@@ -517,7 +517,11 @@ export class FormModalComponent
           (x) => x.name === inputField.name
         );
         // If source field got choices
-        if (inputField.choices || inputField.choicesByUrl) {
+        if (
+          inputField.choices ||
+          inputField.choicesByUrl ||
+          inputField.choicesByGraphQL
+        ) {
           // If the target has multiple choices we concatenate all the source values
           if (
             targetField.type === 'tagbox' ||
@@ -590,6 +594,7 @@ export class FormModalComponent
           revert: (version: any) =>
             this.confirmRevertDialog(this.record, version),
         },
+        panelClass: ['lg:w-4/5', 'w-full'],
         autoFocus: false,
       });
     }

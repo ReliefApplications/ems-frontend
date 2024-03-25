@@ -17,6 +17,8 @@ import {
   BreadcrumbService,
   ConfirmService,
   DownloadService,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -30,10 +32,6 @@ import {
   handleTablePageEvent,
 } from '@oort-front/ui';
 import { GraphQLError } from 'graphql';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
 
 /** Default items per query, for pagination */
@@ -430,6 +428,7 @@ export class FormRecordsComponent
         inputs: {
           id: item.id,
           revert: (version: any) => this.confirmRevertDialog(item, version),
+          resizable: true,
         },
       });
     });

@@ -13,7 +13,9 @@
   <!-- Unique values -->
   <div>
     <div class="flex gap-1 items-center mb-2">
-      <h2 class="m-0">{{ 'common.value.none' | translate }}</h2>
+      <h2 class="m-0">{{
+        'components.widget.settings.map.renderer.uniqueValue' | translate
+      }}</h2>
       <ui-button
         (click)="onAddInfo()"
         [isIcon]="true"
@@ -36,7 +38,7 @@
       >
         <!-- header -->
         <div
-          class="flex justify-between items-center"
+          class="flex justify-between items-center w-full"
           [ngClass]="{ 'pb-2': index === openedIndex }"
         >
           <div class="flex flex-1 gap-4 items-center cursor-pointer">
@@ -68,7 +70,7 @@
         <!-- body -->
         <div
           [formGroup]="$any(uniqueValueInfos.at(index))"
-          class="flex flex-col pt-2"
+          class="flex flex-col pt-2 w-full"
           *ngIf="index === openedIndex"
         >
           <div uiFormFieldDirective>

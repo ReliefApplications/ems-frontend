@@ -21,8 +21,8 @@ import { isEqual } from 'lodash';
 export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   /** Public variable for stage type. */
   public stageType = PipelineStage;
-  /** Array to hold the list of stages. */
-  public stageList: string[] = Object.values(PipelineStage);
+  /** Input array to hold the list of stages. */
+  @Input() stageList: string[] = Object.values(PipelineStage);
   /** Input decorator for fields$. */
   @Input() public fields$!: Observable<any[]>;
   /** Input decorator for metaFields$. */

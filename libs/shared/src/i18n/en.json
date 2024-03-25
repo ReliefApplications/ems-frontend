@@ -183,6 +183,7 @@
 		},
 		"errors": {
 			"few": "Errors",
+			"invalidJson": "Please provide a valid JSON",
 			"objectDuplicated": "{{type}} {{value}} already exists."
 		},
 		"exitFullscreen": "Exit Fullscreen",
@@ -224,7 +225,10 @@
 			"rawJson": "Raw JSON"
 		},
 		"label": "Label",
-		"layers": "Layers",
+		"layers": {
+			"few": "Layers",
+			"none": "No layer"
+		},
 		"layout": {
 			"few": "Layouts",
 			"none": "No layout",
@@ -234,6 +238,7 @@
 		"modifiedOn": "Modified On",
 		"name": "Name",
 		"next": "Next",
+		"noData": "No data available",
 		"noOptions": "No available choices",
 		"notifications": {
 			"accessDenied": "You don't have permission to see the {{type}}.",
@@ -582,7 +587,8 @@
 						"bottom": "Show filter on the bottom",
 						"left": "Show filter on the left",
 						"right": "Show filter on the right",
-						"top": "Show filter on the top"
+						"top": "Show filter on the top",
+						"unset": "Position unset, please select one"
 					},
 					"info": "Dashboard filters can be used between pages to filter their content.",
 					"title": "Dashboard filters configuration"
@@ -592,15 +598,23 @@
 					"defaultPosition": "Default position for the filter",
 					"fixedRowHeight": "Row height",
 					"gridOptions": "Grid options",
+					"gridType": {
+						"fit": "Fit",
+						"placeholder": "Select a grid type",
+						"title": "Grid type",
+						"verticalFixed": "Vertical fixed"
+					},
 					"help": {
 						"minCols": "Reducing the number of columns may not have a direct impact if the dashboard contains widgets wider than the specified limit."
 					},
 					"margin": "Margin between widgets",
 					"minCols": "Number of columns",
+					"minimumHeight": "Minimum height",
 					"tooltip": {
 						"fixedRowHeight": "Size of rows in pixels.\nMust be greater or equal to 50.",
 						"margin": "Gap in pixels between widgets.\nMust be a positive integer.",
 						"minCols": "Number of columns.\nMust be an integer between 4 and 24.",
+						"minimumHeight": "Minimum height of the grid in pixels.\nMust be greater than or equal to 0. \nThe dashboard won't automatically fit to the screen if its height is below this number.",
 						"reset": "Reset to default"
 					}
 				}
@@ -688,6 +702,28 @@
 			"paginator": {
 				"ariaLabel": "Select page of applications"
 			}
+		},
+		"automation": {
+			"actions": {
+				"add.layer": "Add layer",
+				"add.tab": "Add tab",
+				"display.collapse": "Collapse the display",
+				"display.expand": "Expand the display",
+				"map.click": "On map click",
+				"map.get.country": "Get country from map",
+				"open.tab": "Open tab",
+				"remove.layer": "Remove layer",
+				"remove.tab": "Remove tab",
+				"set.context": "Set context"
+			},
+			"addRule": "Add a new automation rule",
+			"component": {
+				"add": "Add a new component",
+				"select": "Select a component"
+			},
+			"configuration": "Automation configuration",
+			"ruleName": "Name of the automation rule",
+			"rules": "Automation rules"
 		},
 		"calculatedFields": {
 			"add": "Create a new Calculated field",
@@ -938,13 +974,26 @@
 				"to": "to",
 				"withValue": "with value"
 			},
+			"columns": {
+				"action": "Action type",
+				"date": "Date",
+				"modifiedValue": "New value",
+				"originalValue": "Old value",
+				"person": "User",
+				"time": "Time",
+				"variable": "Field"
+			},
 			"download": "Download history",
 			"empty": "No activity detected",
 			"field": {
 				"all": "All fields",
-				"select": "Select a field"
+				"select": "Select fields"
 			},
-			"preview": "Preview and revert"
+			"preview": "Preview and revert",
+			"range": {
+				"clear": "Clear range"
+			},
+			"useTableMode": "Use table mode"
 		},
 		"icon": {
 			"modal": {
@@ -970,6 +1019,10 @@
 						"all": "Map",
 						"current": "Current view"
 					}
+				},
+				"fullScreen": {
+					"exitFullscreen": "Exit Fullscreen",
+					"viewFullscreen": "View Fullscreen"
 				}
 			}
 		},
@@ -1769,12 +1822,16 @@
 							"title": "Layer styles"
 						}
 					},
+					"help": {
+						"geographicExtent": "Use filter and / or page context to zoom on the map"
+					},
 					"layers": {
 						"add": "Add new layer",
 						"chooseLayer": "Choose a layer",
 						"createGroup": "Create a new group layer",
 						"createLayer": "Create a new layer",
 						"dataSource": {
+							"fieldMapping": "Field Mapping",
 							"geoField": "GeoField",
 							"latitude": "Latitude",
 							"longitude": "Longitude"
@@ -1849,6 +1906,8 @@
 							"timedimension": "Time dimension",
 							"title": "Visible Map Controls"
 						},
+						"geographicExtent": "Geographic extent",
+						"geographicExtentValue": "Geographic extent value",
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
 						"setByMap": "Set By Map",
@@ -1861,6 +1920,7 @@
 						"defaultLabel": "Default label",
 						"label": "Label",
 						"symbol": "Symbol",
+						"uniqueValue": "Unique values",
 						"value": "Value"
 					},
 					"tooltip": {
@@ -1874,6 +1934,16 @@
 							"latitude": "Set the default latitude of the center of the map. You can use 'Set By Map' to use the latitude of the preview map.",
 							"longitude": "Set the default longitude of the center of the map. You can use 'Set By Map' to use the longitude of the preview map.",
 							"zoom": "Select a default zoom for the map display"
+						},
+						"geographicExtent": {
+							"add": "Add new geographic extent",
+							"admin0": "Use either iso2code, iso3code or country name",
+							"region": "Use region name",
+							"remove": "Remove geographic extent",
+							"value": "You can input a static value, or use {{context}} or {{filter}} notation to dynamically inject a value"
+						},
+						"gradient": {
+							"reverse": "Reverse gradient"
 						}
 					}
 				},
@@ -1885,6 +1955,13 @@
 					"card": {
 						"dataSource": {
 							"layoutStyles": {
+								"queryFilters": {
+									"help": "Make sure to remove all unused variables, to prevent null arguments to be sent.",
+									"noVariables": "No variables defined",
+									"refresh": "See all graphQL variables",
+									"title": "GraphQL variable mapping",
+									"tooltip": "Set values for the GraphQL variables defined in the reference data query. You can get values from the filters using the {{filter.<question-name>}} templates. E.g.: { \"region\": {{filter.region}} }"
+								},
 								"title": "Layout styles",
 								"use": "Use layout styles",
 								"wholeRow": {
@@ -1969,6 +2046,7 @@
 	},
 	"kendo": {
 		"combobox": {
+			"clearTitle": "Clear value",
 			"noDataText": "No available choice"
 		},
 		"datepicker": {
@@ -2049,6 +2127,7 @@
 		},
 		"fileselect": {
 			"dropFilesHere": "Drop files here to select",
+			"invalidMaxFileSize": "File size too large.",
 			"select": "Select files..."
 		},
 		"grid": {
@@ -2126,6 +2205,7 @@
 			"unstick": "Unstick"
 		},
 		"multiselect": {
+			"clearTitle": "Clear value",
 			"noDataText": "No available choice"
 		},
 		"pager": {
@@ -2138,7 +2218,8 @@
 			"of": "of",
 			"page": "Page",
 			"pageNumberInputTitle": "Page Number",
-			"previousPage": "Go to the previous page"
+			"previousPage": "Go to the previous page",
+			"selectPage": "Select page"
 		},
 		"tilelayout": {
 			"component": {
@@ -2363,6 +2444,7 @@
 				"border": "Show widget border",
 				"expand": "Show button to expand widget",
 				"header": "Show widget header",
+				"hideEmpty": "Hide widget when empty",
 				"padding": "Use widget inner padding",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",
@@ -2391,6 +2473,7 @@
 					"help": "Only appears in front-office or in preview mode",
 					"restore": "Restore default"
 				},
+				"hideEmpty": "Only hides in front-office or in preview mode",
 				"selector": {
 					"collapse": "Hide widget selector",
 					"expand": "Show widget selector"
@@ -2534,7 +2617,23 @@
 				"title": "Field"
 			},
 			"graphQLFilter": "GraphQL query parameters",
-			"path": "Path",
+			"pagination": {
+				"cursorPath": "Cursor path",
+				"cursorVariable": "Cursor query variable",
+				"offsetVariable": "Offset query variable",
+				"pageSizeVariable": "Page size query variable",
+				"pageVariable": "Page number query variable",
+				"strategy": "Pagination strategy",
+				"totalCountPath": "Total items count path",
+				"usePagination": {
+					"hint": "Depends on API support, allows fetching data by page",
+					"text": "Use pagination"
+				}
+			},
+			"path": {
+				"placeholder": "Enter a valid JSONPath",
+				"title": "Data path"
+			},
 			"payload": {
 				"label": "Payload",
 				"show": "Show payload"

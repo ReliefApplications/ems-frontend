@@ -183,6 +183,7 @@
 		},
 		"errors": {
 			"few": "******",
+			"invalidJson": "******",
 			"objectDuplicated": "{{type}} ****** {{value}} ******"
 		},
 		"exitFullscreen": "******",
@@ -224,7 +225,10 @@
 			"rawJson": "******"
 		},
 		"label": "******",
-		"layers": "******",
+		"layers": {
+			"few": "******",
+			"none": "******"
+		},
 		"layout": {
 			"few": "******",
 			"none": "******",
@@ -234,6 +238,7 @@
 		"modifiedOn": "******",
 		"name": "******",
 		"next": "******",
+		"noData": "******",
 		"noOptions": "******",
 		"notifications": {
 			"accessDenied": "****** {{type}} ******",
@@ -582,7 +587,8 @@
 						"bottom": "******",
 						"left": "******",
 						"right": "******",
-						"top": "******"
+						"top": "******",
+						"unset": "******"
 					},
 					"info": "******",
 					"title": "******"
@@ -592,15 +598,23 @@
 					"defaultPosition": "******",
 					"fixedRowHeight": "******",
 					"gridOptions": "******",
+					"gridType": {
+						"fit": "******",
+						"placeholder": "******",
+						"title": "******",
+						"verticalFixed": "******"
+					},
 					"help": {
 						"minCols": "******"
 					},
 					"margin": "******",
 					"minCols": "******",
+					"minimumHeight": "******",
 					"tooltip": {
 						"fixedRowHeight": "******",
 						"margin": "******",
 						"minCols": "******",
+						"minimumHeight": "******",
 						"reset": "******"
 					}
 				}
@@ -688,6 +702,28 @@
 			"paginator": {
 				"ariaLabel": "******"
 			}
+		},
+		"automation": {
+			"actions": {
+				"add.layer": "******",
+				"add.tab": "******",
+				"display.collapse": "******",
+				"display.expand": "******",
+				"map.click": "******",
+				"map.get.country": "******",
+				"open.tab": "******",
+				"remove.layer": "******",
+				"remove.tab": "******",
+				"set.context": "******"
+			},
+			"addRule": "******",
+			"component": {
+				"add": "******",
+				"select": "******"
+			},
+			"configuration": "******",
+			"ruleName": "******",
+			"rules": "******"
 		},
 		"calculatedFields": {
 			"add": "******",
@@ -938,13 +974,26 @@
 				"to": "******",
 				"withValue": "******"
 			},
+			"columns": {
+				"action": "******",
+				"date": "******",
+				"modifiedValue": "******",
+				"originalValue": "******",
+				"person": "******",
+				"time": "******",
+				"variable": "******"
+			},
 			"download": "******",
 			"empty": "******",
 			"field": {
 				"all": "******",
 				"select": "******"
 			},
-			"preview": "******"
+			"preview": "******",
+			"range": {
+				"clear": "******"
+			},
+			"useTableMode": "******"
 		},
 		"icon": {
 			"modal": {
@@ -970,6 +1019,10 @@
 						"all": "******",
 						"current": "******"
 					}
+				},
+				"fullScreen": {
+					"exitFullscreen": "******",
+					"viewFullscreen": "******"
 				}
 			}
 		},
@@ -1769,12 +1822,16 @@
 							"title": "******"
 						}
 					},
+					"help": {
+						"geographicExtent": "******"
+					},
 					"layers": {
 						"add": "******",
 						"chooseLayer": "******",
 						"createGroup": "******",
 						"createLayer": "******",
 						"dataSource": {
+							"fieldMapping": "******",
 							"geoField": "******",
 							"latitude": "******",
 							"longitude": "******"
@@ -1849,6 +1906,8 @@
 							"timedimension": "******",
 							"title": "******"
 						},
+						"geographicExtent": "******",
+						"geographicExtentValue": "******",
 						"latitude": "******",
 						"longitude": "******",
 						"setByMap": "******",
@@ -1861,6 +1920,7 @@
 						"defaultLabel": "******",
 						"label": "******",
 						"symbol": "******",
+						"uniqueValue": "******",
 						"value": "******"
 					},
 					"tooltip": {
@@ -1874,6 +1934,16 @@
 							"latitude": "******",
 							"longitude": "******",
 							"zoom": "******"
+						},
+						"geographicExtent": {
+							"add": "******",
+							"admin0": "******",
+							"region": "******",
+							"remove": "******",
+							"value": "****** {{context}} ****** {{filter}} ******"
+						},
+						"gradient": {
+							"reverse": "******"
 						}
 					}
 				},
@@ -1885,6 +1955,13 @@
 					"card": {
 						"dataSource": {
 							"layoutStyles": {
+								"queryFilters": {
+									"help": "******",
+									"noVariables": "******",
+									"refresh": "******",
+									"title": "******",
+									"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
+								},
 								"title": "******",
 								"use": "******",
 								"wholeRow": {
@@ -1969,6 +2046,7 @@
 	},
 	"kendo": {
 		"combobox": {
+			"clearTitle": "******",
 			"noDataText": "******"
 		},
 		"datepicker": {
@@ -2049,6 +2127,7 @@
 		},
 		"fileselect": {
 			"dropFilesHere": "******",
+			"invalidMaxFileSize": "******",
 			"select": "******"
 		},
 		"grid": {
@@ -2126,6 +2205,7 @@
 			"unstick": "******"
 		},
 		"multiselect": {
+			"clearTitle": "******",
 			"noDataText": "******"
 		},
 		"pager": {
@@ -2138,7 +2218,8 @@
 			"of": "******",
 			"page": "******",
 			"pageNumberInputTitle": "******",
-			"previousPage": "******"
+			"previousPage": "******",
+			"selectPage": "******"
 		},
 		"tilelayout": {
 			"component": {
@@ -2363,6 +2444,7 @@
 				"border": "******",
 				"expand": "******",
 				"header": "******",
+				"hideEmpty": "******",
 				"padding": "******",
 				"searchable": "******",
 				"sortable": "******",
@@ -2391,6 +2473,7 @@
 					"help": "******",
 					"restore": "******"
 				},
+				"hideEmpty": "******",
 				"selector": {
 					"collapse": "******",
 					"expand": "******"
@@ -2534,7 +2617,23 @@
 				"title": "******"
 			},
 			"graphQLFilter": "******",
-			"path": "******",
+			"pagination": {
+				"cursorPath": "******",
+				"cursorVariable": "******",
+				"offsetVariable": "******",
+				"pageSizeVariable": "******",
+				"pageVariable": "******",
+				"strategy": "******",
+				"totalCountPath": "******",
+				"usePagination": {
+					"hint": "******",
+					"text": "******"
+				}
+			},
+			"path": {
+				"placeholder": "******",
+				"title": "******"
+			},
 			"payload": {
 				"label": "******",
 				"show": "******"

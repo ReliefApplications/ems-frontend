@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { ContextService } from '../../services/context/context.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { Observable, debounceTime, takeUntil } from 'rxjs';
+import { Observable, debounceTime, filter, takeUntil } from 'rxjs';
 import { isEmpty } from 'lodash';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 
@@ -39,17 +39,30 @@ export class DashboardFilterIconComponent
    * Appears in application header.
    *
    * @param contextService Shared context service
+   * @param {ElementRef} el Current components element ref in the DOM
    */
-  constructor(private contextService: ContextService) {
+  constructor(private contextService: ContextService, private el: ElementRef) {
     super();
     this.enabled = this.contextService.isFilterEnabled$;
   }
 
   ngOnInit(): void {
     this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.active = !isEmpty(value);
+      .pipe(
+        // On working with web components we want to send filter value if this current element is in the DOM
+        // Otherwise send value always
+        filter(() =>
+          this.contextService.shadowDomService.isShadowRoot
+            ? this.contextService.shadowDomService.currentHost.contains(
+                this.el.nativeElement
+              )
+            : true
+        ),
+        debounceTime(500),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ current }) => {
+        this.active = !isEmpty(current);
       });
   }
 

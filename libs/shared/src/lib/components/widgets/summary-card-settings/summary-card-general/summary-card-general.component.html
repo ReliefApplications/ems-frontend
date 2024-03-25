@@ -6,7 +6,7 @@
 
   <ng-container formGroupName="card">
     <div class="flex gap-2 flex-wrap">
-      <div class="flex-1 flex-col">
+      <div class="flex-1 flex-col w-full">
         <!-- Reference data selection  -->
         <div
           uiFormFieldDirective
@@ -29,6 +29,15 @@
             [uiTooltip]="'common.remove' | translate"
           ></ui-button>
         </div>
+
+        <!-- GraphQL variable mapping -->
+        <shared-graphql-variables-mapping
+          *ngIf="referenceData && referenceData.type === 'graphql'"
+          [referenceData]="referenceData"
+          [control]="
+            formGroup.controls.card.controls.referenceDataVariableMapping
+          "
+        ></shared-graphql-variables-mapping>
         <ui-divider
           class="max-w-xs m-auto"
           [text]="'common.or' | translate"

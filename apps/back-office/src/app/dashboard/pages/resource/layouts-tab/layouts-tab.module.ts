@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { LayoutsTabRoutingModule } from './layouts-tab-routing.module';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { LayoutsTabComponent } from './layouts-tab.component';
-import { PaginatorModule } from '@oort-front/ui';
 import { DataPresentationListComponent } from '../components/data-presentation-list/data-presentation-list.component';
 
 /**
@@ -15,7 +14,6 @@ import { DataPresentationListComponent } from '../components/data-presentation-l
     CommonModule,
     LayoutsTabRoutingModule,
     OverlayModule,
-    PaginatorModule,
     DataPresentationListComponent,
   ],
 })

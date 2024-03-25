@@ -5,6 +5,7 @@ import {
   DashboardService,
   EditDashboardMutationResponse,
   UnsubscribeComponent,
+  FilterPosition,
 } from '@oort-front/shared';
 import {
   FormWrapperModule,
@@ -92,16 +93,17 @@ export class DashboardFilterSettingsComponent
         this.onEdit(value);
       });
 
-    this.contextService.filterStructure$.subscribe((value) => {
-      this.formGroup.controls.structure.setValue(value, { emitEvent: false });
-    });
+    this.formGroup.controls.structure.setValue(
+      this.dashboard.filter?.structure,
+      { emitEvent: false }
+    );
   }
 
   /**
    * Call context service onEditFilter method.
    */
   public onEditStructure() {
-    this.contextService.onEditFilter();
+    this.contextService.onEditFilter(this.dashboard);
   }
 
   /**
@@ -155,6 +157,12 @@ export class DashboardFilterSettingsComponent
         },
         complete: () => {
           this.contextService.isFilterEnabled.next(value.show);
+          this.contextService.filterPosition.next({
+            position:
+              (this.dashboard.filter?.position as FilterPosition) ||
+              FilterPosition.BOTTOM,
+            dashboardId: this.dashboard.id ?? '',
+          });
         },
       });
   }

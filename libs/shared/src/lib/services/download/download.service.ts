@@ -307,8 +307,7 @@ export class DownloadService {
           snackBarSpinner.instance.loading = false;
           snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
-        error: (err) => {
-          console.log(err);
+        error: () => {
           snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.file.upload.error'
           );
