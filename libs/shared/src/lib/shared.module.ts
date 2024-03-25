@@ -49,7 +49,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
 /** Main module for the shared project */
 @NgModule({
   exports: [
-    PayloadModalComponent,
     LayoutModule,
     AccessModule,
     FormModule,
