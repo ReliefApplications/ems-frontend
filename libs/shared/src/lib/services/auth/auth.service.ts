@@ -323,6 +323,9 @@ export class AuthService {
     if (globalPermissions.includes('can_create_applications')) {
       can('create', 'Application');
     }
+    if (globalPermissions.includes('can_delete_applications')) {
+      can('delete', 'Application');
+    }
     if (globalPermissions.includes('can_manage_applications')) {
       can(
         ['read', 'create', 'update', 'delete', 'manage'],
