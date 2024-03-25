@@ -5,7 +5,9 @@ import {
   HostListener,
   Input,
   OnInit,
+  Optional,
   Renderer2,
+  SkipSelf,
   ViewChild,
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
@@ -37,6 +39,7 @@ import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
+import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
 
 /**
  * Text widget component using Tinymce.
@@ -105,9 +108,10 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
    */
   @HostListener('click', ['$event'])
   onContentClick(event: any) {
-    this.widgetService.handleWidgetContentAction(
+    this.widgetService.handleWidgetContentClick(
       event,
       'shared-editor',
+      this.dashboardAutomationService,
       this.settings.automationRules
     );
     const content = this.htmlContentComponent.el.nativeElement;
@@ -136,6 +140,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
    * @param el Element ref
    * @param router Angular router
    * @param widgetService Shared widget service
+   * @param dashboardAutomationService Dashboard automation service (Optional, so not active while editing widget)
    */
   constructor(
     private apollo: Apollo,
@@ -151,7 +156,10 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
     private aggregationService: AggregationService,
     private el: ElementRef,
     private router: Router,
-    private widgetService: WidgetService
+    private widgetService: WidgetService,
+    @Optional()
+    @SkipSelf()
+    private dashboardAutomationService: DashboardAutomationService
   ) {
     super();
   }

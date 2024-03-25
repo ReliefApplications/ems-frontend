@@ -264,12 +264,13 @@ export class SummaryCardComponent
 
   /** @returns the graphql query variables object */
   get graphqlVariables() {
-    let mapping = this.widgetService.mapGraphQLVariables(
-      this.settings.card?.referenceDataVariableMapping as any
+    return this.widgetService.mapGraphQLVariables(
+      this.settings.card?.referenceDataVariableMapping as any,
+      this.replaceWidgetVariables.bind(this)
     );
-    mapping = this.replaceWidgetVariables(mapping);
-    this.contextService.removeEmptyPlaceholders(mapping);
-    return mapping;
+    // mapping = this.replaceWidgetVariables(mapping);
+    // this.contextService.removeEmptyPlaceholders(mapping);
+    // return mapping;
   }
 
   /**

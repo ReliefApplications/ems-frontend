@@ -1,12 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import {
-  Inject,
-  Injectable,
-  Optional,
-  Renderer2,
-  RendererFactory2,
-  SkipSelf,
-} from '@angular/core';
+import { Inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { ShadowDomService } from '@oort-front/ui';
 import { isEqual, set } from 'lodash';
 import get from 'lodash/get';
@@ -18,6 +11,8 @@ import { RestService } from '../rest/rest.service';
  * Shared widget service.
  * Handles common operations, like:
  * - adding custom style
+ * - widget click
+ * - variables injection
  */
 @Injectable({
   providedIn: 'root',
@@ -33,7 +28,6 @@ export class WidgetService {
    * @param document Document reference
    * @param shadowDomService Shared shadow dom service
    * @param contextService Shared context service
-   * @param dashboardAutomationService Dashboard automation service (Optional, so not active while editing widget)
    * @param _renderer RendererFactory2
    */
   constructor(
@@ -41,9 +35,6 @@ export class WidgetService {
     @Inject(DOCUMENT) private document: Document,
     private shadowDomService: ShadowDomService,
     private contextService: ContextService,
-    @Optional()
-    @SkipSelf()
-    private dashboardAutomationService: DashboardAutomationService,
     _renderer: RendererFactory2
   ) {
     this.renderer = _renderer.createRenderer(null, null);
@@ -96,11 +87,13 @@ export class WidgetService {
    *
    * @param event Click event received from the widget
    * @param widgetNodeName Current clicked widget node name
+   * @param dashboardAutomationService Dashboard automation service, provided by widget
    * @param automationRules Automation rules from the widget settings to trigger if needed
    */
-  public handleWidgetContentAction(
+  public handleWidgetContentClick(
     event: PointerEvent,
     widgetNodeName: string,
+    dashboardAutomationService: DashboardAutomationService,
     automationRules:
       | Partial<{
           id: any;
@@ -159,7 +152,9 @@ export class WidgetService {
       const ruleTarget = currentNode.dataset?.ruleTarget;
       const rule = automationRules.find((rule: any) => rule.id === ruleTarget);
       if (rule) {
-        this.dashboardAutomationService?.executeAutomationRule(rule);
+        console.log(rule);
+        console.log(dashboardAutomationService);
+        dashboardAutomationService?.executeAutomationRule(rule);
       }
     }
 
@@ -200,13 +195,21 @@ export class WidgetService {
    * Gets graphQLVariables from target source
    *
    * @param source source we need the mapping variables from
+   * @param additionalLogic additional logic, for widgets that use other placeholders than filter & context
    * @returns the graphql query variables object
    */
-  public mapGraphQLVariables(source: string | undefined): object | null {
+  public mapGraphQLVariables(
+    source: string | undefined,
+    additionalLogic?: (mapping: any) => any
+  ): object | null {
     try {
       let mapping = JSON.parse(source || '');
       mapping = this.contextService.replaceContext(mapping);
       mapping = this.contextService.replaceFilter(mapping);
+      // Apply additional logic if provided
+      if (additionalLogic) {
+        mapping = additionalLogic(mapping);
+      }
       this.contextService.removeEmptyPlaceholders(mapping);
       return mapping || {};
     } catch {

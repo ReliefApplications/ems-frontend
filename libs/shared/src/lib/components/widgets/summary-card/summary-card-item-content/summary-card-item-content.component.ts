@@ -8,19 +8,20 @@ import {
   OnInit,
   Optional,
   Renderer2,
+  SkipSelf,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { takeUntil } from 'rxjs';
-import { ContextService } from '../../../../services/context/context.service';
 import { DataTemplateService } from '../../../../services/data-template/data-template.service';
 import { WidgetService } from '../../../../services/widget/widget.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { HtmlWidgetContentComponent } from '../../common/html-widget-content/html-widget-content.component';
 import { SummaryCardFormT } from '../../summary-card-settings/summary-card-settings.component';
 import { SummaryCardItemComponent } from '../summary-card-item/summary-card-item.component';
+import { DashboardAutomationService } from '../../../../services/dashboard-automation/dashboard-automation.service';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -65,9 +66,10 @@ export class SummaryCardItemContentComponent
    */
   @HostListener('click', ['$event'])
   onContentClick(event: any) {
-    this.widgetService.handleWidgetContentAction(
+    this.widgetService.handleWidgetContentClick(
       event,
       'shared-summary-card-item-content',
+      this.dashboardAutomationService,
       this.settings.automationRules
     );
     const content = this.htmlContentComponent.el.nativeElement;
@@ -85,21 +87,23 @@ export class SummaryCardItemContentComponent
    * @param dataTemplateService Shared data template service, used to render content from template
    * @param dialog CDK Dialog service
    * @param parent Reference to parent summary card item component
-   * @param contextService Context service
    * @param renderer Angular renderer2 service
    * @param el Element ref
    * @param router Angular router
    * @param widgetService Shared widget service
+   * @param dashboardAutomationService Dashboard automation service (Optional, so not active while editing widget)
    */
   constructor(
     private dataTemplateService: DataTemplateService,
     private dialog: Dialog,
     @Optional() public parent: SummaryCardItemComponent,
-    private contextService: ContextService,
     private renderer: Renderer2,
     private el: ElementRef,
     private router: Router,
-    private widgetService: WidgetService
+    private widgetService: WidgetService,
+    @Optional()
+    @SkipSelf()
+    private dashboardAutomationService: DashboardAutomationService
   ) {
     super();
   }
