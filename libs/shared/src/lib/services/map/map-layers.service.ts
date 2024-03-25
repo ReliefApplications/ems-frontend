@@ -35,6 +35,7 @@ import { omitBy, isNil, get } from 'lodash';
 import { ContextService } from '../context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { MapPolygonsService } from './map-polygons.service';
+import { WidgetService } from '../widget/widget.service';
 
 /**
  * Shared map layer service
@@ -52,6 +53,7 @@ export class MapLayersService {
    * @param aggregationBuilder Aggregation builder service
    * @param contextService Application context service
    * @param mapPolygonsService Shared map polygons service
+   * @param widgetService Shared widget service
    * @param document document
    */
   constructor(
@@ -61,6 +63,7 @@ export class MapLayersService {
     private aggregationBuilder: AggregationBuilderService,
     private contextService: ContextService,
     private mapPolygonsService: MapPolygonsService,
+    private widgetService: WidgetService,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
@@ -405,25 +408,16 @@ export class MapLayersService {
     const at = layer.at
       ? this.contextService.atArgumentValue(layer.at)
       : undefined;
-    const graphQLVariables = () => {
-      try {
-        let mapping = JSON.parse(
-          layer.datasource?.referenceDataVariableMapping || ''
-        );
-        mapping = this.contextService.replaceContext(mapping);
-        mapping = this.contextService.replaceFilter(mapping);
-        this.contextService.removeEmptyPlaceholders(mapping);
-        return mapping || {};
-      } catch {
-        return {};
-      }
-    };
     const params = new HttpParams({
       fromObject: omitBy(
         {
           ...layer.datasource,
           contextFilters: JSON.stringify(contextFilters),
-          graphQLVariables: JSON.stringify(graphQLVariables()),
+          graphQLVariables: JSON.stringify(
+            this.widgetService.mapGraphQLVariables(
+              layer.datasource?.referenceDataVariableMapping
+            )
+          ),
           ...(at && {
             at: at.toString(),
           }),

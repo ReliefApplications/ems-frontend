@@ -16,6 +16,7 @@ import { MapPolygonsService } from '../map/map-polygons.service';
 import { first, firstValueFrom } from 'rxjs';
 import { ContextService } from '../context/context.service';
 import { TabsComponent } from '../../components/widgets/tabs/tabs.component';
+import { ActionType, ActionWithValue } from '../../models/automation.model';
 
 /**
  * Dashboard automation services.
@@ -46,9 +47,16 @@ export class DashboardAutomationService {
    * Execute an automation rule.
    *
    * @param rule Rule to be executed.
+   * @param rule.components list of automation components
    * @param value initial value ( trigger action result )
    */
-  public async executeAutomationRule(rule: any, value?: any) {
+  public async executeAutomationRule(
+    rule: { components?: ActionWithValue[] | undefined },
+    value?: any
+  ) {
+    if (!rule.components) {
+      return;
+    }
     // Automation context
     const context = {};
     try {
@@ -60,9 +68,9 @@ export class DashboardAutomationService {
           case 'action':
           default: {
             switch (component.type) {
-              case 'add.layer': {
-                const widget = this.findWidget(component.value.widget);
-                const layerIds = component.value.layers;
+              case ActionType.addLayer: {
+                const widget = this.findWidget(component.value?.widget);
+                const layerIds = component.value?.layers;
                 if (
                   widget &&
                   widget.widgetContentComponent instanceof MapWidgetComponent
@@ -81,9 +89,9 @@ export class DashboardAutomationService {
                 }
                 break;
               }
-              case 'remove.layer': {
-                const widget = this.findWidget(component.value.widget);
-                const layerIds = component.value.layers;
+              case ActionType.removeLayer: {
+                const widget = this.findWidget(component.value?.widget);
+                const layerIds = component.value?.layers;
                 if (
                   widget &&
                   widget.widgetContentComponent instanceof MapWidgetComponent
@@ -102,7 +110,7 @@ export class DashboardAutomationService {
                 }
                 break;
               }
-              case 'map.get.country': {
+              case ActionType.mapGetCountry: {
                 await firstValueFrom(
                   this.mapPolygonsService.admin0sReady$.pipe(first((v) => v))
                 );
@@ -118,7 +126,7 @@ export class DashboardAutomationService {
                 }
                 break;
               }
-              case 'set.context': {
+              case ActionType.setContext: {
                 const mapping = get(component, 'value.mapping', '');
                 const mappingAsJSON = this.parseJSONValues(JSON.parse(mapping));
                 const toString = JSON.stringify(mappingAsJSON);
@@ -141,9 +149,9 @@ export class DashboardAutomationService {
                 }
                 break;
               }
-              case 'add.tab': {
-                const widget = this.findWidget(component.value.widget);
-                const tabIds = component.value.tabs;
+              case ActionType.addTab: {
+                const widget = this.findWidget(component.value?.widget);
+                const tabIds = component.value?.tabs;
                 if (
                   widget &&
                   widget.widgetContentComponent instanceof TabsComponent
@@ -159,9 +167,9 @@ export class DashboardAutomationService {
                 }
                 break;
               }
-              case 'remove.tab': {
-                const widget = this.findWidget(component.value.widget);
-                const tabIds = component.value.tabs;
+              case ActionType.removeTab: {
+                const widget = this.findWidget(component.value?.widget);
+                const tabIds = component.value?.tabs;
                 if (
                   widget &&
                   widget.widgetContentComponent instanceof TabsComponent
@@ -177,9 +185,9 @@ export class DashboardAutomationService {
                 }
                 break;
               }
-              case 'open.tab': {
-                const widget = this.findWidget(component.value.widget);
-                const tabId = component.value.tab;
+              case ActionType.openTab: {
+                const widget = this.findWidget(component.value?.widget);
+                const tabId = component.value?.tab;
                 if (
                   widget &&
                   widget.widgetContentComponent instanceof TabsComponent
@@ -201,15 +209,15 @@ export class DashboardAutomationService {
                 }
                 break;
               }
-              case 'display.collapse': {
-                const widget = this.findWidget(component.value.widget);
+              case ActionType.displayCollapse: {
+                const widget = this.findWidget(component.value?.widget);
                 if (widget && widget.showExpand && widget.expanded) {
                   widget.onResize();
                 }
                 break;
               }
-              case 'display.expand': {
-                const widget = this.findWidget(component.value.widget);
+              case ActionType.displayExpand: {
+                const widget = this.findWidget(component.value?.widget);
                 if (widget && widget.showExpand && !widget.expanded) {
                   widget.onResize();
                 }

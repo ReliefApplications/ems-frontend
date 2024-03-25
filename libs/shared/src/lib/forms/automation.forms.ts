@@ -1,6 +1,11 @@
 import { FormBuilder, Validators } from '@angular/forms';
 import { get } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import {
+  ActionType,
+  ActionValue,
+  ActionWithValue,
+} from '../models/automation.model';
 
 /** Form builder */
 const fb = new FormBuilder();
@@ -31,37 +36,37 @@ export const createAutomationForm = (value?: any) => {
  * @returns form group
  */
 export const createAutomationActionComponentForm = (
-  type: string,
-  value: any
+  type: ActionType,
+  value: ActionValue | null
 ) => {
   switch (type) {
-    case 'set.context': {
+    case ActionType.setContext: {
       return fb.group({
         mapping: [get(value, 'mapping', ''), Validators.required],
       });
     }
-    case 'add.layer':
-    case 'remove.layer': {
+    case ActionType.addLayer:
+    case ActionType.removeLayer: {
       return fb.group({
         widget: [get(value, 'widget', null), Validators.required],
         layers: [get(value, 'layers', null), Validators.required],
       });
     }
-    case 'add.tab':
-    case 'remove.tab': {
+    case ActionType.addTab:
+    case ActionType.removeTab: {
       return fb.group({
         widget: [get(value, 'widget', null), Validators.required],
         tabs: [get(value, 'tabs', null), Validators.required],
       });
     }
-    case 'open.tab': {
+    case ActionType.openTab: {
       return fb.group({
         widget: [get(value, 'widget', null), Validators.required],
         tab: [get(value, 'tab', null), Validators.required],
       });
     }
-    case 'display.collapse':
-    case 'display.expand': {
+    case ActionType.displayCollapse:
+    case ActionType.displayExpand: {
       return fb.group({
         widget: [get(value, 'widget', null), Validators.required],
       });
@@ -78,12 +83,15 @@ export const createAutomationActionComponentForm = (
  * @param value value of automation component
  * @returns form group
  */
-export const createAutomationComponentForm = (value: any) => {
+export const createAutomationComponentForm = (value: ActionWithValue) => {
+  const type = get(value, 'type', null);
+  const description = get(value, 'description', '');
   switch (value.component) {
     case 'trigger': {
       return fb.group({
         component: 'trigger',
-        type: [get(value, 'type', null), Validators.required],
+        type: [type, Validators.required],
+        description,
         value: fb.group({}),
       });
     }
@@ -92,11 +100,11 @@ export const createAutomationComponentForm = (value: any) => {
       // todo: more logic depending on type of action
       return fb.group({
         component: 'action',
-        type: [get(value, 'type', null), Validators.required],
-        value: createAutomationActionComponentForm(
-          get(value, 'type', null),
-          get(value, 'value', null)
-        ),
+        type: [type, Validators.required],
+        description,
+        value: type
+          ? createAutomationActionComponentForm(type, get(value, 'value', null))
+          : fb.group({}),
       });
     }
   }

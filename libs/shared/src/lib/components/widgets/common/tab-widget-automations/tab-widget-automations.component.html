@@ -1,12 +1,12 @@
 <div class="flex justify-between">
-  <h2>Automation rules</h2>
+  <h2>{{ 'components.automation.rules' | translate }}</h2>
   <ui-button
     class="mb-6"
     category="secondary"
     variant="primary"
     (click)="addEditRule()"
   >
-    Add a new automation rule
+    {{ 'components.automation.addRule' | translate }}
   </ui-button>
 </div>
 <ng-template #emptyTmpl>
@@ -39,14 +39,6 @@
       <td uiCell *cdkCellDef="let element; let i = index">
         <div class="flex gap-2 text-neutral-500 justify-end">
           <ui-button
-            variant="danger"
-            [isIcon]="true"
-            icon="delete"
-            (click)="removeRow(i)"
-            [uiTooltip]="'common.delete' | translate"
-          >
-          </ui-button>
-          <ui-button
             uiSuffix
             variant="primary"
             [isIcon]="true"
@@ -54,6 +46,14 @@
             (click)="addEditRule(i)"
             [uiTooltip]="'common.edit' | translate"
           ></ui-button>
+          <ui-button
+            variant="danger"
+            [isIcon]="true"
+            icon="delete"
+            (click)="removeRow(i)"
+            [uiTooltip]="'common.delete' | translate"
+          >
+          </ui-button>
         </div>
       </td>
     </ng-container>
