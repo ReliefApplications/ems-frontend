@@ -6,6 +6,7 @@ import get from 'lodash/get';
 import { ContextService } from '../context/context.service';
 import { DashboardAutomationService } from '../dashboard-automation/dashboard-automation.service';
 import { RestService } from '../rest/rest.service';
+import { ActionWithValue } from '../../models/automation.model';
 
 /**
  * Shared widget service.
@@ -98,11 +99,7 @@ export class WidgetService {
       | Partial<{
           id: any;
           name: any;
-          components: Partial<{
-            component: string | null;
-            type: any;
-            value: Partial<object>;
-          }>[];
+          components: ActionWithValue[] | undefined;
         }>[]
       | undefined
   ) {
@@ -152,8 +149,6 @@ export class WidgetService {
       const ruleTarget = currentNode.dataset?.ruleTarget;
       const rule = automationRules.find((rule: any) => rule.id === ruleTarget);
       if (rule) {
-        console.log(rule);
-        console.log(dashboardAutomationService);
         dashboardAutomationService?.executeAutomationRule(rule);
       }
     }

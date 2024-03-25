@@ -1,6 +1,6 @@
 <ui-dialog size="medium">
   <ng-container ngProjectAs="header">
-    <h3>{{ data.type }}</h3>
+    <h3>{{ 'components.automation.actions.' + data.type | translate }}</h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <ng-container *ngIf="editor" [formGroup]="formGroup.controls.value">
@@ -14,10 +14,10 @@
               <ui-select-menu
                 *ngIf="property.async"
                 [formControlName]="property.name"
-                [multiselect]="property.multiselect"
+                [multiselect]="property.multiselect || false"
               >
                 <ui-select-option
-                  *ngFor="let choice of property.choices | async"
+                  *ngFor="let choice of $any(property).choices | async"
                   [value]="choice.value"
                 >
                   {{ choice.text }}
@@ -27,10 +27,10 @@
               <ui-select-menu
                 *ngIf="!property.async"
                 [formControlName]="property.name"
-                [multiselect]="property.multiselect"
+                [multiselect]="property.multiselect || false"
               >
                 <ui-select-option
-                  *ngFor="let choice of property.choices"
+                  *ngFor="let choice of $any(property).choices"
                   [value]="choice.value"
                 >
                   {{ choice.text }}

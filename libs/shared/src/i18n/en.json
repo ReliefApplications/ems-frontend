@@ -653,6 +653,28 @@
 				"ariaLabel": "Select page of applications"
 			}
 		},
+		"automation": {
+			"actions": {
+				"add.layer": "Add layer",
+				"add.tab": "Add tab",
+				"display.collapse": "Collapse the display",
+				"display.expand": "Expand the display",
+				"map.click": "On map click",
+				"map.get.country": "Get country from map",
+				"open.tab": "Open tab",
+				"remove.layer": "Remove layer",
+				"remove.tab": "Remove tab",
+				"set.context": "Set context"
+			},
+			"addRule": "Add a new automation rule",
+			"component": {
+				"add": "Add a new component",
+				"select": "Select a component"
+			},
+			"configuration": "Automation configuration",
+			"ruleName": "Name of the automation rule",
+			"rules": "Automation rules"
+		},
 		"calculatedFields": {
 			"add": "Create a new Calculated field",
 			"delete": {

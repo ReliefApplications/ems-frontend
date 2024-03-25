@@ -1,7 +1,12 @@
 <ui-dialog size="big">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{ 'components.automation.configuration' | translate }}
+    </h3>
+  </ng-container>
   <ng-container ngProjectAs="header" [formGroup]="formGroup">
     <div uiFormFieldDirective>
-      <label>Name of automation rule</label>
+      <label>{{ 'components.automation.ruleName' | translate }}</label>
       <input formControlName="name" type="text" placeholder="Type a name..." />
     </div>
     <div class="flex justify-between">
@@ -12,13 +17,13 @@
         variant="primary"
         (click)="onAddComponent()"
       >
-        Add a new component
+        {{ 'components.automation.component.add' | translate }}
       </ui-button>
     </div>
   </ng-container>
 
   <ng-container ngProjectAs="content">
-    <ul>
+    <ul cdkDropList (cdkDropListDropped)="onDrop($event)">
       <li *ngFor="let action of components.controls; let i = index">
         <div class="relative pb-8">
           <span
@@ -26,9 +31,29 @@
             class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200"
           ></span>
           <div
-            class="relative flex flex-row justify-between bg-white shadow border border-gray-300 rounded-lg ring ring-white items-center pl-2"
+            class="relative flex flex-row justify-between bg-white shadow border border-gray-300 rounded-lg ring ring-white items-center pl-2 w-full"
+            cdkDrag
           >
-            <h4 class="!m-0">{{ action.value.type }}</h4>
+            <div class="flex items-center overflow-x-hidden">
+              <ui-button
+                variant="grey"
+                class="hover:text-primary-600"
+                [isIcon]="true"
+                size="small"
+                cdkDragHandle
+                icon="drag_indicator"
+                [uiTooltip]="'common.tooltip.dragDrop' | translate"
+              ></ui-button>
+              <h4 class="!m-0 whitespace-nowrap">
+                {{
+                  'components.automation.actions.' + action.value.type
+                    | translate
+                }}
+              </h4>
+              <h4 class="text-gray-400 !m-0 pl-3 truncate">
+                {{ action.value.description }}
+              </h4>
+            </div>
             <div class="flex flex-row gap-1">
               <ui-button
                 [isIcon]="true"
