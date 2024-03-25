@@ -1,3 +1,10 @@
+## [2.11.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.11.1...v2.11.2) (2024-03-25)
+
+
+### Bug Fixes
+
+* drag & drop would not remove tooltips from the dom ([#2451](https://github.com/ReliefApplications/ems-frontend/issues/2451)) ([e08c9d7](https://github.com/ReliefApplications/ems-frontend/commit/e08c9d798f9cc84544e27b96d86f2b533b805edc))
+
 ## [2.11.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.11.0...v2.11.1) (2024-03-15)
 
 
