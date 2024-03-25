@@ -34,7 +34,7 @@
             class="relative flex flex-row justify-between bg-white shadow border border-gray-300 rounded-lg ring ring-white items-center pl-2 w-full"
             cdkDrag
           >
-            <div class="flex items-center">
+            <div class="flex items-center overflow-x-hidden">
               <ui-button
                 variant="grey"
                 class="hover:text-primary-600"
@@ -44,14 +44,14 @@
                 icon="drag_indicator"
                 [uiTooltip]="'common.tooltip.dragDrop' | translate"
               ></ui-button>
-              <h4 class="!m-0">
+              <h4 class="!m-0 whitespace-nowrap">
                 {{
                   'components.automation.actions.' + action.value.type
                     | translate
                 }}
               </h4>
-              <h4 class="text-gray-400 !m-0 pl-3">
-                {{ action.value.relatedName }}
+              <h4 class="text-gray-400 !m-0 pl-3 truncate">
+                {{ action.value.description }}
               </h4>
             </div>
             <div class="flex flex-row gap-1">

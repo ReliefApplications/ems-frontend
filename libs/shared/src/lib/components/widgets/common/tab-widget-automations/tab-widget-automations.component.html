@@ -39,14 +39,6 @@
       <td uiCell *cdkCellDef="let element; let i = index">
         <div class="flex gap-2 text-neutral-500 justify-end">
           <ui-button
-            variant="danger"
-            [isIcon]="true"
-            icon="delete"
-            (click)="removeRow(i)"
-            [uiTooltip]="'common.delete' | translate"
-          >
-          </ui-button>
-          <ui-button
             uiSuffix
             variant="primary"
             [isIcon]="true"
@@ -54,6 +46,14 @@
             (click)="addEditRule(i)"
             [uiTooltip]="'common.edit' | translate"
           ></ui-button>
+          <ui-button
+            variant="danger"
+            [isIcon]="true"
+            icon="delete"
+            (click)="removeRow(i)"
+            [uiTooltip]="'common.delete' | translate"
+          >
+          </ui-button>
         </div>
       </td>
     </ng-container>

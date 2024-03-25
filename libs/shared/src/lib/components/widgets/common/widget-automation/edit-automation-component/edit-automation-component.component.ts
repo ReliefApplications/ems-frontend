@@ -86,7 +86,7 @@ export class EditAutomationComponentComponent
           async: false,
           choices: [],
           onValueChanged: (value) => {
-            this.setRelatedName(value, 'layers');
+            this.setDescription(value, 'layers');
           },
         },
       ],
@@ -117,7 +117,7 @@ export class EditAutomationComponentComponent
           async: false,
           choices: [],
           onValueChanged: (value) => {
-            this.setRelatedName(value, 'layers');
+            this.setDescription(value, 'layers');
           },
         },
       ],
@@ -148,7 +148,7 @@ export class EditAutomationComponentComponent
           async: false,
           choices: [],
           onValueChanged: (value) => {
-            this.setRelatedName(value, 'tabs');
+            this.setDescription(value, 'tabs');
           },
         },
       ],
@@ -179,7 +179,7 @@ export class EditAutomationComponentComponent
           async: false,
           choices: [],
           onValueChanged: (value) => {
-            this.setRelatedName(value, 'tabs');
+            this.setDescription(value, 'tabs');
           },
         },
       ],
@@ -210,7 +210,7 @@ export class EditAutomationComponentComponent
           async: false,
           choices: [],
           onValueChanged: (value) => {
-            this.setRelatedName(value, 'tab');
+            this.setDescription(value, 'tab');
           },
         },
       ],
@@ -227,7 +227,7 @@ export class EditAutomationComponentComponent
           async: true,
           choices: this.getChoicesFromWidgets(),
           onValueChanged: (value) => {
-            this.setRelatedName(value, 'widget');
+            this.setDescription(value, 'widget');
           },
         },
       ],
@@ -244,7 +244,7 @@ export class EditAutomationComponentComponent
           async: true,
           choices: this.getChoicesFromWidgets(),
           onValueChanged: (value) => {
-            this.setRelatedName(value, 'widget');
+            this.setDescription(value, 'widget');
           },
         },
       ],
@@ -381,25 +381,25 @@ export class EditAutomationComponentComponent
   }
 
   /**
-   * Sets the related name for the editor.
+   * Sets the description of the component.
    *
    * @param {string[]} idsList - An array of ids.
    * @param {string} propertyName - The name of the property.
    */
-  private setRelatedName(idsList: string[] | string, propertyName: string) {
+  private setDescription(idsList: string[] | string, propertyName: string) {
     const choices = this.editor?.properties?.find(
       (x: any) => x.name === propertyName
     )?.choices;
     if (!choices) {
       return;
     }
-    const setRelatedName = (
+    const setDescription = (
       choices: {
         value: string;
         text: string;
       }[]
     ) =>
-      this.formGroup.controls.relatedName.setValue(
+      this.formGroup.controls.description.setValue(
         (isArray(idsList)
           ? idsList
               .map((id) => {
@@ -417,10 +417,10 @@ export class EditAutomationComponentComponent
 
     if (isObservable(choices)) {
       choices.subscribe((choicesArray) => {
-        setRelatedName(choicesArray);
+        setDescription(choicesArray);
       });
     } else {
-      setRelatedName(choices);
+      setDescription(choices);
     }
   }
 }

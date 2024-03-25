@@ -85,13 +85,13 @@ export const createAutomationActionComponentForm = (
  */
 export const createAutomationComponentForm = (value: ActionWithValue) => {
   const type = get(value, 'type', null);
-  const relatedName = get(value, 'relatedName', '');
+  const description = get(value, 'description', '');
   switch (value.component) {
     case 'trigger': {
       return fb.group({
         component: 'trigger',
         type: [type, Validators.required],
-        relatedName: relatedName,
+        description,
         value: fb.group({}),
       });
     }
@@ -101,7 +101,7 @@ export const createAutomationComponentForm = (value: ActionWithValue) => {
       return fb.group({
         component: 'action',
         type: [type, Validators.required],
-        relatedName: relatedName,
+        description,
         value: type
           ? createAutomationActionComponentForm(type, get(value, 'value', null))
           : fb.group({}),
