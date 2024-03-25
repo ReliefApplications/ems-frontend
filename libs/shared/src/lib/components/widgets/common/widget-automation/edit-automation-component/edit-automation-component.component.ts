@@ -66,60 +66,12 @@ export class EditAutomationComponentComponent
           editor: 'select',
           multiselect: false,
           async: true,
-          choices: this.widgets.pipe(
-            takeUntil(this.destroy$),
-            map((widgets) => {
-              return widgets
-                .filter((widget) => widget.component === 'map')
-                .map((x) => ({
-                  value: x.id,
-                  text: x.name || `Widget #${x.id}`,
-                }));
-            })
-          ),
+          choices: this.getWidgetChoicesByType('map'),
           onValueChanged: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              this.mapLayersService
-                .getLayers(get(widget, 'settings.layers') || [])
-                .pipe(takeUntil(this.destroy$))
-                .subscribe((layers) => {
-                  this.editor.properties.find(
-                    (x: any) => x.name === 'layers'
-                  ).choices = layers.map((layer) => ({
-                    value: layer.id,
-                    text: layer.name,
-                  }));
-                });
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'layers'
-              ).choices = [];
-            }
+            this.setUpLayerListInEditor(value);
           },
           onInit: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              this.mapLayersService
-                .getLayers(get(widget, 'settings.layers') || [])
-                .pipe(takeUntil(this.destroy$))
-                .subscribe((layers) => {
-                  this.editor.properties.find(
-                    (x: any) => x.name === 'layers'
-                  ).choices = layers.map((layer) => ({
-                    value: layer.id,
-                    text: layer.name,
-                  }));
-                });
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'layers'
-              ).choices = [];
-            }
+            this.setUpLayerListInEditor(value);
           },
         },
         {
@@ -142,60 +94,12 @@ export class EditAutomationComponentComponent
           editor: 'select',
           multiselect: false,
           async: true,
-          choices: this.widgets.pipe(
-            takeUntil(this.destroy$),
-            map((widgets) => {
-              return widgets
-                .filter((widget) => widget.component === 'map')
-                .map((x) => ({
-                  value: x.id,
-                  text: x.name || `Widget #${x.id}`,
-                }));
-            })
-          ),
+          choices: this.getWidgetChoicesByType('map'),
           onValueChanged: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              this.mapLayersService
-                .getLayers(get(widget, 'settings.layers') || [])
-                .pipe(takeUntil(this.destroy$))
-                .subscribe((layers) => {
-                  this.editor.properties.find(
-                    (x: any) => x.name === 'layers'
-                  ).choices = layers.map((layer) => ({
-                    value: layer.id,
-                    text: layer.name,
-                  }));
-                });
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'layers'
-              ).choices = [];
-            }
+            this.setUpLayerListInEditor(value);
           },
           onInit: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              this.mapLayersService
-                .getLayers(get(widget, 'settings.layers') || [])
-                .pipe(takeUntil(this.destroy$))
-                .subscribe((layers) => {
-                  this.editor.properties.find(
-                    (x: any) => x.name === 'layers'
-                  ).choices = layers.map((layer) => ({
-                    value: layer.id,
-                    text: layer.name,
-                  }));
-                });
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'layers'
-              ).choices = [];
-            }
+            this.setUpLayerListInEditor(value);
           },
         },
         {
@@ -218,52 +122,12 @@ export class EditAutomationComponentComponent
           editor: 'select',
           multiselect: false,
           async: true,
-          choices: this.widgets.pipe(
-            takeUntil(this.destroy$),
-            map((widgets) => {
-              return widgets
-                .filter((widget) => widget.component === 'tabs')
-                .map((x) => ({
-                  value: x.id,
-                  text: x.name || `Widget #${x.id}`,
-                }));
-            })
-          ),
+          choices: this.getWidgetChoicesByType('tabs'),
           onValueChanged: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              const tabs: any[] = get(widget, 'settings.tabs') || [];
-              this.editor.properties.find(
-                (x: any) => x.name === 'tabs'
-              ).choices = tabs.map((tab: any, index) => ({
-                value: tab.id,
-                text: tab.label || `Tab ${index}`,
-              }));
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'tabs'
-              ).choices = [];
-            }
+            this.setUpTabListInEditor(value);
           },
           onInit: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              const tabs: any[] = get(widget, 'settings.tabs') || [];
-              this.editor.properties.find(
-                (x: any) => x.name === 'tabs'
-              ).choices = tabs.map((tab: any, index) => ({
-                value: tab.id,
-                text: tab.label || `Tab ${index}`,
-              }));
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'tabs'
-              ).choices = [];
-            }
+            this.setUpTabListInEditor(value);
           },
         },
         {
@@ -286,52 +150,12 @@ export class EditAutomationComponentComponent
           editor: 'select',
           multiselect: false,
           async: true,
-          choices: this.widgets.pipe(
-            takeUntil(this.destroy$),
-            map((widgets) => {
-              return widgets
-                .filter((widget) => widget.component === 'tabs')
-                .map((x) => ({
-                  value: x.id,
-                  text: x.name || `Widget #${x.id}`,
-                }));
-            })
-          ),
+          choices: this.getWidgetChoicesByType('tabs'),
           onValueChanged: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              const tabs: any[] = get(widget, 'settings.tabs') || [];
-              this.editor.properties.find(
-                (x: any) => x.name === 'tabs'
-              ).choices = tabs.map((tab: any, index) => ({
-                value: tab.id,
-                text: tab.label || `Tab ${index}`,
-              }));
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'tabs'
-              ).choices = [];
-            }
+            this.setUpTabListInEditor(value);
           },
           onInit: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              const tabs: any[] = get(widget, 'settings.tabs') || [];
-              this.editor.properties.find(
-                (x: any) => x.name === 'tabs'
-              ).choices = tabs.map((tab: any, index) => ({
-                value: tab.id,
-                text: tab.label || `Tab ${index}`,
-              }));
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'tabs'
-              ).choices = [];
-            }
+            this.setUpTabListInEditor(value);
           },
         },
         {
@@ -354,52 +178,12 @@ export class EditAutomationComponentComponent
           editor: 'select',
           multiselect: false,
           async: true,
-          choices: this.widgets.pipe(
-            takeUntil(this.destroy$),
-            map((widgets) => {
-              return widgets
-                .filter((widget) => widget.component === 'tabs')
-                .map((x) => ({
-                  value: x.id,
-                  text: x.name || `Widget #${x.id}`,
-                }));
-            })
-          ),
+          choices: this.getWidgetChoicesByType('tabs'),
           onValueChanged: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              const tabs: any[] = get(widget, 'settings.tabs') || [];
-              this.editor.properties.find(
-                (x: any) => x.name === 'tab'
-              ).choices = tabs.map((tab: any, index) => ({
-                value: tab.id,
-                text: tab.label || `Tab ${index}`,
-              }));
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'tab'
-              ).choices = [];
-            }
+            this.setUpTabListInEditor(value, 'tab');
           },
           onInit: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              const tabs: any[] = get(widget, 'settings.tabs') || [];
-              this.editor.properties.find(
-                (x: any) => x.name === 'tab'
-              ).choices = tabs.map((tab: any, index) => ({
-                value: tab.id,
-                text: tab.label || `Tab ${index}`,
-              }));
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'tab'
-              ).choices = [];
-            }
+            this.setUpTabListInEditor(value, 'tab');
           },
         },
         {
@@ -422,15 +206,7 @@ export class EditAutomationComponentComponent
           editor: 'select',
           multiselect: false,
           async: true,
-          choices: this.widgets.pipe(
-            takeUntil(this.destroy$),
-            map((widgets) => {
-              return widgets.map((x) => ({
-                value: x.id,
-                text: x.name || `Widget #${x.id}`,
-              }));
-            })
-          ),
+          choices: this.getWidgetChoicesByType(),
         },
       ],
     },
@@ -444,15 +220,7 @@ export class EditAutomationComponentComponent
           editor: 'select',
           multiselect: false,
           async: true,
-          choices: this.widgets.pipe(
-            takeUntil(this.destroy$),
-            map((widgets) => {
-              return widgets.map((x) => ({
-                value: x.id,
-                text: x.name || `Widget #${x.id}`,
-              }));
-            })
-          ),
+          choices: this.getWidgetChoicesByType(),
         },
       ],
     },
@@ -517,5 +285,73 @@ export class EditAutomationComponentComponent
         );
       }
     }
+  }
+
+  /**
+   * Set up current map widget layer list
+   *
+   * @param widgetId Widget id from to get tab list
+   * @param propertyName Property name used to set current list choices in the editor
+   */
+  private setUpTabListInEditor(widgetId: string, propertyName = 'tabs') {
+    const widget = this.widgets
+      .getValue()
+      .find((widget) => widget.id === widgetId);
+    if (widget) {
+      const tabs: any[] = get(widget, 'settings.tabs') || [];
+      this.editor.properties.find((x: any) => x.name === propertyName).choices =
+        tabs.map((tab: any, index) => ({
+          value: tab.id,
+          text: tab.label || `Tab ${index}`,
+        }));
+    } else {
+      this.editor.properties.find((x: any) => x.name === propertyName).choices =
+        [];
+    }
+  }
+
+  /**
+   * Set up current map widget layer list
+   *
+   * @param widgetId Widget id from to get layer list
+   */
+  private setUpLayerListInEditor(widgetId: string) {
+    const widget = this.widgets
+      .getValue()
+      .find((widget) => widget.id === widgetId);
+    if (widget) {
+      this.mapLayersService
+        .getLayers(get(widget, 'settings.layers') || [])
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((layers) => {
+          this.editor.properties.find((x: any) => x.name === 'layers').choices =
+            layers.map((layer) => ({
+              value: layer.id,
+              text: layer.name,
+            }));
+        });
+    } else {
+      this.editor.properties.find((x: any) => x.name === 'layers').choices = [];
+    }
+  }
+
+  /**
+   * Get current widgets list filtered by type if given
+   *
+   * @param type Widget type
+   * @returns widget list filter by type if given, otherwise all widgets
+   */
+  private getWidgetChoicesByType(type?: string) {
+    return this.widgets.pipe(
+      takeUntil(this.destroy$),
+      map((widgets) => {
+        return widgets
+          .filter((widget) => (type ? widget.component === type : true))
+          .map((x) => ({
+            value: x.id,
+            text: x.name || `Widget #${x.id}`,
+          }));
+      })
+    );
   }
 }
