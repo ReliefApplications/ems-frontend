@@ -13,7 +13,7 @@ import { takeUntil } from 'rxjs/operators';
  * Front-office Application component.
  */
 @Component({
-  selector: 'oort-app-application',
+  selector: 'app-application',
   templateUrl: './application.component.html',
   styleUrls: ['./application.component.scss'],
 })
@@ -78,13 +78,17 @@ export class ApplicationComponent
    */
   private setUpApplicationListeners() {
     // Subscribe to params change
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      if (this.application && params.id !== this.application.id) {
-        this.applicationService.leaveApplication();
-      }
-      this.loading = true;
-      this.applicationService.loadApplication(params.id);
-    });
+    // this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+    //   if (this.application) {
+    //     if (params.id !== this.application.id) {
+    //       this.loading = true;
+    //       this.applicationService.loadApplication(params.id);
+    //     }
+    //   } else {
+    //     this.loading = true;
+    //     this.applicationService.loadApplication(params.id);
+    //   }
+    // });
     // Subscribe to application change
     this.applicationService.application$
       .pipe(takeUntil(this.destroy$))
@@ -111,6 +115,26 @@ export class ApplicationComponent
                 this.router.navigate(['./'], {
                   relativeTo: this.route,
                 });
+              }
+            } else {
+              if (!this.router.url.includes(application?.id || '')) {
+                // If a page is configured
+                if (firstPage) {
+                  this.router.navigate(
+                    [
+                      `./${firstPage.type}/${
+                        firstPage.type === ContentType.form
+                          ? firstPage.id
+                          : firstPage.content
+                      }`,
+                    ],
+                    { relativeTo: this.route }
+                  );
+                } else {
+                  this.router.navigate(['./'], {
+                    relativeTo: this.route,
+                  });
+                }
               }
             }
           }

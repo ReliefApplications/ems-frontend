@@ -42,6 +42,7 @@ export interface QuestionSelectBase
   referenceDataFilterFilterCondition?: string;
   referenceDataFilterLocalField?: string;
   referenceDataChoicesLoaded?: boolean;
+  referenceDataVariableMapping?: string;
 }
 
 // TYPES FOR CUSTOM QUESTIONS
@@ -50,6 +51,11 @@ export interface QuestionSelectBase
 export interface QuestionOwner extends QuestionCustomModel, GlobalProperties {
   applications?: any;
   contentQuestion: SurveyCoreQuestionSelectBase;
+}
+
+/** Type for the users question */
+export interface QuestionUsers extends QuestionCustomModel, GlobalProperties {
+  applications?: any;
 }
 
 /** Type for resource question */

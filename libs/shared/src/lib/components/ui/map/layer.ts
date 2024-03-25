@@ -2,8 +2,9 @@
 import * as L from 'leaflet';
 import 'leaflet.heat';
 import 'leaflet.markercluster';
+import './utils/leaflet-heatmap.js';
 import { Feature, Geometry } from 'geojson';
-import { get, isNil, set } from 'lodash';
+import { get, isNaN, isNil, maxBy, set } from 'lodash';
 import {
   LayerType,
   LayerFilter,
@@ -15,6 +16,7 @@ import {
   createCustomDivIcon,
 } from './utils/create-div-icon';
 import {
+  HeatMapOptions,
   LayerDatasource,
   LayerDefinition,
   LayerModel,
@@ -34,6 +36,7 @@ import {
   icon as iconCreator,
 } from '@fortawesome/fontawesome-svg-core';
 import { getIconDefinition } from '@oort-front/ui';
+import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -141,6 +144,8 @@ export class Layer implements LayerModel {
   private popupService!: MapPopupService;
   /** Map layer service */
   private layerService!: MapLayersService;
+  /** Dashboar automation service */
+  private dashboardAutomationService?: DashboardAutomationService;
   /** Map renderer */
   private renderer!: Renderer2;
 
@@ -193,6 +198,8 @@ export class Layer implements LayerModel {
   // private properties: any | null = null;
   /** Layer filter */
   private filter: LayerFilter | null = null;
+  /** Layer context filters  */
+  public contextFilters!: string;
   // private styling: any | null = null;
   // private label: LayerLabel | null = null;
 
@@ -202,8 +209,12 @@ export class Layer implements LayerModel {
   // Declare variables to store the event listeners
   /** Event listener for zoom event */
   private zoomListener!: L.LeafletEventHandlerFn;
+  /** Event listener for automation rules events from map */
+  private rulesListener!: L.LeafletEventHandlerFn;
   /** Array of listeners */
   private listeners: any[] = [];
+  /** Should refresh layer */
+  public shouldRefresh = false;
 
   /**
    * Get layer children. Await for sub-layers to be loaded first.
@@ -264,6 +275,15 @@ export class Layer implements LayerModel {
     if (options) {
       this.popupService = injector.get(MapPopupService);
       this.layerService = injector.get(MapLayersService);
+      // If no dashboard automation service is provided(it's optional, map settings does not use it), cannot recognize the token and breaks
+      try {
+        this.dashboardAutomationService = injector.get(
+          DashboardAutomationService
+        );
+      } catch (error) {
+        this.dashboardAutomationService =
+          null as unknown as DashboardAutomationService;
+      }
       this.renderer = injector.get(Renderer2);
       this.setConfig(options);
     } else {
@@ -289,6 +309,7 @@ export class Layer implements LayerModel {
       this.datasource = get(options, 'datasource', null);
       this.geojson = get(options, 'geojson', EMPTY_FEATURE_COLLECTION);
       // this.properties = options.properties || DEFAULT_LAYER_PROPERTIES;
+      this.contextFilters = get(options, 'contextFilters', null);
       this.filter = get(options, 'filter', DEFAULT_LAYER_FILTER);
       // this.styling = options.styling || [];
       // this.label = options.labels || null;
@@ -435,7 +456,7 @@ export class Layer implements LayerModel {
       []
     );
 
-    const uniqueValueField = get(
+    const valueField = get(
       this.layerDefinition,
       'drawingInfo.renderer.field1',
       ''
@@ -452,11 +473,7 @@ export class Layer implements LayerModel {
       ...(geometryType === 'Point' && {
         pointToLayer: (feature, latlng) => {
           if (rendererType === 'uniqueValue') {
-            const fieldValue = get(
-              feature,
-              `properties.${uniqueValueField}`,
-              null
-            );
+            const fieldValue = get(feature, `properties.${valueField}`, null);
             const uniqueValueSymbol =
               uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
               uniqueValueDefaultSymbol;
@@ -483,11 +500,7 @@ export class Layer implements LayerModel {
       ...(geometryType === 'Polygon' && {
         style: (feature) => {
           if (rendererType === 'uniqueValue') {
-            const fieldValue = get(
-              feature,
-              `properties.${uniqueValueField}`,
-              null
-            );
+            const fieldValue = get(feature, `properties.${valueField}`, null);
             const uniqueValueSymbol =
               uniqueValueInfos.find((x) => x.value == fieldValue)?.symbol ||
               uniqueValueDefaultSymbol;
@@ -587,21 +600,43 @@ export class Layer implements LayerModel {
               );
             }
             const heatArray: any[] = [];
-
             data.features.forEach((feature: any) => {
+              // Format intensity to the required value for heat map point
+              // {number}.{decimal}
+              const intensity = (feature: any) => {
+                return Number(
+                  Number.parseFloat(
+                    get(feature, `properties.${valueField}`, 0).toFixed(1)
+                  )
+                );
+              };
               switch (get(feature, 'type')) {
                 case 'Point': {
-                  heatArray.push([
-                    get(feature, 'coordinates[1]'), // lat
-                    get(feature, 'coordinates[0]'), // long
-                  ]);
+                  const lat = parseFloat(get(feature, 'coordinates[1]'));
+                  const long = parseFloat(get(feature, 'coordinates[0]'));
+                  if (!isNaN(lat) && !isNaN(long)) {
+                    if (valueField) {
+                      heatArray.push([lat, long, intensity(feature)]);
+                    } else {
+                      heatArray.push([lat, long]);
+                    }
+                  }
                   break;
                 }
                 case 'Feature': {
-                  heatArray.push([
-                    get(feature, 'geometry.coordinates[1]'), // lat
-                    get(feature, 'geometry.coordinates[0]'), // long
-                  ]);
+                  const lat = parseFloat(
+                    get(feature, 'geometry.coordinates[1]')
+                  );
+                  const long = parseFloat(
+                    get(feature, 'geometry.coordinates[0]')
+                  );
+                  if (!isNaN(lat) && !isNaN(long)) {
+                    if (valueField) {
+                      heatArray.push([lat, long, intensity(feature)]);
+                    } else {
+                      heatArray.push([lat, long]);
+                    }
+                  }
                   break;
                 }
                 default: {
@@ -616,7 +651,8 @@ export class Layer implements LayerModel {
               DEFAULT_HEATMAP.gradient
             );
 
-            const heatmapOptions: L.HeatMapOptions = {
+            const heatmapOptions: HeatMapOptions = {
+              opacity: this.opacity,
               blur: get(
                 this.layerDefinition,
                 'drawingInfo.renderer.blur',
@@ -637,6 +673,9 @@ export class Layer implements LayerModel {
                 set(g, stop.ratio, stop.color);
                 return g;
               }, {}),
+              ...(valueField && {
+                max: maxBy(heatArray, 2) ? maxBy(heatArray, 2)[2] : 1,
+              }),
             };
 
             const layer = L.heatLayer(heatArray, heatmapOptions);
@@ -830,6 +869,45 @@ export class Layer implements LayerModel {
     if (this.zoomListener) {
       map.off('zoomend', this.zoomListener);
     }
+    if (this.rulesListener) {
+      layer.off('click', this.rulesListener);
+      layer.off('clusterclick', this.rulesListener);
+    }
+    this.rulesListener = (e) => {
+      let event: any = e;
+      if (
+        get(this.layerDefinition, 'featureReduction.type') === 'cluster' &&
+        // If it's actually one of the features within the cluster, then take that one
+        e.propagatedFrom.feature
+      ) {
+        const latitude = get(
+          e.propagatedFrom.feature,
+          'geometry.coordinates[1]'
+        );
+        const longitude = get(
+          e.propagatedFrom.feature,
+          'geometry.coordinates[0]'
+        );
+        event = { latlng: { lat: latitude, lng: longitude } };
+      }
+      for (const rule of (map as any)._rules) {
+        this.dashboardAutomationService?.executeAutomationRule(rule, event);
+      }
+    };
+
+    if (map.hasEventListeners('click') && (map as any)._rules) {
+      layer.on('click', this.rulesListener);
+      layer.on('clusterclick', this.rulesListener);
+    }
+    map.eachLayer((l) => {
+      if (
+        (l as any).id === this.id &&
+        (l as any)._leaflet_id !== (layer as any)._leaflet_id
+      ) {
+        (l as any).deleted = true;
+        (l as L.Layer).remove();
+      }
+    });
     // Using the sidenav-controls-menu-item, we can overwrite visibility property of the layer
     if (!isNil((layer as any).shouldDisplay)) {
       this.visibility = (layer as any).shouldDisplay;
@@ -908,6 +986,10 @@ export class Layer implements LayerModel {
       // Ensure that we do not subscribe multiple times to zoom event
       if (this.zoomListener) {
         map.off('zoomend', this.zoomListener);
+      }
+      if (this.rulesListener) {
+        layer.off('click', this.rulesListener);
+        layer.off('clusterclick', this.rulesListener);
       }
     }
     // map.off('zoomend', this.zoomListener);
@@ -1118,6 +1200,10 @@ export class Layer implements LayerModel {
     if (this.zoomListener) {
       map.off('zoomend', this.zoomListener);
     }
+    if (this.layer && this.rulesListener) {
+      this.layer.off('click', this.rulesListener);
+      this.layer.off('clusterclick', this.rulesListener);
+    }
     const children = this.getChildren();
     if (children.length) {
       const removeAllListenersLayerPromises = children.map((layer) => {
@@ -1130,6 +1216,7 @@ export class Layer implements LayerModel {
       await Promise.all(removeAllListenersLayerPromises);
     }
     this.zoomListener = null as unknown as L.LeafletEventHandlerFn;
+    this.rulesListener = null as unknown as L.LeafletEventHandlerFn;
     this.listeners.forEach((listener) => {
       listener();
     });

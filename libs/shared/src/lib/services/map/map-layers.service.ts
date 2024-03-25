@@ -3,12 +3,14 @@ import { Apollo } from 'apollo-angular';
 import {
   catchError,
   filter,
+  first,
   forkJoin,
   lastValueFrom,
   map,
   mergeMap,
   Observable,
   of,
+  switchMap,
 } from 'rxjs';
 import { LayerFormData } from '../../components/ui/map/interfaces/layer-settings.type';
 import { Layer, EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
@@ -32,6 +34,8 @@ import { HttpParams } from '@angular/common/http';
 import { omitBy, isNil, get } from 'lodash';
 import { ContextService } from '../context/context.service';
 import { DOCUMENT } from '@angular/common';
+import { MapPolygonsService } from './map-polygons.service';
+import { WidgetService } from '../widget/widget.service';
 
 /**
  * Shared map layer service
@@ -41,13 +45,15 @@ import { DOCUMENT } from '@angular/common';
 })
 export class MapLayersService {
   /**
-   * Class constructor
+   * Shared map layer service
    *
    * @param apollo Apollo client instance
    * @param restService RestService
    * @param queryBuilder Query builder service
    * @param aggregationBuilder Aggregation builder service
    * @param contextService Application context service
+   * @param mapPolygonsService Shared map polygons service
+   * @param widgetService Shared widget service
    * @param document document
    */
   constructor(
@@ -56,6 +62,8 @@ export class MapLayersService {
     private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService,
     private contextService: ContextService,
+    private mapPolygonsService: MapPolygonsService,
+    private widgetService: WidgetService,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
@@ -163,14 +171,25 @@ export class MapLayersService {
   /**
    * Get the layers
    *
+   * @param ids id array
    * @returns Observable of layer
    */
-  public getLayers(): Observable<LayerModel[]> {
+  public getLayers(ids: string[]): Observable<LayerModel[]> {
     return this.apollo
       .query<LayersQueryResponse>({
         query: GET_LAYERS,
         variables: {
           sortField: 'name',
+          filter: {
+            logic: 'and',
+            filters: [
+              {
+                field: 'ids',
+                operator: 'eq',
+                value: ids,
+              },
+            ],
+          },
         },
       })
       .pipe(
@@ -255,8 +274,6 @@ export class MapLayersService {
           )
       );
   }
-
-  // ================= LAYER CREATION ==================== //
 
   /**
    * Format given settings for Layer class
@@ -396,6 +413,11 @@ export class MapLayersService {
         {
           ...layer.datasource,
           contextFilters: JSON.stringify(contextFilters),
+          graphQLVariables: JSON.stringify(
+            this.widgetService.mapGraphQLVariables(
+              layer.datasource?.referenceDataVariableMapping
+            )
+          ),
           ...(at && {
             at: at.toString(),
           }),
@@ -403,11 +425,41 @@ export class MapLayersService {
         isNil
       ),
     });
-    return lastValueFrom(
-      this.restService
-        .get(`${this.restService.apiUrl}/gis/feature`, { params })
-        .pipe(catchError(() => of(EMPTY_FEATURE_COLLECTION)))
-    );
+    // Method to get layer from definition
+    // Query is sent to the back-end to fetch correct data
+    const getLayer = () => {
+      return lastValueFrom(
+        this.restService
+          .get(`${this.restService.apiUrl}/gis/feature`, { params })
+          .pipe(
+            map((value) => {
+              // When using adminField mapping, update the feature so geometry is replaced with according polygons
+              if (layer.datasource?.adminField) {
+                return this.mapPolygonsService.assignPolygons(
+                  value,
+                  layer.datasource.adminField as any
+                );
+              } else {
+                // Else, directly returns the feature layer
+                return value;
+              }
+            }),
+            // On error, returns a default geojson
+            catchError(() => of(EMPTY_FEATURE_COLLECTION))
+          )
+      );
+    };
+    // When using adminField, first make sure the polygons are fetched
+    if (layer.datasource?.adminField) {
+      return lastValueFrom(
+        this.mapPolygonsService.admin0sReady$.pipe(
+          first((v) => v),
+          switchMap(() => getLayer())
+        )
+      );
+    } else {
+      return getLayer();
+    }
   }
 
   /**

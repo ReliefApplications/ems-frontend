@@ -1,4 +1,4 @@
-import { Injectable, ComponentRef, Inject } from '@angular/core';
+import { Injectable, ComponentRef, Inject, Renderer2 } from '@angular/core';
 import { Feature } from 'geojson';
 
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
@@ -8,31 +8,41 @@ import { DomService } from '../../../../services/dom/dom.service';
 import { MapPopupComponent } from './map-popup.component';
 import { PopupInfo } from '../../../../models/layer.model';
 import { DOCUMENT } from '@angular/common';
-
 /**
  * Shared map control service.
  */
 @Injectable()
 export class MapPopupService {
-  // There would be an instance of map popup service for each map
   /** Map instance */
   private map!: L.Map;
+  /** Popup pane of the map */
+  private popupPane!: HTMLElement | undefined;
 
   /**
    * Set the map that loaded this popup service instance
    */
   public set setMap(_map: L.Map) {
     this.map = _map;
+    this.popupPane = this.map.getPane('popupPane');
   }
+
+  /** Is the popup outside of the world bounds? */
+  private isPopupOutOfBounds = { x: false, y: false };
+  /** Timeout to open popup */
+  private timeoutListener!: NodeJS.Timeout;
+  /** Timeout to close popup */
+  private timeoutPopupCloseListener!: NodeJS.Timeout;
 
   /**
    * Injects DomService and TranslateService instances to the service
    *
    * @param domService DomService
+   * @param renderer Angular renderer
    * @param document document
    */
   constructor(
     private domService: DomService,
+    private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
@@ -78,6 +88,17 @@ export class MapPopupService {
       );
 
       popup.on('remove', () => {
+        if (this.timeoutListener) {
+          clearTimeout(this.timeoutListener);
+        }
+        if (this.timeoutPopupCloseListener) {
+          clearTimeout(this.timeoutPopupCloseListener);
+        }
+        // prevent visual bug (bottom-popup switch + content destruction)
+        this.popupPane
+          ?.querySelector('.leaflet-popup')
+          ?.classList.add('invisible');
+
         if (layerToBind instanceof L.Circle) {
           this.map.removeLayer(layerToBind);
         }
@@ -85,8 +106,122 @@ export class MapPopupService {
         layerToBind?.unbindPopup();
         instance.destroy();
       });
-      layerToBind.bindPopup(popup);
-      layerToBind.openPopup();
+      if (this.timeoutListener) {
+        clearTimeout(this.timeoutListener);
+      }
+      this.timeoutListener = setTimeout(() => {
+        // Reset default popup
+        if (this.popupPane) {
+          this.popupPane.className = 'leaflet-pane leaflet-popup-pan';
+          this.isPopupOutOfBounds = { x: false, y: false };
+        }
+
+        layerToBind
+          ?.bindPopup(popup, {
+            autoPan: false,
+          })
+          .openPopup();
+
+        // Define the popup position
+        this.setPopupPosition(coordinates, popup);
+      }, 0); // time listener is used to get the correct popup height
+    }
+  }
+
+  /**
+   * Set the popup position if it is out of the world bounds
+   *
+   * @param coordinates Coordinates
+   * @param popup Popup Element
+   */
+  private setPopupPosition(coordinates: L.LatLng, popup: L.Popup) {
+    const popupEl: any = popup.getElement();
+    const popupHeight = popupEl?.offsetHeight + 25 + 12; // pop up height + margin + half default icon size
+    const popupWidth = popupEl?.offsetWidth / 2 + 25 + 12; // half pop up width + margin + half default icon size
+    const maxPixWorldBounds = this.map.getPixelWorldBounds().max as L.Point; // world bounds in pixels
+
+    if (this.map.project(coordinates).x < popupWidth) {
+      // out of the left world bound
+      this.isPopupOutOfBounds.x = true;
+      this.popupPane?.classList.add('right-popup');
+    } else if (
+      maxPixWorldBounds.x - this.map.project(coordinates).x <
+      popupWidth
+    ) {
+      // out of the right world bound
+      this.isPopupOutOfBounds.x = true;
+      this.popupPane?.classList.add('left-popup');
+    }
+
+    if (this.map.project(coordinates).y < popupHeight) {
+      // out of the top world bound
+      this.isPopupOutOfBounds.y = true;
+      this.popupPane?.classList.add('bottom-popup');
+    } else if (
+      this.isPopupOutOfBounds &&
+      maxPixWorldBounds.y - this.map.project(coordinates).y <
+        popupEl?.offsetHeight / 2
+    ) {
+      // out of the bottom world bound if the position has changed to left or right
+      this.isPopupOutOfBounds.y = true;
+      this.popupPane?.classList.add('top-popup');
+    }
+
+    // if the pop up is outside the world bounds
+    if (this.isPopupOutOfBounds.x || this.isPopupOutOfBounds.y) {
+      const popupCoordinates = this.map.latLngToLayerPoint(coordinates); // popup coordinates based on origin point
+      // manually set the popup pane position to allow the use of global values on the transform property
+      this.renderer.setStyle(this.popupPane, 'top', popupCoordinates.y + 'px');
+      this.renderer.setStyle(this.popupPane, 'left', popupCoordinates.x + 'px');
+    } else {
+      // reset the popup pane default position
+      this.renderer.setStyle(this.popupPane, 'top', '0px');
+      this.renderer.setStyle(this.popupPane, 'left', '0px');
+    }
+
+    // prevent display issue when zoom change
+    this.map.once('zoomstart', () => {
+      this.map.closePopup();
+    });
+
+    this.autoPan(popup, popupEl);
+  }
+
+  /**
+   * Replicate of the leaflet auto-pan function
+   * If the popup is out of view, the map will automatically move to make it visible
+   *
+   * @param popup Leaflet popup
+   * @param popupEl Popup Element
+   */
+  private autoPan(popup: L.Popup, popupEl: HTMLElement) {
+    const margin = 20; // distance with map bounds
+    const popupLatLng = popup.getLatLng() as L.LatLng; // popup coordinates
+    const popupPoint = this.map.latLngToContainerPoint(popupLatLng); // popup coordinates in pixels relative to the map container
+    const mapSize = this.map.getSize(); // map size
+
+    let dx = 0;
+    let dy = 0;
+
+    if (!this.isPopupOutOfBounds.x) {
+      if (popupPoint.x - popupEl.offsetWidth / 2 < margin) {
+        // left offset
+        dx = -1 * (margin + popupEl.offsetWidth / 2 - popupPoint.x);
+      } else if (popupPoint.x + popupEl.offsetWidth / 2 > mapSize.x - margin) {
+        // right offset
+        dx = margin + popupEl.offsetWidth / 2 - (mapSize.x - popupPoint.x);
+      }
+    }
+
+    if (!this.isPopupOutOfBounds.y) {
+      if (popupPoint.y - popupEl.offsetHeight - 24 < margin) {
+        // top offset
+        dy = -1 * (margin + popupEl.offsetHeight + 24 - popupPoint.y);
+      }
+    }
+
+    if (dx !== 0 || dy !== 0) {
+      this.map.panBy([dx, dy]);
     }
   }
 
@@ -136,7 +271,12 @@ export class MapPopupService {
     popupComponent.instance.closePopup
       .pipe(takeUntil(popupComponent.instance.destroy$))
       .subscribe(() => {
-        popup.remove();
+        if (this.timeoutPopupCloseListener) {
+          clearTimeout(this.timeoutPopupCloseListener);
+        }
+        this.timeoutPopupCloseListener = setTimeout(() => {
+          popup.remove();
+        }, 0);
       });
 
     // listen to popup zoom to event

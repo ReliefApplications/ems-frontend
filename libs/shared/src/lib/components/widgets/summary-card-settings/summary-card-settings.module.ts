@@ -23,6 +23,7 @@ import { TextEditorTabModule } from './text-editor-tab/text-editor.module';
 import { SortingSettingsModule } from '../common/sorting-settings/sorting-settings.module';
 import { ContextualFiltersSettingsComponent } from '../common/contextual-filters-settings/contextual-filters-settings.component';
 import { TabActionsModule } from '../common/tab-actions/tab-actions.module';
+import { TabWidgetAutomationsComponent } from '../common/tab-widget-automations/tab-widget-automations.component';
 
 /** Summary Card Settings Module */
 @NgModule({
@@ -51,6 +52,7 @@ import { TabActionsModule } from '../common/tab-actions/tab-actions.module';
     SortingSettingsModule,
     ContextualFiltersSettingsComponent,
     TabActionsModule,
+    TabWidgetAutomationsComponent,
   ],
   exports: [SummaryCardSettingsComponent],
 })

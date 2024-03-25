@@ -51,6 +51,7 @@
         class="mb-4"
         [multiple]="true"
         formControlName="files"
+        [restrictions]="fileRestrictions"
       ></kendo-fileselect>
       <editor [init]="editor" formControlName="html"></editor>
     </form>
@@ -62,8 +63,7 @@
     <ui-button
       category="secondary"
       variant="primary"
-      [uiDialogClose]="emailForm.value"
-      cdkFocusInitial
+      (click)="onSubmit()"
       [disabled]="!emailForm.valid"
     >
       {{ 'common.send' | translate }}

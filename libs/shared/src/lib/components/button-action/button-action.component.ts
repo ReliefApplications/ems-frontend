@@ -5,6 +5,7 @@ import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { DataTemplateService } from '../../services/data-template/data-template.service';
 import { Dashboard } from '../../models/dashboard.model';
 import { ButtonActionT } from './button-action-type';
+import { Router } from '@angular/router';
 
 /** Component for display action buttons */
 @Component({
@@ -27,12 +28,14 @@ export class ButtonActionComponent {
    * @param dashboardService Shared dashboard service
    * @param translateService Angular translate service
    * @param dataTemplateService DataTemplate service
+   * @param router Angular router
    */
   constructor(
     public dialog: Dialog,
     private dashboardService: DashboardService,
     private translateService: TranslateService,
-    private dataTemplateService: DataTemplateService
+    private dataTemplateService: DataTemplateService,
+    private router: Router
   ) {}
 
   /**
@@ -43,8 +46,16 @@ export class ButtonActionComponent {
   public onButtonActionClick(button: ButtonActionT) {
     if (button.href) {
       const href = this.dataTemplateService.renderLink(button.href);
-      if (button.openInNewTab) window.open(href, '_blank');
-      else window.location.href = href;
+      if (button.openInNewTab) {
+        window.open(href, '_blank');
+      } else {
+        if (href?.startsWith('./')) {
+          // Navigation inside the app builder
+          this.router.navigateByUrl(href.substring(1));
+        } else {
+          window.location.href = href;
+        }
+      }
     }
   }
 
@@ -81,7 +92,9 @@ export class ButtonActionComponent {
       if (value) {
         const currButtons = this.dashboard?.buttons || [];
         currButtons.splice(idx, 1);
-        this.dashboardService.saveDashboardButtons(currButtons);
+        this.dashboardService
+          .saveDashboardButtons(this.dashboard?.id, currButtons)
+          ?.subscribe();
       }
     });
   }

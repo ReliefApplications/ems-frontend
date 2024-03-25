@@ -14,6 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule, DividerModule, TooltipModule } from '@oort-front/ui';
 import { LatLng } from 'leaflet';
 import get from 'lodash/get';
+import { isNil } from 'lodash';
 
 /** Component for a popup that has information on multiple points */
 @Component({
@@ -93,7 +94,7 @@ export class MapPopupComponent
             value = this.coordinates;
           }
 
-          return value ? value : '';
+          return isNil(value) ? '' : value;
         })
       : this.template.replace(regex, '');
     const scriptRegex = /<script>(.*?)<\/script>/g;

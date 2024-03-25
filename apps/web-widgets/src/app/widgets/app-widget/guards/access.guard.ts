@@ -39,7 +39,7 @@ export class AccessGuard implements CanActivate {
           if (this.authService.account) {
             this.authService.logout();
           } else {
-            this.router.navigate(['/auth']);
+            this.router.navigate(['/auth/error'], { skipLocationChange: true });
           }
           return false;
         }
