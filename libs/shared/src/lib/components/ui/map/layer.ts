@@ -674,7 +674,7 @@ export class Layer implements LayerModel {
                 return g;
               }, {}),
               ...(valueField && {
-                max: maxBy(heatArray, 2)[2],
+                max: maxBy(heatArray, 2) ? maxBy(heatArray, 2)[2] : 1,
               }),
             };
 
@@ -874,8 +874,24 @@ export class Layer implements LayerModel {
       layer.off('clusterclick', this.rulesListener);
     }
     this.rulesListener = (e) => {
+      let event: any = e;
+      if (
+        get(this.layerDefinition, 'featureReduction.type') === 'cluster' &&
+        // If it's actually one of the features within the cluster, then take that one
+        e.propagatedFrom.feature
+      ) {
+        const latitude = get(
+          e.propagatedFrom.feature,
+          'geometry.coordinates[1]'
+        );
+        const longitude = get(
+          e.propagatedFrom.feature,
+          'geometry.coordinates[0]'
+        );
+        event = { latlng: { lat: latitude, lng: longitude } };
+      }
       for (const rule of (map as any)._rules) {
-        this.dashboardAutomationService?.executeAutomationRule(rule, e);
+        this.dashboardAutomationService?.executeAutomationRule(rule, event);
       }
     };
 
@@ -883,6 +899,15 @@ export class Layer implements LayerModel {
       layer.on('click', this.rulesListener);
       layer.on('clusterclick', this.rulesListener);
     }
+    map.eachLayer((l) => {
+      if (
+        (l as any).id === this.id &&
+        (l as any)._leaflet_id !== (layer as any)._leaflet_id
+      ) {
+        (l as any).deleted = true;
+        (l as L.Layer).remove();
+      }
+    });
     // Using the sidenav-controls-menu-item, we can overwrite visibility property of the layer
     if (!isNil((layer as any).shouldDisplay)) {
       this.visibility = (layer as any).shouldDisplay;

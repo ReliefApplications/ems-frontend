@@ -133,7 +133,7 @@ export class AppWidgetComponent
     private shadowDomService: ShadowDomService,
     private authService: AuthService
   ) {
-    console.log('DEBUG: build from 03/13/2023, v3');
+    console.log('DEBUG: 03/15/2023, v1');
     super(el, injector);
     this.shadowDomService.shadowRoot = el.nativeElement.shadowRoot;
 
