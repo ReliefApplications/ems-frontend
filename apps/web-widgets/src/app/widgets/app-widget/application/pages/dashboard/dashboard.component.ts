@@ -8,27 +8,26 @@ import {
   OnInit,
   Output,
   Renderer2,
-  ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
-  UnsubscribeComponent,
-  WidgetGridComponent,
   ConfirmService,
   ButtonActionT,
   ContextService,
   DashboardQueryResponse,
   Record,
+  MapWidgetComponent,
+  DashboardComponent as SharedDashboardComponent,
+  DashboardAutomationService,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { map } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
-import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, get } from 'lodash';
 
 /**
  * Dashboard page.
@@ -37,16 +36,20 @@ import { cloneDeep } from 'lodash';
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
+  providers: [
+    {
+      provide: SharedDashboardComponent,
+      useClass: DashboardComponent,
+    },
+    DashboardAutomationService,
+  ],
 })
 export class DashboardComponent
-  extends UnsubscribeComponent
+  extends SharedDashboardComponent
   implements OnInit, OnDestroy
 {
   /** Change step event ( in workflow ) */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
-  /** Widget grid reference */
-  @ViewChild(WidgetGridComponent)
-  widgetGridComponent!: WidgetGridComponent;
   /** Is dashboard in fullscreen mode */
   public isFullScreen = false;
   /** Dashboard id */
@@ -57,8 +60,6 @@ export class DashboardComponent
   public applicationId?: string;
   /** Is dashboard loading */
   public loading = true;
-  /** List of widgets */
-  public widgets: any[] = [];
   /** Current dashboard */
   public dashboard?: Dashboard;
   /** Show dashboard filter */
@@ -75,28 +76,29 @@ export class DashboardComponent
    * @param route Angular current page
    * @param router Angular router service
    * @param dialog Dialog service
-   * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param confirmService Shared confirm service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
    * @param document Document
    * @param contextService Dashboard context service
+   * @param dashboardAutomationService Dashboard automation service
    */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
     public dialog: Dialog,
-    private snackBar: SnackbarService,
     private translate: TranslateService,
     private confirmService: ConfirmService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
     @Inject(DOCUMENT) private document: Document,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private dashboardAutomationService: DashboardAutomationService
   ) {
     super();
+    this.dashboardAutomationService.dashboard = this;
   }
 
   /**
@@ -189,23 +191,15 @@ export class DashboardComponent
           this.contextService.isFilterEnabled.next(this.showFilter);
           this.contextService.setFilter(this.dashboard);
         } else {
+          this.route.snapshot.data.reuse = false;
           this.contextService.isFilterEnabled.next(false);
           this.contextService.setFilter();
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.accessNotProvided', {
-              type: this.translate
-                .instant('common.dashboard.one')
-                .toLowerCase(),
-              error: '',
-            }),
-            { error: true }
-          );
-          this.router.navigate(['/applications']);
+          this.router.navigate(['/auth/error'], { skipLocationChange: true });
         }
       })
-      .catch((err) => {
-        this.snackBar.openSnackBar(err.message, { error: true });
-        this.router.navigate(['/applications']);
+      .catch(() => {
+        this.route.snapshot.data.reuse = false;
+        this.router.navigate(['/auth/error'], { skipLocationChange: true });
       });
   }
 
@@ -248,5 +242,31 @@ export class DashboardComponent
       );
     };
     this.contextService.initContext(this.dashboard as Dashboard, callback);
+  }
+
+  /**
+   * Called when attaching component ( reuse strategy ).
+   * Loop through all map widgets, and redraw them when needed.
+   */
+  onAttach(): void {
+    this.widgetGridComponent.widgetComponents.forEach((widget) => {
+      const content = widget.widgetContentComponent;
+      if (content instanceof MapWidgetComponent) {
+        let glLayersCount = 0;
+        content.mapComponent.map.eachLayer((l) => {
+          const glMap = get(l, '_maplibreGL._glMap') as any;
+          if (glMap) {
+            l.remove();
+            glLayersCount += 1;
+          }
+        });
+        if (glLayersCount > 0) {
+          const settings = content.mapComponent.extractSettings();
+          content.mapComponent.setWebmap(settings.arcGisWebMap, {
+            skipDefaultView: true,
+          });
+        }
+      }
+    });
   }
 }

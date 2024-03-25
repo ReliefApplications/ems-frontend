@@ -33,6 +33,18 @@
         ></ui-icon
       ></ng-container>
     </ui-toggle>
+    <ui-toggle formControlName="hideEmpty" *ngIf="showHideOption">
+      <ng-container ngProjectAs="label"
+        >{{ 'models.widget.display.hideEmpty' | translate }}
+        <ui-icon
+          class="ml-1 cursor-help self-center"
+          icon="info_outline"
+          variant="grey"
+          [size]="18"
+          [uiTooltip]="'models.widget.tooltip.hideEmpty' | translate"
+        ></ui-icon
+      ></ng-container>
+    </ui-toggle>
   </ng-container>
   <!-- Other specific options for each widget type -->
   <ng-content></ng-content>

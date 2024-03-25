@@ -1,6 +1,7 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import { GridType } from 'angular-gridster2';
+import { v4 as uuidv4 } from 'uuid';
 
 /** Form builder */
 const fb = new FormBuilder();
@@ -22,7 +23,9 @@ const DEFAULT_GRID_OPTIONS = {
  */
 export const createTabFormGroup = (value?: any) => {
   const formGroup = fb.group({
+    id: [get(value, 'id') || uuidv4(), Validators.required],
     label: fb.nonNullable.control<string>(value?.label, Validators.required),
+    hide: fb.control<boolean>(value?.hide ?? false),
     gridOptions: fb.group({
       minCols: fb.control(
         get<number>(value.gridOptions, 'minCols', DEFAULT_GRID_OPTIONS.minCols),

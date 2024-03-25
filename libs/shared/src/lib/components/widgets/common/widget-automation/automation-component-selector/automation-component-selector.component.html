@@ -1,0 +1,25 @@
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header"
+    ><h3 class="font-semibold">
+      {{ 'components.automation.component.select' | translate }}
+    </h3></ng-container
+  >
+  <ng-container ngProjectAs="content">
+    <div class="flex flex-wrap justify-between">
+      <div
+        *ngFor="let action of actionComponents"
+        class="mb-4 mx-0.5 border border-gray-300 rounded-lg p-2 cursor-pointer hover:shadow-md"
+        (click)="onSelect(action)"
+      >
+        <h3 class="!m-0">
+          {{ 'components.automation.actions.' + action.type | translate }}
+        </h3>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
+  </ng-container>
+</ui-dialog>

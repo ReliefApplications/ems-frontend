@@ -72,6 +72,8 @@ export class DashboardFilterComponent
   public containerLeftOffset!: string;
   /** Filter template */
   public survey: Model = new Model();
+  /** Survey init flag */
+  private surveyInit = true;
   /** Quick filter display */
   public quickFilters: QuickFilter[] = [];
   /** Indicate empty status of filter */
@@ -130,6 +132,7 @@ export class DashboardFilterComponent
       )
       .subscribe(({ current }) => {
         this.survey.data = current;
+        this.survey.setPropertyValue('refreshData', true);
       });
     this.contextService.filterOpened$
       .pipe(takeUntil(this.destroy$))
@@ -226,6 +229,7 @@ export class DashboardFilterComponent
       renderGlobalProperties(this.referenceDataService, this.http);
     });
     this.onValueChange();
+    this.surveyInit = false;
   }
 
   /**
@@ -319,7 +323,21 @@ export class DashboardFilterComponent
         };
         return acc;
       }, {});
-    this.contextService.filter.next(surveyData);
+    const currentSurveyQuestions = this.survey.getAllQuestions();
+    const nextFilterValue: any = surveyData;
+    // Don't merge current context filter values to the filter if survey has init and it's used in web component
+    if (
+      !(this.surveyInit && this.contextService.shadowDomService.isShadowRoot)
+    ) {
+      const currentFilterValue = this.contextService.filter.value;
+      const filterKeys = Object.keys(currentFilterValue);
+      filterKeys
+        .filter((key) => !currentSurveyQuestions.find((sq) => sq.name === key))
+        .forEach((key) => {
+          nextFilterValue[key] = currentFilterValue[key];
+        });
+    }
+    this.contextService.filter.next(nextFilterValue);
     this.ngZone.run(() => {
       this.quickFilters = displayValues
         .filter((question) => !!question.value)
@@ -397,7 +415,7 @@ export class DashboardFilterComponent
           // Add width from left sidenav as left offset
           this.containerLeftOffset = `${
             this._host.el.nativeElement.offsetLeft +
-            this._host.sidenav.get(0).nativeElement.offsetWidth
+            this._host.sidenav.get(0)?.nativeElement.offsetWidth
           }px`;
           this.containerTopOffset = `${this._host.el.nativeElement.offsetTop}px`;
         } else {

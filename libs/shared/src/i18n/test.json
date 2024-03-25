@@ -174,6 +174,7 @@
 		},
 		"errors": {
 			"few": "******",
+			"invalidJson": "******",
 			"objectDuplicated": "{{type}} ****** {{value}} ******"
 		},
 		"exitFullscreen": "******",
@@ -228,6 +229,7 @@
 		"modifiedOn": "******",
 		"name": "******",
 		"next": "******",
+		"noData": "******",
 		"noOptions": "******",
 		"notifications": {
 			"accessDenied": "****** {{type}} ******",
@@ -651,6 +653,28 @@
 				"ariaLabel": "******"
 			}
 		},
+		"automation": {
+			"actions": {
+				"add.layer": "******",
+				"add.tab": "******",
+				"display.collapse": "******",
+				"display.expand": "******",
+				"map.click": "******",
+				"map.get.country": "******",
+				"open.tab": "******",
+				"remove.layer": "******",
+				"remove.tab": "******",
+				"set.context": "******"
+			},
+			"addRule": "******",
+			"component": {
+				"add": "******",
+				"select": "******"
+			},
+			"configuration": "******",
+			"ruleName": "******",
+			"rules": "******"
+		},
 		"calculatedFields": {
 			"add": "******",
 			"delete": {
@@ -919,6 +943,10 @@
 						"all": "******",
 						"current": "******"
 					}
+				},
+				"fullScreen": {
+					"exitFullscreen": "******",
+					"viewFullscreen": "******"
 				}
 			}
 		},
@@ -1807,6 +1835,9 @@
 							"region": "******",
 							"remove": "******",
 							"value": "****** {{context}} ****** {{filter}} ******"
+						},
+						"gradient": {
+							"reverse": "******"
 						}
 					}
 				},
@@ -2305,6 +2336,7 @@
 				"border": "******",
 				"expand": "******",
 				"header": "******",
+				"hideEmpty": "******",
 				"padding": "******",
 				"searchable": "******",
 				"sortable": "******",
@@ -2333,6 +2365,7 @@
 					"help": "******",
 					"restore": "******"
 				},
+				"hideEmpty": "******",
 				"selector": {
 					"collapse": "******",
 					"expand": "******"

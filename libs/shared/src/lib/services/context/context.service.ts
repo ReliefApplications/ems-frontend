@@ -58,8 +58,10 @@ export class ContextService {
   public filterValues = new BehaviorSubject<any>(null);
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
+  /** Should skip filter, used by the web widgets app, so when a page is redrawn, emit a value */
+  public skipFilter = false;
   /** Web component filter surveys */
-  webComponentsFilterSurvey: Model[] = [];
+  public webComponentsFilterSurvey: Model[] = [];
   /** Regex used to allow widget refresh */
   public filterRegex = /["']?{{filter\.(.*?)}}["']?/;
   /** Regex to detect the value of {{filter.}} in object */
@@ -95,6 +97,8 @@ export class ContextService {
         ([prev, curr]: [Record<string, any>, Record<string, any>]) =>
           !isEqual(prev, curr)
       ),
+      // Deactivate the filter emit when the context service is disabled ( when changing dashboard in web-widgets )
+      filter(() => !this.skipFilter),
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       map(([prev, curr]: [Record<string, any>, Record<string, any>]) => ({
         previous: prev,
@@ -423,11 +427,13 @@ export class ContextService {
   public initSurvey(structure: any): SurveyModel {
     const survey = this.formBuilderService.createSurvey(structure);
     // set each question value manually otherwise the defaultValueExpression is not loaded
-    forEach(this.filterValues.getValue(), (value, key) => {
-      if (survey.getQuestionByName(key)) {
-        survey.getQuestionByName(key).value = value;
-      }
-    });
+    if (!this.shadowDomService.isShadowRoot) {
+      forEach(this.filterValues.getValue(), (value, key) => {
+        if (survey.getQuestionByName(key)) {
+          survey.getQuestionByName(key).value = value;
+        }
+      });
+    }
 
     // prevent the default value from being applied when a question has been intentionally cleared
     const handleValueChanged = (sender: any, options: any) => {

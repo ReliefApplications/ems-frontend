@@ -142,8 +142,6 @@ export const init = (
       tagboxInstance.placeholder = question.placeholder;
       tagboxInstance.readonly = question.isReadOnly;
       tagboxInstance.registerOnChange((value: any) => {
-        console.log('on update');
-        console.log(value);
         question.value = value;
       });
 

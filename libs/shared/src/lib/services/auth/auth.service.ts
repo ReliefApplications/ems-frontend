@@ -96,6 +96,14 @@ export class AuthService {
   private isDoneLoading = new ReplaySubject<boolean>();
   /** Boolean for loading as observable */
   public isDoneLoading$ = this.isDoneLoading.asObservable();
+  /** Boolean to send a flag for token refresh */
+  public refreshToken = new BehaviorSubject<boolean>(false);
+  /** Boolean to send a flag for token refresh as observable */
+  public refreshToken$ = this.refreshToken.asObservable();
+  /** Boolean to send if token is refreshed */
+  public isTokenRefreshed = new BehaviorSubject<boolean>(false);
+  /** Boolean to send if token is refreshed as observable */
+  public isTokenRefreshed$ = this.isTokenRefreshed.asObservable();
 
   /** Boolean for protected route activation */
   public canActivateProtectedRoutes$: Observable<boolean> = combineLatest([

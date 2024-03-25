@@ -1,3 +1,20 @@
+# [2.10.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.9.0...v2.10.0) (2024-03-01)
+
+
+### Bug Fixes
+
+* due to query params some components could be duplicated in sui ([faf3986](https://github.com/ReliefApplications/ems-frontend/commit/faf39869bc4244652a9ebef90535697a056360c0))
+* fullscreen control would not work in web elements mode ([#2425](https://github.com/ReliefApplications/ems-frontend/issues/2425)) ([4f0dd92](https://github.com/ReliefApplications/ems-frontend/commit/4f0dd9278739affd64cdfaaf46bec90711c67846))
+* layers overlay could be hidden on maps, when using fullscreen & web elements ([#2424](https://github.com/ReliefApplications/ems-frontend/issues/2424)) ([49e6db7](https://github.com/ReliefApplications/ems-frontend/commit/49e6db7135137ca4d361e46a8e5dfbfaf2ff74a4))
+* map could sometimes disappear on some browsers due to a browser limitation ([79d1a1c](https://github.com/ReliefApplications/ems-frontend/commit/79d1a1cb5bf0a63c0283a9e4db19fc4de6944fd2))
+* only one mutation instance supported ([#2419](https://github.com/ReliefApplications/ems-frontend/issues/2419)) ([2b80a9f](https://github.com/ReliefApplications/ems-frontend/commit/2b80a9ff984a6c071480f58619dde678c56e560d))
+* selecting some reference data in questions in dashboard filter, using web elements, could not reflect on other pages  ([#2420](https://github.com/ReliefApplications/ems-frontend/issues/2420)) ([729957a](https://github.com/ReliefApplications/ems-frontend/commit/729957a69f2b612b19e4edc44d68a6bff2c6395b))
+
+
+### Features
+
+* allow widgets to build automation rules ([#2422](https://github.com/ReliefApplications/ems-frontend/issues/2422)) ([9457fd4](https://github.com/ReliefApplications/ems-frontend/commit/9457fd4662243216e9145b82d555b901492357c8))
+
 # [2.9.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.8.3...v2.9.0) (2024-02-23)
 
 

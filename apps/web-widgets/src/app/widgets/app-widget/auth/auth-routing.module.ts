@@ -20,6 +20,11 @@ export const routes: Routes = [
         redirectTo: '',
         pathMatch: 'full',
       },
+      {
+        path: 'error',
+        loadChildren: () =>
+          import('./pages/error/error.module').then((m) => m.ErrorModule),
+      },
     ],
   },
 ];

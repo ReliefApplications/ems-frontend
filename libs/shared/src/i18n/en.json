@@ -174,6 +174,7 @@
 		},
 		"errors": {
 			"few": "Errors",
+			"invalidJson": "Please provide a valid JSON",
 			"objectDuplicated": "{{type}} {{value}} already exists."
 		},
 		"exitFullscreen": "Exit Fullscreen",
@@ -228,6 +229,7 @@
 		"modifiedOn": "Modified On",
 		"name": "Name",
 		"next": "Next",
+		"noData": "No data available",
 		"noOptions": "No available choices",
 		"notifications": {
 			"accessDenied": "You don't have permission to see the {{type}}.",
@@ -651,6 +653,28 @@
 				"ariaLabel": "Select page of applications"
 			}
 		},
+		"automation": {
+			"actions": {
+				"add.layer": "Add layer",
+				"add.tab": "Add tab",
+				"display.collapse": "Collapse the display",
+				"display.expand": "Expand the display",
+				"map.click": "On map click",
+				"map.get.country": "Get country from map",
+				"open.tab": "Open tab",
+				"remove.layer": "Remove layer",
+				"remove.tab": "Remove tab",
+				"set.context": "Set context"
+			},
+			"addRule": "Add a new automation rule",
+			"component": {
+				"add": "Add a new component",
+				"select": "Select a component"
+			},
+			"configuration": "Automation configuration",
+			"ruleName": "Name of the automation rule",
+			"rules": "Automation rules"
+		},
 		"calculatedFields": {
 			"add": "Create a new Calculated field",
 			"delete": {
@@ -919,6 +943,10 @@
 						"all": "Map",
 						"current": "Current view"
 					}
+				},
+				"fullScreen": {
+					"exitFullscreen": "Exit Fullscreen",
+					"viewFullscreen": "View Fullscreen"
 				}
 			}
 		},
@@ -1807,6 +1835,9 @@
 							"region": "Use region name",
 							"remove": "Remove geographic extent",
 							"value": "You can input a static value, or use {{context}} or {{filter}} notation to dynamically inject a value"
+						},
+						"gradient": {
+							"reverse": "Reverse gradient"
 						}
 					}
 				},
@@ -2305,6 +2336,7 @@
 				"border": "Show widget border",
 				"expand": "Show button to expand widget",
 				"header": "Show widget header",
+				"hideEmpty": "Hide widget when empty",
 				"padding": "Use widget inner padding",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",
@@ -2333,6 +2365,7 @@
 					"help": "Only appears in front-office or in preview mode",
 					"restore": "Restore default"
 				},
+				"hideEmpty": "Only hides in front-office or in preview mode",
 				"selector": {
 					"collapse": "Hide widget selector",
 					"expand": "Show widget selector"

@@ -18,11 +18,12 @@ import {
   DataTemplateService,
   WorkflowService,
   MapLayersService,
+  AuthService,
 } from '@oort-front/shared';
-import { Subject, debounceTime, takeUntil } from 'rxjs';
+import { Subject, debounceTime, filter, skip, takeUntil } from 'rxjs';
 import { isEmpty } from 'lodash';
 import { ShadowDomService } from '@oort-front/ui';
-import { Router } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 
 /**
  * Application as Web Widget.
@@ -47,6 +48,8 @@ export class AppWidgetComponent
   /** Application Id */
   @Input()
   set id(value: string) {
+    // Reset error status
+    this.hasError = false;
     this.applicationService.loadApplication(value);
     // Get the current path
     const currentPath = this.router.url;
@@ -60,6 +63,14 @@ export class AppWidgetComponent
   }
 
   /**
+   * Check if system that embeds web-widget has finish token refresh
+   */
+  @Input()
+  set isTokenRefreshed(tokenRefreshed: boolean) {
+    this.authService.isTokenRefreshed.next(tokenRefreshed);
+  }
+
+  /**
    * Set dashboard filter visibility status
    */
   @Input()
@@ -70,7 +81,11 @@ export class AppWidgetComponent
   /** Navigation path */
   @Input()
   set path(value: string) {
-    this.router.navigate([value]);
+    // Only navigate if no error
+    if (!this.hasError) {
+      this.router.navigate([value]);
+    }
+    // Otherwise, stay on error page
   }
 
   /** Pass new value to the filter */
@@ -79,6 +94,9 @@ export class AppWidgetComponent
     this.contextService.filter.next(value);
   }
 
+  /** Send reminder to system about token refresh */
+  @Output()
+  refreshToken$ = new EventEmitter<boolean>();
   /** Is filter active */
   @Output()
   filterActive$ = new EventEmitter<boolean>();
@@ -90,6 +108,10 @@ export class AppWidgetComponent
   pages = new EventEmitter<any[]>();
   /** Trigger subscription teardown on component destruction */
   private destroy$: Subject<void> = new Subject<void>();
+  /** Navigation in SUI is loading */
+  public isNavigationLoading = false;
+  /** Is there an application error */
+  public hasError = false;
 
   /**
    * Application as Web Widget.
@@ -100,6 +122,7 @@ export class AppWidgetComponent
    * @param applicationService Shared application service
    * @param router Angular router service
    * @param shadowDomService Shared shadow dom service
+   * @param authService Auth service
    */
   constructor(
     el: ElementRef,
@@ -107,19 +130,24 @@ export class AppWidgetComponent
     private contextService: ContextService,
     private applicationService: ApplicationService,
     private router: Router,
-    private shadowDomService: ShadowDomService
+    private shadowDomService: ShadowDomService,
+    private authService: AuthService
   ) {
-    console.log('DEBUG: build from 02/22/2023');
+    console.log('DEBUG: 03/15/2023, v1');
     super(el, injector);
     this.shadowDomService.shadowRoot = el.nativeElement.shadowRoot;
+
+    // Subscribe to filter changes to emit them
     this.contextService.filter$
       .pipe(debounceTime(500))
       .subscribe(({ current }) => {
         this.filterActive$.emit(!isEmpty(current));
         this.filter$.emit(current);
       });
+
+    // Subscribe to application changes to update the pages
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(skip(1), takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
         if (application) {
           const pages = application.pages
@@ -136,9 +164,32 @@ export class AppWidgetComponent
             }));
           this.pages.emit(pages);
         } else {
+          this.hasError = true;
           this.pages.emit([]);
+          // Navigate to error page
+          this.router.navigate(['/auth/error'], { skipLocationChange: true });
         }
       });
+
+    // Subscribe to token refresh events
+    this.authService.refreshToken$
+      .pipe(
+        filter((refreshToken) => !!refreshToken),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: () => this.refreshToken$.emit(),
+      });
+
+    // Subscribe to router events, to show / hide loading indicator
+    this.router.events.pipe(takeUntil(this.destroy$)).subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.isNavigationLoading = true;
+      }
+      if (event instanceof NavigationEnd) {
+        this.isNavigationLoading = false;
+      }
+    });
   }
 
   /**
