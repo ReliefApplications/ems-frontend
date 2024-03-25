@@ -505,7 +505,7 @@ export class MapComponent
     }
 
     // Close layers/bookmarks menu
-    this.document.getElementById('layer-control-button-close')?.click();
+    this.closeLayersControl();
 
     this.setupMapLayers({ layers, controls, arcGisWebMap, basemap });
     this.setMapControls(controls, initMap);
@@ -1120,7 +1120,7 @@ export class MapComponent
     const { layers: layersToGet, controls } = this.extractSettings();
 
     if (controls.layer) {
-      this.document.getElementById('layer-control-button-close')?.click();
+      this.closeLayersControl();
       this.layerControlButtons._component.loading = true;
     }
 
@@ -1271,5 +1271,22 @@ export class MapComponent
     const { center, zoom } = this.extractSettings().initialState.viewpoint;
     this.currentZoom = zoom;
     this.map.setView([center.latitude, center.longitude], zoom);
+  }
+
+  /**
+   * Close layers control sidenav.
+   */
+  private closeLayersControl(): void {
+    let controlButton: HTMLElement | null;
+    if (this.shadowDomService.isShadowRoot) {
+      controlButton = this.shadowDomService.currentHost.getElementById(
+        'layer-control-button-close'
+      );
+    } else {
+      controlButton = this.document.getElementById(
+        'layer-control-button-close'
+      );
+    }
+    controlButton?.click();
   }
 }
