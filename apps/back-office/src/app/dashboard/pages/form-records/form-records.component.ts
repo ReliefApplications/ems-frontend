@@ -27,7 +27,6 @@ import {
   SnackbarService,
   UIPageChangeEvent,
   UILayoutService,
-  handleTablePageEvent,
 } from '@oort-front/ui';
 import { GraphQLError } from 'graphql';
 import {
