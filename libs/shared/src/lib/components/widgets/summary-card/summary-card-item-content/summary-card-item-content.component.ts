@@ -70,7 +70,7 @@ export class SummaryCardItemContentComponent
       event,
       'shared-summary-card-item-content',
       this.dashboardAutomationService,
-      this.settings.automationRules
+      this.settings.automationRules as any[]
     );
     const content = this.htmlContentComponent.el.nativeElement;
     const editorTriggers = content.querySelectorAll('.record-editor');
