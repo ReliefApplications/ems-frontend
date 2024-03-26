@@ -504,7 +504,8 @@
 				"selectedFields": "Only unused fields can be removed.",
 				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.\nEstablishing consecutive sorting stages will simultaneously sort all fields.",
 				"unwind": "Deconstructs an array field from the input documents to output a document for each element."
-			}
+			},
+			"unavailableFields": "These fields are unavailable because their types are not supported"
 		},
 		"apiConfiguration": {
 			"create": {

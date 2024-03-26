@@ -43,6 +43,8 @@ export class AggregationBuilderComponent
   public loading = true;
   /** Available fields */
   private fields = new BehaviorSubject<any[]>([]);
+  /** Fields removed because of their types */
+  public removedFields: string[] = [];
   /** Available fields as observable */
   public fields$ = this.fields.asObservable();
   /** Available filter fields */
@@ -224,6 +226,38 @@ export class AggregationBuilderComponent
             )
         );
       this.fields.next(fields);
+      if (this.resource) {
+        const metaQuery = this.queryBuilder.buildMetaQuery({
+          name: query,
+          fields: fields.map((field) => {
+            return { ...field.type, name: field.name };
+          }),
+        });
+        if (metaQuery) {
+          metaQuery.pipe(takeUntil(this.destroy$)).subscribe({
+            next: async ({ data }: any) => {
+              for (const field in data) {
+                if (Object.prototype.hasOwnProperty.call(data, field)) {
+                  const metaFields = Object.assign({}, data[field]);
+                  let fieldsWithMeta = fields.map((currentField) => {
+                    return {
+                      ...currentField,
+                      meta: metaFields[currentField.name],
+                    };
+                  });
+                  this.removedFields = fieldsWithMeta
+                    .filter((field) => field.meta.type === 'editor')
+                    .map((field) => field.name);
+                  fieldsWithMeta = fieldsWithMeta.filter(
+                    (field) => !(field.meta.type === 'editor')
+                  ); //TODO: filter out other unusable fields
+                  this.fields.next(fieldsWithMeta);
+                }
+              }
+            },
+          });
+        }
+      }
     }
   }
 

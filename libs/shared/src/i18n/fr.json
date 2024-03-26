@@ -504,7 +504,8 @@
 				"selectedFields": "Seuls les champs non utilisés peuvent être supprimés.",
 				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.\nLa mise en place de des étapes de tri successives triera simultanément tous les champs.",
 				"unwind": "Déconstruit un tableau depuis les documents d'entrée et ressort un document pour chaque élément."
-			}
+			},
+			"unavailableFields": "Ces champs ne sont pas disponibles car leurs types ne sont pas supportés"
 		},
 		"apiConfiguration": {
 			"create": {

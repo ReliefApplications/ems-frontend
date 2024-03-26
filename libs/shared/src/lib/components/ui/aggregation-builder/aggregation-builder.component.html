@@ -1,5 +1,13 @@
 <ui-spinner size="large" *ngIf="loading"></ui-spinner>
 <ng-container *ngIf="!loading">
+  <ui-alert variant="warning" *ngIf="removedFields.length > 0">
+    {{
+      ('components.aggregationBuilder.unavailableFields' | translate) +
+        ': ' +
+        removedFields.join(', ')
+    }}</ui-alert
+  >
+
   <div class="flex">
     <!-- Selection of fields -->
     <shared-tagbox
