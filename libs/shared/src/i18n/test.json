@@ -2182,7 +2182,8 @@
 				"one": "******",
 				"openInNewTab": "******",
 				"text": "******",
-				"variant": "******"
+				"variant": "******",
+				"visibleToRoles": "******"
 			},
 			"closable": "******",
 			"context": {

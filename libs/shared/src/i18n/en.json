@@ -2182,7 +2182,8 @@
 				"one": "Button action",
 				"openInNewTab": "Open in new tab",
 				"text": "Button text",
-				"variant": "Button variant"
+				"variant": "Button variant",
+				"visibleToRoles": "Visible to roles"
 			},
 			"closable": "Closable",
 			"context": {

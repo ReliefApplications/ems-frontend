@@ -6,6 +6,7 @@ import { Category, Variant } from '@oort-front/ui';
 export type ButtonActionT = {
   text: string;
   href: string;
+  visibleToRoles: string[];
   variant: Variant;
   category: Category;
   openInNewTab: boolean;

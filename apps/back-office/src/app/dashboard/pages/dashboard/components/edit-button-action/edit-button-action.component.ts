@@ -28,6 +28,8 @@ import {
   DataTemplateService,
   INLINE_EDITOR_CONFIG,
   ButtonActionT,
+  ApplicationService,
+  Role,
 } from '@oort-front/shared';
 import { Router } from '@angular/router';
 
@@ -35,12 +37,17 @@ import { Router } from '@angular/router';
  * Create a form group for the button action
  *
  * @param data Data to initialize the form
+ * @param roles roles of the application
  * @returns the form group
  */
-const createButtonActionForm = (data?: ButtonActionT) => {
+const createButtonActionForm = (data: ButtonActionT, roles: Role[]) => {
   return new FormGroup({
     text: new FormControl(get(data, 'text', ''), Validators.required),
     href: new FormControl(get(data, 'href', ''), Validators.required),
+    visibleToRoles: new FormControl(
+      roles.map((role) => role.id || ''),
+      Validators.required
+    ),
     variant: new FormControl(get(data, 'variant', 'primary')),
     category: new FormControl(get(data, 'category', 'secondary')),
     openInNewTab: new FormControl(get(data, 'openInNewTab', true)),
@@ -82,6 +89,8 @@ export class EditButtonActionComponent implements OnInit {
 
   /** tinymce href editor */
   public hrefEditor: RawEditorSettings = INLINE_EDITOR_CONFIG;
+  /** Roles from current application */
+  public roles: Role[];
 
   /**
    * Component for editing a dashboard button action
@@ -91,15 +100,18 @@ export class EditButtonActionComponent implements OnInit {
    * @param editorService editor service used to get main URL and current language
    * @param dataTemplateService Shared data template service
    * @param router Router service
+   * @param applicationService shared application service
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
     @Inject(DIALOG_DATA) private data: ButtonActionT,
     private editorService: EditorService,
     private dataTemplateService: DataTemplateService,
-    private router: Router
+    private router: Router,
+    public applicationService: ApplicationService
   ) {
-    this.form = createButtonActionForm(data);
+    this.roles = this.applicationService.application.value?.roles || [];
+    this.form = createButtonActionForm(data, this.roles);
     this.isNew = !data;
 
     // Set the editor base url based on the environment file

@@ -2196,7 +2196,8 @@
 				"one": "Action du bouton",
 				"openInNewTab": "Ouvrir dans un nouvel onglet",
 				"text": "Texte du bouton",
-				"variant": "Variante de bouton"
+				"variant": "Variante de bouton",
+				"visibleToRoles": "Visible pour les roles"
 			},
 			"closable": "Peut être fermé",
 			"context": {
