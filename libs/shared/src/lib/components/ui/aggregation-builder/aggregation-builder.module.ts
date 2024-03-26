@@ -6,7 +6,7 @@ import { PipelineModule } from './pipeline/pipeline.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TagboxModule } from '../tagbox/tagbox.module';
 import { GridModule } from '../core-grid/grid/grid.module';
-import { ButtonModule, SpinnerModule } from '@oort-front/ui';
+import { AlertModule, ButtonModule, SpinnerModule } from '@oort-front/ui';
 
 /**
  * Aggregation Builder module.
@@ -24,6 +24,7 @@ import { ButtonModule, SpinnerModule } from '@oort-front/ui';
     GridModule,
     SpinnerModule,
     ButtonModule,
+    AlertModule,
   ],
   exports: [AggregationBuilderComponent],
 })
