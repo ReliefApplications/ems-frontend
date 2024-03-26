@@ -1394,6 +1394,7 @@
 					"mapDetailsTitle": "Query Map View",
 					"mapDetailsTooltip": "Centered by default on selected record"
 				},
+				"openEditor": "Open editor",
 				"openSettings": "Open settings",
 				"tooltip": {
 					"displayEditor": "Display editor",

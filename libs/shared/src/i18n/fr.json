@@ -1407,6 +1407,7 @@
 					"mapDetailsTitle": "Cartographie des données",
 					"mapDetailsTooltip": "Centré par defaut sur l'enregistrement sélectionné"
 				},
+				"openEditor": "Ouvrir l'éditeur",
 				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {
 					"displayEditor": "Afficher l'éditeur",
