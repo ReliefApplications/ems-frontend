@@ -25,7 +25,6 @@ import { EditorService } from '../../../services/editor/editor.service';
 import { RawEditorSettings } from 'tinymce';
 import { FormControlComponent } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
-import { INLINE_EDITOR_CONFIG } from '../../../const/tinymce.const';
 
 /** Component for using TinyMCE editor with formControl */
 @Component({
@@ -55,7 +54,7 @@ export class EditorControlComponent
   public editorContent = '';
 
   /** Tinymce editor configuration */
-  @Input() editorConfig: RawEditorSettings = INLINE_EDITOR_CONFIG;
+  @Input() editorConfig!: RawEditorSettings;
 
   /**
    * Gets the value
