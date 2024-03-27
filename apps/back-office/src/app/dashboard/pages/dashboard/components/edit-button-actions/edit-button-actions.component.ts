@@ -22,6 +22,7 @@ import {
   UnsubscribeComponent,
   ApplicationService,
   Role,
+  EmptyModule,
 } from '@oort-front/shared';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -48,6 +49,7 @@ import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
     TooltipModule,
     IconModule,
     DragDropModule,
+    EmptyModule,
   ],
   templateUrl: './edit-button-actions.component.html',
   styleUrls: ['./edit-button-actions.component.scss'],

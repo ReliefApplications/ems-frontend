@@ -5,7 +5,10 @@
     </h3>
   </ng-container>
 
-  <ng-container ngProjectAs="content">
+  <ng-container
+    ngProjectAs="content"
+    *ngIf="datasource.value.length; else emptyTmpl"
+  >
     <div class="flex justify-between mb-4">
       <div uiFormFieldDirective [defaultMargin]="false" class="p-0">
         <ui-icon icon="search" uiPrefix></ui-icon>
@@ -16,14 +19,7 @@
           (ngModelChange)="updateDatasource()"
         />
       </div>
-      <ui-button
-        category="secondary"
-        variant="primary"
-        icon="add"
-        (click)="onAddButtonAction()"
-      >
-        {{ 'models.dashboard.buttonActions.create' | translate }}
-      </ui-button>
+      <ng-container *ngTemplateOutlet="newActionButton"></ng-container>
     </div>
     <!-- Table container -->
     <div class="overflow-y-auto overflow-hidden mb-4">
@@ -111,6 +107,23 @@
       </div>
     </div>
   </ng-container>
+  <ng-template #newActionButton>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      icon="add"
+      (click)="onAddButtonAction()"
+    >
+      {{ 'models.dashboard.buttonActions.create' | translate }}
+    </ui-button>
+  </ng-template>
+  <ng-template #emptyTmpl>
+    <!-- Empty indicator -->
+    <shared-empty
+      [title]="'models.dashboard.buttonActions.none' | translate"
+      [footerTemplate]="newActionButton"
+    ></shared-empty>
+  </ng-template>
 
   <ng-container ngProjectAs="actions">
     <ui-button

@@ -2196,6 +2196,7 @@
 					"one": "Modifier le bouton d'action"
 				},
 				"href": "Bouton href",
+				"none": "Pas de bouton d'action",
 				"one": "Bouton d'action",
 				"openInNewTab": "Ouvrir dans un nouvel onglet",
 				"text": "Texte du bouton",

@@ -2182,6 +2182,7 @@
 					"one": "Edit action button"
 				},
 				"href": "Button href",
+				"none": "No action buttons",
 				"one": "Action button",
 				"openInNewTab": "Open in new tab",
 				"text": "Button text",
