@@ -1156,7 +1156,10 @@ export class CoreGridComponent
 
     // Loop over metaFields to verify if there are new users
     for (const metaField in this.metaFields) {
-      if (this.metaFields[metaField].type === 'people') {
+      if (
+        this.metaFields[metaField]?.type === 'people' &&
+        value.data.data[metaField]
+      ) {
         newIds.push(
           ...value.data.data[metaField]
             // Filter new users
@@ -1190,7 +1193,7 @@ export class CoreGridComponent
       });
 
       this.fields = this.gridService.getFields(
-        this.fields,
+        this.settings?.query?.fields || [],
         this.metaFields,
         this.defaultLayout.fields || {},
         ''
