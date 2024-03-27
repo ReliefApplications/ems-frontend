@@ -2174,16 +2174,19 @@
 		"dashboard": {
 			"activateFiltering": "******",
 			"buttonActions": {
-				"add": "******",
 				"category": "******",
 				"confirmDelete": "******",
-				"edit": "******",
+				"create": "******",
+				"edit": {
+					"few": "******",
+					"one": "******"
+				},
 				"href": "******",
 				"one": "******",
 				"openInNewTab": "******",
 				"text": "******",
 				"variant": "******",
-				"visibleToRoles": "******"
+				"visibleTo": "******"
 			},
 			"closable": "******",
 			"context": {

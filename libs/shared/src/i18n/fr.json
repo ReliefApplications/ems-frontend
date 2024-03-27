@@ -2188,16 +2188,19 @@
 		"dashboard": {
 			"activateFiltering": "Activer le filtre",
 			"buttonActions": {
-				"add": "Ajouter une action de bouton",
 				"category": "Catégorie de bouton",
 				"confirmDelete": "Voulez-vous vraiment supprimer cette action de bouton ?",
-				"edit": "Modifier l'action du bouton",
+				"create": "Créer un bouton d'action",
+				"edit": {
+					"few": "Modifier les boutons d'action",
+					"one": "Modifier le bouton d'action"
+				},
 				"href": "Bouton href",
-				"one": "Action du bouton",
+				"one": "Bouton d'action",
 				"openInNewTab": "Ouvrir dans un nouvel onglet",
 				"text": "Texte du bouton",
 				"variant": "Variante de bouton",
-				"visibleToRoles": "Visible pour les roles"
+				"visibleTo": "Visible pour les rôles"
 			},
 			"closable": "Peut être fermé",
 			"context": {

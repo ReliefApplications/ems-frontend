@@ -566,26 +566,52 @@ export class DashboardComponent
     );
   }
 
-  /** Open modal to add new button action */
-  public async onAddButtonAction() {
-    const { EditButtonActionComponent } = await import(
-      './components/edit-button-action/edit-button-action.component'
+  // /** Open modal to add new button action */
+  // public async onAddButtonAction() {
+  //   const { EditButtonActionComponent } = await import(
+  //     './components/edit-button-action/edit-button-action.component'
+  //   );
+  //   const dialogRef = this.dialog.open<ButtonActionT | undefined>(
+  //     EditButtonActionComponent
+  //   );
+
+  //   dialogRef.closed
+  //     .pipe(takeUntil(this.destroy$))
+  //     .subscribe(async (button) => {
+  //       if (!button) return;
+  //       const currButtons = this.dashboard?.buttons || [];
+
+  //       this.dashboardService
+  //         .saveDashboardButtons(this.dashboard?.id, [...currButtons, button])
+  //         ?.pipe(takeUntil(this.destroy$))
+  //         .subscribe(() => {
+  //           this.buttonActions.push(button);
+  //         });
+  //     });
+  // }
+
+  /** Opens modal to modify button actions */
+  public async onEditButtonActions() {
+    const { EditButtonActionsComponent } = await import(
+      './components/edit-button-actions/edit-button-actions.component'
     );
-    const dialogRef = this.dialog.open<ButtonActionT | undefined>(
-      EditButtonActionComponent
+    const dialogRef = this.dialog.open<ButtonActionT[] | undefined>(
+      EditButtonActionsComponent,
+      {
+        data: { buttonActions: this.buttonActions },
+      }
     );
 
     dialogRef.closed
       .pipe(takeUntil(this.destroy$))
-      .subscribe(async (button) => {
-        if (!button) return;
-        const currButtons = this.dashboard?.buttons || [];
+      .subscribe(async (buttons) => {
+        if (!buttons) return;
 
         this.dashboardService
-          .saveDashboardButtons(this.dashboard?.id, [...currButtons, button])
+          .saveDashboardButtons(this.dashboard?.id, buttons)
           ?.pipe(takeUntil(this.destroy$))
           .subscribe(() => {
-            this.buttonActions.push(button);
+            this.buttonActions = buttons;
           });
       });
   }

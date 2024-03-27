@@ -45,7 +45,11 @@ const createButtonActionForm = (data: ButtonActionT, roles: Role[]) => {
     text: new FormControl(get(data, 'text', ''), Validators.required),
     href: new FormControl(get(data, 'href', ''), Validators.required),
     visibleToRoles: new FormControl(
-      roles.map((role) => role.id || ''),
+      get(
+        data,
+        'visibleToRoles',
+        roles.map((role) => role.id || '')
+      ),
       Validators.required
     ),
     variant: new FormControl(get(data, 'variant', 'primary')),
