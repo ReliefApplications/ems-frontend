@@ -59,16 +59,16 @@ export class EditButtonActionsComponent
   implements OnInit, OnDestroy
 {
   /**
-   *
+   * list of button actions from dashboard
    */
   private buttonActions: ButtonActionT[] = [];
   /**
-   *
+   * Behaviour subject to track change in action buttons
    */
   datasource = new BehaviorSubject(this.buttonActions);
 
   /**
-   *
+   * Search string
    */
   searchTerm = '';
 
