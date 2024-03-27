@@ -4,7 +4,11 @@ import { UnsubscribeComponent } from '../../../components/utils/unsubscribe/unsu
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { PeopleQueryResponse, Person } from '../../../models/people.model';
+import {
+  PeopleQueryResponse,
+  Person,
+  getPersonLabel,
+} from '../../../models/people.model';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { GET_PEOPLE } from './graphql/queries';
 import { takeUntil } from 'rxjs';
@@ -46,20 +50,8 @@ export class PeopleDropdownComponent
   private searchTimeout: ReturnType<typeof setTimeout> | null = null;
   /** Store the previous search value */
   private previousSearchValue: string | null = null;
-
-  /**
-   * Display value expression used by the select
-   *
-   * @param person Displayed person
-   * @returns Display value for the select
-   */
-  public displayValueExpression = (person: any) => {
-    const fullname =
-      person.firstname && person.lastname
-        ? `${person.firstname}, ${person.lastname}`
-        : person.firstname || person.lastname;
-    return `${fullname} (${person.emailaddress})`;
-  };
+  /** Display value expression used by the select */
+  public displayValueExpression = getPersonLabel;
 
   /**
    * Component to pick people from the list of people
@@ -104,7 +96,7 @@ export class PeopleDropdownComponent
                 value: this.initialSelectionIDs,
               },
             ],
-          },
+          } as CompositeFilterDescriptor,
         },
       })
       .pipe(takeUntil(this.destroy$))

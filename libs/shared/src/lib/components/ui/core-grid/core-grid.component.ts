@@ -49,7 +49,7 @@ import { DateTranslateService } from '../../../services/date-translate/date-tran
 import { ApplicationService } from '../../../services/application/application.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
-import { firstValueFrom, from, merge, Subject } from 'rxjs';
+import { firstValueFrom, from, lastValueFrom, merge, Subject } from 'rxjs';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
@@ -1062,8 +1062,9 @@ export class CoreGridComponent
       });
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))
-        .subscribe((value: any) => {
+        .subscribe(async (value: any) => {
           if (value) {
+            await this.loadPeopleChoices(value);
             this.reloadData();
           }
         });
@@ -1146,6 +1147,58 @@ export class CoreGridComponent
   }
 
   /**
+   * Load more people choices if needed
+   *
+   * @param value new updated or added record
+   */
+  public async loadPeopleChoices(value: any) {
+    const newIds: any[] = [];
+
+    // Loop over metaFields to verify if there are new users
+    for (const metaField in this.metaFields) {
+      if (this.metaFields[metaField].type === 'people') {
+        newIds.push(
+          ...value.data.data[metaField]
+            // Filter new users
+            .filter(
+              (choice: any) =>
+                !this.metaFields[metaField].choices.some(
+                  (obj: any) => obj.value === choice
+                )
+            )
+            .map((choice: any) => ({
+              id: choice,
+              // Saving the field name to address new choices after fetching
+              field: metaField,
+            }))
+        );
+      }
+    }
+
+    if (newIds.length) {
+      // Fetch new users
+      const newChoices = await lastValueFrom(
+        this.gridService.getNewPeopleChoices(newIds.map((el) => el.id))
+      );
+
+      // Assign the choices to the correct field
+      newChoices.forEach((choice: any) => {
+        const fieldName = newIds.find((el) => el.id === choice.value)?.field;
+        if (fieldName) {
+          this.metaFields[fieldName].choices.push(choice);
+        }
+      });
+
+      this.fields = this.gridService.getFields(
+        this.fields,
+        this.metaFields,
+        this.defaultLayout.fields || {},
+        ''
+      );
+    }
+  }
+
+  /**
    * Opens the form corresponding to selected row in order to update it
    *
    * @param items items to update.
@@ -1163,12 +1216,15 @@ export class CoreGridComponent
       },
       autoFocus: false,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.validateRecords(ids);
-        this.reloadData();
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (value: any) => {
+        if (value) {
+          await this.loadPeopleChoices(value);
+          this.validateRecords(ids);
+          this.reloadData();
+        }
+      });
   }
 
   /**

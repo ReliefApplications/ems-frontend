@@ -18,6 +18,13 @@ import { ResourceQueryResponse } from '../../models/resource.model';
 import { GET_RESOURCE_FIELDS } from './graphql/queries';
 import { map } from 'rxjs';
 import jsonpath from 'jsonpath';
+import {
+  PeopleQueryResponse,
+  Person,
+  getPersonLabel,
+} from '../../models/people.model';
+import { GET_PEOPLE } from '../../survey/components/people-dropdown/graphql/queries';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 /** List of disabled fields */
 const DISABLED_FIELDS = [
@@ -539,6 +546,43 @@ export class GridService {
             );
             return field;
           }
+        })
+      );
+  }
+
+  /**
+   * Get new choices for people question
+   *
+   * @param ids new user ids to fetch
+   * @returns users choices
+   */
+  public getNewPeopleChoices(ids: string[]) {
+    return this.apollo
+      .query<PeopleQueryResponse>({
+        query: GET_PEOPLE,
+        variables: {
+          filter: {
+            logic: 'or',
+            filters: [
+              {
+                field: 'userid',
+                operator: 'in',
+                value: ids,
+              },
+            ],
+          } as CompositeFilterDescriptor,
+        },
+      })
+      .pipe(
+        map(({ data }) => {
+          const choices: any[] = [];
+          data.people.forEach((person: Person) => {
+            choices.push({
+              value: person.id,
+              text: getPersonLabel(person),
+            });
+          });
+          return choices;
         })
       );
   }
