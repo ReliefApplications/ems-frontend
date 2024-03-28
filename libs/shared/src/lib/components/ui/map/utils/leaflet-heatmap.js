@@ -50,15 +50,7 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
       map._panes.overlayPane.appendChild(this._canvas);
     }
 
-    //map.on('moveend', this._reset, this);
-    this._reset();
-    map.on(
-      'moveend',
-      () => {
-        console.log('move end');
-      },
-      this
-    );
+    map.on('moveend', this._reset, this);
 
     if (map.options.zoomAnimation && L.Browser.any3d) {
       map.on('zoomanim', this._animateZoom, this);
@@ -224,7 +216,6 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
   },
 
   _animateZoom: function (e) {
-    console.log('animate zoom');
     var scale = this._map.getZoomScale(e.zoom),
       offset = this._map
         ._getCenterOffset(e.center)

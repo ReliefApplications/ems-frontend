@@ -223,7 +223,6 @@ export class EditButtonActionsComponent
   public updateDatasource() {
     let buttonActions: ButtonActionT[];
 
-    console.log(this.buttonActions);
     if (this.searchTerm !== '') {
       buttonActions = this.buttonActions.filter((action) =>
         action.text.toLowerCase().includes(this.searchTerm.toLowerCase())
