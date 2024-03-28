@@ -60,7 +60,7 @@ const createButtonActionForm = (data: ButtonActionT, roles: Role[]) => {
 
 /** Component for editing a dashboard button action */
 @Component({
-  selector: 'app-edit-button-action',
+  selector: 'app-edit-button-action-modal',
   standalone: true,
   imports: [
     CommonModule,
@@ -76,10 +76,10 @@ const createButtonActionForm = (data: ButtonActionT, roles: Role[]) => {
     EditorControlComponent,
     DividerModule,
   ],
-  templateUrl: './edit-button-action.component.html',
-  styleUrls: ['./edit-button-action.component.scss'],
+  templateUrl: './edit-button-action-modal.component.html',
+  styleUrls: ['./edit-button-action-modal.component.scss'],
 })
-export class EditButtonActionComponent implements OnInit {
+export class EditButtonActionModalComponent implements OnInit {
   /** Form group */
   public form: ReturnType<typeof createButtonActionForm>;
 

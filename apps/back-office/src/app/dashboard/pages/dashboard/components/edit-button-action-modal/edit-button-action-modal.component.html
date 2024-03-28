@@ -32,10 +32,7 @@
         <label>{{
           'models.dashboard.buttonActions.visibleTo' | translate
         }}</label>
-        <ui-select-menu
-          formControlName="visibleToRoles"
-          [multiselect]="true"
-        >
+        <ui-select-menu formControlName="visibleToRoles" [multiselect]="true">
           <ui-select-option *ngFor="let role of roles" [value]="role.id">
             {{ role.title }}
           </ui-select-option>
@@ -101,6 +98,9 @@
   </ng-container>
 
   <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.cancel' | translate
+    }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"

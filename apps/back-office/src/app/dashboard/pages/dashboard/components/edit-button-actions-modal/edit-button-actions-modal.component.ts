@@ -3,21 +3,17 @@ import { CommonModule } from '@angular/common';
 import {
   DialogModule,
   FormWrapperModule,
-  SelectMenuModule,
   ButtonModule,
-  ToggleModule,
   DividerModule,
   TableModule,
   MenuModule,
   TooltipModule,
   IconModule,
 } from '@oort-front/ui';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DialogRef, DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
-import { EditorModule } from '@tinymce/tinymce-angular';
 import {
-  EditorControlComponent,
   ButtonActionT,
   UnsubscribeComponent,
   ApplicationService,
@@ -27,22 +23,17 @@ import {
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 
-/** Component for editing a dashboard button action */
+/** Component for editing dashboard action buttons */
 @Component({
-  selector: 'app-edit-button-actions',
+  selector: 'app-edit-button-actions-modal',
   standalone: true,
   imports: [
     CommonModule,
     DialogModule,
     FormsModule,
-    ReactiveFormsModule,
     TranslateModule,
     FormWrapperModule,
-    SelectMenuModule,
     ButtonModule,
-    ToggleModule,
-    EditorModule,
-    EditorControlComponent,
     DividerModule,
     TableModule,
     MenuModule,
@@ -51,32 +42,24 @@ import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
     DragDropModule,
     EmptyModule,
   ],
-  templateUrl: './edit-button-actions.component.html',
-  styleUrls: ['./edit-button-actions.component.scss'],
+  templateUrl: './edit-button-actions-modal.component.html',
+  styleUrls: ['./edit-button-actions-modal.component.scss'],
 })
-export class EditButtonActionsComponent
+export class EditButtonActionsModalComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
-  /**
-   * list of button actions from dashboard
-   */
-  private buttonActions: ButtonActionT[] = [];
-  /**
-   * Behaviour subject to track change in action buttons
-   */
-  datasource = new BehaviorSubject(this.buttonActions);
-
-  /**
-   * Search string
-   */
-  searchTerm = '';
-
+  /** List of button actions from dashboard */
+  public buttonActions: ButtonActionT[] = [];
+  /** Behavior subject to track change in action buttons */
+  public datasource = new BehaviorSubject(this.buttonActions);
+  /** Current search string */
+  public searchTerm = '';
   /** Columns to display */
-  displayedColumns = ['dragDrop', 'name', 'roles', 'actions'];
+  public displayedColumns = ['dragDrop', 'name', 'roles', 'actions'];
 
   /**
-   * Component for editing a dashboard button action
+   * Component for editing dashboard action buttons
    *
    * @param dialogRef dialog reference
    * @param data data passed to the modal
@@ -98,17 +81,21 @@ export class EditButtonActionsComponent
   ngOnInit(): void {
     if (this.data && this.data.buttonActions) {
       this.buttonActions = [...this.data.buttonActions];
-      this.updateDatasource();
+      this.updateTable();
     }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
   }
 
   /** Open modal to add new button action */
   public async onAddButtonAction() {
-    const { EditButtonActionComponent } = await import(
-      '../edit-button-action/edit-button-action.component'
+    const { EditButtonActionModalComponent } = await import(
+      '../edit-button-action-modal/edit-button-action-modal.component'
     );
     const dialogRef = this.dialog.open<ButtonActionT | undefined>(
-      EditButtonActionComponent
+      EditButtonActionModalComponent
     );
 
     dialogRef.closed
@@ -116,7 +103,7 @@ export class EditButtonActionsComponent
       .subscribe(async (button) => {
         if (!button) return;
         this.buttonActions.push(button);
-        this.updateDatasource();
+        this.updateTable();
       });
   }
 
@@ -126,11 +113,11 @@ export class EditButtonActionsComponent
    * @param buttonAction Button action to edit
    */
   public async onEditButtonAction(buttonAction: ButtonActionT) {
-    const { EditButtonActionComponent } = await import(
-      '../edit-button-action/edit-button-action.component'
+    const { EditButtonActionModalComponent } = await import(
+      '../edit-button-action-modal/edit-button-action-modal.component'
     );
     const dialogRef = this.dialog.open<ButtonActionT | undefined>(
-      EditButtonActionComponent,
+      EditButtonActionModalComponent,
       { data: buttonAction }
     );
 
@@ -141,7 +128,7 @@ export class EditButtonActionsComponent
         const index = this.buttonActions.indexOf(buttonAction);
         if (index > -1) {
           this.buttonActions[index] = button;
-          this.updateDatasource();
+          this.updateTable();
         }
       });
   }
@@ -178,7 +165,7 @@ export class EditButtonActionsComponent
         const index = this.buttonActions.indexOf(buttonAction);
         if (index > -1) {
           this.buttonActions.splice(index, 1);
-          this.updateDatasource();
+          this.updateTable();
         }
       }
     });
@@ -209,7 +196,7 @@ export class EditButtonActionsComponent
       event.previousIndex,
       event.currentIndex
     );
-    this.updateDatasource();
+    this.updateTable();
   }
 
   /** On click on the save button close the dialog with the form value */
@@ -220,7 +207,7 @@ export class EditButtonActionsComponent
   /**
    * Updates the datasource to reflect the state of the buttonActions and to apply the filter
    */
-  public updateDatasource() {
+  public updateTable() {
     let buttonActions: ButtonActionT[];
 
     if (this.searchTerm !== '') {
@@ -231,12 +218,5 @@ export class EditButtonActionsComponent
       buttonActions = this.buttonActions;
     }
     this.datasource.next([...buttonActions]);
-  }
-
-  /**
-   * Leave Modal
-   */
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
   }
 }
