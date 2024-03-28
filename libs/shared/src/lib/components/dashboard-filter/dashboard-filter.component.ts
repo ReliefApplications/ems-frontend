@@ -415,7 +415,7 @@ export class DashboardFilterComponent
           // Add width from left sidenav as left offset
           this.containerLeftOffset = `${
             this._host.el.nativeElement.offsetLeft +
-            this._host.sidenav.get(0).nativeElement.offsetWidth
+            this._host.sidenav.get(0)?.nativeElement.offsetWidth
           }px`;
           this.containerTopOffset = `${this._host.el.nativeElement.offsetTop}px`;
         } else {
