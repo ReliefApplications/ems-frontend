@@ -1,15 +1,27 @@
 import { moduleMetadata, Story, Meta } from '@storybook/angular';
 import { TooltipComponent } from './tooltip.component';
-import { tooltipExamplesPositions } from './types/tooltip-example-positions';
 import { TooltipModule } from './tooltip.module';
+import { TooltipPosition, tooltipPositions } from './types/tooltip-positions';
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'ui-tooltip-dummy',
+  template: ` <button [uiTooltip]="tooltip" [uiTooltipPosition]="position">
+    Hover me
+  </button>`,
+})
+class TooltipDummyComponent {
+  @Input() public tooltip = '';
+  @Input() public position: TooltipPosition = 'bottom';
+}
 
 export default {
-  title: 'Components/Tooltip',
+  title: 'Directives/Tooltip',
   tags: ['autodocs'],
-  component: TooltipComponent,
+  component: TooltipDummyComponent,
   argTypes: {
     position: {
-      options: tooltipExamplesPositions,
+      options: tooltipPositions,
       control: 'select',
     },
   },
@@ -26,7 +38,9 @@ export default {
  * @param args Tooltip component args
  * @returns TooltipComponent
  */
-const Template: Story<TooltipComponent> = (args: TooltipComponent) => ({
+const Template: Story<TooltipDummyComponent> = (
+  args: TooltipDummyComponent
+) => ({
   props: args,
 });
 
@@ -36,69 +50,42 @@ const Template: Story<TooltipComponent> = (args: TooltipComponent) => ({
 export const TopExample = Template.bind({});
 TopExample.args = {
   position: 'top',
-  hint: 'test',
+  tooltip: 'test',
 };
-/**
- * Top left element
- */
-export const TopLeftExample = Template.bind({});
-TopLeftExample.args = {
-  position: 'top-left',
-  hint: 'test',
-};
-/**
- * Top right element
- */
-export const TopRightExample = Template.bind({});
-TopRightExample.args = {
-  position: 'top-right',
-  hint: 'test',
-};
+
 /**
  * Bottom centered element
  */
 export const BottomExample = Template.bind({});
 BottomExample.args = {
   position: 'bottom',
-  hint: 'test',
+  tooltip: 'test',
 };
-/**
- * Bottom left element
- */
-export const BottomLeftExample = Template.bind({});
-BottomLeftExample.args = {
-  position: 'bottom-left',
-  hint: 'test',
-};
-/**
- * Bottom right element
- */
-export const BottomRightExample = Template.bind({});
-BottomRightExample.args = {
-  position: 'bottom-right',
-  hint: 'test',
-};
+
 /**
  * Middle left element
  */
 export const LeftExample = Template.bind({});
 LeftExample.args = {
   position: 'left',
-  hint: 'test',
+  tooltip: 'test',
 };
+
 /**
  * Middle right element
  */
 export const RightExample = Template.bind({});
 RightExample.args = {
   position: 'right',
-  hint: 'test',
+  tooltip: 'test',
 };
+
 /**
  * Long text element
  */
 export const LongTextExample = Template.bind({});
 LongTextExample.args = {
   position: 'top',
-  hint: 'The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ...',
+  tooltip:
+    'The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ...',
 };
