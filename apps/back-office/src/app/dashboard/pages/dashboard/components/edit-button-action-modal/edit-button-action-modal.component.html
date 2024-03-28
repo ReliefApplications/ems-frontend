@@ -3,8 +3,8 @@
     <h3 class="font-semibold">
       {{
         (isNew
-          ? 'models.dashboard.buttonActions.add'
-          : 'models.dashboard.buttonActions.edit'
+          ? 'models.dashboard.buttonActions.create'
+          : 'models.dashboard.buttonActions.edit.one'
         ) | translate
       }}
     </h3>
@@ -25,6 +25,27 @@
           formControlName="href"
           [editorConfig]="hrefEditor"
         ></shared-editor-control>
+      </div>
+
+      <!-- New tab toggle -->
+      <ui-toggle formControlName="hasRoleRestriction" class="mb-4">
+        <ng-container ngProjectAs="label">
+          {{
+            'models.dashboard.buttonActions.hasRoleRestriction' | translate
+          }}</ng-container
+        >
+      </ui-toggle>
+
+      <!-- Roles -->
+      <div uiFormFieldDirective *ngIf="form.value.hasRoleRestriction">
+        <label>{{
+          'models.dashboard.buttonActions.visibleTo' | translate
+        }}</label>
+        <ui-select-menu formControlName="roles" [multiselect]="true">
+          <ui-select-option *ngFor="let role of roles" [value]="role.id">
+            {{ role.title }}
+          </ui-select-option>
+        </ui-select-menu>
       </div>
 
       <div class="flex gap-2 mb-2">
@@ -86,6 +107,9 @@
   </ng-container>
 
   <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.cancel' | translate
+    }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"
