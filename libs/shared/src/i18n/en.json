@@ -2181,6 +2181,7 @@
 					"few": "Edit action buttons",
 					"one": "Edit action button"
 				},
+				"hasRoleRestriction": "Use Role Restriction",
 				"href": "Button href",
 				"none": "No action buttons",
 				"one": "Action button",

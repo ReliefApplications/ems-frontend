@@ -68,7 +68,11 @@
               *cdkCellDef="let element"
               class="!text-gray-900 !font-medium max-w-[30vw]"
             >
-              {{ getCorrespondingRoles(element.visibleToRoles) }}
+              {{
+                element.hasRoleRestriction
+                  ? getCorrespondingRoles(element.roles)
+                  : ''
+              }}
             </td>
           </ng-container>
 

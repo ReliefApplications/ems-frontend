@@ -44,13 +44,16 @@ const createButtonActionForm = (data: ButtonActionT, roles: Role[]) => {
   return new FormGroup({
     text: new FormControl(get(data, 'text', ''), Validators.required),
     href: new FormControl(get(data, 'href', ''), Validators.required),
-    visibleToRoles: new FormControl(
+    hasRoleRestriction: new FormControl(
+      get(data, 'hasRoleRestriction', false),
+      Validators.required
+    ),
+    roles: new FormControl(
       get(
         data,
-        'visibleToRoles',
+        'roles',
         roles.map((role) => role.id || '')
-      ),
-      Validators.required
+      )
     ),
     variant: new FormControl(get(data, 'variant', 'primary')),
     category: new FormControl(get(data, 'category', 'secondary')),

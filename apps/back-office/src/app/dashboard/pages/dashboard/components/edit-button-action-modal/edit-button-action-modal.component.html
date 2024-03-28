@@ -27,12 +27,21 @@
         ></shared-editor-control>
       </div>
 
-      <!-- href -->
-      <div uiFormFieldDirective>
+      <!-- New tab toggle -->
+      <ui-toggle formControlName="hasRoleRestriction" class="mb-4">
+        <ng-container ngProjectAs="label">
+          {{
+            'models.dashboard.buttonActions.hasRoleRestriction' | translate
+          }}</ng-container
+        >
+      </ui-toggle>
+
+      <!-- Roles -->
+      <div uiFormFieldDirective *ngIf="form.value.hasRoleRestriction">
         <label>{{
           'models.dashboard.buttonActions.visibleTo' | translate
         }}</label>
-        <ui-select-menu formControlName="visibleToRoles" [multiselect]="true">
+        <ui-select-menu formControlName="roles" [multiselect]="true">
           <ui-select-option *ngFor="let role of roles" [value]="role.id">
             {{ role.title }}
           </ui-select-option>

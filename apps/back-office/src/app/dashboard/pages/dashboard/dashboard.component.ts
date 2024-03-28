@@ -574,6 +574,7 @@ export class DashboardComponent
       EditButtonActionsModalComponent,
       {
         data: { buttonActions: this.buttonActions },
+        disableClose: true,
       }
     );
 

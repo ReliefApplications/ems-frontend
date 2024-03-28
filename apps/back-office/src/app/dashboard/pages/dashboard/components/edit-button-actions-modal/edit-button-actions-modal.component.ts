@@ -95,7 +95,10 @@ export class EditButtonActionsModalComponent
       '../edit-button-action-modal/edit-button-action-modal.component'
     );
     const dialogRef = this.dialog.open<ButtonActionT | undefined>(
-      EditButtonActionModalComponent
+      EditButtonActionModalComponent,
+      {
+        disableClose: true,
+      }
     );
 
     dialogRef.closed
@@ -118,7 +121,7 @@ export class EditButtonActionsModalComponent
     );
     const dialogRef = this.dialog.open<ButtonActionT | undefined>(
       EditButtonActionModalComponent,
-      { data: buttonAction }
+      { data: buttonAction, disableClose: true }
     );
 
     dialogRef.closed

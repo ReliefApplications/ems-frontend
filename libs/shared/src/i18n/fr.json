@@ -2195,6 +2195,7 @@
 					"few": "Modifier les boutons d'action",
 					"one": "Modifier le bouton d'action"
 				},
+				"hasRoleRestriction": "Limiter l'accès",
 				"href": "Bouton href",
 				"none": "Pas de bouton d'action",
 				"one": "Bouton d'action",
