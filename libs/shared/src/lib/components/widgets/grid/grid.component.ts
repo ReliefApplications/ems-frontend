@@ -597,15 +597,18 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
             const { ChooseRecordModalComponent } = await import(
               '../../choose-record-modal/choose-record-modal.component'
             );
-            const dialogRef = this.dialog.open(ChooseRecordModalComponent, {
-              data: {
-                targetForm: form,
-                targetFormField,
-                targetFormQuery,
-              },
-            });
+            const selectionDialogRef = this.dialog.open(
+              ChooseRecordModalComponent,
+              {
+                data: {
+                  targetForm: form,
+                  targetFormField,
+                  targetFormQuery,
+                },
+              }
+            );
             const value = await Promise.resolve(
-              firstValueFrom(dialogRef.closed) as any
+              firstValueFrom(selectionDialogRef.closed) as any
             );
             if (value && value.record) {
               this.apollo
@@ -615,39 +618,39 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                     id: value.record,
                   },
                 })
-                .subscribe(async (getRecord) => {
+                .subscribe(async ({ data }) => {
                   const resourceField = form.fields?.find(
                     (field) =>
                       field.resource &&
                       field.resource === this.settings.resource
                   );
-                  let data = getRecord.data.record.data;
+                  let recordData = data.record.data;
                   const key = resourceField.name;
                   if (resourceField.type === 'resource') {
-                    data = { ...data, [key]: selectedRecords[0] };
+                    recordData = { ...recordData, [key]: selectedRecords[0] };
                   } else {
-                    if (data[key]) {
-                      data = {
-                        ...data,
-                        [key]: data[key].concat(selectedRecords),
+                    if (recordData[key]) {
+                      recordData = {
+                        ...recordData,
+                        [key]: recordData[key].concat(selectedRecords),
                       };
                     } else {
-                      data = { ...data, [key]: selectedRecords };
+                      recordData = { ...recordData, [key]: selectedRecords };
                     }
                   }
                   const { FormModalComponent } = await import(
                     '../../form-modal/form-modal.component'
                   );
-                  const dialogRef2 = this.dialog.open(FormModalComponent, {
+                  const formDialogRef = this.dialog.open(FormModalComponent, {
                     disableClose: true,
                     data: {
                       recordId: value.record,
                       template: targetForm,
-                      recordData: { [key]: data[key] },
+                      recordData: { [key]: recordData[key] },
                     },
                     autoFocus: false,
                   });
-                  dialogRef2.closed
+                  formDialogRef.closed
                     .pipe(takeUntil(this.destroy$))
                     .subscribe((res) => resolve(res ? true : false));
                 });
