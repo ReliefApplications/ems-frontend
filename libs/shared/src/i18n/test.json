@@ -2282,15 +2282,21 @@
 		"dashboard": {
 			"activateFiltering": "******",
 			"buttonActions": {
-				"add": "******",
 				"category": "******",
 				"confirmDelete": "******",
-				"edit": "******",
+				"create": "******",
+				"edit": {
+					"few": "******",
+					"one": "******"
+				},
+				"hasRoleRestriction": "******",
 				"href": "******",
+				"none": "******",
 				"one": "******",
 				"openInNewTab": "******",
 				"text": "******",
-				"variant": "******"
+				"variant": "******",
+				"visibleTo": "******"
 			},
 			"closable": "******",
 			"context": {
