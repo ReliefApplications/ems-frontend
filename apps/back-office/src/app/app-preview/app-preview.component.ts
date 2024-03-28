@@ -158,6 +158,14 @@ export class AppPreviewComponent
           const adminNavItems: any[] = [];
           if (ability.can('manage', 'Template')) {
             adminNavItems.push({
+              name: this.translate.instant('common.email.notification.few'),
+              path: './settings/email-notifications',
+              icon: 'mail',
+              visible: true,
+            });
+          }
+          if (ability.can('manage', 'Template')) {
+            adminNavItems.push({
               name: this.translate.instant('common.template.few'),
               path: './settings/templates',
               icon: 'description',

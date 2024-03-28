@@ -4,6 +4,7 @@ import { ApplicationDistributionListsViewModule } from './application-distributi
 import { ApplicationTemplatesViewModule } from './application-templates/application-templates.module';
 import { ApplicationUsersViewModule } from './application-users/application-users.module';
 import { ApplicationNotificationsViewModule } from './application-notifications/application-notifications.module';
+import { EmailModule } from '../components/email/email.module';
 
 /**
  * Export module of shared views.
@@ -17,6 +18,7 @@ import { ApplicationNotificationsViewModule } from './application-notifications/
     ApplicationTemplatesViewModule,
     ApplicationUsersViewModule,
     ApplicationNotificationsViewModule,
+    EmailModule,
   ],
 })
 export class ViewsModule {}

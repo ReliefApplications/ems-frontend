@@ -6,6 +6,7 @@ import { DialogCloseDirective } from './dialog-close.directive';
 import { DialogRef } from '@angular/cdk/dialog';
 import { ButtonModule } from '../button/button.module';
 import { By } from '@angular/platform-browser';
+import { TranslateTestingModule } from 'ngx-translate-testing';
 
 /**
  * Component for testing purposes
@@ -37,7 +38,14 @@ describe('DialogCloseDirective', () => {
   let fixture!: ComponentFixture<TestingComponent>;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TestingComponent],
+      imports: [
+        TestingComponent,
+        TranslateTestingModule.withTranslations('en', {
+          common: {
+            close: 'Close',
+          },
+        }),
+      ],
       providers: [
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         { provide: DialogRef, useValue: { removePanelClass: () => {} } },

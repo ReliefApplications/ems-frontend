@@ -16,16 +16,16 @@ import { FormWrapperModule } from '../form-wrapper/form-wrapper.module';
  */
 @Component({
   template: ` <form [formGroup]="form">
-    <div uiFormFieldDirective>
-      <label>{{ 'components.record.convert.select' | translate }}</label>
-      <ui-graphql-select
-        valueField="id"
-        textField="name"
-        [query]="null"
-        formControlName="formControl"
-        [filterable]="true"
-      ></ui-graphql-select>
-    </div>
+    <!-- <div uiFormFieldDirective>
+      <label>{{ 'components.record.convert.select' | translate }}</label> -->
+    <ui-graphql-select
+      valueField="id"
+      textField="name"
+      [query]="null"
+      formControlName="formControl"
+      [filterable]="true"
+    ></ui-graphql-select>
+    <!-- </div> -->
   </form>`,
 })
 class TestingComponent {

@@ -104,21 +104,21 @@ export class ApplicationComponent
                 path: './settings/edit',
                 icon: 'settings',
               },
-              {
-                name: this.translate.instant('common.template.few'),
-                path: './settings/templates',
-                icon: 'description',
-              },
-              {
-                name: this.translate.instant('common.distributionList.few'),
-                path: './settings/distribution-lists',
-                icon: 'mail',
-              },
-              {
-                name: this.translate.instant('common.customNotification.few'),
-                path: './settings/notifications',
-                icon: 'schedule_send',
-              },
+              // {
+              //   name: this.translate.instant('common.template.few'),
+              //   path: './settings/templates',
+              //   icon: 'description',
+              // },
+              // {
+              //   name: this.translate.instant('common.distributionList.few'),
+              //   path: './settings/distribution-lists',
+              //   icon: 'mail',
+              // },
+              // {
+              //   name: this.translate.instant('common.customNotification.few'),
+              //   path: './settings/notifications',
+              //   icon: 'schedule_send',
+              // },
               {
                 name: this.translate.instant('common.user.few'),
                 path: './settings/users',
@@ -135,6 +135,11 @@ export class ApplicationComponent
                 ),
                 path: './settings/position',
                 icon: 'edit_attributes',
+              },
+              {
+                name: this.translate.instant('common.email.notification.few'),
+                path: './settings/email-notifications',
+                icon: 'mail',
               },
               {
                 name: this.translate.instant('common.channel.few'),
