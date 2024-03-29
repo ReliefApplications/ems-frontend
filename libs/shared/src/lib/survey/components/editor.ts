@@ -39,7 +39,14 @@ export const init = (
       );
       const instance: EditorQuestionComponent = editor.instance;
 
-      if (question.value) instance.editor.value = question.value;
+      // Use of a timeout to wait for the loading of the editor instance
+      setTimeout(() => {
+        const value = question.value.length
+          ? question.value
+          : question.defaultValue;
+        // Doesn't work
+        instance.editor.value = value;
+      }, 0);
 
       //Cannot set instance.editor.registerOnChange because editor not set yet
       instance.html.subscribe((html) => (question.value = html));

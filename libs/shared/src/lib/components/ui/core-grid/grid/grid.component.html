@@ -127,7 +127,7 @@
       <kendo-grid-column
         *ngIf="
           field.type !== 'JSON' &&
-          (!field.meta || field.meta.type !== 'referenceData')
+          (!field.meta || (field.meta.type !== 'referenceData' && field.meta.type !== 'editor'))
         "
         [field]="field.name"
         [title]="field.title"
