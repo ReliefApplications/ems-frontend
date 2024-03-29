@@ -119,32 +119,51 @@ export class PeopleDropdownComponent
     }
 
     if (searchValue.length >= 4 && searchValue !== this.previousSearchValue) {
+      const searchWords = searchValue
+        .split(' ')
+        .filter((word) => word.length >= 3);
+
+      const filters = [
+        {
+          field: 'userid',
+          operator: 'in',
+          value: this.control.value,
+        },
+        {
+          field: 'lastname',
+          operator: 'like',
+          value: searchValue,
+        },
+        {
+          field: 'firstname',
+          operator: 'like',
+          value: searchValue,
+        },
+      ];
+
+      if (searchWords.length > 1) {
+        for (let index = 0; index < 2; index++) {
+          ['lastname', 'firstname', 'emailaddress'].forEach((field) => {
+            filters.push({
+              field: field,
+              operator: 'like',
+              value: searchWords[index],
+            });
+          });
+        }
+      } else {
+        filters.push({
+          field: 'emailaddress',
+          operator: 'like',
+          value: searchValue,
+        });
+      }
+
       this.searchTimeout = setTimeout(() => {
         this.query.refetch({
           filter: {
             logic: 'or',
-            filters: [
-              {
-                field: 'lastname',
-                operator: 'like',
-                value: searchValue,
-              },
-              {
-                field: 'firstname',
-                operator: 'like',
-                value: searchValue,
-              },
-              {
-                field: 'emailaddress',
-                operator: 'like',
-                value: searchValue,
-              },
-              {
-                field: 'userid',
-                operator: 'in',
-                value: this.control.value,
-              },
-            ],
+            filters: filters,
           } as CompositeFilterDescriptor,
         });
       }, 500);
