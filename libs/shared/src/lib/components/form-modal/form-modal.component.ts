@@ -51,6 +51,7 @@ interface DialogData {
   prefillRecords?: Record[];
   prefillData?: any;
   askForConfirm?: boolean;
+  recordData?: any;
 }
 /**
  * Defines the default Dialog data
@@ -168,6 +169,9 @@ export class FormModalComponent
           })
         ).then(({ data }) => {
           this.record = data.record;
+          if (this.data.recordData) {
+            this.record.data = { ...this.record.data, ...this.data.recordData };
+          }
           this.modifiedAt = this.isMultiEdition
             ? null
             : this.record?.modifiedAt || null;

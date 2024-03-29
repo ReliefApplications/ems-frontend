@@ -660,6 +660,28 @@
 				"ariaLabel": "Sélectionnez la page d'applications"
 			}
 		},
+		"automation": {
+			"actions": {
+				"add.layer": "Ajouter une couche",
+				"add.tab": "Ajouter un onglet",
+				"display.collapse": "Réduire l'affichage",
+				"display.expand": "Développer l'affichage",
+				"map.click": "En cliquant sur la carte",
+				"map.get.country": "Obtenir le pays sur la carte",
+				"open.tab": "Ouvrir un onglet",
+				"remove.layer": "Supprimer une couche",
+				"remove.tab": "Supprimer un onglet",
+				"set.context": "Définir le contexte"
+			},
+			"addRule": "Ajouter une nouvelle règle d'automatisation",
+			"component": {
+				"add": "Ajoutez un nouveau composant",
+				"select": "Sélectionnez un composant"
+			},
+			"configuration": "Configuration de l'automatisation",
+			"ruleName": "Nom de la règle d'automatisation",
+			"rules": "Règles d'automatisation"
+		},
 		"calculatedFields": {
 			"add": "Créer un nouveau champ dérivé",
 			"delete": {
@@ -2169,15 +2191,21 @@
 		"dashboard": {
 			"activateFiltering": "Activer le filtre",
 			"buttonActions": {
-				"add": "Ajouter une action de bouton",
 				"category": "Catégorie de bouton",
 				"confirmDelete": "Voulez-vous vraiment supprimer cette action de bouton ?",
-				"edit": "Modifier l'action du bouton",
+				"create": "Créer un bouton d'action",
+				"edit": {
+					"few": "Modifier les boutons d'action",
+					"one": "Modifier le bouton d'action"
+				},
+				"hasRoleRestriction": "Limiter l'accès",
 				"href": "Bouton href",
-				"one": "Action du bouton",
+				"none": "Pas de bouton d'action",
+				"one": "Bouton d'action",
 				"openInNewTab": "Ouvrir dans un nouvel onglet",
 				"text": "Texte du bouton",
-				"variant": "Variante de bouton"
+				"variant": "Variante de bouton",
+				"visibleTo": "Visible pour les rôles"
 			},
 			"closable": "Peut être fermé",
 			"context": {

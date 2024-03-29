@@ -1,11 +1,9 @@
-import { DOCUMENT } from '@angular/common';
 import {
   Directive,
   ElementRef,
   Input,
   HostListener,
   OnDestroy,
-  Inject,
   Attribute,
   ComponentRef,
 } from '@angular/core';
@@ -39,14 +37,12 @@ export class TooltipDirective implements OnDestroy {
   /**
    * Tooltip directive.
    *
-   * @param document current DOCUMENT
    * @param {TooltipEnableBy} enableBy special cases that enable/disable tooltip display
    * @param elementRef Tooltip host reference
    * @param overlay Overlay
    * @param overlayPositionBuilder cdk overlay position builder
    */
   constructor(
-    @Inject(DOCUMENT) private document: Document,
     @Attribute('tooltipEnableBy') public enableBy: TooltipEnableBy,
     public elementRef: ElementRef,
     private overlay: Overlay,
@@ -161,6 +157,14 @@ export class TooltipDirective implements OnDestroy {
    */
   @HostListener('mouseleave')
   onMouseLeave() {
+    this.removeHint();
+  }
+
+  /**
+   * Function that listen for the user's mouse down to quit the element where the directive is placed(drag and drop cases)
+   */
+  @HostListener('mousedown')
+  onMouseDown() {
     this.removeHint();
   }
 
