@@ -42,6 +42,7 @@ const CUSTOM_COMPONENTS = [
   'owner',
   'users',
   'geospatial',
+  'editor',
 ];
 
 /**
