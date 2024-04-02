@@ -64,7 +64,7 @@
     <shared-widget-grid
       class="flex-1"
       [loading]="loading"
-      [widgets]="widgets"
+      [widgets]="dashboardService.widgets"
       [options]="dashboard?.gridOptions"
       (changeStep)="changeStep.emit($event)"
     ></shared-widget-grid>

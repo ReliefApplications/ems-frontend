@@ -4,7 +4,7 @@ import { ButtonModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { ContextService } from '../../services/context/context.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { Observable, debounceTime, takeUntil } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
 import { isEmpty } from 'lodash';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 
@@ -47,7 +47,7 @@ export class DashboardFilterIconComponent
 
   ngOnInit(): void {
     this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(({ current }) => {
         this.active = !isEmpty(current);
       });

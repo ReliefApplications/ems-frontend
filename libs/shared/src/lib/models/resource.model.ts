@@ -31,6 +31,10 @@ export interface Resource {
   };
   metadata?: Metadata[];
   canCreateRecords?: boolean;
+  idShape?: {
+    shape: string;
+    padding: number;
+  };
 }
 
 /** Model for resource query response object */

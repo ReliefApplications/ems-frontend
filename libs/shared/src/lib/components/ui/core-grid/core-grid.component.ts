@@ -49,13 +49,14 @@ import { GridComponent } from './grid/grid.component';
 import { DateTranslateService } from '../../../services/date-translate/date-translate.service';
 import { ApplicationService } from '../../../services/application/application.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { firstValueFrom, from, merge, Subject } from 'rxjs';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 /**
  * Default file name when exporting grid data.
@@ -316,8 +317,10 @@ export class CoreGridComponent
       field: '',
       pageUrl: '',
       title: '',
+      copyLink: false,
     },
     remove: false,
+    actionsAsIcons: false,
   };
 
   /** Whether the grid is editable */
@@ -350,6 +353,7 @@ export class CoreGridComponent
    * @param contextService Shared context service
    * @param router Angular Router
    * @param el Element reference
+   * @param clipboard Angular clipboard service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -366,19 +370,20 @@ export class CoreGridComponent
     private applicationService: ApplicationService,
     private contextService: ContextService,
     private router: Router,
-    private el: ElementRef
+    private el: ElementRef,
+    private clipboard: Clipboard
   ) {
     super();
     this.environment = environment;
     contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(({ previous, current }) => {
-        if (contextService.filterRegex.test(this.settings.contextFilters)) {
-          if (
-            this.contextService.shouldRefresh(this.widget, previous, current)
-          ) {
-            if (this.dataQuery) this.reloadData();
-          }
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ previous, current, resourceId }) => {
+        if (
+          resourceId === this.settings.resource ||
+          (contextService.filterRegex.test(this.settings.contextFilters) &&
+            this.contextService.shouldRefresh(this.settings, previous, current))
+        ) {
+          if (this.dataQuery) this.reloadData();
         }
       });
 
@@ -426,8 +431,14 @@ export class CoreGridComponent
         field: get(this.settings, 'actions.navigateSettings.field', false),
         pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
         title: get(this.settings, 'actions.navigateSettings.title', ''),
+        copyLink: get(
+          this.settings,
+          'actions.navigateSettings.copyLink',
+          false
+        ),
       },
       remove: get(this.settings, 'actions.remove', false),
+      actionsAsIcons: get(this.settings, 'actions.actionsAsIcons', false),
     };
     this.editable = this.settings.actions?.inlineEdition;
     if (!isNil(this.settings.actions?.search)) {
@@ -941,6 +952,20 @@ export class CoreGridComponent
     field?: any;
     pageUrl?: string;
   }): void {
+    const getTargetUrl = () => {
+      if (!event.item) {
+        return null;
+      }
+
+      let fullUrl = this.getPageUrl(event.pageUrl as string);
+      if (event.field) {
+        const field = get(event, 'field', '');
+        const value = get(event, `item.${field}`);
+        fullUrl = `${fullUrl}?${field}=${value}`;
+      }
+
+      return fullUrl;
+    };
     switch (event.action) {
       case 'add': {
         this.onAdd();
@@ -975,14 +1000,25 @@ export class CoreGridComponent
         break;
       }
       case 'goTo': {
+        const url = getTargetUrl();
+        if (url) {
+          this.router.navigateByUrl(url);
+        }
+        break;
+      }
+      case 'copyLink': {
         if (event.item) {
-          let fullUrl = this.getPageUrl(event.pageUrl as string);
-          if (event.field) {
-            const field = get(event, 'field', '');
-            const value = get(event, `item.${field}`);
-            fullUrl = `${fullUrl}?id=${value}`;
+          const url = getTargetUrl();
+          if (url) {
+            this.clipboard.copy(
+              `${this.environment.authConfig.redirectUri}${url}`
+            );
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'components.widget.settings.grid.actions.copyLinkDone'
+              )
+            );
           }
-          this.router.navigateByUrl(fullUrl);
         }
         break;
       }

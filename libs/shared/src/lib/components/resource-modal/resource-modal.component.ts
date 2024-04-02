@@ -60,7 +60,7 @@ export class ResourceModalComponent extends FormModalComponent {
   public override async onUpdate(survey: any): Promise<void> {
     // If question propriety alwaysCreateRecord set to true, don't use override method and create new record
     if (this.data.alwaysCreateRecord) {
-      super.onUpdate(survey);
+      super.onUpdate(survey, true);
     } else if (this.data.recordId) {
       this.formHelpersService
         .checkUniquePropriety(this.survey)
@@ -72,9 +72,9 @@ export class ResourceModalComponent extends FormModalComponent {
               this.form?.id
             );
             if (this.isMultiEdition) {
-              this.updateMultipleData(this.data.recordId, survey);
+              this.updateMultipleData(this.data.recordId, survey, true);
             } else {
-              this.updateData(this.data.recordId, survey);
+              this.updateData(this.data.recordId, survey, true);
             }
           } else {
             this.snackBar.openSnackBar(

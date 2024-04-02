@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { rowActions } from '../grid/grid.component';
 import { get, intersection } from 'lodash';
+import { GridActions } from '../models/grid-settings.model';
 
 /** Translation keys for each of the row action types */
 const ACTIONS_TRANSLATIONS: Record<(typeof rowActions)[number], string> = {
@@ -22,16 +23,24 @@ export class GridRowActionsComponent {
   @Input() item: any;
 
   /** Actions */
-  @Input() actions = {
+  @Input() actions: Partial<GridActions> = {
     update: false,
     delete: false,
     history: false,
     convert: false,
     remove: false,
+    navigateSettings: {
+      field: '',
+      pageUrl: '',
+      title: '',
+      copyLink: false,
+    },
   };
 
   /** Tells if only one action is enabled, if it should be displayed as a single button */
   @Input() singleActionAsButton = false;
+  /** Tells if should be used instead of the menu the actions as icons side by side */
+  @Input() actionsAsIcons = false;
 
   /** Event emitter for the action event */
   @Output() action = new EventEmitter();

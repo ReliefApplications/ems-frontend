@@ -22,6 +22,7 @@ import {
   ContextService,
   DashboardQueryResponse,
   Record,
+  DashboardService,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
@@ -57,8 +58,6 @@ export class DashboardComponent
   public applicationId?: string;
   /** Is dashboard loading */
   public loading = true;
-  /** List of widgets */
-  public widgets: any[] = [];
   /** Current dashboard */
   public dashboard?: Dashboard;
   /** Show dashboard filter */
@@ -84,6 +83,7 @@ export class DashboardComponent
    * @param elementRef Angular element ref
    * @param document Document
    * @param contextService Dashboard context service
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     private apollo: Apollo,
@@ -96,7 +96,8 @@ export class DashboardComponent
     private renderer: Renderer2,
     private elementRef: ElementRef,
     @Inject(DOCUMENT) private document: Document,
-    private contextService: ContextService
+    private contextService: ContextService,
+    public dashboardService: DashboardService
   ) {
     super();
   }
@@ -149,7 +150,7 @@ export class DashboardComponent
 
   /** Sets up the widgets from the dashboard structure */
   private setWidgets() {
-    this.widgets = cloneDeep(
+    this.dashboardService.widgets = cloneDeep(
       this.dashboard?.structure
         ?.filter((x: any) => x !== null)
         .map((widget: any) => {

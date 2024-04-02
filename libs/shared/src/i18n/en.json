@@ -309,7 +309,7 @@
 			"of": "of"
 		},
 		"placeholder": {
-			"address": "Enter an address or place e.g. 1 York St",
+			"address": "Enter an address or location",
 			"email": "Enter email",
 			"name": "Enter a name",
 			"search": "Search...",
@@ -1186,6 +1186,15 @@
 				"layouts": "No layout detected",
 				"records": "No record detected"
 			},
+			"incrementalIdShape": {
+				"example": "Example of incremental id using the shape input",
+				"invalidExpression": "Invalid id shape expression",
+				"padding": "Padding",
+				"shape": "Shape",
+				"title": "Incremental Id Shape",
+				"updateError": "Error updating resource incremental id shape: {{error}}",
+				"updateSuccess": "Incremental id shape of resource '{{resource}}' updated successfully!"
+			},
 			"paginator": {
 				"ariaLabel": "Select page of resources"
 			}
@@ -1535,8 +1544,11 @@
 				},
 				"grid": {
 					"actions": {
+						"actionsAsIcons": "Display actions as icons",
 						"add": "Add new records",
 						"convert": "Convert records",
+						"copyLink": "Copy link",
+						"copyLinkDone": "Link copied to clipboard",
 						"delete": "Delete records",
 						"export": "Export records",
 						"goTo": {
@@ -1631,8 +1643,10 @@
 					},
 					"hint": {
 						"actions": {
+							"actionsAsIcons": "If enabled, instead of displaying the three dots menu, all the actions will be displayed as icons side by side",
 							"add": "If authorized, user can add new records using selected template",
 							"convert": "If authorized, user can convert record using another template of selected resource",
+							"copyLink": "If enabled, the users can copy the same url of the \"Navigate to\" page on the row actions",
 							"delete": "If authorized, user can delete visible records",
 							"export": "User can export selected columns of visible records",
 							"goTo": "User can go to specified page on click",
@@ -2528,6 +2542,9 @@
 			"notifications": {
 				"notUpdated": "Error on saving preferences.",
 				"updated": "Preferences saved."
+			},
+			"password": {
+				"change": "Change password"
 			},
 			"title": "Your profile"
 		},

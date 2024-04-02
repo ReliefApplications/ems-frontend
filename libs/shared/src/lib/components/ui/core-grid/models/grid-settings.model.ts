@@ -37,7 +37,9 @@ export interface GridActions {
     field: string;
     pageUrl: string;
     title: string;
+    copyLink: boolean;
   };
   search?: boolean;
   inlineEdition?: boolean;
+  actionsAsIcons?: boolean;
 }

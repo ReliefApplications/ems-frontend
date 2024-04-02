@@ -23,6 +23,10 @@ export const GET_RESOURCES_EXTENDED = gql`
           createdAt
           recordsCount
           canDelete
+          idShape {
+            shape
+            padding
+          }
         }
         cursor
       }

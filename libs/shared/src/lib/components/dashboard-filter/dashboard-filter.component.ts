@@ -14,7 +14,7 @@ import {
 import { FilterPosition } from './enums/dashboard-filters.enum';
 import { Model, SurveyModel } from 'survey-core';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { takeUntil, debounceTime } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent, Variant } from '@oort-front/ui';
 import { DatePipe } from '../../pipes/date/date.pipe';
@@ -74,6 +74,8 @@ export class DashboardFilterComponent
   public empty = true;
   /** Resize observer for the sidenav container */
   private resizeObserver!: ResizeObserver;
+  /** Timeout to add debounce time to survey value changes */
+  private debounceTimeout: NodeJS.Timeout | null = null;
 
   /**
    * Dashboard contextual filter component.
@@ -107,7 +109,7 @@ export class DashboardFilterComponent
     }
     // Can listen to changes made from widget ( editor & summary cards sending updated filters )
     this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(({ current }) => {
         this.survey.data = current;
       });
@@ -152,6 +154,9 @@ export class DashboardFilterComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.resizeObserver.disconnect();
+    if (this.debounceTimeout) {
+      clearTimeout(this.debounceTimeout);
+    }
   }
 
   // add ngOnChanges there
@@ -199,7 +204,15 @@ export class DashboardFilterComponent
     this.survey.showCompletedPage = false; // Hide completed page from the survey
     this.survey.showNavigationButtons = false; // Hide navigation buttons from the survey
 
-    this.survey.onValueChanged.add(this.onValueChange.bind(this));
+    this.survey.onValueChanged.add(() => {
+      if (this.debounceTimeout) {
+        clearTimeout(this.debounceTimeout);
+      }
+      this.debounceTimeout = setTimeout(() => {
+        this.onValueChange();
+      }, 500);
+    });
+
     this.survey.onAfterRenderSurvey.add(this.onAfterRenderSurvey.bind(this));
     // we should render the custom questions somewhere, let's do it here
     this.survey.onAfterRenderQuestion.add((_, options: any) => {
