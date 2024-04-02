@@ -1197,6 +1197,11 @@
 				"layouts": "Aucune mise en page détectée",
 				"records": "Aucun enregistrement détecté"
 			},
+			"importField": {
+				"title": "Champ d'importation",
+				"updateError": "Erreur lors de la mise à jour du champ d'importation de ressources: {{error}}",
+				"updateSuccess": "Le champ d'importation de la ressource '{{resource}}' a été mis à jour avec succès!"
+			},
 			"incrementalIdShape": {
 				"example": "Exemple d'identifiant incrémentiel utilisant l'entrée de forme",
 				"invalidExpression": "Expression de forme d'identifiant non valide",

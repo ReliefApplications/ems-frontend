@@ -87,6 +87,11 @@
               {{ 'components.resource.incrementalIdShape.title' | translate }}
             </button>
 
+            <button uiMenuItem (click)="onUpdateImportField(element)">
+              <ui-icon icon="edit" variant="grey"></ui-icon>
+              {{ 'components.resource.importField.title' | translate }}
+            </button>
+
             <button uiMenuItem (click)="onDuplicate(element)">
               <ui-icon icon="file_copy" variant="grey"></ui-icon>
               {{ 'common.duplicate' | translate }}

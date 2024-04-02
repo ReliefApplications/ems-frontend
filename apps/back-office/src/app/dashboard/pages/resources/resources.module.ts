@@ -22,14 +22,21 @@ import {
   TooltipModule,
   DialogModule,
   ErrorMessageModule,
+  SelectMenuModule,
 } from '@oort-front/ui';
 import { IdShapeModalComponent } from './id-shape-modal/id-shape-modal.component';
+import { ImportFieldModalComponent } from './import-field-modal/import-field-modal.component';
 
 /**
  * Resources page module.
  */
 @NgModule({
-  declarations: [ResourcesComponent, FilterComponent, IdShapeModalComponent],
+  declarations: [
+    ResourcesComponent,
+    FilterComponent,
+    IdShapeModalComponent,
+    ImportFieldModalComponent,
+  ],
   imports: [
     CommonModule,
     ResourcesRoutingModule,
@@ -50,6 +57,7 @@ import { IdShapeModalComponent } from './id-shape-modal/id-shape-modal.component
     ListFilterComponent,
     DialogModule,
     ErrorMessageModule,
+    SelectMenuModule,
   ],
   exports: [ResourcesComponent],
 })
