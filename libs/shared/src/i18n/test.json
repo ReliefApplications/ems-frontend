@@ -786,6 +786,7 @@
 				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
 			},
 			"display": {
+				"cancelMessage": "******",
 				"submissionMessage": "******"
 			},
 			"draftRecords": {
@@ -1130,6 +1131,13 @@
 			"recovery": {
 				"confirmationMessage": "****** {{date}} ******",
 				"title": "******"
+			},
+			"uniqueField": {
+				"cannotUpdate": "******",
+				"exist": "****** {{question}} ****** {{value}} ******",
+				"overwriteConfirm": "******",
+				"title": "******",
+				"updateRecord": "******"
 			}
 		},
 		"records": {

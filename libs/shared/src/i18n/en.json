@@ -786,6 +786,7 @@
 				"confirmationMessage": "Do you confirm the deletion of {{quantity}} {{rowText}}?"
 			},
 			"display": {
+				"cancelMessage": "Operation canceled",
 				"submissionMessage": "The form has successfully been submitted."
 			},
 			"draftRecords": {
@@ -1130,6 +1131,13 @@
 			"recovery": {
 				"confirmationMessage": "Do you confirm recovery the data from {{date}} to the current register?",
 				"title": "Recovery data"
+			},
+			"uniqueField": {
+				"cannotUpdate": "You do not have the permission to update this existing record.",
+				"exist": "Record with question '{{question}}' with value '{{value}}' already exists and this value must be unique.",
+				"overwriteConfirm": "Do you want to overwrite the existing record?",
+				"title": "Unique field value",
+				"updateRecord": "Please update the unique value on this record first."
 			}
 		},
 		"records": {

@@ -34,6 +34,11 @@
     </ng-container>
   </ui-tab>
 </ui-tabs>
+<!-- Loading indicator -->
+<ui-spinner
+  class="flex justify-center items-center h-screen"
+  *ngIf="saving"
+></ui-spinner>
 <!-- Form -->
 <div #formContainer></div>
 <!-- Floating div for form buttons actions -->
