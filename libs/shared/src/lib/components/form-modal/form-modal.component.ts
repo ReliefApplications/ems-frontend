@@ -22,7 +22,12 @@ import {
   Record,
   RecordQueryResponse,
 } from '../../models/record.model';
-import { EDIT_RECORD, ADD_RECORD, EDIT_RECORDS } from './graphql/mutations';
+import {
+  EDIT_RECORD,
+  ADD_RECORD,
+  EDIT_RECORDS,
+  ARCHIVE_RECORD,
+} from './graphql/mutations';
 import addCustomFunctions from '../../survey/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
 import {
@@ -234,17 +239,19 @@ export class FormModalComponent
     this.initSurvey();
 
     // Creates UploadRecordsComponent
-    const componentRef = this.uploadRecordsContent.createComponent(
-      UploadRecordsComponent
-    );
-    componentRef.setInput('id', this.form?.id);
-    componentRef.setInput('name', this.form?.name);
-    componentRef.setInput('path', 'form');
-    componentRef.instance.uploaded.subscribe(
-      () => (this.uploadedRecords = true)
-    );
-    /** To use angular hooks */
-    componentRef.changeDetectorRef.detectChanges();
+    if (this.survey.allowUploadRecords && !this.record) {
+      const componentRef = this.uploadRecordsContent.createComponent(
+        UploadRecordsComponent
+      );
+      componentRef.setInput('id', this.form?.id);
+      componentRef.setInput('name', this.form?.name);
+      componentRef.setInput('path', 'form');
+      componentRef.instance.uploaded.subscribe(
+        () => (this.uploadedRecords = true)
+      );
+      /** To use angular hooks */
+      componentRef.changeDetectorRef.detectChanges();
+    }
   }
 
   /**
@@ -775,6 +782,57 @@ export class FormModalComponent
   public onLoadDraftRecord(id: string): void {
     this.lastDraftRecord = id;
     this.disableSaveAsDraft = true;
+  }
+
+  /** Confirms deletion of record using the confirm service and deletes the record if confirmed */
+  public async deleteRecord(): Promise<void> {
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.record.one'),
+      }),
+      content: this.translate.instant(
+        'components.record.delete.confirmationMessage',
+        {
+          name: '',
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmVariant: 'danger',
+    });
+
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(async (value) => {
+      if (value && this.record?.id) {
+        this.apollo
+          .mutate({
+            mutation: ARCHIVE_RECORD,
+            variables: {
+              id: this.record.id,
+            },
+          })
+          .subscribe((res) => {
+            if (res.errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
+                    value: this.translate.instant('common.record.one'),
+                    error: res.errors[0]?.message ?? '',
+                  }
+                ),
+                { error: true }
+              );
+              return;
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.record.one'),
+                })
+              );
+              this.dialogRef.close();
+            }
+          });
+      }
+    });
   }
 
   /**

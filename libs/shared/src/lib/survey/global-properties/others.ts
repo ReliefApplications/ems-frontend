@@ -131,38 +131,32 @@ export const init = (environment: any): void => {
     default: false,
     visibleIndex: 2,
   });
+
+  const yesNoChoices = [
+    {
+      value: true,
+      text: 'Yes',
+    },
+    {
+      value: false,
+      text: 'No',
+    },
+  ];
   // Adds a property to the survey settings to show or hide the close button on record modal
   serializer.addProperty('survey', {
     name: 'showCloseButtonOnModal',
     category: 'general',
     type: 'dropdown',
-    choices: [
-      {
-        value: true,
-        text: 'Yes',
-      },
-      {
-        value: false,
-        text: 'No',
-      },
-    ],
+    choices: yesNoChoices,
     default: true,
   });
+
   // Adds a property to the survey settings to ask for confirmation on closing the record modal
   serializer.addProperty('survey', {
     name: 'confirmOnModalClose',
     category: 'general',
     type: 'dropdown',
-    choices: [
-      {
-        value: true,
-        text: 'Yes',
-      },
-      {
-        value: false,
-        text: 'No',
-      },
-    ],
+    choices: yesNoChoices,
     default: true,
   });
   // Property to allow customization of the save button label
@@ -172,6 +166,14 @@ export const init = (environment: any): void => {
     category: 'general',
     visibleIndex: 2,
     isRequired: false,
+  });
+  // Adds a property to the survey settings to show or hide the delete button on record modal
+  serializer.addProperty('survey', {
+    name: 'showDeleteButtonOnModal',
+    category: 'general',
+    type: 'dropdown',
+    choices: yesNoChoices,
+    default: false,
   });
 
   // Allow user to select the default language of the survey
@@ -261,6 +263,14 @@ export const init = (environment: any): void => {
     name: 'omitField:boolean',
     category: 'general',
     visibleIndex: 6,
+    default: false,
+  });
+
+  // Add option to omit question on form template
+  serializer.addProperty('question', {
+    name: 'omitOnXlsxTemplate:boolean',
+    category: 'general',
+    visibleIndex: 7,
     default: false,
   });
 

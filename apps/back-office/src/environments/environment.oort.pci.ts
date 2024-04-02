@@ -7,9 +7,9 @@ import { Environment } from './environment.type';
  * Authentication configuration
  */
 const authConfig: AuthConfig = {
-  issuer: 'https://id.oortcloud.tech/auth/realms/oort',
-  redirectUri: 'https://pci.oortcloud.tech/admin/',
-  postLogoutRedirectUri: 'https://pci.oortcloud.tech/admin/auth/',
+  issuer: 'https://id-ltkmp.oortcloud.tech/auth/realms/oort',
+  redirectUri: 'https://ltkmp.oortcloud.tech/admin/',
+  postLogoutRedirectUri: 'https://ltkmp.oortcloud.tech/admin/auth/',
   clientId: 'oort-client',
   scope: 'openid profile email offline_access',
   responseType: 'code',
@@ -23,10 +23,10 @@ export const environment: Environment = {
   ...sharedEnvironment,
 
   production: true,
-  apiUrl: 'https://pci.oortcloud.tech/api',
-  subscriptionApiUrl: 'wss://pci.oortcloud.tech/api',
-  frontOfficeUri: 'https://pci.oortcloud.tech',
-  backOfficeUri: 'https://pci.oortcloud.tech/admin/',
+  apiUrl: 'https://ltkmp.oortcloud.tech/api',
+  subscriptionApiUrl: 'wss://ltkmp.oortcloud.tech/api',
+  frontOfficeUri: 'https://ltkmp.oortcloud.tech',
+  backOfficeUri: 'https://ltkmp.oortcloud.tech/admin/',
   module: 'backoffice',
   availableLanguages: ['en', 'fr'],
   authConfig,

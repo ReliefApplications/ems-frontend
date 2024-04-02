@@ -1178,6 +1178,15 @@
 				"layouts": "******",
 				"records": "******"
 			},
+			"incrementalIdShape": {
+				"example": "******",
+				"invalidExpression": "******",
+				"padding": "******",
+				"shape": "******",
+				"title": "******",
+				"updateError": "****** {{error}}",
+				"updateSuccess": "****** {{resource}} ******"
+			},
 			"paginator": {
 				"ariaLabel": "******"
 			}
@@ -1527,8 +1536,11 @@
 				},
 				"grid": {
 					"actions": {
+						"actionsAsIcons": "******",
 						"add": "******",
 						"convert": "******",
+						"copyLink": "******",
+						"copyLinkDone": "******",
 						"delete": "******",
 						"export": "******",
 						"goTo": {
@@ -1623,8 +1635,10 @@
 					},
 					"hint": {
 						"actions": {
+							"actionsAsIcons": "******",
 							"add": "******",
 							"convert": "******",
+							"copyLink": "******",
 							"delete": "******",
 							"export": "******",
 							"goTo": "******",
@@ -2520,6 +2534,9 @@
 			"notifications": {
 				"notUpdated": "******",
 				"updated": "******"
+			},
+			"password": {
+				"change": "******"
 			},
 			"title": "******"
 		},
