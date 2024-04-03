@@ -273,3 +273,16 @@ export const FIELD_TYPES = [
     operators: ['isnull', 'isnotnull'],
   },
 ];
+
+/**
+ * Editor names
+ */
+export const TYPE_LABEL = {
+  email: 'email',
+  text: 'text',
+  date: 'date',
+  datetime: 'datetime',
+  datetime_local: 'datetime-local',
+  resource: 'resource',
+  resources: 'resources',
+};

@@ -157,13 +157,13 @@ export class EmailService {
   public isLinear = true;
   /** EMAIL LIST LOADING CHECKER */
   public emailListLoading = true;
+  /** SEPARATE EMAIL LIST */
   public separateEmail = [];
-  dataSetResponse: any;
 
   /**
-   * To replace all special characters with space
+   * Generates new dataset group.
    *
-   * @returns form group
+   * @returns new Dataset form group.
    */
   createNewDataSetGroup(): FormGroup {
     return this.formBuilder.group({
@@ -771,7 +771,6 @@ export class EmailService {
   ): Observable<any> {
     if (separateEmail) {
       const urlWithConfigId = `${this.restService.apiUrl}/notification/send-individual-email/${configId}`;
-      console.log('separate');
       return this.http.post<any>(urlWithConfigId, emailData);
     } else {
       const urlWithConfigId = `${this.restService.apiUrl}/notification/send-email/${configId}`;
@@ -828,14 +827,30 @@ export class EmailService {
     let count = 0;
     let allPreviewData: any = [];
     for (const query of emailData.dataSets) {
+      query.fields.forEach((x: any) => {
+        if (x.parentName) {
+          const child = x.name;
+          x.childName = child.split(' - ')[1];
+          x.name = x.parentName;
+          x.childType = x.type;
+          x.type = 'resource';
+        }
+      });
       query.tabIndex = count;
       count++;
       query.pageSize = Number(query.pageSize);
       this.fetchDataSet(query).subscribe((res: { data: { dataSet: any } }) => {
         if (res?.data?.dataSet) {
-          this.dataSetResponse = res?.data?.dataSet.records;
-          this.dataList = this.dataSetResponse?.map((record: any) => {
-            const flattenedObject = this.flattenRecord(record);
+          const dataSetResponse = res?.data?.dataSet.records;
+          this.dataList = dataSetResponse?.map((record: any) => {
+            const flattenedObject = this.flattenRecord(record, query);
+
+            query.fields.forEach((x: any) => {
+              if (x.parentName) {
+                x.name = `${x.parentName} - ${x.childName}`;
+                x.type = x.childType;
+              }
+            });
 
             delete flattenedObject.data;
 
@@ -847,8 +862,6 @@ export class EmailService {
 
             return flatData;
           });
-          console.log('data list');
-          console.log(this.dataList);
           if (this.dataList?.length) {
             const existfields = emailData.dataSets[
               res?.data?.dataSet?.tabIndex
@@ -860,7 +873,6 @@ export class EmailService {
             existfields.concat(notmatching);
             this.dataSetFields = existfields;
           }
-          console.log(`Dataset Fields: ${this.dataSetFields}`);
           allPreviewData.push({
             dataList: this.dataList,
             dataSetFields: this.dataSetFields,
@@ -870,10 +882,6 @@ export class EmailService {
                 ? this.tabs[res.data.dataSet.tabIndex].title
                 : '',
           });
-          console.log('Dataset Fields');
-          console.log(this.dataSetFields);
-          console.log('All Preview Data from Email Service');
-          console.log(allPreviewData);
           if (this.tabs.length == allPreviewData.length) {
             allPreviewData = allPreviewData.sort(
               (a: any, b: any) => a.tabIndex - b.tabIndex
@@ -896,34 +904,65 @@ export class EmailService {
     if (emailData?.dataSets?.length == 0) {
       this.emailListLoading = false;
     }
-    console.log(allPreviewData);
   }
 
   /**
-   * Flattens the record.
+   * Flattens the given record object into a single level object.
    *
    * @param record The record to be flattened.
+   * @param query
    * @returns The flattened record.
    */
-  flattenRecord(record: any): any {
+  flattenRecord(record: any, query?: any): any {
     const result: any = {};
-
     for (const key in record) {
-      // eslint-disable-next-line no-prototype-builtins
-      if (record.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(record, key)) {
         const value = record[key];
 
         if (typeof value === 'object' && value !== null) {
-          const flattenedValue = this.flattenRecord(value);
+          if (value.data) {
+            query.fields.forEach((x: any) => {
+              if (x.childName) {
+                // Check if the childName exists in the records object
+                let matchingKey = Object.keys(record[key].data).find(
+                  (child) => child === x.childName
+                );
 
-          for (const subKey in flattenedValue) {
-            // eslint-disable-next-line no-prototype-builtins
-            if (flattenedValue.hasOwnProperty(subKey)) {
-              result[`${key}-${subKey}`] = flattenedValue[subKey];
-            }
+                if (matchingKey) {
+                  // If a match is found, map the child field to the corresponding value in records
+                  result[`${x.parentName} - ${x.childName}`] =
+                    value.data[matchingKey];
+                } else {
+                  matchingKey = Object.keys(record[key]).find(
+                    (child) => child === x.childName
+                  );
+                  if (matchingKey) {
+                    // If a match is found, searches for meta data and sets if found
+                    result[`${x.parentName} - ${x.childName}`] =
+                      record[key][matchingKey];
+                  }
+                }
+              }
+            });
+          } else {
+            // Takes the resources count and maps it to the resource name.
+            result[key] =
+              record[key].length > 1
+                ? `${record[key].length} items`
+                : `${record[key].length} item`;
           }
         } else {
-          result[key] = value;
+          if (
+            key.split('_')[1] == 'createdBy' ||
+            key.split('_')[1] == 'lastUpdatedBy'
+          ) {
+            // Takes the created by and last updated by values and persists them.
+            result[
+              `_${key.split('_')[1]}.${key.split('_')[2]}.${key.split('_')[3]}`
+            ] = value;
+          } else {
+            result[key] = value;
+          }
         }
       }
     }

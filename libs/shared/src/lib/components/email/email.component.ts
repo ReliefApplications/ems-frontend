@@ -105,7 +105,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       this.applicationId = res?.id;
     });
     this.getExistingTemplate();
-    console.log(this.emailService.datasetsForm);
   }
 
   /**

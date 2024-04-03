@@ -21,14 +21,31 @@ import {
   ResourcesQueryResponse,
 } from '../../../../models/resource.model';
 import { EmailService } from '../../email.service';
-import { FIELD_TYPES, FILTER_OPERATORS } from '../../filter/filter.constant';
+import {
+  FIELD_TYPES,
+  FILTER_OPERATORS,
+  TYPE_LABEL,
+} from '../../filter/filter.constant';
 import { GET_RESOURCE, GET_RESOURCES } from '../../graphql/queries';
 import { Subscription } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 /** Default items per query, for pagination */
 let ITEMS_PER_PAGE = 0;
 /**
- *
+ * Available fields object
+ */
+interface fieldStore {
+  name: string;
+  type: string;
+  fields?: string[] | null;
+  __typename: string;
+  parentName?: string | null;
+  childName?: string | null;
+  childType?: string | null;
+}
+
+/**
+ * Component for filtering, selecting fields and styling block data sets.
  */
 @Component({
   selector: 'shared-dataset-filter',
@@ -36,93 +53,67 @@ let ITEMS_PER_PAGE = 0;
   styleUrls: ['./dataset-filter.component.scss'],
 })
 export class DatasetFilterComponent implements OnInit, OnDestroy {
-  /** Active tab in the component. */
+  /** ACTIVE TAB IN THE COMPONENT. */
   @Input() activeTab: any;
-
-  /** Array of tabs in the component. */
+  /** ARRAY OF TABS IN THE COMPONENT. */
   @Input() tabs: any;
-
-  /** Query FormGroup used for filtering. */
+  /** QUERY FORMGROUP USED FOR FILTERING. */
   @Input() query: FormGroup | any;
-
-  /** Value of the query FormGroup. */
+  /** VALUE OF THE QUERY FORMGROUP. */
   @Input() queryValue: FormGroup | any;
-
-  /** Flag to control the visibility of the preview. */
+  /** FLAG TO CONTROL THE VISIBILITY OF THE PREVIEW. */
   showPreview = false;
-
-  /** Subscription to dataset saving. */
+  /** SUBSCRIPTION TO DATASET SAVING. */
   private datasetSaveSubscription?: Subscription;
-
-  /** GraphQL query reference for fetching resources. */
+  /** GRAPHQL QUERY REFERENCE FOR FETCHING RESOURCES. */
   public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
-
-  /** Method to fetch data sets. */
+  /** METHOD TO FETCH DATA SETS. */
   public fetchDataSet: any = this.emailService.fetchDataSet;
-
-  /** Selected resource. */
+  /** SELECTED RESOURCE. */
   public resource!: Resource;
-
-  /** Metadata of the selected resource. */
+  /** METADATA OF THE SELECTED RESOURCE. */
   public metaData!: any;
-
-  /** Response of the data set. */
+  /** RESPONSE OF THE DATA SET. */
   public dataSetResponse: any;
-
-  /** Fields of the data set. */
+  /** FIELDS OF THE DATA SET. */
   public dataSetFields!: any[];
-
-  /** Selected resource ID. */
+  /** SELECTED RESOURCE ID. */
   public selectedResourceId!: string;
-
-  /** List of data. */
+  /** LIST OF DATA. */
   public dataList!: { [key: string]: any }[];
-
-  /** Selected search field. */
+  /** SELECTED SEARCH FIELD. */
   public searchSelectedField = '';
-
-  /** Available search field. */
+  /** AVAILABLE SEARCH FIELD. */
   public searchAvailableField = '';
-
-  /** Filtered fields for search. */
+  /** FILTERED FIELDS FOR SEARCH. */
   public filteredFields: any[] = [];
-
-  /** Selected fields for filtering. */
-  public selectedFields!: { name: string; type: string }[];
-
-  /** Fields for filtering. */
-  public filterFields!: { name: string; type: string }[];
-
-  /** Available fields for filtering. */
-  public availableFields!: { name: string; type: string }[];
-
-  /** Operators for filtering. */
+  /** SELECTED FIELDS FOR FILTERING. */
+  public selectedFields: fieldStore[] = [];
+  /** FIELDS FOR FILTERING. */
+  public filterFields: any[] = [];
+  /** AVAILABLE FIELDS FOR FILTERING. */
+  public availableFields: fieldStore[] = [];
+  /** OPERATORS FOR FILTERING. */
   public operators: { [key: number]: { value: string; label: string }[] } = {};
-
-  /** Flag to show the dataset limit warning. */
+  /** FLAG TO SHOW THE DATASET LIMIT WARNING. */
   public showDatasetLimitWarning = false;
-
-  /** Total number of matching records. */
+  /** TOTAL NUMBER OF MATCHING RECORDS. */
   public totalMatchingRecords = 0;
-
-  /** Current tab index. */
+  /** CURRENT TAB INDEX. */
   public currentTabIndex = 0;
-
-  /** Flag to switch between date picker and text expression. */
+  /** FLAG TO SWITCH BETWEEN DATE PICKER AND TEXT EXPRESSION. */
   public useExpression = false;
   /** FILTER OPERATORS FROM FILTER CONSTANT */
   filterOperators = FILTER_OPERATORS;
-
-  /** Flag for sending indivuial emails */
+  /** FLAG FOR SENDING INDIVUAL EMAILS */
   public separateEmail = false;
-
-  /** Disabled Fields List */
+  /** DISABLED FIELDS LIST */
   public disabledFields: string[] = [];
-
-  /** Disabled Fields Type List */
+  /** DISABLED FIELDS TYPE LIST */
   public disabledTypes: string[] = [];
-
-  /** Time units for filtering. */
+  /** TYPE LABELS */
+  public TYPE_LABEL = TYPE_LABEL;
+  /** TIME UNITS FOR FILTERING. */
   public timeUnits = [
     { value: 'hours', label: 'Hours' },
     { value: 'days', label: 'Days' },
@@ -130,28 +121,23 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
     { value: 'months', label: 'Months' },
     { value: 'years', label: 'Years' },
   ];
-
-  /** Dataset preview ViewChild. */
+  /** DATASET PREVIEW VIEWCHILD. */
   @ViewChild('datasetPreview') datasetPreview: any;
-
-  /** Event emitter for changing the main tab. */
+  /** EVENT EMITTER FOR CHANGING THE MAIN TAB. */
   @Output() changeMainTab: EventEmitter<any> = new EventEmitter();
   /** NAVIGATE TO DATASET PREVIEW SCREEN EMITTER */
-
-  /** Event emitter for navigating to the preview. */
   @Output() navigateToPreview: EventEmitter<any> = new EventEmitter();
-
-  /** Loading status. */
+  /** LOADING STATUS. */
   public loading = false;
-
-  /** Field options. */
+  /** FIELD OPTIONS. */
   fieldOptions: any;
-
-  /** Current field name. */
+  /** CURRENT FIELD NAME. */
   currentFieldName: any;
   /** VALIDATION ERROR MESSAGE */
   showErrorMessage: any = '';
+  /** INDEX OF CURRENT HIGHLIGHTED FIELD FROM SELECTED FIELD LIST */
   selectedFieldIndex: number | null = null;
+  /** INDEX OF CURRENT HIGHLIGHTED FIELD FROM AVAILABLE FIELD LIST */
   availableFieldIndex: number | null = null;
 
   /**
@@ -216,7 +202,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       this.availableFields = availableFields;
       this.selectedResourceId = selectedResourceId;
     }
-
+    // Saves Dataset form form when called.
     this.datasetSaveSubscription = this.emailService.datasetSave.subscribe(
       (save) => {
         if (save) {
@@ -240,6 +226,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
     };
     this.query.controls.cacheData.setValue(cacheData);
 
+    // Safely destroys dataset save subscription
     if (this.datasetSaveSubscription) {
       this.datasetSaveSubscription.unsubscribe();
     }
@@ -402,16 +389,23 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                       obj.name = 'form.' + obj.name.split('.')[1];
                       this.filterFields.push(obj);
                     });
-                  } else if (field.type === 'resource') {
+                  } else if (field.type === TYPE_LABEL.resource) {
                     field.fields.forEach((obj: any) => {
-                      obj.name = `${field.name}.${obj.name}`;
-                      obj.type = 'resource';
+                      obj.name = field.name + ' - ' + obj.name;
+                      obj.parentName = field.name;
+                      obj.childName = field.name + ' - ' + obj.name;
                       this.availableFields.filter((x) => x.name == obj.name)
                         .length === 0
                         ? this.availableFields.push(clone(obj))
                         : '';
-                      this.filterFields.push(obj);
                     });
+                    this.filterFields.push(field);
+                  } else if (field.type === TYPE_LABEL.resources) {
+                    this.availableFields.filter((x) => x.name == field.name)
+                      .length === 0
+                      ? this.availableFields.push(clone(field))
+                      : '';
+                    this.filterFields.push(field);
                   } else {
                     this.availableFields =
                       this.availableFields == undefined
@@ -484,11 +478,24 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   getFieldType(fieldIndex: number): string | undefined {
     const fieldControl = this.datasetFilterInfo.at(fieldIndex);
     const fieldName = fieldControl ? fieldControl.value : null;
-    const field = fieldName
+    let field = fieldName
       ? this.resource?.metadata?.find(
-          (data: any) => data.name === fieldName.field
+          (data: any) => data.name === fieldName.field.split('.')[0]
         )
       : null;
+    if (field && field?.type === TYPE_LABEL.resources) {
+      field = fieldName
+        ? field.fields?.find(
+            (data: any) => data.name === fieldName.field.split('.')[1]
+          )
+        : null;
+    }
+    if (field && field.type === TYPE_LABEL.resource) {
+      field = field?.fields?.find(
+        (x: { name: any }) =>
+          x.name.split(' - ')[1] === fieldName.field.split('.')[1]
+      );
+    }
     return field ? field.type : '';
   }
 
@@ -506,9 +513,9 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       .get('operator');
     const fieldOperator = operatorControl ? operatorControl.value : null;
     return (
-      (fieldType === 'date' ||
-        fieldType === 'datetime' ||
-        fieldType === 'datetime-local') &&
+      (fieldType === TYPE_LABEL.date ||
+        fieldType === TYPE_LABEL.datetime ||
+        fieldType === TYPE_LABEL.datetime_local) &&
       operators.includes(fieldOperator)
     );
   }
@@ -633,10 +640,11 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * On the operator change
+   * Maps operator to the correct operator value,
+   * and enables or disables value input box.
    *
-   * @param selectedOperator string
-   * @param filterData any
+   * @param selectedOperator Filter Operator that has been selected
+   * @param filterData Filter form data.
    */
   onOperatorChange(selectedOperator: string, filterData: any) {
     const operator = this.filterOperators.find(
@@ -658,9 +666,18 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   public setField(event: any, fieldIndex: number) {
     const name = event?.target?.value || event;
     const fields = clone(this.metaData);
-    const field = fields.find(
+    let field = fields.find(
       (x: { name: any }) => x.name === name.split('.')[0]
     );
+    if (field && field.type === TYPE_LABEL.resources) {
+      field = name.split('.')[1];
+    }
+
+    if (field && field.type === TYPE_LABEL.resource) {
+      field = field?.fields.find(
+        (x: { name: any }) => x.name.split(' - ')[1] === name.split('.')[1]
+      );
+    }
     let type: { operators: any; editor: string; defaultOperator: string } = {
       operators: undefined,
       editor: '',
@@ -670,7 +687,9 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       const fieldType = FIELD_TYPES.find(
         (x) =>
           x.editor ===
-          (field.type === 'datetime-local' ? 'datetime' : field.type || 'text')
+          (field.type === TYPE_LABEL.datetime_local
+            ? TYPE_LABEL.datetime
+            : field.type || TYPE_LABEL.text)
       );
       if (fieldType) {
         type = {
@@ -765,7 +784,9 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   removeAllSelectedFields(): void {
     this.availableFields = [
       ...this.availableFields,
-      ...this.selectedFields.map((field) => JSON.parse(JSON.stringify(field))),
+      ...this.selectedFields.map((field: fieldStore) =>
+        JSON.parse(JSON.stringify(field))
+      ),
     ];
     this.selectedFields = [];
     this.availableFields.sort((a, b) =>
@@ -880,6 +901,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                     inTheLastNumberControl.value,
                     inTheLastUnitControl.value
                   );
+                  // Sets filter value to the in the last filter converted to minutes.
                   filterFormGroup.get('value')?.setValue(days);
                   this.queryValue[this.activeTab.index].filter.filters[
                     filterIndex
@@ -892,11 +914,14 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       }
 
       if (tabName == 'filter') {
-        // this.datasetPreview.selectTab(1);
         const query = this.queryValue[this.activeTab.index];
         query.pageSize = 1;
         query.tabIndex = this.activeTab.index;
         this.loading = true;
+        /**
+         Fetches the data records for selected fields
+        (by default its all records in the resource).
+         */
         this.fetchDataSet(query).subscribe(
           (res: any) => {
             this.loading = false;
@@ -936,6 +961,20 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       if (tabName == 'preview') {
         let count = 0;
         for (const query of this.queryValue) {
+          query.fields.forEach((x: any) => {
+            /**
+             * Converts the resource field name to parents name
+             * so the resource parent is converted back to an object.
+             */
+            if (x.parentName) {
+              const child = x.name;
+              x.childName = child.split(' - ')[1];
+              x.name = x.parentName;
+              x.childType = x.type;
+              x.type = TYPE_LABEL.resource;
+            }
+          });
+
           if (count == 0) {
             this.loading = true;
           }
@@ -948,7 +987,20 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                 this.dataSetResponse = res?.data?.dataSet;
                 this.dataList = res?.data?.dataSet.records?.map(
                   (record: any) => {
-                    const flattenedObject = this.flattenRecord(record);
+                    const flattenedObject = this.emailService.flattenRecord(
+                      record,
+                      query
+                    );
+                    query.fields.forEach((x: any) => {
+                      /**
+                       * Converts the resource field name back to {resourceName} - {resourceField}
+                       * so the field can be mapped to the correct data.
+                       */
+                      if (x.parentName) {
+                        x.name = `${x.parentName} - ${x.childName}`;
+                        x.type = x.childType;
+                      }
+                    });
 
                     delete flattenedObject.data;
 
@@ -968,12 +1020,6 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                       this.queryValue[tempIndex].fields
                         .map((data: any) => data.name)
                         .flat()
-
-                      // this.dataList
-                      //   .map((data: { [key: string]: any }) =>
-                      //     Object.keys(data)
-                      //   )
-                      //   .flat()
                     ),
                   ];
                 }
@@ -992,7 +1038,6 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                   );
                   this.loading = false;
                   this.navigateToPreview.emit(allPreviewData);
-                  console.log(allPreviewData);
                   this.emailService.setAllPreviewData(allPreviewData);
                 }
               }
@@ -1014,38 +1059,6 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
    */
   public changeEditor(): void {
     this.useExpression = !this.useExpression;
-  }
-
-  /**
-   * Flattens the given record object into a single level object.
-   *
-   * @param record The record to flatten.
-   * @returns The flattened record.
-   */
-  flattenRecord(record: any): any {
-    const result: any = {};
-
-    for (const key in record) {
-      // eslint-disable-next-line no-prototype-builtins
-      if (record.hasOwnProperty(key)) {
-        const value = record[key];
-
-        if (typeof value === 'object' && value !== null) {
-          const flattenedValue = this.flattenRecord(value);
-
-          for (const subKey in flattenedValue) {
-            // eslint-disable-next-line no-prototype-builtins
-            if (flattenedValue.hasOwnProperty(subKey)) {
-              result[`${key}-${subKey}`] = flattenedValue[subKey];
-            }
-          }
-        } else {
-          result[key] = value;
-        }
-      }
-    }
-
-    return result;
   }
 
   /**

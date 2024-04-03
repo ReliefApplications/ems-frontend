@@ -122,20 +122,24 @@
                     >
                       {{ 'components.queryBuilder.filter.field' | translate }}
                     </label>
-                    <ui-select-menu
-                      id="exampleSelect"
-                      name="exampleSelect"
-                      [filterable]="true"
-                      (ngModelChange)="setField($event, fieldIndex)"
-                      formControlName="field"
-                    >
-                      <ng-container
-                        *ngFor="let fieldDetails of filterFields"
-                      >
-                        <ui-select-option [value]="fieldDetails?.name">
-                          {{
-                            this.emailService.replaceUnderscores(fieldDetails.name) | titlecase
-                          }}
+                    <ui-select-menu formControlName="field" [filterable]="true" (ngModelChange)="setField($event, fieldIndex)">
+                      <ng-container *ngFor="let field of filterFields">
+                        <ui-select-option *ngIf="!field.fields" [value]="field.name">
+                          {{ field.text || field.name }}
+                        </ui-select-option>
+
+                        <ui-select-option *ngIf="field.fields" [isGroup]="true">
+                          {{ field.text || field.name }}
+                          <ui-select-option
+                            *ngFor="let subField of field.fields"
+                            [value]="subField.parentName ? subField.name.split(' - ').join('.') : field.name + '.' + subField.name"
+                          >
+                            {{
+                              field.name === '$attribute'
+                                ? subField.text || subField.name
+                                : (field.type === TYPE_LABEL.resource ? (subField.text || subField.name) : field.name + ' - ' + (subField.text || subField.name))
+                            }}
+                          </ui-select-option>
                         </ui-select-option>
                       </ng-container>
                     </ui-select-menu>
@@ -206,7 +210,7 @@
                           />
                         </ng-template>
 
-                        <!-- Date and text Button -->
+                        <!-- Date and time Button -->
                         <div class="col-span-1">
                           <ui-button
                             [isIcon]="true"
