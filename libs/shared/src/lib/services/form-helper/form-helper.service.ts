@@ -800,7 +800,7 @@ export class FormHelpersService {
 
         // If the record is the same as the one we are editing, we can skip the check
         // We can also skip the check if the record is not found
-        if (!data.record || data.record.id === survey.record.id) {
+        if (!data.record || data.record.id === survey.record?.id) {
           continue;
         } else {
           const canUpdate = data.record.form?.metadata?.find(

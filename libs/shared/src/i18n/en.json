@@ -1186,6 +1186,11 @@
 				"layouts": "No layout detected",
 				"records": "No record detected"
 			},
+			"importField": {
+				"title": "Import field",
+				"updateError": "Error updating resource import field: {{error}}",
+				"updateSuccess": "Import field of resource '{{resource}}' updated successfully!"
+			},
 			"incrementalIdShape": {
 				"example": "Example of incremental id using the shape input",
 				"invalidExpression": "Invalid id shape expression",

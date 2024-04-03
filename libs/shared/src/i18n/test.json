@@ -1186,6 +1186,11 @@
 				"layouts": "******",
 				"records": "******"
 			},
+			"importField": {
+				"title": "******",
+				"updateError": "****** {{error}}",
+				"updateSuccess": "****** {{resource}} ******"
+			},
 			"incrementalIdShape": {
 				"example": "******",
 				"invalidExpression": "******",
