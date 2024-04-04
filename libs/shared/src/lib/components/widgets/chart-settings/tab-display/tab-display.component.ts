@@ -5,7 +5,12 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { UntypedFormGroup, FormBuilder, FormArray } from '@angular/forms';
+import {
+  UntypedFormGroup,
+  FormBuilder,
+  FormArray,
+  FormControl,
+} from '@angular/forms';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import {
   debounceTime,
@@ -48,6 +53,8 @@ export class TabDisplayComponent
   ];
   /** Themes colors */
   public themesColors = THEMES_COLORS;
+  /** Themes control */
+  public themesControl = new FormControl('');
 
   /** @returns the form for the chart */
   public get chartForm(): UntypedFormGroup {
@@ -81,6 +88,25 @@ export class TabDisplayComponent
         this.chartSettings = value;
         this.chartSettings.chart.title.font = this.getFont();
       });
+
+    // check palette value to set initial theme color
+    const paletteColorValue = this.formGroup.get('chart.palette.value')?.value;
+    const themeColor: any = this.themesColors.filter((theme: any) => {
+      return isEqual(theme.colors, paletteColorValue);
+    });
+    if (themeColor.length) {
+      const colors = themeColor[0].colors;
+      this.themesControl.setValue(colors.join(','));
+    }
+    // subscribe to palette changes to set null in themesControl if colors not equal to theme colors
+    this.formGroup.get('chart.palette.value')?.valueChanges.subscribe((val) => {
+      const themeColor = this.themesColors.filter((theme: any) => {
+        return isEqual(theme.colors, val);
+      });
+      if (!themeColor.length) {
+        this.themesControl.reset();
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -186,7 +212,8 @@ export class TabDisplayComponent
    */
   themeChanged(value: any) {
     if (value) {
-      this.formGroup.get('chart.palette.value')?.setValue(value);
+      const val = value.split(',');
+      this.formGroup.get('chart.palette.value')?.setValue(val);
     }
   }
 }

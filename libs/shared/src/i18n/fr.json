@@ -1508,8 +1508,7 @@
 					"other": "Autre",
 					"palette": {
 						"enable": "Configurer la palette",
-						"placeholder": "Vous pouvez sélectionner un thème de palette",
-						"theme": "Thème",
+						"placeholder": "Thème personnalisé",
 						"themes": "Thèmes des palettes",
 						"title": "Palette de couleurs"
 					},
