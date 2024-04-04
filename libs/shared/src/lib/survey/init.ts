@@ -67,7 +67,7 @@ export const initCustomSurvey = (
     document
   );
   DropdownWidget.init(domService, CustomWidgetCollection.Instance, document);
-  Matrices.init(domService);
+  Matrices.init(domService, referenceDataService);
 
   if (customQuestions) {
     // Register all custom property grid component types
@@ -76,7 +76,7 @@ export const initCustomSurvey = (
     Object.keys(CustomPropertyGridComponentTypes).forEach((propertyKey) => {
       const propertyType =
         CustomPropertyGridComponentTypes[
-          propertyKey as keyof typeof CustomPropertyGridComponentTypes
+        propertyKey as keyof typeof CustomPropertyGridComponentTypes
         ];
       // Register the component in the Angular factory(the class with the @Component decorator)
       if (!registeredTypes.includes(propertyType)) {

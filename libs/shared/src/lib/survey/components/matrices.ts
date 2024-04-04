@@ -1,23 +1,30 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
-  // JsonMetadata,
+  JsonMetadata,
   QuestionFileModel,
   SurveyModel,
   PageModel,
-  // Serializer,
+  Serializer,
 } from 'survey-core';
-import { Question } from '../types';
+import { Question, QuestionSelectBase } from '../types';
 import { DomService } from '../../services/dom/dom.service';
 import { MultiSelectComponent } from '@progress/kendo-angular-dropdowns';
+import { SurveyQuestionEditorDefinition } from 'survey-creator';
+import { CustomPropertyGridComponentTypes } from './utils/components.enum';
+import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 
 /**
  * Add support for custom properties to the survey
  *
  * @param domService Dom service
+ * @param referenceDataService Reference data service
  */
-export const init = (domService: DomService): void => {
+export const init = (
+  domService: DomService,
+  referenceDataService: ReferenceDataService
+): void => {
   // @TODO: Update this code to work with new version of SurveyJS
-  // const serializer: JsonMetadata = Serializer;
+  const serializer: JsonMetadata = Serializer;
   // // Adds a dropdown to the matrix section with all the questions in the form
   // serializer.addProperty('matrix', {
   //   name: 'copyToOthers',
@@ -61,6 +68,48 @@ export const init = (domService: DomService): void => {
   //   'copyToOthers',
   //   copyToOthers
   // );
+
+  // Custom property to columns edition: reference data
+  serializer.addProperty('matrixdropdowncolumn', {
+    name: 'referenceData',
+    showMode: 'form',
+    category: 'Choices from Reference data',
+    type: CustomPropertyGridComponentTypes.referenceDataDropdown,
+    visibleIndex: 1,
+    onSetValue: (obj: QuestionSelectBase, value: string) => {
+      obj.setPropertyValue('referenceData', value);
+    },
+  });
+
+  serializer.addProperty('matrixdropdowncolumn', {
+    displayName: 'Display field',
+    showMode: 'form',
+    name: 'referenceDataDisplayField',
+    category: 'Choices from Reference data',
+    required: true,
+    dependsOn: 'referenceData',
+    visibleIf: (obj: null | QuestionSelectBase): boolean =>
+      Boolean(obj?.referenceData),
+    visibleIndex: 2,
+    choices: (
+      obj: null | QuestionSelectBase,
+      choicesCallback: (choices: any[]) => void
+    ) => {
+      if (obj?.referenceData) {
+        referenceDataService
+          .loadReferenceData(obj.referenceData)
+          .then((referenceData) =>
+            choicesCallback(
+              referenceData.fields?.map((x) => x?.name ?? x) || []
+            )
+          );
+      }
+    },
+  });
+
+  SurveyQuestionEditorDefinition.definition[
+    'matrixdropdowncolumn'
+  ].properties?.push('referenceData');
 };
 
 /**
