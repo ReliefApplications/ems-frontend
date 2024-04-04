@@ -1,10 +1,12 @@
 <div *ngIf="true">
-<!-- <h1>4th step schedule alert</h1> -->
 <div class="mt-2 text-gray-700 text-xs gap-1 flex items-end" style="font-weight: 500;">
-  <input id="Schedule_alert" type="checkbox" [(ngModel)]="schedule_alert" [disabled]="true">
-  <label for="Schedule_alert">
-    No Schedule Alert
-  </label>
+ 
+  <ui-checkbox 
+      [(ngModel)]="schedule_alert" [disabled]="true"
+      >
+       <ng-container ngProjectAs="label">No Schedule Alert</ng-container>
+      </ui-checkbox>
+ 
 </div>
 <div *ngIf="!schedule_alert">
   <div class="mt-2 h-6 w-96">

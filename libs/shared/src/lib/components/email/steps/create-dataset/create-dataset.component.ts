@@ -20,6 +20,8 @@ export class CreateDatasetComponent implements OnInit {
   /** Tab index for filtering. */
   public tabIndex = 'filter';
 
+  blockIndex!: number;
+
   /** GraphQL query reference for fetching resources. */
   public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
 
@@ -125,8 +127,14 @@ export class CreateDatasetComponent implements OnInit {
    *  This function is used to change to the correct tab.
    *
    * @param tabIndex The index of the tab thats been selected.
+   * @param event Event of tab selection
    */
-  changeTab(tabIndex: any) {
+  changeTab(tabIndex: any, event?: any) {
+    if (event.title === undefined) {
+      event.preventDefault();
+      return;
+    }
+
     if (tabIndex !== undefined) {
       this.tabIndex = tabIndex;
       this.activeTab = this.emailService.tabs[tabIndex];
@@ -184,12 +192,14 @@ export class CreateDatasetComponent implements OnInit {
    * Adds a tab
    */
   public addTab() {
-    this.tabs.forEach((tab) => (tab.active = false));
+    this.tabs.forEach(
+      (tab) => ((tab.active = false), (this.blockIndex = tab.index))
+    );
     this.tabs.push({
-      title: `Block ${this.tabs.length + 1}`,
-      content: `Block ${this.tabs.length + 1} Content`,
+      title: `Block ${this.blockIndex + 2}`,
+      content: `Block ${this.blockIndex + 2} Content`,
       active: true,
-      index: this.tabs.length,
+      index: this.blockIndex + 1,
     });
     this.activeTab =
       this.tabs.filter((tab: any) => tab.active == true).length > 0

@@ -52,6 +52,9 @@
   <div class="use-existing"  *ngIf="!showExistingDistributionList">
     <p (click)="toggleExistingDistributionList()">{{ 'common.notifications.email.existing' | translate}}</p>
   </div>
+  <ui-alert class="mb-4" variant="warning" *ngIf="recipients?.distributionListName?.length === 0 || recipients?.To?.length === 0">
+    To proceed, please enter <strong *ngIf="recipients?.distributionListName?.length === 0 || recipients?.distributionListName?.trim() === '' "> a distribution list name</strong> <strong *ngIf="recipients?.To?.length === 0 && recipients?.distributionListName?.length === 0 || recipients?.distributionListName?.trim() === ''"> and </strong><strong *ngIf="recipients?.To?.length === 0">at least one recipient email address</strong>.
+  </ui-alert>
   <!-- Existing Distribution List -->
   <div *ngIf="showExistingDistributionList">
     <div class="mt-4" *ngIf="!isLoading;else loaderContainer">
@@ -146,7 +149,5 @@
     <p (click)="showExistingDistributionList = !showExistingDistributionList" >Or Create New</p>
   </div>
 </div>
-<ui-alert class="mb-4" variant="warning" *ngIf="recipients?.distributionListName?.length === 0 || recipients?.To?.length === 0">
-  To proceed, please enter <strong *ngIf="recipients?.distributionListName?.length === 0 || recipients?.distributionListName?.trim() === '' "> a distribution list name</strong> <strong *ngIf="recipients?.To?.length === 0 && recipients?.distributionListName?.length === 0 || recipients?.distributionListName?.trim() === ''"> and </strong><strong *ngIf="recipients?.To?.length === 0">at least one recipient email address</strong>.
-</ui-alert>
+
 

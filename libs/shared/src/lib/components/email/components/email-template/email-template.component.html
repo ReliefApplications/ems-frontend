@@ -9,14 +9,20 @@
       </ui-select-menu>
     </div>
 
-    <div class="mt-4 w-1/3 flex flex-col" *ngIf="activeSegmentIndex === 0">
+    <div class="mt-4 w-1/3 flex flex-col px-0" *ngIf="activeSegmentIndex === 0" uiFormFieldDirective>
         <label class="block text-sm font-normal leading-6 text-gray-900 mb-1">{{ 'components.select.distribution.email' | translate }}</label>
+        <ui-icon icon="info" class="cursor-pointer border-0"
+        variant="primary"  [uiTooltip]="
+        'components.select.distribution.emailError' | translate
+      " uiSuffix></ui-icon>
         <input #filterInput (keyup.enter)="addEmailManually(filterInput)" (change)="validateEmail(filterInput)"
-        class="relative flex py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center w-full"
-        [ngClass]="emailValidationError.length ? 'input-error': ''"
+        class="relative flex py-0.5 px-2 focus-within:ring-2 shadow-sm rounded-md border-0  items-center w-full"
+
+
         type="text" [placeholder]="'components.select.distribution.email' | translate" />
-        <p class="hint-text" *ngIf="emailValidationError.length">{{emailValidationError}}</p>
-    </div>
+        <!-- <p class="email-hint-text" *ngIf="!emailValidationError.length">{{'components.select.distribution.emailError' | translate}}</p> -->
+      </div>
+      <!-- <p class="hint-text" *ngIf="emailValidationError.length">{{emailValidationError}}</p> -->
 
     <div class="select-from-list" *ngIf="activeSegmentIndex === 1">
         <div class="w-1/2 mt-6 flex-row gap-4">
@@ -26,7 +32,7 @@
             <ng-select id="select__data__set" name="select__data__set" [(ngModel)]="selectedDataset"  [ngModelOptions]="{ standalone: true }"
                 [items]="dataSets" bindLabel="blockName" [searchable]="true"  [virtualScroll]="true"
                 (clear)="clearDatasetSelection()"
-                (change)="bindDataSetDetails($event)" 
+                (change)="bindDataSetDetails($event)"
                 [placeholder]="'components.queryBuilder.dataset.select' | translate">
                 <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
                     <span>{{ this.emailService.replaceUnderscores(item.blockName || '') | titlecase }}</span>
@@ -74,7 +80,7 @@
             <ng-select id="select__data__set" name="select__data__set" [(ngModel)]="selectedDataset" [ngModelOptions]="{ standalone: true }"
                 [items]="dataSets" bindLabel="blockName" [searchable]="true"  [virtualScroll]="true"
                 (clear)="clearDatasetSelection()"
-                (change)="bindDataSetDetails($event)" 
+                (change)="bindDataSetDetails($event)"
                 [placeholder]="'components.queryBuilder.dataset.select' | translate">
                 <ng-template disabled selected>
                     <span>{{ 'components.queryBuilder.dataset.select' | translate }}</span>

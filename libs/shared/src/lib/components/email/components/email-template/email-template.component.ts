@@ -18,6 +18,8 @@ import { FIELD_TYPES, FILTER_OPERATORS } from '../../filter/filter.constant';
 import { ResourceQueryResponse } from '../../../../models/resource.model';
 import { GET_RESOURCE } from '../../graphql/queries';
 import { Apollo } from 'apollo-angular';
+import { SnackbarService } from '@oort-front/ui';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Email template to create distribution list
@@ -155,11 +157,15 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
    * @param fb Angular form builder
    * @param emailService helper functions
    * @param apollo Apollo server
+   * @param snackbar snackbar helper function
+   * @param translate i18 translate service
    */
   constructor(
     private fb: FormBuilder,
     public emailService: EmailService,
-    private apollo: Apollo
+    private apollo: Apollo,
+    public snackbar: SnackbarService,
+    public translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -543,7 +549,14 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
       this.emailValidationError = '';
       this.listChange.emit();
     } else if (!emailRegex.test(element.value)) {
-      this.emailValidationError = 'Invalid Email Address';
+      this.snackbar.openSnackBar(
+        this.translate.instant('components.customNotifications.errors.email'),
+        {
+          error: true,
+        }
+      );
+
+      this.emailValidationError = '';
     }
   }
 

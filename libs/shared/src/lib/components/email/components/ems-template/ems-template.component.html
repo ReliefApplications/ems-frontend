@@ -17,25 +17,26 @@
     <app-preview *ngIf="currentStep === 5"></app-preview>
 
     <div class="flex gap-5 mt-4 pb-4">
-      <button
-        type="button"
-        class="bg-sky-500 hover:bg-sky-400 text-white px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
-        *ngIf="currentStep !== 0"
-        (click)="prev()"
-      >
-        Back
-      </button>
-      <button
-        type="submit"
-        class="bg-sky-500 hover:bg-sky-400 px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
-        [ngClass]="disableActionButton ? 'inactive': 'active'"
-        [disabled]="disableActionButton"
-        (click)="next()"
-        *ngIf="currentStep !== 5"
-      >
-        Save and Proceed
-      </button>
-
+      <ui-button
+      *ngIf="currentStep !== 0"
+      class="my-0 mx-1"
+      category="tertiary"
+      variant="primary"
+      (click)="prev()"
+      [disabled]="disableActionButton"
+    >
+      {{ 'common.back' | translate }}
+    </ui-button>
+      <ui-button
+      class="my-0 mx-1"
+      category="secondary"
+      variant="primary"
+      (click)="next()"
+      [disabled]="disableActionButton"
+      *ngIf="currentStep !== 5"
+    >
+      {{ 'common.next' | translate }}
+    </ui-button>
       <!-- <button
         type="submit"
         class="bg-sky-500 hover:bg-sky-400 text-white ml-3 px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
@@ -46,22 +47,26 @@
       </button> -->
 
       <!-- EMAIL NOTIFICATION SAVE -->
-      <button
+      <ui-button
       type="submit"
-      class="bg-sky-500 text-white ml-3 px-4 py-2 rounded-md"
+      class="my-0 mx-1"
+      category="secondary"
+      variant="primary"
       (click)="submit()"
       *ngIf="currentStep === 5"
     >
-      Save
-    </button>
+      {{'common.save' | translate}}
+    </ui-button>
       <!-- EMAIL NOTIFICATION SAVE AND SEND -->
-      <button
+      <ui-button
       type="button"
-      class="bg-sky-500 text-white ml-3 px-4 py-2 rounded-md"
+      class="my-0 mx-1"
+      category="secondary"
+      variant="primary"
       (click)="send()"
       *ngIf="currentStep === 5"
       >
-      Send email
-    </button>
+      {{'common.sendEmail' | translate}}
+    </ui-button>
     </div>
   </div>

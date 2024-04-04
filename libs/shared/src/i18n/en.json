@@ -429,6 +429,7 @@
 		"selectStatus": "Select a status",
 		"semicolon": "semicolon",
 		"send": "Send",
+		"sendEmail": "Send email",
 		"separator": "Separator",
 		"settings": "Settings",
 		"status": "Status",
@@ -452,6 +453,9 @@
 			"one": "Notification template"
 		},
 		"title": "Title",
+		"toolTip": {
+			"newBlock": "Add New Block"
+		},
 		"tooltip": {
 			"dragDrop": "Drag and drop to reorder",
 			"editor": {
@@ -1355,6 +1359,7 @@
 				"cc": "CC",
 				"createFilterLogic": "Create filter logic",
 				"email": "Email",
+				"emailError": "Type emails here and hit ENTER to add them to the distribution list",
 				"label": "Distribution List Name*",
 				"separateEmail": "Send separate email",
 				"to": "To"

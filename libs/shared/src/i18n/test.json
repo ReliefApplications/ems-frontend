@@ -429,6 +429,7 @@
 		"selectStatus": "******",
 		"semicolon": "******",
 		"send": "******",
+		"sendEmail": "******",
 		"separator": "******",
 		"settings": "******",
 		"status": "******",
@@ -452,6 +453,9 @@
 			"one": "******"
 		},
 		"title": "******",
+		"toolTip": {
+			"newBlock": "******"
+		},
 		"tooltip": {
 			"dragDrop": "******",
 			"editor": {
@@ -1355,6 +1359,7 @@
 				"cc": "******",
 				"createFilterLogic": "******",
 				"email": "******",
+				"emailError": "******",
 				"label": "******",
 				"separateEmail": "******",
 				"to": "******"

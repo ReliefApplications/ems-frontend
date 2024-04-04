@@ -172,8 +172,77 @@ export class TooltipDirective implements OnDestroy {
    * Destroy the tooltip and stop its display
    */
   private removeHint() {
-    this.overlayRef?.detach();
-    this.overlayRef?.dispose();
+    if (this.currentHost.contains(this.elToolTip)) {
+      this.renderer.removeChild(this.currentHost, this.elToolTip);
+    }
+  }
+
+  /**
+   * Show the tooltip and place it on the screen accordingly to its width and height
+   */
+  private showHint() {
+    // Fullscreen only renders the current full-screened element,
+    // Therefor we check if exists to take it as a reference, else we use the document body by default
+    const elementRef = this.document.fullscreenElement ?? this.currentHost;
+    this.elToolTip.textContent = this.uiTooltip;
+    this.renderer.addClass(this.elToolTip, 'opacity-0');
+    this.renderer.appendChild(elementRef, this.elToolTip);
+    // Management of tooltip placement in the screen (including screen edges cases)
+    const hostPos = this.elementRef.nativeElement.getBoundingClientRect();
+    const tooltipPos = this.elToolTip.getBoundingClientRect();
+    this.renderer.removeClass(this.elToolTip, 'opacity-0');
+    this.renderer.removeChild(elementRef, this.elToolTip);
+
+    let top = 0;
+    let left = 0;
+    const tooltipWidth = tooltipPos.width;
+    const tooltipHeight = tooltipPos.height;
+
+    // Gets the preferred position from the data attribute
+    // set by the TooltipPositionDirective
+    this.position =
+      this.elementRef.nativeElement.dataset.tooltipPosition ?? 'bottom';
+
+    switch (this.position) {
+      case 'top': {
+        top = hostPos.top - tooltipHeight - this.tooltipSeparation;
+        left = hostPos.left + hostPos.width / 2 - tooltipWidth / 2;
+        break;
+      }
+      case 'bottom': {
+        top = hostPos.bottom + this.tooltipSeparation;
+        left = hostPos.left + hostPos.width / 2 - tooltipWidth / 2;
+        break;
+      }
+      case 'left': {
+        top = hostPos.top + hostPos.height / 2 - tooltipHeight / 2;
+        left = hostPos.left - tooltipWidth - this.tooltipSeparation;
+        break;
+      }
+      case 'right': {
+        top = hostPos.top + hostPos.height / 2 - tooltipHeight / 2;
+        left = hostPos.right + this.tooltipSeparation;
+        break;
+      }
+    }
+
+    // Clamp the tooltip position to the screen edges
+    top = Math.max(0, Math.min(top, window.innerHeight - tooltipHeight));
+    left = Math.max(0, Math.min(left, window.innerWidth - tooltipWidth));
+
+    this.renderer.setStyle(this.elToolTip, 'top', `${top}px`);
+    this.renderer.setStyle(this.elToolTip, 'left', `${left}px`);
+    this.renderer.appendChild(elementRef, this.elToolTip);
+  }
+
+  /**
+   * Creates an span HTML element with the tooltip properties
+   */
+  private createTooltipElement(): void {
+    this.elToolTip = this.renderer.createElement('span');
+    for (const cl of this.tooltipClasses) {
+      this.renderer.addClass(this.elToolTip, cl);
+    }
   }
 
   /**

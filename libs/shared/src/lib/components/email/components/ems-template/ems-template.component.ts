@@ -167,6 +167,9 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
     this.disableSub = this.emailService.disableSaveAndProceed.subscribe(
       (disable) => {
         this.disableActionButton = disable;
+        if (disable) {
+          this.disableAllNextSteps(this.currentStep);
+        }
       }
     );
   }
@@ -207,6 +210,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
         this.emailService.datasetsForm.controls[
           'notificationType'
         ].markAsTouched();
+        this.disableAllNextSteps(0);
       }
     } else if (this.currentStep === 1) {
       if (

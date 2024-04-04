@@ -15,6 +15,7 @@ import {
   FormWrapperModule,
   DateModule,
   AlertModule,
+  CheckboxModule,
 } from '@oort-front/ui';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
@@ -89,6 +90,7 @@ import { EmsTemplateComponent } from './components/ems-template/ems-template.com
     DateModule,
     SelectMenuModule,
     AlertModule,
+    CheckboxModule,
   ],
   schemas: [NO_ERRORS_SCHEMA],
 })

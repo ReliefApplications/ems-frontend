@@ -429,6 +429,7 @@
 		"selectStatus": "Sélectionner un statut",
 		"semicolon": "point-virgule",
 		"send": "Envoyer",
+		"sendEmail": "Envoyer un e-mail",
 		"separator": "Séparateur",
 		"settings": "Paramètres",
 		"status": "Statut",
@@ -452,6 +453,9 @@
 			"one": "Modèle de notification"
 		},
 		"title": "Titre",
+		"toolTip": {
+			"newBlock": "Ajouter un nouveau bloc"
+		},
 		"tooltip": {
 			"dragDrop": "Glissez-déposez pour réorganiser",
 			"editor": {
@@ -1366,6 +1370,7 @@
 				"cc": "Cc",
 				"createFilterLogic": "Créer une logique de filtre",
 				"email": "Email",
+				"emailError": "Tapez les e-mails ici et appuyez sur ENTRÉE pour les ajouter à la liste de distribution",
 				"label": "Nom de la liste de distribution*",
 				"separateEmail": "Envoyer un e-mail séparé",
 				"to": "À"

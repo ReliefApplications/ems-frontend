@@ -243,7 +243,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
             );
           }
           this.emailService.emailNotificationNames.push(
-            ele.node.name.trim().toLowerCase()
+            ele.node.name?.trim()?.toLowerCase()
           );
         });
         let uniquDistributionLists = Array.from(

@@ -37,7 +37,7 @@ export class CheckboxComponent implements ControlValueAccessor {
   /** Variant of the checkbox. */
   @Input() variant: Variant = 'primary';
   /** Boolean indicating whether the checkbox is disabled. */
-  disabled = false;
+  @Input() disabled = false;
   /** Event emitter for value changes. */
   valueChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   /** Function to handle value changes. */
