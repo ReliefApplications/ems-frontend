@@ -36,7 +36,7 @@ export const updateModalChoicesAndValue = (sender: any, options: any) => {
       options.obj.isPrimitiveValue
         ? options.obj.defaultValue
         : // Gets rid of surveyJS pos artifact
-          omit(new ItemValue(options.obj.defaultValue).id as any, 'pos')
+        omit(new ItemValue(options.obj.defaultValue).id as any, 'pos')
     );
   }
 };
@@ -49,6 +49,15 @@ export const updateModalChoicesAndValue = (sender: any, options: any) => {
  */
 const isSelectQuestion = (question: Question): boolean =>
   Serializer.isDescendantOf(question.getType(), 'selectbase');
+
+/**
+ * Check if a question is of select type
+ *
+ * @param question The question to check
+ * @returns A boolean indicating if the question is a select type
+ */
+export const isMatrixDropdownQuestion = (question: Question): boolean =>
+  Serializer.isDescendantOf(question.getType(), 'matrixdropdown');
 
 /**
  * Add support for custom properties to the survey
@@ -245,82 +254,118 @@ export const render = (
   questionElement: Question,
   referenceDataService: ReferenceDataService
 ): void => {
+  const updateChoices = (question: Question, element: any) => {
+    if (element.referenceData && element.referenceDataDisplayField) {
+      let filter;
+      // create a filter object if all required properties for filtering are set
+      if (
+        element.referenceDataFilterFilterFromQuestion &&
+        element.referenceDataFilterForeignField &&
+        element.referenceDataFilterFilterCondition &&
+        element.referenceDataFilterLocalField
+      ) {
+        const foreign = (question.survey as SurveyModel)
+          .getAllQuestions()
+          .find(
+            (x: any) => x.name === element.referenceDataFilterFilterFromQuestion
+          ) as QuestionSelectBase;
+        if (foreign.referenceData && !!foreign.value) {
+          filter = {
+            foreignReferenceData: foreign.referenceData,
+            foreignField: element.referenceDataFilterForeignField,
+            foreignValue: foreign.value,
+            localField: element.referenceDataFilterLocalField,
+            operator: element.referenceDataFilterFilterCondition,
+          };
+        }
+      }
+      referenceDataService
+        .getChoices(
+          element.referenceData,
+          element.referenceDataDisplayField,
+          element.isPrimitiveValue,
+          filter
+        )
+        .then((choices) => {
+          // this is to avoid that the choices appear on the 'choices' tab
+          // and also to avoid the choices being sent to the server
+          element.choices = [];
+
+          const choiceItems = choices.map((choice) => new ItemValue(choice));
+          element.setPropertyValue('visibleChoices', choiceItems);
+          element.setPropertyValue('choices', choiceItems);
+          // manually set the selected option (not done by default)
+          // only affects dropdown questions (only one option selected) with reference data and non primitive values
+          if (
+            !element.isPrimitiveValue &&
+            (element.getType() === 'dropdown' ||
+              element.getType() === 'matrixdropdowncolumn')
+          ) {
+            // When using dashboard filters, the element.value object is truncated
+            if (isEqual(element.value, element.defaultValue?.value)) {
+              return (element.value = element.defaultValue);
+            }
+
+            // First, if no value, we try to get the default value
+            element.value = element.value ?? element.defaultValue;
+
+            // We then create an ItemValue from the value
+            const valueItem = new ItemValue(element.value);
+
+            // Then, we try to find the value in the choices by comparing the ids
+            element.value = choiceItems.find((choice) =>
+              isEqual(choice.id, omit(valueItem.id as any, 'pos'))
+            );
+          }
+        });
+    } else {
+      element.choices = [];
+    }
+  };
+
+  const initChoices = (question: Question, element: any) => {
+    // look on changes
+    element.registerFunctionOnPropertyValueChanged(
+      'referenceData',
+      (value: string) => {
+        element.referenceDataDisplayField = undefined;
+        if (!value) {
+          element.referenceDataDisplayField = undefined;
+          element.referenceDataFilterFilterFromQuestion = undefined;
+          element.referenceDataFilterForeignField = undefined;
+          element.referenceDataFilterFilterCondition = undefined;
+          element.referenceDataFilterLocalField = undefined;
+        }
+      }
+    );
+    element.registerFunctionOnPropertyValueChanged(
+      'isPrimitiveValue',
+      updateChoices(question, element)
+    );
+    element.registerFunctionOnPropertyValueChanged(
+      'referenceDataDisplayField',
+      updateChoices(question, element)
+    );
+
+    // Look for foreign question changes if needed for filter
+    const foreignQuestion = (question.survey as SurveyModel)
+      .getAllQuestions()
+      .find(
+        (x: any) => x.name === element.referenceDataFilterFilterFromQuestion
+      ) as QuestionSelectBase | undefined;
+    foreignQuestion?.registerFunctionOnPropertyValueChanged(
+      'value',
+      updateChoices(question, element)
+    );
+  };
+
   if (isSelectQuestion(questionElement)) {
     const question = questionElement as QuestionSelectBase;
 
-    const updateChoices = () => {
-      if (question.referenceData && question.referenceDataDisplayField) {
-        let filter;
-        // create a filter object if all required properties for filtering are set
-        if (
-          question.referenceDataFilterFilterFromQuestion &&
-          question.referenceDataFilterForeignField &&
-          question.referenceDataFilterFilterCondition &&
-          question.referenceDataFilterLocalField
-        ) {
-          const foreign = (question.survey as SurveyModel)
-            .getAllQuestions()
-            .find(
-              (x: any) =>
-                x.name === question.referenceDataFilterFilterFromQuestion
-            ) as QuestionSelectBase;
-          if (foreign.referenceData && !!foreign.value) {
-            filter = {
-              foreignReferenceData: foreign.referenceData,
-              foreignField: question.referenceDataFilterForeignField,
-              foreignValue: foreign.value,
-              localField: question.referenceDataFilterLocalField,
-              operator: question.referenceDataFilterFilterCondition,
-            };
-          }
-        }
-        referenceDataService
-          .getChoices(
-            question.referenceData,
-            question.referenceDataDisplayField,
-            question.isPrimitiveValue,
-            filter
-          )
-          .then((choices) => {
-            // this is to avoid that the choices appear on the 'choices' tab
-            // and also to avoid the choices being sent to the server
-            question.choices = [];
-
-            const choiceItems = choices.map((choice) => new ItemValue(choice));
-            question.setPropertyValue('visibleChoices', choiceItems);
-            // manually set the selected option (not done by default)
-            // only affects dropdown questions (only one option selected) with reference data and non primitive values
-            if (
-              !question.isPrimitiveValue &&
-              question.getType() === 'dropdown'
-            ) {
-              // When using dashboard filters, the question.value object is truncated
-              if (isEqual(question.value, question.defaultValue?.value)) {
-                return (question.value = question.defaultValue);
-              }
-
-              // First, if no value, we try to get the default value
-              question.value = question.value ?? question.defaultValue;
-
-              // We then create an ItemValue from the value
-              const valueItem = new ItemValue(question.value);
-
-              // Then, we try to find the value in the choices by comparing the ids
-              question.value = choiceItems.find((choice) =>
-                isEqual(choice.id, omit(valueItem.id as any, 'pos'))
-              );
-            }
-          });
-      } else {
-        question.choices = [];
-      }
-    };
-
-    // init the choices
     if (!question.referenceDataChoicesLoaded && question.referenceData) {
       referenceDataService
         .cacheItems(question.referenceData)
-        .then(() => updateChoices());
+        .then(() => updateChoices(question, question));
       question.referenceDataChoicesLoaded = true;
     }
     // Prevent selected choices to be removed when sending the value
@@ -328,38 +373,20 @@ export const render = (
       // console.log(question.visibleChoices);
       // console.log(question.value);
     };
-    // look on changes
-    question.registerFunctionOnPropertyValueChanged(
-      'referenceData',
-      (value: string) => {
-        question.referenceDataDisplayField = undefined;
-        if (!value) {
-          question.referenceDataDisplayField = undefined;
-          question.referenceDataFilterFilterFromQuestion = undefined;
-          question.referenceDataFilterForeignField = undefined;
-          question.referenceDataFilterFilterCondition = undefined;
-          question.referenceDataFilterLocalField = undefined;
-        }
+    initChoices(question, question);
+  } else if (isMatrixDropdownQuestion(questionElement)) {
+    const visibleColumns = questionElement.visibleColumns;
+    // init the choices
+    visibleColumns.forEach((column: any) => {
+      // !column.referenceDataChoicesLoaded
+      if (column.referenceData) {
+        referenceDataService
+          .cacheItems(column.referenceData)
+          .then(() => updateChoices(questionElement, column));
+        // column.referenceDataChoicesLoaded = true;
       }
-    );
-    question.registerFunctionOnPropertyValueChanged(
-      'isPrimitiveValue',
-      updateChoices
-    );
-    question.registerFunctionOnPropertyValueChanged(
-      'referenceDataDisplayField',
-      updateChoices
-    );
 
-    // Look for foreign question changes if needed for filter
-    const foreignQuestion = (question.survey as SurveyModel)
-      .getAllQuestions()
-      .find(
-        (x: any) => x.name === question.referenceDataFilterFilterFromQuestion
-      ) as QuestionSelectBase | undefined;
-    foreignQuestion?.registerFunctionOnPropertyValueChanged(
-      'value',
-      updateChoices
-    );
+      initChoices(questionElement, column);
+    });
   }
 };
