@@ -1,5 +1,5 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
-import { theme } from '../themes/pci/pci.prod';
+import { theme } from '../themes/expertisefr/expertisefr.prod';
 import { sharedEnvironment } from './environment.shared';
 import { Environment } from './environment.type';
 
@@ -7,13 +7,13 @@ import { Environment } from './environment.type';
  * Authentication configuration
  */
 const authConfig: AuthConfig = {
-  issuer: 'https://id.libyatt.ly/auth/realms/oort',
-  redirectUri: 'https://libyatt.ly/admin/',
-  postLogoutRedirectUri: 'https://libyatt.ly/admin/auth/',
+  issuer: 'https://id-tess-mav.oortcloud.tech/auth/realms/oort',
+  redirectUri: 'https://tess-mav.oortcloud.tech/admin/',
+  postLogoutRedirectUri: 'https://tess-mav.oortcloud.tech/admin/auth/',
   clientId: 'oort-client',
   scope: 'openid profile email offline_access',
   responseType: 'code',
-  showDebugInformation: false,
+  showDebugInformation: true,
 };
 
 /**
@@ -21,15 +21,14 @@ const authConfig: AuthConfig = {
  */
 export const environment: Environment = {
   ...sharedEnvironment,
-
   production: true,
-  apiUrl: 'https://libyatt.ly/api',
-  subscriptionApiUrl: 'wss://libyatt.ly/api',
-  frontOfficeUri: 'https://libyatt.ly',
-  backOfficeUri: 'https://libyatt.ly/admin/',
-  module: 'backoffice',
+  apiUrl: 'https://tess-mav.oortcloud.tech/api',
+  subscriptionApiUrl: 'wss://tess-mav.oortcloud.tech/api',
+  frontOfficeUri: 'https://tess-mav.oortcloud.tech',
+  backOfficeUri: 'https://tess-mav.oortcloud.tech/admin/',
   availableLanguages: ['en', 'fr'],
   authConfig,
+  esriApiKey: '',
   theme,
   availableWidgets: [
     'donut-chart',
