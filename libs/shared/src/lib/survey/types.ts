@@ -6,6 +6,7 @@ import {
   QuestionSelectBase as SurveyCoreQuestionSelectBase,
   QuestionCustomModel,
   QuestionDropdownModel,
+  MatrixDropdownColumn,
 } from 'survey-core';
 import { Record } from '../models/record.model';
 import { Form } from '../models/form.model';
@@ -37,6 +38,20 @@ export interface QuestionComment
 /** Type for all select-based questions */
 export interface QuestionSelectBase
   extends SurveyCoreQuestionSelectBase,
+    GlobalProperties {
+  referenceData?: string;
+  referenceDataDisplayField?: string;
+  isPrimitiveValue?: boolean;
+  referenceDataFilterFilterFromQuestion?: string;
+  referenceDataFilterForeignField?: string;
+  referenceDataFilterFilterCondition?: string;
+  referenceDataFilterLocalField?: string;
+  referenceDataChoicesLoaded?: boolean;
+}
+
+/** Type for all columns of matrixdropdowncolumn questions */
+export interface CustomMatrixDropdownColumn
+  extends MatrixDropdownColumn,
     GlobalProperties {
   referenceData?: string;
   referenceDataDisplayField?: string;

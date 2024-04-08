@@ -1,4 +1,8 @@
-import { QuestionSelectBase, Question } from '../types';
+import {
+  QuestionSelectBase,
+  Question,
+  CustomMatrixDropdownColumn,
+} from '../types';
 import {
   ChoicesRestfull,
   ItemValue,
@@ -36,7 +40,7 @@ export const updateModalChoicesAndValue = (sender: any, options: any) => {
       options.obj.isPrimitiveValue
         ? options.obj.defaultValue
         : // Gets rid of surveyJS pos artifact
-        omit(new ItemValue(options.obj.defaultValue).id as any, 'pos')
+          omit(new ItemValue(options.obj.defaultValue).id as any, 'pos')
     );
   }
 };
@@ -47,14 +51,14 @@ export const updateModalChoicesAndValue = (sender: any, options: any) => {
  * @param question The question to check
  * @returns A boolean indicating if the question is a select type
  */
-const isSelectQuestion = (question: Question): boolean =>
+export const isSelectQuestion = (question: Question): boolean =>
   Serializer.isDescendantOf(question.getType(), 'selectbase');
 
 /**
  * Check if a question is of select type
  *
  * @param question The question to check
- * @returns A boolean indicating if the question is a select type
+ * @returns A boolean indicating if the question is a matrixdropdowncolumn type
  */
 export const isMatrixDropdownQuestion = (question: Question): boolean =>
   Serializer.isDescendantOf(question.getType(), 'matrixdropdown');
@@ -377,13 +381,12 @@ export const render = (
   } else if (isMatrixDropdownQuestion(questionElement)) {
     const visibleColumns = questionElement.visibleColumns;
     // init the choices
-    visibleColumns.forEach((column: any) => {
-      // !column.referenceDataChoicesLoaded
-      if (column.referenceData) {
+    visibleColumns.forEach((column: CustomMatrixDropdownColumn) => {
+      if (!column.referenceDataChoicesLoaded && column.referenceData) {
         referenceDataService
           .cacheItems(column.referenceData)
           .then(() => updateChoices(questionElement, column));
-        // column.referenceDataChoicesLoaded = true;
+        column.referenceDataChoicesLoaded = true;
       }
 
       initChoices(questionElement, column);
