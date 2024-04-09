@@ -62,8 +62,3 @@ export const asyncFunctions = [
   { fn: getComplaintsByType, name: 'getComplaintsByType' },
   { fn: getCurrentYearAids, name: 'getCurrentYearAids' },
 ];
-
-// regex for removing hyphens and underscores
-const regex = new RegExp('[-_]', 'g');
-// test regex
-console.log('a-b_c'.replace(regex, '')); // 'abc'
