@@ -51,12 +51,15 @@
 <survey [model]="survey"></survey>
 
 <!-- Form buttons actions without floating div-->
-<ng-container *ngIf="surveyActive && !floatingActions">
+<div *ngIf="surveyActive && !floatingActions">
   <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
-</ng-container>
+</div>
 
 <ng-template #actionButtons>
-  <div class="flex justify-end gap-2 flex-wrap" [ngClass]="{ 'mt-2 mr-2': !floatingActions }">
+  <div
+    class="flex justify-end gap-2 flex-wrap"
+    [ngClass]="{ 'mt-2 mr-2': !floatingActions }"
+  >
     <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
       <ui-button
         *ngIf="pages.length > 1"
@@ -76,8 +79,10 @@
     <!-- <ui-button [disabled]="disableSaveAsDraft" (click)="saveAsDraft()">{{
       'components.form.draftRecords.save' | translate
     }}</ui-button> -->
-    <ui-button variant="primary" category="secondary" (click)="submit()">{{
-      'common.save' | translate
-    }}</ui-button>
+    <p>
+      <ui-button variant="primary" category="secondary" (click)="submit()">
+        {{ survey.toJSON().saveButtonText || ('common.save' | translate) }}
+      </ui-button>
+    </p>
   </div>
 </ng-template>
