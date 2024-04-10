@@ -31,6 +31,7 @@ export const environment: Environment = {
   esriApiKey: '',
   theme,
   availableWidgets: [
+    'form',
     'donut-chart',
     'line-chart',
     'bar-chart',

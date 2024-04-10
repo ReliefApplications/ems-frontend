@@ -45,6 +45,7 @@ import { ListFilterComponent } from './components/list-filter/list-filter.compon
 import { StatusOptionsComponent } from './components/status-options/status-options.component';
 import { DashboardFilterIconComponent } from './components/dashboard-filter-icon/dashboard-filter-icon.component';
 import { PayloadModalComponent } from './components/payload-modal/payload-modal.component';
+import { FormSettingsModule } from './components/widgets/form-settings/form-settings.module';
 
 /** Main module for the shared project */
 @NgModule({
@@ -81,6 +82,7 @@ import { PayloadModalComponent } from './components/payload-modal/payload-modal.
     ButtonActionModule,
     WidgetChoiceModule,
     TabsSettingsModule,
+    FormSettingsModule,
     ReferenceDataDropdownModule,
     StatusOptionsComponent,
     // === Pipes ===
