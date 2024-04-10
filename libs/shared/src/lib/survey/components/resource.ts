@@ -116,13 +116,7 @@ export const init = (
       fetchPolicy: 'no-cache',
     });
 
-  let filters: { field: string; operator: string; value: string }[] = [
-    {
-      field: '',
-      operator: '',
-      value: '',
-    },
-  ];
+  let filters: { field: string; operator: string; value: string }[] = [];
 
   // const hasUniqueRecord = ((id: string) => false);
   // resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
@@ -613,7 +607,14 @@ export const init = (
       }
     },
     populateChoices: (question: QuestionResource): void => {
-      if (question.resource) {
+      if (
+        question.resource &&
+        !(
+          question.customFilter &&
+          Array.isArray(filters) &&
+          filters.length === 0
+        )
+      ) {
         getResourceRecordsById({ id: question.resource, filters }).subscribe(
           ({ data }) => {
             const choices = mapQuestionChoices(data, question);
