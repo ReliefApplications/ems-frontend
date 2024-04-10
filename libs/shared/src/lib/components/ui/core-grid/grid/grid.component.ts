@@ -135,8 +135,10 @@ export class GridComponent
       field: '',
       pageUrl: '',
       title: '',
+      copyLink: false,
     },
     remove: false,
+    actionsAsIcons: false,
   };
   /** Input decorator */
   @Input() hasDetails = true;
@@ -1254,5 +1256,24 @@ export class GridComponent
         `Report-${incrementalID}.pdf`
       );
     }
+  }
+
+  /**
+   * Gets any data to be injected into the row template as html classes
+   *
+   * @param context The record context
+   * @returns An ngClass like object
+   */
+  public injectClasses(context: any): { [key: string]: boolean } {
+    return (this.widget?.settings?.widgetDisplay?.addToRowClasses ?? []).reduce(
+      (acc: { [key: string]: true }, item: string) => {
+        const value = get(context.dataItem, item);
+        if (value) {
+          acc[`${item}_${value}`] = true;
+        }
+        return acc;
+      },
+      {}
+    );
   }
 }

@@ -102,6 +102,11 @@ export const GET_LAYER_BY_ID = gql`
           description
           fields
         }
+        navigateToPage
+        navigateSettings {
+          field
+          pageUrl
+        }
       }
       timelineInfo {
         enabled

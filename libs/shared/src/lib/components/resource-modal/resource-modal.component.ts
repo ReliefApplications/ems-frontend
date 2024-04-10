@@ -16,6 +16,7 @@ import {
 } from '@oort-front/ui';
 import { SurveyModule } from 'survey-angular-ui';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
+import { CheckUniqueProprietyReturnT } from '../../services/form-helper/form-helper.service';
 
 /**
  * Factory for creating scroll strategy
@@ -59,17 +60,29 @@ export class ResourceModalComponent extends FormModalComponent {
   public override async onUpdate(survey: any): Promise<void> {
     // If question propriety alwaysCreateRecord set to true, don't use override method and create new record
     if (this.data.alwaysCreateRecord) {
-      super.onUpdate(survey);
+      super.onUpdate(survey, true);
     } else if (this.data.recordId) {
-      await this.formHelpersService.uploadFiles(
-        this.temporaryFilesStorage,
-        this.form?.id
-      );
-      if (this.isMultiEdition) {
-        this.updateMultipleData(this.data.recordId, survey);
-      } else {
-        this.updateData(this.data.recordId, survey);
-      }
+      this.formHelpersService
+        .checkUniquePropriety(this.survey)
+        .then(async (response: CheckUniqueProprietyReturnT) => {
+          if (response.verified) {
+            this.loading = true;
+            await this.formHelpersService.uploadFiles(
+              this.temporaryFilesStorage,
+              this.form?.id
+            );
+            if (this.isMultiEdition) {
+              this.updateMultipleData(this.data.recordId, survey, true);
+            } else {
+              this.updateData(this.data.recordId, survey, true);
+            }
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('components.form.display.cancelMessage')
+            );
+            this.survey.clear(false);
+          }
+        });
     } else {
       const callback = (details: any) => {
         this.ngZone.run(() => {

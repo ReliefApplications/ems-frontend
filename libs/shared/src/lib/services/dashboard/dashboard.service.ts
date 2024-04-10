@@ -25,6 +25,8 @@ import { GraphQLError } from 'graphql';
 export class DashboardService {
   /** List of available widgets */
   public availableWidgets = WIDGET_TYPES;
+  /** List of widgets of the current open dashboard*/
+  public widgets: any[] = [];
 
   /**
    * Shared dashboard service. Handles dashboard events.
@@ -41,7 +43,7 @@ export class DashboardService {
     private translate: TranslateService
   ) {
     this.availableWidgets = WIDGET_TYPES.filter((widget) =>
-      get(environment, 'availableWidgets', []).includes(widget.id)
+      get(environment, 'availableWidgets', []).includes(widget.widgetType)
     );
   }
 

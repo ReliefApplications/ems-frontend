@@ -43,7 +43,85 @@
           ></ui-icon>
         </div>
       </div>
-      <ui-divider class="my-1"></ui-divider>
+      <ui-toggle [formControlName]="navigateOptions.name">
+        <ng-container ngProjectAs="label">
+          {{ navigateOptions.text | translate
+          }}<ui-icon
+            *ngIf="navigateOptions.tooltip"
+            class="ml-2 cursor-help"
+            variant="grey"
+            icon="info_outline"
+            [size]="18"
+            [uiTooltip]="navigateOptions.tooltip | translate"
+            uiTooltipPosition="right"
+          ></ui-icon>
+        </ng-container>
+      </ui-toggle>
+      <!-- Redirect to specific page action details -->
+      <div
+        *ngIf="showSelectPage"
+        formGroupName="navigateSettings"
+        class="flex gap-2"
+      >
+        <div uiFormFieldDirective class="grow">
+          <label>
+            {{
+              'components.widget.settings.grid.actions.pageUrl.label'
+                | translate
+            }}
+          </label>
+          <ui-select-menu
+            formControlName="pageUrl"
+            [placeholder]="
+              'components.widget.settings.grid.actions.pageUrl.placeholder'
+                | translate
+            "
+          >
+            <ui-select-option
+              *ngFor="let page of pages"
+              [value]="page.urlParams"
+            >
+              {{ page.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+        <div uiFormFieldDirective class="grow">
+          <label>
+            {{
+              'components.widget.settings.grid.actions.goTo.field.label'
+                | translate
+            }}
+          </label>
+          <ui-select-menu
+            formControlName="field"
+            [placeholder]="
+              'components.widget.settings.grid.actions.goTo.field.placeholder'
+                | translate
+            "
+          >
+            <ng-container *ngFor="let field of fields">
+              <ui-select-option *ngIf="!field.fields" [value]="field.name">
+                {{ field.text || field.name }}
+              </ui-select-option>
+
+              <ui-select-option *ngIf="field.fields" [isGroup]="true">
+                {{ field.text || field.name }}
+                <ui-select-option
+                  *ngFor="let subField of field.fields"
+                  [value]="field.name + '.' + subField.name"
+                >
+                  {{
+                    field.name === '$attribute'
+                      ? subField.text || subField.name
+                      : field.name + ' - ' + (subField.text || subField.name)
+                  }}
+                </ui-select-option>
+              </ui-select-option>
+            </ng-container>
+          </ui-select-menu>
+        </div>
+      </div>
+      <ui-divider class="my-3"></ui-divider>
       <h3>
         {{
           'components.widget.settings.map.layers.popup.popupElements'

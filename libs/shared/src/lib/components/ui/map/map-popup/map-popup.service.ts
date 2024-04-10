@@ -300,6 +300,10 @@ export class MapPopupService {
     // set the component inputs
     instance.feature = featurePoints;
     instance.coordinates = coordinates;
+    instance.navigateToPage = popupInfo.navigateToPage || false;
+    if (popupInfo.navigateSettings) {
+      instance.navigateSettings = popupInfo.navigateSettings;
+    }
 
     // Bind zoom
     instance.currZoom = this.map.getZoom();

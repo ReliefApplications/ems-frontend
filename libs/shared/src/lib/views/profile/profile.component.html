@@ -16,11 +16,22 @@
         <input formControlName="lastName" type="text" />
       </div>
     </div>
-    <div uiFormFieldDirective>
-      <label>
-        {{ 'models.user.username' | translate }}
-      </label>
-      <input formControlName="username" type="text" />
+    <div class="flex gap-2 flex-wrap items-center">
+      <div uiFormFieldDirective class="grow">
+        <label>
+          {{ 'models.user.username' | translate }}
+        </label>
+        <input formControlName="username" type="text" />
+      </div>
+      <ui-button
+        category="secondary"
+        variant="primary"
+        icon="vpn_key"
+        class="mt-1.5"
+        (click)="updatePassword()"
+      >
+        {{ 'pages.profile.password.change' | translate }}
+      </ui-button>
     </div>
   </div>
   <!-- Table container -->

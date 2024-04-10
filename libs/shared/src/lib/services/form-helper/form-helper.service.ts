@@ -8,18 +8,20 @@ import {
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmService } from '../confirm/confirm.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { ADD_RECORD } from '../../components/form/graphql/mutations';
-import { DialogRef } from '@angular/cdk/dialog';
+import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { IconComponent, SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
-import { snakeCase, cloneDeep, set, get, isNil } from 'lodash';
+import { snakeCase, cloneDeep, set, get, isNil, flattenDeep } from 'lodash';
 import { AuthService } from '../auth/auth.service';
 import { BlobType, DownloadService } from '../download/download.service';
 import {
   AddDraftRecordMutationResponse,
   AddRecordMutationResponse,
   EditDraftRecordMutationResponse,
+  RecordQueryResponse,
+  Record,
 } from '../../models/record.model';
 import { Question } from '../../survey/types';
 import {
@@ -32,6 +34,14 @@ import { ApplicationService } from '../application/application.service';
 import { DomService } from '../dom/dom.service';
 import { TemporaryFilesStorage } from '../form-builder/form-builder.service';
 import { Router } from '@angular/router';
+import { DashboardService } from '../dashboard/dashboard.service';
+import { GET_RECORD_BY_UNIQUE_FIELD_VALUE } from './graphql/queries';
+import { Metadata } from '../../models/metadata.model';
+
+export type CheckUniqueProprietyReturnT = {
+  verified: boolean;
+  overwriteRecord?: Record;
+};
 
 /**
  * Applies custom logic to survey data values.
@@ -95,6 +105,8 @@ export class FormHelpersService {
    * @param applicationService Shared application service
    * @param domService Shared dom service
    * @param router Angular router service.
+   * @param dialog Dialogs service
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     @Inject('environment') private environment: any,
@@ -107,7 +119,9 @@ export class FormHelpersService {
     private workflowService: WorkflowService,
     private applicationService: ApplicationService,
     private domService: DomService,
-    private router: Router
+    private router: Router,
+    public dialog: Dialog,
+    private dashboardService: DashboardService
   ) {}
 
   /**
@@ -672,12 +686,13 @@ export class FormHelpersService {
    * @param record.id Record id
    * @param record.incrementalId Record incremental id
    */
-  public addRecordIDVariable = (
-    survey: SurveyModel,
-    record: { id?: string; incrementalId?: string }
-  ) => {
+  public addRecordVariables = (survey: SurveyModel, record: Record) => {
     survey.setVariable('record.id', record.id);
     survey.setVariable('record.incrementalID', record?.incrementalId ?? '');
+
+    Object.keys(record?.data ?? {}).forEach((key) => {
+      survey.setVariable(`record.${key}`, record.data[key]);
+    });
   };
 
   /**
@@ -698,7 +713,7 @@ export class FormHelpersService {
 
   /**
    * Adds any query parameters to the survey variables
-   * These variables are accessible using the variables {queryParam.<paramName>}
+   * These variables are accessible using the variables {param.<paramName>}
    *
    * @param survey Survey instance
    */
@@ -709,4 +724,166 @@ export class FormHelpersService {
       survey.setVariable(`param.${key}`, queryParams[key]);
     });
   };
+
+  /**
+   * Checks if record were created/updated from a resource/s question
+   * on a dashboard filter and dashboard widgets needs to refresh.
+   *
+   * @param resourceId id of the resource
+   * @param filterStructure id of the resource
+   *
+   * @returns list of widgets id that needs to be refreshed
+   */
+  public async checkResourceOnFilter(
+    resourceId: string,
+    filterStructure: any
+  ): Promise<string | undefined> {
+    if (filterStructure) {
+      const widgets = flattenDeep(
+        this.dashboardService.widgets.map((widget: any) => {
+          if (widget.component === 'tabs') {
+            const tabs = widget.settings.tabs.map((tab: any) => tab.structure);
+            return tabs;
+          } else {
+            return widget;
+          }
+        })
+      );
+      for await (const widget of widgets) {
+        if (
+          widget.settings.resource === resourceId ||
+          widget.settings.card?.resource === resourceId
+        ) {
+          return resourceId;
+        }
+      }
+      return;
+    } else {
+      return;
+    }
+  }
+
+  /**
+   * Checks survey for unique fields when adding/editing records.
+   *
+   * @param survey Survey to get questions from
+   * @returns if the validation is approved and can create/update the record,
+   * or if overwrite existing record with unique field is allowed
+   */
+  public async checkUniquePropriety(
+    survey: SurveyModel
+  ): Promise<CheckUniqueProprietyReturnT> {
+    const uniqueFields: Question[] = [];
+    survey.getAllQuestions().forEach((question) => {
+      if (question.unique) {
+        uniqueFields.push(question);
+      }
+    });
+    const checkUniqueResponse: CheckUniqueProprietyReturnT = {
+      verified: true,
+    };
+    if (uniqueFields.length) {
+      let firstOverwriteRecord = true;
+      for await (const field of uniqueFields) {
+        if (isNil(field.value)) {
+          continue;
+        }
+        const { data } = await lastValueFrom(
+          this.apollo.query<RecordQueryResponse>({
+            query: GET_RECORD_BY_UNIQUE_FIELD_VALUE,
+            variables: {
+              uniqueField: field.name,
+              uniqueValue: field.value,
+            },
+          })
+        );
+
+        // If the record is the same as the one we are editing, we can skip the check
+        // We can also skip the check if the record is not found
+        if (!data.record || data.record.id === survey.record?.id) {
+          continue;
+        } else {
+          const canUpdate = data.record.form?.metadata?.find(
+            (metadataField: Metadata) => field.name === metadataField.name
+          )?.canUpdate;
+          if (!canUpdate) {
+            // if user doesn’t have permission to edit that record, permission denied
+            this.snackBar.openSnackBar(
+              this.translate.instant('components.record.uniqueField.exist', {
+                question: field.title,
+                value: field.value,
+              }) +
+                this.translate.instant(
+                  'components.record.uniqueField.cannotUpdate'
+                ),
+              { error: true }
+            );
+            return { verified: false };
+          }
+
+          // If is the first (or unique) record to overwrite and the user allow it, it will be the one updated in the form component
+          if (firstOverwriteRecord) {
+            firstOverwriteRecord = false;
+            const dialogRef = this.confirmService.openConfirmModal({
+              title: this.translate.instant(
+                'components.record.uniqueField.title'
+              ),
+              content:
+                this.translate.instant('components.record.uniqueField.exist', {
+                  question: field.title,
+                  value: field.value,
+                }) +
+                ' ' +
+                this.translate.instant(
+                  'components.record.uniqueField.overwriteConfirm'
+                ),
+              confirmText: this.translate.instant(
+                'components.confirmModal.confirm'
+              ),
+              confirmVariant: 'primary',
+            });
+            const confirm = await lastValueFrom(dialogRef.closed);
+            if (confirm) {
+              checkUniqueResponse.overwriteRecord = data.record;
+              continue;
+            } else {
+              return { verified: false };
+            }
+          } else {
+            // Otherwise, user needs first to update the other records where the other unique fields are present
+            this.snackBar.openSnackBar(
+              this.translate.instant('components.record.uniqueField.exist', {
+                question: field.title,
+                value: field.value,
+              }) +
+                this.translate.instant(
+                  'components.record.uniqueField.updateRecord'
+                ),
+              { error: true }
+            );
+            const { FormModalComponent } = await import(
+              '../../components/form-modal/form-modal.component'
+            );
+
+            const dialogRef = this.dialog.open(FormModalComponent, {
+              disableClose: true,
+              data: {
+                recordId: data.record.id,
+              },
+              autoFocus: false,
+            });
+            const updateRecordDialogRef = await lastValueFrom(dialogRef.closed);
+            if (updateRecordDialogRef) {
+              continue;
+            } else {
+              return { verified: false };
+            }
+          }
+        }
+      }
+      return checkUniqueResponse;
+    } else {
+      return checkUniqueResponse;
+    }
+  }
 }

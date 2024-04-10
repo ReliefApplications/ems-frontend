@@ -22,6 +22,7 @@ import {
   ContextService,
   DashboardQueryResponse,
   Record,
+  DashboardService,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
@@ -57,8 +58,6 @@ export class DashboardComponent
   public applicationId?: string;
   /** Is dashboard loading */
   public loading = true;
-  /** List of widgets */
-  public widgets: any[] = [];
   /** Current dashboard */
   public dashboard?: Dashboard;
   /** Show dashboard filter */
@@ -84,6 +83,7 @@ export class DashboardComponent
    * @param elementRef Angular element ref
    * @param document Document
    * @param contextService Dashboard context service
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     private apollo: Apollo,
@@ -96,7 +96,8 @@ export class DashboardComponent
     private renderer: Renderer2,
     private elementRef: ElementRef,
     @Inject(DOCUMENT) private document: Document,
-    private contextService: ContextService
+    private contextService: ContextService,
+    public dashboardService: DashboardService
   ) {
     super();
   }
@@ -123,6 +124,22 @@ export class DashboardComponent
         const id = this.route.snapshot.paramMap.get('id');
         /** Extract query id to load template */
         const queryId = this.route.snapshot.queryParamMap.get('id');
+
+        // Quick fix, not sure what's causing this two run twice,
+        // the second time the id is the old one concatenated with the the context id
+        if (id?.includes('?id=')) {
+          const [newId, newQueryId] = id.split('?id=');
+          const urlArr = this.router.url.split('/');
+          // remove the "faulty" id from the url
+          urlArr.pop();
+
+          this.router.navigateByUrl(
+            urlArr.join('/') + `/${newId}?id=${newQueryId}`
+          );
+
+          return;
+        }
+
         if (id) {
           this.loadDashboard(id, queryId?.trim()).then(
             () => (this.loading = false)
@@ -133,7 +150,7 @@ export class DashboardComponent
 
   /** Sets up the widgets from the dashboard structure */
   private setWidgets() {
-    this.widgets = cloneDeep(
+    this.dashboardService.widgets = cloneDeep(
       this.dashboard?.structure
         ?.filter((x: any) => x !== null)
         .map((widget: any) => {
@@ -212,12 +229,12 @@ export class DashboardComponent
             }),
             { error: true }
           );
-          this.router.navigate(['/applications']);
+          this.router.navigate(['/']);
         }
       })
       .catch((err) => {
         this.snackBar.openSnackBar(err.message, { error: true });
-        this.router.navigate(['/applications']);
+        this.router.navigate(['/']);
       });
   }
 

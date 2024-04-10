@@ -39,3 +39,26 @@ export const DUPLICATE_RESOURCE = gql`
     }
   }
 `;
+
+/** Edit resource gql mutation definition */
+export const EDIT_RESOURCE_ID_SHAPE = gql`
+  mutation editResource($id: ID!, $idShape: IdShapeType) {
+    editResource(id: $id, idShape: $idShape) {
+      id
+      idShape {
+        shape
+        padding
+      }
+    }
+  }
+`;
+
+/** Edit resource gql mutation definition */
+export const EDIT_RESOURCE_IMPORT_FIELD = gql`
+  mutation editResource($id: ID!, $importField: String) {
+    editResource(id: $id, importField: $importField) {
+      id
+      importField
+    }
+  }
+`;

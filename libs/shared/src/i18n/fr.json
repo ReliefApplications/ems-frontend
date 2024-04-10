@@ -261,6 +261,7 @@
 					"ready": "Fichier importé"
 				}
 			},
+			"formStatus": "Le statut actuel du formulaire ne permet pas son affichage.",
 			"formatInvalid": "Veuillez importer un fichier de format .{{format}}.",
 			"groups": {
 				"error": "Une erreur s'est produite lors de la tentative d'obtenir des groupes du service",
@@ -308,7 +309,7 @@
 			"of": "de"
 		},
 		"placeholder": {
-			"address": "Entrez une adresse exemple : 1 rue de la paix, Paris",
+			"address": "Entrez une adresse",
 			"email": "Entrez un email",
 			"name": "Entrez un nom",
 			"search": "Rechercher...",
@@ -796,6 +797,7 @@
 				"confirmationMessage": "Voulez-vous vraiment supprimer {{quantity}} {{rowText}}?"
 			},
 			"display": {
+				"cancelMessage": "Opération annulée",
 				"submissionMessage": "Le formulaire a été sauvegardé."
 			},
 			"draftRecords": {
@@ -1140,6 +1142,13 @@
 			"recovery": {
 				"confirmationMessage": "Souhaitez-vous appliquer les données du {{date}} à l'enregistrement ?",
 				"title": "Récupération de données"
+			},
+			"uniqueField": {
+				"cannotUpdate": "Vous n'êtes pas autorisé à mettre à jour cet enregistrement existant.",
+				"exist": "L'enregistrement avec la question '{{question}}' avec la valeur '{{value}}' existe déjà et cette valeur doit être unique.",
+				"overwriteConfirm": "Voulez-vous écraser l'enregistrement existant?",
+				"title": "Valeur de champ unique",
+				"updateRecord": "Veuillez d'abord mettre à jour la valeur unique de cet enregistrement."
 			}
 		},
 		"records": {
@@ -1187,6 +1196,20 @@
 				"calculatedFields": "Aucun champ dérivé détecté",
 				"layouts": "Aucune mise en page détectée",
 				"records": "Aucun enregistrement détecté"
+			},
+			"importField": {
+				"title": "Champ d'importation",
+				"updateError": "Erreur lors de la mise à jour du champ d'importation de ressources: {{error}}",
+				"updateSuccess": "Le champ d'importation de la ressource '{{resource}}' a été mis à jour avec succès!"
+			},
+			"incrementalIdShape": {
+				"example": "Exemple d'identifiant incrémentiel utilisant l'entrée de forme",
+				"invalidExpression": "Expression de forme d'identifiant non valide",
+				"padding": "Rembourrage",
+				"shape": "Forme",
+				"title": "Forme d'identifiant incrémentiel",
+				"updateError": "Erreur lors de la mise à jour de la forme de l'identifiant incrémentiel de la ressource : {{error}}",
+				"updateSuccess": "La forme de l'identifiant incrémentiel de la ressource '{{resource}}' a été mise à jour avec succès!"
 			},
 			"paginator": {
 				"ariaLabel": "Sélectionnez la page de ressources"
@@ -1539,8 +1562,11 @@
 				},
 				"grid": {
 					"actions": {
+						"actionsAsIcons": "Afficher les actions sous forme d'icônes",
 						"add": "Ajouter de nouveaux enregistrements",
 						"convert": "Convertir des enregistrements",
+						"copyLink": "Copier le lien",
+						"copyLinkDone": "Lien copié dans le presse-papier",
 						"delete": "Supprimer les enregistrements",
 						"export": "Exporter les enregistrements",
 						"goTo": {
@@ -1627,12 +1653,18 @@
 					},
 					"display": {
 						"actionsTitle": "Afficher le titre des actions",
+						"injectClasses": {
+							"title": "Injecter des valeurs en tant que classes CSS",
+							"tooltip": "Lorsqu'un champ est sélectionné, sa valeur sera ajoutée à l'élément <tr> en tant que classe, lui permettant d'être ciblé par un style personnalisé"
+						},
 						"showSingleActionAsButton": "Afficher une seule action sous forme de bouton"
 					},
 					"hint": {
 						"actions": {
+							"actionsAsIcons": "Si activé, au lieu d'afficher le menu à trois points, toutes les actions seront affichées sous forme d'icônes côte à côte",
 							"add": "L'utilisateur peut ajouter de nouveaux enregistrements avec le modèle choisi, s'il en a la permission",
 							"convert": "L'utilisateur peut convertir les enregistrements avec les autres modèles de la ressource sélectionnée, s'il en a la permission",
+							"copyLink": "Si activé, les utilisateurs peuvent copier la même URL de la page \"Naviguer vers\" sur les actions de ligne",
 							"delete": "L'utilisateur peut supprimer les enregistrements affichés, s'il en a la permission",
 							"export": "L'utilisateur peut exporter les enregistrements affichés",
 							"goTo": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
@@ -2529,6 +2561,9 @@
 			"notifications": {
 				"notUpdated": "Erreur lors de l'enregistrement des préférences.",
 				"updated": "Préférences sauvegardées."
+			},
+			"password": {
+				"change": "Changer le mot de passe"
 			},
 			"title": "Votre profil"
 		},

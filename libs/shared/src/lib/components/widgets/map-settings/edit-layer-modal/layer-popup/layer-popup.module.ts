@@ -15,6 +15,8 @@ import {
   IconModule,
   MenuModule,
   TooltipModule,
+  ToggleModule,
+  SelectMenuModule,
 } from '@oort-front/ui';
 import { PortalModule } from '@angular/cdk/portal';
 
@@ -40,6 +42,8 @@ import { PortalModule } from '@angular/cdk/portal';
     EditorControlComponent,
     TooltipModule,
     PortalModule,
+    ToggleModule,
+    SelectMenuModule,
   ],
   exports: [LayerPopupComponent],
 })

@@ -1,65 +1,152 @@
-<button
-  *ngIf="display && (availableActions.length > 1 || !singleActionAsButton)"
-  kendoButton
-  class="text-center"
-  icon="more-vertical"
-  [look]="'flat'"
-  [uiMenuTriggerFor]="menu"
-></button>
-<button
-  *ngIf="display && availableActions.length === 1 && singleActionAsButton"
-  id="single-action-button"
-  kendoButton
-  class="text-center"
-  (click)="action.emit({ action: availableActions[0].action, item })"
->
-  {{ availableActions[0].translationKey | translate }}
-  <div id="single-action-label"></div>
-</button>
-<ui-menu #menu>
+<!-- Actions as icons, side by side -->
+<ng-container *ngIf="actionsAsIcons">
+  <div class="flex pr-1">
+    <button
+      *ngIf="actions.update && item.canUpdate"
+      kendoButton
+      icon="edit"
+      [look]="'flat'"
+      (click)="action.emit({ action: 'update', item: item })"
+      [uiTooltip]="'common.update' | translate"
+    ></button>
+
+    <button
+      *ngIf="actions.history"
+      kendoButton
+      icon="clock-arrow-rotate"
+      [look]="'flat'"
+      (click)="action.emit({ action: 'history', item: item })"
+      [uiTooltip]="'common.history' | translate"
+    ></button>
+
+    <button
+      *ngIf="actions.convert && item.canUpdate"
+      kendoButton
+      icon="connector"
+      [look]="'flat'"
+      (click)="action.emit({ action: 'convert', item: item })"
+      [uiTooltip]="'models.record.convert' | translate"
+    ></button>
+
+    <button
+      *ngIf="actions.delete && item.canDelete"
+      kendoButton
+      icon="trash"
+      [look]="'flat'"
+      (click)="action.emit({ action: 'delete', item: item })"
+      [uiTooltip]="'common.delete' | translate"
+    ></button>
+
+    <button
+      *ngIf="actions.remove"
+      kendoButton
+      icon="x-circle"
+      [look]="'flat'"
+      (click)="action.emit({ action: 'remove', item: item })"
+      [uiTooltip]="'components.widget.settings.grid.actions.remove' | translate"
+    ></button>
+
+    <button
+      *ngIf="actions.navigateSettings?.copyLink"
+      kendoButton
+      icon="copy"
+      [look]="'flat'"
+      (click)="
+        action.emit({
+          action: 'copyLink',
+          item: item,
+          pageUrl: actions.navigateSettings?.pageUrl,
+          field: actions.navigateSettings?.field
+        })
+      "
+      [uiTooltip]="
+        'components.widget.settings.grid.actions.copyLink' | translate
+      "
+    ></button>
+  </div>
+</ng-container>
+
+<!-- Actions inside menu -->
+<ng-container *ngIf="!actionsAsIcons">
   <button
-    *ngIf="actions.update && item.canUpdate"
-    id="update-action-button"
-    uiMenuItem
-    (click)="action.emit({ action: 'update', item: item })"
-  >
-    {{ 'common.update' | translate }}
-    <div id="update-action-label"></div>
-  </button>
+    *ngIf="display && (availableActions.length > 1 || !singleActionAsButton)"
+    kendoButton
+    class="text-center"
+    icon="more-vertical"
+    [look]="'flat'"
+    [uiMenuTriggerFor]="menu"
+  ></button>
   <button
-    *ngIf="actions.history"
-    id="history-action-button"
-    uiMenuItem
-    (click)="action.emit({ action: 'history', item: item })"
+    *ngIf="display && availableActions.length === 1 && singleActionAsButton"
+    id="single-action-button"
+    kendoButton
+    class="text-center"
+    (click)="action.emit({ action: availableActions[0].action, item })"
   >
-    {{ 'common.history' | translate }}
-    <div id="history-action-label"></div>
+    {{ availableActions[0].translationKey | translate }}
+    <div id="single-action-label"></div>
   </button>
-  <button
-    *ngIf="actions.convert && item.canUpdate"
-    id="convert-action-button"
-    uiMenuItem
-    (click)="action.emit({ action: 'convert', item: item })"
-  >
-    {{ 'models.record.convert' | translate }}
-    <div id="convert-action-label"></div>
-  </button>
-  <button
-    *ngIf="actions.delete && item.canDelete"
-    id="delete-action-button"
-    uiMenuItem
-    (click)="action.emit({ action: 'delete', item: item })"
-  >
-    {{ 'common.delete' | translate }}
-    <div id="delete-action-label"></div>
-  </button>
-  <button
-    *ngIf="actions.remove"
-    id="remove-action-button"
-    uiMenuItem
-    (click)="action.emit({ action: 'remove', item: item })"
-  >
-    {{ 'components.widget.settings.grid.actions.remove' | translate }}
-    <div id="remove-action-label"></div>
-  </button>
-</ui-menu>
+  <ui-menu #menu>
+    <button
+      *ngIf="actions.update && item.canUpdate"
+      id="update-action-button"
+      uiMenuItem
+      (click)="action.emit({ action: 'update', item: item })"
+    >
+      {{ 'common.update' | translate }}
+      <div id="update-action-label"></div>
+    </button>
+    <button
+      *ngIf="actions.history"
+      id="history-action-button"
+      uiMenuItem
+      (click)="action.emit({ action: 'history', item: item })"
+    >
+      {{ 'common.history' | translate }}
+      <div id="history-action-label"></div>
+    </button>
+    <button
+      *ngIf="actions.convert && item.canUpdate"
+      id="convert-action-button"
+      uiMenuItem
+      (click)="action.emit({ action: 'convert', item: item })"
+    >
+      {{ 'models.record.convert' | translate }}
+      <div id="convert-action-label"></div>
+    </button>
+    <button
+      *ngIf="actions.delete && item.canDelete"
+      id="delete-action-button"
+      uiMenuItem
+      (click)="action.emit({ action: 'delete', item: item })"
+    >
+      {{ 'common.delete' | translate }}
+      <div id="delete-action-label"></div>
+    </button>
+    <button
+      *ngIf="actions.remove"
+      id="remove-action-button"
+      uiMenuItem
+      (click)="action.emit({ action: 'remove', item: item })"
+    >
+      {{ 'components.widget.settings.grid.actions.remove' | translate }}
+      <div id="remove-action-label"></div>
+    </button>
+    <button
+      *ngIf="actions.navigateSettings?.copyLink"
+      id="copy-field-action-button"
+      uiMenuItem
+      (click)="
+        action.emit({
+          action: 'copyLink',
+          item: item,
+          pageUrl: actions.navigateSettings?.pageUrl,
+          field: actions.navigateSettings?.field
+        })
+      "
+    >
+      {{ 'components.widget.settings.grid.actions.copyLink' | translate }}
+      <div id="copy-field-action-label"></div>
+    </button>
+  </ui-menu>
+</ng-container>

@@ -20,13 +20,23 @@ import {
   PaginatorModule,
   DateModule,
   TooltipModule,
+  DialogModule,
+  ErrorMessageModule,
+  SelectMenuModule,
 } from '@oort-front/ui';
+import { IdShapeModalComponent } from './id-shape-modal/id-shape-modal.component';
+import { ImportFieldModalComponent } from './import-field-modal/import-field-modal.component';
 
 /**
  * Resources page module.
  */
 @NgModule({
-  declarations: [ResourcesComponent, FilterComponent],
+  declarations: [
+    ResourcesComponent,
+    FilterComponent,
+    IdShapeModalComponent,
+    ImportFieldModalComponent,
+  ],
   imports: [
     CommonModule,
     ResourcesRoutingModule,
@@ -45,6 +55,9 @@ import {
     DateModule,
     TooltipModule,
     ListFilterComponent,
+    DialogModule,
+    ErrorMessageModule,
+    SelectMenuModule,
   ],
   exports: [ResourcesComponent],
 })

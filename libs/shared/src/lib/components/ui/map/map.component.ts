@@ -570,6 +570,26 @@ export class MapComponent
             this.layerControlButtons.remove();
           }
         }
+        // Get layers as a single-level array in the same order as saved in the settings
+        const orderedLayers: any[] = [];
+        const extractLayer = (layers: any[]) => {
+          layers.forEach((layer: any) => {
+            if (layer.children) {
+              extractLayer(layer.children);
+            } else {
+              orderedLayers.push(layer);
+            }
+          });
+        };
+        extractLayer(flatten(this.overlaysTree));
+        orderedLayers.forEach((item, index) => {
+          // Retrieve the layer object to initialize the legend
+          const layer = this.layers.find((layer) => layer.id === item.layer.id);
+          if (layer) {
+            layer.legendIndex = index;
+            layer.onAddLayer(this.map, item.layer);
+          }
+        });
         // When layers are created, filters are then initialized
         this.initFilters();
       });

@@ -11,9 +11,32 @@ import {
   ResourceDropdownComponent,
   ResourceSelectTextComponent,
   TestServiceDropdownComponent,
+  DownloadService,
 } from '@oort-front/shared';
 import { CldrIntlService, IntlService } from '@progress/kendo-angular-intl';
 import { Router } from '@angular/router';
+
+/**
+ * Parses a query string and returns an object with key-value pairs.
+ *
+ * @param queryString The query string to parse.
+ * @returns An object with key-value pairs representing the parsed query string.
+ */
+const parseQuery = (queryString: string): Record<string, string> => {
+  if (!queryString) {
+    return {};
+  }
+
+  const query: Record<string, string> = {};
+  const pairs = (
+    queryString[0] === '?' ? queryString.substring(1) : queryString
+  ).split('&');
+  for (let i = 0; i < pairs.length; i++) {
+    const pair = pairs[i].split('=');
+    query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+  }
+  return query;
+};
 
 /**
  * Main component of Front-office.
@@ -45,12 +68,14 @@ export class AppComponent implements OnInit {
    * @param translate Angular translate service
    * @param kendoIntl Kendo Intl Service
    * @param router Angular router service
+   * @param downloadService Shared download service
    */
   constructor(
     private authService: AuthService,
     private translate: TranslateService,
     private kendoIntl: IntlService,
-    private router: Router
+    private router: Router,
+    private downloadService: DownloadService
   ) {
     this.translate.addLangs(environment.availableLanguages);
     this.translate.setDefaultLang(environment.availableLanguages[0]);
@@ -88,7 +113,12 @@ export class AppComponent implements OnInit {
       const target = event.target.getAttribute('target');
       const openOnSameTab = !target || target === '_self';
 
-      if (
+      if (href?.startsWith('https://pci-reports.azurewebsites.net')) {
+        event.preventDefault(); // Prevent default navigation behavior
+        event.stopImmediatePropagation(); // Stop event propagation
+        // Open snackbar
+        this.downloadService.getFile(href ?? '', 'pdf', 'location report.pdf');
+      } else if (
         href &&
         openOnSameTab &&
         (href.startsWith(environment.frontOfficeUri) || isRelativeUrl(href))
@@ -96,7 +126,9 @@ export class AppComponent implements OnInit {
         // Navigate to the url in the href using the router
         event.preventDefault();
         const regex = new RegExp(`^${environment.frontOfficeUri}`);
-        this.router.navigate([href.replace(regex, '')]).catch(() => {
+        const [route, params] = href.replace(regex, '').split('?');
+        const queryParams = parseQuery(params);
+        this.router.navigate([route], { queryParams }).catch(() => {
           // If the navigation fails, fallback to window.location.href
           window.location.href = href;
         });

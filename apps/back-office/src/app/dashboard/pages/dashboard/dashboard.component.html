@@ -193,7 +193,7 @@
   <shared-widget-grid
     class="flex-1"
     [loading]="loading"
-    [widgets]="widgets"
+    [widgets]="dashboardService.widgets"
     [options]="gridOptions"
     [canUpdate]="(canUpdate && editionActive) || false"
     (edit)="onEditTile($event)"

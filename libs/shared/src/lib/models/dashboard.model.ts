@@ -12,7 +12,7 @@ import { FormSettingsComponent } from '../components/widgets/form-settings/form-
 
 /** Model for IWidgetType object */
 export interface IWidgetType {
-  id: string;
+  widgetType: string;
   name: string;
   icon: string;
   color: string;
@@ -49,7 +49,7 @@ export abstract class WidgetSettings<T extends (...args: any[]) => any> {
 /** List of Widget types with their properties */
 export const WIDGET_TYPES = [
   {
-    id: 'form',
+    widgetType: 'form',
     name: 'Form',
     icon: '/assets/form.svg',
     color: '#C5D3FC',
@@ -63,7 +63,7 @@ export const WIDGET_TYPES = [
     settingsTemplate: FormSettingsComponent,
   },
   {
-    id: 'donut-chart',
+    widgetType: 'donut-chart',
     name: 'Donut chart',
     icon: '/assets/donut.svg',
     color: '#3B8CC4',
@@ -80,7 +80,7 @@ export const WIDGET_TYPES = [
     settingsTemplate: ChartSettingsComponent,
   },
   {
-    id: 'column-chart',
+    widgetType: 'column-chart',
     name: 'Column chart',
     icon: '/assets/column.svg',
     color: '#EBA075',
@@ -97,7 +97,7 @@ export const WIDGET_TYPES = [
     settingsTemplate: ChartSettingsComponent,
   },
   {
-    id: 'line-chart',
+    widgetType: 'line-chart',
     name: 'Line chart',
     icon: '/assets/line.svg',
     color: '#F6C481',
@@ -114,7 +114,7 @@ export const WIDGET_TYPES = [
     settingsTemplate: ChartSettingsComponent,
   },
   {
-    id: 'pie-chart',
+    widgetType: 'pie-chart',
     name: 'Pie chart',
     icon: '/assets/pie.svg',
     color: '#8CCDD5',
@@ -131,7 +131,7 @@ export const WIDGET_TYPES = [
     settingsTemplate: ChartSettingsComponent,
   },
   {
-    id: 'polar-chart',
+    widgetType: 'polar-chart',
     name: 'Polar chart',
     icon: '/assets/pie.svg',
     color: '#8CCDD5',
@@ -148,7 +148,7 @@ export const WIDGET_TYPES = [
     settingsTemplate: ChartSettingsComponent,
   },
   {
-    id: 'bar-chart',
+    widgetType: 'bar-chart',
     name: 'Bar chart',
     icon: '/assets/bar.svg',
     color: '#B5DC8D',
@@ -165,7 +165,7 @@ export const WIDGET_TYPES = [
     settingsTemplate: ChartSettingsComponent,
   },
   {
-    id: 'radar-chart',
+    widgetType: 'radar-chart',
     name: 'Radar chart',
     icon: '/assets/pie.svg',
     color: '#8CCDD5',
@@ -182,7 +182,7 @@ export const WIDGET_TYPES = [
     settingsTemplate: ChartSettingsComponent,
   },
   {
-    id: 'grid',
+    widgetType: 'grid',
     name: 'Grid',
     icon: '/assets/grid.svg',
     color: '#AC8CD5',
@@ -203,7 +203,7 @@ export const WIDGET_TYPES = [
     settingsTemplate: GridSettingsComponent,
   },
   {
-    id: 'map',
+    widgetType: 'map',
     name: 'Map',
     icon: '/assets/map.svg',
     color: '#D58CA6',
@@ -217,7 +217,7 @@ export const WIDGET_TYPES = [
     settingsTemplate: MapSettingsComponent,
   },
   {
-    id: 'text',
+    widgetType: 'text',
     name: 'Text',
     icon: '/assets/text.svg',
     color: '#2F383E',
@@ -232,7 +232,7 @@ export const WIDGET_TYPES = [
     settingsTemplate: EditorSettingsComponent,
   },
   {
-    id: 'summaryCard',
+    widgetType: 'summaryCard',
     name: 'Summary card',
     icon: '/assets/summary-card.svg',
     color: '#99CBEF',
@@ -244,7 +244,7 @@ export const WIDGET_TYPES = [
     settingsTemplate: SummaryCardSettingsComponent,
   },
   {
-    id: 'tabs',
+    widgetType: 'tabs',
     name: 'Tabs',
     icon: '/assets/tab.svg',
     color: '#D5B38C',

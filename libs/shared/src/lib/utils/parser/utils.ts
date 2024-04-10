@@ -82,7 +82,25 @@ export const parseHtml = (
       options.styles
     );
   }
-  return applyOperations(formattedHtml);
+  formattedHtml = applyOperations(formattedHtml);
+
+  const linkRegex = /<a[^>]+href="([^"]+)"[^>]*>/g;
+  const links = formattedHtml.match(linkRegex);
+  links?.forEach((link: any) => {
+    // Format links that will be open in a new window
+    const match = link.match(
+      /href="([^"]+)"[^>]+target="_blank" rel="noopener"/
+    );
+    if (match) {
+      const formattedLink = link.replace(
+        linkRegex,
+        `<a onclick="window.open('$1')" target="_blank" rel="noopener" style="color: blue; text-decoration: underline; cursor: pointer;">`
+      );
+      formattedHtml = formattedHtml.replace(link, formattedLink);
+    }
+  });
+
+  return formattedHtml;
 };
 
 /**
@@ -209,6 +227,9 @@ const replaceRecordFields = (
                 .map((key) => `${key}: ${obj[key]}`)
                 .join(', ');
             }
+          } else if (typeof obj === 'string') {
+            // If string, we replace new lines with <br> to keep the format
+            return obj.replace(/\n/g, '<br>');
           } else {
             // If not an object, return string representation
             return `${obj}`;

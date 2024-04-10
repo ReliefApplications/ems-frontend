@@ -2,6 +2,7 @@
 <kendo-grid
   id="recordsGrid"
   class="w-full"
+  [rowClass]="injectClasses.bind(this)"
   [class.border-none]="!showBorder"
   [loading]="loadingRecords || loadingSettings"
   [data]="status.error ? [] : data"
@@ -1078,6 +1079,7 @@
             !!widget?.settings?.widgetDisplay?.showSingleActionAsButton
           "
           [actions]="actions"
+          [actionsAsIcons]="actions.actionsAsIcons ?? false"
           (action)="action.emit($event)"
         >
         </shared-grid-row-actions>

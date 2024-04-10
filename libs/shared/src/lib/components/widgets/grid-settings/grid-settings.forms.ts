@@ -190,6 +190,9 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
       actionsTitle: new FormControl(
         get<string>(configuration, 'widgetDisplay.actionsTitle', '')
       ),
+      addToRowClasses: new FormControl(
+        get<string[]>(configuration, 'widgetDisplay.addToRowClasses', [])
+      ),
     }
   );
   return extendedForm;
@@ -246,11 +249,15 @@ export const createGridActionsFormGroup = (configuration: any) => {
     export: [get(configuration, 'actions.export', true)],
     showDetails: [get(configuration, 'actions.showDetails', true)],
     navigateToPage: [get(configuration, 'actions.navigateToPage', false)],
+    actionsAsIcons: [get(configuration, 'actions.actionsAsIcons', false)],
     navigateSettings: fb.group({
       pageUrl: [get(configuration, 'actions.navigateSettings.pageUrl', '')],
       field: [get(configuration, 'actions.navigateSettings.field', '')],
       title: [
         get(configuration, 'actions.navigateSettings.title', 'Details view'),
+      ],
+      copyLink: [
+        get(configuration, 'actions.navigateSettings.copyLink', false),
       ],
     }),
   });

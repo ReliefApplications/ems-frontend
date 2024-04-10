@@ -261,6 +261,7 @@
 					"ready": "******"
 				}
 			},
+			"formStatus": "******",
 			"formatInvalid": "****** {{format}} ******",
 			"groups": {
 				"error": "******",
@@ -785,6 +786,7 @@
 				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
 			},
 			"display": {
+				"cancelMessage": "******",
 				"submissionMessage": "******"
 			},
 			"draftRecords": {
@@ -1129,6 +1131,13 @@
 			"recovery": {
 				"confirmationMessage": "****** {{date}} ******",
 				"title": "******"
+			},
+			"uniqueField": {
+				"cannotUpdate": "******",
+				"exist": "****** {{question}} ****** {{value}} ******",
+				"overwriteConfirm": "******",
+				"title": "******",
+				"updateRecord": "******"
 			}
 		},
 		"records": {
@@ -1176,6 +1185,20 @@
 				"calculatedFields": "******",
 				"layouts": "******",
 				"records": "******"
+			},
+			"importField": {
+				"title": "******",
+				"updateError": "****** {{error}}",
+				"updateSuccess": "****** {{resource}} ******"
+			},
+			"incrementalIdShape": {
+				"example": "******",
+				"invalidExpression": "******",
+				"padding": "******",
+				"shape": "******",
+				"title": "******",
+				"updateError": "****** {{error}}",
+				"updateSuccess": "****** {{resource}} ******"
 			},
 			"paginator": {
 				"ariaLabel": "******"
@@ -1526,8 +1549,11 @@
 				},
 				"grid": {
 					"actions": {
+						"actionsAsIcons": "******",
 						"add": "******",
 						"convert": "******",
+						"copyLink": "******",
+						"copyLinkDone": "******",
 						"delete": "******",
 						"export": "******",
 						"goTo": {
@@ -1614,12 +1640,18 @@
 					},
 					"display": {
 						"actionsTitle": "******",
+						"injectClasses": {
+							"title": "******",
+							"tooltip": "******"
+						},
 						"showSingleActionAsButton": "******"
 					},
 					"hint": {
 						"actions": {
+							"actionsAsIcons": "******",
 							"add": "******",
 							"convert": "******",
+							"copyLink": "******",
 							"delete": "******",
 							"export": "******",
 							"goTo": "******",
@@ -2515,6 +2547,9 @@
 			"notifications": {
 				"notUpdated": "******",
 				"updated": "******"
+			},
+			"password": {
+				"change": "******"
 			},
 			"title": "******"
 		},

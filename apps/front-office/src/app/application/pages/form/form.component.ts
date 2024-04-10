@@ -145,7 +145,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * Handles the response for the given form query response data and loading state
    *
    * @param {FormQueryResponse} data data retrieved from the form query
-   * @param {boolean} loading loadin state
+   * @param {boolean} loading loading state
    */
   private handleApplicationLoadResponse(
     data: FormQueryResponse,
@@ -154,18 +154,23 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     if (data) {
       this.form = data.form;
     }
-    if (
-      !this.form ||
-      this.form.status !== 'active' ||
-      !this.form.canCreateRecords
-    ) {
+
+    const displayError = (error: string) => {
       this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.accessNotProvided', {
+        this.translate.instant(error, {
           type: this.translate.instant('common.form.one').toLowerCase(),
           error: '',
         }),
         { error: true }
       );
+    };
+
+    if (!this.form) {
+      displayError('common.notifications.objectNotFound');
+    } else if (this.form.status !== 'active') {
+      displayError('common.notifications.formStatus');
+    } else if (!this.form.canCreateRecords) {
+      displayError('common.notifications.accessNotProvided');
     } else {
       this.canCreateRecords = true;
     }

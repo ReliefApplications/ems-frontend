@@ -204,6 +204,85 @@ export const buildAddButton = (
 };
 
 /**
+ * Build the add button for resource and resources components
+ *
+ * @param question The question object
+ * @param dialog The Dialog service
+ * @param ngZone Angular Service to execute code inside Angular environment
+ * @param document Document
+ * @returns The button DOM element
+ */
+export const buildUpdateButton = (
+  question: Question,
+  dialog: Dialog,
+  ngZone: NgZone,
+  document: Document
+): any => {
+  const survey = question.survey as SurveyModel;
+  const updateButton = document.createElement('button');
+
+  const updateButtonText = () => {
+    updateButton.innerText =
+      question.updateRecordText ??
+      surveyLocalization.getString(
+        'oort:updateRecord',
+        survey.locale || survey.defaultLanguage
+      );
+  };
+  updateButtonText();
+
+  // Listen to language change and update button text
+  survey.onLocaleChangedEvent.add(updateButtonText);
+
+  updateButton.className = 'sd-btn !px-3 !py-1';
+  if (question.updateRecord) {
+    updateButton.onclick = async () => {
+      const { ResourceModalComponent } = await import(
+        '../../components/resource-modal/resource-modal.component'
+      );
+      ngZone.run(() => {
+        const dialogRef = dialog.open(ResourceModalComponent, {
+          disableClose: true,
+          data: {
+            recordId: question.value,
+            alwaysCreateRecord: false,
+            askForConfirm: false,
+          },
+          height: '98%',
+          width: '100vw',
+          panelClass: 'full-screen-modal',
+        });
+        dialogRef.closed.subscribe((result: any) => {
+          if (result) {
+            const { data } = result;
+            question.template = result.template;
+            question.draftData = {
+              ...question.draftData,
+              [data.id]: data.data,
+            };
+
+            const updatedItem = {
+              value: data.id,
+              text: data.data[question.displayField],
+            };
+            const itemIndex = question.contentQuestion.choices.findIndex(
+              (choice: any) => choice.value === updatedItem.value
+            );
+            if (itemIndex !== -1) {
+              const newChoices = [...question.contentQuestion.choices];
+              newChoices[itemIndex] = updatedItem;
+              question.contentQuestion.choices = newChoices;
+            }
+          }
+        });
+      });
+    };
+  }
+
+  return updateButton;
+};
+
+/**
  * Updates the newCreatedRecords for resource and resources questions
  *
  * @param question The question object

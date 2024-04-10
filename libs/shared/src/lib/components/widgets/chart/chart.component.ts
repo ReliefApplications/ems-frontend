@@ -15,7 +15,7 @@ import { BarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component
 import { uniq, get, groupBy, isEqual } from 'lodash';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { BehaviorSubject, Subject, merge } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
@@ -174,21 +174,18 @@ export class ChartComponent
   ngOnInit(): void {
     // Listen to dashboard filters changes if it is necessary
     this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(({ previous, current }) => {
-        if (
-          this.contextService.filterRegex.test(this.settings.contextFilters) ||
-          this.contextService.filterRegex.test(
-            this.settings.referenceDataVariableMapping
-          )
-        ) {
-          if (
-            this.contextService.shouldRefresh(this.settings, previous, current)
-          ) {
-            this.series.next([]);
-            this.loadChart();
-            this.getOptions();
-          }
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ previous, current, resourceId }) => {
+        const hasFilter =
+          (this.contextService.filterRegex.test(this.settings.contextFilters) ||
+            this.contextService.filterRegex.test(
+              this.settings.referenceDataVariableMapping
+            )) &&
+          this.contextService.shouldRefresh(this.settings, previous, current);
+        if (resourceId === this.settings.resource || hasFilter) {
+          this.series.next([]);
+          this.loadChart();
+          this.getOptions();
         }
       });
   }
