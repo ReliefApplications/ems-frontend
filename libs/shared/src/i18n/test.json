@@ -1551,10 +1551,19 @@
 					"actions": {
 						"actionsAsIcons": "******",
 						"add": "******",
-						"convert": "******",
-						"copyLink": "******",
+						"convert": {
+							"label": "******",
+							"text": "******"
+						},
+						"copyLink": {
+							"label": "******",
+							"text": "******"
+						},
 						"copyLinkDone": "******",
-						"delete": "******",
+						"delete": {
+							"label": "******",
+							"text": "******"
+						},
 						"export": "******",
 						"goTo": {
 							"column": {
@@ -1582,10 +1591,16 @@
 							"placeholder": "******"
 						},
 						"remove": "******",
-						"show": "******",
+						"show": {
+							"label": "******",
+							"text": "******"
+						},
 						"showDetails": "******",
 						"title": "******",
-						"update": "******",
+						"update": {
+							"label": "******",
+							"text": "******"
+						},
 						"useRecordId": "******"
 					},
 					"aggregations": {

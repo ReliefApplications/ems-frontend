@@ -305,9 +305,13 @@ export class CoreGridComponent
   public actions: GridActions = {
     add: false,
     update: false,
+    updateLabel: '',
     delete: false,
+    deleteLabel: '',
     history: false,
+    historyLabel: '',
     convert: false,
+    convertLabel: '',
     export: this.showExport,
     showDetails: true,
     navigateToPage: false,
@@ -316,6 +320,7 @@ export class CoreGridComponent
       pageUrl: '',
       title: '',
       copyLink: false,
+      copyLinkLabel: '',
     },
     remove: false,
     actionsAsIcons: false,
@@ -419,9 +424,13 @@ export class CoreGridComponent
         get(this.settings, 'actions.addRecord', false) &&
         this.settings.template,
       history: get(this.settings, 'actions.history', false),
+      historyLabel: get(this.settings, 'actions.historyLabel', ''),
       update: get(this.settings, 'actions.update', false),
+      updateLabel: get(this.settings, 'actions.updateLabel', ''),
       delete: get(this.settings, 'actions.delete', false),
+      deleteLabel: get(this.settings, 'actions.deleteLabel', ''),
       convert: get(this.settings, 'actions.convert', false),
+      convertLabel: get(this.settings, 'actions.convertLabel', ''),
       export: get(this.settings, 'actions.export', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
       navigateToPage: get(this.settings, 'actions.navigateToPage', false),
@@ -433,6 +442,11 @@ export class CoreGridComponent
           this.settings,
           'actions.navigateSettings.copyLink',
           false
+        ),
+        copyLinkLabel: get(
+          this.settings,
+          'actions.navigateSettings.copyLinkLabel',
+          ''
         ),
       },
       remove: get(this.settings, 'actions.remove', false),

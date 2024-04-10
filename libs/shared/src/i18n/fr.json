@@ -1564,10 +1564,19 @@
 					"actions": {
 						"actionsAsIcons": "Afficher les actions sous forme d'icônes",
 						"add": "Ajouter de nouveaux enregistrements",
-						"convert": "Convertir des enregistrements",
-						"copyLink": "Copier le lien",
+						"convert": {
+							"label": "Libellé du bouton convertir des enregistrements",
+							"text": "Convertir des enregistrements"
+						},
+						"copyLink": {
+							"label": "Libellé du bouton Copier le lien",
+							"text": "Copier le lien"
+						},
 						"copyLinkDone": "Lien copié dans le presse-papier",
-						"delete": "Supprimer les enregistrements",
+						"delete": {
+							"label": "Libellé du bouton supprimer les enregistrements",
+							"text": "Supprimer les enregistrements"
+						},
 						"export": "Exporter les enregistrements",
 						"goTo": {
 							"column": {
@@ -1595,10 +1604,16 @@
 							"placeholder": "Entrez un nom pour la colonne..."
 						},
 						"remove": "Retirer",
-						"show": "Voir l'historique",
+						"show": {
+							"label": "Libellé du bouton voir l'historique",
+							"text": "Voir l'historique"
+						},
 						"showDetails": "Afficher les détails des enregistrements",
 						"title": "Actions activées",
-						"update": "Modifier les enregistrements",
+						"update": {
+							"label": "Libellé du bouton modifier les enregistrements",
+							"text": "Modifier les enregistrements"
+						},
 						"useRecordId": "Injecter l'identifiant comme paramètre de navigation"
 					},
 					"aggregations": {
