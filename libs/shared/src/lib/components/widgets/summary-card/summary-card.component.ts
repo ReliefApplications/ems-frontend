@@ -159,9 +159,7 @@ export class SummaryCardComponent
         filters: [
           {
             logic: 'or',
-            field: '_globalSearch',
-            operator: 'contains',
-            value: searchFilters(
+            filters: searchFilters(
               this.searchControl.value,
               this.fields,
               skippedFields

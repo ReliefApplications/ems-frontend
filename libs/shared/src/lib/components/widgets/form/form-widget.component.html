@@ -1,0 +1,19 @@
+<ng-template #headerTemplate>
+  <span class="widget-title" [title]="settings.title">{{
+    settings.title
+  }}</span>
+</ng-template>
+
+<ng-container *ngIf="!loading && form">
+  <shared-form
+    [form]="form"
+    [floatingActions]="false"
+    [record]="record"
+    (save)="onComplete($event)"
+  ></shared-form>
+  <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">
+    <ui-button category="secondary" (click)="clearForm()" class="mt-2 m-auto">{{
+      'models.record.new' | translate
+    }}</ui-button>
+  </ng-container>
+</ng-container>

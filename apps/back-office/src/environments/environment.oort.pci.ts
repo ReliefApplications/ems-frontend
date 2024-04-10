@@ -7,9 +7,9 @@ import { Environment } from './environment.type';
  * Authentication configuration
  */
 const authConfig: AuthConfig = {
-  issuer: 'https://id-ltkmp.oortcloud.tech/auth/realms/oort',
-  redirectUri: 'https://ltkmp.oortcloud.tech/admin/',
-  postLogoutRedirectUri: 'https://ltkmp.oortcloud.tech/admin/auth/',
+  issuer: 'https://id.libyatt.ly/auth/realms/oort',
+  redirectUri: 'https://libyatt.ly/admin/',
+  postLogoutRedirectUri: 'https://libyatt.ly/admin/auth/',
   clientId: 'oort-client',
   scope: 'openid profile email offline_access',
   responseType: 'code',
@@ -23,15 +23,16 @@ export const environment: Environment = {
   ...sharedEnvironment,
 
   production: true,
-  apiUrl: 'https://ltkmp.oortcloud.tech/api',
-  subscriptionApiUrl: 'wss://ltkmp.oortcloud.tech/api',
-  frontOfficeUri: 'https://ltkmp.oortcloud.tech',
-  backOfficeUri: 'https://ltkmp.oortcloud.tech/admin/',
+  apiUrl: 'https://libyatt.ly/api',
+  subscriptionApiUrl: 'wss://libyatt.ly/api',
+  frontOfficeUri: 'https://libyatt.ly',
+  backOfficeUri: 'https://libyatt.ly/admin/',
   module: 'backoffice',
   availableLanguages: ['en', 'fr'],
   authConfig,
   theme,
   availableWidgets: [
+    'form',
     'donut-chart',
     'line-chart',
     'bar-chart',

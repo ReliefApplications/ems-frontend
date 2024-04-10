@@ -5,9 +5,9 @@ import { Environment } from './environment.type';
 
 /** Authentication configuration of the module. */
 const authConfig: AuthConfig = {
-  issuer: 'https://id-ltkmp.oortcloud.tech/auth/realms/oort',
-  redirectUri: 'https://ltkmp.oortcloud.tech/',
-  postLogoutRedirectUri: 'https://ltkmp.oortcloud.tech/auth/',
+  issuer: 'https://id.libyatt.ly/auth/realms/oort',
+  redirectUri: 'https://libyatt.ly/',
+  postLogoutRedirectUri: 'https://libyatt.ly/auth/',
   clientId: 'oort-client',
   scope: 'openid profile email offline_access',
   responseType: 'code',
@@ -18,10 +18,10 @@ const authConfig: AuthConfig = {
 export const environment: Environment = {
   ...sharedEnvironment,
   production: true,
-  apiUrl: 'https://ltkmp.oortcloud.tech/api',
-  subscriptionApiUrl: 'wss://ltkmp.oortcloud.tech/api',
-  frontOfficeUri: 'https://ltkmp.oortcloud.tech',
-  backOfficeUri: 'https://ltkmp.oortcloud.tech/admin/',
+  apiUrl: 'https://libyatt.ly/api',
+  subscriptionApiUrl: 'wss://libyatt.ly/api',
+  frontOfficeUri: 'https://libyatt.ly',
+  backOfficeUri: 'https://libyatt.ly/admin/',
   availableLanguages: ['en', 'fr'],
   authConfig,
   theme,

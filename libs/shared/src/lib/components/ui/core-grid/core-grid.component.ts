@@ -252,9 +252,7 @@ export class CoreGridComponent
           { logic: 'and', filters: filterCpy },
           {
             logic: 'or',
-            field: '_globalSearch',
-            operator: 'contains',
-            value: searchFilters(
+            filters: searchFilters(
               this.search,
               this.fields.map((field) => field.meta),
               skippedFields

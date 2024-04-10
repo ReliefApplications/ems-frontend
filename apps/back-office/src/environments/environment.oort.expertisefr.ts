@@ -1,15 +1,15 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
-import { theme } from '../themes/oort/oort.prod';
+import { theme } from '../themes/expertisefr/expertisefr.prod';
 import { sharedEnvironment } from './environment.shared';
 import { Environment } from './environment.type';
 
 /**
- * Authentification configuration
+ * Authentication configuration
  */
 const authConfig: AuthConfig = {
-  issuer: 'https://id.oortcloud.tech/auth/realms/oort-demo',
-  redirectUri: 'https://demo.oortcloud.tech/admin/',
-  postLogoutRedirectUri: 'https://demo.oortcloud.tech/admin/auth/',
+  issuer: 'https://id-tess-mav.oortcloud.tech/auth/realms/oort',
+  redirectUri: 'https://tess-mav.oortcloud.tech/admin/',
+  postLogoutRedirectUri: 'https://tess-mav.oortcloud.tech/admin/auth/',
   clientId: 'oort-client',
   scope: 'openid profile email offline_access',
   responseType: 'code',
@@ -22,13 +22,13 @@ const authConfig: AuthConfig = {
 export const environment: Environment = {
   ...sharedEnvironment,
   production: true,
-  apiUrl: 'https://demo.oortcloud.tech/api',
-  subscriptionApiUrl: 'wss://demo.oortcloud.tech/api',
-  frontOfficeUri: 'https://demo.oortcloud.tech',
-  backOfficeUri: 'https://demo.oortcloud.tech/admin/',
-  module: 'backoffice',
+  apiUrl: 'https://tess-mav.oortcloud.tech/api',
+  subscriptionApiUrl: 'wss://tess-mav.oortcloud.tech/api',
+  frontOfficeUri: 'https://tess-mav.oortcloud.tech',
+  backOfficeUri: 'https://tess-mav.oortcloud.tech/admin/',
   availableLanguages: ['en', 'fr'],
   authConfig,
+  esriApiKey: '',
   theme,
   availableWidgets: [
     'form',
@@ -37,8 +37,6 @@ export const environment: Environment = {
     'bar-chart',
     'column-chart',
     'pie-chart',
-    'polar-chart',
-    'radar-chart',
     'grid',
     'text',
     'map',

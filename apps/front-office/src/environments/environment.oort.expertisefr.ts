@@ -7,9 +7,9 @@ import { Environment } from './environment.type';
  * Authentication configuration
  */
 const authConfig: AuthConfig = {
-  issuer: 'https://id.oortcloud.tech/auth/realms/oort',
-  redirectUri: 'https://dms.oortcloud.tech/admin/',
-  postLogoutRedirectUri: 'https://dms.oortcloud.tech/admin/auth/',
+  issuer: 'https://id-tess-mav.oortcloud.tech/auth/realms/oort',
+  redirectUri: 'https://tess-mav.oortcloud.tech/',
+  postLogoutRedirectUri: 'https://tess-mav.oortcloud.tech/auth/',
   clientId: 'oort-client',
   scope: 'openid profile email offline_access',
   responseType: 'code',
@@ -22,24 +22,12 @@ const authConfig: AuthConfig = {
 export const environment: Environment = {
   ...sharedEnvironment,
   production: true,
-  apiUrl: 'https://dms.oortcloud.tech/api',
-  subscriptionApiUrl: 'wss://dms.oortcloud.tech/api',
-  frontOfficeUri: 'https://dms.oortcloud.tech',
-  backOfficeUri: 'https://dms.oortcloud.tech/admin/',
+  apiUrl: 'https://tess-mav.oortcloud.tech/api',
+  subscriptionApiUrl: 'wss://tess-mav.oortcloud.tech/api',
+  frontOfficeUri: 'https://tess-mav.oortcloud.tech',
+  backOfficeUri: 'https://tess-mav.oortcloud.tech/admin/',
   availableLanguages: ['en', 'fr'],
   authConfig,
+  esriApiKey: '',
   theme,
-  availableWidgets: [
-    'form',
-    'donut-chart',
-    'line-chart',
-    'bar-chart',
-    'column-chart',
-    'pie-chart',
-    'grid',
-    'text',
-    'map',
-    'summaryCard',
-    'tabs',
-  ],
 };

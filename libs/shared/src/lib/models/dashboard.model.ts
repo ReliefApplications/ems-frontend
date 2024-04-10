@@ -8,6 +8,7 @@ import { SummaryCardSettingsComponent } from '../components/widgets/summary-card
 import { Category, Variant } from '@oort-front/ui';
 import { TabsSettingsComponent } from '../components/widgets/tabs-settings/tabs-settings.component';
 import { EventEmitter } from '@angular/core';
+import { FormSettingsComponent } from '../components/widgets/form-settings/form-settings.component';
 
 /** Model for IWidgetType object */
 export interface IWidgetType {
@@ -47,6 +48,20 @@ export abstract class WidgetSettings<T extends (...args: any[]) => any> {
 
 /** List of Widget types with their properties */
 export const WIDGET_TYPES = [
+  {
+    widgetType: 'form',
+    name: 'Form',
+    icon: '/assets/form.svg',
+    color: '#C5D3FC',
+    settings: {
+      title: 'Form widget',
+    },
+    defaultCols: 4,
+    defaultRows: 4,
+    minRow: 1,
+    component: 'form',
+    settingsTemplate: FormSettingsComponent,
+  },
   {
     widgetType: 'donut-chart',
     name: 'Donut chart',
