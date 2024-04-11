@@ -273,23 +273,32 @@ export class DownloadService {
       Accept: 'application/json',
     });
 
+    const handleError = (errorMessage: string) => {
+      snackBarSpinner.instance.message = errorMessage;
+      snackBarSpinner.instance.loading = false;
+      snackBarSpinner.instance.error = true;
+      snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+    };
+
     return this.restService.post(path, formData, { headers }).pipe(
       tap({
-        next: () => {
-          snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.file.upload.ready'
-          );
-          snackBarSpinner.instance.loading = false;
-          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+        next: (response) => {
+          if (response.error) {
+            // Manually handle errors on file such as: missing required field, resource not found
+            handleError(response.message);
+          } else {
+            snackBarSpinner.instance.message = this.translate.instant(
+              'common.notifications.file.upload.ready'
+            );
+            snackBarSpinner.instance.loading = false;
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+          }
         },
         error: (err) => {
           console.log(err);
-          snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.file.upload.error'
+          handleError(
+            this.translate.instant('common.notifications.file.upload.error')
           );
-          snackBarSpinner.instance.loading = false;
-          snackBarSpinner.instance.error = true;
-          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
       })
     );
