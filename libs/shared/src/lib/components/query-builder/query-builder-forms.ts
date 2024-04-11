@@ -158,7 +158,7 @@ export const createQueryForm = (value: any, validators = true) =>
 export const createDisplayForm = (value: any) =>
   formBuilder.group({
     showFilter: [value?.showFilter],
-    actionsColWidth: [value?.actionsColWidth || 86],
+    actionsColWidth: [value?.actionsColWidth || 54],
     sort: [value?.sort || []],
     fields: [value?.fields || null],
     filter: [value?.filter || null],

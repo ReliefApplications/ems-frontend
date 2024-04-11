@@ -103,7 +103,7 @@ export class GridComponent
   /** Input decorator for fields. */
   @Input() fields: any[] = [];
   /** Input decorator the the action column width */
-  @Input() actionsWidth = 86;
+  @Input() actionsWidth = 54;
   /** Input decorator for data. */
   @Input() data: GridDataResult = { data: [], total: 0 };
   /** Input decorator for loadingRecords. */
