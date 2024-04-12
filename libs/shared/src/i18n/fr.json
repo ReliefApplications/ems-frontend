@@ -2200,9 +2200,22 @@
 				"none": "Pas de bouton d'action",
 				"one": "Bouton d'action",
 				"openInNewTab": "Ouvrir dans un nouvel onglet",
+				"roles": {
+					"any": "Tout",
+					"none": "Aucun"
+				},
 				"text": "Texte du bouton",
+				"type": "Type",
+				"types": {
+					"emailNotification": "Notification par email",
+					"link": "Lien",
+					"recordEdition": "Modifier enregistrement"
+				},
 				"variant": "Variante de bouton",
-				"visibleTo": "Visible pour les rôles"
+				"visibleTo": "Visible pour les rôles",
+				"warnings": {
+					"recordEdition": "Sélectionnez un enregistrement pour activer ce bouton"
+				}
 			},
 			"closable": "Peut être fermé",
 			"context": {

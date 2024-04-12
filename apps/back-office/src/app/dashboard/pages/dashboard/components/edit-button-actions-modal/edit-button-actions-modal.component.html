@@ -70,11 +70,25 @@
             >
               {{
                 element.hasRoleRestriction
-                  ? getCorrespondingRoles(element.roles)
-                  : ''
+                  ? (element.roles.length > 0 ? getCorrespondingRoles(element.roles) : 'models.dashboard.buttonActions.roles.none' | translate)
+                  : 'models.dashboard.buttonActions.roles.any' | translate
               }}
             </td>
           </ng-container>
+
+          <ng-container cdkColumnDef="type">
+            <th uiCellHeader *cdkHeaderCellDef>
+              {{ 'models.dashboard.buttonActions.type' | translate }}
+            </th>
+            <td
+              uiCell
+              *cdkCellDef="let element"
+              class="!text-gray-900 !font-medium max-w-[30vw]"
+            >
+              {{ 'models.dashboard.buttonActions.types.' + element.type | translate }}
+            </td>
+          </ng-container>
+
 
           <ng-container cdkColumnDef="actions" [stickyEnd]="true">
             <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>

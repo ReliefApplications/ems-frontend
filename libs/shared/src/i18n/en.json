@@ -2186,9 +2186,22 @@
 				"none": "No action buttons",
 				"one": "Action button",
 				"openInNewTab": "Open in new tab",
+				"roles": {
+					"any": "Any",
+					"none": "None"
+				},
 				"text": "Button text",
+				"type": "Type",
+				"types": {
+					"emailNotification": "Email notification",
+					"link": "Link",
+					"recordEdition": "Record edition"
+				},
 				"variant": "Button variant",
-				"visibleTo": "Visible to roles"
+				"visibleTo": "Visible to roles",
+				"warnings": {
+					"recordEdition": "Select a record to enable this button"
+				}
 			},
 			"closable": "Closable",
 			"context": {

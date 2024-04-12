@@ -56,7 +56,9 @@ export class EditButtonActionsModalComponent
   /** Current search string */
   public searchTerm = '';
   /** Columns to display */
-  public displayedColumns = ['dragDrop', 'name', 'roles', 'actions'];
+  public displayedColumns = ['dragDrop', 'name', 'roles', 'type', 'actions'];
+  /** Record edition type is available */
+  public recordEditionIsAvailable = false;
 
   /**
    * Component for editing dashboard action buttons
@@ -64,13 +66,18 @@ export class EditButtonActionsModalComponent
    * @param dialogRef dialog reference
    * @param data data passed to the modal
    * @param data.buttonActions list of button actions
+   * @param data.recordEditionIsAvailable is record edition action available
    * @param dialog dialog module for button edition / creation / deletion
    * @param translateService used to translate modal text
    * @param applicationService shared application service
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT[]>,
-    @Inject(DIALOG_DATA) private data: { buttonActions: ButtonActionT[] },
+    @Inject(DIALOG_DATA)
+    private data: {
+      buttonActions: ButtonActionT[];
+      recordEditionIsAvailable?: boolean;
+    },
     public dialog: Dialog,
     public translateService: TranslateService,
     public applicationService: ApplicationService
@@ -80,7 +87,18 @@ export class EditButtonActionsModalComponent
 
   ngOnInit(): void {
     if (this.data && this.data.buttonActions) {
-      this.buttonActions = [...this.data.buttonActions];
+      // Sets link type for legacy buttons and saves it to this.buttonActions
+      this.buttonActions = this.data.buttonActions.map(
+        (buttonAction: ButtonActionT) => {
+          return {
+            ...buttonAction,
+            type: buttonAction.type || 'link',
+          } as ButtonActionT;
+        }
+      );
+      if (this.data.recordEditionIsAvailable) {
+        this.recordEditionIsAvailable = true;
+      }
       this.updateTable();
     }
   }
@@ -97,6 +115,7 @@ export class EditButtonActionsModalComponent
     const dialogRef = this.dialog.open<ButtonActionT | undefined>(
       EditButtonActionModalComponent,
       {
+        data: { recordEditionIsAvailable: this.recordEditionIsAvailable },
         disableClose: true,
       }
     );
@@ -121,7 +140,13 @@ export class EditButtonActionsModalComponent
     );
     const dialogRef = this.dialog.open<ButtonActionT | undefined>(
       EditButtonActionModalComponent,
-      { data: buttonAction, disableClose: true }
+      {
+        data: {
+          buttonDef: buttonAction,
+          recordEditionIsAvailable: this.recordEditionIsAvailable,
+        },
+        disableClose: true,
+      }
     );
 
     dialogRef.closed

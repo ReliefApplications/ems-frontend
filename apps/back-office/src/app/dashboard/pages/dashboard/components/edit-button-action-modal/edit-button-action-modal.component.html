@@ -18,15 +18,6 @@
         <input formControlName="text" type="string" />
       </div>
 
-      <!-- href -->
-      <div uiFormFieldDirective>
-        <label>{{ 'models.dashboard.buttonActions.href' | translate }}</label>
-        <shared-editor-control
-          formControlName="href"
-          [editorConfig]="hrefEditor"
-        ></shared-editor-control>
-      </div>
-
       <!-- New tab toggle -->
       <ui-toggle formControlName="hasRoleRestriction" class="mb-4">
         <ng-container ngProjectAs="label">
@@ -80,14 +71,39 @@
         </div>
       </div>
 
-      <!-- New tab toggle -->
-      <ui-toggle formControlName="openInNewTab">
-        <ng-container ngProjectAs="label">
-          {{
-            'models.dashboard.buttonActions.openInNewTab' | translate
-          }}</ng-container
-        >
-      </ui-toggle>
+      <!-- Type -->
+      <div uiFormFieldDirective [outline]="false" class="grow">
+        <label>{{
+          'models.dashboard.buttonActions.type' | translate
+        }}</label>
+        <ui-select-menu formControlName="type" (selectedOption)="setType()">
+          <ui-select-option
+            *ngFor="let type of types"
+            [value]="type"
+          >
+            {{ 'models.dashboard.buttonActions.types.' + type | translate }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+
+      <ng-container *ngIf="form.get('type')?.value === 'link'">
+        <!-- href -->
+        <div uiFormFieldDirective>
+          <label>{{ 'models.dashboard.buttonActions.href' | translate }}</label>
+          <shared-editor-control
+            formControlName="href"
+            [editorConfig]="hrefEditor"
+          ></shared-editor-control>
+        </div>
+        <!-- New tab toggle -->
+        <ui-toggle formControlName="openInNewTab">
+          <ng-container ngProjectAs="label">
+            {{
+              'models.dashboard.buttonActions.openInNewTab' | translate
+            }}</ng-container
+          >
+        </ui-toggle>
+      </ng-container>
 
       <ui-divider class="my-4"></ui-divider>
       <h3 class="font-semibold">{{ 'common.preview' | translate }}</h3>

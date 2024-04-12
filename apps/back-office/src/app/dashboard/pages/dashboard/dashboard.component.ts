@@ -573,7 +573,13 @@ export class DashboardComponent
     const dialogRef = this.dialog.open<ButtonActionT[] | undefined>(
       EditButtonActionsModalComponent,
       {
-        data: { buttonActions: this.buttonActions },
+        data: {
+          buttonActions: this.buttonActions,
+          recordEditionIsAvailable: Object.prototype.hasOwnProperty.call(
+            this.dashboard?.page?.context,
+            'resource'
+          ),
+        },
         disableClose: true,
       }
     );

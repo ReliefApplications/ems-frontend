@@ -30,6 +30,7 @@ import {
   ButtonActionT,
   ApplicationService,
   Role,
+  ButtonActionTypes,
 } from '@oort-front/shared';
 import { Router } from '@angular/router';
 
@@ -40,10 +41,12 @@ import { Router } from '@angular/router';
  * @param roles roles of the application
  * @returns the form group
  */
-const createButtonActionForm = (data: ButtonActionT, roles: Role[]) => {
-  return new FormGroup({
+const createButtonActionForm = (
+  data: ButtonActionT | undefined,
+  roles: Role[]
+) => {
+  const newForm = new FormGroup({
     text: new FormControl(get(data, 'text', ''), Validators.required),
-    href: new FormControl(get(data, 'href', ''), Validators.required),
     hasRoleRestriction: new FormControl(
       get(data, 'hasRoleRestriction', false),
       Validators.required
@@ -57,8 +60,12 @@ const createButtonActionForm = (data: ButtonActionT, roles: Role[]) => {
     ),
     variant: new FormControl(get(data, 'variant', 'primary')),
     category: new FormControl(get(data, 'category', 'secondary')),
+    type: new FormControl(get(data, 'type'), Validators.required),
+    // Link type
+    href: new FormControl(get(data, 'href', '')),
     openInNewTab: new FormControl(get(data, 'openInNewTab', true)),
   });
+  return newForm;
 };
 
 /** Component for editing a dashboard button action */
@@ -90,6 +97,8 @@ export class EditButtonActionModalComponent implements OnInit {
   public variants = ButtonVariants;
   /** Categories */
   public categories = ButtonCategories;
+  /** Types */
+  public types = ButtonActionTypes;
 
   /** Is the action new */
   public isNew: boolean;
@@ -103,7 +112,9 @@ export class EditButtonActionModalComponent implements OnInit {
    * Component for editing a dashboard button action
    *
    * @param dialogRef dialog reference
-   * @param data initial button action
+   * @param data Model data
+   * @param data.buttonDef initial button definition
+   * @param data.recordEditionIsAvailable is the record edition action available
    * @param editorService editor service used to get main URL and current language
    * @param dataTemplateService Shared data template service
    * @param router Router service
@@ -111,15 +122,28 @@ export class EditButtonActionModalComponent implements OnInit {
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
-    @Inject(DIALOG_DATA) private data: ButtonActionT,
+    @Inject(DIALOG_DATA)
+    private data: {
+      buttonDef?: ButtonActionT;
+      recordEditionIsAvailable: boolean;
+    },
     private editorService: EditorService,
     private dataTemplateService: DataTemplateService,
     private router: Router,
     public applicationService: ApplicationService
   ) {
     this.roles = this.applicationService.application.value?.roles || [];
-    this.form = createButtonActionForm(data, this.roles);
-    this.isNew = !data;
+    this.form = createButtonActionForm(data.buttonDef, this.roles);
+    this.setType();
+    this.isNew = !data.buttonDef;
+    // Remove record edition type
+    if (!this.data.recordEditionIsAvailable) {
+      const index = this.types.indexOf('recordEdition');
+      if (index > -1) {
+        // only splice array when item is found
+        this.types.splice(1, 1);
+      }
+    }
 
     // Set the editor base url based on the environment file
     this.hrefEditor.base_url = editorService.url;
@@ -135,23 +159,47 @@ export class EditButtonActionModalComponent implements OnInit {
   }
 
   /** On click on the preview button open the href */
-  public preview(): void {
-    let href = this.form.get('href')?.value;
-    if (href) {
-      //regex to verify if it's a page id key
-      const regex = /{{page\((.*?)\)}}/;
-      const match = href.match(regex);
-      if (match) {
-        href = this.dataTemplateService.getButtonLink(match[1]);
-      }
-      const isNewTab = this.form.get('openInNewTab')?.value ?? true;
-      if (isNewTab) window.open(href, '_blank');
-      else this.router.navigate([href]);
+  public async preview(): Promise<void> {
+    switch (this.form.get('type')?.value) {
+      case 'link':
+        let href = this.form.get('href')?.value;
+        if (href) {
+          //regex to verify if it's a page id key
+          const regex = /{{page\((.*?)\)}}/;
+          const match = href.match(regex);
+          if (match) {
+            href = this.dataTemplateService.getButtonLink(match[1]);
+          }
+          const isNewTab = this.form.get('openInNewTab')?.value ?? true;
+          if (isNewTab) window.open(href, '_blank');
+          else this.router.navigate([href]);
+        }
+        break;
+
+      default:
+        break;
     }
   }
 
   /** On click on the save button close the dialog with the form value */
   public onSubmit(): void {
     this.dialogRef.close(this.form.value as any);
+  }
+
+  /**
+   * Sets the correct validators for the selected type and resets unused variables
+   */
+  public setType(): void {
+    this.form.controls.href.clearValidators();
+    this.form.controls.href.reset();
+
+    switch (this.form.get('type')?.value) {
+      case 'link':
+        this.form.controls.href.addValidators(Validators.required);
+        break;
+
+      default:
+        break;
+    }
   }
 }

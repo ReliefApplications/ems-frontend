@@ -2186,9 +2186,22 @@
 				"none": "******",
 				"one": "******",
 				"openInNewTab": "******",
+				"roles": {
+					"any": "******",
+					"none": "******"
+				},
 				"text": "******",
+				"type": "******",
+				"types": {
+					"emailNotification": "******",
+					"link": "******",
+					"recordEdition": "******"
+				},
 				"variant": "******",
-				"visibleTo": "******"
+				"visibleTo": "******",
+				"warnings": {
+					"recordEdition": "******"
+				}
 			},
 			"closable": "******",
 			"context": {
