@@ -1,5 +1,4 @@
 import { DomService } from '../../services/dom/dom.service';
-
 import { EmbeddedViewRef } from '@angular/core';
 import { Question, QuestionText } from '../types';
 import { ButtonComponent } from '@oort-front/ui';

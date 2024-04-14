@@ -257,6 +257,13 @@ export const WIDGET_TYPES = [
   },
 ];
 
+/** DashboardState interface */
+export interface DashboardState {
+  name: string;
+  value?: any;
+  id: string;
+}
+
 /** Model for Dashboard object. */
 export interface Dashboard {
   id?: string;
@@ -273,6 +280,7 @@ export interface Dashboard {
   contextData?: {
     [key: string]: any;
   };
+  states?: DashboardState[];
   buttons?: {
     text: string;
     href: string;

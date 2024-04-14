@@ -109,6 +109,30 @@
     </ng-container>
     <ng-template uiTabContent>
       <shared-display-settings [formGroup]="widgetFormGroup">
+        <!-- Single selection toggle  -->
+        <ui-toggle
+          [formControl]="
+            $any(widgetFormGroup.get('widgetDisplay.singleSelect'))
+          "
+        >
+          <ng-container ngProjectAs="label">
+            {{
+              'components.widget.settings.grid.display.singleSelection'
+                | translate
+            }}
+            <ui-icon
+              class="ml-2 cursor-help"
+              variant="grey"
+              icon="info_outline"
+              [size]="18"
+              [uiTooltip]="
+                'components.widget.settings.grid.hint.actions.singleSelection'
+                  | translate
+              "
+              uiTooltipPosition="right"
+            ></ui-icon>
+          </ng-container>
+        </ui-toggle>
         <!-- Display single action as own button -->
         <ui-toggle
           [formControl]="

@@ -5,6 +5,8 @@ import { Application } from '../../../../models/application.model';
 import { ContentType, Page } from '../../../../models/page.model';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { DashboardService } from '../../../../services/dashboard/dashboard.service';
+import { DashboardState } from '../../../../models/dashboard.model';
 
 /**
  * Actions tab of grid widget configuration modal.
@@ -26,6 +28,10 @@ export class TabActionsComponent
   public showSelectPage = false;
   /** Available pages from the application */
   public pages: any[] = [];
+  /** Show select dashboard state */
+  public showSelectState = false;
+  /** Available dashboard states */
+  public states: DashboardState[] = [];
   /** Grid actions */
   public actions = [
     {
@@ -70,6 +76,28 @@ export class TabActionsComponent
       tooltip: 'components.widget.settings.grid.hint.actions.showDetails',
     },
     {
+      name: 'mapSelected',
+      text: 'components.widget.settings.grid.actions.mapSelected',
+      tooltip: 'components.widget.settings.grid.hint.actions.mapSelectedRows',
+    },
+    {
+      name: 'mapView',
+      text: 'components.widget.settings.grid.actions.mapView',
+      tooltip: 'components.widget.settings.grid.hint.actions.mapViewRows',
+    },
+    {
+      name: 'automaticallyMapSelected',
+      text: 'components.widget.settings.grid.actions.automaticallyMapSelected',
+      tooltip:
+        'components.widget.settings.grid.hint.actions.automaticallyMapSelectedRows',
+    },
+    {
+      name: 'automaticallyMapView',
+      text: 'components.widget.settings.grid.actions.automaticallyMapView',
+      tooltip:
+        'components.widget.settings.grid.hint.actions.automaticallyMapViewRows',
+    },
+    {
       name: 'navigateToPage',
       text: 'components.widget.settings.grid.actions.goTo.label',
       tooltip: 'components.widget.settings.grid.hint.actions.goTo',
@@ -80,8 +108,12 @@ export class TabActionsComponent
    * Constructor of the grid component
    *
    * @param applicationService Application service
+   * @param dashboardService Shared dashboard service
    */
-  constructor(public applicationService: ApplicationService) {
+  constructor(
+    public applicationService: ApplicationService,
+    private dashboardService: DashboardService
+  ) {
     super();
   }
 
@@ -91,6 +123,7 @@ export class TabActionsComponent
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
     this.pages = this.getPages(application);
+    this.states = this.dashboardService.states.getValue() || [];
     this.formGroup.controls.actions
       .get('navigateToPage')
       ?.valueChanges.pipe(takeUntil(this.destroy$))

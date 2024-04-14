@@ -1551,6 +1551,8 @@
 					"actions": {
 						"actionsAsIcons": "Display actions as icons",
 						"add": "Add new records",
+						"automaticallyMapSelected": "Automatically map selected rows",
+						"automaticallyMapView": "Automatically map visible rows",
 						"convert": "Convert records",
 						"copyLink": "Copy link",
 						"copyLinkDone": "Link copied to clipboard",
@@ -1572,6 +1574,8 @@
 							}
 						},
 						"inline": "Inline edition",
+						"mapSelected": "Map selected rows to state",
+						"mapView": "Map visible rows to state",
 						"navigateToPage": "Navigate to page",
 						"pageUrl": {
 							"label": "Target page",
@@ -1584,6 +1588,7 @@
 						"remove": "Remove",
 						"show": "Show history",
 						"showDetails": "Show record details",
+						"state": "Select dashboard state",
 						"title": "Enabled actions",
 						"update": "Update records",
 						"useRecordId": "Pass id as query parameter"
@@ -1644,21 +1649,28 @@
 							"title": "Inject values as CSS classes",
 							"tooltip": "When a field is selected, it's value will be added to to <tr> element as a class, allowing it to be targeted by custom styling"
 						},
-						"showSingleActionAsButton": "Show single action as button"
+						"showSingleActionAsButton": "Show single action as button",
+						"singleSelection": "Single selection"
 					},
 					"hint": {
 						"actions": {
 							"actionsAsIcons": "If enabled, instead of displaying the three dots menu, all the actions will be displayed as icons side by side",
 							"add": "If authorized, user can add new records using selected template",
+							"automaticallyMapSelectedRows": "Automatically map the selected grid widget rows to a dashboard state",
+							"automaticallyMapViewRows": "Automatically map grid widget rows in view to a dashboard state",
 							"convert": "If authorized, user can convert record using another template of selected resource",
 							"copyLink": "If enabled, the users can copy the same url of the \"Navigate to\" page on the row actions",
 							"delete": "If authorized, user can delete visible records",
 							"export": "User can export selected columns of visible records",
 							"goTo": "User can go to specified page on click",
 							"inline": "If authorized, user can edit records in the grid",
+							"mapSelectedRows": "Enable button to map the selected grid widget rows to a dashboard state",
+							"mapViewRows": "Enable button to map grid widget rows in view to a dashboard state",
 							"navigateToPage": "User can go to specified page on click",
 							"show": "User can see full history of visible records",
 							"showDetails": "User can see full details of visible records",
+							"singleSelection": "Si activé, une seule ligne peut être sélectionnée à la fois",
+							"state": "Select the dashboard state to use to map and save the rows ID's. If no state is selected, a new one will be created for the widget.",
 							"update": "If authorized, user can update visible records"
 						},
 						"attachToRecord": "If the selected records are not attached to any records, the action will be canceled",
@@ -2285,6 +2297,21 @@
 			},
 			"historicalDate": "Get dataset at",
 			"share": "Share Dashboard",
+			"states": {
+				"create": "Create a state",
+				"delete": {
+					"confirmationMessage": "Do you confirm the deletion of the state {{state}}?",
+					"title": "Delete state"
+				},
+				"few": "States",
+				"new": "New state",
+				"none": "No states",
+				"one": "State",
+				"update": {
+					"confirmationMessage": "States updated successfully",
+					"title": "Update state"
+				}
+			},
 			"tooltip": {
 				"filter": {
 					"closable": "When variant is modern, or application is used as web element, it will indicate if filter can be closed or not",

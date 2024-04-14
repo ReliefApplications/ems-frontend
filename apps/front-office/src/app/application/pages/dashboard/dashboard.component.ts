@@ -205,6 +205,7 @@ export class DashboardComponent
           this.id = data.dashboard.id || id;
           this.contextId = contextId ?? undefined;
           this.dashboard = data.dashboard;
+          this.dashboardService.openDashboard(this.dashboard);
           this.initContext();
           this.setWidgets();
           this.buttonActions = this.dashboard.buttons || [];

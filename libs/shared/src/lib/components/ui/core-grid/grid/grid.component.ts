@@ -138,6 +138,8 @@ export class GridComponent
       copyLink: false,
     },
     remove: false,
+    mapSelected: false,
+    mapView: false,
     actionsAsIcons: false,
   };
   /** Input decorator */
@@ -973,7 +975,7 @@ export class GridComponent
     const stickyColumns = this.columns.filter(
       (column) => !column.hidden && !!column.sticky
     );
-    let totalWidthSticky = 0;
+    let totalWidthSticky = 5;
     stickyColumns.forEach((column: any) => {
       if (column.width) {
         totalWidthSticky += column.width;
