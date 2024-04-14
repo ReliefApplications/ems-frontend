@@ -4,6 +4,27 @@
       {{ 'components.widget.settings.grid.actions.title' | translate }}
     </h2>
     <div class="flex flex-col gap-2 pb-0.5">
+      <!-- Select specific state to map rows -->
+      <div uiFormFieldDirective class="w-80" *ngIf="states.length">
+        <label>
+          {{ 'components.widget.settings.grid.actions.state' | translate }}
+          <ui-icon
+            class="ml-2 cursor-help"
+            variant="grey"
+            icon="info_outline"
+            [size]="18"
+            [uiTooltip]="
+              'components.widget.settings.grid.hint.actions.state' | translate
+            "
+            uiTooltipPosition="right"
+          ></ui-icon>
+        </label>
+        <ui-select-menu formControlName="state" class="flex flex-col ml-[55px]">
+          <ui-select-option *ngFor="let state of states" [value]="state.id">
+            {{ state.name }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
       <!-- Actions -->
       <div class="flex flex-col gap-2 mb-2">
         <ui-toggle

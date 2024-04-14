@@ -3,6 +3,13 @@
         Update
     </button> -->
   <button
+    *ngIf="actions.mapSelected && canUpdate"
+    kendoButton
+    (click)="action.emit({ action: 'mapSelected' })"
+  >
+    {{ 'components.widget.settings.grid.actions.mapSelected' | translate }}
+  </button>
+  <button
     *ngIf="actions.convert && canUpdate"
     kendoButton
     (click)="action.emit({ action: 'convert', items: items })"

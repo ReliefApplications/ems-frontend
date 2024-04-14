@@ -51,6 +51,7 @@ import { ReferenceDataService } from '../../../services/reference-data/reference
 import searchFilters from '../../../utils/filter/search-filters';
 import filterReferenceData from '../../../utils/filter/reference-data-filter.util';
 import { ReferenceData } from '../../../models/reference-data.model';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -263,6 +264,7 @@ export class SummaryCardComponent
    * @param gridService grid service
    * @param referenceDataService Shared reference data service
    * @param renderer Angular renderer service
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     private apollo: Apollo,
@@ -276,7 +278,8 @@ export class SummaryCardComponent
     private elementRef: ElementRef,
     private gridService: GridService,
     private referenceDataService: ReferenceDataService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private dashboardService: DashboardService
   ) {
     super();
   }
@@ -303,7 +306,6 @@ export class SummaryCardComponent
     this.contextService.filter$
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ previous, current, resourceId }) => {
-        console.log('filter', previous, current, resourceId);
         const hasFilter =
           (this.contextService.filterRegex.test(
             this.widget.settings.contextFilters
@@ -316,6 +318,25 @@ export class SummaryCardComponent
           this.refresh();
         }
       });
+
+    if (
+      this.contextService.dashboardStateRegex.test(
+        this.widget.settings.contextFilters
+      )
+    ) {
+      // Listen to dashboard states changes
+      this.dashboardService.states$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.onPage({
+            pageSize: DEFAULT_PAGE_SIZE,
+            skip: 0,
+            previousPageIndex: 0,
+            pageIndex: 0,
+            totalItems: 0,
+          });
+        });
+    }
   }
 
   ngAfterViewInit(): void {

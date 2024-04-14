@@ -41,5 +41,7 @@ export interface GridActions {
   };
   search?: boolean;
   inlineEdition?: boolean;
+  mapSelected?: boolean;
+  mapView?: boolean;
   actionsAsIcons?: boolean;
 }

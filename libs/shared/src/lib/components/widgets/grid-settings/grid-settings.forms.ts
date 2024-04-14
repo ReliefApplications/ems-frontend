@@ -193,6 +193,9 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
       addToRowClasses: new FormControl(
         get<string[]>(configuration, 'widgetDisplay.addToRowClasses', [])
       ),
+      singleSelect: new FormControl(
+        get<boolean>(configuration, 'widgetDisplay.singleSelect', false)
+      ),
     }
   );
   return extendedForm;
@@ -247,6 +250,15 @@ export const createGridActionsFormGroup = (configuration: any) => {
     inlineEdition: [get(configuration, 'actions.inlineEdition', true)],
     addRecord: [get(configuration, 'actions.addRecord', false)],
     export: [get(configuration, 'actions.export', true)],
+    state: [get(configuration, 'actions.state', null)],
+    mapSelected: [get(configuration, 'actions.mapSelected', false)],
+    mapView: [get(configuration, 'actions.mapView', false)],
+    automaticallyMapSelected: [
+      get(configuration, 'actions.automaticallyMapSelected', false),
+    ],
+    automaticallyMapView: [
+      get(configuration, 'actions.automaticallyMapView', false),
+    ],
     showDetails: [get(configuration, 'actions.showDetails', true)],
     navigateToPage: [get(configuration, 'actions.navigateToPage', false)],
     actionsAsIcons: [get(configuration, 'actions.actionsAsIcons', false)],

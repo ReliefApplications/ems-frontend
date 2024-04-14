@@ -5,6 +5,7 @@ import {
   Inject,
   Input,
   OnChanges,
+  OnInit,
   Output,
   SimpleChanges,
   ViewChild,
@@ -57,6 +58,7 @@ import { ContextService } from '../../../services/context/context.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
 
 /**
  * Default file name when exporting grid data.
@@ -82,7 +84,7 @@ const cloneData = (data: any[]) => data.map((item) => Object.assign({}, item));
 })
 export class CoreGridComponent
   extends UnsubscribeComponent
-  implements OnChanges
+  implements OnChanges, OnInit
 {
   // === INPUTS ===
   /** Grid settings */
@@ -318,6 +320,8 @@ export class CoreGridComponent
       copyLink: false,
     },
     remove: false,
+    mapSelected: false,
+    mapView: false,
     actionsAsIcons: false,
   };
 
@@ -352,6 +356,7 @@ export class CoreGridComponent
    * @param router Angular Router
    * @param el Element reference
    * @param clipboard Angular clipboard service
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -369,7 +374,8 @@ export class CoreGridComponent
     private contextService: ContextService,
     private router: Router,
     private el: ElementRef,
-    private clipboard: Clipboard
+    private clipboard: Clipboard,
+    private dashboardService: DashboardService
   ) {
     super();
     this.environment = environment;
@@ -389,6 +395,19 @@ export class CoreGridComponent
     this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.configureGrid();
     });
+  }
+
+  ngOnInit(): void {
+    if (
+      this.contextService.dashboardStateRegex.test(this.settings.contextFilters)
+    ) {
+      // Listen to dashboard states changes
+      this.dashboardService.states$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          if (this.dataQuery) this.reloadData();
+        });
+    }
   }
 
   /**
@@ -436,11 +455,18 @@ export class CoreGridComponent
         ),
       },
       remove: get(this.settings, 'actions.remove', false),
+      mapSelected: get(this.settings, 'actions.mapSelected', false),
+      mapView: get(this.settings, 'actions.mapView', false),
       actionsAsIcons: get(this.settings, 'actions.actionsAsIcons', false),
     };
     this.editable = this.settings.actions?.inlineEdition;
     if (!isNil(this.settings.actions?.search)) {
       this.searchable = this.settings.actions?.search;
+    }
+
+    // If configured, set the single row selection mode
+    if (this.settings.widgetDisplay?.singleSelect) {
+      this.multiSelect = false;
     }
 
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
@@ -891,6 +917,14 @@ export class CoreGridComponent
       data: this.items,
       total: this.totalCount,
     };
+
+    // Check if should automatically map visible rows into state automatically
+    if (
+      this.widget.settings.actions.automaticallyMapView &&
+      this.items.length
+    ) {
+      this.setState(this.items.map((item: any) => item.id));
+    }
   }
 
   /**
@@ -927,6 +961,14 @@ export class CoreGridComponent
       );
     }
     this.selectionChange.emit(selection);
+
+    // Check if should automatically map selected rows into state automatically
+    if (
+      this.widget.settings.actions.automaticallyMapSelected &&
+      this.selectedRows.length
+    ) {
+      this.setState(this.selectedRows);
+    }
   }
 
   // === GRID ACTIONS ===
@@ -1084,6 +1126,14 @@ export class CoreGridComponent
           }
         );
 
+        break;
+      }
+      case 'mapView': {
+        this.setState(this.items);
+        break;
+      }
+      case 'mapSelected': {
+        this.setState(this.selectedRows);
         break;
       }
       default: {
@@ -1654,6 +1704,26 @@ export class CoreGridComponent
         const day = date.getDate();
         filter.value = new Date(Date.UTC(year, month, day)).toISOString();
       }
+    }
+  }
+
+  /**
+   * Create / update widget dashboard state.
+   *
+   * @param items items that will be state value
+   */
+  private setState(items: any): void {
+    const stateId = this.dashboardService.setDashboardState(
+      items,
+      this.widget.settings.actions.state
+    );
+    if (stateId) {
+      this.widget.settings.actions.state = stateId;
+      this.edit.emit({
+        type: 'data',
+        id: this.widget.id,
+        options: this.widget.settings,
+      });
     }
   }
 }

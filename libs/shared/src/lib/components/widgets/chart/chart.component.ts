@@ -21,6 +21,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
 
 /**
  * Default file name for chart exports
@@ -157,16 +158,18 @@ export class ChartComponent
    * Chart widget component.
    * Use Chartjs.
    *
+   * @param document document
    * @param aggregationService Shared aggregation service
    * @param translate Angular translate service
    * @param contextService Shared context service
-   * @param document document
+   * @param dashboardService Shared dashboard service
    */
   constructor(
+    @Inject(DOCUMENT) private document: Document,
     private aggregationService: AggregationService,
     private translate: TranslateService,
     private contextService: ContextService,
-    @Inject(DOCUMENT) private document: Document
+    private dashboardService: DashboardService
   ) {
     super();
   }
@@ -188,6 +191,19 @@ export class ChartComponent
           this.getOptions();
         }
       });
+
+    if (
+      this.contextService.dashboardStateRegex.test(this.settings.contextFilters)
+    ) {
+      // Listen to dashboard states changes
+      this.dashboardService.states$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.series.next([]);
+          this.loadChart();
+          this.getOptions();
+        });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -326,7 +342,6 @@ export class ChartComponent
     this.dataQuery
       .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
       .subscribe(({ errors, data, loading }: any) => {
-        console.log('ici');
         if (errors) {
           this.loading = false;
           this.hasError = true;
