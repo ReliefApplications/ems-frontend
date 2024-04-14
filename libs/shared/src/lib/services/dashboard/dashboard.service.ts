@@ -249,11 +249,6 @@ export class DashboardService {
               states,
             };
             this.states.next(states);
-            this.snackBar.openSnackBar(
-              this.translate.instant(
-                'models.dashboard.states.update.confirmationMessage'
-              )
-            );
           }
         },
       });
@@ -295,11 +290,6 @@ export class DashboardService {
               states,
             };
             this.states.next(states);
-            this.snackBar.openSnackBar(
-              this.translate.instant(
-                'models.dashboard.states.update.confirmationMessage'
-              )
-            );
           }
         },
       });
@@ -337,12 +327,6 @@ export class DashboardService {
         if (name) {
           // On updating state, we only want to save when updating the name, no the values
           this.saveDashboardStates(this.dashboard.id, states);
-        } else {
-          this.snackBar.openSnackBar(
-            this.translate.instant(
-              'models.dashboard.states.update.confirmationMessage'
-            )
-          );
         }
         return;
       }
