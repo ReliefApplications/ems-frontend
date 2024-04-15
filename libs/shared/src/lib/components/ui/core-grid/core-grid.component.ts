@@ -920,7 +920,7 @@ export class CoreGridComponent
 
     // Check if should automatically map visible rows into state automatically
     if (
-      this.widget.settings.actions.automaticallyMapView &&
+      this.widget?.settings?.actions?.automaticallyMapView &&
       this.items.length
     ) {
       this.setState(this.items.map((item: any) => item.id));

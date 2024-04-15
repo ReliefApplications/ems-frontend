@@ -993,12 +993,12 @@ export class GridComponent
           (field) => field.name === column.field && !column.hidden
         )?.fixedWidth
     );
-    fixedWidthColumns.forEach(
-      (column) =>
-        (column.width = this.fields.find(
-          (field) => field.name === column.field
-        ).fixedWidth)
-    );
+    fixedWidthColumns.forEach((column) => {
+      column.width = this.fields.find(
+        (field) => field.name === column.field
+      ).fixedWidth;
+    });
+
     /** Subtract the width of non-fields columns (details, actions etc.), columns with fixed width and small calculation errors ( border + scrollbar ) */
     const gridTotalWidth =
       gridElement.offsetWidth -
@@ -1103,7 +1103,10 @@ export class GridComponent
     // Instead, clamp the columns to the min and max width
     if (avgPixelPerCol < MIN_COLUMN_WIDTH * 1.1) {
       this.columns.forEach((column) => {
-        if (!column.hidden) {
+        const fixedWidth = fixedWidthColumns.find(
+          (fixedColumn) => fixedColumn.field === column.field
+        );
+        if (!column.hidden && !fixedWidth) {
           const colWidth = activeColumns[column.field];
           if (colWidth) {
             column.width = Math.min(
