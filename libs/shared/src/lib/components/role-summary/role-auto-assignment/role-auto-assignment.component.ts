@@ -81,6 +81,23 @@ export class RoleAutoAssignmentComponent
     this.formArray.valueChanges.subscribe((value) => {
       this.rules = value;
     });
+    // Add a new field to allow automation based on email
+    this.fields.push({
+      text: 'Email', // todo: translation
+      name: '{{email}}',
+      editor: 'text',
+      filter: {
+        operators: [
+          'eq',
+          'neq',
+          'contains',
+          'doesnotcontain',
+          'startswith',
+          'endswith',
+        ],
+      },
+    });
+    // Get groups, and add a new field to allow automation based on groups
     this.apollo
       .query<GroupsQueryResponse>({
         query: GET_GROUPS,
@@ -89,7 +106,7 @@ export class RoleAutoAssignmentComponent
         if (data.groups) {
           this.groups = data.groups;
           this.fields.push({
-            text: 'User Groups',
+            text: 'User Groups', // todo: translation
             name: '{{groups}}',
             editor: 'select',
             multiSelect: true,
@@ -104,6 +121,7 @@ export class RoleAutoAssignmentComponent
         }
       });
 
+    // Get available user attributes, and add a new field to allow automation based on them
     const url = '/permissions/attributes';
     this.restService.get(url).subscribe((res: any) => {
       if (isArray(res)) {
