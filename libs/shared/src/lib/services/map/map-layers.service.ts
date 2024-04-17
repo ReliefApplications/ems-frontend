@@ -435,9 +435,10 @@ export class MapLayersService {
             map((value) => {
               // When using adminField mapping, update the feature so geometry is replaced with according polygons
               if (layer.datasource?.adminField) {
-                return this.mapPolygonsService.assignPolygons(
+                return this.mapPolygonsService.assignGeometry(
                   value,
-                  layer.datasource.adminField as any
+                  layer.datasource.adminField,
+                  layer.datasource.type
                 );
               } else {
                 // Else, directly returns the feature layer
