@@ -254,7 +254,6 @@ export class WidgetGridComponent
       minItemCols: 1, // min item number of columns
       minItemRows: 1, // min item number of rows
       minCols: this.colsNumber,
-      maxRows: Infinity,
       fixedRowHeight: 200,
       minimumHeight: 0,
       draggable: {
