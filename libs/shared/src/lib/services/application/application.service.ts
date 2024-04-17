@@ -1951,42 +1951,46 @@ export class ApplicationService {
     const path = `style/application/${application?.id}`;
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      'Content-Type': 'text/plain',
+      'Content-Type': 'application/json',
     });
     return firstValueFrom(
-      this.restService.get(path, { responseType: 'text', headers })
+      this.restService.get(path, { responseType: 'blob', headers })
     )
       .then(async (res) => {
-        const styleFromFile = res;
-        const scss = styleFromFile as string;
-        this.customStyle = this.document.createElement('style');
-        await firstValueFrom(
-          this.restService.post(
-            'style/scss-to-css',
-            { scss },
-            { responseType: 'text' }
+        if (res.type === 'application/octet-stream') {
+          const styleFromFile = await res.text();
+          const scss = styleFromFile as string;
+          this.customStyle = this.document.createElement('style');
+          await firstValueFrom(
+            this.restService.post(
+              'style/scss-to-css',
+              { scss },
+              { responseType: 'text' }
+            )
           )
-        )
-          .then((css) => {
-            if (this.customStyle) {
-              this.customStyle.innerText = css;
-              // Add stylesheet to shadow root instead of document head
-              if (this.shadowDomService.isShadowRoot) {
-                this.shadowDomService.currentHost.appendChild(this.customStyle);
-              } else {
-                this.document
-                  .getElementsByTagName('head')[0]
-                  .appendChild(this.customStyle);
+            .then((css) => {
+              if (this.customStyle) {
+                this.customStyle.innerText = css;
+                // Add stylesheet to shadow root instead of document head
+                if (this.shadowDomService.isShadowRoot) {
+                  this.shadowDomService.currentHost.appendChild(
+                    this.customStyle
+                  );
+                } else {
+                  this.document
+                    .getElementsByTagName('head')[0]
+                    .appendChild(this.customStyle);
+                }
               }
-            }
-          })
-          .catch(() => {
-            if (this.customStyle) {
-              this.customStyle.innerText = styleFromFile;
-            }
-          });
+            })
+            .catch(() => {
+              if (this.customStyle) {
+                this.customStyle.innerText = styleFromFile;
+              }
+            });
 
-        this.rawCustomStyle = styleFromFile;
+          this.rawCustomStyle = styleFromFile;
+        }
       })
       .catch((err) => {
         console.error(err);
