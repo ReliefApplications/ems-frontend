@@ -1,10 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { DataTemplateService } from '../../services/data-template/data-template.service';
 import { Dashboard } from '../../models/dashboard.model';
 import { ButtonActionT } from './button-action-type';
 import { Router } from '@angular/router';
 import { Record } from '../../models/record.model';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs';
 
 /** Component for display action buttons */
 @Component({
@@ -12,7 +14,7 @@ import { Record } from '../../models/record.model';
   templateUrl: './button-action.component.html',
   styleUrls: ['./button-action.component.scss'],
 })
-export class ButtonActionComponent {
+export class ButtonActionComponent extends UnsubscribeComponent {
   /** Button actions */
   @Input() buttonActions: ButtonActionT[] = [];
   /** Dashboard */
@@ -21,6 +23,10 @@ export class ButtonActionComponent {
   @Input() canUpdate = false;
   /** Context record of a dashboard  */
   @Input() contextRecord: Record | null = null;
+  /**
+   *
+   */
+  @Output() refreshContextRecord: EventEmitter<void> = new EventEmitter();
 
   /**
    * @returns If the record edition action can be executed
@@ -45,7 +51,9 @@ export class ButtonActionComponent {
     public dialog: Dialog,
     private dataTemplateService: DataTemplateService,
     private router: Router
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Executes button action.
@@ -57,7 +65,25 @@ export class ButtonActionComponent {
       // Opens record edition
       case 'recordEdition':
         if (this.recordEditionIsAvailable) {
-          // TODO
+          const { FormModalComponent } = await import(
+            '../form-modal/form-modal.component'
+          );
+          const dialogRef = this.dialog.open(FormModalComponent, {
+            disableClose: true,
+            data: {
+              recordId: this.contextRecord?.id,
+              // template: this.settings.template || null,
+              template: null,
+            },
+            autoFocus: false,
+          });
+          dialogRef.closed
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((value: any) => {
+              if (value) {
+                this.refreshContextRecord.emit();
+              }
+            });
         }
         break;
       // Email Notifications, to determine

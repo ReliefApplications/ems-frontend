@@ -825,4 +825,12 @@ export class DashboardComponent
       });
     }
   }
+
+  /**
+   *
+   */
+  public refreshContextData() {
+    this.loading = true;
+    this.loadDashboard(this.id).then(() => (this.loading = false));
+  }
 }
