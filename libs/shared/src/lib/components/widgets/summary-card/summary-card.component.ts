@@ -176,7 +176,10 @@ export class SummaryCardComponent
         filters: this.layout?.query.filter ? [this.layout?.query.filter] : [],
       };
     }
-    return filter;
+    return {
+      logic: 'and',
+      filters: [filter, this.contextService.injectContext(this.contextFilters)],
+    };
   }
 
   /** @returns does the card use resource aggregation */
