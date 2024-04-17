@@ -118,7 +118,7 @@ export class PeopleDropdownComponent
       clearTimeout(this.searchTimeout);
     }
 
-    if (searchValue.length >= 4 && searchValue !== this.previousSearchValue) {
+    if (searchValue.length >= 2 && searchValue !== this.previousSearchValue) {
       const searchWords = searchValue
         .split(' ')
         .filter((word) => word.length >= 3);
