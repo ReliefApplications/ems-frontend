@@ -113,7 +113,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
 
   /** Existing ID. */
   @Input() existingId = '';
-
+  /** Form group for segment */
   public segmentForm!: FormGroup;
 
   /** Index of active segment. */

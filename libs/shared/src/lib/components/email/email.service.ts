@@ -910,7 +910,7 @@ export class EmailService {
    * Flattens the given record object into a single level object.
    *
    * @param record The record to be flattened.
-   * @param query
+   * @param query Form Query Object for field values.
    * @returns The flattened record.
    */
   flattenRecord(record: any, query?: any): any {
@@ -918,7 +918,6 @@ export class EmailService {
     for (const key in record) {
       if (Object.prototype.hasOwnProperty.call(record, key)) {
         const value = record[key];
-
         if (typeof value === 'object' && value !== null) {
           if (value.data) {
             query.fields.forEach((x: any) => {
@@ -927,19 +926,53 @@ export class EmailService {
                 let matchingKey = Object.keys(record[key].data).find(
                   (child) => child === x.childName
                 );
+                if (
+                  x.childName.split('.')[0] === '_createdBy' ||
+                  x.childName.split('.')[0] === '_createdBy'
+                ) {
+                  const namedChild = `${x.childName}`;
+                  matchingKey = Object.keys(
+                    record[key][namedChild.split('.')[0]][
+                      namedChild.split('.')[1]
+                    ]
+                  ).find((child) => child === namedChild.split('.')[2]);
+                }
 
-                if (matchingKey) {
+                if (
+                  matchingKey &&
+                  !(
+                    x.childName.split('.')[0] === '_createdBy' ||
+                    x.childName.split('.')[0] === '_lastUpdatedBy'
+                  )
+                ) {
                   // If a match is found, map the child field to the corresponding value in records
                   result[`${x.parentName} - ${x.childName}`] =
                     value.data[matchingKey];
                 } else {
-                  matchingKey = Object.keys(record[key]).find(
-                    (child) => child === x.childName
-                  );
-                  if (matchingKey) {
+                  matchingKey =
+                    matchingKey ??
+                    Object.keys(record[key]).find(
+                      (child) => child === x.childName
+                    ) ??
+                    Object.keys(record[key]).find(
+                      (child) => child === `_${x.childName}`
+                    );
+                  if (
+                    matchingKey &&
+                    !(
+                      x.childName.split('.')[0] === '_createdBy' ||
+                      x.childName.split('.')[0] === '_lastUpdatedBy'
+                    )
+                  ) {
                     // If a match is found, searches for meta data and sets if found
                     result[`${x.parentName} - ${x.childName}`] =
                       record[key][matchingKey];
+                  } else if (matchingKey) {
+                    const namedChild = `${x.childName}`;
+                    result[`${x.parentName} - ${x.childName}`] =
+                      record[key][namedChild.split('.')[0]][
+                        namedChild.split('.')[1]
+                      ][namedChild.split('.')[2]];
                   }
                 }
               }
@@ -956,10 +989,21 @@ export class EmailService {
             key.split('_')[1] == 'createdBy' ||
             key.split('_')[1] == 'lastUpdatedBy'
           ) {
-            // Takes the created by and last updated by values and persists them.
-            result[
-              `_${key.split('_')[1]}.${key.split('_')[2]}.${key.split('_')[3]}`
-            ] = value;
+            if (key.split('_')[3] === 'id') {
+              // Takes the created by and last updated by values and persists them.
+              result[
+                `_${key.split('_')[1]}.${key.split('_')[2]}._${
+                  key.split('_')[3]
+                }`
+              ] = value;
+            } else {
+              // Takes the created by and last updated by values and persists them.
+              result[
+                `_${key.split('_')[1]}.${key.split('_')[2]}.${
+                  key.split('_')[3]
+                }`
+              ] = value;
+            }
           } else {
             result[key] = value;
           }

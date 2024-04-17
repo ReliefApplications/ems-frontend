@@ -56,9 +56,10 @@
       </ng-select>
     </div>
     <div class="text-gray-700 text-xs gap-1 flex items-end w-1/3" style="font-weight: 500;">
-      <ui-checkbox 
+      <ui-checkbox
       formControlName="individualEmail"
       [(ngModel)]="separateEmail" (change)="onChangeSeparateEmail()"
+      [disabled]="true"
       >
        <ng-container ngProjectAs="label">{{
           'components.select.distribution.separateEmail'
@@ -129,11 +130,13 @@
                     </label>
                     <ui-select-menu formControlName="field" [filterable]="true" (ngModelChange)="setField($event, fieldIndex)">
                       <ng-container *ngFor="let field of filterFields">
+                        <!-- Normal Fields -->
                         <ui-select-option *ngIf="!field.fields" [value]="field.name">
                           {{ field.text || field.name }}
                         </ui-select-option>
-
+                        <!-- Resource and Resources Fields -->
                         <ui-select-option *ngIf="field.fields" [isGroup]="true">
+                          <!-- Group Label -->
                           {{ field.text || field.name }}
                           <ui-select-option
                             *ngFor="let subField of field.fields"
@@ -142,7 +145,7 @@
                             {{
                               field.name === '$attribute'
                                 ? subField.text || subField.name
-                                : (field.type === TYPE_LABEL.resource ? (subField.text || subField.name) : field.name + ' - ' + (subField.text || subField.name))
+                                : (field.type === TYPE_LABEL.resource || subField.parentName ? subField.name : field.name + ' - ' + subField.name)
                             }}
                           </ui-select-option>
                         </ui-select-option>
@@ -392,7 +395,7 @@
                 <ng-container *ngFor="let fieldDetails of availableFields; let index = index">
                   <div
                     *ngIf="fieldDetails?.name?.toLowerCase()?.includes(searchAvailableField.toLowerCase())"
-                    class="field-box cursor-pointer hover:bg-blue-500 hover:text-white"
+                    class="field-box cursor-pointer overflow-ellipsis hover:bg-blue-500 hover:text-white"
                     (click)="availableFieldIndex = index"
                     [ngClass]="{'field-select': availableFieldIndex === index}"
                   >
@@ -445,7 +448,7 @@
                 <ng-container *ngFor="let fields of selectedFields; let index = index">
                   <div
                     *ngIf="fields?.name?.toLowerCase()?.includes(searchSelectedField.toLowerCase())"
-                    class="field-box cursor-pointer hover:bg-blue-500 hover:text-white"
+                    class="field-box cursor-pointer overflow-ellipsis hover:bg-blue-500 hover:text-white"
                     (click)="selectedFieldIndex = index"
                   [ngClass]="{'field-select': selectedFieldIndex === index}"
                   >

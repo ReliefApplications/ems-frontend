@@ -423,9 +423,9 @@ export class PreviewComponent implements OnInit, OnDestroy {
     const theadHtml = previewData.dataSetFields
       .map(
         (fieldKeyString: any) =>
-          `<th style="${this.getTableStyle(
-            'th'
-          )}">${this.emailService.replaceUnderscores(fieldKeyString)}</th>`
+          `<th style="${this.getTableStyle('th')}">${this.titleCase(
+            this.emailService.replaceUnderscores(fieldKeyString)
+          )}</th>`
       )
       .join('');
 
@@ -461,6 +461,20 @@ export class PreviewComponent implements OnInit, OnDestroy {
   </div>
 `;
     return tableHtml;
+  }
+
+  /**
+   * Converts String to Title Case
+   *
+   * @param str Input string to be converted
+   * @returns Titlecase string
+   */
+  titleCase(str: string): string {
+    return str
+      .toLowerCase()
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   }
 
   ngOnDestroy(): void {

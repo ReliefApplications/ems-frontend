@@ -20,6 +20,7 @@ export class CreateDatasetComponent implements OnInit {
   /** Tab index for filtering. */
   public tabIndex = 'filter';
 
+  /** Index of the tab. */
   blockIndex!: number;
 
   /** GraphQL query reference for fetching resources. */

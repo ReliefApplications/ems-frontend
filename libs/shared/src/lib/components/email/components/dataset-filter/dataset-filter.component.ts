@@ -14,7 +14,7 @@ import {
   FormGroup,
 } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { clone } from 'lodash';
+import { clone, cloneDeep } from 'lodash';
 import {
   Resource,
   ResourceQueryResponse,
@@ -391,13 +391,65 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                     });
                   } else if (field.type === TYPE_LABEL.resource) {
                     field.fields.forEach((obj: any) => {
-                      obj.name = field.name + ' - ' + obj.name;
                       obj.parentName = field.name;
-                      obj.childName = field.name + ' - ' + obj.name;
-                      this.availableFields.filter((x) => x.name == obj.name)
-                        .length === 0
-                        ? this.availableFields.push(clone(obj))
-                        : '';
+                      if (
+                        obj.name === 'createdBy' ||
+                        obj.name === 'lastUpdatedBy'
+                      ) {
+                        const obj1 = cloneDeep(obj);
+                        obj1.childName = `${field.name} - _${obj.name}.user.username`;
+                        obj1.name = `${field.name} - _${obj.name}.user.username`;
+                        obj1.parentName = field.name;
+                        obj1.type = 'text';
+                        this.availableFields.filter((x) => x.name == obj1.name)
+                          .length === 0
+                          ? this.availableFields.push(obj1)
+                          : '';
+
+                        // Create and push the second object
+                        const obj2 = cloneDeep(obj);
+                        obj2.name = `${field.name} - _${obj.name}.user._id`;
+                        obj2.childName = `${field.name} - _${obj.name}.user._id`;
+                        obj2.parentName = field.name;
+                        obj2.type = 'text';
+                        this.availableFields.filter((x) => x.name == obj2.name)
+                          .length === 0
+                          ? this.availableFields.push(obj2)
+                          : '';
+
+                        // Create and push the third object
+                        const obj3 = cloneDeep(obj);
+                        obj3.name = `${field.name} - _${obj.name}.user.name`;
+                        obj3.childName = `${field.name} - _${obj.name}.user.name`;
+                        obj3.parentName = field.name;
+                        obj3.type = 'text';
+                        this.availableFields.filter((x) => x.name == obj3.name)
+                          .length === 0
+                          ? this.availableFields.push(obj3)
+                          : '';
+                        obj.fields = [];
+                        obj.fields?.filter((x: any) => x.name == obj.name)
+                          .length === 0
+                          ? obj.fields.push(clone(obj1))
+                          : '';
+                        obj.fields?.filter((x: any) => x.name == obj.name)
+                          .length === 0
+                          ? obj.fields.push(clone(obj2))
+                          : '';
+                        obj.fields?.filter((x: any) => x.name == obj.name)
+                          .length === 0
+                          ? obj.fields.push(clone(obj3))
+                          : '';
+                        obj.childName = field.name + ' - ' + obj.name;
+                        obj.name = field.name + ' - ' + obj.name;
+                      } else {
+                        obj.childName = field.name + ' - ' + obj.name;
+                        obj.name = field.name + ' - ' + obj.name;
+                        this.availableFields.filter((x) => x.name == obj.name)
+                          .length === 0
+                          ? this.availableFields.push(clone(obj))
+                          : '';
+                      }
                     });
                     this.filterFields.push(field);
                   } else if (field.type === TYPE_LABEL.resources) {
