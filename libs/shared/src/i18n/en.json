@@ -1056,6 +1056,8 @@
 				"field": "Sort field",
 				"limit": "limit",
 				"limitTitle": "Sort & Limit",
+				"logic": "Sort logic",
+				"new": "Add new sort field",
 				"order": "Sort order",
 				"title": "Sort"
 			},

@@ -1067,6 +1067,8 @@
 				"field": "Filtrer le champ",
 				"limit": "limite",
 				"limitTitle": "Tri et limite",
+				"logic": "Ordre logique",
+				"new": "Ajouter un nouveau filtrer le champ",
 				"order": "Ordre de tri",
 				"title": "Tri"
 			},

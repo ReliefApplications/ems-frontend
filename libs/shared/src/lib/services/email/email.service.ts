@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { RestService } from '../rest/rest.service';
 import { SnackbarService } from '@oort-front/ui';
 import { flatDeep } from '../../utils/array-filter';
+import { SortField } from '../query-builder/query-builder.service';
 
 /** Snackbar duration in ms */
 const SNACKBAR_DURATION = 1000;
@@ -65,8 +66,7 @@ export class EmailService {
    * @param query Query settings
    * @param query.name Name of the query
    * @param query.fields Fields requested in the query
-   * @param sortField Sort field (optional).
-   * @param sortOrder Sort order (optional).
+   * @param sort Sort fields and their orders (optional).
    * @param attachment Whether an excel with the dataset is attached to the mail
    * or not (optional).
    * @param files List of files to send with the mail (optional).
@@ -80,8 +80,7 @@ export class EmailService {
       name: string;
       fields: any[];
     },
-    sortField?: string,
-    sortOrder?: string,
+    sort?: SortField[],
     attachment?: boolean,
     files?: any[]
   ): Promise<void> {
@@ -119,8 +118,7 @@ export class EmailService {
           filter,
           query,
           fields: this.getFields(query.fields),
-          sortField,
-          sortOrder,
+          sort,
           attachment,
           ...(fileFolderId && { files: fileFolderId }),
         },
@@ -155,8 +153,7 @@ export class EmailService {
    * @param query Query settings
    * @param query.name Name of the query
    * @param query.fields Fields requested in the query
-   * @param sortField Sort field (optional).
-   * @param sortOrder Sort order (optional).
+   * @param sort Sort fields and their order (optional).
    * @param attachment Whether an excel with the dataset is attached to the mail
    * or not (optional).
    */
@@ -169,8 +166,7 @@ export class EmailService {
       name: string;
       fields: any[];
     },
-    sortField?: string,
-    sortOrder?: string,
+    sort?: SortField[],
     attachment?: boolean
   ): Promise<void> {
     const snackBarRef = this.snackBar.openComponentSnackBar(
@@ -199,8 +195,7 @@ export class EmailService {
           filter,
           query,
           fields: this.getFields(query.fields),
-          sortField,
-          sortOrder,
+          sort,
           attachment,
         },
         { headers }
@@ -229,8 +224,7 @@ export class EmailService {
                 value.html,
                 filter,
                 query,
-                sortField,
-                sortOrder,
+                sort,
                 attachment,
                 value.files
               );

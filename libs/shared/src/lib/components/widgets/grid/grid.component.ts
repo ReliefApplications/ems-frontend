@@ -503,8 +503,7 @@ export class GridWidgetComponent
               name: this.grid.settings.query.name,
               fields: options.bodyFields,
             },
-            this.grid.sortField || undefined,
-            this.grid.sortOrder || undefined,
+            this.grid.sortFields || undefined,
             options.export
           );
         }
