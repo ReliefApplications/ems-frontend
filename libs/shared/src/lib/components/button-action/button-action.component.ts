@@ -72,8 +72,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
             disableClose: true,
             data: {
               recordId: this.contextRecord?.id,
-              // template: this.settings.template || null,
-              template: null,
+              askForConfirm: false
             },
             autoFocus: false,
           });
