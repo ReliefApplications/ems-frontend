@@ -6,6 +6,7 @@ import * as L from 'leaflet';
 export interface MapConstructorSettings {
   title?: string;
   initialState: {
+    useWebmapZoom?: boolean;
     viewpoint: {
       center: {
         latitude: number;

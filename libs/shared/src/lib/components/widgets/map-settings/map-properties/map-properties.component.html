@@ -38,30 +38,47 @@
           <shared-webmap-select
             formControlName="arcGisWebMap"
           ></shared-webmap-select>
+          <ng-container
+            formGroupName="initialState"
+            *ngIf="form.controls.arcGisWebMap.value"
+          >
+            <ui-toggle formControlName="useWebmapZoom">
+              <ng-container ngProjectAs="label">
+                {{
+                  'components.widget.settings.map.properties.useWebmapZoom' | translate
+                }}
+              </ng-container>
+            </ui-toggle>
+          </ng-container>
           <ui-divider></ui-divider>
           <!-- Default view -->
           <div class="w-full" formGroupName="initialState">
             <div class="flex flex-col flex-1" formGroupName="viewpoint">
               <!-- Default zoom -->
-              <label class="flex gap-1 items-center">
-                {{
-                  'components.widget.settings.map.properties.zoom' | translate
-                }}
-                <ui-icon
-                  icon="info_outline"
-                  class="cursor-pointer"
-                  [uiTooltip]="
+              <ng-container
+                *ngIf="!form.controls.initialState.value.useWebmapZoom"
+              >
+                <label class="flex gap-1 items-center">
+                  {{
                     'components.widget.settings.map.properties.zoom' | translate
-                  "
-                  [size]="18"
-                  variant="grey"
-                ></ui-icon>
-              </label>
-              <ui-slider
-                formControlName="zoom"
-                [minValue]="2"
-                [maxValue]="18"
-              ></ui-slider>
+                  }}
+                  <ui-icon
+                    icon="info_outline"
+                    class="cursor-pointer"
+                    [uiTooltip]="
+                      'components.widget.settings.map.tooltip.default.zoom'
+                        | translate
+                    "
+                    [size]="18"
+                    variant="grey"
+                  ></ui-icon>
+                </label>
+                <ui-slider
+                  formControlName="zoom"
+                  [minValue]="2"
+                  [maxValue]="18"
+                ></ui-slider>
+              </ng-container>
               <div formGroupName="center" class="flex flex-wrap gap-2 mt-2">
                 <!-- Default latitude -->
                 <div

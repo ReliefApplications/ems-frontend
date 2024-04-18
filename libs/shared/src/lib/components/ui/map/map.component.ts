@@ -600,7 +600,9 @@ export class MapComponent
         // Load arcgis webmap
         promises.push(
           this.setWebmap(settings.arcGisWebMap, {
-            skipDefaultView: this.useContextZoom,
+            skipDefaultView:
+              this.useContextZoom ||
+              !this.mapSettingsValue.initialState.useWebmapZoom,
           })
         );
       } else {
