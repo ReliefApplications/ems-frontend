@@ -2196,6 +2196,9 @@
 					"one": "Modifier le bouton d'action"
 				},
 				"hasRoleRestriction": "Limiter l'accès",
+				"hints": {
+					"recordEdition": "Ce bouton sera désactivé si aucun enregistrement n'est sélectionné pour la source de données contextuelle"
+				},
 				"href": "Bouton href",
 				"none": "Pas de bouton d'action",
 				"one": "Bouton d'action",

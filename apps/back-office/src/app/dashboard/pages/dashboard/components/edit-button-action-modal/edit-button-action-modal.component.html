@@ -109,6 +109,9 @@
       <h3 class="font-semibold">{{ 'common.preview' | translate }}</h3>
       <div>
         <!-- Button preview -->
+        <ui-alert class="mb-4 mt-4" *ngIf="form.get('type')?.value === 'recordEdition'">
+          {{ 'models.dashboard.buttonActions.hints.recordEdition' | translate }}
+        </ui-alert>
         <ui-button
           *ngIf="form.get('text')?.value"
           class="w-fit mx-auto mt-3"

@@ -2182,6 +2182,9 @@
 					"one": "******"
 				},
 				"hasRoleRestriction": "******",
+				"hints": {
+					"recordEdition": "******"
+				},
 				"href": "******",
 				"none": "******",
 				"one": "******",

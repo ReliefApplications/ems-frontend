@@ -9,6 +9,7 @@ import {
   ButtonModule,
   ToggleModule,
   DividerModule,
+  AlertModule,
 } from '@oort-front/ui';
 import {
   FormControl,
@@ -85,6 +86,7 @@ const createButtonActionForm = (
     EditorModule,
     EditorControlComponent,
     DividerModule,
+    AlertModule,
   ],
   templateUrl: './edit-button-action-modal.component.html',
   styleUrls: ['./edit-button-action-modal.component.scss'],

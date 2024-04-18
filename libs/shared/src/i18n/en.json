@@ -2182,6 +2182,9 @@
 					"one": "Edit action button"
 				},
 				"hasRoleRestriction": "Use Role Restriction",
+				"hints": {
+					"recordEdition": "This button will be disabled if no record is selected for the context datasource"
+				},
 				"href": "Button href",
 				"none": "No action buttons",
 				"one": "Action button",
