@@ -1819,7 +1819,7 @@
 						"longitude": "Longitude du centre de la carte",
 						"setByMap": "Utiliser la vue actuelle",
 						"title": "Affichage par défaut",
-						"useWebmapZoom": "Utiliser le zoom par défaut de la webmap",
+						"useWebMapInitialState": "Utiliser l'affichage par défaut de la webmap",
 						"webmap": "WebMap",
 						"zoom": "Zoom par défaut"
 					},

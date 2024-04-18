@@ -602,7 +602,7 @@ export class MapComponent
           this.setWebmap(settings.arcGisWebMap, {
             skipDefaultView:
               this.useContextZoom ||
-              !this.mapSettingsValue.initialState.useWebmapZoom,
+              !this.mapSettingsValue.initialState.useWebMapInitialState,
           })
         );
       } else {
