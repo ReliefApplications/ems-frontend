@@ -192,15 +192,14 @@ export class EditButtonActionModalComponent implements OnInit {
    * Sets the correct validators for the selected type and resets unused variables
    */
   public setType(): void {
-    this.form.controls.href.clearValidators();
-    this.form.controls.href.reset();
-
     switch (this.form.get('type')?.value) {
       case 'link':
         this.form.controls.href.addValidators(Validators.required);
         break;
 
       default:
+        this.form.controls.href.clearValidators();
+        this.form.controls.href.reset();
         break;
     }
   }

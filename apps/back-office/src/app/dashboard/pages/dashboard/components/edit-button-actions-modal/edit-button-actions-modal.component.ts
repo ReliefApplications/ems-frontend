@@ -92,10 +92,12 @@ export class EditButtonActionsModalComponent
         (buttonAction: ButtonActionT) => {
           return {
             ...buttonAction,
+            hasRoleRestriction: buttonAction.hasRoleRestriction || false,
             type: buttonAction.type || 'link',
           } as ButtonActionT;
         }
       );
+      console.log(this.buttonActions);
       if (this.data.recordEditionIsAvailable) {
         this.recordEditionIsAvailable = true;
       }
