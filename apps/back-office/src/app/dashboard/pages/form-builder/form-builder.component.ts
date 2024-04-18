@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   EDIT_FORM_NAME,
@@ -29,6 +29,7 @@ import { isEqual } from 'lodash';
 import { GraphQLError } from 'graphql';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
+import { DOCUMENT } from '@angular/common';
 
 /** Default snackbar config for after request complete  */
 const REQUEST_SNACKBAR_CONF = {
@@ -45,7 +46,7 @@ const REQUEST_SNACKBAR_CONF = {
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss'],
 })
-export class FormBuilderComponent implements OnInit {
+export class FormBuilderComponent implements OnInit, OnDestroy {
   /** Loading state */
   public loading = true;
   /** Form id */
@@ -90,6 +91,7 @@ export class FormBuilderComponent implements OnInit {
    * @param translate Angular translate service
    * @param breadcrumbService Shared breadcrumb service
    * @param overlay Angular overlay service
+   * @param document Angular document service
    */
   constructor(
     private apollo: Apollo,
@@ -101,7 +103,8 @@ export class FormBuilderComponent implements OnInit {
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private breadcrumbService: BreadcrumbService,
-    private overlay: Overlay
+    private overlay: Overlay,
+    @Inject(DOCUMENT) private document: Document
   ) {}
 
   /**
@@ -134,6 +137,11 @@ export class FormBuilderComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Remove the bottom padding of the appPageContainer
+    const appPageContainer = this.document.getElementById('appPageContainer');
+    appPageContainer?.classList.add('!pb-0', '!px-0');
+    appPageContainer?.querySelector('ui-breadcrumbs')?.classList.add('px-8');
+
     this.formActive = false;
     this.statusControl.valueChanges.subscribe((status) => {
       if (status) {
@@ -534,5 +542,12 @@ export class FormBuilderComponent implements OnInit {
     );
     localStorage.setItem(`form:${this.id}`, event);
     this.authService.canLogout.next(!this.hasChanges);
+  }
+
+  ngOnDestroy(): void {
+    // Add the bottom padding of the appPageContainer
+    const appPageContainer = this.document.getElementById('appPageContainer');
+    appPageContainer?.classList.remove('!pb-0', '!px-0');
+    appPageContainer?.querySelector('ui-breadcrumbs')?.classList.remove('px-8');
   }
 }
