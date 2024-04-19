@@ -572,6 +572,8 @@ export const init = (
             filters = obj;
             this.populateChoices(question);
           }
+        } else if (!question.customFilter) {
+          filters = [];
         }
         if (question.addRecord && question.canSearch) {
           // If search button exists, updates grid displayed records when new records are created with the add button
@@ -721,6 +723,7 @@ export const init = (
         header.style.display = 'flex';
         header.style.justifyContent = 'space-between';
         header.style.alignItems = 'flex-end';
+        header.style.flexWrap = 'wrap';
       } else if (parentElement) {
         parentElement.insertBefore(actionsButtons, parentElement.firstChild);
       }
