@@ -18,6 +18,8 @@ import { RestService } from '../../services/rest/rest.service';
   providedIn: 'root',
 })
 export class EmailService {
+  public index = new BehaviorSubject(null);
+  public title = new BehaviorSubject<string>('');
   /** EMAIL NOTIFICATION DATA */
   public datasetsForm!: FormGroup;
   /** EMAIL RESOURCE NAME ID */
