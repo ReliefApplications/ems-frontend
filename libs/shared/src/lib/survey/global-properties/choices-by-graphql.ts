@@ -186,6 +186,11 @@ export const render = (questionElement: Question, http: HttpClient): void => {
             }));
           const choiceItems = choices.map((choice) => new ItemValue(choice));
           questionElement.setPropertyValue('visibleChoices', choiceItems);
+          // Should remove items that are not part anymore of the list of available choices
+          setQuestionValue(
+            questionElement,
+            questionElement.getPropertyValue('visibleChoices')
+          );
         })
         .finally(() => {
           if (questionElement._instance) {
