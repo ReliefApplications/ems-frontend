@@ -37,6 +37,7 @@ const DEFAULT_MAP: Nullable<MapConstructorSettings> = {
   title: null,
   basemap: null,
   initialState: {
+    useWebMapInitialState: true,
     viewpoint: {
       center: {
         latitude: 0,
@@ -541,6 +542,13 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
     id,
     title: [get(value, 'title', DEFAULT_MAP.title)],
     initialState: fb.group({
+      useWebMapInitialState: [
+        get(
+          value,
+          'initialState.useWebMapInitialState',
+          DEFAULT_MAP.initialState?.useWebMapInitialState
+        ),
+      ],
       viewpoint: fb.group({
         zoom: [
           get(
