@@ -81,6 +81,7 @@ export const rowActions = [
   'history',
   'convert',
   'remove',
+  'showDetails',
 ] as const;
 
 /** Component for grid widgets */
@@ -373,6 +374,7 @@ export class GridComponent
       ...this.selectableSettings,
       mode: this.multiSelect ? 'multiple' : 'single',
     };
+    this.setActionsColumnSize();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -1280,5 +1282,64 @@ export class GridComponent
       },
       {}
     );
+  }
+
+  /**
+   * Set actions column size when action as icon
+   */
+  private setActionsColumnSize() {
+    let size = 0;
+    if (
+      this.widget?.settings?.actions?.update &&
+      this.widget?.settings?.actions?.actionsAsIcons
+    ) {
+      size += 35;
+    }
+
+    if (
+      this.widget?.settings?.actions?.history &&
+      this.widget?.settings?.actions?.actionsAsIcons
+    ) {
+      size += 35;
+    }
+
+    if (
+      this.widget?.settings?.actions?.convert &&
+      this.widget?.settings?.actions?.actionsAsIcons
+    ) {
+      size += 35;
+    }
+
+    if (
+      this.widget?.settings?.actions?.delete &&
+      this.widget?.settings?.actions?.actionsAsIcons
+    ) {
+      size += 35;
+    }
+
+    if (
+      this.widget?.settings?.actions?.showDetails &&
+      this.widget?.settings?.actions?.actionsAsIcons
+    ) {
+      size += 35;
+    }
+
+    if (
+      this.widget?.settings?.actions?.remove &&
+      this.widget?.settings?.actions?.actionsAsIcons
+    ) {
+      size += 35;
+    }
+
+    if (
+      this.widget?.settings?.actions?.navigateToPage &&
+      this.widget?.settings?.actions?.actionsAsIcons
+    ) {
+      size += 35;
+    }
+
+    if (size) {
+      this.actionsWidth = size + 10;
+    }
   }
 }

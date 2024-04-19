@@ -1559,6 +1559,7 @@
 						"copyLink": "Copy link",
 						"copyLinkDone": "Link copied to clipboard",
 						"delete": "Delete records",
+						"details": "Details",
 						"export": "Export records",
 						"goTo": {
 							"column": {

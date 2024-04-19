@@ -2,6 +2,17 @@
 <ng-container *ngIf="actionsAsIcons">
   <div class="flex pr-1">
     <button
+      *ngIf="hasDetails && actions.showDetails"
+      kendoButton
+      icon="detail-section"
+      [look]="'flat'"
+      (click)="action.emit({ action: 'details', items: item })"
+      [uiTooltip]="
+        'components.widget.settings.grid.actions.details' | translate
+      "
+    ></button>
+
+    <button
       *ngIf="actions.update && item.canUpdate"
       kendoButton
       icon="edit"
@@ -47,7 +58,7 @@
     ></button>
 
     <button
-      *ngIf="actions.navigateSettings?.copyLink"
+      *ngIf="actions.navigateToPage && actions.navigateSettings?.copyLink"
       kendoButton
       icon="copy"
       [look]="'flat'"
@@ -87,6 +98,16 @@
     <div id="single-action-label"></div>
   </button>
   <ui-menu #menu>
+    <button
+      *ngIf="hasDetails && actions.showDetails"
+      id="details-action-button"
+      uiMenuItem
+      (click)="action.emit({ action: 'details', items: item })"
+    >
+      {{ 'components.widget.settings.grid.actions.details' | translate }}
+      <div id="details-action-label"></div>
+    </button>
+
     <button
       *ngIf="actions.update && item.canUpdate"
       id="update-action-button"

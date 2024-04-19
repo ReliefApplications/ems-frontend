@@ -1572,6 +1572,7 @@
 						"copyLink": "Copier le lien",
 						"copyLinkDone": "Lien copié dans le presse-papier",
 						"delete": "Supprimer les enregistrements",
+						"details": "Détails",
 						"export": "Exporter les enregistrements",
 						"goTo": {
 							"column": {
