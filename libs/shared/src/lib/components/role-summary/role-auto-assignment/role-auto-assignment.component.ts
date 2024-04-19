@@ -97,6 +97,26 @@ export class RoleAutoAssignmentComponent
         ],
       },
     });
+    // todo: allow to disable that ( environment )
+    // Add a new field to allow automation based on user type ( in Microsoft Entra ID tenant )
+    this.fields.push({
+      text: 'Microsoft Tenant User Type', // todo: translation
+      name: '{{userType}}',
+      editor: 'select',
+      filter: {
+        operators: ['eq', 'neq'],
+      },
+      options: [
+        {
+          text: 'Member',
+          value: 'Member',
+        },
+        {
+          text: 'Guest',
+          value: 'Guest',
+        },
+      ],
+    });
     // Get groups, and add a new field to allow automation based on groups
     this.apollo
       .query<GroupsQueryResponse>({
