@@ -156,7 +156,7 @@ export const render = (questionElement: Question, http: HttpClient): void => {
         get(questionElement, `${prefix}Query`),
         variables
       );
-      const token = localStorage.getItem('idtoken');
+      // const token = localStorage.getItem('idtoken');
       firstValueFrom(
         http
           .post(
@@ -164,8 +164,8 @@ export const render = (questionElement: Question, http: HttpClient): void => {
             {
               query: get(questionElement, `${prefix}Query`),
               variables,
-            },
-            { headers: { Authorization: `Bearer ${token}` } }
+            }
+            // { headers: { Authorization: `Bearer ${token}` } }
           )
           // Cancel the request when refreshing
           .pipe(takeUntil(questionElement.refresh$))
