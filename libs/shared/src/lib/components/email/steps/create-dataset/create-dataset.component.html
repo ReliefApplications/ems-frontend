@@ -41,7 +41,7 @@
         </ng-container>
         <kendo-tabstrip-tab *ngIf="!showPreview"  id="addIcon" class="add-block" >
           <ng-template kendoTabTitle >
-            <ui-button  
+            <ui-button
             class="hide-icons hover:text-primary-600"
             [isIcon]="true"
             size="large"
@@ -79,7 +79,7 @@
                     <th
                       class="text-center p-2"
                     >
-                      {{ this.emailService.replaceUnderscores(fieldKeyString) | titlecase }}
+                      {{ this.emailService.titleCase(this.emailService.replaceUnderscores(fieldKeyString)) | titlecase }}
                     </th>
                   </ng-container>
                 </tr>
@@ -93,7 +93,7 @@
                     <td
                       class="p-2 text-center"
                     >
-                      {{ data[fieldKeyString] }}
+                      {{ this.emailService.formatDateStrings(data[fieldKeyString]) }}
                     </td>
                   </ng-container>
                 </tr>

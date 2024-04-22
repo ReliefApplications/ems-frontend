@@ -423,7 +423,9 @@ export class PreviewComponent implements OnInit, OnDestroy {
     const theadHtml = previewData.dataSetFields
       .map(
         (fieldKeyString: any) =>
-          `<th style="${this.getTableStyle('th')}">${this.titleCase(
+          `<th style="${this.getTableStyle(
+            'th'
+          )}">${this.emailService.titleCase(
             this.emailService.replaceUnderscores(fieldKeyString)
           )}</th>`
       )
@@ -437,7 +439,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
               (fieldKeyString: any) =>
                 `<td style="${this.getTableStyle(
                   'td'
-                )}">${this.formatDateStrings(
+                )}">${this.emailService.formatDateStrings(
                   `${data[fieldKeyString] ?? ''}`
                 )}</td>`
             )
@@ -463,50 +465,6 @@ export class PreviewComponent implements OnInit, OnDestroy {
   </div>
 `;
     return tableHtml;
-  }
-
-  /**
-   * Formats date strings into a pretty string representation
-   *
-   * @param rowData table cell data value
-   * @returns formatted date string or the original value if not a date string
-   */
-  formatDateStrings(rowData: any): string {
-    // Check if rowData is a string that can be parsed into a date
-    if (typeof rowData === 'string' && !isNaN(Date.parse(rowData))) {
-      // Parse the string into a Date object
-      const date = new Date(rowData);
-      // Format the date as MM/DD/YY, hh:mm AM/PM
-      return date.toLocaleString('en-US', {
-        month: 'numeric',
-        day: 'numeric',
-        year: '2-digit',
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true,
-        timeZone: 'UTC',
-        timeZoneName: 'short',
-      });
-    }
-    // If rowData is not a date string, return it as is
-    if (!rowData) {
-      return '';
-    }
-    return rowData as string;
-  }
-
-  /**
-   * Converts String to Title Case
-   *
-   * @param str Input string to be converted
-   * @returns Titlecase string
-   */
-  titleCase(str: string): string {
-    return str
-      .toLowerCase()
-      .split(' ')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
   }
 
   ngOnDestroy(): void {
