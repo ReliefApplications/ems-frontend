@@ -19,6 +19,7 @@ import {
 } from '../../../models/aggregation.model';
 import { getReferenceMetadata } from '../../../utils/reference-data-metadata.util';
 import { PipelineStage } from './pipeline/pipeline-stage.enum';
+import { getReferenceDataAggregationFields } from '../../../utils/reference-data/aggregation-fields.util';
 
 /**
  * Main component of Aggregation builder.
@@ -220,17 +221,10 @@ export class AggregationBuilderComponent
         );
       this.fields.next(fields);
     } else if (this.referenceData) {
-      const fields = this.queryBuilder
-        .getFields(this.referenceData.graphQLTypeName as string)
-        .filter(
-          (field: any) =>
-            !(
-              field.name.includes('_id') &&
-              (field.type.name === 'ID' ||
-                (field.type?.kind === 'LIST' &&
-                  field.type.ofType.name === 'ID'))
-            )
-        );
+      const fields = getReferenceDataAggregationFields(
+        this.referenceData,
+        this.queryBuilder
+      );
       this.fields.next(fields);
     }
   }
