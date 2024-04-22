@@ -30,7 +30,6 @@ import { Aggregation } from '../../models/aggregation.model';
 import { Layout } from '../../models/layout.model';
 import { ADD_LAYER, EDIT_LAYER, DELETE_LAYER } from './graphql/mutations';
 import { GET_LAYERS, GET_LAYER_BY_ID } from './graphql/queries';
-import { HttpParams } from '@angular/common/http';
 import { omitBy, isNil, get } from 'lodash';
 import { ContextService } from '../context/context.service';
 import { DOCUMENT } from '@angular/common';
@@ -408,29 +407,27 @@ export class MapLayersService {
     const at = layer.at
       ? this.contextService.atArgumentValue(layer.at)
       : undefined;
-    const params = new HttpParams({
-      fromObject: omitBy(
-        {
-          ...layer.datasource,
-          contextFilters: JSON.stringify(contextFilters),
-          graphQLVariables: JSON.stringify(
-            this.widgetService.mapGraphQLVariables(
-              layer.datasource?.referenceDataVariableMapping
-            )
-          ),
-          ...(at && {
-            at: at.toString(),
-          }),
-        },
-        isNil
-      ),
-    });
+    const body = omitBy(
+      {
+        ...layer.datasource,
+        contextFilters: JSON.stringify(contextFilters),
+        graphQLVariables: JSON.stringify(
+          this.widgetService.mapGraphQLVariables(
+            layer.datasource?.referenceDataVariableMapping
+          )
+        ),
+        ...(at && {
+          at: at.toString(),
+        }),
+      },
+      isNil
+    );
     // Method to get layer from definition
     // Query is sent to the back-end to fetch correct data
     const getLayer = () => {
       return lastValueFrom(
         this.restService
-          .get(`${this.restService.apiUrl}/gis/feature`, { params })
+          .post(`${this.restService.apiUrl}/gis/feature`, body)
           .pipe(
             map((value) => {
               // When using adminField mapping, update the feature so geometry is replaced with according polygons
