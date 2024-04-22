@@ -77,7 +77,7 @@
                 <tr>
                   <ng-container *ngFor="let fieldKeyString of previewData?.dataSetFields">
                     <th
-                      class="text-center p-2"
+                      class="text-left p-2"
                     >
                       {{ this.emailService.titleCase(this.emailService.replaceUnderscores(fieldKeyString)) | titlecase }}
                     </th>
@@ -91,7 +91,7 @@
                 >
                   <ng-container *ngFor="let fieldKeyString of previewData?.dataSetFields">
                     <td
-                      class="p-2 text-center"
+                      class="p-2 text-left"
                     >
                       {{ this.emailService.formatDateStrings(data[fieldKeyString]) }}
                     </td>
