@@ -977,6 +977,10 @@ export class EmailService {
                 }
               }
             });
+          } else if (value.geometry) {
+            result[
+              key
+            ] = `${record[key].properties.countryName} (${record[key].properties.coordinates.lat}, ${record[key].properties.coordinates.lng})`;
           } else {
             // Takes the resources count and maps it to the resource name.
             result[key] =
