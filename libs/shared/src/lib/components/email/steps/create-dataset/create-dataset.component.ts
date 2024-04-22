@@ -131,7 +131,7 @@ export class CreateDatasetComponent implements OnInit {
    * @param event Event of tab selection
    */
   changeTab(tabIndex: any, event?: any) {
-    if (event && !event.title) {
+    if (event && !event?.title) {
       event.preventDefault();
       return;
     }

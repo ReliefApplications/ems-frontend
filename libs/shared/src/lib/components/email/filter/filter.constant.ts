@@ -272,6 +272,30 @@ export const FIELD_TYPES = [
     defaultOperator: 'isnull',
     operators: ['isnull', 'isnotnull'],
   },
+  {
+    editor: 'users',
+    defaultOperator: 'contains',
+    operators: [
+      'eq',
+      'neq',
+      'contains',
+      'doesnotcontain',
+      'isempty',
+      'isnotempty',
+    ],
+  },
+  {
+    editor: 'owner',
+    defaultOperator: 'contains',
+    operators: [
+      'eq',
+      'neq',
+      'contains',
+      'doesnotcontain',
+      'isempty',
+      'isnotempty',
+    ],
+  },
 ];
 
 /**
