@@ -735,14 +735,18 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       (x: { name: any }) => x.name === name.split('.')[0]
     );
     if (field && field.type === TYPE_LABEL.resources) {
-      field = name.split('.')[1];
+      const child = name.split('.')[1];
+      if (field.fields) {
+        field = field?.fields.find((x: { name: any }) => x.name === child);
+      }
     }
 
     if (field && field.type === TYPE_LABEL.resource) {
       if (field.fields) {
-        field = field?.fields.find(
-          (x: { name: any }) => x.name.split(' - ')[1] === name.split('.')[1]
-        );
+        field =
+          field?.fields.find(
+            (x: { name: any }) => x.name.split(' - ')[1] === name.split('.')[1]
+          ) ?? field;
       }
     }
     let type: { operators: any; editor: string; defaultOperator: string } = {
