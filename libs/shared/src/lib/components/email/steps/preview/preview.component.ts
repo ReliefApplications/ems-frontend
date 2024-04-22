@@ -240,7 +240,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
       case 'td':
         styles[
           'tdStyle'
-        ] = `padding: 0.5rem; text-align: left; font-family: 'Source Sans Pro', Roboto, 'Helvetica Neue', sans-serif;`;
+        ] = `padding: 0.5rem; text-align: left; font-family: 'Source Sans Pro', Roboto, 'Helvetica Neue', sans-serif; color: #000000;`;
         break;
     }
     this.emailService.setTableStyles(styles);
