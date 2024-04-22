@@ -26,6 +26,7 @@ import {
   FILTER_OPERATORS,
   TYPE_LABEL,
 } from '../../filter/filter.constant';
+import { FIELD_NAME } from './metadata.constant';
 import { GET_RESOURCE, GET_RESOURCES } from '../../graphql/queries';
 import { Subscription } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
@@ -343,27 +344,33 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                 )
               ) {
                 if (field) {
-                  if (field.name === 'createdBy' && field.fields?.length) {
-                    field.fields.forEach((obj: any) => {
-                      obj.name = '_createdBy.user.' + obj.name;
-                      this.availableFields.filter((x) => x.name == obj.name)
-                        .length === 0
-                        ? this.availableFields.push(clone(obj))
-                        : '';
-                      obj.name = 'createdBy.' + obj.name.split('.')[2];
-                      this.filterFields.push(obj);
-                    });
-                  } else if (
-                    field.name === 'lastUpdatedBy' &&
+                  if (
+                    field.name === FIELD_NAME.createdBy &&
                     field.fields?.length
                   ) {
                     field.fields.forEach((obj: any) => {
-                      obj.name = '_lastUpdatedBy.user.' + obj.name;
+                      obj.name = `_${FIELD_NAME.createdBy}.user.` + obj.name;
                       this.availableFields.filter((x) => x.name == obj.name)
                         .length === 0
                         ? this.availableFields.push(clone(obj))
                         : '';
-                      obj.name = 'lastUpdatedBy.' + obj.name.split('.')[2];
+                      obj.name =
+                        `${FIELD_NAME.createdBy}.` + obj.name.split('.')[2];
+                      this.filterFields.push(obj);
+                    });
+                  } else if (
+                    field.name === FIELD_NAME.lastUpdatedBy &&
+                    field.fields?.length
+                  ) {
+                    field.fields.forEach((obj: any) => {
+                      obj.name =
+                        `_${FIELD_NAME.lastUpdatedBy}.user.` + obj.name;
+                      this.availableFields.filter((x) => x.name == obj.name)
+                        .length === 0
+                        ? this.availableFields.push(clone(obj))
+                        : '';
+                      obj.name =
+                        `${FIELD_NAME.lastUpdatedBy}.` + obj.name.split('.')[2];
                       this.filterFields.push(obj);
                     });
                   } else if (
@@ -394,8 +401,8 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                       field.fields.forEach((obj: any) => {
                         obj.parentName = field.name;
                         if (
-                          obj.name === 'createdBy' ||
-                          obj.name === 'lastUpdatedBy'
+                          obj.name === FIELD_NAME.createdBy ||
+                          obj.name === FIELD_NAME.lastUpdatedBy
                         ) {
                           const obj1 = cloneDeep(obj);
                           obj1.childName = `${field.name} - _${obj.name}.user.username`;
