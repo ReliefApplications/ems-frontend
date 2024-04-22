@@ -296,6 +296,11 @@ export const FIELD_TYPES = [
       'isnotempty',
     ],
   },
+  {
+    editor: 'geospatial',
+    defaultOperator: 'eq',
+    operators: ['eq'],
+  },
 ];
 
 /**
