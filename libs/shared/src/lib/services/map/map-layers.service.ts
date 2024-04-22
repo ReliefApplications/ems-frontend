@@ -35,6 +35,8 @@ import { ContextService } from '../context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { MapPolygonsService } from './map-polygons.service';
 import { WidgetService } from '../widget/widget.service';
+import { ReferenceData } from '../../models/reference-data.model';
+import getReferenceDataAggregationFields from '../../utils/reference-data/aggregation-fields.util';
 
 /**
  * Shared map layer service
@@ -213,13 +215,56 @@ export class MapLayersService {
   }
 
   /**
+   * Get reference data aggregation fields
+   *
+   * @param referenceData Reference data
+   * @param aggregation Current aggregation
+   * @returns list of aggregation fields
+   */
+  public getReferenceDataAggregationFields(
+    referenceData: ReferenceData,
+    aggregation: Aggregation | null
+  ) {
+    const fields = getReferenceDataAggregationFields(
+      referenceData,
+      this.queryBuilder
+    );
+    const selectedFields = aggregation?.sourceFields
+      .map((x: string) => {
+        const field = fields.find((y) => x === y.name);
+        if (!field) return null;
+        if (field.type.kind !== 'SCALAR') {
+          Object.assign(field, {
+            fields: this.queryBuilder
+              .getFieldsFromType(
+                field.type.kind === 'OBJECT'
+                  ? field.type.name
+                  : field.type.ofType.name
+              )
+              .filter((y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR'),
+          });
+        }
+        return field;
+      })
+      // @TODO To be improved - Get only the JSON type fields for this case
+      .filter((x: any) => x !== null);
+    return this.aggregationBuilder
+      .fieldsAfter(selectedFields, aggregation?.pipeline)
+      .map((field) => ({
+        name: field.name,
+        label: field.name,
+        type: field.type.name,
+      }));
+  }
+
+  /**
    * Get fields from aggregation
    *
    * @param queryName query name to get the fields
-   * @param aggregation A aggregation
-   * @returns aggregation fields
+   * @param aggregation Current aggregation
+   * @returns list of aggregation fields
    */
-  public getAggregationFields(
+  public getResourceAggregationFields(
     queryName: string,
     aggregation: Aggregation | null
   ) {

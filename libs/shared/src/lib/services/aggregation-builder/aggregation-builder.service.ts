@@ -8,6 +8,7 @@ import { QueryBuilderService } from '../query-builder/query-builder.service';
 import { Aggregation } from '../../models/aggregation.model';
 import { Resource } from '../../models/resource.model';
 import { ReferenceData } from '../../models/reference-data.model';
+import getReferenceDataAggregationFields from '../../utils/reference-data/aggregation-fields.util';
 
 /**
  * Shared aggregation service.
@@ -225,19 +226,25 @@ export class AggregationBuilderService {
       referenceData?: ReferenceData | null;
     }
   ) {
-    const queryName = options.resource
-      ? options.resource.queryName
-      : options.referenceData?.graphQLTypeName;
-    const fields = this.queryBuilder
-      .getFields(queryName as string)
-      .filter(
-        (field: any) =>
-          !(
-            field.name.includes('_id') &&
-            (field.type.name === 'ID' ||
-              (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
-          )
+    let fields: any[] = [];
+    if (options.referenceData) {
+      fields = getReferenceDataAggregationFields(
+        options.referenceData,
+        this.queryBuilder
       );
+    } else {
+      fields = this.queryBuilder
+        .getFields(options.resource?.queryName as string)
+        .filter(
+          (field: any) =>
+            !(
+              field.name.includes('_id') &&
+              (field.type.name === 'ID' ||
+                (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
+            )
+        );
+    }
+
     const selectedFields = aggregation.sourceFields
       .map((x: string) => {
         const field = fields.find((y) => x === y.name);
