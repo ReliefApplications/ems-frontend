@@ -42,7 +42,7 @@ const QUESTION_TYPES = [
   'dropdown',
   'tagbox',
   'comment',
-  // 'rating',
+  'rating',
   // 'ranking',
   // 'imagepicker',
   'boolean',
@@ -395,7 +395,7 @@ export class FormBuilderComponent
     this.surveyCreator.onDefineElementMenuItems.add((_, options) => {
       const element = options.obj;
       // Only display for questions & panels
-      if (element.isPage) {
+      if (element.isPage || element.isPanel) {
         return;
       }
 

@@ -26,6 +26,7 @@ import startsWith from './startsWith';
 import endsWith from './endsWith';
 import replace from './replace';
 import regexReplace from './regexReplace';
+import round from './round';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -55,6 +56,7 @@ export const functions = [
   { fn: endsWith, name: 'endsWith' },
   { fn: replace, name: 'replace' },
   { fn: regexReplace, name: 'regexReplace' },
+  { fn: round, name: 'round' },
 ];
 
 /** Generators for each async custom function available  */
