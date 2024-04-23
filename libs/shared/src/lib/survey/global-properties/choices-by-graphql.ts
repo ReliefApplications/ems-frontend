@@ -45,7 +45,10 @@ const setQuestionValue = (question: Question, choices: ItemValue[]) => {
         .filter((choice) => value.find((x) => isEqual(x, choice.value)))
         .map((choice) => choice.value);
       question.value = updatedValue;
-      question._instance.value = updatedValue;
+      // as question value may be updated before display
+      if (question._instance) {
+        question._instance.value = updatedValue;
+      }
     }
   }
   if (question.getType() === 'dropdown') {
