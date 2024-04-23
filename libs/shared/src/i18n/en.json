@@ -1919,6 +1919,7 @@
 						"longitude": "Map center longitude",
 						"setByMap": "Set By Map",
 						"title": "Map Parameters",
+						"useWebMapInitialState": "Use WebMap initial state",
 						"webmap": "WebMap",
 						"zoom": "Default zoom"
 					},

@@ -544,7 +544,7 @@ export class EditLayerModalComponent
               );
               this.fields.next(
                 this.aggregation
-                  ? this.mapLayersService.getAggregationFields(
+                  ? this.mapLayersService.getResourceAggregationFields(
                       data.resource.queryName ?? '',
                       this.aggregation
                     )
@@ -583,8 +583,8 @@ export class EditLayerModalComponent
             );
             this.fields.next(
               this.aggregation
-                ? this.mapLayersService.getAggregationFields(
-                    data.referenceData.graphQLTypeName ?? '',
+                ? this.mapLayersService.getReferenceDataAggregationFields(
+                    data.referenceData,
                     this.aggregation
                   )
                 : []
