@@ -785,6 +785,9 @@
 			}
 		},
 		"distributionLists": {
+			"actions": {
+				"navigate": "Accédez à la liste de distribution"
+			},
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer la liste de distribution: '{{name}}'?"
 			},
@@ -1383,6 +1386,9 @@
 			}
 		},
 		"templates": {
+			"actions": {
+				"navigate": "Accédez aux modèles"
+			},
 			"available": "Modèles d'email disponibles",
 			"delete": {
 				"confirmationMessage": "Voulez-vous supprimer le modèle '{{name}}'?",

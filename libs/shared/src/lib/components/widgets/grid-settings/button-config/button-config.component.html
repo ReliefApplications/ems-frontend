@@ -347,6 +347,15 @@
             [uiTooltip]="'components.distributionLists.edit.new' | translate"
           >
           </ui-button>
+          <ui-button
+            uiSuffix
+            [isIcon]="true"
+            icon="link_simple"
+            variant="grey"
+            (click)="navigateTo('/settings/distribution-lists')"
+            [uiTooltip]="'components.distributionLists.actions.navigate' | translate"
+          >
+          </ui-button>
         </div>
         <!-- Templates -->
         <div
@@ -390,6 +399,15 @@
             [uiTooltip]="'components.templates.edit.new' | translate"
           >
           </ui-button>
+          <ui-button
+          uiSuffix
+          [isIcon]="true"
+          icon="link_simple"
+          variant="grey"
+          (click)="navigateTo('/settings/notifications')"
+          [uiTooltip]="'components.templates.actions.navigate' | translate"
+        >
+        </ui-button>
         </div>
         <!-- Export dataset -->
         <ui-checkbox formControlName="export">

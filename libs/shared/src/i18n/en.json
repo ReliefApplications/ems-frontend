@@ -779,6 +779,9 @@
 			}
 		},
 		"distributionLists": {
+			"actions": {
+				"navigate": "Navigate to Distribution List"
+			},
 			"delete": {
 				"confirmationMessage": "Are you sure you want to delete the distribution list '{{name}}'?"
 			},
@@ -1372,6 +1375,9 @@
 			}
 		},
 		"templates": {
+			"actions": {
+				"navigate": "Navigate to Templates"
+			},
 			"available": "Available email templates",
 			"delete": {
 				"confirmationMessage": "Are you sure you want to delete the template '{{name}}'?"

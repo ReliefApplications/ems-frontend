@@ -16,6 +16,7 @@ import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ButtonModule, DialogModule } from '@oort-front/ui';
 import { WidgetSettingsType } from '../../../models/dashboard.model';
+import { ApplicationService } from '../../../services/application/application.service';
 
 /** Model for dialog data */
 interface DialogData {
@@ -56,12 +57,14 @@ export class EditWidgetModalComponent
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
    * @param environmentInjector Angular environment injector containing all registered DI for the settings component
+   * @param applicationService the application service
    */
   constructor(
     public dialogRef: DialogRef<EditWidgetModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
     private confirmService: ConfirmService,
     private translate: TranslateService,
+    private applicationService: ApplicationService,
     private environmentInjector: EnvironmentInjector
   ) {
     super();
@@ -82,6 +85,14 @@ export class EditWidgetModalComponent
       .subscribe((e: any) => {
         this.widgetForm = e;
       });
+    this.applicationService.closeApplicationSettingsDialog.subscribe(
+      (isCloseAction: boolean | undefined) => {
+        if (isCloseAction) {
+          this.dialogRef.close();
+          this.applicationService.closeApplicationSettingsDialog.next(false);
+        }
+      }
+    );
   }
 
   /** Once the template is ready, inject the settings component linked to the widget type passed as a parameter. */

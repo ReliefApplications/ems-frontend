@@ -147,6 +147,11 @@ export class ApplicationService {
   /** Custom style edited */
   public customStyleEdited = false;
 
+  /* To close the application's grid settings dialog */
+  public closeApplicationSettingsDialog = new BehaviorSubject<
+    boolean | undefined
+  >(undefined);
+
   /** @returns Path to download application users */
   get usersDownloadPath(): string {
     const id = this.application.getValue()?.id;
