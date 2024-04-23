@@ -248,10 +248,14 @@ export const render = (questionElement: Question, http: HttpClient): void => {
     }
 
     (questionElement.survey as SurveyModel).onValueChanged.add(() => {
-      setQuestionValue(
-        questionElement,
-        questionElement.getPropertyValue('visibleChoices')
-      );
+      if (
+        get(questionElement, `${prefix}Url`) &&
+        get(questionElement, `${prefix}Query`)
+      )
+        setQuestionValue(
+          questionElement,
+          questionElement.getPropertyValue('visibleChoices')
+        );
     });
   }
 };
