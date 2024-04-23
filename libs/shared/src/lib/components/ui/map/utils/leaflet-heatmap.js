@@ -200,11 +200,13 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
     // console.log('Diff is: ', pointDiff);
 
     const newCenter = this._map.latLngToContainerPoint([0, 0]);
+    console.log('New center is: ', newCenter);
     const oldCenter = this._map
       .project([0, 0], 2)
       ._round()
       ._subtract(this._map.getPixelOrigin())
       .add(panePos);
+    console.log('Old center is: ', oldCenter);
     const pointDiff = newCenter.subtract(oldCenter);
     console.log('Diff is: ', pointDiff);
 
@@ -219,15 +221,15 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
       // for (let i = 0; i < scaleDiff; i++) {
       //   p.add(copy);
       // }
-      if (i == 0) {
-        console.log(p);
-        console.log(p.distanceTo(this._map.latLngToContainerPoint([0, 0])));
-        console.log(this._map.latLngToContainerPoint(this._latlngs[i]));
-      }
+      // if (i == 0) {
+      // console.log(p);
+      // console.log(p.distanceTo(this._map.latLngToContainerPoint([0, 0])));
+      // console.log(this._map.latLngToContainerPoint(this._latlngs[i]));
+      // }
       // console.log(p);
       // console.log(this._map.project(this._latlngs[i], 2));
-      x = Math.floor((p.x - offsetX) / cellSize) + 2;
-      y = Math.floor((p.y - offsetY) / cellSize) + 2;
+      x = Math.floor((p.x - offsetX) / cellSize) + 2 + pointDiff.x;
+      y = Math.floor((p.y - offsetY) / cellSize) + 2 + pointDiff.y;
 
       var alt =
         this._latlngs[i].alt !== undefined
@@ -238,6 +240,8 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
 
       grid[y] = grid[y] || [];
       cell = grid[y][x];
+
+      p = p.add(pointDiff);
 
       if (!cell) {
         cell = grid[y][x] = [p.x, p.y, alt];
@@ -284,9 +288,9 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
     // console.timeEnd('draw ' + data.length);
 
     this._frame = null;
-    console.log('end draw');
-    this._canvas.style.transform =
-      this._canvas.style.transform + ` scale(${scaleDiff})`;
+    console.log('=== end draw, should transform ===');
+    // this._canvas.style.transform =
+    //   this._canvas.style.transform + ` scale(${scaleDiff})`;
   },
 
   _animateZoom: function (e) {
