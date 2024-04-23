@@ -1555,11 +1555,23 @@
 						"add": "******",
 						"automaticallyMapSelected": "******",
 						"automaticallyMapView": "******",
-						"convert": "******",
-						"copyLink": "******",
+						"convert": {
+							"label": "******",
+							"text": "******"
+						},
+						"copyLink": {
+							"label": "******",
+							"text": "******"
+						},
 						"copyLinkDone": "******",
-						"delete": "******",
-						"details": "******",
+						"delete": {
+							"label": "******",
+							"text": "******"
+						},
+						"details": {
+							"label": "******",
+							"text": "******"
+						},
 						"export": "******",
 						"goTo": {
 							"column": {
@@ -1589,11 +1601,17 @@
 							"placeholder": "******"
 						},
 						"remove": "******",
-						"show": "******",
+						"show": {
+							"label": "******",
+							"text": "******"
+						},
 						"showDetails": "******",
 						"state": "******",
 						"title": "******",
-						"update": "******",
+						"update": {
+							"label": "******",
+							"text": "******"
+						},
 						"useRecordId": "******"
 					},
 					"aggregations": {

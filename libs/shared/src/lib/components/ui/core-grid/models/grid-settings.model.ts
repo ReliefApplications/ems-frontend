@@ -23,9 +23,13 @@ export interface GridSettings {
 /** Related grid actions */
 export interface GridActions {
   update: boolean;
+  updateLabel?: string;
   delete: boolean;
+  deleteLabel?: string;
   history: boolean;
+  historyLabel?: string;
   convert: boolean;
+  convertLabel?: string;
   remove: boolean;
   add?: boolean;
   export?: boolean;
@@ -36,6 +40,7 @@ export interface GridActions {
     pageUrl: string;
     title: string;
     copyLink: boolean;
+    copyLinkLabel?: string;
   };
   search?: boolean;
   inlineEdition?: boolean;

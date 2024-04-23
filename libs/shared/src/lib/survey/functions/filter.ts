@@ -20,39 +20,20 @@ const filter = (params: any[]) => {
   if (!validOps.includes(op)) {
     return [];
   }
-  let res = [];
 
   switch (op) {
     case 'eq':
-      res = arr.filter((item) => item[key] === value);
-
-      console.log(res);
-      return res;
+      return arr.filter((item) => item[key] === value);
     case 'neq':
-      res = arr.filter((item) => item[key] !== value);
-
-      console.log(res);
-      return res;
+      return arr.filter((item) => item[key] !== value);
     case 'gt':
-      res = arr.filter((item) => item[key] > value);
-
-      console.log(res);
-      return res;
+      return arr.filter((item) => item[key] > value);
     case 'gte':
-      res = arr.filter((item) => item[key] >= value);
-
-      console.log(res);
-      return res;
+      return arr.filter((item) => item[key] >= value);
     case 'lt':
-      res = arr.filter((item) => item[key] < value);
-
-      console.log(res);
-      return res;
+      return arr.filter((item) => item[key] < value);
     case 'lte':
-      res = arr.filter((item) => item[key] <= value);
-
-      console.log(res);
-      return res;
+      return arr.filter((item) => item[key] <= value);
     default:
       return arr;
   }

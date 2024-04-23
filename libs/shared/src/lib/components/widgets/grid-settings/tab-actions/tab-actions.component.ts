@@ -36,23 +36,35 @@ export class TabActionsComponent
   public actions = [
     {
       name: 'delete',
-      text: 'components.widget.settings.grid.actions.delete',
+      text: 'components.widget.settings.grid.actions.delete.text',
       tooltip: 'components.widget.settings.grid.hint.actions.delete',
+      editLabel: true,
+      label: 'components.widget.settings.grid.actions.delete.label',
+      placeholder: 'common.delete',
     },
     {
       name: 'history',
-      text: 'components.widget.settings.grid.actions.show',
+      text: 'components.widget.settings.grid.actions.show.text',
       tooltip: 'components.widget.settings.grid.hint.actions.show',
+      editLabel: true,
+      label: 'components.widget.settings.grid.actions.show.label',
+      placeholder: 'common.history',
     },
     {
       name: 'convert',
-      text: 'components.widget.settings.grid.actions.convert',
+      text: 'components.widget.settings.grid.actions.convert.text',
       tooltip: 'components.widget.settings.grid.hint.actions.convert',
+      editLabel: true,
+      label: 'components.widget.settings.grid.actions.convert.label',
+      placeholder: 'models.record.convert',
     },
     {
       name: 'update',
-      text: 'components.widget.settings.grid.actions.update',
+      text: 'components.widget.settings.grid.actions.update.text',
       tooltip: 'components.widget.settings.grid.hint.actions.update',
+      editLabel: true,
+      label: 'components.widget.settings.grid.actions.update.label',
+      placeholder: 'common.update',
     },
     {
       name: 'inlineEdition',
@@ -74,6 +86,11 @@ export class TabActionsComponent
       name: 'showDetails',
       text: 'components.widget.settings.grid.actions.showDetails',
       tooltip: 'components.widget.settings.grid.hint.actions.showDetails',
+    },
+    {
+      name: 'actionsAsIcons',
+      text: 'components.widget.settings.grid.actions.actionsAsIcons',
+      tooltip: 'components.widget.settings.grid.hint.actions.actionsAsIcons',
     },
     {
       name: 'mapSelected',

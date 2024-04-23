@@ -1555,11 +1555,23 @@
 						"add": "Add new records",
 						"automaticallyMapSelected": "Automatically map selected rows",
 						"automaticallyMapView": "Automatically map visible rows",
-						"convert": "Convert records",
-						"copyLink": "Copy link",
+						"convert": {
+							"label": "Convert records button label",
+							"text": "Convert records"
+						},
+						"copyLink": {
+							"label": "Copy link button label",
+							"text": "Copy link"
+						},
 						"copyLinkDone": "Link copied to clipboard",
-						"delete": "Delete records",
-						"details": "Details",
+						"delete": {
+							"label": "Delete button label",
+							"text": "Delete records"
+						},
+						"details": {
+							"label": "Details button label",
+							"text": "Details"
+						},
 						"export": "Export records",
 						"goTo": {
 							"column": {
@@ -1589,11 +1601,17 @@
 							"placeholder": "Type a title for the column..."
 						},
 						"remove": "Remove",
-						"show": "Show history",
+						"show": {
+							"label": "Show history button label",
+							"text": "Show history"
+						},
 						"showDetails": "Show record details",
 						"state": "Select dashboard state",
 						"title": "Enabled actions",
-						"update": "Update records",
+						"update": {
+							"label": "Update button label",
+							"text": "Update records"
+						},
 						"useRecordId": "Pass id as query parameter"
 					},
 					"aggregations": {

@@ -42,7 +42,7 @@ const QUESTION_TYPES = [
   'dropdown',
   'tagbox',
   'comment',
-  // 'rating',
+  'rating',
   // 'ranking',
   // 'imagepicker',
   'boolean',
@@ -290,8 +290,8 @@ export class FormBuilderComponent
     // Manage copying rows/columns between matrixes
     new MatrixManager(this.surveyCreator.survey);
 
-    this.surveyCreator.toolbox.forceCompact = false;
-    this.surveyCreator.toolbox.allowExpandMultipleCategories = true;
+    this.surveyCreator.toolbox.forceCompact = true;
+    this.surveyCreator.toolbox.allowExpandMultipleCategories = false;
     new SurveyCustomJSONEditorPlugin(this.surveyCreator);
     this.surveyCreator.toolbox.changeCategories(
       QUESTION_TYPES.map((x) => ({
@@ -395,7 +395,7 @@ export class FormBuilderComponent
     this.surveyCreator.onDefineElementMenuItems.add((_, options) => {
       const element = options.obj;
       // Only display for questions & panels
-      if (element.isPage) {
+      if (element.isPage || element.isPanel) {
         return;
       }
 

@@ -402,13 +402,6 @@ export class GridWidgetComponent
         return;
       }
     }
-    // Auto modify the selected rows
-    if (options.modifySelectedRows) {
-      await this.promisedRowsModifications(
-        options.modifications,
-        this.grid.selectedRows
-      );
-    }
     const promises: Promise<any>[] = [];
     // Notifies on a channel.
     if (options.notify && this.grid.selectedRows.length > 0) {
@@ -553,25 +546,22 @@ export class GridWidgetComponent
           { error: true }
         );
       } else {
-        if (options.requireConfirmation) {
-          const confirm = await firstValueFrom(
-            this.confirmService.openConfirmModal({
-              title: this.translate.instant(
-                'components.widget.settings.chart.grid.buttons.modifySelectedRows.confirmation'
-              ),
-              confirmText: this.translate.instant(
-                'components.confirmModal.confirm'
-              ),
-              confirmVariant: 'primary',
-            }).closed
-          );
-          if (confirm) {
-            await this.promisedRowsModifications(
-              options.modifications,
-              this.grid.selectedRows
-            );
-          }
-        } else {
+        const confirmPromise = options.requireConfirmation
+          ? firstValueFrom(
+              this.confirmService.openConfirmModal({
+                title: this.translate.instant(
+                  'components.widget.settings.chart.grid.buttons.modifySelectedRows.confirmation'
+                ),
+                confirmText: this.translate.instant(
+                  'components.confirmModal.confirm'
+                ),
+                confirmVariant: 'primary',
+              }).closed
+            )
+          : new Promise((resolve) => resolve(true));
+
+        const confirm = await confirmPromise;
+        if (confirm) {
           await this.promisedRowsModifications(
             options.modifications,
             this.grid.selectedRows
