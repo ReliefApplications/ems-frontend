@@ -45,7 +45,10 @@ const setQuestionValue = (question: Question, choices: ItemValue[]) => {
         .filter((choice) => value.find((x) => isEqual(x, choice.value)))
         .map((choice) => choice.value);
       question.value = updatedValue;
-      question._instance.value = updatedValue;
+      // as question value may be updated before display
+      if (question._instance) {
+        question._instance.value = updatedValue;
+      }
     }
   }
   if (question.getType() === 'dropdown') {
@@ -248,10 +251,14 @@ export const render = (questionElement: Question, http: HttpClient): void => {
     }
 
     (questionElement.survey as SurveyModel).onValueChanged.add(() => {
-      setQuestionValue(
-        questionElement,
-        questionElement.getPropertyValue('visibleChoices')
-      );
+      if (
+        get(questionElement, `${prefix}Url`) &&
+        get(questionElement, `${prefix}Query`)
+      )
+        setQuestionValue(
+          questionElement,
+          questionElement.getPropertyValue('visibleChoices')
+        );
     });
   }
 };
