@@ -157,11 +157,75 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
       j,
       len2;
 
+    console.log('cellsize: ', cellSize);
+    console.log('offset x: ', offsetX);
+    console.log('offset y: ', offsetY);
+
     this._max = 1;
+
+    console.log('Origin: ', this._map.getPixelOrigin());
+    console.log('Pane pos: ', this._map._getMapPanePos());
+
+    console.log(
+      'Origin to latlng: ',
+      this._map.containerPointToLatLng(this._map.getPixelOrigin())
+    );
+
+    console.log(
+      'Origin at base zoom: ',
+      this._map.project(
+        this._map.containerPointToLatLng(this._map.getPixelOrigin()),
+        2
+      )
+    );
+
+    console.log(
+      'bottom right at base zoom: ',
+      this._map.project([-90, 180], 2)
+    );
+
+    console.log(
+      'bottom right at current zoom: ',
+      this._map.project([-90, 180])
+    );
+
+    const scaleDiff =
+      this._map.getZoomScale(this._map.getZoom()) / this._map.getZoomScale(2);
+
+    console.log('scale diff is: ', scaleDiff);
+
+    // const pointDiff = this._map
+    //   .project([0, 0])
+    //   .subtract(this._map.project([0, 0], 2).subtract(panePos));
+    // console.log('Diff is: ', pointDiff);
+
+    const newCenter = this._map.latLngToContainerPoint([0, 0]);
+    const oldCenter = this._map
+      .project([0, 0], 2)
+      ._round()
+      ._subtract(this._map.getPixelOrigin())
+      .add(panePos);
+    const pointDiff = newCenter.subtract(oldCenter);
+    console.log('Diff is: ', pointDiff);
 
     // console.time('process');
     for (i = 0, len = this._latlngs.length; i < len; i++) {
-      p = this._map.latLngToContainerPoint(this._latlngs[i]);
+      p = this._map
+        .project(this._latlngs[i], 2)
+        ._round()
+        ._subtract(this._map.getPixelOrigin())
+        .add(panePos);
+      // const copy = p.clone();
+      // for (let i = 0; i < scaleDiff; i++) {
+      //   p.add(copy);
+      // }
+      if (i == 0) {
+        console.log(p);
+        console.log(p.distanceTo(this._map.latLngToContainerPoint([0, 0])));
+        console.log(this._map.latLngToContainerPoint(this._latlngs[i]));
+      }
+      // console.log(p);
+      // console.log(this._map.project(this._latlngs[i], 2));
       x = Math.floor((p.x - offsetX) / cellSize) + 2;
       y = Math.floor((p.y - offsetY) / cellSize) + 2;
 
@@ -196,13 +260,20 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
       if (grid[i]) {
         for (j = 0, len2 = grid[i].length; j < len2; j++) {
           cell = grid[i][j];
-          if (cell && bounds.contains(cell.p)) {
+          if (cell) {
             data.push([
               Math.round(cell[0]),
               Math.round(cell[1]),
               Math.min(cell[2], this._max),
             ]);
           }
+          // if (cell && bounds.contains(cell.p)) {
+          //   data.push([
+          //     Math.round(cell[0]),
+          //     Math.round(cell[1]),
+          //     Math.min(cell[2], this._max),
+          //   ]);
+          // }
         }
       }
     }
@@ -213,6 +284,9 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
     // console.timeEnd('draw ' + data.length);
 
     this._frame = null;
+    console.log('end draw');
+    this._canvas.style.transform =
+      this._canvas.style.transform + ` scale(${scaleDiff})`;
   },
 
   _animateZoom: function (e) {
