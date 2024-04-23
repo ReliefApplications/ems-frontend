@@ -141,8 +141,7 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
     }
 
     // Calculate the zoom coefficient to ensure the radius maintains its scale
-    // cf (https://leafletjs.com/examples/zoom-levels/) power of 2
-    const scale = Math.pow(2, this._map.getZoom() - 2) || 1; // -2 because the minimum zoom equals 2
+    const scale = this._map.getZoomScale(this._map.getZoom()) / this._map.getZoomScale(2);
     this._heat.radius(
       this.options.radius * scale || this._heat.defaultRadius * scale,
       this.options.blur * scale
