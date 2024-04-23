@@ -126,6 +126,38 @@ export class PreviewComponent implements OnInit, OnDestroy {
       const fieldValue = firstRowData[fieldName];
 
       if (fieldValue !== undefined) {
+        if (fieldValue instanceof Date) {
+          this.subjectString = this.subjectString.replace(
+            match[0],
+            fieldValue.toLocaleString('en-US', {
+              month: 'numeric',
+              day: 'numeric',
+              year: '2-digit',
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true,
+              timeZone: 'UTC',
+              timeZoneName: 'short',
+            })
+          );
+        } else if (typeof fieldValue === 'string') {
+          const date = new Date(fieldValue);
+          if (!isNaN(date.getTime())) {
+            this.subjectString = this.subjectString.replace(
+              match[0],
+              date.toLocaleString('en-US', {
+                month: 'numeric',
+                day: 'numeric',
+                year: '2-digit',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+                timeZone: 'UTC',
+                timeZoneName: 'short',
+              })
+            );
+          }
+        }
         this.subjectString = this.subjectString.replace(match[0], fieldValue);
       }
     }
@@ -344,9 +376,29 @@ export class PreviewComponent implements OnInit, OnDestroy {
    */
   replaceDateTimeTokens(): void {
     const currentDate = new Date();
-    const dateString = currentDate.toLocaleDateString();
-    const timeString = currentDate.toLocaleTimeString();
-    const dateTimeString = currentDate.toLocaleString();
+
+    const dateString = currentDate.toLocaleDateString('en-US', {
+      timeZone: 'UTC',
+      timeZoneName: 'short',
+      month: 'numeric',
+      day: 'numeric',
+      year: '2-digit',
+    });
+    const timeString = currentDate.toLocaleTimeString('en-US', {
+      timeZone: 'UTC',
+      timeZoneName: 'short',
+      hour: 'numeric',
+      minute: '2-digit',
+    });
+    const dateTimeString = currentDate.toLocaleString('en-US', {
+      timeZone: 'UTC',
+      timeZoneName: 'short',
+      month: 'numeric',
+      day: 'numeric',
+      year: '2-digit',
+      hour: 'numeric',
+      minute: '2-digit',
+    });
 
     // Tokens to match
     const tokens = {
