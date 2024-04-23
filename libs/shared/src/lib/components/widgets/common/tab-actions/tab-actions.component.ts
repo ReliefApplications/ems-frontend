@@ -110,11 +110,6 @@ export class TabActionsComponent
         'components.widget.settings.grid.hint.actions.automaticallyMapViewRows',
     },
     {
-      name: 'actionsAsIcons',
-      text: 'components.widget.settings.grid.actions.actionsAsIcons',
-      tooltip: 'components.widget.settings.grid.hint.actions.actionsAsIcons',
-    },
-    {
       name: 'navigateToPage',
       text: 'components.widget.settings.grid.actions.goTo.label',
       tooltip: 'components.widget.settings.grid.hint.actions.goTo',

@@ -320,7 +320,6 @@ export class CoreGridComponent
     remove: false,
     mapSelected: false,
     mapView: false,
-    actionsAsIcons: false,
   };
 
   /** Whether the grid is editable */
@@ -464,7 +463,6 @@ export class CoreGridComponent
       remove: get(this.settings, 'actions.remove', false),
       mapSelected: get(this.settings, 'actions.mapSelected', false),
       mapView: get(this.settings, 'actions.mapView', false),
-      actionsAsIcons: get(this.settings, 'actions.actionsAsIcons', false),
     };
     this.editable = this.settings.actions?.inlineEdition;
     if (!isNil(this.settings.actions?.search)) {

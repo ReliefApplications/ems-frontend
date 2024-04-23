@@ -10,6 +10,7 @@ const ACTIONS_TRANSLATIONS: Record<(typeof rowActions)[number], string> = {
   history: 'common.history',
   convert: 'models.record.convert',
   remove: 'components.widget.settings.grid.actions.remove',
+  showDetails: 'components.widget.settings.grid.actions.details',
 };
 
 /** Component for grid row actions */
@@ -29,6 +30,7 @@ export class GridRowActionsComponent {
     history: false,
     convert: false,
     remove: false,
+    showDetails: false,
     navigateSettings: {
       field: '',
       pageUrl: '',
@@ -41,6 +43,9 @@ export class GridRowActionsComponent {
   @Input() singleActionAsButton = false;
   /** Tells if should be used instead of the menu the actions as icons side by side */
   @Input() actionsAsIcons = false;
+
+  /** Input to indicate if has details */
+  @Input() hasDetails = true;
 
   /** Event emitter for the action event */
   @Output() action = new EventEmitter();

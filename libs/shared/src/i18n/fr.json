@@ -1581,6 +1581,10 @@
 							"label": "Libellé du bouton supprimer les enregistrements",
 							"text": "Supprimer les enregistrements"
 						},
+						"details": {
+							"label": "Libellé du bouton voir les détails des enregistrements",
+							"text": "Détails"
+						},
 						"export": "Exporter les enregistrements",
 						"goTo": {
 							"column": {

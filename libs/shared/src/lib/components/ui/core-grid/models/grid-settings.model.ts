@@ -46,5 +46,4 @@ export interface GridActions {
   inlineEdition?: boolean;
   mapSelected?: boolean;
   mapView?: boolean;
-  actionsAsIcons?: boolean;
 }

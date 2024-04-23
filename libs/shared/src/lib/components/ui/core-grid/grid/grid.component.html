@@ -1023,26 +1023,6 @@
         </ng-container>
       </kendo-grid-column-group>
     </ng-container>
-    <!-- ROW DETAILS -->
-    <kendo-grid-column
-      *ngIf="hasDetails && actions.showDetails"
-      [columnMenu]="false"
-      [width]="68"
-      [resizable]="false"
-      title="Details"
-      [sticky]="true"
-    >
-      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
-        <button
-          class="text-center"
-          kendoButton
-          icon="detail-section"
-          [look]="'flat'"
-          (click)="action.emit({ action: 'details', items: dataItem })"
-          [uiTooltip]="'components.widget.grid.actions.detail' | translate"
-        ></button>
-      </ng-template>
-    </kendo-grid-column>
     <!-- Go to page ( navigateToPage action ) -->
     <kendo-grid-column
       *ngIf="actions.navigateToPage"
@@ -1091,8 +1071,11 @@
             !!widget?.settings?.widgetDisplay?.showSingleActionAsButton
           "
           [actions]="actions"
-          [actionsAsIcons]="actions.actionsAsIcons ?? false"
+          [actionsAsIcons]="
+            widget?.settings?.widgetDisplay?.actionsAsIcons ?? false
+          "
           (action)="action.emit($event)"
+          [hasDetails]="hasDetails"
         >
         </shared-grid-row-actions>
         <button

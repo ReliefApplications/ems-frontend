@@ -1568,6 +1568,10 @@
 							"label": "Delete button label",
 							"text": "Delete records"
 						},
+						"details": {
+							"label": "Details button label",
+							"text": "Details"
+						},
 						"export": "Export records",
 						"goTo": {
 							"column": {

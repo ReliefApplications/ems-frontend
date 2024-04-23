@@ -146,6 +146,30 @@
             }}
           </ng-container>
         </ui-toggle>
+        <!-- Display actions as icons -->
+        <ui-toggle
+          [formControl]="
+            $any(widgetFormGroup.get('widgetDisplay.actionsAsIcons'))
+          "
+        >
+          <ng-container ngProjectAs="label">
+            {{
+              'components.widget.settings.grid.actions.actionsAsIcons'
+                | translate
+            }}
+            <ui-icon
+              class="ml-2 cursor-help"
+              variant="grey"
+              icon="info_outline"
+              [size]="18"
+              [uiTooltip]="
+                'components.widget.settings.grid.hint.actions.actionsAsIcons'
+                  | translate
+              "
+              uiTooltipPosition="right"
+            ></ui-icon>
+          </ng-container>
+        </ui-toggle>
         <!-- Display actions title -->
         <div class="flex gap-2 items-center">
           <ui-toggle

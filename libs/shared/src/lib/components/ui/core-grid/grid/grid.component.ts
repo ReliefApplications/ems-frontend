@@ -81,6 +81,7 @@ export const rowActions = [
   'history',
   'convert',
   'remove',
+  'showDetails',
 ] as const;
 
 /** Component for grid widgets */
@@ -140,7 +141,6 @@ export class GridComponent
     remove: false,
     mapSelected: false,
     mapView: false,
-    actionsAsIcons: false,
   };
   /** Input decorator */
   @Input() hasDetails = true;
@@ -373,6 +373,7 @@ export class GridComponent
       ...this.selectableSettings,
       mode: this.multiSelect ? 'multiple' : 'single',
     };
+    this.setActionsColumnSize();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -1280,5 +1281,36 @@ export class GridComponent
       },
       {}
     );
+  }
+
+  /**
+   * Set actions column size when action as icon
+   */
+  private setActionsColumnSize() {
+    const ICON_SIZE = 35;
+
+    const size =
+      ICON_SIZE *
+      [
+        this.widget?.settings?.actions?.update,
+        this.widget?.settings?.actions?.delete,
+        this.widget?.settings?.actions?.history,
+        this.widget?.settings?.actions?.convert,
+        this.widget?.settings?.actions?.showDetails,
+        this.widget?.settings?.actions?.remove,
+        this.widget?.settings?.actions?.navigateToPage,
+      ].filter((action) => action).length;
+    console.log(size);
+    if (!this.widget?.settings?.widgetDisplay?.actionsAsIcons) {
+      if (size > 0) {
+        this.actionsWidth = 56;
+      }
+
+      return;
+    }
+
+    if (size) {
+      this.actionsWidth = size + 10;
+    }
   }
 }

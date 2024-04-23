@@ -196,6 +196,9 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
       singleSelect: new FormControl(
         get<boolean>(configuration, 'widgetDisplay.singleSelect', false)
       ),
+      actionsAsIcons: new FormControl(
+        get<boolean>(configuration, 'widgetDisplay.actionsAsIcons', false)
+      ),
     }
   );
   return extendedForm;
@@ -265,7 +268,6 @@ export const createGridActionsFormGroup = (configuration: any) => {
     ],
     showDetails: [get(configuration, 'actions.showDetails', true)],
     navigateToPage: [get(configuration, 'actions.navigateToPage', false)],
-    actionsAsIcons: [get(configuration, 'actions.actionsAsIcons', false)],
     navigateSettings: fb.group({
       pageUrl: [get(configuration, 'actions.navigateSettings.pageUrl', '')],
       field: [get(configuration, 'actions.navigateSettings.field', '')],
