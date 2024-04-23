@@ -10,6 +10,7 @@ export const EDIT_DASHBOARD = gql`
     $name: String
     $buttons: [ButtonActionInputType]
     $gridOptions: JSON
+    $states: [StateInputType]
   ) {
     editDashboard(
       id: $id
@@ -17,10 +18,12 @@ export const EDIT_DASHBOARD = gql`
       name: $name
       buttons: $buttons
       gridOptions: $gridOptions
+      states: $states
     ) {
       id
       name
       structure
+      states
       modifiedAt
       permissions {
         canSee {

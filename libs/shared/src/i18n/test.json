@@ -1056,6 +1056,8 @@
 				"field": "******",
 				"limit": "******",
 				"limitTitle": "******",
+				"logic": "******",
+				"new": "******",
 				"order": "******",
 				"title": "******"
 			},
@@ -1551,6 +1553,8 @@
 					"actions": {
 						"actionsAsIcons": "******",
 						"add": "******",
+						"automaticallyMapSelected": "******",
+						"automaticallyMapView": "******",
 						"convert": {
 							"label": "******",
 							"text": "******"
@@ -1581,6 +1585,8 @@
 							}
 						},
 						"inline": "******",
+						"mapSelected": "******",
+						"mapView": "******",
 						"navigateToPage": "******",
 						"pageUrl": {
 							"label": "******",
@@ -1596,6 +1602,7 @@
 							"text": "******"
 						},
 						"showDetails": "******",
+						"state": "******",
 						"title": "******",
 						"update": {
 							"label": "******",
@@ -1659,21 +1666,28 @@
 							"title": "******",
 							"tooltip": "******"
 						},
-						"showSingleActionAsButton": "******"
+						"showSingleActionAsButton": "******",
+						"singleSelection": "******"
 					},
 					"hint": {
 						"actions": {
 							"actionsAsIcons": "******",
 							"add": "******",
+							"automaticallyMapSelectedRows": "******",
+							"automaticallyMapViewRows": "******",
 							"convert": "******",
 							"copyLink": "******",
 							"delete": "******",
 							"export": "******",
 							"goTo": "******",
 							"inline": "******",
+							"mapSelectedRows": "******",
+							"mapViewRows": "******",
 							"navigateToPage": "******",
 							"show": "******",
 							"showDetails": "******",
+							"singleSelection": "******",
+							"state": "******",
 							"update": "******"
 						},
 						"attachToRecord": "******",
@@ -2300,6 +2314,21 @@
 			},
 			"historicalDate": "******",
 			"share": "******",
+			"states": {
+				"create": "******",
+				"delete": {
+					"confirmationMessage": "****** {{state}} ******",
+					"title": "******"
+				},
+				"few": "******",
+				"new": "******",
+				"none": "******",
+				"one": "******",
+				"update": {
+					"confirmationMessage": "******",
+					"title": "******"
+				}
+			},
 			"tooltip": {
 				"filter": {
 					"closable": "******",

@@ -1,4 +1,5 @@
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { SortField } from '../../../../services/query-builder/query-builder.service';
 
 // TO-DO Finish it
 /**
@@ -9,10 +10,7 @@ export interface GridSettings {
   query?: {
     name: string;
     fields: any[];
-    sort?: {
-      field?: string;
-      order?: 'asc' | 'desc';
-    };
+    sort?: SortField[];
     filter?: CompositeFilterDescriptor;
   };
   actions?: GridActions;
@@ -46,5 +44,7 @@ export interface GridActions {
   };
   search?: boolean;
   inlineEdition?: boolean;
+  mapSelected?: boolean;
+  mapView?: boolean;
   actionsAsIcons?: boolean;
 }

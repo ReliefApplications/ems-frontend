@@ -1,0 +1,39 @@
+.group-fields {
+  padding-top: 4px;
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.group-item {
+  position: relative;
+  padding-left: 8px;
+
+  &::before {
+    background-color: #e5e7eb;
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 1px;
+    top: 30px;
+    left: -8px;
+  }
+
+  &::after {
+    @apply bg-gray-200;
+    content: '';
+    position: absolute;
+    width: 1px;
+    top: 0px;
+    left: -8px;
+    height: calc(100% + 8px);
+  }
+
+  &:last-child {
+    &::after {
+      height: 30px;
+    }
+  }
+}

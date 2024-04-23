@@ -103,7 +103,7 @@ export class GridComponent
   /** Input decorator for fields. */
   @Input() fields: any[] = [];
   /** Input decorator the the action column width */
-  @Input() actionsWidth = 86;
+  @Input() actionsWidth = 54;
   /** Input decorator for data. */
   @Input() data: GridDataResult = { data: [], total: 0 };
   /** Input decorator for loadingRecords. */
@@ -138,6 +138,8 @@ export class GridComponent
       copyLink: false,
     },
     remove: false,
+    mapSelected: false,
+    mapView: false,
     actionsAsIcons: false,
   };
   /** Input decorator */
@@ -973,7 +975,7 @@ export class GridComponent
     const stickyColumns = this.columns.filter(
       (column) => !column.hidden && !!column.sticky
     );
-    let totalWidthSticky = 0;
+    let totalWidthSticky = 5;
     stickyColumns.forEach((column: any) => {
       if (column.width) {
         totalWidthSticky += column.width;
@@ -991,12 +993,12 @@ export class GridComponent
           (field) => field.name === column.field && !column.hidden
         )?.fixedWidth
     );
-    fixedWidthColumns.forEach(
-      (column) =>
-        (column.width = this.fields.find(
-          (field) => field.name === column.field
-        ).fixedWidth)
-    );
+    fixedWidthColumns.forEach((column) => {
+      column.width = this.fields.find(
+        (field) => field.name === column.field
+      ).fixedWidth;
+    });
+
     /** Subtract the width of non-fields columns (details, actions etc.), columns with fixed width and small calculation errors ( border + scrollbar ) */
     const gridTotalWidth =
       gridElement.offsetWidth -
@@ -1101,7 +1103,10 @@ export class GridComponent
     // Instead, clamp the columns to the min and max width
     if (avgPixelPerCol < MIN_COLUMN_WIDTH * 1.1) {
       this.columns.forEach((column) => {
-        if (!column.hidden) {
+        const fixedWidth = fixedWidthColumns.find(
+          (fixedColumn) => fixedColumn.field === column.field
+        );
+        if (!column.hidden && !fixedWidth) {
           const colWidth = activeColumns[column.field];
           if (colWidth) {
             column.width = Math.min(

@@ -1,0 +1,95 @@
+<ng-container *ngIf="states.length">
+  <div class="flex justify-end">
+    <ng-container *ngTemplateOutlet="newState"></ng-container>
+  </div>
+</ng-container>
+<ng-container *ngIf="states.length; else emptyTmpl">
+  <!-- Table with the states container -->
+  <div class="overflow-x-hidden mt-4 shadow-2lg inline-grid w-full">
+    <!-- Table scroll container -->
+    <div class="overflow-x-auto">
+      <table cdk-table uiTableWrapper [dataSource]="statesElements">
+        <ng-container cdkColumnDef="name">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            {{ 'models.dashboard.states.one' | translate }}
+          </th>
+          <td
+            uiCell
+            *cdkCellDef="let element"
+            class="!text-gray-900 !font-medium max-w-[30vw]"
+          >
+            {{ element.state.name }}
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="value">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            {{ 'common.value.one' | translate }}
+          </th>
+          <td
+            uiCell
+            *cdkCellDef="let element"
+            class="!text-gray-500 max-w-[30vw]"
+          >
+            <ng-container [ngSwitch]="isArray(element.state.value)">
+              <ng-container *ngSwitchCase="false">
+                {{ element.state.value }}
+              </ng-container>
+              <ng-container *ngSwitchCase="true">
+                <ul>
+                  <li *ngFor="let item of element.state.value">{{ item }}</li>
+                </ul>
+              </ng-container>
+            </ng-container>
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+          <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
+          <td uiCell *cdkCellDef="let element">
+            <ui-button
+              [isIcon]="true"
+              icon="more_vert"
+              [uiMenuTriggerFor]="menu"
+              (click)="$event.stopPropagation()"
+              [uiTooltip]="'common.actions' | translate"
+            >
+            </ui-button>
+            <ui-menu #menu>
+              <button uiMenuItem (click)="onUpdate(element)">
+                <ui-icon icon="edit" variant="grey"></ui-icon>
+                {{ 'common.update' | translate }}
+              </button>
+              <button uiMenuItem (click)="onDelete(element)">
+                <ui-icon icon="delete" variant="danger"></ui-icon>
+                {{ 'common.delete' | translate }}
+              </button>
+            </ui-menu>
+          </td>
+        </ng-container>
+
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+        <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
+      </table>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #newState>
+  <ui-button
+    icon="add"
+    category="secondary"
+    variant="primary"
+    (click)="onAdd()"
+  >
+    {{ 'models.dashboard.states.create' | translate }}
+  </ui-button>
+</ng-template>
+
+<!-- Empty indicator -->
+<ng-template #emptyTmpl>
+  <shared-empty
+    [title]="'models.dashboard.states.none' | translate"
+    [footerTemplate]="newState"
+  ></shared-empty>
+</ng-template>

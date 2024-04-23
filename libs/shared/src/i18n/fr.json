@@ -1067,6 +1067,8 @@
 				"field": "Filtrer le champ",
 				"limit": "limite",
 				"limitTitle": "Tri et limite",
+				"logic": "Ordre logique",
+				"new": "Ajouter un nouveau filtrer le champ",
 				"order": "Ordre de tri",
 				"title": "Tri"
 			},
@@ -1564,6 +1566,8 @@
 					"actions": {
 						"actionsAsIcons": "Afficher les actions sous forme d'icônes",
 						"add": "Ajouter de nouveaux enregistrements",
+						"automaticallyMapSelected": "Mapper automatiquement les lignes sélectionnées",
+						"automaticallyMapView": "Mapper automatiquement les lignes visibles",
 						"convert": {
 							"label": "Libellé du bouton convertir des enregistrements",
 							"text": "Convertir des enregistrements"
@@ -1594,6 +1598,8 @@
 							}
 						},
 						"inline": "Modifier par ligne",
+						"mapSelected": "Mapper les lignes sélectionnées à l'état",
+						"mapView": "Mapper les lignes visibles à l'état",
 						"navigateToPage": "Accédez à la page",
 						"pageUrl": {
 							"label": "Url de la source de la page",
@@ -1609,6 +1615,7 @@
 							"text": "Voir l'historique"
 						},
 						"showDetails": "Afficher les détails des enregistrements",
+						"state": "Sélectionner l'état du tableau de bord",
 						"title": "Actions activées",
 						"update": {
 							"label": "Libellé du bouton modifier les enregistrements",
@@ -1672,21 +1679,28 @@
 							"title": "Injecter des valeurs en tant que classes CSS",
 							"tooltip": "Lorsqu'un champ est sélectionné, sa valeur sera ajoutée à l'élément <tr> en tant que classe, lui permettant d'être ciblé par un style personnalisé"
 						},
-						"showSingleActionAsButton": "Afficher une seule action sous forme de bouton"
+						"showSingleActionAsButton": "Afficher une seule action sous forme de bouton",
+						"singleSelection": "Sélection unique"
 					},
 					"hint": {
 						"actions": {
 							"actionsAsIcons": "Si activé, au lieu d'afficher le menu à trois points, toutes les actions seront affichées sous forme d'icônes côte à côte",
 							"add": "L'utilisateur peut ajouter de nouveaux enregistrements avec le modèle choisi, s'il en a la permission",
+							"automaticallyMapSelectedRows": "Mappez automatiquement les lignes du widget de grille sélectionnées à un état du tableau de bord",
+							"automaticallyMapViewRows": "Mapper automatiquement les lignes du widget de grille en vue d'un état de tableau de bord",
 							"convert": "L'utilisateur peut convertir les enregistrements avec les autres modèles de la ressource sélectionnée, s'il en a la permission",
 							"copyLink": "Si activé, les utilisateurs peuvent copier la même URL de la page \"Naviguer vers\" sur les actions de ligne",
 							"delete": "L'utilisateur peut supprimer les enregistrements affichés, s'il en a la permission",
 							"export": "L'utilisateur peut exporter les enregistrements affichés",
 							"goTo": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
 							"inline": "L'utilisateur peut éditer dans la grille les enregistrements affichés, s'il en a la permission",
+							"mapSelectedRows": "Bouton Activer pour mapper les lignes du widget de grille sélectionnées à un état du tableau de bord",
+							"mapViewRows": "Activer le bouton pour mapper les lignes du widget de grille en vue d'un état de tableau de bord",
 							"navigateToPage": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
 							"show": "L'utilisateur peut afficher l'historique complet des enregistrements affichés",
 							"showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
+							"singleSelection": "Single selection",
+							"state": "Sélectionnez l'état du tableau de bord à utiliser pour mapper et enregistrer les ID de lignes. Si aucun état n'est sélectionné, un nouveau sera créé pour le widget.",
 							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"
 						},
 						"attachToRecord": "Si les enregistrements sélectionnés ne sont joints à aucun enregistrement, l'action sera annulée",
@@ -2314,6 +2328,21 @@
 			},
 			"historicalDate": "Récupérer les données historiques",
 			"share": "Partager le tableau de bord",
+			"states": {
+				"create": "Créer un état",
+				"delete": {
+					"confirmationMessage": "Confirmez-vous la suppression de l'état {{state}}?",
+					"title": "Supprimer l'état"
+				},
+				"few": "États",
+				"new": "Nouvel état",
+				"none": "Aucun état",
+				"one": "État",
+				"update": {
+					"confirmationMessage": "États mis à jour avec succès",
+					"title": "État de mise à jour"
+				}
+			},
 			"tooltip": {
 				"filter": {
 					"closable": "Lorsque la variante est moderne ou que l'application est utilisée comme élément web, un bouton s'affichera pour permettre à l'utilisateur de cacher le filtre",

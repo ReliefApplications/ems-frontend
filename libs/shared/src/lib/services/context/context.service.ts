@@ -37,6 +37,8 @@ import { ApplicationService } from '../application/application.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RecordQueryResponse } from '../../models/record.model';
 import { GET_RECORD_BY_ID } from './graphql/queries';
+import { DashboardState } from '../../models/dashboard.model';
+import { DashboardService } from '../dashboard/dashboard.service';
 
 /**
  * Dashboard context service
@@ -55,6 +57,8 @@ export class ContextService {
     position: FilterPosition;
     dashboardId: string;
   } | null>(null);
+  /** Dashboard state regex */
+  public dashboardStateRegex = /(?<={{dashboard\.)(.*?)(?=}})/gim;
   /** To keep the history of previous dashboard filter values */
   public filterValues = new BehaviorSubject<any>(null);
   /** Is filter opened */
@@ -148,6 +152,7 @@ export class ContextService {
    * @param formBuilderService Form builder service
    * @param applicationService Shared application service
    * @param router Angular router
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     private dialog: Dialog,
@@ -156,7 +161,8 @@ export class ContextService {
     private translate: TranslateService,
     private formBuilderService: FormBuilderService,
     private applicationService: ApplicationService,
-    private router: Router
+    private router: Router,
+    private dashboardService: DashboardService
   ) {
     this.filterPosition$.subscribe(
       (value: { position: FilterPosition; dashboardId: string } | null) => {
@@ -349,6 +355,7 @@ export class ContextService {
     if ('field' in filter && filter.field) {
       // If it's a filter descriptor, replace value ( if string )
       if (filter.value && typeof filter.value === 'string') {
+        const stateName = filter.value?.match(this.dashboardStateRegex)?.[0];
         const filterName = filter.value?.match(filterRegex)?.[0];
         const contextName = filter.value?.match(contextRegex)?.[0];
         const appField = filter.value?.match(applicationRegex)?.[0];
@@ -361,6 +368,11 @@ export class ContextService {
             this.applicationService.application.getValue(),
             appField
           );
+        } else if (stateName) {
+          const states = this.dashboardService.states.getValue();
+          filter.value = states.find(
+            (state: DashboardState) => state.name === stateName
+          )?.value;
         }
       }
     } else if ('filters' in filter && filter.filters) {

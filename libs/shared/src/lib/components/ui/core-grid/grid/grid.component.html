@@ -103,6 +103,18 @@
     >
       {{ 'components.widget.grid.layout.reset' | translate }}
     </button>
+    <button
+      *ngIf="actions.mapView"
+      kendoTooltip
+      kendoButton
+      [title]="
+        'components.widget.settings.grid.hint.actions.automaticallyMapViewRows'
+          | translate
+      "
+      (click)="action.emit({ action: 'mapView' })"
+    >
+      {{ 'components.widget.settings.grid.actions.mapView' | translate }}
+    </button>
     <shared-grid-toolbar
       [actions]="actions"
       [items]="selectedItems"

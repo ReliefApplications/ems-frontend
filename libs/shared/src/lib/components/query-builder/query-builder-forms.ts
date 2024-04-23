@@ -41,6 +41,19 @@ export const createFilterGroup = (filter: any) => {
 };
 
 /**
+ * Builds a sort form
+ *
+ * @param sortField Initial sort fields
+ * @returns Sort fields form
+ */
+export const createSortGroup = (sortField: any) =>
+  formBuilder.group({
+    field: get<string>(sortField, 'field', ''),
+    order: get<'asc' | 'desc'>(sortField, 'order', 'asc'),
+    first: sortField.first as number | null,
+  });
+
+/**
  * Adds a field to the query
  *
  * @param field Field definition
@@ -139,10 +152,9 @@ export const createQueryForm = (value: any, validators = true) =>
       get(value, 'fields', []).map((x: any) => addNewField(x)),
       validators ? Validators.required : null
     ),
-    sort: formBuilder.group({
-      field: [get(value, 'sort.field', '')],
-      order: [get(value, 'sort.order', 'asc')],
-    }),
+    sort: formBuilder.array(
+      get(value, 'sort', []).map((x: any) => createSortGroup(x))
+    ),
     filter: createFilterGroup(get(value, 'filter', {})),
     style: formBuilder.array(
       get(value, 'style', []).map((x: any) => createStyleForm(x))
@@ -158,7 +170,7 @@ export const createQueryForm = (value: any, validators = true) =>
 export const createDisplayForm = (value: any) =>
   formBuilder.group({
     showFilter: [value?.showFilter],
-    actionsColWidth: [value?.actionsColWidth || 86],
+    actionsColWidth: [value?.actionsColWidth || 54],
     sort: [value?.sort || []],
     fields: [value?.fields || null],
     filter: [value?.filter || null],

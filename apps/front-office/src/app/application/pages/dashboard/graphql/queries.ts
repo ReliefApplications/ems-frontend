@@ -11,6 +11,7 @@ export const GET_DASHBOARD_BY_ID = gql`
       createdAt
       structure
       contextData
+      states
       permissions {
         canSee {
           id
