@@ -311,6 +311,8 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
           }
         );
         const queryData = this.emailService.datasetsForm.value;
+        queryData.notificationType =
+          this.emailService.datasetsForm.controls.notificationType.value;
         this.applicationService.application$.subscribe((res: any) => {
           this.emailService.datasetsForm
             .get('applicationId')
