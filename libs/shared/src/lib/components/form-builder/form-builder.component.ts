@@ -290,8 +290,8 @@ export class FormBuilderComponent
     // Manage copying rows/columns between matrixes
     new MatrixManager(this.surveyCreator.survey);
 
-    this.surveyCreator.toolbox.forceCompact = false;
-    this.surveyCreator.toolbox.allowExpandMultipleCategories = true;
+    this.surveyCreator.toolbox.forceCompact = true;
+    this.surveyCreator.toolbox.allowExpandMultipleCategories = false;
     new SurveyCustomJSONEditorPlugin(this.surveyCreator);
     this.surveyCreator.toolbox.changeCategories(
       QUESTION_TYPES.map((x) => ({

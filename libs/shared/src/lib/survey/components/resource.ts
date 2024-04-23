@@ -274,9 +274,9 @@ export const init = (
         visibleIf: visibleIfResource,
         visibleIndex: 2,
         onSetValue: (question: QuestionResource, value: boolean) => {
+          question.setPropertyValue('canSearch', value);
           if (value) {
             question.setPropertyValue('canOnlyCreateRecords', false);
-            question.setPropertyValue('canSearch', true);
           }
         },
       });
