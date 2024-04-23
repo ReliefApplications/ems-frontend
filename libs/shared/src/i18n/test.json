@@ -786,6 +786,7 @@
 				"confirmationMessage": "****** {{quantity}} ****** {{rowText}} ******"
 			},
 			"display": {
+				"cancelMessage": "******",
 				"submissionMessage": "******"
 			},
 			"draftRecords": {
@@ -1055,6 +1056,8 @@
 				"field": "******",
 				"limit": "******",
 				"limitTitle": "******",
+				"logic": "******",
+				"new": "******",
 				"order": "******",
 				"title": "******"
 			},
@@ -1130,6 +1133,13 @@
 			"recovery": {
 				"confirmationMessage": "****** {{date}} ******",
 				"title": "******"
+			},
+			"uniqueField": {
+				"cannotUpdate": "******",
+				"exist": "****** {{question}} ****** {{value}} ******",
+				"overwriteConfirm": "******",
+				"title": "******",
+				"updateRecord": "******"
 			}
 		},
 		"records": {
@@ -1177,6 +1187,11 @@
 				"calculatedFields": "******",
 				"layouts": "******",
 				"records": "******"
+			},
+			"importField": {
+				"title": "******",
+				"updateError": "****** {{error}}",
+				"updateSuccess": "****** {{resource}} ******"
 			},
 			"incrementalIdShape": {
 				"example": "******",
@@ -1540,10 +1555,25 @@
 					"actions": {
 						"actionsAsIcons": "******",
 						"add": "******",
-						"convert": "******",
-						"copyLink": "******",
+						"automaticallyMapSelected": "******",
+						"automaticallyMapView": "******",
+						"convert": {
+							"label": "******",
+							"text": "******"
+						},
+						"copyLink": {
+							"label": "******",
+							"text": "******"
+						},
 						"copyLinkDone": "******",
-						"delete": "******",
+						"delete": {
+							"label": "******",
+							"text": "******"
+						},
+						"details": {
+							"label": "******",
+							"text": "******"
+						},
 						"export": "******",
 						"goTo": {
 							"column": {
@@ -1561,6 +1591,8 @@
 							}
 						},
 						"inline": "******",
+						"mapSelected": "******",
+						"mapView": "******",
 						"navigateToPage": "******",
 						"pageUrl": {
 							"label": "******",
@@ -1571,10 +1603,17 @@
 							"placeholder": "******"
 						},
 						"remove": "******",
-						"show": "******",
+						"show": {
+							"label": "******",
+							"text": "******"
+						},
 						"showDetails": "******",
+						"state": "******",
 						"title": "******",
-						"update": "******",
+						"update": {
+							"label": "******",
+							"text": "******"
+						},
 						"useRecordId": "******"
 					},
 					"aggregations": {
@@ -1633,21 +1672,28 @@
 							"title": "******",
 							"tooltip": "******"
 						},
-						"showSingleActionAsButton": "******"
+						"showSingleActionAsButton": "******",
+						"singleSelection": "******"
 					},
 					"hint": {
 						"actions": {
 							"actionsAsIcons": "******",
 							"add": "******",
+							"automaticallyMapSelectedRows": "******",
+							"automaticallyMapViewRows": "******",
 							"convert": "******",
 							"copyLink": "******",
 							"delete": "******",
 							"export": "******",
 							"goTo": "******",
 							"inline": "******",
+							"mapSelectedRows": "******",
+							"mapViewRows": "******",
 							"navigateToPage": "******",
 							"show": "******",
 							"showDetails": "******",
+							"singleSelection": "******",
+							"state": "******",
 							"update": "******"
 						},
 						"attachToRecord": "******",
@@ -2274,6 +2320,21 @@
 			},
 			"historicalDate": "******",
 			"share": "******",
+			"states": {
+				"create": "******",
+				"delete": {
+					"confirmationMessage": "****** {{state}} ******",
+					"title": "******"
+				},
+				"few": "******",
+				"new": "******",
+				"none": "******",
+				"one": "******",
+				"update": {
+					"confirmationMessage": "******",
+					"title": "******"
+				}
+			},
 			"tooltip": {
 				"filter": {
 					"closable": "******",

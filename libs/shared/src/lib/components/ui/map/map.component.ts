@@ -62,6 +62,8 @@ import { ContextService } from '../../../services/context/context.service';
 import { MapPolygonsService } from '../../../services/map/map-polygons.service';
 import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
+import { DashboardState } from '../../../models/dashboard.model';
 
 /** Component for the map widget */
 @Component({
@@ -152,6 +154,8 @@ export class MapComponent
   private layerControlButtons: any;
   /** Current layer ids */
   private layerIds: string[] = [];
+  /** Dashboard states applied */
+  private appliedDashboardStates: DashboardState[] = [];
   /** Resize observer on map container */
   private resizeObserver?: ResizeObserver;
   /** First load timeout */
@@ -181,6 +185,7 @@ export class MapComponent
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
    * @param el Element reference,
    * @param mapPolygonsService Shared map polygons service
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -195,7 +200,8 @@ export class MapComponent
     public injector: Injector,
     private shadowDomService: ShadowDomService,
     public el: ElementRef,
-    private mapPolygonsService: MapPolygonsService
+    private mapPolygonsService: MapPolygonsService,
+    private dashboardService: DashboardService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -256,6 +262,26 @@ export class MapComponent
               current
             )
           ),
+          takeUntil(this.destroy$)
+        )
+        .subscribe(() => {
+          this.filterLayers();
+        });
+    }
+
+    if (
+      this.contextService.dashboardStateRegex.test(
+        allContextFilters + allGraphQLVariables
+      )
+    ) {
+      // Listen to dashboard states changes
+      this.dashboardService.states$
+        .pipe(
+          debounceTime(500),
+          filter(() => {
+            const states = this.dashboardService.states.getValue();
+            return !isEqual(states, this.appliedDashboardStates);
+          }),
           takeUntil(this.destroy$)
         )
         .subscribe(() => {
@@ -1051,6 +1077,7 @@ export class MapComponent
   private async filterLayers() {
     this.document.getElementById('layer-control-button-close')?.click();
     this.cancelRefresh$.next();
+    this.appliedDashboardStates = [...this.dashboardService.states.getValue()];
     const { layers: layersToGet, controls } = this.extractSettings();
 
     const shouldDisplayStatuses: Record<string, boolean> = {};

@@ -4,9 +4,11 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
@@ -28,7 +30,10 @@ import {
 import { RecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { FormHelpersService } from '../../services/form-helper/form-helper.service';
+import {
+  CheckUniqueProprietyReturnT,
+  FormHelpersService,
+} from '../../services/form-helper/form-helper.service';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 
 /**
@@ -41,12 +46,14 @@ import { SnackbarService, UILayoutService } from '@oort-front/ui';
 })
 export class FormComponent
   extends UnsubscribeComponent
-  implements OnInit, OnDestroy
+  implements OnInit, OnDestroy, OnChanges
 {
   /** Form input */
   @Input() form!: Form;
   /** Record input, optional */
   @Input() record?: RecordModel;
+  /** Display actions buttons on floating div, optional */
+  @Input() floatingActions = true;
   /** Output event when saving the form */
   @Output() save: EventEmitter<{
     completed: boolean;
@@ -77,6 +84,8 @@ export class FormComponent
   public lastDraftRecord?: string;
   /** Disables the save as draft button */
   public disableSaveAsDraft = false;
+  /** saving operations */
+  public saving = false;
   /** Timeout for reset survey */
   private resetTimeoutListener!: NodeJS.Timeout;
   /** As we save the draft record in the db, the local storage is no longer used */
@@ -111,97 +120,14 @@ export class FormComponent
     super();
   }
 
-  /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.record) {
+      this.initSurvey();
+    }
+  }
+
   ngOnInit(): void {
-    addCustomFunctions({
-      record: this.record,
-      authService: this.authService,
-      apollo: this.apollo,
-      form: this.form,
-    });
-
-    const structure = JSON.parse(this.form.structure || '{}');
-    if (structure && !structure.completedHtml) {
-      structure.completedHtml = `<h3>${this.translate.instant(
-        'components.form.display.submissionMessage'
-      )}</h3>`;
-    }
-
-    this.survey = this.formBuilderService.createSurvey(
-      JSON.stringify(structure),
-      this.form.metadata,
-      this.record,
-      this.form
-    );
-
-    // After the survey is created we add common callback to survey events
-    this.formBuilderService.addEventsCallBacksToSurvey(
-      this.survey,
-      this.selectedPageIndex,
-      this.temporaryFilesStorage
-    );
-
-    this.survey.showCompletedPage = false;
-    if (!this.record && !this.form.canCreateRecords) {
-      this.survey.mode = 'display';
-    }
-    this.survey.onValueChanged.add(() => {
-      // Allow user to save as draft
-      this.disableSaveAsDraft = false;
-    });
-    this.survey.onComplete.add(this.onComplete);
-
-    // Set readOnly fields
-    this.form.fields?.forEach((field) => {
-      if (field.readOnly && this.survey.getQuestionByName(field.name))
-        this.survey.getQuestionByName(field.name).readOnly = true;
-    });
-    // Fetch cached data from local storage
-    //this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
-    //const storedData = localStorage.getItem(this.storageId);
-    //const cachedData = storedData ? JSON.parse(storedData).data : null;
-    //this.storageDate = storedData
-    //? new Date(JSON.parse(storedData).date)
-    //: undefined;
-    // this.isFromCacheData = !!cachedData;
-    //if (this.isFromCacheData) {
-    //this.snackBar.openSnackBar(
-    //this.translate.instant('common.notifications.loadedFromCache', {
-    //type: this.translate.instant('common.record.one'),
-    //})
-    //);
-    //}
-
-    //if (cachedData) {
-    //this.survey.data = cachedData;
-    // this.setUserVariables();
-    //}
-    if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
-      this.survey.data = this.form.uniqueRecord.data;
-      this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
-    } else if (this.record && this.record.data) {
-      this.survey.data = this.record.data;
-      this.modifiedAt = this.record.modifiedAt || null;
-    }
-
-    // if (this.survey.getUsedLocales().length > 1) {
-    //   this.survey.getUsedLocales().forEach((lang) => {
-    //     const nativeName = (LANGUAGES as any)[lang].nativeName.split(',')[0];
-    //     this.usedLocales.push({ value: lang, text: nativeName });
-    //     this.dropdownLocales.push(nativeName);
-    //   });
-    // }
-
-    // Sets default language as form language if it is in survey locales
-    // const currentLang = this.usedLocales.find(
-    //   (lang) => lang.value === this.translate.currentLang
-    // );
-    // if (currentLang) {
-    //   this.setLanguage(currentLang.text);
-    //   this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
-    // } else {
-    //   this.survey.locale = this.translate.currentLang;
-    // }
+    this.initSurvey();
   }
 
   /**
@@ -270,77 +196,104 @@ export class FormComponent
    * Creates the record when it is complete, or update it if provided.
    */
   public onComplete = async () => {
-    let mutation: any;
-    this.surveyActive = false;
-    // const promises: Promise<any>[] =
-    //   this.formHelpersService.uploadTemporaryRecords(this.survey);
+    this.formHelpersService
+      .checkUniquePropriety(this.survey)
+      .then(async (response: CheckUniqueProprietyReturnT) => {
+        if (response.verified) {
+          let mutation: any;
+          this.surveyActive = false;
+          this.saving = true;
+          // const promises: Promise<any>[] =
+          //   this.formHelpersService.uploadTemporaryRecords(this.survey);
 
-    await this.formHelpersService.uploadFiles(
-      this.temporaryFilesStorage,
-      this.form?.id
-    );
-    this.formHelpersService.setEmptyQuestions(this.survey);
-    // We wait for the resources questions to update their ids
-    await this.formHelpersService.createTemporaryRecords(this.survey);
-    // If is an already saved record, edit it
-    if (this.record || this.form.uniqueRecord) {
-      const recordId = this.record
-        ? this.record.id
-        : this.form.uniqueRecord?.id;
-      mutation = this.apollo.mutate<EditRecordMutationResponse>({
-        mutation: EDIT_RECORD,
-        variables: {
-          id: recordId,
-          data: this.survey.parsedData ?? this.survey.data,
-          template:
-            this.form.id !== this.record?.form?.id ? this.form.id : null,
-        },
-      });
-      // Else create a new one
-    } else {
-      mutation = this.apollo.mutate<AddRecordMutationResponse>({
-        mutation: ADD_RECORD,
-        variables: {
-          form: this.form.id,
-          data: this.survey.parsedData ?? this.survey.data,
-        },
-      });
-    }
-    mutation.subscribe(({ errors, data }: any) => {
-      if (errors) {
-        this.save.emit({ completed: false });
-        this.survey.clear(false, true);
-        this.surveyActive = true;
-        this.snackBar.openSnackBar(errors[0].message, { error: true });
-      } else {
-        if (this.lastDraftRecord) {
-          const callback = () => {
-            this.lastDraftRecord = undefined;
-          };
-          this.formHelpersService.deleteRecordDraft(
-            this.lastDraftRecord,
-            callback
+          await this.formHelpersService.uploadFiles(
+            this.temporaryFilesStorage,
+            this.form?.id
           );
-        }
-        // localStorage.removeItem(this.storageId);
-        if (data.editRecord || data.addRecord.form.uniqueRecord) {
-          this.survey.clear(false, false);
-          if (data.addRecord) {
-            this.record = data.addRecord;
-            this.modifiedAt = this.record?.modifiedAt || null;
+          this.formHelpersService.setEmptyQuestions(this.survey);
+          // We wait for the resources questions to update their ids
+          await this.formHelpersService.createTemporaryRecords(this.survey);
+          const editRecord =
+            response.overwriteRecord ?? (this.record || this.form.uniqueRecord);
+          // If is an already saved record, edit it
+          if (editRecord) {
+            // If update or creation of record is overwriting another record because unique field values
+            const recordId = response.overwriteRecord
+              ? response.overwriteRecord.id
+              : this.record
+              ? this.record.id
+              : this.form.uniqueRecord?.id;
+            mutation = this.apollo.mutate<EditRecordMutationResponse>({
+              mutation: EDIT_RECORD,
+              variables: {
+                id: recordId,
+                data: this.survey.parsedData ?? this.survey.data,
+                ...(!response.overwriteRecord && {
+                  template:
+                    this.form.id !== this.record?.form?.id
+                      ? this.form.id
+                      : null,
+                }),
+              },
+            });
+            // Else create a new one
           } else {
-            this.modifiedAt = data.editRecord.modifiedAt;
+            mutation = this.apollo.mutate<AddRecordMutationResponse>({
+              mutation: ADD_RECORD,
+              variables: {
+                form: this.form.id,
+                data: this.survey.parsedData ?? this.survey.data,
+              },
+            });
           }
-          this.surveyActive = true;
+          mutation
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(({ errors, data }: any) => {
+              if (errors) {
+                this.save.emit({ completed: false });
+                this.survey.clear(false, true);
+                this.surveyActive = true;
+                this.snackBar.openSnackBar(errors[0].message, {
+                  error: true,
+                });
+              } else {
+                if (this.lastDraftRecord) {
+                  const callback = () => {
+                    this.lastDraftRecord = undefined;
+                  };
+                  this.formHelpersService.deleteRecordDraft(
+                    this.lastDraftRecord,
+                    callback
+                  );
+                }
+                // localStorage.removeItem(this.storageId);
+                if (data.editRecord || data.addRecord.form.uniqueRecord) {
+                  this.survey.clear(false, false);
+                  if (data.addRecord) {
+                    this.record = data.addRecord;
+                    this.modifiedAt = this.record?.modifiedAt || null;
+                  } else {
+                    this.modifiedAt = data.editRecord.modifiedAt;
+                  }
+                  this.surveyActive = true;
+                } else {
+                  this.survey.showCompletedPage = true;
+                }
+                this.save.emit({
+                  completed: true,
+                  hideNewRecord:
+                    data.addRecord && data.addRecord.form.uniqueRecord,
+                });
+              }
+              this.saving = false;
+            });
         } else {
-          this.survey.showCompletedPage = true;
+          this.snackBar.openSnackBar(
+            this.translate.instant('components.form.display.cancelMessage')
+          );
+          this.survey.clear(false);
         }
-        this.save.emit({
-          completed: true,
-          hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,
-        });
-      }
-    });
+      });
   };
 
   /**
@@ -444,5 +397,101 @@ export class FormComponent
       clearTimeout(this.resetTimeoutListener);
     }
     this.survey?.dispose();
+  }
+
+  /**
+   * It adds custom functions, creates the lookup, adds callbacks to the lookup events,
+   * fetches cached data from local storage, and sets the lookup data.
+   */
+  private initSurvey(): void {
+    addCustomFunctions({
+      record: this.record,
+      authService: this.authService,
+      apollo: this.apollo,
+      form: this.form,
+    });
+
+    const structure = JSON.parse(this.form.structure || '{}');
+    if (structure && !structure.completedHtml) {
+      structure.completedHtml = `<h3>${this.translate.instant(
+        'components.form.display.submissionMessage'
+      )}</h3>`;
+    }
+
+    this.survey = this.formBuilderService.createSurvey(
+      JSON.stringify(structure),
+      this.form.metadata,
+      this.record,
+      this.form
+    );
+
+    // After the survey is created we add common callback to survey events
+    this.formBuilderService.addEventsCallBacksToSurvey(
+      this.survey,
+      this.selectedPageIndex,
+      this.temporaryFilesStorage
+    );
+
+    this.survey.showCompletedPage = false;
+    if (!this.record && !this.form.canCreateRecords) {
+      this.survey.mode = 'display';
+    }
+    this.survey.onValueChanged.add(() => {
+      // Allow user to save as draft
+      this.disableSaveAsDraft = false;
+    });
+    this.survey.onComplete.add(this.onComplete);
+
+    // Set readOnly fields
+    this.form.fields?.forEach((field) => {
+      if (field.readOnly && this.survey.getQuestionByName(field.name))
+        this.survey.getQuestionByName(field.name).readOnly = true;
+    });
+    // Fetch cached data from local storage
+    //this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
+    //const storedData = localStorage.getItem(this.storageId);
+    //const cachedData = storedData ? JSON.parse(storedData).data : null;
+    //this.storageDate = storedData
+    //? new Date(JSON.parse(storedData).date)
+    //: undefined;
+    // this.isFromCacheData = !!cachedData;
+    //if (this.isFromCacheData) {
+    //this.snackBar.openSnackBar(
+    //this.translate.instant('common.notifications.loadedFromCache', {
+    //type: this.translate.instant('common.record.one'),
+    //})
+    //);
+    //}
+
+    //if (cachedData) {
+    //this.survey.data = cachedData;
+    // this.setUserVariables();
+    //}
+    if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
+      this.survey.data = this.form.uniqueRecord.data;
+      this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
+    } else if (this.record && this.record.data) {
+      this.survey.data = this.record.data;
+      this.modifiedAt = this.record.modifiedAt || null;
+    }
+
+    // if (this.survey.getUsedLocales().length > 1) {
+    //   this.survey.getUsedLocales().forEach((lang) => {
+    //     const nativeName = (LANGUAGES as any)[lang].nativeName.split(',')[0];
+    //     this.usedLocales.push({ value: lang, text: nativeName });
+    //     this.dropdownLocales.push(nativeName);
+    //   });
+    // }
+
+    // Sets default language as form language if it is in survey locales
+    // const currentLang = this.usedLocales.find(
+    //   (lang) => lang.value === this.translate.currentLang
+    // );
+    // if (currentLang) {
+    //   this.setLanguage(currentLang.text);
+    //   this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
+    // } else {
+    //   this.survey.locale = this.translate.currentLang;
+    // }
   }
 }

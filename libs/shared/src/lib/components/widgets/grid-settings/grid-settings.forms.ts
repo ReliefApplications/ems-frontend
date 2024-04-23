@@ -193,6 +193,12 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
       addToRowClasses: new FormControl(
         get<string[]>(configuration, 'widgetDisplay.addToRowClasses', [])
       ),
+      singleSelect: new FormControl(
+        get<boolean>(configuration, 'widgetDisplay.singleSelect', false)
+      ),
+      actionsAsIcons: new FormControl(
+        get<boolean>(configuration, 'widgetDisplay.actionsAsIcons', false)
+      ),
     }
   );
   return extendedForm;
@@ -241,15 +247,27 @@ export const templateRequiredWhenAddRecord = (
 export const createGridActionsFormGroup = (configuration: any) => {
   const formGroup = fb.group({
     delete: [get(configuration, 'actions.delete', true)],
+    deleteLabel: [get(configuration, 'actions.deleteLabel', '')],
     history: [get(configuration, 'actions.history', true)],
+    historyLabel: [get(configuration, 'actions.historyLabel', '')],
     convert: [get(configuration, 'actions.convert', true)],
+    convertLabel: [get(configuration, 'actions.convertLabel', '')],
     update: [get(configuration, 'actions.update', true)],
+    updateLabel: [get(configuration, 'actions.updateLabel', '')],
     inlineEdition: [get(configuration, 'actions.inlineEdition', true)],
     addRecord: [get(configuration, 'actions.addRecord', false)],
     export: [get(configuration, 'actions.export', true)],
+    state: [get(configuration, 'actions.state', null)],
+    mapSelected: [get(configuration, 'actions.mapSelected', false)],
+    mapView: [get(configuration, 'actions.mapView', false)],
+    automaticallyMapSelected: [
+      get(configuration, 'actions.automaticallyMapSelected', false),
+    ],
+    automaticallyMapView: [
+      get(configuration, 'actions.automaticallyMapView', false),
+    ],
     showDetails: [get(configuration, 'actions.showDetails', true)],
     navigateToPage: [get(configuration, 'actions.navigateToPage', false)],
-    actionsAsIcons: [get(configuration, 'actions.actionsAsIcons', false)],
     navigateSettings: fb.group({
       pageUrl: [get(configuration, 'actions.navigateSettings.pageUrl', '')],
       field: [get(configuration, 'actions.navigateSettings.field', '')],
@@ -258,6 +276,9 @@ export const createGridActionsFormGroup = (configuration: any) => {
       ],
       copyLink: [
         get(configuration, 'actions.navigateSettings.copyLink', false),
+      ],
+      copyLinkLabel: [
+        get(configuration, 'actions.navigateSettings.copyLinkLabel', ''),
       ],
     }),
   });

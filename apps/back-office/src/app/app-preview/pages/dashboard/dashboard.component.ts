@@ -79,6 +79,7 @@ export class DashboardComponent
           next: ({ data, loading }) => {
             if (data.dashboard) {
               this.dashboard = data.dashboard;
+              this.dashboardService.openDashboard(this.dashboard);
               this.dashboardService.widgets = cloneDeep(
                 data.dashboard.structure ? data.dashboard.structure : []
               );

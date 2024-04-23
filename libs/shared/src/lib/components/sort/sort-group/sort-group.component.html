@@ -1,0 +1,27 @@
+<form [formGroup]="form">
+  <!-- HEADER -->
+  <div>
+    <h3>{{ 'components.queryBuilder.sort.logic' | translate }}</h3>
+    <ui-button category="tertiary" (click)="addSortField()">
+      {{ 'components.queryBuilder.sort.new' | translate }}
+    </ui-button>
+  </div>
+
+  <!-- SORT FIELDS -->
+  <div
+    formGroupName="sort"
+    class="group-fields"
+    *ngIf="sortFields && sortFields.length > 0"
+  >
+    <ng-container *ngFor="let sortField of sortFields.controls; let i = index">
+      <!-- NESTED SORT FIELD ROW -->
+      <shared-sort-row
+        class="group-item"
+        [form]="$any(sortField)"
+        [fields]="fields"
+        [showLimit]="showLimit"
+        (delete)="deleteSortField(i)"
+      ></shared-sort-row>
+    </ng-container>
+  </div>
+</form>

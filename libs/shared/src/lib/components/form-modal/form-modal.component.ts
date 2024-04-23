@@ -22,7 +22,12 @@ import {
   Record,
   RecordQueryResponse,
 } from '../../models/record.model';
-import { EDIT_RECORD, ADD_RECORD, EDIT_RECORDS } from './graphql/mutations';
+import {
+  EDIT_RECORD,
+  ADD_RECORD,
+  EDIT_RECORDS,
+  ARCHIVE_RECORD,
+} from './graphql/mutations';
 import addCustomFunctions from '../../survey/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
 import {
@@ -43,6 +48,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SpinnerModule } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import {
+  CheckUniqueProprietyReturnT,
   FormHelpersService,
   transformSurveyData,
 } from '../../services/form-helper/form-helper.service';
@@ -234,17 +240,22 @@ export class FormModalComponent
     this.initSurvey();
 
     // Creates UploadRecordsComponent
-    const componentRef = this.uploadRecordsContent.createComponent(
-      UploadRecordsComponent
-    );
-    componentRef.setInput('id', this.form?.id);
-    componentRef.setInput('name', this.form?.name);
-    componentRef.setInput('path', 'form');
-    componentRef.instance.uploaded.subscribe(
-      () => (this.uploadedRecords = true)
-    );
-    /** To use angular hooks */
-    componentRef.changeDetectorRef.detectChanges();
+
+    if (this.survey.allowUploadRecords && !this.record) {
+      const componentRef = this.uploadRecordsContent.createComponent(
+        UploadRecordsComponent
+      );
+
+      componentRef.setInput('id', this.form?.id);
+      componentRef.setInput('name', this.form?.name);
+      componentRef.setInput('path', 'form');
+      componentRef.instance.uploaded.subscribe(
+        () => (this.uploadedRecords = true)
+      );
+
+      /** To use angular hooks */
+      componentRef.changeDetectorRef.detectChanges();
+    }
   }
 
   /**
@@ -356,11 +367,11 @@ export class FormModalComponent
         .pipe(takeUntil(this.destroy$))
         .subscribe((value: any) => {
           if (value) {
-            this.dialogRef.close((this.uploadedRecords ? true : false) as any);
+            this.dialogRef.close(!!this.uploadedRecords as any);
           }
         });
     } else {
-      this.dialogRef.close((this.uploadedRecords ? true : false) as any);
+      this.dialogRef.close(!!this.uploadedRecords as any);
     }
   }
 
@@ -414,69 +425,86 @@ export class FormModalComponent
    * @param refreshWidgets if updating/creating resource on resource-modal and widgets using it need to be refreshed
    */
   public async onUpdate(survey: any, refreshWidgets = false): Promise<void> {
-    await this.formHelpersService.uploadFiles(
-      this.temporaryFilesStorage,
-      this.form?.id
-    );
-    // await Promise.allSettled(promises);
-    await this.formHelpersService.createTemporaryRecords(survey);
-
-    if (this.data.recordId) {
-      if (this.isMultiEdition) {
-        this.updateMultipleData(this.data.recordId, survey, refreshWidgets);
-      } else {
-        this.updateData(this.data.recordId, survey, refreshWidgets);
-      }
-    } else {
-      this.apollo
-        .mutate<AddRecordMutationResponse>({
-          mutation: ADD_RECORD,
-          variables: {
-            form: this.data.template,
-            data: survey.parsedData ?? survey.data,
-          },
-        })
-        .subscribe({
-          next: async ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
-                error: true,
-              });
-              this.ngZone.run(() => {
-                this.dialogRef.close();
-              });
+    this.formHelpersService
+      .checkUniquePropriety(this.survey)
+      .then(async (response: CheckUniqueProprietyReturnT) => {
+        if (response.verified) {
+          this.loading = true;
+          await this.formHelpersService.uploadFiles(
+            this.temporaryFilesStorage,
+            this.form?.id
+          );
+          // await Promise.allSettled(promises);
+          await this.formHelpersService.createTemporaryRecords(survey);
+          const editRecord = response.overwriteRecord ?? this.data.recordId;
+          if (editRecord) {
+            // If update or creation of record is overwriting another record because unique field values
+            const recordId = response.overwriteRecord
+              ? response.overwriteRecord.id
+              : this.data.recordId;
+            if (this.isMultiEdition) {
+              this.updateMultipleData(recordId, survey, refreshWidgets);
             } else {
-              if (this.lastDraftRecord) {
-                const callback = () => {
-                  this.lastDraftRecord = undefined;
-                };
-                this.formHelpersService.deleteRecordDraft(
-                  this.lastDraftRecord,
-                  callback
-                );
-              }
-              if (refreshWidgets) {
-                this.contextService.setWidgets(
-                  await this.formHelpersService.checkResourceOnFilter(
-                    this.form?.resource?.id as string,
-                    this.contextService.filterStructure.getValue()
-                  )
-                );
-              }
-              this.ngZone.run(() => {
-                this.dialogRef.close({
-                  template: this.data.template,
-                  data: data?.addRecord,
-                } as any);
-              });
+              this.updateData(recordId, survey, refreshWidgets);
             }
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-          },
-        });
-    }
-    survey.showCompletedPage = true;
+          } else {
+            this.apollo
+              .mutate<AddRecordMutationResponse>({
+                mutation: ADD_RECORD,
+                variables: {
+                  form: this.data.template,
+                  data: survey.parsedData ?? survey.data,
+                },
+              })
+              .subscribe({
+                next: async ({ errors, data }) => {
+                  if (errors) {
+                    this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
+                      error: true,
+                    });
+                    this.ngZone.run(() => {
+                      this.dialogRef.close();
+                    });
+                  } else {
+                    if (this.lastDraftRecord) {
+                      const callback = () => {
+                        this.lastDraftRecord = undefined;
+                      };
+                      this.formHelpersService.deleteRecordDraft(
+                        this.lastDraftRecord,
+                        callback
+                      );
+                    }
+                    if (refreshWidgets) {
+                      this.contextService.setWidgets(
+                        await this.formHelpersService.checkResourceOnFilter(
+                          this.form?.resource?.id as string,
+                          this.contextService.filterStructure.getValue()
+                        )
+                      );
+                    }
+                    this.ngZone.run(() => {
+                      this.dialogRef.close({
+                        template: this.data.template,
+                        data: data?.addRecord,
+                      } as any);
+                    });
+                  }
+                },
+                error: (err) => {
+                  this.snackBar.openSnackBar(err.message, { error: true });
+                },
+              });
+          }
+          survey.showCompletedPage = true;
+        } else {
+          this.snackBar.openSnackBar(
+            this.translate.instant('components.form.display.cancelMessage')
+          );
+          this.survey.clear(false);
+          this.saving = false;
+        }
+      });
   }
 
   /**
@@ -507,9 +535,11 @@ export class FormModalComponent
               )
             );
           }
+          this.loading = false;
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          this.loading = false;
         },
       });
   }
@@ -556,9 +586,11 @@ export class FormModalComponent
               )
             );
           }
+          this.loading = false;
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
+          this.loading = false;
         },
       });
   }
@@ -775,6 +807,57 @@ export class FormModalComponent
   public onLoadDraftRecord(id: string): void {
     this.lastDraftRecord = id;
     this.disableSaveAsDraft = true;
+  }
+
+  /** Confirms deletion of record using the confirm service and deletes the record if confirmed */
+  public async deleteRecord(): Promise<void> {
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.record.one'),
+      }),
+      content: this.translate.instant(
+        'components.record.delete.confirmationMessage',
+        {
+          name: '',
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmVariant: 'danger',
+    });
+
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(async (value) => {
+      if (value && this.record?.id) {
+        this.apollo
+          .mutate({
+            mutation: ARCHIVE_RECORD,
+            variables: {
+              id: this.record.id,
+            },
+          })
+          .subscribe((res) => {
+            if (res.errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotDeleted',
+                  {
+                    value: this.translate.instant('common.record.one'),
+                    error: res.errors[0]?.message ?? '',
+                  }
+                ),
+                { error: true }
+              );
+              return;
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.record.one'),
+                })
+              );
+              this.dialogRef.close();
+            }
+          });
+      }
+    });
   }
 
   /**

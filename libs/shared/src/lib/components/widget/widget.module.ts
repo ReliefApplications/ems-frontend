@@ -10,6 +10,7 @@ import { TabsModule } from '../widgets/tabs/tabs.module';
 import 'hammerjs';
 import { IconModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
+import { FormWidgetModule } from '../widgets/form/form-widget.module';
 
 /**
  * Main Widget Module.
@@ -20,8 +21,10 @@ import { TranslateModule } from '@ngx-translate/core';
   declarations: [WidgetComponent],
   imports: [
     CommonModule,
+    TranslateModule,
     // UI elements
     IconModule,
+    TooltipModule,
     // Widgets
     ChartModule,
     EditorModule,
@@ -29,8 +32,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MapWidgetModule,
     SummaryCardModule,
     TabsModule,
-    TooltipModule,
-    TranslateModule,
+    FormWidgetModule,
   ],
   exports: [WidgetComponent],
 })

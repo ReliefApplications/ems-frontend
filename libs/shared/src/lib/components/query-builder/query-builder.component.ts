@@ -153,10 +153,12 @@ export class QueryBuilderComponent
         );
         this.form?.setControl(
           'sort',
-          this.fb.group({
-            field: [''],
-            order: ['asc'],
-          })
+          this.fb.array([
+            this.fb.group({
+              field: [''],
+              order: ['asc'],
+            }),
+          ])
         );
       };
       this.form?.controls.name.valueChanges

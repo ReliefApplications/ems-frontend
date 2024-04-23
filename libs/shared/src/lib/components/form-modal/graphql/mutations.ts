@@ -77,3 +77,12 @@ export const EDIT_RECORDS = gql`
     }
   }
 `;
+
+/** Graphql request for archiving a record by its id */
+export const ARCHIVE_RECORD = gql`
+  mutation ArchiveRecord($id: ID!) {
+    deleteRecord(id: $id, hardDelete: false) {
+      id
+    }
+  }
+`;

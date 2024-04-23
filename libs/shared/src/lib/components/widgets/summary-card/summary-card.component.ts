@@ -51,6 +51,7 @@ import { ReferenceDataService } from '../../../services/reference-data/reference
 import searchFilters from '../../../utils/filter/search-filters';
 import filterReferenceData from '../../../utils/filter/reference-data-filter.util';
 import { ReferenceData } from '../../../models/reference-data.model';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -138,10 +139,7 @@ export class SummaryCardComponent
   /** Used to reset sort options when changing display mode */
   public sortControl = new FormControl(null);
   /** Current sort */
-  private sortOptions: {
-    field: string | null;
-    order: string;
-  } = { field: null, order: '' };
+  private sort: any[] = [];
   /** Summary card grid scroll event listener */
   private scrollEventListener!: any;
   /** Timeout listener for summary card scroll bind set on view switch */
@@ -159,9 +157,7 @@ export class SummaryCardComponent
         filters: [
           {
             logic: 'or',
-            field: '_globalSearch',
-            operator: 'contains',
-            value: searchFilters(
+            filters: searchFilters(
               this.searchControl.value,
               this.fields,
               skippedFields
@@ -265,6 +261,7 @@ export class SummaryCardComponent
    * @param gridService grid service
    * @param referenceDataService Shared reference data service
    * @param renderer Angular renderer service
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     private apollo: Apollo,
@@ -278,7 +275,8 @@ export class SummaryCardComponent
     private elementRef: ElementRef,
     private gridService: GridService,
     private referenceDataService: ReferenceDataService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private dashboardService: DashboardService
   ) {
     super();
   }
@@ -305,7 +303,6 @@ export class SummaryCardComponent
     this.contextService.filter$
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ previous, current, resourceId }) => {
-        console.log('filter', previous, current, resourceId);
         const hasFilter =
           (this.contextService.filterRegex.test(
             this.widget.settings.contextFilters
@@ -318,6 +315,25 @@ export class SummaryCardComponent
           this.refresh();
         }
       });
+
+    if (
+      this.contextService.dashboardStateRegex.test(
+        this.widget.settings.contextFilters
+      )
+    ) {
+      // Listen to dashboard states changes
+      this.dashboardService.states$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.onPage({
+            pageSize: DEFAULT_PAGE_SIZE,
+            skip: 0,
+            previousPageIndex: 0,
+            pageIndex: 0,
+            totalItems: 0,
+          });
+        });
+    }
   }
 
   ngAfterViewInit(): void {
@@ -494,8 +510,7 @@ export class SummaryCardComponent
           contextFilters: this.contextService.injectContext(
             this.contextFilters
           ),
-          sortField: this.sortOptions.field,
-          sortOrder: this.sortOptions.order,
+          sort: this.sort,
           ...(this.settings.at && {
             at: this.contextService.atArgumentValue(this.settings.at),
           }),
@@ -815,10 +830,11 @@ export class SummaryCardComponent
           });
 
           if (builtQuery) {
-            this.sortOptions = {
-              field: get(this.layout?.query, 'sort.field', null),
-              order: get(this.layout?.query, 'sort.order', ''),
-            };
+            // this.sortOptions = {
+            //   field: get(this.layout?.query, 'sort.field', null),
+            //   order: get(this.layout?.query, 'sort.order', ''),
+            // };
+            this.sort = get(this.layout?.query, 'sort', []);
             this.dataQuery = this.apollo.watchQuery<any>({
               query: builtQuery,
               variables: {
@@ -827,8 +843,9 @@ export class SummaryCardComponent
                 contextFilters: this.contextService.injectContext(
                   this.contextFilters
                 ),
-                sortField: this.sortOptions.field,
-                sortOrder: this.sortOptions.order,
+                sort: this.sort,
+                // sortField: this.sortOptions.field,
+                // sortOrder: this.sortOptions.order,
                 styles: layoutQuery.style || null,
                 ...(this.settings.at && {
                   at: this.contextService.atArgumentValue(this.settings.at),
@@ -908,7 +925,6 @@ export class SummaryCardComponent
         showDetails: get(this.settings, 'actions.showDetails', true),
         update: get(this.settings, 'actions.update', true),
         navigateToPage: get(this.settings, 'actions.navigateToPage', false),
-        actionsAsIcons: get(this.settings, 'actions.actionsAsIcons', false),
         navigateSettings: {
           pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
           field: get(this.settings, 'actions.navigateSettings.field', ''),
@@ -1031,8 +1047,9 @@ export class SummaryCardComponent
           contextFilters: this.contextService.injectContext(
             this.contextFilters
           ),
-          sortField: this.sortOptions.field,
-          sortOrder: this.sortOptions.order,
+          sort: this.sort,
+          // sortField: this.sortOptions.field,
+          // sortOrder: this.sortOptions.order,
           styles: layoutQuery?.style || null,
           ...(this.settings.at && {
             at: this.contextService.atArgumentValue(this.settings.at),
@@ -1118,13 +1135,10 @@ export class SummaryCardComponent
   public onSort(e: any) {
     this.cancelRefresh$.next();
     if (e) {
-      this.sortOptions = { field: e.field, order: e.order };
+      this.sort = [{ field: e.field, order: e.order }];
     } else {
       if (this.useLayout) {
-        this.sortOptions = {
-          field: get(this.layout?.query, 'sort.field', null),
-          order: get(this.layout?.query, 'sort.order', ''),
-        };
+        this.sort = get(this.layout?.query, 'sort', []);
       }
     }
     if (this.gridComponent) {
@@ -1141,8 +1155,7 @@ export class SummaryCardComponent
             contextFilters: this.contextService.injectContext(
               this.contextFilters
             ),
-            sortField: this.sortOptions.field,
-            sortOrder: this.sortOptions.order,
+            sort: this.sort,
             ...(this.settings.at && {
               at: this.contextService.atArgumentValue(this.settings.at),
             }),
@@ -1158,8 +1171,8 @@ export class SummaryCardComponent
           this.pageInfo.pageIndex = 0;
           this.pageInfo.skip = 0;
           if (e) {
-            const field = `rawValue.${this.sortOptions.field as string}`;
-            if (this.sortOptions.order === 'asc') {
+            const field = `rawValue.${this.sort[0].field as string}`;
+            if (this.sort[0].order === 'asc') {
               this.sortedCachedCards.sort((a, b) => {
                 const fieldA = String(get(a, field) || '');
                 const fieldB = String(get(b, field) || '');
@@ -1199,7 +1212,7 @@ export class SummaryCardComponent
    */
   private replaceWidgetVariables(object: any): any {
     // Replace sort options
-    const sort = this.sortOptions;
+    const [sort] = this.sort;
     if (sort && sort.field && sort.order) {
       object = JSON.parse(
         JSON.stringify(object)

@@ -328,9 +328,11 @@ export class FormBuilderService {
         const question = survey.getQuestionByName(
           survey.openOnQuestionValuesPage
         );
-        const page = survey.getPageByName(question.value);
-        if (page) {
-          selectedPageIndex.next(page.visibleIndex);
+        if (question) {
+          const page = survey.getPageByName(question.value);
+          if (page) {
+            selectedPageIndex.next(page.visibleIndex);
+          }
         }
       } else if (survey.openOnPage) {
         const page = survey.getPageByName(survey.openOnPage);
