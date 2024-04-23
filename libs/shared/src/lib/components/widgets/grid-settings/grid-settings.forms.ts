@@ -244,9 +244,13 @@ export const templateRequiredWhenAddRecord = (
 export const createGridActionsFormGroup = (configuration: any) => {
   const formGroup = fb.group({
     delete: [get(configuration, 'actions.delete', true)],
+    deleteLabel: [get(configuration, 'actions.deleteLabel', '')],
     history: [get(configuration, 'actions.history', true)],
+    historyLabel: [get(configuration, 'actions.historyLabel', '')],
     convert: [get(configuration, 'actions.convert', true)],
+    convertLabel: [get(configuration, 'actions.convertLabel', '')],
     update: [get(configuration, 'actions.update', true)],
+    updateLabel: [get(configuration, 'actions.updateLabel', '')],
     inlineEdition: [get(configuration, 'actions.inlineEdition', true)],
     addRecord: [get(configuration, 'actions.addRecord', false)],
     export: [get(configuration, 'actions.export', true)],
@@ -270,6 +274,9 @@ export const createGridActionsFormGroup = (configuration: any) => {
       ],
       copyLink: [
         get(configuration, 'actions.navigateSettings.copyLink', false),
+      ],
+      copyLinkLabel: [
+        get(configuration, 'actions.navigateSettings.copyLinkLabel', ''),
       ],
     }),
   });
