@@ -562,7 +562,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       textStyle: null,
       individualEmail: ele.individualEmail,
     });
-    this.emailService.setSeperateEmail(ele.individualEmail, index);
+    this.emailService.setSeparateEmail(ele.individualEmail, index);
     tempData.controls.fields.setValue(ele.fields);
     return tempData;
   }

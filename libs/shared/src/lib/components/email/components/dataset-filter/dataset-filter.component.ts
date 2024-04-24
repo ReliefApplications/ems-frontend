@@ -1117,7 +1117,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
    * Updating the separate email boolean flag on change
    */
   onChangeSeparateEmail() {
-    this.emailService.setSeperateEmail(
+    this.emailService.setSeparateEmail(
       this.separateEmail,
       this.activeTab.index
     );

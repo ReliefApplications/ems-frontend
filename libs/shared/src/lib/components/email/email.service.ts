@@ -793,12 +793,12 @@ export class EmailService {
   /**
    * persisting the state of the boolean variable for sending separete emails
    *
-   * @param seperateEmail - boolean value for checkbox
+   * @param separateEmail - boolean value for checkbox
    * @param index - dataset index
    */
-  setSeperateEmail(seperateEmail: boolean, index: number): void {
+  setSeparateEmail(separateEmail: boolean, index: number): void {
     const datasetArray = this.datasetsForm?.get('dataSets') as FormArray;
-    datasetArray?.at(index)?.get('individualEmail')?.setValue(seperateEmail);
+    datasetArray?.at(index)?.get('individualEmail')?.setValue(separateEmail);
   }
 
   /**
@@ -806,15 +806,15 @@ export class EmailService {
    *
    * @returns boolean for triggering endpoints
    */
-  sendSeperateEmail(): boolean {
-    let seperateEmail = false;
+  sendSeparateEmail(): boolean {
+    let separateEmail = false;
     const datasetArray = this.datasetsForm.get('dataSets') as FormArray;
     datasetArray.controls.forEach((datasetControl: any) => {
       if (datasetControl.get('individualEmail')?.value === true) {
-        seperateEmail = true;
+        separateEmail = true;
       }
     });
-    return seperateEmail;
+    return separateEmail;
   }
 
   /**
