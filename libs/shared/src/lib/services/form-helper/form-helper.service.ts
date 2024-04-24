@@ -368,26 +368,43 @@ export class FormHelpersService {
    *
    * @param survey current survey
    * @param options current survey question options
+   * @param options.question current question
+   * @param options.htmlElement html element associated to question
    */
-  public addQuestionTooltips(survey: any, options: any): void {
+  public addQuestionTooltips(
+    survey: SurveyModel,
+    options: { question: Question; htmlElement: HTMLElement }
+  ): void {
     //Return if there is no description to show in popup
     if (!options.question.tooltip) {
       return;
     }
-    const titleElement = (options.htmlElement as HTMLElement).querySelector(
+    const titleElement = options.htmlElement.querySelector(
       '.sd-question__title'
     );
+    const createTooltip = (htmlElement: Element) => {
+      const tooltip = document.createElement('span');
+      tooltip.title = options.question.tooltip || '';
+      tooltip.innerHTML = '?';
+      tooltip.classList.add('survey-title__tooltip');
+      htmlElement.appendChild(tooltip);
+    };
     if (titleElement) {
       const selector = survey.isDesignMode
         ? '.svc-string-editor'
         : '.sv-string-viewer';
-      titleElement.querySelectorAll(selector).forEach((el: any) => {
-        const tooltip = document.createElement('span');
-        tooltip.title = options.question.tooltip;
-        tooltip.innerHTML = '?';
-        tooltip.classList.add('survey-title__tooltip');
-        el.appendChild(tooltip);
+      titleElement.querySelectorAll(selector).forEach((el: Element) => {
+        createTooltip(el);
       });
+    } else if (options.question.getType() === 'html') {
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('flex', 'items-center');
+      options.htmlElement.parentNode?.insertBefore(
+        wrapper,
+        options.htmlElement
+      );
+      wrapper.appendChild(options.htmlElement);
+      createTooltip(wrapper);
     }
   }
 
