@@ -12,8 +12,8 @@
       <ng-container *ngFor="let email of this.emailService.recipients.To; let i = index">
         <li *ngIf="i < 5 || isExpandedTo" class="inline-block bg-blue-100 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2">{{ email }}</li>
       </ng-container>
-      <li *ngIf="this.emailService.recipients.To.length > 5 && !isExpandedTo" class="inline-block bg-white border border-blue-500 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 cursor-pointer hover:bg-blue-500 hover:text-white" (click)="toggleExpandTo()">Show {{ this.emailService.recipients.To.length - 5 }} remaining emails...</li>
-      <li *ngIf="isExpandedTo" class="inline-block bg-white border border-blue-500 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 cursor-pointer hover:bg-blue-500 hover:text-white" (click)="toggleExpandTo()">Show Less</li>
+      <li *ngIf="this.emailService.recipients.To.length > 5 && !isExpandedTo" class="inline-block bg-white border border-blue-500 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 cursor-pointer hover:bg-blue-500 hover:text-white" (click)="toggleExpandTo()">{{'components.email.preview.more' | translate: { length: emailService.recipients.To.length - 5 } }}</li>
+      <li *ngIf="isExpandedTo" class="inline-block bg-white border border-blue-500 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 cursor-pointer hover:bg-blue-500 hover:text-white" (click)="toggleExpandTo()">{{'components.email.preview.less' | translate}}</li>
     </ul>
   </div>
 
@@ -24,8 +24,8 @@
       <ng-container *ngFor="let email of this.emailService.recipients.Cc; let i = index">
         <li *ngIf="i < 5 || isExpandedCc" class="inline-block bg-blue-100 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2">{{ email }}</li>
       </ng-container>
-      <li *ngIf="this.emailService.recipients.Cc.length > 5 && !isExpandedCc" class="inline-block bg-white border border-blue-500 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 cursor-pointer hover:bg-blue-500 hover:text-white" (click)="toggleExpandCc()">See {{ this.emailService.recipients.Cc.length - 5 }} remaining emails</li>
-      <li *ngIf="isExpandedCc" class="inline-block bg-white border border-blue-500 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 cursor-pointer hover:bg-blue-500 hover:text-white" (click)="toggleExpandCc()">Show Less</li>
+      <li *ngIf="this.emailService.recipients.Cc.length > 5 && !isExpandedCc" class="inline-block bg-white border border-blue-500 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 cursor-pointer hover:bg-blue-500 hover:text-white" (click)="toggleExpandCc()">{{'components.email.preview.more' | translate: { length: emailService.recipients.Cc.length - 5 } }}</li>
+      <li *ngIf="isExpandedCc" class="inline-block bg-white border border-blue-500 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 cursor-pointer hover:bg-blue-500 hover:text-white" (click)="toggleExpandCc()">{{'components.email.preview.less' | translate}}</li>
     </ul>
   </div>
 
@@ -36,8 +36,8 @@
       <ng-container *ngFor="let email of this.emailService.recipients.Bcc; let i = index">
         <li *ngIf="i < 5 || isExpandedBcc" class="inline-block bg-blue-100 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2">{{ email }}</li>
       </ng-container>
-      <li *ngIf="this.emailService.recipients.Bcc.length > 5 && !isExpandedBcc" class="inline-block bg-white border border-blue-500 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 cursor-pointer hover:bg-blue-500 hover:text-white" (click)="toggleExpandBcc()">See {{ this.emailService.recipients.Bcc.length - 5 }} remaining emails</li>
-      <li *ngIf="isExpandedBcc" class="inline-block bg-white border border-blue-500 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 cursor-pointer hover:bg-blue-500 hover:text-white" (click)="toggleExpandBcc()">Show Less</li>
+      <li *ngIf="this.emailService.recipients.Bcc.length > 5 && !isExpandedBcc" class="inline-block bg-white border border-blue-500 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 cursor-pointer hover:bg-blue-500 hover:text-white" (click)="toggleExpandBcc()">{{'components.email.preview.more' | translate: { length: emailService.recipients.Bcc.length - 5 } }}</li>
+      <li *ngIf="isExpandedBcc" class="inline-block bg-white border border-blue-500 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 mr-2 cursor-pointer hover:bg-blue-500 hover:text-white" (click)="toggleExpandBcc()">{{'components.email.preview.less' | translate}} </li>
     </ul>
   </div>
 

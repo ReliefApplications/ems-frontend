@@ -827,6 +827,8 @@
 				"validTitle": "Veuillez saisir un titre"
 			},
 			"preview": {
+				"less": "Montrer moins",
+				"more": "Afficher {{length}} e-mails restants...",
 				"subject": "Sujet:"
 			}
 		},

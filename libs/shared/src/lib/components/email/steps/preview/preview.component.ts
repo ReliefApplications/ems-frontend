@@ -42,25 +42,25 @@ export class PreviewComponent implements OnInit, OnDestroy {
   isExpandedBcc = false;
 
   /**
-   *
+   * Expand see more email list dropdown for "To".
    */
   toggleExpandTo() {
     this.isExpandedTo = !this.isExpandedTo;
   }
 
   /**
-   *
+   * Expand see more email list dropdown for "Cc".
    */
   toggleExpandCc() {
     this.isExpandedCc = !this.isExpandedCc;
   }
 
-    /**
-   *
+  /**
+   * Expand see more email list dropdown for "Bcc".
    */
-    toggleExpandBcc() {
-      this.isExpandedBcc = !this.isExpandedBcc;
-    }
+  toggleExpandBcc() {
+    this.isExpandedBcc = !this.isExpandedBcc;
+  }
 
   /**
    * Creates an instance of PreviewComponent.
