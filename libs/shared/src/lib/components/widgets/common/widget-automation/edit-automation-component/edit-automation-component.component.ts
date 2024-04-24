@@ -12,10 +12,14 @@ import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { createAutomationComponentForm } from '../../../../../forms/automation.forms';
 import { DashboardService } from '../../../../../services/dashboard/dashboard.service';
 import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
-import { BehaviorSubject, map, takeUntil } from 'rxjs';
+import { BehaviorSubject, isObservable, map, takeUntil } from 'rxjs';
 import { MapLayersService } from '../../../../../services/map/map-layers.service';
-import { get } from 'lodash';
+import { get, isArray, isNil } from 'lodash';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import {
+  ActionType,
+  ActionWithProperties,
+} from '../../../../../models/automation.model';
 
 /**
  * Edition of automation component.
@@ -45,20 +49,20 @@ export class EditAutomationComponentComponent
   /** Available widgets */
   public widgets = new BehaviorSubject<any[]>([]);
   /** Current editor */
-  public editor: any;
+  public editor!: ActionWithProperties | undefined;
   /** Available editors */
-  public editors = [
+  public editors: ActionWithProperties[] = [
     {
       component: 'trigger',
-      type: 'map.click',
+      type: ActionType.mapClick,
     },
     {
       component: 'action',
-      type: 'map.get.country',
+      type: ActionType.mapGetCountry,
     },
     {
       component: 'action',
-      type: 'add.layer',
+      type: ActionType.addLayer,
       properties: [
         {
           name: 'widget',
@@ -66,60 +70,12 @@ export class EditAutomationComponentComponent
           editor: 'select',
           multiselect: false,
           async: true,
-          choices: this.widgets.pipe(
-            takeUntil(this.destroy$),
-            map((widgets) => {
-              return widgets
-                .filter((widget) => widget.component === 'map')
-                .map((x) => ({
-                  value: x.id,
-                  text: x.name || `Widget #${x.id}`,
-                }));
-            })
-          ),
-          onValueChanged: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              this.mapLayersService
-                .getLayers(get(widget, 'settings.layers') || [])
-                .pipe(takeUntil(this.destroy$))
-                .subscribe((layers) => {
-                  this.editor.properties.find(
-                    (x: any) => x.name === 'layers'
-                  ).choices = layers.map((layer) => ({
-                    value: layer.id,
-                    text: layer.name,
-                  }));
-                });
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'layers'
-              ).choices = [];
-            }
+          choices: this.getChoicesFromWidgets('map'),
+          onValueChanged: (value: string) => {
+            this.setPropertyChoices(value, 'layers');
           },
-          onInit: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              this.mapLayersService
-                .getLayers(get(widget, 'settings.layers') || [])
-                .pipe(takeUntil(this.destroy$))
-                .subscribe((layers) => {
-                  this.editor.properties.find(
-                    (x: any) => x.name === 'layers'
-                  ).choices = layers.map((layer) => ({
-                    value: layer.id,
-                    text: layer.name,
-                  }));
-                });
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'layers'
-              ).choices = [];
-            }
+          onInit: (value: string) => {
+            this.setPropertyChoices(value, 'layers');
           },
         },
         {
@@ -129,12 +85,15 @@ export class EditAutomationComponentComponent
           multiselect: true,
           async: false,
           choices: [],
+          onValueChanged: (value) => {
+            this.setDescription(value, 'layers');
+          },
         },
       ],
     },
     {
       component: 'action',
-      type: 'remove.layer',
+      type: ActionType.removeLayer,
       properties: [
         {
           name: 'widget',
@@ -142,60 +101,12 @@ export class EditAutomationComponentComponent
           editor: 'select',
           multiselect: false,
           async: true,
-          choices: this.widgets.pipe(
-            takeUntil(this.destroy$),
-            map((widgets) => {
-              return widgets
-                .filter((widget) => widget.component === 'map')
-                .map((x) => ({
-                  value: x.id,
-                  text: x.name || `Widget #${x.id}`,
-                }));
-            })
-          ),
-          onValueChanged: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              this.mapLayersService
-                .getLayers(get(widget, 'settings.layers') || [])
-                .pipe(takeUntil(this.destroy$))
-                .subscribe((layers) => {
-                  this.editor.properties.find(
-                    (x: any) => x.name === 'layers'
-                  ).choices = layers.map((layer) => ({
-                    value: layer.id,
-                    text: layer.name,
-                  }));
-                });
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'layers'
-              ).choices = [];
-            }
+          choices: this.getChoicesFromWidgets('map'),
+          onValueChanged: (value: string) => {
+            this.setPropertyChoices(value, 'layers');
           },
-          onInit: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              this.mapLayersService
-                .getLayers(get(widget, 'settings.layers') || [])
-                .pipe(takeUntil(this.destroy$))
-                .subscribe((layers) => {
-                  this.editor.properties.find(
-                    (x: any) => x.name === 'layers'
-                  ).choices = layers.map((layer) => ({
-                    value: layer.id,
-                    text: layer.name,
-                  }));
-                });
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'layers'
-              ).choices = [];
-            }
+          onInit: (value: string) => {
+            this.setPropertyChoices(value, 'layers');
           },
         },
         {
@@ -205,12 +116,15 @@ export class EditAutomationComponentComponent
           multiselect: true,
           async: false,
           choices: [],
+          onValueChanged: (value) => {
+            this.setDescription(value, 'layers');
+          },
         },
       ],
     },
     {
       component: 'action',
-      type: 'add.tab',
+      type: ActionType.addTab,
       properties: [
         {
           name: 'widget',
@@ -218,52 +132,12 @@ export class EditAutomationComponentComponent
           editor: 'select',
           multiselect: false,
           async: true,
-          choices: this.widgets.pipe(
-            takeUntil(this.destroy$),
-            map((widgets) => {
-              return widgets
-                .filter((widget) => widget.component === 'tabs')
-                .map((x) => ({
-                  value: x.id,
-                  text: x.name || `Widget #${x.id}`,
-                }));
-            })
-          ),
-          onValueChanged: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              const tabs: any[] = get(widget, 'settings.tabs') || [];
-              this.editor.properties.find(
-                (x: any) => x.name === 'tabs'
-              ).choices = tabs.map((tab: any, index) => ({
-                value: tab.id,
-                text: tab.label || `Tab ${index}`,
-              }));
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'tabs'
-              ).choices = [];
-            }
+          choices: this.getChoicesFromWidgets('tabs'),
+          onValueChanged: (value: string) => {
+            this.setPropertyChoices(value, 'tabs');
           },
-          onInit: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              const tabs: any[] = get(widget, 'settings.tabs') || [];
-              this.editor.properties.find(
-                (x: any) => x.name === 'tabs'
-              ).choices = tabs.map((tab: any, index) => ({
-                value: tab.id,
-                text: tab.label || `Tab ${index}`,
-              }));
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'tabs'
-              ).choices = [];
-            }
+          onInit: (value: string) => {
+            this.setPropertyChoices(value, 'tabs');
           },
         },
         {
@@ -273,12 +147,15 @@ export class EditAutomationComponentComponent
           multiselect: true,
           async: false,
           choices: [],
+          onValueChanged: (value) => {
+            this.setDescription(value, 'tabs');
+          },
         },
       ],
     },
     {
       component: 'action',
-      type: 'remove.tab',
+      type: ActionType.removeTab,
       properties: [
         {
           name: 'widget',
@@ -286,52 +163,12 @@ export class EditAutomationComponentComponent
           editor: 'select',
           multiselect: false,
           async: true,
-          choices: this.widgets.pipe(
-            takeUntil(this.destroy$),
-            map((widgets) => {
-              return widgets
-                .filter((widget) => widget.component === 'tabs')
-                .map((x) => ({
-                  value: x.id,
-                  text: x.name || `Widget #${x.id}`,
-                }));
-            })
-          ),
-          onValueChanged: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              const tabs: any[] = get(widget, 'settings.tabs') || [];
-              this.editor.properties.find(
-                (x: any) => x.name === 'tabs'
-              ).choices = tabs.map((tab: any, index) => ({
-                value: tab.id,
-                text: tab.label || `Tab ${index}`,
-              }));
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'tabs'
-              ).choices = [];
-            }
+          choices: this.getChoicesFromWidgets('tabs'),
+          onValueChanged: (value: string) => {
+            this.setPropertyChoices(value, 'tabs');
           },
-          onInit: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              const tabs: any[] = get(widget, 'settings.tabs') || [];
-              this.editor.properties.find(
-                (x: any) => x.name === 'tabs'
-              ).choices = tabs.map((tab: any, index) => ({
-                value: tab.id,
-                text: tab.label || `Tab ${index}`,
-              }));
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'tabs'
-              ).choices = [];
-            }
+          onInit: (value: string) => {
+            this.setPropertyChoices(value, 'tabs');
           },
         },
         {
@@ -341,12 +178,15 @@ export class EditAutomationComponentComponent
           multiselect: true,
           async: false,
           choices: [],
+          onValueChanged: (value) => {
+            this.setDescription(value, 'tabs');
+          },
         },
       ],
     },
     {
       component: 'action',
-      type: 'open.tab',
+      type: ActionType.openTab,
       properties: [
         {
           name: 'widget',
@@ -354,52 +194,12 @@ export class EditAutomationComponentComponent
           editor: 'select',
           multiselect: false,
           async: true,
-          choices: this.widgets.pipe(
-            takeUntil(this.destroy$),
-            map((widgets) => {
-              return widgets
-                .filter((widget) => widget.component === 'tabs')
-                .map((x) => ({
-                  value: x.id,
-                  text: x.name || `Widget #${x.id}`,
-                }));
-            })
-          ),
-          onValueChanged: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              const tabs: any[] = get(widget, 'settings.tabs') || [];
-              this.editor.properties.find(
-                (x: any) => x.name === 'tab'
-              ).choices = tabs.map((tab: any, index) => ({
-                value: tab.id,
-                text: tab.label || `Tab ${index}`,
-              }));
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'tab'
-              ).choices = [];
-            }
+          choices: this.getChoicesFromWidgets('tabs'),
+          onValueChanged: (value: string) => {
+            this.setPropertyChoices(value, 'tab');
           },
-          onInit: (value: any) => {
-            const widget = this.widgets
-              .getValue()
-              .find((widget) => widget.id === value);
-            if (widget) {
-              const tabs: any[] = get(widget, 'settings.tabs') || [];
-              this.editor.properties.find(
-                (x: any) => x.name === 'tab'
-              ).choices = tabs.map((tab: any, index) => ({
-                value: tab.id,
-                text: tab.label || `Tab ${index}`,
-              }));
-            } else {
-              this.editor.properties.find(
-                (x: any) => x.name === 'tab'
-              ).choices = [];
-            }
+          onInit: (value: string) => {
+            this.setPropertyChoices(value, 'tab');
           },
         },
         {
@@ -409,12 +209,15 @@ export class EditAutomationComponentComponent
           multiselect: false,
           async: false,
           choices: [],
+          onValueChanged: (value) => {
+            this.setDescription(value, 'tab');
+          },
         },
       ],
     },
     {
       component: 'action',
-      type: 'display.collapse',
+      type: ActionType.displayCollapse,
       properties: [
         {
           name: 'widget',
@@ -422,21 +225,16 @@ export class EditAutomationComponentComponent
           editor: 'select',
           multiselect: false,
           async: true,
-          choices: this.widgets.pipe(
-            takeUntil(this.destroy$),
-            map((widgets) => {
-              return widgets.map((x) => ({
-                value: x.id,
-                text: x.name || `Widget #${x.id}`,
-              }));
-            })
-          ),
+          choices: this.getChoicesFromWidgets(),
+          onValueChanged: (value) => {
+            this.setDescription(value, 'widget');
+          },
         },
       ],
     },
     {
       component: 'action',
-      type: 'display.expand',
+      type: ActionType.displayExpand,
       properties: [
         {
           name: 'widget',
@@ -444,21 +242,16 @@ export class EditAutomationComponentComponent
           editor: 'select',
           multiselect: false,
           async: true,
-          choices: this.widgets.pipe(
-            takeUntil(this.destroy$),
-            map((widgets) => {
-              return widgets.map((x) => ({
-                value: x.id,
-                text: x.name || `Widget #${x.id}`,
-              }));
-            })
-          ),
+          choices: this.getChoicesFromWidgets(),
+          onValueChanged: (value) => {
+            this.setDescription(value, 'widget');
+          },
         },
       ],
     },
     {
       component: 'action',
-      type: 'set.context',
+      type: ActionType.setContext,
       properties: [
         {
           name: 'mapping',
@@ -503,19 +296,131 @@ export class EditAutomationComponentComponent
         editor.component === this.data.component &&
         editor.type === this.data.type
     );
+    if (isNil(this.editor)) {
+      return;
+    }
     for (const key in this.editor.properties) {
-      const property = this.editor.properties[key];
+      const property = get(this.editor.properties, key);
       if (property.onValueChanged) {
         (this.formGroup as any)
           .get(`value.${property.name}`)
           ?.valueChanges.pipe(takeUntil(this.destroy$))
-          .subscribe((value: any) => property.onValueChanged(value));
+          .subscribe((value: string) => property.onValueChanged(value));
       }
       if (property.onInit) {
         property.onInit(
           (this.formGroup as any).get(`value.${property.name}`).value
         );
       }
+    }
+  }
+
+  /**
+   * Sets the choices for a specific property based on the widget settings.
+   *
+   * @param id The ID of the widget
+   * @param propertyName The name of the property whose choices are being set (e.g., 'layers', 'tabs')
+   */
+  private setPropertyChoices(id: string, propertyName: string) {
+    const property = this.editor?.properties?.find(
+      (x: any) => x.name === propertyName
+    );
+    if (!property) {
+      return;
+    }
+
+    const widget = this.widgets.getValue().find((widget) => widget.id === id);
+    if (widget) {
+      switch (propertyName) {
+        case 'layers':
+          this.mapLayersService
+            .getLayers(get(widget, 'settings.layers') || [])
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((layers) => {
+              property.choices = layers.map((layer) => ({
+                value: layer.id,
+                text: layer.name,
+              }));
+            });
+          break;
+        case 'tab':
+        case 'tabs':
+          const tabs: any[] = get(widget, 'settings.tabs') || [];
+          property.choices = tabs.map((tab: any, index) => ({
+            value: tab.id,
+            text: tab.label || `Tab ${index}`,
+          }));
+          break;
+      }
+    } else {
+      property.choices = [];
+    }
+  }
+
+  /**
+   * Retrieves choices from widgets based on the specified widget type.
+   * If a widget type is provided, filters widgets by the specified type;
+   * otherwise, returns choices from all widgets.
+   *
+   * @param widgetType Optional. The type of widget to filter by.
+   * @returns An Observable that emits an array of choices in the format { value: string; text: string; }[].
+   */
+  private getChoicesFromWidgets(widgetType?: string) {
+    return this.widgets.pipe(
+      takeUntil(this.destroy$),
+      map((widgets) => {
+        if (widgetType) {
+          widgets = widgets.filter((widget) => widget.component === widgetType);
+        }
+        return widgets.map((x) => ({
+          value: x.id,
+          text: x.name || `Widget #${x.id}`,
+        }));
+      })
+    );
+  }
+
+  /**
+   * Sets the description of the component.
+   *
+   * @param {string[]} idsList - An array of ids.
+   * @param {string} propertyName - The name of the property.
+   */
+  private setDescription(idsList: string[] | string, propertyName: string) {
+    const choices = this.editor?.properties?.find(
+      (x: any) => x.name === propertyName
+    )?.choices;
+    if (!choices) {
+      return;
+    }
+    const setDescription = (
+      choices: {
+        value: string;
+        text: string;
+      }[]
+    ) =>
+      this.formGroup.controls.description.setValue(
+        (isArray(idsList)
+          ? idsList
+              .map((id) => {
+                return choices.find(
+                  (choice: { value: string; text: string }) =>
+                    choice.value === id
+                )?.text;
+              })
+              .join(', ')
+          : choices.find(
+              (choice: { value: string; text: string }) =>
+                choice.value === idsList
+            )?.text) ?? ''
+      );
+
+    if (isObservable(choices)) {
+      choices.subscribe((choicesArray) => {
+        setDescription(choicesArray);
+      });
+    } else {
+      setDescription(choices);
     }
   }
 }

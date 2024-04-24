@@ -299,14 +299,18 @@ export class FormWrapperDirective
               this.currentLabelElement?.textContent?.endsWith(' *');
 
             if (isRequired && !labelHasRequired) {
-              this.renderer.appendChild(
-                this.currentLabelElement,
-                this.renderer.createText(' *')
-              );
+              if (this.currentLabelElement) {
+                this.renderer.appendChild(
+                  this.currentLabelElement,
+                  this.renderer.createText(' *')
+                );
+              }
             } else if (!isRequired && labelHasRequired) {
-              // remove the ' *' from the innerText
-              this.currentLabelElement.innerText =
-                this.currentLabelElement.innerText.replace(' *', '');
+              if (this.currentLabelElement) {
+                // remove the ' *' from the innerText
+                this.currentLabelElement.innerText =
+                  this.currentLabelElement.innerText.replace(' *', '');
+              }
             }
           },
         });

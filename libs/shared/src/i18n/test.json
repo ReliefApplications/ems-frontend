@@ -653,6 +653,28 @@
 				"ariaLabel": "******"
 			}
 		},
+		"automation": {
+			"actions": {
+				"add.layer": "******",
+				"add.tab": "******",
+				"display.collapse": "******",
+				"display.expand": "******",
+				"map.click": "******",
+				"map.get.country": "******",
+				"open.tab": "******",
+				"remove.layer": "******",
+				"remove.tab": "******",
+				"set.context": "******"
+			},
+			"addRule": "******",
+			"component": {
+				"add": "******",
+				"select": "******"
+			},
+			"configuration": "******",
+			"ruleName": "******",
+			"rules": "******"
+		},
 		"calculatedFields": {
 			"add": "******",
 			"delete": {
@@ -1784,6 +1806,7 @@
 						"longitude": "******",
 						"setByMap": "******",
 						"title": "******",
+						"useWebMapInitialState": "******",
 						"webmap": "******",
 						"zoom": "******"
 					},
@@ -2152,15 +2175,21 @@
 		"dashboard": {
 			"activateFiltering": "******",
 			"buttonActions": {
-				"add": "******",
 				"category": "******",
 				"confirmDelete": "******",
-				"edit": "******",
+				"create": "******",
+				"edit": {
+					"few": "******",
+					"one": "******"
+				},
+				"hasRoleRestriction": "******",
 				"href": "******",
+				"none": "******",
 				"one": "******",
 				"openInNewTab": "******",
 				"text": "******",
-				"variant": "******"
+				"variant": "******",
+				"visibleTo": "******"
 			},
 			"closable": "******",
 			"context": {

@@ -64,6 +64,7 @@ import { MapPolygonsService } from '../../../services/map/map-polygons.service';
 import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
 import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
+import { ActionComponent, ActionType } from '../../../models/automation.model';
 
 /** Component for the map widget */
 @Component({
@@ -319,11 +320,11 @@ export class MapComponent
 
     if (this.mapSettingsValue.automationRules) {
       for (const rule of this.mapSettingsValue.automationRules) {
-        const trigger = get(rule, 'components[0]');
+        const trigger: ActionComponent = get(rule, 'components[0]');
         if (
           trigger &&
           trigger.component === 'trigger' &&
-          trigger.type === 'map.click'
+          trigger.type === ActionType.mapClick
         ) {
           // Save rule in map object to populate to all layers attached to it
           if ((this.map as any)._rules) {
@@ -599,7 +600,9 @@ export class MapComponent
         // Load arcgis webmap
         promises.push(
           this.setWebmap(settings.arcGisWebMap, {
-            skipDefaultView: this.useContextZoom,
+            skipDefaultView:
+              this.useContextZoom ||
+              !this.mapSettingsValue.initialState.useWebMapInitialState,
           })
         );
       } else {

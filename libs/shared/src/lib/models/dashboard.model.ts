@@ -5,9 +5,9 @@ import { GridSettingsComponent } from '../components/widgets/grid-settings/grid-
 import { MapSettingsComponent } from '../components/widgets/map-settings/map-settings.component';
 import { EditorSettingsComponent } from '../components/widgets/editor-settings/editor-settings.component';
 import { SummaryCardSettingsComponent } from '../components/widgets/summary-card-settings/summary-card-settings.component';
-import { Category, Variant } from '@oort-front/ui';
 import { TabsSettingsComponent } from '../components/widgets/tabs-settings/tabs-settings.component';
 import { EventEmitter } from '@angular/core';
+import { ButtonActionT } from '../components/button-action/button-action-type';
 
 /** Model for IWidgetType object */
 export interface IWidgetType {
@@ -258,13 +258,7 @@ export interface Dashboard {
   contextData?: {
     [key: string]: any;
   };
-  buttons?: {
-    text: string;
-    href: string;
-    variant: Variant;
-    category: Category;
-    openInNewTab: boolean;
-  }[];
+  buttons?: ButtonActionT[];
   filter?: DashboardFilter;
   gridOptions?: any;
 }

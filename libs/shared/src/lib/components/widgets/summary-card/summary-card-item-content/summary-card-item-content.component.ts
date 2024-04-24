@@ -1,3 +1,4 @@
+import { Dialog } from '@angular/cdk/dialog';
 import {
   Component,
   ElementRef,
@@ -12,17 +13,15 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
-import { DataTemplateService } from '../../../../services/data-template/data-template.service';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { Dialog } from '@angular/cdk/dialog';
-import { HtmlWidgetContentComponent } from '../../common/html-widget-content/html-widget-content.component';
-import { takeUntil } from 'rxjs';
-import { SummaryCardItemComponent } from '../summary-card-item/summary-card-item.component';
-import { ContextService } from '../../../../services/context/context.service';
 import { Router } from '@angular/router';
+import { takeUntil } from 'rxjs';
+import { DataTemplateService } from '../../../../services/data-template/data-template.service';
+import { WidgetService } from '../../../../services/widget/widget.service';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { HtmlWidgetContentComponent } from '../../common/html-widget-content/html-widget-content.component';
 import { SummaryCardFormT } from '../../summary-card-settings/summary-card-settings.component';
+import { SummaryCardItemComponent } from '../summary-card-item/summary-card-item.component';
 import { DashboardAutomationService } from '../../../../services/dashboard-automation/dashboard-automation.service';
-import { isEqual, set } from 'lodash';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -61,96 +60,18 @@ export class SummaryCardItemContentComponent
   private timeoutListener!: NodeJS.Timeout;
 
   /**
-   * Listen to click events from host element, if record editor is clicked, open record editor modal
+   * Listen to click events from host element, and trigger any action attached to the content clicked in the summary card item
    *
    * @param event Click event from host element
    */
   @HostListener('click', ['$event'])
   onContentClick(event: any) {
-    let filterButtonIsClicked = !!event.target.dataset.filterField;
-    let currentNode = event.target;
-    const currentFilters = { ...this.contextService.filter.getValue() };
-    const updatedFilters = { ...currentFilters };
-    // Check for filter fields
-    if (!filterButtonIsClicked) {
-      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
-      while (
-        currentNode.localName !== 'shared-summary-card-item-content' &&
-        !filterButtonIsClicked
-      ) {
-        currentNode = this.renderer.parentNode(currentNode);
-        filterButtonIsClicked = !!currentNode.dataset.filterField;
-      }
-    }
-    if (filterButtonIsClicked) {
-      const { filterField, filterValue } = currentNode.dataset;
-      // Cleanup filter value from the span set by default in the tinymce calculated field if exists
-      const cleanContent = filterValue.match(/(?<=>)(.*?)(?=<)/gi);
-      const cleanFilterValue = cleanContent ? cleanContent[0] : filterValue;
-      // If current filters contains the field but there is no value set, delete it
-      if (filterField in currentFilters && !cleanFilterValue) {
-        delete updatedFilters[filterField];
-      }
-      // Update filter object with existing fields and values
-      if (cleanFilterValue) {
-        set(updatedFilters, filterField, cleanFilterValue);
-      }
-    }
-
-    // Check for automation rules
-    let ruleButtonIsClicked = !!event.target.dataset?.ruleTarget;
-    currentNode = event.target; // reset the node
-    if (!ruleButtonIsClicked) {
-      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
-      while (
-        currentNode.localName !== 'shared-editor' &&
-        !ruleButtonIsClicked
-      ) {
-        currentNode = this.renderer.parentNode(currentNode);
-        ruleButtonIsClicked = !!currentNode?.dataset?.ruleTarget;
-      }
-    }
-    if (ruleButtonIsClicked) {
-      const ruleTarget = currentNode.dataset?.ruleTarget;
-      const rule = (this.settings.automationRules || []).find(
-        (rule: any) => rule.id === ruleTarget
-      );
-      if (rule) {
-        this.dashboardAutomationService?.executeAutomationRule(rule);
-      }
-    }
-
-    // Check for filter reset
-    let resetButtonIsClicked = !!event.target.dataset.filterReset;
-    currentNode = event.target;
-    if (!resetButtonIsClicked) {
-      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
-      while (
-        currentNode.localName !== 'shared-summary-card-item-content' &&
-        !resetButtonIsClicked
-      ) {
-        currentNode = this.renderer.parentNode(currentNode);
-        resetButtonIsClicked = !!currentNode.dataset.filterReset;
-      }
-    }
-    if (resetButtonIsClicked) {
-      // Get all the fields that need to be cleared
-      const resetList = currentNode.dataset.filterReset
-        .split(';')
-        .map((item: any) => item.trim());
-      for (const key of Object.keys(updatedFilters)) {
-        // If key is in list of fields that need to be cleared, remove it
-        if (resetList.includes(key)) {
-          delete updatedFilters[key];
-        }
-      }
-    }
-
-    // If filter is affected, update it
-    if (!isEqual(currentFilters, updatedFilters)) {
-      this.contextService.filter.next(updatedFilters);
-    }
-
+    this.widgetService.handleWidgetContentClick(
+      event,
+      'shared-summary-card-item-content',
+      this.dashboardAutomationService,
+      this.settings.automationRules as any[]
+    );
     const content = this.htmlContentComponent.el.nativeElement;
     const editorTriggers = content.querySelectorAll('.record-editor');
     editorTriggers.forEach((recordEditor: HTMLElement) => {
@@ -166,20 +87,20 @@ export class SummaryCardItemContentComponent
    * @param dataTemplateService Shared data template service, used to render content from template
    * @param dialog CDK Dialog service
    * @param parent Reference to parent summary card item component
-   * @param contextService Context service
    * @param renderer Angular renderer2 service
    * @param el Element ref
    * @param router Angular router
+   * @param widgetService Shared widget service
    * @param dashboardAutomationService Dashboard automation service (Optional, so not active while editing widget)
    */
   constructor(
     private dataTemplateService: DataTemplateService,
     private dialog: Dialog,
     @Optional() public parent: SummaryCardItemComponent,
-    private contextService: ContextService,
     private renderer: Renderer2,
     private el: ElementRef,
     private router: Router,
+    private widgetService: WidgetService,
     @Optional()
     @SkipSelf()
     private dashboardAutomationService: DashboardAutomationService
