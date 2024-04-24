@@ -142,7 +142,7 @@ export class WidgetService {
       // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
       while (currentNode.localName !== widgetNodeName && !ruleButtonIsClicked) {
         currentNode = this.renderer.parentNode(currentNode);
-        ruleButtonIsClicked = !!currentNode.dataset?.ruleTarget;
+        ruleButtonIsClicked = !!currentNode?.dataset?.ruleTarget;
       }
     }
     if (ruleButtonIsClicked && automationRules) {
