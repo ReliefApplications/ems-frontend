@@ -399,11 +399,10 @@ export class FormHelpersService {
     } else if (options.question.getType() === 'html') {
       const wrapper = document.createElement('div');
       wrapper.classList.add('flex', 'items-center');
-      options.htmlElement.parentNode?.insertBefore(
-        wrapper,
-        options.htmlElement
-      );
-      wrapper.appendChild(options.htmlElement);
+      const htmlQuestion = options.htmlElement.querySelector('.sd-html');
+      if (!htmlQuestion) return;
+      htmlQuestion.parentNode?.insertBefore(wrapper, htmlQuestion);
+      wrapper.appendChild(htmlQuestion);
       createTooltip(wrapper);
     }
   }
