@@ -34,6 +34,7 @@ export interface GridActions {
   add?: boolean;
   export?: boolean;
   showDetails?: boolean;
+  showDetailsLabel?: string;
   navigateToPage?: boolean;
   navigateSettings?: {
     field: string;

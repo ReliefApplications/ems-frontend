@@ -8,7 +8,8 @@
       [look]="'flat'"
       (click)="action.emit({ action: 'details', items: item })"
       [uiTooltip]="
-        'components.widget.settings.grid.actions.details' | translate
+        actions.showDetailsLabel ||
+          'components.widget.settings.grid.actions.details.text' | translate
       "
     ></button>
 
@@ -18,7 +19,7 @@
       icon="edit"
       [look]="'flat'"
       (click)="action.emit({ action: 'update', item: item })"
-      [uiTooltip]="'common.update' | translate"
+      [uiTooltip]="actions.updateLabel || 'common.update' | translate"
     ></button>
 
     <button
@@ -27,7 +28,7 @@
       icon="clock-arrow-rotate"
       [look]="'flat'"
       (click)="action.emit({ action: 'history', item: item })"
-      [uiTooltip]="'common.history' | translate"
+      [uiTooltip]="actions.historyLabel || 'common.history' | translate"
     ></button>
 
     <button
@@ -36,7 +37,7 @@
       icon="connector"
       [look]="'flat'"
       (click)="action.emit({ action: 'convert', item: item })"
-      [uiTooltip]="'models.record.convert' | translate"
+      [uiTooltip]="actions.convertLabel || 'models.record.convert' | translate"
     ></button>
 
     <button
@@ -45,7 +46,7 @@
       icon="trash"
       [look]="'flat'"
       (click)="action.emit({ action: 'delete', item: item })"
-      [uiTooltip]="'common.delete' | translate"
+      [uiTooltip]="actions.deleteLabel || 'common.delete' | translate"
     ></button>
 
     <button
@@ -71,7 +72,8 @@
         })
       "
       [uiTooltip]="
-        'components.widget.settings.grid.actions.copyLink.text' | translate
+        actions.navigateSettings?.copyLinkLabel ||
+          'components.widget.settings.grid.actions.copyLink.text' | translate
       "
     ></button>
   </div>
@@ -104,7 +106,7 @@
       uiMenuItem
       (click)="action.emit({ action: 'details', items: item })"
     >
-      {{ 'components.widget.settings.grid.actions.details' | translate }}
+      {{ 'components.widget.settings.grid.actions.details.text' | translate }}
       <div id="details-action-label"></div>
     </button>
 
@@ -115,9 +117,9 @@
       (click)="action.emit({ action: 'update', item: item })"
     >
       {{
-        actions.updateLabel ?
-        actions.updateLabel :
-        'common.update' | translate
+        actions.updateLabel
+          ? actions.updateLabel
+          : ('common.update' | translate)
       }}
       <div id="update-action-label"></div>
     </button>
@@ -128,9 +130,9 @@
       (click)="action.emit({ action: 'history', item: item })"
     >
       {{
-        actions.historyLabel ?
-        actions.historyLabel :
-        'common.history' | translate
+        actions.historyLabel
+          ? actions.historyLabel
+          : ('common.history' | translate)
       }}
       <div id="history-action-label"></div>
     </button>
@@ -141,9 +143,9 @@
       (click)="action.emit({ action: 'convert', item: item })"
     >
       {{
-        actions.convertLabel ?
-        actions.convertLabel :
-        'models.record.convert' | translate
+        actions.convertLabel
+          ? actions.convertLabel
+          : ('models.record.convert' | translate)
       }}
       <div id="convert-action-label"></div>
     </button>
@@ -154,9 +156,9 @@
       (click)="action.emit({ action: 'delete', item: item })"
     >
       {{
-        actions.deleteLabel ?
-        actions.deleteLabel :
-        'common.delete' | translate
+        actions.deleteLabel
+          ? actions.deleteLabel
+          : ('common.delete' | translate)
       }}
       <div id="delete-action-label"></div>
     </button>
@@ -183,9 +185,10 @@
       "
     >
       {{
-        actions.navigateSettings?.copyLinkLabel ?
-        actions.navigateSettings?.copyLinkLabel :
-        'components.widget.settings.grid.actions.copyLink.text' | translate
+        actions.navigateSettings?.copyLinkLabel
+          ? actions.navigateSettings?.copyLinkLabel
+          : ('components.widget.settings.grid.actions.copyLink.text'
+            | translate)
       }}
       <div id="copy-field-action-label"></div>
     </button>

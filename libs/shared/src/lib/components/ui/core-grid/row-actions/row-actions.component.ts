@@ -73,4 +73,7 @@ export class GridRowActionsComponent {
         ACTIONS_TRANSLATIONS[action as (typeof rowActions)[number]],
     }));
   }
+
+  /** Component for grid row actions */
+  constructor() {}
 }

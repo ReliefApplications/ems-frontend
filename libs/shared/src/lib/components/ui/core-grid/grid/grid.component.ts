@@ -103,8 +103,6 @@ export class GridComponent
   @Input() hasChanges = false;
   /** Input decorator for fields. */
   @Input() fields: any[] = [];
-  /** Input decorator the the action column width */
-  @Input() actionsWidth = 54;
   /** Input decorator for data. */
   @Input() data: GridDataResult = { data: [], total: 0 };
   /** Input decorator for loadingRecords. */
@@ -243,6 +241,8 @@ export class GridComponent
   private closeEditorListener!: any;
   /** A boolean indicating if actions are enabled */
   public hasEnabledActions = false;
+  /** Action column width */
+  public actionsWidth = 56;
   /** Reference to the column chooser element */
   private columnChooserRef: PopupRef | null = null;
 
@@ -1287,7 +1287,7 @@ export class GridComponent
    * Set actions column size when action as icon
    */
   private setActionsColumnSize() {
-    const ICON_SIZE = 35;
+    const ICON_SIZE = 30;
 
     const size =
       ICON_SIZE *
@@ -1300,9 +1300,17 @@ export class GridComponent
         this.widget?.settings?.actions?.remove,
         this.widget?.settings?.actions?.navigateToPage,
       ].filter((action) => action).length;
-    console.log(size);
+
     if (!this.widget?.settings?.widgetDisplay?.actionsAsIcons) {
-      if (size > 0) {
+      // User checked "Show single action as button" and there is only one action
+      if (
+        this.widget.settings.widgetDisplay.showSingleActionAsButton &&
+        size === ICON_SIZE
+      ) {
+        // TODO: Figure out how to get the width of the button
+        this.actionsWidth = 100;
+      } else if (size > 0) {
+        // Show three dots menu
         this.actionsWidth = 56;
       }
 
@@ -1310,7 +1318,7 @@ export class GridComponent
     }
 
     if (size) {
-      this.actionsWidth = size + 10;
+      this.actionsWidth = size + 24;
     }
   }
 }

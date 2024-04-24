@@ -267,6 +267,7 @@ export const createGridActionsFormGroup = (configuration: any) => {
       get(configuration, 'actions.automaticallyMapView', false),
     ],
     showDetails: [get(configuration, 'actions.showDetails', true)],
+    showDetailsLabel: [get(configuration, 'actions.showDetailsLabel', '')],
     navigateToPage: [get(configuration, 'actions.navigateToPage', false)],
     navigateSettings: fb.group({
       pageUrl: [get(configuration, 'actions.navigateSettings.pageUrl', '')],

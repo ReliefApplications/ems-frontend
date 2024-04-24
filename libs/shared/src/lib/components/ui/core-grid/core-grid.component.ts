@@ -309,6 +309,7 @@ export class CoreGridComponent
     convertLabel: '',
     export: this.showExport,
     showDetails: true,
+    showDetailsLabel: '',
     navigateToPage: false,
     navigateSettings: {
       field: '',
@@ -444,6 +445,7 @@ export class CoreGridComponent
       convertLabel: get(this.settings, 'actions.convertLabel', ''),
       export: get(this.settings, 'actions.export', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
+      showDetailsLabel: get(this.settings, 'actions.showDetailsLabel', ''),
       navigateToPage: get(this.settings, 'actions.navigateToPage', false),
       navigateSettings: {
         field: get(this.settings, 'actions.navigateSettings.field', false),

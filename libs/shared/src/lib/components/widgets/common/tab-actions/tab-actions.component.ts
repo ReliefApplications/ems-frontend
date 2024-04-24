@@ -35,6 +35,14 @@ export class TabActionsComponent
   /** Grid actions */
   public actions = [
     {
+      name: 'showDetails',
+      text: 'components.widget.settings.grid.actions.showDetails',
+      tooltip: 'components.widget.settings.grid.hint.actions.showDetails',
+      editLabel: true,
+      label: 'components.widget.settings.grid.actions.details.label',
+      placeholder: 'components.widget.settings.grid.actions.details.text',
+    },
+    {
       name: 'delete',
       text: 'components.widget.settings.grid.actions.delete.text',
       tooltip: 'components.widget.settings.grid.hint.actions.delete',
@@ -82,11 +90,7 @@ export class TabActionsComponent
       text: 'components.widget.settings.grid.actions.export',
       tooltip: 'components.widget.settings.grid.hint.actions.export',
     },
-    {
-      name: 'showDetails',
-      text: 'components.widget.settings.grid.actions.showDetails',
-      tooltip: 'components.widget.settings.grid.hint.actions.showDetails',
-    },
+
     {
       name: 'mapSelected',
       text: 'components.widget.settings.grid.actions.mapSelected',
