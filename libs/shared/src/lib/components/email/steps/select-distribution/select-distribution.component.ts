@@ -15,13 +15,10 @@ import { SnackbarService } from '@oort-front/ui';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
-/**
- *
- */
+/** Current Distribution list items page size (for pagination) */
 const DISTRIBUTION_PAGE_SIZE = 5;
-/**
- * Select Distribution component.
- */
+
+/** Select Distribution component. */
 @Component({
   selector: 'app-select-distribution',
   templateUrl: './select-distribution.component.html',

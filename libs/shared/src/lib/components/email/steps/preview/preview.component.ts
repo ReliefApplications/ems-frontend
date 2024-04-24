@@ -14,10 +14,8 @@ import { Subscription } from 'rxjs';
 export class PreviewComponent implements OnInit, OnDestroy {
   /** Selected resource ID. -TO DELETE? */
   public selectedResourceId: string | undefined = '653642baa37293bb1706506e';
-
   /** List of data items. -TO DELETE? */
   public dataList!: { [key: string]: string }[];
-
   /** List of keys for data items. -TO DELETE? */
   public dataListKey!: { [key: string]: string }[];
   /** HEADER LOGO FILE SRC STRING */
@@ -37,7 +35,6 @@ export class PreviewComponent implements OnInit, OnDestroy {
   /** FOOTER HTML STRING */
   public footerString: string | any =
     this.emailService.allLayoutdata.footerHtml;
-
   /** Subscription for query. */
   private querySubscription: Subscription | null = null;
 

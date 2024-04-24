@@ -18,6 +18,10 @@ import { RestService } from '../../services/rest/rest.service';
   providedIn: 'root',
 })
 export class EmailService {
+  /** INDEX OF CURRENT DATASET BLOCK */
+  public index = new BehaviorSubject(null);
+  /** DATASET BLOCK TITLE */
+  public title = new BehaviorSubject<string>('');
   /** EMAIL NOTIFICATION DATA */
   public datasetsForm!: FormGroup;
   /** EMAIL RESOURCE NAME ID */
