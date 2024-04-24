@@ -10,6 +10,7 @@ import { Apollo } from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { RestService } from '../../services/rest/rest.service';
+import { TYPE_LABEL } from './filter/filter.constant';
 
 /**
  * Helper functions for emails template
@@ -982,7 +983,7 @@ export class EmailService {
               return field.name === key;
             }).type;
 
-            if (fieldType === 'tagbox') {
+            if (fieldType !== TYPE_LABEL.resources) {
               result[key] = record[key];
             } else {
               // Takes the resources count and maps it to the resource name.
