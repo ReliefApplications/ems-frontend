@@ -289,46 +289,49 @@ export class PreviewComponent implements OnInit, OnDestroy {
   formatInLastString(minutes: number): string {
     const currentDate = new Date();
     // Multiplied by 60000 to convert minutes to milliseconds (to match getTime)
-    const currentDateUTC = new Date(
-      currentDate.getTime() + currentDate.getTimezoneOffset() * 60000
-    );
 
     // Current date offset by minutes param
-    const pastDateUTC = new Date(currentDateUTC.getTime() - minutes * 60000);
+    const pastDate = new Date(currentDate.getTime() - minutes * 60000);
 
     // Past Date in date format (mm/dd/yyyy)
-    const formattedPastDate = pastDateUTC.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: '2-digit',
+    const formattedPastDate = pastDate.toLocaleDateString('en-US', {
+      timeZone: 'UTC',
+      month: 'numeric',
+      day: 'numeric',
+      year: '2-digit',
     });
 
     // Past Date in time format (hh:mm)
-    const formattedPastTime = pastDateUTC.toLocaleTimeString('en-US', {
-      hour: '2-digit',
+    const formattedPastTime = pastDate.toLocaleTimeString('en-US', {
+      timeZone: 'UTC',
+      timeZoneName: 'short',
+      hour: 'numeric',
       minute: '2-digit',
     });
 
     // Current Date in date format (mm/dd/yyyy)
-    const formattedCurrentDate = currentDateUTC.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: '2-digit',
+    const formattedCurrentDate = currentDate.toLocaleDateString('en-US', {
+      timeZone: 'UTC',
+      month: 'numeric',
+      day: 'numeric',
+      year: '2-digit',
     });
 
     // Current Date in time format (hh:mm)
-    const formattedCurrentTime = currentDateUTC.toLocaleTimeString('en-US', {
-      hour: '2-digit',
+    const formattedCurrentTime = currentDate.toLocaleTimeString('en-US', {
+      timeZone: 'UTC',
+      timeZoneName: 'short',
+      hour: 'numeric',
       minute: '2-digit',
     });
 
     // If minutes is greater than a week then set past time as current time
     const minutesInAWeek = 7 * 24 * 60;
     if (minutes > minutesInAWeek) {
-      return `From ${formattedPastDate} ${formattedCurrentTime} UTC as of ${formattedCurrentDate} ${formattedCurrentTime} UTC`;
+      return `From ${formattedPastDate} ${formattedCurrentTime} as of ${formattedCurrentDate} ${formattedCurrentTime}`;
     }
 
-    return `From ${formattedPastDate} ${formattedPastTime} UTC as of ${formattedCurrentDate} ${formattedCurrentTime} UTC`;
+    return `From ${formattedPastDate} ${formattedPastTime} as of ${formattedCurrentDate} ${formattedCurrentTime}`;
   }
 
   /**
