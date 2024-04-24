@@ -591,7 +591,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @returns filter fields form.
    */
   getNewFilterFields(filter: any): FormGroup {
-    console.log(filter);
     return this.formBuilder.group({
       field: filter.field,
       operator: filter.operator,

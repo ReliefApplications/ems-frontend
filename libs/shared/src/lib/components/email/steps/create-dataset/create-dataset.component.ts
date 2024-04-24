@@ -182,14 +182,6 @@ export class CreateDatasetComponent implements OnInit {
   }
 
   /**
-   * Dynamic Form Submission
-   */
-  onSubmit(): void {
-    const finalResponse = this.dataSetFormGroup.value;
-    console.log('Final Response', finalResponse);
-  }
-
-  /**
    * Adds a tab
    */
   public addTab() {

@@ -266,8 +266,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
           this.emailService.sendSeparateEmail()
         )
         .subscribe(
-          (response) => {
-            console.log('Email sent successfully:', response);
+          () => {
             this.emailService.isEdit = false;
             this.emailService.editId = '';
             this.snackBar.openSnackBar(

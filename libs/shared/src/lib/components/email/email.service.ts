@@ -779,10 +779,10 @@ export class EmailService {
   }
 
   /**
-   * persisting the state of the boolean variable for sending separete emails
+   * persisting the state of the boolean variable for sending separate emails
    *
    * @param index - dataset index
-   * @returns binded variable between service and dist list component
+   * @returns Bound variable between service and dist list component
    */
   updateSeparateEmail(index: number): boolean {
     const datasetArray = this.datasetsForm?.get('dataSets') as FormArray;
@@ -791,7 +791,7 @@ export class EmailService {
   }
 
   /**
-   * persisting the state of the boolean variable for sending separete emails
+   * persisting the state of the boolean variable for sending separate emails
    *
    * @param separateEmail - boolean value for checkbox
    * @param index - dataset index

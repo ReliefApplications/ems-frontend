@@ -645,7 +645,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
    */
   onEditorContentChange(): void {
     const bodyHtml = this.layoutForm.get('body')?.value;
-    console.log(bodyHtml);
     let isUndefined = !bodyHtml;
     if (bodyHtml) {
       isUndefined =
