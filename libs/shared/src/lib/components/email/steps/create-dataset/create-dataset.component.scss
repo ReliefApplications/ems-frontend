@@ -18,41 +18,43 @@
 }
 
 ::ng-deep .k-tabstrip-items .k-item:not(:last-child) {
-  background-color: #FCFCFD !important;
+  background-color: #fcfcfd !important;
 }
 
 ::ng-deep .k-tabstrip-items .k-item:not(:last-child):hover,
 ::ng-deep .k-tabstrip-items .k-item:not(:last-child):focus,
-::ng-deep .k-tabstrip-items .k-item:not(:last-child).k-state-default.k-state-active {
+::ng-deep
+  .k-tabstrip-items
+  .k-item:not(:last-child).k-state-default.k-state-active {
   border-bottom: 2px solid #717171 !important;
-  background-color: #F5FAFF !important;
+  background-color: #f5faff !important;
 }
 
 ::ng-deep .k-tabstrip-items .k-item.k-state-active {
-  border-bottom: 2px solid #2E90FA !important;
-  background-color: #F5FAFF !important;
+  border-bottom: 2px solid #2e90fa !important;
+  background-color: #f5faff !important;
 }
 
-::ng-deep .k-tabstrip-items-wrapper, ::ng-deep .ng-trigger-state.k-content.k-active {
+::ng-deep .k-tabstrip-items-wrapper,
+::ng-deep .ng-trigger-state.k-content.k-active {
   border: none;
   overflow-x: hidden;
 }
 
 ::ng-deep .k-tabstrip-top {
   > .k-tabstrip-items-wrapper {
-
-      .k-item:active,
-      .k-item.k-active {
-        margin-bottom: 0px !important;
-        border-bottom-width: 2px !important;
-        border-bottom-color: #2E90FA !important;
-      }
+    .k-item:active,
+    .k-item.k-active {
+      margin-bottom: 0px !important;
+      border-bottom-width: 2px !important;
+      border-bottom-color: #2e90fa !important;
+    }
   }
 }
 
 ::ng-deep .k-tabstrip-items-wrapper {
   .k-item.k-state-active::after {
-    border-color: #2E90FA !important;
+    border-color: #2e90fa !important;
   }
 
   .k-item:focus {
@@ -63,24 +65,25 @@
 ::ng-deep .k-tabstrip-items .k-item {
   border: none;
   border-bottom: 2px solid;
-  border-color: #2E90FA !important;
+  border-color: #2e90fa !important;
 }
 
-::ng-deep .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked {
-  background-color: #80c6e4 !important;  // #1a67bb !important;
+::ng-deep
+  .ng-dropdown-panel
+  .ng-dropdown-panel-items
+  .ng-option.ng-option-marked {
+  background-color: #80c6e4 !important; // #1a67bb !important;
   color: white !important;
 }
 
-#previewLabel{
+#previewLabel {
   font-family: 'Source Sans Pro', sans-serif;
-  border: 3px solid #00205C;
-  background-color: #00205C;
-  color: #FFF;
+  border: 3px solid #00205c;
+  background-color: #00205c;
+  color: #fff;
   font-style: normal;
   font-weight: 700;
 }
-
-
 
 :host button > * {
   pointer-events: none;
@@ -274,6 +277,6 @@ button.ui-button-icon:disabled {
   border: 1px solid red;
   border-radius: 5px;
   .ng-select-container {
-      border: transparent !important;
+    border: transparent !important;
   }
 }

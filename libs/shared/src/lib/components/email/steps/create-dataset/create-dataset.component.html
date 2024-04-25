@@ -1,22 +1,30 @@
 <form class="" [formGroup]="dataSetFormGroup">
   <div class="text-left">
-    <div class="tab-container" style="width: 100%;">
+    <div class="tab-container" style="width: 100%">
       <!-- Block Tabs -->
-      <kendo-tabstrip #kendoStrip formArrayName="dataSets" (tabSelect)="changeTab($event.index, $event)">
-        <ng-container *ngIf="showPreview === false" >
-          <kendo-tabstrip-tab *ngFor="let tab of tabs; let tabIndex = index" [title]="tab.title" [selected]="tab.active">
+      <kendo-tabstrip
+        #kendoStrip
+        formArrayName="dataSets"
+        (tabSelect)="changeTab($event.index, $event)"
+      >
+        <ng-container *ngIf="showPreview === false">
+          <kendo-tabstrip-tab
+            *ngFor="let tab of tabs; let tabIndex = index"
+            [title]="tab.title"
+            [selected]="tab.active"
+          >
             <ng-template kendoTabTitle>
               <div class="flex gap-5 justify-between items-center">
                 <span>{{ tab.title }}</span>
                 <ui-button
-                    [variant]="'danger'"
-                    class="hide-icons hover:text-primary-600"
-                    [isIcon]="true"
-                    size="large"
-                    (click)="deleteTab(tabIndex, $event)"
-                    [icon]="'delete'"
-                    [uiTooltip]="'common.archive.delete' | translate"
-                  >
+                  [variant]="'danger'"
+                  class="hide-icons hover:text-primary-600"
+                  [isIcon]="true"
+                  size="large"
+                  (click)="deleteTab(tabIndex, $event)"
+                  [icon]="'delete'"
+                  [uiTooltip]="'common.archive.delete' | translate"
+                >
                 </ui-button>
               </div>
               <!-- <ui-button
@@ -30,94 +38,115 @@
                   >
                 </ui-button> -->
               <ng-template [formGroupName]="tabIndex" kendoTabContent>
-                <shared-dataset-filter [query]="datasetsFormArray.controls[tabIndex]" [queryValue]="datasetsFormArray.value" (changeMainTab)="changeTab($event)"
-                  (navigateToPreview)="bindPreviewTbl($event)" [activeTab]="activeTab" [tabs]="tabs"></shared-dataset-filter>
+                <shared-dataset-filter
+                  [query]="datasetsFormArray.controls[tabIndex]"
+                  [queryValue]="datasetsFormArray.value"
+                  (changeMainTab)="changeTab($event)"
+                  (navigateToPreview)="bindPreviewTbl($event)"
+                  [activeTab]="activeTab"
+                  [tabs]="tabs"
+                ></shared-dataset-filter>
               </ng-template>
             </ng-template>
-            <ng-template kendoTabTitle>
-
-            </ng-template>
+            <ng-template kendoTabTitle> </ng-template>
           </kendo-tabstrip-tab>
         </ng-container>
-        <kendo-tabstrip-tab *ngIf="!showPreview"  id="addIcon" class="add-block" >
-          <ng-template kendoTabTitle >
-            <ui-button  
-            class="hide-icons hover:text-primary-600"
-            [isIcon]="true"
-            size="large"
-            (click)="addTab()"
-            [icon]="'add'"
-            [uiTooltip]="'common.toolTip.newBlock' | translate"
-          >
-        </ui-button>
+        <kendo-tabstrip-tab *ngIf="!showPreview" id="addIcon" class="add-block">
+          <ng-template kendoTabTitle>
+            <ui-button
+              class="hide-icons hover:text-primary-600"
+              [isIcon]="true"
+              size="large"
+              (click)="addTab()"
+              [icon]="'add'"
+              [uiTooltip]="'common.toolTip.newBlock' | translate"
+            >
+            </ui-button>
           </ng-template>
         </kendo-tabstrip-tab>
 
         <!-- Preview Tab -->
-      <kendo-tabstrip-tab *ngIf="showPreview === true" [selected]="showPreview === true" id="previewTab">
-        <ng-template kendoTabTitle>
-          {{ 'common.preview' | translate }}
-        </ng-template>
-
-      <ng-template kendoTabContent>
-        <div>
-          <ng-container *ngFor="let previewData of allPreviewData; let preIndex = index">
-            <div class="flex flex-col items-center w-9/10 mx-auto">
-                <label
-                  id="previewLabel"
-                  class="block text-left pl-5 p-2 shadow-none text-sm w-full">
-                  {{ previewData?.tabName }}
-                </label>
-              <div style="width: 100%; overflow-x: auto;">
-                <table
-              *ngIf="previewData?.dataList?.length"
-              class="w-full border-collapse border border-gray-300 shadow-xs"
-            >
-              <thead class="bg-[#00205C] text-white">
-                <tr>
-                  <ng-container *ngFor="let fieldKeyString of previewData?.dataSetFields">
-                    <th
-                      class="text-center p-2"
-                    >
-                      {{ this.emailService.replaceUnderscores(fieldKeyString) | titlecase }}
-                    </th>
-                  </ng-container>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  *ngFor="let data of previewData?.dataList"
-                  class="border-t border-gray-300 bg-white"
-                >
-                  <ng-container *ngFor="let fieldKeyString of previewData?.dataSetFields">
-                    <td
-                      class="p-2 text-center"
-                    >
-                      {{ data[fieldKeyString] }}
-                    </td>
-                  </ng-container>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-          <label class="block text-gray-700 text-sm" *ngIf="previewData?.dataList?.length === 0">
-            no data found
-          </label>
-          <br>
-          </ng-container>
-        </div>
-
-        <button
-          type="button"
-          (click)="showPreview=false"
-          class="bg-sky-600 float-right hover:bg-sky-700 text-white ml-3 px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
+        <kendo-tabstrip-tab
+          *ngIf="showPreview === true"
+          [selected]="showPreview === true"
+          id="previewTab"
         >
-          {{ 'common.back' | translate }}
-        </button>
-      </ng-template>
+          <ng-template kendoTabTitle>
+            {{ 'common.preview' | translate }}
+          </ng-template>
 
-      </kendo-tabstrip-tab>
+          <ng-template kendoTabContent>
+            <div>
+              <ng-container
+                *ngFor="let previewData of allPreviewData; let preIndex = index"
+              >
+                <div class="flex flex-col items-center w-9/10 mx-auto">
+                  <label
+                    id="previewLabel"
+                    class="block text-left pl-5 p-2 shadow-none text-sm w-full"
+                  >
+                    {{ previewData?.tabName }}
+                  </label>
+                  <div style="width: 100%; overflow-x: auto">
+                    <table
+                      *ngIf="previewData?.dataList?.length"
+                      class="w-full border-collapse border border-gray-300 shadow-xs"
+                    >
+                      <thead class="bg-[#00205C] text-white">
+                        <tr>
+                          <ng-container
+                            *ngFor="
+                              let fieldKeyString of previewData?.dataSetFields
+                            "
+                          >
+                            <th class="text-center p-2">
+                              {{
+                                this.emailService.replaceUnderscores(
+                                  fieldKeyString
+                                ) | titlecase
+                              }}
+                            </th>
+                          </ng-container>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          *ngFor="let data of previewData?.dataList"
+                          class="border-t border-gray-300 bg-white"
+                        >
+                          <ng-container
+                            *ngFor="
+                              let fieldKeyString of previewData?.dataSetFields
+                            "
+                          >
+                            <td class="p-2 text-center">
+                              {{ data[fieldKeyString] }}
+                            </td>
+                          </ng-container>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <label
+                  class="block text-gray-700 text-sm"
+                  *ngIf="previewData?.dataList?.length === 0"
+                >
+                  no data found
+                </label>
+                <br />
+              </ng-container>
+            </div>
+
+            <button
+              type="button"
+              (click)="showPreview = false"
+              class="bg-sky-600 float-right hover:bg-sky-700 text-white ml-3 px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
+            >
+              {{ 'common.back' | translate }}
+            </button>
+          </ng-template>
+        </kendo-tabstrip-tab>
       </kendo-tabstrip>
     </div>
   </div>

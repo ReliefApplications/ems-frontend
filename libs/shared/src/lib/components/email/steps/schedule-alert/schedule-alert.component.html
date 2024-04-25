@@ -1,194 +1,196 @@
 <div *ngIf="true">
-<div class="mt-2 text-gray-700 text-xs gap-1 flex items-end" style="font-weight: 500;">
- 
-  <ui-checkbox 
-      [(ngModel)]="schedule_alert" [disabled]="true"
+  <div
+    class="mt-2 text-gray-700 text-xs gap-1 flex items-end"
+    style="font-weight: 500"
+  >
+    <ui-checkbox [(ngModel)]="schedule_alert" [disabled]="true">
+      <ng-container ngProjectAs="label">No Schedule Alert</ng-container>
+    </ui-checkbox>
+  </div>
+  <div *ngIf="!schedule_alert">
+    <div class="mt-2 h-6 w-96">
+      <ul class="flex bg-gray-50 flex-wrap -mb-px">
+        <li class="me-2">
+          <a
+            href="#"
+            class="inline-block p-3 border-b-2 font-bold text-xs border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-800"
+            >Daily
+          </a>
+        </li>
+
+        <li class="me-2">
+          <a
+            href="#"
+            class="inline-block p-3 text-blue-600 border-b-2 font-bold text-xs border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
+            aria-current="page"
+            >Weekly</a
+          >
+        </li>
+        <li class="me-2">
+          <a
+            href="#"
+            class="inline-block p-3 border-b-2 font-bold text-xs border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+            >Monthly</a
+          >
+        </li>
+        <li class="me-2">
+          <a
+            href="#"
+            class="inline-block p-3 border-b-2 font-bold text-xs border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+            >Yearly</a
+          >
+        </li>
+        <li class="me-2">
+          <a
+            href="#"
+            class="inline-block p-3 border-b-2 font-bold text-xs border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+            >Custom
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="mt-7">
+      <label
+        htmlFor="exampleSelect"
+        class="block text-gray-700 font-bold mt-2 text-sm"
       >
-       <ng-container ngProjectAs="label">No Schedule Alert</ng-container>
-      </ui-checkbox>
- 
-</div>
-<div *ngIf="!schedule_alert">
-  <div class="mt-2 h-6 w-96">
-    <ul class="flex bg-gray-50 flex-wrap -mb-px">
-      <li class="me-2">
-        <a
-          href="#"
-          class="inline-block p-3 border-b-2 font-bold text-xs border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-800"
-          >Daily
-        </a>
-      </li>
-  
-      <li class="me-2">
-        <a
-          href="#"
-          class="inline-block p-3 text-blue-600 border-b-2 font-bold text-xs border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
-          aria-current="page"
-          >Weekly</a
-        >
-      </li>
-      <li class="me-2">
-        <a
-          href="#"
-          class="inline-block p-3 border-b-2 font-bold text-xs border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-          >Monthly</a
-        >
-      </li>
-      <li class="me-2">
-        <a
-          href="#"
-          class="inline-block p-3 border-b-2 font-bold text-xs border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-          >Yearly</a
-        >
-      </li>
-      <li class="me-2">
-        <a
-          href="#"
-          class="inline-block p-3 border-b-2 font-bold text-xs border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-          >Custom
-        </a>
-      </li>
-    </ul>
+        Every*
+      </label>
+    </div>
+
+    <div class="mt-2 flex gap-1">
+      <button
+        class="mt-1 text-xs text-left block w-10 py-2 px-2 font-bold border border-gray-300 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+      >
+        Mon
+      </button>
+      <button
+        class="mt-1 text-xs text-left block w-10 py-2 px-2 font-bold border border-blue-500 bg-gray-100 rounded-tl-md rounded-md shadow-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+      >
+        Tue
+      </button>
+      <button
+        class="mt-1 text-xs text-left block w-10 py-2 px-2 font-bold border border-gray-300 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+      >
+        Wed
+      </button>
+      <button
+        class="mt-1 text-xs text-left block w-10 py-2 px-2 font-bold border border-gray-300 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+      >
+        Thu
+      </button>
+      <button
+        class="mt-1 text-xs text-left block w-10 py-2 px-2 font-bold border border-gray-300 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+      >
+        Fri
+      </button>
+      <button
+        class="mt-1 text-xs text-left block w-10 py-2 px-2 font-bold border border-gray-300 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+      >
+        Sat
+      </button>
+      <button
+        class="mt-1 text-xs text-left block w-10 py-2 px-2 font-bold border border-gray-300 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+      >
+        Sun
+      </button>
+    </div>
+
+    <div class="mt-4">
+      <label
+        htmlFor="exampleSelect"
+        class="block text-gray-700 font-bold text-xs"
+      >
+        Select Time
+      </label>
+      <button
+        class="mt-1 text-xs text-left block w-64 py-2 px-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+      >
+        <div class="flex gap-6">
+          <div class="">00</div>
+          <div class="">:</div>
+
+          <div class="">00</div>
+          <div class="">:</div>
+          <div class="ml-12">PM</div>
+        </div>
+      </button>
+    </div>
   </div>
-  
-  <div class="mt-7">
-    <label
-      htmlFor="exampleSelect"
-      class="block text-gray-700 font-bold mt-2 text-sm"
-    >
-      Every*
-    </label>
-  </div>
-  
-  <div class="mt-2 flex gap-1">
-    <button
-      class="mt-1 text-xs text-left block w-10 py-2 px-2 font-bold border border-gray-300 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-    >
-      Mon
-    </button>
-    <button
-      class="mt-1 text-xs text-left block w-10 py-2 px-2 font-bold border border-blue-500 bg-gray-100 rounded-tl-md rounded-md shadow-lg focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-    >
-      Tue
-    </button>
-    <button
-      class="mt-1 text-xs text-left block w-10 py-2 px-2 font-bold border border-gray-300 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-    >
-      Wed
-    </button>
-    <button
-      class="mt-1 text-xs text-left block w-10 py-2 px-2 font-bold border border-gray-300 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-    >
-      Thu
-    </button>
-    <button
-      class="mt-1 text-xs text-left block w-10 py-2 px-2 font-bold border border-gray-300 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-    >
-      Fri
-    </button>
-    <button
-      class="mt-1 text-xs text-left block w-10 py-2 px-2 font-bold border border-gray-300 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-    >
-      Sat
-    </button>
-    <button
-      class="mt-1 text-xs text-left block w-10 py-2 px-2 font-bold border border-gray-300 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-    >
-      Sun
-    </button>
-  </div>
-  
-  <div class="mt-4">
-    <label htmlFor="exampleSelect" class="block text-gray-700 font-bold text-xs">
-      Select Time
-    </label>
-    <button
-      class="mt-1 text-xs text-left block w-64 py-2 px-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-    >
-      <div class="flex gap-6">
-        <div class="">00</div>
-        <div class="">:</div>
-  
-        <div class="">00</div>
-        <div class="">:</div>
-        <div class="ml-12">PM</div>
-      </div>
-    </button>
-  </div>
-  </div>
-  
+
   <div *ngIf="false">
-  <h1>4th step schedule alert</h1>
-  <div class="mt-2 h-6 w-96">
-    <ul class="flex bg-gray-50 flex-wrap -mb-px">
-      <li class="me-2">
-        <a
-          href="#"
-          class="inline-block p-3 border-b-2 font-bold text-xs border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-800"
-          >Daily
-        </a>
-      </li>
-  
-      <li class="me-2">
-        <a
-          href="#"
-          class="inline-block p-3 border-b-2 font-bold text-xs border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-          >Weekly
-        </a>
-      </li>
-      <li class="me-2">
-        <a
-          href="#"
-          class="inline-block p-3 border-b-2 font-bold text-xs border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-          >Monthly</a
-        >
-      </li>
-      <li class="me-2">
-        <a
-          href="#"
-          class="inline-block p-3 border-b-2 font-bold text-xs border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-          >Yearly</a
-        >
-      </li>
-  
-      <li class="me-2">
-        <a
-          href="#"
-          class="inline-block p-3 text-blue-600 border-b-2 font-bold text-xs border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
-          aria-current="page"
-          >Custom</a
-        >
-      </li>
-    </ul>
-  </div>
-  <body class="p-8 w-96 ml-12">
-    <div class="mx-auto bg-white p-6 rounded-md shadow-md">
+    <h1>4th step schedule alert</h1>
+    <div class="mt-2 h-6 w-96">
+      <ul class="flex bg-gray-50 flex-wrap -mb-px">
+        <li class="me-2">
+          <a
+            href="#"
+            class="inline-block p-3 border-b-2 font-bold text-xs border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-800"
+            >Daily
+          </a>
+        </li>
+
+        <li class="me-2">
+          <a
+            href="#"
+            class="inline-block p-3 border-b-2 font-bold text-xs border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+            >Weekly
+          </a>
+        </li>
+        <li class="me-2">
+          <a
+            href="#"
+            class="inline-block p-3 border-b-2 font-bold text-xs border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+            >Monthly</a
+          >
+        </li>
+        <li class="me-2">
+          <a
+            href="#"
+            class="inline-block p-3 border-b-2 font-bold text-xs border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+            >Yearly</a
+          >
+        </li>
+
+        <li class="me-2">
+          <a
+            href="#"
+            class="inline-block p-3 text-blue-600 border-b-2 font-bold text-xs border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500"
+            aria-current="page"
+            >Custom</a
+          >
+        </li>
+      </ul>
+    </div>
+    <body class="p-8 w-96 ml-12">
+      <div class="mx-auto bg-white p-6 rounded-md shadow-md">
+        <input
+          type="date"
+          id="start_date"
+          name="start_date"
+          class="mt-1 p-2 border rounded-md w-28"
+        />
+        --
+
+        <input
+          type="date"
+          id="end_date"
+          name="end_date"
+          class="mt-1 p-2 border rounded-md w-28"
+        />
+      </div>
+    </body>
+    <div class="mx-auto p-6">
+      <label for="timePicker" class="block text-sm font-medium text-gray-600"
+        >Select Time:</label
+      >
       <input
-        type="date"
-        id="start_date"
-        name="start_date"
-        class="mt-1 p-2 border rounded-md w-28"
-      />
-      --
-  
-      <input
-        type="date"
-        id="end_date"
-        name="end_date"
-        class="mt-1 p-2 border rounded-md w-28"
+        type="time"
+        id="timePicker"
+        name="timePicker"
+        class="mt-1 p-2 border rounded-md w-64"
       />
     </div>
-  </body>
-  <div class="mx-auto p-6">
-    <label for="timePicker" class="block text-sm font-medium text-gray-600"
-      >Select Time:</label
-    >
-    <input
-      type="time"
-      id="timePicker"
-      name="timePicker"
-      class="mt-1 p-2 border rounded-md w-64"
-    />
-  </div>
   </div>
 </div>

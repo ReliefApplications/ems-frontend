@@ -1,15 +1,25 @@
 <div class="w-full">
   <!-- Subject -->
-  <p>{{'components.email.preview.subject' | translate}}</p>
+  <p>{{ 'components.email.preview.subject' | translate }}</p>
   <div id="subjectHtml" class="w-full"></div>
 </div>
 <div [style]="getEmailStyle('container')">
   <!-- Banner Images -->
-  <img *ngIf="bannerImage" id="bannerImage" [src]="bannerImage" [style]="getEmailStyle('bannerImage')">
+  <img
+    *ngIf="bannerImage"
+    id="bannerImage"
+    [src]="bannerImage"
+    [style]="getEmailStyle('bannerImage')"
+  />
 
   <!-- Header -->
   <div id="header" [style]="getEmailStyle('header')">
-    <img id="headerLogo" *ngIf="headerLogo" [src]="headerLogo" [style]="getEmailStyle('headerLogo')">
+    <img
+      id="headerLogo"
+      *ngIf="headerLogo"
+      [src]="headerLogo"
+      [style]="getEmailStyle('headerLogo')"
+    />
     <div id="headerHtml" [style]="getEmailStyle('headerHtml')"></div>
   </div>
 
@@ -18,11 +28,15 @@
 
   <!-- Footer -->
   <div [style]="getEmailStyle('footer')">
-    <img id="footerImg" [src]="footerLogo" [style]="getEmailStyle('footerImg')"/>
+    <img
+      id="footerImg"
+      [src]="footerLogo"
+      [style]="getEmailStyle('footerImg')"
+    />
     <div id="footerHtml" [style]="getEmailStyle('footerHtml')"></div>
   </div>
   <!-- Copyright -->
   <div [style]="getEmailStyle('copyright')">
-    {{ 'common.copyright.who' | translate}}
+    {{ 'common.copyright.who' | translate }}
   </div>
 </div>

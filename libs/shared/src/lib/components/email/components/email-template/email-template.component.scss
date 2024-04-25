@@ -1,7 +1,7 @@
 .btnDataSet {
   border-radius: 8px;
-  border: 1px solid var(--Gray-300, #D0D5DD);
-  background: var(--Base-White, #FFF);
+  border: 1px solid var(--Gray-300, #d0d5dd);
+  background: var(--Base-White, #fff);
   /* Shadow/xs */
   box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
   width: fit-content;
@@ -11,21 +11,21 @@
 
 ::ng-deep .dataset-preview {
   border-width: 1px !important;
-  border-color: rgb(228 228 228/ var(--tw-border-opacity)) !important;
+  border-color: rgb(228 228 228 / var(--tw-border-opacity)) !important;
   thead {
     font-family: inherit;
     font-size: 14px;
   }
   tbody {
     font-family: inherit;
-    font-size: 14px
+    font-size: 14px;
   }
   .bg-blue-600 {
     background-color: rgb(17 37 91 / var(--tw-bg-opacity)) !important;
   }
 
   .border-blue-600 {
-    border-color: rgb(228 228 228/ var(--tw-border-opacity)) !important;
+    border-color: rgb(228 228 228 / var(--tw-border-opacity)) !important;
   }
 
   .text-blue-600 {
@@ -43,14 +43,20 @@
   td:nth-child(1) {
     padding-left: 20px;
   }
-  tr:nth-child(even) { background: #f8f8f8 }
-  tr:nth-child(odd) { background: white }
-  .border { border-width: 0px !important ;}
+  tr:nth-child(even) {
+    background: #f8f8f8;
+  }
+  tr:nth-child(odd) {
+    background: white;
+  }
+  .border {
+    border-width: 0px !important ;
+  }
 }
-.hint-text{
+.hint-text {
   color: #ff0000;
-    font-size: 14px;
-    padding: 5px 0;
+  font-size: 14px;
+  padding: 5px 0;
 }
 
 .input-error {
@@ -60,75 +66,80 @@
     border: transparent !important;
   }
 
-    &:focus-within {
-      --tw-ring-color: #ff0000;
-      --tw-ring-offset-shadow: var(--tw-ring-inset)  0  0  0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-      --tw-ring-shadow: var(--tw-ring-inset)  0  0  0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-      box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow,  0  0 #0000);
-    }
+  &:focus-within {
+    --tw-ring-color: #ff0000;
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
+      var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
+      calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+      var(--tw-shadow, 0 0 #0000);
+  }
 
-    &:focus {
-      --tw-ring-color: #ff0000;
-      --tw-ring-offset-shadow: var(--tw-ring-inset)  0  0  0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-      --tw-ring-shadow: var(--tw-ring-inset)  0  0  0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-      box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow,  0  0 #0000);
-    }
+  &:focus {
+    --tw-ring-color: #ff0000;
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
+      var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
+      calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+      var(--tw-shadow, 0 0 #0000);
+  }
 }
 
 .dl-segment-button {
   display: flex;
 
   .segment {
-      border: 1px solid #269ed1;
-      padding: 5px 10px;
-      cursor: pointer;
-      color: #269ed1;
+    border: 1px solid #269ed1;
+    padding: 5px 10px;
+    cursor: pointer;
+    color: #269ed1;
 
-      &:first-child {
-          border-top-left-radius: 15px;
-          border-bottom-left-radius: 15px;
-          border-right: transparent;
-      }
+    &:first-child {
+      border-top-left-radius: 15px;
+      border-bottom-left-radius: 15px;
+      border-right: transparent;
+    }
 
-      &:last-child {
-          border-top-right-radius: 15px;
-          border-bottom-right-radius: 15px;
-          border-left: transparent;
-      }
+    &:last-child {
+      border-top-right-radius: 15px;
+      border-bottom-right-radius: 15px;
+      border-left: transparent;
+    }
 
-      &.active {
-          background:#269ed1;
-          color: #FFF;
-      }
+    &.active {
+      background: #269ed1;
+      color: #fff;
+    }
 
-      &:hover {
-        background-color: #008dc9;
-        color: #FFF;
-      }
+    &:hover {
+      background-color: #008dc9;
+      color: #fff;
+    }
   }
 }
 .email-chips {
   padding: 2px 20px;
-    font-size: 14px;
-    border: 1px solid #0000005c;
-    background: #FFF;
+  font-size: 14px;
+  border: 1px solid #0000005c;
+  background: #fff;
 }
 
 .button-wrapper {
   display: flex;
-    justify-content: flex-end;
-    padding: 20px;
-    button {
-      height: 40px;
+  justify-content: flex-end;
+  padding: 20px;
+  button {
+    height: 40px;
     background: #269ed1;
     padding: 5px 10px;
     border-radius: 5px;
-    color: #FFF;
-    }
+    color: #fff;
+  }
 }
 
-
-.loadingSign{
+.loadingSign {
   display: none;
   width: 100%;
   justify-content: center;

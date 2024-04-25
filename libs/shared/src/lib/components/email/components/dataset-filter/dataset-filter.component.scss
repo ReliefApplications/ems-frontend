@@ -14,7 +14,6 @@ button.disabled-button {
   cursor: not-allowed;
 }
 
-
 .field-box {
   padding: 20px 10px;
   @apply border-b-zinc-200 bg-white border-b border-solid;
@@ -41,7 +40,7 @@ button.disabled-button {
 }
 
 .clsFilters {
-    align-items: flex-end;
+  align-items: flex-end;
 }
 
 ::ng-deep .k-tabstrip > .k-content {
@@ -50,8 +49,8 @@ button.disabled-button {
 
 .btnDataSet {
   border-radius: 8px;
-  border: 1px solid var(--Gray-300, #D0D5DD);
-  background: var(--Base-White, #FFF);
+  border: 1px solid var(--Gray-300, #d0d5dd);
+  background: var(--Base-White, #fff);
   /* Shadow/xs */
   box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
   width: fit-content;
@@ -60,25 +59,31 @@ button.disabled-button {
 }
 
 div .form-error {
-  border:  1px solid red;
+  border: 1px solid red;
   outline-color: red;
   .ng-select-container {
     border: transparent !important;
   }
 
-    &:focus-within {
-      --tw-ring-color: #ff0000;
-      --tw-ring-offset-shadow: var(--tw-ring-inset)  0  0  0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-      --tw-ring-shadow: var(--tw-ring-inset)  0  0  0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-      box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow,  0  0 #0000);
-    }
+  &:focus-within {
+    --tw-ring-color: #ff0000;
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
+      var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
+      calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+      var(--tw-shadow, 0 0 #0000);
+  }
 
-    &:focus {
-      --tw-ring-color: #ff0000;
-      --tw-ring-offset-shadow: var(--tw-ring-inset)  0  0  0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-      --tw-ring-shadow: var(--tw-ring-inset)  0  0  0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-      box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow,  0  0 #0000);
-    }
+  &:focus {
+    --tw-ring-color: #ff0000;
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
+      var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
+      calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+      var(--tw-shadow, 0 0 #0000);
+  }
 }
 
 .divScroll {
@@ -270,7 +275,7 @@ button.ui-button-icon:disabled {
   @apply text-neutral-400 bg-opacity-20;
 }
 ::ng-deep .stepper-center {
-    .ng-select.ng-select-single .ng-select-container {
+  .ng-select.ng-select-single .ng-select-container {
     height: 37.6px;
   }
 
@@ -307,33 +312,39 @@ button.ui-button-icon:disabled {
     padding-bottom: 0rem;
   }
 }
-.max-limit-note{
+.max-limit-note {
   padding: 15px 10px;
-    border: 1px solid #53514d59;
-    background: #ffab0082;
-    margin: 20px 0;
-    border-radius: 5px;
+  border: 1px solid #53514d59;
+  background: #ffab0082;
+  margin: 20px 0;
+  border-radius: 5px;
 }
 .btn-width {
   width: fit-content !important;
 }
 
 ::ng-deep .stepper-center {
-  .ng-select.ng-select-opened>.ng-select-container {
-    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) rgb(38 158 209);
-    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  .ng-select.ng-select-opened > .ng-select-container {
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
+      var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
+      calc(2px + var(--tw-ring-offset-width)) rgb(38 158 209);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+      var(--tw-shadow, 0 0 #0000);
   }
 }
 
-::ng-deep .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected  {
+::ng-deep
+  .ng-dropdown-panel
+  .ng-dropdown-panel-items
+  .ng-option.ng-option-selected {
   color: white !important;
   background-color: #4dafd9 !important;
 }
 
 ::ng-deep .ng-select-container {
   cursor: pointer !important;
-  input{
+  input {
     cursor: pointer !important;
   }
 }
