@@ -663,6 +663,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       );
     } else if (this.layoutForm.get('body')?.touched) {
       if (isUndefined) {
+        console.log('touched');
         this.showBodyValidator = true;
         this.snackbar.openSnackBar(
           this.translate.instant('common.notifications.email.errors.noBody'),

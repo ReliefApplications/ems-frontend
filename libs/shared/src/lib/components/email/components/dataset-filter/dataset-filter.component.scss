@@ -121,6 +121,12 @@ div .form-error {
   }
 }
 
+::ng-deep .dataset-filter{
+  .k-disabled:hover{
+    pointer-events: visiblePainted !important ;
+  }
+}
+
 .ui-button-icon {
   &.primary {
     @apply rounded-full shadow-sm;
