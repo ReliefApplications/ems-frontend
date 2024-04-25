@@ -1,13 +1,13 @@
 <div class="w-full">
   <!-- Distribution List -->
-  <div class="distribution-list mb-4">
-      <label class="text-lg font-semibold mb-2">{{ 'common.distributionList.one' | translate }}</label>
-      <p class="text-sm">{{ this.emailService.recipients.distributionListName }}</p>
+  <div class="mb-4">
+    <h2>{{ 'components.email.distributionList.name' | translate }}</h2>
+    <p>{{ this.emailService.recipients.distributionListName }}</p>
   </div>
 
   <!-- To -->
-  <div class="email-list mb-4">
-    <label class="text-lg font-semibold mb-2">{{ 'components.select.distribution.to' | translate }}:</label>
+  <div class="mb-4">
+    <h2>{{ 'components.select.distribution.to' | translate }}:</h2>
     <ul class="list-none space-y-1">
       <div uiChipList>
         <ng-container *ngFor="let email of this.emailService.recipients.To; let i = index">
@@ -20,8 +20,8 @@
   </div>
 
   <!-- CC -->
-  <div class="email-list mb-4">
-    <label class="text-lg font-semibold mb-2">{{ 'components.select.distribution.cc' | translate }}:</label>
+  <div *ngIf="this.emailService.recipients.Cc.length > 0" class="mb-4">
+    <h2>{{ 'components.select.distribution.cc' | translate }}:</h2>
     <ul class="list-none space-y-1">
       <div uiChipList>
         <ng-container *ngFor="let email of this.emailService.recipients.Cc; let i = index">
@@ -34,8 +34,8 @@
   </div>
 
   <!-- BCC -->
-  <div class="email-list mb-4">
-    <label class="text-lg font-semibold mb-2">{{ 'components.select.distribution.bcc' | translate }}:</label>
+  <div *ngIf="this.emailService.recipients.Bcc.length > 0" class="mb-4">
+    <h2>{{ 'components.select.distribution.bcc' | translate }}:</h2>
     <ul class="list-none space-y-1">
       <div uiChipList>
         <ng-container *ngFor="let email of this.emailService.recipients.Bcc; let i = index">

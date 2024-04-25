@@ -824,6 +824,7 @@
 					"upload": "Télécharger la liste de diffusion"
 				},
 				"list": "Liste de distribution",
+				"name": "Nom de la liste de distribution",
 				"to": "À"
 			},
 			"image": {

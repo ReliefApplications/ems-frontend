@@ -818,6 +818,7 @@
 					"upload": "Upload Email List"
 				},
 				"list": "Distribution List",
+				"name": "Distribution List name",
 				"to": "To"
 			},
 			"image": {
