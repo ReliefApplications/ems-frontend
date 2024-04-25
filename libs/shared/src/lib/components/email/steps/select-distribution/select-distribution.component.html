@@ -11,27 +11,27 @@
       />
     </div>
     <ui-button
-      class="float-right"
-      icon="download"
-      category="secondary"
-      variant="primary"
-      uiTooltip="Download Template"
-      (click)="downloadDistributionListTemplate()"
-    >
-      {{ 'components.email.distributionList.import.download' | translate }}
-    </ui-button>
-    <!-- Email List Template Button -->
-    <ui-button
-      class="float-right import"
-      icon="cloud_download"
-      category="secondary"
-      variant="primary"
-      uiTooltip="Upload Email List"
-      (click)="fileUpload.click()"
-    >
-      {{ 'components.email.distributionList.import.name' | translate }}
-    </ui-button>
-    <br />
+        class="float-right"
+        icon="download"
+        category="secondary"
+        variant="primary"
+        uiTooltip="'components.email.distributionList.import.download' | translate"
+        (click)="downloadDistributionListTemplate()"
+      >
+      {{'components.email.distributionList.import.download' | translate}}
+      </ui-button>
+      <!-- Email List Template Button -->
+      <ui-button
+        class="float-right import"
+        icon="cloud_download"
+        category="secondary"
+        variant="primary"
+        uiTooltip="'components.email.distributionList.import.upload' | translate"
+        (click)="fileUpload.click()"
+      >
+      {{'components.email.distributionList.import.name' | translate}}
+      </ui-button>
+      <br>
   </div>
   <div class="flex gap-4" *ngIf="!showExistingDistributionList">
     <div class="mt-4 w-1/3">
@@ -77,34 +77,8 @@
       {{ 'common.notifications.email.existing' | translate }}
     </p>
   </div>
-  <ui-alert
-    class="mb-4"
-    variant="warning"
-    *ngIf="
-      recipients?.distributionListName?.length === 0 ||
-      recipients?.To?.length === 0
-    "
-  >
-    To proceed, please enter
-    <strong
-      *ngIf="
-        recipients?.distributionListName?.length === 0 ||
-        recipients?.distributionListName?.trim() === ''
-      "
-    >
-      a distribution list name</strong
-    >
-    <strong
-      *ngIf="
-        (recipients?.To?.length === 0 &&
-          recipients?.distributionListName?.length === 0) ||
-        recipients?.distributionListName?.trim() === ''
-      "
-    >
-      and </strong
-    ><strong *ngIf="recipients?.To?.length === 0"
-      >at least one recipient email address</strong
-    >.
+  <ui-alert class="mb-4" variant="warning" *ngIf="recipients?.distributionListName?.length === 0 || recipients?.To?.length === 0">
+    {{'components.email.distributionList.alert.partOne' | translate}} <strong *ngIf="recipients?.distributionListName?.length === 0 || recipients?.distributionListName?.trim() === '' "> {{'components.email.distributionList.alert.partTwo' | translate}}</strong> <strong *ngIf="recipients?.To?.length === 0 && recipients?.distributionListName?.length === 0 || recipients?.distributionListName?.trim() === ''"> {{'components.email.distributionList.alert.and' | translate}} </strong><strong *ngIf="recipients?.To?.length === 0">{{'components.email.distributionList.alert.partThree' | translate}}</strong>.
   </ui-alert>
   <!-- Existing Distribution List -->
   <div *ngIf="showExistingDistributionList">
@@ -198,15 +172,7 @@
         ></ui-icon
       ></span>
     </div>
-    <shared-email-template
-      [existingId]="this.distributionListId"
-      (emailLoad)="to($event)"
-      (listChange)="validateDistributionList()"
-      [emailBackLoad]="recipients.To"
-      [emailFilter]="toEmailFilter"
-      *ngIf="showToTemplate && templateFor === 'to'"
-      >To</shared-email-template
-    >
+    <shared-email-template [existingId]="this.distributionListId" (emailLoad)="to($event)" (listChange)="validateDistributionList()" [emailBackLoad]="recipients.To" [emailFilter]="toEmailFilter" *ngIf="showToTemplate">{{ 'components.email.distributionList.to' | translate}}</shared-email-template>
 
     <!-- CC dropdown -->
     <div
@@ -231,15 +197,7 @@
         ></ui-icon
       ></span>
     </div>
-    <shared-email-template
-      [existingId]="this.distributionListId"
-      (emailLoad)="cc($event)"
-      (listChange)="validateDistributionList()"
-      [emailBackLoad]="recipients.Cc"
-      [emailFilter]="ccEmailFilter"
-      *ngIf="showCCTemplate && templateFor === 'cc'"
-      >cc</shared-email-template
-    >
+    <shared-email-template [existingId]="this.distributionListId" (emailLoad)="cc($event)" (listChange)="validateDistributionList()" [emailBackLoad]="recipients.Cc" [emailFilter]="ccEmailFilter" *ngIf="showCCTemplate">{{ 'components.email.distributionList.cc' | translate}}</shared-email-template>
 
     <!-- BCC dropdown -->
     <div
@@ -264,19 +222,9 @@
         ></ui-icon
       ></span>
     </div>
-    <shared-email-template
-      [existingId]="this.distributionListId"
-      (emailLoad)="bcc($event)"
-      (listChange)="validateDistributionList()"
-      [emailBackLoad]="recipients.Bcc"
-      [emailFilter]="bccEmailFilter"
-      *ngIf="showBccTemplate && templateFor === 'bcc'"
-      >bcc</shared-email-template
-    >
+    <shared-email-template [existingId]="this.distributionListId" (emailLoad)="bcc($event)" (listChange)="validateDistributionList()" [emailBackLoad]="recipients.Bcc" [emailFilter]="bccEmailFilter" *ngIf="showBccTemplate">{{ 'components.email.distributionList.bcc' | translate}}</shared-email-template>
   </div>
   <div class="use-existing" *ngIf="showExistingDistributionList">
-    <p (click)="showExistingDistributionList = !showExistingDistributionList">
-      Or Create New
-    </p>
+    <p (click)="showExistingDistributionList = !showExistingDistributionList" >{{'components.email.distributionList.createNew' | translate}}</p>
   </div>
 </div>

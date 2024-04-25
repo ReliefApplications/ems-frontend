@@ -800,14 +800,25 @@
 		},
 		"email": {
 			"distributionList": {
+				"alert": {
+					"and": "and",
+					"partOne": "To proceed, please enter",
+					"partThree": "at least one recipient email address",
+					"partTwo": "a distribution list name"
+				},
+				"bcc": "BCC",
+				"cc": "CC",
+				"createNew": "Or Create New",
 				"duplicate": "Title already exists",
 				"import": {
 					"download": "Download Template",
 					"loading": "Importing file...",
 					"name": "Import",
-					"success": "Import Successful"
+					"success": "Import Successful",
+					"upload": "Upload Email List"
 				},
-				"list": "Distribution List"
+				"list": "Distribution List",
+				"to": "To"
 			},
 			"image": {
 				"rectangleValidation": "Please upload an image with a more rectangular aspect ratio, similar to 960x80.",

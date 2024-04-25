@@ -800,14 +800,25 @@
 		},
 		"email": {
 			"distributionList": {
+				"alert": {
+					"and": "******",
+					"partOne": "******",
+					"partThree": "******",
+					"partTwo": "******"
+				},
+				"bcc": "******",
+				"cc": "******",
+				"createNew": "******",
 				"duplicate": "******",
 				"import": {
 					"download": "******",
 					"loading": "******",
 					"name": "******",
-					"success": "******"
+					"success": "******",
+					"upload": "******"
 				},
-				"list": "******"
+				"list": "******",
+				"to": "******"
 			},
 			"image": {
 				"rectangleValidation": "******",
