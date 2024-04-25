@@ -697,20 +697,30 @@
       </ng-template>
     </kendo-tabstrip-tab>
     <!-- Style Tab -->
-    <kendo-tabstrip-tab  *ngIf="showPreview === false" [disabled]="true" class="custom-btn">
+    <kendo-tabstrip-tab [disabled]="true">
       <ng-template kendoTabTitle >
+        <div >
+          {{ 'components.queryBuilder.style.title' | translate }}
+        </div>
+      </ng-template>
+      <ng-template kendoTabContent>
+      </ng-template>
+    </kendo-tabstrip-tab>
+    <kendo-tabstrip-tab>
+      <ng-template >
         <div uiTooltip="Disabled">
           {{ 'components.queryBuilder.style.title' | translate }}
         </div>
       </ng-template>
-      <ng-template kendoTabContent> </ng-template>
+
     </kendo-tabstrip-tab>
+
+
+
   </kendo-tabstrip>
-  <div
-    *ngIf="query?.value?.resource !== null && !resource?.fields?.length"
-    class="mt-5"
-  >
-    {{ showErrorMessage }}
+
+  <div *ngIf="query?.value?.resource !== null && !resource?.fields?.length" class="mt-5">
+    {{showErrorMessage}}
   </div>
 </form>
 <ng-template #datasetAlert>
