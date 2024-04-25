@@ -1,5 +1,4 @@
 @import 'variables.scss';
-@import url('https://unpkg.com/@progress/kendo-theme-bootstrap@latest/dist/all.css');
 
 // Declaration of Kendo variables
 $kendo-border-radius: 2px;
@@ -98,8 +97,8 @@ If you need to add a new component, you should uncomment there the related impor
 // @import "@progress/kendo-theme-default/scss/expansion-panel/_index.scss";
 // @import "@progress/kendo-theme-default/scss/panelbar/_index.scss";
 // @import "@progress/kendo-theme-default/scss/splitter/_index.scss";
-// @import "@progress/kendo-theme-default/scss/stepper/_index.scss";
-// @import "@progress/kendo-theme-default/scss/tabstrip/_index.scss";
+@import "@progress/kendo-theme-default/scss/stepper/_index.scss";
+@import "@progress/kendo-theme-default/scss/tabstrip/_index.scss";
 @import '@progress/kendo-theme-default/scss/tilelayout/_index.scss';
 
 // kendo-angular-listbox
