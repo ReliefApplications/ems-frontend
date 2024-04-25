@@ -10,6 +10,7 @@ import { Apollo } from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { RestService } from '../../services/rest/rest.service';
+import { TYPE_LABEL } from './filter/filter.constant';
 
 /**
  * Helper functions service for emails template.
@@ -982,11 +983,19 @@ export class EmailService {
               }
             });
           } else {
-            // Takes the resources count and maps it to the resource name.
-            result[key] =
-              record[key].length > 1
-                ? `${record[key].length} items`
-                : `${record[key].length} item`;
+            const fieldType = query.fields.find((field: any) => {
+              return field.name === key;
+            }).type;
+
+            if (fieldType !== TYPE_LABEL.resources) {
+              result[key] = record[key];
+            } else {
+              // Takes the resources count and maps it to the resource name.
+              result[key] =
+                record[key].length > 1
+                  ? `${record[key].length} items`
+                  : `${record[key].length} item`;
+            }
           }
         } else {
           if (
