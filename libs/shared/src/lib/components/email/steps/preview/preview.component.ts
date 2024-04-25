@@ -37,8 +37,11 @@ export class PreviewComponent implements OnInit, OnDestroy {
     this.emailService.allLayoutdata.footerHtml;
   /** Subscription for query. */
   private querySubscription: Subscription | null = null;
+  /** Expand for "To" list items. */
   isExpandedTo = false;
+  /** Expand for "CC" list items. */
   isExpandedCc = false;
+  /** Expand for "BCC" list items. */
   isExpandedBcc = false;
 
   /**
