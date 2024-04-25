@@ -66,14 +66,10 @@
         </kendo-tabstrip-tab>
 
         <!-- Preview Tab -->
-        <kendo-tabstrip-tab
-          *ngIf="showPreview === true"
-          [selected]="showPreview === true"
-          id="previewTab"
-        >
-          <ng-template kendoTabTitle>
-            {{ 'common.preview' | translate }}
-          </ng-template>
+      <kendo-tabstrip-tab *ngIf="showPreview === true" [selected]="showPreview === true" [disabled]="true" id="previewTab">
+        <ng-template kendoTabTitle>
+          {{ 'common.preview' | translate }}
+        </ng-template>
 
           <ng-template kendoTabContent>
             <div>

@@ -67,21 +67,17 @@
         </ng-template>
       </ng-select>
     </div>
-    <div
-      class="text-gray-700 text-xs gap-1 flex items-end w-1/3"
-      style="font-weight: 500"
-    >
+    <!-- <div class="text-gray-700 text-xs gap-1 flex items-end w-1/3" style="font-weight: 500;">
       <ui-checkbox
-        formControlName="individualEmail"
-        [(ngModel)]="separateEmail"
-        (change)="onChangeSeparateEmail()"
-        [disabled]="true"
+      formControlName="individualEmail"
+      [(ngModel)]="separateEmail" (change)="onChangeSeparateEmail()"
+      [disabled]="true"
       >
         <ng-container ngProjectAs="label">{{
           'components.select.distribution.separateEmail' | translate
         }}</ng-container>
       </ui-checkbox>
-    </div>
+    </div> -->
     <div class="w-1/3 flex loadingSign">
       <ui-spinner *ngIf="loading" style="position: relative"></ui-spinner>
     </div>
@@ -614,87 +610,52 @@
                     (click)="selectedFieldIndex = index"
                     [ngClass]="{ 'field-select': selectedFieldIndex === index }"
                   >
-                    {{
-                      this.emailService.replaceUnderscores(
-                        removeUserString(fields.name)
-                      ) | titlecase
-                    }}
-                  </div>
-                </ng-container>
-              </div>
-            </div>
-            <!-- Up and Down buttons -->
-            <div class="flex flex-col items-center justify-center">
-              <!-- Move Selected Field To Top Button -->
-              <button
-                class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1"
-                (click)="moveTop(selectedFieldIndex)"
-              >
-                <ui-icon
-                  class="text-base"
-                  icon="keyboard_double_arrow_up"
-                  variant="default"
-                ></ui-icon>
-              </button>
-              <!-- Move Selected Field Up Button -->
-              <button
-                class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1"
-                (click)="moveUp(selectedFieldIndex)"
-              >
-                <ui-icon
-                  class="text-base"
-                  icon="keyboard_arrow_up"
-                  variant="default"
-                ></ui-icon>
-              </button>
-              <!-- Move Selected Field Down Button -->
-              <button
-                class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1"
-                (click)="moveDown(selectedFieldIndex)"
-              >
-                <ui-icon
-                  class="text-base"
-                  icon="keyboard_arrow_down"
-                  variant="default"
-                ></ui-icon>
-              </button>
-              <!-- Move Selected Field To Bottom Button -->
-              <button
-                class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1"
-                (click)="moveBottom(selectedFieldIndex)"
-              >
-                <ui-icon
-                  class="text-base"
-                  icon="keyboard_double_arrow_down"
-                  variant="default"
-                ></ui-icon>
-              </button>
+                    {{ this.emailService.replaceUnderscores(removeUserString(fields.name)) | titlecase }}
+                </div>
+              </ng-container>
             </div>
           </div>
+          <!-- Up and Down buttons -->
+          <div class="flex flex-col items-center justify-center">
+            <!-- Move Selected Field To Top Button -->
+            <button class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1" (click)="moveTop(selectedFieldIndex)"><ui-icon class="text-base" icon="keyboard_double_arrow_up" variant="default"></ui-icon></button>
+            <!-- Move Selected Field Up Button -->
+            <button class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1" (click)="moveUp(selectedFieldIndex)"><ui-icon class="text-base" icon="keyboard_arrow_up" variant="default"></ui-icon></button>
+            <!-- Move Selected Field Down Button -->
+            <button class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1" (click)="moveDown(selectedFieldIndex)"><ui-icon class="text-base" icon="keyboard_arrow_down" variant="default"></ui-icon></button>
+            <!-- Move Selected Field To Bottom Button -->
+            <button class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1" (click)="moveBottom(selectedFieldIndex)"><ui-icon class="text-base" icon="keyboard_double_arrow_down" variant="default"></ui-icon></button>
+          </div>
+        </div>
+        <div>
+
+        </div>
+        <div class="mt-2">
+
+          <ng-container class="mt-5" *ngTemplateOutlet="selectedFieldAlert"></ng-container>
+        </div>
         </ng-container>
         <button
-          *ngIf="
-            tabs?.length > 1 &&
-            datasetFilterInfo.controls &&
-            activeTab.index !== tabs.length - 1
-          "
-          type="button"
-          (click)="getDataSet('fields')"
-          class="text-white text-sm float-right block mt-2 w-24 rounded-md bg-sky-600 hover:bg-sky-700 px-4 py-2 transition-colors duration-150 ease-in-out btn-width"
-        >
-          {{ 'components.queryBuilder.filter.apply' | translate }}
-        </button>
+        *ngIf="tabs?.length > 1 && datasetFilterInfo.controls && activeTab.index !== tabs.length-1"
+        type="button"
+        [disabled]="selectedFields.length === 0"
+        (click)="getDataSet('fields')"
+        class="text-white text-sm float-right block mt-2 w-24 rounded-md bg-sky-600 hover:bg-sky-700 px-4 py-2 transition-colors duration-150 ease-in-out btn-width"
+      >
+        {{ 'components.queryBuilder.filter.apply' | translate }}
+      </button>
         <button
-          *ngIf="tabs?.length === 1 || activeTab?.index === tabs?.length - 1"
-          type="button"
-          (click)="getDataSet('preview'); showPreview = true"
-          [disabled]="showDatasetLimitWarning"
-          [class.disabled-button]="showDatasetLimitWarning"
-          class="text-white text-sm float-right block mt-2 w-24 rounded-md bg-sky-600 hover:bg-sky-700 px-4 py-2 transition-colors duration-150 ease-in-out"
-        >
-          {{ 'common.preview' | translate }}
-        </button>
-      </ng-template>
+        *ngIf="tabs?.length === 1 || activeTab?.index === tabs?.length-1"
+        type="button"
+        (click)="getDataSet('preview');showPreview=true"
+        [disabled]="showDatasetLimitWarning || selectedFields.length === 0 "
+        [class.disabled-button]="showDatasetLimitWarning || selectedFields.length === 0"
+        class="text-white text-sm float-right block mt-2 w-24 rounded-md bg-sky-600 hover:bg-sky-700 px-4 py-2 transition-colors duration-150 ease-in-out"
+      >
+        {{ 'common.preview' | translate }}
+      </button>
+    </ng-template>
+
     </kendo-tabstrip-tab>
     <!-- Style Tab -->
     <kendo-tabstrip-tab [disabled]="true" *ngIf="showPreview === false">
@@ -713,10 +674,14 @@
 </form>
 <ng-template #datasetAlert>
   <ui-alert variant="warning" *ngIf="showDatasetLimitWarning" [closable]="true">
-    At this moment, we are limited to fetch only 50 records. Based on the
-    provided filter conditions there are
-    <strong>{{ totalMatchingRecords }}</strong> matching records. Kindly add
-    some additional filters to bring the record count less than or equals to 50.
+    At this moment, we are limited to fetch only 50 records.
+    Based on the provided filter conditions there are <strong>{{totalMatchingRecords}}</strong> matching records.
+    Kindly add some additional filters to bring the record count less than or equals to 50.
+  </ui-alert>
+</ng-template>
+<ng-template #selectedFieldAlert>
+  <ui-alert variant="warning" *ngIf="!selectedFields.length" [closable]="true">
+   At least select one field
   </ui-alert>
 </ng-template>
 <ng-template #missingFieldAlert>
