@@ -78,7 +78,7 @@
     </p>
   </div>
   <ui-alert class="mb-4" variant="warning" *ngIf="recipients?.distributionListName?.length === 0 || recipients?.To?.length === 0">
-    {{'components.email.distributionList.alert.partOne' | translate}} <strong *ngIf="recipients?.distributionListName?.length === 0 || recipients?.distributionListName?.trim() === '' "> {{'components.email.distributionList.alert.partTwo' | translate}}</strong> <strong *ngIf="recipients?.To?.length === 0 && recipients?.distributionListName?.length === 0 || recipients?.distributionListName?.trim() === ''"> {{'components.email.distributionList.alert.and' | translate}} </strong><strong *ngIf="recipients?.To?.length === 0">{{'components.email.distributionList.alert.partThree' | translate}}</strong>.
+    {{'components.email.distributionList.alert.partOne' | translate}} <strong *ngIf="recipients?.distributionListName?.length === 0 || recipients?.distributionListName?.trim() === '' "> {{'components.email.distributionList.alert.partTwo' | translate}}</strong> <strong *ngIf="recipients?.To?.length === 0 && (recipients?.distributionListName?.length === 0 || recipients?.distributionListName?.trim() === '')"> {{'components.email.distributionList.alert.and' | translate}} </strong><strong *ngIf="recipients?.To?.length === 0">{{'components.email.distributionList.alert.partThree' | translate}}</strong>.
   </ui-alert>
   <!-- Existing Distribution List -->
   <div *ngIf="showExistingDistributionList">
