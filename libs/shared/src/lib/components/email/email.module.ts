@@ -17,6 +17,7 @@ import {
   AlertModule,
   CheckboxModule,
   DividerModule,
+  FixedWrapperModule,
 } from '@oort-front/ui';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
@@ -93,6 +94,7 @@ import { EmsTemplateComponent } from './components/ems-template/ems-template.com
     AlertModule,
     CheckboxModule,
     DividerModule,
+    FixedWrapperModule,
   ],
   schemas: [NO_ERRORS_SCHEMA],
 })
