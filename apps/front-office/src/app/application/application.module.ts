@@ -11,6 +11,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
+  ChipModule,
   IconModule,
   MenuModule,
   SpinnerModule,
@@ -36,6 +37,7 @@ import {
     SpinnerModule,
     TooltipModule,
     DashboardFilterIconComponent,
+    ChipModule,
   ],
 })
 export class ApplicationModule {}

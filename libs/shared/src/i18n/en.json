@@ -234,6 +234,7 @@
 			"none": "No layout",
 			"one": "Layout"
 		},
+		"legacy": "Legacy",
 		"loading": "Loading",
 		"modifiedOn": "Modified On",
 		"name": "Name",

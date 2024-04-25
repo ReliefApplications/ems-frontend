@@ -170,6 +170,7 @@ export class AppPreviewComponent
               path: './settings/templates',
               icon: 'description',
               visible: true,
+              legacy: true,
             });
           }
           if (ability.can('manage', 'DistributionList')) {
@@ -178,6 +179,7 @@ export class AppPreviewComponent
               path: './settings/distribution-lists',
               icon: 'mail',
               visible: true,
+              legacy: true,
             });
           }
           if (ability.can('manage', 'CustomNotification')) {
