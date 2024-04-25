@@ -1,34 +1,29 @@
 <div
-  class="container mx-auto py-8 flex justify-between"
+  class="flex gap-8 justify-between mb-8 flex-col sm:flex-row"
   *ngIf="emailService.isExisting"
 >
+  <!-- Search text filter -->
   <div
     uiFormFieldDirective
     [defaultMargin]="false"
-    class="p-4 flex max-sm:flex-auto"
+    class="lex max-sm:flex-auto"
   >
     <ui-icon icon="search" uiPrefix></ui-icon>
     <input
-      id="exampleSelect"
       type="text"
       (input)="searchTemplate($event)"
       [placeholder]="'common.placeholder.search' | translate"
-      class="w-64 relative flex py-0.5 px-2rounded-md border-0 items-center"
     />
   </div>
 
-  <div class="p-4">
-    <ui-button
-      class="float-right"
-      icon="add"
-      category="secondary"
-      variant="primary"
-      (click)="toggle(true)"
-    >
-      {{ 'components.email.notification.create' | translate }}
-    </ui-button>
-    <br />
-  </div>
+  <ui-button
+    icon="add"
+    category="secondary"
+    variant="primary"
+    (click)="toggle(true)"
+  >
+    {{ 'components.email.notification.create' | translate }}
+  </ui-button>
 </div>
 
 <div *ngIf="emailService.isExisting">

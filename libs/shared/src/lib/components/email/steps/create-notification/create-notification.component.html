@@ -1,8 +1,3 @@
-<!-- <h1>first step create notification </h1> -->
-<ui-spinner
-  *ngIf="emailService.emailListLoading"
-  class="spinnerCss"
-></ui-spinner>
 <div *ngIf="!emailService.isExisting">
   <div class="flex gap-5" [formGroup]="dataSetFormGroup">
     <div class="mt-4 w-1/3">
@@ -45,3 +40,9 @@
     </div>
   </div>
 </div>
+
+<!-- Loading indicator -->
+<ui-spinner
+  *ngIf="emailService.emailListLoading"
+  class="absolute top-0 bottom-0 left-0 right-0 flex-col items-center"
+></ui-spinner>
