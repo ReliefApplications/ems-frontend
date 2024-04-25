@@ -68,6 +68,10 @@ export class CreateDatasetComponent implements OnInit {
   public showPreview = false;
   /** View child for Kendo Strip. */
   @ViewChild('kendoStrip') kendoStrip: any;
+  /** Dataset Tab Index */
+  filteredTab!: any;
+  /** Tab Title */
+  title!: any;
 
   /**
    * Composite filter group.
