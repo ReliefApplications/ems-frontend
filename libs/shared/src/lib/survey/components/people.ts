@@ -1,4 +1,9 @@
-import { ComponentCollection, SvgRegistry } from 'survey-core';
+import {
+  ComponentCollection,
+  JsonMetadata,
+  Serializer,
+  SvgRegistry,
+} from 'survey-core';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 import { PeopleDropdownComponent } from './people-dropdown/people-dropdown.component';
@@ -32,9 +37,15 @@ export const init = (
       choices: [] as any[],
     },
     onInit: (): void => {
+      const serializer: JsonMetadata = Serializer;
       registerCustomPropertyEditor(
         CustomPropertyGridComponentTypes.applicationsDropdown
       );
+      serializer.addProperty('people', {
+        name: 'placeholder',
+        category: 'general',
+        isLocalizable: true,
+      });
     },
     onAfterRender: async (question: any, el: HTMLElement) => {
       // Hides the tagbox element
@@ -56,12 +67,11 @@ export const init = (
       );
 
       const instance: PeopleDropdownComponent = personDropdown.instance;
-      // Filter by applications
-      instance.applications = question.applications;
-
       // Initial selection
       instance.initialSelectionIDs = selectedPersonIDs;
-
+      if (question.placeholder) {
+        instance.placeholder = question.placeholder;
+      }
       // Updates the question value when the selection changes
       instance.selectionChange.subscribe((value: string[]) => {
         question.value = value;

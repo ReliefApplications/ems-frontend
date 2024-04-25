@@ -34,10 +34,10 @@ export class PeopleDropdownComponent
   extends UnsubscribeComponent
   implements OnInit
 {
-  /** Applications to get people from, if any */
-  @Input() applications?: string[];
   /** IDs of the initial people selection */
   @Input() initialSelectionIDs: string[] = [];
+  /** Placeholder */
+  @Input() placeholder = '';
   /** Selection change emitter */
   @Output() selectionChange = new EventEmitter<string[]>();
   /** Initial selection of people */
