@@ -1,7 +1,3 @@
-<ui-spinner
-  *ngIf="emailService.emailListLoading && emailService.isExisting"
-  class="spinner"
-></ui-spinner>
 <div
   class="container mx-auto py-8 flex justify-between"
   *ngIf="emailService.isExisting"
@@ -172,17 +168,9 @@
         </ng-container>
         <ng-template #emptyTmpl>
           <!-- Empty indicator -->
-          <div class="flex flex-col items-center">
-            <ui-icon
-              [isOutlined]="true"
-              [icon]="'folder_open'"
-              variant="grey"
-              [size]="48"
-            ></ui-icon>
-            <h3 class="mt-2 text-sm font-semibold text-gray-900">
-              {{ 'common.email.notification.none' | translate }}
-            </h3>
-          </div>
+          <shared-empty
+            [title]="'common.customNotification.none' | translate"
+          ></shared-empty>
         </ng-template>
       </div>
     </ui-tab>
@@ -261,3 +249,9 @@
     class="stepper-center"
   ></ems-template>
 </ng-container>
+
+<!-- Loading indicator -->
+<ui-spinner
+  *ngIf="emailService.emailListLoading && emailService.isExisting"
+  class="absolute top-0 bottom-0 left-0 right-0 flex-col items-center"
+></ui-spinner>
