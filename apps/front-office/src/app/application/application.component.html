@@ -49,7 +49,7 @@
     *ngFor="let setting of adminNavItems"
     [routerLink]="setting.path"
     routerLinkActive="text-primary-600 bg-gray-50"
-    class="text-sm font-semibold leading-6"
+    class="text-sm font-semibold leading-6 w-auto"
   >
     <ui-icon variant="grey" [icon]="setting.icon"> </ui-icon>
     {{ setting.name }}
