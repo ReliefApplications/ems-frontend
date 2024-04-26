@@ -489,7 +489,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
       </div>`;
     }
 
-    const theadHtml = previewData.dataSetFields
+    const theadHtml = previewData.datasetFields
       .map(
         (fieldKeyString: any) =>
           `<th style="${this.getTableStyle(
@@ -503,7 +503,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
     const tbodyHtml = previewData.dataList
       .map(
         (data: any) =>
-          `<tr style="${this.getTableStyle('tr')}">${previewData.dataSetFields
+          `<tr style="${this.getTableStyle('tr')}">${previewData.datasetFields
             .map(
               (fieldKeyString: any) =>
                 `<td style="${this.getTableStyle(

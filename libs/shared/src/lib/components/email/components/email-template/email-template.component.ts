@@ -31,7 +31,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class EmailTemplateComponent implements OnInit, OnDestroy {
   /** Data set containing emails and records. */
-  public dataSet?: {
+  public dataset?: {
     emails: string[];
     records: any[];
   };
@@ -55,10 +55,10 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   public selectedDataset: any | undefined = '';
 
   /** Emails in the data set. */
-  public dataSetEmails!: string[];
+  public datasetEmails!: string[];
 
   /** Fields in the data set. */
-  public dataSetFields!: string[];
+  public datasetFields!: string[];
 
   /** Form group for filter query. */
   public filterQuery: FormGroup | any | undefined;
@@ -85,7 +85,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   public isDropdownVisible = false;
 
   /** List of data sets. */
-  public dataSets: any;
+  public datasets: any;
 
   /** Flag to switch between date picker and text expression. */
   public useExpression = false;
@@ -174,13 +174,13 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
       datasetSelect: '',
     });
 
-    this.datasetsForm?.value?.dataSets?.forEach((eleDataset: any) => {
+    this.datasetsForm?.value?.datasets?.forEach((eleDataset: any) => {
       eleDataset.cacheData = {};
     });
 
     this.selectedEmails = this.emailBackLoad;
-    this.dataSets = this.datasetsForm.value.dataSets;
-    this.dataSets?.forEach((ele: any) => {
+    this.datasets = this.datasetsForm.value.datasets;
+    this.datasets?.forEach((ele: any) => {
       ele.blockName = ele.resource.name;
       // ele.name = ele.resource.name;
     });
@@ -279,34 +279,34 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   /**
    * To bind the dataset details
    *
-   * @param dataSet data of the data set
+   * @param dataset data of the data set
    */
-  bindDataSetDetails(dataSet: any): void {
-    if (dataSet === undefined) {
+  bindDataSetDetails(dataset: any): void {
+    if (dataset === undefined) {
       this.dataList = [];
       this.resource = [];
-      this.dataSetFields = [];
+      this.datasetFields = [];
       return;
     }
     if (
-      Object.keys(dataSet?.cacheData).length &&
-      dataSet?.cacheData.dataSetResponse
+      Object.keys(dataset?.cacheData).length &&
+      dataset?.cacheData.datasetResponse
     ) {
       this.loading = true;
       // const { dataList, resource, dataSetFields, dataSetResponse } =
       //   dataSet.cacheData;
 
-      const { dataList, resource, dataSetResponse } = dataSet.cacheData;
+      const { dataList, resource, datasetResponse } = dataset.cacheData;
       this.dataList = dataList;
       this.resource = resource;
-      this.dataSetFields = dataSet.fields.map((ele: any) => ele.name); //dataSetFields;
-      this.dataSet = dataSetResponse;
-      this.dataSetEmails = dataSetResponse?.records
+      this.datasetFields = dataset.fields.map((ele: any) => ele.name); //datasetFields;
+      this.dataset = datasetResponse;
+      this.datasetEmails = datasetResponse?.records
         ?.map((record: { email: string }) => record.email)
         ?.filter(Boolean)
         ?.flat();
-      this.emails = [...this.dataSetEmails];
-      this.emailService.setSelectedDataSet(dataSet);
+      this.emails = [...this.datasetEmails];
+      this.emailService.setSelectedDataSet(dataset);
       this.loading = false;
     } else {
       this.loading = true;
@@ -314,36 +314,36 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
         .query<ResourceQueryResponse>({
           query: GET_RESOURCE,
           variables: {
-            id: dataSet.resource.id,
+            id: dataset.resource.id,
           },
         })
         .subscribe((res) => {
           if (res?.data?.resource) {
             this.resource = res.data?.resource;
-            dataSet.pageSize = 50;
-            this.emailService.fetchDataSet(dataSet).subscribe((res) => {
-              if (res?.data.dataSet) {
-                this.dataSet = res?.data?.dataSet;
-                this.dataSetEmails = res?.data?.dataSet?.emails;
-                this.dataList = res.data?.dataSet?.records;
-                this.dataSetFields = dataSet.fields.map((ele: any) => ele.name);
-                this.emails = [...this.dataSetEmails];
-                dataSet.cacheData.dataSetResponse = this.dataSet;
-                dataSet.cacheData.dataList = this.dataList;
-                dataSet.cacheData.dataSetFields = this.dataSetFields;
-                dataSet.cacheData.resource = this.resource;
+            dataset.pageSize = 50;
+            this.emailService.fetchDataSet(dataset).subscribe((res) => {
+              if (res?.data.dataset) {
+                this.dataset = res?.data?.dataset;
+                this.datasetEmails = res?.data?.dataset?.emails;
+                this.dataList = res.data?.dataset?.records;
+                this.datasetFields = dataset.fields.map((ele: any) => ele.name);
+                this.emails = [...this.datasetEmails];
+                dataset.cacheData.datasetResponse = this.dataset;
+                dataset.cacheData.dataList = this.dataList;
+                dataset.cacheData.datasetFields = this.datasetFields;
+                dataset.cacheData.resource = this.resource;
 
                 //Below if condition is assigning the cachedData to the selected Dataset (Reinitializing)
                 if (
-                  this.datasetsForm.value?.dataSets?.filter(
-                    (x: any) => x.name === dataSet.name
+                  this.datasetsForm.value?.datasets?.filter(
+                    (x: any) => x.name === dataset.name
                   )?.length > 0
                 ) {
-                  this.datasetsForm.value.dataSets.filter(
-                    (x: any) => x.name === dataSet.name
-                  )[0].cacheData = dataSet.cacheData;
+                  this.datasetsForm.value.datasets.filter(
+                    (x: any) => x.name === dataset.name
+                  )[0].cacheData = dataset.cacheData;
                 }
-                this.emailService.setSelectedDataSet(dataSet);
+                this.emailService.setSelectedDataSet(dataset);
               }
               this.loading = false;
             });
@@ -689,7 +689,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
       const { logic } = filterObject;
       let emailsList: string[] | undefined;
       if (logic === 'and') {
-        emailsList = this.dataSet?.records
+        emailsList = this.dataset?.records
           ?.map((data) => {
             if (
               filterObject.filters.every((filter: any) =>
@@ -707,7 +707,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
           })
           ?.filter(Boolean);
       } else if (logic === 'or') {
-        emailsList = this.dataSet?.records
+        emailsList = this.dataset?.records
           ?.map((data) => {
             if (
               filterObject.filters.some(
@@ -747,7 +747,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   clearDatasetSelection(): void {
     this.dataList = [];
     this.resource = [];
-    this.dataSetFields = [];
+    this.datasetFields = [];
     this.filterFields = new FormArray([]);
 
     const filterConditionCount = this.datasetFilterInfo.controls.length;

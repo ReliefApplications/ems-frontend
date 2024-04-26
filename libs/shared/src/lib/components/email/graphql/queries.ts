@@ -237,7 +237,7 @@ export const GET_RESOURCES = gql`
 /** Graphql query for getting data set by filter layout */
 export const GET_DATA_SET = gql`
   query getDataSet($query: JSON!) {
-    dataSet(query: $query) {
+    dataset(query: $query) {
       records
       emails
       totalCount
@@ -259,8 +259,8 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
         node {
           applicationId
           createdAt
-          recipients {
-            distributionListName
+          emailDistributionList {
+            name
             To
             Bcc
             Cc
@@ -280,7 +280,7 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
 export const ADD_EMAIL_NOTIFICATION = gql`
   mutation Mutation($notification: EmailNotificationInputType!) {
     addEmailNotification(notification: $notification) {
-      dataSets {
+      datasets {
         pageSize
         filter
         fields
@@ -304,11 +304,11 @@ export const ADD_EMAIL_NOTIFICATION = gql`
       lastExecution
       name
       notificationType
-      recipients {
-        distributionListName
+      emailDistributionList {
+        name
         To
-        Cc
         Bcc
+        Cc
       }
       recipientsType
       status
@@ -330,7 +330,7 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
     ) {
       createdAt
       createdBy
-      dataSets {
+      datasets {
         fields
         filter
         name
@@ -347,11 +347,11 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
       id
       name
       notificationType
-      recipients {
-        distributionListName
+      emailDistributionList {
+        name
         To
-        Cc
         Bcc
+        Cc
       }
       status
       schedule

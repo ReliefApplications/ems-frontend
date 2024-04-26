@@ -50,12 +50,12 @@
         [class]="{
           'form-error':
             (isNameDuplicate() && !distributionListId) ||
-            !recipients.distributionListName ||
-            recipients.distributionListName.trim() === ''
+            !emailDistributionList.name ||
+            emailDistributionList.name.trim() === ''
         }"
         class="relative flex py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center w-full"
         (change)="validateDistributionList()"
-        [(ngModel)]="recipients.distributionListName"
+        [(ngModel)]="emailDistributionList.name"
         [placeholder]="'common.name' | translate"
       />
       <div
@@ -85,15 +85,15 @@
     class="mb-4"
     variant="warning"
     *ngIf="
-      recipients?.distributionListName?.length === 0 ||
-      recipients?.To?.length === 0
+      emailDistributionList?.name?.length === 0 ||
+      emailDistributionList?.To?.length === 0
     "
   >
     {{ 'components.email.distributionList.alert.partOne' | translate }}
     <strong
       *ngIf="
-        recipients?.distributionListName?.length === 0 ||
-        recipients?.distributionListName?.trim() === ''
+        emailDistributionList?.name?.length === 0 ||
+        emailDistributionList?.name?.trim() === ''
       "
     >
       {{
@@ -102,13 +102,13 @@
     >
     <strong
       *ngIf="
-        recipients?.To?.length === 0 &&
-        (recipients?.distributionListName?.length === 0 ||
-          recipients?.distributionListName?.trim() === '')
+        emailDistributionList?.To?.length === 0 &&
+        (emailDistributionList?.name?.length === 0 ||
+          emailDistributionList?.name?.trim() === '')
       "
     >
       {{ 'components.email.distributionList.alert.and' | translate }} </strong
-    ><strong *ngIf="recipients?.To?.length === 0">{{
+    ><strong *ngIf="emailDistributionList?.To?.length === 0">{{
       'components.email.distributionList.alert.partThree' | translate
     }}</strong
     >.
@@ -126,7 +126,7 @@
                 </span>
               </th>
               <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
-                {{ element.node.recipients.distributionListName }}
+                {{ element.node.emailDistributionList.name }}
               </td>
             </ng-container>
             <ng-container cdkColumnDef="createdBy">
@@ -209,7 +209,7 @@
       [existingId]="this.distributionListId"
       (emailLoad)="to($event)"
       (listChange)="validateDistributionList()"
-      [emailBackLoad]="recipients.To"
+      [emailBackLoad]="emailDistributionList.To"
       [emailFilter]="toEmailFilter"
       *ngIf="showToTemplate"
       >{{
@@ -244,7 +244,7 @@
       [existingId]="this.distributionListId"
       (emailLoad)="cc($event)"
       (listChange)="validateDistributionList()"
-      [emailBackLoad]="recipients.Cc"
+      [emailBackLoad]="emailDistributionList.Cc"
       [emailFilter]="ccEmailFilter"
       *ngIf="showCCTemplate"
       >{{
@@ -279,7 +279,7 @@
       [existingId]="this.distributionListId"
       (emailLoad)="bcc($event)"
       (listChange)="validateDistributionList()"
-      [emailBackLoad]="recipients.Bcc"
+      [emailBackLoad]="emailDistributionList.Bcc"
       [emailFilter]="bccEmailFilter"
       *ngIf="showBccTemplate"
       >{{

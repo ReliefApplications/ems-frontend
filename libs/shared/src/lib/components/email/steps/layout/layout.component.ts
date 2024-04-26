@@ -259,7 +259,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
    * Initialises the in the last dropdown and forms options.
    */
   private initInTheLastDropdown(): void {
-    const blocks = this.emailService.datasetsForm.get('dataSets') as FormArray;
+    const blocks = this.emailService.datasetsForm.get('datasets') as FormArray;
     blocks.controls.forEach((blockFormGroup, index) => {
       const blockName =
         blockFormGroup.get('name')?.value || `Block ${index + 1}`;

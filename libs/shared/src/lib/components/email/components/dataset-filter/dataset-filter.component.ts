@@ -73,9 +73,9 @@ export class DatasetFilterComponent
   /** Metadata of the selected resource. */
   public metaData!: any;
   /** Response of the data set. */
-  public dataSetResponse: any;
+  public datasetResponse: any;
   /** Fields of the data set. */
-  public dataSetFields!: any[];
+  public datasetFields!: any[];
   /** Selected resource ID. */
   public selectedResourceId!: string;
   /** List of data. */
@@ -193,7 +193,7 @@ export class DatasetFilterComponent
         dataList,
         resource,
         operators,
-        dataSetFields,
+        datasetFields,
         selectedFields,
         availableFields,
         filterFields,
@@ -203,7 +203,7 @@ export class DatasetFilterComponent
       this.dataList = dataList;
       this.resource = resource;
       this.operators = operators;
-      this.dataSetFields = dataSetFields;
+      this.datasetFields = datasetFields;
       this.selectedFields = selectedFields;
       this.filterFields = filterFields;
       this.availableFields = availableFields;
@@ -238,11 +238,11 @@ export class DatasetFilterComponent
       dataList: this.dataList,
       resource: this.resource,
       operators: this.operators,
-      dataSetFields: this.dataSetFields,
+      datasetFields: this.datasetFields,
       selectedFields: this.selectedFields,
       availableFields: this.availableFields,
       filterFields: this.filterFields,
-      dataSetResponse: this.dataSetResponse,
+      datasetResponse: this.datasetResponse,
       selectedResourceId: this.selectedResourceId,
     };
     this.query.controls.cacheData.setValue(cacheData);
@@ -1128,7 +1128,7 @@ export class DatasetFilterComponent
           .subscribe(
             (res: any) => {
               this.loading = false;
-              this.totalMatchingRecords = res?.data?.dataSet?.totalCount;
+              this.totalMatchingRecords = res?.data?.dataset?.totalCount;
               if (this.totalMatchingRecords <= 50) {
                 this.datasetPreview.selectTab(1);
                 this.showDatasetLimitWarning = false;
@@ -1194,10 +1194,10 @@ export class DatasetFilterComponent
           query.pageSize = 50;
           this.fetchDataSet(query)
             .pipe(takeUntil(this.destroy$))
-            .subscribe((res: { data: { dataSet: any } }) => {
-              if (res?.data?.dataSet) {
-                this.dataSetResponse = res?.data?.dataSet;
-                this.dataList = res?.data?.dataSet.records?.map(
+            .subscribe((res: { data: { dataset: any } }) => {
+              if (res?.data?.dataset) {
+                this.datasetResponse = res?.data?.dataset;
+                this.dataList = res?.data?.dataset.records?.map(
                   (record: any) => {
                     const flattenedObject = this.emailService.flattenRecord(
                       record,
@@ -1226,8 +1226,8 @@ export class DatasetFilterComponent
                   }
                 );
                 if (this.dataList?.length) {
-                  const tempIndex = res?.data?.dataSet?.tabIndex;
-                  this.dataSetFields = [
+                  const tempIndex = res?.data?.dataset?.tabIndex;
+                  this.datasetFields = [
                     ...new Set(
                       this.queryValue[tempIndex].fields
                         .map((data: any) => data.name)
@@ -1237,11 +1237,11 @@ export class DatasetFilterComponent
                 }
                 allPreviewData.push({
                   dataList: this.dataList,
-                  dataSetFields: this.dataSetFields,
-                  tabIndex: res?.data?.dataSet?.tabIndex,
+                  datasetFields: this.datasetFields,
+                  tabIndex: res?.data?.dataset?.tabIndex,
                   tabName:
-                    res?.data?.dataSet?.tabIndex < this.queryValue.length
-                      ? this.queryValue[res.data.dataSet.tabIndex].name
+                    res?.data?.dataset?.tabIndex < this.queryValue.length
+                      ? this.queryValue[res.data.dataset.tabIndex].name
                       : '',
                 });
                 if (this.tabs.length == allPreviewData.length) {

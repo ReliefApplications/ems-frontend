@@ -27,7 +27,13 @@ import { SelectDistributionComponent } from '../../steps/select-distribution/sel
   styleUrls: ['./ems-template.component.scss'],
 })
 export class EmsTemplateComponent implements OnInit, OnDestroy {
+  /**
+   *
+   */
   @ViewChild(LayoutComponent) layout!: LayoutComponent;
+  /**
+   *
+   */
   @ViewChild(SelectDistributionComponent)
   distribution!: SelectDistributionComponent;
   /** STEPPER */
@@ -43,6 +49,9 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
   public disableActionButton = false;
   /** Email Subject Subscription */
   private disableSub!: Subscription;
+  /**
+   *
+   */
   private disableDraft!: Subscription;
   /** DISABLE Saave As Draft BUTTON */
   public disableSaveAsDraft = false;
@@ -365,7 +374,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
       if (Object.keys(this.emailService.datasetsForm.value).length) {
-        this.emailService.datasetsForm?.value?.dataSets?.forEach(
+        this.emailService.datasetsForm?.value?.datasets?.forEach(
           (data: any) => {
             delete data.cacheData;
           }
@@ -379,7 +388,8 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
             .get('applicationId')
             ?.setValue(res?.id);
           queryData.applicationId = res?.id;
-          queryData.recipients = this.emailService.recipients;
+          queryData.emailDistributionList =
+            this.emailService.emailDistributionList;
         });
         queryData.isDraft = false;
         //For email notification edit operation.
@@ -487,7 +497,8 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
       // eslint-disable-next-line no-empty
     } catch (error: any) {}
     if (this.currentStep === 2) {
-      this.emailService.recipients = this.distribution.recipients;
+      this.emailService.emailDistributionList =
+        this.distribution.emailDistributionList;
       this.emailService.toEmailFilter = this.distribution.toEmailFilter;
       this.emailService.ccEmailFilter = this.distribution.ccEmailFilter;
       this.emailService.bccEmailFilter = this.distribution.bccEmailFilter;
@@ -499,7 +510,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
     this.applicationService.application$.subscribe((res: any) => {
       this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
       queryData.applicationId = res?.id;
-      queryData.recipients = this.emailService.recipients;
+      queryData.emailDistributionList = this.emailService.emailDistributionList;
     });
     queryData.isDraft = true;
     queryData.notificationType =
@@ -567,7 +578,8 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
       this.applicationService.application$.subscribe((res: any) => {
         this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
         queryData.applicationId = res?.id;
-        queryData.recipients = this.emailService.recipients;
+        queryData.emailDistributionList =
+          this.emailService.emailDistributionList;
       });
       queryData.isDraft = false;
       // For email notification edit operation.

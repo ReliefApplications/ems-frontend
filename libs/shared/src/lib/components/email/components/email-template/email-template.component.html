@@ -49,7 +49,7 @@
         name="select__data__set"
         [(ngModel)]="selectedDataset"
         [ngModelOptions]="{ standalone: true }"
-        [items]="dataSets"
+        [items]="datasets"
         bindLabel="blockName"
         [searchable]="true"
         [virtualScroll]="true"
@@ -100,7 +100,7 @@
               (change)="selectAllEmailItems($event)"
             />
           </th>
-          <ng-container *ngFor="let field of dataSetFields">
+          <ng-container *ngFor="let field of datasetFields">
             <th
               class="bg-blue-600 border-white-600 shadow-xs text-white p-2 text-center"
             >
@@ -128,7 +128,7 @@
               *ngIf="selectedItemIndexes.indexOf(i) === -1"
             />
           </td>
-          <ng-container *ngFor="let field of dataSetFields">
+          <ng-container *ngFor="let field of datasetFields">
             <td class="p-2 border border-blue-600 shadow-xs m-1 text-center">
               {{ data[field] }}
             </td>
@@ -225,7 +225,7 @@
                     (ngModelChange)="setField($event, fieldIndex)"
                     formControlName="field"
                   >
-                    <ng-container *ngFor="let fieldDetails of dataSetFields">
+                    <ng-container *ngFor="let fieldDetails of datasetFields">
                       <ui-select-option [value]="fieldDetails">
                         {{
                           this.emailService.replaceUnderscores(fieldDetails)

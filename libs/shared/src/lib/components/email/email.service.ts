@@ -60,6 +60,9 @@ export class EmailService {
   /** Dataset event emitter */
   public datasetSave: EventEmitter<boolean> = new EventEmitter();
   // Disable SaveAsDraft button
+  /**
+   *
+   */
   public disableSaveAsDraft = new BehaviorSubject<boolean>(false);
   /** DISABLE SAVE AND PROCEED BUTTON EMITTER */
   public disableSaveAndProceed = new BehaviorSubject<boolean>(false);
@@ -68,13 +71,13 @@ export class EmailService {
   /** Should show existing distribution list */
   public showExistingDistributionList = false;
   /** Distribution list data */
-  public recipients: {
-    distributionListName: string;
+  public emailDistributionList: {
+    name: string;
     To: string[];
     Cc: string[];
     Bcc: string[];
   } = {
-    distributionListName: '',
+    name: '',
     To: [],
     Cc: [],
     Bcc: [],
@@ -146,7 +149,7 @@ export class EmailService {
   /** Datalist */
   public dataList!: { [key: string]: any }[];
   /** Dataset fields */
-  public dataSetFields!: string[];
+  public datasetFields!: string[];
   /** Email distribution list of names */
   public distributionListNames: string[] = [];
   /** Email notification list of names */
@@ -232,8 +235,8 @@ export class EmailService {
       name: ['', Validators.required],
       notificationType: [null, Validators.required],
       applicationId: [''],
-      dataSets: new FormArray([this.createNewDataSetGroup()]),
-      recipients: this.recipients,
+      datasets: new FormArray([this.createNewDataSetGroup()]),
+      emailDistributionList: this.emailDistributionList,
       emailLayout: this.emailLayout,
       schedule: [''],
     });
@@ -298,10 +301,10 @@ export class EmailService {
   /**
    * Sets the selected data set.
    *
-   * @param dataSet The data set to be selected.
+   * @param dataset The data set to be selected.
    */
-  setSelectedDataSet(dataSet: any): void {
-    this.selectedDataSet = dataSet;
+  setSelectedDataSet(dataset: any): void {
+    this.selectedDataSet = dataset;
   }
 
   /**
@@ -468,7 +471,7 @@ export class EmailService {
       tdStyle: this.defaultTableStyle?.tdStyle,
     };
 
-    this.datasetsForm.get('dataSets')?.get('tableStyle')?.setValue(tableStyles);
+    this.datasetsForm.get('datasets')?.get('tableStyle')?.setValue(tableStyles);
   }
 
   /**
@@ -806,7 +809,7 @@ export class EmailService {
    * @returns Bound variable between service and dist list component
    */
   updateSeparateEmail(index: number): boolean {
-    const datasetArray = this.datasetsForm?.get('dataSets') as FormArray;
+    const datasetArray = this.datasetsForm?.get('datasets') as FormArray;
     const isSeparate = datasetArray?.at(index)?.get('individualEmail')?.value;
     return isSeparate;
   }
@@ -818,7 +821,7 @@ export class EmailService {
    * @param index - dataset index
    */
   setSeparateEmail(separateEmail: boolean, index: number): void {
-    const datasetArray = this.datasetsForm?.get('dataSets') as FormArray;
+    const datasetArray = this.datasetsForm?.get('datasets') as FormArray;
     datasetArray?.at(index)?.get('individualEmail')?.setValue(separateEmail);
   }
 
@@ -829,7 +832,7 @@ export class EmailService {
    */
   sendSeparateEmail(): boolean {
     let separateEmail = false;
-    const datasetArray = this.datasetsForm.get('dataSets') as FormArray;
+    const datasetArray = this.datasetsForm.get('datasets') as FormArray;
     datasetArray.controls.forEach((datasetControl: any) => {
       if (datasetControl.get('individualEmail')?.value === true) {
         separateEmail = true;
@@ -847,7 +850,7 @@ export class EmailService {
   getDataSet(emailData: any, isSendEmail?: boolean) {
     let count = 0;
     let allPreviewData: any = [];
-    for (const query of emailData.dataSets) {
+    for (const query of emailData.datasets) {
       query?.fields?.forEach((x: any) => {
         if (x.parentName) {
           const child = x.name;
@@ -860,10 +863,10 @@ export class EmailService {
       query.tabIndex = count;
       count++;
       query.pageSize = Number(query.pageSize);
-      this.fetchDataSet(query).subscribe((res: { data: { dataSet: any } }) => {
-        if (res?.data?.dataSet) {
-          const dataSetResponse = res?.data?.dataSet.records;
-          this.dataList = dataSetResponse?.map((record: any) => {
+      this.fetchDataSet(query).subscribe((res: { data: { dataset: any } }) => {
+        if (res?.data?.dataset) {
+          const datasetResponse = res?.data?.dataset.records;
+          this.dataList = datasetResponse?.map((record: any) => {
             const flattenedObject = this.flattenRecord(record, query);
 
             query.fields.forEach((x: any) => {
@@ -884,23 +887,23 @@ export class EmailService {
             return flatData;
           });
           if (this.dataList?.length) {
-            const existfields = emailData.dataSets[
-              res?.data?.dataSet?.tabIndex
+            const existfields = emailData.datasets[
+              res?.data?.dataset?.tabIndex
             ].fields.map((x: any) => x.name);
             const temp = Object.keys(this.dataList[0]);
             const notmatching = temp.filter(
               (currentId) => !existfields.some((item: any) => item == currentId)
             );
             existfields.concat(notmatching);
-            this.dataSetFields = existfields;
+            this.datasetFields = existfields;
           }
           allPreviewData.push({
             dataList: this.dataList,
-            dataSetFields: this.dataSetFields,
-            tabIndex: res?.data?.dataSet?.tabIndex,
+            datasetFields: this.datasetFields,
+            tabIndex: res?.data?.dataset?.tabIndex,
             tabName:
-              res?.data?.dataSet?.tabIndex < this.tabs.length
-                ? this.tabs[res.data.dataSet.tabIndex].title
+              res?.data?.dataset?.tabIndex < this.tabs.length
+                ? this.tabs[res.data.dataset.tabIndex].title
                 : '',
           });
           if (this.tabs.length == allPreviewData.length) {
@@ -922,7 +925,7 @@ export class EmailService {
         }
       });
     }
-    if (emailData?.dataSets?.length == 0) {
+    if (emailData?.datasets?.length == 0) {
       this.emailListLoading = false;
     }
   }
@@ -1141,8 +1144,8 @@ export class EmailService {
     this.allLayoutdata = {};
     this.allPreviewData = [];
     this.emailLayout = {};
-    this.recipients = {
-      distributionListName: '',
+    this.emailDistributionList = {
+      name: '',
       To: [],
       Cc: [],
       Bcc: [],
