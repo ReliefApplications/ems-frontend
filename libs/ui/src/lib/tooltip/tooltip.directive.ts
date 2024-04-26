@@ -137,7 +137,6 @@ export class TooltipDirective implements OnDestroy {
    */
   @HostListener('mouseenter')
   onMouseEnter() {
-    console.log('entered');
     if (this.enableBy !== 'default') {
       this.tooltipDisabled = this.disableTooltipByCase();
     }
