@@ -377,7 +377,6 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   onSegmentChange(event: any): void {
     const segment = event?.target?.value || event;
     this.activeSegmentIndex = this.segmentList.indexOf(segment);
-    console.log(this.activeSegmentIndex);
   }
 
   /**
@@ -588,14 +587,6 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
       });
     }
     this.isDropdownVisible = !this.isDropdownVisible;
-  }
-
-  /**
-   * Dynamic Form Submission
-   */
-  onSubmit(): void {
-    const filterLogics = this.filterQuery.value;
-    console.log('🚀 filterLogics:', filterLogics);
   }
 
   ngOnDestroy(): void {

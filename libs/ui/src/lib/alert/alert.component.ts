@@ -43,7 +43,10 @@ export class AlertComponent implements OnDestroy {
 
   /** Closes the alert and emits an event */
   onClose() {
-    setTimeout(() => {
+    if (this.closeTimeoutListener) {
+      clearTimeout(this.closeTimeoutListener);
+    }
+    this.closeTimeoutListener = setTimeout(() => {
       this.close.emit();
     }, 300);
     this.host.nativeElement.remove();

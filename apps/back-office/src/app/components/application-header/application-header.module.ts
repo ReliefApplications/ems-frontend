@@ -7,6 +7,7 @@ import {
   TooltipModule,
   MenuModule,
   ButtonModule,
+  ChipModule,
 } from '@oort-front/ui';
 import { RouterModule } from '@angular/router';
 import { DashboardFilterIconComponent } from '@oort-front/shared';
@@ -25,6 +26,7 @@ import { DashboardFilterIconComponent } from '@oort-front/shared';
     ButtonModule,
     TooltipModule,
     DashboardFilterIconComponent,
+    ChipModule,
   ],
   exports: [ApplicationHeaderComponent],
 })

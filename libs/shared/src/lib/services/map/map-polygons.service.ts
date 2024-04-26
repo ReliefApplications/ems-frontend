@@ -7,12 +7,27 @@ import { flattenDeep, get, isArray, isNil, isObject, uniq } from 'lodash';
 import * as L from 'leaflet';
 import REGIONS from './regions';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
+import { Feature, MultiPolygon, Polygon } from 'geojson';
+import { LayerDatasourceType } from '../../models/layer.model';
 
 /** Available admin identifiers */
-type AdminIdentifier = 'admin0.iso2code' | 'admin0.iso3code' | 'admin0.id';
+export type AdminIdentifier =
+  | 'admin0.iso2code'
+  | 'admin0.iso3code'
+  | 'admin0.id';
 
 /** Admin 0 available identifiers */
 type Admin0Identifier = 'iso2code' | 'iso3code' | 'id';
+
+type Admin0 = {
+  id: number;
+  centerlatitude: string;
+  centerlongitude: string;
+  iso2code: string;
+  iso3code: string;
+  name: string;
+  polygons: Polygon | MultiPolygon | Feature<Polygon | MultiPolygon>;
+};
 
 /**
  * Shared map polygons service.
@@ -23,7 +38,7 @@ type Admin0Identifier = 'iso2code' | 'iso3code' | 'id';
 })
 export class MapPolygonsService {
   /** Admin0 polygons */
-  public admin0s: any[] = [];
+  public admin0s: Admin0[] = [];
   /** Are admin0 polygons ready */
   private admin0sReady = new BehaviorSubject<boolean>(false);
   /** Admin0 polygons status as observable */
@@ -60,15 +75,26 @@ export class MapPolygonsService {
    *
    * @param data feature layer
    * @param identifier admin identifier
+   * @param layerDatasourceType type of datasource, point or polygon
    * @returns feature layer with polygons for geometry
    */
-  public assignAdmin0Polygons(
+  public assignAdmin0Geometry(
     data: any,
-    identifier: Admin0Identifier = 'iso3code'
+    identifier: Admin0Identifier = 'iso3code',
+    layerDatasourceType: LayerDatasourceType
   ) {
-    const polygons = {};
+    const geometry = {};
     for (const admin0 of this.admin0s) {
-      set(polygons, admin0[identifier].toLowerCase(), admin0.polygons);
+      set(
+        geometry,
+        admin0[identifier].toString().toLowerCase(),
+        layerDatasourceType === 'Polygon'
+          ? admin0.polygons
+          : {
+              type: 'Point',
+              coordinates: [admin0.centerlongitude, admin0.centerlatitude],
+            }
+      );
     }
     const features: any[] = [];
     for (const feature of data.features) {
@@ -76,12 +102,12 @@ export class MapPolygonsService {
         (x) => !isObject(x) && !isNil(x)
       );
       adminIds.forEach((adminId) => {
-        const adminPolygons = get(polygons, adminId.toString().toLowerCase());
-        if (adminPolygons) {
+        const adminGeometry = get(geometry, adminId.toString().toLowerCase());
+        if (adminGeometry) {
           features.push({
             ...feature,
             type: 'Feature',
-            geometry: adminPolygons,
+            geometry: adminGeometry,
           });
         }
       });
@@ -97,16 +123,19 @@ export class MapPolygonsService {
    *
    * @param data feature layer
    * @param identifier admin identifier
+   * @param layerDatasourceType type of layer datasource, polygon by default
    * @returns feature layer with polygons for geometry
    */
-  public assignPolygons(
+  public assignGeometry(
     data: any,
-    identifier: AdminIdentifier = 'admin0.iso3code'
+    identifier: AdminIdentifier = 'admin0.iso3code',
+    layerDatasourceType: LayerDatasourceType = 'Polygon'
   ) {
     if (identifier.startsWith('admin0.')) {
-      return this.assignAdmin0Polygons(
+      return this.assignAdmin0Geometry(
         data,
-        identifier.replace('admin0.', '') as Admin0Identifier
+        identifier.replace('admin0.', '') as Admin0Identifier,
+        layerDatasourceType
       );
     } else {
       return EMPTY_FEATURE_COLLECTION;

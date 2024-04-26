@@ -74,7 +74,8 @@
     <!-- Remove value -->
     <ui-button
       uiSuffix
-      (click)="this.form.get('lastUpdate')?.setValue(null);"
+      (click)="this.form.get('lastUpdate')?.setValue(null)"
+      *ngIf="this.form.get('lastUpdate')?.value"
       [isIcon]="true"
       icon="close"
       variant="danger"

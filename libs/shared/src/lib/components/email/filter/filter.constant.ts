@@ -314,4 +314,5 @@ export const TYPE_LABEL = {
   datetime_local: 'datetime-local',
   resource: 'resource',
   resources: 'resources',
+  tagbox: 'tagbox',
 };

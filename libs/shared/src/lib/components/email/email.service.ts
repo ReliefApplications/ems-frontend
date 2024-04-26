@@ -10,58 +10,61 @@ import { Apollo } from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { RestService } from '../../services/rest/rest.service';
+import { TYPE_LABEL } from './filter/filter.constant';
 
 /**
- * Helper functions for emails template
+ * Helper functions service for emails template.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class EmailService {
+  /** Index of current dataset block */
   public index = new BehaviorSubject(null);
+  /** Dataset block title */
   public title = new BehaviorSubject<string>('');
-  /** EMAIL NOTIFICATION DATA */
+  /** Current email notification form group */
   public datasetsForm!: FormGroup;
-  /** EMAIL RESOURCE NAME ID */
+  /** Email resources */
   public resourcesNameId!: {
     name: string | undefined;
     id: string | undefined;
   }[];
-  /** SELECTED DATASET */
+  /** Selected dataset */
   public selectedDataSet: any;
-  /** EMAIL TO FILTER FORM GROUP */
+  /** Form group for to: email field */
   public toEmailFilter!: FormGroup | any;
-  /** EMAIL Cc FILTER FORM GROUP */
+  /** Form group for cc: email field */
   public ccEmailFilter!: FormGroup | any;
-  /** EMAIL Bcc FILTER FORM GROUP */
+  /** Form group for bcc: email field */
   public bccEmailFilter!: FormGroup | any;
-  /** EMAIL PREVIEW DATA */
+  /** Email preview data */
   public allPreviewData: any[] = [];
-  /** EMAIL TYPE */
+  /** Email type ( only email supported now ) */
   public notificationTypes: string[] = ['email', 'alert', 'push notification'];
-  /** EMAIL LAYOUT DATA + STYLES */
+  /** Email layout data + styles */
   public emailLayout!: any;
-  /** EMAIL STYLES DATA */
+  /** Email header background color */
   public headerBackgroundColor = '#00205C';
-  /** EMAIL TEXT COLOR DATA */
+  /** Email header text color */
   public headerTextColor = '#FFFFFF';
-  /** EMAIL BODY BACKGROUND COLOR DATA */
+  /** Email body background color */
   public bodyBackgroundColor = '#FFFFFF';
-  /** EMAIL BODY TEXT COLOR DATA */
+  /** Email body text color */
   public bodyTextColor = '#000000';
-  /** EMAIL FOOTER BACKGROUND COLOR DATA */
+  /** Email footer background color */
   public footerBackgroundColor = '#FFFFFF';
-  /** EMAIL FOOTER TEXT COLOR DATA */
+  /** Email footer text color */
   public footerTextColor = '#000000';
-  /** EMAIL SAVE EMITTER */
+  /** Dataset event emitter */
   public datasetSave: EventEmitter<boolean> = new EventEmitter();
-  /** DISABLE SAVE AND PROCEED BUTTON EMITTER */
+  /** Control save & proceed button disable status */
   public disableSaveAndProceed = new BehaviorSubject<boolean>(false);
-  /** UI STEPPER DISABLED CHECKER */
+  /** Control stepper disable status */
   public stepperDisable = new BehaviorSubject<any>('');
-  /** DISTRIBUTION LIST CHECKER */
+  /** Should show existing distribution list */
   public showExistingDistributionList = false;
-  /** DISTRIBUTION LIST DATA */
+  /** Distribution list data */
   public recipients: {
     distributionListName: string;
     To: string[];
@@ -73,7 +76,7 @@ export class EmailService {
     Cc: [],
     Bcc: [],
   };
-  /** BLOCK TABS LIST */
+  /** List of tabs */
   public tabs: any[] = [
     {
       title: `Block 1`,
@@ -82,37 +85,37 @@ export class EmailService {
       index: 0,
     },
   ];
-  /** UI STEPPER DISABLED CHECKER */
+  /** Used to disable stepper steps */
   public disableFormSteps = new BehaviorSubject({
     stepperIndex: 0,
     disableAction: false,
   });
-  /** UI STEPPER ENABLE ALL STEPS CHECKER */
+  /** Should stepper enable all steps */
   public enableAllSteps = new BehaviorSubject<boolean>(false);
-  /** EMAIL LAYOUT DATA */
+  /** Email layout data */
   public allLayoutdata: any = {
-    /** IMAGES AND STYLES */
+    /** Images & styles */
     bannerImage: null,
     bannerImageStyle: '',
-    /** CONTAINER STYLE */
+    /** Container style */
     containerStyle: '',
     /** FOOTER COPYRIGHT STYLE */
     copyrightStyle: '',
-    /** EMAIL SUBJECT */
+    /** Email subject */
     txtSubject: '',
-    /** EMAIL HEADER */
+    /** Email header */
     headerHtml: '',
     headerLogo: null,
     headerLogoStyle: '',
     headerBackgroundColor: this.headerBackgroundColor,
     headerTextColor: this.headerTextColor,
     headerStyle: '',
-    /** EMAIL BODY */
+    /** Email body */
     bodyHtml: '',
     bodyBackgroundColor: this.bodyBackgroundColor,
     bodyTextColor: this.bodyTextColor,
     bodyStyle: '',
-    /** EMAIL FOOTER */
+    /** Email footer */
     footerHtml: '',
     footerLogo: null,
     footerBackgroundColor: this.footerBackgroundColor,
@@ -122,7 +125,7 @@ export class EmailService {
     footerHtmlStyle: '',
   };
 
-  /** DEFAULT BLOCK DATASET TABLE STYLE */
+  /** Default block dataset table style*/
   public defaultTableStyle: any = {
     tableDivStyle: '',
     labelStyle: '',
@@ -133,34 +136,51 @@ export class EmailService {
     trStyle: '',
     tdStyle: '',
   };
-  /** IS EXISTING DISTRIBUTION LIST */
+  /** Is distribution list existing */
   isExisting = true;
-  /** EMAIL NOTIFICATION ID */
+  /** Email notification id */
   public configId: string | undefined;
-  /** DATALIST */
+  /** Datalist */
   public dataList!: { [key: string]: any }[];
-  /** EMAIL DATASET FIELDS */
+  /** Dataset fields */
   public dataSetFields!: string[];
-  /** EMAIL DISTRIBUTION LIST NAMES */
+  /** Email distribution list of names */
   public distributionListNames: string[] = [];
-  /** EMAIL NOTIFICATION LIST NAMES */
+  /** Email notification list of names */
   public emailNotificationNames: string[] = [];
-  /** EMAIL NOTIFICATION EDIT ID */
+  /** Email notification edit id */
   public editId = '';
-  /** NAVIGATE TO PREVIEW EMITTER */
+  /** navigate to preview emitter */
   @Output() navigateToPreview: EventEmitter<any> = new EventEmitter();
-  /** CURRENT STEP */
+  /** Current step */
   stepperStep = 0;
-  /** IS EDIT MODE CHECKER */
+  /** Is in edit mode */
   public isEdit = false;
-  /** IS PREVIEW MODE CHECKER */
+  /** Is in preview */
   public isPreview = false;
-  /** STEPPER LINEAR MODE CHECKER */
+  /** Is email stepper linear */
   public isLinear = true;
-  /** EMAIL LIST LOADING CHECKER */
+  /** Email loading checker */
   public emailListLoading = true;
-  /** SEPARATE EMAIL LIST */
+  /** Separate email lists */
   public separateEmail = [];
+
+  /**
+   * Helper functions service for emails template.
+   *
+   * @param formBuilder The FormBuilder instance used to create form groups and controls
+   * @param apollo The Apollo server instance used for GraphQL queries
+   * @param http The HttpClient instance used for making HTTP requests
+   * @param restService mapping of the url
+   */
+  constructor(
+    private formBuilder: FormBuilder,
+    private apollo: Apollo,
+    private http: HttpClient,
+    private restService: RestService
+  ) {
+    this.setDatasetForm();
+  }
 
   /**
    * Generates new dataset group.
@@ -186,23 +206,6 @@ export class EmailService {
       }), // Fields (field selected and style), Block Style (HTML wrapping field with token)
       individualEmail: false,
     });
-  }
-
-  /**
-   * Constructs the EmailService instance.
-   *
-   * @param formBuilder The FormBuilder instance used to create form groups and controls
-   * @param apollo The Apollo server instance used for GraphQL queries
-   * @param http The HttpClient instance used for making HTTP requests
-   * @param restService mapping of the url
-   */
-  constructor(
-    private formBuilder: FormBuilder,
-    private apollo: Apollo,
-    private http: HttpClient,
-    private restService: RestService
-  ) {
-    this.setDatasetForm();
   }
 
   /**
@@ -781,10 +784,10 @@ export class EmailService {
   }
 
   /**
-   * persisting the state of the boolean variable for sending separete emails
+   * persisting the state of the boolean variable for sending separate emails
    *
    * @param index - dataset index
-   * @returns binded variable between service and dist list component
+   * @returns Bound variable between service and dist list component
    */
   updateSeparateEmail(index: number): boolean {
     const datasetArray = this.datasetsForm?.get('dataSets') as FormArray;
@@ -793,14 +796,14 @@ export class EmailService {
   }
 
   /**
-   * persisting the state of the boolean variable for sending separete emails
+   * persisting the state of the boolean variable for sending separate emails
    *
-   * @param seperateEmail - boolean value for checkbox
+   * @param separateEmail - boolean value for checkbox
    * @param index - dataset index
    */
-  setSeperateEmail(seperateEmail: boolean, index: number): void {
+  setSeparateEmail(separateEmail: boolean, index: number): void {
     const datasetArray = this.datasetsForm?.get('dataSets') as FormArray;
-    datasetArray?.at(index)?.get('individualEmail')?.setValue(seperateEmail);
+    datasetArray?.at(index)?.get('individualEmail')?.setValue(separateEmail);
   }
 
   /**
@@ -808,15 +811,15 @@ export class EmailService {
    *
    * @returns boolean for triggering endpoints
    */
-  sendSeperateEmail(): boolean {
-    let seperateEmail = false;
+  sendSeparateEmail(): boolean {
+    let separateEmail = false;
     const datasetArray = this.datasetsForm.get('dataSets') as FormArray;
     datasetArray.controls.forEach((datasetControl: any) => {
       if (datasetControl.get('individualEmail')?.value === true) {
-        seperateEmail = true;
+        separateEmail = true;
       }
     });
-    return seperateEmail;
+    return separateEmail;
   }
 
   /**
@@ -984,11 +987,19 @@ export class EmailService {
               key
             ] = `${record[key].properties.countryName} (${record[key].properties.coordinates.lat}, ${record[key].properties.coordinates.lng})`;
           } else {
-            // Takes the resources count and maps it to the resource name.
-            result[key] =
-              record[key].length > 1
-                ? `${record[key].length} items`
-                : `${record[key].length} item`;
+            const fieldType = query.fields.find((field: any) => {
+              return field.name === key;
+            }).type;
+
+            if (fieldType !== TYPE_LABEL.resources) {
+              result[key] = record[key];
+            } else {
+              // Takes the resources count and maps it to the resource name.
+              result[key] =
+                record[key].length > 1
+                  ? `${record[key].length} items`
+                  : `${record[key].length} item`;
+            }
           }
         } else {
           if (

@@ -1,25 +1,34 @@
 <div class="example">
-    <kendo-stepper #stepper
+  <kendo-stepper
+    #stepper
     [steps]="steps"
     stepType="full"
     [(currentStep)]="currentStep"
     orientation="horizontal"
     [linear]="emailService.isLinear"
-    > </kendo-stepper>
-    <div>
-      <span class="k-form-separator"></span>
-    </div>
-    <app-create-notification *ngIf="currentStep === 0" (navigateToListScreen)="navigateToListScreen()"></app-create-notification>
-    <app-create-dataset *ngIf="currentStep === 1"></app-create-dataset>
-    <app-select-distribution *ngIf="currentStep === 2"></app-select-distribution>
-    <app-schedule-alert *ngIf="currentStep === 3"></app-schedule-alert>
-    <app-layout [setLayoutValidation]="setLayoutValidation" *ngIf="currentStep === 4"></app-layout>
-    <app-preview *ngIf="currentStep === 5"></app-preview>
+  >
+  </kendo-stepper>
+  <ui-divider class="mt-10"></ui-divider>
+  <app-create-notification
+    *ngIf="currentStep === 0"
+    (navigateToListScreen)="navigateToListScreen()"
+  ></app-create-notification>
+  <app-create-dataset *ngIf="currentStep === 1"></app-create-dataset>
+  <app-select-distribution *ngIf="currentStep === 2"></app-select-distribution>
+  <app-schedule-alert *ngIf="currentStep === 3"></app-schedule-alert>
+  <app-layout
+    [setLayoutValidation]="setLayoutValidation"
+    *ngIf="currentStep === 4"
+  ></app-layout>
+  <app-preview *ngIf="currentStep === 5"></app-preview>
+</div>
 
-    <div class="flex gap-5 mt-4 pb-4">
-      <ui-button
+<!-- Floating div for actions buttons -->
+<ui-fixed-wrapper>
+  <div class="flex justify-end gap-2 flex-wrap">
+    <!-- Back button -->
+    <ui-button
       *ngIf="currentStep !== 0"
-      class="my-0 mx-1"
       category="tertiary"
       variant="primary"
       (click)="prev()"
@@ -27,8 +36,8 @@
     >
       {{ 'common.back' | translate }}
     </ui-button>
-      <ui-button
-      class="my-0 mx-1"
+    <!-- Next button -->
+    <ui-button
       category="secondary"
       variant="primary"
       (click)="next()"
@@ -37,36 +46,26 @@
     >
       {{ 'common.next' | translate }}
     </ui-button>
-      <!-- <button
+    <!-- Only activate at last step -->
+    <ng-container *ngIf="currentStep === 5">
+      <!-- Save notification button -->
+      <ui-button
         type="submit"
-        class="bg-sky-500 hover:bg-sky-400 text-white ml-3 px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
-        (click)="preview()"
-        *ngIf="currentStep === 2"
+        category="secondary"
+        variant="primary"
+        (click)="submit()"
       >
-        Preview
-      </button> -->
-
-      <!-- EMAIL NOTIFICATION SAVE -->
+        {{ 'common.save' | translate }}
+      </ui-button>
+      <!-- Save & send button -->
       <ui-button
-      type="submit"
-      class="my-0 mx-1"
-      category="secondary"
-      variant="primary"
-      (click)="submit()"
-      *ngIf="currentStep === 5"
-    >
-      {{'common.save' | translate}}
-    </ui-button>
-      <!-- EMAIL NOTIFICATION SAVE AND SEND -->
-      <ui-button
-      type="button"
-      class="my-0 mx-1"
-      category="secondary"
-      variant="primary"
-      (click)="send()"
-      *ngIf="currentStep === 5"
+        type="button"
+        category="secondary"
+        variant="primary"
+        (click)="send()"
       >
-      {{'common.sendEmail' | translate}}
-    </ui-button>
-    </div>
+        {{ 'common.sendEmail' | translate }}
+      </ui-button>
+    </ng-container>
   </div>
+</ui-fixed-wrapper>

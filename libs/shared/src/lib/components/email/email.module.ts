@@ -16,6 +16,9 @@ import {
   DateModule,
   AlertModule,
   CheckboxModule,
+  DividerModule,
+  FixedWrapperModule,
+  ChipModule,
 } from '@oort-front/ui';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
@@ -41,6 +44,7 @@ import { EditorModule } from '@tinymce/tinymce-angular';
 import { EmailTemplateComponent } from './components/email-template/email-template.component';
 import { DatasetFilterComponent } from './components/dataset-filter/dataset-filter.component';
 import { EmsTemplateComponent } from './components/ems-template/ems-template.component';
+import { EmptyModule } from '../ui/empty/empty.module';
 
 /**
  * Email module.
@@ -61,6 +65,7 @@ import { EmsTemplateComponent } from './components/ems-template/ems-template.com
   ],
   imports: [
     FormsModule,
+    ChipModule,
     ReactiveFormsModule,
     CommonModule,
     EmailRoutingModule,
@@ -91,6 +96,9 @@ import { EmsTemplateComponent } from './components/ems-template/ems-template.com
     SelectMenuModule,
     AlertModule,
     CheckboxModule,
+    DividerModule,
+    FixedWrapperModule,
+    EmptyModule,
   ],
   schemas: [NO_ERRORS_SCHEMA],
 })

@@ -18,13 +18,10 @@ import { DownloadService } from '../../services/download/download.service';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
-/**
- *
- */
+/** Current Distribution list items page size (for pagination) */
 const DISTRIBUTION_PAGE_SIZE = 5;
-/**
- * Email Notification setup component.
- */
+
+/** Email Notification setup component. */
 @Component({
   selector: 'app-email',
   templateUrl: './email.component.html',
@@ -33,19 +30,14 @@ const DISTRIBUTION_PAGE_SIZE = 5;
 export class EmailComponent extends UnsubscribeComponent implements OnInit {
   /** Data for filtering templates. */
   filterTemplateData: any = [];
-
   /** Actual data for templates. */
   templateActualData: any = [];
-
   /** Application ID. */
   public applicationId = '';
-
   /** Distribution lists. */
   public distributionLists: any = [];
-
   /** Email notifications. */
   public emailNotifications: any = [];
-
   /** Page information for pagination. */
   public pageInfo = {
     pageIndex: 0,
@@ -55,16 +47,12 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     skip: 0,
     limit: DEFAULT_PAGE_SIZE,
   };
-
   /** Displayed columns in the table. */
   public displayedColumns = ['name', 'alerttype', 'createdby', 'actions'];
-
   /** Columns for distribution. */
   public distributionColumn = ['name'];
-
   /** Cached API configurations. */
   public cachedApiConfigurations: ApiConfiguration[] = [];
-
   /** Page information for distribution pagination. */
   public distributionPageInfo = {
     pageIndex: 0,
@@ -72,7 +60,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     length: 0,
     endCursor: '',
   };
-
   /** Cached distribution list. */
   cacheDistributionList: any = [];
 
@@ -562,7 +549,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       textStyle: null,
       individualEmail: ele.individualEmail,
     });
-    this.emailService.setSeperateEmail(ele.individualEmail, index);
+    this.emailService.setSeparateEmail(ele.individualEmail, index);
     tempData.controls.fields.setValue(ele.fields);
     return tempData;
   }
@@ -591,7 +578,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @returns filter fields form.
    */
   getNewFilterFields(filter: any): FormGroup {
-    console.log(filter);
     return this.formBuilder.group({
       field: filter.field,
       operator: filter.operator,

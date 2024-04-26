@@ -234,6 +234,7 @@
 			"none": "Aucune mise en page",
 			"one": "Mise en page"
 		},
+		"legacy": "Obsolète",
 		"loading": "Chargement",
 		"modifiedOn": "Modifié le ",
 		"name": "Nom",
@@ -805,14 +806,26 @@
 		},
 		"email": {
 			"distributionList": {
+				"alert": {
+					"and": "et",
+					"partOne": "Pour continuer, veuillez saisir",
+					"partThree": "au moins une adresse email de destinataire",
+					"partTwo": "un nom de liste de distribution"
+				},
+				"bcc": "CCI",
+				"cc": "CC",
+				"createNew": "Ou créer un nouveau",
 				"duplicate": "Le nom existe déjà",
 				"import": {
 					"download": "Télécharger le modèle",
 					"loading": "Importation du fichier...",
 					"name": "Importer",
-					"success": "Importation réussie"
+					"success": "Importation réussie",
+					"upload": "Télécharger la liste de diffusion"
 				},
-				"list": "Liste de distribution"
+				"list": "Liste de distribution",
+				"name": "Nom de la liste de distribution",
+				"to": "À"
 			},
 			"image": {
 				"rectangleValidation": "Veuillez télécharger une image avec un rapport hauteur/largeur plus rectangulaire, similaire à 960x80.",
@@ -826,6 +839,8 @@
 				"validTitle": "Veuillez saisir un titre"
 			},
 			"preview": {
+				"less": "Montrer moins",
+				"more": "Afficher {{length}} e-mails restants...",
 				"subject": "Sujet:"
 			}
 		},
@@ -1932,6 +1947,7 @@
 						"longitude": "Longitude du centre de la carte",
 						"setByMap": "Utiliser la vue actuelle",
 						"title": "Affichage par défaut",
+						"useWebMapInitialState": "Utiliser l'affichage par défaut de la webmap",
 						"webmap": "WebMap",
 						"zoom": "Zoom par défaut"
 					},

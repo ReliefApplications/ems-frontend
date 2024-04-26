@@ -234,6 +234,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"legacy": "******",
 		"loading": "******",
 		"modifiedOn": "******",
 		"name": "******",
@@ -799,14 +800,26 @@
 		},
 		"email": {
 			"distributionList": {
+				"alert": {
+					"and": "******",
+					"partOne": "******",
+					"partThree": "******",
+					"partTwo": "******"
+				},
+				"bcc": "******",
+				"cc": "******",
+				"createNew": "******",
 				"duplicate": "******",
 				"import": {
 					"download": "******",
 					"loading": "******",
 					"name": "******",
-					"success": "******"
+					"success": "******",
+					"upload": "******"
 				},
-				"list": "******"
+				"list": "******",
+				"name": "******",
+				"to": "******"
 			},
 			"image": {
 				"rectangleValidation": "******",
@@ -820,6 +833,8 @@
 				"validTitle": "******"
 			},
 			"preview": {
+				"less": "******",
+				"more": "****** {{length}} ******",
 				"subject": "******"
 			}
 		},
@@ -1919,6 +1934,7 @@
 						"longitude": "******",
 						"setByMap": "******",
 						"title": "******",
+						"useWebMapInitialState": "******",
 						"webmap": "******",
 						"zoom": "******"
 					},

@@ -15,13 +15,10 @@ import { SnackbarService } from '@oort-front/ui';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
-/**
- *
- */
+/** Current Distribution list items page size (for pagination) */
 const DISTRIBUTION_PAGE_SIZE = 5;
-/**
- * Select Distribution component.
- */
+
+/** Select Distribution component. */
 @Component({
   selector: 'app-select-distribution',
   templateUrl: './select-distribution.component.html',
@@ -129,6 +126,11 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     this.ccEmailFilter = this.emailService.ccEmailFilter;
     this.bccEmailFilter = this.emailService.bccEmailFilter;
     this.validateDistributionList();
+
+    // Toggle all dropdowns to open by default
+    this.showToTemplate = true;
+    this.showCCTemplate = true;
+    this.showBccTemplate = true;
   }
 
   /**
@@ -149,16 +151,10 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
   toggleDropdown(templateFor: string): void {
     if (templateFor.toLocaleLowerCase() === 'to') {
       this.showToTemplate = !this.showToTemplate;
-      this.showCCTemplate = false;
-      this.showBccTemplate = false;
     } else if (templateFor.toLocaleLowerCase() === 'cc') {
       this.showCCTemplate = !this.showCCTemplate;
-      this.showToTemplate = false;
-      this.showBccTemplate = false;
     } else if (templateFor.toLocaleLowerCase() === 'bcc') {
       this.showBccTemplate = !this.showBccTemplate;
-      this.showToTemplate = false;
-      this.showCCTemplate = false;
     }
     if (!this.templateFor || this.templateFor === templateFor) {
       this.showEmailTemplate = !this.showEmailTemplate;

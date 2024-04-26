@@ -234,6 +234,7 @@
 			"none": "No layout",
 			"one": "Layout"
 		},
+		"legacy": "Legacy",
 		"loading": "Loading",
 		"modifiedOn": "Modified On",
 		"name": "Name",
@@ -799,14 +800,26 @@
 		},
 		"email": {
 			"distributionList": {
+				"alert": {
+					"and": "and",
+					"partOne": "To proceed, please enter",
+					"partThree": "at least one recipient email address",
+					"partTwo": "a distribution list name"
+				},
+				"bcc": "BCC",
+				"cc": "CC",
+				"createNew": "Or Create New",
 				"duplicate": "Title already exists",
 				"import": {
 					"download": "Download Template",
 					"loading": "Importing file...",
 					"name": "Import",
-					"success": "Import Successful"
+					"success": "Import Successful",
+					"upload": "Upload Email List"
 				},
-				"list": "Distribution List"
+				"list": "Distribution List",
+				"name": "Distribution List name",
+				"to": "To"
 			},
 			"image": {
 				"rectangleValidation": "Please upload an image with a more rectangular aspect ratio, similar to 960x80.",
@@ -820,6 +833,8 @@
 				"validTitle": "Please enter a title"
 			},
 			"preview": {
+				"less": "Show Less",
+				"more": "Show {{length}} remaining emails...",
 				"subject": "Subject:"
 			}
 		},
@@ -1919,6 +1934,7 @@
 						"longitude": "Map center longitude",
 						"setByMap": "Set By Map",
 						"title": "Map Parameters",
+						"useWebMapInitialState": "Use WebMap initial state",
 						"webmap": "WebMap",
 						"zoom": "Default zoom"
 					},

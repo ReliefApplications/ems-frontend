@@ -15,10 +15,8 @@ import { TranslateService } from '@ngx-translate/core';
 export class CreateNotificationComponent implements OnInit {
   /** Form group for data set. */
   public dataSetFormGroup: FormGroup | any = this.emailService.datasetsForm;
-
   /** Notification types for email service. */
   public notificationTypes: string[] = this.emailService.notificationTypes;
-
   /** Event emitter for navigating to list screen. */
   @Output() navigateToListScreen: EventEmitter<any> = new EventEmitter();
 

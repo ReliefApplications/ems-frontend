@@ -10,7 +10,9 @@
         [uiErrorMessage]="
           'components.emailPreview.errors.missingSubject' | translate
         "
-        [uiErrorMessageIf]="this.emailForm.controls.subject.hasError('required')"
+        [uiErrorMessageIf]="
+          this.emailForm.controls.subject.hasError('required')
+        "
         uiFormFieldDirective
       >
         <label>{{ 'components.emailPreview.subject' | translate }}</label>

@@ -70,6 +70,8 @@
   margin-left: 0.25rem;
   font-size: 0.75rem !important;
   font-weight: bold;
+  height: 17px;
+  line-height: 17px;
 }
 
 ::ng-deep .sd-matrixdropdown.sd-table,
@@ -300,7 +302,7 @@
   shared-core-grid {
     display: block;
     height: 410px;
-  
+
     .sv_row div {
       min-width: unset;
     }

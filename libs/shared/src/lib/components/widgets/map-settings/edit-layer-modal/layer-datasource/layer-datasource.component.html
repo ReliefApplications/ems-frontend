@@ -95,9 +95,7 @@
       <shared-graphql-variables-mapping
         *ngIf="referenceData && referenceData.type === 'graphql'"
         [referenceData]="referenceData"
-        [control]="
-          $any(formGroup.get('referenceDataVariableMapping'))
-        "
+        [control]="$any(formGroup.get('referenceDataVariableMapping'))"
       ></shared-graphql-variables-mapping>
 
       <!-- Selected layout -->

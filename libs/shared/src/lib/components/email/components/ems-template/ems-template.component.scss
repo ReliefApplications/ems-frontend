@@ -3,37 +3,19 @@
   margin-left: 8px;
   width: 80%;
 }
-.k-stepper {
-  align-self: center;
-}
-.k-button.prev {
-  margin-right: 16px;
-}
-.k-form-separator {
-  margin-top: 40px;
-}
-.k-buttons-end {
-  justify-content: space-between;
-  align-content: center;
-}
+
 .page {
   align-self: center;
 }
 
 .active {
   background: #269ed1;
-  color: #FFF;
+  color: #fff;
   cursor: pointer;
 }
 
 .inactive {
   background: #c3cacdbd;
-  color: #FFF;
+  color: #fff;
   cursor: not-allowed;
-}
-
-.back-button {
-  background: #FFF;
-  border: 1px solid #269ed1;
-  color: #269ed1;
 }

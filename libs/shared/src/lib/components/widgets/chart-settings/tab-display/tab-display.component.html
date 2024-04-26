@@ -217,10 +217,7 @@
             {{ 'components.widget.settings.chart.axes' | translate }}
           </ng-container>
           <!-- === X AXIS PARAMETERS === -->
-          <ng-container
-            formGroupName="x"
-            *ngIf="['bar'].includes(type.name)"
-          >
+          <ng-container formGroupName="x" *ngIf="['bar'].includes(type.name)">
             <h3>
               {{ 'components.widget.settings.chart.xAxis' | translate }}
             </h3>
@@ -297,7 +294,7 @@
                       [placeholder]="'common.auto' | translate"
                     />
                   </div>
-                </div> 
+                </div>
                 <div class="flex gap-2 items-center">
                   <ui-toggle formControlName="enableMax"></ui-toggle>
                   <div uiFormFieldDirective floatLabel="always">
