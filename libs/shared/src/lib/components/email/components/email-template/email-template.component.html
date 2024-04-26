@@ -411,92 +411,92 @@
                           />
                         </ng-template>
 
-                                        <!-- Date to text Button -->
-                                        <div class="col-span-1">
-                                          <ui-button
-                                            [isIcon]="true"
-                                            icon="change_circle_outline"
-                                            variant="primary"
-                                            (click)="changeEditor()"
-                                            [uiTooltip]="
-                                              (useExpression
-                                                ? 'components.queryBuilder.tooltip.filter.date.usePicker'
-                                                : 'components.queryBuilder.tooltip.filter.date.useExpression'
-                                              ) | translate
-                                            "
-                                            class="w-full"
-                                          ></ui-button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <!-- within the Last... picker -->
-                                    <div
-                                      *ngIf="data.get('operator')?.value === 'inthelast'"
-                                      formGroupName="inTheLast"
-                                      class="flex">
-                                      <div
-                                      uiFormFieldDirective
-                                      [defaultMargin]="false"
-                                      class="mr-2">
-                                        <label>Number</label>
-                                        <ui-select-menu
-                                          formControlName="number"
-                                          >
-                                          <ui-select-option
-                                            *ngFor="let num of getNumbersArray()"
-                                            [value]="num">
-                                            {{ num }}
-                                          </ui-select-option>
-                                        </ui-select-menu>
-                                      </div>
-                                      <div
-                                        uiFormFieldDirective
-                                        [defaultMargin]="false"
-                                      >
-                                        <label>Unit</label>
-                                        <ui-select-menu formControlName="unit">
-                                          <ng-container *ngFor="let timeUnit of timeUnits">
-                                            <ui-select-option [value]="timeUnit.value">
-                                              {{ timeUnit.label }}
-                                            </ui-select-option>
-                                          </ng-container>
-                                        </ui-select-menu>
-                                      </div>
-                                    </div>
-                                    <div
-                                      *ngIf="data.get('operator')?.value === 'inthelast'" [hidden]="true">
-                                      <input
-                                        formControlName="value"
-                                        type="text"
-                                      />
-                                    </div>
-                                  </ng-container>
-                                  </div>
-                                <button
-                                    class="ui-button-icon primary medium button-danger mt-8"
-                                    (click)="deleteDatasetFilter(fieldIndex)">
-                                    <ui-icon class="text-3xl" icon="delete" variant="danger"> </ui-icon>
-                                </button>
-                            </div>
+                        <!-- Date to text Button -->
+                        <div class="col-span-1">
+                          <ui-button
+                            [isIcon]="true"
+                            icon="change_circle_outline"
+                            variant="primary"
+                            (click)="changeEditor()"
+                            [uiTooltip]="
+                              (useExpression
+                                ? 'components.queryBuilder.tooltip.filter.date.usePicker'
+                                : 'components.queryBuilder.tooltip.filter.date.useExpression'
+                              ) | translate
+                            "
+                            class="w-full"
+                          ></ui-button>
                         </div>
+                      </div>
                     </div>
+                    <!-- within the Last... picker -->
+                    <div
+                      *ngIf="data.get('operator')?.value === 'inthelast'"
+                      formGroupName="inTheLast"
+                      class="flex"
+                    >
+                      <div
+                        uiFormFieldDirective
+                        [defaultMargin]="false"
+                        class="mr-2"
+                      >
+                        <label>Number</label>
+                        <ui-select-menu formControlName="number">
+                          <ui-select-option
+                            *ngFor="let num of getNumbersArray()"
+                            [value]="num"
+                          >
+                            {{ num }}
+                          </ui-select-option>
+                        </ui-select-menu>
+                      </div>
+                      <div uiFormFieldDirective [defaultMargin]="false">
+                        <label>Unit</label>
+                        <ui-select-menu formControlName="unit">
+                          <ng-container *ngFor="let timeUnit of timeUnits">
+                            <ui-select-option [value]="timeUnit.value">
+                              {{ timeUnit.label }}
+                            </ui-select-option>
+                          </ng-container>
+                        </ui-select-menu>
+                      </div>
+                    </div>
+                    <div
+                      *ngIf="data.get('operator')?.value === 'inthelast'"
+                      [hidden]="true"
+                    >
+                      <input formControlName="value" type="text" />
+                    </div>
+                  </ng-container>
                 </div>
-
+                <button
+                  class="ui-button-icon primary medium button-danger mt-8"
+                  (click)="deleteDatasetFilter(fieldIndex)"
+                >
+                  <ui-icon class="text-3xl" icon="delete" variant="danger">
+                  </ui-icon>
+                </button>
+              </div>
             </div>
+          </div>
         </div>
-        <div class="button-wrapper" *ngIf="datasetFilterInfo.controls.length">
-            <button (click)="applyFilter()">Apply</button>
-        </div>
-    </div>
-    <div class="loadingSign" [ngClass]="{active: loading}">
-        <ui-spinner *ngIf="loading" style="position: relative;"></ui-spinner>
       </div>
-    <div uiChipList>
-      <ui-chip
-      variant="secondary"
+    </div>
+    <div class="button-wrapper" *ngIf="datasetFilterInfo.controls.length">
+      <button (click)="applyFilter()">Apply</button>
+    </div>
+  </div>
+  <div class="loadingSign" [ngClass]="{ active: loading }">
+    <ui-spinner *ngIf="loading" style="position: relative"></ui-spinner>
+  </div>
+  <div uiChipList>
+    <ui-chip
+      variant="primary"
       class="text-xl px-1"
       [removable]="true"
       (removed)="removeEmailChip(chipIndex)"
-      *ngFor="let emailText of selectedEmails; let chipIndex = index">{{ emailText }}</ui-chip>
-    </div>
+      *ngFor="let emailText of selectedEmails; let chipIndex = index"
+      >{{ emailText }}</ui-chip
+    >
+  </div>
 </div>
