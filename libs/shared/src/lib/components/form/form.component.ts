@@ -303,7 +303,9 @@ export class FormComponent
    */
   public onShowPage(i: number): void {
     if (this.survey) {
-      this.survey.currentPageNo = i;
+      setTimeout(() => {
+        this.survey.currentPageNo = i;
+      }, 50);
     }
   }
 

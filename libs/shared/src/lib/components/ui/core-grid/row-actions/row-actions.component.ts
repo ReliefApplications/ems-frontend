@@ -53,6 +53,7 @@ export class GridRowActionsComponent {
   /** @returns A boolean indicating if the component must be shown */
   get display(): boolean {
     return (
+      this.actions.showDetails ||
       this.actions.history ||
       this.actions.remove ||
       (this.item.canDelete && this.actions.delete) ||

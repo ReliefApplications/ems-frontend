@@ -255,10 +255,12 @@ export class RecordModalComponent
    * @param i Index of the page to show
    */
   public onShowPage(i: number): void {
-    this.survey.currentPageNo = i;
-    if (this.data.compareTo && this.surveyNext) {
-      this.surveyNext.currentPageNo = i;
-    }
+    setTimeout(() => {
+      this.survey.currentPageNo = i;
+      if (this.data.compareTo && this.surveyNext) {
+        this.surveyNext.currentPageNo = i;
+      }
+    }, 50);
   }
 
   /**
