@@ -665,25 +665,20 @@
 </form>
 <ng-template #datasetAlert>
   <ui-alert variant="warning" *ngIf="showDatasetLimitWarning" [closable]="true">
-    At this moment, we are limited to fetch only 50 records.
-    Based on the provided filter conditions there are <strong>{{totalMatchingRecords}}</strong> matching records.
-    Kindly add some additional filters to bring the record count less than or equals to 50.
+    {{ 'components.email.filter.datasetAlert.partOne' | translate}}
+    {{ 'components.email.filter.datasetAlert.partTwo.start' | translate}}<strong>{{totalMatchingRecords}}</strong>{{ 'components.email.filter.datasetAlert.partTwo.end' | translate}}
+    {{ 'components.email.filter.datasetAlert.partThree' | translate}}
   </ui-alert>
 </ng-template>
 <ng-template #selectedFieldAlert>
-  <ui-alert variant="warning" *ngIf="!selectedFields.length" [closable]="true">
-   At least select one field
+  <ui-alert variant="warning" *ngIf="!selectedFields.length && !showDatasetLimitWarning" [closable]="true">
+   {{'components.email.noFieldsSelected' | translate}}
   </ui-alert>
 </ng-template>
 <ng-template #missingFieldAlert>
-  <ui-alert
-    *ngIf="disabledFields.length > 0"
-    variant="danger"
-    [closable]="true"
-  >
-    The following fields are not available for selection:
-    <strong>{{ disabledFields.join(', ') }}</strong> as they are of type
-    <strong>{{ disabledTypes.join(', ') }}</strong>
-    and cannot be properly displayed in the table for this form.
-  </ui-alert>
+   <ui-alert *ngIf="disabledFields.length > 0" variant="danger" [closable]="true">
+    {{'components.email.filter.missingFieldAlert.partOne' | translate}}
+    <strong>{{disabledFields.join(', ')}}</strong>{{'components.email.filter.missingFieldAlert.partTwo' | translate}}<strong>{{disabledTypes.join(', ')}}</strong>
+    {{'components.email.filter.missingFieldAlert.partThree' | translate}}
+   </ui-alert>
 </ng-template>

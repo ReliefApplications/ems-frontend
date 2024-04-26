@@ -809,11 +809,27 @@
 				},
 				"list": "******"
 			},
+			"filter": {
+				"datasetAlert": {
+					"partOne": "******",
+					"partThree": "******",
+					"partTwo": {
+						"end": "******",
+						"start": "******"
+					}
+				},
+				"missingFieldAlert": {
+					"partOne": "******",
+					"partThree": "******",
+					"partTwo": "******"
+				}
+			},
 			"image": {
 				"rectangleValidation": "******",
 				"squareValidation": "******"
 			},
 			"name": "******",
+			"noFieldsSelected": "******",
 			"notification": {
 				"create": "******",
 				"list": "******",
