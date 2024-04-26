@@ -916,7 +916,8 @@
 				"originalValue": "Nouvelle valeur",
 				"person": "Utilisateur",
 				"time": "Heure",
-				"variable": "Champ"
+				"variable": "Champ",
+				"incrementalId": "Incrémental Id"
 			},
 			"download": "Télécharger l'historique",
 			"empty": "Aucune activité détectée",
