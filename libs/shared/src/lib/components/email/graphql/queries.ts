@@ -147,10 +147,12 @@ export const ADD_EMAIL_NOTIFICATION = gql`
 export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
   mutation EditEmailNotification(
     $editEmailNotificationId: ID!
+    $applicationId: ID!
     $notification: EmailNotificationInputType
   ) {
     editAndGetEmailNotification(
       id: $editEmailNotificationId
+      application: $applicationId
       notification: $notification
     ) {
       createdAt

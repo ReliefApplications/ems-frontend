@@ -51,6 +51,18 @@ const getAbilityForAppPreview = (app: Application, role: string) => {
     can(['create', 'read', 'update', 'delete', 'manage'], 'CustomNotification');
   }
 
+  // === Email Notifications ===
+  if (permissions.includes('can_see_email_notifications')) {
+    can('read', 'EmailNotification');
+  }
+  if (permissions.includes('can_manage_email_notifications')) {
+    can(['update', 'delete'], 'EmailNotification');
+  }
+
+  if (permissions.includes('can_create_email_notifications')) {
+    can('create', 'EmailNotification');
+  }
+
   return new AppAbility(rules);
 };
 
@@ -156,7 +168,25 @@ export class AppPreviewComponent
                 visible: x.visible ?? false,
               })) || [];
           const adminNavItems: any[] = [];
-          if (ability.can('manage', 'Template')) {
+          this.sideMenu = this.application?.sideMenu ?? true;
+          this.hideMenu = this.application?.hideMenu ?? false;
+          if (ability.can('read', 'User')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.user.few'),
+              path: './settings/users',
+              icon: 'supervisor_account',
+              visible: true,
+            });
+          }
+          if (ability.can('read', 'Role')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.role.few'),
+              path: './settings/roles',
+              icon: 'admin_panel_settings',
+              visible: true,
+            });
+          }
+          if (ability.can('read', 'EmailNotification')) {
             adminNavItems.push({
               name: this.translate.instant('common.email.notification.few'),
               path: './settings/email-notifications',

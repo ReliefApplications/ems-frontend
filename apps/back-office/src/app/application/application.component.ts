@@ -7,6 +7,7 @@ import {
   ApplicationService,
   ConfirmService,
   UnsubscribeComponent,
+  AppAbility,
 } from '@oort-front/shared';
 import get from 'lodash/get';
 import { takeUntil, map } from 'rxjs/operators';
@@ -49,13 +50,15 @@ export class ApplicationComponent
    * @param router Angular router
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
+   * @param ability Shared app ability service
    */
   constructor(
     private applicationService: ApplicationService,
     public route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
-    private confirmService: ConfirmService
+    private confirmService: ConfirmService,
+    private ability: AppAbility
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
@@ -98,62 +101,62 @@ export class ApplicationComponent
                 },
               })) || [];
           if (application.canUpdate) {
-            this.adminNavItems = [
-              {
-                name: this.translate.instant('common.settings'),
-                path: './settings/edit',
-                icon: 'settings',
-              },
-              {
-                name: this.translate.instant('common.template.few'),
-                path: './settings/templates',
-                icon: 'description',
-                legacy: true,
-              },
-              {
-                name: this.translate.instant('common.distributionList.few'),
-                path: './settings/distribution-lists',
-                icon: 'mail',
-                legacy: true,
-              },
-              // {
-              //   name: this.translate.instant('common.customNotification.few'),
-              //   path: './settings/notifications',
-              //   icon: 'schedule_send',
-              // },
-              {
-                name: this.translate.instant('common.user.few'),
-                path: './settings/users',
-                icon: 'supervisor_account',
-              },
-              {
-                name: this.translate.instant('common.role.few'),
-                path: './settings/roles',
-                icon: 'verified_user',
-              },
-              {
-                name: this.translate.instant(
-                  'pages.application.positionAttributes.title'
-                ),
-                path: './settings/position',
-                icon: 'edit_attributes',
-              },
-              {
+            this.adminNavItems.push({
+              name: this.translate.instant('common.settings'),
+              path: './settings/edit',
+              icon: 'settings',
+            });
+            this.adminNavItems.push({
+              name: this.translate.instant('common.template.few'),
+              path: './settings/templates',
+              icon: 'description',
+              legacy: true,
+            });
+            this.adminNavItems.push({
+              name: this.translate.instant('common.distributionList.few'),
+              path: './settings/distribution-lists',
+              icon: 'mail',
+              legacy: true,
+            });
+            // {
+            //   name: this.translate.instant('common.customNotification.few'),
+            //   path: './settings/notifications',
+            //   icon: 'schedule_send',
+            // },
+            this.adminNavItems.push({
+              name: this.translate.instant('common.user.few'),
+              path: './settings/users',
+              icon: 'supervisor_account',
+            });
+            this.adminNavItems.push({
+              name: this.translate.instant('common.role.few'),
+              path: './settings/roles',
+              icon: 'verified_user',
+            });
+            this.adminNavItems.push({
+              name: this.translate.instant(
+                'pages.application.positionAttributes.title'
+              ),
+              path: './settings/position',
+              icon: 'edit_attributes',
+            });
+            if (this.ability.can('read', 'EmailNotification')) {
+              this.adminNavItems.push({
                 name: this.translate.instant('common.email.notification.few'),
                 path: './settings/email-notifications',
                 icon: 'mail',
-              },
-              {
-                name: this.translate.instant('common.channel.few'),
-                path: './settings/channels',
-                icon: 'dns',
-              },
-              {
-                name: this.translate.instant('common.subscription.few'),
-                path: './settings/subscriptions',
-                icon: 'add_to_queue',
-              },
-            ];
+              });
+            }
+            this.adminNavItems.push({
+              name: this.translate.instant('common.channel.few'),
+              path: './settings/channels',
+              icon: 'dns',
+            });
+            this.adminNavItems.push({
+              name: this.translate.instant('common.subscription.few'),
+              path: './settings/subscriptions',
+              icon: 'add_to_queue',
+            });
           }
           if (application.canUpdate) {
             this.adminNavItems.push({

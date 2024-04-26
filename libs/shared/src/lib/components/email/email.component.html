@@ -17,13 +17,14 @@
   </div>
 
   <ui-button
-    icon="add"
-    category="secondary"
-    variant="primary"
-    (click)="toggle(true)"
-  >
-    {{ 'components.email.notification.create' | translate }}
-  </ui-button>
+      icon="add"
+      category="secondary"
+      variant="primary"
+      (click)="toggle(true)"
+      *ngIf="this.ability.can('create', 'EmailNotification')"
+    >
+    {{  'components.email.notification.create' | translate  }}
+    </ui-button>
 </div>
 
 <div *ngIf="emailService.isExisting">
@@ -32,28 +33,28 @@
       <ng-container ngProjectAs="label">{{
         'components.email.notification.list' | translate
       }}</ng-container>
-      <div class="mt-4 overflow-x-hidden shadow-2lg">
-        <ng-container *ngIf="emailNotifications?.length; else emptyTmpl">
-          <div class="overflow-x-auto">
-            <table cdk-table uiTableWrapper [dataSource]="emailNotifications">
-              <ng-container cdkColumnDef="name">
-                <th uiCellHeader *cdkHeaderCellDef scope="col">
-                  <span class="headerTitle">
-                    {{ 'common.name' | translate }}
-                  </span>
-                </th>
-                <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
-                  {{ element.name }}
-                </td>
-              </ng-container>
-              <ng-container cdkColumnDef="alerttype">
-                <th uiCellHeader *cdkHeaderCellDef scope="col">
-                  <span class="headerTitle">
-                    {{ 'components.email.notification.type' | translate }}
-                  </span>
-                </th>
-                <td uiCell *cdkCellDef="let element">
-                  <button
+        <div class="mt-4 overflow-x-hidden shadow-2lg">
+          <ng-container *ngIf="emailNotifications?.length && this.ability.can('read', 'EmailNotification'); else emptyTmpl">
+            <div class="overflow-x-auto">
+              <table cdk-table uiTableWrapper [dataSource]="emailNotifications">
+                <ng-container cdkColumnDef="name">
+                  <th uiCellHeader *cdkHeaderCellDef scope="col">
+                    <span class="headerTitle">
+                      {{ 'common.name' | translate }}
+                    </span>
+                  </th>
+                  <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
+                    {{ element.name }}
+                  </td>
+                </ng-container>
+                <ng-container cdkColumnDef="alerttype">
+                  <th uiCellHeader *cdkHeaderCellDef scope="col">
+                    <span class="headerTitle">
+                      {{'components.email.notification.type' | translate}}
+                    </span>
+                  </th>
+                  <td uiCell *cdkCellDef="let element">
+                    <button
                     type="button"
                     class="cursor-text py-0.5 px-2 font-medium text-blue-600 rounded-full flex focus:ring-4 bg-blue-50 dark:border-blue-500"
                   >
@@ -76,90 +77,92 @@
                 </td>
               </ng-container>
 
-              <ng-container cdkColumnDef="createdby">
-                <th uiCellHeader *cdkHeaderCellDef scope="col">
-                  <span class="headerTitle">
-                    {{ 'models.customNotification.lastExecution' | translate }}
-                  </span>
-                </th>
-                <td uiCell *cdkCellDef="let element">
-                  {{ element?.createdBy?.name }}
-                </td>
-              </ng-container>
+                <ng-container cdkColumnDef="createdby">
+                  <th uiCellHeader *cdkHeaderCellDef scope="col">
+                    <span class="headerTitle">
+                      {{ 'models.customNotification.lastExecution' | translate }}
+                    </span>
+                  </th>
+                  <td uiCell *cdkCellDef="let element">
+                    {{element?.createdBy?.name}}
+                  </td>
+                </ng-container>
 
-              <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-                <th
-                  uiCellHeader
-                  *cdkHeaderCellDef
-                  scope="col"
-                  class="w-16"
-                ></th>
-                <td uiCell *cdkCellDef="let element" class="flex items-center">
-                  <ng-container>
-                    <ui-button
-                      [variant]="'grey'"
-                      class="hide-icons hover:text-primary-600"
-                      [isIcon]="true"
-                      size="large"
-                      (click)="sendEmailList(element)"
-                      [icon]="'forward_to_inbox'"
-                      [uiTooltip]="'Send Email'"
-                    >
-                    </ui-button>
+                <div *ngIf="this.ability.can('update', 'EmailNotification'); else elseBlock">
+                  <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+                    <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+                    <td uiCell *cdkCellDef="let element" class="flex items-center">
+                      <ng-container>
+                          <ui-button
+                            [variant]="'grey'"
+                            class="hide-icons hover:text-primary-600"
+                            [isIcon]="true"
+                            size="large"
+                            (click)="sendEmailList(element)"
+                            [icon]="'forward_to_inbox'"
+                            [uiTooltip]="'Send Email'"
+                          >
+                        </ui-button>
 
-                    <ui-button
-                      [variant]="'grey'"
-                      class="hide-icons hover:text-primary-600"
-                      [isIcon]="true"
-                      size="large"
-                      (click)="getEmailNotificationById(element.id)"
-                      [icon]="'edit'"
-                      [uiTooltip]="'Edit'"
-                    >
-                    </ui-button>
+                        <ui-button
+                            [variant]="'grey'"
+                            class="hide-icons hover:text-primary-600"
+                            [isIcon]="true"
+                            size="large"
+                            (click)="getEmailNotificationById(element.id)"
+                            [icon]="'edit'"
+                            [uiTooltip]="'Edit'"
+                          >
+                        </ui-button>
 
-                    <ui-button
-                      [variant]="'grey'"
-                      class="hide-icons hover:text-primary-600"
-                      [isIcon]="true"
-                      size="large"
-                      (click)="cloneEmailNotification(element)"
-                      [icon]="'content_copy'"
-                      [uiTooltip]="'Clone'"
-                    >
-                    </ui-button>
+                        <ui-button
+                            [variant]="'grey'"
+                            class="hide-icons hover:text-primary-600"
+                            [isIcon]="true"
+                            size="large"
+                            (click)="cloneEmailNotification(element)"
+                            [icon]="'content_copy'"
+                            [uiTooltip]="'Clone'"
+                          >
+                        </ui-button>
 
-                    <ui-button
-                      [variant]="'danger'"
-                      class="hide-icons hover:text-primary-600"
-                      [isIcon]="true"
-                      size="large"
-                      (click)="deleteEmailNotification(element)"
-                      [icon]="'delete'"
-                      [uiTooltip]="'Delete'"
-                    >
-                    </ui-button>
+                        <ui-button
+                            [variant]="'danger'"
+                            class="hide-icons hover:text-primary-600"
+                            [isIcon]="true"
+                            size="large"
+                            (click)="deleteEmailNotification(element)"
+                            [icon]="'delete'"
+                            [uiTooltip]="'Delete'"
+                          >
+                        </ui-button>
+                      </ng-container>
+                    </td>
                   </ng-container>
-                </td>
-              </ng-container>
+                </div>
 
-              <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-              <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
-            </table>
-          </div>
-          <!-- Pagination -->
-          <ui-paginator
-            [disabled]="emailService.emailListLoading"
-            [pageIndex]="pageInfo.pageIndex"
-            [pageSize]="pageInfo.pageSize"
-            [pageSizeOptions]="[5, 10, 25, 50]"
-            [totalItems]="pageInfo.length"
-            [ariaLabel]="
-              'components.notifications.paginator.ariaLabel' | translate
-            "
-            (pageChange)="onPage($event)"
-          >
-          </ui-paginator>
+                <ng-template #elseBlock>
+                  <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+                    <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+                    <td uiCell *cdkCellDef="let element" class="flex items-center"></td>
+                  </ng-container>
+                </ng-template>
+
+                <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+                <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+              </table>
+            </div>
+            <!-- Pagination -->
+              <ui-paginator
+              [disabled]="emailService.emailListLoading"
+              [pageIndex]="pageInfo.pageIndex"
+              [pageSize]="pageInfo.pageSize"
+              [pageSizeOptions]="[5, 10, 25, 50]"
+              [totalItems]="pageInfo.length"
+              [ariaLabel]="'components.notifications.paginator.ariaLabel' | translate"
+              (pageChange)="onPage($event)"
+            >
+            </ui-paginator>
         </ng-container>
         <ng-template #emptyTmpl>
           <!-- Empty indicator -->
