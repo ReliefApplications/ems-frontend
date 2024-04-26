@@ -815,11 +815,27 @@
 				},
 				"list": "Liste de distribution"
 			},
+			"filter": {
+				"datasetAlert": {
+					"partOne": "Pour le moment, nous sommes limités à récupérer seulement 50 enregistrements.",
+					"partThree": "Veuillez ajouter des filtres supplémentaires pour que le nombre d'enregistrements soit inférieur ou égal à 50.",
+					"partTwo": {
+						"end": "enregistrements correspondants.",
+						"start": "Sur la base des conditions de filtre fournies, il existe"
+					}
+				},
+				"missingFieldAlert": {
+					"partOne": "Les champs suivants ne peuvent pas être sélectionnés :",
+					"partThree": "et ne peut pas être correctement affiché dans le tableau de ce formulaire.",
+					"partTwo": "car ils sont du type"
+				}
+			},
 			"image": {
 				"rectangleValidation": "Veuillez télécharger une image avec un rapport hauteur/largeur plus rectangulaire, similaire à 960x80.",
 				"squareValidation": "Veuillez télécharger une image avec un rapport hauteur/largeur plus carré, ou similaire à 200x200."
 			},
 			"name": "Email",
+			"noFieldsSelected": "Veuillez sélectionner au moins 1 champ!",
 			"notification": {
 				"create": "Créer une notification",
 				"list": "Liste des notifications",

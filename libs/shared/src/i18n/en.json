@@ -809,11 +809,27 @@
 				},
 				"list": "Distribution List"
 			},
+			"filter": {
+				"datasetAlert": {
+					"partOne": "At this moment, we are limited to fetch only 50 records.",
+					"partThree": "Kindly add some additional filters to bring the record count less than or equals to 50.",
+					"partTwo": {
+						"end": " matching records.",
+						"start": "Based on the provided filter conditions there are "
+					}
+				},
+				"missingFieldAlert": {
+					"partOne": "The following fields are not available for selection:",
+					"partThree": "and cannot be properly displayed in the table for this form.",
+					"partTwo": " as they are of type "
+				}
+			},
 			"image": {
 				"rectangleValidation": "Please upload an image with a more rectangular aspect ratio, similar to 960x80.",
 				"squareValidation": "Please upload an image with a more square aspect ratio, or similar to 200x200."
 			},
 			"name": "Email",
+			"noFieldsSelected": "Please select at least 1 field to save this dataset",
 			"notification": {
 				"create": "Create Notification",
 				"list": "Notification List",
