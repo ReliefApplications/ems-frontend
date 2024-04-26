@@ -11,10 +11,10 @@
     <ul class="list-none space-y-1">
       <div uiChipList>
         <ng-container *ngFor="let email of this.emailService.recipients.To; let i = index">
-          <ui-chip *ngIf="i < 5 || isExpandedTo" class="inline-block bg-blue-100 rounded-full px-3 py-1 text-sm mb-1 font-semibold text-sky-700 mr-2">{{ email }}</ui-chip>
+          <ui-chip *ngIf="i < 6 || isExpandedTo" variant="secondary" class="w-full flex-row flex-wrap justify-between mr-1">{{ email }}</ui-chip>
         </ng-container>
       </div>
-      <ui-button *ngIf="this.emailService.recipients.To.length > 5 && !isExpandedTo" class="inline-block" (click)="toggleExpandTo()">{{'components.email.preview.more' | translate: { length: emailService.recipients.To.length - 5 } }}</ui-button>
+      <ui-button *ngIf="this.emailService.recipients.To.length > 6 && !isExpandedTo" class="inline-block" (click)="toggleExpandTo()">{{'components.email.preview.more' | translate: { length: emailService.recipients.To.length - 6 } }}</ui-button>
       <ui-button *ngIf="isExpandedTo" class="inline-block" (click)="toggleExpandTo()">{{'components.email.preview.less' | translate}}</ui-button>
     </ul>
   </div>
@@ -25,10 +25,10 @@
     <ul class="list-none space-y-1">
       <div uiChipList>
         <ng-container *ngFor="let email of this.emailService.recipients.Cc; let i = index">
-          <ui-chip variant="primary" *ngIf="i < 5 || isExpandedCc" class="inline-block bg-blue-100 rounded-full px-3 py-1 mb-1 text-sm font-semibold text-sky-700 mr-2">{{ email }}</ui-chip>
+          <ui-chip *ngIf="i < 6 || isExpandedCc" variant="secondary" class="w-full flex-row flex-wrap justify-between mr-1">{{ email }}</ui-chip>
         </ng-container>
       </div>
-      <ui-button *ngIf="this.emailService.recipients.Cc.length > 5 && !isExpandedCc" variant="primary" class="inline-block" (click)="toggleExpandCc()">{{'components.email.preview.more' | translate: { length: emailService.recipients.Cc.length - 5 } }}</ui-button>
+      <ui-button *ngIf="this.emailService.recipients.Cc.length > 6 && !isExpandedCc" variant="primary" class="inline-block" (click)="toggleExpandCc()">{{'components.email.preview.more' | translate: { length: emailService.recipients.Cc.length - 6 } }}</ui-button>
       <ui-button *ngIf="isExpandedCc" variant="primary" class="inline-block" (click)="toggleExpandCc()">{{'components.email.preview.less' | translate}}</ui-button>
     </ul>
   </div>
@@ -39,10 +39,10 @@
     <ul class="list-none space-y-1">
       <div uiChipList>
         <ng-container *ngFor="let email of this.emailService.recipients.Bcc; let i = index">
-          <ui-chip *ngIf="i < 5 || isExpandedBcc" class="inline-block bg-blue-100 rounded-full px-3 py-1 text-sm font-semibold mb-1 text-sky-700 mr-2">{{ email }}</ui-chip>
+          <ui-chip *ngIf="i < 6 || isExpandedBcc" variant="secondary" class="w-full flex-row flex-wrap justify-between mr-1">{{ email }}</ui-chip>
         </ng-container>
       </div>
-      <ui-button *ngIf="this.emailService.recipients.Bcc.length > 5 && !isExpandedBcc" variant="primary" class="inline-block" (click)="toggleExpandBcc()">{{'components.email.preview.more' | translate: { length: emailService.recipients.Bcc.length - 5 } }}</ui-button>
+      <ui-button *ngIf="this.emailService.recipients.Bcc.length > 6 && !isExpandedBcc" variant="primary" class="inline-block" (click)="toggleExpandBcc()">{{'components.email.preview.more' | translate: { length: emailService.recipients.Bcc.length - 6 } }}</ui-button>
       <ui-button *ngIf="isExpandedBcc" variant="primary" class="inline-block" (click)="toggleExpandBcc()">{{'components.email.preview.less' | translate}} </ui-button>
     </ul>
   </div>
