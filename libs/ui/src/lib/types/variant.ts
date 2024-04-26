@@ -4,6 +4,7 @@
 export const variants = [
   'default',
   'primary',
+  'secondary',
   'success',
   'danger',
   'grey',

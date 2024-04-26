@@ -47,6 +47,9 @@ export class ChipComponent implements OnDestroy {
         case 'primary':
           classes.push('bg-primary-100 hover:bg-primary-200 text-primary-400');
           break;
+        case 'secondary':
+          classes.push('bg-primary-100 hover:bg-primary-200 text-primary-800');
+          break;
         case 'success':
           classes.push('bg-green-100 hover:bg-green-200 text-green-400');
           break;
