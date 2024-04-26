@@ -8,6 +8,10 @@
       [variant]="button.variant"
       [category]="button.category"
       (click)="onButtonActionClick(button)"
+      [disabled]="button.type === 'recordEdition' && !recordEditionIsAvailable"
+      [uiTooltip]="
+        button.type === 'recordEdition' && !recordEditionIsAvailable ?
+        ('models.dashboard.buttonActions.warnings.recordEdition' | translate) : ''"
     >
       {{ button.text }}
     </ui-button>

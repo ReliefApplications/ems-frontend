@@ -288,6 +288,7 @@ export class DashboardComponent
             ? this.dashboard.step.workflow?.page?.application?.id
             : '';
           this.buttonActions = this.dashboard.buttons || [];
+          console.log(this.buttonActions);
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
           this.contextService.filterPosition.next({
@@ -573,7 +574,15 @@ export class DashboardComponent
     const dialogRef = this.dialog.open<ButtonActionT[] | undefined>(
       EditButtonActionsModalComponent,
       {
-        data: { buttonActions: this.buttonActions },
+        data: {
+          buttonActions: this.buttonActions,
+          recordEditionIsAvailable:
+            this.dashboard?.page?.context &&
+            Object.prototype.hasOwnProperty.call(
+              this.dashboard?.page?.context,
+              'resource'
+            ),
+        },
         disableClose: true,
       }
     );
@@ -582,6 +591,7 @@ export class DashboardComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(async (buttons) => {
         if (!buttons) return;
+        console.log(buttons);
 
         this.dashboardService
           .saveDashboardButtons(this.dashboard?.id, buttons)
@@ -818,5 +828,13 @@ export class DashboardComponent
         },
       });
     }
+  }
+
+  /**
+   * Refreshes the dashboard when context data record has been updated
+   */
+  public refreshContextData() {
+    this.loading = true;
+    this.loadDashboard(this.id).then(() => (this.loading = false));
   }
 }
