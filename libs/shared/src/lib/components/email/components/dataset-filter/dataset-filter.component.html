@@ -442,14 +442,9 @@
         {{ 'components.queryBuilder.fields.title' | translate }}
       </ng-template>
       <ng-template kendoTabContent>
-        <ng-container
-          class="mt-2"
-          *ngTemplateOutlet="datasetAlert"
-        ></ng-container>
-        <ng-container
-          class="mt-2"
-          *ngTemplateOutlet="missingFieldAlert"
-        ></ng-container>
+        <ng-container class="mt-2" *ngTemplateOutlet="datasetAlert"></ng-container>
+        <ng-container class="mt-2" *ngTemplateOutlet="missingFieldAlert"></ng-container>
+        <ng-container class="mt-2" *ngTemplateOutlet="selectedFieldAlert"></ng-container>
         <ng-container>
           <div class="flex gap-5">
             <!-- Available Fields -->
@@ -629,10 +624,6 @@
         </div>
         <div>
 
-        </div>
-        <div class="mt-2">
-
-          <ng-container class="mt-5" *ngTemplateOutlet="selectedFieldAlert"></ng-container>
         </div>
         </ng-container>
         <button
