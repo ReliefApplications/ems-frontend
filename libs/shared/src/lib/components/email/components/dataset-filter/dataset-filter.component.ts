@@ -56,39 +56,39 @@ export class DatasetFilterComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
-  /** ACTIVE TAB IN THE COMPONENT. */
+  /** Active tab in the component. */
   @Input() activeTab: any;
-  /** ARRAY OF TABS IN THE COMPONENT. */
+  /** Array of tabs in the component. */
   @Input() tabs: any;
-  /** QUERY FORMGROUP USED FOR FILTERING. */
+  /** Query FormGroup used for filtering. */
   @Input() query: FormGroup | any;
-  /** VALUE OF THE QUERY FORMGROUP. */
+  /** Value of the query FormGroup. */
   @Input() queryValue: FormGroup | any;
-  /** FLAG TO CONTROL THE VISIBILITY OF THE PREVIEW. */
+  /** Flag to control the visibility of the preview. */
   showPreview = false;
-  /** SUBSCRIPTION TO DATASET SAVING. */
+  /** Subscription to dataset saving. */
   private datasetSaveSubscription?: Subscription;
-  /** GRAPHQL QUERY REFERENCE FOR FETCHING RESOURCES. */
+  /** GraphQL query reference for fetching resources. */
   public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
-  /** METHOD TO FETCH DATA SETS. */
+  /** Method to fetch data sets. */
   public fetchDataSet: any = this.emailService.fetchDataSet;
-  /** SELECTED RESOURCE. */
+  /** Selected resource. */
   public resource!: Resource;
-  /** METADATA OF THE SELECTED RESOURCE. */
+  /** Metadata of the selected resource. */
   public metaData!: any;
-  /** RESPONSE OF THE DATA SET. */
+  /** Response of the data set. */
   public dataSetResponse: any;
-  /** FIELDS OF THE DATA SET. */
+  /** Fields of the data set. */
   public dataSetFields!: any[];
-  /** SELECTED RESOURCE ID. */
+  /** Selected resource ID. */
   public selectedResourceId!: string;
-  /** LIST OF DATA. */
+  /** List of data. */
   public dataList!: { [key: string]: any }[];
-  /** SELECTED SEARCH FIELD. */
+  /** Selected search field. */
   public searchSelectedField = '';
-  /** AVAILABLE SEARCH FIELD. */
+  /** Available search field. */
   public searchAvailableField = '';
-  /** FILTERED FIELDS FOR SEARCH. */
+  /** Filtered fields for search. */
   public filteredFields: any[] = [];
   /** Selected fields for filtering. */
   public selectedFields: FieldStore[] = [];
@@ -98,25 +98,25 @@ export class DatasetFilterComponent
   public availableFields: FieldStore[] = [];
   /** Operators for filtering. */
   public operators: { [key: number]: { value: string; label: string }[] } = {};
-  /** FLAG TO SHOW THE DATASET LIMIT WARNING. */
+  /** Flag to show the dataset limit warning. */
   public showDatasetLimitWarning = false;
-  /** TOTAL NUMBER OF MATCHING RECORDS. */
+  /** Total number of matching records. */
   public totalMatchingRecords = 0;
-  /** CURRENT TAB INDEX. */
+  /** Current tab index. */
   public currentTabIndex = 0;
-  /** FLAG TO SWITCH BETWEEN DATE PICKER AND TEXT EXPRESSION. */
+  /** Flag to switch between date picker and text expression. */
   public useExpression = false;
-  /** FILTER OPERATORS FROM FILTER CONSTANT */
+  /** Filter operators from filter constant */
   filterOperators = FILTER_OPERATORS;
-  /** FLAG FOR SENDING INDIVUAL EMAILS */
+  /** Flag for sending individual emails */
   public separateEmail = false;
-  /** DISABLED FIELDS LIST */
+  /** Disabled fields list */
   public disabledFields: string[] = [];
-  /** DISABLED FIELDS TYPE LIST */
+  /** Disabled fields type list */
   public disabledTypes: string[] = [];
-  /** TYPE LABELS */
+  /** Type labels */
   public TYPE_LABEL = TYPE_LABEL;
-  /** TIME UNITS FOR FILTERING. */
+  /** Time units for filtering. */
   public timeUnits = [
     { value: 'hours', label: 'Hours' },
     { value: 'days', label: 'Days' },
@@ -124,28 +124,24 @@ export class DatasetFilterComponent
     { value: 'months', label: 'Months' },
     { value: 'years', label: 'Years' },
   ];
-  /** DATASET PREVIEW VIEWCHILD. */
+  /** Dataset preview ViewChild. */
   @ViewChild('datasetPreview') datasetPreview: any;
-  /** EVENT EMITTER FOR CHANGING THE MAIN TAB. */
+  /** Event emitter for changing the main tab. */
   @Output() changeMainTab: EventEmitter<any> = new EventEmitter();
-  /** NAVIGATE TO DATASET PREVIEW SCREEN EMITTER */
+  /** Navigate to dataset preview screen emitter */
   @Output() navigateToPreview: EventEmitter<any> = new EventEmitter();
-  /** LOADING STATUS. */
+  /** Loading status. */
   public loading = false;
-  /** FIELD OPTIONS. */
+  /** Field options. */
   fieldOptions: any;
-  /** CURRENT FIELD NAME. */
+  /** Current field name. */
   currentFieldName: any;
-  /** VALIDATION ERROR MESSAGE */
+  /** Validation error message */
   showErrorMessage: any = '';
-  /** INDEX OF CURRENT HIGHLIGHTED FIELD FROM SELECTED FIELD LIST */
+  /** Index of current highlighted field from selected field list */
   selectedFieldIndex: number | null = null;
-  /** INDEX OF CURRENT HIGHLIGHTED FIELD FROM AVAILABLE FIELD LIST */
+  /** Index of current highlighted field from available field list */
   availableFieldIndex: number | null = null;
-  /**
-   *
-   */
-  fieldResourceData: any = null;
 
   /**
    * To use helper functions, Apollo serve
