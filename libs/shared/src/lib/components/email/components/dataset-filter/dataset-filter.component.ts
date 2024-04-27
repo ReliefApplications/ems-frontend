@@ -242,11 +242,16 @@ export class DatasetFilterComponent
     });
   }
 
-  // grabTypes() {
-  //   return this.apollo.query<QueryTypes>({
-  //     query: GET_QUERY_TYPES,
-  //   });
-  // }
+  /**
+   * Fetches types for field Row (Future use for filter-row)
+   *
+   * @returns Field Type
+   */
+  fetchTypes() {
+    return this.apollo.query<QueryTypes>({
+      query: GET_QUERY_TYPES,
+    });
+  }
 
   override ngOnDestroy() {
     const cacheData = {
