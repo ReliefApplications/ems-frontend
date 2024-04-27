@@ -27,9 +27,19 @@ import {
   TYPE_LABEL,
 } from '../../filter/filter.constant';
 import { FIELD_NAME } from './metadata.constant';
-import { GET_RESOURCE, GET_RESOURCES } from '../../graphql/queries';
-import { Subscription } from 'rxjs';
+import {
+  GET_RESOURCE,
+  GET_RESOURCES,
+  GET_QUERY_META_DATA,
+  GET_QUERY_TYPES,
+} from '../../graphql/queries';
+import {
+  QueryMetaDataQueryResponse,
+  QueryTypes,
+} from '../../../../models/metadata.model';
+import { Subscription, takeUntil } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { FieldStore } from '../../models/email.const';
 /** Default items per query, for pagination */
 let ITEMS_PER_PAGE = 0;
@@ -42,7 +52,10 @@ let ITEMS_PER_PAGE = 0;
   templateUrl: './dataset-filter.component.html',
   styleUrls: ['./dataset-filter.component.scss'],
 })
-export class DatasetFilterComponent implements OnInit, OnDestroy {
+export class DatasetFilterComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   /** ACTIVE TAB IN THE COMPONENT. */
   @Input() activeTab: any;
   /** ARRAY OF TABS IN THE COMPONENT. */
@@ -129,6 +142,10 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   selectedFieldIndex: number | null = null;
   /** INDEX OF CURRENT HIGHLIGHTED FIELD FROM AVAILABLE FIELD LIST */
   availableFieldIndex: number | null = null;
+  /**
+   *
+   */
+  fieldResourceData: any = null;
 
   /**
    * To use helper functions, Apollo serve
@@ -143,13 +160,17 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private formGroup: FormBuilder,
     public snackBar: SnackbarService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.query.controls.name.valueChanges.subscribe((data: any) => {
-      this.emailService.title.next(data);
-      this.emailService.index.next(this.activeTab.index);
-    });
+    this.query.controls.name.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data: any) => {
+        this.emailService.title.next(data);
+        this.emailService.index.next(this.activeTab.index);
+      });
     this.query.get('individualEmail').disable();
     this.separateEmail = this.emailService.updateSeparateEmail(
       this.activeTab.index
@@ -206,7 +227,28 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnDestroy() {
+  /**
+   * Fetches Resource meta data
+   *
+   * @returns resource meta data
+   */
+  fetchResourceMetaData() {
+    return this.apollo.query<QueryMetaDataQueryResponse>({
+      query: GET_QUERY_META_DATA,
+      variables: {
+        id: this.selectedResourceId,
+      },
+      fetchPolicy: 'cache-first',
+    });
+  }
+
+  // grabTypes() {
+  //   return this.apollo.query<QueryTypes>({
+  //     query: GET_QUERY_TYPES,
+  //   });
+  // }
+
+  override ngOnDestroy() {
     const cacheData = {
       dataList: this.dataList,
       resource: this.resource,
@@ -260,35 +302,39 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       });
       if (this.resourcesQuery && ITEMS_PER_PAGE > -1) {
         this.loading = true;
-        this.resourcesQuery.valueChanges.subscribe(({ data }) => {
-          this.loading = false;
-          ITEMS_PER_PAGE =
-            ITEMS_PER_PAGE > data?.resources?.totalCount ? -1 : ITEMS_PER_PAGE;
-          const resources =
-            data?.resources?.edges?.map((edge) => edge.node) || [];
-          this.emailService.resourcesNameId = resources.map((element) => {
-            return { id: element?.id?.toString(), name: element?.name };
-          });
-
-          // Edit Mode data
-          if (this.query?.value?.resource?.id) {
-            this.selectedResourceId = this.query?.value?.resource?.id;
-            const found = this.emailService.resourcesNameId.some(
-              (resource) => resource.id === this.selectedResourceId
-            );
-
-            // Keeps scrolling until name is found
-            if (!found && ITEMS_PER_PAGE !== -1) {
-              this.getResourceDataOnScroll();
-            }
+        this.resourcesQuery.valueChanges
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(({ data }) => {
+            this.loading = false;
+            ITEMS_PER_PAGE =
+              ITEMS_PER_PAGE > data?.resources?.totalCount
+                ? -1
+                : ITEMS_PER_PAGE;
             const resources =
               data?.resources?.edges?.map((edge) => edge.node) || [];
             this.emailService.resourcesNameId = resources.map((element) => {
               return { id: element?.id?.toString(), name: element?.name };
             });
-            this.getResourceData(false);
-          }
-        });
+
+            // Edit Mode data
+            if (this.query?.value?.resource?.id) {
+              this.selectedResourceId = this.query?.value?.resource?.id;
+              const found = this.emailService.resourcesNameId.some(
+                (resource) => resource.id === this.selectedResourceId
+              );
+
+              // Keeps scrolling until name is found
+              if (!found && ITEMS_PER_PAGE !== -1) {
+                this.getResourceDataOnScroll();
+              }
+              const resources =
+                data?.resources?.edges?.map((edge) => edge.node) || [];
+              this.emailService.resourcesNameId = resources.map((element) => {
+                return { id: element?.id?.toString(), name: element?.name };
+              });
+              this.getResourceData(false);
+            }
+          });
       }
     }
   }
@@ -314,216 +360,257 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
           (element) => element.id === this.selectedResourceId
         )
       );
-      this.resource = {};
-      this.loading = true;
-      this.showErrorMessage = '';
-      this.apollo
-        .query<ResourceQueryResponse>({
-          query: GET_RESOURCE,
-          variables: {
-            id: this.selectedResourceId,
-          },
-        })
+      let fields: any[] | undefined = [];
+      this.fetchResourceMetaData()
+        .pipe(takeUntil(this.destroy$))
         .subscribe((res) => {
-          this.loading = false;
-          this.resource = res.data.resource;
-          this.metaData = res.data?.resource?.metadata;
-          if (this.metaData?.length) {
-            this.metaData.forEach((field: any) => {
-              if (
-                field &&
-                !['matrix', 'matrixdynamic', 'matrixdropdown'].includes(
-                  field.type
-                )
-              ) {
-                if (field) {
+          fields = res.data?.resource?.metadata;
+          this.resource = {};
+          this.loading = true;
+          this.showErrorMessage = '';
+          this.apollo
+            .query<ResourceQueryResponse>({
+              query: GET_RESOURCE,
+              variables: {
+                id: this.selectedResourceId,
+              },
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((res) => {
+              this.loading = false;
+              this.resource = res.data.resource;
+              this.metaData = res.data?.resource?.metadata;
+              if (this.metaData?.length) {
+                this.metaData.forEach((field: any) => {
                   if (
-                    field.name === FIELD_NAME.createdBy &&
-                    field.fields?.length
+                    field &&
+                    !['matrix', 'matrixdynamic', 'matrixdropdown'].includes(
+                      field.type
+                    )
                   ) {
-                    field.fields.forEach((obj: any) => {
-                      obj.name = `_${FIELD_NAME.createdBy}.user.` + obj.name;
-                      this.availableFields.filter((x) => x.name == obj.name)
-                        .length === 0
-                        ? this.availableFields.push(clone(obj))
-                        : '';
-                      obj.name =
-                        `${FIELD_NAME.createdBy}.` + obj.name.split('.')[2];
-                      this.filterFields.push(obj);
-                    });
-                  } else if (
-                    field.name === FIELD_NAME.lastUpdatedBy &&
-                    field.fields?.length
-                  ) {
-                    field.fields.forEach((obj: any) => {
-                      obj.name =
-                        `_${FIELD_NAME.lastUpdatedBy}.user.` + obj.name;
-                      this.availableFields.filter((x) => x.name == obj.name)
-                        .length === 0
-                        ? this.availableFields.push(clone(obj))
-                        : '';
-                      obj.name =
-                        `${FIELD_NAME.lastUpdatedBy}.` + obj.name.split('.')[2];
-                      this.filterFields.push(obj);
-                    });
-                  } else if (
-                    field.name === 'lastUpdateForm' &&
-                    field.fields?.length
-                  ) {
-                    field.fields.forEach((obj: any) => {
-                      obj.name = '_lastUpdateForm.' + obj.name;
-                      this.availableFields.filter((x) => x.name == obj.name)
-                        .length === 0
-                        ? this.availableFields.push(clone(obj))
-                        : '';
-                      obj.name = 'lastUpdateForm.' + obj.name.split('.')[1];
-                      this.filterFields.push(obj);
-                    });
-                  } else if (field.name === 'form' && field.fields?.length) {
-                    field.fields.forEach((obj: any) => {
-                      obj.name = '_form.' + obj.name;
-                      this.availableFields.filter((x) => x.name == obj.name)
-                        .length === 0
-                        ? this.availableFields.push(clone(obj))
-                        : '';
-                      obj.name = 'form.' + obj.name.split('.')[1];
-                      this.filterFields.push(obj);
-                    });
-                  } else if (field.type === TYPE_LABEL.resource) {
-                    if (field.fields) {
-                      field.fields.forEach((obj: any) => {
-                        obj.parentName = field.name;
-                        if (
-                          obj.name === FIELD_NAME.createdBy ||
-                          obj.name === FIELD_NAME.lastUpdatedBy
-                        ) {
-                          const obj1 = cloneDeep(obj);
-                          obj1.childName = `${field.name} - _${obj.name}.user.username`;
-                          obj1.name = `${field.name} - _${obj.name}.user.username`;
-                          obj1.parentName = field.name;
-                          obj1.type = 'text';
-                          this.availableFields.filter(
-                            (x) => x.name == obj1.name
-                          ).length === 0
-                            ? this.availableFields.push(obj1)
-                            : '';
-
-                          // Create and push the second object
-                          const obj2 = cloneDeep(obj);
-                          obj2.name = `${field.name} - _${obj.name}.user._id`;
-                          obj2.childName = `${field.name} - _${obj.name}.user._id`;
-                          obj2.parentName = field.name;
-                          obj2.type = 'text';
-                          this.availableFields.filter(
-                            (x) => x.name == obj2.name
-                          ).length === 0
-                            ? this.availableFields.push(obj2)
-                            : '';
-
-                          // Create and push the third object
-                          const obj3 = cloneDeep(obj);
-                          obj3.name = `${field.name} - _${obj.name}.user.name`;
-                          obj3.childName = `${field.name} - _${obj.name}.user.name`;
-                          obj3.parentName = field.name;
-                          obj3.type = 'text';
-                          this.availableFields.filter(
-                            (x) => x.name == obj3.name
-                          ).length === 0
-                            ? this.availableFields.push(obj3)
-                            : '';
-                          obj.fields = [];
-                          obj.fields?.filter((x: any) => x.name == obj.name)
-                            .length === 0
-                            ? obj.fields.push(clone(obj1))
-                            : '';
-                          obj.fields?.filter((x: any) => x.name == obj.name)
-                            .length === 0
-                            ? obj.fields.push(clone(obj2))
-                            : '';
-                          obj.fields?.filter((x: any) => x.name == obj.name)
-                            .length === 0
-                            ? obj.fields.push(clone(obj3))
-                            : '';
-                          obj.childName = field.name + ' - ' + obj.name;
-                          obj.name = field.name + ' - ' + obj.name;
-                        } else {
-                          obj.childName = field.name + ' - ' + obj.name;
-                          obj.name = field.name + ' - ' + obj.name;
+                    if (field) {
+                      if (
+                        field.name === FIELD_NAME.createdBy &&
+                        field.fields?.length
+                      ) {
+                        field.fields.forEach((obj: any) => {
+                          obj.name =
+                            `_${FIELD_NAME.createdBy}.user.` + obj.name;
                           this.availableFields.filter((x) => x.name == obj.name)
                             .length === 0
                             ? this.availableFields.push(clone(obj))
                             : '';
-                        }
-                      });
-                    } else {
-                      this.availableFields.filter((x) => x.name == field.name)
-                        .length === 0
-                        ? this.availableFields.push(clone(field))
-                        : '';
-                    }
+                          obj.name =
+                            `${FIELD_NAME.createdBy}.` + obj.name.split('.')[2];
+                          this.filterFields.push(obj);
+                        });
+                      } else if (
+                        field.name === FIELD_NAME.lastUpdatedBy &&
+                        field.fields?.length
+                      ) {
+                        field.fields.forEach((obj: any) => {
+                          obj.name =
+                            `_${FIELD_NAME.lastUpdatedBy}.user.` + obj.name;
+                          this.availableFields.filter((x) => x.name == obj.name)
+                            .length === 0
+                            ? this.availableFields.push(clone(obj))
+                            : '';
+                          obj.name =
+                            `${FIELD_NAME.lastUpdatedBy}.` +
+                            obj.name.split('.')[2];
+                          this.filterFields.push(obj);
+                        });
+                      } else if (
+                        field.name === 'lastUpdateForm' &&
+                        field.fields?.length
+                      ) {
+                        field.fields.forEach((obj: any) => {
+                          obj.name = '_lastUpdateForm.' + obj.name;
+                          this.availableFields.filter((x) => x.name == obj.name)
+                            .length === 0
+                            ? this.availableFields.push(clone(obj))
+                            : '';
+                          obj.name = 'lastUpdateForm.' + obj.name.split('.')[1];
+                          this.filterFields.push(obj);
+                        });
+                      } else if (
+                        field.name === 'form' &&
+                        field.fields?.length
+                      ) {
+                        field.fields.forEach((obj: any) => {
+                          obj.name = '_form.' + obj.name;
+                          this.availableFields.filter((x) => x.name == obj.name)
+                            .length === 0
+                            ? this.availableFields.push(clone(obj))
+                            : '';
+                          obj.name = 'form.' + obj.name.split('.')[1];
+                          this.filterFields.push(obj);
+                        });
+                      } else if (field.type === TYPE_LABEL.resource) {
+                        if (field.fields) {
+                          field.fields.forEach((obj: any) => {
+                            obj.parentName = field.name;
+                            if (
+                              obj.name === FIELD_NAME.createdBy ||
+                              obj.name === FIELD_NAME.lastUpdatedBy
+                            ) {
+                              const obj1 = cloneDeep(obj);
+                              obj1.childName = `${field.name} - _${obj.name}.user.username`;
+                              obj1.name = `${field.name} - _${obj.name}.user.username`;
+                              obj1.parentName = field.name;
+                              obj1.type = 'text';
+                              this.availableFields.filter(
+                                (x) => x.name == obj1.name
+                              ).length === 0
+                                ? this.availableFields.push(obj1)
+                                : '';
 
-                    this.filterFields.push(field);
-                  } else if (field.type === TYPE_LABEL.resources) {
-                    this.availableFields.filter((x) => x.name == field.name)
-                      .length === 0
-                      ? this.availableFields.push(clone(field))
-                      : '';
-                    this.filterFields.push(field);
+                              // Create and push the second object
+                              const obj2 = cloneDeep(obj);
+                              obj2.name = `${field.name} - _${obj.name}.user._id`;
+                              obj2.childName = `${field.name} - _${obj.name}.user._id`;
+                              obj2.parentName = field.name;
+                              obj2.type = 'text';
+                              this.availableFields.filter(
+                                (x) => x.name == obj2.name
+                              ).length === 0
+                                ? this.availableFields.push(obj2)
+                                : '';
+
+                              // Create and push the third object
+                              const obj3 = cloneDeep(obj);
+                              obj3.name = `${field.name} - _${obj.name}.user.name`;
+                              obj3.childName = `${field.name} - _${obj.name}.user.name`;
+                              obj3.parentName = field.name;
+                              obj3.type = 'text';
+                              this.availableFields.filter(
+                                (x) => x.name == obj3.name
+                              ).length === 0
+                                ? this.availableFields.push(obj3)
+                                : '';
+                              obj.fields = [];
+                              obj.fields?.filter((x: any) => x.name == obj.name)
+                                .length === 0
+                                ? obj.fields.push(clone(obj1))
+                                : '';
+                              obj.fields?.filter((x: any) => x.name == obj.name)
+                                .length === 0
+                                ? obj.fields.push(clone(obj2))
+                                : '';
+                              obj.fields?.filter((x: any) => x.name == obj.name)
+                                .length === 0
+                                ? obj.fields.push(clone(obj3))
+                                : '';
+                              obj.childName = field.name + ' - ' + obj.name;
+                              obj.name = field.name + ' - ' + obj.name;
+                            } else {
+                              obj.childName = field.name + ' - ' + obj.name;
+                              obj.name = field.name + ' - ' + obj.name;
+                              this.availableFields.filter(
+                                (x) => x.name == obj.name
+                              ).length === 0
+                                ? this.availableFields.push(clone(obj))
+                                : '';
+                            }
+                          });
+                        } else {
+                          this.availableFields.filter(
+                            (x) => x.name == field.name
+                          ).length === 0
+                            ? this.availableFields.push(clone(field))
+                            : '';
+                        }
+
+                        this.filterFields.push(field);
+                      } else if (field.type === TYPE_LABEL.resources) {
+                        this.availableFields.filter((x) => x.name == field.name)
+                          .length === 0
+                          ? this.availableFields.push(clone(field))
+                          : '';
+                        this.filterFields.push(field);
+                      } else {
+                        const metaField = fields?.find(
+                          (x: any) => x.type === field.type
+                        );
+                        // Map Select Data to select fields if it exists
+                        field.options = metaField.options;
+                        field.multiSelect = metaField.multiSelect;
+                        field.select = metaField.editor === 'select';
+                        this.availableFields.filter((x) => x.name == field.name)
+                          ? this.availableFields.push(clone(field))
+                          : '';
+                        this.filterFields.push(clone(field));
+                      }
+                    }
+                    this.availableFields = this.availableFields ?? [];
+                    this.filterFields = this.filterFields ?? [];
+                    this.availableFields?.sort((a, b) =>
+                      a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
+                    );
                   } else {
-                    this.availableFields.filter((x) => x.name == field.name)
-                      ? this.availableFields.push(clone(field))
-                      : '';
-                    this.filterFields.push(clone(field));
+                    this.disabledFields.push(field.name);
+                    this.disabledTypes.push(field.type);
+                    this.disabledTypes = [...new Set(this.disabledTypes)];
                   }
+                });
+
+                //Checking Edit mode data
+                if (
+                  this.query?.controls?.fields?.value &&
+                  (this.selectedFields === undefined ||
+                    this.selectedFields.length === 0)
+                ) {
+                  this.selectedFields =
+                    this.selectedFields === undefined
+                      ? []
+                      : this.selectedFields;
+                  this.selectedFields =
+                    this.query?.controls?.fields?.value?.length > 0
+                      ? this.query?.controls?.fields?.value
+                      : this.selectedFields;
+                  this.query?.controls?.fields?.value?.forEach(
+                    (fieldEle: any) => {
+                      this.populateFields(fieldEle);
+                    }
+                  );
                 }
-                this.availableFields = this.availableFields ?? [];
-                this.filterFields = this.filterFields ?? [];
-                this.availableFields?.sort((a, b) =>
-                  a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
-                );
-              } else {
-                this.disabledFields.push(field.name);
-                this.disabledTypes.push(field.type);
-                this.disabledTypes = [...new Set(this.disabledTypes)];
+
+                if (this.query?.controls?.filter?.value) {
+                  this.query?.controls?.filter?.value?.filters?.forEach(
+                    (fValue: any, fIndex: number) => {
+                      this.setField(fValue.field, fIndex);
+                    }
+                  );
+                }
+              }
+              if (
+                this.query?.value?.resource !== null &&
+                !this.resource?.fields?.length
+              ) {
+                this.showErrorMessage =
+                  "Selected form doesn't contain any fields";
               }
             });
-
-            //Checking Edit mode data
-            if (
-              this.query?.controls?.fields?.value &&
-              (this.selectedFields === undefined ||
-                this.selectedFields.length === 0)
-            ) {
-              this.selectedFields =
-                this.selectedFields === undefined ? [] : this.selectedFields;
-              this.selectedFields =
-                this.query?.controls?.fields?.value?.length > 0
-                  ? this.query?.controls?.fields?.value
-                  : this.selectedFields;
-              this.query?.controls?.fields?.value?.forEach((fieldEle: any) => {
-                this.populateFields(fieldEle);
-              });
-            }
-
-            if (this.query?.controls?.filter?.value) {
-              this.query?.controls?.filter?.value?.filters?.forEach(
-                (fValue: any, fIndex: number) => {
-                  this.setField(fValue.field, fIndex);
-                }
-              );
-            }
-          }
-          if (
-            this.query?.value?.resource !== null &&
-            !this.resource?.fields?.length
-          ) {
-            this.showErrorMessage = "Selected form doesn't contain any fields";
-          }
         });
     } else {
       this.showErrorMessage = "Selected form doesn't contain any fields";
     }
   }
+
+  // /**
+  //  *
+  //  * @param name
+  //  */
+  // grabValues(name: string) {
+  //   const values = [];
+
+  //   this.grabData().subscribe((res) => {
+  //     const resource = res.data.resource;
+  //     // const value = resource?.find(
+  //     //   (data: any) => data.name === fieldName.field.split('.')[0]
+  //     // )
+  //   });
+  // }
 
   /**
    * Retrieves the field type of the field.
@@ -607,6 +694,16 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       this.getFieldType(fieldIndex) === 'numeric' &&
       operators.includes(fieldOperator)
     );
+  }
+
+  /**
+   * Checks if the selected field is a select field.
+   *
+   * @param fieldIndex The index of the field in the dataset filter.
+   * @returns Returns true if the field is a select field, otherwise false.
+   */
+  isSelectField(fieldIndex: number): boolean {
+    return this.getFieldType(fieldIndex) === 'select';
   }
 
   /**
@@ -773,6 +870,38 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
         [fieldIndex]: fieldOperator,
       };
     }
+  }
+
+  /**
+   * Retrieves field using index
+   *
+   * @param fieldIndex filter row index
+   * @returns field object
+   */
+  getField(fieldIndex: number): any {
+    const fieldControl = this.datasetFilterInfo.at(fieldIndex);
+    const fieldName = fieldControl ? fieldControl.value : null;
+    let field = fieldName
+      ? this.resource?.metadata?.find(
+          (data: any) => data.name === fieldName.field.split('.')[0]
+        )
+      : null;
+    if (field && field?.type === TYPE_LABEL.resources) {
+      field = fieldName
+        ? field.fields?.find(
+            (data: any) => data.name === fieldName.field.split('.')[1]
+          )
+        : null;
+    }
+    if (field && field.type === TYPE_LABEL.resource) {
+      if (field.fields) {
+        field = field?.fields?.find(
+          (x: { name: any }) =>
+            x.name.split(' - ')[1] === fieldName.field.split('.')[1]
+        );
+      }
+    }
+    return field ?? '';
   }
 
   /**
@@ -1003,33 +1132,35 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
          Fetches the data records for selected fields
         (by default its all records in the resource).
          */
-        this.fetchDataSet(query).subscribe(
-          (res: any) => {
-            this.loading = false;
-            this.totalMatchingRecords = res?.data?.dataSet?.totalCount;
-            if (this.totalMatchingRecords <= 50) {
-              this.datasetPreview.selectTab(1);
-              this.showDatasetLimitWarning = false;
-              if (this.selectedFields.length) {
-                this.emailService.disableSaveAndProceed.next(false);
+        this.fetchDataSet(query)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(
+            (res: any) => {
+              this.loading = false;
+              this.totalMatchingRecords = res?.data?.dataSet?.totalCount;
+              if (this.totalMatchingRecords <= 50) {
+                this.datasetPreview.selectTab(1);
+                this.showDatasetLimitWarning = false;
+                if (this.selectedFields.length) {
+                  this.emailService.disableSaveAndProceed.next(false);
+                } else {
+                  this.emailService.disableSaveAndProceed.next(true);
+                }
               } else {
+                this.showDatasetLimitWarning = true;
                 this.emailService.disableSaveAndProceed.next(true);
               }
-            } else {
-              this.showDatasetLimitWarning = true;
+            },
+            (error: any) => {
+              this.loading = false;
+              this.showDatasetLimitWarning = false;
               this.emailService.disableSaveAndProceed.next(true);
+              this.snackBar.openSnackBar(
+                error?.message ?? 'Something Went Wrong',
+                { error: true }
+              );
             }
-          },
-          (error: any) => {
-            this.loading = false;
-            this.showDatasetLimitWarning = false;
-            this.emailService.disableSaveAndProceed.next(true);
-            this.snackBar.openSnackBar(
-              error?.message ?? 'Something Went Wrong',
-              { error: true }
-            );
-          }
-        );
+          );
       }
       if (
         tabName == 'fields' &&
@@ -1066,8 +1197,9 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
           query.tabIndex = count;
           count++;
           query.pageSize = 50;
-          this.fetchDataSet(query).subscribe(
-            (res: { data: { dataSet: any } }) => {
+          this.fetchDataSet(query)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((res: { data: { dataSet: any } }) => {
               if (res?.data?.dataSet) {
                 this.dataSetResponse = res?.data?.dataSet;
                 this.dataList = res?.data?.dataSet.records?.map(
@@ -1126,8 +1258,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                   this.emailService.setAllPreviewData(allPreviewData);
                 }
               }
-            }
-          );
+            });
         }
       }
     } else {

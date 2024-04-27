@@ -315,4 +315,6 @@ export const TYPE_LABEL = {
   resource: 'resource',
   resources: 'resources',
   tagbox: 'tagbox',
+  owner: 'owner',
+  user: 'user',
 };
