@@ -847,6 +847,9 @@
 				"less": "******",
 				"more": "****** {{length}} ******",
 				"subject": "******"
+			},
+			"tooltip": {
+				"reverseDate": "******"
 			}
 		},
 		"emailBuilder": {

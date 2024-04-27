@@ -847,6 +847,9 @@
 				"less": "Montrer moins",
 				"more": "Afficher {{length}} e-mails restants...",
 				"subject": "Sujet:"
+			},
+			"tooltip": {
+				"reverseDate": "AAAA/MM/JJ"
 			}
 		},
 		"emailBuilder": {
