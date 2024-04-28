@@ -9,6 +9,11 @@ import { Application } from '../../models/application.model';
 import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
 import { AuthService } from '../auth/auth.service';
+import {
+  AnalyticsService,
+  DownloadFileEvent,
+  EventType,
+} from '../analytics/analytics.service';
 
 /** LIFT case report api URL */
 const LIFT_REPORT_URL = 'https://lift-functions.azurewebsites.net/api/report/';
@@ -45,13 +50,15 @@ export class DownloadService {
    * @param restService Shared rest service
    * @param document document
    * @param authService Shared authentication service
+   * @param analyticsService Shared analytics service
    */
   constructor(
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private restService: RestService,
     @Inject(DOCUMENT) private document: Document,
-    private authService: AuthService
+    private authService: AuthService,
+    private analyticsService: AnalyticsService
   ) {}
 
   /**
@@ -120,6 +127,11 @@ export class DownloadService {
       .subscribe({
         next: (res) => {
           const blob = new Blob([res], { type });
+          this.analyticsService.sendEvent({
+            type: EventType.DOWNLOAD_FILE,
+            datetime: new Date(),
+            file: fileName,
+          } as DownloadFileEvent);
           this.saveFile(fileName, blob);
           snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.file.download.ready'
