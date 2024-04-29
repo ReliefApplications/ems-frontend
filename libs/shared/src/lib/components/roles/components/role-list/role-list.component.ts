@@ -146,6 +146,9 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
       if (value) {
         if (this.inApplication) {
           this.applicationService.addRole(value);
+
+          // Reload window to update roles list & application menu.
+          window.location.reload();
         } else {
           this.apollo
             .mutate<AddRoleMutationResponse>({
