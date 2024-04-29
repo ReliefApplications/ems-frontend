@@ -442,9 +442,18 @@
         {{ 'components.queryBuilder.fields.title' | translate }}
       </ng-template>
       <ng-template kendoTabContent>
-        <ng-container class="mt-2" *ngTemplateOutlet="datasetAlert"></ng-container>
-        <ng-container class="mt-2" *ngTemplateOutlet="missingFieldAlert"></ng-container>
-        <ng-container class="mt-2" *ngTemplateOutlet="selectedFieldAlert"></ng-container>
+        <ng-container
+          class="mt-2"
+          *ngTemplateOutlet="datasetAlert"
+        ></ng-container>
+        <ng-container
+          class="mt-2"
+          *ngTemplateOutlet="missingFieldAlert"
+        ></ng-container>
+        <ng-container
+          class="mt-2"
+          *ngTemplateOutlet="selectedFieldAlert"
+        ></ng-container>
         <ng-container>
           <div class="flex gap-5">
             <!-- Available Fields -->
@@ -605,48 +614,91 @@
                     (click)="selectedFieldIndex = index"
                     [ngClass]="{ 'field-select': selectedFieldIndex === index }"
                   >
-                    {{ this.emailService.replaceUnderscores(removeUserString(fields.name)) | titlecase }}
-                </div>
-              </ng-container>
+                    {{
+                      this.emailService.replaceUnderscores(
+                        removeUserString(fields.name)
+                      ) | titlecase
+                    }}
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+            <!-- Up and Down buttons -->
+            <div class="flex flex-col items-center justify-center">
+              <!-- Move Selected Field To Top Button -->
+              <button
+                class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1"
+                (click)="moveTop(selectedFieldIndex)"
+              >
+                <ui-icon
+                  class="text-base"
+                  icon="keyboard_double_arrow_up"
+                  variant="default"
+                ></ui-icon>
+              </button>
+              <!-- Move Selected Field Up Button -->
+              <button
+                class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1"
+                (click)="moveUp(selectedFieldIndex)"
+              >
+                <ui-icon
+                  class="text-base"
+                  icon="keyboard_arrow_up"
+                  variant="default"
+                ></ui-icon>
+              </button>
+              <!-- Move Selected Field Down Button -->
+              <button
+                class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1"
+                (click)="moveDown(selectedFieldIndex)"
+              >
+                <ui-icon
+                  class="text-base"
+                  icon="keyboard_arrow_down"
+                  variant="default"
+                ></ui-icon>
+              </button>
+              <!-- Move Selected Field To Bottom Button -->
+              <button
+                class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1"
+                (click)="moveBottom(selectedFieldIndex)"
+              >
+                <ui-icon
+                  class="text-base"
+                  icon="keyboard_double_arrow_down"
+                  variant="default"
+                ></ui-icon>
+              </button>
             </div>
           </div>
-          <!-- Up and Down buttons -->
-          <div class="flex flex-col items-center justify-center">
-            <!-- Move Selected Field To Top Button -->
-            <button class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1" (click)="moveTop(selectedFieldIndex)"><ui-icon class="text-base" icon="keyboard_double_arrow_up" variant="default"></ui-icon></button>
-            <!-- Move Selected Field Up Button -->
-            <button class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1" (click)="moveUp(selectedFieldIndex)"><ui-icon class="text-base" icon="keyboard_arrow_up" variant="default"></ui-icon></button>
-            <!-- Move Selected Field Down Button -->
-            <button class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1" (click)="moveDown(selectedFieldIndex)"><ui-icon class="text-base" icon="keyboard_arrow_down" variant="default"></ui-icon></button>
-            <!-- Move Selected Field To Bottom Button -->
-            <button class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1" (click)="moveBottom(selectedFieldIndex)"><ui-icon class="text-base" icon="keyboard_double_arrow_down" variant="default"></ui-icon></button>
-          </div>
-        </div>
-        <div>
-
-        </div>
+          <div></div>
         </ng-container>
         <button
-        *ngIf="tabs?.length > 1 && datasetFilterInfo.controls && activeTab.index !== tabs.length-1"
-        type="button"
-        [disabled]="selectedFields.length === 0"
-        (click)="getDataSet('fields')"
-        class="text-white text-sm float-right block mt-2 w-24 rounded-md bg-sky-600 hover:bg-sky-700 px-4 py-2 transition-colors duration-150 ease-in-out btn-width"
-      >
-        {{ 'components.queryBuilder.filter.apply' | translate }}
-      </button>
+          *ngIf="
+            tabs?.length > 1 &&
+            datasetFilterInfo.controls &&
+            activeTab.index !== tabs.length - 1
+          "
+          type="button"
+          [disabled]="selectedFields.length === 0"
+          (click)="getDataSet('fields')"
+          class="text-white text-sm float-right block mt-2 w-24 rounded-md bg-sky-600 hover:bg-sky-700 px-4 py-2 transition-colors duration-150 ease-in-out btn-width"
+        >
+          {{ 'components.queryBuilder.filter.apply' | translate }}
+        </button>
         <button
-        *ngIf="tabs?.length === 1 || activeTab?.index === tabs?.length-1"
-        type="button"
-        (click)="getDataSet('preview');showPreview=true"
-        [disabled]="showDatasetLimitWarning || selectedFields.length === 0 "
-        [class.disabled-button]="showDatasetLimitWarning || selectedFields.length === 0"
-        class="text-white text-sm float-right block mt-2 w-24 rounded-md bg-sky-600 hover:bg-sky-700 px-4 py-2 transition-colors duration-150 ease-in-out"
-      >
-        {{ 'common.preview' | translate }}
-      </button>
-    </ng-template>
-
+          *ngIf="tabs?.length === 1 || activeTab?.index === tabs?.length - 1"
+          type="button"
+          (click)="getDataSet('preview'); showPreview = true"
+          [disabled]="showDatasetLimitWarning || selectedFields.length === 0"
+          [class.disabled-button]="
+            showDatasetLimitWarning || selectedFields.length === 0
+          "
+          class="text-white text-sm float-right block mt-2 w-24 rounded-md bg-sky-600 hover:bg-sky-700 px-4 py-2 transition-colors duration-150 ease-in-out"
+        >
+          {{ 'common.preview' | translate }}
+        </button>
+      </ng-template>
     </kendo-tabstrip-tab>
     <!-- Style Tab -->
     <!-- <kendo-tabstrip-tab [disabled]="true">
@@ -669,20 +721,32 @@
 </form>
 <ng-template #datasetAlert>
   <ui-alert variant="warning" *ngIf="showDatasetLimitWarning" [closable]="true">
-    {{ 'components.email.filter.datasetAlert.partOne' | translate}}
-    {{ 'components.email.filter.datasetAlert.partTwo.start' | translate}}<strong>{{totalMatchingRecords}}</strong>{{ 'components.email.filter.datasetAlert.partTwo.end' | translate}}
-    {{ 'components.email.filter.datasetAlert.partThree' | translate}}
+    {{ 'components.email.filter.datasetAlert.partOne' | translate }}
+    {{ 'components.email.filter.datasetAlert.partTwo.start' | translate
+    }}<strong>{{ totalMatchingRecords }}</strong
+    >{{ 'components.email.filter.datasetAlert.partTwo.end' | translate }}
+    {{ 'components.email.filter.datasetAlert.partThree' | translate }}
   </ui-alert>
 </ng-template>
 <ng-template #selectedFieldAlert>
-  <ui-alert variant="warning" *ngIf="!selectedFields.length && !showDatasetLimitWarning" [closable]="true">
-   {{'components.email.noFieldsSelected' | translate}}
+  <ui-alert
+    variant="warning"
+    *ngIf="!selectedFields.length && !showDatasetLimitWarning"
+    [closable]="true"
+  >
+    {{ 'components.email.noFieldsSelected' | translate }}
   </ui-alert>
 </ng-template>
 <ng-template #missingFieldAlert>
-   <ui-alert *ngIf="disabledFields.length > 0" variant="danger" [closable]="true">
-    {{'components.email.filter.missingFieldAlert.partOne' | translate}}
-    <strong>{{disabledFields.join(', ')}}</strong>{{'components.email.filter.missingFieldAlert.partTwo' | translate}}<strong>{{disabledTypes.join(', ')}}</strong>
-    {{'components.email.filter.missingFieldAlert.partThree' | translate}}
-   </ui-alert>
+  <ui-alert
+    *ngIf="disabledFields.length > 0"
+    variant="danger"
+    [closable]="true"
+  >
+    {{ 'components.email.filter.missingFieldAlert.partOne' | translate }}
+    <strong>{{ disabledFields.join(', ') }}</strong
+    >{{ 'components.email.filter.missingFieldAlert.partTwo' | translate
+    }}<strong>{{ disabledTypes.join(', ') }}</strong>
+    {{ 'components.email.filter.missingFieldAlert.partThree' | translate }}
+  </ui-alert>
 </ng-template>

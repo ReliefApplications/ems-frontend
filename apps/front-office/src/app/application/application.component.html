@@ -49,13 +49,13 @@
     *ngFor="let setting of adminNavItems"
     [routerLink]="setting.path"
     routerLinkActive="text-primary-600 bg-gray-50"
-    class="text-sm font-semibold leading-6 w-auto"
+    class="text-sm font-semibold leading-6"
   >
     <ui-icon variant="grey" [icon]="setting.icon"> </ui-icon>
     {{ setting.name }}
     <ui-chip
       *ngIf="setting.legacy"
-      class="pointer-events-none flex items-center"
+      class="pointer-events-none flex items-center ml-auto"
       >{{ 'common.legacy' | translate }}</ui-chip
     >
   </a>
