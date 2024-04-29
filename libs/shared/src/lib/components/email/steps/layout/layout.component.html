@@ -378,7 +378,7 @@
         class="rounded"
         [ngClass]="{ 'form-error': showBodyValidator }"
         [init]="editor"
-        (onChange)="onEditorContentChange()"
+        (onSelectionChange)="onEditorContentChange()"
       ></editor>
     </div>
 

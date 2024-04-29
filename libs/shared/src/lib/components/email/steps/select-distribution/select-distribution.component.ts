@@ -126,6 +126,11 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     this.ccEmailFilter = this.emailService.ccEmailFilter;
     this.bccEmailFilter = this.emailService.bccEmailFilter;
     this.validateDistributionList();
+
+    // Toggle all dropdowns to open by default
+    this.showToTemplate = true;
+    this.showCCTemplate = true;
+    this.showBccTemplate = true;
   }
 
   /**
@@ -146,16 +151,10 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
   toggleDropdown(templateFor: string): void {
     if (templateFor.toLocaleLowerCase() === 'to') {
       this.showToTemplate = !this.showToTemplate;
-      this.showCCTemplate = false;
-      this.showBccTemplate = false;
     } else if (templateFor.toLocaleLowerCase() === 'cc') {
       this.showCCTemplate = !this.showCCTemplate;
-      this.showToTemplate = false;
-      this.showBccTemplate = false;
     } else if (templateFor.toLocaleLowerCase() === 'bcc') {
       this.showBccTemplate = !this.showBccTemplate;
-      this.showToTemplate = false;
-      this.showCCTemplate = false;
     }
     if (!this.templateFor || this.templateFor === templateFor) {
       this.showEmailTemplate = !this.showEmailTemplate;

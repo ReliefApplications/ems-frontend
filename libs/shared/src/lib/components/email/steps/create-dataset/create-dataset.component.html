@@ -95,7 +95,7 @@
                               let fieldKeyString of previewData?.dataSetFields
                             "
                           >
-                            <th class="text-center p-2">
+                            <th class="text-left p-2">
                               {{
                                 this.emailService.replaceUnderscores(
                                   fieldKeyString
@@ -115,8 +115,12 @@
                               let fieldKeyString of previewData?.dataSetFields
                             "
                           >
-                            <td class="p-2 text-center">
-                              {{ data[fieldKeyString] }}
+                            <td class="p-2 text-left">
+                              {{
+                                this.emailService.formatDateStrings(
+                                  data[fieldKeyString]
+                                )
+                              }}
                             </td>
                           </ng-container>
                         </tr>

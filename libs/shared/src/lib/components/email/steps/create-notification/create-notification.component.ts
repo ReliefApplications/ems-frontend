@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { EmailService } from '../../email.service';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
@@ -41,6 +41,9 @@ export class CreateNotificationComponent implements OnInit {
       this.emailService.datasetsForm.controls['notificationType'].setValue(
         this.emailService.notificationTypes[0]
       );
+      (
+        this.emailService.datasetsForm.get('notificationType') as FormControl
+      ).disable();
     }
     this.triggerDuplicateChecker();
   }

@@ -37,6 +37,33 @@ export class PreviewComponent implements OnInit, OnDestroy {
     this.emailService.allLayoutdata.footerHtml;
   /** Subscription for query. */
   private querySubscription: Subscription | null = null;
+  /** Expand for "To" list items. */
+  isExpandedTo = false;
+  /** Expand for "CC" list items. */
+  isExpandedCc = false;
+  /** Expand for "BCC" list items. */
+  isExpandedBcc = false;
+
+  /**
+   * Expand see more email list dropdown for "To".
+   */
+  toggleExpandTo() {
+    this.isExpandedTo = !this.isExpandedTo;
+  }
+
+  /**
+   * Expand see more email list dropdown for "Cc".
+   */
+  toggleExpandCc() {
+    this.isExpandedCc = !this.isExpandedCc;
+  }
+
+  /**
+   * Expand see more email list dropdown for "Bcc".
+   */
+  toggleExpandBcc() {
+    this.isExpandedBcc = !this.isExpandedBcc;
+  }
 
   /**
    * Creates an instance of PreviewComponent.
@@ -123,6 +150,38 @@ export class PreviewComponent implements OnInit, OnDestroy {
       const fieldValue = firstRowData[fieldName];
 
       if (fieldValue !== undefined) {
+        if (fieldValue instanceof Date) {
+          this.subjectString = this.subjectString.replace(
+            match[0],
+            fieldValue.toLocaleString('en-US', {
+              month: 'numeric',
+              day: 'numeric',
+              year: '2-digit',
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true,
+              timeZone: 'UTC',
+              timeZoneName: 'short',
+            })
+          );
+        } else if (typeof fieldValue === 'string') {
+          const date = new Date(fieldValue);
+          if (!isNaN(date.getTime())) {
+            this.subjectString = this.subjectString.replace(
+              match[0],
+              date.toLocaleString('en-US', {
+                month: 'numeric',
+                day: 'numeric',
+                year: '2-digit',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+                timeZone: 'UTC',
+                timeZoneName: 'short',
+              })
+            );
+          }
+        }
         this.subjectString = this.subjectString.replace(match[0], fieldValue);
       }
     }
@@ -228,7 +287,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
         break;
       case 'th':
         styles['thStyle'] =
-          'text-align: center; padding: 0.5rem; background-color: #00205C; color: white;';
+          'text-align: left; padding: 0.5rem; background-color: #00205C; color: white;';
         break;
       case 'tr':
         styles['trStyle'] =
@@ -237,7 +296,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
       case 'td':
         styles[
           'tdStyle'
-        ] = `padding: 0.5rem; text-align: center; font-family: 'Source Sans Pro', Roboto, 'Helvetica Neue', sans-serif;`;
+        ] = `padding: 0.5rem; text-align: left; font-family: 'Source Sans Pro', Roboto, 'Helvetica Neue', sans-serif; color: #000000;`;
         break;
     }
     this.emailService.setTableStyles(styles);
@@ -254,46 +313,49 @@ export class PreviewComponent implements OnInit, OnDestroy {
   formatInLastString(minutes: number): string {
     const currentDate = new Date();
     // Multiplied by 60000 to convert minutes to milliseconds (to match getTime)
-    const currentDateUTC = new Date(
-      currentDate.getTime() + currentDate.getTimezoneOffset() * 60000
-    );
 
     // Current date offset by minutes param
-    const pastDateUTC = new Date(currentDateUTC.getTime() - minutes * 60000);
+    const pastDate = new Date(currentDate.getTime() - minutes * 60000);
 
     // Past Date in date format (mm/dd/yyyy)
-    const formattedPastDate = pastDateUTC.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: '2-digit',
+    const formattedPastDate = pastDate.toLocaleDateString('en-US', {
+      timeZone: 'UTC',
+      month: 'numeric',
+      day: 'numeric',
+      year: '2-digit',
     });
 
     // Past Date in time format (hh:mm)
-    const formattedPastTime = pastDateUTC.toLocaleTimeString('en-US', {
-      hour: '2-digit',
+    const formattedPastTime = pastDate.toLocaleTimeString('en-US', {
+      timeZone: 'UTC',
+      timeZoneName: 'short',
+      hour: 'numeric',
       minute: '2-digit',
     });
 
     // Current Date in date format (mm/dd/yyyy)
-    const formattedCurrentDate = currentDateUTC.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: '2-digit',
+    const formattedCurrentDate = currentDate.toLocaleDateString('en-US', {
+      timeZone: 'UTC',
+      month: 'numeric',
+      day: 'numeric',
+      year: '2-digit',
     });
 
     // Current Date in time format (hh:mm)
-    const formattedCurrentTime = currentDateUTC.toLocaleTimeString('en-US', {
-      hour: '2-digit',
+    const formattedCurrentTime = currentDate.toLocaleTimeString('en-US', {
+      timeZone: 'UTC',
+      timeZoneName: 'short',
+      hour: 'numeric',
       minute: '2-digit',
     });
 
     // If minutes is greater than a week then set past time as current time
     const minutesInAWeek = 7 * 24 * 60;
     if (minutes > minutesInAWeek) {
-      return `From ${formattedPastDate} ${formattedCurrentTime} UTC as of ${formattedCurrentDate} ${formattedCurrentTime} UTC`;
+      return `From ${formattedPastDate} ${formattedCurrentTime} as of ${formattedCurrentDate} ${formattedCurrentTime}`;
     }
 
-    return `From ${formattedPastDate} ${formattedPastTime} UTC as of ${formattedCurrentDate} ${formattedCurrentTime} UTC`;
+    return `From ${formattedPastDate} ${formattedPastTime} as of ${formattedCurrentDate} ${formattedCurrentTime}`;
   }
 
   /**
@@ -341,9 +403,29 @@ export class PreviewComponent implements OnInit, OnDestroy {
    */
   replaceDateTimeTokens(): void {
     const currentDate = new Date();
-    const dateString = currentDate.toLocaleDateString();
-    const timeString = currentDate.toLocaleTimeString();
-    const dateTimeString = currentDate.toLocaleString();
+
+    const dateString = currentDate.toLocaleDateString('en-US', {
+      timeZone: 'UTC',
+      timeZoneName: 'short',
+      month: 'numeric',
+      day: 'numeric',
+      year: '2-digit',
+    });
+    const timeString = currentDate.toLocaleTimeString('en-US', {
+      timeZone: 'UTC',
+      timeZoneName: 'short',
+      hour: 'numeric',
+      minute: '2-digit',
+    });
+    const dateTimeString = currentDate.toLocaleString('en-US', {
+      timeZone: 'UTC',
+      timeZoneName: 'short',
+      month: 'numeric',
+      day: 'numeric',
+      year: '2-digit',
+      hour: 'numeric',
+      minute: '2-digit',
+    });
 
     // Tokens to match
     const tokens = {
@@ -420,7 +502,9 @@ export class PreviewComponent implements OnInit, OnDestroy {
     const theadHtml = previewData.dataSetFields
       .map(
         (fieldKeyString: any) =>
-          `<th style="${this.getTableStyle('th')}">${this.titleCase(
+          `<th style="${this.getTableStyle(
+            'th'
+          )}">${this.emailService.titleCase(
             this.emailService.replaceUnderscores(fieldKeyString)
           )}</th>`
       )
@@ -432,9 +516,11 @@ export class PreviewComponent implements OnInit, OnDestroy {
           `<tr style="${this.getTableStyle('tr')}">${previewData.dataSetFields
             .map(
               (fieldKeyString: any) =>
-                `<td style="${this.getTableStyle('td')}">${
-                  data[fieldKeyString] ? data[fieldKeyString] : ''
-                }</td>`
+                `<td style="${this.getTableStyle(
+                  'td'
+                )}">${this.emailService.formatDateStrings(
+                  `${data[fieldKeyString] ?? ''}`
+                )}</td>`
             )
             .join('')}</tr>`
       )
@@ -458,20 +544,6 @@ export class PreviewComponent implements OnInit, OnDestroy {
   </div>
 `;
     return tableHtml;
-  }
-
-  /**
-   * Converts String to Title Case
-   *
-   * @param str Input string to be converted
-   * @returns Titlecase string
-   */
-  titleCase(str: string): string {
-    return str
-      .toLowerCase()
-      .split(' ')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
   }
 
   ngOnDestroy(): void {
