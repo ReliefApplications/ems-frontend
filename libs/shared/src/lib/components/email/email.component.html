@@ -77,83 +77,71 @@
                 </td>
               </ng-container>
 
-              <ng-container cdkColumnDef="createdby">
-                <th uiCellHeader *cdkHeaderCellDef scope="col">
-                  <span class="headerTitle">
-                    {{ 'models.customNotification.lastExecution' | translate }}
-                  </span>
-                </th>
-                <td uiCell *cdkCellDef="let element">
-                  {{ element?.createdBy?.name }}
-                </td>
-              </ng-container>
-
-              <div
-                *ngIf="
-                  this.ability.can('update', 'EmailNotification');
-                  else elseBlock
-                "
-              >
-                <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-                  <th
-                    uiCellHeader
-                    *cdkHeaderCellDef
-                    scope="col"
-                    class="w-16"
-                  ></th>
-                  <td
-                    uiCell
-                    *cdkCellDef="let element"
-                    class="flex items-center"
-                  >
-                    <ng-container>
-                      <ui-button
-                        [variant]="'grey'"
-                        class="hide-icons hover:text-primary-600"
-                        [isIcon]="true"
-                        size="large"
-                        (click)="sendEmailList(element)"
-                        [icon]="'forward_to_inbox'"
-                        [uiTooltip]="'Send Email'"
-                      >
-                      </ui-button>
-
-                      <ui-button
-                        [variant]="'grey'"
-                        class="hide-icons hover:text-primary-600"
-                        [isIcon]="true"
-                        size="large"
-                        (click)="getEmailNotificationById(element.id)"
-                        [icon]="'edit'"
-                        [uiTooltip]="'Edit'"
-                      >
-                      </ui-button>
-
-                      <ui-button
-                        [variant]="'grey'"
-                        class="hide-icons hover:text-primary-600"
-                        [isIcon]="true"
-                        size="large"
-                        (click)="cloneEmailNotification(element)"
-                        [icon]="'content_copy'"
-                        [uiTooltip]="'Clone'"
-                      >
-                      </ui-button>
-
-                      <ui-button
-                        [variant]="'danger'"
-                        class="hide-icons hover:text-primary-600"
-                        [isIcon]="true"
-                        size="large"
-                        (click)="deleteEmailNotification(element)"
-                        [icon]="'delete'"
-                        [uiTooltip]="'Delete'"
-                      >
-                      </ui-button>
-                    </ng-container>
+                <ng-container cdkColumnDef="createdby">
+                  <th uiCellHeader *cdkHeaderCellDef scope="col">
+                    <span class="headerTitle">
+                      {{ 'models.customNotification.lastExecution' | translate }}
+                    </span>
+                  </th>
+                  <td uiCell *cdkCellDef="let element">
+                    {{element?.createdBy?.name}}
                   </td>
                 </ng-container>
-              </div>
+
+                <div *ngIf="this.ability.can('update', 'EmailNotification'); else elseBlock">
+                  <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+                    <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+                    <td uiCell *cdkCellDef="let element" class="flex items-center">
+                      <ng-container>
+                          <ui-button
+                            [variant]="'grey'"
+                            class="hide-icons hover:text-primary-600"
+                            [isIcon]="true"
+                            size="large"
+                            (click)="sendEmailList(element)"
+                            [icon]="'forward_to_inbox'"
+                            [uiTooltip]="'Send Email'"
+                            *ngIf="!element.isDraft"
+                          >
+                        </ui-button>
+
+                        <ui-button
+                            [variant]="'grey'"
+                            class="hide-icons hover:text-primary-600"
+                            [isIcon]="true"
+                            size="large"
+                            (click)="getEmailNotificationById(element.id)"
+                            [icon]="'edit'"
+                            [uiTooltip]="'Edit'"
+                          >
+                        </ui-button>
+
+                        <ui-button
+                            [variant]="'grey'"
+                            class="hide-icons hover:text-primary-600"
+                            [isIcon]="true"
+                            size="large"
+                            (click)="cloneEmailNotification(element)"
+                            [icon]="'content_copy'"
+                            [uiTooltip]="'Clone'"
+                            *ngIf="!element.isDraft"
+                          >
+                        </ui-button>
+
+                        <ui-button
+                            [variant]="'danger'"
+                            class="hide-icons hover:text-primary-600"
+                            [isIcon]="true"
+                            size="large"
+                            (click)="deleteEmailNotification(element)"
+                            [icon]="'delete'"
+                            [uiTooltip]="'Delete'"
+                          >
+                        </ui-button>
+                      </ng-container>
+                    </td>
+                  </ng-container>
+                </div>
 
               <ng-template #elseBlock>
                 <ng-container cdkColumnDef="actions" [stickyEnd]="true">

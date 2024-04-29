@@ -131,51 +131,33 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.onTxtSubjectChange();
     this.initInTheLastDropdown();
     if (this.emailService.allLayoutdata.headerLogo) {
-      if (this.emailService.allLayoutdata.headerLogo.__zone_symbol__value) {
-        this.headerLogo = URL.createObjectURL(
-          this.emailService.convertBase64ToFile(
-            this.emailService.allLayoutdata.headerLogo.__zone_symbol__value,
-            'image.png',
-            'image/png'
-          )
-        );
-      } else {
-        this.headerLogo = URL.createObjectURL(
-          this.emailService.allLayoutdata.headerLogo
-        );
-      }
+      this.headerLogo = URL.createObjectURL(
+        this.emailService.convertBase64ToFile(
+          this.emailService.allLayoutdata.headerLogo,
+          'image.png',
+          'image/png'
+        )
+      );
     }
 
     if (this.emailService.allLayoutdata.footerLogo) {
-      if (this.emailService.allLayoutdata.footerLogo.__zone_symbol__value) {
-        this.footerLogo = URL.createObjectURL(
-          this.emailService.convertBase64ToFile(
-            this.emailService.allLayoutdata.footerLogo.__zone_symbol__value,
-            'image.png',
-            'image/png'
-          )
-        );
-      } else {
-        this.footerLogo = URL.createObjectURL(
-          this.emailService.allLayoutdata.footerLogo
-        );
-      }
+      this.footerLogo = URL.createObjectURL(
+        this.emailService.convertBase64ToFile(
+          this.emailService.allLayoutdata.footerLogo,
+          'image.png',
+          'image/png'
+        )
+      );
     }
 
     if (this.emailService.allLayoutdata.bannerImage) {
-      if (this.emailService.allLayoutdata.bannerImage.__zone_symbol__value) {
-        this.bannerImage = URL.createObjectURL(
-          this.emailService.convertBase64ToFile(
-            this.emailService.allLayoutdata.bannerImage.__zone_symbol__value,
-            'image.png',
-            'image/png'
-          )
-        );
-      } else {
-        this.bannerImage = URL.createObjectURL(
-          this.emailService.allLayoutdata.bannerImage
-        );
-      }
+      this.bannerImage = URL.createObjectURL(
+        this.emailService.convertBase64ToFile(
+          this.emailService.allLayoutdata.bannerImage,
+          'image.png',
+          'image/png'
+        )
+      );
     }
     this.initialiseFieldSelectDropdown();
     if (this.headerLogoInput) {
