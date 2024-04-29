@@ -1001,9 +1001,11 @@ export class EmailService {
               key
             ] = `${record[key].properties.countryName} (${record[key].properties.coordinates.lat}, ${record[key].properties.coordinates.lng})`;
           } else {
-            const fieldType = query.fields.find((field: any) => {
+            const metaField = query.fields.find((field: any) => {
               return field.name === key;
-            }).type;
+            });
+
+            const fieldType = metaField?.type;
 
             // console.log('KEY');
             // console.log(key);
