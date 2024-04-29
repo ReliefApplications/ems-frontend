@@ -988,12 +988,33 @@ export class EmailService {
               key
             ] = `${record[key].properties.countryName} (${record[key].properties.coordinates.lat}, ${record[key].properties.coordinates.lng})`;
           } else {
-            const fieldType = query.fields.find((field: any) => {
+            const metaField = query.fields.find((field: any) => {
               return field.name === key;
-            }).type;
+            });
+
+            const fieldType = metaField?.type;
 
             if (fieldType !== TYPE_LABEL.resources) {
-              result[key] = record[key];
+              const fieldName = query.fields.find((field: any) => {
+                return field.name === key;
+              });
+              if (fieldType === 'owner' || fieldType === 'users') {
+                const options = fieldName?.options?.filter((option: any) => {
+                  return Object.values(record[key]).some((array: any) =>
+                    array.includes(option.value)
+                  );
+                });
+                if (options && options.length > 0) {
+                  // Map over the options to extract the text values and join them with commas
+                  result[key] = options
+                    .map((option: any) => option.text)
+                    .join(', ');
+                } else {
+                  result[key] = '';
+                }
+              } else {
+                result[key] = record[key];
+              }
             } else {
               // Takes the resources count and maps it to the resource name.
               result[key] =
