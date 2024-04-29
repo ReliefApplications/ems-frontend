@@ -120,7 +120,11 @@
                             "
                           >
                             <td class="p-2 text-left">
-                              {{ this.emailService.formatDateStrings(data[fieldKeyString]) }}
+                              {{
+                                this.emailService.formatDateStrings(
+                                  data[fieldKeyString]
+                                )
+                              }}
                             </td>
                           </ng-container>
                         </tr>

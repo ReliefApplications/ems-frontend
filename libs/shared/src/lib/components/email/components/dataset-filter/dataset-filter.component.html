@@ -708,8 +708,11 @@
     </kendo-tabstrip-tab> -->
   </kendo-tabstrip>
 
-  <div *ngIf="query?.value?.resource !== null && !resource?.fields?.length" class="mt-5">
-    {{showErrorMessage}}
+  <div
+    *ngIf="query?.value?.resource !== null && !resource?.fields?.length"
+    class="mt-5"
+  >
+    {{ showErrorMessage }}
   </div>
 </form>
 <ng-template #datasetAlert>
