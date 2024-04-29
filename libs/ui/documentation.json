@@ -1700,7 +1700,7 @@
                     }
                 }
             },
-            "templateData": "<label for=\"{{ name }}\" class=\"inline-flex\">\n  <span class=\"mr-2 flex\">\n    <input\n      [attr.aria-describedby]=\"name + '-description'\"\n      [attr.aria-label]=\"ariaLabel\"\n      id=\"{{ name }}\"\n      name=\"{{ name }}\"\n      type=\"checkbox\"\n      [checked]=\"checked\"\n      [indeterminate]=\"indeterminate\"\n      [ngClass]=\"checkboxClasses\"\n      class=\"form-checkbox h-4 w-4 rounded border-gray-300 self-center\"\n      (click)=\"onSelect()\"\n    />\n  </span>\n  <span class=\"text-sm text-dark-100 font-medium leading-6 flex\">\n    <ng-content select=\"label\"></ng-content>\n    <ng-content select=\"icon\"></ng-content>\n    <p id=\"{{ name }}-description\" class=\"m-0 font-normal text-gray-500\">\n      <ng-content select=\"description\"></ng-content>\n    </p>\n  </span>\n</label>\n"
+            "templateData": "<label for=\"{{ name }}\" class=\"inline-flex\">\n  <span class=\"mr-2 flex\">\n    <input\n      [attr.aria-describedby]=\"name + '-description'\"\n      [attr.aria-label]=\"ariaLabel\"\n      id=\"{{ name }}\"\n      name=\"{{ name }}\"\n      type=\"checkbox\"\n      [checked]=\"checked\"\n      [indeterminate]=\"indeterminate\"\n      [ngClass]=\"checkboxClasses\"\n      class=\"form-checkbox h-4 w-4 rounded border-gray-300 self-center disabled:bg-gray-50\"\n      (click)=\"onSelect()\"\n      [disabled]=\"disabled\"\n    />\n  </span>\n  <span class=\"text-sm text-dark-100 font-medium leading-6 flex\">\n    <ng-content select=\"label\"></ng-content>\n    <ng-content select=\"icon\"></ng-content>\n    <p id=\"{{ name }}-description\" class=\"m-0 font-normal text-gray-500\">\n      <ng-content select=\"description\"></ng-content>\n    </p>\n  </span>\n</label>\n"
         },
         {
             "name": "ChipComponent",
@@ -14469,7 +14469,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "StoryFn<CheckboxComponent>",
-                "defaultValue": "(\n  args: CheckboxComponent\n) => {\n  const formGroup = new FormGroup({\n    checkbox: new FormControl(false),\n  });\n  formGroup.get('checkbox')?.disable();\n  args.variant = 'default';\n  return {\n    component: CheckboxComponent,\n    template: `\n      <form [formGroup]=\"formGroup\">\n      <ui-checkbox [variant]=\"'${args.variant}'\" formControlName=\"checkbox\">\n      <ng-container ngProjectAs=\"label\">Form control checkbox</ng-container>\n      </ui-checkbox>\n        </form>\n        <br>\n        <p>value: {{formGroup.get('checkbox').value}}</p>\n        <p>touched: {{formGroup.get('checkbox').touched}}</p>\n        `,\n    props: {\n      ...args,\n      formGroup,\n    },\n  };\n}",
+                "defaultValue": "(\n  args: CheckboxComponent\n) => {\n  const formGroup = new FormGroup({\n    checkbox: new FormControl(false),\n  });\n  args.variant = 'default';\n  return {\n    component: CheckboxComponent,\n    template: `\n      <form [formGroup]=\"formGroup\">\n      <ui-checkbox [variant]=\"'${args.variant}'\" formControlName=\"checkbox\">\n      <ng-container ngProjectAs=\"label\">Form control checkbox</ng-container>\n      </ui-checkbox>\n        </form>\n        <br>\n        <p>value: {{formGroup.get('checkbox').value}}</p>\n        <p>touched: {{formGroup.get('checkbox').touched}}</p>\n        `,\n    props: {\n      ...args,\n      formGroup,\n    },\n  };\n}",
                 "rawdescription": "Form control template checkbox",
                 "description": "<p>Form control template checkbox</p>\n"
             },
@@ -15744,7 +15744,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "StoryFn<CheckboxComponent>",
-                "defaultValue": "(args: CheckboxComponent) => {\n  args.variant = 'default';\n  return {\n    component: CheckboxComponent,\n    template: `\n      <ui-checkbox [variant]=\"'${args.variant}'\">\n      <ng-container ngProjectAs=\"label\">Checkbox text</ng-container>\n      <ng-container ngProjectAs=\"description\">Description text text text.</ng-container>\n      <ng-container ngProjectAs=\"icon\">\n      <ui-icon\n      icon=\"info_outline\"\n      [inline]=\"true\"\n      [size]=\"18\"\n      variant=\"grey\"\n    ></ui-icon>\n      </ng-container>\n      </ui-checkbox>\n        `,\n    props: {\n      ...args,\n    },\n  };\n}",
+                "defaultValue": "(args: CheckboxComponent) => {\n  args.variant = 'default';\n  return {\n    component: CheckboxComponent,\n    template: `\n      <ui-checkbox [variant]=\"'${args.variant}'\">\n      <ng-container ngProjectAs=\"label\">Checkbox text</ng-container>\n      <ng-container ngProjectAs=\"description\">Description text text text.</ng-container>\n      <ng-container ngProjectAs=\"icon\">\n      <ui-icon\n      icon=\"info_outline\"\n      [size]=\"18\"\n      variant=\"grey\"\n    ></ui-icon>\n      </ng-container>\n      </ui-checkbox>\n        `,\n    props: {\n      ...args,\n    },\n  };\n}",
                 "rawdescription": "Template checkbox",
                 "description": "<p>Template checkbox</p>\n"
             },
@@ -18148,7 +18148,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "StoryFn<CheckboxComponent>",
-                    "defaultValue": "(\n  args: CheckboxComponent\n) => {\n  const formGroup = new FormGroup({\n    checkbox: new FormControl(false),\n  });\n  formGroup.get('checkbox')?.disable();\n  args.variant = 'default';\n  return {\n    component: CheckboxComponent,\n    template: `\n      <form [formGroup]=\"formGroup\">\n      <ui-checkbox [variant]=\"'${args.variant}'\" formControlName=\"checkbox\">\n      <ng-container ngProjectAs=\"label\">Form control checkbox</ng-container>\n      </ui-checkbox>\n        </form>\n        <br>\n        <p>value: {{formGroup.get('checkbox').value}}</p>\n        <p>touched: {{formGroup.get('checkbox').touched}}</p>\n        `,\n    props: {\n      ...args,\n      formGroup,\n    },\n  };\n}",
+                    "defaultValue": "(\n  args: CheckboxComponent\n) => {\n  const formGroup = new FormGroup({\n    checkbox: new FormControl(false),\n  });\n  args.variant = 'default';\n  return {\n    component: CheckboxComponent,\n    template: `\n      <form [formGroup]=\"formGroup\">\n      <ui-checkbox [variant]=\"'${args.variant}'\" formControlName=\"checkbox\">\n      <ng-container ngProjectAs=\"label\">Form control checkbox</ng-container>\n      </ui-checkbox>\n        </form>\n        <br>\n        <p>value: {{formGroup.get('checkbox').value}}</p>\n        <p>touched: {{formGroup.get('checkbox').touched}}</p>\n        `,\n    props: {\n      ...args,\n      formGroup,\n    },\n  };\n}",
                     "rawdescription": "Form control template checkbox",
                     "description": "<p>Form control template checkbox</p>\n"
                 },
@@ -18172,7 +18172,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "StoryFn<CheckboxComponent>",
-                    "defaultValue": "(args: CheckboxComponent) => {\n  args.variant = 'default';\n  return {\n    component: CheckboxComponent,\n    template: `\n      <ui-checkbox [variant]=\"'${args.variant}'\">\n      <ng-container ngProjectAs=\"label\">Checkbox text</ng-container>\n      <ng-container ngProjectAs=\"description\">Description text text text.</ng-container>\n      <ng-container ngProjectAs=\"icon\">\n      <ui-icon\n      icon=\"info_outline\"\n      [inline]=\"true\"\n      [size]=\"18\"\n      variant=\"grey\"\n    ></ui-icon>\n      </ng-container>\n      </ui-checkbox>\n        `,\n    props: {\n      ...args,\n    },\n  };\n}",
+                    "defaultValue": "(args: CheckboxComponent) => {\n  args.variant = 'default';\n  return {\n    component: CheckboxComponent,\n    template: `\n      <ui-checkbox [variant]=\"'${args.variant}'\">\n      <ng-container ngProjectAs=\"label\">Checkbox text</ng-container>\n      <ng-container ngProjectAs=\"description\">Description text text text.</ng-container>\n      <ng-container ngProjectAs=\"icon\">\n      <ui-icon\n      icon=\"info_outline\"\n      [size]=\"18\"\n      variant=\"grey\"\n    ></ui-icon>\n      </ng-container>\n      </ui-checkbox>\n        `,\n    props: {\n      ...args,\n    },\n  };\n}",
                     "rawdescription": "Template checkbox",
                     "description": "<p>Template checkbox</p>\n"
                 }
