@@ -15,6 +15,8 @@ import { ApplicationService } from '../../../../services/application/application
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, first } from 'rxjs';
+import { LayoutComponent } from '../../steps/layout/layout.component';
+import { SelectDistributionComponent } from '../../steps/select-distribution/select-distribution.component';
 
 /**
  * Email template to create distribution list
@@ -25,6 +27,9 @@ import { Subscription, first } from 'rxjs';
   styleUrls: ['./ems-template.component.scss'],
 })
 export class EmsTemplateComponent implements OnInit, OnDestroy {
+  @ViewChild(LayoutComponent) layout!: LayoutComponent;
+  @ViewChild(SelectDistributionComponent)
+  distribution!: SelectDistributionComponent;
   /** STEPPER */
   @ViewChild('stepper', { static: true })
   public stepper: StepperComponent | undefined;
@@ -38,6 +43,8 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
   public disableActionButton = false;
   /** Email Subject Subscription */
   private disableSub!: Subscription;
+  /** DISABLE Saave As Draft BUTTON */
+  public disableSaveAsDraft = false;
   /** SUBMIT BUTTON STATUS */
   private submitted = false;
   /** STEPPER ARRAY */
@@ -172,6 +179,9 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
         }
       }
     );
+    this.emailService.disableSaveAsDraft.subscribe((disable) => {
+      this.disableSaveAsDraft = disable;
+    });
   }
 
   /**
@@ -229,8 +239,10 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
       this.currentStep += 1;
       this.steps[4].disabled = false;
     } else if (this.currentStep === 4) {
-      this.currentStep += 1;
-      this.steps[5].disabled = false;
+      this.emailService.patchEmailLayout().then(() => {
+        this.currentStep += 1;
+        this.steps[5].disabled = false;
+      });
     } else {
       this.currentStep += 1;
     }
@@ -319,6 +331,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
           queryData.applicationId = res?.id;
           queryData.recipients = this.emailService.recipients;
         });
+        queryData.isDraft = false;
         //For email notification edit operation.
         if (this.emailService.isEdit) {
           if (
@@ -364,6 +377,87 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Save as Draft
+  async saveDraft() {
+    try {
+      if (this.currentStep === 4) {
+        this.layout.getColors();
+        this.emailService.allLayoutdata.txtSubject =
+          this.layout.layoutForm.get('subjectInput')?.value;
+        this.emailService.allLayoutdata.bodyHtml =
+          this.layout.layoutForm.get('body')?.value;
+        this.emailService.allLayoutdata.headerHtml =
+          this.layout.layoutForm.get('header')?.value;
+        await this.emailService.patchEmailLayout();
+      }
+      // eslint-disable-next-line no-empty
+    } catch (error: any) {}
+    if (this.currentStep === 2) {
+      this.emailService.recipients = this.distribution.recipients;
+      this.emailService.toEmailFilter = this.distribution.toEmailFilter;
+      this.emailService.ccEmailFilter = this.distribution.ccEmailFilter;
+      this.emailService.bccEmailFilter = this.distribution.bccEmailFilter;
+    }
+    this.emailService.datasetsForm?.value?.datasets?.forEach((data: any) => {
+      delete data.cacheData;
+    });
+    const queryData = this.emailService.datasetsForm.value;
+    this.applicationService.application$.subscribe((res: any) => {
+      this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
+      queryData.applicationId = res?.id;
+      queryData.recipients = this.emailService.recipients;
+    });
+    queryData.isDraft = true;
+    queryData.notificationType =
+      this.emailService.datasetsForm.controls.notificationType.value;
+    if (this.emailService.isEdit) {
+      if (
+        this.emailService.allLayoutdata.headerLogo &&
+        !queryData.emailLayout.header.headerLogo
+      ) {
+        queryData.emailLayout.header.headerLogo =
+          this.emailService.allLayoutdata.headerLogo;
+      }
+      if (
+        this.emailService.allLayoutdata.footerLogo &&
+        !queryData.emailLayout.footer.footerLogo
+      ) {
+        queryData.emailLayout.footer.footerLogo =
+          this.emailService.allLayoutdata.footerLogo;
+      }
+      if (
+        this.emailService.allLayoutdata.footerLogo &&
+        !queryData.emailLayout.banner.bannerImage
+      ) {
+        queryData.emailLayout.banner.bannerImage =
+          this.emailService.allLayoutdata.bannerImage;
+      }
+      this.emailService
+        .editEmailNotification(this.emailService.editId, queryData)
+        .subscribe((res: any) => {
+          this.emailService.isEdit = false;
+          this.emailService.editId = '';
+          this.emailService.configId = res.data.editAndGetEmailNotification.id;
+          this.snackBar.openSnackBar(
+            this.translate.instant('pages.application.settings.emailEdited')
+          );
+          this.emailService.datasetsForm.reset();
+          this.navigateToEms.emit();
+        });
+    } else {
+      this.emailService
+        .addEmailNotification(queryData)
+        .subscribe((res: any) => {
+          this.emailService.configId = res.data.addEmailNotification.id;
+
+          this.snackBar.openSnackBar(
+            this.translate.instant('pages.application.settings.emailCreated')
+          );
+          this.navigateToEms.emit();
+        });
+    }
+  }
+
   /**
    * Submission
    */
@@ -380,6 +474,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
         queryData.applicationId = res?.id;
         queryData.recipients = this.emailService.recipients;
       });
+      queryData.isDraft = true;
       // For email notification edit operation.
       if (this.emailService.isEdit) {
         if (

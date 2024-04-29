@@ -68,9 +68,11 @@ export class CreateNotificationComponent implements OnInit {
     const flag = this.isNameDuplicate() || this.isEmpty();
     if (flag) {
       this.emailService.disableSaveAndProceed.next(true);
+      this.emailService.disableSaveAsDraft.next(true);
       this.emailService.stepperDisable.next({ id: 0, isValid: false });
     } else {
       this.emailService.disableSaveAndProceed.next(false);
+      this.emailService.disableSaveAsDraft.next(false);
       this.emailService.stepperDisable.next({ id: 0, isValid: true });
     }
   }

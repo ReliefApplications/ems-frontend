@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable, Output } from '@angular/core';
+import { EventEmitter, Injectable, NgZone, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   ADD_EMAIL_NOTIFICATION,
@@ -58,6 +58,8 @@ export class EmailService {
   public footerTextColor = '#000000';
   /** Dataset event emitter */
   public datasetSave: EventEmitter<boolean> = new EventEmitter();
+  /** Disable SaveAsDraft button  */
+  public disableSaveAsDraft = new BehaviorSubject<boolean>(false);
   /** Control save & proceed button disable status */
   public disableSaveAndProceed = new BehaviorSubject<boolean>(false);
   /** Control stepper disable status */
@@ -166,18 +168,20 @@ export class EmailService {
   public separateEmail = [];
 
   /**
-   * Helper functions service for emails template.
+   * Constructs the EmailService instance.
    *
    * @param formBuilder The FormBuilder instance used to create form groups and controls
    * @param apollo The Apollo server instance used for GraphQL queries
    * @param http The HttpClient instance used for making HTTP requests
    * @param restService mapping of the url
+   * @param ngZone The NgZone instance used for executing work inside or outside of the Angular zone.
    */
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
     private http: HttpClient,
-    private restService: RestService
+    private restService: RestService,
+    private ngZone: NgZone
   ) {
     this.setDatasetForm();
   }
@@ -369,75 +373,72 @@ export class EmailService {
   /**
    * Retrieves all preview data objects.
    */
-  patchEmailLayout(): void {
-    this.setEmailStyles();
-    const headerImg =
-      this.allLayoutdata?.headerLogo instanceof File
-        ? this.convertFileToBase64(this.allLayoutdata?.headerLogo)
-            .then((base64String) => {
-              return base64String;
-            })
-            .catch((error) => {
-              console.error('Error converting file to base64:', error);
-            })
-        : null;
+  patchEmailLayout(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      // Your existing code with modifications to handle promises
+      this.setEmailStyles();
+      this.ngZone.run(() => {
+        const headerPromise =
+          this.allLayoutdata?.headerLogo instanceof File
+            ? this.convertFileToBase64(this.allLayoutdata?.headerLogo)
+            : Promise.resolve(null);
 
-    const footerImg =
-      this.allLayoutdata?.footerLogo instanceof File
-        ? this.convertFileToBase64(this.allLayoutdata?.footerLogo)
-            .then((base64String) => {
-              return base64String;
-            })
-            .catch((error) => {
-              console.error('Error converting file to base64:', error);
-            })
-        : null;
+        const footerPromise =
+          this.allLayoutdata?.footerLogo instanceof File
+            ? this.convertFileToBase64(this.allLayoutdata?.footerLogo)
+            : Promise.resolve(null);
 
-    const bannerLogo =
-      this.allLayoutdata?.bannerImage instanceof File
-        ? this.convertFileToBase64(this.allLayoutdata?.bannerImage)
-            .then((base64String) => {
-              return base64String;
-            })
-            .catch((error) => {
-              console.error('Error converting file to base64:', error);
-            })
-        : null;
+        const bannerPromise =
+          this.allLayoutdata?.bannerImage instanceof File
+            ? this.convertFileToBase64(this.allLayoutdata?.bannerImage)
+            : Promise.resolve(null);
 
-    this.emailLayout = {
-      subject: this.allLayoutdata?.txtSubject,
-      header: {
-        headerHtml: this.allLayoutdata?.headerHtml,
-        headerLogo: headerImg,
-        headerLogoStyle: this.allLayoutdata.headerLogoStyle,
-        headerBackgroundColor: this.allLayoutdata.headerBackgroundColor,
-        headerTextColor: this.allLayoutdata.headerTextColor,
-        headerHtmlStyle: this.allLayoutdata?.headerHtmlStyle,
-        headerStyle: this.allLayoutdata?.headerStyle,
-      },
-      body: {
-        bodyHtml: this.allLayoutdata?.bodyHtml,
-        bodyBackgroundColor: this.allLayoutdata.bodyBackgroundColor,
-        bodyTextColor: this.allLayoutdata.bodyTextColor,
-        bodyStyle: this.allLayoutdata?.bodyStyle,
-      },
-      banner: {
-        bannerImage: bannerLogo,
-        bannerImageStyle: this.allLayoutdata?.bannerImageStyle,
-        containerStyle: this.allLayoutdata?.containerStyle,
-        copyrightStyle: this.allLayoutdata?.copyrightStyle,
-      },
-      footer: {
-        footerHtml: this.allLayoutdata?.footerHtml,
-        footerLogo: footerImg,
-        footerBackgroundColor: this.allLayoutdata.footerBackgroundColor,
-        footerTextColor: this.allLayoutdata.footerTextColor,
-        footerStyle: this.allLayoutdata?.footerStyle,
-        footerImgStyle: this.allLayoutdata?.footerImgStyle,
-        footerHtmlStyle: this.allLayoutdata?.footerHtmlStyle,
-      },
-    };
-    this.datasetsForm.get('emailLayout')?.setValue(this.emailLayout);
+        Promise.all([headerPromise, footerPromise, bannerPromise])
+          .then(([headerImg, footerImg, bannerLogo]) => {
+            this.emailLayout = {
+              subject: this.allLayoutdata?.txtSubject,
+              header: {
+                headerHtml: this.allLayoutdata?.headerHtml,
+                headerLogo: headerImg,
+                headerLogoStyle: this.allLayoutdata.headerLogoStyle,
+                headerBackgroundColor: this.allLayoutdata.headerBackgroundColor,
+                headerTextColor: this.allLayoutdata.headerTextColor,
+                headerHtmlStyle: this.allLayoutdata?.headerHtmlStyle,
+                headerStyle: this.allLayoutdata?.headerStyle,
+              },
+              body: {
+                bodyHtml: this.allLayoutdata?.bodyHtml,
+                bodyBackgroundColor: this.allLayoutdata.bodyBackgroundColor,
+                bodyTextColor: this.allLayoutdata.bodyTextColor,
+                bodyStyle: this.allLayoutdata?.bodyStyle,
+              },
+              banner: {
+                bannerImage: bannerLogo,
+                bannerImageStyle: this.allLayoutdata?.bannerImageStyle,
+                containerStyle: this.allLayoutdata?.containerStyle,
+                copyrightStyle: this.allLayoutdata?.copyrightStyle,
+              },
+              footer: {
+                footerHtml: this.allLayoutdata?.footerHtml,
+                footerLogo: footerImg,
+                footerBackgroundColor: this.allLayoutdata.footerBackgroundColor,
+                footerTextColor: this.allLayoutdata.footerTextColor,
+                footerStyle: this.allLayoutdata?.footerStyle,
+                footerImgStyle: this.allLayoutdata?.footerImgStyle,
+                footerHtmlStyle: this.allLayoutdata?.footerHtmlStyle,
+              },
+            };
+            this.datasetsForm.get('emailLayout')?.setValue(this.emailLayout);
+            this.allLayoutdata.headerLogo = headerImg;
+            this.allLayoutdata.footerLogo = footerImg;
+            this.allLayoutdata.bannerImage = bannerLogo;
+            resolve(); // Resolve the promise when all asynchronous tasks are completed
+          })
+          .catch((error) => {
+            reject(error); // Reject the promise if an error occurs
+          });
+      });
+    });
   }
 
   /**

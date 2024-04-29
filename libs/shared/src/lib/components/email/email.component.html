@@ -104,6 +104,7 @@
                       (click)="sendEmailList(element)"
                       [icon]="'forward_to_inbox'"
                       [uiTooltip]="'Send Email'"
+                            *ngIf="!element.isDraft"
                     >
                     </ui-button>
 
@@ -126,6 +127,7 @@
                       (click)="cloneEmailNotification(element)"
                       [icon]="'content_copy'"
                       [uiTooltip]="'Clone'"
+                            *ngIf="!element.isDraft"
                     >
                     </ui-button>
 
