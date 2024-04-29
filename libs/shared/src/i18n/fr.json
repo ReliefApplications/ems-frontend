@@ -842,6 +842,10 @@
 				"less": "Montrer moins",
 				"more": "Afficher {{length}} e-mails restants...",
 				"subject": "Sujet:"
+			},
+			"saveAsDraft": "Enregistrer comme brouillon",
+			"tooltip": {
+				"reverseDate": "AAAA/MM/JJ"
 			}
 		},
 		"emailBuilder": {

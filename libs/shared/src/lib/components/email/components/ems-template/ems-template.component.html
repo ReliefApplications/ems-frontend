@@ -55,7 +55,7 @@
       *ngIf="currentStep!==5"
       [disabled]="disableSaveAsDraft"
     >
-      Save as Draft
+      {{ 'components.email.saveAsDraft' | translate }}
     </ui-button>
     <!-- Only activate at last step -->
     <ng-container *ngIf="currentStep === 5">

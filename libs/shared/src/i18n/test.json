@@ -836,6 +836,10 @@
 				"less": "******",
 				"more": "****** {{length}} ******",
 				"subject": "******"
+			},
+			"saveAsDraft": "******",
+			"tooltip": {
+				"reverseDate": "******"
 			}
 		},
 		"emailBuilder": {

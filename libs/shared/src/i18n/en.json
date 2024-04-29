@@ -836,6 +836,10 @@
 				"less": "Show Less",
 				"more": "Show {{length}} remaining emails...",
 				"subject": "Subject:"
+			},
+			"saveAsDraft": "Save as draft",
+			"tooltip": {
+				"reverseDate": "YYYY/MM/DD"
 			}
 		},
 		"emailBuilder": {
