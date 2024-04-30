@@ -43,6 +43,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
   public disableActionButton = false;
   /** Email Subject Subscription */
   private disableSub!: Subscription;
+  private disableDraft!: Subscription;
   /** DISABLE Saave As Draft BUTTON */
   public disableSaveAsDraft = false;
   /** SUBMIT BUTTON STATUS */
@@ -179,9 +180,11 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
         }
       }
     );
-    this.emailService.disableSaveAsDraft.subscribe((disable) => {
-      this.disableSaveAsDraft = disable;
-    });
+    this.disableDraft = this.emailService.disableSaveAsDraft.subscribe(
+      (disable) => {
+        this.disableSaveAsDraft = disable;
+      }
+    );
   }
 
   /**
@@ -658,6 +661,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.disableSub.unsubscribe();
+    this.disableDraft.unsubscribe();
   }
 
   /**
