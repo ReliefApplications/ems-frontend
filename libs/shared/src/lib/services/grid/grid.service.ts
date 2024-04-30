@@ -23,7 +23,7 @@ import {
   Person,
   getPersonLabel,
 } from '../../models/people.model';
-import { GET_PEOPLE } from '../../survey/components/people-dropdown/graphql/queries';
+import { GET_PEOPLE } from '../../survey/components/people-select/graphql/queries';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 /** List of disabled fields */

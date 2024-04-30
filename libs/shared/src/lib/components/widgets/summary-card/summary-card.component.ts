@@ -1023,7 +1023,6 @@ export class SummaryCardComponent
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) < 50;
     if (isScrollNearBottom) {
       if (!this.scrolling && this.pageInfo.length > this.cards.length) {
-        this.cards.length;
         this.scrolling = true;
         if (this.useReferenceData) {
           if (!this.refData?.pageInfo?.strategy) {

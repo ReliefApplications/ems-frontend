@@ -451,7 +451,7 @@ export class GraphQLSelectComponent
    *
    * @param e scroll event.
    */
-  private loadOnScroll(e: any): void {
+  protected loadOnScroll(e: any): void {
     if (
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
       50

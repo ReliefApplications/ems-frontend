@@ -1,12 +1,7 @@
-<ui-graphql-select
-  valueField="id"
-  [displayValueExpression]="displayValueExpression"
-  [query]="query"
+<shared-people-select
   [formControl]="control"
-  [selectedElements]="initialSelection"
-  (searchChange)="onSearchChange($event)"
-  [filterable]="true"
-  [multiselect]="true"
+  [initialSelectionIDs]="initialSelectionIDs"
+  [multiselect]="multiselect"
   [placeholder]="placeholder"
 >
-</ui-graphql-select>
+</shared-people-select>
