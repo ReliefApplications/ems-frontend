@@ -26,6 +26,7 @@ import {
   FILTER_OPERATORS,
   TYPE_LABEL,
 } from '../../filter/filter.constant';
+import { FIELD_NAME } from './metadata.constant';
 import { GET_RESOURCE, GET_RESOURCES } from '../../graphql/queries';
 import { Subscription } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
@@ -156,6 +157,10 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.query.controls.name.valueChanges.subscribe((data: any) => {
+      this.emailService.title.next(data);
+      this.emailService.index.next(this.activeTab.index);
+    });
     this.query.get('individualEmail').disable();
     this.separateEmail = this.emailService.updateSeparateEmail(
       this.activeTab.index
@@ -343,27 +348,33 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                 )
               ) {
                 if (field) {
-                  if (field.name === 'createdBy' && field.fields?.length) {
-                    field.fields.forEach((obj: any) => {
-                      obj.name = '_createdBy.user.' + obj.name;
-                      this.availableFields.filter((x) => x.name == obj.name)
-                        .length === 0
-                        ? this.availableFields.push(clone(obj))
-                        : '';
-                      obj.name = 'createdBy.' + obj.name.split('.')[2];
-                      this.filterFields.push(obj);
-                    });
-                  } else if (
-                    field.name === 'lastUpdatedBy' &&
+                  if (
+                    field.name === FIELD_NAME.createdBy &&
                     field.fields?.length
                   ) {
                     field.fields.forEach((obj: any) => {
-                      obj.name = '_lastUpdatedBy.user.' + obj.name;
+                      obj.name = `_${FIELD_NAME.createdBy}.user.` + obj.name;
                       this.availableFields.filter((x) => x.name == obj.name)
                         .length === 0
                         ? this.availableFields.push(clone(obj))
                         : '';
-                      obj.name = 'lastUpdatedBy.' + obj.name.split('.')[2];
+                      obj.name =
+                        `${FIELD_NAME.createdBy}.` + obj.name.split('.')[2];
+                      this.filterFields.push(obj);
+                    });
+                  } else if (
+                    field.name === FIELD_NAME.lastUpdatedBy &&
+                    field.fields?.length
+                  ) {
+                    field.fields.forEach((obj: any) => {
+                      obj.name =
+                        `_${FIELD_NAME.lastUpdatedBy}.user.` + obj.name;
+                      this.availableFields.filter((x) => x.name == obj.name)
+                        .length === 0
+                        ? this.availableFields.push(clone(obj))
+                        : '';
+                      obj.name =
+                        `${FIELD_NAME.lastUpdatedBy}.` + obj.name.split('.')[2];
                       this.filterFields.push(obj);
                     });
                   } else if (
@@ -390,67 +401,78 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                       this.filterFields.push(obj);
                     });
                   } else if (field.type === TYPE_LABEL.resource) {
-                    field.fields.forEach((obj: any) => {
-                      obj.parentName = field.name;
-                      if (
-                        obj.name === 'createdBy' ||
-                        obj.name === 'lastUpdatedBy'
-                      ) {
-                        const obj1 = cloneDeep(obj);
-                        obj1.childName = `${field.name} - _${obj.name}.user.username`;
-                        obj1.name = `${field.name} - _${obj.name}.user.username`;
-                        obj1.parentName = field.name;
-                        obj1.type = 'text';
-                        this.availableFields.filter((x) => x.name == obj1.name)
-                          .length === 0
-                          ? this.availableFields.push(obj1)
-                          : '';
+                    if (field.fields) {
+                      field.fields.forEach((obj: any) => {
+                        obj.parentName = field.name;
+                        if (
+                          obj.name === FIELD_NAME.createdBy ||
+                          obj.name === FIELD_NAME.lastUpdatedBy
+                        ) {
+                          const obj1 = cloneDeep(obj);
+                          obj1.childName = `${field.name} - _${obj.name}.user.username`;
+                          obj1.name = `${field.name} - _${obj.name}.user.username`;
+                          obj1.parentName = field.name;
+                          obj1.type = 'text';
+                          this.availableFields.filter(
+                            (x) => x.name == obj1.name
+                          ).length === 0
+                            ? this.availableFields.push(obj1)
+                            : '';
 
-                        // Create and push the second object
-                        const obj2 = cloneDeep(obj);
-                        obj2.name = `${field.name} - _${obj.name}.user._id`;
-                        obj2.childName = `${field.name} - _${obj.name}.user._id`;
-                        obj2.parentName = field.name;
-                        obj2.type = 'text';
-                        this.availableFields.filter((x) => x.name == obj2.name)
-                          .length === 0
-                          ? this.availableFields.push(obj2)
-                          : '';
+                          // Create and push the second object
+                          const obj2 = cloneDeep(obj);
+                          obj2.name = `${field.name} - _${obj.name}.user._id`;
+                          obj2.childName = `${field.name} - _${obj.name}.user._id`;
+                          obj2.parentName = field.name;
+                          obj2.type = 'text';
+                          this.availableFields.filter(
+                            (x) => x.name == obj2.name
+                          ).length === 0
+                            ? this.availableFields.push(obj2)
+                            : '';
 
-                        // Create and push the third object
-                        const obj3 = cloneDeep(obj);
-                        obj3.name = `${field.name} - _${obj.name}.user.name`;
-                        obj3.childName = `${field.name} - _${obj.name}.user.name`;
-                        obj3.parentName = field.name;
-                        obj3.type = 'text';
-                        this.availableFields.filter((x) => x.name == obj3.name)
-                          .length === 0
-                          ? this.availableFields.push(obj3)
-                          : '';
-                        obj.fields = [];
-                        obj.fields?.filter((x: any) => x.name == obj.name)
-                          .length === 0
-                          ? obj.fields.push(clone(obj1))
-                          : '';
-                        obj.fields?.filter((x: any) => x.name == obj.name)
-                          .length === 0
-                          ? obj.fields.push(clone(obj2))
-                          : '';
-                        obj.fields?.filter((x: any) => x.name == obj.name)
-                          .length === 0
-                          ? obj.fields.push(clone(obj3))
-                          : '';
-                        obj.childName = field.name + ' - ' + obj.name;
-                        obj.name = field.name + ' - ' + obj.name;
-                      } else {
-                        obj.childName = field.name + ' - ' + obj.name;
-                        obj.name = field.name + ' - ' + obj.name;
-                        this.availableFields.filter((x) => x.name == obj.name)
-                          .length === 0
-                          ? this.availableFields.push(clone(obj))
-                          : '';
-                      }
-                    });
+                          // Create and push the third object
+                          const obj3 = cloneDeep(obj);
+                          obj3.name = `${field.name} - _${obj.name}.user.name`;
+                          obj3.childName = `${field.name} - _${obj.name}.user.name`;
+                          obj3.parentName = field.name;
+                          obj3.type = 'text';
+                          this.availableFields.filter(
+                            (x) => x.name == obj3.name
+                          ).length === 0
+                            ? this.availableFields.push(obj3)
+                            : '';
+                          obj.fields = [];
+                          obj.fields?.filter((x: any) => x.name == obj.name)
+                            .length === 0
+                            ? obj.fields.push(clone(obj1))
+                            : '';
+                          obj.fields?.filter((x: any) => x.name == obj.name)
+                            .length === 0
+                            ? obj.fields.push(clone(obj2))
+                            : '';
+                          obj.fields?.filter((x: any) => x.name == obj.name)
+                            .length === 0
+                            ? obj.fields.push(clone(obj3))
+                            : '';
+                          obj.childName = field.name + ' - ' + obj.name;
+                          obj.name = field.name + ' - ' + obj.name;
+                        } else {
+                          obj.childName = field.name + ' - ' + obj.name;
+                          obj.name = field.name + ' - ' + obj.name;
+                          this.availableFields.filter((x) => x.name == obj.name)
+                            .length === 0
+                            ? this.availableFields.push(clone(obj))
+                            : '';
+                        }
+                      });
+                    } else {
+                      this.availableFields.filter((x) => x.name == field.name)
+                        .length === 0
+                        ? this.availableFields.push(clone(field))
+                        : '';
+                    }
+
                     this.filterFields.push(field);
                   } else if (field.type === TYPE_LABEL.resources) {
                     this.availableFields.filter((x) => x.name == field.name)
@@ -459,24 +481,17 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                       : '';
                     this.filterFields.push(field);
                   } else {
-                    this.availableFields =
-                      this.availableFields == undefined
-                        ? []
-                        : this.availableFields;
-                    this.filterFields =
-                      this.filterFields == undefined ? [] : this.filterFields;
                     this.availableFields.filter((x) => x.name == field.name)
-                      .length === 0 &&
-                    this.selectedFields.filter((x) => x.name == field.name)
-                      .length === 0
                       ? this.availableFields.push(clone(field))
                       : '';
                     this.filterFields.push(clone(field));
                   }
-                  this.availableFields.sort((a, b) =>
-                    a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
-                  );
                 }
+                this.availableFields = this.availableFields ?? [];
+                this.filterFields = this.filterFields ?? [];
+                this.availableFields?.sort((a, b) =>
+                  a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
+                );
               } else {
                 this.disabledFields.push(field.name);
                 this.disabledTypes.push(field.type);
@@ -543,10 +558,12 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
         : null;
     }
     if (field && field.type === TYPE_LABEL.resource) {
-      field = field?.fields?.find(
-        (x: { name: any }) =>
-          x.name.split(' - ')[1] === fieldName.field.split('.')[1]
-      );
+      if (field.fields) {
+        field = field?.fields?.find(
+          (x: { name: any }) =>
+            x.name.split(' - ')[1] === fieldName.field.split('.')[1]
+        );
+      }
     }
     return field ? field.type : '';
   }
@@ -722,13 +739,19 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       (x: { name: any }) => x.name === name.split('.')[0]
     );
     if (field && field.type === TYPE_LABEL.resources) {
-      field = name.split('.')[1];
+      const child = name.split('.')[1];
+      if (field.fields) {
+        field = field?.fields.find((x: { name: any }) => x.name === child);
+      }
     }
 
     if (field && field.type === TYPE_LABEL.resource) {
-      field = field?.fields.find(
-        (x: { name: any }) => x.name.split(' - ')[1] === name.split('.')[1]
-      );
+      if (field.fields) {
+        field =
+          field?.fields.find(
+            (x: { name: any }) => x.name.split(' - ')[1] === name.split('.')[1]
+          ) ?? field;
+      }
     }
     let type: { operators: any; editor: string; defaultOperator: string } = {
       operators: undefined,

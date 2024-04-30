@@ -199,10 +199,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
     this.setLayoutValidation = false;
     this.emailService.isLinear = false;
     if (this.currentStep === 0) {
-      if (
-        this.emailService.datasetsForm.controls['name'].valid &&
-        this.emailService.datasetsForm.controls['notificationType'].valid
-      ) {
+      if (this.emailService.datasetsForm.controls['name'].valid) {
         this.currentStep += 1;
         this.steps[1].disabled = false;
       } else {
@@ -213,10 +210,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
         this.disableAllNextSteps(0);
       }
     } else if (this.currentStep === 1) {
-      if (
-        this.emailService.datasetsForm.controls['name'].valid &&
-        this.emailService.datasetsForm.controls['notificationType'].valid
-      ) {
+      if (this.emailService.datasetsForm.controls['name'].valid) {
         this.currentStep += 1;
         this.steps[2].disabled = false;
       } else {
@@ -316,6 +310,8 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
           }
         );
         const queryData = this.emailService.datasetsForm.value;
+        queryData.notificationType =
+          this.emailService.datasetsForm.controls.notificationType.value;
         this.applicationService.application$.subscribe((res: any) => {
           this.emailService.datasetsForm
             .get('applicationId')
@@ -377,6 +373,8 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
         delete data.cacheData;
       });
       const queryData = this.emailService.datasetsForm.value;
+      queryData.notificationType =
+        this.emailService.datasetsForm.controls.notificationType.value;
       this.applicationService.application$.subscribe((res: any) => {
         this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
         queryData.applicationId = res?.id;

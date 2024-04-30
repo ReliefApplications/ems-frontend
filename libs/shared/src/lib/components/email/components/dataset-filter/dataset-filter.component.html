@@ -649,13 +649,17 @@
 
     </kendo-tabstrip-tab>
     <!-- Style Tab -->
-    <kendo-tabstrip-tab [disabled]="true" *ngIf="showPreview === false">
-      <ng-template kendoTabTitle>
-        {{ 'components.queryBuilder.style.title' | translate }}
+    <!-- <kendo-tabstrip-tab [disabled]="true">
+      <ng-template kendoTabTitle >
+        <div >
+          {{ 'components.queryBuilder.style.title' | translate }}
+        </div>
       </ng-template>
-      <ng-template kendoTabContent> </ng-template>
-    </kendo-tabstrip-tab>
+      <ng-template kendoTabContent>
+      </ng-template>
+    </kendo-tabstrip-tab> -->
   </kendo-tabstrip>
+
   <div
     *ngIf="query?.value?.resource !== null && !resource?.fields?.length"
     class="mt-5"

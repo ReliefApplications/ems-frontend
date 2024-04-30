@@ -84,6 +84,16 @@ export class CreateDatasetComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.emailService.title.subscribe((data) => {
+      this.title = data;
+    });
+    this.emailService.index.subscribe((index: any) => {
+      this.tabs.map((tab) => {
+        if (tab.index === index) {
+          tab.title = this.title;
+        }
+      });
+    });
     this.allPreviewData = this.emailService.getAllPreviewData();
     this.filteredFields = this.resource?.fields;
     this.tabIndex = this.activeTab.index;
@@ -114,7 +124,7 @@ export class CreateDatasetComponent implements OnInit {
    * @param event Event of tab selection
    */
   changeTab(tabIndex: any, event?: any) {
-    if (event.title === undefined) {
+    if (event && !event?.title) {
       event.preventDefault();
       return;
     }

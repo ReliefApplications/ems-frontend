@@ -800,14 +800,26 @@
 		},
 		"email": {
 			"distributionList": {
+				"alert": {
+					"and": "and",
+					"partOne": "To proceed, please enter",
+					"partThree": "at least one recipient email address",
+					"partTwo": "a distribution list name"
+				},
+				"bcc": "BCC",
+				"cc": "CC",
+				"createNew": "Or Create New",
 				"duplicate": "Title already exists",
 				"import": {
 					"download": "Download Template",
 					"loading": "Importing file...",
 					"name": "Import",
-					"success": "Import Successful"
+					"success": "Import Successful",
+					"upload": "Upload Email List"
 				},
-				"list": "Distribution List"
+				"list": "Distribution List",
+				"name": "Distribution List name",
+				"to": "To"
 			},
 			"filter": {
 				"datasetAlert": {
@@ -837,6 +849,8 @@
 				"validTitle": "Please enter a title"
 			},
 			"preview": {
+				"less": "Show Less",
+				"more": "Show {{length}} remaining emails...",
 				"subject": "Subject:"
 			}
 		},

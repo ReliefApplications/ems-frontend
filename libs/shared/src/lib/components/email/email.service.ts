@@ -10,6 +10,7 @@ import { Apollo } from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { RestService } from '../../services/rest/rest.service';
+import { TYPE_LABEL } from './filter/filter.constant';
 
 /**
  * Helper functions service for emails template.
@@ -981,12 +982,24 @@ export class EmailService {
                 }
               }
             });
+          } else if (value.geometry) {
+            result[
+              key
+            ] = `${record[key].properties.countryName} (${record[key].properties.coordinates.lat}, ${record[key].properties.coordinates.lng})`;
           } else {
-            // Takes the resources count and maps it to the resource name.
-            result[key] =
-              record[key].length > 1
-                ? `${record[key].length} items`
-                : `${record[key].length} item`;
+            const fieldType = query.fields.find((field: any) => {
+              return field.name === key;
+            }).type;
+
+            if (fieldType !== TYPE_LABEL.resources) {
+              result[key] = record[key];
+            } else {
+              // Takes the resources count and maps it to the resource name.
+              result[key] =
+                record[key].length > 1
+                  ? `${record[key].length} items`
+                  : `${record[key].length} item`;
+            }
           }
         } else {
           if (
@@ -1016,6 +1029,50 @@ export class EmailService {
     }
 
     return result;
+  }
+
+  /**
+   * Formats date strings into a pretty string representation
+   *
+   * @param rowData table cell data value
+   * @returns formatted date string or the original value if not a date string
+   */
+  formatDateStrings(rowData: any): string {
+    // Check if rowData is a string that can be parsed into a date
+    if (typeof rowData === 'string' && !isNaN(Date.parse(rowData))) {
+      // Parse the string into a Date object
+      const date = new Date(rowData);
+      // Format the date as MM/DD/YY, hh:mm AM/PM
+      return date.toLocaleString('en-US', {
+        month: 'numeric',
+        day: 'numeric',
+        year: '2-digit',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+        timeZone: 'UTC',
+        timeZoneName: 'short',
+      });
+    }
+    // If rowData is not a date string, return it as is
+    if (!rowData) {
+      return '';
+    }
+    return rowData as string;
+  }
+
+  /**
+   * Converts String to Title Case
+   *
+   * @param str Input string to be converted
+   * @returns Titlecase string
+   */
+  titleCase(str: string): string {
+    return str
+      .toLowerCase()
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   }
 
   /**

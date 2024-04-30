@@ -139,6 +139,14 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
     if (!this._map) {
       return;
     }
+
+    // Calculate the zoom coefficient to ensure the radius maintains its scale
+    const scale = this._map.getZoomScale(this._map.getZoom()) / this._map.getZoomScale(2);
+    this._heat.radius(
+      this.options.radius * scale || this._heat.defaultRadius * scale,
+      this.options.blur * scale
+    );
+
     var data = [],
       r = this._heat._r,
       size = this._map.getSize(),

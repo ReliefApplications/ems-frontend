@@ -800,14 +800,26 @@
 		},
 		"email": {
 			"distributionList": {
+				"alert": {
+					"and": "******",
+					"partOne": "******",
+					"partThree": "******",
+					"partTwo": "******"
+				},
+				"bcc": "******",
+				"cc": "******",
+				"createNew": "******",
 				"duplicate": "******",
 				"import": {
 					"download": "******",
 					"loading": "******",
 					"name": "******",
-					"success": "******"
+					"success": "******",
+					"upload": "******"
 				},
-				"list": "******"
+				"list": "******",
+				"name": "******",
+				"to": "******"
 			},
 			"filter": {
 				"datasetAlert": {
@@ -837,6 +849,8 @@
 				"validTitle": "******"
 			},
 			"preview": {
+				"less": "******",
+				"more": "****** {{length}} ******",
 				"subject": "******"
 			}
 		},

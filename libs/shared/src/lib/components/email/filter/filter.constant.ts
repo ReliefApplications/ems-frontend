@@ -272,6 +272,35 @@ export const FIELD_TYPES = [
     defaultOperator: 'isnull',
     operators: ['isnull', 'isnotnull'],
   },
+  {
+    editor: 'users',
+    defaultOperator: 'contains',
+    operators: [
+      'eq',
+      'neq',
+      'contains',
+      'doesnotcontain',
+      'isempty',
+      'isnotempty',
+    ],
+  },
+  {
+    editor: 'owner',
+    defaultOperator: 'contains',
+    operators: [
+      'eq',
+      'neq',
+      'contains',
+      'doesnotcontain',
+      'isempty',
+      'isnotempty',
+    ],
+  },
+  {
+    editor: 'geospatial',
+    defaultOperator: 'eq',
+    operators: ['eq'],
+  },
 ];
 
 /**
@@ -285,4 +314,5 @@ export const TYPE_LABEL = {
   datetime_local: 'datetime-local',
   resource: 'resource',
   resources: 'resources',
+  tagbox: 'tagbox',
 };
