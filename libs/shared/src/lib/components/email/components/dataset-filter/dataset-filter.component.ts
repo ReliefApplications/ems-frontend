@@ -336,6 +336,7 @@ export class DatasetFilterComponent
     fromHtml ? this.query.controls.fields.setValue([]) : '';
     this.showDatasetLimitWarning = false;
     this.emailService.disableSaveAndProceed.next(false);
+    this.emailService.disableSaveAsDraft.next(false);
     this.disabledFields = [];
     this.disabledTypes = [];
     this.currentTabIndex = 0;
@@ -915,6 +916,7 @@ export class DatasetFilterComponent
   addSelectedField(): void {
     if (this.availableFieldIndex !== null) {
       this.emailService.disableSaveAndProceed.next(false);
+      this.emailService.disableSaveAsDraft.next(false);
       const field = this.availableFields[this.availableFieldIndex];
       this.selectedFields.push(field);
       this.availableFields.splice(this.availableFieldIndex, 1);
@@ -951,8 +953,10 @@ export class DatasetFilterComponent
       );
       if (this.selectedFields.length) {
         this.emailService.disableSaveAndProceed.next(false);
+        this.emailService.disableSaveAsDraft.next(false);
       } else {
         this.emailService.disableSaveAndProceed.next(true);
+        this.emailService.disableSaveAsDraft.next(true);
       }
       // Adds the deselected field back to the available fields list
       this.availableFields.push(field);
@@ -974,6 +978,7 @@ export class DatasetFilterComponent
    */
   removeAllSelectedFields(): void {
     this.emailService.disableSaveAndProceed.next(true);
+    this.emailService.disableSaveAsDraft.next(true);
     this.availableFields = [
       ...this.availableFields,
       ...this.selectedFields.map((field: FieldStore) =>
@@ -997,6 +1002,7 @@ export class DatasetFilterComponent
       ...this.availableFields.map((field) => JSON.parse(JSON.stringify(field))),
     ];
     this.emailService.disableSaveAndProceed.next(false);
+    this.emailService.disableSaveAsDraft.next(false);
     this.availableFields = [];
     this.query.controls.fields.setValue(this.selectedFields);
     this.emailService.setEmailFields(this.selectedFields);
@@ -1128,18 +1134,22 @@ export class DatasetFilterComponent
                 this.showDatasetLimitWarning = false;
                 if (this.selectedFields.length) {
                   this.emailService.disableSaveAndProceed.next(false);
+                  this.emailService.disableSaveAsDraft.next(false);
                 } else {
                   this.emailService.disableSaveAndProceed.next(true);
+                  this.emailService.disableSaveAsDraft.next(true);
                 }
               } else {
                 this.showDatasetLimitWarning = true;
                 this.emailService.disableSaveAndProceed.next(true);
+                this.emailService.disableSaveAsDraft.next(true);
               }
             },
             (error: any) => {
               this.loading = false;
               this.showDatasetLimitWarning = false;
               this.emailService.disableSaveAndProceed.next(true);
+              this.emailService.disableSaveAsDraft.next(true);
               this.snackBar.openSnackBar(
                 error?.message ?? 'Something Went Wrong',
                 { error: true }

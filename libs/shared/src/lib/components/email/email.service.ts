@@ -846,7 +846,7 @@ export class EmailService {
     let count = 0;
     let allPreviewData: any = [];
     for (const query of emailData.dataSets) {
-      query.fields.forEach((x: any) => {
+      query?.fields?.forEach((x: any) => {
         if (x.parentName) {
           const child = x.name;
           x.childName = child.split(' - ')[1];

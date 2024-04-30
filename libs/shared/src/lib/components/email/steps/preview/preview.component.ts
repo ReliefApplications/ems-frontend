@@ -85,7 +85,6 @@ export class PreviewComponent implements OnInit, OnDestroy {
 
     (document.getElementById('bodyHtml') as HTMLInputElement).innerHTML =
       this.bodyString;
-
     if (this.emailService.allLayoutdata.headerLogo) {
       this.headerLogo = URL.createObjectURL(
         this.emailService.convertBase64ToFile(

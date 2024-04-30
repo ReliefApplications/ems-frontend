@@ -239,6 +239,39 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
       this.currentStep += 1;
       this.steps[4].disabled = false;
     } else if (this.currentStep === 4) {
+      if (
+        !(this.emailService.allLayoutdata.headerLogo instanceof File) &&
+        this.emailService.allLayoutdata.headerLogo
+      ) {
+        this.emailService.allLayoutdata.headerLogo =
+          this.emailService.convertBase64ToFile(
+            this.emailService.allLayoutdata.headerLogo,
+            'image.png',
+            'image/png'
+          );
+      }
+      if (
+        !(this.emailService.allLayoutdata.bannerImage instanceof File) &&
+        this.emailService.allLayoutdata.bannerImage
+      ) {
+        this.emailService.allLayoutdata.bannerImage =
+          this.emailService.convertBase64ToFile(
+            this.emailService.allLayoutdata.bannerImage,
+            'image.png',
+            'image/png'
+          );
+      }
+      if (
+        !(this.emailService.allLayoutdata.footerLogo instanceof File) &&
+        this.emailService.allLayoutdata.footerLogo
+      ) {
+        this.emailService.allLayoutdata.footerLogo =
+          this.emailService.convertBase64ToFile(
+            this.emailService.allLayoutdata.footerLogo,
+            'image.png',
+            'image/png'
+          );
+      }
       this.emailService.patchEmailLayout().then(() => {
         this.currentStep += 1;
         this.steps[5].disabled = false;
@@ -516,7 +549,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
         queryData.applicationId = res?.id;
         queryData.recipients = this.emailService.recipients;
       });
-      queryData.isDraft = true;
+      queryData.isDraft = false;
       // For email notification edit operation.
       if (this.emailService.isEdit) {
         if (

@@ -704,6 +704,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.layoutForm.get('body')?.value;
     this.emailService.allLayoutdata.headerHtml =
       this.layoutForm.get('header')?.value;
-    this.emailService.patchEmailLayout();
+    // this.emailService.patchEmailLayout();
   }
 }
