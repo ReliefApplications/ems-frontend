@@ -375,8 +375,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
               );
             });
         } else {
-          this.prepareEditData(emailData, isSendEmail);
           this.emailService.editId = id;
+          this.prepareEditData(emailData, isSendEmail);
         }
       });
   }
@@ -454,7 +454,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.datasetsForm = this.formBuilder.group({
       name: emailData.name,
       notificationType: emailData.notificationType,
-      dataSets: dataArray,
+      dataSets: emailData.dataSets?.length
+        ? dataArray
+        : this.emailService.datasetsForm.controls.dataSets,
       recipients: {
         distributionListName: emailData.recipients.distributionListName,
         To: emailData.recipients.To,

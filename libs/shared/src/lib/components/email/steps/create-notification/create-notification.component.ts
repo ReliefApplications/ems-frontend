@@ -99,9 +99,11 @@ export class CreateNotificationComponent
     const isInvalid = this.isNameDuplicate || this.isEmpty;
     if (isInvalid) {
       this.emailService.disableSaveAndProceed.next(true);
+      this.emailService.disableSaveAsDraft.next(true);
       this.emailService.stepperDisable.next({ id: 0, isValid: false });
     } else {
       this.emailService.disableSaveAndProceed.next(false);
+      this.emailService.disableSaveAsDraft.next(false);
       this.emailService.stepperDisable.next({ id: 0, isValid: true });
     }
   }

@@ -52,6 +52,17 @@
     >
       {{ 'common.next' | translate }}
     </ui-button>
+    <ui-button
+      type="button"
+      class="my-0 mx-1"
+      category="secondary"
+      variant="primary"
+      (click)="saveDraft()"
+      *ngIf="currentStep!==5"
+      [disabled]="disableSaveAsDraft"
+    >
+      {{ 'components.email.saveAsDraft' | translate }}
+    </ui-button>
     <!-- Only activate at last step -->
     <ng-container *ngIf="currentStep === 5">
       <!-- Save notification button -->
