@@ -31,12 +31,8 @@ import {
   GET_RESOURCE,
   GET_RESOURCES,
   GET_QUERY_META_DATA,
-  GET_QUERY_TYPES,
 } from '../../graphql/queries';
-import {
-  QueryMetaDataQueryResponse,
-  QueryTypes,
-} from '../../../../models/metadata.model';
+import { QueryMetaDataQueryResponse } from '../../../../models/metadata.model';
 import { Subscription, takeUntil } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -176,7 +172,7 @@ export class DatasetFilterComponent
       this.query.controls['name'].setValue(name);
     }
     if (this.query?.value?.resource?.id) {
-      ITEMS_PER_PAGE = 70;
+      ITEMS_PER_PAGE = 400;
       this.getResourceDataOnScroll();
     } else if (
       !this.emailService?.resourcesNameId?.length ||
@@ -235,17 +231,6 @@ export class DatasetFilterComponent
         id: this.selectedResourceId,
       },
       fetchPolicy: 'cache-first',
-    });
-  }
-
-  /**
-   * Fetches types for field Row (Future use for filter-row)
-   *
-   * @returns Field Type
-   */
-  fetchTypes() {
-    return this.apollo.query<QueryTypes>({
-      query: GET_QUERY_TYPES,
     });
   }
 
