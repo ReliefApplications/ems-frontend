@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EmailService } from './email.service';
 import { ApplicationService } from '../../services/application/application.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { SnackbarService } from '@oort-front/ui';
 import {
   AbstractControl,
   FormArray,
@@ -13,7 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { ApiConfiguration } from '../../models/api-configuration.model';
-import { AuthService } from '../../services/auth/auth.service';
+import { AppAbility, AuthService } from '../../services/auth/auth.service';
 import { DownloadService } from '../../services/download/download.service';
 
 /** Default number of items per request for pagination */
@@ -69,19 +70,23 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param emailService The service for handling emails.
    * @param applicationService The service for handling applications.
    * @param formBuilder The builder for creating forms.
+   * @param snackBar Shared snackbar service.
    * @param confirmService The service for confirmation dialogs.
    * @param translate The service for translation.
    * @param authService The service for authentication.
    * @param downloadService The service for downloading files.
+   * @param ability The app ability
    */
   constructor(
     public emailService: EmailService,
     public applicationService: ApplicationService,
     public formBuilder: FormBuilder,
+    private snackBar: SnackbarService,
     private confirmService: ConfirmService,
     private translate: TranslateService,
     public authService: AuthService,
-    public downloadService: DownloadService
+    public downloadService: DownloadService,
+    public ability: AppAbility
   ) {
     super();
   }
@@ -117,7 +122,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param isNew value of if the user is creating a new email notification.
    */
   toggle(isNew?: boolean) {
-    console.log('Toggle is calling');
     this.emailService.isLinear = true;
     this.emailService.stepperStep = 0;
     this.emailService.disableSaveAndProceed.next(false);
@@ -607,15 +611,37 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.emailService.emailListLoading = true;
         this.emailService
           .deleteEmailNotification(data.id, this.applicationId)
-          .subscribe(() => {
-            this.distributionLists = [];
-            this.emailNotifications = [];
-            this.templateActualData = [];
-            this.filterTemplateData = [];
-            this.getExistingTemplate();
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.objectNotDeleted',
+                    {
+                      type: this.translate.instant(
+                        'common.email.notification.one'
+                      ),
+                      error: errors ? errors[0].message : '',
+                    }
+                  ),
+                  { error: true }
+                );
+              } else {
+                if (data) {
+                  this.emailService.emailListLoading = true;
+                  this.distributionLists = [];
+                  this.emailNotifications = [];
+                  this.templateActualData = [];
+                  this.filterTemplateData = [];
+                  this.getExistingTemplate();
+                }
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
           });
       }
     });

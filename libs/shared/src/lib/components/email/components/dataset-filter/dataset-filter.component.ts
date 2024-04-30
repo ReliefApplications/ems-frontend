@@ -799,6 +799,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
    */
   addSelectedField(): void {
     if (this.availableFieldIndex !== null) {
+      this.emailService.disableSaveAndProceed.next(false);
       const field = this.availableFields[this.availableFieldIndex];
       this.selectedFields.push(field);
       this.availableFields.splice(this.availableFieldIndex, 1);
@@ -832,6 +833,11 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       this.selectedFields = this.selectedFields.filter(
         (f: { name: string }) => f.name !== field.name
       );
+      if (this.selectedFields.length) {
+        this.emailService.disableSaveAndProceed.next(false);
+      } else {
+        this.emailService.disableSaveAndProceed.next(true);
+      }
       // Adds the deselected field back to the available fields list
       this.availableFields.push(field);
       this.availableFields = this.availableFields.sort((a, b) =>
@@ -850,6 +856,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
    * Moves all selected fields back into available fields list.
    */
   removeAllSelectedFields(): void {
+    this.emailService.disableSaveAndProceed.next(true);
     this.availableFields = [
       ...this.availableFields,
       ...this.selectedFields.map((field: FieldStore) =>
@@ -871,6 +878,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       ...this.selectedFields,
       ...this.availableFields.map((field) => JSON.parse(JSON.stringify(field))),
     ];
+    this.emailService.disableSaveAndProceed.next(false);
     this.availableFields = [];
     this.query.controls.fields.setValue(this.selectedFields);
   }
@@ -994,10 +1002,14 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
           (res: any) => {
             this.loading = false;
             this.totalMatchingRecords = res?.data?.dataSet?.totalCount;
-            if (res?.data?.dataSet?.totalCount <= 50) {
+            if (this.totalMatchingRecords <= 50) {
               this.datasetPreview.selectTab(1);
               this.showDatasetLimitWarning = false;
-              this.emailService.disableSaveAndProceed.next(false);
+              if (this.selectedFields.length) {
+                this.emailService.disableSaveAndProceed.next(false);
+              } else {
+                this.emailService.disableSaveAndProceed.next(true);
+              }
             } else {
               this.showDatasetLimitWarning = true;
               this.emailService.disableSaveAndProceed.next(true);
@@ -1132,10 +1144,10 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   /**
    * Updating the separate email boolean flag on change
    */
-  onChangeSeparateEmail() {
-    this.emailService.setSeparateEmail(
-      this.separateEmail,
-      this.activeTab.index
-    );
-  }
+  // onChangeSeparateEmail() {
+  //   this.emailService.setSeparateEmail(
+  //     this.separateEmail,
+  //     this.activeTab.index
+  //   );
+  // }
 }

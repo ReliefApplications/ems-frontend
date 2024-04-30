@@ -744,10 +744,12 @@ export class EmailService {
    * @returns The edited Email notification.
    */
   editEmailNotification(id: string, data: any) {
+    const applicationId = data.applicationId;
     return this.apollo.query<any>({
       query: GET_AND_UPDATE_EMAIL_NOTIFICATION,
       variables: {
         notification: data,
+        applicationId: applicationId,
         editEmailNotificationId: id,
       },
     });
@@ -769,6 +771,7 @@ export class EmailService {
           applicationId: applicationId,
         },
         editEmailNotificationId: id,
+        applicationId: applicationId,
       },
     });
   }

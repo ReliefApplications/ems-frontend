@@ -51,7 +51,8 @@ type Subjects =
   | 'PullJob'
   | 'Group'
   | 'CustomNotification'
-  | 'Form';
+  | 'Form'
+  | 'EmailNotification';
 
 export type AppAbility = Ability<
   [Actions, Subjects | ForcedSubject<Subjects>],
@@ -481,6 +482,27 @@ export class AuthService {
           application: app.id,
         }
       );
+    }
+
+    // === Email Notifications ===
+    if (
+      appPermissions.has('can_see_email_notifications') ||
+      this.ability.can('manage', 'Application')
+    ) {
+      can('read', 'EmailNotification');
+    }
+    if (
+      appPermissions.has('can_manage_email_notifications') ||
+      this.ability.can('manage', 'Application')
+    ) {
+      can(['update', 'delete'], 'EmailNotification');
+    }
+
+    if (
+      appPermissions.has('can_create_email_notifications') ||
+      this.ability.can('manage', 'Application')
+    ) {
+      can('create', 'EmailNotification');
     }
 
     this.ability.update(rules);

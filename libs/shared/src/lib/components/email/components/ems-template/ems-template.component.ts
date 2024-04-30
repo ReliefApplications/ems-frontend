@@ -302,7 +302,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
    * Submission for sending and saving emails
    */
   saveAndSend(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (Object.keys(this.emailService.datasetsForm.value).length) {
         this.emailService.datasetsForm?.value?.dataSets?.forEach(
           (data: any) => {
@@ -344,19 +344,61 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
           }
           this.emailService
             .editEmailNotification(this.emailService.editId, queryData)
-            .subscribe((res) => {
-              this.emailService.configId =
-                res.data?.editAndGetEmailNotification?.id;
-              resolve();
-            }, reject);
+            .subscribe({
+              next: ({ errors, data }) => {
+                if (errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectNotUpdated',
+                      {
+                        type: this.translate.instant(
+                          'common.email.notification.one'
+                        ),
+                        error: errors ? errors[0].message : '',
+                      }
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  if (data) {
+                    this.emailService.configId =
+                      data.editAndGetEmailNotification?.id;
+                    resolve();
+                  }
+                }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
         } else {
           // For email notification create operation.
-          this.emailService
-            .addEmailNotification(queryData)
-            .subscribe((res: any) => {
-              this.emailService.configId = res.data?.addEmailNotification?.id;
-              resolve();
-            }, reject);
+          this.emailService.addEmailNotification(queryData).subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.objectNotCreated',
+                    {
+                      type: this.translate
+                        .instant('common.email.notification.one')
+                        .toLowerCase(),
+                      error: errors ? errors[0].message : '',
+                    }
+                  ),
+                  { error: true }
+                );
+              } else {
+                if (data) {
+                  this.emailService.configId = data.addEmailNotification?.id;
+                  resolve();
+                }
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
+          });
         }
       } else {
         resolve();
@@ -405,30 +447,76 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
         }
         this.emailService
           .editEmailNotification(this.emailService.editId, queryData)
-          .subscribe((res: any) => {
-            this.emailService.isEdit = false;
-            this.emailService.editId = '';
-            this.emailService.configId =
-              res.data.editAndGetEmailNotification.id;
-            this.snackBar.openSnackBar(
-              this.translate.instant('pages.application.settings.emailEdited')
-            );
-            this.emailService.datasetsForm.reset();
-            this.navigateToEms.emit();
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.objectNotUpdated',
+                    {
+                      type: this.translate.instant(
+                        'common.email.notification.one'
+                      ),
+                      error: errors ? errors[0].message : '',
+                    }
+                  ),
+                  { error: true }
+                );
+              } else {
+                if (data) {
+                  this.emailService.isEdit = false;
+                  this.emailService.editId = '';
+                  this.emailService.configId =
+                    data.editAndGetEmailNotification.id;
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'pages.application.settings.emailEdited'
+                    )
+                  );
+                  this.emailService.datasetsForm.reset();
+                  this.navigateToEms.emit();
+                }
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
           });
       } else {
         // For email notification create operation.
-        this.emailService
-          .addEmailNotification(queryData)
-          .subscribe((res: any) => {
-            this.emailService.configId = res.data.addEmailNotification.id;
+        this.emailService.addEmailNotification(queryData).subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'common.notifications.objectNotCreated',
+                  {
+                    type: this.translate
+                      .instant('common.email.notification.one')
+                      .toLowerCase(),
+                    error: errors ? errors[0].message : '',
+                  }
+                ),
+                { error: true }
+              );
+            } else {
+              if (data) {
+                this.emailService.configId = data.addEmailNotification.id;
 
-            this.snackBar.openSnackBar(
-              this.translate.instant('pages.application.settings.emailCreated')
-            );
-            this.emailService.datasetsForm.reset();
-            this.navigateToEms.emit();
-          });
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'pages.application.settings.emailCreated'
+                  )
+                );
+                this.emailService.datasetsForm.reset();
+                this.navigateToEms.emit();
+              }
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
+        });
       }
     }
   }
