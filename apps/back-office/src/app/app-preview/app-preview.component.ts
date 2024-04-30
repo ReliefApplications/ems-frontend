@@ -168,24 +168,6 @@ export class AppPreviewComponent
                 visible: x.visible ?? false,
               })) || [];
           const adminNavItems: any[] = [];
-          this.sideMenu = this.application?.sideMenu ?? true;
-          this.hideMenu = this.application?.hideMenu ?? false;
-          if (ability.can('read', 'User')) {
-            adminNavItems.push({
-              name: this.translate.instant('common.user.few'),
-              path: './settings/users',
-              icon: 'supervisor_account',
-              visible: true,
-            });
-          }
-          if (ability.can('read', 'Role')) {
-            adminNavItems.push({
-              name: this.translate.instant('common.role.few'),
-              path: './settings/roles',
-              icon: 'admin_panel_settings',
-              visible: true,
-            });
-          }
           if (ability.can('read', 'EmailNotification')) {
             adminNavItems.push({
               name: this.translate.instant('common.email.notification.few'),

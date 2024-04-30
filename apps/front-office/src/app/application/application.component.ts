@@ -270,6 +270,7 @@ export class ApplicationComponent
         name: this.translate.instant('common.customNotification.few'),
         path: './settings/notifications',
         icon: 'schedule_send',
+        legacy: true,
       });
     }
   }
