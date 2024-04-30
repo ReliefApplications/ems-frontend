@@ -230,7 +230,6 @@ export class DatasetFilterComponent
       variables: {
         id: this.selectedResourceId,
       },
-      fetchPolicy: 'cache-first',
     });
   }
 
