@@ -1072,7 +1072,7 @@ export class EmailService {
    * @param field Name of record field
    * @returns formatted date string or the original value if not a date string
    */
-  formatDateStrings(rowData: any, field: string): string {
+  formatDataStrings(rowData: any, field: string): string {
     const select = this.isSelect(field);
 
     // Check if rowData is a string that can be parsed into a date

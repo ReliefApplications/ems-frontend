@@ -518,7 +518,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
               (fieldKeyString: any) =>
                 `<td style="${this.getTableStyle(
                   'td'
-                )}">${this.emailService.formatDateStrings(
+                )}">${this.emailService.formatDataStrings(
                   `${data[fieldKeyString] ?? ''}`,
                   `${fieldKeyString}`
                 )}</td>`

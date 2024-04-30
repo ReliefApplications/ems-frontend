@@ -792,6 +792,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
     this.availableFields = this.availableFields
       .filter((f: { name: string }) => f.name !== field.name)
       .sort((a, b) => (a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1));
+    this.emailService.setEmailFields(this.selectedFields);
   }
 
   /**
@@ -809,6 +810,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       this.availableFieldIndex = null;
       this.selectedFieldIndex = this.selectedFields.length - 1;
       this.query.controls.fields.setValue(this.selectedFields);
+      this.emailService.setEmailFields(this.selectedFields);
     }
   }
 
@@ -849,6 +851,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
         (f) => f.name === field.name
       );
       this.selectedFieldIndex = null; // Reset the selected field index
+      this.emailService.setEmailFields(this.selectedFields);
     }
   }
 
@@ -868,6 +871,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
     );
     this.query.controls.fields.setValue(this.selectedFields);
+    this.emailService.setEmailFields(this.selectedFields);
   }
 
   /**
@@ -881,6 +885,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
     this.emailService.disableSaveAndProceed.next(false);
     this.availableFields = [];
     this.query.controls.fields.setValue(this.selectedFields);
+    this.emailService.setEmailFields(this.selectedFields);
   }
 
   /**
