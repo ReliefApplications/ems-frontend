@@ -805,6 +805,11 @@
 			}
 		},
 		"email": {
+			"alert": {
+				"invalidFields": "Les champs suivants ne peuvent pas être sélectionnés: <strong>{{fields}}</strong> car ils sont du type <strong>{{types}}</strong> et ne peut pas être correctement affiché dans le tableau de ce formulaire.",
+				"noSelectedFields": "Veuillez sélectionner au moins 1 champ pour sauvegarder ce jeu de données",
+				"tooManyRecords": "Pour le moment, nous sommes limités à récupérer seulement 50 enregistrements. Sur la base des conditions de filtre fournies, il existe <strong>{{totalRecords}}</strong> enregistrements correspondants. Veuillez ajouter des filtres supplémentaires pour que le nombre d'enregistrements soit inférieur ou égal à 50."
+			},
 			"distributionList": {
 				"alert": {
 					"and": "et",
@@ -827,27 +832,11 @@
 				"name": "Nom de la liste de distribution",
 				"to": "À"
 			},
-			"filter": {
-				"datasetAlert": {
-					"partOne": "Pour le moment, nous sommes limités à récupérer seulement 50 enregistrements.",
-					"partThree": "Veuillez ajouter des filtres supplémentaires pour que le nombre d'enregistrements soit inférieur ou égal à 50.",
-					"partTwo": {
-						"end": "enregistrements correspondants.",
-						"start": "Sur la base des conditions de filtre fournies, il existe"
-					}
-				},
-				"missingFieldAlert": {
-					"partOne": "Les champs suivants ne peuvent pas être sélectionnés :",
-					"partThree": "et ne peut pas être correctement affiché dans le tableau de ce formulaire.",
-					"partTwo": "car ils sont du type"
-				}
-			},
 			"image": {
 				"rectangleValidation": "Veuillez télécharger une image avec un rapport hauteur/largeur plus rectangulaire, similaire à 960x80.",
 				"squareValidation": "Veuillez télécharger une image avec un rapport hauteur/largeur plus carré, ou similaire à 200x200."
 			},
 			"name": "Email",
-			"noFieldsSelected": "Veuillez sélectionner au moins 1 champ!",
 			"notification": {
 				"create": "Créer une notification",
 				"list": "Liste des notifications",

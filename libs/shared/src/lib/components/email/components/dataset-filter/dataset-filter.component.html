@@ -100,11 +100,11 @@
       <ng-template kendoTabContent>
         <ng-container
           class="mt-2"
-          *ngTemplateOutlet="datasetAlert"
+          *ngTemplateOutlet="tooManyRecordsAlertTmpl"
         ></ng-container>
         <ng-container
           class="mt-2"
-          *ngTemplateOutlet="missingFieldAlert"
+          *ngTemplateOutlet="invalidFieldsAlertTmpl"
         ></ng-container>
         <ng-container *ngIf="resource?.fields?.length">
           <div class="flex gap-4 mt-2">
@@ -444,15 +444,15 @@
       <ng-template kendoTabContent>
         <ng-container
           class="mt-2"
-          *ngTemplateOutlet="datasetAlert"
+          *ngTemplateOutlet="tooManyRecordsAlertTmpl"
         ></ng-container>
         <ng-container
           class="mt-2"
-          *ngTemplateOutlet="missingFieldAlert"
+          *ngTemplateOutlet="invalidFieldsAlertTmpl"
         ></ng-container>
         <ng-container
           class="mt-2"
-          *ngTemplateOutlet="selectedFieldAlert"
+          *ngTemplateOutlet="noSelectedFieldsAlertTmpl"
         ></ng-container>
         <ng-container>
           <div class="flex gap-5">
@@ -719,34 +719,44 @@
     {{ showErrorMessage }}
   </div>
 </form>
-<ng-template #datasetAlert>
-  <ui-alert variant="warning" *ngIf="showDatasetLimitWarning" [closable]="true">
-    {{ 'components.email.filter.datasetAlert.partOne' | translate }}
-    {{ 'components.email.filter.datasetAlert.partTwo.start' | translate
-    }}<strong>{{ totalMatchingRecords }}</strong
-    >{{ 'components.email.filter.datasetAlert.partTwo.end' | translate }}
-    {{ 'components.email.filter.datasetAlert.partThree' | translate }}
+
+<!-- Too many records in dataset -->
+<ng-template #tooManyRecordsAlertTmpl>
+  <ui-alert variant="warning" [closable]="true" *ngIf="showDatasetLimitWarning">
+    <div
+      [innerHTML]="
+        'components.email.alert.tooManyRecords'
+          | translate : { totalRecords: totalMatchingRecords }
+      "
+    ></div>
   </ui-alert>
 </ng-template>
-<ng-template #selectedFieldAlert>
+<!-- No selected fields in dataset -->
+<ng-template #noSelectedFieldsAlertTmpl>
   <ui-alert
     variant="warning"
     *ngIf="!selectedFields.length && !showDatasetLimitWarning"
     [closable]="true"
   >
-    {{ 'components.email.noFieldsSelected' | translate }}
+    {{ 'components.email.alert.noSelectedFields' | translate }}
   </ui-alert>
 </ng-template>
-<ng-template #missingFieldAlert>
+<!-- Invalid fields in dataset -->
+<ng-template #invalidFieldsAlertTmpl>
   <ui-alert
     *ngIf="disabledFields.length > 0"
     variant="danger"
     [closable]="true"
   >
-    {{ 'components.email.filter.missingFieldAlert.partOne' | translate }}
-    <strong>{{ disabledFields.join(', ') }}</strong
-    >{{ 'components.email.filter.missingFieldAlert.partTwo' | translate
-    }}<strong>{{ disabledTypes.join(', ') }}</strong>
-    {{ 'components.email.filter.missingFieldAlert.partThree' | translate }}
+    <div
+      [innerHTML]="
+        'components.email.alert.invalidFields'
+          | translate
+            : {
+                fields: disabledFields.join(', '),
+                types: disabledTypes.join(', ')
+              }
+      "
+    ></div>
   </ui-alert>
 </ng-template>
