@@ -138,6 +138,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
           'image/png'
         )
       );
+      this.emailService.allLayoutdata.headerLogo =
+        this.emailService.convertBase64ToFile(
+          this.emailService.allLayoutdata.headerLogo,
+          'image.png',
+          'image/png'
+        );
     }
 
     if (this.emailService.allLayoutdata.footerLogo) {
@@ -148,6 +154,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
           'image/png'
         )
       );
+      this.emailService.allLayoutdata.footerLogo =
+        this.emailService.convertBase64ToFile(
+          this.emailService.allLayoutdata.footerLogo,
+          'image.png',
+          'image/png'
+        );
     }
 
     if (this.emailService.allLayoutdata.bannerImage) {
@@ -158,6 +170,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
           'image/png'
         )
       );
+      this.emailService.allLayoutdata.bannerImage =
+        this.emailService.convertBase64ToFile(
+          this.emailService.allLayoutdata.bannerImage,
+          'image.png',
+          'image/png'
+        );
     }
     this.initialiseFieldSelectDropdown();
     if (this.headerLogoInput) {
