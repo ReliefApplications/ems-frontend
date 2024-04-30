@@ -372,7 +372,14 @@
         </div>
       </div>
       <!-- Body Text Editor -->
-      <editor #bodyEditor formControlName="body" class="rounded" [ngClass]="{'form-error': showBodyValidator}" [init]="editor" (ngModelChange)="onEditorContentChange()"></editor>
+      <editor
+        #bodyEditor
+        formControlName="body"
+        class="rounded"
+        [ngClass]="{ 'form-error': showBodyValidator }"
+        [init]="editor"
+        (ngModelChange)="onEditorContentChange()"
+      ></editor>
     </div>
 
     <!-- Footer -->
