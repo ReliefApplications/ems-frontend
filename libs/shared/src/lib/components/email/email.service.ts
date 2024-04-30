@@ -1029,7 +1029,7 @@ export class EmailService {
                     .map((option: any) => option.text)
                     .join(', ');
                 } else {
-                  result[key] = '';
+                  result[key] = record[key];
                 }
               } else {
                 result[key] = record[key];
