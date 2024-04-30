@@ -9,17 +9,23 @@
   >
   </kendo-stepper>
   <ui-divider class="mt-10"></ui-divider>
+  <!-- General settings ( title / type ) -->
   <app-create-notification
     *ngIf="currentStep === 0"
     (navigateToListScreen)="navigateToListScreen()"
   ></app-create-notification>
+  <!-- Dataset creation -->
   <app-create-dataset *ngIf="currentStep === 1"></app-create-dataset>
+  <!-- Distribution list selection -->
   <app-select-distribution *ngIf="currentStep === 2"></app-select-distribution>
+  <!-- Schedule of notification -->
   <app-schedule-alert *ngIf="currentStep === 3"></app-schedule-alert>
+  <!-- Notification layout edition -->
   <app-layout
     [setLayoutValidation]="setLayoutValidation"
     *ngIf="currentStep === 4"
   ></app-layout>
+  <!-- Notification preview -->
   <app-preview *ngIf="currentStep === 5"></app-preview>
 </div>
 
