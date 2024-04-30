@@ -117,7 +117,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param isNew value of if the user is creating a new email notification.
    */
   toggle(isNew?: boolean) {
-    console.log('Toggle is calling');
     this.emailService.isLinear = true;
     this.emailService.stepperStep = 0;
     this.emailService.disableSaveAndProceed.next(false);

@@ -799,6 +799,11 @@
 			}
 		},
 		"email": {
+			"alert": {
+				"invalidFields": "****** {{fields}} ****** {{types}} ******",
+				"noSelectedFields": "******",
+				"tooManyRecords": "****** {{totalRecords}} ******"
+			},
 			"distributionList": {
 				"alert": {
 					"and": "******",
