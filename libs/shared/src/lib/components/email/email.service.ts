@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { RestService } from '../../services/rest/rest.service';
 import { TYPE_LABEL } from './filter/filter.constant';
+import { FieldStore } from './models/email.const';
 
 /**
  * Helper functions service for emails template.
@@ -164,23 +165,8 @@ export class EmailService {
   public emailListLoading = true;
   /** Separate email lists */
   public separateEmail = [];
-
-  /**
-   * Helper functions service for emails template.
-   *
-   * @param formBuilder The FormBuilder instance used to create form groups and controls
-   * @param apollo The Apollo server instance used for GraphQL queries
-   * @param http The HttpClient instance used for making HTTP requests
-   * @param restService mapping of the url
-   */
-  constructor(
-    private formBuilder: FormBuilder,
-    private apollo: Apollo,
-    private http: HttpClient,
-    private restService: RestService
-  ) {
-    this.setDatasetForm();
-  }
+  /** Selected Fields */
+  public fields: FieldStore[] = [];
 
   /**
    * Generates new dataset group.
@@ -206,6 +192,32 @@ export class EmailService {
       }), // Fields (field selected and style), Block Style (HTML wrapping field with token)
       individualEmail: false,
     });
+  }
+
+  /**
+   * Constructs the EmailService instance.
+   *
+   * @param formBuilder The FormBuilder instance used to create form groups and controls
+   * @param apollo The Apollo server instance used for GraphQL queries
+   * @param http The HttpClient instance used for making HTTP requests
+   * @param restService mapping of the url
+   */
+  constructor(
+    private formBuilder: FormBuilder,
+    private apollo: Apollo,
+    private http: HttpClient,
+    private restService: RestService
+  ) {
+    this.setDatasetForm();
+  }
+
+  /**
+   * Sets the email service fields
+   *
+   * @param selectedFields The selected fields
+   */
+  setEmailFields(selectedFields: FieldStore[]) {
+    this.fields = selectedFields;
   }
 
   /**
@@ -992,7 +1004,26 @@ export class EmailService {
             }).type;
 
             if (fieldType !== TYPE_LABEL.resources) {
-              result[key] = record[key];
+              const fieldName = query.fields.find((field: any) => {
+                return field.name === key;
+              });
+              if (fieldType === 'owner' || fieldType === 'users') {
+                const options = fieldName?.options?.filter((option: any) => {
+                  return Object.values(record[key]).some((array: any) =>
+                    array.includes(option.value)
+                  );
+                });
+                if (options && options.length > 0) {
+                  // Map over the options to extract the text values and join them with commas
+                  result[key] = options
+                    .map((option: any) => option.text)
+                    .join(', ');
+                } else {
+                  result[key] = '';
+                }
+              } else {
+                result[key] = record[key];
+              }
             } else {
               // Takes the resources count and maps it to the resource name.
               result[key] =
@@ -1035,11 +1066,14 @@ export class EmailService {
    * Formats date strings into a pretty string representation
    *
    * @param rowData table cell data value
+   * @param field Name of record field
    * @returns formatted date string or the original value if not a date string
    */
-  formatDateStrings(rowData: any): string {
+  formatDateStrings(rowData: any, field: string): string {
+    const select = this.isSelect(field);
+
     // Check if rowData is a string that can be parsed into a date
-    if (typeof rowData === 'string' && !isNaN(Date.parse(rowData))) {
+    if (!select && typeof rowData === 'string' && !isNaN(Date.parse(rowData))) {
       // Parse the string into a Date object
       const date = new Date(rowData);
       // Format the date as MM/DD/YY, hh:mm AM/PM
@@ -1055,10 +1089,21 @@ export class EmailService {
       });
     }
     // If rowData is not a date string, return it as is
-    if (!rowData) {
-      return '';
-    }
-    return rowData as string;
+    // This includes non-string inputs and strings that cannot be parsed into a date
+    return rowData ? rowData.toString() : '';
+  }
+
+  /**
+   * Returns if field is Select
+   *
+   * @param fieldName Name of Field
+   * @returns boolean - true if field is Select
+   */
+  isSelect(fieldName: string) {
+    const field = this.fields.find((field: any) => {
+      return fieldName === field.name;
+    });
+    return field?.select;
   }
 
   /**

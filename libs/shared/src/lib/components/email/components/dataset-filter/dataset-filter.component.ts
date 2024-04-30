@@ -30,20 +30,9 @@ import { FIELD_NAME } from './metadata.constant';
 import { GET_RESOURCE, GET_RESOURCES } from '../../graphql/queries';
 import { Subscription } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
+import { FieldStore } from '../../models/email.const';
 /** Default items per query, for pagination */
 let ITEMS_PER_PAGE = 0;
-/**
- * Available fields object
- */
-interface fieldStore {
-  name: string;
-  type: string;
-  fields?: string[] | null;
-  __typename: string;
-  parentName?: string | null;
-  childName?: string | null;
-  childType?: string | null;
-}
 
 /**
  * Component for filtering, selecting fields and styling block data sets.
@@ -88,13 +77,13 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   public searchAvailableField = '';
   /** FILTERED FIELDS FOR SEARCH. */
   public filteredFields: any[] = [];
-  /** SELECTED FIELDS FOR FILTERING. */
-  public selectedFields: fieldStore[] = [];
-  /** FIELDS FOR FILTERING. */
+  /** Selected fields for filtering. */
+  public selectedFields: FieldStore[] = [];
+  /** Fields for filtering. */
   public filterFields: any[] = [];
-  /** AVAILABLE FIELDS FOR FILTERING. */
-  public availableFields: fieldStore[] = [];
-  /** OPERATORS FOR FILTERING. */
+  /** Available fields for filtering. */
+  public availableFields: FieldStore[] = [];
+  /** Operators for filtering. */
   public operators: { [key: number]: { value: string; label: string }[] } = {};
   /** FLAG TO SHOW THE DATASET LIMIT WARNING. */
   public showDatasetLimitWarning = false;
@@ -565,6 +554,10 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
         );
       }
     }
+    if (field && (field as FieldStore)?.select) {
+      return 'select';
+    }
+
     return field ? field.type : '';
   }
 
@@ -859,7 +852,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   removeAllSelectedFields(): void {
     this.availableFields = [
       ...this.availableFields,
-      ...this.selectedFields.map((field: fieldStore) =>
+      ...this.selectedFields.map((field: FieldStore) =>
         JSON.parse(JSON.stringify(field))
       ),
     ];
