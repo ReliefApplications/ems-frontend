@@ -1700,11 +1700,11 @@
                     }
                 }
             },
-            "templateData": "<label for=\"{{ name }}\" class=\"inline-flex\">\n  <span class=\"mr-2 flex\">\n    <input\n      [attr.aria-describedby]=\"name + '-description'\"\n      [attr.aria-label]=\"ariaLabel\"\n      id=\"{{ name }}\"\n      name=\"{{ name }}\"\n      type=\"checkbox\"\n      [checked]=\"checked\"\n      [indeterminate]=\"indeterminate\"\n      [ngClass]=\"checkboxClasses\"\n      class=\"form-checkbox h-4 w-4 rounded border-gray-300 self-center\"\n      (click)=\"onSelect()\"\n      [disabled]=\"disabled\"\n    />\n  </span>\n  <span class=\"text-sm text-dark-100 font-medium leading-6 flex\">\n    <ng-content select=\"label\"></ng-content>\n    <ng-content select=\"icon\"></ng-content>\n    <p id=\"{{ name }}-description\" class=\"m-0 font-normal text-gray-500\">\n      <ng-content select=\"description\"></ng-content>\n    </p>\n  </span>\n</label>\n"
+            "templateData": "<label for=\"{{ name }}\" class=\"inline-flex\">\n  <span class=\"mr-2 flex\">\n    <input\n      [attr.aria-describedby]=\"name + '-description'\"\n      [attr.aria-label]=\"ariaLabel\"\n      id=\"{{ name }}\"\n      name=\"{{ name }}\"\n      type=\"checkbox\"\n      [checked]=\"checked\"\n      [indeterminate]=\"indeterminate\"\n      [ngClass]=\"checkboxClasses\"\n      class=\"form-checkbox h-4 w-4 rounded border-gray-300 self-center disabled:bg-gray-50\"\n      (click)=\"onSelect()\"\n      [disabled]=\"disabled\"\n    />\n  </span>\n  <span class=\"text-sm text-dark-100 font-medium leading-6 flex\">\n    <ng-content select=\"label\"></ng-content>\n    <ng-content select=\"icon\"></ng-content>\n    <p id=\"{{ name }}-description\" class=\"m-0 font-normal text-gray-500\">\n      <ng-content select=\"description\"></ng-content>\n    </p>\n  </span>\n</label>\n"
         },
         {
             "name": "ChipComponent",
-            "id": "component-ChipComponent-47f807257ce90481b932106d2176cb57db854c1278367f5e266d7fcc21ef05025500bbb04f9fec86d864ae6bab5b18df245b16218257677f6183ae4f9cf5d4e9",
+            "id": "component-ChipComponent-04e09801e948268a70281cd962887426afd0fcb5de25d064e09fed8c18a1adffc50e4513695681df738fc40da30ffafe3354cf251d305fbbaa71b3300cedca4c",
             "file": "libs/ui/src/lib/chip/chip.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -1801,7 +1801,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 89,
+                    "line": 86,
                     "deprecated": false,
                     "deprecationMessage": ""
                 },
@@ -1818,7 +1818,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 74,
+                    "line": 71,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nAdd animation on click in the chip\n\n",
@@ -1826,8 +1826,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 2094,
-                                "end": 2099,
+                                "pos": 1971,
+                                "end": 1976,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -1838,8 +1838,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 2088,
-                                "end": 2093,
+                                "pos": 1965,
+                                "end": 1970,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -1860,7 +1860,7 @@
             "description": "<p>UI Chip Component\nDisplay a chip with text and optional remove button.</p>\n",
             "rawdescription": "\n\nUI Chip Component\nDisplay a chip with text and optional remove button.\n",
             "type": "component",
-            "sourceCode": "import {\n  Component,\n  Input,\n  Output,\n  EventEmitter,\n  OnDestroy,\n} from '@angular/core';\nimport { Variant } from '../types/variant';\n\n/**\n * UI Chip Component\n * Display a chip with text and optional remove button.\n */\n@Component({\n  selector: 'ui-chip',\n  templateUrl: './chip.component.html',\n  styleUrls: ['./chip.component.scss'],\n})\nexport class ChipComponent implements OnDestroy {\n  /** The value or label of the chip. */\n  @Input() value = '';\n  /** Boolean indicating whether the chip is removable. */\n  @Input() removable = false;\n  /** The variant or style of the chip. */\n  @Input() variant: Variant = 'default';\n  /** Boolean indicating whether the chip is disabled. */\n  @Input() disabled = false;\n  /** Event emitter for when the chip is removed. */\n  @Output() removed = new EventEmitter<void>();\n  /** Timeout to onClick */\n  private onClickTimeoutListener!: NodeJS.Timeout;\n\n  /** @returns general chip classes and variant */\n  get chipClasses(): string[] {\n    const classes: string[] = [];\n    // Disable state\n    if (this.disabled) {\n      classes.push('opacity-70 bg-gray-300 text-gray-400 pointer-events-none');\n    } else {\n      classes.push('cursor-pointer');\n      // Variants\n      switch (this.variant) {\n        case 'default':\n        case 'grey':\n          classes.push('bg-gray-300 hover:bg-gray-400 text-gray-500');\n          break;\n        case 'primary':\n          classes.push('bg-primary-100 hover:bg-primary-200 text-primary-400');\n          break;\n        case 'secondary':\n          classes.push('bg-primary-100 hover:bg-primary-200 text-primary-800');\n          break;\n        case 'success':\n          classes.push('bg-green-100 hover:bg-green-200 text-green-400');\n          break;\n        case 'danger':\n          classes.push('bg-red-100 hover:bg-red-200 text-red-400');\n          break;\n        case 'warning':\n          classes.push('bg-orange-100 hover:bg-orange-200 text-orange-400');\n          break;\n        default:\n          break;\n      }\n    }\n    return classes;\n  }\n\n  /**\n   * Add animation on click in the chip\n   *\n   * @param event mouse event of the chip clicked\n   */\n  onClick(event: MouseEvent): void {\n    if (this.disabled) {\n      return;\n    }\n    const chip = event.currentTarget as HTMLElement;\n    chip.style.transform = 'scale(0.95)';\n    if (this.onClickTimeoutListener) {\n      clearTimeout(this.onClickTimeoutListener);\n    }\n    this.onClickTimeoutListener = setTimeout(\n      () => (chip.style.transform = 'scale(1)'),\n      200\n    );\n  }\n\n  ngOnDestroy(): void {\n    if (this.onClickTimeoutListener) {\n      clearTimeout(this.onClickTimeoutListener);\n    }\n  }\n}\n",
+            "sourceCode": "import {\n  Component,\n  Input,\n  Output,\n  EventEmitter,\n  OnDestroy,\n} from '@angular/core';\nimport { Variant } from '../types/variant';\n\n/**\n * UI Chip Component\n * Display a chip with text and optional remove button.\n */\n@Component({\n  selector: 'ui-chip',\n  templateUrl: './chip.component.html',\n  styleUrls: ['./chip.component.scss'],\n})\nexport class ChipComponent implements OnDestroy {\n  /** The value or label of the chip. */\n  @Input() value = '';\n  /** Boolean indicating whether the chip is removable. */\n  @Input() removable = false;\n  /** The variant or style of the chip. */\n  @Input() variant: Variant = 'default';\n  /** Boolean indicating whether the chip is disabled. */\n  @Input() disabled = false;\n  /** Event emitter for when the chip is removed. */\n  @Output() removed = new EventEmitter<void>();\n  /** Timeout to onClick */\n  private onClickTimeoutListener!: NodeJS.Timeout;\n\n  /** @returns general chip classes and variant */\n  get chipClasses(): string[] {\n    const classes: string[] = [];\n    // Disable state\n    if (this.disabled) {\n      classes.push('opacity-70 bg-gray-300 text-gray-400 pointer-events-none');\n    } else {\n      classes.push('cursor-pointer');\n      // Variants\n      switch (this.variant) {\n        case 'default':\n        case 'grey':\n          classes.push('bg-gray-300 hover:bg-gray-400 text-gray-500');\n          break;\n        case 'primary':\n          classes.push('bg-primary-100 hover:bg-primary-200 text-primary-800');\n          break;\n        case 'success':\n          classes.push('bg-green-100 hover:bg-green-200 text-green-400');\n          break;\n        case 'danger':\n          classes.push('bg-red-100 hover:bg-red-200 text-red-400');\n          break;\n        case 'warning':\n          classes.push('bg-orange-100 hover:bg-orange-200 text-orange-400');\n          break;\n        default:\n          break;\n      }\n    }\n    return classes;\n  }\n\n  /**\n   * Add animation on click in the chip\n   *\n   * @param event mouse event of the chip clicked\n   */\n  onClick(event: MouseEvent): void {\n    if (this.disabled) {\n      return;\n    }\n    const chip = event.currentTarget as HTMLElement;\n    chip.style.transform = 'scale(0.95)';\n    if (this.onClickTimeoutListener) {\n      clearTimeout(this.onClickTimeoutListener);\n    }\n    this.onClickTimeoutListener = setTimeout(\n      () => (chip.style.transform = 'scale(1)'),\n      200\n    );\n  }\n\n  ngOnDestroy(): void {\n    if (this.onClickTimeoutListener) {\n      clearTimeout(this.onClickTimeoutListener);\n    }\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -14381,18 +14381,6 @@
                 "name": "formControl",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "",
-                "defaultValue": "new FormGroup({\n  name: new FormControl(''),\n})",
-                "rawdescription": "Form group to test story with disable option",
-                "description": "<p>Form group to test story with disable option</p>\n"
-            },
-            {
-                "name": "formControl",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
                 "file": "libs/ui/src/lib/radio/radio.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
@@ -14508,6 +14496,18 @@
                 "defaultValue": "(\n  args: ToggleComponent\n) => {\n  const formGroup = new FormGroup({\n    toggle: new FormControl(true),\n  });\n  return {\n    component: ToggleComponent,\n    template: `\n      <form [formGroup]=\"formGroup\">\n      <ui-toggle [type]=\"'${args.type}'\" [variant]=\"'${args.variant}'\" [labelPosition]=\"'${args.labelPosition}'\" formControlName=\"toggle\">\n        <ng-container ngProjectAs=\"label\">Test test test!</ng-container>\n        <ng-container ngProjectAs=\"description\">\n          Test test test test test test test test test test test test test\n        </ng-container>\n      </ui-toggle>\n        </form>\n        <br>\n        <p>value: {{formGroup.get('toggle').value}}</p>\n        <p>touched: {{formGroup.get('toggle').touched}}</p>\n        `,\n    props: {\n      ...args,\n      formGroup,\n    },\n  };\n}",
                 "rawdescription": "Form control template toggle",
                 "description": "<p>Form control template toggle</p>\n"
+            },
+            {
+                "name": "formGroup",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "new FormGroup({\n  name: new FormControl(''),\n})",
+                "rawdescription": "Form group to test story with disable option",
+                "description": "<p>Form group to test story with disable option</p>\n"
             },
             {
                 "name": "formGroup",
@@ -15744,7 +15744,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "StoryFn<CheckboxComponent>",
-                "defaultValue": "(args: CheckboxComponent) => {\n  args.variant = 'default';\n  return {\n    component: CheckboxComponent,\n    template: `\n      <ui-checkbox [variant]=\"'${args.variant}'\">\n      <ng-container ngProjectAs=\"label\">Checkbox text</ng-container>\n      <ng-container ngProjectAs=\"description\">Description text text text.</ng-container>\n      <ng-container ngProjectAs=\"icon\">\n      <ui-icon\n      icon=\"info_outline\"\n      [inline]=\"true\"\n      [size]=\"18\"\n      variant=\"grey\"\n    ></ui-icon>\n      </ng-container>\n      </ui-checkbox>\n        `,\n    props: {\n      ...args,\n    },\n  };\n}",
+                "defaultValue": "(args: CheckboxComponent) => {\n  args.variant = 'default';\n  return {\n    component: CheckboxComponent,\n    template: `\n      <ui-checkbox [variant]=\"'${args.variant}'\">\n      <ng-container ngProjectAs=\"label\">Checkbox text</ng-container>\n      <ng-container ngProjectAs=\"description\">Description text text text.</ng-container>\n      <ng-container ngProjectAs=\"icon\">\n      <ui-icon\n      icon=\"info_outline\"\n      [size]=\"18\"\n      variant=\"grey\"\n    ></ui-icon>\n      </ng-container>\n      </ui-checkbox>\n        `,\n    props: {\n      ...args,\n    },\n  };\n}",
                 "rawdescription": "Template checkbox",
                 "description": "<p>Template checkbox</p>\n"
             },
@@ -15780,7 +15780,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "StoryFn<any>",
-                "defaultValue": "(args: any) => {\n  return {\n    template: `<div uiFormFieldDirective [outline]=\"${args.outline}\">\n    <label>Phone Number</label>\n    <input type=\"text\" name=\"account-number\" id=\"account-number\" placeholder=\"000-00-0000\"/>\n    <ui-spinner [size]=\"'medium'\" uiSuffix></ui-spinner>\n    <ui-icon icon=\"search\" uiPrefix></ui-icon>\n  </div>`,\n    props: {\n      ...args,\n    },\n  };\n}",
+                "defaultValue": "(args: any) => {\n  return {\n    template: `\n    <div [formGroup]=\"formGroup\">\n    <div uiFormFieldDirective [outline]=\"${args.outline}\">\n    <label>Phone Number</label>\n    <input type=\"text\" name=\"account-number\" id=\"account-number\" placeholder=\"000-00-0000\" formControlName=\"name\"/>\n    <ui-spinner [size]=\"'medium'\" uiSuffix></ui-spinner>\n    <ui-icon icon=\"search\" uiPrefix></ui-icon>\n  </div></div>\n  <ui-button (click)=\"toggleDisabled()\">\n  Enable/disabled\n</ui-button>\n<ui-button (click)=\"toggleInvalid()\">\n  Valid/Invalid\n</ui-button>\n  `,\n    props: {\n      ...args,\n      toggleInvalid,\n      toggleDisabled,\n      formGroup,\n    },\n  };\n}",
                 "rawdescription": "Template to create form wrapper component's story",
                 "description": "<p>Template to create form wrapper component&#39;s story</p>\n"
             },
@@ -15900,7 +15900,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "StoryFn<any>",
-                "defaultValue": "(args: any) => {\n  return {\n    template: `\n    <div [formGroup]=\"formControl\">\n      <div uiFormFieldDirective  [outline]=\"${args.outline}\">\n        <label>Choose language</label>\n        <input\n          formControlName=\"name\"\n          type=\"text\"\n          placeholder=\"Select a value\"\n          [uiAutocomplete]=\"auto\"\n          (optionSelected)=\"selectedOption($event)\"\n        >\n        <ui-autocomplete #auto>\n          <ui-option *ngFor=\"let option of options\" [value]=\"option\">\n            {{option}}\n            <ng-container ngProjectsAs=\"icon\">\n              <ui-icon\n                [icon]=\"'edit'\"\n                [size]=\"18\"\n              ></ui-icon>\n            </ng-container>\n          </ui-option>\n        </ui-autocomplete>\n        <ui-spinner [size]=\"'medium'\" uiSuffix></ui-spinner>\n        <ui-icon icon=\"search\" uiPrefix></ui-icon>\n    </div>\n  </div>\n  <ui-button (click)=\"toggleDisabled()\">\n    Enable/disabled\n  </ui-button>\n  `,\n    props: {\n      ...args,\n      options,\n      toggleDisabled,\n      formControl,\n    },\n  };\n}",
+                "defaultValue": "(args: any) => {\n  return {\n    template: `\n    <div [formGroup]=\"formGroup\">\n      <div uiFormFieldDirective  [outline]=\"${args.outline}\">\n        <label>Choose language</label>\n        <input\n          formControlName=\"name\"\n          type=\"text\"\n          placeholder=\"Select a value\"\n          [uiAutocomplete]=\"auto\"\n          (optionSelected)=\"selectedOption($event)\"\n        >\n        <ui-autocomplete #auto>\n          <ui-option *ngFor=\"let option of options\" [value]=\"option\">\n            {{option}}\n            <ng-container ngProjectsAs=\"icon\">\n              <ui-icon\n                [icon]=\"'edit'\"\n                [size]=\"18\"\n              ></ui-icon>\n            </ng-container>\n          </ui-option>\n        </ui-autocomplete>\n        <ui-spinner [size]=\"'medium'\" uiSuffix></ui-spinner>\n        <ui-icon icon=\"search\" uiPrefix></ui-icon>\n    </div>\n  </div>\n  <ui-button (click)=\"toggleDisabled()\">\n    Enable/disabled\n  </ui-button>\n  <ui-button (click)=\"toggleInvalid()\">\n    Valid/Invalid\n  </ui-button>\n  `,\n    props: {\n      ...args,\n      options,\n      toggleDisabled,\n      toggleInvalid,\n      formGroup,\n    },\n  };\n}",
                 "rawdescription": "Template to create form wrapper component's story using autocomplete",
                 "description": "<p>Template to create form wrapper component&#39;s story using autocomplete</p>\n"
             },
@@ -15972,7 +15972,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "StoryFn<any>",
-                "defaultValue": "(args: any) => {\n  return {\n    template: `<div uiFormFieldDirective [outline]=\"${args.outline}\">\n    <label>Choose language</label>\n    <ui-select-menu \n      [multiselect]=\"false\"\n      [disabled]=\"false\">\n        <ui-select-option *ngFor=\"let option of options\" [value]=\"option\">\n          {{option}}\n        </ui-select-option>\n    </ui-select-menu>\n    <ui-spinner [size]=\"'medium'\" uiSuffix></ui-spinner>\n    <ui-icon icon=\"search\" uiPrefix></ui-icon>\n  </div>`,\n    props: {\n      ...args,\n      options,\n    },\n  };\n}",
+                "defaultValue": "(args: any) => {\n  return {\n    template: `\n    <div [formGroup]=\"formGroup\">\n    <div uiFormFieldDirective [outline]=\"${args.outline}\">\n    <label>Choose language</label>\n    <ui-select-menu \n      formControlName=\"name\"\n      [multiselect]=\"false\"\n      [disabled]=\"false\">\n        <ui-select-option *ngFor=\"let option of options\" [value]=\"option\">\n          {{option}}\n        </ui-select-option>\n    </ui-select-menu>\n    <ui-spinner [size]=\"'medium'\" uiSuffix></ui-spinner>\n    <ui-icon icon=\"search\" uiPrefix></ui-icon>\n  </div>\n    </div>\n    <ui-button (click)=\"toggleDisabled()\">\n    Enable/disabled\n  </ui-button>\n  <ui-button (click)=\"toggleInvalid()\">\n    Valid/Invalid\n  </ui-button>\n  `,\n    props: {\n      ...args,\n      options,\n      toggleInvalid,\n      toggleDisabled,\n      formGroup,\n    },\n  };\n}",
                 "rawdescription": "Template to create form wrapper component's story using select menu",
                 "description": "<p>Template to create form wrapper component&#39;s story using select menu</p>\n"
             },
@@ -16104,9 +16104,21 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
-                "defaultValue": "() => {\n  if (formControl.disabled) {\n    formControl.enable();\n  } else {\n    formControl.disable();\n  }\n}",
+                "defaultValue": "() => {\n  const formControl = formGroup.controls.name;\n  if (formControl.disabled) {\n    formControl.enable();\n  } else {\n    formControl.disable();\n  }\n}",
                 "rawdescription": "Callback to test story with disable option",
                 "description": "<p>Callback to test story with disable option</p>\n"
+            },
+            {
+                "name": "toggleInvalid",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "() => {\n  const formControl = formGroup.controls.name;\n  if (formControl.valid) {\n    formControl.setErrors({ customError: true });\n  } else {\n    formControl.setErrors(null);\n  }\n}",
+                "rawdescription": "Callback to set status of form control to invalid",
+                "description": "<p>Callback to set status of form control to invalid</p>\n"
             },
             {
                 "name": "TogglePanel",
@@ -18172,155 +18184,9 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "StoryFn<CheckboxComponent>",
-                    "defaultValue": "(args: CheckboxComponent) => {\n  args.variant = 'default';\n  return {\n    component: CheckboxComponent,\n    template: `\n      <ui-checkbox [variant]=\"'${args.variant}'\">\n      <ng-container ngProjectAs=\"label\">Checkbox text</ng-container>\n      <ng-container ngProjectAs=\"description\">Description text text text.</ng-container>\n      <ng-container ngProjectAs=\"icon\">\n      <ui-icon\n      icon=\"info_outline\"\n      [inline]=\"true\"\n      [size]=\"18\"\n      variant=\"grey\"\n    ></ui-icon>\n      </ng-container>\n      </ui-checkbox>\n        `,\n    props: {\n      ...args,\n    },\n  };\n}",
+                    "defaultValue": "(args: CheckboxComponent) => {\n  args.variant = 'default';\n  return {\n    component: CheckboxComponent,\n    template: `\n      <ui-checkbox [variant]=\"'${args.variant}'\">\n      <ng-container ngProjectAs=\"label\">Checkbox text</ng-container>\n      <ng-container ngProjectAs=\"description\">Description text text text.</ng-container>\n      <ng-container ngProjectAs=\"icon\">\n      <ui-icon\n      icon=\"info_outline\"\n      [size]=\"18\"\n      variant=\"grey\"\n    ></ui-icon>\n      </ng-container>\n      </ui-checkbox>\n        `,\n    props: {\n      ...args,\n    },\n  };\n}",
                     "rawdescription": "Template checkbox",
                     "description": "<p>Template checkbox</p>\n"
-                }
-            ],
-            "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts": [
-                {
-                    "name": "formControl",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "new FormGroup({\n  name: new FormControl(''),\n})",
-                    "rawdescription": "Form group to test story with disable option",
-                    "description": "<p>Form group to test story with disable option</p>\n"
-                },
-                {
-                    "name": "options",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "[]",
-                    "defaultValue": "[\n  'french',\n  'spanish',\n  'english',\n  'japanese',\n  'javanese',\n  'chinese',\n]",
-                    "rawdescription": "List of options for the select menu included template",
-                    "description": "<p>List of options for the select menu included template</p>\n"
-                },
-                {
-                    "name": "OutlineFalse",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "Template.bind({})",
-                    "rawdescription": "Outline = False design",
-                    "description": "<p>Outline = False design</p>\n"
-                },
-                {
-                    "name": "OutlineFalseAutocomplete",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "TemplateAutocomplete.bind({})",
-                    "rawdescription": "Outline = False design + use of autocomplete",
-                    "description": "<p>Outline = False design + use of autocomplete</p>\n"
-                },
-                {
-                    "name": "OutlineFalseSelect",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "TemplateSelect.bind({})",
-                    "rawdescription": "Outline = False design + use of select menu",
-                    "description": "<p>Outline = False design + use of select menu</p>\n"
-                },
-                {
-                    "name": "OutlineTrue",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "Template.bind({})",
-                    "rawdescription": "Outline = True design",
-                    "description": "<p>Outline = True design</p>\n"
-                },
-                {
-                    "name": "OutlineTrueAutocomplete",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "TemplateAutocomplete.bind({})",
-                    "rawdescription": "Outline = True design + use of autocomplete",
-                    "description": "<p>Outline = True design + use of autocomplete</p>\n"
-                },
-                {
-                    "name": "OutlineTrueSelect",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "TemplateSelect.bind({})",
-                    "rawdescription": "Outline = True design + use of select menu",
-                    "description": "<p>Outline = True design + use of select menu</p>\n"
-                },
-                {
-                    "name": "Template",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "StoryFn<any>",
-                    "defaultValue": "(args: any) => {\n  return {\n    template: `<div uiFormFieldDirective [outline]=\"${args.outline}\">\n    <label>Phone Number</label>\n    <input type=\"text\" name=\"account-number\" id=\"account-number\" placeholder=\"000-00-0000\"/>\n    <ui-spinner [size]=\"'medium'\" uiSuffix></ui-spinner>\n    <ui-icon icon=\"search\" uiPrefix></ui-icon>\n  </div>`,\n    props: {\n      ...args,\n    },\n  };\n}",
-                    "rawdescription": "Template to create form wrapper component's story",
-                    "description": "<p>Template to create form wrapper component&#39;s story</p>\n"
-                },
-                {
-                    "name": "TemplateAutocomplete",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "StoryFn<any>",
-                    "defaultValue": "(args: any) => {\n  return {\n    template: `\n    <div [formGroup]=\"formControl\">\n      <div uiFormFieldDirective  [outline]=\"${args.outline}\">\n        <label>Choose language</label>\n        <input\n          formControlName=\"name\"\n          type=\"text\"\n          placeholder=\"Select a value\"\n          [uiAutocomplete]=\"auto\"\n          (optionSelected)=\"selectedOption($event)\"\n        >\n        <ui-autocomplete #auto>\n          <ui-option *ngFor=\"let option of options\" [value]=\"option\">\n            {{option}}\n            <ng-container ngProjectsAs=\"icon\">\n              <ui-icon\n                [icon]=\"'edit'\"\n                [size]=\"18\"\n              ></ui-icon>\n            </ng-container>\n          </ui-option>\n        </ui-autocomplete>\n        <ui-spinner [size]=\"'medium'\" uiSuffix></ui-spinner>\n        <ui-icon icon=\"search\" uiPrefix></ui-icon>\n    </div>\n  </div>\n  <ui-button (click)=\"toggleDisabled()\">\n    Enable/disabled\n  </ui-button>\n  `,\n    props: {\n      ...args,\n      options,\n      toggleDisabled,\n      formControl,\n    },\n  };\n}",
-                    "rawdescription": "Template to create form wrapper component's story using autocomplete",
-                    "description": "<p>Template to create form wrapper component&#39;s story using autocomplete</p>\n"
-                },
-                {
-                    "name": "TemplateSelect",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "StoryFn<any>",
-                    "defaultValue": "(args: any) => {\n  return {\n    template: `<div uiFormFieldDirective [outline]=\"${args.outline}\">\n    <label>Choose language</label>\n    <ui-select-menu \n      [multiselect]=\"false\"\n      [disabled]=\"false\">\n        <ui-select-option *ngFor=\"let option of options\" [value]=\"option\">\n          {{option}}\n        </ui-select-option>\n    </ui-select-menu>\n    <ui-spinner [size]=\"'medium'\" uiSuffix></ui-spinner>\n    <ui-icon icon=\"search\" uiPrefix></ui-icon>\n  </div>`,\n    props: {\n      ...args,\n      options,\n    },\n  };\n}",
-                    "rawdescription": "Template to create form wrapper component's story using select menu",
-                    "description": "<p>Template to create form wrapper component&#39;s story using select menu</p>\n"
-                },
-                {
-                    "name": "toggleDisabled",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "() => {\n  if (formControl.disabled) {\n    formControl.enable();\n  } else {\n    formControl.disable();\n  }\n}",
-                    "rawdescription": "Callback to test story with disable option",
-                    "description": "<p>Callback to test story with disable option</p>\n"
                 }
             ],
             "libs/ui/src/lib/radio/radio.stories.ts": [
@@ -18538,6 +18404,164 @@
                     "defaultValue": "(args: ToggleComponent) => {\n  args.icon = {\n    disableIcon: 'close',\n    enableIcon: 'save',\n  };\n  return {\n    component: ToggleComponent,\n    template: `\n      <ui-toggle [type]=\"'${args.type}'\" [icon]=\"icon\" [variant]=\"'${args.variant}'\" [labelPosition]=\"'${args.labelPosition}'\">\n        <ng-container ngProjectAs=\"label\">Test test test!</ng-container>\n        <ng-container ngProjectAs=\"description\">\n          Test test test test test test test test test test test test test\n        </ng-container>\n      </ui-toggle>\n        `,\n    props: {\n      ...args,\n    },\n  };\n}",
                     "rawdescription": "Primary template toggle",
                     "description": "<p>Primary template toggle</p>\n"
+                }
+            ],
+            "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts": [
+                {
+                    "name": "formGroup",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "new FormGroup({\n  name: new FormControl(''),\n})",
+                    "rawdescription": "Form group to test story with disable option",
+                    "description": "<p>Form group to test story with disable option</p>\n"
+                },
+                {
+                    "name": "options",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "[]",
+                    "defaultValue": "[\n  'french',\n  'spanish',\n  'english',\n  'japanese',\n  'javanese',\n  'chinese',\n]",
+                    "rawdescription": "List of options for the select menu included template",
+                    "description": "<p>List of options for the select menu included template</p>\n"
+                },
+                {
+                    "name": "OutlineFalse",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})",
+                    "rawdescription": "Outline = False design",
+                    "description": "<p>Outline = False design</p>\n"
+                },
+                {
+                    "name": "OutlineFalseAutocomplete",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "TemplateAutocomplete.bind({})",
+                    "rawdescription": "Outline = False design + use of autocomplete",
+                    "description": "<p>Outline = False design + use of autocomplete</p>\n"
+                },
+                {
+                    "name": "OutlineFalseSelect",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "TemplateSelect.bind({})",
+                    "rawdescription": "Outline = False design + use of select menu",
+                    "description": "<p>Outline = False design + use of select menu</p>\n"
+                },
+                {
+                    "name": "OutlineTrue",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})",
+                    "rawdescription": "Outline = True design",
+                    "description": "<p>Outline = True design</p>\n"
+                },
+                {
+                    "name": "OutlineTrueAutocomplete",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "TemplateAutocomplete.bind({})",
+                    "rawdescription": "Outline = True design + use of autocomplete",
+                    "description": "<p>Outline = True design + use of autocomplete</p>\n"
+                },
+                {
+                    "name": "OutlineTrueSelect",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "TemplateSelect.bind({})",
+                    "rawdescription": "Outline = True design + use of select menu",
+                    "description": "<p>Outline = True design + use of select menu</p>\n"
+                },
+                {
+                    "name": "Template",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "StoryFn<any>",
+                    "defaultValue": "(args: any) => {\n  return {\n    template: `\n    <div [formGroup]=\"formGroup\">\n    <div uiFormFieldDirective [outline]=\"${args.outline}\">\n    <label>Phone Number</label>\n    <input type=\"text\" name=\"account-number\" id=\"account-number\" placeholder=\"000-00-0000\" formControlName=\"name\"/>\n    <ui-spinner [size]=\"'medium'\" uiSuffix></ui-spinner>\n    <ui-icon icon=\"search\" uiPrefix></ui-icon>\n  </div></div>\n  <ui-button (click)=\"toggleDisabled()\">\n  Enable/disabled\n</ui-button>\n<ui-button (click)=\"toggleInvalid()\">\n  Valid/Invalid\n</ui-button>\n  `,\n    props: {\n      ...args,\n      toggleInvalid,\n      toggleDisabled,\n      formGroup,\n    },\n  };\n}",
+                    "rawdescription": "Template to create form wrapper component's story",
+                    "description": "<p>Template to create form wrapper component&#39;s story</p>\n"
+                },
+                {
+                    "name": "TemplateAutocomplete",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "StoryFn<any>",
+                    "defaultValue": "(args: any) => {\n  return {\n    template: `\n    <div [formGroup]=\"formGroup\">\n      <div uiFormFieldDirective  [outline]=\"${args.outline}\">\n        <label>Choose language</label>\n        <input\n          formControlName=\"name\"\n          type=\"text\"\n          placeholder=\"Select a value\"\n          [uiAutocomplete]=\"auto\"\n          (optionSelected)=\"selectedOption($event)\"\n        >\n        <ui-autocomplete #auto>\n          <ui-option *ngFor=\"let option of options\" [value]=\"option\">\n            {{option}}\n            <ng-container ngProjectsAs=\"icon\">\n              <ui-icon\n                [icon]=\"'edit'\"\n                [size]=\"18\"\n              ></ui-icon>\n            </ng-container>\n          </ui-option>\n        </ui-autocomplete>\n        <ui-spinner [size]=\"'medium'\" uiSuffix></ui-spinner>\n        <ui-icon icon=\"search\" uiPrefix></ui-icon>\n    </div>\n  </div>\n  <ui-button (click)=\"toggleDisabled()\">\n    Enable/disabled\n  </ui-button>\n  <ui-button (click)=\"toggleInvalid()\">\n    Valid/Invalid\n  </ui-button>\n  `,\n    props: {\n      ...args,\n      options,\n      toggleDisabled,\n      toggleInvalid,\n      formGroup,\n    },\n  };\n}",
+                    "rawdescription": "Template to create form wrapper component's story using autocomplete",
+                    "description": "<p>Template to create form wrapper component&#39;s story using autocomplete</p>\n"
+                },
+                {
+                    "name": "TemplateSelect",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "StoryFn<any>",
+                    "defaultValue": "(args: any) => {\n  return {\n    template: `\n    <div [formGroup]=\"formGroup\">\n    <div uiFormFieldDirective [outline]=\"${args.outline}\">\n    <label>Choose language</label>\n    <ui-select-menu \n      formControlName=\"name\"\n      [multiselect]=\"false\"\n      [disabled]=\"false\">\n        <ui-select-option *ngFor=\"let option of options\" [value]=\"option\">\n          {{option}}\n        </ui-select-option>\n    </ui-select-menu>\n    <ui-spinner [size]=\"'medium'\" uiSuffix></ui-spinner>\n    <ui-icon icon=\"search\" uiPrefix></ui-icon>\n  </div>\n    </div>\n    <ui-button (click)=\"toggleDisabled()\">\n    Enable/disabled\n  </ui-button>\n  <ui-button (click)=\"toggleInvalid()\">\n    Valid/Invalid\n  </ui-button>\n  `,\n    props: {\n      ...args,\n      options,\n      toggleInvalid,\n      toggleDisabled,\n      formGroup,\n    },\n  };\n}",
+                    "rawdescription": "Template to create form wrapper component's story using select menu",
+                    "description": "<p>Template to create form wrapper component&#39;s story using select menu</p>\n"
+                },
+                {
+                    "name": "toggleDisabled",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "() => {\n  const formControl = formGroup.controls.name;\n  if (formControl.disabled) {\n    formControl.enable();\n  } else {\n    formControl.disable();\n  }\n}",
+                    "rawdescription": "Callback to test story with disable option",
+                    "description": "<p>Callback to test story with disable option</p>\n"
+                },
+                {
+                    "name": "toggleInvalid",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "() => {\n  const formControl = formGroup.controls.name;\n  if (formControl.valid) {\n    formControl.setErrors({ customError: true });\n  } else {\n    formControl.setErrors(null);\n  }\n}",
+                    "rawdescription": "Callback to set status of form control to invalid",
+                    "description": "<p>Callback to set status of form control to invalid</p>\n"
                 }
             ],
             "libs/ui/src/lib/slider/slider.stories.ts": [
@@ -20397,7 +20421,7 @@
                 "type": "variable",
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
-                "name": "formControl",
+                "name": "formGroup",
                 "coveragePercent": 100,
                 "coverageCount": "1/1",
                 "status": "very-good"
@@ -20508,6 +20532,16 @@
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
                 "name": "toggleDisabled",
+                "coveragePercent": 100,
+                "coverageCount": "1/1",
+                "status": "very-good"
+            },
+            {
+                "filePath": "libs/ui/src/lib/form-wrapper/form-wrapper.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "toggleInvalid",
                 "coveragePercent": 100,
                 "coverageCount": "1/1",
                 "status": "very-good"

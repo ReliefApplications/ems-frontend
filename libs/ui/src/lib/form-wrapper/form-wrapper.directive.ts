@@ -284,12 +284,10 @@ export class FormWrapperDirective
               this.removeDisableState();
             }
             // Error state
-            if (this.control.control.validator) {
-              if (status === 'INVALID') {
-                this.setInvalidState();
-              } else {
-                this.removeInvalidState();
-              }
+            if (status === 'INVALID') {
+              this.setInvalidState();
+            } else {
+              this.removeInvalidState();
             }
             // Required state
             const isRequired = this.control?.control?.hasValidator(

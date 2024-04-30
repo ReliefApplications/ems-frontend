@@ -19,6 +19,7 @@ import {
   DividerModule,
   FixedWrapperModule,
   ChipModule,
+  ErrorMessageModule,
 } from '@oort-front/ui';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
@@ -99,6 +100,7 @@ import { EmptyModule } from '../ui/empty/empty.module';
     DividerModule,
     FixedWrapperModule,
     EmptyModule,
+    ErrorMessageModule,
   ],
   schemas: [NO_ERRORS_SCHEMA],
 })

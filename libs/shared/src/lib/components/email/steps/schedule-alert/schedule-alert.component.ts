@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EmailService } from '../../email.service';
 
 /**
- * schedule-alert page component.
+ * Schedule notification configuration step.
  */
 @Component({
   selector: 'app-schedule-alert',
@@ -11,17 +11,18 @@ import { EmailService } from '../../email.service';
 })
 export class ScheduleAlertComponent implements OnInit {
   /** Flag indicating whether schedule alert is enabled. */
-  schedule_alert = true;
+  schedule_alert = false;
 
   /**
-   * initialing this component
+   * Schedule notification configuration step.
    *
    *@param emailService is injecting email service to this component
    */
   constructor(private emailService: EmailService) {}
 
   ngOnInit(): void {
-    if (this.schedule_alert) {
+    // For phase 1, skip this part
+    if (!this.schedule_alert) {
       this.emailService.disableSaveAndProceed.next(false);
     }
   }

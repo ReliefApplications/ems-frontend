@@ -1,13 +1,15 @@
 <div *ngIf="true">
-  <div
-    class="mt-2 text-gray-700 text-xs gap-1 flex items-end"
-    style="font-weight: 500"
-  >
-    <ui-checkbox [(ngModel)]="schedule_alert" [disabled]="true">
-      <ng-container ngProjectAs="label">No Schedule Alert</ng-container>
+  <div class="mt-2">
+    <!-- todo: translate -->
+    <ui-checkbox
+      [(ngModel)]="schedule_alert"
+      [disabled]="true"
+      uiTooltip="Currently disabled, will be enabled in a future release"
+    >
+      <ng-container ngProjectAs="label">Schedule Alert</ng-container>
     </ui-checkbox>
   </div>
-  <div *ngIf="!schedule_alert">
+  <div *ngIf="schedule_alert">
     <div class="mt-2 h-6 w-96">
       <ul class="flex bg-gray-50 flex-wrap -mb-px">
         <li class="me-2">

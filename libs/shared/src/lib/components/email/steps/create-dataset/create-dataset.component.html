@@ -69,6 +69,7 @@
         <kendo-tabstrip-tab
           *ngIf="showPreview === true"
           [selected]="showPreview === true"
+          [disabled]="true"
           id="previewTab"
         >
           <ng-template kendoTabTitle>
@@ -120,7 +121,11 @@
                             "
                           >
                             <td class="p-2 text-left">
-                              {{ this.emailService.formatDateStrings(data[fieldKeyString]) }}
+                              {{
+                                this.emailService.formatDateStrings(
+                                  data[fieldKeyString]
+                                )
+                              }}
                             </td>
                           </ng-container>
                         </tr>
