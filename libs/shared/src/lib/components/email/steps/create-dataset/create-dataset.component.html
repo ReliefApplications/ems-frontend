@@ -125,15 +125,17 @@
           </ng-container>
         </div>
 
-            <button
-              type="button"
-              (click)="showPreview = false"
-              class="bg-sky-600 float-right hover:bg-sky-700 text-white ml-3 px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
-            >
-              {{ 'common.back' | translate }}
-            </button>
-          </ng-template>
-        </kendo-tabstrip-tab>
+        <ui-button
+          class="float-right"
+          category="secondary"
+          variant="primary"
+          (click)="showPreview=false"
+        >
+        {{ 'common.back' | translate }}
+        </ui-button>
+      </ng-template>
+
+      </kendo-tabstrip-tab>
       </kendo-tabstrip>
     </div>
   </div>

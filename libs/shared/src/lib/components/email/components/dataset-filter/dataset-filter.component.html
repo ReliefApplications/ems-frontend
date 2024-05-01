@@ -402,34 +402,30 @@
                       </div>
                     </ng-container>
                   </div>
-                  <button
-                    class="ui-button-icon primary medium button-danger mt-8"
-                    (click)="deleteDatasetFilter(fieldIndex)"
-                  >
-                    <ui-icon class="text-3xl" icon="delete" variant="danger">
-                    </ui-icon>
-                  </button>
+                  <ui-button
+                      [variant]="'danger'"
+                      class="hide-icons hover:text-primary-600 mt-8"
+                      [isIcon]="true"
+                      size="large"
+                      (click)="deleteDatasetFilter(fieldIndex)"
+                      [icon]="'delete'"
+                      [uiTooltip]="'common.archive.delete' | translate"
+                    >
+                  </ui-button>
                 </div>
               </div>
             </div>
           </div>
 
-          <button
-            *ngIf="datasetFilterInfo.controls && showDatasetLimitWarning"
-            type="button"
-            (click)="getDataSet('filter')"
-            class="bg-sky-600 float-right hover:bg-sky-800 text-white ml-3 px-4 py-2 rounded-md transition-colors duration-150 ease-in-out mt-2"
-          >
-            <ui-icon class="text-3xl" icon="check" variant="light"> </ui-icon>
-          </button>
-          <button
-            *ngIf="datasetFilterInfo.controls && !showDatasetLimitWarning"
-            type="button"
-            (click)="getDataSet('filter')"
-            class="bg-sky-600 float-right hover:bg-sky-800 text-white ml-3 px-4 py-2 rounded-md transition-colors duration-150 ease-in-out mt-2 btn-width"
-          >
-            {{ 'components.queryBuilder.filter.apply' | translate }}
-          </button>
+        <ui-button
+          *ngIf="datasetFilterInfo.controls"
+          class="float-right ml-3 px-4 py-2"
+          category="secondary"
+          variant="primary"
+          (click)="getDataSet('filter')"
+        >
+        {{ 'components.queryBuilder.filter.apply' | translate }}
+        </ui-button>
         </ng-container>
       </ng-template>
     </kendo-tabstrip-tab>
@@ -674,32 +670,29 @@
           </div>
           <div></div>
         </ng-container>
-        <button
-          *ngIf="
-            tabs?.length > 1 &&
-            datasetFilterInfo.controls &&
-            activeTab.index !== tabs.length - 1
-          "
-          type="button"
-          [disabled]="selectedFields.length === 0"
-          (click)="getDataSet('fields')"
-          class="text-white text-sm float-right block mt-2 w-24 rounded-md bg-sky-600 hover:bg-sky-700 px-4 py-2 transition-colors duration-150 ease-in-out btn-width"
-        >
-          {{ 'components.queryBuilder.filter.apply' | translate }}
-        </button>
-        <button
-          *ngIf="tabs?.length === 1 || activeTab?.index === tabs?.length - 1"
-          type="button"
-          (click)="getDataSet('preview'); showPreview = true"
-          [disabled]="showDatasetLimitWarning || selectedFields.length === 0"
-          [class.disabled-button]="
-            showDatasetLimitWarning || selectedFields.length === 0
-          "
-          class="text-white text-sm float-right block mt-2 w-24 rounded-md bg-sky-600 hover:bg-sky-700 px-4 py-2 transition-colors duration-150 ease-in-out"
-        >
-          {{ 'common.preview' | translate }}
-        </button>
-      </ng-template>
+      <ui-button
+        *ngIf="tabs?.length > 1 && datasetFilterInfo.controls && activeTab.index !== tabs.length-1"
+        class="float-right mt-2"
+        category="secondary"
+        variant="primary"
+        (click)="getDataSet('fields')"
+        [disabled]="selectedFields.length === 0"
+      >
+      {{ 'components.queryBuilder.filter.apply' | translate }}
+      </ui-button>
+      <ui-button
+        *ngIf="tabs?.length === 1 || activeTab?.index === tabs?.length-1"
+        class="float-right mt-2"
+        category="secondary"
+        variant="primary"
+        (click)="getDataSet('preview');showPreview=true"
+        [disabled]="showDatasetLimitWarning || selectedFields.length === 0 "
+        [class.disabled-button]="showDatasetLimitWarning || selectedFields.length === 0"
+      >
+      {{ 'common.preview' | translate }}
+      </ui-button>
+    </ng-template>
+
     </kendo-tabstrip-tab>
     <!-- Style Tab -->
     <!-- <kendo-tabstrip-tab [disabled]="true">
