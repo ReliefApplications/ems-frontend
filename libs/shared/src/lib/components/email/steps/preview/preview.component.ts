@@ -188,6 +188,15 @@ export class PreviewComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Checks if footer is empty
+   *
+   * @returns true if footer is empty
+   */
+  footerIsEmpty() {
+    return !this.footerString || /^<p>\s*<\/p>$/.test(this.footerString);
+  }
+
+  /**
    * Retrieves the style based on the item name then sets the style in the email service.
    *
    * @param item The item you are retrieving the inline styling of.
@@ -245,7 +254,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
       case 'container':
         styles[
           'containerStyle'
-        ] = `border: 2px solid #00205C; width: 100%; height: 100%; box-sizing: border-box; display: flex; flex-direction: column;`;
+        ] = `border: 2px solid #00205C; width: 100%; height: 60%; box-sizing: border-box; display: flex; flex-direction: column;`;
         break;
       default:
         return '';
