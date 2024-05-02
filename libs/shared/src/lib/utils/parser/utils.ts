@@ -614,8 +614,9 @@ export const getPageKeys = (
  */
 export const applyLayoutFormat = (value: any, field: any): any => {
   // replaces value for label, if it exists
-  if (field.options)
-    value = field.options.find((o: any) => o.value === value)?.text || value;
+  const options = field.options ?? field.meta?.choices;
+  if (options)
+    value = options.find((o: any) => o.value == value)?.text || value;
 
   if (value && field.layoutFormat && field.layoutFormat.length > 1) {
     const regex = new RegExp(
