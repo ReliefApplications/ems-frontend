@@ -1,113 +1,175 @@
-<div class="Email_Template">
-    <div class="flex flex-row">
-      <!-- Segment Dropdown -->
-      <div class="mt-4 w-1/4"[formGroup]="segmentForm"  uiFormFieldDirective [defaultMargin]="false">
-        <label class="mb-1">{{ 'components.notifications.email.dropdown.emailInput' | translate }}</label>
-        <ui-select-menu id="segmentSelect"
-          formControlName="segment"
-          (ngModelChange)="onSegmentChange($event)"
-          class="w-full">
-          <ui-select-option *ngFor="let segment of segmentList" [value]="segment">{{ segment | titlecase }}</ui-select-option>
-        </ui-select-menu>
-      </div>
-      <!-- Email Input -->
-      <div class="w-1/3" *ngIf="activeSegmentIndex === 0">
-          <div class="mt-4 mx-4 flex flex-col px-0" uiFormFieldDirective>
-            <label class="block text-sm font-medium leading-6 text-gray-900 mb-1">{{ 'components.select.distribution.email' | translate }}</label>
-            <ui-icon icon="info" class="cursor-pointer border-0"
-            variant="primary"  [uiTooltip]="
-            'components.select.distribution.emailError' | translate
-          " uiSuffix></ui-icon>
-            <input #filterInput (keyup.enter)="addEmailManually(filterInput)" (change)="validateEmail(filterInput)"
-            class="relative flex px-2 focus-within:ring-2 shadow-sm rounded-md border-0  items-center w-full"
-            type="text" [placeholder]="'components.select.distribution.email' | translate" />
-            <!-- <p class="email-hint-text" *ngIf="!emailValidationError.length">{{'components.select.distribution.emailError' | translate}}</p> -->
-        </div>
-      </div>
-      <!-- Select From List -->
-      <div class="w-1/3" *ngIf="activeSegmentIndex === 1">
-        <div class="mt-4 mx-4 flex-row gap-4">
-          <label htmlFor="select__data__set" class="block text-sm font-medium leading-6 text-gray-900 mb-1">
-              {{ 'components.queryBuilder.dataset.title' | translate }}*
-          </label>
-          <ng-select id="select__data__set" name="select__data__set" [(ngModel)]="selectedDataset"  [ngModelOptions]="{ standalone: true }"
-              [items]="dataSets" bindLabel="blockName" [searchable]="true"  [virtualScroll]="true"
-              (clear)="clearDatasetSelection()"
-              (change)="bindDataSetDetails($event)"
-              [placeholder]="'components.queryBuilder.dataset.select' | translate">
-              <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-                  <span>{{ this.emailService.replaceUnderscores(item.blockName || '') | titlecase }}</span>
-              </ng-template>
-          </ng-select>
-        </div>
-      </div>
-      <!-- Filter Select -->
-      <div class="w-1/3" *ngIf="activeSegmentIndex === 2">
-        <div class="mt-4 mx-4 flex-row gap-4">
-          <label htmlFor="select__data__set" class="block text-sm font-medium leading-6 text-gray-900 mb-1">
-              {{ 'components.queryBuilder.dataset.title' | translate }}*
-          </label>
-          <ng-select id="select__data__set" name="select__data__set" [(ngModel)]="selectedDataset" [ngModelOptions]="{ standalone: true }"
-              [items]="dataSets" bindLabel="blockName" [searchable]="true"  [virtualScroll]="true"
-              (clear)="clearDatasetSelection()"
-              (change)="bindDataSetDetails($event)"
-              [placeholder]="'components.queryBuilder.dataset.select' | translate">
-              <ng-template disabled selected>
-                  <span>{{ 'components.queryBuilder.dataset.select' | translate }}</span>
-              </ng-template>
-              <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-                  <span>{{ this.emailService.replaceUnderscores(item.blockName || '') | titlecase }}</span>
-              </ng-template>
-          </ng-select>
-        </div>
-      </div>
+<div>
+  <div class="flex flex-row gap-2" [formGroup]="segmentForm">
+    <!-- Select type of email input ( manual / from list / from resource ) -->
+    <div class="w-1/3" uiFormFieldDirective [defaultMargin]="false">
+      <label>{{
+        'components.notifications.email.dropdown.emailInput' | translate
+      }}</label>
+      <ui-select-menu
+        id="segmentSelect"
+        formControlName="segment"
+        (ngModelChange)="onSegmentChange($event)"
+        class="w-full"
+      >
+        <ui-select-option
+          *ngFor="let segment of segmentList"
+          [value]="segment"
+          >{{ segment | titlecase }}</ui-select-option
+        >
+      </ui-select-menu>
     </div>
+    <!-- Manual input -->
+    <div class="w-1/3" *ngIf="activeSegmentIndex === 0" uiFormFieldDirective>
+      <label>{{ 'components.select.distribution.email' | translate }}</label>
+      <ui-icon
+        icon="info"
+        class="cursor-pointer border-0"
+        variant="primary"
+        [uiTooltip]="'components.select.distribution.emailError' | translate"
+        uiSuffix
+      ></ui-icon>
+      <input
+        #filterInput
+        (keyup.enter)="addEmailManually(filterInput)"
+        (change)="validateEmail(filterInput)"
+        type="text"
+        [placeholder]="'components.select.distribution.email' | translate"
+      />
+    </div>
+    <!-- Selection of resource -->
+    <div class="w-1/2" *ngIf="activeSegmentIndex >= 1">
+      <label
+        htmlFor="select__data__set"
+        class="block text-sm font-medium leading-6 text-gray-900"
+      >
+        {{ 'components.queryBuilder.dataset.title' | translate }}*
+      </label>
+      <ng-select
+        id="select__data__set"
+        name="select__data__set"
+        [(ngModel)]="selectedDataset"
+        [ngModelOptions]="{ standalone: true }"
+        [items]="dataSets"
+        bindLabel="blockName"
+        [searchable]="true"
+        [virtualScroll]="true"
+        (clear)="clearDatasetSelection()"
+        (change)="bindDataSetDetails($event)"
+        [placeholder]="'components.queryBuilder.dataset.select' | translate"
+      >
+        <ng-template disabled selected>
+          <span>{{
+            'components.queryBuilder.dataset.select' | translate
+          }}</span>
+        </ng-template>
+        <ng-template
+          ng-option-tmp
+          let-item="item"
+          let-index="index"
+          let-search="searchTerm"
+        >
+          <span>{{
+            this.emailService.replaceUnderscores(item.blockName || '')
+              | titlecase
+          }}</span>
+        </ng-template>
+      </ng-select>
+    </div>
+  </div>
 
-    <div class="select-from-list" *ngIf="activeSegmentIndex === 1">
-        <table *ngIf="dataList?.length" class="dataset-preview w-full border border-blue-600 shadow-xs m-1">
-            <thead class="bg-blue-600 border-blue-600 shadow-xs text-white">
-                <tr class="bg-blue-600 border-blue-600 shadow-xs text-white">
-                    <th>
-                        <input type="checkbox" [checked]="false" *ngIf="!isAllSelected" (change)="selectAllEmailItems($event)">
-                        <input type="checkbox" [checked]="true" *ngIf="isAllSelected" (change)="selectAllEmailItems($event)">
-                    </th>
-                    <ng-container *ngFor="let field of dataSetFields">
-                        <th class="bg-blue-600 border-white-600 shadow-xs text-white p-2 text-center">
-                            {{ this.emailService.replaceUnderscores(field) | titlecase }}
-                        </th>
-                    </ng-container>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of dataList; index as i" class="bg-white-600 border-blue-600 text-blue-600">
-                    <td>
-                        <input type="checkbox" (change)="selectUnselectIndividualEmails(i, $event)" [checked]="true" *ngIf="selectedItemIndexes.indexOf(i) !== -1">
-                        <input type="checkbox" (change)="selectUnselectIndividualEmails(i, $event)" [checked]="false" *ngIf="selectedItemIndexes.indexOf(i) === -1">
-                    </td>
-                    <ng-container *ngFor="let field of dataSetFields">
-                        <td class="p-2 border border-blue-600 shadow-xs m-1 text-center">
-                            {{ data[field] }}
-                        </td>
-                    </ng-container>
-                </tr>
-            </tbody>
-        </table>
-        <div class="button-wrapper">
-            <button (click)="addSelectedEmails()" *ngIf="selectedItemIndexes.length">Apply</button>
-        </div>
-    </div>
-    <!-- Filter -->
-    <div class="Create filters" *ngIf="activeSegmentIndex === 2">
-        <div>
-            <div [formGroup]="filterQuery" *ngIf="selectedDataset?.fields?.length && !this.loading">
-                <div class="flex-row gap-4 mt-6">
-                    <div class="flex gap-4">
-                      <div class="flex gap-4 mt-2">
-                        <div class="mt-2">
-                          <!-- Label for Filter Logic -->
-                          <div>
-                            <label class="block text-sm font-medium leading-6 text-gray-900" htmlFor="exampleSelect">{{ 'components.queryBuilder.filter.logic' | translate }}</label>
-                          </div>
+  <!-- From list ( selected from resource ) -->
+  <div *ngIf="activeSegmentIndex === 1">
+    <!-- Selection of emails -->
+    <table
+      *ngIf="dataList?.length"
+      class="dataset-preview w-full border border-blue-600 shadow-xs m-1"
+    >
+      <thead class="bg-blue-600 border-blue-600 shadow-xs text-white">
+        <tr class="bg-blue-600 border-blue-600 shadow-xs text-white">
+          <th>
+            <input
+              type="checkbox"
+              [checked]="false"
+              *ngIf="!isAllSelected"
+              (change)="selectAllEmailItems($event)"
+            />
+            <input
+              type="checkbox"
+              [checked]="true"
+              *ngIf="isAllSelected"
+              (change)="selectAllEmailItems($event)"
+            />
+          </th>
+          <ng-container *ngFor="let field of dataSetFields">
+            <th
+              class="bg-blue-600 border-white-600 shadow-xs text-white p-2 text-center"
+            >
+              {{ this.emailService.replaceUnderscores(field) | titlecase }}
+            </th>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let data of dataList; index as i"
+          class="bg-white-600 border-blue-600 text-blue-600"
+        >
+          <td>
+            <input
+              type="checkbox"
+              (change)="selectUnselectIndividualEmails(i, $event)"
+              [checked]="true"
+              *ngIf="selectedItemIndexes.indexOf(i) !== -1"
+            />
+            <input
+              type="checkbox"
+              (change)="selectUnselectIndividualEmails(i, $event)"
+              [checked]="false"
+              *ngIf="selectedItemIndexes.indexOf(i) === -1"
+            />
+          </td>
+          <ng-container *ngFor="let field of dataSetFields">
+            <td class="p-2 border border-blue-600 shadow-xs m-1 text-center">
+              {{ data[field] }}
+            </td>
+          </ng-container>
+        </tr>
+      </tbody>
+    </table>
+    <!-- todo: translate -->
+    <ui-button
+      *ngIf="selectedItemIndexes.length"
+      class="float-right mt-8"
+      category="secondary"
+      variant="primary"
+      (click)="addSelectedEmails()"
+    >
+      Apply
+    </ui-button>
+  </div>
+
+  <!-- From resource filter -->
+  <div *ngIf="activeSegmentIndex === 2">
+    <!-- Filter editor -->
+    <div>
+      <div
+        [formGroup]="filterQuery"
+        *ngIf="selectedDataset?.fields?.length && !this.loading"
+      >
+        <div class="flex-row gap-4 mt-6">
+          <div class="flex gap-4">
+            <div class="flex gap-4 mt-2">
+              <div class="mt-2">
+                <!-- Label for Filter Logic -->
+                <div>
+                  <label
+                    class="block text-sm font-medium leading-6 text-gray-900"
+                    htmlFor="exampleSelect"
+                    >{{
+                      'components.queryBuilder.filter.logic' | translate
+                    }}</label
+                  >
+                </div>
 
                 <div class="flex items-center gap-5 mt-1">
                   <!-- Filter Logic -->
@@ -375,22 +437,32 @@
                     </div>
                   </ng-container>
                 </div>
-                <button
-                  class="ui-button-icon primary medium button-danger mt-8"
+                <ui-button
+                  [variant]="'danger'"
+                  class="hide-icons hover:text-primary-600 mt-8"
+                  [isIcon]="true"
+                  size="large"
                   (click)="deleteDatasetFilter(fieldIndex)"
+                  [icon]="'delete'"
+                  [uiTooltip]="'common.archive.delete' | translate"
                 >
-                  <ui-icon class="text-3xl" icon="delete" variant="danger">
-                  </ui-icon>
-                </button>
+                </ui-button>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="button-wrapper" *ngIf="datasetFilterInfo.controls.length">
-      <button (click)="applyFilter()">Apply</button>
-    </div>
+    <!-- Apply filter -->
+    <ui-button
+      *ngIf="datasetFilterInfo.controls"
+      class="float-right mt-8"
+      category="secondary"
+      variant="primary"
+      (click)="applyFilter()"
+    >
+      {{ 'components.queryBuilder.filter.apply' | translate }}
+    </ui-button>
   </div>
   <div class="loadingSign" [ngClass]="{ active: loading }">
     <ui-spinner *ngIf="loading" style="position: relative"></ui-spinner>

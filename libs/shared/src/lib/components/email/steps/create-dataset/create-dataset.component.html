@@ -76,62 +76,84 @@
             {{ 'common.preview' | translate }}
           </ng-template>
 
-      <ng-template kendoTabContent>
-        <div>
-          <ng-container *ngFor="let previewData of allPreviewData; let preIndex = index">
-            <div class="flex flex-col items-center w-9/10 mx-auto">
+          <ng-template kendoTabContent>
+            <div>
+              <ng-container
+                *ngFor="let previewData of allPreviewData; let preIndex = index"
+              >
+                <div class="flex flex-col items-center w-9/10 mx-auto">
+                  <label
+                    id="previewLabel"
+                    class="block text-left pl-5 p-2 shadow-none text-sm w-full"
+                  >
+                    {{ previewData?.tabName }}
+                  </label>
+                  <div style="width: 100%; overflow-x: auto">
+                    <table
+                      *ngIf="previewData?.dataList?.length"
+                      class="w-full border-collapse border border-gray-300 shadow-xs"
+                    >
+                      <thead class="bg-[#00205C] text-white">
+                        <tr>
+                          <ng-container
+                            *ngFor="
+                              let fieldKeyString of previewData?.dataSetFields
+                            "
+                          >
+                            <th class="text-left p-2">
+                              {{
+                                this.emailService.titleCase(
+                                  this.emailService.replaceUnderscores(
+                                    fieldKeyString
+                                  )
+                                ) | titlecase
+                              }}
+                            </th>
+                          </ng-container>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          *ngFor="let data of previewData?.dataList"
+                          class="border-t border-gray-300 bg-white"
+                        >
+                          <ng-container
+                            *ngFor="
+                              let fieldKeyString of previewData?.dataSetFields
+                            "
+                          >
+                            <td class="p-2 text-left">
+                              {{
+                                this.emailService.formatDateStrings(
+                                  data[fieldKeyString],
+                                  fieldKeyString
+                                )
+                              }}
+                            </td>
+                          </ng-container>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
                 <label
-                  id="previewLabel"
-                  class="block text-left pl-5 p-2 shadow-none text-sm w-full">
-                  {{ previewData?.tabName }}
-                </label>
-              <div style="width: 100%; overflow-x: auto;">
-                <table
-              *ngIf="previewData?.dataList?.length"
-              class="w-full border-collapse border border-gray-300 shadow-xs"
-            >
-              <thead class="bg-[#00205C] text-white">
-                <tr>
-                  <ng-container *ngFor="let fieldKeyString of previewData?.dataSetFields">
-                    <th
-                      class="text-left p-2"
-                    >
-                      {{ this.emailService.titleCase(this.emailService.replaceUnderscores(fieldKeyString)) | titlecase }}
-                    </th>
-                  </ng-container>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  *ngFor="let data of previewData?.dataList"
-                  class="border-t border-gray-300 bg-white"
+                  class="block text-gray-700 text-sm"
+                  *ngIf="previewData?.dataList?.length === 0"
                 >
-                  <ng-container *ngFor="let fieldKeyString of previewData?.dataSetFields">
-                    <td
-                      class="p-2 text-left"
-                    >
-                      {{ this.emailService.formatDateStrings(data[fieldKeyString], fieldKeyString) }}
-                    </td>
-                  </ng-container>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-          <label class="block text-gray-700 text-sm" *ngIf="previewData?.dataList?.length === 0">
-            no data found
-          </label>
-          <br>
-          </ng-container>
-        </div>
+                  no data found
+                </label>
+                <br />
+              </ng-container>
+            </div>
 
-            <button
-              type="button"
+            <ui-button
+              class="float-right"
+              category="secondary"
+              variant="primary"
               (click)="showPreview = false"
-              class="bg-sky-600 float-right hover:bg-sky-700 text-white ml-3 px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
             >
               {{ 'common.back' | translate }}
-            </button>
+            </ui-button>
           </ng-template>
         </kendo-tabstrip-tab>
       </kendo-tabstrip>
