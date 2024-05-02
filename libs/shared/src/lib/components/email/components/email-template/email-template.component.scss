@@ -119,25 +119,6 @@
     }
   }
 }
-.email-chips {
-  padding: 2px 20px;
-  font-size: 14px;
-  border: 1px solid #0000005c;
-  background: #fff;
-}
-
-.button-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  padding: 20px;
-  button {
-    height: 40px;
-    background: #269ed1;
-    padding: 5px 10px;
-    border-radius: 5px;
-    color: #fff;
-  }
-}
 
 .loadingSign {
   display: none;
@@ -149,9 +130,4 @@
   &.active {
     display: flex;
   }
-}
-
-.email-hint-text {
-  font-size: 12px;
-  color: #909090;
 }
