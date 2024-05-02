@@ -8,6 +8,7 @@ import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 import { PeopleDropdownComponent } from './people-dropdown/people-dropdown.component';
 import { DomService } from '../../services/dom/dom.service';
+import { isArray, isObject } from 'lodash';
 
 /**
  * Inits the people component.
@@ -57,7 +58,6 @@ export const init = (
 
       // People that are already selected
       const selectedPersonID: string = question.value;
-      console.log(question.value);
 
       // Appends people dropdown to the question html element
       const personDropdown = domService.appendComponentToBody(
@@ -74,8 +74,9 @@ export const init = (
       }
       // Updates the question value when the selection changes
       instance.control.valueChanges.subscribe((value) => {
-        console.log(value, 'value');
-        question.value = value;
+        if (!isObject(value) && !isArray(value)) {
+          question.value = value;
+        }
       });
 
       if (question.isReadOnly) {

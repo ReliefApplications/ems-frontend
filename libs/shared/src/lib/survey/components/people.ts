@@ -8,6 +8,7 @@ import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 import { PeopleDropdownComponent } from './people-dropdown/people-dropdown.component';
 import { DomService } from '../../services/dom/dom.service';
+import { clone } from 'lodash';
 
 /**
  * Inits the people component.
@@ -57,7 +58,7 @@ export const init = (
 
       // People that are already selected
       const selectedPersonIDs: string[] = Array.isArray(question.value)
-        ? question.value
+        ? clone(question.value)
         : [];
 
       // Appends people dropdown to the question html element

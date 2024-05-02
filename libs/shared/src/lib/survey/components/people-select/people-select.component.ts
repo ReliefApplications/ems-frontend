@@ -56,11 +56,9 @@ export class PeopleSelectComponent
   implements OnInit
 {
   /** IDs of the initial people selection */
-  @Input() initialSelectionIDs: string[] | string = [];
+  @Input() initialSelectionIDs!: string[] | string;
   /** People query */
   public override query!: QueryRef<PeopleQueryResponse>;
-  /** Store the timeout ID returned by setTimeout */
-  private searchTimeout: ReturnType<typeof setTimeout> | null = null;
   /** Store the previous search value */
   private previousSearchValue: string | null = null;
   /** search filters */
@@ -105,30 +103,25 @@ export class PeopleSelectComponent
 
   /** Fetches already selected people */
   private async setupInitialSelection() {
-    console.log(!this.initialSelectionIDs || !this.initialSelectionIDs.length);
     if (!this.initialSelectionIDs || !this.initialSelectionIDs.length) {
       return;
     }
-    this.apollo
-      .query<PeopleQueryResponse>({
-        query: GET_PEOPLE,
-        variables: {
-          filter: {
-            logic: 'or',
-            filters: [
-              {
-                field: 'userid',
-                operator: 'in',
-                value: isArray(this.initialSelectionIDs)
-                  ? this.initialSelectionIDs
-                  : [this.initialSelectionIDs],
-              },
-            ],
-          } as CompositeFilterDescriptor,
-        },
+    this.query
+      .refetch({
+        filter: {
+          logic: 'or',
+          filters: [
+            {
+              field: 'userid',
+              operator: 'in',
+              value: isArray(this.initialSelectionIDs)
+                ? this.initialSelectionIDs
+                : [this.initialSelectionIDs],
+            },
+          ],
+        } as CompositeFilterDescriptor,
       })
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
+      .then(({ data }) => {
         if (data.people) {
           this.selectedElements = data.people;
         }

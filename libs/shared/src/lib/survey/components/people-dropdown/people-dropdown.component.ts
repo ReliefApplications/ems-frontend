@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { GraphQLSelectModule } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../components/utils/unsubscribe/unsubscribe.component';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -28,11 +28,11 @@ export class PeopleDropdownComponent
   implements OnInit
 {
   /** Placeholder */
-  @Input() placeholder = '';
+  public placeholder = '';
   /** Multiselect */
   public multiselect = true;
   /** IDs of the initial people selection */
-  @Input() initialSelectionIDs: string[] | string = [];
+  public initialSelectionIDs!: string[] | string;
   /** Form control that has selected people */
   public control = new FormControl<string[] | string>([]);
 
