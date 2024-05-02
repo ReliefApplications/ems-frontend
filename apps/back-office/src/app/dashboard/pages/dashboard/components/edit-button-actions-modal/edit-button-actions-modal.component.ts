@@ -106,6 +106,7 @@ export class EditButtonActionsModalComponent
       .subscribe(async (button) => {
         if (!button) return;
         this.buttonActions.push(button);
+        this.searchTerm = '';
         this.updateTable();
       });
   }
@@ -168,6 +169,7 @@ export class EditButtonActionsModalComponent
         const index = this.buttonActions.indexOf(buttonAction);
         if (index > -1) {
           this.buttonActions.splice(index, 1);
+          this.searchTerm = '';
           this.updateTable();
         }
       }
