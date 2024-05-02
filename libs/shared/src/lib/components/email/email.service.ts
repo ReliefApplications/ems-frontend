@@ -1066,11 +1066,11 @@ export class EmailService {
   }
 
   /**
-   * Formats date strings into a pretty string representation
+   * Formats data strings into a pretty string representation
    *
    * @param rowData table cell data value
    * @param field Name of record field
-   * @returns formatted date string or the original value if not a date string
+   * @returns formatted data string ( can be original value )
    */
   formatDataStrings(rowData: any, field: string): string {
     const select = this.isSelect(field);

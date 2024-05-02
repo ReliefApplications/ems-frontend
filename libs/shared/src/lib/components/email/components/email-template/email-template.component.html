@@ -1,57 +1,46 @@
-<div class="Email_Template">
-  <div
-    class="mt-4 w-1/4"
-    [formGroup]="segmentForm"
-    uiFormFieldDirective
-    [defaultMargin]="false"
-  >
-    <label class="mb-1">{{
-      'components.notifications.email.dropdown.emailInput' | translate
-    }}</label>
-    <ui-select-menu
-      id="segmentSelect"
-      formControlName="segment"
-      (ngModelChange)="onSegmentChange($event)"
-      class="w-full"
-    >
-      <ui-select-option *ngFor="let segment of segmentList" [value]="segment">{{
-        segment | titlecase
-      }}</ui-select-option>
-    </ui-select-menu>
-  </div>
-
-  <div
-    class="mt-4 w-1/3 flex flex-col px-0"
-    *ngIf="activeSegmentIndex === 0"
-    uiFormFieldDirective
-  >
-    <label class="block text-sm font-normal leading-6 text-gray-900 mb-1">{{
-      'components.select.distribution.email' | translate
-    }}</label>
-    <ui-icon
-      icon="info"
-      class="cursor-pointer border-0"
-      variant="primary"
-      [uiTooltip]="'components.select.distribution.emailError' | translate"
-      uiSuffix
-    ></ui-icon>
-    <input
-      #filterInput
-      (keyup.enter)="addEmailManually(filterInput)"
-      (change)="validateEmail(filterInput)"
-      class="relative flex py-0.5 px-2 focus-within:ring-2 shadow-sm rounded-md border-0 items-center w-full"
-      type="text"
-      [placeholder]="'components.select.distribution.email' | translate"
-    />
-    <!-- <p class="email-hint-text" *ngIf="!emailValidationError.length">{{'components.select.distribution.emailError' | translate}}</p> -->
-  </div>
-  <!-- <p class="hint-text" *ngIf="emailValidationError.length">{{emailValidationError}}</p> -->
-
-  <div class="select-from-list" *ngIf="activeSegmentIndex === 1">
-    <div class="w-1/2 mt-6 flex-row gap-4">
+<div>
+  <div class="flex flex-row gap-2" [formGroup]="segmentForm">
+    <!-- Select type of email input ( manual / from list / from resource ) -->
+    <div class="w-1/3" uiFormFieldDirective [defaultMargin]="false">
+      <label>{{
+        'components.notifications.email.dropdown.emailInput' | translate
+      }}</label>
+      <ui-select-menu
+        id="segmentSelect"
+        formControlName="segment"
+        (ngModelChange)="onSegmentChange($event)"
+        class="w-full"
+      >
+        <ui-select-option
+          *ngFor="let segment of segmentList"
+          [value]="segment"
+          >{{ segment | titlecase }}</ui-select-option
+        >
+      </ui-select-menu>
+    </div>
+    <!-- Manual input -->
+    <div class="w-1/3" *ngIf="activeSegmentIndex === 0" uiFormFieldDirective>
+      <label>{{ 'components.select.distribution.email' | translate }}</label>
+      <ui-icon
+        icon="info"
+        class="cursor-pointer border-0"
+        variant="primary"
+        [uiTooltip]="'components.select.distribution.emailError' | translate"
+        uiSuffix
+      ></ui-icon>
+      <input
+        #filterInput
+        (keyup.enter)="addEmailManually(filterInput)"
+        (change)="validateEmail(filterInput)"
+        type="text"
+        [placeholder]="'components.select.distribution.email' | translate"
+      />
+    </div>
+    <!-- Selection of resource -->
+    <div class="w-1/2" *ngIf="activeSegmentIndex >= 1">
       <label
         htmlFor="select__data__set"
-        class="block text-sm font-normal leading-6 text-gray-900 mb-1"
+        class="block text-sm font-medium leading-6 text-gray-900"
       >
         {{ 'components.queryBuilder.dataset.title' | translate }}*
       </label>
@@ -68,6 +57,11 @@
         (change)="bindDataSetDetails($event)"
         [placeholder]="'components.queryBuilder.dataset.select' | translate"
       >
+        <ng-template disabled selected>
+          <span>{{
+            'components.queryBuilder.dataset.select' | translate
+          }}</span>
+        </ng-template>
         <ng-template
           ng-option-tmp
           let-item="item"
@@ -81,6 +75,11 @@
         </ng-template>
       </ng-select>
     </div>
+  </div>
+
+  <!-- From list ( selected from resource ) -->
+  <div *ngIf="activeSegmentIndex === 1">
+    <!-- Selection of emails -->
     <table
       *ngIf="dataList?.length"
       class="dataset-preview w-full border border-blue-600 shadow-xs m-1"
@@ -137,52 +136,21 @@
         </tr>
       </tbody>
     </table>
-    <div class="button-wrapper">
-      <button (click)="addSelectedEmails()" *ngIf="selectedItemIndexes.length">
-        Apply
-      </button>
-    </div>
+    <!-- todo: translate -->
+    <ui-button
+      *ngIf="selectedItemIndexes.length"
+      class="float-right mt-8"
+      category="secondary"
+      variant="primary"
+      (click)="addSelectedEmails()"
+    >
+      Apply
+    </ui-button>
   </div>
-  <!-- Filter -->
-  <div class="Create filters" *ngIf="activeSegmentIndex === 2">
-    <div class="w-1/2 mt-6 flex-row gap-4">
-      <label
-        htmlFor="select__data__set"
-        class="block text-sm font-medium leading-6 text-gray-900 mb-1"
-      >
-        {{ 'components.queryBuilder.dataset.title' | translate }}*
-      </label>
-      <ng-select
-        id="select__data__set"
-        name="select__data__set"
-        [(ngModel)]="selectedDataset"
-        [ngModelOptions]="{ standalone: true }"
-        [items]="dataSets"
-        bindLabel="blockName"
-        [searchable]="true"
-        [virtualScroll]="true"
-        (clear)="clearDatasetSelection()"
-        (change)="bindDataSetDetails($event)"
-        [placeholder]="'components.queryBuilder.dataset.select' | translate"
-      >
-        <ng-template disabled selected>
-          <span>{{
-            'components.queryBuilder.dataset.select' | translate
-          }}</span>
-        </ng-template>
-        <ng-template
-          ng-option-tmp
-          let-item="item"
-          let-index="index"
-          let-search="searchTerm"
-        >
-          <span>{{
-            this.emailService.replaceUnderscores(item.blockName || '')
-              | titlecase
-          }}</span>
-        </ng-template>
-      </ng-select>
-    </div>
+
+  <!-- From resource filter -->
+  <div *ngIf="activeSegmentIndex === 2">
+    <!-- Filter editor -->
     <div>
       <div
         [formGroup]="filterQuery"
@@ -469,22 +437,32 @@
                     </div>
                   </ng-container>
                 </div>
-                <button
-                  class="ui-button-icon primary medium button-danger mt-8"
+                <ui-button
+                  [variant]="'danger'"
+                  class="hide-icons hover:text-primary-600 mt-8"
+                  [isIcon]="true"
+                  size="large"
                   (click)="deleteDatasetFilter(fieldIndex)"
+                  [icon]="'delete'"
+                  [uiTooltip]="'common.archive.delete' | translate"
                 >
-                  <ui-icon class="text-3xl" icon="delete" variant="danger">
-                  </ui-icon>
-                </button>
+                </ui-button>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="button-wrapper" *ngIf="datasetFilterInfo.controls.length">
-      <button (click)="applyFilter()">Apply</button>
-    </div>
+    <!-- Apply filter -->
+    <ui-button
+      *ngIf="datasetFilterInfo.controls"
+      class="float-right mt-8"
+      category="secondary"
+      variant="primary"
+      (click)="applyFilter()"
+    >
+      {{ 'components.queryBuilder.filter.apply' | translate }}
+    </ui-button>
   </div>
   <div class="loadingSign" [ngClass]="{ active: loading }">
     <ui-spinner *ngIf="loading" style="position: relative"></ui-spinner>
