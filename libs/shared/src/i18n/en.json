@@ -623,6 +623,12 @@
 						"minCols": "Number of columns.\nMust be an integer between 4 and 24.",
 						"minimumHeight": "Minimum height of the grid in pixels.\nMust be greater than or equal to 0. \nThe dashboard won't automatically fit to the screen if its height is below this number.",
 						"reset": "Reset to default"
+					},
+					"tooltips": {
+						"clear": "Reset to default",
+						"fixedRowHeight": "Minimum: 50. By default: 200. No maximum.",
+						"margin": "Minimum: 0. By default: 10. No maximum.",
+						"minCols": "Minimum: 4. By default: 8. Maximum: 24."
 					}
 				}
 			},
@@ -1394,7 +1400,8 @@
 		"templates": {
 			"available": "Available email templates",
 			"delete": {
-				"confirmationMessage": "Are you sure you want to delete the template '{{name}}'?"
+				"confirmationMessage": "Are you sure you want to delete the template '{{name}}'?",
+				"titleMessage": "Delete the template"
 			},
 			"edit": {
 				"body": "Body",
@@ -1490,6 +1497,7 @@
 					"goTo": "Go to page",
 					"history": "Show history"
 				},
+				"empty": "No record found for this dataset",
 				"errors": {
 					"autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
 					"invalid": {
@@ -2285,6 +2293,7 @@
 				}
 			},
 			"id": "Application ID",
+			"menu": "Side menu",
 			"new": "New application",
 			"notifications": {
 				"notPublished": "Application not published.",

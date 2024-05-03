@@ -115,7 +115,8 @@ const calcFunctions: Record<
      * @returns minimum value
      */
     call: (...values) => {
-      return min(values)?.toString() || '';
+      // Ensure that the values are treated as numbers
+      return min(values.map((x) => Number(x)))?.toString() || '';
     },
   },
   max: {
@@ -127,7 +128,8 @@ const calcFunctions: Record<
      * @returns maximum value
      */
     call: (...values) => {
-      return max(values)?.toString() || '';
+      // Ensure that the values are treated as numbers
+      return max(values.map((x) => Number(x)))?.toString() || '';
     },
   },
 };

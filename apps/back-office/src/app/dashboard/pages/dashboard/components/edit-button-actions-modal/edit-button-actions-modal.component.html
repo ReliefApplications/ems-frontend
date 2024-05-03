@@ -19,7 +19,9 @@
           (ngModelChange)="updateTable()"
         />
       </div>
-      <ng-container *ngTemplateOutlet="newActionButton"></ng-container>
+      <ng-container *ngIf="datasource.value.length">
+        <ng-container *ngTemplateOutlet="newActionButtonTmpl"></ng-container>
+      </ng-container>
     </div>
     <ng-container *ngIf="datasource.value.length; else emptyTmpl">
       <!-- Table container -->
@@ -114,7 +116,7 @@
       </div>
     </ng-container>
   </ng-container>
-  <ng-template #newActionButton>
+  <ng-template #newActionButtonTmpl>
     <ui-button
       category="secondary"
       variant="primary"
@@ -128,7 +130,7 @@
     <!-- Empty indicator -->
     <shared-empty
       [title]="'models.dashboard.buttonActions.none' | translate"
-      [footerTemplate]="newActionButton"
+      [footerTemplate]="newActionButtonTmpl"
     ></shared-empty>
   </ng-template>
 
