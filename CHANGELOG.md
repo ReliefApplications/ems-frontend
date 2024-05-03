@@ -1,3 +1,10 @@
+## [2.12.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.2...v2.12.3) (2024-05-03)
+
+
+### Bug Fixes
+
+* choices by graphql questions with trigger could remove the value Ab[#90661](https://github.com/ReliefApplications/ems-frontend/issues/90661) ([68131d1](https://github.com/ReliefApplications/ems-frontend/commit/68131d1f504965b61f1a02cbcbd2ddf8ed033882))
+
 ## [2.12.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.1...v2.12.2) (2024-05-03)
 
 

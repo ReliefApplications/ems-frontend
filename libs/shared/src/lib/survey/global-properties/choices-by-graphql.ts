@@ -42,7 +42,9 @@ const setQuestionValue = (question: Question, choices: ItemValue[]) => {
   if (question.getType() === 'tagbox') {
     if (isArray(value)) {
       const updatedValue = choices
-        .filter((choice) => value.find((x) => isEqual(x, choice.value)))
+        .filter((choice) =>
+          value.find((x) => isEqual(x, choice.value) || x == choice.value)
+        )
         .map((choice) => choice.value);
       question.value = updatedValue;
       // as question value may be updated before display
@@ -53,11 +55,14 @@ const setQuestionValue = (question: Question, choices: ItemValue[]) => {
   }
   if (question.getType() === 'dropdown') {
     if (value) {
-      const updatedValue = choices.find((choice) =>
-        isEqual(value, choice.value)
+      const updatedValue = choices.find(
+        (choice) => isEqual(value, choice.value) || value == choice.value
       )?.value;
       if (!isNil(updatedValue)) {
         question.value = updatedValue;
+        if (question._instance) {
+          question._instance.value = updatedValue;
+        }
       } else {
         question.value = undefined;
       }
