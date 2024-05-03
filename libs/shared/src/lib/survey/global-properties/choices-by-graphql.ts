@@ -159,17 +159,12 @@ export const render = (questionElement: Question, http: HttpClient): void => {
         get(questionElement, `${prefix}Query`),
         variables
       );
-      // const token = localStorage.getItem('idtoken');
       firstValueFrom(
         http
-          .post(
-            get(questionElement, `${prefix}Url`),
-            {
-              query: get(questionElement, `${prefix}Query`),
-              variables,
-            }
-            // { headers: { Authorization: `Bearer ${token}` } }
-          )
+          .post(get(questionElement, `${prefix}Url`), {
+            query: get(questionElement, `${prefix}Query`),
+            variables,
+          })
           // Cancel the request when refreshing
           .pipe(takeUntil(questionElement.refresh$))
       )
@@ -254,11 +249,16 @@ export const render = (questionElement: Question, http: HttpClient): void => {
       if (
         get(questionElement, `${prefix}Url`) &&
         get(questionElement, `${prefix}Query`)
-      )
-        setQuestionValue(
-          questionElement,
-          questionElement.getPropertyValue('visibleChoices')
-        );
+      ) {
+        const choices = questionElement.getPropertyValue('visibleChoices');
+        // Avoid to update if choices not defined yet, otherwise, it removes the value
+        if (choices.length > 0) {
+          setQuestionValue(
+            questionElement,
+            questionElement.getPropertyValue('visibleChoices')
+          );
+        }
+      }
     });
   }
 };
