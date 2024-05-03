@@ -127,7 +127,8 @@
       <kendo-grid-column
         *ngIf="
           field.type !== 'JSON' &&
-          (!field.meta || field.meta.type !== 'referenceData')
+          (!field.meta || field.meta.type !== 'referenceData') &&
+          !(field.meta.type === 'singlepeople')
         "
         [field]="field.name"
         [title]="field.title"
@@ -645,6 +646,61 @@
             >
               {{ dataItem.text[field.name] }}
             </a>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- SINGLE PEOPLE -->
+      <kendo-grid-column
+        *ngIf="['singlepeople'].includes(field.meta.type)"
+        [field]="field.name"
+        [filterable]="true"
+        [title]="field.title"
+        [editor]="field.editor"
+        [editable]="false"
+        [width]="field.width"
+        [hidden]="field.hidden"
+        [minResizableWidth]="50"
+        class="no-padding"
+      >
+        <ng-template
+          kendoGridFilterMenuTemplate
+          let-filter
+          let-column="column"
+          let-filterService="filterService"
+        >
+          <shared-grid-filter-menu
+            [filter]="filter"
+            [filterService]="filterService"
+            [data]="field.meta.choices || []"
+            [field]="field.name"
+            textField="text"
+            valueField="value"
+          >
+          </shared-grid-filter-menu>
+        </ng-template>
+        <ng-template
+          kendoGridFilterCellTemplate
+          let-filter
+          let-dataItem="dataItem"
+        >
+          <shared-grid-filter
+            [filter]="filter"
+            [data]="field.meta.choices || []"
+            [field]="field.name"
+            textField="text"
+            valueField="value"
+          >
+          </shared-grid-filter>
+        </ng-template>
+        <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem">
+          <div class="textbox-container" [style]="dataItem.style[field.name]">
+            <div
+              class="truncate"
+              [uiTooltip]="dataItem.text[field.name]"
+              tooltipEnableBy="truncate"
+            >
+              {{ dataItem.text[field.name] }}
+            </div>
           </div>
         </ng-template>
       </kendo-grid-column>

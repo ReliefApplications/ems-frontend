@@ -168,7 +168,7 @@ const replaceRecordFields = (
         }
       }
     );
-
+    console.log(fieldsValue, fields);
     const links = formattedHtml.match(`href=["]?[^" >]+`);
 
     // We check for LIST fields and duplicate their only element for each subfield
@@ -373,6 +373,9 @@ const replaceRecordFields = (
                   </button>`.replace(/\n/g, ''); // add elements to be able to identify file when clicking on button
               }
             }
+            break;
+          case 'singlepeople':
+            console.log(value);
             break;
           case 'owner':
           case 'users':

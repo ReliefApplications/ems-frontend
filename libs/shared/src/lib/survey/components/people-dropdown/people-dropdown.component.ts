@@ -45,7 +45,6 @@ export class PeopleDropdownComponent
 
   ngOnInit() {
     // Sets the form value
-    console.log(this.initialSelectionIDs);
     if (this.initialSelectionIDs) {
       this.control.setValue(this.initialSelectionIDs);
     }
