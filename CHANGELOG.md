@@ -1,3 +1,10 @@
+## [2.12.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.3...v2.12.4) (2024-05-03)
+
+
+### Bug Fixes
+
+* history could be downloaded before being ready ([d6f3d91](https://github.com/ReliefApplications/ems-frontend/commit/d6f3d91d9ff5762f102cb57fabec2b2cc01d8c11))
+
 ## [2.12.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.2...v2.12.3) (2024-05-03)
 
 
