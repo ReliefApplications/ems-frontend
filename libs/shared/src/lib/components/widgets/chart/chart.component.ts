@@ -22,6 +22,7 @@ import { DOCUMENT } from '@angular/common';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
+import { WidgetService } from '../../../services/widget/widget.service';
 
 /**
  * Default file name for chart exports
@@ -111,17 +112,9 @@ export class ChartComponent
 
   /** @returns the graphql query variables object */
   get graphQLVariables() {
-    try {
-      let mapping = JSON.parse(
-        this.settings.referenceDataVariableMapping || ''
-      );
-      mapping = this.contextService.replaceContext(mapping);
-      mapping = this.contextService.replaceFilter(mapping);
-      this.contextService.removeEmptyPlaceholders(mapping);
-      return mapping;
-    } catch {
-      return null;
-    }
+    return this.widgetService.mapGraphQLVariables(
+      this.settings.referenceDataVariableMapping
+    );
   }
 
   /**
@@ -162,6 +155,7 @@ export class ChartComponent
    * @param {ElementRef} el Current components element ref in the DOM
    * @param document document
    * @param dashboardService Shared dashboard service
+   * @param widgetService Shared widget service
    */
   constructor(
     private aggregationService: AggregationService,
@@ -169,7 +163,8 @@ export class ChartComponent
     private contextService: ContextService,
     private el: ElementRef,
     @Inject(DOCUMENT) private document: Document,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private widgetService: WidgetService
   ) {
     super();
   }

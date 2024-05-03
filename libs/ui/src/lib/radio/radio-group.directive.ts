@@ -9,11 +9,13 @@ import {
   EventEmitter,
   Optional,
   Self,
+  OnDestroy,
 } from '@angular/core';
 import { RadioComponent } from './radio.component';
 import { ControlValueAccessor } from '@angular/forms';
 import { NgControl } from '@angular/forms';
 import { isNil } from 'lodash';
+import { Subject, takeUntil } from 'rxjs';
 
 /**
  * UI Radio group directive
@@ -24,7 +26,7 @@ import { isNil } from 'lodash';
   selector: '[uiRadioGroupDirective]',
 })
 export class RadioGroupDirective
-  implements AfterContentInit, ControlValueAccessor
+  implements AfterContentInit, OnDestroy, ControlValueAccessor
 {
   /** Radio group directive name */
   @Input() uiRadioGroupDirective!: string;
@@ -34,6 +36,8 @@ export class RadioGroupDirective
   @Output() groupValueChange = new EventEmitter<any>();
   /** Group value */
   private groupValue: any;
+  /** Unsubscribe flag when component is destroyed */
+  private destroy$ = new Subject<void>();
 
   /** Whether the radio group is disabled or not */
   disabled = false;
@@ -59,11 +63,13 @@ export class RadioGroupDirective
         radio.checked = radio.value === this.control.value;
       });
     }
-    this.control?.valueChanges?.subscribe((value) => {
-      this.radioComponents.forEach(
-        (radio: RadioComponent) => (radio.checked = radio.value === value)
-      );
-    });
+    this.control?.valueChanges
+      ?.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.radioComponents.forEach(
+          (radio: RadioComponent) => (radio.checked = radio.value === value)
+        );
+      });
     this.radioComponents.toArray().forEach((val: any) => {
       if (!this.onTouched && !this.onChanged && val.checked) {
         this.groupValue = val.value;
@@ -71,6 +77,11 @@ export class RadioGroupDirective
       }
       val.name = this.uiRadioGroupDirective;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**

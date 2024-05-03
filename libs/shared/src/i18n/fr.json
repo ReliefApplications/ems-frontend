@@ -659,6 +659,28 @@
 				"ariaLabel": "Sélectionnez la page d'applications"
 			}
 		},
+		"automation": {
+			"actions": {
+				"add.layer": "Ajouter une couche",
+				"add.tab": "Ajouter un onglet",
+				"display.collapse": "Réduire l'affichage",
+				"display.expand": "Développer l'affichage",
+				"map.click": "En cliquant sur la carte",
+				"map.get.country": "Obtenir le pays sur la carte",
+				"open.tab": "Ouvrir un onglet",
+				"remove.layer": "Supprimer une couche",
+				"remove.tab": "Supprimer un onglet",
+				"set.context": "Définir le contexte"
+			},
+			"addRule": "Ajouter une nouvelle règle d'automatisation",
+			"component": {
+				"add": "Ajoutez un nouveau composant",
+				"select": "Sélectionnez un composant"
+			},
+			"configuration": "Configuration de l'automatisation",
+			"ruleName": "Nom de la règle d'automatisation",
+			"rules": "Règles d'automatisation"
+		},
 		"calculatedFields": {
 			"add": "Créer un nouveau champ dérivé",
 			"delete": {
@@ -741,11 +763,6 @@
 			"subject": "Objet",
 			"title": "Prévisualisation de mail",
 			"to": "À"
-		},
-		"floating": {
-			"menuButton": {
-				"ariaLabel": "***"
-			}
 		},
 		"form": {
 			"aggregation": {
@@ -1676,7 +1693,7 @@
 						"styling": {
 							"heatmapOptions": {
 								"blur": "Flou",
-								"gradient": "Gradient",
+								"gradient": "Dégradé",
 								"minOpacity": "Opacité minimum",
 								"radius": "Rayon"
 							}
@@ -1797,6 +1814,7 @@
 						"longitude": "Longitude du centre de la carte",
 						"setByMap": "Utiliser la vue actuelle",
 						"title": "Affichage par défaut",
+						"useWebMapInitialState": "Utiliser l'affichage par défaut de la webmap",
 						"webmap": "WebMap",
 						"zoom": "Zoom par défaut"
 					},
@@ -1826,6 +1844,9 @@
 							"region": "Utilisez le nom de région",
 							"remove": "Supprimer le type d'étendue",
 							"value": "Vous pouvez entrer une valeur statique, ou utiliser les notations {{context}} ou {{filter}} pour injecter la valeur"
+						},
+						"gradient": {
+							"reverse": "Inverser le dégradé"
 						}
 					}
 				},
@@ -2163,15 +2184,21 @@
 		"dashboard": {
 			"activateFiltering": "Activer le filtre",
 			"buttonActions": {
-				"add": "Ajouter une action de bouton",
 				"category": "Catégorie de bouton",
 				"confirmDelete": "Voulez-vous vraiment supprimer cette action de bouton ?",
-				"edit": "Modifier l'action du bouton",
+				"create": "Créer un bouton d'action",
+				"edit": {
+					"few": "Modifier les boutons d'action",
+					"one": "Modifier le bouton d'action"
+				},
+				"hasRoleRestriction": "Limiter l'accès",
 				"href": "Bouton href",
-				"one": "Action du bouton",
+				"none": "Pas de bouton d'action",
+				"one": "Bouton d'action",
 				"openInNewTab": "Ouvrir dans un nouvel onglet",
 				"text": "Texte du bouton",
-				"variant": "Variante de bouton"
+				"variant": "Variante de bouton",
+				"visibleTo": "Visible pour les rôles"
 			},
 			"closable": "Peut être fermé",
 			"context": {

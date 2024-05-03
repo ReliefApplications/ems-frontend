@@ -566,6 +566,12 @@
 						"minCols": "******",
 						"minimumHeight": "******",
 						"reset": "******"
+					},
+					"tooltips": {
+						"clear": "******",
+						"fixedRowHeight": "******",
+						"margin": "******",
+						"minCols": "******"
 					}
 				}
 			},
@@ -652,6 +658,28 @@
 			"paginator": {
 				"ariaLabel": "******"
 			}
+		},
+		"automation": {
+			"actions": {
+				"add.layer": "******",
+				"add.tab": "******",
+				"display.collapse": "******",
+				"display.expand": "******",
+				"map.click": "******",
+				"map.get.country": "******",
+				"open.tab": "******",
+				"remove.layer": "******",
+				"remove.tab": "******",
+				"set.context": "******"
+			},
+			"addRule": "******",
+			"component": {
+				"add": "******",
+				"select": "******"
+			},
+			"configuration": "******",
+			"ruleName": "******",
+			"rules": "******"
 		},
 		"calculatedFields": {
 			"add": "******",
@@ -1239,7 +1267,8 @@
 		"templates": {
 			"available": "******",
 			"delete": {
-				"confirmationMessage": "****** {{name}} ******"
+				"confirmationMessage": "****** {{name}} ******",
+				"titleMessage": "******"
 			},
 			"edit": {
 				"body": "******",
@@ -1335,6 +1364,7 @@
 					"goTo": "******",
 					"history": "******"
 				},
+				"empty": "******",
 				"errors": {
 					"autoSaveFailed": "******",
 					"invalid": {
@@ -1784,6 +1814,7 @@
 						"longitude": "******",
 						"setByMap": "******",
 						"title": "******",
+						"useWebMapInitialState": "******",
 						"webmap": "******",
 						"zoom": "******"
 					},
@@ -1813,6 +1844,9 @@
 							"region": "******",
 							"remove": "******",
 							"value": "****** {{context}} ****** {{filter}} ******"
+						},
+						"gradient": {
+							"reverse": "******"
 						}
 					}
 				},
@@ -2125,6 +2159,7 @@
 				}
 			},
 			"id": "******",
+			"menu": "******",
 			"new": "******",
 			"notifications": {
 				"notPublished": "******",
@@ -2149,15 +2184,21 @@
 		"dashboard": {
 			"activateFiltering": "******",
 			"buttonActions": {
-				"add": "******",
 				"category": "******",
 				"confirmDelete": "******",
-				"edit": "******",
+				"create": "******",
+				"edit": {
+					"few": "******",
+					"one": "******"
+				},
+				"hasRoleRestriction": "******",
 				"href": "******",
+				"none": "******",
 				"one": "******",
 				"openInNewTab": "******",
 				"text": "******",
-				"variant": "******"
+				"variant": "******",
+				"visibleTo": "******"
 			},
 			"closable": "******",
 			"context": {

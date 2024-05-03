@@ -566,6 +566,12 @@
 						"minCols": "Number of columns.\nMust be an integer between 4 and 24.",
 						"minimumHeight": "Minimum height of the grid in pixels.\nMust be greater than or equal to 0. \nThe dashboard won't automatically fit to the screen if its height is below this number.",
 						"reset": "Reset to default"
+					},
+					"tooltips": {
+						"clear": "Reset to default",
+						"fixedRowHeight": "Minimum: 50. By default: 200. No maximum.",
+						"margin": "Minimum: 0. By default: 10. No maximum.",
+						"minCols": "Minimum: 4. By default: 8. Maximum: 24."
 					}
 				}
 			},
@@ -652,6 +658,28 @@
 			"paginator": {
 				"ariaLabel": "Select page of applications"
 			}
+		},
+		"automation": {
+			"actions": {
+				"add.layer": "Add layer",
+				"add.tab": "Add tab",
+				"display.collapse": "Collapse the display",
+				"display.expand": "Expand the display",
+				"map.click": "On map click",
+				"map.get.country": "Get country from map",
+				"open.tab": "Open tab",
+				"remove.layer": "Remove layer",
+				"remove.tab": "Remove tab",
+				"set.context": "Set context"
+			},
+			"addRule": "Add a new automation rule",
+			"component": {
+				"add": "Add a new component",
+				"select": "Select a component"
+			},
+			"configuration": "Automation configuration",
+			"ruleName": "Name of the automation rule",
+			"rules": "Automation rules"
 		},
 		"calculatedFields": {
 			"add": "Create a new Calculated field",
@@ -1239,7 +1267,8 @@
 		"templates": {
 			"available": "Available email templates",
 			"delete": {
-				"confirmationMessage": "Are you sure you want to delete the template '{{name}}'?"
+				"confirmationMessage": "Are you sure you want to delete the template '{{name}}'?",
+				"titleMessage": "Delete the template"
 			},
 			"edit": {
 				"body": "Body",
@@ -1335,6 +1364,7 @@
 					"goTo": "Go to page",
 					"history": "Show history"
 				},
+				"empty": "No record found for this dataset",
 				"errors": {
 					"autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
 					"invalid": {
@@ -1784,6 +1814,7 @@
 						"longitude": "Map center longitude",
 						"setByMap": "Set By Map",
 						"title": "Map Parameters",
+						"useWebMapInitialState": "Use WebMap initial state",
 						"webmap": "WebMap",
 						"zoom": "Default zoom"
 					},
@@ -1813,6 +1844,9 @@
 							"region": "Use region name",
 							"remove": "Remove geographic extent",
 							"value": "You can input a static value, or use {{context}} or {{filter}} notation to dynamically inject a value"
+						},
+						"gradient": {
+							"reverse": "Reverse gradient"
 						}
 					}
 				},
@@ -2125,6 +2159,7 @@
 				}
 			},
 			"id": "Application ID",
+			"menu": "Side menu",
 			"new": "New application",
 			"notifications": {
 				"notPublished": "Application not published.",
@@ -2149,15 +2184,21 @@
 		"dashboard": {
 			"activateFiltering": "Activate filtering",
 			"buttonActions": {
-				"add": "Add button action",
 				"category": "Button category",
-				"confirmDelete": "Are you sure you want to delete this button action?",
-				"edit": "Edit button action",
+				"confirmDelete": "Are you sure you want to delete this action button?",
+				"create": "Create an action button",
+				"edit": {
+					"few": "Edit action buttons",
+					"one": "Edit action button"
+				},
+				"hasRoleRestriction": "Use Role Restriction",
 				"href": "Button href",
-				"one": "Button action",
+				"none": "No action buttons",
+				"one": "Action button",
 				"openInNewTab": "Open in new tab",
 				"text": "Button text",
-				"variant": "Button variant"
+				"variant": "Button variant",
+				"visibleTo": "Visible to roles"
 			},
 			"closable": "Closable",
 			"context": {

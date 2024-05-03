@@ -1,18 +1,19 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ButtonModule, DialogModule } from '@oort-front/ui';
+import { ButtonModule, DialogModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogRef } from '@angular/cdk/dialog';
+import {
+  ActionWithValue,
+  ActionType,
+} from '../../../../../models/automation.model';
 
 /** Available action components */
-const ACTION_COMPONENTS = [
-  {
-    component: 'trigger',
-    type: 'map.click',
-  },
+const ACTION_COMPONENTS: ActionWithValue[] = [
+  { component: 'trigger', type: ActionType.mapClick },
   {
     component: 'action',
-    type: 'add.layer',
+    type: ActionType.addLayer,
     value: {
       widget: null,
       layers: null,
@@ -20,7 +21,7 @@ const ACTION_COMPONENTS = [
   },
   {
     component: 'action',
-    type: 'remove.layer',
+    type: ActionType.removeLayer,
     value: {
       widget: null,
       layers: null,
@@ -28,7 +29,7 @@ const ACTION_COMPONENTS = [
   },
   {
     component: 'action',
-    type: 'add.tab',
+    type: ActionType.addTab,
     value: {
       widget: null,
       tabs: null,
@@ -36,7 +37,7 @@ const ACTION_COMPONENTS = [
   },
   {
     component: 'action',
-    type: 'open.tab',
+    type: ActionType.openTab,
     value: {
       widget: null,
       tab: null,
@@ -44,7 +45,7 @@ const ACTION_COMPONENTS = [
   },
   {
     component: 'action',
-    type: 'remove.tab',
+    type: ActionType.removeTab,
     value: {
       widget: null,
       tabs: null,
@@ -52,28 +53,28 @@ const ACTION_COMPONENTS = [
   },
   {
     component: 'action',
-    type: 'display.collapse',
+    type: ActionType.displayCollapse,
     value: {
       widget: null,
     },
   },
   {
     component: 'action',
-    type: 'display.expand',
+    type: ActionType.displayExpand,
     value: {
       widget: null,
     },
   },
   {
     component: 'action',
-    type: 'set.context',
+    type: ActionType.setContext,
     value: {
       mapping: '',
     },
   },
   {
     component: 'action',
-    type: 'map.get.country',
+    type: ActionType.mapGetCountry,
   },
 ];
 
@@ -83,7 +84,13 @@ const ACTION_COMPONENTS = [
 @Component({
   selector: 'shared-automation-component-selector',
   standalone: true,
-  imports: [CommonModule, DialogModule, TranslateModule, ButtonModule],
+  imports: [
+    CommonModule,
+    DialogModule,
+    TranslateModule,
+    ButtonModule,
+    TooltipModule,
+  ],
   templateUrl: './automation-component-selector.component.html',
   styleUrls: ['./automation-component-selector.component.scss'],
 })

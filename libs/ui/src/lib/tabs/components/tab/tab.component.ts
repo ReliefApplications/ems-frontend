@@ -26,7 +26,8 @@ import { v4 as uuidv4 } from 'uuid';
 })
 export class TabComponent implements AfterContentChecked, AfterContentInit {
   /** Unique tab id */
-  @Input() id = uuidv4();
+  @Input()
+  id = uuidv4();
   /** Whether the tab is enabled or not */
   @Input() disabled = false;
   /** Button reference */

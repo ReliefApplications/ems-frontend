@@ -491,12 +491,11 @@ export class DashboardComponent
       })
       .subscribe({
         next: ({ errors }) => {
-          if (errors) {
-            this.applicationService.handleEditionMutationResponse(
-              errors,
-              this.translate.instant('common.dashboard.one')
-            );
-          } else {
+          this.applicationService.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.dashboard.one')
+          );
+          if (!errors) {
             this.dashboardService.widgets.next(this.widgets);
           }
         },
@@ -566,26 +565,33 @@ export class DashboardComponent
     );
   }
 
-  /** Open modal to add new button action */
-  public async onAddButtonAction() {
-    const { EditButtonActionComponent } = await import(
-      './components/edit-button-action/edit-button-action.component'
+  /** Opens modal to modify button actions */
+  public async onEditButtonActions() {
+    const { EditButtonActionsModalComponent } = await import(
+      './components/edit-button-actions-modal/edit-button-actions-modal.component'
     );
-    const dialogRef = this.dialog.open<ButtonActionT | undefined>(
-      EditButtonActionComponent
+    const dialogRef = this.dialog.open<ButtonActionT[] | undefined>(
+      EditButtonActionsModalComponent,
+      {
+        data: { buttonActions: this.buttonActions },
+        disableClose: true,
+      }
     );
 
     dialogRef.closed
       .pipe(takeUntil(this.destroy$))
-      .subscribe(async (button) => {
-        if (!button) return;
-        const currButtons = this.dashboard?.buttons || [];
+      .subscribe(async (buttons) => {
+        if (!buttons) return;
 
         this.dashboardService
-          .saveDashboardButtons(this.dashboard?.id, [...currButtons, button])
+          .saveDashboardButtons(this.dashboard?.id, buttons)
           ?.pipe(takeUntil(this.destroy$))
-          .subscribe(() => {
-            this.buttonActions.push(button);
+          .subscribe(({ errors }) => {
+            this.buttonActions = buttons;
+            this.applicationService.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.dashboard.one')
+            );
           });
       });
   }

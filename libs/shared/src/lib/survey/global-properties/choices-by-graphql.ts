@@ -32,6 +32,40 @@ const isSelectQuestion = (question: Question): boolean =>
   Serializer.isDescendantOf(question.getType(), 'selectbase');
 
 /**
+ * Updates the question value
+ *
+ * @param question surveyjs question
+ * @param choices choices from the question
+ */
+const setQuestionValue = (question: Question, choices: ItemValue[]) => {
+  const value = question.value;
+  if (question.getType() === 'tagbox') {
+    if (isArray(value)) {
+      const updatedValue = choices
+        .filter((choice) => value.find((x) => isEqual(x, choice.value)))
+        .map((choice) => choice.value);
+      question.value = updatedValue;
+      // as question value may be updated before display
+      if (question._instance) {
+        question._instance.value = updatedValue;
+      }
+    }
+  }
+  if (question.getType() === 'dropdown') {
+    if (value) {
+      const updatedValue = choices.find((choice) =>
+        isEqual(value, choice.value)
+      )?.value;
+      if (!isNil(updatedValue)) {
+        question.value = updatedValue;
+      } else {
+        question.value = undefined;
+      }
+    }
+  }
+};
+
+/**
  * Missing:
  * - use graphQL nested property
  */
@@ -112,6 +146,7 @@ export const render = (questionElement: Question, http: HttpClient): void => {
       if (questionElement._instance) {
         questionElement._instance.loading = true;
         questionElement._instance.disabled = true;
+        questionElement._instance.toggle(false);
       }
       const valueName = get(questionElement, `${prefix}ValueName`);
       const titleName = get(questionElement, `${prefix}TitleName`);
@@ -149,28 +184,11 @@ export const render = (questionElement: Question, http: HttpClient): void => {
             }));
           const choiceItems = choices.map((choice) => new ItemValue(choice));
           questionElement.setPropertyValue('visibleChoices', choiceItems);
-          const value = questionElement.value;
-          if (questionElement.getType() === 'tagbox') {
-            if (isArray(value)) {
-              const updatedValue = choices
-                .filter((choice) => value.find((x) => isEqual(x, choice.value)))
-                .map((choice) => choice.value);
-              questionElement.value = updatedValue;
-              questionElement._instance.value = updatedValue;
-            }
-          }
-          if (questionElement.getType() === 'dropdown') {
-            if (value) {
-              const updatedValue = choices.find((choice) =>
-                isEqual(value, choice.value)
-              )?.value;
-              if (!isNil(updatedValue)) {
-                questionElement.value = updatedValue;
-              } else {
-                questionElement.value = undefined;
-              }
-            }
-          }
+          // Should remove items that are not part anymore of the list of available choices
+          setQuestionValue(
+            questionElement,
+            questionElement.getPropertyValue('visibleChoices')
+          );
         })
         .finally(() => {
           if (questionElement._instance) {
@@ -226,5 +244,21 @@ export const render = (questionElement: Question, http: HttpClient): void => {
         }
       });
     }
+
+    (questionElement.survey as SurveyModel).onValueChanged.add(() => {
+      if (
+        get(questionElement, `${prefix}Url`) &&
+        get(questionElement, `${prefix}Query`)
+      ) {
+        const choices = questionElement.getPropertyValue('visibleChoices');
+        // Avoid to update if choices not defined yet, otherwise, it removes the value
+        if (choices.length > 0) {
+          setQuestionValue(
+            questionElement,
+            questionElement.getPropertyValue('visibleChoices')
+          );
+        }
+      }
+    });
   }
 };

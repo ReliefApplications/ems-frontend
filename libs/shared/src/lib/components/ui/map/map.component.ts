@@ -11,6 +11,7 @@ import {
   Injector,
   ElementRef,
   Optional,
+  SkipSelf,
 } from '@angular/core';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
@@ -63,6 +64,7 @@ import { MapPolygonsService } from '../../../services/map/map-polygons.service';
 import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
 import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
+import { ActionComponent, ActionType } from '../../../models/automation.model';
 
 /** Component for the map widget */
 @Component({
@@ -200,7 +202,9 @@ export class MapComponent
     private shadowDomService: ShadowDomService,
     public el: ElementRef,
     private mapPolygonsService: MapPolygonsService,
-    @Optional() private dashboardAutomationService: DashboardAutomationService
+    @Optional()
+    @SkipSelf()
+    private dashboardAutomationService: DashboardAutomationService
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -316,11 +320,11 @@ export class MapComponent
 
     if (this.mapSettingsValue.automationRules) {
       for (const rule of this.mapSettingsValue.automationRules) {
-        const trigger = get(rule, 'components[0]');
+        const trigger: ActionComponent = get(rule, 'components[0]');
         if (
           trigger &&
           trigger.component === 'trigger' &&
-          trigger.type === 'map.click'
+          trigger.type === ActionType.mapClick
         ) {
           // Save rule in map object to populate to all layers attached to it
           if ((this.map as any)._rules) {
@@ -501,7 +505,7 @@ export class MapComponent
     }
 
     // Close layers/bookmarks menu
-    this.document.getElementById('layer-control-button-close')?.click();
+    this.closeLayersControl();
 
     this.setupMapLayers({ layers, controls, arcGisWebMap, basemap });
     this.setMapControls(controls, initMap);
@@ -596,7 +600,9 @@ export class MapComponent
         // Load arcgis webmap
         promises.push(
           this.setWebmap(settings.arcGisWebMap, {
-            skipDefaultView: this.useContextZoom,
+            skipDefaultView:
+              this.useContextZoom ||
+              !this.mapSettingsValue.initialState.useWebMapInitialState,
           })
         );
       } else {
@@ -1116,26 +1122,22 @@ export class MapComponent
     const { layers: layersToGet, controls } = this.extractSettings();
 
     if (controls.layer) {
-      this.document.getElementById('layer-control-button-close')?.click();
+      this.closeLayersControl();
       this.layerControlButtons._component.loading = true;
     }
-
-    const shouldDisplayStatuses: Record<string, boolean> = {};
 
     const flattenOverlaysTree = (tree: L.Control.Layers.TreeObject): any => {
       return [tree, flatMapDeep(tree.children, flattenOverlaysTree)];
     };
 
+    // Copy old layers, so if the visibility changes while filtering the layers, we still get the last visibility
+    const oldLayers = this.layers.slice();
+
     // remove zoom listeners from old layers
     flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree)
       .filter((x) => x.layer && (x.layer as any).origin === 'app-builder')
       .forEach((x) => {
-        // Store visibility status of the layer
-        const shouldDisplay = (x.layer as any).shouldDisplay;
         const id = (x.layer as any).id;
-        if (!isNil(shouldDisplay)) {
-          shouldDisplayStatuses[id] = shouldDisplay;
-        }
         const existingLayer = this.layers.find((layer) => layer.id === id);
         if (!existingLayer || existingLayer.shouldRefresh) {
           (x.layer as any).deleted = true;
@@ -1154,9 +1156,13 @@ export class MapComponent
           (x) => {
             if (x.layer) {
               const id = (x.layer as any).id;
-              if (!isNil(shouldDisplayStatuses[id])) {
-                (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
-                if (shouldDisplayStatuses[id]) {
+              const shouldDisplay = get(
+                oldLayers.find((x) => x.id === id),
+                'layer.shouldDisplay'
+              );
+              if (!isNil(shouldDisplay)) {
+                (x.layer as any).shouldDisplay = shouldDisplay;
+                if (shouldDisplay) {
                   this.map.addLayer(x.layer);
                 }
               } else {
@@ -1267,5 +1273,22 @@ export class MapComponent
     const { center, zoom } = this.extractSettings().initialState.viewpoint;
     this.currentZoom = zoom;
     this.map.setView([center.latitude, center.longitude], zoom);
+  }
+
+  /**
+   * Close layers control sidenav.
+   */
+  private closeLayersControl(): void {
+    let controlButton: HTMLElement | null;
+    if (this.shadowDomService.isShadowRoot) {
+      controlButton = this.shadowDomService.currentHost.getElementById(
+        'layer-control-button-close'
+      );
+    } else {
+      controlButton = this.document.getElementById(
+        'layer-control-button-close'
+      );
+    }
+    controlButton?.click();
   }
 }

@@ -52,12 +52,14 @@ import filterReferenceData from '../../../utils/filter/reference-data-filter.uti
 import { ReferenceData } from '../../../models/reference-data.model';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
+import { PageSizeChangeEvent } from '@progress/kendo-angular-pager';
+import { WidgetService } from '../../../services/widget/widget.service';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
 
-/** Default page size for pagination */
-const DEFAULT_PAGE_SIZE = 25;
+/** Key to store user selected page size, in local storage */
+const SELECTED_PAGE_SIZE_KEY = 'selectedPageSize';
 
 /**
  * Summary Card Widget component.
@@ -92,7 +94,7 @@ export class SummaryCardComponent
   /** Pagination info */
   public pageInfo = {
     pageIndex: 0,
-    pageSize: DEFAULT_PAGE_SIZE,
+    pageSize: this.defaultPageSize,
     length: 0,
     skip: 0,
     lastCursor: null as any,
@@ -174,7 +176,10 @@ export class SummaryCardComponent
         filters: this.layout?.query.filter ? [this.layout?.query.filter] : [],
       };
     }
-    return filter;
+    return {
+      logic: 'and',
+      filters: [filter, this.contextService.injectContext(this.contextFilters)],
+    };
   }
 
   /** @returns does the card use resource aggregation */
@@ -212,6 +217,33 @@ export class SummaryCardComponent
     return get(this.settings, 'widgetDisplay.exportable', true);
   }
 
+  /** @returns default page size, for initialization */
+  private get defaultPageSize(): number {
+    const selectedPageSize = localStorage.getItem(SELECTED_PAGE_SIZE_KEY);
+    if (selectedPageSize) {
+      return Number(selectedPageSize);
+    } else {
+      const windowHeight = window.innerHeight;
+      switch (true) {
+        case windowHeight < 600: {
+          return 10;
+        }
+        case windowHeight >= 600 && windowHeight < 1200: {
+          return 25;
+        }
+        case windowHeight >= 1200 && windowHeight < 1800: {
+          return 50;
+        }
+        case windowHeight >= 1800: {
+          return 100;
+        }
+        default: {
+          return 25;
+        }
+      }
+    }
+  }
+
   /**
    * Get the summary card pdf name
    *
@@ -235,18 +267,10 @@ export class SummaryCardComponent
 
   /** @returns the graphql query variables object */
   get graphqlVariables() {
-    try {
-      let mapping = JSON.parse(
-        this.settings.card?.referenceDataVariableMapping || ''
-      );
-      mapping = this.contextService.replaceContext(mapping);
-      mapping = this.contextService.replaceFilter(mapping);
-      mapping = this.replaceWidgetVariables(mapping);
-      this.contextService.removeEmptyPlaceholders(mapping);
-      return mapping;
-    } catch {
-      return null;
-    }
+    return this.widgetService.mapGraphQLVariables(
+      this.settings.card?.referenceDataVariableMapping as any,
+      this.replaceWidgetVariables.bind(this)
+    );
   }
 
   /**
@@ -265,6 +289,7 @@ export class SummaryCardComponent
    * @param referenceDataService Shared reference data service
    * @param renderer Angular renderer service
    * @param dashboardService Shared dashboard service
+   * @param widgetService Shared widget service
    */
   constructor(
     private apollo: Apollo,
@@ -279,7 +304,8 @@ export class SummaryCardComponent
     private gridService: GridService,
     private referenceDataService: ReferenceDataService,
     private renderer: Renderer2,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private widgetService: WidgetService
   ) {
     super();
   }
@@ -1077,6 +1103,15 @@ export class SummaryCardComponent
           this.loading = false;
         });
     }
+  }
+
+  /**
+   * Store new page size in local storage, so next time widgets are drawn, remembers it
+   *
+   * @param event page size change event
+   */
+  public onPageSizeChange(event: PageSizeChangeEvent): void {
+    localStorage.setItem(SELECTED_PAGE_SIZE_KEY, event.newPageSize.toString());
   }
 
   /**
