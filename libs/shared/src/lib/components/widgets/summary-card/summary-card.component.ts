@@ -915,13 +915,24 @@ export class SummaryCardComponent
                             rows: metaData.rows,
                           };
                         }
+                        //add choices for people questions
+                        if (metaData && metaData.choices) {
+                          return {
+                            ...field,
+                            choices: metaData.choices,
+                          };
+                        }
                         return field;
+                      });
+                      this.cards = this.cards.map((card) => {
+                        return { ...card, metadata: this.fields };
                       });
                     } catch (err) {
                       console.error(err);
                     }
                   }
                 }
+                this.updateRecordCards.bind(this);
               },
               error: () => {
                 this.loading = false;

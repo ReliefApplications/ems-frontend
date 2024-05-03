@@ -63,8 +63,12 @@ export class PeopleSelectComponent
   private previousSearchValue: string | null = null;
   /** search filters */
   private filters: any[] = [];
+  /** number of items fetched after each query */
+  private limitItems = 10;
   /** offset for the scroll loading */
   private offset = 0;
+  /** boolean to control whether there are more people */
+  private hasNextPage = true;
 
   /**
    * Component to pick people from the list of people
@@ -137,7 +141,8 @@ export class PeopleSelectComponent
     if (
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
         50 &&
-      !this.loading
+      !this.loading &&
+      this.hasNextPage
     ) {
       this.offset += 10;
       this.loading = true;
@@ -148,12 +153,13 @@ export class PeopleSelectComponent
               logic: 'or',
               filters: this.filters,
             } as CompositeFilterDescriptor,
-            limitItems: 10,
+            limitItems: this.limitItems,
             offset: this.offset,
           },
         })
         .then((results) => {
           this.updateValues(results.data, results.loading);
+          this.hasNextPage = results.data.people.length === this.limitItems;
         });
     }
   }
@@ -166,6 +172,7 @@ export class PeopleSelectComponent
   public onSearchChange(searchValue: string) {
     if (searchValue.length >= 2 && searchValue !== this.previousSearchValue) {
       this.offset = 0;
+      this.hasNextPage = true;
       const searchWords = searchValue
         .split(' ')
         .filter((word) => word.length >= 3);
@@ -211,6 +218,7 @@ export class PeopleSelectComponent
           logic: 'or',
           filters: filters,
         } as CompositeFilterDescriptor,
+        limitItems: this.limitItems,
       });
       this.previousSearchValue = searchValue;
     }

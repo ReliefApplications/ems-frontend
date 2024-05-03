@@ -579,6 +579,13 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
                     rows: metaData.rows,
                   };
                 }
+                //add choices for people questions
+                if (metaData && metaData.choices) {
+                  return {
+                    ...field,
+                    choices: metaData.choices,
+                  };
+                }
                 return field;
               });
             } catch (err) {
