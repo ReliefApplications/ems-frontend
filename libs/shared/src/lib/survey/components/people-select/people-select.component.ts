@@ -213,13 +213,17 @@ export class PeopleSelectComponent
         });
       }
       this.filters = filters;
-      this.query.refetch({
-        filter: {
-          logic: 'or',
-          filters: filters,
-        } as CompositeFilterDescriptor,
-        limitItems: this.limitItems,
-      });
+      this.query
+        .refetch({
+          filter: {
+            logic: 'or',
+            filters: filters,
+          } as CompositeFilterDescriptor,
+          limitItems: this.limitItems,
+        })
+        .then((results) => {
+          this.hasNextPage = results.data.people.length === this.limitItems;
+        });
       this.previousSearchValue = searchValue;
     }
   }
