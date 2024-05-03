@@ -455,7 +455,9 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Save as Draft
+  /**
+   * Save as Draft function
+   */
   async saveDraft() {
     try {
       if (this.currentStep === 4) {

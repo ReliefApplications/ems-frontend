@@ -171,23 +171,6 @@ export class EmailService {
   public fields: FieldStore[] = [];
 
   /**
-   * Helper functions service for emails template.
-   *
-   * @param formBuilder Angular Form Builder
-   * @param apollo Apollo service
-   * @param http Http client
-   * @param restService Shared rest service
-   */
-  constructor(
-    private formBuilder: FormBuilder,
-    private apollo: Apollo,
-    private http: HttpClient,
-    private restService: RestService
-  ) {
-    this.setDatasetForm();
-  }
-
-  /**
    * Generates new dataset group.
    *
    * @returns new Dataset form group.
@@ -211,6 +194,25 @@ export class EmailService {
       }), // Fields (field selected and style), Block Style (HTML wrapping field with token)
       individualEmail: false,
     });
+  }
+
+  /**
+   * Constructs the EmailService instance.
+   *
+   * @param formBuilder The FormBuilder instance used to create form groups and controls
+   * @param apollo The Apollo server instance used for GraphQL queries
+   * @param http The HttpClient instance used for making HTTP requests
+   * @param restService mapping of the url
+   * @param ngZone The NgZone instance
+   */
+  constructor(
+    private formBuilder: FormBuilder,
+    private apollo: Apollo,
+    private http: HttpClient,
+    private restService: RestService,
+    private ngZone: NgZone
+  ) {
+    this.setDatasetForm();
   }
 
   /**
