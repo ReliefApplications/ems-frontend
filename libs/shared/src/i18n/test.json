@@ -566,6 +566,12 @@
 						"minCols": "******",
 						"minimumHeight": "******",
 						"reset": "******"
+					},
+					"tooltips": {
+						"clear": "******",
+						"fixedRowHeight": "******",
+						"margin": "******",
+						"minCols": "******"
 					}
 				}
 			},
@@ -1261,7 +1267,8 @@
 		"templates": {
 			"available": "******",
 			"delete": {
-				"confirmationMessage": "****** {{name}} ******"
+				"confirmationMessage": "****** {{name}} ******",
+				"titleMessage": "******"
 			},
 			"edit": {
 				"body": "******",
@@ -1357,6 +1364,7 @@
 					"goTo": "******",
 					"history": "******"
 				},
+				"empty": "******",
 				"errors": {
 					"autoSaveFailed": "******",
 					"invalid": {
@@ -2151,6 +2159,7 @@
 				}
 			},
 			"id": "******",
+			"menu": "******",
 			"new": "******",
 			"notifications": {
 				"notPublished": "******",

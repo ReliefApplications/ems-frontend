@@ -764,11 +764,6 @@
 			"title": "Prévisualisation de mail",
 			"to": "À"
 		},
-		"floating": {
-			"menuButton": {
-				"ariaLabel": "***"
-			}
-		},
 		"form": {
 			"aggregation": {
 				"delete": {
