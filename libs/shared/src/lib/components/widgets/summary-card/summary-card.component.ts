@@ -102,7 +102,9 @@ export class SummaryCardComponent
   /** Reference data datasource */
   public refData: ReferenceData | null = null;
   /** Loading indicators */
-  public loading = true;
+  public dataLoading = true;
+  /** Metadata loading */
+  public metadataLoading = true;
   /** Available cards */
   public cards: CardT[] = [];
   /** Cached cards */
@@ -149,6 +151,11 @@ export class SummaryCardComponent
   private scrollEventBindTimeout!: NodeJS.Timeout;
   /** Subject to emit signals for cancelling previous data queries */
   private cancelRefresh$ = new Subject<void>();
+
+  /** @returns whether card is still loading */
+  get loading(): boolean {
+    return this.metadataLoading || this.dataLoading;
+  }
 
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
@@ -526,7 +533,7 @@ export class SummaryCardComponent
       this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
       this.pageInfo.length = this.sortedCachedCards.length;
     } else if (this.useLayout) {
-      this.loading = true;
+      this.dataLoading = true;
       from(
         this.dataQuery?.refetch({
           skip: 0,
@@ -631,7 +638,7 @@ export class SummaryCardComponent
     );
     this.scrolling = false;
     this.triggerRefreshCardList = false;
-    this.loading = res.loading;
+    this.dataLoading = res.loading;
   }
 
   /**
@@ -766,7 +773,7 @@ export class SummaryCardComponent
     }
 
     this.scrolling = false;
-    this.loading = false;
+    this.dataLoading = false;
   }
 
   /**
@@ -895,7 +902,7 @@ export class SummaryCardComponent
           // Build meta query to add information to fields
           this.metaQuery = this.queryBuilder.buildMetaQuery(this.layout.query);
           if (this.metaQuery) {
-            this.loading = true;
+            this.metadataLoading = true;
             this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe({
               next: async ({ data }: any) => {
                 for (const field in data) {
@@ -924,18 +931,18 @@ export class SummaryCardComponent
                         }
                         return field;
                       });
-                      this.cards = this.cards.map((card) => {
-                        return { ...card, metadata: this.fields };
-                      });
                     } catch (err) {
                       console.error(err);
                     }
                   }
                 }
-                this.updateRecordCards.bind(this);
+                this.cards = this.cards.map((card) => {
+                  return { ...card, metadata: this.fields };
+                });
+                this.metadataLoading = false;
               },
               error: () => {
-                this.loading = false;
+                this.dataLoading = false;
               },
             });
           }
@@ -1000,7 +1007,7 @@ export class SummaryCardComponent
   private async getCardsFromAggregation(
     card: NonNullable<SummaryCardFormT['value']['card']>
   ) {
-    this.loading = true;
+    this.dataLoading = true;
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
       card.resource as string,
       card.aggregation as string,
@@ -1076,7 +1083,7 @@ export class SummaryCardComponent
     this.pageInfo.pageIndex = event.pageIndex;
 
     if (this.dataQuery) {
-      this.loading = true;
+      this.dataLoading = true;
       const layoutQuery = this.layout?.query;
       from(
         this.dataQuery.refetch({
@@ -1098,7 +1105,7 @@ export class SummaryCardComponent
         .subscribe(this.updateRecordCards.bind(this));
     } else if (this.useReferenceData && this.refData) {
       // Only set loading state if using pagination, not infinite scroll
-      this.loading = !this.scrolling;
+      this.dataLoading = !this.scrolling;
       const variables = this.queryPaginationVariables(event.pageIndex);
 
       from(
@@ -1110,7 +1117,7 @@ export class SummaryCardComponent
         .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
         .subscribe(({ items, pageInfo }) => {
           this.updateReferenceDataCards(items, pageInfo);
-          this.loading = false;
+          this.dataLoading = false;
         });
     }
   }
@@ -1213,12 +1220,12 @@ export class SummaryCardComponent
           })
         )
           .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-          .subscribe(() => (this.loading = false));
+          .subscribe(() => (this.dataLoading = false));
       } else if (this.useReferenceData) {
         if (this.refData?.pageInfo?.strategy) {
           this.refresh();
         } else {
-          this.loading = true;
+          this.dataLoading = true;
           this.pageInfo.pageIndex = 0;
           this.pageInfo.skip = 0;
           if (e) {
@@ -1249,7 +1256,7 @@ export class SummaryCardComponent
               this.pageInfo.pageSize
             );
           }
-          this.loading = false;
+          this.dataLoading = false;
         }
       }
     }
