@@ -184,13 +184,18 @@ export class ReferenceDatasComponent
                   { error: true }
                 );
               } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectCreated', {
-                    type: this.translate.instant('common.referenceData.one'),
-                    value: value.name,
-                  })
-                );
                 if (data) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectCreated',
+                      {
+                        type: this.translate.instant(
+                          'common.referenceData.one'
+                        ),
+                        value: value.name,
+                      }
+                    )
+                  );
                   this.router.navigate([
                     '/referencedata',
                     data.addReferenceData.id,
