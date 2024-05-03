@@ -1,3 +1,11 @@
+## [2.12.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.0...v2.12.1) (2024-05-03)
+
+
+### Bug Fixes
+
+* issue with search term on action buttons of dashboard [#91553](https://github.com/ReliefApplications/ems-frontend/issues/91553) ([#2498](https://github.com/ReliefApplications/ems-frontend/issues/2498)) ([88721dd](https://github.com/ReliefApplications/ems-frontend/commit/88721dd5d4c61bcca3df4a3eb0fa55926bc2a576))
+* min & max in template widgets would treat inputs as strings, and return false min / max ([30d3576](https://github.com/ReliefApplications/ems-frontend/commit/30d3576b674ff5ded3e3bef994e4ef48f7b5f3c6))
+
 # [2.12.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.11.2...v2.12.0) (2024-04-24)
 
 
