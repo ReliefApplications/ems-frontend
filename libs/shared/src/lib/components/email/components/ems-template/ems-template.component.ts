@@ -349,14 +349,16 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
   /**
    * Submission for sending and saving emails
    */
-  saveAndSend(): Promise<void> {
-    return new Promise((resolve) => {
+  async saveAndSend(): Promise<void> {
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve) => {
       if (Object.keys(this.emailService.datasetsForm.value).length) {
         this.emailService.datasetsForm?.value?.dataSets?.forEach(
           (data: any) => {
             delete data.cacheData;
           }
         );
+        await this.emailService.patchEmailLayout();
         const queryData = this.emailService.datasetsForm.value;
         queryData.notificationType =
           this.emailService.datasetsForm.controls.notificationType.value;
@@ -539,11 +541,12 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
   /**
    * Submission
    */
-  submit() {
+  async submit() {
     if (Object.keys(this.emailService.datasetsForm.value).length) {
       this.emailService.datasetsForm?.value?.datasets?.forEach((data: any) => {
         delete data.cacheData;
       });
+      await this.emailService.patchEmailLayout();
       const queryData = this.emailService.datasetsForm.value;
       queryData.notificationType =
         this.emailService.datasetsForm.controls.notificationType.value;
