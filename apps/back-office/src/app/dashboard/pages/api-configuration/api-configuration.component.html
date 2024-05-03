@@ -209,6 +209,20 @@
               (focus)="clearControl('settings.token')"
             />
           </div>
+          <!-- Token Prefix -->
+          <div uiFormFieldDirective>
+            <label>
+              {{ 'pages.apiConfiguration.tokenPrefix' | translate }}
+            </label>
+            <input
+              formControlName="tokenPrefix"
+              type="text"
+              [placeholder]="
+                'pages.apiConfiguration.placeholder.tokenPrefix' | translate
+              "
+              (focus)="clearControl('settings.tokenPrefix')"
+            />
+          </div>
         </div>
       </ng-container>
     </ng-container>

@@ -2522,11 +2522,13 @@
 				"scope": "Enter scope",
 				"secret": "Enter client secret",
 				"token": "Enter token for authentication",
+				"tokenPrefix": "Enter a token prefix for authentication",
 				"tokenUrl": "Enter access token URL"
 			},
 			"scope": "Scope",
 			"secret": "Client Secret",
 			"token": "Token",
+			"tokenPrefix": "Token prefix",
 			"tokenUrl": "Access token URL"
 		},
 		"apiConfigurations": {

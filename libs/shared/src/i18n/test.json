@@ -2522,11 +2522,13 @@
 				"scope": "******",
 				"secret": "******",
 				"token": "******",
+				"tokenPrefix": "******",
 				"tokenUrl": "******"
 			},
 			"scope": "******",
 			"secret": "******",
 			"token": "******",
+			"tokenPrefix": "******",
 			"tokenUrl": "******"
 		},
 		"apiConfigurations": {

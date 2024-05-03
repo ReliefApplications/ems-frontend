@@ -15,10 +15,10 @@
         </div>
         <div
           class="flex flex-col mb-5 gap-1"
-          formControlName="newResource"
-          uiRadioGroupDirective="newResourceOptions"
+          formControlName="type"
+          uiRadioGroupDirective="typeOptions"
         >
-          <ui-radio [value]="true">
+          <ui-radio value="core">
             <ng-container ngProjectAs="label">
               <span class="flex items-center gap-1">
                 {{ 'components.form.create.choice.resource' | translate }}
@@ -35,7 +35,7 @@
               </span>
             </ng-container>
           </ui-radio>
-          <ui-radio [value]="false">
+          <ui-radio value="template">
             <ng-container ngProjectAs="label">
               <span class="flex items-center gap-1">
                 {{ 'components.form.create.choice.inherit' | translate }}
@@ -52,8 +52,25 @@
               </span>
             </ng-container>
           </ui-radio>
+          <ui-radio value="kobo">
+            <ng-container ngProjectAs="label">
+              <span class="flex items-center gap-1">
+                From KoboToolbox
+                <ui-icon
+                  class="cursor-help"
+                  [size]="18"
+                  icon="info_outline"
+                  variant="grey"
+                  [uiTooltip]="
+                    'components.form.create.tooltip.inherit' | translate
+                  "
+                >
+                </ui-icon>
+              </span>
+            </ng-container>
+          </ui-radio>
         </div>
-        <ng-container *ngIf="!form.value.newResource">
+        <ng-container *ngIf="form.value.type === 'template'">
           <div uiFormFieldDirective>
             <label>{{
               'components.form.create.template.title' | translate
@@ -107,6 +124,26 @@
               </div>
             </ng-container>
           </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="form.value.type === 'kobo'">
+          <div uiFormFieldDirective>
+            <label>From a kobo api</label>
+            <shared-resource-select
+              formControlName="resource"
+              [placeholder]="
+                'components.form.create.template.selectResource' | translate
+              "
+            ></shared-resource-select>
+          </div>
+          <div uiFormFieldDirective>
+            <label>Kobo form id</label>
+            <input
+              formControlName="template"
+              type="text"
+              placeholder="Enter a kobo form id"
+            />
+          </div>
         </ng-container>
       </div>
     </form>

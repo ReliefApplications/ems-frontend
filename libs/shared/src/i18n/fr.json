@@ -2536,11 +2536,13 @@
 				"scope": "Entrer le scope",
 				"secret": "Entrer le client secret",
 				"token": "Entrez le jeton d'accès pour l'authentification",
+				"tokenPrefix": "Entrez un préfixe de jeton pour l'authentification",
 				"tokenUrl": "Entrez l'URL du jeton d'accès"
 			},
 			"scope": "Scope",
 			"secret": "Client Secret",
 			"token": "Jeton d'accès",
+			"tokenPrefix": "Préfixe de jeton",
 			"tokenUrl": "URL du jeton d'accès"
 		},
 		"apiConfigurations": {

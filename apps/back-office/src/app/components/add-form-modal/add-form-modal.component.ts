@@ -53,7 +53,7 @@ export class AddFormModalComponent implements OnInit {
   /** Form group */
   public form = this.fb.group({
     name: ['', Validators.required],
-    newResource: this.fb.nonNullable.control(true),
+    type: this.fb.nonNullable.control('core'),
     resource: [null],
     inheritsTemplate: this.fb.nonNullable.control(false),
     template: null,
@@ -87,16 +87,18 @@ export class AddFormModalComponent implements OnInit {
 
   /** Load the resources and build the form. */
   ngOnInit(): void {
-    this.form.get('newResource')?.valueChanges.subscribe((value: boolean) => {
-      if (value) {
+    this.form.get('type')?.valueChanges.subscribe((value: string) => {
+      if (value == 'core') {
         this.form.get('resource')?.clearValidators();
         this.form.patchValue({
           resource: null,
           inheritsTemplate: false,
           template: null,
         });
-      } else {
+      } else if (value == 'template') {
         this.form.get('resource')?.setValidators([Validators.required]);
+      } else {
+        console.log("KOBO!");
       }
       this.form.get('resource')?.updateValueAndValidity();
     });
