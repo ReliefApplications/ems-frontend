@@ -1,3 +1,10 @@
+## [2.12.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.1...v2.12.2) (2024-05-03)
+
+
+### Bug Fixes
+
+* heatmap layer would fail to draw if intensity is null ([#2504](https://github.com/ReliefApplications/ems-frontend/issues/2504)) ([098841a](https://github.com/ReliefApplications/ems-frontend/commit/098841a76fb5cd7e4caf6a34a3b371331a053a12))
+
 ## [2.12.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.0...v2.12.1) (2024-05-03)
 
 
