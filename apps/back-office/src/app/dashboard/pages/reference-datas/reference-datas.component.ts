@@ -186,8 +186,8 @@ export class ReferenceDatasComponent
               } else {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectCreated', {
-                    type: value.name,
-                    value: this.translate.instant('common.referenceData.one'),
+                    type: this.translate.instant('common.referenceData.one'),
+                    value: value.name,
                   })
                 );
                 if (data) {
