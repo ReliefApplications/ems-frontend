@@ -2,84 +2,80 @@ import { NgModule } from '@angular/core';
 import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
 import {
   ApolloClientOptions,
-  // ApolloLink,
+  ApolloLink,
   InMemoryCache,
-  // split,
 } from '@apollo/client/core';
 import { HttpLink } from 'apollo-angular/http';
-// import { setContext } from '@apollo/client/link/context';
-// import { getMainDefinition } from '@apollo/client/utilities';
-// import { environment } from '../environments/environment';
-import extractFiles from 'extract-files/extractFiles.mjs';
-import isExtractableFile from 'extract-files/isExtractableFile.mjs';
-// import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
-// import { createClient } from 'graphql-ws';
-// import { SchemaService } from '@oort-front/shared';
-import { HttpClient } from '@angular/common/http';
-import { firstValueFrom, map } from 'rxjs';
+import { setContext } from '@apollo/client/link/context';
+import { getMainDefinition } from '@apollo/client/utilities';
+import { environment } from '../environments/environment';
+import { buildClientSchema } from 'graphql/utilities';
+import { fetch } from 'cross-fetch';
 
 /**
  * Configuration of the Apollo client.
  *
  * @param httpLink Apollo http link
- * @param httpClient Http client
  * @returns void
  */
 export const createApollo = async (
-  httpLink: HttpLink,
-  httpClient: HttpClient
+  httpLink: HttpLink
 ): Promise<ApolloClientOptions<any>> => {
-  // const basic = setContext(() => ({
-  //   headers: {
-  //     // eslint-disable-next-line @typescript-eslint/naming-convention
-  //     Accept: 'application/json; charset=utf-8',
-  //     UserTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  //   },
-  // }));
+  const basic = setContext(() => ({
+    headers: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      Accept: 'application/json; charset=utf-8',
+      UserTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
+  }));
 
-  const schemaUrl = await firstValueFrom(
-    httpClient
-      .get<{ url: string }>('/schema/url')
-      .pipe(map((response) => response.url))
+  // Fetch the schema url from back-end
+  // NOT WORKING: we must be logged in and here we're not
+  // const schemaEndpoint = await fetch(`${environment.apiUrl}/schema/url`);
+  // const schemaEndpointString = await schemaEndpoint.text();
+
+  // Fetch the schema file from the fetched endpoint
+  // NOT WORKING: CORS ERROR
+  const response = await fetch(
+    'https://oortdevstorage.blob.core.windows.net/public/introspection/schema?1715023102100'
   );
+  const schemaString = await response.text();
+  const schema = buildClientSchema(JSON.parse(schemaString));
 
-  const http = httpLink.create({
-    uri: schemaUrl,
-    extractFiles: (body) => extractFiles(body, isExtractableFile),
+  const link = ApolloLink.from([
+    basic,
+    httpLink.create({
+      uri: `${environment.apiUrl}/graphql`,
+    }),
+  ]);
+
+  // Create a link that uses the introspected schema
+  const schemaLink = new ApolloLink((operation, forward) => {
+    operation.setContext(({ graphqlContext = {} }) => ({
+      graphqlContext: {
+        ...graphqlContext,
+        schema,
+      },
+    }));
+
+    return forward(operation);
   });
-
-  // const ws = new GraphQLWsLink(
-  //   createClient({
-  //     url: `${environment.subscriptionApiUrl}/graphql`,
-  //     connectionParams: {
-  //       authToken: localStorage.getItem('idtoken'),
-  //     },
-  //   })
-  // );
-
-  /** Definition for apollo link query definition */
-  // interface Definition {
-  //   kind: string;
-  //   operation?: string;
-  // }
-
-  // const link = ApolloLink.from([
-  //   basic,
-  //   split(
-  //     ({ query }) => {
-  //       const { kind, operation }: Definition = getMainDefinition(query);
-  //       return kind === 'OperationDefinition' && operation === 'subscription';
-  //     },
-  //     ws,
-  //     http
-  //   ),
-  // ]);
 
   // Cache is not currently used, due to fetchPolicy values
   const cache = new InMemoryCache();
 
   return {
-    link: http,
+    link: ApolloLink.split(
+      (operation) => {
+        const definition = getMainDefinition(operation.query);
+        return (
+          definition.kind === 'OperationDefinition' &&
+          definition.operation === 'subscription'
+        );
+      },
+      schemaLink.concat(link),
+      link
+    ),
     cache,
     defaultOptions: {
       watchQuery: {
@@ -108,7 +104,7 @@ export const createApollo = async (
     {
       provide: APOLLO_OPTIONS,
       useFactory: createApollo,
-      deps: [HttpLink, HttpClient],
+      deps: [HttpLink],
     },
   ],
 })
