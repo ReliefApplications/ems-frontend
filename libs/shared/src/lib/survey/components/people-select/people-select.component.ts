@@ -110,6 +110,7 @@ export class PeopleSelectComponent
     if (!this.initialSelectionIDs || !this.initialSelectionIDs.length) {
       return;
     }
+    this.loading = true;
     this.query
       .refetch({
         filter: {
