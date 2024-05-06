@@ -20,16 +20,13 @@ import {
   FormWrapperModule,
 } from '@oort-front/ui';
 import { BehaviorSubject } from 'rxjs';
+import * as EmailValidator from 'email-validator';
 
 /** Model for the data input */
 interface DialogData {
   name?: string;
   emails?: string[];
 }
-
-/** Regex pattern for email */
-// eslint-disable-next-line no-useless-escape
-const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 /** Key codes of separators */
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
@@ -141,7 +138,7 @@ export class EditDistributionListModalComponent implements OnDestroy {
         // Add the mail
         const emails = [...this.emails];
         if ((value || '').trim()) {
-          if (EMAIL_REGEX.test(value.trim())) {
+          if (EmailValidator.validate(value.trim())) {
             emails.push(value.trim());
             control?.setValue(emails);
             control?.updateValueAndValidity();
