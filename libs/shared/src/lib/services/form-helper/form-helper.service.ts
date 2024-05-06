@@ -543,27 +543,70 @@ export class FormHelpersService {
    *
    * @param survey Survey where to add the callbacks
    * @param formId Form id of the survey
+   * @param temporaryFilesStorage Temporary files saved while executing the survey
    * @param draftId Draft record id
    * @param callback callback method
    */
   public saveAsDraft(
     survey: SurveyModel,
     formId: string,
+    temporaryFilesStorage: TemporaryFilesStorage,
     draftId?: string,
     callback?: any
   ): void {
-    // Check if a draft has already been loaded
-    if (!draftId) {
-      // Add a new draft record to the database
-      const mutation = this.apollo.mutate<AddDraftRecordMutationResponse>({
-        mutation: ADD_DRAFT_RECORD,
-        variables: {
-          form: formId,
-          data: survey.data,
-        },
-      });
-      mutation.subscribe({
-        next: ({ errors, data }) => {
+    // First we need to upload any files that were added to the survey
+    this.uploadFiles(temporaryFilesStorage, formId).then(() => {
+      // Check if a draft has already been loaded
+      if (!draftId) {
+        // Add a new draft record to the database
+        const mutation = this.apollo.mutate<AddDraftRecordMutationResponse>({
+          mutation: ADD_DRAFT_RECORD,
+          variables: {
+            form: formId,
+            data: survey.data,
+          },
+        });
+        mutation.subscribe({
+          next: ({ errors, data }) => {
+            if (errors) {
+              survey.clear(false, true);
+              this.snackBar.openSnackBar(errors[0].message, { error: true });
+            } else {
+              // localStorage.removeItem(this.storageId);
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'components.form.draftRecords.successSave'
+                ),
+                {
+                  error: false,
+                }
+              );
+            }
+            // Callback to emit save but stay in record addition mode
+            if (callback) {
+              callback({
+                id: data?.addDraftRecord.id,
+                save: {
+                  completed: false,
+                  hideNewRecord: true,
+                },
+              });
+            }
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
+        });
+      } else {
+        // Edit last added draft record in the database
+        const mutation = this.apollo.mutate<EditDraftRecordMutationResponse>({
+          mutation: EDIT_DRAFT_RECORD,
+          variables: {
+            id: draftId,
+            data: survey.data,
+          },
+        });
+        mutation.subscribe(({ errors }: any) => {
           if (errors) {
             survey.clear(false, true);
             this.snackBar.openSnackBar(errors[0].message, { error: true });
@@ -571,7 +614,7 @@ export class FormHelpersService {
             // localStorage.removeItem(this.storageId);
             this.snackBar.openSnackBar(
               this.translate.instant(
-                'components.form.draftRecords.successSave'
+                'components.form.draftRecords.successEdit'
               ),
               {
                 error: false,
@@ -581,52 +624,16 @@ export class FormHelpersService {
           // Callback to emit save but stay in record addition mode
           if (callback) {
             callback({
-              id: data?.addDraftRecord.id,
+              id: draftId,
               save: {
                 completed: false,
                 hideNewRecord: true,
               },
             });
           }
-        },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
-        },
-      });
-    } else {
-      // Edit last added draft record in the database
-      const mutation = this.apollo.mutate<EditDraftRecordMutationResponse>({
-        mutation: EDIT_DRAFT_RECORD,
-        variables: {
-          id: draftId,
-          data: survey.data,
-        },
-      });
-      mutation.subscribe(({ errors }: any) => {
-        if (errors) {
-          survey.clear(false, true);
-          this.snackBar.openSnackBar(errors[0].message, { error: true });
-        } else {
-          // localStorage.removeItem(this.storageId);
-          this.snackBar.openSnackBar(
-            this.translate.instant('components.form.draftRecords.successEdit'),
-            {
-              error: false,
-            }
-          );
-        }
-        // Callback to emit save but stay in record addition mode
-        if (callback) {
-          callback({
-            id: draftId,
-            save: {
-              completed: false,
-              hideNewRecord: true,
-            },
-          });
-        }
-      });
-    }
+        });
+      }
+    });
   }
 
   /**
