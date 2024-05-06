@@ -275,8 +275,22 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
             'image/png'
           );
       }
-      this.currentStep += 1;
-      this.steps[5].disabled = false;
+      this.layout.getColors();
+      this.emailService.allLayoutdata.txtSubject =
+        this.layout.layoutForm.get('subjectInput')?.value;
+      this.emailService.allLayoutdata.bodyHtml =
+        this.layout.layoutForm.get('body')?.value;
+      this.emailService.allLayoutdata.headerHtml =
+        this.layout.layoutForm.get('header')?.value;
+      this.emailService
+        .patchEmailLayout()
+        .then(() => {
+          this.currentStep += 1;
+          this.steps[5].disabled = false;
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
     } else {
       this.currentStep += 1;
     }
@@ -356,7 +370,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
             delete data.cacheData;
           }
         );
-        await this.emailService.patchEmailLayout();
+        // await this.emailService.patchEmailLayout();
         const queryData = this.emailService.datasetsForm.value;
         queryData.notificationType =
           this.emailService.datasetsForm.controls.notificationType.value;
@@ -542,7 +556,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
    * Submission
    */
   async submit() {
-    await this.emailService.patchEmailLayout();
+    // await this.emailService.patchEmailLayout();
     if (Object.keys(this.emailService.datasetsForm.value).length) {
       this.emailService.datasetsForm?.value?.datasets?.forEach((data: any) => {
         delete data.cacheData;
