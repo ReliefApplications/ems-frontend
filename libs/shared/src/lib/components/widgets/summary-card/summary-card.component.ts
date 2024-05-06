@@ -835,112 +835,111 @@ export class SummaryCardComponent
         },
       })
     );
-    const layoutsResponse = await this.gridLayoutService.getLayouts(
-      card.resource,
-      {
+    await this.gridLayoutService
+      .getLayouts(card.resource, {
         ids: [card.layout],
         first: 1,
-      }
-    );
-
-    if (layoutsResponse) {
-      const layouts = layoutsResponse.edges.map((edge) => edge.node);
-      if (layouts.length > 0) {
-        this.layout = layouts[0];
-        const layoutQuery = this.layout.query;
-        const builtQuery = this.queryBuilder.buildQuery({
-          query: layoutQuery,
-        });
-        const layoutFields = layoutQuery.fields;
-        this.fields = get(metaRes, 'data.resource.metadata', []).map(
-          (f: any) => {
-            const layoutField = layoutFields.find(
-              (lf: any) => lf.name === f.name
-            );
-            if (layoutField) {
-              return { ...layoutField, ...f };
-            }
-            return f;
-          }
-        );
-
-        // Set sort fields
-        this.sortFields = [];
-        this.widget.settings.sortFields?.forEach((sortField: any) => {
-          this.sortFields.push(sortField);
-        });
-
-        if (builtQuery) {
-          this.sortOptions = {
-            field: get(this.layout?.query, 'sort.field', null),
-            order: get(this.layout?.query, 'sort.order', ''),
-          };
-          this.dataQuery = this.apollo.watchQuery<any>({
-            query: builtQuery,
-            variables: {
-              first: this.pageInfo.pageSize,
-              filter: this.queryFilter,
-              contextFilters: this.contextService.injectContext(
-                this.contextFilters
-              ),
-              sortField: this.sortOptions.field,
-              sortOrder: this.sortOptions.order,
-              styles: layoutQuery.style || null,
-              ...(this.settings.at && {
-                at: this.contextService.atArgumentValue(this.settings.at),
-              }),
-            },
-            fetchPolicy: 'network-only',
-            nextFetchPolicy: 'cache-first',
+      })
+      .then(async ({ edges }) => {
+        const layouts = edges.map((edge) => edge.node);
+        if (layouts.length > 0) {
+          this.layout = layouts[0];
+          const layoutQuery = this.layout.query;
+          const builtQuery = this.queryBuilder.buildQuery({
+            query: layoutQuery,
           });
-          this.dataQuery.valueChanges
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(this.updateRecordCards.bind(this));
-        }
-        // Build meta query to add information to fields
-        this.metaQuery = this.queryBuilder.buildMetaQuery(this.layout.query);
-        if (this.metaQuery) {
-          this.loading = true;
-          const { data } = await this.metaQuery
-            .pipe(takeUntil(this.destroy$))
-            .toPromise();
-
-          const promises = Object.entries(data).map(async ([key]) => {
-            if (Object.prototype.hasOwnProperty.call(data, key)) {
-              this.metaFields = Object.assign({}, data[key]);
-              try {
-                await this.gridService.populateMetaFields(this.metaFields);
-                this.fields = this.fields.map((field) => {
-                  const metaData = this.metaFields[field.name];
-                  if (metaData) {
-                    field = {
-                      ...field,
-                      meta: metaData,
-                    };
-                    if (metaData.columns || metaData.row) {
-                      return {
-                        ...field,
-                        columns: metaData.columns,
-                        rows: metaData.rows,
-                      };
-                    }
-                  }
-                  return field;
-                });
-              } catch (err) {
-                console.error(err);
+          const layoutFields = layoutQuery.fields;
+          this.fields = get(metaRes, 'data.resource.metadata', []).map(
+            (f: any) => {
+              const layoutField = layoutFields.find(
+                (lf: any) => lf.name === f.name
+              );
+              if (layoutField) {
+                return { ...layoutField, ...f };
               }
+              return f;
             }
+          );
+
+          // Set sort fields
+          this.sortFields = [];
+          this.widget.settings.sortFields?.forEach((sortField: any) => {
+            this.sortFields.push(sortField);
           });
-          await Promise.all(promises);
-          // Update cards metadata (will be the fields value in the cards content)
-          this.cards = this.cards.map((c: CardT) => ({
-            ...c,
-            metadata: this.fields,
-          }));
+
+          if (builtQuery) {
+            this.sortOptions = {
+              field: get(this.layout?.query, 'sort.field', null),
+              order: get(this.layout?.query, 'sort.order', ''),
+            };
+            this.dataQuery = this.apollo.watchQuery<any>({
+              query: builtQuery,
+              variables: {
+                first: this.pageInfo.pageSize,
+                filter: this.queryFilter,
+                contextFilters: this.contextService.injectContext(
+                  this.contextFilters
+                ),
+                sortField: this.sortOptions.field,
+                sortOrder: this.sortOptions.order,
+                styles: layoutQuery.style || null,
+                ...(this.settings.at && {
+                  at: this.contextService.atArgumentValue(this.settings.at),
+                }),
+              },
+              fetchPolicy: 'network-only',
+              nextFetchPolicy: 'cache-first',
+            });
+            this.dataQuery.valueChanges
+              .pipe(takeUntil(this.destroy$))
+              .subscribe(this.updateRecordCards.bind(this));
+          }
+          // Build meta query to add information to fields
+          this.metaQuery = this.queryBuilder.buildMetaQuery(this.layout.query);
+          if (this.metaQuery) {
+            this.loading = true;
+            const { data } = await this.metaQuery
+              .pipe(takeUntil(this.destroy$))
+              .toPromise();
+
+            const promises = Object.entries(data).map(async ([key]) => {
+              if (Object.prototype.hasOwnProperty.call(data, key)) {
+                this.metaFields = Object.assign({}, data[key]);
+                try {
+                  await this.gridService.populateMetaFields(this.metaFields);
+                  this.fields = this.fields.map((field) => {
+                    const metaData = this.metaFields[field.name];
+                    if (metaData) {
+                      field = {
+                        ...field,
+                        meta: metaData,
+                      };
+                      if (metaData.columns || metaData.row) {
+                        return {
+                          ...field,
+                          columns: metaData.columns,
+                          rows: metaData.rows,
+                        };
+                      }
+                    }
+                    return field;
+                  });
+                } catch (err) {
+                  console.error(err);
+                }
+              }
+            });
+            await Promise.all(promises);
+            // Update cards metadata (will be the fields value in the cards content)
+            this.cards = this.cards.map((c: CardT) => ({
+              ...c,
+              metadata: this.fields,
+            }));
+            console.log('one');
+          }
         }
-      }
-    }
+      });
+    console.log('two');
   }
 
   /**
