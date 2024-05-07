@@ -45,8 +45,7 @@
         ],
         "stylePreprocessorOptions": {
           "includePaths": ["libs/styles/src/lib/themes/default"]
-        },
-        "allowedCommonJsDependencies": ["email-validator"]
+        }
       },
       "configurations": {
         "ci": {
