@@ -9,8 +9,7 @@ import REGIONS from './regions';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
 import { LayerDatasourceType } from '../../models/layer.model';
-import { AllGeoJSON, simplify } from '@turf/turf';
-import { parse } from 'wellknown';
+import { simplify } from '@turf/turf';
 import { TranslateService } from '@ngx-translate/core';
 
 /** Available admin identifiers */
@@ -77,33 +76,31 @@ export class MapPolygonsService {
         const mapping = [];
         for (const feature of value.features) {
           // Transform data to fit Admin0 type
-          if (feature.geometry) {
-            try {
-              mapping.push({
-                id: feature.id,
-                centerlatitude: feature.properties.CENTER_LAT.toString(),
-                centerlongitude: feature.properties.CENTER_LON.toString(),
-                iso2code: feature.properties.ISO_2_CODE,
-                iso3code: feature.properties.ISO_3_CODE,
-                name: feature.properties.ADM0_VIZ_NAME,
-                // Reduction of the GeoJSON object into a simplified version
-                polygons: simplify(parse(feature.geometry) as AllGeoJSON, {
-                  tolerance: 0.1,
-                  highQuality: true,
-                  mutate: true,
-                }) as Polygon | MultiPolygon | Feature<Polygon | MultiPolygon>,
-              });
-            } catch (err: any) {
-              console.log(
-                this.translate.instant(
-                  'components.widget.settings.map.tooltip.geographicExtent.admin0Error',
-                  {
-                    iso3code: feature.properties.ISO_3_CODE,
-                    errorMessage: err.message,
-                  }
-                )
-              );
-            }
+          try {
+            mapping.push({
+              id: feature.id,
+              centerlatitude: feature.properties.CENTER_LAT.toString(),
+              centerlongitude: feature.properties.CENTER_LON.toString(),
+              iso2code: feature.properties.ISO_2_CODE,
+              iso3code: feature.properties.ISO_3_CODE,
+              name: feature.properties.ADM0_VIZ_NAME,
+              // Reduction of the GeoJSON object into a simplified version
+              polygons: simplify(feature.geometry, {
+                tolerance: 0.1,
+                highQuality: true,
+                mutate: true,
+              }) as Polygon | MultiPolygon | Feature<Polygon | MultiPolygon>,
+            });
+          } catch (err: any) {
+            console.log(
+              this.translate.instant(
+                'components.widget.settings.map.tooltip.geographicExtent.admin0Error',
+                {
+                  iso3code: feature.properties.ISO_3_CODE,
+                  errorMessage: err.message,
+                }
+              )
+            );
           }
         }
         this.admin0s = mapping;

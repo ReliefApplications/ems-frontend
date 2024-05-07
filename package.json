@@ -110,7 +110,6 @@
     "to-json-schema": "^0.2.5",
     "tslib": "^2.3.0",
     "uuid": "^8.3.1",
-    "wellknown": "^0.5.0",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
@@ -160,7 +159,6 @@
     "@types/proj4": "^2.5.2",
     "@types/to-json-schema": "^0.2.4",
     "@types/uuid": "^9.0.1",
-    "@types/wellknown": "^0.5.8",
     "@types/ws": "^7.4.1",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
