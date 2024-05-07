@@ -55,7 +55,7 @@ const getAbilityForAppPreview = (app: Application, role: string) => {
   if (permissions.includes('can_see_email_notifications')) {
     can('read', 'EmailNotification');
   }
-  if (permissions.includes('can_manage_email_notifications')) {
+  if (permissions.includes('can_update_email_notifications')) {
     can(['update', 'delete'], 'EmailNotification');
   }
 

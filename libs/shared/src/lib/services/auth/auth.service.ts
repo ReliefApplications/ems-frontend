@@ -398,6 +398,11 @@ export class AuthService {
       );
     }
 
+    // === Email Notifications ===
+    if (globalPermissions.includes('can_manage_email_notifications')) {
+      can(['create', 'read', 'update', 'delete'], 'EmailNotification');
+    }
+
     this.ability.update(rules);
   }
 
@@ -491,10 +496,7 @@ export class AuthService {
     ) {
       can('read', 'EmailNotification');
     }
-    if (
-      appPermissions.has('can_manage_email_notifications') ||
-      this.ability.can('manage', 'Application')
-    ) {
+    if (appPermissions.has('can_update_email_notifications')) {
       can(['update', 'delete'], 'EmailNotification');
     }
 
