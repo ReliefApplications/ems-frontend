@@ -1841,6 +1841,7 @@
 						"geographicExtent": {
 							"add": "Add new geographic extent",
 							"admin0": "Use either iso2code, iso3code or country name",
+							"admin0Error": "Failed to fetch admin0s for country {{iso3code}}: {{errorMessage}}",
 							"region": "Use region name",
 							"remove": "Remove geographic extent",
 							"value": "You can input a static value, or use {{context}} or {{filter}} notation to dynamically inject a value"

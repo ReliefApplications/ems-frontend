@@ -65,6 +65,7 @@
     "@tinymce/tinymce-angular": "^7.0.0",
     "@turf/boolean-point-in-polygon": "^6.5.0",
     "@turf/centroid": "^6.5.0",
+    "@turf/turf": "^6.5.0",
     "angular-gridster2": "^15.0.4",
     "angular-oauth2-oidc": "~13.0.1",
     "angular-resizable-element": "^7.0.2",
@@ -109,6 +110,7 @@
     "to-json-schema": "^0.2.5",
     "tslib": "^2.3.0",
     "uuid": "^8.3.1",
+    "wellknown": "^0.5.0",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
@@ -158,6 +160,7 @@
     "@types/proj4": "^2.5.2",
     "@types/to-json-schema": "^0.2.4",
     "@types/uuid": "^9.0.1",
+    "@types/wellknown": "^0.5.8",
     "@types/ws": "^7.4.1",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",

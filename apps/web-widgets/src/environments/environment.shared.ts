@@ -25,4 +25,6 @@ export const sharedAzureEnvironment = {
         'Please contact <a class="underline text-primary-500 hover:text-primary-600" href="mailto:ems2@who.int">ems2@who.int</a> for more information.',
     },
   },
+  admin0PolygonsUrl:
+    'https://ems2-dev.who.int/csadmin/geo/Detailed_Boundary_ADM0_7691616017328378072.geojson',
 };

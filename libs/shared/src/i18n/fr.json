@@ -1841,6 +1841,7 @@
 						"geographicExtent": {
 							"add": "Ajouter un nouveau type d'étendue",
 							"admin0": "Utiliez le code iso2, le code iso3, ou le nom du pays",
+							"admin0Error": "Échec de la récupération des  admin0s pour le pays {{iso3code}}: {{errorMessage}}",
 							"region": "Utilisez le nom de région",
 							"remove": "Supprimer le type d'étendue",
 							"value": "Vous pouvez entrer une valeur statique, ou utiliser les notations {{context}} ou {{filter}} pour injecter la valeur"

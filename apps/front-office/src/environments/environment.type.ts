@@ -25,4 +25,5 @@ export interface Environment {
   sentry?: any;
   maxFileSize?: number;
   user?: UserConfiguration;
+  admin0PolygonsUrl: string;
 }

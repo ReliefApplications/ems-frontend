@@ -1841,6 +1841,7 @@
 						"geographicExtent": {
 							"add": "******",
 							"admin0": "******",
+							"admin0Error": "****** {{iso3code}} ****** {{errorMessage}}",
 							"region": "******",
 							"remove": "******",
 							"value": "****** {{context}} ****** {{filter}} ******"

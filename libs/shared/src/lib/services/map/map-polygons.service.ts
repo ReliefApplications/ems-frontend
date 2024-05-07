@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { RestService } from '../rest/rest.service';
 import { BehaviorSubject, first } from 'rxjs';
 import { EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
@@ -9,6 +9,9 @@ import REGIONS from './regions';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
 import { LayerDatasourceType } from '../../models/layer.model';
+import { AllGeoJSON, simplify } from '@turf/turf';
+import { parse } from 'wellknown';
+import { TranslateService } from '@ngx-translate/core';
 
 /** Available admin identifiers */
 export type AdminIdentifier =
@@ -43,16 +46,25 @@ export class MapPolygonsService {
   private admin0sReady = new BehaviorSubject<boolean>(false);
   /** Admin0 polygons status as observable */
   public admin0sReady$ = this.admin0sReady.asObservable();
+  /** Admin0 polygons endpoint url */
+  private admin0PolygonsUrl = '';
 
   /**
    * Shared map polygons service.
    * Allow to use polygons from common services, and assign them to the layer features.
    *
    * @param restService Shared rest service
+   * @param translate Angular translate service.
+   * @param environment Environment variable
    */
-  constructor(private restService: RestService) {
-    // On init, fetch the admin0 polygons from the back-end
-    // The back-end handles the caching of polygons & reduction
+  constructor(
+    private restService: RestService,
+    private translate: TranslateService,
+    @Inject('environment') environment: any
+  ) {
+    this.admin0PolygonsUrl = environment.admin0PolygonsUrl;
+
+    // On init, fetch the admin0 polygons from the endpoint
     this.getAdmin0Polygons();
   }
 
@@ -60,14 +72,44 @@ export class MapPolygonsService {
    * Retrieve admin0 polygons
    */
   public getAdmin0Polygons() {
-    this.restService
-      .get(`${this.restService.apiUrl}/gis/admin0`)
-      .subscribe((value) => {
-        if (value) {
-          this.admin0s = value;
-          this.admin0sReady.next(true);
+    this.restService.get(this.admin0PolygonsUrl).subscribe((value) => {
+      if (value) {
+        const mapping = [];
+        for (const feature of value.features) {
+          // Transform data to fit Admin0 type
+          if (feature.geometry) {
+            try {
+              mapping.push({
+                id: feature.id,
+                centerlatitude: feature.properties.CENTER_LAT.toString(),
+                centerlongitude: feature.properties.CENTER_LON.toString(),
+                iso2code: feature.properties.ISO_2_CODE,
+                iso3code: feature.properties.ISO_3_CODE,
+                name: feature.properties.ADM0_VIZ_NAME,
+                // Reduction of the GeoJSON object into a simplified version
+                polygons: simplify(parse(feature.geometry) as AllGeoJSON, {
+                  tolerance: 0.1,
+                  highQuality: true,
+                  mutate: true,
+                }) as Polygon | MultiPolygon | Feature<Polygon | MultiPolygon>,
+              });
+            } catch (err: any) {
+              console.log(
+                this.translate.instant(
+                  'components.widget.settings.map.tooltip.geographicExtent.admin0Error',
+                  {
+                    iso3code: feature.properties.ISO_3_CODE,
+                    errorMessage: err.message,
+                  }
+                )
+              );
+            }
+          }
         }
-      });
+        this.admin0s = mapping;
+        this.admin0sReady.next(true);
+      }
+    });
   }
 
   /**

@@ -27,4 +27,5 @@ export interface Environment {
   user?: UserConfiguration;
   tinymceBaseUrl: string;
   i18nUrl: string;
+  admin0PolygonsUrl: string;
 }
