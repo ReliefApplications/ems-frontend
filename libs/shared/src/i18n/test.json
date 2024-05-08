@@ -508,7 +508,8 @@
 				"group": "******",
 				"label": "******",
 				"sort": "******",
-				"unwind": "******"
+				"unwind": "******",
+				"user": "******"
 			},
 			"tooltip": {
 				"addFields": "******",
@@ -519,8 +520,10 @@
 				"label": "******",
 				"selectedFields": "******",
 				"sort": "******",
-				"unwind": "******"
-			}
+				"unwind": "******",
+				"user": "******"
+			},
+			"userProperty": "******"
 		},
 		"apiConfiguration": {
 			"create": {

@@ -23,6 +23,7 @@ import {
   IconModule,
   CheckboxModule,
 } from '@oort-front/ui';
+import { UserStageComponent } from './user-stage/user-stage.component';
 
 /**
  * Aggregation builder pipeline module.
@@ -36,6 +37,7 @@ import {
     FieldDropdownComponent,
     SortStageComponent,
     LabelStageComponent,
+    UserStageComponent,
   ],
   imports: [
     CommonModule,

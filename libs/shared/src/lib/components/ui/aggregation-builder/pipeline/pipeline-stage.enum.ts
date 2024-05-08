@@ -9,4 +9,5 @@ export enum PipelineStage {
   UNWIND = 'unwind',
   CUSTOM = 'custom',
   LABEL = 'label',
+  USER = 'user',
 }
