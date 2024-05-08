@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { isArray, isEqual, get } from 'lodash';
+import { isArray, isEqual, get, set } from 'lodash';
 import { map } from 'rxjs/operators';
 import localForage from 'localforage';
 import {
@@ -11,10 +11,14 @@ import {
 import { ApiProxyService } from '../api-proxy/api-proxy.service';
 import { GET_REFERENCE_DATA_BY_ID } from './graphql/queries';
 import { firstValueFrom } from 'rxjs';
-import { ApiConfiguration } from '../../models/api-configuration.model';
+import {
+  ApiConfiguration,
+  authType,
+} from '../../models/api-configuration.model';
 import jsonpath from 'jsonpath';
 import toJsonSchema from 'to-json-schema';
 import transformGraphQLVariables from '../../utils/reference-data/transform-graphql-variables.util';
+import { HttpHeaders } from '@angular/common/http';
 
 /** Local storage key for last request */
 const LAST_REQUEST_KEY = '_last_request';
@@ -235,10 +239,29 @@ export class ReferenceDataService {
   ) {
     let data!: any;
     if (type === referenceDataType.graphql) {
-      const url =
-        this.apiProxy.baseUrl +
-        (referenceData.apiConfiguration?.name ?? '') +
-        (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
+      let url = '';
+      const options = {};
+      if (
+        referenceData.apiConfiguration?.authType === authType.authorizationCode
+      ) {
+        // If using authorizationCode authentication, directly query the target endpoint
+        url =
+          (referenceData.apiConfiguration?.endpoint ?? '') +
+          (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
+        const accessToken = localStorage.getItem('access_token');
+        if (accessToken) {
+          // Add access token to the request headers
+          let headers = new HttpHeaders();
+          headers = headers.append('Authorization', `Bearer ${accessToken}`);
+          set(options, 'headers', headers);
+        }
+      } else {
+        // Else, use the back-end
+        url =
+          this.apiProxy.baseUrl +
+          (referenceData.apiConfiguration?.name ?? '') +
+          (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
+      }
       const query = this.processQuery(referenceData);
 
       if (query) {
@@ -246,7 +269,7 @@ export class ReferenceDataService {
       }
 
       const body = { query, variables };
-      data = (await this.apiProxy.buildPostRequest(url, body)) as any;
+      data = (await this.apiProxy.buildPostRequest(url, body, options)) as any;
     } else if (type === referenceDataType.rest) {
       const url =
         this.apiProxy.baseUrl +

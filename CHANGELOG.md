@@ -1,3 +1,57 @@
+## [2.12.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.3...v2.12.4) (2024-05-03)
+
+
+### Bug Fixes
+
+* history could be downloaded before being ready ([d6f3d91](https://github.com/ReliefApplications/ems-frontend/commit/d6f3d91d9ff5762f102cb57fabec2b2cc01d8c11))
+
+## [2.12.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.2...v2.12.3) (2024-05-03)
+
+
+### Bug Fixes
+
+* choices by graphql questions with trigger could remove the value Ab[#90661](https://github.com/ReliefApplications/ems-frontend/issues/90661) ([68131d1](https://github.com/ReliefApplications/ems-frontend/commit/68131d1f504965b61f1a02cbcbd2ddf8ed033882))
+
+## [2.12.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.1...v2.12.2) (2024-05-03)
+
+
+### Bug Fixes
+
+* heatmap layer would fail to draw if intensity is null ([#2504](https://github.com/ReliefApplications/ems-frontend/issues/2504)) ([098841a](https://github.com/ReliefApplications/ems-frontend/commit/098841a76fb5cd7e4caf6a34a3b371331a053a12))
+
+## [2.12.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.0...v2.12.1) (2024-05-03)
+
+
+### Bug Fixes
+
+* issue with search term on action buttons of dashboard [#91553](https://github.com/ReliefApplications/ems-frontend/issues/91553) ([#2498](https://github.com/ReliefApplications/ems-frontend/issues/2498)) ([88721dd](https://github.com/ReliefApplications/ems-frontend/commit/88721dd5d4c61bcca3df4a3eb0fa55926bc2a576))
+* min & max in template widgets would treat inputs as strings, and return false min / max ([30d3576](https://github.com/ReliefApplications/ems-frontend/commit/30d3576b674ff5ded3e3bef994e4ef48f7b5f3c6))
+
+# [2.12.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.11.2...v2.12.0) (2024-04-24)
+
+
+### Bug Fixes
+
+* context could be wrong in SUI, due to providers ([6708196](https://github.com/ReliefApplications/ems-frontend/commit/670819639825a6ec0d1c554123c9e6e1b1a73099))
+* context filter not taken into account while using resource & summary cards ([#2465](https://github.com/ReliefApplications/ems-frontend/issues/2465)) ([05f8b18](https://github.com/ReliefApplications/ems-frontend/commit/05f8b1857d8549987d2cddf7e86dba32c502fd24))
+* increase gridster default max col to be infinity: no more constraints ([#2469](https://github.com/ReliefApplications/ems-frontend/issues/2469)) ([11d0cf1](https://github.com/ReliefApplications/ems-frontend/commit/11d0cf12893bbb7675d6082a94046fb71a6564c2))
+* layers can now use admin0 center latitude & longitude ([#2471](https://github.com/ReliefApplications/ems-frontend/issues/2471)) ([6cf9a4b](https://github.com/ReliefApplications/ems-frontend/commit/6cf9a4ba2da5507728dea3aae1de5413d34c41a3))
+* reallow default position and remove buttons when no value ([#2474](https://github.com/ReliefApplications/ems-frontend/issues/2474)) ([50a571e](https://github.com/ReliefApplications/ems-frontend/commit/50a571e6b022fc5ad5d3542b110edc1b3746c61d))
+* rerender question with choicesByGraphQL when trigger activated ([#2473](https://github.com/ReliefApplications/ems-frontend/issues/2473)) ([9db71e5](https://github.com/ReliefApplications/ems-frontend/commit/9db71e5422970adf49b867cdf8291221771ec383))
+
+
+### Features
+
+* Add email + AAD user type to automation rules ([#2468](https://github.com/ReliefApplications/ems-frontend/issues/2468)) ([e898c3b](https://github.com/ReliefApplications/ems-frontend/commit/e898c3ba7ee8c858ab30ecc072d8c65c01520d3a)), closes [#89936](https://github.com/ReliefApplications/ems-frontend/issues/89936) [#89936](https://github.com/ReliefApplications/ems-frontend/issues/89936) [#89936](https://github.com/ReliefApplications/ems-frontend/issues/89936)
+* add tooltips for html question ([#2480](https://github.com/ReliefApplications/ems-frontend/issues/2480)) ([87a2b21](https://github.com/ReliefApplications/ems-frontend/commit/87a2b21f08d11509b61d5435f6d625653c84f172))
+* allow ignoring webmap default state ([#2472](https://github.com/ReliefApplications/ems-frontend/issues/2472)) ([6a04854](https://github.com/ReliefApplications/ems-frontend/commit/6a048544d16d2006e06b202b888d097e26942d38))
+* role based display for action buttons ([#2461](https://github.com/ReliefApplications/ems-frontend/issues/2461)) ([84abc92](https://github.com/ReliefApplications/ems-frontend/commit/84abc9223319a95fdd00fb4b77b50c00ee85105d))
+
+
+### Reverts
+
+* Revert "refactor: application scss endpoint now using text/plain (#2467)" (#2470) ([a541694](https://github.com/ReliefApplications/ems-frontend/commit/a5416947ce2bbb297cb47630c8f1d433f7dfe7dd)), closes [#2467](https://github.com/ReliefApplications/ems-frontend/issues/2467) [#2470](https://github.com/ReliefApplications/ems-frontend/issues/2470)
+
 ## [2.11.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.11.1...v2.11.2) (2024-03-25)
 
 

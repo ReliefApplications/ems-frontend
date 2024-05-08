@@ -30,12 +30,13 @@ import { Aggregation } from '../../models/aggregation.model';
 import { Layout } from '../../models/layout.model';
 import { ADD_LAYER, EDIT_LAYER, DELETE_LAYER } from './graphql/mutations';
 import { GET_LAYERS, GET_LAYER_BY_ID } from './graphql/queries';
-import { HttpParams } from '@angular/common/http';
 import { omitBy, isNil, get } from 'lodash';
 import { ContextService } from '../context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { MapPolygonsService } from './map-polygons.service';
 import { WidgetService } from '../widget/widget.service';
+import { ReferenceData } from '../../models/reference-data.model';
+import getReferenceDataAggregationFields from '../../utils/reference-data/aggregation-fields.util';
 
 /**
  * Shared map layer service
@@ -214,13 +215,56 @@ export class MapLayersService {
   }
 
   /**
+   * Get reference data aggregation fields
+   *
+   * @param referenceData Reference data
+   * @param aggregation Current aggregation
+   * @returns list of aggregation fields
+   */
+  public getReferenceDataAggregationFields(
+    referenceData: ReferenceData,
+    aggregation: Aggregation | null
+  ) {
+    const fields = getReferenceDataAggregationFields(
+      referenceData,
+      this.queryBuilder
+    );
+    const selectedFields = aggregation?.sourceFields
+      .map((x: string) => {
+        const field = fields.find((y) => x === y.name);
+        if (!field) return null;
+        if (field.type.kind !== 'SCALAR') {
+          Object.assign(field, {
+            fields: this.queryBuilder
+              .getFieldsFromType(
+                field.type.kind === 'OBJECT'
+                  ? field.type.name
+                  : field.type.ofType.name
+              )
+              .filter((y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR'),
+          });
+        }
+        return field;
+      })
+      // @TODO To be improved - Get only the JSON type fields for this case
+      .filter((x: any) => x !== null);
+    return this.aggregationBuilder
+      .fieldsAfter(selectedFields, aggregation?.pipeline)
+      .map((field) => ({
+        name: field.name,
+        label: field.name,
+        type: field.type.name,
+      }));
+  }
+
+  /**
    * Get fields from aggregation
    *
    * @param queryName query name to get the fields
-   * @param aggregation A aggregation
-   * @returns aggregation fields
+   * @param aggregation Current aggregation
+   * @returns list of aggregation fields
    */
-  public getAggregationFields(
+  public getResourceAggregationFields(
     queryName: string,
     aggregation: Aggregation | null
   ) {
@@ -408,36 +452,35 @@ export class MapLayersService {
     const at = layer.at
       ? this.contextService.atArgumentValue(layer.at)
       : undefined;
-    const params = new HttpParams({
-      fromObject: omitBy(
-        {
-          ...layer.datasource,
-          contextFilters: JSON.stringify(contextFilters),
-          graphQLVariables: JSON.stringify(
-            this.widgetService.mapGraphQLVariables(
-              layer.datasource?.referenceDataVariableMapping
-            )
-          ),
-          ...(at && {
-            at: at.toString(),
-          }),
-        },
-        isNil
-      ),
-    });
+    const body = omitBy(
+      {
+        ...layer.datasource,
+        contextFilters: JSON.stringify(contextFilters),
+        graphQLVariables: JSON.stringify(
+          this.widgetService.mapGraphQLVariables(
+            layer.datasource?.referenceDataVariableMapping
+          )
+        ),
+        ...(at && {
+          at: at.toString(),
+        }),
+      },
+      isNil
+    );
     // Method to get layer from definition
     // Query is sent to the back-end to fetch correct data
     const getLayer = () => {
       return lastValueFrom(
         this.restService
-          .get(`${this.restService.apiUrl}/gis/feature`, { params })
+          .post(`${this.restService.apiUrl}/gis/feature`, body)
           .pipe(
             map((value) => {
               // When using adminField mapping, update the feature so geometry is replaced with according polygons
               if (layer.datasource?.adminField) {
-                return this.mapPolygonsService.assignPolygons(
+                return this.mapPolygonsService.assignGeometry(
                   value,
-                  layer.datasource.adminField as any
+                  layer.datasource.adminField,
+                  layer.datasource.type
                 );
               } else {
                 // Else, directly returns the feature layer

@@ -15,9 +15,6 @@ import {
   ApplicationService,
   ContentType,
   ContextService,
-  DataTemplateService,
-  WorkflowService,
-  MapLayersService,
   AuthService,
 } from '@oort-front/shared';
 import { Subject, debounceTime, filter, skip, takeUntil } from 'rxjs';
@@ -33,13 +30,17 @@ import { NavigationEnd, NavigationStart, Router } from '@angular/router';
   templateUrl: './app-widget.component.html',
   styleUrls: ['./app-widget.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,
-  providers: [
-    ApplicationService,
-    WorkflowService,
-    ContextService,
-    DataTemplateService,
-    MapLayersService,
-  ],
+  // Comment this block as this is useless, if we only use one single instance of the widget
+  // In case we need more, we'd need to bring that back live
+  // In addition, note that the context service was causing issue with some other ones, so each service that would use it should be put there
+  // providers: [
+  //   ApplicationService,
+  //   WorkflowService,
+  //   ContextService,
+  //   DataTemplateService,
+  //   MapLayersService,
+  //   WidgetService,
+  // ],
 })
 export class AppWidgetComponent
   extends ShadowRootExtendedHostComponent
@@ -133,7 +134,7 @@ export class AppWidgetComponent
     private shadowDomService: ShadowDomService,
     private authService: AuthService
   ) {
-    console.log('DEBUG: 03/15/2023, v1');
+    console.log('DEBUG: 05-03-2024, v1');
     super(el, injector);
     this.shadowDomService.shadowRoot = el.nativeElement.shadowRoot;
 

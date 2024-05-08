@@ -606,7 +606,7 @@ export class Layer implements LayerModel {
               const intensity = (feature: any) => {
                 return Number(
                   Number.parseFloat(
-                    get(feature, `properties.${valueField}`, 0).toFixed(1)
+                    (get(feature, `properties.${valueField}`) || 0).toFixed(1)
                   )
                 );
               };
