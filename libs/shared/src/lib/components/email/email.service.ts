@@ -1006,23 +1006,30 @@ export class EmailService {
               return field.name === key;
             }).type;
 
+            // console.log('KEY');
+            // console.log(key);
+            // console.log('FIELDTYPE');
+            // console.log(fieldType);
+
             if (fieldType !== TYPE_LABEL.resources) {
               const fieldName = query.fields.find((field: any) => {
                 return field.name === key;
               });
+
               if (fieldType === 'owner' || fieldType === 'users') {
                 const options = fieldName?.options?.filter((option: any) => {
                   return Object.values(record[key]).some((array: any) =>
                     array.includes(option.value)
                   );
                 });
+
                 if (options && options.length > 0) {
                   // Map over the options to extract the text values and join them with commas
                   result[key] = options
                     .map((option: any) => option.text)
                     .join(', ');
                 } else {
-                  result[key] = '';
+                  result[key] = record[key];
                 }
               } else {
                 result[key] = record[key];
