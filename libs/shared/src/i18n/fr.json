@@ -468,6 +468,7 @@
 			"addField": "Ajouter un champ",
 			"addRule": "Ajouter une règle",
 			"addStage": "Ajouter une étape",
+			"copyFrom": "Copier les étiquettes de",
 			"dataset": {
 				"select": "Sélectionner la source de données"
 			},
@@ -505,6 +506,7 @@
 				"custom": "Personnaliser",
 				"filter": "Filtrer",
 				"group": "Grouper & Accumulateur",
+				"label": "Étiqueter",
 				"sort": "Trier",
 				"unwind": "Dissocier"
 			},
@@ -514,6 +516,7 @@
 				"filter": "Retourne un tableau contenant uniquement les éléments qui vérifient la condition.",
 				"group": "Regroupe les enregistrements en fonction des valeurs de champ et construit des accumulateurs personnalisés.",
 				"groupingRules": "Les règles de regroupement sont facultatives.",
+				"label": "Remplace les valeurs de choix pour les textes de choix (si définis) dans le champ spécifié.",
 				"selectedFields": "Seuls les champs non utilisés peuvent être supprimés.",
 				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.\nLa mise en place de des étapes de tri successives triera simultanément tous les champs.",
 				"unwind": "Déconstruit un tableau depuis les documents d'entrée et ressort un document pour chaque élément."
@@ -1056,6 +1059,9 @@
 				"fields": "Sélectionnez des champs ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite",
 				"sortingDisabled": "Le tri est désactivé quand la recherche est active.",
 				"style": "Les règles de style font ressortir les enregistrements contenant des informations importantes. Quand un enregistrement vérifie plusieurs règles, la première est utilisée."
+			},
+			"label": {
+				"field": "Champ"
 			},
 			"pagination": {
 				"first": "Limite",

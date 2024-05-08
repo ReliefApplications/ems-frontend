@@ -11,6 +11,7 @@ import { FieldDropdownComponent } from './field-dropdown/field-dropdown.componen
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FilterModule } from '../../../filter/filter.module';
 import { SortStageComponent } from './sort-stage/sort-stage.component';
+import { LabelStageComponent } from './label-stage/label-stage.component';
 import {
   TextareaModule,
   FormWrapperModule,
@@ -34,6 +35,7 @@ import {
     ExpressionsComponent,
     FieldDropdownComponent,
     SortStageComponent,
+    LabelStageComponent,
   ],
   imports: [
     CommonModule,
@@ -60,6 +62,7 @@ import {
     ExpressionsComponent,
     FieldDropdownComponent,
     SortStageComponent,
+    LabelStageComponent,
   ],
 })
 export class PipelineModule {}

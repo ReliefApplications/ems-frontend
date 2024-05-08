@@ -8,4 +8,5 @@ export enum PipelineStage {
   ADD_FIELDS = 'addFields',
   UNWIND = 'unwind',
   CUSTOM = 'custom',
+  LABEL = 'label',
 }

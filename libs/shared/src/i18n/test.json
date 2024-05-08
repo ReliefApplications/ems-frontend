@@ -468,6 +468,7 @@
 			"addField": "******",
 			"addRule": "******",
 			"addStage": "******",
+			"copyFrom": "******",
 			"dataset": {
 				"select": "******"
 			},
@@ -505,6 +506,7 @@
 				"custom": "******",
 				"filter": "******",
 				"group": "******",
+				"label": "******",
 				"sort": "******",
 				"unwind": "******"
 			},
@@ -514,6 +516,7 @@
 				"filter": "******",
 				"group": "******",
 				"groupingRules": "******",
+				"label": "******",
 				"selectedFields": "******",
 				"sort": "******",
 				"unwind": "******"
@@ -1045,6 +1048,9 @@
 				"fields": "******",
 				"sortingDisabled": "******",
 				"style": "******"
+			},
+			"label": {
+				"field": "******"
 			},
 			"pagination": {
 				"first": "******",
