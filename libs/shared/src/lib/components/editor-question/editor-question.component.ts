@@ -19,7 +19,7 @@ export class EditorQuestionComponent implements AfterViewInit {
   @ViewChild(EditorControlComponent)
   public editor!: EditorControlComponent;
   /** html content */
-  public html = new BehaviorSubject<string>('');
+  public html = new BehaviorSubject<string | undefined>(undefined);
 
   /**
    * Editor question component
