@@ -2,9 +2,10 @@ import { ComponentCollection, SvgRegistry } from 'survey-core';
 import { Question } from '../types';
 import { DomService } from '../../services/dom/dom.service';
 import { EditorQuestionComponent } from '../../components/editor-question/editor-question.component';
+import { isNil } from 'lodash';
 
 /**
- * Inits the geospatial component.
+ * Inits the editor component.
  *
  * @param domService DOM service.
  * @param componentCollectionInstance ComponentCollection
@@ -41,15 +42,17 @@ export const init = (
 
       // Use of a timeout to wait for the loading of the editor instance
       setTimeout(() => {
-        const value = question.value.length
-          ? question.value
-          : question.defaultValue;
-        // Doesn't work
-        instance.editor.value = value;
-      }, 0);
+        if (question.value) {
+          instance.editor.editor.writeValue(question.value);
+        }
+      }, 100);
 
       //Cannot set instance.editor.registerOnChange because editor not set yet
-      instance.html.subscribe((html) => (question.value = html));
+      instance.html.subscribe((html) => {
+        if (!isNil(html)) {
+          question.value = html;
+        }
+      });
     },
   };
   componentCollectionInstance.add(component);
