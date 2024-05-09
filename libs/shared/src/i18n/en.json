@@ -1238,6 +1238,7 @@
 				"grantFilterDeleteRecordsPermission": "Grant permission to delete records that satisfies filter",
 				"grantFilterReadRecordsPermission": "Grant permission to see records that satisfies filter",
 				"grantFilterUpdateRecordsPermission": "Grant permission to update records that satisfies filter",
+				"grantFilterDownloadRecordsPermission": "Grant permission to download records that satisfies filter",
 				"grantReadRecordsPermission": "Grant permission to see records",
 				"grantUpdateRecordsPermission": "Grant permission to update records",
 				"hideFeature": "Hide {{page}} from this role",
@@ -1249,9 +1250,13 @@
 				"notGrantFilterDeleteRecordsPermission": "Does not grant permission to delete records that satisfies filter",
 				"notGrantFilterReadRecordsPermission": "Does not grant permission to see records that satisfies filter",
 				"notGrantFilterUpdateRecordsPermission": "Does not grant permission to update records that satisfies filter",
+				"notGrantFilterDownloadRecordsPermission": "Does not grant permission to download records that satisfies filter",
 				"notGrantReadRecordsPermission": "Does not grant permission to see records",
 				"notGrantUpdateRecordsPermission": "Does not grant permission to update records",
-				"showFeature": "Show {{page}} to this role"
+				"showFeature": "Show {{page}} to this role",
+				"limitedDownloadRecordsPermission": "Provide limited permission to download records, based on filters",
+				"grantDownloadRecordsPermission": "Grant permission to download records",
+				"notGrantDownloadRecordsPermission": "Does not grant permission to download records"
 			},
 			"update": {
 				"permissions": "Permissions",

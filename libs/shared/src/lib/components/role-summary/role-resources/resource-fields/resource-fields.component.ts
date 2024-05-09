@@ -16,7 +16,6 @@ type ResourceField = {
   name: string;
   canSee: boolean;
   canUpdate: boolean;
-  canDownload: boolean;
 };
 
 /**
@@ -40,7 +39,7 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
   @Output() onToggle = new EventEmitter<{
     resource: Resource;
     field: ResourceField;
-    permission: 'canSee' | 'canUpdate' | 'canDownload';
+    permission: 'canSee' | 'canUpdate';
   }>();
 
   /** Filter template id */
@@ -54,7 +53,7 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
   /** Updated field */
   private updatedField: {
     index: number;
-    permission: 'canSee' | 'canUpdate' | 'canDownload';
+    permission: 'canSee' | 'canUpdate';
   } = { index: -1, permission: 'canSee' };
 
   ngOnInit() {
@@ -86,7 +85,6 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
     name: field.name,
     canSee: !!field.permissions?.canSee?.includes(this.role.id),
     canUpdate: !!field.permissions?.canUpdate?.includes(this.role.id),
-    canDownload: !!field.permissions?.canDownload?.includes(this.role.id),
   });
 
   /**
@@ -124,7 +122,7 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
   public onEditFieldAccess(
     index: number,
     field: ResourceField,
-    permission: 'canSee' | 'canUpdate' | 'canDownload'
+    permission: 'canSee' | 'canUpdate'
   ) {
     // Save field updated
     this.updatedField = { index, permission };

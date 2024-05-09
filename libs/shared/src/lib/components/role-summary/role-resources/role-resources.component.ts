@@ -392,7 +392,6 @@ export class RoleResourcesComponent
    * @param field.name the name of the field to be edited
    * @param field.canSee whether the field can be seen
    * @param field.canUpdate whether the field can be edited
-   * @param field.canDownload whether the field can be downloaded
    * @param action the permission to be edited
    */
   onEditFieldAccess(
@@ -401,9 +400,8 @@ export class RoleResourcesComponent
       name: string;
       canSee: boolean;
       canUpdate: boolean;
-      canDownload: boolean;
     },
-    action: 'canSee' | 'canUpdate' | 'canDownload'
+    action: 'canSee' | 'canUpdate'
   ): void {
     if (!this.role.id) return;
 

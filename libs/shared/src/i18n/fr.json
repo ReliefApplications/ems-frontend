@@ -1238,6 +1238,7 @@
 				"grantFilterDeleteRecordsPermission": "Permet de supprimer les enregistremetns satisfaisant le filtre",
 				"grantFilterReadRecordsPermission": "Permet de voir les enregistrements satisfaisant le filtre",
 				"grantFilterUpdateRecordsPermission": "Permet de mettre à jour les enregistrements satisfaisant le filtre",
+				"grantFilterDownloadRecordsPermission": "Permet de télécharger les enregistrements satisfaisant le filtre",
 				"grantReadRecordsPermission": "Permet de voir tous les enregistrements",
 				"grantUpdateRecordsPermission": "Permet de mettre à jour tous les enregistrements",
 				"hideFeature": "Masquer {{page}} pour ce rôle",
@@ -1249,9 +1250,13 @@
 				"notGrantFilterDeleteRecordsPermission": "Ne donne pas la permission de supprimer les enregistrements satisfaisant le filtre",
 				"notGrantFilterReadRecordsPermission": "Ne donne pas la permission de voir les enregistrements satisfaisant le filtre",
 				"notGrantFilterUpdateRecordsPermission": "Ne donne pas la permission de mettre à jour les enregistrements satisfaisant le filtre",
+				"notGrantFilterDownloadRecordsPermission": "Ne donne pas la permission de télécharger les enregistrements satisfaisant le filtre",
 				"notGrantReadRecordsPermission": "Ne donne pas la permission de voir les enregistrements",
 				"notGrantUpdateRecordsPermission": "Ne donne pas la permission de mettre à jour les enregistrements",
-				"showFeature": "Afficher {{page}} pour ce rôle"
+				"showFeature": "Afficher {{page}} pour ce rôle",
+				"limitedDownloadRecordsPermission": "Permet de télécharger les enregistrements satisfaisant les filtres",
+				"grantDownloadRecordsPermission": "Permet de télécharger les enregistrements",
+				"notGrantDownloadRecordsPermission": "Ne donne pas la permission de télécharger les enregistrements"
 			},
 			"update": {
 				"permissions": "Permissions",
