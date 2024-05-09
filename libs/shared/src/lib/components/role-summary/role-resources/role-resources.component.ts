@@ -142,6 +142,7 @@ export class RoleResourcesComponent
       resource,
       permissions: [
         Permission.SEE,
+        Permission.DOWNLOAD,
         Permission.CREATE,
         Permission.UPDATE,
         Permission.DELETE,
@@ -391,12 +392,18 @@ export class RoleResourcesComponent
    * @param field.name the name of the field to be edited
    * @param field.canSee whether the field can be seen
    * @param field.canUpdate whether the field can be edited
+   * @param field.canDownload whether the field can be downloaded
    * @param action the permission to be edited
    */
   onEditFieldAccess(
     resource: Resource,
-    field: { name: string; canSee: boolean; canUpdate: boolean },
-    action: 'canSee' | 'canUpdate'
+    field: {
+      name: string;
+      canSee: boolean;
+      canUpdate: boolean;
+      canDownload: boolean;
+    },
+    action: 'canSee' | 'canUpdate' | 'canDownload'
   ): void {
     if (!this.role.id) return;
 
@@ -506,6 +513,18 @@ export class RoleResourcesComponent
             return 'delete';
           }
         }
+      case Permission.DOWNLOAD:
+        switch (permissionLevel) {
+          case 'limited': {
+            return 'file_download_outline';
+          }
+          case 'full': {
+            return 'file_download';
+          }
+          default: {
+            return 'file_download_off';
+          }
+        }
     }
   }
 
@@ -603,6 +622,18 @@ export class RoleResourcesComponent
           }
           default: {
             return 'components.role.tooltip.notGrantDeleteRecordsPermission';
+          }
+        }
+      case Permission.DOWNLOAD:
+        switch (permissionLevel) {
+          case 'limited': {
+            return 'components.role.tooltip.limitedDownloadRecordsPermission';
+          }
+          case 'full': {
+            return 'components.role.tooltip.grantDownloadRecordsPermission';
+          }
+          default: {
+            return 'components.role.tooltip.notGrantDownloadRecordsPermission';
           }
         }
     }

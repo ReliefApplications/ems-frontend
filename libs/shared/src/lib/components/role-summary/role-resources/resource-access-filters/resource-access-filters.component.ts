@@ -32,6 +32,7 @@ const BASE_PERMISSIONS = {
   canSeeRecords: false,
   canUpdateRecords: false,
   canDeleteRecords: false,
+  canDownloadRecords: false,
 };
 
 /** Modal for the definition of access/permissions for a given resource */
@@ -195,6 +196,11 @@ export class RoleResourceFiltersComponent implements OnInit {
         canDeleteRecords: get(filter, 'permissions.canDeleteRecords', false),
         canSeeRecords: get(filter, 'permissions.canSeeRecords', false),
         canUpdateRecords: get(filter, 'permissions.canUpdateRecords', false),
+        canDownloadRecords: get(
+          filter,
+          'permissions.canDownloadRecords',
+          false
+        ),
       }),
     });
   }
@@ -260,6 +266,7 @@ export class RoleResourceFiltersComponent implements OnInit {
       access: filter.access,
       permissions: [
         Permission.SEE,
+        Permission.DOWNLOAD,
         Permission.CREATE,
         Permission.UPDATE,
         Permission.DELETE,
@@ -300,6 +307,8 @@ export class RoleResourceFiltersComponent implements OnInit {
         return hasPermission ? 'edit' : 'edit_off';
       case Permission.DELETE:
         return 'delete';
+      case Permission.DOWNLOAD:
+        return hasPermission ? 'file_download' : 'file_download_off';
     }
   }
 
@@ -333,6 +342,10 @@ export class RoleResourceFiltersComponent implements OnInit {
         return hasPermission
           ? 'components.role.tooltip.grantFilterUpdateRecordsPermission'
           : 'components.role.tooltip.notGrantFilterUpdateRecordsPermission';
+      case Permission.DOWNLOAD:
+        return hasPermission
+          ? 'components.role.tooltip.grantFilterDownloadRecordsPermission'
+          : 'components.role.tooltip.notGrantFilterDownloadRecordsPermission';
       default:
         return hasPermission
           ? 'components.role.tooltip.grantFilterDeleteRecordsPermission'

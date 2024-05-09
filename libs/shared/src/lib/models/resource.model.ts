@@ -28,6 +28,7 @@ export interface Resource {
     canSeeRecords: any;
     canUpdateRecords: any;
     canDeleteRecords: any;
+    canDownloadRecords: any;
   };
   metadata?: Metadata[];
   canCreateRecords?: boolean;

@@ -1,6 +1,7 @@
 /** Permission type for Resource */
 export enum Permission {
   SEE = 'canSeeRecords',
+  DOWNLOAD = 'canDownloadRecords',
   CREATE = 'canCreateRecords',
   UPDATE = 'canUpdateRecords',
   DELETE = 'canDeleteRecords',

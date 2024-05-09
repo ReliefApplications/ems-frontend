@@ -56,6 +56,20 @@
             </ui-button>
             <ui-button
               [isIcon]="true"
+              [icon]="element.canDownload ? 'file_download' : 'file_download_off'"
+              [variant]="element.canDownload ? 'primary' : 'grey'"
+              [disabled]="disabled"
+              [uiTooltip]="
+                (element.canDownload
+                  ? 'components.role.tooltip.allowFieldDownload'
+                  : 'components.role.tooltip.disallowFieldDownload'
+                ) | translate : { field: element.name }
+              "
+              (click)="onEditFieldAccess(index, element, 'canDownload')"
+            >
+            </ui-button>
+            <ui-button
+              [isIcon]="true"
               [icon]="element.canUpdate ? 'edit' : 'edit_off'"
               [variant]="element.canUpdate ? 'primary' : 'grey'"
               [disabled]="disabled"
