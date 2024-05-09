@@ -240,9 +240,12 @@ export class AuthService {
       } else {
         redirectUri = new URL(pathName, this.environment.frontOfficeUri);
       }
-      redirectUri.search = '';
+      // redirectUri.search = '';
       if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
-        localStorage.setItem('redirectPath', redirectUri.pathname);
+        localStorage.setItem(
+          'redirectPath',
+          redirectUri.pathname + redirectUri.search ?? ''
+        );
       }
     }
     return this.oauthService

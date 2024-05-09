@@ -131,6 +131,15 @@ export const init = (environment: any): void => {
     visibleIndex: 2,
   });
 
+  // Adds a property to the survey settings to hide the survey navigation buttons
+  serializer.addProperty('survey', {
+    name: 'hideNavigationButtons',
+    category: 'pages',
+    type: 'boolean',
+    default: false,
+    visibleIndex: 3,
+  });
+
   const yesNoChoices = [
     {
       value: true,

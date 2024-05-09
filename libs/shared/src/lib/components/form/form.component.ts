@@ -187,6 +187,7 @@ export class FormComponent
     this.formHelpersService.saveAsDraft(
       this.survey,
       this.form.id as string,
+      this.temporaryFilesStorage,
       this.lastDraftRecord,
       callback
     );

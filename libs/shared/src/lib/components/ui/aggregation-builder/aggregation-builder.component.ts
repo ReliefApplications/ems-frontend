@@ -51,10 +51,6 @@ export class AggregationBuilderComponent
   private selectedFields = new BehaviorSubject<any[]>([]);
   /** Selected fields as observable */
   public selectedFields$!: Observable<any[]>;
-  /** Meta fields */
-  private metaFields = new BehaviorSubject<any[]>([]);
-  /** Meta fields as observable */
-  public metaFields$!: Observable<any[]>;
   /** Fields available for mapping */
   private mappingFields = new BehaviorSubject<any[]>([]);
   /** Fields available for mapping as observable */
@@ -76,6 +72,7 @@ export class AggregationBuilderComponent
       enabled: false,
     },
     lineNumbers: 'off',
+    automaticLayout: true,
   };
   /** The text displayed in the aggregation result preview */
   public aggregationPreview = '';
@@ -139,7 +136,6 @@ export class AggregationBuilderComponent
 
     // Meta selected fields query
     this.selectedFields$ = this.selectedFields.asObservable();
-    this.metaFields$ = this.metaFields.asObservable();
 
     this.filterFields$ = this.filterFields.asObservable();
     this.selectedFilterFields$ = this.selectedFilterFields.asObservable();
@@ -319,7 +315,6 @@ export class AggregationBuilderComponent
     } else {
       this.selectedFields.next([]);
       this.selectedFilterFields.next([]);
-      this.metaFields.next([]);
       this.mappingFields.next([]);
     }
   }

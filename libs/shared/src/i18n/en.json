@@ -468,6 +468,7 @@
 			"addField": "Add field",
 			"addRule": "Add rule",
 			"addStage": "Add stage",
+			"copyFrom": "Copy labels from",
 			"dataset": {
 				"select": "Select the data source"
 			},
@@ -505,8 +506,10 @@
 				"custom": "Custom",
 				"filter": "Filter",
 				"group": "Group & Accumulator",
+				"label": "Label",
 				"sort": "Sort",
-				"unwind": "Unwind"
+				"unwind": "Unwind",
+				"user": "User"
 			},
 			"tooltip": {
 				"addFields": "Adds new fields to documents.",
@@ -514,10 +517,13 @@
 				"filter": "Returns an array with only those elements that match the condition.",
 				"group": "Group records based on field values and construct personalized accumulators",
 				"groupingRules": "Grouping rules are optional.",
+				"label": "Replaces the choice values for the choice texts (if defined) in the specified field.",
 				"selectedFields": "Only unused fields can be removed.",
 				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.\nEstablishing consecutive sorting stages will simultaneously sort all fields.",
-				"unwind": "Deconstructs an array field from the input documents to output a document for each element."
-			}
+				"unwind": "Deconstructs an array field from the input documents to output a document for each element.",
+				"user": "Replaces the a user ID with some information about the user. Note that the result will always be an array. Use unwind if necessary."
+			},
+			"userProperty": "User property"
 		},
 		"apiConfiguration": {
 			"create": {
@@ -1045,6 +1051,9 @@
 				"fields": "Select data points below and drag them to 'selected fields' on the right",
 				"sortingDisabled": "Sorting fields is disabled when search is active",
 				"style": "Styling rules make records with important information stand out. When a record matches more than one rule, the first rule is used."
+			},
+			"label": {
+				"field": "Field"
 			},
 			"pagination": {
 				"first": "Limit",

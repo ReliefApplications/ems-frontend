@@ -240,7 +240,7 @@ export class CoreGridComponent
     this.parseDateFilters({ logic: 'and', filters: filterCpy });
 
     if (this.search) {
-      const skippedFields = ['id', 'incrementalId'];
+      const skippedFields = ['id'];
       filter = {
         logic: 'and',
         filters: [

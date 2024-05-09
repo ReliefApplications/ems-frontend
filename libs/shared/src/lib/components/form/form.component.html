@@ -62,14 +62,14 @@
   >
     <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
       <ui-button
-        *ngIf="pages.length > 1"
+        *ngIf="pages.length > 1 && !survey?.hideNavigationButtons"
         [disabled]="survey.isFirstPage"
         variant="primary"
         (click)="survey.prevPage()"
         >{{ 'common.previous' | translate }}</ui-button
       >
       <ui-button
-        *ngIf="pages.length > 1"
+        *ngIf="pages.length > 1 && !survey?.hideNavigationButtons"
         [disabled]="survey.isLastPage"
         variant="primary"
         (click)="survey.nextPage()"

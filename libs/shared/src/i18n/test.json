@@ -468,6 +468,7 @@
 			"addField": "******",
 			"addRule": "******",
 			"addStage": "******",
+			"copyFrom": "******",
 			"dataset": {
 				"select": "******"
 			},
@@ -505,8 +506,10 @@
 				"custom": "******",
 				"filter": "******",
 				"group": "******",
+				"label": "******",
 				"sort": "******",
-				"unwind": "******"
+				"unwind": "******",
+				"user": "******"
 			},
 			"tooltip": {
 				"addFields": "******",
@@ -514,10 +517,13 @@
 				"filter": "******",
 				"group": "******",
 				"groupingRules": "******",
+				"label": "******",
 				"selectedFields": "******",
 				"sort": "******",
-				"unwind": "******"
-			}
+				"unwind": "******",
+				"user": "******"
+			},
+			"userProperty": "******"
 		},
 		"apiConfiguration": {
 			"create": {
@@ -1045,6 +1051,9 @@
 				"fields": "******",
 				"sortingDisabled": "******",
 				"style": "******"
+			},
+			"label": {
+				"field": "******"
 			},
 			"pagination": {
 				"first": "******",
