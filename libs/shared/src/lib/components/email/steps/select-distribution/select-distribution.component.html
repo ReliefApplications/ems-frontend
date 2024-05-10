@@ -11,31 +11,27 @@
       />
     </div>
     <ui-button
-      class="float-right"
-      icon="download"
-      category="secondary"
-      variant="primary"
-      [uiTooltip]="
-        'components.email.distributionList.import.download' | translate
-      "
-      (click)="downloadDistributionListTemplate()"
-    >
-      {{ 'components.email.distributionList.import.download' | translate }}
-    </ui-button>
-    <!-- Email List Template Button -->
-    <ui-button
-      class="float-right import"
-      icon="cloud_download"
-      category="secondary"
-      variant="primary"
-      [uiTooltip]="
-        'components.email.distributionList.import.upload' | translate
-      "
-      (click)="fileUpload.click()"
-    >
-      {{ 'components.email.distributionList.import.name' | translate }}
-    </ui-button>
-    <br />
+        class="float-right"
+        icon="download"
+        category="secondary"
+        variant="primary"
+        [uiTooltip]="'components.email.distributionList.import.download' | translate"
+        (click)="downloadDistributionListTemplate()"
+      >
+      {{'components.email.distributionList.import.download' | translate}}
+      </ui-button>
+      <!-- Email List Template Button -->
+      <ui-button
+        class="float-right import"
+        icon="cloud_download"
+        category="secondary"
+        variant="primary"
+        [uiTooltip]="'components.email.distributionList.import.upload' | translate"
+        (click)="fileUpload.click()"
+      >
+      {{'components.email.distributionList.import.name' | translate}}
+      </ui-button>
+      <br>
   </div>
   <div class="flex gap-4" *ngIf="!showExistingDistributionList">
     <div class="mt-4 w-1/3">

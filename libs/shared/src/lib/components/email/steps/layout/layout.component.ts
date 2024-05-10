@@ -138,12 +138,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
           'image/png'
         )
       );
-      this.emailService.allLayoutdata.headerLogo =
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.headerLogo,
-          'image.png',
-          'image/png'
-        );
+      // this.emailService.allLayoutdata.headerLogo =
+      //   this.emailService.convertBase64ToFile(
+      //     this.emailService.allLayoutdata.headerLogo,
+      //     'image.png',
+      //     'image/png'
+      //   );
     }
 
     if (this.emailService.allLayoutdata.footerLogo) {
@@ -154,12 +154,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
           'image/png'
         )
       );
-      this.emailService.allLayoutdata.footerLogo =
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.footerLogo,
-          'image.png',
-          'image/png'
-        );
+      // this.emailService.allLayoutdata.footerLogo =
+      //   this.emailService.convertBase64ToFile(
+      //     this.emailService.allLayoutdata.footerLogo,
+      //     'image.png',
+      //     'image/png'
+      //   );
     }
 
     if (this.emailService.allLayoutdata.bannerImage) {
@@ -170,12 +170,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
           'image/png'
         )
       );
-      this.emailService.allLayoutdata.bannerImage =
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.bannerImage,
-          'image.png',
-          'image/png'
-        );
+      // this.emailService.allLayoutdata.bannerImage =
+      //   this.emailService.convertBase64ToFile(
+      //     this.emailService.allLayoutdata.bannerImage,
+      //     'image.png',
+      //     'image/png'
+      //   );
     }
     this.initialiseFieldSelectDropdown();
     if (this.headerLogoInput) {
@@ -357,15 +357,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
    * Initialises the field select dropdown.
    */
   initialiseFieldSelectDropdown(): void {
+    const firstBlock = this.emailService.getAllPreviewData()[0];
     if (
-      this.firstBlockFields.length == 0 &&
-      !(
-        this.emailService.allPreviewData.length > 1 ||
-        this.emailService.allPreviewData.length === 0
-      )
+      firstBlock &&
+      firstBlock.datasetFields &&
+      firstBlock.datasetFields.length > 0
     ) {
-      this.firstBlockFields = this.emailService.fields.map((x: any) => x.name);
-      this.firstBlockFields = [...new Set(this.firstBlockFields)];
+      this.firstBlockFields = Object.values(firstBlock.datasetFields);
     }
   }
 

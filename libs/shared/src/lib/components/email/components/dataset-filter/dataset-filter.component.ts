@@ -159,10 +159,8 @@ export class DatasetFilterComponent
   ngOnInit(): void {
     this.query.controls.name.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((data: any) => {
-        this.emailService.disableSaveAndProceed.next(!data.length);
-        // this.emailService.disableSaveAsDraft.next(!data.length);
-        this.emailService.title.next(data);
+      .subscribe(() => {
+        this.emailService.title.next(this.activeTab.title);
         this.emailService.index.next(this.activeTab.index);
       });
     this.query.get('individualEmail').disable();
@@ -337,7 +335,7 @@ export class DatasetFilterComponent
     this.filterFields = [];
     fromHtml ? this.query.controls.fields.setValue([]) : '';
     this.showDatasetLimitWarning = false;
-    this.emailService.disableSaveAndProceed.next(false);
+    this.emailService.disableSaveAndProceed.next(true);
     this.emailService.disableSaveAsDraft.next(false);
     this.disabledFields = [];
     this.disabledTypes = [];
@@ -567,6 +565,7 @@ export class DatasetFilterComponent
                   this.query?.controls?.filter?.value?.filters?.forEach(
                     (fValue: any, fIndex: number) => {
                       this.setField(fValue.field, fIndex);
+                      this.emailService.disableSaveAndProceed.next(false);
                     }
                   );
                 }

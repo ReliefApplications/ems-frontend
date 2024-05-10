@@ -128,7 +128,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
     const fieldNameList = this.subjectString.match(tokenRegex);
     fieldNameList?.forEach((fName: any) => {
       const fieldName = fName.replace('{{', '').replace('}}', '');
-      const fieldValue = firstRowData[fieldName];
+      const fieldValue = firstRowData?.[fieldName];
 
       if (fieldValue !== undefined) {
         if (fieldValue instanceof Date) {
