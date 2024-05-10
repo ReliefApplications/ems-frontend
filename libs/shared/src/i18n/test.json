@@ -770,8 +770,16 @@
 			"create": {
 				"choice": {
 					"inherit": "******",
+					"kobo": "******",
 					"resource": "******",
 					"template": "******"
+				},
+				"kobo": {
+					"apiConfiguration": {
+						"placeholder": "******"
+					},
+					"label": "******",
+					"placeholder": "******"
 				},
 				"template": {
 					"from": "******",
@@ -781,6 +789,7 @@
 				},
 				"tooltip": {
 					"inherit": "******",
+					"kobo": "******",
 					"resource": "******",
 					"template": "******"
 				}

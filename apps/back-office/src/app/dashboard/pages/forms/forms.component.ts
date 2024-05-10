@@ -272,43 +272,48 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         console.log(value);
-        // const variablesData = { name: value.name };
-        // Object.assign(
-        //   variablesData,
-        //   value.resource && { resource: value.resource },
-        //   value.template && { template: value.template }
-        // );
-        // this.apollo
-        //   .mutate<AddFormMutationResponse>({
-        //     mutation: ADD_FORM,
-        //     variables: variablesData,
-        //   })
-        //   .subscribe({
-        //     next: ({ errors, data }) => {
-        //       if (errors) {
-        //         this.snackBar.openSnackBar(
-        //           this.translate.instant(
-        //             'common.notifications.objectNotCreated',
-        //             {
-        //               type: this.translate
-        //                 .instant('common.form.one')
-        //                 .toLowerCase(),
-        //               error: errors ? errors[0].message : '',
-        //             }
-        //           ),
-        //           { error: true }
-        //         );
-        //       } else {
-        //         if (data) {
-        //           const { id } = data.addForm;
-        //           this.router.navigate(['/forms/' + id + '/builder']);
-        //         }
-        //       }
-        //     },
-        //     error: (err) => {
-        //       this.snackBar.openSnackBar(err.message, { error: true });
-        //     },
-        //   });
+        const variablesData = { name: value.name };
+        Object.assign(
+          variablesData,
+          value.resource && { resource: value.resource },
+          value.template && { template: value.template },
+          value.apiConfiguration && {
+            apiConfiguration: value.apiConfiguration,
+          },
+          value.kobo && { kobo: value.kobo }
+        );
+        console.log(variablesData);
+        this.apollo
+          .mutate<AddFormMutationResponse>({
+            mutation: ADD_FORM,
+            variables: variablesData,
+          })
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.objectNotCreated',
+                    {
+                      type: this.translate
+                        .instant('common.form.one')
+                        .toLowerCase(),
+                      error: errors ? errors[0].message : '',
+                    }
+                  ),
+                  { error: true }
+                );
+              } else {
+                if (data) {
+                  const { id } = data.addForm;
+                  this.router.navigate(['/forms/' + id + '/builder']);
+                }
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
+          });
       }
     });
   }

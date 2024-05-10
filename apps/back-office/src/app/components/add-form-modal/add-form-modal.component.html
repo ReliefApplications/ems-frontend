@@ -55,14 +55,14 @@
           <ui-radio value="kobo">
             <ng-container ngProjectAs="label">
               <span class="flex items-center gap-1">
-                From KoboToolbox
+                {{ 'components.form.create.choice.kobo' | translate }}
                 <ui-icon
                   class="cursor-help"
                   [size]="18"
                   icon="info_outline"
                   variant="grey"
                   [uiTooltip]="
-                    'components.form.create.tooltip.inherit' | translate
+                    'components.form.create.tooltip.kobo' | translate
                   "
                 >
                 </ui-icon>
@@ -127,21 +127,32 @@
         </ng-container>
 
         <ng-container *ngIf="form.value.type === 'kobo'">
-          <div uiFormFieldDirective>
-            <label>From a kobo api</label>
-            <shared-resource-select
-              formControlName="resource"
+          <!-- API Configuration -->
+          <div uiFormFieldDirective class="flex-auto">
+            <label>{{ 'common.apiConfiguration.one' | translate }}</label>
+            <ui-graphql-select
+              valueField="id"
+              textField="name"
+              [query]="apiConfigurationsQuery"
+              formControlName="apiConfiguration"
+              [selectedElements]="[selectedApiConfiguration]"
+              [filterable]="true"
+              (searchChange)="onSearchChange($event)"
               [placeholder]="
-                'components.form.create.template.selectResource' | translate
+                'components.form.create.kobo.apiConfiguration.placeholder'
+                  | translate
               "
-            ></shared-resource-select>
+            >
+            </ui-graphql-select>
           </div>
           <div uiFormFieldDirective>
-            <label>Kobo form id</label>
+            <label>{{ 'components.form.create.kobo.label' | translate }}</label>
             <input
-              formControlName="template"
+              formControlName="kobo"
               type="text"
-              placeholder="Enter a kobo form id"
+              [placeholder]="
+                'components.form.create.kobo.placeholder' | translate
+              "
             />
           </div>
         </ng-container>

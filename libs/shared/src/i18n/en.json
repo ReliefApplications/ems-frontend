@@ -770,8 +770,16 @@
 			"create": {
 				"choice": {
 					"inherit": "Create from template",
+					"kobo": "Create from KoboToolbox",
 					"resource": "Create a core form",
 					"template": "Start from existing template"
+				},
+				"kobo": {
+					"apiConfiguration": {
+						"placeholder": "Select an api configuration"
+					},
+					"label": "KoboToolbox form id",
+					"placeholder": "Enter a KoboToolbox form id"
 				},
 				"template": {
 					"from": "From template",
@@ -781,6 +789,7 @@
 				},
 				"tooltip": {
 					"inherit": "Creates a child form using a template from the resource linked to the core form",
+					"kobo": "Creates a form from a KoboToolbox form, using the same template",
 					"resource": "Creates a core form that allows the creation of children forms linked to this core form. It will also create a new resource.",
 					"template": "If no template is selected, core structure will be loaded"
 				}

@@ -1,4 +1,4 @@
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { GET_RESOURCE_BY_ID } from './graphql/queries';
@@ -14,6 +14,7 @@ import {
   SelectMenuModule,
   ChipModule,
   FormWrapperModule,
+  GraphQLSelectModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 import { DialogRef } from '@angular/cdk/dialog';
@@ -22,6 +23,18 @@ import {
   ResourceQueryResponse,
   ResourceSelectComponent,
 } from '@oort-front/shared';
+import {
+  ApiConfiguration,
+  ApiConfigurationsQueryResponse,
+  ApiConfigurationQueryResponse,
+} from '@oort-front/shared';
+import {
+  GET_API_CONFIGURATION,
+  GET_API_CONFIGURATIONS_NAMES,
+} from './graphql/queries';
+
+/** Default pagination parameter. */
+const ITEMS_PER_PAGE = 10;
 
 /**
  * Add form component (modal)
@@ -44,6 +57,7 @@ import {
     FormWrapperModule,
     ChipModule,
     ResourceSelectComponent,
+    GraphQLSelectModule,
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',
@@ -57,9 +71,15 @@ export class AddFormModalComponent implements OnInit {
     resource: [null],
     inheritsTemplate: this.fb.nonNullable.control(false),
     template: null,
+    apiConfiguration: [null],
+    kobo: [''],
   });
   /** Available templates */
   public templates: Form[] = [];
+  /** Selected API configuration */
+  public selectedApiConfiguration?: ApiConfiguration;
+  /** Api configurations query */
+  public apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
 
   /**
    * Selected template
@@ -98,7 +118,8 @@ export class AddFormModalComponent implements OnInit {
       } else if (value == 'template') {
         this.form.get('resource')?.setValidators([Validators.required]);
       } else {
-        console.log("KOBO!");
+        this.loadApiConfigurations();
+        this.form.get('kobo')?.setValidators([Validators.required]);
       }
       this.form.get('resource')?.updateValueAndValidity();
     });
@@ -148,5 +169,58 @@ export class AddFormModalComponent implements OnInit {
       .subscribe(({ data }) => {
         this.templates = data.resource.forms || [];
       });
+  }
+
+  /**
+   * Load all Api Configurations.
+   *
+   */
+  loadApiConfigurations(): void {
+    this.form.get('apiConfiguration')?.setValidators(Validators.required);
+    if (this.form.value.apiConfiguration) {
+      this.apollo
+        .query<ApiConfigurationQueryResponse>({
+          query: GET_API_CONFIGURATION,
+          variables: {
+            id: this.form.value.apiConfiguration,
+          },
+        })
+        .subscribe(({ data }) => {
+          if (data.apiConfiguration) {
+            this.selectedApiConfiguration = data.apiConfiguration;
+          }
+        });
+    }
+
+    this.apiConfigurationsQuery =
+      this.apollo.watchQuery<ApiConfigurationsQueryResponse>({
+        query: GET_API_CONFIGURATIONS_NAMES,
+        variables: {
+          first: ITEMS_PER_PAGE,
+        },
+      });
+    this.form?.get('apiConfiguration')?.updateValueAndValidity();
+  }
+
+  /**
+   * Update query based on text search.
+   *
+   * @param search Search text from the graphql select
+   */
+  onSearchChange(search: string): void {
+    const variables = this.apiConfigurationsQuery.variables;
+    this.apiConfigurationsQuery.refetch({
+      ...variables,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
+      },
+    });
   }
 }
