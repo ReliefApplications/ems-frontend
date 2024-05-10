@@ -213,6 +213,8 @@ export class GridComponent
   public showColumnChooser = false;
   /** Search control */
   public search = new UntypedFormControl('');
+  /** Indicates if role can download resource records */
+  public canDownload = true;
   /** Row actions for the component */
   private readonly rowActions = ['update', 'delete', 'history', 'convert'];
   /** Snackbar reference */
@@ -389,7 +391,7 @@ export class GridComponent
     }
   }
 
-  ngAfterViewInit(): void {
+  async ngAfterViewInit(): Promise<void> {
     this.setSelectedItems();
     // Wait for columns to be reordered before updating the layout
     this.grid?.columnReorder.pipe(takeUntil(this.destroy$)).subscribe(() => {
@@ -404,6 +406,13 @@ export class GridComponent
     new ResizeObservable(this.gridRef.nativeElement)
       .pipe(debounceTime(100), takeUntil(this.destroy$))
       .subscribe(() => this.setColumnsWidth());
+    // If using resource, check if user has a role with permission to download resource records
+    if (this.widget.settings.resource || this.widget.settings.card?.resource) {
+      this.canDownload =
+        await this.dashboardService.getResourceDownloadPermission(
+          this.widget.settings.resource ?? this.widget.settings.card?.resource
+        );
+    }
   }
 
   override ngOnDestroy(): void {

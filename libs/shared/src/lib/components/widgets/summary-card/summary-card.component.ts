@@ -149,6 +149,8 @@ export class SummaryCardComponent
   private scrollEventBindTimeout!: NodeJS.Timeout;
   /** Subject to emit signals for cancelling previous data queries */
   private cancelRefresh$ = new Subject<void>();
+  /** Indicates if role can download resource records */
+  private canDownload = true;
 
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
@@ -214,7 +216,9 @@ export class SummaryCardComponent
 
   /** @returns is widget exportable ( only cards mode ) */
   get exportable() {
-    return get(this.settings, 'widgetDisplay.exportable', true);
+    return (
+      get(this.settings, 'widgetDisplay.exportable', true) && this.canDownload
+    );
   }
 
   /** @returns default page size, for initialization */
@@ -470,6 +474,11 @@ export class SummaryCardComponent
       } else if (this.useLayout) {
         this.createDynamicQueryFromLayout(card);
       }
+      // Check if user has a role with permission to download resource records
+      this.canDownload =
+        await this.dashboardService.getResourceDownloadPermission(
+          card.resource
+        );
     } else if (this.useReferenceData) {
       // Using reference data
       this.refData = await this.referenceDataService.loadReferenceData(

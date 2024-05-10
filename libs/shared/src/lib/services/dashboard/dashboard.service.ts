@@ -15,6 +15,9 @@ import { Apollo } from 'apollo-angular';
 import { EDIT_DASHBOARD, UPDATE_PAGE_CONTEXT } from './graphql/mutations';
 import get from 'lodash/get';
 import { GraphQLError } from 'graphql';
+import { AuthService } from '../auth/auth.service';
+import { GET_RESOURCE_DOWNLOAD_PERMISSION } from './graphql/queries';
+import { ResourceQueryResponse } from '../../models/resource.model';
 
 /**
  * Shared dashboard service. Handles dashboard events.
@@ -44,12 +47,14 @@ export class DashboardService {
    * @param apollo Apollo client
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param authService Shared authentication service
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private authService: AuthService
   ) {
     this.availableWidgets = WIDGET_TYPES.filter((widget) =>
       get(environment, 'availableWidgets', []).includes(widget.id)
@@ -202,5 +207,39 @@ export class DashboardService {
           if (callback) callback();
         }
       });
+  }
+
+  /**
+   * Check if user has a role with permission to download resource records
+   *
+   * @param resourceId current resource id
+   * @returns if has download permission
+   */
+  async getResourceDownloadPermission(resourceId: string) {
+    const user = this.authService.userValue;
+    const canSeeResources = user?.permissions?.find(
+      (permission) =>
+        permission?.type === 'can_see_resources' ||
+        permission?.type === 'can_manage_resources'
+    );
+    if (canSeeResources) {
+      // Admins that have a read access on resource records automatically have the permission to download as well
+      return true;
+    }
+    const { data } = await firstValueFrom(
+      this.apollo.query<ResourceQueryResponse>({
+        query: GET_RESOURCE_DOWNLOAD_PERMISSION,
+        variables: {
+          id: resourceId,
+        },
+      })
+    );
+    if (data?.resource) {
+      return data?.resource.permissions?.canDownloadRecords.some(
+        (permission: any) =>
+          user?.roles?.find((role: any) => role.id === permission.role)
+      );
+    }
+    return false;
   }
 }

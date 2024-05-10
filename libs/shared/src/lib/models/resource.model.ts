@@ -30,6 +30,13 @@ export interface Resource {
     canDeleteRecords: any;
     canDownloadRecords: any;
   };
+  permissions?: {
+    canCreateRecords: any;
+    canSeeRecords: any;
+    canUpdateRecords: any;
+    canDeleteRecords: any;
+    canDownloadRecords: any;
+  };
   metadata?: Metadata[];
   canCreateRecords?: boolean;
 }
