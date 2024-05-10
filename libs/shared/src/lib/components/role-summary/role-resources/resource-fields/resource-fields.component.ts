@@ -51,10 +51,8 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
   public displayedColumns: string[] = ['name', 'actions'];
 
   /** Updated field */
-  private updatedField: {
-    index: number;
-    permission: 'canSee' | 'canUpdate';
-  } = { index: -1, permission: 'canSee' };
+  private updatedField: { index: number; permission: 'canSee' | 'canUpdate' } =
+    { index: -1, permission: 'canSee' };
 
   ngOnInit() {
     this.fields = sortBy(this.resource.fields.map(this.hasFieldAccess), 'name');
