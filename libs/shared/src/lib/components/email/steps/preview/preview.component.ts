@@ -123,7 +123,8 @@ export class PreviewComponent implements OnInit, OnDestroy {
    * Replaces Subject Tokens with data from the first row of data.
    */
   replaceSubjectTokens() {
-    const tokenRegex = /{{([^}]+)}}/g;
+    const tokenRegex = /{{([^}]*)}}/;
+    let match;
     const firstRowData = this.emailService.allPreviewData[0]?.dataList[0];
     const fieldNameList = this.subjectString.match(tokenRegex);
     fieldNameList?.forEach((fName: any) => {
@@ -147,7 +148,10 @@ export class PreviewComponent implements OnInit, OnDestroy {
           );
         } else if (typeof fieldValue === 'string') {
           const date = new Date(fieldValue);
-          if (!isNaN(date.getTime())) {
+          if (
+            !isNaN(date.getTime()) &&
+            date.toISOString().slice(0, 10) === fieldValue
+          ) {
             this.subjectString = this.subjectString.replace(
               fName,
               date.toLocaleString('en-US', {
