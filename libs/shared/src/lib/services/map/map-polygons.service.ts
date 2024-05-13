@@ -92,7 +92,7 @@ export class MapPolygonsService {
           ? admin0.polygons
           : {
               type: 'Point',
-              coordinates: [admin0.centerlongitude, admin0.centerlatitude],
+              coordinates: [+admin0.centerlongitude, +admin0.centerlatitude],
             }
       );
     }

@@ -91,7 +91,8 @@
           "esri-leaflet-heatmap",
           "esri-leaflet-renderers",
           "jsonpath",
-          "to-json-schema"
+          "to-json-schema",
+          "email-validator"
         ]
       },
       "configurations": {
