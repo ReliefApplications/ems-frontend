@@ -56,4 +56,6 @@ export const environment: Environment = {
   user: {
     attributes: ['country', 'region', 'location'],
   },
+  admin0Url:
+    'https://ems2-dev.who.int/csadmin/geo/Detailed_Boundary_ADM0_7691616017328378072.geojson',
 };
