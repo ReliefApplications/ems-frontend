@@ -45,7 +45,8 @@
           "leaflet",
           "leaflet.markercluster",
           "jsonpath",
-          "to-json-schema"
+          "to-json-schema",
+          "email-validator"
         ]
       },
       "configurations": {
