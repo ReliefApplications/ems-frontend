@@ -14,12 +14,10 @@ import {
   ApplicationService,
   UnsubscribeComponent,
   ConfirmService,
-  RestService,
   BlobType,
   DownloadService,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs/operators';
-import { Apollo } from 'apollo-angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   ButtonModule,
@@ -31,6 +29,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
 import { ResizeEvent } from 'angular-resizable-element';
 import { ResizableModule } from 'angular-resizable-element';
+import { compileString } from 'sass';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -88,20 +87,16 @@ export class CustomStyleComponent
    *
    * @param applicationService Shared application service
    * @param snackBar Shared snackbar service
-   * @param apollo Apollo service
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
-   * @param restService Shared rest service
    * @param document document
    * @param downloadService Shared download service
    */
   constructor(
     private applicationService: ApplicationService,
     private snackBar: SnackbarService,
-    private apollo: Apollo,
     private translate: TranslateService,
     private confirmService: ConfirmService,
-    private restService: RestService,
     @Inject(DOCUMENT) private document: Document,
     private downloadService: DownloadService
   ) {
@@ -115,15 +110,11 @@ export class CustomStyleComponent
       )
       .subscribe((value: any) => {
         const scss = value as string;
-        this.restService
-          .post('style/scss-to-css', { scss }, { responseType: 'text' })
-          .subscribe({
-            next: (css) => {
-              if (this.applicationService.customStyle) {
-                this.applicationService.customStyle.innerText = css;
-              }
-            },
-          });
+        // Compile to css ( we store style as scss )
+        const css = compileString(scss).css;
+        if (this.applicationService.customStyle) {
+          this.applicationService.customStyle.innerText = css;
+        }
         this.applicationService.customStyleEdited = true;
         this.rawCustomStyle = value;
       });

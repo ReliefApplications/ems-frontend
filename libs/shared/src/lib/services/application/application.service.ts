@@ -115,6 +115,7 @@ import { RestService } from '../rest/rest.service';
 import { DownloadService } from '../download/download.service';
 import { DOCUMENT } from '@angular/common';
 import { GraphQLError } from 'graphql';
+import { compileString } from 'sass';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -1961,33 +1962,25 @@ export class ApplicationService {
           const styleFromFile = await res.text();
           const scss = styleFromFile as string;
           this.customStyle = this.document.createElement('style');
-          await firstValueFrom(
-            this.restService.post(
-              'style/scss-to-css',
-              { scss },
-              { responseType: 'text' }
-            )
-          )
-            .then((css) => {
-              if (this.customStyle) {
-                this.customStyle.innerText = css;
-                // Add stylesheet to shadow root instead of document head
-                if (this.shadowDomService.isShadowRoot) {
-                  this.shadowDomService.currentHost.appendChild(
-                    this.customStyle
-                  );
-                } else {
-                  this.document
-                    .getElementsByTagName('head')[0]
-                    .appendChild(this.customStyle);
-                }
+          try {
+            // Compile to css ( we store style as scss )
+            const css = compileString(scss).css;
+            if (this.customStyle) {
+              this.customStyle.innerText = css;
+              // Add stylesheet to shadow root instead of document head
+              if (this.shadowDomService.isShadowRoot) {
+                this.shadowDomService.currentHost.appendChild(this.customStyle);
+              } else {
+                this.document
+                  .getElementsByTagName('head')[0]
+                  .appendChild(this.customStyle);
               }
-            })
-            .catch(() => {
-              if (this.customStyle) {
-                this.customStyle.innerText = styleFromFile;
-              }
-            });
+            }
+          } catch {
+            if (this.customStyle) {
+              this.customStyle.innerText = styleFromFile;
+            }
+          }
 
           this.rawCustomStyle = styleFromFile;
         }
