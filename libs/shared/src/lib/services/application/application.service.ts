@@ -1949,11 +1949,19 @@ export class ApplicationService {
    * @returns custom styling loading as promise
    */
   getCustomStyle(application: Application): Promise<void> {
-    const path = `style/application/${application?.id}`;
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
     });
+    let path = '';
+    if (application.publicCssFilename) {
+      // Query from CDN
+      path = application.publicCssFilename;
+    } else {
+      // Query from back-end
+      path = `style/application/${application?.id}`;
+    }
+
     return firstValueFrom(
       this.restService.get(path, { responseType: 'blob', headers })
     )

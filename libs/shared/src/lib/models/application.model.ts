@@ -38,6 +38,7 @@ export interface Application {
   templates?: Template[];
   distributionLists?: DistributionList[];
   customNotifications?: Connection<CustomNotification>;
+  publicCssFilename?: string;
 }
 
 /** Model for application query response object */
