@@ -55,6 +55,8 @@ export class GraphQLSelectComponent
   @Input() textField = '';
   /** Input decorator for path */
   @Input() path = '';
+  /** Whether you can select multiple items or not */
+  @Input() multiselect = false;
   /** Whether it is a survey question or not */
   @Input() isSurveyQuestion = false;
   /** Add type to selectedElements */
@@ -146,11 +148,11 @@ export class GraphQLSelectComponent
   public touched = false;
 
   /** Destroy subject */
-  private destroy$ = new Subject<void>();
+  public destroy$ = new Subject<void>();
   /** Query name */
-  private queryName!: string;
+  protected queryName!: string;
   /** Query change subject */
-  private queryChange$ = new Subject<void>();
+  protected queryChange$ = new Subject<void>();
   /** Query elements */
   private queryElements: any[] = [];
   /** Cached elements */
@@ -328,7 +330,7 @@ export class GraphQLSelectComponent
       });
     // this way we can wait for 0.5s before sending an update
     this.searchControl.valueChanges
-      .pipe(debounceTime(500), distinctUntilChanged())
+      .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((value) => {
         this.cachedElements = [];
         this.searchChange.emit(value);
@@ -522,7 +524,7 @@ export class GraphQLSelectComponent
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(data: any, loading: boolean) {
+  protected updateValues(data: any, loading: boolean) {
     const path = this.path ? `${this.queryName}.${this.path}` : this.queryName;
     const elements: any[] = get(data, path).edges
       ? get(data, path).edges.map((x: any) => x.node)

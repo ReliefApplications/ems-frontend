@@ -3,12 +3,14 @@ import { Apollo } from 'apollo-angular';
 import {
   catchError,
   filter,
+  first,
   forkJoin,
   lastValueFrom,
   map,
   mergeMap,
   Observable,
   of,
+  switchMap,
 } from 'rxjs';
 import { LayerFormData } from '../../components/ui/map/interfaces/layer-settings.type';
 import { Layer, EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
@@ -28,10 +30,13 @@ import { Aggregation } from '../../models/aggregation.model';
 import { Layout } from '../../models/layout.model';
 import { ADD_LAYER, EDIT_LAYER, DELETE_LAYER } from './graphql/mutations';
 import { GET_LAYERS, GET_LAYER_BY_ID } from './graphql/queries';
-import { HttpParams } from '@angular/common/http';
 import { omitBy, isNil, get } from 'lodash';
 import { ContextService } from '../context/context.service';
 import { DOCUMENT } from '@angular/common';
+import { MapPolygonsService } from './map-polygons.service';
+import { WidgetService } from '../widget/widget.service';
+import { ReferenceData } from '../../models/reference-data.model';
+import getReferenceDataAggregationFields from '../../utils/reference-data/aggregation-fields.util';
 
 /**
  * Shared map layer service
@@ -41,13 +46,15 @@ import { DOCUMENT } from '@angular/common';
 })
 export class MapLayersService {
   /**
-   * Class constructor
+   * Shared map layer service
    *
    * @param apollo Apollo client instance
    * @param restService RestService
    * @param queryBuilder Query builder service
    * @param aggregationBuilder Aggregation builder service
    * @param contextService Application context service
+   * @param mapPolygonsService Shared map polygons service
+   * @param widgetService Shared widget service
    * @param document document
    */
   constructor(
@@ -56,6 +63,8 @@ export class MapLayersService {
     private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService,
     private contextService: ContextService,
+    private mapPolygonsService: MapPolygonsService,
+    private widgetService: WidgetService,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
@@ -163,14 +172,25 @@ export class MapLayersService {
   /**
    * Get the layers
    *
+   * @param ids id array
    * @returns Observable of layer
    */
-  public getLayers(): Observable<LayerModel[]> {
+  public getLayers(ids: string[]): Observable<LayerModel[]> {
     return this.apollo
       .query<LayersQueryResponse>({
         query: GET_LAYERS,
         variables: {
           sortField: 'name',
+          filter: {
+            logic: 'and',
+            filters: [
+              {
+                field: 'ids',
+                operator: 'eq',
+                value: ids,
+              },
+            ],
+          },
         },
       })
       .pipe(
@@ -195,13 +215,56 @@ export class MapLayersService {
   }
 
   /**
+   * Get reference data aggregation fields
+   *
+   * @param referenceData Reference data
+   * @param aggregation Current aggregation
+   * @returns list of aggregation fields
+   */
+  public getReferenceDataAggregationFields(
+    referenceData: ReferenceData,
+    aggregation: Aggregation | null
+  ) {
+    const fields = getReferenceDataAggregationFields(
+      referenceData,
+      this.queryBuilder
+    );
+    const selectedFields = aggregation?.sourceFields
+      .map((x: string) => {
+        const field = fields.find((y) => x === y.name);
+        if (!field) return null;
+        if (field.type.kind !== 'SCALAR') {
+          Object.assign(field, {
+            fields: this.queryBuilder
+              .getFieldsFromType(
+                field.type.kind === 'OBJECT'
+                  ? field.type.name
+                  : field.type.ofType.name
+              )
+              .filter((y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR'),
+          });
+        }
+        return field;
+      })
+      // @TODO To be improved - Get only the JSON type fields for this case
+      .filter((x: any) => x !== null);
+    return this.aggregationBuilder
+      .fieldsAfter(selectedFields, aggregation?.pipeline)
+      .map((field) => ({
+        name: field.name,
+        label: field.name,
+        type: field.type.name,
+      }));
+  }
+
+  /**
    * Get fields from aggregation
    *
    * @param queryName query name to get the fields
-   * @param aggregation A aggregation
-   * @returns aggregation fields
+   * @param aggregation Current aggregation
+   * @returns list of aggregation fields
    */
-  public getAggregationFields(
+  public getResourceAggregationFields(
     queryName: string,
     aggregation: Aggregation | null
   ) {
@@ -255,8 +318,6 @@ export class MapLayersService {
           )
       );
   }
-
-  // ================= LAYER CREATION ==================== //
 
   /**
    * Format given settings for Layer class
@@ -391,23 +452,57 @@ export class MapLayersService {
     const at = layer.at
       ? this.contextService.atArgumentValue(layer.at)
       : undefined;
-    const params = new HttpParams({
-      fromObject: omitBy(
-        {
-          ...layer.datasource,
-          contextFilters: JSON.stringify(contextFilters),
-          ...(at && {
-            at: at.toString(),
-          }),
-        },
-        isNil
-      ),
-    });
-    return lastValueFrom(
-      this.restService
-        .get(`${this.restService.apiUrl}/gis/feature`, { params })
-        .pipe(catchError(() => of(EMPTY_FEATURE_COLLECTION)))
+    const body = omitBy(
+      {
+        ...layer.datasource,
+        contextFilters: JSON.stringify(contextFilters),
+        graphQLVariables: JSON.stringify(
+          this.widgetService.mapGraphQLVariables(
+            layer.datasource?.referenceDataVariableMapping
+          )
+        ),
+        ...(at && {
+          at: at.toString(),
+        }),
+      },
+      isNil
     );
+    // Method to get layer from definition
+    // Query is sent to the back-end to fetch correct data
+    const getLayer = () => {
+      return lastValueFrom(
+        this.restService
+          .post(`${this.restService.apiUrl}/gis/feature`, body)
+          .pipe(
+            map((value) => {
+              // When using adminField mapping, update the feature so geometry is replaced with according polygons
+              if (layer.datasource?.adminField) {
+                return this.mapPolygonsService.assignGeometry(
+                  value,
+                  layer.datasource.adminField,
+                  layer.datasource.type
+                );
+              } else {
+                // Else, directly returns the feature layer
+                return value;
+              }
+            }),
+            // On error, returns a default geojson
+            catchError(() => of(EMPTY_FEATURE_COLLECTION))
+          )
+      );
+    };
+    // When using adminField, first make sure the polygons are fetched
+    if (layer.datasource?.adminField) {
+      return lastValueFrom(
+        this.mapPolygonsService.admin0sReady$.pipe(
+          first((v) => v),
+          switchMap(() => getLayer())
+        )
+      );
+    } else {
+      return getLayer();
+    }
   }
 
   /**

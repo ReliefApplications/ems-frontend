@@ -38,104 +38,228 @@
           <shared-webmap-select
             formControlName="arcGisWebMap"
           ></shared-webmap-select>
+          <ng-container
+            formGroupName="initialState"
+            *ngIf="form.controls.arcGisWebMap.value"
+          >
+            <ui-toggle formControlName="useWebMapInitialState">
+              <ng-container ngProjectAs="label">
+                {{
+                  'components.widget.settings.map.properties.useWebMapInitialState'
+                    | translate
+                }}
+              </ng-container>
+            </ui-toggle>
+          </ng-container>
           <ui-divider></ui-divider>
           <!-- Default view -->
-          <div class="w-full" formGroupName="initialState">
-            <div class="flex flex-col flex-1" formGroupName="viewpoint">
-              <!-- Default zoom -->
-              <label class="flex gap-1 items-center">
-                {{
-                  'components.widget.settings.map.properties.zoom' | translate
-                }}
-                <ui-icon
-                  icon="info_outline"
-                  class="cursor-pointer"
-                  [uiTooltip]="
+          <ng-container
+            *ngIf="
+              !form.controls.arcGisWebMap.value ||
+              !form.controls.initialState.value.useWebMapInitialState
+            "
+          >
+            <div class="w-full" formGroupName="initialState">
+              <div class="flex flex-col flex-1" formGroupName="viewpoint">
+                <!-- Default zoom -->
+                <label class="flex gap-1 items-center">
+                  {{
                     'components.widget.settings.map.properties.zoom' | translate
-                  "
-                  [size]="18"
-                  variant="grey"
-                ></ui-icon>
-              </label>
-              <ui-slider
-                formControlName="zoom"
-                [minValue]="2"
-                [maxValue]="18"
-              ></ui-slider>
-              <div formGroupName="center" class="flex flex-wrap gap-2 mt-2">
-                <!-- Default latitude -->
-                <div
-                  [uiErrorMessage]="
-                    'components.widget.settings.map.errors.latitude' | translate
-                  "
-                  [uiErrorMessageIf]="
-                    form.get('initialState.viewpoint.center.latitude')!.errors
-                  "
-                  uiFormFieldDirective
-                  class="flex-1"
-                >
-                  <label>
-                    {{
-                      'components.widget.settings.map.properties.latitude'
-                        | translate
-                    }}
-                  </label>
-                  <input type="number" formControlName="latitude" />
+                  }}
                   <ui-icon
-                    uiSuffix
-                    icon="info"
+                    icon="info_outline"
                     class="cursor-pointer"
-                    variant="grey"
                     [uiTooltip]="
-                      'components.widget.settings.map.tooltip.default.latitude'
+                      'components.widget.settings.map.tooltip.default.zoom'
                         | translate
                     "
-                  ></ui-icon>
-                </div>
-                <!-- Default longitude -->
-                <div
-                  [uiErrorMessage]="
-                    'components.widget.settings.map.errors.longitude'
-                      | translate
-                  "
-                  [uiErrorMessageIf]="
-                    form.get('initialState.viewpoint.center.longitude')!.errors
-                  "
-                  uiFormFieldDirective
-                  class="flex-1"
-                >
-                  <label>
-                    {{
-                      'components.widget.settings.map.properties.longitude'
-                        | translate
-                    }}
-                  </label>
-                  <input type="number" formControlName="longitude" />
-                  <ui-icon
-                    uiSuffix
-                    icon="info"
-                    class="cursor-pointer"
+                    [size]="18"
                     variant="grey"
-                    [uiTooltip]="
-                      'components.widget.settings.map.tooltip.default.longitude'
+                  ></ui-icon>
+                </label>
+                <ui-slider
+                  formControlName="zoom"
+                  [minValue]="2"
+                  [maxValue]="18"
+                ></ui-slider>
+                <div formGroupName="center" class="flex flex-wrap gap-2 mt-2">
+                  <!-- Default latitude -->
+                  <div
+                    [uiErrorMessage]="
+                      'components.widget.settings.map.errors.latitude'
                         | translate
                     "
-                  ></ui-icon>
+                    [uiErrorMessageIf]="
+                      form.get('initialState.viewpoint.center.latitude')!.errors
+                    "
+                    uiFormFieldDirective
+                    class="flex-1"
+                  >
+                    <label>
+                      {{
+                        'components.widget.settings.map.properties.latitude'
+                          | translate
+                      }}
+                    </label>
+                    <input type="number" formControlName="latitude" />
+                    <ui-icon
+                      uiSuffix
+                      icon="info_outline"
+                      class="cursor-pointer"
+                      [size]="18"
+                      variant="grey"
+                      [uiTooltip]="
+                        'components.widget.settings.map.tooltip.default.latitude'
+                          | translate
+                      "
+                    ></ui-icon>
+                  </div>
+                  <!-- Default longitude -->
+                  <div
+                    [uiErrorMessage]="
+                      'components.widget.settings.map.errors.longitude'
+                        | translate
+                    "
+                    [uiErrorMessageIf]="
+                      form.get('initialState.viewpoint.center.longitude')!
+                        .errors
+                    "
+                    uiFormFieldDirective
+                    class="flex-1"
+                  >
+                    <label>
+                      {{
+                        'components.widget.settings.map.properties.longitude'
+                          | translate
+                      }}
+                    </label>
+                    <input type="number" formControlName="longitude" />
+                    <ui-icon
+                      uiSuffix
+                      icon="info_outline"
+                      class="cursor-pointer"
+                      [size]="18"
+                      variant="grey"
+                      [uiTooltip]="
+                        'components.widget.settings.map.tooltip.default.longitude'
+                          | translate
+                      "
+                    ></ui-icon>
+                  </div>
                 </div>
               </div>
             </div>
+            <!-- Use map to set properties -->
+            <ui-button
+              class="self-end flex-1"
+              (click)="onSetByMap()"
+              category="secondary"
+              variant="primary"
+            >
+              {{
+                'components.widget.settings.map.properties.setByMap' | translate
+              }}
+            </ui-button>
+          </ng-container>
+          <div class="flex flex-col gap-2 mt-2">
+            <div class="flex justify-between">
+              <h3>
+                {{
+                  'components.widget.settings.map.properties.geographicExtent'
+                    | translate
+                }}
+              </h3>
+              <ui-button
+                [uiTooltip]="
+                  'components.widget.settings.map.tooltip.geographicExtent.add'
+                    | translate
+                "
+                [isIcon]="true"
+                icon="add"
+                (click)="onAddExtent()"
+              ></ui-button>
+            </div>
+
+            <ui-alert>{{
+              'components.widget.settings.map.help.geographicExtent' | translate
+            }}</ui-alert>
+            <ng-container
+              *ngFor="let element of geographicExtents.controls; index as i"
+              [formGroup]="$any(element)"
+            >
+              <div class="flex flex-wrap gap-2 items-center">
+                <!-- Fit & zoom on country polygon -->
+                <div uiFormFieldDirective class="flex-1">
+                  <label>{{
+                    'components.widget.settings.map.properties.geographicExtentValue'
+                      | translate
+                  }}</label>
+                  <input formControlName="value" type="string" />
+                  <ui-icon
+                    uiSuffix
+                    icon="info_outline"
+                    class="cursor-pointer"
+                    [uiTooltip]="
+                      'components.widget.settings.map.tooltip.geographicExtent.value'
+                        | translate
+                    "
+                    [size]="18"
+                    variant="grey"
+                  ></ui-icon>
+                </div>
+                <!-- Geographic extent field ("admin0" (by default) and region) -->
+                <div uiFormFieldDirective class="flex-1">
+                  <label>{{
+                    'components.widget.settings.map.properties.geographicExtent'
+                      | translate
+                  }}</label>
+                  <ui-select-menu formControlName="extent" [disabled]="true">
+                    <ui-select-option
+                      *ngFor="let extent of extents"
+                      [value]="extent"
+                    >
+                      {{ extent }}
+                    </ui-select-option>
+                  </ui-select-menu>
+                  <ui-icon
+                    *ngIf="element.value.extent === 'admin0'"
+                    uiSuffix
+                    icon="info_outline"
+                    class="cursor-pointer"
+                    [uiTooltip]="
+                      'components.widget.settings.map.tooltip.geographicExtent.admin0'
+                        | translate
+                    "
+                    [size]="18"
+                    variant="grey"
+                  ></ui-icon>
+                  <ui-icon
+                    *ngIf="element.value.extent === 'region'"
+                    uiSuffix
+                    icon="info_outline"
+                    class="cursor-pointer"
+                    [uiTooltip]="
+                      'components.widget.settings.map.tooltip.geographicExtent.region'
+                        | translate
+                    "
+                    [size]="18"
+                    variant="grey"
+                  ></ui-icon>
+                </div>
+                <!-- Remove extent -->
+                <ui-button
+                  [uiTooltip]="
+                    'components.widget.settings.map.tooltip.geographicExtent.remove'
+                      | translate
+                  "
+                  [isIcon]="true"
+                  icon="delete"
+                  variant="danger"
+                  (click)="onDeleteExtent(i)"
+                ></ui-button>
+              </div>
+            </ng-container>
           </div>
-          <!-- Use map to set properties -->
-          <ui-button
-            class="self-end flex-1"
-            (click)="onSetByMap()"
-            category="secondary"
-            variant="primary"
-          >
-            {{
-              'components.widget.settings.map.properties.setByMap' | translate
-            }}
-          </ui-button>
           <ui-divider></ui-divider>
           <!-- Map controls -->
           <shared-map-controls

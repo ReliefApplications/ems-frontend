@@ -24,6 +24,8 @@ export * from './lib/services/context/context.service';
 export * from './lib/services/data-template/data-template.service';
 export * from './lib/services/editor/editor.service';
 export * from './lib/services/rest/rest.service';
+export * from './lib/services/map/map-layers.service';
+export * from './lib/services/dashboard-automation/dashboard-automation.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
@@ -53,6 +55,7 @@ export * from './lib/models/layout.model';
 export * from './lib/models/aggregation.model';
 export * from './lib/models/reference-data.model';
 export * from './lib/models/metadata.model';
+export * from './lib/models/automation.model';
 
 // === COMPONENTS ===
 export * from './lib/components/aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
@@ -77,7 +80,6 @@ export * from './lib/components/record-history/public-api';
 export * from './lib/components/record-modal/public-api';
 export * from './lib/components/search-menu/public-api';
 export * from './lib/components/search-resource-grid-modal/public-api';
-export * from './lib/components/config-display-grid-fields-modal/public-api';
 export * from './lib/components/content-choice/public-api';
 export * from './lib/components/workflow-stepper/public-api';
 export * from './lib/components/applications-summary/public-api';
@@ -91,7 +93,10 @@ export * from './lib/components/ui/empty/public-api';
 export * from './lib/components/edit-calculated-field-modal/public-api';
 export * from './lib/components/utils/unsubscribe/public-api';
 export * from './lib/components/editable-text/public-api';
+export * from './lib/components/users/public-api';
 export * from './lib/components/payload-modal/payload-modal.component';
+export * from './lib/components/widgets/map/public-api';
+export * from './lib/components/dashboard/public-api';
 
 // Export of controls
 export * from './lib/components/controls/public-api';
@@ -110,6 +115,7 @@ export * from './lib/survey/components/resource-custom-filters/resource-custom-f
 export * from './lib/survey/components/resource-dropdown/resource-dropdown.component';
 export * from './lib/survey/components/resource-select-text/resource-select-text.component';
 export * from './lib/survey/components/test-service-dropdown/test-service-dropdown.component';
+export * from './lib/survey/components/code-editor/code-editor.component';
 
 /** Grid Layouts */
 export * from './lib/components/grid-layout/edit-layout-modal/public-api';
@@ -135,3 +141,6 @@ export * from './lib/utils/public-api';
 
 // === CONST ===
 export * from './lib/const/tinymce.const';
+
+// === ENUM ===
+export * from './lib/components/dashboard-filter/enums/dashboard-filters.enum';

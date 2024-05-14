@@ -7,16 +7,14 @@ import {
   ConfirmService,
   UnsubscribeComponent,
   ReferenceDatasQueryResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { GET_REFERENCE_DATAS } from './graphql/queries';
 import { ADD_REFERENCE_DATA, DELETE_REFERENCE_DATA } from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../utils/update-queries';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   TableSort,
@@ -187,6 +185,17 @@ export class ReferenceDatasComponent
                 );
               } else {
                 if (data) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectCreated',
+                      {
+                        type: this.translate.instant(
+                          'common.referenceData.one'
+                        ),
+                        value: value.name,
+                      }
+                    )
+                  );
                   this.router.navigate([
                     '/referencedata',
                     data.addReferenceData.id,

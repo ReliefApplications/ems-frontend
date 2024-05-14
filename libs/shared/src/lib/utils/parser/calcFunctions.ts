@@ -1,4 +1,4 @@
-import { ceil, floor, round } from 'lodash';
+import { ceil, floor, max, min, round } from 'lodash';
 
 /**
  * Check that all arguments are number
@@ -104,6 +104,32 @@ const calcFunctions: Record<
       } catch {
         return '0';
       }
+    },
+  },
+  min: {
+    signature: 'min( value1 ; value2 ; ... )',
+    /**
+     * Get minimum value from array
+     *
+     * @param values array of values, must be separated in the template by ";"
+     * @returns minimum value
+     */
+    call: (...values) => {
+      // Ensure that the values are treated as numbers
+      return min(values.map((x) => Number(x)))?.toString() || '';
+    },
+  },
+  max: {
+    signature: 'max( value1 ; value2 ; ... )',
+    /**
+     * Get maximum value from array
+     *
+     * @param values array of values, must be separated in the template by ";"
+     * @returns maximum value
+     */
+    call: (...values) => {
+      // Ensure that the values are treated as numbers
+      return max(values.map((x) => Number(x)))?.toString() || '';
     },
   },
 };

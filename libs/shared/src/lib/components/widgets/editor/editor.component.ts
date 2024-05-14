@@ -1,37 +1,45 @@
+import { Dialog } from '@angular/cdk/dialog';
 import {
   Component,
-  OnInit,
-  Input,
-  TemplateRef,
-  ViewChild,
+  ElementRef,
   HostListener,
+  Input,
+  OnInit,
+  Optional,
   Renderer2,
+  SkipSelf,
+  ViewChild,
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
-import { Subject, debounceTime, firstValueFrom, from, takeUntil } from 'rxjs';
+import { clone, get, isEmpty, isEqual, isNil, set } from 'lodash';
+import {
+  Subject,
+  debounceTime,
+  filter,
+  firstValueFrom,
+  from,
+  takeUntil,
+} from 'rxjs';
+import { ReferenceData } from '../../../models/reference-data.model';
+import { ResourceQueryResponse } from '../../../models/resource.model';
+import { AggregationService } from '../../../services/aggregation/aggregation.service';
+import { ContextService } from '../../../services/context/context.service';
+import { DataTemplateService } from '../../../services/data-template/data-template.service';
+import { GridService } from '../../../services/grid/grid.service';
+import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
+import { WidgetService } from '../../../services/widget/widget.service';
+import { BaseWidgetComponent } from '../base-widget/base-widget.component';
+import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-widget-content.component';
 import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
-import { clone, get, isNil, set } from 'lodash';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import { DataTemplateService } from '../../../services/data-template/data-template.service';
-import { Dialog } from '@angular/cdk/dialog';
-import { SnackbarService } from '@oort-front/ui';
-import { TranslateService } from '@ngx-translate/core';
-import { ResourceQueryResponse } from '../../../models/resource.model';
-import { GridService } from '../../../services/grid/grid.service';
-import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
-import {
-  ReferenceData,
-  ReferenceDataQueryResponse,
-} from '../../../models/reference-data.model';
-import { GET_REFERENCE_DATA } from './graphql/queries';
-import { HtmlWidgetContentComponent } from '../common/html-widget-content/html-widget-content.component';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { ContextService } from '../../../services/context/context.service';
-import { AggregationService } from '../../../services/aggregation/aggregation.service';
+import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
 
 /**
  * Text widget component using Tinymce.
@@ -41,13 +49,11 @@ import { AggregationService } from '../../../services/aggregation/aggregation.se
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
 })
-export class EditorComponent extends UnsubscribeComponent implements OnInit {
+export class EditorComponent extends BaseWidgetComponent implements OnInit {
   /** Widget settings */
   @Input() settings: any;
   /** Should show padding */
   @Input() usePadding = true;
-  /** Reference to header template */
-  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
   /** Reference to html content component */
   @ViewChild(HtmlWidgetContentComponent)
   htmlContentComponent!: HtmlWidgetContentComponent;
@@ -73,8 +79,10 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   public aggregationsData: any = {};
   /** Loading indicator */
   public loading = true;
-  /** Refresh subject, emit a value when refresh needed */
-  refresh$: Subject<boolean> = new Subject<boolean>();
+  /** Subject to emit signals for cancelling previous data queries */
+  private cancelRefresh$ = new Subject<void>();
+  /** Timeout to init active filter */
+  private timeoutListener!: NodeJS.Timeout;
 
   /** @returns does the card use reference data */
   get useReferenceData() {
@@ -94,6 +102,28 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
+   * Listen to click events from host element, and trigger any action attached to the content clicked in the editor
+   *
+   * @param event Click event from host element
+   */
+  @HostListener('click', ['$event'])
+  onContentClick(event: any) {
+    this.widgetService.handleWidgetContentClick(
+      event,
+      'shared-editor',
+      this.dashboardAutomationService,
+      this.settings.automationRules
+    );
+    const content = this.htmlContentComponent.el.nativeElement;
+    const editorTriggers = content.querySelectorAll('.record-editor');
+    editorTriggers.forEach((recordEditor: HTMLElement) => {
+      if (recordEditor.contains(event.target)) {
+        this.openEditRecordModal();
+      }
+    });
+  }
+
+  /**
    * Text widget component using Tinymce.
    *
    * @param apollo Apollo instance
@@ -107,6 +137,10 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
    * @param contextService Context service
    * @param renderer Angular renderer2 service
    * @param aggregationService Shared aggregation service
+   * @param el Element ref
+   * @param router Angular router
+   * @param widgetService Shared widget service
+   * @param dashboardAutomationService Dashboard automation service (Optional, so not active while editing widget)
    */
   constructor(
     private apollo: Apollo,
@@ -119,7 +153,13 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     private referenceDataService: ReferenceDataService,
     private contextService: ContextService,
     private renderer: Renderer2,
-    private aggregationService: AggregationService
+    private aggregationService: AggregationService,
+    private el: ElementRef,
+    private router: Router,
+    private widgetService: WidgetService,
+    @Optional()
+    @SkipSelf()
+    private dashboardAutomationService: DashboardAutomationService
   ) {
     super();
   }
@@ -128,19 +168,147 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.setHtml();
 
+    // Gather all context filters in a single text value
+    const allContextFilters = this.aggregations
+      .map((aggregation: any) => aggregation.contextFilters)
+      .join('');
+    const allGraphQLVariables = this.aggregations
+      .map((aggregation: any) => aggregation.referenceDataVariableMapping)
+      .join('');
+    // Listen to dashboard filters changes if it is necessary
     this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.refresh$.next(true);
-        this.loading = true;
-        this.setHtml();
+      .pipe(
+        // On working with web components we want to send filter value if this current element is in the DOM
+        // Otherwise send value always
+        filter(() =>
+          this.contextService.shadowDomService.isShadowRoot
+            ? this.contextService.shadowDomService.currentHost.contains(
+                this.el.nativeElement
+              )
+            : true
+        ),
+        debounceTime(500),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ previous, current }) => {
+        if (
+          this.contextService.filterRegex.test(
+            allContextFilters + allGraphQLVariables
+          )
+        ) {
+          if (
+            this.contextService.shouldRefresh(this.settings, previous, current)
+          ) {
+            this.cancelRefresh$.next();
+            this.loading = true;
+            this.setHtml();
+          }
+        }
+        this.toggleActiveFilters(
+          current,
+          this.htmlContentComponent?.el.nativeElement
+        );
       });
   }
+
+  /**
+   * Set the elements as active if matching dashboard filter
+   *
+   * @param filterValue value of the current dashboard filter
+   * @param node HTML element
+   */
+  private toggleActiveFilters = (filterValue: any, node: any) => {
+    /**
+     * Should activate or deactivate the active status of the field, based on other filter fields
+     * If other field fields are set, then, deactivate the field
+     *
+     * @param node html node
+     */
+    const shouldActivate = (node: any): void => {
+      const deactivatingFields = get(node, 'dataset.filterDeactivate');
+      if (deactivatingFields) {
+        if (
+          deactivatingFields
+            .split(';')
+            .map((item: any) => item.trim())
+            .some((field: any) => !isNil(get(filterValue, field)))
+        ) {
+          node.dataset.filterActive = false;
+          return;
+        }
+      }
+      node.dataset.filterActive = true;
+    };
+
+    if (get(node, 'dataset.filterField')) {
+      const value = get(node, 'dataset.filterValue');
+      const filterFieldValue = get(filterValue, node.dataset.filterField);
+      const isNilOrEmpty = (x: any) => isNil(x) || x === '';
+      if (
+        isEqual(value, filterFieldValue) ||
+        (isNilOrEmpty(value) && isNilOrEmpty(filterFieldValue))
+      ) {
+        shouldActivate(node);
+      } else {
+        node.dataset.filterActive = false;
+      }
+    } else {
+      // Handle empty filters. Need to leave filter field empty.
+      if (get(node, 'dataset.filterField') === '') {
+        if (!filterValue || isEmpty(filterValue)) {
+          shouldActivate(node);
+        } else {
+          node.dataset.filterActive = false;
+        }
+      }
+    }
+
+    for (let i = 0; i < node.childNodes.length; i++) {
+      const child = node.childNodes[i];
+      this.toggleActiveFilters(filterValue, child);
+    }
+  };
 
   /**
    * Set widget html.
    */
   private setHtml() {
+    const callback = () => {
+      if (this.timeoutListener) {
+        clearTimeout(this.timeoutListener);
+      }
+      // Necessary because ViewChild is not initialized immediately
+      this.timeoutListener = setTimeout(() => {
+        this.toggleActiveFilters(
+          this.contextService.filter.getValue(),
+          this.htmlContentComponent.el.nativeElement
+        );
+        const anchorElements = this.el.nativeElement.querySelectorAll('a');
+        anchorElements.forEach((anchor: HTMLElement) => {
+          this.renderer.listen(anchor, 'click', (event: Event) => {
+            // Prevent the default behavior of the anchor tag
+            event.preventDefault();
+            // Use the Angular Router to navigate to the desired route ( if needed )
+            const href = anchor.getAttribute('href');
+            const target = anchor.getAttribute('target');
+            if (href) {
+              if (target === '_blank') {
+                // Open link in a new tab, don't use Angular router
+                window.open(href, '_blank');
+              } else {
+                if (href?.startsWith('./')) {
+                  // Navigation inside the app builder
+                  this.router.navigateByUrl(href.substring(1));
+                } else {
+                  // Default navigation
+                  window.location.href = href;
+                }
+              }
+            }
+          });
+        });
+      }, 500);
+    };
     if (this.settings.record && this.settings.resource) {
       from(
         Promise.all([
@@ -152,7 +320,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
           this.getAggregationsData(),
         ])
       )
-        .pipe(takeUntil(this.refresh$))
+        .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
           this.formattedStyle = this.dataTemplateService.renderStyle(
             this.settings.wholeCardStyles || false,
@@ -169,34 +337,42 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
             }
           );
           this.loading = false;
+          callback();
         });
     } else if (this.settings.element && this.settings.referenceData) {
       from(
         Promise.all([
           new Promise<void>((resolve) => {
-            this.getReferenceData()
-              .then(() => {
-                this.referenceDataService
-                  .cacheItems(this.settings.referenceData)
-                  .then((value) => {
-                    if (value) {
-                      const field = this.referenceData?.valueField;
-                      const selectedItemKey = String(this.settings.element);
-                      if (field) {
-                        this.fieldsValue = value.find(
-                          (x: any) => String(get(x, field)) === selectedItemKey
-                        );
-                      }
-                    }
-                  })
-                  .finally(() => resolve());
+            this.referenceDataService
+              .cacheItems(this.settings.referenceData)
+              .then(({ items, referenceData }) => {
+                this.referenceData = referenceData;
+                this.fields = (referenceData.fields || [])
+                  .filter((field: any) => field && typeof field !== 'string')
+                  .map((field: any) => {
+                    return {
+                      label: field.name,
+                      name: field.name,
+                      type: field.type,
+                    };
+                  });
+                if (items) {
+                  const field = this.referenceData?.valueField;
+                  const selectedItemKey = String(this.settings.element);
+                  if (field) {
+                    this.fieldsValue = items.find(
+                      (x: any) => String(get(x, field)) === selectedItemKey
+                    );
+                  }
+                }
               })
-              .catch(() => resolve());
+              .catch(() => resolve())
+              .finally(() => resolve());
           }),
           this.getAggregationsData(),
         ])
       )
-        .pipe(takeUntil(this.refresh$))
+        .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
           this.formattedHtml = this.dataTemplateService.renderHtml(
             this.settings.text,
@@ -207,10 +383,11 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
             }
           );
           this.loading = false;
+          callback();
         });
     } else {
       from(Promise.all([this.getAggregationsData()]))
-        .pipe(takeUntil(this.refresh$))
+        .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
           this.formattedHtml = this.dataTemplateService.renderHtml(
             this.settings.text,
@@ -221,6 +398,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
             }
           );
           this.loading = false;
+          callback();
         });
     }
   }
@@ -243,6 +421,9 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
               contextFilters: aggregation.contextFilters
                 ? JSON.parse(aggregation.contextFilters)
                 : {},
+              graphQLVariables: this.widgetService.mapGraphQLVariables(
+                aggregation.referenceDataVariableMapping
+              ),
               at: this.contextService.atArgumentValue(aggregation.at),
             })
           )
@@ -266,54 +447,6 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       );
     });
     return Promise.all(promises);
-  }
-
-  /**
-   * Listen to click events from host element, if record editor is clicked, open record editor modal
-   *
-   * @param event Click event from host element
-   */
-  @HostListener('click', ['$event'])
-  onContentClick(event: any) {
-    let filterButtonIsClicked = !!event.target.dataset.filterField;
-    let currentNode = event.target;
-    if (!filterButtonIsClicked) {
-      // Check parent node if contains the dataset for filtering until we hit the host node or find the node with the filter dataset
-      while (
-        currentNode.localName !== 'shared-editor' &&
-        !filterButtonIsClicked
-      ) {
-        currentNode = this.renderer.parentNode(currentNode);
-        filterButtonIsClicked = !!currentNode.dataset.filterField;
-      }
-    }
-    if (filterButtonIsClicked) {
-      const { filterField, filterValue } = currentNode.dataset;
-      // Cleanup filter value from the span set by default in the tinymce calculated field if exists
-      const cleanContent = filterValue.match(/(?<=>)(.*?)(?=<)/gi);
-      const cleanFilterValue = cleanContent ? cleanContent[0] : filterValue;
-      const currentFilters = { ...this.contextService.filter.getValue() };
-      // If current filters contains the field but there is no value set, delete it
-      if (filterField in currentFilters && !cleanFilterValue) {
-        delete currentFilters[filterField];
-      }
-      // Update filter object with existing fields and values
-      const updatedFilters = {
-        ...(currentFilters && { ...currentFilters }),
-        ...(cleanFilterValue && {
-          [filterField]: cleanFilterValue,
-        }),
-      };
-      this.contextService.filter.next(updatedFilters);
-    } else {
-      const content = this.htmlContentComponent.el.nativeElement;
-      const editorTriggers = content.querySelectorAll('.record-editor');
-      editorTriggers.forEach((recordEditor: HTMLElement) => {
-        if (recordEditor.contains(event.target)) {
-          this.openEditRecordModal();
-        }
-      });
-    }
   }
 
   /**
@@ -358,33 +491,6 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
         }
       });
     }
-  }
-
-  /**
-   * Get reference data.
-   */
-  private async getReferenceData() {
-    this.apollo
-      .query<ReferenceDataQueryResponse>({
-        query: GET_REFERENCE_DATA,
-        variables: {
-          id: this.settings.referenceData,
-        },
-      })
-      .subscribe(({ data }) => {
-        if (data.referenceData) {
-          this.referenceData = data.referenceData;
-          this.fields = (data.referenceData.fields || [])
-            .filter((field) => field && typeof field !== 'string')
-            .map((field) => {
-              return {
-                label: field.name,
-                name: field.name,
-                type: field.type,
-              };
-            });
-        }
-      });
   }
 
   /** Sets layout */

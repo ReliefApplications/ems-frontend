@@ -7,7 +7,6 @@ import {
   HostBinding,
   OnInit,
   OnDestroy,
-  Inject,
   TemplateRef,
   ElementRef,
   Optional,
@@ -21,10 +20,9 @@ import { MapWidgetComponent } from '../widgets/map/map.component';
 import { SummaryCardComponent } from '../widgets/summary-card/summary-card.component';
 import { v4 as uuidv4 } from 'uuid';
 import get from 'lodash/get';
-import { RestService } from '../../services/rest/rest.service';
-import { DOCUMENT } from '@angular/common';
-import { ShadowDomService } from '@oort-front/ui';
 import { GridsterComponent, GridsterItemComponent } from 'angular-gridster2';
+import { WidgetService } from '../../services/widget/widget.service';
+import { TabsComponent } from '../widgets/tabs/tabs.component';
 
 /** Component for the widgets */
 @Component({
@@ -49,7 +47,7 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   @Output() edit: EventEmitter<any> = new EventEmitter();
   /** Change step workflow event emitter */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
-  /** Id of the ticket. Visible in the dom */
+  /** Id of the widget. Visible in the dom */
   @HostBinding()
   id = `widget-${uuidv4()}`;
   /** Reference to widget inner component */
@@ -59,13 +57,16 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
     | GridWidgetComponent
     | MapWidgetComponent
     | EditorComponent
-    | SummaryCardComponent;
+    | SummaryCardComponent
+    | TabsComponent;
+  /** Expanded state of the widget */
+  public expanded = false;
+  /** Loading state of the widget */
+  public loading = true;
   /** Html element containing widget custom style */
   private customStyle?: HTMLStyleElement;
   /** Previous position of the widget ( cols / x )  */
   private previousPosition?: { cols: number; x: number };
-  /** Expanded state of the widget */
-  public expanded = false;
 
   /** @returns would component block navigation */
   get canDeactivate() {
@@ -110,45 +111,28 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   /**
    * Widget component
    *
-   * @param restService Shared rest service
-   * @param document document
    * @param elementRef reference to element
-   * @param shadowDomService shadow dom service to handle the current host of the component
    * @param grid Reference to parent gridster
    * @param gridItem Reference to parent gridster item
+   * @param widgetService Shared widget service
    */
   constructor(
-    private restService: RestService,
-    @Inject(DOCUMENT) private document: Document,
     public elementRef: ElementRef,
-    private shadowDomService: ShadowDomService,
     @Optional() private grid: GridsterComponent,
-    @Optional() private gridItem: GridsterItemComponent
+    @Optional() private gridItem: GridsterItemComponent,
+    private widgetService: WidgetService
   ) {}
 
   ngOnInit(): void {
-    // Get style from widget definition
-    const style = get(this.widget, 'settings.widgetDisplay.style') || '';
-    if (style) {
-      const scss = `#${this.id} {
-        ${style}
-      }`;
-      // Compile to css ( we store style as scss )
-      this.restService
-        .post('style/scss-to-css', { scss }, { responseType: 'text' })
-        .subscribe((css) => {
-          this.customStyle = this.document.createElement('style');
-          this.customStyle.appendChild(this.document.createTextNode(css));
-          if (this.shadowDomService.isShadowRoot) {
-            // Add it to shadow root
-            this.shadowDomService.currentHost.appendChild(this.customStyle);
-          } else {
-            // Add to head of document
-            const head = this.document.getElementsByTagName('head')[0];
-            head.appendChild(this.customStyle);
-          }
-        });
-    }
+    // Initialize style
+    this.widgetService
+      .createCustomStyle(this.id, this.widget)
+      .then((customStyle) => {
+        if (customStyle) {
+          this.customStyle = customStyle;
+        }
+      })
+      .finally(() => (this.loading = false));
   }
 
   ngOnChanges(changes: SimpleChanges): void {

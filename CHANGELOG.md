@@ -1,3 +1,344 @@
+## [2.12.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.3...v2.12.4) (2024-05-03)
+
+
+### Bug Fixes
+
+* history could be downloaded before being ready ([d6f3d91](https://github.com/ReliefApplications/ems-frontend/commit/d6f3d91d9ff5762f102cb57fabec2b2cc01d8c11))
+
+## [2.12.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.2...v2.12.3) (2024-05-03)
+
+
+### Bug Fixes
+
+* choices by graphql questions with trigger could remove the value Ab[#90661](https://github.com/ReliefApplications/ems-frontend/issues/90661) ([68131d1](https://github.com/ReliefApplications/ems-frontend/commit/68131d1f504965b61f1a02cbcbd2ddf8ed033882))
+
+## [2.12.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.1...v2.12.2) (2024-05-03)
+
+
+### Bug Fixes
+
+* heatmap layer would fail to draw if intensity is null ([#2504](https://github.com/ReliefApplications/ems-frontend/issues/2504)) ([098841a](https://github.com/ReliefApplications/ems-frontend/commit/098841a76fb5cd7e4caf6a34a3b371331a053a12))
+
+## [2.12.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.0...v2.12.1) (2024-05-03)
+
+
+### Bug Fixes
+
+* issue with search term on action buttons of dashboard [#91553](https://github.com/ReliefApplications/ems-frontend/issues/91553) ([#2498](https://github.com/ReliefApplications/ems-frontend/issues/2498)) ([88721dd](https://github.com/ReliefApplications/ems-frontend/commit/88721dd5d4c61bcca3df4a3eb0fa55926bc2a576))
+* min & max in template widgets would treat inputs as strings, and return false min / max ([30d3576](https://github.com/ReliefApplications/ems-frontend/commit/30d3576b674ff5ded3e3bef994e4ef48f7b5f3c6))
+
+# [2.12.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.11.2...v2.12.0) (2024-04-24)
+
+
+### Bug Fixes
+
+* context could be wrong in SUI, due to providers ([6708196](https://github.com/ReliefApplications/ems-frontend/commit/670819639825a6ec0d1c554123c9e6e1b1a73099))
+* context filter not taken into account while using resource & summary cards ([#2465](https://github.com/ReliefApplications/ems-frontend/issues/2465)) ([05f8b18](https://github.com/ReliefApplications/ems-frontend/commit/05f8b1857d8549987d2cddf7e86dba32c502fd24))
+* increase gridster default max col to be infinity: no more constraints ([#2469](https://github.com/ReliefApplications/ems-frontend/issues/2469)) ([11d0cf1](https://github.com/ReliefApplications/ems-frontend/commit/11d0cf12893bbb7675d6082a94046fb71a6564c2))
+* layers can now use admin0 center latitude & longitude ([#2471](https://github.com/ReliefApplications/ems-frontend/issues/2471)) ([6cf9a4b](https://github.com/ReliefApplications/ems-frontend/commit/6cf9a4ba2da5507728dea3aae1de5413d34c41a3))
+* reallow default position and remove buttons when no value ([#2474](https://github.com/ReliefApplications/ems-frontend/issues/2474)) ([50a571e](https://github.com/ReliefApplications/ems-frontend/commit/50a571e6b022fc5ad5d3542b110edc1b3746c61d))
+* rerender question with choicesByGraphQL when trigger activated ([#2473](https://github.com/ReliefApplications/ems-frontend/issues/2473)) ([9db71e5](https://github.com/ReliefApplications/ems-frontend/commit/9db71e5422970adf49b867cdf8291221771ec383))
+
+
+### Features
+
+* Add email + AAD user type to automation rules ([#2468](https://github.com/ReliefApplications/ems-frontend/issues/2468)) ([e898c3b](https://github.com/ReliefApplications/ems-frontend/commit/e898c3ba7ee8c858ab30ecc072d8c65c01520d3a)), closes [#89936](https://github.com/ReliefApplications/ems-frontend/issues/89936) [#89936](https://github.com/ReliefApplications/ems-frontend/issues/89936) [#89936](https://github.com/ReliefApplications/ems-frontend/issues/89936)
+* add tooltips for html question ([#2480](https://github.com/ReliefApplications/ems-frontend/issues/2480)) ([87a2b21](https://github.com/ReliefApplications/ems-frontend/commit/87a2b21f08d11509b61d5435f6d625653c84f172))
+* allow ignoring webmap default state ([#2472](https://github.com/ReliefApplications/ems-frontend/issues/2472)) ([6a04854](https://github.com/ReliefApplications/ems-frontend/commit/6a048544d16d2006e06b202b888d097e26942d38))
+* role based display for action buttons ([#2461](https://github.com/ReliefApplications/ems-frontend/issues/2461)) ([84abc92](https://github.com/ReliefApplications/ems-frontend/commit/84abc9223319a95fdd00fb4b77b50c00ee85105d))
+
+
+### Reverts
+
+* Revert "refactor: application scss endpoint now using text/plain (#2467)" (#2470) ([a541694](https://github.com/ReliefApplications/ems-frontend/commit/a5416947ce2bbb297cb47630c8f1d433f7dfe7dd)), closes [#2467](https://github.com/ReliefApplications/ems-frontend/issues/2467) [#2470](https://github.com/ReliefApplications/ems-frontend/issues/2470)
+
+## [2.11.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.11.1...v2.11.2) (2024-03-25)
+
+
+### Bug Fixes
+
+* drag & drop would not remove tooltips from the dom ([#2451](https://github.com/ReliefApplications/ems-frontend/issues/2451)) ([e08c9d7](https://github.com/ReliefApplications/ems-frontend/commit/e08c9d798f9cc84544e27b96d86f2b533b805edc))
+
+## [2.11.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.11.0...v2.11.1) (2024-03-15)
+
+
+### Bug Fixes
+
+* automation to hide layers would not work fine ([062151e](https://github.com/ReliefApplications/ems-frontend/commit/062151ebd82ec2a9acc376f6a8a1bd136d97320d))
+* clicking on points when cluster expand should use lat / long of cluster, not lat / long of click ([#2452](https://github.com/ReliefApplications/ems-frontend/issues/2452)) ([1317299](https://github.com/ReliefApplications/ems-frontend/commit/1317299e40c9eb9f7c6fa8bcfe2e4dbebc40986e))
+* empty heatmap with valueField could make the map fail ([45bbdbf](https://github.com/ReliefApplications/ems-frontend/commit/45bbdbf31077ec6a556150a4393777601afd3245))
+* filter between pages could sometimes be reactivated ([a76e6fe](https://github.com/ReliefApplications/ems-frontend/commit/a76e6fe0350016073b98c9f1176b875d684d01e7))
+* incorrect message error when no access to application ([#2446](https://github.com/ReliefApplications/ems-frontend/issues/2446)) ([718964f](https://github.com/ReliefApplications/ems-frontend/commit/718964feaf3ab6592112e5a0ca7bb76d235cb180))
+* layers control would not automatically close when used in web component ([4029ca3](https://github.com/ReliefApplications/ems-frontend/commit/4029ca3a74057eb26a63b107d93df293101e2da8))
+* onDownloadFile not working when seeing record in form ( display mode ) ([#2453](https://github.com/ReliefApplications/ems-frontend/issues/2453)) ([06323db](https://github.com/ReliefApplications/ems-frontend/commit/06323db7d6dbad88c1c3957160911ee49e8a2efb))
+* possible conflict between reset filter event and add filter event on widget content click ([e7a48ba](https://github.com/ReliefApplications/ems-frontend/commit/e7a48baf9675c0a609110fda9eac05c50fb47a28))
+* some layers could be drawn multiple times due to add layer & remove layer automations ([f20f4ea](https://github.com/ReliefApplications/ems-frontend/commit/f20f4eae9971a1e80a927a00e745c6004517667b))
+
+# [2.11.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.10.1...v2.11.0) (2024-03-12)
+
+
+### Bug Fixes
+
+* BO resource's subpages not loading fine, and requiring 2x clicks  ([#2441](https://github.com/ReliefApplications/ems-frontend/issues/2441)) ([cc569ce](https://github.com/ReliefApplications/ems-frontend/commit/cc569ce81a0d02edb98172d1d9c8a406058baf7d))
+* heatmap can now use opacity parameter ([#2439](https://github.com/ReliefApplications/ems-frontend/issues/2439)) ([80da23e](https://github.com/ReliefApplications/ems-frontend/commit/80da23e11c4fd7a1141ba13ee5666f21c04dce90))
+
+
+### Features
+
+* add calendar type option to date questions ([#2435](https://github.com/ReliefApplications/ems-frontend/issues/2435)) ([6518b16](https://github.com/ReliefApplications/ems-frontend/commit/6518b168c9903e737142f11a033e8f3c024aae71))
+* allow heatmap to have intensity field ([#2437](https://github.com/ReliefApplications/ems-frontend/issues/2437)) ([027c291](https://github.com/ReliefApplications/ems-frontend/commit/027c291cdac7455c4b7ad9e4e916822a460f4df2))
+* default number of items per page in summary cards now depend by default on height of window ([15072c5](https://github.com/ReliefApplications/ems-frontend/commit/15072c587143d7e1e033fdb550c503c1f26c3108))
+* system now stores selection of page size on summary card widgets, so it can be reused for future widgets ([768ff58](https://github.com/ReliefApplications/ems-frontend/commit/768ff587212bc78cd5a310db579a79dd8b8af595))
+
+## [2.10.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.10.0...v2.10.1) (2024-03-06)
+
+
+### Bug Fixes
+
+* dashboard automation service could create dependency injection issues ([#2429](https://github.com/ReliefApplications/ems-frontend/issues/2429)) ([225ad11](https://github.com/ReliefApplications/ems-frontend/commit/225ad11acb8a04610dfff0b88a926318279cb0c3)), closes [bugfix/AB#87222](https://github.com/bugfix/AB/issues/87222)
+* in web elements, some filters could be removed ([5014636](https://github.com/ReliefApplications/ems-frontend/commit/5014636b9df3d4c9ea91a276668662196b5833f0))
+
+# [2.10.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.9.0...v2.10.0) (2024-03-01)
+
+
+### Bug Fixes
+
+* due to query params some components could be duplicated in sui ([faf3986](https://github.com/ReliefApplications/ems-frontend/commit/faf39869bc4244652a9ebef90535697a056360c0))
+* fullscreen control would not work in web elements mode ([#2425](https://github.com/ReliefApplications/ems-frontend/issues/2425)) ([4f0dd92](https://github.com/ReliefApplications/ems-frontend/commit/4f0dd9278739affd64cdfaaf46bec90711c67846))
+* layers overlay could be hidden on maps, when using fullscreen & web elements ([#2424](https://github.com/ReliefApplications/ems-frontend/issues/2424)) ([49e6db7](https://github.com/ReliefApplications/ems-frontend/commit/49e6db7135137ca4d361e46a8e5dfbfaf2ff74a4))
+* map could sometimes disappear on some browsers due to a browser limitation ([79d1a1c](https://github.com/ReliefApplications/ems-frontend/commit/79d1a1cb5bf0a63c0283a9e4db19fc4de6944fd2))
+* only one mutation instance supported ([#2419](https://github.com/ReliefApplications/ems-frontend/issues/2419)) ([2b80a9f](https://github.com/ReliefApplications/ems-frontend/commit/2b80a9ff984a6c071480f58619dde678c56e560d))
+* selecting some reference data in questions in dashboard filter, using web elements, could not reflect on other pages  ([#2420](https://github.com/ReliefApplications/ems-frontend/issues/2420)) ([729957a](https://github.com/ReliefApplications/ems-frontend/commit/729957a69f2b612b19e4edc44d68a6bff2c6395b))
+
+
+### Features
+
+* allow widgets to build automation rules ([#2422](https://github.com/ReliefApplications/ems-frontend/issues/2422)) ([9457fd4](https://github.com/ReliefApplications/ems-frontend/commit/9457fd4662243216e9145b82d555b901492357c8))
+
+# [2.9.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.8.3...v2.9.0) (2024-02-23)
+
+
+### Bug Fixes
+
+* button action would redirect to incorrect page on web element ([8faadb2](https://github.com/ReliefApplications/ems-frontend/commit/8faadb2aeae26aef64895a79480b15c3b9d6dfbb))
+* dashboard context value select could sometimes display empty value ([#2405](https://github.com/ReliefApplications/ems-frontend/issues/2405)) ([2bb449f](https://github.com/ReliefApplications/ems-frontend/commit/2bb449fc4438784ac0ee69f36aa5cb479e753271))
+* min and max dates not taken into account in forms ([#2396](https://github.com/ReliefApplications/ems-frontend/issues/2396)) ([bb03549](https://github.com/ReliefApplications/ems-frontend/commit/bb03549698e216d1b0cc2dd4e330f3e4cdfc1aee))
+* ref data focus on form builder init ([#2397](https://github.com/ReliefApplications/ems-frontend/issues/2397)) ([6672ba3](https://github.com/ReliefApplications/ems-frontend/commit/6672ba3fa0e414f6d848c0759c8b83a6c878b3f3))
+* tagbox would not correctly indicate values, when value passed from another element ([d4a603b](https://github.com/ReliefApplications/ems-frontend/commit/d4a603b6ff550645694f0e93701c82ec4a764c6c))
+
+
+### Features
+
+* allow questions using reference data to be depending between themselves ([#2384](https://github.com/ReliefApplications/ems-frontend/issues/2384)) ([89ce3f7](https://github.com/ReliefApplications/ems-frontend/commit/89ce3f78994b6b74745fa8ca3011064051009e6d))
+* implementation of choicesByGraphQL questions ([#2407](https://github.com/ReliefApplications/ems-frontend/issues/2407)) ([56c75f6](https://github.com/ReliefApplications/ems-frontend/commit/56c75f6c8cb11c1a678a0938473bdba273169735))
+
+## [2.8.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.8.2...v2.8.3) (2024-02-15)
+
+
+### Bug Fixes
+
+* editor data filter reset not working as expected ([#2383](https://github.com/ReliefApplications/ems-frontend/issues/2383)) ([b1da90b](https://github.com/ReliefApplications/ems-frontend/commit/b1da90b56b164b97ba558e6b8a2d7bfe7359b7db))
+* img tag in widget editor should now be correctly parsed ([#2390](https://github.com/ReliefApplications/ems-frontend/issues/2390)) ([d78e9d9](https://github.com/ReliefApplications/ems-frontend/commit/d78e9d9d3e6a77e2e9f188b09d417c8a2e79d02a))
+
+## [2.8.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.8.1...v2.8.2) (2024-02-12)
+
+
+### Bug Fixes
+
+* clicking on workflow link when workflow already opened would redirect to blank page ([ae97b33](https://github.com/ReliefApplications/ems-frontend/commit/ae97b333ee0bcce928a310a7bb990c0f777dc3bf))
+* context service would transform some strings in filter into booleans or integers when not needed ([44942b3](https://github.com/ReliefApplications/ems-frontend/commit/44942b3e5492c02ef596bd81732a196fbdf0eed3))
+* links in editor & summary card widgets could not be opened in new tabs ([7c40994](https://github.com/ReliefApplications/ems-frontend/commit/7c40994bac914c30cedd7324a287d08c0c614bf5))
+
+## [2.8.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.8.0...v2.8.1) (2024-02-07)
+
+
+### Bug Fixes
+
+* arrays not correctly transformed in context filters [#84646](https://github.com/ReliefApplications/ems-frontend/issues/84646) ([#2361](https://github.com/ReliefApplications/ems-frontend/issues/2361)) ([284f295](https://github.com/ReliefApplications/ems-frontend/commit/284f295b966862613a7d266efa366ae1887ce989))
+* form number questions dont accept 0 as answer ([#2367](https://github.com/ReliefApplications/ems-frontend/issues/2367)) ([9af9eda](https://github.com/ReliefApplications/ems-frontend/commit/9af9eda4eff6938d7407f35c5d419cf5b1b78cae))
+* fullscreen doesnt trigger changes in widget display ([#2357](https://github.com/ReliefApplications/ems-frontend/issues/2357)) ([c863f7e](https://github.com/ReliefApplications/ems-frontend/commit/c863f7e09eed82cd36ed745675d72af05838d66c))
+* grid inline edition info icon partially hidden ([#2214](https://github.com/ReliefApplications/ems-frontend/issues/2214)) ([2b824be](https://github.com/ReliefApplications/ems-frontend/commit/2b824be0dc651d10b867cd4e5e5691f8eedde3e0))
+* issue with web elements not using dedicated instance of map layers service per instance ([319d284](https://github.com/ReliefApplications/ems-frontend/commit/319d2845b0e3b47faf87d5dd77bea9746d3e17c7))
+* some array filters would not work fine ([ccae634](https://github.com/ReliefApplications/ems-frontend/commit/ccae6344a4dddfb2ba4fbb9b4fabf5acc6869c4f))
+* update filter survey with latest filter structure ([#2368](https://github.com/ReliefApplications/ems-frontend/issues/2368)) ([33e5394](https://github.com/ReliefApplications/ems-frontend/commit/33e53948ce8ec88a282cc12fd9c06a772d321ea1))
+
+# [2.8.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.7.0...v2.8.0) (2024-02-01)
+
+
+### Bug Fixes
+
+* buttons in modern dashboard filter would take all height ([3b6a9ff](https://github.com/ReliefApplications/ems-frontend/commit/3b6a9ff2cd6428c311ea6f3dbc1593d20bf891fb))
+* context filters with summary cards ([#2334](https://github.com/ReliefApplications/ems-frontend/issues/2334)) ([dce1481](https://github.com/ReliefApplications/ems-frontend/commit/dce14813346357b122ef94c04677724a54c653dc))
+* dashboard filter would not appear in front-office ([582c0c5](https://github.com/ReliefApplications/ems-frontend/commit/582c0c5296bf01266e9fe5c161e7934e37e05920))
+* date & datetime filters not working as expected ([#2259](https://github.com/ReliefApplications/ems-frontend/issues/2259)) ([178c050](https://github.com/ReliefApplications/ems-frontend/commit/178c0507e5acad58c080170add95e9d90e97704e))
+* default value not working for reference data in dashboard filter ([#2325](https://github.com/ReliefApplications/ems-frontend/issues/2325)) ([52b8f8d](https://github.com/ReliefApplications/ems-frontend/commit/52b8f8da7bdd2a1cf06b359fd1755fb9e4f1f057))
+* history would not be resizable in sidenav ([0076a23](https://github.com/ReliefApplications/ems-frontend/commit/0076a23cd688b79fadc69cf4c7322e23bb71c984))
+* in some cases, incorrect value in tagbox would raise an error ([6f69ed3](https://github.com/ReliefApplications/ems-frontend/commit/6f69ed395e0bd5aaf34a448f787276dd31854c58))
+* prevent loading previous value for minimum height ([#2336](https://github.com/ReliefApplications/ems-frontend/issues/2336)) ([97523bc](https://github.com/ReliefApplications/ems-frontend/commit/97523bc6b0cf4d74f79028be8369b8370b78ed52))
+
+
+### Features
+
+* add new min & max operators in template parser ([#2349](https://github.com/ReliefApplications/ems-frontend/issues/2349)) ([266e47f](https://github.com/ReliefApplications/ems-frontend/commit/266e47f94725d978166fc9fe7fc1e0177533be6d))
+* allow custom styling sidenav resizing ([#2346](https://github.com/ReliefApplications/ems-frontend/issues/2346)) ([2b3a9bb](https://github.com/ReliefApplications/ems-frontend/commit/2b3a9bb096019fa842cdf205d8ecb4c102a4b486))
+
+# [2.7.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.6.0...v2.7.0) (2024-01-25)
+
+
+### Bug Fixes
+
+* could not use non scalar fields in filters ([#2315](https://github.com/ReliefApplications/ems-frontend/issues/2315)) ([cc4534d](https://github.com/ReliefApplications/ems-frontend/commit/cc4534d2abcc2873e61e228894aad78d15417468))
+* incorrect filter position when filter style is default one ([#2322](https://github.com/ReliefApplications/ems-frontend/issues/2322)) ([d18d587](https://github.com/ReliefApplications/ems-frontend/commit/d18d58765a3db79d3aed2baad4da47415a3a5780))
+* prevent fields used as attributes in text & summary cards widgets to be replaced with html elements ([#2330](https://github.com/ReliefApplications/ems-frontend/issues/2330)) ([95485cd](https://github.com/ReliefApplications/ems-frontend/commit/95485cd19bf1ca7278169388b2ce5307e1e75e43))
+
+
+### Features
+
+* Allow editor filters to also reset other filters on click ([#2317](https://github.com/ReliefApplications/ems-frontend/issues/2317)) ([cb1cee6](https://github.com/ReliefApplications/ems-frontend/commit/cb1cee6297d730cf6abb02ea0ab440487d72bb47))
+
+# [2.6.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.5.0...v2.6.0) (2024-01-23)
+
+
+### Bug Fixes
+
+* could not edit filter from dashboard-filter html ([43c37d0](https://github.com/ReliefApplications/ems-frontend/commit/43c37d059514378cd3a22d3e56b8c9ca1a804e60))
+* dashboard buttons would not be correctly saved ([9b32345](https://github.com/ReliefApplications/ems-frontend/commit/9b3234510402a69198381d4356da91b11aca5514))
+* incorrect display of tagbox & dropdown when using primitive ref data in dashboard filter ([2263cae](https://github.com/ReliefApplications/ems-frontend/commit/2263caeb9edca96c1f2ba1962261d65acd606bf9))
+* load dashboard filter default value expression ([#2288](https://github.com/ReliefApplications/ems-frontend/issues/2288)) ([2c99c32](https://github.com/ReliefApplications/ems-frontend/commit/2c99c328af6a5afdd7b3569a632e2faed9a78111))
+* Users question is editable even if readonly mode ([#2280](https://github.com/ReliefApplications/ems-frontend/issues/2280)) ([fec4499](https://github.com/ReliefApplications/ems-frontend/commit/fec4499ee113a2b7a554cb32a7a8f0d1e361ad17))
+
+
+### Features
+
+* Add ability to view history as table ([#2289](https://github.com/ReliefApplications/ems-frontend/issues/2289)) ([af65f0d](https://github.com/ReliefApplications/ems-frontend/commit/af65f0dfd6941034a20f7178454c2577a9d7f2b4))
+* allow addFields stage for reference data aggregations ([#2226](https://github.com/ReliefApplications/ems-frontend/issues/2226)) ([ba1fe54](https://github.com/ReliefApplications/ems-frontend/commit/ba1fe547f83c2cd5700803c97078ff881c75c1e8))
+* allow fit to screen widget grids ([6b6a6db](https://github.com/ReliefApplications/ems-frontend/commit/6b6a6db12c61b1d822129ad768f75ff461a1dcf0))
+* allow graphql reference data to pass variables ([#2275](https://github.com/ReliefApplications/ems-frontend/issues/2275)) ([4e9a8fc](https://github.com/ReliefApplications/ems-frontend/commit/4e9a8fcceae32263c7e4492a59487af225ba67b0))
+* allow map to be zoomed based on dynamic or static geographic extent ([#2292](https://github.com/ReliefApplications/ems-frontend/issues/2292)) ([dbf92bf](https://github.com/ReliefApplications/ems-frontend/commit/dbf92bf22efb2a4f5ce9a1b5981676eb3387fb6f))
+* allow search & sort to be passed to graphql ref data in summary cards ([0b24f8c](https://github.com/ReliefApplications/ems-frontend/commit/0b24f8c0a23eb96e921fb0c65ca9e44893e768b9))
+* pass graphql variables in reference data graphql charts ([#2298](https://github.com/ReliefApplications/ems-frontend/issues/2298)) ([206fd35](https://github.com/ReliefApplications/ems-frontend/commit/206fd353163c23a55a7e133519f48ce842c6a13f))
+* reference data aggregation now supports graphql variables injection ([#2301](https://github.com/ReliefApplications/ems-frontend/issues/2301)) ([8eac470](https://github.com/ReliefApplications/ems-frontend/commit/8eac47006d77b85efab0e9abca86d5ff68649a56))
+* use graphql reference data variables in layers ([#2297](https://github.com/ReliefApplications/ems-frontend/issues/2297)) ([fda16d7](https://github.com/ReliefApplications/ems-frontend/commit/fda16d76e914f3c5563388034ee8137baeeea880))
+
+# [2.5.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.4.0...v2.5.0) (2024-01-15)
+
+
+### Bug Fixes
+
+* dashboard context not taken into account in front-office ([#2279](https://github.com/ReliefApplications/ems-frontend/issues/2279)) ([de54c29](https://github.com/ReliefApplications/ems-frontend/commit/de54c29260e49e65178a1152e0a9d7a366de8225))
+* empty filters array always returns false ([#2285](https://github.com/ReliefApplications/ems-frontend/issues/2285)) ([ad4910b](https://github.com/ReliefApplications/ems-frontend/commit/ad4910bf2c64e62ebf4ceb5f4371cc303d6c3d14))
+* grid widget would not correctly listen to context filter changes ([76eca59](https://github.com/ReliefApplications/ems-frontend/commit/76eca59158da0a6620df7cd1aec531b855bd66c9))
+* selected reference data not appearing in form builder. ([#2273](https://github.com/ReliefApplications/ems-frontend/issues/2273)) ([4408ca1](https://github.com/ReliefApplications/ems-frontend/commit/4408ca1cbb1b026dcffc6561fb66538a7fa2a159))
+* tooltip not appearing in design mode of form builder ([0a28711](https://github.com/ReliefApplications/ems-frontend/commit/0a287114cc107630689d058e9abe654fa488eafe))
+
+
+### Features
+
+* add identifier to text widget filter elements when active ([#2271](https://github.com/ReliefApplications/ems-frontend/issues/2271)) ([9d69243](https://github.com/ReliefApplications/ems-frontend/commit/9d6924349eb393f4e9d73f69ba096693f7c41eb4))
+
+# [2.4.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.4...v2.4.0) (2024-01-10)
+
+
+### Bug Fixes
+
+* Remove currently useless download option from the map widget. ([#2266](https://github.com/ReliefApplications/ems-frontend/issues/2266)) ([3edd7bb](https://github.com/ReliefApplications/ems-frontend/commit/3edd7bb46030fdd0f592371533159b5ece7ad01a))
+* summary card and text widgets checkbox inconclusive ([#2217](https://github.com/ReliefApplications/ems-frontend/issues/2217)) ([7dd457d](https://github.com/ReliefApplications/ems-frontend/commit/7dd457d7fbf70f4e5e1c79b98b3e38f47fea94e2))
+* widgets would be reordered based on their index when mobile mode activated ([#2229](https://github.com/ReliefApplications/ems-frontend/issues/2229)) ([bcba2c8](https://github.com/ReliefApplications/ems-frontend/commit/bcba2c84a772417be7d9f21c840ee9adef4d46cd))
+
+
+### Features
+
+* allow dashboard filter to have default values ([#2263](https://github.com/ReliefApplications/ems-frontend/issues/2263)) ([b73e747](https://github.com/ReliefApplications/ems-frontend/commit/b73e747c6bb9b7f6f4fc5742c95b989f9e863f8f))
+* use cursor pagination for users ([#2265](https://github.com/ReliefApplications/ems-frontend/issues/2265)) ([f44abde](https://github.com/ReliefApplications/ems-frontend/commit/f44abdeb0e814b3360a582c18f557168383446d5))
+
+## [2.3.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.3...v2.3.4) (2024-01-09)
+
+
+### Bug Fixes
+
+* application preview not working fine ([68829f8](https://github.com/ReliefApplications/ems-frontend/commit/68829f8ef3469ed31d7531a095be720067aaffde))
+* assets from geocoder package not being available when using as web component ([c38009f](https://github.com/ReliefApplications/ems-frontend/commit/c38009f821ef209e0a0f540a86fd0f261123eedb))
+* dashboard filter would not show value when using object values in dropdown fields ([#2239](https://github.com/ReliefApplications/ems-frontend/issues/2239)) ([3f01238](https://github.com/ReliefApplications/ems-frontend/commit/3f01238cfc5cdcbfc241d043b66221dd9f19a2b4))
+* resources grid not appearing well in forms, in some cases ([236aebc](https://github.com/ReliefApplications/ems-frontend/commit/236aebca37f4fe684aadc343b2fb9d604ec35d03))
+
+## [2.3.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.2...v2.3.3) (2024-01-08)
+
+
+### Bug Fixes
+
+* changing fields in resources question would not reflect in the form builder ([#2247](https://github.com/ReliefApplications/ems-frontend/issues/2247)) ([30b9c09](https://github.com/ReliefApplications/ems-frontend/commit/30b9c09fe93b9ea02658d1f71575f079211b4892))
+* check null values for map popup properties ([#2246](https://github.com/ReliefApplications/ems-frontend/issues/2246)) ([1aadbb6](https://github.com/ReliefApplications/ems-frontend/commit/1aadbb6158d671a0c43ae7b58ffbeed2400dc106))
+* check null values in setEmptyQuestions ([#2248](https://github.com/ReliefApplications/ems-frontend/issues/2248)) ([0303574](https://github.com/ReliefApplications/ems-frontend/commit/03035747769220d94b9fe682e7356da6f79fa2f9))
+* dashboard filter could create some white space issues & not work when collapsing sidenav ([#2228](https://github.com/ReliefApplications/ems-frontend/issues/2228)) ([4164c43](https://github.com/ReliefApplications/ems-frontend/commit/4164c43061a25f67d2e3f6c017a67134f9bd430b))
+* font title not updating in charts when editing ([ab013db](https://github.com/ReliefApplications/ems-frontend/commit/ab013dbdaa466cecfd95611ac53a38a934d37611))
+* incorrect date format in grid filter menu ([5ccaeb6](https://github.com/ReliefApplications/ems-frontend/commit/5ccaeb6914ac00b94fc23d2e4b9aa60047e3cd9a))
+* incorrect display of icon in icon-picker ([498abd3](https://github.com/ReliefApplications/ems-frontend/commit/498abd3b9d3546f373ac9b526e94702076073f20))
+* incorrect width drag / drop unique value renderer ([#2224](https://github.com/ReliefApplications/ems-frontend/issues/2224)) ([87b39ce](https://github.com/ReliefApplications/ems-frontend/commit/87b39ce34d7732be60dec54bdd48a984c0e30f3a))
+* popup to edit fields from resources question not appearing on first click  ([#2231](https://github.com/ReliefApplications/ems-frontend/issues/2231)) ([ea8493b](https://github.com/ReliefApplications/ems-frontend/commit/ea8493bd1f53077dd264b24b0686e3723534e347))
+* prevent widget grid not to resize when available width changes ([#2256](https://github.com/ReliefApplications/ems-frontend/issues/2256)) ([efa55f3](https://github.com/ReliefApplications/ems-frontend/commit/efa55f3e2d500fae8043a8736a27bae099fc9876))
+* restore selected attribute in order to apply tab css content ([#2220](https://github.com/ReliefApplications/ems-frontend/issues/2220)) ([fd800c6](https://github.com/ReliefApplications/ems-frontend/commit/fd800c6724db54cd2f5099930fbdd4ca2afa83d9))
+* summary cards not correctly updating after grid edition ([#2219](https://github.com/ReliefApplications/ems-frontend/issues/2219)) ([0727cca](https://github.com/ReliefApplications/ems-frontend/commit/0727cca5be44def937671561411a3e1f92286a4e))
+* summary cards widgets using reference data would send duplicated queries ([#2238](https://github.com/ReliefApplications/ems-frontend/issues/2238)) ([0e3c08a](https://github.com/ReliefApplications/ems-frontend/commit/0e3c08a19eeb7519651e6ccc86e72feb0775bb4c))
+* web widgets app not correctly reloading if using same id ([ff3f99d](https://github.com/ReliefApplications/ems-frontend/commit/ff3f99d0ea75ba177394edd578e9e2e00afef8ce))
+
+
+### Performance Improvements
+
+* add lint to web widgets app ([#2221](https://github.com/ReliefApplications/ems-frontend/issues/2221)) ([b8969ec](https://github.com/ReliefApplications/ems-frontend/commit/b8969ecc3fa180d16086e9fc10b3e7a9bf5a2b06))
+
+## [2.3.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.1...v2.3.2) (2023-12-21)
+
+
+### Bug Fixes
+
+* date filters should not use timestamps ([#2203](https://github.com/ReliefApplications/ems-frontend/issues/2203)) ([18c3d98](https://github.com/ReliefApplications/ems-frontend/commit/18c3d98ea00dba4a0ff5dc51dd8bf1df40ff49b0))
+* expansion panels in map unique value renderer not working as expected ([#2215](https://github.com/ReliefApplications/ems-frontend/issues/2215)) ([92016df](https://github.com/ReliefApplications/ems-frontend/commit/92016dfc2066c81ffe2000e2a708114d333c8a84))
+* file question not appearing in text / summary card widgets ([#2216](https://github.com/ReliefApplications/ems-frontend/issues/2216)) ([a534282](https://github.com/ReliefApplications/ems-frontend/commit/a534282bbec46532fb2e9ce9e686576c67748c08))
+
+## [2.3.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.0...v2.3.1) (2023-12-20)
+
+
+### Bug Fixes
+
+* change visibity when position set to none ([#2200](https://github.com/ReliefApplications/ems-frontend/issues/2200)) ([8ec6933](https://github.com/ReliefApplications/ems-frontend/commit/8ec6933614fdc983de02392bd3b94bb012be5d15))
+* context incorrectly saved in some inherited dashboard templates ([#2202](https://github.com/ReliefApplications/ems-frontend/issues/2202)) ([a30bf10](https://github.com/ReliefApplications/ems-frontend/commit/a30bf10ddffc60f187054737d2b92bffb14c1e39))
+* infinite scroll with ref data not working in summary cards ([eb86688](https://github.com/ReliefApplications/ems-frontend/commit/eb8668867a019babd4601edfbe45f3ac48ccdb8c))
+* predefined filters in charts not applying ([#2193](https://github.com/ReliefApplications/ems-frontend/issues/2193)) ([e68d3c4](https://github.com/ReliefApplications/ems-frontend/commit/e68d3c462da8f582ec85e85db2e02aa05f90af51))
+
+# [2.3.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.2...v2.3.0) (2023-12-18)
+
+
+### Bug Fixes
+
+*  Make context filter work for text widget with aggregation ([#2191](https://github.com/ReliefApplications/ems-frontend/issues/2191)) ([453b59c](https://github.com/ReliefApplications/ems-frontend/commit/453b59c584e410d25bba5feb0f6b2602f77c5ea1))
+* allow templating to use nested fields ([d4d10d4](https://github.com/ReliefApplications/ems-frontend/commit/d4d10d44850d40f431955420e8b37e32a5420d25))
+* calc operators in templates would not work when using style ([#2154](https://github.com/ReliefApplications/ems-frontend/issues/2154)) ([3ae4f0e](https://github.com/ReliefApplications/ems-frontend/commit/3ae4f0eea4e2812567cb1ca1c5cdc3b9f795087a))
+* data keys not available by default when loading text widget, without changing tabs ([d265357](https://github.com/ReliefApplications/ems-frontend/commit/d265357362b0deecaddd8b8e37605705c1cc2208))
+* fields disappear when unselecting them in tagbox of aggregation builder ([#2163](https://github.com/ReliefApplications/ems-frontend/issues/2163)) ([65cd803](https://github.com/ReliefApplications/ems-frontend/commit/65cd803fd54cf0c3baa190cf58b4c58862ff61f8))
+* get correct classes and tooltips for ref data fields in grid widgets ([#2192](https://github.com/ReliefApplications/ems-frontend/issues/2192)) ([c3a961c](https://github.com/ReliefApplications/ems-frontend/commit/c3a961c56165d934fadbe00ed816b7ea3c1e5b5f))
+* grid actions in summary cards settings would appear when not needed  ([#2189](https://github.com/ReliefApplications/ems-frontend/issues/2189)) ([931ec30](https://github.com/ReliefApplications/ems-frontend/commit/931ec308e2a9b003fb98c6c9ce5a661bd7fb5e02))
+* grids in forms could go out of the parent container ([#2186](https://github.com/ReliefApplications/ems-frontend/issues/2186)) ([7dee363](https://github.com/ReliefApplications/ems-frontend/commit/7dee363ed839d14ed59017c1df03becfffc7bf60))
+* resolve a few template aggregation issues ([#2182](https://github.com/ReliefApplications/ems-frontend/issues/2182)) ([e1a6760](https://github.com/ReliefApplications/ems-frontend/commit/e1a67603e2a07d203a31bce55685d3476f8ba04b))
+* some change detection would break the app in back-office ([#2181](https://github.com/ReliefApplications/ems-frontend/issues/2181)) ([8b25faa](https://github.com/ReliefApplications/ems-frontend/commit/8b25faa1232dfab7456cdc822958b0326ae61061))
+* valueField not available for static ref data ([#2170](https://github.com/ReliefApplications/ems-frontend/issues/2170)) ([6a1b708](https://github.com/ReliefApplications/ems-frontend/commit/6a1b708423cbb64c0d10450c0e9f74f2dbbf822e))
+
+
+### Features
+
+* Add option to hide summary cards buttons ([#2159](https://github.com/ReliefApplications/ems-frontend/issues/2159)) ([69dac7d](https://github.com/ReliefApplications/ems-frontend/commit/69dac7dbe4410ee03ce3214556c67f796b5a31a1))
+* add ref data aggregation support for layers ([#2158](https://github.com/ReliefApplications/ems-frontend/issues/2158)) ([3b8ca03](https://github.com/ReliefApplications/ems-frontend/commit/3b8ca03ae72b08bdc9ff034ba9d0a51995bf8190))
+* allow filtering on ref data aggregations ([#2175](https://github.com/ReliefApplications/ems-frontend/issues/2175)) ([00a85ca](https://github.com/ReliefApplications/ems-frontend/commit/00a85ca8702c326cdbc6c111f9a5036b866c5f7e))
+* allow html question in dashboard filter ([f51abee](https://github.com/ReliefApplications/ems-frontend/commit/f51abeef839aa522a34babffd34d85400e32fde7))
+* allow preview of aggregation data ([#2176](https://github.com/ReliefApplications/ems-frontend/issues/2176)) ([5665f06](https://github.com/ReliefApplications/ems-frontend/commit/5665f0663253fe3a1bf2821f5d3fdb0af28e3604))
+* allow ref data to appear in grid mode ([#2138](https://github.com/ReliefApplications/ems-frontend/issues/2138)) ([86d293a](https://github.com/ReliefApplications/ems-frontend/commit/86d293a864aa7f480c17286b1af75fd1019c3b53))
+* allow reference data to be used in charts ([#2148](https://github.com/ReliefApplications/ems-frontend/issues/2148)) ([6adf1d1](https://github.com/ReliefApplications/ems-frontend/commit/6adf1d1a6e2f88e92a61576f8b7db007be6ff49d)), closes [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346) [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346) [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346) [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346) [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346) [#68346](https://github.com/ReliefApplications/ems-frontend/issues/68346)
+* allow text & summary card widgets to use record edition when using resource & layout ([#2134](https://github.com/ReliefApplications/ems-frontend/issues/2134)) ([a0f0ca0](https://github.com/ReliefApplications/ems-frontend/commit/a0f0ca0be44bb0c4e908d8317f08abe835592ff8))
+* allow to inject aggregation in text widget ([#2172](https://github.com/ReliefApplications/ems-frontend/issues/2172)) ([41106a3](https://github.com/ReliefApplications/ems-frontend/commit/41106a3ecbcd8a4dc2882a80ea8c7490bfd19d89)), closes [#78949](https://github.com/ReliefApplications/ems-frontend/issues/78949) [#78949](https://github.com/ReliefApplications/ems-frontend/issues/78949) [#78949](https://github.com/ReliefApplications/ems-frontend/issues/78949) [#78949](https://github.com/ReliefApplications/ems-frontend/issues/78949) [#78949](https://github.com/ReliefApplications/ems-frontend/issues/78949)
+* allow to trigger dashboard filter from some widgets ([#2160](https://github.com/ReliefApplications/ems-frontend/issues/2160)) ([3ab66be](https://github.com/ReliefApplications/ems-frontend/commit/3ab66bee5bf1262175bbb4e0970442d8e6629747))
+* app builder as web component should not update the url ([#2152](https://github.com/ReliefApplications/ems-frontend/issues/2152)) ([253ba2f](https://github.com/ReliefApplications/ems-frontend/commit/253ba2f18da43d94b901a1114350a8ff8739b735))
+* can now use context filter in ref data aggregations ([18aa19c](https://github.com/ReliefApplications/ems-frontend/commit/18aa19cf2ecb799ad7b650374944a7500e936ce4))
+* can use context variables in widgets ([#2003](https://github.com/ReliefApplications/ems-frontend/issues/2003)) ([a592082](https://github.com/ReliefApplications/ems-frontend/commit/a5920827436adceaf32d2c86223ea2a2b6cb22dc))
+
 ## [2.2.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.2.1...v2.2.2) (2023-12-13)
 
 

@@ -124,6 +124,7 @@ export class AggregationService {
    * @param options.contextFilters context filters, if any
    * @param options.at 'at' argument value, if any
    * @param options.first number of records to fetch, -1 if all of them
+   * @param options.graphQLVariables graphql variables (optional)
    * @returns Aggregation query
    */
   aggregationDataQuery(options: {
@@ -136,6 +137,7 @@ export class AggregationService {
     contextFilters?: CompositeFilterDescriptor;
     at?: Date;
     first?: number;
+    graphQLVariables?: any;
   }): Observable<
     ApolloQueryResult<
       AggregationDataQueryResponse | ReferenceDataAggregationQueryResponse
@@ -169,6 +171,7 @@ export class AggregationService {
           contextFilters: options.contextFilters
             ? this.contextService.injectContext(options.contextFilters)
             : {},
+          graphQLVariables: options.graphQLVariables,
           at: options.at,
           first: options.first,
         },

@@ -21,7 +21,7 @@ import {
   TranslateService,
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { MessageService } from '@progress/kendo-angular-l10n';
+import { L10N_PREFIX, MessageService } from '@progress/kendo-angular-l10n';
 import {
   AppAbility,
   KendoTranslationService,
@@ -39,7 +39,6 @@ import { PureAbility } from '@casl/ability';
 // Config
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 import { createCustomElement } from '@angular/elements';
-import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
 import { POPUP_CONTAINER, PopupService } from '@progress/kendo-angular-popup';
 import { APP_BASE_HREF, LOCATION_INITIALIZED } from '@angular/common';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
@@ -55,6 +54,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import get from 'lodash/get';
+import { ShadowDomService } from '@oort-front/ui';
 
 // Register local translations for dates
 registerLocaleData(localeFr);
@@ -123,11 +123,15 @@ export const httpTranslateLoader = (http: HttpClient) =>
 /**
  * Provides custom overlay to inject modals / snackbars in shadow root.
  *
+ * @param shadowDomService Shadow Dom service
  * @param _platform CDK platform.
  * @returns custom Overlay container.
  */
-const provideOverlay = (_platform: Platform): AppOverlayContainer =>
-  new AppOverlayContainer(_platform, document);
+const provideOverlay = (
+  shadowDomService: ShadowDomService,
+  _platform: Platform
+): AppOverlayContainer =>
+  new AppOverlayContainer(shadowDomService, _platform, document);
 
 /**
  * Get base href from window configuration.
@@ -179,7 +183,7 @@ export const getBaseHref = () => {
     {
       provide: OverlayContainer,
       useFactory: provideOverlay,
-      deps: [Platform],
+      deps: [ShadowDomService, Platform],
     },
     {
       provide: MessageService,
@@ -214,6 +218,7 @@ export const getBaseHref = () => {
     ResizeBatchService,
     DatePipe,
     { provide: APP_BASE_HREF, useFactory: getBaseHref },
+    { provide: L10N_PREFIX, useValue: '' },
   ],
 })
 export class AppModule implements DoBootstrap {
@@ -229,13 +234,7 @@ export class AppModule implements DoBootstrap {
    * Create the web elements.
    */
   ngDoBootstrap(): void {
-    // Form
-    const form = createCustomElement(FormWidgetComponent, {
-      injector: this.injector,
-    });
-    customElements.define('apb-form', form);
-
-    // Form
+    // Application widget
     const application = createCustomElement(AppWidgetComponent, {
       injector: this.injector,
     });

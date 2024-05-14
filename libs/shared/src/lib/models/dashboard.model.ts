@@ -5,8 +5,9 @@ import { GridSettingsComponent } from '../components/widgets/grid-settings/grid-
 import { MapSettingsComponent } from '../components/widgets/map-settings/map-settings.component';
 import { EditorSettingsComponent } from '../components/widgets/editor-settings/editor-settings.component';
 import { SummaryCardSettingsComponent } from '../components/widgets/summary-card-settings/summary-card-settings.component';
-import { Category, Variant } from '@oort-front/ui';
 import { TabsSettingsComponent } from '../components/widgets/tabs-settings/tabs-settings.component';
+import { EventEmitter } from '@angular/core';
+import { ButtonActionT } from '../components/button-action/button-action-type';
 
 /** Model for IWidgetType object */
 export interface IWidgetType {
@@ -23,6 +24,25 @@ export interface DashboardFilter {
   closable?: boolean;
   structure?: any;
   position?: string;
+}
+
+/** Widget settings types */
+export type WidgetSettingsType = WidgetSettings<any>;
+
+/**
+ * Extended class of all widget settings components
+ *
+ * Implement this class for any widget settings class component that is created
+ */
+export abstract class WidgetSettings<T extends (...args: any[]) => any> {
+  /** Change event emitted on widget settings form group value change */
+  public formChange!: EventEmitter<ReturnType<T>>;
+  /** Related widget property */
+  public widget: any;
+  /** Widget settings form group */
+  public widgetFormGroup!: ReturnType<T>;
+  /** Build settings form for the given widget type */
+  public buildSettingsForm!: () => void;
 }
 
 /** List of Widget types with their properties */
@@ -238,13 +258,7 @@ export interface Dashboard {
   contextData?: {
     [key: string]: any;
   };
-  buttons?: {
-    text: string;
-    href: string;
-    variant: Variant;
-    category: Category;
-    openInNewTab: boolean;
-  }[];
+  buttons?: ButtonActionT[];
   filter?: DashboardFilter;
   gridOptions?: any;
 }
@@ -272,9 +286,4 @@ export interface DeleteDashboardMutationResponse {
 /** Model for dashboards graphql query response */
 export interface DashboardsQueryResponse {
   dashboards: Dashboard[];
-}
-
-/** Model for create dashboard with context mutation response */
-export interface CreateDashboardWithContextMutationResponse {
-  addDashboardWithContext: Pick<Dashboard, 'id' | 'structure' | 'page'>;
 }

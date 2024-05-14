@@ -41,6 +41,7 @@ export const GET_REFERENCE_DATA = gql`
       fields
       valueField
       graphQLTypeName
+      query
       aggregations(ids: $aggregationIds) {
         edges {
           node {
@@ -87,6 +88,17 @@ export const GET_RESOURCE_METADATA = gql`
           options
         }
       }
+    }
+  }
+`;
+
+/** Graphql request to get reference data metadata */
+export const GET_REFERENCE_DATA_METADATA = gql`
+  query GetReferenceDataMetadata($id: ID!) {
+    referenceData(id: $id) {
+      id
+      name
+      fields
     }
   }
 `;

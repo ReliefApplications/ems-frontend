@@ -2,6 +2,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { Platform } from '@angular/cdk/platform';
 import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { ShadowDomService } from '@oort-front/ui';
 
 /**
  * Custom Overlay container, to avoid creating modals / snackbar as child of body directly.
@@ -11,10 +12,12 @@ export class AppOverlayContainer extends OverlayContainer {
   /**
    * Custom overlay container
    *
+   * @param shadowDomService Shadow dom service
    * @param _platform Angular platform
    * @param document Current client document
    */
   constructor(
+    private shadowDomService: ShadowDomService,
     _platform: Platform,
     @Inject(DOCUMENT) private document: Document
   ) {
@@ -28,17 +31,14 @@ export class AppOverlayContainer extends OverlayContainer {
     const container = document.createElement('div');
     container.classList.add('cdk-overlay-container');
 
-    const isShadowRoot = Array.from(
-      this.document.getElementsByTagName('*')
-    ).filter((element) => element.shadowRoot);
-
-    const shadowRootHolder =
-      isShadowRoot instanceof Array && isShadowRoot.length
-        ? isShadowRoot[0].shadowRoot
-        : null;
     this._containerElement = container;
-
-    shadowRootHolder?.appendChild(container);
+    if (this.shadowDomService.currentHost?.fullscreenElement) {
+      this.shadowDomService.currentHost.fullscreenElement.appendChild(
+        container
+      );
+    } else {
+      this.shadowDomService.currentHost.appendChild(container);
+    }
   }
 
   /**

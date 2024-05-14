@@ -28,6 +28,8 @@ import { DOCUMENT } from '@angular/common';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
+import { updateModalChoicesAndValue } from '../../survey/global-properties/reference-data';
+import { HttpClient } from '@angular/common/http';
 
 /**
  * Array containing the different types of questions.
@@ -142,6 +144,7 @@ export class FormBuilderComponent
    * @param referenceDataService Reference data service
    * @param formHelpersService Shared form helper service.
    * @param document document
+   * @param http Http client
    */
   constructor(
     public dialog: Dialog,
@@ -149,7 +152,8 @@ export class FormBuilderComponent
     private translate: TranslateService,
     private referenceDataService: ReferenceDataService,
     private formHelpersService: FormHelpersService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private http: HttpClient
   ) {
     super();
     // translate the editor in the same language as the interface
@@ -191,7 +195,10 @@ export class FormBuilderComponent
 
       // add the rendering of custom properties
       this.surveyCreator.survey.onAfterRenderQuestion.add(
-        renderGlobalProperties(this.referenceDataService) as any
+        renderGlobalProperties(this.referenceDataService, this.http)
+      );
+      this.surveyCreator.survey.onAfterRenderQuestion.add(
+        this.formHelpersService.addQuestionTooltips
       );
     }
   }
@@ -221,18 +228,16 @@ export class FormBuilderComponent
 
     this.surveyCreator = new SurveyCreatorModel(creatorOptions);
 
-    (this.surveyCreator.onTestSurveyCreated as any).add(
-      (_: any, options: any) => {
-        const survey: SurveyModel = options.survey;
-        survey.applyTheme({
-          isPanelless: true,
-        });
-        survey.onAfterRenderQuestion.add(
-          this.formHelpersService.addQuestionTooltips
-        );
-        this.formHelpersService.addUserVariables(survey);
-      }
-    );
+    this.surveyCreator.onPreviewSurveyCreated.add((_: any, options: any) => {
+      const survey: SurveyModel = options.survey;
+      survey.applyTheme({
+        isPanelless: true,
+      });
+      survey.onAfterRenderQuestion.add(
+        this.formHelpersService.addQuestionTooltips
+      );
+      this.formHelpersService.addUserVariables(survey);
+    });
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.text = structure;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
@@ -320,14 +325,19 @@ export class FormBuilderComponent
 
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
-      renderGlobalProperties(this.referenceDataService) as any
+      renderGlobalProperties(this.referenceDataService, this.http)
     );
-    (this.surveyCreator.onTestSurveyCreated as any).add(
-      (sender: any, options: any) =>
-        options.survey.onAfterRenderQuestion.add(
-          renderGlobalProperties(this.referenceDataService)
-        )
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      this.formHelpersService.addQuestionTooltips
     );
+
+    this.surveyCreator.onPreviewSurveyCreated.add((sender: any, options: any) =>
+      options.survey.onAfterRenderQuestion.add(
+        renderGlobalProperties(this.referenceDataService, this.http)
+      )
+    );
+
+    this.surveyCreator.onPropertyGridShowModal.add(updateModalChoicesAndValue);
 
     this.surveyCreator.survey.locale = surveyLocalization.currentLocale; // -> set the defaultLanguage property also
 
@@ -404,14 +414,13 @@ export class FormBuilderComponent
    * @param coreFields list of core fields
    */
   private addCustomClassToCoreFields(coreFields: string[]): void {
-    this.surveyCreator.survey.onAfterRenderQuestion.add(((
-      survey: SurveyModel,
-      options: any
-    ) => {
-      if (coreFields.includes(options.question.valueName)) {
-        options.htmlElement.children[0].className += ` ${CORE_FIELD_CLASS}`;
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      (survey: SurveyModel, options: any) => {
+        if (coreFields.includes(options.question.valueName)) {
+          options.htmlElement.children[0].className += ` ${CORE_FIELD_CLASS}`;
+        }
       }
-    }) as any);
+    );
   }
 
   /**

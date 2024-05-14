@@ -10,6 +10,7 @@ import { createGridActionsFormGroup } from '../grid-settings/grid-settings.forms
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import isNil from 'lodash/isNil';
 import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';
+import { createAutomationForm } from '../../../forms/automation.forms';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
@@ -27,7 +28,7 @@ export const createSummaryCardForm = (id: string, configuration: any) => {
       id,
       title: get<string>(configuration, 'title', ''),
       card: createCardForm(get(configuration, 'card', null)),
-      sortFields: new FormArray([]),
+      sortFields: new FormArray<any>([]),
       contextFilters: get<string>(
         configuration,
         'contextFilters',
@@ -35,6 +36,12 @@ export const createSummaryCardForm = (id: string, configuration: any) => {
       ),
       actions: createGridActionsFormGroup(configuration),
       at: get<string>(configuration, 'at', ''),
+      // Automation
+      automationRules: fb.array<ReturnType<typeof createAutomationForm>>(
+        get(configuration, 'automationRules', []).map((rule: any) =>
+          createAutomationForm(rule)
+        )
+      ),
     },
     {
       validators: [templateRequiredWhenAddRecord],
@@ -121,10 +128,13 @@ export const templateRequiredWhenAddRecord = (
  * @returns card as form group
  */
 const createCardForm = (value?: any) => {
-  return fb.group(
+  const formGroup = fb.group(
     {
       title: get<string>(value, 'title', 'New Card'),
       referenceData: get<string | null>(value, 'referenceData', null),
+      referenceDataVariableMapping: [
+        get<string | null>(value, 'referenceDataVariableMapping', null),
+      ],
       resource: get<string | null>(value, 'resource', null),
       template: get<string | null>(value, 'template', null),
       layout: get<string | null>(value, 'layout', null),
@@ -141,10 +151,39 @@ const createCardForm = (value?: any) => {
       usePadding: get<boolean>(value, 'usePadding', true),
     },
     {
-      validators: mutuallyExclusive({
-        required: true,
-        fields: ['resource', 'referenceData'],
-      }),
+      validators: [
+        mutuallyExclusive({
+          required: true,
+          fields: ['resource', 'referenceData'],
+        }),
+      ],
     }
   );
+  if (formGroup.value.resource) {
+    formGroup.addValidators(
+      mutuallyExclusive({
+        required: true,
+        fields: ['layout', 'aggregation'],
+      })
+    );
+  }
+  formGroup.controls.resource.valueChanges.subscribe((value) => {
+    if (value) {
+      formGroup.addValidators(
+        mutuallyExclusive({
+          required: true,
+          fields: ['layout', 'aggregation'],
+        })
+      );
+    } else {
+      formGroup.setValidators([
+        mutuallyExclusive({
+          required: true,
+          fields: ['resource', 'referenceData'],
+        }),
+      ]);
+    }
+    formGroup.updateValueAndValidity();
+  });
+  return formGroup;
 };
