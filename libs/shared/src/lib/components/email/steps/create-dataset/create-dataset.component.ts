@@ -181,6 +181,9 @@ export class CreateDatasetComponent implements OnInit {
     this.tabs.forEach(
       (tab) => ((tab.active = false), (this.blockIndex = tab.index))
     );
+    if (this.tabs.length === 0) {
+      this.blockIndex = -1;
+    }
     this.tabs.push({
       title: `Block ${this.blockIndex + 2}`,
       content: `Block ${this.blockIndex + 2} Content`,

@@ -824,10 +824,10 @@
 				"duplicate": "Title already exists",
 				"import": {
 					"download": "Download Template",
+					"import": "Import Distribution List",
 					"loading": "Importing file...",
 					"name": "Import",
-					"success": "Import Successful",
-					"upload": "Upload Email List"
+					"success": "Import Successful"
 				},
 				"list": "Distribution List",
 				"name": "Distribution List name",

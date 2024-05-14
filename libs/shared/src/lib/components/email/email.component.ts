@@ -365,16 +365,17 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           delete emailData.isDeleted;
           delete emailData.lastExecution;
           delete emailData.status;
-          this.emailService
-            .addEmailNotification(emailData)
-            .subscribe((res: any) => {
-              this.emailService.emailListLoading = false;
-              this.emailService.configId = res.data.addEmailNotification.id;
-              this.getEmailNotificationById(
-                res.data.addEmailNotification.id,
-                false
-              );
-            });
+          this.prepareEditData(emailData, false, true);
+          // this.emailService
+          //   .addEmailNotification(emailData)
+          //   .subscribe((res: any) => {
+          //     this.emailService.emailListLoading = false;
+          //     this.emailService.configId = res.data.addEmailNotification.id;
+          //     // this.getEmailNotificationById(
+          //     //   res.data.addEmailNotification.id,
+          //     //   false
+          //     // );
+          //   });
         } else {
           this.emailService.editId = id;
           this.prepareEditData(emailData, isSendEmail);
@@ -387,9 +388,14 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    *
    * @param emailData The data of the email notification to be edited.
    * @param isSendEmail Whether to send the email notification.
+   * @param isclone Identify it is cloned or not
    */
-  prepareEditData(emailData: any, isSendEmail?: boolean) {
-    this.emailService.isEdit = true;
+  prepareEditData(emailData: any, isSendEmail?: boolean, isclone?: boolean) {
+    if (isclone) {
+      this.emailService.isEdit = false;
+    } else {
+      this.emailService.isEdit = true;
+    }
     this.emailService.isLinear = false;
     const distributionListNames = this.emailService.distributionListNames;
     const emailNotificationNames = this.emailService.emailNotificationNames;

@@ -824,10 +824,10 @@
 				"duplicate": "Le nom existe déjà",
 				"import": {
 					"download": "Télécharger le modèle",
+					"import": "Liste de distribution d'importation",
 					"loading": "Importation du fichier...",
 					"name": "Importer",
-					"success": "Importation réussie",
-					"upload": "Télécharger la liste de diffusion"
+					"success": "Importation réussie"
 				},
 				"list": "Liste de distribution",
 				"name": "Nom de la liste de distribution",

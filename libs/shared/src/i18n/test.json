@@ -824,10 +824,10 @@
 				"duplicate": "******",
 				"import": {
 					"download": "******",
+					"import": "******",
 					"loading": "******",
 					"name": "******",
-					"success": "******",
-					"upload": "******"
+					"success": "******"
 				},
 				"list": "******",
 				"name": "******",
