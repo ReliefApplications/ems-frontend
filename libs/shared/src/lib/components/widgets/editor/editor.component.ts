@@ -452,26 +452,25 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
       });
 
     this.aggregations.forEach((aggregation: any) => {
+      // If reference data
       if (aggregation.referenceData) {
-        console.log('one');
         promises.push(
           new Promise<void>((resolve) => {
+            // First, load reference data
             this.referenceDataService
               .loadReferenceData(aggregation.referenceData)
               .then((refData) => {
-                console.log('two');
+                // Then, if using auth code, directly query external API
                 if (
                   refData.apiConfiguration?.authType ===
                   authType.authorizationCode
                 ) {
-                  console.log('three');
                   this.aggregationService
                     .getAggregations({
                       referenceData: aggregation.referenceData,
                       ids: [aggregation.aggregation],
                     })
                     .then(({ edges }) => {
-                      console.log('four');
                       const aggregationModel = edges[0].node;
                       this.referenceDataService
                         .aggregate(refData, aggregationModel, {
@@ -484,22 +483,24 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
                             ),
                         })
                         .then((data) => {
-                          console.log(data);
+                          set(this.aggregations, aggregation.id, data);
                         })
                         .finally(() => resolve());
                     })
                     .catch(() => resolve());
                 } else {
+                  // Else, apply default logic
                   defaultPromise(aggregation).finally(() => resolve());
                 }
               })
               .catch(() => resolve());
           })
         );
+      } else {
+        // If resource
+        promises.push(defaultPromise(aggregation));
       }
-      promises.push(defaultPromise(aggregation));
     });
-    console.log('five');
     return Promise.all(promises);
   }
 
