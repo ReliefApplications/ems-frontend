@@ -58,11 +58,15 @@ export class ResourceModalComponent extends FormModalComponent {
    */
   public override async onUpdate(survey: any): Promise<void> {
     if (this.data.recordId) {
-      await this.formHelpersService.uploadFiles(
-        survey,
-        this.temporaryFilesStorage,
-        this.form?.id
-      );
+      try {
+        await this.formHelpersService.uploadFiles(
+          survey,
+          this.temporaryFilesStorage,
+          this.form?.id
+        );
+      } catch {
+        return;
+      }
       if (this.isMultiEdition) {
         this.updateMultipleData(this.data.recordId, survey);
       } else {
@@ -87,23 +91,6 @@ export class ResourceModalComponent extends FormModalComponent {
         this.lastDraftRecord,
         callback
       );
-
-      // Temporary record saved in local storage (outdated)
-      // const temporaryId = uuidv4();
-      // await localForage.setItem(
-      //   temporaryId.toString(),
-      //   JSON.stringify({ data: survey.data, template: this.data.template })
-      // ); //We save the question temporarily before applying the mutation.
-      // this.ngZone.run(() => {
-      //   this.dialogRef.close({
-      //     template: this.data.template,
-      //     data: {
-      //       id: temporaryId,
-      //       data: survey.data,
-      //     },
-      //   } as any);
-      // });
     }
-    // survey.showCompletedPage = true;
   }
 }
