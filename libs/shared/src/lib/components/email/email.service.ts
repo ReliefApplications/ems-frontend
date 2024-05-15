@@ -860,6 +860,7 @@ export class EmailService {
           x.type = 'resource';
         }
       });
+      const resourceInfo = { id: query.resource.id, name: query.resource.name };
       query.tabIndex = count;
       count++;
       query.pageSize = Number(query.pageSize);
@@ -867,7 +868,11 @@ export class EmailService {
         if (res?.data?.dataset) {
           const datasetResponse = res?.data?.dataset.records;
           this.dataList = datasetResponse?.map((record: any) => {
-            const flattenedObject = this.flattenRecord(record, query);
+            const flattenedObject = this.flattenRecord(
+              record,
+              resourceInfo,
+              query
+            );
 
             query.fields.forEach((x: any) => {
               if (x.parentName) {
@@ -934,10 +939,11 @@ export class EmailService {
    * Flattens the given record object into a single level object.
    *
    * @param record The record to be flattened.
+   * @param resourceInfo Name and Id of the supplied resource.
    * @param query Form Query Object for field values.
    * @returns The flattened record.
    */
-  flattenRecord(record: any, query?: any): any {
+  flattenRecord(record: any, resourceInfo: any, query?: any): any {
     const result: any = {};
     for (const key in record) {
       if (Object.prototype.hasOwnProperty.call(record, key)) {
@@ -1068,6 +1074,16 @@ export class EmailService {
                 }`
               ] = value;
             }
+          } else if (resourceInfo && key == 'form') {
+            // Temp fix, set as resource name.
+            result[key] = resourceInfo.name;
+          } else if (key == 'lastUpdateForm') {
+            // TO DO
+            // Ideally we will run an apollo graphql query to fetch the form
+            // names from the id's passed into the form and lastUpdateForm
+            // fields. This isn't currently working due to the data configuration,
+            // likely will need to normalise the metaData so that we have options/choices.
+            result[key] = value;
           } else {
             result[key] = value;
           }
@@ -1111,7 +1127,10 @@ export class EmailService {
     }
     // If rowData is not a date string, return it as is
     // This includes non-string inputs and strings that cannot be parsed into a date
-    return rowData ? rowData.toString() : '';
+    if (typeof rowData == 'string') {
+      return rowData;
+    }
+    return rowData ? JSON.stringify(rowData) : '';
   }
 
   /**

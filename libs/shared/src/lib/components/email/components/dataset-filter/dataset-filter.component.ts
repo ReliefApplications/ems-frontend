@@ -1195,6 +1195,10 @@ export class DatasetFilterComponent
           if (count == 0) {
             this.loading = true;
           }
+          const resourceInfo = {
+            id: query.resource.id,
+            name: query.resource.name,
+          };
           query.tabIndex = count;
           count++;
           query.pageSize = 50;
@@ -1207,6 +1211,7 @@ export class DatasetFilterComponent
                   (record: any) => {
                     const flattenedObject = this.emailService.flattenRecord(
                       record,
+                      resourceInfo,
                       query
                     );
                     query.fields.forEach((x: any) => {
