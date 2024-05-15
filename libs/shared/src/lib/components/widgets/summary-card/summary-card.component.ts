@@ -468,7 +468,7 @@ export class SummaryCardComponent
       if (this.useAggregation) {
         this.getCardsFromAggregation(card);
       } else if (this.useLayout) {
-        this.createDynamicQueryFromLayout(card);
+        await this.createDynamicQueryFromLayout(card);
       }
     } else if (this.useReferenceData) {
       // Using reference data
@@ -835,11 +835,13 @@ export class SummaryCardComponent
         },
       })
     );
-
-    this.gridLayoutService
-      .getLayouts(card.resource, { ids: [card.layout], first: 1 })
-      .then((res) => {
-        const layouts = res.edges.map((edge) => edge.node);
+    await this.gridLayoutService
+      .getLayouts(card.resource, {
+        ids: [card.layout],
+        first: 1,
+      })
+      .then(async ({ edges }) => {
+        const layouts = edges.map((edge) => edge.node);
         if (layouts.length > 0) {
           this.layout = layouts[0];
           const layoutQuery = this.layout.query;
@@ -896,40 +898,48 @@ export class SummaryCardComponent
           this.metaQuery = this.queryBuilder.buildMetaQuery(this.layout.query);
           if (this.metaQuery) {
             this.loading = true;
-            this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe({
-              next: async ({ data }: any) => {
-                for (const field in data) {
-                  if (Object.prototype.hasOwnProperty.call(data, field)) {
-                    this.metaFields = Object.assign({}, data[field]);
-                    try {
-                      await this.gridService.populateMetaFields(
-                        this.metaFields
-                      );
-                      this.fields = this.fields.map((field) => {
-                        //add shape for columns and matrices
-                        const metaData = this.metaFields[field.name];
-                        if (metaData && (metaData.columns || metaData.rows)) {
-                          return {
-                            ...field,
-                            columns: metaData.columns,
-                            rows: metaData.rows,
-                          };
-                        }
-                        return field;
-                      });
-                    } catch (err) {
-                      console.error(err);
+            const { data } = await this.metaQuery
+              .pipe(takeUntil(this.destroy$))
+              .toPromise();
+
+            const promises = Object.entries(data).map(async ([key]) => {
+              if (Object.prototype.hasOwnProperty.call(data, key)) {
+                this.metaFields = Object.assign({}, data[key]);
+                try {
+                  await this.gridService.populateMetaFields(this.metaFields);
+                  this.fields = this.fields.map((field) => {
+                    const metaData = this.metaFields[field.name];
+                    if (metaData) {
+                      field = {
+                        ...field,
+                        meta: metaData,
+                      };
+                      if (metaData.columns || metaData.row) {
+                        return {
+                          ...field,
+                          columns: metaData.columns,
+                          rows: metaData.rows,
+                        };
+                      }
                     }
-                  }
+                    return field;
+                  });
+                } catch (err) {
+                  console.error(err);
                 }
-              },
-              error: () => {
-                this.loading = false;
-              },
+              }
             });
+            await Promise.all(promises);
+            // Update cards metadata (will be the fields value in the cards content)
+            this.cards = this.cards.map((c: CardT) => ({
+              ...c,
+              metadata: this.fields,
+            }));
+            console.log('one');
           }
         }
       });
+    console.log('two');
   }
 
   /**
