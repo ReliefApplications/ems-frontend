@@ -438,10 +438,6 @@ export class GridComponent
     if (!this.loadingRecords) {
       this.showFilter = !this.showFilter;
       this.showFilterChange.emit(this.showFilter);
-      this.onFilterChange({
-        logic: 'and',
-        filters: this.showFilter ? [] : this.filter.filters,
-      });
     }
   }
 
