@@ -126,13 +126,19 @@ export class UsersDropdownComponent
    */
   public onSearchChange(searchValue: string) {
     this.query.refetch({
+      first: ITEMS_PER_PAGE + (this.control.value?.length ?? 0),
       filter: {
-        logic: 'and',
+        logic: 'or',
         filters: [
           {
             field: 'username',
             operator: 'contains',
             value: searchValue,
+          },
+          {
+            field: 'ids',
+            operator: 'in',
+            value: this.control.value,
           },
         ],
       } as CompositeFilterDescriptor,
