@@ -69,10 +69,10 @@ const setDefaultValue = (json, defaultValue) => {
 const updateFile = (lang, json) => {
   fs.writeFileSync(
     I18N_FOLDER_PATH + lang + '.json',
-    JSON.stringify(json, null, '\t'),
+    JSON.stringify(json, null, '  '),
     (err) => {
       if (err) {
-        throw(err);
+        throw err;
       }
       // else success
     }
@@ -119,19 +119,19 @@ const checkTranslationKeys = (
 };
 
 try {
-  // Build dictionnary from files
+  // Build dictionary from files
   let filenames = fs.readdirSync(I18N_FOLDER_PATH);
   let languages = filenames
     .filter((name) => name.endsWith('.json'))
     .map((name) => name.split('.json')[0]);
 
-  let dictionnary = languages.map((lang) => ({
+  let dictionary = languages.map((lang) => ({
     lang: lang,
     value: require('../' + I18N_FOLDER_PATH + lang + '.json'),
   }));
 
   // Sort the files
-  dictionnary
+  dictionary
     .filter((x) => x.lang !== TEST_LANGUAGE)
     .map((x) => {
       x.value = sortJson(x.value);
@@ -139,7 +139,7 @@ try {
     });
 
   // Check the files content
-  dictionnary
+  dictionary
     .filter((x) => ![TEST_LANGUAGE, DEFAULT_LANGUAGE].includes(x.lang))
     .forEach((x) =>
       checkTranslationKeys(x.lang, x.value, DEFAULT_LANGUAGE, DEFAULT_I18N)
@@ -147,7 +147,7 @@ try {
 
   // Update the i18n test file.
   const testJson = setDefaultValue(
-    dictionnary.find((x) => x.lang === DEFAULT_LANGUAGE).value,
+    dictionary.find((x) => x.lang === DEFAULT_LANGUAGE).value,
     DEFAULT_VALUE
   );
   updateFile(TEST_LANGUAGE, testJson);
