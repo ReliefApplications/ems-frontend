@@ -22,7 +22,7 @@ import {
   ReferenceDataSelectComponent,
   ResourceSelectComponent,
 } from '../../../controls/public-api';
-import { GraphqlVariablesMappingComponent } from '../../common/graphql-variables-mapping/graphql-variables-mapping.component';
+import { ReferenceDataVariablesMappingComponent } from '../../common/reference-data-variables-mapping/reference-data-variables-mapping.component';
 
 /**
  * Main tab of chart settings modal.
@@ -51,7 +51,7 @@ import { GraphqlVariablesMappingComponent } from '../../common/graphql-variables
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
     DividerModule,
-    GraphqlVariablesMappingComponent,
+    ReferenceDataVariablesMappingComponent,
   ],
   exports: [TabMainComponent],
 })
