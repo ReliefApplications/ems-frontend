@@ -5,7 +5,7 @@ import { Apollo } from 'apollo-angular';
 import { ADD_GROUP, DELETE_GROUP, FETCH_GROUPS } from '../../graphql/mutations';
 import { GET_GROUPS } from '../../graphql/queries';
 import { ConfirmService } from '../../../../services/confirm/confirm.service';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { RestService } from '../../../../services/rest/rest.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';

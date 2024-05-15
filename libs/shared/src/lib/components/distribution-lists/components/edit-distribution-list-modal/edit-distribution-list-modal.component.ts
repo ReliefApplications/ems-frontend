@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';

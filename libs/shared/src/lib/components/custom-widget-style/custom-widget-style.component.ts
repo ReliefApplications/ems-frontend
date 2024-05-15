@@ -14,7 +14,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule, TooltipModule } from '@oort-front/ui';
 import { debounceTime, takeUntil } from 'rxjs';
 import set from 'lodash/set';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { RestService } from '../../services/rest/rest.service';
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';

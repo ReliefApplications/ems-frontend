@@ -6,7 +6,7 @@ import {
   UnsubscribeComponent,
 } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { Calculated_FIELD_UPDATE } from './graphql/mutations';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';

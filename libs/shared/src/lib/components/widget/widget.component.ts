@@ -19,7 +19,7 @@ import { GridWidgetComponent } from '../widgets/grid/grid.component';
 import { MapWidgetComponent } from '../widgets/map/map.component';
 import { SummaryCardComponent } from '../widgets/summary-card/summary-card.component';
 import { v4 as uuidv4 } from 'uuid';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { GridsterComponent, GridsterItemComponent } from 'angular-gridster2';
 import { WidgetService } from '../../services/widget/widget.service';
 import { FormWidgetComponent } from '../widgets/form/form-widget.component';

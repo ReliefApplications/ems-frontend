@@ -28,7 +28,7 @@ import { GridLayoutService } from '../../../services/grid-layout/grid-layout.ser
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import set from 'lodash/set';
 import { ApplicationService } from '../../../services/application/application.service';
 import { Aggregation } from '../../../models/aggregation.model';

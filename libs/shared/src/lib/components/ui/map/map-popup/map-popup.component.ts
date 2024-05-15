@@ -14,8 +14,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule, DividerModule, TooltipModule } from '@oort-front/ui';
 import { LatLng } from 'leaflet';
-import get from 'lodash/get';
-import { isNil } from 'lodash';
+import { get, isNil } from 'lodash';
 import { ButtonModule as KendoButtonModule } from '@progress/kendo-angular-buttons';
 import { Router } from '@angular/router';
 

@@ -32,7 +32,7 @@ import {
   debounceTime,
   distinctUntilChanged,
 } from 'rxjs';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';

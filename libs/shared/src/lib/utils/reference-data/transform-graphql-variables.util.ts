@@ -1,4 +1,4 @@
-import get from 'lodash/get';
+import { get } from 'lodash';
 import set from 'lodash/set';
 import { gql } from '@apollo/client';
 

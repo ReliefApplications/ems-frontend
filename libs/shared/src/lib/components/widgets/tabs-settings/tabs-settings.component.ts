@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { createTabsWidgetFormGroup } from './tabs-settings.form';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
 import { WidgetSettings } from '../../../models/dashboard.model';

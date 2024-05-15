@@ -5,7 +5,7 @@ import {
   FormControl,
   ValidationErrors,
 } from '@angular/forms';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { createGridActionsFormGroup } from '../grid-settings/grid-settings.forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import isNil from 'lodash/isNil';

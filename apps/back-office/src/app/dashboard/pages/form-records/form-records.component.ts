@@ -22,7 +22,7 @@ import {
 } from '@oort-front/shared';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { takeUntil } from 'rxjs/operators';
 import { Metadata } from '@oort-front/shared';
 import {

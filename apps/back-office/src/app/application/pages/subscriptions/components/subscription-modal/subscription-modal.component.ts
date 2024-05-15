@@ -15,7 +15,7 @@ import {
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GET_ROUTING_KEYS, GET_FORM_NAMES } from '../../graphql/queries';
 import { map, startWith, takeUntil } from 'rxjs/operators';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { ApolloQueryResult } from '@apollo/client';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';

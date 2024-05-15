@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DownloadService } from '../download/download.service';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import {
   getAggregationKeys,
   getCalcKeys,

@@ -1,6 +1,6 @@
 import { FormBuilder, Validators } from '@angular/forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import isNil from 'lodash/isNil';
 import { v4 as uuidv4 } from 'uuid';
 import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';

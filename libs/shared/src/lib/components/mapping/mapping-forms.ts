@@ -1,5 +1,5 @@
 import { FormBuilder, Validators } from '@angular/forms';
-import get from 'lodash/get';
+import { get } from 'lodash';
 
 /** Interface for Mapping element. */
 export interface Mapping {

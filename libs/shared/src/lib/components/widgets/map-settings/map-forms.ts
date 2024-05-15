@@ -4,7 +4,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import get from 'lodash/get';
+import { get, set } from 'lodash';
 import {
   MapControls,
   DefaultMapControls,
@@ -21,7 +21,6 @@ import {
   GeometryType,
   LayerType,
 } from '../../ui/map/interfaces/layer-settings.type';
-import { set } from 'lodash';
 import { DEFAULT_MARKER_ICON_OPTIONS } from '../../ui/map/utils/create-div-icon';
 import { FaIconName, faV4toV6Mapper } from '@oort-front/ui';
 import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';

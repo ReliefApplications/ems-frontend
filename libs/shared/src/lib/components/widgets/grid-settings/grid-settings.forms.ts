@@ -6,7 +6,7 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import {
   addNewField,
   createQueryForm,

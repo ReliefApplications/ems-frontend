@@ -8,7 +8,7 @@ import {
 } from 'rxjs';
 import { GET_QUERY_META_DATA, GET_QUERY_TYPES } from './graphql/queries';
 import { ApolloQueryResult } from '@apollo/client';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { Connection } from '../../utils/public-api';
 import {
