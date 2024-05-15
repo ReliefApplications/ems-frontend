@@ -1859,11 +1859,14 @@
 						"dataSource": {
 							"layoutStyles": {
 								"queryFilters": {
+									"error": "******",
+									"graphqlTitle": "******",
+									"graphqlTooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }",
 									"help": "******",
 									"noVariables": "******",
 									"refresh": "******",
-									"title": "******",
-									"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
+									"restTitle": "******",
+									"restTooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
 								},
 								"title": "******",
 								"use": "******",

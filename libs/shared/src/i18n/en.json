@@ -1859,11 +1859,14 @@
 						"dataSource": {
 							"layoutStyles": {
 								"queryFilters": {
+									"error": "Error while building available reference data variables",
+									"graphqlTitle": "GraphQL variable mapping",
+									"graphqlTooltip": "Set values for the GraphQL variables defined in the reference data query. You can get values from the filters using the {{filter.<question-name>}} templates. E.g.: { \"region\": {{filter.region}} }",
 									"help": "Make sure to remove all unused variables, to prevent null arguments to be sent.",
 									"noVariables": "No variables defined",
-									"refresh": "See all graphQL variables",
-									"title": "GraphQL variable mapping",
-									"tooltip": "Set values for the GraphQL variables defined in the reference data query. You can get values from the filters using the {{filter.<question-name>}} templates. E.g.: { \"region\": {{filter.region}} }"
+									"refresh": "See all variables",
+									"restTitle": "Rest variable mapping",
+									"restTooltip": "Set values for the rest endpoint variables available in the reference data. You can add filtering and pagination variables as well. You can get values from the filters using the {{filter.<question-name>}} templates. E.g.: { \"region\": {{filter.region}} }"
 								},
 								"title": "Layout styles",
 								"use": "Use layout styles",
