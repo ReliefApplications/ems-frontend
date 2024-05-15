@@ -9,6 +9,7 @@ import {
   surveyLocalization,
   QuestionMatrixDropdownModel,
 } from 'survey-core';
+import { SurveyQuestionEditorDefinition } from 'survey-creator-core';
 import {
   CustomMatrixDropdownColumn,
   Question,
@@ -16,7 +17,6 @@ import {
 } from '../types';
 import { DomService } from '../../services/dom/dom.service';
 import { MultiSelectComponent } from '@progress/kendo-angular-dropdowns';
-import { SurveyQuestionEditorDefinition } from 'survey-creator';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { isSelectQuestion } from '../global-properties/reference-data';
