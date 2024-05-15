@@ -366,16 +366,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           delete emailData.lastExecution;
           delete emailData.status;
           this.prepareEditData(emailData, false, true);
-          // this.emailService
-          //   .addEmailNotification(emailData)
-          //   .subscribe((res: any) => {
-          //     this.emailService.emailListLoading = false;
-          //     this.emailService.configId = res.data.addEmailNotification.id;
-          //     // this.getEmailNotificationById(
-          //     //   res.data.addEmailNotification.id,
-          //     //   false
-          //     // );
-          //   });
         } else {
           this.emailService.editId = id;
           this.prepareEditData(emailData, isSendEmail);

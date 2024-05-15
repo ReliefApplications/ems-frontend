@@ -61,3 +61,6 @@ export const TITLE_POSITIONS = [
     icon: 'vertical_align_bottom',
   },
 ];
+
+/** token regex*/
+export const TokenRegex = /{{([^}]*)}}/;
