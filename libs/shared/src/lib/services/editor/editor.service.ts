@@ -28,7 +28,6 @@ export class EditorService {
    * @returns the base url
    */
   get url(): string {
-    return 'https://whoemssafedsta03.blob.core.windows.net/shared/dev/tinymce';
     if (this.environment.tinymceBaseUrl) {
       return this.environment.tinymceBaseUrl;
     } else {
