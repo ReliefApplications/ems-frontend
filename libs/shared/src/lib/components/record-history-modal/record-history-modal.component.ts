@@ -5,6 +5,7 @@ import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ButtonModule, DialogModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
+import { Field } from '../../services/query-builder/query-builder.service';
 
 /**
  * This interface describes the structure of the data that will be displayed in the dialog modal
@@ -14,6 +15,7 @@ interface DialogData {
   revert: any;
   template?: string;
   refresh$?: Subject<boolean>;
+  availableFields: Field[]
 }
 
 /**
