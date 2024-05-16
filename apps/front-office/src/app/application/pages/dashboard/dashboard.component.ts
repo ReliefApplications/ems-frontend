@@ -142,7 +142,8 @@ export class DashboardComponent
         ?.filter((x: any) => x !== null)
         .map((widget: any) => {
           const contextData = this.dashboard?.contextData;
-          this.contextService.context = contextData || null;
+          this.contextService.context =
+            { id: this.contextId, ...contextData } || null;
           if (!contextData) {
             return widget;
           }

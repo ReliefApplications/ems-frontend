@@ -28,9 +28,10 @@ steps:
 - script: |
     npx nx run front-office:build:azure-dev
     npx nx run back-office:build:azure-dev
-    npx nx run web-widgets:build:azure-dev
-    node .scripts/build-widgets.js
   displayName: 'build the apps'
+
+# npx nx run web-widgets:build:azure-dev
+# node .scripts/build-widgets.js
 
 - task: ArchiveFiles@2
   inputs:
@@ -48,31 +49,31 @@ steps:
     archiveFile: '$(Build.ArtifactStagingDirectory)/dev/back-office/$(Build.BuildId).zip'
     replaceExistingArchive: true
 
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: '$(System.DefaultWorkingDirectory)/widgets'
-    Contents: 'app-builder.js' # Only copy a single file
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/temp/web-widgets'
+# - task: CopyFiles@2
+#   inputs:
+#     SourceFolder: '$(System.DefaultWorkingDirectory)/widgets'
+#     Contents: 'app-builder.js' # Only copy a single file
+#     TargetFolder: '$(Build.ArtifactStagingDirectory)/temp/web-widgets'
 
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: '$(System.DefaultWorkingDirectory)/dist/apps/front-office/tinymce'
-    Contents: '**'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/temp/web-widgets/tinymce'
+# - task: CopyFiles@2
+#   inputs:
+#     SourceFolder: '$(System.DefaultWorkingDirectory)/dist/apps/front-office/tinymce'
+#     Contents: '**'
+#     TargetFolder: '$(Build.ArtifactStagingDirectory)/temp/web-widgets/tinymce'
 
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: '$(System.DefaultWorkingDirectory)/dist/apps/front-office/assets/i18n'
-    Contents: '**'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/temp/web-widgets/i18n'
+# - task: CopyFiles@2
+#   inputs:
+#     SourceFolder: '$(System.DefaultWorkingDirectory)/dist/apps/front-office/assets/i18n'
+#     Contents: '**'
+#     TargetFolder: '$(Build.ArtifactStagingDirectory)/temp/web-widgets/i18n'
 
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/temp/web-widgets'
-    includeRootFolder: false
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/dev/web-widgets/$(Build.BuildId).zip'
-    replaceExistingArchive: true
+# - task: ArchiveFiles@2
+#   inputs:
+#     rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/temp/web-widgets'
+#     includeRootFolder: false
+#     archiveType: 'zip'
+#     archiveFile: '$(Build.ArtifactStagingDirectory)/dev/web-widgets/$(Build.BuildId).zip'
+#     replaceExistingArchive: true
 
 - task: PublishBuildArtifacts@1
   inputs:
@@ -86,8 +87,8 @@ steps:
     ArtifactName: 'dev-back-office'
     publishLocation: 'Container'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/temp/web-widgets'
-    ArtifactName: 'dev-web-widgets'
-    publishLocation: 'Container'
+# - task: PublishBuildArtifacts@1
+#   inputs:
+#     PathtoPublish: '$(Build.ArtifactStagingDirectory)/temp/web-widgets'
+#     ArtifactName: 'dev-web-widgets'
+#     publishLocation: 'Container'
