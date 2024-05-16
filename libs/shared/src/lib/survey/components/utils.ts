@@ -126,7 +126,7 @@ export const buildAddButton = (
 
   addButton.className = 'sd-btn !px-3 !py-1';
   if (question.showButtonsInDropdown) {
-    searchButton.className += ' !shadow-none';
+    addButton.className += ' !shadow-none';
   }
   if (question.addRecord && question.addTemplate && !question.isReadOnly) {
     addButton.onclick = async () => {
@@ -247,7 +247,7 @@ export const buildUpdateButton = (
 
   updateButton.className = 'sd-btn !px-3 !py-1';
   if (question.showButtonsInDropdown) {
-    searchButton.className += ' !shadow-none';
+    updateButton.className += ' !shadow-none';
   }
   if (question.updateRecord) {
     updateButton.onclick = async () => {
