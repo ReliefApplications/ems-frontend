@@ -59,6 +59,8 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
   @Input() fields$!: Observable<Fields[]>;
   /** Map dom portal */
   @Input() mapPortal?: DomPortal;
+  /** Loading */
+  @Input() loading = false;
   /** Emit new fields */
   @Output() fields: EventEmitter<Fields[]> = new EventEmitter<Fields[]>();
   /** Admin fields */

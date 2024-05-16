@@ -97,6 +97,7 @@ export * from './lib/components/users/public-api';
 export * from './lib/components/payload-modal/payload-modal.component';
 export * from './lib/components/widgets/map/public-api';
 export * from './lib/components/dashboard/public-api';
+export * from './lib/components/widgets/common/monaco-editor/monaco-editor.component';
 
 // Export of controls
 export * from './lib/components/controls/public-api';

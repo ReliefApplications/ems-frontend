@@ -45,10 +45,12 @@ import { ListFilterComponent } from './components/list-filter/list-filter.compon
 import { StatusOptionsComponent } from './components/status-options/status-options.component';
 import { DashboardFilterIconComponent } from './components/dashboard-filter-icon/dashboard-filter-icon.component';
 import { PayloadModalComponent } from './components/payload-modal/payload-modal.component';
+import { MonacoEditorComponent } from './components/widgets/common/monaco-editor/monaco-editor.component';
 
 /** Main module for the shared project */
 @NgModule({
   exports: [
+    MonacoEditorComponent,
     PayloadModalComponent,
     LayoutModule,
     AccessModule,
@@ -106,6 +108,7 @@ import { PayloadModalComponent } from './components/payload-modal/payload-modal.
     StatusOptionsComponent,
     DashboardFilterIconComponent,
     PayloadModalComponent,
+    MonacoEditorComponent,
   ],
 })
 export class Module {}

@@ -1,4 +1,8 @@
-<div [formGroup]="formGroup" class="flex flex-col last:mb-0">
+<div
+  [formGroup]="formGroup"
+  class="flex flex-col last:mb-0"
+  *ngIf="!loading; else loadingTmpl"
+>
   <h2>{{ 'common.general' | translate }}</h2>
   <div uiFormFieldDirective>
     <label>{{ 'common.title' | translate }}</label>
@@ -128,3 +132,10 @@
     </ng-container>
   </ng-container>
 </div>
+
+<!-- Loading indicator -->
+<ng-template #loadingTmpl>
+  <div class="h-full w-full flex">
+    <ui-spinner class="m-auto block"></ui-spinner>
+  </div>
+</ng-template>

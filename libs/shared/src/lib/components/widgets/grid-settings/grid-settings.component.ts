@@ -75,6 +75,8 @@ export class GridSettingsComponent
   public templates: Form[] = [];
   /** Resource */
   public resource: Resource | null = null;
+  /** Loading */
+  public loading = false;
 
   /** Stores the selected tab */
   public selectedTab = 0;
@@ -302,6 +304,7 @@ export class GridSettingsComponent
    */
   private getQueryMetaData(): void {
     if (this.widgetFormGroup.get('resource')?.value) {
+      this.loading = true;
       const layoutIds: string[] | undefined =
         this.widgetFormGroup?.get('layouts')?.value;
       const aggregationIds: string[] | undefined =
@@ -337,6 +340,7 @@ export class GridSettingsComponent
             this.resource = null;
             this.fields = [];
           }
+          this.loading = false;
         });
     } else {
       this.relatedForms = [];

@@ -11,12 +11,12 @@
   <ng-container ngProjectAs="content">
     <!-- Style editor -->
     <div class="h-[400px]">
-      <ngx-monaco-editor
+      <shared-monaco-editor
         class="!h-full"
         [options]="editorOptions"
-        [formControl]="formControl"
-        (onInit)="initEditor($event)"
-      ></ngx-monaco-editor>
+        [control]="formControl"
+        (editorLoaded)="initEditor($event)"
+      ></shared-monaco-editor>
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions">

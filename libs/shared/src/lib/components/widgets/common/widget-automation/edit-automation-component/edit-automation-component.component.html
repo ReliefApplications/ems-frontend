@@ -41,11 +41,11 @@
           <!-- JSON -->
           <ng-container *ngSwitchCase="'json'">
             <div class="h-[300px]">
-              <ngx-monaco-editor
+              <shared-monaco-editor
                 class="!h-full !w-full min-w-[200px]"
-                [formControlName]="property.name"
+                [control]="formGroup.controls[property.name]"
                 [options]="property.options"
-              ></ngx-monaco-editor>
+              ></shared-monaco-editor>
             </div>
           </ng-container>
         </ng-container>

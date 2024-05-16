@@ -67,12 +67,12 @@
             >{{ 'pages.referenceData.queryName' | translate }} *</label
           >
           <!-- Graphql query editor -->
-          <ngx-monaco-editor
-            (onInit)="initEditor($event)"
+          <shared-monaco-editor
+            (editorLoaded)="initEditor($event)"
             [options]="editorOptions"
-            [formControl]="queryControl"
+            [control]="queryControl"
             class="!h-full !w-full"
-          ></ngx-monaco-editor>
+          ></shared-monaco-editor>
           <!-- Resize handle -->
           <div
             class="cursor-row-resize absolute w-full h-2 bottom-0"

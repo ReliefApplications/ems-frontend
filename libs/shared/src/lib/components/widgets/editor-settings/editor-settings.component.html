@@ -23,7 +23,7 @@
             [init]="editor"
             formControlName="text"
           ></editor>
-          <ui-spinner *ngIf="loading"></ui-spinner>
+          <ui-spinner *ngIf="loading || editorLoading"></ui-spinner>
         </form>
       </ng-template>
     </ui-tab>

@@ -27,6 +27,7 @@ import {
 import { createEditorForm } from './editor-settings.forms';
 import { WidgetSettings } from '../../../models/dashboard.model';
 import { WidgetService } from '../../../services/widget/widget.service';
+import { RawEditorSettings } from 'tinymce';
 
 // export type EditorFormType = ReturnType<typeof createEditorForm>;
 
@@ -54,7 +55,7 @@ export class EditorSettingsComponent
   @Output() formChange: EventEmitter<ReturnType<typeof createEditorForm>> =
     new EventEmitter();
   /** tinymce editor configuration */
-  public editor: any = WIDGET_EDITOR_CONFIG;
+  public editor: RawEditorSettings = WIDGET_EDITOR_CONFIG;
   /** Current resource */
   public resource: Resource | null = null;
   /** Current reference data */
@@ -63,6 +64,8 @@ export class EditorSettingsComponent
   public layout: Layout | null = null;
   /** Loading indicator */
   public loading = true;
+  /** whether tinymce is done loading */
+  public editorLoading = true;
   /** Html element containing widget custom style */
   private customStyle?: HTMLStyleElement;
 
@@ -86,6 +89,8 @@ export class EditorSettingsComponent
     // Set the editor language
     this.editor.language = editorService.language;
     this.dataTemplateService.setEditorLinkList(this.editor);
+    console.log(this.editor);
+    this.editorService.listenToLoader(this.editor, this);
   }
 
   ngOnInit(): void {

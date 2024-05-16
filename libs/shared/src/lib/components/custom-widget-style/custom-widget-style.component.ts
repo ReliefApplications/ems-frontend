@@ -21,6 +21,7 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
 import { DOCUMENT } from '@angular/common';
 import { ResizeEvent } from 'angular-resizable-element';
 import { ResizableModule } from 'angular-resizable-element';
+import { MonacoEditorComponent } from '../widgets/common/monaco-editor/monaco-editor.component';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -38,6 +39,7 @@ const DEFAULT_STYLE = '';
     ButtonModule,
     TooltipModule,
     ResizableModule,
+    MonacoEditorComponent,
   ],
   templateUrl: './custom-widget-style.component.html',
   styleUrls: ['./custom-widget-style.component.scss'],

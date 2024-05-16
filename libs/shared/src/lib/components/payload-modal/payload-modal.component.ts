@@ -1,10 +1,10 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { DialogModule } from '@oort-front/ui';
-import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from '@oort-front/ui';
+import { MonacoEditorComponent } from '../widgets/common/monaco-editor/monaco-editor.component';
 
 /** Interface of data passed to dialog */
 interface DialogData {
@@ -20,7 +20,7 @@ interface DialogData {
   standalone: true,
   imports: [
     DialogModule,
-    MonacoEditorModule,
+    MonacoEditorComponent,
     FormsModule,
     ReactiveFormsModule,
     CommonModule,

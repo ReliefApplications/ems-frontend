@@ -1,0 +1,15 @@
+<!-- Loading indicator -->
+<div class="h-full w-full flex" *ngIf="loading">
+  <ui-spinner class="m-auto block"></ui-spinner>
+</div>
+
+<ngx-monaco-editor
+  [class]="parentClass"
+  [ngClass]="{
+    hidden: loading
+  }"
+  [options]="options"
+  (onInit)="onEditorInit($event)"
+  [formControl]="control"
+>
+</ngx-monaco-editor>

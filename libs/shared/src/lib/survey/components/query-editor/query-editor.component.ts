@@ -6,11 +6,11 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { QueryEditorModel } from './query-editor.model';
 import { QuestionAngular } from 'survey-angular-ui';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
+import { MonacoEditorComponent } from '../../../components/widgets/common/monaco-editor/monaco-editor.component';
 
 /**
  * Query editor component for Form Builder.
@@ -20,7 +20,12 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'shared-query-editor',
   standalone: true,
-  imports: [CommonModule, MonacoEditorModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    MonacoEditorComponent,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './query-editor.component.html',
   styleUrls: ['./query-editor.component.scss'],
 })

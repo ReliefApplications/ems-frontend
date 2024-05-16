@@ -1,4 +1,8 @@
-<form [formGroup]="formGroup" class="flex flex-col gap-3">
+<form
+  [formGroup]="formGroup"
+  class="flex flex-col gap-3"
+  *ngIf="!loading; else loadingTmpl"
+>
   <div uiFormFieldDirective>
     <label>{{ 'common.title' | translate }}</label>
     <input formControlName="title" type="string" />
@@ -228,3 +232,10 @@
     </ng-container>
   </ng-container>
 </form>
+
+<!-- Loading indicator -->
+<ng-template #loadingTmpl>
+  <div class="h-full w-full flex">
+    <ui-spinner class="m-auto block"></ui-spinner>
+  </div>
+</ng-template>

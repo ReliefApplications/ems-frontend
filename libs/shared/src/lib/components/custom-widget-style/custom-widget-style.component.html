@@ -39,11 +39,11 @@
   </div>
   <!-- Style editor -->
   <div class="grow overflow-y-auto overflow-x-hidden">
-    <ngx-monaco-editor
+    <shared-monaco-editor
       class="!h-full !w-full"
-      (onInit)="initEditor($event)"
+      (editorLoaded)="initEditor($event)"
       [options]="editorOptions"
-      [formControl]="formControl"
-    ></ngx-monaco-editor>
+      [control]="formControl"
+    ></shared-monaco-editor>
   </div>
 </div>

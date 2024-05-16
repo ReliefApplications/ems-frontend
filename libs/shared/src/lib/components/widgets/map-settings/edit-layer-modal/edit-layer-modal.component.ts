@@ -133,6 +133,8 @@ export class EditLayerModalComponent
   public isDatasourceValid = false;
   /** Map dom portal */
   public mapPortal?: DomPortal;
+  /** Loading */
+  public loading = false;
   /**
    * This property would handle the form change side effects to be triggered once all
    * layer related updates are done in order to avoid multiple mismatches and duplications between
@@ -513,6 +515,7 @@ export class EditLayerModalComponent
    * Get resource from graphql
    */
   getResource(): void {
+    this.loading = true;
     this.fields.next([]);
     const formValue = this.form.getRawValue();
     const resourceID = get(formValue, 'datasource.resource');
@@ -552,6 +555,7 @@ export class EditLayerModalComponent
               );
             }
           }
+          this.loading = false;
         });
     }
   }

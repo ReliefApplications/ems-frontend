@@ -43,11 +43,11 @@
     [validateResize]="validate.bind(this)"
   >
     <!-- JSON editor -->
-    <ngx-monaco-editor
+    <shared-monaco-editor
       class="!h-full !w-full min-w-[200px]"
       [formControl]="control"
       [options]="editorOptions"
-    ></ngx-monaco-editor>
+    ></shared-monaco-editor>
     <!-- Resize handle -->
     <div
       class="cursor-row-resize absolute w-full h-2 bottom-0"

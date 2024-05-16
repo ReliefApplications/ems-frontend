@@ -298,6 +298,9 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
       items: 'contextFilter resetFilters',
     });
   },
+  init_instance_callback: (editor) => {
+    editor.fire('loaded');
+  },
 };
 
 /** Email Editor tinymce configuration. */

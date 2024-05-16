@@ -19,6 +19,8 @@ export class TextEditorTabComponent implements OnChanges {
   @Input() fields: any[] = [];
   /** Tinymce editor configuration */
   public editor = WIDGET_EDITOR_CONFIG;
+  /** editor loading */
+  public editorLoading = true;
 
   /**
    * Edition of card template.
@@ -35,6 +37,7 @@ export class TextEditorTabComponent implements OnChanges {
     // Set the editor language
     this.editor.language = editorService.language;
     this.dataTemplateService.setEditorLinkList(this.editor);
+    this.editorService.listenToLoader(this.editor, this);
   }
 
   ngOnChanges(): void {

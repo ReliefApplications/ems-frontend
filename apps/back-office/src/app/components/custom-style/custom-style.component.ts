@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import {
   Application,
   ApplicationService,
@@ -17,6 +16,7 @@ import {
   RestService,
   BlobType,
   DownloadService,
+  MonacoEditorComponent,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
@@ -43,12 +43,12 @@ const DEFAULT_STYLE = '';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MonacoEditorModule,
     TranslateModule,
     ButtonModule,
     SpinnerModule,
     TooltipModule,
     ResizableModule,
+    MonacoEditorComponent,
   ],
   templateUrl: './custom-style.component.html',
   styleUrls: ['./custom-style.component.scss'],

@@ -1,4 +1,8 @@
-<div [formGroup]="formGroup" class="flex flex-col">
+<div
+  [formGroup]="formGroup"
+  class="flex flex-col"
+  *ngIf="!loading; else loadingTmpl"
+>
   <h2>{{ 'common.general' | translate }}</h2>
   <!-- Widget title -->
   <div uiFormFieldDirective>
@@ -77,3 +81,10 @@
     ></shared-layout-table>
   </div>
 </div>
+
+<!-- Loading indicator -->
+<ng-template #loadingTmpl>
+  <div class="h-full w-full flex">
+    <ui-spinner class="m-auto block"></ui-spinner>
+  </div>
+</ng-template>

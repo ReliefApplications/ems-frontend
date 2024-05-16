@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { MonacoEditorComponent } from '../../widgets/common/monaco-editor/monaco-editor.component';
 
 // Documentation:
 // https://surveyjs.io/survey-creator/examples/modify-tab-bar/angular#
@@ -46,7 +46,12 @@ export class SurveyCustomJSONEditorPlugin implements ICreatorPlugin {
   selector: 'svc-tab-customJSONEditor',
   templateUrl: './custom-json-editor.component.html',
   styleUrls: ['./custom-json-editor.component.scss'],
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MonacoEditorModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MonacoEditorComponent,
+  ],
   standalone: true,
 })
 export class CustomJSONEditorComponent

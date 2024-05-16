@@ -28,6 +28,7 @@ export class EditorService {
    * @returns the base url
    */
   get url(): string {
+    return 'https://whoemssafedsta03.blob.core.windows.net/shared/dev/tinymce';
     if (this.environment.tinymceBaseUrl) {
       return this.environment.tinymceBaseUrl;
     } else {
@@ -82,7 +83,9 @@ export class EditorService {
   ) {
     const defaultSetup = editor.setup;
     editor.setup = (e: Editor) => {
-      if (defaultSetup && typeof defaultSetup === 'function') defaultSetup(e);
+      if (defaultSetup && typeof defaultSetup === 'function') {
+        defaultSetup(e);
+      }
       e.ui.registry.addAutocompleter('keys_data_and_calc', {
         ch: '{',
         minChars: 0,
@@ -109,6 +112,25 @@ export class EditorService {
             (key.value || key.text).includes(pattern)
           );
         },
+      });
+    };
+  }
+
+  /**
+   * listens to the loading event
+   *
+   * @param editor current editor
+   * @param componentInstance component instance
+   */
+  listenToLoader(editor: RawEditorSettings, componentInstance: any) {
+    const defaultSetup = editor.setup;
+    editor.setup = (e) => {
+      if (defaultSetup && typeof defaultSetup === 'function') {
+        defaultSetup(e);
+      }
+      e.on('loaded', () => {
+        componentInstance.editorLoading = false;
+        return false;
       });
     };
   }

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReferenceDataRoutingModule } from './reference-data-routing.module';
 import { ReferenceDataComponent } from './reference-data.component';
-import { AccessModule } from '@oort-front/shared';
+import { AccessModule, MonacoEditorComponent } from '@oort-front/shared';
 import {
   AlertModule,
   GraphQLSelectModule,
@@ -23,7 +23,6 @@ import {
   FixedWrapperModule,
   DialogModule,
 } from '@oort-front/ui';
-import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { ResizableModule } from 'angular-resizable-element';
@@ -49,7 +48,6 @@ import { ResizableModule } from 'angular-resizable-element';
     UiButtonModule,
     SelectMenuModule,
     FormWrapperModule,
-    MonacoEditorModule,
     FixedWrapperModule,
     FormsModule,
     DialogModule,
@@ -58,6 +56,7 @@ import { ResizableModule } from 'angular-resizable-element';
     DropDownsModule,
     ToggleModule,
     ResizableModule,
+    MonacoEditorComponent,
   ],
 })
 export class ReferenceDataModule {}

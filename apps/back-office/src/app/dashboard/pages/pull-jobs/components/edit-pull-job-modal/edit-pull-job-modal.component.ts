@@ -17,6 +17,7 @@ import {
   StatusOptionsComponent,
   getCachedValues,
   updateQueryUniqueValues,
+  MonacoEditorComponent,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -51,7 +52,6 @@ import {
   IconModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
-import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -79,7 +79,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     SelectMenuModule,
     FormWrapperModule,
     StatusOptionsComponent,
-    MonacoEditorModule,
+    MonacoEditorComponent,
   ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',

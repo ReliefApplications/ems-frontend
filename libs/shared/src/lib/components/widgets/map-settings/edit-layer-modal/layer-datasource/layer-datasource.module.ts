@@ -12,6 +12,7 @@ import {
   SelectMenuModule,
   DividerModule,
   TooltipModule,
+  SpinnerModule,
 } from '@oort-front/ui';
 import { PortalModule } from '@angular/cdk/portal';
 import {
@@ -42,6 +43,7 @@ import { GraphqlVariablesMappingComponent } from '../../../common/graphql-variab
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
     GraphqlVariablesMappingComponent,
+    SpinnerModule,
   ],
   exports: [LayerDatasourceComponent],
 })

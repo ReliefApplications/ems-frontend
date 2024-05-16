@@ -14,13 +14,13 @@ import {
   AlertModule,
 } from '@oort-front/ui';
 import { EmptyModule } from '../../../ui/empty/empty.module';
-import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { ReferenceData } from '../../../../models/reference-data.model';
 import { gql } from '@apollo/client';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ResizableModule, ResizeEvent } from 'angular-resizable-element';
 import isEqual from 'lodash/isEqual';
 import { JSONValidator } from '../../../../utils/validators/json.validator';
+import { MonacoEditorComponent } from '../monaco-editor/monaco-editor.component';
 
 /**
  * Graphql variables mapping, for widgets using graphql reference data.
@@ -34,7 +34,7 @@ import { JSONValidator } from '../../../../utils/validators/json.validator';
     IconModule,
     TooltipModule,
     EmptyModule,
-    MonacoEditorModule,
+    MonacoEditorComponent,
     FormsModule,
     ReactiveFormsModule,
     ButtonModule,

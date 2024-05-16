@@ -18,6 +18,8 @@ export class TabMainComponent {
   @Input() resource: Resource | null = null;
   /** Available resource templates */
   @Input() templates: Form[] = [];
+  /** loading boolean */
+  @Input() loading = false;
 
   /**
    * Reset given form field value if there is a value previously to avoid triggering

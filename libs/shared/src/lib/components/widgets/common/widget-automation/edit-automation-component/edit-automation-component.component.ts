@@ -15,11 +15,11 @@ import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.
 import { BehaviorSubject, isObservable, map, takeUntil } from 'rxjs';
 import { MapLayersService } from '../../../../../services/map/map-layers.service';
 import { get, isArray, isNil } from 'lodash';
-import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import {
   ActionType,
   ActionWithProperties,
 } from '../../../../../models/automation.model';
+import { MonacoEditorComponent } from '../../monaco-editor/monaco-editor.component';
 
 /**
  * Edition of automation component.
@@ -35,7 +35,7 @@ import {
     ReactiveFormsModule,
     FormWrapperModule,
     SelectMenuModule,
-    MonacoEditorModule,
+    MonacoEditorComponent,
   ],
   templateUrl: './edit-automation-component.component.html',
   styleUrls: ['./edit-automation-component.component.scss'],
@@ -45,7 +45,7 @@ export class EditAutomationComponentComponent
   implements OnInit
 {
   /** Automation component form */
-  public formGroup!: ReturnType<typeof createAutomationComponentForm>;
+  public formGroup: any;
   /** Available widgets */
   public widgets = new BehaviorSubject<any[]>([]);
   /** Current editor */
