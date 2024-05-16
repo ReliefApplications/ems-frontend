@@ -5,10 +5,9 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  OnInit,
   Output,
 } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SpinnerModule } from '@oort-front/ui';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
@@ -27,7 +26,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
     FormsModule,
   ],
 })
-export class MonacoEditorComponent implements OnInit {
+export class MonacoEditorComponent {
   /** Editor options */
   @Input() options:
     | {
@@ -36,11 +35,9 @@ export class MonacoEditorComponent implements OnInit {
         language?: string;
         fixedOverflowWidgets?: boolean;
       }
-    | undefined = {};
+    | undefined;
   /** form control */
-  @Input() control: any = new FormControl();
-  /** parent class */
-  public parentClass = '';
+  @Input() control: any;
   /** Emit when oninit done */
   @Output() editorLoaded = new EventEmitter();
   /** editor loading */
@@ -53,13 +50,9 @@ export class MonacoEditorComponent implements OnInit {
    * @param changeDetectorRef Change detector ref
    */
   constructor(
-    private elementRef: ElementRef,
+    public elementRef: ElementRef,
     private changeDetectorRef: ChangeDetectorRef
   ) {}
-
-  ngOnInit() {
-    this.parentClass = this.elementRef.nativeElement.className;
-  }
 
   /**
    * Sets the loading to false upon ending of loading

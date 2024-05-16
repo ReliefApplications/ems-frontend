@@ -4,7 +4,7 @@
 </div>
 
 <ngx-monaco-editor
-  [class]="parentClass"
+  [class]="elementRef.nativeElement.className"
   [ngClass]="{
     hidden: loading
   }"
