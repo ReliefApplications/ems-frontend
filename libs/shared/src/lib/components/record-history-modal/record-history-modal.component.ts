@@ -15,7 +15,7 @@ interface DialogData {
   revert: any;
   template?: string;
   refresh$?: Subject<boolean>;
-  availableFields: Field[]
+  availableFields: Field[];
 }
 
 /**

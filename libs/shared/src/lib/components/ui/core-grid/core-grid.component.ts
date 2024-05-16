@@ -1285,7 +1285,7 @@ export class CoreGridComponent
               revert: (version: any) => this.confirmRevertDialog(item, version),
               template: this.settings.template || null,
               refresh$: this.refresh$,
-              availableFields: this.fields
+              availableFields: this.fields,
             },
             autoFocus: false,
           });
@@ -1303,7 +1303,7 @@ export class CoreGridComponent
               template: this.settings.template || null,
               refresh$: this.refresh$,
               resizable: true,
-              availableFields: this.fields
+              availableFields: this.fields,
             },
           });
         }

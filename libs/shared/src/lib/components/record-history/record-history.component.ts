@@ -196,10 +196,15 @@ export class RecordHistoryComponent
             this.cancel.emit(true);
           } else {
             // console.log(data.recordHistory);
-            const availableHistory = data.recordHistory.map(item => {
-              item.changes = item.changes.filter(change => this.availableFields.findIndex(availableField => availableField.name === change.field) !== -1)
+            const availableHistory = data.recordHistory.map((item) => {
+              item.changes = item.changes.filter(
+                (change) =>
+                  this.availableFields.findIndex(
+                    (availableField) => availableField.name === change.field
+                  ) !== -1
+              );
               return item;
-            })
+            });
             console.log(availableHistory);
             this.history = data.recordHistory.filter(
               (item) => item.changes.length
@@ -519,7 +524,11 @@ export class RecordHistoryComponent
     if (this.record?.resource) {
       // Take the fields from the form
       this.record.resource.fields?.map((field: any) => {
-        if (this.availableFields.findIndex(availableField => availableField.name === field.name) !== -1) {
+        if (
+          this.availableFields.findIndex(
+            (availableField) => availableField.name === field.name
+          ) !== -1
+        ) {
           fields.push(Object.assign({}, field));
         }
       });
