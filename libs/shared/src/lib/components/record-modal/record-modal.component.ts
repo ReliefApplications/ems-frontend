@@ -273,6 +273,7 @@ export class RecordModalComponent
     this.dialog.open(RecordHistoryModalComponent, {
       data: {
         id: this.record.id,
+        availableFields: this.form?.metadata?.filter((el) => el.canSee),
         revert: (version: any) =>
           this.confirmRevertDialog(this.record, version),
       },

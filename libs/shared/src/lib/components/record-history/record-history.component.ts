@@ -78,7 +78,7 @@ export class RecordHistoryComponent
   /** Boolean indicating whether the dialog is resizable. */
   @Input() resizable = false;
   /** Available fields for the user */
-  @Input() availableFields: Field[] = [];
+  @Input() availableFields?: Field[];
   /** Event emitter for cancel event */
   @Output() cancel = new EventEmitter();
 
@@ -195,17 +195,16 @@ export class RecordHistoryComponent
             );
             this.cancel.emit(true);
           } else {
-            // console.log(data.recordHistory);
-            const availableHistory = data.recordHistory.map((item) => {
+            data.recordHistory.map((item) => {
               item.changes = item.changes.filter(
                 (change) =>
+                  !this.availableFields ||
                   this.availableFields.findIndex(
                     (availableField) => availableField.name === change.field
                   ) !== -1
               );
               return item;
             });
-            console.log(availableHistory);
             this.history = data.recordHistory.filter(
               (item) => item.changes.length
             );
@@ -525,6 +524,7 @@ export class RecordHistoryComponent
       // Take the fields from the form
       this.record.resource.fields?.map((field: any) => {
         if (
+          !this.availableFields ||
           this.availableFields.findIndex(
             (availableField) => availableField.name === field.name
           ) !== -1

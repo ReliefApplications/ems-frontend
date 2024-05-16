@@ -371,6 +371,7 @@ export class FormComponent
           revert: (version: any) =>
             this.confirmRevertDialog(this.record, version),
           resizable: true,
+          availableFields: this.form.metadata?.filter((el) => el.canSee),
         },
       });
     }

@@ -415,6 +415,7 @@ export class FormRecordsComponent
           id: item.id,
           revert: (version: any) => this.confirmRevertDialog(item, version),
           resizable: true,
+          availableFields: this.form.metadata?.filter((el: any) => el.canSee),
         },
       });
     });
