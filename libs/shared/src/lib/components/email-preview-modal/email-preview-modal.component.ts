@@ -22,6 +22,7 @@ import {
   DialogModule,
   ErrorMessageModule,
   FormWrapperModule,
+  SpinnerModule,
 } from '@oort-front/ui';
 import {
   FileRestrictions,
@@ -66,6 +67,7 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
     ButtonModule,
     ChipModule,
     ErrorMessageModule,
+    SpinnerModule,
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
@@ -90,6 +92,8 @@ export class EmailPreviewModalComponent implements OnDestroy {
   public fileRestrictions: FileRestrictions = {
     maxFileSize: 7 * 1024 * 1024, // should represent 7MB
   };
+  /** boolean whether editor loading */
+  public editorLoading = true;
 
   /** Timeout */
   private timeoutListener!: NodeJS.Timeout;
@@ -133,6 +137,7 @@ export class EmailPreviewModalComponent implements OnDestroy {
     this.editor.base_url = editorService.url;
     // Set the editor language
     this.editor.language = editorService.language;
+    this.editorService.listenToLoader(this.editor, this);
   }
 
   ngOnDestroy(): void {

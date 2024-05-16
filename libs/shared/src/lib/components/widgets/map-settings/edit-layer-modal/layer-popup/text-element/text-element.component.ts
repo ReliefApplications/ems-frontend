@@ -7,6 +7,7 @@ import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { Fields } from '../../../../../../models/layer.model';
 import { Observable, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';
+import { SpinnerModule } from '@oort-front/ui';
 
 /**
  * Popup text element component.
@@ -14,7 +15,13 @@ import { UnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscri
 @Component({
   selector: 'shared-text-element',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, EditorModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    EditorModule,
+    SpinnerModule,
+  ],
   templateUrl: './text-element.component.html',
   styleUrls: ['./text-element.component.scss'],
   providers: [
@@ -31,6 +38,8 @@ export class TextElementComponent
   @Input() fields$!: Observable<Fields[]>;
   /** Tinymce editor configuration */
   public editor: any = POPUP_EDITOR_CONFIG;
+  /** loading boolean for editor */
+  public editorLoading = true;
 
   /**
    * Popup text element component.
@@ -53,6 +62,7 @@ export class TextElementComponent
         text: `{{${field.name}}}`,
       }));
       this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
+      this.editorService.listenToLoader(this.editor, this);
     });
   }
 }

@@ -329,6 +329,9 @@ export const EMAIL_EDITOR_CONFIG: RawEditorSettings = {
     'keyboardnav', // the default keyboard navigation tab
   ],
   convert_urls: false,
+  init_instance_callback: (editor) => {
+    editor.fire('loaded');
+  },
 };
 
 /** Field Editor tinymce configuration. */
@@ -346,6 +349,9 @@ export const FIELD_EDITOR_CONFIG: RawEditorSettings = {
     'shortcuts', // the default shortcuts tab
     'keyboardnav', // the default keyboard navigation tab
   ],
+  init_instance_callback: (editor) => {
+    editor.fire('loaded');
+  },
 };
 
 /** Popup Editor tinymce configuration. */
@@ -373,6 +379,9 @@ export const POPUP_EDITOR_CONFIG: RawEditorSettings = {
     'shortcuts', // the default shortcuts tab
     'keyboardnav', // the default keyboard navigation tab
   ],
+  init_instance_callback: (editor) => {
+    editor.fire('loaded');
+  },
 };
 
 /** Inline Editor tinymce configuration. */
@@ -383,4 +392,7 @@ export const INLINE_EDITOR_CONFIG: RawEditorSettings = {
   plugins: '',
   height: 50,
   content_style: 'p { margin: 0 !important; }',
+  init_instance_callback: (editor) => {
+    editor.fire('loaded');
+  },
 };

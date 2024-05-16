@@ -23,14 +23,14 @@ import {
 } from '@tinymce/tinymce-angular';
 import { EditorService } from '../../../services/editor/editor.service';
 import { RawEditorSettings } from 'tinymce';
-import { FormControlComponent } from '@oort-front/ui';
+import { FormControlComponent, SpinnerModule } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
 
 /** Component for using TinyMCE editor with formControl */
 @Component({
   selector: 'shared-editor-control',
   standalone: true,
-  imports: [CommonModule, EditorModule, FormsModule],
+  imports: [CommonModule, EditorModule, FormsModule, SpinnerModule],
   templateUrl: './editor-control.component.html',
   styleUrls: ['./editor-control.component.scss'],
   providers: [
@@ -52,6 +52,8 @@ export class EditorControlComponent
   @ViewChild('editor') editor!: EditorComponent;
   /** Editor content */
   public editorContent = '';
+  /** Editor loading */
+  public editorLoading = true;
 
   /** Tinymce editor configuration */
   @Input() editorConfig!: RawEditorSettings;
@@ -211,6 +213,7 @@ export class EditorControlComponent
   }
 
   ngAfterViewInit(): void {
+    this.editorService.listenToLoader(this.editor, this);
     this.editor.onFocusIn.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.onFocusIn();
     });

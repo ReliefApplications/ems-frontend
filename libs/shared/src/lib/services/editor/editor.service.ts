@@ -3,6 +3,12 @@ import { EDITOR_LANGUAGE_PAIRS } from '../../const/tinymce.const';
 import { TranslateService } from '@ngx-translate/core';
 import { Editor, RawEditorSettings } from 'tinymce';
 import { DOCUMENT } from '@angular/common';
+import { EditorControlComponent } from '../../components/controls/public-api';
+import { EditorSettingsComponent } from '../../components/widgets/editor-settings/editor-settings.component';
+import { TextEditorTabComponent } from '../../components/widgets/summary-card-settings/text-editor-tab/text-editor-tab.component';
+import { TextElementComponent } from '../../components/widgets/map-settings/edit-layer-modal/layer-popup/text-element/text-element.component';
+import { EditTemplateModalComponent } from '../../components/templates/components/edit-template-modal/edit-template-modal.component';
+import { EmailPreviewModalComponent } from '../../components/email-preview-modal/email-preview-modal.component';
 
 /**
  * Shared editor service
@@ -121,7 +127,16 @@ export class EditorService {
    * @param editor current editor
    * @param componentInstance component instance
    */
-  listenToLoader(editor: RawEditorSettings, componentInstance: any) {
+  listenToLoader(
+    editor: RawEditorSettings,
+    componentInstance:
+      | EditorControlComponent
+      | EditorSettingsComponent
+      | TextEditorTabComponent
+      | TextElementComponent
+      | EditTemplateModalComponent
+      | EmailPreviewModalComponent
+  ) {
     const defaultSetup = editor.setup;
     editor.setup = (e) => {
       if (defaultSetup && typeof defaultSetup === 'function') {

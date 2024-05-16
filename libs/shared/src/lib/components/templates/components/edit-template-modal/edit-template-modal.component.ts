@@ -17,6 +17,7 @@ import {
   ButtonModule,
   IconModule,
   SelectMenuModule,
+  SpinnerModule,
   TooltipModule,
 } from '@oort-front/ui';
 import { DialogModule, FormWrapperModule } from '@oort-front/ui';
@@ -49,6 +50,7 @@ const SUBJECT_EDITOR_AUTOCOMPLETE_KEYS = ['{{now}}', '{{today}}'];
     SelectMenuModule,
     IconModule,
     TooltipModule,
+    SpinnerModule,
   ],
   selector: 'shared-edit-template',
   templateUrl: './edit-template-modal.component.html',
@@ -66,6 +68,8 @@ export class EditTemplateModalComponent implements OnInit {
 
   /** tinymce body editor */
   public bodyEditor: RawEditorSettings = EMAIL_EDITOR_CONFIG;
+  /** boolean whether editor loading */
+  public editorLoading = true;
 
   /** tinymce subject editor */
   public subjectEditor: RawEditorSettings = INLINE_EDITOR_CONFIG;
@@ -96,6 +100,7 @@ export class EditTemplateModalComponent implements OnInit {
 
   /** Build the form. */
   ngOnInit(): void {
+    this.editorService.listenToLoader(this.bodyEditor, this);
     this.editorService.addCalcAndKeysAutoCompleter(
       this.bodyEditor,
       BODY_EDITOR_AUTOCOMPLETE_KEYS.map((key) => ({ value: key, text: key }))

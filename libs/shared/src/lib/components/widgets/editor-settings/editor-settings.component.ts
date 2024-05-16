@@ -89,7 +89,6 @@ export class EditorSettingsComponent
     // Set the editor language
     this.editor.language = editorService.language;
     this.dataTemplateService.setEditorLinkList(this.editor);
-    console.log(this.editor);
     this.editorService.listenToLoader(this.editor, this);
   }
 

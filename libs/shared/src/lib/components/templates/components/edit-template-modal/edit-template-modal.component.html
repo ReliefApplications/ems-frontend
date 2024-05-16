@@ -40,6 +40,7 @@
         ></ui-icon>
       </div>
       <editor [init]="bodyEditor" formControlName="body"></editor>
+      <ui-spinner *ngIf="editorLoading"></ui-spinner>
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
