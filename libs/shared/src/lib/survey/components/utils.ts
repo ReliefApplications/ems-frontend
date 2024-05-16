@@ -1,5 +1,4 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { UntypedFormControl } from '@angular/forms';
 import { NgZone } from '@angular/core';
 // todo: as it something to do with survey-angular
 import { SurveyModel, surveyLocalization } from 'survey-core';
@@ -9,27 +8,24 @@ import { Question } from '../types';
  * Build the search button for resource and resources components
  *
  * @param question The question object
- * @param fieldsSettingsForm The raw value from the form used for the grid settings
  * @param multiselect Indicate if we need multiselect
  * @param dialog The Dialog service
- * @param temporaryRecords The form used to save and keep the temporary records updated
  * @param document Document
  * @param ngZone Angular Service to execute code inside Angular environment
  * @returns The button DOM element
  */
 export const buildSearchButton = (
   question: Question,
-  fieldsSettingsForm: any,
   multiselect: boolean,
   dialog: Dialog,
-  temporaryRecords: UntypedFormControl,
   document: Document,
   ngZone: NgZone
-): any => {
+) => {
+  const fieldsSettingsForm = question.gridFieldsSettings;
   const survey = question.survey as SurveyModel;
   const searchButton = document.createElement('button');
 
-  searchButton.id = 'resourceSearchButton';
+  searchButton.id = `resourceSearchButton-${question.name}`;
   const updateButtonText = () => {
     if (!survey) {
       return;
@@ -45,15 +41,17 @@ export const buildSearchButton = (
 
   // Listen to language change and update button text
   survey.onLocaleChangedEvent.add(updateButtonText);
+  question.registerFunctionOnPropertyValueChanged(
+    'searchButtonText',
+    updateButtonText
+  );
 
   searchButton.className = 'sd-btn !px-3 !py-1';
-  searchButton.style.marginRight = '8px';
+
+  if (question.showButtonsInDropdown) {
+    searchButton.className += ' !shadow-none';
+  }
   if (fieldsSettingsForm) {
-    temporaryRecords.valueChanges.subscribe((res: any) => {
-      if (res) {
-        fieldsSettingsForm.temporaryRecords = res;
-      }
-    });
     searchButton.onclick = async () => {
       const { ResourceGridModalComponent } = await import(
         '../../components/search-resource-grid-modal/search-resource-grid-modal.component'
@@ -85,8 +83,7 @@ export const buildSearchButton = (
       });
     };
   }
-  searchButton.style.display =
-    !question.isReadOnly && question.canSearch ? 'block' : 'none';
+
   return searchButton;
 };
 
@@ -122,6 +119,10 @@ export const buildAddButton = (
 
   // Listen to language change and update button text
   survey.onLocaleChangedEvent.add(updateButtonText);
+  question.registerFunctionOnPropertyValueChanged(
+    'addRecordText',
+    updateButtonText
+  );
 
   addButton.className = 'sd-btn !px-3 !py-1';
   if (question.addRecord && question.addTemplate && !question.isReadOnly) {
@@ -190,16 +191,7 @@ export const buildAddButton = (
       });
     };
   }
-  addButton.style.display =
-    question.addRecord && question.addTemplate && !question.isReadOnly
-      ? ''
-      : 'none';
-  question.registerFunctionOnPropertyValueChanged(
-    'readOnly',
-    (value: boolean) => {
-      addButton.style.display = value ? 'none' : '';
-    }
-  );
+
   return addButton;
 };
 
@@ -231,8 +223,24 @@ export const buildUpdateButton = (
   };
   updateButtonText();
 
+  // Disable button if no record is selected
+  const setDisabled = () => {
+    updateButton.disabled = !question.value;
+  };
+
+  setDisabled();
+  survey.onValueChanged.add((val, options) => {
+    if (options.question === question) {
+      setDisabled();
+    }
+  });
+
   // Listen to language change and update button text
   survey.onLocaleChangedEvent.add(updateButtonText);
+  question.registerFunctionOnPropertyValueChanged(
+    'updateRecordText',
+    updateButtonText
+  );
 
   updateButton.className = 'sd-btn !px-3 !py-1';
   if (question.updateRecord) {
@@ -360,7 +368,7 @@ export function setUpActionsButtonWrapper() {
   const actionsButtons = document.createElement('div');
   actionsButtons.id = 'actionsButtons';
   actionsButtons.style.display = 'flex';
+  actionsButtons.style.flexWrap = 'wrap';
   actionsButtons.style.gap = '8px';
-  actionsButtons.style.marginBottom = '0.5em';
   return actionsButtons;
 }

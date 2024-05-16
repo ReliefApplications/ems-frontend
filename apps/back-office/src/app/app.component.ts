@@ -13,6 +13,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
 import { CldrIntlService, IntlService } from '@progress/kendo-angular-intl';
+
 /**
  * Root component of back-office.
  */
