@@ -37,4 +37,6 @@ export const environment: Environment = {
   user: {
     attributes: ['country', 'region', 'location'],
   },
+  admin0Url:
+    'https://services.arcgis.com/5T5nSi527N4F7luB/arcgis/rest/services/Detailed_Boundary_ADM0/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson',
 };
