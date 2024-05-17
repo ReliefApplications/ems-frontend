@@ -363,7 +363,7 @@ export const render = (
     );
   };
 
-  if (isSelectQuestion(questionElement)) {
+  if (isSelectQuestion(questionElement) && questionElement.referenceData) {
     const question = questionElement as QuestionSelectBase;
 
     if (!question.referenceDataChoicesLoaded && question.referenceData) {
@@ -373,10 +373,8 @@ export const render = (
       question.referenceDataChoicesLoaded = true;
     }
     // Prevent selected choices to be removed when sending the value
-    question.clearIncorrectValuesCallback = () => {
-      // console.log(question.visibleChoices);
-      // console.log(question.value);
-    };
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    question.clearIncorrectValuesCallback = () => {};
     initChoices(question, question);
   } else if (isMatrixDropdownQuestion(questionElement)) {
     const visibleColumns = questionElement.visibleColumns;

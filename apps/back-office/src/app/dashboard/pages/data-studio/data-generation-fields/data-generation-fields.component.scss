@@ -1,0 +1,14 @@
+::ng-deep {
+  .accordion-item span {
+    display: flex;
+    width: 100%;
+  }
+
+  .opt-form > div {
+    width: 100%;
+  }
+}
+
+.field-type {
+  border-right: 1px solid #e0e0e0;
+}

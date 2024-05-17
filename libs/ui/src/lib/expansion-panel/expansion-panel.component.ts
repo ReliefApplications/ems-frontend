@@ -56,6 +56,8 @@ export class ExpansionPanelComponent implements AfterViewInit, OnDestroy {
   @Input() index = 0;
   /** Event emitter for closing the panel. */
   @Output() closePanel = new EventEmitter<boolean>();
+  /** Event emitter for opening the panel. */
+  @Output() openPanel = new EventEmitter<boolean>();
   /** Reference to the accordion item. */
   @ViewChild('accordionItem') accordionItem!: CdkAccordionItem;
   /** Reference to the content container. */
@@ -96,6 +98,7 @@ export class ExpansionPanelComponent implements AfterViewInit, OnDestroy {
   onOpened() {
     this.renderer.removeClass(this.contentContainer.nativeElement, 'hidden');
     this.renderer.addClass(this.contentContainer.nativeElement, 'block');
+    this.openPanel.emit(true);
   }
 
   ngOnDestroy(): void {

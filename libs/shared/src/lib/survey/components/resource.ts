@@ -673,7 +673,6 @@ export const init = (
       }
 
       const dropdownInstance = question.contentQuestion.dropdownInstance;
-      console.log('dropdownInstance', dropdownInstance);
       const searchBtn = buildSearchButton(
         question,
         false,
