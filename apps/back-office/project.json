@@ -93,7 +93,8 @@
           "jsonpath",
           "to-json-schema",
           "email-validator"
-        ]
+        ],
+        "webWorkerTsConfig": "apps/back-office/tsconfig.worker.json"
       },
       "configurations": {
         "azure-prod": {
@@ -338,7 +339,8 @@
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "apps/back-office/jest.config.ts",
-        "passWithNoTests": true
+        "passWithNoTests": true,
+        "webWorkerTsConfig": "apps/back-office/tsconfig.worker.json"
       },
       "configurations": {
         "ci": {

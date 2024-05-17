@@ -12,6 +12,7 @@ export const GET_APPLICATION_BY_ID = gql`
       hideMenu
       createdAt
       status
+      publicCssFilename
       templates {
         id
         name

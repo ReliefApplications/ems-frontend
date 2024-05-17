@@ -6,7 +6,7 @@ import get from 'lodash/get';
 import { ContextService } from '../context/context.service';
 import { DashboardAutomationService } from '../dashboard-automation/dashboard-automation.service';
 import { ActionWithValue } from '../../models/automation.model';
-import { RestService } from '../rest/rest.service';
+import { SassService } from '../sass/sass.service';
 
 /**
  * Shared widget service.
@@ -25,18 +25,18 @@ export class WidgetService {
   /**
    * Shared widget service.
    *
-   * @param restService Shared rest service
    * @param document Document reference
    * @param shadowDomService Shared shadow dom service
    * @param contextService Shared context service
    * @param _renderer RendererFactory2
+   * @param sassService Shared sass service compiler
    */
   constructor(
-    private restService: RestService,
     @Inject(DOCUMENT) private document: Document,
     private shadowDomService: ShadowDomService,
     private contextService: ContextService,
-    _renderer: RendererFactory2
+    _renderer: RendererFactory2,
+    private sassService: SassService
   ) {
     this.renderer = _renderer.createRenderer(null, null);
   }
@@ -53,14 +53,13 @@ export class WidgetService {
       // Get style from widget definition
       const style = get(widget, 'settings.widgetDisplay.style') || '';
       if (style) {
-        const scss = `#${id} {
-          ${style}
-        }`;
-        // Compile to css ( we store style as scss )
-        this.restService
-          .post('style/scss-to-css', { scss }, { responseType: 'text' })
-          .subscribe({
-            next: (css) => {
+        try {
+          const scss = `#${id} {
+            ${style}
+          }`;
+          this.sassService
+            .convertToCss(scss)
+            .then(({ css }) => {
               const customStyle = this.document.createElement('style');
               customStyle.appendChild(this.document.createTextNode(css));
               if (this.shadowDomService.isShadowRoot) {
@@ -72,11 +71,13 @@ export class WidgetService {
                 head.appendChild(customStyle);
               }
               resolve(customStyle);
-            },
-            error: () => {
+            })
+            .finally(() => {
               resolve();
-            },
-          });
+            });
+        } catch {
+          resolve();
+        }
       } else {
         resolve();
       }
