@@ -29,6 +29,12 @@ import { takeUntil } from 'rxjs';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { isArray } from 'lodash';
 
+/** Number of char required to start the search */
+const MIN_CHAR_TO_SEARCH = 2;
+
+/** Minimum word size */
+const MIN_WORD_SIZE = 3;
+
 /**
  * Component to pick people from the list of people
  */
@@ -145,7 +151,7 @@ export class PeopleSelectComponent
       !this.loading &&
       this.hasNextPage
     ) {
-      this.offset += 10;
+      this.offset += this.limitItems;
       this.loading = true;
       this.query
         .fetchMore({
@@ -171,12 +177,15 @@ export class PeopleSelectComponent
    * @param searchValue New search value
    */
   public onSearchChange(searchValue: string) {
-    if (searchValue.length >= 2 && searchValue !== this.previousSearchValue) {
+    if (
+      searchValue.length >= MIN_CHAR_TO_SEARCH &&
+      searchValue !== this.previousSearchValue
+    ) {
       this.offset = 0;
       this.hasNextPage = true;
       const searchWords = searchValue
         .split(' ')
-        .filter((word) => word.length >= 3);
+        .filter((word) => word.length >= MIN_WORD_SIZE);
 
       const filters = [
         {
@@ -197,15 +206,16 @@ export class PeopleSelectComponent
       ];
 
       if (searchWords.length > 1) {
-        for (let index = 0; index < 2; index++) {
-          ['lastname', 'firstname', 'emailaddress'].forEach((field) => {
+        const fields = ['lastname', 'firstname', 'emailaddress'];
+        searchWords.slice(0, 2).forEach((word) => {
+          fields.forEach((field) => {
             filters.push({
               field: field,
               operator: 'like',
-              value: searchWords[index],
+              value: word,
             });
           });
-        }
+        });
       } else {
         filters.push({
           field: 'emailaddress',

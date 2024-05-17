@@ -36,6 +36,9 @@ const DISABLED_FIELDS = [
   'lastUpdateForm',
 ];
 
+/** List of disabled fields types */
+const DISABLED_FIELD_TYPES = ['people'];
+
 /** Interface of field meta */
 interface IMeta {
   choicesByUrl?: {
@@ -229,6 +232,7 @@ export class GridService {
               disabled:
                 disabled ||
                 DISABLED_FIELDS.includes(f.name) ||
+                DISABLED_FIELD_TYPES.includes(get(metaData, 'type')) ||
                 get(metaData, 'readOnly', false) ||
                 get(metaData, 'isCalculated', false),
               hidden: hidden || cachedField?.hidden || false,
