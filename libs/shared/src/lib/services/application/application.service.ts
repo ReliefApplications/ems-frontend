@@ -115,7 +115,6 @@ import { RestService } from '../rest/rest.service';
 import { DownloadService } from '../download/download.service';
 import { DOCUMENT } from '@angular/common';
 import { GraphQLError } from 'graphql';
-import { SassService } from '../sass/sass.service';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -205,7 +204,6 @@ export class ApplicationService {
    * @param {DownloadService} downloadService - The download service.
    * @param {Document} document - The Document object.
    * @param shadowDomService shadow dom service to handle the current host of the component
-   * @param sassService Shared sass service compiler
    */
   constructor(
     @Inject('environment') environment: any,
@@ -218,8 +216,7 @@ export class ApplicationService {
     private restService: RestService,
     private downloadService: DownloadService,
     @Inject(DOCUMENT) private document: Document,
-    private shadowDomService: ShadowDomService,
-    private sassService: SassService
+    private shadowDomService: ShadowDomService
   ) {
     this.environment = environment;
   }
@@ -1951,18 +1948,11 @@ export class ApplicationService {
    * @returns custom styling loading as promise
    */
   getCustomStyle(application: Application): Promise<void> {
+    const path = `style/application/${application?.id}`;
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
     });
-    let path = '';
-    if (application.publicCssFilename) {
-      // Query from CDN
-      path = application.publicCssFilename;
-    } else {
-      // Query from back-end
-      path = `style/application/${application?.id}`;
-    }
 
     return firstValueFrom(
       this.restService.get(path, { responseType: 'blob', headers })
@@ -1972,9 +1962,14 @@ export class ApplicationService {
           const styleFromFile = await res.text();
           const scss = styleFromFile as string;
           this.customStyle = this.document.createElement('style');
-          this.sassService
-            .convertToCss(scss)
-            .then(({ css }) => {
+          await firstValueFrom(
+            this.restService.post(
+              'style/scss-to-css',
+              { scss },
+              { responseType: 'text' }
+            )
+          )
+            .then((css) => {
               if (this.customStyle) {
                 this.customStyle.innerText = css;
                 // Add stylesheet to shadow root instead of document head
@@ -1989,12 +1984,13 @@ export class ApplicationService {
                 }
               }
             })
-            .finally(() => {
+            .catch(() => {
               if (this.customStyle) {
                 this.customStyle.innerText = styleFromFile;
               }
-              this.rawCustomStyle = styleFromFile;
             });
+
+          this.rawCustomStyle = styleFromFile;
         }
       })
       .catch((err) => {

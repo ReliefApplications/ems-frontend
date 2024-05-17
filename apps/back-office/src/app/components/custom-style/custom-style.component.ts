@@ -16,7 +16,7 @@ import {
   ConfirmService,
   BlobType,
   DownloadService,
-  SassService,
+  RestService,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs/operators';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -89,18 +89,18 @@ export class CustomStyleComponent
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
+   * @param restService Shared rest service
    * @param document document
    * @param downloadService Shared download service
-   * @param sassService Shared sass service compiler
    */
   constructor(
     private applicationService: ApplicationService,
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private confirmService: ConfirmService,
+    private restService: RestService,
     @Inject(DOCUMENT) private document: Document,
-    private downloadService: DownloadService,
-    private sassService: SassService
+    private downloadService: DownloadService
   ) {
     super();
     // Updates the style when the value changes
@@ -112,18 +112,17 @@ export class CustomStyleComponent
       )
       .subscribe((value: any) => {
         const scss = value as string;
-        // Compile to css ( we store style as scss )
-        this.sassService
-          .convertToCss(scss)
-          .then(({ css }) => {
-            if (this.applicationService.customStyle) {
-              this.applicationService.customStyle.innerText = css;
-            }
-          })
-          .finally(() => {
-            this.applicationService.customStyleEdited = true;
-            this.rawCustomStyle = value;
+        this.restService
+          .post('style/scss-to-css', { scss }, { responseType: 'text' })
+          .subscribe({
+            next: (css) => {
+              if (this.applicationService.customStyle) {
+                this.applicationService.customStyle.innerText = css;
+              }
+            },
           });
+        this.applicationService.customStyleEdited = true;
+        this.rawCustomStyle = value;
       });
   }
 
