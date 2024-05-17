@@ -41,7 +41,8 @@
           "jsonpath",
           "to-json-schema",
           "email-validator"
-        ]
+        ],
+        "webWorkerTsConfig": "apps/web-widgets/tsconfig.worker.json"
       },
       "configurations": {
         "azure-dev": {
@@ -256,7 +257,8 @@
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "apps/web-widgets/jest.config.ts",
-        "passWithNoTests": true
+        "passWithNoTests": true,
+        "webWorkerTsConfig": "apps/web-widgets/tsconfig.worker.json"
       },
       "configurations": {
         "ci": {
