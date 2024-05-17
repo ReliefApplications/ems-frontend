@@ -1,3 +1,17 @@
+# [2.13.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.4...v2.13.0) (2024-05-15)
+
+
+### Bug Fixes
+
+* graphql select would not correctly keep selected elements for multi select Ab[#92212](https://github.com/ReliefApplications/ems-frontend/issues/92212) ([3b7769e](https://github.com/ReliefApplications/ems-frontend/commit/3b7769e285da4100f8801bbcd958845356e31dcd))
+* layers using admin0 lat & lng would fail to display popups due to incorrect string types ([f2c2c85](https://github.com/ReliefApplications/ems-frontend/commit/f2c2c8553f07063d61bc86c37a282fa57e9ad1e8))
+* summary cards using resources would not correctly display choices fields ([#2502](https://github.com/ReliefApplications/ems-frontend/issues/2502)) ([c37a524](https://github.com/ReliefApplications/ems-frontend/commit/c37a52439b798c247952e661e93c2f93045fe17f))
+
+
+### Features
+
+* possibility to filter from record ([#2527](https://github.com/ReliefApplications/ems-frontend/issues/2527)) ([a7ade5a](https://github.com/ReliefApplications/ems-frontend/commit/a7ade5a2a61394b0a25ca7bef3e2c8b6327f416e))
+
 ## [2.12.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.3...v2.12.4) (2024-05-03)
 
 

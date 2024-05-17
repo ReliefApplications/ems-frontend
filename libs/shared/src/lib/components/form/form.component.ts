@@ -260,14 +260,18 @@ export class FormComponent
   public onComplete = async () => {
     let mutation: any;
     this.surveyActive = false;
-    // const promises: Promise<any>[] =
-    //   this.formHelpersService.uploadTemporaryRecords(this.survey);
 
-    await this.formHelpersService.uploadFiles(
-      this.survey,
-      this.temporaryFilesStorage,
-      this.form?.id
-    );
+    try {
+      await this.formHelpersService.uploadFiles(
+        this.survey,
+        this.temporaryFilesStorage,
+        this.form?.id
+      );
+    } catch {
+      this.survey.clear(false, true);
+      this.surveyActive = true;
+      return;
+    }
     this.formHelpersService.setEmptyQuestions(this.survey);
     // We wait for the resources questions to update their ids
     await this.formHelpersService.createTemporaryRecords(this.survey);
