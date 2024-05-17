@@ -100,7 +100,6 @@ export class EditTemplateModalComponent implements OnInit {
 
   /** Build the form. */
   ngOnInit(): void {
-    this.editorService.listenToLoader(this.bodyEditor, this);
     this.editorService.addCalcAndKeysAutoCompleter(
       this.bodyEditor,
       BODY_EDITOR_AUTOCOMPLETE_KEYS.map((key) => ({ value: key, text: key }))

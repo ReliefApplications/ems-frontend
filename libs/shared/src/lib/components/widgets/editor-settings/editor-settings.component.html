@@ -20,10 +20,11 @@
           </div>
           <editor
             *ngIf="!loading"
+            (onInit)="editorLoading = false"
             [init]="editor"
             formControlName="text"
           ></editor>
-          <ui-spinner *ngIf="loading || editorLoading"></ui-spinner>
+          <ui-spinner *ngIf="editorLoading"></ui-spinner>
         </form>
       </ng-template>
     </ui-tab>

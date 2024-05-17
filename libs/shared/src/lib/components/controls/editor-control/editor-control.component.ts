@@ -213,7 +213,6 @@ export class EditorControlComponent
   }
 
   ngAfterViewInit(): void {
-    this.editorService.listenToLoader(this.editor, this);
     this.editor.onFocusIn.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.onFocusIn();
     });
@@ -243,7 +242,6 @@ export class EditorControlComponent
         }
       }
     });
-    // this.editor.onInit.subscribe(() => {});
   }
 
   /** onTouched function shell */

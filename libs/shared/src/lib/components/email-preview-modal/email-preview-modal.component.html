@@ -10,7 +10,9 @@
         [uiErrorMessage]="
           'components.emailPreview.errors.missingSubject' | translate
         "
-        [uiErrorMessageIf]="this.emailForm.controls.subject.hasError('required')"
+        [uiErrorMessageIf]="
+          this.emailForm.controls.subject.hasError('required')
+        "
         uiFormFieldDirective
       >
         <label>{{ 'components.emailPreview.subject' | translate }}</label>
@@ -53,7 +55,11 @@
         formControlName="files"
         [restrictions]="fileRestrictions"
       ></kendo-fileselect>
-      <editor [init]="editor" formControlName="html"></editor>
+      <editor
+        (onInit)="editorLoading = false"
+        [init]="editor"
+        formControlName="html"
+      ></editor>
       <ui-spinner *ngIf="editorLoading"></ui-spinner>
     </form>
   </ng-container>

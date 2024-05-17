@@ -37,7 +37,6 @@ export class TextEditorTabComponent implements OnChanges {
     // Set the editor language
     this.editor.language = editorService.language;
     this.dataTemplateService.setEditorLinkList(this.editor);
-    this.editorService.listenToLoader(this.editor, this);
   }
 
   ngOnChanges(): void {

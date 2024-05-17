@@ -1,5 +1,6 @@
 <editor
   #editor
+  (onInit)="editorLoading = false"
   [init]="editorConfig"
   [(ngModel)]="editorContent"
   (ngModelChange)="onEditorContentChange()"

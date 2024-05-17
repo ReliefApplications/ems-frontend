@@ -62,7 +62,6 @@ export class TextElementComponent
         text: `{{${field.name}}}`,
       }));
       this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
-      this.editorService.listenToLoader(this.editor, this);
     });
   }
 }

@@ -137,7 +137,6 @@ export class EmailPreviewModalComponent implements OnDestroy {
     this.editor.base_url = editorService.url;
     // Set the editor language
     this.editor.language = editorService.language;
-    this.editorService.listenToLoader(this.editor, this);
   }
 
   ngOnDestroy(): void {
