@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { isArray, isEqual, get } from 'lodash';
+import { isArray, isEqual, get, isEmpty } from 'lodash';
 import { map } from 'rxjs/operators';
 import localForage from 'localforage';
 import {
@@ -203,7 +203,8 @@ export class ReferenceDataService {
         items = (
           await this.processItemsByRequestType(
             referenceData,
-            referenceDataType.rest
+            referenceDataType.rest,
+            variables
           )
         ).items;
         break;
@@ -248,10 +249,25 @@ export class ReferenceDataService {
       const body = { query, variables };
       data = (await this.apiProxy.buildPostRequest(url, body)) as any;
     } else if (type === referenceDataType.rest) {
-      const url =
+      let url =
         this.apiProxy.baseUrl +
         referenceData.apiConfiguration?.name +
         referenceData.query;
+      if (variables && !isEmpty(variables)) {
+        // Transform the variables object into a string linked by '&'
+        const queryString = Object.keys(variables)
+          .map(
+            (key) =>
+              `${encodeURIComponent(key)}=${encodeURIComponent(variables[key])}`
+          )
+          .join('&');
+        // Append the query params to the URL
+        if (url.includes('?')) {
+          url = `${url}&${queryString}`;
+        } else {
+          url = `${url}?${queryString}`;
+        }
+      }
       data = await this.apiProxy.promisedRequestWithHeaders(url);
     }
 

@@ -67,7 +67,7 @@ export class ReferenceDataVariablesMappingComponent
   /** size style of editor */
   public style: any = {};
   /** reference data type */
-  public type!: referenceDataType;
+  public type?: referenceDataType;
 
   /**
    * Variables mapping, for widgets using reference data graphql or rest.
@@ -83,7 +83,7 @@ export class ReferenceDataVariablesMappingComponent
 
   ngOnChanges(changes: SimpleChanges): void {
     // if the mapping is already loaded
-    if (changes['referenceData'] && !changes['control']) {
+    if (changes['referenceData']) {
       // if the reference data doesn't change
       if (
         !isEqual(
@@ -106,7 +106,6 @@ export class ReferenceDataVariablesMappingComponent
    * @param keepVariables boolean to indicate if should keep used variables
    */
   public refresh(restoreTemplate?: boolean, keepVariables?: boolean): void {
-    console.log('this.control.value', this.control.value);
     if (
       this.referenceData?.type !== 'graphql' &&
       this.referenceData?.type !== 'rest'
@@ -115,15 +114,12 @@ export class ReferenceDataVariablesMappingComponent
       return;
     }
     this.type = this.referenceData?.type;
-    console.log('this.referenceData', this.referenceData);
 
     try {
       if (this.referenceData?.type === 'rest') {
         this.availableQueryVariables = (this.referenceData.fields ?? []).map(
           (field) => field.graphQLFieldName
         ) as string[];
-
-        console.log('rest availableVariables', this.availableQueryVariables);
 
         this.setVariablesInEditor(
           restoreTemplate ?? false,
@@ -141,7 +137,6 @@ export class ReferenceDataVariablesMappingComponent
         const variableDefinitions = (definition.variableDefinitions ?? []).map(
           (variable) => variable.variable.name.value
         );
-        console.log('graphql variableDefinitions', variableDefinitions);
 
         const { cursorVar, offsetVar, pageVar, pageSizeVar } =
           (this.referenceData.pageInfo as any) ?? {};
@@ -150,7 +145,6 @@ export class ReferenceDataVariablesMappingComponent
         const availableVariables = variableDefinitions.filter(
           (v) => ![cursorVar, offsetVar, pageVar, pageSizeVar].includes(v)
         );
-        console.log('availableVariables', availableVariables);
 
         this.setVariablesInEditor(
           restoreTemplate ?? false,
@@ -207,7 +201,6 @@ export class ReferenceDataVariablesMappingComponent
       } else {
         this.control.setValue(template);
       }
-      console.log('control.value', this.control.value);
     }
   }
 

@@ -187,13 +187,13 @@ export class WidgetService {
   }
 
   /**
-   * Gets graphQLVariables from target source
+   * Gets referenceDataVariables from target source
    *
    * @param source source we need the mapping variables from
    * @param additionalLogic additional logic, for widgets that use other placeholders than filter & context
-   * @returns the graphql query variables object
+   * @returns the reference data query variables object
    */
-  public mapGraphQLVariables(
+  public mapReferenceDataVariables(
     source: string | undefined,
     additionalLogic?: (mapping: any) => any
   ): object | null {
