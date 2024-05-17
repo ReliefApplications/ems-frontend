@@ -8,6 +8,13 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class SassService {
+  /** Service worker instance */
+  worker?: Worker;
+  /** Id of request */
+  private requestId = 0;
+  /** Pending requests. Enable to match requests with service worker's responses */
+  private pendingRequests = new Map<number, (value: string) => void>();
+
   /**
    * Sass service.
    * Transforms sass to css, using web worker.
@@ -15,9 +22,20 @@ export class SassService {
   constructor() {
     if (typeof Worker !== 'undefined') {
       // Create a new worker instance
-      console.log(import.meta.url);
+      this.worker = new Worker(
+        new URL('./sass-worker.worker', import.meta.url)
+      );
+      // Listen for messages from the worker
+      this.worker.onmessage = ({ data }) => {
+        const { id, css } = data;
+        const resolve = this.pendingRequests.get(id);
+        if (resolve) {
+          resolve(css);
+          this.pendingRequests.delete(id);
+        }
+      };
     } else {
-      console.log('Web Workers are not supported in this environment.');
+      console.error('Web Workers are not supported in this environment.');
     }
   }
 
@@ -27,21 +45,19 @@ export class SassService {
    * @param sass sass style as string
    * @returns sass style as css
    */
-  convertToCss(sass: string) {
-    const worker = new Worker(new URL('./sass-worker.worker', import.meta.url));
-
-    let css = '';
-
-    // Listen for messages from the worker
-    worker.onmessage = ({ data }) => {
-      worker.terminate();
-      css = data;
-      console.log(css);
-    };
-
-    // Send data to the worker
-    worker.postMessage(sass);
-
-    return css;
+  convertToCss(sass: string): Promise<any> {
+    return new Promise((resolve) => {
+      if (this.worker) {
+        // Generate a unique request ID
+        const id = this.requestId++;
+        // Store the resolve function with the request ID
+        this.pendingRequests.set(id, resolve);
+        // Send data to the worker along with the request ID
+        this.worker.postMessage({ id, sass });
+      } else {
+        // Fallback in case web workers are not supported
+        resolve(sass);
+      }
+    });
   }
 }

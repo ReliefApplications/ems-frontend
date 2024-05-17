@@ -3,7 +3,9 @@
 import { compileString } from 'sass';
 
 addEventListener('message', ({ data }) => {
-  console.log(`worker response to ${data}`);
-  const response = compileString(data);
-  postMessage(response);
+  const { id, sass } = data;
+  // Process the SASS to CSS conversion
+  const css = compileString(sass);
+  // Send the result back to the main thread
+  self.postMessage({ id, css });
 });

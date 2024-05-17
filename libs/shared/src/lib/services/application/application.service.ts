@@ -115,7 +115,7 @@ import { RestService } from '../rest/rest.service';
 import { DownloadService } from '../download/download.service';
 import { DOCUMENT } from '@angular/common';
 import { GraphQLError } from 'graphql';
-import { compileString } from 'sass';
+import { SassService } from '../sass/sass.service';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -205,6 +205,7 @@ export class ApplicationService {
    * @param {DownloadService} downloadService - The download service.
    * @param {Document} document - The Document object.
    * @param shadowDomService shadow dom service to handle the current host of the component
+   * @param sassService Shared sass service compiler
    */
   constructor(
     @Inject('environment') environment: any,
@@ -217,7 +218,8 @@ export class ApplicationService {
     private restService: RestService,
     private downloadService: DownloadService,
     @Inject(DOCUMENT) private document: Document,
-    private shadowDomService: ShadowDomService
+    private shadowDomService: ShadowDomService,
+    private sassService: SassService
   ) {
     this.environment = environment;
   }
@@ -1970,27 +1972,29 @@ export class ApplicationService {
           const styleFromFile = await res.text();
           const scss = styleFromFile as string;
           this.customStyle = this.document.createElement('style');
-          try {
-            // Compile to css ( we store style as scss )
-            const css = compileString(scss).css;
-            if (this.customStyle) {
-              this.customStyle.innerText = css;
-              // Add stylesheet to shadow root instead of document head
-              if (this.shadowDomService.isShadowRoot) {
-                this.shadowDomService.currentHost.appendChild(this.customStyle);
-              } else {
-                this.document
-                  .getElementsByTagName('head')[0]
-                  .appendChild(this.customStyle);
+          this.sassService
+            .convertToCss(scss)
+            .then(({ css }) => {
+              if (this.customStyle) {
+                this.customStyle.innerText = css;
+                // Add stylesheet to shadow root instead of document head
+                if (this.shadowDomService.isShadowRoot) {
+                  this.shadowDomService.currentHost.appendChild(
+                    this.customStyle
+                  );
+                } else {
+                  this.document
+                    .getElementsByTagName('head')[0]
+                    .appendChild(this.customStyle);
+                }
               }
-            }
-          } catch {
-            if (this.customStyle) {
-              this.customStyle.innerText = styleFromFile;
-            }
-          }
-
-          this.rawCustomStyle = styleFromFile;
+            })
+            .finally(() => {
+              if (this.customStyle) {
+                this.customStyle.innerText = styleFromFile;
+              }
+              this.rawCustomStyle = styleFromFile;
+            });
         }
       })
       .catch((err) => {

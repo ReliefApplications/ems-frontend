@@ -16,6 +16,7 @@ import {
   ConfirmService,
   BlobType,
   DownloadService,
+  SassService,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs/operators';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -29,7 +30,6 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
 import { ResizeEvent } from 'angular-resizable-element';
 import { ResizableModule } from 'angular-resizable-element';
-import { compileString } from 'sass';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -91,6 +91,7 @@ export class CustomStyleComponent
    * @param confirmService Shared confirmation service
    * @param document document
    * @param downloadService Shared download service
+   * @param sassService Shared sass service compiler
    */
   constructor(
     private applicationService: ApplicationService,
@@ -98,7 +99,8 @@ export class CustomStyleComponent
     private translate: TranslateService,
     private confirmService: ConfirmService,
     @Inject(DOCUMENT) private document: Document,
-    private downloadService: DownloadService
+    private downloadService: DownloadService,
+    private sassService: SassService
   ) {
     super();
     // Updates the style when the value changes
@@ -111,12 +113,17 @@ export class CustomStyleComponent
       .subscribe((value: any) => {
         const scss = value as string;
         // Compile to css ( we store style as scss )
-        const css = compileString(scss).css;
-        if (this.applicationService.customStyle) {
-          this.applicationService.customStyle.innerText = css;
-        }
-        this.applicationService.customStyleEdited = true;
-        this.rawCustomStyle = value;
+        this.sassService
+          .convertToCss(scss)
+          .then(({ css }) => {
+            if (this.applicationService.customStyle) {
+              this.applicationService.customStyle.innerText = css;
+            }
+          })
+          .finally(() => {
+            this.applicationService.customStyleEdited = true;
+            this.rawCustomStyle = value;
+          });
       });
   }
 
