@@ -73,6 +73,7 @@ export class MapPolygonsService {
    * Retrieve admin0 polygons
    */
   public async getAdmin0Polygons() {
+    console.log(this.admin0Url);
     if (this.admin0Url) {
       const fetchAdmin0 = () => {
         this.restService.get(this.admin0Url).subscribe((value) => {
@@ -92,6 +93,7 @@ export class MapPolygonsService {
                 });
               } catch (err: any) {
                 console.error(err.message);
+                return;
               }
             }
             this.admin0s = mapping;
