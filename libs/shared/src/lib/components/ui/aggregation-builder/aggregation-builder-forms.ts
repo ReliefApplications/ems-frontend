@@ -2,7 +2,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
 import { PipelineStage } from './pipeline/pipeline-stage.enum';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
-import get from 'lodash/get';
+import { get } from 'lodash';
 
 /** Creating a new instance of the FormBuilder class. */
 const formBuilder = new FormBuilder();

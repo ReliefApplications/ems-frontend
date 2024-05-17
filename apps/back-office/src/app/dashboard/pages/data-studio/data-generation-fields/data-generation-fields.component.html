@@ -1,0 +1,269 @@
+<ui-spinner *ngIf="loading"></ui-spinner>
+<div *ngIf="formId && fields.length > 0 && !loading">
+  <div class="flex items-center mb-2">
+    <h2 class="ml-2 my-1">{{ 'common.field.few' | translate }}</h2>
+    <ui-icon
+      icon="info_outline"
+      variant="grey"
+      [size]="18"
+      [uiTooltip]="'common.dataStudio.dataGeneration.fieldsTooltip' | translate"
+      class="mx-2 my-1"
+    ></ui-icon>
+    <ui-checkbox
+      (click)="$event.stopPropagation()"
+      class="ml-auto mr-2"
+      [(ngModel)]="isChecked"
+      (change)="selectAll()"
+    >
+      <ng-container ngProjectAs="label" class="ml-auto">
+        {{ 'common.dataStudio.dataGeneration.selectAll' | translate }}
+      </ng-container>
+    </ui-checkbox>
+  </div>
+  <!-- Content -->
+  <cdk-accordion>
+    <form [formGroup]="dataGenerationForm">
+      <div formArrayName="fieldsForm">
+        <ui-expansion-panel
+          *ngFor="let field of fields; let index = index"
+          [index]="index"
+          (openPanel)="
+            onAccordionItemOpen(index); accordionItemExpanded = index
+          "
+        >
+          <ng-container ngProjectAs="title" formGroupName="{{ index }}">
+            {{ field.name }}
+            <ui-checkbox
+              (click)="$event.stopPropagation()"
+              class="ml-auto"
+              formControlName="include"
+            >
+            </ui-checkbox>
+          </ng-container>
+          <div
+            formGroupName="{{ index }}"
+            *ngIf="
+              field.type !== 'file' &&
+                field.type !== 'image' &&
+                field.type !== 'html' &&
+                field.type !== 'expression';
+              else invalidFields
+            "
+          >
+            <div class="flex my-2">
+              <div class="px-3 field-type whitespace-nowrap">
+                <b>{{
+                  'common.dataStudio.dataGeneration.fieldType' | translate
+                }}</b
+                >{{ getDisplayName(field) }}
+              </div>
+              <div class="px-3 flex whitespace-nowrap w-3/4">
+                <b>{{
+                  'common.dataStudio.dataGeneration.generationSource'
+                    | translate
+                }}</b>
+                <div class="ml-2">
+                  {{ getGenerationSource(field) }} {{ field.inputType }}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex m-3">
+              <ui-toggle formControlName="setDefault" class="mt-1.5">
+                <ng-container ngProjectAs="label">
+                  {{
+                    'common.dataStudio.dataGeneration.setDefault' | translate
+                  }}
+                </ng-container>
+              </ui-toggle>
+              <ui-icon
+                icon="info_outline"
+                variant="grey"
+                [size]="14"
+                [uiTooltip]="
+                  'common.dataStudio.dataGeneration.setDefaultTooltip'
+                    | translate
+                "
+                class="m-1"
+              ></ui-icon>
+              <div
+                *ngIf="
+                  (field.inputType === 'date' ||
+                    field.inputType === 'datetime-local') &&
+                  !fieldsForm.value[index].setDefault
+                "
+                class="flex whitespace-nowrap ml-6 opt-form grow"
+                [uiDateWrapper]="calendar"
+              >
+                <input
+                  [uiDatePicker]
+                  formControlName="minDate"
+                  [label]="
+                    'common.dataStudio.dataGeneration.minDate' | translate
+                  "
+                />
+                <input
+                  [uiDatePicker]
+                  formControlName="maxDate"
+                  [label]="
+                    'common.dataStudio.dataGeneration.maxDate' | translate
+                  "
+                />
+                <ui-date-range #calendar> </ui-date-range>
+              </div>
+              <div
+                *ngIf="
+                  field.inputType === 'tel' &&
+                  !fieldsForm.value[index].setDefault
+                "
+                class="flex whitespace-nowrap ml-6 opt-form grow"
+              >
+                <div uiFormFieldDirective class="w-52">
+                  <input
+                    type="text"
+                    formControlName="phoneFormat"
+                    [placeholder]="
+                      'common.dataStudio.dataGeneration.phoneFormat' | translate
+                    "
+                  />
+                  <ui-icon
+                    uiSuffix
+                    class="cursor-pointer"
+                    icon="help_outline"
+                    variant="grey"
+                    [uiTooltip]="
+                      'common.dataStudio.dataGeneration.tooltips.phone'
+                        | translate
+                    "
+                  ></ui-icon>
+                </div>
+              </div>
+              <div
+                *ngIf="
+                  field.type === 'text' &&
+                  !field.inputType &&
+                  !fieldsForm.value[index].setDefault
+                "
+                class="flex whitespace-nowrap ml-6 opt-form grow"
+              >
+                <div uiFormFieldDirective>
+                  <ng-container ngProjectAs="label"> </ng-container>
+                  <ui-select-menu
+                    formControlName="textSource"
+                    [placeholder]="
+                      'common.dataStudio.dataGeneration.textType' | translate
+                    "
+                  >
+                    <ui-select-option
+                      *ngFor="let type of textOptions"
+                      [value]="type"
+                    >
+                      {{ type }}
+                    </ui-select-option>
+                  </ui-select-menu>
+                </div>
+              </div>
+              <div
+                *ngIf="
+                  field.inputType === 'time' &&
+                  !fieldsForm.value[index].setDefault
+                "
+                class="flex whitespace-nowrap ml-6 opt-form grow gap-x-2"
+              >
+                <kendo-timepicker
+                  formControlName="minTime"
+                  [placeholder]="
+                    'common.dataStudio.dataGeneration.minTime' | translate
+                  "
+                  format="HH:mm"
+                ></kendo-timepicker>
+                <kendo-timepicker
+                  formControlName="maxTime"
+                  [placeholder]="
+                    'common.dataStudio.dataGeneration.maxTime' | translate
+                  "
+                  format="HH:mm"
+                  [min]="fieldsForm.value[index].minTime"
+                ></kendo-timepicker>
+              </div>
+              <div
+                *ngIf="
+                  field.inputType === 'number' &&
+                  !fieldsForm.value[index].setDefault
+                "
+                class="flex whitespace-nowrap ml-6 opt-form grow gap-x-2"
+              >
+                <div uiFormFieldDirective class="w-52">
+                  <input
+                    type="number"
+                    formControlName="minNumber"
+                    [placeholder]="
+                      'common.dataStudio.dataGeneration.minNumber' | translate
+                    "
+                  />
+                </div>
+                <div uiFormFieldDirective class="w-52">
+                  <input
+                    type="number"
+                    formControlName="maxNumber"
+                    [placeholder]="
+                      'common.dataStudio.dataGeneration.maxNumber' | translate
+                    "
+                    [min]="fieldsForm.value[index].minNumber"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="my-4 mx-8">
+              <survey
+                *ngIf="
+                  fieldsForm.value[index].setDefault &&
+                  accordionItemExpanded === index
+                "
+                [model]="questionSurvey"
+              ></survey>
+            </div>
+          </div>
+          <ng-template #invalidFields>
+            <div class="px-3">
+              <b>{{
+                'common.dataStudio.dataGeneration.fieldType' | translate
+              }}</b
+              >{{ getDisplayName(field.type) }}
+            </div>
+            <div class="m-2">
+              <i>{{
+                'common.dataStudio.dataGeneration.generationNotPossible'
+                  | translate
+              }}</i>
+            </div>
+          </ng-template>
+        </ui-expansion-panel>
+      </div>
+      <div class="flex justify-end my-4">
+        <div uiFormFieldDirective class="w-72">
+          <input
+            type="number"
+            min="1"
+            max="50"
+            formControlName="recordsNumber"
+            [placeholder]="
+              'common.dataStudio.dataGeneration.recordsNumber' | translate
+            "
+          />
+        </div>
+
+        <ui-button
+          category="secondary"
+          variant="primary"
+          icon="autorenew"
+          (click)="onClick()"
+          [disabled]="!dataGenerationForm.valid || loading"
+          class="mx-4"
+        >
+          {{ 'common.dataStudio.dataGeneration.generate' | translate }}
+        </ui-button>
+      </div>
+    </form>
+  </cdk-accordion>
+</div>

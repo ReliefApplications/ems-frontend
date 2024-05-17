@@ -4,7 +4,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { User } from '../../../models/user.model';
 import { AppAbility } from '../../../services/auth/auth.service';
 import { RestService } from '../../../services/rest/rest.service';

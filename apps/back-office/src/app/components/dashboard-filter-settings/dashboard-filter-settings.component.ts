@@ -23,7 +23,7 @@ import { FormBuilder } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UiModule } from '@oort-front/ui';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { ViewSettingsModalComponent } from '../view-settings-modal/view-settings-modal.component';
 import { CommonModule } from '@angular/common';
 

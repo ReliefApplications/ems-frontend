@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { CommonModule } from '@angular/common';
 import { DialogModule, Variant } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';

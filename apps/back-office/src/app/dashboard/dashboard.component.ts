@@ -116,6 +116,13 @@ export class DashboardComponent extends UnsubscribeComponent {
         icon: 'cloud_download',
       });
     }
+    if (this.ability.can('create', 'Record')) {
+      dataItems.push({
+        name: this.translate.instant('common.dataStudio.few'),
+        path: '/datastudio',
+        icon: 'build_circle',
+      });
+    }
     if (administrationItems.length > 0) {
       navGroups.push({
         name: this.translate.instant('pages.administration.title'),

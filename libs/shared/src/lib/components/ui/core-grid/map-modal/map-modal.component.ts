@@ -3,7 +3,7 @@ import { Component, Inject, AfterViewInit, ViewChild } from '@angular/core';
 import { MapComponent, MapModule } from '../../map';
 import { MapLayersService } from '../../../../services/map/map-layers.service';
 import { LayerDatasource } from '../../../../models/layer.model';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import {
   ButtonModule,
   DialogModule,

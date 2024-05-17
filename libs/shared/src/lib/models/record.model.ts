@@ -83,3 +83,8 @@ export interface EditRecordsMutationResponse {
 export interface DeleteRecordsMutationResponse {
   deleteRecords: number;
 }
+
+/** Model for generate records graphql mutation response */
+export interface GenerateRecordsMutationResponse {
+  generateRecords: Record[];
+}

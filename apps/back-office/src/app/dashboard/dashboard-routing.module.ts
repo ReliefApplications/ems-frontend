@@ -26,6 +26,13 @@ export const routes: Routes = [
           import('@oort-front/shared').then((m) => m.ProfileViewModule),
       },
       {
+        path: 'datastudio',
+        loadChildren: () =>
+          import('./pages/data-studio/data-studio.module').then(
+            (m) => m.DataStudioModule
+          ),
+      },
+      {
         path: 'referencedata',
         children: [
           {

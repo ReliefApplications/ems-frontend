@@ -14,7 +14,7 @@ import {
   ConfirmService,
   UnsubscribeComponent,
 } from '@oort-front/shared';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { takeUntil, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { DOCUMENT } from '@angular/common';

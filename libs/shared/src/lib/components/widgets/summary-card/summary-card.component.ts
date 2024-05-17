@@ -10,7 +10,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import get from 'lodash/get';
 import {
   Subject,
   debounceTime,
@@ -39,7 +38,7 @@ export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
   }>;
 import { Layout } from '../../../models/layout.model';
 import { FormControl } from '@angular/forms';
-import { clone, cloneDeep, isNaN, isNil } from 'lodash';
+import { clone, cloneDeep, isNaN, isNil, get } from 'lodash';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { ResourceQueryResponse } from '../../../models/resource.model';

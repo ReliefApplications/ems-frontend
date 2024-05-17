@@ -12,7 +12,7 @@ import {
   Renderer2,
   SimpleChanges,
 } from '@angular/core';
-import get from 'lodash/get';
+import { get } from 'lodash';
 
 /**
  * Fullscreen directive.

@@ -12,7 +12,7 @@ import {
   AppAbility,
 } from '@oort-front/shared';
 import { SnackbarService } from '@oort-front/ui';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { takeUntil } from 'rxjs/operators';
 
 /**

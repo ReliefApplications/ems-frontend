@@ -36,16 +36,19 @@ export type Event = LoginEvent | LogoutEvent | DownloadFileEvent;
   providedIn: 'root',
 })
 export class AnalyticsService {
+  /** Analytics URL */
   private static readonly ANALYTICS_URL = '/events';
 
   /**
    * Analytics service, for sending events to server.
+   *
    * @param restService REST service
    */
   constructor(private restService: RestService) {}
 
   /**
    * Send an event to the server.
+   *
    * @param event Event to send
    */
   sendEvent(event: Omit<Event, 'user'>): void {

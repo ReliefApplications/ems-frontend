@@ -1,5 +1,5 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { GridType } from 'angular-gridster2';
 
 /** Form builder */

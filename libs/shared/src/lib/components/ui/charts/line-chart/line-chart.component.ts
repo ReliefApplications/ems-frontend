@@ -1,5 +1,4 @@
 import { Component, Inject, Input, OnChanges, ViewChild } from '@angular/core';
-import get from 'lodash/get';
 import {
   Plugin,
   ChartConfiguration,
@@ -16,7 +15,7 @@ import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.p
 import { ChartLegend, ChartTitle } from '../interfaces';
 import { generateMonochromePalette } from '../const/palette';
 import { getColor } from '../utils/color.util';
-import { isEqual, isNil } from 'lodash';
+import { isEqual, isNil, get } from 'lodash';
 import Color from 'color';
 
 /** Interpolation modes */

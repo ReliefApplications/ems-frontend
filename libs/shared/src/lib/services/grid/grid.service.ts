@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { prettifyLabel } from '../../utils/prettify';
-import get from 'lodash/get';
+import { get, isNil } from 'lodash';
 import { ApiProxyService } from '../api-proxy/api-proxy.service';
 import { MULTISELECT_TYPES } from '../../components/ui/core-grid/grid/grid.constants';
 import { TranslateService } from '@ngx-translate/core';
 import { REFERENCE_DATA_END } from '../query-builder/query-builder.service';
-import { isNil } from 'lodash';
 import {
   getListOfKeys,
   getWithExpiry,

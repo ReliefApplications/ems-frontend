@@ -1,5 +1,5 @@
 import { FormBuilder, Validators } from '@angular/forms';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { QueryField } from '../../services/query-builder/query-builder.service';
 import { prettifyLabel } from '../../utils/prettify';
 import { FILTER_OPERATORS } from '../filter/filter.const';

@@ -42,6 +42,8 @@ export const init = (
       dropdownDiv.classList.add('flex', 'min-h-[36px]');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const dropdownInstance = createDropdownInstance(dropdownDiv, question);
+      // Add a reference to the dropdown instance
+      question.dropdownInstance = dropdownInstance;
       // Make sure the value is valid
       if (!isObject(question.value) && !isArray(question.value)) {
         dropdownInstance.value = question.value;
