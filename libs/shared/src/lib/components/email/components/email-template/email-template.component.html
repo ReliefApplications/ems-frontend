@@ -32,6 +32,8 @@
         #filterInput
         (keyup.enter)="addEmailManually(filterInput)"
         (change)="validateEmail(filterInput)"
+        autocomplete="off"
+        aria-autocomplete="none"
         type="text"
         [placeholder]="'components.select.distribution.email' | translate"
       />
