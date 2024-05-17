@@ -20,7 +20,7 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
 import { DOCUMENT } from '@angular/common';
 import { ResizeEvent } from 'angular-resizable-element';
 import { ResizableModule } from 'angular-resizable-element';
-import { RestService } from '../../services/rest/rest.service';
+import { compileString } from 'sass';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -77,13 +77,11 @@ export class CustomWidgetStyleComponent
   /**
    * Creates an instance of CustomStyleComponent, form and updates.
    *
-   * @param restService Shared rest service
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
    * @param document document
    */
   constructor(
-    private restService: RestService,
     private translate: TranslateService,
     private confirmService: ConfirmService,
     @Inject(DOCUMENT) private document: Document
@@ -104,17 +102,13 @@ export class CustomWidgetStyleComponent
         const scss = `#${this.widgetComp.id} {
         ${value}
       }`;
-        this.restService
-          .post('style/scss-to-css', { scss }, { responseType: 'text' })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((css) => {
-            set(this.widgetComp, 'widget.settings.widgetDisplay.style', value);
-            this.styleApplied.innerText = css;
-            this.document
-              .getElementsByTagName('head')[0]
-              .appendChild(this.styleApplied);
-            this.loading = false;
-          });
+        const css = compileString(scss).css;
+        set(this.widgetComp, 'widget.settings.widgetDisplay.style', value);
+        this.styleApplied.innerText = css;
+        this.document
+          .getElementsByTagName('head')[0]
+          .appendChild(this.styleApplied);
+        this.loading = false;
       });
   }
 
