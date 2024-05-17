@@ -120,6 +120,9 @@ export class CreateNotificationComponent
         this.translate.instant('components.email.distributionList.duplicate'),
         { error: true }
       );
+    } else {
+      this.formGroup.get('name')?.setErrors(null);
+      this.snackBar.dismissCurrentSnackBar();
     }
     if (this.isEmpty && this.formGroup.controls['name'].touched) {
       this.snackBar.openSnackBar(

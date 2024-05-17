@@ -194,6 +194,12 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
         this.disableSaveAsDraft = disable;
       }
     );
+    if (
+      this.emailService.draftStepper !== null &&
+      this.emailService.draftStepper !== undefined
+    ) {
+      this.disableAllNextSteps(this.emailService.draftStepper);
+    }
   }
 
   /**
@@ -546,6 +552,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
       queryData.emailDistributionList = this.emailService.emailDistributionList;
     });
     queryData.isDraft = true;
+    queryData.draftStepper = this.currentStep;
     queryData.notificationType =
       this.emailService.datasetsForm.controls.notificationType.value;
     if (this.emailService.isEdit) {

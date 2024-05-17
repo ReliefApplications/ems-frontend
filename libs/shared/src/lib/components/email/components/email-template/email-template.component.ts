@@ -507,6 +507,14 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   }
 
   /**
+   *
+   * @param data
+   */
+  getKeys(data: any) {
+    return Object.keys(data);
+  }
+
+  /**
    * Set field.
    *
    * @param event field name

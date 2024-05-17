@@ -28,6 +28,7 @@ const DEFAULT_SNACKBAR = {
 export class SnackbarService {
   /** Shadow DOM */
   public shadowDom!: any;
+  private currentSnackBar: ComponentRef<SnackbarComponent> | null = null;
 
   /**
    * Shared snackbar service.
@@ -69,11 +70,13 @@ export class SnackbarService {
       ...DEFAULT_SNACKBAR,
       ...config,
     };
+    this.dismissCurrentSnackBar();
     const snackBar = createComponent(SnackbarComponent, {
       environmentInjector: this.app.injector,
     });
     snackBar.instance.open(message, config);
     this.updateView(snackBar);
+    this.currentSnackBar = snackBar;
     return snackBar;
   }
 
@@ -92,11 +95,13 @@ export class SnackbarService {
       ...DEFAULT_SNACKBAR,
       ...config,
     };
+    this.dismissCurrentSnackBar();
     const snackBar = createComponent(SnackbarComponent, {
       environmentInjector: this.app.injector,
     });
     snackBar.instance.openFromComponent(component, config);
     this.updateView(snackBar);
+    this.currentSnackBar = snackBar;
     return snackBar;
   }
 
@@ -115,11 +120,20 @@ export class SnackbarService {
       ...DEFAULT_SNACKBAR,
       ...config,
     };
+    this.dismissCurrentSnackBar();
     const snackBar = createComponent(SnackbarComponent, {
       environmentInjector: this.app.injector,
     });
     snackBar.instance.openFromTemplate(template, config);
     this.updateView(snackBar);
+    this.currentSnackBar = snackBar;
     return snackBar;
+  }
+
+  public dismissCurrentSnackBar() {
+    if (this.currentSnackBar) {
+      this.currentSnackBar.instance.dismiss();
+      this.currentSnackBar = null;
+    }
   }
 }

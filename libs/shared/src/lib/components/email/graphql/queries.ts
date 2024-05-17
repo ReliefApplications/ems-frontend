@@ -270,6 +270,7 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
           notificationType
           createdBy
           isDraft
+          draftStepper
         }
       }
     }
@@ -367,6 +368,7 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
       recipientsType
       isDeleted
       isDraft
+      draftStepper
     }
   }
 `;

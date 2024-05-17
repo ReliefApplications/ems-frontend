@@ -386,6 +386,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     } else {
       this.emailService.isEdit = true;
     }
+    this.emailService.draftStepper = emailData.draftStepper;
     this.emailService.isLinear = false;
     const distributionListNames = this.emailService.distributionListNames;
     const emailNotificationNames = this.emailService.emailNotificationNames;

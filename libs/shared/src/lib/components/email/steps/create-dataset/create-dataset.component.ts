@@ -216,6 +216,7 @@ export class CreateDatasetComponent implements OnInit {
         ? this.tabs[this.tabs.length - 1]
         : this.activeTab;
     this.activeTab.active = true;
+    this.activeTab.index = index;
   }
 
   /**

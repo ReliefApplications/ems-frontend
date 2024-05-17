@@ -20,6 +20,7 @@ import { FieldStore } from './models/email.const';
   providedIn: 'root',
 })
 export class EmailService {
+  public draftStepper!: number;
   /** Index of current dataset block */
   public index = new BehaviorSubject(null);
   /** Dataset block title */
