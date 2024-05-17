@@ -86,10 +86,9 @@
           "esri-leaflet-heatmap",
           "esri-leaflet-renderers",
           "jsonpath",
-          "to-json-schema",
+          "to-json-schema", 
           "email-validator"
-        ],
-        "webWorkerTsConfig": "apps/front-office/tsconfig.worker.json"
+        ]
       },
       "configurations": {
         "azure-prod": {
@@ -327,8 +326,7 @@
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "apps/front-office/jest.config.ts",
-        "passWithNoTests": true,
-        "webWorkerTsConfig": "apps/front-office/tsconfig.worker.json"
+        "passWithNoTests": true
       },
       "configurations": {
         "ci": {
