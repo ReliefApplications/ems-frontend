@@ -131,9 +131,9 @@
               *ngIf="selectedItemIndexes.indexOf(i) === -1"
             />
           </td>
-          <ng-container *ngFor="let field of getKeys(data)">
+          <ng-container *ngFor="let field of datasetFields">
             <td class="p-2 border border-blue-600 shadow-xs m-1 text-center">
-              {{ data[field] }}
+              {{ getValue(data, field) }}
             </td>
           </ng-container>
         </tr>

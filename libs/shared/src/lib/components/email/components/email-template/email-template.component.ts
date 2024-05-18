@@ -277,6 +277,15 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     this.useExpression = !this.useExpression;
   }
 
+  getValue(data: any, field: string): any {
+    const fieldParts = field.split(' - ');
+    let value = data;
+    for (const part of fieldParts) {
+      value = value ? value[part] : null;
+    }
+    return value;
+  }
+
   /**
    * Checks if the current field is date or time field.
    *
@@ -378,6 +387,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
    * @param dataset data of the data set
    */
   bindDataSetDetails(dataset: any): void {
+    console.log(dataset);
     if (dataset === undefined) {
       this.dataList = [];
       this.resource = [];
@@ -426,6 +436,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
             this.emailService.fetchDataSet(dataset).subscribe((res) => {
               if (res?.data.dataset) {
                 this.dataset = res?.data?.dataset;
+                console.log(this.dataset);
                 this.datasetEmails = res?.data?.dataset?.emails;
                 this.dataList = res.data?.dataset?.records;
                 this.datasetFields = dataset.fields.map((ele: any) => ele.name);
