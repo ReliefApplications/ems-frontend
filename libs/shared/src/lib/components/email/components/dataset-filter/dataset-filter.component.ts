@@ -1,3 +1,4 @@
+import { GridService } from './../../../../services/grid/grid.service';
 import {
   Component,
   EventEmitter,
@@ -156,13 +157,15 @@ export class DatasetFilterComponent
    * @param formGroup Angular form builder
    * @param snackBar snackbar helper function
    * @param queryBuilder Shared query builder service
+   * @param gridService Shared grid service
    */
   constructor(
     public emailService: EmailService,
     private apollo: Apollo,
     private formGroup: FormBuilder,
     public snackBar: SnackbarService,
-    public queryBuilder: QueryBuilderService
+    public queryBuilder: QueryBuilderService,
+    public gridService: GridService
   ) {
     super();
   }
@@ -427,7 +430,7 @@ export class DatasetFilterComponent
                     } catch (err) {
                       console.error(err);
                     }
-                    const fields = resource || [];
+                    // const fields = resource || [];
                     // const defaultLayoutFields = this.defaultLayout.fields || {};
                     // this.fields = this.gridService.getFields(
                     //   fields,
@@ -437,22 +440,7 @@ export class DatasetFilterComponent
                     // );
                   }
                 }
-                this.getRecords();
-              },
-              error: (err: any) => {
-                this.loading = false;
-                this.status = {
-                  error: true,
-                  message: this.translate.instant(
-                    'components.widget.grid.errors.metaQueryFetchFailed',
-                    {
-                      error:
-                        err.networkError?.error?.errors
-                          ?.map((x: any) => x.message)
-                          .join(', ') || err,
-                    }
-                  ),
-                };
+                // this.getRecords();
               },
             });
           }
