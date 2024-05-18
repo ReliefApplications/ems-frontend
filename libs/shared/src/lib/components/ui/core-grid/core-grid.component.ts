@@ -492,6 +492,8 @@ export class CoreGridComponent
               if (Object.prototype.hasOwnProperty.call(data, field)) {
                 this.metaFields = Object.assign({}, data[field]);
                 try {
+                  console.log('META FIELDS');
+                  console.log(this.metaFields);
                   await this.gridService.populateMetaFields(this.metaFields);
                 } catch (err) {
                   console.error(err);
@@ -808,11 +810,15 @@ export class CoreGridComponent
                       raw: x.meta.raw,
                     },
                   })) || [];
+                console.log('NODES');
+                console.log(nodes);
                 this.totalCount = data[field] ? data[field].totalCount : 0;
                 this.items = cloneData(nodes);
                 this.convertDateFields(this.items);
                 this.originalItems = cloneData(this.items);
                 this.loadItems();
+                console.log('UPDATED ITEMS');
+                console.log(this.updatedItems);
                 for (const updatedItem of this.updatedItems) {
                   const item: any = this.items.find(
                     (x) => x.id === updatedItem.id
@@ -877,6 +883,8 @@ export class CoreGridComponent
       data: this.items,
       total: this.totalCount,
     };
+    console.log('GRID DATA');
+    console.log(this.gridData);
   }
 
   /**

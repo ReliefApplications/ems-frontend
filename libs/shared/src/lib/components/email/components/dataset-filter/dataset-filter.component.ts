@@ -13,7 +13,7 @@ import {
   FormBuilder,
   FormGroup,
 } from '@angular/forms';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo, QueryRef, gql } from 'apollo-angular';
 import { clone, cloneDeep } from 'lodash';
 import {
   Resource,
@@ -31,12 +31,17 @@ import {
   GET_RESOURCE,
   GET_RESOURCES,
   GET_QUERY_META_DATA,
+  GET_QUERY_TYPES,
 } from '../../graphql/queries';
-import { QueryMetaDataQueryResponse } from '../../../../models/metadata.model';
+import {
+  QueryMetaDataQueryResponse,
+  QueryTypesResponse,
+} from '../../../../models/metadata.model';
 import { Subscription, takeUntil } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { FieldStore } from '../../models/email.const';
+import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 /** Default items per query, for pagination */
 let ITEMS_PER_PAGE = 0;
 
@@ -138,6 +143,10 @@ export class DatasetFilterComponent
   selectedFieldIndex: number | null = null;
   /** Index of current highlighted field from available field list */
   availableFieldIndex: number | null = null;
+  /** Meta query reference for fetching metadata. */
+  private metaFieldList!: any;
+  /** Metadata fields for the grid. */
+  private metaFields: any;
 
   /**
    * To use helper functions, Apollo serve
@@ -146,12 +155,14 @@ export class DatasetFilterComponent
    * @param apollo server
    * @param formGroup Angular form builder
    * @param snackBar snackbar helper function
+   * @param queryBuilder Shared query builder service
    */
   constructor(
     public emailService: EmailService,
     private apollo: Apollo,
     private formGroup: FormBuilder,
-    public snackBar: SnackbarService
+    public snackBar: SnackbarService,
+    public queryBuilder: QueryBuilderService
   ) {
     super();
   }
@@ -234,6 +245,18 @@ export class DatasetFilterComponent
       variables: {
         id: this.selectedResourceId,
       },
+    });
+  }
+
+  /**
+   * Fetches Resource meta data type
+   *
+   * @returns resource meta data types
+   */
+  fetchResourceDataTypes() {
+    return this.apollo.query<QueryTypesResponse>({
+      query: GET_QUERY_TYPES,
+      variables: {},
     });
   }
 
@@ -350,11 +373,105 @@ export class DatasetFilterComponent
           (element) => element.id === this.selectedResourceId
         )
       );
+
+      this.apollo
+        .query<QueryTypesResponse>({
+          query: GET_QUERY_TYPES,
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          const resourceName = this.query.value.resource.name
+            .split(' ')
+            .join('');
+          const types = (data as any).__schema.types;
+          const resource = types.find(
+            (x: any) => x.name.toLowerCase() === resourceName.toLowerCase()
+          );
+          const metaFields = this.queryBuilder.getMetaFields(resource.fields);
+
+          // if (metaFields.every((x: string) => !x)) {
+          //   return null;
+          // }
+          const metaQuery = gql`
+            query GetCustomMetaQuery {
+              _${resourceName}Meta {
+                ${metaFields}
+              }
+            }
+          `;
+
+          this.metaFieldList = this.apollo
+            .query<any>({
+              query: metaQuery,
+              variables: {},
+              fetchPolicy: 'cache-first',
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((res) => {
+              console.log(res);
+            });
+
+          if (this.metaFieldList) {
+            this.loading = true;
+            this.metaFieldList.pipe(takeUntil(this.destroy$)).subscribe({
+              next: async ({ data }: any) => {
+                for (const field in data) {
+                  if (Object.prototype.hasOwnProperty.call(data, field)) {
+                    this.metaFields = Object.assign({}, data[field]);
+                    try {
+                      console.log('META FIELDS');
+                      console.log(this.metaFields);
+                      await this.gridService.populateMetaFields(
+                        this.metaFields
+                      );
+                    } catch (err) {
+                      console.error(err);
+                    }
+                    const fields = resource || [];
+                    // const defaultLayoutFields = this.defaultLayout.fields || {};
+                    // this.fields = this.gridService.getFields(
+                    //   fields,
+                    //   this.metaFields,
+                    //   defaultLayoutFields,
+                    //   ''
+                    // );
+                  }
+                }
+                this.getRecords();
+              },
+              error: (err: any) => {
+                this.loading = false;
+                this.status = {
+                  error: true,
+                  message: this.translate.instant(
+                    'components.widget.grid.errors.metaQueryFetchFailed',
+                    {
+                      error:
+                        err.networkError?.error?.errors
+                          ?.map((x: any) => x.message)
+                          .join(', ') || err,
+                    }
+                  ),
+                };
+              },
+            });
+          }
+          console.log('TYPES');
+          console.log(types);
+          console.log('RESOURCE NAME');
+          console.log(resourceName);
+          console.log('RESOURCE');
+          console.log(resource);
+          // const metaFields = this.buildMetaFields(query.fields);
+          // const fieldList
+        });
       let fields: any[] | undefined = [];
       this.fetchResourceMetaData()
         .pipe(takeUntil(this.destroy$))
         .subscribe((res) => {
           fields = res.data?.resource?.metadata;
+          console.log('META DATA');
+          console.log(fields);
           this.resource = {};
           this.loading = true;
           this.showErrorMessage = '';
@@ -371,6 +488,8 @@ export class DatasetFilterComponent
               this.resource = res.data.resource;
               this.metaData = res.data?.resource?.metadata;
               if (this.metaData?.length) {
+                console.log('METADATA');
+                console.log(this.metaData);
                 this.metaData.forEach((field: any) => {
                   if (
                     field &&
