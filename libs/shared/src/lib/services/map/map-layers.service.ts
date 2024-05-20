@@ -456,8 +456,8 @@ export class MapLayersService {
       {
         ...layer.datasource,
         contextFilters: JSON.stringify(contextFilters),
-        graphQLVariables: JSON.stringify(
-          this.widgetService.mapGraphQLVariables(
+        queryParams: JSON.stringify(
+          this.widgetService.replaceReferenceDataQueryParams(
             layer.datasource?.referenceDataVariableMapping
           )
         ),
