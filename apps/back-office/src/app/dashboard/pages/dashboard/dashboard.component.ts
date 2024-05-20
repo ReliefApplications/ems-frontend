@@ -221,6 +221,35 @@ export class DashboardComponent
   }
 
   /**
+   * Sets up the widgets from the dashboard structure
+   *
+   * @param dashboard Dashboard
+   * @param contextID context ID
+   */
+  private setWidgets(dashboard: Dashboard, contextID?: string | number) {
+    this.widgets = cloneDeep(
+      dashboard.structure
+        ?.filter((x: any) => x !== null)
+        .map((widget: any) => {
+          const contextData = this.dashboard?.contextData;
+          this.contextService.context =
+            { id: contextID, ...contextData } || null;
+          if (!contextData) {
+            return widget;
+          }
+          const { settings, originalSettings } =
+            this.contextService.updateSettingsContextContent(
+              widget.settings,
+              this.dashboard
+            );
+          widget.originalSettings = originalSettings;
+          widget.settings = settings;
+          return widget;
+        }) || []
+    );
+  }
+
+  /**
    * Init the dashboard
    *
    * @param id Dashboard id
@@ -262,25 +291,7 @@ export class DashboardComponent
           this.editionActive = this.canUpdate;
           this.initContext();
           this.updateContextOptions();
-          this.widgets = cloneDeep(
-            data.dashboard.structure
-              ?.filter((x: any) => x !== null)
-              .map((widget: any) => {
-                const contextData = this.dashboard?.contextData;
-                this.contextService.context = contextData || null;
-                if (!contextData) {
-                  return widget;
-                }
-                const { settings, originalSettings } =
-                  this.contextService.updateSettingsContextContent(
-                    widget.settings,
-                    this.dashboard
-                  );
-                widget.originalSettings = originalSettings;
-                widget.settings = settings;
-                return widget;
-              }) || []
-          );
+          this.setWidgets(data.dashboard, contextID);
           this.dashboardService.widgets.next(this.widgets);
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id

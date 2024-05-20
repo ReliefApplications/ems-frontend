@@ -45,37 +45,28 @@ export class GridSettingsComponent
     AfterViewInit,
     WidgetSettings<typeof createGridWidgetFormGroup>
 {
-  // === WIDGET ===
   /** Widget */
   @Input() widget: any;
-  // === EMIT THE CHANGES APPLIED ===
   /** Event emitter for change */
   @Output() formChange: EventEmitter<
     ReturnType<typeof createGridWidgetFormGroup>
   > = new EventEmitter();
-
-  // === REACTIVE FORM ===
   /** Form group */
   public widgetFormGroup!: ReturnType<typeof createGridWidgetFormGroup>;
   /** Form array for filters */
   public filtersFormArray: any = null;
-
-  // === NOTIFICATIONS ===
   /** List of channels */
   public channels?: Channel[];
-
-  // === FLOATING BUTTON ===
   /** List of fields */
   public fields: any[] = [];
   /** List of related forms */
   public relatedForms: Form[] = [];
-
-  // === DATASET AND TEMPLATES ===
   /** List of public templates */
   public templates: Form[] = [];
   /** Resource */
   public resource: Resource | null = null;
-
+  /** Loading status */
+  public loading = false;
   /** Stores the selected tab */
   public selectedTab = 0;
 
@@ -90,12 +81,12 @@ export class GridSettingsComponent
   }
 
   /**
-   * Constructor of the grid settings component
+   * Modal content for the settings of the grid widgets.
    *
-   * @param apollo The apollo client
-   * @param applicationService The application service
-   * @param queryBuilder The query builder service
-   * @param fb FormBuilder instance
+   * @param apollo Apollo client
+   * @param applicationService Shared application service
+   * @param queryBuilder Shared query builder service
+   * @param fb Angular form builder
    * @param aggregationService Shared aggregation service
    */
   constructor(
@@ -112,11 +103,7 @@ export class GridSettingsComponent
     if (!this.widgetFormGroup) {
       this.buildSettingsForm();
     }
-    // this.formGroup?.get('query.name')?.valueChanges.subscribe((res) => {
-    //   this.filteredQueries = this.filterQueries(res);
-    // });
 
-    // this.queryName = this.formGroup.get('query')?.value.name;
     this.getQueryMetaData();
 
     // Subscribe to form resource changes
@@ -302,6 +289,7 @@ export class GridSettingsComponent
    */
   private getQueryMetaData(): void {
     if (this.widgetFormGroup.get('resource')?.value) {
+      this.loading = true;
       const layoutIds: string[] | undefined =
         this.widgetFormGroup?.get('layouts')?.value;
       const aggregationIds: string[] | undefined =
@@ -337,6 +325,7 @@ export class GridSettingsComponent
             this.resource = null;
             this.fields = [];
           }
+          this.loading = false;
         });
     } else {
       this.relatedForms = [];

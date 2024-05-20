@@ -1,3 +1,8 @@
 <ng-container [formGroup]="formGroup">
-  <editor [init]="editor" formControlName="text"></editor>
+  <editor
+    (onInit)="editorLoading = false"
+    [init]="editor"
+    formControlName="text"
+  ></editor>
 </ng-container>
+<ui-spinner *ngIf="editorLoading"></ui-spinner>

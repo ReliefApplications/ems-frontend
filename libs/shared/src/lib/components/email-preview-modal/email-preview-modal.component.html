@@ -55,7 +55,12 @@
         formControlName="files"
         [restrictions]="fileRestrictions"
       ></kendo-fileselect>
-      <editor [init]="editor" formControlName="html"></editor>
+      <editor
+        (onInit)="editorLoading = false"
+        [init]="editor"
+        formControlName="html"
+      ></editor>
+      <ui-spinner *ngIf="editorLoading"></ui-spinner>
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">

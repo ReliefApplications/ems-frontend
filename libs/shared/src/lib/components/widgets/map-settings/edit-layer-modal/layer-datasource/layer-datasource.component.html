@@ -1,7 +1,7 @@
 <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
   <!-- Datasource form -->
   <form [formGroup]="formGroup" class="flex-1 lg:max-w-[50%]">
-    <div class="flex flex-col gap-3 w-full">
+    <div class="flex flex-col gap-3 w-full" *ngIf="!loading; else loadingTmpl">
       <div class="flex-1 flex-col">
         <!-- Reference data selection  -->
         <div
@@ -91,12 +91,15 @@
         ></ui-divider>
       </div>
 
-      <!-- GraphQL variable mapping for reference data graphql-->
-      <shared-graphql-variables-mapping
-        *ngIf="referenceData && referenceData.type === 'graphql'"
+      <!-- Query params mapping for reference data graphql or rest-->
+      <shared-query-params-mapping
+        *ngIf="
+          referenceData &&
+          (referenceData.type === 'graphql' || referenceData.type === 'rest')
+        "
         [referenceData]="referenceData"
         [control]="$any(formGroup.get('referenceDataVariableMapping'))"
-      ></shared-graphql-variables-mapping>
+      ></shared-query-params-mapping>
 
       <!-- Selected layout -->
       <div uiFormFieldDirective *ngIf="layout">
@@ -305,3 +308,10 @@
     <ng-template [cdkPortalOutlet]="mapPortal"></ng-template>
   </div>
 </div>
+
+<!-- Loading indicator -->
+<ng-template #loadingTmpl>
+  <div class="h-full w-full flex">
+    <ui-spinner class="m-auto block"></ui-spinner>
+  </div>
+</ng-template>

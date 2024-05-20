@@ -4,7 +4,7 @@
     <input formControlName="title" type="string" />
   </div>
 
-  <ng-container formGroupName="card">
+  <ng-container formGroupName="card" *ngIf="!loading; else loadingTmpl">
     <div class="flex gap-2 flex-wrap">
       <div class="flex-1 flex-col w-full">
         <!-- Reference data selection  -->
@@ -29,15 +29,14 @@
             [uiTooltip]="'common.remove' | translate"
           ></ui-button>
         </div>
-
-        <!-- GraphQL variable mapping -->
-        <shared-graphql-variables-mapping
-          *ngIf="referenceData && referenceData.type === 'graphql'"
+        <!-- Query params mapping for reference data graphql or rest-->
+        <shared-query-params-mapping
+          *ngIf="referenceData && (referenceData.type === 'graphql' || referenceData.type === 'rest')"
           [referenceData]="referenceData"
           [control]="
             formGroup.controls.card.controls.referenceDataVariableMapping
           "
-        ></shared-graphql-variables-mapping>
+        ></shared-query-params-mapping>
         <ui-divider
           class="max-w-xs m-auto"
           [text]="'common.or' | translate"
@@ -228,3 +227,10 @@
     </ng-container>
   </ng-container>
 </form>
+
+<!-- Loading indicator -->
+<ng-template #loadingTmpl>
+  <div class="w-full flex">
+    <ui-spinner class="m-auto block"></ui-spinner>
+  </div>
+</ng-template>

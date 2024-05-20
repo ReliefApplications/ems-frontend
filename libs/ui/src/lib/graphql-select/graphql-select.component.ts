@@ -317,9 +317,9 @@ export class GraphQLSelectComponent
         const elements = this.elements.getValue();
         if (Array.isArray(value)) {
           this.selectedElements = [
-            ...elements.filter((element) => {
-              value.find((x) => x === element[this.valueField]);
-            }),
+            ...elements.filter((element) =>
+              value.find((x) => x === element[this.valueField])
+            ),
           ];
         } else {
           this.selectedElements = [

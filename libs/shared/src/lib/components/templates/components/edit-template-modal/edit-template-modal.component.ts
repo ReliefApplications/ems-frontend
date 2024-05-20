@@ -17,6 +17,7 @@ import {
   ButtonModule,
   IconModule,
   SelectMenuModule,
+  SpinnerModule,
   TooltipModule,
 } from '@oort-front/ui';
 import { DialogModule, FormWrapperModule } from '@oort-front/ui';
@@ -49,26 +50,26 @@ const SUBJECT_EDITOR_AUTOCOMPLETE_KEYS = ['{{now}}', '{{today}}'];
     SelectMenuModule,
     IconModule,
     TooltipModule,
+    SpinnerModule,
   ],
   selector: 'shared-edit-template',
   templateUrl: './edit-template-modal.component.html',
   styleUrls: ['./edit-template-modal.component.scss'],
 })
 export class EditTemplateModalComponent implements OnInit {
-  // === REACTIVE FORM ===
   /** Reactive form for the template */
-  form = this.fb.group({
+  public form = this.fb.group({
     name: [get(this.data, 'name', null), Validators.required],
     type: [get(this.data, 'type', 'email'), Validators.required],
     subject: [get(this.data, 'content.subject', null), Validators.required],
     body: [get(this.data, 'content.body', ''), Validators.required],
   });
-
   /** tinymce body editor */
   public bodyEditor: RawEditorSettings = EMAIL_EDITOR_CONFIG;
-
   /** tinymce subject editor */
   public subjectEditor: RawEditorSettings = INLINE_EDITOR_CONFIG;
+  /** Is editor loading */
+  public editorLoading = true;
 
   /**
    * Component for editing a template

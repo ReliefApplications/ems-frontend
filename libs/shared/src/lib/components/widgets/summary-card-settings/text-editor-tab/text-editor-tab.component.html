@@ -8,6 +8,11 @@
       }}
     </ui-alert>
     <!-- Template editor -->
-    <editor [init]="editor" formControlName="html"></editor>
+    <editor
+      (onInit)="editorLoading = false"
+      [init]="editor"
+      formControlName="html"
+    ></editor>
+    <ui-spinner *ngIf="editorLoading"></ui-spinner>
   </ng-container>
 </form>
