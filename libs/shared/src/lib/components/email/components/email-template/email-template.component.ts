@@ -42,6 +42,8 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     records: any[];
   };
 
+  public data!: any;
+
   /** List of data items. */
   public dataList!: any[];
 
@@ -64,7 +66,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   public datasetEmails!: string[];
 
   /** Fields in the data set. */
-  public datasetFields!: string[];
+  public datasetFields!: any[];
 
   /** Form group for filter query. */
   public filterQuery: FormGroup | any | undefined;
@@ -277,13 +279,33 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     this.useExpression = !this.useExpression;
   }
 
-  getValue(data: any, field: string): any {
-    const fieldParts = field.split(' - ');
-    let value = data;
-    for (const part of fieldParts) {
-      value = value ? value[part] : null;
-    }
-    return value;
+  /**
+   *
+   */
+  getDataList(field: any): any {
+    const data = this.data?.map((record: any) => {
+      const flattenedObject = this.emailService.flattenRecord(record, field);
+      field.fields.forEach((x: any) => {
+        /**
+         * Converts the resource field name back to {resourceName} - {resourceField}
+         * so the field can be mapped to the correct data.
+         */
+        if (x.parentName) {
+          x.name = `${x.parentName} - ${x.childName}`;
+          x.type = x.childType;
+        }
+      });
+
+      delete flattenedObject.data;
+
+      const flatData = Object.fromEntries(
+        Object.entries(flattenedObject).filter(
+          ([, value]) => value !== null && value !== undefined
+        )
+      );
+      return flatData;
+    });
+    return data;
   }
 
   /**
@@ -387,7 +409,6 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
    * @param dataset data of the data set
    */
   bindDataSetDetails(dataset: any): void {
-    console.log(dataset);
     if (dataset === undefined) {
       this.dataList = [];
       this.resource = [];
@@ -436,10 +457,10 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
             this.emailService.fetchDataSet(dataset).subscribe((res) => {
               if (res?.data.dataset) {
                 this.dataset = res?.data?.dataset;
-                console.log(this.dataset);
                 this.datasetEmails = res?.data?.dataset?.emails;
-                this.dataList = res.data?.dataset?.records;
+                this.data = res?.data?.dataset.records;
                 this.datasetFields = dataset.fields.map((ele: any) => ele.name);
+                this.dataList = this.getDataList(dataset);
                 this.emails = [...this.datasetEmails];
                 dataset.cacheData.datasetResponse = this.dataset;
                 dataset.cacheData.dataList = this.dataList;

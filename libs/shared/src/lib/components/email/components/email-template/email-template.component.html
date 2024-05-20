@@ -133,7 +133,7 @@
           </td>
           <ng-container *ngFor="let field of datasetFields">
             <td class="p-2 border border-blue-600 shadow-xs m-1 text-center">
-              {{ getValue(data, field) }}
+             {{this.emailService.formatDataStrings(data[field], field)}}
             </td>
           </ng-container>
         </tr>
