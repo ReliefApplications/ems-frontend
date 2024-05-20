@@ -187,13 +187,13 @@ export class WidgetService {
   }
 
   /**
-   * Gets referenceDataVariables from target source
+   * Gets query params from target source
    *
-   * @param source source we need the mapping variables from
+   * @param source source we need the query params mapping from
    * @param additionalLogic additional logic, for widgets that use other placeholders than filter & context
-   * @returns the reference data query variables object
+   * @returns the reference data query params object
    */
-  public mapReferenceDataVariables(
+  public replaceReferenceDataQueryParams(
     source: string | undefined,
     additionalLogic?: (mapping: any) => any
   ): object | null {

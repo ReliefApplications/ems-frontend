@@ -34,7 +34,7 @@ import { AggregationService } from '../../../../services/aggregation/aggregation
 import { DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
 import get from 'lodash/get';
 import { createTemplateAggregationForm } from '../../editor-settings/editor-settings.forms';
-import { ReferenceDataVariablesMappingComponent } from '../reference-data-variables-mapping/reference-data-variables-mapping.component';
+import { QueryParamsMappingComponent } from '../query-params-mapping/query-params-mapping.component';
 
 /** Dialog data interface */
 interface DialogData {
@@ -64,7 +64,7 @@ interface DialogData {
     DividerModule,
     FormWrapperModule,
     SelectMenuModule,
-    ReferenceDataVariablesMappingComponent,
+    QueryParamsMappingComponent,
   ],
   templateUrl: './template-aggregation-modal.component.html',
   styleUrls: ['./template-aggregation-modal.component.scss'],

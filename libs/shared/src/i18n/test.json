@@ -1860,13 +1860,17 @@
 							"layoutStyles": {
 								"queryFilters": {
 									"error": "******",
-									"graphqlTitle": "******",
-									"graphqlTooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }",
+									"graphql": {
+										"title": "******",
+										"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
+									},
 									"help": "******",
 									"noVariables": "******",
 									"refresh": "******",
-									"restTitle": "******",
-									"restTooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
+									"rest": {
+										"title": "******",
+										"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
+									}
 								},
 								"title": "******",
 								"use": "******",

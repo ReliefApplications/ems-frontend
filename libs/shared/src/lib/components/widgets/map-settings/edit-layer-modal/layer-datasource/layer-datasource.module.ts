@@ -18,7 +18,7 @@ import {
   ReferenceDataSelectComponent,
   ResourceSelectComponent,
 } from '../../../../controls/public-api';
-import { ReferenceDataVariablesMappingComponent } from '../../../common/reference-data-variables-mapping/reference-data-variables-mapping.component';
+import { QueryParamsMappingComponent } from '../../../common/query-params-mapping/query-params-mapping.component';
 
 /** Module for the LayerDatasourceComponent */
 @NgModule({
@@ -41,7 +41,7 @@ import { ReferenceDataVariablesMappingComponent } from '../../../common/referenc
     PortalModule,
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
-    ReferenceDataVariablesMappingComponent,
+    QueryParamsMappingComponent,
   ],
   exports: [LayerDatasourceComponent],
 })

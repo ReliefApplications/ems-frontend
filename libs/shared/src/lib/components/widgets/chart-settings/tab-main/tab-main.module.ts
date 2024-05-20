@@ -22,7 +22,7 @@ import {
   ReferenceDataSelectComponent,
   ResourceSelectComponent,
 } from '../../../controls/public-api';
-import { ReferenceDataVariablesMappingComponent } from '../../common/reference-data-variables-mapping/reference-data-variables-mapping.component';
+import { QueryParamsMappingComponent } from '../../common/query-params-mapping/query-params-mapping.component';
 
 /**
  * Main tab of chart settings modal.
@@ -51,7 +51,7 @@ import { ReferenceDataVariablesMappingComponent } from '../../common/reference-d
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
     DividerModule,
-    ReferenceDataVariablesMappingComponent,
+    QueryParamsMappingComponent,
   ],
   exports: [TabMainComponent],
 })

@@ -265,9 +265,9 @@ export class SummaryCardComponent
     return this.pageInfo.length !== Number.MAX_SAFE_INTEGER;
   }
 
-  /** @returns the reference data (graphql or rest) variables object */
-  get referenceDataVariables() {
-    return this.widgetService.mapReferenceDataVariables(
+  /** @returns reference data (graphql or rest) query params */
+  get queryParams() {
+    return this.widgetService.replaceReferenceDataQueryParams(
       this.settings.card?.referenceDataVariableMapping as any,
       this.replaceWidgetVariables.bind(this)
     );
@@ -488,7 +488,7 @@ export class SummaryCardComponent
       from(
         this.referenceDataService.fetchItems(this.refData, {
           ...variables,
-          ...(this.referenceDataVariables ?? {}),
+          ...(this.queryParams ?? {}),
         })
       )
         .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
@@ -1104,7 +1104,7 @@ export class SummaryCardComponent
       from(
         this.referenceDataService.fetchItems(this.refData, {
           ...variables,
-          ...(this.referenceDataVariables ?? {}),
+          ...(this.queryParams ?? {}),
         })
       )
         .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))

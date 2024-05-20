@@ -29,14 +29,14 @@
             [uiTooltip]="'common.remove' | translate"
           ></ui-button>
         </div>
-        <!-- Variable mapping for reference data graphql or rest-->
-        <shared-reference-data-variables-mapping
+        <!-- Query params mapping for reference data graphql or rest-->
+        <shared-query-params-mapping
           *ngIf="referenceData && (referenceData.type === 'graphql' || referenceData.type === 'rest')"
           [referenceData]="referenceData"
           [control]="
             formGroup.controls.card.controls.referenceDataVariableMapping
           "
-        ></shared-reference-data-variables-mapping>
+        ></shared-query-params-mapping>
         <ui-divider
           class="max-w-xs m-auto"
           [text]="'common.or' | translate"

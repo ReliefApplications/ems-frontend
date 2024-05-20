@@ -26,10 +26,10 @@ import isEqual from 'lodash/isEqual';
 import { JSONValidator } from '../../../../utils/validators/json.validator';
 
 /**
- * Variables mapping, for widgets using reference data graphql or rest.
+ * Query params mapping, for widgets using reference data graphql or rest.
  */
 @Component({
-  selector: 'shared-reference-data-variables-mapping',
+  selector: 'shared-query-params-mapping',
   standalone: true,
   imports: [
     CommonModule,
@@ -44,15 +44,13 @@ import { JSONValidator } from '../../../../utils/validators/json.validator';
     AlertModule,
     ResizableModule,
   ],
-  templateUrl: './reference-data-variables-mapping.component.html',
-  styleUrls: ['./reference-data-variables-mapping.component.scss'],
+  templateUrl: './query-params-mapping.component.html',
+  styleUrls: ['./query-params-mapping.component.scss'],
 })
-export class ReferenceDataVariablesMappingComponent
-  implements OnInit, OnChanges
-{
+export class QueryParamsMappingComponent implements OnInit, OnChanges {
   /** Reference data */
   @Input() referenceData!: ReferenceData;
-  /** Form control storing variables mapping */
+  /** Form control storing query params mapping */
   @Input() control!: FormControl;
   /** List of available variables to inject data */
   public availableQueryVariables: string[] = [];
@@ -64,13 +62,13 @@ export class ReferenceDataVariablesMappingComponent
     formatOnPaste: true,
     automaticLayout: true,
   };
-  /** size style of editor */
+  /** Size style of editor */
   public style: any = {};
-  /** reference data type */
+  /** Reference data type */
   public type?: referenceDataType;
 
   /**
-   * Variables mapping, for widgets using reference data graphql or rest.
+   * Query params mapping, for widgets using reference data graphql or rest.
    *
    * @param translate Angular translate service
    */
@@ -83,7 +81,7 @@ export class ReferenceDataVariablesMappingComponent
 
   ngOnChanges(changes: SimpleChanges): void {
     // if the mapping is already loaded
-    if (changes['referenceData']) {
+    if (changes['referenceData'] && !changes['control']) {
       // if the reference data doesn't change
       if (
         !isEqual(
@@ -100,10 +98,10 @@ export class ReferenceDataVariablesMappingComponent
   }
 
   /**
-   * Refresh editor, updating template & variables if needed.
+   * Refresh editor, updating template & query params if needed.
    *
-   * @param restoreTemplate boolean to indicate if should restore variables template
-   * @param keepVariables boolean to indicate if should keep used variables
+   * @param restoreTemplate boolean to indicate if should restore query params template
+   * @param keepVariables boolean to indicate if should keep used query params
    */
   public refresh(restoreTemplate?: boolean, keepVariables?: boolean): void {
     if (
@@ -116,17 +114,8 @@ export class ReferenceDataVariablesMappingComponent
     this.type = this.referenceData?.type;
 
     try {
-      if (this.referenceData?.type === 'rest') {
-        this.availableQueryVariables = (this.referenceData.fields ?? []).map(
-          (field) => field.graphQLFieldName
-        ) as string[];
-
-        this.setVariablesInEditor(
-          restoreTemplate ?? false,
-          keepVariables ?? false,
-          this.availableQueryVariables
-        );
-      } else if (this.referenceData?.type === 'graphql') {
+      // Get variables from query definition, and clean the JSON editor, based on available variables
+      if (this.referenceData?.type === 'graphql') {
         const query = gql(this.referenceData.query ?? '');
         const definition = query.definitions?.[0];
         if (definition?.kind !== 'OperationDefinition') {

@@ -30,7 +30,7 @@ import {
   ResourceSelectComponent,
 } from '../../../controls/public-api';
 import { ReferenceData } from '../../../../models/reference-data.model';
-import { ReferenceDataVariablesMappingComponent } from '../../common/reference-data-variables-mapping/reference-data-variables-mapping.component';
+import { QueryParamsMappingComponent } from '../../common/query-params-mapping/query-params-mapping.component';
 
 /** Component for the general summary cards tab */
 @Component({
@@ -55,7 +55,7 @@ import { ReferenceDataVariablesMappingComponent } from '../../common/reference-d
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
     DividerModule,
-    ReferenceDataVariablesMappingComponent,
+    QueryParamsMappingComponent,
   ],
   templateUrl: './summary-card-general.component.html',
   styleUrls: ['./summary-card-general.component.scss'],
