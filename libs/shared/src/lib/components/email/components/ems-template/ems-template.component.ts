@@ -490,6 +490,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
    */
   async saveDraft() {
     try {
+      // convert base64 to file
       if (this.currentStep === 4) {
         if (
           !(this.emailService.allLayoutdata.headerLogo instanceof File) &&
@@ -524,6 +525,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
               'image/png'
             );
         }
+        // patch layout data
         this.layout.getColors();
         this.emailService.allLayoutdata.txtSubject =
           this.layout.layoutForm.get('subjectInput')?.value;

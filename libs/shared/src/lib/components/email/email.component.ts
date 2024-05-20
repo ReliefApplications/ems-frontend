@@ -365,6 +365,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           delete emailData.isDeleted;
           delete emailData.lastExecution;
           delete emailData.status;
+          // prepares edit data if it is clone
           this.prepareEditData(emailData, false, true);
         } else {
           this.emailService.editId = id;
