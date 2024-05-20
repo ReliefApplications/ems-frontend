@@ -232,10 +232,17 @@
                     *ngIf="operators?.[fieldIndex] && !data.get('hideEditor')?.value"
                   >
                     <!-- Text Input for non-date/datetime fields -->
-                    <ng-container *ngIf="!isDateOrDatetimeOperator(fieldIndex) && !isNumericOperator(fieldIndex) && !isSelectField(fieldIndex)">
+                    <ng-container
+                      *ngIf="
+                        !isDateOrDatetimeOperator(fieldIndex) &&
+                        !isNumericOperator(fieldIndex) &&
+                        !isSelectField(fieldIndex) &&
+                        getFieldType(fieldIndex) !== 'boolean'
+                      "
+                    >                      
                       <div uiFormFieldDirective [defaultMargin]="false">
-                        <label>{{ 'common.value.one' | translate }}</label>
-                        <input formControlName="value" type="text" />
+                          <label>{{ 'common.value.one' | translate }}</label>
+                          <input formControlName="value" type="text" />
                       </div>
                     </ng-container>
                     <!-- Numeric Input -->
@@ -409,6 +416,27 @@
                       </div>
                     </ng-container>
 
+                    <!-- Value picker for boolean fields -->
+                    <ng-container
+                      *ngIf="getFieldType(fieldIndex) === 'boolean'"
+                    >
+                    <div uiFormFieldDirective [defaultMargin]="false">
+                      <label>{{ 'common.value.one' | translate }}</label>
+                      <ui-select-menu formControlName="value">
+                        <ui-select-option>{{
+                          'common.input.none' | translate
+                        }}</ui-select-option>
+
+                        <ui-select-option [value]="true">
+                          {{ 'common.true' | translate }}
+                        </ui-select-option>
+
+                        <ui-select-option [value]="false">
+                          {{ 'common.false' | translate }}
+                        </ui-select-option>
+                      </ui-select-menu>
+                    </div>
+                    </ng-container>
                   </div>
                   <!-- Delete filter row -->
                   <ui-button

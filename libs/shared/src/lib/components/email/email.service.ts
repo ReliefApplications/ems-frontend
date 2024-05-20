@@ -1104,6 +1104,11 @@ export class EmailService {
         timeZoneName: 'short',
       });
     }
+    if (rowData === false) {
+      return 'False';
+    } else if (rowData === true) {
+      return 'True';
+    }
     // If rowData is not a date string, return it as is
     // This includes non-string inputs and strings that cannot be parsed into a date
     return rowData ? rowData.toString() : '';
