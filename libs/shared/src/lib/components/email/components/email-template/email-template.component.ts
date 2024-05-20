@@ -42,7 +42,8 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     records: any[];
   };
 
-  public data!: any;
+  /** records of selected Dataset*/
+  public data!: any[];
 
   /** List of data items. */
   public dataList!: any[];
@@ -66,7 +67,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   public datasetEmails!: string[];
 
   /** Fields in the data set. */
-  public datasetFields!: any[];
+  public datasetFields!: string[];
 
   /** Form group for filter query. */
   public filterQuery: FormGroup | any | undefined;
