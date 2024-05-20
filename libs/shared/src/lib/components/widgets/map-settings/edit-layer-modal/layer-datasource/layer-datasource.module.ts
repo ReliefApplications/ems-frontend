@@ -18,7 +18,7 @@ import {
   ReferenceDataSelectComponent,
   ResourceSelectComponent,
 } from '../../../../controls/public-api';
-import { GraphqlVariablesMappingComponent } from '../../../common/graphql-variables-mapping/graphql-variables-mapping.component';
+import { QueryParamsMappingComponent } from '../../../common/query-params-mapping/query-params-mapping.component';
 
 /** Module for the LayerDatasourceComponent */
 @NgModule({
@@ -41,7 +41,7 @@ import { GraphqlVariablesMappingComponent } from '../../../common/graphql-variab
     PortalModule,
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
-    GraphqlVariablesMappingComponent,
+    QueryParamsMappingComponent,
   ],
   exports: [LayerDatasourceComponent],
 })
