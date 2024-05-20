@@ -14,7 +14,11 @@ import {
 } from '@angular/forms';
 import { clone } from 'lodash';
 import { EmailService } from '../../email.service';
-import { FIELD_TYPES, FILTER_OPERATORS } from '../../filter/filter.constant';
+import {
+  FIELD_TYPES,
+  FILTER_OPERATORS,
+  TYPE_LABEL,
+} from '../../filter/filter.constant';
 import { ResourceQueryResponse } from '../../../../models/resource.model';
 import { GET_RESOURCE } from '../../graphql/queries';
 import { Apollo } from 'apollo-angular';
@@ -244,6 +248,51 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
         fieldType === 'datetime-local') &&
       operators.includes(fieldOperator)
     );
+  }
+
+  /**
+   * Checks if the selected field is a select field.
+   *
+   * @param fieldIndex The index of the field in the dataset filter.
+   * @returns Returns true if the field is a select field, otherwise false.
+   */
+  isSelectField(fieldIndex: number): boolean {
+    return (
+      this.getFieldType(fieldIndex) === 'select' ||
+      this.getFieldType(fieldIndex) === 'dropdown'
+    );
+  }
+
+  /**
+   * Retrieves field using index
+   *
+   * @param fieldIndex filter row index
+   * @returns field object
+   */
+  getField(fieldIndex: number): any {
+    const fieldControl = this.datasetFilterInfo.at(fieldIndex);
+    const fieldName = fieldControl ? fieldControl.value : null;
+    let field = fieldName
+      ? this.resource?.metadata?.find(
+          (data: any) => data.name === fieldName.field.split('.')[0]
+        )
+      : null;
+    if (field && field?.type === TYPE_LABEL.resources) {
+      field = fieldName
+        ? field.fields?.find(
+            (data: any) => data.name === fieldName.field.split('.')[1]
+          )
+        : null;
+    }
+    if (field && field.type === TYPE_LABEL.resource) {
+      if (field.fields) {
+        field = field?.fields?.find(
+          (x: { name: any }) =>
+            x.name.split(' - ')[1] === fieldName.field.split('.')[1]
+        );
+      }
+    }
+    return field ?? '';
   }
 
   /**

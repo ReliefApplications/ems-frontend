@@ -160,6 +160,8 @@ export class DatasetFilterComponent
     this.query.controls.name.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((data: any) => {
+        this.emailService.disableSaveAndProceed.next(!data.length);
+        // this.emailService.disableSaveAsDraft.next(!data.length);
         this.emailService.title.next(data);
         this.emailService.index.next(this.activeTab.index);
       });
@@ -915,8 +917,12 @@ export class DatasetFilterComponent
    */
   addSelectedField(): void {
     if (this.availableFieldIndex !== null) {
-      this.emailService.disableSaveAndProceed.next(false);
-      this.emailService.disableSaveAsDraft.next(false);
+      this.emailService.disableSaveAndProceed.next(
+        !(this.totalMatchingRecords <= 50)
+      );
+      this.emailService.disableSaveAsDraft.next(
+        !(this.totalMatchingRecords <= 50)
+      );
       const field = this.availableFields[this.availableFieldIndex];
       this.selectedFields.push(field);
       this.availableFields.splice(this.availableFieldIndex, 1);

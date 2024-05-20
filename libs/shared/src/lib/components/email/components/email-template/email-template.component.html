@@ -270,8 +270,7 @@
                   <!-- Text Input for non-date/datetime fields -->
                   <ng-container
                     *ngIf="
-                      !isDateOrDatetimeOperator(fieldIndex) &&
-                      !isNumericOperator(fieldIndex)
+                     !isDateOrDatetimeOperator(fieldIndex) && !isNumericOperator(fieldIndex) && !isSelectField(fieldIndex)
                     "
                   >
                     <div uiFormFieldDirective [defaultMargin]="false">
@@ -438,6 +437,38 @@
                       [hidden]="true"
                     >
                       <input formControlName="value" type="text" />
+                    </div>
+                  </ng-container>
+                  <!-- Value picker for Select fields -->
+                  <ng-container *ngIf="isSelectField(fieldIndex)">
+                    <div uiFormFieldDirective [defaultMargin]="false">
+                      <label>{{ 'common.value.one' | translate }}</label>
+                      <ui-select-menu *ngIf="!getField(fieldIndex).multiSelect" formControlName="value">
+                        <ui-select-option>{{
+                          'common.input.none' | translate
+                        }}</ui-select-option>
+                        <ui-select-option
+                          *ngFor="let option of getField(fieldIndex).options"
+                          [value]="option.value"
+                        >
+                          {{ option.text }}
+                        </ui-select-option>
+                      </ui-select-menu>
+                      <ui-select-menu
+                        *ngIf="getField(fieldIndex).multiSelect"
+                        formControlName="value"
+                        [multiselect]="true"
+                      >
+                        <ui-select-option>{{
+                          'common.input.none' | translate
+                        }}</ui-select-option>
+                        <ui-select-option
+                          *ngFor="let option of getField(fieldIndex).options"
+                          [value]="option.value"
+                        >
+                          {{ option.text }}
+                        </ui-select-option>
+                      </ui-select-menu>
                     </div>
                   </ng-container>
                 </div>
