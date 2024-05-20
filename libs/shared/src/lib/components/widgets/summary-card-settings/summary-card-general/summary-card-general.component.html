@@ -4,7 +4,7 @@
     <input formControlName="title" type="string" />
   </div>
 
-  <ng-container formGroupName="card">
+  <ng-container formGroupName="card" *ngIf="!loading; else loadingTmpl">
     <div class="flex gap-2 flex-wrap">
       <div class="flex-1 flex-col w-full">
         <!-- Reference data selection  -->
@@ -227,3 +227,10 @@
     </ng-container>
   </ng-container>
 </form>
+
+<!-- Loading indicator -->
+<ng-template #loadingTmpl>
+  <div class="w-full flex">
+    <ui-spinner class="m-auto block"></ui-spinner>
+  </div>
+</ng-template>

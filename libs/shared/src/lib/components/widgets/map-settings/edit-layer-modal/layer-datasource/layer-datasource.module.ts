@@ -12,6 +12,7 @@ import {
   SelectMenuModule,
   DividerModule,
   TooltipModule,
+  SpinnerModule,
 } from '@oort-front/ui';
 import { PortalModule } from '@angular/cdk/portal';
 import {
@@ -42,6 +43,7 @@ import { QueryParamsMappingComponent } from '../../../common/query-params-mappin
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
     QueryParamsMappingComponent,
+    SpinnerModule,
   ],
   exports: [LayerDatasourceComponent],
 })

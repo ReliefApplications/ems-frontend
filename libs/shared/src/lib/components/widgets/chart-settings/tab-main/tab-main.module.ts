@@ -7,6 +7,7 @@ import {
   DividerModule,
   ExpansionPanelModule,
   SelectMenuModule,
+  SpinnerModule,
 } from '@oort-front/ui';
 import { IconModule } from '@oort-front/ui';
 import { TabsModule } from '@oort-front/ui';
@@ -52,6 +53,7 @@ import { QueryParamsMappingComponent } from '../../common/query-params-mapping/q
     ReferenceDataSelectComponent,
     DividerModule,
     QueryParamsMappingComponent,
+    SpinnerModule,
   ],
   exports: [TabMainComponent],
 })

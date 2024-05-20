@@ -22,6 +22,7 @@ import {
   RadioModule,
   SelectMenuModule,
   SelectOptionModule,
+  SpinnerModule,
   TooltipModule,
 } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
@@ -56,6 +57,7 @@ import { QueryParamsMappingComponent } from '../../common/query-params-mapping/q
     ReferenceDataSelectComponent,
     DividerModule,
     QueryParamsMappingComponent,
+    SpinnerModule,
   ],
   templateUrl: './summary-card-general.component.html',
   styleUrls: ['./summary-card-general.component.scss'],
@@ -71,6 +73,8 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
   @Input() layout: Layout | null = null;
   /** Selected aggregation */
   @Input() aggregation: Aggregation | null = null;
+  /** Loading status */
+  @Input() loading = false;
 
   /**
    * Component for the general summary cards tab

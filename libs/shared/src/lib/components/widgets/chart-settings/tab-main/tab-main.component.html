@@ -28,7 +28,7 @@
       </ui-select-menu>
     </div>
   </ng-container>
-  <div class="flex-1 flex-col">
+  <div class="flex-1 flex-col" *ngIf="!loading; else loadingTmpl">
     <!-- Reference data selection  -->
     <div uiFormFieldDirective class="flex-1" *ngIf="!formGroup.value.resource">
       <label>{{ 'models.referenceData.select' | translate }}</label>
@@ -131,3 +131,10 @@
     </ng-container>
   </ng-container>
 </div>
+
+<!-- Loading indicator -->
+<ng-template #loadingTmpl>
+  <div class="w-full flex">
+    <ui-spinner class="m-auto block"></ui-spinner>
+  </div>
+</ng-template>
