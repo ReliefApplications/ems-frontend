@@ -20,7 +20,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UploadsModule } from '@progress/kendo-angular-upload';
 import { ButtonModule as uiButtonModule, TextareaModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
-import { isEqual } from 'lodash';
 
 /** Model fot the input data */
 interface DialogData {
