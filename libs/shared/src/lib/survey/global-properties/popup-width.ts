@@ -8,11 +8,11 @@ export const init = (): void => {
   const serializer: JsonMetadata = Serializer;
 
   for (const type of ['dropdown']) {
-    // add popupWidth property
+    // add minimumPopupWidth property
     serializer.addProperty(type, {
-      name: 'popupWidth:number',
+      name: 'minimumPopupWidth:number',
       category: 'general',
-      default: 0,
+      default: null,
     });
   }
 };

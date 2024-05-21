@@ -158,7 +158,7 @@ export const init = (
     dropdownInstance.valueField = 'value';
     dropdownInstance.popupSettings = {
       appendTo: 'component',
-      width: question.popupWidth,
+      width: question.minimumPopupWidth,
     };
     dropdownInstance.fillMode = 'none';
     return dropdownInstance;
