@@ -218,9 +218,7 @@ export class DashboardService {
   async getResourceDownloadPermission(resourceId: string) {
     const user = this.authService.userValue;
     const canSeeResources = user?.permissions?.find(
-      (permission) =>
-        permission?.type === 'can_see_resources' ||
-        permission?.type === 'can_manage_resources'
+      (permission) => permission?.type === 'can_manage_resources'
     );
     if (canSeeResources) {
       // Admins that have a read access on resource records automatically have the permission to download as well
