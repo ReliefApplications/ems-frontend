@@ -935,11 +935,9 @@ export class SummaryCardComponent
               ...c,
               metadata: this.fields,
             }));
-            console.log('one');
           }
         }
       });
-    console.log('two');
   }
 
   /**
