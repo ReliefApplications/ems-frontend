@@ -1120,15 +1120,20 @@ export class EmailService {
         timeZoneName: 'short',
       });
     }
-    if (rowData === false) {
+    if (typeof rowData === 'string') {
+      return rowData;
+    } else if (rowData === false) {
       return 'False';
     } else if (rowData === true) {
       return 'True';
-    }
-    // If rowData is not a date string, return it as is
-    // This includes non-string inputs and strings that cannot be parsed into a date
-    if (typeof rowData == 'string') {
-      return rowData;
+    } else if (rowData instanceof Array) {
+      return rowData.join(', ');
+    } else if (rowData instanceof Object) {
+      let objectString = '';
+      for (const field in rowData) {
+        objectString += `${field}: ${rowData[field]}\n`;
+      }
+      return objectString;
     }
     return rowData ? JSON.stringify(rowData) : '';
   }
