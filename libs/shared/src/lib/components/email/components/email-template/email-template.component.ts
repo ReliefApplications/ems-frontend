@@ -96,11 +96,16 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   /** Error message for email validation. */
   public emailValidationError = '';
 
+  /** It is for previously selcted Dataset*/
+  public prevDataset!: any | undefined;
+
   /** Event emitter for loading emails. */
   @Output() emailLoad = new EventEmitter<{
     emails: string[];
     emailFilter: any;
   }>();
+
+  @Output() noEmail = new EventEmitter();
 
   /** List of emails for back loading. */
   @Input() emailBackLoad: string[] | undefined;
@@ -306,6 +311,12 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
         ?.filter(Boolean)
         ?.flat();
       this.emails = [...this.datasetEmails];
+      if (this.emails.length === 0) {
+        this.noEmail.emit(true);
+      } else {
+        this.noEmail.emit(false);
+      }
+      this.prevDataset = this.selectedDataset;
       this.emailService.setSelectedDataSet(dataset);
       this.loading = false;
     } else {
@@ -333,6 +344,12 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
                 dataset.cacheData.datasetFields = this.datasetFields;
                 dataset.cacheData.resource = this.resource;
 
+                if (this.emails.length === 0) {
+                  this.noEmail.emit(true);
+                } else {
+                  this.noEmail.emit(false);
+                }
+
                 //Below if condition is assigning the cachedData to the selected Dataset (Reinitializing)
                 if (
                   this.datasetsForm.value?.datasets?.filter(
@@ -343,6 +360,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
                     (x: any) => x.name === dataset.name
                   )[0].cacheData = dataset.cacheData;
                 }
+                this.prevDataset = this.selectedDataset;
                 this.emailService.setSelectedDataSet(dataset);
               }
               this.loading = false;
@@ -350,6 +368,16 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
           }
         });
     }
+  }
+
+  // eslint-disable-next-line jsdoc/require-returns
+  /**
+   * get the keys of @data
+   *
+   * @param data datasetFields
+   */
+  getKeys(data: any) {
+    return Object.keys(data);
   }
 
   /**
@@ -377,6 +405,14 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   onSegmentChange(event: any): void {
     const segment = event?.target?.value || event;
     this.activeSegmentIndex = this.segmentList.indexOf(segment);
+    if (this.activeSegmentIndex === 0) {
+      this.noEmail.emit(false);
+    } else if (
+      this.activeSegmentIndex !== 0 &&
+      this.prevDataset === this.selectedDataset
+    ) {
+      this.noEmail.emit(true);
+    }
   }
 
   /**
@@ -749,6 +785,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     this.resource = [];
     this.datasetFields = [];
     this.filterFields = new FormArray([]);
+    this.noEmail.emit(false);
 
     const filterConditionCount = this.datasetFilterInfo.controls.length;
     if (filterConditionCount !== 0) {

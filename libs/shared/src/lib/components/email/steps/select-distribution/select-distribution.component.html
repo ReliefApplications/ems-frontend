@@ -113,6 +113,9 @@
     }}</strong
     >.
   </ui-alert>
+  <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.to">
+    {{ 'components.email.distributionList.alert.noEmail' | translate }}
+  </ui-alert>
   <!-- Existing Distribution List -->
   <div *ngIf="showExistingDistributionList">
     <div class="mt-4" *ngIf="!isLoading; else loaderContainer">
@@ -207,6 +210,7 @@
     </div>
     <shared-email-template
       [existingId]="this.distributionListId"
+      (noEmail)="update($event, 'to')"
       (emailLoad)="to($event)"
       (listChange)="validateDistributionList()"
       [emailBackLoad]="emailDistributionList.To"
@@ -217,6 +221,9 @@
       }}</shared-email-template
     >
 
+    <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.cc">
+      {{ 'components.email.distributionList.alert.noEmail' | translate }}
+    </ui-alert>
     <!-- CC dropdown -->
     <div
       class="w-full flex p-1 pl-2 space-y-4 flex-row items-start self-stretch bg-blue-50 cursor-pointer"
@@ -242,6 +249,7 @@
     </div>
     <shared-email-template
       [existingId]="this.distributionListId"
+      (noEmail)="update($event, 'cc')"
       (emailLoad)="cc($event)"
       (listChange)="validateDistributionList()"
       [emailBackLoad]="emailDistributionList.Cc"
@@ -252,6 +260,9 @@
       }}</shared-email-template
     >
 
+    <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.bcc">
+      {{ 'components.email.distributionList.alert.noEmail' | translate }}
+    </ui-alert>
     <!-- BCC dropdown -->
     <div
       class="w-full flex p-1 pl-2 space-y-4 flex-row items-start self-stretch bg-blue-50 cursor-pointer"
@@ -277,6 +288,7 @@
     </div>
     <shared-email-template
       [existingId]="this.distributionListId"
+      (noEmail)="update($event, 'bcc')"
       (emailLoad)="bcc($event)"
       (listChange)="validateDistributionList()"
       [emailBackLoad]="emailDistributionList.Bcc"

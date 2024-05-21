@@ -813,6 +813,7 @@
 			"distributionList": {
 				"alert": {
 					"and": "et",
+					"noEmail": "L'ensemble de données sélectionné ne contient pas d'adresses e-mail valides",
 					"partOne": "Pour continuer, veuillez saisir",
 					"partThree": "au moins une adresse email de destinataire",
 					"partTwo": "un nom de liste de distribution"

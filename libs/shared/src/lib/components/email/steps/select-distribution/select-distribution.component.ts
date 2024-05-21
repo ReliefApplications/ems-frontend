@@ -115,6 +115,15 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
   /** Flag indicating whether the BCC template is shown. */
   public showBccTemplate = false;
 
+  /**
+   *
+   */
+  public noEmail = {
+    to: false,
+    cc: false,
+    bcc: false,
+  };
+
   /** Reference to file upload element. */
   @ViewChild('fileUpload', { static: true }) fileElement:
     | ElementRef
@@ -131,6 +140,23 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     this.showToTemplate = true;
     this.showCCTemplate = true;
     this.showBccTemplate = true;
+  }
+
+  // eslint-disable-next-line jsdoc/require-description
+  /**
+   * @param val the value of emited datset email
+   * @param type refers to cc,bcc and to
+   */
+  update(val: any, type: string) {
+    if (type === 'to') {
+      this.noEmail.to = val;
+    }
+    if (type === 'cc') {
+      this.noEmail.cc = val;
+    }
+    if (type === 'bcc') {
+      this.noEmail.bcc = val;
+    }
   }
 
   /**

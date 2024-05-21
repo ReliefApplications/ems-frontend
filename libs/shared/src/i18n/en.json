@@ -813,6 +813,7 @@
 			"distributionList": {
 				"alert": {
 					"and": "and",
+					"noEmail": "Selected Dataset does not contain valid email addresses",
 					"partOne": "To proceed, please enter",
 					"partThree": "at least one recipient email address",
 					"partTwo": "a distribution list name"

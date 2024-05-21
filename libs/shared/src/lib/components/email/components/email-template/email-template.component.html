@@ -80,9 +80,10 @@
   </div>
 
   <!-- From list ( selected from resource ) -->
-  <div *ngIf="activeSegmentIndex === 1">
+  <div class="select-from-list" *ngIf="activeSegmentIndex === 1">
     <!-- Selection of emails -->
-    <table
+    <div class="select-scroll">
+      <table
       *ngIf="dataList?.length"
       class="dataset-preview w-full border border-blue-600 shadow-xs m-1"
     >
@@ -130,7 +131,7 @@
               *ngIf="selectedItemIndexes.indexOf(i) === -1"
             />
           </td>
-          <ng-container *ngFor="let field of datasetFields">
+          <ng-container *ngFor="let field of getKeys(data)">
             <td class="p-2 border border-blue-600 shadow-xs m-1 text-center">
               {{ data[field] }}
             </td>
@@ -138,6 +139,7 @@
         </tr>
       </tbody>
     </table>
+    </div>
     <!-- todo: translate -->
     <ui-button
       *ngIf="selectedItemIndexes.length"
