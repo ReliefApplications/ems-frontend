@@ -196,6 +196,12 @@ const addCustomFunctions = (
     if (!Array.isArray(params[0])) return 0;
     return params[0].length;
   });
+
+  // JSON parse
+  FunctionFactory.Instance.register('parse', (params: any[]) => {
+    if (!params[0]) return '';
+    return JSON.parse(params[0]);
+  });
 };
 
 export default addCustomFunctions;
