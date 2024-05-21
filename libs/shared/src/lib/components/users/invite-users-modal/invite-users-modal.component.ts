@@ -20,6 +20,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UploadsModule } from '@progress/kendo-angular-upload';
 import { ButtonModule as uiButtonModule, TextareaModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { isEqual } from 'lodash';
 
 /** Model fot the input data */
 interface DialogData {
@@ -237,7 +238,7 @@ export class InviteUsersModalComponent extends UnsubscribeComponent {
   public createFormGroup(dataItem: any) {
     return this.fb.group({
       email: [dataItem.email, Validators.required],
-      role: [dataItem.role, Validators.required],
+      roles: [dataItem.roles, Validators.required],
       ...(this.data.positionAttributeCategories && {
         positionAttributes: this.fb.array(
           this.data.positionAttributeCategories.map((x, index) =>

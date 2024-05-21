@@ -1391,7 +1391,7 @@
         "confirm": "Invite",
         "role": {
           "additionalAttributes": "Set additional attributes",
-          "description": "Select the role to assign"
+          "description": "Select the roles to assign"
         }
       },
       "summary": {

@@ -1403,7 +1403,7 @@
         "confirm": "Inviter",
         "role": {
           "additionalAttributes": "Définir des attributs supplémentaires",
-          "description": "Sélectionner le rôle à assigner"
+          "description": "Sélectionner les rôles à assigner"
         }
       },
       "summary": {
