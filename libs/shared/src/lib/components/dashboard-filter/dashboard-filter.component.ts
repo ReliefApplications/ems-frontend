@@ -25,6 +25,7 @@ import { ReferenceDataService } from '../../services/reference-data/reference-da
 import { DOCUMENT } from '@angular/common';
 import { Dashboard } from '../../models/dashboard.model';
 import { HttpClient } from '@angular/common/http';
+import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 
 /**
  * Interface for quick filters
@@ -93,6 +94,7 @@ export class DashboardFilterComponent
    * @param document Document
    * @param _host sidenav container host
    * @param http Http client
+   * @param formHelpersService Shared form helper service.
    */
   constructor(
     public contextService: ContextService,
@@ -103,7 +105,8 @@ export class DashboardFilterComponent
     private el: ElementRef,
     @Inject(DOCUMENT) private document: Document,
     @Optional() private _host: SidenavContainerComponent,
-    private http: HttpClient
+    private http: HttpClient,
+    private formHelpersService: FormHelpersService
   ) {
     super();
   }
@@ -214,6 +217,8 @@ export class DashboardFilterComponent
   /** Render the survey using the saved structure*/
   private initSurvey(): void {
     this.survey = this.contextService.initSurvey(this.structure);
+
+    this.formHelpersService.addUserVariables(this.survey);
 
     this.survey.showCompletedPage = false; // Hide completed page from the survey
     this.survey.showNavigationButtons = false; // Hide navigation buttons from the survey
