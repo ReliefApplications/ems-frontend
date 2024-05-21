@@ -9,7 +9,7 @@ export const FORMAT_KEYS = [
   'text',
   'icon',
   'urlValue',
-  'value',
+  'valueValue',
   'showFullScreenButton',
 ];
 
@@ -78,7 +78,7 @@ export function formatGridRowData(
     urlValue: {},
   };
   const valueObj = {
-    value: {},
+    valueValue: {},
   };
   const showFullScreenButtonObj = {
     showFullScreenButton: {},
@@ -120,7 +120,7 @@ export function formatGridRowData(
             // Format value for email and telephone if exists for each field
             if (field.meta.type === 'email' || field.meta.type === 'tel') {
               const value = getPropertyValue(rowData, field);
-              Object.assign(valueObj.value, {
+              Object.assign(valueObj.valueValue, {
                 [field.name]: value,
               });
             }

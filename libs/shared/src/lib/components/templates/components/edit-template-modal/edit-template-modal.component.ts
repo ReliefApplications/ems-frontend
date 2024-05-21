@@ -6,7 +6,7 @@ import {
   EMAIL_EDITOR_CONFIG,
   INLINE_EDITOR_CONFIG,
 } from '../../../../const/tinymce.const';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';

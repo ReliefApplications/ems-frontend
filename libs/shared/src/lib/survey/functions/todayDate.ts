@@ -15,10 +15,10 @@ export const todayDate = () => {
 };
 
 /**
- *  Generator for the custom function addTime.
+ *  Generator for the custom function todayDate.
  *
  * @param _ Global options
- * @returns The custom function addTime
+ * @returns The custom function todayDate
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default (_: GlobalOptions) => todayDate;

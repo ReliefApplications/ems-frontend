@@ -87,7 +87,7 @@ export class ConfigDisplayGridFieldsModalComponent
           this.form = createQueryForm({
             name: queryName,
             fields: hasDataForm ? this.data.form.value.fields : [],
-            sort: hasDataForm ? this.data.form.value.sort : {},
+            sort: hasDataForm ? this.data.form.value.sort : [],
             filter: hasDataForm ? this.data.form.value.filter : {},
           });
 

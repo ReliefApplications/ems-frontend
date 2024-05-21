@@ -1,0 +1,41 @@
+<ui-dialog size="small">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{
+        this.update
+          ? ('models.dashboard.states.update.title' | translate)
+          : ('models.dashboard.states.new' | translate)
+      }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="form">
+      <div uiFormFieldDirective>
+        <label>{{ 'common.name' | translate }}</label>
+        <input
+          type="text"
+          [placeholder]="'common.placeholder.name' | translate"
+          formControlName="name"
+        />
+      </div>
+      <div uiFormFieldDirective>
+        <label>{{ 'common.value.one' | translate }}</label>
+        <input type="text" formControlName="value" />
+      </div>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="form.value"
+      cdkFocusInitial
+      [disabled]="!form.valid || form.pristine"
+    >
+      {{ (this.update ? 'common.update' : 'common.create') | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

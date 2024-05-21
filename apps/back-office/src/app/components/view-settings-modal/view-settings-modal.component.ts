@@ -36,6 +36,7 @@ import { get, isNil } from 'lodash';
 import { AbilityModule } from '@casl/angular';
 import { DashboardFilterSettingsComponent } from '../dashboard-filter-settings/dashboard-filter-settings.component';
 import { GridType } from 'angular-gridster2';
+import { DashboardStatesModule } from '../dashboard-states/dashboard-states.module';
 
 /** Settings Dialog Data */
 interface DialogData {
@@ -77,6 +78,7 @@ interface DialogData {
     AlertModule,
     AbilityModule,
     DashboardFilterSettingsComponent,
+    DashboardStatesModule,
   ],
   templateUrl: './view-settings-modal.component.html',
   styleUrls: ['./view-settings-modal.component.scss'],

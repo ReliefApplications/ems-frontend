@@ -2,7 +2,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
 import { PipelineStage } from './pipeline/pipeline-stage.enum';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
-import get from 'lodash/get';
+import { get } from 'lodash';
 
 /** Creating a new instance of the FormBuilder class. */
 const formBuilder = new FormBuilder();
@@ -123,6 +123,26 @@ export const addStage = (value: any) => {
         ?.get('raw')
         ?.setValidators([Validators.required, jsonValidator]);
       return formGroup;
+    }
+    case PipelineStage.LABEL: {
+      return formBuilder.group({
+        type: [PipelineStage.LABEL],
+        preview: true,
+        form: formBuilder.group({
+          field: [get(value, 'form.field', ''), Validators.required],
+          copyFrom: [get(value, 'form.copyFrom', ''), Validators.required],
+        }),
+      });
+    }
+    case PipelineStage.USER: {
+      return formBuilder.group({
+        type: [PipelineStage.USER],
+        preview: true,
+        form: formBuilder.group({
+          field: [get(value, 'form.field', ''), Validators.required],
+          to: [get(value, 'form.to', ''), Validators.required],
+        }),
+      });
     }
     default: {
       return formBuilder.group({

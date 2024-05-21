@@ -44,6 +44,7 @@ export enum CustomPropertyGridComponentTypes {
   dateTypeDisplayer = 'date',
   geospatialListbox = 'listBox',
   referenceDataDropdown = 'reference-data-dropdown',
+  referenceDataMatrix = 'reference-data-matrix',
   resourcesAvailableFields = 'resourcesFields',
   resourceCustomFilters = 'customFilter',
   resourcesDropdown = 'resourcesDropdown',
@@ -71,6 +72,10 @@ export const CustomPropertyGridEditors: Record<
     model: QuestionGeospatialListboxModel,
   },
   [CustomPropertyGridComponentTypes.referenceDataDropdown]: {
+    component: ReferenceDataDropdownComponent,
+    model: QuestionReferenceDataDropdownModel,
+  },
+  [CustomPropertyGridComponentTypes.referenceDataMatrix]: {
     component: ReferenceDataDropdownComponent,
     model: QuestionReferenceDataDropdownModel,
   },

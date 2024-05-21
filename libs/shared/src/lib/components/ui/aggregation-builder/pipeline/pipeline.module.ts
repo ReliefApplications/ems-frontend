@@ -11,6 +11,7 @@ import { FieldDropdownComponent } from './field-dropdown/field-dropdown.componen
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FilterModule } from '../../../filter/filter.module';
 import { SortStageComponent } from './sort-stage/sort-stage.component';
+import { LabelStageComponent } from './label-stage/label-stage.component';
 import {
   TextareaModule,
   FormWrapperModule,
@@ -22,6 +23,7 @@ import {
   IconModule,
   CheckboxModule,
 } from '@oort-front/ui';
+import { UserStageComponent } from './user-stage/user-stage.component';
 
 /**
  * Aggregation builder pipeline module.
@@ -34,6 +36,8 @@ import {
     ExpressionsComponent,
     FieldDropdownComponent,
     SortStageComponent,
+    LabelStageComponent,
+    UserStageComponent,
   ],
   imports: [
     CommonModule,
@@ -60,6 +64,7 @@ import {
     ExpressionsComponent,
     FieldDropdownComponent,
     SortStageComponent,
+    LabelStageComponent,
   ],
 })
 export class PipelineModule {}

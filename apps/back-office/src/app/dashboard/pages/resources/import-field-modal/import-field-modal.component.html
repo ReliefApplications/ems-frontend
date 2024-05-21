@@ -1,0 +1,36 @@
+<ui-dialog size="small">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{ 'components.resource.importField.title' | translate }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <ui-spinner *ngIf="loading"></ui-spinner>
+    <ng-container *ngIf="!loading && importFieldForm">
+      <div uiFormFieldDirective class="p-0">
+        <ui-select-menu [formControl]="importFieldForm">
+          <ui-select-option
+            *ngFor="let field of fields"
+            [value]="field"
+          >
+            {{ field }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+    </ng-container>
+  </ng-container>
+  <ng-container ngProjectAs="actions" *ngIf="!loading && importFieldForm">
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [disabled]="!importFieldForm.valid || importFieldForm.pristine"
+      [uiDialogClose]="importFieldForm.value"
+      cdkFocusInitial
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

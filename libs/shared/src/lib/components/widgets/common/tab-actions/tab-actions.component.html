@@ -4,39 +4,79 @@
       {{ 'components.widget.settings.grid.actions.title' | translate }}
     </h2>
     <div class="flex flex-col gap-2 pb-0.5">
-      <!-- Actions -->
-      <div class="flex flex-col gap-2 mb-2">
-        <ui-toggle
-          *ngFor="let action of actions"
-          [formControlName]="action.name"
-        >
-          <ng-container ngProjectAs="label">
-            {{ action.text | translate
-            }}<ui-icon
-              *ngIf="action.tooltip"
-              class="ml-1 cursor-help self-center"
+      <!-- Select specific state to map rows -->
+      <div uiFormFieldDirective class="w-80 ml-[55px]" *ngIf="states.length">
+        <ng-container ngProjectAs="label">
+          <label>
+            {{ 'components.widget.settings.grid.actions.state' | translate }}
+            <ui-icon
               variant="grey"
               icon="info_outline"
               [size]="18"
-              [uiTooltip]="action.tooltip | translate"
-              uiTooltipPosition="right"
-            ></ui-icon>
-            <!-- Icon with warning if any -->
-            <ui-icon
-              *ngIf="
-                formGroup.get('actions')?.get(action.name)?.invalid &&
-                action.toolTipWarning
+              [uiTooltip]="
+                'components.widget.settings.grid.hint.actions.state' | translate
               "
-              class="ml-1 cursor-help self-center"
-              variant="danger"
-              icon="warning"
-              [size]="18"
-              [uiTooltip]="action.toolTipWarning | translate"
               uiTooltipPosition="right"
             ></ui-icon>
-          </ng-container>
-        </ui-toggle>
+          </label>
+        </ng-container>
+        <ui-select-menu formControlName="state" class="flex flex-col">
+          <ui-select-option *ngFor="let state of states" [value]="state.id">
+            {{ state.name }}
+          </ui-select-option>
+        </ui-select-menu>
       </div>
+      <!-- Actions -->
+      <div class="flex flex-col gap-2 mb-2">
+        <div *ngFor="let action of actions" class="flex flex-col gap-1">
+          <ui-toggle [formControlName]="action.name">
+            <ng-container ngProjectAs="label">
+              <label>
+                {{ action.text | translate }}
+                <ui-icon
+                  *ngIf="action.tooltip"
+                  class="ml-1 cursor-help self-center"
+                  variant="grey"
+                  icon="info_outline"
+                  [size]="18"
+                  [uiTooltip]="action.tooltip | translate"
+                  uiTooltipPosition="right"
+                ></ui-icon>
+                <!-- Icon with warning if any -->
+                <ui-icon
+                  *ngIf="
+                    formGroup.get('actions')?.get(action.name)?.invalid &&
+                    action.toolTipWarning
+                  "
+                  class="ml-1 cursor-help self-center"
+                  variant="danger"
+                  icon="warning"
+                  [size]="18"
+                  [uiTooltip]="action.toolTipWarning | translate"
+                  uiTooltipPosition="right"
+                ></ui-icon>
+              </label>
+            </ng-container>
+          </ui-toggle>
+          <div
+            uiFormFieldDirective
+            class="w-80 ml-[55px]"
+            *ngIf="
+              action.editLabel &&
+              formGroup.get('actions')?.get(action.name)?.value
+            "
+          >
+            <ng-container ngProjectAs="label">
+              <label> {{ action.label | translate }}</label>
+            </ng-container>
+            <input
+              [formControlName]="action.name + 'Label'"
+              [placeholder]="action.placeholder | translate"
+            />
+          </div>
+        </div>
+      </div>
+
       <!-- Redirect to specific page action details -->
       <div
         *ngIf="showSelectPage"
@@ -44,10 +84,14 @@
         class="flex flex-col ml-[55px]"
       >
         <div uiFormFieldDirective class="w-80">
-          <label>{{
-            'components.widget.settings.grid.actions.goTo.column.label'
-              | translate
-          }}</label>
+          <ng-container ngProjectAs="label">
+            <label>
+              {{
+                'components.widget.settings.grid.actions.goTo.column.label'
+                  | translate
+              }}
+            </label>
+          </ng-container>
           <input
             formControlName="title"
             [placeholder]="
@@ -57,12 +101,14 @@
           />
         </div>
         <div uiFormFieldDirective class="w-80">
-          <label>
-            {{
-              'components.widget.settings.grid.actions.goTo.target.label'
-                | translate
-            }}
-          </label>
+          <ng-container ngProjectAs="label">
+            <label>
+              {{
+                'components.widget.settings.grid.actions.goTo.target.label'
+                  | translate
+              }}
+            </label>
+          </ng-container>
           <ui-select-menu
             formControlName="pageUrl"
             [placeholder]="
@@ -111,23 +157,50 @@
             </ng-container>
           </ui-select-menu>
         </div>
-        <ui-toggle formControlName="copyLink">
+        <div class="flex flex-col gap-1">
+          <ui-toggle formControlName="copyLink">
+            <ng-container ngProjectAs="label">
+              <label>
+                {{
+                  'components.widget.settings.grid.actions.copyLink.text'
+                    | translate
+                }}
+                <ui-icon
+                  class="ml-1 cursor-help self-center"
+                  variant="grey"
+                  icon="info_outline"
+                  [size]="18"
+                  [uiTooltip]="
+                    'components.widget.settings.grid.hint.actions.copyLink'
+                      | translate
+                  "
+                  uiTooltipPosition="right"
+                ></ui-icon>
+              </label>
+            </ng-container>
+          </ui-toggle>
+          <div
+            uiFormFieldDirective
+            class="w-80"
+            *ngIf="formGroup.get('actions.navigateSettings.copyLink')?.value"
           >
-          <ng-container ngProjectAs="label">
-            {{ 'components.widget.settings.grid.actions.copyLink' | translate }}
-            <ui-icon
-              class="ml-1 cursor-help self-center"
-              variant="grey"
-              icon="info_outline"
-              [size]="18"
-              [uiTooltip]="
-                'components.widget.settings.grid.hint.actions.copyLink'
+            <ng-container ngProjectAs="label">
+              <label>
+                {{
+                  'components.widget.settings.grid.actions.copyLink.label'
+                    | translate
+                }}
+              </label>
+            </ng-container>
+            <input
+              formControlName="copyLinkLabel"
+              [placeholder]="
+                'components.widget.settings.grid.actions.copyLink.text'
                   | translate
               "
-              uiTooltipPosition="right"
-            ></ui-icon>
-          </ng-container>
-        </ui-toggle>
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>

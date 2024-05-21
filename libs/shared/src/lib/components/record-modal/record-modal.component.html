@@ -79,7 +79,7 @@
           category="secondary"
           variant="primary"
           cdkFocusInitial
-          *ngIf="pages.length > 1"
+          *ngIf="pages.length > 1 && !survey?.hideNavigationButtons"
           (click)="survey.prevPage()"
           [disabled]="survey.isFirstPage"
         >
@@ -89,7 +89,7 @@
           category="secondary"
           variant="primary"
           cdkFocusInitial
-          *ngIf="pages.length > 1"
+          *ngIf="pages.length > 1 && !survey?.hideNavigationButtons"
           (click)="survey.nextPage()"
           [disabled]="survey.isLastPage"
         >

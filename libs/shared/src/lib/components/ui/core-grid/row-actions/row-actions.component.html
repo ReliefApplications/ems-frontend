@@ -2,12 +2,24 @@
 <ng-container *ngIf="actionsAsIcons">
   <div class="flex pr-1">
     <button
+      *ngIf="hasDetails && actions.showDetails"
+      kendoButton
+      icon="set-column-position"
+      [look]="'flat'"
+      (click)="action.emit({ action: 'details', items: item })"
+      [uiTooltip]="
+        actions.showDetailsLabel ||
+          'components.widget.settings.grid.actions.details.text' | translate
+      "
+    ></button>
+
+    <button
       *ngIf="actions.update && item.canUpdate"
       kendoButton
       icon="edit"
       [look]="'flat'"
       (click)="action.emit({ action: 'update', item: item })"
-      [uiTooltip]="'common.update' | translate"
+      [uiTooltip]="actions.updateLabel || 'common.update' | translate"
     ></button>
 
     <button
@@ -16,7 +28,7 @@
       icon="clock-arrow-rotate"
       [look]="'flat'"
       (click)="action.emit({ action: 'history', item: item })"
-      [uiTooltip]="'common.history' | translate"
+      [uiTooltip]="actions.historyLabel || 'common.history' | translate"
     ></button>
 
     <button
@@ -25,7 +37,7 @@
       icon="connector"
       [look]="'flat'"
       (click)="action.emit({ action: 'convert', item: item })"
-      [uiTooltip]="'models.record.convert' | translate"
+      [uiTooltip]="actions.convertLabel || 'models.record.convert' | translate"
     ></button>
 
     <button
@@ -34,7 +46,7 @@
       icon="trash"
       [look]="'flat'"
       (click)="action.emit({ action: 'delete', item: item })"
-      [uiTooltip]="'common.delete' | translate"
+      [uiTooltip]="actions.deleteLabel || 'common.delete' | translate"
     ></button>
 
     <button
@@ -47,7 +59,7 @@
     ></button>
 
     <button
-      *ngIf="actions.navigateSettings?.copyLink"
+      *ngIf="actions.navigateToPage && actions.navigateSettings?.copyLink"
       kendoButton
       icon="copy"
       [look]="'flat'"
@@ -60,7 +72,8 @@
         })
       "
       [uiTooltip]="
-        'components.widget.settings.grid.actions.copyLink' | translate
+        actions.navigateSettings?.copyLinkLabel ||
+          'components.widget.settings.grid.actions.copyLink.text' | translate
       "
     ></button>
   </div>
@@ -88,12 +101,26 @@
   </button>
   <ui-menu #menu>
     <button
+      *ngIf="hasDetails && actions.showDetails"
+      id="details-action-button"
+      uiMenuItem
+      (click)="action.emit({ action: 'details', items: item })"
+    >
+      {{ 'components.widget.settings.grid.actions.details.text' | translate }}
+      <div id="details-action-label"></div>
+    </button>
+
+    <button
       *ngIf="actions.update && item.canUpdate"
       id="update-action-button"
       uiMenuItem
       (click)="action.emit({ action: 'update', item: item })"
     >
-      {{ 'common.update' | translate }}
+      {{
+        actions.updateLabel
+          ? actions.updateLabel
+          : ('common.update' | translate)
+      }}
       <div id="update-action-label"></div>
     </button>
     <button
@@ -102,7 +129,11 @@
       uiMenuItem
       (click)="action.emit({ action: 'history', item: item })"
     >
-      {{ 'common.history' | translate }}
+      {{
+        actions.historyLabel
+          ? actions.historyLabel
+          : ('common.history' | translate)
+      }}
       <div id="history-action-label"></div>
     </button>
     <button
@@ -111,7 +142,11 @@
       uiMenuItem
       (click)="action.emit({ action: 'convert', item: item })"
     >
-      {{ 'models.record.convert' | translate }}
+      {{
+        actions.convertLabel
+          ? actions.convertLabel
+          : ('models.record.convert' | translate)
+      }}
       <div id="convert-action-label"></div>
     </button>
     <button
@@ -120,7 +155,11 @@
       uiMenuItem
       (click)="action.emit({ action: 'delete', item: item })"
     >
-      {{ 'common.delete' | translate }}
+      {{
+        actions.deleteLabel
+          ? actions.deleteLabel
+          : ('common.delete' | translate)
+      }}
       <div id="delete-action-label"></div>
     </button>
     <button
@@ -145,7 +184,12 @@
         })
       "
     >
-      {{ 'components.widget.settings.grid.actions.copyLink' | translate }}
+      {{
+        actions.navigateSettings?.copyLinkLabel
+          ? actions.navigateSettings?.copyLinkLabel
+          : ('components.widget.settings.grid.actions.copyLink.text'
+            | translate)
+      }}
       <div id="copy-field-action-label"></div>
     </button>
   </ui-menu>

@@ -5,7 +5,12 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { UntypedFormGroup, FormBuilder, FormArray } from '@angular/forms';
+import {
+  UntypedFormGroup,
+  FormBuilder,
+  FormArray,
+  FormControl,
+} from '@angular/forms';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import {
   debounceTime,
@@ -13,7 +18,7 @@ import {
   skip,
   takeUntil,
 } from 'rxjs/operators';
-import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
+import { LEGEND_POSITIONS, TITLE_POSITIONS, THEMES_COLORS } from '../constants';
 import { ChartComponent } from '../../chart/chart.component';
 import { createSerieForm } from '../chart-forms';
 import { isEqual, isNil, get } from 'lodash';
@@ -46,6 +51,10 @@ export class TabDisplayComponent
     4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26,
     28,
   ];
+  /** Themes colors */
+  public themesColors = THEMES_COLORS;
+  /** Themes control */
+  public themesControl = new FormControl('');
 
   /** @returns the form for the chart */
   public get chartForm(): UntypedFormGroup {
@@ -79,6 +88,25 @@ export class TabDisplayComponent
         this.chartSettings = value;
         this.chartSettings.chart.title.font = this.getFont();
       });
+
+    // check palette value to set initial theme color
+    const paletteColorValue = this.formGroup.get('chart.palette.value')?.value;
+    const themeColor: any = this.themesColors.filter((theme: any) => {
+      return isEqual(theme.colors, paletteColorValue);
+    });
+    if (themeColor.length) {
+      const colors = themeColor[0].colors;
+      this.themesControl.setValue(colors.join(','));
+    }
+    // subscribe to palette changes to set null in themesControl if colors not equal to theme colors
+    this.formGroup.get('chart.palette.value')?.valueChanges.subscribe((val) => {
+      const themeColor = this.themesColors.filter((theme: any) => {
+        return isEqual(theme.colors, val);
+      });
+      if (!themeColor.length) {
+        this.themesControl.reset();
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -175,5 +203,17 @@ export class TabDisplayComponent
       font = font + '; text-decoration: underline;';
     }
     return font;
+  }
+
+  /**
+   * Change the palette theme
+   *
+   * @param value value
+   */
+  themeChanged(value: any) {
+    if (value) {
+      const val = value.split(',');
+      this.formGroup.get('chart.palette.value')?.setValue(val);
+    }
   }
 }

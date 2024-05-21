@@ -4,7 +4,7 @@ import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
 import { UntypedFormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';

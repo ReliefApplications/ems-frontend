@@ -1,5 +1,5 @@
 import { FormBuilder, Validators } from '@angular/forms';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { createMappingForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
 import { generateMonochromePalette } from '../../ui/charts/const/palette';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';

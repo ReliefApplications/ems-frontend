@@ -161,6 +161,21 @@
             <shared-palette-control
               formControlName="value"
             ></shared-palette-control>
+            <label>
+              {{'components.widget.settings.chart.palette.themes' | translate}}
+            </label>
+            <ui-select-menu
+              [formControl]="themesControl"
+              (selectedOption)="themeChanged($event)"
+              [placeholder]="
+                'components.widget.settings.chart.palette.placeholder'
+                | translate
+              "
+            >
+              <ui-select-option *ngFor="let theme of themesColors" value="{{ theme.colors }}">
+                {{ theme.name }}
+              </ui-select-option>
+            </ui-select-menu>
           </div>
         </ui-expansion-panel>
         <!-- === LABELS === -->

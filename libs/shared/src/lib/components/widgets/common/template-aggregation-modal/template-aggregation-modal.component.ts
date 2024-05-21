@@ -32,7 +32,7 @@ import { Aggregation } from '../../../../models/aggregation.model';
 import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
 import { AggregationService } from '../../../../services/aggregation/aggregation.service';
 import { DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { createTemplateAggregationForm } from '../../editor-settings/editor-settings.forms';
 import { GraphqlVariablesMappingComponent } from '../graphql-variables-mapping/graphql-variables-mapping.component';
 

@@ -33,7 +33,7 @@
       <ui-button
         category="secondary"
         variant="primary"
-        *ngIf="pages.length > 1"
+        *ngIf="pages.length > 1 && !survey?.hideNavigationButtons"
         (click)="survey && survey.prevPage()"
         cdkFocusInitial
         [disabled]="!survey || survey.isFirstPage"
@@ -43,7 +43,7 @@
       <ui-button
         category="secondary"
         variant="primary"
-        *ngIf="pages.length > 1"
+        *ngIf="pages.length > 1 && !survey?.hideNavigationButtons"
         (click)="survey && survey.nextPage()"
         cdkFocusInitial
         [disabled]="!survey || survey.isLastPage"

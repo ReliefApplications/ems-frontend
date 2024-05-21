@@ -1,4 +1,10 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -8,9 +14,10 @@ import {
   ConfirmService,
   UnsubscribeComponent,
 } from '@oort-front/shared';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { takeUntil, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Main component of Application view.
@@ -49,13 +56,15 @@ export class ApplicationComponent
    * @param router Angular router
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
+   * @param document Document object
    */
   constructor(
     private applicationService: ApplicationService,
     public route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
-    private confirmService: ConfirmService
+    private confirmService: ConfirmService,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
@@ -70,6 +79,8 @@ export class ApplicationComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
         if (application) {
+          // change the page title to the application name
+          this.document.title = application.name || '';
           this.loading = false;
           this.title = application.name || '';
           const displayNavItems: any[] =

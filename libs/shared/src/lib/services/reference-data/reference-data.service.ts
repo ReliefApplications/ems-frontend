@@ -102,17 +102,16 @@ export class ReferenceDataService {
     const foreignIsMultiselect = Array.isArray(filter?.foreignValue);
     // if we ask to filter and there is a value in foreign field
     if (
-      filter &&
-      ((foreignIsMultiselect && filter.foreignValue.length) ||
-        (!foreignIsMultiselect && !!filter.foreignValue))
+      (filter?.foreignValue?.length && foreignIsMultiselect) ||
+      (!!filter?.foreignValue && !foreignIsMultiselect)
     ) {
-      const cache = (await localForage.getItem(
-        filter.foreignReferenceData
-      )) as CachedItems;
-      if (!cache) {
+      const res = await this.cacheItems(filter.foreignReferenceData);
+      if (!res) {
         return [];
       }
-      const { items: foreignItems, valueField: foreignValueField } = cache;
+      const { items: foreignItems, referenceData: foreignReferenceData } = res;
+      const foreignValueField = foreignReferenceData.valueField || '';
+
       let selectedForeignValue: any | any[];
       // Retrieve foreign field items for multiselect or single select
       if (foreignIsMultiselect) {

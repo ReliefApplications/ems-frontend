@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { RestService } from '../rest/rest.service';
 import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';

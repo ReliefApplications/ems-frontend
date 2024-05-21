@@ -24,6 +24,7 @@ import {
 } from '@casl/ability';
 import { get } from 'lodash';
 import { Application } from '../../models/application.model';
+import { AnalyticsService, EventType } from '../analytics/analytics.service';
 
 /** Defining the interface for the account object. */
 export interface Account {
@@ -123,13 +124,15 @@ export class AuthService {
    * @param oauthService OAuth authentication service
    * @param router Angular Router service
    * @param ability CASL ability
+   * @param analyticsService Analytics service
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
     private oauthService: OAuthService,
     private router: Router,
-    private ability: AppAbility
+    private ability: AppAbility,
+    private analyticsService: AnalyticsService
   ) {
     this.environment = environment;
     this.oauthService.events.subscribe(() => {
@@ -141,6 +144,11 @@ export class AuthService {
       .subscribe(() => {
         localStorage.setItem('idtoken', this.oauthService.getIdToken());
         this.oauthService.loadUserProfile();
+        // log event with the analytics service
+        this.analyticsService.sendEvent({
+          type: EventType.LOGIN,
+          datetime: new Date(),
+        });
       });
     this.oauthService.events
       .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
@@ -232,9 +240,12 @@ export class AuthService {
       } else {
         redirectUri = new URL(pathName, this.environment.frontOfficeUri);
       }
-      redirectUri.search = '';
+      // redirectUri.search = '';
       if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
-        localStorage.setItem('redirectPath', redirectUri.pathname);
+        localStorage.setItem(
+          'redirectPath',
+          redirectUri.pathname + redirectUri.search ?? ''
+        );
       }
     }
     return this.oauthService
@@ -252,6 +263,10 @@ export class AuthService {
    * Cleans user profile, and logout.
    */
   logout(): void {
+    this.analyticsService.sendEvent({
+      type: EventType.LOGOUT,
+      datetime: new Date(),
+    });
     this.account = null;
     this.user.next(null);
     localStorage.removeItem('idtoken');

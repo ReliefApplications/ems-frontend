@@ -122,5 +122,14 @@
       class="flex-1 overflow-hidden gridster-item-content"
     >
     </shared-tabs>
+    <!-- Form -->
+    <shared-form-widget
+      *ngSwitchCase="'form'"
+      #widgetContent
+      [settings]="widget.settings"
+      [usePadding]="usePadding"
+      class="flex-1 overflow-auto gridster-item-content"
+    >
+    </shared-form-widget>
   </ng-container>
 </div>

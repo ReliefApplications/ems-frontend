@@ -28,6 +28,7 @@ import {
   DELETE_RESOURCE,
   DUPLICATE_RESOURCE,
   EDIT_RESOURCE_ID_SHAPE,
+  EDIT_RESOURCE_IMPORT_FIELD,
 } from './graphql/mutations';
 
 /**
@@ -440,6 +441,63 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
                     this.snackBar.openSnackBar(
                       this.translate.instant(
                         'components.resource.incrementalIdShape.updateSuccess',
+                        { resource: resource.name }
+                      )
+                    );
+                  }
+                }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
+  }
+
+  /**
+   * Open modal to update resource import field.
+   *
+   * @param resource Resource to update.
+   */
+  async onUpdateImportField(resource: Resource): Promise<void> {
+    const { ImportFieldModalComponent } = await import(
+      './import-field-modal/import-field-modal.component'
+    );
+    const dialogRef = this.dialog.open(ImportFieldModalComponent, {
+      data: {
+        resourceId: resource.id,
+      },
+    });
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((importField: any) => {
+        if (importField) {
+          this.apollo
+            .mutate<EditResourceMutationResponse>({
+              mutation: EDIT_RESOURCE_IMPORT_FIELD,
+              variables: {
+                id: resource.id,
+                importField,
+              },
+            })
+            .subscribe({
+              next: ({ errors, data }) => {
+                if (errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'components.resource.importField.updateError',
+                      {
+                        error: errors[0].message,
+                      }
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  if (data) {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'components.resource.importField.updateSuccess',
                         { resource: resource.name }
                       )
                     );

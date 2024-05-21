@@ -4,10 +4,10 @@ import { sharedEnvironment } from './environment.shared';
 import { Environment } from './environment.type';
 
 /**
- * Authentification configuration
+ * Authentication configuration
  */
 const authConfig: AuthConfig = {
-  issuer: 'https://id.oortcloud.tech/auth/realms/oort-demo',
+  issuer: 'https://id-demo.oortcloud.tech/auth/realms/oort',
   redirectUri: 'https://demo.oortcloud.tech/admin/',
   postLogoutRedirectUri: 'https://demo.oortcloud.tech/admin/auth/',
   clientId: 'oort-client',
@@ -31,6 +31,7 @@ export const environment: Environment = {
   authConfig,
   theme,
   availableWidgets: [
+    'form',
     'donut-chart',
     'line-chart',
     'bar-chart',

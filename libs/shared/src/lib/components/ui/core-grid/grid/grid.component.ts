@@ -81,6 +81,7 @@ export const rowActions = [
   'history',
   'convert',
   'remove',
+  'showDetails',
 ] as const;
 
 /** Component for grid widgets */
@@ -102,8 +103,6 @@ export class GridComponent
   @Input() hasChanges = false;
   /** Input decorator for fields. */
   @Input() fields: any[] = [];
-  /** Input decorator the the action column width */
-  @Input() actionsWidth = 86;
   /** Input decorator for data. */
   @Input() data: GridDataResult = { data: [], total: 0 };
   /** Input decorator for loadingRecords. */
@@ -138,7 +137,8 @@ export class GridComponent
       copyLink: false,
     },
     remove: false,
-    actionsAsIcons: false,
+    mapSelected: false,
+    mapView: false,
   };
   /** Input decorator */
   @Input() hasDetails = true;
@@ -241,6 +241,8 @@ export class GridComponent
   private closeEditorListener!: any;
   /** A boolean indicating if actions are enabled */
   public hasEnabledActions = false;
+  /** Action column width */
+  public actionsWidth = 56;
   /** Reference to the column chooser element */
   private columnChooserRef: PopupRef | null = null;
 
@@ -371,6 +373,7 @@ export class GridComponent
       ...this.selectableSettings,
       mode: this.multiSelect ? 'multiple' : 'single',
     };
+    this.setActionsColumnSize();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -973,7 +976,7 @@ export class GridComponent
     const stickyColumns = this.columns.filter(
       (column) => !column.hidden && !!column.sticky
     );
-    let totalWidthSticky = 0;
+    let totalWidthSticky = 5;
     stickyColumns.forEach((column: any) => {
       if (column.width) {
         totalWidthSticky += column.width;
@@ -991,12 +994,12 @@ export class GridComponent
           (field) => field.name === column.field && !column.hidden
         )?.fixedWidth
     );
-    fixedWidthColumns.forEach(
-      (column) =>
-        (column.width = this.fields.find(
-          (field) => field.name === column.field
-        ).fixedWidth)
-    );
+    fixedWidthColumns.forEach((column) => {
+      column.width = this.fields.find(
+        (field) => field.name === column.field
+      ).fixedWidth;
+    });
+
     /** Subtract the width of non-fields columns (details, actions etc.), columns with fixed width and small calculation errors ( border + scrollbar ) */
     const gridTotalWidth =
       gridElement.offsetWidth -
@@ -1101,7 +1104,10 @@ export class GridComponent
     // Instead, clamp the columns to the min and max width
     if (avgPixelPerCol < MIN_COLUMN_WIDTH * 1.1) {
       this.columns.forEach((column) => {
-        if (!column.hidden) {
+        const fixedWidth = fixedWidthColumns.find(
+          (fixedColumn) => fixedColumn.field === column.field
+        );
+        if (!column.hidden && !fixedWidth) {
           const colWidth = activeColumns[column.field];
           if (colWidth) {
             column.width = Math.min(
@@ -1275,5 +1281,44 @@ export class GridComponent
       },
       {}
     );
+  }
+
+  /**
+   * Set actions column size when action as icon
+   */
+  private setActionsColumnSize() {
+    const ICON_SIZE = 30;
+
+    const size =
+      ICON_SIZE *
+      [
+        this.widget?.settings?.actions?.update,
+        this.widget?.settings?.actions?.delete,
+        this.widget?.settings?.actions?.history,
+        this.widget?.settings?.actions?.convert,
+        this.widget?.settings?.actions?.showDetails,
+        this.widget?.settings?.actions?.remove,
+        this.widget?.settings?.actions?.navigateToPage,
+      ].filter((action) => action).length;
+
+    if (!this.widget?.settings?.widgetDisplay?.actionsAsIcons) {
+      // User checked "Show single action as button" and there is only one action
+      if (
+        this.widget.settings.widgetDisplay.showSingleActionAsButton &&
+        size === ICON_SIZE
+      ) {
+        // TODO: Figure out how to get the width of the button
+        this.actionsWidth = 100;
+      } else if (size > 0) {
+        // Show three dots menu
+        this.actionsWidth = 56;
+      }
+
+      return;
+    }
+
+    if (size) {
+      this.actionsWidth = size + 24;
+    }
   }
 }

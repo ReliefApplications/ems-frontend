@@ -35,6 +35,7 @@ export interface Resource {
     shape: string;
     padding: number;
   };
+  importField?: string;
 }
 
 /** Model for resource query response object */

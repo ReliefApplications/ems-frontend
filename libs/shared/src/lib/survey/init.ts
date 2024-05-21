@@ -67,7 +67,7 @@ export const initCustomSurvey = (
     document
   );
   DropdownWidget.init(domService, CustomWidgetCollection.Instance, document);
-  Matrices.init(domService);
+  Matrices.init(domService, referenceDataService);
 
   if (customQuestions) {
     // Register all custom property grid component types

@@ -5,7 +5,7 @@ import {
   UPDATE_RECORD,
 } from '../graphql/queries';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
-import { FormControl, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
 import { CoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { DomService } from '../../services/dom/dom.service';
@@ -42,9 +42,6 @@ export const resourceConditions = [
   { value: '>=', text: 'greater or equals' },
   { value: '<=', text: 'less or equals' },
 ];
-
-/** Question temporary records */
-const temporaryRecordsForm = new FormControl([]);
 
 /**
  * Inits the resources question component for survey.
@@ -603,6 +600,8 @@ export const init = (
             filters = obj;
             this.populateChoices(question);
           }
+        } else if (!question.customFilter) {
+          filters = [];
         }
       }
     },
@@ -663,10 +662,8 @@ export const init = (
 
       const searchBtn = buildSearchButton(
         question,
-        question.gridFieldsSettings,
         true,
         dialog,
-        temporaryRecordsForm,
         document,
         ngZone
       );
@@ -736,6 +733,7 @@ export const init = (
         header.style.display = 'flex';
         header.style.justifyContent = 'space-between';
         header.style.alignItems = 'flex-end';
+        header.style.flexWrap = 'wrap';
       } else if (parentElement) {
         parentElement.insertBefore(actionsButtons, parentElement.firstChild);
       }
@@ -902,10 +900,6 @@ export const init = (
           remove: question.canDeselectRecords,
         },
       });
-    }
-    // If search button exists, updates grid displayed records
-    if (question.canSearch) {
-      temporaryRecordsForm.setValue(settings.query.temporaryRecords);
     }
     instance.settings = settings;
     Promise.allSettled(promises).then(() => {

@@ -6,7 +6,7 @@ import {
   ContentType,
   UnsubscribeComponent,
 } from '@oort-front/shared';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { takeUntil } from 'rxjs/operators';
 
 /**

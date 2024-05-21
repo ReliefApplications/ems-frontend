@@ -4,17 +4,19 @@ import { SnackbarService } from '@oort-front/ui';
 import {
   Dashboard,
   EditDashboardMutationResponse,
+  DashboardState,
   WIDGET_TYPES,
 } from '../../models/dashboard.model';
 import {
   EditPageContextMutationResponse,
   PageContextT,
 } from '../../models/page.model';
-import { firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { EDIT_DASHBOARD, UPDATE_PAGE_CONTEXT } from './graphql/mutations';
-import get from 'lodash/get';
 import { GraphQLError } from 'graphql';
+import { cloneDeep, get } from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Shared dashboard service. Handles dashboard events.
@@ -25,6 +27,16 @@ import { GraphQLError } from 'graphql';
 export class DashboardService {
   /** List of available widgets */
   public availableWidgets = WIDGET_TYPES;
+  /** Current dashboard */
+  private dashboard?: Dashboard = undefined;
+  /** Current dashboard states */
+  public states = new BehaviorSubject<DashboardState[]>([]);
+
+  /** @returns Current dashboard states as observable */
+  get states$(): Observable<DashboardState[]> {
+    return this.states.asObservable();
+  }
+
   /** List of widgets of the current open dashboard*/
   public widgets: any[] = [];
 
@@ -45,6 +57,17 @@ export class DashboardService {
     this.availableWidgets = WIDGET_TYPES.filter((widget) =>
       get(environment, 'availableWidgets', []).includes(widget.widgetType)
     );
+  }
+
+  /**
+   * Opens a new dashboard.
+   *
+   * @param dashboard dashboard to open.
+   */
+  openDashboard(dashboard: Dashboard): void {
+    this.dashboard = dashboard;
+    // Load dashboard states, if any
+    this.states.next(dashboard.states ?? []);
   }
 
   /**
@@ -193,5 +216,133 @@ export class DashboardService {
           if (callback) callback();
         }
       });
+  }
+
+  /**
+   * Save the dashboard states changes in the database.
+   *
+   * @param id dashboard id
+   * @param states dashboard states
+   */
+  private saveDashboardStates(id: string, states: any): void {
+    this.apollo
+      .mutate<EditDashboardMutationResponse>({
+        mutation: EDIT_DASHBOARD,
+        variables: {
+          id,
+          states: states.map(
+            (state: DashboardState) =>
+              (state = { id: state.id, name: state.name })
+          ),
+        },
+      })
+      .subscribe({
+        next: ({ errors }) => {
+          if (errors) {
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('models.dashboard.states.few')
+            );
+          } else {
+            this.dashboard = {
+              ...this.dashboard,
+              states,
+            };
+            this.states.next(states);
+          }
+        },
+      });
+  }
+
+  /**
+   * Delete a dashboard state.
+   *
+   * @param id state id
+   */
+  public deleteDashboardState(id: string): void {
+    if (!this.dashboard?.id) return;
+
+    const states = this.states
+      .getValue()
+      .filter((state: DashboardState) => state.id !== id);
+
+    this.apollo
+      .mutate<EditDashboardMutationResponse>({
+        mutation: EDIT_DASHBOARD,
+        variables: {
+          id: this.dashboard?.id,
+          states: states.map(
+            (state: DashboardState) =>
+              (state = { id: state.id, name: state.name })
+          ),
+        },
+      })
+      .subscribe({
+        next: ({ errors }) => {
+          if (errors) {
+            this.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('models.dashboard.states.few')
+            );
+          } else {
+            this.dashboard = {
+              ...this.dashboard,
+              states,
+            };
+            this.states.next(states);
+          }
+        },
+      });
+  }
+
+  /**
+   * Add or update a dashboard state .
+   *
+   * @param value state value, only necessary if creating a new state
+   * @param id state id to identify existing state
+   * @param name state name
+   * @returns the new state id, or nothing if updating an existing state
+   */
+  public setDashboardState(
+    value: any,
+    id?: string,
+    name?: string
+  ): void | string {
+    if (!this.dashboard?.id) {
+      return;
+    }
+
+    const states = cloneDeep(this.states.getValue());
+    if (id) {
+      const oldStateIndex = states.findIndex(
+        (state: DashboardState) => state.id === id
+      );
+      if (oldStateIndex !== -1) {
+        states[oldStateIndex] = {
+          ...states[oldStateIndex],
+          value,
+          ...(name && { name }),
+        };
+        this.states.next(states);
+        if (name) {
+          // On updating state, we only want to save when updating the name, no the values
+          this.saveDashboardStates(this.dashboard.id, states);
+        }
+        return;
+      }
+    }
+    // Create id to the new state
+    id = `state-${uuidv4()}`;
+    name = name ?? 'STATE-' + (states.length + 1);
+    const newState: DashboardState = {
+      name,
+      value,
+      id,
+    };
+    states.push(newState);
+    this.states.next(states);
+    // To save new dashboards
+    this.saveDashboardStates(this.dashboard.id, states);
+    return id;
   }
 }

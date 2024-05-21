@@ -13,6 +13,9 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
 import { CldrIntlService, IntlService } from '@progress/kendo-angular-intl';
+import { Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+
 /**
  * Root component of back-office.
  */
@@ -42,12 +45,19 @@ export class AppComponent implements OnInit {
    * @param authService Shared authentication service
    * @param translate Angular translate service
    * @param kendoIntl Kendo Intl Service
+   * @param document The document object
    */
   constructor(
     private authService: AuthService,
     private translate: TranslateService,
-    private kendoIntl: IntlService
+    private kendoIntl: IntlService,
+    @Inject(DOCUMENT) private document: Document
   ) {
+    // Update the document language attribute when the language changes
+    this.translate.onLangChange.subscribe(({ lang }) => {
+      this.document.documentElement.lang = lang;
+    });
+
     this.translate.addLangs(environment.availableLanguages);
     this.translate.setDefaultLang(environment.availableLanguages[0]);
     (this.kendoIntl as CldrIntlService).localeId =

@@ -17,7 +17,7 @@
           (loadDraft)="onLoadDraftRecord($event)"
         ></shared-draft-record> -->
       </ng-container>
-      <ng-template #uploadRecordsContent *ngIf="!record"></ng-template>
+      <ng-template #uploadRecordsContent></ng-template>
     </div>
     <ng-container *ngIf="!loading">
       <ui-tabs
@@ -53,11 +53,19 @@
     <ui-button (click)="close()" *ngIf="survey?.showCloseButtonOnModal">
       {{ 'common.close' | translate }}
     </ui-button>
+    <ui-button
+      (click)="deleteRecord()"
+      *ngIf="survey?.showDeleteButtonOnModal"
+      category="secondary"
+      variant="danger"
+    >
+      {{ 'common.delete' | translate }}
+    </ui-button>
     <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
       <ui-button
         category="secondary"
         variant="primary"
-        *ngIf="pages.length > 1"
+        *ngIf="pages.length > 1 && !survey?.hideNavigationButtons"
         (click)="survey && survey.prevPage()"
         cdkFocusInitial
         [disabled]="!survey || survey.isFirstPage"
@@ -67,7 +75,7 @@
       <ui-button
         category="secondary"
         variant="primary"
-        *ngIf="pages.length > 1"
+        *ngIf="pages.length > 1 && !survey?.hideNavigationButtons"
         (click)="survey && survey.nextPage()"
         cdkFocusInitial
         [disabled]="!survey || survey.isLastPage"

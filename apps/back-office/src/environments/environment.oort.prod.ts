@@ -4,7 +4,7 @@ import { sharedEnvironment } from './environment.shared';
 import { Environment } from './environment.type';
 
 /**
- * Authentification configuration
+ * Authentication configuration
  */
 const authConfig: AuthConfig = {
   issuer: 'https://id.oortcloud.tech/auth/realms/oort',
@@ -30,6 +30,7 @@ export const environment: Environment = {
   authConfig,
   theme,
   availableWidgets: [
+    'form',
     'donut-chart',
     'line-chart',
     'bar-chart',

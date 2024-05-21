@@ -10,7 +10,7 @@ import {
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { DELETE_FORM } from './graphql/mutations';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { GET_RESOURCE_FORMS } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';

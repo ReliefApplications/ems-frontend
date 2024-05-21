@@ -1,6 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FixedWrapperModule, IconModule, TabsModule } from '@oort-front/ui';
+import {
+  FixedWrapperModule,
+  IconModule,
+  SpinnerModule,
+  TabsModule,
+} from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormComponent } from './form.component';
 import { FormActionsModule } from '../form-actions/form-actions.module';
@@ -27,6 +32,7 @@ import { DraftRecordComponent } from '../draft-record/draft-record.component';
     SurveyModule,
     FixedWrapperModule,
     DraftRecordComponent,
+    SpinnerModule,
   ],
   exports: [FormComponent],
 })

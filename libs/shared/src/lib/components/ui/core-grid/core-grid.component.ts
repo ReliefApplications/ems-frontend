@@ -5,6 +5,7 @@ import {
   Inject,
   Input,
   OnChanges,
+  OnInit,
   Output,
   SimpleChanges,
   ViewChild,
@@ -57,6 +58,7 @@ import { ContextService } from '../../../services/context/context.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
 
 /**
  * Default file name when exporting grid data.
@@ -82,7 +84,7 @@ const cloneData = (data: any[]) => data.map((item) => Object.assign({}, item));
 })
 export class CoreGridComponent
   extends UnsubscribeComponent
-  implements OnChanges
+  implements OnChanges, OnInit
 {
   // === INPUTS ===
   /** Grid settings */
@@ -200,20 +202,13 @@ export class CoreGridComponent
   /** Array of sort descriptors for sorting data. */
   public sort: SortDescriptor[] = [];
 
-  /** @returns current field used for sorting */
-  get sortField(): string | null {
-    return this.sort.length > 0 && this.sort[0].dir
-      ? this.sort[0].field
-      : this.settings.query?.sort && this.settings.query.sort.field
-      ? this.settings.query.sort.field
-      : null;
-  }
-
-  /** @returns current sorting order */
-  get sortOrder(): string {
-    return this.sort.length > 0 && this.sort[0].dir
-      ? this.sort[0].dir
-      : this.settings.query?.sort?.order || '';
+  /** @returns current sorting fields with order */
+  get sortFields(): any {
+    if (this.sort.length > 0 && this.sort[0].dir) {
+      return [{ field: this.sort[0].field, order: this.sort[0].dir }];
+    } else {
+      return this.settings.query?.sort ? this.settings.query.sort : null;
+    }
   }
 
   /** @returns grid styling rules */
@@ -245,16 +240,14 @@ export class CoreGridComponent
     this.parseDateFilters({ logic: 'and', filters: filterCpy });
 
     if (this.search) {
-      const skippedFields = ['id', 'incrementalId'];
+      const skippedFields = ['id'];
       filter = {
         logic: 'and',
         filters: [
           { logic: 'and', filters: filterCpy },
           {
             logic: 'or',
-            field: '_globalSearch',
-            operator: 'contains',
-            value: searchFilters(
+            filters: searchFilters(
               this.search,
               this.fields.map((field) => field.meta),
               skippedFields
@@ -307,20 +300,27 @@ export class CoreGridComponent
   public actions: GridActions = {
     add: false,
     update: false,
+    updateLabel: '',
     delete: false,
+    deleteLabel: '',
     history: false,
+    historyLabel: '',
     convert: false,
+    convertLabel: '',
     export: this.showExport,
     showDetails: true,
+    showDetailsLabel: '',
     navigateToPage: false,
     navigateSettings: {
       field: '',
       pageUrl: '',
       title: '',
       copyLink: false,
+      copyLinkLabel: '',
     },
     remove: false,
-    actionsAsIcons: false,
+    mapSelected: false,
+    mapView: false,
   };
 
   /** Whether the grid is editable */
@@ -354,6 +354,7 @@ export class CoreGridComponent
    * @param router Angular Router
    * @param el Element reference
    * @param clipboard Angular clipboard service
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -371,7 +372,8 @@ export class CoreGridComponent
     private contextService: ContextService,
     private router: Router,
     private el: ElementRef,
-    private clipboard: Clipboard
+    private clipboard: Clipboard,
+    private dashboardService: DashboardService
   ) {
     super();
     this.environment = environment;
@@ -391,6 +393,19 @@ export class CoreGridComponent
     this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.configureGrid();
     });
+  }
+
+  ngOnInit(): void {
+    if (
+      this.contextService.dashboardStateRegex.test(this.settings.contextFilters)
+    ) {
+      // Listen to dashboard states changes
+      this.dashboardService.states$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          if (this.dataQuery) this.reloadData();
+        });
+    }
   }
 
   /**
@@ -421,11 +436,16 @@ export class CoreGridComponent
         get(this.settings, 'actions.addRecord', false) &&
         this.settings.template,
       history: get(this.settings, 'actions.history', false),
+      historyLabel: get(this.settings, 'actions.historyLabel', ''),
       update: get(this.settings, 'actions.update', false),
+      updateLabel: get(this.settings, 'actions.updateLabel', ''),
       delete: get(this.settings, 'actions.delete', false),
+      deleteLabel: get(this.settings, 'actions.deleteLabel', ''),
       convert: get(this.settings, 'actions.convert', false),
+      convertLabel: get(this.settings, 'actions.convertLabel', ''),
       export: get(this.settings, 'actions.export', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
+      showDetailsLabel: get(this.settings, 'actions.showDetailsLabel', ''),
       navigateToPage: get(this.settings, 'actions.navigateToPage', false),
       navigateSettings: {
         field: get(this.settings, 'actions.navigateSettings.field', false),
@@ -436,13 +456,24 @@ export class CoreGridComponent
           'actions.navigateSettings.copyLink',
           false
         ),
+        copyLinkLabel: get(
+          this.settings,
+          'actions.navigateSettings.copyLinkLabel',
+          ''
+        ),
       },
       remove: get(this.settings, 'actions.remove', false),
-      actionsAsIcons: get(this.settings, 'actions.actionsAsIcons', false),
+      mapSelected: get(this.settings, 'actions.mapSelected', false),
+      mapView: get(this.settings, 'actions.mapView', false),
     };
     this.editable = this.settings.actions?.inlineEdition;
     if (!isNil(this.settings.actions?.search)) {
       this.searchable = this.settings.actions?.search;
+    }
+
+    // If configured, set the single row selection mode
+    if (this.settings.widgetDisplay?.singleSelect) {
+      this.multiSelect = false;
     }
 
     // this.selectableSettings = { ...this.selectableSettings, mode: this.multiSelect ? 'multiple' : 'single' };
@@ -475,8 +506,7 @@ export class CoreGridComponent
           variables: {
             first: this.pageSize,
             filter: this.queryFilter,
-            sortField: this.sortField || undefined,
-            sortOrder: this.sortOrder,
+            sort: this.sortFields,
             styles: this.style,
             at: this.settings.at
               ? this.contextService.atArgumentValue(this.settings.at)
@@ -893,6 +923,14 @@ export class CoreGridComponent
       data: this.items,
       total: this.totalCount,
     };
+
+    // Check if should automatically map visible rows into state automatically
+    if (
+      this.widget?.settings?.actions?.automaticallyMapView &&
+      this.items.length
+    ) {
+      this.setState(this.items.map((item: any) => item.id));
+    }
   }
 
   /**
@@ -929,6 +967,14 @@ export class CoreGridComponent
       );
     }
     this.selectionChange.emit(selection);
+
+    // Check if should automatically map selected rows into state automatically
+    if (
+      this.widget.settings.actions.automaticallyMapSelected &&
+      this.selectedRows.length
+    ) {
+      this.setState(this.selectedRows);
+    }
   }
 
   // === GRID ACTIONS ===
@@ -1086,6 +1132,14 @@ export class CoreGridComponent
           }
         );
 
+        break;
+      }
+      case 'mapView': {
+        this.setState(this.items);
+        break;
+      }
+      case 'mapSelected': {
+        this.setState(this.selectedRows);
         break;
       }
       default: {
@@ -1453,8 +1507,7 @@ export class CoreGridComponent
           : this.queryFilter,
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       query: this.settings.query,
-      sortField: this.sortField,
-      sortOrder: this.sortOrder,
+      sort: this.sortFields,
       format: e.format,
       application: this.applicationService.name,
       fileName: this.fileName,
@@ -1516,8 +1569,7 @@ export class CoreGridComponent
         first: this.pageSize,
         skip: this.skip,
         filter: this.queryFilter,
-        sortField: this.sortField || undefined,
-        sortOrder: this.sortOrder,
+        sort: this.sortFields,
         styles: this.style,
         ...(this.settings.at && {
           at: this.contextService.atArgumentValue(this.settings.at),
@@ -1656,6 +1708,26 @@ export class CoreGridComponent
         const day = date.getDate();
         filter.value = new Date(Date.UTC(year, month, day)).toISOString();
       }
+    }
+  }
+
+  /**
+   * Create / update widget dashboard state.
+   *
+   * @param items items that will be state value
+   */
+  private setState(items: any): void {
+    const stateId = this.dashboardService.setDashboardState(
+      items,
+      this.widget.settings.actions.state
+    );
+    if (stateId) {
+      this.widget.settings.actions.state = stateId;
+      this.edit.emit({
+        type: 'data',
+        id: this.widget.id,
+        options: this.widget.settings,
+      });
     }
   }
 }

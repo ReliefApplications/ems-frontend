@@ -1,5 +1,5 @@
 <ng-container *ngIf="form">
-  <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+  <div class="flex flex-wrap items-center justify-between gap-4 mx-8">
     <div class="flex items-center overflow-hidden">
       <shared-editable-text
         [text]="form.name"
@@ -46,11 +46,14 @@
     [dataSource]="form.versions || []"
     (open)="onOpenVersion($event)"
   ></app-history>
-  <shared-form-builder
-    [form]="form"
-    (save)="onSave($event)"
-    (formChange)="formStructureChange($event)"
-  ></shared-form-builder>
+  <div class="w-full grow relative">
+    <shared-form-builder
+      class="absolute top-0 left-0 w-full h-full"
+      [form]="form"
+      (save)="onSave($event)"
+      (formChange)="formStructureChange($event)"
+    ></shared-form-builder>
+  </div>
 </ng-container>
 
 <!-- Template to display status -->

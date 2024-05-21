@@ -11,7 +11,6 @@ import {
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
-import get from 'lodash/get';
 import { EDIT_RECORD } from './graphql/mutations';
 import {
   EditRecordMutationResponse,
@@ -22,7 +21,7 @@ import { RestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { FormHelpersService } from '../form-helper/form-helper.service';
-import { cloneDeep, difference } from 'lodash';
+import { cloneDeep, difference, get } from 'lodash';
 import { Form } from '../../models/form.model';
 
 /** Type for the temporary file storage */
@@ -328,9 +327,11 @@ export class FormBuilderService {
         const question = survey.getQuestionByName(
           survey.openOnQuestionValuesPage
         );
-        const page = survey.getPageByName(question.value);
-        if (page) {
-          selectedPageIndex.next(page.visibleIndex);
+        if (question) {
+          const page = survey.getPageByName(question.value);
+          if (page) {
+            selectedPageIndex.next(page.visibleIndex);
+          }
         }
       } else if (survey.openOnPage) {
         const page = survey.getPageByName(survey.openOnPage);

@@ -36,6 +36,7 @@ import {
   IconModule,
 } from '@oort-front/ui';
 import { TreeViewModule } from '@progress/kendo-angular-treeview';
+import { SharedSortModule } from '../sort/sort.module';
 
 /**
  * QueryBuilderModule is a class used to manage all the modules and components
@@ -83,6 +84,7 @@ import { TreeViewModule } from '@progress/kendo-angular-treeview';
     SelectMenuModule,
     DividerModule,
     TreeViewModule,
+    SharedSortModule,
   ],
   exports: [
     QueryBuilderComponent,

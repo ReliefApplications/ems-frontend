@@ -145,7 +145,9 @@ export class InviteUsersModalComponent extends UnsubscribeComponent {
       if (file && this.isValidFile(file)) {
         this.downloadService.uploadFile(this.data.uploadPath, file).subscribe({
           next: (res) => {
-            this.gridData.data = this.gridData.data.concat(res);
+            if (res.status === 'OK') {
+              this.gridData.data = this.gridData.data.concat(res);
+            }
           },
           error: (err) => {
             if (err.status === 400) {
@@ -235,7 +237,7 @@ export class InviteUsersModalComponent extends UnsubscribeComponent {
   public createFormGroup(dataItem: any) {
     return this.fb.group({
       email: [dataItem.email, Validators.required],
-      role: [dataItem.role, Validators.required],
+      roles: [dataItem.roles, Validators.required],
       ...(this.data.positionAttributeCategories && {
         positionAttributes: this.fb.array(
           this.data.positionAttributeCategories.map((x, index) =>
