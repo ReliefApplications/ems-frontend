@@ -156,7 +156,10 @@ export const init = (
     dropdownInstance.disabled = true;
     dropdownInstance.textField = 'text';
     dropdownInstance.valueField = 'value';
-    dropdownInstance.popupSettings = { appendTo: 'component' };
+    dropdownInstance.popupSettings = {
+      appendTo: 'component',
+      width: question.popupWidth,
+    };
     dropdownInstance.fillMode = 'none';
     return dropdownInstance;
   };

@@ -12,7 +12,7 @@ export const init = (): void => {
     serializer.addProperty(type, {
       name: 'popupWidth:number',
       category: 'general',
-      isLocalizable: true,
+      default: 0,
     });
   }
 };
