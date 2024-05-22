@@ -110,6 +110,9 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     emailFilter: any;
   }>();
 
+  /**
+   *
+   */
   @Output() noEmail = new EventEmitter();
 
   /** List of emails for back loading. */
@@ -626,7 +629,8 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
    * @param element Input Element
    */
   addEmailManually(element: HTMLInputElement): void {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex =
+      /^(([^<>()[\]\\.,;:\s@\\"!#\\$]{3,}(\.[^<>()[\]\\.,;:\s@\\"!#\\$]+)*)|(\\".+\\"))@(([^<>()[\]\\.,;:\s@\\"!#\\$]+\.)+[^<>()[\]\\.,;:\s@\\"!#\\$]{2,})$/;
 
     if (
       emailRegex.test(element.value) &&
