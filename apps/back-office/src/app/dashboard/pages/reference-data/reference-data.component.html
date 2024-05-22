@@ -280,6 +280,9 @@
         'pages.referenceData.fields.help' | translate
       }}</ui-alert>
       <!-- Fields -->
+      <label class="block text-sm font-medium leading-6 text-gray-900">
+        {{ 'common.field.few' | translate }}
+      </label>
       <kendo-grid *ngIf="!loading" [data]="valueFields" class="rounded-md">
         <kendo-grid-column
           field="name"
@@ -317,42 +320,54 @@
           [width]="86"
           [resizable]="false"
         >
-          <ng-template kendoGridCellTemplate let-dataItem>
-            <div [ngClass]="{ hidden: currEditingField === dataItem }">
-              <button
-                kendoButton
-                class="text-center"
-                icon="edit"
-                [look]="'flat'"
-                (click)="toggleInlineEditor(dataItem)"
-                [uiTooltip]="'common.edit' | translate"
-              ></button>
-              <button
-                kendoButton
-                class="text-center"
-                icon="delete"
-                [look]="'flat'"
-                (click)="onRemoveField(dataItem)"
-                [uiTooltip]="'common.remove' | translate"
-              ></button>
-            </div>
-            <div [ngClass]="{ hidden: currEditingField !== dataItem }">
-              <button
-                kendoButton
-                class="text-center"
-                icon="save"
-                [look]="'flat'"
-                (click)="toggleInlineEditor(null)"
-                [uiTooltip]="'common.save' | translate"
-              ></button>
-              <button
-                kendoButton
-                class="text-center"
-                icon="cancel"
-                [look]="'flat'"
-                (click)="currEditingField = null"
-                [uiTooltip]="'common.cancel' | translate"
-              ></button>
+          <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+            <div class="flex flex-row">
+              <ui-icon
+                *ngIf="fieldsControl.controls.at(rowIndex)?.errors?.invalidField"
+                class="cursor-help self-center"
+                variant="danger"
+                [size]="18"
+                icon="info_outline"
+                [uiTooltip]="
+                  'pages.referenceData.fields.noFound' | translate
+                "
+              ></ui-icon>
+              <div class="flex flex-row" [ngClass]="{ hidden: currEditingField === dataItem }">
+                <button
+                  kendoButton
+                  class="text-center"
+                  icon="edit"
+                  [look]="'flat'"
+                  (click)="toggleInlineEditor(dataItem)"
+                  [uiTooltip]="'common.edit' | translate"
+                ></button>
+                <button
+                  kendoButton
+                  class="text-center"
+                  icon="delete"
+                  [look]="'flat'"
+                  (click)="onRemoveField(dataItem)"
+                  [uiTooltip]="'common.remove' | translate"
+                ></button>
+              </div>
+              <div class="flex flex-row" [ngClass]="{ hidden: currEditingField !== dataItem }">
+                <button
+                  kendoButton
+                  class="text-center"
+                  icon="save"
+                  [look]="'flat'"
+                  (click)="toggleInlineEditor(null)"
+                  [uiTooltip]="'common.save' | translate"
+                ></button>
+                <button
+                  kendoButton
+                  class="text-center"
+                  icon="cancel"
+                  [look]="'flat'"
+                  (click)="currEditingField = null"
+                  [uiTooltip]="'common.cancel' | translate"
+                ></button>
+              </div>
             </div>
           </ng-template>
         </kendo-grid-column>
