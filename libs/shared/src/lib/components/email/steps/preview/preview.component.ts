@@ -124,16 +124,16 @@ export class PreviewComponent implements OnInit, OnDestroy {
    */
   replaceSubjectTokens() {
     const tokenRegex = /{{([^}]+)}}/g;
-    let match;
     const firstRowData = this.emailService.allPreviewData[0]?.dataList[0];
-    while ((match = tokenRegex.exec(this.subjectString)) !== null) {
-      const fieldName = match[1];
+    const fieldNameList = this.subjectString.match(tokenRegex);
+    fieldNameList?.forEach((fName: any) => {
+      const fieldName = fName.replace('{{', '').replace('}}', '');
       const fieldValue = firstRowData[fieldName];
 
       if (fieldValue !== undefined) {
         if (fieldValue instanceof Date) {
           this.subjectString = this.subjectString.replace(
-            match[0],
+            fName,
             fieldValue.toLocaleString('en-US', {
               month: 'numeric',
               day: 'numeric',
@@ -149,7 +149,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
           const date = new Date(fieldValue);
           if (!isNaN(date.getTime())) {
             this.subjectString = this.subjectString.replace(
-              match[0],
+              fName,
               date.toLocaleString('en-US', {
                 month: 'numeric',
                 day: 'numeric',
@@ -163,9 +163,9 @@ export class PreviewComponent implements OnInit, OnDestroy {
             );
           }
         }
-        this.subjectString = this.subjectString.replace(match[0], fieldValue);
+        this.subjectString = this.subjectString.replace(fName, fieldValue);
       }
-    }
+    });
   }
 
   /**
