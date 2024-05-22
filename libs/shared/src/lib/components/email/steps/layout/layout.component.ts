@@ -313,7 +313,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
         // Get the current content of the editor
         const currentContent = this.headerEditor.editor.getContent();
-
+        this.headerEditor.editor.selection.select(
+          this.headerEditor.editor.getBody(),
+          true
+        );
+        this.headerEditor.editor.selection.collapse(false);
         // Check if the cursor is at the beginning or end of the content
         if (cursorPosition === 0) {
           // If at the beginning, remove the leading whitespace from the token
@@ -323,7 +327,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
           this.headerEditor.editor.insertContent(token.trimEnd());
         } else {
           // If in the middle, insert the token with spaces before and after it
-          this.headerEditor.editor.insertContent(token);
+          this.headerEditor.editor.execCommand(
+            'mceInsertContent',
+            false,
+            token
+          );
         }
 
         // Reset the dropdown value
@@ -547,6 +555,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
       const token = `{{${tabName}}}`;
 
       if (this.bodyEditor && this.bodyEditor.editor) {
+        this.bodyEditor.editor.selection.select(
+          this.bodyEditor.editor.getBody(),
+          true
+        );
+        this.bodyEditor.editor.selection.collapse(false);
         this.bodyEditor.editor.insertContent(token);
         this.layoutForm
           .get('body')
