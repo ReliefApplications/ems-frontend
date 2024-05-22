@@ -173,7 +173,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
     const allContextFilters = this.aggregations
       .map((aggregation: any) => aggregation.contextFilters)
       .join('');
-    const allGraphQLVariables = this.aggregations
+    const allQueryParams = this.aggregations
       .map((aggregation: any) => aggregation.referenceDataVariableMapping)
       .join('');
     // Listen to dashboard filters changes if it is necessary
@@ -194,7 +194,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
       .subscribe(({ previous, current }) => {
         if (
           this.contextService.filterRegex.test(
-            allContextFilters + allGraphQLVariables
+            allContextFilters + allQueryParams
           )
         ) {
           if (
@@ -427,7 +427,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
             contextFilters: aggregation.contextFilters
               ? JSON.parse(aggregation.contextFilters)
               : {},
-            graphQLVariables: this.widgetService.mapGraphQLVariables(
+            queryParams: this.widgetService.replaceReferenceDataQueryParams(
               aggregation.referenceDataVariableMapping
             ),
             at: this.contextService.atArgumentValue(aggregation.at),
@@ -478,7 +478,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
                             ? JSON.parse(aggregation.contextFilters)
                             : {},
                           graphQLVariables:
-                            this.widgetService.mapGraphQLVariables(
+                            this.widgetService.replaceReferenceDataQueryParams(
                               aggregation.referenceDataVariableMapping
                             ),
                         })

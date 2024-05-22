@@ -19,6 +19,8 @@ export class TextEditorTabComponent implements OnChanges {
   @Input() fields: any[] = [];
   /** Tinymce editor configuration */
   public editor = WIDGET_EDITOR_CONFIG;
+  /** Is editor loading */
+  public editorLoading = true;
 
   /**
    * Edition of card template.

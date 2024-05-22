@@ -210,7 +210,8 @@ export class ReferenceDataService {
         items = (
           await this.processItemsByRequestType(
             referenceData,
-            referenceDataType.rest
+            referenceDataType.rest,
+            variables
           )
         ).items;
         break;
@@ -232,13 +233,13 @@ export class ReferenceDataService {
    *
    * @param referenceData Reference data item
    * @param type Reference data request type
-   * @param variables Graphql variables (optional)
+   * @param queryParams Query params (optional)
    * @returns processed items by the request type
    */
   private async processItemsByRequestType(
     referenceData: ReferenceData,
     type: referenceDataType,
-    variables: any = {}
+    queryParams: any = {}
   ) {
     let data!: any;
     if (type === referenceDataType.graphql) {
@@ -268,16 +269,33 @@ export class ReferenceDataService {
       const query = this.processQuery(referenceData);
 
       if (query) {
-        transformGraphQLVariables(query, variables);
+        transformGraphQLVariables(query, queryParams);
       }
 
-      const body = { query, variables };
+      const body = { query, variables: queryParams };
       data = (await this.apiProxy.buildPostRequest(url, body, options)) as any;
     } else if (type === referenceDataType.rest) {
-      const url =
+      let url =
         this.apiProxy.baseUrl +
         referenceData.apiConfiguration?.name +
         referenceData.query;
+      if (queryParams && !isEmpty(queryParams)) {
+        // Transform the variables object into a string linked by '&'
+        const queryString = Object.keys(queryParams)
+          .map(
+            (key) =>
+              `${encodeURIComponent(key)}=${encodeURIComponent(
+                queryParams[key]
+              )}`
+          )
+          .join('&');
+        // Append the query params to the URL
+        if (url.includes('?')) {
+          url = `${url}&${queryString}`;
+        } else {
+          url = `${url}?${queryString}`;
+        }
+      }
       data = await this.apiProxy.promisedRequestWithHeaders(url);
     }
 
@@ -297,7 +315,7 @@ export class ReferenceDataService {
           : null) ?? Number.MAX_SAFE_INTEGER;
 
       const pageSize = referenceData.pageInfo.pageSizeVar
-        ? variables[referenceData.pageInfo.pageSizeVar] ?? 0
+        ? queryParams[referenceData.pageInfo.pageSizeVar] ?? 0
         : items?.length || 0;
 
       let lastCursor = null;

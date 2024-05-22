@@ -112,9 +112,9 @@ export class ChartComponent
         };
   }
 
-  /** @returns the graphql query variables object */
-  get graphQLVariables() {
-    return this.widgetService.mapGraphQLVariables(
+  /** @returns reference data (graphql or rest) query params */
+  get queryParams() {
+    return this.widgetService.replaceReferenceDataQueryParams(
       this.settings.referenceDataVariableMapping
     );
   }
@@ -295,7 +295,7 @@ export class ChartComponent
         aggregation: this.aggregationId || '',
         mapping: get(this.settings, 'chart.mapping', null),
         contextFilters: joinFilters(this.contextFilters, this.selectedFilter),
-        graphQLVariables: this.graphQLVariables,
+        queryParams: this.queryParams,
         at: this.settings.at
           ? this.contextService.atArgumentValue(this.settings.at)
           : undefined,

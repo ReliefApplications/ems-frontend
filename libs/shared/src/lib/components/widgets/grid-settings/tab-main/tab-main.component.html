@@ -5,49 +5,53 @@
     <label>{{ 'common.title' | translate }}</label>
     <input formControlName="title" type="string" />
   </div>
-  <div class="flex gap-2 flex-wrap">
-    <!-- Resource selection -->
-    <div uiFormFieldDirective class="flex-1">
-      <label>{{ 'common.resource.one' | translate }}</label>
-      <shared-resource-select
-        formControlName="resource"
-        [selectedElements]="[resource]"
-      ></shared-resource-select>
-      <ui-button
-        *ngIf="formGroup.value.resource"
-        uiSuffix
-        size="small"
-        [isIcon]="true"
-        (click)="clearFormField('resource', $event)"
-        icon="close"
-        variant="danger"
-        [uiTooltip]="'common.remove' | translate"
-      ></ui-button>
+  <ng-container *ngIf="!loading; else loadingTmpl">
+    <div class="flex gap-2 flex-wrap">
+      <!-- Resource selection -->
+      <div uiFormFieldDirective class="flex-1">
+        <label>{{ 'common.resource.one' | translate }}</label>
+        <shared-resource-select
+          formControlName="resource"
+          [selectedElements]="[resource]"
+        ></shared-resource-select>
+        <ui-button
+          *ngIf="formGroup.value.resource"
+          uiSuffix
+          size="small"
+          [isIcon]="true"
+          (click)="clearFormField('resource', $event)"
+          icon="close"
+          variant="danger"
+          [uiTooltip]="'common.remove' | translate"
+        ></ui-button>
+      </div>
+      <!-- Template selection -->
+      <div *ngIf="resource" uiFormFieldDirective class="flex-1">
+        <label>{{ 'models.form.template' | translate }}</label>
+        <ui-select-menu formControlName="template">
+          <ui-select-option>-</ui-select-option>
+          <ui-select-option
+            *ngFor="let template of templates"
+            [value]="template.id"
+          >
+            {{ template.name }}
+          </ui-select-option>
+        </ui-select-menu>
+        <ui-icon
+          uiSuffix
+          icon="info_outline"
+          variant="grey"
+          [uiTooltip]="
+            'components.widget.settings.grid.tooltip.template' | translate
+          "
+        ></ui-icon>
+      </div>
     </div>
-    <!-- Template selection -->
-    <div *ngIf="resource" uiFormFieldDirective class="flex-1">
-      <label>{{ 'models.form.template' | translate }}</label>
-      <ui-select-menu formControlName="template">
-        <ui-select-option>-</ui-select-option>
-        <ui-select-option
-          *ngFor="let template of templates"
-          [value]="template.id"
-        >
-          {{ template.name }}
-        </ui-select-option>
-      </ui-select-menu>
-      <ui-icon
-        uiSuffix
-        icon="info_outline"
-        variant="grey"
-        [uiTooltip]="
-          'components.widget.settings.grid.tooltip.template' | translate
-        "
-      ></ui-icon>
-    </div>
-  </div>
+  </ng-container>
 </div>
-<div class="flex flex-col mt-8 gap-8" *ngIf="resource">
+
+<!-- Selection of layouts or aggregations -->
+<div class="flex flex-col mt-8 gap-8" *ngIf="resource && !loading">
   <!-- Aggregations -->
   <div *ngIf="!(formGroup.get('layouts')?.value.length > 0)">
     <h2>
@@ -77,3 +81,10 @@
     ></shared-layout-table>
   </div>
 </div>
+
+<!-- Loading indicator -->
+<ng-template #loadingTmpl>
+  <div class="w-full flex">
+    <ui-spinner class="m-auto block"></ui-spinner>
+  </div>
+</ng-template>

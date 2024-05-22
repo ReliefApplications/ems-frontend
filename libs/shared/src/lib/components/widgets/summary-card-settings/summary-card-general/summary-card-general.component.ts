@@ -22,6 +22,7 @@ import {
   RadioModule,
   SelectMenuModule,
   SelectOptionModule,
+  SpinnerModule,
   TooltipModule,
 } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
@@ -30,7 +31,7 @@ import {
   ResourceSelectComponent,
 } from '../../../controls/public-api';
 import { ReferenceData } from '../../../../models/reference-data.model';
-import { GraphqlVariablesMappingComponent } from '../../common/graphql-variables-mapping/graphql-variables-mapping.component';
+import { QueryParamsMappingComponent } from '../../common/query-params-mapping/query-params-mapping.component';
 
 /** Component for the general summary cards tab */
 @Component({
@@ -55,7 +56,8 @@ import { GraphqlVariablesMappingComponent } from '../../common/graphql-variables
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
     DividerModule,
-    GraphqlVariablesMappingComponent,
+    QueryParamsMappingComponent,
+    SpinnerModule,
   ],
   templateUrl: './summary-card-general.component.html',
   styleUrls: ['./summary-card-general.component.scss'],
@@ -71,6 +73,8 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
   @Input() layout: Layout | null = null;
   /** Selected aggregation */
   @Input() aggregation: Aggregation | null = null;
+  /** Loading status */
+  @Input() loading = false;
 
   /**
    * Component for the general summary cards tab
