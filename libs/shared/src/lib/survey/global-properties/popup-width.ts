@@ -7,12 +7,14 @@ import { JsonMetadata, Serializer } from 'survey-core';
 export const init = (): void => {
   const serializer: JsonMetadata = Serializer;
 
-  for (const type of ['dropdown']) {
-    // add minimumPopupWidth property
+  for (const type of ['dropdown', 'tagbox']) {
+    // add popupWidth property
     serializer.addProperty(type, {
-      name: 'minimumPopupWidth:number',
+      name: 'popupWidth:number',
+      displayName: 'Popup width (in pixels)',
       category: 'general',
       default: null,
+      minValue: 0,
     });
   }
 };

@@ -119,7 +119,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'enableIf',
   'visibleIf',
   'tooltip',
-  'minimumPopupWidth',
+  'popupWidth',
   'referenceData',
   'referenceDataDisplayField',
   'isPrimitiveValue',
