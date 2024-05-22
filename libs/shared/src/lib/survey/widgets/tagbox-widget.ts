@@ -253,7 +253,10 @@ export const init = (
     tagboxInstance.disabled = true;
     tagboxInstance.textField = 'text';
     tagboxInstance.valueField = 'value';
-    tagboxInstance.popupSettings = { appendTo: 'component' };
+    tagboxInstance.popupSettings = {
+      appendTo: 'component',
+      width: question.popupWidth,
+    };
     tagboxInstance.fillMode = 'none';
     if (question.useSummaryTagMode) {
       tagboxInstance.tagMapper = (tags: any[]) => {

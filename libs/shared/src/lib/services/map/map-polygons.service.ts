@@ -9,6 +9,7 @@ import REGIONS from './regions';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
 import { LayerDatasourceType } from '../../models/layer.model';
+import area from '@turf/area';
 
 /** Available admin identifiers */
 export type AdminIdentifier =
@@ -64,7 +65,12 @@ export class MapPolygonsService {
       .get(`${this.restService.apiUrl}/gis/admin0`)
       .subscribe((value) => {
         if (value) {
-          this.admin0s = value;
+          // Sort polygons by area to make sure small territories can be found inside larger ones
+          this.admin0s = value.sort((a: any, b: any) => {
+            const areaA = area(a.polygons);
+            const areaB = area(b.polygons);
+            return areaA - areaB;
+          });
           this.admin0sReady.next(true);
         }
       });
