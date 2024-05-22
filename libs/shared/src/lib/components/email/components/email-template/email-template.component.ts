@@ -111,7 +111,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   }>();
 
   /**
-   *
+   * Event Emitted for no email
    */
   @Output() noEmail = new EventEmitter();
 
