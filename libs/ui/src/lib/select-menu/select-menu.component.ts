@@ -226,13 +226,11 @@ export class SelectMenuComponent
         this.value instanceof Array ? [...this.value] : this.value
       );
     }
-    console.log(options, 'resubscribing');
     options.forEach((option) => {
       option.optionClick
         .pipe(takeUntil(this.destroy$), takeUntil(this.resetSubscriptions$))
         .subscribe({
           next: (isSelected: boolean) => {
-            console.log(option, isSelected);
             this.updateSelectedValues(option, isSelected);
             this.onChangeFunction();
           },
