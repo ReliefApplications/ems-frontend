@@ -17,6 +17,7 @@ import {
   RestService,
   BlobType,
   DownloadService,
+  AsyncMonacoEditorDirective,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
@@ -49,6 +50,7 @@ const DEFAULT_STYLE = '';
     SpinnerModule,
     TooltipModule,
     ResizableModule,
+    AsyncMonacoEditorDirective,
   ],
   templateUrl: './custom-style.component.html',
   styleUrls: ['./custom-style.component.scss'],

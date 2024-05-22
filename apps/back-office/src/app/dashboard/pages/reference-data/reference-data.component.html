@@ -68,6 +68,7 @@
           >
           <!-- Graphql query editor -->
           <ngx-monaco-editor
+          sharedAsyncMonacoEditor
             (onInit)="initEditor($event)"
             [options]="editorOptions"
             [formControl]="queryControl"

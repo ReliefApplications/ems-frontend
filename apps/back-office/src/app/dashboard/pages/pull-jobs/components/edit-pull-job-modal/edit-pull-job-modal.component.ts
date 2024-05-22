@@ -17,6 +17,7 @@ import {
   StatusOptionsComponent,
   getCachedValues,
   updateQueryUniqueValues,
+  AsyncMonacoEditorDirective,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -80,6 +81,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     FormWrapperModule,
     StatusOptionsComponent,
     MonacoEditorModule,
+    AsyncMonacoEditorDirective,
   ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',
