@@ -11,6 +11,7 @@ import {
   SelectMenuModule,
   IconModule,
   ButtonModule,
+  SpinnerModule,
 } from '@oort-front/ui';
 import { AggregationTableModule } from '../../../aggregation/aggregation-table/aggregation-table.module';
 import { ResourceSelectComponent } from '../../../controls/public-api';
@@ -34,6 +35,7 @@ import { ResourceSelectComponent } from '../../../controls/public-api';
     SelectMenuModule,
     ResourceSelectComponent,
     ButtonModule,
+    SpinnerModule,
   ],
   exports: [TabMainComponent],
 })

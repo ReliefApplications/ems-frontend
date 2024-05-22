@@ -227,6 +227,8 @@ export class GridComponent
   public hasEnabledActions = false;
   /** Reference to the column chooser element */
   private columnChooserRef: PopupRef | null = null;
+  /** Prevent next column reset */
+  private preventColumnResize = false;
 
   /** @returns show border of grid */
   get showBorder(): boolean {
@@ -385,7 +387,9 @@ export class GridComponent
           this.updateColumnShowFullScreenButton((column as any).field);
         });
       }, 0);
-      this.setColumnsWidth();
+      this.preventColumnResize
+        ? (this.preventColumnResize = false)
+        : this.setColumnsWidth();
     }
   }
 
@@ -442,6 +446,7 @@ export class GridComponent
         logic: 'and',
         filters: this.showFilter ? [] : this.filter.filters,
       });
+      this.preventColumnResize = true;
     }
   }
 

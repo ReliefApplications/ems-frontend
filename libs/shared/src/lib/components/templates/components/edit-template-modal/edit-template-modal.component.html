@@ -39,7 +39,12 @@
           [uiTooltip]="'common.tooltip.editor.insert' | translate"
         ></ui-icon>
       </div>
-      <editor [init]="bodyEditor" formControlName="body"></editor>
+      <editor
+        (onInit)="editorLoading = false"
+        [init]="bodyEditor"
+        formControlName="body"
+      ></editor>
+      <ui-spinner *ngIf="editorLoading"></ui-spinner>
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">

@@ -61,6 +61,8 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
   @Input() mapPortal?: DomPortal;
   /** Emit new fields */
   @Output() fields: EventEmitter<Fields[]> = new EventEmitter<Fields[]>();
+  /** Loading status */
+  @Input() loading = false;
   /** Admin fields */
   public adminFields = ADMIN_FIELDS;
 

@@ -31,4 +31,7 @@ export const environment: Environment = {
   i18nUrl: 'https://whoemssafedsta03.blob.core.windows.net/shared/dev/i18n/',
   // tinymceBaseUrl: 'https://ems2-dev.who.int/app-builder/tinymce',
   // i18nUrl: 'https://ems2-dev.who.int/app-builder/i18n/',
+  user: {
+    attributes: ['country', 'region', 'location', 'department'],
+  },
 };

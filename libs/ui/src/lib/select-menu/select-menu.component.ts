@@ -83,6 +83,8 @@ export class SelectMenuComponent
   @Input() public loading = false;
   /** Subscription to the search control */
   private searchSubscriptionActive!: Subscription;
+  /** handles resetting subscriptions */
+  public resetSubscriptions$ = new Subject<void>();
 
   /** Array to store the values selected */
   public selectedValues: any[] = [];
@@ -225,12 +227,14 @@ export class SelectMenuComponent
       );
     }
     options.forEach((option) => {
-      option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
-        next: (isSelected: boolean) => {
-          this.updateSelectedValues(option, isSelected);
-          this.onChangeFunction();
-        },
-      });
+      option.optionClick
+        .pipe(takeUntil(this.destroy$), takeUntil(this.resetSubscriptions$))
+        .subscribe({
+          next: (isSelected: boolean) => {
+            this.updateSelectedValues(option, isSelected);
+            this.onChangeFunction();
+          },
+        });
       // Initialize any selected values
       if (this.selectedValues.find((selVal) => selVal == option.value)) {
         option.selected = true;
@@ -239,6 +243,11 @@ export class SelectMenuComponent
       }
       this.setDisplayTriggerText();
     });
+  }
+
+  /** Reset subscriptions */
+  resetSubscriptions() {
+    this.resetSubscriptions$.next();
   }
 
   /**

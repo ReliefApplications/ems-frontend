@@ -31,6 +31,7 @@
     </h2>
     <div class="grow overflow-y-auto overflow-x-hidden w-full">
       <ngx-monaco-editor
+        sharedAsyncMonacoEditor
         class="!h-full min-h-[450px]"
         (onInit)="initEditor($event)"
         [options]="editorOptions"
