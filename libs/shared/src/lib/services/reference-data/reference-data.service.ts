@@ -22,6 +22,7 @@ import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { cloneDeep, get, set } from 'lodash';
 import { procPipelineStep } from '../../utils/reference-data/filter.util';
 import { DataTransformer } from '../../utils/reference-data/data-transformer.util';
+import { isEmpty } from 'lodash';
 
 /** Local storage key for last request */
 const LAST_REQUEST_KEY = '_last_request';
