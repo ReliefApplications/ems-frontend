@@ -120,11 +120,13 @@ export class ReferenceDataService {
     }
     const cacheKey = `${referenceData.id || ''}-${JSON.stringify(variables)}`;
     const valueField = referenceData.valueField || 'id';
-    const cacheTimestamp = localStorage.getItem(cacheKey + LAST_REQUEST_KEY);
-    const modifiedAt = referenceData.modifiedAt || '';
+    const cacheTimestamp = Number(
+      localStorage.getItem(cacheKey + LAST_REQUEST_KEY)
+    );
+    const modifiedAt = Number(referenceData.modifiedAt || '');
 
     const isCached =
-      cacheTimestamp &&
+      !Number.isNaN(cacheTimestamp) &&
       cacheTimestamp >= modifiedAt &&
       (await localForage.keys()).includes(cacheKey);
 
@@ -138,7 +140,7 @@ export class ReferenceDataService {
       paginationRes = p;
       // Cache items and timestamp
       await localForage.setItem(cacheKey, { items, valueField, pageInfo: p });
-      localStorage.setItem(cacheKey + LAST_REQUEST_KEY, modifiedAt);
+      localStorage.setItem(cacheKey + LAST_REQUEST_KEY, modifiedAt.toString());
     } else {
       // If referenceData has not changed, use cached value and check for updates for graphQL.
       if (referenceData.type === referenceDataType.graphql) {
@@ -152,7 +154,7 @@ export class ReferenceDataService {
         await localForage.setItem(cacheKey, { items, valueField, pageInfo: p });
         localStorage.setItem(
           cacheKey + LAST_REQUEST_KEY,
-          this.formatDateSQL(new Date())
+          new Date().getTime().toString()
         );
       } else {
         // If referenceData has not changed, use cached value for non graphQL.
@@ -161,7 +163,10 @@ export class ReferenceDataService {
           items = (await this.fetchItems(referenceData)).items;
           // Cache items and timestamp
           await localForage.setItem(cacheKey, { items, valueField });
-          localStorage.setItem(cacheKey + LAST_REQUEST_KEY, modifiedAt);
+          localStorage.setItem(
+            cacheKey + LAST_REQUEST_KEY,
+            modifiedAt.toString()
+          );
         }
       }
     }
@@ -195,7 +200,7 @@ export class ReferenceDataService {
         paginationInfo = p;
         localStorage.setItem(
           cacheKey + LAST_REQUEST_KEY,
-          this.formatDateSQL(new Date())
+          new Date().getTime().toString()
         );
         break;
       }
