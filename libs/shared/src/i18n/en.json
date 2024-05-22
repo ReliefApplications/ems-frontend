@@ -2509,7 +2509,8 @@
 				"help": "The fields are calculated based on the attributes of the first item in the payload.",
 				"missingConfig": "Can't fetch fields. Missing configuration: {{config}}",
 				"noFields": "No fields found",
-				"title": "Field"
+				"title": "Field",
+				"noFound": "Field not found in the payload of the reference data."
 			},
 			"graphQLFilter": "GraphQL query parameters",
 			"pagination": {

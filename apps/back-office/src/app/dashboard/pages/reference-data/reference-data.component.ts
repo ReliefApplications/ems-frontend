@@ -27,6 +27,7 @@ import {
   ApiConfigurationQueryResponse,
   EditReferenceDataMutationResponse,
   paginationStrategy,
+  containsFieldsValidator,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { EDIT_REFERENCE_DATA } from './graphql/mutations';
@@ -93,7 +94,7 @@ export class ReferenceDataComponent
   public apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
   /** List of query variables */
   public queryVariables: string[] = [];
-  /** Value fields */
+  /** Value fields to be displayed */
   public valueFields: NonNullable<ReferenceData['fields']> = [];
   /** Payload */
   public payload: any;
@@ -140,12 +141,28 @@ export class ReferenceDataComponent
   private addChipListTimeoutListener!: NodeJS.Timeout;
   /** Outside click listener for inline edition */
   private inlineEditionOutsideClickListener!: any;
+  /** Saves the original fields fetched from the reference data */
+  private dataFields: NonNullable<ReferenceData['fields']> = [];
   /** size style of editor */
   public style: any = {};
 
   /** @returns the graphqlQuery form control */
   get queryControl() {
     return this.referenceForm.get('query') as FormControl | null;
+  }
+
+  /** @returns the fieldsControl form control */
+  get fieldsControl() {
+    const arrayControl = this.fb.array([]);
+    this.valueFields.forEach((value) => {
+      arrayControl.push(
+        this.fb.nonNullable.control(
+          value,
+          containsFieldsValidator(this.dataFields)
+        )
+      );
+    });
+    return arrayControl;
   }
 
   /** @returns name of reference model */
@@ -251,12 +268,7 @@ export class ReferenceDataComponent
       }
     };
 
-    const handleQueryChange = (queryStr: string, resetFields = true) => {
-      // Clear the fields
-      if (resetFields) {
-        clearFields();
-      }
-
+    const handleQueryChange = (queryStr: string) => {
       // Update the query variables
       try {
         const query = gql(queryStr ?? '');
@@ -277,6 +289,7 @@ export class ReferenceDataComponent
     const clearFields = () => {
       this.payload = null;
       this.valueFields = [];
+      this.dataFields = [];
       form.get('fields')?.setValue([], { emitEvent: false });
     };
 
@@ -332,7 +345,7 @@ export class ReferenceDataComponent
         .subscribe(setPaginationValidators);
 
       // Initialize the query variables
-      handleQueryChange(this.queryControl?.value, false);
+      handleQueryChange(this.queryControl?.value);
     }, 100);
 
     return form;
@@ -390,6 +403,11 @@ export class ReferenceDataComponent
                   ? this.referenceData?.data
                   : [];
               this.referenceForm = this.getRefDataForm();
+              if (!this.dataFields.length) {
+                this.dataFields =
+                  this.referenceForm?.get('fields')?.value || [];
+                this.getFields(true);
+              }
               this.valueFields = this.referenceForm?.get('fields')?.value || [];
               this.loadApiConfigurations(
                 this.referenceForm?.get('type')?.value
@@ -809,8 +827,12 @@ export class ReferenceDataComponent
     return array.map((it) => Object.values(it).toString()).join('\n');
   }
 
-  /** Uses the API Configuration to get the fields and parse their types. */
-  public async getFields() {
+  /**
+   * Uses the API Configuration to get the fields and parse their types.
+   *
+   * @param init if starting component don't mark form as dirt, but get payload only
+   */
+  public async getFields(init = false) {
     const apiConfID = this.referenceForm.value.apiConfiguration;
     const path = this.referenceForm.value.path;
     const query = this.referenceForm.value.query;
@@ -855,10 +877,15 @@ export class ReferenceDataComponent
         query,
         type
       );
-      this.valueFields = result.fields;
+      const fieldsCopy = cloneDeep(this.valueFields);
+      const manualFields = fieldsCopy.filter((field) => field.manual);
+      this.dataFields = result.fields;
+      this.valueFields = this.dataFields.concat(manualFields);
       this.payload = result.payload;
       this.referenceForm?.get('fields')?.setValue(this.valueFields);
-      this.referenceForm.get('fields')?.markAsDirty();
+      if (!init) {
+        this.referenceForm.get('fields')?.markAsDirty();
+      }
     } catch (e) {
       if (e instanceof HttpErrorResponse) {
         this.snackBar.openSnackBar(e.message, { error: true });
@@ -875,6 +902,7 @@ export class ReferenceDataComponent
   onRemoveField(field: any) {
     this.valueFields = this.valueFields.filter((x) => x.name !== field.name);
     this.referenceForm?.get('fields')?.setValue(this.valueFields);
+    this.setReferenceFormValue();
   }
 
   /**
@@ -970,6 +998,7 @@ export class ReferenceDataComponent
           'components.referenceData.fields.new'
         ),
         type: 'string',
+        manual: true,
       },
     ];
 
