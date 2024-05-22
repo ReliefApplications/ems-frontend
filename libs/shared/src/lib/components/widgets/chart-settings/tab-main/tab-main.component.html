@@ -1,8 +1,14 @@
 <div [formGroup]="formGroup" class="flex flex-col last:mb-0">
   <h2>{{ 'common.general' | translate }}</h2>
-  <div uiFormFieldDirective>
-    <label>{{ 'common.title' | translate }}</label>
-    <input formControlName="title" type="string" />
+  <div class="mb-2">
+    <label class="block text-sm font-medium leading-6 text-gray-900">{{
+      'common.title' | translate
+    }}</label>
+    <editor
+      (onInit)="editorLoading = false"
+      [init]="editor"
+      formControlName="title"
+    ></editor>
   </div>
   <ng-container formGroupName="chart">
     <div uiFormFieldDirective>

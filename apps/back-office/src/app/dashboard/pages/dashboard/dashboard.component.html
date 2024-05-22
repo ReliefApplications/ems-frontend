@@ -49,7 +49,10 @@
             (formActiveEvent)="formActive = $event"
           >
             <h1 class="!m-0 overflow-hidden text-ellipsis">
-              {{ dashboard.name }}
+              <div
+                class="no-tailwindcss-base"
+                [innerHTML]="convertStringToHtml(dashboard.name)"
+              ></div>
             </h1>
           </shared-editable-text>
           <!-- Settings -->
@@ -62,7 +65,7 @@
             [uiTooltip]="'common.settings' | translate"
           ></ui-button>
           <ui-button
-            *ngIf="canUpdate"
+            *ngIf="canUpdate && !formActive"
             [icon]="editionActive ? 'edit' : 'preview'"
             (click)="editionActive = !editionActive"
             >{{

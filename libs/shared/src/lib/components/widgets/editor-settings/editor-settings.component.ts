@@ -56,6 +56,11 @@ export class EditorSettingsComponent
     new EventEmitter();
   /** tinymce editor configuration */
   public editor: RawEditorSettings = WIDGET_EDITOR_CONFIG;
+  /** tinymce editor title configuration */
+  public editorTitle: RawEditorSettings = {
+    ...WIDGET_EDITOR_CONFIG,
+    height: 200,
+  };
   /** Current resource */
   public resource: Resource | null = null;
   /** Current reference data */

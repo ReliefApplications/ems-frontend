@@ -18,6 +18,9 @@ import { get } from 'lodash';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
+import { WIDGET_EDITOR_CONFIG } from 'libs/shared/src/lib/const/tinymce.const';
+import { RawEditorSettings } from 'tinymce';
+import { EditorService } from 'libs/shared/src/lib/services/editor/editor.service';
 
 /**
  * Main tab of chart settings modal.
@@ -44,6 +47,13 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
   public availableSeriesFields: any[] = [];
   /** Loading status */
   public loading = false;
+  /** tinymce editor configuration */
+  public editor: RawEditorSettings = {
+    ...WIDGET_EDITOR_CONFIG,
+    height: 200,
+  };
+  /** Is editor loading */
+  public editorLoading = true;
 
   /**
    * Get the selected chart type object
@@ -65,14 +75,20 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
    * @param dialog Dialog service
    * @param aggregationBuilder Shared aggregation builder service
    * @param aggregationService Shared aggregation service
+   * @param editorService Editor service
    */
   constructor(
     private apollo: Apollo,
     private dialog: Dialog,
     private aggregationBuilder: AggregationBuilderService,
-    private aggregationService: AggregationService
+    private aggregationService: AggregationService,
+    private editorService: EditorService
   ) {
     super();
+    // Set the editor base url based on the environment file
+    this.editor.base_url = editorService.url;
+    // Set the editor language
+    this.editor.language = editorService.language;
   }
 
   ngOnInit(): void {

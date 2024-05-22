@@ -1,7 +1,8 @@
 <shared-map class="flex-1" [mapSettings]="settings" />
 
 <ng-template #headerTemplate>
-  <span class="widget-title" [title]="settings ? settings.title : ''">{{
-    settings.title
-  }}</span>
+  <div
+    class="no-tailwindcss-base max-h-9 content-center"
+    [innerHTML]="convertStringToHtml(settings ? settings.title : '')"
+  ></div>
 </ng-template>

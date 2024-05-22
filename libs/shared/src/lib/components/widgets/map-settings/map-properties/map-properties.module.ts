@@ -18,6 +18,11 @@ import { MapControlsModule } from './map-controls/map-controls.module';
 import { WebmapSelectComponent } from './webmap-select/webmap-select.component';
 import { TooltipModule, ErrorMessageModule } from '@oort-front/ui';
 import { PortalModule } from '@angular/cdk/portal';
+import {
+  EditorModule as TinyMceEditorModule,
+  TINYMCE_SCRIPT_SRC,
+} from '@tinymce/tinymce-angular';
+import { EditorModule } from '../../editor/editor.module';
 
 /**
  * Module of Map Properties of Map Widget.
@@ -47,7 +52,12 @@ import { PortalModule } from '@angular/cdk/portal';
     PortalModule,
     AlertModule,
     ToggleModule,
+    TinyMceEditorModule,
+    EditorModule,
   ],
   exports: [MapPropertiesComponent],
+  providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+  ],
 })
 export class MapPropertiesModule {}

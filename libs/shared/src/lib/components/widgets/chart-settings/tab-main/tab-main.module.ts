@@ -24,6 +24,11 @@ import {
   ResourceSelectComponent,
 } from '../../../controls/public-api';
 import { QueryParamsMappingComponent } from '../../common/query-params-mapping/query-params-mapping.component';
+import {
+  EditorModule as TinyMceEditorModule,
+  TINYMCE_SCRIPT_SRC,
+} from '@tinymce/tinymce-angular';
+import { EditorModule } from '../../editor/editor.module';
 
 /**
  * Main tab of chart settings modal.
@@ -54,7 +59,12 @@ import { QueryParamsMappingComponent } from '../../common/query-params-mapping/q
     DividerModule,
     QueryParamsMappingComponent,
     SpinnerModule,
+    TinyMceEditorModule,
+    EditorModule,
   ],
   exports: [TabMainComponent],
+  providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+  ],
 })
 export class TabMainModule {}

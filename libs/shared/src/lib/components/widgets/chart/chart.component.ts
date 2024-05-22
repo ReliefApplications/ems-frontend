@@ -23,6 +23,7 @@ import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 import { WidgetService } from '../../../services/widget/widget.service';
+import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 
 /**
  * Default file name for chart exports
@@ -156,6 +157,7 @@ export class ChartComponent
    * @param document document
    * @param dashboardService Shared dashboard service
    * @param widgetService Shared widget service
+   * @param sanitizer Sanitizer
    */
   constructor(
     private aggregationService: AggregationService,
@@ -164,7 +166,8 @@ export class ChartComponent
     private el: ElementRef,
     @Inject(DOCUMENT) private document: Document,
     private dashboardService: DashboardService,
-    private widgetService: WidgetService
+    private widgetService: WidgetService,
+    private sanitizer: DomSanitizer
   ) {
     super();
   }
@@ -441,5 +444,15 @@ export class ChartComponent
       this.selectedFilter = null;
     }
     this.loadChart();
+  }
+
+  /**
+   * convert string to html
+   *
+   * @param value string value
+   * @returns html value
+   */
+  public convertStringToHtml(value: string | undefined): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(value || '');
   }
 }

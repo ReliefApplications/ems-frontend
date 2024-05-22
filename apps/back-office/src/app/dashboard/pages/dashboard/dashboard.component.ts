@@ -48,6 +48,7 @@ import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { GridsterConfig } from 'angular-gridster2';
+import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -152,6 +153,7 @@ export class DashboardComponent
    * @param document Document
    * @param clipboard Angular clipboard service
    * @param dashboardAutomationService Dashboard automation service
+   * @param sanitizer Sanitizer
    */
   constructor(
     private applicationService: ApplicationService,
@@ -171,7 +173,8 @@ export class DashboardComponent
     private layoutService: UILayoutService,
     @Inject(DOCUMENT) private document: Document,
     private clipboard: Clipboard,
-    private dashboardAutomationService: DashboardAutomationService
+    private dashboardAutomationService: DashboardAutomationService,
+    private sanitizer: DomSanitizer
   ) {
     super();
     this.dashboardAutomationService.dashboard = this;
@@ -829,5 +832,15 @@ export class DashboardComponent
         },
       });
     }
+  }
+
+  /**
+   * convert string to html
+   *
+   * @param value string value
+   * @returns html value
+   */
+  public convertStringToHtml(value: string | undefined): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(value || '');
   }
 }

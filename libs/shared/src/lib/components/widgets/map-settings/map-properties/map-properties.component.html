@@ -8,9 +8,15 @@
         </h2>
         <div class="flex flex-col gap-4">
           <!-- Widget ( map ) name -->
-          <div uiFormFieldDirective>
-            <label>{{ 'common.name' | translate }}</label>
-            <input formControlName="title" type="string" />
+          <div class="mb-2">
+            <label class="block text-sm font-medium leading-6 text-gray-900">{{
+              'common.name' | translate
+            }}</label>
+            <editor
+              (onInit)="editorLoading = false"
+              [init]="editor"
+              formControlName="title"
+            ></editor>
           </div>
           <ui-divider></ui-divider>
           <!-- Basemap -->

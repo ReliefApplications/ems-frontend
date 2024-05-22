@@ -15,6 +15,11 @@ import {
 } from '@oort-front/ui';
 import { AggregationTableModule } from '../../../aggregation/aggregation-table/aggregation-table.module';
 import { ResourceSelectComponent } from '../../../controls/public-api';
+import {
+  EditorModule as TinyMceEditorModule,
+  TINYMCE_SCRIPT_SRC,
+} from '@tinymce/tinymce-angular';
+import { EditorModule } from '../../editor/editor.module';
 
 /**
  * Main Tab of grid widget configuration modal.
@@ -36,7 +41,12 @@ import { ResourceSelectComponent } from '../../../controls/public-api';
     ResourceSelectComponent,
     ButtonModule,
     SpinnerModule,
+    TinyMceEditorModule,
+    EditorModule,
   ],
   exports: [TabMainComponent],
+  providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+  ],
 })
 export class TabMainModule {}

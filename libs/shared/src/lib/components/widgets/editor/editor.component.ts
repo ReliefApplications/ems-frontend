@@ -10,7 +10,6 @@ import {
   SkipSelf,
   ViewChild,
 } from '@angular/core';
-import { SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
@@ -40,6 +39,7 @@ import {
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
 import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
+import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 
 /**
  * Text widget component using Tinymce.
@@ -141,6 +141,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
    * @param router Angular router
    * @param widgetService Shared widget service
    * @param dashboardAutomationService Dashboard automation service (Optional, so not active while editing widget)
+   * @param sanitizer Sanitizer
    */
   constructor(
     private apollo: Apollo,
@@ -159,7 +160,8 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
     private widgetService: WidgetService,
     @Optional()
     @SkipSelf()
-    private dashboardAutomationService: DashboardAutomationService
+    private dashboardAutomationService: DashboardAutomationService,
+    private sanitizer: DomSanitizer
   ) {
     super();
   }
@@ -620,5 +622,15 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
         { error: true }
       );
     }
+  }
+
+  /**
+   * convert string to html
+   *
+   * @param value string value
+   * @returns html value
+   */
+  public convertStringToHtml(value: string | undefined): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(value || '');
   }
 }

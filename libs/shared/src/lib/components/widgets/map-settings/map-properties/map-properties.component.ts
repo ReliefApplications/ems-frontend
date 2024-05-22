@@ -5,6 +5,9 @@ import { MapConstructorSettings } from '../../../ui/map/interfaces/map.interface
 import { BASEMAPS } from '../../../ui/map/const/baseMaps';
 import { DomPortal } from '@angular/cdk/portal';
 import { createGeographicExtent } from '../map-forms';
+import { WIDGET_EDITOR_CONFIG } from 'libs/shared/src/lib/const/tinymce.const';
+import { RawEditorSettings } from 'tinymce';
+import { EditorService } from 'libs/shared/src/lib/services/editor/editor.service';
 
 /**
  * Map Properties of Map widget.
@@ -25,6 +28,13 @@ export class MapPropertiesComponent extends UnsubscribeComponent {
   public baseMaps = BASEMAPS;
   /** Available geographic extent fields */
   public extents = ['admin0', 'region'];
+  /** tinymce editor configuration */
+  public editor: RawEditorSettings = {
+    ...WIDGET_EDITOR_CONFIG,
+    height: 200,
+  };
+  /** Is editor loading */
+  public editorLoading = true;
 
   /** @returns geographic extents as form array */
   get geographicExtents() {
@@ -38,9 +48,15 @@ export class MapPropertiesComponent extends UnsubscribeComponent {
 
   /**
    * Map Properties of Map widget.
+   *
+   * @param editorService Editor service
    */
-  constructor() {
+  constructor(private editorService: EditorService) {
     super();
+    // Set the editor base url based on the environment file
+    this.editor.base_url = editorService.url;
+    // Set the editor language
+    this.editor.language = editorService.language;
   }
 
   /**

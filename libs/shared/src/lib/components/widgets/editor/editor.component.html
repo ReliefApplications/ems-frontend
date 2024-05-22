@@ -17,9 +17,10 @@
   </div>
 </div>
 <ng-template #headerTemplate>
-  <span class="widget-title" [title]="settings.title">{{
-    settings.title
-  }}</span>
+  <div
+    class="no-tailwindcss-base max-h-9 content-center"
+    [innerHTML]="convertStringToHtml(settings.title)"
+  ></div>
   <div class="flex">
     <!-- Data source button -->
     <ui-button

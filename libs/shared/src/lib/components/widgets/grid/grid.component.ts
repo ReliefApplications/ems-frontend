@@ -47,6 +47,7 @@ import { FormQueryResponse } from '../../../models/form.model';
 import { AggregationGridComponent } from '../../aggregation/aggregation-grid/aggregation-grid.component';
 import { ReferenceDataGridComponent } from '../../ui/reference-data-grid/reference-data-grid.component';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
+import { SafeHtml, DomSanitizer } from '@angular/platform-browser';
 
 /** Component for the grid widget */
 @Component({
@@ -144,6 +145,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
    * @param applicationService The shared application service
    * @param translate Angular translate service
    * @param aggregationService Shared aggregation service
+   * @param sanitizer Sanitizer
    */
   constructor(
     private apollo: Apollo,
@@ -156,7 +158,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     private confirmService: ConfirmService,
     private applicationService: ApplicationService,
     private translate: TranslateService,
-    private aggregationService: AggregationService
+    private aggregationService: AggregationService,
+    private sanitizer: DomSanitizer
   ) {
     super();
   }
@@ -692,5 +695,15 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
    */
   onAggregationChange(aggregation: Aggregation): void {
     this.aggregation = aggregation;
+  }
+
+  /**
+   * convert string to html
+   *
+   * @param value string value
+   * @returns html value
+   */
+  public convertStringToHtml(value: string | undefined): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(value || '');
   }
 }
