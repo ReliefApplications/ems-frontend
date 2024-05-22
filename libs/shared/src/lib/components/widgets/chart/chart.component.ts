@@ -23,6 +23,8 @@ import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 import { WidgetService } from '../../../services/widget/widget.service';
+import { authType } from '../../../models/api-configuration.model';
+import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 
 /**
  * Default file name for chart exports
@@ -156,6 +158,7 @@ export class ChartComponent
    * @param document document
    * @param dashboardService Shared dashboard service
    * @param widgetService Shared widget service
+   * @param referenceDataService Shared reference data service
    */
   constructor(
     private aggregationService: AggregationService,
@@ -164,7 +167,8 @@ export class ChartComponent
     private el: ElementRef,
     @Inject(DOCUMENT) private document: Document,
     private dashboardService: DashboardService,
-    private widgetService: WidgetService
+    private widgetService: WidgetService,
+    private referenceDataService: ReferenceDataService
   ) {
     super();
   }
@@ -250,11 +254,41 @@ export class ChartComponent
     this.cancelRefresh$.complete();
   }
 
+  // /** Loads chart */
+  // private loadChart(): void {
+  //   this.cancelRefresh$.next();
+  //   this.loading = true;
+  //   if (this.settings.resource || this.settings.referenceData) {
+  //     this.dataQuery = this.aggregationService.aggregationDataQuery({
+  //       referenceData: this.settings.referenceData,
+  //       resource: this.settings.resource,
+  //       aggregation: this.aggregationId || '',
+  //       mapping: get(this.settings, 'chart.mapping', null),
+  //       contextFilters: joinFilters(this.contextFilters, this.selectedFilter),
+  //       graphQLVariables: this.graphQLVariables,
+  //       at: this.settings.at
+  //         ? this.contextService.atArgumentValue(this.settings.at)
+  //         : undefined,
+  //     });
+  //     if (this.dataQuery) {
+  //       this.getData();
+  //     } else {
+  //       this.loading = false;
+  //     }
+  //   } else {
+  //     this.loading = false;
+  //   }
+  // }
+
   /** Loads chart */
   private loadChart(): void {
     this.cancelRefresh$.next();
+    if (!(this.settings.resource || this.settings.referenceData)) {
+      return;
+    }
     this.loading = true;
-    if (this.settings.resource || this.settings.referenceData) {
+
+    const defaultLogic = () => {
       this.dataQuery = this.aggregationService.aggregationDataQuery({
         referenceData: this.settings.referenceData,
         resource: this.settings.resource,
@@ -267,12 +301,60 @@ export class ChartComponent
           : undefined,
       });
       if (this.dataQuery) {
-        this.getData();
+        this.dataQuery
+          .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+          .subscribe(({ errors, data, loading }: any) => {
+            if (errors) {
+              this.loading = false;
+              this.hasError = true;
+              this.series.next([]);
+            } else {
+              this.getData(data);
+              this.loading = loading;
+            }
+          });
       } else {
         this.loading = false;
       }
-    } else {
-      this.loading = false;
+    };
+
+    if (this.settings.resource || !this.aggregationId) {
+      defaultLogic();
+    } else if (this.settings.referenceData) {
+      // First, load reference data
+      this.referenceDataService
+        .loadReferenceData(this.settings.referenceData)
+        .then((refData) => {
+          // Then, if using auth code, directly query external API
+          if (
+            refData.apiConfiguration?.authType === authType.authorizationCode
+          ) {
+            defaultLogic();
+            // this.aggregationService
+            //   .getAggregations({
+            //     referenceData: this.settings.referenceData,
+            //     ids: [this.aggregationId || ''],
+            //   })
+            //   .then(({ edges }) => {
+            //     const aggregationModel = edges[0].node;
+            //     this.referenceDataService
+            //       .aggregate(refData, aggregationModel, {
+            //         contextFilters: this.contextFilters,
+            //         graphQLVariables: this.graphQLVariables,
+            //       })
+            //       .then((aggregationData) => {
+            //         console.log(aggregationData, 'aggregation data');
+            //         this.getData({
+            //           referenceDataAggregation: aggregationData.items,
+            //         });
+            //         this.loading = false;
+            //       });
+            //   });
+          } else {
+            // Else, apply default logic
+            defaultLogic();
+          }
+        });
     }
   }
 
@@ -340,91 +422,72 @@ export class ChartComponent
     };
   }
 
-  /** Load the data, using widget parameters. */
-  private getData(): void {
-    this.dataQuery
-      .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-      .subscribe(({ errors, data, loading }: any) => {
-        if (errors) {
-          this.loading = false;
-          this.hasError = true;
-          this.series.next([]);
-        } else {
-          this.hasError = false;
-          const today = new Date();
-          this.lastUpdate =
-            ('0' + today.getHours()).slice(-2) +
-            ':' +
-            ('0' + today.getMinutes()).slice(-2);
+  /**
+   * Load the data, using widget parameters.
+   *
+   * @param data data to process
+   */
+  private getData(data: any): void {
+    this.hasError = false;
+    const today = new Date();
+    this.lastUpdate =
+      ('0' + today.getHours()).slice(-2) +
+      ':' +
+      ('0' + today.getMinutes()).slice(-2);
 
-          if (
-            [
-              'pie',
-              'donut',
-              'radar',
-              'line',
-              'bar',
-              'column',
-              'polar',
-            ].includes(this.settings.chart.type)
-          ) {
-            const aggregationData = cloneDeep(
-              this.settings.resource
-                ? data.recordsAggregation
-                : data.referenceDataAggregation
+    if (
+      ['pie', 'donut', 'radar', 'line', 'bar', 'column', 'polar'].includes(
+        this.settings.chart.type
+      )
+    ) {
+      const aggregationData = cloneDeep(
+        this.settings.resource
+          ? data.recordsAggregation
+          : data.referenceDataAggregation
+      );
+
+      // Check if we got any data back
+      this.isEmpty =
+        Array.isArray(aggregationData) && aggregationData.length === 0;
+      // If series
+      if (get(this.settings, 'chart.mapping.series', null)) {
+        const groups = groupBy(aggregationData, 'series');
+        const categories = uniq(aggregationData.map((x: any) => x.category));
+        this.series.next(
+          Object.keys(groups).map((key) => {
+            const rawData = groups[key];
+            const returnData = Array.from(
+              categories,
+              (category) =>
+                rawData.find((x) => x.category === category) || {
+                  category,
+                  field: null,
+                }
             );
+            return {
+              label:
+                key || this.translate.instant('components.widget.chart.other'),
+              name: key,
+              data: returnData,
+            };
+          })
+        );
+      } else {
+        // Group under same series
+        this.series.next([
+          {
+            data: aggregationData,
+          },
+        ]);
+      }
+    } else {
+      this.series.next(
+        this.settings.resource ? data.recordsAggregation : data.referenceData
+      );
 
-            // Check if we got any data back
-            this.isEmpty =
-              Array.isArray(aggregationData) && aggregationData.length === 0;
-            // If series
-            if (get(this.settings, 'chart.mapping.series', null)) {
-              const groups = groupBy(aggregationData, 'series');
-              const categories = uniq(
-                aggregationData.map((x: any) => x.category)
-              );
-              this.series.next(
-                Object.keys(groups).map((key) => {
-                  const rawData = groups[key];
-                  const returnData = Array.from(
-                    categories,
-                    (category) =>
-                      rawData.find((x) => x.category === category) || {
-                        category,
-                        field: null,
-                      }
-                  );
-                  return {
-                    label:
-                      key ||
-                      this.translate.instant('components.widget.chart.other'),
-                    name: key,
-                    data: returnData,
-                  };
-                })
-              );
-            } else {
-              // Group under same series
-              this.series.next([
-                {
-                  data: aggregationData,
-                },
-              ]);
-            }
-          } else {
-            this.series.next(
-              this.settings.resource
-                ? data.recordsAggregation
-                : data.referenceData
-            );
-
-            this.isEmpty =
-              Array.isArray(this.series.value) &&
-              this.series.value.length === 0;
-          }
-          this.loading = loading;
-        }
-      });
+      this.isEmpty =
+        Array.isArray(this.series.value) && this.series.value.length === 0;
+    }
   }
 
   /**
