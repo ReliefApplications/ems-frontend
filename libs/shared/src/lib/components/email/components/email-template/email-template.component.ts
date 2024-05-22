@@ -24,6 +24,7 @@ import { GET_RESOURCE } from '../../graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
+import { selectFieldTypes } from '../../constant';
 
 /**
  * Email template to create distribution list
@@ -210,7 +211,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
    * @param fieldIndex - Index of the field in graphql.
    * @returns field type
    */
-  getFieldType(fieldIndex: number): string | undefined {
+  getFieldType(fieldIndex: number): string {
     const fieldControl = this.filterQuery.get('filters').at(fieldIndex);
     const fieldName = fieldControl ? fieldControl.value : null;
     const field = fieldName
@@ -256,11 +257,8 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
    * @param fieldIndex The index of the field in the dataset filter.
    * @returns Returns true if the field is a select field, otherwise false.
    */
-  isSelectField(fieldIndex: number): boolean {
-    return (
-      this.getFieldType(fieldIndex) === 'select' ||
-      this.getFieldType(fieldIndex) === 'dropdown'
-    );
+  public isSelectField(fieldIndex: number): boolean {
+    return selectFieldTypes.indexOf(this.getFieldType(fieldIndex)) > -1;
   }
 
   /**
@@ -277,21 +275,27 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
           (data: any) => data.name === fieldName.field.split('.')[0]
         )
       : null;
-    if (field && field?.type === TYPE_LABEL.resources) {
-      field = fieldName
-        ? field.fields?.find(
-            (data: any) => data.name === fieldName.field.split('.')[1]
-          )
-        : null;
-    }
-    if (field && field.type === TYPE_LABEL.resource) {
-      if (field.fields) {
-        field = field?.fields?.find(
-          (x: { name: any }) =>
-            x.name.split(' - ')[1] === fieldName.field.split('.')[1]
-        );
+
+    if (field) {
+      switch (field.type) {
+        case TYPE_LABEL.resources:
+          field = fieldName
+            ? field.fields?.find(
+                (data: any) => data.name === fieldName.field.split('.')[1]
+              )
+            : null;
+          break;
+        case TYPE_LABEL.resource:
+          if (field.fields) {
+            field = field.fields.find(
+              (x: { name: any }) =>
+                x.name.split(' - ')[1] === fieldName.field.split('.')[1]
+            );
+          }
+          break;
       }
     }
+
     return field ?? '';
   }
 
