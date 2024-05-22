@@ -13,6 +13,13 @@ import get from 'lodash/get';
 import { takeUntil, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
+type adminNavItem = {
+  name: string;
+  icon: string;
+  path: string;
+  legacy?: boolean;
+};
+
 /**
  * Main component of Application view.
  */
@@ -30,7 +37,7 @@ export class ApplicationComponent
   /** Navigation groups */
   public navGroups: any[] = [];
   /** Admin pages */
-  public adminNavItems: any[] = [];
+  public adminNavItems: adminNavItem[] = [];
   /** Current application */
   public application?: Application;
   /** Use side menu or not */
@@ -101,69 +108,66 @@ export class ApplicationComponent
                 },
               })) || [];
           if (application.canUpdate) {
-            this.adminNavItems.push({
-              name: this.translate.instant('common.settings'),
-              path: './settings/edit',
-              icon: 'settings',
-            });
-            this.adminNavItems.push({
-              name: this.translate.instant('common.template.few'),
-              path: './settings/templates',
-              icon: 'description',
-              legacy: true,
-            });
-            this.adminNavItems.push({
-              name: this.translate.instant('common.distributionList.few'),
-              path: './settings/distribution-lists',
-              icon: 'mail',
-              legacy: true,
-            });
+            const addNavItem = (
+              nameKey: string,
+              path: string,
+              icon: string,
+              legacy?: boolean
+            ) => {
+              this.adminNavItems.push({
+                name: this.translate.instant(nameKey),
+                path: path,
+                icon: icon,
+                legacy: legacy,
+              });
+            };
+
+            this.adminNavItems = [];
+
+            addNavItem('common.settings', './settings/edit', 'settings');
+            addNavItem(
+              'common.template.few',
+              './settings/templates',
+              'description',
+              true
+            );
+            addNavItem(
+              'common.distributionList.few',
+              './settings/distribution-lists',
+              'mail',
+              true
+            );
+            addNavItem(
+              'common.user.few',
+              './settings/users',
+              'supervisor_account'
+            );
+            addNavItem('common.role.few', './settings/roles', 'verified_user');
+            addNavItem(
+              'pages.application.positionAttributes.title',
+              './settings/position',
+              'edit_attributes'
+            );
+            if (this.ability.can('read', 'EmailNotification')) {
+              addNavItem(
+                'common.email.notification.few',
+                './settings/email-notifications',
+                'mail'
+              );
+            }
+            addNavItem('common.channel.few', './settings/channels', 'dns');
+            addNavItem(
+              'common.subscription.few',
+              './settings/subscriptions',
+              'add_to_queue'
+            );
+            addNavItem('common.archive.few', './settings/archive', 'delete');
+
             // {
             //   name: this.translate.instant('common.customNotification.few'),
             //   path: './settings/notifications',
             //   icon: 'schedule_send',
             // },
-            this.adminNavItems.push({
-              name: this.translate.instant('common.user.few'),
-              path: './settings/users',
-              icon: 'supervisor_account',
-            });
-            this.adminNavItems.push({
-              name: this.translate.instant('common.role.few'),
-              path: './settings/roles',
-              icon: 'verified_user',
-            });
-            this.adminNavItems.push({
-              name: this.translate.instant(
-                'pages.application.positionAttributes.title'
-              ),
-              path: './settings/position',
-              icon: 'edit_attributes',
-            });
-            if (this.ability.can('read', 'EmailNotification')) {
-              this.adminNavItems.push({
-                name: this.translate.instant('common.email.notification.few'),
-                path: './settings/email-notifications',
-                icon: 'mail',
-              });
-            }
-            this.adminNavItems.push({
-              name: this.translate.instant('common.channel.few'),
-              path: './settings/channels',
-              icon: 'dns',
-            });
-            this.adminNavItems.push({
-              name: this.translate.instant('common.subscription.few'),
-              path: './settings/subscriptions',
-              icon: 'add_to_queue',
-            });
-          }
-          if (application.canUpdate) {
-            this.adminNavItems.push({
-              name: this.translate.instant('common.archive.few'),
-              path: './settings/archive',
-              icon: 'delete',
-            });
           }
           this.navGroups = [
             {
