@@ -254,32 +254,6 @@ export class ChartComponent
     this.cancelRefresh$.complete();
   }
 
-  // /** Loads chart */
-  // private loadChart(): void {
-  //   this.cancelRefresh$.next();
-  //   this.loading = true;
-  //   if (this.settings.resource || this.settings.referenceData) {
-  //     this.dataQuery = this.aggregationService.aggregationDataQuery({
-  //       referenceData: this.settings.referenceData,
-  //       resource: this.settings.resource,
-  //       aggregation: this.aggregationId || '',
-  //       mapping: get(this.settings, 'chart.mapping', null),
-  //       contextFilters: joinFilters(this.contextFilters, this.selectedFilter),
-  //       graphQLVariables: this.graphQLVariables,
-  //       at: this.settings.at
-  //         ? this.contextService.atArgumentValue(this.settings.at)
-  //         : undefined,
-  //     });
-  //     if (this.dataQuery) {
-  //       this.getData();
-  //     } else {
-  //       this.loading = false;
-  //     }
-  //   } else {
-  //     this.loading = false;
-  //   }
-  // }
-
   /** Loads chart */
   private loadChart(): void {
     this.cancelRefresh$.next();
@@ -329,27 +303,29 @@ export class ChartComponent
           if (
             refData.apiConfiguration?.authType === authType.authorizationCode
           ) {
-            defaultLogic();
-            // this.aggregationService
-            //   .getAggregations({
-            //     referenceData: this.settings.referenceData,
-            //     ids: [this.aggregationId || ''],
-            //   })
-            //   .then(({ edges }) => {
-            //     const aggregationModel = edges[0].node;
-            //     this.referenceDataService
-            //       .aggregate(refData, aggregationModel, {
-            //         contextFilters: this.contextFilters,
-            //         graphQLVariables: this.graphQLVariables,
-            //       })
-            //       .then((aggregationData) => {
-            //         console.log(aggregationData, 'aggregation data');
-            //         this.getData({
-            //           referenceDataAggregation: aggregationData.items,
-            //         });
-            //         this.loading = false;
-            //       });
-            //   });
+            this.aggregationService
+              .getAggregations({
+                referenceData: this.settings.referenceData,
+                ids: [this.aggregationId || ''],
+              })
+              .then(({ edges }) => {
+                const aggregationModel = edges[0].node;
+                this.referenceDataService
+                  .aggregate(refData, aggregationModel, {
+                    mapping: get(this.settings, 'chart.mapping', null),
+                    graphQLVariables: this.queryParams,
+                    contextFilters: joinFilters(
+                      this.contextFilters,
+                      this.selectedFilter
+                    ),
+                  })
+                  .then((aggregationData) => {
+                    this.getData({
+                      referenceDataAggregation: aggregationData,
+                    });
+                    this.loading = false;
+                  });
+              });
           } else {
             // Else, apply default logic
             defaultLogic();
