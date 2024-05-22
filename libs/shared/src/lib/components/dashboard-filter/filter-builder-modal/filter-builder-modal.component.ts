@@ -119,6 +119,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'enableIf',
   'visibleIf',
   'tooltip',
+  'popupWidth',
   'referenceData',
   'referenceDataDisplayField',
   'isPrimitiveValue',
@@ -141,6 +142,12 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'inputType',
   'html',
   'calendarType',
+  'gqlUrl',
+  'gqlQuery',
+  'gqlPath',
+  'gqlValueName',
+  'gqlTitleName',
+  'gqlVariableMapping',
 ];
 
 /**
@@ -259,6 +266,7 @@ export class FilterBuilderModalComponent
     const survey = new SurveyModel(
       this.data?.surveyStructure || DEFAULT_STRUCTURE
     );
+    this.formHelpersService.addUserVariables(survey);
     this.surveyCreator.JSON = survey.toJSON();
 
     // add the rendering of custom properties
@@ -268,11 +276,12 @@ export class FilterBuilderModalComponent
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       this.formHelpersService.addQuestionTooltips
     );
-    this.surveyCreator.onPreviewSurveyCreated.add((sender: any, opt: any) =>
+    this.surveyCreator.onPreviewSurveyCreated.add((sender: any, opt: any) => {
+      this.formHelpersService.addUserVariables(opt.survey);
       opt.survey.onAfterRenderQuestion.add(
         renderGlobalProperties(this.referenceDataService, this.http)
-      )
-    );
+      );
+    });
 
     this.surveyCreator.onPropertyGridShowModal.add(updateModalChoicesAndValue);
   }

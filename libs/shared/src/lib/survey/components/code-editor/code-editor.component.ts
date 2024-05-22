@@ -8,7 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { QuestionAngular } from 'survey-angular-ui';
 import { CodeEditorModel } from './code-editor.model';
-import { GraphqlVariablesMappingComponent } from '../../../components/widgets/common/graphql-variables-mapping/graphql-variables-mapping.component';
+import { QueryParamsMappingComponent } from '../../../components/widgets/common/query-params-mapping/query-params-mapping.component';
 import { FormControl } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { ReferenceData } from '../../../models/reference-data.model';
@@ -21,7 +21,7 @@ import { ReferenceData } from '../../../models/reference-data.model';
 @Component({
   selector: 'shared-code-editor',
   standalone: true,
-  imports: [CommonModule, GraphqlVariablesMappingComponent],
+  imports: [CommonModule, QueryParamsMappingComponent],
   templateUrl: './code-editor.component.html',
   styleUrls: ['./code-editor.component.scss'],
 })

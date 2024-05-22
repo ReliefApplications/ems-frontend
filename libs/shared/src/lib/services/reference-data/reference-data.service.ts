@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { isArray, isEqual, get } from 'lodash';
+import { isArray, isEqual, get, isEmpty } from 'lodash';
 import { map } from 'rxjs/operators';
 import localForage from 'localforage';
 import {
@@ -120,11 +120,13 @@ export class ReferenceDataService {
     }
     const cacheKey = `${referenceData.id || ''}-${JSON.stringify(variables)}`;
     const valueField = referenceData.valueField || 'id';
-    const cacheTimestamp = localStorage.getItem(cacheKey + LAST_REQUEST_KEY);
-    const modifiedAt = referenceData.modifiedAt || '';
+    const cacheTimestamp = Number(
+      localStorage.getItem(cacheKey + LAST_REQUEST_KEY)
+    );
+    const modifiedAt = Number(referenceData.modifiedAt || '');
 
     const isCached =
-      cacheTimestamp &&
+      !Number.isNaN(cacheTimestamp) &&
       cacheTimestamp >= modifiedAt &&
       (await localForage.keys()).includes(cacheKey);
 
@@ -138,7 +140,7 @@ export class ReferenceDataService {
       paginationRes = p;
       // Cache items and timestamp
       await localForage.setItem(cacheKey, { items, valueField, pageInfo: p });
-      localStorage.setItem(cacheKey + LAST_REQUEST_KEY, modifiedAt);
+      localStorage.setItem(cacheKey + LAST_REQUEST_KEY, modifiedAt.toString());
     } else {
       // If referenceData has not changed, use cached value and check for updates for graphQL.
       if (referenceData.type === referenceDataType.graphql) {
@@ -152,7 +154,7 @@ export class ReferenceDataService {
         await localForage.setItem(cacheKey, { items, valueField, pageInfo: p });
         localStorage.setItem(
           cacheKey + LAST_REQUEST_KEY,
-          this.formatDateSQL(new Date())
+          new Date().getTime().toString()
         );
       } else {
         // If referenceData has not changed, use cached value for non graphQL.
@@ -161,7 +163,10 @@ export class ReferenceDataService {
           items = (await this.fetchItems(referenceData)).items;
           // Cache items and timestamp
           await localForage.setItem(cacheKey, { items, valueField });
-          localStorage.setItem(cacheKey + LAST_REQUEST_KEY, modifiedAt);
+          localStorage.setItem(
+            cacheKey + LAST_REQUEST_KEY,
+            modifiedAt.toString()
+          );
         }
       }
     }
@@ -195,7 +200,7 @@ export class ReferenceDataService {
         paginationInfo = p;
         localStorage.setItem(
           cacheKey + LAST_REQUEST_KEY,
-          this.formatDateSQL(new Date())
+          new Date().getTime().toString()
         );
         break;
       }
@@ -203,7 +208,8 @@ export class ReferenceDataService {
         items = (
           await this.processItemsByRequestType(
             referenceData,
-            referenceDataType.rest
+            referenceDataType.rest,
+            variables
           )
         ).items;
         break;
@@ -225,13 +231,13 @@ export class ReferenceDataService {
    *
    * @param referenceData Reference data item
    * @param type Reference data request type
-   * @param variables Graphql variables (optional)
+   * @param queryParams Query params (optional)
    * @returns processed items by the request type
    */
   private async processItemsByRequestType(
     referenceData: ReferenceData,
     type: referenceDataType,
-    variables: any = {}
+    queryParams: any = {}
   ) {
     let data!: any;
     if (type === referenceDataType.graphql) {
@@ -242,16 +248,33 @@ export class ReferenceDataService {
       const query = this.processQuery(referenceData);
 
       if (query) {
-        transformGraphQLVariables(query, variables);
+        transformGraphQLVariables(query, queryParams);
       }
 
-      const body = { query, variables };
+      const body = { query, variables: queryParams };
       data = (await this.apiProxy.buildPostRequest(url, body)) as any;
     } else if (type === referenceDataType.rest) {
-      const url =
+      let url =
         this.apiProxy.baseUrl +
         referenceData.apiConfiguration?.name +
         referenceData.query;
+      if (queryParams && !isEmpty(queryParams)) {
+        // Transform the variables object into a string linked by '&'
+        const queryString = Object.keys(queryParams)
+          .map(
+            (key) =>
+              `${encodeURIComponent(key)}=${encodeURIComponent(
+                queryParams[key]
+              )}`
+          )
+          .join('&');
+        // Append the query params to the URL
+        if (url.includes('?')) {
+          url = `${url}&${queryString}`;
+        } else {
+          url = `${url}?${queryString}`;
+        }
+      }
       data = await this.apiProxy.promisedRequestWithHeaders(url);
     }
 
@@ -271,7 +294,7 @@ export class ReferenceDataService {
           : null) ?? Number.MAX_SAFE_INTEGER;
 
       const pageSize = referenceData.pageInfo.pageSizeVar
-        ? variables[referenceData.pageInfo.pageSizeVar] ?? 0
+        ? queryParams[referenceData.pageInfo.pageSizeVar] ?? 0
         : items?.length || 0;
 
       let lastCursor = null;
