@@ -223,7 +223,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
           (data: any) => data.name === fieldName.field
         )
       : null;
-    if (field?.options == undefined) {
+    if (field?.options === undefined) {
       field =
         this.emailService.fields.filter(
           (x: any) => x.name == fieldName.field.split('.')[0]
@@ -234,26 +234,40 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
           : field;
     }
     // return field ? field.type : '';
-    if (field && field?.type === TYPE_LABEL.resources) {
-      field = fieldName
-        ? field.fields?.find(
-            (data: any) => data.name === fieldName.field.split('.')[1]
-          )
-        : null;
-    }
-    if (field && field.type === TYPE_LABEL.resource) {
-      if (field.fields) {
-        field = field?.fields?.find(
-          (x: { name: any }) =>
-            x.name.split(' - ')[1] === fieldName.field.split('.')[1]
-        );
-      }
-    }
+    field = this.checkFieldDetails(field, fieldName);
     if (field && (field as FieldStore)?.select) {
       return 'select';
     }
 
     return field ? field.type : '';
+  }
+
+  /**
+   *
+   * @param field
+   * @param fieldName
+   */
+  checkFieldDetails(field: any, fieldName: any) {
+    if (field) {
+      switch (field.type) {
+        case TYPE_LABEL.resources:
+          field = fieldName
+            ? field.fields?.find(
+                (data: any) => data.name === fieldName.field.split('.')[1]
+              )
+            : null;
+          break;
+        case TYPE_LABEL.resource:
+          if (field.fields) {
+            field = field?.fields?.find(
+              (x: { name: any }) =>
+                x.name.split(' - ')[1] === fieldName.field.split('.')[1]
+            );
+          }
+          break;
+      }
+    }
+    return field;
   }
 
   /**
@@ -319,26 +333,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
             )[0]
           : field;
     }
-    if (field) {
-      switch (field.type) {
-        case TYPE_LABEL.resources:
-          field = fieldName
-            ? field.fields?.find(
-                (data: any) => data.name === fieldName.field.split('.')[1]
-              )
-            : null;
-          break;
-        case TYPE_LABEL.resource:
-          if (field.fields) {
-            field = field.fields.find(
-              (x: { name: any }) =>
-                x.name.split(' - ')[1] === fieldName.field.split('.')[1]
-            );
-          }
-          break;
-      }
-    }
-
+    field = this.checkFieldDetails(field, fieldName);
     return field ?? '';
   }
 
