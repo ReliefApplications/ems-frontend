@@ -25,6 +25,7 @@ import { Apollo } from 'apollo-angular';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { selectFieldTypes } from '../../constant';
+import { FieldStore } from '../../models/email.const';
 
 /**
  * Email template to create distribution list
@@ -217,11 +218,41 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   getFieldType(fieldIndex: number): string {
     const fieldControl = this.filterQuery.get('filters').at(fieldIndex);
     const fieldName = fieldControl ? fieldControl.value : null;
-    const field = fieldName
+    let field = fieldName
       ? this.resource?.metadata?.find(
           (data: any) => data.name === fieldName.field
         )
       : null;
+    if (field?.options == undefined) {
+      field =
+        this.emailService.fields.filter(
+          (x: any) => x.name == fieldName.field.split('.')[0]
+        ).length > 0
+          ? this.emailService.fields.filter(
+              (x: any) => x.name == fieldName.field.split('.')[0]
+            )[0]
+          : field;
+    }
+    // return field ? field.type : '';
+    if (field && field?.type === TYPE_LABEL.resources) {
+      field = fieldName
+        ? field.fields?.find(
+            (data: any) => data.name === fieldName.field.split('.')[1]
+          )
+        : null;
+    }
+    if (field && field.type === TYPE_LABEL.resource) {
+      if (field.fields) {
+        field = field?.fields?.find(
+          (x: { name: any }) =>
+            x.name.split(' - ')[1] === fieldName.field.split('.')[1]
+        );
+      }
+    }
+    if (field && (field as FieldStore)?.select) {
+      return 'select';
+    }
+
     return field ? field.type : '';
   }
 
@@ -278,7 +309,16 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
           (data: any) => data.name === fieldName.field.split('.')[0]
         )
       : null;
-
+    if (field?.options == undefined) {
+      field =
+        this.emailService.fields.filter(
+          (x: any) => x.name == fieldName.field.split('.')[0]
+        ).length > 0
+          ? this.emailService.fields.filter(
+              (x: any) => x.name == fieldName.field.split('.')[0]
+            )[0]
+          : field;
+    }
     if (field) {
       switch (field.type) {
         case TYPE_LABEL.resources:
@@ -479,7 +519,12 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
    */
   public setField(event: any, fieldIndex: number) {
     const name = event?.target?.value || event;
-    const fields = clone(this.resource?.metadata);
+    let fields = clone(this.resource?.metadata);
+    if (fields?.options == undefined) {
+      fields = this.emailService.fields.filter(
+        (x: any) => x.name == name.split('.')[0]
+      );
+    }
     const field = fields.find(
       (x: { name: any }) => x.name === name.split('.')[0]
     );
@@ -495,7 +540,9 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
       const fieldType = FIELD_TYPES.find(
         (x) =>
           x.editor ===
-          (field.type === 'datetime-local' ? 'datetime' : field.type || 'text')
+          (field.type === TYPE_LABEL.datetime_local
+            ? TYPE_LABEL.datetime
+            : field.type || TYPE_LABEL.text)
       );
 
       if (fieldType) {
