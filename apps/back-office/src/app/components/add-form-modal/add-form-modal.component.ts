@@ -108,16 +108,33 @@ export class AddFormModalComponent implements OnInit {
   /** Load the resources and build the form. */
   ngOnInit(): void {
     this.form.get('type')?.valueChanges.subscribe((value: string) => {
+      console.log(this.form);
       if (value == 'core') {
+        this.form.get('resource')?.clearValidators();
+        this.form.get('kobo')?.clearValidators();
+        this.form.get('apiConfiguration')?.clearValidators();
+        this.form.patchValue({
+          resource: null,
+          inheritsTemplate: false,
+          template: null,
+          apiConfiguration: null,
+          kobo: null,
+        });
+      } else if (value == 'template') {
+        this.form.get('kobo')?.clearValidators();
+        this.form.get('apiConfiguration')?.clearValidators();
+        this.form.patchValue({
+          apiConfiguration: null,
+          kobo: null,
+        });
+        this.form.get('resource')?.setValidators([Validators.required]);
+      } else {
         this.form.get('resource')?.clearValidators();
         this.form.patchValue({
           resource: null,
           inheritsTemplate: false,
           template: null,
         });
-      } else if (value == 'template') {
-        this.form.get('resource')?.setValidators([Validators.required]);
-      } else {
         this.loadApiConfigurations();
         this.form.get('kobo')?.setValidators([Validators.required]);
       }

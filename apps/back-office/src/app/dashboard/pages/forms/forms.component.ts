@@ -271,7 +271,6 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
     const dialogRef = this.dialog.open(AddFormModalComponent);
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        console.log(value);
         const variablesData = { name: value.name };
         Object.assign(
           variablesData,
@@ -282,7 +281,6 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
           },
           value.kobo && { kobo: value.kobo }
         );
-        console.log(variablesData);
         this.apollo
           .mutate<AddFormMutationResponse>({
             mutation: ADD_FORM,
