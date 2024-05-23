@@ -159,8 +159,12 @@ export class DatasetFilterComponent
   ngOnInit(): void {
     this.query.controls.name.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.emailService.title.next(this.activeTab.title);
+      .subscribe((data: any) => {
+        if (data === null) {
+          this.emailService.title.next(this.activeTab.title);
+        } else {
+          this.emailService.title.next(data);
+        }
         this.emailService.index.next(this.activeTab.index);
       });
     this.query.get('individualEmail').disable();
