@@ -1,3 +1,21 @@
+# [2.14.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.13.0...v2.14.0) (2024-05-22)
+
+
+### Bug Fixes
+
+* graphql select could create visual issues when searching multiple times ([#2543](https://github.com/ReliefApplications/ems-frontend/issues/2543)) ([09f1158](https://github.com/ReliefApplications/ems-frontend/commit/09f11589d5d604d7bb1e09153c69b1f503df6f4a))
+* prevent resize when toggling filter in grid widget ([#2538](https://github.com/ReliefApplications/ems-frontend/issues/2538)) ([8fae0c4](https://github.com/ReliefApplications/ems-frontend/commit/8fae0c49c90575f7174b7f2343213f585ad21680))
+* reference data would use incorrect caching keys AB[#93659](https://github.com/ReliefApplications/ems-frontend/issues/93659) ([8db7596](https://github.com/ReliefApplications/ems-frontend/commit/8db7596fdfadc97da5b357cde490bd0c5fee0413))
+* search in question of type resources opening incorrect modal ([#2549](https://github.com/ReliefApplications/ems-frontend/issues/2549)) ([cf328af](https://github.com/ReliefApplications/ems-frontend/commit/cf328af743bcd7a068807a51bfa94307a462b8ad))
+* some polygons could not be found, when considered as enclave ([#2547](https://github.com/ReliefApplications/ems-frontend/issues/2547)) ([5497b37](https://github.com/ReliefApplications/ems-frontend/commit/5497b37ee057745cb8547293a4ae92d63be8a650))
+
+
+### Features
+
+* allow dropdown & tagbox questions in forms to have a custom popup width ([#2544](https://github.com/ReliefApplications/ems-frontend/issues/2544)) ([777b743](https://github.com/ReliefApplications/ems-frontend/commit/777b74357ce3a0f3137e2cc272e7e5b2fb3d7e1b))
+* REST reference data can now use dynamic query params ([#2539](https://github.com/ReliefApplications/ems-frontend/issues/2539)) ([89b7dd1](https://github.com/ReliefApplications/ems-frontend/commit/89b7dd15d5e95798976c5935d8556e70f7d0ceb0))
+* use microsoft graph to populate user's attributes ([#2545](https://github.com/ReliefApplications/ems-frontend/issues/2545)) ([3801749](https://github.com/ReliefApplications/ems-frontend/commit/38017490b183c2bb8d46c208264632ffeaadeadf))
+
 # [2.13.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.12.4...v2.13.0) (2024-05-15)
 
 

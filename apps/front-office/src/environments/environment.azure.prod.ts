@@ -30,6 +30,6 @@ export const environment: Environment = {
   authConfig,
   theme,
   user: {
-    attributes: ['country', 'region', 'location'],
+    attributes: ['country', 'region', 'location', 'department'],
   },
 };
