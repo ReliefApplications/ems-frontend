@@ -476,7 +476,6 @@ export class DatasetFilterComponent
               this.resource = res.data.resource;
               this.metaData = res.data?.resource?.metadata;
               if (this.metaData?.length) {
-                console.log('METADATA ==========> jay');
                 console.log(this.metaData);
                 this.metaData.forEach((field: any) => {
                   if (
