@@ -282,6 +282,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
 
   /**
    *
+   * @param field
    */
   getDataList(field: any): any {
     const data = this.data?.map((record: any) => {
@@ -537,14 +538,6 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     ) {
       this.noEmail.emit(true);
     }
-  }
-
-  /**
-   *
-   * @param data
-   */
-  getKeys(data: any) {
-    return Object.keys(data);
   }
 
   /**

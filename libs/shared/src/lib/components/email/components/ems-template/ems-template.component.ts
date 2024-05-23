@@ -14,9 +14,10 @@ import { Router } from '@angular/router';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, first } from 'rxjs';
+import { Subscription, first, takeUntil } from 'rxjs';
 import { LayoutComponent } from '../../steps/layout/layout.component';
 import { SelectDistributionComponent } from '../../steps/select-distribution/select-distribution.component';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Email template to create distribution list
@@ -26,7 +27,10 @@ import { SelectDistributionComponent } from '../../steps/select-distribution/sel
   templateUrl: './ems-template.component.html',
   styleUrls: ['./ems-template.component.scss'],
 })
-export class EmsTemplateComponent implements OnInit, OnDestroy {
+export class EmsTemplateComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   /**
    *
    */
@@ -107,6 +111,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
     private snackBar: SnackbarService,
     private translate: TranslateService
   ) {
+    super();
     this.steps = [
       {
         label: 'Notification/Alert',
@@ -594,6 +599,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
     } else {
       this.emailService
         .addEmailNotification(queryData)
+        .pipe(takeUntil(this.destroy$))
         .subscribe((res: any) => {
           this.emailService.configId = res.data.addEmailNotification.id;
 
@@ -730,7 +736,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
     this.navigateToEms.emit();
   }
 
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
     this.disableSub.unsubscribe();
     this.disableDraft.unsubscribe();
   }

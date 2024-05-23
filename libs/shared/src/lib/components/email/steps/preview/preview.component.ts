@@ -124,7 +124,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
    */
   replaceSubjectTokens() {
     const tokenRegex = /{{([^}]*)}}/;
-    let match;
+    // let match;
     const firstRowData = this.emailService.allPreviewData[0]?.dataList[0];
     const fieldNameList = this.subjectString.match(tokenRegex);
     fieldNameList?.forEach((fName: any) => {

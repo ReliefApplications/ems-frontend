@@ -28,6 +28,9 @@ const DEFAULT_SNACKBAR = {
 export class SnackbarService {
   /** Shadow DOM */
   public shadowDom!: any;
+  /**
+   *
+   */
   private currentSnackBar: ComponentRef<SnackbarComponent> | null = null;
 
   /**
@@ -130,6 +133,9 @@ export class SnackbarService {
     return snackBar;
   }
 
+  /**
+   * Dimisses open snackbar
+   */
   public dismissCurrentSnackBar() {
     if (this.currentSnackBar) {
       this.currentSnackBar.instance.dismiss();
