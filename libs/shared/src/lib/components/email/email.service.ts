@@ -1047,6 +1047,21 @@ export class EmailService {
                 } else {
                   result[key] = record[key];
                 }
+              } else if (fieldType === 'tagbox') {
+                const findMatchingTexts = (options: any, keysToFind: any) => {
+                  return options
+                    .filter((values: any) =>
+                      keysToFind.includes(parseInt(values.value))
+                    )
+                    .map((values: any) => values.text)
+                    .join(', ');
+                };
+
+                const matchingTexts = findMatchingTexts(
+                  metaField?.options,
+                  record[key]
+                );
+                result[key] = matchingTexts;
               } else {
                 result[key] = record[key];
               }

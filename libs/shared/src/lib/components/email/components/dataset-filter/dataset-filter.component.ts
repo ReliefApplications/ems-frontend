@@ -476,7 +476,7 @@ export class DatasetFilterComponent
               this.resource = res.data.resource;
               this.metaData = res.data?.resource?.metadata;
               if (this.metaData?.length) {
-                console.log('METADATA');
+                console.log('METADATA ==========> jay');
                 console.log(this.metaData);
                 this.metaData.forEach((field: any) => {
                   if (
@@ -627,7 +627,7 @@ export class DatasetFilterComponent
                         this.filterFields.push(field);
                       } else {
                         const metaField = fields?.find(
-                          (x: any) => x.type === field.type
+                          (x: any) => x.name === field.name
                         );
                         // Map Select Data to select fields if it exists
                         field.options = metaField.options;
