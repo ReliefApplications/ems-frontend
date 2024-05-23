@@ -21,6 +21,7 @@ import { DOCUMENT } from '@angular/common';
 import { ResizeEvent } from 'angular-resizable-element';
 import { ResizableModule } from 'angular-resizable-element';
 import { RestService } from '../../services/rest/rest.service';
+import { AsyncMonacoEditorDirective } from '../../directives/async-monaco-editor/async-monaco-editor.directive';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -38,6 +39,7 @@ const DEFAULT_STYLE = '';
     ButtonModule,
     TooltipModule,
     ResizableModule,
+    AsyncMonacoEditorDirective,
   ],
   templateUrl: './custom-widget-style.component.html',
   styleUrls: ['./custom-widget-style.component.scss'],

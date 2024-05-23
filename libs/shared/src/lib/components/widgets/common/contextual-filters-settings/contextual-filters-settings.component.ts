@@ -4,6 +4,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormWrapperModule, IconModule, TooltipModule } from '@oort-front/ui';
+import { AsyncMonacoEditorDirective } from '../../../../directives/async-monaco-editor/async-monaco-editor.directive';
 
 /** Component to define the contextual filters of a widget or a map layer */
 @Component({
@@ -18,6 +19,7 @@ import { FormWrapperModule, IconModule, TooltipModule } from '@oort-front/ui';
     FormWrapperModule,
     IconModule,
     TooltipModule,
+    AsyncMonacoEditorDirective,
   ],
   templateUrl: './contextual-filters-settings.component.html',
   styleUrls: ['./contextual-filters-settings.component.scss'],

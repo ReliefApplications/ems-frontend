@@ -20,6 +20,7 @@ import {
   ActionType,
   ActionWithProperties,
 } from '../../../../../models/automation.model';
+import { AsyncMonacoEditorDirective } from '../../../../../directives/async-monaco-editor/async-monaco-editor.directive';
 
 /**
  * Edition of automation component.
@@ -36,6 +37,7 @@ import {
     FormWrapperModule,
     SelectMenuModule,
     MonacoEditorModule,
+    AsyncMonacoEditorDirective,
   ],
   templateUrl: './edit-automation-component.component.html',
   styleUrls: ['./edit-automation-component.component.scss'],

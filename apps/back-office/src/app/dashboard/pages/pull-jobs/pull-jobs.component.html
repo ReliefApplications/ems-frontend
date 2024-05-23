@@ -107,11 +107,7 @@
 <ng-template #loadingTmpl>
   <!-- Loading indicator -->
   <shared-skeleton-table
-    [columns]="[
-      'common.name',
-      'common.status',
-      'models.pullJob.nextIteration',
-    ]"
+    [columns]="['common.name', 'common.status', 'models.pullJob.nextIteration']"
     [actions]="true"
   >
   </shared-skeleton-table>
