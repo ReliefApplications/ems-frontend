@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { EmailService } from '../../email.service';
 import { Subscription } from 'rxjs';
+import { TokenRegex } from '../../constant';
 
 /**
  * The preview component is used to display the email layout using user input from layout component.
@@ -123,7 +124,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
    * Replaces Subject Tokens with data from the first row of data.
    */
   replaceSubjectTokens() {
-    const tokenRegex = /{{([^}]+)}}/g;
+    const tokenRegex = TokenRegex;
     const firstRowData = this.emailService.allPreviewData[0]?.dataList[0];
     const fieldNameList = this.subjectString.match(tokenRegex);
     fieldNameList?.forEach((fName: any) => {
