@@ -285,8 +285,14 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
    * @param field
    */
   getDataList(field: any): any {
+    const info = field.resource;
+    delete info.__typename;
     const data = this.data?.map((record: any) => {
-      const flattenedObject = this.emailService.flattenRecord(record, field);
+      const flattenedObject = this.emailService.flattenRecord(
+        record,
+        info,
+        field
+      );
       field.fields.forEach((x: any) => {
         /**
          * Converts the resource field name back to {resourceName} - {resourceField}
@@ -305,8 +311,10 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
           ([, value]) => value !== null && value !== undefined
         )
       );
+
       return flatData;
     });
+
     return data;
   }
 
