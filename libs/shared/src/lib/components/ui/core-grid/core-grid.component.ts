@@ -816,6 +816,15 @@ export class CoreGridComponent
                 // if (!this.readOnly) {
                 //   this.initSelectedRows();
                 // }
+                // We reset the scroll position
+                if (this.hasLayoutChanges && this.grid) {
+                  (
+                    this.grid as any
+                  ).gridRef.nativeElement.children[1].children[1].children[0].scrollTo(
+                    0,
+                    0
+                  );
+                }
               }
             } catch (error) {
               console.error(error);
