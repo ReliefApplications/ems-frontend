@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { isArray, isEqual, get, set, isEmpty } from 'lodash';
-import { map } from 'rxjs/operators';
 import localForage from 'localforage';
 import {
   ReferenceData,
@@ -10,7 +8,7 @@ import {
 } from '../../models/reference-data.model';
 import { ApiProxyService } from '../api-proxy/api-proxy.service';
 import { GET_REFERENCE_DATA_BY_ID } from './graphql/queries';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, map } from 'rxjs';
 import {
   ApiConfiguration,
   authType,
@@ -19,6 +17,12 @@ import jsonpath from 'jsonpath';
 import toJsonSchema from 'to-json-schema';
 import transformGraphQLVariables from '../../utils/reference-data/transform-graphql-variables.util';
 import { HttpHeaders } from '@angular/common/http';
+import { Aggregation } from '../../models/aggregation.model';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { cloneDeep, get, set } from 'lodash';
+import { procPipelineStep } from '../../utils/reference-data/filter.util';
+import { DataTransformer } from '../../utils/reference-data/data-transformer.util';
+import { isEmpty } from 'lodash';
 
 /** Local storage key for last request */
 const LAST_REQUEST_KEY = '_last_request';
@@ -358,65 +362,6 @@ export class ReferenceDataService {
   }
 
   /**
-   * Calculate an operation for filters
-   *
-   * @param foreignValue The value which comes from the record item
-   * @param operator The operator to use for the operation
-   * @param localValue The value which comes from the filter
-   * @returns A boolean, indicating the result of the operation
-   */
-  private operate = (
-    foreignValue: any,
-    operator: string,
-    localValue: any
-  ): boolean => {
-    switch (operator) {
-      case 'eq':
-        return isEqual(foreignValue, localValue);
-      case 'neq':
-        return !isEqual(foreignValue, localValue);
-      case 'gte':
-        return foreignValue >= localValue;
-      case 'gt':
-        return foreignValue > localValue;
-      case 'lte':
-        return foreignValue <= localValue;
-      case 'lt':
-        return foreignValue < localValue;
-      case 'contains':
-        if (foreignValue === null) return false;
-        if (isArray(localValue)) {
-          for (const itemValue of localValue) {
-            if (!foreignValue.includes(itemValue)) {
-              return false;
-            }
-          }
-          return true;
-        } else {
-          return foreignValue.includes(localValue);
-        }
-      case 'doesnotcontain':
-        if (foreignValue === null) return true;
-        if (isArray(localValue)) {
-          for (const itemValue of localValue) {
-            if (foreignValue.includes(itemValue)) {
-              return false;
-            }
-          }
-          return true;
-        } else {
-          return !foreignValue.includes(localValue);
-        }
-      case 'iscontained':
-        return this.operate(localValue, 'contains', foreignValue);
-      case 'isnotcontained':
-        return this.operate(localValue, 'doesnotcontain', foreignValue);
-      default:
-        return true;
-    }
-  };
-
-  /**
    * Gets the fields from the API Configuration
    * and parses them to a list of fields names and types
    *
@@ -514,5 +459,97 @@ export class ReferenceDataService {
       }
     }
     return processedQuery;
+  }
+
+  /**
+   * Execute aggregation on reference data
+   *
+   * @param referenceData reference data
+   * @param aggregation aggregation
+   * @param options aggregation options
+   * @param options.sourceFields list of source fields
+   * @param options.pipeline pipeline definition
+   * @param options.sortField sort field
+   * @param options.sortOrder sort order
+   * @param options.contextFilters context filters
+   * @param options.mapping data mapping
+   * @param options.graphQLVariables graphql variables ( graphql api only )
+   * @returns aggregation result
+   */
+  public async aggregate(
+    referenceData: ReferenceData,
+    aggregation: Aggregation,
+    options: {
+      sourceFields?: any;
+      pipeline?: any;
+      sortField?: string;
+      sortOrder?: string;
+      contextFilters?: CompositeFilterDescriptor;
+      mapping?: any;
+      graphQLVariables?: any;
+    } = {}
+  ) {
+    try {
+      // sourceFields and pipeline from args have priority over current aggregation ones
+      // for the aggregation preview feature on aggregation builder
+      const sourceFields = options.sourceFields ?? aggregation.sourceFields;
+      const pipeline = options.pipeline ?? aggregation.pipeline ?? [];
+      // Build the source fields step
+      if (sourceFields && sourceFields.length && pipeline) {
+        const rawItems = (
+          await this.fetchItems(referenceData, options.graphQLVariables)
+        ).items;
+        const transformer = new DataTransformer(
+          referenceData.fields || [],
+          cloneDeep(rawItems)
+        );
+        let items = transformer.transformData();
+        for (const item of items) {
+          //we remove white spaces as they end up being a mess, but probably a temp fix as I think we should remove white spaces straight when saving ref data in mongo
+          for (const key in item) {
+            if (/\s/g.test(key)) {
+              item[key.replace(/ /g, '')] = item[key];
+              delete item[key];
+            }
+          }
+        }
+        if (options.contextFilters) {
+          pipeline.unshift({
+            type: 'filter',
+            form: options.contextFilters,
+          });
+        }
+        // Build the pipeline
+        if (options.sortField && options.sortOrder) {
+          pipeline.push({
+            type: 'sort',
+            form: {
+              field: options.sortField,
+              order: options.sortOrder,
+            },
+          });
+        }
+
+        pipeline.forEach((step: any) => {
+          items = procPipelineStep(step, items, sourceFields);
+        });
+        if (options.mapping) {
+          return items.map((item: any) => {
+            return {
+              category: get(item, options.mapping.category),
+              field: get(item, options.mapping.field),
+              ...(options.mapping.series && {
+                series: get(item, options.mapping.series),
+              }),
+            };
+          });
+        }
+        return { items: items, totalCount: items.length };
+      } else {
+        return { items: [], totalCount: 0 };
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 }

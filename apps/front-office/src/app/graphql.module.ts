@@ -71,11 +71,11 @@ export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
     defaultOptions: {
       watchQuery: {
         fetchPolicy: 'network-only',
-        // fetchPolicy: 'cache-and-network',
+        // nextFetchPolicy: 'cache-and-network',
         errorPolicy: 'ignore',
       },
       query: {
-        fetchPolicy: 'network-only',
+        fetchPolicy: 'no-cache',
         // fetchPolicy: 'cache-and-network',
         errorPolicy: 'all',
       },

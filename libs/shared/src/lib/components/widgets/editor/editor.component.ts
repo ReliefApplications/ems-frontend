@@ -40,6 +40,7 @@ import {
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
 import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
+import { authType } from '../../../models/api-configuration.model';
 
 /**
  * Text widget component using Tinymce.
@@ -410,41 +411,95 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
    */
   private getAggregationsData() {
     const promises: Promise<void>[] = [];
+
+    /**
+     * Default aggregation flow
+     *
+     * @param aggregation Aggregation item
+     */
+    const defaultPromise = (aggregation: any) =>
+      new Promise<void>((resolve) => {
+        firstValueFrom(
+          this.aggregationService.aggregationDataQuery({
+            resource: aggregation.resource,
+            referenceData: aggregation.referenceData,
+            aggregation: aggregation.aggregation,
+            contextFilters: aggregation.contextFilters
+              ? JSON.parse(aggregation.contextFilters)
+              : {},
+            queryParams: this.widgetService.replaceReferenceDataQueryParams(
+              aggregation.referenceDataVariableMapping
+            ),
+            at: this.contextService.atArgumentValue(aggregation.at),
+          })
+        )
+          .then(({ data }) => {
+            if (aggregation.resource) {
+              set(
+                this.aggregations,
+                aggregation.id,
+                (data as any).recordsAggregation
+              );
+            } else {
+              set(
+                this.aggregations,
+                aggregation.id,
+                (data as any).referenceDataAggregation
+              );
+            }
+          })
+          .finally(() => resolve());
+      });
+
     this.aggregations.forEach((aggregation: any) => {
-      promises.push(
-        new Promise<void>((resolve) => {
-          firstValueFrom(
-            this.aggregationService.aggregationDataQuery({
-              resource: aggregation.resource,
-              referenceData: aggregation.referenceData,
-              aggregation: aggregation.aggregation,
-              contextFilters: aggregation.contextFilters
-                ? JSON.parse(aggregation.contextFilters)
-                : {},
-              queryParams: this.widgetService.replaceReferenceDataQueryParams(
-                aggregation.referenceDataVariableMapping
-              ),
-              at: this.contextService.atArgumentValue(aggregation.at),
-            })
-          )
-            .then(({ data }) => {
-              if (aggregation.resource) {
-                set(
-                  this.aggregations,
-                  aggregation.id,
-                  (data as any).recordsAggregation
-                );
-              } else {
-                set(
-                  this.aggregations,
-                  aggregation.id,
-                  (data as any).referenceDataAggregation
-                );
-              }
-            })
-            .finally(() => resolve());
-        })
-      );
+      // If reference data
+      if (aggregation.referenceData) {
+        promises.push(
+          new Promise<void>((resolve) => {
+            // First, load reference data
+            this.referenceDataService
+              .loadReferenceData(aggregation.referenceData)
+              .then((refData) => {
+                // Then, if using auth code, directly query external API
+                if (
+                  refData.apiConfiguration?.authType ===
+                  authType.authorizationCode
+                ) {
+                  this.aggregationService
+                    .getAggregations({
+                      referenceData: aggregation.referenceData,
+                      ids: [aggregation.aggregation],
+                    })
+                    .then(({ edges }) => {
+                      const aggregationModel = edges[0].node;
+                      this.referenceDataService
+                        .aggregate(refData, aggregationModel, {
+                          contextFilters: aggregation.contextFilters
+                            ? JSON.parse(aggregation.contextFilters)
+                            : {},
+                          graphQLVariables:
+                            this.widgetService.replaceReferenceDataQueryParams(
+                              aggregation.referenceDataVariableMapping
+                            ),
+                        })
+                        .then((data) => {
+                          set(this.aggregations, aggregation.id, data);
+                        })
+                        .finally(() => resolve());
+                    })
+                    .catch(() => resolve());
+                } else {
+                  // Else, apply default logic
+                  defaultPromise(aggregation).finally(() => resolve());
+                }
+              })
+              .catch(() => resolve());
+          })
+        );
+      } else {
+        // If resource
+        promises.push(defaultPromise(aggregation));
+      }
     });
     return Promise.all(promises);
   }
