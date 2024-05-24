@@ -24,6 +24,7 @@
           [placeholder]="'components.queryBuilder.block.label' | translate"
           formControlName="name"
           [ngModelOptions]="{ standalone: true }"
+          (ngModelChange)="changeBlockTitle()"
         />
       </div>
     </div>

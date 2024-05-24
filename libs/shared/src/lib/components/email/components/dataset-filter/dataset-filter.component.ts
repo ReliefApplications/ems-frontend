@@ -921,10 +921,16 @@ export class DatasetFilterComponent
   addSelectedField(): void {
     if (this.availableFieldIndex !== null) {
       this.emailService.disableSaveAndProceed.next(
-        !(this.totalMatchingRecords <= 50)
+        !(
+          this.totalMatchingRecords <= 50 &&
+          this.query?.controls['name'].value !== ''
+        )
       );
       this.emailService.disableSaveAsDraft.next(
-        !(this.totalMatchingRecords <= 50)
+        !(
+          this.totalMatchingRecords <= 50 &&
+          this.query?.controls['name'].value !== ''
+        )
       );
       const field = this.availableFields[this.availableFieldIndex];
       this.selectedFields.push(field);
@@ -1010,7 +1016,10 @@ export class DatasetFilterComponent
       ...this.selectedFields,
       ...this.availableFields.map((field) => JSON.parse(JSON.stringify(field))),
     ];
-    if (!this.showDatasetLimitWarning) {
+    if (
+      this.query?.controls['name'].value !== '' &&
+      !this.showDatasetLimitWarning
+    ) {
       this.emailService.disableSaveAndProceed.next(false);
       this.emailService.disableSaveAsDraft.next(false);
     }
@@ -1297,4 +1306,19 @@ export class DatasetFilterComponent
   //     this.activeTab.index
   //   );
   // }
+
+  changeBlockTitle() {
+    this.emailService.disableSaveAndProceed.next(
+      !(
+        this.totalMatchingRecords <= 50 &&
+        this.query?.controls['name'].value !== ''
+      )
+    );
+    this.emailService.disableSaveAsDraft.next(
+      !(
+        this.totalMatchingRecords <= 50 &&
+        this.query?.controls['name'].value !== ''
+      )
+    );
+  }
 }
