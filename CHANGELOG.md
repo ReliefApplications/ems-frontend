@@ -1,3 +1,11 @@
+## [2.14.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.14.0...v2.14.1) (2024-05-24)
+
+
+### Bug Fixes
+
+* hide tooltip when doing drag / drop in dashboard ([#2555](https://github.com/ReliefApplications/ems-frontend/issues/2555)) ([63adce8](https://github.com/ReliefApplications/ems-frontend/commit/63adce8c30b52c61dade2f92b2896a5f15574837))
+* On some layout loadings, the scroll is by default not all on the left ([#2556](https://github.com/ReliefApplications/ems-frontend/issues/2556)) ([2a5afdf](https://github.com/ReliefApplications/ems-frontend/commit/2a5afdf35a5ed8f9b0993a96e4230b671829b230))
+
 # [2.14.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.13.0...v2.14.0) (2024-05-22)
 
 
