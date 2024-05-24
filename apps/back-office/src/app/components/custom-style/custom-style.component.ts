@@ -17,6 +17,7 @@ import {
   BlobType,
   DownloadService,
   RestService,
+  AsyncMonacoEditorDirective,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs/operators';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -48,6 +49,7 @@ const DEFAULT_STYLE = '';
     SpinnerModule,
     TooltipModule,
     ResizableModule,
+    AsyncMonacoEditorDirective,
   ],
   templateUrl: './custom-style.component.html',
   styleUrls: ['./custom-style.component.scss'],

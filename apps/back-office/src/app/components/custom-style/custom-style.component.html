@@ -41,6 +41,7 @@
   <!-- Style editor -->
   <div class="grow overflow-y-auto overflow-x-hidden">
     <ngx-monaco-editor
+      sharedAsyncMonacoEditor
       class="!h-full"
       (onInit)="initEditor($event)"
       [options]="editorOptions"

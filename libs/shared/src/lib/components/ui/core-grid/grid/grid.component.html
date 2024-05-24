@@ -46,6 +46,7 @@
       [placeholder]="'common.placeholder.search' | translate"
       [formControl]="search"
       [clearButton]="true"
+      (keydown.enter)="$event.preventDefault()"
     >
     </kendo-textbox>
     <!-- Column Chooser -->

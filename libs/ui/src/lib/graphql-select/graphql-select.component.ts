@@ -333,6 +333,7 @@ export class GraphQLSelectComponent
       .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((value) => {
         this.cachedElements = [];
+        this.elementSelect.resetSubscriptions();
         this.searchChange.emit(value);
       });
   }

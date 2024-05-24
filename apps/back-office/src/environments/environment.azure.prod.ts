@@ -49,6 +49,6 @@ export const environment: Environment = {
     'tabs',
   ],
   user: {
-    attributes: ['country', 'region', 'location'],
+    attributes: ['country', 'region', 'location', 'department'],
   },
 };

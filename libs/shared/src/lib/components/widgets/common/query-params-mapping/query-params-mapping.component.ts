@@ -24,6 +24,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ResizableModule, ResizeEvent } from 'angular-resizable-element';
 import isEqual from 'lodash/isEqual';
 import { JSONValidator } from '../../../../utils/validators/json.validator';
+import { AsyncMonacoEditorDirective } from '../../../../directives/async-monaco-editor/async-monaco-editor.directive';
 
 /**
  * Query params mapping, for widgets using reference data graphql or rest.
@@ -43,6 +44,7 @@ import { JSONValidator } from '../../../../utils/validators/json.validator';
     ButtonModule,
     AlertModule,
     ResizableModule,
+    AsyncMonacoEditorDirective,
   ],
   templateUrl: './query-params-mapping.component.html',
   styleUrls: ['./query-params-mapping.component.scss'],

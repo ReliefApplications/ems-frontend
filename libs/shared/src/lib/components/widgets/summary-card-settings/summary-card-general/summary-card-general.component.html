@@ -31,7 +31,10 @@
         </div>
         <!-- Query params mapping for reference data graphql or rest-->
         <shared-query-params-mapping
-          *ngIf="referenceData && (referenceData.type === 'graphql' || referenceData.type === 'rest')"
+          *ngIf="
+            referenceData &&
+            (referenceData.type === 'graphql' || referenceData.type === 'rest')
+          "
           [referenceData]="referenceData"
           [control]="
             formGroup.controls.card.controls.referenceDataVariableMapping
