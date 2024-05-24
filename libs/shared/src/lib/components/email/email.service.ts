@@ -1121,7 +1121,8 @@ export class EmailService {
    */
   isValidDate(dateString: any): boolean {
     // Regular expression for basic ISO date format (YYYY-MM-DD)
-    const isoDateFormat = /^\d{4}-\d{2}-\d{2}$/;
+    const isoDateFormat =
+      /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?(Z|([+-]\d{2}:\d{2})))?$/;
 
     // Check if the dateString matches the ISO date format
     if (!isoDateFormat.test(dateString)) {
