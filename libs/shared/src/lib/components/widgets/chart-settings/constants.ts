@@ -214,3 +214,9 @@ export const THEMES_COLORS = [
     name: 'Verdant Harmony',
   },
 ];
+
+/** Settings for exporting data */
+export const EXPORT_SETTINGS = {
+  format: 'xlsx',
+  email: false,
+};

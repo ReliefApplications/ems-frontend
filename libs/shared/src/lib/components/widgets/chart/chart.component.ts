@@ -22,6 +22,10 @@ import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
+import { Dialog } from '@angular/cdk/dialog';
+import { EXPORT_SETTINGS } from '../chart-settings/constants';
+import { DownloadService } from '../../../services/download/download.service';
+import { ApplicationService } from '../../../services/application/application.service';
 
 /**
  * Default file name for chart exports
@@ -100,6 +104,8 @@ export class ChartComponent
   private aggregationId?: string;
   /** Subject to emit signals for cancelling previous data queries */
   private cancelRefresh$ = new Subject<void>();
+  /** export settings  */
+  public exportSettings = EXPORT_SETTINGS;
 
   /** @returns Context filters array */
   get contextFilters(): CompositeFilterDescriptor {
@@ -139,7 +145,7 @@ export class ChartComponent
     })} ${today.getFullYear()}`;
     return `${
       this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
-    } ${formatDate}.png`;
+    } ${formatDate}`;
   }
 
   /**
@@ -163,13 +169,19 @@ export class ChartComponent
    * @param translate Angular translate service
    * @param contextService Shared context service
    * @param dashboardService Shared dashboard service
+   * @param dialog The Dialog service
+   * @param downloadService Shared download service
+   * @param applicationService Shared application service
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private aggregationService: AggregationService,
     private translate: TranslateService,
     private contextService: ContextService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private dialog: Dialog,
+    private downloadService: DownloadService,
+    private applicationService: ApplicationService
   ) {
     super();
   }
@@ -274,13 +286,45 @@ export class ChartComponent
   }
 
   /**
-   * Exports the chart as a png ticket
+   * Exports the chart
    */
-  public onExport(): void {
-    const downloadLink = this.document.createElement('a');
-    downloadLink.href = this.chartWrapper?.chart?.toBase64Image() as string;
-    downloadLink.download = this.fileName;
-    downloadLink.click();
+  public async onExport(): Promise<void> {
+    const { ExportComponent } = await import(
+      '../../ui/charts/export/export.component'
+    );
+    const dialogRef = this.dialog.open(ExportComponent, {
+      data: {
+        export: this.exportSettings,
+      },
+      autoFocus: false,
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      if (res) {
+        console.log(this.settings);
+        if (res.format == 'png') {
+          const downloadLink = this.document.createElement('a');
+          downloadLink.href =
+            this.chartWrapper?.chart?.toBase64Image() as string;
+          downloadLink.download = `${this.fileName}.png`;
+          downloadLink.click();
+        } else {
+          const body = {
+            format: res.format,
+            fileName: this.fileName,
+            email: res.email,
+            chartData: this.series.getValue(),
+            application: this.applicationService.name,
+            resource: this.settings.resource,
+          };
+          this.downloadService.getChartDataExport(
+            '/download/charts',
+            `text/${res.format};charset=utf-8;`,
+            `${this.fileName}.${res.format}`,
+            body
+          );
+        }
+      }
+    });
   }
 
   /**

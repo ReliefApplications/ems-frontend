@@ -201,6 +201,56 @@ export class DownloadService {
   }
 
   /**
+   * Downloads chart data from the server with a POST request
+   *
+   * @param path download path to append to base url
+   * @param type type of the file
+   * @param fileName name of the file
+   * @param body (optional) request body
+   */
+  getChartDataExport(
+    path: string,
+    type: string,
+    fileName: string,
+    body?: any
+  ): void {
+    const { snackBarRef, headers } = this.triggerFileDownloadMessage(
+      'common.notifications.file.download.processing'
+    );
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
+
+    this.restService
+      .post(path, body, { responseType: 'blob', headers })
+      .subscribe({
+        next: (res) => {
+          if (body?.email) {
+            snackBarSpinner.instance.message = this.translate.instant(
+              'common.notifications.file.download.ongoing'
+            );
+            snackBarSpinner.instance.loading = false;
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+          } else {
+            const blob = new Blob([res], { type });
+            this.saveFile(fileName, blob);
+            snackBarSpinner.instance.message = this.translate.instant(
+              'common.notifications.file.download.ready'
+            );
+            snackBarSpinner.instance.loading = false;
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+          }
+        },
+        error: () => {
+          snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.file.download.error'
+          );
+          snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.error = true;
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+        },
+      });
+  }
+
+  /**
    * Downloads file with users from the server
    *
    * @param type type of the file
