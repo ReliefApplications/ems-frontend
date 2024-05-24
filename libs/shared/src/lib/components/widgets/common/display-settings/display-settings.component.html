@@ -33,7 +33,10 @@
         ></ui-icon>
       </ng-container>
     </ui-toggle>
-    <ng-container formGroupName="tooltip">
+    <ng-container
+      formGroupName="tooltip"
+      *ngIf="formGroup.get('widgetDisplay.showHeader')?.value"
+    >
       <ui-toggle formControlName="display">
         <ng-container ngProjectAs="label">
           {{ 'models.widget.display.tooltip.display.title' | translate }}

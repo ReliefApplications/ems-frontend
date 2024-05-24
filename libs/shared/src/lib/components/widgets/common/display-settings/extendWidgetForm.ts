@@ -1,4 +1,9 @@
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { get } from 'lodash';
 
 /**
@@ -45,7 +50,10 @@ export const extendWidgetForm = <
     tooltip: new FormGroup({
       display: new FormControl(get(settings, 'tooltip.display', false)),
       title: new FormControl(get(settings, 'tooltip.title', '')),
-      content: new FormControl(get(settings, 'tooltip.content', '')),
+      content: new FormControl(
+        get(settings, 'tooltip.content', ''),
+        Validators.required
+      ),
     }),
     style: new FormControl(get(settings, 'style', '')),
   };
