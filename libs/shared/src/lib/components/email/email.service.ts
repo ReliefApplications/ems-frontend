@@ -20,6 +20,9 @@ import { FieldStore } from './models/email.const';
   providedIn: 'root',
 })
 export class EmailService {
+  /**
+   * Stepper for draft
+   */
   public draftStepper!: number;
   /** Index of current dataset block */
   public index = new BehaviorSubject(null);
@@ -1096,6 +1099,36 @@ export class EmailService {
   }
 
   /**
+   * Checks if a given date string is a valid date in the format YYYY-MM-DD.
+   *
+   * @param {string} dateString The date string to validate.
+   * @returns {boolean} Returns true if the date string is a valid date in the format YYYY-MM-DD, otherwise false.
+   */
+  isValidDate(dateString: any): boolean {
+    // Regular expression for basic ISO date format (YYYY-MM-DD)
+    const isoDateFormat = /^\d{4}-\d{2}-\d{2}$/;
+
+    // Check if the dateString matches the ISO date format
+    if (!isoDateFormat.test(dateString)) {
+      return false;
+    }
+
+    // Parse the date string
+    const timestamp = Date.parse(dateString);
+
+    // Check if the parsed result is NaN
+    if (isNaN(timestamp)) {
+      return false;
+    }
+
+    // Create a Date object from the timestamp
+    const date = new Date(timestamp);
+
+    // Check if the Date object is valid
+    return date instanceof Date && !isNaN(date.getTime());
+  }
+
+  /**
    * Formats data strings into a pretty string representation
    *
    * @param rowData table cell data value
@@ -1106,7 +1139,12 @@ export class EmailService {
     const select = this.isSelect(field);
 
     // Check if rowData is a string that can be parsed into a date
-    if (!select && typeof rowData === 'string' && !isNaN(Date.parse(rowData))) {
+    if (
+      !select &&
+      typeof rowData === 'string' &&
+      !isNaN(Date.parse(rowData)) &&
+      this.isValidDate(rowData)
+    ) {
       // Parse the string into a Date object
       const date = new Date(rowData);
       // Format the date as MM/DD/YY, hh:mm AM/PM
