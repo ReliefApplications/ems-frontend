@@ -324,7 +324,17 @@ export class ChartComponent
                       referenceDataAggregation: aggregationData,
                     });
                     this.loading = false;
+                  })
+                  .catch(() => {
+                    this.loading = false;
+                    this.hasError = true;
+                    this.series.next([]);
                   });
+              })
+              .catch(() => {
+                this.loading = false;
+                this.hasError = true;
+                this.series.next([]);
               });
           } else {
             // Else, apply default logic
