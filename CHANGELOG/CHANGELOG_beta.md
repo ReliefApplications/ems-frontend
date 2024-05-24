@@ -1,3 +1,16 @@
+## [2.14.1-beta.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.14.0...v2.14.1-beta.1) (2024-05-24)
+
+
+### Bug Fixes
+
+* add better error handling for upload files AB[#64764](https://github.com/ReliefApplications/ems-frontend/issues/64764) ([7296228](https://github.com/ReliefApplications/ems-frontend/commit/72962285363130599868dbc003d7e6f08d95b6f3))
+* gql ref data would not query from correct endpoint when editing ([745a14c](https://github.com/ReliefApplications/ems-frontend/commit/745a14c6da2b7dfea9d20ac8997c5045dd1bba59))
+
+
+### Reverts
+
+* Revert ""AB#91806 revert changes" revert (#2536)" (#2540) ([c99c97b](https://github.com/ReliefApplications/ems-frontend/commit/c99c97b6d27f78f07ac192fc29e617a6cfef62bb)), closes [AB#91806](https://github.com/AB/issues/91806) [#2536](https://github.com/ReliefApplications/ems-frontend/issues/2536) [#2540](https://github.com/ReliefApplications/ems-frontend/issues/2540)
+
 # [2.3.0-beta.5](https://github.com/ReliefApplications/ems-frontend/compare/v2.3.0-beta.4...v2.3.0-beta.5) (2023-12-18)
 
 
