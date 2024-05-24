@@ -50,10 +50,7 @@ export const extendWidgetForm = <
     tooltip: new FormGroup({
       display: new FormControl(get(settings, 'tooltip.display', false)),
       title: new FormControl(get(settings, 'tooltip.title', '')),
-      content: new FormControl(
-        get(settings, 'tooltip.content', ''),
-        Validators.required
-      ),
+      content: new FormControl(get(settings, 'tooltip.content', '')),
     }),
     style: new FormControl(get(settings, 'style', '')),
   };
