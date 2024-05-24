@@ -631,6 +631,7 @@ export class DatasetFilterComponent
                         // Map Select Data to select fields if it exists
                         field.options = metaField.options;
                         field.multiSelect = metaField.multiSelect;
+                        field.fields = metaField.fields ?? null;
                         field.select = metaField.editor === 'select';
                         this.availableFields.filter((x) => x.name == field.name)
                           ? this.availableFields.push(clone(field))
@@ -978,7 +979,7 @@ export class DatasetFilterComponent
   getField(fieldIndex: number): any {
     const fieldControl = this.datasetFilterInfo.at(fieldIndex);
     const fieldName = fieldControl ? fieldControl.value : null;
-    let field = fieldName
+    let field: any = fieldName
       ? this.resource?.metadata?.find(
           (data: any) => data.name === fieldName.field.split('.')[0]
         )
@@ -997,6 +998,16 @@ export class DatasetFilterComponent
             x.name.split(' - ')[1] === fieldName.field.split('.')[1]
         );
       }
+    }
+
+    /* Reference data - options manipulation */
+
+    if (fieldName?.field?.includes('.')) {
+      const fieldParts = fieldName?.field?.split('.');
+      const optionsKey = fieldParts[fieldParts.length - 1];
+      field.options = field?.fields
+        ? field.fields.filter((x: any) => x.name === optionsKey)[0].options
+        : null;
     }
     return field ?? '';
   }
