@@ -2363,7 +2363,18 @@
 				"padding": "******",
 				"searchable": "******",
 				"sortable": "******",
-				"title": "******"
+				"title": "******",
+				"tooltip": {
+					"content": "******",
+					"display": {
+						"title": "******",
+						"tooltip": "******"
+					},
+					"title": {
+						"placeholder": "******",
+						"title": "******"
+					}
+				}
 			},
 			"map": {
 				"defaultTitle": "******",

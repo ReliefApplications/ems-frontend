@@ -2363,7 +2363,18 @@
 				"padding": "Use widget inner padding",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",
-				"title": "Widget display"
+				"title": "Widget display",
+				"tooltip": {
+					"content": "Tooltip content",
+					"display": {
+						"title": "Display tooltip",
+						"tooltip": "When configured, the tooltip will be displayed when hovering over the icon next to the widget title"
+					},
+					"title": {
+						"placeholder": "Enter a title (optional)",
+						"title": "Tooltip title"
+					}
+				}
 			},
 			"map": {
 				"defaultTitle": "Map Widget",

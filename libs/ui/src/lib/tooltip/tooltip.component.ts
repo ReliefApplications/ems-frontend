@@ -10,4 +10,6 @@ import { Component, Input } from '@angular/core';
 export class TooltipComponent {
   /** Tooltip text */
   @Input() uiTooltip!: string;
+  /** Tooltip title */
+  @Input() uiTooltipTitle = '';
 }

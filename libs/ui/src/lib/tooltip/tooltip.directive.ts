@@ -27,6 +27,8 @@ import { TooltipPosition } from './types/tooltip-positions';
 export class TooltipDirective implements OnDestroy {
   /** Tooltip text */
   @Input() uiTooltip = '';
+  /** Tooltip title */
+  @Input() uiTooltipTitle = '';
   /** Is tooltip disabled */
   @Input() tooltipDisabled = false;
   /** preferred position for the tooltip */
@@ -149,6 +151,7 @@ export class TooltipDirective implements OnDestroy {
         this.overlayRef.attach(tooltipPortal);
       // Pass content to tooltip component instance
       tooltipRef.instance.uiTooltip = this.uiTooltip;
+      tooltipRef.instance.uiTooltipTitle = this.uiTooltipTitle;
     }
   }
 

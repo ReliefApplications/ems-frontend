@@ -30,9 +30,68 @@
           variant="grey"
           [size]="18"
           [uiTooltip]="'models.widget.tooltip.expandButton.help' | translate"
-        ></ui-icon
-      ></ng-container>
+        ></ui-icon>
+      </ng-container>
     </ui-toggle>
+    <ng-container formGroupName="tooltip">
+      <ui-toggle formControlName="display">
+        <ng-container ngProjectAs="label">
+          {{ 'models.widget.display.tooltip.display.title' | translate }}
+          <ui-icon
+            class="ml-1 cursor-help self-center"
+            icon="info_outline"
+            variant="grey"
+            [size]="18"
+            [uiTooltip]="
+              'models.widget.display.tooltip.display.tooltip' | translate
+            "
+          ></ui-icon>
+        </ng-container>
+        <ui-icon
+          class="ml-1 cursor-help self-center"
+          icon="info_outline"
+          variant="grey"
+          [size]="18"
+          [uiTooltip]="
+            'models.widget.display.tooltip.display.title.tooltip' | translate
+          "
+        ></ui-icon>
+      </ui-toggle>
+
+      <div
+        uiFormFieldDirective
+        *ngIf="formGroup.get('widgetDisplay.tooltip.display')?.value"
+        class="mb-0"
+      >
+        <label>
+          {{ 'models.widget.display.tooltip.title.title' | translate }}
+        </label>
+        <input
+          formControlName="title"
+          [placeholder]="
+            'models.widget.display.tooltip.title.placeholder' | translate
+          "
+        />
+      </div>
+      <div
+        uiFormFieldDirective
+        *ngIf="formGroup.get('widgetDisplay.tooltip.display')?.value"
+      >
+        <label>
+          {{ 'models.widget.display.tooltip.content' | translate }}
+        </label>
+        <ui-textarea
+          formControlName="content"
+          [placeholder]="
+            'components.application.update.placeholder.description' | translate
+          "
+          [minRows]="2"
+          [maxRows]="5"
+          name="textarea"
+        />
+      </div>
+    </ng-container>
+
     <ui-toggle formControlName="hideEmpty" *ngIf="showHideOption">
       <ng-container ngProjectAs="label"
         >{{ 'models.widget.display.hideEmpty' | translate }}

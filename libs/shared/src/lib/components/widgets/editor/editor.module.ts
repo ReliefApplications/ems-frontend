@@ -1,7 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EditorComponent } from './editor.component';
-import { ButtonModule, SpinnerModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  IconModule,
+  SpinnerModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { HtmlWidgetContentModule } from '../common/html-widget-content/html-widget-content.module';
 
@@ -16,6 +21,8 @@ import { HtmlWidgetContentModule } from '../common/html-widget-content/html-widg
     TranslateModule,
     HtmlWidgetContentModule,
     SpinnerModule,
+    IconModule,
+    TooltipModule,
   ],
   exports: [EditorComponent],
 })

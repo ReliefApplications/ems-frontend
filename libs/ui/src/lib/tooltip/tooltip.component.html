@@ -1,5 +1,9 @@
 <span
   #tooltip
   class="block transition-opacity delay-300 bg-gray-800 p-2 max-w-xs whitespace-pre-wrap text-xs text-gray-100 rounded-md z-[9999] break-words pointer-events-none"
-  >{{ uiTooltip }}</span
 >
+  <div *ngIf="uiTooltipTitle" class="mb-1">
+    <strong class="text-lg">{{ uiTooltipTitle }}</strong>
+  </div>
+  <span>{{ uiTooltip }}</span>
+</span>

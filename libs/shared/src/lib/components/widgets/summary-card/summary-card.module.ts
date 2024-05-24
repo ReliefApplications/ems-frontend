@@ -12,6 +12,7 @@ import {
   SpinnerModule,
   SelectMenuModule,
   FormWrapperModule,
+  IconModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
@@ -42,6 +43,7 @@ import { EmptyModule } from '../../ui/empty/empty.module';
     SelectMenuModule,
     FormWrapperModule,
     EmptyModule,
+    IconModule,
   ],
   exports: [SummaryCardComponent],
 })

@@ -2363,7 +2363,18 @@
 				"padding": "Utiliser la marge intérieure du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",
-				"title": "Affichage des widgets"
+				"title": "Affichage des widgets",
+				"tooltip": {
+					"content": "Contenu de l'infobulle",
+					"display": {
+						"title": "Afficher l'infobulle",
+						"tooltip": "Lorsqu'il est configuré, l'infobulle s'affiche lorsque vous survolez l'icône à côté du titre du widget"
+					},
+					"title": {
+						"placeholder": "Entrez un titre (facultatif)",
+						"title": "Titre de l'infobulle"
+					}
+				}
 			},
 			"map": {
 				"defaultTitle": "Widget Carte",

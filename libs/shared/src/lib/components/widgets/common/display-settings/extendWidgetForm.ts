@@ -11,6 +11,10 @@ import { get } from 'lodash';
  * @param settings.hideEmpty hide empty widget on preview, front-office and web-widgets apps
  * @param settings.style custom style of the widget
  * @param settings.expandable show expand button
+ * @param settings.tooltip tooltip settings
+ * @param settings.tooltip.display whether to display the tooltip
+ * @param settings.tooltip.title tooltip title, if any
+ * @param settings.tooltip.content tooltip content
  * @param specificControls specific controls to add to the form, on a widget basis
  * @returns form with the common fields
  */
@@ -24,6 +28,11 @@ export const extendWidgetForm = <
     showHeader?: boolean;
     hideEmpty?: boolean;
     expandable: boolean;
+    tooltip?: {
+      display: boolean;
+      title?: string;
+      content: string;
+    };
     style?: string;
   },
   specificControls?: T2
@@ -33,6 +42,11 @@ export const extendWidgetForm = <
     showHeader: new FormControl(get(settings, 'showHeader', true)),
     hideEmpty: new FormControl(get(settings, 'hideEmpty', false)),
     expandable: new FormControl(get(settings, 'expandable', false)),
+    tooltip: new FormGroup({
+      display: new FormControl(get(settings, 'tooltip.display', false)),
+      title: new FormControl(get(settings, 'tooltip.title', '')),
+      content: new FormControl(get(settings, 'tooltip.content', '')),
+    }),
     style: new FormControl(get(settings, 'style', '')),
   };
   Object.assign(controls, specificControls);
@@ -46,6 +60,11 @@ export const extendWidgetForm = <
           showHeader: FormControl<boolean>;
           hideEmpty: FormControl<boolean>;
           expandable: FormControl<boolean>;
+          tooltip: FormGroup<{
+            display: FormControl<boolean>;
+            title: FormControl<string>;
+            content: FormControl<string>;
+          }>;
           style: FormControl<string>;
         } & T2
       >;
