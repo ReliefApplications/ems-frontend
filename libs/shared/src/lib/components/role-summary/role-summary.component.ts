@@ -82,5 +82,8 @@ export class RoleSummaryComponent implements OnInit {
           this.loading = loading;
         }
       });
+
+    // Reload window to update permissions of user.
+    window.location.reload();
   }
 }

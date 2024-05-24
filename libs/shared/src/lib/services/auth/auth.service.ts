@@ -491,20 +491,14 @@ export class AuthService {
     }
 
     // === Email Notifications ===
-    if (
-      appPermissions.has('can_see_email_notifications') ||
-      this.ability.can('manage', 'Application')
-    ) {
+    if (appPermissions.has('can_see_email_notifications')) {
       can('read', 'EmailNotification');
     }
     if (appPermissions.has('can_update_email_notifications')) {
       can(['update', 'delete'], 'EmailNotification');
     }
 
-    if (
-      appPermissions.has('can_create_email_notifications') ||
-      this.ability.can('manage', 'Application')
-    ) {
+    if (appPermissions.has('can_create_email_notifications')) {
       can('create', 'EmailNotification');
     }
 
