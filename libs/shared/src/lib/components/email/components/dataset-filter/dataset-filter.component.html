@@ -716,7 +716,7 @@
           category="secondary"
           variant="primary"
           (click)="getDataSet('fields')"
-          [disabled]="selectedFields.length === 0"
+          [disabled]="selectedFields.length === 0 || showDatasetLimitWarning"
         >
           {{ 'components.queryBuilder.filter.apply' | translate }}
         </ui-button>
