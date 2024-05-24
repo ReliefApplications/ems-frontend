@@ -1010,8 +1010,10 @@ export class DatasetFilterComponent
       ...this.selectedFields,
       ...this.availableFields.map((field) => JSON.parse(JSON.stringify(field))),
     ];
-    this.emailService.disableSaveAndProceed.next(false);
-    this.emailService.disableSaveAsDraft.next(false);
+    if (!this.showDatasetLimitWarning) {
+      this.emailService.disableSaveAndProceed.next(false);
+      this.emailService.disableSaveAsDraft.next(false);
+    }
     this.availableFields = [];
     this.query.controls.fields.setValue(this.selectedFields);
     this.emailService.setEmailFields(this.selectedFields);
