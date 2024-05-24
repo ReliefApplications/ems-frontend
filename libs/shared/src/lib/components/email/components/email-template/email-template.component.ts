@@ -814,7 +814,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
    * to add all the selected emails into the list
    */
   addSelectedEmails(): void {
-    this.selectedItemIndexes?.forEach((itemIndex: number) => {
+    this.selectedItemIndexes?.forEach((_, itemIndex: number) => {
       /* duplicate check */
       if (this.selectedEmails.indexOf(this.emails[itemIndex]) === -1) {
         if (itemIndex !== undefined && this.emails[itemIndex] !== undefined) {
