@@ -37,9 +37,9 @@ export const init = (
         name: 'applications',
         category: 'Users properties',
         type: CustomPropertyGridComponentTypes.applicationsDropdown,
-        isDynamicChoices: true,
+        // isDynamicChoices: true,
         visibleIndex: 3,
-        required: true,
+        isRequired: true,
       });
 
       registerCustomPropertyEditor(

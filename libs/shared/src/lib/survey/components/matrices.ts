@@ -94,7 +94,7 @@ export const init = (
     showMode: 'form',
     name: 'referenceDataDisplayField',
     category: 'Choices from Reference data',
-    required: true,
+    isRequired: true,
     dependsOn: 'referenceData',
     visibleIf: (obj: null | CustomMatrixDropdownColumn): boolean =>
       Boolean(obj?.referenceData),
@@ -168,7 +168,7 @@ export const init = (
     showMode: 'form',
     name: 'referenceDataFilterForeignField',
     category: 'Choices from Reference data',
-    required: true,
+    isRequired: true,
     dependsOn: 'referenceDataFilterFilterFromQuestion',
     visibleIf: (obj: null | CustomMatrixDropdownColumn): boolean =>
       Boolean(obj?.referenceDataFilterFilterFromQuestion),
@@ -201,7 +201,7 @@ export const init = (
     showMode: 'form',
     name: 'referenceDataFilterFilterCondition',
     category: 'Choices from Reference data',
-    required: true,
+    isRequired: true,
     dependsOn: 'referenceDataFilterFilterFromQuestion',
     visibleIf: (obj: null | CustomMatrixDropdownColumn): boolean =>
       Boolean(obj?.referenceDataFilterFilterFromQuestion),
@@ -225,7 +225,7 @@ export const init = (
     showMode: 'form',
     name: 'referenceDataFilterLocalField',
     category: 'Choices from Reference data',
-    required: true,
+    isRequired: true,
     dependsOn: 'referenceDataFilterFilterFromQuestion',
     visibleIf: (obj: null | CustomMatrixDropdownColumn): boolean =>
       Boolean(obj?.referenceDataFilterFilterFromQuestion),

@@ -43,7 +43,7 @@ export const init = (
         name: 'geometry',
         type: 'dropdown',
         category: 'general',
-        required: true,
+        isRequired: true,
         default: 'Point',
         choices: ['Point'],
       });

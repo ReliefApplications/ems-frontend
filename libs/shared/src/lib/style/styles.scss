@@ -22,6 +22,18 @@ survey-creator {
   --sjs-font-pagetitle-size: 16px;
   --sjs-font-surveytitle-size: 16px;
   --sd-base-vertical-padding: #{10px !important};
+
+  .spg-search-editor_container {
+    width: 100%;
+  }
+
+  .spg-root-modern {
+    top: calc(4 * (var(--sjs-base-unit))) !important;
+  }
+
+  .svc-creator__banner {
+    display: none;
+  }
 }
 
 // Checkbox

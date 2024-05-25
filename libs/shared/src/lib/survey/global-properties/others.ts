@@ -29,7 +29,7 @@ export const init = (environment: any): void => {
     visibleIndex: 6,
     default: false,
     category: 'general',
-    required: true,
+    isRequired: true,
   });
   // Pass token before the request to fetch choices by URL if it's targeting SHARED API
   ChoicesRestful.onBeforeSendRequest = (

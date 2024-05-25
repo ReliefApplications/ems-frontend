@@ -146,7 +146,7 @@ export const init = (
         category: 'Custom Questions',
         type: CustomPropertyGridComponentTypes.resourcesDropdown,
         visibleIndex: 3,
-        required: true,
+        isRequired: true,
       });
 
       registerCustomPropertyEditor(
@@ -156,7 +156,7 @@ export const init = (
         name: 'displayField',
         category: 'Custom Questions',
         dependsOn: 'resource',
-        required: true,
+        isRequired: true,
         visibleIf: visibleIfResource,
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
@@ -178,8 +178,7 @@ export const init = (
         name: 'relatedName',
         category: 'Custom Questions',
         dependsOn: 'resource',
-        required: true,
-        description: 'unique name for this resource question',
+        isRequired: true,
         visibleIf: visibleIfResource,
         visibleIndex: 4,
       });
@@ -204,7 +203,7 @@ export const init = (
         type: CustomPropertyGridComponentTypes.resourceTestService,
         category: 'Custom Questions',
         dependsOn: ['resource', 'displayField'],
-        required: true,
+        isRequired: true,
         visibleIf: visibleIfResourceAndDisplayField,
         visibleIndex: 3,
       });
@@ -368,7 +367,7 @@ export const init = (
         name: 'selectQuestion:dropdown',
         category: 'Filter by Questions',
         dependsOn: ['resource', 'displayField'],
-        required: true,
+        isRequired: true,
         visibleIf: visibleIfResourceAndDisplayField,
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
