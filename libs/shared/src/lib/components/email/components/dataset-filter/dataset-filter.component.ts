@@ -1340,6 +1340,18 @@ export class DatasetFilterComponent
                 this.datasetResponse = res?.data?.dataset;
                 this.dataList = res?.data?.dataset.records?.map(
                   (record: any) => {
+                    if (
+                      Object.keys(record).filter((rec: any) =>
+                        Array.isArray(record[rec])
+                      ).length > 0
+                    ) {
+                      const arrayData = Object.keys(record).filter((rec: any) =>
+                        Array.isArray(record[rec])
+                      );
+                      arrayData.forEach((colNm: any) => {
+                        record[colNm] = record[colNm].join(',');
+                      });
+                    }
                     const flattenedObject = this.emailService.flattenRecord(
                       record,
                       resourceInfo,
