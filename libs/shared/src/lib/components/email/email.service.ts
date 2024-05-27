@@ -1093,9 +1093,13 @@ export class EmailService {
                 }`
               ] = value;
             }
-          } else if (resourceInfo && key == 'form') {
-            // Temp fix, set as resource name.
-            result[key] = resourceInfo.name;
+          } else if (key == 'form') {
+            const metaField = query.fields.find((field: any) => {
+              return field.name === key;
+            });
+            result[key] = metaField?.options?.filter(
+              (x: any) => x.value === record[key]
+            )[0].text;
           } else if (key == 'lastUpdateForm') {
             // TO DO
             // Ideally we will run an apollo graphql query to fetch the form
