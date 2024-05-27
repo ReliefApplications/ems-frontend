@@ -1340,14 +1340,10 @@ export class DatasetFilterComponent
                 this.datasetResponse = res?.data?.dataset;
                 this.dataList = res?.data?.dataset.records?.map(
                   (record: any) => {
-                    if (
-                      Object.keys(record).filter((rec: any) =>
-                        Array.isArray(record[rec])
-                      ).length > 0
-                    ) {
-                      const arrayData = Object.keys(record).filter((rec: any) =>
-                        Array.isArray(record[rec])
-                      );
+                    const arrayData = Object.keys(record).filter((rec: any) =>
+                      Array.isArray(record[rec])
+                    );
+                    if (arrayData.length > 0) {
                       arrayData.forEach((colNm: any) => {
                         record[colNm] = record[colNm].join(',');
                       });
