@@ -104,14 +104,11 @@ export const init = (
         });
       }
     },
-    isDefaultRender: false,
+    isDefaultRender: true,
     afterRender: (question: any, el: HTMLElement): void => {
       unRegisterRelatedPropertyChangeCallbacks(question);
       let currentSearchValue = '';
-      const defaultTagbox = el.querySelector('sv-ng-tagbox-question');
-      if (defaultTagbox) {
-        el.removeChild(defaultTagbox);
-      }
+      const defaultTagbox = el.querySelector('sv-ng-tagbox');
       const parentQuestion = question.parentQuestion;
       if (
         parentQuestion &&
@@ -212,7 +209,7 @@ export const init = (
         updateChoices(tagboxInstance, question, currentSearchValue);
       }
       question._instance = tagboxInstance;
-      el.parentElement?.appendChild(tagboxDiv);
+      defaultTagbox?.replaceWith(tagboxDiv);
     },
     willUnmount: (question: any): void => {
       if (!question._propertyValueChangedVirtual) return;
