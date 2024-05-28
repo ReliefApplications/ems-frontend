@@ -261,6 +261,7 @@ export class ChartComponent
       return;
     }
     this.loading = true;
+    const filters = joinFilters(this.contextFilters, this.selectedFilter);
 
     const defaultLogic = () => {
       this.dataQuery = this.aggregationService.aggregationDataQuery({
@@ -268,7 +269,7 @@ export class ChartComponent
         resource: this.settings.resource,
         aggregation: this.aggregationId || '',
         mapping: get(this.settings, 'chart.mapping', null),
-        contextFilters: joinFilters(this.contextFilters, this.selectedFilter),
+        contextFilters: filters,
         queryParams: this.queryParams,
         at: this.settings.at
           ? this.contextService.atArgumentValue(this.settings.at)
@@ -314,10 +315,9 @@ export class ChartComponent
                   .aggregate(refData, aggregationModel, {
                     mapping: get(this.settings, 'chart.mapping', null),
                     graphQLVariables: this.queryParams,
-                    contextFilters: joinFilters(
-                      this.contextFilters,
-                      this.selectedFilter
-                    ),
+                    contextFilters: filters
+                      ? this.contextService.injectContext(filters)
+                      : undefined,
                   })
                   .then((aggregationData) => {
                     this.getData({
