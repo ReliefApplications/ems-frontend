@@ -1,3 +1,11 @@
+## [2.14.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.14.1...v2.14.2) (2024-05-28)
+
+
+### Bug Fixes
+
+* dropdown & tagbox "other" field not showing comment [#91382](https://github.com/ReliefApplications/ems-frontend/issues/91382) ([#2565](https://github.com/ReliefApplications/ems-frontend/issues/2565)) ([5849604](https://github.com/ReliefApplications/ems-frontend/commit/58496049ce1e7110e022f24e2b1bba0f8ef011e0))
+* infinite redirection when application cannot be found in front-office ([#2569](https://github.com/ReliefApplications/ems-frontend/issues/2569)) ([19a131a](https://github.com/ReliefApplications/ems-frontend/commit/19a131ac284fdfe5c3359c791372d711179c50c5))
+
 ## [2.14.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.14.0...v2.14.1) (2024-05-24)
 
 
