@@ -344,7 +344,6 @@ export class AuthService {
           'Workflow',
           'Template',
           'DistributionList',
-          'EmailNotification',
         ]
       );
     }
