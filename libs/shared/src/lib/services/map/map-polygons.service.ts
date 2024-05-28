@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { RestService } from '../rest/rest.service';
 import { BehaviorSubject, first } from 'rxjs';
 import { EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
@@ -9,6 +9,7 @@ import REGIONS from './regions';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
 import { LayerDatasourceType } from '../../models/layer.model';
+import { getWithExpiry, setWithExpiry } from '../../utils/cache-with-expiry';
 import area from '@turf/area';
 
 /** Available admin identifiers */
@@ -30,6 +31,11 @@ type Admin0 = {
   polygons: Polygon | MultiPolygon | Feature<Polygon | MultiPolygon>;
 };
 
+/** Cache key for local forage */
+const CACHE_KEY = 'admin0';
+/** TTL for admin 0 */
+const CACHE_TTL = 7 * 24 * 3600 * 1000; // 1 week
+
 /**
  * Shared map polygons service.
  * Allow to use polygons from common services, and assign them to the layer features.
@@ -44,14 +50,21 @@ export class MapPolygonsService {
   private admin0sReady = new BehaviorSubject<boolean>(false);
   /** Admin0 polygons status as observable */
   public admin0sReady$ = this.admin0sReady.asObservable();
+  /** Admin0 url, from environment */
+  private admin0Url = '';
 
   /**
    * Shared map polygons service.
    * Allow to use polygons from common services, and assign them to the layer features.
    *
    * @param restService Shared rest service
+   * @param environment Shared environment
    */
-  constructor(private restService: RestService) {
+  constructor(
+    private restService: RestService,
+    @Inject('environment') environment: any
+  ) {
+    this.admin0Url = environment.admin0Url;
     // On init, fetch the admin0 polygons from the back-end
     // The back-end handles the caching of polygons & reduction
     this.getAdmin0Polygons();
@@ -60,20 +73,61 @@ export class MapPolygonsService {
   /**
    * Retrieve admin0 polygons
    */
-  public getAdmin0Polygons() {
-    this.restService
-      .get(`${this.restService.apiUrl}/gis/admin0`)
-      .subscribe((value) => {
-        if (value) {
-          // Sort polygons by area to make sure small territories can be found inside larger ones
-          this.admin0s = value.sort((a: any, b: any) => {
-            const areaA = area(a.polygons);
-            const areaB = area(b.polygons);
-            return areaA - areaB;
-          });
-          this.admin0sReady.next(true);
-        }
-      });
+  public async getAdmin0Polygons() {
+    if (this.admin0Url) {
+      const fetchAdmin0 = () => {
+        this.restService.get(this.admin0Url).subscribe((value) => {
+          if (value) {
+            const mapping = [];
+            for (const feature of value.features) {
+              // Transform data to fit Admin0 type
+              try {
+                mapping.push({
+                  id: feature.id,
+                  centerlatitude: feature.properties.CENTER_LAT.toString(),
+                  centerlongitude: feature.properties.CENTER_LON.toString(),
+                  iso2code: feature.properties.ISO_2_CODE,
+                  iso3code: feature.properties.ISO_3_CODE,
+                  name: feature.properties.ADM0_VIZ_NAME,
+                  polygons: feature.geometry,
+                });
+              } catch (err: any) {
+                console.error(err.message);
+                return;
+              }
+            }
+            this.admin0s = mapping.sort((a: any, b: any) => {
+              const areaA = area(a.polygons);
+              const areaB = area(b.polygons);
+              return areaA - areaB;
+            });
+            setWithExpiry(CACHE_KEY, mapping, CACHE_TTL).then(() => {
+              this.admin0sReady.next(true);
+            });
+          }
+        });
+      };
+      const cacheValue = await getWithExpiry(CACHE_KEY);
+      if (cacheValue) {
+        this.admin0s = cacheValue.sort((a: any, b: any) => {
+          const areaA = area(a.polygons);
+          const areaB = area(b.polygons);
+          return areaA - areaB;
+        });
+        this.admin0sReady.next(true);
+      } else {
+        fetchAdmin0();
+      }
+    } else {
+      this.restService
+        .get(`${this.restService.apiUrl}/gis/admin0`)
+        .subscribe((value) => {
+          if (value) {
+            this.admin0s = value;
+            this.admin0sReady.next(true);
+          }
+        });
+    }
   }
 
   /**
@@ -115,6 +169,9 @@ export class MapPolygonsService {
             type: 'Feature',
             geometry: adminGeometry,
           });
+        }
+        if (adminId === 'FR') {
+          console.log(adminGeometry);
         }
       });
     }

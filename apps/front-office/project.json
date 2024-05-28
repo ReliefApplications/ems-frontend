@@ -86,7 +86,8 @@
           "esri-leaflet-heatmap",
           "esri-leaflet-renderers",
           "jsonpath",
-          "to-json-schema"
+          "to-json-schema", 
+          "email-validator"
         ]
       },
       "configurations": {
@@ -101,7 +102,7 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
@@ -125,7 +126,7 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
@@ -149,7 +150,7 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
@@ -173,7 +174,7 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
@@ -197,7 +198,7 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
@@ -221,7 +222,7 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
@@ -245,7 +246,7 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",

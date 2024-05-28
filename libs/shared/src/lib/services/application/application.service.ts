@@ -1953,6 +1953,7 @@ export class ApplicationService {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
     });
+
     return firstValueFrom(
       this.restService.get(path, { responseType: 'blob', headers })
     )

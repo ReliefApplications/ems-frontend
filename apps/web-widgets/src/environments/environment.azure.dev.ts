@@ -31,6 +31,8 @@ export const environment: Environment = {
   i18nUrl: 'https://whoemssafedsta03.blob.core.windows.net/shared/dev/i18n/',
   // tinymceBaseUrl: 'https://ems2-dev.who.int/app-builder/tinymce',
   // i18nUrl: 'https://ems2-dev.who.int/app-builder/i18n/',
+  admin0Url:
+    'https://services.arcgis.com/5T5nSi527N4F7luB/arcgis/rest/services/Detailed_Boundary_ADM0/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson',
   user: {
     attributes: ['country', 'region', 'location', 'department'],
   },
