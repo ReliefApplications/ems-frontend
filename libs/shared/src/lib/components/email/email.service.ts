@@ -1099,7 +1099,7 @@ export class EmailService {
             });
             result[key] = metaField?.options?.filter(
               (x: any) => x.value === record[key]
-            )[0].text;
+            )[0]?.text;
           } else if (key == 'lastUpdateForm') {
             // TO DO
             // Ideally we will run an apollo graphql query to fetch the form
