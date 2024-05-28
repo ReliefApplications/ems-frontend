@@ -477,12 +477,6 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
                 dataset.cacheData.datasetFields = this.datasetFields;
                 dataset.cacheData.resource = this.resource;
 
-                if (this.emails.length === 0) {
-                  this.noEmail.emit(true);
-                } else {
-                  this.noEmail.emit(false);
-                }
-
                 //Below if condition is assigning the cachedData to the selected Dataset (Reinitializing)
                 if (
                   this.datasetsForm.value?.datasets?.filter(
@@ -538,14 +532,6 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   onSegmentChange(event: any): void {
     const segment = event?.target?.value || event;
     this.activeSegmentIndex = this.segmentList.indexOf(segment);
-    if (this.activeSegmentIndex === 0) {
-      this.noEmail.emit(false);
-    } else if (
-      this.activeSegmentIndex !== 0 &&
-      this.prevDataset === this.selectedDataset
-    ) {
-      this.noEmail.emit(true);
-    }
   }
 
   /**
@@ -814,19 +800,29 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
    * to add all the selected emails into the list
    */
   addSelectedEmails(): void {
-    this.selectedItemIndexes?.forEach((_, itemIndex: number) => {
+    this.selectedItemIndexes?.forEach((indexNum, itemIndex: number) => {
       /* duplicate check */
       if (this.selectedEmails.indexOf(this.emails[itemIndex]) === -1) {
         if (itemIndex !== undefined && this.emails[itemIndex] !== undefined) {
           this.selectedEmails.push(this.emails[itemIndex]);
         }
       }
+      const emailRegex =
+        /^(([^<>()[\]\\.,;:\s@\\"!#\\$]{3,}(\.[^<>()[\]\\.,;:\s@\\"!#\\$]+)*)|(\\".+\\"))@(([^<>()[\]\\.,;:\s@\\"!#\\$]+\.)+[^<>()[\]\\.,;:\s@\\"!#\\$]{2,})$/;
+      const emailData = Object.values(this.data[indexNum]).filter((x: any) =>
+        emailRegex.test(x)
+      );
+      this.selectedEmails = this.selectedEmails.concat(emailData);
     });
+    this.selectedEmails = [...new Set(this.selectedEmails)];
     if (this.selectedEmails.length > 0) {
       this.emailLoad.emit({
         emails: this.selectedEmails,
         emailFilter: this.filterQuery,
       });
+      this.noEmail.emit(false);
+    } else {
+      this.noEmail.emit(true);
     }
     this.selectedItemIndexes = [];
     this.isAllSelected = false;
@@ -864,7 +860,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
 
     if (filterObject?.filters?.length && filterObject?.logic) {
       const { logic } = filterObject;
-      let emailsList: string[] | undefined;
+      let emailsList: any;
       if (logic === 'and') {
         emailsList = this.dataset?.records
           ?.map((data) => {
@@ -904,6 +900,17 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
           })
           ?.filter(Boolean);
       }
+
+      //Checking email in all Data
+      //Checking email in all Data
+      const emailRegex =
+        /^(([^<>()[\]\\.,;:\s@\\"!#\\$]{3,}(\.[^<>()[\]\\.,;:\s@\\"!#\\$]+)*)|(\\".+\\"))@(([^<>()[\]\\.,;:\s@\\"!#\\$]+\.)+[^<>()[\]\\.,;:\s@\\"!#\\$]{2,})$/;
+      this.dataset?.records?.forEach((dataVal: any) => {
+        const emailData = Object.values(dataVal).filter((x: any) =>
+          emailRegex.test(x)
+        );
+        emailsList = emailsList.concat(emailData);
+      });
       if (emailsList?.length) {
         this.selectedEmails = [
           ...new Set([...this.selectedEmails, ...emailsList]),
@@ -914,6 +921,9 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
           emails: this.selectedEmails,
           emailFilter: this.filterQuery,
         });
+        this.noEmail.emit(false);
+      } else {
+        this.noEmail.emit(true);
       }
     }
   }
