@@ -2363,7 +2363,8 @@
 				"padding": "******",
 				"searchable": "******",
 				"sortable": "******",
-				"title": "******"
+				"title": "******",
+				"tooltip": "******"
 			},
 			"map": {
 				"defaultTitle": "******",
@@ -2392,7 +2393,8 @@
 				"selector": {
 					"collapse": "******",
 					"expand": "******"
-				}
+				},
+				"tooltip": "******"
 			}
 		},
 		"workflow": {
