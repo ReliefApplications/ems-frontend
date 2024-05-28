@@ -24,7 +24,7 @@ import { GET_RESOURCE } from '../../graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
-import { selectFieldTypes } from '../../constant';
+import { emailRegex, selectFieldTypes } from '../../constant';
 import { FieldStore } from '../../models/email.const';
 
 /**
@@ -699,9 +699,6 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
    * @param element Input Element
    */
   addEmailManually(element: HTMLInputElement): void {
-    const emailRegex =
-      /^(([^<>()[\]\\.,;:\s@\\"!#\\$]{3,}(\.[^<>()[\]\\.,;:\s@\\"!#\\$]+)*)|(\\".+\\"))@(([^<>()[\]\\.,;:\s@\\"!#\\$]+\.)+[^<>()[\]\\.,;:\s@\\"!#\\$]{2,})$/;
-
     if (
       emailRegex.test(element.value) &&
       !this.selectedEmails.includes(element?.value)
@@ -807,8 +804,6 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
           this.selectedEmails.push(this.emails[itemIndex]);
         }
       }
-      const emailRegex =
-        /^(([^<>()[\]\\.,;:\s@\\"!#\\$]{3,}(\.[^<>()[\]\\.,;:\s@\\"!#\\$]+)*)|(\\".+\\"))@(([^<>()[\]\\.,;:\s@\\"!#\\$]+\.)+[^<>()[\]\\.,;:\s@\\"!#\\$]{2,})$/;
       const emailData = Object.values(this.data[indexNum]).filter((x: any) =>
         emailRegex.test(x)
       );
@@ -903,8 +898,6 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
 
       //Checking email in all Data
       //Checking email in all Data
-      const emailRegex =
-        /^(([^<>()[\]\\.,;:\s@\\"!#\\$]{3,}(\.[^<>()[\]\\.,;:\s@\\"!#\\$]+)*)|(\\".+\\"))@(([^<>()[\]\\.,;:\s@\\"!#\\$]+\.)+[^<>()[\]\\.,;:\s@\\"!#\\$]{2,})$/;
       this.dataset?.records?.forEach((dataVal: any) => {
         const emailData = Object.values(dataVal).filter((x: any) =>
           emailRegex.test(x)
