@@ -33,6 +33,7 @@ export const extendWidgetForm = <
     showHeader: new FormControl(get(settings, 'showHeader', true)),
     hideEmpty: new FormControl(get(settings, 'hideEmpty', false)),
     expandable: new FormControl(get(settings, 'expandable', false)),
+    tooltip: new FormControl(get(settings, 'tooltip', null)),
     style: new FormControl(get(settings, 'style', '')),
   };
   Object.assign(controls, specificControls);
@@ -46,6 +47,7 @@ export const extendWidgetForm = <
           showHeader: FormControl<boolean>;
           hideEmpty: FormControl<boolean>;
           expandable: FormControl<boolean>;
+          tooltip: FormControl<string>;
           style: FormControl<string>;
         } & T2
       >;
