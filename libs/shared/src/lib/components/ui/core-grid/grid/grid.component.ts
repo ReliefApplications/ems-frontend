@@ -775,31 +775,36 @@ export class GridComponent
    * Expands text in a full window modal.
    *
    * @param item Item to display data of.
-   * @param field field name.
+   * @param fieldName field name.
+   * @param fieldTitle title of the field
    */
-  public async onExpandText(item: any, field: string): Promise<void> {
+  public async onExpandText(
+    item: any,
+    fieldName: string,
+    fieldTitle: string
+  ): Promise<void> {
     // Lazy load expended comment component
     const { ExpandedCommentComponent } = await import(
       '../expanded-comment/expanded-comment.component'
     );
     const dialogRef = this.dialog.open(ExpandedCommentComponent, {
       data: {
-        title: field,
-        value: get(item, field),
+        title: fieldTitle,
+        value: get(item, fieldName),
         // Disable edition if cannot update / cannot do inline edition / cannot update item / field is readonly
         readonly:
           !this.actions.update ||
           !this.editable ||
           !item.canUpdate ||
-          this.fields.find((val) => val.name === field).meta.readOnly,
+          this.fields.find((val) => val.name === fieldName).meta.readOnly,
       },
       autoFocus: false,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       // Only update if value is not null or undefined, and different from previous value
-      if (!isNil(value) && value !== get(item, field)) {
+      if (!isNil(value) && value !== get(item, fieldName)) {
         // Create update
-        const update = { [field]: value };
+        const update = { [fieldName]: value };
         // Emit update so the grid can handle the event and update its content
         this.action.emit({ action: 'edit', item, value: update });
       }
