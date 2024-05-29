@@ -170,9 +170,6 @@ export class MapPolygonsService {
             geometry: adminGeometry,
           });
         }
-        if (adminId === 'FR') {
-          console.log(adminGeometry);
-        }
       });
     }
     return {
