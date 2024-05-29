@@ -1,3 +1,10 @@
+# [2.15.0-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.15.0-rc.1...v2.15.0-rc.2) (2024-05-29)
+
+
+### Bug Fixes
+
+* overlay container would not appear fullscreen in SUI due to cdk overlay container z-index being too low ([b684dbb](https://github.com/ReliefApplications/ems-frontend/commit/b684dbbedbd21258c0559242ea67603f5e1f4a69))
+
 # [2.15.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.14.2...v2.15.0-rc.1) (2024-05-28)
 
 
