@@ -20,6 +20,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UploadsModule } from '@progress/kendo-angular-upload';
 import { ButtonModule as uiButtonModule, TextareaModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { IconsModule } from '@progress/kendo-angular-icons';
 
 /** Model fot the input data */
 interface DialogData {
@@ -47,6 +48,7 @@ interface DialogData {
     AddUserModule,
     TranslateModule,
     UploadsModule,
+    IconsModule,
     DialogModule,
     TextareaModule,
     uiButtonModule,
