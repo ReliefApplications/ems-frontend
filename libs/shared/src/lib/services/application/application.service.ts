@@ -146,6 +146,8 @@ export class ApplicationService {
   public customStyle?: HTMLStyleElement;
   /** Custom style edited */
   public customStyleEdited = false;
+  /** application has errors */
+  public hasErrors = false;
 
   /** @returns Path to download application users */
   get usersDownloadPath(): string {
@@ -241,7 +243,12 @@ export class ApplicationService {
           asRole,
         },
       })
-      .subscribe(async ({ data }) => {
+      .subscribe(async ({ errors, data }) => {
+        if (errors) {
+          this.hasErrors = true;
+        } else {
+          this.hasErrors = false;
+        }
         // extend user abilities for application
         if (data.application) {
           // Map all previously configured icons in v4 to v6 so on application edit, new icons are saved in DB
