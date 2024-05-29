@@ -221,7 +221,7 @@ export class SelectMenuComponent
    * @param options Select menu options query list items
    */
   private handleOptionsQueryChange(options: QueryList<SelectOptionComponent>) {
-    if (this.value) {
+    if (!isNil(this.value)) {
       this.selectedValues.push(
         this.value instanceof Array ? [...this.value] : this.value
       );
@@ -258,7 +258,7 @@ export class SelectMenuComponent
   writeValue(value: string | string[] | null): void {
     if (value && value instanceof Array) {
       this.selectedValues = [...value];
-    } else if (value) {
+    } else if (!isNil(value)) {
       this.selectedValues = [value];
     }
   }
@@ -375,8 +375,10 @@ export class SelectMenuComponent
    */
   getValuesLabel(selectedValues: any[]) {
     let values = this.optionList.filter((val: any) => {
-      if (selectedValues.find((selVal) => val.value == selVal)) {
-        return val;
+      for (const selVal of selectedValues) {
+        if (selVal === val.value) {
+          return val;
+        }
       }
     });
     return (values = values.map((val: any) => {
