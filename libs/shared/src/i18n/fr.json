@@ -2610,6 +2610,7 @@
 			"settings": {
 				"actions": "Actions",
 				"emailCreated": "Nouvelle notification par e-mail créée",
+				"emailDeleted": "Notification par e-mail supprimée avec succès",
 				"emailEdited": "Notification par e-mail modifiée avec succès.",
 				"emailFailMsg": "Oups !... Quelque chose ne va pas lors de l'envoi d'un e-mail",
 				"emailSent": "La notification par e-mail a été enregistrée et envoyée avec succès"

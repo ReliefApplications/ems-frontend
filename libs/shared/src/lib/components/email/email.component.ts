@@ -626,6 +626,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
                 );
               } else {
                 if (data) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'pages.application.settings.emailDeleted'
+                    )
+                  );
                   this.emailService.emailListLoading = true;
                   this.distributionLists = [];
                   this.emailNotifications = [];

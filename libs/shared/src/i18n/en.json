@@ -2610,6 +2610,7 @@
 			"settings": {
 				"actions": "Actions",
 				"emailCreated": "New email notification created",
+				"emailDeleted": "Email notification deleted successfully",
 				"emailEdited": "Email notification edited successfully",
 				"emailFailMsg": "Oops!... Something went wrong while sending the email",
 				"emailSent": "Email notification has successfully been saved and sent"

@@ -2610,6 +2610,7 @@
 			"settings": {
 				"actions": "******",
 				"emailCreated": "******",
+				"emailDeleted": "******",
 				"emailEdited": "******",
 				"emailFailMsg": "******",
 				"emailSent": "******"
