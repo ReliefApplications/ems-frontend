@@ -1,6 +1,8 @@
 <editor
   #editor
+  (onInit)="editorLoading = false"
   [init]="editorConfig"
   [(ngModel)]="editorContent"
   (ngModelChange)="onEditorContentChange()"
 ></editor>
+<ui-spinner *ngIf="editorLoading"></ui-spinner>

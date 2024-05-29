@@ -10,6 +10,7 @@ import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
 import { LayerDatasourceType } from '../../models/layer.model';
 import { getWithExpiry, setWithExpiry } from '../../utils/cache-with-expiry';
+import area from '@turf/area';
 
 /** Available admin identifiers */
 export type AdminIdentifier =
@@ -95,7 +96,11 @@ export class MapPolygonsService {
                 return;
               }
             }
-            this.admin0s = mapping;
+            this.admin0s = mapping.sort((a: any, b: any) => {
+              const areaA = area(a.polygons);
+              const areaB = area(b.polygons);
+              return areaA - areaB;
+            });
             setWithExpiry(CACHE_KEY, mapping, CACHE_TTL).then(() => {
               this.admin0sReady.next(true);
             });
@@ -104,7 +109,11 @@ export class MapPolygonsService {
       };
       const cacheValue = await getWithExpiry(CACHE_KEY);
       if (cacheValue) {
-        this.admin0s = cacheValue;
+        this.admin0s = cacheValue.sort((a: any, b: any) => {
+          const areaA = area(a.polygons);
+          const areaB = area(b.polygons);
+          return areaA - areaB;
+        });
         this.admin0sReady.next(true);
       } else {
         fetchAdmin0();

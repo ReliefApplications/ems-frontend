@@ -31,6 +31,7 @@ export * from './lib/services/sass/sass.service';
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
 export * from './lib/directives/fullscreen/public-api';
+export * from './lib/directives/async-monaco-editor/public-api';
 
 // === GUARDS ===
 export * from './lib/guards/permission.guard';

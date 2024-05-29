@@ -217,12 +217,12 @@ export class DashboardComponent
             }),
             { error: true }
           );
-          this.router.navigate(['/applications']);
+          this.router.navigate(['/']);
         }
       })
       .catch((err) => {
         this.snackBar.openSnackBar(err.message, { error: true });
-        this.router.navigate(['/applications']);
+        this.router.navigate(['/']);
       });
   }
 

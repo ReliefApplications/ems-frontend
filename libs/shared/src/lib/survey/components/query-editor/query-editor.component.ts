@@ -11,6 +11,7 @@ import { QueryEditorModel } from './query-editor.model';
 import { QuestionAngular } from 'survey-angular-ui';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
+import { AsyncMonacoEditorDirective } from '../../../directives/async-monaco-editor/async-monaco-editor.directive';
 
 /**
  * Query editor component for Form Builder.
@@ -20,7 +21,13 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'shared-query-editor',
   standalone: true,
-  imports: [CommonModule, MonacoEditorModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    MonacoEditorModule,
+    FormsModule,
+    ReactiveFormsModule,
+    AsyncMonacoEditorDirective,
+  ],
   templateUrl: './query-editor.component.html',
   styleUrls: ['./query-editor.component.scss'],
 })
