@@ -1087,6 +1087,13 @@ export class EmailService {
                   key.split('_')[3]
                 }`
               ] = value;
+            } else if (key.split('_')[4] === 'id') {
+              // Takes the created by and last updated by values and persists them.
+              result[
+                `_${key.split('_')[1]}.${key.split('_')[2]}._${
+                  key.split('_')[4]
+                }`
+              ] = value;
             } else {
               // Takes the created by and last updated by values and persists them.
               result[
