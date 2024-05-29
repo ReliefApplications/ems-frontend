@@ -1,3 +1,10 @@
+# [2.15.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.14.2...v2.15.0-rc.1) (2024-05-28)
+
+
+### Features
+
+* add tooltip to widgets AB[#92824](https://github.com/ReliefApplications/ems-frontend/issues/92824) ([3154960](https://github.com/ReliefApplications/ems-frontend/commit/3154960b2178a339f9d60eeca92096ba8ee6465d))
+
 ## [2.14.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.14.1...v2.14.2) (2024-05-28)
 
 

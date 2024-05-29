@@ -62,9 +62,22 @@ ui-checkbox {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    flex: 1;
+    // flex: 1;
     margin: unset;
     font-size: 14px;
+  }
+
+  .widget-tooltip {
+    @apply bg-primary-500;
+    flex-shrink: 0;
+    padding: 0 0.35rem;
+    border-radius: 100%;
+    color: white;
+    font-size: 0.75rem !important;
+    font-weight: bold;
+    height: 17px;
+    line-height: 17px;
+    cursor: help;
   }
 
   .hide-border & {

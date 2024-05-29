@@ -2,7 +2,13 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { IconModule, ToggleModule, TooltipModule } from '@oort-front/ui';
+import {
+  FormWrapperModule,
+  IconModule,
+  TextareaModule,
+  ToggleModule,
+  TooltipModule,
+} from '@oort-front/ui';
 
 /** Component for selecting the widget display options */
 @Component({
@@ -16,6 +22,8 @@ import { IconModule, ToggleModule, TooltipModule } from '@oort-front/ui';
     TranslateModule,
     IconModule,
     TooltipModule,
+    FormWrapperModule,
+    TextareaModule,
   ],
   templateUrl: './display-settings.component.html',
   styleUrls: ['./display-settings.component.scss'],

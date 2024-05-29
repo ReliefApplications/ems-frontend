@@ -2498,7 +2498,8 @@
 				"padding": "Use widget inner padding",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",
-				"title": "Widget display"
+				"title": "Widget display",
+				"tooltip": "Widget tooltip"
 			},
 			"map": {
 				"defaultTitle": "Map Widget",
@@ -2527,7 +2528,8 @@
 				"selector": {
 					"collapse": "Hide widget selector",
 					"expand": "Show widget selector"
-				}
+				},
+				"tooltip": "Leave empty to hide"
 			}
 		},
 		"workflow": {

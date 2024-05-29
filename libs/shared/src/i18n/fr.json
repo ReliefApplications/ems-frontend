@@ -2498,7 +2498,8 @@
 				"padding": "Utiliser la marge intérieure du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",
-				"title": "Affichage des widgets"
+				"title": "Affichage des widgets",
+				"tooltip": "Info-bulle"
 			},
 			"map": {
 				"defaultTitle": "Widget Carte",
@@ -2527,7 +2528,8 @@
 				"selector": {
 					"collapse": "Fermer la sélection de widget",
 					"expand": "Afficher la sélection de widget"
-				}
+				},
+				"tooltip": "Laissez vide pour ne pas afficher"
 			}
 		},
 		"workflow": {
