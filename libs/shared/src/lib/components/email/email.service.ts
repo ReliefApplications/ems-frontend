@@ -176,6 +176,8 @@ export class EmailService {
   public separateEmail = [];
   /** Selected Fields */
   public fields: FieldStore[] = [];
+  /** Selected cacheDistributionList */
+  public cacheDistributionList: any = [];
 
   /**
    * Generates new dataset group.

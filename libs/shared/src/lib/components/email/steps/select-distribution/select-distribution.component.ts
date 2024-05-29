@@ -140,6 +140,18 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     this.showToTemplate = true;
     this.showCCTemplate = true;
     this.showBccTemplate = true;
+    const existingDataIndex = this.emailService.cacheDistributionList
+      .map((x: any) => x.node)
+      .map((y: any) => y.emailDistributionList)
+      .findIndex(
+        (x: any) =>
+          x.name.toLowerCase() ==
+          this.emailDistributionList?.name?.trim().toLowerCase()
+      );
+    if (existingDataIndex > -1) {
+      this.distributionListId =
+        this.emailService.cacheDistributionList[existingDataIndex].node.id;
+    }
   }
 
   // eslint-disable-next-line jsdoc/require-description
@@ -292,6 +304,7 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
           }
         });
         this.cacheDistributionList = this.distributionLists;
+        this.emailService.cacheDistributionList = this.cacheDistributionList;
         this.distributionLists = this.cacheDistributionList.slice(
           this.distributionPageInfo.pageSize *
             this.distributionPageInfo.pageIndex,
