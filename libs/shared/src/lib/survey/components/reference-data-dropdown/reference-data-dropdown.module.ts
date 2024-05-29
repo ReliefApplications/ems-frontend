@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReferenceDataDropdownComponent } from './reference-data-dropdown.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { FormWrapperModule } from '@oort-front/ui';
+import { FormWrapperModule, ButtonModule, TooltipModule } from '@oort-front/ui';
 import { ReferenceDataSelectComponent } from '../../../components/controls/public-api';
 
 /**
@@ -18,6 +18,8 @@ import { ReferenceDataSelectComponent } from '../../../components/controls/publi
     TranslateModule,
     FormWrapperModule,
     ReferenceDataSelectComponent,
+    ButtonModule,
+    TooltipModule,
   ],
   exports: [ReferenceDataDropdownComponent],
 })

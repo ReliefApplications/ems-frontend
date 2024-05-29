@@ -80,9 +80,11 @@ export class SelectMenuComponent
   /** Search control */
   public searchControl = new FormControl('', { nonNullable: true });
   /** Loading state */
-  public loading = false;
+  @Input() public loading = false;
   /** Subscription to the search control */
   private searchSubscriptionActive!: Subscription;
+  /** handles resetting subscriptions */
+  public resetSubscriptions$ = new Subject<void>();
 
   /** Array to store the values selected */
   public selectedValues: any[] = [];
@@ -225,20 +227,27 @@ export class SelectMenuComponent
       );
     }
     options.forEach((option) => {
-      option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
-        next: (isSelected: boolean) => {
-          this.updateSelectedValues(option, isSelected);
-          this.onChangeFunction();
-        },
-      });
+      option.optionClick
+        .pipe(takeUntil(this.destroy$), takeUntil(this.resetSubscriptions$))
+        .subscribe({
+          next: (isSelected: boolean) => {
+            this.updateSelectedValues(option, isSelected);
+            this.onChangeFunction();
+          },
+        });
       // Initialize any selected values
-      if (this.selectedValues.includes(option.value)) {
+      if (this.selectedValues.find((selVal) => selVal == option.value)) {
         option.selected = true;
       } else {
         option.selected = false;
       }
       this.setDisplayTriggerText();
     });
+  }
+
+  /** Reset subscriptions */
+  resetSubscriptions() {
+    this.resetSubscriptions$.next();
   }
 
   /**
@@ -366,7 +375,7 @@ export class SelectMenuComponent
    */
   getValuesLabel(selectedValues: any[]) {
     let values = this.optionList.filter((val: any) => {
-      if (selectedValues.includes(val.value)) {
+      if (selectedValues.find((selVal) => val.value == selVal)) {
         return val;
       }
     });
@@ -446,9 +455,8 @@ export class SelectMenuComponent
           this.applySelectListDisplayAnimation(true);
         }, 0);
         // Subscribe to all actions that close the select (outside click, item click, any other overlay detach)
-        this.selectClosingActionsSubscription = this.selectClosingActions()
-          .pipe(takeUntil(this.destroy$))
-          .subscribe(
+        this.selectClosingActionsSubscription =
+          this.selectClosingActions().subscribe(
             // If so, destroy select
             () => this.closeSelectPanel()
           );
@@ -544,6 +552,9 @@ export class SelectMenuComponent
     }
     if (this.clickOutsideListener) {
       this.clickOutsideListener();
+    }
+    if (this.selectClosingActionsSubscription) {
+      this.selectClosingActionsSubscription.unsubscribe();
     }
     this.destroy$.next();
     this.destroy$.complete();

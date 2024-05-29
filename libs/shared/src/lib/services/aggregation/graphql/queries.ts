@@ -96,6 +96,7 @@ export const GET_REFERENCE_DATA_AGGREGATION_DATA = gql`
     $first: Int
     $skip: Int
     $contextFilters: JSON
+    $queryParams: JSON
     $at: Date
     $sortOrder: String
     $sortField: String
@@ -109,6 +110,7 @@ export const GET_REFERENCE_DATA_AGGREGATION_DATA = gql`
       first: $first
       skip: $skip
       contextFilters: $contextFilters
+      queryParams: $queryParams
       at: $at
       sortOrder: $sortOrder
       sortField: $sortField

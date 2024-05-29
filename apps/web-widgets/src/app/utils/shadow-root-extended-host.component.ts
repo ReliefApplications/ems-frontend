@@ -1,5 +1,5 @@
 import { Component, ElementRef, Injector, OnInit, inject } from '@angular/core';
-import { ShadowDomService, SnackbarService } from '@oort-front/ui';
+import { SnackbarService } from '@oort-front/ui';
 import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 import { settings } from 'survey-core';
 
@@ -8,11 +8,8 @@ import { settings } from 'survey-core';
  */
 @Component({ template: '' })
 export class ShadowRootExtendedHostComponent implements OnInit {
+  /** UI snackbar service */
   snackBarService: SnackbarService = inject(SnackbarService);
-  shadowDomService: ShadowDomService = inject(ShadowDomService);
-  /**
-   * Shadow Dom service
-   */
 
   /**
    * ShadowRootExtendedHostClass that would set up all needed features
@@ -25,7 +22,6 @@ export class ShadowRootExtendedHostComponent implements OnInit {
     const kendoPopupHost = injector.get(POPUP_CONTAINER);
     kendoPopupHost.nativeElement = el.nativeElement.shadowRoot;
     this.snackBarService.shadowDom = el.nativeElement.shadowRoot;
-    this.shadowDomService.shadowRoot = el.nativeElement.shadowRoot;
   }
 
   ngOnInit(): void {

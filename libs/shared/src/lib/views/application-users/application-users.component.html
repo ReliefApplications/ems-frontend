@@ -1,32 +1,45 @@
 <!-- Header -->
-<div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
+<div class="flex gap-8 justify-between flex-col sm:flex-row">
   <!-- Actions -->
-  <div class="flex gap-2 items-center ml-auto">
-    <ui-button
-      icon="file_download"
-      category="secondary"
-      variant="primary"
-      [uiMenuTriggerFor]="menu"
+  <div
+    class="flex gap-8 justify-between flex-col sm:flex-row items-center w-full"
+  >
+    <shared-users-filter
+      #filter
+      (filter)="filters = $event"
+      [loading]="loading"
+      [roles]="roles"
     >
-      {{
-        'common.exportObject'
-          | translate : { name: 'common.user.few' | translate }
-      }}
-    </ui-button>
-    <ui-menu #menu>
-      <button uiMenuItem (click)="onExport('csv')">.csv</button>
-      <button uiMenuItem (click)="onExport('xlsx')">.xlsx</button>
-    </ui-menu>
-    <ui-button
-      icon="send"
-      category="secondary"
-      variant="primary"
-      (click)="onInvite()"
-    >
-      {{ 'components.users.invite.confirm' | translate }}
-    </ui-button>
+    </shared-users-filter>
+    <div class="flex gap-2">
+      <ui-button
+        icon="file_download"
+        category="secondary"
+        variant="primary"
+        [uiMenuTriggerFor]="menu"
+      >
+        {{
+          'common.exportObject'
+            | translate : { name: 'common.user.few' | translate }
+        }}
+      </ui-button>
+      <ui-menu #menu>
+        <button uiMenuItem (click)="onExport('csv')">.csv</button>
+        <button uiMenuItem (click)="onExport('xlsx')">.xlsx</button>
+      </ui-menu>
+      <ui-button
+        icon="send"
+        category="secondary"
+        variant="primary"
+        (click)="onInvite()"
+      >
+        {{ 'components.users.invite.confirm' | translate }}
+      </ui-button>
+    </div>
   </div>
 </div>
+<ng-container *ngTemplateOutlet="filter.expandedFilter"></ng-container>
+<div class="w-full h-8"></div>
 <ui-tabs>
   <!-- Manual assignment -->
   <ui-tab>
@@ -35,7 +48,9 @@
     }}</ng-container>
     <shared-user-list
       [roles]="roles"
+      [filter]="filters"
       [positionAttributeCategories]="positionAttributeCategories"
+      (loadingStatusChange)="loading = $event"
     ></shared-user-list>
   </ui-tab>
   <!-- Automated assignment -->
@@ -43,6 +58,10 @@
     <ng-container ngProjectAs="label">{{
       'components.application.users.auto' | translate
     }}</ng-container>
-    <shared-user-list [autoAssigned]="true"></shared-user-list>
+    <shared-user-list
+      [filter]="filters"
+      [autoAssigned]="true"
+      (loadingStatusChange)="loading = $event"
+    ></shared-user-list>
   </ui-tab>
 </ui-tabs>

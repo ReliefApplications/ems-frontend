@@ -6,6 +6,7 @@ import * as L from 'leaflet';
 export interface MapConstructorSettings {
   title?: string;
   initialState: {
+    useWebMapInitialState?: boolean;
     viewpoint: {
       center: {
         latitude: number;
@@ -27,6 +28,8 @@ export interface MapConstructorSettings {
   pmIgnore?: boolean;
   controls: MapControls;
   arcGisWebMap?: string;
+  geographicExtents?: { value: string; extent: string }[];
+  automationRules?: any[];
 }
 
 /** Available leaflet event types. */

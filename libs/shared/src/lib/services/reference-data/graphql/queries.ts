@@ -11,6 +11,7 @@ export const GET_REFERENCE_DATA_BY_ID = gql`
       type
       apiConfiguration {
         name
+        endpoint
         graphQLEndpoint
         authType
       }
@@ -20,6 +21,15 @@ export const GET_REFERENCE_DATA_BY_ID = gql`
       path
       data
       graphQLFilter
+      pageInfo {
+        strategy
+        totalCountField
+        pageSizeVar
+        offsetVar
+        cursorField
+        cursorVar
+        pageVar
+      }
     }
   }
 `;

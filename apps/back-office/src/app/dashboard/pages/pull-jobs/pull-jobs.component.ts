@@ -9,6 +9,8 @@ import {
   ConfirmService,
   UnsubscribeComponent,
   PullJobsNodesQueryResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { GET_PULL_JOBS } from './graphql/queries';
@@ -19,10 +21,6 @@ import {
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { ApolloQueryResult } from '@apollo/client';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../utils/update-queries';
 import { takeUntil } from 'rxjs';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 

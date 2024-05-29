@@ -9,6 +9,7 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { isEqual } from 'lodash';
+import { ResizeEvent } from 'angular-resizable-element';
 
 /**
  * Aggregation pipeline component.
@@ -21,8 +22,8 @@ import { isEqual } from 'lodash';
 export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   /** Public variable for stage type. */
   public stageType = PipelineStage;
-  /** Array to hold the list of stages. */
-  public stageList: string[] = Object.values(PipelineStage);
+  /** Input array to hold the list of stages. */
+  @Input() stageList: string[] = Object.values(PipelineStage);
   /** Input decorator for fields$. */
   @Input() public fields$!: Observable<any[]>;
   /** Input decorator for metaFields$. */
@@ -31,6 +32,17 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   @Input() public filterFields$!: Observable<any[]>;
   /** Array to hold the filter fields. */
   public filterFields: any[] = [];
+
+  /** Editor options */
+  public editorOptions = {
+    automaticLayout: true,
+    theme: 'vs-dark',
+    language: 'json',
+    formatOnPaste: true,
+    fixedOverflowWidgets: true,
+  };
+  /** size style of editor */
+  public style: any = {};
 
   /** Array to hold the meta fields. */
   public metaFields: any[] = [];
@@ -134,5 +146,32 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
 
     this.pipelineForm.removeAt(event.previousIndex);
     this.pipelineForm.insert(event.currentIndex, temp);
+  }
+
+  /**
+   * On resizing action
+   *
+   * @param event resize event
+   */
+  onResizing(event: ResizeEvent): void {
+    this.style = {
+      // width: `${event.rectangle.width}px`,
+      height: `${event.rectangle.height}px`,
+    };
+  }
+
+  /**
+   * Check if resize event is valid
+   *
+   * @param event resize event
+   * @returns boolean
+   */
+  validate(event: ResizeEvent): boolean {
+    const minHeight = 300;
+    if (event.rectangle.height && event.rectangle.height < minHeight) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }

@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import {
-  CreateDashboardWithContextMutationResponse,
   Dashboard,
   EditDashboardMutationResponse,
   WIDGET_TYPES,
@@ -11,13 +10,9 @@ import {
   EditPageContextMutationResponse,
   PageContextT,
 } from '../../models/page.model';
-import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { Apollo } from 'apollo-angular';
-import {
-  EDIT_DASHBOARD,
-  UPDATE_PAGE_CONTEXT,
-  CREATE_DASHBOARD_WITH_CONTEXT,
-} from './graphql/mutations';
+import { EDIT_DASHBOARD, UPDATE_PAGE_CONTEXT } from './graphql/mutations';
 import get from 'lodash/get';
 import { GraphQLError } from 'graphql';
 
@@ -30,12 +25,16 @@ import { GraphQLError } from 'graphql';
 export class DashboardService {
   /** List of available widgets */
   public availableWidgets = WIDGET_TYPES;
-  /** Current dashboard */
-  private dashboard = new BehaviorSubject<Dashboard | null>(null);
+  /** If dashboard content should be updated and empty widgets hidden */
+  public widgetContentRefreshed = new BehaviorSubject<any>(null);
+  /** Shared property to keep track of current loaded dashboard widgets */
+  public widgets: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  /** Observable of current loaded dashboard widgets */
+  public widgets$ = this.widgets.asObservable();
 
-  /** @returns Current dashboard as observable */
-  get dashboard$(): Observable<Dashboard | null> {
-    return this.dashboard.asObservable();
+  /** @returns To listen when dashboard widgets that can be hidden refreshes its contents */
+  get widgetContentRefreshed$(): Observable<any> {
+    return this.widgetContentRefreshed.asObservable();
   }
 
   /**
@@ -88,22 +87,6 @@ export class DashboardService {
   }
 
   /**
-   * Opens a new dashboard.
-   *
-   * @param dashboard dashboard to open.
-   */
-  openDashboard(dashboard: Dashboard): void {
-    this.dashboard.next(dashboard);
-  }
-
-  /**
-   * Closes the dashboard.
-   */
-  closeDashboard(): void {
-    this.dashboard.next(null);
-  }
-
-  /**
    * Finds the settings component from the widget.
    *
    * @param widget widget to get settings of.
@@ -121,58 +104,19 @@ export class DashboardService {
   /**
    * Updates the context of the page.
    *
+   * @param pageId id of the page to update context from
    * @param context The new context of the page
    * @returns promise the mutation result
    */
-  public updateContext(context: PageContextT) {
-    const dashboard = this.dashboard.getValue();
-    if (!dashboard?.page?.id) return;
+  public updateContext(pageId: string | undefined, context: PageContextT) {
+    if (!pageId) return;
 
-    const res = firstValueFrom(
+    return firstValueFrom(
       this.apollo.mutate<EditPageContextMutationResponse>({
         mutation: UPDATE_PAGE_CONTEXT,
         variables: {
-          id: dashboard.page.id,
+          id: pageId,
           context,
-        },
-      })
-    );
-
-    res.then(({ data }) => {
-      if (data) {
-        this.dashboard.next({
-          ...dashboard,
-          page: {
-            ...dashboard.page,
-            context,
-            contentWithContext: data.editPageContext.contentWithContext,
-          },
-        });
-      }
-    });
-
-    return res;
-  }
-
-  /**
-   * Duplicates a dashboard and adds context to it.
-   *
-   * @param page Page to copy content from
-   * @param context The type of context to be added to the dashboard
-   * @param id The id of the context to be added to the dashboard
-   * @returns The newly created dashboard
-   */
-  public createDashboardWithContext(
-    page: string,
-    context: 'element' | 'record',
-    id: string | number
-  ) {
-    return firstValueFrom(
-      this.apollo.mutate<CreateDashboardWithContextMutationResponse>({
-        mutation: CREATE_DASHBOARD_WITH_CONTEXT,
-        variables: {
-          page,
-          [context]: id,
         },
       })
     );
@@ -181,17 +125,21 @@ export class DashboardService {
   /**
    * Edit dashboard name
    *
+   * @param dashboardId id of the dashboard
    * @param name new name
    * @param callback callback method
    */
-  public editName(name: string, callback?: any): void {
-    const dashboard = this.dashboard.getValue();
-    if (!dashboard?.id) return;
+  public editName(
+    dashboardId: string | undefined,
+    name: string,
+    callback?: any
+  ): void {
+    if (dashboardId) return;
     this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD,
         variables: {
-          id: dashboard.id,
+          id: dashboardId,
           name,
         },
       })
@@ -203,43 +151,45 @@ export class DashboardService {
   /**
    * Saves the buttons of the dashboard.
    *
+   * @param dashboardId id of the dashboard
    * @param buttons Button actions to save
+   * @returns apollo mutation
    */
-  public saveDashboardButtons(buttons: Dashboard['buttons']) {
-    const dashboard = this.dashboard.getValue();
-    if (!dashboard?.id) return;
+  public saveDashboardButtons(
+    dashboardId: string | undefined,
+    buttons: Dashboard['buttons']
+  ) {
+    if (!dashboardId) return;
     buttons = buttons || [];
 
-    this.apollo
-      .mutate<EditDashboardMutationResponse>({
-        mutation: EDIT_DASHBOARD,
-        variables: {
-          id: dashboard.id,
-          buttons,
-        },
-      })
-      .subscribe(() => {
-        this.dashboard.next({
-          ...dashboard,
-          buttons,
-        });
-      });
+    return this.apollo.mutate<EditDashboardMutationResponse>({
+      mutation: EDIT_DASHBOARD,
+      variables: {
+        id: dashboardId,
+        buttons,
+      },
+    });
   }
 
   /**
    * Edit the dashboard's grid options.
    *
+   * @param dashboardId id of the dashboard
    * @param gridOptions new grid options
    * @param callback callback method
+   * @returns mutation
    */
-  editGridOptions(gridOptions: any, callback?: any): void {
-    const dashboard = this.dashboard.getValue();
-    if (!dashboard?.id) return;
-    this.apollo
+  editGridOptions(
+    dashboardId: string | undefined,
+    gridOptions: any,
+    callback?: any
+  ) {
+    if (!dashboardId) return;
+    return this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD,
         variables: {
-          id: dashboard.id,
+          id: dashboardId,
           gridOptions,
         },
       })
@@ -249,10 +199,6 @@ export class DashboardService {
           this.translate.instant('common.page.one')
         );
         if (!errors && data) {
-          this.dashboard.next({
-            ...dashboard,
-            gridOptions,
-          });
           if (callback) callback();
         }
       });

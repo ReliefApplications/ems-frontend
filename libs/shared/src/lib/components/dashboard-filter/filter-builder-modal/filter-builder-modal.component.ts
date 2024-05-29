@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   Inject,
+  OnChanges,
   OnDestroy,
   OnInit,
 } from '@angular/core';
@@ -24,6 +25,8 @@ import {
   CustomJSONEditorComponent,
   SurveyCustomJSONEditorPlugin,
 } from '../../form-builder/custom-json-editor/custom-json-editor.component';
+import { updateModalChoicesAndValue } from '../../../survey/global-properties/reference-data';
+import { HttpClient } from '@angular/common/http';
 //import 'survey-creator-core/survey-creator-core.i18n.min.js';
 
 /**
@@ -112,16 +115,17 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'readOnly',
   'isRequired',
   'placeHolder',
+  'useSummaryTagMode',
   'enableIf',
   'visibleIf',
   'tooltip',
+  'popupWidth',
   'referenceData',
   'referenceDataDisplayField',
   'isPrimitiveValue',
-  'referenceDataFilterFilterFromQuestion',
-  'referenceDataFilterForeignField',
-  'referenceDataFilterFilterCondition',
-  'referenceDataFilterLocalField',
+  'referenceDataVariableMapping',
+  '_referenceData',
+  '_graphQLVariables',
   'showSelectAllItem',
   'showNoneItem',
   'showClearButton',
@@ -137,6 +141,13 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'valueName',
   'inputType',
   'html',
+  'calendarType',
+  'gqlUrl',
+  'gqlQuery',
+  'gqlPath',
+  'gqlValueName',
+  'gqlTitleName',
+  'gqlVariableMapping',
 ];
 
 /**
@@ -163,7 +174,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   ],
 })
 export class FilterBuilderModalComponent
-  implements OnInit, AfterViewInit, OnDestroy
+  implements OnInit, AfterViewInit, OnChanges, OnDestroy
 {
   /** Survey creator instance */
   surveyCreator!: SurveyCreatorModel;
@@ -177,6 +188,7 @@ export class FilterBuilderModalComponent
    * @param referenceDataService reference data service
    * @param formHelpersService Shared form helper service.
    * @param snackBar Service that will be used to display the snackbar.
+   * @param http Http client
    */
   constructor(
     private formService: FormService,
@@ -184,7 +196,8 @@ export class FilterBuilderModalComponent
     @Inject(DIALOG_DATA) public data: DialogData,
     private referenceDataService: ReferenceDataService,
     private formHelpersService: FormHelpersService,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -194,6 +207,14 @@ export class FilterBuilderModalComponent
 
   ngAfterViewInit(): void {
     this.setFormBuilder();
+  }
+
+  ngOnChanges(): void {
+    if (this.surveyCreator) {
+      this.surveyCreator.survey.onAfterRenderQuestion.add(
+        this.formHelpersService.addQuestionTooltips
+      );
+    }
   }
 
   /**
@@ -208,6 +229,13 @@ export class FilterBuilderModalComponent
       questionTypes: QUESTION_TYPES,
     };
     this.surveyCreator = new SurveyCreatorModel(creatorOptions);
+
+    this.surveyCreator.onPreviewSurveyCreated.add((_: any, options: any) => {
+      const survey: SurveyModel = options.survey;
+      survey.onAfterRenderQuestion.add(
+        this.formHelpersService.addQuestionTooltips
+      );
+    });
 
     new SurveyCustomJSONEditorPlugin(this.surveyCreator);
 
@@ -234,22 +262,28 @@ export class FilterBuilderModalComponent
       }
     });
 
-    // add the rendering of custom properties
-    this.surveyCreator.survey.onAfterRenderQuestion.add(
-      renderGlobalProperties(this.referenceDataService) as any
-    );
-    (this.surveyCreator.onTestSurveyCreated as any).add(
-      (sender: any, opt: any) =>
-        opt.survey.onAfterRenderQuestion.add(
-          renderGlobalProperties(this.referenceDataService)
-        )
-    );
-
     // Set content
     const survey = new SurveyModel(
       this.data?.surveyStructure || DEFAULT_STRUCTURE
     );
+    this.formHelpersService.addUserVariables(survey);
     this.surveyCreator.JSON = survey.toJSON();
+
+    // add the rendering of custom properties
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      renderGlobalProperties(this.referenceDataService, this.http)
+    );
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      this.formHelpersService.addQuestionTooltips
+    );
+    this.surveyCreator.onPreviewSurveyCreated.add((sender: any, opt: any) => {
+      this.formHelpersService.addUserVariables(opt.survey);
+      opt.survey.onAfterRenderQuestion.add(
+        renderGlobalProperties(this.referenceDataService, this.http)
+      );
+    });
+
+    this.surveyCreator.onPropertyGridShowModal.add(updateModalChoicesAndValue);
   }
 
   /**

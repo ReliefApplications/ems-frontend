@@ -22,6 +22,7 @@ import { v4 as uuidv4 } from 'uuid';
 import get from 'lodash/get';
 import { GridsterComponent, GridsterItemComponent } from 'angular-gridster2';
 import { WidgetService } from '../../services/widget/widget.service';
+import { TabsComponent } from '../widgets/tabs/tabs.component';
 
 /** Component for the widgets */
 @Component({
@@ -46,7 +47,7 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
   @Output() edit: EventEmitter<any> = new EventEmitter();
   /** Change step workflow event emitter */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
-  /** Id of the ticket. Visible in the dom */
+  /** Id of the widget. Visible in the dom */
   @HostBinding()
   id = `widget-${uuidv4()}`;
   /** Reference to widget inner component */
@@ -56,13 +57,16 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
     | GridWidgetComponent
     | MapWidgetComponent
     | EditorComponent
-    | SummaryCardComponent;
+    | SummaryCardComponent
+    | TabsComponent;
+  /** Expanded state of the widget */
+  public expanded = false;
+  /** Loading state of the widget */
+  public loading = true;
   /** Html element containing widget custom style */
   private customStyle?: HTMLStyleElement;
   /** Previous position of the widget ( cols / x )  */
   private previousPosition?: { cols: number; x: number };
-  /** Expanded state of the widget */
-  public expanded = false;
 
   /** @returns would component block navigation */
   get canDeactivate() {
@@ -127,7 +131,8 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
         if (customStyle) {
           this.customStyle = customStyle;
         }
-      });
+      })
+      .finally(() => (this.loading = false));
   }
 
   ngOnChanges(changes: SimpleChanges): void {

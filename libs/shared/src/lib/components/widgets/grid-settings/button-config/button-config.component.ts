@@ -40,7 +40,7 @@ export class ButtonConfigComponent
   /** List of fields */
   @Input() fields: any[] = [];
   /** List of channels */
-  @Input() channels: Channel[] = [];
+  @Input() channels?: Channel[];
   /** List of forms */
   @Input() relatedForms: Form[] = [];
 
@@ -58,6 +58,11 @@ export class ButtonConfigComponent
 
   /** Indicate if the next step is a Form and so we could potentially pass some data to it.*/
   public canPassData = false;
+
+  /** Emits when the select channel is opened for the first time */
+  @Output() loadChannels = new EventEmitter<void>();
+  /** Saves if the channels has been fetched */
+  public loadedChannel = false;
 
   /** @returns The list of fields which are of type scalar and not disabled */
   get scalarFields(): any[] {
@@ -465,5 +470,15 @@ export class ButtonConfigComponent
    */
   public scalarField(fieldName: string): any {
     return this.scalarFields.find((field: any) => field.name === fieldName);
+  }
+
+  /**
+   * On open select menu the first time, emits event to load channels query.
+   */
+  public onOpenSelectChannel(): void {
+    if (!this.loadedChannel) {
+      this.loadChannels.emit();
+      this.loadedChannel = true;
+    }
   }
 }

@@ -19,10 +19,13 @@
     >
     </shared-core-grid>
   </ng-container>
-  <ng-container ngProjectAs="actions" *ngIf="selectable">
-    <ui-button [uiDialogClose] variant="default">
-      {{ 'common.cancel' | translate }}
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default" *ngIf="!selectable">
+      {{ 'common.close' | translate }}
     </ui-button>
+    <ui-button [uiDialogClose] variant="danger" *ngIf="selectable">{{
+      'common.cancel' | translate
+    }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"

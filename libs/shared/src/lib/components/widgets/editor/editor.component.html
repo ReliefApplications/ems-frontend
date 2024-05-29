@@ -1,27 +1,33 @@
-<div class="h-full flex flex-col">
+<div
+  class="h-full overflow-auto"
+  [ngClass]="{
+    'p-[14px]': usePadding
+  }"
+  (click)="onClick($event)"
+>
   <div
-    class="flex-1 overflow-auto"
-    [ngClass]="{
-      'p-[14px]': usePadding
-    }"
+    *ngIf="!loading; else loadingTmpl"
+    class="w-full h-fit"
     (click)="onClick($event)"
   >
-    <div
-      *ngIf="!loading; else loadingTmpl"
-      class="w-full h-fit"
-      (click)="onClick($event)"
-    >
-      <shared-html-widget-content
-        [html]="formattedHtml"
-        [style]="formattedStyle"
-      ></shared-html-widget-content>
-    </div>
+    <shared-html-widget-content
+      [html]="formattedHtml"
+      [style]="formattedStyle"
+    ></shared-html-widget-content>
   </div>
 </div>
 <ng-template #headerTemplate>
-  <span class="widget-title" [title]="settings.title">{{
-    settings.title
-  }}</span>
+  <div class="overflow-hidden flex-1 flex gap-1 items-center">
+    <span class="widget-title" [title]="settings.title">{{
+      settings.title
+    }}</span>
+    <span
+      *ngIf="settings.widgetDisplay?.tooltip"
+      class="widget-tooltip"
+      [title]="settings.widgetDisplay.tooltip"
+      >?</span
+    >
+  </div>
   <div class="flex">
     <!-- Data source button -->
     <ui-button

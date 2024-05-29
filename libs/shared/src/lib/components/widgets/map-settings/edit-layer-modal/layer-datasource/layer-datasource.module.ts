@@ -12,12 +12,14 @@ import {
   SelectMenuModule,
   DividerModule,
   TooltipModule,
+  SpinnerModule,
 } from '@oort-front/ui';
 import { PortalModule } from '@angular/cdk/portal';
 import {
   ReferenceDataSelectComponent,
   ResourceSelectComponent,
 } from '../../../../controls/public-api';
+import { QueryParamsMappingComponent } from '../../../common/query-params-mapping/query-params-mapping.component';
 
 /** Module for the LayerDatasourceComponent */
 @NgModule({
@@ -40,6 +42,8 @@ import {
     PortalModule,
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
+    QueryParamsMappingComponent,
+    SpinnerModule,
   ],
   exports: [LayerDatasourceComponent],
 })

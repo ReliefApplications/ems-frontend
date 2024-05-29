@@ -1,6 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {
   ContentType,
   Step,
@@ -10,7 +10,7 @@ import {
 } from '@oort-front/shared';
 import { GET_WORKFLOW_BY_ID } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { Subscription } from 'rxjs';
 
@@ -59,6 +59,20 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
    * Subscribes to the route to load the workflow accordingly.
    */
   ngOnInit(): void {
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((e) => {
+        // If going back or clicking on route in sidenav, go to first step
+        if (
+          e instanceof NavigationEnd &&
+          e.urlAfterRedirects.endsWith(this.id)
+        ) {
+          this.onOpenStep(0);
+        }
+      });
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.loading = true;
       this.id = params.id;

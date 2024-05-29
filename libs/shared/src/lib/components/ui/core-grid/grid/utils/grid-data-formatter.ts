@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { applyLayoutFormat } from '../../../../../utils/parser/utils';
 import { DatePipe } from '../../../../../pipes/date/date.pipe';
 import { ICON_EXTENSIONS } from '../grid.constants';
@@ -91,7 +91,9 @@ export function formatGridRowData(
    */
   function iterateFields(fields: GridField[], parent?: GridField) {
     fields
-      .filter((field) => !!get(rowData, parent ? parent.name : field.name))
+      .filter(
+        (field) => !isNil(get(rowData, parent ? parent.name : field.name))
+      )
       .forEach((field) => {
         // Reference data
         if (field.subFields && field.meta.type === 'referenceData') {
@@ -298,23 +300,15 @@ function getPropertyValue(
           value = value.map((x) => get(x, meta.graphQLFieldName as string));
         }
       }
-      const text = meta.choices
-        .filter((x) => x.value)
-        .reduce(
-          (acc: string[], x: any) =>
-            value.includes(x.value) ? acc.concat([x.text]) : acc,
-          []
-        );
-      if (text.length < value.length) {
-        return value;
-      } else {
-        return text;
-      }
+      const choices = (meta.choices || []).filter((x) => !isNil(x.value));
+      return value.map(
+        (x: any) => choices.find((choice) => choice.value == x)?.text || x
+      );
     } else {
       if (parent) {
         value = get(item, field.name);
       }
-      return meta.choices.find((x: any) => x.value === value)?.text || value;
+      return meta.choices.find((x: any) => x.value == value)?.text || value;
     }
   } else {
     if (meta.type === 'geospatial') {

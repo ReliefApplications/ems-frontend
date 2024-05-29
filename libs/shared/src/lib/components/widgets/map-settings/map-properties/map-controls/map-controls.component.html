@@ -10,15 +10,15 @@
       }}
     </ng-container>
   </ui-toggle> -->
-
-  <ui-toggle formControlName="download">
-    <ng-container ngProjectAs="label">
-      {{
-        'components.widget.settings.map.properties.controls.download'
-          | translate
-      }}
-    </ng-container>
-  </ui-toggle>
+  <!-- 
+    <ui-toggle formControlName="download">
+      <ng-container ngProjectAs="label">
+        {{
+          'components.widget.settings.map.properties.controls.download'
+            | translate
+        }}
+      </ng-container>
+    </ui-toggle>-->
 
   <ui-toggle formControlName="search">
     <ng-container ngProjectAs="label">
@@ -74,7 +74,8 @@
     <!-- Remove value -->
     <ui-button
       uiSuffix
-      (click)="this.form.get('lastUpdate')?.setValue(null);"
+      (click)="this.form.get('lastUpdate')?.setValue(null)"
+      *ngIf="this.form.get('lastUpdate')?.value"
       [isIcon]="true"
       icon="close"
       variant="danger"

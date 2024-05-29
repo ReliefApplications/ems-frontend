@@ -11,7 +11,7 @@ import { takeUntil } from 'rxjs/operators';
  * Role summary page
  */
 @Component({
-  selector: 'oort-app-role-summary',
+  selector: 'app-role-summary',
   templateUrl: './role-summary.component.html',
   styleUrls: ['./role-summary.component.scss'],
 })
@@ -19,7 +19,9 @@ export class RoleSummaryComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** id of the role */
   public id = '';
+  /** Application */
   public application!: Application;
 
   /**

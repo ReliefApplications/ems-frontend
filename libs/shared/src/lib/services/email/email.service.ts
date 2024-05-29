@@ -85,64 +85,81 @@ export class EmailService {
     attachment?: boolean,
     files?: any[]
   ): Promise<void> {
-    const snackBarRef = this.snackBar.openComponentSnackBar(
-      SnackbarSpinnerComponent,
-      {
-        duration: 0,
-        data: {
-          message: this.translate.instant(
-            'common.notifications.email.processing'
-          ),
-          loading: true,
-        },
-      }
-    );
-    const snackBarSpinner = snackBarRef.instance.nestedComponent;
-    let fileFolderId = '';
-    if (files && files.length > 0) {
-      const response = await firstValueFrom(this.sendFiles(files));
-      if (response.id) {
-        fileFolderId = response.id;
-      }
-    }
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
-
-    this.restService
-      .post(
-        '/email/',
+    return new Promise<void>((resolve, reject) => {
+      const snackBarRef = this.snackBar.openComponentSnackBar(
+        SnackbarSpinnerComponent,
         {
-          recipient,
-          subject,
-          body,
-          filter,
-          query,
-          fields: this.getFields(query.fields),
-          sortField,
-          sortOrder,
-          attachment,
-          ...(fileFolderId && { files: fileFolderId }),
-        },
-        { headers }
-      )
-      .subscribe({
-        next: () => {
-          (snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.email.sent'
-          )),
-            (snackBarSpinner.instance.loading = false);
-          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-        },
-        error: () => {
-          (snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.email.error'
-          )),
-            (snackBarSpinner.instance.loading = false);
-          snackBarSpinner.instance.error = true;
-          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-        },
-      });
+          duration: 0,
+          data: {
+            message: this.translate.instant(
+              'common.notifications.email.processing'
+            ),
+            loading: true,
+          },
+        }
+      );
+      const snackBarSpinner = snackBarRef.instance.nestedComponent;
+      let fileFolderId = '';
+      const send = () => {
+        const headers = new HttpHeaders({
+          'Content-Type': 'application/json',
+        });
+        this.restService
+          .post(
+            '/email/',
+            {
+              recipient,
+              subject,
+              body,
+              filter,
+              query,
+              fields: this.getFields(query.fields),
+              sortField,
+              sortOrder,
+              attachment,
+              ...(fileFolderId && { files: fileFolderId }),
+            },
+            { headers }
+          )
+          .subscribe({
+            next: () => {
+              snackBarSpinner.instance.message = this.translate.instant(
+                'common.notifications.email.sent'
+              );
+              snackBarSpinner.instance.loading = false;
+              snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+              resolve();
+            },
+            error: () => {
+              snackBarSpinner.instance.message = this.translate.instant(
+                'common.notifications.email.error'
+              );
+              snackBarSpinner.instance.loading = false;
+              snackBarSpinner.instance.error = true;
+              snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+              reject();
+            },
+          });
+      };
+      if (files && files.length > 0) {
+        firstValueFrom(this.sendFiles(files))
+          .then((response) => {
+            if (response.id) {
+              fileFolderId = response.id;
+            }
+            send();
+          })
+          .catch((error) => {
+            snackBarSpinner.instance.message = error.message;
+            snackBarSpinner.instance.loading = false;
+            snackBarSpinner.instance.error = true;
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+            reject(error);
+          });
+      } else {
+        send();
+      }
+    });
   }
 
   /**
@@ -215,27 +232,41 @@ export class EmailService {
           const { EmailPreviewModalComponent } = await import(
             '../../components/email-preview-modal/email-preview-modal.component'
           );
-          const dialogRef = this.dialog.open(EmailPreviewModalComponent, {
-            data: res,
+          this.dialog.open(EmailPreviewModalComponent, {
+            data: {
+              ...res,
+              onSubmit: (value: any) =>
+                this.sendMail(
+                  value.to,
+                  value.subject,
+                  value.html,
+                  filter,
+                  query,
+                  sortField,
+                  sortOrder,
+                  attachment,
+                  value.files
+                ),
+            },
             autoFocus: false,
             disableClose: true,
             width: '100%',
           });
-          dialogRef.closed.subscribe((value: any) => {
-            if (value) {
-              this.sendMail(
-                value.to,
-                value.subject,
-                value.html,
-                filter,
-                query,
-                sortField,
-                sortOrder,
-                attachment,
-                value.files
-              );
-            }
-          });
+          // dialogRef.closed.subscribe((value: any) => {
+          //   if (value) {
+          //     this.sendMail(
+          //       value.to,
+          //       value.subject,
+          //       value.html,
+          //       filter,
+          //       query,
+          //       sortField,
+          //       sortOrder,
+          //       attachment,
+          //       value.files
+          //     );
+          //   }
+          // });
         },
         error: () => {
           snackBarSpinner.instance.message = this.translate.instant(

@@ -15,6 +15,9 @@ import {
   FormQueryResponse,
   FormsQueryResponse,
   StatusOptionsComponent,
+  getCachedValues,
+  updateQueryUniqueValues,
+  AsyncMonacoEditorDirective,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -31,10 +34,6 @@ import {
   distinctUntilChanged,
 } from 'rxjs';
 import get from 'lodash/get';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../../../utils/update-queries';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -82,6 +81,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     FormWrapperModule,
     StatusOptionsComponent,
     MonacoEditorModule,
+    AsyncMonacoEditorDirective,
   ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',

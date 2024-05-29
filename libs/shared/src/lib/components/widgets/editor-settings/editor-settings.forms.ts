@@ -4,6 +4,7 @@ import get from 'lodash/get';
 import isNil from 'lodash/isNil';
 import { v4 as uuidv4 } from 'uuid';
 import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';
+import { createAutomationForm } from '../../../forms/automation.forms';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
@@ -32,6 +33,9 @@ export const createTemplateAggregationForm = (value: any) => {
         ? get<string>(value, 'contextFilters', '')
         : DEFAULT_CONTEXT_FILTER,
       at: get<string>(value, 'at', ''),
+      referenceDataVariableMapping: [
+        get(value, 'referenceDataVariableMapping', null),
+      ],
     },
     {
       validators: [
@@ -69,6 +73,12 @@ export const createEditorForm = (id: string, value: any) => {
           disabled: !isNil(get<string | null>(value, 'referenceData', null)),
         },
       ],
+      // Automation
+      automationRules: fb.array<ReturnType<typeof createAutomationForm>>(
+        get(value, 'automationRules', []).map((rule: any) =>
+          createAutomationForm(rule)
+        )
+      ),
       // Style
       useStyles: get<boolean>(value, 'useStyles', true),
       wholeCardStyles: get<boolean>(value, 'wholeCardStyles', false),

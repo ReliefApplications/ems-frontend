@@ -13,6 +13,9 @@ const routes: Routes = [
     component: DashboardComponent,
     canDeactivate: [IsDeactivated],
     canActivate: [IsNormalizeUrl],
+    data: {
+      reuse: true,
+    },
   },
 ];
 

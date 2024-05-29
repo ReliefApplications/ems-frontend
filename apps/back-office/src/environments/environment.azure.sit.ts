@@ -54,6 +54,6 @@ export const environment: Environment = {
     tracePropagationTargets: ['ems-safe-test.who.int'],
   },
   user: {
-    attributes: ['country', 'region', 'location'],
+    attributes: ['country', 'region', 'location', 'department'],
   },
 };

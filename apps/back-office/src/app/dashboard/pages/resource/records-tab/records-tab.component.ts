@@ -10,13 +10,11 @@ import {
   ResourceRecordsNodesQueryResponse,
   DeleteRecordMutationResponse,
   RestoreRecordMutationResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../../utils/update-queries';
 import { DELETE_RECORD, RESTORE_RECORD } from '../graphql/mutations';
 import { GET_RESOURCE_RECORDS } from './graphql/queries';
 import {

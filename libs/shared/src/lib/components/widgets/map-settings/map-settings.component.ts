@@ -156,6 +156,14 @@ export class MapSettingsComponent
           layers: value,
         } as MapConstructorSettings)
       );
+    this.widgetFormGroup
+      .get('geographicExtents')
+      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
+      .subscribe((value) =>
+        this.updateMapSettings({
+          geographicExtents: value,
+        } as MapConstructorSettings)
+      );
   }
 
   /**

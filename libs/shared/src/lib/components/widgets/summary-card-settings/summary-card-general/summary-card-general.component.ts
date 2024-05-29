@@ -22,6 +22,7 @@ import {
   RadioModule,
   SelectMenuModule,
   SelectOptionModule,
+  SpinnerModule,
   TooltipModule,
 } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
@@ -30,6 +31,7 @@ import {
   ResourceSelectComponent,
 } from '../../../controls/public-api';
 import { ReferenceData } from '../../../../models/reference-data.model';
+import { QueryParamsMappingComponent } from '../../common/query-params-mapping/query-params-mapping.component';
 
 /** Component for the general summary cards tab */
 @Component({
@@ -54,6 +56,8 @@ import { ReferenceData } from '../../../../models/reference-data.model';
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
     DividerModule,
+    QueryParamsMappingComponent,
+    SpinnerModule,
   ],
   templateUrl: './summary-card-general.component.html',
   styleUrls: ['./summary-card-general.component.scss'],
@@ -69,6 +73,8 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
   @Input() layout: Layout | null = null;
   /** Selected aggregation */
   @Input() aggregation: Aggregation | null = null;
+  /** Loading status */
+  @Input() loading = false;
 
   /**
    * Component for the general summary cards tab
@@ -143,6 +149,9 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
    * Adds a new aggregation for the resource.
    */
   async addAggregation(): Promise<void> {
+    if (!this.resource) {
+      return;
+    }
     const { AddAggregationModalComponent } = await import(
       '../../../aggregation/add-aggregation-modal/add-aggregation-modal.component'
     );

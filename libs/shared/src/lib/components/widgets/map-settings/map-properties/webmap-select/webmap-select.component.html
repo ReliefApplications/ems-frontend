@@ -19,6 +19,7 @@
   <ui-button
     uiSuffix
     (click)="selectionOnChange(null); $event.stopPropagation()"
+    *ngIf="ngControl.control?.value"
     [isIcon]="true"
     icon="close"
     variant="danger"

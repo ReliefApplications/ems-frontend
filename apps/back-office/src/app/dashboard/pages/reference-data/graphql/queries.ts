@@ -32,6 +32,15 @@ export const GET_REFERENCE_DATA = gql`
           title
         }
       }
+      pageInfo {
+        strategy
+        cursorField
+        cursorVar
+        offsetVar
+        pageVar
+        pageSizeVar
+        totalCountField
+      }
       canSee
       canUpdate
       canDelete
@@ -46,6 +55,7 @@ export const GET_API_CONFIGURATION = gql`
       id
       name
       authType
+      endpoint
       graphQLEndpoint
     }
   }
@@ -54,8 +64,12 @@ export const GET_API_CONFIGURATION = gql`
 // === GET API CONFGIURATIONS NAME ===
 /** API configuration names query */
 export const GET_API_CONFIGURATIONS_NAMES = gql`
-  query GetApiConfigurationsName($first: Int, $afterCursor: ID) {
-    apiConfigurations(first: $first, afterCursor: $afterCursor) {
+  query GetApiConfigurationsName($first: Int, $afterCursor: ID, $filter: JSON) {
+    apiConfigurations(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+    ) {
       edges {
         node {
           id

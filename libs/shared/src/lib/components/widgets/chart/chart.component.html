@@ -91,6 +91,12 @@
   class="absolute top-0 bottom-0 left-0 right-0 flex-col items-center"
   *ngIf="loading"
 ></ui-spinner>
+<div
+  *ngIf="!loading && !hasError && isEmpty"
+  class="absolute inset-0 grid place-items-center"
+>
+  <shared-empty icon="find_in_page" [title]="'common.noData' | translate" />
+</div>
 <div *ngIf="hasError" class="chart-error">
   <ui-icon variant="danger" icon="error_outline"></ui-icon>
   <p color="danger">
@@ -98,9 +104,17 @@
   </p>
 </div>
 <ng-template #headerTemplate>
-  <span class="widget-title" [title]="settings.title">{{
-    settings.title
-  }}</span>
+  <div class="overflow-hidden flex-1 flex gap-1 items-center">
+    <span class="widget-title" [title]="settings.title">{{
+      settings.title
+    }}</span>
+    <span
+      *ngIf="settings.widgetDisplay?.tooltip"
+      class="widget-tooltip"
+      [title]="settings.widgetDisplay.tooltip"
+      >?</span
+    >
+  </div>
   <!-- Selection of predefined filter -->
   <ng-container *ngIf="predefinedFilters.length > 0">
     <ng-container *ngTemplateOutlet="filterTemplate"></ng-container>

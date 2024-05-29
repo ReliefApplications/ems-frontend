@@ -48,3 +48,6 @@ libs/ui/documentation.json
 
 # Widgets build
 /widgets/
+
+# Kendo license
+kendo-ui-license.txt

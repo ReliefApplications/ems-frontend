@@ -69,8 +69,6 @@ export class SummaryCardSettingsComponent
   public layout: Layout | null = null;
   /** Current aggregation */
   public aggregation: Aggregation | null = null;
-  /** Result of custom aggregation data */
-  public customAggregation: any;
   /** Available fields */
   public fields: any[] = [];
   /** Available resource templates */
@@ -79,6 +77,8 @@ export class SummaryCardSettingsComponent
   private previousTabsLength = 0;
   /** Current active settings tab index */
   public activeSettingsTab = 0;
+  /** Loading status */
+  public loading = false;
 
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
@@ -143,7 +143,6 @@ export class SummaryCardSettingsComponent
         this.widgetFormGroup?.get('card.aggregation')?.setValue(null);
         this.layout = null;
         this.aggregation = null;
-        this.customAggregation = null;
         this.fields = [];
         if (value) {
           this.referenceData = null;
@@ -199,7 +198,6 @@ export class SummaryCardSettingsComponent
           }
         } else {
           this.aggregation = null;
-          this.customAggregation = null;
         }
       });
 
@@ -289,6 +287,7 @@ export class SummaryCardSettingsComponent
    * @param id resource id
    */
   private getResource(id: string): void {
+    this.loading = true;
     const formValue = this.widgetFormGroup.getRawValue();
     const layoutID = get(formValue, 'card.layout');
     const aggregationID = get(formValue, 'card.aggregation');
@@ -332,6 +331,7 @@ export class SummaryCardSettingsComponent
             this.getCustomAggregation();
           }
         }
+        this.loading = false;
       });
   }
 
@@ -341,6 +341,7 @@ export class SummaryCardSettingsComponent
    * @param id reference data id
    */
   private getReferenceData(id: string): void {
+    this.loading = true;
     this.apollo
       .query<ReferenceDataQueryResponse>({
         query: GET_REFERENCE_DATA,
@@ -364,6 +365,7 @@ export class SummaryCardSettingsComponent
               };
             });
         }
+        this.loading = false;
       });
   }
 
@@ -380,10 +382,9 @@ export class SummaryCardSettingsComponent
       })
       ?.subscribe(({ data }: any) => {
         if (data.recordsAggregation) {
-          this.customAggregation = data.recordsAggregation;
-          // @TODO: Figure out fields' types from aggregation
-          this.fields = this.customAggregation.items[0]
-            ? Object.keys(this.customAggregation.items[0]).map((f) => ({
+          const customAggregation = data.recordsAggregation;
+          this.fields = customAggregation.items[0]
+            ? Object.keys(customAggregation.items[0]).map((f) => ({
                 name: f,
                 editor: 'text',
               }))

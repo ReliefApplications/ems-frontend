@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, OnInit, Optional } from '@angular/core';
 import { get } from 'lodash';
 import { CardT, SummaryCardComponent } from '../summary-card.component';
+import { SummaryCardFormT } from '../../summary-card-settings/summary-card-settings.component';
 
 /**
  * Single Item component of Summary card widget.
@@ -13,6 +14,8 @@ import { CardT, SummaryCardComponent } from '../summary-card.component';
 export class SummaryCardItemComponent implements OnInit, OnChanges {
   /** Card configuration */
   @Input() card!: CardT;
+  /** Widget settings */
+  @Input() settings!: SummaryCardFormT['value'];
   /** Available fields */
   public fields: any[] = [];
   /** Mapping fields / values */

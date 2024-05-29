@@ -124,6 +124,7 @@ export class AggregationService {
    * @param options.contextFilters context filters, if any
    * @param options.at 'at' argument value, if any
    * @param options.first number of records to fetch, -1 if all of them
+   * @param options.queryParams reference data query params (optional)
    * @returns Aggregation query
    */
   aggregationDataQuery(options: {
@@ -136,6 +137,7 @@ export class AggregationService {
     contextFilters?: CompositeFilterDescriptor;
     at?: Date;
     first?: number;
+    queryParams?: any;
   }): Observable<
     ApolloQueryResult<
       AggregationDataQueryResponse | ReferenceDataAggregationQueryResponse
@@ -169,6 +171,7 @@ export class AggregationService {
           contextFilters: options.contextFilters
             ? this.contextService.injectContext(options.contextFilters)
             : {},
+          queryParams: options.queryParams,
           at: options.at,
           first: options.first,
         },

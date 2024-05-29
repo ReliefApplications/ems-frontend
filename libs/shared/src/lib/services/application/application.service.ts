@@ -256,8 +256,8 @@ export class ApplicationService {
             }
           });
           this.authService.extendAbilityForApplication(data.application);
+          await this.getCustomStyle(data.application);
         }
-        await this.getCustomStyle(data.application);
         this.application.next(data.application);
         const application = this.application.getValue();
         if (data.application?.locked) {
@@ -1953,6 +1953,7 @@ export class ApplicationService {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
     });
+
     return firstValueFrom(
       this.restService.get(path, { responseType: 'blob', headers })
     )

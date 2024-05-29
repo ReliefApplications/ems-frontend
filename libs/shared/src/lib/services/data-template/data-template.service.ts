@@ -180,8 +180,8 @@ export class DataTemplateService {
     const baseHref = this.locationStrategy.getBaseHref();
     if (this.environment.module === 'backoffice') {
       return page.type === ContentType.form
-        ? `${this.environment.backOfficeUri}/applications/${application.id}/${page.type}/${page.id}`
-        : `${this.environment.backOfficeUri}/applications/${application.id}/${page.type}/${page.content}`;
+        ? `./applications/${application.id}/${page.type}/${page.id}`
+        : `./applications/${application.id}/${page.type}/${page.content}`;
     } else {
       return page.type === ContentType.form
         ? `.${baseHref}${application.id}/${page.type}/${page.id}`

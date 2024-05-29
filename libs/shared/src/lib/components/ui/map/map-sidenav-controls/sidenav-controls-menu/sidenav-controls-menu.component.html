@@ -9,14 +9,14 @@
       }"
       (click)="openLayersMenu()"
     >
-      {{ 'common.layers' | translate }}
+      {{ 'common.layers.few' | translate }}
     </button>
     <ui-button
+      id="layer-control-button-close"
       [isIcon]="true"
       icon="close"
       (click)="closeMenu()"
       class="ml-auto"
-      id="layer-control-button-close"
       [uiTooltip]="'common.close' | translate"
     ></ui-button>
   </div>

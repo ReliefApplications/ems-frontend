@@ -16,7 +16,7 @@ import { ShadowRootExtendedHostComponent } from '../../utils/shadow-root-extende
 
 /** Form web widget component */
 @Component({
-  selector: 'oort-form-widget',
+  selector: 'app-form-widget',
   templateUrl: './form-widget.component.html',
   styleUrls: ['./form-widget.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,
@@ -25,12 +25,15 @@ export class FormWidgetComponent
   extends ShadowRootExtendedHostComponent
   implements AfterViewInit
 {
+  /** id of the form */
   @Input() id = '626b96227ad4dd0c96f3b8a1';
   // @Input() id = '642061d1b7109549fa3035e8';
 
+  /** Reference to the right sideNav */
   @ViewChild('rightSidenav', { read: ViewContainerRef })
   rightSidenav?: ViewContainerRef;
 
+  /** boolean, whether the sidenav should be shown or not */
   public showSidenav = false;
 
   /**

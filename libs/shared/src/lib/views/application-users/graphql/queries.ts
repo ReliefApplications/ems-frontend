@@ -7,9 +7,15 @@ export const GET_APPLICATION_USERS = gql`
     $afterCursor: ID
     $first: Int
     $automated: Boolean
+    $filter: JSON
   ) {
     application(id: $id) {
-      users(afterCursor: $afterCursor, first: $first, automated: $automated) {
+      users(
+        afterCursor: $afterCursor
+        first: $first
+        automated: $automated
+        filter: $filter
+      ) {
         edges {
           node {
             id

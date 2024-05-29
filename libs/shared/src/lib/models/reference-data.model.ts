@@ -10,6 +10,13 @@ export enum referenceDataType {
   rest = 'rest',
 }
 
+/** Enum of the available pagination methods */
+export enum paginationStrategy {
+  offset = 'offset',
+  cursor = 'cursor',
+  page = 'page',
+}
+
 /** Model for Reference data object. */
 export interface ReferenceData {
   id?: string;
@@ -29,6 +36,34 @@ export interface ReferenceData {
   canUpdate?: boolean;
   canDelete?: boolean;
   aggregations?: Connection<Aggregation>;
+  // Pagination strategies
+  //  offset: The client will send the offset (how many items to skip)
+  //  cursor: The client will send the cursor of the last item
+  //  page: The client will send the page number
+  pageInfo?: {
+    // JSON path that when queried to the API response will return the total number of items
+    totalCountField: string;
+    // Name of the query variable that corresponds to the page size
+    pageSizeVar?: string;
+  } & (
+    | {
+        strategy: 'offset';
+        // Name of the query variable to be used for determining the offset
+        offsetVar: string;
+      }
+    | {
+        strategy: 'cursor';
+        // JSON path that when queried to the API response will return the cursor
+        cursorField: string;
+        // Name of the query variable to be used for determining the cursor
+        cursorVar: string;
+      }
+    | {
+        strategy: 'page';
+        // Name of the query variable that corresponds to the page number
+        pageVar: string;
+      }
+  );
 }
 
 /** Model for reference data graphql query response */

@@ -10,14 +10,12 @@ import {
   FormsQueryResponse,
   DeleteFormMutationResponse,
   AddFormMutationResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { GET_SHORT_FORMS } from './graphql/queries';
 import { DELETE_FORM, ADD_FORM } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
 import { takeUntil } from 'rxjs';
 import {

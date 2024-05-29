@@ -1,6 +1,5 @@
 import { Apollo } from 'apollo-angular';
 import {
-  EDIT_RECORD,
   EDIT_RECORDS,
   PUBLISH,
   PUBLISH_NOTIFICATION,
@@ -18,7 +17,6 @@ import {
   Input,
   Output,
   EventEmitter,
-  TemplateRef,
 } from '@angular/core';
 import { WorkflowService } from '../../../services/workflow/workflow.service';
 import { EmailService } from '../../../services/email/email.service';
@@ -36,10 +34,8 @@ import { AggregationService } from '../../../services/aggregation/aggregation.se
 import { firstValueFrom, takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { RoleUsersNodesQueryResponse } from '../../../models/user.model';
 import {
-  EditRecordMutationResponse,
   EditRecordsMutationResponse,
   RecordQueryResponse,
 } from '../../../models/record.model';
@@ -50,6 +46,7 @@ import {
 import { FormQueryResponse } from '../../../models/form.model';
 import { AggregationGridComponent } from '../../aggregation/aggregation-grid/aggregation-grid.component';
 import { ReferenceDataGridComponent } from '../../ui/reference-data-grid/reference-data-grid.component';
+import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 
 /** Component for the grid widget */
 @Component({
@@ -58,10 +55,7 @@ import { ReferenceDataGridComponent } from '../../ui/reference-data-grid/referen
   styleUrls: ['./grid.component.scss'],
 })
 /** Grid widget using KendoUI. */
-export class GridWidgetComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
   /** Template reference */
   @ViewChild(CoreGridComponent)
   private grid!: CoreGridComponent;
@@ -74,8 +68,6 @@ export class GridWidgetComponent
   /** Reference to reference data grid */
   @ViewChild(ReferenceDataGridComponent)
   referenceDataGridComponent?: ReferenceDataGridComponent;
-  /** Header template */
-  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
 
   /** Data */
   @Input() widget: any;
@@ -118,6 +110,9 @@ export class GridWidgetComponent
 
   /** Emit event */
   @Output() edit: EventEmitter<any> = new EventEmitter();
+
+  /** Event emitter for inline edition of records */
+  @Output() inlineEdition: EventEmitter<any> = new EventEmitter();
 
   /**
    * Test if the grid uses a layout, and if a layout is used, if any item is currently updated.
@@ -602,15 +597,18 @@ export class GridWidgetComponent
             const { ChooseRecordModalComponent } = await import(
               '../../choose-record-modal/choose-record-modal.component'
             );
-            const dialogRef = this.dialog.open(ChooseRecordModalComponent, {
-              data: {
-                targetForm: form,
-                targetFormField,
-                targetFormQuery,
-              },
-            });
+            const selectionDialogRef = this.dialog.open(
+              ChooseRecordModalComponent,
+              {
+                data: {
+                  targetForm: form,
+                  targetFormField,
+                  targetFormQuery,
+                },
+              }
+            );
             const value = await Promise.resolve(
-              firstValueFrom(dialogRef.closed) as any
+              firstValueFrom(selectionDialogRef.closed) as any
             );
             if (value && value.record) {
               this.apollo
@@ -620,81 +618,41 @@ export class GridWidgetComponent
                     id: value.record,
                   },
                 })
-                .subscribe((getRecord) => {
+                .subscribe(async ({ data }) => {
                   const resourceField = form.fields?.find(
                     (field) =>
                       field.resource &&
                       field.resource === this.settings.resource
                   );
-                  let data = getRecord.data.record.data;
+                  let recordData = data.record.data;
                   const key = resourceField.name;
                   if (resourceField.type === 'resource') {
-                    data = { ...data, [key]: selectedRecords[0] };
+                    recordData = { ...recordData, [key]: selectedRecords[0] };
                   } else {
-                    if (data[key]) {
-                      data = {
-                        ...data,
-                        [key]: data[key].concat(selectedRecords),
+                    if (recordData[key]) {
+                      recordData = {
+                        ...recordData,
+                        [key]: recordData[key].concat(selectedRecords),
                       };
                     } else {
-                      data = { ...data, [key]: selectedRecords };
+                      recordData = { ...recordData, [key]: selectedRecords };
                     }
                   }
-                  this.apollo
-                    .mutate<EditRecordMutationResponse>({
-                      mutation: EDIT_RECORD,
-                      variables: {
-                        id: value.record,
-                        template: targetForm,
-                        data,
-                      },
-                    })
-                    .subscribe(async (editRecord) => {
-                      if (editRecord.errors) {
-                        this.snackBar.openSnackBar(
-                          this.translate.instant(
-                            'models.record.notifications.rowsNotAdded'
-                          ),
-                          { error: true }
-                        );
-                        resolve(false);
-                      } else {
-                        if (editRecord.data) {
-                          const record = editRecord.data.editRecord;
-                          if (record) {
-                            this.snackBar.openSnackBar(
-                              this.translate.instant(
-                                'models.record.notifications.rowsAdded',
-                                {
-                                  field: record.data[targetFormField],
-                                  length: selectedRecords.length,
-                                  value: key,
-                                }
-                              )
-                            );
-                            const { FormModalComponent } = await import(
-                              '../../form-modal/form-modal.component'
-                            );
-                            const dialogRef2 = this.dialog.open(
-                              FormModalComponent,
-                              {
-                                disableClose: true,
-                                data: {
-                                  recordId: record.id,
-                                  template: targetForm,
-                                },
-                                autoFocus: false,
-                              }
-                            );
-                            dialogRef2.closed
-                              .pipe(takeUntil(this.destroy$))
-                              .subscribe(() => resolve(true));
-                          } else {
-                            resolve(false);
-                          }
-                        }
-                      }
-                    });
+                  const { FormModalComponent } = await import(
+                    '../../form-modal/form-modal.component'
+                  );
+                  const formDialogRef = this.dialog.open(FormModalComponent, {
+                    disableClose: true,
+                    data: {
+                      recordId: value.record,
+                      template: targetForm,
+                      recordData: { [key]: recordData[key] },
+                    },
+                    autoFocus: false,
+                  });
+                  formDialogRef.closed
+                    .pipe(takeUntil(this.destroy$))
+                    .subscribe((res) => resolve(res ? true : false));
                 });
             } else {
               resolve(false);

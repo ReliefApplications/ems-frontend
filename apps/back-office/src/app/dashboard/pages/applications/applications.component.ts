@@ -10,6 +10,8 @@ import {
   ApplicationsApplicationNodesQueryResponse,
   DeleteApplicationMutationResponse,
   EditApplicationMutationResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import {
   DELETE_APPLICATION,
@@ -20,10 +22,6 @@ import { PreviewService } from '../../../services/preview.service';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { ApolloQueryResult } from '@apollo/client';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../utils/update-queries';
 import {
   TableSort,
   UIPageChangeEvent,

@@ -8,13 +8,11 @@ import {
   Resource,
   UnsubscribeComponent,
   ResourceQueryResponse,
+  getCachedValues,
+  updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../../utils/update-queries';
 import { GET_RESOURCE_AGGREGATIONS } from './graphql/queries';
 import { takeUntil } from 'rxjs';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';

@@ -46,6 +46,7 @@
       [placeholder]="'common.placeholder.search' | translate"
       [formControl]="search"
       [clearButton]="true"
+      (keydown.enter)="$event.preventDefault()"
     >
     </kendo-textbox>
     <!-- Column Chooser -->
@@ -157,6 +158,7 @@
                 [field]="field.name"
                 [filterService]="filterService"
                 valueField="value"
+                [format]="field.format"
               >
               </shared-date-filter-menu>
             </ng-template>
@@ -222,7 +224,12 @@
               <button
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
+<<<<<<< HEAD
                 (click)="onExpandText(dataItem, field.name)"
+=======
+                icon="hyperlink-open-sm"
+                (click)="onExpandText(dataItem, field.name, field.title)"
+>>>>>>> beta
                 [look]="'flat'"
                 [uiTooltip]="'common.viewFullscreen' | translate"
               >
@@ -279,7 +286,12 @@
               <button
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
+<<<<<<< HEAD
                 (click)="onExpandText(dataItem, field.name)"
+=======
+                icon="hyperlink-open-sm"
+                (click)="onExpandText(dataItem, field.name, field.title)"
+>>>>>>> beta
                 [look]="'flat'"
                 [uiTooltip]="'common.openFullScreen' | translate"
               >
@@ -311,7 +323,12 @@
               <button
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
+<<<<<<< HEAD
                 (click)="onExpandText(dataItem, field.name)"
+=======
+                icon="hyperlink-open-sm"
+                (click)="onExpandText(dataItem, field.name, field.title)"
+>>>>>>> beta
                 [look]="'flat'"
                 [uiTooltip]="'common.openFullScreen' | translate"
               >
@@ -343,7 +360,8 @@
               <button
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
-                (click)="onExpandText(dataItem, field.name)"
+                icon="hyperlink-open-sm"
+                (click)="onExpandText(dataItem, field.name, field.title)"
                 [look]="'flat'"
                 [uiTooltip]="'common.viewFullscreen' | translate"
               >
@@ -387,7 +405,12 @@
               <button
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
+<<<<<<< HEAD
                 (click)="onExpandText(dataItem, field.name)"
+=======
+                icon="hyperlink-open-sm"
+                (click)="onExpandText(dataItem, field.name, field.title)"
+>>>>>>> beta
                 [look]="'flat'"
                 [uiTooltip]="'common.viewFullscreen' | translate"
               >
@@ -1039,7 +1062,7 @@
       [columnMenu]="false"
       [width]="54"
       [resizable]="true"
-      [title]="actions.navigateSettings.title"
+      [title]="actions.navigateSettings?.title ?? ''"
       [sticky]="true"
     >
       <ng-template kendoGridCellTemplate let-dataItem="dataItem">
@@ -1051,8 +1074,8 @@
             action.emit({
               action: 'goTo',
               item: dataItem,
-              pageUrl: actions.navigateSettings.pageUrl,
-              field: actions.navigateSettings.field
+              pageUrl: actions.navigateSettings?.pageUrl,
+              field: actions.navigateSettings?.field
             })
           "
           [uiTooltip]="'components.widget.grid.actions.goTo' | translate"

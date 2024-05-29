@@ -55,6 +55,7 @@ export interface LayerFormData {
     layout: any;
     aggregation: any;
     refData: any;
+    referenceDataVariableMapping?: string;
     type?: GeometryType;
   };
   sublayers?: string[];

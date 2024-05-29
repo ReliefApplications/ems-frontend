@@ -14,12 +14,12 @@ import {
   ApplicationService,
   UnsubscribeComponent,
   ConfirmService,
-  RestService,
   BlobType,
   DownloadService,
+  RestService,
+  AsyncMonacoEditorDirective,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs/operators';
-import { Apollo } from 'apollo-angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   ButtonModule,
@@ -29,6 +29,8 @@ import {
 } from '@oort-front/ui';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
+import { ResizeEvent } from 'angular-resizable-element';
+import { ResizableModule } from 'angular-resizable-element';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -46,6 +48,8 @@ const DEFAULT_STYLE = '';
     ButtonModule,
     SpinnerModule,
     TooltipModule,
+    ResizableModule,
+    AsyncMonacoEditorDirective,
   ],
   templateUrl: './custom-style.component.html',
   styleUrls: ['./custom-style.component.scss'],
@@ -64,6 +68,7 @@ export class CustomStyleComponent
   @Output() cancel = new EventEmitter();
   /** Editor options */
   public editorOptions = {
+    automaticLayout: true,
     theme: 'vs-dark',
     language: 'scss',
     fixedOverflowWidgets: false,
@@ -76,13 +81,14 @@ export class CustomStyleComponent
   public loading = false;
   /** Timeout to init editor */
   private timeoutListener!: NodeJS.Timeout;
+  /** Navbar size style */
+  public navbarStyle: any = {};
 
   /**
    * Creates an instance of CustomStyleComponent, form and updates.
    *
    * @param applicationService Shared application service
    * @param snackBar Shared snackbar service
-   * @param apollo Apollo service
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
    * @param restService Shared rest service
@@ -92,7 +98,6 @@ export class CustomStyleComponent
   constructor(
     private applicationService: ApplicationService,
     private snackBar: SnackbarService,
-    private apollo: Apollo,
     private translate: TranslateService,
     private confirmService: ConfirmService,
     private restService: RestService,
@@ -252,5 +257,53 @@ export class CustomStyleComponent
       this.applicationService.customStyleEdited = false;
       this.applicationService.customStyle.innerText = this.savedStyle;
     }
+  }
+
+  /**
+   * On resize action
+   *
+   * @param event resize event
+   */
+  onResizing(event: ResizeEvent): void {
+    this.navbarStyle = {
+      width: `${event.rectangle.width}px`,
+      // height: `${event.rectangle.height}px`,
+    };
+  }
+
+  /**
+   * Check if resize event is valid
+   *
+   * @param event resize event
+   * @returns boolean
+   */
+  validate(event: ResizeEvent): boolean {
+    const dashboardNavbars =
+      this.document.getElementsByTagName('shared-navbar');
+    let dashboardNavbarWidth = 0;
+    if (dashboardNavbars[0]) {
+      if (
+        (dashboardNavbars[0] as any).offsetWidth <
+        this.document.documentElement.clientWidth
+      ) {
+        // Only if the sidenav is not horizontal
+        dashboardNavbarWidth = (dashboardNavbars[0] as any).offsetWidth;
+      }
+    }
+    // set the min width as 30% of the screen size available
+    const minWidth = Math.round(
+      (this.document.documentElement.clientWidth - dashboardNavbarWidth) * 0.3
+    );
+    // set the max width as 95% of the screen size available
+    const maxWidth = Math.round(
+      (this.document.documentElement.clientWidth - dashboardNavbarWidth) * 0.95
+    );
+    if (
+      event.rectangle.width &&
+      (event.rectangle.width < minWidth || event.rectangle.width > maxWidth)
+    ) {
+      return false;
+    }
+    return true;
   }
 }

@@ -61,6 +61,8 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
   @Input() mapPortal?: DomPortal;
   /** Emit new fields */
   @Output() fields: EventEmitter<Fields[]> = new EventEmitter<Fields[]>();
+  /** Loading status */
+  @Input() loading = false;
   /** Admin fields */
   public adminFields = ADMIN_FIELDS;
 
@@ -88,10 +90,12 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (typeof value === 'string') {
-        this.formGroup.get('layout')?.setValue(value);
-      } else {
-        this.formGroup.get('layout')?.setValue((value as any).id);
+      if (value) {
+        if (typeof value === 'string') {
+          this.formGroup.get('layout')?.setValue(value);
+        } else {
+          this.formGroup.get('layout')?.setValue((value as any).id);
+        }
       }
     });
   }
@@ -108,10 +112,12 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (typeof value === 'string') {
-        this.formGroup.get('aggregation')?.setValue(value);
-      } else {
-        this.formGroup.get('aggregation')?.setValue((value as any)?.id);
+      if (value) {
+        if (typeof value === 'string') {
+          this.formGroup.get('aggregation')?.setValue(value);
+        } else {
+          this.formGroup.get('aggregation')?.setValue((value as any)?.id);
+        }
       }
     });
   }

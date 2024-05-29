@@ -6,10 +6,6 @@ export const GET_CHANNELS = gql`
     channels(application: $application) {
       id
       title
-      application {
-        id
-        name
-      }
     }
   }
 `;

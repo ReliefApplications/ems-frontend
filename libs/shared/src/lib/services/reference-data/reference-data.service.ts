@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { isArray, isEqual, get } from 'lodash';
-import { map } from 'rxjs/operators';
 import localForage from 'localforage';
 import {
   ReferenceData,
@@ -10,13 +8,22 @@ import {
 } from '../../models/reference-data.model';
 import { ApiProxyService } from '../api-proxy/api-proxy.service';
 import { GET_REFERENCE_DATA_BY_ID } from './graphql/queries';
-import { firstValueFrom } from 'rxjs';
-import { ApiConfiguration } from '../../models/api-configuration.model';
+import { firstValueFrom, map } from 'rxjs';
+import {
+  ApiConfiguration,
+  authType,
+} from '../../models/api-configuration.model';
 import jsonpath from 'jsonpath';
 import toJsonSchema from 'to-json-schema';
+import transformGraphQLVariables from '../../utils/reference-data/transform-graphql-variables.util';
+import { HttpHeaders } from '@angular/common/http';
+import { Aggregation } from '../../models/aggregation.model';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { cloneDeep, get, set } from 'lodash';
+import { procPipelineStep } from '../../utils/reference-data/filter.util';
+import { DataTransformer } from '../../utils/reference-data/data-transformer.util';
+import { isEmpty } from 'lodash';
 
-/** Local storage key for last modified */
-const LAST_MODIFIED_KEY = '_last_modified';
 /** Local storage key for last request */
 const LAST_REQUEST_KEY = '_last_request';
 /** Property for filtering in requests */
@@ -26,6 +33,7 @@ const LAST_UPDATE_CODE = '{{lastUpdate}}';
  */
 interface CachedItems {
   items: any[];
+  pageInfo?: any;
   valueField: string;
 }
 
@@ -70,77 +78,27 @@ export class ReferenceDataService {
    * @param referenceDataID ReferenceData ID.
    * @param displayField Field used for display in the question.
    * @param storePrimitiveValue Whether to store the whole item or only the primitive value given the displayField
-   * @param filter The filter object
-   * @param filter.foreignReferenceData The reference data name of the foreign question
-   * @param filter.foreignField The field name for the foreign question
-   * @param filter.foreignValue The value to filter on for the foreign field
-   * @param filter.localField The field to filter on on the local reference data
-   * @param filter.operator The operator to filter
+   * @param graphQLVariables optional graphql variables, built from form value
    * @returns Promised choices.
    */
   public async getChoices(
     referenceDataID: string,
     displayField: string,
     storePrimitiveValue: boolean = true,
-    filter?: {
-      foreignReferenceData: string;
-      foreignField: string;
-      foreignValue: any;
-      localField: string;
-      operator: string;
-    }
+    graphQLVariables?: any
   ): Promise<{ value: string | number; text: string }[]> {
     const sortByDisplayField = (a: any, b: any) =>
       a[displayField] > b[displayField] ? 1 : -1;
 
     // get items
-    const stored = (await localForage.getItem(referenceDataID)) as CachedItems;
-    const items_ = stored?.items || [];
-    const valueField = stored?.valueField || '';
+    const { items, referenceData } = await this.cacheItems(
+      referenceDataID,
+      graphQLVariables && graphQLVariables
+    );
+    const valueField = referenceData?.valueField || '';
 
     // sort items by displayField
-    const items = items_.sort(sortByDisplayField);
-    const foreignIsMultiselect = Array.isArray(filter?.foreignValue);
-    // if we ask to filter and there is a value in foreign field
-    if (
-      filter &&
-      ((foreignIsMultiselect && filter.foreignValue.length) ||
-        (!foreignIsMultiselect && !!filter.foreignValue))
-    ) {
-      const cache = (await localForage.getItem(
-        filter.foreignReferenceData
-      )) as CachedItems;
-      if (!cache) {
-        return [];
-      }
-      const { items: foreignItems, valueField: foreignValueField } = cache;
-      let selectedForeignValue: any | any[];
-      // Retrieve foreign field items for multiselect or single select
-      if (foreignIsMultiselect) {
-        selectedForeignValue = filter.foreignValue.map(
-          (value: any) =>
-            foreignItems.find((item) => item[foreignValueField] === value)[
-              filter.foreignField
-            ]
-        );
-      } else {
-        selectedForeignValue = foreignItems.find(
-          (item) => get(item, foreignValueField) === filter.foreignValue
-        )[filter.foreignField];
-      }
-      return items
-        .filter((item) =>
-          this.operate(
-            selectedForeignValue,
-            filter.operator,
-            item[filter.localField]
-          )
-        )
-        .map((item) => ({
-          value: storePrimitiveValue ? item[valueField] : item,
-          text: item[displayField],
-        }));
-    }
+    items.sort(sortByDisplayField);
     // if we don't have to filter
     return items.map((item) => ({
       value: storePrimitiveValue ? item[valueField] : item,
@@ -151,98 +109,117 @@ export class ReferenceDataService {
   /**
    * Get the items and the value field of a reference data
    *
-   * @param referenceDataID The reference data id
+   * @param referenceData The reference data id or the reference data object
+   * @param variables Graphql variables ( optional )
    * @returns The item list and the value field
    */
-  public async cacheItems(referenceDataID: string): Promise<any> {
+  public async cacheItems(
+    referenceData: string | ReferenceData,
+    variables: any = {}
+  ) {
     // Initialization
-    let items: any;
-    const referenceData = await this.loadReferenceData(referenceDataID);
-    const cacheKey = referenceData.id || '';
-    const valueField = referenceData.valueField || 'id';
-    const cacheTimestamp = localStorage.getItem(cacheKey + LAST_MODIFIED_KEY);
-    const modifiedAt = referenceData.modifiedAt || '';
+    let items: any[] = [];
+    let paginationRes: Awaited<
+      ReturnType<typeof this.processItemsByRequestType>
+    >['pageInfo'] = null;
 
-    // Check if referenceData has changed. In this case, refresh choices instead of using cached ones.
-    if (!cacheTimestamp || cacheTimestamp < modifiedAt) {
-      items = await this.fetchItems(referenceData);
+    if (typeof referenceData === 'string') {
+      referenceData = await this.loadReferenceData(referenceData);
+    }
+    const cacheKey = `${referenceData.id || ''}-${JSON.stringify(variables)}`;
+    const valueField = referenceData.valueField || 'id';
+    const cacheTimestamp = Number(
+      localStorage.getItem(cacheKey + LAST_REQUEST_KEY)
+    );
+    const modifiedAt = Number(referenceData.modifiedAt || '');
+
+    const isCached =
+      !Number.isNaN(cacheTimestamp) &&
+      cacheTimestamp >= modifiedAt &&
+      (await localForage.keys()).includes(cacheKey);
+
+    // If it isn't cached, fetch items and cache them
+    if (!isCached) {
+      const { items: i, pageInfo: p } = await this.fetchItems(
+        referenceData,
+        variables
+      );
+      items = i;
+      paginationRes = p;
       // Cache items and timestamp
-      await localForage.setItem(cacheKey, { items, valueField });
-      localStorage.setItem(cacheKey + LAST_MODIFIED_KEY, modifiedAt);
+      await localForage.setItem(cacheKey, { items, valueField, pageInfo: p });
+      localStorage.setItem(cacheKey + LAST_REQUEST_KEY, modifiedAt.toString());
     } else {
       // If referenceData has not changed, use cached value and check for updates for graphQL.
       if (referenceData.type === referenceDataType.graphql) {
-        const isCached = (await localForage.keys()).includes(cacheKey);
-        // Fetch items
-        items = await this.processItemsByRequestType(
-          referenceData,
-          referenceDataType.graphql
-        );
         // Cache items
-        if (isCached) {
-          const { items: cache } = (await localForage.getItem(
-            cacheKey
-          )) as CachedItems;
-          if (cache && items && items.length) {
-            for (const newItem of items) {
-              const cachedItemIndex = cache.findIndex(
-                (cachedItem) => cachedItem[valueField] === newItem[valueField]
-              );
-              if (cachedItemIndex !== -1) {
-                cache[cachedItemIndex] = newItem;
-              } else {
-                cache.push(newItem);
-              }
-            }
-            items = cache || [];
-          }
-        }
-        await localForage.setItem(cacheKey, { items, valueField });
+        const { items: cache, pageInfo: p } = (await localForage.getItem(
+          cacheKey
+        )) as CachedItems;
+        items = cache || [];
+        paginationRes = p;
+
+        await localForage.setItem(cacheKey, { items, valueField, pageInfo: p });
         localStorage.setItem(
           cacheKey + LAST_REQUEST_KEY,
-          this.formatDateSQL(new Date())
+          new Date().getTime().toString()
         );
       } else {
         // If referenceData has not changed, use cached value for non graphQL.
         items = ((await localForage.getItem(cacheKey)) as CachedItems)?.items;
         if (!items) {
-          items = await this.fetchItems(referenceData);
+          items = (await this.fetchItems(referenceData)).items;
           // Cache items and timestamp
           await localForage.setItem(cacheKey, { items, valueField });
-          localStorage.setItem(cacheKey + LAST_MODIFIED_KEY, modifiedAt);
+          localStorage.setItem(
+            cacheKey + LAST_REQUEST_KEY,
+            modifiedAt.toString()
+          );
         }
       }
     }
-    return items;
+
+    return { items, referenceData, pageInfo: paginationRes };
   }
 
   /**
    * Fetch items from reference data parameters and set cache
    *
    * @param referenceData reference data to query items of
+   * @param variables Graphql variables (optional)
    * @returns list of items
    */
-  public async fetchItems(referenceData: ReferenceData): Promise<any[]> {
+  public async fetchItems(referenceData: ReferenceData, variables: any = {}) {
     const cacheKey = referenceData.id || '';
     // Initialization
-    let items: any;
+    let items: any[];
+    let paginationInfo: Awaited<
+      ReturnType<typeof this.processItemsByRequestType>
+    >['pageInfo'] = null;
+
     switch (referenceData.type) {
       case referenceDataType.graphql: {
-        items = await this.processItemsByRequestType(
+        const { items: i, pageInfo: p } = await this.processItemsByRequestType(
           referenceData,
-          referenceDataType.graphql
+          referenceDataType.graphql,
+          variables
         );
+        items = i;
+        paginationInfo = p;
         localStorage.setItem(
           cacheKey + LAST_REQUEST_KEY,
-          this.formatDateSQL(new Date())
+          new Date().getTime().toString()
         );
         break;
       }
       case referenceDataType.rest: {
-        items = await this.processItemsByRequestType(
-          referenceData,
-          referenceDataType.rest
-        );
+        items = (
+          await this.processItemsByRequestType(
+            referenceData,
+            referenceDataType.rest,
+            variables
+          )
+        ).items;
         break;
       }
       case referenceDataType.static: {
@@ -254,7 +231,7 @@ export class ReferenceDataService {
         break;
       }
     }
-    return items;
+    return { items, pageInfo: paginationInfo };
   }
 
   /**
@@ -262,28 +239,113 @@ export class ReferenceDataService {
    *
    * @param referenceData Reference data item
    * @param type Reference data request type
+   * @param queryParams Query params (optional)
    * @returns processed items by the request type
    */
   private async processItemsByRequestType(
     referenceData: ReferenceData,
-    type: referenceDataType
+    type: referenceDataType,
+    queryParams: any = {}
   ) {
     let data!: any;
     if (type === referenceDataType.graphql) {
-      const url =
-        this.apiProxy.baseUrl +
-        (referenceData.apiConfiguration?.name ?? '') +
-        (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
-      const body = { query: this.processQuery(referenceData) };
-      data = (await this.apiProxy.buildPostRequest(url, body)) as any;
+      let url = '';
+      const options = {};
+      if (
+        referenceData.apiConfiguration?.authType === authType.authorizationCode
+      ) {
+        // If using authorizationCode authentication, directly query the target endpoint
+        url =
+          (referenceData.apiConfiguration?.endpoint ?? '') +
+          (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
+        const accessToken = localStorage.getItem('access_token');
+        if (accessToken) {
+          // Add access token to the request headers
+          let headers = new HttpHeaders();
+          headers = headers.append('Authorization', `Bearer ${accessToken}`);
+          set(options, 'headers', headers);
+        }
+      } else {
+        // Else, use the back-end
+        url =
+          this.apiProxy.baseUrl +
+          (referenceData.apiConfiguration?.name ?? '') +
+          (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
+      }
+      const query = this.processQuery(referenceData);
+
+      if (query) {
+        transformGraphQLVariables(query, queryParams);
+      }
+
+      const body = { query, variables: queryParams };
+      data = (await this.apiProxy.buildPostRequest(url, body, options)) as any;
     } else if (type === referenceDataType.rest) {
-      const url =
+      let url =
         this.apiProxy.baseUrl +
         referenceData.apiConfiguration?.name +
         referenceData.query;
+      if (queryParams && !isEmpty(queryParams)) {
+        // Transform the variables object into a string linked by '&'
+        const queryString = Object.keys(queryParams)
+          .map(
+            (key) =>
+              `${encodeURIComponent(key)}=${encodeURIComponent(
+                queryParams[key]
+              )}`
+          )
+          .join('&');
+        // Append the query params to the URL
+        if (url.includes('?')) {
+          url = `${url}&${queryString}`;
+        } else {
+          url = `${url}?${queryString}`;
+        }
+      }
       data = await this.apiProxy.promisedRequestWithHeaders(url);
     }
-    return referenceData.path ? jsonpath.query(data, referenceData.path) : data;
+
+    const items = referenceData.path
+      ? jsonpath.query(data, referenceData.path)
+      : data;
+
+    // Build page info
+    if (referenceData.pageInfo?.strategy) {
+      // If the api doesn't tell us the total count,
+      // we hide it along with the paginator pages and only update it
+      // again when we get a page smaller than the previous one
+      // indicating that we reached the end of the list
+      const totalCount =
+        (referenceData.pageInfo.totalCountField
+          ? jsonpath.query(data, referenceData.pageInfo.totalCountField)[0]
+          : null) ?? Number.MAX_SAFE_INTEGER;
+
+      const pageSize = referenceData.pageInfo.pageSizeVar
+        ? queryParams[referenceData.pageInfo.pageSizeVar] ?? 0
+        : items?.length || 0;
+
+      let lastCursor = null;
+      if (referenceData.pageInfo?.strategy === 'cursor') {
+        const cursors = jsonpath.query(
+          data,
+          referenceData.pageInfo.cursorField
+        );
+        items.forEach((item: any) => {
+          item.__CURSOR__ = cursors.shift();
+        });
+        lastCursor = items[items.length - 1].__CURSOR__;
+      }
+
+      return {
+        items,
+        pageInfo: {
+          totalCount,
+          pageSize,
+          lastCursor,
+        },
+      };
+    }
+    return { items, pageInfo: null };
   }
 
   /**
@@ -298,65 +360,6 @@ export class ReferenceDataService {
       .replace('T', ' ') // remove the T between date and time
       .split('.')[0]; // remove the decimals after the seconds
   }
-
-  /**
-   * Calculate an operation for filters
-   *
-   * @param foreignValue The value which comes from the record item
-   * @param operator The operator to use for the operation
-   * @param localValue The value which comes from the filter
-   * @returns A boolean, indicating the result of the operation
-   */
-  private operate = (
-    foreignValue: any,
-    operator: string,
-    localValue: any
-  ): boolean => {
-    switch (operator) {
-      case 'eq':
-        return isEqual(foreignValue, localValue);
-      case 'neq':
-        return !isEqual(foreignValue, localValue);
-      case 'gte':
-        return foreignValue >= localValue;
-      case 'gt':
-        return foreignValue > localValue;
-      case 'lte':
-        return foreignValue <= localValue;
-      case 'lt':
-        return foreignValue < localValue;
-      case 'contains':
-        if (foreignValue === null) return false;
-        if (isArray(localValue)) {
-          for (const itemValue of localValue) {
-            if (!foreignValue.includes(itemValue)) {
-              return false;
-            }
-          }
-          return true;
-        } else {
-          return foreignValue.includes(localValue);
-        }
-      case 'doesnotcontain':
-        if (foreignValue === null) return true;
-        if (isArray(localValue)) {
-          for (const itemValue of localValue) {
-            if (foreignValue.includes(itemValue)) {
-              return false;
-            }
-          }
-          return true;
-        } else {
-          return !foreignValue.includes(localValue);
-        }
-      case 'iscontained':
-        return this.operate(localValue, 'contains', foreignValue);
-      case 'isnotcontained':
-        return this.operate(localValue, 'doesnotcontain', foreignValue);
-      default:
-        return true;
-    }
-  };
 
   /**
    * Gets the fields from the API Configuration
@@ -381,7 +384,7 @@ export class ReferenceDataService {
       type,
     };
 
-    const result = await this.fetchItems(referenceData);
+    const { items: result } = await this.fetchItems(referenceData);
 
     if (result) {
       if (result.length > 0) {
@@ -456,5 +459,97 @@ export class ReferenceDataService {
       }
     }
     return processedQuery;
+  }
+
+  /**
+   * Execute aggregation on reference data
+   *
+   * @param referenceData reference data
+   * @param aggregation aggregation
+   * @param options aggregation options
+   * @param options.sourceFields list of source fields
+   * @param options.pipeline pipeline definition
+   * @param options.sortField sort field
+   * @param options.sortOrder sort order
+   * @param options.contextFilters context filters
+   * @param options.mapping data mapping
+   * @param options.graphQLVariables graphql variables ( graphql api only )
+   * @returns aggregation result
+   */
+  public async aggregate(
+    referenceData: ReferenceData,
+    aggregation: Aggregation,
+    options: {
+      sourceFields?: any;
+      pipeline?: any;
+      sortField?: string;
+      sortOrder?: string;
+      contextFilters?: CompositeFilterDescriptor;
+      mapping?: any;
+      graphQLVariables?: any;
+    } = {}
+  ) {
+    try {
+      // sourceFields and pipeline from args have priority over current aggregation ones
+      // for the aggregation preview feature on aggregation builder
+      const sourceFields = options.sourceFields ?? aggregation.sourceFields;
+      const pipeline = options.pipeline ?? aggregation.pipeline ?? [];
+      // Build the source fields step
+      if (sourceFields && sourceFields.length && pipeline) {
+        const rawItems = (
+          await this.fetchItems(referenceData, options.graphQLVariables)
+        ).items;
+        const transformer = new DataTransformer(
+          referenceData.fields || [],
+          cloneDeep(rawItems)
+        );
+        let items = transformer.transformData();
+        for (const item of items) {
+          //we remove white spaces as they end up being a mess, but probably a temp fix as I think we should remove white spaces straight when saving ref data in mongo
+          for (const key in item) {
+            if (/\s/g.test(key)) {
+              item[key.replace(/ /g, '')] = item[key];
+              delete item[key];
+            }
+          }
+        }
+        if (options.contextFilters) {
+          pipeline.unshift({
+            type: 'filter',
+            form: options.contextFilters,
+          });
+        }
+        // Build the pipeline
+        if (options.sortField && options.sortOrder) {
+          pipeline.push({
+            type: 'sort',
+            form: {
+              field: options.sortField,
+              order: options.sortOrder,
+            },
+          });
+        }
+
+        pipeline.forEach((step: any) => {
+          items = procPipelineStep(step, items, sourceFields);
+        });
+        if (options.mapping) {
+          return items.map((item: any) => {
+            return {
+              category: get(item, options.mapping.category),
+              field: get(item, options.mapping.field),
+              ...(options.mapping.series && {
+                series: get(item, options.mapping.series),
+              }),
+            };
+          });
+        }
+        return { items: items, totalCount: items.length };
+      } else {
+        return { items: [], totalCount: 0 };
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 }

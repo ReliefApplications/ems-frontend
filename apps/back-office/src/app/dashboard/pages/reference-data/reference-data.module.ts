@@ -2,12 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReferenceDataRoutingModule } from './reference-data-routing.module';
 import { ReferenceDataComponent } from './reference-data.component';
-import { AccessModule } from '@oort-front/shared';
+import { AccessModule, AsyncMonacoEditorDirective } from '@oort-front/shared';
 import {
   AlertModule,
   GraphQLSelectModule,
   IconModule,
   SpinnerModule,
+  ToggleModule,
 } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -25,7 +26,7 @@ import {
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
-import { IconsModule } from '@progress/kendo-angular-icons';
+import { ResizableModule } from 'angular-resizable-element';
 
 /**
  * Reference Data page module.
@@ -55,7 +56,9 @@ import { IconsModule } from '@progress/kendo-angular-icons';
     AlertModule,
     InputsModule,
     DropDownsModule,
-    IconsModule,
+    ToggleModule,
+    ResizableModule,
+    AsyncMonacoEditorDirective,
   ],
 })
 export class ReferenceDataModule {}

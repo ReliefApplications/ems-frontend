@@ -11,7 +11,7 @@ import { takeUntil } from 'rxjs/operators';
  * User Summary page component.
  */
 @Component({
-  selector: 'oort-app-user-summary',
+  selector: 'app-user-summary',
   templateUrl: './user-summary.component.html',
   styleUrls: ['./user-summary.component.scss'],
 })
@@ -19,7 +19,9 @@ export class UserSummaryComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** role of the user */
   public id = '';
+  /** Application */
   public application!: Application;
 
   /**

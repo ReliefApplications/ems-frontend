@@ -19,15 +19,16 @@ export interface Metadata {
   usedIn?: string[];
 }
 
-// TODO: check type of __schema
-/** Model for query types  */
-export interface QueryTypes {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __schema: any;
-}
-
 /** Model for query metadata query response */
 export interface QueryMetaDataQueryResponse {
   form: Form;
   resource: Resource;
 }
+
+/** Model for query types */
+export type QueryTypesResponse = {
+  types: {
+    availableQueries: any[];
+    userFields: any[];
+  };
+};

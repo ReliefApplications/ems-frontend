@@ -7,7 +7,6 @@ import { EmptyModule } from '../ui/empty/empty.module';
 import { DrawerPositionerModule } from './directives/drawer-positioner/drawer-positioner.module';
 import { DrawerPositionerDirective } from './directives/drawer-positioner/drawer-positioner.directive';
 import { SurveyModule } from 'survey-angular-ui';
-import { ModernDrawerPositionerModule } from './directives/modern-drawer-positioner/modern-drawer-positioner.module';
 
 /** Dashboard floating filter module. */
 @NgModule({
@@ -21,7 +20,6 @@ import { ModernDrawerPositionerModule } from './directives/modern-drawer-positio
     EmptyModule,
     SurveyModule,
     DrawerPositionerModule,
-    ModernDrawerPositionerModule,
   ],
   exports: [DashboardFilterComponent],
   providers: [DrawerPositionerDirective],

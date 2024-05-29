@@ -1,5 +1,6 @@
 <!-- Header -->
-<nav *ngIf="showHeader"
+<nav
+  *ngIf="showHeader"
   id="app-header"
   class="flex p-4 items-center md:justify-between text-white"
   [ngClass]="theme.headerClass"
@@ -199,6 +200,9 @@
       *ngIf="breadcrumbs.length > 1"
       [breadcrumbs]="breadcrumbs"
     ></ui-breadcrumbs>
-    <router-outlet></router-outlet>
+    <router-outlet
+      (detach)="onDetach($event)"
+      (attach)="onAttach($event)"
+    ></router-outlet>
   </ng-container>
 </ui-sidenav-container>

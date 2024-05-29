@@ -21,6 +21,7 @@
           [resource]="resource"
           [layout]="layout"
           [aggregation]="aggregation"
+          [loading]="loading"
         ></shared-summary-card-general>
       </ng-template>
     </ui-tab>
@@ -137,7 +138,10 @@
         <span>{{ 'models.widget.display.title' | translate }}</span>
       </ng-container>
       <ng-template uiTabContent>
-        <shared-display-settings [formGroup]="widgetFormGroup">
+        <shared-display-settings
+          [formGroup]="widgetFormGroup"
+          [showHideOption]="true"
+        >
           <!-- Specific settings for summary card -->
           <ui-toggle
             *ngIf="widgetFormGroup.get('widgetDisplay.searchable')?.enabled"
@@ -215,6 +219,23 @@
           [formArray]="widgetFormGroup.controls.sortFields"
           [formGroup]="widgetFormGroup"
         ></shared-sorting-settings>
+      </ng-template>
+    </ui-tab>
+    <!-- Widget API options -->
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon
+          icon="settings_input_composite"
+          [size]="24"
+          uiTooltip="Automation"
+        ></ui-icon>
+        <span>Automation</span>
+      </ng-container>
+
+      <ng-template uiTabContent>
+        <shared-tab-widget-automations
+          [formArray]="widgetFormGroup.controls.automationRules"
+        ></shared-tab-widget-automations>
       </ng-template>
     </ui-tab>
   </ui-tabs>

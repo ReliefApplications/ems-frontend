@@ -73,6 +73,46 @@ export const FILTER_OPERATORS = [
 ];
 
 /**
+ * Available date operators.
+ */
+export const DATE_FILTER_OPERATORS = [
+  {
+    value: 'eq',
+    label: 'kendo.grid.filterEqOperator',
+  },
+  {
+    value: 'neq',
+    label: 'kendo.grid.filterNotEqOperator',
+  },
+  {
+    value: 'gte',
+    label: 'kendo.grid.filterAfterOrEqualOperator',
+  },
+  {
+    value: 'gt',
+    label: 'kendo.grid.filterAfterOperator',
+  },
+  {
+    value: 'lte',
+    label: 'kendo.grid.filterBeforeOrEqualOperator',
+  },
+  {
+    value: 'lt',
+    label: 'kendo.grid.filterBeforeOperator',
+  },
+  {
+    value: 'isnull',
+    label: 'kendo.grid.filterIsNullOperator',
+    disableValue: true,
+  },
+  {
+    value: 'isnotnull',
+    label: 'kendo.grid.filterIsNotNullOperator',
+    disableValue: true,
+  },
+];
+
+/**
  * Available field types.
  */
 export const FIELD_TYPES = [

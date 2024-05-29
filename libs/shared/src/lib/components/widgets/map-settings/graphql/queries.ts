@@ -45,6 +45,7 @@ export const GET_REFERENCE_DATA = gql`
       graphQLTypeName
       type
       fields
+      query
       aggregations(ids: $aggregation) {
         edges {
           node {

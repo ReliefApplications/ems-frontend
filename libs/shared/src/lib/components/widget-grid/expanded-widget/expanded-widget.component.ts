@@ -26,6 +26,8 @@ interface WidgetData {
 export class ExpandedWidgetComponent implements AfterViewInit, OnDestroy {
   /** CDK portal */
   public portal?: DomPortal;
+  /** Timeout listener */
+  private setFullscreenTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Expand widgets in a modal
@@ -39,13 +41,19 @@ export class ExpandedWidgetComponent implements AfterViewInit, OnDestroy {
   ) {}
 
   ngAfterViewInit(): void {
-    this.document.dispatchEvent(
-      new CustomEvent('expandchange', { detail: { expanded: true } })
-    );
     this.portal = new DomPortal(this.data.element);
+    // sync with the domPortal content
+    this.setFullscreenTimeoutListener = setTimeout(() => {
+      this.document.dispatchEvent(
+        new CustomEvent('expandchange', { detail: { expanded: true } })
+      );
+    });
   }
 
   ngOnDestroy(): void {
+    if (this.setFullscreenTimeoutListener) {
+      clearTimeout(this.setFullscreenTimeoutListener);
+    }
     this.document.dispatchEvent(
       new CustomEvent('expandchange', { detail: { expanded: false } })
     );

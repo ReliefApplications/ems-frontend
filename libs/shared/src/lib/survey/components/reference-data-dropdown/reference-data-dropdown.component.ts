@@ -6,16 +6,13 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import {
-  ReferenceData,
-  ReferenceDataQueryResponse,
-} from '../../../models/reference-data.model';
-import { GET_SHORT_REFERENCE_DATA_BY_ID } from './graphql/queries';
+import { ReferenceData } from '../../../models/reference-data.model';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { QuestionAngular } from 'survey-angular-ui';
 import { QuestionReferenceDataDropdownModel } from './reference-data-dropdown.model';
 import { Subject } from 'rxjs';
+import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 
 /**
  * Reference data dropdown component.
@@ -43,11 +40,13 @@ export class ReferenceDataDropdownComponent
    * @param {ChangeDetectorRef} changeDetectorRef - Angular - This is angular change detector ref of the component instance needed for the survey AngularQuestion class
    * @param {ViewContainerRef} viewContainerRef - Angular - This is angular view container ref of the component instance needed for the survey AngularQuestion class
    * @param {Apollo} apollo - Apollo - This is the Apollo service that we'll use to make our GraphQL queries.
+   * @param {ReferenceDataService} referenceDataService Shared reference data service
    */
   constructor(
     changeDetectorRef: ChangeDetectorRef,
     viewContainerRef: ViewContainerRef,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private referenceDataService: ReferenceDataService
   ) {
     super(changeDetectorRef, viewContainerRef);
   }
@@ -60,19 +59,15 @@ export class ReferenceDataDropdownComponent
       },
     });
     if (this.model.obj.referenceData) {
-      this.apollo
-        .query<ReferenceDataQueryResponse>({
-          query: GET_SHORT_REFERENCE_DATA_BY_ID,
-          variables: {
-            id: this.model.obj.referenceData,
-          },
-        })
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(({ data }) => {
-          this.selectedReferenceData = data.referenceData;
+      this.referenceDataService
+        .loadReferenceData(this.model.obj.referenceData)
+        .then((referenceData) => {
+          this.selectedReferenceData = referenceData;
+          this.model.obj.setPropertyValue('_referenceData', referenceData);
           this.control.setValue(this.model.obj.referenceData, {
             emitEvent: false,
           });
+          this.changeDetectorRef.detectChanges();
         });
     }
   }
@@ -81,5 +76,18 @@ export class ReferenceDataDropdownComponent
     super.ngOnDestroy();
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  /**
+   * Reset control value if there is a value previously to avoid triggering
+   * not necessary actions
+   *
+   * @param event click event
+   */
+  clearFormField(event: Event) {
+    if (this.control.value) {
+      this.control.setValue(null);
+    }
+    event.stopPropagation();
   }
 }

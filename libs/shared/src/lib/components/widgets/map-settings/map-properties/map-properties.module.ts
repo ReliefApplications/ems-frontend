@@ -10,6 +10,8 @@ import {
   ButtonModule,
   DividerModule,
   CheckboxModule,
+  AlertModule,
+  ToggleModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { MapControlsModule } from './map-controls/map-controls.module';
@@ -43,6 +45,8 @@ import { PortalModule } from '@angular/cdk/portal';
     SelectMenuModule,
     ErrorMessageModule,
     PortalModule,
+    AlertModule,
+    ToggleModule,
   ],
   exports: [MapPropertiesComponent],
 })

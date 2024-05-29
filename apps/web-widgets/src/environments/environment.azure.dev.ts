@@ -1,6 +1,6 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
-import { theme } from '../themes/default';
-import { sharedEnvironment } from './environment.shared';
+import { sharedAzureEnvironment } from './environment.shared';
+import { Environment } from './environment.type';
 
 /** Authentication configuration */
 const authConfig: AuthConfig = {
@@ -19,17 +19,21 @@ const authConfig: AuthConfig = {
 /**
  * Environment file for local development.
  */
-export const environment = {
-  ...sharedEnvironment,
-  production: true,
+export const environment: Environment = {
+  ...sharedAzureEnvironment,
   apiUrl: 'https://ems-safe-dev.who.int/api',
   subscriptionApiUrl: 'wss://ems-safe-dev.who.int/api',
   frontOfficeUri: 'https://ems-safe-dev.who.int/',
   backOfficeUri: 'https://ems-safe-dev.who.int/backoffice/',
-  module: 'widgets',
-  availableLanguages: ['en', 'test'],
   authConfig,
-  theme,
-  tinymceBaseUrl: 'https://ems-safe-dev.who.int/tinymce',
-  i18nUrl: 'https://ems-safe-dev.who.int/assets/i18n/',
+  tinymceBaseUrl:
+    'https://whoemssafedsta03.blob.core.windows.net/shared/dev/tinymce',
+  i18nUrl: 'https://whoemssafedsta03.blob.core.windows.net/shared/dev/i18n/',
+  // tinymceBaseUrl: 'https://ems2-dev.who.int/app-builder/tinymce',
+  // i18nUrl: 'https://ems2-dev.who.int/app-builder/i18n/',
+  admin0Url:
+    'https://services.arcgis.com/5T5nSi527N4F7luB/arcgis/rest/services/Detailed_Boundary_ADM0/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson',
+  user: {
+    attributes: ['country', 'region', 'location', 'department'],
+  },
 };

@@ -10,7 +10,9 @@
         [uiErrorMessage]="
           'components.emailPreview.errors.missingSubject' | translate
         "
-        [uiErrorMessageIf]="this.emailForm.controls.subject.hasError('required')"
+        [uiErrorMessageIf]="
+          this.emailForm.controls.subject.hasError('required')
+        "
         uiFormFieldDirective
       >
         <label>{{ 'components.emailPreview.subject' | translate }}</label>
@@ -51,8 +53,14 @@
         class="mb-4"
         [multiple]="true"
         formControlName="files"
+        [restrictions]="fileRestrictions"
       ></kendo-fileselect>
-      <editor [init]="editor" formControlName="html"></editor>
+      <editor
+        (onInit)="editorLoading = false"
+        [init]="editor"
+        formControlName="html"
+      ></editor>
+      <ui-spinner *ngIf="editorLoading"></ui-spinner>
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
@@ -62,8 +70,7 @@
     <ui-button
       category="secondary"
       variant="primary"
-      [uiDialogClose]="emailForm.value"
-      cdkFocusInitial
+      (click)="onSubmit()"
       [disabled]="!emailForm.valid"
     >
       {{ 'common.send' | translate }}
