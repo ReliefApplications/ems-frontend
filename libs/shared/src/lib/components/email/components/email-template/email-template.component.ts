@@ -168,6 +168,12 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     { value: 'years', label: 'Years' },
   ];
 
+  /** Show preview for select with fiter option  */
+  public showPreview = false;
+
+  /** Show preview button for select with fiter option  */
+  public showBtnPreview = false;
+
   /**
    * Composite filter group.
    *
@@ -229,10 +235,10 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     if (field?.options === undefined) {
       field =
         this.emailService.fields.filter(
-          (x: any) => x.name == fieldName.field.split('.')[0]
+          (x: any) => x.name == fieldName?.field?.split('.')[0]
         ).length > 0
           ? this.emailService.fields.filter(
-              (x: any) => x.name == fieldName.field.split('.')[0]
+              (x: any) => x.name == fieldName?.field?.split('.')[0]
             )[0]
           : field;
     }
@@ -532,6 +538,8 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   onSegmentChange(event: any): void {
     const segment = event?.target?.value || event;
     this.activeSegmentIndex = this.segmentList.indexOf(segment);
+    this.showPreview = false;
+    this.showBtnPreview = false;
   }
 
   /**
@@ -652,6 +660,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
    */
   addNewDatasetFilter(): void {
     // Filter Form values
+    this.showBtnPreview = true;
     this.filterFields = this.filterQuery.get('filters') as FormArray;
     this.filterFields.push(this.getNewFilterFields);
   }
@@ -663,6 +672,8 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
    */
   deleteDatasetFilter(index: number): void {
     this.datasetFilterInfo.removeAt(index);
+    this.showBtnPreview =
+      this.datasetFilterInfo?.controls?.length == 0 ? false : true;
   }
 
   /**
@@ -825,8 +836,11 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
 
   /**
    * apply filter via dataset filters
+   *
+   * @param filterType
    */
-  applyFilter(): void {
+  applyFilter(filterType: any) {
+    this.showPreview = false;
     const filtersArray = this.filterQuery.get('filters') as FormArray;
 
     // Iterate over the filters and update the value for 'inthelast' operators
@@ -896,27 +910,31 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
           ?.filter(Boolean);
       }
 
-      //Checking email in all Data
-      //Checking email in all Data
-      this.dataset?.records?.forEach((dataVal: any) => {
-        const emailData = Object.values(dataVal).filter((x: any) =>
-          emailRegex.test(x)
-        );
-        emailsList = emailsList.concat(emailData);
-      });
-      if (emailsList?.length) {
-        this.selectedEmails = [
-          ...new Set([...this.selectedEmails, ...emailsList]),
-        ];
-      }
-      if (this.selectedEmails.length > 0) {
-        this.emailLoad.emit({
-          emails: this.selectedEmails,
-          emailFilter: this.filterQuery,
-        });
-        this.noEmail.emit(false);
+      if (filterType === 'preview') {
+        this.showPreview = true;
+        // this.dataList = this.dataset?.records || [];
       } else {
-        this.noEmail.emit(true);
+        //Checking email in all Data
+        this.dataset?.records?.forEach((dataVal: any) => {
+          const emailData = Object.values(dataVal).filter((x: any) =>
+            emailRegex.test(x)
+          );
+          emailsList = emailsList.concat(emailData);
+        });
+        if (emailsList?.length) {
+          this.selectedEmails = [
+            ...new Set([...this.selectedEmails, ...emailsList]),
+          ];
+        }
+        if (this.selectedEmails.length > 0) {
+          this.emailLoad.emit({
+            emails: this.selectedEmails,
+            emailFilter: this.filterQuery,
+          });
+          this.noEmail.emit(false);
+        } else {
+          this.noEmail.emit(true);
+        }
       }
     }
   }

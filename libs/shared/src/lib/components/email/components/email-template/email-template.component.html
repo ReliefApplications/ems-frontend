@@ -79,79 +79,6 @@
     </div>
   </div>
 
-  <!-- From list ( selected from resource ) -->
-  <div class="select-from-list" *ngIf="activeSegmentIndex === 1">
-    <!-- Selection of emails -->
-    <div class="select-scroll">
-      <table
-      *ngIf="dataList?.length"
-      class="dataset-preview w-full border border-blue-600 shadow-xs m-1"
-    >
-      <thead class="bg-blue-600 border-blue-600 shadow-xs text-white">
-        <tr class="bg-blue-600 border-blue-600 shadow-xs text-white">
-          <th>
-            <input
-              type="checkbox"
-              [checked]="false"
-              *ngIf="!isAllSelected"
-              (change)="selectAllEmailItems($event)"
-            />
-            <input
-              type="checkbox"
-              [checked]="true"
-              *ngIf="isAllSelected"
-              (change)="selectAllEmailItems($event)"
-            />
-          </th>
-          <ng-container *ngFor="let field of datasetFields">
-            <th
-              class="bg-blue-600 border-white-600 shadow-xs text-white p-2 text-center"
-            >
-              {{ this.emailService.replaceUnderscores(field) | titlecase }}
-            </th>
-          </ng-container>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          *ngFor="let data of dataList; index as i"
-          class="bg-white-600 border-blue-600 text-blue-600"
-        >
-          <td>
-            <input
-              type="checkbox"
-              (change)="selectUnselectIndividualEmails(i, $event)"
-              [checked]="true"
-              *ngIf="selectedItemIndexes.indexOf(i) !== -1"
-            />
-            <input
-              type="checkbox"
-              (change)="selectUnselectIndividualEmails(i, $event)"
-              [checked]="false"
-              *ngIf="selectedItemIndexes.indexOf(i) === -1"
-            />
-          </td>
-          <ng-container *ngFor="let field of datasetFields">
-            <td class="p-2 border border-blue-600 shadow-xs m-1 text-center">
-             {{this.emailService.formatDataStrings(data[field], field)}}
-            </td>
-          </ng-container>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-    <!-- todo: translate -->
-    <ui-button
-      *ngIf="selectedItemIndexes.length"
-      class="float-right mt-8"
-      category="secondary"
-      variant="primary"
-      (click)="addSelectedEmails()"
-    >
-      Apply
-    </ui-button>
-  </div>
-
   <!-- From resource filter -->
   <div *ngIf="activeSegmentIndex === 2">
     <!-- Filter editor -->
@@ -488,16 +415,7 @@
         </div>
       </div>
     </div>
-    <!-- Apply filter -->
-    <ui-button
-      *ngIf="datasetFilterInfo.controls"
-      class="float-right mt-8"
-      category="secondary"
-      variant="primary"
-      (click)="applyFilter()"
-    >
-      {{ 'components.queryBuilder.filter.apply' | translate }}
-    </ui-button>
+
   </div>
   <div class="loadingSign" [ngClass]="{ active: loading }">
     <ui-spinner *ngIf="loading" style="position: relative"></ui-spinner>
@@ -512,4 +430,102 @@
       >{{ emailText }}</ui-chip
     >
   </div>
+
+    <!-- From list ( selected from resource ) -->
+    <div class="select-from-list mt-2" *ngIf="activeSegmentIndex === 1 || showPreview">
+      <!-- Selection of emails -->
+      <div class="select-scroll">
+        <table
+        *ngIf="dataList?.length"
+        class="dataset-preview w-full border border-blue-600 shadow-xs m-1"
+      >
+        <thead class="bg-blue-600 border-blue-600 shadow-xs text-white">
+          <tr class="bg-blue-600 border-blue-600 shadow-xs text-white">
+            <th *ngIf="!showPreview">
+              <input
+                type="checkbox"
+                [checked]="false"
+                *ngIf="!isAllSelected"
+                (change)="selectAllEmailItems($event)"
+              />
+              <input
+                type="checkbox"
+                [checked]="true"
+                *ngIf="isAllSelected"
+                (change)="selectAllEmailItems($event)"
+              />
+            </th>
+            <ng-container *ngFor="let field of datasetFields">
+              <th
+                class="bg-blue-600 border-white-600 shadow-xs text-white p-2 text-center"
+              >
+                {{ this.emailService.replaceUnderscores(field) | titlecase }}
+              </th>
+            </ng-container>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let data of dataList; index as i"
+            class="bg-white-600 border-blue-600 text-blue-600"
+          >
+            <td *ngIf="!showPreview">
+              <input
+                type="checkbox"
+                (change)="selectUnselectIndividualEmails(i, $event)"
+                [checked]="true"
+                *ngIf="selectedItemIndexes.indexOf(i) !== -1"
+              />
+              <input
+                type="checkbox"
+                (change)="selectUnselectIndividualEmails(i, $event)"
+                [checked]="false"
+                *ngIf="selectedItemIndexes.indexOf(i) === -1"
+              />
+            </td>
+            <ng-container *ngFor="let field of datasetFields">
+              <td class="p-2 border border-blue-600 shadow-xs m-1 text-center">
+               {{this.emailService.formatDataStrings(data[field], field)}}
+              </td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <!-- todo: translate -->
+      <div>
+        <ui-button
+        *ngIf="selectedItemIndexes.length"
+        class="float-right mt-8"
+        category="secondary"
+        variant="primary"
+        (click)="addSelectedEmails()"
+        >
+          Apply
+        </ui-button>
+      </div>
+    </div>
+
+  <div>
+      <!-- Apply filter -->
+      <ui-button
+        *ngIf="datasetFilterInfo.controls"
+        class="float-right mt-8"
+        category="secondary"
+        variant="primary"
+        (click)="applyFilter('')"
+      >
+        {{ 'components.queryBuilder.filter.apply' | translate }}
+      </ui-button>
+  
+      <ui-button
+        *ngIf="showBtnPreview"
+        class="float-right mt-8 mr-2"
+        category="secondary"
+        variant="primary"
+        (click)="applyFilter('preview')"
+      >
+        {{ 'common.preview' | translate }}
+      </ui-button>
+  </div>    
 </div>
