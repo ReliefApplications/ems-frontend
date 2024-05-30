@@ -127,7 +127,7 @@
     </div>
 
     <!-- Body -->
-    <div id="bodyHtml" [style]="getEmailStyle('body')"></div>
+    <div id="bodyHtml" [style]="getEmailStyle('body')" (afterViewChecked)="checkAndApplyBodyStyle()"></div>
 
     <!-- Footer -->
     <div [style]="getEmailStyle('footer')">

@@ -74,6 +74,29 @@ export class PreviewComponent implements OnInit, OnDestroy {
    */
   constructor(private apollo: Apollo, public emailService: EmailService) {}
 
+  ngAfterViewInit(): void {
+    this.checkAndApplyBodyStyle();
+  }
+
+  checkAndApplyBodyStyle() {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(this.bodyString, 'text/html');
+    console.log(doc);
+
+    const strong = doc.querySelectorAll('strong');
+    const em = doc.querySelectorAll('em');
+
+    if (strong.length > 0 || em.length > 0) {
+      (document.getElementById('bodyHtml') as HTMLInputElement).classList.add(
+        'body-wrap'
+      );
+    } else {
+      (
+        document.getElementById('bodyHtml') as HTMLInputElement
+      ).classList.remove('body-wrap');
+    }
+  }
+
   ngOnInit(): void {
     this.replaceTokensWithTables();
     this.replaceDateTimeTokens();
@@ -83,7 +106,6 @@ export class PreviewComponent implements OnInit, OnDestroy {
 
     (document.getElementById('headerHtml') as HTMLInputElement).innerHTML =
       this.headerString;
-
     (document.getElementById('bodyHtml') as HTMLInputElement).innerHTML =
       this.bodyString;
     if (this.emailService.allLayoutdata.headerLogo) {
