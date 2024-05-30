@@ -1067,6 +1067,9 @@ export class EmailService {
                   record[key]
                 );
                 result[key] = matchingTexts;
+                if (matchingTexts === '') {
+                  result[key] = record[key].join(', ');
+                }
               } else {
                 result[key] = record[key];
               }

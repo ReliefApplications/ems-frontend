@@ -1342,22 +1342,6 @@ export class DatasetFilterComponent
                 this.datasetResponse = res?.data?.dataset;
                 this.dataList = res?.data?.dataset.records?.map(
                   (record: any) => {
-                    const arrayData = Object.keys(record).filter((rec: any) =>
-                      Array.isArray(record[rec])
-                    );
-                    if (arrayData.length > 0) {
-                      arrayData.forEach((colNm: any) => {
-                        const metaField = query.fields.find((field: any) => {
-                          return field.name === colNm;
-                        });
-
-                        const fieldType = metaField?.type;
-
-                        if (fieldType !== TYPE_LABEL.tagbox) {
-                          record[colNm] = record[colNm].join(',');
-                        }
-                      });
-                    }
                     const flattenedObject = this.emailService.flattenRecord(
                       record,
                       resourceInfo,
