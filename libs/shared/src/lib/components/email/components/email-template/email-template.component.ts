@@ -448,7 +448,6 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
         ?.map((record: { email: string }) => record.email)
         ?.filter(Boolean)
         ?.flat();
-      this.emails = [...this.datasetEmails];
       if (this.emails.length === 0) {
         this.noEmail.emit(true);
       } else {
@@ -477,7 +476,6 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
                 this.data = res?.data?.dataset.records;
                 this.datasetFields = dataset.fields.map((ele: any) => ele.name);
                 this.dataList = this.getDataList(dataset);
-                this.emails = [...this.datasetEmails];
                 dataset.cacheData.datasetResponse = this.dataset;
                 dataset.cacheData.dataList = this.dataList;
                 dataset.cacheData.datasetFields = this.datasetFields;
