@@ -28,7 +28,7 @@ import { haversineDistance } from './utils/haversine';
 import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
 import { MapLayersService } from '../../../services/map/map-layers.service';
 import { BehaviorSubject } from 'rxjs';
-import centroid from '@turf/centroid';
+import { centroid } from '@turf/turf';
 import { Injector, Renderer2, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import {

@@ -6,7 +6,7 @@ import set from 'lodash/set';
 import { flattenDeep, get, isArray, isNil, isObject, uniq } from 'lodash';
 import * as L from 'leaflet';
 import REGIONS from './regions';
-import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
+import { booleanPointInPolygon } from '@turf/turf';
 import { Feature, MultiPolygon, Polygon } from 'geojson';
 import { LayerDatasourceType } from '../../models/layer.model';
 import { getWithExpiry, setWithExpiry } from '../../utils/cache-with-expiry';

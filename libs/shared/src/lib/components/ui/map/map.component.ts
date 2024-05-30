@@ -412,7 +412,7 @@ export class MapComponent
    *
    * @param initMap Does the map need to be reloaded
    */
-  private drawMap(initMap: boolean = true): void {
+  private drawMap(initMap = true): void {
     const {
       initialState,
       maxBounds,
@@ -809,6 +809,7 @@ export class MapComponent
           return this.mapLayersService
             .createLayersFromId(id, this.injector)
             .then((layer) => {
+              console.log(layer);
               return parseTreeNode(layer, undefined, displayLayers);
             });
         } else {

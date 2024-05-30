@@ -12,7 +12,10 @@ import {
   of,
   switchMap,
 } from 'rxjs';
-import { LayerFormData } from '../../components/ui/map/interfaces/layer-settings.type';
+import {
+  GeometryType,
+  LayerFormData,
+} from '../../components/ui/map/interfaces/layer-settings.type';
 import { Layer, EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
 import {
   AddLayerMutationResponse,
@@ -30,13 +33,19 @@ import { Aggregation } from '../../models/aggregation.model';
 import { Layout } from '../../models/layout.model';
 import { ADD_LAYER, EDIT_LAYER, DELETE_LAYER } from './graphql/mutations';
 import { GET_LAYERS, GET_LAYER_BY_ID } from './graphql/queries';
-import { omitBy, isNil, get } from 'lodash';
+import { omitBy, isNil, get, omit, isEmpty } from 'lodash';
 import { ContextService } from '../context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { MapPolygonsService } from './map-polygons.service';
 import { WidgetService } from '../widget/widget.service';
 import { ReferenceData } from '../../models/reference-data.model';
 import getReferenceDataAggregationFields from '../../utils/reference-data/aggregation-fields.util';
+import { authType } from '../../models/api-configuration.model';
+import { ReferenceDataService } from '../reference-data/reference-data.service';
+import { AggregationService } from '../aggregation/aggregation.service';
+import turf, { Feature, booleanPointInPolygon } from '@turf/turf';
+import filterReferenceData from '../../utils/filter/reference-data-filter.util';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 /**
  * Shared map layer service
@@ -55,6 +64,8 @@ export class MapLayersService {
    * @param contextService Application context service
    * @param mapPolygonsService Shared map polygons service
    * @param widgetService Shared widget service
+   * @param referenceDataService Shared reference data service
+   * @param aggregationService Shared aggregation service
    * @param document document
    */
   constructor(
@@ -65,6 +76,8 @@ export class MapLayersService {
     private contextService: ContextService,
     private mapPolygonsService: MapPolygonsService,
     private widgetService: WidgetService,
+    private referenceDataService: ReferenceDataService,
+    private aggregationService: AggregationService,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
@@ -440,6 +453,140 @@ export class MapLayersService {
   }
 
   /**
+   * Check geoJSON feature, if it's MultiLine or MultiPolygon, parse it
+   * into array of single features
+   *
+   * @param feature Feature to parse
+   * @returns array of features
+   */
+  parseToSingleFeature = (feature: Feature) => {
+    const features: Feature[] = [];
+    if (feature.geometry.type === 'MultiPoint') {
+      for (const coordinates of feature.geometry.coordinates) {
+        features.push({
+          ...omit(feature, 'geometry'),
+          geometry: {
+            type: 'Point',
+            coordinates: typeof coordinates !== 'number' ? coordinates : [],
+          },
+        });
+      }
+    } else if (feature.geometry.type === 'MultiPolygon') {
+      features.push(feature);
+    } else {
+      // No other types are supported for now
+      // features.push(feature);
+    }
+    return features;
+  };
+
+  /**
+   * Get feature from item and add it to collection
+   *
+   * @param features collection of features
+   * @param layerType layer type
+   * @param item item to get feature from
+   * @param mapping fields mapping, to build geoJson from
+   * @param mapping.geoField geo field to extract geojson
+   * @param mapping.latitudeField latitude field ( not used if geoField )
+   * @param mapping.longitudeField longitude field ( not used if geoField )
+   * @param mapping.adminField admin field ( mapping with polygons coming from common services )
+   * @param geoFilter geo filter ( polygon )
+   */
+  getFeatureFromItem = (
+    features: any[],
+    layerType: GeometryType,
+    item: any,
+    mapping: {
+      geoField?: string;
+      latitudeField?: string;
+      longitudeField?: string;
+      adminField?: string;
+    },
+    geoFilter?: turf.Polygon
+  ) => {
+    if (mapping.geoField) {
+      // removed the toLowerCase there, which may cause an issue
+      const geo = get(item, mapping.geoField);
+      if (
+        geo &&
+        (!geoFilter ||
+          booleanPointInPolygon(geo.geometry.coordinates, geoFilter))
+      ) {
+        if (mapping.adminField) {
+          const feature = {
+            geometry: geo,
+            properties: { ...omit(item, mapping.geoField) },
+          };
+          features.push(feature);
+        } else {
+          const feature = {
+            ...(typeof geo === 'string' ? JSON.parse(geo) : geo),
+            properties: { ...omit(item, mapping.geoField) },
+          };
+          // Only push if feature is of the same type as layer
+          // Get from feature, as geo can be stored as string for some models ( ref data )
+          const geoType = get(feature, 'geometry.type');
+          if (feature.type === 'Feature' && geoType === layerType) {
+            features.push(feature);
+          } else if (
+            feature.type === 'Feature' &&
+            `Multi${layerType}` === geoType
+          ) {
+            features.push(...this.parseToSingleFeature(feature));
+          }
+        }
+      }
+    } else {
+      // Lowercase is needed as quick solution for solving ref data layers
+      const latitude = get(item, mapping.latitudeField || '');
+      const longitude = get(item, mapping.longitudeField || '');
+      if (latitude && longitude) {
+        const geo = {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [Number(longitude), Number(latitude)],
+          },
+        };
+        if (
+          !geoFilter ||
+          booleanPointInPolygon(geo.geometry.coordinates, geoFilter)
+        ) {
+          const feature = {
+            ...geo,
+            properties: { ...item },
+          };
+          features.push(feature);
+        }
+      }
+    }
+  };
+
+  /**
+   * Get features
+   *
+   * @param features list of geo features
+   * @param layerType type of layer
+   * @param items list of items
+   * @param mapping mapping
+   */
+  getFeatures = async (
+    features: any[],
+    layerType: GeometryType,
+    items: any[],
+    mapping: any
+  ) => {
+    items.forEach((item) => {
+      try {
+        this.getFeatureFromItem(features, layerType, item, mapping);
+      } catch (e) {
+        console.error(e);
+      }
+    });
+  };
+
+  /**
    * Get layer geojson from definition
    *
    * @param layer layer model
@@ -492,16 +639,120 @@ export class MapLayersService {
           )
       );
     };
-    // When using adminField, first make sure the polygons are fetched
-    if (layer.datasource?.adminField) {
-      return lastValueFrom(
-        this.mapPolygonsService.admin0sReady$.pipe(
-          first((v) => v),
-          switchMap(() => getLayer())
+
+    const fetchAggregationData = (
+      refData: ReferenceData,
+      contextFilters: CompositeFilterDescriptor
+    ) => {
+      return this.aggregationService
+        .getAggregations({
+          referenceData: layer.datasource?.refData,
+          ids: [layer.datasource?.aggregation || ''],
+        })
+        .then(({ edges }) => {
+          const aggregationModel = edges[0].node;
+          return this.referenceDataService.aggregate(
+            refData,
+            aggregationModel,
+            {
+              queryParams: this.widgetService.replaceReferenceDataQueryParams(
+                layer.datasource?.referenceDataVariableMapping
+              ),
+              contextFilters: contextFilters,
+            }
+          );
+        })
+        .then((aggregationData) => {
+          console.log(aggregationData, 'aggregation');
+          if (layer.datasource?.adminField) {
+            return lastValueFrom(
+              this.mapPolygonsService.admin0sReady$.pipe(
+                first((v) => v),
+                map(() => {
+                  return this.mapPolygonsService.assignGeometry(
+                    aggregationData,
+                    layer.datasource?.adminField,
+                    layer.datasource?.type
+                  );
+                })
+              )
+            );
+          } else {
+            return aggregationData;
+          }
+        })
+        .catch(() => of(EMPTY_FEATURE_COLLECTION));
+    };
+
+    const fetchFeatureCollection = (
+      refData: ReferenceData,
+      contextFilters: CompositeFilterDescriptor
+    ) => {
+      const featureCollection = {
+        type: 'FeatureCollection',
+        features: [],
+      };
+
+      return this.referenceDataService
+        .fetchItems(
+          refData,
+          this.widgetService.replaceReferenceDataQueryParams(
+            layer.datasource?.referenceDataVariableMapping
+          )
         )
-      );
+        .then((data) => {
+          let items = data.items;
+          if (contextFilters && !isEmpty(contextFilters)) {
+            items = items.filter((x: any) =>
+              filterReferenceData(x, contextFilters)
+            );
+          }
+          this.getFeatures(
+            featureCollection.features,
+            layer.type as any,
+            items,
+            {
+              geoField: layer.datasource?.geoField,
+              longitudeField: layer.datasource?.longitudeField,
+              latitudeField: layer.datasource?.latitudeField,
+              adminField: layer.datasource?.adminField,
+            }
+          );
+          console.log(data, 'no aggregation');
+        });
+    };
+
+    const defaultLogic = () => {
+      if (layer.datasource?.adminField) {
+        return lastValueFrom(
+          this.mapPolygonsService.admin0sReady$.pipe(
+            first((v) => v),
+            switchMap(() => getLayer())
+          )
+        );
+      } else {
+        return getLayer();
+      }
+    };
+
+    if (layer.datasource?.refData) {
+      this.referenceDataService
+        .loadReferenceData(layer.datasource.refData)
+        .then((refData) => {
+          if (
+            refData.apiConfiguration?.authType === authType.authorizationCode
+          ) {
+            if (layer.datasource?.aggregation) {
+              return fetchAggregationData(refData, contextFilters);
+            } else {
+              return fetchFeatureCollection(refData, contextFilters);
+            }
+          } else {
+            return defaultLogic();
+          }
+        });
     } else {
-      return getLayer();
+      return defaultLogic();
     }
   }
 

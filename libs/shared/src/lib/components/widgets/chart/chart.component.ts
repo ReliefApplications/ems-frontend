@@ -314,7 +314,7 @@ export class ChartComponent
                 this.referenceDataService
                   .aggregate(refData, aggregationModel, {
                     mapping: get(this.settings, 'chart.mapping', null),
-                    graphQLVariables: this.queryParams,
+                    queryParams: this.queryParams,
                     contextFilters: filters
                       ? this.contextService.injectContext(filters)
                       : undefined,
