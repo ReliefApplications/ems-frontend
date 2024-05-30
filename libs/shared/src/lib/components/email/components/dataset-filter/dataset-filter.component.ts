@@ -1353,7 +1353,7 @@ export class DatasetFilterComponent
 
                         const fieldType = metaField?.type;
 
-                        if (fieldType !== 'tagbox') {
+                        if (fieldType !== TYPE_LABEL.tagbox) {
                           record[colNm] = record[colNm].join(',');
                         }
                       });
