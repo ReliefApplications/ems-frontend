@@ -1347,7 +1347,15 @@ export class DatasetFilterComponent
                     );
                     if (arrayData.length > 0) {
                       arrayData.forEach((colNm: any) => {
-                        record[colNm] = record[colNm].join(',');
+                        const metaField = query.fields.find((field: any) => {
+                          return field.name === colNm;
+                        });
+
+                        const fieldType = metaField?.type;
+
+                        if (fieldType !== 'tagbox') {
+                          record[colNm] = record[colNm].join(',');
+                        }
                       });
                     }
                     const flattenedObject = this.emailService.flattenRecord(
