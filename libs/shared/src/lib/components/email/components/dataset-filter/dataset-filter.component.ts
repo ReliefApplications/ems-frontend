@@ -507,7 +507,8 @@ export class DatasetFilterComponent
                       ) {
                         field.fields.forEach((obj: any) => {
                           obj.name =
-                            `_${FIELD_NAME.lastUpdatedBy}.user.` + obj.name;
+                            `_${FIELD_NAME.lastUpdatedBy}.user.` +
+                            `${obj.name === 'id' ? '_id' : obj.name}`;
                           this.availableFields.filter((x) => x.name == obj.name)
                             .length === 0
                             ? this.availableFields.push(clone(obj))
