@@ -32,6 +32,7 @@ export class TabFilterComponent implements OnInit {
   /** List of filter fields */
   public filterFields: Field[] = [];
 
+  /** Loading status of the filter fields */
   public loading = true;
 
   /**

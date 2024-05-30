@@ -34,7 +34,7 @@ import {
   DateModule,
   DividerModule,
   IconModule,
-  SpinnerModule
+  SpinnerModule,
 } from '@oort-front/ui';
 import { TreeViewModule } from '@progress/kendo-angular-treeview';
 
