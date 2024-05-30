@@ -1049,7 +1049,7 @@ export class EmailService {
                 } else {
                   result[key] = record[key];
                 }
-              } else if (fieldType === 'tagbox') {
+              } else if (fieldType === 'tagbox' && metaField?.options?.length) {
                 const findMatchingTexts = (options: any, keysToFind: any) => {
                   return options
                     .filter((values: any) =>
