@@ -1049,7 +1049,10 @@ export class EmailService {
                 } else {
                   result[key] = record[key];
                 }
-              } else if (metaField?.options?.length) {
+              } else if (
+                metaField?.options?.every((x: any) => !isNaN(x.value)) &&
+                metaField?.options?.length
+              ) {
                 const findMatchingTexts = (options: any, keysToFind: any) => {
                   return options
                     .filter((values: any) =>
@@ -1125,7 +1128,7 @@ export class EmailService {
             });
 
             if (
-              // fieldType === TYPE_LABEL.tagbox &&
+              metaField?.options?.every((x: any) => !isNaN(x.value)) &&
               metaField?.options?.length
             ) {
               const findMatchingTexts = (options: any, keysToFind: any) => {
