@@ -143,8 +143,8 @@ export const createDefaultField = (name: string): QueryField => ({
  * @param validators Enables or not the validators of the form
  * @returns Query form
  */
-export const createQueryForm = (value: any, validators = true) =>
-  formBuilder.group({
+export const createQueryForm = (value: any, validators = true) => {
+  return formBuilder.group({
     name: [get(value, 'name', ''), validators ? Validators.required : null],
     template: [get(value, 'template', ''), null],
     pageSize: [get(value, 'pageSize', 10)],
@@ -153,13 +153,14 @@ export const createQueryForm = (value: any, validators = true) =>
       validators ? Validators.required : null
     ),
     sort: formBuilder.array(
-      get(value, 'sort', []).map((x: any) => createSortGroup(x))
+      (get(value, 'sort', []) ?? []).map((x: any) => createSortGroup(x))
     ),
     filter: createFilterGroup(get(value, 'filter', {})),
     style: formBuilder.array(
       get(value, 'style', []).map((x: any) => createStyleForm(x))
     ),
   });
+};
 
 /**
  * Creates a display form.

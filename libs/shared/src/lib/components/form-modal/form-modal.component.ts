@@ -452,6 +452,7 @@ export class FormModalComponent
               .mutate<AddRecordMutationResponse>({
                 mutation: ADD_RECORD,
                 variables: {
+                  id: this.survey.getVariable('record.id'),
                   form: this.data.template,
                   data: survey.parsedData ?? survey.data,
                 },

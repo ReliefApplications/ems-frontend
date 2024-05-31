@@ -833,7 +833,7 @@ export class SummaryCardComponent
             //   field: get(this.layout?.query, 'sort.field', null),
             //   order: get(this.layout?.query, 'sort.order', ''),
             // };
-            this.sort = get(this.layout?.query, 'sort', []);
+            this.sort = get(this.layout?.query, 'sort', []) ?? [];
             this.dataQuery = this.apollo.watchQuery<any>({
               query: builtQuery,
               variables: {
@@ -1137,7 +1137,7 @@ export class SummaryCardComponent
       this.sort = [{ field: e.field, order: e.order }];
     } else {
       if (this.useLayout) {
-        this.sort = get(this.layout?.query, 'sort', []);
+        this.sort = get(this.layout?.query, 'sort', []) ?? [];
       }
     }
     if (this.gridComponent) {

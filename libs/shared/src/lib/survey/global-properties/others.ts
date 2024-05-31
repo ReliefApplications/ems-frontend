@@ -213,6 +213,15 @@ export const init = (environment: any): void => {
     category: 'Records',
     type: 'boolean',
     default: false,
+    visibleIndex: 1,
+  });
+
+  // Adds a property to initialize new records with random OID
+  serializer.addProperty('survey', {
+    name: 'generateNewRecordOid',
+    category: 'Records',
+    type: 'boolean',
+    default: false,
     visibleIndex: 2,
   });
 

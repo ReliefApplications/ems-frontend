@@ -73,8 +73,8 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   public formActive = false;
   /** Has changes */
   public hasChanges = false;
-  /** Is step */
-  private isStep = false;
+  /** Remove padding */
+  private removePadding = false;
   /** Prevent form builder to display multiple modals when exiting. */
   private deactivating = false;
 
@@ -137,10 +137,15 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Remove the bottom padding of the appPageContainer
-    const appPageContainer = this.document.getElementById('appPageContainer');
-    appPageContainer?.classList.add('!pb-0', '!px-0');
-    appPageContainer?.querySelector('ui-breadcrumbs')?.classList.add('px-8');
+    if (!this.router.url.startsWith('/applications')) {
+      // Remove the bottom padding of the appPageContainer
+      this.removePadding = true;
+
+      const appPageContainer = this.document.getElementById('appPageContainer');
+
+      appPageContainer?.classList.add('!pb-0', '!px-0');
+      appPageContainer?.querySelector('ui-breadcrumbs')?.classList.add('px-8');
+    }
 
     this.formActive = false;
     this.statusControl.valueChanges.subscribe((status) => {
@@ -545,9 +550,13 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Add the bottom padding of the appPageContainer
-    const appPageContainer = this.document.getElementById('appPageContainer');
-    appPageContainer?.classList.remove('!pb-0', '!px-0');
-    appPageContainer?.querySelector('ui-breadcrumbs')?.classList.remove('px-8');
+    if (this.removePadding) {
+      // If we removed the padding, add it back on cleanup
+      const appPageContainer = this.document.getElementById('appPageContainer');
+      appPageContainer?.classList.remove('!pb-0', '!px-0');
+      appPageContainer
+        ?.querySelector('ui-breadcrumbs')
+        ?.classList.remove('px-8');
+    }
   }
 }

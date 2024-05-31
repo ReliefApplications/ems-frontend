@@ -697,7 +697,8 @@ export const init = (
         true,
         dialog,
         document,
-        ngZone
+        ngZone,
+        resourcesFilterValues
       );
 
       if (canDisplayButtons && question.canSearch) {
@@ -714,7 +715,7 @@ export const init = (
         }
       });
 
-      const addBtn = buildAddButton(question, false, dialog, ngZone, document);
+      const addBtn = buildAddButton(question, true, dialog, ngZone, document);
       if (canDisplayButtons && question.addRecord && question.addTemplate) {
         actionsButtons.appendChild(addBtn);
       }
