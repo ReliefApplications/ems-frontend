@@ -813,9 +813,12 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
           this.selectedEmails.push(this.emails[itemIndex]);
         }
       }
-      const emailData = Object.values(this.data[indexNum]).filter((x: any) =>
-        emailRegex.test(x)
-      );
+      const emailData =
+        indexNum !== undefined
+          ? Object.values(this.data[indexNum]).filter((x: any) =>
+              emailRegex.test(x)
+            )
+          : [];
       this.selectedEmails = this.selectedEmails.concat(emailData);
     });
     this.selectedEmails = [...new Set(this.selectedEmails)];
