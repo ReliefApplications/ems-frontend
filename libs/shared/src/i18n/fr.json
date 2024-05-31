@@ -2250,6 +2250,7 @@
 				}
 			},
 			"historicalDate": "Récupérer les données historiques",
+			"item-specific-templates": "Modèles spécifiques à des enregistrements",
 			"share": "Partager le tableau de bord",
 			"tooltip": {
 				"filter": {

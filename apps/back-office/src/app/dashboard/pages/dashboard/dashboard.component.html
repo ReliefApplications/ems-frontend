@@ -131,6 +131,10 @@
               <ui-icon icon="share" variant="grey"></ui-icon>
               {{ 'models.dashboard.share' | translate }}
             </button>
+            <button *ngIf="dashboard.page?.context" uiMenuItem>
+              <ui-icon icon="delete_sweep" variant="grey"></ui-icon>
+              {{ 'models.dashboard.item-specific-templates' | translate }}
+            </button>
           </ui-menu>
         </div>
       </div>
