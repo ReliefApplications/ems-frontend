@@ -1024,11 +1024,6 @@ export class EmailService {
 
             const fieldType = metaField?.type;
 
-            // console.log('KEY');
-            // console.log(key);
-            // console.log('FIELDTYPE');
-            // console.log(fieldType);
-
             if (fieldType !== TYPE_LABEL.resources) {
               const fieldName = query.fields.find((field: any) => {
                 return field.name === key;
@@ -1150,9 +1145,6 @@ export class EmailService {
                 record[key]
               );
               result[key] = matchingTexts;
-              // if (matchingTexts === '') {
-              //   result[key] = record[key].join(', ');
-              // }
             } else {
               result[key] = value;
             }

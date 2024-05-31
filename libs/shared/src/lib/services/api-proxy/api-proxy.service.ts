@@ -45,10 +45,6 @@ export class ApiProxyService {
     if (api.pingUrl) {
       const url = this.buildPingUrl(api.pingUrl);
       const headers = this.buildHeaders();
-      console.log('URL 1');
-      console.log(url);
-      console.log('HEADERS 1');
-      console.log(headers);
       return this.restService.post(url, api, { headers });
 
       // if (name) {
@@ -88,10 +84,6 @@ export class ApiProxyService {
     options: any = {}
   ): Promise<ArrayBuffer> {
     const headers = this.buildHeaders(options.headers);
-    console.log('HEADERS 2');
-    console.log(headers);
-    console.log('OPTIONS 2');
-    console.log(options);
     return firstValueFrom(
       this.restService.post(url, body, { ...options, headers })
     );

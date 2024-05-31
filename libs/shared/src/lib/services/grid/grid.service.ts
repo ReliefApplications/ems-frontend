@@ -325,26 +325,18 @@ export class GridService {
               ...meta,
               choices,
             };
-            console.log('META FIELDS');
-            console.log(metaFields);
           });
       }
       if (meta.choicesByUrl) {
         return this.apiProxyService
           .promisedRequestWithHeaders(meta.choicesByUrl.url || '')
           .then((value: any) => {
-            console.log('VALUE');
-            console.log(value);
-            console.log('META FROM URL');
-            console.log(meta);
             const choices = this.extractChoices(value, meta);
             setWithExpiry(key, choices);
             metaFields[fieldName] = {
               ...meta,
               choices,
             };
-            console.log('META FIELDS FROM URL');
-            console.log(metaFields);
           });
       }
       return Promise.resolve();
@@ -412,8 +404,6 @@ export class GridService {
     let choices: any[] = [];
     let valueField: string | null = '';
     let textField: string | null = '';
-    console.log('META 1');
-    console.log(meta);
     if (meta.choicesByUrl) {
       valueField = meta.choicesByUrl.value || null;
       textField = meta.choicesByUrl.text || null;

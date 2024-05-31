@@ -422,44 +422,23 @@ export class DatasetFilterComponent
                   if (Object.prototype.hasOwnProperty.call(data, field)) {
                     this.metaFields = Object.assign({}, data[field]);
                     try {
-                      console.log('META FIELDS');
-                      console.log(this.metaFields);
                       await this.gridService.populateMetaFields(
                         this.metaFields
                       );
                     } catch (err) {
                       console.error(err);
                     }
-                    // const fields = resource || [];
-                    // const defaultLayoutFields = this.defaultLayout.fields || {};
-                    // this.fields = this.gridService.getFields(
-                    //   fields,
-                    //   this.metaFields,
-                    //   defaultLayoutFields,
-                    //   ''
-                    // );
                   }
                 }
-                // this.getRecords();
               },
             });
           }
-          console.log('TYPES');
-          console.log(types);
-          console.log('RESOURCE NAME');
-          console.log(resourceName);
-          console.log('RESOURCE');
-          console.log(resource);
-          // const metaFields = this.buildMetaFields(query.fields);
-          // const fieldList
         });
       let fields: any[] | undefined = [];
       this.fetchResourceMetaData()
         .pipe(takeUntil(this.destroy$))
         .subscribe((res) => {
           fields = res.data?.resource?.metadata;
-          console.log('META DATA');
-          console.log(fields);
           this.resource = {};
           this.loading = true;
           this.showErrorMessage = '';
@@ -476,7 +455,6 @@ export class DatasetFilterComponent
               this.resource = res.data.resource;
               this.metaData = res.data?.resource?.metadata;
               if (this.metaData?.length) {
-                console.log(this.metaData);
                 this.metaData.forEach((field: any) => {
                   if (
                     field &&
