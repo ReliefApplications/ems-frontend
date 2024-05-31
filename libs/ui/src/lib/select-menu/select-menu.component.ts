@@ -374,18 +374,18 @@ export class SelectMenuComponent
    * @returns mapped values
    */
   getValuesLabel(selectedValues: any[]) {
-    let values = this.optionList.filter((val: any) => {
-      for (const selVal of selectedValues) {
-        if (selVal === val.value) {
-          return val;
+    let values = this.optionList.filter((option: any) => {
+      for (const value of selectedValues) {
+        if (value === option.value) {
+          return option;
         }
       }
     });
-    return (values = values.map((val: any) => {
-      if (val.label) {
-        return val.label;
+    return (values = values.map((x: any) => {
+      if (x.label) {
+        return x.label;
       } else {
-        return val.value;
+        return x.value;
       }
     }));
   }
