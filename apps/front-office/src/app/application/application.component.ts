@@ -137,6 +137,18 @@ export class ApplicationComponent
         } else {
           this.title = '';
           this.navGroups = [];
+          if (this.applicationService.hasErrors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.accessNotProvided', {
+                type: this.translate
+                  .instant('common.application.one')
+                  .toLowerCase(),
+                error: '',
+              }),
+              { error: true }
+            );
+            this.router.navigate(['/']);
+          }
         }
       });
   }
