@@ -1,3 +1,17 @@
+# [2.15.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.14.2...v2.15.0) (2024-05-31)
+
+
+### Bug Fixes
+
+* false value not appearing on filter ([#2580](https://github.com/ReliefApplications/ems-frontend/issues/2580)) ([204ff6f](https://github.com/ReliefApplications/ems-frontend/commit/204ff6fa7468c57ab1b2b1bfb3f296e5b61e51e5))
+* overlay container would not appear fullscreen in SUI due to cdk overlay container z-index being too low ([b684dbb](https://github.com/ReliefApplications/ems-frontend/commit/b684dbbedbd21258c0559242ea67603f5e1f4a69))
+* wrong app id would produce infinite loading in front-office ([#2577](https://github.com/ReliefApplications/ems-frontend/issues/2577)) ([12c7728](https://github.com/ReliefApplications/ems-frontend/commit/12c77285adc669f64b4ae137739aaf7ae39549dc))
+
+
+### Features
+
+* add tooltip to widgets AB[#92824](https://github.com/ReliefApplications/ems-frontend/issues/92824) ([3154960](https://github.com/ReliefApplications/ems-frontend/commit/3154960b2178a339f9d60eeca92096ba8ee6465d))
+
 # [2.15.0-rc.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.15.0-rc.2...v2.15.0-rc.3) (2024-05-31)
 
 
