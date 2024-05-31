@@ -1,4 +1,10 @@
-import { Component, OnInit, OnDestroy, ElementRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { EmailService } from '../../email.service';
 import { Subscription } from 'rxjs';
@@ -44,6 +50,8 @@ export class PreviewComponent implements OnInit, OnDestroy {
   isExpandedCc = false;
   /** Expand for "BCC" list items. */
   isExpandedBcc = false;
+  /** Reference to the bodyHtml */
+  @ViewChild('bodyHtml') bodyHtml!: ElementRef;
 
   /**
    * Expand see more email list dropdown for "To".
@@ -72,13 +80,10 @@ export class PreviewComponent implements OnInit, OnDestroy {
    * @param apollo - The Apollo client for making GraphQL queries.
    * @param emailService - The service for email-related operations.
    */
-  constructor(
-    private apollo: Apollo,
-    public emailService: EmailService,
-    private el: ElementRef
-  ) {}
+  constructor(private apollo: Apollo, public emailService: EmailService) {}
 
   ngAfterViewInit(): void {
+    this.bodyHtml.nativeElement.innerHTML = this.bodyString;
     this.checkAndApplyBodyStyle();
   }
 
@@ -88,15 +93,10 @@ export class PreviewComponent implements OnInit, OnDestroy {
 
     const strong = doc.querySelectorAll('strong');
     const em = doc.querySelectorAll('em');
-
     if (strong.length > 0 || em.length > 0) {
-      (
-        this.el.nativeElement.querySelector('#bodyHtml') as HTMLInputElement
-      ).classList.add('body-wrap');
+      this.bodyHtml.nativeElement.classList.add('body-wrap');
     } else {
-      (
-        this.el.nativeElement.querySelector('#bodyHtml') as HTMLInputElement
-      ).classList.remove('body-wrap');
+      this.bodyHtml.nativeElement.classList.remove('body-wrap');
     }
   }
 
@@ -109,8 +109,6 @@ export class PreviewComponent implements OnInit, OnDestroy {
 
     (document.getElementById('headerHtml') as HTMLInputElement).innerHTML =
       this.headerString;
-    (document.getElementById('bodyHtml') as HTMLInputElement).innerHTML =
-      this.bodyString;
     if (this.emailService.allLayoutdata.headerLogo) {
       this.headerLogo = URL.createObjectURL(
         this.emailService.convertBase64ToFile(
