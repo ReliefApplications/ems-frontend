@@ -32,6 +32,9 @@ export class TabFilterComponent implements OnInit {
   /** List of filter fields */
   public filterFields: Field[] = [];
 
+  /** Loading status of the filter fields */
+  public loading = true;
+
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
@@ -45,6 +48,7 @@ export class TabFilterComponent implements OnInit {
       const cloneFields = cloneDeep(fields);
       this.setCustomEditors(cloneFields);
       this.filterFields = cloneFields;
+      this.loading = false;
     });
   }
 
