@@ -13,7 +13,7 @@ module.exports = {
     'main',
     {
       name: 'next',
-      prerelease: 'rc'
+      prerelease: 'rc',
     },
     {
       name: 'beta',
