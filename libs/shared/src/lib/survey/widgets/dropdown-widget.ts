@@ -28,10 +28,7 @@ export const init = (
       el: HTMLInputElement
     ): void => {
       let currentSearchValue = '';
-      const defaultDropdown = el.querySelector('sv-ng-dropdown-question');
-      if (defaultDropdown) {
-        el.removeChild(defaultDropdown);
-      }
+      const defaultDropdown = el.querySelector('sv-ng-dropdown');
       // Remove previous input if already rendered
       el.parentElement?.querySelector('.k-input')?.parentElement?.remove();
       widget.willUnmount(question);
@@ -116,7 +113,7 @@ export const init = (
         updateChoices(dropdownInstance, question, currentSearchValue);
       }
       question._instance = dropdownInstance;
-      el.parentElement?.appendChild(dropdownDiv);
+      defaultDropdown?.replaceWith(dropdownDiv);
     },
     willUnmount: (question: any): void => {
       if (!question._propertyValueChangedVirtual) return;
