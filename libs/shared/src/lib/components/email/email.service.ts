@@ -1049,10 +1049,7 @@ export class EmailService {
                 } else {
                   result[key] = record[key];
                 }
-              } else if (
-                fieldType === TYPE_LABEL.tagbox &&
-                metaField?.options?.length
-              ) {
+              } else if (metaField?.options?.length) {
                 const findMatchingTexts = (options: any, keysToFind: any) => {
                   return options
                     .filter((values: any) =>
@@ -1123,7 +1120,39 @@ export class EmailService {
             // likely will need to normalise the metaData so that we have options/choices.
             result[key] = value;
           } else {
-            result[key] = value;
+            const metaField = query.fields.find((field: any) => {
+              return field.name === key;
+            });
+
+            if (
+              // fieldType === TYPE_LABEL.tagbox &&
+              metaField?.options?.length
+            ) {
+              const findMatchingTexts = (options: any, keysToFind: any) => {
+                return options
+                  .filter((values: any) => {
+                    if (typeof keysToFind === 'object') {
+                      return keysToFind?.includes(parseInt(values.value));
+                    } else {
+                      const keyAsArray = [keysToFind];
+                      return keyAsArray?.includes(parseInt(values.value));
+                    }
+                  })
+                  .map((values: any) => values.text)
+                  .join(', ');
+              };
+
+              const matchingTexts = findMatchingTexts(
+                metaField?.options,
+                record[key]
+              );
+              result[key] = matchingTexts;
+              // if (matchingTexts === '') {
+              //   result[key] = record[key].join(', ');
+              // }
+            } else {
+              result[key] = value;
+            }
           }
         }
       }
