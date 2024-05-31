@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { EmailService } from '../../email.service';
 import { Subscription } from 'rxjs';
@@ -72,7 +72,11 @@ export class PreviewComponent implements OnInit, OnDestroy {
    * @param apollo - The Apollo client for making GraphQL queries.
    * @param emailService - The service for email-related operations.
    */
-  constructor(private apollo: Apollo, public emailService: EmailService) {}
+  constructor(
+    private apollo: Apollo,
+    public emailService: EmailService,
+    private el: ElementRef
+  ) {}
 
   ngAfterViewInit(): void {
     this.checkAndApplyBodyStyle();
@@ -81,18 +85,17 @@ export class PreviewComponent implements OnInit, OnDestroy {
   checkAndApplyBodyStyle() {
     const parser = new DOMParser();
     const doc = parser.parseFromString(this.bodyString, 'text/html');
-    console.log(doc);
 
     const strong = doc.querySelectorAll('strong');
     const em = doc.querySelectorAll('em');
 
     if (strong.length > 0 || em.length > 0) {
-      (document.getElementById('bodyHtml') as HTMLInputElement).classList.add(
-        'body-wrap'
-      );
+      (
+        this.el.nativeElement.querySelector('#bodyHtml') as HTMLInputElement
+      ).classList.add('body-wrap');
     } else {
       (
-        document.getElementById('bodyHtml') as HTMLInputElement
+        this.el.nativeElement.querySelector('#bodyHtml') as HTMLInputElement
       ).classList.remove('body-wrap');
     }
   }
