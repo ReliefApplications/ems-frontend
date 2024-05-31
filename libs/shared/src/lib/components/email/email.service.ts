@@ -1065,6 +1065,14 @@ export class EmailService {
                 if (matchingTexts === '') {
                   result[key] = record[key].join(', ');
                 }
+              } else if (
+                metaField?.options?.every((x: any) => isNaN(x.value)) &&
+                metaField?.options?.length
+              ) {
+                result[key] = metaField?.options
+                  ?.filter((values: any) => value.includes(values.value))
+                  .map((values: any) => values.text)
+                  .join(', ');
               } else {
                 result[key] = record[key];
               }
