@@ -243,14 +243,10 @@ export class ApplicationService {
           asRole,
         },
       })
-      .subscribe(async ({ errors, data }) => {
-        if (errors) {
-          this.hasErrors = true;
-        } else {
-          this.hasErrors = false;
-        }
+      .subscribe(async ({ data }) => {
         // extend user abilities for application
         if (data.application) {
+          this.hasErrors = false;
           // Map all previously configured icons in v4 to v6 so on application edit, new icons are saved in DB
           data.application.pages?.map((page: Page) => {
             if (faV4toV6Mapper[page.icon as string]) {
@@ -264,6 +260,8 @@ export class ApplicationService {
           });
           this.authService.extendAbilityForApplication(data.application);
           await this.getCustomStyle(data.application);
+        } else {
+          this.hasErrors = true;
         }
         this.application.next(data.application);
         const application = this.application.getValue();
