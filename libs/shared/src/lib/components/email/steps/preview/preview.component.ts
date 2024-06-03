@@ -4,6 +4,7 @@ import {
   OnDestroy,
   ViewChild,
   ElementRef,
+  AfterViewInit,
 } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { EmailService } from '../../email.service';
@@ -18,7 +19,7 @@ import { TokenRegex } from '../../constant';
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.scss'],
 })
-export class PreviewComponent implements OnInit, OnDestroy {
+export class PreviewComponent implements OnInit, OnDestroy, AfterViewInit {
   /** Selected resource ID. -TO DELETE? */
   public selectedResourceId: string | undefined = '653642baa37293bb1706506e';
   /** List of data items. -TO DELETE? */
@@ -87,6 +88,9 @@ export class PreviewComponent implements OnInit, OnDestroy {
     this.checkAndApplyBodyStyle();
   }
 
+  /**
+   * Check if the body has strong or em tags, and add the body-wrap class if it does.
+   */
   checkAndApplyBodyStyle() {
     const parser = new DOMParser();
     const doc = parser.parseFromString(this.bodyString, 'text/html');

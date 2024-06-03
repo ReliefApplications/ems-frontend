@@ -252,14 +252,17 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Check if the field is a resource or resources field
    *
-   * @param field
-   * @param fieldName
+   * @param field - Field object
+   * @param fieldName - Field name
+   * @returns The field object with updated details
    */
   checkFieldDetails(field: any, fieldName: any) {
     if (field) {
       switch (field.type) {
         case TYPE_LABEL.resources:
+          // If the field type is 'resources', find the field by name
           field = fieldName
             ? field.fields?.find(
                 (data: any) => data.name === fieldName.field.split('.')[1]
@@ -268,6 +271,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
           break;
         case TYPE_LABEL.resource:
           if (field.fields) {
+            // If the field type is 'resource', split the name and find the subfield
             field = field?.fields?.find(
               (x: { name: any }) =>
                 x.name.split(' - ')[1] === fieldName.field.split('.')[1]
@@ -287,31 +291,38 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Returns an array of data objects.
+   * Each object is a flattened version of a resource.
    *
-   * @param field
+   * @param field - Field object representing a resource.
+   * @returns An array of data objects.
    */
   getDataList(field: any): any {
+    // Get the resource info
     const info = field.resource;
+    // Remove the __typename property
     delete info.__typename;
+
+    // Get the data and flatten the resource
     const data = this.data?.map((record: any) => {
       const flattenedObject = this.emailService.flattenRecord(
         record,
         info,
         field
       );
+
+      // Convert the resource field name back to {resourceName} - {resourceField}
       field.fields.forEach((x: any) => {
-        /**
-         * Converts the resource field name back to {resourceName} - {resourceField}
-         * so the field can be mapped to the correct data.
-         */
         if (x.parentName) {
           x.name = `${x.parentName} - ${x.childName}`;
           x.type = x.childType;
         }
       });
 
+      // Remove the data property
       delete flattenedObject.data;
 
+      // Remove null and undefined values
       const flatData = Object.fromEntries(
         Object.entries(flattenedObject).filter(
           ([, value]) => value !== null && value !== undefined
@@ -836,12 +847,14 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * apply filter via dataset filters
+   * Applies filter to the dataset based on the filterQuery.
    *
-   * @param filterType
+   * @param filterType - The type of filter. Currently supports 'preview' or undefined.
    */
-  applyFilter(filterType: any) {
+  applyFilter(filterType: string): void {
+    // Hide the preview if it is currently shown.
     this.showPreview = false;
+
     const filtersArray = this.filterQuery.get('filters') as FormArray;
 
     // Iterate over the filters and update the value for 'inthelast' operators
@@ -851,6 +864,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
 
       if (operatorControl && operatorControl.value === 'inthelast') {
         const inTheLastGroup = filterFormGroup.get('inTheLast') as FormGroup;
+
         if (inTheLastGroup) {
           const inTheLastNumberControl = inTheLastGroup.get('number');
           const inTheLastUnitControl = inTheLastGroup.get('unit');
@@ -860,6 +874,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
               inTheLastNumberControl.value,
               inTheLastUnitControl.value
             );
+            // Sets filter value to the in the last filter converted to minutes.
             filterFormGroup.get('value')?.setValue(days);
           }
         }
@@ -871,6 +886,10 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     if (filterObject?.filters?.length && filterObject?.logic) {
       const { logic } = filterObject;
       let emailsList: any;
+
+      /**
+       * Filter the dataset based on the 'and' logic.
+       */
       if (logic === 'and') {
         emailsList = this.dataset?.records
           ?.map((data) => {
@@ -890,6 +909,9 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
           })
           ?.filter(Boolean);
       } else if (logic === 'or') {
+        /**
+         * Filter the dataset based on the 'or' logic.
+         */
         emailsList = this.dataset?.records
           ?.map((data) => {
             if (
@@ -912,6 +934,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
       }
 
       if (filterType === 'preview') {
+        // Show the preview and update the dataList.
         this.showPreview = true;
         // this.dataList = this.dataset?.records || [];
       } else {
@@ -923,17 +946,20 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
           emailsList = emailsList.concat(emailData);
         });
         if (emailsList?.length) {
+          // Add the new emails to the selectedEmails list.
           this.selectedEmails = [
             ...new Set([...this.selectedEmails, ...emailsList]),
           ];
         }
         if (this.selectedEmails.length > 0) {
+          // Emit the selected emails and the email filter query.
           this.emailLoad.emit({
             emails: this.selectedEmails,
             emailFilter: this.filterQuery,
           });
           this.noEmail.emit(false);
         } else {
+          // Emit the fact that no email is available.
           this.noEmail.emit(true);
         }
       }
