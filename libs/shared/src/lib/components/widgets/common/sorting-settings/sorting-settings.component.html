@@ -38,7 +38,7 @@
         [formGroupName]="rowIndex"
       >
         <div uiFormFieldDirective class="!m-0">
-          <ui-select-menu formControlName="field">
+          <ui-select-menu formControlName="field" [filterable]="true">
             <ui-select-option
               *ngFor="let option of fields"
               [value]="option.name"
