@@ -1959,6 +1959,7 @@ export class ApplicationService {
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': window.location.origin,
     });
     let path = '';
     if (application.publicCssFilename) {
