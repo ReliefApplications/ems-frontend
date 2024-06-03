@@ -25,8 +25,10 @@ export class SassService {
       this.worker = new Worker(
         new URL('./sass-worker.worker', import.meta.url)
       );
+      console.log('Worker initialized:', this.worker);
       // Listen for messages from the worker
       this.worker.onmessage = ({ data }) => {
+        console.log('> on message <');
         const { id, css } = data;
         const resolve = this.pendingRequests.get(id);
         if (resolve) {
@@ -34,6 +36,10 @@ export class SassService {
           this.pendingRequests.delete(id);
         }
       };
+      this.worker.onerror = function (event) {
+        console.log(event.message, event);
+      };
+      this.worker.postMessage({ id: 0, sass: '{}' });
     } else {
       console.error('Web Workers are not supported in this environment.');
     }
@@ -48,6 +54,7 @@ export class SassService {
   convertToCss(sass: string): Promise<any> {
     return new Promise((resolve) => {
       if (this.worker) {
+        console.log('> send message <');
         // Generate a unique request ID
         const id = this.requestId++;
         // Store the resolve function with the request ID

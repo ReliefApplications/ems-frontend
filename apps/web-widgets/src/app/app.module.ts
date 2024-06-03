@@ -28,6 +28,7 @@ import {
   AuthInterceptorService,
   FormService,
   DatePipe,
+  SassService,
 } from '@oort-front/shared';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
@@ -55,6 +56,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import get from 'lodash/get';
 import { ShadowDomService } from '@oort-front/ui';
+import { SassService as WebWidgetsSassService } from './services/sass/sass.service';
 
 // Register local translations for dates
 registerLocaleData(localeFr);
@@ -219,6 +221,10 @@ export const getBaseHref = () => {
     DatePipe,
     { provide: APP_BASE_HREF, useFactory: getBaseHref },
     { provide: L10N_PREFIX, useValue: '' },
+    {
+      provide: SassService,
+      useClass: WebWidgetsSassService,
+    },
   ],
 })
 export class AppModule implements DoBootstrap {
