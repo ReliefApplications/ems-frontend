@@ -951,6 +951,7 @@ export class EmailService {
    */
   flattenRecord(record: any, resourceInfo: any, query?: any): any {
     const result: any = {};
+    console.log(record);
     for (const key in record) {
       if (Object.prototype.hasOwnProperty.call(record, key)) {
         const value = record[key];
@@ -1048,6 +1049,7 @@ export class EmailService {
                 metaField?.options?.every((x: any) => !isNaN(x.value)) &&
                 metaField?.options?.length
               ) {
+                // Checks that all of the metafield options are numbers.
                 const findMatchingTexts = (options: any, keysToFind: any) => {
                   return options
                     .filter((values: any) =>
@@ -1069,14 +1071,32 @@ export class EmailService {
                 metaField?.options?.every((x: any) => isNaN(x.value)) &&
                 metaField?.options?.length
               ) {
+                // Checks that all of the metafield options are not numbers.
                 result[key] = metaField?.options
                   ?.filter((values: any) => value.includes(values.value))
                   .map((values: any) => values.text)
                   .join(', ');
+              } else if (
+                Array.isArray(record[key]) &&
+                record[key].some(
+                  (item: any) =>
+                    Object.prototype.hasOwnProperty.call(item, 'text') &&
+                    Object.prototype.hasOwnProperty.call(item, 'value')
+                )
+              ) {
+                const texts = record[key]
+                  .filter((item: any) =>
+                    Object.prototype.hasOwnProperty.call(item, 'text')
+                  )
+                  .map((item: any) => item.text);
+
+                // Decide whether to join with a comma based on the length of the texts array
+                result[key] = texts.length === 1 ? texts[0] : texts.join(', ');
               } else {
                 result[key] = record[key];
               }
             } else {
+              console.log('key 5', key);
               // Takes the resources count and maps it to the resource name.
               result[key] =
                 record[key].length > 1
@@ -1084,6 +1104,8 @@ export class EmailService {
                   : `${record[key].length} item`;
             }
           }
+          console.log('RSULT 2');
+          console.log(result[key]);
         } else {
           if (
             key.split('_')[1] == 'createdBy' ||
