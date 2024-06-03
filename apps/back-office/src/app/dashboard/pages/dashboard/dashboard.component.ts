@@ -48,6 +48,7 @@ import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { GridsterConfig } from 'angular-gridster2';
+import { ManageItemSpecificTemplatesModalComponent } from '../manage-item-specific-templates-modal/manage-item-specific-templates-modal.component';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -829,5 +830,18 @@ export class DashboardComponent
         },
       });
     }
+  }
+
+  /**
+   * Open manage item specific templates modal
+   */
+  public onManageItemTemplates(): void {
+    const dialogRef = this.dialog.open(
+      ManageItemSpecificTemplatesModalComponent,
+      {}
+    );
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      console.log('WE ARE HERE');
+    });
   }
 }
