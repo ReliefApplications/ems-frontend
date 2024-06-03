@@ -1,3 +1,10 @@
+## [2.15.1-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.15.0...v2.15.1-rc.1) (2024-06-03)
+
+
+### Bug Fixes
+
+* cdk popup would hide tinymce popups AB[#94878](https://github.com/ReliefApplications/ems-frontend/issues/94878) ([d0f2607](https://github.com/ReliefApplications/ems-frontend/commit/d0f2607535ed2696f9cdc188fe2ba944d6abf1c8))
+
 # [2.15.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.14.2...v2.15.0) (2024-05-31)
 
 
