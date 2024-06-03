@@ -3,7 +3,6 @@
 import { compileString } from 'sass';
 
 addEventListener('message', ({ data }) => {
-  console.log('> event listener <');
   const { id, sass } = data;
   if (sass) {
     // Process the SASS to CSS conversion
