@@ -300,7 +300,6 @@ export class ChartComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if (res) {
-        console.log(this.settings);
         if (res.format == 'png') {
           const downloadLink = this.document.createElement('a');
           downloadLink.href =
@@ -311,7 +310,6 @@ export class ChartComponent
           const body = {
             format: res.format,
             fileName: this.fileName,
-            email: res.email,
             chartData: this.series.getValue(),
             application: this.applicationService.name,
             resource: this.settings.resource,

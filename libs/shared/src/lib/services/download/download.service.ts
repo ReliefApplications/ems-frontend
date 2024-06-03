@@ -223,21 +223,13 @@ export class DownloadService {
       .post(path, body, { responseType: 'blob', headers })
       .subscribe({
         next: (res) => {
-          if (body?.email) {
-            snackBarSpinner.instance.message = this.translate.instant(
-              'common.notifications.file.download.ongoing'
-            );
-            snackBarSpinner.instance.loading = false;
-            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-          } else {
-            const blob = new Blob([res], { type });
-            this.saveFile(fileName, blob);
-            snackBarSpinner.instance.message = this.translate.instant(
-              'common.notifications.file.download.ready'
-            );
-            snackBarSpinner.instance.loading = false;
-            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-          }
+          const blob = new Blob([res], { type });
+          this.saveFile(fileName, blob);
+          snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.file.download.ready'
+          );
+          snackBarSpinner.instance.loading = false;
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
         error: () => {
           snackBarSpinner.instance.message = this.translate.instant(

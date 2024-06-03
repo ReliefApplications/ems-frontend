@@ -6,7 +6,6 @@ import { EXPORT_SETTINGS } from '../../../widgets/chart-settings/constants';
 interface DialogData {
   export: {
     format: string;
-    email: boolean;
   };
 }
 
