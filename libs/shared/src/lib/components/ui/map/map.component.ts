@@ -809,7 +809,6 @@ export class MapComponent
           return this.mapLayersService
             .createLayersFromId(id, this.injector)
             .then((layer) => {
-              console.log(layer);
               return parseTreeNode(layer, undefined, displayLayers);
             });
         } else {
