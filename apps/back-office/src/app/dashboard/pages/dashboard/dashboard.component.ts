@@ -838,10 +838,14 @@ export class DashboardComponent
   public onManageItemTemplates(): void {
     const dialogRef = this.dialog.open(
       ManageItemSpecificTemplatesModalComponent,
-      {}
+      {
+        data: {
+          page: this.dashboard?.page,
+        },
+      }
     );
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      console.log('WE ARE HERE');
+      console.log('THIS DASHBOARD', this.dashboard);
     });
   }
 }
