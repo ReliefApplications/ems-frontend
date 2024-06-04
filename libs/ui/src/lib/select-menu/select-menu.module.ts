@@ -16,7 +16,9 @@ import { TooltipModule } from '../tooltip/tooltip.module';
   declarations: [SelectMenuComponent],
   imports: [
     CommonModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule.withConfig({
+      callSetDisabledState: 'whenDisabledForLegacyCode',
+    }),
     SelectOptionModule,
     TranslateModule,
     IconModule,
