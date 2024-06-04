@@ -34,3 +34,16 @@ export const GET_RESOURCES_EXTENDED = gql`
     }
   }
 `;
+
+/** Graphql request for getting form data by its id */
+export const GET_FORM_BY_ID = gql`
+  query GetFormById($id: ID!) {
+    form(id: $id) {
+      id
+      name
+      resource {
+        id
+      }
+    }
+  }
+`;
