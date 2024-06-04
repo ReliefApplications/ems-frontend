@@ -12,7 +12,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { RestService } from '../../services/rest/rest.service';
 import { TYPE_LABEL } from './filter/filter.constant';
 import { FieldStore } from './models/email.const';
-import { omit } from 'lodash';
+import { clone, omit } from 'lodash';
 
 /**
  * Helper functions service for emails template.
@@ -592,12 +592,16 @@ export class EmailService {
    * @returns the dataset.
    */
   fetchDataSet(filterQuery: any) {
+    let filterCopy = clone(filterQuery);
+    filterCopy.fields.map((field: any) => {
+      return omit(field, 'options');
+    });
     // Create a new object excluding the 'cacheData' field
-    const queryWithoutCacheData = omit(filterQuery, 'cacheData');
+    filterCopy = omit(filterCopy, 'cacheData');
     return this.apollo.query<any>({
       query: GET_EMAIL_DATA_SET,
       variables: {
-        query: queryWithoutCacheData,
+        query: filterCopy,
       },
     });
   }
