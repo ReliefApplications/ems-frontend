@@ -197,7 +197,9 @@
                   <!-- Text Input for non-date/datetime fields -->
                   <ng-container
                     *ngIf="
-                     !isDateOrDatetimeOperator(fieldIndex) && !isNumericOperator(fieldIndex) && !isSelectField(fieldIndex)
+                      !isDateOrDatetimeOperator(fieldIndex) &&
+                      !isNumericOperator(fieldIndex) &&
+                      !isSelectField(fieldIndex)
                     "
                   >
                     <div uiFormFieldDirective [defaultMargin]="false">
@@ -370,7 +372,10 @@
                   <ng-container *ngIf="isSelectField(fieldIndex)">
                     <div uiFormFieldDirective [defaultMargin]="false">
                       <label>{{ 'common.value.one' | translate }}</label>
-                      <ui-select-menu *ngIf="!getField(fieldIndex).multiSelect" formControlName="value">
+                      <ui-select-menu
+                        *ngIf="!getField(fieldIndex).multiSelect"
+                        formControlName="value"
+                      >
                         <ui-select-option>{{
                           'common.input.none' | translate
                         }}</ui-select-option>
@@ -415,7 +420,6 @@
         </div>
       </div>
     </div>
-
   </div>
   <div class="loadingSign" [ngClass]="{ active: loading }">
     <ui-spinner *ngIf="loading" style="position: relative"></ui-spinner>
@@ -431,11 +435,14 @@
     >
   </div>
 
-    <!-- From list ( selected from resource ) -->
-    <div class="select-from-list mt-2" *ngIf="activeSegmentIndex === 1 || showPreview">
-      <!-- Selection of emails -->
-      <div class="select-scroll">
-        <table
+  <!-- From list ( selected from resource ) -->
+  <div
+    class="select-from-list mt-2"
+    *ngIf="activeSegmentIndex === 1 || showPreview"
+  >
+    <!-- Selection of emails -->
+    <div class="select-scroll">
+      <table
         *ngIf="dataList?.length"
         class="dataset-preview w-full border border-blue-600 shadow-xs m-1"
       >
@@ -485,47 +492,47 @@
             </td>
             <ng-container *ngFor="let field of datasetFields">
               <td class="p-2 border border-blue-600 shadow-xs m-1 text-center">
-               {{this.emailService.formatDataStrings(data[field], field)}}
+                {{ this.emailService.formatDataStrings(data[field], field) }}
               </td>
             </ng-container>
           </tr>
         </tbody>
       </table>
-      </div>
-      <!-- todo: translate -->
-      <div>
-        <ui-button
+    </div>
+    <!-- todo: translate -->
+    <div>
+      <ui-button
         *ngIf="selectedItemIndexes.length"
         class="float-right mt-8"
         category="secondary"
         variant="primary"
         (click)="addSelectedEmails()"
-        >
-          Apply
-        </ui-button>
-      </div>
+      >
+        Apply
+      </ui-button>
     </div>
+  </div>
 
   <div *ngIf="activeSegmentIndex === 2">
-      <!-- Apply filter -->
-      <ui-button
-        *ngIf="datasetFilterInfo.controls"
-        class="float-right mt-8"
-        category="secondary"
-        variant="primary"
-        (click)="applyFilter('')"
-      >
-        {{ 'components.queryBuilder.filter.apply' | translate }}
-      </ui-button>
-  
-      <ui-button
-        *ngIf="showBtnPreview"
-        class="float-right mt-8 mr-2"
-        category="secondary"
-        variant="primary"
-        (click)="applyFilter('preview')"
-      >
-        {{ 'common.preview' | translate }}
-      </ui-button>
-  </div>    
+    <!-- Apply filter -->
+    <ui-button
+      *ngIf="datasetFilterInfo.controls"
+      class="float-right mt-8"
+      category="secondary"
+      variant="primary"
+      (click)="applyFilter('')"
+    >
+      {{ 'components.queryBuilder.filter.apply' | translate }}
+    </ui-button>
+
+    <ui-button
+      *ngIf="showBtnPreview"
+      class="float-right mt-8 mr-2"
+      category="secondary"
+      variant="primary"
+      (click)="applyFilter('preview')"
+    >
+      {{ 'common.preview' | translate }}
+    </ui-button>
+  </div>
 </div>

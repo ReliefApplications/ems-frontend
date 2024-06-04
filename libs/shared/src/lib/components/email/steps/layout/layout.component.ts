@@ -8,8 +8,9 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { NgSelectComponent } from '@ng-select/ng-select';
+
 /**
- * layout page component.
+ * Email layout page component.
  */
 @Component({
   selector: 'app-layout',
@@ -92,7 +93,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   public datasetOverflow = false;
 
   /**
-   * Component used for the selection of fields to display the fields in tabs.
+   * Email layout page component.
    *
    * @param fb Form builder used for form creation
    * @param editorService Editor service used to get main URL and current language
@@ -238,7 +239,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Initialises the in the last dropdown and forms options.
+   * Initializes the in the last dropdown and forms options.
    */
   private initInTheLastDropdown(): void {
     const blocks = this.emailService.datasetsForm.get('datasets') as FormArray;
@@ -336,7 +337,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Initialises the field select dropdown.
+   * Initializes the field select dropdown.
    */
   initialiseFieldSelectDropdown(): void {
     const firstBlock = this.emailService.getAllPreviewData()[0];

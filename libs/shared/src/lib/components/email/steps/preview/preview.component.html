@@ -11,7 +11,10 @@
     <ul class="list-none space-y-1">
       <div uiChipList>
         <ng-container
-          *ngFor="let email of this.emailService.emailDistributionList.To; let i = index"
+          *ngFor="
+            let email of this.emailService.emailDistributionList.To;
+            let i = index
+          "
         >
           <ui-chip
             *ngIf="i < 6 || isExpandedTo"
@@ -22,12 +25,15 @@
         </ng-container>
       </div>
       <ui-button
-        *ngIf="this.emailService.emailDistributionList.To.length > 6 && !isExpandedTo"
+        *ngIf="
+          this.emailService.emailDistributionList.To.length > 6 && !isExpandedTo
+        "
         class="inline-block"
         (click)="toggleExpandTo()"
         >{{
           'components.email.preview.more'
-            | translate : { length: emailService.emailDistributionList.To.length - 6 }
+            | translate
+              : { length: emailService.emailDistributionList.To.length - 6 }
         }}</ui-button
       >
       <ui-button
@@ -40,12 +46,18 @@
   </div>
 
   <!-- CC -->
-  <div *ngIf="this.emailService.emailDistributionList.Cc.length > 0" class="mb-4">
+  <div
+    *ngIf="this.emailService.emailDistributionList.Cc.length > 0"
+    class="mb-4"
+  >
     <h2>{{ 'components.select.distribution.cc' | translate }}:</h2>
     <ul class="list-none space-y-1">
       <div uiChipList>
         <ng-container
-          *ngFor="let email of this.emailService.emailDistributionList.Cc; let i = index"
+          *ngFor="
+            let email of this.emailService.emailDistributionList.Cc;
+            let i = index
+          "
         >
           <ui-chip
             *ngIf="i < 6 || isExpandedCc"
@@ -56,13 +68,16 @@
         </ng-container>
       </div>
       <ui-button
-        *ngIf="this.emailService.emailDistributionList.Cc.length > 6 && !isExpandedCc"
+        *ngIf="
+          this.emailService.emailDistributionList.Cc.length > 6 && !isExpandedCc
+        "
         variant="primary"
         class="inline-block"
         (click)="toggleExpandCc()"
         >{{
           'components.email.preview.more'
-            | translate : { length: emailService.emailDistributionList.Cc.length - 6 }
+            | translate
+              : { length: emailService.emailDistributionList.Cc.length - 6 }
         }}</ui-button
       >
       <ui-button
@@ -76,12 +91,18 @@
   </div>
 
   <!-- BCC -->
-  <div *ngIf="this.emailService.emailDistributionList.Bcc.length > 0" class="mb-4">
+  <div
+    *ngIf="this.emailService.emailDistributionList.Bcc.length > 0"
+    class="mb-4"
+  >
     <h2>{{ 'components.select.distribution.bcc' | translate }}:</h2>
     <ul class="list-none space-y-1">
       <div uiChipList>
         <ng-container
-          *ngFor="let email of this.emailService.emailDistributionList.Bcc; let i = index"
+          *ngFor="
+            let email of this.emailService.emailDistributionList.Bcc;
+            let i = index
+          "
         >
           <ui-chip
             *ngIf="i < 6 || isExpandedBcc"
@@ -92,13 +113,17 @@
         </ng-container>
       </div>
       <ui-button
-        *ngIf="this.emailService.emailDistributionList.Bcc.length > 6 && !isExpandedBcc"
+        *ngIf="
+          this.emailService.emailDistributionList.Bcc.length > 6 &&
+          !isExpandedBcc
+        "
         variant="primary"
         class="inline-block"
         (click)="toggleExpandBcc()"
         >{{
           'components.email.preview.more'
-            | translate : { length: emailService.emailDistributionList.Bcc.length - 6 }
+            | translate
+              : { length: emailService.emailDistributionList.Bcc.length - 6 }
         }}</ui-button
       >
       <ui-button
@@ -114,29 +139,48 @@
   <!-- Subject -->
   <p>{{ 'components.email.preview.subject' | translate }}</p>
   <div id="subjectHtml" class="w-full"></div>
- </div>
+</div>
 <div class="overflow-y-scroll">
   <div class="h-fit mb-3" [style]="getEmailStyle('container')">
     <!-- Banner Images -->
-    <img *ngIf="bannerImage" id="bannerImage" [src]="bannerImage" [style]="getEmailStyle('bannerImage')">
+    <img
+      *ngIf="bannerImage"
+      id="bannerImage"
+      [src]="bannerImage"
+      [style]="getEmailStyle('bannerImage')"
+    />
 
     <!-- Header -->
     <div id="header" [style]="getEmailStyle('header')">
-      <img id="headerLogo" *ngIf="headerLogo" [src]="headerLogo" [style]="getEmailStyle('headerLogo')">
+      <img
+        id="headerLogo"
+        *ngIf="headerLogo"
+        [src]="headerLogo"
+        [style]="getEmailStyle('headerLogo')"
+      />
       <div id="headerHtml" [style]="getEmailStyle('headerHtml')"></div>
     </div>
 
     <!-- Body -->
-    <div id="bodyHtml" #bodyHtml [style]="getEmailStyle('body')" (afterViewChecked)="checkAndApplyBodyStyle()"></div>
+    <div
+      id="bodyHtml"
+      #bodyHtml
+      [style]="getEmailStyle('body')"
+      (afterViewChecked)="checkAndApplyBodyStyle()"
+    ></div>
 
     <!-- Footer -->
     <div [style]="getEmailStyle('footer')">
-      <img id="footerImg" [src]="footerLogo" [style]="getEmailStyle('footerImg')"/>
+      <img
+        id="footerImg"
+        [src]="footerLogo"
+        [style]="getEmailStyle('footerImg')"
+      />
       <div id="footerHtml" [style]="getEmailStyle('footerHtml')"></div>
     </div>
     <!-- Copyright -->
     <div [style]="getEmailStyle('copyright')">
-      {{ 'common.copyright.who' | translate}}
+      {{ 'common.copyright.who' | translate }}
     </div>
   </div>
 </div>

@@ -21,7 +21,7 @@ import { TokenRegex } from '../../constant';
 })
 export class PreviewComponent implements OnInit, OnDestroy, AfterViewInit {
   /** Selected resource ID. -TO DELETE? */
-  public selectedResourceId: string | undefined = '653642baa37293bb1706506e';
+  public selectedResourceId: string | undefined;
   /** List of data items. -TO DELETE? */
   public dataList!: { [key: string]: string }[];
   /** List of keys for data items. -TO DELETE? */

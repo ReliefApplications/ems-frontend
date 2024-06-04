@@ -1,4 +1,8 @@
-<shared-filter *ngIf="!loading; else loadingTmpl" [form]="form" [fields]="filterFields"></shared-filter>
+<shared-filter
+  *ngIf="!loading; else loadingTmpl"
+  [form]="form"
+  [fields]="filterFields"
+></shared-filter>
 
 <!-- CUSTOM EDITOR FOR DATES -->
 <ng-template #dateEditor let-valueControl="valueControl">

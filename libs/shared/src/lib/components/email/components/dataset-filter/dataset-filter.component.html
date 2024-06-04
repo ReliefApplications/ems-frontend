@@ -240,14 +240,17 @@
                         !isSelectField(fieldIndex) &&
                         getFieldType(fieldIndex) !== 'boolean'
                       "
-                    >                      
+                    >
                       <div uiFormFieldDirective [defaultMargin]="false">
-                          <label>{{ 'common.value.one' | translate }}</label>
-                          <input formControlName="value" type="text" />
+                        <label>{{ 'common.value.one' | translate }}</label>
+                        <input formControlName="value" type="text" />
                       </div>
                     </ng-container>
                     <!-- Numeric Input -->
-                    <ng-container *ngIf="isNumericOperator(fieldIndex)" #numericEditor>
+                    <ng-container
+                      *ngIf="isNumericOperator(fieldIndex)"
+                      #numericEditor
+                    >
                       <div uiFormFieldDirective [defaultMargin]="false">
                         <label>{{ 'common.value.one' | translate }}</label>
                         <input formControlName="value" type="number" />
@@ -256,8 +259,17 @@
                     <!-- Date / DateTime picker or within the Last... picker -->
                     <ng-container *ngIf="isDateOrDatetimeOperator(fieldIndex)">
                       <!-- Date Picker -->
-                      <div uiFormFieldDirective [defaultMargin]="false" *ngIf="getFieldType(fieldIndex) === 'date' && data.get('operator')?.value !== 'inthelast'">
-                        <label class="block text-gray-700 text-sm">{{ 'components.queryBuilder.filter.value' | translate }}</label>
+                      <div
+                        uiFormFieldDirective
+                        [defaultMargin]="false"
+                        *ngIf="
+                          getFieldType(fieldIndex) === 'date' &&
+                          data.get('operator')?.value !== 'inthelast'
+                        "
+                      >
+                        <label class="block text-gray-700 text-sm">{{
+                          'components.queryBuilder.filter.value' | translate
+                        }}</label>
                         <div class="grid grid-cols-6 gap-2">
                           <!-- Conditional rendering based on useExpression -->
                           <ng-container *ngIf="!useExpression; else textInput">
@@ -265,7 +277,9 @@
                               <input
                                 [uiDatePicker]
                                 formControlName="value"
-                                [label]="'kendo.datepicker.dateLabel' | translate"
+                                [label]="
+                                  'kendo.datepicker.dateLabel' | translate
+                                "
                                 class="w-full"
                               />
                               <ui-date-picker #calendar></ui-date-picker>
@@ -273,10 +287,16 @@
                           </ng-container>
                           <ng-template #textInput>
                             <input
-                              [uiTooltip]="'components.email.tooltip.reverseDate'| translate"
+                              [uiTooltip]="
+                                'components.email.tooltip.reverseDate'
+                                  | translate
+                              "
                               formControlName="value"
                               type="text"
-                              [placeholder]="'components.email.tooltip.reverseDate' | translate"
+                              [placeholder]="
+                                'components.email.tooltip.reverseDate'
+                                  | translate
+                              "
                               class="col-span-5 w-full"
                             />
                           </ng-template>
@@ -300,15 +320,27 @@
                         </div>
                       </div>
                       <!-- Date Time Picker -->
-                      <div uiFormFieldDirective [defaultMargin]="false" *ngIf="(getFieldType(fieldIndex) === 'datetime' || getFieldType(fieldIndex) === 'datetime-local') && data.get('operator')?.value !== 'inthelast'">
-                        <label class="block text-gray-700 text-sm">{{ 'components.queryBuilder.filter.value' | translate }}</label>
+                      <div
+                        uiFormFieldDirective
+                        [defaultMargin]="false"
+                        *ngIf="
+                          (getFieldType(fieldIndex) === 'datetime' ||
+                            getFieldType(fieldIndex) === 'datetime-local') &&
+                          data.get('operator')?.value !== 'inthelast'
+                        "
+                      >
+                        <label class="block text-gray-700 text-sm">{{
+                          'components.queryBuilder.filter.value' | translate
+                        }}</label>
                         <div class="grid grid-cols-6 gap-2">
                           <ng-container *ngIf="!useExpression; else textInput">
                             <div [uiDateWrapper]="calendar" class="col-span-5">
                               <input
                                 [uiDatePicker]
                                 formControlName="value"
-                                [label]="'kendo.datepicker.dateLabel' | translate"
+                                [label]="
+                                  'kendo.datepicker.dateLabel' | translate
+                                "
                                 class="w-full"
                               />
                               <ui-date-picker #calendar></ui-date-picker>
@@ -316,10 +348,16 @@
                           </ng-container>
                           <ng-template #textInput>
                             <input
-                              [uiTooltip]="'components.email.tooltip.reverseDate'| translate"
+                              [uiTooltip]="
+                                'components.email.tooltip.reverseDate'
+                                  | translate
+                              "
                               formControlName="value"
                               type="text"
-                              [placeholder]="'components.email.tooltip.reverseDate' | translate"
+                              [placeholder]="
+                                'components.email.tooltip.reverseDate'
+                                  | translate
+                              "
                               class="col-span-5 w-full"
                             />
                           </ng-template>
@@ -346,26 +384,24 @@
                       <div
                         *ngIf="data.get('operator')?.value === 'inthelast'"
                         formGroupName="inTheLast"
-                        class="flex">
+                        class="flex"
+                      >
                         <div
-                        uiFormFieldDirective
-                        [defaultMargin]="false"
-                        class="mr-2">
+                          uiFormFieldDirective
+                          [defaultMargin]="false"
+                          class="mr-2"
+                        >
                           <label>Number</label>
-                          <ui-select-menu
-                            formControlName="number"
-                            >
+                          <ui-select-menu formControlName="number">
                             <ui-select-option
                               *ngFor="let num of getNumbersArray()"
-                              [value]="num">
+                              [value]="num"
+                            >
                               {{ num }}
                             </ui-select-option>
                           </ui-select-menu>
                         </div>
-                        <div
-                          uiFormFieldDirective
-                          [defaultMargin]="false"
-                        >
+                        <div uiFormFieldDirective [defaultMargin]="false">
                           <label>Unit</label>
                           <ui-select-menu formControlName="unit">
                             <ng-container *ngFor="let timeUnit of timeUnits">
@@ -377,18 +413,20 @@
                         </div>
                       </div>
                       <div
-                        *ngIf="data.get('operator')?.value === 'inthelast'" [hidden]="true">
-                        <input
-                          formControlName="value"
-                          type="text"
-                        />
+                        *ngIf="data.get('operator')?.value === 'inthelast'"
+                        [hidden]="true"
+                      >
+                        <input formControlName="value" type="text" />
                       </div>
                     </ng-container>
                     <!-- Value picker for Select fields -->
                     <ng-container *ngIf="isSelectField(fieldIndex)">
                       <div uiFormFieldDirective [defaultMargin]="false">
                         <label>{{ 'common.value.one' | translate }}</label>
-                        <ui-select-menu *ngIf="!getField(fieldIndex).multiSelect" formControlName="value">
+                        <ui-select-menu
+                          *ngIf="!getField(fieldIndex).multiSelect"
+                          formControlName="value"
+                        >
                           <ui-select-option>{{
                             'common.input.none' | translate
                           }}</ui-select-option>
@@ -421,22 +459,22 @@
                     <ng-container
                       *ngIf="getFieldType(fieldIndex) === 'boolean'"
                     >
-                    <div uiFormFieldDirective [defaultMargin]="false">
-                      <label>{{ 'common.value.one' | translate }}</label>
-                      <ui-select-menu formControlName="value">
-                        <ui-select-option>{{
-                          'common.input.none' | translate
-                        }}</ui-select-option>
+                      <div uiFormFieldDirective [defaultMargin]="false">
+                        <label>{{ 'common.value.one' | translate }}</label>
+                        <ui-select-menu formControlName="value">
+                          <ui-select-option>{{
+                            'common.input.none' | translate
+                          }}</ui-select-option>
 
-                        <ui-select-option [value]="true">
-                          {{ 'common.true' | translate }}
-                        </ui-select-option>
+                          <ui-select-option [value]="true">
+                            {{ 'common.true' | translate }}
+                          </ui-select-option>
 
-                        <ui-select-option [value]="false">
-                          {{ 'common.false' | translate }}
-                        </ui-select-option>
-                      </ui-select-menu>
-                    </div>
+                          <ui-select-option [value]="false">
+                            {{ 'common.false' | translate }}
+                          </ui-select-option>
+                        </ui-select-menu>
+                      </div>
                     </ng-container>
                   </div>
                   <!-- Delete filter row -->
