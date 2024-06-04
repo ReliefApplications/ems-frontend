@@ -1067,10 +1067,7 @@ export class EmailService {
                 if (matchingTexts === '') {
                   result[key] = record[key].join(', ');
                 }
-              } else if (
-                metaField?.options?.every((x: any) => isNaN(x.value)) &&
-                metaField?.options?.length
-              ) {
+              } else if (metaField?.options?.length) {
                 // Checks that all of the metafield options are not numbers.
                 result[key] = metaField?.options
                   ?.filter((values: any) => value.includes(values.value))
