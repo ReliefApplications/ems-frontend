@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable, Output } from '@angular/core';
+import { EventEmitter, Injectable, NgZone, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   ADD_EMAIL_NOTIFICATION,
@@ -20,6 +20,10 @@ import { FieldStore } from './models/email.const';
   providedIn: 'root',
 })
 export class EmailService {
+  /**
+   * Stepper for draft
+   */
+  public draftStepper!: number;
   /** Index of current dataset block */
   public index = new BehaviorSubject(null);
   /** Dataset block title */
@@ -59,20 +63,25 @@ export class EmailService {
   public footerTextColor = '#000000';
   /** Dataset event emitter */
   public datasetSave: EventEmitter<boolean> = new EventEmitter();
-  /** Control save & proceed button disable status */
+  // Disable SaveAsDraft button
+  /**
+   *
+   */
+  public disableSaveAsDraft = new BehaviorSubject<boolean>(false);
+  /** DISABLE SAVE AND PROCEED BUTTON EMITTER */
   public disableSaveAndProceed = new BehaviorSubject<boolean>(false);
   /** Control stepper disable status */
   public stepperDisable = new BehaviorSubject<any>('');
   /** Should show existing distribution list */
   public showExistingDistributionList = false;
   /** Distribution list data */
-  public recipients: {
-    distributionListName: string;
+  public emailDistributionList: {
+    name: string;
     To: string[];
     Cc: string[];
     Bcc: string[];
   } = {
-    distributionListName: '',
+    name: '',
     To: [],
     Cc: [],
     Bcc: [],
@@ -144,7 +153,7 @@ export class EmailService {
   /** Datalist */
   public dataList!: { [key: string]: any }[];
   /** Dataset fields */
-  public dataSetFields!: string[];
+  public datasetFields!: string[];
   /** Email distribution list of names */
   public distributionListNames: string[] = [];
   /** Email notification list of names */
@@ -167,23 +176,8 @@ export class EmailService {
   public separateEmail = [];
   /** Selected Fields */
   public fields: FieldStore[] = [];
-
-  /**
-   * Helper functions service for emails template.
-   *
-   * @param formBuilder Angular Form Builder
-   * @param apollo Apollo service
-   * @param http Http client
-   * @param restService Shared rest service
-   */
-  constructor(
-    private formBuilder: FormBuilder,
-    private apollo: Apollo,
-    private http: HttpClient,
-    private restService: RestService
-  ) {
-    this.setDatasetForm();
-  }
+  /** Selected cacheDistributionList */
+  public cacheDistributionList: any = [];
 
   /**
    * Generates new dataset group.
@@ -212,6 +206,25 @@ export class EmailService {
   }
 
   /**
+   * Constructs the EmailService instance.
+   *
+   * @param formBuilder The FormBuilder instance used to create form groups and controls
+   * @param apollo The Apollo server instance used for GraphQL queries
+   * @param http The HttpClient instance used for making HTTP requests
+   * @param restService mapping of the url
+   * @param ngZone The NgZone instance
+   */
+  constructor(
+    private formBuilder: FormBuilder,
+    private apollo: Apollo,
+    private http: HttpClient,
+    private restService: RestService,
+    private ngZone: NgZone
+  ) {
+    this.setDatasetForm();
+  }
+
+  /**
    * Sets the email service fields
    *
    * @param selectedFields The selected fields
@@ -228,8 +241,8 @@ export class EmailService {
       name: ['', Validators.required],
       notificationType: [null, Validators.required],
       applicationId: [''],
-      dataSets: new FormArray([this.createNewDataSetGroup()]),
-      recipients: this.recipients,
+      datasets: new FormArray([this.createNewDataSetGroup()]),
+      emailDistributionList: this.emailDistributionList,
       emailLayout: this.emailLayout,
       schedule: [''],
     });
@@ -294,10 +307,10 @@ export class EmailService {
   /**
    * Sets the selected data set.
    *
-   * @param dataSet The data set to be selected.
+   * @param dataset The data set to be selected.
    */
-  setSelectedDataSet(dataSet: any): void {
-    this.selectedDataSet = dataSet;
+  setSelectedDataSet(dataset: any): void {
+    this.selectedDataSet = dataset;
   }
 
   /**
@@ -381,75 +394,72 @@ export class EmailService {
   /**
    * Retrieves all preview data objects.
    */
-  patchEmailLayout(): void {
-    this.setEmailStyles();
-    const headerImg =
-      this.allLayoutdata?.headerLogo instanceof File
-        ? this.convertFileToBase64(this.allLayoutdata?.headerLogo)
-            .then((base64String) => {
-              return base64String;
-            })
-            .catch((error) => {
-              console.error('Error converting file to base64:', error);
-            })
-        : null;
+  patchEmailLayout(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      // Your existing code with modifications to handle promises
+      this.setEmailStyles();
+      this.ngZone.run(() => {
+        const headerPromise =
+          this.allLayoutdata?.headerLogo instanceof File
+            ? this.convertFileToBase64(this.allLayoutdata?.headerLogo)
+            : Promise.resolve(null);
 
-    const footerImg =
-      this.allLayoutdata?.footerLogo instanceof File
-        ? this.convertFileToBase64(this.allLayoutdata?.footerLogo)
-            .then((base64String) => {
-              return base64String;
-            })
-            .catch((error) => {
-              console.error('Error converting file to base64:', error);
-            })
-        : null;
+        const footerPromise =
+          this.allLayoutdata?.footerLogo instanceof File
+            ? this.convertFileToBase64(this.allLayoutdata?.footerLogo)
+            : Promise.resolve(null);
 
-    const bannerLogo =
-      this.allLayoutdata?.bannerImage instanceof File
-        ? this.convertFileToBase64(this.allLayoutdata?.bannerImage)
-            .then((base64String) => {
-              return base64String;
-            })
-            .catch((error) => {
-              console.error('Error converting file to base64:', error);
-            })
-        : null;
+        const bannerPromise =
+          this.allLayoutdata?.bannerImage instanceof File
+            ? this.convertFileToBase64(this.allLayoutdata?.bannerImage)
+            : Promise.resolve(null);
 
-    this.emailLayout = {
-      subject: this.allLayoutdata?.txtSubject,
-      header: {
-        headerHtml: this.allLayoutdata?.headerHtml,
-        headerLogo: headerImg,
-        headerLogoStyle: this.allLayoutdata.headerLogoStyle,
-        headerBackgroundColor: this.allLayoutdata.headerBackgroundColor,
-        headerTextColor: this.allLayoutdata.headerTextColor,
-        headerHtmlStyle: this.allLayoutdata?.headerHtmlStyle,
-        headerStyle: this.allLayoutdata?.headerStyle,
-      },
-      body: {
-        bodyHtml: this.allLayoutdata?.bodyHtml,
-        bodyBackgroundColor: this.allLayoutdata.bodyBackgroundColor,
-        bodyTextColor: this.allLayoutdata.bodyTextColor,
-        bodyStyle: this.allLayoutdata?.bodyStyle,
-      },
-      banner: {
-        bannerImage: bannerLogo,
-        bannerImageStyle: this.allLayoutdata?.bannerImageStyle,
-        containerStyle: this.allLayoutdata?.containerStyle,
-        copyrightStyle: this.allLayoutdata?.copyrightStyle,
-      },
-      footer: {
-        footerHtml: this.allLayoutdata?.footerHtml,
-        footerLogo: footerImg,
-        footerBackgroundColor: this.allLayoutdata.footerBackgroundColor,
-        footerTextColor: this.allLayoutdata.footerTextColor,
-        footerStyle: this.allLayoutdata?.footerStyle,
-        footerImgStyle: this.allLayoutdata?.footerImgStyle,
-        footerHtmlStyle: this.allLayoutdata?.footerHtmlStyle,
-      },
-    };
-    this.datasetsForm.get('emailLayout')?.setValue(this.emailLayout);
+        Promise.all([headerPromise, footerPromise, bannerPromise])
+          .then(([headerImg, footerImg, bannerLogo]) => {
+            this.emailLayout = {
+              subject: this.allLayoutdata?.txtSubject,
+              header: {
+                headerHtml: this.allLayoutdata?.headerHtml,
+                headerLogo: headerImg,
+                headerLogoStyle: this.allLayoutdata.headerLogoStyle,
+                headerBackgroundColor: this.allLayoutdata.headerBackgroundColor,
+                headerTextColor: this.allLayoutdata.headerTextColor,
+                headerHtmlStyle: this.allLayoutdata?.headerHtmlStyle,
+                headerStyle: this.allLayoutdata?.headerStyle,
+              },
+              body: {
+                bodyHtml: this.allLayoutdata?.bodyHtml,
+                bodyBackgroundColor: this.allLayoutdata.bodyBackgroundColor,
+                bodyTextColor: this.allLayoutdata.bodyTextColor,
+                bodyStyle: this.allLayoutdata?.bodyStyle,
+              },
+              banner: {
+                bannerImage: bannerLogo,
+                bannerImageStyle: this.allLayoutdata?.bannerImageStyle,
+                containerStyle: this.allLayoutdata?.containerStyle,
+                copyrightStyle: this.allLayoutdata?.copyrightStyle,
+              },
+              footer: {
+                footerHtml: this.allLayoutdata?.footerHtml,
+                footerLogo: footerImg,
+                footerBackgroundColor: this.allLayoutdata.footerBackgroundColor,
+                footerTextColor: this.allLayoutdata.footerTextColor,
+                footerStyle: this.allLayoutdata?.footerStyle,
+                footerImgStyle: this.allLayoutdata?.footerImgStyle,
+                footerHtmlStyle: this.allLayoutdata?.footerHtmlStyle,
+              },
+            };
+            this.datasetsForm.get('emailLayout')?.setValue(this.emailLayout);
+            this.allLayoutdata.headerLogo = headerImg;
+            this.allLayoutdata.footerLogo = footerImg;
+            this.allLayoutdata.bannerImage = bannerLogo;
+            resolve(); // Resolve the promise when all asynchronous tasks are completed
+          })
+          .catch((error) => {
+            reject(error); // Reject the promise if an error occurs
+          });
+      });
+    });
   }
 
   /**
@@ -467,7 +477,7 @@ export class EmailService {
       tdStyle: this.defaultTableStyle?.tdStyle,
     };
 
-    this.datasetsForm.get('dataSets')?.get('tableStyle')?.setValue(tableStyles);
+    this.datasetsForm.get('datasets')?.get('tableStyle')?.setValue(tableStyles);
   }
 
   /**
@@ -805,7 +815,7 @@ export class EmailService {
    * @returns Bound variable between service and dist list component
    */
   updateSeparateEmail(index: number): boolean {
-    const datasetArray = this.datasetsForm?.get('dataSets') as FormArray;
+    const datasetArray = this.datasetsForm?.get('datasets') as FormArray;
     const isSeparate = datasetArray?.at(index)?.get('individualEmail')?.value;
     return isSeparate;
   }
@@ -817,7 +827,7 @@ export class EmailService {
    * @param index - dataset index
    */
   setSeparateEmail(separateEmail: boolean, index: number): void {
-    const datasetArray = this.datasetsForm?.get('dataSets') as FormArray;
+    const datasetArray = this.datasetsForm?.get('datasets') as FormArray;
     datasetArray?.at(index)?.get('individualEmail')?.setValue(separateEmail);
   }
 
@@ -828,7 +838,7 @@ export class EmailService {
    */
   sendSeparateEmail(): boolean {
     let separateEmail = false;
-    const datasetArray = this.datasetsForm.get('dataSets') as FormArray;
+    const datasetArray = this.datasetsForm.get('datasets') as FormArray;
     datasetArray.controls.forEach((datasetControl: any) => {
       if (datasetControl.get('individualEmail')?.value === true) {
         separateEmail = true;
@@ -846,8 +856,8 @@ export class EmailService {
   getDataSet(emailData: any, isSendEmail?: boolean) {
     let count = 0;
     let allPreviewData: any = [];
-    for (const query of emailData.dataSets) {
-      query.fields.forEach((x: any) => {
+    for (const query of emailData.datasets) {
+      query?.fields?.forEach((x: any) => {
         if (x.parentName) {
           const child = x.name;
           x.childName = child.split(' - ')[1];
@@ -856,14 +866,19 @@ export class EmailService {
           x.type = 'resource';
         }
       });
+      const resourceInfo = { id: query.resource.id, name: query.resource.name };
       query.tabIndex = count;
       count++;
       query.pageSize = Number(query.pageSize);
-      this.fetchDataSet(query).subscribe((res: { data: { dataSet: any } }) => {
-        if (res?.data?.dataSet) {
-          const dataSetResponse = res?.data?.dataSet.records;
-          this.dataList = dataSetResponse?.map((record: any) => {
-            const flattenedObject = this.flattenRecord(record, query);
+      this.fetchDataSet(query).subscribe((res: { data: { dataset: any } }) => {
+        if (res?.data?.dataset) {
+          const datasetResponse = res?.data?.dataset.records;
+          this.dataList = datasetResponse?.map((record: any) => {
+            const flattenedObject = this.flattenRecord(
+              record,
+              resourceInfo,
+              query
+            );
 
             query.fields.forEach((x: any) => {
               if (x.parentName) {
@@ -883,23 +898,23 @@ export class EmailService {
             return flatData;
           });
           if (this.dataList?.length) {
-            const existfields = emailData.dataSets[
-              res?.data?.dataSet?.tabIndex
+            const existfields = emailData.datasets[
+              res?.data?.dataset?.tabIndex
             ].fields.map((x: any) => x.name);
             const temp = Object.keys(this.dataList[0]);
             const notmatching = temp.filter(
               (currentId) => !existfields.some((item: any) => item == currentId)
             );
             existfields.concat(notmatching);
-            this.dataSetFields = existfields;
+            this.datasetFields = existfields;
           }
           allPreviewData.push({
             dataList: this.dataList,
-            dataSetFields: this.dataSetFields,
-            tabIndex: res?.data?.dataSet?.tabIndex,
+            datasetFields: this.datasetFields,
+            tabIndex: res?.data?.dataset?.tabIndex,
             tabName:
-              res?.data?.dataSet?.tabIndex < this.tabs.length
-                ? this.tabs[res.data.dataSet.tabIndex].title
+              res?.data?.dataset?.tabIndex < this.tabs.length
+                ? this.tabs[res.data.dataset.tabIndex].title
                 : '',
           });
           if (this.tabs.length == allPreviewData.length) {
@@ -921,7 +936,7 @@ export class EmailService {
         }
       });
     }
-    if (emailData?.dataSets?.length == 0) {
+    if (emailData?.datasets?.length == 0) {
       this.emailListLoading = false;
     }
   }
@@ -930,10 +945,11 @@ export class EmailService {
    * Flattens the given record object into a single level object.
    *
    * @param record The record to be flattened.
+   * @param resourceInfo Name and Id of the supplied resource.
    * @param query Form Query Object for field values.
    * @returns The flattened record.
    */
-  flattenRecord(record: any, query?: any): any {
+  flattenRecord(record: any, resourceInfo: any, query?: any): any {
     const result: any = {};
     for (const key in record) {
       if (Object.prototype.hasOwnProperty.call(record, key)) {
@@ -1002,28 +1018,79 @@ export class EmailService {
               key
             ] = `${record[key].properties.countryName} (${record[key].properties.coordinates.lat}, ${record[key].properties.coordinates.lng})`;
           } else {
-            const fieldType = query.fields.find((field: any) => {
+            const metaField = query.fields.find((field: any) => {
               return field.name === key;
-            }).type;
+            });
+
+            const fieldType = metaField?.type;
 
             if (fieldType !== TYPE_LABEL.resources) {
               const fieldName = query.fields.find((field: any) => {
                 return field.name === key;
               });
+
               if (fieldType === 'owner' || fieldType === 'users') {
                 const options = fieldName?.options?.filter((option: any) => {
                   return Object.values(record[key]).some((array: any) =>
                     array.includes(option.value)
                   );
                 });
+
                 if (options && options.length > 0) {
                   // Map over the options to extract the text values and join them with commas
                   result[key] = options
                     .map((option: any) => option.text)
                     .join(', ');
                 } else {
-                  result[key] = '';
+                  result[key] = record[key];
                 }
+              } else if (
+                metaField?.options?.every((x: any) => !isNaN(x.value)) &&
+                metaField?.options?.length
+              ) {
+                // Checks that all of the metafield options are numbers.
+                const findMatchingTexts = (options: any, keysToFind: any) => {
+                  return options
+                    .filter((values: any) =>
+                      keysToFind.includes(parseInt(values.value))
+                    )
+                    .map((values: any) => values.text)
+                    .join(', ');
+                };
+
+                const matchingTexts = findMatchingTexts(
+                  metaField?.options,
+                  record[key]
+                );
+                result[key] = matchingTexts;
+                if (matchingTexts === '') {
+                  result[key] = record[key].join(', ');
+                }
+              } else if (
+                metaField?.options?.every((x: any) => isNaN(x.value)) &&
+                metaField?.options?.length
+              ) {
+                // Checks that all of the metafield options are not numbers.
+                result[key] = metaField?.options
+                  ?.filter((values: any) => value.includes(values.value))
+                  .map((values: any) => values.text)
+                  .join(', ');
+              } else if (
+                Array.isArray(record[key]) &&
+                record[key].some(
+                  (item: any) =>
+                    Object.prototype.hasOwnProperty.call(item, 'text') &&
+                    Object.prototype.hasOwnProperty.call(item, 'value')
+                )
+              ) {
+                const texts = record[key]
+                  .filter((item: any) =>
+                    Object.prototype.hasOwnProperty.call(item, 'text')
+                  )
+                  .map((item: any) => item.text);
+
+                // Decide whether to join with a comma based on the length of the texts array
+                result[key] = texts.length === 1 ? texts[0] : texts.join(', ');
               } else {
                 result[key] = record[key];
               }
@@ -1047,6 +1114,13 @@ export class EmailService {
                   key.split('_')[3]
                 }`
               ] = value;
+            } else if (key.split('_')[4] === 'id') {
+              // Takes the created by and last updated by values and persists them.
+              result[
+                `_${key.split('_')[1]}.${key.split('_')[2]}._${
+                  key.split('_')[4]
+                }`
+              ] = value;
             } else {
               // Takes the created by and last updated by values and persists them.
               result[
@@ -1055,14 +1129,88 @@ export class EmailService {
                 }`
               ] = value;
             }
-          } else {
+          } else if (key == 'form') {
+            const metaField = query.fields.find((field: any) => {
+              return field.name === key;
+            });
+            result[key] = metaField?.options?.filter(
+              (x: any) => x.value === record[key]
+            )[0]?.text;
+          } else if (key == 'lastUpdateForm') {
+            // TO DO
+            // Ideally we will run an apollo graphql query to fetch the form
+            // names from the id's passed into the form and lastUpdateForm
+            // fields. This isn't currently working due to the data configuration,
+            // likely will need to normalise the metaData so that we have options/choices.
             result[key] = value;
+          } else {
+            const metaField = query.fields.find((field: any) => {
+              return field.name === key;
+            });
+
+            if (
+              metaField?.options?.every((x: any) => !isNaN(x.value)) &&
+              metaField?.options?.length
+            ) {
+              const findMatchingTexts = (options: any, keysToFind: any) => {
+                return options
+                  .filter((values: any) => {
+                    if (typeof keysToFind === 'object') {
+                      return keysToFind?.includes(parseInt(values.value));
+                    } else {
+                      const keyAsArray = [keysToFind];
+                      return keyAsArray?.includes(parseInt(values.value));
+                    }
+                  })
+                  .map((values: any) => values.text)
+                  .join(', ');
+              };
+
+              const matchingTexts = findMatchingTexts(
+                metaField?.options,
+                record[key]
+              );
+              result[key] = matchingTexts;
+            } else {
+              result[key] = value;
+            }
           }
         }
       }
     }
 
     return result;
+  }
+
+  /**
+   * Checks if a given date string is a valid date in the format YYYY-MM-DD.
+   *
+   * @param {string} dateString The date string to validate.
+   * @returns {boolean} Returns true if the date string is a valid date in the format YYYY-MM-DD, otherwise false.
+   */
+  isValidDate(dateString: any): boolean {
+    // Regular expression for basic ISO date format (YYYY-MM-DD)
+    const isoDateFormat =
+      /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?(Z|([+-]\d{2}:\d{2})))?$/;
+
+    // Check if the dateString matches the ISO date format
+    if (!isoDateFormat.test(dateString)) {
+      return false;
+    }
+
+    // Parse the date string
+    const timestamp = Date.parse(dateString);
+
+    // Check if the parsed result is NaN
+    if (isNaN(timestamp)) {
+      return false;
+    }
+
+    // Create a Date object from the timestamp
+    const date = new Date(timestamp);
+
+    // Check if the Date object is valid
+    return date instanceof Date && !isNaN(date.getTime());
   }
 
   /**
@@ -1076,7 +1224,12 @@ export class EmailService {
     const select = this.isSelect(field);
 
     // Check if rowData is a string that can be parsed into a date
-    if (!select && typeof rowData === 'string' && !isNaN(Date.parse(rowData))) {
+    if (
+      !select &&
+      typeof rowData === 'string' &&
+      !isNaN(Date.parse(rowData)) &&
+      this.isValidDate(rowData)
+    ) {
       // Parse the string into a Date object
       const date = new Date(rowData);
       // Format the date as MM/DD/YY, hh:mm AM/PM
@@ -1091,9 +1244,22 @@ export class EmailService {
         timeZoneName: 'short',
       });
     }
-    // If rowData is not a date string, return it as is
-    // This includes non-string inputs and strings that cannot be parsed into a date
-    return rowData ? rowData.toString() : '';
+    if (typeof rowData === 'string') {
+      return rowData;
+    } else if (rowData === false) {
+      return 'False';
+    } else if (rowData === true) {
+      return 'True';
+    } else if (rowData instanceof Array) {
+      return rowData.join(', ');
+    } else if (rowData instanceof Object) {
+      let objectString = '';
+      for (const field in rowData) {
+        objectString += `${field}: ${rowData[field]}\n`;
+      }
+      return objectString;
+    }
+    return rowData ? JSON.stringify(rowData) : '';
   }
 
   /**
@@ -1131,8 +1297,8 @@ export class EmailService {
     this.allLayoutdata = {};
     this.allPreviewData = [];
     this.emailLayout = {};
-    this.recipients = {
-      distributionListName: '',
+    this.emailDistributionList = {
+      name: '',
       To: [],
       Cc: [],
       Bcc: [],

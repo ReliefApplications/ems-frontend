@@ -1,7 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+} from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { EmailService } from '../../email.service';
 import { Subscription } from 'rxjs';
+import { TokenRegex } from '../../constant';
 
 /**
  * The preview component is used to display the email layout using user input from layout component.
@@ -11,7 +19,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.scss'],
 })
-export class PreviewComponent implements OnInit, OnDestroy {
+export class PreviewComponent implements OnInit, OnDestroy, AfterViewInit {
   /** Selected resource ID. -TO DELETE? */
   public selectedResourceId: string | undefined = '653642baa37293bb1706506e';
   /** List of data items. -TO DELETE? */
@@ -43,6 +51,8 @@ export class PreviewComponent implements OnInit, OnDestroy {
   isExpandedCc = false;
   /** Expand for "BCC" list items. */
   isExpandedBcc = false;
+  /** Reference to the bodyHtml */
+  @ViewChild('bodyHtml') bodyHtml!: ElementRef;
 
   /**
    * Expand see more email list dropdown for "To".
@@ -73,6 +83,27 @@ export class PreviewComponent implements OnInit, OnDestroy {
    */
   constructor(private apollo: Apollo, public emailService: EmailService) {}
 
+  ngAfterViewInit(): void {
+    this.bodyHtml.nativeElement.innerHTML = this.bodyString;
+    this.checkAndApplyBodyStyle();
+  }
+
+  /**
+   * Check if the body has strong or em tags, and add the body-wrap class if it does.
+   */
+  checkAndApplyBodyStyle() {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(this.bodyString, 'text/html');
+
+    const strong = doc.querySelectorAll('strong');
+    const em = doc.querySelectorAll('em');
+    if (strong.length > 0 || em.length > 0) {
+      this.bodyHtml.nativeElement.classList.add('body-wrap');
+    } else {
+      this.bodyHtml.nativeElement.classList.remove('body-wrap');
+    }
+  }
+
   ngOnInit(): void {
     this.replaceTokensWithTables();
     this.replaceDateTimeTokens();
@@ -82,56 +113,34 @@ export class PreviewComponent implements OnInit, OnDestroy {
 
     (document.getElementById('headerHtml') as HTMLInputElement).innerHTML =
       this.headerString;
-
-    (document.getElementById('bodyHtml') as HTMLInputElement).innerHTML =
-      this.bodyString;
-
     if (this.emailService.allLayoutdata.headerLogo) {
-      if (this.emailService.allLayoutdata.headerLogo.__zone_symbol__value) {
-        this.headerLogo = URL.createObjectURL(
-          this.emailService.convertBase64ToFile(
-            this.emailService.allLayoutdata.headerLogo.__zone_symbol__value,
-            'image.png',
-            'image/png'
-          )
-        );
-      } else {
-        this.headerLogo = URL.createObjectURL(
-          this.emailService.allLayoutdata.headerLogo
-        );
-      }
+      this.headerLogo = URL.createObjectURL(
+        this.emailService.convertBase64ToFile(
+          this.emailService.allLayoutdata.headerLogo,
+          'image.png',
+          'image/png'
+        )
+      );
     }
 
     if (this.emailService.allLayoutdata.footerLogo) {
-      if (this.emailService.allLayoutdata.footerLogo.__zone_symbol__value) {
-        this.footerLogo = URL.createObjectURL(
-          this.emailService.convertBase64ToFile(
-            this.emailService.allLayoutdata.footerLogo.__zone_symbol__value,
-            'image.png',
-            'image/png'
-          )
-        );
-      } else {
-        this.footerLogo = URL.createObjectURL(
-          this.emailService.allLayoutdata.footerLogo
-        );
-      }
+      this.footerLogo = URL.createObjectURL(
+        this.emailService.convertBase64ToFile(
+          this.emailService.allLayoutdata.footerLogo,
+          'image.png',
+          'image/png'
+        )
+      );
     }
 
     if (this.emailService.allLayoutdata.bannerImage) {
-      if (this.emailService.allLayoutdata.bannerImage.__zone_symbol__value) {
-        this.bannerImage = URL.createObjectURL(
-          this.emailService.convertBase64ToFile(
-            this.emailService.allLayoutdata.bannerImage.__zone_symbol__value,
-            'image.png',
-            'image/png'
-          )
-        );
-      } else {
-        this.bannerImage = URL.createObjectURL(
-          this.emailService.allLayoutdata.bannerImage
-        );
-      }
+      this.bannerImage = URL.createObjectURL(
+        this.emailService.convertBase64ToFile(
+          this.emailService.allLayoutdata.bannerImage,
+          'image.png',
+          'image/png'
+        )
+      );
     }
 
     (document.getElementById('footerHtml') as HTMLInputElement).innerHTML =
@@ -142,17 +151,17 @@ export class PreviewComponent implements OnInit, OnDestroy {
    * Replaces Subject Tokens with data from the first row of data.
    */
   replaceSubjectTokens() {
-    const tokenRegex = /{{([^}]+)}}/g;
-    let match;
+    const tokenRegex = TokenRegex;
     const firstRowData = this.emailService.allPreviewData[0]?.dataList[0];
-    while ((match = tokenRegex.exec(this.subjectString)) !== null) {
-      const fieldName = match[1];
+    const fieldNameList = this.subjectString.match(tokenRegex);
+    fieldNameList?.forEach((fName: any) => {
+      const fieldName = fName.replace('{{', '').replace('}}', '');
       const fieldValue = firstRowData[fieldName];
 
       if (fieldValue !== undefined) {
         if (fieldValue instanceof Date) {
           this.subjectString = this.subjectString.replace(
-            match[0],
+            fName,
             fieldValue.toLocaleString('en-US', {
               month: 'numeric',
               day: 'numeric',
@@ -168,7 +177,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
           const date = new Date(fieldValue);
           if (!isNaN(date.getTime())) {
             this.subjectString = this.subjectString.replace(
-              match[0],
+              fName,
               date.toLocaleString('en-US', {
                 month: 'numeric',
                 day: 'numeric',
@@ -182,9 +191,18 @@ export class PreviewComponent implements OnInit, OnDestroy {
             );
           }
         }
-        this.subjectString = this.subjectString.replace(match[0], fieldValue);
+        this.subjectString = this.subjectString.replace(fName, fieldValue);
       }
-    }
+    });
+  }
+
+  /**
+   * Checks if footer is empty
+   *
+   * @returns true if footer is empty
+   */
+  footerIsEmpty() {
+    return !this.footerString || /^<p>\s*<\/p>$/.test(this.footerString);
   }
 
   /**
@@ -245,7 +263,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
       case 'container':
         styles[
           'containerStyle'
-        ] = `border: 2px solid #00205C; width: 100%; height: 100%; box-sizing: border-box; display: flex; flex-direction: column;`;
+        ] = `border: 2px solid #00205C; width: 100%; height: 60%; box-sizing: border-box; display: flex; flex-direction: column;`;
         break;
       default:
         return '';
@@ -499,7 +517,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
       </div>`;
     }
 
-    const theadHtml = previewData.dataSetFields
+    const theadHtml = previewData.datasetFields
       .map(
         (fieldKeyString: any) =>
           `<th style="${this.getTableStyle(
@@ -513,14 +531,14 @@ export class PreviewComponent implements OnInit, OnDestroy {
     const tbodyHtml = previewData.dataList
       .map(
         (data: any) =>
-          `<tr style="${this.getTableStyle('tr')}">${previewData.dataSetFields
+          `<tr style="${this.getTableStyle('tr')}">${previewData.datasetFields
             .map(
               (fieldKeyString: any) =>
                 `<td style="${this.getTableStyle(
                   'td'
                 )}">${this.emailService.formatDataStrings(
-                  `${data[fieldKeyString] ?? ''}`,
-                  `${fieldKeyString}`
+                  data[fieldKeyString] ?? '',
+                  fieldKeyString
                 )}</td>`
             )
             .join('')}</tr>`

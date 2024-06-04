@@ -11,31 +11,27 @@
       />
     </div>
     <ui-button
-      class="float-right"
-      icon="download"
-      category="secondary"
-      variant="primary"
-      [uiTooltip]="
-        'components.email.distributionList.import.download' | translate
-      "
-      (click)="downloadDistributionListTemplate()"
-    >
-      {{ 'components.email.distributionList.import.download' | translate }}
-    </ui-button>
-    <!-- Email List Template Button -->
-    <ui-button
-      class="float-right import"
-      icon="cloud_download"
-      category="secondary"
-      variant="primary"
-      [uiTooltip]="
-        'components.email.distributionList.import.upload' | translate
-      "
-      (click)="fileUpload.click()"
-    >
-      {{ 'components.email.distributionList.import.name' | translate }}
-    </ui-button>
-    <br />
+        class="float-right"
+        icon="download"
+        category="secondary"
+        variant="primary"
+        [uiTooltip]="'components.email.distributionList.import.download' | translate"
+        (click)="downloadDistributionListTemplate()"
+      >
+      {{'components.email.distributionList.import.download' | translate}}
+      </ui-button>
+      <!-- Email List Template Button -->
+      <ui-button
+        class="float-right import"
+        icon="cloud_download"
+        category="secondary"
+        variant="primary"
+        [uiTooltip]="'components.email.distributionList.import.import' | translate"
+        (click)="fileUpload.click()"
+      >
+      {{'components.email.distributionList.import.name' | translate}}
+      </ui-button>
+      <br>
   </div>
   <div class="flex gap-4" *ngIf="!showExistingDistributionList">
     <div class="mt-4 w-1/3">
@@ -50,12 +46,12 @@
         [class]="{
           'form-error':
             (isNameDuplicate() && !distributionListId) ||
-            !recipients.distributionListName ||
-            recipients.distributionListName.trim() === ''
+            !emailDistributionList.name ||
+            emailDistributionList.name.trim() === ''
         }"
         class="relative flex py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center w-full"
         (change)="validateDistributionList()"
-        [(ngModel)]="recipients.distributionListName"
+        [(ngModel)]="emailDistributionList.name"
         [placeholder]="'common.name' | translate"
       />
       <div
@@ -85,15 +81,15 @@
     class="mb-4"
     variant="warning"
     *ngIf="
-      recipients?.distributionListName?.length === 0 ||
-      recipients?.To?.length === 0
+      emailDistributionList?.name?.length === 0 ||
+      emailDistributionList?.To?.length === 0
     "
   >
     {{ 'components.email.distributionList.alert.partOne' | translate }}
     <strong
       *ngIf="
-        recipients?.distributionListName?.length === 0 ||
-        recipients?.distributionListName?.trim() === ''
+        emailDistributionList?.name?.length === 0 ||
+        emailDistributionList?.name?.trim() === ''
       "
     >
       {{
@@ -102,16 +98,19 @@
     >
     <strong
       *ngIf="
-        recipients?.To?.length === 0 &&
-        (recipients?.distributionListName?.length === 0 ||
-          recipients?.distributionListName?.trim() === '')
+        emailDistributionList?.To?.length === 0 &&
+        (emailDistributionList?.name?.length === 0 ||
+          emailDistributionList?.name?.trim() === '')
       "
     >
       {{ 'components.email.distributionList.alert.and' | translate }} </strong
-    ><strong *ngIf="recipients?.To?.length === 0">{{
+    ><strong *ngIf="emailDistributionList?.To?.length === 0">{{
       'components.email.distributionList.alert.partThree' | translate
     }}</strong
     >.
+  </ui-alert>
+  <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.to">
+    {{ 'components.email.distributionList.alert.noEmail' | translate }}
   </ui-alert>
   <!-- Existing Distribution List -->
   <div *ngIf="showExistingDistributionList">
@@ -126,7 +125,7 @@
                 </span>
               </th>
               <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
-                {{ element.node.recipients.distributionListName }}
+                {{ element.node.emailDistributionList.name }}
               </td>
             </ng-container>
             <ng-container cdkColumnDef="createdBy">
@@ -207,9 +206,10 @@
     </div>
     <shared-email-template
       [existingId]="this.distributionListId"
+      (noEmail)="update($event, 'to')"
       (emailLoad)="to($event)"
       (listChange)="validateDistributionList()"
-      [emailBackLoad]="recipients.To"
+      [emailBackLoad]="emailDistributionList.To"
       [emailFilter]="toEmailFilter"
       *ngIf="showToTemplate"
       >{{
@@ -217,6 +217,9 @@
       }}</shared-email-template
     >
 
+    <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.cc">
+      {{ 'components.email.distributionList.alert.noEmail' | translate }}
+    </ui-alert>
     <!-- CC dropdown -->
     <div
       class="w-full flex p-1 pl-2 space-y-4 flex-row items-start self-stretch bg-blue-50 cursor-pointer"
@@ -242,9 +245,10 @@
     </div>
     <shared-email-template
       [existingId]="this.distributionListId"
+      (noEmail)="update($event, 'cc')"
       (emailLoad)="cc($event)"
       (listChange)="validateDistributionList()"
-      [emailBackLoad]="recipients.Cc"
+      [emailBackLoad]="emailDistributionList.Cc"
       [emailFilter]="ccEmailFilter"
       *ngIf="showCCTemplate"
       >{{
@@ -252,6 +256,9 @@
       }}</shared-email-template
     >
 
+    <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.bcc">
+      {{ 'components.email.distributionList.alert.noEmail' | translate }}
+    </ui-alert>
     <!-- BCC dropdown -->
     <div
       class="w-full flex p-1 pl-2 space-y-4 flex-row items-start self-stretch bg-blue-50 cursor-pointer"
@@ -277,9 +284,10 @@
     </div>
     <shared-email-template
       [existingId]="this.distributionListId"
+      (noEmail)="update($event, 'bcc')"
       (emailLoad)="bcc($event)"
       (listChange)="validateDistributionList()"
-      [emailBackLoad]="recipients.Bcc"
+      [emailBackLoad]="emailDistributionList.Bcc"
       [emailFilter]="bccEmailFilter"
       *ngIf="showBccTemplate"
       >{{

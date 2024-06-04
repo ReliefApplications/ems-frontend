@@ -38,9 +38,9 @@ export class CreateDatasetComponent implements OnInit {
   /** Notification types for email service. */
   public notificationTypes: string[] = this.emailService.notificationTypes;
   /** Form group for data set. */
-  public dataSetFormGroup: FormGroup | any = this.emailService.datasetsForm;
+  public datasetFormGroup: FormGroup | any = this.emailService.datasetsForm;
   /** Form group for data set group. */
-  public dataSetGroup: FormGroup | any =
+  public datasetGroup: FormGroup | any =
     this.emailService.createNewDataSetGroup();
   /** Tabs configuration. */
   public tabs: {
@@ -98,7 +98,7 @@ export class CreateDatasetComponent implements OnInit {
     this.filteredFields = this.resource?.fields;
     this.tabIndex = this.activeTab.index;
     if (this.emailService.notificationTypes.length > 0) {
-      this.dataSetFormGroup.controls['notificationType'].setValue(
+      this.datasetFormGroup.controls['notificationType'].setValue(
         this.emailService.notificationTypes[0]
       );
       this.emailService.datasetsForm.controls['notificationType'].setValue(
@@ -142,13 +142,13 @@ export class CreateDatasetComponent implements OnInit {
   }
 
   /**
-   * Gets the datasets form array from the dataSetFormGroup
+   * Gets the datasets form array from the datasetFormGroup
    * (Fields, Filter {Fields, Operators, Values})
    *
-   * @returns The datasets form array from the dataSetFormGroup
+   * @returns The datasets form array from the datasetFormGroup
    */
   get datasetsFormArray() {
-    return this.dataSetFormGroup.get('dataSets') as FormArray;
+    return this.datasetFormGroup.get('datasets') as FormArray;
   }
 
   /**
@@ -171,7 +171,7 @@ export class CreateDatasetComponent implements OnInit {
    * @returns form control
    */
   get formControllers() {
-    return this.dataSetFormGroup.controls;
+    return this.datasetFormGroup.controls;
   }
 
   /**
@@ -181,6 +181,9 @@ export class CreateDatasetComponent implements OnInit {
     this.tabs.forEach(
       (tab) => ((tab.active = false), (this.blockIndex = tab.index))
     );
+    if (this.tabs.length === 0) {
+      this.blockIndex = -1;
+    }
     this.tabs.push({
       title: `Block ${this.blockIndex + 2}`,
       content: `Block ${this.blockIndex + 2} Content`,
@@ -213,6 +216,7 @@ export class CreateDatasetComponent implements OnInit {
         ? this.tabs[this.tabs.length - 1]
         : this.activeTab;
     this.activeTab.active = true;
+    this.activeTab.index = index;
   }
 
   /**

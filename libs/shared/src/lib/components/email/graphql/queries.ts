@@ -32,6 +32,178 @@ export const GET_RESOURCE = gql`
   }
 `;
 
+/** Graphql request for getting query types */
+export const GET_QUERY_TYPES = gql`
+  query GetQueryTypes {
+    __schema {
+      types {
+        name
+        kind
+        fields {
+          name
+          args {
+            name
+            type {
+              name
+              kind
+              inputFields {
+                name
+                type {
+                  name
+                  kind
+                }
+              }
+            }
+          }
+          type {
+            name
+            kind
+            fields {
+              name
+              args {
+                name
+                type {
+                  name
+                  kind
+                  inputFields {
+                    name
+                    type {
+                      name
+                      kind
+                    }
+                  }
+                }
+              }
+              type {
+                name
+                kind
+                ofType {
+                  name
+                  fields {
+                    name
+                    type {
+                      name
+                      kind
+                      ofType {
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            ofType {
+              name
+              fields {
+                name
+                type {
+                  name
+                  kind
+                  ofType {
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      queryType {
+        name
+        kind
+        fields {
+          name
+          args {
+            name
+            type {
+              name
+              kind
+              inputFields {
+                name
+                type {
+                  name
+                  kind
+                }
+              }
+            }
+          }
+          type {
+            name
+            kind
+            ofType {
+              name
+              fields {
+                name
+                type {
+                  name
+                  kind
+                  ofType {
+                    name
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * Get metadata of form / resource query definition.
+ */
+export const GET_QUERY_META_DATA = gql`
+  query GetQueryMetaData($id: ID!) {
+    form(id: $id) {
+      id
+      metadata {
+        name
+        automated
+        type
+        editor
+        filter
+        multiSelect
+        filterable
+        options
+        fields {
+          name
+          automated
+          type
+          editor
+          filter
+          multiSelect
+          filterable
+          options
+        }
+      }
+    }
+    resource(id: $id) {
+      id
+      metadata {
+        name
+        automated
+        type
+        editor
+        filter
+        multiSelect
+        filterable
+        options
+        fields {
+          name
+          automated
+          type
+          editor
+          filter
+          multiSelect
+          filterable
+          options
+        }
+      }
+    }
+  }
+`;
+
 /** Graphql query for getting multiple resources with a cursor */
 export const GET_RESOURCES = gql`
   query GetResources(
@@ -65,7 +237,7 @@ export const GET_RESOURCES = gql`
 /** Graphql query for getting data set by filter layout */
 export const GET_DATA_SET = gql`
   query getDataSet($query: JSON!) {
-    dataSet(query: $query) {
+    dataset(query: $query) {
       records
       emails
       totalCount
@@ -87,8 +259,8 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
         node {
           applicationId
           createdAt
-          recipients {
-            distributionListName
+          emailDistributionList {
+            name
             To
             Bcc
             Cc
@@ -97,6 +269,8 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
           id
           notificationType
           createdBy
+          isDraft
+          draftStepper
         }
       }
     }
@@ -107,7 +281,7 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
 export const ADD_EMAIL_NOTIFICATION = gql`
   mutation Mutation($notification: EmailNotificationInputType!) {
     addEmailNotification(notification: $notification) {
-      dataSets {
+      datasets {
         pageSize
         filter
         fields
@@ -131,11 +305,11 @@ export const ADD_EMAIL_NOTIFICATION = gql`
       lastExecution
       name
       notificationType
-      recipients {
-        distributionListName
+      emailDistributionList {
+        name
         To
-        Cc
         Bcc
+        Cc
       }
       recipientsType
       status
@@ -157,7 +331,7 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
     ) {
       createdAt
       createdBy
-      dataSets {
+      datasets {
         fields
         filter
         name
@@ -174,11 +348,11 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
       id
       name
       notificationType
-      recipients {
-        distributionListName
+      emailDistributionList {
+        name
         To
-        Cc
         Bcc
+        Cc
       }
       status
       schedule
@@ -193,6 +367,8 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
       lastExecution
       recipientsType
       isDeleted
+      isDraft
+      draftStepper
     }
   }
 `;

@@ -813,6 +813,7 @@
 			"distributionList": {
 				"alert": {
 					"and": "******",
+					"noEmail": "******",
 					"partOne": "******",
 					"partThree": "******",
 					"partTwo": "******"
@@ -823,10 +824,10 @@
 				"duplicate": "******",
 				"import": {
 					"download": "******",
+					"import": "******",
 					"loading": "******",
 					"name": "******",
-					"success": "******",
-					"upload": "******"
+					"success": "******"
 				},
 				"list": "******",
 				"name": "******",
@@ -847,6 +848,10 @@
 				"less": "******",
 				"more": "****** {{length}} ******",
 				"subject": "******"
+			},
+			"saveAsDraft": "******",
+			"tooltip": {
+				"reverseDate": "******"
 			}
 		},
 		"emailBuilder": {
@@ -2607,6 +2612,7 @@
 			"settings": {
 				"actions": "******",
 				"emailCreated": "******",
+				"emailDeleted": "******",
 				"emailEdited": "******",
 				"emailFailMsg": "******",
 				"emailSent": "******"

@@ -1,3 +1,4 @@
+import { GridService } from './../../../../services/grid/grid.service';
 import {
   Component,
   EventEmitter,
@@ -13,7 +14,7 @@ import {
   FormBuilder,
   FormGroup,
 } from '@angular/forms';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo, QueryRef, gql } from 'apollo-angular';
 import { clone, cloneDeep } from 'lodash';
 import {
   Resource,
@@ -27,10 +28,21 @@ import {
   TYPE_LABEL,
 } from '../../filter/filter.constant';
 import { FIELD_NAME } from './metadata.constant';
-import { GET_RESOURCE, GET_RESOURCES } from '../../graphql/queries';
-import { Subscription } from 'rxjs';
+import {
+  GET_RESOURCE,
+  GET_RESOURCES,
+  GET_QUERY_META_DATA,
+  GET_QUERY_TYPES,
+} from '../../graphql/queries';
+import {
+  QueryMetaDataQueryResponse,
+  QueryTypesResponse,
+} from '../../../../models/metadata.model';
+import { Subscription, takeUntil } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { FieldStore } from '../../models/email.const';
+import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 /** Default items per query, for pagination */
 let ITEMS_PER_PAGE = 0;
 
@@ -42,40 +54,43 @@ let ITEMS_PER_PAGE = 0;
   templateUrl: './dataset-filter.component.html',
   styleUrls: ['./dataset-filter.component.scss'],
 })
-export class DatasetFilterComponent implements OnInit, OnDestroy {
-  /** ACTIVE TAB IN THE COMPONENT. */
+export class DatasetFilterComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
+{
+  /** Active tab in the component. */
   @Input() activeTab: any;
-  /** ARRAY OF TABS IN THE COMPONENT. */
+  /** Array of tabs in the component. */
   @Input() tabs: any;
-  /** QUERY FORMGROUP USED FOR FILTERING. */
+  /** Query FormGroup used for filtering. */
   @Input() query: FormGroup | any;
-  /** VALUE OF THE QUERY FORMGROUP. */
+  /** Value of the query FormGroup. */
   @Input() queryValue: FormGroup | any;
-  /** FLAG TO CONTROL THE VISIBILITY OF THE PREVIEW. */
+  /** Flag to control the visibility of the preview. */
   showPreview = false;
-  /** SUBSCRIPTION TO DATASET SAVING. */
+  /** Subscription to dataset saving. */
   private datasetSaveSubscription?: Subscription;
-  /** GRAPHQL QUERY REFERENCE FOR FETCHING RESOURCES. */
+  /** GraphQL query reference for fetching resources. */
   public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
-  /** METHOD TO FETCH DATA SETS. */
+  /** Method to fetch data sets. */
   public fetchDataSet: any = this.emailService.fetchDataSet;
-  /** SELECTED RESOURCE. */
+  /** Selected resource. */
   public resource!: Resource;
-  /** METADATA OF THE SELECTED RESOURCE. */
+  /** Metadata of the selected resource. */
   public metaData!: any;
-  /** RESPONSE OF THE DATA SET. */
-  public dataSetResponse: any;
-  /** FIELDS OF THE DATA SET. */
-  public dataSetFields!: any[];
-  /** SELECTED RESOURCE ID. */
+  /** Response of the data set. */
+  public datasetResponse: any;
+  /** Fields of the data set. */
+  public datasetFields!: any[];
+  /** Selected resource ID. */
   public selectedResourceId!: string;
-  /** LIST OF DATA. */
+  /** List of data. */
   public dataList!: { [key: string]: any }[];
-  /** SELECTED SEARCH FIELD. */
+  /** Selected search field. */
   public searchSelectedField = '';
-  /** AVAILABLE SEARCH FIELD. */
+  /** Available search field. */
   public searchAvailableField = '';
-  /** FILTERED FIELDS FOR SEARCH. */
+  /** Filtered fields for search. */
   public filteredFields: any[] = [];
   /** Selected fields for filtering. */
   public selectedFields: FieldStore[] = [];
@@ -85,25 +100,25 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   public availableFields: FieldStore[] = [];
   /** Operators for filtering. */
   public operators: { [key: number]: { value: string; label: string }[] } = {};
-  /** FLAG TO SHOW THE DATASET LIMIT WARNING. */
+  /** Flag to show the dataset limit warning. */
   public showDatasetLimitWarning = false;
-  /** TOTAL NUMBER OF MATCHING RECORDS. */
+  /** Total number of matching records. */
   public totalMatchingRecords = 0;
-  /** CURRENT TAB INDEX. */
+  /** Current tab index. */
   public currentTabIndex = 0;
-  /** FLAG TO SWITCH BETWEEN DATE PICKER AND TEXT EXPRESSION. */
+  /** Flag to switch between date picker and text expression. */
   public useExpression = false;
-  /** FILTER OPERATORS FROM FILTER CONSTANT */
+  /** Filter operators from filter constant */
   filterOperators = FILTER_OPERATORS;
-  /** FLAG FOR SENDING INDIVUAL EMAILS */
+  /** Flag for sending individual emails */
   public separateEmail = false;
-  /** DISABLED FIELDS LIST */
+  /** Disabled fields list */
   public disabledFields: string[] = [];
-  /** DISABLED FIELDS TYPE LIST */
+  /** Disabled fields type list */
   public disabledTypes: string[] = [];
-  /** TYPE LABELS */
+  /** Type labels */
   public TYPE_LABEL = TYPE_LABEL;
-  /** TIME UNITS FOR FILTERING. */
+  /** Time units for filtering. */
   public timeUnits = [
     { value: 'hours', label: 'Hours' },
     { value: 'days', label: 'Days' },
@@ -111,24 +126,28 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
     { value: 'months', label: 'Months' },
     { value: 'years', label: 'Years' },
   ];
-  /** DATASET PREVIEW VIEWCHILD. */
+  /** Dataset preview ViewChild. */
   @ViewChild('datasetPreview') datasetPreview: any;
-  /** EVENT EMITTER FOR CHANGING THE MAIN TAB. */
+  /** Event emitter for changing the main tab. */
   @Output() changeMainTab: EventEmitter<any> = new EventEmitter();
-  /** NAVIGATE TO DATASET PREVIEW SCREEN EMITTER */
+  /** Navigate to dataset preview screen emitter */
   @Output() navigateToPreview: EventEmitter<any> = new EventEmitter();
-  /** LOADING STATUS. */
+  /** Loading status. */
   public loading = false;
-  /** FIELD OPTIONS. */
+  /** Field options. */
   fieldOptions: any;
-  /** CURRENT FIELD NAME. */
+  /** Current field name. */
   currentFieldName: any;
-  /** VALIDATION ERROR MESSAGE */
+  /** Validation error message */
   showErrorMessage: any = '';
-  /** INDEX OF CURRENT HIGHLIGHTED FIELD FROM SELECTED FIELD LIST */
+  /** Index of current highlighted field from selected field list */
   selectedFieldIndex: number | null = null;
-  /** INDEX OF CURRENT HIGHLIGHTED FIELD FROM AVAILABLE FIELD LIST */
+  /** Index of current highlighted field from available field list */
   availableFieldIndex: number | null = null;
+  /** Meta query reference for fetching metadata. */
+  private metaFieldList!: any;
+  /** Metadata fields for the grid. */
+  private metaFields: any;
 
   /**
    * To use helper functions, Apollo serve
@@ -137,19 +156,31 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
    * @param apollo server
    * @param formGroup Angular form builder
    * @param snackBar snackbar helper function
+   * @param queryBuilder Shared query builder service
+   * @param gridService Shared grid service
    */
   constructor(
     public emailService: EmailService,
     private apollo: Apollo,
     private formGroup: FormBuilder,
-    public snackBar: SnackbarService
-  ) {}
+    public snackBar: SnackbarService,
+    public queryBuilder: QueryBuilderService,
+    public gridService: GridService
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.query.controls.name.valueChanges.subscribe((data: any) => {
-      this.emailService.title.next(data);
-      this.emailService.index.next(this.activeTab.index);
-    });
+    this.query.controls.name.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data: any) => {
+        if (data === null) {
+          this.emailService.title.next(this.activeTab.title);
+        } else {
+          this.emailService.title.next(data);
+        }
+        this.emailService.index.next(this.activeTab.index);
+      });
     this.query.get('individualEmail').disable();
     this.separateEmail = this.emailService.updateSeparateEmail(
       this.activeTab.index
@@ -159,7 +190,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       this.query.controls['name'].setValue(name);
     }
     if (this.query?.value?.resource?.id) {
-      ITEMS_PER_PAGE = 70;
+      ITEMS_PER_PAGE = 400;
       this.getResourceDataOnScroll();
     } else if (
       !this.emailService?.resourcesNameId?.length ||
@@ -180,7 +211,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
         dataList,
         resource,
         operators,
-        dataSetFields,
+        datasetFields,
         selectedFields,
         availableFields,
         filterFields,
@@ -190,7 +221,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       this.dataList = dataList;
       this.resource = resource;
       this.operators = operators;
-      this.dataSetFields = dataSetFields;
+      this.datasetFields = datasetFields;
       this.selectedFields = selectedFields;
       this.filterFields = filterFields;
       this.availableFields = availableFields;
@@ -206,16 +237,42 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnDestroy() {
+  /**
+   * Fetches Resource meta data
+   *
+   * @returns resource meta data
+   */
+  fetchResourceMetaData() {
+    return this.apollo.query<QueryMetaDataQueryResponse>({
+      query: GET_QUERY_META_DATA,
+      variables: {
+        id: this.selectedResourceId,
+      },
+    });
+  }
+
+  /**
+   * Fetches Resource meta data type
+   *
+   * @returns resource meta data types
+   */
+  fetchResourceDataTypes() {
+    return this.apollo.query<QueryTypesResponse>({
+      query: GET_QUERY_TYPES,
+      variables: {},
+    });
+  }
+
+  override ngOnDestroy() {
     const cacheData = {
       dataList: this.dataList,
       resource: this.resource,
       operators: this.operators,
-      dataSetFields: this.dataSetFields,
+      datasetFields: this.datasetFields,
       selectedFields: this.selectedFields,
       availableFields: this.availableFields,
       filterFields: this.filterFields,
-      dataSetResponse: this.dataSetResponse,
+      datasetResponse: this.datasetResponse,
       selectedResourceId: this.selectedResourceId,
     };
     this.query.controls.cacheData.setValue(cacheData);
@@ -260,35 +317,39 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       });
       if (this.resourcesQuery && ITEMS_PER_PAGE > -1) {
         this.loading = true;
-        this.resourcesQuery.valueChanges.subscribe(({ data }) => {
-          this.loading = false;
-          ITEMS_PER_PAGE =
-            ITEMS_PER_PAGE > data?.resources?.totalCount ? -1 : ITEMS_PER_PAGE;
-          const resources =
-            data?.resources?.edges?.map((edge) => edge.node) || [];
-          this.emailService.resourcesNameId = resources.map((element) => {
-            return { id: element?.id?.toString(), name: element?.name };
-          });
-
-          // Edit Mode data
-          if (this.query?.value?.resource?.id) {
-            this.selectedResourceId = this.query?.value?.resource?.id;
-            const found = this.emailService.resourcesNameId.some(
-              (resource) => resource.id === this.selectedResourceId
-            );
-
-            // Keeps scrolling until name is found
-            if (!found && ITEMS_PER_PAGE !== -1) {
-              this.getResourceDataOnScroll();
-            }
+        this.resourcesQuery.valueChanges
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(({ data }) => {
+            this.loading = false;
+            ITEMS_PER_PAGE =
+              ITEMS_PER_PAGE > data?.resources?.totalCount
+                ? -1
+                : ITEMS_PER_PAGE;
             const resources =
               data?.resources?.edges?.map((edge) => edge.node) || [];
             this.emailService.resourcesNameId = resources.map((element) => {
               return { id: element?.id?.toString(), name: element?.name };
             });
-            this.getResourceData(false);
-          }
-        });
+
+            // Edit Mode data
+            if (this.query?.value?.resource?.id) {
+              this.selectedResourceId = this.query?.value?.resource?.id;
+              const found = this.emailService.resourcesNameId.some(
+                (resource) => resource.id === this.selectedResourceId
+              );
+
+              // Keeps scrolling until name is found
+              if (!found && ITEMS_PER_PAGE !== -1) {
+                this.getResourceDataOnScroll();
+              }
+              const resources =
+                data?.resources?.edges?.map((edge) => edge.node) || [];
+              this.emailService.resourcesNameId = resources.map((element) => {
+                return { id: element?.id?.toString(), name: element?.name };
+              });
+              this.getResourceData(false);
+            }
+          });
       }
     }
   }
@@ -304,7 +365,8 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
     this.filterFields = [];
     fromHtml ? this.query.controls.fields.setValue([]) : '';
     this.showDatasetLimitWarning = false;
-    this.emailService.disableSaveAndProceed.next(false);
+    this.emailService.disableSaveAndProceed.next(true);
+    this.emailService.disableSaveAsDraft.next(false);
     this.disabledFields = [];
     this.disabledTypes = [];
     this.currentTabIndex = 0;
@@ -314,216 +376,319 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
           (element) => element.id === this.selectedResourceId
         )
       );
-      this.resource = {};
-      this.loading = true;
-      this.showErrorMessage = '';
+
       this.apollo
-        .query<ResourceQueryResponse>({
-          query: GET_RESOURCE,
-          variables: {
-            id: this.selectedResourceId,
-          },
+        .query<QueryTypesResponse>({
+          query: GET_QUERY_TYPES,
         })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          const resourceName = this.query.value.resource.name
+            .split(' ')
+            .join('');
+          const types = (data as any).__schema.types;
+          const resource = types.find(
+            (x: any) => x.name.toLowerCase() === resourceName.toLowerCase()
+          );
+          const metaFields = this.queryBuilder.getMetaFields(resource.fields);
+
+          // if (metaFields.every((x: string) => !x)) {
+          //   return null;
+          // }
+          const metaQuery = gql`
+            query GetCustomMetaQuery {
+              _${resourceName}Meta {
+                ${metaFields}
+              }
+            }
+          `;
+
+          this.metaFieldList = this.apollo
+            .query<any>({
+              query: metaQuery,
+              variables: {},
+              fetchPolicy: 'cache-first',
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((res) => {
+              console.log(res);
+            });
+
+          if (this.metaFieldList) {
+            this.loading = true;
+            this.metaFieldList.pipe(takeUntil(this.destroy$)).subscribe({
+              next: async ({ data }: any) => {
+                for (const field in data) {
+                  if (Object.prototype.hasOwnProperty.call(data, field)) {
+                    this.metaFields = Object.assign({}, data[field]);
+                    try {
+                      await this.gridService.populateMetaFields(
+                        this.metaFields
+                      );
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }
+                }
+              },
+            });
+          }
+        });
+      let fields: any[] | undefined = [];
+      this.fetchResourceMetaData()
+        .pipe(takeUntil(this.destroy$))
         .subscribe((res) => {
-          this.loading = false;
-          this.resource = res.data.resource;
-          this.metaData = res.data?.resource?.metadata;
-          if (this.metaData?.length) {
-            this.metaData.forEach((field: any) => {
-              if (
-                field &&
-                !['matrix', 'matrixdynamic', 'matrixdropdown'].includes(
-                  field.type
-                )
-              ) {
-                if (field) {
+          fields = res.data?.resource?.metadata;
+          this.resource = {};
+          this.loading = true;
+          this.showErrorMessage = '';
+          this.apollo
+            .query<ResourceQueryResponse>({
+              query: GET_RESOURCE,
+              variables: {
+                id: this.selectedResourceId,
+              },
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((res) => {
+              this.loading = false;
+              this.resource = res.data.resource;
+              this.metaData = res.data?.resource?.metadata;
+              if (this.metaData?.length) {
+                this.metaData.forEach((field: any) => {
                   if (
-                    field.name === FIELD_NAME.createdBy &&
-                    field.fields?.length
+                    field &&
+                    !['matrix', 'matrixdynamic', 'matrixdropdown'].includes(
+                      field.type
+                    )
                   ) {
-                    field.fields.forEach((obj: any) => {
-                      obj.name = `_${FIELD_NAME.createdBy}.user.` + obj.name;
-                      this.availableFields.filter((x) => x.name == obj.name)
-                        .length === 0
-                        ? this.availableFields.push(clone(obj))
-                        : '';
-                      obj.name =
-                        `${FIELD_NAME.createdBy}.` + obj.name.split('.')[2];
-                      this.filterFields.push(obj);
-                    });
-                  } else if (
-                    field.name === FIELD_NAME.lastUpdatedBy &&
-                    field.fields?.length
-                  ) {
-                    field.fields.forEach((obj: any) => {
-                      obj.name =
-                        `_${FIELD_NAME.lastUpdatedBy}.user.` + obj.name;
-                      this.availableFields.filter((x) => x.name == obj.name)
-                        .length === 0
-                        ? this.availableFields.push(clone(obj))
-                        : '';
-                      obj.name =
-                        `${FIELD_NAME.lastUpdatedBy}.` + obj.name.split('.')[2];
-                      this.filterFields.push(obj);
-                    });
-                  } else if (
-                    field.name === 'lastUpdateForm' &&
-                    field.fields?.length
-                  ) {
-                    field.fields.forEach((obj: any) => {
-                      obj.name = '_lastUpdateForm.' + obj.name;
-                      this.availableFields.filter((x) => x.name == obj.name)
-                        .length === 0
-                        ? this.availableFields.push(clone(obj))
-                        : '';
-                      obj.name = 'lastUpdateForm.' + obj.name.split('.')[1];
-                      this.filterFields.push(obj);
-                    });
-                  } else if (field.name === 'form' && field.fields?.length) {
-                    field.fields.forEach((obj: any) => {
-                      obj.name = '_form.' + obj.name;
-                      this.availableFields.filter((x) => x.name == obj.name)
-                        .length === 0
-                        ? this.availableFields.push(clone(obj))
-                        : '';
-                      obj.name = 'form.' + obj.name.split('.')[1];
-                      this.filterFields.push(obj);
-                    });
-                  } else if (field.type === TYPE_LABEL.resource) {
-                    if (field.fields) {
-                      field.fields.forEach((obj: any) => {
-                        obj.parentName = field.name;
-                        if (
-                          obj.name === FIELD_NAME.createdBy ||
-                          obj.name === FIELD_NAME.lastUpdatedBy
-                        ) {
-                          const obj1 = cloneDeep(obj);
-                          obj1.childName = `${field.name} - _${obj.name}.user.username`;
-                          obj1.name = `${field.name} - _${obj.name}.user.username`;
-                          obj1.parentName = field.name;
-                          obj1.type = 'text';
-                          this.availableFields.filter(
-                            (x) => x.name == obj1.name
-                          ).length === 0
-                            ? this.availableFields.push(obj1)
-                            : '';
-
-                          // Create and push the second object
-                          const obj2 = cloneDeep(obj);
-                          obj2.name = `${field.name} - _${obj.name}.user._id`;
-                          obj2.childName = `${field.name} - _${obj.name}.user._id`;
-                          obj2.parentName = field.name;
-                          obj2.type = 'text';
-                          this.availableFields.filter(
-                            (x) => x.name == obj2.name
-                          ).length === 0
-                            ? this.availableFields.push(obj2)
-                            : '';
-
-                          // Create and push the third object
-                          const obj3 = cloneDeep(obj);
-                          obj3.name = `${field.name} - _${obj.name}.user.name`;
-                          obj3.childName = `${field.name} - _${obj.name}.user.name`;
-                          obj3.parentName = field.name;
-                          obj3.type = 'text';
-                          this.availableFields.filter(
-                            (x) => x.name == obj3.name
-                          ).length === 0
-                            ? this.availableFields.push(obj3)
-                            : '';
-                          obj.fields = [];
-                          obj.fields?.filter((x: any) => x.name == obj.name)
-                            .length === 0
-                            ? obj.fields.push(clone(obj1))
-                            : '';
-                          obj.fields?.filter((x: any) => x.name == obj.name)
-                            .length === 0
-                            ? obj.fields.push(clone(obj2))
-                            : '';
-                          obj.fields?.filter((x: any) => x.name == obj.name)
-                            .length === 0
-                            ? obj.fields.push(clone(obj3))
-                            : '';
-                          obj.childName = field.name + ' - ' + obj.name;
-                          obj.name = field.name + ' - ' + obj.name;
-                        } else {
-                          obj.childName = field.name + ' - ' + obj.name;
-                          obj.name = field.name + ' - ' + obj.name;
+                    if (field) {
+                      if (
+                        field.name === FIELD_NAME.createdBy &&
+                        field.fields?.length
+                      ) {
+                        field.fields.forEach((obj: any) => {
+                          obj.name =
+                            `_${FIELD_NAME.createdBy}.user.` +
+                            `${obj.name === 'id' ? '_id' : obj.name}`;
                           this.availableFields.filter((x) => x.name == obj.name)
                             .length === 0
                             ? this.availableFields.push(clone(obj))
                             : '';
-                        }
-                      });
-                    } else {
-                      this.availableFields.filter((x) => x.name == field.name)
-                        .length === 0
-                        ? this.availableFields.push(clone(field))
-                        : '';
-                    }
+                          obj.name =
+                            `${FIELD_NAME.createdBy}.` + obj.name.split('.')[2];
+                          this.filterFields.push(obj);
+                        });
+                      } else if (
+                        field.name === FIELD_NAME.lastUpdatedBy &&
+                        field.fields?.length
+                      ) {
+                        field.fields.forEach((obj: any) => {
+                          obj.name =
+                            `_${FIELD_NAME.lastUpdatedBy}.user.` +
+                            `${obj.name === 'id' ? '_id' : obj.name}`;
+                          this.availableFields.filter((x) => x.name == obj.name)
+                            .length === 0
+                            ? this.availableFields.push(clone(obj))
+                            : '';
+                          obj.name =
+                            `${FIELD_NAME.lastUpdatedBy}.` +
+                            obj.name.split('.')[2];
+                          this.filterFields.push(obj);
+                        });
+                      } else if (
+                        field.name === 'lastUpdateForm' &&
+                        field.fields?.length
+                      ) {
+                        field.fields.forEach((obj: any) => {
+                          obj.name = '_lastUpdateForm.' + obj.name;
+                          this.availableFields.filter((x) => x.name == obj.name)
+                            .length === 0
+                            ? this.availableFields.push(clone(obj))
+                            : '';
+                          obj.name = 'lastUpdateForm.' + obj.name.split('.')[1];
+                          this.filterFields.push(obj);
+                        });
+                      } else if (
+                        field.name === 'form' &&
+                        field.fields?.length
+                      ) {
+                        field.fields.forEach((obj: any) => {
+                          obj.name = '_form.' + obj.name;
+                          this.availableFields.filter((x) => x.name == obj.name)
+                            .length === 0
+                            ? this.availableFields.push(clone(obj))
+                            : '';
+                          obj.name = 'form.' + obj.name.split('.')[1];
+                          this.filterFields.push(obj);
+                        });
+                      } else if (field.type === TYPE_LABEL.resource) {
+                        if (field.fields) {
+                          field.fields.forEach((obj: any) => {
+                            obj.parentName = field.name;
+                            if (
+                              obj.name === FIELD_NAME.createdBy ||
+                              obj.name === FIELD_NAME.lastUpdatedBy
+                            ) {
+                              const obj1 = cloneDeep(obj);
+                              obj1.childName = `${field.name} - _${obj.name}.user.username`;
+                              obj1.name = `${field.name} - _${obj.name}.user.username`;
+                              obj1.parentName = field.name;
+                              obj1.type = 'text';
+                              this.availableFields.filter(
+                                (x) => x.name == obj1.name
+                              ).length === 0
+                                ? this.availableFields.push(obj1)
+                                : '';
 
-                    this.filterFields.push(field);
-                  } else if (field.type === TYPE_LABEL.resources) {
-                    this.availableFields.filter((x) => x.name == field.name)
-                      .length === 0
-                      ? this.availableFields.push(clone(field))
-                      : '';
-                    this.filterFields.push(field);
+                              // Create and push the second object
+                              const obj2 = cloneDeep(obj);
+                              obj2.name = `${field.name} - _${obj.name}.user._id`;
+                              obj2.childName = `${field.name} - _${obj.name}.user._id`;
+                              obj2.parentName = field.name;
+                              obj2.type = 'text';
+                              this.availableFields.filter(
+                                (x) => x.name == obj2.name
+                              ).length === 0
+                                ? this.availableFields.push(obj2)
+                                : '';
+
+                              // Create and push the third object
+                              const obj3 = cloneDeep(obj);
+                              obj3.name = `${field.name} - _${obj.name}.user.name`;
+                              obj3.childName = `${field.name} - _${obj.name}.user.name`;
+                              obj3.parentName = field.name;
+                              obj3.type = 'text';
+                              this.availableFields.filter(
+                                (x) => x.name == obj3.name
+                              ).length === 0
+                                ? this.availableFields.push(obj3)
+                                : '';
+                              obj.fields = [];
+                              obj.fields?.filter((x: any) => x.name == obj.name)
+                                .length === 0
+                                ? obj.fields.push(clone(obj1))
+                                : '';
+                              obj.fields?.filter((x: any) => x.name == obj.name)
+                                .length === 0
+                                ? obj.fields.push(clone(obj2))
+                                : '';
+                              obj.fields?.filter((x: any) => x.name == obj.name)
+                                .length === 0
+                                ? obj.fields.push(clone(obj3))
+                                : '';
+                              obj.childName = field.name + ' - ' + obj.name;
+                              obj.name = field.name + ' - ' + obj.name;
+                            } else {
+                              obj.childName = field.name + ' - ' + obj.name;
+                              obj.name = field.name + ' - ' + obj.name;
+                              this.availableFields.filter(
+                                (x) => x.name == obj.name
+                              ).length === 0
+                                ? this.availableFields.push(clone(obj))
+                                : '';
+                            }
+                          });
+                        } else {
+                          this.availableFields.filter(
+                            (x) => x.name == field.name
+                          ).length === 0
+                            ? this.availableFields.push(clone(field))
+                            : '';
+                        }
+
+                        this.filterFields.push(field);
+                      } else if (field.type === TYPE_LABEL.resources) {
+                        this.availableFields.filter((x) => x.name == field.name)
+                          .length === 0
+                          ? this.availableFields.push(clone(field))
+                          : '';
+                        this.filterFields.push(field);
+                      } else {
+                        const metaField = fields?.find(
+                          (x: any) => x.name === field.name
+                        );
+                        // Map Select Data to select fields if it exists
+                        field.options = metaField.options;
+                        field.multiSelect = metaField.multiSelect;
+                        field.fields = metaField.fields ?? null;
+                        field.select = metaField.editor === 'select';
+                        this.availableFields.filter((x) => x.name == field.name)
+                          ? this.availableFields.push(clone(field))
+                          : '';
+                        this.filterFields.push(clone(field));
+                      }
+                    }
+                    this.availableFields = this.availableFields ?? [];
+                    this.filterFields = this.filterFields ?? [];
+                    this.availableFields?.sort((a, b) =>
+                      a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
+                    );
                   } else {
-                    this.availableFields.filter((x) => x.name == field.name)
-                      ? this.availableFields.push(clone(field))
-                      : '';
-                    this.filterFields.push(clone(field));
+                    this.disabledFields.push(field.name);
+                    this.disabledTypes.push(field.type);
+                    this.disabledTypes = [...new Set(this.disabledTypes)];
                   }
+                });
+
+                //Checking Edit mode data
+                if (
+                  this.query?.controls?.fields?.value &&
+                  (this.selectedFields === undefined ||
+                    this.selectedFields.length === 0)
+                ) {
+                  this.selectedFields =
+                    this.selectedFields === undefined
+                      ? []
+                      : this.selectedFields;
+                  this.selectedFields =
+                    this.query?.controls?.fields?.value?.length > 0
+                      ? this.query?.controls?.fields?.value
+                      : this.selectedFields;
+                  this.query?.controls?.fields?.value?.forEach(
+                    (fieldEle: any) => {
+                      this.populateFields(fieldEle);
+                    }
+                  );
                 }
-                this.availableFields = this.availableFields ?? [];
-                this.filterFields = this.filterFields ?? [];
-                this.availableFields?.sort((a, b) =>
-                  a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
-                );
-              } else {
-                this.disabledFields.push(field.name);
-                this.disabledTypes.push(field.type);
-                this.disabledTypes = [...new Set(this.disabledTypes)];
+
+                if (this.query?.controls?.filter?.value) {
+                  this.query?.controls?.filter?.value?.filters?.forEach(
+                    (fValue: any, fIndex: number) => {
+                      this.setField(fValue.field, fIndex);
+                      this.emailService.disableSaveAndProceed.next(false);
+                    }
+                  );
+                }
+              }
+              if (
+                this.query?.value?.resource !== null &&
+                !this.resource?.fields?.length
+              ) {
+                this.showErrorMessage =
+                  "Selected form doesn't contain any fields";
               }
             });
-
-            //Checking Edit mode data
-            if (
-              this.query?.controls?.fields?.value &&
-              (this.selectedFields === undefined ||
-                this.selectedFields.length === 0)
-            ) {
-              this.selectedFields =
-                this.selectedFields === undefined ? [] : this.selectedFields;
-              this.selectedFields =
-                this.query?.controls?.fields?.value?.length > 0
-                  ? this.query?.controls?.fields?.value
-                  : this.selectedFields;
-              this.query?.controls?.fields?.value?.forEach((fieldEle: any) => {
-                this.populateFields(fieldEle);
-              });
-            }
-
-            if (this.query?.controls?.filter?.value) {
-              this.query?.controls?.filter?.value?.filters?.forEach(
-                (fValue: any, fIndex: number) => {
-                  this.setField(fValue.field, fIndex);
-                }
-              );
-            }
-          }
-          if (
-            this.query?.value?.resource !== null &&
-            !this.resource?.fields?.length
-          ) {
-            this.showErrorMessage = "Selected form doesn't contain any fields";
-          }
         });
     } else {
       this.showErrorMessage = "Selected form doesn't contain any fields";
     }
   }
+
+  // /**
+  //  *
+  //  * @param name
+  //  */
+  // grabValues(name: string) {
+  //   const values = [];
+
+  //   this.grabData().subscribe((res) => {
+  //     const resource = res.data.resource;
+  //     // const value = resource?.find(
+  //     //   (data: any) => data.name === fieldName.field.split('.')[0]
+  //     // )
+  //   });
+  // }
 
   /**
    * Retrieves the field type of the field.
@@ -607,6 +772,16 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       this.getFieldType(fieldIndex) === 'numeric' &&
       operators.includes(fieldOperator)
     );
+  }
+
+  /**
+   * Checks if the selected field is a select field.
+   *
+   * @param fieldIndex The index of the field in the dataset filter.
+   * @returns Returns true if the field is a select field, otherwise false.
+   */
+  isSelectField(fieldIndex: number): boolean {
+    return this.getFieldType(fieldIndex) === 'select';
   }
 
   /**
@@ -776,6 +951,48 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Retrieves field using index
+   *
+   * @param fieldIndex filter row index
+   * @returns field object
+   */
+  getField(fieldIndex: number): any {
+    const fieldControl = this.datasetFilterInfo.at(fieldIndex);
+    const fieldName = fieldControl ? fieldControl.value : null;
+    let field: any = fieldName
+      ? this.resource?.metadata?.find(
+          (data: any) => data.name === fieldName.field.split('.')[0]
+        )
+      : null;
+    if (field && field?.type === TYPE_LABEL.resources) {
+      field = fieldName
+        ? field.fields?.find(
+            (data: any) => data.name === fieldName.field.split('.')[1]
+          )
+        : null;
+    }
+    if (field && field.type === TYPE_LABEL.resource) {
+      if (field.fields) {
+        field = field?.fields?.find(
+          (x: { name: any }) =>
+            x.name.split(' - ')[1] === fieldName.field.split('.')[1]
+        );
+      }
+    }
+
+    /* Reference data - options manipulation */
+
+    if (fieldName?.field?.includes('.')) {
+      const fieldParts = fieldName?.field?.split('.');
+      const optionsKey = fieldParts[fieldParts.length - 1];
+      field.options = field?.fields
+        ? field.fields.filter((x: any) => x.name === optionsKey)[0].options
+        : null;
+    }
+    return field ?? '';
+  }
+
+  /**
    * To add the selective fields in the layout
    *
    * @param field to be added to list
@@ -800,7 +1017,18 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
    */
   addSelectedField(): void {
     if (this.availableFieldIndex !== null) {
-      this.emailService.disableSaveAndProceed.next(false);
+      this.emailService.disableSaveAndProceed.next(
+        !(
+          this.totalMatchingRecords <= 50 &&
+          this.query?.controls['name'].value !== ''
+        )
+      );
+      this.emailService.disableSaveAsDraft.next(
+        !(
+          this.totalMatchingRecords <= 50 &&
+          this.query?.controls['name'].value !== ''
+        )
+      );
       const field = this.availableFields[this.availableFieldIndex];
       this.selectedFields.push(field);
       this.availableFields.splice(this.availableFieldIndex, 1);
@@ -837,8 +1065,10 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       );
       if (this.selectedFields.length) {
         this.emailService.disableSaveAndProceed.next(false);
+        this.emailService.disableSaveAsDraft.next(false);
       } else {
         this.emailService.disableSaveAndProceed.next(true);
+        this.emailService.disableSaveAsDraft.next(true);
       }
       // Adds the deselected field back to the available fields list
       this.availableFields.push(field);
@@ -860,6 +1090,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
    */
   removeAllSelectedFields(): void {
     this.emailService.disableSaveAndProceed.next(true);
+    this.emailService.disableSaveAsDraft.next(true);
     this.availableFields = [
       ...this.availableFields,
       ...this.selectedFields.map((field: FieldStore) =>
@@ -882,7 +1113,13 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
       ...this.selectedFields,
       ...this.availableFields.map((field) => JSON.parse(JSON.stringify(field))),
     ];
-    this.emailService.disableSaveAndProceed.next(false);
+    if (
+      this.query?.controls['name'].value !== '' &&
+      !this.showDatasetLimitWarning
+    ) {
+      this.emailService.disableSaveAndProceed.next(false);
+      this.emailService.disableSaveAsDraft.next(false);
+    }
     this.availableFields = [];
     this.query.controls.fields.setValue(this.selectedFields);
     this.emailService.setEmailFields(this.selectedFields);
@@ -1003,33 +1240,39 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
          Fetches the data records for selected fields
         (by default its all records in the resource).
          */
-        this.fetchDataSet(query).subscribe(
-          (res: any) => {
-            this.loading = false;
-            this.totalMatchingRecords = res?.data?.dataSet?.totalCount;
-            if (this.totalMatchingRecords <= 50) {
-              this.datasetPreview.selectTab(1);
-              this.showDatasetLimitWarning = false;
-              if (this.selectedFields.length) {
-                this.emailService.disableSaveAndProceed.next(false);
+        this.fetchDataSet(query)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(
+            (res: any) => {
+              this.loading = false;
+              this.totalMatchingRecords = res?.data?.dataset?.totalCount;
+              if (this.totalMatchingRecords <= 50) {
+                this.datasetPreview.selectTab(1);
+                this.showDatasetLimitWarning = false;
+                if (this.selectedFields.length) {
+                  this.emailService.disableSaveAndProceed.next(false);
+                  this.emailService.disableSaveAsDraft.next(false);
+                } else {
+                  this.emailService.disableSaveAndProceed.next(true);
+                  this.emailService.disableSaveAsDraft.next(true);
+                }
               } else {
+                this.showDatasetLimitWarning = true;
                 this.emailService.disableSaveAndProceed.next(true);
+                this.emailService.disableSaveAsDraft.next(true);
               }
-            } else {
-              this.showDatasetLimitWarning = true;
+            },
+            (error: any) => {
+              this.loading = false;
+              this.showDatasetLimitWarning = false;
               this.emailService.disableSaveAndProceed.next(true);
+              this.emailService.disableSaveAsDraft.next(true);
+              this.snackBar.openSnackBar(
+                error?.message ?? 'Something Went Wrong',
+                { error: true }
+              );
             }
-          },
-          (error: any) => {
-            this.loading = false;
-            this.showDatasetLimitWarning = false;
-            this.emailService.disableSaveAndProceed.next(true);
-            this.snackBar.openSnackBar(
-              error?.message ?? 'Something Went Wrong',
-              { error: true }
-            );
-          }
-        );
+          );
       }
       if (
         tabName == 'fields' &&
@@ -1063,17 +1306,23 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
           if (count == 0) {
             this.loading = true;
           }
+          const resourceInfo = {
+            id: query.resource.id,
+            name: query.resource.name,
+          };
           query.tabIndex = count;
           count++;
           query.pageSize = 50;
-          this.fetchDataSet(query).subscribe(
-            (res: { data: { dataSet: any } }) => {
-              if (res?.data?.dataSet) {
-                this.dataSetResponse = res?.data?.dataSet;
-                this.dataList = res?.data?.dataSet.records?.map(
+          this.fetchDataSet(query)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((res: { data: { dataset: any } }) => {
+              if (res?.data?.dataset) {
+                this.datasetResponse = res?.data?.dataset;
+                this.dataList = res?.data?.dataset.records?.map(
                   (record: any) => {
                     const flattenedObject = this.emailService.flattenRecord(
                       record,
+                      resourceInfo,
                       query
                     );
                     query.fields.forEach((x: any) => {
@@ -1099,8 +1348,8 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                   }
                 );
                 if (this.dataList?.length) {
-                  const tempIndex = res?.data?.dataSet?.tabIndex;
-                  this.dataSetFields = [
+                  const tempIndex = res?.data?.dataset?.tabIndex;
+                  this.datasetFields = [
                     ...new Set(
                       this.queryValue[tempIndex].fields
                         .map((data: any) => data.name)
@@ -1110,11 +1359,11 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                 }
                 allPreviewData.push({
                   dataList: this.dataList,
-                  dataSetFields: this.dataSetFields,
-                  tabIndex: res?.data?.dataSet?.tabIndex,
+                  datasetFields: this.datasetFields,
+                  tabIndex: res?.data?.dataset?.tabIndex,
                   tabName:
-                    res?.data?.dataSet?.tabIndex < this.queryValue.length
-                      ? this.queryValue[res.data.dataSet.tabIndex].name
+                    res?.data?.dataset?.tabIndex < this.queryValue.length
+                      ? this.queryValue[res.data.dataset.tabIndex].name
                       : '',
                 });
                 if (this.tabs.length == allPreviewData.length) {
@@ -1126,8 +1375,7 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
                   this.emailService.setAllPreviewData(allPreviewData);
                 }
               }
-            }
-          );
+            });
         }
       }
     } else {
@@ -1155,4 +1403,19 @@ export class DatasetFilterComponent implements OnInit, OnDestroy {
   //     this.activeTab.index
   //   );
   // }
+
+  changeBlockTitle() {
+    this.emailService.disableSaveAndProceed.next(
+      !(
+        this.totalMatchingRecords <= 50 &&
+        this.query?.controls['name'].value !== ''
+      )
+    );
+    this.emailService.disableSaveAsDraft.next(
+      !(
+        this.totalMatchingRecords <= 50 &&
+        this.query?.controls['name'].value !== ''
+      )
+    );
+  }
 }

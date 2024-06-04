@@ -14,7 +14,10 @@ import { Router } from '@angular/router';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, first } from 'rxjs';
+import { Subscription, first, takeUntil } from 'rxjs';
+import { LayoutComponent } from '../../steps/layout/layout.component';
+import { SelectDistributionComponent } from '../../steps/select-distribution/select-distribution.component';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Email template to create distribution list
@@ -24,7 +27,19 @@ import { Subscription, first } from 'rxjs';
   templateUrl: './ems-template.component.html',
   styleUrls: ['./ems-template.component.scss'],
 })
-export class EmsTemplateComponent implements OnInit, OnDestroy {
+export class EmsTemplateComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
+{
+  /**
+   *
+   */
+  @ViewChild(LayoutComponent) layout!: LayoutComponent;
+  /**
+   *
+   */
+  @ViewChild(SelectDistributionComponent)
+  distribution!: SelectDistributionComponent;
   /** STEPPER */
   @ViewChild('stepper', { static: true })
   public stepper: StepperComponent | undefined;
@@ -38,6 +53,12 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
   public disableActionButton = false;
   /** Email Subject Subscription */
   private disableSub!: Subscription;
+  /**
+   *
+   */
+  private disableDraft!: Subscription;
+  /** DISABLE Saave As Draft BUTTON */
+  public disableSaveAsDraft = false;
   /** SUBMIT BUTTON STATUS */
   private submitted = false;
   /** STEPPER ARRAY */
@@ -90,6 +111,7 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
     private snackBar: SnackbarService,
     private translate: TranslateService
   ) {
+    super();
     this.steps = [
       {
         label: 'Notification/Alert',
@@ -169,9 +191,26 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
         this.disableActionButton = disable;
         if (disable) {
           this.disableAllNextSteps(this.currentStep);
+        } else if (
+          !disable &&
+          this.emailService.isEdit &&
+          this.currentStep === 4
+        ) {
+          this.steps[5].disabled = false;
         }
       }
     );
+    this.disableDraft = this.emailService.disableSaveAsDraft.subscribe(
+      (disable) => {
+        this.disableSaveAsDraft = disable;
+      }
+    );
+    if (
+      this.emailService.draftStepper !== null &&
+      this.emailService.draftStepper !== undefined
+    ) {
+      this.disableAllNextSteps(this.emailService.draftStepper);
+    }
   }
 
   /**
@@ -229,8 +268,55 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
       this.currentStep += 1;
       this.steps[4].disabled = false;
     } else if (this.currentStep === 4) {
-      this.currentStep += 1;
-      this.steps[5].disabled = false;
+      if (
+        !(this.emailService.allLayoutdata.headerLogo instanceof File) &&
+        this.emailService.allLayoutdata.headerLogo
+      ) {
+        this.emailService.allLayoutdata.headerLogo =
+          this.emailService.convertBase64ToFile(
+            this.emailService.allLayoutdata.headerLogo,
+            'image.png',
+            'image/png'
+          );
+      }
+      if (
+        !(this.emailService.allLayoutdata.bannerImage instanceof File) &&
+        this.emailService.allLayoutdata.bannerImage
+      ) {
+        this.emailService.allLayoutdata.bannerImage =
+          this.emailService.convertBase64ToFile(
+            this.emailService.allLayoutdata.bannerImage,
+            'image.png',
+            'image/png'
+          );
+      }
+      if (
+        !(this.emailService.allLayoutdata.footerLogo instanceof File) &&
+        this.emailService.allLayoutdata.footerLogo
+      ) {
+        this.emailService.allLayoutdata.footerLogo =
+          this.emailService.convertBase64ToFile(
+            this.emailService.allLayoutdata.footerLogo,
+            'image.png',
+            'image/png'
+          );
+      }
+      this.layout.getColors();
+      this.emailService.allLayoutdata.txtSubject =
+        this.layout.layoutForm.get('subjectInput')?.value;
+      this.emailService.allLayoutdata.bodyHtml =
+        this.layout.layoutForm.get('body')?.value;
+      this.emailService.allLayoutdata.headerHtml =
+        this.layout.layoutForm.get('header')?.value;
+      this.emailService
+        .patchEmailLayout()
+        .then(() => {
+          this.currentStep += 1;
+          this.steps[5].disabled = false;
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
     } else {
       this.currentStep += 1;
     }
@@ -301,14 +387,16 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
   /**
    * Submission for sending and saving emails
    */
-  saveAndSend(): Promise<void> {
-    return new Promise((resolve) => {
+  async saveAndSend(): Promise<void> {
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve) => {
       if (Object.keys(this.emailService.datasetsForm.value).length) {
-        this.emailService.datasetsForm?.value?.dataSets?.forEach(
+        this.emailService.datasetsForm?.value?.datasets?.forEach(
           (data: any) => {
             delete data.cacheData;
           }
         );
+        // await this.emailService.patchEmailLayout();
         const queryData = this.emailService.datasetsForm.value;
         queryData.notificationType =
           this.emailService.datasetsForm.controls.notificationType.value;
@@ -317,8 +405,10 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
             .get('applicationId')
             ?.setValue(res?.id);
           queryData.applicationId = res?.id;
-          queryData.recipients = this.emailService.recipients;
+          queryData.emailDistributionList =
+            this.emailService.emailDistributionList;
         });
+        queryData.isDraft = false;
         //For email notification edit operation.
         if (this.emailService.isEdit) {
           if (
@@ -407,9 +497,131 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Save as Draft function
+   */
+  async saveDraft() {
+    try {
+      // convert base64 to file
+      if (this.currentStep === 4) {
+        if (
+          !(this.emailService.allLayoutdata.headerLogo instanceof File) &&
+          this.emailService.allLayoutdata.headerLogo
+        ) {
+          this.emailService.allLayoutdata.headerLogo =
+            this.emailService.convertBase64ToFile(
+              this.emailService.allLayoutdata.headerLogo,
+              'image.png',
+              'image/png'
+            );
+        }
+        if (
+          !(this.emailService.allLayoutdata.bannerImage instanceof File) &&
+          this.emailService.allLayoutdata.bannerImage
+        ) {
+          this.emailService.allLayoutdata.bannerImage =
+            this.emailService.convertBase64ToFile(
+              this.emailService.allLayoutdata.bannerImage,
+              'image.png',
+              'image/png'
+            );
+        }
+        if (
+          !(this.emailService.allLayoutdata.footerLogo instanceof File) &&
+          this.emailService.allLayoutdata.footerLogo
+        ) {
+          this.emailService.allLayoutdata.footerLogo =
+            this.emailService.convertBase64ToFile(
+              this.emailService.allLayoutdata.footerLogo,
+              'image.png',
+              'image/png'
+            );
+        }
+        // patch layout data
+        this.layout.getColors();
+        this.emailService.allLayoutdata.txtSubject =
+          this.layout.layoutForm.get('subjectInput')?.value;
+        this.emailService.allLayoutdata.bodyHtml =
+          this.layout.layoutForm.get('body')?.value;
+        this.emailService.allLayoutdata.headerHtml =
+          this.layout.layoutForm.get('header')?.value;
+        await this.emailService.patchEmailLayout();
+      }
+      // eslint-disable-next-line no-empty
+    } catch (error: any) {}
+    if (this.currentStep === 2) {
+      this.emailService.emailDistributionList =
+        this.distribution.emailDistributionList;
+      this.emailService.toEmailFilter = this.distribution.toEmailFilter;
+      this.emailService.ccEmailFilter = this.distribution.ccEmailFilter;
+      this.emailService.bccEmailFilter = this.distribution.bccEmailFilter;
+    }
+    this.emailService.datasetsForm?.value?.datasets?.forEach((data: any) => {
+      delete data.cacheData;
+    });
+    const queryData = this.emailService.datasetsForm.value;
+    this.applicationService.application$.subscribe((res: any) => {
+      this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
+      queryData.applicationId = res?.id;
+      queryData.emailDistributionList = this.emailService.emailDistributionList;
+    });
+    queryData.isDraft = true;
+    queryData.draftStepper = this.currentStep;
+    queryData.notificationType =
+      this.emailService.datasetsForm.controls.notificationType.value;
+    if (this.emailService.isEdit) {
+      if (
+        this.emailService.allLayoutdata.headerLogo &&
+        !queryData.emailLayout.header.headerLogo
+      ) {
+        queryData.emailLayout.header.headerLogo =
+          this.emailService.allLayoutdata.headerLogo;
+      }
+      if (
+        this.emailService.allLayoutdata.footerLogo &&
+        !queryData.emailLayout.footer.footerLogo
+      ) {
+        queryData.emailLayout.footer.footerLogo =
+          this.emailService.allLayoutdata.footerLogo;
+      }
+      if (
+        this.emailService.allLayoutdata.footerLogo &&
+        !queryData.emailLayout.banner.bannerImage
+      ) {
+        queryData.emailLayout.banner.bannerImage =
+          this.emailService.allLayoutdata.bannerImage;
+      }
+      this.emailService
+        .editEmailNotification(this.emailService.editId, queryData)
+        .subscribe((res: any) => {
+          this.emailService.isEdit = false;
+          this.emailService.editId = '';
+          this.emailService.configId = res.data.editAndGetEmailNotification.id;
+          this.snackBar.openSnackBar(
+            this.translate.instant('pages.application.settings.emailEdited')
+          );
+          this.emailService.datasetsForm.reset();
+          this.navigateToEms.emit();
+        });
+    } else {
+      this.emailService
+        .addEmailNotification(queryData)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((res: any) => {
+          this.emailService.configId = res.data.addEmailNotification.id;
+
+          this.snackBar.openSnackBar(
+            this.translate.instant('pages.application.settings.emailCreated')
+          );
+          this.navigateToEms.emit();
+        });
+    }
+  }
+
+  /**
    * Submission
    */
-  submit() {
+  async submit() {
+    // await this.emailService.patchEmailLayout();
     if (Object.keys(this.emailService.datasetsForm.value).length) {
       this.emailService.datasetsForm?.value?.datasets?.forEach((data: any) => {
         delete data.cacheData;
@@ -420,8 +632,10 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
       this.applicationService.application$.subscribe((res: any) => {
         this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
         queryData.applicationId = res?.id;
-        queryData.recipients = this.emailService.recipients;
+        queryData.emailDistributionList =
+          this.emailService.emailDistributionList;
       });
+      queryData.isDraft = false;
       // For email notification edit operation.
       if (this.emailService.isEdit) {
         if (
@@ -528,8 +742,9 @@ export class EmsTemplateComponent implements OnInit, OnDestroy {
     this.navigateToEms.emit();
   }
 
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
     this.disableSub.unsubscribe();
+    this.disableDraft.unsubscribe();
   }
 
   /**

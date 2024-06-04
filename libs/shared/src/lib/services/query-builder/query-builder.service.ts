@@ -285,6 +285,16 @@ export class QueryBuilderService {
    * Builds the fields part of the GraphQL meta query.
    *
    * @param fields List of fields to query.
+   * @returns GraphQL meta fields.
+   */
+  public getMetaFields(fields: any[]): any {
+    return this.buildMetaFields(fields);
+  }
+
+  /**
+   * Builds the fields part of the GraphQL meta query.
+   *
+   * @param fields List of fields to query.
    * @returns QL document to build the query.
    */
   private buildMetaFields(fields: any[]): any {

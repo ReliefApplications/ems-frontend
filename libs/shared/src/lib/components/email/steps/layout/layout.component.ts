@@ -131,51 +131,33 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.onTxtSubjectChange();
     this.initInTheLastDropdown();
     if (this.emailService.allLayoutdata.headerLogo) {
-      if (this.emailService.allLayoutdata.headerLogo.__zone_symbol__value) {
-        this.headerLogo = URL.createObjectURL(
-          this.emailService.convertBase64ToFile(
-            this.emailService.allLayoutdata.headerLogo.__zone_symbol__value,
-            'image.png',
-            'image/png'
-          )
-        );
-      } else {
-        this.headerLogo = URL.createObjectURL(
-          this.emailService.allLayoutdata.headerLogo
-        );
-      }
+      this.headerLogo = URL.createObjectURL(
+        this.emailService.convertBase64ToFile(
+          this.emailService.allLayoutdata.headerLogo,
+          'image.png',
+          'image/png'
+        )
+      );
     }
 
     if (this.emailService.allLayoutdata.footerLogo) {
-      if (this.emailService.allLayoutdata.footerLogo.__zone_symbol__value) {
-        this.footerLogo = URL.createObjectURL(
-          this.emailService.convertBase64ToFile(
-            this.emailService.allLayoutdata.footerLogo.__zone_symbol__value,
-            'image.png',
-            'image/png'
-          )
-        );
-      } else {
-        this.footerLogo = URL.createObjectURL(
-          this.emailService.allLayoutdata.footerLogo
-        );
-      }
+      this.footerLogo = URL.createObjectURL(
+        this.emailService.convertBase64ToFile(
+          this.emailService.allLayoutdata.footerLogo,
+          'image.png',
+          'image/png'
+        )
+      );
     }
 
     if (this.emailService.allLayoutdata.bannerImage) {
-      if (this.emailService.allLayoutdata.bannerImage.__zone_symbol__value) {
-        this.bannerImage = URL.createObjectURL(
-          this.emailService.convertBase64ToFile(
-            this.emailService.allLayoutdata.bannerImage.__zone_symbol__value,
-            'image.png',
-            'image/png'
-          )
-        );
-      } else {
-        this.bannerImage = URL.createObjectURL(
-          this.emailService.allLayoutdata.bannerImage
-        );
-      }
+      this.bannerImage = URL.createObjectURL(
+        this.emailService.convertBase64ToFile(
+          this.emailService.allLayoutdata.bannerImage,
+          'image.png',
+          'image/png'
+        )
+      );
     }
     this.initialiseFieldSelectDropdown();
     if (this.headerLogoInput) {
@@ -259,7 +241,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
    * Initialises the in the last dropdown and forms options.
    */
   private initInTheLastDropdown(): void {
-    const blocks = this.emailService.datasetsForm.get('dataSets') as FormArray;
+    const blocks = this.emailService.datasetsForm.get('datasets') as FormArray;
     blocks.controls.forEach((blockFormGroup, index) => {
       const blockName =
         blockFormGroup.get('name')?.value || `Block ${index + 1}`;
@@ -313,7 +295,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
         // Get the current content of the editor
         const currentContent = this.headerEditor.editor.getContent();
-
+        this.headerEditor.editor.selection.select(
+          this.headerEditor.editor.getBody(),
+          true
+        );
+        this.headerEditor.editor.selection.collapse(false);
         // Check if the cursor is at the beginning or end of the content
         if (cursorPosition === 0) {
           // If at the beginning, remove the leading whitespace from the token
@@ -323,7 +309,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
           this.headerEditor.editor.insertContent(token.trimEnd());
         } else {
           // If in the middle, insert the token with spaces before and after it
-          this.headerEditor.editor.insertContent(token);
+          this.headerEditor.editor.execCommand(
+            'mceInsertContent',
+            false,
+            token
+          );
         }
 
         // Reset the dropdown value
@@ -350,8 +340,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
    */
   initialiseFieldSelectDropdown(): void {
     const firstBlock = this.emailService.getAllPreviewData()[0];
-    if (firstBlock && firstBlock.dataList && firstBlock.dataList.length > 0) {
-      this.firstBlockFields = Object.keys(firstBlock.dataList[0]);
+    if (
+      firstBlock &&
+      firstBlock.datasetFields &&
+      firstBlock.datasetFields.length > 0
+    ) {
+      // get the values of the first block
+      this.firstBlockFields = Object.values(firstBlock.datasetFields);
     }
   }
 
@@ -547,6 +542,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
       const token = `{{${tabName}}}`;
 
       if (this.bodyEditor && this.bodyEditor.editor) {
+        this.bodyEditor.editor.selection.select(
+          this.bodyEditor.editor.getBody(),
+          true
+        );
+        this.bodyEditor.editor.selection.collapse(false);
         this.bodyEditor.editor.insertContent(token);
         this.layoutForm
           .get('body')
@@ -722,6 +722,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
       this.layoutForm.get('body')?.value;
     this.emailService.allLayoutdata.headerHtml =
       this.layoutForm.get('header')?.value;
-    this.emailService.patchEmailLayout();
+    // this.emailService.patchEmailLayout();
   }
 }

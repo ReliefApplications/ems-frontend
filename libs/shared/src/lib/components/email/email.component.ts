@@ -144,10 +144,10 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       this.emailService.resetDataSetForm();
       this.emailService.setDatasetForm();
     } else {
-      const dataSetArray = this.emailService.datasetsForm.get(
-        'dataSets'
+      const datasetArray = this.emailService.datasetsForm.get(
+        'datasets'
       ) as FormArray;
-      dataSetArray.controls.forEach(
+      datasetArray.controls.forEach(
         (datasetControl: AbstractControl<any, any>) => {
           const datasetFormGroup = datasetControl as FormGroup | null;
           datasetFormGroup?.get('cacheData')?.reset();
@@ -168,11 +168,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         res?.data?.emailNotifications?.edges?.forEach((ele: any) => {
           this.emailService.emailListLoading = false;
           if (
-            ele.node.recipients.distributionListName !== null &&
-            ele.node.recipients.distributionListName !== ''
+            ele.node.emailDistributionList.name !== null &&
+            ele.node.emailDistributionList.name !== ''
           ) {
             this.emailService.distributionListNames.push(
-              ele.node?.recipients?.distributionListName.trim().toLowerCase()
+              ele.node?.emailDistributionList?.name.trim().toLowerCase()
             );
           }
           this.emailService.emailNotificationNames.push(
@@ -225,12 +225,12 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           this.templateActualData.push(ele.node);
           this.emailService.emailListLoading = false;
           if (
-            ele.node.recipients.distributionListName !== null &&
-            ele.node.recipients.distributionListName !== ''
+            ele.node.emailDistributionList.name !== null &&
+            ele.node.emailDistributionList.name !== ''
           ) {
-            this.distributionLists.push(ele.node.recipients);
+            this.distributionLists.push(ele.node.emailDistributionList);
             this.emailService.distributionListNames.push(
-              ele.node?.recipients?.distributionListName.trim().toLowerCase()
+              ele.node?.emailDistributionList?.name.trim().toLowerCase()
             );
           }
           this.emailService.emailNotificationNames.push(
@@ -241,13 +241,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           new Set(this.emailService.distributionListNames)
         );
         this.distributionLists = this.distributionLists.filter((ele: any) => {
-          if (
-            uniquDistributionLists.includes(
-              ele.distributionListName.toLowerCase()
-            )
-          ) {
+          if (uniquDistributionLists.includes(ele.name.toLowerCase())) {
             uniquDistributionLists = uniquDistributionLists.filter(
-              (name) => ele.distributionListName.toLowerCase() !== name
+              (name) => ele.name.toLowerCase() !== name
             );
             return true;
           } else {
@@ -356,7 +352,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           delete emailData.createdBy;
           delete emailData.modifiedAt;
           emailData.applicationId = this.applicationId;
-          emailData?.dataSets?.forEach((element: any) => {
+          emailData?.datasets?.forEach((element: any) => {
             delete element.__typename;
             delete element.resource.__typename;
             element?.fields.forEach((ele: any) => {
@@ -365,23 +361,15 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           });
           delete emailData?.emailLayout?.__typename;
           delete emailData.__typename;
-          delete emailData?.recipients?.__typename;
+          delete emailData?.emailDistributionList?.__typename;
           delete emailData.isDeleted;
           delete emailData.lastExecution;
           delete emailData.status;
-          this.emailService
-            .addEmailNotification(emailData)
-            .subscribe((res: any) => {
-              this.emailService.emailListLoading = false;
-              this.emailService.configId = res.data.addEmailNotification.id;
-              this.getEmailNotificationById(
-                res.data.addEmailNotification.id,
-                false
-              );
-            });
+          // prepares edit data if it is clone
+          this.prepareEditData(emailData, false, true);
         } else {
-          this.prepareEditData(emailData, isSendEmail);
           this.emailService.editId = id;
+          this.prepareEditData(emailData, isSendEmail);
         }
       });
   }
@@ -391,15 +379,21 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    *
    * @param emailData The data of the email notification to be edited.
    * @param isSendEmail Whether to send the email notification.
+   * @param isclone Identify it is cloned or not
    */
-  prepareEditData(emailData: any, isSendEmail?: boolean) {
-    this.emailService.isEdit = true;
+  prepareEditData(emailData: any, isSendEmail?: boolean, isclone?: boolean) {
+    if (isclone) {
+      this.emailService.isEdit = false;
+    } else {
+      this.emailService.isEdit = true;
+    }
+    this.emailService.draftStepper = emailData.draftStepper;
     this.emailService.isLinear = false;
     const distributionListNames = this.emailService.distributionListNames;
     const emailNotificationNames = this.emailService.emailNotificationNames;
     this.emailService.distributionListNames = distributionListNames.filter(
       (name) => {
-        const distributionListName = emailData.recipients?.distributionListName;
+        const distributionListName = emailData.emailDistributionList?.name;
         return (
           distributionListName !== null &&
           distributionListName.trim().toLowerCase() !== name
@@ -418,8 +412,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.allLayoutdata = {};
     this.emailService.allPreviewData = [];
     this.emailService.emailLayout = {};
-    this.emailService.recipients = {
-      distributionListName: '',
+    this.emailService.emailDistributionList = {
+      name: '',
       To: [],
       Cc: [],
       Bcc: [],
@@ -433,18 +427,18 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       },
     ];
     const dataArray: FormArray | any = new FormArray([]);
-    for (let index = 0; index < emailData.dataSets.length; index++) {
+    for (let index = 0; index < emailData.datasets.length; index++) {
       //Adding Tabs detail
       dataArray.push(
-        this.createNewDataSetGroup(emailData.dataSets[index], index)
+        this.createNewDataSetGroup(emailData.datasets[index], index)
       );
       if (index === 0) {
-        this.emailService.tabs[0].title = emailData.dataSets[index].name;
-        this.emailService.tabs[0].content = emailData.dataSets[index].name;
+        this.emailService.tabs[0].title = emailData.datasets[index].name;
+        this.emailService.tabs[0].content = emailData.datasets[index].name;
       } else {
         this.emailService.tabs.push({
-          title: emailData.dataSets[index].name,
-          content: emailData.dataSets[index].name,
+          title: emailData.datasets[index].name,
+          content: emailData.datasets[index].name,
           active: false,
           index: index,
         });
@@ -459,12 +453,14 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.datasetsForm = this.formBuilder.group({
       name: emailData.name,
       notificationType: emailData.notificationType,
-      dataSets: dataArray,
-      recipients: {
-        distributionListName: emailData.recipients.distributionListName,
-        To: emailData.recipients.To,
-        Cc: emailData.recipients.Cc,
-        Bcc: emailData.recipients.Bcc,
+      datasets: emailData.datasets?.length
+        ? dataArray
+        : this.emailService.datasetsForm.controls.datasets,
+      emailDistributionList: {
+        name: emailData.emailDistributionList.name,
+        To: emailData.emailDistributionList.To,
+        Cc: emailData.emailDistributionList.Cc,
+        Bcc: emailData.emailDistributionList.Bcc,
       },
       emailLayout: emailData.emailLayout,
       schedule: emailData.schedule,
@@ -474,8 +470,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.isExisting = !this.emailService.isExisting;
 
     //Setting up Recipients data
-    this.emailService.recipients =
-      this.emailService.datasetsForm.controls['recipients'].value;
+    this.emailService.emailDistributionList =
+      this.emailService.datasetsForm.controls['emailDistributionList'].value;
 
     //Setting up Layout Data
     this.emailService.emailLayout = {
@@ -630,6 +626,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
                 );
               } else {
                 if (data) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'pages.application.settings.emailDeleted'
+                    )
+                  );
                   this.emailService.emailListLoading = true;
                   this.distributionLists = [];
                   this.emailNotifications = [];

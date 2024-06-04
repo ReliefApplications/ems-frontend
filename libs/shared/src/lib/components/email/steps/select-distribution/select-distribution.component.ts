@@ -93,13 +93,13 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     limit: DEFAULT_PAGE_SIZE,
   };
   /** Recipients data. */
-  public recipients: {
-    distributionListName: string;
+  public emailDistributionList: {
+    name: string;
     To: string[];
     Cc: string[];
     Bcc: string[];
   } = {
-    distributionListName: '',
+    name: '',
     To: [],
     Cc: [],
     Bcc: [],
@@ -115,13 +115,22 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
   /** Flag indicating whether the BCC template is shown. */
   public showBccTemplate = false;
 
+  /**
+   *
+   */
+  public noEmail = {
+    to: false,
+    cc: false,
+    bcc: false,
+  };
+
   /** Reference to file upload element. */
   @ViewChild('fileUpload', { static: true }) fileElement:
     | ElementRef
     | undefined;
 
   ngOnInit(): void {
-    this.recipients = this.emailService.recipients;
+    this.emailDistributionList = this.emailService.emailDistributionList;
     this.toEmailFilter = this.emailService.toEmailFilter;
     this.ccEmailFilter = this.emailService.ccEmailFilter;
     this.bccEmailFilter = this.emailService.bccEmailFilter;
@@ -131,6 +140,35 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     this.showToTemplate = true;
     this.showCCTemplate = true;
     this.showBccTemplate = true;
+    const existingDataIndex = this.emailService.cacheDistributionList
+      .map((x: any) => x.node)
+      .map((y: any) => y.emailDistributionList)
+      .findIndex(
+        (x: any) =>
+          x.name.toLowerCase() ==
+          this.emailDistributionList?.name?.trim().toLowerCase()
+      );
+    if (existingDataIndex > -1) {
+      this.distributionListId =
+        this.emailService.cacheDistributionList[existingDataIndex].node.id;
+    }
+  }
+
+  // eslint-disable-next-line jsdoc/require-description
+  /**
+   * @param val the value of emited datset email
+   * @param type refers to cc,bcc and to
+   */
+  update(val: any, type: string) {
+    if (type === 'to') {
+      this.noEmail.to = val;
+    }
+    if (type === 'cc') {
+      this.noEmail.cc = val;
+    }
+    if (type === 'bcc') {
+      this.noEmail.bcc = val;
+    }
   }
 
   /**
@@ -168,9 +206,7 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
    * @returns boolean
    */
   isNameDuplicate(): boolean {
-    const enteredName = this.recipients.distributionListName
-      .trim()
-      .toLowerCase();
+    const enteredName = this.emailDistributionList?.name?.trim().toLowerCase();
     return this.emailService.distributionListNames.includes(enteredName);
   }
 
@@ -181,8 +217,8 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
   triggerDuplicateChecker() {
     const flag = this.isNameDuplicate();
     if (
-      this.recipients.To.length === 0 ||
-      this.recipients.distributionListName.length === 0 ||
+      this.emailDistributionList.To.length === 0 ||
+      this.emailDistributionList.name.length === 0 ||
       flag
     ) {
       this.emailService.stepperDisable.next({ id: 2, isValid: false });
@@ -199,7 +235,7 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
    * @param data.emailFilter The form group representing the email filter.
    */
   to(data: { emails: string[]; emailFilter: any }): void {
-    this.recipients.To = data.emails;
+    this.emailDistributionList.To = data.emails;
     this.toEmailFilter = data.emailFilter;
     this.validateDistributionList();
   }
@@ -212,7 +248,7 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
    * @param data.emailFilter The form group representing the email filter.
    */
   cc(data: { emails: string[]; emailFilter: any }): void {
-    this.recipients.Cc = data.emails;
+    this.emailDistributionList.Cc = data.emails;
     this.ccEmailFilter = data.emailFilter;
   }
 
@@ -224,12 +260,12 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
    * @param data.emailFilter The form group representing the email filter.
    */
   bcc(data: { emails: string[]; emailFilter: any }): void {
-    this.recipients.Bcc = data.emails;
+    this.emailDistributionList.Bcc = data.emails;
     this.bccEmailFilter = data.emailFilter;
   }
 
   ngOnDestroy(): void {
-    this.emailService.recipients = this.recipients;
+    this.emailService.emailDistributionList = this.emailDistributionList;
     this.emailService.toEmailFilter = this.toEmailFilter;
     this.emailService.ccEmailFilter = this.ccEmailFilter;
     this.emailService.bccEmailFilter = this.bccEmailFilter;
@@ -255,12 +291,12 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
         this.distributionLists = this.distributionLists.filter((ele: any) => {
           if (
             uniquDistributionLists.includes(
-              ele.node.recipients.distributionListName?.toLowerCase()
+              ele.node.emailDistributionList.name?.toLowerCase()
             )
           ) {
             uniquDistributionLists = uniquDistributionLists.filter(
               (name) =>
-                ele.node.recipients.distributionListName?.toLowerCase() !== name
+                ele.node.emailDistributionList.name?.toLowerCase() !== name
             );
             return true;
           } else {
@@ -268,6 +304,7 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
           }
         });
         this.cacheDistributionList = this.distributionLists;
+        this.emailService.cacheDistributionList = this.cacheDistributionList;
         this.distributionLists = this.cacheDistributionList.slice(
           this.distributionPageInfo.pageSize *
             this.distributionPageInfo.pageIndex,
@@ -285,7 +322,8 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
    * @param index table row index
    */
   selectDistributionListRow(index: number): void {
-    this.recipients = this.distributionLists[index].node.recipients;
+    this.emailDistributionList =
+      this.distributionLists[index].node.emailDistributionList;
     this.distributionListId = this.distributionLists[index].node.id;
     this.showExistingDistributionList = !this.showExistingDistributionList;
     this.validateDistributionList();
@@ -315,10 +353,14 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
             'components.email.distributionList.import.loading'
           )
         );
-        this.recipients.To = [...new Set([...this.recipients.To, ...res.To])];
-        this.recipients.Cc = [...new Set([...this.recipients.Cc, ...res.Cc])];
-        this.recipients.Bcc = [
-          ...new Set([...this.recipients.Bcc, ...res.Bcc]),
+        this.emailDistributionList.To = [
+          ...new Set([...this.emailDistributionList.To, ...res.To]),
+        ];
+        this.emailDistributionList.Cc = [
+          ...new Set([...this.emailDistributionList.Cc, ...res.Cc]),
+        ];
+        this.emailDistributionList.Bcc = [
+          ...new Set([...this.emailDistributionList.Bcc, ...res.Bcc]),
         ];
         this.showToTemplate = true;
         this.templateFor = 'to';
@@ -339,9 +381,9 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
    */
   validateDistributionList(): void {
     const isSaveAndProceedNotAllowed =
-      this.recipients.To.length === 0 ||
-      this.recipients.distributionListName.length === 0 ||
-      this.recipients.distributionListName.trim() === '';
+      this.emailDistributionList.To.length === 0 ||
+      this.emailDistributionList.name.length === 0 ||
+      this.emailDistributionList.name.trim() === '';
     this.emailService.disableSaveAndProceed.next(isSaveAndProceedNotAllowed);
     if (isSaveAndProceedNotAllowed) {
       this.emailService.disableFormSteps.next({
