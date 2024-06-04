@@ -60,7 +60,10 @@ export class EditTemplateModalComponent implements OnInit {
   /** Reactive form for the template */
   public form = this.fb.group({
     name: [get(this.data, 'name', null), Validators.required],
-    type: [get(this.data, 'type', 'email'), Validators.required],
+    type: [
+      { value: get(this.data, 'type', 'email'), disabled: true },
+      Validators.required,
+    ],
     subject: [get(this.data, 'content.subject', null), Validators.required],
     body: [get(this.data, 'content.body', ''), Validators.required],
   });
