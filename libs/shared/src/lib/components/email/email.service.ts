@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   ADD_EMAIL_NOTIFICATION,
   GET_AND_UPDATE_EMAIL_NOTIFICATION,
-  GET_DATA_SET,
+  GET_EMAIL_DATA_SET,
   GET_EMAIL_NOTIFICATIONS,
 } from './graphql/queries';
 import { Apollo } from 'apollo-angular';
@@ -12,6 +12,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { RestService } from '../../services/rest/rest.service';
 import { TYPE_LABEL } from './filter/filter.constant';
 import { FieldStore } from './models/email.const';
+import { omit } from 'lodash';
 
 /**
  * Helper functions service for emails template.
@@ -20,9 +21,7 @@ import { FieldStore } from './models/email.const';
   providedIn: 'root',
 })
 export class EmailService {
-  /**
-   * Stepper for draft
-   */
+  /** Stepper for draft */
   public draftStepper!: number;
   /** Index of current dataset block */
   public index = new BehaviorSubject(null);
@@ -593,10 +592,12 @@ export class EmailService {
    * @returns the dataset.
    */
   fetchDataSet(filterQuery: any) {
+    // Create a new object excluding the 'cacheData' field
+    const queryWithoutCacheData = omit(filterQuery, 'cacheData');
     return this.apollo.query<any>({
-      query: GET_DATA_SET,
+      query: GET_EMAIL_DATA_SET,
       variables: {
-        query: filterQuery,
+        query: queryWithoutCacheData,
       },
     });
   }

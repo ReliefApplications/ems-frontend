@@ -235,8 +235,8 @@ export const GET_RESOURCES = gql`
 `;
 
 /** Graphql query for getting data set by filter layout */
-export const GET_DATA_SET = gql`
-  query getDataSet($query: JSON!) {
+export const GET_EMAIL_DATA_SET = gql`
+  query getEmailDataset($query: JSON!) {
     dataset(query: $query) {
       records
       emails
