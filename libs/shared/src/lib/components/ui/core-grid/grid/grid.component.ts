@@ -214,7 +214,7 @@ export class GridComponent
   /** Search control */
   public search = new UntypedFormControl('');
   /** Indicates if role can download resource records */
-  public canDownload = true;
+  public canDownload = false;
   /** Row actions for the component */
   private readonly rowActions = ['update', 'delete', 'history', 'convert'];
   /** Snackbar reference */

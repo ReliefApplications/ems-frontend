@@ -150,7 +150,7 @@ export class SummaryCardComponent
   /** Subject to emit signals for cancelling previous data queries */
   private cancelRefresh$ = new Subject<void>();
   /** Indicates if role can download resource records */
-  private canDownload = true;
+  private canDownload = false;
 
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
