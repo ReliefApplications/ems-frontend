@@ -2240,6 +2240,12 @@
 			},
 			"contextFilter": "Filtre contextuel",
 			"dashboardFilter": "Filtre du tableau de bord",
+			"dashboardTemplates": {
+				"edit": {
+					"few": "Modifier le modèle de tableau de bord"
+				},
+				"none": "Pas de modèle pour ce tableau de bord"
+			},
 			"deactivateFiltering": "Désactiver le filtre",
 			"filterVariant": {
 				"title": "Variante de filtre",

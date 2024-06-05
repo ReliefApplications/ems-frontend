@@ -62,7 +62,7 @@
             [uiTooltip]="'common.settings' | translate"
           ></ui-button>
           <ui-button
-            *ngIf="canUpdate"
+            *ngIf="canUpdate && !templateMode"
             [icon]="editionActive ? 'edit' : 'preview'"
             (click)="editionActive = !editionActive"
             >{{
@@ -71,6 +71,11 @@
                 : 'components.application.dashboard.enterEditMode'
               ) | translate
             }}</ui-button
+          >
+          <ui-button
+            *ngIf="canUpdate && templateMode"
+            (click)="createTemplate()"
+            >Create template</ui-button
           >
         </div>
         <!-- Other dashboard settings -->
@@ -130,6 +135,10 @@
             <button uiMenuItem (click)="onShare()">
               <ui-icon icon="share" variant="grey"></ui-icon>
               {{ 'models.dashboard.share' | translate }}
+            </button>
+            <button uiMenuItem (click)="onOpenDeleteTemplatesModal()">
+              <ui-icon icon="chien" variant="grey"></ui-icon>
+              Delete these fuckers
             </button>
           </ui-menu>
         </div>

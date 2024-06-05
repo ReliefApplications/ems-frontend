@@ -26,8 +26,14 @@ import {
   EditDashboardMutationResponse,
   DashboardComponent as SharedDashboardComponent,
   DashboardAutomationService,
+  DashboardQueryType,
+  AddDashboardTemplateMutationResponse,
 } from '@oort-front/shared';
-import { EDIT_DASHBOARD } from './graphql/mutations';
+import {
+  CREATE_DASHBOARD_TEMPLATE,
+  DELETE_DASHBOARD_TEMPLATE,
+  EDIT_DASHBOARD,
+} from './graphql/mutations';
 import { GET_DASHBOARD_BY_ID, GET_RESOURCE_RECORDS } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -48,6 +54,7 @@ import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { GridsterConfig } from 'angular-gridster2';
+import { DashboardTemplate } from './components/manage-dashboard-templates/dashboard-template-type';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -113,6 +120,8 @@ export class DashboardComponent
   /** Is edition active */
   @HostBinding('class.edit-mode-dashboard')
   public editionActive = true;
+  /** If we are visualising a new template */
+  public templateMode = false;
   /** Additional grid configuration */
   public gridOptions: GridsterConfig = {};
 
@@ -128,6 +137,21 @@ export class DashboardComponent
   /** @returns is dashboard a step or a page */
   get isStep(): boolean {
     return this.router.url.includes('/workflow/');
+  }
+
+  /** @returns main dashboard id */
+  get dashboardId(): string | null {
+    return this.route.snapshot.paramMap.get('id');
+  }
+
+  /** @returns query id to load template */
+  get contextEl(): string | null {
+    return this.route.snapshot.queryParamMap.get('id');
+  }
+
+  /** @returns existing templates */
+  get dashboardTemplates(): DashboardTemplate[] | undefined {
+    return this.dashboard?.page?.contentWithContext;
   }
 
   /**
@@ -208,14 +232,18 @@ export class DashboardComponent
           pageContainer.scrollTop = 0;
         }
 
-        /** Extract main dashboard id */
-        const id = this.route.snapshot.paramMap.get('id');
-        /** Extract query id to load template */
-        const queryId = this.route.snapshot.queryParamMap.get('id');
-        if (id) {
-          this.loadDashboard(id, queryId?.trim()).then(
-            () => (this.loading = false)
-          );
+        if (this.dashboardId) {
+          this.loadDashboard(
+            {
+              query: GET_DASHBOARD_BY_ID,
+              variables: {
+                id: this.dashboardId,
+                contextEl: this.contextEl,
+              },
+            },
+            this.dashboardId,
+            this.contextEl?.trim()
+          ).then(() => (this.loading = false));
         }
       });
   }
@@ -252,13 +280,21 @@ export class DashboardComponent
   /**
    * Init the dashboard
    *
+   * @param query query to fetch the dashboard
    * @param id Dashboard id
    * @param contextID ID of the param record or element
    * @returns Promise
    */
-  private async loadDashboard(id: string, contextID?: string | number) {
+  private async loadDashboard(
+    query: DashboardQueryType,
+    id?: string,
+    contextID?: string | number
+  ) {
     // don't init the dashboard if the id is the same
-    if (this.dashboard?.id === id && this.contextId.value === contextID) {
+    if (
+      !id ||
+      (this.dashboard?.id === id && this.contextId.value === contextID)
+    ) {
       return;
     }
 
@@ -267,18 +303,20 @@ export class DashboardComponent
     this.formActive = false;
     this.loading = true;
     return firstValueFrom(
-      this.apollo.query<DashboardQueryResponse>({
-        query: GET_DASHBOARD_BY_ID,
-        variables: {
-          id,
-          contextEl: contextID ?? null,
-        },
-      })
+      this.apollo.query<
+        DashboardQueryResponse | AddDashboardTemplateMutationResponse
+      >(query)
     )
       .then(({ data }) => {
-        if (data.dashboard) {
-          this.id = data.dashboard.id || id;
-          this.dashboard = data.dashboard;
+        const dashboard =
+          'dashboard' in data
+            ? data.dashboard
+            : 'addDashboardTemplate' in data
+            ? data.addDashboardTemplate
+            : null;
+        if (dashboard) {
+          this.id = dashboard.id || id;
+          this.dashboard = dashboard;
           this.gridOptions = {
             ...omit(this.gridOptions, ['gridType', 'minimumHeight']), // Prevent issue when gridType or minimumHeight was not set
             ...this.dashboard?.gridOptions,
@@ -288,10 +326,11 @@ export class DashboardComponent
             (this.dashboard?.page
               ? this.dashboard?.page?.canUpdate
               : this.dashboard?.step?.canUpdate) || false;
-          this.editionActive = this.canUpdate;
+          this.templateMode = !!dashboard.newTemplate;
+          this.editionActive = this.canUpdate && !this.templateMode;
           this.initContext();
           this.updateContextOptions();
-          this.setWidgets(data.dashboard, contextID);
+          this.setWidgets(dashboard, contextID);
           this.dashboardService.widgets.next(this.widgets);
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id
@@ -334,6 +373,23 @@ export class DashboardComponent
         this.snackBar.openSnackBar(err.message, { error: true });
         this.router.navigate(['/applications']);
       });
+  }
+
+  /** Creates the template for the corresponding page */
+  public createTemplate() {
+    if (this.dashboardId && this.contextEl) {
+      this.loadDashboard(
+        {
+          query: CREATE_DASHBOARD_TEMPLATE,
+          variables: {
+            id: this.dashboardId,
+            contextEl: this.contextEl,
+          },
+        },
+        this.dashboardId,
+        this.contextEl.trim()
+      ).then(() => (this.loading = false));
+    }
   }
 
   /**
@@ -604,6 +660,56 @@ export class DashboardComponent
               this.translate.instant('common.dashboard.one')
             );
           });
+      });
+  }
+
+  /** Opens modal to delete existing templates */
+  public async onOpenDeleteTemplatesModal() {
+    const { ManageDashboardTemplatesComponent } = await import(
+      './components/manage-dashboard-templates/manage-dashboard-templates.component'
+    );
+    const dialogRef = this.dialog.open<DashboardTemplate[] | undefined>(
+      ManageDashboardTemplatesComponent,
+      {
+        data: { dashboardTemplates: this.dashboardTemplates },
+        disableClose: true,
+      }
+    );
+
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (templates) => {
+        if (!templates) return;
+        const templatesToDelete = this.dashboardTemplates
+          ?.map((template) => template.content)
+          ?.filter(
+            (dashboard) =>
+              !templates.map((template) => template.content).includes(dashboard)
+          );
+        if (!templatesToDelete) return;
+        console.log(templatesToDelete);
+        await Promise.all(
+          templatesToDelete.map((template) =>
+            this.apollo.mutate({
+              mutation: DELETE_DASHBOARD_TEMPLATE,
+              variables: { id: template },
+            })
+          )
+        );
+        if (this.dashboardId) {
+          // Reload your dashboard here
+          this.loadDashboard(
+            {
+              query: GET_DASHBOARD_BY_ID,
+              variables: {
+                id: this.dashboardId,
+                contextEl: this.contextEl,
+              },
+            },
+            this.dashboardId,
+            this.contextEl?.trim()
+          );
+        }
       });
   }
 

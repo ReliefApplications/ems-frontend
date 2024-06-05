@@ -465,9 +465,9 @@ export const TOGGLE_APPLICATION_LOCK = gql`
 // TEMPLATE OPERATIONS
 
 /** Graphql request for adding a template to an application */
-export const ADD_TEMPLATE = gql`
-  mutation addTemplate($application: ID!, $template: TemplateInputType!) {
-    addTemplate(application: $application, template: $template) {
+export const ADD_EMAIL_TEMPLATE = gql`
+  mutation addEmailTemplate($application: ID!, $template: TemplateInputType!) {
+    addEmailTemplate(application: $application, template: $template) {
       id
       name
       type
@@ -477,7 +477,7 @@ export const ADD_TEMPLATE = gql`
 `;
 
 /** Graphql request for editing a template of an application */
-export const UPDATE_TEMPLATE = gql`
+export const UPDATE_EMAIL_TEMPLATE = gql`
   mutation editTemplate(
     $application: ID!
     $id: ID!
@@ -493,7 +493,7 @@ export const UPDATE_TEMPLATE = gql`
 `;
 
 /** Graphql request for deleting a template of an application */
-export const DELETE_TEMPLATE = gql`
+export const DELETE_EMAIL_TEMPLATE = gql`
   mutation deleteTemplate($application: ID!, $id: ID!) {
     deleteTemplate(application: $application, id: $id) {
       id

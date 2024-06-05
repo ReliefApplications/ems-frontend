@@ -2240,6 +2240,12 @@
 			},
 			"contextFilter": "Context filter",
 			"dashboardFilter": "Dashboard filter",
+			"dashboardTemplates": {
+				"edit": {
+					"few": "Edit dashboard template"
+				},
+				"none": "No template for this dashboard"
+			},
 			"deactivateFiltering": "Deactivate filtering",
 			"filterVariant": {
 				"title": "Filter variant",

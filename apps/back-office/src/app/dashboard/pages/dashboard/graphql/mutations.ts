@@ -46,3 +46,72 @@ export const EDIT_DASHBOARD = gql`
     }
   }
 `;
+
+// === CREATE NEW DASHBOARD TEMPLATE ===
+/** gql mutation to create a new dashboard template */
+export const CREATE_DASHBOARD_TEMPLATE = gql`
+  mutation CreateDashboardTemplate($id: ID!, $contextEl: JSON) {
+    addDashboardTemplate(id: $id, contextEl: $contextEl) {
+      id
+      name
+      createdAt
+      contextData
+      structure
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      buttons
+      canSee
+      canUpdate
+      page {
+        id
+        icon
+        visible
+        application {
+          id
+        }
+        canUpdate
+        context
+        content
+        contentWithContext
+      }
+      step {
+        id
+        icon
+        workflow {
+          id
+          page {
+            id
+            application {
+              id
+            }
+          }
+        }
+        canUpdate
+      }
+      filter
+      gridOptions
+    }
+  }
+`;
+// === DELETE DASHBOARD TEMPLATE ===
+/** gql mutation to delete a dashboard template */
+export const DELETE_DASHBOARD_TEMPLATE = gql`
+  mutation DeleteDashboardTemplate($id: ID!) {
+    deleteDashboardTemplate(id: $id) {
+      id
+      name
+    }
+  }
+`;
