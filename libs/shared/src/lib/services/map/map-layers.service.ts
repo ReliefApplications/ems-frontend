@@ -44,7 +44,7 @@ import getReferenceDataAggregationFields from '../../utils/reference-data/aggreg
 import { authType } from '../../models/api-configuration.model';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { AggregationService } from '../aggregation/aggregation.service';
-import { Feature } from '@turf/turf';
+import { Feature } from '@turf/helpers';
 import filterReferenceData from '../../utils/filter/reference-data-filter.util';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
@@ -460,7 +460,7 @@ export class MapLayersService {
    * @param feature Feature to parse
    * @returns array of features
    */
-  parseToSingleFeature = (feature: Feature) => {
+  private parseToSingleFeature = (feature: Feature) => {
     const features: Feature[] = [];
     if (feature.geometry.type === 'MultiPoint') {
       for (const coordinates of feature.geometry.coordinates) {
@@ -493,7 +493,7 @@ export class MapLayersService {
    * @param mapping.longitudeField longitude field ( not used if geoField )
    * @param mapping.adminField admin field ( mapping with polygons coming from common services )
    */
-  getFeatureFromItem = (
+  private getFeatureFromItem = (
     features: any[],
     layerType: GeometryType,
     item: any,
@@ -561,7 +561,7 @@ export class MapLayersService {
    * @param items list of items
    * @param mapping mapping
    */
-  getFeatures = (
+  private getFeatures = (
     features: any[],
     layerType: GeometryType,
     items: any[],
@@ -585,7 +585,7 @@ export class MapLayersService {
    * @param layer layer to get polygons for
    * @returns modified feature collection
    */
-  applyPolygons = (
+  private applyPolygons = (
     featureCollection: { type: string; features: any[] },
     layer: LayerModel
   ) => {
@@ -610,7 +610,7 @@ export class MapLayersService {
    * @param params.contextFilters Context filters
    * @returns features for the layer
    */
-  getLayer = (params: {
+  private getLayer = (params: {
     layer: LayerModel;
     contextFilters?: CompositeFilterDescriptor;
   }) => {
@@ -658,7 +658,7 @@ export class MapLayersService {
    * @param params.aggregationModel Aggregation
    * @returns Promise of features
    */
-  fetchAggregationData = (params: {
+  private fetchAggregationData = (params: {
     layer: LayerModel;
     refData?: ReferenceData;
     contextFilters?: CompositeFilterDescriptor;
@@ -713,7 +713,7 @@ export class MapLayersService {
    * @param params.contextFilters Context filters
    * @returns Promise of features
    */
-  fetchFeatureCollection(params: {
+  private fetchFeatureCollection(params: {
     layer: LayerModel;
     refData?: ReferenceData;
     contextFilters?: CompositeFilterDescriptor;
@@ -765,7 +765,7 @@ export class MapLayersService {
    * @param layer layer model
    * @returns Layer GeoJSON query
    */
-  async getLayerGeoJson(layer: LayerModel) {
+  private async getLayerGeoJson(layer: LayerModel) {
     const contextFilters = layer.contextFilters
       ? this.contextService.injectContext(JSON.parse(layer.contextFilters))
       : {};
