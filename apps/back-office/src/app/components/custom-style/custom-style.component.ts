@@ -14,12 +14,12 @@ import {
   ApplicationService,
   UnsubscribeComponent,
   ConfirmService,
-  RestService,
   BlobType,
   DownloadService,
+  RestService,
+  AsyncMonacoEditorDirective,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs/operators';
-import { Apollo } from 'apollo-angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   ButtonModule,
@@ -49,6 +49,7 @@ const DEFAULT_STYLE = '';
     SpinnerModule,
     TooltipModule,
     ResizableModule,
+    AsyncMonacoEditorDirective,
   ],
   templateUrl: './custom-style.component.html',
   styleUrls: ['./custom-style.component.scss'],
@@ -88,7 +89,6 @@ export class CustomStyleComponent
    *
    * @param applicationService Shared application service
    * @param snackBar Shared snackbar service
-   * @param apollo Apollo service
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
    * @param restService Shared rest service
@@ -98,7 +98,6 @@ export class CustomStyleComponent
   constructor(
     private applicationService: ApplicationService,
     private snackBar: SnackbarService,
-    private apollo: Apollo,
     private translate: TranslateService,
     private confirmService: ConfirmService,
     private restService: RestService,

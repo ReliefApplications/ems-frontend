@@ -94,7 +94,7 @@ export const parseHtml = (
  * @returns the html styles
  */
 export const getCardStyle = (
-  wholeCardStyles: boolean = false,
+  wholeCardStyles = false,
   fieldsValue: any,
   styles: any[] = []
 ) => {
@@ -613,9 +613,12 @@ export const getPageKeys = (
  * @returns Formatted field value
  */
 export const applyLayoutFormat = (value: any, field: any): any => {
-  // replaces value for label, if it exists
-  if (field.options)
-    value = field.options.find((o: any) => o.value === value)?.text || value;
+  // Get choices from field
+  const options = field.options ?? field.meta?.choices;
+  if (options) {
+    // replaces value for label, if it exists
+    value = options.find((o: any) => o.value == value)?.text || value;
+  }
 
   if (value && field.layoutFormat && field.layoutFormat.length > 1) {
     const regex = new RegExp(

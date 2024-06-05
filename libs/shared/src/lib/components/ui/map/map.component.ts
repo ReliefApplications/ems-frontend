@@ -240,7 +240,7 @@ export class MapComponent
     const allContextFilters = this.layers
       .map((layer: any) => JSON.stringify(layer.contextFilters))
       .join('');
-    const allGraphQLVariables = this.layers
+    const allQueryParams = this.layers
       .map(
         (layer: any) =>
           get(layer, 'datasource.referenceDataVariableMapping') || ''
@@ -249,9 +249,7 @@ export class MapComponent
 
     // Listen to dashboard filters changes to apply layers filter, if it is necessary
     if (
-      this.contextService.filterRegex.test(
-        allContextFilters + allGraphQLVariables
-      )
+      this.contextService.filterRegex.test(allContextFilters + allQueryParams)
     ) {
       this.contextService.filter$
         .pipe(
@@ -414,7 +412,7 @@ export class MapComponent
    *
    * @param initMap Does the map need to be reloaded
    */
-  private drawMap(initMap: boolean = true): void {
+  private drawMap(initMap = true): void {
     const {
       initialState,
       maxBounds,

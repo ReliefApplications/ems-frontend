@@ -77,6 +77,8 @@ export class SummaryCardSettingsComponent
   private previousTabsLength = 0;
   /** Current active settings tab index */
   public activeSettingsTab = 0;
+  /** Loading status */
+  public loading = false;
 
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
@@ -285,6 +287,7 @@ export class SummaryCardSettingsComponent
    * @param id resource id
    */
   private getResource(id: string): void {
+    this.loading = true;
     const formValue = this.widgetFormGroup.getRawValue();
     const layoutID = get(formValue, 'card.layout');
     const aggregationID = get(formValue, 'card.aggregation');
@@ -328,6 +331,7 @@ export class SummaryCardSettingsComponent
             this.getCustomAggregation();
           }
         }
+        this.loading = false;
       });
   }
 
@@ -337,6 +341,7 @@ export class SummaryCardSettingsComponent
    * @param id reference data id
    */
   private getReferenceData(id: string): void {
+    this.loading = true;
     this.apollo
       .query<ReferenceDataQueryResponse>({
         query: GET_REFERENCE_DATA,
@@ -360,6 +365,7 @@ export class SummaryCardSettingsComponent
               };
             });
         }
+        this.loading = false;
       });
   }
 
