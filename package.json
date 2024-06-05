@@ -1,6 +1,6 @@
 {
   "name": "oort-front",
-  "version": "2.15.0-rc.2",
+  "version": "2.15.1-beta.1",
   "license": "MIT",
   "scripts": {
     "check-i18n": "node .scripts/check-i18n",
@@ -67,6 +67,7 @@
     "@turf/boolean-point-in-polygon": "^6.5.0",
     "@turf/centroid": "^6.5.0",
     "angular-gridster2": "^16.0.0",
+    "@turf/helpers": "^6.5.0",
     "angular-oauth2-oidc": "~13.0.1",
     "apollo-angular": "^5.0.0",
     "angular-resizable-element": "^7.0.2",

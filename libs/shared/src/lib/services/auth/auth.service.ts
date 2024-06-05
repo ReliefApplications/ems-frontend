@@ -185,7 +185,7 @@ export class AuthService {
    * @param global is the permission global or not
    * @returns Does the user have access
    */
-  userHasClaim(permission: string | string[], global: boolean = true): boolean {
+  userHasClaim(permission: string | string[], global = true): boolean {
     const user = this.user.getValue();
     if (user) {
       if (
