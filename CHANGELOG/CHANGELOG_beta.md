@@ -1,3 +1,11 @@
+## [2.15.1-beta.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.15.1-beta.1...v2.15.1-beta.2) (2024-06-05)
+
+
+### Bug Fixes
+
+* email template type would not appear as disabled ([#2596](https://github.com/ReliefApplications/ems-frontend/issues/2596)) ([22c6a97](https://github.com/ReliefApplications/ems-frontend/commit/22c6a9783f6898043a3ee638e52ddd750427de6d))
+* Redirection to resource page now works properly upon its creation ([#2597](https://github.com/ReliefApplications/ems-frontend/issues/2597)) ([8c6c038](https://github.com/ReliefApplications/ems-frontend/commit/8c6c03814335af7f085c89bf592923b7378ebd6d))
+
 ## [2.15.1-beta.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.15.0...v2.15.1-beta.1) (2024-06-03)
 
 
