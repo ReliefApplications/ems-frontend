@@ -6,7 +6,7 @@
     <!-- ngStyle prevent the left sidenav to have a fixed height -->
     <div
       #sidenav
-      class="will-change-transform overflow-y-auto bg-white translate-x-0"
+      class="will-change-transform bg-white translate-x-0"
       [attr.data-sidenav-show]="showSidenav[i]"
       [ngClass]="resolveSidenavClasses(i)"
       [ngStyle]="(i > 0 && { height: height }) || null"
