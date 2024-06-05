@@ -12,7 +12,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { RestService } from '../../services/rest/rest.service';
 import { TYPE_LABEL } from './filter/filter.constant';
 import { FieldStore } from './models/email.const';
-import { clone, omit } from 'lodash';
+import { omit } from 'lodash';
 
 /**
  * Helper functions service for emails template.
