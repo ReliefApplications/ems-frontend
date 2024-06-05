@@ -592,16 +592,29 @@ export class EmailService {
    * @returns the dataset.
    */
   fetchDataSet(filterQuery: any) {
-    let filterCopy = clone(filterQuery);
-    filterCopy.fields.map((field: any) => {
-      return omit(field, 'options');
+    let filters = Object.assign({}, filterQuery);
+
+    /* Removing the options key from the payload to avoid payload too large error */
+    const fieldsWithoutOptions = filters?.fields?.map((field: any) => {
+      const payloadOptions: { [key: string]: any } = {};
+      const fieldKeys = Object.keys(field);
+
+      fieldKeys.forEach((keyName: string) => {
+        if (keyName !== TYPE_LABEL.options) {
+          payloadOptions[keyName] = field[keyName];
+        }
+      });
+      return payloadOptions;
     });
+
+    filters.fields = fieldsWithoutOptions;
     // Create a new object excluding the 'cacheData' field
-    filterCopy = omit(filterCopy, 'cacheData');
+    filters = omit(filters, 'cacheData');
+
     return this.apollo.query<any>({
       query: GET_EMAIL_DATA_SET,
       variables: {
-        query: filterCopy,
+        query: filters,
       },
     });
   }
