@@ -1,7 +1,7 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { DELETE_RESOURCE, ADD_FORM } from './graphql/mutations';
-import { GET_RESOURCES_EXTENDED, GET_FORM_BY_ID } from './graphql/queries';
+import { GET_RESOURCES_EXTENDED } from './graphql/queries';
 import {
   AddFormMutationResponse,
   DeleteResourceMutationResponse,
@@ -11,7 +11,6 @@ import {
   ResourcesQueryResponse,
   getCachedValues,
   updateQueryUniqueValues,
-  FormQueryResponse,
 } from '@oort-front/shared';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -23,6 +22,7 @@ import {
 } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
+import { get } from 'lodash';
 
 /**
  * Default number of resources that will be shown at once.
@@ -306,20 +306,8 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
                 );
               } else {
                 if (data) {
-                  const { id } = data.addForm;
-                  const formQuery = this.apollo.watchQuery<FormQueryResponse>({
-                    query: GET_FORM_BY_ID,
-                    variables: {
-                      id,
-                    },
-                  });
-                  formQuery.valueChanges.subscribe(({ data }) => {
-                    if (data) {
-                      this.router.navigate([
-                        '/resources/' + data.form.resource?.id,
-                      ]);
-                    }
-                  });
+                  const resourceId = get(data.addForm, 'resource.id');
+                  this.router.navigate(['/resources/' + resourceId]);
                 }
               }
             },
