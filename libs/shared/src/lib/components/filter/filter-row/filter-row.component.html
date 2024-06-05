@@ -130,7 +130,11 @@
   <ng-template #selectEditor>
     <div uiFormFieldDirective [defaultMargin]="false" class="w-60">
       <label>{{ 'common.value.one' | translate }}</label>
-      <ui-select-menu *ngIf="!field.multiSelect" formControlName="value">
+      <ui-select-menu
+        *ngIf="!field.multiSelect"
+        formControlName="value"
+        [filterable]="true"
+      >
         <ui-select-option>{{
           'common.input.none' | translate
         }}</ui-select-option>
@@ -142,6 +146,7 @@
         </ui-select-option>
       </ui-select-menu>
       <ui-select-menu
+        [filterable]="true"
         *ngIf="field.multiSelect"
         formControlName="value"
         [multiselect]="true"
