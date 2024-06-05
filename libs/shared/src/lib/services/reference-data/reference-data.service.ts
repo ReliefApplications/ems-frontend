@@ -84,7 +84,7 @@ export class ReferenceDataService {
   public async getChoices(
     referenceDataID: string,
     displayField: string,
-    storePrimitiveValue: boolean = true,
+    storePrimitiveValue = true,
     graphQLVariables?: any
   ): Promise<{ value: string | number; text: string }[]> {
     const sortByDisplayField = (a: any, b: any) =>
@@ -473,7 +473,7 @@ export class ReferenceDataService {
    * @param options.sortOrder sort order
    * @param options.contextFilters context filters
    * @param options.mapping data mapping
-   * @param options.graphQLVariables graphql variables ( graphql api only )
+   * @param options.queryParams graphql variables ( graphql api only )
    * @returns aggregation result
    */
   public async aggregate(
@@ -486,7 +486,7 @@ export class ReferenceDataService {
       sortOrder?: string;
       contextFilters?: CompositeFilterDescriptor;
       mapping?: any;
-      graphQLVariables?: any;
+      queryParams?: any;
     } = {}
   ) {
     try {
@@ -497,7 +497,7 @@ export class ReferenceDataService {
       // Build the source fields step
       if (sourceFields && sourceFields.length && pipeline) {
         const rawItems = (
-          await this.fetchItems(referenceData, options.graphQLVariables)
+          await this.fetchItems(referenceData, options.queryParams)
         ).items;
         const transformer = new DataTransformer(
           referenceData.fields || [],
