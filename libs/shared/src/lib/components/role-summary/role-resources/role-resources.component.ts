@@ -145,6 +145,7 @@ export class RoleResourcesComponent
         Permission.CREATE,
         Permission.UPDATE,
         Permission.DELETE,
+        Permission.DOWNLOAD,
       ].map((x) => ({
         name: x,
         icon: this.getIcon(resource, x),
@@ -506,6 +507,18 @@ export class RoleResourcesComponent
             return 'delete';
           }
         }
+      case Permission.DOWNLOAD:
+        switch (permissionLevel) {
+          case 'limited': {
+            return 'file_download_outline';
+          }
+          case 'full': {
+            return 'file_download';
+          }
+          default: {
+            return 'file_download_off';
+          }
+        }
     }
   }
 
@@ -603,6 +616,15 @@ export class RoleResourcesComponent
           }
           default: {
             return 'components.role.tooltip.notGrantDeleteRecordsPermission';
+          }
+        }
+      case Permission.DOWNLOAD:
+        switch (permissionLevel) {
+          case 'full': {
+            return 'components.role.tooltip.grantDownloadRecordsPermission';
+          }
+          default: {
+            return 'components.role.tooltip.notGrantDownloadRecordsPermission';
           }
         }
     }
