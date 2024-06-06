@@ -9,7 +9,7 @@ export const ADD_FORM = gql`
       name
       createdAt
       status
-      versions {
+      resource {
         id
       }
     }
