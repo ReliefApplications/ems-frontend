@@ -9,6 +9,7 @@ import {
   MenuModule,
   TooltipModule,
   IconModule,
+  SpinnerModule,
 } from '@oort-front/ui';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -18,12 +19,7 @@ import {
   EmptyModule,
   DashboardsQueryResponse,
 } from '@oort-front/shared';
-import {
-  BehaviorSubject,
-  debounceTime,
-  distinctUntilChanged,
-  firstValueFrom,
-} from 'rxjs';
+import { debounceTime, distinctUntilChanged, firstValueFrom } from 'rxjs';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DashboardTemplate } from './dashboard-template-type';
 import { Apollo } from 'apollo-angular';
@@ -50,6 +46,7 @@ import { GET_DASHBOARDS_NAMES } from '../../graphql/queries';
     DragDropModule,
     EmptyModule,
     ReactiveFormsModule,
+    SpinnerModule,
   ],
 })
 export class ManageDashboardTemplatesComponent
@@ -58,12 +55,12 @@ export class ManageDashboardTemplatesComponent
 {
   /** List of button actions from dashboard */
   public dashboardTemplates: DashboardTemplate[] = [];
-  /** Behavior subject to track change in dashboard templates */
-  public datasource = new BehaviorSubject(this.dashboardTemplates);
   /** Search control */
   public searchControl: FormControl = new FormControl();
   /** Search string, delayed from search control */
   public searchTerm = '';
+  /** Loading indicator */
+  public loading = false;
 
   /**
    * Component for editing dashboard dashboard templates
@@ -121,12 +118,14 @@ export class ManageDashboardTemplatesComponent
 
     // Only execute the query if there are records
     if (recordIds.length > 0) {
+      this.loading = true;
       firstValueFrom(
         this.apollo.query<DashboardsQueryResponse>({
           query: GET_DASHBOARDS_NAMES,
           variables: { ids: recordIds },
         })
       ).then(({ data }) => {
+        this.loading = false;
         const dashboardMap = new Map(
           data.dashboards.map((dashboard) => [dashboard.id, dashboard.name])
         );

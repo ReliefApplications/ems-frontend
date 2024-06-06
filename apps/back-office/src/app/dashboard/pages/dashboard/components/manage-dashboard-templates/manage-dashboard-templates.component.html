@@ -15,28 +15,31 @@
         <input
           type="text"
           [placeholder]="'common.placeholder.search' | translate"
-          [formControl]="searchControl" 
+          [formControl]="searchControl"
         />
       </div>
     </div>
 
-    <div *ngFor="let dashboardTemplate of dashboardTemplates">
-      <div
-        class="flex items-center justify-between p-4 bg-white rounded shadow"
-        *ngIf="matchesSearch(dashboardTemplate.name ?? '')"
-      >
-        {{ dashboardTemplate.name }}
-
-        <ui-button
-          [isIcon]="true"
-          icon="delete"
-          variant="danger"
-          [uiTooltip]="'common.delete' | translate"
-          (click)="onDeleteDashboardTemplate(dashboardTemplate)"
+    <ng-container *ngIf="!loading; else loadingTemplate">
+      <div *ngFor="let dashboardTemplate of dashboardTemplates">
+        <div
+          class="flex items-center justify-between p-4 bg-white rounded shadow"
+          *ngIf="matchesSearch(dashboardTemplate.name ?? '')"
         >
-        </ui-button>
-      </div>
-    </div>
+          {{ dashboardTemplate.name }}
+
+          <ui-button
+            [isIcon]="true"
+            icon="delete"
+            variant="danger"
+            [uiTooltip]="'common.delete' | translate"
+            (click)="onDeleteDashboardTemplate(dashboardTemplate)"
+          >
+          </ui-button>
+        </div></div
+    ></ng-container>
+
+    <ng-template #loadingTemplate> <ui-spinner></ui-spinner></ng-template>
   </ng-container>
 
   <ng-template #emptyTmpl>

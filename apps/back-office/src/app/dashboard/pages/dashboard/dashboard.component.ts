@@ -666,7 +666,7 @@ export class DashboardComponent
   }
 
   /** Opens modal to delete existing templates */
-  public async onOpenDeleteTemplatesModal() {
+  public async onManageTemplates() {
     const { ManageDashboardTemplatesComponent } = await import(
       './components/manage-dashboard-templates/manage-dashboard-templates.component'
     );
