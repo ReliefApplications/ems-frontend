@@ -72,7 +72,11 @@
     >
       {{ 'common.add' | translate }}
     </button>
-    <button *ngIf="actions.export" kendoButton (click)="onExport()">
+    <button
+      *ngIf="actions.export && canDownload"
+      kendoButton
+      (click)="onExport()"
+    >
       {{ 'common.export' | translate }}
     </button>
     <ng-container *ngIf="editable">

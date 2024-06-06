@@ -86,6 +86,7 @@ export const GET_USER_ROLES_PERMISSIONS = gql`
   query GetUserRolesPermissions($resource: ID!) {
     resource(id: $resource) {
       canCreateRecords
+      canDownloadRecords
     }
   }
 `;
