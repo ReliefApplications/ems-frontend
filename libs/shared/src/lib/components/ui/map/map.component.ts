@@ -767,6 +767,7 @@ export class MapComponent
           return this.mapLayersService
             .createLayersFromId(Childrenlayer, this.injector)
             .then(async (sublayer) => {
+              sublayer.parent = layer;
               if (sublayer.type === 'GroupLayer') {
                 const layer = await sublayer.getLayer();
                 return parseTreeNode(sublayer, layer, displayLayers);
