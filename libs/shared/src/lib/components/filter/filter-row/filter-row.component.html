@@ -138,13 +138,19 @@
         <ui-select-option>{{
           'common.input.none' | translate
         }}</ui-select-option>
-        <ui-select-option
-          *ngFor="let option of field.options"
-          [value]="option.value"
+        <cdk-virtual-scroll-viewport
+          itemSize="30"
+          class="virtual-scroll-viewport"
         >
-          {{ option.text }}
-        </ui-select-option>
+          <ui-select-option
+            *cdkVirtualFor="let option of field.options"
+            [value]="option.value"
+          >
+            {{ option.text }}
+          </ui-select-option>
+        </cdk-virtual-scroll-viewport>
       </ui-select-menu>
+
       <ui-select-menu
         [filterable]="true"
         *ngIf="field.multiSelect"
@@ -154,12 +160,17 @@
         <ui-select-option>{{
           'common.input.none' | translate
         }}</ui-select-option>
-        <ui-select-option
-          *ngFor="let option of field.options"
-          [value]="option.value"
+        <cdk-virtual-scroll-viewport
+          itemSize="30"
+          class="virtual-scroll-viewport"
         >
-          {{ option.text }}
-        </ui-select-option>
+          <ui-select-option
+            *cdkVirtualFor="let option of field.options"
+            [value]="option.value"
+          >
+            {{ option.text }}
+          </ui-select-option>
+        </cdk-virtual-scroll-viewport>
       </ui-select-menu>
     </div>
   </ng-template>
