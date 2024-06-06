@@ -279,6 +279,11 @@ export interface AddDashboardTemplateMutationResponse {
   addDashboardTemplate: Dashboard;
 }
 
+/** Model for delete dashboard templates graphql mutation response */
+export interface DeleteDashboardTemplatesMutationResponse {
+  deleteDashboardTemplates: number;
+}
+
 /** Model for add dashboard graphql mutation response */
 export interface AddDashboardMutationResponse {
   addDashboard: Dashboard;

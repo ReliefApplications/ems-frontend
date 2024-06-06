@@ -173,7 +173,7 @@ export class ManageDashboardTemplatesComponent
         const index = this.dashboardTemplates.indexOf(dashboardTemplate);
         if (index > -1) {
           this.dashboardTemplates.splice(index, 1);
-          this.searchTerm = '';
+          this.searchControl.setValue('');
         }
       }
     });

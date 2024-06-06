@@ -49,8 +49,8 @@ export const EDIT_DASHBOARD = gql`
 
 // === CREATE NEW DASHBOARD TEMPLATE ===
 /** gql mutation to create a new dashboard template */
-export const CREATE_DASHBOARD_TEMPLATE = gql`
-  mutation CreateDashboardTemplate($id: ID!, $contextEl: JSON) {
+export const ADD_DASHBOARD_TEMPLATE = gql`
+  mutation AddDashboardTemplate($id: ID!, $contextEl: JSON) {
     addDashboardTemplate(id: $id, contextEl: $contextEl) {
       id
       name

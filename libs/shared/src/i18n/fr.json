@@ -2224,7 +2224,8 @@
 				"notifications": {
 					"creatingTemplate": "Création d'une nouvelle vue",
 					"loadDefault": "Affichage de la vue générique",
-					"templateCreated": "Nouvelle vue créée"
+					"templateCreated": "Nouvelle vue créée",
+					"templatesDeleted": "{{number}} modèles ont été supprimés pour ce tableau de bord"
 				},
 				"origin": "Origine du contexte",
 				"refData": {
@@ -2241,11 +2242,8 @@
 			"contextFilter": "Filtre contextuel",
 			"dashboardFilter": "Filtre du tableau de bord",
 			"dashboardTemplates": {
-				"delete": {
-					"few": "Supprimer des modeles de tableau de bord"
-				},
-				"edit": {
-					"few": "Modifier le modèle de tableau de bord"
+				"manage": {
+					"few": "Gérer les modèles de tableaux de bord"
 				},
 				"none": "Pas de modèle pour ce tableau de bord"
 			},

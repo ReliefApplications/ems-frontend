@@ -28,9 +28,10 @@ import {
   DashboardAutomationService,
   DashboardQueryType,
   AddDashboardTemplateMutationResponse,
+  DeleteDashboardTemplatesMutationResponse,
 } from '@oort-front/shared';
 import {
-  CREATE_DASHBOARD_TEMPLATE,
+  ADD_DASHBOARD_TEMPLATE,
   DELETE_DASHBOARD_TEMPLATES,
   EDIT_DASHBOARD,
 } from './graphql/mutations';
@@ -374,9 +375,14 @@ export class DashboardComponent
   /** Creates the template for the corresponding page */
   public createTemplate() {
     if (this.dashboardId && this.contextEl) {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'models.dashboard.context.notifications.templateCreated'
+        )
+      );
       this.loadDashboard(
         {
-          query: CREATE_DASHBOARD_TEMPLATE,
+          query: ADD_DASHBOARD_TEMPLATE,
           variables: {
             id: this.dashboardId,
             contextEl: this.contextEl,
@@ -683,14 +689,20 @@ export class DashboardComponent
               !templates.map((template) => template.content).includes(dashboard)
           );
         firstValueFrom(
-          this.apollo.mutate<DashboardQueryResponse>({
+          this.apollo.mutate<DeleteDashboardTemplatesMutationResponse>({
             mutation: DELETE_DASHBOARD_TEMPLATES,
             variables: {
               dashboardId: this.dashboardId,
               templateIds: templatesToDelete,
             },
           })
-        ).then(() => {
+        ).then((data) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant(
+              'models.dashboard.context.notifications.templatesDeleted',
+              { number: data.data?.deleteDashboardTemplates }
+            )
+          );
           if (this.dashboardId) {
             // Reload your dashboard here
             this.loadDashboard(

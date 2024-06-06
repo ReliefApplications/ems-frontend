@@ -2224,7 +2224,8 @@
 				"notifications": {
 					"creatingTemplate": "******",
 					"loadDefault": "******",
-					"templateCreated": "******"
+					"templateCreated": "******",
+					"templatesDeleted": "{{number}} ******"
 				},
 				"origin": "******",
 				"refData": {
@@ -2241,10 +2242,7 @@
 			"contextFilter": "******",
 			"dashboardFilter": "******",
 			"dashboardTemplates": {
-				"delete": {
-					"few": "******"
-				},
-				"edit": {
+				"manage": {
 					"few": "******"
 				},
 				"none": "******"

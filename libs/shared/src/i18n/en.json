@@ -2224,7 +2224,8 @@
 				"notifications": {
 					"creatingTemplate": "Creating new template",
 					"loadDefault": "Displaying default template",
-					"templateCreated": "New template created"
+					"templateCreated": "New template created",
+					"templatesDeleted": "{{number}} templates were deleted for this dashboard"
 				},
 				"origin": "Context origin",
 				"refData": {
@@ -2241,11 +2242,8 @@
 			"contextFilter": "Context filter",
 			"dashboardFilter": "Dashboard filter",
 			"dashboardTemplates": {
-				"delete": {
-					"few": "Delete dashboard templates"
-				},
-				"edit": {
-					"few": "Edit dashboard template"
+				"manage": {
+					"few": "Manage dashboard templates"
 				},
 				"none": "No template for this dashboard"
 			},

@@ -127,7 +127,7 @@
             [uiTooltip]="'common.options' | translate"
           >
           </ui-button>
-          <ui-menu #menu width="w-64">
+          <ui-menu #menu width="w-72">
             <button uiMenuItem (click)="onEditButtonActions()">
               <ui-icon icon="touch_app" variant="grey"></ui-icon>
               {{ 'models.dashboard.buttonActions.edit.few' | translate }}
@@ -138,7 +138,7 @@
             </button>
             <button uiMenuItem (click)="onOpenDeleteTemplatesModal()">
               <ui-icon icon="dashboard" variant="grey"></ui-icon>
-              {{ 'models.dashboard.dashboardTemplates.delete.few' | translate }}
+              {{ 'models.dashboard.dashboardTemplates.manage.few' | translate }}
             </button>
           </ui-menu>
         </div>
