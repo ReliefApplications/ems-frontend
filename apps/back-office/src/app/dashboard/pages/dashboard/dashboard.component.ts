@@ -31,7 +31,7 @@ import {
 } from '@oort-front/shared';
 import {
   CREATE_DASHBOARD_TEMPLATE,
-  DELETE_DASHBOARD_TEMPLATE,
+  DELETE_DASHBOARD_TEMPLATES,
   EDIT_DASHBOARD,
 } from './graphql/mutations';
 import { GET_DASHBOARD_BY_ID, GET_RESOURCE_RECORDS } from './graphql/queries';
@@ -231,7 +231,6 @@ export class DashboardComponent
         if (pageContainer) {
           pageContainer.scrollTop = 0;
         }
-
         if (this.dashboardId) {
           this.loadDashboard(
             {
@@ -243,7 +242,7 @@ export class DashboardComponent
             },
             this.dashboardId,
             this.contextEl?.trim()
-          ).then(() => (this.loading = false));
+          );
         }
       });
   }
@@ -290,11 +289,7 @@ export class DashboardComponent
     id?: string,
     contextID?: string | number
   ) {
-    // don't init the dashboard if the id is the same
-    if (
-      !id ||
-      (this.dashboard?.id === id && this.contextId.value === contextID)
-    ) {
+    if (!id) {
       return;
     }
 
@@ -368,6 +363,7 @@ export class DashboardComponent
           );
           this.router.navigate(['/applications']);
         }
+        this.loading = false;
       })
       .catch((err) => {
         this.snackBar.openSnackBar(err.message, { error: true });
@@ -388,7 +384,7 @@ export class DashboardComponent
         },
         this.dashboardId,
         this.contextEl.trim()
-      ).then(() => (this.loading = false));
+      );
     }
   }
 
@@ -686,30 +682,30 @@ export class DashboardComponent
             (dashboard) =>
               !templates.map((template) => template.content).includes(dashboard)
           );
-        if (!templatesToDelete) return;
-        console.log(templatesToDelete);
-        await Promise.all(
-          templatesToDelete.map((template) =>
-            this.apollo.mutate({
-              mutation: DELETE_DASHBOARD_TEMPLATE,
-              variables: { id: template },
-            })
-          )
-        );
-        if (this.dashboardId) {
-          // Reload your dashboard here
-          this.loadDashboard(
-            {
-              query: GET_DASHBOARD_BY_ID,
-              variables: {
-                id: this.dashboardId,
-                contextEl: this.contextEl,
-              },
+        firstValueFrom(
+          this.apollo.mutate<DashboardQueryResponse>({
+            mutation: DELETE_DASHBOARD_TEMPLATES,
+            variables: {
+              dashboardId: this.dashboardId,
+              templateIds: templatesToDelete,
             },
-            this.dashboardId,
-            this.contextEl?.trim()
-          );
-        }
+          })
+        ).then(() => {
+          if (this.dashboardId) {
+            // Reload your dashboard here
+            this.loadDashboard(
+              {
+                query: GET_DASHBOARD_BY_ID,
+                variables: {
+                  id: this.dashboardId,
+                  contextEl: this.contextEl,
+                },
+              },
+              this.dashboardId,
+              this.contextEl?.trim()
+            );
+          }
+        });
       });
   }
 
@@ -805,7 +801,11 @@ export class DashboardComponent
         });
       }
     };
-    this.contextService.initContext(this.dashboard as Dashboard, callback);
+    this.contextService.initContext(
+      this.dashboard as Dashboard,
+      callback,
+      this.contextEl
+    );
   }
 
   /**

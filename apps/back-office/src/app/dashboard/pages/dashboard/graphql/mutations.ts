@@ -107,11 +107,11 @@ export const CREATE_DASHBOARD_TEMPLATE = gql`
 `;
 // === DELETE DASHBOARD TEMPLATE ===
 /** gql mutation to delete a dashboard template */
-export const DELETE_DASHBOARD_TEMPLATE = gql`
-  mutation DeleteDashboardTemplate($id: ID!) {
-    deleteDashboardTemplate(id: $id) {
-      id
-      name
-    }
+export const DELETE_DASHBOARD_TEMPLATES = gql`
+  mutation DeleteDashboardTemplates($dashboardId: ID!, $templateIds: [ID!]) {
+    deleteDashboardTemplates(
+      dashboardId: $dashboardId
+      templateIds: $templateIds
+    )
   }
 `;

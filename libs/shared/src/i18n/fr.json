@@ -2241,6 +2241,9 @@
 			"contextFilter": "Filtre contextuel",
 			"dashboardFilter": "Filtre du tableau de bord",
 			"dashboardTemplates": {
+				"delete": {
+					"few": "Supprimer des modeles de tableau de bord"
+				},
 				"edit": {
 					"few": "Modifier le modèle de tableau de bord"
 				},

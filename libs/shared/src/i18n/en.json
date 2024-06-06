@@ -2241,6 +2241,9 @@
 			"contextFilter": "Context filter",
 			"dashboardFilter": "Dashboard filter",
 			"dashboardTemplates": {
+				"delete": {
+					"few": "Delete dashboard templates"
+				},
 				"edit": {
 					"few": "Edit dashboard template"
 				},

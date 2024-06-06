@@ -10,7 +10,7 @@ import {
   TooltipModule,
   IconModule,
 } from '@oort-front/ui';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DialogRef, DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
 import {
@@ -18,7 +18,12 @@ import {
   EmptyModule,
   DashboardsQueryResponse,
 } from '@oort-front/shared';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import {
+  BehaviorSubject,
+  debounceTime,
+  distinctUntilChanged,
+  firstValueFrom,
+} from 'rxjs';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DashboardTemplate } from './dashboard-template-type';
 import { Apollo } from 'apollo-angular';
@@ -44,6 +49,7 @@ import { GET_DASHBOARDS_NAMES } from '../../graphql/queries';
     IconModule,
     DragDropModule,
     EmptyModule,
+    ReactiveFormsModule,
   ],
 })
 export class ManageDashboardTemplatesComponent
@@ -54,7 +60,9 @@ export class ManageDashboardTemplatesComponent
   public dashboardTemplates: DashboardTemplate[] = [];
   /** Behavior subject to track change in dashboard templates */
   public datasource = new BehaviorSubject(this.dashboardTemplates);
-  /** Search string */
+  /** Search control */
+  public searchControl: FormControl = new FormControl();
+  /** Search string, delayed from search control */
   public searchTerm = '';
 
   /**
@@ -79,6 +87,11 @@ export class ManageDashboardTemplatesComponent
   }
 
   ngOnInit(): void {
+    this.searchControl.valueChanges
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe((searchTerm) => {
+        this.searchTerm = searchTerm;
+      });
     if (this.data && this.data.dashboardTemplates) {
       this.dashboardTemplates = [...this.data.dashboardTemplates];
       this.getDashboardNames();
@@ -91,34 +104,42 @@ export class ManageDashboardTemplatesComponent
 
   /** get dashboard names for templates using records */
   public getDashboardNames() {
-    firstValueFrom(
-      this.apollo.query<DashboardsQueryResponse>({
-        query: GET_DASHBOARDS_NAMES,
-        variables: {
-          ids: this.dashboardTemplates
-            .map((template) => {
-              if ('record' in template) {
-                return template.content;
-              }
-              return;
-            })
-            .filter(Boolean),
-        },
+    const recordIds = this.dashboardTemplates
+      .map((template) => {
+        if ('record' in template) {
+          return template.content;
+        }
+        return null;
       })
-    ).then(({ data }) => {
-      const dashboardMap = new Map(
-        data.dashboards.map((dashboard) => [dashboard.id, dashboard.name])
-      );
-      this.dashboardTemplates = this.dashboardTemplates.map((template) => ({
-        ...template,
-        ...('element' in template && {
-          name: template.element,
-        }),
-        ...('record' in template && {
-          name: dashboardMap.get(template.content),
-        }),
-      }));
-    });
+      .filter(Boolean);
+
+    // Assign names for elements regardless of records
+    this.dashboardTemplates = this.dashboardTemplates.map((template) => ({
+      ...template,
+      ...('element' in template && { name: template.element }),
+    }));
+
+    // Only execute the query if there are records
+    if (recordIds.length > 0) {
+      firstValueFrom(
+        this.apollo.query<DashboardsQueryResponse>({
+          query: GET_DASHBOARDS_NAMES,
+          variables: { ids: recordIds },
+        })
+      ).then(({ data }) => {
+        const dashboardMap = new Map(
+          data.dashboards.map((dashboard) => [dashboard.id, dashboard.name])
+        );
+
+        // Update names for templates with records
+        this.dashboardTemplates = this.dashboardTemplates.map((template) => ({
+          ...template,
+          ...('record' in template && {
+            name: dashboardMap.get(template.content),
+          }),
+        }));
+      });
+    }
   }
 
   /**
@@ -126,14 +147,17 @@ export class ManageDashboardTemplatesComponent
    *
    * @param dashboardTemplate Dashboard template
    */
-  public async onDeleteButtonAction(dashboardTemplate: DashboardTemplate) {
+  public async onDeleteDashboardTemplate(dashboardTemplate: DashboardTemplate) {
     const { ConfirmModalComponent } = await import('@oort-front/shared');
     const dialogRef = this.dialog.open(ConfirmModalComponent, {
       data: {
         title: this.translateService.instant('common.deleteObject', {
           name: 'Dashboard template',
         }),
-        content: 'you sure you wanna delete Template bruh?',
+        content: this.translateService.instant(
+          'components.templates.delete.confirmationMessage',
+          { name: dashboardTemplate.name }
+        ),
         confirmText: this.translateService.instant(
           'components.confirmModal.delete'
         ),
@@ -153,6 +177,18 @@ export class ManageDashboardTemplatesComponent
         }
       }
     });
+  }
+
+  /**
+   * Checks if dashboard template name matches search term
+   *
+   * @param templateName name of the dashboard template
+   * @returns true if template name matches search, else false
+   */
+  public matchesSearch(templateName: string) {
+    return this.searchTerm === ''
+      ? true
+      : templateName.includes(this.searchTerm);
   }
 
   /** On click on the save button close the dialog with the form value */

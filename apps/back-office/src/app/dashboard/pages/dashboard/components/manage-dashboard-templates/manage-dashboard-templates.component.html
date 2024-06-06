@@ -1,7 +1,7 @@
 <ui-dialog size="medium" [closable]="true">
   <ng-container ngProjectAs="header">
     <h3 class="font-semibold">
-      {{ 'models.dashboard.dashboardTemplates.edit.few' | translate }}
+      {{ 'models.dashboard.dashboardTemplates.delete.few' | translate }}
     </h3>
   </ng-container>
 
@@ -15,22 +15,27 @@
         <input
           type="text"
           [placeholder]="'common.placeholder.search' | translate"
-          [(ngModel)]="searchTerm"
+          [formControl]="searchControl" 
         />
       </div>
     </div>
 
     <div *ngFor="let dashboardTemplate of dashboardTemplates">
-      {{ dashboardTemplate.name }}
-
-      <ui-button
-        [isIcon]="true"
-        icon="delete"
-        variant="danger"
-        [uiTooltip]="'common.delete' | translate"
-        (click)="onDeleteButtonAction(dashboardTemplate)"
+      <div
+        class="flex items-center justify-between p-4 bg-white rounded shadow"
+        *ngIf="matchesSearch(dashboardTemplate.name ?? '')"
       >
-      </ui-button>
+        {{ dashboardTemplate.name }}
+
+        <ui-button
+          [isIcon]="true"
+          icon="delete"
+          variant="danger"
+          [uiTooltip]="'common.delete' | translate"
+          (click)="onDeleteDashboardTemplate(dashboardTemplate)"
+        >
+        </ui-button>
+      </div>
     </div>
   </ng-container>
 

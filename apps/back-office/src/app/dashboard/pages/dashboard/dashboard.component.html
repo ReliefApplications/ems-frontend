@@ -127,7 +127,7 @@
             [uiTooltip]="'common.options' | translate"
           >
           </ui-button>
-          <ui-menu #menu>
+          <ui-menu #menu width="w-64">
             <button uiMenuItem (click)="onEditButtonActions()">
               <ui-icon icon="touch_app" variant="grey"></ui-icon>
               {{ 'models.dashboard.buttonActions.edit.few' | translate }}
@@ -137,20 +137,12 @@
               {{ 'models.dashboard.share' | translate }}
             </button>
             <button uiMenuItem (click)="onOpenDeleteTemplatesModal()">
-              <ui-icon icon="chien" variant="grey"></ui-icon>
-              Delete these fuckers
+              <ui-icon icon="dashboard" variant="grey"></ui-icon>
+              {{ 'models.dashboard.dashboardTemplates.delete.few' | translate }}
             </button>
           </ui-menu>
         </div>
       </div>
-      <ng-container *ngIf="dashboard.page?.context">
-        <ui-alert *ngIf="!contextRecord" class="mb-4">{{
-          'models.dashboard.context.edition.template' | translate
-        }}</ui-alert>
-        <ui-alert *ngIf="contextRecord" class="mb-4">{{
-          'models.dashboard.context.edition.element' | translate
-        }}</ui-alert>
-      </ng-container>
       <span>
         <!-- Selection of record, to see dashboard per record -->
         <div
