@@ -318,4 +318,5 @@ export const TYPE_LABEL = {
   owner: 'owner',
   user: 'user',
   options: 'options',
+  fields: 'fields',
 };
