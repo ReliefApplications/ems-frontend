@@ -1,3 +1,12 @@
+## [2.15.1-rc.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.15.1-rc.2...v2.15.1-rc.3) (2024-06-06)
+
+
+### Bug Fixes
+
+* allow to skip validation of records ([df79fed](https://github.com/ReliefApplications/ems-frontend/commit/df79fed1ad728343a7568c8280276d6cdf55e87a))
+* children layers now using parent visibility [#69081](https://github.com/ReliefApplications/ems-frontend/issues/69081) ([#2602](https://github.com/ReliefApplications/ems-frontend/issues/2602)) ([c3465e8](https://github.com/ReliefApplications/ems-frontend/commit/c3465e8367e739183ddabeb1e6f283d272e4db1f))
+* Sidenav collapsing on form builder firefox ([#2599](https://github.com/ReliefApplications/ems-frontend/issues/2599)) ([e32bd42](https://github.com/ReliefApplications/ems-frontend/commit/e32bd42bde1fd096bbf1d6479b190419f47605aa))
+
 ## [2.15.1-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.15.1-rc.1...v2.15.1-rc.2) (2024-06-05)
 
 
