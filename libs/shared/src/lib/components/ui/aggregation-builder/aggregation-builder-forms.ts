@@ -46,6 +46,7 @@ export const groupByRuleForm = (value: any) =>
   formBuilder.group({
     field: get(value, 'field', ''),
     expression: expressionForm(get(value, 'expression', false), false),
+    keepNull: get(value, 'keepNull') || false,
   });
 
 /**
