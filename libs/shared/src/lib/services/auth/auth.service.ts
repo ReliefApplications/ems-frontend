@@ -148,30 +148,18 @@ export class AuthService {
       .pipe(filter((e) => ['token_received'].includes(e.type)))
       .subscribe(() => {
         localStorage.setItem('idtoken', this.oauthService.getIdToken());
-        this.oauthService.loadUserProfile();
+        const redirectPath = localStorage.getItem('redirectPath');
+        // Redirect to previous path
+        if (redirectPath) {
+          // Current URL has finished loading, navigate to the desired URL
+          this.router.navigateByUrl(redirectPath);
+        }
+        localStorage.removeItem('redirectPath');
       });
     this.oauthService.events
       .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
       .subscribe(() => {
         this.oauthService.initLoginFlow();
-      });
-    // Redirect to previous path
-    this.oauthService.events
-      .pipe(filter((e: any) => e.type === 'user_profile_loaded'))
-      .subscribe(() => {
-        const redirectPath = localStorage.getItem('redirectPath');
-        if (redirectPath) {
-          // Current URL has finished loading, navigate to the desired URL
-          this.router.navigateByUrl(redirectPath);
-        } else {
-          // Fallback to the location origin with a new url state with clean params
-          // Chrome does not delete state and session state params once the oauth is successful
-          // Which triggers a new token fetch with an invalid(deprecated) code
-          // can cause an issue with navigation
-          // console.log(e);
-          // this.router.navigateByUrl(this.environment.authConfig.redirectUri);
-        }
-        localStorage.removeItem('redirectPath');
       });
     this.oauthService.setupAutomaticSilentRefresh();
     this.user$.subscribe((user) => this.updateAbility(user));
