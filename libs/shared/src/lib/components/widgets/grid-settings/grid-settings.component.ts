@@ -24,11 +24,12 @@ import {
   ResourceQueryResponse,
 } from '../../../models/resource.model';
 import { createGridWidgetFormGroup } from './grid-settings.forms';
-import { DistributionList } from '../../../models/distribution-list.model';
+// import { DistributionList } from '../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { WidgetSettings } from '../../../models/dashboard.model';
+import { EmailService } from '../../email/email.service';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -76,8 +77,36 @@ export class GridSettingsComponent
   }
 
   /** @returns application distribution lists */
-  get distributionLists(): DistributionList[] {
-    return this.applicationService.distributionLists || [];
+  public distributionLists: any[] = [];
+  /** Stores the email template */
+  public emailTemplates: any[] = [];
+
+  /**
+   *Distribution list
+   */
+  distributionListsData() {
+    this.emailService.getEmailDistributionList().subscribe((res: any) => {
+      if (res.data?.emailDistributionLists?.edges) {
+        const distributionList = res.data.emailDistributionLists.edges.map(
+          (e: any) => e.node
+        );
+        this.distributionLists = distributionList || [];
+      }
+    });
+  }
+
+  /**
+   * Custom email templates
+   */
+  emailTemplateData() {
+    this.emailService.getCustomTemplates().subscribe((res: any) => {
+      if (res.data?.customTemplates?.edges) {
+        const emailTemplates = res.data.customTemplates.edges.map(
+          (e: any) => e.node
+        );
+        this.emailTemplates = emailTemplates || [];
+      }
+    });
   }
 
   /**
@@ -88,13 +117,15 @@ export class GridSettingsComponent
    * @param queryBuilder Shared query builder service
    * @param fb Angular form builder
    * @param aggregationService Shared aggregation service
+   * @param emailService Email Service
    */
   constructor(
     private apollo: Apollo,
     private applicationService: ApplicationService,
     private queryBuilder: QueryBuilderService,
     private fb: FormBuilder,
-    private aggregationService: AggregationService
+    private aggregationService: AggregationService,
+    private emailService: EmailService
   ) {
     super();
   }
@@ -378,5 +409,7 @@ export class GridSettingsComponent
       this.widget.id,
       this.widget.settings
     );
+    this.distributionListsData();
+    this.emailTemplateData();
   }
 }

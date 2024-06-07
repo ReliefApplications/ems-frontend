@@ -172,6 +172,7 @@
 		"duplicate": "******",
 		"edit": "******",
 		"email": {
+			"customTemplate": "******",
 			"error": {
 				"duplicateName": "******"
 			},

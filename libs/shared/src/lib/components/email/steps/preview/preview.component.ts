@@ -7,6 +7,7 @@ import {
   OnChanges,
   SimpleChanges,
   OnInit,
+  Input,
 } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { EmailService } from '../../email.service';
@@ -77,6 +78,8 @@ export class PreviewComponent
   @ViewChild('subjectHtmlRef') subjectHtmlRef: any;
   /** Refernce to Subject */
   @ViewChild('emailHTMLRef') emailHTMLRef: any;
+  /** data set*/
+  @Input() dataset!: any[];
 
   /**
    * Expand see more email list dropdown for "To".

@@ -172,6 +172,7 @@
 		"duplicate": "Dupliquer",
 		"edit": "Modifier",
 		"email": {
+			"customTemplate": "Modèle personnalisé",
 			"error": {
 				"duplicateName": "Le titre existe déjà !"
 			},

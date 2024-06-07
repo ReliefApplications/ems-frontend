@@ -1,0 +1,189 @@
+<ui-dialog size="medium">
+    <ng-container ngProjectAs="header">
+      <h3 class="font-semibold">
+        {{
+          (data
+            ? 'components.distributionLists.edit.update'
+            : 'components.distributionLists.edit.new'
+          ) | translate
+        }}
+      </h3>
+    </ng-container>
+    <ng-container ngProjectAs="content">
+      <div class="mt-4 import-action-buttons">
+        <!-- Email List Import Button -->
+        <div>
+          <input type="file" class="hidden" #fileUpload (change)="fileSelectionHandler($event)" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+         </div>
+          <!-- Email List Template Button -->
+          <ui-button
+            class="float-right import"
+            icon="cloud_download"
+            category="secondary"
+            variant="primary"
+            uiTooltip="Upload Email List"
+            (click)="fileUpload.click()"
+          >
+          {{'components.email.distributionList.import.name' | translate}}
+          </ui-button>
+          
+          <ui-button
+            class="float-right"
+            icon="download"
+            category="secondary"
+            variant="primary"
+            uiTooltip="Download Template"
+            (click)="downloadDistributionListTemplate()"
+          >
+          {{'components.email.distributionList.import.download' | translate}}
+          </ui-button>
+          <br>
+      </div>
+      <form [formGroup]="form" class="flex flex-col">
+        <div class="flex flex-col">
+          <div
+            [uiErrorMessage]="
+              'components.distributionLists.errors.name.required' | translate
+            "
+            [uiErrorMessageIf]="
+              form.get('name')?.errors && form.get('name')?.touched && form.get('name')?.errors?.duplicateName
+            "
+            uiFormFieldDirective
+            class="flex-1"
+          >
+            <label>{{
+              'components.distributionLists.edit.name' | translate
+            }}</label>
+            <input formControlName="name" type="text" />
+          </div>
+          <div class="warning" *ngIf="uniqueNameValidator(form.get('name'))">
+            This name already exists. Please enter a unique name.
+          </div>
+          <!-- <div
+            *ngIf="data===null"
+            [uiErrorMessage]="emailsError | translate"
+            [uiErrorMessageIf]="
+              form.get('emails')?.errors && form.get('emails')?.touched
+            "
+            uiFormFieldDirective
+          >
+            <label class="block text-sm font-medium leading-6 text-gray-900">{{
+              'common.email.few' | translate
+            }}</label>
+            <div uiChipList #chipList formControlName="emails">
+              <ui-chip
+                *ngFor="let email of form.get('emails')?.value"
+                [removable]="true"
+                [value]="email"
+                (removed)="removeEmail(email)"
+              >
+                {{ email }}
+              </ui-chip>
+            </div>
+            <input
+              #emailsInput
+              [uiChipListFor]="chipList"
+              [chipInputSeparatorKeyCodes]="separatorKeysCodes"
+              (focusout)="addEmail($event)"
+              (chipTokenEnd)="addEmail($event)"
+            />
+          </div> -->
+
+          <div
+            [uiErrorMessage]="emailsError | translate"
+            [uiErrorMessageIf]="
+              form.get('to')?.errors && form.get('to')?.touched
+            "
+            uiFormFieldDirective
+          >
+            <label class="block text-sm font-medium leading-6 text-gray-900">To</label>
+            <div uiChipList #chipList formControlName="to">
+              <ui-chip
+                *ngFor="let to of form.get('to')?.value"
+                [removable]="true"
+                [value]="to"
+                (removed)="removeEmail(to,'to')"
+              >
+                {{ to }}
+              </ui-chip>
+            </div>
+            <input
+              #toInput
+              [uiChipListFor]="chipList"
+              [chipInputSeparatorKeyCodes]="separatorKeysCodes"
+              (focusout)="addTo($event)"
+              (chipTokenEnd)="addTo($event)"
+            />
+          </div>
+
+          <div
+            [uiErrorMessage]="emailsError | translate"
+            [uiErrorMessageIf]="
+              form.get('cc')?.errors && form.get('cc')?.touched
+            "
+            uiFormFieldDirective
+          >
+            <label class="block text-sm font-medium leading-6 text-gray-900">CC</label>
+            <div uiChipList #chipList formControlName="cc">
+              <ui-chip
+                *ngFor="let cc of form.get('cc')?.value"
+                [removable]="true"
+                [value]="cc"
+                (removed)="removeEmail(cc,'cc')"
+              >
+                {{ cc }}
+              </ui-chip>
+            </div>
+            <input
+              #ccInput
+              [uiChipListFor]="chipList"
+              [chipInputSeparatorKeyCodes]="separatorKeysCodes"
+              (focusout)="addCC($event)"
+              (chipTokenEnd)="addCC($event)"
+            />
+          </div>
+
+          <div
+            [uiErrorMessage]="emailsError | translate"
+            [uiErrorMessageIf]="
+              form.get('bcc')?.errors && form.get('bcc')?.touched
+            "
+            uiFormFieldDirective
+          >
+            <label class="block text-sm font-medium leading-6 text-gray-900">BCC</label>
+            <div uiChipList #chipList formControlName="bcc">
+              <ui-chip
+                *ngFor="let bcc of form.get('bcc')?.value"
+                [removable]="true"
+                [value]="bcc"
+                (removed)="removeEmail(bcc,'bcc')"
+              >
+                {{ bcc }}
+              </ui-chip>
+            </div>
+            <input
+              #bccInput
+              [uiChipListFor]="chipList"
+              [chipInputSeparatorKeyCodes]="separatorKeysCodes"
+              (focusout)="addBCC($event)"
+              (chipTokenEnd)="addBCC($event)"
+            />
+          </div>
+
+        </div>
+      </form>
+    </ng-container>
+    <ng-container ngProjectAs="actions">
+      <ui-button [uiDialogClose] variant="default">
+        {{ 'common.close' | translate }}
+      </ui-button>
+      <ui-button
+        category="secondary"
+        variant="primary"
+        [disabled]="!form.valid || isDistributionListNameDuplicate"
+        (click)="addOrUpdateDistributionList()"
+      >
+        {{ (data.isEdit ? 'common.update' : 'common.create') | translate }}
+      </ui-button>
+    </ng-container>
+  </ui-dialog>

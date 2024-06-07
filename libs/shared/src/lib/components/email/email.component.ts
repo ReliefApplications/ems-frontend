@@ -18,6 +18,8 @@ import { AppAbility, AuthService } from '../../services/auth/auth.service';
 import { DownloadService } from '../../services/download/download.service';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { cloneDeep } from 'lodash';
+import { Dialog } from '@angular/cdk/dialog';
+import { DistributionModalComponent } from '../distribution-lists/components/distribution-modal/distribution-modal.component';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
@@ -53,7 +55,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   /** Displayed columns in the table. */
   public displayedColumns = ['name', 'alerttype', 'createdby', 'actions'];
   /** Columns for distribution. */
-  public distributionColumn = ['name'];
+  public distributionColumn = ['name', 'createdby', 'actions'];
   /** Cached API configurations. */
   public cachedApiConfigurations: ApiConfiguration[] = [];
   /** Page information for distribution pagination. */
@@ -65,6 +67,18 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   };
   /** Cached distribution list. */
   cacheDistributionList: any = [];
+
+  /** Custom Template Columns */
+  public customTemplateColumns = ['subject', 'createdBy', 'actions'];
+
+  /** An array to store custom template objects.*/
+  public customTemplates: any[] = [];
+
+  /** Selected Tab Index - to manipulated button text based on selection */
+  public selectedTabIndex = 0;
+
+  /** Handler to show template creation wizard */
+  public showTemplateCreationWizard = false;
 
   /**
    * Email Notification setup component.
@@ -79,6 +93,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param downloadService The service for downloading files.
    * @param ability The app ability
    * @param queryBuilder The query builder
+   * @param dialog The service for showing dialog.
    */
   constructor(
     public emailService: EmailService,
@@ -90,7 +105,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     public authService: AuthService,
     public downloadService: DownloadService,
     public ability: AppAbility,
-    public queryBuilder: QueryBuilderService
+    public queryBuilder: QueryBuilderService,
+    public dialog: Dialog
   ) {
     super();
   }
@@ -101,6 +117,21 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       this.applicationId = res?.id;
     });
     this.getExistingTemplate();
+    this.getCustomTemplates();
+  }
+
+  /**
+   * Fetches custom templates from the email service and updates the component's customTemplates property.
+   *
+   * @returns {void}
+   */
+  getCustomTemplates(): void {
+    this.emailService.getCustomTemplates().subscribe((res: any) => {
+      // this.customTemplates =
+      this.customTemplates = res?.data?.customTemplates?.edges?.map(
+        (template: any) => template?.node
+      );
+    });
   }
 
   /**
@@ -171,16 +202,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         }
         res?.data?.emailNotifications?.edges?.forEach((ele: any) => {
           this.emailService.emailListLoading = false;
-          if (
-            ele.node.emailDistributionList.name !== null &&
-            ele.node.emailDistributionList.name !== ''
-          ) {
-            this.emailService.distributionListNames.push(
-              ele.node?.emailDistributionList?.name.trim().toLowerCase()
-            );
-          }
           this.emailService.emailNotificationNames.push(
-            ele.node.name.trim().toLowerCase()
+            ele?.node?.name?.trim()?.toLowerCase()
           );
         });
         const distributionListPaginationConfig = {
@@ -261,14 +284,15 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         );
         this.pageInfo.length = res?.data?.emailNotifications?.edges.length;
 
-        this.cacheDistributionList = this.distributionLists;
-        this.distributionLists = this.cacheDistributionList.slice(
-          this.distributionPageInfo.pageSize *
-            this.distributionPageInfo.pageIndex,
-          this.distributionPageInfo.pageSize *
-            (this.distributionPageInfo.pageIndex + 1)
-        );
-        this.distributionPageInfo.length = this.cacheDistributionList.length;
+          this.cacheDistributionList = this.distributionLists;
+          this.distributionLists = this.cacheDistributionList.slice(
+            this.distributionPageInfo.pageSize *
+              this.distributionPageInfo.pageIndex,
+            this.distributionPageInfo.pageSize *
+              (this.distributionPageInfo.pageIndex + 1)
+          );
+          this.distributionPageInfo.length = this.cacheDistributionList.length;
+        });
       });
   }
 
@@ -666,6 +690,62 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
+   * Deletes the specified custom template.
+   *
+   * @param data The custom template to be deleted.
+   */
+  public deleteCustomTemplate(data: any) {
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.email.customTemplate'),
+      }),
+      content: 'Do you confirm the deletion of ' + data.subject + ' ?',
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmVariant: 'danger',
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        this.emailService.emailListLoading = true;
+        this.emailService.deleteCustomTemplate(data.id).subscribe((res) => {
+          if (res.data?.editAndGetCustomTemplate?.id) {
+            this.emailService.emailListLoading = false;
+            this.getCustomTemplates();
+          }
+        });
+      }
+    });
+  }
+
+  /**
+   * Deletes the specified distribution list.
+   *
+   * @param data The custom template to be deleted.
+   */
+  public deleteDistributionList(data: any) {
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.distributionList.one'),
+      }),
+      content:
+        'Do you confirm the deletion of ' + data.distributionListName + ' ?',
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmVariant: 'danger',
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        this.emailService.emailListLoading = true;
+        this.emailService.deleteDistributionList(data.id).subscribe((res) => {
+          this.emailService.emailListLoading = false;
+          if (res.data?.editAndGetDistributionList?.id) {
+            this.emailService.emailListLoading = false;
+            this.getExistingTemplate();
+          }
+        });
+      }
+    });
+  }
+
+  /**
    * Deletes the specified email notification.
    *
    * @param data The email notification to be deleted.
@@ -766,5 +846,116 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       this.cacheDistributionList
     );
     this.distributionLists = cachedData;
+  }
+
+  /**
+   * used to create new custom template
+   */
+  createTemplate(): void {
+    this.showTemplateCreationWizard = true;
+  }
+
+  /**
+   * to handle the dialog of distribution list creation
+   */
+  distributionListDialogHandler() {
+    const dialogRef = this.dialog.open(DistributionModalComponent, {
+      data: { distributionListNames: this.emailService.distributionListNames },
+      disableClose: true,
+    });
+
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.getExistingTemplate();
+    });
+  }
+
+  /**
+   * To edit the distribution list from the list view
+   *
+   * @param distributionListData the distribution list data
+   */
+  editDistributionListHandler(distributionListData: any): void {
+    const editDistributionListDialogReference = this.dialog.open(
+      DistributionModalComponent,
+      {
+        data: { distributionListData, isEdit: true },
+        disableClose: true,
+      }
+    );
+
+    /* Need to update the list only if the data being updated */
+    editDistributionListDialogReference.closed.subscribe(
+      ({ isDistributionListUpdated }: any) => {
+        if (isDistributionListUpdated) {
+          this.getExistingTemplate();
+        }
+      }
+    );
+  }
+
+  /**
+   * Edit the custom template data.
+   *
+   * @param {any} data - The custom template data to be edited.
+   * @returns {void}
+   */
+  editCustomTemplate(data: any) {
+    this.emailService.isCustomTemplateEdit = true;
+    this.emailService.datasetsForm.patchValue({
+      emailLayout: data,
+    });
+
+    this.emailService.emailLayout = {
+      subject: data?.subject,
+      header: data?.header,
+      body: data?.body,
+      banner: data?.banner,
+      footer: data?.footer,
+    };
+    this.emailService.allLayoutdata = {
+      /** IMAGES AND STYLES */
+      bannerImage: data?.banner?.bannerImage,
+      bannerImageStyle: data?.banner?.bannerImageStyle,
+      /** CONTAINER STYLE */
+      containerStyle: data?.banner?.containerStyle,
+      /** FOOTER COPYRIGHT STYLE */
+      copyrightStyle: data?.banner?.copyrightStyle,
+      /** EMAIL SUBJECT */
+      txtSubject: data?.subject,
+      /** EMAIL HEADER */
+      headerHtml: data?.header?.headerHtml,
+      headerLogo: data?.header?.headerLogo,
+      headerLogoStyle: data?.header?.headerStyle,
+      headerBackgroundColor: data?.header?.headerBackgroundColor,
+      headerTextColor: data?.header?.headerTextColor,
+      headerStyle: data?.header?.headerStyle,
+      /** EMAIL BODY */
+      bodyHtml: data?.body?.bodyHtml,
+      bodyBackgroundColor: data?.body?.bodyBackgroundColor,
+      bodyTextColor: data?.body?.bodyTextColor,
+      bodyStyle: data?.body?.bodyStyle,
+      /** EMAIL FOOTER */
+      footerHtml: data?.footer?.footerHtml,
+      footerLogo: data?.footer?.footerLogo,
+      footerBackgroundColor: data?.footer?.footerBackgroundColor,
+      footerTextColor: data?.footer?.footerTextColor,
+      footerStyle: data?.footer?.footerStyle,
+      footerImgStyle: data?.footer?.footerImgStyle,
+      footerHtmlStyle: data?.footer?.footerHtmlStyle,
+    };
+
+    this.emailService.customTemplateId = data.id;
+    this.createTemplate();
+  }
+
+  /**
+   * Close the custom template;
+   */
+  customTemplateClose() {
+    this.emailService.datasetsForm?.get('emailLayout')?.reset();
+    this.emailService.customTemplateId = '';
+    this.emailService.isCustomTemplateEdit = false;
+    this.emailService.allLayoutdata = {};
+    this.emailService.emailLayout = {};
   }
 }

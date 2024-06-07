@@ -124,16 +124,37 @@ export class LayoutComponent
   }
 
   ngOnInit(): void {
-    this.layoutForm = this.fb.group({
-      subjectField: [''],
-      timeInput: [''],
-      subjectInput: [this.emailService.allLayoutdata.txtSubject],
-      inTheLastDropdown: [''],
-      headerTimeInput: [''],
-      header: [this.emailService.allLayoutdata.headerHtml],
-      block: [''],
-      body: [this.emailService.allLayoutdata.bodyHtml],
-    });
+    if (!this.emailService.isCustomTemplateEdit) {
+      this.layoutForm = this.fb.group({
+        subjectField: [''],
+        timeInput: [''],
+        subjectInput: [this.emailService.allLayoutdata.txtSubject],
+        inTheLastDropdown: [''],
+        headerTimeInput: [''],
+        header: [this.emailService.allLayoutdata.headerHtml],
+        block: [''],
+        body: [this.emailService.allLayoutdata.bodyHtml],
+      });
+    } else {
+      this.layoutForm = this.fb.group({
+        subjectField: [''],
+        timeInput: [''],
+        subjectInput: [
+          this.emailService.datasetsForm?.get('emailLayout')?.value.subject,
+        ],
+        inTheLastDropdown: [''],
+        headerTimeInput: [''],
+        header: [
+          this.emailService.datasetsForm?.get('emailLayout')?.value?.header
+            ?.headerHtml,
+        ],
+        block: [''],
+        body: [
+          this.emailService.datasetsForm?.get('emailLayout')?.value?.body
+            ?.bodyHtml,
+        ],
+      });
+    }
 
     this.onTxtSubjectChange();
     this.initInTheLastDropdown();

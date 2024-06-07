@@ -59,6 +59,7 @@
     [canUpdate]="canUpdate"
     [status]="status"
     [canCreateRecords]="canCreateRecords"
+    (selectionChange)="onGridRowSelection($event)"
   ></shared-core-grid>
 </ng-template>
 

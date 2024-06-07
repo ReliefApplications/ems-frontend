@@ -48,6 +48,7 @@ import { EmsTemplateComponent } from './components/ems-template/ems-template.com
 import { EmptyModule } from '../ui/empty/empty.module';
 import { FilterModule } from '../filter/filter.module';
 import { ResourceSelectComponent } from '../controls/public-api';
+import { CustomTemplateComponent } from './components/custom-templates/custom-template.component';
 
 /**
  * Email module.
@@ -65,6 +66,7 @@ import { ResourceSelectComponent } from '../controls/public-api';
     EmailTemplateComponent,
     DatasetFilterComponent,
     EmsTemplateComponent,
+    CustomTemplateComponent,
   ],
   imports: [
     FormsModule,
@@ -107,5 +109,6 @@ import { ResourceSelectComponent } from '../controls/public-api';
     ResourceSelectComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA],
+  exports: [CustomTemplateComponent, PreviewComponent, LayoutComponent],
 })
 export class EmailModule {}

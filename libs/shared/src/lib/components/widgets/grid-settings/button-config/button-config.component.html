@@ -324,7 +324,7 @@
               *ngFor="let list of distributionLists"
               [value]="list.id"
             >
-              {{ list.name }}
+              {{ list.distributionListName  }}
             </ui-select-option>
           </ui-select-menu>
           <ui-icon
@@ -364,10 +364,10 @@
             [multiselect]="true"
           >
             <ui-select-option
-              *ngFor="let template of mailTemplates"
+              *ngFor="let template of allTemplateData"
               [value]="template.id"
             >
-              {{ template.name }}
+              {{ template.subject  }}
             </ui-select-option>
           </ui-select-menu>
           <ui-icon

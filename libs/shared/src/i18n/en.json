@@ -172,6 +172,7 @@
 		"duplicate": "Duplicate",
 		"edit": "Edit",
 		"email": {
+			"customTemplate": "Custom template",
 			"error": {
 				"duplicateName": "Title already exists!"
 			},

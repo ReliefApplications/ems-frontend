@@ -1,7 +1,13 @@
 import { EventEmitter, Injectable, NgZone, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
+  ADD_CUSTOM_TEMPLATE,
+  ADD_DISTRIBUTION_LIST,
   ADD_EMAIL_NOTIFICATION,
+  EDIT_CUSTOM_TEMPLATE,
+  EDIT_DISTRIBUTION_LIST,
+  GET_CUSTOM_TEMPLATES,
+  GET_DISTRIBUTION_LIST,
   GET_AND_UPDATE_EMAIL_NOTIFICATION,
   GET_EMAIL_NOTIFICATIONS,
   GET_RESOURCE_BY_ID,
@@ -124,6 +130,10 @@ export class EmailService {
   public cacheDistributionList: any = [];
   /** Final Email Preview */
   public finalEmailPreview: any = '';
+  /** Checking the edit operation on custom template */
+  public isCustomTemplateEdit = false;
+  /** custom template ID */
+  public customTemplateId = '';
 
   /**
    * Generates new dataset group.
@@ -1044,6 +1054,21 @@ export class EmailService {
   }
 
   /**
+   * Adds an email distribution list with the provided data.
+   *
+   * @param data The notification data to be added.
+   * @returns A query result after adding the email distribution list.
+   */
+  addDistributionList(data: any) {
+    return this.apollo.query<any>({
+      query: ADD_DISTRIBUTION_LIST,
+      variables: {
+        distributionList: data,
+      },
+    });
+  }
+
+  /**
    * sending query to endpoint
    *
    * @param queryData - Preview Data payload
@@ -1053,6 +1078,21 @@ export class EmailService {
     const url = `${this.restService.apiUrl}/notification/preview-dataset`;
     return this.http.post<any>(url, queryData, {
       headers: { responseType: 'text/html' },
+    });
+  }
+
+  /**
+   * Adds a custom template to the distribution list.
+   *
+   * @param templateInfo - Information about the custom template to be added.
+   * @returns {Observable<any>} An observable that resolves with the result of the query.
+   */
+  addCustomTemplate(templateInfo: any): Observable<any> {
+    return this.apollo.query<any>({
+      query: ADD_CUSTOM_TEMPLATE,
+      variables: {
+        customTemplate: templateInfo,
+      },
     });
   }
 
@@ -1068,6 +1108,96 @@ export class EmailService {
       variables: {
         id: resourceId,
       },
+    });
+  }
+
+  /**
+   * Edit a custom template to the distribution list.
+   *
+   * @param customTemplate - Information about the custom template to be edit.
+   * @param id string
+   * @returns {Observable<any>} An observable that resolves with the result of the query.
+   */
+  editCustomTemplate(customTemplate: any, id: string): Observable<any> {
+    return this.apollo.query<any>({
+      query: EDIT_CUSTOM_TEMPLATE,
+      variables: {
+        editAndGetCustomTemplateId: id,
+        customTemplate,
+      },
+    });
+  }
+
+  /**
+   * Edit a distribution list.
+   *
+   * @param distributionList dl data
+   * @param id string
+   * @returns {Observable<any>} An observable that resolves with the result of the query.
+   */
+  editDistributionList(distributionList: any, id?: string): Observable<any> {
+    return this.apollo.query<any>({
+      query: EDIT_DISTRIBUTION_LIST,
+      variables: {
+        editAndGetDistributionListId: id,
+        distributionList,
+      },
+    });
+  }
+
+  /**
+   * Delete the distribution list.
+   *
+   * @param id string
+   * @returns {Observable<any>} An observable that resolves with the result of the query.
+   */
+  deleteDistributionList(id: string): Observable<any> {
+    return this.apollo.query<any>({
+      query: EDIT_DISTRIBUTION_LIST,
+      variables: {
+        editAndGetDistributionListId: id,
+        distributionList: { isDeleted: 1 },
+      },
+    });
+  }
+
+  /**
+   * Delete a custom template to the distribution list.
+   *
+   * @param id string
+   * @returns {Observable<any>} An observable that resolves with the result of the query.
+   */
+  deleteCustomTemplate(id: string): Observable<any> {
+    return this.apollo.query<any>({
+      query: EDIT_CUSTOM_TEMPLATE,
+      variables: {
+        editAndGetCustomTemplateId: id,
+        customTemplate: { isDeleted: 1 },
+      },
+    });
+  }
+
+  /**
+   * Retrieves custom templates from the server.
+   *
+   * @returns {Observable<any>} An observable that resolves with the result of the query.
+   */
+  getCustomTemplates(): Observable<any> {
+    return this.apollo.query<any>({
+      query: GET_CUSTOM_TEMPLATES,
+      variables: {},
+    });
+  }
+
+  /**
+   * Get an email distribution lists.
+   *
+   * @returns Email distribution lists.
+   */
+  getEmailDistributionList() {
+    return this.apollo.query<any>({
+      query: GET_DISTRIBUTION_LIST,
+      variables: {},
     });
   }
 }

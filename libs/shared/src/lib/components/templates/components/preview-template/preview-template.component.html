@@ -1,0 +1,167 @@
+<!-- <ui-dialog>
+    <ng-container ngProjectAs="content">
+            Subject
+            <p>{{'components.email.preview.subject' | translate}}</p>
+            <div id="subjectHtml" class="w-full"></div>
+
+            <p>To: {{this.data?.distribution?.To}}</p>
+            <p>CC: {{this.data?.distribution?.Cc}}</p>
+            <p>BCC: {{this.data?.distribution?.Bcc}}</p>
+
+        
+        <div [style]="getEmailStyle('container')">
+            Banner Images
+            <img *ngIf="bannerImage" id="bannerImage" [src]="bannerImage" [style]="getEmailStyle('bannerImage')">
+
+    Header
+    <div id="header" [style]="getEmailStyle('header')">
+        <img id="headerLogo" *ngIf="headerLogo" [src]="headerLogo" [style]="getEmailStyle('headerLogo')">
+        <div id="headerHtml" [style]="getEmailStyle('headerHtml')"></div>
+    </div>
+
+
+    Body
+    <div id="bodyHtml" >
+        <ng-container *ngIf="this.data.dataset.length">
+            <table cdk-table uiTableWrapper [dataSource]="this.data.dataset">
+                <ng-container cdkColumnDef="Alerts">
+                <th uiCellHeader *cdkHeaderCellDef scope="col">
+                    Alerts
+                </th>
+                <td
+                    uiCell
+                    *cdkCellDef="let element"
+                    class="!text-gray-900 !font-medium max-w-[30vw]"
+                >
+                </td>
+                </ng-container>
+                <ng-container cdkColumnDef="Cause">
+                <th uiCellHeader *cdkHeaderCellDef scope="col">
+                    Cause
+                </th>
+                <td uiCell *cdkCellDef="let element">
+                    
+                </td>
+                </ng-container>
+                <ng-container cdkColumnDef="Date of Disaster">
+                    <th uiCellHeader *cdkHeaderCellDef scope="col">
+                        Date of Disaster
+                    </th>
+                    <td uiCell *cdkCellDef="let element">
+                    
+                    </td>
+                </ng-container>
+                <ng-container cdkColumnDef="Date of Logging">
+                    <th uiCellHeader *cdkHeaderCellDef scope="col">
+                        Date of Logging
+                    </th>
+                    <td uiCell *cdkCellDef="let element">
+                    
+                    </td>
+                </ng-container>
+                <ng-container cdkColumnDef="Plan">
+                    <th uiCellHeader *cdkHeaderCellDef scope="col">
+                        Plan
+                    </th>
+                    <td uiCell *cdkCellDef="let element">
+                    
+                    </td>
+                </ng-container>
+                <ng-container cdkColumnDef="Notes">
+                    <th uiCellHeader *cdkHeaderCellDef scope="col">
+                        Notes
+                    </th>
+                    <td uiCell *cdkCellDef="let element">
+                    
+                    </td>
+                </ng-container>
+                <ng-container cdkColumnDef="Description">
+                    <th uiCellHeader *cdkHeaderCellDef scope="col">
+                        Description
+                    </th>
+                    <td uiCell *cdkCellDef="let element">
+                    {{element.dataItem.description}}
+                    </td>
+                </ng-container>
+                <ng-container cdkColumnDef="Level of Alert">
+                    <th uiCellHeader *cdkHeaderCellDef scope="col">
+                        Level of Alert
+                    </th>
+                    <td uiCell *cdkCellDef="let element">
+                    {{element.dataItem.level_of_alert}}
+                    </td>
+                </ng-container>
+    
+                <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+                <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
+            </table>
+        </ng-container>
+        
+    </div>
+
+    <div [style]="getEmailStyle('footer')">
+        <img id="footerImg" [src]="footerLogo" [style]="getEmailStyle('footerImg')"/>
+        <div id="footerHtml" [style]="getEmailStyle('footerHtml')"></div>
+    </div>
+    Copyright
+    <div [style]="getEmailStyle('copyright')">
+        {{ 'common.copyright.who' | translate}}
+    </div>
+    </div>
+    </ng-container>
+    <ng-container ngProjectAs="actions">
+        <ui-button variant="primary" [uiDialogClose]>Dismiss</ui-button>
+        <ui-button variant="primary" (click)="send()">Send</ui-button>
+        
+    </ng-container>
+</ui-dialog> -->
+<ui-dialog (closed)="onClose()">
+    <ng-container ngProjectAs="content">
+        <div class="example">
+            <kendo-stepper #stepper
+            [steps]="steps"
+            stepType="full"
+            [(currentStep)]="currentStep"
+            orientation="horizontal"
+            [linear]="true"
+            > </kendo-stepper>
+            <div>
+              <span class="k-form-separator"></span>
+            </div>
+            <app-layout *ngIf="currentStep === 0" type="custom"></app-layout>
+            <app-preview *ngIf="currentStep === 1" [dataset]="this.data.dataset"></app-preview>
+        
+            <div class="flex gap-5 mt-4 pb-4">
+              <button
+                type="button"
+                class="bg-sky-500 hover:bg-sky-400 text-white px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
+                *ngIf="currentStep !== 0"
+                (click)="currentStep = 0"
+              >
+                Back
+              </button>
+              <button
+                type="submit"
+                class="bg-sky-500 hover:bg-sky-400 px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
+                [ngClass]="disableActionButton ? 'inactive': 'active'"
+                [disabled]="disableActionButton"
+                (click)="currentStep = 1"
+                *ngIf="currentStep !== 1"
+              >
+                Next
+              </button>
+        
+              
+              <button
+              type="submit"
+              class="bg-sky-500 text-white ml-3 px-4 py-2 rounded-md"
+              *ngIf="currentStep === 1"
+              (click)="send()"
+            >
+              Send Email
+            </button>
+            </div>
+          </div>
+    </ng-container>
+</ui-dialog>
+

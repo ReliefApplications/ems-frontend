@@ -69,6 +69,9 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
   @ViewChild(ReferenceDataGridComponent)
   referenceDataGridComponent?: ReferenceDataGridComponent;
 
+  /** Selected Items from the grid */
+  public selectedRows: any = [];
+
   /** Data */
   @Input() widget: any;
 
@@ -285,6 +288,27 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
   }
 
   /**
+   * Handles the selection of rows in a grid.
+   *
+   * @param selectionEvent the event of selected and unselected Items
+   */
+  onGridRowSelection(selectionEvent: any) {
+    const deselectedRows = selectionEvent.deselectedRows || [];
+    const selectedRows = selectionEvent.selectedRows || [];
+    if (deselectedRows.length > 0) {
+      this.selectedRows = [
+        ...this.selectedRows.filter(
+          (x: any) =>
+            !deselectedRows.some((y: any) => x.dataItem.id === y.dataItem.id)
+        ),
+      ];
+    }
+    if (selectedRows.length > 0) {
+      this.selectedRows = this.selectedRows.concat(selectedRows);
+    }
+  }
+
+  /**
    * Executes sequentially actions enabled by settings for the floating button
    *
    * @param options action options.
@@ -435,65 +459,62 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     }
     // Send email using backend mail service.
     if (options.sendMail) {
-      const templates =
-        this.applicationService.templates.filter((x) =>
-          options.templates?.includes(x.id)
-        ) || [];
-      if (templates.length === 0) {
-        // no template found, skip
-        this.snackBar.openSnackBar(
-          this.translate.instant(
-            'common.notifications.email.errors.noTemplate'
-          ),
-          { error: true }
+      this.emailService.getCustomTemplates().subscribe((res: any) => {
+        const allTemplateData = res.data.customTemplates.edges.map(
+          (x: any) => x.node
         );
-      } else {
-        // find recipients
-        const recipients =
-          this.applicationService.distributionLists.find(
-            (x) => x.id === options.distributionList
-          )?.emails || [];
-
-        // select template
-        const { EmailTemplateModalComponent } = await import(
-          '../../email-template-modal/email-template-modal.component'
+        const templates = allTemplateData.filter((template: any) =>
+          options.templates?.includes(template.id)
         );
-        const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
-          data: {
-            templates,
-          },
-        });
-
-        const value = await firstValueFrom<any>(
-          dialogRef.closed.pipe(takeUntil(this.destroy$))
-        );
-        const template = value?.template;
-
-        if (template) {
-          this.emailService.previewMail(
-            recipients,
-            template.content.subject,
-            template.content.body,
-            {
-              logic: 'and',
-              filters: [
-                {
-                  operator: 'eq',
-                  field: 'ids',
-                  value: this.grid.selectedRows,
-                },
-              ],
-            },
-            {
-              name: this.grid.settings.query.name,
-              fields: options.bodyFields,
-            },
-            this.grid.sortField || undefined,
-            this.grid.sortOrder || undefined,
-            options.export
+        if (templates.length === 0) {
+          // no template found, skip
+          this.snackBar.openSnackBar(
+            this.translate.instant(
+              'common.notifications.email.errors.noTemplate'
+            ),
+            { error: true }
           );
+        } else {
+          this.emailService
+            .getEmailDistributionList()
+            .subscribe(async (res) => {
+              const allDistributionLists =
+                res.data.emailDistributionLists.edges.map((x: any) => x.node);
+
+              const selectedDL = allDistributionLists.filter(
+                (dl: any) => options.distributionList === dl.id
+              );
+
+              console.log('', selectedDL);
+              const { EmailTemplateModalComponent } = await import(
+                '../../email-template-modal/email-template-modal.component'
+              );
+              const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
+                data: {
+                  templates,
+                },
+              });
+              const value = await firstValueFrom<any>(
+                dialogRef.closed.pipe(takeUntil(this.destroy$))
+              );
+              const template = value?.template;
+
+              const selectedTemplate = templates.filter(
+                (temp: any) => temp.subject === template
+              );
+
+              console.log('selected Template', selectedTemplate);
+
+              if (selectedTemplate?.length) {
+                this.emailService.previewCustomTemplates(
+                  selectedTemplate[0],
+                  selectedDL[0],
+                  this.selectedRows
+                );
+              }
+            });
         }
-      }
+      });
     }
 
     // Workflow only: goes to next step, goes to the previous step, or closes the workflow.

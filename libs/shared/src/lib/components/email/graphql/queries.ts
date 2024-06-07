@@ -435,3 +435,115 @@ export const GET_RESOURCE_BY_ID = gql`
     }
   }
 `;
+
+/** Graphql query for getting  EMAIL_DISTRIBUTION_LIST */
+export const GET_DISTRIBUTION_LIST = gql`
+  query EmailDistributionLists {
+    emailDistributionLists {
+      totalCount
+      edges {
+        node {
+          Bcc
+          Cc
+          To
+          distributionListName
+          id
+          isDeleted
+          createdBy
+        }
+      }
+    }
+  }
+`;
+/** Graphql query for add  EMAIL_DISTRIBUTION_LIST */
+export const ADD_DISTRIBUTION_LIST = gql`
+  mutation AddEmailDistributionList($distributionList: JSON!) {
+    addEmailDistributionList(distributionList: $distributionList) {
+      Bcc
+      Cc
+      To
+      distributionListName
+      id
+      createdBy
+    }
+  }
+`;
+
+/**
+ * Custom Template related queries
+ */
+export const ADD_CUSTOM_TEMPLATE = gql`
+  mutation AddCustomTemplate($customTemplate: JSON!) {
+    addCustomTemplate(customTemplate: $customTemplate) {
+      subject
+      header
+      body
+      banner
+      footer
+    }
+  }
+`;
+
+/**
+ * Distribution List related queries
+ */
+export const EDIT_DISTRIBUTION_LIST = gql`
+  mutation EditAndGetDistributionList(
+    $editAndGetDistributionListId: ID!
+    $distributionList: JSON
+  ) {
+    editAndGetDistributionList(
+      id: $editAndGetDistributionListId
+      distributionList: $distributionList
+    ) {
+      Bcc
+      Cc
+      To
+      distributionListName
+      id
+      isDeleted
+    }
+  }
+`;
+
+/**
+ * Custom Template related queries
+ */
+export const EDIT_CUSTOM_TEMPLATE = gql`
+  mutation Mutation($editAndGetCustomTemplateId: ID!, $customTemplate: JSON) {
+    editAndGetCustomTemplate(
+      id: $editAndGetCustomTemplateId
+      customTemplate: $customTemplate
+    ) {
+      banner
+      body
+      createdBy
+      footer
+      header
+      id
+      isDeleted
+      subject
+    }
+  }
+`;
+
+/** Graphql query for getting  CUSTOM_TEMPLATES */
+export const GET_CUSTOM_TEMPLATES = gql`
+  query CustomTemplates {
+    customTemplates {
+      totalCount
+      edges {
+        node {
+          subject
+          header
+          body
+          banner
+          footer
+          isDeleted
+          createdBy
+          id
+        }
+      }
+    }
+  }
+`;

@@ -9,6 +9,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { RestService } from '../rest/rest.service';
 import { SnackbarService } from '@oort-front/ui';
 import { flatDeep } from '../../utils/array-filter';
+import {
+  GET_CUSTOM_TEMPLATES,
+  GET_DISTRIBUTION_LIST,
+} from '../../components/email/graphql/queries';
+import { Apollo } from 'apollo-angular';
 
 /** Snackbar duration in ms */
 const SNACKBAR_DURATION = 1000;
@@ -29,12 +34,14 @@ export class EmailService {
    * @param dialog The Dialog service.
    * @param translate Angular translate service.
    * @param restService Shared rest service.
+   * @param apollo the graphQL client service
    */
   constructor(
     private snackBar: SnackbarService,
     private dialog: Dialog,
     private translate: TranslateService,
-    private restService: RestService
+    private restService: RestService,
+    private apollo: Apollo
   ) {}
 
   /**
@@ -315,5 +322,61 @@ export class EmailService {
         }
       })
     );
+  }
+
+  /**
+   * Retrieves custom templates from the server.
+   *
+   * @returns {Observable<any>} An observable that resolves with the result of the query.
+   */
+  getCustomTemplates(): Observable<any> {
+    return this.apollo.query<any>({
+      query: GET_CUSTOM_TEMPLATES,
+      variables: {},
+    });
+  }
+
+  /**
+   * Get an email distribution lists.
+   *
+   * @returns Email distribution lists.
+   */
+  getEmailDistributionList() {
+    return this.apollo.query<any>({
+      query: GET_DISTRIBUTION_LIST,
+      variables: {},
+    });
+  }
+
+  /**
+   * Previews custom email templates.
+   *
+   * @param {any} emailContent - The content of the email template.
+   * @param {any} distributionListInfo - Information about the distribution list.
+   * @param selectedRowsFromGrid
+   */
+  async previewCustomTemplates(
+    emailContent: any,
+    distributionListInfo: any,
+    selectedRowsFromGrid: any
+  ) {
+    const { PreviewTemplate } = await import(
+      '../../../lib/components/templates/components/preview-template/preview-template.component'
+    );
+    const customTemplateDialogRef = this.dialog.open(PreviewTemplate, {
+      data: {
+        emailContent,
+        distributionListInfo,
+        selectedRowsFromGrid,
+      },
+      autoFocus: false,
+      disableClose: true,
+      width: '80%',
+    });
+    customTemplateDialogRef.closed.subscribe((value: any) => {
+      if (value) {
+        // this.dataset = [];
+      }
+    });
   }
 }
