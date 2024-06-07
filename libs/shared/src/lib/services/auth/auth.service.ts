@@ -15,7 +15,13 @@ import {
 import { ApolloQueryResult } from '@apollo/client';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { filter, map } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import {
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  NavigationStart,
+  Router,
+} from '@angular/router';
 import {
   Ability,
   AbilityBuilder,
@@ -149,12 +155,12 @@ export class AuthService {
       .subscribe(() => {
         localStorage.setItem('idtoken', this.oauthService.getIdToken());
         const redirectPath = localStorage.getItem('redirectPath');
-        // Redirect to previous path
-        if (redirectPath) {
+        // Redirect to previous path for backoffice, frontoffice is handled directly from the redirect component
+        if (redirectPath && this.environment.module === 'backoffice') {
           // Current URL has finished loading, navigate to the desired URL
           this.router.navigateByUrl(redirectPath);
+          localStorage.removeItem('redirectPath');
         }
-        localStorage.removeItem('redirectPath');
       });
     this.oauthService.events
       .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
@@ -230,6 +236,7 @@ export class AuthService {
       }
       redirectUri.search = '';
       if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
+        console.log('setting redirect uri', redirectUri.pathname);
         localStorage.setItem('redirectPath', redirectUri.pathname);
       }
     }
