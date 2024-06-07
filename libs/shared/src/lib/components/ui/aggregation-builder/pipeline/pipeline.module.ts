@@ -20,6 +20,7 @@ import {
   ExpansionPanelModule,
   SelectMenuModule,
   IconModule,
+  CheckboxModule,
 } from '@oort-front/ui';
 
 /**
@@ -50,6 +51,7 @@ import {
     ButtonModule,
     FormWrapperModule,
     SelectMenuModule,
+    CheckboxModule,
   ],
   exports: [
     PipelineComponent,

@@ -465,6 +465,7 @@
 			"fieldName": "Field name",
 			"groupBy": "Group by",
 			"groupingRules": "Grouping rules",
+			"keepNull": "Preserve null values",
 			"mapping": {
 				"category": "Category",
 				"field": "Value",
