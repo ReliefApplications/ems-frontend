@@ -29,6 +29,14 @@
         [operators]="$any(dateOperators)"
         [displayField]="false"
       ></shared-expressions>
+      <ng-container [formGroup]="$any(rule)">
+        <ui-checkbox formControlName="keepNull">
+          <ng-container ngProjectAs="label">{{
+            'components.aggregationBuilder.keepNull' | translate
+          }}</ng-container>
+        </ui-checkbox>
+      </ng-container>
+
       <ui-button
         *ngIf="i > 0"
         (click)="onDeleteRule(i)"
