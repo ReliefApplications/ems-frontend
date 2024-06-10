@@ -164,6 +164,26 @@ export class CalculatedFieldsTabComponent
               this.snackBar.openSnackBar(res.errors[0].message, {
                 error: true,
               });
+            } else {
+              if (!field) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.calculatedField.one')
+                      .toLowerCase(),
+                    value: value.name,
+                  })
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectUpdated', {
+                    type: this.translate
+                      .instant('common.calculatedField.one')
+                      .toLowerCase(),
+                    value: value.name,
+                  })
+                );
+              }
             }
           },
           error: (err) => {
@@ -221,6 +241,12 @@ export class CalculatedFieldsTabComponent
                 this.snackBar.openSnackBar(res.errors[0].message, {
                   error: true,
                 });
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: this.translate.instant('common.calculatedField.one'),
+                  })
+                );
               }
             },
             error: (err) => {

@@ -18,6 +18,8 @@ import { get } from 'lodash';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
+import { SnackbarService } from '@oort-front/ui';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Main tab of chart settings modal.
@@ -65,12 +67,16 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
    * @param dialog Dialog service
    * @param aggregationBuilder Shared aggregation builder service
    * @param aggregationService Shared aggregation service
+   * @param snackBar Snackbar service
+   * @param translate Translate service
    */
   constructor(
     private apollo: Apollo,
     private dialog: Dialog,
     private aggregationBuilder: AggregationBuilderService,
-    private aggregationService: AggregationService
+    private aggregationService: AggregationService,
+    private snackBar: SnackbarService,
+    private translate: TranslateService
   ) {
     super();
   }
@@ -189,20 +195,36 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
         referenceData: this.referenceData,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.formGroup.get('chart.aggregationId')?.setValue(value.id);
-        this.aggregation = value;
-        if (this.aggregation) {
-          this.availableSeriesFields =
-            this.aggregationBuilder.getAvailableSeriesFields(this.aggregation, {
-              referenceData: this.referenceData,
-              resource: this.resource,
-            });
-        } else {
-          this.availableSeriesFields = [];
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (value: any) => {
+        if (value) {
+          this.formGroup.get('chart.aggregationId')?.setValue(value.id);
+          this.aggregation = value;
+          if (this.aggregation) {
+            this.availableSeriesFields =
+              this.aggregationBuilder.getAvailableSeriesFields(
+                this.aggregation,
+                {
+                  referenceData: this.referenceData,
+                  resource: this.resource,
+                }
+              );
+          } else {
+            this.availableSeriesFields = [];
+          }
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectCreated', {
+              type: this.translate
+                .instant('common.aggregation.one')
+                .toLowerCase(),
+              value: value.name,
+            })
+          );
         }
-      }
+      },
+      error: (err) => {
+        this.snackBar.openSnackBar(err.message, { error: true });
+      },
     });
   }
 

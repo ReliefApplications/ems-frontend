@@ -15,7 +15,11 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import { GET_RESOURCE_AGGREGATIONS } from './graphql/queries';
 import { takeUntil } from 'rxjs';
-import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
+import {
+  UIPageChangeEvent,
+  handleTablePageEvent,
+  SnackbarService,
+} from '@oort-front/ui';
 
 /**
  * Aggregations tab of resource page
@@ -78,13 +82,15 @@ export class AggregationsTabComponent
    * @param aggregationService Grid aggregation service
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
+   * @param snackBar Shared snackbar service
    */
   constructor(
     private apollo: Apollo,
     private dialog: Dialog,
     private aggregationService: AggregationService,
     private confirmService: ConfirmService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private snackBar: SnackbarService
   ) {
     super();
   }
@@ -189,11 +195,42 @@ export class AggregationsTabComponent
       if (value) {
         this.aggregationService
           .addAggregation(value, { resource: this.resource.id })
-          .subscribe(({ data }: any) => {
-            if (data.addAggregation) {
-              this.aggregations = [...this.aggregations, data?.addAggregation];
-              this.pageInfo.length += 1;
-            }
+          .subscribe({
+            next: ({ data }: any) => {
+              if (data.addAggregation && !data.errors) {
+                this.aggregations = [
+                  ...this.aggregations,
+                  data?.addAggregation,
+                ];
+                this.pageInfo.length += 1;
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.aggregation.one')
+                      .toLowerCase(),
+                    value: data.addAggregation.name,
+                  })
+                );
+              } else {
+                if (data.errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectNotCreated',
+                      {
+                        type: this.translate
+                          .instant('common.aggregation.one')
+                          .toLowerCase(),
+                        error: data.errors ? data.errors[0] : '',
+                      }
+                    ),
+                    { error: true }
+                  );
+                }
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
           });
       }
     });
@@ -263,6 +300,12 @@ export class AggregationsTabComponent
               );
               this.pageInfo.length -= 1;
             }
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectDeleted', {
+                value: this.translate.instant('common.aggregation.one'),
+              })
+            );
+            console.log(this.cachedAggregations);
           });
       }
     });
