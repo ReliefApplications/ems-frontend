@@ -900,7 +900,9 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
                   this.fetchValue(data, filter.field.replace(/-/g, '.'))
                     ?.toString()
                     .toLowerCase(),
-                  filter?.value?.toLowerCase()
+                  typeof filter.value === 'string'
+                    ? filter?.value?.toLowerCase()
+                    : filter?.value
                 )
               )
             ) {
