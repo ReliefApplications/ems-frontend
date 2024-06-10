@@ -666,6 +666,7 @@
             <a
               class="url-container textbox cursor-pointer"
               rel="noopener noreferrer"
+              *ngIf="dataItem[field.name]"
               (click)="onOpenEditorModal(dataItem[field.name])"
               [uiTooltip]="
                 'components.widget.grid.tooltip.displayEditor' | translate

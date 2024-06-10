@@ -159,6 +159,7 @@ export class EditorControlComponent
     } else {
       this.ngControl?.control?.enable();
     }
+    this.editor.disabled = isDisabled;
     this.stateChanges.next();
   }
 

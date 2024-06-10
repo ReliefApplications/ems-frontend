@@ -40,19 +40,26 @@ export const init = (
       );
       const instance: EditorQuestionComponent = editor.instance;
 
-      // Use of a timeout to wait for the loading of the editor instance
       setTimeout(() => {
+        if (!question.value && question.defaultValueExpression) {
+          question.value = question.defaultValueExpression;
+        }
         if (question.value) {
+          console.log(question.value);
           instance.editor.editor.writeValue(question.value);
         }
-      }, 100);
 
-      //Cannot set instance.editor.registerOnChange because editor not set yet
-      instance.html.subscribe((html) => {
-        if (!isNil(html)) {
-          question.value = html;
-        }
-      });
+        instance.html.subscribe((html) => {
+          if (isNil(html)) {
+            return;
+          }
+          if (question.survey?.isDesignMode) {
+            question.defaultValueExpression = html;
+          } else {
+            question.value = html;
+          }
+        });
+      }, 100);
     },
   };
   componentCollectionInstance.add(component);
