@@ -16,6 +16,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { GET_RESOURCE_LAYOUTS } from './graphql/queries';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Layouts tab of resource page
@@ -79,13 +80,15 @@ export class LayoutsTabComponent
    * @param gridLayoutService Grid layout service
    * @param confirmService Confirm service
    * @param translate Angular translate service
+   * @param snackBar Shared snackbar service
    */
   constructor(
     private apollo: Apollo,
     private dialog: Dialog,
     private gridLayoutService: GridLayoutService,
     private confirmService: ConfirmService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private snackBar: SnackbarService
   ) {
     super();
   }
@@ -186,14 +189,25 @@ export class LayoutsTabComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.gridLayoutService
-          .addLayout(value, this.resource.id)
-          .subscribe(({ data }: any) => {
+        this.gridLayoutService.addLayout(value, this.resource.id).subscribe({
+          next: ({ data }: any) => {
             if (data.addLayout) {
               this.layouts = [...this.layouts, data?.addLayout];
               this.pageInfo.length += 1;
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectCreated', {
+                  type: this.translate
+                    .instant('common.layout.one')
+                    .toLowerCase(),
+                  value: value.name,
+                })
+              );
             }
-          });
+          },
+          error: (err) => {
+            this.snackBar.openSnackBar(err.message, { error: true });
+          },
+        });
       }
     });
   }
