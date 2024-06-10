@@ -40,26 +40,29 @@ export const init = (
       );
       const instance: EditorQuestionComponent = editor.instance;
 
-      setTimeout(() => {
-        if (!question.value && question.defaultValueExpression) {
-          question.value = question.defaultValueExpression;
-        }
-        if (question.value) {
-          console.log(question.value);
-          instance.editor.editor.writeValue(question.value);
-        }
+      instance.editor.editorLoaded.subscribe((value) => {
+        console.log(value, 'yeah works');
+        if (value) {
+          if (!question.value && question.defaultValueExpression) {
+            question.value = question.defaultValueExpression;
+          }
+          if (question.value) {
+            console.log(question.value);
+            instance.editor.editor.writeValue(question.value);
+          }
 
-        instance.html.subscribe((html) => {
-          if (isNil(html)) {
-            return;
-          }
-          if (question.survey?.isDesignMode) {
-            question.defaultValueExpression = html;
-          } else {
-            question.value = html;
-          }
-        });
-      }, 100);
+          instance.html.subscribe((html) => {
+            if (isNil(html)) {
+              return;
+            }
+            if (question.survey?.isDesignMode) {
+              question.defaultValueExpression = html;
+            } else {
+              question.value = html;
+            }
+          });
+        }
+      });
     },
   };
   componentCollectionInstance.add(component);

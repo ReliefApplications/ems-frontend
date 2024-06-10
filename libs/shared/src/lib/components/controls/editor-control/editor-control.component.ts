@@ -11,6 +11,7 @@ import {
   ViewChild,
   forwardRef,
   Inject,
+  EventEmitter,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
@@ -54,6 +55,8 @@ export class EditorControlComponent
   public editorContent = '';
   /** Is editor loading */
   public editorLoading = true;
+  /** */
+  public editorLoaded = new EventEmitter<boolean>();
 
   /** Tinymce editor configuration */
   @Input() editorConfig!: RawEditorSettings;
@@ -244,6 +247,12 @@ export class EditorControlComponent
       }
     });
     // this.editor.onInit.subscribe(() => {});
+  }
+
+  /** Emit and change editor loading */
+  public endLoading() {
+    this.editorLoaded.emit(true);
+    this.editorLoading = false;
   }
 
   /** onTouched function shell */
