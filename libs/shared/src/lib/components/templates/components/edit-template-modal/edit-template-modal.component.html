@@ -14,7 +14,7 @@
       <div class="flex gap-2">
         <div uiFormFieldDirective class="flex-1">
           <label>{{ 'components.templates.type.title' | translate }}</label>
-          <ui-select-menu formControlName="type" [disabled]="true">
+          <ui-select-menu formControlName="type">
             <ui-select-option value="email">{{
               'components.templates.type.email' | translate
             }}</ui-select-option>
@@ -39,7 +39,12 @@
           [uiTooltip]="'common.tooltip.editor.insert' | translate"
         ></ui-icon>
       </div>
-      <editor [init]="bodyEditor" formControlName="body"></editor>
+      <editor
+        (onInit)="editorLoading = false"
+        [init]="bodyEditor"
+        formControlName="body"
+      ></editor>
+      <ui-spinner *ngIf="editorLoading"></ui-spinner>
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">

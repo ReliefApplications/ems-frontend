@@ -22,12 +22,14 @@ import {
   DialogModule,
   ErrorMessageModule,
   FormWrapperModule,
+  SpinnerModule,
 } from '@oort-front/ui';
 import {
   FileRestrictions,
   UploadsModule,
 } from '@progress/kendo-angular-upload';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import * as EmailValidator from 'email-validator';
 
 /** Interface of Email Preview Modal Data */
 interface DialogData {
@@ -38,10 +40,6 @@ interface DialogData {
   // Provided by service
   onSubmit: any;
 }
-
-/** Regex pattern for email */
-// eslint-disable-next-line no-useless-escape
-const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 /** Key codes of separators */
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
@@ -66,6 +64,7 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
     ButtonModule,
     ChipModule,
     ErrorMessageModule,
+    SpinnerModule,
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
@@ -90,6 +89,8 @@ export class EmailPreviewModalComponent implements OnDestroy {
   public fileRestrictions: FileRestrictions = {
     maxFileSize: 7 * 1024 * 1024, // should represent 7MB
   };
+  /** Is editor loading */
+  public editorLoading = true;
 
   /** Timeout */
   private timeoutListener!: NodeJS.Timeout;
@@ -162,7 +163,7 @@ export class EmailPreviewModalComponent implements OnDestroy {
         // Add the mail
         const emails = [...this.emails];
         if ((value || '').trim()) {
-          if (EMAIL_REGEX.test(value.trim())) {
+          if (EmailValidator.validate(value.trim())) {
             emails.push(value.trim());
             control?.setValue(emails);
             control?.updateValueAndValidity();

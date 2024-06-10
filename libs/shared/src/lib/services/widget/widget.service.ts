@@ -5,8 +5,8 @@ import { isEqual, set } from 'lodash';
 import get from 'lodash/get';
 import { ContextService } from '../context/context.service';
 import { DashboardAutomationService } from '../dashboard-automation/dashboard-automation.service';
-import { RestService } from '../rest/rest.service';
 import { ActionWithValue } from '../../models/automation.model';
+import { RestService } from '../rest/rest.service';
 
 /**
  * Shared widget service.
@@ -54,8 +54,8 @@ export class WidgetService {
       const style = get(widget, 'settings.widgetDisplay.style') || '';
       if (style) {
         const scss = `#${id} {
-    ${style}
-  }`;
+          ${style}
+        }`;
         // Compile to css ( we store style as scss )
         this.restService
           .post('style/scss-to-css', { scss }, { responseType: 'text' })
@@ -187,13 +187,13 @@ export class WidgetService {
   }
 
   /**
-   * Gets graphQLVariables from target source
+   * Gets query params from target source
    *
-   * @param source source we need the mapping variables from
+   * @param source source we need the query params mapping from
    * @param additionalLogic additional logic, for widgets that use other placeholders than filter & context
-   * @returns the graphql query variables object
+   * @returns the reference data query params object
    */
-  public mapGraphQLVariables(
+  public replaceReferenceDataQueryParams(
     source: string | undefined,
     additionalLogic?: (mapping: any) => any
   ): object | null {

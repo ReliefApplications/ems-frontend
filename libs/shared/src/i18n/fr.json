@@ -1236,6 +1236,7 @@
 				"disallowFieldUpdate": "Interdire ce rôle pour mettre à jour le champ {{field}}",
 				"grantAddRecordsPermission": "Permet de créer de nouveaux enregistrements",
 				"grantDeleteRecordsPermission": "Permet de supprimer tous les enregistrements",
+				"grantDownloadRecordsPermission": "Permet de télécharger les enregistrements",
 				"grantFilterDeleteRecordsPermission": "Permet de supprimer les enregistremetns satisfaisant le filtre",
 				"grantFilterReadRecordsPermission": "Permet de voir les enregistrements satisfaisant le filtre",
 				"grantFilterUpdateRecordsPermission": "Permet de mettre à jour les enregistrements satisfaisant le filtre",
@@ -1247,6 +1248,7 @@
 				"limitedUpdateRecordsPermission": "Permet de mettre à jour les enregistrements satisfaisant les filtres",
 				"notGrantAddRecordsPermission": "Ne donne pas la permission d'ajouter de nouveaux enregistrements",
 				"notGrantDeleteRecordsPermission": "Ne donne pas la permission de supprimer les enregistrements",
+				"notGrantDownloadRecordsPermission": "Ne donne pas la permission de télécharger les enregistrements",
 				"notGrantFilterDeleteRecordsPermission": "Ne donne pas la permission de supprimer les enregistrements satisfaisant le filtre",
 				"notGrantFilterReadRecordsPermission": "Ne donne pas la permission de voir les enregistrements satisfaisant le filtre",
 				"notGrantFilterUpdateRecordsPermission": "Ne donne pas la permission de mettre à jour les enregistrements satisfaisant le filtre",
@@ -1862,11 +1864,18 @@
 						"dataSource": {
 							"layoutStyles": {
 								"queryFilters": {
+									"error": "Erreur lors de la création des variables de données de référence disponibles",
+									"graphql": {
+										"title": "Mappage de variables GraphQL",
+										"tooltip": "Définissez les valeurs des variables GraphQL définies dans la requête de données de référence. Vous pouvez obtenir les valeurs des filtres à l'aide des modèles {{filter.<question-name>}}. Par exemple: { \"region\": {{filter.region}} }"
+									},
 									"help": "N'oubliez pas de supprimer les variables non utilisées.",
 									"noVariables": "Aucune variable définie",
 									"refresh": "Afficher toutes les variables graphQL",
-									"title": "Mappage de variables GraphQL",
-									"tooltip": "Définissez les valeurs des variables GraphQL définies dans la requête de données de référence. Vous pouvez obtenir les valeurs des filtres à l'aide des modèles {{filter.<question-name>}}. Par exemple : { \"region\": {{filter.region}} }"
+									"rest": {
+										"title": "Mappage de paramètres de requête REST",
+										"tooltip": "Définir les valeurs pour les paramètres de requête du point de terminaison REST disponibles dans les données de référence. Vous pouvez obtenir les valeurs des filtres à l'aide des modèles {{filter.<question-name>}}. Par exemple: { \"region\": {{filter.region}} }"
+									}
 								},
 								"title": "Styles de mise en page",
 								"use": "Utiliser les styles de mise en page",
@@ -2359,7 +2368,8 @@
 				"padding": "Utiliser la marge intérieure du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",
-				"title": "Affichage des widgets"
+				"title": "Affichage des widgets",
+				"tooltip": "Info-bulle"
 			},
 			"map": {
 				"defaultTitle": "Widget Carte",
@@ -2388,7 +2398,8 @@
 				"selector": {
 					"collapse": "Fermer la sélection de widget",
 					"expand": "Afficher la sélection de widget"
-				}
+				},
+				"tooltip": "Laissez vide pour ne pas afficher"
 			}
 		},
 		"workflow": {

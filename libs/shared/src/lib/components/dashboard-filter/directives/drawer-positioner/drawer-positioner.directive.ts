@@ -222,7 +222,7 @@ export class DrawerPositionerDirective
    * @param open Is element open
    * @param translateToTheBottom Has to use absolute value(for BOTTOM)
    */
-  private translateY(open: boolean, translateToTheBottom: boolean = false) {
+  private translateY(open: boolean, translateToTheBottom = false) {
     if (open) {
       this.el.nativeElement.style.transform = `translateY(0)`;
     } else {
@@ -241,7 +241,7 @@ export class DrawerPositionerDirective
    * @param open Is element open
    * @param translateToTheRight Has to use absolute value(for RIGHT)
    */
-  private translateX(open: boolean, translateToTheRight: boolean = false) {
+  private translateX(open: boolean, translateToTheRight = false) {
     if (open) {
       this.el.nativeElement.style.transform = `translateX(0px)`;
     } else {

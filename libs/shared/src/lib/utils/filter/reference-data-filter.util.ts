@@ -88,7 +88,7 @@ export const filterReferenceData = (item: any, filter: any) => {
         } else {
           return !isNil(filter.value) && filter.value.includes(value);
         }
-      case 'notint':
+      case 'notin':
         if (isString(value)) {
           if (isArray(filter.value)) {
             return isNil(filter.value) || !filter.value.includes(value);

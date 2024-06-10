@@ -28,4 +28,7 @@ export const environment: Environment = {
   authConfig,
   tinymceBaseUrl: 'https://ems2.who.int/app-builder/tinymce/',
   i18nUrl: 'https://ems2.who.int/app-builder/i18n/',
+  user: {
+    attributes: ['country', 'region', 'location', 'department'],
+  },
 };

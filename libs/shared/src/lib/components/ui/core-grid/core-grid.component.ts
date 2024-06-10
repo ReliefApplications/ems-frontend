@@ -126,6 +126,8 @@ export class CoreGridComponent
   @Input() showExport = true;
   /** Whether new records can be created */
   @Input() canCreateRecords = false;
+  /** Whether records can be downloaded */
+  @Input() canDownloadRecords = false;
 
   // === OUTPUTS ===
   /** Event emitter for layout change */
@@ -504,6 +506,15 @@ export class CoreGridComponent
                   defaultLayoutFields,
                   ''
                 );
+                // Scroll to left
+                if (this.grid) {
+                  (
+                    this.grid as any
+                  ).gridRef.nativeElement.children[1].children[1].children[0].scrollTo(
+                    0,
+                    0
+                  );
+                }
               }
             }
             this.getRecords();

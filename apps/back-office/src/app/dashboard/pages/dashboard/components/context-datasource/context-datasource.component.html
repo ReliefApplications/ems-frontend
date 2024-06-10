@@ -12,11 +12,7 @@
       </ui-alert>
       <div class="flex-1 flex-col">
         <!-- Reference data selection  -->
-        <div
-          uiFormFieldDirective
-          class="flex-1"
-          *ngIf="!form.value.resource"
-        >
+        <div uiFormFieldDirective class="flex-1" *ngIf="!form.value.resource">
           <label>{{ 'models.referenceData.select' | translate }}</label>
           <shared-reference-data-select
             formControlName="refData"
@@ -39,11 +35,7 @@
           *ngIf="!form.value.resource && !form.value.refData"
         ></ui-divider>
         <!-- Resource selection  -->
-        <div
-          uiFormFieldDirective
-          class="flex-1"
-          *ngIf="!form.value.refData"
-        >
+        <div uiFormFieldDirective class="flex-1" *ngIf="!form.value.refData">
           <label>{{ 'models.resource.select' | translate }}</label>
           <shared-resource-select
             formControlName="resource"
@@ -61,7 +53,7 @@
           ></ui-button>
         </div>
       </div>
-      
+
       <!-- Field selection -->
       <div uiFormFieldDirective [outline]="false">
         <label>{{ 'models.dashboard.context.displayField' | translate }}</label>

@@ -16,16 +16,16 @@ const DEFAULT_TTL = 1 * 24 * 3600 * 1000; // 1 day
  * @param value Value to cache.
  * @param ttl Number of milliseconds before expiracy. Default is equivalent to 1 day.
  */
-export const setWithExpiry = (
+export const setWithExpiry = async (
   key: string,
   value: any,
   ttl = DEFAULT_TTL
-): void => {
+): Promise<void> => {
   const item: ExpiringItem = {
     value,
     expiry: new Date().getTime() + ttl,
   };
-  localForage.setItem(key, item);
+  await localForage.setItem(key, item);
 };
 
 /**

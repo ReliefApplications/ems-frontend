@@ -74,9 +74,11 @@
       </ng-container>
       <ng-container *ngSwitchCase="stageType.CUSTOM">
         <h3>{{ 'common.input.rawJson' | translate }}</h3>
-        <ui-alert variant="danger" *ngIf="$any(stageForm).controls.form.controls.raw.errors?.jsonInvalid">{{
-          'common.errors.invalidJson' | translate
-        }}</ui-alert>
+        <ui-alert
+          variant="danger"
+          *ngIf="$any(stageForm).controls.form.controls.raw.errors?.jsonInvalid"
+          >{{ 'common.errors.invalidJson' | translate }}</ui-alert
+        >
         <div
           mwlResizable
           class="flex flex-col relative h-[300px]"

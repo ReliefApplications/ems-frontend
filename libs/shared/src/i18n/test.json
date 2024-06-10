@@ -1236,6 +1236,7 @@
 				"disallowFieldUpdate": "****** {{field}}",
 				"grantAddRecordsPermission": "******",
 				"grantDeleteRecordsPermission": "******",
+				"grantDownloadRecordsPermission": "******",
 				"grantFilterDeleteRecordsPermission": "******",
 				"grantFilterReadRecordsPermission": "******",
 				"grantFilterUpdateRecordsPermission": "******",
@@ -1247,6 +1248,7 @@
 				"limitedUpdateRecordsPermission": "******",
 				"notGrantAddRecordsPermission": "******",
 				"notGrantDeleteRecordsPermission": "******",
+				"notGrantDownloadRecordsPermission": "******",
 				"notGrantFilterDeleteRecordsPermission": "******",
 				"notGrantFilterReadRecordsPermission": "******",
 				"notGrantFilterUpdateRecordsPermission": "******",
@@ -1862,11 +1864,18 @@
 						"dataSource": {
 							"layoutStyles": {
 								"queryFilters": {
+									"error": "******",
+									"graphql": {
+										"title": "******",
+										"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
+									},
 									"help": "******",
 									"noVariables": "******",
 									"refresh": "******",
-									"title": "******",
-									"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
+									"rest": {
+										"title": "******",
+										"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
+									}
 								},
 								"title": "******",
 								"use": "******",
@@ -2359,7 +2368,8 @@
 				"padding": "******",
 				"searchable": "******",
 				"sortable": "******",
-				"title": "******"
+				"title": "******",
+				"tooltip": "******"
 			},
 			"map": {
 				"defaultTitle": "******",
@@ -2388,7 +2398,8 @@
 				"selector": {
 					"collapse": "******",
 					"expand": "******"
-				}
+				},
+				"tooltip": "******"
 			}
 		},
 		"workflow": {

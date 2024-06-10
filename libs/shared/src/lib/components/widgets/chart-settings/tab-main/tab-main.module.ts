@@ -7,6 +7,7 @@ import {
   DividerModule,
   ExpansionPanelModule,
   SelectMenuModule,
+  SpinnerModule,
 } from '@oort-front/ui';
 import { IconModule } from '@oort-front/ui';
 import { TabsModule } from '@oort-front/ui';
@@ -22,7 +23,7 @@ import {
   ReferenceDataSelectComponent,
   ResourceSelectComponent,
 } from '../../../controls/public-api';
-import { GraphqlVariablesMappingComponent } from '../../common/graphql-variables-mapping/graphql-variables-mapping.component';
+import { QueryParamsMappingComponent } from '../../common/query-params-mapping/query-params-mapping.component';
 
 /**
  * Main tab of chart settings modal.
@@ -51,7 +52,8 @@ import { GraphqlVariablesMappingComponent } from '../../common/graphql-variables
     ResourceSelectComponent,
     ReferenceDataSelectComponent,
     DividerModule,
-    GraphqlVariablesMappingComponent,
+    QueryParamsMappingComponent,
+    SpinnerModule,
   ],
   exports: [TabMainComponent],
 })

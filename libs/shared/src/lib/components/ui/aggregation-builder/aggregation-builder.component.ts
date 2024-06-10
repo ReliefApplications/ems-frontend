@@ -315,15 +315,6 @@ export class AggregationBuilderComponent
     if (this.loadingAggregationRecords) {
       return;
     }
-    if (!this.aggregationForm.value.id) {
-      this.snackBar.openSnackBar(
-        this.translateService.instant(
-          'pages.aggregation.preview.missingAggregation'
-        ),
-        { error: true }
-      );
-      return;
-    }
     // get the aggregation data
     this.loadingAggregationRecords = true;
     const query$ = this.aggregationService.aggregationDataQuery({
