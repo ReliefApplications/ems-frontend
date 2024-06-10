@@ -826,7 +826,7 @@ export class EmailService {
 
           query.fields.forEach((rowData: any, fieldIndex: number) => {
             if (
-              (rowData?.options?.length === 0 || rowData?.options === null) &&
+              !rowData?.options &&
               mergedObjectKeys.includes(rowData.name) &&
               mergedObject[rowData.name]?.length
             ) {
