@@ -826,27 +826,19 @@ export class EmailService {
 
           query.fields.forEach((rowData: any, fieldIndex: number) => {
             if (
-              !rowData?.options &&
+              rowData?.options?.length &&
               mergedObjectKeys.includes(rowData.name) &&
               mergedObject[rowData.name]?.length
             ) {
               const mergedKeyIndex = mergedObjectKeys.indexOf(rowData.name);
+              const matchDataArray = mergedObject[
+                mergedObjectKeys[mergedKeyIndex]
+              ]
+                .filter((x) => x !== null)
+                .map((x) => (x = x.toString()));
               query.fields[fieldIndex].options = rowData.options.filter(
-                (x: any) =>
-                  mergedObject[mergedObjectKeys[mergedKeyIndex]].includes(
-                    x.value
-                  )
+                (x: any) => matchDataArray.includes(x.value.toString())
               );
-              if (query.fields[fieldIndex].options?.length === 0) {
-                const matchDataArray = mergedObject[
-                  mergedObjectKeys[mergedKeyIndex]
-                ]
-                  .filter((x) => x !== null)
-                  .map((x) => (x = x.toString()));
-                query.fields[fieldIndex].options = rowData.options.filter(
-                  (x: any) => matchDataArray.includes(x.value.toString())
-                );
-              }
             }
           });
 
