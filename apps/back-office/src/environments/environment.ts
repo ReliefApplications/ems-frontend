@@ -45,4 +45,5 @@ export const environment: Environment = {
     'summaryCard',
     'tabs',
   ],
+  admin0Url: 'https://ems2-dev.who.int/app-builder/admin0.json',
 };
