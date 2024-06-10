@@ -837,6 +837,16 @@ export class EmailService {
                     x.value
                   )
               );
+              if (query.fields[fieldIndex].options?.length === 0) {
+                const matchDataArray = mergedObject[
+                  mergedObjectKeys[mergedKeyIndex]
+                ]
+                  .filter((x) => x !== null)
+                  .map((x) => (x = x.toString()));
+                query.fields[fieldIndex].options = rowData.options.filter(
+                  (x: any) => matchDataArray.includes(x.value.toString())
+                );
+              }
             }
           });
 
