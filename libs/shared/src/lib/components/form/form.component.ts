@@ -228,7 +228,7 @@ export class FormComponent
               mutation: EDIT_RECORD,
               variables: {
                 id: recordId,
-                data: this.survey.parsedData ?? this.survey.data,
+                data: this.survey.getParsedData?.() ?? this.survey.data,
                 ...(!response.overwriteRecord && {
                   template:
                     this.form.id !== this.record?.form?.id
@@ -244,7 +244,7 @@ export class FormComponent
               variables: {
                 id: this.survey.getVariable('record.id'),
                 form: this.form.id,
-                data: this.survey.parsedData ?? this.survey.data,
+                data: this.survey.getParsedData?.() ?? this.survey.data,
               },
             });
           }

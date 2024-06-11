@@ -186,6 +186,11 @@ export class FormBuilderService {
     settings.useCachingForChoicesRestfull = false;
     const survey = new Model(structure);
 
+    // Adds function to survey to be able to get the current parsed data
+    survey.getParsedData = () => {
+      return transformSurveyData(survey);
+    };
+
     // Add form model to the survey
     if (form) {
       survey.form = form;

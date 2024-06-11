@@ -237,7 +237,6 @@ export class FormHelpersService {
                       .mutate<AddRecordMutationResponse>({
                         mutation: ADD_RECORD,
                         variables: {
-                          id: survey.getVariable('record.id'),
                           form: recordFromResource.template,
                           data: recordFromResource.data,
                         },
@@ -378,7 +377,6 @@ export class FormHelpersService {
             this.apollo.mutate<AddRecordMutationResponse>({
               mutation: ADD_RECORD,
               variables: {
-                id: survey.getVariable('record.id'),
                 form: template,
                 data,
               },

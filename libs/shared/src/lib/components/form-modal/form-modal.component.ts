@@ -454,7 +454,7 @@ export class FormModalComponent
                 variables: {
                   id: this.survey.getVariable('record.id'),
                   form: this.data.template,
-                  data: survey.parsedData ?? survey.data,
+                  data: survey.getParsedData?.() ?? survey.data,
                 },
               })
               .subscribe({
@@ -521,7 +521,7 @@ export class FormModalComponent
         mutation: EDIT_RECORD,
         variables: {
           id,
-          data: survey.parsedData ?? survey.data,
+          data: survey.getParsedData?.() ?? survey.data,
           template: this.data.template,
         },
       })
@@ -557,7 +557,7 @@ export class FormModalComponent
     survey: any,
     refreshWidgets = false
   ): void {
-    const recordData = cleanRecord(survey.parsedData ?? survey.data);
+    const recordData = cleanRecord(survey.getParsedData?.() ?? survey.data);
     this.apollo
       .mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
