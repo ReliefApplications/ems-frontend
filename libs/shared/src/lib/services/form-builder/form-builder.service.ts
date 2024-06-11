@@ -277,9 +277,6 @@ export class FormBuilderService {
           }
         }
       });
-
-      // Apply custom logic to survey data values
-      survey.parsedData = transformSurveyData(survey);
     });
     if (fields.length > 0) {
       for (const f of fields.filter((x) => !x.automated)) {
