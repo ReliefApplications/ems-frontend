@@ -207,6 +207,7 @@ export class FormBuilderService {
     }
 
     // Add custom variables
+    this.formHelpersService.addStateVariables(survey, structure);
     this.formHelpersService.addUserVariables(survey);
     this.formHelpersService.addApplicationVariables(survey);
     this.formHelpersService.setWorkflowContextVariable(survey);
