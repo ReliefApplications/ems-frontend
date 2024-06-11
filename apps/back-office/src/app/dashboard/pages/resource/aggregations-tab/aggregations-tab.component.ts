@@ -265,6 +265,14 @@ export class AggregationsTabComponent
                   return x;
                 }
               });
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  value: data.editAggregation.name,
+                  type: this.translate
+                    .instant('common.aggregation.one')
+                    .toLowerCase(),
+                })
+              );
             }
           });
       }
@@ -293,19 +301,18 @@ export class AggregationsTabComponent
       if (value) {
         this.aggregationService
           .deleteAggregation(aggregation, { resource: this.resource.id })
-          .subscribe(({ data }: any) => {
-            if (data.deleteAggregation) {
+          .subscribe(({ errors }: any) => {
+            if (!errors) {
               this.aggregations = this.aggregations.filter(
                 (x: any) => x.id !== aggregation.id
               );
               this.pageInfo.length -= 1;
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.aggregation.one'),
+                })
+              );
             }
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectDeleted', {
-                value: this.translate.instant('common.aggregation.one'),
-              })
-            );
-            console.log(this.cachedAggregations);
           });
       }
     });

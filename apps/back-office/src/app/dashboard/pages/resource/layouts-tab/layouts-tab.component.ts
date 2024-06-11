@@ -239,6 +239,14 @@ export class LayoutsTabComponent
                   return x;
                 }
               });
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  value: data.editLayout.name,
+                  type: this.translate
+                    .instant('common.layout.one')
+                    .toLowerCase(),
+                })
+              );
             }
           });
       }
@@ -267,12 +275,17 @@ export class LayoutsTabComponent
       if (value) {
         this.gridLayoutService
           .deleteLayout(layout, this.resource.id)
-          .subscribe(({ data }: any) => {
-            if (data.deleteLayout) {
+          .subscribe(({ errors }: any) => {
+            if (!errors) {
               this.layouts = this.layouts.filter(
                 (x: any) => x.id !== layout.id
               );
               this.pageInfo.length -= 1;
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectDeleted', {
+                  value: this.translate.instant('common.layout.one'),
+                })
+              );
             }
           });
       }

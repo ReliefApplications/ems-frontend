@@ -194,11 +194,6 @@ export class LayoutTableComponent
     this.selectedLayouts?.setValue(
       this.selectedLayouts?.value.filter((x: string) => x !== layout.id)
     );
-    this.snackBar.openSnackBar(
-      this.translate.instant('common.notifications.objectDeleted', {
-        value: this.translate.instant('common.layout.one'),
-      })
-    );
   }
 
   /**
