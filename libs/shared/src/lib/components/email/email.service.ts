@@ -817,7 +817,7 @@ export class EmailService {
         }
 
         query.tabIndex = index;
-        query.pageSize = Number(query.pageSize);
+        query.pageSize = 50;
 
         const res = await this.fetchDataSet(query).toPromise();
 
