@@ -1,4 +1,9 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  ViewChild,
+} from '@angular/core';
 import { WIDGET_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { EditorService } from '../../services/editor/editor.service';
 import { EditorControlComponent } from '../controls/public-api';
@@ -20,6 +25,8 @@ export class EditorQuestionComponent implements AfterViewInit {
   public editor!: EditorControlComponent;
   /** html content */
   public html = new BehaviorSubject<string | undefined>(undefined);
+  /** editor loaded */
+  public editorLoaded = new EventEmitter<boolean>();
 
   /**
    * Editor question component

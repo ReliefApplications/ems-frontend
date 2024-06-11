@@ -3,6 +3,7 @@ import { Question } from '../types';
 import { DomService } from '../../services/dom/dom.service';
 import { EditorQuestionComponent } from '../../components/editor-question/editor-question.component';
 import { isNil } from 'lodash';
+import { HtmlWidgetContentComponent } from '../../components/widgets/common/html-widget-content/html-widget-content.component';
 
 /**
  * Inits the editor component.
@@ -34,34 +35,43 @@ export const init = (
       // hides the input element
       const element = el.getElementsByTagName('input')[0].parentElement;
       if (element) element.style.display = 'none';
+
+      if (question.survey.isDisplayMode) {
+        const editor = domService.appendComponentToBody(
+          HtmlWidgetContentComponent,
+          el
+        );
+        const instance: HtmlWidgetContentComponent = editor.instance;
+        instance.html = question.value;
+        return;
+      }
       const editor = domService.appendComponentToBody(
         EditorQuestionComponent,
         el
       );
       const instance: EditorQuestionComponent = editor.instance;
 
-      instance.editor.editorLoaded.subscribe((value) => {
-        console.log(value, 'yeah works');
-        if (value) {
-          if (!question.value && question.defaultValueExpression) {
-            question.value = question.defaultValueExpression;
-          }
-          if (question.value) {
-            console.log(question.value);
-            instance.editor.editor.writeValue(question.value);
-          }
-
-          instance.html.subscribe((html) => {
-            if (isNil(html)) {
-              return;
-            }
-            if (question.survey?.isDesignMode) {
-              question.defaultValueExpression = html;
-            } else {
-              question.value = html;
-            }
-          });
+      instance.editorLoaded.subscribe((value) => {
+        if (!value) {
+          return;
         }
+        if (!question.value && question.defaultValueExpression) {
+          question.value = question.defaultValueExpression;
+        }
+        if (question.value) {
+          instance.editor.editor.writeValue(question.value);
+        }
+
+        instance.html.subscribe((html) => {
+          if (isNil(html)) {
+            return;
+          }
+          if (question.survey?.isDesignMode) {
+            question.defaultValueExpression = html;
+          } else {
+            question.value = html;
+          }
+        });
       });
     },
   };

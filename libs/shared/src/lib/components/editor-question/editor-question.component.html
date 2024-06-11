@@ -1,4 +1,5 @@
 <shared-editor-control
   #editor
   [editorConfig]="config"
+  (editorLoaded)="editorLoaded.emit(true);"
 ></shared-editor-control>
