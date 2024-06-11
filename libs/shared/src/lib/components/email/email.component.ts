@@ -602,7 +602,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     return this.formBuilder.group({
       field: filter.field,
       operator: filter.operator,
-      value: filter.value,
+      value: Array.isArray(filter.value)
+        ? this.formBuilder.array(filter.value)
+        : filter.value,
       hideEditor: filter.hideEditor,
       inTheLast: this.formBuilder.group({
         number: filter.inTheLast?.number,
