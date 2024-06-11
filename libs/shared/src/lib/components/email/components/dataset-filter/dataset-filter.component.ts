@@ -181,7 +181,7 @@ export class DatasetFilterComponent
         }
         this.emailService.index.next(this.activeTab.index);
       });
-    this.query.get('individualEmail').disable();
+    // this.query.get('individualEmail').disable();
     this.separateEmail = this.emailService.updateSeparateEmail(
       this.activeTab.index
     );
