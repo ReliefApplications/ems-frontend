@@ -238,20 +238,6 @@ export class DatasetFilterComponent
   }
 
   /**
-   * Fetches Resource meta data
-   *
-   * @returns resource meta data
-   */
-  fetchResourceMetaData() {
-    return this.apollo.query<QueryMetaDataQueryResponse>({
-      query: GET_QUERY_META_DATA,
-      variables: {
-        id: this.selectedResourceId,
-      },
-    });
-  }
-
-  /**
    * Fetches Resource meta data type
    *
    * @returns resource meta data types
@@ -435,7 +421,8 @@ export class DatasetFilterComponent
           }
         });
       let fields: any[] | undefined = [];
-      this.fetchResourceMetaData()
+      this.emailService
+        .fetchResourceMetaData(this.selectedResourceId)
         .pipe(takeUntil(this.destroy$))
         .subscribe((res) => {
           fields = res.data?.resource?.metadata;

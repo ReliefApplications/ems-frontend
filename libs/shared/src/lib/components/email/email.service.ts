@@ -5,6 +5,7 @@ import {
   GET_AND_UPDATE_EMAIL_NOTIFICATION,
   GET_EMAIL_DATA_SET,
   GET_EMAIL_NOTIFICATIONS,
+  GET_QUERY_META_DATA,
 } from './graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
@@ -13,6 +14,7 @@ import { RestService } from '../../services/rest/rest.service';
 import { TYPE_LABEL } from './filter/filter.constant';
 import { FieldStore } from './models/email.const';
 import { omit } from 'lodash';
+import { QueryMetaDataQueryResponse } from '../../models/metadata.model';
 
 /**
  * Helper functions service for emails template.
@@ -1417,5 +1419,20 @@ export class EmailService {
         index: 0,
       },
     ];
+  }
+
+  /**
+   * Fetches Resource meta data
+   *
+   * @param selectedResourceId Id of the Resource
+   * @returns resource meta data
+   */
+  fetchResourceMetaData(selectedResourceId: any) {
+    return this.apollo.query<QueryMetaDataQueryResponse>({
+      query: GET_QUERY_META_DATA,
+      variables: {
+        id: selectedResourceId,
+      },
+    });
   }
 }
