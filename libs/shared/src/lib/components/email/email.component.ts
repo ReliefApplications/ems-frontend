@@ -521,11 +521,31 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       ?.setValue(this.applicationId);
 
     // this.emailService.datasetSave.emit(true);
-    if (isSendEmail) {
-      this.emailService.getDataSet(emailData, true);
-    } else {
-      this.emailService.getDataSet(emailData, false);
-      this.emailService.stepperStep = 0;
+    let datasetCount = 0;
+    for (const query of emailData.datasets) {
+      this.emailService
+        .fetchResourceMetaData(query.resource.id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((res: any) => {
+          datasetCount++;
+          query?.fields?.forEach((x: any) => {
+            x.options =
+              res.data.resource.metadata.filter((m: any) => m.name == x.name)
+                .length > 0
+                ? res.data.resource.metadata.filter(
+                    (m: any) => m.name == x.name
+                  )[0].options
+                : query.fields.options;
+          });
+          if (datasetCount === emailData.datasets.length) {
+            if (isSendEmail) {
+              this.emailService.getDataSet(emailData, true);
+            } else {
+              this.emailService.getDataSet(emailData, false);
+              this.emailService.stepperStep = 0;
+            }
+          }
+        });
     }
   }
 
@@ -582,7 +602,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     return this.formBuilder.group({
       field: filter.field,
       operator: filter.operator,
-      value: filter.value,
+      value: Array.isArray(filter.value)
+        ? this.formBuilder.array(filter.value)
+        : filter.value,
       hideEditor: filter.hideEditor,
       inTheLast: this.formBuilder.group({
         number: filter.inTheLast?.number,

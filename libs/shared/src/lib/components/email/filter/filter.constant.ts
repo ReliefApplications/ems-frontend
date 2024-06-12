@@ -317,4 +317,6 @@ export const TYPE_LABEL = {
   tagbox: 'tagbox',
   owner: 'owner',
   user: 'user',
+  options: 'options',
+  fields: 'fields',
 };

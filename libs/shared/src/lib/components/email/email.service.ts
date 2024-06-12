@@ -5,6 +5,7 @@ import {
   GET_AND_UPDATE_EMAIL_NOTIFICATION,
   GET_EMAIL_DATA_SET,
   GET_EMAIL_NOTIFICATIONS,
+  GET_QUERY_META_DATA,
 } from './graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
@@ -13,6 +14,7 @@ import { RestService } from '../../services/rest/rest.service';
 import { TYPE_LABEL } from './filter/filter.constant';
 import { FieldStore } from './models/email.const';
 import { omit } from 'lodash';
+import { QueryMetaDataQueryResponse } from '../../models/metadata.model';
 
 /**
  * Helper functions service for emails template.
@@ -592,12 +594,29 @@ export class EmailService {
    * @returns the dataset.
    */
   fetchDataSet(filterQuery: any) {
+    let filters = Object.assign({}, filterQuery);
+
+    /* Removing the options key from the payload to avoid payload too large error */
+    const fieldsWithoutOptions = filters?.fields?.map((field: any) => {
+      const payloadOptions: { [key: string]: any } = {};
+      const fieldKeys = Object.keys(field);
+
+      fieldKeys.forEach((keyName: string) => {
+        if (keyName !== TYPE_LABEL.options) {
+          payloadOptions[keyName] = field[keyName];
+        }
+      });
+      return payloadOptions;
+    });
+
+    filters.fields = fieldsWithoutOptions;
     // Create a new object excluding the 'cacheData' field
-    const queryWithoutCacheData = omit(filterQuery, 'cacheData');
+    filters = omit(filters, 'cacheData');
+
     return this.apollo.query<any>({
       query: GET_EMAIL_DATA_SET,
       variables: {
-        query: queryWithoutCacheData,
+        query: filters,
       },
     });
   }
@@ -745,6 +764,97 @@ export class EmailService {
         applicationId: applicationId,
       },
     });
+  }
+
+  /**
+   * Merges multiple objects into a single object.
+   * If values are not arrays, they are converted to arrays.
+   * Duplicate values are removed in the final merged object.
+   *
+   * @param {Array<Record<string, any>>} objects - Array of objects to merge.
+   * @returns {Record<string, any[]>} - The merged object with array values and no duplicates.
+   */
+  mergeObjects(objects: Array<Record<string, any>>): Record<string, any[]> {
+    const result: Record<string, any[]> = {};
+
+    objects.forEach((obj) => {
+      Object.entries(obj).forEach(([key, value]) => {
+        if (!Array.isArray(value)) {
+          // Ensure the value is an array
+          value = [value];
+        }
+
+        if (result[key]) {
+          // Merge arrays and remove duplicates
+          result[key] = Array.from(new Set([...result[key], ...value]));
+        } else {
+          result[key] = value;
+        }
+      });
+    });
+
+    return result;
+  }
+
+  /**
+   * Manipulates the payload by modifying options of fields based on fetched dataset.
+   *
+   * @param {any} emailData - The payload to be manipulated with limited options.
+   * @returns {Promise<any>} A Promise that resolves with the modified emailData.
+   */
+  async getDataSetToSkipOptions(emailData: any) {
+    // eslint-disable-next-line no-async-promise-executor
+    await Promise.all(
+      emailData.datasets.map(async (query: any, index: number) => {
+        for (const x of query.fields) {
+          if (x.parentName) {
+            const child = x.name;
+            x.childName = child.split(' - ')[1];
+            x.name = x.parentName;
+            x.childType = x.type;
+            x.type = 'resource';
+          }
+        }
+
+        query.tabIndex = index;
+        query.pageSize = 50;
+
+        const res = await this.fetchDataSet(query).toPromise();
+
+        if (res?.data?.dataset) {
+          const datasetResponse = res.data.dataset.records;
+          const mergedObject = this.mergeObjects(datasetResponse);
+          const mergedObjectKeys = Object.keys(mergedObject);
+
+          query.fields.forEach((rowData: any, fieldIndex: number) => {
+            if (
+              mergedObjectKeys.includes(rowData.name) &&
+              mergedObject[rowData.name]?.length
+            ) {
+              const mergedKeyIndex = mergedObjectKeys.indexOf(rowData.name);
+              query.fields[fieldIndex].options = rowData?.options?.filter(
+                (x: any) =>
+                  mergedObject[mergedObjectKeys[mergedKeyIndex]].includes(
+                    x.value
+                  )
+              );
+              if (query.fields[fieldIndex].options?.length === 0) {
+                const matchDataArray = mergedObject[
+                  mergedObjectKeys[mergedKeyIndex]
+                ]
+                  .filter((x) => x !== null)
+                  .map((x) => (x = x.toString()));
+                query.fields[fieldIndex].options = rowData.options.filter(
+                  (x: any) => matchDataArray.includes(x.value.toString())
+                );
+              }
+            }
+          });
+        }
+      })
+    );
+
+    return emailData;
   }
 
   /**
@@ -1067,10 +1177,7 @@ export class EmailService {
                 if (matchingTexts === '') {
                   result[key] = record[key].join(', ');
                 }
-              } else if (
-                metaField?.options?.every((x: any) => isNaN(x.value)) &&
-                metaField?.options?.length
-              ) {
+              } else if (metaField?.options?.length) {
                 // Checks that all of the metafield options are not numbers.
                 result[key] = metaField?.options
                   ?.filter((values: any) => value.includes(values.value))
@@ -1312,5 +1419,20 @@ export class EmailService {
         index: 0,
       },
     ];
+  }
+
+  /**
+   * Fetches Resource meta data
+   *
+   * @param selectedResourceId Id of the Resource
+   * @returns resource meta data
+   */
+  fetchResourceMetaData(selectedResourceId: any) {
+    return this.apollo.query<QueryMetaDataQueryResponse>({
+      query: GET_QUERY_META_DATA,
+      variables: {
+        id: selectedResourceId,
+      },
+    });
   }
 }

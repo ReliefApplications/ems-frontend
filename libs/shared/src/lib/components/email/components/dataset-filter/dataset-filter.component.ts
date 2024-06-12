@@ -31,13 +31,9 @@ import { FIELD_NAME } from './metadata.constant';
 import {
   GET_RESOURCE,
   GET_RESOURCES,
-  GET_QUERY_META_DATA,
   GET_QUERY_TYPES,
 } from '../../graphql/queries';
-import {
-  QueryMetaDataQueryResponse,
-  QueryTypesResponse,
-} from '../../../../models/metadata.model';
+import { QueryTypesResponse } from '../../../../models/metadata.model';
 import { Subscription, takeUntil } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -238,20 +234,6 @@ export class DatasetFilterComponent
   }
 
   /**
-   * Fetches Resource meta data
-   *
-   * @returns resource meta data
-   */
-  fetchResourceMetaData() {
-    return this.apollo.query<QueryMetaDataQueryResponse>({
-      query: GET_QUERY_META_DATA,
-      variables: {
-        id: this.selectedResourceId,
-      },
-    });
-  }
-
-  /**
    * Fetches Resource meta data type
    *
    * @returns resource meta data types
@@ -435,7 +417,8 @@ export class DatasetFilterComponent
           }
         });
       let fields: any[] | undefined = [];
-      this.fetchResourceMetaData()
+      this.emailService
+        .fetchResourceMetaData(this.selectedResourceId)
         .pipe(takeUntil(this.destroy$))
         .subscribe((res) => {
           fields = res.data?.resource?.metadata;
