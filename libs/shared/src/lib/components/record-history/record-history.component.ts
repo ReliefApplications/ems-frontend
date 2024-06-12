@@ -101,6 +101,7 @@ export class RecordHistoryComponent
   public sortedFields: any[] = [];
   /** Table columns */
   public displayedColumnsHistory: string[] = [
+    'incrementalId',
     'variable',
     'date',
     'time',
@@ -328,6 +329,7 @@ export class RecordHistoryComponent
       type: change.type,
       createdAt: filterHistoryElement.createdAt,
       createdBy: filterHistoryElement.createdBy,
+      incrementalId: filterHistoryElement.incrementalId,
     });
   }
 

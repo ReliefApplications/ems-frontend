@@ -24,6 +24,7 @@ export const GET_RECORD_HISTORY_BY_ID = gql`
     recordHistory(id: $id, lang: $lang) {
       createdAt
       createdBy
+      incrementalId
       changes {
         type
         field
