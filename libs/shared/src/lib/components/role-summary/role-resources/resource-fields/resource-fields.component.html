@@ -51,7 +51,7 @@
                   : 'components.role.tooltip.disallowFieldAccessibility'
                 ) | translate : { field: element.name }
               "
-              (click)="onEditFieldAccess(index, element, 'canSee')"
+              (click)="onEditFieldAccess(element, 'canSee')"
             >
             </ui-button>
             <ui-button
@@ -65,7 +65,7 @@
                   : 'components.role.tooltip.disallowFieldUpdate'
                 ) | translate : { field: element.name }
               "
-              (click)="onEditFieldAccess(index, element, 'canUpdate')"
+              (click)="onEditFieldAccess(element, 'canUpdate')"
             >
             </ui-button>
           </div>

@@ -50,10 +50,6 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
   /** Displayed columns */
   public displayedColumns: string[] = ['name', 'actions'];
 
-  /** Updated field */
-  private updatedField: { index: number; permission: 'canSee' | 'canUpdate' } =
-    { index: -1, permission: 'canSee' };
-
   ngOnInit() {
     this.fields = sortBy(this.resource.fields.map(this.hasFieldAccess), 'name');
     this.filterId.valueChanges.subscribe((value) => {
@@ -62,14 +58,11 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.resource && this.updatedField.index !== -1) {
-      const field = this.fields[this.updatedField.index];
-      if (this.updatedField.permission === 'canSee') {
-        field.canSee = !field.canSee;
-      } else {
-        field.canUpdate = !field.canUpdate;
-      }
-      this.updatedField.index = -1;
+    if (changes.resource) {
+      this.fields = sortBy(
+        this.resource.fields.map(this.hasFieldAccess),
+        'name'
+      );
     }
   }
 
@@ -113,17 +106,14 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
   /**
    * Emits an event to toggle if field is visible / editable.
    *
-   * @param index Index of the field to toggle permission for.
    * @param field Field to toggle permission for.
    * @param permission Permission type to toggle.
    */
   public onEditFieldAccess(
-    index: number,
     field: ResourceField,
     permission: 'canSee' | 'canUpdate'
   ) {
     // Save field updated
-    this.updatedField = { index, permission };
     this.onToggle.emit({
       field,
       permission,
