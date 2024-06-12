@@ -1,0 +1,76 @@
+body {
+  font-family: "Roboto", sans-serif !important;
+  background-color: #f4f6f9 !important;
+  color: #4a4a4a;
+  font-size: 14px;
+  line-height: 18px;
+  margin: 0;
+}
+a {
+  color: #4a4a4a;
+}
+header {
+  padding: 10px 30px 10px 20px;
+  border-bottom: 1px solid #d1d6e0;
+  background-color: #ffffff;
+  box-shadow: 0px -1px 8px #d1d1d1;
+}
+header a h5 {
+  font-size: 16px;
+  line-height: 19px;
+  padding: 13px 10px;
+  margin-left: 0px !important;
+}
+.hamburger-icon {
+  display: none;
+}
+header .logoright-div .inner-div {
+  float: right;
+}
+.doc-primary-btn {
+  background-color: #008dc9;
+  color: #ffffff;
+  border: 1px solid #008dc9;
+  text-transform: uppercase;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  padding: 9px 14px;
+  font-size: 14px;
+  line-height: 18px;
+}
+.doc-primary-btn:hover {
+  background-color: #196aaa;
+  color: #ffffff;
+}
+.doc-primary-btn span {
+  vertical-align: bottom;
+}
+.page-content {
+  margin: 0px 15px;
+}
+.left-section {
+  padding-left: 0;
+}
+.right-section {
+  background-color: #fff;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px !important;
+  margin-top: -5px !important;
+  margin-bottom: 0px !important;
+}
+
+@media (max-width: 575px) {
+  header h5,
+  header .btn-txt {
+    display: none;
+  }
+  .doc-primary-btn span.material-icons {
+    margin: 0px !important;
+  }
+  .hamburger-icon {
+    display: block;
+    margin-left: 15px;
+  }
+}
