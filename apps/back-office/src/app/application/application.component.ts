@@ -13,6 +13,7 @@ import get from 'lodash/get';
 import { takeUntil, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
+/** Admin Navigation item type */
 type adminNavItem = {
   name: string;
   icon: string;

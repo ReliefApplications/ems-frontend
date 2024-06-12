@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { EMAIL_LAYOUT_CONFIG } from '../../../../const/tinymce.const';
+import { EMAIL_LAYOUT_EDITOR_CONFIG } from '../../../../const/tinymce.const';
 import { EditorService } from '../../../../services/editor/editor.service';
 import { EmailService } from '../../email.service';
 import { EditorComponent } from '@tinymce/tinymce-angular';
@@ -38,7 +38,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   /** Flag indicating whether subject validation is shown. */
   showSubjectValidator = false;
   /** Configuration object for the Tinymce editor. */
-  public editor: any = EMAIL_LAYOUT_CONFIG;
+  public editor: any = EMAIL_LAYOUT_EDITOR_CONFIG;
   /** HTML content for the body. */
   bodyHtml: any = '';
   /** HTML content for the header. */

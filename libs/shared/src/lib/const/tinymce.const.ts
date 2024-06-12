@@ -387,7 +387,7 @@ export const INLINE_EDITOR_CONFIG: RawEditorSettings = {
  * This configuration sets up the TinyMCE editor with various plugins,
  * toolbar options, and other settings tailored for editing email layouts.
  */
-export const EMAIL_LAYOUT_CONFIG: RawEditorSettings = {
+export const EMAIL_LAYOUT_EDITOR_CONFIG: RawEditorSettings = {
   suffix: '.min',
   plugins:
     'preview paste importcss searchreplace autolink code visualblocks visualchars fullscreen image link media table charmap hr nonbreaking insertdatetime advlist lists wordcount imagetools textpattern help charmap quickbars emoticons',
