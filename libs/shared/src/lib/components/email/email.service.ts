@@ -11,7 +11,7 @@ import { Apollo } from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { RestService } from '../../services/rest/rest.service';
-import { TYPE_LABEL } from './filter/filter.constant';
+import { TYPE_LABEL } from './filter/filter.const';
 import { FieldStore } from './models/email.const';
 import { omit } from 'lodash';
 import { QueryMetaDataQueryResponse } from '../../models/metadata.model';

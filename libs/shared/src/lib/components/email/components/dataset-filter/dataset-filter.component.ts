@@ -26,7 +26,7 @@ import {
   FIELD_TYPES,
   FILTER_OPERATORS,
   TYPE_LABEL,
-} from '../../filter/filter.constant';
+} from '../../filter/filter.const';
 import { FIELD_NAME } from './metadata.constant';
 import {
   GET_RESOURCE,
@@ -420,8 +420,8 @@ export class DatasetFilterComponent
       this.emailService
         .fetchResourceMetaData(this.selectedResourceId)
         .pipe(takeUntil(this.destroy$))
-        .subscribe((res) => {
-          fields = res.data?.resource?.metadata;
+        .subscribe(({ data }) => {
+          fields = data?.resource?.metadata;
           this.resource = {};
           this.loading = true;
           this.showErrorMessage = '';
@@ -433,10 +433,10 @@ export class DatasetFilterComponent
               },
             })
             .pipe(takeUntil(this.destroy$))
-            .subscribe((res) => {
+            .subscribe(({ data }) => {
               this.loading = false;
-              this.resource = res.data.resource;
-              this.metaData = res.data?.resource?.metadata;
+              this.resource = data.resource;
+              this.metaData = data?.resource?.metadata;
               if (this.metaData?.length) {
                 this.metaData.forEach((field: any) => {
                   if (

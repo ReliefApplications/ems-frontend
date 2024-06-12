@@ -18,7 +18,7 @@ import {
   FIELD_TYPES,
   FILTER_OPERATORS,
   TYPE_LABEL,
-} from '../../filter/filter.constant';
+} from '../../filter/filter.const';
 import { ResourceQueryResponse } from '../../../../models/resource.model';
 import { GET_RESOURCE } from '../../graphql/queries';
 import { Apollo } from 'apollo-angular';
