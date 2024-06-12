@@ -18,7 +18,6 @@
                 <span>{{ tab.title }}</span>
                 <ui-button
                   [variant]="'danger'"
-                  class="hide-icons hover:text-primary-600"
                   [isIcon]="true"
                   size="large"
                   (click)="deleteTab(tabIndex, $event)"
@@ -28,7 +27,6 @@
                 </ui-button>
               </div>
               <!-- <ui-button
-                    class="hide-icons hover:text-primary-600"
                     [isIcon]="true"
                     size="large"
                     (click)="addTab()"
@@ -54,7 +52,6 @@
         <kendo-tabstrip-tab *ngIf="!showPreview" id="addIcon" class="add-block">
           <ng-template kendoTabTitle>
             <ui-button
-              class="hide-icons hover:text-primary-600"
               [isIcon]="true"
               size="large"
               (click)="addTab()"

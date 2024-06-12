@@ -1,5 +1,5 @@
 <div class="distribution_list">
-  <div class="mt-4">
+  <div class="mt-4 flex gap-2 justify-end">
     <!-- Email List Import Button -->
     <div>
       <input
@@ -10,21 +10,8 @@
         accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       />
     </div>
+    <!-- Import file -->
     <ui-button
-      class="float-right"
-      icon="download"
-      category="secondary"
-      variant="primary"
-      [uiTooltip]="
-        'components.email.distributionList.import.download' | translate
-      "
-      (click)="downloadDistributionListTemplate()"
-    >
-      {{ 'components.email.distributionList.import.download' | translate }}
-    </ui-button>
-    <!-- Email List Template Button -->
-    <ui-button
-      class="float-right import"
       icon="cloud_download"
       category="secondary"
       variant="primary"
@@ -35,7 +22,18 @@
     >
       {{ 'components.email.distributionList.import.name' | translate }}
     </ui-button>
-    <br />
+    <!-- Download import template -->
+    <ui-button
+      icon="download"
+      category="secondary"
+      variant="primary"
+      [uiTooltip]="
+        'components.email.distributionList.import.download' | translate
+      "
+      (click)="onDownloadTemplate()"
+    >
+      {{ 'components.email.distributionList.import.download' | translate }}
+    </ui-button>
   </div>
   <div class="flex gap-4" *ngIf="!showExistingDistributionList">
     <div class="mt-4 w-1/3">

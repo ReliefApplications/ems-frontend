@@ -332,8 +332,12 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
   /**
    * Download Distribution List Template
    */
-  downloadDistributionListTemplate(): void {
-    this.downloadService.downloadDistributionListTemplate();
+  onDownloadTemplate(): void {
+    this.downloadService.getFile(
+      '/download/templates',
+      `text/xlsx;charset=utf-8;`,
+      'users_template.xlsx'
+    );
   }
 
   /**
@@ -347,31 +351,33 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     this.showBccTemplate = false;
     const file: File = event.target.files[0];
     if (file) {
-      this.downloadService.importDistributionList(file).subscribe((res) => {
-        this.snackBar.openSnackBar(
-          this.translate.instant(
-            'components.email.distributionList.import.loading'
-          )
-        );
-        this.emailDistributionList.To = [
-          ...new Set([...this.emailDistributionList.To, ...res.To]),
-        ];
-        this.emailDistributionList.Cc = [
-          ...new Set([...this.emailDistributionList.Cc, ...res.Cc]),
-        ];
-        this.emailDistributionList.Bcc = [
-          ...new Set([...this.emailDistributionList.Bcc, ...res.Bcc]),
-        ];
-        this.showToTemplate = true;
-        this.templateFor = 'to';
-        this.validateDistributionList();
-        if (this.fileElement) this.fileElement.nativeElement.value = '';
-        this.snackBar.openSnackBar(
-          this.translate.instant(
-            'components.email.distributionList.import.success'
-          )
-        );
-      });
+      this.downloadService
+        .uploadFile('upload/distributionList', file)
+        .subscribe(({ To, Cc, Bcc }) => {
+          this.snackBar.openSnackBar(
+            this.translate.instant(
+              'components.email.distributionList.import.loading'
+            )
+          );
+          this.emailDistributionList.To = [
+            ...new Set([...this.emailDistributionList.To, ...To]),
+          ];
+          this.emailDistributionList.Cc = [
+            ...new Set([...this.emailDistributionList.Cc, ...Cc]),
+          ];
+          this.emailDistributionList.Bcc = [
+            ...new Set([...this.emailDistributionList.Bcc, ...Bcc]),
+          ];
+          this.showToTemplate = true;
+          this.templateFor = 'to';
+          this.validateDistributionList();
+          if (this.fileElement) this.fileElement.nativeElement.value = '';
+          this.snackBar.openSnackBar(
+            this.translate.instant(
+              'components.email.distributionList.import.success'
+            )
+          );
+        });
     }
   }
 

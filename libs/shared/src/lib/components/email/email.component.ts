@@ -65,7 +65,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   cacheDistributionList: any = [];
 
   /**
-   * Constructor for the EmailComponent.
+   * Email Notification setup component.
    *
    * @param emailService The service for handling emails.
    * @param applicationService The service for handling applications.

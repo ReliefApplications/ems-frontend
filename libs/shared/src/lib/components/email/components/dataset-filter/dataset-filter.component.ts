@@ -372,7 +372,7 @@ export class DatasetFilterComponent
           const resource = types.find(
             (x: any) => x.name.toLowerCase() === resourceName.toLowerCase()
           );
-          const metaFields = this.queryBuilder.getMetaFields(resource.fields);
+          const metaFields = this.queryBuilder.buildMetaFields(resource.fields);
 
           // if (metaFields.every((x: string) => !x)) {
           //   return null;

@@ -109,7 +109,6 @@
                     <ng-container>
                       <ui-button
                         [variant]="'grey'"
-                        class="hide-icons hover:text-primary-600"
                         [isIcon]="true"
                         size="large"
                         (click)="sendEmailList(element)"
@@ -121,7 +120,6 @@
 
                       <ui-button
                         [variant]="'grey'"
-                        class="hide-icons hover:text-primary-600"
                         [isIcon]="true"
                         size="large"
                         (click)="getEmailNotificationById(element.id)"
@@ -132,7 +130,6 @@
 
                       <ui-button
                         [variant]="'grey'"
-                        class="hide-icons hover:text-primary-600"
                         [isIcon]="true"
                         size="large"
                         (click)="cloneEmailNotification(element)"
@@ -144,7 +141,6 @@
 
                       <ui-button
                         [variant]="'danger'"
-                        class="hide-icons hover:text-primary-600"
                         [isIcon]="true"
                         size="large"
                         (click)="deleteEmailNotification(element)"
@@ -256,15 +252,17 @@
   </button> -->
 </div>
 <ng-container *ngIf="!emailService.isExisting">
-  <div>
+  <div class="relative">
+    <!-- todo: remove, and use better email notification navigation with breadcrumbs -->
+     <!-- todo: if not removing, translate -->
     <ui-button
-      [variant]="'danger'"
-      class="hide-icons hover:text-primary-600 btnClose"
+      variant="danger"
+      class="absolute -top-[22px] -right-[14px]"
       [isIcon]="true"
       size="large"
       (click)="confirmClose()"
-      [icon]="'close'"
-      [uiTooltip]="'Back to List'"
+      icon="close"
+      [uiTooltip]="'Back to List'" 
     >
     </ui-button>
   </div>

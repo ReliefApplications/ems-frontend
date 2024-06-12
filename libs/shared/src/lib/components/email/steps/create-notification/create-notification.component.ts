@@ -26,6 +26,8 @@ export class CreateNotificationComponent
   public notificationTypes: string[] = this.emailService.notificationTypes;
   /** Event emitter for navigating to list screen. */
   @Output() navigateToListScreen: EventEmitter<any> = new EventEmitter();
+  /** Opened snackBars */
+  private snackBars: any[] = [];
 
   /**
    * Checks if name input is empty.
@@ -116,13 +118,19 @@ export class CreateNotificationComponent
     if (this.isNameDuplicate) {
       // Set new control error so form control is marked as invalid
       this.formGroup.get('name')?.setErrors({ duplicated: true });
-      this.snackBar.openSnackBar(
-        this.translate.instant('components.email.distributionList.duplicate'),
-        { error: true }
+      // Store snackBars to remove them later
+      this.snackBars.push(
+        this.snackBar.openSnackBar(
+          this.translate.instant('components.email.distributionList.duplicate'),
+          { error: true }
+        )
       );
     } else {
       this.formGroup.get('name')?.setErrors(null);
-      this.snackBar.dismissCurrentSnackBar();
+      // Dismiss all snackBars opened by the component
+      for (const snackBar of this.snackBars) {
+        snackBar.instance.dismiss();
+      }
     }
     if (this.isEmpty && this.formGroup.controls['name'].touched) {
       this.snackBar.openSnackBar(
@@ -131,14 +139,4 @@ export class CreateNotificationComponent
       );
     }
   }
-
-  /**
-   * Deprecated?
-   * Toggles the state of `isExisting` property in the `EmailService`.
-   */
-  // toggle() {
-  //   this.emailService.setDatasetForm();
-  //   this.emailService.isExisting = !this.emailService.isExisting;
-  //   this.navigateToListScreen.emit();
-  // }
 }
