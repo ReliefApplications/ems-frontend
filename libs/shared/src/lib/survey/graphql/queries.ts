@@ -12,6 +12,16 @@ export const GET_ROLES_FROM_APPLICATIONS = gql`
   }
 `;
 
+/** Gets roles for a single application */
+export const GET_ROLES_FROM_APPLICATION = gql`
+  query GetRolesFromApplication($application: ID!) {
+    rolesFromApplications(applications: [$application]) {
+      id
+      title
+    }
+  }
+`;
+
 // === GET RESOURCE BY ID ===
 /** Graphql request for getting data of a resource by its id */
 export const GET_RESOURCE_BY_ID = gql`
