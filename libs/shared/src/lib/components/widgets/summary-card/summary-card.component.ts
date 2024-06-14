@@ -478,6 +478,8 @@ export class SummaryCardComponent
         await this.createDynamicQueryFromLayout(card);
       }
     } else if (this.useReferenceData) {
+      // No need to fetch meta data
+      this.metadataLoading = false;
       // Using reference data
       this.refData = await this.referenceDataService.loadReferenceData(
         card.referenceData as string
@@ -1012,6 +1014,8 @@ export class SummaryCardComponent
   private async getCardsFromAggregation(
     card: NonNullable<SummaryCardFormT['value']['card']>
   ) {
+    // No meta data loading
+    this.metadataLoading = false;
     this.dataLoading = true;
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
       card.resource as string,
