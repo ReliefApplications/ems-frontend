@@ -9,8 +9,6 @@ import { GridLayoutService } from '../../../services/grid-layout/grid-layout.ser
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
-import { SnackbarService } from '@oort-front/ui';
-import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Layouts list configuration for grid widgets
@@ -45,14 +43,10 @@ export class LayoutTableComponent
    *
    * @param dialog Dialog Service
    * @param gridLayoutService The shared grid layout service
-   * @param snackBar Snackbar Service
-   * @param translate Translate Service
    */
   constructor(
     private dialog: Dialog,
-    private gridLayoutService: GridLayoutService,
-    private snackBar: SnackbarService,
-    private translate: TranslateService
+    private gridLayoutService: GridLayoutService
   ) {
     super();
   }
@@ -125,30 +119,19 @@ export class LayoutTableComponent
         resource: this.resource,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe({
-      next: (value: any) => {
-        if (value) {
-          if (!this.allLayouts.find((x) => x.id === value.id)) {
-            this.allLayouts.push(value);
-            this.resource?.layouts?.edges?.push({
-              node: value,
-              cursor: value.id,
-            });
-          }
-          this.selectedLayouts?.setValue(
-            this.selectedLayouts?.value.concat(value.id)
-          );
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectCreated', {
-              type: this.translate.instant('common.layout.one').toLowerCase(),
-              value: value.name,
-            })
-          );
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        if (!this.allLayouts.find((x) => x.id === value.id)) {
+          this.allLayouts.push(value);
+          this.resource?.layouts?.edges?.push({
+            node: value,
+            cursor: value.id,
+          });
         }
-      },
-      error: (err) => {
-        this.snackBar.openSnackBar(err.message, { error: true });
-      },
+        this.selectedLayouts?.setValue(
+          this.selectedLayouts?.value.concat(value.id)
+        );
+      }
     });
   }
 
