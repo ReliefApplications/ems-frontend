@@ -377,7 +377,9 @@ export class EditLayerModalComponent
 
     if (this.form.controls.datasource) {
       // Reference data changes
-      this.getReferenceData();
+      if (this.form.value.datasource.refData) {
+        this.getReferenceData();
+      }
       this.form
         .get('datasource.refData')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
@@ -396,7 +398,9 @@ export class EditLayerModalComponent
         });
 
       // Resource changes
-      this.getResource();
+      if (this.form.value.datasource.resource) {
+        this.getResource();
+      }
       this.form
         .get('datasource.resource')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
@@ -515,6 +519,7 @@ export class EditLayerModalComponent
    * Get resource from graphql
    */
   getResource(): void {
+    console.log('get resource');
     this.loading = true;
     this.fields.next([]);
     const formValue = this.form.getRawValue();
@@ -564,6 +569,7 @@ export class EditLayerModalComponent
    * Get reference data from graphql
    */
   getReferenceData(): void {
+    console.log('get reference data');
     this.loading = true;
     this.fields.next([]);
     const formValue = this.form.getRawValue();
