@@ -57,7 +57,7 @@
 		"calculatedField": {
 			"few": "Calculated Fields",
 			"none": "No Calculated field",
-			"one": "calculated Field"
+			"one": "Calculated Field"
 		},
 		"cancel": "Cancel",
 		"channel": {
@@ -465,6 +465,7 @@
 			"fieldName": "Field name",
 			"groupBy": "Group by",
 			"groupingRules": "Grouping rules",
+			"keepNull": "Preserve null values",
 			"mapping": {
 				"category": "Category",
 				"field": "Value",
@@ -566,6 +567,12 @@
 						"minCols": "Number of columns.\nMust be an integer between 4 and 24.",
 						"minimumHeight": "Minimum height of the grid in pixels.\nMust be greater than or equal to 0. \nThe dashboard won't automatically fit to the screen if its height is below this number.",
 						"reset": "Reset to default"
+					},
+					"tooltips": {
+						"clear": "Reset to default",
+						"fixedRowHeight": "Minimum: 50. By default: 200. No maximum.",
+						"margin": "Minimum: 0. By default: 10. No maximum.",
+						"minCols": "Minimum: 4. By default: 8. Maximum: 24."
 					}
 				}
 			},
@@ -1261,7 +1268,8 @@
 		"templates": {
 			"available": "Available email templates",
 			"delete": {
-				"confirmationMessage": "Are you sure you want to delete the template '{{name}}'?"
+				"confirmationMessage": "Are you sure you want to delete the template '{{name}}'?",
+				"titleMessage": "Delete the template"
 			},
 			"edit": {
 				"body": "Body",
@@ -1357,6 +1365,7 @@
 					"goTo": "Go to page",
 					"history": "Show history"
 				},
+				"empty": "No record found for this dataset",
 				"errors": {
 					"autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
 					"invalid": {
@@ -1851,11 +1860,18 @@
 						"dataSource": {
 							"layoutStyles": {
 								"queryFilters": {
+									"error": "Error while building available reference data variables",
+									"graphql": {
+										"title": "GraphQL variables mapping",
+										"tooltip": "Set values for the GraphQL variables defined in the reference data query. You can get values from the filters using the {{filter.<question-name>}} templates. E.g.: { \"region\": {{filter.region}} }"
+									},
 									"help": "Make sure to remove all unused variables, to prevent null arguments to be sent.",
 									"noVariables": "No variables defined",
-									"refresh": "See all graphQL variables",
-									"title": "GraphQL variable mapping",
-									"tooltip": "Set values for the GraphQL variables defined in the reference data query. You can get values from the filters using the {{filter.<question-name>}} templates. E.g.: { \"region\": {{filter.region}} }"
+									"refresh": "See all variables",
+									"rest": {
+										"title": "REST query params mapping",
+										"tooltip": "Set values for the REST endpoint query params available in the reference data. You can get values from the filters using the {{filter.<question-name>}} templates. E.g.: { \"region\": {{filter.region}} }"
+									}
 								},
 								"title": "Layout styles",
 								"use": "Use layout styles",
@@ -2151,6 +2167,7 @@
 				}
 			},
 			"id": "Application ID",
+			"menu": "Side menu",
 			"new": "New application",
 			"notifications": {
 				"notPublished": "Application not published.",
@@ -2347,7 +2364,8 @@
 				"padding": "Use widget inner padding",
 				"searchable": "Allow search",
 				"sortable": "Allow sorting",
-				"title": "Widget display"
+				"title": "Widget display",
+				"tooltip": "Widget tooltip"
 			},
 			"map": {
 				"defaultTitle": "Map Widget",
@@ -2376,7 +2394,8 @@
 				"selector": {
 					"collapse": "Hide widget selector",
 					"expand": "Show widget selector"
-				}
+				},
+				"tooltip": "Leave empty to hide"
 			}
 		},
 		"workflow": {

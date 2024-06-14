@@ -5,7 +5,6 @@ on:
     branches:
       - main
       - next
-      - next-major
   workflow_dispatch:
 
 concurrency:
@@ -25,7 +24,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Check branch
         run: |
-          VALID_BRANCHES=("main" "next" "next-major" "beta" "alpha")
+          VALID_BRANCHES=("main" "next" "beta" "alpha")
           BRANCH_NAME=$(basename ${{ github.ref }})
 
           if [[ ! " ${VALID_BRANCHES[@]} " =~ " ${BRANCH_NAME} " ]]; then

@@ -110,12 +110,16 @@
               </ng-container>
             </ng-container>
           </div>
-          <!-- GraphQL variable mapping for reference data graphql-->
-          <shared-graphql-variables-mapping
-            *ngIf="referenceData && referenceData.type === 'graphql'"
+          <!-- Query params mapping for reference data graphql or rest-->
+          <shared-query-params-mapping
+            *ngIf="
+              referenceData &&
+              (referenceData.type === 'graphql' ||
+                referenceData.type === 'rest')
+            "
             [referenceData]="referenceData"
             [control]="$any(form.get('referenceDataVariableMapping'))"
-          ></shared-graphql-variables-mapping>
+          ></shared-query-params-mapping>
         </ng-template>
       </ui-tab>
       <ui-tab>

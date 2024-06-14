@@ -465,6 +465,7 @@
 			"fieldName": "******",
 			"groupBy": "******",
 			"groupingRules": "******",
+			"keepNull": "******",
 			"mapping": {
 				"category": "******",
 				"field": "******",
@@ -566,6 +567,12 @@
 						"minCols": "******",
 						"minimumHeight": "******",
 						"reset": "******"
+					},
+					"tooltips": {
+						"clear": "******",
+						"fixedRowHeight": "******",
+						"margin": "******",
+						"minCols": "******"
 					}
 				}
 			},
@@ -1261,7 +1268,8 @@
 		"templates": {
 			"available": "******",
 			"delete": {
-				"confirmationMessage": "****** {{name}} ******"
+				"confirmationMessage": "****** {{name}} ******",
+				"titleMessage": "******"
 			},
 			"edit": {
 				"body": "******",
@@ -1357,6 +1365,7 @@
 					"goTo": "******",
 					"history": "******"
 				},
+				"empty": "******",
 				"errors": {
 					"autoSaveFailed": "******",
 					"invalid": {
@@ -1851,11 +1860,18 @@
 						"dataSource": {
 							"layoutStyles": {
 								"queryFilters": {
+									"error": "******",
+									"graphql": {
+										"title": "******",
+										"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
+									},
 									"help": "******",
 									"noVariables": "******",
 									"refresh": "******",
-									"title": "******",
-									"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
+									"rest": {
+										"title": "******",
+										"tooltip": "****** {{filter.<question-name>}} ****** { ****** {{filter.region}} ****** }"
+									}
 								},
 								"title": "******",
 								"use": "******",
@@ -2151,6 +2167,7 @@
 				}
 			},
 			"id": "******",
+			"menu": "******",
 			"new": "******",
 			"notifications": {
 				"notPublished": "******",
@@ -2347,7 +2364,8 @@
 				"padding": "******",
 				"searchable": "******",
 				"sortable": "******",
-				"title": "******"
+				"title": "******",
+				"tooltip": "******"
 			},
 			"map": {
 				"defaultTitle": "******",
@@ -2376,7 +2394,8 @@
 				"selector": {
 					"collapse": "******",
 					"expand": "******"
-				}
+				},
+				"tooltip": "******"
 			}
 		},
 		"workflow": {

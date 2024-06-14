@@ -28,7 +28,7 @@
       </ui-select-menu>
     </div>
   </ng-container>
-  <div class="flex-1 flex-col">
+  <div class="flex-1 flex-col" *ngIf="!loading; else loadingTmpl">
     <!-- Reference data selection  -->
     <div uiFormFieldDirective class="flex-1" *ngIf="!formGroup.value.resource">
       <label>{{ 'models.referenceData.select' | translate }}</label>
@@ -102,13 +102,16 @@
           [uiTooltip]="'common.remove' | translate"
         ></ui-button>
       </div>
-      <!-- GraphQL variable mapping for reference data graphql-->
-      <shared-graphql-variables-mapping
+      <!-- Query params mapping for reference data graphql or rest-->
+      <shared-query-params-mapping
         class="mb-1"
-        *ngIf="referenceData && referenceData.type === 'graphql'"
+        *ngIf="
+          referenceData &&
+          (referenceData.type === 'graphql' || referenceData.type === 'rest')
+        "
         [referenceData]="referenceData"
         [control]="$any(formGroup.get('referenceDataVariableMapping'))"
-      ></shared-graphql-variables-mapping>
+      ></shared-query-params-mapping>
       <!-- Series Mapping -->
       <h3 class="mb-1">{{ 'components.mapping.title' | translate }}</h3>
       <shared-series-mapping
@@ -128,3 +131,10 @@
     </ng-container>
   </ng-container>
 </div>
+
+<!-- Loading indicator -->
+<ng-template #loadingTmpl>
+  <div class="w-full flex">
+    <ui-spinner class="m-auto block"></ui-spinner>
+  </div>
+</ng-template>

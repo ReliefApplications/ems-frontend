@@ -59,7 +59,6 @@ const Template: StoryFn<CheckboxComponent> = (args: CheckboxComponent) => {
       <ng-container ngProjectAs="icon">
       <ui-icon
       icon="info_outline"
-      [inline]="true"
       [size]="18"
       variant="grey"
     ></ui-icon>

@@ -1,7 +1,15 @@
 <shared-map class="flex-1" [mapSettings]="settings" />
 
 <ng-template #headerTemplate>
-  <span class="widget-title" [title]="settings ? settings.title : ''">{{
-    settings.title
-  }}</span>
+  <div class="overflow-hidden flex-1 flex gap-1 items-center">
+    <span class="widget-title" [title]="settings ? settings.title : ''">{{
+      settings.title
+    }}</span>
+    <span
+      *ngIf="settings?.widgetDisplay?.tooltip"
+      class="widget-tooltip"
+      [title]="settings.widgetDisplay.tooltip"
+      >?</span
+    >
+  </div>
 </ng-template>

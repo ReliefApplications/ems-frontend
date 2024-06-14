@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReferenceDataRoutingModule } from './reference-data-routing.module';
 import { ReferenceDataComponent } from './reference-data.component';
-import { AccessModule } from '@oort-front/shared';
+import { AccessModule, AsyncMonacoEditorDirective } from '@oort-front/shared';
 import {
   AlertModule,
   GraphQLSelectModule,
@@ -58,6 +58,7 @@ import { ResizableModule } from 'angular-resizable-element';
     DropDownsModule,
     ToggleModule,
     ResizableModule,
+    AsyncMonacoEditorDirective,
   ],
 })
 export class ReferenceDataModule {}

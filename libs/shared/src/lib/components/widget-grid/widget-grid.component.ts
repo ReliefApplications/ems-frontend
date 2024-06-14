@@ -96,6 +96,8 @@ export class WidgetGridComponent
   private setFullscreenTimeoutListener!: NodeJS.Timeout;
   /** Stored widgets, not affected by visibility changes */
   private _widgets: any[] = [];
+  /** Disables the tooltips */
+  public tooltipDisabled = false;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -258,6 +260,12 @@ export class WidgetGridComponent
       fixedRowHeight: 200,
       minimumHeight: 0,
       draggable: {
+        start: () => {
+          this.tooltipDisabled = true;
+        },
+        stop: () => {
+          this.tooltipDisabled = false;
+        },
         enabled: this.canUpdate,
         ignoreContentClass: 'gridster-item-content',
         ignoreContent: true,

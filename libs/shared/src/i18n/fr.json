@@ -465,6 +465,7 @@
 			"fieldName": "Nom du champ",
 			"groupBy": "Regrouper par",
 			"groupingRules": "Grouper par",
+			"keepNull": "Conserver les valeurs vides",
 			"mapping": {
 				"category": "Catégorie",
 				"field": "Valeur",
@@ -763,11 +764,6 @@
 			"subject": "Objet",
 			"title": "Prévisualisation de mail",
 			"to": "À"
-		},
-		"floating": {
-			"menuButton": {
-				"ariaLabel": "***"
-			}
 		},
 		"form": {
 			"aggregation": {
@@ -1864,11 +1860,18 @@
 						"dataSource": {
 							"layoutStyles": {
 								"queryFilters": {
+									"error": "Erreur lors de la création des variables de données de référence disponibles",
+									"graphql": {
+										"title": "Mappage de variables GraphQL",
+										"tooltip": "Définissez les valeurs des variables GraphQL définies dans la requête de données de référence. Vous pouvez obtenir les valeurs des filtres à l'aide des modèles {{filter.<question-name>}}. Par exemple: { \"region\": {{filter.region}} }"
+									},
 									"help": "N'oubliez pas de supprimer les variables non utilisées.",
 									"noVariables": "Aucune variable définie",
 									"refresh": "Afficher toutes les variables graphQL",
-									"title": "Mappage de variables GraphQL",
-									"tooltip": "Définissez les valeurs des variables GraphQL définies dans la requête de données de référence. Vous pouvez obtenir les valeurs des filtres à l'aide des modèles {{filter.<question-name>}}. Par exemple : { \"region\": {{filter.region}} }"
+									"rest": {
+										"title": "Mappage de paramètres de requête REST",
+										"tooltip": "Définir les valeurs pour les paramètres de requête du point de terminaison REST disponibles dans les données de référence. Vous pouvez obtenir les valeurs des filtres à l'aide des modèles {{filter.<question-name>}}. Par exemple: { \"region\": {{filter.region}} }"
+									}
 								},
 								"title": "Styles de mise en page",
 								"use": "Utiliser les styles de mise en page",
@@ -2361,7 +2364,8 @@
 				"padding": "Utiliser la marge intérieure du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",
-				"title": "Affichage des widgets"
+				"title": "Affichage des widgets",
+				"tooltip": "Info-bulle"
 			},
 			"map": {
 				"defaultTitle": "Widget Carte",
@@ -2390,7 +2394,8 @@
 				"selector": {
 					"collapse": "Fermer la sélection de widget",
 					"expand": "Afficher la sélection de widget"
-				}
+				},
+				"tooltip": "Laissez vide pour ne pas afficher"
 			}
 		},
 		"workflow": {

@@ -1700,7 +1700,7 @@
                     }
                 }
             },
-            "templateData": "<label for=\"{{ name }}\" class=\"inline-flex\">\n  <span class=\"mr-2 flex\">\n    <input\n      [attr.aria-describedby]=\"name + '-description'\"\n      [attr.aria-label]=\"ariaLabel\"\n      id=\"{{ name }}\"\n      name=\"{{ name }}\"\n      type=\"checkbox\"\n      [checked]=\"checked\"\n      [indeterminate]=\"indeterminate\"\n      [ngClass]=\"checkboxClasses\"\n      class=\"form-checkbox h-4 w-4 rounded border-gray-300 self-center\"\n      (click)=\"onSelect()\"\n    />\n  </span>\n  <span class=\"text-sm text-dark-100 font-medium leading-6 flex\">\n    <ng-content select=\"label\"></ng-content>\n    <ng-content select=\"icon\"></ng-content>\n    <p id=\"{{ name }}-description\" class=\"m-0 font-normal text-gray-500\">\n      <ng-content select=\"description\"></ng-content>\n    </p>\n  </span>\n</label>\n"
+            "templateData": "<label for=\"{{ name }}\" class=\"inline-flex\">\n  <span class=\"mr-2 flex\">\n    <input\n      [attr.aria-describedby]=\"name + '-description'\"\n      [attr.aria-label]=\"ariaLabel\"\n      id=\"{{ name }}\"\n      name=\"{{ name }}\"\n      type=\"checkbox\"\n      [checked]=\"checked\"\n      [indeterminate]=\"indeterminate\"\n      [ngClass]=\"checkboxClasses\"\n      class=\"form-checkbox h-4 w-4 rounded border-gray-300 self-center disabled:bg-gray-50\"\n      (click)=\"onSelect()\"\n      [disabled]=\"disabled\"\n    />\n  </span>\n  <span class=\"text-sm text-dark-100 font-medium leading-6 flex\">\n    <ng-content select=\"label\"></ng-content>\n    <ng-content select=\"icon\"></ng-content>\n    <p id=\"{{ name }}-description\" class=\"m-0 font-normal text-gray-500\">\n      <ng-content select=\"description\"></ng-content>\n    </p>\n  </span>\n</label>\n"
         },
         {
             "name": "ChipComponent",
@@ -5123,7 +5123,7 @@
         },
         {
             "name": "GraphQLSelectComponent",
-            "id": "component-GraphQLSelectComponent-2c8af818fd15cc8f9466a7d6ce78fcc77921220b517ac71f741cead6c76d05bdf117f4d5fc88701f247bb87e958501ff1562797f3364ca6bac6de25a57b80e39",
+            "id": "component-GraphQLSelectComponent-63543da184de484efd33a42bb71b205023cebfb4de8a28c14d6598a146dc109e314711ba6bed875bf210552cdab783d57b3144fd7f6e016948d2379cff48efe5",
             "file": "libs/ui/src/lib/graphql-select/graphql-select.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -5792,8 +5792,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 15386,
-                                "end": 15393,
+                                "pos": 15412,
+                                "end": 15419,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -5804,8 +5804,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 15380,
-                                "end": 15385,
+                                "pos": 15406,
+                                "end": 15411,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -5816,8 +5816,8 @@
                         },
                         {
                             "tagName": {
-                                "pos": 15441,
-                                "end": 15448,
+                                "pos": 15467,
+                                "end": 15474,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -5852,8 +5852,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 12056,
-                                "end": 12057,
+                                "pos": 12082,
+                                "end": 12083,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -5864,8 +5864,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 12050,
-                                "end": 12055,
+                                "pos": 12076,
+                                "end": 12081,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -6014,8 +6014,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 11174,
-                                "end": 11179,
+                                "pos": 11200,
+                                "end": 11205,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -6026,8 +6026,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 11168,
-                                "end": 11173,
+                                "pos": 11194,
+                                "end": 11199,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -6074,8 +6074,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 13303,
-                                "end": 13308,
+                                "pos": 13329,
+                                "end": 13334,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -6086,8 +6086,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 13297,
-                                "end": 13302,
+                                "pos": 13323,
+                                "end": 13328,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -6281,8 +6281,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 14271,
-                                "end": 14275,
+                                "pos": 14297,
+                                "end": 14301,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -6293,8 +6293,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 14265,
-                                "end": 14270,
+                                "pos": 14291,
+                                "end": 14296,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -6305,8 +6305,8 @@
                         },
                         {
                             "name": {
-                                "pos": 14308,
-                                "end": 14315,
+                                "pos": 14334,
+                                "end": 14341,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -6317,8 +6317,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 14302,
-                                "end": 14307,
+                                "pos": 14328,
+                                "end": 14333,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -6446,7 +6446,7 @@
             "description": "<p>Component for a dropdown with pagination.\nExtended by:</p>\n<ul>\n<li>resource select</li>\n<li>reference data select</li>\n</ul>\n<p>BE AWARE: changes made on this component may affect extended ones!!!</p>\n",
             "rawdescription": "\n\nComponent for a dropdown with pagination.\nExtended by:\n- resource select\n- reference data select\n\nBE AWARE: changes made on this component may affect extended ones!!!\n",
             "type": "component",
-            "sourceCode": "import {\n  ChangeDetectorRef,\n  Component,\n  ElementRef,\n  EventEmitter,\n  HostBinding,\n  Input,\n  OnChanges,\n  OnDestroy,\n  OnInit,\n  Optional,\n  Output,\n  Renderer2,\n  Self,\n  SimpleChanges,\n  ViewChild,\n} from '@angular/core';\nimport { QueryRef } from 'apollo-angular';\nimport { BehaviorSubject, Observable, Subject } from 'rxjs';\nimport { get } from 'lodash';\nimport { NgControl, ControlValueAccessor, FormControl } from '@angular/forms';\nimport { coerceBooleanProperty } from '@angular/cdk/coercion';\nimport { debounceTime, distinctUntilChanged } from 'rxjs/operators';\nimport { takeUntil } from 'rxjs/operators';\nimport { SelectMenuComponent } from '../select-menu/select-menu.component';\nimport { updateQueryUniqueValues } from './utils/update-queries';\nimport { ShadowDomService } from '../shadow-dom/shadow-dom.service';\n\n/** A constant that is used to determine how many items should be added on scroll. */\nconst ITEMS_PER_RELOAD = 10;\n\n/**\n * Component for a dropdown with pagination.\n * Extended by:\n * - resource select\n * - reference data select\n *\n * BE AWARE: changes made on this component may affect extended ones!!!\n */\n@Component({\n  selector: 'ui-graphql-select',\n  templateUrl: './graphql-select.component.html',\n  styleUrls: ['./graphql-select.component.scss'],\n  template: '<div></div>',\n})\nexport class GraphQLSelectComponent\n  implements OnInit, OnChanges, OnDestroy, ControlValueAccessor\n{\n  /** Static variable for generating unique id */\n  static nextId = 0;\n\n  /** Input decorator for valueField */\n  @Input() valueField = '';\n  /** Input decorator for textField */\n  @Input() textField = '';\n  /** Input decorator for path */\n  @Input() path = '';\n  /** Whether you can select multiple items or not */\n  @Input() multiselect = false;\n  /** Whether it is a survey question or not */\n  @Input() isSurveyQuestion = false;\n  /** Add type to selectedElements */\n  @Input() selectedElements: any[] = [];\n  /** Whether the select is filterable or not */\n  @Input() filterable = false;\n  /** Placeholder text for the select */\n  @Input() placeholder = '';\n  /**\n   *  Input decorator for aria-label\n   */\n  // eslint-disable-next-line @angular-eslint/no-input-rename\n  @Input('aria-describedby') userAriaDescribedBy!: string;\n  /** Query reference for getting the available contents */\n  @Input() query!: QueryRef<any>;\n\n  /**\n   * Gets the value\n   *\n   * @returns the value\n   */\n  @Input() get value(): string | string[] | null {\n    return this.ngControl?.value;\n  }\n\n  /** Sets the value */\n  set value(val: string | string[] | null) {\n    this.onChange(val);\n    this.stateChanges.next();\n    this.selectionChange.emit(val);\n  }\n\n  /**\n   * Indicates whether the field is required\n   *\n   * @returns whether the field is required\n   */\n  @Input()\n  get required() {\n    return this.isRequired;\n  }\n\n  /**\n   * Sets whether the field is required\n   */\n  set required(req) {\n    this.isRequired = coerceBooleanProperty(req);\n    this.stateChanges.next();\n  }\n\n  /**\n   * Indicates whether the field is disabled\n   *\n   * @returns whether the field is disabled\n   */\n  @Input()\n  get disabled(): boolean {\n    return this.ngControl?.disabled || false;\n  }\n\n  /** Sets whether the field is disabled */\n  set disabled(value: boolean) {\n    const isDisabled = coerceBooleanProperty(value);\n    if (isDisabled) this.ngControl?.control?.disable();\n    else this.ngControl?.control?.enable();\n    this.stateChanges.next();\n  }\n\n  /** Event emitter for selection change */\n  @Output() selectionChange = new EventEmitter<string | string[] | null>();\n  /** Event emitter for search change */\n  @Output() searchChange = new EventEmitter<string>();\n\n  /** Subject that emits when the state changes */\n  public stateChanges = new Subject<void>();\n  /** Form control for search */\n  public searchControl = new FormControl('', { nonNullable: true });\n  /** Control type */\n  public controlType = 'ui-graphql-select';\n  /** Elements */\n  public elements = new BehaviorSubject<any[]>([]);\n  /** Elements observable */\n  public elements$!: Observable<any[]>;\n  /** Loading status */\n  public loading = true;\n  /** Focused status */\n  public focused = false;\n  /** Touched status */\n  public touched = false;\n\n  /** Destroy subject */\n  public destroy$ = new Subject<void>();\n  /** Query name */\n  protected queryName!: string;\n  /** Query change subject */\n  protected queryChange$ = new Subject<void>();\n  /** Query elements */\n  private queryElements: any[] = [];\n  /** Cached elements */\n  private cachedElements: any[] = [];\n  /** Page info */\n  private pageInfo = {\n    endCursor: '',\n    hasNextPage: true,\n  };\n  /** Whether the field is required */\n  private isRequired = false;\n  /** Scroll listener */\n  private scrollListener!: any;\n\n  /** Select menu component */\n  @ViewChild(SelectMenuComponent) elementSelect!: SelectMenuComponent;\n  /** Search input element */\n  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;\n\n  /**\n   * Indicates whether the label should be in the floating position\n   *\n   * @returns whether the label should be in the floating position\n   */\n  @HostBinding('class.floating')\n  get shouldLabelFloat() {\n    return this.focused || !this.empty;\n  }\n\n  /**\n   * Gets the id\n   *\n   * @returns the id\n   */\n  @HostBinding()\n  id = `ui-graphql-select-${GraphQLSelectComponent.nextId++}`;\n\n  /**\n   * Gets the empty status\n   *\n   * @returns if an option is selected\n   */\n  get empty() {\n    // return !this.selected.value;\n    return !this.ngControl?.control?.value;\n  }\n\n  /**\n   * Indicates whether the input is in an error state\n   *\n   * @returns whether the input is in an error state\n   */\n  get errorState(): boolean {\n    return (this.ngControl?.invalid && this.touched) || false;\n    // return this.ngControl.invalid && this.touched;\n    // return this.selected.invalid && this.touched;\n  }\n\n  /**\n   * The constructor function is a special function that is called when a new instance of the class is\n   * created\n   *\n   * @param ngControl form control shared service,\n   * @param elementRef shared element ref service\n   * @param renderer - Angular - Renderer2\n   * @param changeDetectorRef - Angular - ChangeDetectorRef\n   * @param shadowDomService shadow dom service to handle the current host of the component\n   */\n  constructor(\n    @Optional() @Self() public ngControl: NgControl,\n    public elementRef: ElementRef<HTMLElement>,\n    protected renderer: Renderer2,\n    protected changeDetectorRef: ChangeDetectorRef,\n    protected shadowDomService: ShadowDomService\n  ) {\n    if (this.ngControl) {\n      this.ngControl.valueAccessor = this;\n    }\n  }\n\n  /**\n   * Sets element ids that should be used for the aria-describedby attribute of your control\n   *\n   * @param ids id array\n   */\n  setDescribedByIds(ids: string[]) {\n    const controlElement = this.elementRef.nativeElement.querySelector(\n      '.ui-graphql-select-container'\n    );\n    if (!controlElement) return;\n    this.renderer.setAttribute(\n      controlElement,\n      'aria-describedby',\n      ids.join(' ')\n    );\n  }\n\n  /**\n   * Handles mouse click on container\n   *\n   * @param event Mouse event\n   */\n  onContainerClick(event: MouseEvent) {\n    if ((event.target as Element).tagName.toLowerCase() !== 'input') {\n      this.elementRef.nativeElement.querySelector('input')?.focus();\n    }\n  }\n\n  /**\n   * ControlValueAccessor set value\n   *\n   * @param val new value\n   */\n  writeValue(val: string | null): void {\n    this.value = val;\n  }\n\n  /**\n   * Registers new onChange function\n   *\n   * @param fn onChange function\n   */\n  registerOnChange(fn: (_: any) => void): void {\n    this.onChange = fn;\n  }\n\n  /**\n   * Registers new onTouched function\n   *\n   * @param fn onTouched function\n   */\n  registerOnTouched(fn: () => void): void {\n    this.onTouched = fn;\n  }\n\n  /**\n   * Function shell for onTouched\n   */\n  // eslint-disable-next-line @typescript-eslint/no-empty-function\n  onTouched = () => {};\n  /**\n   * Function shell for onChange\n   *\n   * @param _ new value\n   */\n  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function\n  onChange = (_: any) => {};\n\n  ngOnInit(): void {\n    this.elements$ = this.elements.asObservable();\n    if (this.query) {\n      this.query.valueChanges\n        .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))\n        .subscribe(({ data, loading }) => {\n          this.queryName = Object.keys(data)[0];\n          this.updateValues(data, loading);\n        });\n    }\n    this.ngControl?.valueChanges\n      ?.pipe(takeUntil(this.destroy$))\n      .subscribe((value) => {\n        const elements = this.elements.getValue();\n        if (Array.isArray(value)) {\n          this.selectedElements = [\n            ...elements.filter((element) => {\n              value.find((x) => x === element[this.valueField]);\n            }),\n          ];\n        } else {\n          this.selectedElements = [\n            elements.find((element) => value === element[this.valueField]),\n          ];\n        }\n        this.selectionChange.emit(value);\n      });\n    // this way we can wait for 0.5s before sending an update\n    this.searchControl.valueChanges\n      .pipe(debounceTime(500), distinctUntilChanged())\n      .subscribe((value) => {\n        this.cachedElements = [];\n        this.searchChange.emit(value);\n      });\n  }\n\n  ngOnChanges(changes: SimpleChanges): void {\n    if (changes['query'] && changes['query'].previousValue) {\n      // Unsubscribe from the old query\n      this.queryChange$.next();\n\n      // Reset the loading and pageInfo states\n      this.loading = true;\n      this.pageInfo = {\n        endCursor: '',\n        hasNextPage: true,\n      };\n\n      // Clear the cached elements\n      this.cachedElements = [];\n\n      // Clear the selected elements\n      this.selectedElements = [];\n\n      // Clear the elements\n      this.elements.next([]);\n\n      // Clear the search control\n      this.searchControl.setValue('');\n\n      // Clear the form control\n      this.ngControl?.control?.setValue(null);\n\n      // Emit the selection change\n      this.selectionChange.emit(null);\n\n      // Subscribe to the new query\n      this.query.valueChanges\n        .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))\n        .subscribe(({ data, loading }) => {\n          this.queryName = Object.keys(data)[0];\n          this.updateValues(data, loading);\n        });\n    } else {\n      const elements = this.elements.getValue();\n      const selectedElements = this.selectedElements.filter(\n        (selectedElement) =>\n          selectedElement &&\n          !elements.find(\n            (node) => node[this.valueField] === selectedElement[this.valueField]\n          )\n      );\n      this.elements.next([...selectedElements, ...elements]);\n    }\n  }\n\n  ngOnDestroy(): void {\n    if (this.scrollListener) {\n      this.scrollListener();\n    }\n    this.destroy$.next();\n    this.destroy$.complete();\n    this.stateChanges.complete();\n  }\n\n  /**\n   * Handles focus on input\n   */\n  onFocusIn() {\n    if (!this.focused) {\n      this.focused = true;\n      this.stateChanges.next();\n    }\n  }\n\n  /**\n   * Handles lost focus on input\n   *\n   * @param event The focus event\n   */\n  onFocusOut(event: FocusEvent) {\n    if (\n      this.focused &&\n      !this.elementRef.nativeElement.contains(event.relatedTarget as Element)\n    ) {\n      this.touched = true;\n      this.focused = false;\n      this.onTouched();\n      this.stateChanges.next();\n    }\n  }\n\n  /**\n   * Adds scroll listener to select and focuses on input.\n   *\n   */\n  onOpenSelect(): void {\n    // focus on search input, if filterable\n    if (this.filterable) this.searchInput?.nativeElement.focus();\n    const panel =\n      this.shadowDomService.currentHost.getElementById('optionList');\n    if (this.scrollListener) {\n      this.scrollListener();\n    }\n    this.scrollListener = this.renderer.listen(\n      panel,\n      'scroll',\n      (event: any) => {\n        this.loadOnScroll(event);\n      }\n    );\n  }\n\n  /**\n   * Fetches more resources on scroll.\n   *\n   * @param e scroll event.\n   */\n  private loadOnScroll(e: any): void {\n    if (\n      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <\n      50\n    ) {\n      if (!this.loading && this.pageInfo?.hasNextPage) {\n        // Check if original query is using skip or afterCursor\n        const queryDefinition = this.query.options.query.definitions[0];\n        const isSkip =\n          queryDefinition?.kind === 'OperationDefinition' &&\n          !!queryDefinition.variableDefinitions?.find(\n            (x) => x.variable.name.value === 'skip'\n          );\n\n        this.loading = true;\n        this.query\n          .fetchMore({\n            variables: {\n              first: ITEMS_PER_RELOAD,\n              ...(isSkip\n                ? { skip: this.cachedElements.length }\n                : { afterCursor: this.pageInfo.endCursor }),\n            },\n          })\n          .then((results) => {\n            this.updateValues(results.data, results.loading);\n          });\n      }\n      // If it's used as a survey question, then change detector have to be manually triggered\n      if (this.isSurveyQuestion) {\n        this.changeDetectorRef.detectChanges();\n      }\n    }\n  }\n\n  /**\n   * Triggers on selection change for select\n   *\n   * @param event the selection change event\n   */\n  public onSelectionChange(event: any) {\n    this.value = event.value;\n    // If it's used as a survey question, then change detector have to be manually triggered\n    if (this.isSurveyQuestion) {\n      this.changeDetectorRef.detectChanges();\n    }\n  }\n\n  /** Triggers on close of select */\n  onCloseSelect() {\n    // filter out from the elements the ones that are\n    // not in the queryElements array or the selectedElements array\n    const elements = this.elements\n      .getValue()\n      .filter(\n        (element) =>\n          this.queryElements.find(\n            (queryElement) =>\n              queryElement[this.valueField] === element[this.valueField]\n          ) ||\n          this.selectedElements.find(\n            (selectedElement) =>\n              selectedElement[this.valueField] === element[this.valueField]\n          )\n      );\n\n    this.elements.next(elements);\n  }\n\n  /**\n   * Update data value\n   *\n   * @param data query response data\n   * @param loading loading status\n   */\n  protected updateValues(data: any, loading: boolean) {\n    const path = this.path ? `${this.queryName}.${this.path}` : this.queryName;\n    const elements: any[] = get(data, path).edges\n      ? get(data, path).edges.map((x: any) => x.node)\n      : get(data, path);\n    const selectedElements = this.selectedElements.filter(\n      (selectedElement) =>\n        selectedElement &&\n        !elements.find(\n          (node) => node[this.valueField] === selectedElement[this.valueField]\n        )\n    );\n    this.cachedElements = updateQueryUniqueValues(this.cachedElements, [\n      ...selectedElements,\n      ...elements,\n    ]);\n    this.elements.next(this.cachedElements);\n    this.queryElements = this.cachedElements;\n    this.pageInfo = get(data, path).pageInfo;\n    this.loading = loading;\n    // If it's used as a survey question, then change detector have to be manually triggered\n    if (this.isSurveyQuestion) {\n      this.changeDetectorRef.detectChanges();\n    }\n  }\n\n  /**\n   * Returns the display value for the given element\n   *\n   * @param element the element to get the display value for\n   * @returns the display value\n   */\n  public getDisplayValue(element: any) {\n    return get(element, this.textField);\n  }\n}\n",
+            "sourceCode": "import {\n  ChangeDetectorRef,\n  Component,\n  ElementRef,\n  EventEmitter,\n  HostBinding,\n  Input,\n  OnChanges,\n  OnDestroy,\n  OnInit,\n  Optional,\n  Output,\n  Renderer2,\n  Self,\n  SimpleChanges,\n  ViewChild,\n} from '@angular/core';\nimport { QueryRef } from 'apollo-angular';\nimport { BehaviorSubject, Observable, Subject } from 'rxjs';\nimport { get } from 'lodash';\nimport { NgControl, ControlValueAccessor, FormControl } from '@angular/forms';\nimport { coerceBooleanProperty } from '@angular/cdk/coercion';\nimport { debounceTime, distinctUntilChanged } from 'rxjs/operators';\nimport { takeUntil } from 'rxjs/operators';\nimport { SelectMenuComponent } from '../select-menu/select-menu.component';\nimport { updateQueryUniqueValues } from './utils/update-queries';\nimport { ShadowDomService } from '../shadow-dom/shadow-dom.service';\n\n/** A constant that is used to determine how many items should be added on scroll. */\nconst ITEMS_PER_RELOAD = 10;\n\n/**\n * Component for a dropdown with pagination.\n * Extended by:\n * - resource select\n * - reference data select\n *\n * BE AWARE: changes made on this component may affect extended ones!!!\n */\n@Component({\n  selector: 'ui-graphql-select',\n  templateUrl: './graphql-select.component.html',\n  styleUrls: ['./graphql-select.component.scss'],\n  template: '<div></div>',\n})\nexport class GraphQLSelectComponent\n  implements OnInit, OnChanges, OnDestroy, ControlValueAccessor\n{\n  /** Static variable for generating unique id */\n  static nextId = 0;\n\n  /** Input decorator for valueField */\n  @Input() valueField = '';\n  /** Input decorator for textField */\n  @Input() textField = '';\n  /** Input decorator for path */\n  @Input() path = '';\n  /** Whether you can select multiple items or not */\n  @Input() multiselect = false;\n  /** Whether it is a survey question or not */\n  @Input() isSurveyQuestion = false;\n  /** Add type to selectedElements */\n  @Input() selectedElements: any[] = [];\n  /** Whether the select is filterable or not */\n  @Input() filterable = false;\n  /** Placeholder text for the select */\n  @Input() placeholder = '';\n  /**\n   *  Input decorator for aria-label\n   */\n  // eslint-disable-next-line @angular-eslint/no-input-rename\n  @Input('aria-describedby') userAriaDescribedBy!: string;\n  /** Query reference for getting the available contents */\n  @Input() query!: QueryRef<any>;\n\n  /**\n   * Gets the value\n   *\n   * @returns the value\n   */\n  @Input() get value(): string | string[] | null {\n    return this.ngControl?.value;\n  }\n\n  /** Sets the value */\n  set value(val: string | string[] | null) {\n    this.onChange(val);\n    this.stateChanges.next();\n    this.selectionChange.emit(val);\n  }\n\n  /**\n   * Indicates whether the field is required\n   *\n   * @returns whether the field is required\n   */\n  @Input()\n  get required() {\n    return this.isRequired;\n  }\n\n  /**\n   * Sets whether the field is required\n   */\n  set required(req) {\n    this.isRequired = coerceBooleanProperty(req);\n    this.stateChanges.next();\n  }\n\n  /**\n   * Indicates whether the field is disabled\n   *\n   * @returns whether the field is disabled\n   */\n  @Input()\n  get disabled(): boolean {\n    return this.ngControl?.disabled || false;\n  }\n\n  /** Sets whether the field is disabled */\n  set disabled(value: boolean) {\n    const isDisabled = coerceBooleanProperty(value);\n    if (isDisabled) this.ngControl?.control?.disable();\n    else this.ngControl?.control?.enable();\n    this.stateChanges.next();\n  }\n\n  /** Event emitter for selection change */\n  @Output() selectionChange = new EventEmitter<string | string[] | null>();\n  /** Event emitter for search change */\n  @Output() searchChange = new EventEmitter<string>();\n\n  /** Subject that emits when the state changes */\n  public stateChanges = new Subject<void>();\n  /** Form control for search */\n  public searchControl = new FormControl('', { nonNullable: true });\n  /** Control type */\n  public controlType = 'ui-graphql-select';\n  /** Elements */\n  public elements = new BehaviorSubject<any[]>([]);\n  /** Elements observable */\n  public elements$!: Observable<any[]>;\n  /** Loading status */\n  public loading = true;\n  /** Focused status */\n  public focused = false;\n  /** Touched status */\n  public touched = false;\n\n  /** Destroy subject */\n  public destroy$ = new Subject<void>();\n  /** Query name */\n  protected queryName!: string;\n  /** Query change subject */\n  protected queryChange$ = new Subject<void>();\n  /** Query elements */\n  private queryElements: any[] = [];\n  /** Cached elements */\n  private cachedElements: any[] = [];\n  /** Page info */\n  private pageInfo = {\n    endCursor: '',\n    hasNextPage: true,\n  };\n  /** Whether the field is required */\n  private isRequired = false;\n  /** Scroll listener */\n  private scrollListener!: any;\n\n  /** Select menu component */\n  @ViewChild(SelectMenuComponent) elementSelect!: SelectMenuComponent;\n  /** Search input element */\n  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;\n\n  /**\n   * Indicates whether the label should be in the floating position\n   *\n   * @returns whether the label should be in the floating position\n   */\n  @HostBinding('class.floating')\n  get shouldLabelFloat() {\n    return this.focused || !this.empty;\n  }\n\n  /**\n   * Gets the id\n   *\n   * @returns the id\n   */\n  @HostBinding()\n  id = `ui-graphql-select-${GraphQLSelectComponent.nextId++}`;\n\n  /**\n   * Gets the empty status\n   *\n   * @returns if an option is selected\n   */\n  get empty() {\n    // return !this.selected.value;\n    return !this.ngControl?.control?.value;\n  }\n\n  /**\n   * Indicates whether the input is in an error state\n   *\n   * @returns whether the input is in an error state\n   */\n  get errorState(): boolean {\n    return (this.ngControl?.invalid && this.touched) || false;\n    // return this.ngControl.invalid && this.touched;\n    // return this.selected.invalid && this.touched;\n  }\n\n  /**\n   * The constructor function is a special function that is called when a new instance of the class is\n   * created\n   *\n   * @param ngControl form control shared service,\n   * @param elementRef shared element ref service\n   * @param renderer - Angular - Renderer2\n   * @param changeDetectorRef - Angular - ChangeDetectorRef\n   * @param shadowDomService shadow dom service to handle the current host of the component\n   */\n  constructor(\n    @Optional() @Self() public ngControl: NgControl,\n    public elementRef: ElementRef<HTMLElement>,\n    protected renderer: Renderer2,\n    protected changeDetectorRef: ChangeDetectorRef,\n    protected shadowDomService: ShadowDomService\n  ) {\n    if (this.ngControl) {\n      this.ngControl.valueAccessor = this;\n    }\n  }\n\n  /**\n   * Sets element ids that should be used for the aria-describedby attribute of your control\n   *\n   * @param ids id array\n   */\n  setDescribedByIds(ids: string[]) {\n    const controlElement = this.elementRef.nativeElement.querySelector(\n      '.ui-graphql-select-container'\n    );\n    if (!controlElement) return;\n    this.renderer.setAttribute(\n      controlElement,\n      'aria-describedby',\n      ids.join(' ')\n    );\n  }\n\n  /**\n   * Handles mouse click on container\n   *\n   * @param event Mouse event\n   */\n  onContainerClick(event: MouseEvent) {\n    if ((event.target as Element).tagName.toLowerCase() !== 'input') {\n      this.elementRef.nativeElement.querySelector('input')?.focus();\n    }\n  }\n\n  /**\n   * ControlValueAccessor set value\n   *\n   * @param val new value\n   */\n  writeValue(val: string | null): void {\n    this.value = val;\n  }\n\n  /**\n   * Registers new onChange function\n   *\n   * @param fn onChange function\n   */\n  registerOnChange(fn: (_: any) => void): void {\n    this.onChange = fn;\n  }\n\n  /**\n   * Registers new onTouched function\n   *\n   * @param fn onTouched function\n   */\n  registerOnTouched(fn: () => void): void {\n    this.onTouched = fn;\n  }\n\n  /**\n   * Function shell for onTouched\n   */\n  // eslint-disable-next-line @typescript-eslint/no-empty-function\n  onTouched = () => {};\n  /**\n   * Function shell for onChange\n   *\n   * @param _ new value\n   */\n  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function\n  onChange = (_: any) => {};\n\n  ngOnInit(): void {\n    this.elements$ = this.elements.asObservable();\n    if (this.query) {\n      this.query.valueChanges\n        .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))\n        .subscribe(({ data, loading }) => {\n          this.queryName = Object.keys(data)[0];\n          this.updateValues(data, loading);\n        });\n    }\n    this.ngControl?.valueChanges\n      ?.pipe(takeUntil(this.destroy$))\n      .subscribe((value) => {\n        const elements = this.elements.getValue();\n        if (Array.isArray(value)) {\n          this.selectedElements = [\n            ...elements.filter((element) => {\n              value.find((x) => x === element[this.valueField]);\n            }),\n          ];\n        } else {\n          this.selectedElements = [\n            elements.find((element) => value === element[this.valueField]),\n          ];\n        }\n        this.selectionChange.emit(value);\n      });\n    // this way we can wait for 0.5s before sending an update\n    this.searchControl.valueChanges\n      .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))\n      .subscribe((value) => {\n        this.cachedElements = [];\n        this.searchChange.emit(value);\n      });\n  }\n\n  ngOnChanges(changes: SimpleChanges): void {\n    if (changes['query'] && changes['query'].previousValue) {\n      // Unsubscribe from the old query\n      this.queryChange$.next();\n\n      // Reset the loading and pageInfo states\n      this.loading = true;\n      this.pageInfo = {\n        endCursor: '',\n        hasNextPage: true,\n      };\n\n      // Clear the cached elements\n      this.cachedElements = [];\n\n      // Clear the selected elements\n      this.selectedElements = [];\n\n      // Clear the elements\n      this.elements.next([]);\n\n      // Clear the search control\n      this.searchControl.setValue('');\n\n      // Clear the form control\n      this.ngControl?.control?.setValue(null);\n\n      // Emit the selection change\n      this.selectionChange.emit(null);\n\n      // Subscribe to the new query\n      this.query.valueChanges\n        .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))\n        .subscribe(({ data, loading }) => {\n          this.queryName = Object.keys(data)[0];\n          this.updateValues(data, loading);\n        });\n    } else {\n      const elements = this.elements.getValue();\n      const selectedElements = this.selectedElements.filter(\n        (selectedElement) =>\n          selectedElement &&\n          !elements.find(\n            (node) => node[this.valueField] === selectedElement[this.valueField]\n          )\n      );\n      this.elements.next([...selectedElements, ...elements]);\n    }\n  }\n\n  ngOnDestroy(): void {\n    if (this.scrollListener) {\n      this.scrollListener();\n    }\n    this.destroy$.next();\n    this.destroy$.complete();\n    this.stateChanges.complete();\n  }\n\n  /**\n   * Handles focus on input\n   */\n  onFocusIn() {\n    if (!this.focused) {\n      this.focused = true;\n      this.stateChanges.next();\n    }\n  }\n\n  /**\n   * Handles lost focus on input\n   *\n   * @param event The focus event\n   */\n  onFocusOut(event: FocusEvent) {\n    if (\n      this.focused &&\n      !this.elementRef.nativeElement.contains(event.relatedTarget as Element)\n    ) {\n      this.touched = true;\n      this.focused = false;\n      this.onTouched();\n      this.stateChanges.next();\n    }\n  }\n\n  /**\n   * Adds scroll listener to select and focuses on input.\n   *\n   */\n  onOpenSelect(): void {\n    // focus on search input, if filterable\n    if (this.filterable) this.searchInput?.nativeElement.focus();\n    const panel =\n      this.shadowDomService.currentHost.getElementById('optionList');\n    if (this.scrollListener) {\n      this.scrollListener();\n    }\n    this.scrollListener = this.renderer.listen(\n      panel,\n      'scroll',\n      (event: any) => {\n        this.loadOnScroll(event);\n      }\n    );\n  }\n\n  /**\n   * Fetches more resources on scroll.\n   *\n   * @param e scroll event.\n   */\n  private loadOnScroll(e: any): void {\n    if (\n      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <\n      50\n    ) {\n      if (!this.loading && this.pageInfo?.hasNextPage) {\n        // Check if original query is using skip or afterCursor\n        const queryDefinition = this.query.options.query.definitions[0];\n        const isSkip =\n          queryDefinition?.kind === 'OperationDefinition' &&\n          !!queryDefinition.variableDefinitions?.find(\n            (x) => x.variable.name.value === 'skip'\n          );\n\n        this.loading = true;\n        this.query\n          .fetchMore({\n            variables: {\n              first: ITEMS_PER_RELOAD,\n              ...(isSkip\n                ? { skip: this.cachedElements.length }\n                : { afterCursor: this.pageInfo.endCursor }),\n            },\n          })\n          .then((results) => {\n            this.updateValues(results.data, results.loading);\n          });\n      }\n      // If it's used as a survey question, then change detector have to be manually triggered\n      if (this.isSurveyQuestion) {\n        this.changeDetectorRef.detectChanges();\n      }\n    }\n  }\n\n  /**\n   * Triggers on selection change for select\n   *\n   * @param event the selection change event\n   */\n  public onSelectionChange(event: any) {\n    this.value = event.value;\n    // If it's used as a survey question, then change detector have to be manually triggered\n    if (this.isSurveyQuestion) {\n      this.changeDetectorRef.detectChanges();\n    }\n  }\n\n  /** Triggers on close of select */\n  onCloseSelect() {\n    // filter out from the elements the ones that are\n    // not in the queryElements array or the selectedElements array\n    const elements = this.elements\n      .getValue()\n      .filter(\n        (element) =>\n          this.queryElements.find(\n            (queryElement) =>\n              queryElement[this.valueField] === element[this.valueField]\n          ) ||\n          this.selectedElements.find(\n            (selectedElement) =>\n              selectedElement[this.valueField] === element[this.valueField]\n          )\n      );\n\n    this.elements.next(elements);\n  }\n\n  /**\n   * Update data value\n   *\n   * @param data query response data\n   * @param loading loading status\n   */\n  protected updateValues(data: any, loading: boolean) {\n    const path = this.path ? `${this.queryName}.${this.path}` : this.queryName;\n    const elements: any[] = get(data, path).edges\n      ? get(data, path).edges.map((x: any) => x.node)\n      : get(data, path);\n    const selectedElements = this.selectedElements.filter(\n      (selectedElement) =>\n        selectedElement &&\n        !elements.find(\n          (node) => node[this.valueField] === selectedElement[this.valueField]\n        )\n    );\n    this.cachedElements = updateQueryUniqueValues(this.cachedElements, [\n      ...selectedElements,\n      ...elements,\n    ]);\n    this.elements.next(this.cachedElements);\n    this.queryElements = this.cachedElements;\n    this.pageInfo = get(data, path).pageInfo;\n    this.loading = loading;\n    // If it's used as a survey question, then change detector have to be manually triggered\n    if (this.isSurveyQuestion) {\n      this.changeDetectorRef.detectChanges();\n    }\n  }\n\n  /**\n   * Returns the display value for the given element\n   *\n   * @param element the element to get the display value for\n   * @returns the display value\n   */\n  public getDisplayValue(element: any) {\n    return get(element, this.textField);\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -8246,7 +8246,7 @@
         },
         {
             "name": "SelectMenuComponent",
-            "id": "component-SelectMenuComponent-7242c439970e4150328deecd0cc2822d54a53b776c886b14b39122aff0301f404004282684274c4d3f13c1efe03f67c13caa299921be5203c81308e777092bc0",
+            "id": "component-SelectMenuComponent-ded557ede3056b5b52691cb96a29da0b9b50a8d37cca9fc7e4f58df0f25208ba16fbb2bdcf1906e8949543123fac2e9844625a20f1d22b0bfff9abc51c3b405f",
             "file": "libs/ui/src/lib/select-menu/select-menu.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -8641,7 +8641,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 497,
+                    "line": 496,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nApply animation to displayed selectList\n\n",
@@ -8652,8 +8652,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 15518,
-                                "end": 15527,
+                                "pos": 15475,
+                                "end": 15484,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -8664,8 +8664,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 15512,
-                                "end": 15517,
+                                "pos": 15469,
+                                "end": 15474,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -8682,7 +8682,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 461,
+                    "line": 460,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\nCloses the listbox if a click is made outside of the component",
@@ -8704,7 +8704,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 515,
+                    "line": 514,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nFilter the current option list by the given search value\n\n",
@@ -8715,8 +8715,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 16262,
-                                "end": 16273,
+                                "pos": 16219,
+                                "end": 16230,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -8727,8 +8727,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 16256,
-                                "end": 16261,
+                                "pos": 16213,
+                                "end": 16218,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -8915,7 +8915,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 538,
+                    "line": 537,
                     "deprecated": false,
                     "deprecationMessage": ""
                 },
@@ -9057,7 +9057,7 @@
                     "optional": false,
                     "returnType": "Observable<Event | void>",
                     "typeParameters": [],
-                    "line": 487,
+                    "line": 486,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nActions linked to the destruction of the current displayed select\n\n",
@@ -9068,8 +9068,8 @@
                     "jsdoctags": [
                         {
                             "tagName": {
-                                "pos": 15262,
-                                "end": 15269,
+                                "pos": 15219,
+                                "end": 15226,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -9317,7 +9317,7 @@
             "description": "<p>UI Select Menu component\nSelect menu is a UI component that provides a list of options to choose from.</p>\n",
             "rawdescription": "\n\nUI Select Menu component\nSelect menu is a UI component that provides a list of options to choose from.\n",
             "type": "component",
-            "sourceCode": "import {\n  Component,\n  Input,\n  Output,\n  EventEmitter,\n  TemplateRef,\n  ContentChildren,\n  QueryList,\n  OnDestroy,\n  Renderer2,\n  ElementRef,\n  ViewChild,\n  ViewContainerRef,\n  AfterContentInit,\n  Optional,\n  Self,\n  OnChanges,\n} from '@angular/core';\nimport { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';\nimport { SelectOptionComponent } from './components/select-option.component';\nimport {\n  Observable,\n  Subject,\n  Subscription,\n  debounceTime,\n  distinctUntilChanged,\n  merge,\n  startWith,\n  takeUntil,\n} from 'rxjs';\nimport { Overlay, OverlayRef } from '@angular/cdk/overlay';\nimport { TemplatePortal } from '@angular/cdk/portal';\nimport { isNil } from 'lodash';\nimport { ShadowDomService } from '../shadow-dom/shadow-dom.service';\n\n/**\n * UI Select Menu component\n * Select menu is a UI component that provides a list of options to choose from.\n */\n@Component({\n  selector: 'ui-select-menu',\n  templateUrl: './select-menu.component.html',\n  styleUrls: ['./select-menu.component.scss'],\n})\nexport class SelectMenuComponent\n  implements ControlValueAccessor, OnChanges, AfterContentInit, OnDestroy\n{\n  /** Tells if the select menu should allow multi selection */\n  @Input() multiselect = false;\n  /** Tells if the select menu should be disabled */\n  @Input() disabled = false;\n  /** Tells if some styles to the current ul element should be applied */\n  @Input() isGraphQlSelect = false;\n  /** If the option list is searchable or not */\n  @Input() filterable = false;\n  /** Default selected value */\n  @Input() value?: string | string[] | null;\n  /** Any custom template provided for display */\n  @Input()\n  customTemplate!: { template: TemplateRef<any>; context: any };\n  /** Add extra classes that will apply to the wrapper element */\n  @Input() extraClasses?: string;\n  /** Default value to be displayed when no option is selected */\n  @Input() placeholder = '';\n\n  /** Emits when the list is opened */\n  @Output() opened = new EventEmitter<void>();\n  /** Emits when the list is closed */\n  @Output() closed = new EventEmitter<void>();\n  /** Emits the list of the selected options */\n  @Output() selectedOption = new EventEmitter<string | string[]>();\n\n  /** List of options */\n  @ContentChildren(SelectOptionComponent, { descendants: true })\n  optionList!: QueryList<SelectOptionComponent>;\n\n  /** Template reference for the option panel */\n  @ViewChild('optionPanel', { static: true }) optionPanel!: TemplateRef<any>;\n\n  /** Search control */\n  public searchControl = new FormControl('', { nonNullable: true });\n  /** Loading state */\n  @Input() public loading = false;\n  /** Subscription to the search control */\n  private searchSubscriptionActive!: Subscription;\n\n  /** Array to store the values selected */\n  public selectedValues: any[] = [];\n  /** True if the box is focused, false otherwise */\n  public listBoxFocused = false;\n  /** Text to be displayed in the trigger when some selections are made */\n  public displayTrigger = this.placeholder;\n  /** Needed property for the components in survey that would use the select-menu component */\n  public triggerUIChange$ = new Subject<boolean>();\n  /** Destroy subject */\n  private destroy$ = new Subject<void>();\n  /** Click outside listener */\n  private clickOutsideListener!: () => void;\n  /** Subscription to the closing actions */\n  private selectClosingActionsSubscription!: Subscription;\n  /** Overlay reference */\n  private overlayRef!: OverlayRef;\n  /** Timeout listener for the animation */\n  private applyAnimationTimeoutListener!: NodeJS.Timeout;\n  /** Timeout listener for the closing of the panel */\n  private closePanelTimeoutListener!: NodeJS.Timeout;\n\n  /** Control access value functions */\n  onChange!: (value: any) => void;\n  /** Control access touch functions */\n  onTouch!: () => void;\n\n  /** @returns if current option list is empty by option number or option display number by search */\n  get emptyList() {\n    return (\n      this.optionList.toArray().every((option) => !option.display) ||\n      !this.optionList.length\n    );\n  }\n\n  /**\n   * Ui Select constructor\n   *\n   * @param control host element NgControl instance\n   * @param el Host element reference\n   * @param renderer Renderer2\n   * @param viewContainerRef ViewContainerRef\n   * @param overlay Overlay\n   * @param shadowDomService shadow dom service to handle the current host of the component\n   */\n  constructor(\n    @Optional() @Self() private control: NgControl,\n    public el: ElementRef,\n    private renderer: Renderer2,\n    private viewContainerRef: ViewContainerRef,\n    private overlay: Overlay,\n    private shadowDomService: ShadowDomService\n  ) {\n    if (this.control) {\n      this.control.valueAccessor = this;\n    }\n  }\n\n  ngOnChanges(): void {\n    // Listen to search bar changes if filterable is available\n    if (this.filterable) {\n      if (this.searchSubscriptionActive) {\n        this.searchSubscriptionActive.unsubscribe();\n      }\n      this.searchSubscriptionActive = this.searchControl.valueChanges\n        .pipe(\n          debounceTime(500),\n          distinctUntilChanged(),\n          takeUntil(this.destroy$)\n        )\n        .subscribe((searchValue: string) => {\n          this.filterOptionList(searchValue);\n        });\n    }\n  }\n\n  ngAfterContentInit(): void {\n    this.clickOutsideListener = this.renderer.listen(\n      this.shadowDomService.currentHost,\n      'click',\n      (event) => {\n        if (\n          !(\n            this.el.nativeElement.contains(event.target) ||\n            this.shadowDomService.currentHost\n              .getElementById('optionsContainer')\n              ?.contains(event.target)\n          )\n        ) {\n          this.closeSelectPanel();\n        }\n      }\n    );\n    this.optionList?.changes\n      .pipe(startWith(this.optionList), takeUntil(this.destroy$))\n      .subscribe({\n        next: (options: QueryList<SelectOptionComponent>) => {\n          this.handleOptionsQueryChange(options);\n        },\n      });\n    if (this.control) {\n      this.control.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe({\n        next: (value) => {\n          // If the value is cleared from outside, reset displayed values\n          if (isNil(value) || value.length === 0) {\n            this.selectedValues = [];\n            this.optionList.forEach((option) => (option.selected = false));\n            this.setDisplayTriggerText();\n          }\n        },\n      });\n    }\n  }\n\n  /**\n   * Force the options list when they cannot be successfully loaded through contentchildren\n   *\n   * @param optionList the optionList we want to\n   */\n  forceOptionList(optionList: QueryList<SelectOptionComponent>) {\n    this.optionList = optionList;\n    this.optionList?.changes\n      .pipe(startWith(this.optionList), takeUntil(this.destroy$))\n      .subscribe({\n        next: (options: QueryList<SelectOptionComponent>) => {\n          this.handleOptionsQueryChange(options);\n        },\n      });\n  }\n\n  /**\n   * Update selected values and all handlers for the given options query list\n   *\n   * @param options Select menu options query list items\n   */\n  private handleOptionsQueryChange(options: QueryList<SelectOptionComponent>) {\n    if (this.value) {\n      this.selectedValues.push(\n        this.value instanceof Array ? [...this.value] : this.value\n      );\n    }\n    options.forEach((option) => {\n      option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({\n        next: (isSelected: boolean) => {\n          this.updateSelectedValues(option, isSelected);\n          this.onChangeFunction();\n        },\n      });\n      // Initialize any selected values\n      if (this.selectedValues.find((selVal) => selVal == option.value)) {\n        option.selected = true;\n      } else {\n        option.selected = false;\n      }\n      this.setDisplayTriggerText();\n    });\n  }\n\n  /**\n   * Write new value\n   *\n   * @param value value set from parent form control\n   */\n  writeValue(value: string | string[] | null): void {\n    if (value && value instanceof Array) {\n      this.selectedValues = [...value];\n    } else if (value) {\n      this.selectedValues = [value];\n    }\n  }\n\n  /**\n   * Record on change\n   *\n   * @param fn\n   * event that took place\n   */\n  registerOnChange(fn: (value: any) => void) {\n    if (!this.onChange) {\n      this.onChange = fn;\n    }\n  }\n\n  /**\n   * Record on touch\n   *\n   * @param fn\n   * event that took place\n   */\n  registerOnTouched(fn: () => void) {\n    if (!this.onTouch) {\n      this.onTouch = fn;\n    }\n  }\n\n  /**\n   * Set disabled state of the control\n   *\n   * @param isDisabled is control disabled\n   */\n  public setDisabledState(isDisabled: boolean): void {\n    this.disabled = isDisabled;\n  }\n\n  /**\n   * Emit selectedOption output, change trigger text and deal with control access value when an element of the list is clicked\n   */\n  onChangeFunction() {\n    // Emit the list of values selected as an output\n    this.setDisplayTriggerText();\n    if (this.multiselect) {\n      // Manage control access value\n      if (this.onChange && this.onTouch) {\n        this.onChange(this.selectedValues);\n        this.onTouch();\n      }\n      this.selectedOption.emit(this.selectedValues);\n    } else {\n      // Manage control access value\n      if (this.onChange && this.onTouch) {\n        this.onChange(this.selectedValues[0]);\n        this.onTouch();\n      }\n      this.selectedOption.emit(this.selectedValues[0]);\n      //close list after selection\n      this.closeSelectPanel();\n    }\n  }\n\n  /** Builds the text displayed from selected options */\n  private setDisplayTriggerText() {\n    const labelValues = this.getValuesLabel(this.selectedValues);\n    // Adapt the text to be displayed in the trigger if no custom template for display is provided\n    if (!this.customTemplate) {\n      if (labelValues?.length) {\n        if (labelValues.length === 1) {\n          this.displayTrigger = labelValues[0];\n        } else {\n          this.displayTrigger =\n            labelValues[0] + ' (+' + (labelValues.length - 1) + ' others)';\n        }\n      } else {\n        this.displayTrigger = '';\n      }\n    }\n  }\n\n  /**\n   * Updated the form control value on optionClick event\n   *\n   * @param {SelectOptionComponent} selectedOption option clicked\n   * @param {boolean} selected if the option as selected or unselected\n   */\n  private updateSelectedValues(\n    selectedOption: SelectOptionComponent,\n    selected: boolean\n  ): void {\n    if (selected) {\n      if (!this.multiselect) {\n        // Reset any other selected option\n        this.optionList.forEach((option: SelectOptionComponent) => {\n          if (selectedOption.value !== option.value) {\n            option.selected = false;\n          }\n        });\n        this.selectedValues = [selectedOption.value];\n      } else {\n        this.selectedValues = [...this.selectedValues, selectedOption.value];\n      }\n    } else {\n      const index = this.selectedValues?.indexOf(selectedOption.value) ?? 0;\n      this.selectedValues?.splice(index, 1);\n    }\n  }\n\n  /**\n   * Map select option list label if exists, otherwise value\n   *\n   * @param selectedValues selected values\n   * @returns mapped values\n   */\n  getValuesLabel(selectedValues: any[]) {\n    let values = this.optionList.filter((val: any) => {\n      if (selectedValues.find((selVal) => val.value == selVal)) {\n        return val;\n      }\n    });\n    return (values = values.map((val: any) => {\n      if (val.label) {\n        return val.label;\n      } else {\n        return val.value;\n      }\n    }));\n  }\n\n  // SELECT DISPLAY LOGIC //\n  /**\n   * Opens or closes the list when the trigger component is clicked (+ make the corresponding output emissions)\n   */\n  openSelectPanel() {\n    //Do nothing if the box is disabled\n    if (this.disabled) {\n      return;\n    }\n    // Open the box + emit outputs\n    if (this.listBoxFocused) {\n      this.closeSelectPanel();\n    }\n    //Close the box + emit outputs\n    else {\n      if (!this.listBoxFocused) {\n        this.listBoxFocused = true;\n        // We create an overlay for the displayed select as done for UI menu\n        this.overlayRef = this.overlay.create({\n          hasBackdrop: false,\n          // close autocomplete on user scroll - default behavior, could be changed\n          scrollStrategy: this.overlay.scrollStrategies.close(),\n          // We position the displayed autocomplete taking current directive host element as reference\n          positionStrategy: this.overlay\n            .position()\n            .flexibleConnectedTo(\n              this.el.nativeElement.parentElement ?? this.el.nativeElement\n            )\n            .withPositions([\n              {\n                originX: 'start',\n                originY: 'bottom',\n                overlayX: 'start',\n                overlayY: 'top',\n                offsetX: 0,\n                offsetY: 5,\n              },\n              {\n                originX: 'start',\n                originY: 'top',\n                overlayX: 'start',\n                overlayY: 'bottom',\n                offsetX: 0,\n                offsetY: -5,\n              },\n            ]),\n          minWidth:\n            this.el.nativeElement.parentElement?.clientWidth &&\n            this.el.nativeElement.parentElement?.clientWidth !== 0\n              ? this.el.nativeElement.parentElement?.clientWidth\n              : this.el.nativeElement.clientWidth,\n        });\n        // Create the template portal for the select items using the reference of the element with the select directive\n        const templatePortal = new TemplatePortal(\n          this.optionPanel,\n          this.viewContainerRef\n        );\n        // Attach it to our overlay\n        this.overlayRef.attach(templatePortal);\n        // We add the needed classes to create the animation on select display\n        if (this.applyAnimationTimeoutListener) {\n          clearTimeout(this.applyAnimationTimeoutListener);\n        }\n        this.applyAnimationTimeoutListener = setTimeout(() => {\n          this.applySelectListDisplayAnimation(true);\n        }, 0);\n        // Subscribe to all actions that close the select (outside click, item click, any other overlay detach)\n        this.selectClosingActionsSubscription = this.selectClosingActions()\n          .pipe(takeUntil(this.destroy$))\n          .subscribe(\n            // If so, destroy select\n            () => this.closeSelectPanel()\n          );\n        this.opened.emit();\n      }\n    }\n  }\n\n  /** Closes the listbox if a click is made outside of the component */\n  private closeSelectPanel() {\n    if (!this.overlayRef || !this.listBoxFocused) {\n      return;\n    }\n    // Unsubscribe to our close action subscription\n    this.selectClosingActionsSubscription.unsubscribe();\n    this.listBoxFocused = false;\n    this.closed.emit();\n    // We remove the needed classes to create the animation on select close\n    this.applySelectListDisplayAnimation(false);\n    // Detach the previously created overlay for the select\n    if (this.closePanelTimeoutListener) {\n      clearTimeout(this.closePanelTimeoutListener);\n    }\n    this.closePanelTimeoutListener = setTimeout(() => {\n      this.overlayRef.detach();\n      this.searchControl.setValue('');\n      this.triggerUIChange$.next(true);\n    }, 100);\n  }\n\n  /**\n   * Actions linked to the destruction of the current displayed select\n   *\n   * @returns Observable of actions\n   */\n  private selectClosingActions(): Observable<Event | void> {\n    const detachment$ = this.overlayRef.detachments();\n    return merge(detachment$);\n  }\n\n  /**\n   * Apply animation to displayed selectList\n   *\n   * @param toDisplay If the selectList is going to be displayed or not\n   */\n  private applySelectListDisplayAnimation(toDisplay: boolean) {\n    // The overlayElement is the immediate parent element containing the selectList list,\n    // therefor we want the immediate child in where we would apply the classes\n    const selectList = this.overlayRef.overlayElement.querySelector('div');\n    if (toDisplay) {\n      this.renderer.addClass(selectList, 'translate-y-0');\n      this.renderer.addClass(selectList, 'opacity-100');\n    } else {\n      this.renderer.removeClass(selectList, 'translate-y-0');\n      this.renderer.removeClass(selectList, 'opacity-100');\n    }\n  }\n\n  /**\n   * Filter the current option list by the given search value\n   *\n   * @param searchValue value to filter current option list\n   */\n  private filterOptionList(searchValue: string) {\n    this.loading = true;\n    // Recursively set option display input, based on if the option is a group or not\n    const setOptionVisibility = (options: QueryList<SelectOptionComponent>) => {\n      options.forEach((option) => {\n        if (option.options.length) {\n          setOptionVisibility(option.options);\n          option.display = option.options.toArray().some((o) => o.display);\n        } else {\n          const regExTest = new RegExp(searchValue, 'gmi');\n          if (regExTest.test(option.label)) {\n            option.display = true;\n          } else {\n            option.display = false;\n          }\n        }\n      });\n    };\n    setOptionVisibility(this.optionList);\n    this.loading = false;\n    this.triggerUIChange$.next(true);\n  }\n\n  ngOnDestroy(): void {\n    if (this.applyAnimationTimeoutListener) {\n      clearTimeout(this.applyAnimationTimeoutListener);\n    }\n    if (this.closePanelTimeoutListener) {\n      clearTimeout(this.closePanelTimeoutListener);\n    }\n    if (this.clickOutsideListener) {\n      this.clickOutsideListener();\n    }\n    this.destroy$.next();\n    this.destroy$.complete();\n  }\n}\n",
+            "sourceCode": "import {\n  Component,\n  Input,\n  Output,\n  EventEmitter,\n  TemplateRef,\n  ContentChildren,\n  QueryList,\n  OnDestroy,\n  Renderer2,\n  ElementRef,\n  ViewChild,\n  ViewContainerRef,\n  AfterContentInit,\n  Optional,\n  Self,\n  OnChanges,\n} from '@angular/core';\nimport { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';\nimport { SelectOptionComponent } from './components/select-option.component';\nimport {\n  Observable,\n  Subject,\n  Subscription,\n  debounceTime,\n  distinctUntilChanged,\n  merge,\n  startWith,\n  takeUntil,\n} from 'rxjs';\nimport { Overlay, OverlayRef } from '@angular/cdk/overlay';\nimport { TemplatePortal } from '@angular/cdk/portal';\nimport { isNil } from 'lodash';\nimport { ShadowDomService } from '../shadow-dom/shadow-dom.service';\n\n/**\n * UI Select Menu component\n * Select menu is a UI component that provides a list of options to choose from.\n */\n@Component({\n  selector: 'ui-select-menu',\n  templateUrl: './select-menu.component.html',\n  styleUrls: ['./select-menu.component.scss'],\n})\nexport class SelectMenuComponent\n  implements ControlValueAccessor, OnChanges, AfterContentInit, OnDestroy\n{\n  /** Tells if the select menu should allow multi selection */\n  @Input() multiselect = false;\n  /** Tells if the select menu should be disabled */\n  @Input() disabled = false;\n  /** Tells if some styles to the current ul element should be applied */\n  @Input() isGraphQlSelect = false;\n  /** If the option list is searchable or not */\n  @Input() filterable = false;\n  /** Default selected value */\n  @Input() value?: string | string[] | null;\n  /** Any custom template provided for display */\n  @Input()\n  customTemplate!: { template: TemplateRef<any>; context: any };\n  /** Add extra classes that will apply to the wrapper element */\n  @Input() extraClasses?: string;\n  /** Default value to be displayed when no option is selected */\n  @Input() placeholder = '';\n\n  /** Emits when the list is opened */\n  @Output() opened = new EventEmitter<void>();\n  /** Emits when the list is closed */\n  @Output() closed = new EventEmitter<void>();\n  /** Emits the list of the selected options */\n  @Output() selectedOption = new EventEmitter<string | string[]>();\n\n  /** List of options */\n  @ContentChildren(SelectOptionComponent, { descendants: true })\n  optionList!: QueryList<SelectOptionComponent>;\n\n  /** Template reference for the option panel */\n  @ViewChild('optionPanel', { static: true }) optionPanel!: TemplateRef<any>;\n\n  /** Search control */\n  public searchControl = new FormControl('', { nonNullable: true });\n  /** Loading state */\n  @Input() public loading = false;\n  /** Subscription to the search control */\n  private searchSubscriptionActive!: Subscription;\n\n  /** Array to store the values selected */\n  public selectedValues: any[] = [];\n  /** True if the box is focused, false otherwise */\n  public listBoxFocused = false;\n  /** Text to be displayed in the trigger when some selections are made */\n  public displayTrigger = this.placeholder;\n  /** Needed property for the components in survey that would use the select-menu component */\n  public triggerUIChange$ = new Subject<boolean>();\n  /** Destroy subject */\n  private destroy$ = new Subject<void>();\n  /** Click outside listener */\n  private clickOutsideListener!: () => void;\n  /** Subscription to the closing actions */\n  private selectClosingActionsSubscription!: Subscription;\n  /** Overlay reference */\n  private overlayRef!: OverlayRef;\n  /** Timeout listener for the animation */\n  private applyAnimationTimeoutListener!: NodeJS.Timeout;\n  /** Timeout listener for the closing of the panel */\n  private closePanelTimeoutListener!: NodeJS.Timeout;\n\n  /** Control access value functions */\n  onChange!: (value: any) => void;\n  /** Control access touch functions */\n  onTouch!: () => void;\n\n  /** @returns if current option list is empty by option number or option display number by search */\n  get emptyList() {\n    return (\n      this.optionList.toArray().every((option) => !option.display) ||\n      !this.optionList.length\n    );\n  }\n\n  /**\n   * Ui Select constructor\n   *\n   * @param control host element NgControl instance\n   * @param el Host element reference\n   * @param renderer Renderer2\n   * @param viewContainerRef ViewContainerRef\n   * @param overlay Overlay\n   * @param shadowDomService shadow dom service to handle the current host of the component\n   */\n  constructor(\n    @Optional() @Self() private control: NgControl,\n    public el: ElementRef,\n    private renderer: Renderer2,\n    private viewContainerRef: ViewContainerRef,\n    private overlay: Overlay,\n    private shadowDomService: ShadowDomService\n  ) {\n    if (this.control) {\n      this.control.valueAccessor = this;\n    }\n  }\n\n  ngOnChanges(): void {\n    // Listen to search bar changes if filterable is available\n    if (this.filterable) {\n      if (this.searchSubscriptionActive) {\n        this.searchSubscriptionActive.unsubscribe();\n      }\n      this.searchSubscriptionActive = this.searchControl.valueChanges\n        .pipe(\n          debounceTime(500),\n          distinctUntilChanged(),\n          takeUntil(this.destroy$)\n        )\n        .subscribe((searchValue: string) => {\n          this.filterOptionList(searchValue);\n        });\n    }\n  }\n\n  ngAfterContentInit(): void {\n    this.clickOutsideListener = this.renderer.listen(\n      this.shadowDomService.currentHost,\n      'click',\n      (event) => {\n        if (\n          !(\n            this.el.nativeElement.contains(event.target) ||\n            this.shadowDomService.currentHost\n              .getElementById('optionsContainer')\n              ?.contains(event.target)\n          )\n        ) {\n          this.closeSelectPanel();\n        }\n      }\n    );\n    this.optionList?.changes\n      .pipe(startWith(this.optionList), takeUntil(this.destroy$))\n      .subscribe({\n        next: (options: QueryList<SelectOptionComponent>) => {\n          this.handleOptionsQueryChange(options);\n        },\n      });\n    if (this.control) {\n      this.control.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe({\n        next: (value) => {\n          // If the value is cleared from outside, reset displayed values\n          if (isNil(value) || value.length === 0) {\n            this.selectedValues = [];\n            this.optionList.forEach((option) => (option.selected = false));\n            this.setDisplayTriggerText();\n          }\n        },\n      });\n    }\n  }\n\n  /**\n   * Force the options list when they cannot be successfully loaded through contentchildren\n   *\n   * @param optionList the optionList we want to\n   */\n  forceOptionList(optionList: QueryList<SelectOptionComponent>) {\n    this.optionList = optionList;\n    this.optionList?.changes\n      .pipe(startWith(this.optionList), takeUntil(this.destroy$))\n      .subscribe({\n        next: (options: QueryList<SelectOptionComponent>) => {\n          this.handleOptionsQueryChange(options);\n        },\n      });\n  }\n\n  /**\n   * Update selected values and all handlers for the given options query list\n   *\n   * @param options Select menu options query list items\n   */\n  private handleOptionsQueryChange(options: QueryList<SelectOptionComponent>) {\n    if (this.value) {\n      this.selectedValues.push(\n        this.value instanceof Array ? [...this.value] : this.value\n      );\n    }\n    options.forEach((option) => {\n      option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({\n        next: (isSelected: boolean) => {\n          this.updateSelectedValues(option, isSelected);\n          this.onChangeFunction();\n        },\n      });\n      // Initialize any selected values\n      if (this.selectedValues.find((selVal) => selVal == option.value)) {\n        option.selected = true;\n      } else {\n        option.selected = false;\n      }\n      this.setDisplayTriggerText();\n    });\n  }\n\n  /**\n   * Write new value\n   *\n   * @param value value set from parent form control\n   */\n  writeValue(value: string | string[] | null): void {\n    if (value && value instanceof Array) {\n      this.selectedValues = [...value];\n    } else if (value) {\n      this.selectedValues = [value];\n    }\n  }\n\n  /**\n   * Record on change\n   *\n   * @param fn\n   * event that took place\n   */\n  registerOnChange(fn: (value: any) => void) {\n    if (!this.onChange) {\n      this.onChange = fn;\n    }\n  }\n\n  /**\n   * Record on touch\n   *\n   * @param fn\n   * event that took place\n   */\n  registerOnTouched(fn: () => void) {\n    if (!this.onTouch) {\n      this.onTouch = fn;\n    }\n  }\n\n  /**\n   * Set disabled state of the control\n   *\n   * @param isDisabled is control disabled\n   */\n  public setDisabledState(isDisabled: boolean): void {\n    this.disabled = isDisabled;\n  }\n\n  /**\n   * Emit selectedOption output, change trigger text and deal with control access value when an element of the list is clicked\n   */\n  onChangeFunction() {\n    // Emit the list of values selected as an output\n    this.setDisplayTriggerText();\n    if (this.multiselect) {\n      // Manage control access value\n      if (this.onChange && this.onTouch) {\n        this.onChange(this.selectedValues);\n        this.onTouch();\n      }\n      this.selectedOption.emit(this.selectedValues);\n    } else {\n      // Manage control access value\n      if (this.onChange && this.onTouch) {\n        this.onChange(this.selectedValues[0]);\n        this.onTouch();\n      }\n      this.selectedOption.emit(this.selectedValues[0]);\n      //close list after selection\n      this.closeSelectPanel();\n    }\n  }\n\n  /** Builds the text displayed from selected options */\n  private setDisplayTriggerText() {\n    const labelValues = this.getValuesLabel(this.selectedValues);\n    // Adapt the text to be displayed in the trigger if no custom template for display is provided\n    if (!this.customTemplate) {\n      if (labelValues?.length) {\n        if (labelValues.length === 1) {\n          this.displayTrigger = labelValues[0];\n        } else {\n          this.displayTrigger =\n            labelValues[0] + ' (+' + (labelValues.length - 1) + ' others)';\n        }\n      } else {\n        this.displayTrigger = '';\n      }\n    }\n  }\n\n  /**\n   * Updated the form control value on optionClick event\n   *\n   * @param {SelectOptionComponent} selectedOption option clicked\n   * @param {boolean} selected if the option as selected or unselected\n   */\n  private updateSelectedValues(\n    selectedOption: SelectOptionComponent,\n    selected: boolean\n  ): void {\n    if (selected) {\n      if (!this.multiselect) {\n        // Reset any other selected option\n        this.optionList.forEach((option: SelectOptionComponent) => {\n          if (selectedOption.value !== option.value) {\n            option.selected = false;\n          }\n        });\n        this.selectedValues = [selectedOption.value];\n      } else {\n        this.selectedValues = [...this.selectedValues, selectedOption.value];\n      }\n    } else {\n      const index = this.selectedValues?.indexOf(selectedOption.value) ?? 0;\n      this.selectedValues?.splice(index, 1);\n    }\n  }\n\n  /**\n   * Map select option list label if exists, otherwise value\n   *\n   * @param selectedValues selected values\n   * @returns mapped values\n   */\n  getValuesLabel(selectedValues: any[]) {\n    let values = this.optionList.filter((val: any) => {\n      if (selectedValues.find((selVal) => val.value == selVal)) {\n        return val;\n      }\n    });\n    return (values = values.map((val: any) => {\n      if (val.label) {\n        return val.label;\n      } else {\n        return val.value;\n      }\n    }));\n  }\n\n  // SELECT DISPLAY LOGIC //\n  /**\n   * Opens or closes the list when the trigger component is clicked (+ make the corresponding output emissions)\n   */\n  openSelectPanel() {\n    //Do nothing if the box is disabled\n    if (this.disabled) {\n      return;\n    }\n    // Open the box + emit outputs\n    if (this.listBoxFocused) {\n      this.closeSelectPanel();\n    }\n    //Close the box + emit outputs\n    else {\n      if (!this.listBoxFocused) {\n        this.listBoxFocused = true;\n        // We create an overlay for the displayed select as done for UI menu\n        this.overlayRef = this.overlay.create({\n          hasBackdrop: false,\n          // close autocomplete on user scroll - default behavior, could be changed\n          scrollStrategy: this.overlay.scrollStrategies.close(),\n          // We position the displayed autocomplete taking current directive host element as reference\n          positionStrategy: this.overlay\n            .position()\n            .flexibleConnectedTo(\n              this.el.nativeElement.parentElement ?? this.el.nativeElement\n            )\n            .withPositions([\n              {\n                originX: 'start',\n                originY: 'bottom',\n                overlayX: 'start',\n                overlayY: 'top',\n                offsetX: 0,\n                offsetY: 5,\n              },\n              {\n                originX: 'start',\n                originY: 'top',\n                overlayX: 'start',\n                overlayY: 'bottom',\n                offsetX: 0,\n                offsetY: -5,\n              },\n            ]),\n          minWidth:\n            this.el.nativeElement.parentElement?.clientWidth &&\n            this.el.nativeElement.parentElement?.clientWidth !== 0\n              ? this.el.nativeElement.parentElement?.clientWidth\n              : this.el.nativeElement.clientWidth,\n        });\n        // Create the template portal for the select items using the reference of the element with the select directive\n        const templatePortal = new TemplatePortal(\n          this.optionPanel,\n          this.viewContainerRef\n        );\n        // Attach it to our overlay\n        this.overlayRef.attach(templatePortal);\n        // We add the needed classes to create the animation on select display\n        if (this.applyAnimationTimeoutListener) {\n          clearTimeout(this.applyAnimationTimeoutListener);\n        }\n        this.applyAnimationTimeoutListener = setTimeout(() => {\n          this.applySelectListDisplayAnimation(true);\n        }, 0);\n        // Subscribe to all actions that close the select (outside click, item click, any other overlay detach)\n        this.selectClosingActionsSubscription =\n          this.selectClosingActions().subscribe(\n            // If so, destroy select\n            () => this.closeSelectPanel()\n          );\n        this.opened.emit();\n      }\n    }\n  }\n\n  /** Closes the listbox if a click is made outside of the component */\n  private closeSelectPanel() {\n    if (!this.overlayRef || !this.listBoxFocused) {\n      return;\n    }\n    // Unsubscribe to our close action subscription\n    this.selectClosingActionsSubscription.unsubscribe();\n    this.listBoxFocused = false;\n    this.closed.emit();\n    // We remove the needed classes to create the animation on select close\n    this.applySelectListDisplayAnimation(false);\n    // Detach the previously created overlay for the select\n    if (this.closePanelTimeoutListener) {\n      clearTimeout(this.closePanelTimeoutListener);\n    }\n    this.closePanelTimeoutListener = setTimeout(() => {\n      this.overlayRef.detach();\n      this.searchControl.setValue('');\n      this.triggerUIChange$.next(true);\n    }, 100);\n  }\n\n  /**\n   * Actions linked to the destruction of the current displayed select\n   *\n   * @returns Observable of actions\n   */\n  private selectClosingActions(): Observable<Event | void> {\n    const detachment$ = this.overlayRef.detachments();\n    return merge(detachment$);\n  }\n\n  /**\n   * Apply animation to displayed selectList\n   *\n   * @param toDisplay If the selectList is going to be displayed or not\n   */\n  private applySelectListDisplayAnimation(toDisplay: boolean) {\n    // The overlayElement is the immediate parent element containing the selectList list,\n    // therefor we want the immediate child in where we would apply the classes\n    const selectList = this.overlayRef.overlayElement.querySelector('div');\n    if (toDisplay) {\n      this.renderer.addClass(selectList, 'translate-y-0');\n      this.renderer.addClass(selectList, 'opacity-100');\n    } else {\n      this.renderer.removeClass(selectList, 'translate-y-0');\n      this.renderer.removeClass(selectList, 'opacity-100');\n    }\n  }\n\n  /**\n   * Filter the current option list by the given search value\n   *\n   * @param searchValue value to filter current option list\n   */\n  private filterOptionList(searchValue: string) {\n    this.loading = true;\n    // Recursively set option display input, based on if the option is a group or not\n    const setOptionVisibility = (options: QueryList<SelectOptionComponent>) => {\n      options.forEach((option) => {\n        if (option.options.length) {\n          setOptionVisibility(option.options);\n          option.display = option.options.toArray().some((o) => o.display);\n        } else {\n          const regExTest = new RegExp(searchValue, 'gmi');\n          if (regExTest.test(option.label)) {\n            option.display = true;\n          } else {\n            option.display = false;\n          }\n        }\n      });\n    };\n    setOptionVisibility(this.optionList);\n    this.loading = false;\n    this.triggerUIChange$.next(true);\n  }\n\n  ngOnDestroy(): void {\n    if (this.applyAnimationTimeoutListener) {\n      clearTimeout(this.applyAnimationTimeoutListener);\n    }\n    if (this.closePanelTimeoutListener) {\n      clearTimeout(this.closePanelTimeoutListener);\n    }\n    if (this.clickOutsideListener) {\n      this.clickOutsideListener();\n    }\n    if (this.selectClosingActionsSubscription) {\n      this.selectClosingActionsSubscription.unsubscribe();\n    }\n    this.destroy$.next();\n    this.destroy$.complete();\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -13794,7 +13794,7 @@
         },
         {
             "name": "TooltipDummyComponent",
-            "id": "component-TooltipDummyComponent-1d62dd3eff643289fbbdca9c2e56913873845e8c81a983beb1473e6fb201147821c24623ff819e21b4f448c1036d53f7df9229ffdab33c8e05535a41cdd2c45d",
+            "id": "component-TooltipDummyComponent-a9cbf9a34d655fc3d4c10d020afd8254ba975fef11a7bbc7cd74b57e61414d0a50313c0ab24ecc9fd0f4befe50d5693dcd794c9126fbac4d1fbbe2870b3d22f3",
             "file": "libs/ui/src/lib/tooltip/tooltip.stories.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -13814,7 +13814,7 @@
                     "defaultValue": "'bottom'",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 15,
+                    "line": 24,
                     "type": "TooltipPosition",
                     "decorators": []
                 },
@@ -13823,7 +13823,7 @@
                     "defaultValue": "''",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 14,
+                    "line": 20,
                     "type": "string",
                     "decorators": []
                 }
@@ -13838,9 +13838,9 @@
             "standalone": false,
             "imports": [],
             "description": "",
-            "rawdescription": "\n",
+            "rawdescription": "\n\n\n",
             "type": "component",
-            "sourceCode": "import { moduleMetadata, Story, Meta } from '@storybook/angular';\nimport { TooltipComponent } from './tooltip.component';\nimport { TooltipModule } from './tooltip.module';\nimport { TooltipPosition, tooltipPositions } from './types/tooltip-positions';\nimport { Component, Input } from '@angular/core';\n\n@Component({\n  selector: 'ui-tooltip-dummy',\n  template: ` <button [uiTooltip]=\"tooltip\" [uiTooltipPosition]=\"position\">\n    Hover me\n  </button>`,\n})\nclass TooltipDummyComponent {\n  @Input() public tooltip = '';\n  @Input() public position: TooltipPosition = 'bottom';\n}\n\nexport default {\n  title: 'Directives/Tooltip',\n  tags: ['autodocs'],\n  component: TooltipDummyComponent,\n  argTypes: {\n    position: {\n      options: tooltipPositions,\n      control: 'select',\n    },\n  },\n  decorators: [\n    moduleMetadata({\n      imports: [TooltipModule],\n    }),\n  ],\n} as Meta<TooltipComponent>;\n\n/**\n * Template for storybook's test of the directive\n *\n * @param args Tooltip component args\n * @returns TooltipComponent\n */\nconst Template: Story<TooltipDummyComponent> = (\n  args: TooltipDummyComponent\n) => ({\n  props: args,\n});\n\n/**\n * Top centered element\n */\nexport const TopExample = Template.bind({});\nTopExample.args = {\n  position: 'top',\n  tooltip: 'test',\n};\n\n/**\n * Bottom centered element\n */\nexport const BottomExample = Template.bind({});\nBottomExample.args = {\n  position: 'bottom',\n  tooltip: 'test',\n};\n\n/**\n * Middle left element\n */\nexport const LeftExample = Template.bind({});\nLeftExample.args = {\n  position: 'left',\n  tooltip: 'test',\n};\n\n/**\n * Middle right element\n */\nexport const RightExample = Template.bind({});\nRightExample.args = {\n  position: 'right',\n  tooltip: 'test',\n};\n\n/**\n * Long text element\n */\nexport const LongTextExample = Template.bind({});\nLongTextExample.args = {\n  position: 'top',\n  tooltip:\n    'The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ...',\n};\n",
+            "sourceCode": "import { moduleMetadata, Story, Meta } from '@storybook/angular';\nimport { TooltipComponent } from './tooltip.component';\nimport { TooltipModule } from './tooltip.module';\nimport { TooltipPosition, tooltipPositions } from './types/tooltip-positions';\nimport { Component, Input } from '@angular/core';\n\n/**\n *\n */\n@Component({\n  selector: 'ui-tooltip-dummy',\n  template: ` <button [uiTooltip]=\"tooltip\" [uiTooltipPosition]=\"position\">\n    Hover me\n  </button>`,\n})\nclass TooltipDummyComponent {\n  /**\n   *\n   */\n  @Input() public tooltip = '';\n  /**\n   *\n   */\n  @Input() public position: TooltipPosition = 'bottom';\n}\n\nexport default {\n  title: 'Directives/Tooltip',\n  tags: ['autodocs'],\n  component: TooltipDummyComponent,\n  argTypes: {\n    position: {\n      options: tooltipPositions,\n      control: 'select',\n    },\n  },\n  decorators: [\n    moduleMetadata({\n      imports: [TooltipModule],\n    }),\n  ],\n} as Meta<TooltipComponent>;\n\n/**\n * Template for storybook's test of the directive\n *\n * @param args Tooltip component args\n * @returns TooltipComponent\n */\nconst Template: Story<TooltipDummyComponent> = (\n  args: TooltipDummyComponent\n) => ({\n  props: args,\n});\n\n/**\n * Top centered element\n */\nexport const TopExample = Template.bind({});\nTopExample.args = {\n  position: 'top',\n  tooltip: 'test',\n};\n\n/**\n * Bottom centered element\n */\nexport const BottomExample = Template.bind({});\nBottomExample.args = {\n  position: 'bottom',\n  tooltip: 'test',\n};\n\n/**\n * Middle left element\n */\nexport const LeftExample = Template.bind({});\nLeftExample.args = {\n  position: 'left',\n  tooltip: 'test',\n};\n\n/**\n * Middle right element\n */\nexport const RightExample = Template.bind({});\nRightExample.args = {\n  position: 'right',\n  tooltip: 'test',\n};\n\n/**\n * Long text element\n */\nexport const LongTextExample = Template.bind({});\nLongTextExample.args = {\n  position: 'top',\n  tooltip:\n    'The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ... The Tooltip can either be assigned auto height and width values or specific pixel values. The width and height properties are used to set the outer dimension ...',\n};\n",
             "assetsDirs": [],
             "styleUrlsData": "",
             "stylesData": ""
@@ -14117,18 +14117,6 @@
                 "name": "CONTROL_VALUE_ACCESSOR",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "libs/ui/src/lib/toggle/toggle.component.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "Provider",
-                "defaultValue": "{\n  provide: NG_VALUE_ACCESSOR,\n  useExisting: forwardRef(() => ToggleComponent),\n  multi: true,\n}",
-                "rawdescription": "A provider for the ControlValueAccessor interface.",
-                "description": "<p>A provider for the ControlValueAccessor interface.</p>\n"
-            },
-            {
-                "name": "CONTROL_VALUE_ACCESSOR",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
                 "file": "libs/ui/src/lib/textarea/textarea.component.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
@@ -14136,6 +14124,18 @@
                 "defaultValue": "{\n  provide: NG_VALUE_ACCESSOR,\n  useExisting: forwardRef(() => TextareaComponent),\n  multi: true,\n}",
                 "rawdescription": "Control value accessor",
                 "description": "<p>Control value accessor</p>\n"
+            },
+            {
+                "name": "CONTROL_VALUE_ACCESSOR",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "libs/ui/src/lib/toggle/toggle.component.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "Provider",
+                "defaultValue": "{\n  provide: NG_VALUE_ACCESSOR,\n  useExisting: forwardRef(() => ToggleComponent),\n  multi: true,\n}",
+                "rawdescription": "A provider for the ControlValueAccessor interface.",
+                "description": "<p>A provider for the ControlValueAccessor interface.</p>\n"
             },
             {
                 "name": "cronEditor",
@@ -14489,18 +14489,6 @@
                 "name": "FormControlTemplate",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "libs/ui/src/lib/toggle/toggle.stories.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "StoryFn<ToggleComponent>",
-                "defaultValue": "(\n  args: ToggleComponent\n) => {\n  const formGroup = new FormGroup({\n    toggle: new FormControl(true),\n  });\n  return {\n    component: ToggleComponent,\n    template: `\n      <form [formGroup]=\"formGroup\">\n      <ui-toggle [type]=\"'${args.type}'\" [variant]=\"'${args.variant}'\" [labelPosition]=\"'${args.labelPosition}'\" formControlName=\"toggle\">\n        <ng-container ngProjectAs=\"label\">Test test test!</ng-container>\n        <ng-container ngProjectAs=\"description\">\n          Test test test test test test test test test test test test test\n        </ng-container>\n      </ui-toggle>\n        </form>\n        <br>\n        <p>value: {{formGroup.get('toggle').value}}</p>\n        <p>touched: {{formGroup.get('toggle').touched}}</p>\n        `,\n    props: {\n      ...args,\n      formGroup,\n    },\n  };\n}",
-                "rawdescription": "Form control template toggle",
-                "description": "<p>Form control template toggle</p>\n"
-            },
-            {
-                "name": "FormControlTemplate",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
                 "file": "libs/ui/src/lib/textarea/textarea.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
@@ -14508,6 +14496,18 @@
                 "defaultValue": "(\n  args: TextareaComponent\n) => {\n  const formGroup = new FormGroup({\n    textarea: new FormControl('Default value'),\n  });\n  return {\n    component: TextareaComponent,\n    template: `\n      <form [formGroup]=\"formGroup\">\n      <ui-textarea [placeholder]=\"'${args.placeholder}'\" formControlName=\"textarea\"></ui-textarea>\n        </form>\n        <br>\n        <p>value: {{formGroup.get('textarea').value}}</p>\n        <p>touched: {{formGroup.get('textarea').touched}}</p>\n        `,\n    props: {\n      ...args,\n      formGroup,\n    },\n  };\n}",
                 "rawdescription": "Form control template textarea",
                 "description": "<p>Form control template textarea</p>\n"
+            },
+            {
+                "name": "FormControlTemplate",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "libs/ui/src/lib/toggle/toggle.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "StoryFn<ToggleComponent>",
+                "defaultValue": "(\n  args: ToggleComponent\n) => {\n  const formGroup = new FormGroup({\n    toggle: new FormControl(true),\n  });\n  return {\n    component: ToggleComponent,\n    template: `\n      <form [formGroup]=\"formGroup\">\n      <ui-toggle [type]=\"'${args.type}'\" [variant]=\"'${args.variant}'\" [labelPosition]=\"'${args.labelPosition}'\" formControlName=\"toggle\">\n        <ng-container ngProjectAs=\"label\">Test test test!</ng-container>\n        <ng-container ngProjectAs=\"description\">\n          Test test test test test test test test test test test test test\n        </ng-container>\n      </ui-toggle>\n        </form>\n        <br>\n        <p>value: {{formGroup.get('toggle').value}}</p>\n        <p>touched: {{formGroup.get('toggle').touched}}</p>\n        `,\n    props: {\n      ...args,\n      formGroup,\n    },\n  };\n}",
+                "rawdescription": "Form control template toggle",
+                "description": "<p>Form control template toggle</p>\n"
             },
             {
                 "name": "formGroup",
@@ -15157,18 +15157,6 @@
                 "name": "Primary",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "libs/ui/src/lib/toggle/toggle.stories.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "",
-                "defaultValue": "PrimaryTemplate.bind({})",
-                "rawdescription": "Primary toggle",
-                "description": "<p>Primary toggle</p>\n"
-            },
-            {
-                "name": "Primary",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
                 "file": "libs/ui/src/lib/textarea/textarea.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
@@ -15176,6 +15164,18 @@
                 "defaultValue": "Template.bind({})",
                 "rawdescription": "Primary textarea",
                 "description": "<p>Primary textarea</p>\n"
+            },
+            {
+                "name": "Primary",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "libs/ui/src/lib/toggle/toggle.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "PrimaryTemplate.bind({})",
+                "rawdescription": "Primary toggle",
+                "description": "<p>Primary toggle</p>\n"
             },
             {
                 "name": "primaryButton",
@@ -15744,7 +15744,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "StoryFn<CheckboxComponent>",
-                "defaultValue": "(args: CheckboxComponent) => {\n  args.variant = 'default';\n  return {\n    component: CheckboxComponent,\n    template: `\n      <ui-checkbox [variant]=\"'${args.variant}'\">\n      <ng-container ngProjectAs=\"label\">Checkbox text</ng-container>\n      <ng-container ngProjectAs=\"description\">Description text text text.</ng-container>\n      <ng-container ngProjectAs=\"icon\">\n      <ui-icon\n      icon=\"info_outline\"\n      [inline]=\"true\"\n      [size]=\"18\"\n      variant=\"grey\"\n    ></ui-icon>\n      </ng-container>\n      </ui-checkbox>\n        `,\n    props: {\n      ...args,\n    },\n  };\n}",
+                "defaultValue": "(args: CheckboxComponent) => {\n  args.variant = 'default';\n  return {\n    component: CheckboxComponent,\n    template: `\n      <ui-checkbox [variant]=\"'${args.variant}'\">\n      <ng-container ngProjectAs=\"label\">Checkbox text</ng-container>\n      <ng-container ngProjectAs=\"description\">Description text text text.</ng-container>\n      <ng-container ngProjectAs=\"icon\">\n      <ui-icon\n      icon=\"info_outline\"\n      [size]=\"18\"\n      variant=\"grey\"\n    ></ui-icon>\n      </ng-container>\n      </ui-checkbox>\n        `,\n    props: {\n      ...args,\n    },\n  };\n}",
                 "rawdescription": "Template checkbox",
                 "description": "<p>Template checkbox</p>\n"
             },
@@ -17751,20 +17751,6 @@
                     "description": "<p>A provider for the ControlValueAccessor interface.</p>\n"
                 }
             ],
-            "libs/ui/src/lib/toggle/toggle.component.ts": [
-                {
-                    "name": "CONTROL_VALUE_ACCESSOR",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "libs/ui/src/lib/toggle/toggle.component.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "Provider",
-                    "defaultValue": "{\n  provide: NG_VALUE_ACCESSOR,\n  useExisting: forwardRef(() => ToggleComponent),\n  multi: true,\n}",
-                    "rawdescription": "A provider for the ControlValueAccessor interface.",
-                    "description": "<p>A provider for the ControlValueAccessor interface.</p>\n"
-                }
-            ],
             "libs/ui/src/lib/textarea/textarea.component.ts": [
                 {
                     "name": "CONTROL_VALUE_ACCESSOR",
@@ -17777,6 +17763,20 @@
                     "defaultValue": "{\n  provide: NG_VALUE_ACCESSOR,\n  useExisting: forwardRef(() => TextareaComponent),\n  multi: true,\n}",
                     "rawdescription": "Control value accessor",
                     "description": "<p>Control value accessor</p>\n"
+                }
+            ],
+            "libs/ui/src/lib/toggle/toggle.component.ts": [
+                {
+                    "name": "CONTROL_VALUE_ACCESSOR",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/toggle/toggle.component.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Provider",
+                    "defaultValue": "{\n  provide: NG_VALUE_ACCESSOR,\n  useExisting: forwardRef(() => ToggleComponent),\n  multi: true,\n}",
+                    "rawdescription": "A provider for the ControlValueAccessor interface.",
+                    "description": "<p>A provider for the ControlValueAccessor interface.</p>\n"
                 }
             ],
             "libs/ui/src/lib/cron-editor/cron-editor.stories.ts": [
@@ -18172,7 +18172,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "StoryFn<CheckboxComponent>",
-                    "defaultValue": "(args: CheckboxComponent) => {\n  args.variant = 'default';\n  return {\n    component: CheckboxComponent,\n    template: `\n      <ui-checkbox [variant]=\"'${args.variant}'\">\n      <ng-container ngProjectAs=\"label\">Checkbox text</ng-container>\n      <ng-container ngProjectAs=\"description\">Description text text text.</ng-container>\n      <ng-container ngProjectAs=\"icon\">\n      <ui-icon\n      icon=\"info_outline\"\n      [inline]=\"true\"\n      [size]=\"18\"\n      variant=\"grey\"\n    ></ui-icon>\n      </ng-container>\n      </ui-checkbox>\n        `,\n    props: {\n      ...args,\n    },\n  };\n}",
+                    "defaultValue": "(args: CheckboxComponent) => {\n  args.variant = 'default';\n  return {\n    component: CheckboxComponent,\n    template: `\n      <ui-checkbox [variant]=\"'${args.variant}'\">\n      <ng-container ngProjectAs=\"label\">Checkbox text</ng-container>\n      <ng-container ngProjectAs=\"description\">Description text text text.</ng-container>\n      <ng-container ngProjectAs=\"icon\">\n      <ui-icon\n      icon=\"info_outline\"\n      [size]=\"18\"\n      variant=\"grey\"\n    ></ui-icon>\n      </ng-container>\n      </ui-checkbox>\n        `,\n    props: {\n      ...args,\n    },\n  };\n}",
                     "rawdescription": "Template checkbox",
                     "description": "<p>Template checkbox</p>\n"
                 }
@@ -18416,56 +18416,6 @@
                     "description": "<p>Template radio group</p>\n"
                 }
             ],
-            "libs/ui/src/lib/toggle/toggle.stories.ts": [
-                {
-                    "name": "FormControlTemplate",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "libs/ui/src/lib/toggle/toggle.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "StoryFn<ToggleComponent>",
-                    "defaultValue": "(\n  args: ToggleComponent\n) => {\n  const formGroup = new FormGroup({\n    toggle: new FormControl(true),\n  });\n  return {\n    component: ToggleComponent,\n    template: `\n      <form [formGroup]=\"formGroup\">\n      <ui-toggle [type]=\"'${args.type}'\" [variant]=\"'${args.variant}'\" [labelPosition]=\"'${args.labelPosition}'\" formControlName=\"toggle\">\n        <ng-container ngProjectAs=\"label\">Test test test!</ng-container>\n        <ng-container ngProjectAs=\"description\">\n          Test test test test test test test test test test test test test\n        </ng-container>\n      </ui-toggle>\n        </form>\n        <br>\n        <p>value: {{formGroup.get('toggle').value}}</p>\n        <p>touched: {{formGroup.get('toggle').touched}}</p>\n        `,\n    props: {\n      ...args,\n      formGroup,\n    },\n  };\n}",
-                    "rawdescription": "Form control template toggle",
-                    "description": "<p>Form control template toggle</p>\n"
-                },
-                {
-                    "name": "FormToggle",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "libs/ui/src/lib/toggle/toggle.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "FormControlTemplate.bind({})",
-                    "rawdescription": "Form control toggle",
-                    "description": "<p>Form control toggle</p>\n"
-                },
-                {
-                    "name": "Primary",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "libs/ui/src/lib/toggle/toggle.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "PrimaryTemplate.bind({})",
-                    "rawdescription": "Primary toggle",
-                    "description": "<p>Primary toggle</p>\n"
-                },
-                {
-                    "name": "PrimaryTemplate",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "libs/ui/src/lib/toggle/toggle.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "StoryFn<ToggleComponent>",
-                    "defaultValue": "(args: ToggleComponent) => {\n  args.icon = {\n    disableIcon: 'close',\n    enableIcon: 'save',\n  };\n  return {\n    component: ToggleComponent,\n    template: `\n      <ui-toggle [type]=\"'${args.type}'\" [icon]=\"icon\" [variant]=\"'${args.variant}'\" [labelPosition]=\"'${args.labelPosition}'\">\n        <ng-container ngProjectAs=\"label\">Test test test!</ng-container>\n        <ng-container ngProjectAs=\"description\">\n          Test test test test test test test test test test test test test\n        </ng-container>\n      </ui-toggle>\n        `,\n    props: {\n      ...args,\n    },\n  };\n}",
-                    "rawdescription": "Primary template toggle",
-                    "description": "<p>Primary template toggle</p>\n"
-                }
-            ],
             "libs/ui/src/lib/textarea/textarea.stories.ts": [
                 {
                     "name": "FormControlTemplate",
@@ -18538,6 +18488,56 @@
                     "defaultValue": "(args: TextareaComponent) => ({\n  props: args,\n})",
                     "rawdescription": "Template textarea",
                     "description": "<p>Template textarea</p>\n"
+                }
+            ],
+            "libs/ui/src/lib/toggle/toggle.stories.ts": [
+                {
+                    "name": "FormControlTemplate",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/toggle/toggle.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "StoryFn<ToggleComponent>",
+                    "defaultValue": "(\n  args: ToggleComponent\n) => {\n  const formGroup = new FormGroup({\n    toggle: new FormControl(true),\n  });\n  return {\n    component: ToggleComponent,\n    template: `\n      <form [formGroup]=\"formGroup\">\n      <ui-toggle [type]=\"'${args.type}'\" [variant]=\"'${args.variant}'\" [labelPosition]=\"'${args.labelPosition}'\" formControlName=\"toggle\">\n        <ng-container ngProjectAs=\"label\">Test test test!</ng-container>\n        <ng-container ngProjectAs=\"description\">\n          Test test test test test test test test test test test test test\n        </ng-container>\n      </ui-toggle>\n        </form>\n        <br>\n        <p>value: {{formGroup.get('toggle').value}}</p>\n        <p>touched: {{formGroup.get('toggle').touched}}</p>\n        `,\n    props: {\n      ...args,\n      formGroup,\n    },\n  };\n}",
+                    "rawdescription": "Form control template toggle",
+                    "description": "<p>Form control template toggle</p>\n"
+                },
+                {
+                    "name": "FormToggle",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/toggle/toggle.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "FormControlTemplate.bind({})",
+                    "rawdescription": "Form control toggle",
+                    "description": "<p>Form control toggle</p>\n"
+                },
+                {
+                    "name": "Primary",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/toggle/toggle.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "PrimaryTemplate.bind({})",
+                    "rawdescription": "Primary toggle",
+                    "description": "<p>Primary toggle</p>\n"
+                },
+                {
+                    "name": "PrimaryTemplate",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "libs/ui/src/lib/toggle/toggle.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "StoryFn<ToggleComponent>",
+                    "defaultValue": "(args: ToggleComponent) => {\n  args.icon = {\n    disableIcon: 'close',\n    enableIcon: 'save',\n  };\n  return {\n    component: ToggleComponent,\n    template: `\n      <ui-toggle [type]=\"'${args.type}'\" [icon]=\"icon\" [variant]=\"'${args.variant}'\" [labelPosition]=\"'${args.labelPosition}'\">\n        <ng-container ngProjectAs=\"label\">Test test test!</ng-container>\n        <ng-container ngProjectAs=\"description\">\n          Test test test test test test test test test test test test test\n        </ng-container>\n      </ui-toggle>\n        `,\n    props: {\n      ...args,\n    },\n  };\n}",
+                    "rawdescription": "Primary template toggle",
+                    "description": "<p>Primary template toggle</p>\n"
                 }
             ],
             "libs/ui/src/lib/slider/slider.stories.ts": [

@@ -8,7 +8,7 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import { UntypedFormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import {
@@ -16,6 +16,7 @@ import {
   FormWrapperModule,
   GraphQLSelectComponent,
   GraphQLSelectModule,
+  SnackbarService,
   TooltipModule,
 } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
@@ -97,13 +98,17 @@ export class AddLayoutModalComponent
    * @param data Data used by the modal
    * @param gridLayoutService Grid layout service
    * @param apollo Apollo service
+   * @param snackBar Snackbar Service
+   * @param translate Translate Service
    */
   constructor(
     private dialogRef: DialogRef<AddLayoutModalComponent>,
     private dialog: Dialog,
     @Inject(DIALOG_DATA) public data: DialogData,
     private gridLayoutService: GridLayoutService,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private snackBar: SnackbarService,
+    private translate: TranslateService
   ) {
     super();
     this.hasLayouts = data.hasLayouts;
@@ -155,6 +160,14 @@ export class AddLayoutModalComponent
           .addLayout(layout, this.resource?.id, this.form?.id)
           .subscribe(({ data }) => {
             if (data?.addLayout) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectCreated', {
+                  type: this.translate
+                    .instant('common.layout.one')
+                    .toLowerCase(),
+                  value: data.addLayout.name,
+                })
+              );
               this.dialogRef.close(data.addLayout as any);
             } else {
               this.dialogRef.close();

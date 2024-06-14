@@ -240,7 +240,7 @@ export class MapComponent
     const allContextFilters = this.layers
       .map((layer: any) => JSON.stringify(layer.contextFilters))
       .join('');
-    const allGraphQLVariables = this.layers
+    const allQueryParams = this.layers
       .map(
         (layer: any) =>
           get(layer, 'datasource.referenceDataVariableMapping') || ''
@@ -249,9 +249,7 @@ export class MapComponent
 
     // Listen to dashboard filters changes to apply layers filter, if it is necessary
     if (
-      this.contextService.filterRegex.test(
-        allContextFilters + allGraphQLVariables
-      )
+      this.contextService.filterRegex.test(allContextFilters + allQueryParams)
     ) {
       this.contextService.filter$
         .pipe(
@@ -769,6 +767,7 @@ export class MapComponent
           return this.mapLayersService
             .createLayersFromId(Childrenlayer, this.injector)
             .then(async (sublayer) => {
+              sublayer.parent = layer;
               if (sublayer.type === 'GroupLayer') {
                 const layer = await sublayer.getLayer();
                 return parseTreeNode(sublayer, layer, displayLayers);
