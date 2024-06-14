@@ -57,7 +57,7 @@
 		"calculatedField": {
 			"few": "Calculated Fields",
 			"none": "No Calculated field",
-			"one": "calculated Field"
+			"one": "Calculated Field"
 		},
 		"cancel": "Cancel",
 		"channel": {
@@ -465,6 +465,7 @@
 			"fieldName": "Field name",
 			"groupBy": "Group by",
 			"groupingRules": "Grouping rules",
+			"keepNull": "Preserve null values",
 			"mapping": {
 				"category": "Category",
 				"field": "Value",

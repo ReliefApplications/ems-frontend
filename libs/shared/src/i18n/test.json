@@ -465,6 +465,7 @@
 			"fieldName": "******",
 			"groupBy": "******",
 			"groupingRules": "******",
+			"keepNull": "******",
 			"mapping": {
 				"category": "******",
 				"field": "******",

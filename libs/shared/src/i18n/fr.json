@@ -465,6 +465,7 @@
 			"fieldName": "Nom du champ",
 			"groupBy": "Regrouper par",
 			"groupingRules": "Grouper par",
+			"keepNull": "Conserver les valeurs vides",
 			"mapping": {
 				"category": "Catégorie",
 				"field": "Valeur",
