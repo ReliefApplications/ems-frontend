@@ -301,6 +301,17 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
                 if (data) {
                   const { id } = data.addForm;
                   this.router.navigate(['/forms/' + id + '/builder']);
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectCreated',
+                      {
+                        type: this.translate
+                          .instant('common.form.one')
+                          .toLowerCase(),
+                        value: value.name,
+                      }
+                    )
+                  );
                 }
               }
             },
