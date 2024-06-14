@@ -12,13 +12,14 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import { UntypedFormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
   DialogModule,
   FormWrapperModule,
   GraphQLSelectComponent,
   GraphQLSelectModule,
+  SnackbarService,
   TooltipModule,
 } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
@@ -84,13 +85,17 @@ export class AddAggregationModalComponent
    * @param apollo Apollo client service
    * @param data Data used by the modal
    * @param aggregationService Shared aggregation service
+   * @param snackBar Snackbar Service
+   * @param translate Translate Service
    */
   constructor(
     private dialogRef: DialogRef<AddAggregationModalComponent>,
     private dialog: Dialog,
     private apollo: Apollo,
     @Inject(DIALOG_DATA) public data: DialogData,
-    private aggregationService: AggregationService
+    private aggregationService: AggregationService,
+    private snackBar: SnackbarService,
+    private translate: TranslateService
   ) {
     super();
     this.hasAggregations = data.hasAggregations;
@@ -152,6 +157,14 @@ export class AddAggregationModalComponent
             })
             .subscribe(({ data }) => {
               if (data?.addAggregation) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.aggregation.one')
+                      .toLowerCase(),
+                    value: data.addAggregation.name,
+                  })
+                );
                 this.dialogRef.close(data.addAggregation as any);
               } else {
                 this.dialogRef.close();
