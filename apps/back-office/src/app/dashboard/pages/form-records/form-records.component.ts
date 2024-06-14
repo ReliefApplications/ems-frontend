@@ -29,12 +29,13 @@ import {
   SnackbarService,
   UIPageChangeEvent,
   UILayoutService,
+  handleTablePageEvent,
 } from '@oort-front/ui';
 import { GraphQLError } from 'graphql';
 import { ApolloQueryResult } from '@apollo/client';
 
 /** Default items per query, for pagination */
-let ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 10;
 
 /** Static columns ( appear whatever the form ) */
 const DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
@@ -250,29 +251,15 @@ export class FormRecordsComponent
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    ITEMS_PER_PAGE = e.pageSize;
-    this.loadingMore = true;
-    if (
-      e.pageIndex > e.previousPageIndex &&
-      e.totalItems > this.cachedRecords.length &&
-      ITEMS_PER_PAGE * this.pageInfo.pageIndex >= this.cachedRecords.length
-    ) {
-      this.recordsQuery.refetch({
-        id: this.id,
-        first: ITEMS_PER_PAGE,
-        afterCursor: this.pageInfo.endCursor,
-      });
+    const cachedData = handleTablePageEvent(
+      e,
+      this.pageInfo,
+      this.cachedRecords
+    );
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
+      this.dataSource = cachedData;
     } else {
-      this.dataSource = this.cachedRecords.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex,
-        ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
-      );
-      this.recordsQuery.refetch({
-        id: this.id,
-        first: e.pageSize,
-        afterCursor: this.pageInfo.endCursor,
-      });
+      this.fetchRecordsData();
     }
   }
 
