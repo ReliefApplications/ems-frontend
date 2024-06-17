@@ -14,7 +14,7 @@ import {
   FormBuilder,
   FormGroup,
 } from '@angular/forms';
-import { Apollo, QueryRef, gql } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { clone, cloneDeep } from 'lodash';
 import {
   Resource,
