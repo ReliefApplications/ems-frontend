@@ -343,9 +343,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     const firstBlock = this.emailService.getAllPreviewData()[0];
     if (
       firstBlock &&
-      firstBlock.datasetFields &&
-      firstBlock.datasetFields.length > 0 &&
-      firstBlock.dataList.length === 1
+      firstBlock?.datasetFields &&
+      firstBlock?.datasetFields?.length > 0 &&
+      firstBlock?.dataList.length === 1
     ) {
       // get the values of the first block
       this.firstBlockFields = Object.values(firstBlock.datasetFields);
