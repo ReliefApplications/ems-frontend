@@ -34,6 +34,7 @@
             uiTooltip="First row of first created block"
             [filterable]="true"
             class="w-full"
+            *ngIf="firstBlockFields.length > 0"
           >
             <ui-select-option
               *ngFor="let field of firstBlockFields"

@@ -344,7 +344,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
     if (
       firstBlock &&
       firstBlock.datasetFields &&
-      firstBlock.datasetFields.length > 0
+      firstBlock.datasetFields.length > 0 &&
+      firstBlock.dataList.length === 1
     ) {
       // get the values of the first block
       this.firstBlockFields = Object.values(firstBlock.datasetFields);
