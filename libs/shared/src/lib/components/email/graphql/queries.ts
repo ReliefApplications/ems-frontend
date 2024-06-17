@@ -155,29 +155,6 @@ export const GET_QUERY_TYPES = gql`
  */
 export const GET_QUERY_META_DATA = gql`
   query GetQueryMetaData($id: ID!) {
-    form(id: $id) {
-      id
-      metadata {
-        name
-        automated
-        type
-        editor
-        filter
-        multiSelect
-        filterable
-        options
-        fields {
-          name
-          automated
-          type
-          editor
-          filter
-          multiSelect
-          filterable
-          options
-        }
-      }
-    }
     resource(id: $id) {
       id
       metadata {
