@@ -132,6 +132,8 @@ export class GridComponent
   @Input() reorderable = true;
   /** Add permission */
   @Input() canAdd = false;
+  /** Download permission */
+  @Input() canDownload = false;
   /** Selectable status */
   @Input() selectable = true;
   /** Multi-select status */

@@ -465,6 +465,7 @@
 			"fieldName": "Nom du champ",
 			"groupBy": "Regrouper par",
 			"groupingRules": "Grouper par",
+			"keepNull": "Conserver les valeurs vides",
 			"mapping": {
 				"category": "Catégorie",
 				"field": "Valeur",
@@ -1235,6 +1236,7 @@
 				"disallowFieldUpdate": "Interdire ce rôle pour mettre à jour le champ {{field}}",
 				"grantAddRecordsPermission": "Permet de créer de nouveaux enregistrements",
 				"grantDeleteRecordsPermission": "Permet de supprimer tous les enregistrements",
+				"grantDownloadRecordsPermission": "Permet de télécharger les enregistrements",
 				"grantFilterDeleteRecordsPermission": "Permet de supprimer les enregistremetns satisfaisant le filtre",
 				"grantFilterReadRecordsPermission": "Permet de voir les enregistrements satisfaisant le filtre",
 				"grantFilterUpdateRecordsPermission": "Permet de mettre à jour les enregistrements satisfaisant le filtre",
@@ -1246,6 +1248,7 @@
 				"limitedUpdateRecordsPermission": "Permet de mettre à jour les enregistrements satisfaisant les filtres",
 				"notGrantAddRecordsPermission": "Ne donne pas la permission d'ajouter de nouveaux enregistrements",
 				"notGrantDeleteRecordsPermission": "Ne donne pas la permission de supprimer les enregistrements",
+				"notGrantDownloadRecordsPermission": "Ne donne pas la permission de télécharger les enregistrements",
 				"notGrantFilterDeleteRecordsPermission": "Ne donne pas la permission de supprimer les enregistrements satisfaisant le filtre",
 				"notGrantFilterReadRecordsPermission": "Ne donne pas la permission de voir les enregistrements satisfaisant le filtre",
 				"notGrantFilterUpdateRecordsPermission": "Ne donne pas la permission de mettre à jour les enregistrements satisfaisant le filtre",

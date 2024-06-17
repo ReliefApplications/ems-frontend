@@ -465,6 +465,7 @@
 			"fieldName": "******",
 			"groupBy": "******",
 			"groupingRules": "******",
+			"keepNull": "******",
 			"mapping": {
 				"category": "******",
 				"field": "******",
@@ -1235,6 +1236,7 @@
 				"disallowFieldUpdate": "****** {{field}}",
 				"grantAddRecordsPermission": "******",
 				"grantDeleteRecordsPermission": "******",
+				"grantDownloadRecordsPermission": "******",
 				"grantFilterDeleteRecordsPermission": "******",
 				"grantFilterReadRecordsPermission": "******",
 				"grantFilterUpdateRecordsPermission": "******",
@@ -1246,6 +1248,7 @@
 				"limitedUpdateRecordsPermission": "******",
 				"notGrantAddRecordsPermission": "******",
 				"notGrantDeleteRecordsPermission": "******",
+				"notGrantDownloadRecordsPermission": "******",
 				"notGrantFilterDeleteRecordsPermission": "******",
 				"notGrantFilterReadRecordsPermission": "******",
 				"notGrantFilterUpdateRecordsPermission": "******",
