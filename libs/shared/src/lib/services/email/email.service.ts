@@ -354,11 +354,14 @@ export class EmailService {
    * @param {any} emailContent - The content of the email template.
    * @param {any} distributionListInfo - Information about the distribution list.
    * @param selectedRowsFromGrid
+   * @param resourceId
    */
   async previewCustomTemplates(
     emailContent: any,
     distributionListInfo: any,
-    selectedRowsFromGrid: any
+    selectedRowsFromGrid: any,
+    resourceData: any,
+    selectedLayoutFields: any
   ) {
     const { PreviewTemplate } = await import(
       '../../../lib/components/templates/components/preview-template/preview-template.component'
@@ -368,6 +371,8 @@ export class EmailService {
         emailContent,
         distributionListInfo,
         selectedRowsFromGrid,
+        resourceData,
+        selectedLayoutFields,
       },
       autoFocus: false,
       disableClose: true,

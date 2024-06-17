@@ -10,7 +10,7 @@
       </h3>
     </ng-container>
     <ng-container ngProjectAs="content">
-      <div class="mt-4 import-action-buttons">
+      <div class="mt-4 flex gap-2 justify-end">
         <!-- Email List Import Button -->
         <div>
           <input type="file" class="hidden" #fileUpload (change)="fileSelectionHandler($event)" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
@@ -59,35 +59,6 @@
           <div class="warning" *ngIf="uniqueNameValidator(form.get('name'))">
             This name already exists. Please enter a unique name.
           </div>
-          <!-- <div
-            *ngIf="data===null"
-            [uiErrorMessage]="emailsError | translate"
-            [uiErrorMessageIf]="
-              form.get('emails')?.errors && form.get('emails')?.touched
-            "
-            uiFormFieldDirective
-          >
-            <label class="block text-sm font-medium leading-6 text-gray-900">{{
-              'common.email.few' | translate
-            }}</label>
-            <div uiChipList #chipList formControlName="emails">
-              <ui-chip
-                *ngFor="let email of form.get('emails')?.value"
-                [removable]="true"
-                [value]="email"
-                (removed)="removeEmail(email)"
-              >
-                {{ email }}
-              </ui-chip>
-            </div>
-            <input
-              #emailsInput
-              [uiChipListFor]="chipList"
-              [chipInputSeparatorKeyCodes]="separatorKeysCodes"
-              (focusout)="addEmail($event)"
-              (chipTokenEnd)="addEmail($event)"
-            />
-          </div> -->
 
           <div
             [uiErrorMessage]="emailsError | translate"
@@ -96,7 +67,8 @@
             "
             uiFormFieldDirective
           >
-            <label class="block text-sm font-medium leading-6 text-gray-900">To</label>
+            <label class="block text-sm font-medium leading-6 text-gray-900">
+              {{ 'components.email.distributionList.to' | translate }}</label>
             <div uiChipList #chipList formControlName="to">
               <ui-chip
                 *ngFor="let to of form.get('to')?.value"
@@ -104,7 +76,7 @@
                 [value]="to"
                 (removed)="removeEmail(to,'to')"
               >
-                {{ to }}
+              {{to}}
               </ui-chip>
             </div>
             <input
@@ -123,7 +95,9 @@
             "
             uiFormFieldDirective
           >
-            <label class="block text-sm font-medium leading-6 text-gray-900">CC</label>
+            <label class="block text-sm font-medium leading-6 text-gray-900">
+              {{ 'components.email.distributionList.cc' | translate }}
+            </label>
             <div uiChipList #chipList formControlName="cc">
               <ui-chip
                 *ngFor="let cc of form.get('cc')?.value"
@@ -131,7 +105,7 @@
                 [value]="cc"
                 (removed)="removeEmail(cc,'cc')"
               >
-                {{ cc }}
+              {{ cc }}
               </ui-chip>
             </div>
             <input
@@ -150,7 +124,9 @@
             "
             uiFormFieldDirective
           >
-            <label class="block text-sm font-medium leading-6 text-gray-900">BCC</label>
+            <label class="block text-sm font-medium leading-6 text-gray-900">
+              {{ 'components.email.distributionList.bcc' | translate }}
+            </label>
             <div uiChipList #chipList formControlName="bcc">
               <ui-chip
                 *ngFor="let bcc of form.get('bcc')?.value"
@@ -158,7 +134,7 @@
                 [value]="bcc"
                 (removed)="removeEmail(bcc,'bcc')"
               >
-                {{ bcc }}
+              {{ bcc }}
               </ui-chip>
             </div>
             <input

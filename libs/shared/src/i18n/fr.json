@@ -312,6 +312,7 @@
 				},
 				"timestamp": "Horodatage"
 			},
+			"emailSent": "E-mail envoyé avec succès.",
 			"fetchingGroups": "Fetching groups from service...",
 			"file": {
 				"download": {

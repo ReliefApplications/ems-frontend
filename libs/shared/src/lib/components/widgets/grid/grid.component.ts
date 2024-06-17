@@ -1,4 +1,4 @@
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import {
   EDIT_RECORDS,
   PUBLISH,
@@ -20,7 +20,10 @@ import {
 } from '@angular/core';
 import { WorkflowService } from '../../../services/workflow/workflow.service';
 import { EmailService } from '../../../services/email/email.service';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import {
+  QueryBuilderService,
+  QueryResponse,
+} from '../../../services/query-builder/query-builder.service';
 import { CoreGridComponent } from '../../ui/core-grid/core-grid.component';
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
@@ -47,6 +50,9 @@ import { FormQueryResponse } from '../../../models/form.model';
 import { AggregationGridComponent } from '../../aggregation/aggregation-grid/aggregation-grid.component';
 import { ReferenceDataGridComponent } from '../../ui/reference-data-grid/reference-data-grid.component';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
+import { QueryMetaDataQueryResponse } from '../../../models/metadata.model';
+import { GET_QUERY_META_DATA } from '../../email/graphql/queries';
+import { clone } from 'lodash';
 
 /** Component for the grid widget */
 @Component({
@@ -133,6 +139,11 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     return (this.settings.floatingButtons || []).filter((x: any) => x.show);
   }
 
+  /** Resource data list */
+  metaResourceData: any = [];
+  /** Data query for preview  */
+  private previewDataQuery!: QueryRef<QueryResponse>;
+
   /**
    * Heavy constructor for the grid widget component
    *
@@ -169,6 +180,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     delete this.gridSettings.query;
     let buildSortFields = false;
     if (this.settings.resource) {
+      this.getResourceMetaData();
       this.useReferenceData = false;
       const layouts = get(this.settings, 'layouts', []);
       const aggregations = get(this.settings, 'aggregations', []);
@@ -505,12 +517,35 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
 
               console.log('selected Template', selectedTemplate);
 
-              if (selectedTemplate?.length) {
-                this.emailService.previewCustomTemplates(
-                  selectedTemplate[0],
-                  selectedDL[0],
-                  this.selectedRows
-                );
+              this.getPreviewData();
+              if (this.previewDataQuery) {
+                this.previewDataQuery.valueChanges
+                  .pipe(takeUntil(this.destroy$))
+                  .subscribe({
+                    next: ({ data }) => {
+                      let selectedPreviewData: any = [];
+                      Object.keys(data)?.forEach((lKey: any) => {
+                        selectedPreviewData = data[lKey].edges.filter(
+                          (item: any) =>
+                            this.selectedRows
+                              ?.map((x: any) => x?.dataItem?.id)
+                              .includes(item?.node?.id)
+                        );
+                      });
+                      if (selectedTemplate?.length) {
+                        this.emailService.previewCustomTemplates(
+                          selectedTemplate[0],
+                          selectedDL[0],
+                          selectedPreviewData,
+                          this.metaResourceData,
+                          this.gridSettings?.floatingButtons?.[0]?.bodyFields
+                        );
+                      }
+                      this.status = {
+                        error: false,
+                      };
+                    },
+                  });
               }
             });
         }
@@ -713,5 +748,67 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
    */
   onAggregationChange(aggregation: Aggregation): void {
     this.aggregation = aggregation;
+  }
+
+  /** getResourceMetaData */
+  async getResourceMetaData() {
+    await this.fetchResourceMetaData()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        console.log('Res', res);
+        this.metaResourceData = res.data.resource.metadata;
+      });
+  }
+
+  /**
+   * Fetches Resource meta data
+   * @returns resource meta data
+   */
+  fetchResourceMetaData() {
+    return this.apollo.query<QueryMetaDataQueryResponse>({
+      query: GET_QUERY_META_DATA,
+      variables: {
+        id: this.settings.resource,
+      },
+    });
+  }
+
+  /**
+   * Gets whether the grid settings are loading.
+   * @param previewSettings
+   * @returns true if the grid settings are loading, false otherwise
+   */
+  loadingSettings(previewSettings: any): boolean {
+    return previewSettings.resource && !previewSettings.query;
+  }
+
+  /** Get preview data for the Preview screen */
+  getPreviewData() {
+    const settingsData: any = clone(this.layout);
+    settingsData.query.fields =
+      this.settings?.floatingButtons?.[0].bodyFields || [];
+    const builtQuery = this.queryBuilder.buildQuery(settingsData);
+    if (!builtQuery) {
+      this.status = {
+        error: !this.loadingSettings(settingsData),
+        message: this.translate.instant(
+          'components.widget.grid.errors.queryBuildFailed'
+        ),
+      };
+    } else {
+      this.previewDataQuery = this.apollo.watchQuery({
+        query: builtQuery,
+        variables: {
+          first: this.layout?.query?.pageSize,
+          filter: this.layout?.query?.queryFilter,
+          sortField: this.layout?.query?.sortField || undefined,
+          sortOrder: this.layout?.query?.sortOrder,
+          styles: this.layout?.query?.style,
+          at: undefined,
+        },
+        fetchPolicy: 'no-cache',
+        nextFetchPolicy: 'cache-first',
+      });
+    }
   }
 }

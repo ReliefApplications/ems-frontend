@@ -11,6 +11,7 @@ import { NgSelectComponent } from '@ng-select/ng-select';
 import { Subscription } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { convertToMinutes } from '../../../../utils/parser/utils';
+import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 
 /**
  * Email layout page component.
@@ -100,6 +101,50 @@ export class LayoutComponent
   /** Subscription for the graphql load change event. */
   private loadChangeSubscription: Subscription = new Subscription();
 
+  /** To input HTML */
+  @ViewChild('toInput') toInput!: ElementRef<HTMLInputElement>;
+  /** Cc input HTML */
+  @ViewChild('ccInput') ccInput!: ElementRef<HTMLInputElement>;
+  /** Bcc input HTML */
+  @ViewChild('bccInput') bccInput!: ElementRef<HTMLInputElement>;
+  /** Regex pattern for email */
+  // eslint-disable-next-line no-useless-escape
+  EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  /** Key codes of separators */
+  SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
+
+  /** @returns list of emails */
+  get emails(): string[] {
+    return this.layoutForm.get('to')?.value || [];
+  }
+
+  /** @returns {string[]} An array containing the CC values.*/
+  get cc(): string[] {
+    return this.layoutForm.get('cc')?.value || [];
+  }
+
+  /** @returns {string[]} An array containing the BCC values. */
+  get bcc(): string[] {
+    return this.layoutForm.get('bcc')?.value || [];
+  }
+
+  /** @returns error message */
+  get emailsError(): string {
+    const control = this.layoutForm.get('to');
+    if (control?.hasError('required')) {
+      return 'components.distributionLists.errors.emails.required';
+    }
+    if (control?.hasError('pattern')) {
+      return 'components.distributionLists.errors.emails.pattern';
+    }
+    return '';
+  }
+
+  /** separatorKeysCodes  */
+  readonly separatorKeysCodes: number[] = this.SEPARATOR_KEYS_CODE;
+  /** flag for custom preview template  */
+  @Input() isPreviewTemplate = false;
+
   /**
    * Email layout page component.
    *
@@ -134,6 +179,9 @@ export class LayoutComponent
         header: [this.emailService.allLayoutdata.headerHtml],
         block: [''],
         body: [this.emailService.allLayoutdata.bodyHtml],
+        to: [''],
+        cc: [''],
+        bcc: [''],
       });
     } else {
       this.layoutForm = this.fb.group({
@@ -206,6 +254,41 @@ export class LayoutComponent
           this.emailService.allLayoutdata.footerLogo;
       }
     }
+    if (this.emailService.customLayoutDL.To) {
+      this.layoutForm.get('to')?.setValue(this.emailService.customLayoutDL.To);
+      this.emailService.emailDistributionList.To = this.getDistinctArray(
+        this.emailService.customLayoutDL.To,
+        this.emailService.emailDistributionList.To
+      );
+    }
+    if (this.emailService.customLayoutDL.Cc) {
+      this.layoutForm.get('cc')?.setValue(this.emailService.customLayoutDL.Cc);
+      this.emailService.emailDistributionList.Cc = this.getDistinctArray(
+        this.emailService.customLayoutDL.Cc,
+        this.emailService.emailDistributionList.Cc
+      );
+    }
+    if (this.emailService.customLayoutDL.Bcc) {
+      this.layoutForm
+        .get('bcc')
+        ?.setValue(this.emailService.customLayoutDL.Bcc);
+      this.emailService.emailDistributionList.Bcc = this.getDistinctArray(
+        this.emailService.customLayoutDL.Bcc,
+        this.emailService.emailDistributionList.Bcc
+      );
+    }
+  }
+
+  /**
+   *
+   * @param dlArray
+   * @param previewArray
+   */
+  getDistinctArray(dlArray: any, previewArray: any) {
+    previewArray = previewArray.filter((el: any) => {
+      return dlArray.indexOf(el) < 0;
+    });
+    return previewArray;
   }
 
   /**
@@ -216,6 +299,9 @@ export class LayoutComponent
     this.showSubjectValidator =
       !this.layoutForm.controls['subjectInput'].value ||
       this.layoutForm.controls['subjectInput'].value.trim() === '';
+
+    // this.emailService.allLayoutdata.txtSubject =
+    //   this.layoutForm.controls['subjectInput'].value;
 
     if (
       this.layoutForm.controls['subjectInput'].touched &&
@@ -747,5 +833,103 @@ export class LayoutComponent
     this.emailService.allLayoutdata.headerHtml =
       this.layoutForm.get('header')?.value;
     // this.emailService.patchEmailLayout();
+  }
+
+  /**
+   * Add the inputs emails to the distribution list
+   *
+   * @param emailType
+   * @param event The event triggered when we exit the input
+   */
+  addEmail(emailType: string, event: string | any): void {
+    const control = this.layoutForm.get(emailType);
+    // use setTimeout to prevent add input value on focusout
+    setTimeout(
+      () => {
+        const value: string =
+          event.type === 'focusout' ? this.toInput.nativeElement.value : event;
+
+        // Add the mail
+        const emails =
+          emailType === 'to'
+            ? [...this.emails]
+            : emailType === 'cc'
+            ? [...this.cc]
+            : [...this.bcc];
+        if ((value || '').trim()) {
+          if (this.EMAIL_REGEX.test(value.trim())) {
+            emails.push(value.trim());
+            const uniqueEmails = Array.from(new Set(emails));
+            control?.patchValue(uniqueEmails);
+            control?.updateValueAndValidity();
+            if (event.type === 'focusout') {
+              switch (emailType) {
+                case 'to':
+                  this.toInput.nativeElement.value = '';
+                  break;
+                case 'cc':
+                  this.ccInput.nativeElement.value = '';
+                  break;
+                case 'bcc':
+                  this.bccInput.nativeElement.value = '';
+                  break;
+                default:
+                  break;
+              }
+            }
+          } else {
+            control?.setErrors({ pattern: true });
+          }
+        } else {
+          // no value
+          control?.setErrors({ pattern: false });
+          control?.updateValueAndValidity();
+        }
+        switch (emailType) {
+          case 'to':
+            this.emailService.customLayoutDL.To = emails;
+            break;
+          case 'cc':
+            this.emailService.customLayoutDL.Cc = emails;
+            break;
+          case 'bcc':
+            this.emailService.customLayoutDL.Bcc = emails;
+            break;
+          default:
+            break;
+        }
+      },
+      event.type === 'focusout' ? 500 : 0
+    );
+  }
+
+  /**
+   * Remove an email from the distribution list
+   *
+   * @param email The email to remove
+   * @param type the type as string
+   */
+  removeEmail(email: string, type: string): void {
+    if (type === 'to') {
+      const emails = [...this.emails].filter(
+        (emailData) => emailData.toLowerCase() !== email.toLowerCase()
+      );
+      this.layoutForm.get(type)?.setValue(emails);
+      this.emailService.customLayoutDL.To = emails;
+    }
+    if (type === 'cc') {
+      const emails = [...this.cc].filter(
+        (emailData) => emailData.toLowerCase() !== email.toLowerCase()
+      );
+      this.layoutForm.get(type)?.setValue(emails);
+      this.emailService.customLayoutDL.Cc = emails;
+    }
+    if (type === 'bcc') {
+      const emails = [...this.bcc].filter(
+        (emailData) => emailData.toLowerCase() !== email.toLowerCase()
+      );
+      this.layoutForm.get(type)?.setValue(emails);
+      this.emailService.customLayoutDL.Bcc = emails;
+    }
   }
 }

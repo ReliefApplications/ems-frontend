@@ -1,4 +1,4 @@
-<div *ngIf="!showTemplateCreationWizard">
+<ng-container *ngIf="!showTemplateCreationWizard">
   <ui-spinner *ngIf="emailService.emailListLoading && emailService.isExisting" class="spinner"></ui-spinner>
   <div class="container mx-auto py-8 flex justify-between" *ngIf="emailService.isExisting">
     <div
@@ -17,16 +17,19 @@
   </div>
   
   <div class="p-4" [ngSwitch]="selectedTabIndex">
-    <ui-button
-        class="float-right"
-        icon="add"
-        category="secondary"
-        variant="primary"
-        (click)="toggle(true)"
-        *ngSwitchCase="0"
-    >
-        Create Notification
-    </ui-button>
+    <ng-container *ngIf="this.ability.can('create', 'EmailNotification')">
+      <ui-button
+      class="float-right"
+      icon="add"
+      category="secondary"
+      variant="primary"
+      (click)="toggle(true)"        
+      *ngSwitchCase="0"
+      >
+      {{  'components.email.notification.create' | translate  }}
+      </ui-button>
+    </ng-container>
+    
     <ui-button
         class="float-right"
         icon="add"
@@ -58,7 +61,7 @@
           'components.email.notification.list' | translate
         }}</ng-container>
           <div class="mt-4 overflow-x-hidden shadow-2lg">
-            <ng-container *ngIf="emailNotifications?.length; else emptyTmpl">
+            <ng-container *ngIf="emailNotifications?.length && this.ability.can('read', 'EmailNotification'); else emptyTmpl">
               <div class="overflow-x-auto">
                 <table cdk-table uiTableWrapper [dataSource]="emailNotifications">
                   <ng-container cdkColumnDef="name">
@@ -111,7 +114,7 @@
                       {{element?.createdBy?.name}}
                     </td>
                   </ng-container>
-        
+                  <div *ngIf="this.ability.can('update', 'EmailNotification'); else elseBlock">
                   <ng-container cdkColumnDef="actions" [stickyEnd]="true">
                     <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
                     <td uiCell *cdkCellDef="let element" class="flex items-center">
@@ -123,7 +126,7 @@
                             size="large"
                             (click)="sendEmailList(element)"
                             [icon]="'forward_to_inbox'"
-                            [uiTooltip]="'Send Email'"
+                            [uiTooltip]="'common.sendEmail' | translate"
                           >
                         </ui-button>
         
@@ -162,7 +165,13 @@
                       </ng-container>
                     </td>
                   </ng-container>
-        
+                  </div>
+                  <ng-template #elseBlock>
+                    <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+                      <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+                      <td uiCell *cdkCellDef="let element" class="flex items-center"></td>
+                    </ng-container>
+                  </ng-template>
                   <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
                   <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
                 </table>
@@ -363,21 +372,21 @@
     </button> -->
   </div>
   <ng-container *ngIf="!emailService.isExisting">
-    <div>
+    <div class="relative">
       <ui-button
           [variant]="'danger'"
-          class="hide-icons hover:text-primary-600 btnClose"
+          class="absolute -top-[22px] -right-[14px] btnClose"
           [isIcon]="true"
           size="large"
           (click)="confirmClose()"
           [icon]="'close'"
-          [uiTooltip]="'Back to List'"
+          [uiTooltip]="'components.email.back' | translate"
         >
       </ui-button>
     </div>
     <ems-template (navigateToEms)="toggle();getExistingTemplate();" [currentStep]="emailService.stepperStep" class="stepper-center"></ems-template>
   </ng-container>
-  </div>
+  </ng-container>
   <div *ngIf="showTemplateCreationWizard">
   <ng-container>
     <div>
@@ -388,7 +397,7 @@
           size="large"
           (click)="showTemplateCreationWizard = false"
           [icon]="'close'"
-          [uiTooltip]="'Back to List'"
+          [uiTooltip]="'components.email.back' | translate"
           (click)="customTemplateClose()"
         >
       </ui-button>

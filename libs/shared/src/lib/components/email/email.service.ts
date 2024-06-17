@@ -92,6 +92,18 @@ export class EmailService {
   public enableAllSteps = new BehaviorSubject<boolean>(false);
   /** Email layout data */
   public allLayoutdata!: any;
+  /**
+   *
+   */
+  public customLayoutDL: {
+    To: string[];
+    Cc: string[];
+    Bcc: string[];
+  } = {
+    To: [],
+    Cc: [],
+    Bcc: [],
+  };
   /** Default block dataset table style*/
   public defaultTableStyle!: any;
   /** Is distribution list existing */
@@ -134,6 +146,8 @@ export class EmailService {
   public isCustomTemplateEdit = false;
   /** custom template ID */
   public customTemplateId = '';
+  /** Quick action flag */
+  public isQuickAction = false;
 
   /**
    * Generates new dataset group.
@@ -1199,5 +1213,18 @@ export class EmailService {
       query: GET_DISTRIBUTION_LIST,
       variables: {},
     });
+  }
+
+  /**
+   * sending emails to endpoint
+   *
+   * @param configId id of the config.
+   * @param emailData data to be send.
+   * @param separateEmail trigger for sending individual emails
+   * @returns rest post to end point.
+   */
+  sendQuickEmail(emailData: any): Observable<any> {
+    const urlWithConfigId = `${this.restService.apiUrl}/notification/send-quick-email`;
+    return this.http.post<any>(urlWithConfigId, emailData);
   }
 }

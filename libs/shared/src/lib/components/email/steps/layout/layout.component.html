@@ -3,6 +3,87 @@
 <form [formGroup]="layoutForm">
   <!-- 5th step Layout -->
   <div>
+    <div *ngIf="isPreviewTemplate"
+      [uiErrorMessage]="emailsError | translate"
+      [uiErrorMessageIf]="
+      layoutForm.get('to')?.errors && layoutForm.get('to')?.touched
+      "
+      uiFormFieldDirective
+    >
+      <label class="block text-sm font-medium leading-6 text-gray-900">To</label>
+      <div uiChipList #chipList formControlName="to">
+        <ui-chip
+          *ngFor="let to of layoutForm.get('to')?.value"
+          [removable]="true"
+          [value]="to"
+          (removed)="removeEmail(to,'to')"
+        >
+          {{ to }}
+        </ui-chip>
+      </div>
+      <input
+        #toInput
+        [uiChipListFor]="chipList"
+        [chipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (focusout)="addEmail('to', $event)"
+        (chipTokenEnd)="addEmail('to', $event)"
+      />
+    </div>
+
+    <div *ngIf="isPreviewTemplate"
+      [uiErrorMessage]="emailsError | translate"
+      [uiErrorMessageIf]="
+      layoutForm.get('cc')?.errors && layoutForm.get('cc')?.touched
+      "
+      uiFormFieldDirective
+    >
+      <label class="block text-sm font-medium leading-6 text-gray-900">CC</label>
+      <div uiChipList #chipList formControlName="cc">
+        <ui-chip
+          *ngFor="let cc of layoutForm.get('cc')?.value"
+          [removable]="true"
+          [value]="cc"
+          (removed)="removeEmail(cc,'cc')"
+        >
+          {{ cc }}
+        </ui-chip>
+      </div>
+      <input
+        #ccInput
+        [uiChipListFor]="chipList"
+        [chipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (focusout)="addEmail('cc', $event)"
+        (chipTokenEnd)="addEmail('cc', $event)"
+      />
+    </div>
+
+    <div *ngIf="isPreviewTemplate"
+      [uiErrorMessage]="emailsError | translate"
+      [uiErrorMessageIf]="
+      layoutForm.get('bcc')?.errors && layoutForm.get('bcc')?.touched
+      "
+      uiFormFieldDirective
+    >
+      <label class="block text-sm font-medium leading-6 text-gray-900">BCC</label>
+      <div uiChipList #chipList formControlName="bcc">
+        <ui-chip
+          *ngFor="let bcc of layoutForm.get('bcc')?.value"
+          [removable]="true"
+          [value]="bcc"
+          (removed)="removeEmail(bcc,'bcc')"
+        >
+          {{ bcc }}
+        </ui-chip>
+      </div>
+      <input
+        #bccInput
+        [uiChipListFor]="chipList"
+        [chipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (focusout)="addEmail('bcc', $event)"
+        (chipTokenEnd)="addEmail('bcc', $event)"
+      />
+    </div>
+
     <!-- Dropdowns and Subject Input -->
     <div class="flex flex-col mb-4 py-5">
       <!-- Subject Input Label -->

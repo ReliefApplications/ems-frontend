@@ -19,7 +19,7 @@
         *ngIf="currentStep !== 0"
         (click)="currentStep = 0"
       >
-        Back
+      {{ 'common.back' | translate }}
       </button>
       <button
         type="submit"
@@ -29,7 +29,7 @@
         (click)="currentStep = 1"
         *ngIf="currentStep !== 1"
       >
-        Next
+      {{ 'common.next' | translate }}
       </button>
 
       <!-- <button
@@ -48,7 +48,7 @@
       (click)="submit()"
       *ngIf="currentStep === 1"
     >
-      Save
+    {{ 'common.save' | translate }}
     </button>
     </div>
   </div>

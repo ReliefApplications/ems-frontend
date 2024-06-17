@@ -48,7 +48,7 @@ export class PreviewComponent
   public bodyString: string | any = this.emailService.allLayoutdata.bodyHtml;
   /** HEADER HTML STRING */
   public headerString: string | any =
-    this.emailService.allLayoutdata.headerhtml;
+    this.emailService.allLayoutdata.headerHtml;
   /** FOOTER HTML STRING */
   public footerString: string | any =
     this.emailService.allLayoutdata.footerHtml;
@@ -80,6 +80,8 @@ export class PreviewComponent
   @ViewChild('emailHTMLRef') emailHTMLRef: any;
   /** data set*/
   @Input() dataset!: any[];
+  /** previewUrl for cehcking the preview Type */
+  previewUrl = 'email';
 
   /**
    * Expand see more email list dropdown for "To".
@@ -161,43 +163,98 @@ export class PreviewComponent
    *
    */
   loadFinalEmailPreview(): void {
-    this.emailService.loading = true; // Show spinner
-    this.http
-      .post(
-        `${this.restService.apiUrl}/notification/preview-email/`,
-        this.query
-      )
-      .subscribe(
-        (response: any) => {
-          this.emailService.finalEmailPreview = response;
-          this.updateEmailContainer(); // Update the email container with the new preview
-          this.subjectString =
-            this.emailService.finalEmailPreview.subject ?? this.subjectString; // Update/Replace the subject string from the response
+    const previewData: any = this.emailService.allPreviewData?.[0];
+    if (!this.emailService.datasetsForm.value.emailLayout) {
+      this.emailService.isQuickAction = true;
+    }
+    this.previewUrl = this.emailService.isQuickAction
+      ? `${this.restService.apiUrl}/notification/preview-quick-email`
+      : this.query
+      ? `${this.restService.apiUrl}/notification/preview-email/`
+      : '';
 
-          if (this.subjectHtmlRef?.nativeElement) {
-            this.subjectHtmlRef.nativeElement.innerHTML = this.subjectString;
+    // Checks if url exists
+    if (this.previewUrl) {
+      this.emailService.loading = true; // Show spinner
+      let emailLayout: any = {};
+      if (!this.emailService.datasetsForm.value.emailLayout) {
+        emailLayout = {
+          header: {
+            headerHtml: this.emailService.allLayoutdata?.headerHtml,
+            headerLogo: this.emailService.allLayoutdata.headerLogo,
+            headerLogoStyle: this.emailService.allLayoutdata.headerLogoStyle,
+            headerBackgroundColor:
+              this.emailService.allLayoutdata.headerBackgroundColor,
+            headerTextColor: this.emailService.allLayoutdata.headerTextColor,
+            headerHtmlStyle: this.emailService.allLayoutdata?.headerHtmlStyle,
+            headerStyle: this.emailService.allLayoutdata?.headerStyle,
+          },
+          body: {
+            bodyHtml: this.emailService.allLayoutdata?.bodyHtml,
+            bodyBackgroundColor:
+              this.emailService.allLayoutdata.bodyBackgroundColor,
+            bodyTextColor: this.emailService.allLayoutdata.bodyTextColor,
+            bodyStyle: this.emailService.allLayoutdata?.bodyStyle,
+          },
+          banner: {
+            bannerImage: this.emailService.allLayoutdata.bannerImage,
+            bannerImageStyle: this.emailService.allLayoutdata?.bannerImageStyle,
+            containerStyle: this.emailService.allLayoutdata?.containerStyle,
+            copyrightStyle: this.emailService.allLayoutdata?.copyrightStyle,
+          },
+          footer: {
+            footerHtml: this.emailService.allLayoutdata?.footerHtml,
+            footerLogo: this.emailService.allLayoutdata.footerLogo,
+            footerBackgroundColor:
+              this.emailService.allLayoutdata.footerBackgroundColor,
+            footerTextColor: this.emailService.allLayoutdata.footerTextColor,
+            footerStyle: this.emailService.allLayoutdata?.footerStyle,
+            footerImgStyle: this.emailService.allLayoutdata?.footerImgStyle,
+            footerHtmlStyle: this.emailService.allLayoutdata?.footerHtmlStyle,
+          },
+        };
+      }
+      const emailData: any = {
+        emailLayout: this.emailService.datasetsForm.value.emailLayout
+          ? this.emailService.datasetsForm.value.emailLayout
+          : emailLayout,
+        tableInfo: previewData?.datasetFieldsObj
+          ? [
+              {
+                columns: previewData?.datasetFieldsObj
+                  ? previewData?.datasetFieldsObj
+                  : [],
+                records: previewData?.dataList,
+                index: previewData?.tabIndex,
+                name: previewData?.tabName ? previewData?.tabName : [],
+              },
+            ]
+          : [],
+      };
+
+      this.http
+        .post(
+          this.previewUrl,
+          this.emailService.isQuickAction ? emailData : this.query
+        )
+        .subscribe(
+          (response: any) => {
+            this.emailService.finalEmailPreview = response;
+            this.updateEmailContainer(); // Update the email container with the new preview
+            this.subjectString =
+              this.emailService.finalEmailPreview.subject ?? this.subjectString; // Updae/Replace the subject string from the response
+            console.log(this.subjectHtmlRef);
+            if (this.subjectHtmlRef?.nativeElement) {
+              this.subjectHtmlRef.nativeElement.innerHTML = this.subjectString;
+            }
+            this.emailService.loading = false; // Hide spinner
+          },
+          (error: string) => {
+            console.error('Failed to load final email preview:', error);
+            this.emailService.loading = false; // Hide spinner in case of error
           }
-          this.emailService.loading = false; // Hide spinner
-        },
-        (error: string) => {
-          console.error('Failed to load final email preview:', error);
-          this.emailService.loading = false;
-        }
-      );
-
-    // this.emailService
-    //   .getFinalEmail(this.emailService.configId)
-    //   .then(() => {
-    //     // Update the finalEmailPreview in emailService
-    //     this.updateEmailContainer(); // Update the email container with the new preview
-    //     this.subjectString =
-    //       this.emailPreviewHtml?.['subject'] ?? this.subjectString; // Updae/Replace the subject string from the response
-    //     this.emailService.loading = false; // Hide spinner
-    //   })
-    //   .catch((error) => {
-    //     console.error('Failed to load final email preview:', error);
-    //     this.emailService.loading = false; // Hide spinner in case of error
-    //   });
+        );
+    }
   }
 
   /**
@@ -231,6 +288,52 @@ export class PreviewComponent
     }
 
     // this.loadFinalEmailPreview();
+    if (this.emailService.allLayoutdata.bannerImage) {
+      this.bannerImage = URL.createObjectURL(
+        this.emailService.convertBase64ToFile(
+          this.emailService.allLayoutdata.bannerImage,
+          'image.png',
+          'image/png'
+        )
+      );
+    }
+
+    if (this.emailService.emailDistributionList?.To) {
+      this.emailService.emailDistributionList.To = [
+        ...new Set(
+          this.emailService.emailDistributionList.To.concat(
+            this.emailService.customLayoutDL.To
+          )
+        ),
+      ];
+    }
+
+    if (this.emailService.emailDistributionList?.Cc) {
+      this.emailService.emailDistributionList.Cc = [
+        ...new Set(
+          this.emailService.emailDistributionList.Cc.concat(
+            this.emailService.customLayoutDL.Cc
+          )
+        ),
+      ];
+    }
+
+    if (this.emailService.emailDistributionList?.Bcc) {
+      this.emailService.emailDistributionList.Bcc = [
+        ...new Set(
+          this.emailService.emailDistributionList.Bcc.concat(
+            this.emailService.customLayoutDL.Bcc
+          )
+        ),
+      ];
+    }
+
+    if (
+      (document.getElementById('footerHtml') as HTMLInputElement)?.innerHTML
+    ) {
+      (document.getElementById('footerHtml') as HTMLInputElement).innerHTML =
+        this.footerString;
+    }
   }
 
   /**
