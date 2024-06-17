@@ -22,7 +22,7 @@
   @apply relative;
 }
 
-// Horizontal divider: position change texts positions
+/* Horizontal divider: position change texts positions */
 .position-center {
   @apply justify-center relative;
 }
@@ -35,7 +35,7 @@
   @apply justify-end relative;
 }
 
-// Vertical divider: position change divider locations, text always in the center
+/* Vertical divider: position change divider locations, text always in the center */
 .vertical-center {
   @apply left-1/2 -translate-x-1/2 top-1/2 absolute;
 }

@@ -9,12 +9,12 @@ body {
   margin: 0;
   overflow: hidden;
 
-  // Firefox scrollbars
+  /* Firefox scrollbars */
   scrollbar-width: thin;
   scrollbar-gutter: stable;
   scrollbar-color: #d4d4d9 white;
 }
-// === SCROLL BARS ===
+/* === SCROLL BARS === */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

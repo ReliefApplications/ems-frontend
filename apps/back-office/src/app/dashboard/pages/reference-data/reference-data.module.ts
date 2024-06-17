@@ -27,6 +27,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { ResizableModule } from 'angular-resizable-element';
+import { IconsModule } from '@progress/kendo-angular-icons';
 
 /**
  * Reference Data page module.
@@ -58,6 +59,7 @@ import { ResizableModule } from 'angular-resizable-element';
     DropDownsModule,
     ToggleModule,
     ResizableModule,
+    IconsModule,
     AsyncMonacoEditorDirective,
   ],
 })

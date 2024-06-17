@@ -141,7 +141,7 @@ export function formatGridRowData(
                     [file.name]: text,
                   },
                 });
-                const icon = 'k-icon ' + getFileIcon(file.name);
+                const icon = 'k-icon k-font-icon ' + getFileIcon(file.name);
                 Object.assign(iconObj.icon, {
                   [file.name]: icon,
                 });
