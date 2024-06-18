@@ -30,11 +30,10 @@
             id="fieldSelect"
             formControlName="subjectField"
             (ngModelChange)="insertSubjectFieldToken('field', subjectInputRef)"
-            placeholder="Field Select"
-            uiTooltip="First row of first created block"
+            [placeholder]="'common.notifications.email.fieldselect.placeholder' | translate"
             [filterable]="true"
             class="w-full"
-            *ngIf="firstBlockFields.length > 0"
+            *ngIf="firstBlockFields.length > 0 && this.emailService.getAllPreviewData().length === 1"
           >
             <ui-select-option
               *ngFor="let field of firstBlockFields"
@@ -44,6 +43,16 @@
               }}</ui-select-option
             >
           </ui-select-menu>
+          <ui-icon
+                  class="cursor-help"
+                  icon="info_outline"
+                  variant="grey"
+                  uiSuffix
+                  [uiTooltip]="
+                    'common.notifications.email.fieldselect.tooltip' | translate
+                  "
+                >
+        </ui-icon>
         </div>
         <div uiFormFieldDirective [defaultMargin]="false" class="w-1/3 px-2">
           <label

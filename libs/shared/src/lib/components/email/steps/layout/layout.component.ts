@@ -341,10 +341,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
    */
   initialiseFieldSelectDropdown(): void {
     const firstBlock = this.emailService.getAllPreviewData()[0];
-    if (
-      firstBlock?.datasetFields?.length > 0 &&
-      firstBlock?.dataList.length === 1
-    ) {
+    if (firstBlock?.datasetFields?.length > 0) {
       // get the values of the first block
       this.firstBlockFields = Object.values(firstBlock.datasetFields);
     }
