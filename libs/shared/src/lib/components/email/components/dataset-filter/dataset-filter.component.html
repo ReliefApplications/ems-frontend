@@ -87,7 +87,7 @@
   <kendo-tabstrip
     (tabSelect)="onTabSelect($event)"
     #datasetPreview
-    *ngIf="resource?.fields?.length"
+    *ngIf="resource?.fields?.length && !loading"
   >
     <!-- Filter Tab -->
     <kendo-tabstrip-tab
