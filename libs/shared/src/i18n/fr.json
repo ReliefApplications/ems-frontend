@@ -1393,12 +1393,14 @@
 			"distribution": {
 				"SelectFromList": "Selecteer uit Lijst",
 				"alertMe": "Alerte moi",
+				"apply": "Appliquer",
 				"bcc": "Cci",
 				"cc": "Cc",
 				"createFilterLogic": "Créer une logique de filtre",
 				"email": "Email",
 				"emailError": "Tapez les e-mails ici et appuyez sur ENTRÉE pour les ajouter à la liste de distribution",
 				"label": "Nom de la liste de distribution*",
+				"noPreviewData": "L'ensemble de données sélectionné ne contient aucune donnée d'aperçu",
 				"separateEmail": "Envoyer un e-mail séparé",
 				"to": "À"
 			}

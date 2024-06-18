@@ -1393,12 +1393,14 @@
 			"distribution": {
 				"SelectFromList": "******",
 				"alertMe": "******",
+				"apply": "******",
 				"bcc": "******",
 				"cc": "******",
 				"createFilterLogic": "******",
 				"email": "******",
 				"emailError": "******",
 				"label": "******",
+				"noPreviewData": "******",
 				"separateEmail": "******",
 				"to": "******"
 			}

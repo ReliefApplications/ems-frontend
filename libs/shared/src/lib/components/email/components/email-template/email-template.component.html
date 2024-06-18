@@ -503,7 +503,7 @@
           class="block text-gray-700 text-sm"
           *ngIf="dataList?.length === 0"
         >
-          Selected Dataset does not contain preview data
+          {{'components.select.distribution.noPreviewData' | translate}}
         </label>
       </div>
     </div>
@@ -516,7 +516,7 @@
         variant="primary"
         (click)="addSelectedEmails()"
       >
-        Apply
+      {{'components.select.distribution.apply' | translate}}
       </ui-button>
     </div>
   </div>

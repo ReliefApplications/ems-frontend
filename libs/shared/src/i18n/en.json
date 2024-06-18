@@ -1393,12 +1393,14 @@
 			"distribution": {
 				"SelectFromList": "Select from list",
 				"alertMe": "Alert me",
+				"apply": "Apply",
 				"bcc": "BCC",
 				"cc": "CC",
 				"createFilterLogic": "Create filter logic",
 				"email": "Email",
 				"emailError": "Type emails here and hit ENTER to add them to the distribution list",
 				"label": "Distribution List Name*",
+				"noPreviewData": "Selected dataset does not contain any preview data",
 				"separateEmail": "Send separate email",
 				"to": "To"
 			}
