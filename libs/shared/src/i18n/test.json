@@ -278,6 +278,10 @@
 					"selectPlaceholder": "******",
 					"selectTitle": "******"
 				},
+				"fieldselect": {
+					"placeholder": "******",
+					"tooltip": "******"
+				},
 				"footer": {
 					"logo": "******",
 					"removeTooltip": "******",

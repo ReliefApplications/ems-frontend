@@ -278,6 +278,10 @@
 					"selectPlaceholder": "Select Block Field",
 					"selectTitle": "Champ Select"
 				},
+				"fieldselect": {
+					"placeholder": "Sélection de champ",
+					"tooltip": "Sélectionnez l'option de champ uniquement si le champ contient une valeur unique ; \nsinon, le système utilisera par défaut le premier enregistrement dans les résultats"
+				},
 				"footer": {
 					"logo": "Pied-de-page Logo",
 					"removeTooltip": "Supprimer Pied-de-page Logo",

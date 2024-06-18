@@ -278,6 +278,10 @@
 					"selectPlaceholder": "Select block field",
 					"selectTitle": "Field select"
 				},
+				"fieldselect": {
+					"placeholder": "Field Select",
+					"tooltip": "Select the field option only if the field contains a unique value; otherwise, the system will default to the first record in the results"
+				},
 				"footer": {
 					"logo": "Footer logo",
 					"removeTooltip": "Remove footer logo",

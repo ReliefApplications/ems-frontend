@@ -142,6 +142,8 @@ export class DatasetFilterComponent
   availableFieldIndex: number | null = null;
   /** Resource Populated Check */
   resourcePopulated = false;
+  /** Checks if data is fully loaded */
+  loadingCheck = true;
   /** Meta query reference for fetching metadata. */
   private metaFieldList!: any;
   /** Metadata fields for the grid. */
@@ -301,10 +303,12 @@ export class DatasetFilterComponent
       });
       if (this.resourcesQuery && ITEMS_PER_PAGE > -1) {
         this.loading = true;
+        this.loadingCheck = true;
         this.resourcesQuery.valueChanges
           .pipe(takeUntil(this.destroy$))
           .subscribe(({ data }) => {
             this.loading = false;
+            this.loadingCheck = false;
             ITEMS_PER_PAGE =
               ITEMS_PER_PAGE > data?.resources?.totalCount
                 ? -1
@@ -346,6 +350,7 @@ export class DatasetFilterComponent
   getResourceData(fromHtml: boolean) {
     this.resourcePopulated = false;
     this.loading = true;
+    this.loadingCheck = true;
     this.availableFields = [];
     this.selectedFields = [];
     this.filterFields = [];
@@ -428,6 +433,7 @@ export class DatasetFilterComponent
           fields = data?.resource?.metadata;
           this.resource = {};
           this.loading = true;
+          this.loadingCheck = true;
           this.showErrorMessage = '';
           this.apollo
             .query<ResourceQueryResponse>({
@@ -439,6 +445,7 @@ export class DatasetFilterComponent
             .pipe(takeUntil(this.destroy$))
             .subscribe(({ data }) => {
               this.loading = false;
+              this.loadingCheck = false;
               this.resource = data.resource;
               this.metaData = data?.resource?.metadata;
               if (this.metaData?.length) {
@@ -1215,6 +1222,7 @@ export class DatasetFilterComponent
         query.pageSize = 1;
         query.tabIndex = this.activeTab.index;
         this.loading = true;
+        this.loadingCheck = false;
         /**
          Fetches the data records for selected fields
         (by default its all records in the resource).
@@ -1224,6 +1232,7 @@ export class DatasetFilterComponent
           .subscribe(
             (res: any) => {
               this.loading = false;
+              this.loadingCheck = false;
               this.totalMatchingRecords = res?.data?.dataset?.totalCount;
               if (this.totalMatchingRecords <= 50) {
                 this.datasetPreview.selectTab(1);
@@ -1243,6 +1252,7 @@ export class DatasetFilterComponent
             },
             (error: any) => {
               this.loading = false;
+              this.loadingCheck = false;
               this.showDatasetLimitWarning = false;
               this.emailService.disableSaveAndProceed.next(true);
               this.emailService.disableSaveAsDraft.next(true);
@@ -1284,6 +1294,7 @@ export class DatasetFilterComponent
 
           if (count == 0) {
             this.loading = true;
+            this.loadingCheck = false;
           }
           const resourceInfo = {
             id: query.resource.id,
