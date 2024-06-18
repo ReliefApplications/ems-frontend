@@ -26,6 +26,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { emailRegex, selectFieldTypes } from '../../constant';
 import { FieldStore } from '../../models/email.const';
+import { Subject, takeUntil } from 'rxjs';
 
 /**
  * Email template to create distribution list
@@ -173,6 +174,10 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
 
   /** Show preview button for select with fiter option  */
   public showBtnPreview = false;
+  /**
+   * Subject to destroy
+   */
+  destroy$: Subject<boolean> = new Subject<boolean>();
 
   /**
    * Composite filter group.
@@ -549,6 +554,13 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     this.activeSegmentIndex = this.segmentList.indexOf(segment);
     this.showPreview = false;
     this.showBtnPreview = false;
+    if (this.selectedDataset !== null && this.activeSegmentIndex === 1) {
+      this.bindDataSetDetails(this.selectedDataset);
+    }
+    if (this.activeSegmentIndex === 2) {
+      this.showBtnPreview =
+        this.datasetFilterInfo?.controls?.length == 0 ? false : true;
+    }
   }
 
   /**
@@ -824,12 +836,24 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
           this.selectedEmails.push(this.emails[itemIndex]);
         }
       }
-      const emailData =
-        indexNum !== undefined
-          ? Object.values(this.data[indexNum]).filter((x: any) =>
-              emailRegex.test(x)
-            )
-          : [];
+      let emailData: any = [];
+      if (indexNum !== undefined) {
+        Object.values(
+          this.selectedDataset?.cacheData?.dataList[indexNum]
+        ).forEach((x: any) => {
+          const emailText = x.split(',');
+          if (
+            emailText.filter((y: any) => emailRegex.test(y?.toString().trim()))
+              .length > 0
+          ) {
+            emailData = emailData.concat(
+              emailText.filter((y: any) =>
+                emailRegex.test(y?.toString().trim())
+              )
+            );
+          }
+        });
+      }
       this.selectedEmails = this.selectedEmails.concat(emailData);
     });
     this.selectedEmails = [...new Set(this.selectedEmails)];
@@ -853,119 +877,9 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
    */
   applyFilter(filterType: string): void {
     // Hide the preview if it is currently shown.
+    this.dataList = [];
     this.showPreview = false;
-
-    const filtersArray = this.filterQuery.get('filters') as FormArray;
-
-    // Iterate over the filters and update the value for 'inthelast' operators
-    filtersArray.controls.forEach((filterControl: AbstractControl) => {
-      const filterFormGroup = filterControl as FormGroup;
-      const operatorControl = filterFormGroup.get('operator');
-
-      if (operatorControl && operatorControl.value === 'inthelast') {
-        const inTheLastGroup = filterFormGroup.get('inTheLast') as FormGroup;
-
-        if (inTheLastGroup) {
-          const inTheLastNumberControl = inTheLastGroup.get('number');
-          const inTheLastUnitControl = inTheLastGroup.get('unit');
-
-          if (inTheLastNumberControl && inTheLastUnitControl) {
-            const days = this.emailService.convertToMinutes(
-              inTheLastNumberControl.value,
-              inTheLastUnitControl.value
-            );
-            // Sets filter value to the in the last filter converted to minutes.
-            filterFormGroup.get('value')?.setValue(days);
-          }
-        }
-      }
-    });
-
-    const filterObject = this.filterQuery.value;
-
-    if (filterObject?.filters?.length && filterObject?.logic) {
-      const { logic } = filterObject;
-      let emailsList: any;
-
-      /**
-       * Filter the dataset based on the 'and' logic.
-       */
-      if (logic === 'and') {
-        emailsList = this.dataset?.records
-          ?.map((data) => {
-            if (
-              filterObject.filters.every((filter: any) =>
-                this.filterData(
-                  filter.operator,
-                  this.fetchValue(data, filter.field.replace(/-/g, '.'))
-                    ?.toString()
-                    .toLowerCase(),
-                  typeof filter.value === 'string'
-                    ? filter?.value?.toLowerCase()
-                    : filter?.value
-                )
-              )
-            ) {
-              return data.email;
-            }
-          })
-          ?.filter(Boolean);
-      } else if (logic === 'or') {
-        /**
-         * Filter the dataset based on the 'or' logic.
-         */
-        emailsList = this.dataset?.records
-          ?.map((data) => {
-            if (
-              filterObject.filters.some(
-                (filter: any) =>
-                  data?.filter?.field &&
-                  this.filterData(
-                    filter.operator,
-                    this.fetchValue(data, filter.field.replace(/-/g, '.'))
-                      ?.toString()
-                      .toLowerCase(),
-                    filter?.value?.toLowerCase()
-                  )
-              )
-            ) {
-              return data.email;
-            }
-          })
-          ?.filter(Boolean);
-      }
-
-      if (filterType === 'preview') {
-        // Show the preview and update the dataList.
-        this.showPreview = true;
-        // this.dataList = this.dataset?.records || [];
-      } else {
-        //Checking email in all Data
-        this.dataset?.records?.forEach((dataVal: any) => {
-          const emailData = Object.values(dataVal).filter((x: any) =>
-            emailRegex.test(x)
-          );
-          emailsList = emailsList.concat(emailData);
-        });
-        if (emailsList?.length) {
-          // Add the new emails to the selectedEmails list.
-          this.selectedEmails = [
-            ...new Set([...this.selectedEmails, ...emailsList]),
-          ];
-        }
-        if (this.selectedEmails.length > 0) {
-          // Emit the selected emails and the email filter query.
-          this.emailLoad.emit({
-            emails: this.selectedEmails,
-            emailFilter: this.filterQuery,
-          });
-          this.noEmail.emit(false);
-        } else {
-          // Emit the fact that no email is available.
-          this.noEmail.emit(true);
-        }
-      }
-    }
+    this.getDataSetPreview(filterType);
   }
 
   /**
@@ -989,6 +903,105 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
         if we remove element from form array element indexes will be automatically rearranging */
         this.datasetFilterInfo.removeAt(0);
       }
+    }
+  }
+
+  /**
+   * get preview data
+   *
+   * @param filterType
+   */
+  getDataSetPreview(filterType: string) {
+    this.loading = true;
+    const currentDataset = clone(this.selectedDataset);
+    currentDataset.filter = this.filterQuery.value;
+    currentDataset.cacheData = {};
+    this.emailService
+      .fetchDataSet(currentDataset)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        (res: { data: { dataset: any } }) => {
+          if (res?.data?.dataset) {
+            const query = { fields: this.selectedDataset?.fields };
+            this.dataList = res?.data?.dataset.records?.map((record: any) => {
+              const flattenedObject = this.emailService.flattenRecord(
+                record,
+                {},
+                query
+              );
+              query.fields.forEach((x: any) => {
+                /**
+                 * Converts the resource field name back to {resourceName} - {resourceField}
+                 * so the field can be mapped to the correct data.
+                 */
+                if (x.parentName) {
+                  x.name = `${x.parentName} - ${x.childName}`;
+                  x.type = x.childType;
+                }
+              });
+
+              delete flattenedObject.data;
+
+              const flatData = Object.fromEntries(
+                Object.entries(flattenedObject).filter(
+                  ([, value]) => value !== null && value !== undefined
+                )
+              );
+
+              return flatData;
+            });
+          }
+          this.getFilteredEmailList(this.dataList, filterType);
+          this.loading = false;
+          if (filterType === 'preview') {
+            this.showPreview = true;
+          }
+        },
+        (error: any) => {
+          console.log(error);
+          this.loading = false;
+          if (filterType === 'preview') {
+            this.showPreview = true;
+          }
+        }
+      );
+  }
+
+  /**
+   *
+   * @param filterData
+   * @param filterType
+   */
+  getFilteredEmailList(filterData: any, filterType: string) {
+    let emailsList: any = [];
+    if (filterType === '' && filterData?.length > 0) {
+      /**
+       * Filter the dataset based on the 'and' logic.
+       */
+      filterData.forEach((ele: any) => {
+        const currnetEmailList = Object.values(ele).filter((x: any) =>
+          emailRegex.test(x)
+        );
+        emailsList = emailsList.concat(currnetEmailList);
+      });
+    }
+
+    if (emailsList?.length) {
+      // Add the new emails to the selectedEmails list.
+      this.selectedEmails = [
+        ...new Set([...this.selectedEmails, ...emailsList]),
+      ];
+    }
+    if (this.selectedEmails.length > 0) {
+      // Emit the selected emails and the email filter query.
+      this.emailLoad.emit({
+        emails: this.selectedEmails,
+        emailFilter: this.filterQuery,
+      });
+      this.noEmail.emit(false);
+    } else {
+      // Emit the fact that no email is available.
+      this.noEmail.emit(true);
     }
   }
 }

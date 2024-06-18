@@ -85,7 +85,7 @@
     <div>
       <div
         [formGroup]="filterQuery"
-        *ngIf="selectedDataset?.fields?.length && !this.loading"
+        *ngIf="selectedDataset?.fields?.length"
       >
         <div class="flex-row gap-4 mt-6">
           <div class="flex gap-4">
@@ -498,11 +498,19 @@
           </tr>
         </tbody>
       </table>
+      <div *ngIf="activeSegmentIndex === 2">
+        <label
+          class="block text-gray-700 text-sm"
+          *ngIf="dataList?.length === 0"
+        >
+          Selected Dataset does not contain preview data
+        </label>
+      </div>
     </div>
     <!-- todo: translate -->
     <div>
       <ui-button
-        *ngIf="selectedItemIndexes.length"
+        *ngIf="activeSegmentIndex === 1 && selectedItemIndexes.length"
         class="float-right mt-8"
         category="secondary"
         variant="primary"
@@ -516,7 +524,7 @@
   <div *ngIf="activeSegmentIndex === 2">
     <!-- Apply filter -->
     <ui-button
-      *ngIf="datasetFilterInfo.controls"
+      *ngIf="datasetFilterInfo.controls && showBtnPreview"
       class="float-right mt-8"
       category="secondary"
       variant="primary"
