@@ -140,6 +140,8 @@ export class DatasetFilterComponent
   selectedFieldIndex: number | null = null;
   /** Index of current highlighted field from available field list */
   availableFieldIndex: number | null = null;
+  /** Resource Populated Check */
+  resourcePopulated = false;
   /** Meta query reference for fetching metadata. */
   private metaFieldList!: any;
   /** Metadata fields for the grid. */
@@ -342,6 +344,8 @@ export class DatasetFilterComponent
    * @param fromHtml - If state is in edit mode then false else true if new notification (means Event from UI)
    */
   getResourceData(fromHtml: boolean) {
+    this.resourcePopulated = false;
+    this.loading = true;
     this.availableFields = [];
     this.selectedFields = [];
     this.filterFields = [];
@@ -644,17 +648,9 @@ export class DatasetFilterComponent
                   );
                 }
               }
-              if (
-                this.query?.value?.resource !== null &&
-                !this.resource?.fields?.length
-              ) {
-                this.showErrorMessage =
-                  "Selected form doesn't contain any fields";
-              }
+              this.resourcePopulated = true;
             });
         });
-    } else {
-      this.showErrorMessage = "Selected form doesn't contain any fields";
     }
   }
 

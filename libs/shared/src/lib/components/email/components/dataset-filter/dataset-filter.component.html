@@ -784,13 +784,10 @@
       </ng-template>
     </kendo-tabstrip-tab> -->
   </kendo-tabstrip>
-
-  <div
-    *ngIf="query?.value?.resource !== null && !resource?.fields?.length"
+  <ng-container
     class="mt-5"
-  >
-    {{ showErrorMessage }}
-  </div>
+    *ngTemplateOutlet="noFieldsInResourceAlertTmpl"
+  ></ng-container>
 </form>
 
 <!-- Too many records in dataset -->
@@ -804,6 +801,17 @@
     ></div>
   </ui-alert>
 </ng-template>
+<!-- No Fields in Resource Message -->
+<ng-template #noFieldsInResourceAlertTmpl>
+  <ui-alert variant="warning" [closable]="true" *ngIf="this.resourcePopulated && this.query?.value?.resource !== null && !this.resource?.fields?.length">
+    <div
+      [innerHTML]="
+        'components.email.alert.noResourceFields'
+          | translate
+      "
+    ></div>
+  </ui-alert>
+</ng-template>
 <!-- No selected fields in dataset -->
 <ng-template #noSelectedFieldsAlertTmpl>
   <ui-alert
@@ -811,7 +819,9 @@
     *ngIf="!selectedFields.length && !showDatasetLimitWarning"
     [closable]="true"
   >
-    {{ 'components.email.alert.noSelectedFields' | translate }}
+    <div>
+      {{ 'components.email.alert.noSelectedFields' | translate }}
+    </div>
   </ui-alert>
 </ng-template>
 <!-- Invalid fields in dataset -->

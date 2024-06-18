@@ -808,6 +808,7 @@
 		"email": {
 			"alert": {
 				"invalidFields": "****** {{fields}} ****** {{types}} ******",
+				"noResourceFields": "******",
 				"noSelectedFields": "******",
 				"tooManyRecords": "****** {{totalRecords}} ******"
 			},
