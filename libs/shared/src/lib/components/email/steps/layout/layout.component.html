@@ -23,7 +23,8 @@
           uiFormFieldDirective
           [defaultMargin]="false"
           class="w-1/3 px-2"
-          *ngIf="!datasetOverflow"
+          *ngIf="!emailService.metaDataQueryLoading && !(this.emailService.allPreviewData.length > 1 ||
+          this.emailService.allPreviewData.length === 0)"
         >
           <label
             for="fieldSelect"

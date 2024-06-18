@@ -524,6 +524,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     // this.emailService.datasetSave.emit(true);
     let datasetCount = 0;
     this.emailService.metaDataQueryLoading = true;
+    this.emailService.updateMetaDataTypeLoading(true);
 
     for (const query of emailData.datasets) {
       this.emailService
@@ -556,6 +557,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
                 this.emailService.stepperStep = 0;
               }
               this.emailService.metaDataQueryLoading = false;
+              this.emailService.updateMetaDataTypeLoading(false);
             }
           },
         });

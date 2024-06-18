@@ -8,6 +8,8 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { NgSelectComponent } from '@ng-select/ng-select';
+import { Subscription, takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Email layout page component.
@@ -17,7 +19,10 @@ import { NgSelectComponent } from '@ng-select/ng-select';
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss'],
 })
-export class LayoutComponent implements OnInit, OnDestroy {
+export class LayoutComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   /** Reference to the body editor component. */
   @ViewChild('bodyEditor', { static: false })
   bodyEditor: EditorComponent | null = null;
@@ -91,6 +96,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
   ngFieldComponent!: NgSelectComponent;
   /** DATASETS LIST GREATER THAN 1 CHECK */
   public datasetOverflow = false;
+  /** Subscription for the graphql load change event. */
+  private loadChangeSubscription: Subscription = new Subscription();
 
   /**
    * Email layout page component.
@@ -108,6 +115,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     public snackbar: SnackbarService,
     public translate: TranslateService
   ) {
+    super();
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
     // Set the editor language
@@ -125,10 +133,18 @@ export class LayoutComponent implements OnInit, OnDestroy {
       block: [''],
       body: [this.emailService.allLayoutdata.bodyHtml],
     });
+    this.loadChangeSubscription.add(
+      this.emailService.metaDataQueryLoading$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((isLoading) => {
+          if (!isLoading) {
+            this.datasetOverflow =
+              this.emailService.allPreviewData.length > 1 ||
+              this.emailService.allPreviewData.length === 0;
+          }
+        })
+    );
 
-    this.datasetOverflow =
-      this.emailService.allPreviewData.length > 1 ||
-      this.emailService.allPreviewData.length === 0;
     this.onTxtSubjectChange();
     this.initInTheLastDropdown();
     if (this.emailService.allLayoutdata.headerLogo) {
@@ -711,7 +727,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   /**
    * patch the data in service file.
    */
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
     this.getColors();
     this.emailService.allLayoutdata.txtSubject =
       this.layoutForm.get('subjectInput')?.value;

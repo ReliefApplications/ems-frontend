@@ -183,6 +183,10 @@ export class EmailService {
   public fields: FieldStore[] = [];
   /** Selected cacheDistributionList */
   public cacheDistributionList: any = [];
+  /** Meta Data Query Loading State Subject  */
+  private metaDataQueryLoadingSource = new BehaviorSubject<boolean>(false);
+  /** Meta Data Query Loading State Observable */
+  metaDataQueryLoading$ = this.metaDataQueryLoadingSource.asObservable();
 
   /**
    * Generates new dataset group.
@@ -287,6 +291,15 @@ export class EmailService {
         this.allLayoutdata[key as keyof typeof defaultStyles] = styles[key];
       }
     });
+  }
+
+  /**
+   * Sets the metadata graphql query loading state.
+   *
+   * @param loadingState The loading state of metadata graphql query
+   */
+  updateMetaDataTypeLoading(loadingState: boolean): void {
+    this.metaDataQueryLoadingSource.next(loadingState);
   }
 
   /**
