@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs';
+import { concatMap, of, takeUntil } from 'rxjs';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { ApiConfiguration } from '../../models/api-configuration.model';
 import { AppAbility, AuthService } from '../../services/auth/auth.service';
@@ -387,6 +387,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     } else {
       this.emailService.isEdit = true;
     }
+    this.emailService.isDirectSend = isSendEmail ?? false;
     this.emailService.draftStepper = emailData.draftStepper;
     this.emailService.isLinear = false;
     const distributionListNames = this.emailService.distributionListNames;
@@ -522,29 +523,41 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
 
     // this.emailService.datasetSave.emit(true);
     let datasetCount = 0;
+    this.emailService.metaDataQueryLoading = true;
+
     for (const query of emailData.datasets) {
       this.emailService
         .fetchResourceMetaData(query.resource.id)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((res: any) => {
-          datasetCount++;
-          query?.fields?.forEach((x: any) => {
-            x.options =
-              res.data.resource.metadata.filter((m: any) => m.name == x.name)
-                .length > 0
-                ? res.data.resource.metadata.filter(
-                    (m: any) => m.name == x.name
-                  )[0].options
-                : query.fields.options;
-          });
-          if (datasetCount === emailData.datasets.length) {
-            if (isSendEmail) {
-              this.emailService.getDataSet(emailData, true);
-            } else {
-              this.emailService.getDataSet(emailData, false);
-              this.emailService.stepperStep = 0;
+        .pipe(
+          takeUntil(this.destroy$),
+          concatMap((res: any) => {
+            datasetCount++;
+            query?.fields?.forEach((x: any) => {
+              x.options =
+                res.data.resource.metadata.filter((m: any) => m.name == x.name)
+                  .length > 0
+                  ? res.data.resource.metadata.filter(
+                      (m: any) => m.name == x.name
+                    )[0].options
+                  : query.fields.options;
+            });
+
+            // Returns an empty observable to keep the stream alive
+            return of({});
+          })
+        )
+        .subscribe({
+          complete: () => {
+            if (datasetCount === emailData.datasets.length) {
+              if (isSendEmail) {
+                this.emailService.getDataSet(emailData, true);
+              } else {
+                this.emailService.getDataSet(emailData, false);
+                this.emailService.stepperStep = 0;
+              }
+              this.emailService.metaDataQueryLoading = false;
             }
-          }
+          },
         });
     }
   }

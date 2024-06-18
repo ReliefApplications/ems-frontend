@@ -75,6 +75,8 @@ export class EmailService {
   public stepperDisable = new BehaviorSubject<any>('');
   /** Should show existing distribution list */
   public showExistingDistributionList = false;
+  /** Flag indicating whether graphql is loading. */
+  public metaDataQueryLoading = false;
   /** Distribution list data */
   public emailDistributionList: {
     name: string;
@@ -169,6 +171,8 @@ export class EmailService {
   public isEdit = false;
   /** Is in preview */
   public isPreview = false;
+  /** Is in direct send mode */
+  public isDirectSend = false;
   /** Is email stepper linear */
   public isLinear = true;
   /** Email loading checker */

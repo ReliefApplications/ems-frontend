@@ -1,4 +1,9 @@
-<form [formGroup]="layoutForm">
+<!-- Loading indicator -->
+<ui-spinner
+  class="flex justify-center items-center h-screen"
+  *ngIf="emailService.metaDataQueryLoading"
+></ui-spinner>
+<form [formGroup]="layoutForm" *ngIf="!emailService.metaDataQueryLoading">
   <!-- 5th step Layout -->
   <div>
     <!-- Dropdowns and Subject Input -->
@@ -33,7 +38,6 @@
             [placeholder]="'common.notifications.email.fieldselect.placeholder' | translate"
             [filterable]="true"
             class="w-full"
-            *ngIf="firstBlockFields.length > 0 && this.emailService.getAllPreviewData().length === 1"
           >
             <ui-select-option
               *ngFor="let field of firstBlockFields"
