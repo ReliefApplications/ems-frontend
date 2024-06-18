@@ -1371,6 +1371,13 @@ export class DatasetFilterComponent
   }
 
   /**
+   * Resets the state `showDatasetLimitWarning` when the close button is clicked.
+   */
+  closeWarningMessage(): void {
+    this.showDatasetLimitWarning = false;
+  }
+
+  /**
    * Update input type of date editor.
    */
   public changeEditor(): void {

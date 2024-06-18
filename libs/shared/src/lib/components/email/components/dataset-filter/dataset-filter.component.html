@@ -795,7 +795,7 @@
 
 <!-- Too many records in dataset -->
 <ng-template #tooManyRecordsAlertTmpl>
-  <ui-alert variant="warning" [closable]="true" *ngIf="showDatasetLimitWarning">
+  <ui-alert variant="warning" [closable]="true" *ngIf="showDatasetLimitWarning" (close)="closeWarningMessage()">
     <div
       [innerHTML]="
         'components.email.alert.tooManyRecords'
