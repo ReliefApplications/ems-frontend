@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   OnDestroy,
   ViewChild,
   ElementRef,
@@ -10,6 +9,7 @@ import { Apollo } from 'apollo-angular';
 import { EmailService } from '../../email.service';
 import { Subscription } from 'rxjs';
 import { TokenRegex } from '../../constant';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * The preview component is used to display the email layout using user input from layout component.
@@ -19,7 +19,10 @@ import { TokenRegex } from '../../constant';
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.scss'],
 })
-export class PreviewComponent implements OnInit, OnDestroy, AfterViewInit {
+export class PreviewComponent
+  extends UnsubscribeComponent
+  implements OnDestroy, AfterViewInit
+{
   /** Selected resource ID. -TO DELETE? */
   public selectedResourceId: string | undefined;
   /** List of data items. -TO DELETE? */
@@ -53,6 +56,8 @@ export class PreviewComponent implements OnInit, OnDestroy, AfterViewInit {
   isExpandedBcc = false;
   /** Reference to the bodyHtml */
   @ViewChild('bodyHtml') bodyHtml!: ElementRef;
+  /** Meta Data Graphql loading state subscription */
+  private metaDataLoadSubscription: Subscription = new Subscription();
 
   /**
    * Expand see more email list dropdown for "To".
@@ -81,32 +86,16 @@ export class PreviewComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param apollo - The Apollo client for making GraphQL queries.
    * @param emailService - The service for email-related operations.
    */
-  constructor(private apollo: Apollo, public emailService: EmailService) {}
+  constructor(private apollo: Apollo, public emailService: EmailService) {
+    super();
+  }
 
   ngAfterViewInit(): void {
-    this.bodyHtml.nativeElement.innerHTML = this.bodyString;
-    this.checkAndApplyBodyStyle();
-  }
-
-  /**
-   * Check if the body has strong or em tags, and add the body-wrap class if it does.
-   */
-  checkAndApplyBodyStyle() {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(this.bodyString, 'text/html');
-
-    const strong = doc.querySelectorAll('strong');
-    const em = doc.querySelectorAll('em');
-    if (strong.length > 0 || em.length > 0) {
-      this.bodyHtml.nativeElement.classList.add('body-wrap');
-    } else {
-      this.bodyHtml.nativeElement.classList.remove('body-wrap');
-    }
-  }
-
-  ngOnInit(): void {
     this.replaceTokensWithTables();
     this.replaceDateTimeTokens();
+
+    this.bodyHtml.nativeElement.innerHTML = this.bodyString;
+    this.checkAndApplyBodyStyle();
 
     (document.getElementById('subjectHtml') as HTMLInputElement).innerHTML =
       this.subjectString;
@@ -145,6 +134,22 @@ export class PreviewComponent implements OnInit, OnDestroy, AfterViewInit {
 
     (document.getElementById('footerHtml') as HTMLInputElement).innerHTML =
       this.footerString;
+  }
+
+  /**
+   * Check if the body has strong or em tags, and add the body-wrap class if it does.
+   */
+  checkAndApplyBodyStyle() {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(this.bodyString, 'text/html');
+
+    const strong = doc.querySelectorAll('strong');
+    const em = doc.querySelectorAll('em');
+    if (strong.length > 0 || em.length > 0) {
+      this.bodyHtml.nativeElement.classList.add('body-wrap');
+    } else {
+      this.bodyHtml.nativeElement.classList.remove('body-wrap');
+    }
   }
 
   /**
@@ -565,7 +570,7 @@ export class PreviewComponent implements OnInit, OnDestroy, AfterViewInit {
     return tableHtml;
   }
 
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
     if (this.querySubscription) {
       this.querySubscription.unsubscribe();
     }
