@@ -113,7 +113,7 @@
                         size="large"
                         (click)="sendEmailList(element)"
                         [icon]="'forward_to_inbox'"
-                        [uiTooltip]="'Send Email'"
+                        [uiTooltip]="'common.sendEmail' | translate"
                         *ngIf="!element.isDraft"
                       >
                       </ui-button>

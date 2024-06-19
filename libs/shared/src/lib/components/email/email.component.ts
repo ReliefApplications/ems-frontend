@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
-import { concatMap, of, takeUntil } from 'rxjs';
+import { firstValueFrom, takeUntil } from 'rxjs';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { ApiConfiguration } from '../../models/api-configuration.model';
 import { AppAbility, AuthService } from '../../services/auth/auth.service';
@@ -379,10 +379,10 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    *
    * @param emailData The data of the email notification to be edited.
    * @param isSendEmail Whether to send the email notification.
-   * @param isclone Identify it is cloned or not
+   * @param isClone Identify it is cloned or not
    */
-  prepareEditData(emailData: any, isSendEmail?: boolean, isclone?: boolean) {
-    if (isclone) {
+  prepareEditData(emailData: any, isSendEmail?: boolean, isClone?: boolean) {
+    if (isClone) {
       this.emailService.isEdit = false;
     } else {
       this.emailService.isEdit = true;
@@ -450,7 +450,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     });
     this.emailService.tabs[this.emailService.tabs.length - 1].active = true;
 
-    //Creating DatasetForm
+    // Creating DatasetForm
     this.emailService.datasetsForm = this.formBuilder.group({
       name: emailData.name,
       notificationType: emailData.notificationType,
@@ -467,14 +467,14 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       schedule: emailData.schedule,
     });
 
-    //Setting up edit screen
+    // Setting up edit screen
     this.emailService.isExisting = !this.emailService.isExisting;
 
-    //Setting up Recipients data
+    // Setting up Recipients data
     this.emailService.emailDistributionList =
       this.emailService.datasetsForm.controls['emailDistributionList'].value;
 
-    //Setting up Layout Data
+    // Setting up Layout Data
     this.emailService.emailLayout = {
       subject: emailData.emailLayout.subject,
       header: emailData.emailLayout.header,
@@ -521,47 +521,37 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       .get('applicationId')
       ?.setValue(this.applicationId);
 
-    // this.emailService.datasetSave.emit(true);
-    let datasetCount = 0;
     this.emailService.metaDataQueryLoading = true;
     this.emailService.updateMetaDataTypeLoading(true);
 
-    for (const query of emailData.datasets) {
-      this.emailService
-        .fetchResourceMetaData(query.resource.id)
-        .pipe(
-          takeUntil(this.destroy$),
-          concatMap((res: any) => {
-            datasetCount++;
-            query?.fields?.forEach((x: any) => {
-              x.options =
-                res.data.resource.metadata.filter((m: any) => m.name == x.name)
-                  .length > 0
-                  ? res.data.resource.metadata.filter(
-                      (m: any) => m.name == x.name
-                    )[0].options
-                  : query.fields.options;
-            });
+    // For each dataset, query its metadata
+    const promises = emailData.datasets.map((dataset: any) => {
+      return firstValueFrom(
+        this.emailService.fetchResourceMetaData(dataset.resource.id)
+      ).then(({ data }) => {
+        if (data.resource.metadata) {
+          const metadata = data.resource.metadata;
+          dataset?.fields?.forEach((x: any) => {
+            x.options =
+              metadata.filter((m: any) => m.name == x.name).length > 0
+                ? metadata.filter((m: any) => m.name == x.name)[0].options
+                : dataset.fields.options;
+          });
+        }
+      });
+    });
 
-            // Returns an empty observable to keep the stream alive
-            return of({});
-          })
-        )
-        .subscribe({
-          complete: () => {
-            if (datasetCount === emailData.datasets.length) {
-              if (isSendEmail) {
-                this.emailService.getDataSet(emailData, true);
-              } else {
-                this.emailService.getDataSet(emailData, false);
-                this.emailService.stepperStep = 0;
-              }
-              this.emailService.metaDataQueryLoading = false;
-              this.emailService.updateMetaDataTypeLoading(false);
-            }
-          },
-        });
-    }
+    // Execute all queries in parallel and update metadata loading status when done
+    Promise.all(promises).finally(() => {
+      if (isSendEmail) {
+        this.emailService.getDataSet(emailData, true);
+      } else {
+        this.emailService.getDataSet(emailData, false);
+        this.emailService.stepperStep = 0;
+      }
+      this.emailService.metaDataQueryLoading = false;
+      this.emailService.updateMetaDataTypeLoading(false);
+    });
   }
 
   /**

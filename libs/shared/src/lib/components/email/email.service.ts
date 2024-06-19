@@ -823,6 +823,11 @@ export class EmailService {
     // eslint-disable-next-line no-async-promise-executor
     await Promise.all(
       emailData.datasets.map(async (query: any, index: number) => {
+        // Dataset is invalid, skip
+        if (!query.resource || !query.fields) {
+          return;
+        }
+
         for (const x of query.fields) {
           if (x.parentName) {
             const child = x.name;

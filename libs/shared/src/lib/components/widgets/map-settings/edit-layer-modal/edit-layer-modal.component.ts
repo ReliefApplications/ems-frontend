@@ -519,7 +519,6 @@ export class EditLayerModalComponent
    * Get resource from graphql
    */
   getResource(): void {
-    console.log('get resource');
     this.loading = true;
     this.fields.next([]);
     const formValue = this.form.getRawValue();
@@ -569,7 +568,6 @@ export class EditLayerModalComponent
    * Get reference data from graphql
    */
   getReferenceData(): void {
-    console.log('get reference data');
     this.loading = true;
     this.fields.next([]);
     const formValue = this.form.getRawValue();
