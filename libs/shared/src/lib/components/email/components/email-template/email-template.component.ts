@@ -444,7 +444,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     }
     if (
       Object.keys(dataset?.cacheData).length &&
-      dataset?.cacheData.datasetResponse
+      dataset?.cacheData?.datasetResponse
     ) {
       this.loading = true;
       // const { dataList, resource, dataSetFields, dataSetResponse } =
@@ -836,9 +836,13 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
         Object.values(
           this.selectedDataset?.cacheData?.dataList[indexNum]
         ).forEach((x: any) => {
-          const emailText = x.split(',');
+          const emailText = typeof x === 'string' ? x?.split(',') : x;
           if (
-            emailText.filter((y: any) => emailRegex.test(y?.toString().trim()))
+            typeof emailText !== 'number' &&
+            typeof emailText === 'object' &&
+            Object.values(emailText).length > 0 &&
+            Array.isArray(emailText) &&
+            emailText?.filter((y: any) => emailRegex.test(y?.toString().trim()))
               .length > 0
           ) {
             emailData = emailData.concat(
@@ -974,10 +978,24 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
        * Filter the dataset based on the 'and' logic.
        */
       filterData.forEach((ele: any) => {
-        const currnetEmailList = Object.values(ele).filter((x: any) =>
-          emailRegex.test(x)
-        );
-        emailsList = emailsList.concat(currnetEmailList);
+        Object.values(ele).forEach((x: any) => {
+          const emailText = typeof x === 'string' ? x?.split(',') : x;
+          if (
+            typeof emailText !== 'number' &&
+            typeof emailText === 'object' &&
+            Array.isArray(emailText) &&
+            Object.values(emailText).length > 0 &&
+            emailText.filter((y: any) =>
+              emailRegex?.test(y?.toString()?.trim())
+            ).length > 0
+          ) {
+            emailsList = emailsList.concat(
+              emailText.filter((y: any) =>
+                emailRegex.test(y?.toString().trim())
+              )
+            );
+          }
+        });
       });
     }
 
