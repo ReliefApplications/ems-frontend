@@ -928,9 +928,9 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * get preview data
+   * Retrieves preview data
    *
-   * @param filterType
+   * @param filterType - The type of filter. Currently supports 'preview' or '' when filtering.
    */
   getDataSetPreview(filterType: string) {
     this.loading = true;
@@ -998,9 +998,10 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Gets List of filter emails
    *
-   * @param filterData
-   * @param filterType
+   * @param filterData - The filter data from filter query
+   * @param filterType - The type of filter. Currently supports 'preview' or '' when filtering.
    */
   getFilteredEmailList(filterData: any, filterType: string) {
     let emailsList: any = [];
