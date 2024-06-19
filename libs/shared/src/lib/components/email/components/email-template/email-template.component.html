@@ -438,7 +438,7 @@
     *ngIf="activeSegmentIndex === 1 || showPreview"
   >
     <!-- Selection of emails -->
-    <div class="select-scroll">
+    <div class="select-scroll" *ngIf="!loading">
       <table
         *ngIf="dataList?.length"
         class="dataset-preview w-full border border-blue-600 shadow-xs m-1"

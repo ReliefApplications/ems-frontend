@@ -440,13 +440,21 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
       this.dataList = [];
       this.resource = [];
       this.datasetFields = [];
+      this.selectedItemIndexes = [];
+      this.isAllSelected = false;
       return;
     }
     if (
       Object.keys(dataset?.cacheData).length &&
       dataset?.cacheData?.datasetResponse
     ) {
+      this.dataList = [];
+      this.resource = [];
+      this.datasetFields = [];
+      this.selectedItemIndexes = [];
+      this.isAllSelected = false;
       this.loading = true;
+      this.noEmail.emit(false);
       // const { dataList, resource, dataSetFields, dataSetResponse } =
       //   dataSet.cacheData;
 
@@ -459,11 +467,6 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
         ?.map((record: { email: string }) => record.email)
         ?.filter(Boolean)
         ?.flat();
-      if (this.emails.length === 0) {
-        this.noEmail.emit(true);
-      } else {
-        this.noEmail.emit(false);
-      }
       this.prevDataset = this.selectedDataset;
       this.emailService.setSelectedDataSet(dataset);
       this.loading = false;
