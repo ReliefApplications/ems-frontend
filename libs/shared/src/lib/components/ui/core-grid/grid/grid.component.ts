@@ -1304,7 +1304,7 @@ export class GridComponent
     if (!this.widget?.settings?.widgetDisplay?.actionsAsIcons) {
       // User checked "Show single action as button" and there is only one action
       if (
-        this.widget.settings.widgetDisplay.showSingleActionAsButton &&
+        this.widget?.settings?.widgetDisplay.showSingleActionAsButton &&
         size === ICON_SIZE
       ) {
         // TODO: Figure out how to get the width of the button

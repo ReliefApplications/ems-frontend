@@ -412,9 +412,6 @@ export class FormHelpersService {
     }
 
     await Promise.all(promises);
-
-    // We need to apply the transformations to the data again
-    survey.parsedData = transformSurveyData(survey);
   }
 
   /**

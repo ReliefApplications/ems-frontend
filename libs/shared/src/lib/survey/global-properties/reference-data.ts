@@ -99,7 +99,7 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       displayName: 'Display field',
       name: 'referenceDataDisplayField',
       category: 'Choices from Reference data',
-      required: true,
+      isRequired: true,
       dependsOn: 'referenceData',
       visibleIf: (obj: null | QuestionSelectBase): boolean =>
         Boolean(obj?.referenceData),
@@ -170,7 +170,7 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       displayName: 'Foreign field',
       name: 'referenceDataFilterForeignField',
       category: 'Choices from Reference data',
-      required: true,
+      isRequired: true,
       dependsOn: 'referenceDataFilterFilterFromQuestion',
       visibleIf: (obj: null | QuestionSelectBase): boolean =>
         Boolean(obj?.referenceDataFilterFilterFromQuestion),
@@ -202,7 +202,7 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       displayName: 'Filter condition',
       name: 'referenceDataFilterFilterCondition',
       category: 'Choices from Reference data',
-      required: true,
+      isRequired: true,
       dependsOn: 'referenceDataFilterFilterFromQuestion',
       visibleIf: (obj: null | QuestionSelectBase): boolean =>
         Boolean(obj?.referenceDataFilterFilterFromQuestion),
@@ -225,7 +225,7 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       displayName: 'Local field',
       name: 'referenceDataFilterLocalField',
       category: 'Choices from Reference data',
-      required: true,
+      isRequired: true,
       dependsOn: 'referenceDataFilterFilterFromQuestion',
       visibleIf: (obj: null | QuestionSelectBase): boolean =>
         Boolean(obj?.referenceDataFilterFilterFromQuestion),

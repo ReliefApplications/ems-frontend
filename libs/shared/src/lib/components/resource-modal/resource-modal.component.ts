@@ -90,12 +90,11 @@ export class ResourceModalComponent extends FormModalComponent {
             template: this.data.template,
             data: {
               id: details.id,
-              data: survey.parsedData ?? survey.data,
+              data: survey.getParsedData?.() ?? survey.data,
             },
           } as any);
         });
       };
-
       this.formHelpersService.saveAsDraft(
         this.survey,
         this.form?.id as string,

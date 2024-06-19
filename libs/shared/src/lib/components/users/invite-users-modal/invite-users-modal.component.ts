@@ -237,7 +237,7 @@ export class InviteUsersModalComponent extends UnsubscribeComponent {
   public createFormGroup(dataItem: any) {
     return this.fb.group({
       email: [dataItem.email, Validators.required],
-      role: [dataItem.role, Validators.required],
+      roles: [dataItem.roles, Validators.required],
       ...(this.data.positionAttributeCategories && {
         positionAttributes: this.fb.array(
           this.data.positionAttributeCategories.map((x, index) =>

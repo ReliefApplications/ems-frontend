@@ -78,7 +78,7 @@ export class DraftRecordModalComponent implements OnInit {
     if (this.survey) {
       setTimeout(() => {
         this.survey.currentPageNo = i;
-      });
+      }, 50);
     }
   }
 }

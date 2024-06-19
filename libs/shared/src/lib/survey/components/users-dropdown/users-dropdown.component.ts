@@ -138,4 +138,10 @@ export class UsersDropdownComponent
       } as CompositeFilterDescriptor,
     });
   }
+
+  /** Reloads selected users */
+  public reloadSelectedUsers() {
+    this.initialSelectionIDs = this.control.value ?? [];
+    this.setupInitialSelection();
+  }
 }

@@ -146,7 +146,7 @@ export const init = (
         category: 'Custom Questions',
         type: CustomPropertyGridComponentTypes.resourcesDropdown,
         visibleIndex: 3,
-        required: true,
+        isRequired: true,
       });
 
       registerCustomPropertyEditor(
@@ -156,7 +156,7 @@ export const init = (
         name: 'displayField',
         category: 'Custom Questions',
         dependsOn: 'resource',
-        required: true,
+        isRequired: true,
         visibleIf: visibleIfResource,
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
@@ -178,8 +178,7 @@ export const init = (
         name: 'relatedName',
         category: 'Custom Questions',
         dependsOn: 'resource',
-        required: true,
-        description: 'unique name for this resource question',
+        isRequired: true,
         visibleIf: visibleIfResource,
         visibleIndex: 4,
       });
@@ -204,7 +203,7 @@ export const init = (
         type: CustomPropertyGridComponentTypes.resourceTestService,
         category: 'Custom Questions',
         dependsOn: ['resource', 'displayField'],
-        required: true,
+        isRequired: true,
         visibleIf: visibleIfResourceAndDisplayField,
         visibleIndex: 3,
       });
@@ -368,7 +367,7 @@ export const init = (
         name: 'selectQuestion:dropdown',
         category: 'Filter by Questions',
         dependsOn: ['resource', 'displayField'],
-        required: true,
+        isRequired: true,
         visibleIf: visibleIfResourceAndDisplayField,
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
@@ -646,10 +645,39 @@ export const init = (
       }
     },
     onAfterRender: (question: QuestionResource, el: any): void => {
-      const parentElement = el.querySelector('.sd-question__content');
-      // Display the add button | grid for resources question
+      // Resource is required
+      if (!question.resource) {
+        return;
+      }
+
+      const survey: SurveyModel = question.survey as SurveyModel;
+
+      // Auto save changes, if enabled
+      if (question.autoSaveChanges && survey) {
+        survey.onValueChanged.add(async (_: any, options: any) => {
+          const record = survey.getVariable('record.id');
+          // Can only auto save when updating a records
+          if (options.name === question.name && record) {
+            // Automatically save the changes
+            await firstValueFrom(
+              apollo.mutate({
+                mutation: UPDATE_RECORD,
+                variables: {
+                  id: record,
+                  data: {
+                    [question.name]: options.value,
+                  },
+                },
+              })
+            );
+          }
+        });
+      }
+
+      // Div that will hold the buttons
       const actionsButtons = setUpActionsButtonWrapper();
-      let gridComponentRef!: ComponentRef<CoreGridComponent>;
+      const parentElement = el.querySelector('.sd-question__content');
+
       // hide tagbox if grid view is enable
       setTimeout(() => {
         if (question.displayAsGrid) {
@@ -660,71 +688,59 @@ export const init = (
         }
       }, 500);
 
+      // Conditions to display any of the buttons
+      const canDisplayButtons =
+        survey.mode !== 'display' && !question.isReadOnly;
+
       const searchBtn = buildSearchButton(
         question,
         true,
         dialog,
         document,
-        ngZone
+        ngZone,
+        resourcesFilterValues
       );
-      searchBtn.style.display = 'none';
-      if (question.resource) {
-        searchBtn.style.display = 'block';
-        if (parentElement) {
-          gridComponentRef = buildGridDisplay(question, parentElement);
-          if ((question.survey as SurveyModel).mode !== 'display') {
-            searchBtn.style.display = 'block';
-            const addBtn = buildAddButton(
-              question,
-              true,
-              dialog,
-              ngZone,
-              document
-            );
-            actionsButtons.appendChild(addBtn);
 
-            // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
-            question.registerFunctionOnPropertyValueChanged(
-              'addTemplate',
-              () => {
-                addBtn.style.display =
-                  question.addRecord && question.addTemplate ? '' : 'none';
-              }
-            );
-            question.registerFunctionOnPropertyValueChanged('addRecord', () => {
-              addBtn.style.display =
-                question.addRecord &&
-                question.addTemplate &&
-                !question.isReadOnly
-                  ? ''
-                  : 'none';
-            });
-          }
-        }
-
-        const survey = question.survey as SurveyModel;
-        if (question.autoSaveChanges && survey) {
-          survey.onValueChanged.add(async (_: any, options: any) => {
-            const record = survey.getVariable('record.id');
-            // Can only auto save when updating a records
-            if (options.name === question.name && record) {
-              // Automatically save the changes
-              await firstValueFrom(
-                apollo.mutate({
-                  mutation: UPDATE_RECORD,
-                  variables: {
-                    id: record,
-                    data: {
-                      [question.name]: options.value,
-                    },
-                  },
-                })
-              );
-            }
-          });
-        }
+      if (canDisplayButtons && question.canSearch) {
+        actionsButtons.appendChild(searchBtn);
       }
-      actionsButtons.appendChild(searchBtn);
+
+      question.registerFunctionOnPropertyValueChanged('canSearch', () => {
+        if (canDisplayButtons && question.canSearch) {
+          // add the search button to the actions buttons
+          actionsButtons.appendChild(searchBtn);
+        } else {
+          // remove the search button from the actions buttons
+          actionsButtons.removeChild(searchBtn);
+        }
+      });
+
+      const addBtn = buildAddButton(question, true, dialog, ngZone, document);
+      if (canDisplayButtons && question.addRecord && question.addTemplate) {
+        actionsButtons.appendChild(addBtn);
+      }
+      const removeAddBtn = () => {
+        if (canDisplayButtons && question.addRecord && question.addTemplate) {
+          // add the add button to the actions buttons
+          actionsButtons.appendChild(addBtn);
+        } else {
+          // remove the add button from the actions buttons
+          actionsButtons.removeChild(addBtn);
+        }
+      };
+      question.registerFunctionOnPropertyValueChanged(
+        'addRecord',
+        removeAddBtn
+      );
+      question.registerFunctionOnPropertyValueChanged(
+        'addTemplate',
+        removeAddBtn
+      );
+
+      let gridComponentRef!: ComponentRef<CoreGridComponent>;
+      if (parentElement) {
+        gridComponentRef = buildGridDisplay(question, parentElement);
+      }
 
       const header = el.querySelector('.sd-question__header') as HTMLDivElement;
       // make header flex to align buttons
@@ -737,18 +753,7 @@ export const init = (
       } else if (parentElement) {
         parentElement.insertBefore(actionsButtons, parentElement.firstChild);
       }
-      question.registerFunctionOnPropertyValueChanged('resource', () => {
-        if (question.resource && question.canSearch) {
-          searchBtn.style.display = 'block';
-        }
-      });
-      question.registerFunctionOnPropertyValueChanged('canSearch', () => {
-        if (question.displayAsGrid) {
-          setGridInputs(gridComponentRef.instance, question);
-        } else {
-          searchBtn.style.display = question.canSearch ? 'block' : 'none';
-        }
-      });
+
       question.registerFunctionOnPropertyValueChanged(
         'gridFieldsSettings',
         () => {
@@ -756,25 +761,21 @@ export const init = (
             // Update grid configuration display
             domService.removeComponentFromBody(gridComponentRef);
             gridComponentRef = buildGridDisplay(question, parentElement);
-            searchBtn.style.display = 'none';
           }
         }
       );
+
       question.registerFunctionOnPropertyValueChanged('displayAsGrid', () => {
         const element = el.parentElement?.querySelector('#tagbox');
         if (question.displayAsGrid) {
           if (element) {
             element.style.display = 'none';
           }
-          searchBtn.style.display = 'none';
           gridComponentRef = buildGridDisplay(question, parentElement);
         } else {
           domService.removeComponentFromBody(gridComponentRef);
           if (element) {
             element.style.display = 'block';
-          }
-          if (question.canSearch) {
-            searchBtn.style.display = 'block';
           }
         }
       });

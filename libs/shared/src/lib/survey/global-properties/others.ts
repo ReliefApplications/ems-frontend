@@ -29,7 +29,7 @@ export const init = (environment: any): void => {
     visibleIndex: 6,
     default: false,
     category: 'general',
-    required: true,
+    isRequired: true,
   });
   // Pass token before the request to fetch choices by URL if it's targeting SHARED API
   ChoicesRestful.onBeforeSendRequest = (
@@ -210,6 +210,15 @@ export const init = (environment: any): void => {
   // Adds property to display in the form component the upload records button
   serializer.addProperty('survey', {
     name: 'allowUploadRecords',
+    category: 'Records',
+    type: 'boolean',
+    default: false,
+    visibleIndex: 1,
+  });
+
+  // Adds a property to initialize new records with random OID
+  serializer.addProperty('survey', {
+    name: 'generateNewRecordOid',
     category: 'Records',
     type: 'boolean',
     default: false,

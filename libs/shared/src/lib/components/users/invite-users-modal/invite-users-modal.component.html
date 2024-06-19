@@ -44,26 +44,26 @@
         field="email"
         [title]="'common.email.one' | translate"
       ></kendo-grid-column>
-      <kendo-grid-column field="role" [title]="'common.role.one' | translate">
+      <kendo-grid-column field="roles" [title]="'common.role.one' | translate">
         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
-          <kendo-dropdownlist
+          <kendo-multiselect
             [data]="data.roles"
             textField="title"
             valueField="id"
             [valuePrimitive]="true"
-            [value]="dataItem.role"
+            [value]="dataItem.roles"
             [disabled]="true"
           >
-          </kendo-dropdownlist>
+          </kendo-multiselect>
         </ng-template>
         <ng-template kendoGridEditTemplate let-formGroup="formGroup">
-          <kendo-dropdownlist
+          <kendo-multiselect
             [data]="data.roles"
             textField="title"
             valueField="id"
             [valuePrimitive]="true"
-            [formControl]="formGroup.get('role')"
-          ></kendo-dropdownlist>
+            [formControl]="formGroup.get('roles')"
+          ></kendo-multiselect>
         </ng-template>
       </kendo-grid-column>
       <kendo-grid-column-group

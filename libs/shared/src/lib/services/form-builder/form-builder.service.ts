@@ -24,6 +24,29 @@ import { FormHelpersService } from '../form-helper/form-helper.service';
 import { cloneDeep, difference, get } from 'lodash';
 import { Form } from '../../models/form.model';
 
+let counter = Math.floor(Math.random() * 0xffffff); // Initialize counter with a random value
+
+/**
+ * Generates a new MongoDB ObjectId.
+ *
+ * @returns A new ObjectId in the form of a 24-character hexadecimal string.
+ */
+const createNewObjectId = () => {
+  const timestamp = Math.floor(Date.now() / 1000)
+    .toString(16)
+    .padStart(8, '0');
+
+  const randomValue = Array.from({ length: 5 }, () =>
+    Math.floor(Math.random() * 256)
+      .toString(16)
+      .padStart(2, '0')
+  ).join('');
+
+  const counterHex = (counter++).toString(16).padStart(6, '0');
+
+  return timestamp + randomValue + counterHex;
+};
+
 /** Type for the temporary file storage */
 export type TemporaryFilesStorage = Map<Question, File[]>;
 
@@ -163,6 +186,11 @@ export class FormBuilderService {
     settings.useCachingForChoicesRestfull = false;
     const survey = new Model(structure);
 
+    // Adds function to survey to be able to get the current parsed data
+    survey.getParsedData = () => {
+      return transformSurveyData(survey);
+    };
+
     // Add form model to the survey
     if (form) {
       survey.form = form;
@@ -185,6 +213,8 @@ export class FormBuilderService {
     if (record) {
       this.recordId = record.id;
       this.formHelpersService.addRecordVariables(survey, record);
+    } else if (survey.generateNewRecordOid) {
+      survey.setVariable('record.id', createNewObjectId());
     }
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
@@ -247,9 +277,6 @@ export class FormBuilderService {
           }
         }
       });
-
-      // Apply custom logic to survey data values
-      survey.parsedData = transformSurveyData(survey);
     });
     if (fields.length > 0) {
       for (const f of fields.filter((x) => !x.automated)) {

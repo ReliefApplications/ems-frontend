@@ -19,6 +19,7 @@ import { FormHelpersService } from '../../services/form-helper/form-helper.servi
 import {
   Action,
   PageModel,
+  Question as QuestionModel,
   SurveyModel,
   surveyLocalization,
 } from 'survey-core';
@@ -394,8 +395,13 @@ export class FormBuilderComponent
   private addAdorners() {
     this.surveyCreator.onDefineElementMenuItems.add((_, options) => {
       const element = options.obj;
+
       // Only display for questions & panels
-      if (element.isPage || element.isPanel) {
+      if (
+        !(element instanceof QuestionModel) ||
+        element.isPage ||
+        element.isPanel
+      ) {
         return;
       }
 

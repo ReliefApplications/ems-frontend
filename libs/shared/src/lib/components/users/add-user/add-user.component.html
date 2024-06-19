@@ -19,7 +19,7 @@
           <label>{{
             'components.user.invite.role.description' | translate
           }}</label>
-          <ui-select-menu formControlName="role">
+          <ui-select-menu formControlName="roles" [multiselect]="true">
             <ui-select-option *ngFor="let role of data.roles" [value]="role.id">
               {{ role.title }}
             </ui-select-option>

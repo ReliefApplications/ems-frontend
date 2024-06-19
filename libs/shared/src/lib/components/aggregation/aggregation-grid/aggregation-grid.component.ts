@@ -17,7 +17,7 @@ import { ContextService } from '../../../services/context/context.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { SortDescriptor } from '@progress/kendo-data-query';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isNil, uniq } from 'lodash';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
 
 /**
@@ -45,6 +45,8 @@ export class AggregationGridComponent
   /** Grid data */
   public gridData: GridDataResult = { data: [], total: 0 };
   /** Grid fields */
+  public allFields: any[] = [];
+  /** Grid fields that are currently showing in the grid */
   public fields: any[] = [];
   /** Loading state */
   public loading = false;
@@ -170,6 +172,7 @@ export class AggregationGridComponent
       .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
       .subscribe({
         next: ({ data, loading }) => {
+          console.log('data', data);
           this.updateValues(data, loading);
         },
         error: (err: any) => {
@@ -235,11 +238,12 @@ export class AggregationGridComponent
             selectedFields,
             this.aggregation?.pipeline
           );
-          this.fields = this.gridService.getFields(
+          this.allFields = this.gridService.getFields(
             aggregationFields,
             null,
             null
           );
+          console.log('allFields', this.allFields);
           this.loadingSettings = false;
           this.status = {
             error: false,
@@ -301,6 +305,38 @@ export class AggregationGridComponent
       data: cloneDeep(data.recordsAggregation.items),
       total: data.recordsAggregation.totalCount,
     };
+
+    const extraFields: string[] = [];
+    this.gridData.data.forEach((row) => {
+      extraFields.push(
+        ...Object.keys(row).filter(
+          (colName) => !this.allFields.find((field) => field.name == colName)
+        )
+      );
+    });
+
+    console.log('extraFields', extraFields);
+    // show only fields that has at least one row with them present
+    this.fields = this.allFields
+      .filter((field) => {
+        console.log('field', field);
+        return this.gridData.data.some((row) => !isNil(row[field.name]));
+      })
+      .concat(
+        uniq(extraFields).map((field) => ({
+          name: field,
+          editor: 'text',
+          filter: 'text',
+          meta: {
+            name: field,
+          },
+          disabled: true,
+          hidden: false,
+        }))
+      );
+
+    console.log(this.fields);
+
     this.loading = loading;
   }
 }

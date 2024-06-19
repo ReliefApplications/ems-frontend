@@ -969,10 +969,7 @@ export class CoreGridComponent
     this.selectionChange.emit(selection);
 
     // Check if should automatically map selected rows into state automatically
-    if (
-      this.widget.settings.actions.automaticallyMapSelected &&
-      this.selectedRows.length
-    ) {
+    if (this.widget.settings.actions.automaticallyMapSelected) {
       this.setState(this.selectedRows);
     }
   }

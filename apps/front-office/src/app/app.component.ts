@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, Inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
 import {
@@ -15,6 +15,7 @@ import {
 } from '@oort-front/shared';
 import { CldrIntlService, IntlService } from '@progress/kendo-angular-intl';
 import { Router } from '@angular/router';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Parses a query string and returns an object with key-value pairs.
@@ -69,14 +70,21 @@ export class AppComponent implements OnInit {
    * @param kendoIntl Kendo Intl Service
    * @param router Angular router service
    * @param downloadService Shared download service
+   * @param document The document object
    */
   constructor(
     private authService: AuthService,
     private translate: TranslateService,
     private kendoIntl: IntlService,
     private router: Router,
-    private downloadService: DownloadService
+    private downloadService: DownloadService,
+    @Inject(DOCUMENT) private document: Document
   ) {
+    // Update the document language attribute when the language changes
+    this.translate.onLangChange.subscribe(({ lang }) => {
+      this.document.documentElement.lang = lang;
+    });
+
     this.translate.addLangs(environment.availableLanguages);
     this.translate.setDefaultLang(environment.availableLanguages[0]);
     (this.kendoIntl as CldrIntlService).localeId =

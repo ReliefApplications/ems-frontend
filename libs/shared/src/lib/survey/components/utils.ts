@@ -3,6 +3,7 @@ import { NgZone } from '@angular/core';
 // todo: as it something to do with survey-angular
 import { SurveyModel, surveyLocalization } from 'survey-core';
 import { Question } from '../types';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * Build the search button for resource and resources components
@@ -12,6 +13,7 @@ import { Question } from '../types';
  * @param dialog The Dialog service
  * @param document Document
  * @param ngZone Angular Service to execute code inside Angular environment
+ * @param dynamicFilterSubject The dynamic filter behavior subject
  * @returns The button DOM element
  */
 export const buildSearchButton = (
@@ -19,7 +21,8 @@ export const buildSearchButton = (
   multiselect: boolean,
   dialog: Dialog,
   document: Document,
-  ngZone: NgZone
+  ngZone: NgZone,
+  dynamicFilterSubject?: BehaviorSubject<any>
 ) => {
   const fieldsSettingsForm = question.gridFieldsSettings;
   const survey = question.survey as SurveyModel;
@@ -57,10 +60,18 @@ export const buildSearchButton = (
         '../../components/search-resource-grid-modal/search-resource-grid-modal.component'
       );
       ngZone.run(() => {
+        const settings = { ...fieldsSettingsForm };
+
+        if (dynamicFilterSubject && settings.filter) {
+          settings.filter = {
+            logic: 'and',
+            filters: [settings.filter, ...dynamicFilterSubject.getValue()],
+          };
+        }
         const dialogRef = dialog.open(ResourceGridModalComponent, {
           data: {
             multiselect,
-            gridSettings: { ...fieldsSettingsForm },
+            gridSettings: settings,
             selectedRows: Array.isArray(question.value)
               ? question.value
               : question.value
@@ -311,30 +322,22 @@ export const processNewCreatedRecords = (
 ): any => {
   const query = question.gridFieldsSettings || {};
   const temporaryRecords: any[] = [];
-  if (multiselect) {
-    question.newCreatedRecords?.forEach((recordId: string) => {
-      const promise = new Promise<void>((resolve) => {
-        temporaryRecords.push({
-          id: recordId,
-          template: question.template,
-          ...question.draftData[recordId],
-          isTemporary: true,
-        });
-        resolve();
-      });
-      promises.push(promise);
-    });
-  } else {
-    new Promise<void>((resolve) => {
+  const newCreatedRecords = Array.isArray(question.newCreatedRecords)
+    ? question.newCreatedRecords
+    : [question.newCreatedRecords];
+
+  newCreatedRecords.forEach((recordId: string) => {
+    const promise = new Promise<void>((resolve) => {
       temporaryRecords.push({
-        id: question.newCreatedRecords,
+        id: recordId,
         template: question.template,
-        ...question.draftData[question.newCreatedRecords],
+        ...question.draftData[recordId],
         isTemporary: true,
       });
       resolve();
     });
-  }
+    promises.push(promise);
+  });
 
   const uuidRegExpr =
     /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/i;
