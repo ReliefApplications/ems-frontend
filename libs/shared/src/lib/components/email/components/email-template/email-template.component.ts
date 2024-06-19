@@ -577,7 +577,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
    */
   public setField(event: any, fieldIndex: number) {
     const name = event?.target?.value || event;
-    let fields = clone(this.resource?.metadata);
+    const fields = clone(this.resource?.metadata);
     // if (fields?.options == undefined) {
     //   fields = this.emailService.fields.filter(
     //     (x: any) => x.name == name.split('.')[0]
