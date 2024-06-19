@@ -816,6 +816,7 @@
 				"noSelectedFields": "******",
 				"tooManyRecords": "****** {{totalRecords}} ******"
 			},
+			"back": "******",
 			"distributionList": {
 				"alert": {
 					"and": "******",

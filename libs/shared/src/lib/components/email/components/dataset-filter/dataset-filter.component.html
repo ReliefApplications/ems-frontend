@@ -792,7 +792,12 @@
 
 <!-- Too many records in dataset -->
 <ng-template #tooManyRecordsAlertTmpl>
-  <ui-alert variant="warning" [closable]="true" *ngIf="showDatasetLimitWarning" (close)="closeWarningMessage()">
+  <ui-alert
+    variant="warning"
+    [closable]="true"
+    *ngIf="showDatasetLimitWarning"
+    (close)="closeWarningMessage()"
+  >
     <div
       [innerHTML]="
         'components.email.alert.tooManyRecords'
@@ -803,12 +808,17 @@
 </ng-template>
 <!-- No Fields in Resource Message -->
 <ng-template #noFieldsInResourceAlertTmpl>
-  <ui-alert variant="warning" [closable]="true" *ngIf="this.resourcePopulated && this.query?.value?.resource !== null && !this.resource?.fields?.length">
+  <ui-alert
+    variant="warning"
+    [closable]="true"
+    *ngIf="
+      this.resourcePopulated &&
+      this.query?.value?.resource !== null &&
+      !this.resource?.fields?.length
+    "
+  >
     <div
-      [innerHTML]="
-        'components.email.alert.noResourceFields'
-          | translate
-      "
+      [innerHTML]="'components.email.alert.noResourceFields' | translate"
     ></div>
   </ui-alert>
 </ng-template>

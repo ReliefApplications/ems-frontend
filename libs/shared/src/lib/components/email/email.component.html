@@ -254,7 +254,6 @@
 <ng-container *ngIf="!emailService.isExisting">
   <div class="relative">
     <!-- todo: remove, and use better email notification navigation with breadcrumbs -->
-     <!-- todo: if not removing, translate -->
     <ui-button
       variant="danger"
       class="absolute -top-[22px] -right-[14px]"
@@ -262,7 +261,7 @@
       size="large"
       (click)="confirmClose()"
       icon="close"
-      [uiTooltip]="'Back to List'" 
+      [uiTooltip]="'components.email.back' | translate"
     >
     </ui-button>
   </div>

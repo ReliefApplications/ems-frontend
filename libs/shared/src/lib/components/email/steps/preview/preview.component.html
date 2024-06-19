@@ -32,7 +32,8 @@
         </div>
         <ui-button
           *ngIf="
-            this.emailService.emailDistributionList.To.length > 6 && !isExpandedTo
+            this.emailService.emailDistributionList.To.length > 6 &&
+            !isExpandedTo
           "
           class="inline-block"
           (click)="toggleExpandTo()"
@@ -75,7 +76,8 @@
         </div>
         <ui-button
           *ngIf="
-            this.emailService.emailDistributionList.Cc.length > 6 && !isExpandedCc
+            this.emailService.emailDistributionList.Cc.length > 6 &&
+            !isExpandedCc
           "
           variant="primary"
           class="inline-block"

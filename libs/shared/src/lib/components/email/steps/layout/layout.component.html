@@ -23,8 +23,13 @@
           uiFormFieldDirective
           [defaultMargin]="false"
           class="w-1/3 px-2"
-          *ngIf="!emailService.metaDataQueryLoading && !(this.emailService.allPreviewData.length > 1 ||
-          this.emailService.allPreviewData.length === 0)"
+          *ngIf="
+            !emailService.metaDataQueryLoading &&
+            !(
+              this.emailService.allPreviewData.length > 1 ||
+              this.emailService.allPreviewData.length === 0
+            )
+          "
         >
           <label
             for="fieldSelect"
@@ -36,7 +41,9 @@
             id="fieldSelect"
             formControlName="subjectField"
             (ngModelChange)="insertSubjectFieldToken('field', subjectInputRef)"
-            [placeholder]="'common.notifications.email.fieldselect.placeholder' | translate"
+            [placeholder]="
+              'common.notifications.email.fieldselect.placeholder' | translate
+            "
             [filterable]="true"
             class="w-full"
           >
@@ -49,15 +56,15 @@
             >
           </ui-select-menu>
           <ui-icon
-                  class="cursor-help"
-                  icon="info_outline"
-                  variant="grey"
-                  uiSuffix
-                  [uiTooltip]="
-                    'common.notifications.email.fieldselect.tooltip' | translate
-                  "
-                >
-        </ui-icon>
+            class="cursor-help"
+            icon="info_outline"
+            variant="grey"
+            uiSuffix
+            [uiTooltip]="
+              'common.notifications.email.fieldselect.tooltip' | translate
+            "
+          >
+          </ui-icon>
         </div>
         <div uiFormFieldDirective [defaultMargin]="false" class="w-1/3 px-2">
           <label

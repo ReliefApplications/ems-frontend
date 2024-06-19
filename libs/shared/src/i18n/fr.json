@@ -816,6 +816,7 @@
 				"noSelectedFields": "Veuillez sélectionner au moins 1 champ pour sauvegarder ce jeu de données",
 				"tooManyRecords": "Pour le moment, nous sommes limités à récupérer seulement 50 enregistrements. Sur la base des conditions de filtre fournies, il existe <strong>{{totalRecords}}</strong> enregistrements correspondants. Veuillez ajouter des filtres supplémentaires pour que le nombre d'enregistrements soit inférieur ou égal à 50."
 			},
+			"back": "Retour à la liste",
 			"distributionList": {
 				"alert": {
 					"and": "et",
