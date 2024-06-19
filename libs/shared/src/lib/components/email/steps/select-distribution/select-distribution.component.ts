@@ -115,9 +115,7 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
   /** Flag indicating whether the BCC template is shown. */
   public showBccTemplate = false;
 
-  /**
-   *
-   */
+  /** Checks for valid emails when filtering datasets   */
   public noEmail = {
     to: false,
     cc: false,
@@ -154,8 +152,9 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     }
   }
 
-  // eslint-disable-next-line jsdoc/require-description
   /**
+   * This method is used to update the noEmail object
+   *
    * @param val the value of emited datset email
    * @param type refers to cc,bcc and to
    */
