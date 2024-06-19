@@ -801,7 +801,6 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
       emails: this.selectedEmails,
       emailFilter: this.filterQuery,
     });
-    console.log(this.filterQuery);
   }
 
   /**
