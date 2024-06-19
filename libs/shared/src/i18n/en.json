@@ -261,7 +261,7 @@
 					"emailInput": "Email input",
 					"inTheLast": {
 						"placeholder": "Select timestamp from filters...",
-						"tooltip": "Formats Date fields filtered by within the last; i.e. createdAt within the last 2 days; if TODAY = \"02/20/2024 2:21pm\" OUTPUT =  \"2:21 PM UTC From 2/18/24 1:21 PM UTC as of 2/20/24 2:21 PM UTC \""
+						"tooltip": "Use this configuration only if you’ve filtered data using the ‘within last’ operator. For example, within the last 2 days or 24 hours"
 					},
 					"selectBlock": "Select a block",
 					"timestamp": "Select a timestamp"
