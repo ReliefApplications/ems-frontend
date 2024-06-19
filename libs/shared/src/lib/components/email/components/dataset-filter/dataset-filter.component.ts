@@ -368,63 +368,6 @@ export class DatasetFilterComponent
         )
       );
 
-      this.apollo
-        .query<QueryTypesResponse>({
-          query: GET_QUERY_TYPES,
-        })
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(({ data }) => {
-          const resourceName = this.query.value.resource.name
-            .split(' ')
-            .join('');
-          const types = (data as any).__schema.types;
-          const resource = types.find(
-            (x: any) => x.name.toLowerCase() === resourceName.toLowerCase()
-          );
-          const metaFields = this.queryBuilder.buildMetaFields(resource.fields);
-
-          // if (metaFields.every((x: string) => !x)) {
-          //   return null;
-          // }
-          const metaQuery = gql`
-            query GetCustomMetaQuery {
-              _${resourceName}Meta {
-                ${metaFields}
-              }
-            }
-          `;
-
-          this.metaFieldList = this.apollo
-            .query<any>({
-              query: metaQuery,
-              variables: {},
-              fetchPolicy: 'cache-first',
-            })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((res) => {
-              console.log(res);
-            });
-
-          if (this.metaFieldList) {
-            this.loading = true;
-            this.metaFieldList.pipe(takeUntil(this.destroy$)).subscribe({
-              next: async ({ data }: any) => {
-                for (const field in data) {
-                  if (Object.prototype.hasOwnProperty.call(data, field)) {
-                    this.metaFields = Object.assign({}, data[field]);
-                    try {
-                      await this.gridService.populateMetaFields(
-                        this.metaFields
-                      );
-                    } catch (err) {
-                      console.error(err);
-                    }
-                  }
-                }
-              },
-            });
-          }
-        });
       let fields: any[] | undefined = [];
       this.emailService
         .fetchResourceMetaData(this.selectedResourceId)
