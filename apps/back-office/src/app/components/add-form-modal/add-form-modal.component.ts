@@ -108,7 +108,6 @@ export class AddFormModalComponent implements OnInit {
   /** Load the resources and build the form. */
   ngOnInit(): void {
     this.form.get('type')?.valueChanges.subscribe((value: string) => {
-      console.log(this.form);
       if (value == 'core') {
         this.form.get('resource')?.clearValidators();
         this.form.get('kobo')?.clearValidators();
