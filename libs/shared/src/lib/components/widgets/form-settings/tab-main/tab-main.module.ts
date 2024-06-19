@@ -9,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule, FormWrapperModule, TooltipModule } from '@oort-front/ui';
 
 /**
- * Main tab of chart settings modal.
+ * Main tab of form settings modal.
  */
 @NgModule({
   declarations: [TabMainComponent],

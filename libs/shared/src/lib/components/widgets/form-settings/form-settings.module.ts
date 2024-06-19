@@ -7,6 +7,7 @@ import { DisplaySettingsComponent } from '../common/display-settings/display-set
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ContextualFiltersSettingsComponent } from '../common/contextual-filters-settings/contextual-filters-settings.component';
 import { TabMainModule } from './tab-main/tab-main.module';
+import { TabMapQuestionStateModule } from './tab-map-question-state/tab-map-question-state.module';
 /**
  * Tabs widget settings module.
  */
@@ -23,6 +24,7 @@ import { TabMainModule } from './tab-main/tab-main.module';
     ReactiveFormsModule,
     TabsModule,
     ContextualFiltersSettingsComponent,
+    TabMapQuestionStateModule,
   ],
   exports: [FormSettingsComponent],
 })

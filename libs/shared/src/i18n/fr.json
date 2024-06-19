@@ -119,6 +119,9 @@
         "feminine": "Pendant la",
         "masculine": "Pendant le"
       },
+      "question": {
+        "one": "Question"
+      },
       "seconds": "Seconde(s)",
       "week": "Semaine",
       "weekDay": "Jour de la semaine (LUN-VEN)",
@@ -1324,6 +1327,7 @@
         "newFilter": "Nouveau filtre",
         "noFeatures": "Aucune fonctionnalité détectée",
         "noFilters": "Aucun filtre d'accès détecté",
+        "noForm": "Aucun formulaire détecté",
         "noForms": "Aucun formulaire détecté",
         "noSteps": "Aucune étape détectée",
         "removeFilter": "Supprimer le filtre",
@@ -1469,6 +1473,11 @@
         }
       },
       "expand": "Étendre",
+      "form": {
+        "addNewMapping": "Ajouter une nouvelle valeur de question au mappage d'état",
+        "mapQuestionState": "Mapper la valeur de la question à l'état",
+        "questionStateTab": "Valeur de la question à indiquer"
+      },
       "grid": {
         "actions": {
           "detail": "Ouvrir le détail",

@@ -78,6 +78,7 @@ export class FormSettingsComponent
             id: this.widgetFormGroup.get('resource')?.value,
           },
         })
+        .pipe(takeUntil(this.destroy$))
         .subscribe((data: any) => {
           if (data) {
             this.form = data.form;

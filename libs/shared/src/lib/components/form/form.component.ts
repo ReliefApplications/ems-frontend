@@ -35,6 +35,14 @@ import {
   FormHelpersService,
 } from '../../services/form-helper/form-helper.service';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
+import { DashboardService } from '../../services/dashboard/dashboard.service';
+import { DashboardState } from '../../models/dashboard.model';
+
+/** Interface of the type of the mapping question o state rules */
+interface MapQuestionToState {
+  question: string;
+  state: string;
+}
 
 /**
  * This component is used to display forms
@@ -54,6 +62,8 @@ export class FormComponent
   @Input() record?: RecordModel;
   /** Display actions buttons on floating div, optional */
   @Input() floatingActions = true;
+  /** Array of mapping questions to states rules, if form widget on dashboard uses it */
+  @Input() mapQuestionState?: MapQuestionToState[];
   /** Output event when saving the form */
   @Output() save: EventEmitter<{
     completed: boolean;
@@ -106,6 +116,7 @@ export class FormComponent
    * @param formBuilderService This is the service that will be used to build forms.
    * @param formHelpersService This is the service that will handle forms.
    * @param translate This is the service used to translate text
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     public dialog: Dialog,
@@ -115,7 +126,8 @@ export class FormComponent
     private layoutService: UILayoutService,
     private formBuilderService: FormBuilderService,
     public formHelpersService: FormHelpersService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private dashboardService: DashboardService
   ) {
     super();
   }
@@ -128,6 +140,36 @@ export class FormComponent
 
   ngOnInit(): void {
     this.initSurvey();
+    if (this.mapQuestionState) {
+      const questions = this.mapQuestionState.map(
+        (rule: MapQuestionToState) => rule.question
+      );
+      const states = this.dashboardService.states.getValue();
+      // For each question, if question is present in the mapping rules,
+      // we will add a listener to the value change event so the state value change as well
+      this.survey.getAllQuestions().forEach((question) => {
+        if (questions.includes(question.name)) {
+          const questionMapRules = this.mapQuestionState?.filter(
+            (rule: MapQuestionToState) => (rule.question = question.name)
+          );
+          const statesToUpdate = states.filter((state: DashboardState) =>
+            questionMapRules?.find(
+              (rule: MapQuestionToState) => state.name === rule.state
+            )
+          );
+          question.registerFunctionOnPropertyValueChanged('value', () => {
+            if (statesToUpdate) {
+              statesToUpdate.forEach((state) =>
+                this.dashboardService.setDashboardState(
+                  question.value,
+                  state?.id
+                )
+              );
+            }
+          });
+        }
+      });
+    }
   }
 
   /**

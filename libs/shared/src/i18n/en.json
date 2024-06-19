@@ -119,6 +119,9 @@
         "feminine": "On the",
         "masculine": "On the"
       },
+      "question": {
+        "one": "Question"
+      },
       "seconds": "Second(s)",
       "week": "Week",
       "weekDay": "Week Day (MON-FRI)",
@@ -1313,6 +1316,7 @@
         "newFilter": "New filter",
         "noFeatures": "No feature detected",
         "noFilters": "No access filters detected",
+        "noForm": "No form detected",
         "noForms": "No forms detected",
         "noSteps": "No steps detected",
         "removeFilter": "Remove filter",
@@ -1457,6 +1461,11 @@
         }
       },
       "expand": "Expand",
+      "form": {
+        "addNewMapping": "Add new question value to state mapping",
+        "mapQuestionState": "Map question value to state",
+        "questionStateTab": "Question value to state"
+      },
       "grid": {
         "actions": {
           "detail": "Open detail",

@@ -9,6 +9,7 @@
     [form]="form"
     [floatingActions]="false"
     [record]="record"
+    [mapQuestionState]="settings?.mapQuestionState"
     (save)="onComplete($event)"
   ></shared-form>
   <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">

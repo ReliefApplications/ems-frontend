@@ -418,7 +418,7 @@ export class QueryBuilderService {
   public buildMetaQuery(
     query: Query
   ): Observable<ApolloQueryResult<any>> | null {
-    if (query && query.fields.length > 0) {
+    if (query && query.fields?.length > 0) {
       const metaFields = this.buildMetaFields(query.fields);
       // check if has any valid value in metaFields
       if (metaFields.every((x: string) => !x)) {
