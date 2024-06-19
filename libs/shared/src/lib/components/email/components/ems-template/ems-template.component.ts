@@ -10,7 +10,6 @@ import {
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { StepperComponent } from '@progress/kendo-angular-layout';
 import { EmailService } from '../../email.service';
-import { Router } from '@angular/router';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
@@ -18,6 +17,10 @@ import { Subscription, first, takeUntil } from 'rxjs';
 import { LayoutComponent } from '../../steps/layout/layout.component';
 import { SelectDistributionComponent } from '../../steps/select-distribution/select-distribution.component';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { SnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
+
+/** Snackbar duration in ms */
+const SNACKBAR_DURATION = 1000;
 
 /**
  * Email template to create distribution list
@@ -31,16 +34,12 @@ export class EmsTemplateComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
-  /**
-   *
-   */
+  /** Reference to email layout. */
   @ViewChild(LayoutComponent) layout!: LayoutComponent;
-  /**
-   *
-   */
+  /** Reference to selector of distribution list. */
   @ViewChild(SelectDistributionComponent)
   distribution!: SelectDistributionComponent;
-  /** STEPPER */
+  /** Reference to stepper */
   @ViewChild('stepper', { static: true })
   public stepper: StepperComponent | undefined;
   /** RETRIEVES NEW EMAIL NOTIFICATION */
@@ -53,15 +52,13 @@ export class EmsTemplateComponent
   public disableActionButton = false;
   /** Email Subject Subscription */
   private disableSub!: Subscription;
-  /**
-   *
-   */
+  /** Disable draft subscription */
   private disableDraft!: Subscription;
-  /** DISABLE Saave As Draft BUTTON */
+  /** Disable Save As Draft BUTTON */
   public disableSaveAsDraft = false;
-  /** SUBMIT BUTTON STATUS */
+  /** is submitted*/
   private submitted = false;
-  /** STEPPER ARRAY */
+  /** Steps for stepper component */
   public steps: any[];
   /** LAYOUT PAGE VALIDATION */
   setLayoutValidation = false;
@@ -99,14 +96,12 @@ export class EmsTemplateComponent
    * initializing Email Service
    *
    * @param emailService helper functions
-   * @param router Angular Router
    * @param applicationService Shared application service
    * @param snackBar Shared snackbar service
    * @param translate Angular Translate service
    */
   constructor(
     public emailService: EmailService,
-    private router: Router,
     public applicationService: ApplicationService,
     private snackBar: SnackbarService,
     private translate: TranslateService
@@ -334,37 +329,59 @@ export class EmsTemplateComponent
    */
   public async send(): Promise<void> {
     try {
+      // Save email
       await this.saveAndSend();
       const emailData = {
         // Your email data here
       };
 
+      // Create a snackbar to indicate email is processing
+      const snackBarRef = this.snackBar.openComponentSnackBar(
+        SnackbarSpinnerComponent,
+        {
+          duration: 0,
+          data: {
+            message: this.translate.instant(
+              'common.notifications.email.processing'
+            ),
+            loading: true,
+          },
+        }
+      );
+      const snackBarSpinner = snackBarRef.instance.nestedComponent;
+
+      // Send email
       this.emailService
         .sendEmail(
           this.emailService.configId,
           emailData,
           this.emailService.sendSeparateEmail()
         )
-        .subscribe(
-          () => {
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
             this.emailService.isEdit = false;
             this.emailService.editId = '';
-            this.snackBar.openSnackBar(
-              this.translate.instant('pages.application.settings.emailSent')
+            snackBarSpinner.instance.message = this.translate.instant(
+              'pages.application.settings.emailSent'
             );
+            snackBarSpinner.instance.loading = false;
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
             this.emailService.datasetsForm.reset();
             this.navigateToEms.emit();
           },
-          (error) => {
-            console.error('Error sending email:', error);
-            this.snackBar.openSnackBar(
-              this.translate.instant('pages.application.settings.emailFailMsg'),
-              { error: true }
+          error: (err) => {
+            console.error('Error sending email:', err);
+            snackBarSpinner.instance.message = this.translate.instant(
+              'pages.application.settings.emailFailMsg'
             );
+            snackBarSpinner.instance.loading = false;
+            snackBarSpinner.instance.error = true;
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
             this.emailService.datasetsForm.reset();
             this.navigateToEms.emit();
-          }
-        );
+          },
+        });
     } catch (error) {
       console.error('Error in saveAndSend:', error);
     }
