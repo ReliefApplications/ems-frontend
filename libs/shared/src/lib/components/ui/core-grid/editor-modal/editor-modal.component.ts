@@ -1,14 +1,14 @@
 import { Component, Inject } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { SafeHtml } from '@angular/platform-browser';
 import { HtmlWidgetContentModule } from '../../../widgets/common/html-widget-content/html-widget-content.module';
 import { DataTemplateService } from '../../../../services/data-template/data-template.service';
-import { DialogModule } from '@oort-front/ui';
+import { ButtonModule, DialogModule } from '@oort-front/ui';
 
 /**
  * Dialog data interface
  */
 interface DialogData {
+  title: string;
   html: string;
 }
 
@@ -17,14 +17,14 @@ interface DialogData {
  */
 @Component({
   standalone: true,
-  imports: [HtmlWidgetContentModule, DialogModule],
+  imports: [HtmlWidgetContentModule, DialogModule, ButtonModule],
   selector: 'shared-editor-modal',
   templateUrl: './editor-modal.component.html',
   styleUrls: ['./editor-modal.component.scss'],
 })
 export class EditorModalComponent {
   /** Formatted html */
-  public formattedHtml: SafeHtml = '';
+  public formattedHtml = '';
 
   /**
    * Modal to show html linked

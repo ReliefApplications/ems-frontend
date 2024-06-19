@@ -918,12 +918,14 @@ export class GridComponent
   /**
    * Open editor around clicked item
    *
-   * @param html html string to be parsed
+   * @param dataItem Clicked item
+   * @param field html field
    */
-  public onOpenEditorModal(html: string) {
+  public onOpenEditorModal(dataItem: any, field: any) {
     this.action.emit({
       action: 'editor',
-      html,
+      item: dataItem,
+      field,
     });
   }
 

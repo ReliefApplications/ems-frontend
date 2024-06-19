@@ -1427,10 +1427,10 @@
 					"mapDetailsTitle": "Cartographie des données",
 					"mapDetailsTooltip": "Centré par defaut sur l'enregistrement sélectionné"
 				},
-				"openEditor": "Ouvrir l'éditeur",
+				"openEditor": "Afficher le html",
 				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {
-					"displayEditor": "Afficher l'éditeur",
+					"displayEditor": "Afficher le html dans un modal",
 					"displayMap": "Afficher la carte",
 					"openPage": "Aller à la page",
 					"saved": "Changements sauvegardés",

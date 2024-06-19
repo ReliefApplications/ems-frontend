@@ -1,7 +1,17 @@
 <ui-dialog [closable]="true" size="medium">
+  <!-- Title of the field -->
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">{{ data.title }}</h3>
+  </ng-container>
+  <!-- Content -->
   <ng-container ngProjectAs="content">
     <shared-html-widget-content
-    [html]="formattedHtml"
-  ></shared-html-widget-content>
+      [html]="formattedHtml"
+    ></shared-html-widget-content>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose]="null" variant="default">
+      {{ 'common.close' | translate }}
+    </ui-button>
   </ng-container>
 </ui-dialog>

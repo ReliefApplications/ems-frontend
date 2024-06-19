@@ -1427,10 +1427,10 @@
 					"mapDetailsTitle": "Query Map View",
 					"mapDetailsTooltip": "Centered by default on selected record"
 				},
-				"openEditor": "Open editor",
+				"openEditor": "Open html",
 				"openSettings": "Open settings",
 				"tooltip": {
-					"displayEditor": "Display editor",
+					"displayEditor": "Display html in modal",
 					"displayMap": "Display map",
 					"openPage": "Navigate to page",
 					"saved": "Changes saved",
