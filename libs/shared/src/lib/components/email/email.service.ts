@@ -1083,10 +1083,6 @@ export class EmailService {
    * @returns The flattened record.
    */
   flattenRecord(record: any, resourceInfo: any, query?: any): any {
-    console.log('RECORD');
-    console.log(record);
-    console.log('QUERY');
-    console.log(query);
     const result: any = {};
     for (const key in record) {
       if (Object.prototype.hasOwnProperty.call(record, key)) {
