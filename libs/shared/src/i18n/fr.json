@@ -259,7 +259,10 @@
 				"close": "Êtes-vous sûr de vouloir fermer cette notification? Les modifications apportées ne seront pas enregistrées.",
 				"dropdown": {
 					"emailInput": "Type de saisie d'e-mail",
-					"inTheLast": "Select Horodatage from filters...",
+					"inTheLast": {
+						"placeholder": "Sélectionnez l'horodatage à partir des filtres...",
+						"tooltip": "Formats Champs de date filtrés par dans le dernier ; \nc'est-à-dire créé à au cours des 2 derniers jours ; \nsi AUJOURD'HUI = \"20/02/2024 14h21\" SORTIE = \"14h21 UTC Du 18/02/24 13h21 UTC au 20/02/24 14h21 UTC \""
+					},
 					"selectBlock": "Select a block",
 					"timestamp": "Select a timestamp"
 				},

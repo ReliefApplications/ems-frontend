@@ -259,7 +259,10 @@
 				"close": "******",
 				"dropdown": {
 					"emailInput": "******",
-					"inTheLast": "******",
+					"inTheLast": {
+						"placeholder": "******",
+						"tooltip": "******"
+					},
 					"selectBlock": "******",
 					"timestamp": "******"
 				},
