@@ -436,25 +436,24 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
    * @param dataset data of the data set
    */
   bindDataSetDetails(dataset: any): void {
+    this.noEmail.emit(false);
+    this.selectedItemIndexes = [];
+    this.isAllSelected = false;
     if (dataset === undefined) {
       this.dataList = [];
       this.resource = [];
       this.datasetFields = [];
-      this.selectedItemIndexes = [];
-      this.isAllSelected = false;
       return;
     }
     if (
+      dataset.cacheData !== undefined &&
       Object.keys(dataset?.cacheData).length &&
       dataset?.cacheData?.datasetResponse
     ) {
       this.dataList = [];
       this.resource = [];
       this.datasetFields = [];
-      this.selectedItemIndexes = [];
-      this.isAllSelected = false;
       this.loading = true;
-      this.noEmail.emit(false);
       // const { dataList, resource, dataSetFields, dataSetResponse } =
       //   dataSet.cacheData;
 
@@ -471,47 +470,51 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
       this.emailService.setSelectedDataSet(dataset);
       this.loading = false;
     } else {
-      this.loading = true;
-      this.apollo
-        .query<ResourceQueryResponse>({
-          query: GET_RESOURCE,
-          variables: {
-            id: dataset.resource.id,
-          },
-        })
-        .subscribe((res) => {
-          if (res?.data?.resource) {
-            this.resource = res.data?.resource;
-            dataset.pageSize = 50;
-            this.emailService.fetchDataSet(dataset).subscribe((res) => {
-              if (res?.data.dataset) {
-                this.dataset = res?.data?.dataset;
-                this.datasetEmails = res?.data?.dataset?.emails;
-                this.data = res?.data?.dataset.records;
-                this.datasetFields = dataset.fields.map((ele: any) => ele.name);
-                this.dataList = this.getDataList(dataset);
-                dataset.cacheData.datasetResponse = this.dataset;
-                dataset.cacheData.dataList = this.dataList;
-                dataset.cacheData.datasetFields = this.datasetFields;
-                dataset.cacheData.resource = this.resource;
+      if (dataset?.resource?.id) {
+        this.loading = true;
+        this.apollo
+          .query<ResourceQueryResponse>({
+            query: GET_RESOURCE,
+            variables: {
+              id: dataset.resource.id,
+            },
+          })
+          .subscribe((res) => {
+            if (res?.data?.resource) {
+              this.resource = res.data?.resource;
+              dataset.pageSize = 50;
+              this.emailService.fetchDataSet(dataset).subscribe((res) => {
+                if (res?.data.dataset) {
+                  this.dataset = res?.data?.dataset;
+                  this.datasetEmails = res?.data?.dataset?.emails;
+                  this.data = res?.data?.dataset.records;
+                  this.datasetFields = dataset.fields.map(
+                    (ele: any) => ele.name
+                  );
+                  this.dataList = this.getDataList(dataset);
+                  dataset.cacheData.datasetResponse = this.dataset;
+                  dataset.cacheData.dataList = this.dataList;
+                  dataset.cacheData.datasetFields = this.datasetFields;
+                  dataset.cacheData.resource = this.resource;
 
-                //Below if condition is assigning the cachedData to the selected Dataset (Reinitializing)
-                if (
-                  this.datasetsForm.value?.datasets?.filter(
-                    (x: any) => x.name === dataset.name
-                  )?.length > 0
-                ) {
-                  this.datasetsForm.value.datasets.filter(
-                    (x: any) => x.name === dataset.name
-                  )[0].cacheData = dataset.cacheData;
+                  //Below if condition is assigning the cachedData to the selected Dataset (Reinitializing)
+                  if (
+                    this.datasetsForm.value?.datasets?.filter(
+                      (x: any) => x.name === dataset.name
+                    )?.length > 0
+                  ) {
+                    this.datasetsForm.value.datasets.filter(
+                      (x: any) => x.name === dataset.name
+                    )[0].cacheData = dataset.cacheData;
+                  }
+                  this.prevDataset = this.selectedDataset;
+                  this.emailService.setSelectedDataSet(dataset);
                 }
-                this.prevDataset = this.selectedDataset;
-                this.emailService.setSelectedDataSet(dataset);
-              }
-              this.loading = false;
-            });
-          }
-        });
+                this.loading = false;
+              });
+            }
+          });
+      }
     }
   }
 
@@ -556,6 +559,11 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
       this.bindDataSetDetails(this.selectedDataset);
     }
     if (this.activeSegmentIndex === 2) {
+      if (this.selectedEmails.length == 0) {
+        this.noEmail.emit(false);
+      } else {
+        this.noEmail.emit(true);
+      }
       this.showBtnPreview =
         this.datasetFilterInfo?.controls?.length == 0 ? false : true;
     }
@@ -836,11 +844,13 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
       }
       let emailData: any = [];
       if (indexNum !== undefined) {
-        Object.values(
+        Object.keys(
           this.selectedDataset?.cacheData?.dataList[indexNum]
-        ).forEach((x: any) => {
+        ).forEach((eleKey: any) => {
+          const x = this.selectedDataset?.cacheData?.dataList[indexNum][eleKey];
           const emailText = typeof x === 'string' ? x?.split(',') : x;
           if (
+            this.datasetFields.includes(eleKey) &&
             typeof emailText !== 'number' &&
             typeof emailText === 'object' &&
             Object.values(emailText).length > 0 &&
@@ -981,9 +991,11 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
        * Filter the dataset based on the 'and' logic.
        */
       filterData.forEach((ele: any) => {
-        Object.values(ele).forEach((x: any) => {
+        Object.keys(ele).forEach((eleKey: any) => {
+          const x = ele[eleKey];
           const emailText = typeof x === 'string' ? x?.split(',') : x;
           if (
+            this.datasetFields.includes(eleKey) &&
             typeof emailText !== 'number' &&
             typeof emailText === 'object' &&
             Array.isArray(emailText) &&
