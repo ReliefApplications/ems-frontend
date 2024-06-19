@@ -579,9 +579,22 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     const name = event?.target?.value || event;
     const fields = clone(this.resource?.metadata);
 
-    const field = fields.find(
-      (x: { name: any }) => x.name === name.split('.')[0]
-    );
+    let field = fields.find((x: { name: any }) => {
+      // Remove leading underscore if present
+      const cleanedName = name.replace(/^_/g, '');
+      return (
+        x.name === cleanedName.split('.')[0] || x.name === name.split(' - ')[0]
+      );
+    });
+
+    if (field && field.type === TYPE_LABEL.resource) {
+      if (field.fields) {
+        field =
+          field?.fields.find(
+            (x: { name: any }) => x.name === name.split(' - ')[1]
+          ) ?? field;
+      }
+    }
 
     let type: { operators: any; editor: string; defaultOperator: string } = {
       operators: undefined,
@@ -788,6 +801,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
       emails: this.selectedEmails,
       emailFilter: this.filterQuery,
     });
+    console.log(this.filterQuery);
   }
 
   /**
@@ -922,7 +936,16 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   getDataSetPreview(filterType: string) {
     this.loading = true;
     const currentDataset = clone(this.selectedDataset);
-    currentDataset.filter = this.filterQuery.value;
+
+    currentDataset.filter.filters = this.filterQuery?.value?.filters.map(
+      (x: any) => {
+        if (x.field.includes(' - ')) {
+          x.field = x.field.split(' - ').join('.');
+        }
+        return x;
+      }
+    );
+
     currentDataset.cacheData = {};
     this.emailService
       .fetchDataSet(currentDataset)
