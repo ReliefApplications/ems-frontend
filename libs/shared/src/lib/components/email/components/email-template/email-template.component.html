@@ -83,10 +83,7 @@
   <div *ngIf="activeSegmentIndex === 2">
     <!-- Filter editor -->
     <div>
-      <div
-        [formGroup]="filterQuery"
-        *ngIf="selectedDataset?.fields?.length"
-      >
+      <div [formGroup]="filterQuery" *ngIf="selectedDataset?.fields?.length">
         <div class="flex-row gap-4 mt-6">
           <div class="flex gap-4">
             <div class="flex gap-4 mt-2">
@@ -503,7 +500,7 @@
           class="block text-gray-700 text-sm"
           *ngIf="dataList?.length === 0"
         >
-          {{'components.select.distribution.noPreviewData' | translate}}
+          {{ 'components.select.distribution.noPreviewData' | translate }}
         </label>
       </div>
     </div>
@@ -515,7 +512,7 @@
         variant="primary"
         (click)="addSelectedEmails()"
       >
-      {{'components.select.distribution.apply' | translate}}
+        {{ 'components.select.distribution.apply' | translate }}
       </ui-button>
     </div>
   </div>
