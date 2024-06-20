@@ -696,8 +696,6 @@ export class EmailTemplateComponent
         ...(this.operators && { ...this.operators }),
         [fieldIndex]: fieldOperator,
       };
-      // this.filterQuery.get('filters')[fieldIndex].get('operators').value =
-      //   this.operators[fieldIndex][0];
     }
   }
 
