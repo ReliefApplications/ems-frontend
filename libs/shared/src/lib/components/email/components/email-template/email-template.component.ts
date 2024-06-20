@@ -812,8 +812,8 @@ export class EmailTemplateComponent
    * @param element email string
    */
   validateEmail(element: HTMLInputElement): void {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    this.emailValidationError = emailRegex.test(element.value)
+    const emailValidate = emailRegex;
+    this.emailValidationError = emailValidate.test(element.value)
       ? ''
       : 'Invalid Email Address';
     if (element.value === '') {
@@ -970,6 +970,7 @@ export class EmailTemplateComponent
   getDataSetPreview(filterType: string) {
     this.loading = true;
     const currentDataset = clone(this.selectedDataset);
+    console.log(currentDataset);
 
     currentDataset.filter.filters = this.filterQuery?.value?.filters.map(
       (x: any) => {
