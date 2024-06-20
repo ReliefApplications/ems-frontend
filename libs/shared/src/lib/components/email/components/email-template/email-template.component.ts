@@ -7,7 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { clone } from 'lodash';
+import { clone, cloneDeep } from 'lodash';
 import { EmailService } from '../../email.service';
 import {
   FIELD_TYPES,
@@ -23,6 +23,7 @@ import { emailRegex, selectFieldTypes } from '../../constant';
 import { FieldStore } from '../../models/email.const';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { FIELD_NAME } from '../dataset-filter/metadata.constant';
 
 /**
  * Email template to create distribution list
@@ -48,6 +49,9 @@ export class EmailTemplateComponent
   /** List of data items. */
   public dataList!: any[];
 
+  /** Header fields name of the Preview table */
+  public previewTableHeader: any[] = [];
+
   /** List of emails. */
   public emails: string[] = [];
 
@@ -67,7 +71,7 @@ export class EmailTemplateComponent
   public datasetEmails!: string[];
 
   /** Fields in the data set. */
-  public datasetFields!: string[];
+  public datasetFields: FieldStore[] = [];
 
   /** Form group for filter query. */
   public filterQuery: FormGroup | any | undefined;
@@ -461,7 +465,7 @@ export class EmailTemplateComponent
       const { dataList, resource, datasetResponse } = dataset.cacheData;
       this.dataList = dataList;
       this.resource = resource;
-      this.datasetFields = dataset.fields.map((ele: any) => ele.name); //datasetFields;
+      this.datasetFields = dataset.fields; //datasetFields;
       this.dataset = datasetResponse;
       this.datasetEmails = datasetResponse?.records
         ?.map((record: { email: string }) => record.email)
@@ -473,47 +477,60 @@ export class EmailTemplateComponent
     } else {
       if (dataset?.resource?.id) {
         this.loading = true;
-        this.apollo
-          .query<ResourceQueryResponse>({
-            query: GET_RESOURCE,
-            variables: {
-              id: dataset.resource.id,
-            },
-          })
-          .subscribe((res) => {
-            if (res?.data?.resource) {
-              this.resource = res.data?.resource;
-              dataset.pageSize = 50;
-              this.emailService.fetchDataSet(dataset).subscribe((res) => {
-                if (res?.data.dataset) {
-                  this.dataset = res?.data?.dataset;
-                  this.datasetEmails = res?.data?.dataset?.emails;
-                  this.data = res?.data?.dataset.records;
-                  this.datasetFields = dataset.fields.map(
-                    (ele: any) => ele.name
-                  );
-                  this.dataList = this.getDataList(dataset);
-                  dataset.cacheData.datasetResponse = this.dataset;
-                  dataset.cacheData.dataList = this.dataList;
-                  dataset.cacheData.datasetFields = this.datasetFields;
-                  dataset.cacheData.resource = this.resource;
+        let fields: any[] | undefined = [];
+        this.emailService
+          .fetchResourceMetaData(dataset.resource.id)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(({ data }) => {
+            fields = data?.resource?.metadata;
+            this.loading = true;
+            this.apollo
+              .query<ResourceQueryResponse>({
+                query: GET_RESOURCE,
+                variables: {
+                  id: dataset.resource.id,
+                },
+              })
+              .subscribe(({ data }) => {
+                if (data?.resource) {
+                  this.resource = data?.resource;
+                  this.getResourceFields(data, fields);
+                  dataset.pageSize = 50;
+                  this.emailService.fetchDataSet(dataset).subscribe((res) => {
+                    if (res?.data.dataset) {
+                      this.dataset = res?.data?.dataset;
+                      this.datasetEmails = res?.data?.dataset?.emails;
+                      this.data = res?.data?.dataset.records;
+                      // this.datasetFields = dataset.fields.map(
+                      //   (ele: any) => ele.name
+                      // );
+                      this.datasetFields = this.allFields;
+                      this.previewTableHeader = dataset.fields.map(
+                        (ele: any) => ele.name
+                      );
+                      this.dataList = this.getDataList(dataset);
+                      dataset.cacheData.datasetResponse = this.dataset;
+                      dataset.cacheData.dataList = this.dataList;
+                      dataset.cacheData.datasetFields = this.datasetFields;
+                      dataset.cacheData.resource = this.resource;
 
-                  //Below if condition is assigning the cachedData to the selected Dataset (Reinitializing)
-                  if (
-                    this.datasetsForm.value?.datasets?.filter(
-                      (x: any) => x.name === dataset.name
-                    )?.length > 0
-                  ) {
-                    this.datasetsForm.value.datasets.filter(
-                      (x: any) => x.name === dataset.name
-                    )[0].cacheData = dataset.cacheData;
-                  }
-                  this.prevDataset = this.selectedDataset;
-                  this.emailService.setSelectedDataSet(dataset);
+                      //Below if condition is assigning the cachedData to the selected Dataset (Reinitializing)
+                      if (
+                        this.datasetsForm.value?.datasets?.filter(
+                          (x: any) => x.name === dataset.name
+                        )?.length > 0
+                      ) {
+                        this.datasetsForm.value.datasets.filter(
+                          (x: any) => x.name === dataset.name
+                        )[0].cacheData = dataset.cacheData;
+                      }
+                      this.prevDataset = this.selectedDataset;
+                      this.emailService.setSelectedDataSet(dataset);
+                    }
+                    this.loading = false;
+                  });
                 }
-                this.loading = false;
               });
-            }
           });
       }
     }
@@ -589,11 +606,18 @@ export class EmailTemplateComponent
       );
     });
 
+    if (field && field.type === TYPE_LABEL.resources) {
+      const child = name.split('.')[1];
+      if (field.fields) {
+        field = field?.fields.find((x: { name: any }) => x.name === child);
+      }
+    }
+
     if (field && field.type === TYPE_LABEL.resource) {
       if (field.fields) {
         field =
           field?.fields.find(
-            (x: { name: any }) => x.name === name.split(' - ')[1]
+            (x: { name: any }) => x.name.split(' - ')[1] === name.split('.')[1]
           ) ?? field;
       }
     }
@@ -854,7 +878,7 @@ export class EmailTemplateComponent
           const x = this.selectedDataset?.cacheData?.dataList[indexNum][eleKey];
           const emailText = typeof x === 'string' ? x?.split(',') : x;
           if (
-            this.datasetFields.includes(eleKey) &&
+            // this.datasetFields.includes(eleKey) &&
             typeof emailText !== 'number' &&
             typeof emailText === 'object' &&
             Object.values(emailText).length > 0 &&
@@ -1006,7 +1030,7 @@ export class EmailTemplateComponent
           const x = ele[eleKey];
           const emailText = typeof x === 'string' ? x?.split(',') : x;
           if (
-            this.datasetFields.includes(eleKey) &&
+            // this.datasetFields.includes(eleKey) &&
             typeof emailText !== 'number' &&
             typeof emailText === 'object' &&
             Array.isArray(emailText) &&
@@ -1041,6 +1065,128 @@ export class EmailTemplateComponent
     } else {
       // Emit the fact that no email is available.
       this.noEmail.emit(true);
+    }
+  }
+
+  /**
+   * Get the all the fields for showing in filter dropdown
+   *
+   * @param data - Metadata from the Graphql service
+   * @param fields - All the fields
+   */
+  getResourceFields(data: any, fields: any) {
+    const metaData = data?.resource?.metadata;
+    if (metaData?.length) {
+      metaData.forEach((field: any) => {
+        if (
+          field &&
+          !['matrix', 'matrixdynamic', 'matrixdropdown'].includes(field.type)
+        ) {
+          if (field) {
+            if (field.name === FIELD_NAME.createdBy && field.fields?.length) {
+              field.fields.forEach((obj: any) => {
+                obj.name =
+                  `_${FIELD_NAME.createdBy}.user.` +
+                  `${obj.name === 'id' ? '_id' : obj.name}`;
+                obj.name = `${FIELD_NAME.createdBy}.` + obj.name.split('.')[2];
+                this.allFields.push(obj);
+              });
+            } else if (
+              field.name === FIELD_NAME.lastUpdatedBy &&
+              field.fields?.length
+            ) {
+              field.fields.forEach((obj: any) => {
+                obj.name =
+                  `_${FIELD_NAME.lastUpdatedBy}.user.` +
+                  `${obj.name === 'id' ? '_id' : obj.name}`;
+
+                obj.name =
+                  `${FIELD_NAME.lastUpdatedBy}.` + obj.name.split('.')[2];
+                this.allFields.push(obj);
+              });
+            } else if (
+              field.name === 'lastUpdateForm' &&
+              field.fields?.length
+            ) {
+              field.fields.forEach((obj: any) => {
+                obj.name = '_lastUpdateForm.' + obj.name;
+
+                obj.name = 'lastUpdateForm.' + obj.name.split('.')[1];
+                this.allFields.push(obj);
+              });
+            } else if (field.name === 'form' && field.fields?.length) {
+              field.fields.forEach((obj: any) => {
+                obj.name = '_form.' + obj.name;
+
+                obj.name = 'form.' + obj.name.split('.')[1];
+                this.allFields.push(obj);
+              });
+            } else if (field.type === TYPE_LABEL.resource) {
+              if (field.fields) {
+                field.fields.forEach((obj: any) => {
+                  obj.parentName = field.name;
+                  if (
+                    obj.name === FIELD_NAME.createdBy ||
+                    obj.name === FIELD_NAME.lastUpdatedBy
+                  ) {
+                    const obj1 = cloneDeep(obj);
+                    obj1.childName = `${field.name} - _${obj.name}.user.username`;
+                    obj1.name = `${field.name} - _${obj.name}.user.username`;
+                    obj1.parentName = field.name;
+                    obj1.type = 'text';
+
+                    // Create and push the second object
+                    const obj2 = cloneDeep(obj);
+                    obj2.name = `${field.name} - _${obj.name}.user._id`;
+                    obj2.childName = `${field.name} - _${obj.name}.user._id`;
+                    obj2.parentName = field.name;
+                    obj2.type = 'text';
+
+                    // Create and push the third object
+                    const obj3 = cloneDeep(obj);
+                    obj3.name = `${field.name} - _${obj.name}.user.name`;
+                    obj3.childName = `${field.name} - _${obj.name}.user.name`;
+                    obj3.parentName = field.name;
+                    obj3.type = 'text';
+
+                    obj.fields = [];
+                    obj.fields?.filter((x: any) => x.name == obj.name)
+                      .length === 0
+                      ? obj.fields.push(clone(obj1))
+                      : '';
+                    obj.fields?.filter((x: any) => x.name == obj.name)
+                      .length === 0
+                      ? obj.fields.push(clone(obj2))
+                      : '';
+                    obj.fields?.filter((x: any) => x.name == obj.name)
+                      .length === 0
+                      ? obj.fields.push(clone(obj3))
+                      : '';
+                    obj.childName = field.name + ' - ' + obj.name;
+                    obj.name = field.name + ' - ' + obj.name;
+                  } else {
+                    obj.childName = field.name + ' - ' + obj.name;
+                    obj.name = field.name + ' - ' + obj.name;
+                  }
+                });
+              }
+
+              this.allFields.push(field);
+            } else if (field.type === TYPE_LABEL.resources) {
+              this.allFields.push(field);
+            } else {
+              const metaField = fields?.find((x: any) => x.name === field.name);
+              // Map Select Data to select fields if it exists
+              field.options = metaField.options;
+              field.multiSelect = metaField.multiSelect;
+              field.fields = metaField.fields ?? null;
+              field.select = metaField.editor === 'select';
+              this.allFields.push(clone(field));
+            }
+          }
+          this.allFields = this.allFields ?? [];
+        }
+      });
     }
   }
 }

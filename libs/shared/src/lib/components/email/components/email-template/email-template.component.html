@@ -153,13 +153,36 @@
                     (ngModelChange)="setField($event, fieldIndex)"
                     formControlName="field"
                   >
-                    <ng-container *ngFor="let fieldDetails of datasetFields">
-                      <ui-select-option [value]="fieldDetails">
+                    <ng-container *ngFor="let fieldDetails of allFields">
+                      <!-- Normal Fields -->
+                      <ui-select-option
+                      *ngIf="!fieldDetails.fields"
+                      [value]="fieldDetails.name"
+                    >
+                      {{ fieldDetails.text || fieldDetails.name }}
+                    </ui-select-option>
+                    <!-- Resource and Resources Fields -->
+                    <ui-select-option *ngIf="fieldDetails.fields" [isGroup]="true">
+                      <!-- Group Label -->
+                      {{ fieldDetails.text || fieldDetails.name }}
+                      <ui-select-option
+                        *ngFor="let subField of fieldDetails.fields"
+                        [value]="
+                          subField.parentName
+                            ? subField.name.split(' - ').join('.')
+                            : fieldDetails.name + '.' + subField.name
+                        "
+                      >
                         {{
-                          this.emailService.replaceUnderscores(fieldDetails)
-                            | titlecase
+                          fieldDetails.name === '$attribute'
+                            ? subField.text || subField.name
+                            : fieldDetails.type === 'resource' ||
+                              subField.parentName
+                            ? subField.name
+                            : fieldDetails.name + ' - ' + subField.name
                         }}
                       </ui-select-option>
+                    </ui-select-option>
                     </ng-container>
                   </ui-select-menu>
                 </div>
@@ -402,6 +425,28 @@
                       </ui-select-menu>
                     </div>
                   </ng-container>
+
+                  <!-- Value picker for boolean fields -->
+                  <ng-container
+                  *ngIf="getFieldType(fieldIndex) === 'boolean'"
+                >
+                  <div uiFormFieldDirective [defaultMargin]="false">
+                    <label>{{ 'common.value.one' | translate }}</label>
+                    <ui-select-menu formControlName="value">
+                      <ui-select-option>{{
+                        'common.input.none' | translate
+                      }}</ui-select-option>
+
+                      <ui-select-option [value]="true">
+                        {{ 'common.true' | translate }}
+                      </ui-select-option>
+
+                      <ui-select-option [value]="false">
+                        {{ 'common.false' | translate }}
+                      </ui-select-option>
+                    </ui-select-menu>
+                  </div>
+                </ng-container>
                 </div>
                 <ui-button
                   [variant]="'danger'"
@@ -440,7 +485,7 @@
     *ngIf="activeSegmentIndex === 1 || showPreview"
   >
     <!-- Selection of emails -->
-    <div class="overflow-auto" *ngIf="!loading">
+    <div class="overflow-auto tblPreview" *ngIf="!loading && dataList?.length">
       <table
         *ngIf="dataList?.length"
         class="dataset-preview w-full border border-blue-600 shadow-xs m-1"
@@ -461,7 +506,7 @@
                 (change)="selectAllEmailItems($event)"
               />
             </th>
-            <ng-container *ngFor="let field of datasetFields">
+            <ng-container *ngFor="let field of previewTableHeader">
               <th
                 class="bg-blue-600 border-white-600 shadow-xs text-white p-2 text-center"
               >
@@ -489,7 +534,7 @@
                 *ngIf="selectedItemIndexes.indexOf(i) === -1"
               />
             </td>
-            <ng-container *ngFor="let field of datasetFields">
+            <ng-container *ngFor="let field of previewTableHeader">
               <td class="p-2 border border-blue-600 shadow-xs m-1 text-center">
                 {{ this.emailService.formatDataStrings(data[field], field) }}
               </td>
