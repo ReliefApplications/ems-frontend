@@ -19,7 +19,11 @@ import { GET_RESOURCE } from '../../graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
-import { emailRegex, selectFieldTypes } from '../../constant';
+import {
+  emailRegex,
+  missingTypesArray,
+  selectFieldTypes,
+} from '../../constant';
 import { FieldStore } from '../../models/email.const';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -1085,10 +1089,7 @@ export class EmailTemplateComponent
     this.allFields = [];
     if (metaData?.length) {
       metaData.forEach((field: any) => {
-        if (
-          field &&
-          !['matrix', 'matrixdynamic', 'matrixdropdown'].includes(field.type)
-        ) {
+        if (field && !missingTypesArray.includes(field.type)) {
           if (field) {
             if (field.name === FIELD_NAME.createdBy && field.fields?.length) {
               field.fields.forEach((obj: any) => {
