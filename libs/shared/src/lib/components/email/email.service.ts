@@ -1302,10 +1302,21 @@ export class EmailService {
               );
               if (matchingTexts === '') {
                 //If matching text is blank then needs to check with passign int data (Type cast issue)
-                matchingTexts = findMatchingTexts(
-                  metaField?.options,
-                  record[key] ? parseInt(record[key]) : record[key]
-                );
+                matchingTexts = metaField?.options
+                  .filter((values: any) => {
+                    if (typeof record[key] === 'object') {
+                      return record[key]?.includes(values?.value);
+                    } else {
+                      const keyAsArray = [record[key]];
+                      return keyAsArray?.includes(values?.value);
+                    }
+                  })
+                  .map((values: any) => values.text)
+                  .join(', ');
+                // matchingTexts = findMatchingTexts(
+                //   metaField?.options,
+                //   record[key] ? parseInt(record[key]) : record[key]
+                // );
               }
               result[key] = matchingTexts;
             } else {
