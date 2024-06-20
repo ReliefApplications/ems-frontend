@@ -238,14 +238,14 @@ export class EmailTemplateComponent
     const fieldName = fieldControl ? fieldControl.value : null;
     let field = fieldName
       ? this.resource?.metadata?.find(
-          (data: any) => data.name === fieldName.field
+          (data: any) => data.name === fieldName?.field
         )
       : null;
     let isChild = false;
     if (!field) {
       field = fieldName
         ? this.resource?.metadata?.find(
-            (data: any) => data.name === fieldName.field.split('.')[0]
+            (data: any) => data.name === fieldName?.field?.split('.')[0]
           )
         : null;
       isChild = field ? true : false;
@@ -253,7 +253,7 @@ export class EmailTemplateComponent
 
     if (isChild) {
       field = field?.fields?.find(
-        (data: any) => data.name === fieldName.field.split('.')[1]
+        (data: any) => data.name === fieldName?.field?.split('.')[1]
       );
     }
     if (field?.options === undefined) {
@@ -426,7 +426,6 @@ export class EmailTemplateComponent
         ? field.fields.filter((x: any) => x.name === optionsKey)[0].options
         : null;
     }
-    console.log(field);
     return field ?? '';
   }
 
@@ -474,6 +473,9 @@ export class EmailTemplateComponent
     this.noEmail.emit(false);
     this.selectedItemIndexes = [];
     this.isAllSelected = false;
+    this.dataList = [];
+    this.resource = [];
+    this.datasetFields = [];
     if (dataset === undefined) {
       this.dataList = [];
       this.resource = [];
@@ -510,7 +512,19 @@ export class EmailTemplateComponent
       this.emailService.setSelectedDataSet(dataset);
       this.loading = false;
     } else {
+      this.resetDatasetFilters();
       this.getMetaResourceData(dataset);
+    }
+  }
+
+  /**
+   * Resets the dataset filter row
+   */
+  resetDatasetFilters() {
+    if (this.datasetFilterInfo?.value?.length > 0) {
+      this.datasetFilterInfo.value.forEach((control: any, index: number) => {
+        this.deleteDatasetFilter(index);
+      });
     }
   }
 
@@ -616,6 +630,8 @@ export class EmailTemplateComponent
     this.showPreview = false;
     this.showBtnPreview = false;
     if (this.selectedDataset !== null && this.activeSegmentIndex === 1) {
+      this.resetDatasetFilters();
+
       this.bindDataSetDetails(this.selectedDataset);
     }
     if (this.activeSegmentIndex === 2) {
@@ -685,6 +701,9 @@ export class EmailTemplateComponent
           ...field.filter,
         };
       }
+
+      // Clear the existing operator for the fieldIndex
+      delete this.operators[fieldIndex];
 
       // Filter the FILTER_OPERATORS based on the operators allowed for the field type
       const fieldOperator = FILTER_OPERATORS.filter((x) =>
@@ -765,6 +784,7 @@ export class EmailTemplateComponent
     // Filter Form values
     this.showBtnPreview = true;
     this.filterFields = this.filterQuery.get('filters') as FormArray;
+    this.operators[this.filterFields.length] = [];
     this.filterFields.push(this.getNewFilterFields);
   }
 
@@ -1004,7 +1024,6 @@ export class EmailTemplateComponent
   getDataSetPreview(filterType: string) {
     this.loading = true;
     const currentDataset = clone(this.selectedDataset);
-    console.log(currentDataset);
 
     currentDataset.filter.filters = this.filterQuery?.value?.filters.map(
       (x: any) => {
