@@ -153,9 +153,9 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * This method is used to update the noEmail object
+   * Update the noEmail object
    *
-   * @param val the value of emited datset email
+   * @param val the value of emitted dataset email
    * @param type refers to cc,bcc and to
    */
   update(val: any, type: string) {

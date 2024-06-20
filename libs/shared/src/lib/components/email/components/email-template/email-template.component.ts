@@ -551,6 +551,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
    * @param event What is being displayed
    */
   onSegmentChange(event: any): void {
+    this.noEmail.emit(false);
     const segment = event?.target?.value || event;
     this.activeSegmentIndex = this.segmentList.indexOf(segment);
     this.showPreview = false;
