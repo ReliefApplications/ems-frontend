@@ -601,6 +601,8 @@ export class DatasetFilterComponent
               this.resourcePopulated = true;
             });
         });
+    } else {
+      this.loading = false;
     }
   }
 
