@@ -1076,6 +1076,7 @@ export class EmailTemplateComponent
    */
   getResourceFields(data: any, fields: any) {
     const metaData = data?.resource?.metadata;
+    this.allFields = [];
     if (metaData?.length) {
       metaData.forEach((field: any) => {
         if (
