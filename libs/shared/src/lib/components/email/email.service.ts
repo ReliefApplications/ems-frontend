@@ -1296,10 +1296,17 @@ export class EmailService {
                   .join(', ');
               };
 
-              const matchingTexts = findMatchingTexts(
+              let matchingTexts = findMatchingTexts(
                 metaField?.options,
                 record[key]
               );
+              if (matchingTexts === '') {
+                //If matching text is blank then needs to check with passign int data (Type cast issue)
+                matchingTexts = findMatchingTexts(
+                  metaField?.options,
+                  record[key] ? parseInt(record[key]) : record[key]
+                );
+              }
               result[key] = matchingTexts;
             } else {
               result[key] = value;
