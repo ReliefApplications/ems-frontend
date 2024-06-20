@@ -841,8 +841,7 @@ export class EmailTemplateComponent
    * @param element email string
    */
   validateEmail(element: HTMLInputElement): void {
-    const emailValidate = emailRegex;
-    this.emailValidationError = emailValidate.test(element.value)
+    this.emailValidationError = emailRegex.test(element.value)
       ? ''
       : 'Invalid Email Address';
     if (element.value === '') {
