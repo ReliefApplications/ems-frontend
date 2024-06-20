@@ -218,8 +218,9 @@
                   <ng-container
                     *ngIf="
                       !isDateOrDatetimeOperator(fieldIndex) &&
-                      !isNumericOperator(fieldIndex) &&
-                      !isSelectField(fieldIndex)
+                        !isNumericOperator(fieldIndex) &&
+                        !isSelectField(fieldIndex) &&
+                        getFieldType(fieldIndex) !== 'boolean'
                     "
                   >
                     <div uiFormFieldDirective [defaultMargin]="false">

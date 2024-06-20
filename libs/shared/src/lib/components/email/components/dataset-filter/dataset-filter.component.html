@@ -424,6 +424,7 @@
                       <div uiFormFieldDirective [defaultMargin]="false">
                         <label>{{ 'common.value.one' | translate }}</label>
                         <ui-select-menu
+                          [filterable]="true"
                           *ngIf="!getField(fieldIndex).multiSelect"
                           formControlName="value"
                         >
@@ -438,6 +439,7 @@
                           </ui-select-option>
                         </ui-select-menu>
                         <ui-select-menu
+                          [filterable]="true"
                           *ngIf="getField(fieldIndex).multiSelect"
                           formControlName="value"
                           [multiselect]="true"

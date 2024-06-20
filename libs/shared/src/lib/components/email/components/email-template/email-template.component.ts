@@ -241,6 +241,21 @@ export class EmailTemplateComponent
           (data: any) => data.name === fieldName.field
         )
       : null;
+    let isChild = false;
+    if (!field) {
+      field = fieldName
+        ? this.resource?.metadata?.find(
+            (data: any) => data.name === fieldName.field.split('.')[0]
+          )
+        : null;
+      isChild = field ? true : false;
+    }
+
+    if (isChild) {
+      field = field?.fields?.find(
+        (data: any) => data.name === fieldName.field.split('.')[1]
+      );
+    }
     if (field?.options === undefined) {
       field =
         this.emailService.fields.filter(
@@ -400,7 +415,18 @@ export class EmailTemplateComponent
             )[0]
           : field;
     }
+
     field = this.checkFieldDetails(field, fieldName);
+    /* Reference data - options manipulation */
+
+    if (fieldName?.field?.includes('.')) {
+      const fieldParts = fieldName?.field?.split('.');
+      const optionsKey = fieldParts[fieldParts.length - 1];
+      field.options = field?.fields
+        ? field.fields.filter((x: any) => x.name === optionsKey)[0].options
+        : null;
+    }
+    console.log(field);
     return field ?? '';
   }
 
@@ -455,6 +481,7 @@ export class EmailTemplateComponent
       return;
     }
     if (
+      this.activeSegmentIndex !== 2 &&
       dataset.cacheData !== undefined &&
       Object.keys(dataset?.cacheData).length &&
       dataset?.cacheData?.datasetResponse
@@ -669,6 +696,8 @@ export class EmailTemplateComponent
         ...(this.operators && { ...this.operators }),
         [fieldIndex]: fieldOperator,
       };
+      // this.filterQuery.get('filters')[fieldIndex].get('operators').value =
+      //   this.operators[fieldIndex][0];
     }
   }
 

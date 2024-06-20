@@ -1,5 +1,5 @@
 /** Select field types */
-export const selectFieldTypes = ['select', 'dropdown'];
+export const selectFieldTypes = ['select', 'dropdown', 'checkbox', 'tagbox'];
 /**
  * Regex for valid strings in layout page select
  */
