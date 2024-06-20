@@ -661,7 +661,11 @@ export class FormHelpersService {
    * @returns True if the text is in snake case, false otherwise
    */
   private isSnakeCase(text: string): any {
-    return text.match(/^[a-z]+[a-z0-9_]+$/);
+    if (text.startsWith('_')) {
+      // Forms created from a Kobo form can have questions starting with a _ if the original question in Kobo had a number in the beginning
+      text = text.substring(1);
+    }
+    return text.match(/^[a-z0-9]+(_[a-z0-9]+)*$/);
   }
 
   /**
