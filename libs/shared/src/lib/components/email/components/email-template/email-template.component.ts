@@ -462,6 +462,7 @@ export class EmailTemplateComponent
       this.dataList = [];
       this.resource = [];
       this.datasetFields = [];
+      this.previewTableHeader = [];
       this.loading = true;
       // const { dataList, resource, dataSetFields, dataSetResponse } =
       //   dataSet.cacheData;
@@ -470,6 +471,9 @@ export class EmailTemplateComponent
       this.dataList = dataList;
       this.resource = resource;
       this.datasetFields = dataset.fields; //datasetFields;
+      this.previewTableHeader = [
+        ...new Set(this.selectedDataset.fields.map((ele: any) => ele.name)),
+      ];
       this.dataset = datasetResponse;
       this.datasetEmails = datasetResponse?.records
         ?.map((record: { email: string }) => record.email)
@@ -888,7 +892,9 @@ export class EmailTemplateComponent
           const x = this.selectedDataset?.cacheData?.dataList[indexNum][eleKey];
           const emailText = typeof x === 'string' ? x?.split(',') : x;
           if (
-            // this.datasetFields.includes(eleKey) &&
+            this.selectedDataset.fields
+              .map((x: any) => x.name)
+              .includes(eleKey) &&
             typeof emailText !== 'number' &&
             typeof emailText === 'object' &&
             Object.values(emailText).length > 0 &&
@@ -1040,7 +1046,9 @@ export class EmailTemplateComponent
           const x = ele[eleKey];
           const emailText = typeof x === 'string' ? x?.split(',') : x;
           if (
-            // this.datasetFields.includes(eleKey) &&
+            this.selectedDataset.fields
+              .map((x: any) => x.name)
+              .includes(eleKey) &&
             typeof emailText !== 'number' &&
             typeof emailText === 'object' &&
             Array.isArray(emailText) &&
