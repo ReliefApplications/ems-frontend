@@ -638,7 +638,9 @@ export class EmailTemplateComponent
       if (this.selectedEmails.length == 0) {
         this.noEmail.emit(false);
       } else {
-        this.noEmail.emit(true);
+        if (this.datasetFilterInfo?.controls?.length > 0) {
+          this.noEmail.emit(true);
+        }
       }
       this.showBtnPreview =
         this.datasetFilterInfo?.controls?.length == 0 ? false : true;
@@ -1022,6 +1024,7 @@ export class EmailTemplateComponent
    * @param filterType - The type of filter. Currently supports 'preview' or '' when filtering.
    */
   getDataSetPreview(filterType: string) {
+    this.noEmail.emit(false);
     this.loading = true;
     const currentDataset = clone(this.selectedDataset);
 
