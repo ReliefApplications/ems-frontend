@@ -127,7 +127,7 @@ export const initCustomSurvey = (
     OwnerComponent.init(apollo, ComponentCollection.Instance);
     UsersComponent.init(ComponentCollection.Instance, domService);
     GeospatialComponent.init(domService, ComponentCollection.Instance);
-    EditorComponent.init(domService, ComponentCollection.Instance);
+    EditorComponent.init(injector, ComponentCollection.Instance);
   }
 
   // load global properties

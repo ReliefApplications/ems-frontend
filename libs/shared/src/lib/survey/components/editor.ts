@@ -4,17 +4,24 @@ import { DomService } from '../../services/dom/dom.service';
 import { EditorQuestionComponent } from '../../components/editor-question/editor-question.component';
 import { isNil } from 'lodash';
 import { HtmlWidgetContentComponent } from '../../components/widgets/common/html-widget-content/html-widget-content.component';
+import { Injector } from '@angular/core';
+import { DataTemplateService } from '../../services/data-template/data-template.service';
 
 /**
  * Inits the editor component.
  *
- * @param domService DOM service.
+ * @param injector Parent instance angular injector containing all needed services and directives
  * @param componentCollectionInstance ComponentCollection
  */
 export const init = (
-  domService: DomService,
+  injector: Injector,
   componentCollectionInstance: ComponentCollection
 ): void => {
+  // get services
+  const domService = injector.get(DomService);
+  const dataTemplateService = injector.get(DataTemplateService);
+
+  // Register icon
   SvgRegistry.registerIconFromSvg(
     'editor',
     '<svg class="feather feather-edit" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" height="18px" viewBox="0 0 24 24" width="18px" xmlns="http://www.w3.org/2000/svg"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>'
@@ -42,7 +49,7 @@ export const init = (
           el
         );
         const instance: HtmlWidgetContentComponent = editor.instance;
-        instance.html = question.value;
+        instance.html = dataTemplateService.renderHtml(question.value);
         return;
       }
       const editor = domService.appendComponentToBody(

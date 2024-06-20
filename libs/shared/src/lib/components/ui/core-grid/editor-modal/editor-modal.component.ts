@@ -3,6 +3,7 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { HtmlWidgetContentModule } from '../../../widgets/common/html-widget-content/html-widget-content.module';
 import { DataTemplateService } from '../../../../services/data-template/data-template.service';
 import { ButtonModule, DialogModule } from '@oort-front/ui';
+import { SafeHtml } from '@angular/platform-browser';
 
 /**
  * Dialog data interface
@@ -24,7 +25,7 @@ interface DialogData {
 })
 export class EditorModalComponent {
   /** Formatted html */
-  public formattedHtml = '';
+  public formattedHtml: SafeHtml = '';
 
   /**
    * Modal to show html linked
@@ -38,9 +39,6 @@ export class EditorModalComponent {
     @Inject(DIALOG_DATA) public data: DialogData,
     private dataTemplateService: DataTemplateService
   ) {
-    this.formattedHtml = this.dataTemplateService.renderHtml(
-      this.data.html,
-      {}
-    );
+    this.formattedHtml = this.dataTemplateService.renderHtml(this.data.html);
   }
 }
