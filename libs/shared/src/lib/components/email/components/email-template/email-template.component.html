@@ -22,9 +22,9 @@
     <div class="w-1/3" *ngIf="activeSegmentIndex === 0" uiFormFieldDirective>
       <label>{{ 'components.select.distribution.email' | translate }}</label>
       <ui-icon
-        icon="info"
-        class="cursor-pointer border-0"
-        variant="primary"
+        icon="info_outline"
+        class="cursor-help"
+        variant="grey"
         [uiTooltip]="'components.select.distribution.emailError' | translate"
         uiSuffix
       ></ui-icon>
@@ -436,11 +436,11 @@
 
   <!-- From list ( selected from resource ) -->
   <div
-    class="select-from-list mt-2"
+    class="overflow-hidden mt-2"
     *ngIf="activeSegmentIndex === 1 || showPreview"
   >
     <!-- Selection of emails -->
-    <div class="select-scroll" *ngIf="!loading">
+    <div class="overflow-auto" *ngIf="!loading">
       <table
         *ngIf="dataList?.length"
         class="dataset-preview w-full border border-blue-600 shadow-xs m-1"
@@ -498,12 +498,9 @@
         </tbody>
       </table>
       <div *ngIf="activeSegmentIndex === 2">
-        <label
-          class="block text-gray-700 text-sm"
-          *ngIf="dataList?.length === 0"
-        >
+        <ui-alert class="mb-4" variant="warning" *ngIf="dataList?.length === 0">
           {{ 'components.select.distribution.noPreviewData' | translate }}
-        </label>
+        </ui-alert>
       </div>
     </div>
     <div>
@@ -519,10 +516,10 @@
     </div>
   </div>
 
-  <div *ngIf="activeSegmentIndex === 2">
+  <div *ngIf="activeSegmentIndex === 2 && showBtnPreview">
     <!-- Apply filter -->
     <ui-button
-      *ngIf="datasetFilterInfo.controls && showBtnPreview"
+      *ngIf="datasetFilterInfo.controls"
       class="float-right mt-8"
       category="secondary"
       variant="primary"
@@ -530,9 +527,8 @@
     >
       {{ 'components.queryBuilder.filter.apply' | translate }}
     </ui-button>
-
+    <!-- Preview dataset -->
     <ui-button
-      *ngIf="showBtnPreview"
       class="float-right mt-8 mr-2"
       category="secondary"
       variant="primary"

@@ -21,7 +21,8 @@ import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { emailRegex, selectFieldTypes } from '../../constant';
 import { FieldStore } from '../../models/email.const';
-import { Subject, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Email template to create distribution list
@@ -31,7 +32,10 @@ import { Subject, takeUntil } from 'rxjs';
   templateUrl: './email-template.component.html',
   styleUrls: ['./email-template.component.scss'],
 })
-export class EmailTemplateComponent implements OnInit, OnDestroy {
+export class EmailTemplateComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   /** Data set containing emails and records. */
   public dataset?: {
     emails: string[];
@@ -101,7 +105,7 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   /** Error message for email validation. */
   public emailValidationError = '';
 
-  /** It is for previously selcted Dataset*/
+  /** It is for previously selected Dataset*/
   public prevDataset!: any | undefined;
 
   /** Event emitter for loading emails. */
@@ -128,33 +132,26 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
   @Input() existingId = '';
   /** Form group for segment */
   public segmentForm!: FormGroup;
-
   /** Index of active segment. */
   public activeSegmentIndex = 0;
-
   /** Segment buttons for selection. */
   public segmentButtons = [
     'Add Manually',
     'Select From List',
     'Select With Filter',
   ];
-
   /** List of selected item indexes. */
   public selectedItemIndexes: number[] | any[] = [];
-
   /** Flag to indicate if all items are selected. */
   public isAllSelected = false;
-
   /** Loading status. */
   public loading = false;
-
   /** List of display types */
   public segmentList = [
     'Add Manually',
     'Select From List',
     'Select With Filter',
   ];
-
   /** Time units for filtering. */
   public timeUnits = [
     { value: 'hours', label: 'Hours' },
@@ -163,16 +160,10 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     { value: 'months', label: 'Months' },
     { value: 'years', label: 'Years' },
   ];
-
-  /** Show preview for select with fiter option  */
+  /** Show preview for select with filter option  */
   public showPreview = false;
-
   /** Show preview button for select with fiter option  */
   public showBtnPreview = false;
-  /**
-   * Subject to destroy
-   */
-  destroy$: Subject<boolean> = new Subject<boolean>();
 
   /**
    * Composite filter group.
@@ -189,7 +180,9 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     public snackbar: SnackbarService,
     public translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.segmentForm = this.fb.group({
@@ -216,6 +209,14 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
       });
     }
     this.filterFields = this.filterQuery.get('filters') as FormArray;
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.emailLoad.emit({
+      emails: this.selectedEmails,
+      emailFilter: this.filterQuery,
+    });
   }
 
   /**
@@ -797,13 +798,6 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     this.isDropdownVisible = !this.isDropdownVisible;
   }
 
-  ngOnDestroy(): void {
-    this.emailLoad.emit({
-      emails: this.selectedEmails,
-      emailFilter: this.filterQuery,
-    });
-  }
-
   /**
    * selecting all email items from the dataset list
    *
@@ -950,21 +944,18 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
     this.emailService
       .fetchDataSet(currentDataset)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        (res: { data: { dataset: any } }) => {
-          if (res?.data?.dataset) {
+      .subscribe({
+        next: ({ data }: { data: { dataset: any } }) => {
+          if (data?.dataset) {
             const query = { fields: this.selectedDataset?.fields };
-            this.dataList = res?.data?.dataset.records?.map((record: any) => {
+            this.dataList = data?.dataset.records?.map((record: any) => {
               const flattenedObject = this.emailService.flattenRecord(
                 record,
                 {},
                 query
               );
               query.fields.forEach((x: any) => {
-                /**
-                 * Converts the resource field name back to {resourceName} - {resourceField}
-                 * so the field can be mapped to the correct data.
-                 */
+                // Converts the resource field name back to {resourceName} - {resourceField} so the field can be mapped to the correct data.
                 if (x.parentName) {
                   x.name = `${x.parentName} - ${x.childName}`;
                   x.type = x.childType;
@@ -988,14 +979,14 @@ export class EmailTemplateComponent implements OnInit, OnDestroy {
             this.showPreview = true;
           }
         },
-        (error: any) => {
-          console.log(error);
+        error: (err) => {
+          console.error(err);
           this.loading = false;
           if (filterType === 'preview') {
             this.showPreview = true;
           }
-        }
-      );
+        },
+      });
   }
 
   /**
