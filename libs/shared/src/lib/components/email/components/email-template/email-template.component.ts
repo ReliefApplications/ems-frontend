@@ -800,6 +800,10 @@ export class EmailTemplateComponent
       this.selectedEmails.push(email);
     }
     if (this.selectedEmails.length > 0) {
+      this.selectedEmails =
+        this.selectedEmails.length > 0
+          ? this.selectedEmails.map((x: any) => x.trim())
+          : [];
       this.emailLoad.emit({
         emails: this.selectedEmails,
         emailFilter: this.filterQuery,
@@ -938,6 +942,10 @@ export class EmailTemplateComponent
       }
       this.selectedEmails = this.selectedEmails.concat(emailData);
     });
+    this.selectedEmails =
+      this.selectedEmails.length > 0
+        ? this.selectedEmails.map((x: any) => x.trim())
+        : this.selectedEmails;
     this.selectedEmails = [...new Set(this.selectedEmails)];
     if (this.selectedEmails.length > 0) {
       this.emailLoad.emit({
@@ -1093,7 +1101,8 @@ export class EmailTemplateComponent
         });
       });
     }
-
+    emailsList =
+      emailsList.length > 0 ? emailsList.map((x: any) => x.trim()) : [];
     if (emailsList?.length) {
       // Add the new emails to the selectedEmails list.
       this.selectedEmails = [
