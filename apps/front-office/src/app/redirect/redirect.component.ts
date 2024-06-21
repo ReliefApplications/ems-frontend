@@ -41,7 +41,11 @@ export class RedirectComponent extends UnsubscribeComponent implements OnInit {
       .subscribe((user: User | null) => {
         if (user) {
           this.applications = user?.applications || [];
-          if (user.favoriteApp) {
+          const redirectPath = localStorage.getItem('redirectPath');
+          if (redirectPath) {
+            this.router.navigateByUrl(redirectPath);
+            localStorage.removeItem('redirectPath');
+          } else if (user.favoriteApp) {
             if (this.applications.find((app) => app.id === user.favoriteApp)) {
               this.router.navigate([`./${user.favoriteApp}`]);
             } else {

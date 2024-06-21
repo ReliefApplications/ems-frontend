@@ -2,7 +2,7 @@
   <div class="flex gap-2" formGroupName="sort">
     <div uiFormFieldDirective class="w-44">
       <label>{{ 'components.queryBuilder.sort.field' | translate }}</label>
-      <ui-select-menu formControlName="field">
+      <ui-select-menu formControlName="field" [filterable]="true">
         <ng-container *ngFor="let field of fields">
           <ui-select-option
             *ngIf="field.type.kind === 'SCALAR'"

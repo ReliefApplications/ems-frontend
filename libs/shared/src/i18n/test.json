@@ -78,7 +78,11 @@
 		},
 		"comma": "******",
 		"copy": "******",
+		"copyright": {
+			"who": "******"
+		},
 		"create": "******",
+		"createdBy": "******",
 		"createdOn": "******",
 		"cronEditor": {
 			"advanced": "******",
@@ -170,6 +174,11 @@
 		"email": {
 			"few": "******",
 			"none": "******",
+			"notification": {
+				"few": "******",
+				"none": "******",
+				"one": "******"
+			},
 			"one": "******"
 		},
 		"errors": {
@@ -225,6 +234,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"legacy": "******",
 		"loading": "******",
 		"modifiedOn": "******",
 		"name": "******",
@@ -239,14 +249,64 @@
 			"dataNotRecovered": "******",
 			"dataRecovered": "******",
 			"email": {
+				"banner": {
+					"image": "******",
+					"removeTooltip": "******"
+				},
+				"body": {
+					"title": "******"
+				},
+				"close": "******",
+				"dropdown": {
+					"emailInput": "******",
+					"inTheLast": {
+						"placeholder": "******",
+						"tooltip": "******"
+					},
+					"selectBlock": "******",
+					"timestamp": "******"
+				},
 				"error": "******",
 				"errors": {
+					"noBody": "******",
 					"noDistributionList": "******",
+					"noSubject": "******",
 					"noTemplate": "******"
+				},
+				"existing": "******",
+				"field": {
+					"filtered": "******",
+					"noBlocks": "******",
+					"selectBlock": "******",
+					"selectPlaceholder": "******",
+					"selectTitle": "******"
+				},
+				"fieldselect": {
+					"placeholder": "******",
+					"tooltip": "******"
+				},
+				"footer": {
+					"logo": "******",
+					"removeTooltip": "******",
+					"style": "******"
+				},
+				"header": {
+					"logo": "******",
+					"removeTooltip": "******",
+					"style": "******"
 				},
 				"processing": "******",
 				"ready": "******",
-				"sent": "******"
+				"sent": "******",
+				"style": {
+					"background": "******",
+					"text": "******"
+				},
+				"subject": {
+					"textTitle": "******",
+					"title": "******"
+				},
+				"timestamp": "******"
 			},
 			"fetchingGroups": "******",
 			"file": {
@@ -377,6 +437,7 @@
 		"selectStatus": "******",
 		"semicolon": "******",
 		"send": "******",
+		"sendEmail": "******",
 		"separator": "******",
 		"settings": "******",
 		"status": "******",
@@ -400,6 +461,9 @@
 			"one": "******"
 		},
 		"title": "******",
+		"toolTip": {
+			"newBlock": "******"
+		},
 		"tooltip": {
 			"dragDrop": "******",
 			"editor": {
@@ -465,6 +529,7 @@
 			"fieldName": "******",
 			"groupBy": "******",
 			"groupingRules": "******",
+			"keepNull": "******",
 			"mapping": {
 				"category": "******",
 				"field": "******",
@@ -747,6 +812,58 @@
 				}
 			}
 		},
+		"email": {
+			"alert": {
+				"invalidFields": "****** {{fields}} ****** {{types}} ******",
+				"noResourceFields": "******",
+				"noSelectedFields": "******",
+				"tooManyRecords": "****** {{totalRecords}} ******"
+			},
+			"back": "******",
+			"distributionList": {
+				"alert": {
+					"and": "******",
+					"noEmail": "******",
+					"partOne": "******",
+					"partThree": "******",
+					"partTwo": "******"
+				},
+				"bcc": "******",
+				"cc": "******",
+				"createNew": "******",
+				"duplicate": "******",
+				"import": {
+					"download": "******",
+					"import": "******",
+					"loading": "******",
+					"name": "******",
+					"success": "******"
+				},
+				"list": "******",
+				"name": "******",
+				"to": "******"
+			},
+			"image": {
+				"rectangleValidation": "******",
+				"squareValidation": "******"
+			},
+			"name": "******",
+			"notification": {
+				"create": "******",
+				"list": "******",
+				"type": "******",
+				"validTitle": "******"
+			},
+			"preview": {
+				"less": "******",
+				"more": "****** {{length}} ******",
+				"subject": "******"
+			},
+			"saveAsDraft": "******",
+			"tooltip": {
+				"reverseDate": "******"
+			}
+		},
 		"emailBuilder": {
 			"body": "******",
 			"default": "******",
@@ -964,6 +1081,11 @@
 			"value": "******"
 		},
 		"notifications": {
+			"email": {
+				"dropdown": {
+					"emailInput": "******"
+				}
+			},
 			"paginator": {
 				"ariaLabel": "******"
 			},
@@ -1010,8 +1132,14 @@
 			}
 		},
 		"queryBuilder": {
+			"apply": "******",
+			"block": {
+				"label": "******",
+				"title": "******"
+			},
 			"dataset": {
-				"select": "******"
+				"select": "******",
+				"title": "******"
 			},
 			"errors": {
 				"field": {
@@ -1031,12 +1159,15 @@
 			},
 			"filter": {
 				"and": "******",
+				"apply": "******",
+				"field": "******",
 				"logic": "******",
 				"new": "******",
 				"newGroup": "******",
 				"operator": "******",
 				"or": "******",
-				"title": "******"
+				"title": "******",
+				"value": "******"
 			},
 			"hint": {
 				"fields": "******",
@@ -1045,6 +1176,9 @@
 			},
 			"pagination": {
 				"first": "******",
+				"title": "******"
+			},
+			"preview": {
 				"title": "******"
 			},
 			"sort": {
@@ -1256,6 +1390,22 @@
 			"update": {
 				"permissions": "******",
 				"title": "******"
+			}
+		},
+		"select": {
+			"distribution": {
+				"SelectFromList": "******",
+				"alertMe": "******",
+				"apply": "******",
+				"bcc": "******",
+				"cc": "******",
+				"createFilterLogic": "******",
+				"email": "******",
+				"emailError": "******",
+				"label": "******",
+				"noPreviewData": "******",
+				"separateEmail": "******",
+				"to": "******"
 			}
 		},
 		"share": {
@@ -2072,6 +2222,7 @@
 			"filterIsNotNullOperator": "******",
 			"filterIsNullOperator": "******",
 			"filterIsTrue": "******",
+			"filterIsWithinTheLast": "******",
 			"filterLtOperator": "******",
 			"filterLteOperator": "******",
 			"filterMenuLogicDropDownLabel": "******",
@@ -2186,6 +2337,7 @@
 		"customNotification": {
 			"lastExecution": "******",
 			"schedule": "******",
+			"select": "******",
 			"type": "******"
 		},
 		"dashboard": {
@@ -2470,7 +2622,12 @@
 				"title": "******"
 			},
 			"settings": {
-				"actions": "******"
+				"actions": "******",
+				"emailCreated": "******",
+				"emailDeleted": "******",
+				"emailEdited": "******",
+				"emailFailMsg": "******",
+				"emailSent": "******"
 			}
 		},
 		"applications": {
