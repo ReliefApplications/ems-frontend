@@ -8,18 +8,6 @@ export const GET_RESOURCE = gql`
       name
       queryName
       fields
-      layouts {
-        edges {
-          node {
-            id
-            name
-            query
-            createdAt
-            display
-          }
-        }
-        totalCount
-      }
       metadata {
         name
         type
