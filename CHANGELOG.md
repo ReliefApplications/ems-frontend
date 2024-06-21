@@ -1,3 +1,10 @@
+# [2.16.0-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.16.0-rc.1...v2.16.0-rc.2) (2024-06-21)
+
+
+### Features
+
+* Email notification feature ([#2460](https://github.com/ReliefApplications/ems-frontend/issues/2460)) ([4cd674b](https://github.com/ReliefApplications/ems-frontend/commit/4cd674b7ef6e4d523f3ea8c1ed702d3d2237f469))
+
 # [2.16.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.15.1-rc.3...v2.16.0-rc.1) (2024-06-14)
 
 
