@@ -4,47 +4,68 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-- dev
+  - release
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
 - task: NodeTool@0
+  displayName: 'install node.js'
   inputs:
     versionSpec: '18.x'
-  displayName: 'Install Node.js'
-
-- script: |
-    npm install
-    npx nx run front-office:build:azure-dev
-    npx nx run back-office:build:azure-dev
-  displayName: 'npm install and build the apps'
-
+      
+- task: CmdLine@2
+  displayName: 'npm install'
+  inputs:
+    script: |
+        npm install
+    
+- task: CmdLine@2
+  displayName: 'activate Kendo UI license'
+  env:
+    KENDO_UI_LICENSE: $(KENDO_UI_LICENSE)
+  inputs:
+    script: |
+      npx kendo-ui-license activate
+    
+- task: CmdLine@2
+  displayName: 'build the apps'
+  inputs:
+    script: |
+      npx nx run front-office:build:azure-dev
+      npx nx run back-office:build:azure-dev
+    
 - task: ArchiveFiles@2
+  displayName: 'archive frontoffice'
   inputs:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/apps/front-office'
     includeRootFolder: false
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/dev/front-office/$(Build.BuildId).zip'
-    replaceExistingArchive: true
-
+    replaceExistingArchive: false
+      
 - task: ArchiveFiles@2
+  displayName: 'archive backoffice'
   inputs:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/apps/back-office'
     includeRootFolder: false
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/dev/back-office/$(Build.BuildId).zip'
-    replaceExistingArchive: true
-
+    replaceExistingArchive: false
+      
 - task: PublishBuildArtifacts@1
+  displayName: 'publish frontoffice'
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)/dev/front-office/$(Build.BuildId).zip'
     ArtifactName: 'dev-front-office'
     publishLocation: 'Container'
-
+      
 - task: PublishBuildArtifacts@1
+  displayName: 'publish backoffice'
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)/dev/back-office/$(Build.BuildId).zip'
     ArtifactName: 'dev-back-office'
     publishLocation: 'Container'
+      
+

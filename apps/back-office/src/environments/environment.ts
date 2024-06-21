@@ -4,16 +4,18 @@ import { sharedEnvironment } from './environment.shared';
 import { Environment } from './environment.type';
 
 /**
- * Authentication configuration
+ *
  */
 const authConfig: AuthConfig = {
-  issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
+  issuer:
+    'https://login.microsoftonline.com/76d22fc8-2330-45cf-ab36-51074cf8f1e2/v2.0',
   redirectUri: 'http://localhost:4200/',
   postLogoutRedirectUri: 'http://localhost:4200/auth/',
-  clientId: 'oort-client',
+  clientId: 'db40357f-374e-476e-9ce8-5c9b3cbe475a',
   scope: 'openid profile email offline_access',
   responseType: 'code',
   showDebugInformation: true,
+  strictDiscoveryDocumentValidation: false,
 };
 
 /**

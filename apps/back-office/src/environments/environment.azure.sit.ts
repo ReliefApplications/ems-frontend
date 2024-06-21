@@ -33,6 +33,8 @@ export const environment: Environment = {
   module: 'backoffice',
   availableLanguages: ['en'],
   authConfig,
+  esriApiKey:
+    'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg',
   theme,
   availableWidgets: [
     'donut-chart',
@@ -54,6 +56,6 @@ export const environment: Environment = {
     tracePropagationTargets: ['ems-safe-test.who.int'],
   },
   user: {
-    attributes: ['country', 'region', 'location', 'department'],
+    attributes: ['country', 'region', 'location'],
   },
 };
