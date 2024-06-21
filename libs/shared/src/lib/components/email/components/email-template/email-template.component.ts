@@ -53,8 +53,8 @@ export class EmailTemplateComponent
   /** List of data items. */
   public dataList!: any[];
 
-  /** Header fields name of the Preview table */
-  public previewTableHeader: any[] = [];
+  /** Fields selected in dataset step for display */
+  public selectedFields: any[] = [];
 
   /** List of emails. */
   public emails: string[] = [];
@@ -172,6 +172,8 @@ export class EmailTemplateComponent
   public showPreview = false;
   /** Show preview button for select with fiter option  */
   public showBtnPreview = false;
+  /** Array of fields */
+  public availableFields: any[] = [];
 
   /**
    * Composite filter group.
@@ -491,7 +493,7 @@ export class EmailTemplateComponent
       this.dataList = [];
       this.resource = [];
       this.datasetFields = [];
-      this.previewTableHeader = [];
+      this.selectedFields = [];
       this.loading = true;
       // const { dataList, resource, dataSetFields, dataSetResponse } =
       //   dataSet.cacheData;
@@ -500,7 +502,7 @@ export class EmailTemplateComponent
       this.dataList = dataList;
       this.resource = resource;
       this.datasetFields = dataset.fields; //datasetFields;
-      this.previewTableHeader = [
+      this.selectedFields = [
         ...new Set(this.selectedDataset.fields.map((ele: any) => ele.name)),
       ];
       this.dataset = datasetResponse;
@@ -560,8 +562,8 @@ export class EmailTemplateComponent
                     this.dataset = res?.data?.dataset;
                     this.datasetEmails = res?.data?.dataset?.emails;
                     this.data = res?.data?.dataset.records;
-                    this.datasetFields = this.allFields;
-                    this.previewTableHeader = dataset.fields.map(
+                    this.datasetFields = this.availableFields;
+                    this.selectedFields = dataset.fields.map(
                       (ele: any) => ele.name
                     );
                     this.dataList = this.getDataList(dataset);
@@ -1152,7 +1154,7 @@ export class EmailTemplateComponent
    */
   getResourceFields(data: any, fields: any) {
     const metaData = data?.resource?.metadata;
-    this.allFields = [];
+    this.availableFields = [];
     if (metaData?.length) {
       metaData.forEach((field: any) => {
         if (field && !missingTypesArray.includes(field.type)) {
@@ -1163,7 +1165,7 @@ export class EmailTemplateComponent
                   `_${FIELD_NAME.createdBy}.user.` +
                   `${obj.name === 'id' ? '_id' : obj.name}`;
                 obj.name = `${FIELD_NAME.createdBy}.` + obj.name.split('.')[2];
-                this.allFields.push(obj);
+                this.availableFields.push(obj);
               });
             } else if (
               field.name === FIELD_NAME.lastUpdatedBy &&
@@ -1176,7 +1178,7 @@ export class EmailTemplateComponent
 
                 obj.name =
                   `${FIELD_NAME.lastUpdatedBy}.` + obj.name.split('.')[2];
-                this.allFields.push(obj);
+                this.availableFields.push(obj);
               });
             } else if (
               field.name === 'lastUpdateForm' &&
@@ -1186,14 +1188,14 @@ export class EmailTemplateComponent
                 obj.name = '_lastUpdateForm.' + obj.name;
 
                 obj.name = 'lastUpdateForm.' + obj.name.split('.')[1];
-                this.allFields.push(obj);
+                this.availableFields.push(obj);
               });
             } else if (field.name === 'form' && field.fields?.length) {
               field.fields.forEach((obj: any) => {
                 obj.name = '_form.' + obj.name;
 
                 obj.name = 'form.' + obj.name.split('.')[1];
-                this.allFields.push(obj);
+                this.availableFields.push(obj);
               });
             } else if (field.type === TYPE_LABEL.resource) {
               if (field.fields) {
@@ -1245,9 +1247,9 @@ export class EmailTemplateComponent
                 });
               }
 
-              this.allFields.push(field);
+              this.availableFields.push(field);
             } else if (field.type === TYPE_LABEL.resources) {
-              this.allFields.push(field);
+              this.availableFields.push(field);
             } else {
               const metaField = fields?.find((x: any) => x.name === field.name);
               // Map Select Data to select fields if it exists
@@ -1255,10 +1257,10 @@ export class EmailTemplateComponent
               field.multiSelect = metaField.multiSelect;
               field.fields = metaField.fields ?? null;
               field.select = metaField.editor === 'select';
-              this.allFields.push(clone(field));
+              this.availableFields.push(clone(field));
             }
           }
-          this.allFields = this.allFields ?? [];
+          this.availableFields = this.availableFields ?? [];
         }
       });
     }

@@ -1301,7 +1301,7 @@ export class EmailService {
                 record[key]
               );
               if (matchingTexts === '') {
-                //If matching text is blank then needs to check with passign int data (Type cast issue)
+                // If matching text is blank then needs to check with passing int data (Type cast issue)
                 matchingTexts = metaField?.options
                   .filter((values: any) => {
                     if (typeof record[key] === 'object') {

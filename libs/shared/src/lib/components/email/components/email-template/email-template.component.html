@@ -153,36 +153,35 @@
                     (ngModelChange)="setField($event, fieldIndex)"
                     formControlName="field"
                   >
-                    <ng-container *ngFor="let fieldDetails of allFields">
+                    <ng-container *ngFor="let field of availableFields">
                       <!-- Normal Fields -->
                       <ui-select-option
-                      *ngIf="!fieldDetails.fields"
-                      [value]="fieldDetails.name"
-                    >
-                      {{ fieldDetails.text || fieldDetails.name }}
-                    </ui-select-option>
-                    <!-- Resource and Resources Fields -->
-                    <ui-select-option *ngIf="fieldDetails.fields" [isGroup]="true">
-                      <!-- Group Label -->
-                      {{ fieldDetails.text || fieldDetails.name }}
-                      <ui-select-option
-                        *ngFor="let subField of fieldDetails.fields"
-                        [value]="
-                          subField.parentName
-                            ? subField.name.split(' - ').join('.')
-                            : fieldDetails.name + '.' + subField.name
-                        "
+                        *ngIf="!field.fields"
+                        [value]="field.name"
                       >
-                        {{
-                          fieldDetails.name === '$attribute'
-                            ? subField.text || subField.name
-                            : fieldDetails.type === 'resource' ||
-                              subField.parentName
-                            ? subField.name
-                            : fieldDetails.name + ' - ' + subField.name
-                        }}
+                        {{ field.text || field.name }}
                       </ui-select-option>
-                    </ui-select-option>
+                      <!-- Resource and Resources Fields -->
+                      <ui-select-option *ngIf="field.fields" [isGroup]="true">
+                        <!-- Group Label -->
+                        {{ field.text || field.name }}
+                        <ui-select-option
+                          *ngFor="let subField of field.fields"
+                          [value]="
+                            subField.parentName
+                              ? subField.name.split(' - ').join('.')
+                              : field.name + '.' + subField.name
+                          "
+                        >
+                          {{
+                            field.name === '$attribute'
+                              ? subField.text || subField.name
+                              : field.type === 'resource' || subField.parentName
+                              ? subField.name
+                              : field.name + ' - ' + subField.name
+                          }}
+                        </ui-select-option>
+                      </ui-select-option>
                     </ng-container>
                   </ui-select-menu>
                 </div>
@@ -218,9 +217,9 @@
                   <ng-container
                     *ngIf="
                       !isDateOrDatetimeOperator(fieldIndex) &&
-                        !isNumericOperator(fieldIndex) &&
-                        !isSelectField(fieldIndex) &&
-                        getFieldType(fieldIndex) !== 'boolean'
+                      !isNumericOperator(fieldIndex) &&
+                      !isSelectField(fieldIndex) &&
+                      getFieldType(fieldIndex) !== 'boolean'
                     "
                   >
                     <div uiFormFieldDirective [defaultMargin]="false">
@@ -428,26 +427,24 @@
                   </ng-container>
 
                   <!-- Value picker for boolean fields -->
-                  <ng-container
-                  *ngIf="getFieldType(fieldIndex) === 'boolean'"
-                >
-                  <div uiFormFieldDirective [defaultMargin]="false">
-                    <label>{{ 'common.value.one' | translate }}</label>
-                    <ui-select-menu formControlName="value">
-                      <ui-select-option>{{
-                        'common.input.none' | translate
-                      }}</ui-select-option>
+                  <ng-container *ngIf="getFieldType(fieldIndex) === 'boolean'">
+                    <div uiFormFieldDirective [defaultMargin]="false">
+                      <label>{{ 'common.value.one' | translate }}</label>
+                      <ui-select-menu formControlName="value">
+                        <ui-select-option>{{
+                          'common.input.none' | translate
+                        }}</ui-select-option>
 
-                      <ui-select-option [value]="true">
-                        {{ 'common.true' | translate }}
-                      </ui-select-option>
+                        <ui-select-option [value]="true">
+                          {{ 'common.true' | translate }}
+                        </ui-select-option>
 
-                      <ui-select-option [value]="false">
-                        {{ 'common.false' | translate }}
-                      </ui-select-option>
-                    </ui-select-menu>
-                  </div>
-                </ng-container>
+                        <ui-select-option [value]="false">
+                          {{ 'common.false' | translate }}
+                        </ui-select-option>
+                      </ui-select-menu>
+                    </div>
+                  </ng-container>
                 </div>
                 <ui-button
                   [variant]="'danger'"
@@ -507,7 +504,7 @@
                 (change)="selectAllEmailItems($event)"
               />
             </th>
-            <ng-container *ngFor="let field of previewTableHeader">
+            <ng-container *ngFor="let field of selectedFields">
               <th
                 class="bg-blue-600 border-white-600 shadow-xs text-white p-2 text-center"
               >
@@ -535,7 +532,7 @@
                 *ngIf="selectedItemIndexes.indexOf(i) === -1"
               />
             </td>
-            <ng-container *ngFor="let field of previewTableHeader">
+            <ng-container *ngFor="let field of selectedFields">
               <td class="p-2 border border-blue-600 shadow-xs m-1 text-center">
                 {{ this.emailService.formatDataStrings(data[field], field) }}
               </td>
