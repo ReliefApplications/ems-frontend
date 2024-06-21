@@ -200,12 +200,12 @@ export class EmailTemplateComponent
       datasetSelect: '',
     });
 
-    this.datasetsForm?.value?.datasets?.forEach((eleDataset: any) => {
-      eleDataset.cacheData = {};
-    });
+    // this.datasetsForm?.value?.datasets?.forEach((eleDataset: any) => {
+    //   eleDataset.cacheData = {};
+    // });
 
     this.selectedEmails = this.emailBackLoad;
-    this.datasets = this.datasetsForm.value.datasets;
+    this.datasets = clone(this.datasetsForm.value.datasets);
     this.datasets?.forEach((ele: any) => {
       ele.blockName = ele.resource.name;
       // ele.name = ele.resource.name;
@@ -1028,7 +1028,7 @@ export class EmailTemplateComponent
   getDataSetPreview(filterType: string) {
     this.noEmail.emit(false);
     this.loading = true;
-    const currentDataset = clone(this.selectedDataset);
+    const currentDataset = JSON.parse(JSON.stringify(this.selectedDataset));
 
     currentDataset.filter.filters = this.filterQuery?.value?.filters.map(
       (x: any) => {
