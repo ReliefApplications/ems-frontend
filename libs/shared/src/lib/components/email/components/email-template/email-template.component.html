@@ -486,7 +486,7 @@
     *ngIf="activeSegmentIndex === 1 || showPreview"
   >
     <!-- Selection of emails -->
-    <div class="overflow-auto tblPreview" *ngIf="!loading && dataList?.length">
+    <div class="overflow-auto h-64" *ngIf="!loading && dataList?.length">
       <table
         *ngIf="dataList?.length"
         class="dataset-preview w-full border border-blue-600 shadow-xs m-1"
