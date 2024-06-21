@@ -1039,6 +1039,8 @@ export class EmailTemplateComponent
       }
     );
 
+    currentDataset.filter.logic = this.filterQuery?.value?.logic;
+
     currentDataset.cacheData = {};
     this.emailService
       .fetchDataSet(currentDataset)
