@@ -287,7 +287,7 @@ export class QueryBuilderService {
    * @param fields List of fields to query.
    * @returns QL document to build the query.
    */
-  private buildMetaFields(fields: any[]): any {
+  public buildMetaFields(fields: any[]): any {
     if (!fields) {
       return '';
     }
