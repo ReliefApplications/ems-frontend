@@ -1,3 +1,24 @@
+# [2.16.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.15.0...v2.16.0) (2024-06-21)
+
+
+### Bug Fixes
+
+* allow to skip validation of records ([df79fed](https://github.com/ReliefApplications/ems-frontend/commit/df79fed1ad728343a7568c8280276d6cdf55e87a))
+* cdk overlay would hide some other popups ([d33abcf](https://github.com/ReliefApplications/ems-frontend/commit/d33abcfdd2fb91a66e8d2ae17d30a33f4c620fc4))
+* cdk popup would hide tinymce popups AB[#94878](https://github.com/ReliefApplications/ems-frontend/issues/94878) ([d0f2607](https://github.com/ReliefApplications/ems-frontend/commit/d0f2607535ed2696f9cdc188fe2ba944d6abf1c8))
+* children layers now using parent visibility [#69081](https://github.com/ReliefApplications/ems-frontend/issues/69081) ([#2602](https://github.com/ReliefApplications/ems-frontend/issues/2602)) ([c3465e8](https://github.com/ReliefApplications/ems-frontend/commit/c3465e8367e739183ddabeb1e6f283d272e4db1f))
+* email template type would not appear as disabled ([#2596](https://github.com/ReliefApplications/ems-frontend/issues/2596)) ([22c6a97](https://github.com/ReliefApplications/ems-frontend/commit/22c6a9783f6898043a3ee638e52ddd750427de6d))
+* layer datasource could load indefinitively when creating a new layer ([31c106f](https://github.com/ReliefApplications/ems-frontend/commit/31c106f921ebaaf531b00ec5af8eb87090af8c88))
+* redirection should correctly work when user is not yet logged ([#2606](https://github.com/ReliefApplications/ems-frontend/issues/2606)) ([c21bc0a](https://github.com/ReliefApplications/ems-frontend/commit/c21bc0aa33e4e721f6421af4f822722ce689173a))
+* Redirection to resource page now works properly upon its creation ([#2597](https://github.com/ReliefApplications/ems-frontend/issues/2597)) ([8c6c038](https://github.com/ReliefApplications/ems-frontend/commit/8c6c03814335af7f085c89bf592923b7378ebd6d))
+* Sidenav collapsing on form builder firefox ([#2599](https://github.com/ReliefApplications/ems-frontend/issues/2599)) ([e32bd42](https://github.com/ReliefApplications/ems-frontend/commit/e32bd42bde1fd096bbf1d6479b190419f47605aa))
+
+
+### Features
+
+* allow null values in aggregations ([1194b2f](https://github.com/ReliefApplications/ems-frontend/commit/1194b2f33f1d26e28ff24356029fde2c369c61c9))
+* Email notification feature ([#2460](https://github.com/ReliefApplications/ems-frontend/issues/2460)) ([4cd674b](https://github.com/ReliefApplications/ems-frontend/commit/4cd674b7ef6e4d523f3ea8c1ed702d3d2237f469))
+
 # [2.16.0-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.16.0-rc.1...v2.16.0-rc.2) (2024-06-21)
 
 
