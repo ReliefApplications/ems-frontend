@@ -714,10 +714,10 @@ export class DashboardComponent
   public async selectContextDatasource() {
     const currContext = this.dashboard?.page?.context ?? null;
 
-    const { ContextDatasourceComponent } = await import(
-      './components/context-datasource/context-datasource.component'
+    const { EditContextModalComponent } = await import(
+      './components/edit-context-modal/edit-context-modal.component'
     );
-    const dialogRef = this.dialog.open(ContextDatasourceComponent, {
+    const dialogRef = this.dialog.open(EditContextModalComponent, {
       data: currContext,
     });
 
