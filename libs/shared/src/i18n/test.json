@@ -2212,6 +2212,14 @@
 			},
 			"closable": "******",
 			"context": {
+				"addTemplate": "******",
+				"alert": {
+					"edition": {
+						"element": "******",
+						"template": "******"
+					},
+					"preview": "******"
+				},
 				"datasource": {
 					"alert": "******",
 					"info": "******",
@@ -2220,14 +2228,11 @@
 					"update": "******"
 				},
 				"displayField": "******",
-				"edition": {
-					"element": "******",
-					"template": "******"
-				},
 				"notifications": {
 					"creatingTemplate": "******",
 					"loadDefault": "******",
-					"templateCreated": "******"
+					"templateCreated": "******",
+					"templatesDeleted": "{{number}} ******"
 				},
 				"origin": "******",
 				"refData": {
@@ -2243,6 +2248,12 @@
 			},
 			"contextFilter": "******",
 			"dashboardFilter": "******",
+			"dashboardTemplates": {
+				"manage": {
+					"few": "******"
+				},
+				"none": "******"
+			},
 			"deactivateFiltering": "******",
 			"filterVariant": {
 				"title": "******",

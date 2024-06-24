@@ -517,32 +517,32 @@ export class ContextService {
    *
    * @param dashboard Current dashboard
    * @param callback additional callback
+   * @param contextEl id of the current context element
    */
-  public initContext(dashboard: Dashboard, callback: any): void {
-    if (!dashboard?.page?.context || !dashboard?.id) return;
-    // Checks if the dashboard has context attached to it
-    const contentWithContext = dashboard?.page?.contentWithContext || [];
-    const id = dashboard.id;
-    const dContext = contentWithContext.find((c) => c.content === id);
-
-    if (!dContext) return;
-
-    if ('element' in dContext) {
+  public initContext(
+    dashboard: Dashboard,
+    callback: any,
+    contextEl?: string | null
+  ): void {
+    if (!dashboard.page?.context || !contextEl) {
+      return;
+    }
+    if ('refData' in dashboard.page.context) {
       // Returns context element
-      callback({ element: dContext.element });
-    } else if ('record' in dContext) {
+      callback({ element: contextEl });
+    } else if ('resource' in dashboard.page.context) {
       // Get record by id
       this.apollo
         .query<RecordQueryResponse>({
           query: GET_RECORD_BY_ID,
           variables: {
-            id: dContext.record,
+            id: contextEl,
           },
         })
         .subscribe((res) => {
           if (res?.data) {
             callback({
-              record: dContext.record,
+              record: contextEl,
               recordData: res.data.record,
             });
           }

@@ -21,7 +21,6 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./channels.component.scss'],
 })
 export class ChannelsComponent extends UnsubscribeComponent implements OnInit {
-  // === DATA ===
   /** Channels list */
   private channels: Channel[] = [];
   /** Channels data */

@@ -132,7 +132,7 @@ export class TemplatesComponent extends UnsubscribeComponent implements OnInit {
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.applicationService.addTemplate({
+        this.applicationService.addEmailTemplate({
           name: value.name,
           type: TemplateTypeEnum.EMAIL,
           content: {
