@@ -4,7 +4,8 @@
   >
     <div
       (click)="closed.emit()"
-      class="w-56 shrink bg-white text-sm font-normal leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5 flex flex-col rounded-lg overflow-hidden py-1"
+      class="shrink bg-white text-sm font-normal leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5 flex flex-col rounded-lg overflow-hidden py-1"
+      [ngClass]="width"
     >
       <ng-content></ng-content>
     </div>

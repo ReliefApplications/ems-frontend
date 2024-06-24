@@ -39,7 +39,11 @@
             <ng-container *ngFor="let permission of element.permissions">
               <ui-button
                 [disabled]="disabled"
-                *ngIf="permission.name !== 'canCreateRecords'"
+                *ngIf="
+                  !['canCreateRecords', 'canDownloadRecords'].includes(
+                    permission.name
+                  )
+                "
                 [isIcon]="true"
                 [icon]="permission.icon"
                 [variant]="permission.variant"

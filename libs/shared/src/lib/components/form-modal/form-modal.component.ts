@@ -332,12 +332,16 @@ export class FormModalComponent
    * @param survey current survey
    */
   public async onUpdate(survey: any): Promise<void> {
-    // const promises = this.formHelpersService.uploadTemporaryRecords(survey);
-    await this.formHelpersService.uploadFiles(
-      survey,
-      this.temporaryFilesStorage,
-      this.form?.id
-    );
+    try {
+      await this.formHelpersService.uploadFiles(
+        survey,
+        this.temporaryFilesStorage,
+        this.form?.id
+      );
+    } catch {
+      this.saving = false;
+      return;
+    }
     // await Promise.allSettled(promises);
     await this.formHelpersService.createTemporaryRecords(survey);
 
