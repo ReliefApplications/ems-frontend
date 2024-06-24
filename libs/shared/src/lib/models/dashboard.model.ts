@@ -261,7 +261,7 @@ export interface Dashboard {
   buttons?: ButtonActionT[];
   filter?: DashboardFilter;
   gridOptions?: any;
-  newTemplate?: boolean;
+  defaultTemplate?: boolean;
 }
 
 /** Model for dashboard graphql query response */

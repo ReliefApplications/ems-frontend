@@ -1,4 +1,4 @@
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import {
   Component,
   ElementRef,
@@ -18,10 +18,8 @@ import {
   DashboardService,
   Application,
   ConfirmService,
-  ReferenceDataService,
   Record,
   ButtonActionT,
-  ResourceRecordsNodesQueryResponse,
   DashboardQueryResponse,
   EditDashboardMutationResponse,
   DashboardComponent as SharedDashboardComponent,
@@ -35,7 +33,7 @@ import {
   DELETE_DASHBOARD_TEMPLATES,
   EDIT_DASHBOARD,
 } from './graphql/mutations';
-import { GET_DASHBOARD_BY_ID, GET_RESOURCE_RECORDS } from './graphql/queries';
+import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import {
   map,
@@ -56,9 +54,6 @@ import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { GridsterConfig } from 'angular-gridster2';
 import { DashboardTemplate } from './components/manage-dashboard-templates/dashboard-template-type';
-
-/** Default number of records fetched per page */
-const ITEMS_PER_PAGE = 10;
 
 /**
  * Back-office Dashboard page.
@@ -102,14 +97,8 @@ export class DashboardComponent
   public showAppMenu = false;
   /** List of available applications */
   public applications: Application[] = [];
-  /** Contextual reference data elements  */
-  public refDataElements: any[] = [];
-  /** Contextual records query */
-  public recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
   /** Contextual template id */
   public contextId = new FormControl<string | number | null>(null);
-  /** Field of contextual reference data */
-  public refDataValueField = '';
   /** Contextual record */
   public contextRecord: Record | null = null;
   /** Configured dashboard quick actions */
@@ -170,7 +159,6 @@ export class DashboardComponent
    * @param translate Angular translate service
    * @param confirmService Shared confirm service
    * @param contextService Dashboard context service
-   * @param refDataService Shared reference data service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
    * @param layoutService Shared layout service
@@ -190,7 +178,6 @@ export class DashboardComponent
     private translate: TranslateService,
     private confirmService: ConfirmService,
     private contextService: ContextService,
-    private refDataService: ReferenceDataService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
     private layoutService: UILayoutService,
@@ -322,10 +309,9 @@ export class DashboardComponent
             (this.dashboard?.page
               ? this.dashboard?.page?.canUpdate
               : this.dashboard?.step?.canUpdate) || false;
-          this.templateMode = !!dashboard.newTemplate;
+          this.templateMode = !!dashboard.defaultTemplate;
           this.editionActive = this.canUpdate && !this.templateMode;
           this.initContext();
-          this.updateContextOptions();
           this.setWidgets(dashboard, contextID);
           this.dashboardService.widgets.next(this.widgets);
           this.applicationId = this.dashboard.page
@@ -372,8 +358,11 @@ export class DashboardComponent
       });
   }
 
-  /** Creates the template for the corresponding page */
-  public createTemplate() {
+  /**
+   * Create the template for the corresponding page.
+   * Open it.
+   */
+  public onCreateTemplate() {
     if (this.dashboardId && this.contextEl) {
       this.snackBar.openSnackBar(
         this.translate.instant(
@@ -757,42 +746,11 @@ export class DashboardComponent
 
           const urlArr = this.router.url.split('/');
 
-          // load the linked data
-          this.updateContextOptions();
           // go the the parent dashboard
           urlArr[urlArr.length - 1] = `${parentDashboardId}`;
           this.router.navigateByUrl(urlArr.join('/'));
         }
       });
-  }
-
-  /**
-   * Update the context options.
-   * Loads elements from reference data or records from resource.
-   */
-  private updateContextOptions() {
-    const context = this.dashboard?.page?.context;
-    if (!context) return;
-
-    if ('resource' in context) {
-      this.recordsQuery =
-        this.apollo.watchQuery<ResourceRecordsNodesQueryResponse>({
-          query: GET_RESOURCE_RECORDS,
-          variables: {
-            first: ITEMS_PER_PAGE,
-            id: context.resource,
-          },
-        });
-    }
-
-    if ('refData' in context) {
-      this.refDataService.loadReferenceData(context.refData).then((refData) => {
-        this.refDataValueField = refData.valueField || '';
-        this.refDataService.fetchItems(refData).then(({ items }) => {
-          this.refDataElements = items;
-        });
-      });
-    }
   }
 
   /** Initializes the dashboard context */
@@ -919,33 +877,5 @@ export class DashboardComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
       subscription?.unsubscribe();
     });
-  }
-
-  /**
-   * Update query based on text search.
-   *
-   * @param search Search text from the graphql select
-   */
-  public onSearchChange(search: string): void {
-    const context = this.dashboard?.page?.context;
-    if (!context) return;
-    if ('resource' in context) {
-      this.recordsQuery.refetch({
-        variables: {
-          first: ITEMS_PER_PAGE,
-          id: context.resource,
-        },
-        filter: {
-          logic: 'and',
-          filters: [
-            {
-              field: context.displayField,
-              operator: 'contains',
-              value: search,
-            },
-          ],
-        },
-      });
-    }
   }
 }

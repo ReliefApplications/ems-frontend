@@ -2212,6 +2212,14 @@
 			},
 			"closable": "******",
 			"context": {
+				"addTemplate": "******",
+				"alert": {
+					"edition": {
+						"element": "******",
+						"template": "******"
+					},
+					"preview": "******"
+				},
 				"datasource": {
 					"alert": "******",
 					"info": "******",
@@ -2220,10 +2228,6 @@
 					"update": "******"
 				},
 				"displayField": "******",
-				"edition": {
-					"element": "******",
-					"template": "******"
-				},
 				"notifications": {
 					"creatingTemplate": "******",
 					"loadDefault": "******",

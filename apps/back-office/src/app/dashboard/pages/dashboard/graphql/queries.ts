@@ -55,7 +55,7 @@ export const GET_DASHBOARD_BY_ID = gql`
       }
       filter
       gridOptions
-      newTemplate
+      defaultTemplate
     }
   }
 `;
