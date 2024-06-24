@@ -12,6 +12,7 @@ import {
   DateModule,
   TooltipModule,
 } from '@oort-front/ui';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 /**
  * Composite Filter module.
@@ -29,6 +30,7 @@ import {
     DateModule,
     FormWrapperModule,
     TooltipModule,
+    ScrollingModule,
   ],
   exports: [FilterComponent],
 })
