@@ -23,6 +23,7 @@
     >
     </ui-graphql-select>
     <ui-button
+      *ngIf="contextRecord"
       uiSuffix
       [isIcon]="true"
       icon="close"
@@ -43,6 +44,7 @@
       </ui-select-option>
     </ui-select-menu>
     <ui-button
+      *ngIf="contextRecord"
       uiSuffix
       [isIcon]="true"
       icon="close"
