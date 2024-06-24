@@ -78,7 +78,11 @@
 		},
 		"comma": "virgule",
 		"copy": "Copier",
+		"copyright": {
+			"who": "Copyright © World Health Organization 2024."
+		},
 		"create": "Créer",
+		"createdBy": "Créé par",
 		"createdOn": "Date de création",
 		"cronEditor": {
 			"advanced": "Avancé",
@@ -170,6 +174,11 @@
 		"email": {
 			"few": "Emails",
 			"none": "Pas d'email",
+			"notification": {
+				"few": "Notifications par email",
+				"none": "Aucune Notification par email",
+				"one": "Notification par email"
+			},
 			"one": "Email"
 		},
 		"errors": {
@@ -225,6 +234,7 @@
 			"none": "Aucune mise en page",
 			"one": "Mise en page"
 		},
+		"legacy": "Obsolète",
 		"loading": "Chargement",
 		"modifiedOn": "Modifié le ",
 		"name": "Nom",
@@ -239,14 +249,64 @@
 			"dataNotRecovered": "Échec de la récupération des données",
 			"dataRecovered": "Les données ont été récupérées !",
 			"email": {
+				"banner": {
+					"image": "Bannière Image",
+					"removeTooltip": "Supprimer Bannière Image"
+				},
+				"body": {
+					"title": "Corps*"
+				},
+				"close": "Êtes-vous sûr de vouloir fermer cette notification? Les modifications apportées ne seront pas enregistrées.",
+				"dropdown": {
+					"emailInput": "Type de saisie d'e-mail",
+					"inTheLast": {
+						"placeholder": "Sélectionnez l'horodatage à partir des filtres...",
+						"tooltip": "Utilisez cette configuration uniquement si vous avez filtré les données à l'aide de l'opérateur « dans le dernier ». \nPar exemple, au cours des 2 derniers jours ou 24 heures"
+					},
+					"selectBlock": "Select a block",
+					"timestamp": "Select a timestamp"
+				},
 				"error": "Un problème est survenu lors de l'envoi de l'e-mail",
 				"errors": {
+					"noBody": "Le corps doit continuer!",
 					"noDistributionList": "Un problème est survenu lors de l'envoi de l'e-mail: aucune liste de distribution détectée",
+					"noSubject": "Le sujet doit continuer!",
 					"noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté"
+				},
+				"existing": "Ou utilisez l'existant",
+				"field": {
+					"filtered": "Select Filtered Field",
+					"noBlocks": "No blocks configured",
+					"selectBlock": "Block Select",
+					"selectPlaceholder": "Select Block Field",
+					"selectTitle": "Champ Select"
+				},
+				"fieldselect": {
+					"placeholder": "Sélection de champ",
+					"tooltip": "Sélectionnez l'option de champ uniquement si le champ contient une valeur unique ; \nsinon, le système utilisera par défaut le premier enregistrement dans les résultats"
+				},
+				"footer": {
+					"logo": "Pied-de-page Logo",
+					"removeTooltip": "Supprimer Pied-de-page Logo",
+					"style": "Pied-de-page Style"
+				},
+				"header": {
+					"logo": "En-tête Logo",
+					"removeTooltip": "Supprimer En-tête Logo",
+					"style": "En-tête Style"
 				},
 				"processing": "Envoi en cours...",
 				"ready": "E-mail prêt",
-				"sent": "E-mail envoyé"
+				"sent": "E-mail envoyé",
+				"style": {
+					"background": "Background Color",
+					"text": "Text Color"
+				},
+				"subject": {
+					"textTitle": "Sujet Text*",
+					"title": "Sujet"
+				},
+				"timestamp": "Horodatage"
 			},
 			"fetchingGroups": "Fetching groups from service...",
 			"file": {
@@ -377,6 +437,7 @@
 		"selectStatus": "Sélectionner un statut",
 		"semicolon": "point-virgule",
 		"send": "Envoyer",
+		"sendEmail": "Envoyer un e-mail",
 		"separator": "Séparateur",
 		"settings": "Paramètres",
 		"status": "Statut",
@@ -400,6 +461,9 @@
 			"one": "Modèle de notification"
 		},
 		"title": "Titre",
+		"toolTip": {
+			"newBlock": "Ajouter un nouveau bloc"
+		},
 		"tooltip": {
 			"dragDrop": "Glissez-déposez pour réorganiser",
 			"editor": {
@@ -748,6 +812,58 @@
 				}
 			}
 		},
+		"email": {
+			"alert": {
+				"invalidFields": "Les champs suivants ne peuvent pas être sélectionnés: <strong>{{fields}}</strong> car ils sont du type <strong>{{types}}</strong> et ne peut pas être correctement affiché dans le tableau de ce formulaire.",
+				"noResourceFields": "La ressource sélectionnée ne contient aucun champ",
+				"noSelectedFields": "Veuillez sélectionner au moins 1 champ pour sauvegarder ce jeu de données",
+				"tooManyRecords": "Pour le moment, nous sommes limités à récupérer seulement 50 enregistrements. Sur la base des conditions de filtre fournies, il existe <strong>{{totalRecords}}</strong> enregistrements correspondants. Veuillez ajouter des filtres supplémentaires pour que le nombre d'enregistrements soit inférieur ou égal à 50."
+			},
+			"back": "Retour à la liste",
+			"distributionList": {
+				"alert": {
+					"and": "et",
+					"noEmail": "L'ensemble de données sélectionné ne contient pas d'adresses e-mail valides",
+					"partOne": "Pour continuer, veuillez saisir",
+					"partThree": "au moins une adresse email de destinataire",
+					"partTwo": "un nom de liste de distribution"
+				},
+				"bcc": "CCI",
+				"cc": "CC",
+				"createNew": "Ou créer un nouveau",
+				"duplicate": "Le nom existe déjà",
+				"import": {
+					"download": "Télécharger le modèle",
+					"import": "Liste de distribution d'importation",
+					"loading": "Importation du fichier...",
+					"name": "Importer",
+					"success": "Importation réussie"
+				},
+				"list": "Liste de distribution",
+				"name": "Nom de la liste de distribution",
+				"to": "À"
+			},
+			"image": {
+				"rectangleValidation": "Veuillez télécharger une image avec un rapport hauteur/largeur plus rectangulaire, similaire à 960x80.",
+				"squareValidation": "Veuillez télécharger une image avec un rapport hauteur/largeur plus carré, ou similaire à 200x200."
+			},
+			"name": "Email",
+			"notification": {
+				"create": "Créer une notification",
+				"list": "Liste des notifications",
+				"type": "Type d'alerte",
+				"validTitle": "Veuillez saisir un titre"
+			},
+			"preview": {
+				"less": "Montrer moins",
+				"more": "Afficher {{length}} e-mails restants...",
+				"subject": "Sujet:"
+			},
+			"saveAsDraft": "Enregistrer comme brouillon",
+			"tooltip": {
+				"reverseDate": "AAAA/MM/JJ"
+			}
+		},
 		"emailBuilder": {
 			"body": "Corps du texte",
 			"default": "Défaut",
@@ -965,6 +1081,11 @@
 			"value": "Valeur"
 		},
 		"notifications": {
+			"email": {
+				"dropdown": {
+					"emailInput": "Type de saisie d'e-mail"
+				}
+			},
 			"paginator": {
 				"ariaLabel": "Sélectionnez la page de notifications"
 			},
@@ -1011,8 +1132,14 @@
 			}
 		},
 		"queryBuilder": {
+			"apply": "Appliquer le filtre",
+			"block": {
+				"label": "Titre du Bloc",
+				"title": "Bloc"
+			},
 			"dataset": {
-				"select": "Sélectionner un jeu de données"
+				"select": "Sélectionner un jeu de données",
+				"title": "Ressource"
 			},
 			"errors": {
 				"field": {
@@ -1032,12 +1159,15 @@
 			},
 			"filter": {
 				"and": "Et",
+				"apply": "Appliquer le filtre",
+				"field": "Champ",
 				"logic": "Logique de filtre",
 				"new": "Ajouter un nouveau filtre",
 				"newGroup": "Ajouter un nouveau groupe de filtres",
 				"operator": "Opérateur",
 				"or": "Ou",
-				"title": "Filtre"
+				"title": "Filtre",
+				"value": "Valeur"
 			},
 			"hint": {
 				"fields": "Sélectionnez des champs ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite",
@@ -1047,6 +1177,9 @@
 			"pagination": {
 				"first": "Limite",
 				"title": "Pagination"
+			},
+			"preview": {
+				"title": "Aperçu"
 			},
 			"sort": {
 				"ascending": "Croissant",
@@ -1259,6 +1392,22 @@
 			"update": {
 				"permissions": "Permissions",
 				"title": "Modifier les permissions des rôles et les canaux de diffusion"
+			}
+		},
+		"select": {
+			"distribution": {
+				"SelectFromList": "Selecteer uit Lijst",
+				"alertMe": "Alerte moi",
+				"apply": "Appliquer",
+				"bcc": "Cci",
+				"cc": "Cc",
+				"createFilterLogic": "Créer une logique de filtre",
+				"email": "Email",
+				"emailError": "Tapez les e-mails ici et appuyez sur ENTRÉE pour les ajouter à la liste de distribution",
+				"label": "Nom de la liste de distribution*",
+				"noPreviewData": "L'ensemble de données sélectionné ne contient aucune donnée d'aperçu",
+				"separateEmail": "Envoyer un e-mail séparé",
+				"to": "À"
 			}
 		},
 		"share": {
@@ -2075,6 +2224,7 @@
 			"filterIsNotNullOperator": "Est non-nul",
 			"filterIsNullOperator": "Est nul",
 			"filterIsTrue": "est vrai",
+			"filterIsWithinTheLast": "Est dans le dernier",
 			"filterLtOperator": "Est plus petit que",
 			"filterLteOperator": "Est plus petit que ou égal à",
 			"filterMenuLogicDropDownLabel": "'Logique de filtre sur {columnName}'",
@@ -2189,6 +2339,7 @@
 		"customNotification": {
 			"lastExecution": "Dernière exécution",
 			"schedule": "Fréquence",
+			"select": "Sélectionnez le type de notification",
 			"type": "Type"
 		},
 		"dashboard": {
@@ -2484,7 +2635,12 @@
 				"title": "Attributs"
 			},
 			"settings": {
-				"actions": "Actions"
+				"actions": "Actions",
+				"emailCreated": "Nouvelle notification par e-mail créée",
+				"emailDeleted": "Notification par e-mail supprimée avec succès",
+				"emailEdited": "Notification par e-mail modifiée avec succès.",
+				"emailFailMsg": "Oups !... Quelque chose ne va pas lors de l'envoi d'un e-mail",
+				"emailSent": "La notification par e-mail a été enregistrée et envoyée avec succès"
 			}
 		},
 		"applications": {

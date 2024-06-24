@@ -1,3 +1,4 @@
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CanDeactivateGuard } from '../guards/can-deactivate.guard';
@@ -151,6 +152,12 @@ const routes: Routes = [
               import('@oort-front/shared').then(
                 (m) => m.ApplicationTemplatesViewModule
               ),
+            // canActivate: [PermissionGuard]
+          },
+          {
+            path: 'email-notifications',
+            loadChildren: () =>
+              import('@oort-front/shared').then((m) => m.EmailModule),
             // canActivate: [PermissionGuard]
           },
           {

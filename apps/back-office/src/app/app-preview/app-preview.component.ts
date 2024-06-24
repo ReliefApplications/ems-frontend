@@ -51,6 +51,18 @@ const getAbilityForAppPreview = (app: Application, role: string) => {
     can(['create', 'read', 'update', 'delete', 'manage'], 'CustomNotification');
   }
 
+  // === Email Notifications ===
+  if (permissions.includes('can_see_email_notifications')) {
+    can('read', 'EmailNotification');
+  }
+  if (permissions.includes('can_update_email_notifications')) {
+    can(['update', 'delete'], 'EmailNotification');
+  }
+
+  if (permissions.includes('can_create_email_notifications')) {
+    can('create', 'EmailNotification');
+  }
+
   return new AppAbility(rules);
 };
 
@@ -156,12 +168,21 @@ export class AppPreviewComponent
                 visible: x.visible ?? false,
               })) || [];
           const adminNavItems: any[] = [];
+          if (ability.can('read', 'EmailNotification')) {
+            adminNavItems.push({
+              name: this.translate.instant('common.email.notification.few'),
+              path: './settings/email-notifications',
+              icon: 'mail',
+              visible: true,
+            });
+          }
           if (ability.can('manage', 'Template')) {
             adminNavItems.push({
               name: this.translate.instant('common.template.few'),
               path: './settings/templates',
               icon: 'description',
               visible: true,
+              legacy: true,
             });
           }
           if (ability.can('manage', 'DistributionList')) {
@@ -170,6 +191,7 @@ export class AppPreviewComponent
               path: './settings/distribution-lists',
               icon: 'mail',
               visible: true,
+              legacy: true,
             });
           }
           if (ability.can('manage', 'CustomNotification')) {
