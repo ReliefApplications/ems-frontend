@@ -72,8 +72,10 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
   /** Data */
   @Input() widget: any;
 
-  /** Permissions */
+  /** Permission to create records */
   public canCreateRecords = false;
+  /** Permission to download records */
+  public canDownloadRecords = false;
 
   /** Cached configuration */
   public layout: Layout | null = null;
@@ -178,11 +180,16 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
             resource: this.settings.resource,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             this.canCreateRecords = get(
-              res,
-              'data.resource.canCreateRecords',
+              data,
+              'resource.canCreateRecords',
+              false
+            );
+            this.canDownloadRecords = get(
+              data,
+              'resource.canDownloadRecords',
               false
             );
           }

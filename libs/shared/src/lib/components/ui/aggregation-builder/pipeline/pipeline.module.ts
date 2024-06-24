@@ -21,6 +21,7 @@ import {
   SelectMenuModule,
   IconModule,
   AlertModule,
+  CheckboxModule,
 } from '@oort-front/ui';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { ResizableModule } from 'angular-resizable-element';
@@ -56,6 +57,7 @@ import { ResizableModule } from 'angular-resizable-element';
     MonacoEditorModule,
     ResizableModule,
     AlertModule,
+    CheckboxModule,
   ],
   exports: [
     PipelineComponent,

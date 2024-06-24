@@ -558,25 +558,22 @@ export class FormBuilderComponent
       }
     }
     if (question.getType() === 'matrix') {
-      question.columns.forEach(
-        (x: any) =>
-          (x.value = this.formHelpersService.toSnakeCase(
-            x.value || x.text || x
-          ))
-      );
-      question.rows.forEach(
-        (x: any) =>
-          (x.value = this.formHelpersService.toSnakeCase(
-            x.value || x.text || x
-          ))
-      );
+      question.columns.forEach((x: any) => {
+        x.text = x.text || x.value || x;
+        x.value = this.formHelpersService.toSnakeCase(x.value || x.text || x);
+      });
+      question.rows.forEach((x: any) => {
+        x.text = x.text || x.value || x;
+        x.value = this.formHelpersService.toSnakeCase(x.value || x.text || x);
+      });
     }
     if (question.getType() === 'matrixdropdown') {
       question.columns.forEach((x: any) => {
-        x.name = this.formHelpersService.toSnakeCase(x.name || x.title || x);
         x.title = x.title || x.name || x;
+        x.name = this.formHelpersService.toSnakeCase(x.name || x.title || x);
       });
       question.rows.forEach((x: any) => {
+        x.text = x.text || x.value || x;
         x.value = this.formHelpersService.toSnakeCase(x.value || x.text || x);
       });
     }

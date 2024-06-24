@@ -141,9 +141,7 @@ export class QueryBuilderComponent
           );
         }
       });
-      const setFormBuilderControls = (
-        fieldControlRequired: boolean = false
-      ) => {
+      const setFormBuilderControls = (fieldControlRequired = false) => {
         this.form?.setControl('filter', createFilterGroup(null));
         this.form?.setControl(
           'fields',

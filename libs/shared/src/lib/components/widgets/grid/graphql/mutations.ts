@@ -45,7 +45,13 @@ export const EDIT_RECORDS = gql`
     $template: ID
     $lang: String
   ) {
-    editRecords(ids: $ids, data: $data, template: $template, lang: $lang) {
+    editRecords(
+      ids: $ids
+      data: $data
+      template: $template
+      lang: $lang
+      skipValidation: true
+    ) {
       id
       data
       createdAt

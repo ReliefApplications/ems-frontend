@@ -477,7 +477,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
                           contextFilters: aggregation.contextFilters
                             ? JSON.parse(aggregation.contextFilters)
                             : {},
-                          graphQLVariables:
+                          queryParams:
                             this.widgetService.replaceReferenceDataQueryParams(
                               aggregation.referenceDataVariableMapping
                             ),
