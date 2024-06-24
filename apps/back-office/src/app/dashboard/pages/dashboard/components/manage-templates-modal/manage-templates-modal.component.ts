@@ -18,18 +18,26 @@ import {
   UnsubscribeComponent,
   EmptyModule,
   DashboardsQueryResponse,
+  DashboardTemplate,
 } from '@oort-front/shared';
-import { debounceTime, distinctUntilChanged, firstValueFrom } from 'rxjs';
+import {
+  BehaviorSubject,
+  debounceTime,
+  distinctUntilChanged,
+  firstValueFrom,
+} from 'rxjs';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { DashboardTemplate } from './dashboard-template-type';
 import { Apollo } from 'apollo-angular';
 import { GET_DASHBOARDS_NAMES } from '../../graphql/queries';
 
-/** Modal to manage existing dashboard templates */
+/**
+ * Modal to manage existing dashboard templates.
+ * Templates are only removed when clicking on save.
+ */
 @Component({
-  selector: 'app-manage-dashboard-templates',
-  templateUrl: './manage-dashboard-templates.component.html',
-  styleUrls: ['./manage-dashboard-templates.component.scss'],
+  selector: 'app-manage-templates-modal',
+  templateUrl: './manage-templates-modal.component.html',
+  styleUrls: ['./manage-templates-modal.component.scss'],
   standalone: true,
   imports: [
     CommonModule,
@@ -47,23 +55,26 @@ import { GET_DASHBOARDS_NAMES } from '../../graphql/queries';
     EmptyModule,
     ReactiveFormsModule,
     SpinnerModule,
+    TableModule,
   ],
 })
-export class ManageDashboardTemplatesComponent
+export class ManageTemplateModalComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   /** List of button actions from dashboard */
   public dashboardTemplates: DashboardTemplate[] = [];
+  /** Behavior subject to track change in action buttons */
+  public dataSource = new BehaviorSubject(this.dashboardTemplates);
   /** Search control */
   public searchControl: FormControl = new FormControl();
-  /** Search string, delayed from search control */
-  public searchTerm = '';
   /** Loading indicator */
   public loading = false;
+  /** Table columns */
+  public displayedColumns: string[] = ['name', 'actions'];
 
   /**
-   * Component for editing dashboard dashboard templates
+   * Component for editing dashboard templates
    *
    * @param dialogRef dialog reference
    * @param data data passed to the modal
@@ -86,11 +97,11 @@ export class ManageDashboardTemplatesComponent
   ngOnInit(): void {
     this.searchControl.valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
-      .subscribe((searchTerm) => {
-        this.searchTerm = searchTerm;
+      .subscribe(() => {
+        this.updateTable();
       });
     if (this.data && this.data.dashboardTemplates) {
-      this.dashboardTemplates = [...this.data.dashboardTemplates];
+      this.dashboardTemplates = this.data.dashboardTemplates;
       this.getDashboardNames();
     }
   }
@@ -115,6 +126,7 @@ export class ManageDashboardTemplatesComponent
       ...template,
       ...('element' in template && { name: template.element }),
     }));
+    this.dataSource.next(this.dashboardTemplates);
 
     // Only execute the query if there are records
     if (recordIds.length > 0) {
@@ -137,6 +149,7 @@ export class ManageDashboardTemplatesComponent
             name: dashboardMap.get(template.content),
           }),
         }));
+        this.dataSource.next(this.dashboardTemplates);
       });
     }
   }
@@ -178,20 +191,25 @@ export class ManageDashboardTemplatesComponent
     });
   }
 
-  /**
-   * Checks if dashboard template name matches search term
-   *
-   * @param templateName name of the dashboard template
-   * @returns true if template name matches search, else false
-   */
-  public matchesSearch(templateName: string) {
-    return this.searchTerm === ''
-      ? true
-      : templateName.includes(this.searchTerm);
-  }
-
   /** On click on the save button close the dialog with the form value */
   public onSubmit(): void {
     this.dialogRef.close(this.dashboardTemplates);
+  }
+
+  /**
+   * Updates the dataSource to reflect the state of the buttonActions and to apply the filter
+   */
+  public updateTable() {
+    let templates: DashboardTemplate[];
+    const searchTerm = this.searchControl.value;
+
+    if (searchTerm !== '') {
+      templates = this.dashboardTemplates.filter((template) =>
+        template.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    } else {
+      templates = this.dashboardTemplates;
+    }
+    this.dataSource.next([...templates]);
   }
 }

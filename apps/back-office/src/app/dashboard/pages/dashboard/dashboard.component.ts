@@ -27,6 +27,7 @@ import {
   DashboardQueryType,
   AddDashboardTemplateMutationResponse,
   DeleteDashboardTemplatesMutationResponse,
+  DashboardTemplate,
 } from '@oort-front/shared';
 import {
   ADD_DASHBOARD_TEMPLATE,
@@ -53,7 +54,6 @@ import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { GridsterConfig } from 'angular-gridster2';
-import { DashboardTemplate } from './components/manage-dashboard-templates/dashboard-template-type';
 
 /**
  * Back-office Dashboard page.
@@ -656,11 +656,11 @@ export class DashboardComponent
 
   /** Opens modal to delete existing templates */
   public async onManageTemplates() {
-    const { ManageDashboardTemplatesComponent } = await import(
-      './components/manage-dashboard-templates/manage-dashboard-templates.component'
+    const { ManageTemplateModalComponent } = await import(
+      './components/manage-templates-modal/manage-templates-modal.component'
     );
     const dialogRef = this.dialog.open<DashboardTemplate[] | undefined>(
-      ManageDashboardTemplatesComponent,
+      ManageTemplateModalComponent,
       {
         data: { dashboardTemplates: this.dashboardTemplates },
         disableClose: true,
