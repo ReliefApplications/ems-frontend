@@ -665,7 +665,7 @@ export class FormHelpersService {
       // Forms created from a Kobo form can have questions starting with a _ if the original question in Kobo had a number in the beginning
       text = text.substring(1);
     }
-    return text.match(/^[a-z0-9]+(_[a-z0-9]+)*$/);
+    return text.match(/^[a-zA-Z0-9]+(_[a-zA-Z0-9]+)*$/);
   }
 
   /**
