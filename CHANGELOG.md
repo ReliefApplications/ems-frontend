@@ -1,3 +1,10 @@
+# [2.17.0-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-rc.1...v2.17.0-rc.2) (2024-06-26)
+
+
+### Bug Fixes
+
+* email distribution list filter logic not taken into account ([#2623](https://github.com/ReliefApplications/ems-frontend/issues/2623)) ([4cc4b91](https://github.com/ReliefApplications/ems-frontend/commit/4cc4b913e5b578135dc0512f2c3ef5afc5b89aae))
+
 # [2.17.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.16.0...v2.17.0-rc.1) (2024-06-24)
 
 
