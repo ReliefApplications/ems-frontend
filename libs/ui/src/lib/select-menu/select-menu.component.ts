@@ -376,7 +376,7 @@ export class SelectMenuComponent
   getValuesLabel(selectedValues: any[]) {
     let values = this.optionList.filter((option: any) => {
       for (const value of selectedValues) {
-        if (value === option.value) {
+        if (value == option.value) {
           return option;
         }
       }

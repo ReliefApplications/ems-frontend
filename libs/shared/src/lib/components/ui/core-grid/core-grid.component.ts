@@ -126,6 +126,8 @@ export class CoreGridComponent
   @Input() showExport = true;
   /** Whether new records can be created */
   @Input() canCreateRecords = false;
+  /** Whether records can be downloaded */
+  @Input() canDownloadRecords = false;
 
   // === OUTPUTS ===
   /** Event emitter for layout change */
