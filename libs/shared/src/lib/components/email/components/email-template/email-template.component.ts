@@ -1030,6 +1030,7 @@ export class EmailTemplateComponent
     this.loading = true;
     const currentDataset = JSON.parse(JSON.stringify(this.selectedDataset));
 
+    // Update filters of dataset
     currentDataset.filter.filters = this.filterQuery?.value?.filters.map(
       (x: any) => {
         if (x.field.includes(' - ')) {
@@ -1038,10 +1039,11 @@ export class EmailTemplateComponent
         return x;
       }
     );
-
     currentDataset.filter.logic = this.filterQuery?.value?.logic;
 
+    // Remove cache data to prevent payload issue
     currentDataset.cacheData = {};
+
     this.emailService
       .fetchDataSet(currentDataset)
       .pipe(takeUntil(this.destroy$))
