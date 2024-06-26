@@ -539,11 +539,11 @@ export class ContextService {
             id: contextEl,
           },
         })
-        .subscribe((res) => {
-          if (res?.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             callback({
               record: contextEl,
-              recordData: res.data.record,
+              recordData: data.record,
             });
           }
         });

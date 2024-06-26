@@ -282,8 +282,8 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.emailService
       .getEmailNotifications(this.applicationId)
-      .subscribe((res: any) => {
-        this.distributionLists = res?.data?.emailNotifications?.edges ?? [];
+      .subscribe(({ data }: any) => {
+        this.distributionLists = data?.emailNotifications?.edges ?? [];
         let uniquDistributionLists = Array.from(
           new Set(this.emailService.distributionListNames)
         );

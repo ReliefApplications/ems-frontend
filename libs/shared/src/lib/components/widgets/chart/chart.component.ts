@@ -42,20 +42,20 @@ const joinFilters = (
   contextFilters: CompositeFilterDescriptor,
   predefinedFilter: CompositeFilterDescriptor | null
 ): CompositeFilterDescriptor => {
-  const res: CompositeFilterDescriptor = {
+  const filter: CompositeFilterDescriptor = {
     logic: 'and',
     filters: [],
   };
 
   if (contextFilters) {
-    res.filters.push(contextFilters);
+    filter.filters.push(contextFilters);
   }
 
   if (predefinedFilter) {
-    res.filters.push(predefinedFilter);
+    filter.filters.push(predefinedFilter);
   }
 
-  return res;
+  return filter;
 };
 
 /**

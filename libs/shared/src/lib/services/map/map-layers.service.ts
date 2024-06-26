@@ -434,7 +434,7 @@ export class MapLayersService {
    */
   async createLayerFromDefinition(layer: LayerModel, injector: Injector) {
     if (this.isDatasourceValid(layer.datasource)) {
-      const res = await lastValueFrom(
+      const data = await lastValueFrom(
         forkJoin({
           layer: of(layer),
           geojson: this.getLayerGeoJson(layer),
@@ -442,8 +442,8 @@ export class MapLayersService {
       );
       return new Layer(
         {
-          ...res.layer,
-          geojson: res.geojson,
+          ...data.layer,
+          geojson: data.geojson,
         },
         injector,
         this.document

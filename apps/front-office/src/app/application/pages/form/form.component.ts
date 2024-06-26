@@ -94,8 +94,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
             },
           })
           .pipe(
-            switchMap((res) => {
-              this.step = res.data.step;
+            switchMap(({ data }) => {
+              this.step = data.step;
               return this.getFormQuery(this.step.content ?? '');
             })
           )
@@ -111,8 +111,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
             },
           })
           .pipe(
-            switchMap((res) => {
-              this.page = res.data.page;
+            switchMap(({ data }) => {
+              this.page = data.page;
               return this.getFormQuery(this.page.content ?? '');
             })
           )

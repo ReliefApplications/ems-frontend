@@ -75,8 +75,8 @@ export class ConfigDisplayGridFieldsModalComponent
   ngOnInit(): void {
     this.queryBuilder.availableQueries$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res) => {
-        if (res.length > 0) {
+      .subscribe((queries) => {
+        if (queries.length > 0) {
           const hasDataForm = this.data.form !== null;
           const queryName = hasDataForm
             ? this.data.form.value.name

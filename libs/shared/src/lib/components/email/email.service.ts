@@ -9,7 +9,7 @@ import {
 } from './graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { RestService } from '../../services/rest/rest.service';
 import { TYPE_LABEL } from './filter/filter.const';
 import { FieldStore } from './models/email.const';
@@ -841,10 +841,10 @@ export class EmailService {
         query.tabIndex = index;
         query.pageSize = 50;
 
-        const res = await this.fetchDataSet(query).toPromise();
+        const { data } = await firstValueFrom(this.fetchDataSet(query));
 
-        if (res?.data?.dataset) {
-          const datasetResponse = res.data.dataset.records;
+        if (data?.dataset) {
+          const datasetResponse = data.dataset.records;
           const mergedObject = this.mergeObjects(datasetResponse);
           const mergedObjectKeys = Object.keys(mergedObject);
 
@@ -1003,71 +1003,74 @@ export class EmailService {
       query.tabIndex = count;
       count++;
       query.pageSize = Number(query.pageSize);
-      this.fetchDataSet(query).subscribe((res: { data: { dataset: any } }) => {
-        if (res?.data?.dataset) {
-          const datasetResponse = res?.data?.dataset.records;
-          this.dataList = datasetResponse?.map((record: any) => {
-            const flattenedObject = this.flattenRecord(
-              record,
-              resourceInfo,
-              query
-            );
+      this.fetchDataSet(query).subscribe(
+        ({ data }: { data: { dataset: any } }) => {
+          if (data?.dataset) {
+            const datasetResponse = data?.dataset.records;
+            this.dataList = datasetResponse?.map((record: any) => {
+              const flattenedObject = this.flattenRecord(
+                record,
+                resourceInfo,
+                query
+              );
 
-            query.fields.forEach((x: any) => {
-              if (x.parentName) {
-                x.name = `${x.parentName} - ${x.childName}`;
-                x.type = x.childType;
-              }
+              query.fields.forEach((x: any) => {
+                if (x.parentName) {
+                  x.name = `${x.parentName} - ${x.childName}`;
+                  x.type = x.childType;
+                }
+              });
+
+              delete flattenedObject.data;
+
+              const flatData = Object.fromEntries(
+                Object.entries(flattenedObject).filter(
+                  ([, value]) => value !== null && value !== undefined
+                )
+              );
+
+              return flatData;
             });
-
-            delete flattenedObject.data;
-
-            const flatData = Object.fromEntries(
-              Object.entries(flattenedObject).filter(
-                ([, value]) => value !== null && value !== undefined
-              )
-            );
-
-            return flatData;
-          });
-          if (this.dataList?.length) {
-            const existfields = emailData.datasets[
-              res?.data?.dataset?.tabIndex
-            ].fields.map((x: any) => x.name);
-            const temp = Object.keys(this.dataList[0]);
-            const notmatching = temp.filter(
-              (currentId) => !existfields.some((item: any) => item == currentId)
-            );
-            existfields.concat(notmatching);
-            this.datasetFields = existfields;
-          }
-          allPreviewData.push({
-            dataList: this.dataList,
-            datasetFields: this.datasetFields,
-            tabIndex: res?.data?.dataset?.tabIndex,
-            tabName:
-              res?.data?.dataset?.tabIndex < this.tabs.length
-                ? this.tabs[res.data.dataset.tabIndex].title
-                : '',
-          });
-          if (this.tabs.length == allPreviewData.length) {
-            allPreviewData = allPreviewData.sort(
-              (a: any, b: any) => a.tabIndex - b.tabIndex
-            );
-            // this.loading = false;
-            this.navigateToPreview.emit(allPreviewData);
-            this.setAllPreviewData(allPreviewData);
-            if (isSendEmail) {
-              this.stepperStep = 5;
-              this.isPreview = true;
-              this.isLinear = false;
+            if (this.dataList?.length) {
+              const existfields = emailData.datasets[
+                data?.dataset?.tabIndex
+              ].fields.map((x: any) => x.name);
+              const temp = Object.keys(this.dataList[0]);
+              const notmatching = temp.filter(
+                (currentId) =>
+                  !existfields.some((item: any) => item == currentId)
+              );
+              existfields.concat(notmatching);
+              this.datasetFields = existfields;
             }
+            allPreviewData.push({
+              dataList: this.dataList,
+              datasetFields: this.datasetFields,
+              tabIndex: data?.dataset?.tabIndex,
+              tabName:
+                data?.dataset?.tabIndex < this.tabs.length
+                  ? this.tabs[data.dataset.tabIndex].title
+                  : '',
+            });
+            if (this.tabs.length == allPreviewData.length) {
+              allPreviewData = allPreviewData.sort(
+                (a: any, b: any) => a.tabIndex - b.tabIndex
+              );
+              // this.loading = false;
+              this.navigateToPreview.emit(allPreviewData);
+              this.setAllPreviewData(allPreviewData);
+              if (isSendEmail) {
+                this.stepperStep = 5;
+                this.isPreview = true;
+                this.isLinear = false;
+              }
+              this.emailListLoading = false;
+            }
+          } else {
             this.emailListLoading = false;
           }
-        } else {
-          this.emailListLoading = false;
         }
-      });
+      );
     }
     if (emailData?.datasets?.length == 0) {
       this.emailListLoading = false;

@@ -39,10 +39,10 @@ export class AccessGuard implements CanActivate {
     | boolean
     | UrlTree {
     return this.authService.getProfile().pipe(
-      map((res) => {
-        if (res.data.me) {
-          if (res.data.me.isAdmin) {
-            this.authService.user.next(res.data.me);
+      map(({ data }) => {
+        if (data.me) {
+          if (data.me.isAdmin) {
+            this.authService.user.next(data.me);
             return true;
           } else {
             this.snackBar.openSnackBar(
