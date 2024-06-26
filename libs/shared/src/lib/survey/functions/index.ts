@@ -28,6 +28,10 @@ import replace from './replace';
 import regexReplace from './regexReplace';
 import round from './round';
 import parseJSON from './parseJSON';
+import once from './once';
+import formatDateTime from './formatDateTime';
+import join from './join';
+import concat from './concat';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -48,6 +52,7 @@ export const functions = [
   { fn: push, name: 'push' },
   { fn: getNumberOfMembers, name: 'getNumberOfMembers' },
   { fn: formatDate, name: 'formatDate' },
+  { fn: formatDateTime, name: 'formatDateTime' },
   { fn: getLoadedRecord, name: 'getLoadedRecord' },
   { fn: getListByProp, name: 'getListByProp' },
   { fn: filter, name: 'filter' },
@@ -59,6 +64,9 @@ export const functions = [
   { fn: regexReplace, name: 'regexReplace' },
   { fn: round, name: 'round' },
   { fn: parseJSON, name: 'parseJSON' },
+  { fn: once, name: 'once' },
+  { fn: join, name: 'join' },
+  { fn: concat, name: 'concat' },
 ];
 
 /** Generators for each async custom function available  */
