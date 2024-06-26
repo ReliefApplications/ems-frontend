@@ -829,11 +829,14 @@ export class EmsTemplateComponent
             name: fieldDataArr[2],
             kind: 'SCALAR',
           };
-          if (!acc[fieldDataArr[0]].field.includes(json)) {
-            acc[fieldDataArr[0]].fields.push({
-              name: fieldDataArr[2],
-              kind: 'SCALAR',
-            });
+
+          if (
+            !acc[fieldDataArr[0]].fields.some(
+              (field: { name: any; kind: string }) =>
+                field.name === json.name && field.kind === json.kind
+            )
+          ) {
+            acc[fieldDataArr[0]].fields.push(json);
           }
         } else {
           acc[field.name] = field;
