@@ -672,7 +672,13 @@ export class EmsTemplateComponent
       this.emailService.datasetsForm?.value?.datasets?.forEach((data: any) => {
         delete data.cacheData;
       });
+
       const queryData = this.emailService.datasetsForm.value;
+
+      const dataSet = queryData.datasets;
+
+      queryData['datasets'] = this.formatPayload(dataSet);
+
       queryData.notificationType =
         this.emailService.datasetsForm.controls.notificationType.value;
       this.applicationService.application$.subscribe((res: any) => {
@@ -793,6 +799,56 @@ export class EmsTemplateComponent
           });
       }
     }
+  }
+
+  /**
+   * This function returns the formatted data.
+   *
+   * @param dataSet set of the data
+   * @returns grouped form data
+   */
+  formatPayload(dataSet: any) {
+    const groupedDataSet = dataSet.map((data: any) => {
+      const fieldData = data.fields;
+
+      const groupedFields = fieldData.reduce((acc: any, field: any) => {
+        if (field.name.includes('.')) {
+          const fieldDataArr = field.name.split('.');
+          console.log('field arr >>> ', fieldDataArr);
+
+          if (!acc[fieldDataArr[0]]) {
+            acc[fieldDataArr[0]] = {
+              name: fieldDataArr[0],
+              type: fieldDataArr[1],
+              kind: 'OBJECT',
+              fields: [],
+            };
+          }
+
+          const json = {
+            name: fieldDataArr[2],
+            kind: 'SCALAR',
+          };
+          if (!acc[fieldDataArr[0]].field.includes(json)) {
+            acc[fieldDataArr[0]].fields.push({
+              name: fieldDataArr[2],
+              kind: 'SCALAR',
+            });
+          }
+        } else {
+          acc[field.name] = field;
+        }
+
+        return acc;
+      }, {});
+
+      return {
+        ...data,
+        fields: Object.values(groupedFields),
+      };
+    });
+
+    return groupedDataSet;
   }
 
   /**
