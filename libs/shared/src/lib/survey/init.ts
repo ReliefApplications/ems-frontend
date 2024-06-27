@@ -11,6 +11,8 @@ import * as ResourceComponent from './components/resource';
 import * as ResourcesComponent from './components/resources';
 import * as OwnerComponent from './components/owner';
 import * as UsersComponent from './components/users';
+import * as PeopleComponent from './components/people';
+import * as singlepeopleComponent from './components/singlePeople';
 import * as GeospatialComponent from './components/geospatial';
 import * as TextWidget from './widgets/text-widget';
 import * as CommentWidget from './widgets/comment-widget';
@@ -125,6 +127,8 @@ export const initCustomSurvey = (
     OwnerComponent.init(apollo, ComponentCollection.Instance);
     UsersComponent.init(ComponentCollection.Instance, domService);
     GeospatialComponent.init(domService, ComponentCollection.Instance);
+    PeopleComponent.init(ComponentCollection.Instance, domService);
+    singlepeopleComponent.init(ComponentCollection.Instance, domService);
   }
 
   // load global properties

@@ -40,7 +40,7 @@ import {
 } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridActions, GridSettings } from './models/grid-settings.model';
-import { get, isEqual, isNil } from 'lodash';
+import { get, isArray, isEqual, isNil } from 'lodash';
 import { GridService } from '../../../services/grid/grid.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '../../../pipes/date/date.pipe';
@@ -49,7 +49,7 @@ import { DateTranslateService } from '../../../services/date-translate/date-tran
 import { ApplicationService } from '../../../services/application/application.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
-import { firstValueFrom, from, merge, Subject } from 'rxjs';
+import { firstValueFrom, from, lastValueFrom, merge, Subject } from 'rxjs';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
@@ -517,6 +517,7 @@ export class CoreGridComponent
                 }
               }
             }
+
             this.getRecords();
           },
           error: (err: any) => {
@@ -1073,8 +1074,9 @@ export class CoreGridComponent
       });
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))
-        .subscribe((value: any) => {
+        .subscribe(async (value: any) => {
           if (value) {
+            await this.loadPeopleChoices(value);
             this.reloadData();
           }
         });
@@ -1157,6 +1159,64 @@ export class CoreGridComponent
   }
 
   /**
+   * Load more people choices if needed
+   *
+   * @param value new updated or added record
+   */
+  public async loadPeopleChoices(value: any) {
+    const newIds: any[] = [];
+
+    // Loop over metaFields to verify if there are new users
+    for (const metaField in this.metaFields) {
+      const choices: string[] = isArray(value.data.data[metaField])
+        ? value.data.data[metaField]
+        : [value.data.data[metaField]];
+      if (
+        ['people', 'singlepeople'].includes(this.metaFields[metaField]?.type) &&
+        choices
+      ) {
+        newIds.push(
+          ...choices
+            // Filter new users
+            .filter(
+              (choice: any) =>
+                !this.metaFields[metaField].choices.some(
+                  (obj: any) => obj.value === choice
+                )
+            )
+            .map((choice: any) => ({
+              id: choice,
+              // Saving the field name to address new choices after fetching
+              field: metaField,
+            }))
+        );
+      }
+    }
+
+    if (newIds.length) {
+      // Fetch new users
+      const newChoices = await lastValueFrom(
+        this.gridService.getNewPeopleChoices(newIds.map((el) => el.id))
+      );
+
+      // Assign the choices to the correct field
+      newChoices.forEach((choice: any) => {
+        const fieldName = newIds.find((el) => el.id === choice.value)?.field;
+        if (fieldName) {
+          this.metaFields[fieldName].choices.push(choice);
+        }
+      });
+
+      this.fields = this.gridService.getFields(
+        this.settings?.query?.fields || [],
+        this.metaFields,
+        this.defaultLayout.fields || {},
+        ''
+      );
+    }
+  }
+
+  /**
    * Opens the form corresponding to selected row in order to update it
    *
    * @param items items to update.
@@ -1174,12 +1234,15 @@ export class CoreGridComponent
       },
       autoFocus: false,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.validateRecords(ids);
-        this.reloadData();
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (value: any) => {
+        if (value) {
+          await this.loadPeopleChoices(value);
+          this.validateRecords(ids);
+          this.reloadData();
+        }
+      });
   }
 
   /**

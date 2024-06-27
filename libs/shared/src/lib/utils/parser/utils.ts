@@ -168,7 +168,6 @@ const replaceRecordFields = (
         }
       }
     );
-
     const links = formattedHtml.match(`href=["]?[^" >]+`);
 
     // We check for LIST fields and duplicate their only element for each subfield
@@ -374,11 +373,31 @@ const replaceRecordFields = (
               }
             }
             break;
+          case 'people':
+            convertedValue = `<span style='${style}'>${get(
+              fieldsValue,
+              field.name
+            )
+              .map(
+                (peopleId: string) =>
+                  field.choices?.find((x: any) => x.value === peopleId)?.text
+              )
+              .join(',')}
+               </span>`;
+            break;
+          case 'singlepeople':
+            convertedValue = `<span style='${style}'>${
+              field.choices?.find(
+                (x: any) => x.value === get(fieldsValue, field.name)
+              )?.text
+            }
+               </span>`;
+            break;
           case 'owner':
           case 'users':
           case 'resources':
             convertedValue = `<span style='${style}'>${
-              value ? value.length : 0
+              value ? get(fieldsValue, field.name).length : 0
             } items</span>`;
             break;
           case 'matrixdropdown':

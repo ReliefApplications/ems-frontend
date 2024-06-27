@@ -12,6 +12,7 @@ import {
   DateModule,
   TooltipModule,
 } from '@oort-front/ui';
+import { PeopleDropdownComponent } from '../../survey/components/people-dropdown/people-dropdown.component';
 
 /**
  * Composite Filter module.
@@ -29,6 +30,7 @@ import {
     DateModule,
     FormWrapperModule,
     TooltipModule,
+    PeopleDropdownComponent,
   ],
   exports: [FilterComponent],
 })

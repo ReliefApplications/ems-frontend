@@ -18,6 +18,13 @@ import { ResourceQueryResponse } from '../../models/resource.model';
 import { GET_RESOURCE_FIELDS } from './graphql/queries';
 import { map } from 'rxjs';
 import jsonpath from 'jsonpath';
+import {
+  PeopleQueryResponse,
+  Person,
+  getPersonLabel,
+} from '../../models/people.model';
+import { GET_PEOPLE } from '../../survey/components/people-select/graphql/queries';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 /** List of disabled fields */
 const DISABLED_FIELDS = [
@@ -28,6 +35,9 @@ const DISABLED_FIELDS = [
   'form',
   'lastUpdateForm',
 ];
+
+/** List of disabled fields types */
+const DISABLED_FIELD_TYPES = ['people'];
 
 /** Interface of field meta */
 interface IMeta {
@@ -222,6 +232,7 @@ export class GridService {
               disabled:
                 disabled ||
                 DISABLED_FIELDS.includes(f.name) ||
+                DISABLED_FIELD_TYPES.includes(get(metaData, 'type')) ||
                 get(metaData, 'readOnly', false) ||
                 get(metaData, 'isCalculated', false),
               hidden: hidden || cachedField?.hidden || false,
@@ -539,6 +550,43 @@ export class GridService {
             );
             return field;
           }
+        })
+      );
+  }
+
+  /**
+   * Get new choices for people question
+   *
+   * @param ids new user ids to fetch
+   * @returns users choices
+   */
+  public getNewPeopleChoices(ids: string[]) {
+    return this.apollo
+      .query<PeopleQueryResponse>({
+        query: GET_PEOPLE,
+        variables: {
+          filter: {
+            logic: 'or',
+            filters: [
+              {
+                field: 'userid',
+                operator: 'in',
+                value: ids,
+              },
+            ],
+          } as CompositeFilterDescriptor,
+        },
+      })
+      .pipe(
+        map(({ data }) => {
+          const choices: any[] = [];
+          data.people.forEach((person: Person) => {
+            choices.push({
+              value: person.id,
+              text: getPersonLabel(person),
+            });
+          });
+          return choices;
         })
       );
   }

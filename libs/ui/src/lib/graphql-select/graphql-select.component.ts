@@ -53,6 +53,8 @@ export class GraphQLSelectComponent
   @Input() valueField = '';
   /** Input decorator for textField */
   @Input() textField = '';
+  /** Display value expression (replaces textField) */
+  @Input() displayValueExpression: any = null;
   /** Input decorator for path */
   @Input() path = '';
   /** Whether you can select multiple items or not */
@@ -450,7 +452,7 @@ export class GraphQLSelectComponent
    *
    * @param e scroll event.
    */
-  private loadOnScroll(e: any): void {
+  protected loadOnScroll(e: any): void {
     if (
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
       50
@@ -558,6 +560,10 @@ export class GraphQLSelectComponent
    * @returns the display value
    */
   public getDisplayValue(element: any) {
-    return get(element, this.textField);
+    if (this.displayValueExpression) {
+      return this.displayValueExpression(element);
+    } else {
+      return get(element, this.textField);
+    }
   }
 }
