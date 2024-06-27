@@ -72,7 +72,11 @@
     >
       {{ 'common.add' | translate }}
     </button>
-    <button *ngIf="actions.export" kendoButton (click)="onExport()">
+    <button
+      *ngIf="actions.export && canDownload"
+      kendoButton
+      (click)="onExport()"
+    >
       {{ 'common.export' | translate }}
     </button>
     <ng-container *ngIf="editable">
@@ -225,7 +229,7 @@
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
-                (click)="onExpandText(dataItem, field.name)"
+                (click)="onExpandText(dataItem, field.name, field.title)"
                 [look]="'flat'"
                 [uiTooltip]="'common.viewFullscreen' | translate"
               ></button>
@@ -281,7 +285,7 @@
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
-                (click)="onExpandText(dataItem, field.name)"
+                (click)="onExpandText(dataItem, field.name, field.title)"
                 [look]="'flat'"
                 [uiTooltip]="'common.openFullScreen' | translate"
               ></button>
@@ -312,7 +316,7 @@
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
-                (click)="onExpandText(dataItem, field.name)"
+                (click)="onExpandText(dataItem, field.name, field.title)"
                 [look]="'flat'"
                 [uiTooltip]="'common.openFullScreen' | translate"
               ></button>
@@ -343,7 +347,7 @@
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
-                (click)="onExpandText(dataItem, field.name)"
+                (click)="onExpandText(dataItem, field.name, field.title)"
                 [look]="'flat'"
                 [uiTooltip]="'common.viewFullscreen' | translate"
               ></button>
@@ -386,7 +390,7 @@
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
-                (click)="onExpandText(dataItem, field.name)"
+                (click)="onExpandText(dataItem, field.name, field.title)"
                 [look]="'flat'"
                 [uiTooltip]="'common.viewFullscreen' | translate"
               ></button>

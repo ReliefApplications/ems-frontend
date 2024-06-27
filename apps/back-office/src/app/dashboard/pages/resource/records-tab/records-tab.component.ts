@@ -347,8 +347,8 @@ export class RecordsTabComponent
   uploadFileData(file: any): void {
     const path = `upload/resource/records/${this.resource.id}`;
     this.downloadService.uploadFile(path, file).subscribe({
-      next: (res) => {
-        if (res.status === 'OK') {
+      next: ({ status }) => {
+        if (status === 'OK') {
           this.fetchRecords(true);
           this.showUpload = false;
         }

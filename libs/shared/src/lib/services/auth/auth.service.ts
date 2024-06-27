@@ -51,7 +51,8 @@ type Subjects =
   | 'PullJob'
   | 'Group'
   | 'CustomNotification'
-  | 'Form';
+  | 'Form'
+  | 'EmailNotification';
 
 export type AppAbility = Ability<
   [Actions, Subjects | ForcedSubject<Subjects>],
@@ -173,7 +174,7 @@ export class AuthService {
    * @param global is the permission global or not
    * @returns Does the user have access
    */
-  userHasClaim(permission: string | string[], global: boolean = true): boolean {
+  userHasClaim(permission: string | string[], global = true): boolean {
     const user = this.user.getValue();
     if (user) {
       if (
@@ -386,6 +387,11 @@ export class AuthService {
       );
     }
 
+    // === Email Notifications ===
+    if (globalPermissions.includes('can_manage_email_notifications')) {
+      can(['create', 'read', 'update', 'delete'], 'EmailNotification');
+    }
+
     this.ability.update(rules);
   }
 
@@ -470,6 +476,18 @@ export class AuthService {
           application: app.id,
         }
       );
+    }
+
+    // === Email Notifications ===
+    if (appPermissions.has('can_see_email_notifications')) {
+      can('read', 'EmailNotification');
+    }
+    if (appPermissions.has('can_update_email_notifications')) {
+      can(['update', 'delete'], 'EmailNotification');
+    }
+
+    if (appPermissions.has('can_create_email_notifications')) {
+      can('create', 'EmailNotification');
     }
 
     this.ability.update(rules);

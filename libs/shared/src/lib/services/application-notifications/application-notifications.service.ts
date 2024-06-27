@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Application } from '../../models/application.model';
-import { CustomNotification } from '../../models/custom-notification.model';
-import { ApplicationService } from '../application/application.service';
 import {
   AddCustomNotificationMutationResponse,
-  ADD_CUSTOM_NOTIFICATION,
+  CustomNotification,
   DeleteCustomNotificationMutationResponse,
-  DELETE_CUSTOM_NOTIFICATION,
   UpdateCustomNotificationMutationResponse,
+} from '../../models/custom-notification.model';
+import { ApplicationService } from '../application/application.service';
+import {
+  ADD_CUSTOM_NOTIFICATION,
+  DELETE_CUSTOM_NOTIFICATION,
   UPDATE_CUSTOM_NOTIFICATION,
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
@@ -60,19 +62,19 @@ export class ApplicationNotificationsService {
           notification,
         },
       })
-      .subscribe((res) => {
-        if (res.errors) {
+      .subscribe(({ data, errors }) => {
+        if (errors) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotCreated', {
               type: this.translate
                 .instant('common.customNotification.one')
                 .toLowerCase(),
-              error: res.errors ? res.errors[0].message : '',
+              error: errors[0].message,
             }),
             { error: true }
           );
         } else {
-          if (res.data) {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectCreated', {
                 type: this.translate.instant('common.customNotification.one'),
@@ -98,17 +100,17 @@ export class ApplicationNotificationsService {
           id,
         },
       })
-      .subscribe((res) => {
-        if (res.errors) {
+      .subscribe(({ data, errors }) => {
+        if (errors) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotDeleted', {
               value: this.translate.instant('common.customNotification.one'),
-              error: res.errors ? res.errors[0].message : '',
+              error: errors[0].message,
             }),
             { error: true }
           );
         } else {
-          if (res.data) {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectDeleted', {
                 value: this.translate.instant('common.customNotification.one'),
@@ -134,17 +136,17 @@ export class ApplicationNotificationsService {
           notification,
         },
       })
-      .subscribe((res) => {
-        if (res.errors) {
+      .subscribe(({ data, errors }) => {
+        if (errors) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotUpdated', {
               value: this.translate.instant('common.customNotification.one'),
-              error: res.errors ? res.errors[0].message : '',
+              error: errors[0].message,
             }),
             { error: true }
           );
         } else {
-          if (res.data) {
+          if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectUpdated', {
                 type: this.translate.instant('common.customNotification.one'),

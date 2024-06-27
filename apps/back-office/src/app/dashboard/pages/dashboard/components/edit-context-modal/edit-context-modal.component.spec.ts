@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApolloTestingModule } from 'apollo-angular/testing';
-import { ContextDatasourceComponent } from './context-datasource.component';
+import { EditContextModalComponent } from './edit-context-modal.component';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import {
   TranslateFakeLoader,
@@ -9,14 +9,14 @@ import {
   TranslateService,
 } from '@ngx-translate/core';
 
-describe('ContextDatasourceComponent', () => {
-  let component: ContextDatasourceComponent;
-  let fixture: ComponentFixture<ContextDatasourceComponent>;
+describe('EditContextModalComponent', () => {
+  let component: EditContextModalComponent;
+  let fixture: ComponentFixture<EditContextModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        ContextDatasourceComponent,
+        EditContextModalComponent,
         ApolloTestingModule,
         TranslateModule.forRoot({
           loader: {
@@ -29,18 +29,18 @@ describe('ContextDatasourceComponent', () => {
         TranslateService,
         {
           provide: DIALOG_DATA,
-          useValue: {}
+          useValue: {},
         },
         {
           provide: DialogRef,
           useValue: {
             updateSize: jest.fn(),
-          }
-        }
-      ]
+          },
+        },
+      ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ContextDatasourceComponent);
+    fixture = TestBed.createComponent(EditContextModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

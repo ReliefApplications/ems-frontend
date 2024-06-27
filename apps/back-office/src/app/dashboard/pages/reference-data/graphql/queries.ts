@@ -55,6 +55,7 @@ export const GET_API_CONFIGURATION = gql`
       id
       name
       authType
+      endpoint
       graphQLEndpoint
     }
   }

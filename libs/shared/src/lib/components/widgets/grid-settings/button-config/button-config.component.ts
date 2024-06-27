@@ -11,7 +11,10 @@ import { Form } from '../../../../models/form.model';
 import { Resource } from '../../../../models/resource.model';
 import { ContentType } from '../../../../models/page.model';
 import { WorkflowService } from '../../../../services/workflow/workflow.service';
-import { Template, TemplateTypeEnum } from '../../../../models/template.model';
+import {
+  EmailTemplate,
+  TemplateTypeEnum,
+} from '../../../../models/template.model';
 import { Dialog } from '@angular/cdk/dialog';
 import { createQueryForm } from '../../../query-builder/query-builder-forms';
 import { DistributionList } from '../../../../models/distribution-list.model';
@@ -52,7 +55,7 @@ export class ButtonConfigComponent
   /** List of distribution lists */
   @Input() distributionLists: DistributionList[] = [];
   /** List of templates */
-  @Input() templates: Template[] = [];
+  @Input() templates: EmailTemplate[] = [];
   /** Indicate is the page is a single dashboard.*/
   public isDashboard = false;
 
@@ -435,7 +438,7 @@ export class ButtonConfigComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value)
-        this.applicationService.addTemplate(
+        this.applicationService.addEmailTemplate(
           {
             name: value.name,
             type: TemplateTypeEnum.EMAIL,
@@ -444,7 +447,7 @@ export class ButtonConfigComponent
               body: value.body,
             },
           },
-          (template: Template) => {
+          (template: EmailTemplate) => {
             const templates = [
               ...(this.formGroup.get('templates')?.value || []),
             ];

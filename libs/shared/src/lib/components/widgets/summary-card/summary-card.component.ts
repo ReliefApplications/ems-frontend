@@ -581,17 +581,25 @@ export class SummaryCardComponent
   /**
    * Updates the cards from fetched custom query
    *
-   * @param res Query result
+   * @param data Query result
+   * @param data.data Data field
+   * @param data.loading Loading status
    */
-  private updateRecordCards(res: any) {
-    if (!res?.data) {
+  private updateRecordCards({
+    data,
+    loading,
+  }: {
+    data: any;
+    loading: boolean;
+  }) {
+    if (!data) {
       return;
     }
     let newCards: any[] = [];
 
     const layoutQueryName = this.layout?.query.name;
     if (this.layout) {
-      const edges = res.data?.[layoutQueryName].edges;
+      const edges = data?.[layoutQueryName].edges;
       if (!edges) {
         return;
       }
@@ -604,8 +612,8 @@ export class SummaryCardComponent
         style: e.meta.style,
       }));
     } else if (this.settings.card?.aggregation) {
-      if (!res.data?.recordsAggregation?.items) return;
-      newCards = res.data.recordsAggregation.items.map((x: any) => ({
+      if (!data?.recordsAggregation?.items) return;
+      newCards = data.recordsAggregation.items.map((x: any) => ({
         ...this.settings.card,
         rawValue: x,
       }));
@@ -634,13 +642,13 @@ export class SummaryCardComponent
       }
     }
     this.pageInfo.length = get(
-      res.data[layoutQueryName ?? 'recordsAggregation'],
+      data[layoutQueryName ?? 'recordsAggregation'],
       'totalCount',
       0
     );
     this.scrolling = false;
     this.triggerRefreshCardList = false;
-    this.dataLoading = res.loading;
+    this.dataLoading = loading;
   }
 
   /**

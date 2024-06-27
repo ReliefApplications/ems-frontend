@@ -287,9 +287,9 @@ export class FormHelpersService {
                 data,
               },
             })
-          ).then((res) => {
+          ).then(({ data }) => {
             // change the draftId to the new recordId
-            const newId = res.data?.addRecord?.id;
+            const newId = data?.addRecord?.id;
             if (!newId) return;
             updateIds[draftId](newId);
             // update question.newCreatedRecords too

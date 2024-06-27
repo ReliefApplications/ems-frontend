@@ -53,5 +53,10 @@
   >
     <ui-icon variant="grey" [icon]="setting.icon"> </ui-icon>
     {{ setting.name }}
+    <ui-chip
+      *ngIf="setting.legacy"
+      class="pointer-events-none flex items-center"
+      >{{ 'common.legacy' | translate }}</ui-chip
+    >
   </a>
 </ui-menu>

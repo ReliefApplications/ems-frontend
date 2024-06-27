@@ -72,8 +72,10 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
   /** Data */
   @Input() widget: any;
 
-  /** Permissions */
+  /** Permission to create records */
   public canCreateRecords = false;
+  /** Permission to download records */
+  public canDownloadRecords = false;
 
   /** Cached configuration */
   public layout: Layout | null = null;
@@ -178,11 +180,16 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
             resource: this.settings.resource,
           },
         })
-        .subscribe((res) => {
-          if (res.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             this.canCreateRecords = get(
-              res,
-              'data.resource.canCreateRecords',
+              data,
+              'resource.canCreateRecords',
+              false
+            );
+            this.canDownloadRecords = get(
+              data,
+              'resource.canDownloadRecords',
               false
             );
           }
@@ -194,8 +201,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
             ids: layouts,
             first: layouts?.length,
           })
-          .then((res) => {
-            this.layouts = res.edges
+          .then(({ edges }) => {
+            this.layouts = edges
               .map((edge) => edge.node)
               .sort((a, b) => layouts.indexOf(a.id) - layouts.indexOf(b.id));
             this.layout = this.layouts[0] || null;
@@ -222,8 +229,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
             ids: aggregations,
             first: aggregations.length,
           })
-          .then((res) => {
-            this.aggregations = res.edges
+          .then(({ edges }) => {
+            this.aggregations = edges
               .map((edge) => edge.node)
               .sort(
                 (a, b) =>

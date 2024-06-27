@@ -72,8 +72,8 @@
           </ui-select-option>
         </ui-select-menu>
         <ui-icon
-          icon="info"
-          class="cursor-pointer"
+          icon="info_outline"
+          class="cursor-help"
           variant="grey"
           uiSuffix
           [uiTooltip]="'models.dashboard.context.datasource.info' | translate"
@@ -92,7 +92,6 @@
       (click)="onSubmit()"
       cdkFocusInitial
       [disabled]="!form.valid || !!form.get('displayField')?.disabled"
-      class="ml-auto"
     >
       {{
         (data

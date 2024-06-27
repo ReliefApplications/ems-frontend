@@ -248,8 +248,8 @@ export class ApiConfigurationsComponent
             },
           })
           .subscribe({
-            next: (res) => {
-              if (res && !res.errors) {
+            next: ({ errors }) => {
+              if (!errors) {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectDeleted', {
                     value: this.translate.instant(
@@ -268,7 +268,7 @@ export class ApiConfigurationsComponent
                       value: this.translate.instant(
                         'common.apiConfiguration.one'
                       ),
-                      error: res.errors ? res.errors[0].message : '',
+                      error: errors[0].message,
                     }
                   ),
                   { error: true }

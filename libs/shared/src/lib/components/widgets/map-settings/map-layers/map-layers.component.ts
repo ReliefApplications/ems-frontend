@@ -102,11 +102,11 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
       if (value) {
         this.loading = true;
         this.mapLayersService.addLayer(value).subscribe({
-          next: (res) => {
-            if (res) {
+          next: (layer) => {
+            if (layer) {
               const value = this.control.value;
-              this.control.setValue([...value, res.id]);
-              this.mapLayers.push(res);
+              this.control.setValue([...value, layer.id]);
+              this.mapLayers.push(layer);
             }
           },
           error: (err) => console.error(err),
@@ -165,22 +165,20 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
             if (value) {
               this.loading = true;
               this.mapLayersService.editLayer(value).subscribe({
-                next: (res) => {
-                  if (res) {
-                    const index = this.mapLayers.findIndex(
-                      (layer) => layer.id === id
-                    );
+                next: (layer) => {
+                  if (layer) {
+                    const index = this.mapLayers.findIndex((x) => x.id === id);
                     if (index !== -1) {
                       this.mapLayers.splice(index, 1, {
-                        ...res,
+                        ...layer,
                         name: value.name,
                       });
                       this.restoreMapSettingsView();
                     } else {
                       // Selecting a new layer
                       const value = this.control.value;
-                      this.control.setValue([...value, res.id]);
-                      this.mapLayers.push(res);
+                      this.control.setValue([...value, layer.id]);
+                      this.mapLayers.push(layer);
                     }
                   }
                 },
