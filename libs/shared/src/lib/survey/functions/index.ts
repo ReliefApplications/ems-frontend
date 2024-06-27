@@ -32,6 +32,8 @@ import once from './once';
 import formatDateTime from './formatDateTime';
 import join from './join';
 import concat from './concat';
+import indexedRepeat from './indexedRepeat';
+import string from './string';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -67,6 +69,8 @@ export const functions = [
   { fn: once, name: 'once' },
   { fn: join, name: 'join' },
   { fn: concat, name: 'concat' },
+  { fn: indexedRepeat, name: 'indexedRepeat' },
+  { fn: string, name: 'string' },
 ];
 
 /** Generators for each async custom function available  */
