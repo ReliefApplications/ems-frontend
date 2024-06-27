@@ -40,7 +40,7 @@ import {
 } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridActions, GridSettings } from './models/grid-settings.model';
-import { get, isEqual, isNil } from 'lodash';
+import { get, isArray, isEqual, isNil } from 'lodash';
 import { GridService } from '../../../services/grid/grid.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '../../../pipes/date/date.pipe';
@@ -517,6 +517,7 @@ export class CoreGridComponent
                 }
               }
             }
+
             this.getRecords();
           },
           error: (err: any) => {
@@ -1167,12 +1168,15 @@ export class CoreGridComponent
 
     // Loop over metaFields to verify if there are new users
     for (const metaField in this.metaFields) {
+      const choices: string[] = isArray(value.data.data[metaField])
+        ? value.data.data[metaField]
+        : [value.data.data[metaField]];
       if (
-        this.metaFields[metaField]?.type === 'people' &&
-        value.data.data[metaField]
+        ['people', 'singlepeople'].includes(this.metaFields[metaField]?.type) &&
+        choices
       ) {
         newIds.push(
-          ...value.data.data[metaField]
+          ...choices
             // Filter new users
             .filter(
               (choice: any) =>

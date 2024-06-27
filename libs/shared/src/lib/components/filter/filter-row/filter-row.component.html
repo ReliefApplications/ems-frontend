@@ -164,6 +164,18 @@
     </div>
   </ng-template>
 
+  <!-- PEOPLE EDITOR -->
+  <ng-template #peopleEditor>
+    <div class="w-60">
+      <label>{{ 'common.value.one' | translate }}</label>
+      <shared-people-dropdown
+        [control]="$any(form.get('value'))"
+        [initialSelectionIDs]="form.get('value')?.value"
+        [multiselect]="field.multiSelect"
+      ></shared-people-dropdown>
+    </div>
+  </ng-template>
+
   <!-- DATE EDITOR -->
   <ng-template #dateEditor>
     <div uiFormFieldDirective [defaultMargin]="false">

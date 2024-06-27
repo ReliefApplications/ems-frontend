@@ -51,6 +51,9 @@ export class FilterRowComponent
   /** Reference to context editor template */
   @ViewChild('contextEditor', { static: false })
   contextEditor!: TemplateRef<any>;
+  /** Reference to people editor template */
+  @ViewChild('peopleEditor', { static: false })
+  peopleEditor!: TemplateRef<any>;
   /** Current field */
   public field?: any;
   /** Template reference to the editor */
@@ -217,6 +220,10 @@ export class FilterRowComponent
         case 'datetime':
         case 'date': {
           this.editor = this.dateEditor;
+          break;
+        }
+        case 'people': {
+          this.editor = this.peopleEditor;
           break;
         }
         default: {
