@@ -82,7 +82,35 @@ export const parseHtml = (
       options.styles
     );
   }
+  formattedHtml = applyTableWidth(formattedHtml);
   return applyOperations(formattedHtml);
+};
+
+/**
+ * Function to apply table width based on existing 'border' property
+ *
+ * @param formattedHtml html to parse
+ * @returns formatted html string
+ */
+const applyTableWidth = (formattedHtml: string) => {
+  if (!formattedHtml.includes('table')) {
+    return formattedHtml;
+  }
+  // Create a temporary container element to work with the HTML string
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = formattedHtml;
+
+  // Find all table elements within the temporary container
+  const tables = tempDiv.getElementsByTagName('table');
+
+  // Loop through each table element
+  for (let i = 0; i < tables.length; i++) {
+    const table = tables[i];
+    table.style.borderWidth = `${table.getAttribute('border')}px` || '';
+  }
+
+  // Return the modified HTML content as a string
+  return tempDiv.innerHTML;
 };
 
 /**

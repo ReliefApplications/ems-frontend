@@ -11,6 +11,8 @@ import {
   ViewChild,
   forwardRef,
   Inject,
+  EventEmitter,
+  Output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
@@ -54,6 +56,8 @@ export class EditorControlComponent
   public editorContent = '';
   /** Is editor loading */
   public editorLoading = true;
+  /** Editor loaded event emitter */
+  @Output() editorLoaded = new EventEmitter<boolean>();
 
   /** Tinymce editor configuration */
   @Input() editorConfig!: RawEditorSettings;
@@ -64,7 +68,7 @@ export class EditorControlComponent
    * @returns the value
    */
   @Input() get value(): string | null {
-    return this.ngControl.value;
+    return this.ngControl?.value;
   }
 
   /** Sets the value */
@@ -109,7 +113,7 @@ export class EditorControlComponent
    * @returns if an option is selected
    */
   get empty() {
-    return !this.ngControl.control?.value;
+    return !this.ngControl?.control?.value;
   }
 
   /**
@@ -150,16 +154,16 @@ export class EditorControlComponent
    */
   @Input()
   get disabled(): boolean {
-    return this.ngControl.disabled || false;
+    return this.ngControl?.disabled || false;
   }
 
   /** Sets whether the field is disabled */
   set disabled(value: boolean) {
     const isDisabled = coerceBooleanProperty(value);
     if (isDisabled) {
-      this.ngControl.control?.disable();
+      this.ngControl?.control?.disable();
     } else {
-      this.ngControl.control?.enable();
+      this.ngControl?.control?.enable();
     }
     this.stateChanges.next();
   }
@@ -170,7 +174,7 @@ export class EditorControlComponent
    * @returns whether the input is in an error state
    */
   get errorState(): boolean {
-    return (this.ngControl.invalid && this.touched) || false;
+    return (this.ngControl?.invalid && this.touched) || false;
   }
 
   /** Control type */
@@ -242,7 +246,14 @@ export class EditorControlComponent
         }
       }
     });
+    this.editor.disabled = true;
     // this.editor.onInit.subscribe(() => {});
+  }
+
+  /** Emit and change editor loading */
+  public endLoading() {
+    this.editorLoaded.emit(true);
+    this.editorLoading = false;
   }
 
   /** onTouched function shell */
