@@ -34,6 +34,10 @@ import join from './join';
 import concat from './concat';
 import indexedRepeat from './indexedRepeat';
 import string from './string';
+import sumElements from './sumElements';
+import maxElements from './maxElements';
+import minElements from './minElements';
+import regex from './regex';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -71,6 +75,10 @@ export const functions = [
   { fn: concat, name: 'concat' },
   { fn: indexedRepeat, name: 'indexedRepeat' },
   { fn: string, name: 'string' },
+  { fn: sumElements, name: 'sumElements' },
+  { fn: maxElements, name: 'maxElements' },
+  { fn: minElements, name: 'minElements' },
+  { fn: regex, name: 'regex' },
 ];
 
 /** Generators for each async custom function available  */
