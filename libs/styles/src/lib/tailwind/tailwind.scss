@@ -54,12 +54,21 @@
     border-width: revert;
     border-style: revert;
     border-color: revert;
-    border-style: revert;
     outline: revert;
     list-style: revert;
     padding: revert;
     color: revert;
     text-decoration: revert;
+
+    table {
+      border-style: solid;
+      border-width: thin;
+    }
+    th,
+    td {
+      border-style: inset;
+      border-width: thin;
+    }
   }
   :root {
     --primary-50: #{$primary_50};
