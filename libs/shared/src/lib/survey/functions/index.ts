@@ -38,6 +38,8 @@ import sumElements from './sumElements';
 import maxElements from './maxElements';
 import minElements from './minElements';
 import regex from './regex';
+import int from './int';
+import selected from './selected';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -79,6 +81,8 @@ export const functions = [
   { fn: maxElements, name: 'maxElements' },
   { fn: minElements, name: 'minElements' },
   { fn: regex, name: 'regex' },
+  { fn: int, name: 'int' },
+  { fn: selected, name: 'selected' },
 ];
 
 /** Generators for each async custom function available  */
