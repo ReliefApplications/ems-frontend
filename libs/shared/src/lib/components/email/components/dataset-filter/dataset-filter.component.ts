@@ -8,12 +8,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormGroup,
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { clone, cloneDeep } from 'lodash';
 import {
@@ -171,6 +166,14 @@ export class DatasetFilterComponent
   }
 
   ngOnInit(): void {
+    this.query.controls.resource.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: any) => {
+        if (value !== undefined && value !== null) {
+          this.selectedResourceId = value;
+          this.getResourceData(true);
+        }
+      });
     this.query.controls.name.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((data: any) => {
@@ -362,11 +365,11 @@ export class DatasetFilterComponent
     this.disabledTypes = [];
     this.currentTabIndex = 0;
     if (this.selectedResourceId && this.emailService?.resourcesNameId?.length) {
-      this.query.controls.resource.setValue(
-        this.emailService.resourcesNameId.find(
-          (element) => element.id === this.selectedResourceId
-        )
-      );
+      // this.query.controls.resource.setValue(
+      //   this.emailService.resourcesNameId.find(
+      //     (element) => element.id === this.selectedResourceId
+      //   )
+      // );
 
       let fields: any[] | undefined = [];
       this.emailService
@@ -1126,41 +1129,41 @@ export class DatasetFilterComponent
       this.query.controls['name'].value !== null &&
       this.query.controls['name'].value !== ''
     ) {
-      if (this.query.get('filter') && this.query.get('filter').get('filters')) {
-        const filtersArray = this.query
-          .get('filter')
-          .get('filters') as FormArray;
+      // if (this.query.get('filter') && this.query.get('filter').get('filters')) {
+      //   const filtersArray = this.query
+      //     .get('filter')
+      //     .get('filters') as FormArray;
 
-        // Iterate over the filters and update the value for 'inthelast' operators
-        filtersArray.controls.forEach(
-          (filterControl: AbstractControl, filterIndex: number) => {
-            const filterFormGroup = filterControl as FormGroup;
-            const operatorControl = filterFormGroup.get('operator');
+      //   // Iterate over the filters and update the value for 'inthelast' operators
+      //   filtersArray.controls.forEach(
+      //     (filterControl: AbstractControl, filterIndex: number) => {
+      //       const filterFormGroup = filterControl as FormGroup;
+      //       const operatorControl = filterFormGroup.get('operator');
 
-            if (operatorControl && operatorControl.value === 'inthelast') {
-              const inTheLastGroup = filterFormGroup.get(
-                'inTheLast'
-              ) as FormGroup;
-              if (inTheLastGroup) {
-                const inTheLastNumberControl = inTheLastGroup.get('number');
-                const inTheLastUnitControl = inTheLastGroup.get('unit');
+      //       if (operatorControl && operatorControl.value === 'inthelast') {
+      //         const inTheLastGroup = filterFormGroup.get(
+      //           'inTheLast'
+      //         ) as FormGroup;
+      //         if (inTheLastGroup) {
+      //           const inTheLastNumberControl = inTheLastGroup.get('number');
+      //           const inTheLastUnitControl = inTheLastGroup.get('unit');
 
-                if (inTheLastNumberControl && inTheLastUnitControl) {
-                  const days = this.emailService.convertToMinutes(
-                    inTheLastNumberControl.value,
-                    inTheLastUnitControl.value
-                  );
-                  // Sets filter value to the in the last filter converted to minutes.
-                  filterFormGroup.get('value')?.setValue(days);
-                  this.queryValue[this.activeTab.index].filter.filters[
-                    filterIndex
-                  ].value = days;
-                }
-              }
-            }
-          }
-        );
-      }
+      //           if (inTheLastNumberControl && inTheLastUnitControl) {
+      //             const days = this.emailService.convertToMinutes(
+      //               inTheLastNumberControl.value,
+      //               inTheLastUnitControl.value
+      //             );
+      //             // Sets filter value to the in the last filter converted to minutes.
+      //             filterFormGroup.get('value')?.setValue(days);
+      //             this.queryValue[this.activeTab.index].filter.filters[
+      //               filterIndex
+      //             ].value = days;
+      //           }
+      //         }
+      //       }
+      //     }
+      //   );
+      // }
 
       if (tabName == 'filter') {
         const query = this.queryValue[this.activeTab.index];
@@ -1359,5 +1362,43 @@ export class DatasetFilterComponent
         this.query?.controls['name'].value !== ''
       )
     );
+  }
+
+  /**
+   *To set the send attachment filters.
+   */
+  onChangeSendAttachment(): void {
+    if (this.query.controls.isMoreData.value) {
+      this.query.controls.sendAsAttachment.setValue(
+        !this.query.controls.sendAsAttachment.value
+      );
+    }
+  }
+
+  /**
+   * Create Fields array
+   */
+  getFieldsArray() {
+    const formArray = this.query.get('fields') as FormArray;
+    this.selectedFields.forEach((item: any) => {
+      // For an array of strings, create a FormControl for each string
+      formArray.push(this.formGroup.control(item));
+    });
+
+    return formArray;
+  }
+
+  /**
+   * Reset given form field value if there is a value previously to avoid triggering
+   * not necessary actions
+   *
+   * @param formField Current form field
+   * @param event click event
+   */
+  clearFormField(formField: string, event: Event) {
+    if (this.query.get(formField)?.value) {
+      this.query.get(formField)?.setValue(null);
+    }
+    event.stopPropagation();
   }
 }

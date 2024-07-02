@@ -46,8 +46,8 @@
             "
           >
             {{ field.name }}
-            <span class="text-gray-500" *ngIf="field.type.kind !== 'SCALAR'">
-              {{ field.type.kind }}
+            <span class="text-gray-500" *ngIf="field?.type?.kind !== 'SCALAR'">
+              {{ field?.type?.kind }}
             </span>
           </div>
         </ng-container>

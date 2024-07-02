@@ -9,8 +9,15 @@ export const GET_RESOURCE = gql`
       queryName
       fields
       metadata {
+        __typename
+        options
+        multiSelect
+        filterable
+        filter
+        automated
         name
         type
+        editor
         fields {
           name
           type

@@ -16,4 +16,6 @@ export class FilterComponent {
   @Input() fields: any[] = [];
   /** Can use context variables */
   @Input() canUseContext = false;
+  /** Email Notification Check */
+  @Input() isEmailNotification = false;
 }

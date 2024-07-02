@@ -202,7 +202,7 @@ export class EmailService {
         logic: 'and',
         filters: new FormArray([]),
       }),
-      fields: [],
+      fields: this.formBuilder.array([]),
       cacheData: {},
       tableStyle: this.defaultTableStyle,
       blockType: 'table', // Either Table or Text

@@ -144,11 +144,11 @@ export class TabFieldsComponent implements OnInit, OnChanges {
         // Move to selected fields
         transferArrayItem(
           event.previousContainer.data,
-          event.container.data,
+          event?.container?.data,
           index,
           event.currentIndex
         );
-        this.form.insert(
+        this.form?.insert(
           event.currentIndex,
           addNewField(this.selectedFields[event.currentIndex], true)
         );
