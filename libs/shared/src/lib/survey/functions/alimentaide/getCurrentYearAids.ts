@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { GlobalOptions } from '../types';
+import { GlobalOptions } from '../../types';
 import { SurveyModel } from 'survey-core';
 import { firstValueFrom } from 'rxjs';
 

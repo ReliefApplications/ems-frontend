@@ -1,5 +1,5 @@
 import { SurveyModel } from 'survey-core';
-import { GlobalOptions } from '../types';
+import { GlobalOptions } from '../../types';
 
 /**
  * Returns an array with info pertaining to each prescription of a family.
