@@ -28,6 +28,8 @@ import replace from './replace';
 import regexReplace from './regexReplace';
 import round from './round';
 import parseJSON from './parseJSON';
+import getDepreciationPeriod from './getDepreciationPeriod';
+import calculateDepreciation from './calculateDepreciation';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -59,6 +61,8 @@ export const functions = [
   { fn: regexReplace, name: 'regexReplace' },
   { fn: round, name: 'round' },
   { fn: parseJSON, name: 'parseJSON' },
+  { fn: getDepreciationPeriod, name: 'getDepreciationPeriod' },
+  { fn: calculateDepreciation, name: 'calculateDepreciation' },
 ];
 
 /** Generators for each async custom function available  */
