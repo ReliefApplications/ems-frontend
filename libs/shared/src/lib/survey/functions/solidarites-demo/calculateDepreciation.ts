@@ -1,32 +1,5 @@
-import { GlobalOptions } from '../types';
-
-const depreciationData = [
-  {
-    family: 'mobile',
-    depreciation_period: 12, // in months
-    depreciation: 50, // in euros
-  },
-  {
-    family: 'vehicle',
-    depreciation_period: 24, // in months
-    depreciation: 150, // in euros
-  },
-  {
-    family: 'surgical',
-    depreciation_period: 6, // in months
-    depreciation: 10, // in euros
-  },
-  {
-    family: 'measuring',
-    depreciation_period: 36, // in months
-    depreciation: 10, // in euros
-  },
-  {
-    family: 'computing',
-    depreciation_period: 12, // in months
-    depreciation: 75, // in euros
-  },
-];
+import { GlobalOptions } from '../../types';
+import { DEPRECATION_DATA } from './assets/deprecation-data';
 
 /**
  * Calculate the depreciation of an item given its family
@@ -39,7 +12,7 @@ const calculateDepreciation = (params: any[]) => {
   const family = params[1];
   const invoiceDate = params[2];
 
-  const item = depreciationData.find((item) => item.family === family);
+  const item = DEPRECATION_DATA.find((item) => item.family === family);
   if (!item) return null;
   const depreciation = item.depreciation;
   const depreciationPeriod = item.depreciation_period;

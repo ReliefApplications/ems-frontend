@@ -1,4 +1,4 @@
-import { GlobalOptions } from '../types';
+import { GlobalOptions } from '../../types';
 
 /**
  * Returns the total number of members in family
