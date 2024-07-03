@@ -195,6 +195,18 @@ export class EmailService {
    */
   createNewDataSetGroup(): FormGroup {
     return this.formBuilder.group({
+      name: null,
+      query: this.createQuerygroup(),
+    });
+  }
+
+  /**
+   * Generates new query form group.
+   *
+   * @returns new query form group.
+   */
+  createQuerygroup(): FormGroup {
+    return this.formBuilder.group({
       resource: null,
       name: null,
       pageSize: 10,

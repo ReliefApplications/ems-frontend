@@ -160,8 +160,9 @@ export class DatasetFilterComponent
   }
 
   ngOnInit(): void {
-    this.query.controls.resource.valueChanges
-      .pipe(takeUntil(this.destroy$))
+    this.query.controls.query
+      .get('resource')
+      .valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value: any) => {
         if (
           value !== undefined &&
@@ -193,24 +194,27 @@ export class DatasetFilterComponent
       const name = 'Block ' + (this.activeTab.index + 1);
       this.query.controls['name'].setValue(name);
     }
-    if (this.query?.value?.resource?.id) {
+    if (this.query.controls.query.get('resource')?.id) {
       ITEMS_PER_PAGE = 400;
       this.getResourceDataOnScroll();
     } else if (
       !this.emailService?.resourcesNameId?.length ||
-      (this.query?.value?.cacheData?.resource === undefined &&
-        this.query?.value?.resource?.id)
+      (this.query?.get('query')?.value?.cacheData?.resource === undefined &&
+        this.query?.get('query')?.value?.resource?.id)
     ) {
       ITEMS_PER_PAGE = 0;
       this.getResourceDataOnScroll();
     } else {
-      if (this.query?.value?.resource?.id && this.metaData == undefined) {
-        this.selectedResourceId = this.query?.value?.resource?.id;
+      if (
+        this.query?.get('query')?.value?.resource?.id &&
+        this.metaData == undefined
+      ) {
+        this.selectedResourceId = this.query?.get('query')?.value?.resource?.id;
         this.getResourceData(false);
       }
     }
     this.filteredFields = this.resource?.fields;
-    if (this.query?.controls?.cacheData?.value) {
+    if (this.query.controls.query.get('cacheData').value) {
       const {
         dataList,
         resource,
@@ -220,7 +224,7 @@ export class DatasetFilterComponent
         availableFields,
         filterFields,
         selectedResourceId,
-      } = this.query.controls.cacheData.value;
+      } = this.query.controls.query.get('cacheData').value;
 
       this.dataList = dataList;
       this.resource = resource;
@@ -271,7 +275,7 @@ export class DatasetFilterComponent
       datasetResponse: this.datasetResponse,
       selectedResourceId: this.selectedResourceId,
     };
-    this.query.controls.cacheData.setValue(cacheData);
+    this.query.controls.query.get('cacheData')?.setValue(cacheData);
 
     // Safely destroys dataset save subscription
     if (this.datasetSaveSubscription) {
@@ -330,8 +334,9 @@ export class DatasetFilterComponent
             });
 
             // Edit Mode data
-            if (this.query?.value?.resource?.id) {
-              this.selectedResourceId = this.query?.value?.resource?.id;
+            if (this.query?.get('query')?.value?.resource?.id) {
+              this.selectedResourceId =
+                this.query?.get('query')?.value?.resource?.id;
               const found = this.emailService.resourcesNameId.some(
                 (resource) => resource.id === this.selectedResourceId
               );
@@ -364,13 +369,27 @@ export class DatasetFilterComponent
     this.availableFields = [];
     this.selectedFields = [];
     this.filterFields = [];
-    fromHtml ? this.query.controls.fields.setValue([]) : '';
+    if (fromHtml) {
+      this.query.controls.query.value.fields = [];
+      this.query.controls.query.get('fields').value = [];
+    }
     this.showDatasetLimitWarning = false;
     this.emailService.disableSaveAndProceed.next(true);
     this.emailService.disableSaveAsDraft.next(false);
     this.disabledFields = [];
     this.disabledTypes = [];
     this.currentTabIndex = 0;
+    // this.query.controls.query.get('filter').setValue({
+    //   logic: 'and',
+    //   filters: this.formGroup.array([]), // Recreate the FormArray
+    // });
+    // this.query.get('query').setValue({
+    //   filter: this.formGroup.group({
+    //     logic: 'and',
+    //     filters: this.formGroup.array([]), // Recreate the FormArray
+    //   }),
+    //   fields: [],
+    // });
     if (this.selectedResourceId && this.emailService?.resourcesNameId?.length) {
       // this.query.controls.resource.setValue(
       //   this.emailService.resourcesNameId.find(
@@ -382,7 +401,7 @@ export class DatasetFilterComponent
         .subscribe(({ data }) => {
           const queryTemp: any = data.resource;
           const newData = this.queryBuilder.getFields(queryTemp.queryName);
-          this.query.get('name').setValue(queryTemp.queryName);
+          this.query.controls.query.get('name').setValue(queryTemp.queryName);
           this.availableFields = newData;
           this.filterFields = cloneDeep(newData);
           this.loading = false;
@@ -771,7 +790,7 @@ export class DatasetFilterComponent
    * @returns Form array of dataset filters
    */
   get datasetFilterInfo(): FormArray {
-    return this.query.get('filter').get('filters') as FormArray;
+    return this.query.controls.query.get('filter').get('filters') as FormArray;
   }
 
   /**
@@ -951,11 +970,11 @@ export class DatasetFilterComponent
    * @param field to be added to list
    */
   populateFields(field: any): void {
-    const fieldExists = clone(this.query.value.fields) || [];
+    const fieldExists = clone(this.query?.get('query')?.value?.fields) || [];
     const fieldExistsArray = fieldExists?.map((ele: any) => ele?.name);
     if (!fieldExistsArray.includes(field.name)) {
       fieldExists.push(field);
-      this.query.controls.fields.setValue(fieldExists);
+      this.query.controls.query.get('fields').setValue(fieldExists);
       this.selectedFields = fieldExists;
     }
     // Removes the selected field from the available fields list
@@ -990,7 +1009,7 @@ export class DatasetFilterComponent
       );
       this.availableFieldIndex = null;
       this.selectedFieldIndex = this.selectedFields.length - 1;
-      this.query.controls.fields.setValue(this.selectedFields);
+      this.query.controls.query.get('fields').setValue(this.selectedFields);
       this.emailService.setEmailFields(this.selectedFields);
     }
   }
@@ -1003,13 +1022,13 @@ export class DatasetFilterComponent
   removeSelectiveFields(index: number | null): void {
     if (index !== null) {
       const field = this.selectedFields[index];
-      const fieldExists = this.query.controls.fields.value || [];
+      const fieldExists = this.query.controls.query.get('fields').value || [];
       const fieldIndex = fieldExists.findIndex(
         (f: { name: string }) => f.name === field.name
       );
       if (fieldIndex !== -1) {
         fieldExists.splice(fieldIndex, 1);
-        this.query.controls.fields.setValue(fieldExists);
+        this.query.controls.query.get('fields').setValue(fieldExists);
         this.selectedFields = fieldExists;
       }
       // Remove the field from the selectedFields array
@@ -1054,7 +1073,7 @@ export class DatasetFilterComponent
     this.availableFields.sort((a, b) =>
       a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
     );
-    this.query.controls.fields.setValue(this.selectedFields);
+    this.query.controls.query.get('fields').setValue(this.selectedFields);
     this.emailService.setEmailFields(this.selectedFields);
   }
 
@@ -1074,7 +1093,7 @@ export class DatasetFilterComponent
       this.emailService.disableSaveAsDraft.next(false);
     }
     this.availableFields = [];
-    this.query.controls.fields.setValue(this.selectedFields);
+    this.query.controls.query.get('fields').setValue(this.selectedFields);
     this.emailService.setEmailFields(this.selectedFields);
   }
 
@@ -1089,7 +1108,7 @@ export class DatasetFilterComponent
       this.selectedFields.splice(index, 1);
       this.selectedFields.splice(index - 1, 0, field);
       this.selectedFieldIndex = index - 1;
-      this.query.controls.fields.setValue(this.selectedFields);
+      this.query.controls.query.get('fields').setValue(this.selectedFields);
     }
   }
 
@@ -1104,7 +1123,7 @@ export class DatasetFilterComponent
       this.selectedFields.splice(index, 1);
       this.selectedFields.splice(index + 1, 0, field);
       this.selectedFieldIndex = index + 1;
-      this.query.controls.fields.setValue(this.selectedFields);
+      this.query.controls.query.get('fields').setValue(this.selectedFields);
     }
   }
 
@@ -1119,7 +1138,7 @@ export class DatasetFilterComponent
       this.selectedFields.splice(index, 1);
       this.selectedFields.splice(0, 0, field);
       this.selectedFieldIndex = 0;
-      this.query.controls.fields.setValue(this.selectedFields);
+      this.query.controls.query.get('fields').setValue(this.selectedFields);
     }
   }
 
@@ -1134,7 +1153,7 @@ export class DatasetFilterComponent
       this.selectedFields.splice(index, 1);
       this.selectedFields.push(field);
       this.selectedFieldIndex = this.selectedFields.length - 1;
-      this.query.controls.fields.setValue(this.selectedFields);
+      this.query.controls.query.get('fields').setValue(this.selectedFields);
     }
   }
 
@@ -1389,9 +1408,9 @@ export class DatasetFilterComponent
    */
   onChangeSendAttachment(): void {
     if (this.query.controls.isMoreData.value) {
-      this.query.controls.sendAsAttachment.setValue(
-        !this.query.controls.sendAsAttachment.value
-      );
+      this.query.controls.query
+        .get('sendAsAttachment')
+        .setValue(!this.query.controls.query.get('sendAsAttachment').value);
     }
   }
 
@@ -1399,12 +1418,12 @@ export class DatasetFilterComponent
    * Create Fields array
    */
   getFieldsArray() {
-    const formArray = this.query.get('fields') as FormArray;
+    const formArray = this.query.controls.query.get('fields') as FormArray;
     // this.selectedFields.forEach((item: any) => {
     //   // For an array of strings, create a FormControl for each string
     //   formArray.push(this.formGroup.control(item));
     // });
-    this.selectedFields = this.query.get('fields');
+    this.selectedFields = this.query.controls.query.get('fields');
     return formArray;
   }
 
@@ -1416,10 +1435,17 @@ export class DatasetFilterComponent
    * @param event click event
    */
   clearFormField(formField: string, event: Event) {
-    if (this.query.get(formField)?.value) {
-      this.query.get(formField)?.setValue(null);
-      this.query.controls.resource.value = null;
+    if (this.query.controls.query.get(formField)?.value) {
+      this.query.controls.query.get(formField)?.setValue(null);
+      this.query.controls.query.get('resource').value = null;
     }
+    // this.query.get('query').reset({
+    //   filter: this.formGroup.group({
+    //     logic: 'and',
+    //     filters: this.formGroup.array([]), // Recreate the FormArray
+    //   }),
+    //   fields: this.formGroup.array([]),
+    // });
     this.resource.fields = [];
     this.selectedResourceId = '';
     event.stopPropagation();
