@@ -1,6 +1,6 @@
 import addDays from './addDays';
 import getMatrixTitles from './getMatrixTitles';
-import getPrescriptionInfo from './getPrescriptionInfo';
+import getPrescriptionInfo from './alimentaide/getPrescriptionInfo';
 import intersect from './intersect';
 import length from './length';
 import listColsForRows from './listColsForRows';
@@ -11,16 +11,16 @@ import weekday from './weekday';
 import getField from './getField';
 import elementAt from './elementAt';
 import getWorkflowContext from './getWorkflowContext';
-import summarizeAids from './summarizeAids';
+import summarizeAids from './alimentaide/summarizeAids';
 import push from './push';
-import getComplaintsByType from './getComplaintsByType';
-import getNumberOfMembers from './getNumberOfMembers';
+import getComplaintsByType from './lift/getComplaintsByType';
+import getNumberOfMembers from './alimentaide/getNumberOfMembers';
 import formatDate from './formatDate';
 import getLoadedRecord from './getLoadedRecord';
 import getListByProp from './getListByProp';
 import filter from './filter';
 import sum from './sum';
-import getCurrentYearAids from './getCurrentYearAids';
+import getCurrentYearAids from './alimentaide/getCurrentYearAids';
 import todayDate from './todayDate';
 import startsWith from './startsWith';
 import endsWith from './endsWith';
@@ -28,6 +28,8 @@ import replace from './replace';
 import regexReplace from './regexReplace';
 import round from './round';
 import parseJSON from './parseJSON';
+import getDepreciationPeriod from './solidarites-demo/getDepreciationPeriod';
+import calculateDepreciation from './solidarites-demo/calculateDepreciation';
 import once from './once';
 import formatDateTime from './formatDateTime';
 import join from './join';
@@ -72,6 +74,8 @@ export const functions = [
   { fn: regexReplace, name: 'regexReplace' },
   { fn: round, name: 'round' },
   { fn: parseJSON, name: 'parseJSON' },
+  { fn: getDepreciationPeriod, name: 'getDepreciationPeriod' },
+  { fn: calculateDepreciation, name: 'calculateDepreciation' },
   { fn: once, name: 'once' },
   { fn: join, name: 'join' },
   { fn: concat, name: 'concat' },
