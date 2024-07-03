@@ -41,7 +41,6 @@
         <shared-resource-select
           formControlName="resource"
           [selectedElements]="[query.controls.resource.value]"
-          (change)="getResourceData(true)"
         ></shared-resource-select>
         <ui-button
           *ngIf="query.value.resource"
@@ -70,23 +69,21 @@
       <ui-spinner *ngIf="loading" style="position: relative"></ui-spinner>
     </div>
   </div>
-  <kendo-tabstrip
-    (tabSelect)="onTabSelect($event)"
-    #datasetPreview
-    *ngIf="resource?.fields?.length && !loadingCheck"
-  >
-    <!-- Filter Tab -->
-    <kendo-tabstrip-tab
-      [title]="'Filter'"
-      [disabled]="false"
-      *ngIf="showPreview === false"
-      [selected]="true"
-    >
-      <ng-template kendoTabTitle>
-        {{ 'components.queryBuilder.filter.title' | translate }}
-      </ng-template>
-      <ng-template kendoTabContent>
-        <ng-container
+    <ui-tabs [selectedIndex]="currentTabIndex"
+    (selectedIndexChange)="onTabSelect($event)"
+    #datasetPreview *ngIf="resource?.fields?.length">
+    <div class="mt-4 flex flex-row">
+      <!-- Filter Tab -->
+      <ui-tab
+        [title]="'Filter'"
+        [disabled]="false"
+        *ngIf="showPreview === false"
+        [selected]="true">
+        <ng-container ngProjectAs="label">
+          {{ 'components.queryBuilder.filter.title' | translate }}
+        </ng-container>
+        <ng-template uiTabContent>
+          <ng-container
           class="mt-2"
           *ngTemplateOutlet="tooManyRecordsAlertTmpl"
         ></ng-container>
@@ -94,12 +91,17 @@
           class="mt-2"
           *ngTemplateOutlet="invalidFieldsAlertTmpl"
         ></ng-container>
-        <ng-container *ngIf="resource?.fields?.length">
-          <div class="flex gap-4 mt-2">
-            <div class="mt-2">
-              <!-- NESTED FILTER GROUP -->
-              <shared-filter [form]="query.get('filter')" [fields]="filterFields" [isEmailNotification]="true"></shared-filter>    
-            </div>
+          <ng-container *ngIf="resource?.fields?.length">
+            <div class="flex gap-4 mt-2">
+              <div class="mt-2">
+                <!-- NESTED FILTER GROUP -->
+                <!-- <shared-filter [form]="query.get('filter')" [fields]="filterFields" [isEmailNotification]="true"></shared-filter> -->
+                <shared-tab-filter
+                [form]="$any(query.controls.filter)"
+                [query]="query.getRawValue()"
+              >
+              </shared-tab-filter>
+              </div>
           </div>
 
           
@@ -114,17 +116,16 @@
           </ui-button>
         </ng-container>
       </ng-template>
-    </kendo-tabstrip-tab>
+      </ui-tab>
     <!-- Fields Tab -->
-    <kendo-tabstrip-tab
-      [title]="'Fields'"
-      [disabled]="showDatasetLimitWarning"
-      *ngIf="showPreview === false"
-    >
-      <ng-template kendoTabTitle>
-        {{ 'components.queryBuilder.fields.title' | translate }}
-      </ng-template>
-      <ng-template kendoTabContent>
+    <ui-tab
+        [title]="'Fields'"
+        [disabled]="showDatasetLimitWarning"
+        *ngIf="showPreview === false">
+        <ng-container ngProjectAs="label">
+          {{ 'components.queryBuilder.fields.title' | translate }}
+        </ng-container>
+      <ng-template uiTabContent>
         <ng-container
           class="mt-2"
           *ngTemplateOutlet="tooManyRecordsAlertTmpl"
@@ -149,225 +150,7 @@
               ></shared-tab-fields>
           </div>
         </div>
-        <ng-container>
-          <div class="flex gap-5">
-            <!-- Available Fields -->
-            <div class="mt-4 w-1/2">
-              <h3
-                htmlFor="exampleSelect"
-                class="block text-base font-medium leading-6 text-gray-900 mb-1"
-              >
-                {{ 'components.queryBuilder.fields.available' | translate }}
-              </h3>
-              <div class="flex flex-col">
-                <label class="mb-1">{{
-                  'components.queryBuilder.fields.search' | translate
-                }}</label>
-                <div uiFormFieldDirective class="!w-full divFields">
-                  <input
-                    id="searchBar"
-                    type="text"
-                    [(ngModel)]="searchAvailableField"
-                    [ngModelOptions]="{ standalone: true }"
-                    placeholder="{{
-                      'components.queryBuilder.fields.search' | translate
-                    }}"
-                  />
-                  <ui-button
-                    uiSuffix
-                    (click)="searchAvailableField = ''"
-                    [isIcon]="true"
-                    [icon]="searchAvailableField ? 'cancel' : 'search'"
-                    [uiTooltip]="
-                      'common.' + (searchAvailableField ? 'cancel' : 'search')
-                        | translate
-                    "
-                  ></ui-button>
-                </div>
-              </div>
-              <div class="field-list overflow-auto max-h-[400px]">
-                <ng-container
-                  *ngFor="
-                    let fieldDetails of availableFields;
-                    let index = index
-                  "
-                >
-                  <div
-                    *ngIf="
-                      fieldDetails?.name
-                        ?.toLowerCase()
-                        ?.includes(searchAvailableField.toLowerCase())
-                    "
-                    class="field-box cursor-pointer overflow-ellipsis hover:bg-blue-500 hover:text-white"
-                    (click)="availableFieldIndex = index"
-                    [ngClass]="{
-                      'field-select': availableFieldIndex === index
-                    }"
-                  >
-                    {{
-                      this.emailService.replaceUnderscores(
-                        removeUserString(fieldDetails?.name)
-                      ) | titlecase
-                    }}
-                  </div>
-                </ng-container>
-              </div>
-            </div>
-            <!-- Move Left and Right -->
-            <div class="flex flex-col items-center justify-center">
-              <!-- Add All Available Fields Button -->
-              <button
-                class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1"
-                (click)="addAllAvailableFields()"
-              >
-                <ui-icon
-                  class="text-base"
-                  icon="keyboard_double_arrow_right"
-                  variant="default"
-                ></ui-icon>
-              </button>
-              <!-- Add Selected Available Field Button -->
-              <button
-                class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1"
-                (click)="addSelectedField()"
-              >
-                <ui-icon
-                  class="text-base"
-                  icon="keyboard_arrow_right"
-                  variant="default"
-                ></ui-icon>
-              </button>
-              <!-- Move Selected Field Back Button -->
-              <button
-                class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1"
-                (click)="removeSelectiveFields(selectedFieldIndex)"
-              >
-                <ui-icon
-                  class="text-base"
-                  icon="keyboard_arrow_left"
-                  variant="default"
-                ></ui-icon>
-              </button>
-              <!-- Remove All Selected Fields Button -->
-              <button
-                class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1"
-                (click)="removeAllSelectedFields()"
-              >
-                <ui-icon
-                  class="text-base"
-                  icon="keyboard_double_arrow_left"
-                  variant="default"
-                ></ui-icon>
-              </button>
-            </div>
-
-            <!-- Selected Fields -->
-            <div class="mt-4 w-1/2">
-              <h3
-                htmlFor="exampleSelect"
-                class="block text-base font-medium leading-6 text-gray-900 mb-1"
-              >
-                {{ 'components.queryBuilder.fields.selected' | translate }}
-              </h3>
-              <div class="flex flex-col">
-                <label class="mb-1">{{
-                  'components.queryBuilder.fields.search' | translate
-                }}</label>
-                <div uiFormFieldDirective class="!w-full divFields">
-                  <input
-                    id="searchBarSelected"
-                    type="text"
-                    [(ngModel)]="searchSelectedField"
-                    [ngModelOptions]="{ standalone: true }"
-                    placeholder="{{
-                      'components.queryBuilder.fields.search' | translate
-                    }}"
-                  />
-                  <ui-button
-                    uiSuffix
-                    (click)="searchSelectedField = ''"
-                    [isIcon]="true"
-                    [icon]="searchSelectedField ? 'cancel' : 'search'"
-                    [uiTooltip]="
-                      'common.' + (searchSelectedField ? 'cancel' : 'search')
-                        | translate
-                    "
-                  ></ui-button>
-                </div>
-              </div>
-              <div class="field-list overflow-auto max-h-[400px]">
-                <ng-container
-                  *ngFor="let fields of selectedFields; let index = index"
-                >
-                  <div
-                    *ngIf="
-                      fields?.name
-                        ?.toLowerCase()
-                        ?.includes(searchSelectedField.toLowerCase())
-                    "
-                    class="field-box cursor-pointer overflow-ellipsis hover:bg-blue-500 hover:text-white"
-                    (click)="selectedFieldIndex = index"
-                    [ngClass]="{ 'field-select': selectedFieldIndex === index }"
-                  >
-                    {{
-                      this.emailService.replaceUnderscores(
-                        removeUserString(fields.name)
-                      ) | titlecase
-                    }}
-                  </div>
-                </ng-container>
-              </div>
-            </div>
-            <!-- Up and Down buttons -->
-            <div class="flex flex-col items-center justify-center">
-              <!-- Move Selected Field To Top Button -->
-              <button
-                class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1"
-                (click)="moveTop(selectedFieldIndex)"
-              >
-                <ui-icon
-                  class="text-base"
-                  icon="keyboard_double_arrow_up"
-                  variant="default"
-                ></ui-icon>
-              </button>
-              <!-- Move Selected Field Up Button -->
-              <button
-                class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1"
-                (click)="moveUp(selectedFieldIndex)"
-              >
-                <ui-icon
-                  class="text-base"
-                  icon="keyboard_arrow_up"
-                  variant="default"
-                ></ui-icon>
-              </button>
-              <!-- Move Selected Field Down Button -->
-              <button
-                class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1"
-                (click)="moveDown(selectedFieldIndex)"
-              >
-                <ui-icon
-                  class="text-base"
-                  icon="keyboard_arrow_down"
-                  variant="default"
-                ></ui-icon>
-              </button>
-              <!-- Move Selected Field To Bottom Button -->
-              <button
-                class="bg-gray-200 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 border border-gray-500 rounded shadow mt-1"
-                (click)="moveBottom(selectedFieldIndex)"
-              >
-                <ui-icon
-                  class="text-base"
-                  icon="keyboard_double_arrow_down"
-                  variant="default"
-                ></ui-icon>
-              </button>
-            </div>
-          </div>
-          <div></div>
-        </ng-container>
+        
         <ui-button
           *ngIf="
             tabs?.length > 1 &&
@@ -396,7 +179,7 @@
           {{ 'common.preview' | translate }}
         </ui-button>
       </ng-template>
-    </kendo-tabstrip-tab>
+    </ui-tab>
     <!-- Style Tab -->
     <!-- <kendo-tabstrip-tab [disabled]="true">
       <ng-template kendoTabTitle >
@@ -407,11 +190,13 @@
       <ng-template kendoTabContent>
       </ng-template>
     </kendo-tabstrip-tab> -->
-  </kendo-tabstrip>
+    </div>
+  </ui-tabs>
   <ng-container
     class="mt-5"
     *ngTemplateOutlet="noFieldsInResourceAlertTmpl"
   ></ng-container>
+
 </form>
 
 <!-- Too many records in dataset -->

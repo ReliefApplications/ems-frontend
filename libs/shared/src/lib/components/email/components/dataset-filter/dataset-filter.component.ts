@@ -22,13 +22,7 @@ import {
   FILTER_OPERATORS,
   TYPE_LABEL,
 } from '../../filter/filter.const';
-import { FIELD_NAME } from './metadata.constant';
-import {
-  GET_RESOURCE,
-  GET_RESOURCES,
-  GET_QUERY_TYPES,
-} from '../../graphql/queries';
-import { QueryTypesResponse } from '../../../../models/metadata.model';
+import { GET_RESOURCES, GET_RESOURCE_BY_ID } from '../../graphql/queries';
 import { Subscription, takeUntil } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -88,7 +82,7 @@ export class DatasetFilterComponent
   /** Fields for filtering. */
   public filterFields: any[] = [];
   /** Available fields for filtering. */
-  public availableFields: FieldStore[] = [];
+  public availableFields: any[] = [];
   /** Operators for filtering. */
   public operators: { [key: number]: { value: string; label: string }[] } = {};
   /** Flag to show the dataset limit warning. */
@@ -169,8 +163,15 @@ export class DatasetFilterComponent
     this.query.controls.resource.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: any) => {
-        if (value !== undefined && value !== null) {
+        if (
+          value !== undefined &&
+          value !== null &&
+          this.selectedResourceId !== value
+        ) {
           this.selectedResourceId = value;
+          if (this.resource?.fields) {
+            this.resource.fields = [];
+          }
           this.getResourceData(true);
         }
       });
@@ -246,9 +247,15 @@ export class DatasetFilterComponent
    * @returns resource meta data types
    */
   fetchResourceDataTypes() {
-    return this.apollo.query<QueryTypesResponse>({
-      query: GET_QUERY_TYPES,
-      variables: {},
+    // return this.apollo.query<QueryTypesResponse>({
+    //   query: GET_QUERY_TYPES,
+    //   variables: {},
+    // });
+    return this.apollo.query<ResourceQueryResponse>({
+      query: GET_RESOURCE_BY_ID,
+      variables: {
+        id: this.selectedResourceId,
+      },
     });
   }
 
@@ -278,15 +285,15 @@ export class DatasetFilterComponent
    * @param event The tab selected
    */
   onTabSelect(event: any): void {
-    const newIndex = event.index;
-    const previousIndex = this.currentTabIndex;
-    const filterTabIndex = 0;
-    const fieldsTabIndex = 1;
+    const newIndex = event;
+    // const previousIndex = this.currentTabIndex;
+    // const filterTabIndex = 0;
+    // const fieldsTabIndex = 1;
 
-    // Check if the current active tab is "Filter" and the selected tab is "Fields"
-    if (newIndex === fieldsTabIndex && previousIndex === filterTabIndex) {
-      this.getDataSet('filter');
-    }
+    // // Check if the current active tab is "Filter" and the selected tab is "Fields"
+    // if (newIndex === fieldsTabIndex && previousIndex === filterTabIndex) {
+    //   this.getDataSet('filter');
+    // }
     this.currentTabIndex = newIndex;
   }
 
@@ -370,240 +377,252 @@ export class DatasetFilterComponent
       //     (element) => element.id === this.selectedResourceId
       //   )
       // );
-
-      let fields: any[] | undefined = [];
-      this.emailService
-        .fetchResourceMetaData(this.selectedResourceId)
+      this.fetchResourceDataTypes()
         .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
-          fields = data?.resource?.metadata;
-          this.resource = {};
-          this.loading = true;
-          this.loadingCheck = true;
-          this.showErrorMessage = '';
-          this.apollo
-            .query<ResourceQueryResponse>({
-              query: GET_RESOURCE,
-              variables: {
-                id: this.selectedResourceId,
-              },
-            })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(({ data }) => {
-              this.loading = false;
-              this.loadingCheck = false;
-              this.resource = data.resource;
-              this.metaData = data?.resource?.metadata;
-              if (this.metaData?.length) {
-                this.metaData.forEach((field: any) => {
-                  if (
-                    field &&
-                    !['matrix', 'matrixdynamic', 'matrixdropdown'].includes(
-                      field.type
-                    )
-                  ) {
-                    if (field) {
-                      if (
-                        field.name === FIELD_NAME.createdBy &&
-                        field.fields?.length
-                      ) {
-                        field.fields.forEach((obj: any) => {
-                          obj.name =
-                            `_${FIELD_NAME.createdBy}.user.` +
-                            `${obj.name === 'id' ? '_id' : obj.name}`;
-                          this.availableFields.filter((x) => x.name == obj.name)
-                            .length === 0
-                            ? this.availableFields.push(clone(obj))
-                            : '';
-                          obj.name =
-                            `${FIELD_NAME.createdBy}.` + obj.name.split('.')[2];
-                          this.filterFields.push(obj);
-                        });
-                      } else if (
-                        field.name === FIELD_NAME.lastUpdatedBy &&
-                        field.fields?.length
-                      ) {
-                        field.fields.forEach((obj: any) => {
-                          obj.name =
-                            `_${FIELD_NAME.lastUpdatedBy}.user.` +
-                            `${obj.name === 'id' ? '_id' : obj.name}`;
-                          this.availableFields.filter((x) => x.name == obj.name)
-                            .length === 0
-                            ? this.availableFields.push(clone(obj))
-                            : '';
-                          obj.name =
-                            `${FIELD_NAME.lastUpdatedBy}.` +
-                            obj.name.split('.')[2];
-                          this.filterFields.push(obj);
-                        });
-                      } else if (
-                        field.name === 'lastUpdateForm' &&
-                        field.fields?.length
-                      ) {
-                        field.fields.forEach((obj: any) => {
-                          obj.name = '_lastUpdateForm.' + obj.name;
-                          this.availableFields.filter((x) => x.name == obj.name)
-                            .length === 0
-                            ? this.availableFields.push(clone(obj))
-                            : '';
-                          obj.name = 'lastUpdateForm.' + obj.name.split('.')[1];
-                          this.filterFields.push(obj);
-                        });
-                      } else if (
-                        field.name === 'form' &&
-                        field.fields?.length
-                      ) {
-                        field.fields.forEach((obj: any) => {
-                          obj.name = '_form.' + obj.name;
-                          this.availableFields.filter((x) => x.name == obj.name)
-                            .length === 0
-                            ? this.availableFields.push(clone(obj))
-                            : '';
-                          obj.name = 'form.' + obj.name.split('.')[1];
-                          this.filterFields.push(obj);
-                        });
-                      } else if (field.type === TYPE_LABEL.resource) {
-                        if (field.fields) {
-                          field.fields.forEach((obj: any) => {
-                            obj.parentName = field.name;
-                            if (
-                              obj.name === FIELD_NAME.createdBy ||
-                              obj.name === FIELD_NAME.lastUpdatedBy
-                            ) {
-                              const obj1 = cloneDeep(obj);
-                              obj1.childName = `${field.name} - _${obj.name}.user.username`;
-                              obj1.name = `${field.name} - _${obj.name}.user.username`;
-                              obj1.parentName = field.name;
-                              obj1.type = 'text';
-                              this.availableFields.filter(
-                                (x) => x.name == obj1.name
-                              ).length === 0
-                                ? this.availableFields.push(obj1)
-                                : '';
-
-                              // Create and push the second object
-                              const obj2 = cloneDeep(obj);
-                              obj2.name = `${field.name} - _${obj.name}.user._id`;
-                              obj2.childName = `${field.name} - _${obj.name}.user._id`;
-                              obj2.parentName = field.name;
-                              obj2.type = 'text';
-                              this.availableFields.filter(
-                                (x) => x.name == obj2.name
-                              ).length === 0
-                                ? this.availableFields.push(obj2)
-                                : '';
-
-                              // Create and push the third object
-                              const obj3 = cloneDeep(obj);
-                              obj3.name = `${field.name} - _${obj.name}.user.name`;
-                              obj3.childName = `${field.name} - _${obj.name}.user.name`;
-                              obj3.parentName = field.name;
-                              obj3.type = 'text';
-                              this.availableFields.filter(
-                                (x) => x.name == obj3.name
-                              ).length === 0
-                                ? this.availableFields.push(obj3)
-                                : '';
-                              obj.fields = [];
-                              obj.fields?.filter((x: any) => x.name == obj.name)
-                                .length === 0
-                                ? obj.fields.push(clone(obj1))
-                                : '';
-                              obj.fields?.filter((x: any) => x.name == obj.name)
-                                .length === 0
-                                ? obj.fields.push(clone(obj2))
-                                : '';
-                              obj.fields?.filter((x: any) => x.name == obj.name)
-                                .length === 0
-                                ? obj.fields.push(clone(obj3))
-                                : '';
-                              obj.childName = field.name + ' - ' + obj.name;
-                              obj.name = field.name + ' - ' + obj.name;
-                            } else {
-                              obj.childName = field.name + ' - ' + obj.name;
-                              obj.name = field.name + ' - ' + obj.name;
-                              this.availableFields.filter(
-                                (x) => x.name == obj.name
-                              ).length === 0
-                                ? this.availableFields.push(clone(obj))
-                                : '';
-                            }
-                          });
-                        } else {
-                          this.availableFields.filter(
-                            (x) => x.name == field.name
-                          ).length === 0
-                            ? this.availableFields.push(clone(field))
-                            : '';
-                        }
-
-                        this.filterFields.push(field);
-                      } else if (field.type === TYPE_LABEL.resources) {
-                        this.availableFields.filter((x) => x.name == field.name)
-                          .length === 0
-                          ? this.availableFields.push(clone(field))
-                          : '';
-                        this.filterFields.push(field);
-                      } else {
-                        const metaField = fields?.find(
-                          (x: any) => x.name === field.name
-                        );
-                        // Map Select Data to select fields if it exists
-                        field.options = metaField.options;
-                        field.multiSelect = metaField.multiSelect;
-                        field.fields = metaField.fields ?? null;
-                        field.select = metaField.editor === 'select';
-                        this.availableFields.filter((x) => x.name == field.name)
-                          ? this.availableFields.push(clone(field))
-                          : '';
-                        this.filterFields.push(clone(field));
-                      }
-                    }
-                    this.availableFields = this.availableFields ?? [];
-                    this.filterFields = this.filterFields ?? [];
-                    this.availableFields?.sort((a, b) =>
-                      a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
-                    );
-                  } else {
-                    this.disabledFields.push(field.name);
-                    this.disabledTypes.push(field.type);
-                    this.disabledTypes = [...new Set(this.disabledTypes)];
-                  }
-                });
-
-                //Checking Edit mode data
-                if (
-                  this.query?.controls?.fields?.value &&
-                  (this.selectedFields === undefined ||
-                    this.selectedFields.length === 0)
-                ) {
-                  this.selectedFields =
-                    this.selectedFields === undefined
-                      ? []
-                      : this.selectedFields;
-                  this.selectedFields =
-                    this.query?.controls?.fields?.value?.length > 0
-                      ? this.query?.controls?.fields?.value
-                      : this.selectedFields;
-                  this.query?.controls?.fields?.value?.forEach(
-                    (fieldEle: any) => {
-                      this.populateFields(fieldEle);
-                    }
-                  );
-                }
-
-                if (this.query?.controls?.filter?.value) {
-                  this.query?.controls?.filter?.value?.filters?.forEach(
-                    (fValue: any, fIndex: number) => {
-                      this.setField(fValue.field, fIndex);
-                      this.emailService.disableSaveAndProceed.next(false);
-                    }
-                  );
-                }
-              }
-              this.resourcePopulated = true;
-            });
+          const queryTemp: any = data.resource;
+          const newData = this.queryBuilder.getFields(queryTemp.queryName);
+          this.query.get('name').setValue(queryTemp.queryName);
+          this.availableFields = newData;
+          this.filterFields = cloneDeep(newData);
+          this.loading = false;
+          this.resourcePopulated = true;
+          this.resource = data.resource;
+          this.metaData = data?.resource?.metadata;
         });
+      // let fields: any[] | undefined = [];
+      // this.emailService
+      //   .fetchResourceMetaData(this.selectedResourceId)
+      //   .pipe(takeUntil(this.destroy$))
+      //   .subscribe(({ data }) => {
+      //     fields = data?.resource?.metadata;
+      //     this.resource = {};
+      //     this.loading = true;
+      //     this.loadingCheck = true;
+      //     this.showErrorMessage = '';
+      //     this.apollo
+      //       .query<ResourceQueryResponse>({
+      //         query: GET_RESOURCE,
+      //         variables: {
+      //           id: this.selectedResourceId,
+      //         },
+      //       })
+      //       .pipe(takeUntil(this.destroy$))
+      //       .subscribe(({ data }) => {
+      //         this.loading = false;
+      //         this.loadingCheck = false;
+      //         this.resource = data.resource;
+      //         this.metaData = data?.resource?.metadata;
+      //         if (this.metaData?.length) {
+      //           this.metaData.forEach((field: any) => {
+      //             if (
+      //               field &&
+      //               !['matrix', 'matrixdynamic', 'matrixdropdown'].includes(
+      //                 field.type
+      //               )
+      //             ) {
+      //               if (field) {
+      //                 if (
+      //                   field.name === FIELD_NAME.createdBy &&
+      //                   field.fields?.length
+      //                 ) {
+      //                   field.fields.forEach((obj: any) => {
+      //                     obj.name =
+      //                       `_${FIELD_NAME.createdBy}.user.` +
+      //                       `${obj.name === 'id' ? '_id' : obj.name}`;
+      //                     this.availableFields.filter((x) => x.name == obj.name)
+      //                       .length === 0
+      //                       ? this.availableFields.push(clone(obj))
+      //                       : '';
+      //                     obj.name =
+      //                       `${FIELD_NAME.createdBy}.` + obj.name.split('.')[2];
+      //                     this.filterFields.push(obj);
+      //                   });
+      //                 } else if (
+      //                   field.name === FIELD_NAME.lastUpdatedBy &&
+      //                   field.fields?.length
+      //                 ) {
+      //                   field.fields.forEach((obj: any) => {
+      //                     obj.name =
+      //                       `_${FIELD_NAME.lastUpdatedBy}.user.` +
+      //                       `${obj.name === 'id' ? '_id' : obj.name}`;
+      //                     this.availableFields.filter((x) => x.name == obj.name)
+      //                       .length === 0
+      //                       ? this.availableFields.push(clone(obj))
+      //                       : '';
+      //                     obj.name =
+      //                       `${FIELD_NAME.lastUpdatedBy}.` +
+      //                       obj.name.split('.')[2];
+      //                     this.filterFields.push(obj);
+      //                   });
+      //                 } else if (
+      //                   field.name === 'lastUpdateForm' &&
+      //                   field.fields?.length
+      //                 ) {
+      //                   field.fields.forEach((obj: any) => {
+      //                     obj.name = '_lastUpdateForm.' + obj.name;
+      //                     this.availableFields.filter((x) => x.name == obj.name)
+      //                       .length === 0
+      //                       ? this.availableFields.push(clone(obj))
+      //                       : '';
+      //                     obj.name = 'lastUpdateForm.' + obj.name.split('.')[1];
+      //                     this.filterFields.push(obj);
+      //                   });
+      //                 } else if (
+      //                   field.name === 'form' &&
+      //                   field.fields?.length
+      //                 ) {
+      //                   field.fields.forEach((obj: any) => {
+      //                     obj.name = '_form.' + obj.name;
+      //                     this.availableFields.filter((x) => x.name == obj.name)
+      //                       .length === 0
+      //                       ? this.availableFields.push(clone(obj))
+      //                       : '';
+      //                     obj.name = 'form.' + obj.name.split('.')[1];
+      //                     this.filterFields.push(obj);
+      //                   });
+      //                 } else if (field.type === TYPE_LABEL.resource) {
+      //                   if (field.fields) {
+      //                     field.fields.forEach((obj: any) => {
+      //                       obj.parentName = field.name;
+      //                       if (
+      //                         obj.name === FIELD_NAME.createdBy ||
+      //                         obj.name === FIELD_NAME.lastUpdatedBy
+      //                       ) {
+      //                         const obj1 = cloneDeep(obj);
+      //                         obj1.childName = `${field.name} - _${obj.name}.user.username`;
+      //                         obj1.name = `${field.name} - _${obj.name}.user.username`;
+      //                         obj1.parentName = field.name;
+      //                         obj1.type = 'text';
+      //                         this.availableFields.filter(
+      //                           (x) => x.name == obj1.name
+      //                         ).length === 0
+      //                           ? this.availableFields.push(obj1)
+      //                           : '';
+
+      //                         // Create and push the second object
+      //                         const obj2 = cloneDeep(obj);
+      //                         obj2.name = `${field.name} - _${obj.name}.user._id`;
+      //                         obj2.childName = `${field.name} - _${obj.name}.user._id`;
+      //                         obj2.parentName = field.name;
+      //                         obj2.type = 'text';
+      //                         this.availableFields.filter(
+      //                           (x) => x.name == obj2.name
+      //                         ).length === 0
+      //                           ? this.availableFields.push(obj2)
+      //                           : '';
+
+      //                         // Create and push the third object
+      //                         const obj3 = cloneDeep(obj);
+      //                         obj3.name = `${field.name} - _${obj.name}.user.name`;
+      //                         obj3.childName = `${field.name} - _${obj.name}.user.name`;
+      //                         obj3.parentName = field.name;
+      //                         obj3.type = 'text';
+      //                         this.availableFields.filter(
+      //                           (x) => x.name == obj3.name
+      //                         ).length === 0
+      //                           ? this.availableFields.push(obj3)
+      //                           : '';
+      //                         obj.fields = [];
+      //                         obj.fields?.filter((x: any) => x.name == obj.name)
+      //                           .length === 0
+      //                           ? obj.fields.push(clone(obj1))
+      //                           : '';
+      //                         obj.fields?.filter((x: any) => x.name == obj.name)
+      //                           .length === 0
+      //                           ? obj.fields.push(clone(obj2))
+      //                           : '';
+      //                         obj.fields?.filter((x: any) => x.name == obj.name)
+      //                           .length === 0
+      //                           ? obj.fields.push(clone(obj3))
+      //                           : '';
+      //                         obj.childName = field.name + ' - ' + obj.name;
+      //                         obj.name = field.name + ' - ' + obj.name;
+      //                       } else {
+      //                         obj.childName = field.name + ' - ' + obj.name;
+      //                         obj.name = field.name + ' - ' + obj.name;
+      //                         this.availableFields.filter(
+      //                           (x) => x.name == obj.name
+      //                         ).length === 0
+      //                           ? this.availableFields.push(clone(obj))
+      //                           : '';
+      //                       }
+      //                     });
+      //                   } else {
+      //                     this.availableFields.filter(
+      //                       (x) => x.name == field.name
+      //                     ).length === 0
+      //                       ? this.availableFields.push(clone(field))
+      //                       : '';
+      //                   }
+
+      //                   this.filterFields.push(field);
+      //                 } else if (field.type === TYPE_LABEL.resources) {
+      //                   this.availableFields.filter((x) => x.name == field.name)
+      //                     .length === 0
+      //                     ? this.availableFields.push(clone(field))
+      //                     : '';
+      //                   this.filterFields.push(field);
+      //                 } else {
+      //                   const metaField = fields?.find(
+      //                     (x: any) => x.name === field.name
+      //                   );
+      //                   // Map Select Data to select fields if it exists
+      //                   field.options = metaField.options;
+      //                   field.multiSelect = metaField.multiSelect;
+      //                   field.fields = metaField.fields ?? null;
+      //                   field.select = metaField.editor === 'select';
+      //                   this.availableFields.filter((x) => x.name == field.name)
+      //                     ? this.availableFields.push(clone(field))
+      //                     : '';
+      //                   this.filterFields.push(clone(field));
+      //                 }
+      //               }
+      //               this.availableFields = this.availableFields ?? [];
+      //               this.filterFields = this.filterFields ?? [];
+      //               this.availableFields?.sort((a, b) =>
+      //                 a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
+      //               );
+      //             } else {
+      //               this.disabledFields.push(field.name);
+      //               this.disabledTypes.push(field.type);
+      //               this.disabledTypes = [...new Set(this.disabledTypes)];
+      //             }
+      //           });
+
+      //           //Checking Edit mode data
+      //           if (
+      //             this.query?.controls?.fields?.value &&
+      //             (this.selectedFields === undefined ||
+      //               this.selectedFields.length === 0)
+      //           ) {
+      //             this.selectedFields =
+      //               this.selectedFields === undefined
+      //                 ? []
+      //                 : this.selectedFields;
+      //             this.selectedFields =
+      //               this.query?.controls?.fields?.value?.length > 0
+      //                 ? this.query?.controls?.fields?.value
+      //                 : this.selectedFields;
+      //             this.query?.controls?.fields?.value?.forEach(
+      //               (fieldEle: any) => {
+      //                 this.populateFields(fieldEle);
+      //               }
+      //             );
+      //           }
+
+      //           if (this.query?.controls?.filter?.value) {
+      //             this.query?.controls?.filter?.value?.filters?.forEach(
+      //               (fValue: any, fIndex: number) => {
+      //                 this.setField(fValue.field, fIndex);
+      //                 this.emailService.disableSaveAndProceed.next(false);
+      //               }
+      //             );
+      //           }
+      //         }
+      //         this.resourcePopulated = true;
+      //       });
+      //   });
     } else {
       this.loading = false;
     }
@@ -1166,50 +1185,51 @@ export class DatasetFilterComponent
       // }
 
       if (tabName == 'filter') {
-        const query = this.queryValue[this.activeTab.index];
-        query.pageSize = 1;
-        query.tabIndex = this.activeTab.index;
-        this.loading = true;
-        this.loadingCheck = false;
-        /**
-         Fetches the data records for selected fields
-        (by default its all records in the resource).
-         */
-        this.fetchDataSet(query)
-          .pipe(takeUntil(this.destroy$))
-          .subscribe(
-            (res: any) => {
-              this.loading = false;
-              this.loadingCheck = false;
-              this.totalMatchingRecords = res?.data?.dataset?.totalCount;
-              if (this.totalMatchingRecords <= 50) {
-                this.datasetPreview.selectTab(1);
-                this.showDatasetLimitWarning = false;
-                if (this.selectedFields.length) {
-                  this.emailService.disableSaveAndProceed.next(false);
-                  this.emailService.disableSaveAsDraft.next(false);
-                } else {
-                  this.emailService.disableSaveAndProceed.next(true);
-                  this.emailService.disableSaveAsDraft.next(true);
-                }
-              } else {
-                this.showDatasetLimitWarning = true;
-                this.emailService.disableSaveAndProceed.next(true);
-                this.emailService.disableSaveAsDraft.next(true);
-              }
-            },
-            (error: any) => {
-              this.loading = false;
-              this.loadingCheck = false;
-              this.showDatasetLimitWarning = false;
-              this.emailService.disableSaveAndProceed.next(true);
-              this.emailService.disableSaveAsDraft.next(true);
-              this.snackBar.openSnackBar(
-                error?.message ?? 'Something Went Wrong',
-                { error: true }
-              );
-            }
-          );
+        this.onTabSelect(1);
+        // const query = this.queryValue[this.activeTab.index];
+        // query.pageSize = 1;
+        // query.tabIndex = this.activeTab.index;
+        // this.loading = true;
+        // this.loadingCheck = false;
+        // /**
+        //  Fetches the data records for selected fields
+        // (by default its all records in the resource).
+        //  */
+        // this.fetchDataSet(query)
+        //   .pipe(takeUntil(this.destroy$))
+        //   .subscribe(
+        //     (res: any) => {
+        //       this.loading = false;
+        //       this.loadingCheck = false;
+        //       this.totalMatchingRecords = res?.data?.dataset?.totalCount;
+        //       if (this.totalMatchingRecords <= 50) {
+        //         this.datasetPreview.selectTab(1);
+        //         this.showDatasetLimitWarning = false;
+        //         if (this.selectedFields.length) {
+        //           this.emailService.disableSaveAndProceed.next(false);
+        //           this.emailService.disableSaveAsDraft.next(false);
+        //         } else {
+        //           this.emailService.disableSaveAndProceed.next(true);
+        //           this.emailService.disableSaveAsDraft.next(true);
+        //         }
+        //       } else {
+        //         this.showDatasetLimitWarning = true;
+        //         this.emailService.disableSaveAndProceed.next(true);
+        //         this.emailService.disableSaveAsDraft.next(true);
+        //       }
+        //     },
+        //     (error: any) => {
+        //       this.loading = false;
+        //       this.loadingCheck = false;
+        //       this.showDatasetLimitWarning = false;
+        //       this.emailService.disableSaveAndProceed.next(true);
+        //       this.emailService.disableSaveAsDraft.next(true);
+        //       this.snackBar.openSnackBar(
+        //         error?.message ?? 'Something Went Wrong',
+        //         { error: true }
+        //       );
+        //     }
+        //   );
       }
       if (
         tabName == 'fields' &&
@@ -1380,11 +1400,11 @@ export class DatasetFilterComponent
    */
   getFieldsArray() {
     const formArray = this.query.get('fields') as FormArray;
-    this.selectedFields.forEach((item: any) => {
-      // For an array of strings, create a FormControl for each string
-      formArray.push(this.formGroup.control(item));
-    });
-
+    // this.selectedFields.forEach((item: any) => {
+    //   // For an array of strings, create a FormControl for each string
+    //   formArray.push(this.formGroup.control(item));
+    // });
+    this.selectedFields = this.query.get('fields');
     return formArray;
   }
 
@@ -1398,7 +1418,10 @@ export class DatasetFilterComponent
   clearFormField(formField: string, event: Event) {
     if (this.query.get(formField)?.value) {
       this.query.get(formField)?.setValue(null);
+      this.query.controls.resource.value = null;
     }
+    this.resource.fields = [];
+    this.selectedResourceId = '';
     event.stopPropagation();
   }
 }

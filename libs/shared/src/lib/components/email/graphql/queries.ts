@@ -344,3 +344,15 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
     }
   }
 `;
+
+/** Graphql query for getting a resource by its id */
+export const GET_RESOURCE_BY_ID = gql`
+  query GetResourceById($id: ID!) {
+    resource(id: $id) {
+      id
+      name
+      queryName
+      fields
+    }
+  }
+`;
