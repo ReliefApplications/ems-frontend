@@ -30,6 +30,7 @@ import round from './round';
 import parseJSON from './parseJSON';
 import getDepreciationPeriod from './solidarites-demo/getDepreciationPeriod';
 import calculateDepreciation from './solidarites-demo/calculateDepreciation';
+import getLinkField from './solidarites-demo/getLinkField';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -63,6 +64,7 @@ export const functions = [
   { fn: parseJSON, name: 'parseJSON' },
   { fn: getDepreciationPeriod, name: 'getDepreciationPeriod' },
   { fn: calculateDepreciation, name: 'calculateDepreciation' },
+  { fn: getLinkField, name: 'getLinkField' },
 ];
 
 /** Generators for each async custom function available  */
