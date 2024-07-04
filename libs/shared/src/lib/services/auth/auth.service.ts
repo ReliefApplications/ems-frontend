@@ -231,7 +231,6 @@ export class AuthService {
       }
       redirectUri.search = '';
       if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
-        console.log('setting redirect uri', redirectUri.pathname);
         localStorage.setItem('redirectPath', redirectUri.pathname);
       }
     }

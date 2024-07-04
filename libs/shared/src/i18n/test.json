@@ -569,7 +569,8 @@
 				"selectedFields": "******",
 				"sort": "******",
 				"unwind": "******"
-			}
+			},
+			"unavailableFields": "******"
 		},
 		"apiConfiguration": {
 			"create": {
@@ -1576,8 +1577,10 @@
 					"mapDetailsTitle": "******",
 					"mapDetailsTooltip": "******"
 				},
+				"openEditor": "******",
 				"openSettings": "******",
 				"tooltip": {
+					"displayEditor": "******",
 					"displayMap": "******",
 					"openPage": "******",
 					"saved": "******",

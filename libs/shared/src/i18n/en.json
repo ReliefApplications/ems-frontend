@@ -569,7 +569,8 @@
 				"selectedFields": "Only unused fields can be removed.",
 				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.\nEstablishing consecutive sorting stages will simultaneously sort all fields.",
 				"unwind": "Deconstructs an array field from the input documents to output a document for each element."
-			}
+			},
+			"unavailableFields": "These fields are unavailable because their types are not supported"
 		},
 		"apiConfiguration": {
 			"create": {
@@ -1576,8 +1577,10 @@
 					"mapDetailsTitle": "Query Map View",
 					"mapDetailsTooltip": "Centered by default on selected record"
 				},
+				"openEditor": "Open html",
 				"openSettings": "Open settings",
 				"tooltip": {
+					"displayEditor": "Display html in modal",
 					"displayMap": "Display map",
 					"openPage": "Navigate to page",
 					"saved": "Changes saved",
