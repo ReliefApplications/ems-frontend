@@ -289,7 +289,7 @@ export class PreviewComponent
       case 'tableDiv':
         styles[
           'tableDivStyle'
-        ] = `display: flex; flex-direction: column; align-items: center; width: 90%; margin: 0 auto; margin-top: 1rem;`;
+        ] = `display: flex; flex-direction: column !important; align-items: center; width: 90%; margin: 0 auto; margin-top: 1rem;`;
         break;
       case 'label':
         styles[
