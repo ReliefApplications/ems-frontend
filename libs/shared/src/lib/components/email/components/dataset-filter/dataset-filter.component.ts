@@ -26,9 +26,8 @@ import { GET_RESOURCES, GET_RESOURCE_BY_ID } from '../../graphql/queries';
 import { Subscription, takeUntil } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { FieldStore, PreviewStore } from '../../models/email.const';
+import { FieldStore } from '../../models/email.const';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
-import { error } from 'console';
 /** Default items per query, for pagination */
 let ITEMS_PER_PAGE = 0;
 
