@@ -82,7 +82,7 @@ export const parseHtml = (
       options.styles
     );
   }
-  formattedHtml = applyTableWidth(formattedHtml);
+  formattedHtml = applyTableStyle(formattedHtml);
   return applyOperations(formattedHtml);
 };
 
@@ -92,7 +92,7 @@ export const parseHtml = (
  * @param formattedHtml html to parse
  * @returns formatted html string
  */
-const applyTableWidth = (formattedHtml: string) => {
+const applyTableStyle = (formattedHtml: string) => {
   if (!formattedHtml.includes('table')) {
     return formattedHtml;
   }
@@ -100,12 +100,27 @@ const applyTableWidth = (formattedHtml: string) => {
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = formattedHtml;
 
+  const applyChildStyle = (table: HTMLTableElement, tag: 'th' | 'td') => {
+    const elements = table.querySelectorAll(tag);
+    for (let i = 0; i < elements.length; i++) {
+      const element = elements[i];
+      if (table.style.borderColor && !element.style.borderColor) {
+        element.style.borderColor = table.style.borderColor;
+      }
+      if (table.style.borderWidth && !element.style.borderWidth) {
+        element.style.borderWidth = table.style.borderWidth;
+      }
+    }
+  };
+
   // Find all table elements within the temporary container
   const tables = tempDiv.getElementsByTagName('table');
 
   // Loop through each table element
   for (let i = 0; i < tables.length; i++) {
     const table = tables[i];
+    applyChildStyle(table, 'th');
+    applyChildStyle(table, 'td');
     table.style.borderWidth = `${table.getAttribute('border')}px` || '';
   }
 
