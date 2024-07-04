@@ -379,7 +379,6 @@ export class DatasetFilterComponent
     this.disabledFields = [];
     this.disabledTypes = [];
     this.currentTabIndex = 0;
-    // this.query.controls.query.reset();
     // this.query.get('query.filter.logic').value = 'and';
     // this.query.controls.query.get('filter')?.setValue({
     //   logic: 'and',
@@ -1206,6 +1205,13 @@ export class DatasetFilterComponent
       // }
 
       if (tabName == 'filter') {
+        if (this.selectedFields.length) {
+          this.emailService.disableSaveAndProceed.next(false);
+          this.emailService.disableSaveAsDraft.next(false);
+        } else {
+          this.emailService.disableSaveAndProceed.next(true);
+          this.emailService.disableSaveAsDraft.next(true);
+        }
         this.onTabSelect(1);
         // const query = this.queryValue[this.activeTab.index];
         // query.pageSize = 1;
@@ -1458,7 +1464,7 @@ export class DatasetFilterComponent
     //   // For an array of strings, create a FormControl for each string
     //   formArray.push(this.formGroup.control(item));
     // });
-    this.selectedFields = this.query.controls.query.get('fields');
+    this.selectedFields = this.query.controls.query.get('fields')?.value;
     return formArray;
   }
 
@@ -1474,6 +1480,7 @@ export class DatasetFilterComponent
       this.query.controls.query.get(formField)?.setValue(null);
       this.query.controls.query.get('resource').value = null;
     }
+    this.resetFilters();
     // this.query.controls.query.reset();
     // this.query.get('query.filter.logic').value = 'and';
     // this.query.get('query').reset({

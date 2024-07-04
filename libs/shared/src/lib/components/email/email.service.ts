@@ -1495,7 +1495,7 @@ export class EmailService {
    * @returns rest post to end point.
    */
   getPreviewDataSet(queryData: any): Observable<any> {
-    const urlWithConfigId = `${this.restService.apiUrl}/notification/preview-dataset`;
-    return this.http.post<any>(urlWithConfigId, queryData);
+    const url = `${this.restService.apiUrl}/notification/preview-dataset`;
+    return this.http.post<any>(url, queryData);
   }
 }
