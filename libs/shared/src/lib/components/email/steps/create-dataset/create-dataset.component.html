@@ -50,18 +50,18 @@
             <ng-template ngProjectAs="label"> </ng-template>
           </ui-tab>
         </ng-container>
-        <ui-tab *ngIf="!showPreview" id="addIcon" class="add-block">
-          <ng-container ngProjectAs="label">
+        <ng-container *ngIf="!showPreview" class="add-block" ngProjectAs="label">
+          <span class="k-link py-2" id="addIcon">
             <ui-button
-              [isIcon]="true"
-              size="large"
-              (click)="addTab()"
-              [icon]="'add'"
-              [uiTooltip]="'common.toolTip.newBlock' | translate"
-            >
-            </ui-button>
-          </ng-container>
-        </ui-tab>
+            [isIcon]="true"
+            size="large"
+            (click)="addTab()"
+            [icon]="'add'"
+            [uiTooltip]="'common.toolTip.newBlock' | translate"
+          >
+          </ui-button>
+          </span>          
+        </ng-container>
 
         <!-- Preview Tab -->
         <ui-tab
