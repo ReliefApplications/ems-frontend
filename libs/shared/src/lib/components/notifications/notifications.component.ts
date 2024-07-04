@@ -92,22 +92,22 @@ export class NotificationsComponent
                   },
                 }
               );
-            this.notificationsQuery.valueChanges.subscribe((res) => {
-              this.cachedNotifications =
-                res.data.application.customNotifications.edges.map(
-                  (x) => x.node
+            this.notificationsQuery.valueChanges.subscribe(
+              ({ data, loading }) => {
+                this.cachedNotifications =
+                  data.application.customNotifications.edges.map((x) => x.node);
+                this.notifications = this.cachedNotifications.slice(
+                  this.pageInfo.pageSize * this.pageInfo.pageIndex,
+                  this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
                 );
-              this.notifications = this.cachedNotifications.slice(
-                this.pageInfo.pageSize * this.pageInfo.pageIndex,
-                this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-              );
-              this.pageInfo.length =
-                res.data.application.customNotifications.totalCount;
-              this.pageInfo.endCursor =
-                res.data.application.customNotifications.pageInfo.endCursor;
-              this.loading = res.loading;
-              this.updating = false;
-            });
+                this.pageInfo.length =
+                  data.application.customNotifications.totalCount;
+                this.pageInfo.endCursor =
+                  data.application.customNotifications.pageInfo.endCursor;
+                this.loading = loading;
+                this.updating = false;
+              }
+            );
           }
         }
       );

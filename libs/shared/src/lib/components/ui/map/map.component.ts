@@ -1148,8 +1148,8 @@ export class MapComponent
     this.resetLayers(this.layers.filter((x) => x.shouldRefresh));
     from(this.getLayers(layersToGet ?? [], false))
       .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
-      .subscribe((res) => {
-        this.overlaysTree = [res.layers];
+      .subscribe(({ layers }) => {
+        this.overlaysTree = [layers];
 
         flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree).forEach(
           (x) => {

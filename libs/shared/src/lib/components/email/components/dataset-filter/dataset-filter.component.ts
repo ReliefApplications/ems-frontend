@@ -606,21 +606,6 @@ export class DatasetFilterComponent
     }
   }
 
-  // /**
-  //  *
-  //  * @param name
-  //  */
-  // grabValues(name: string) {
-  //   const values = [];
-
-  //   this.grabData().subscribe((res) => {
-  //     const resource = res.data.resource;
-  //     // const value = resource?.find(
-  //     //   (data: any) => data.name === fieldName.field.split('.')[0]
-  //     // )
-  //   });
-  // }
-
   /**
    * Retrieves the field type of the field.
    *
@@ -1176,10 +1161,10 @@ export class DatasetFilterComponent
         this.fetchDataSet(query)
           .pipe(takeUntil(this.destroy$))
           .subscribe(
-            (res: any) => {
+            ({ data }: any) => {
               this.loading = false;
               this.loadingCheck = false;
-              this.totalMatchingRecords = res?.data?.dataset?.totalCount;
+              this.totalMatchingRecords = data?.dataset?.totalCount;
               if (this.totalMatchingRecords <= 50) {
                 this.datasetPreview.selectTab(1);
                 this.showDatasetLimitWarning = false;
@@ -1251,40 +1236,38 @@ export class DatasetFilterComponent
           query.pageSize = 50;
           this.fetchDataSet(query)
             .pipe(takeUntil(this.destroy$))
-            .subscribe((res: { data: { dataset: any } }) => {
-              if (res?.data?.dataset) {
-                this.datasetResponse = res?.data?.dataset;
-                this.dataList = res?.data?.dataset.records?.map(
-                  (record: any) => {
-                    const flattenedObject = this.emailService.flattenRecord(
-                      record,
-                      resourceInfo,
-                      query
-                    );
-                    query.fields.forEach((x: any) => {
-                      /**
-                       * Converts the resource field name back to {resourceName} - {resourceField}
-                       * so the field can be mapped to the correct data.
-                       */
-                      if (x.parentName) {
-                        x.name = `${x.parentName} - ${x.childName}`;
-                        x.type = x.childType;
-                      }
-                    });
+            .subscribe(({ data }: { data: { dataset: any } }) => {
+              if (data?.dataset) {
+                this.datasetResponse = data?.dataset;
+                this.dataList = data?.dataset.records?.map((record: any) => {
+                  const flattenedObject = this.emailService.flattenRecord(
+                    record,
+                    resourceInfo,
+                    query
+                  );
+                  query.fields.forEach((x: any) => {
+                    /**
+                     * Converts the resource field name back to {resourceName} - {resourceField}
+                     * so the field can be mapped to the correct data.
+                     */
+                    if (x.parentName) {
+                      x.name = `${x.parentName} - ${x.childName}`;
+                      x.type = x.childType;
+                    }
+                  });
 
-                    delete flattenedObject.data;
+                  delete flattenedObject.data;
 
-                    const flatData = Object.fromEntries(
-                      Object.entries(flattenedObject).filter(
-                        ([, value]) => value !== null && value !== undefined
-                      )
-                    );
+                  const flatData = Object.fromEntries(
+                    Object.entries(flattenedObject).filter(
+                      ([, value]) => value !== null && value !== undefined
+                    )
+                  );
 
-                    return flatData;
-                  }
-                );
+                  return flatData;
+                });
                 if (this.dataList?.length) {
-                  const tempIndex = res?.data?.dataset?.tabIndex;
+                  const tempIndex = data?.dataset?.tabIndex;
                   this.datasetFields = [
                     ...new Set(
                       this.queryValue[tempIndex].fields
@@ -1296,10 +1279,10 @@ export class DatasetFilterComponent
                 allPreviewData.push({
                   dataList: this.dataList,
                   datasetFields: this.datasetFields,
-                  tabIndex: res?.data?.dataset?.tabIndex,
+                  tabIndex: data?.dataset?.tabIndex,
                   tabName:
-                    res?.data?.dataset?.tabIndex < this.queryValue.length
-                      ? this.queryValue[res.data.dataset.tabIndex].name
+                    data?.dataset?.tabIndex < this.queryValue.length
+                      ? this.queryValue[data.dataset.tabIndex].name
                       : '',
                 });
                 if (this.tabs.length == allPreviewData.length) {
