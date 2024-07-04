@@ -308,6 +308,17 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
                 if (data) {
                   const resourceId = get(data.addForm, 'resource.id');
                   this.router.navigate(['/resources/' + resourceId]);
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectCreated',
+                      {
+                        type: this.translate
+                          .instant('common.resource.one')
+                          .toLowerCase(),
+                        value: value.name,
+                      }
+                    )
+                  );
                 }
               }
             },

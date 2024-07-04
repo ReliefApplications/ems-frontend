@@ -1,0 +1,303 @@
+<div class="distribution_list">
+  <div class="mt-4 flex gap-2 justify-end">
+    <!-- Email List Import Button -->
+    <div>
+      <input
+        type="file"
+        class="hidden"
+        #fileUpload
+        (change)="fileSelectionHandler($event)"
+        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      />
+    </div>
+    <!-- Import file -->
+    <ui-button
+      icon="cloud_download"
+      category="secondary"
+      variant="primary"
+      [uiTooltip]="
+        'components.email.distributionList.import.import' | translate
+      "
+      (click)="fileUpload.click()"
+    >
+      {{ 'components.email.distributionList.import.name' | translate }}
+    </ui-button>
+    <!-- Download import template -->
+    <ui-button
+      icon="download"
+      category="secondary"
+      variant="primary"
+      [uiTooltip]="
+        'components.email.distributionList.import.download' | translate
+      "
+      (click)="onDownloadTemplate()"
+    >
+      {{ 'components.email.distributionList.import.download' | translate }}
+    </ui-button>
+  </div>
+  <div class="flex gap-4" *ngIf="!showExistingDistributionList">
+    <div class="mt-4 w-1/3">
+      <label
+        htmlFor="exampleSelect"
+        class="block text-sm font-medium leading-6 text-gray-900 mb-1"
+      >
+        {{ 'components.select.distribution.label' | translate }}
+      </label>
+      <input
+        (input)="validateDistributionList()"
+        [class]="{
+          'form-error':
+            (isNameDuplicate() && !distributionListId) ||
+            !emailDistributionList.name ||
+            emailDistributionList.name.trim() === ''
+        }"
+        class="relative flex py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center w-full"
+        (change)="validateDistributionList()"
+        [(ngModel)]="emailDistributionList.name"
+        [placeholder]="'common.name' | translate"
+      />
+      <div
+        *ngIf="isNameDuplicate() && !distributionListId"
+        class="text-red-500 text-sm mt-1"
+      >
+        {{ 'components.email.distributionList.duplicate' | translate }}
+      </div>
+    </div>
+    <div
+      class="text-gray-700 text-xs gap-1 flex items-end"
+      *ngIf="false"
+      style="font-weight: 500"
+    >
+      <input id="Alert_me" type="checkbox" />
+      <label for="Alert_me">
+        {{ 'components.select.distribution.alertMe' | translate }}
+      </label>
+    </div>
+  </div>
+  <div class="use-existing" *ngIf="!showExistingDistributionList">
+    <p (click)="toggleExistingDistributionList()">
+      {{ 'common.notifications.email.existing' | translate }}
+    </p>
+  </div>
+  <ui-alert
+    class="mb-4"
+    variant="warning"
+    *ngIf="
+      emailDistributionList?.name?.length === 0 ||
+      emailDistributionList?.To?.length === 0
+    "
+  >
+    {{ 'components.email.distributionList.alert.partOne' | translate }}
+    <strong
+      *ngIf="
+        emailDistributionList?.name?.length === 0 ||
+        emailDistributionList?.name?.trim() === ''
+      "
+    >
+      {{
+        'components.email.distributionList.alert.partTwo' | translate
+      }}</strong
+    >
+    <strong
+      *ngIf="
+        emailDistributionList?.To?.length === 0 &&
+        (emailDistributionList?.name?.length === 0 ||
+          emailDistributionList?.name?.trim() === '')
+      "
+    >
+      {{ 'components.email.distributionList.alert.and' | translate }} </strong
+    ><strong *ngIf="emailDistributionList?.To?.length === 0">{{
+      'components.email.distributionList.alert.partThree' | translate
+    }}</strong
+    >.
+  </ui-alert>
+  <!-- Existing Distribution List -->
+  <div *ngIf="showExistingDistributionList">
+    <div class="mt-4" *ngIf="!isLoading; else loaderContainer">
+      <div class="mt-4 overflow-x-hidden shadow-2lg">
+        <div class="overflow-x-auto">
+          <table cdk-table uiTableWrapper [dataSource]="distributionLists">
+            <ng-container cdkColumnDef="name">
+              <th uiCellHeader *cdkHeaderCellDef scope="col">
+                <span class="headerTitle">
+                  {{ 'common.name' | translate }}
+                </span>
+              </th>
+              <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
+                {{ element.node.emailDistributionList.name }}
+              </td>
+            </ng-container>
+            <ng-container cdkColumnDef="createdBy">
+              <th uiCellHeader *cdkHeaderCellDef scope="col">
+                <span class="headerTitle">
+                  {{ 'common.createdBy' | translate }}
+                </span>
+              </th>
+              <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
+                {{ element.node.createdBy.name }}
+              </td>
+            </ng-container>
+            <ng-container cdkColumnDef="email">
+              <th uiCellHeader *cdkHeaderCellDef scope="col">
+                <span class="headerTitle">
+                  {{ 'components.email.name' | translate }}
+                </span>
+              </th>
+              <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
+                {{ element.node.createdBy.email }}
+              </td>
+            </ng-container>
+            <tr cdk-header-row *cdkHeaderRowDef="distributionColumn"></tr>
+            <tr
+              cdk-row
+              *cdkRowDef="let row; columns: distributionColumn; let i = index"
+              (click)="selectDistributionListRow(i)"
+              class="table-row"
+            ></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Distribution List Pagination -->
+      <ui-paginator
+        [disabled]="false"
+        [pageIndex]="distributionPageInfo.pageIndex"
+        [pageSize]="distributionPageInfo.pageSize"
+        [pageSizeOptions]="[5, 10, 25, 50]"
+        [totalItems]="distributionPageInfo.length"
+        [ariaLabel]="'components.notifications.paginator.ariaLabel' | translate"
+        (pageChange)="onExistingList($event)"
+      >
+      </ui-paginator>
+    </div>
+    <ng-template #loaderContainer>
+      <div class="loadingSign">
+        <ui-spinner style="position: relative"></ui-spinner>
+      </div>
+    </ng-template>
+  </div>
+  <div
+    class="flex flex-col gap-4 p-4 pl-0 pr-0"
+    *ngIf="!showExistingDistributionList"
+  >
+    <!-- TO dropdown -->
+    <div
+      class="w-full flex p-1 pl-2 space-y-4 flex-row items-start self-stretch bg-blue-50 cursor-pointer"
+      (click)="toggleDropdown('to')"
+    >
+      <span class="w-96 text-style">{{
+        'components.select.distribution.to' | translate
+      }}</span>
+      <span class="w-4" *ngIf="showToTemplate"
+        ><ui-icon
+          icon="expand_less"
+          fontFamily="material"
+          variant="primary"
+        ></ui-icon
+      ></span>
+      <span class="w-4" *ngIf="!showToTemplate"
+        ><ui-icon
+          icon="expand_more"
+          fontFamily="material"
+          variant="primary"
+        ></ui-icon
+      ></span>
+    </div>
+    <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.to">
+      {{ 'components.email.distributionList.alert.noEmail' | translate }}
+    </ui-alert>
+    <shared-email-template
+      [existingId]="this.distributionListId"
+      (noEmail)="update($event, 'to')"
+      (emailLoad)="to($event)"
+      (listChange)="validateDistributionList()"
+      [emailBackLoad]="emailDistributionList.To"
+      [emailFilter]="toEmailFilter"
+      *ngIf="showToTemplate"
+      >{{
+        'components.email.distributionList.to' | translate
+      }}</shared-email-template
+    >
+    <!-- CC dropdown -->
+    <div
+      class="w-full flex p-1 pl-2 space-y-4 flex-row items-start self-stretch bg-blue-50 cursor-pointer"
+      (click)="toggleDropdown('cc')"
+    >
+      <span class="w-96 text-style">{{
+        'components.select.distribution.cc' | translate
+      }}</span>
+      <span class="w-4" *ngIf="showCCTemplate"
+        ><ui-icon
+          icon="expand_less"
+          fontFamily="material"
+          variant="primary"
+        ></ui-icon
+      ></span>
+      <span class="w-4" *ngIf="!showCCTemplate"
+        ><ui-icon
+          icon="expand_more"
+          fontFamily="material"
+          variant="primary"
+        ></ui-icon
+      ></span>
+    </div>
+    <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.cc">
+      {{ 'components.email.distributionList.alert.noEmail' | translate }}
+    </ui-alert>
+    <shared-email-template
+      [existingId]="this.distributionListId"
+      (noEmail)="update($event, 'cc')"
+      (emailLoad)="cc($event)"
+      (listChange)="validateDistributionList()"
+      [emailBackLoad]="emailDistributionList.Cc"
+      [emailFilter]="ccEmailFilter"
+      *ngIf="showCCTemplate"
+      >{{
+        'components.email.distributionList.cc' | translate
+      }}</shared-email-template
+    >
+    <!-- BCC dropdown -->
+    <div
+      class="w-full flex p-1 pl-2 space-y-4 flex-row items-start self-stretch bg-blue-50 cursor-pointer"
+      (click)="toggleDropdown('bcc')"
+    >
+      <span class="w-96 text-style">{{
+        'components.select.distribution.bcc' | translate
+      }}</span>
+      <span class="w-4" *ngIf="showBccTemplate"
+        ><ui-icon
+          icon="expand_less"
+          fontFamily="material"
+          variant="primary"
+        ></ui-icon
+      ></span>
+      <span class="w-4" *ngIf="!showBccTemplate"
+        ><ui-icon
+          icon="expand_more"
+          fontFamily="material"
+          variant="primary"
+        ></ui-icon
+      ></span>
+    </div>
+    <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.bcc">
+      {{ 'components.email.distributionList.alert.noEmail' | translate }}
+    </ui-alert>
+    <shared-email-template
+      [existingId]="this.distributionListId"
+      (noEmail)="update($event, 'bcc')"
+      (emailLoad)="bcc($event)"
+      (listChange)="validateDistributionList()"
+      [emailBackLoad]="emailDistributionList.Bcc"
+      [emailFilter]="bccEmailFilter"
+      *ngIf="showBccTemplate"
+      >{{
+        'components.email.distributionList.bcc' | translate
+      }}</shared-email-template
+    >
+  </div>
+  <div class="use-existing" *ngIf="showExistingDistributionList">
+    <p (click)="showExistingDistributionList = !showExistingDistributionList">
+      {{ 'components.email.distributionList.createNew' | translate }}
+    </p>
+  </div>
+</div>

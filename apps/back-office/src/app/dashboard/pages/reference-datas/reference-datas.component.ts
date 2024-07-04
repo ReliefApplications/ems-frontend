@@ -200,6 +200,17 @@ export class ReferenceDatasComponent
                     '/referencedata',
                     data.addReferenceData.id,
                   ]);
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectCreated',
+                      {
+                        type: this.translate
+                          .instant('common.referenceData.one')
+                          .toLowerCase(),
+                        value: value.name,
+                      }
+                    )
+                  );
                 }
               }
             },

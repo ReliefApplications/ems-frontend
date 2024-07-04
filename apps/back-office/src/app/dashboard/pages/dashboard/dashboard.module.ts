@@ -26,6 +26,7 @@ import {
   IconModule,
 } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ContextSelectorComponent } from './components/context-selector/context-selector.component';
 
 /**
  * Dashboard page module.
@@ -56,6 +57,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     AlertModule,
     DragDropModule,
     ButtonActionModule,
+    ContextSelectorComponent,
   ],
   exports: [DashboardComponent],
 })

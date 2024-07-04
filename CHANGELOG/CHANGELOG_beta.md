@@ -1,3 +1,16 @@
+# [2.16.0-beta.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.16.0-beta.1...v2.16.0-beta.2) (2024-06-14)
+
+
+### Bug Fixes
+
+* layer datasource could load indefinitively when creating a new layer ([31c106f](https://github.com/ReliefApplications/ems-frontend/commit/31c106f921ebaaf531b00ec5af8eb87090af8c88))
+* redirection should correctly work when user is not yet logged ([#2606](https://github.com/ReliefApplications/ems-frontend/issues/2606)) ([c21bc0a](https://github.com/ReliefApplications/ems-frontend/commit/c21bc0aa33e4e721f6421af4f822722ce689173a))
+
+
+### Features
+
+* allow null values in aggregations ([1194b2f](https://github.com/ReliefApplications/ems-frontend/commit/1194b2f33f1d26e28ff24356029fde2c369c61c9))
+
 # [2.16.0-beta.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.15.1-beta.2...v2.16.0-beta.1) (2024-06-06)
 
 

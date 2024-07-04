@@ -261,11 +261,27 @@ export interface Dashboard {
   buttons?: ButtonActionT[];
   filter?: DashboardFilter;
   gridOptions?: any;
+  defaultTemplate?: boolean;
 }
 
 /** Model for dashboard graphql query response */
 export interface DashboardQueryResponse {
   dashboard: Dashboard;
+}
+
+/** Model for dashboards graphql query response */
+export interface DashboardsQueryResponse {
+  dashboards: Dashboard[];
+}
+
+/** Model for add dashboard template graphql mutation response */
+export interface AddDashboardTemplateMutationResponse {
+  addDashboardTemplate: Dashboard;
+}
+
+/** Model for delete dashboard templates graphql mutation response */
+export interface DeleteDashboardTemplatesMutationResponse {
+  deleteDashboardTemplates: number;
 }
 
 /** Model for add dashboard graphql mutation response */
@@ -287,3 +303,16 @@ export interface DeleteDashboardMutationResponse {
 export interface DashboardsQueryResponse {
   dashboards: Dashboard[];
 }
+
+export type DashboardQueryType = {
+  query: any;
+  variables: {
+    id: string;
+    contextEl?: string | number | null;
+  };
+};
+
+export type DashboardTemplate = ({ element: string } | { record: string }) & {
+  content: string;
+  name?: string;
+};
