@@ -1487,4 +1487,15 @@ export class EmailService {
       },
     });
   }
+
+  /**
+   * sending query to endpoint
+   *
+   * @param queryData - Preview Data payload
+   * @returns rest post to end point.
+   */
+  getPreviewDataSet(queryData: any): Observable<any> {
+    const urlWithConfigId = `${this.restService.apiUrl}/notification/preview-dataset`;
+    return this.http.post<any>(urlWithConfigId, queryData);
+  }
 }

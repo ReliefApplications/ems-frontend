@@ -26,8 +26,9 @@ import { GET_RESOURCES, GET_RESOURCE_BY_ID } from '../../graphql/queries';
 import { Subscription, takeUntil } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { FieldStore } from '../../models/email.const';
+import { FieldStore, PreviewStore } from '../../models/email.const';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
+import { error } from 'console';
 /** Default items per query, for pagination */
 let ITEMS_PER_PAGE = 0;
 
@@ -379,7 +380,9 @@ export class DatasetFilterComponent
     this.disabledFields = [];
     this.disabledTypes = [];
     this.currentTabIndex = 0;
-    // this.query.controls.query.get('filter').setValue({
+    // this.query.controls.query.reset();
+    // this.query.get('query.filter.logic').value = 'and';
+    // this.query.controls.query.get('filter')?.setValue({
     //   logic: 'and',
     //   filters: this.formGroup.array([]), // Recreate the FormArray
     // });
@@ -1261,99 +1264,132 @@ export class DatasetFilterComponent
             1
         );
       }
-      let allPreviewData: any = [];
+      // const allPreviewData: any = [];
       if (tabName == 'preview') {
-        let count = 0;
         for (const query of this.queryValue) {
-          query.fields.forEach((x: any) => {
-            /**
-             * Converts the resource field name to parents name
-             * so the resource parent is converted back to an object.
-             */
-            if (x.parentName) {
-              const child = x.name;
-              x.childName = child.split(' - ')[1];
-              x.name = x.parentName;
-              x.childType = x.type;
-              x.type = TYPE_LABEL.resource;
-            }
-          });
-
-          if (count == 0) {
-            this.loading = true;
-            this.loadingCheck = false;
-          }
-          const resourceInfo = {
-            id: query.resource.id,
-            name: query.resource.name,
+          let objPreview: any = {};
+          objPreview = {
+            resource: this.resource.id ?? '',
+            name: query?.name,
+            query: {
+              name: query.query?.name,
+              filter: query.query.filter,
+              fields: query.query.fields.map(
+                ({
+                  label: name,
+                  ...rest
+                }: {
+                  label: string;
+                  [key: string]: any;
+                }) => ({
+                  name,
+                  ...rest,
+                })
+              ),
+            },
           };
-          query.tabIndex = count;
-          count++;
-          query.pageSize = 50;
-          this.fetchDataSet(query)
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((res: { data: { dataset: any } }) => {
-              if (res?.data?.dataset) {
-                this.datasetResponse = res?.data?.dataset;
-                this.dataList = res?.data?.dataset.records?.map(
-                  (record: any) => {
-                    const flattenedObject = this.emailService.flattenRecord(
-                      record,
-                      resourceInfo,
-                      query
-                    );
-                    query.fields.forEach((x: any) => {
-                      /**
-                       * Converts the resource field name back to {resourceName} - {resourceField}
-                       * so the field can be mapped to the correct data.
-                       */
-                      if (x.parentName) {
-                        x.name = `${x.parentName} - ${x.childName}`;
-                        x.type = x.childType;
-                      }
-                    });
-
-                    delete flattenedObject.data;
-
-                    const flatData = Object.fromEntries(
-                      Object.entries(flattenedObject).filter(
-                        ([, value]) => value !== null && value !== undefined
-                      )
-                    );
-
-                    return flatData;
-                  }
-                );
-                if (this.dataList?.length) {
-                  const tempIndex = res?.data?.dataset?.tabIndex;
-                  this.datasetFields = [
-                    ...new Set(
-                      this.queryValue[tempIndex].fields
-                        .map((data: any) => data.name)
-                        .flat()
-                    ),
-                  ];
-                }
-                allPreviewData.push({
-                  dataList: this.dataList,
-                  datasetFields: this.datasetFields,
-                  tabIndex: res?.data?.dataset?.tabIndex,
-                  tabName:
-                    res?.data?.dataset?.tabIndex < this.queryValue.length
-                      ? this.queryValue[res.data.dataset.tabIndex].name
-                      : '',
-                });
-                if (this.tabs.length == allPreviewData.length) {
-                  allPreviewData = allPreviewData.sort(
-                    (a: any, b: any) => a.tabIndex - b.tabIndex
-                  );
-                  this.loading = false;
-                  this.navigateToPreview.emit(allPreviewData);
-                  this.emailService.setAllPreviewData(allPreviewData);
-                }
+          this.emailService
+            .getPreviewDataSet(JSON.stringify(objPreview))
+            .subscribe(
+              (res: any) => {
+                console.log(res);
+              },
+              (error: any) => {
+                console.log(error);
               }
-            });
+            );
         }
+        // let count = 0;
+        // for (const query of this.queryValue) {
+        //   query.fields.forEach((x: any) => {
+        //     /**
+        //      * Converts the resource field name to parents name
+        //      * so the resource parent is converted back to an object.
+        //      */
+        //     if (x.parentName) {
+        //       const child = x.name;
+        //       x.childName = child.split(' - ')[1];
+        //       x.name = x.parentName;
+        //       x.childType = x.type;
+        //       x.type = TYPE_LABEL.resource;
+        //     }
+        //   });
+
+        //   if (count == 0) {
+        //     this.loading = true;
+        //     this.loadingCheck = false;
+        //   }
+        //   const resourceInfo = {
+        //     id: query.resource.id,
+        //     name: query.resource.name,
+        //   };
+        //   query.tabIndex = count;
+        //   count++;
+        //   query.pageSize = 50;
+        //   this.fetchDataSet(query)
+        //     .pipe(takeUntil(this.destroy$))
+        //     .subscribe((res: { data: { dataset: any } }) => {
+        //       if (res?.data?.dataset) {
+        //         this.datasetResponse = res?.data?.dataset;
+        //         this.dataList = res?.data?.dataset.records?.map(
+        //           (record: any) => {
+        //             const flattenedObject = this.emailService.flattenRecord(
+        //               record,
+        //               resourceInfo,
+        //               query
+        //             );
+        //             query.fields.forEach((x: any) => {
+        //               /**
+        //                * Converts the resource field name back to {resourceName} - {resourceField}
+        //                * so the field can be mapped to the correct data.
+        //                */
+        //               if (x.parentName) {
+        //                 x.name = `${x.parentName} - ${x.childName}`;
+        //                 x.type = x.childType;
+        //               }
+        //             });
+
+        //             delete flattenedObject.data;
+
+        //             const flatData = Object.fromEntries(
+        //               Object.entries(flattenedObject).filter(
+        //                 ([, value]) => value !== null && value !== undefined
+        //               )
+        //             );
+
+        //             return flatData;
+        //           }
+        //         );
+        //         if (this.dataList?.length) {
+        //           const tempIndex = res?.data?.dataset?.tabIndex;
+        //           this.datasetFields = [
+        //             ...new Set(
+        //               this.queryValue[tempIndex].fields
+        //                 .map((data: any) => data.name)
+        //                 .flat()
+        //             ),
+        //           ];
+        //         }
+        //         allPreviewData.push({
+        //           dataList: this.dataList,
+        //           datasetFields: this.datasetFields,
+        //           tabIndex: res?.data?.dataset?.tabIndex,
+        //           tabName:
+        //             res?.data?.dataset?.tabIndex < this.queryValue.length
+        //               ? this.queryValue[res.data.dataset.tabIndex].name
+        //               : '',
+        //         });
+        //         if (this.tabs.length == allPreviewData.length) {
+        //           allPreviewData = allPreviewData.sort(
+        //             (a: any, b: any) => a.tabIndex - b.tabIndex
+        //           );
+        //           this.loading = false;
+        //           this.navigateToPreview.emit(allPreviewData);
+        //           this.emailService.setAllPreviewData(allPreviewData);
+        //         }
+        //       }
+        //     });
+        // }
       }
     } else {
       this.query.controls['name'].markAsTouched();
@@ -1439,6 +1475,8 @@ export class DatasetFilterComponent
       this.query.controls.query.get(formField)?.setValue(null);
       this.query.controls.query.get('resource').value = null;
     }
+    // this.query.controls.query.reset();
+    // this.query.get('query.filter.logic').value = 'and';
     // this.query.get('query').reset({
     //   filter: this.formGroup.group({
     //     logic: 'and',
