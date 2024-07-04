@@ -246,15 +246,11 @@ export class DatasetFilterComponent
   }
 
   /**
-   * Fetches Resource meta data type
+   * Fetches Resource data
    *
-   * @returns resource meta data types
+   * @returns resource data
    */
-  fetchResourceDataTypes() {
-    // return this.apollo.query<QueryTypesResponse>({
-    //   query: GET_QUERY_TYPES,
-    //   variables: {},
-    // });
+  fetchResourceData() {
     return this.apollo.query<ResourceQueryResponse>({
       query: GET_RESOURCE_BY_ID,
       variables: {
@@ -379,25 +375,14 @@ export class DatasetFilterComponent
     this.disabledFields = [];
     this.disabledTypes = [];
     this.currentTabIndex = 0;
-    // this.query.get('query.filter.logic').value = 'and';
-    // this.query.controls.query.get('filter')?.setValue({
-    //   logic: 'and',
-    //   filters: this.formGroup.array([]), // Recreate the FormArray
-    // });
-    // this.query.get('query').setValue({
-    //   filter: this.formGroup.group({
-    //     logic: 'and',
-    //     filters: this.formGroup.array([]), // Recreate the FormArray
-    //   }),
-    //   fields: [],
-    // });
+    this.resetQuery(this.query.get('query'));
     if (this.selectedResourceId && this.emailService?.resourcesNameId?.length) {
       // this.query.controls.resource.setValue(
       //   this.emailService.resourcesNameId.find(
       //     (element) => element.id === this.selectedResourceId
       //   )
       // );
-      this.fetchResourceDataTypes()
+      this.fetchResourceData()
         .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
           const queryTemp: any = data.resource;
@@ -648,20 +633,22 @@ export class DatasetFilterComponent
     }
   }
 
-  // /**
-  //  *
-  //  * @param name
-  //  */
-  // grabValues(name: string) {
-  //   const values = [];
+  /**
+   * Reinitialises and resets Dataset Form values
+   *
+   * @param query - Dataset Form Group
+   */
+  resetQuery(query: FormGroup) {
+    const fields = query.get('fields') as FormArray;
+    fields.clear();
 
-  //   this.grabData().subscribe((res) => {
-  //     const resource = res.data.resource;
-  //     // const value = resource?.find(
-  //     //   (data: any) => data.name === fieldName.field.split('.')[0]
-  //     // )
-  //   });
-  // }
+    const filter = query.get('filter') as FormGroup;
+    const filters = filter.get('filters') as FormArray;
+    filters.clear();
+    filters.push(this.getNewFilterFields);
+
+    query.get('name')?.setValue('');
+  }
 
   /**
    * Retrieves the field type of the field.
@@ -1476,19 +1463,12 @@ export class DatasetFilterComponent
    * @param event click event
    */
   clearFormField(formField: string, event: Event) {
-    if (this.query.controls.query.get(formField)?.value) {
-      this.query.controls.query.get(formField)?.setValue(null);
-      this.query.controls.query.get('resource').value = null;
+    const query = this.query.controls.query;
+    if (query.get(formField)?.value) {
+      query.get(formField)?.setValue(null);
+      query.get('resource').value = null;
     }
-    // this.query.controls.query.reset();
-    // this.query.get('query.filter.logic').value = 'and';
-    // this.query.get('query').reset({
-    //   filter: this.formGroup.group({
-    //     logic: 'and',
-    //     filters: this.formGroup.array([]), // Recreate the FormArray
-    //   }),
-    //   fields: this.formGroup.array([]),
-    // });
+    this.resetQuery(this.query.get('query'));
     this.resource.fields = [];
     this.selectedResourceId = '';
     event.stopPropagation();
