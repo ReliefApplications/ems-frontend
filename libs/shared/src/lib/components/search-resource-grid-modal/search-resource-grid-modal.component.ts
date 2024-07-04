@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 import { SpinnerModule } from '@oort-front/ui';
 import { ResourceDropdownModule } from '../../survey/components/resource-dropdown/resource-dropdown.module';
 import { ApplicationDropdownModule } from '../../survey/components/application-dropdown/application-dropdown.module';
-import { RecordDropdownModule } from '../record-dropdown/record-dropdown.module';
 import { CoreGridModule } from '../ui/core-grid/core-grid.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule } from '@oort-front/ui';
@@ -32,7 +31,6 @@ interface DialogData {
     SpinnerModule,
     ResourceDropdownModule,
     ApplicationDropdownModule,
-    RecordDropdownModule,
     CoreGridModule,
     TranslateModule,
     ButtonModule,

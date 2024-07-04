@@ -88,7 +88,7 @@ export const init = (
       query: GET_RESOURCE_BY_ID,
       variables: {
         id: data.id,
-        filter: data.filters,
+        filter: { logic: 'and', filters: data.filters },
       },
       fetchPolicy: 'no-cache',
     });
