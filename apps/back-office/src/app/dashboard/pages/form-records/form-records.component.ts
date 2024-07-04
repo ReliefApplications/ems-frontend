@@ -460,8 +460,8 @@ export class FormRecordsComponent
   uploadFileData(file: any): void {
     const path = `upload/form/records/${this.id}`;
     this.downloadService.uploadFile(path, file).subscribe({
-      next: (res) => {
-        if (res.status === 'OK') {
+      next: ({ status }) => {
+        if (status === 'OK') {
           this.snackBar.openSnackBar(
             this.translate.instant(
               'models.record.notifications.uploadSuccessful'

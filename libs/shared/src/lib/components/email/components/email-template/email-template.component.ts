@@ -557,36 +557,38 @@ export class EmailTemplateComponent
                 this.resource = data?.resource;
                 this.getResourceFields(data, fields);
                 dataset.pageSize = 50;
-                this.emailService.fetchDataSet(dataset).subscribe((res) => {
-                  if (res?.data.dataset) {
-                    this.dataset = res?.data?.dataset;
-                    this.datasetEmails = res?.data?.dataset?.emails;
-                    this.data = res?.data?.dataset.records;
-                    this.datasetFields = this.availableFields;
-                    this.selectedFields = dataset.fields.map(
-                      (ele: any) => ele.name
-                    );
-                    this.dataList = this.getDataList(dataset);
-                    dataset.cacheData.datasetResponse = this.dataset;
-                    dataset.cacheData.dataList = this.dataList;
-                    dataset.cacheData.datasetFields = this.datasetFields;
-                    dataset.cacheData.resource = this.resource;
+                this.emailService
+                  .fetchDataSet(dataset)
+                  .subscribe(({ data }) => {
+                    if (data.dataset) {
+                      this.dataset = data?.dataset;
+                      this.datasetEmails = data?.dataset?.emails;
+                      this.data = data?.dataset.records;
+                      this.datasetFields = this.availableFields;
+                      this.selectedFields = dataset.fields.map(
+                        (ele: any) => ele.name
+                      );
+                      this.dataList = this.getDataList(dataset);
+                      dataset.cacheData.datasetResponse = this.dataset;
+                      dataset.cacheData.dataList = this.dataList;
+                      dataset.cacheData.datasetFields = this.datasetFields;
+                      dataset.cacheData.resource = this.resource;
 
-                    //Below if condition is assigning the cachedData to the selected Dataset (Reinitializing)
-                    if (
-                      this.datasetsForm.value?.datasets?.filter(
-                        (x: any) => x.name === dataset.name
-                      )?.length > 0
-                    ) {
-                      this.datasetsForm.value.datasets.filter(
-                        (x: any) => x.name === dataset.name
-                      )[0].cacheData = dataset.cacheData;
+                      //Below if condition is assigning the cachedData to the selected Dataset (Reinitializing)
+                      if (
+                        this.datasetsForm.value?.datasets?.filter(
+                          (x: any) => x.name === dataset.name
+                        )?.length > 0
+                      ) {
+                        this.datasetsForm.value.datasets.filter(
+                          (x: any) => x.name === dataset.name
+                        )[0].cacheData = dataset.cacheData;
+                      }
+                      this.prevDataset = this.selectedDataset;
+                      this.emailService.setSelectedDataSet(dataset);
                     }
-                    this.prevDataset = this.selectedDataset;
-                    this.emailService.setSelectedDataSet(dataset);
-                  }
-                  this.loading = false;
-                });
+                    this.loading = false;
+                  });
               }
             });
         });

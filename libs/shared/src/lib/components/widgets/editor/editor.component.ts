@@ -550,7 +550,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
 
   /** Sets layout */
   private async getLayout(): Promise<void> {
-    const apolloRes = await firstValueFrom(
+    const { data } = await firstValueFrom(
       this.apollo.query<ResourceQueryResponse>({
         query: GET_LAYOUT,
         variables: {
@@ -560,8 +560,8 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
       })
     );
 
-    if (get(apolloRes, 'data')) {
-      this.layout = apolloRes.data.resource.layouts?.edges[0]?.node;
+    if (data) {
+      this.layout = data.resource.layouts?.edges[0]?.node;
       if (this.settings.useStyles) {
         this.styles = this.layout?.query.style;
       }
@@ -595,7 +595,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
     });
 
     if (builtQuery) {
-      const res = await firstValueFrom(
+      const { data } = await firstValueFrom(
         this.apollo.query<any>({
           query: builtQuery,
           variables: {
@@ -614,7 +614,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
           },
         })
       );
-      this.record = get(res.data, `${queryName}.edges[0].node`, null);
+      this.record = get(data, `${queryName}.edges[0].node`, null);
       this.fieldsValue = { ...this.record };
       const metaQuery = this.queryBuilder.buildMetaQuery(this.layout.query);
       if (metaQuery) {

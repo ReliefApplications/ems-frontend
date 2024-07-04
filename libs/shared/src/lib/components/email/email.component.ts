@@ -159,13 +159,13 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.emailListLoading = true;
     this.emailService
       .getEmailNotifications(this.applicationId)
-      .subscribe((res: any) => {
+      .subscribe(({ data }: any) => {
         this.emailService.distributionListNames = [];
         this.emailService.emailNotificationNames = [];
-        if (res?.data?.emailNotifications?.edges?.length === 0) {
+        if (data?.emailNotifications?.edges?.length === 0) {
           this.emailService.emailListLoading = false;
         }
-        res?.data?.emailNotifications?.edges?.forEach((ele: any) => {
+        data?.emailNotifications?.edges?.forEach((ele: any) => {
           this.emailService.emailListLoading = false;
           if (
             ele.node.emailDistributionList.name !== null &&
@@ -213,15 +213,15 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     });
     this.emailService
       .getEmailNotifications(this.applicationId)
-      .subscribe((res: any) => {
+      .subscribe(({ data }: any) => {
         this.templateActualData = [];
-        if (res?.data?.emailNotifications?.edges?.length === 0) {
+        if (data?.emailNotifications?.edges?.length === 0) {
           this.emailService.emailListLoading = false;
         }
         this.distributionLists = [];
         this.emailService.distributionListNames = [];
         this.emailService.emailNotificationNames = [];
-        res?.data?.emailNotifications?.edges?.forEach((ele: any) => {
+        data?.emailNotifications?.edges?.forEach((ele: any) => {
           this.templateActualData.push(ele.node);
           this.emailService.emailListLoading = false;
           if (
@@ -237,12 +237,12 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
             ele.node.name?.trim()?.toLowerCase()
           );
         });
-        let uniquDistributionLists = Array.from(
+        let uniqueDistributionLists = Array.from(
           new Set(this.emailService.distributionListNames)
         );
         this.distributionLists = this.distributionLists.filter((ele: any) => {
-          if (uniquDistributionLists.includes(ele.name.toLowerCase())) {
-            uniquDistributionLists = uniquDistributionLists.filter(
+          if (uniqueDistributionLists.includes(ele.name.toLowerCase())) {
+            uniqueDistributionLists = uniqueDistributionLists.filter(
               (name) => ele.name.toLowerCase() !== name
             );
             return true;
@@ -255,7 +255,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           this.pageInfo.pageSize * this.pageInfo.pageIndex,
           this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
         );
-        this.pageInfo.length = res?.data?.emailNotifications?.edges.length;
+        this.pageInfo.length = data?.emailNotifications?.edges.length;
 
         this.cacheDistributionList = this.distributionLists;
         this.distributionLists = this.cacheDistributionList.slice(
@@ -301,9 +301,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.enableAllSteps.next(true);
     this.emailService
       .getEmailNotification(id, this.applicationId)
-      .subscribe((res) => {
-        const emailData = res.data.editAndGetEmailNotification;
-        this.emailService.configId = res?.data?.editAndGetEmailNotification?.id;
+      .subscribe(({ data }) => {
+        const emailData = data.editAndGetEmailNotification;
+        this.emailService.configId = data.editAndGetEmailNotification?.id;
         if (isClone) {
           let maxCloneNumber = 0;
           const filteredEmailList: string[][] =

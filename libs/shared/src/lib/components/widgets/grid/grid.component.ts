@@ -201,8 +201,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
             ids: layouts,
             first: layouts?.length,
           })
-          .then((res) => {
-            this.layouts = res.edges
+          .then(({ edges }) => {
+            this.layouts = edges
               .map((edge) => edge.node)
               .sort((a, b) => layouts.indexOf(a.id) - layouts.indexOf(b.id));
             this.layout = this.layouts[0] || null;
@@ -229,8 +229,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
             ids: aggregations,
             first: aggregations.length,
           })
-          .then((res) => {
-            this.aggregations = res.edges
+          .then(({ edges }) => {
+            this.aggregations = edges
               .map((edge) => edge.node)
               .sort(
                 (a, b) =>
