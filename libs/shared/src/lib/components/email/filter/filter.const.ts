@@ -305,7 +305,7 @@ export const FIELD_TYPES = [
     editor: 'editor',
     defaultOperator: 'isnull',
     operators: ['isnull', 'isnotnull'],
-  }
+  },
 ];
 
 /**
