@@ -103,6 +103,11 @@ export default (options: GlobalOptions) => {
                 operator: 'lte',
                 value: currentYearEnd.toISOString(),
               },
+              {
+                field: 'items_given',
+                operator: 'contains',
+                value: 'aide alimentaire',
+              },
             ],
           },
         },
@@ -142,6 +147,11 @@ export default (options: GlobalOptions) => {
                 field: 'createdAt',
                 operator: 'lte',
                 value: currentYearEnd.toISOString(),
+              },
+              {
+                field: 'items_given',
+                operator: 'contains',
+                value: 'aide alimentaire',
               },
             ],
           },

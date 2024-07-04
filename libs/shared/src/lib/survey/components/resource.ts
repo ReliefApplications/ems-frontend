@@ -19,7 +19,7 @@ import {
   setUpActionsButtonWrapper,
   buildUpdateButton,
 } from './utils';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { Question as SharedQuestion, QuestionResource } from '../types';
 import { Record } from '../../models/record.model';
 import { Injector, NgZone } from '@angular/core';
@@ -358,6 +358,15 @@ export const init = (
       });
 
       serializer.addProperty('resource', {
+        name: 'autoSelectFirstOption:boolean',
+        category: 'Custom Questions',
+        dependsOn: ['resource'],
+        default: false,
+        visibleIf: visibleIfResource,
+        visibleIndex: 17,
+      });
+
+      serializer.addProperty('resource', {
         name: 'selectQuestion:dropdown',
         category: 'Filter by Questions',
         dependsOn: ['resource', 'displayField'],
@@ -620,6 +629,16 @@ export const init = (
           ({ data }) => {
             const choices = mapQuestionChoices(data, question);
             question.contentQuestion.choices = choices;
+
+            // Auto select the first option if the option is set, only applicable if question doesn't have a value yet
+            if (
+              question.autoSelectFirstOption &&
+              isNil(question.value) &&
+              choices.length > 0
+            ) {
+              question.value = choices[0].value;
+            }
+
             if (!question.placeholder) {
               question.contentQuestion.optionsCaption =
                 'Select a record from ' + data.resource.name + '...';
@@ -634,6 +653,7 @@ export const init = (
     // Display of add button for resource question ans set placeholder, if any
     onAfterRender: (question: QuestionResource, el: HTMLElement): void => {
       const survey: SurveyModel = question.survey as SurveyModel;
+      loadedRecords.clear();
       survey.loadedRecords = loadedRecords;
 
       // Add placeholder to the dropdown
@@ -647,7 +667,9 @@ export const init = (
 
       // Listen to value changes in order to add records to the survey context
       survey.onValueChanged.add((_, options) => {
-        addRecordToSurveyContext(options.question, options.value);
+        if (options.name === question.name) {
+          addRecordToSurveyContext(options.question, options.value);
+        }
       });
 
       // Create a div that will hold the buttons

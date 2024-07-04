@@ -2387,6 +2387,10 @@
         }
       },
       "historicalDate": "******",
+      "keepPrevious": {
+        "title": "******",
+        "tooltip": "******"
+      },
       "share": "******",
       "states": {
         "create": "******",
@@ -2517,7 +2521,13 @@
         "searchable": "******",
         "sortable": "******",
         "title": "******",
-        "tooltip": "******"
+        "tooltip": {
+          "content": "******",
+          "display": {
+            "title": "******",
+            "tooltip": "******"
+          }
+        }
       },
       "map": {
         "defaultTitle": "******",
