@@ -1480,7 +1480,6 @@ export class DatasetFilterComponent
       this.query.controls.query.get(formField)?.setValue(null);
       this.query.controls.query.get('resource').value = null;
     }
-    this.resetFilters();
     // this.query.controls.query.reset();
     // this.query.get('query.filter.logic').value = 'and';
     // this.query.get('query').reset({
