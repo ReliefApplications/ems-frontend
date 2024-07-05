@@ -1184,7 +1184,7 @@ export class DatasetFilterComponent
       //   );
       // }
 
-      if (tabName == 'filter') {
+      if (tabName == 'fields') {
         if (this.selectedFields.length) {
           this.emailService.disableSaveAndProceed.next(false);
           this.emailService.disableSaveAsDraft.next(false);
@@ -1239,7 +1239,7 @@ export class DatasetFilterComponent
         //   );
       }
       if (
-        tabName == 'fields' &&
+        tabName == 'filter' &&
         this.showPreview == false &&
         this.tabs.findIndex((x: any) => x.content == this.activeTab.content) <
           this.tabs.length - 1
