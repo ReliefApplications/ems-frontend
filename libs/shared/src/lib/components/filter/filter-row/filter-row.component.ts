@@ -243,7 +243,10 @@ export class FilterRowComponent
     // let editorSet = false;
     // const value = this.form.get('value')?.value;
     // this.isFilterEditorOnView = false;
-    if (get(field, 'filter.template', null)) {
+    if (
+      get(field, 'filter.template', null) &&
+      this.form?.get('operator')?.value !== 'inthelast'
+    ) {
       this.editor = field.filter.template;
     } else if (
       typeof value === 'string' &&
