@@ -207,7 +207,7 @@ export class EmailTemplateComponent
     this.selectedEmails = this.emailBackLoad;
     this.datasets = clone(this.datasetsForm.value.datasets);
     this.datasets?.forEach((ele: any) => {
-      ele.blockName = ele.resource.name;
+      ele.blockName = ele.name;
       // ele.name = ele.resource.name;
     });
     this.prepareDatasetFilters();
@@ -536,11 +536,11 @@ export class EmailTemplateComponent
    * @param dataset Dataset for query
    */
   getMetaResourceData(dataset: any) {
-    if (dataset?.resource?.id) {
+    if (dataset?.query?.resource) {
       this.loading = true;
       let fields: any[] | undefined = [];
       this.emailService
-        .fetchResourceMetaData(dataset.resource.id)
+        .fetchResourceMetaData(dataset.query.resource)
         .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
           fields = data?.resource?.metadata;
@@ -549,7 +549,7 @@ export class EmailTemplateComponent
             .query<ResourceQueryResponse>({
               query: GET_RESOURCE,
               variables: {
-                id: dataset.resource.id,
+                id: dataset.query.resource,
               },
             })
             .subscribe(({ data }) => {

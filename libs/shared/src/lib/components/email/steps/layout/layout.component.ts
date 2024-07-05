@@ -259,10 +259,13 @@ export class LayoutComponent
    */
   private initInTheLastDropdown(): void {
     const blocks = this.emailService.datasetsForm.get('datasets') as FormArray;
-    blocks.controls.forEach((blockFormGroup, index) => {
+    blocks.controls.forEach((blockFormGroup: any, index) => {
       const blockName =
         blockFormGroup.get('name')?.value || `Block ${index + 1}`;
-      const filters = blockFormGroup.get('filter')?.get('filters') as FormArray;
+      const filters = blockFormGroup
+        .get('query')
+        .get('filter')
+        .get('filters') as FormArray;
       filters.controls.forEach((filterControl) => {
         if (filterControl.get('operator')?.value === 'inthelast') {
           const field = filterControl.get('field')?.value;
