@@ -34,7 +34,6 @@ import getLinkField from './solidarites-demo/getLinkField';
 
 /** Generators for each custom function available  */
 export const functions = [
-  { fn: getPrescriptionInfo, name: 'getPrescriptionInfo' },
   { fn: getWorkflowContext, name: 'getWorkflowContext' },
   { fn: getField, name: 'getField' },
   { fn: elementAt, name: 'elementAt' },
@@ -71,4 +70,5 @@ export const functions = [
 export const asyncFunctions = [
   { fn: getComplaintsByType, name: 'getComplaintsByType' },
   { fn: getCurrentYearAids, name: 'getCurrentYearAids' },
+  { fn: getPrescriptionInfo, name: 'getPrescriptionInfo' },
 ];
