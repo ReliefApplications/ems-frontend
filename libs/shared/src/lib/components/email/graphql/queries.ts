@@ -308,10 +308,6 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
         filter
         name
         pageSize
-        resource {
-          id
-          name
-        }
         tableStyle
         blockType
         textStyle
