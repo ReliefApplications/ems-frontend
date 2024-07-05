@@ -13,7 +13,6 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { clone, cloneDeep } from 'lodash';
 import {
   Resource,
-  ResourceQueryResponse,
   ResourcesQueryResponse,
 } from '../../../../models/resource.model';
 import { EmailService } from '../../email.service';
@@ -22,7 +21,7 @@ import {
   FILTER_OPERATORS,
   TYPE_LABEL,
 } from '../../filter/filter.const';
-import { GET_RESOURCES, GET_RESOURCE_BY_ID } from '../../graphql/queries';
+import { GET_RESOURCES } from '../../graphql/queries';
 import { Subscription, takeUntil } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -245,20 +244,6 @@ export class DatasetFilterComponent
     );
   }
 
-  /**
-   * Fetches Resource data
-   *
-   * @returns resource data
-   */
-  fetchResourceData() {
-    return this.apollo.query<ResourceQueryResponse>({
-      query: GET_RESOURCE_BY_ID,
-      variables: {
-        id: this.selectedResourceId,
-      },
-    });
-  }
-
   override ngOnDestroy() {
     const cacheData = {
       dataList: this.dataList,
@@ -382,7 +367,8 @@ export class DatasetFilterComponent
       //     (element) => element.id === this.selectedResourceId
       //   )
       // );
-      this.fetchResourceData()
+      this.emailService
+        .fetchResourceData(this.selectedResourceId)
         .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
           const queryTemp: any = data.resource;
@@ -1259,8 +1245,8 @@ export class DatasetFilterComponent
       // const allPreviewData: any = [];
       if (tabName == 'preview') {
         for (const query of this.queryValue) {
-          let objPreview: any = {};
-          objPreview = {
+          const objPreview: any = { dataset: {} };
+          objPreview.dataset = {
             resource: this.resource.id ?? '',
             name: query?.name,
             query: {

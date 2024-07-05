@@ -6,6 +6,7 @@ import {
   GET_EMAIL_DATA_SET,
   GET_EMAIL_NOTIFICATIONS,
   GET_QUERY_META_DATA,
+  GET_RESOURCE_BY_ID,
 } from './graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
@@ -15,6 +16,7 @@ import { TYPE_LABEL } from './filter/filter.const';
 import { FieldStore } from './models/email.const';
 import { omit } from 'lodash';
 import { QueryMetaDataQueryResponse } from '../../models/metadata.model';
+import { ResourceQueryResponse } from '../../models/resource.model';
 
 /**
  * Helper functions service for emails template.
@@ -1497,5 +1499,20 @@ export class EmailService {
   getPreviewDataSet(queryData: any): Observable<any> {
     const url = `${this.restService.apiUrl}/notification/preview-dataset`;
     return this.http.post<any>(url, queryData);
+  }
+
+  /**
+   * Fetches Resource data
+   *
+   * @param resourceId Resource Id of Dataset
+   * @returns resource data
+   */
+  fetchResourceData(resourceId: string) {
+    return this.apollo.query<ResourceQueryResponse>({
+      query: GET_RESOURCE_BY_ID,
+      variables: {
+        id: resourceId,
+      },
+    });
   }
 }
