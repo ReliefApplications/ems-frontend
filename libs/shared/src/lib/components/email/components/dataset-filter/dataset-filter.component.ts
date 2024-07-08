@@ -29,7 +29,7 @@ import { FieldStore } from '../../models/email.const';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { prettifyLabel } from '../../../../utils/prettify';
 import { HttpClient } from '@angular/common/http';
-import { RestService } from 'libs/shared/src/lib/services/rest/rest.service';
+import { RestService } from '../../../../services/rest/rest.service';
 /** Default items per query, for pagination */
 let ITEMS_PER_PAGE = 0;
 
@@ -1334,6 +1334,7 @@ export class DatasetFilterComponent
             )
             .subscribe(
               (response) => {
+                this.showPreview = true;
                 console.log(response);
                 (
                   document.getElementById('tblPreview') as HTMLInputElement

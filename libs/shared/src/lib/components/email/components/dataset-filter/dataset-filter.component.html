@@ -189,13 +189,12 @@
     <ui-tab
         [title]="'Filter'"
         [disabled]="false"
-        *ngIf="showPreview"
-        [selected]="true">
+        *ngIf="showPreview">
         <ng-template ngProjectAs="label">
           {{ 'common.preview' | translate }}
         </ng-template>
         <ng-container uiTabContent>
-          <div #tblPreview id="tblPreview">
+          <div id="tblPreview">
           </div>
         </ng-container>    
     </ui-tab>
