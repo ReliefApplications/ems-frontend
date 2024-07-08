@@ -27,6 +27,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { FieldStore } from '../../models/email.const';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
+import { prettifyLabel } from 'libs/shared/src/lib/utils/prettify';
 /** Default items per query, for pagination */
 let ITEMS_PER_PAGE = 0;
 
@@ -77,7 +78,7 @@ export class DatasetFilterComponent
   /** Filtered fields for search. */
   public filteredFields: any[] = [];
   /** Selected fields for filtering. */
-  public selectedFields: FieldStore[] = [];
+  public selectedFields: any[] = [];
   /** Fields for filtering. */
   public filterFields: any[] = [];
   /** Available fields for filtering. */
@@ -1245,37 +1246,89 @@ export class DatasetFilterComponent
       // const allPreviewData: any = [];
       if (tabName == 'preview') {
         for (const query of this.queryValue) {
-          const objPreview: any = { dataset: {} };
-          objPreview.dataset = {
-            resource: this.resource.id ?? '',
+          let objPreview: any = {};
+          query.query.fields.forEach((ele: any) => {
+            const tempMatchedData = this.availableFields.find(
+              (x) => prettifyLabel(x.name) === ele.label
+            );
+            if (tempMatchedData) {
+              ele.name = tempMatchedData.name;
+              ele.type = tempMatchedData.type.name;
+            }
+          });
+          objPreview = {
+            resource: {
+              id: this.resource.id ?? '',
+              name: this.resource.name ?? '',
+            },
             name: query?.name,
             query: {
               name: query.query?.name,
               filter: query.query.filter,
-              fields: query.query.fields.map(
-                ({
-                  label: name,
-                  ...rest
-                }: {
-                  label: string;
-                  [key: string]: any;
-                }) => ({
-                  name,
-                  ...rest,
-                })
-              ),
+              fields: query.query.fields,
+              sort: {
+                field: '',
+                order: 'asc',
+              },
+              style: [],
+              pageSize: 10,
+              template: '',
             },
           };
-          this.emailService
-            .getPreviewDataSet(JSON.stringify(objPreview))
-            .subscribe(
-              (res: any) => {
-                console.log(res);
+
+          objPreview = {
+            resource: {
+              id: '66448d06055578cf76222207',
+              name: 'A Local GraphQL',
+            },
+            name: 'Block 1',
+            query: {
+              name: 'allALocalGraphQls',
+              template: '',
+              filter: {
+                logic: 'and',
+                filters: [
+                  {
+                    logic: 'and',
+                    filters: [],
+                  },
+                ],
               },
-              (error: any) => {
-                console.log(error);
-              }
-            );
+              pageSize: 10,
+              fields: [
+                {
+                  name: 'checkbox',
+                  type: 'JSON',
+                  kind: 'SCALAR',
+                  label: 'Checkbox',
+                  width: null,
+                  format: null,
+                },
+                {
+                  name: 'countries',
+                  type: 'JSON',
+                  kind: 'SCALAR',
+                  label: 'Countries',
+                  width: null,
+                  format: null,
+                },
+              ],
+              sort: {
+                field: '',
+                order: 'asc',
+              },
+              style: [],
+            },
+          };
+
+          this.emailService.getPreviewDataSet(objPreview).subscribe(
+            (res: any) => {
+              console.log(res);
+            },
+            (error: any) => {
+              console.log(error);
+            }
+          );
         }
         // let count = 0;
         // for (const query of this.queryValue) {
