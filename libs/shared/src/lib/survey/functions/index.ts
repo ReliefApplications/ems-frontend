@@ -42,10 +42,11 @@ import minElements from './minElements';
 import regex from './regex';
 import int from './int';
 import selected from './selected';
+import getLinkField from './solidarites-demo/getLinkField';
+
 
 /** Generators for each custom function available  */
 export const functions = [
-  { fn: getPrescriptionInfo, name: 'getPrescriptionInfo' },
   { fn: getWorkflowContext, name: 'getWorkflowContext' },
   { fn: getField, name: 'getField' },
   { fn: elementAt, name: 'elementAt' },
@@ -87,10 +88,12 @@ export const functions = [
   { fn: regex, name: 'regex' },
   { fn: int, name: 'int' },
   { fn: selected, name: 'selected' },
+  { fn: getLinkField, name: 'getLinkField' },
 ];
 
 /** Generators for each async custom function available  */
 export const asyncFunctions = [
   { fn: getComplaintsByType, name: 'getComplaintsByType' },
   { fn: getCurrentYearAids, name: 'getCurrentYearAids' },
+  { fn: getPrescriptionInfo, name: 'getPrescriptionInfo' },
 ];

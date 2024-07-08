@@ -84,14 +84,17 @@ export class FieldSearchTableComponent
       },
     ];
     const isUpdating = !!(this.question.survey as SurveyModel)?.record?.id;
-    return !isUpdating
-      ? baseFilter
-      : baseFilter.concat({
-          // Remove the current record from the results
-          field: '__ID__',
-          operator: 'neq',
-          value: (this.question.survey as SurveyModel)?.record?.id,
-        });
+    return {
+      logic: 'and',
+      filters: !isUpdating
+        ? baseFilter
+        : baseFilter.concat({
+            // Remove the current record from the results
+            field: '__ID__',
+            operator: 'neq',
+            value: (this.question.survey as SurveyModel)?.record?.id,
+          }),
+    };
   }
 
   /**

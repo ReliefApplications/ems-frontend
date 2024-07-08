@@ -2410,6 +2410,10 @@
         }
       },
       "historicalDate": "Récupérer les données historiques",
+      "keepPrevious": {
+        "title": "Conserver les valeurs de filtre précédentes",
+        "tooltip": "Si sélectionné, lors de la navigation d'un tableau de bord à un autre, si le même filtre est présent dans les deux tableaux de bord, la valeur sera conservée"
+      },
       "share": "Partager le tableau de bord",
       "states": {
         "create": "Créer un état",
@@ -2540,7 +2544,13 @@
         "searchable": "Autoriser la recherche",
         "sortable": "Autoriser le tri",
         "title": "Affichage des widgets",
-        "tooltip": "afficher l'info-bulle"
+        "tooltip": {
+          "content": "Contenu de l'infobulle",
+          "display": {
+            "title": "Afficher l'infobulle",
+            "tooltip": "Lorsqu'il est configuré, l'infobulle s'affiche lorsque vous survolez l'icône à côté du titre du widget"
+          }
+        }
       },
       "map": {
         "defaultTitle": "Widget Carte",

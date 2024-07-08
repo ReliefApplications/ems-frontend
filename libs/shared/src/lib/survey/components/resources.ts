@@ -88,7 +88,7 @@ export const init = (
       query: GET_RESOURCE_BY_ID,
       variables: {
         id: data.id,
-        filter: data.filters,
+        filter: { logic: 'and', filters: data.filters },
       },
       fetchPolicy: 'no-cache',
     });
@@ -705,22 +705,26 @@ export const init = (
         actionsButtons.appendChild(searchBtn);
       }
 
-      question.registerFunctionOnPropertyValueChanged('canSearch', () => {
-        if (canDisplayButtons && question.canSearch) {
+      const setSearchBtn = () => {
+        const shouldDisplay = survey.mode !== 'display' && !question.isReadOnly;
+        if (shouldDisplay && question.canSearch) {
           // add the search button to the actions buttons
           actionsButtons.appendChild(searchBtn);
         } else {
           // remove the search button from the actions buttons
           actionsButtons.removeChild(searchBtn);
         }
-      });
+      };
 
       const addBtn = buildAddButton(question, true, dialog, ngZone, document);
       if (canDisplayButtons && question.addRecord && question.addTemplate) {
         actionsButtons.appendChild(addBtn);
       }
-      const removeAddBtn = () => {
-        if (canDisplayButtons && question.addRecord && question.addTemplate) {
+
+      // Checks whether the add button should be displayed based on current question state
+      const setAddBtn = () => {
+        const shouldDisplay = survey.mode !== 'display' && !question.isReadOnly;
+        if (shouldDisplay && question.addRecord && question.addTemplate) {
           // add the add button to the actions buttons
           actionsButtons.appendChild(addBtn);
         } else {
@@ -728,13 +732,14 @@ export const init = (
           actionsButtons.removeChild(addBtn);
         }
       };
-      question.registerFunctionOnPropertyValueChanged(
-        'addRecord',
-        removeAddBtn
-      );
-      question.registerFunctionOnPropertyValueChanged(
-        'addTemplate',
-        removeAddBtn
+
+      // Recalculate the add button visibility when the question properties change
+      question.registerFunctionOnPropertiesValueChanged(
+        ['addRecord', 'canSearch', 'readOnly'],
+        () => {
+          setAddBtn();
+          setSearchBtn();
+        }
       );
 
       let gridComponentRef!: ComponentRef<CoreGridComponent>;

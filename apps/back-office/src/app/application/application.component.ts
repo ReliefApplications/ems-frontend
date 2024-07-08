@@ -14,7 +14,7 @@ import {
   ConfirmService,
   UnsubscribeComponent,
 } from '@oort-front/shared';
-import { get } from 'lodash';
+import get from 'lodash/get';
 import { takeUntil, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
@@ -56,7 +56,7 @@ export class ApplicationComponent
    * @param router Angular router
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
-   * @param document Document object
+   * @param document Angular document
    */
   constructor(
     private applicationService: ApplicationService,
@@ -81,6 +81,7 @@ export class ApplicationComponent
         if (application) {
           // change the page title to the application name
           this.document.title = application.name || '';
+
           this.loading = false;
           this.title = application.name || '';
           const displayNavItems: any[] =
@@ -109,10 +110,55 @@ export class ApplicationComponent
                 },
               })) || [];
           if (application.canUpdate) {
-            this.configNavItems();
-            this.translate.onLangChange
-              .pipe(takeUntil(this.destroy$))
-              .subscribe(() => this.configNavItems());
+            this.adminNavItems = [
+              {
+                name: this.translate.instant('common.settings'),
+                path: './settings/edit',
+                icon: 'settings',
+              },
+              {
+                name: this.translate.instant('common.template.few'),
+                path: './settings/templates',
+                icon: 'description',
+              },
+              {
+                name: this.translate.instant('common.distributionList.few'),
+                path: './settings/distribution-lists',
+                icon: 'mail',
+              },
+              {
+                name: this.translate.instant('common.customNotification.few'),
+                path: './settings/notifications',
+                icon: 'schedule_send',
+              },
+              {
+                name: this.translate.instant('common.user.few'),
+                path: './settings/users',
+                icon: 'supervisor_account',
+              },
+              {
+                name: this.translate.instant('common.role.few'),
+                path: './settings/roles',
+                icon: 'verified_user',
+              },
+              {
+                name: this.translate.instant(
+                  'pages.application.positionAttributes.title'
+                ),
+                path: './settings/position',
+                icon: 'edit_attributes',
+              },
+              {
+                name: this.translate.instant('common.channel.few'),
+                path: './settings/channels',
+                icon: 'dns',
+              },
+              {
+                name: this.translate.instant('common.subscription.few'),
+                path: './settings/subscriptions',
+                icon: 'add_to_queue',
+              },
+            ];
           }
           if (application.canUpdate) {
             this.adminNavItems.push({
@@ -154,66 +200,6 @@ export class ApplicationComponent
           this.navGroups = [];
         }
       });
-  }
-
-  /**
-   * Config admin navigation items
-   */
-  private configNavItems(): void {
-    this.adminNavItems = [
-      {
-        name: this.translate.instant('common.settings'),
-        path: './settings/edit',
-        icon: 'settings',
-      },
-      {
-        name: this.translate.instant('common.template.few'),
-        path: './settings/templates',
-        icon: 'description',
-      },
-      {
-        name: this.translate.instant('common.distributionList.few'),
-        path: './settings/distribution-lists',
-        icon: 'mail',
-      },
-      {
-        name: this.translate.instant('common.customNotification.few'),
-        path: './settings/notifications',
-        icon: 'schedule_send',
-      },
-      {
-        name: this.translate.instant('common.user.few'),
-        path: './settings/users',
-        icon: 'supervisor_account',
-      },
-      {
-        name: this.translate.instant('common.role.few'),
-        path: './settings/roles',
-        icon: 'verified_user',
-      },
-      {
-        name: this.translate.instant(
-          'pages.application.positionAttributes.title'
-        ),
-        path: './settings/position',
-        icon: 'edit_attributes',
-      },
-      {
-        name: this.translate.instant('common.channel.few'),
-        path: './settings/channels',
-        icon: 'dns',
-      },
-      {
-        name: this.translate.instant('common.subscription.few'),
-        path: './settings/subscriptions',
-        icon: 'add_to_queue',
-      },
-      {
-        name: this.translate.instant('common.archive.few'),
-        path: './settings/archive',
-        icon: 'delete',
-      },
-    ];
   }
 
   /**

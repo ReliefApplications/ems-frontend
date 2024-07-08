@@ -23,7 +23,7 @@ export const environment: Environment = {
   frontOfficeUri: 'https://dms.oortcloud.tech',
   backOfficeUri: 'https://dms.oortcloud.tech/admin/',
   module: 'frontoffice',
-  availableLanguages: ['en', 'fr'],
+  availableLanguages: ['fr'],
   authConfig,
   theme,
 };

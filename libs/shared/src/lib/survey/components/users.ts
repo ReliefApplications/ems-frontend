@@ -161,6 +161,14 @@ export const init = (
         visibleIf: (obj: null | QuestionUsers) =>
           !!obj?.applications && obj.applications.length === 1,
       });
+
+      // Can select multiple users
+      Serializer.addProperty('users', {
+        name: 'selectMultiple:boolean',
+        category: 'Users properties',
+        default: true,
+        visibleIndex: 5,
+      });
     },
     onAfterRender: async (question: QuestionUsers, el: HTMLElement) => {
       // Hides the tagbox element
@@ -187,6 +195,9 @@ export const init = (
 
       // Initial selection
       instance.initialSelectionIDs = selectedUserIDs;
+
+      // Set multiple selection
+      instance.multiple = question.selectMultiple ?? true;
 
       // Updates the question value when the selection changes
       instance.selectionChange.subscribe((value: string[]) => {
