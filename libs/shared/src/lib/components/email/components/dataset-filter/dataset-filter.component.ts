@@ -27,7 +27,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { FieldStore } from '../../models/email.const';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
-import { prettifyLabel } from 'libs/shared/src/lib/utils/prettify';
+import { prettifyLabel } from '../../../../utils/prettify';
 /** Default items per query, for pagination */
 let ITEMS_PER_PAGE = 0;
 
@@ -1321,14 +1321,14 @@ export class DatasetFilterComponent
             },
           };
 
-          this.emailService.getPreviewDataSet(objPreview).subscribe(
-            (res: any) => {
+          this.emailService.getPreviewDataSet(objPreview).subscribe({
+            next: (res) => {
               console.log(res);
             },
-            (error: any) => {
-              console.log(error);
-            }
-          );
+            error: (err) => {
+              console.error('Error sending email:', err);
+            },
+          });
         }
         // let count = 0;
         // for (const query of this.queryValue) {
