@@ -135,6 +135,8 @@ export class DatasetFilterComponent
   resourcePopulated = false;
   /** Checks if data is fully loaded */
   loadingCheck = true;
+  /** Preview HTML */
+  previewHTML = '';
   /** Meta query reference for fetching metadata. */
   private metaFieldList!: any;
   /** Metadata fields for the grid. */
@@ -149,8 +151,8 @@ export class DatasetFilterComponent
    * @param snackBar snackbar helper function
    * @param queryBuilder Shared query builder service
    * @param gridService Shared grid service
-   * @param http
-   * @param restService
+   * @param http Backend http client
+   * @param restService rest service
    */
   constructor(
     public emailService: EmailService,
@@ -278,14 +280,11 @@ export class DatasetFilterComponent
    */
   onTabSelect(event: any): void {
     const newIndex = event;
-    // const previousIndex = this.currentTabIndex;
-    // const filterTabIndex = 0;
-    // const fieldsTabIndex = 1;
-
-    // // Check if the current active tab is "Filter" and the selected tab is "Fields"
-    // if (newIndex === fieldsTabIndex && previousIndex === filterTabIndex) {
-    //   this.getDataSet('filter');
-    // }
+    const previewTabIndex = 2;
+    // if new tab is preview, get preview data
+    if (newIndex === previewTabIndex) {
+      this.getDataSet('preview');
+    }
     this.currentTabIndex = newIndex;
   }
 
@@ -945,198 +944,105 @@ export class DatasetFilterComponent
     return field ?? '';
   }
 
-  /**
-   * To add the selective fields in the layout
-   *
-   * @param field to be added to list
-   */
-  populateFields(field: any): void {
-    const fieldExists = clone(this.query?.get('query')?.value?.fields) || [];
-    const fieldExistsArray = fieldExists?.map((ele: any) => ele?.name);
-    if (!fieldExistsArray.includes(field.name)) {
-      fieldExists.push(field);
-      this.query.controls.query.get('fields').setValue(fieldExists);
-      this.selectedFields = fieldExists;
-    }
-    // Removes the selected field from the available fields list
-    this.availableFields = this.availableFields
-      .filter((f: { name: string }) => f.name !== field.name)
-      .sort((a, b) => (a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1));
-    this.emailService.setEmailFields(this.selectedFields);
-  }
+  // /**
+  //  * Moves all selected fields back into available fields list.
+  //  */
+  // removeAllSelectedFields(): void {
+  //   this.emailService.disableSaveAndProceed.next(true);
+  //   this.emailService.disableSaveAsDraft.next(true);
+  //   this.availableFields = [
+  //     ...this.availableFields,
+  //     ...this.selectedFields.map((field: FieldStore) =>
+  //       JSON.parse(JSON.stringify(field))
+  //     ),
+  //   ];
+  //   this.selectedFields = [];
+  //   this.availableFields.sort((a, b) =>
+  //     a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
+  //   );
+  //   this.query.controls.query.get('fields').setValue(this.selectedFields);
+  //   this.emailService.setEmailFields(this.selectedFields);
+  // }
 
-  /**
-   * Adds field from available field to selected field list.
-   */
-  addSelectedField(): void {
-    if (this.availableFieldIndex !== null) {
-      this.emailService.disableSaveAndProceed.next(
-        !(
-          this.totalMatchingRecords <= 50 &&
-          this.query?.controls['name'].value !== ''
-        )
-      );
-      this.emailService.disableSaveAsDraft.next(
-        !(
-          this.totalMatchingRecords <= 50 &&
-          this.query?.controls['name'].value !== ''
-        )
-      );
-      const field = this.availableFields[this.availableFieldIndex];
-      this.selectedFields.push(field);
-      this.availableFields.splice(this.availableFieldIndex, 1);
-      this.availableFields = this.availableFields.sort((a, b) =>
-        a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
-      );
-      this.availableFieldIndex = null;
-      this.selectedFieldIndex = this.selectedFields.length - 1;
-      this.query.controls.query.get('fields').setValue(this.selectedFields);
-      this.emailService.setEmailFields(this.selectedFields);
-    }
-  }
+  // /**
+  //  * Moves all available fields into selected fields list.
+  //  */
+  // addAllAvailableFields(): void {
+  //   this.selectedFields = [
+  //     ...this.selectedFields,
+  //     ...this.availableFields.map((field) => JSON.parse(JSON.stringify(field))),
+  //   ];
+  //   if (
+  //     this.query?.controls['name'].value !== '' &&
+  //     !this.showDatasetLimitWarning
+  //   ) {
+  //     this.emailService.disableSaveAndProceed.next(false);
+  //     this.emailService.disableSaveAsDraft.next(false);
+  //   }
+  //   this.availableFields = [];
+  //   this.query.controls.query.get('fields').setValue(this.selectedFields);
+  //   this.emailService.setEmailFields(this.selectedFields);
+  // }
 
-  /**
-   * This function removes selected fields from the block table.
-   *
-   * @param index index of field to remove
-   */
-  removeSelectiveFields(index: number | null): void {
-    if (index !== null) {
-      const field = this.selectedFields[index];
-      const fieldExists = this.query.controls.query.get('fields').value || [];
-      const fieldIndex = fieldExists.findIndex(
-        (f: { name: string }) => f.name === field.name
-      );
-      if (fieldIndex !== -1) {
-        fieldExists.splice(fieldIndex, 1);
-        this.query.controls.query.get('fields').setValue(fieldExists);
-        this.selectedFields = fieldExists;
-      }
-      // Remove the field from the selectedFields array
-      this.selectedFields = this.selectedFields.filter(
-        (f: { name: string }) => f.name !== field.name
-      );
-      if (this.selectedFields.length) {
-        this.emailService.disableSaveAndProceed.next(false);
-        this.emailService.disableSaveAsDraft.next(false);
-      } else {
-        this.emailService.disableSaveAndProceed.next(true);
-        this.emailService.disableSaveAsDraft.next(true);
-      }
-      // Adds the deselected field back to the available fields list
-      this.availableFields.push(field);
-      this.availableFields = this.availableFields.sort((a, b) =>
-        a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
-      );
+  // /**
+  //  * Moves field up in selected fields list.
+  //  *
+  //  * @param index of field to be moved up
+  //  */
+  // moveUp(index: number | null): void {
+  //   if (index && index > 0) {
+  //     const field = this.selectedFields[index];
+  //     this.selectedFields.splice(index, 1);
+  //     this.selectedFields.splice(index - 1, 0, field);
+  //     this.selectedFieldIndex = index - 1;
+  //     this.query.controls.query.get('fields').setValue(this.selectedFields);
+  //   }
+  // }
 
-      // Set the availableFieldsIndex to the index of the field in the availableFields list
-      this.availableFieldIndex = this.availableFields.findIndex(
-        (f) => f.name === field.name
-      );
-      this.selectedFieldIndex = null; // Reset the selected field index
-      this.emailService.setEmailFields(this.selectedFields);
-    }
-  }
+  // /**
+  //  * Moves field down in selected fields list.
+  //  *
+  //  * @param index of field to be moved down.
+  //  */
+  // moveDown(index: number | null): void {
+  //   if (index !== null && index < this.selectedFields.length - 1) {
+  //     const field = this.selectedFields[index];
+  //     this.selectedFields.splice(index, 1);
+  //     this.selectedFields.splice(index + 1, 0, field);
+  //     this.selectedFieldIndex = index + 1;
+  //     this.query.controls.query.get('fields').setValue(this.selectedFields);
+  //   }
+  // }
 
-  /**
-   * Moves all selected fields back into available fields list.
-   */
-  removeAllSelectedFields(): void {
-    this.emailService.disableSaveAndProceed.next(true);
-    this.emailService.disableSaveAsDraft.next(true);
-    this.availableFields = [
-      ...this.availableFields,
-      ...this.selectedFields.map((field: FieldStore) =>
-        JSON.parse(JSON.stringify(field))
-      ),
-    ];
-    this.selectedFields = [];
-    this.availableFields.sort((a, b) =>
-      a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1
-    );
-    this.query.controls.query.get('fields').setValue(this.selectedFields);
-    this.emailService.setEmailFields(this.selectedFields);
-  }
+  // /**
+  //  * Moves field in selected fields list to top of list.
+  //  *
+  //  * @param index of field to be moved to top.
+  //  */
+  // moveTop(index: number | null): void {
+  //   if (index !== null && index > 0) {
+  //     const field = this.selectedFields[index];
+  //     this.selectedFields.splice(index, 1);
+  //     this.selectedFields.splice(0, 0, field);
+  //     this.selectedFieldIndex = 0;
+  //     this.query.controls.query.get('fields').setValue(this.selectedFields);
+  //   }
+  // }
 
-  /**
-   * Moves all available fields into selected fields list.
-   */
-  addAllAvailableFields(): void {
-    this.selectedFields = [
-      ...this.selectedFields,
-      ...this.availableFields.map((field) => JSON.parse(JSON.stringify(field))),
-    ];
-    if (
-      this.query?.controls['name'].value !== '' &&
-      !this.showDatasetLimitWarning
-    ) {
-      this.emailService.disableSaveAndProceed.next(false);
-      this.emailService.disableSaveAsDraft.next(false);
-    }
-    this.availableFields = [];
-    this.query.controls.query.get('fields').setValue(this.selectedFields);
-    this.emailService.setEmailFields(this.selectedFields);
-  }
-
-  /**
-   * Moves field up in selected fields list.
-   *
-   * @param index of field to be moved up
-   */
-  moveUp(index: number | null): void {
-    if (index && index > 0) {
-      const field = this.selectedFields[index];
-      this.selectedFields.splice(index, 1);
-      this.selectedFields.splice(index - 1, 0, field);
-      this.selectedFieldIndex = index - 1;
-      this.query.controls.query.get('fields').setValue(this.selectedFields);
-    }
-  }
-
-  /**
-   * Moves field down in selected fields list.
-   *
-   * @param index of field to be moved down.
-   */
-  moveDown(index: number | null): void {
-    if (index !== null && index < this.selectedFields.length - 1) {
-      const field = this.selectedFields[index];
-      this.selectedFields.splice(index, 1);
-      this.selectedFields.splice(index + 1, 0, field);
-      this.selectedFieldIndex = index + 1;
-      this.query.controls.query.get('fields').setValue(this.selectedFields);
-    }
-  }
-
-  /**
-   * Moves field in selected fields list to top of list.
-   *
-   * @param index of field to be moved to top.
-   */
-  moveTop(index: number | null): void {
-    if (index !== null && index > 0) {
-      const field = this.selectedFields[index];
-      this.selectedFields.splice(index, 1);
-      this.selectedFields.splice(0, 0, field);
-      this.selectedFieldIndex = 0;
-      this.query.controls.query.get('fields').setValue(this.selectedFields);
-    }
-  }
-
-  /**
-   * Moves field in selected fields list to bottom of list.
-   *
-   * @param index of field to be moved to bottom.
-   */
-  moveBottom(index: number | null): void {
-    if (index !== null) {
-      const field = this.selectedFields[index];
-      this.selectedFields.splice(index, 1);
-      this.selectedFields.push(field);
-      this.selectedFieldIndex = this.selectedFields.length - 1;
-      this.query.controls.query.get('fields').setValue(this.selectedFields);
-    }
-  }
+  // /**
+  //  * Moves field in selected fields list to bottom of list.
+  //  *
+  //  * @param index of field to be moved to bottom.
+  //  */
+  // moveBottom(index: number | null): void {
+  //   if (index !== null) {
+  //     const field = this.selectedFields[index];
+  //     this.selectedFields.splice(index, 1);
+  //     this.selectedFields.push(field);
+  //     this.selectedFieldIndex = this.selectedFields.length - 1;
+  //     this.query.controls.query.get('fields').setValue(this.selectedFields);
+  //   }
+  // }
 
   /**
    * To get data set for the applied filters.
@@ -1192,55 +1098,9 @@ export class DatasetFilterComponent
           this.emailService.disableSaveAndProceed.next(true);
           this.emailService.disableSaveAsDraft.next(true);
         }
-        this.onTabSelect(1);
-        // const query = this.queryValue[this.activeTab.index];
-        // query.pageSize = 1;
-        // query.tabIndex = this.activeTab.index;
-        // this.loading = true;
-        // this.loadingCheck = false;
-        // /**
-        //  Fetches the data records for selected fields
-        // (by default its all records in the resource).
-        //  */
-        // this.fetchDataSet(query)
-        //   .pipe(takeUntil(this.destroy$))
-        //   .subscribe(
-        //     (res: any) => {
-        //       this.loading = false;
-        //       this.loadingCheck = false;
-        //       this.totalMatchingRecords = res?.data?.dataset?.totalCount;
-        //       if (this.totalMatchingRecords <= 50) {
-        //         this.datasetPreview.selectTab(1);
-        //         this.showDatasetLimitWarning = false;
-        //         if (this.selectedFields.length) {
-        //           this.emailService.disableSaveAndProceed.next(false);
-        //           this.emailService.disableSaveAsDraft.next(false);
-        //         } else {
-        //           this.emailService.disableSaveAndProceed.next(true);
-        //           this.emailService.disableSaveAsDraft.next(true);
-        //         }
-        //       } else {
-        //         this.showDatasetLimitWarning = true;
-        //         this.emailService.disableSaveAndProceed.next(true);
-        //         this.emailService.disableSaveAsDraft.next(true);
-        //       }
-        //     },
-        //     (error: any) => {
-        //       this.loading = false;
-        //       this.loadingCheck = false;
-        //       this.showDatasetLimitWarning = false;
-        //       this.emailService.disableSaveAndProceed.next(true);
-        //       this.emailService.disableSaveAsDraft.next(true);
-        //       this.snackBar.openSnackBar(
-        //         error?.message ?? 'Something Went Wrong',
-        //         { error: true }
-        //       );
-        //     }
-        //   );
       }
       if (
         tabName == 'filter' &&
-        this.showPreview == false &&
         this.tabs.findIndex((x: any) => x.content == this.activeTab.content) <
           this.tabs.length - 1
       ) {
@@ -1282,50 +1142,6 @@ export class DatasetFilterComponent
             },
           };
 
-          // objPreview = {
-          //   resource: {
-          //     id: '66448d06055578cf76222207',
-          //     name: 'A Local GraphQL',
-          //   },
-          //   name: 'Block 1',
-          //   query: {
-          //     name: 'allALocalGraphQls',
-          //     template: '',
-          //     filter: {
-          //       logic: 'and',
-          //       filters: [
-          //         {
-          //           logic: 'and',
-          //           filters: [],
-          //         },
-          //       ],
-          //     },
-          //     pageSize: 10,
-          //     fields: [
-          //       {
-          //         name: 'checkbox',
-          //         type: 'JSON',
-          //         kind: 'SCALAR',
-          //         label: 'Checkbox',
-          //         width: null,
-          //         format: null,
-          //       },
-          //       {
-          //         name: 'countries',
-          //         type: 'JSON',
-          //         kind: 'SCALAR',
-          //         label: 'Countries',
-          //         width: null,
-          //         format: null,
-          //       },
-          //     ],
-          //     sort: {
-          //       field: '',
-          //       order: 'asc',
-          //     },
-          //     style: [],
-          //   },
-          // };
           this.http
             .post(
               `${this.restService.apiUrl}/notification/preview-dataset`,
@@ -1333,110 +1149,19 @@ export class DatasetFilterComponent
               { responseType: 'text' }
             )
             .subscribe(
-              (response) => {
+              (response: any) => {
                 this.showPreview = true;
-                console.log(response);
+                this.previewHTML = response;
                 (
                   document.getElementById('tblPreview') as HTMLInputElement
-                ).innerHTML = response;
+                ).innerHTML = this.previewHTML;
                 // this.navigateToPreview.emit(response);
               },
-              (error) => {
+              (error: string) => {
                 console.error('Error:', error);
               }
             );
         }
-        // let count = 0;
-        // for (const query of this.queryValue) {
-        //   query.fields.forEach((x: any) => {
-        //     /**
-        //      * Converts the resource field name to parents name
-        //      * so the resource parent is converted back to an object.
-        //      */
-        //     if (x.parentName) {
-        //       const child = x.name;
-        //       x.childName = child.split(' - ')[1];
-        //       x.name = x.parentName;
-        //       x.childType = x.type;
-        //       x.type = TYPE_LABEL.resource;
-        //     }
-        //   });
-
-        //   if (count == 0) {
-        //     this.loading = true;
-        //     this.loadingCheck = false;
-        //   }
-        //   const resourceInfo = {
-        //     id: query.resource.id,
-        //     name: query.resource.name,
-        //   };
-        //   query.tabIndex = count;
-        //   count++;
-        //   query.pageSize = 50;
-        //   this.fetchDataSet(query)
-        //     .pipe(takeUntil(this.destroy$))
-        //     .subscribe((res: { data: { dataset: any } }) => {
-        //       if (res?.data?.dataset) {
-        //         this.datasetResponse = res?.data?.dataset;
-        //         this.dataList = res?.data?.dataset.records?.map(
-        //           (record: any) => {
-        //             const flattenedObject = this.emailService.flattenRecord(
-        //               record,
-        //               resourceInfo,
-        //               query
-        //             );
-        //             query.fields.forEach((x: any) => {
-        //               /**
-        //                * Converts the resource field name back to {resourceName} - {resourceField}
-        //                * so the field can be mapped to the correct data.
-        //                */
-        //               if (x.parentName) {
-        //                 x.name = `${x.parentName} - ${x.childName}`;
-        //                 x.type = x.childType;
-        //               }
-        //             });
-
-        //             delete flattenedObject.data;
-
-        //             const flatData = Object.fromEntries(
-        //               Object.entries(flattenedObject).filter(
-        //                 ([, value]) => value !== null && value !== undefined
-        //               )
-        //             );
-
-        //             return flatData;
-        //           }
-        //         );
-        //         if (this.dataList?.length) {
-        //           const tempIndex = res?.data?.dataset?.tabIndex;
-        //           this.datasetFields = [
-        //             ...new Set(
-        //               this.queryValue[tempIndex].fields
-        //                 .map((data: any) => data.name)
-        //                 .flat()
-        //             ),
-        //           ];
-        //         }
-        //         allPreviewData.push({
-        //           dataList: this.dataList,
-        //           datasetFields: this.datasetFields,
-        //           tabIndex: res?.data?.dataset?.tabIndex,
-        //           tabName:
-        //             res?.data?.dataset?.tabIndex < this.queryValue.length
-        //               ? this.queryValue[res.data.dataset.tabIndex].name
-        //               : '',
-        //         });
-        //         if (this.tabs.length == allPreviewData.length) {
-        //           allPreviewData = allPreviewData.sort(
-        //             (a: any, b: any) => a.tabIndex - b.tabIndex
-        //           );
-        //           this.loading = false;
-        //           this.navigateToPreview.emit(allPreviewData);
-        //           this.emailService.setAllPreviewData(allPreviewData);
-        //         }
-        //       }
-        //     });
-        // }
       }
     } else {
       this.query.controls['name'].markAsTouched();
@@ -1498,14 +1223,12 @@ export class DatasetFilterComponent
   }
 
   /**
-   * Create Fields array
+   * Retrieves Fields Form array
+   *
+   * @returns FormArray of fields
    */
   getFieldsArray() {
     const formArray = this.query.controls.query.get('fields') as FormArray;
-    // this.selectedFields.forEach((item: any) => {
-    //   // For an array of strings, create a FormControl for each string
-    //   formArray.push(this.formGroup.control(item));
-    // });
     this.selectedFields = this.query.controls.query.get('fields')?.value;
     return formArray;
   }

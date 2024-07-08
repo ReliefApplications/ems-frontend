@@ -81,7 +81,7 @@
       <ui-tab
           [title]="'Fields'"
           [disabled]="showDatasetLimitWarning"
-          *ngIf="showPreview === false">
+          [selected]="true">
           <ng-container ngProjectAs="label">
             {{ 'components.queryBuilder.fields.title' | translate }}
           </ng-container>
@@ -128,9 +128,7 @@
       <!-- Filter Tab -->
       <ui-tab
         [title]="'Filter'"
-        [disabled]="false"
-        *ngIf="showPreview === false"
-        [selected]="true">
+        [disabled]="false">
         <ng-container ngProjectAs="label">
           {{ 'components.queryBuilder.filter.title' | translate }}
         </ng-container>
@@ -175,16 +173,15 @@
 
     <!-- Preview Tab -->
     <ui-tab
-        [title]="'Filter'"
+        [title]="'Preview'"
         [disabled]="false"
-        *ngIf="showPreview">
-        <ng-template ngProjectAs="label">
+        *ngIf="showPreview || (this.selectedFields && this.selectedFields.length > 0)">
+        <ng-container ngProjectAs="label">
           {{ 'common.preview' | translate }}
-        </ng-template>
-        <ng-container uiTabContent>
-          <div id="tblPreview">
-          </div>
         </ng-container>
+        <ng-template uiTabContent>
+          <div id="tblPreview" [innerHTML]="previewHTML"></div>
+        </ng-template>
     </ui-tab>
 
     <!-- Style Tab -->
