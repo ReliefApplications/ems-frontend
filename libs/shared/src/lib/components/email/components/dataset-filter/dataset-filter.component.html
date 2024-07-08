@@ -184,6 +184,22 @@
         </ui-button>
       </ng-template>
     </ui-tab>
+
+    <!-- Preview Tab -->
+    <ui-tab
+        [title]="'Filter'"
+        [disabled]="false"
+        *ngIf="showPreview"
+        [selected]="true">
+        <ng-template ngProjectAs="label">
+          {{ 'common.preview' | translate }}
+        </ng-template>
+        <ng-container uiTabContent>
+          <div #tblPreview id="tblPreview">
+          </div>
+        </ng-container>    
+    </ui-tab>
+    
     <!-- Style Tab -->
     <!-- <kendo-tabstrip-tab [disabled]="true">
       <ng-template kendoTabTitle >

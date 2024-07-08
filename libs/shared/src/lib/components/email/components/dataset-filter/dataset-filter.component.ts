@@ -28,6 +28,8 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import { FieldStore } from '../../models/email.const';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { prettifyLabel } from '../../../../utils/prettify';
+import { HttpClient } from '@angular/common/http';
+import { RestService } from 'libs/shared/src/lib/services/rest/rest.service';
 /** Default items per query, for pagination */
 let ITEMS_PER_PAGE = 0;
 
@@ -147,6 +149,8 @@ export class DatasetFilterComponent
    * @param snackBar snackbar helper function
    * @param queryBuilder Shared query builder service
    * @param gridService Shared grid service
+   * @param http
+   * @param restService
    */
   constructor(
     public emailService: EmailService,
@@ -154,7 +158,9 @@ export class DatasetFilterComponent
     private formGroup: FormBuilder,
     public snackBar: SnackbarService,
     public queryBuilder: QueryBuilderService,
-    public gridService: GridService
+    public gridService: GridService,
+    private http: HttpClient,
+    private restService: RestService
   ) {
     super();
   }
@@ -1276,59 +1282,68 @@ export class DatasetFilterComponent
             },
           };
 
-          objPreview = {
-            resource: {
-              id: '66448d06055578cf76222207',
-              name: 'A Local GraphQL',
-            },
-            name: 'Block 1',
-            query: {
-              name: 'allALocalGraphQls',
-              template: '',
-              filter: {
-                logic: 'and',
-                filters: [
-                  {
-                    logic: 'and',
-                    filters: [],
-                  },
-                ],
+          // objPreview = {
+          //   resource: {
+          //     id: '66448d06055578cf76222207',
+          //     name: 'A Local GraphQL',
+          //   },
+          //   name: 'Block 1',
+          //   query: {
+          //     name: 'allALocalGraphQls',
+          //     template: '',
+          //     filter: {
+          //       logic: 'and',
+          //       filters: [
+          //         {
+          //           logic: 'and',
+          //           filters: [],
+          //         },
+          //       ],
+          //     },
+          //     pageSize: 10,
+          //     fields: [
+          //       {
+          //         name: 'checkbox',
+          //         type: 'JSON',
+          //         kind: 'SCALAR',
+          //         label: 'Checkbox',
+          //         width: null,
+          //         format: null,
+          //       },
+          //       {
+          //         name: 'countries',
+          //         type: 'JSON',
+          //         kind: 'SCALAR',
+          //         label: 'Countries',
+          //         width: null,
+          //         format: null,
+          //       },
+          //     ],
+          //     sort: {
+          //       field: '',
+          //       order: 'asc',
+          //     },
+          //     style: [],
+          //   },
+          // };
+          this.http
+            .post(
+              `${this.restService.apiUrl}/notification/preview-dataset`,
+              objPreview,
+              { responseType: 'text' }
+            )
+            .subscribe(
+              (response) => {
+                console.log(response);
+                (
+                  document.getElementById('tblPreview') as HTMLInputElement
+                ).innerHTML = response;
+                // this.navigateToPreview.emit(response);
               },
-              pageSize: 10,
-              fields: [
-                {
-                  name: 'checkbox',
-                  type: 'JSON',
-                  kind: 'SCALAR',
-                  label: 'Checkbox',
-                  width: null,
-                  format: null,
-                },
-                {
-                  name: 'countries',
-                  type: 'JSON',
-                  kind: 'SCALAR',
-                  label: 'Countries',
-                  width: null,
-                  format: null,
-                },
-              ],
-              sort: {
-                field: '',
-                order: 'asc',
-              },
-              style: [],
-            },
-          };
-
-          this.emailService.getPreviewDataSet(objPreview).subscribe({
-            next: (res) => {
-              console.log(res);
-            },
-            error: (err) => {
-              console.error('Error sending email:', err);
-            },
-          });
+              (error) => {
+                console.error('Error:', error);
+              }
+            );
         }
         // let count = 0;
         // for (const query of this.queryValue) {
