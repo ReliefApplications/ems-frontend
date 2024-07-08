@@ -367,7 +367,7 @@ export const init = (
         name: 'selectQuestion:dropdown',
         category: 'Filter by Questions',
         dependsOn: ['resource', 'displayField'],
-        isRequired: true,
+        isRequired: false,
         visibleIf: visibleIfResourceAndDisplayField,
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {

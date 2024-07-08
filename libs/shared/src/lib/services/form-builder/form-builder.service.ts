@@ -82,7 +82,10 @@ export const transformSurveyData = (survey: SurveyModel) => {
       };
 
       // Removes null values for invisible questions (or pages)
-      if (!isQuestionVisible(question) && data[filed] === null) {
+      if (
+        (!isQuestionVisible(question) || question.omitField) &&
+        data[filed] === null
+      ) {
         delete data[filed];
       }
     }

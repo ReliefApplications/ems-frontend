@@ -78,7 +78,7 @@ export default (options: GlobalOptions) => {
               {
                 field: 'ids',
                 operator: 'in',
-                value: aids,
+                value: aids ?? [],
               },
               {
                 field: 'items_given',

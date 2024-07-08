@@ -39,13 +39,6 @@
   <!-- Only display if we have space to do it -->
   <div *ngIf="collapsed" class="flex items-center">
     <ui-button
-      *ngIf="widget.settings?.widgetDisplay?.showTooltip"
-      [isIcon]="true"
-      icon="info"
-      variant="grey"
-      [uiTooltip]="widget.settings.widgetDisplay.tooltip"
-    ></ui-button>
-    <ui-button
       [isIcon]="true"
       icon="more_vert"
       [uiMenuTriggerFor]="menu"

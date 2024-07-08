@@ -83,11 +83,13 @@ const getUpdatedFilter = (
 
   const replaceFilterValue = (
     filter: FilterDescriptor | CompositeFilterDescriptor
-  ): FilterDescriptor | CompositeFilterDescriptor => {
+  ): FilterDescriptor | CompositeFilterDescriptor | null => {
     if ('filters' in filter && filter.filters) {
       return {
         ...filter,
-        filters: filter.filters.map((f) => replaceFilterValue(f)),
+        filters: filter.filters
+          .map((f) => replaceFilterValue(f))
+          .filter(Boolean) as (FilterDescriptor | CompositeFilterDescriptor)[],
       };
     } else if ('value' in filter && typeof filter.value === 'string') {
       const value = filter.value;
@@ -102,7 +104,7 @@ const getUpdatedFilter = (
             value: question.value,
           };
         } else {
-          return { logic: 'and', filters: [] };
+          return null;
         }
       }
     }
@@ -176,7 +178,9 @@ export const init = (
             (question.autoSelectFirstOption && choices.length > 0) ||
             (question.autoSelectOnlyOption && choices.length === 1)
           ) {
-            question.value = question.value ?? choices[0].value;
+            setTimeout(() => {
+              question.value = question.value ?? choices[0].value;
+            }, 500);
           }
 
           if (!question.placeholder) {
@@ -296,7 +300,7 @@ export const init = (
         type: CustomPropertyGridComponentTypes.resourceTestService,
         category: 'Custom Questions',
         dependsOn: ['resource', 'displayField'],
-        isRequired: true,
+        isRequired: false,
         visibleIf: visibleIfResourceAndDisplayField,
         visibleIndex: 3,
       });
@@ -481,7 +485,7 @@ export const init = (
         name: 'selectQuestion:dropdown',
         category: 'Filter by Questions',
         dependsOn: ['resource', 'displayField'],
-        isRequired: true,
+        isRequired: false,
         visibleIf: visibleIfResourceAndDisplayField,
         visibleIndex: 3,
         choices: (obj: QuestionResource, choicesCallback: any) => {
@@ -725,8 +729,6 @@ export const init = (
       loadedRecords.clear();
       survey.loadedRecords = loadedRecords;
 
-      console.log('onAfterRender');
-      getUpdatedFilter(question);
       // If using custom filters, we need to update the filters and populate the choices
       // note: we do this here instead of onLoaded because we need the survey initial values
       if (

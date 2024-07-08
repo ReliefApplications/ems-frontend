@@ -243,7 +243,7 @@ export class FieldSearchTableComponent
         this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
       )
       .map(this.mapRecordToDataSource.bind(this))
-      .filter((x) => x.matchedText.includes('<b>'));
+      .filter((x) => x.matchedText?.includes('<b>'));
     this.loading = loading;
   }
 
@@ -261,7 +261,7 @@ export class FieldSearchTableComponent
     if (cachedData && cachedData.length === this.pageInfo.pageSize) {
       this.dataSource = cachedData
         .map(this.mapRecordToDataSource.bind(this))
-        .filter((x) => x.matchedText.includes('<b>'));
+        .filter((x) => x.matchedText?.includes('<b>'));
     } else {
       this.fetchRecordsData();
     }
