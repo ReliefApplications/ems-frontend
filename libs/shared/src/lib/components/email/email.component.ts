@@ -16,6 +16,7 @@ import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { ApiConfiguration } from '../../models/api-configuration.model';
 import { AppAbility, AuthService } from '../../services/auth/auth.service';
 import { DownloadService } from '../../services/download/download.service';
+import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
@@ -86,7 +87,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     private translate: TranslateService,
     public authService: AuthService,
     public downloadService: DownloadService,
-    public ability: AppAbility
+    public ability: AppAbility,
+    public queryBuilder: QueryBuilderService
   ) {
     super();
   }
@@ -527,16 +529,18 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     // For each dataset, query its metadata
     const promises = emailData.datasets.map((dataset: any) => {
       return firstValueFrom(
-        this.emailService.fetchResourceMetaData(dataset.resource.id)
+        this.emailService.fetchResourceData(dataset.resource.id)
       ).then(({ data }) => {
         if (data.resource.metadata) {
-          const metadata = data.resource.metadata;
-          dataset?.fields?.forEach((x: any) => {
-            x.options =
-              metadata.filter((m: any) => m.name == x.name).length > 0
-                ? metadata.filter((m: any) => m.name == x.name)[0].options
-                : dataset.fields.options;
-          });
+          // const queryTemp: any = data.resource;
+          // const newData = this.queryBuilder.getFields(queryTemp.queryName);
+          // const metadata = data.resource.metadata;
+          // dataset?.fields?.forEach((x: any) => {
+          //   x.options =
+          //     metadata.filter((m: any) => m.name == x.name).length > 0
+          //       ? metadata.filter((m: any) => m.name == x.name)[0].options
+          //       : dataset.fields.options;
+          // });
         }
       });
     });
@@ -563,20 +567,22 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    */
   createNewDataSetGroup(ele: any, index: number): FormGroup {
     const tempData = this.formBuilder.group({
-      resource: ele.resource,
       name: ele.name,
-      pageSize: ele.pageSize,
-      filter: this.getFilterGroup(ele.filter),
-      fields: ele.fields,
-      cacheData: {},
-      blockType: 'table', // Either Table or Text
-      tableStyle: this.emailService.getTableStyles(),
-      textStyle: null,
-      individualEmail: ele.individualEmail,
+      query: this.formBuilder.group({
+        resource: ele.resource,
+        pageSize: ele.pageSize,
+        filter: this.getFilterGroup(ele.filter),
+        fields: ele.fields,
+        cacheData: {},
+        blockType: 'table', // Either Table or Text
+        tableStyle: this.emailService.getTableStyles(),
+        textStyle: null,
+        individualEmail: ele.individualEmail,
+      }),
     });
     this.emailService.setEmailFields(ele.fields);
     this.emailService.setSeparateEmail(ele.individualEmail, index);
-    tempData.controls.fields.setValue(ele.fields);
+    // tempData.controls.fields.setValue(ele.fields);
     return tempData;
   }
 
