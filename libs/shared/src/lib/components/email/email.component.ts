@@ -571,6 +571,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @returns The newly created dataset group.
    */
   createNewDataSetGroup(ele: any, index: number): FormGroup {
+    console.log('ele', ele);
     const tempData = this.formBuilder.group({
       name: ele.name,
       query: this.formBuilder.group({

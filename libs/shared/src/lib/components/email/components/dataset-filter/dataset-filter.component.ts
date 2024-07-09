@@ -168,6 +168,7 @@ export class DatasetFilterComponent
   }
 
   ngOnInit(): void {
+    console.log('query', this.query);
     this.query.controls.query
       .get('resource')
       .valueChanges.pipe(takeUntil(this.destroy$))
@@ -217,7 +218,7 @@ export class DatasetFilterComponent
         this.query?.get('query')?.value?.resource?.id &&
         this.metaData == undefined
       ) {
-        this.selectedResourceId = this.query?.get('query')?.value?.resource?.id;
+        this.selectedResourceId = this.query?.get('query')?.value?.resource;
         this.getResourceData(false);
       }
     }
@@ -321,9 +322,9 @@ export class DatasetFilterComponent
             });
 
             // Edit Mode data
-            if (this.query?.get('query')?.value?.resource?.id) {
+            if (this.query?.get('query')?.value?.resource) {
               this.selectedResourceId =
-                this.query?.get('query')?.value?.resource?.id;
+                this.query?.get('query')?.value?.resource;
               const found = this.emailService.resourcesNameId.some(
                 (resource) => resource.id === this.selectedResourceId
               );

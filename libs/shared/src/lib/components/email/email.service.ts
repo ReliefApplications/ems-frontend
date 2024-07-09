@@ -934,71 +934,7 @@ export class EmailService {
       query.tabIndex = count;
       count++;
       query.pageSize = Number(query.pageSize);
-      this.fetchDataSet(query).subscribe((res: { data: { dataset: any } }) => {
-        if (res?.data?.dataset) {
-          const datasetResponse = res?.data?.dataset.records;
-          this.dataList = datasetResponse?.map((record: any) => {
-            const flattenedObject = this.flattenRecord(
-              record,
-              resourceInfo,
-              query
-            );
-
-            query.fields.forEach((x: any) => {
-              if (x.parentName) {
-                x.name = `${x.parentName} - ${x.childName}`;
-                x.type = x.childType;
-              }
-            });
-
-            delete flattenedObject.data;
-
-            const flatData = Object.fromEntries(
-              Object.entries(flattenedObject).filter(
-                ([, value]) => value !== null && value !== undefined
-              )
-            );
-
-            return flatData;
-          });
-          if (this.dataList?.length) {
-            const existfields = emailData.datasets[
-              res?.data?.dataset?.tabIndex
-            ].fields.map((x: any) => x.name);
-            const temp = Object.keys(this.dataList[0]);
-            const notmatching = temp.filter(
-              (currentId) => !existfields.some((item: any) => item == currentId)
-            );
-            existfields.concat(notmatching);
-            this.datasetFields = existfields;
-          }
-          allPreviewData.push({
-            dataList: this.dataList,
-            datasetFields: this.datasetFields,
-            tabIndex: res?.data?.dataset?.tabIndex,
-            tabName:
-              res?.data?.dataset?.tabIndex < this.tabs.length
-                ? this.tabs[res.data.dataset.tabIndex].title
-                : '',
-          });
-          if (this.tabs.length == allPreviewData.length) {
-            allPreviewData = allPreviewData.sort(
-              (a: any, b: any) => a.tabIndex - b.tabIndex
-            );
-            // this.loading = false;
-            this.navigateToPreview.emit(allPreviewData);
-            this.setAllPreviewData(allPreviewData);
-            if (isSendEmail) {
-              this.stepperStep = 5;
-              this.isPreview = true;
-              this.isLinear = false;
-            }
-            this.emailListLoading = false;
-          }
-        } else {
-          this.emailListLoading = false;
-        }
-      });
+      this.emailListLoading = false;
     }
     if (emailData?.datasets?.length == 0) {
       this.emailListLoading = false;
