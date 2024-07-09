@@ -41,7 +41,7 @@
         <div uiFormFieldDirective class="flex-1">
           <shared-resource-select
             formControlName="resource"
-            [selectedElements]="[query.controls.query.get('resource')?.value]"
+            [selectedElements]="[resource]"
           ></shared-resource-select>
           <ui-button
             *ngIf="query?.get('query')?.value.resource"
@@ -240,7 +240,7 @@
 <ng-template #noSelectedFieldsAlertTmpl>
   <ui-alert
     variant="warning"
-    *ngIf="!selectedFields.length && !showDatasetLimitWarning"
+    *ngIf="!selectedFields?.length && !showDatasetLimitWarning"
     [closable]="true"
   >
     <div>

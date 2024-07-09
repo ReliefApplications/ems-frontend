@@ -8,7 +8,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { clone, cloneDeep } from 'lodash';
 import {
@@ -168,7 +168,10 @@ export class DatasetFilterComponent
   }
 
   ngOnInit(): void {
-    console.log('query', this.query);
+    if (this.query.controls.query.get('resource').value && !this.resource) {
+      this.selectedResourceId = this.query.controls.query.get('resource').value;
+      this.getResourceData(false);
+    }
     this.query.controls.query
       .get('resource')
       .valueChanges.pipe(takeUntil(this.destroy$))
@@ -355,11 +358,11 @@ export class DatasetFilterComponent
     this.loading = true;
     this.loadingCheck = true;
     this.availableFields = [];
-    this.selectedFields = [];
-    this.filterFields = [];
     if (fromHtml) {
       this.query.controls.query.value.fields = [];
       this.query.controls.query.get('fields').value = [];
+      this.selectedFields = [];
+      this.filterFields = [];
     }
     this.showDatasetLimitWarning = false;
     this.emailService.disableSaveAndProceed.next(true);
@@ -367,8 +370,10 @@ export class DatasetFilterComponent
     this.disabledFields = [];
     this.disabledTypes = [];
     this.currentTabIndex = 0;
-    this.resetQuery(this.query.get('query'));
-    if (this.selectedResourceId && this.emailService?.resourcesNameId?.length) {
+    if (fromHtml) {
+      this.resetQuery(this.query.get('query'));
+    }
+    if (this.selectedResourceId) {
       // this.query.controls.resource.setValue(
       //   this.emailService.resourcesNameId.find(
       //     (element) => element.id === this.selectedResourceId
@@ -380,6 +385,9 @@ export class DatasetFilterComponent
         .subscribe(({ data }) => {
           const queryTemp: any = data.resource;
           const newData = this.queryBuilder.getFields(queryTemp.queryName);
+          if (this.query.controls.query.get('name') === null) {
+            this.query.controls.query.addControl('name', new FormControl(''));
+          }
           this.query.controls.query.get('name').setValue(queryTemp.queryName);
           this.availableFields = newData;
           this.filterFields = cloneDeep(newData);

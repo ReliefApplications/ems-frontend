@@ -578,7 +578,14 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         resource: ele.resource,
         pageSize: ele.pageSize,
         filter: this.getFilterGroup(ele.query.filter),
-        fields: ele.query.fields,
+        fields:
+          ele?.query?.fields?.length > 0
+            ? this.formBuilder.array(
+                ele?.query?.fields.map((field: any) =>
+                  this.formBuilder.control(field)
+                )
+              )
+            : this.formBuilder.array([]),
         cacheData: {},
         blockType: 'table', // Either Table or Text
         tableStyle: this.emailService.getTableStyles(),

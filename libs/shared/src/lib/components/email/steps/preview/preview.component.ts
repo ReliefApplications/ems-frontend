@@ -415,7 +415,7 @@ export class PreviewComponent
       );
 
       if (previewData) {
-        const tableHtml = this.emailService.allPreviewData[0].dataList; //this.convertPreviewDataToHtml(previewData);
+        const tableHtml = this.emailService.allPreviewData?.[0].dataList; //this.convertPreviewDataToHtml(previewData);
         this.bodyString = this.bodyString.replace(match[0], tableHtml);
       }
     }
