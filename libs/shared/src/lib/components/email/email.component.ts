@@ -77,6 +77,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param authService The service for authentication.
    * @param downloadService The service for downloading files.
    * @param ability The app ability
+   * @param queryBuilder The query builder
    */
   constructor(
     public emailService: EmailService,
@@ -304,8 +305,10 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService
       .getEmailNotification(id, this.applicationId)
       .subscribe((res) => {
-        const emailData = res.data.editAndGetEmailNotification;
-        this.emailService.configId = res?.data?.editAndGetEmailNotification?.id;
+        console.log('EMAIL EDIT RESPONSE  ');
+        console.log(res);
+        const emailData = res.data.editEmailNotification;
+        this.emailService.configId = emailData.id;
         if (isClone) {
           let maxCloneNumber = 0;
           const filteredEmailList: string[][] =
@@ -431,6 +434,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     ];
     const dataArray: FormArray | any = new FormArray([]);
     for (let index = 0; index < emailData.datasets.length; index++) {
+      // TODO: Undo Hotfix
+
       //Adding Tabs detail
       dataArray.push(
         this.createNewDataSetGroup(emailData.datasets[index], index)
@@ -571,8 +576,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       query: this.formBuilder.group({
         resource: ele.resource,
         pageSize: ele.pageSize,
-        filter: this.getFilterGroup(ele.filter),
-        fields: ele.fields,
+        filter: this.getFilterGroup(ele.query.filter),
+        fields: ele.query.fields,
         cacheData: {},
         blockType: 'table', // Either Table or Text
         tableStyle: this.emailService.getTableStyles(),
@@ -580,7 +585,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         individualEmail: ele.individualEmail,
       }),
     });
-    this.emailService.setEmailFields(ele.fields);
+    this.emailService.setEmailFields(ele.query.fields);
     this.emailService.setSeparateEmail(ele.individualEmail, index);
     // tempData.controls.fields.setValue(ele.fields);
     return tempData;

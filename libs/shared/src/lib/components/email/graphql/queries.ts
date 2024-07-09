@@ -254,13 +254,19 @@ export const ADD_EMAIL_NOTIFICATION = gql`
   mutation Mutation($notification: EmailNotificationInputType!) {
     addEmailNotification(notification: $notification) {
       datasets {
-        pageSize
-        filter
-        fields
+        name
+        query {
+          name
+          filter
+          fields
+        }
+        resource
         tableStyle
         blockType
         textStyle
         individualEmail
+        sendAsAttachment
+        pageSize
       }
       modifiedAt
       schedule
@@ -296,7 +302,7 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
     $applicationId: ID!
     $notification: EmailNotificationInputType
   ) {
-    editAndGetEmailNotification(
+    editEmailNotification(
       id: $editEmailNotificationId
       application: $applicationId
       notification: $notification
@@ -304,14 +310,19 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
       createdAt
       createdBy
       datasets {
-        fields
-        filter
         name
-        pageSize
+        query {
+          name
+          filter
+          fields
+        }
+        resource
         tableStyle
         blockType
         textStyle
         individualEmail
+        sendAsAttachment
+        pageSize
       }
       id
       name

@@ -631,6 +631,8 @@ export class EmsTemplateComponent
               manipulatedDataWithoutOptions
             )
             .subscribe((res: any) => {
+              console.log('RES');
+              console.log(res);
               this.emailService.isEdit = false;
               this.emailService.editId = '';
               this.emailService.configId =
@@ -650,6 +652,8 @@ export class EmsTemplateComponent
             .addEmailNotification(manipulatedDataWithoutOptions)
             .pipe(takeUntil(this.destroy$))
             .subscribe((res: any) => {
+              console.log('RES');
+              console.log(res);
               this.emailService.configId = res.data.addEmailNotification.id;
 
               this.snackBar.openSnackBar(

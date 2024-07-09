@@ -14,7 +14,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { RestService } from '../../services/rest/rest.service';
 import { TYPE_LABEL } from './filter/filter.const';
 import { FieldStore } from './models/email.const';
-import { omit } from 'lodash';
+import { cloneDeep, omit } from 'lodash';
 import { QueryMetaDataQueryResponse } from '../../models/metadata.model';
 import { ResourceQueryResponse } from '../../models/resource.model';
 
@@ -834,62 +834,25 @@ export class EmailService {
    * @returns {Promise<any>} A Promise that resolves with the modified emailData.
    */
   async getDataSetToSkipOptions(emailData: any) {
-    // eslint-disable-next-line no-async-promise-executor
     await Promise.all(
-      emailData.datasets.map(async (query: any, index: number) => {
-        // Dataset is invalid, skip
-        if (!query.resource || !query.fields) {
-          return;
-        }
-
-        for (const x of query.fields) {
-          if (x.parentName) {
-            const child = x.name;
-            x.childName = child.split(' - ')[1];
-            x.name = x.parentName;
-            x.childType = x.type;
-            x.type = 'resource';
-          }
-        }
-
-        query.tabIndex = index;
-        query.pageSize = 50;
-
-        const res = await this.fetchDataSet(query).toPromise();
-
-        if (res?.data?.dataset) {
-          const datasetResponse = res.data.dataset.records;
-          const mergedObject = this.mergeObjects(datasetResponse);
-          const mergedObjectKeys = Object.keys(mergedObject);
-
-          query.fields.forEach((rowData: any, fieldIndex: number) => {
-            if (
-              mergedObjectKeys.includes(rowData.name) &&
-              mergedObject[rowData.name]?.length
-            ) {
-              const mergedKeyIndex = mergedObjectKeys.indexOf(rowData.name);
-              query.fields[fieldIndex].options = rowData?.options?.filter(
-                (x: any) =>
-                  mergedObject[mergedObjectKeys[mergedKeyIndex]].includes(
-                    x.value
-                  )
-              );
-              if (query.fields[fieldIndex].options?.length === 0) {
-                const matchDataArray = mergedObject[
-                  mergedObjectKeys[mergedKeyIndex]
-                ]
-                  .filter((x) => x !== null)
-                  .map((x) => (x = x.toString()));
-                query.fields[fieldIndex].options = rowData.options.filter(
-                  (x: any) => matchDataArray.includes(x.value.toString())
-                );
-              }
-            }
-          });
-        }
+      emailData.datasets.map(async (dataset: any) => {
+        // TODO: Implement actual fix instead of quick fix
+        const tempQuery = cloneDeep(dataset.query);
+        console.log(tempQuery);
+        dataset.resource = dataset.query.resource;
+        dataset.query = {
+          name: tempQuery.name,
+          filter: tempQuery.filter,
+          fields: tempQuery.fields,
+        };
+        dataset.blockType = tempQuery.blockType;
+        dataset.textStyle = tempQuery.textStyle;
+        dataset.tableStyle = tempQuery.tableStyle;
+        dataset.individualEmail = tempQuery.isIndividualEmail;
+        dataset.sendAsAttachment = tempQuery.sendAsAttachment;
+        dataset.pageSize = tempQuery.pageSize;
       })
     );
-
     return emailData;
   }
 
@@ -902,6 +865,8 @@ export class EmailService {
    */
   editEmailNotification(id: string, data: any) {
     const applicationId = data.applicationId;
+    console.log('EDIT DATA ');
+    console.log(data);
     return this.apollo.query<any>({
       query: GET_AND_UPDATE_EMAIL_NOTIFICATION,
       variables: {
