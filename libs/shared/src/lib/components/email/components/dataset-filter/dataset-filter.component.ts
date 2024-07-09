@@ -279,11 +279,11 @@ export class DatasetFilterComponent
    *
    * @param event The tab selected
    */
-  onTabSelect(event: any): void {
+  onTabSelect(event: any, fromHTML: boolean): void {
     const newIndex = event;
     const previewTabIndex = 2;
-    // if new tab is preview, get preview data
-    if (newIndex === previewTabIndex) {
+    //if new tab is preview, get preview data
+    if (fromHTML && newIndex === previewTabIndex) {
       this.getDataSet('preview');
     }
     this.currentTabIndex = newIndex;
@@ -1092,6 +1092,7 @@ export class DatasetFilterComponent
       // }
 
       if (tabName == 'fields') {
+        this.onTabSelect(1, false);
         if (this.selectedFields.length) {
           this.emailService.disableSaveAndProceed.next(false);
           this.emailService.disableSaveAsDraft.next(false);
@@ -1112,6 +1113,7 @@ export class DatasetFilterComponent
       }
       // const allPreviewData: any = [];
       if (tabName == 'preview') {
+        this.loading = true;
         for (const query of this.queryValue) {
           let objPreview: any = {};
           query.query.fields.forEach((ele: any) => {
@@ -1151,15 +1153,32 @@ export class DatasetFilterComponent
             )
             .subscribe(
               (response: any) => {
+                this.onTabSelect(2, false);
                 this.showPreview = true;
+                let allPreviewData: any = [];
+                allPreviewData.push({
+                  dataList: response,
+                  datasetFields: this.selectedFields.map((x: any) => x.name),
+                  tabIndex: this.activeTab.index,
+                  tabName: this.activeTab.title,
+                });
+                if (this.tabs.length == allPreviewData.length) {
+                  allPreviewData = allPreviewData.sort(
+                    (a: any, b: any) => a.tabIndex - b.tabIndex
+                  );
+                  this.loading = false;
+                  this.emailService.setAllPreviewData(allPreviewData);
+                }
                 this.previewHTML = response;
                 (
                   document.getElementById('tblPreview') as HTMLInputElement
                 ).innerHTML = this.previewHTML;
                 // this.navigateToPreview.emit(response);
+                this.loading = false;
               },
               (error: string) => {
                 console.error('Error:', error);
+                this.loading = false;
               }
             );
         }

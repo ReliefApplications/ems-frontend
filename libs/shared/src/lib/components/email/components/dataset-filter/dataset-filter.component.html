@@ -74,7 +74,7 @@
   </div>
   <div formGroupName="query">
     <ui-tabs [selectedIndex]="currentTabIndex"
-    (selectedIndexChange)="onTabSelect($event)"
+    (selectedIndexChange)="onTabSelect($event, true)"
     #datasetPreview *ngIf="resource?.fields?.length">
     <div class="mt-4 flex flex-row">
       <!-- Fields Tab -->

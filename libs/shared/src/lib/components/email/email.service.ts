@@ -529,7 +529,7 @@ export class EmailService {
    * @returns A string where all non-alphanumeric and non-hyphen characters are replaced with a whitespace.
    */
   replaceUnderscores(userValue: string): string {
-    return userValue ? userValue.replace(/[^a-zA-Z0-9-]/g, ' ') : '';
+    return userValue ? userValue?.replace(/[^a-zA-Z0-9-]/g, ' ') : '';
   }
 
   /**
