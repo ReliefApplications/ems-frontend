@@ -817,7 +817,7 @@
 				"invalidFields": "The following fields are not available for selection: <strong>{{fields}}</strong> as they are of type <strong>{{types}}</strong> and cannot be properly displayed in the table for this form.",
 				"noResourceFields": "Selected resource doesn't contain any fields",
 				"noSelectedFields": "Please select at least 1 field to save this dataset",
-				"tooManyRecords": "At this moment, we are limited to fetch only 50 records. Based on the provided filter conditions there are <strong>{{totalRecords}}</strong> matching records. Kindly add some additional filters to bring the record count less than or equals to 50."
+				"tooManyRecords": "At this moment, we are limited to fetch only 50 records. Based on the provided filter conditions there are <strong>{{totalRecords}}</strong> matching records. Please add some additional filters to bring the record count less than or equals to 50."
 			},
 			"back": "Back to list",
 			"distributionList": {
@@ -1160,6 +1160,7 @@
 			"filter": {
 				"and": "And",
 				"apply": "Apply filter",
+				"applyField": "Set Fields",
 				"field": "Field",
 				"logic": "Filter logic",
 				"new": "Add new filter",

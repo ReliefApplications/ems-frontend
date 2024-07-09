@@ -58,8 +58,8 @@
       <!-- For phase 2 -->
       <div class="w-1/2 individual-email-checkbox-container">
         <ui-checkbox
-        formControlName="individualEmail"
-        [(ngModel)]="separateEmail"
+          formControlName="individualEmail"
+          [(ngModel)]="separateEmail"
         >
           <ng-container ngProjectAs="label">{{
             'components.select.distribution.separateEmail' | translate
@@ -73,119 +73,116 @@
     </div>
   </div>
   <div formGroupName="query">
-    <ui-tabs [selectedIndex]="currentTabIndex"
-    (selectedIndexChange)="onTabSelect($event, true)"
-    #datasetPreview *ngIf="resource?.fields?.length">
-    <div class="mt-4 flex flex-row">
-      <!-- Fields Tab -->
-      <ui-tab
-          [title]="'Fields'"
-          [disabled]="showDatasetLimitWarning"
-          [selected]="true">
+    <ui-tabs
+      [selectedIndex]="currentTabIndex"
+      (selectedIndexChange)="onTabSelect($event, true)"
+      #datasetPreview
+      *ngIf="resource?.fields?.length"
+    >
+      <div class="mt-4 flex flex-row">
+        <!-- Fields Tab -->
+        <ui-tab [title]="'Fields'" [selected]="true">
           <ng-container ngProjectAs="label">
             {{ 'components.queryBuilder.fields.title' | translate }}
           </ng-container>
-        <ng-template uiTabContent>
-          <ng-container
-            class="mt-2"
-            *ngTemplateOutlet="tooManyRecordsAlertTmpl"
-          ></ng-container>
-          <ng-container
-            class="mt-2"
-            *ngTemplateOutlet="invalidFieldsAlertTmpl"
-          ></ng-container>
-          <ng-container
-            class="mt-2"
-            *ngTemplateOutlet="noSelectedFieldsAlertTmpl"
-          ></ng-container>
-          <div class="flex gap-4 mt-2">
-            <div class="mt-2">
-              <!-- FIELDS -->
-              <shared-tab-fields
-                *ngIf="availableFields.length > 0"
-                [form]="getFieldsArray()"
-                [fields]="availableFields"
-                [showLimit]="false"
-                [showColumnWidth]="false"
-                ></shared-tab-fields>
-            </div>
-          </div>
-
-          <ui-button
-            *ngIf="
-              datasetFilterInfo.controls
-            "
-            class="float-right mt-8"
-            category="secondary"
-            variant="primary"
-            (click)="getDataSet('fields')"
-            [disabled]="selectedFields.length === 0 || showDatasetLimitWarning"
-          >
-            {{ 'components.queryBuilder.filter.apply' | translate }}
-          </ui-button>
-        </ng-template>
-      </ui-tab>
-      <!-- Filter Tab -->
-      <ui-tab
-        [title]="'Filter'"
-        [disabled]="false">
-        <ng-container ngProjectAs="label">
-          {{ 'components.queryBuilder.filter.title' | translate }}
-        </ng-container>
-        <ng-template uiTabContent>
-          <ng-container
-          class="mt-2"
-          *ngTemplateOutlet="tooManyRecordsAlertTmpl"
-        ></ng-container>
-        <ng-container
-          class="mt-2"
-          *ngTemplateOutlet="invalidFieldsAlertTmpl"
-        ></ng-container>
-          <ng-container *ngIf="resource?.fields?.length">
+          <ng-template uiTabContent>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="invalidFieldsAlertTmpl"
+            ></ng-container>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="noSelectedFieldsAlertTmpl"
+            ></ng-container>
             <div class="flex gap-4 mt-2">
               <div class="mt-2">
-                <!-- NESTED FILTER GROUP -->
-                <!-- <shared-filter [form]="query.get('filter')" [fields]="filterFields" [isEmailNotification]="true"></shared-filter> -->
-                <shared-tab-filter
-                [form]="$any(query.controls.query.get('filter'))"
-                [query]="query.controls.query.getRawValue()"
-              >
-              </shared-tab-filter>
+                <!-- FIELDS -->
+                <shared-tab-fields
+                  *ngIf="availableFields.length > 0"
+                  [form]="getFieldsArray()"
+                  [fields]="availableFields"
+                  [showLimit]="false"
+                  [showColumnWidth]="false"
+                ></shared-tab-fields>
               </div>
-          </div>
-          <ui-button
-            *ngIf="tabs?.length === 1 || activeTab?.index === tabs?.length - 1"
-            class="float-right mt-8"
-            category="secondary"
-            variant="primary"
-            (click)="getDataSet('preview'); showPreview = true"
-            [disabled]="showDatasetLimitWarning || selectedFields.length === 0"
-            [class.disabled-button]="
-              showDatasetLimitWarning || selectedFields.length === 0
-            "
-          >
+            </div>
+
+            <ui-button
+              *ngIf="datasetFilterInfo.controls"
+              class="float-right mt-8"
+              category="secondary"
+              variant="primary"
+              (click)="getDataSet('fields')"
+            >
+              {{ 'components.queryBuilder.filter.applyField' | translate }}
+            </ui-button>
+          </ng-template>
+        </ui-tab>
+        <!-- Filter Tab -->
+        <ui-tab [title]="'Filter'" [disabled]="false">
+          <ng-container ngProjectAs="label">
+            {{ 'components.queryBuilder.filter.title' | translate }}
+          </ng-container>
+          <ng-template uiTabContent>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="invalidFieldsAlertTmpl"
+            ></ng-container>
+            <ng-container *ngIf="resource?.fields?.length">
+              <div class="flex gap-4 mt-2">
+                <div class="mt-2">
+                  <!-- NESTED FILTER GROUP -->
+                  <!-- <shared-filter [form]="query.get('filter')" [fields]="filterFields" [isEmailNotification]="true"></shared-filter> -->
+                  <shared-tab-filter
+                    [form]="$any(query.controls.query.get('filter'))"
+                    [query]="query.controls.query.getRawValue()"
+                  >
+                  </shared-tab-filter>
+                </div>
+              </div>
+              <ui-button
+                *ngIf="
+                  tabs?.length === 1 || activeTab?.index === tabs?.length - 1
+                "
+                class="float-right mt-8"
+                category="secondary"
+                variant="primary"
+                (click)="getDataSet('preview'); showPreview = true"
+                [disabled]="
+                  showDatasetLimitWarning || selectedFields.length === 0
+                "
+                [class.disabled-button]="
+                  showDatasetLimitWarning || selectedFields.length === 0
+                "
+              >
+                {{ 'common.preview' | translate }}
+              </ui-button>
+            </ng-container>
+          </ng-template>
+        </ui-tab>
+
+        <!-- Preview Tab -->
+        <ui-tab
+          [title]="'Preview'"
+          [disabled]="
+            showDatasetLimitWarning ||
+            this.query.controls.query.get('fields')?.value.length === 0
+          "
+        >
+          <ng-container ngProjectAs="label">
             {{ 'common.preview' | translate }}
-          </ui-button>
+          </ng-container>
+          <ng-template uiTabContent>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="tooManyRecordsAlertTmpl"
+            ></ng-container>
+            <div id="tblPreview" [innerHTML]="previewHTML"></div>
+          </ng-template>
+        </ui-tab>
 
-        </ng-container>
-      </ng-template>
-    </ui-tab>
-
-    <!-- Preview Tab -->
-    <ui-tab
-        [title]="'Preview'"
-        [disabled]="false"
-        *ngIf="showPreview || (this.selectedFields && this.selectedFields.length > 0)">
-        <ng-container ngProjectAs="label">
-          {{ 'common.preview' | translate }}
-        </ng-container>
-        <ng-template uiTabContent>
-          <div id="tblPreview" [innerHTML]="previewHTML"></div>
-        </ng-template>
-    </ui-tab>
-
-    <!-- Style Tab -->
-    <!-- <kendo-tabstrip-tab [disabled]="true">
+        <!-- Style Tab -->
+        <!-- <kendo-tabstrip-tab [disabled]="true">
       <ng-template kendoTabTitle >
         <div >
           {{ 'components.queryBuilder.style.title' | translate }}
@@ -194,14 +191,13 @@
       <ng-template kendoTabContent>
       </ng-template>
     </kendo-tabstrip-tab> -->
-    </div>
-  </ui-tabs>
+      </div>
+    </ui-tabs>
   </div>
   <ng-container
     class="mt-5"
     *ngTemplateOutlet="noFieldsInResourceAlertTmpl"
   ></ng-container>
-
 </form>
 
 <!-- Too many records in dataset -->

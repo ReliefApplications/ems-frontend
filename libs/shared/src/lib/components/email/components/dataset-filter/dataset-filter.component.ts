@@ -1154,31 +1154,37 @@ export class DatasetFilterComponent
           this.http
             .post(
               `${this.restService.apiUrl}/notification/preview-dataset`,
-              objPreview,
-              { responseType: 'text' }
+              objPreview
             )
             .subscribe(
               (response: any) => {
                 this.onTabSelect(2, false);
                 this.showPreview = true;
-                let allPreviewData: any = [];
-                allPreviewData.push({
-                  dataList: response,
-                  datasetFields: this.selectedFields.map((x: any) => x.name),
-                  tabIndex: this.activeTab.index,
-                  tabName: this.activeTab.title,
-                });
-                if (this.tabs.length == allPreviewData.length) {
-                  allPreviewData = allPreviewData.sort(
-                    (a: any, b: any) => a.tabIndex - b.tabIndex
-                  );
-                  this.loading = false;
-                  this.emailService.setAllPreviewData(allPreviewData);
+                if (response.count <= 50) {
+                  this.showDatasetLimitWarning = false;
+                  let allPreviewData: any = [];
+                  allPreviewData.push({
+                    dataList: response,
+                    datasetFields: this.selectedFields.map((x: any) => x.name),
+                    tabIndex: this.activeTab.index,
+                    tabName: this.activeTab.title,
+                  });
+                  if (this.tabs.length == allPreviewData.length) {
+                    allPreviewData = allPreviewData.sort(
+                      (a: any, b: any) => a.tabIndex - b.tabIndex
+                    );
+                    this.loading = false;
+                    this.emailService.setAllPreviewData(allPreviewData);
+                  }
+                  this.previewHTML = response.tableHtml;
+                  (
+                    document.getElementById('tblPreview') as HTMLInputElement
+                  ).innerHTML = this.previewHTML;
+                } else {
+                  this.totalMatchingRecords = response.count;
+                  this.showDatasetLimitWarning = true;
                 }
-                this.previewHTML = response;
-                (
-                  document.getElementById('tblPreview') as HTMLInputElement
-                ).innerHTML = this.previewHTML;
+
                 // this.navigateToPreview.emit(response);
                 this.loading = false;
               },
