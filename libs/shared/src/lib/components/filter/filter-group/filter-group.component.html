@@ -16,7 +16,11 @@
     <ui-button category="tertiary" (click)="addFilter()">
       {{ 'components.queryBuilder.filter.new' | translate }}
     </ui-button>
-    <ui-button category="tertiary" (click)="addGroup()" *ngIf="!isEmailNotification">
+    <ui-button
+      category="tertiary"
+      (click)="addGroup()"
+      *ngIf="!isEmailNotification"
+    >
       {{ 'components.queryBuilder.filter.newGroup' | translate }}
     </ui-button>
     <ui-button

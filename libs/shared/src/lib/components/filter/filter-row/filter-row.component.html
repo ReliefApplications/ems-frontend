@@ -71,7 +71,11 @@
       <ui-select-menu formControlName="field" [filterable]="true">
         <ng-container *ngFor="let field of fields">
           <ui-select-option *ngIf="!field.fields" [value]="field.name">
-            {{ !isEmailNotification ? field.text || field.name : this.emailService.replaceUnderscores(field.name) | titlecase }}
+            {{
+              !isEmailNotification
+                ? field.text || field.name
+                : (this.emailService.replaceUnderscores(field.name) | titlecase)
+            }}
           </ui-select-option>
 
           <ui-select-option *ngIf="field.fields" [isGroup]="true">
@@ -182,34 +186,29 @@
   <ng-template #inTheLastEditor>
     <div formGroupName="inTheLast" class="flex flex-row">
       <!-- In the last Number -->
-      <div uiFormFieldDirective
-        [defaultMargin]="false"
-        class="w-1/2 mr-1">
+      <div uiFormFieldDirective [defaultMargin]="false" class="w-1/2 mr-1">
         <label>Number</label>
         <ui-select-menu formControlName="number">
-          <ui-select-option
-            *ngFor="let num of getNumbersArray()"
-            [value]="num">
+          <ui-select-option *ngFor="let num of getNumbersArray()" [value]="num">
             {{ num }}
           </ui-select-option>
         </ui-select-menu>
       </div>
       <!-- In the Last Unit -->
-      <div uiFormFieldDirective
-        [defaultMargin]="false"
-        class="w-1/2 ml-1">
+      <div uiFormFieldDirective [defaultMargin]="false" class="w-1/2 ml-1">
         <label>Unit</label>
         <ui-select-menu formControlName="unit">
           <ui-select-option
             [value]="timeUnit.value"
-            *ngFor="let timeUnit of timeUnits">
+            *ngFor="let timeUnit of timeUnits"
+          >
             {{ timeUnit.label }}
           </ui-select-option>
         </ui-select-menu>
       </div>
     </div>
   </ng-template>
-  
+
   <!-- FILTER EDITOR -->
   <!-- <ng-template #dashboardFilterEditor>
     <div uiFormFieldDirective class="w-60">
