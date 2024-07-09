@@ -919,7 +919,7 @@ export class EmailService {
    */
   getDataSet(emailData: any, isSendEmail?: boolean) {
     let count = 0;
-    let allPreviewData: any = [];
+    isSendEmail;
     for (const query of emailData.datasets) {
       query?.fields?.forEach((x: any) => {
         if (x.parentName) {
@@ -930,7 +930,7 @@ export class EmailService {
           x.type = 'resource';
         }
       });
-      const resourceInfo = { id: query.resource.id, name: query.resource.name };
+      // const resourceInfo = { id: query.resource.id, name: query.resource.name };
       query.tabIndex = count;
       count++;
       query.pageSize = Number(query.pageSize);

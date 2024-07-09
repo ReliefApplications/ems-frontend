@@ -85,7 +85,7 @@ export class FilterRowComponent
   /**
    * Composite filter row.
    *
-   * @param emailService
+   * @param emailService email notifications helper functions
    */
   constructor(public emailService: EmailService) {
     super();
