@@ -16,6 +16,7 @@ import { takeUntil } from 'rxjs/operators';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 import { EmailService } from '../../email/email.service';
+import { convertToMinutes } from '../../../utils/parser/utils';
 
 /**
  * Composite filter row.
@@ -121,16 +122,14 @@ export class FilterRowComponent
                   this.form
                     .get('value')
                     ?.setValue(
-                      this.emailService.convertToMinutes(
+                      convertToMinutes(
                         inTheLastValues.number,
                         inTheLastValues.unit
                       )
                     );
                 } else {
                   // Sets default value if not changed
-                  this.form
-                    .get('value')
-                    ?.setValue(this.emailService.convertToMinutes(1, 'days'));
+                  this.form.get('value')?.setValue(convertToMinutes(1, 'days'));
                 }
               }
             });

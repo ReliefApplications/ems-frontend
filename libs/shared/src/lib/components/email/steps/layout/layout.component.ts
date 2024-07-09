@@ -10,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { Subscription, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { convertToMinutes } from '../../../../utils/parser/utils';
 
 /**
  * Email layout page component.
@@ -297,10 +298,7 @@ export class LayoutComponent
         const [numberString, unit] = inTheLastText.split(' ');
 
         // Converts in the last value to minutes
-        const unitInMinutes = this.emailService.convertToMinutes(
-          +numberString,
-          unit
-        );
+        const unitInMinutes = convertToMinutes(+numberString, unit);
 
         // Builds Token
         token = ` {{${blockName}.${field}.${unitInMinutes}}} `;
