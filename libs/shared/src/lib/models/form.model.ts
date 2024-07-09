@@ -55,6 +55,7 @@ export interface Form {
   kobo?: {
     id: string;
     deployedVersionId: string;
+    dataFromDeployedVersion: boolean;
     apiConfiguration: ApiConfiguration;
   };
 }

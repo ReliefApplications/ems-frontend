@@ -343,6 +343,7 @@
       "objectNotFound": "{{name}} n'a pas été trouvé.",
       "objectNotInvited": "L'invitation vers {{name}} a échoué.",
       "objectNotReordered": "{{type}} non réorganisé. {{error}}",
+      "objectNotEdited": "{{type}} not modifié. {{error}}",
       "objectNotRestored": "{{value}} non restauré. {{error}}",
       "objectNotUpdated": "L'objet de type {{type}} n'a pas pu être modifié. {{error}}",
       "objectReordered": "L'objet de type {{type}} a été réorganisé.",
@@ -849,7 +850,15 @@
             "placeholder": "Sélectionnez une configuration d'api"
           },
           "label": "Identifiant du formulaire KoboToolbox",
-          "placeholder": "Entrez l'identifiant du formulaire KoboToolbox"
+          "placeholder": "Entrez l'identifiant du formulaire KoboToolbox",
+          "data": {
+            "synchronize": "Synchroniser les données Kobo",
+            "fromFormWithVersion": "Le formulaire '{{formName}}' a été créé à partir du formulaire Kobotoolbox d'origine avec l'ID de version de déploiement {{versionId}}",
+            "syncOnlyFromDeployedVersion": "Synchronisez les soumissions de données uniquement à partir de la même version de déploiement du formulaire",
+            "tooltip": {
+              "syncOnlyFromDeployedVersion": "Seules les soumissions de données envoyées lorsque le formulaire était dans la même version que lors de son importation seront utilisées pour créer des enregistrements. Les soumissions de données enregistrées dans des versions antérieures ou ultérieures seront ignorées."
+            }
+          }
         },
         "template": {
           "from": "Depuis le modèle",

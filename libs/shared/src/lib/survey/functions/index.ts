@@ -44,7 +44,6 @@ import int from './int';
 import selected from './selected';
 import getLinkField from './solidarites-demo/getLinkField';
 
-
 /** Generators for each custom function available  */
 export const functions = [
   { fn: getWorkflowContext, name: 'getWorkflowContext' },

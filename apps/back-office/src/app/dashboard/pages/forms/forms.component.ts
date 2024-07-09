@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import {
-  AuthService,
   ConfirmService,
   Form,
   UnsubscribeComponent,
@@ -24,6 +23,7 @@ import {
   handleTablePageEvent,
 } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
+import { isNil } from 'lodash';
 
 /** Default number of items for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -83,7 +83,6 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
    * @param dialog Dialog service
    * @param router Angular router
    * @param snackBar Shared snackbar
-   * @param authService Shared authentication service
    * @param confirmService Shared confirmation service
    * @param translate Angular translate service
    */
@@ -92,7 +91,6 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
     public dialog: Dialog,
     private router: Router,
     private snackBar: SnackbarService,
-    private authService: AuthService,
     private confirmService: ConfirmService,
     private translate: TranslateService
   ) {
@@ -119,6 +117,48 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
       .subscribe((results) => {
         this.updateValues(results.data, results.loading);
       });
+  }
+
+  /**
+   * Open the synchronize kobo modal to get kobo form data.
+   *
+   * @param form Form to synchronize data.
+   * @param e click event.
+   */
+  async onSynchronizeKobo(form: Form, e: any): Promise<void> {
+    e.stopPropagation();
+    const { SynchronizeKoboModalComponent } = await import(
+      '../../../components/synchronize-kobo-modal/synchronize-kobo-modal.component'
+    );
+    const dialogRef = this.dialog.open(SynchronizeKoboModalComponent, {
+      data: {
+        koboId: form.kobo?.id,
+        deployedVersionId: form.kobo?.deployedVersionId,
+        dataFromDeployedVersion: form.kobo?.dataFromDeployedVersion,
+        apiConfiguration: form.kobo?.apiConfiguration,
+        form: {
+          id: form.id,
+          name: form.name,
+        },
+      },
+    });
+
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((data: any) => {
+      if (!isNil(data)) {
+        this.forms = this.forms.map((x: Form) => {
+          if (x.id === form.id && x.kobo) {
+            return {
+              ...x,
+              kobo: {
+                ...x.kobo,
+                dataFromDeployedVersion: data,
+              },
+            };
+          }
+          return x;
+        });
+      }
+    });
   }
 
   /**
@@ -227,6 +267,7 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
               id,
             },
           })
+          .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: ({ errors }) => {
               if (!errors) {
@@ -286,6 +327,7 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
             mutation: ADD_FORM,
             variables: variablesData,
           })
+          .pipe(takeUntil(this.destroy$))
           .subscribe({
             next: ({ errors, data }) => {
               if (errors) {

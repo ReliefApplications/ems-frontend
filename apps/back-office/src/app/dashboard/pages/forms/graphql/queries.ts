@@ -33,6 +33,7 @@ export const GET_SHORT_FORMS = gql`
           kobo {
             id
             deployedVersionId
+            dataFromDeployedVersion
             apiConfiguration {
               name
             }
