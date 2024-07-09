@@ -84,9 +84,6 @@ export const init = (
     category: 'Choices from Reference data',
     type: CustomPropertyGridComponentTypes.referenceDataDropdown,
     visibleIndex: 1,
-    onSetValue: (obj: CustomMatrixDropdownColumn, value: string) => {
-      obj.setPropertyValue('referenceData', value);
-    },
   });
 
   serializer.addProperty('matrixdropdowncolumn', {
@@ -96,8 +93,13 @@ export const init = (
     category: 'Choices from Reference data',
     isRequired: true,
     dependsOn: 'referenceData',
-    visibleIf: (obj: null | CustomMatrixDropdownColumn): boolean =>
-      Boolean(obj?.referenceData),
+    visibleIf: (obj: null | Question): boolean => {
+      const colObj = obj?.locOwner as CustomMatrixDropdownColumn;
+      if (colObj?.getType() !== 'matrixdropdowncolumn') {
+        return false;
+      }
+      return Boolean(colObj?.referenceData);
+    },
     visibleIndex: 2,
     choices: (
       obj: null | CustomMatrixDropdownColumn,
@@ -122,8 +124,13 @@ export const init = (
     type: 'boolean',
     category: 'Choices from Reference data',
     dependsOn: 'referenceData',
-    visibleIf: (obj: null | CustomMatrixDropdownColumn): boolean =>
-      Boolean(obj?.referenceData),
+    visibleIf: (obj: null | Question): boolean => {
+      const colObj = obj?.locOwner as CustomMatrixDropdownColumn;
+      if (colObj?.getType() !== 'matrixdropdowncolumn') {
+        return false;
+      }
+      return Boolean(colObj?.referenceData);
+    },
     visibleIndex: 3,
     default: true,
   });
@@ -135,8 +142,13 @@ export const init = (
     type: 'dropdown',
     category: 'Choices from Reference data',
     dependsOn: 'referenceData',
-    visibleIf: (obj: null | CustomMatrixDropdownColumn): boolean =>
-      Boolean(obj?.referenceData),
+    visibleIf: (obj: null | Question): boolean => {
+      const colObj = obj?.locOwner as CustomMatrixDropdownColumn;
+      if (colObj?.getType() !== 'matrixdropdowncolumn') {
+        return false;
+      }
+      return Boolean(colObj?.referenceData);
+    },
     visibleIndex: 3,
     choices: (
       obj: null | QuestionMatrixDropdownModel,
@@ -146,7 +158,7 @@ export const init = (
         '',
         surveyLocalization.getString('pe.conditionSelectQuestion')
       );
-      const survey = obj?.survey as SurveyModel;
+      const survey = obj?.colOwnerValue?.survey as SurveyModel;
       if (!survey) return choicesCallback([defaultOption]);
       const questions = survey
         .getAllQuestions()
@@ -170,15 +182,20 @@ export const init = (
     category: 'Choices from Reference data',
     isRequired: true,
     dependsOn: 'referenceDataFilterFilterFromQuestion',
-    visibleIf: (obj: null | CustomMatrixDropdownColumn): boolean =>
-      Boolean(obj?.referenceDataFilterFilterFromQuestion),
+    visibleIf: (obj: null | Question): boolean => {
+      const colObj = obj?.locOwner as CustomMatrixDropdownColumn;
+      if (colObj?.getType() !== 'matrixdropdowncolumn') {
+        return false;
+      }
+      return Boolean(colObj?.referenceDataFilterFilterFromQuestion);
+    },
     visibleIndex: 4,
     choices: (
       obj: null | Question,
       choicesCallback: (choices: any[]) => void
     ) => {
       if (obj?.referenceDataFilterFilterFromQuestion) {
-        const foreignQuestion = (obj.survey as SurveyModel)
+        const foreignQuestion = (obj.colOwnerValue?.survey as SurveyModel)
           .getAllQuestions()
           .find((q) => q.name === obj.referenceDataFilterFilterFromQuestion) as
           | QuestionSelectBase
@@ -203,8 +220,13 @@ export const init = (
     category: 'Choices from Reference data',
     isRequired: true,
     dependsOn: 'referenceDataFilterFilterFromQuestion',
-    visibleIf: (obj: null | CustomMatrixDropdownColumn): boolean =>
-      Boolean(obj?.referenceDataFilterFilterFromQuestion),
+    visibleIf: (obj: null | Question): boolean => {
+      const colObj = obj?.locOwner as CustomMatrixDropdownColumn;
+      if (colObj?.getType() !== 'matrixdropdowncolumn') {
+        return false;
+      }
+      return Boolean(colObj?.referenceDataFilterFilterFromQuestion);
+    },
     visibleIndex: 5,
     choices: [
       { value: 'eq', text: '==' },
@@ -227,8 +249,13 @@ export const init = (
     category: 'Choices from Reference data',
     isRequired: true,
     dependsOn: 'referenceDataFilterFilterFromQuestion',
-    visibleIf: (obj: null | CustomMatrixDropdownColumn): boolean =>
-      Boolean(obj?.referenceDataFilterFilterFromQuestion),
+    visibleIf: (obj: null | Question): boolean => {
+      const colObj = obj?.locOwner as CustomMatrixDropdownColumn;
+      if (colObj?.getType() !== 'matrixdropdowncolumn') {
+        return false;
+      }
+      return Boolean(colObj?.referenceDataFilterFilterFromQuestion);
+    },
     visibleIndex: 6,
     choices: (
       obj: null | CustomMatrixDropdownColumn,
