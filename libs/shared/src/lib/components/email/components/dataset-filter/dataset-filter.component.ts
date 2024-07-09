@@ -281,6 +281,7 @@ export class DatasetFilterComponent
    * Handles Filter, Field, Style Tab selection changes
    *
    * @param event The tab selected
+   * @param fromHTML
    */
   onTabSelect(event: any, fromHTML: boolean): void {
     const newIndex = event;
@@ -1134,10 +1135,7 @@ export class DatasetFilterComponent
             }
           });
           objPreview = {
-            resource: {
-              id: this.resource.id ?? '',
-              name: this.resource.name ?? '',
-            },
+            resource: this.resource.id ?? '',
             name: query?.name,
             query: {
               name: query.query?.name,
