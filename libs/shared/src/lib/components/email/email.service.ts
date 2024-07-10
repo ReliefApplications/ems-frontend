@@ -68,10 +68,7 @@ export class EmailService {
   public datasetSave: EventEmitter<boolean> = new EventEmitter();
   /** Loading state */
   public loading = false;
-  // Disable SaveAsDraft button
-  /**
-   *
-   */
+  /** Disable SaveAsDraft button */
   public disableSaveAsDraft = new BehaviorSubject<boolean>(false);
   /** DISABLE SAVE AND PROCEED BUTTON EMITTER */
   public disableSaveAndProceed = new BehaviorSubject<boolean>(false);
@@ -545,114 +542,6 @@ export class EmailService {
     return this.formBuilder.group({
       logic: 'and',
       filters: new FormArray([]),
-    });
-  }
-
-  /**
-   * Preparing dataset filters dynamically
-   *
-   * @param operator The comparison operator to be used in the filter
-   * @param fieldValue The value of the field to be compared
-   * @param userValue The value provided by the user to compare against the field value
-   * @returns The result of the filter operation or undefined if no operator is provided
-   */
-  filterData(
-    operator: string,
-    fieldValue: string | any,
-    userValue: string | Date | number
-  ) {
-    let result;
-    if (!operator) return;
-    switch (operator) {
-      case 'eq':
-        result = userValue && fieldValue === userValue;
-        break;
-      case 'neq':
-        result = userValue && fieldValue !== userValue;
-        break;
-      case 'gte':
-        result = userValue && fieldValue >= userValue;
-        break;
-      case 'gt':
-        result = userValue && fieldValue > userValue;
-        break;
-      case 'lte':
-        result = userValue && fieldValue <= userValue;
-        break;
-      case 'lt':
-        result = userValue && fieldValue < userValue;
-        break;
-      case 'isnull':
-        result = fieldValue === null;
-        break;
-      case 'isnotnull':
-        result = fieldValue !== null;
-        break;
-      case 'isempty':
-        result = fieldValue === '' || !fieldValue;
-        break;
-      case 'isnotempty':
-        result = fieldValue !== '' && fieldValue !== undefined;
-        break;
-      case 'contains':
-        result =
-          fieldValue && userValue && fieldValue.includes(userValue as string);
-        break;
-      case 'doesnotcontain':
-        result =
-          fieldValue && userValue && !fieldValue.includes(userValue as string);
-        break;
-      case 'startswith':
-        result =
-          fieldValue && userValue && fieldValue.startsWith(userValue as string);
-        break;
-      case 'endswith':
-        result =
-          fieldValue && userValue && fieldValue.endsWith(userValue as string);
-        break;
-      case 'in':
-        result = userValue && (userValue as string | number) in fieldValue;
-        break;
-      case 'notin':
-        result = userValue && !((userValue as string | number) in fieldValue);
-        break;
-      default:
-        return;
-    }
-    return result;
-  }
-
-  /**
-   * To get data set
-   *
-   * @param filterQuery query details to fetch data set
-   * @returns the dataset.
-   */
-  fetchDataSet(filterQuery: any) {
-    let filters = Object.assign({}, filterQuery);
-
-    /* Removing the options key from the payload to avoid payload too large error */
-    const fieldsWithoutOptions = filters?.fields?.map((field: any) => {
-      const payloadOptions: { [key: string]: any } = {};
-      const fieldKeys = Object.keys(field);
-
-      fieldKeys.forEach((keyName: string) => {
-        if (keyName !== TYPE_LABEL.options) {
-          payloadOptions[keyName] = field[keyName];
-        }
-      });
-      return payloadOptions;
-    });
-
-    filters.fields = fieldsWithoutOptions;
-    // Create a new object excluding the 'cacheData' field
-    filters = omit(filters, 'cacheData');
-
-    return this.apollo.query<any>({
-      query: GET_EMAIL_DATA_SET,
-      variables: {
-        query: filters,
-      },
     });
   }
 

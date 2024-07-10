@@ -95,9 +95,6 @@ export class EmailTemplateComponent
   /** Form group for datasets. */
   public datasetsForm: FormGroup | any = this.emailService.datasetsForm;
 
-  /** Function to filter data. */
-  public filterData = this.emailService.filterData;
-
   /** Flag to control dropdown visibility. */
   public isDropdownVisible = false;
 
@@ -557,36 +554,6 @@ export class EmailTemplateComponent
                 this.resource = data?.resource;
                 this.getResourceFields(data, fields);
                 dataset.pageSize = 50;
-                this.emailService.fetchDataSet(dataset).subscribe((res) => {
-                  if (res?.data.dataset) {
-                    this.dataset = res?.data?.dataset;
-                    this.datasetEmails = res?.data?.dataset?.emails;
-                    this.data = res?.data?.dataset.records;
-                    this.datasetFields = this.availableFields;
-                    this.selectedFields = dataset.fields.map(
-                      (ele: any) => ele.name
-                    );
-                    this.dataList = this.getDataList(dataset);
-                    dataset.cacheData.datasetResponse = this.dataset;
-                    dataset.cacheData.dataList = this.dataList;
-                    dataset.cacheData.datasetFields = this.datasetFields;
-                    dataset.cacheData.resource = this.resource;
-
-                    //Below if condition is assigning the cachedData to the selected Dataset (Reinitializing)
-                    if (
-                      this.datasetsForm.value?.datasets?.filter(
-                        (x: any) => x.name === dataset.name
-                      )?.length > 0
-                    ) {
-                      this.datasetsForm.value.datasets.filter(
-                        (x: any) => x.name === dataset.name
-                      )[0].cacheData = dataset.cacheData;
-                    }
-                    this.prevDataset = this.selectedDataset;
-                    this.emailService.setSelectedDataSet(dataset);
-                  }
-                  this.loading = false;
-                });
               }
             });
         });
@@ -601,23 +568,6 @@ export class EmailTemplateComponent
    */
   getKeys(data: any) {
     return Object.keys(data);
-  }
-
-  /**
-   * Operator Change for null and empty values.
-   *
-   * @param selectedOperator selected operator
-   * @param filterData filter form (field, operator, value)
-   */
-  onOperatorChange(selectedOperator: string, filterData: any) {
-    const operator = this.filterOperators.find(
-      (x) => x.value === selectedOperator
-    );
-    if (operator?.disableValue) {
-      filterData.get('hideEditor').setValue(true);
-    } else {
-      filterData.get('hideEditor').setValue(false);
-    }
   }
 
   /**
@@ -1042,52 +992,6 @@ export class EmailTemplateComponent
     currentDataset.filter.logic = this.filterQuery?.value?.logic;
 
     currentDataset.cacheData = {};
-    this.emailService
-      .fetchDataSet(currentDataset)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: ({ data }: { data: { dataset: any } }) => {
-          if (data?.dataset) {
-            const query = { fields: this.selectedDataset?.fields };
-            this.dataList = data?.dataset.records?.map((record: any) => {
-              const flattenedObject = this.emailService.flattenRecord(
-                record,
-                {},
-                query
-              );
-              query.fields.forEach((x: any) => {
-                // Converts the resource field name back to {resourceName} - {resourceField} so the field can be mapped to the correct data.
-                if (x.parentName) {
-                  x.name = `${x.parentName} - ${x.childName}`;
-                  x.type = x.childType;
-                }
-              });
-
-              delete flattenedObject.data;
-
-              const flatData = Object.fromEntries(
-                Object.entries(flattenedObject).filter(
-                  ([, value]) => value !== null && value !== undefined
-                )
-              );
-
-              return flatData;
-            });
-          }
-          this.getFilteredEmailList(this.dataList, filterType);
-          this.loading = false;
-          if (filterType === 'preview') {
-            this.showPreview = true;
-          }
-        },
-        error: (err) => {
-          console.error(err);
-          this.loading = false;
-          if (filterType === 'preview') {
-            this.showPreview = true;
-          }
-        },
-      });
   }
 
   /**
