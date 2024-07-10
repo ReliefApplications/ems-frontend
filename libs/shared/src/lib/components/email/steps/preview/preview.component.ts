@@ -66,6 +66,10 @@ export class PreviewComponent
   private metaDataLoadSubscription: Subscription = new Subscription();
   /** HTML content to be displayed in the email preview.*/
   emailPreviewHtml: any = '<div></div>';
+  /** Refernce to Subject */
+  @ViewChild('subjectHtmlRef') subjectHtmlRef: any;
+  /** Refernce to Subject */
+  @ViewChild('emailHTMLRef') emailHTMLRef: any;
 
   /**
    * Expand see more email list dropdown for "To".
@@ -149,10 +153,9 @@ export class PreviewComponent
           this.updateEmailContainer(); // Update the email container with the new preview
           this.subjectString =
             this.emailService.finalEmailPreview.subject ?? this.subjectString; // Updae/Replace the subject string from the response
-          if (document.getElementById('subjectHtml') as HTMLInputElement) {
-            (
-              document.getElementById('subjectHtml') as HTMLInputElement
-            ).innerHTML = this.subjectString;
+          console.log(this.subjectHtmlRef);
+          if (this.subjectHtmlRef?.nativeElement) {
+            this.subjectHtmlRef.nativeElement.innerHTML = this.subjectString;
           }
           this.emailService.loading = false; // Hide spinner
         },
@@ -181,9 +184,7 @@ export class PreviewComponent
    * Updates the email container with the new preview
    */
   updateEmailContainer(): void {
-    const emailContainer = document.getElementById(
-      'emailContainer'
-    ) as HTMLInputElement;
+    const emailContainer = this.emailHTMLRef?.nativeElement;
     if (emailContainer) {
       this.emailPreviewHtml =
         this.emailService.finalEmailPreview ?? '<div></div>';
@@ -197,17 +198,16 @@ export class PreviewComponent
 
     // this.bodyHtml.nativeElement.innerHTML = this.bodyString;
     // this.checkAndApplyBodyStyle();
-    if (document.getElementById('subjectHtml') as HTMLInputElement) {
-      (document.getElementById('subjectHtml') as HTMLInputElement).innerHTML =
+    if (this.subjectHtmlRef?.nativeElement) {
+      this.subjectHtmlRef.nativeElement.innerHTML =
         this.emailPreviewHtml.subject ?? '<div></div>';
     }
 
     this.emailPreviewHtml =
       this.emailService.finalEmailPreview ?? '<div></div>';
-    if (document.getElementById('emailContainer') as HTMLInputElement) {
-      (
-        document.getElementById('emailContainer') as HTMLInputElement
-      ).innerHTML = this.emailPreviewHtml.html as string;
+    if (this.emailHTMLRef?.nativeElement) {
+      this.emailHTMLRef.nativeElement.innerHTML = this.emailPreviewHtml
+        .html as string;
     }
 
     // this.loadFinalEmailPreview();
