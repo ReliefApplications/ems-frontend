@@ -554,6 +554,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     Promise.all(promises).finally(() => {
       if (isSendEmail) {
         this.emailService.getDataSet(emailData, true);
+        this.emailService.stepperStep = 5;
       } else {
         this.emailService.getDataSet(emailData, false);
         this.emailService.stepperStep = 0;
