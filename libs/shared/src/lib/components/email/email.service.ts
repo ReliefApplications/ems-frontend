@@ -188,7 +188,7 @@ export class EmailService {
   /** Selected cacheDistributionList */
   public cacheDistributionList: any = [];
   /** Final Email Preview */
-  public finalEmailPreview = '';
+  public finalEmailPreview: any = '';
   /** Meta Data Query Loading State Subject  */
   private metaDataQueryLoadingSource = new BehaviorSubject<boolean>(false);
   /** Meta Data Query Loading State Observable */

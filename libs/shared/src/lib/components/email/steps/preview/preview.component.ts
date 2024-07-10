@@ -14,6 +14,8 @@ import { Subscription } from 'rxjs';
 import { TokenRegex } from '../../constant';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { DomSanitizer } from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
+import { RestService } from 'libs/shared/src/lib/services/rest/rest.service';
 
 /**
  * The preview component is used to display the email layout using user input from layout component.
@@ -63,7 +65,7 @@ export class PreviewComponent
   /** Meta Data Graphql loading state subscription */
   private metaDataLoadSubscription: Subscription = new Subscription();
   /** HTML content to be displayed in the email preview.*/
-  emailPreviewHtml = '<div></div>';
+  emailPreviewHtml: any = '<div></div>';
 
   /**
    * Expand see more email list dropdown for "To".
@@ -92,11 +94,15 @@ export class PreviewComponent
    * @param apollo - The Apollo client for making GraphQL queries.
    * @param emailService - The service for email-related operations.
    * @param sanitizer - The sanitizer for sanitizing HTML.
+   * @param http
+   * @param restService
    */
   constructor(
     private apollo: Apollo,
     public emailService: EmailService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private http: HttpClient,
+    private restService: RestService
   ) {
     super();
   }
@@ -111,14 +117,19 @@ export class PreviewComponent
     this.loadFinalEmailPreview();
     this.replaceTokensWithTables();
     this.replaceDateTimeTokens();
-    (document.getElementById('subjectHtml') as HTMLInputElement).innerHTML =
-      this.subjectString ?? '<div></div>';
+    // if (document.getElementById('subjectHtml') as HTMLInputElement) {
+    //   (document.getElementById('subjectHtml') as HTMLInputElement).innerHTML =
+    //     this.subjectString ?? '<div></div>';
+    // }
 
-    this.emailPreviewHtml =
-      this.emailService.finalEmailPreview ?? '<div></div>';
+    // this.emailPreviewHtml =
+    //   this.emailService.finalEmailPreview ?? '<div></div>';
 
-    (document.getElementById('emailContainer') as HTMLInputElement).innerHTML =
-      this.emailPreviewHtml;
+    // if (document.getElementById('emailContainer') as HTMLInputElement) {
+    //   (
+    //     document.getElementById('emailContainer') as HTMLInputElement
+    //   ).innerHTML = this.emailPreviewHtml.html as string;
+    // }
   }
 
   /**
@@ -126,17 +137,44 @@ export class PreviewComponent
    */
   loadFinalEmailPreview(): void {
     this.emailService.loading = true; // Show spinner
-    this.emailService
-      .getFinalEmail(this.emailService.configId)
-      .then(() => {
-        // Update the finalEmailPreview in emailService
-        this.updateEmailContainer(); // Update the email container with the new preview
-        this.emailService.loading = false; // Hide spinner
-      })
-      .catch((error) => {
-        console.error('Failed to load final email preview:', error);
-        this.emailService.loading = false; // Hide spinner in case of error
-      });
+
+    this.http
+      .post(
+        `${this.restService.apiUrl}/notification/preview-email/${this.emailService.configId}`,
+        {}
+      )
+      .subscribe(
+        (response: any) => {
+          this.emailService.finalEmailPreview = response;
+          this.updateEmailContainer(); // Update the email container with the new preview
+          this.subjectString =
+            this.emailService.finalEmailPreview.subject ?? this.subjectString; // Updae/Replace the subject string from the response
+          if (document.getElementById('subjectHtml') as HTMLInputElement) {
+            (
+              document.getElementById('subjectHtml') as HTMLInputElement
+            ).innerHTML = this.subjectString;
+          }
+          this.emailService.loading = false; // Hide spinner
+        },
+        (error: string) => {
+          console.error('Failed to load final email preview:', error);
+          this.emailService.loading = false; // Hide spinner in case of error
+        }
+      );
+
+    // this.emailService
+    //   .getFinalEmail(this.emailService.configId)
+    //   .then(() => {
+    //     // Update the finalEmailPreview in emailService
+    //     this.updateEmailContainer(); // Update the email container with the new preview
+    //     this.subjectString =
+    //       this.emailPreviewHtml?.['subject'] ?? this.subjectString; // Updae/Replace the subject string from the response
+    //     this.emailService.loading = false; // Hide spinner
+    //   })
+    //   .catch((error) => {
+    //     console.error('Failed to load final email preview:', error);
+    //     this.emailService.loading = false; // Hide spinner in case of error
+    //   });
   }
 
   /**
@@ -145,11 +183,11 @@ export class PreviewComponent
   updateEmailContainer(): void {
     const emailContainer = document.getElementById(
       'emailContainer'
-    ) as HTMLDivElement;
+    ) as HTMLInputElement;
     if (emailContainer) {
       this.emailPreviewHtml =
         this.emailService.finalEmailPreview ?? '<div></div>';
-      emailContainer.innerHTML = this.emailPreviewHtml;
+      emailContainer.innerHTML = this.emailPreviewHtml.html as string;
     }
   }
 
@@ -159,17 +197,20 @@ export class PreviewComponent
 
     // this.bodyHtml.nativeElement.innerHTML = this.bodyString;
     // this.checkAndApplyBodyStyle();
-
-    (document.getElementById('subjectHtml') as HTMLInputElement).innerHTML =
-      this.subjectString ?? '<div></div>';
+    if (document.getElementById('subjectHtml') as HTMLInputElement) {
+      (document.getElementById('subjectHtml') as HTMLInputElement).innerHTML =
+        this.emailPreviewHtml.subject ?? '<div></div>';
+    }
 
     this.emailPreviewHtml =
       this.emailService.finalEmailPreview ?? '<div></div>';
+    if (document.getElementById('emailContainer') as HTMLInputElement) {
+      (
+        document.getElementById('emailContainer') as HTMLInputElement
+      ).innerHTML = this.emailPreviewHtml.html as string;
+    }
 
-    (document.getElementById('emailContainer') as HTMLInputElement).innerHTML =
-      this.emailPreviewHtml;
-
-    this.loadFinalEmailPreview();
+    // this.loadFinalEmailPreview();
   }
 
   /**
@@ -476,7 +517,7 @@ export class PreviewComponent
           value
         );
       });
-      this.replaceSubjectTokens();
+      // this.replaceSubjectTokens();
     } else {
       this.subjectString = '';
     }

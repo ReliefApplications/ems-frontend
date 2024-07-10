@@ -643,9 +643,9 @@ export class EmsTemplateComponent
             .subscribe((res: any) => {
               this.emailService.editId = '';
               this.emailService.configId = res.data.editEmailNotification.id;
-              this.emailService.getFinalEmail(
-                this.emailService.configId as string
-              );
+              // this.emailService.getFinalEmail(
+              //   this.emailService.configId as string
+              // );
               this.previewTriggered = true;
             });
         });
@@ -658,9 +658,9 @@ export class EmsTemplateComponent
             .pipe(takeUntil(this.destroy$))
             .subscribe((res: any) => {
               this.emailService.configId = res.data.addEmailNotification.id;
-              this.emailService.getFinalEmail(
-                this.emailService.configId as string
-              );
+              // this.emailService.getFinalEmail(
+              //   this.emailService.configId as string
+              // );
               this.previewTriggered = true;
             });
         });

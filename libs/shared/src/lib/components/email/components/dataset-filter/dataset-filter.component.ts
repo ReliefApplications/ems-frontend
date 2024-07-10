@@ -1177,9 +1177,12 @@ export class DatasetFilterComponent
                     this.emailService.setAllPreviewData(allPreviewData);
                   }
                   this.previewHTML = response.tableHtml;
-                  (
-                    document.getElementById('tblPreview') as HTMLInputElement
-                  ).innerHTML = this.previewHTML;
+                  const previewHTML = document.getElementById(
+                    'tblPreview'
+                  ) as HTMLInputElement;
+                  if (previewHTML) {
+                    previewHTML.innerHTML = this.previewHTML;
+                  }
                 } else {
                   this.totalMatchingRecords = response.count;
                   this.showDatasetLimitWarning = true;

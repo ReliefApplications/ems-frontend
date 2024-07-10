@@ -3,7 +3,7 @@
   class="flex justify-center items-center h-screen"
   *ngIf="emailService.loading"
 ></ui-spinner>
-<div *ngIf="!emailService.loading">
+<div>
   <div class="w-full">
     <!-- Distribution List -->
     <div class="mb-4">
@@ -147,13 +147,11 @@
     <!-- Subject -->
     <p>{{ 'components.email.preview.subject' | translate }}</p>
     <div id="subjectHtml" #subjectHtmlRef class="w-full"></div>
-  </div>
-  <div class="overflow-y-scroll">
-    <div
-      class="h-fit mb-3"
-      id="emailContainer"
-      #emailContainerRef
-      [innerHTML]="emailPreviewHtml"
-    ></div>
-  </div>
+  </div>  
+</div>
+<div class="overflow-y-scroll">
+  <div
+    class="h-fit mb-3"
+    id="emailContainer"
+  ></div>
 </div>
