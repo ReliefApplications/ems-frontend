@@ -176,118 +176,71 @@
       </div>
     </ng-template>
   </div>
-  <div
-    class="flex flex-col gap-4 p-4 pl-0 pr-0"
-    *ngIf="!showExistingDistributionList"
-  >
-    <!-- TO dropdown -->
-    <div
-      class="w-full flex p-1 pl-2 space-y-4 flex-row items-start self-stretch bg-blue-50 cursor-pointer"
-      (click)="toggleDropdown('to')"
-    >
-      <span class="w-96 text-style">{{
-        'components.select.distribution.to' | translate
-      }}</span>
-      <span class="w-4" *ngIf="showToTemplate"
-        ><ui-icon
-          icon="expand_less"
-          fontFamily="material"
-          variant="primary"
-        ></ui-icon
-      ></span>
-      <span class="w-4" *ngIf="!showToTemplate"
-        ><ui-icon
-          icon="expand_more"
-          fontFamily="material"
-          variant="primary"
-        ></ui-icon
-      ></span>
-    </div>
-    <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.to">
-      {{ 'components.email.distributionList.alert.noEmail' | translate }}
-    </ui-alert>
-    <shared-email-template
-      [existingId]="this.distributionListId"
-      (noEmail)="update($event, 'to')"
-      (listChange)="validateDistributionList()"
-      [emailBackLoad]="emailDistributionList.To"
-      *ngIf="showToTemplate"
-      >{{
-        'components.email.distributionList.to' | translate
-      }}</shared-email-template
-    >
-    <!-- CC dropdown -->
-    <div
-      class="w-full flex p-1 pl-2 space-y-4 flex-row items-start self-stretch bg-blue-50 cursor-pointer"
-      (click)="toggleDropdown('cc')"
-    >
-      <span class="w-96 text-style">{{
-        'components.select.distribution.cc' | translate
-      }}</span>
-      <span class="w-4" *ngIf="showCCTemplate"
-        ><ui-icon
-          icon="expand_less"
-          fontFamily="material"
-          variant="primary"
-        ></ui-icon
-      ></span>
-      <span class="w-4" *ngIf="!showCCTemplate"
-        ><ui-icon
-          icon="expand_more"
-          fontFamily="material"
-          variant="primary"
-        ></ui-icon
-      ></span>
-    </div>
-    <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.cc">
-      {{ 'components.email.distributionList.alert.noEmail' | translate }}
-    </ui-alert>
-    <shared-email-template
-      [existingId]="this.distributionListId"
-      (noEmail)="update($event, 'cc')"
-      (listChange)="validateDistributionList()"
-      [emailBackLoad]="emailDistributionList.Cc"
-      *ngIf="showCCTemplate"
-      >{{
-        'components.email.distributionList.cc' | translate
-      }}</shared-email-template
-    >
-    <!-- BCC dropdown -->
-    <div
-      class="w-full flex p-1 pl-2 space-y-4 flex-row items-start self-stretch bg-blue-50 cursor-pointer"
-      (click)="toggleDropdown('bcc')"
-    >
-      <span class="w-96 text-style">{{
-        'components.select.distribution.bcc' | translate
-      }}</span>
-      <span class="w-4" *ngIf="showBccTemplate"
-        ><ui-icon
-          icon="expand_less"
-          fontFamily="material"
-          variant="primary"
-        ></ui-icon
-      ></span>
-      <span class="w-4" *ngIf="!showBccTemplate"
-        ><ui-icon
-          icon="expand_more"
-          fontFamily="material"
-          variant="primary"
-        ></ui-icon
-      ></span>
-    </div>
-    <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.bcc">
-      {{ 'components.email.distributionList.alert.noEmail' | translate }}
-    </ui-alert>
-    <shared-email-template
-      [existingId]="this.distributionListId"
-      (noEmail)="update($event, 'bcc')"
-      (listChange)="validateDistributionList()"
-      [emailBackLoad]="emailDistributionList.Bcc"
-      *ngIf="showBccTemplate"
-      >{{
-        'components.email.distributionList.bcc' | translate
-      }}</shared-email-template
-    >
+  <div *ngIf="!showExistingDistributionList">
+    <ui-tabs>
+      <!-- TO Tab -->
+      <ui-tab [title]="'TO'">
+        <ng-container ngProjectAs="label">
+          {{ 'components.select.distribution.to' | translate }}
+        </ng-container>
+        <ng-template uiTabContent>
+          <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.to">
+            {{ 'components.email.distributionList.alert.noEmail' | translate }}
+          </ui-alert>
+          <shared-email-template
+            [existingId]="this.distributionListId"
+            (noEmail)="update($event, 'to')"
+            (listChange)="validateDistributionList()"
+            [emailBackLoad]="emailDistributionList.To"
+            >{{
+              'components.email.distributionList.to' | translate
+            }}</shared-email-template
+          >
+        </ng-template>
+      </ui-tab>
+
+      <!-- CC Tab -->
+      <ui-tab [title]="'CC'">
+        <ng-container ngProjectAs="label">
+          {{ 'components.select.distribution.cc' | translate }}
+        </ng-container>
+        <ng-template uiTabContent>
+          <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.cc">
+            {{ 'components.email.distributionList.alert.noEmail' | translate }}
+          </ui-alert>
+          <shared-email-template
+            [existingId]="this.distributionListId"
+            (noEmail)="update($event, 'cc')"
+            (listChange)="validateDistributionList()"
+            [emailBackLoad]="emailDistributionList.Cc"
+            >{{
+              'components.email.distributionList.cc' | translate
+            }}</shared-email-template
+          >
+        </ng-template>
+      </ui-tab>
+
+      <!-- BCC Tab -->
+      <ui-tab [title]="'BCC'">
+        <ng-container ngProjectAs="label">
+          {{ 'components.select.distribution.bcc' | translate }}
+        </ng-container>
+        <ng-template uiTabContent>
+          <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.bcc">
+            {{ 'components.email.distributionList.alert.noEmail' | translate }}
+          </ui-alert>
+          <shared-email-template
+            [existingId]="this.distributionListId"
+            (noEmail)="update($event, 'bcc')"
+            (listChange)="validateDistributionList()"
+            [emailBackLoad]="emailDistributionList.Bcc"
+            >{{
+              'components.email.distributionList.bcc' | translate
+            }}</shared-email-template
+          >
+        </ng-template>
+      </ui-tab>
+    </ui-tabs>
   </div>
   <div class="use-existing" *ngIf="showExistingDistributionList">
     <p (click)="showExistingDistributionList = !showExistingDistributionList">
