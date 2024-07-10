@@ -206,10 +206,10 @@ export class EmailTemplateComponent
 
     this.selectedEmails = this.emailBackLoad;
     this.datasets = clone(this.datasetsForm.value.datasets);
-    this.datasets?.forEach((ele: any) => {
-      ele.blockName = ele.name;
-      // ele.name = ele.resource.name;
-    });
+    // this.datasets?.forEach((ele: any) => {
+    //   ele.blockName = ele.name;
+    //   // ele.name = ele.resource.name;
+    // });
     this.prepareDatasetFilters();
     if (this.emailFilter) {
       this.filterQuery = this.emailFilter;

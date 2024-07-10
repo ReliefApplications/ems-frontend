@@ -62,6 +62,8 @@ export class EmsTemplateComponent
   public steps: any[];
   /** LAYOUT PAGE VALIDATION */
   setLayoutValidation = false;
+  /** PREVIEW TRIGGERED state   */
+  public previewTriggered = false;
 
   /** DUMMY FORM */
   public form = new FormGroup({
@@ -305,7 +307,8 @@ export class EmsTemplateComponent
         this.layout.layoutForm.get('header')?.value;
       this.emailService
         .patchEmailLayout()
-        .then(() => {
+        .then(async () => {
+          await this.submit(true);
           this.currentStep += 1;
           this.steps[5].disabled = false;
         })
@@ -476,7 +479,7 @@ export class EmsTemplateComponent
                     } else {
                       if (data) {
                         this.emailService.configId =
-                          data.editAndGetEmailNotification?.id;
+                          data.editEmailNotification?.id;
                         resolve();
                       }
                     }
@@ -487,45 +490,181 @@ export class EmsTemplateComponent
                 });
             });
         } else {
-          // For email notification create operation.
-          await this.emailService
-            .getDataSetToSkipOptions(queryData)
-            .then((manipulatedDataWithoutOptions) => {
-              this.emailService
-                .addEmailNotification(manipulatedDataWithoutOptions)
-                .subscribe({
-                  next: ({ errors, data }) => {
-                    if (errors) {
-                      this.snackBar.openSnackBar(
-                        this.translate.instant(
-                          'common.notifications.objectNotCreated',
-                          {
-                            type: this.translate
-                              .instant('common.email.notification.one')
-                              .toLowerCase(),
-                            error: errors ? errors[0].message : '',
-                          }
-                        ),
-                        { error: true }
-                      );
-                    } else {
-                      if (data) {
-                        this.emailService.configId =
-                          data.addEmailNotification?.id;
-                        resolve();
+          if (this.previewTriggered) {
+            if (
+              this.emailService.allLayoutdata.headerLogo &&
+              !queryData.emailLayout.header.headerLogo
+            ) {
+              queryData.emailLayout.header.headerLogo =
+                this.emailService.allLayoutdata.headerLogo;
+            }
+            if (
+              this.emailService.allLayoutdata.footerLogo &&
+              !queryData.emailLayout.footer.footerLogo
+            ) {
+              queryData.emailLayout.footer.footerLogo =
+                this.emailService.allLayoutdata.footerLogo;
+            }
+            if (
+              this.emailService.allLayoutdata.footerLogo &&
+              !queryData.emailLayout.banner.bannerImage
+            ) {
+              queryData.emailLayout.banner.bannerImage =
+                this.emailService.allLayoutdata.bannerImage;
+            }
+
+            await this.emailService
+              .getDataSetToSkipOptions(queryData)
+              .then((manipulatedDataWithoutOptions) => {
+                this.emailService
+                  .editEmailNotification(
+                    this.emailService.editId,
+                    manipulatedDataWithoutOptions
+                  )
+                  .subscribe({
+                    next: ({ errors, data }: any) => {
+                      if (errors) {
+                        this.snackBar.openSnackBar(
+                          this.translate.instant(
+                            'common.notifications.objectNotUpdated',
+                            {
+                              type: this.translate.instant(
+                                'common.email.notification.one'
+                              ),
+                              error: errors ? errors[0].message : '',
+                            }
+                          ),
+                          { error: true }
+                        );
+                      } else {
+                        if (data) {
+                          this.emailService.configId =
+                            data.editEmailNotification?.id;
+                          resolve();
+                        }
                       }
-                    }
-                  },
-                  error: (err) => {
-                    this.snackBar.openSnackBar(err.message, { error: true });
-                  },
-                });
-            });
+                    },
+                    error: (err: any) => {
+                      this.snackBar.openSnackBar(err.message, { error: true });
+                    },
+                  });
+              });
+          } else {
+            // For email notification create operation.
+            await this.emailService
+              .getDataSetToSkipOptions(queryData)
+              .then((manipulatedDataWithoutOptions) => {
+                this.emailService
+                  .addEmailNotification(manipulatedDataWithoutOptions)
+                  .subscribe({
+                    next: ({ errors, data }) => {
+                      if (errors) {
+                        this.snackBar.openSnackBar(
+                          this.translate.instant(
+                            'common.notifications.objectNotCreated',
+                            {
+                              type: this.translate
+                                .instant('common.email.notification.one')
+                                .toLowerCase(),
+                              error: errors ? errors[0].message : '',
+                            }
+                          ),
+                          { error: true }
+                        );
+                      } else {
+                        if (data) {
+                          this.emailService.configId =
+                            data.addEmailNotification?.id;
+                          resolve();
+                        }
+                      }
+                    },
+                    error: (err) => {
+                      this.snackBar.openSnackBar(err.message, { error: true });
+                    },
+                  });
+              });
+          }
         }
       } else {
         resolve();
       }
     });
+  }
+
+  /**
+   * Save as Draft function
+   */
+  async saveEmailPreview() {
+    this.emailService.datasetsForm?.value?.datasets?.forEach((data: any) => {
+      delete data.cacheData;
+    });
+    const queryData = this.emailService.datasetsForm.value;
+    this.applicationService.application$.subscribe((res: any) => {
+      this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
+      queryData.applicationId = res?.id;
+      queryData.emailDistributionList = this.emailService.emailDistributionList;
+    });
+    queryData.isDraft = false;
+    queryData.draftStepper = 4;
+    queryData.notificationType =
+      this.emailService.datasetsForm.controls.notificationType.value;
+    queryData.emailLayout = this.emailService.emailLayout;
+    if (this.emailService.isEdit) {
+      if (
+        this.emailService.allLayoutdata.headerLogo &&
+        !queryData.emailLayout.header.headerLogo
+      ) {
+        queryData.emailLayout.header.headerLogo =
+          this.emailService.allLayoutdata.headerLogo;
+      }
+      if (
+        this.emailService.allLayoutdata.footerLogo &&
+        !queryData.emailLayout.footer.footerLogo
+      ) {
+        queryData.emailLayout.footer.footerLogo =
+          this.emailService.allLayoutdata.footerLogo;
+      }
+      if (
+        this.emailService.allLayoutdata.footerLogo &&
+        !queryData.emailLayout.banner.bannerImage
+      ) {
+        queryData.emailLayout.banner.bannerImage =
+          this.emailService.allLayoutdata.bannerImage;
+      }
+      await this.emailService
+        .getDataSetToSkipOptions(queryData)
+        .then((manipulatedDataWithoutOptions) => {
+          this.emailService
+            .editEmailNotification(
+              this.emailService.editId,
+              manipulatedDataWithoutOptions
+            )
+            .subscribe((res: any) => {
+              this.emailService.editId = '';
+              this.emailService.configId = res.data.editEmailNotification.id;
+              this.emailService.getFinalEmail(
+                this.emailService.configId as string
+              );
+              this.previewTriggered = true;
+            });
+        });
+    } else {
+      await this.emailService
+        .getDataSetToSkipOptions(queryData)
+        .then((manipulatedDataWithoutOptions) => {
+          this.emailService
+            .addEmailNotification(manipulatedDataWithoutOptions)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((res: any) => {
+              this.emailService.configId = res.data.addEmailNotification.id;
+              this.emailService.getFinalEmail(
+                this.emailService.configId as string
+              );
+              this.previewTriggered = true;
+            });
+        });
+    }
   }
 
   /**
@@ -635,8 +774,7 @@ export class EmsTemplateComponent
               console.log(res);
               this.emailService.isEdit = false;
               this.emailService.editId = '';
-              this.emailService.configId =
-                res.data.editAndGetEmailNotification.id;
+              this.emailService.configId = res.data.editEmailNotification.id;
               this.snackBar.openSnackBar(
                 this.translate.instant('pages.application.settings.emailEdited')
               );
@@ -669,8 +807,10 @@ export class EmsTemplateComponent
 
   /**
    * Submission
+   *
+   * @param isPreview If it is preview or not
    */
-  async submit() {
+  async submit(isPreview?: boolean) {
     // await this.emailService.patchEmailLayout();
     if (Object.keys(this.emailService.datasetsForm.value).length) {
       this.emailService.datasetsForm?.value?.datasets?.forEach((data: any) => {
@@ -679,9 +819,9 @@ export class EmsTemplateComponent
 
       const queryData = this.emailService.datasetsForm.value;
 
-      const dataSet = queryData.datasets;
+      // const dataSet = queryData.datasets;
 
-      queryData['datasets'] = this.formatPayload(dataSet);
+      // queryData['datasets'] = this.formatPayload(dataSet);
 
       queryData.notificationType =
         this.emailService.datasetsForm.controls.notificationType.value;
@@ -743,14 +883,17 @@ export class EmsTemplateComponent
                       this.emailService.isEdit = false;
                       this.emailService.editId = '';
                       this.emailService.configId =
-                        data.editAndGetEmailNotification.id;
-                      this.snackBar.openSnackBar(
-                        this.translate.instant(
-                          'pages.application.settings.emailEdited'
-                        )
-                      );
-                      this.emailService.datasetsForm.reset();
-                      this.navigateToEms.emit();
+                        data.editEmailNotification.id;
+
+                      if (!isPreview) {
+                        this.snackBar.openSnackBar(
+                          this.translate.instant(
+                            'pages.application.settings.emailEdited'
+                          )
+                        );
+                        this.emailService.datasetsForm.reset();
+                        this.navigateToEms.emit();
+                      }
                     }
                   }
                 },
@@ -786,13 +929,15 @@ export class EmsTemplateComponent
                     if (data) {
                       this.emailService.configId = data.addEmailNotification.id;
 
-                      this.snackBar.openSnackBar(
-                        this.translate.instant(
-                          'pages.application.settings.emailCreated'
-                        )
-                      );
-                      this.emailService.datasetsForm.reset();
-                      this.navigateToEms.emit();
+                      if (!isPreview) {
+                        this.snackBar.openSnackBar(
+                          this.translate.instant(
+                            'pages.application.settings.emailCreated'
+                          )
+                        );
+                        this.emailService.datasetsForm.reset();
+                        this.navigateToEms.emit();
+                      }
                     }
                   }
                 },

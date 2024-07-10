@@ -66,6 +66,8 @@ export class EmailService {
   public footerTextColor = '#000000';
   /** Dataset event emitter */
   public datasetSave: EventEmitter<boolean> = new EventEmitter();
+  /** Loading state */
+  public loading = false;
   // Disable SaveAsDraft button
   /**
    *
@@ -185,6 +187,8 @@ export class EmailService {
   public fields: FieldStore[] = [];
   /** Selected cacheDistributionList */
   public cacheDistributionList: any = [];
+  /** Final Email Preview */
+  public finalEmailPreview = '';
   /** Meta Data Query Loading State Subject  */
   private metaDataQueryLoadingSource = new BehaviorSubject<boolean>(false);
   /** Meta Data Query Loading State Observable */
@@ -788,24 +792,48 @@ export class EmailService {
   async getDataSetToSkipOptions(emailData: any) {
     await Promise.all(
       emailData.datasets.map(async (dataset: any) => {
-        // TODO: Implement actual fix instead of quick fix
         const tempQuery = cloneDeep(dataset.query);
-        console.log(tempQuery);
-        dataset.resource = dataset.query.resource;
-        dataset.query = {
-          name: tempQuery.name,
-          filter: tempQuery.filter,
-          fields: tempQuery.fields,
-        };
-        dataset.blockType = tempQuery.blockType;
-        dataset.textStyle = tempQuery.textStyle;
-        dataset.tableStyle = tempQuery.tableStyle;
-        dataset.individualEmail = tempQuery.isIndividualEmail;
-        dataset.sendAsAttachment = tempQuery.sendAsAttachment;
-        dataset.pageSize = tempQuery.pageSize;
+        if (!dataset.resource) {
+          // TODO: Implement actual fix instead of quick fix
+
+          console.log('Temp Query', dataset);
+          dataset.resource = dataset.query.resource;
+          dataset.query = {
+            name: tempQuery.name,
+            filter: tempQuery.filter,
+            fields: tempQuery.fields,
+          };
+          dataset.blockType = tempQuery.blockType;
+          dataset.textStyle = tempQuery.textStyle;
+          dataset.tableStyle = tempQuery.tableStyle;
+          dataset.pageSize = tempQuery.pageSize;
+        }
+        dataset.individualEmail = tempQuery.isIndividualEmail ?? false;
+        dataset.sendAsAttachment = tempQuery.sendAsAttachment ?? false;
       })
     );
     return emailData;
+  }
+
+  /**
+   *
+   * @param configID
+   */
+  async getFinalEmail(configID: any) {
+    this.http
+      .post(
+        `${this.restService.apiUrl}/notification/preview-email/${configID}`,
+        {}
+      )
+      .subscribe(
+        (response: any) => {
+          console.log('response', response);
+          this.finalEmailPreview = response;
+        },
+        (error: string) => {
+          console.error('Error:', error);
+        }
+      );
   }
 
   /**

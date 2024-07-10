@@ -4,12 +4,16 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
+  OnChanges,
+  SimpleChanges,
+  OnInit,
 } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { EmailService } from '../../email.service';
 import { Subscription } from 'rxjs';
 import { TokenRegex } from '../../constant';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { DomSanitizer } from '@angular/platform-browser';
 
 /**
  * The preview component is used to display the email layout using user input from layout component.
@@ -21,7 +25,7 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 })
 export class PreviewComponent
   extends UnsubscribeComponent
-  implements OnDestroy, AfterViewInit
+  implements OnInit, OnChanges, OnDestroy, AfterViewInit
 {
   /** Selected resource ID. -TO DELETE? */
   public selectedResourceId: string | undefined;
@@ -58,6 +62,8 @@ export class PreviewComponent
   @ViewChild('bodyHtml') bodyHtml!: ElementRef;
   /** Meta Data Graphql loading state subscription */
   private metaDataLoadSubscription: Subscription = new Subscription();
+  /** HTML content to be displayed in the email preview.*/
+  emailPreviewHtml = '<div></div>';
 
   /**
    * Expand see more email list dropdown for "To".
@@ -85,71 +91,85 @@ export class PreviewComponent
    *
    * @param apollo - The Apollo client for making GraphQL queries.
    * @param emailService - The service for email-related operations.
+   * @param sanitizer - The sanitizer for sanitizing HTML.
    */
-  constructor(private apollo: Apollo, public emailService: EmailService) {
+  constructor(
+    private apollo: Apollo,
+    public emailService: EmailService,
+    private sanitizer: DomSanitizer
+  ) {
     super();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['emailService']?.currentValue?.finalEmailPreview) {
+      this.loadFinalEmailPreview();
+    }
+  }
+
+  ngOnInit() {
+    this.loadFinalEmailPreview();
+    this.replaceTokensWithTables();
+    this.replaceDateTimeTokens();
+    (document.getElementById('subjectHtml') as HTMLInputElement).innerHTML =
+      this.subjectString ?? '<div></div>';
+
+    this.emailPreviewHtml =
+      this.emailService.finalEmailPreview ?? '<div></div>';
+
+    (document.getElementById('emailContainer') as HTMLInputElement).innerHTML =
+      this.emailPreviewHtml;
+  }
+
+  /**
+   * Loads the final email preview.
+   */
+  loadFinalEmailPreview(): void {
+    this.emailService.loading = true; // Show spinner
+    this.emailService
+      .getFinalEmail(this.emailService.configId)
+      .then(() => {
+        // Update the finalEmailPreview in emailService
+        this.updateEmailContainer(); // Update the email container with the new preview
+        this.emailService.loading = false; // Hide spinner
+      })
+      .catch((error) => {
+        console.error('Failed to load final email preview:', error);
+        this.emailService.loading = false; // Hide spinner in case of error
+      });
+  }
+
+  /**
+   * Updates the email container with the new preview
+   */
+  updateEmailContainer(): void {
+    const emailContainer = document.getElementById(
+      'emailContainer'
+    ) as HTMLDivElement;
+    if (emailContainer) {
+      this.emailPreviewHtml =
+        this.emailService.finalEmailPreview ?? '<div></div>';
+      emailContainer.innerHTML = this.emailPreviewHtml;
+    }
   }
 
   ngAfterViewInit(): void {
     this.replaceTokensWithTables();
     this.replaceDateTimeTokens();
 
-    this.bodyHtml.nativeElement.innerHTML = this.bodyString;
-    this.checkAndApplyBodyStyle();
+    // this.bodyHtml.nativeElement.innerHTML = this.bodyString;
+    // this.checkAndApplyBodyStyle();
 
     (document.getElementById('subjectHtml') as HTMLInputElement).innerHTML =
-      this.subjectString;
+      this.subjectString ?? '<div></div>';
 
-    (document.getElementById('headerHtml') as HTMLInputElement).innerHTML =
-      this.headerString;
-    if (this.emailService.allLayoutdata.headerLogo) {
-      this.headerLogo = URL.createObjectURL(
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.headerLogo,
-          'image.png',
-          'image/png'
-        )
-      );
-    }
+    this.emailPreviewHtml =
+      this.emailService.finalEmailPreview ?? '<div></div>';
 
-    if (this.emailService.allLayoutdata.footerLogo) {
-      this.footerLogo = URL.createObjectURL(
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.footerLogo,
-          'image.png',
-          'image/png'
-        )
-      );
-    }
+    (document.getElementById('emailContainer') as HTMLInputElement).innerHTML =
+      this.emailPreviewHtml;
 
-    if (this.emailService.allLayoutdata.bannerImage) {
-      this.bannerImage = URL.createObjectURL(
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.bannerImage,
-          'image.png',
-          'image/png'
-        )
-      );
-    }
-
-    (document.getElementById('footerHtml') as HTMLInputElement).innerHTML =
-      this.footerString;
-  }
-
-  /**
-   * Check if the body has strong or em tags, and add the body-wrap class if it does.
-   */
-  checkAndApplyBodyStyle() {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(this.bodyString, 'text/html');
-
-    const strong = doc.querySelectorAll('strong');
-    const em = doc.querySelectorAll('em');
-    if (strong.length > 0 || em.length > 0) {
-      this.bodyHtml.nativeElement.classList.add('body-wrap');
-    } else {
-      this.bodyHtml.nativeElement.classList.remove('body-wrap');
-    }
+    this.loadFinalEmailPreview();
   }
 
   /**
@@ -199,15 +219,6 @@ export class PreviewComponent
         this.subjectString = this.subjectString.replace(fName, fieldValue);
       }
     });
-  }
-
-  /**
-   * Checks if footer is empty
-   *
-   * @returns true if footer is empty
-   */
-  footerIsEmpty() {
-    return !this.footerString || /^<p>\s*<\/p>$/.test(this.footerString);
   }
 
   /**
@@ -470,30 +481,30 @@ export class PreviewComponent
       this.subjectString = '';
     }
 
-    this.headerString = this.emailService.allLayoutdata.headerHtml;
-    if (this.headerString) {
-      Object.entries(tokens).forEach(([token, value]) => {
-        this.headerString = this.headerString?.replace(
-          new RegExp(token, 'g'),
-          value
-        );
-      });
-      this.replaceInTheLast(this.headerString);
-    } else {
-      this.headerString = '';
-    }
+    // this.headerString = this.emailService.allLayoutdata.headerHtml;
+    // if (this.headerString) {
+    //   Object.entries(tokens).forEach(([token, value]) => {
+    //     this.headerString = this.headerString?.replace(
+    //       new RegExp(token, 'g'),
+    //       value
+    //     );
+    //   });
+    //   this.replaceInTheLast(this.headerString);
+    // } else {
+    //   this.headerString = '';
+    // }
 
-    this.footerString = this.emailService.allLayoutdata.footerHtml;
-    if (this.footerString) {
-      Object.entries(tokens).forEach(([token, value]) => {
-        this.footerString = this.footerString.replace(
-          new RegExp(token, 'g'),
-          value
-        );
-      });
-    } else {
-      this.footerString = '';
-    }
+    // this.footerString = this.emailService.allLayoutdata.footerHtml;
+    // if (this.footerString) {
+    //   Object.entries(tokens).forEach(([token, value]) => {
+    //     this.footerString = this.footerString.replace(
+    //       new RegExp(token, 'g'),
+    //       value
+    //     );
+    //   });
+    // } else {
+    //   this.footerString = '';
+    // }
   }
 
   /**
