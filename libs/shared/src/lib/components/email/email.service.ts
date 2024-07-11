@@ -3,7 +3,6 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   ADD_EMAIL_NOTIFICATION,
   GET_AND_UPDATE_EMAIL_NOTIFICATION,
-  GET_EMAIL_DATA_SET,
   GET_EMAIL_NOTIFICATIONS,
   GET_QUERY_META_DATA,
   GET_RESOURCE_BY_ID,
@@ -14,7 +13,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { RestService } from '../../services/rest/rest.service';
 import { TYPE_LABEL } from './filter/filter.const';
 import { FieldStore } from './models/email.const';
-import { cloneDeep, omit } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { QueryMetaDataQueryResponse } from '../../models/metadata.model';
 import { ResourceQueryResponse } from '../../models/resource.model';
 
@@ -705,8 +704,9 @@ export class EmailService {
   }
 
   /**
+   * Gets the final email preview.
    *
-   * @param configID
+   * @param configID - The configID of the email notification.
    */
   async getFinalEmail(configID: any) {
     this.http

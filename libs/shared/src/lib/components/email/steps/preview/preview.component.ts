@@ -98,8 +98,8 @@ export class PreviewComponent
    * @param apollo - The Apollo client for making GraphQL queries.
    * @param emailService - The service for email-related operations.
    * @param sanitizer - The sanitizer for sanitizing HTML.
-   * @param http
-   * @param restService
+   * @param http - The http client for making HTTP requests.
+   * @param restService - The rest service for making REST requests.
    */
   constructor(
     private apollo: Apollo,

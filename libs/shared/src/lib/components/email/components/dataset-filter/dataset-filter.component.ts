@@ -10,28 +10,20 @@ import {
 } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { clone, cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash';
 import {
   Resource,
   ResourcesQueryResponse,
 } from '../../../../models/resource.model';
 import { EmailService } from '../../email.service';
-import {
-  FIELD_TYPES,
-  FILTER_OPERATORS,
-  TYPE_LABEL,
-} from '../../filter/filter.const';
-import { GET_RESOURCES } from '../../graphql/queries';
+import { FILTER_OPERATORS, TYPE_LABEL } from '../../filter/filter.const';
 import { Subscription, takeUntil } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { FieldStore } from '../../models/email.const';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { prettifyLabel } from '../../../../utils/prettify';
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
-/** Default items per query, for pagination */
-let ITEMS_PER_PAGE = 0;
 
 /**
  * Component for filtering, selecting fields and styling block data sets.
@@ -248,7 +240,7 @@ export class DatasetFilterComponent
    * Handles Filter, Field, Style Tab selection changes
    *
    * @param event The tab selected
-   * @param fromHTML
+   * @param fromHTML If state is in edit mode then false else true if new notification (means Event from UI)
    */
   onTabSelect(event: any, fromHTML: boolean): void {
     const newIndex = event;

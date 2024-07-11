@@ -976,6 +976,7 @@ export class EmailTemplateComponent
    * @param filterType - The type of filter. Currently supports 'preview' or '' when filtering.
    */
   getDataSetPreview(filterType: string) {
+    filterType;
     this.noEmail.emit(false);
     this.loading = true;
     const currentDataset = JSON.parse(JSON.stringify(this.selectedDataset));
