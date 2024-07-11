@@ -467,7 +467,7 @@ export class DatasetFilterComponent
                     this.loading = false;
                     this.emailService.setAllPreviewData(allPreviewData);
                   }
-                  this.previewHTML = response.tableHtml;
+                  this.previewHTML = window.atob(response.tableHtml);
                   const previewHTML = document.getElementById(
                     'tblPreview'
                   ) as HTMLInputElement;

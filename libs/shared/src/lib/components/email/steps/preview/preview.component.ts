@@ -16,7 +16,6 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
-
 /**
  * The preview component is used to display the email layout using user input from layout component.
  */
@@ -173,7 +172,7 @@ export class PreviewComponent
     if (emailContainer) {
       this.emailPreviewHtml =
         this.emailService.finalEmailPreview ?? '<div></div>';
-      emailContainer.innerHTML = this.emailPreviewHtml.html as string;
+      emailContainer.innerHTML = window.atob(this.emailPreviewHtml.html);
     }
   }
 
