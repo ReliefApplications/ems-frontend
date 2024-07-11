@@ -842,8 +842,10 @@
           "placeholder": "Enter a KoboToolbox form id",
           "data": {
             "synchronize": "Synchronize kobo data",
+            "start": "Start synchronization",
             "fromFormWithVersion": "The form '{{formName}}' was created from the original Kobotoolbox form with the deploy version id {{versionId}}",
             "syncOnlyFromDeployedVersion": "Synchronize data submissions only from the same form deploy version",
+            "nothingToSynchronize": "No data found for synchronization",
             "tooltip": {
               "syncOnlyFromDeployedVersion": "Only data submissions sent when the form was in the same version as when it was imported will be used to create records. Data submissions registered in earlier or later versions will be disregarded."
             }

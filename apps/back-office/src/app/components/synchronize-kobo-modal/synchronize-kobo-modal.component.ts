@@ -14,6 +14,7 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import {
+  AddRecordsFromKoboMutationResponse,
   ApiConfiguration,
   EditFormMutationResponse,
   UnsubscribeComponent,
@@ -30,7 +31,10 @@ interface DialogData {
   apiConfiguration: ApiConfiguration;
   form: { id: string; name: string };
 }
-import { EDIT_FORM_KOBO_PREFERENCES } from './graphql/mutations';
+import {
+  ADD_RECORDS_FROM_KOBO,
+  EDIT_FORM_KOBO_PREFERENCES,
+} from './graphql/mutations';
 
 /**
  * Synchronize kobo form data (modal, import data submissions from kobo)
@@ -117,6 +121,54 @@ export class SynchronizeKoboModalComponent extends UnsubscribeComponent {
                 type: this.translate.instant(
                   'components.form.create.kobo.data.synchronize'
                 ),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          }
+          this.loading = false;
+        },
+        error: (err) => {
+          this.loading = false;
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
+  }
+
+  /**
+   * Synchronize data submissions from kobo
+   */
+  public onSynchronize() {
+    this.loading = true;
+    this.apollo
+      .mutate<AddRecordsFromKoboMutationResponse>({
+        mutation: ADD_RECORDS_FROM_KOBO,
+        variables: {
+          form: this.data.form.id,
+        },
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (!errors) {
+            if (data?.addRecordsFromKobo) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectCreated', {
+                  value: this.translate.instant('common.record.few'),
+                  type: '',
+                })
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'components.form.create.kobo.data.nothingToSynchronize'
+                )
+              );
+            }
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotCreated', {
+                type: this.translate.instant('common.record.few').toLowerCase(),
                 error: errors ? errors[0].message : '',
               }),
               { error: true }

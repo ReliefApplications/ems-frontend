@@ -26,6 +26,7 @@ export interface Record {
   modifiedBy?: User;
   canUpdate?: boolean;
   canDelete?: boolean;
+  koboId?: string;
   validationErrors?: { question: string; errors: string[] }[];
 }
 
@@ -87,4 +88,9 @@ export interface DeleteRecordsMutationResponse {
 /** Model for generate records graphql mutation response */
 export interface GenerateRecordsMutationResponse {
   generateRecords: Record[];
+}
+
+/** Model for add records from kobo graphql mutation response */
+export interface AddRecordsFromKoboMutationResponse {
+  addRecordsFromKobo: boolean;
 }
