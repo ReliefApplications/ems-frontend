@@ -17,7 +17,7 @@ import { ApiConfiguration } from '../../models/api-configuration.model';
 import { AppAbility, AuthService } from '../../services/auth/auth.service';
 import { DownloadService } from '../../services/download/download.service';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
-// import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
@@ -441,6 +441,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       dataArray.push(
         this.createNewDataSetGroup(emailData.datasets[index], index)
       );
+      // this.formatDataArray(this.emailService.datasetsForm.controls.datasets);
       if (index === 0) {
         this.emailService.tabs[0].title = emailData.datasets[index].name;
         this.emailService.tabs[0].content = emailData.datasets[index].name;
@@ -457,7 +458,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       ele.active = false;
     });
     this.emailService.tabs[this.emailService.tabs.length - 1].active = true;
-    // dataArray = this.formatDataArray(dataArray);
+
     // Creating DatasetForm
     this.emailService.datasetsForm = this.formBuilder.group({
       name: emailData.name,
@@ -571,34 +572,34 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param dataArray - The array of data to format
    * @returns The formatted data array
    */
-  // formatDataArray(dataArray: any): any {
-  //   dataArray.controls.forEach((dataset: FormGroup) => {
-  //     let data = dataset.value;
-  //     if (data.query && !data.resource) {
-  //       const newDataset = this.emailService.createNewDataSetGroup();
-  //       const newQuery = newDataset.get('query') as FormGroup;
-  //       const tempQueryData = cloneDeep(data.query);
-  //       newQuery.get('name')?.setValue(tempQueryData.name);
-  //       newQuery.get('filter')?.setValue(tempQueryData.filter);
-  //       newQuery.get('fields')?.setValue(tempQueryData.fields);
+  formatDataArray(dataArray: any): any {
+    dataArray.controls.forEach((dataset: FormGroup) => {
+      let data = dataset.value;
+      if (data.query && !data.resource) {
+        const newDataset = this.emailService.createNewDataSetGroup();
+        const newQuery = newDataset.get('query') as FormGroup;
+        const tempQueryData = cloneDeep(data.query);
+        newQuery.get('name')?.setValue(tempQueryData.name);
+        newQuery.get('filter')?.setValue(tempQueryData.filter);
+        newQuery.get('fields')?.setValue(tempQueryData.fields);
 
-  //       newDataset.get('name')?.setValue(data.name);
-  //       newDataset.get('resource')?.setValue(tempQueryData.resource);
-  //       newDataset.get('blockType')?.setValue(tempQueryData.blockType);
-  //       newDataset.get('textStyle')?.setValue(tempQueryData.textStyle);
-  //       newDataset.get('tableStyle')?.setValue(tempQueryData.tableStyle);
-  //       newDataset.get('pageSize')?.setValue(tempQueryData.pageSize);
-  //       newDataset
-  //         .get('individualEmail')
-  //         ?.setValue(tempQueryData.isIndividualEmail ?? false);
-  //       newDataset
-  //         .get('sendAsAttachment')
-  //         ?.setValue(tempQueryData.sendAsAttachment ?? false);
-  //       data = newDataset;
-  //     }
-  //   });
-  //   return dataArray;
-  // }
+        newDataset.get('name')?.setValue(data.name);
+        newDataset.get('resource')?.setValue(tempQueryData.resource);
+        newDataset.get('blockType')?.setValue(tempQueryData.blockType);
+        newDataset.get('textStyle')?.setValue(tempQueryData.textStyle);
+        newDataset.get('tableStyle')?.setValue(tempQueryData.tableStyle);
+        newDataset.get('pageSize')?.setValue(tempQueryData.pageSize);
+        newDataset
+          .get('individualEmail')
+          ?.setValue(tempQueryData.isIndividualEmail ?? false);
+        newDataset
+          .get('sendAsAttachment')
+          ?.setValue(tempQueryData.sendAsAttachment ?? false);
+        data = newDataset;
+      }
+    });
+    return dataArray;
+  }
 
   /**
    * This function creates a new dataset group.
@@ -612,8 +613,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     const tempData = this.formBuilder.group({
       name: ele.name,
       query: this.formBuilder.group({
-        resource: ele.resource,
-        pageSize: ele.pageSize,
+        name: ele.query.name,
         filter: this.getFilterGroup(ele.query.filter),
         fields:
           ele?.query?.fields?.length > 0
@@ -623,16 +623,18 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
                 )
               )
             : this.formBuilder.array([]),
-        cacheData: {},
-        blockType: 'table', // Either Table or Text
-        tableStyle: this.emailService.getTableStyles(),
-        textStyle: null,
-        individualEmail: ele.individualEmail,
       }),
+      resource: ele.resource,
+      pageSize: ele.pageSize,
+      cacheData: {},
+      blockType: 'table', // Either Table or Text
+      tableStyle: this.emailService.getTableStyles(),
+      textStyle: null,
+      individualEmail: ele.individualEmail,
     });
     this.emailService.setEmailFields(ele.query.fields);
     this.emailService.setSeparateEmail(ele.individualEmail, index);
-    // tempData.controls.fields.setValue(ele.fields);
+
     return tempData;
   }
 
