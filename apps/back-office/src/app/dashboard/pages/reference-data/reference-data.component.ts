@@ -122,8 +122,6 @@ export class ReferenceDataComponent
   public newData: any = [];
   /** CSV loading state */
   public csvLoading = false;
-  /** CSV separator */
-  public separator = new FormControl(',');
   /** Editor options */
   public editorOptions = {
     automaticLayout: true,
@@ -383,7 +381,10 @@ export class ReferenceDataComponent
               );
               this.csvValue =
                 this.referenceData?.data && this.referenceData?.data.length > 0
-                  ? this.convertToCSV(this.referenceData?.data)
+                  ? this.convertToCSV(
+                      this.referenceData?.data,
+                      data.referenceData.separator
+                    )
                   : '';
               this.newData =
                 this.referenceData?.data && this.referenceData?.data.length > 0
@@ -586,6 +587,9 @@ export class ReferenceDataComponent
       formValue.fields !== this.referenceData?.fields && {
         fields: formValue.fields,
       },
+      formValue.separator !== this.referenceData?.separator && {
+        separator: formValue.separator,
+      },
       formValue.usePagination
         ? {
             pageInfo: {
@@ -761,17 +765,18 @@ export class ReferenceDataComponent
     this.csvLoading = true;
     const dataTemp = this.csvData?.value || '';
     if (dataTemp !== this.csvValue) {
+      const separator = this.referenceForm.get('separator')?.value;
       this.csvValue = dataTemp;
       this.newData = [];
       const lines = dataTemp.split('\n');
       const headers = lines[0]
-        .split(this.separator.value || ',')
+        .split(separator || ',')
         .map((x: string) => x.trim());
       if (lines.length < 2) return;
       // Infer types from first line
       const fields = headers.reduce((acc: any, header: any) => {
         const value = lines[1]
-          .split(this.separator.value || ',')
+          .split(separator || ',')
           [headers.indexOf(header)].trim();
         const type = inferTypeFromString(value);
         acc.push({ name: header, type });
@@ -782,7 +787,7 @@ export class ReferenceDataComponent
         if (!lines[i]) continue;
         const obj: any = {};
         const currentline = lines[i]
-          .split(this.separator.value || ',')
+          .split(separator || ',')
           .map((x: string) => x.trim());
         for (let j = 0; j < headers.length; j++) {
           obj[headers[j]] = currentline[j];
@@ -802,11 +807,14 @@ export class ReferenceDataComponent
    * Convert the JSON into a csv format.
    *
    * @param obj json to convert
+   * @param separator Optional separator to join the values with the symbol instead of the default comma.
    * @returns csv
    */
-  convertToCSV(obj: any): string {
+  convertToCSV(obj: any, separator: string = ','): string {
     const array = [Object.keys(obj[0])].concat(obj);
-    return array.map((it) => Object.values(it).toString()).join('\n');
+    return array
+      .map((it) => Object.values(it).join(separator ?? ','))
+      .join('\n');
   }
 
   /** Uses the API Configuration to get the fields and parse their types. */
