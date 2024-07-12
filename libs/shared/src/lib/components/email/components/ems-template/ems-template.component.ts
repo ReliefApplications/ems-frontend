@@ -188,10 +188,7 @@ export class EmsTemplateComponent
         this.disableActionButton = disable;
         if (disable) {
           this.disableAllNextSteps(this.currentStep);
-        } else if (
-          this.emailService.isEdit &&
-          this.currentStep === 4
-        ) {
+        } else if (this.emailService.isEdit && this.currentStep === 4) {
           this.steps[5].disabled = false;
         }
       }
