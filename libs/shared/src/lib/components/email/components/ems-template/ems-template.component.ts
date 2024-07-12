@@ -189,7 +189,7 @@ export class EmsTemplateComponent
         if (disable) {
           this.disableAllNextSteps(this.currentStep);
         } else if (
-          !disable &&
+          // !disable &&
           this.emailService.isEdit &&
           this.currentStep === 4
         ) {
