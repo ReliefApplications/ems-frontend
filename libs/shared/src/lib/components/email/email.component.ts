@@ -17,7 +17,7 @@ import { ApiConfiguration } from '../../models/api-configuration.model';
 import { AppAbility, AuthService } from '../../services/auth/auth.service';
 import { DownloadService } from '../../services/download/download.service';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
-import { cloneDeep } from 'lodash';
+// import { cloneDeep } from 'lodash';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
@@ -433,7 +433,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         index: 0,
       },
     ];
-    let dataArray: FormArray | any = new FormArray([]);
+    const dataArray: FormArray | any = new FormArray([]);
     for (let index = 0; index < emailData.datasets.length; index++) {
       // TODO: Undo Hotfix
 

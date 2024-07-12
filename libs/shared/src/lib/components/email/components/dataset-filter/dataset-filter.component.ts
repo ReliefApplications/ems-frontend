@@ -283,9 +283,9 @@ export class DatasetFilterComponent
         .subscribe(({ data }) => {
           const queryTemp: any = data.resource;
           const newData = this.queryBuilder.getFields(queryTemp.queryName);
-          // if (this.query.controls.query.get('name') === null) {
-          //   this.query.controls.query.addControl('name', new FormControl(''));
-          // }
+          if (this.query.controls.query.get('name') === null) {
+            this.query.controls.query.addControl('name', new FormControl(''));
+          }
           this.query.controls.query.get('name').setValue(queryTemp.queryName);
           this.availableFields = newData;
           this.filterFields = cloneDeep(newData);
