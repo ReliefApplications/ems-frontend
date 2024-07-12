@@ -359,14 +359,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           delete emailData.modifiedAt;
           emailData.applicationId = this.applicationId;
           emailData?.datasets?.forEach((element: any) => {
-            delete element.__typename;
-            delete element.resource.__typename;
-            element?.fields.forEach((ele: any) => {
-              delete ele.__typename;
-            });
+            delete element?.__typename;
+            delete element?.query?.__typename;
           });
           delete emailData?.emailLayout?.__typename;
-          delete emailData.__typename;
+          delete emailData?.__typename;
           delete emailData?.emailDistributionList?.__typename;
           delete emailData.isDeleted;
           delete emailData.lastExecution;
