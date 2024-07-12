@@ -346,6 +346,7 @@
 			"objectNotInvited": "{{name}} invitation failed.",
 			"objectNotReordered": "{{type}} not reordered. {{error}}",
 			"objectNotRestored": "{{value}} not restored. {{error}}",
+			"objectNotSaved": "{{type}} not saved. {{error}}",
 			"objectNotUpdated": "{{type}} not edited. {{error}}",
 			"objectReordered": "{{type}} reordered.",
 			"objectRestored": "{{value}} restored.",

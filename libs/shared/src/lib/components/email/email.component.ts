@@ -17,6 +17,7 @@ import { ApiConfiguration } from '../../models/api-configuration.model';
 import { AppAbility, AuthService } from '../../services/auth/auth.service';
 import { DownloadService } from '../../services/download/download.service';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
+import { cloneDeep } from 'lodash';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
@@ -432,7 +433,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         index: 0,
       },
     ];
-    const dataArray: FormArray | any = new FormArray([]);
+    let dataArray: FormArray | any = new FormArray([]);
     for (let index = 0; index < emailData.datasets.length; index++) {
       // TODO: Undo Hotfix
 
@@ -456,7 +457,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       ele.active = false;
     });
     this.emailService.tabs[this.emailService.tabs.length - 1].active = true;
-
+    // dataArray = this.formatDataArray(dataArray);
     // Creating DatasetForm
     this.emailService.datasetsForm = this.formBuilder.group({
       name: emailData.name,
@@ -563,6 +564,41 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       this.emailService.updateMetaDataTypeLoading(false);
     });
   }
+
+  /**
+   * Iterates over the dataArray controls, updates values based on data.query, and sets additional properties.
+   *
+   * @param dataArray - The array of data to format
+   * @returns The formatted data array
+   */
+  // formatDataArray(dataArray: any): any {
+  //   dataArray.controls.forEach((dataset: FormGroup) => {
+  //     let data = dataset.value;
+  //     if (data.query && !data.resource) {
+  //       const newDataset = this.emailService.createNewDataSetGroup();
+  //       const newQuery = newDataset.get('query') as FormGroup;
+  //       const tempQueryData = cloneDeep(data.query);
+  //       newQuery.get('name')?.setValue(tempQueryData.name);
+  //       newQuery.get('filter')?.setValue(tempQueryData.filter);
+  //       newQuery.get('fields')?.setValue(tempQueryData.fields);
+
+  //       newDataset.get('name')?.setValue(data.name);
+  //       newDataset.get('resource')?.setValue(tempQueryData.resource);
+  //       newDataset.get('blockType')?.setValue(tempQueryData.blockType);
+  //       newDataset.get('textStyle')?.setValue(tempQueryData.textStyle);
+  //       newDataset.get('tableStyle')?.setValue(tempQueryData.tableStyle);
+  //       newDataset.get('pageSize')?.setValue(tempQueryData.pageSize);
+  //       newDataset
+  //         .get('individualEmail')
+  //         ?.setValue(tempQueryData.isIndividualEmail ?? false);
+  //       newDataset
+  //         .get('sendAsAttachment')
+  //         ?.setValue(tempQueryData.sendAsAttachment ?? false);
+  //       data = newDataset;
+  //     }
+  //   });
+  //   return dataArray;
+  // }
 
   /**
    * This function creates a new dataset group.

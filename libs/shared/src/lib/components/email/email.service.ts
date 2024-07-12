@@ -199,6 +199,16 @@ export class EmailService {
     return this.formBuilder.group({
       name: null,
       query: this.createQuerygroup(),
+      resource: null,
+      pageSize: 10,
+      tableStyle: this.defaultTableStyle,
+      blockType: 'table', // Either Table or Text
+      textStyle: this.formBuilder.group({
+        fields: new FormArray([]),
+        blockStyle: '',
+      }), // Fields (field selected and style), Block Style (HTML wrapping field with token)
+      sendAsAttachment: false,
+      individualEmail: false,
     });
   }
 
@@ -209,22 +219,12 @@ export class EmailService {
    */
   createQuerygroup(): FormGroup {
     return this.formBuilder.group({
-      resource: null,
       name: null,
-      pageSize: 10,
       filter: this.formBuilder.group({
         logic: 'and',
         filters: new FormArray([]),
       }),
       fields: this.formBuilder.array([]),
-      cacheData: {},
-      tableStyle: this.defaultTableStyle,
-      blockType: 'table', // Either Table or Text
-      textStyle: this.formBuilder.group({
-        fields: new FormArray([]),
-        blockStyle: '',
-      }), // Fields (field selected and style), Block Style (HTML wrapping field with token)
-      individualEmail: false,
     });
   }
 
@@ -683,9 +683,7 @@ export class EmailService {
         const tempQuery = cloneDeep(dataset.query);
         if (!dataset.resource) {
           // TODO: Implement actual fix instead of quick fix
-
-          console.log('Temp Query', dataset);
-          dataset.resource = dataset.query.resource;
+          dataset.resource = tempQuery.resource;
           dataset.query = {
             name: tempQuery.name,
             filter: tempQuery.filter,
@@ -695,9 +693,9 @@ export class EmailService {
           dataset.textStyle = tempQuery.textStyle;
           dataset.tableStyle = tempQuery.tableStyle;
           dataset.pageSize = tempQuery.pageSize;
+          dataset.individualEmail = tempQuery.isIndividualEmail ?? false;
+          dataset.sendAsAttachment = tempQuery.sendAsAttachment ?? false;
         }
-        dataset.individualEmail = tempQuery.isIndividualEmail ?? false;
-        dataset.sendAsAttachment = tempQuery.sendAsAttachment ?? false;
       })
     );
     return emailData;

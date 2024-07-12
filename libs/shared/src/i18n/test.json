@@ -346,6 +346,7 @@
 			"objectNotInvited": "{{name}} ******",
 			"objectNotReordered": "{{type}} ****** {{error}}",
 			"objectNotRestored": "{{value}} ****** {{error}}",
+			"objectNotSaved": "{{type}} ****** {{error}}",
 			"objectNotUpdated": "{{type}} ****** {{error}}",
 			"objectReordered": "{{type}} ******",
 			"objectRestored": "{{value}} ******",

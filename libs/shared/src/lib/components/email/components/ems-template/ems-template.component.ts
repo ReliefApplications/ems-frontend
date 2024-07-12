@@ -20,7 +20,7 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import { SnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
 
 /** Snackbar duration in ms */
-const SNACKBAR_DURATION = 1000;
+const SNACKBAR_DURATION = 700;
 
 /**
  * Email template to create distribution list
@@ -309,8 +309,6 @@ export class EmsTemplateComponent
         .patchEmailLayout()
         .then(async () => {
           await this.submit(true);
-          this.currentStep += 1;
-          this.steps[5].disabled = false;
         })
         .catch((err) => {
           throw new Error(err);
@@ -518,7 +516,7 @@ export class EmsTemplateComponent
               .then((manipulatedDataWithoutOptions) => {
                 this.emailService
                   .editEmailNotification(
-                    this.emailService.editId,
+                    this.emailService.configId as string,
                     manipulatedDataWithoutOptions
                   )
                   .subscribe({
@@ -526,7 +524,7 @@ export class EmsTemplateComponent
                       if (errors) {
                         this.snackBar.openSnackBar(
                           this.translate.instant(
-                            'common.notifications.objectNotUpdated',
+                            'common.notifications.objectNotSaved',
                             {
                               type: this.translate.instant(
                                 'common.email.notification.one'
@@ -590,81 +588,6 @@ export class EmsTemplateComponent
         resolve();
       }
     });
-  }
-
-  /**
-   * Save as Draft function
-   */
-  async saveEmailPreview() {
-    this.emailService.datasetsForm?.value?.datasets?.forEach((data: any) => {
-      delete data.cacheData;
-    });
-    const queryData = this.emailService.datasetsForm.value;
-    this.applicationService.application$.subscribe((res: any) => {
-      this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
-      queryData.applicationId = res?.id;
-      queryData.emailDistributionList = this.emailService.emailDistributionList;
-    });
-    queryData.isDraft = false;
-    queryData.draftStepper = 4;
-    queryData.notificationType =
-      this.emailService.datasetsForm.controls.notificationType.value;
-    queryData.emailLayout = this.emailService.emailLayout;
-    if (this.emailService.isEdit) {
-      if (
-        this.emailService.allLayoutdata.headerLogo &&
-        !queryData.emailLayout.header.headerLogo
-      ) {
-        queryData.emailLayout.header.headerLogo =
-          this.emailService.allLayoutdata.headerLogo;
-      }
-      if (
-        this.emailService.allLayoutdata.footerLogo &&
-        !queryData.emailLayout.footer.footerLogo
-      ) {
-        queryData.emailLayout.footer.footerLogo =
-          this.emailService.allLayoutdata.footerLogo;
-      }
-      if (
-        this.emailService.allLayoutdata.footerLogo &&
-        !queryData.emailLayout.banner.bannerImage
-      ) {
-        queryData.emailLayout.banner.bannerImage =
-          this.emailService.allLayoutdata.bannerImage;
-      }
-      await this.emailService
-        .getDataSetToSkipOptions(queryData)
-        .then((manipulatedDataWithoutOptions) => {
-          this.emailService
-            .editEmailNotification(
-              this.emailService.editId,
-              manipulatedDataWithoutOptions
-            )
-            .subscribe((res: any) => {
-              this.emailService.editId = '';
-              this.emailService.configId = res.data.editEmailNotification.id;
-              // this.emailService.getFinalEmail(
-              //   this.emailService.configId as string
-              // );
-              this.previewTriggered = true;
-            });
-        });
-    } else {
-      await this.emailService
-        .getDataSetToSkipOptions(queryData)
-        .then((manipulatedDataWithoutOptions) => {
-          this.emailService
-            .addEmailNotification(manipulatedDataWithoutOptions)
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((res: any) => {
-              this.emailService.configId = res.data.addEmailNotification.id;
-              // this.emailService.getFinalEmail(
-              //   this.emailService.configId as string
-              // );
-              this.previewTriggered = true;
-            });
-        });
-    }
   }
 
   /**
@@ -893,6 +816,9 @@ export class EmsTemplateComponent
                         );
                         this.emailService.datasetsForm.reset();
                         this.navigateToEms.emit();
+                      } else {
+                        this.currentStep += 1;
+                        this.steps[5].disabled = false;
                       }
                     }
                   }
@@ -937,6 +863,10 @@ export class EmsTemplateComponent
                         );
                         this.emailService.datasetsForm.reset();
                         this.navigateToEms.emit();
+                      } else {
+                        this.currentStep += 1;
+                        this.steps[5].disabled = false;
+                        this.previewTriggered = true;
                       }
                     }
                   }

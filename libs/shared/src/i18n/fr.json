@@ -346,6 +346,7 @@
 			"objectNotInvited": "L'invitation vers {{name}} a échoué.",
 			"objectNotReordered": "{{type}} non réorganisé. {{error}}",
 			"objectNotRestored": "{{value}} non restauré. {{error}}",
+			"objectNotSaved": "{{type}} non enregistré. \n{{erreur}}",
 			"objectNotUpdated": "L'objet de type {{type}} n'a pas pu être modifié. {{error}}",
 			"objectReordered": "L'objet de type {{type}} a été réorganisé.",
 			"objectRestored": "{{value}} restauré.",

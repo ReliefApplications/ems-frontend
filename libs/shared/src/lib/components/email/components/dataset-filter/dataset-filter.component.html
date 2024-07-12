@@ -28,7 +28,7 @@
         />
       </div>
     </div>
-    <div formGroupName="query" class="w-2/3 flex flex-row gap-5">
+    <div class="w-2/3 flex flex-row gap-5">
       <!-- select dataset dropdown -->
       <div class="w-1/2">
         <label
@@ -44,7 +44,7 @@
             [selectedElements]="[resource]"
           ></shared-resource-select>
           <ui-button
-            *ngIf="query?.get('query')?.value.resource"
+            *ngIf="query?.value.resource"
             uiSuffix
             size="small"
             [isIcon]="true"
@@ -223,7 +223,7 @@
     [closable]="true"
     *ngIf="
       this.resourcePopulated &&
-      this.query?.get('query')?.value?.resource !== null &&
+      this.query?.value?.resource !== null &&
       !this.resource?.fields?.length
     "
   >

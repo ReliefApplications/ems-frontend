@@ -119,21 +119,6 @@ export class PreviewComponent
 
   ngOnInit() {
     this.loadFinalEmailPreview();
-    this.replaceTokensWithTables();
-    this.replaceDateTimeTokens();
-    // if (document.getElementById('subjectHtml') as HTMLInputElement) {
-    //   (document.getElementById('subjectHtml') as HTMLInputElement).innerHTML =
-    //     this.subjectString ?? '<div></div>';
-    // }
-
-    // this.emailPreviewHtml =
-    //   this.emailService.finalEmailPreview ?? '<div></div>';
-
-    // if (document.getElementById('emailContainer') as HTMLInputElement) {
-    //   (
-    //     document.getElementById('emailContainer') as HTMLInputElement
-    //   ).innerHTML = this.emailPreviewHtml.html as string;
-    // }
   }
 
   /**
@@ -141,7 +126,7 @@ export class PreviewComponent
    */
   loadFinalEmailPreview(): void {
     this.emailService.loading = true; // Show spinner
-
+    console.log('configId', this.emailService.configId);
     this.http
       .post(
         `${this.restService.apiUrl}/notification/preview-email/${this.emailService.configId}`,

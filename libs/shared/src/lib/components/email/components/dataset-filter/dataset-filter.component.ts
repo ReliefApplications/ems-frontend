@@ -140,13 +140,12 @@ export class DatasetFilterComponent
   }
 
   ngOnInit(): void {
-    if (this.query.controls.query.get('resource').value && !this.resource) {
-      this.selectedResourceId = this.query.controls.query.get('resource').value;
+    if (this.query.controls.resource.value && !this.resource) {
+      this.selectedResourceId = this.query.controls.resource.value;
       this.getResourceData(false);
     }
-    this.query.controls.query
-      .get('resource')
-      .valueChanges.pipe(takeUntil(this.destroy$))
+    this.query.controls.resource.valueChanges
+      .pipe(takeUntil(this.destroy$))
       .subscribe((value: any) => {
         if (
           value !== undefined &&
@@ -179,13 +178,13 @@ export class DatasetFilterComponent
       this.query.controls['name'].setValue(name);
     }
 
-    if (this.query?.get('query')?.value?.resource?.id) {
-      this.selectedResourceId = this.query?.get('query')?.value?.resource;
+    if (this.query?.value?.resource) {
+      this.selectedResourceId = this.query?.value?.resource;
       this.getResourceData(false);
     }
 
     this.filteredFields = this.resource?.fields;
-    if (this.query.controls.query.get('cacheData').value) {
+    if (this.query.controls.query.get('cacheData')?.value) {
       const {
         dataList,
         resource,
@@ -217,6 +216,7 @@ export class DatasetFilterComponent
   }
 
   override ngOnDestroy() {
+    console.log('QUERY DATA FROM DATASET QUERY', this.query);
     const cacheData = {
       dataList: this.dataList,
       resource: this.resource,
@@ -283,9 +283,9 @@ export class DatasetFilterComponent
         .subscribe(({ data }) => {
           const queryTemp: any = data.resource;
           const newData = this.queryBuilder.getFields(queryTemp.queryName);
-          if (this.query.controls.query.get('name') === null) {
-            this.query.controls.query.addControl('name', new FormControl(''));
-          }
+          // if (this.query.controls.query.get('name') === null) {
+          //   this.query.controls.query.addControl('name', new FormControl(''));
+          // }
           this.query.controls.query.get('name').setValue(queryTemp.queryName);
           this.availableFields = newData;
           this.filterFields = cloneDeep(newData);
@@ -542,9 +542,9 @@ export class DatasetFilterComponent
    */
   onChangeSendAttachment(): void {
     if (this.query.controls.isMoreData.value) {
-      this.query.controls.query
-        .get('sendAsAttachment')
-        .setValue(!this.query.controls.query.get('sendAsAttachment').value);
+      this.query.controls['sendAsAttachment'].setValue(
+        !this.query.controls.sendAsAttachment.value
+      );
     }
   }
 
@@ -567,10 +567,9 @@ export class DatasetFilterComponent
    * @param event click event
    */
   clearFormField(formField: string, event: Event) {
-    const query = this.query.controls.query;
-    if (query.get(formField)?.value) {
-      query.get(formField)?.setValue(null);
-      query.get('resource').value = null;
+    if (this.query.controls[formField]?.value) {
+      this.query.controls[formField].setValue(null);
+      this.query.controls.resource.value = null;
     }
     this.resetQuery(this.query.get('query'));
     this.resource.fields = [];
