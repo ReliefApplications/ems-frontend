@@ -33,6 +33,10 @@ import calculateDepreciation from './solidarites-demo/calculateDepreciation';
 import getLinkField from './solidarites-demo/getLinkField';
 import flatten from './flatten';
 import trim from './trim';
+import filterRowsByColValue from './matrices/filterRowsByColValue';
+import listRows from './matrices/listRows';
+import renameColumn from './matrices/renameColumn';
+import selectColumns from './matrices/selectColumns';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -68,6 +72,10 @@ export const functions = [
   { fn: getLinkField, name: 'getLinkField' },
   { fn: flatten, name: 'flatten' },
   { fn: trim, name: 'trim' },
+  { fn: filterRowsByColValue, name: 'filterRowsByColValue' },
+  { fn: listRows, name: 'listRows' },
+  { fn: renameColumn, name: 'renameColumn' },
+  { fn: selectColumns, name: 'selectColumns' },
 ];
 
 /** Generators for each async custom function available  */
