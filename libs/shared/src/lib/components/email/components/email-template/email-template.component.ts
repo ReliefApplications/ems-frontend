@@ -152,11 +152,12 @@ export class EmailTemplateComponent
   /** Loading status. */
   public loading = false;
   /** List of display types */
-  public segmentList = [
-    'Add Manually',
-    'Select From List',
-    'Select With Filter',
-  ];
+  // public segmentList = [
+  //   'Add Manually',
+  //   'Select From List',
+  //   'Select With Filter',
+  // ];
+  public segmentList = ['Add Manually'];
   /** Time units for filtering. */
   public timeUnits = [
     { value: 'hours', label: 'Hours' },
