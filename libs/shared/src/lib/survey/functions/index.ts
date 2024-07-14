@@ -37,6 +37,7 @@ import filterRowsByColValue from './matrices/filterRowsByColValue';
 import listRows from './matrices/listRows';
 import renameColumn from './matrices/renameColumn';
 import selectColumns from './matrices/selectColumns';
+import log from './log';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -76,6 +77,7 @@ export const functions = [
   { fn: listRows, name: 'listRows' },
   { fn: renameColumn, name: 'renameColumn' },
   { fn: selectColumns, name: 'selectColumns' },
+  { fn: log, name: 'log' },
 ];
 
 /** Generators for each async custom function available  */

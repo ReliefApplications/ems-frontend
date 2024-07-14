@@ -130,9 +130,7 @@ export const init = (
           pickerDiv.remove();
         }
         if (
-          ['date', 'datetime', 'datetime-local', 'time'].includes(
-            question.inputType
-          )
+          ['datetime', 'datetime-local', 'time'].includes(question.inputType)
         ) {
           pickerDiv = document.createElement('div');
           pickerDiv.classList.add('flex', 'min-h-[36px]');
@@ -261,6 +259,8 @@ export const init = (
               }
             );
           }
+        } else if (question.inputType === 'date') {
+          question.value = question.value?.split('T')[0];
         } else {
           el.classList.add('flex-1', 'min-h-[36px]');
           el.style.display = 'initial';

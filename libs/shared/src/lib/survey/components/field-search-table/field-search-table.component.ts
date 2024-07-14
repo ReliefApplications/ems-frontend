@@ -144,7 +144,7 @@ export class FieldSearchTableComponent
 
     // Subscribe to value changes with debounce time
     this.valueChange
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(debounceTime(2000), takeUntil(this.destroy$))
       .subscribe(() => {
         this.isTouched =
           this.question.value !==
@@ -230,7 +230,8 @@ export class FieldSearchTableComponent
     data: ResourceRecordsConnectionsQueryResponse,
     loading: boolean
   ) {
-    const mappedValues = data.resource.records.edges.map((x) => x.node);
+    const mappedValues =
+      data?.resource?.records?.edges.map((x) => x.node) ?? [];
     this.cachedRecords = updateQueryUniqueValues(
       this.cachedRecords,
       mappedValues

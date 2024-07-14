@@ -191,6 +191,7 @@ export class DashboardComponent
     // Doing this to be able to use custom styles on specific dashboards
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.loading = true;
+    this.showFilter = false;
     return firstValueFrom(
       this.apollo.query<DashboardQueryResponse>({
         query: GET_DASHBOARD_BY_ID,

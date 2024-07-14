@@ -28,15 +28,22 @@ export default (options: GlobalOptions) => {
     },
     params: any[]
   ) {
-    const [prescription] = params;
+    const [prescription, panel_idx] = params;
 
     const DEFAULT_INFO = {
       is_active: false,
       header_text: 'Remplir la prescription',
     };
 
+    const returnResult = (res: any) => {
+      const currInfo = this.survey.getVariable('prescription_info') ?? [];
+      currInfo[panel_idx] = res;
+      this.survey.setVariable('prescription_info', currInfo);
+      return;
+    };
+
     if (typeof prescription !== 'object' || !prescription) {
-      this.returnResult(DEFAULT_INFO);
+      returnResult(DEFAULT_INFO);
       return;
     }
 
@@ -44,7 +51,7 @@ export default (options: GlobalOptions) => {
 
     // If the data is not fully filled
     if (!start || !end || !aidFrequency) {
-      this.returnResult(DEFAULT_INFO);
+      returnResult(DEFAULT_INFO);
       return;
     }
 
@@ -94,7 +101,7 @@ export default (options: GlobalOptions) => {
     const numFoodAids = numFoodAidsRes?.data?.allAid?.totalCount ?? 0;
     const isActive =
       startDate < endDate && !endDatePassed && !(numFoodAids >= maxAids);
-    this.returnResult({
+    returnResult({
       is_active: isActive,
       header_text: isActive
         ? 'Prescription en cours de validité'

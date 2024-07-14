@@ -204,6 +204,15 @@ export const init = (
         question.value = value;
       });
 
+      // Update the dropdown value when the question value changes
+      question.registerFunctionOnPropertyValueChanged(
+        'value',
+        (value: string[]) => {
+          instance.control.setValue(value ?? []);
+          instance.reloadSelectedUsers();
+        }
+      );
+
       if (question.isReadOnly) {
         instance.control.disable();
       }

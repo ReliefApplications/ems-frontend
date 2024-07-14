@@ -460,8 +460,8 @@ export const init = (
         visibleIndex: 17,
         onSetValue: (question: QuestionResource, value: boolean) => {
           if (value) {
-            question.setPropertyValue('autoSelectFirstOption', false);
-            question.setPropertyValue('autoSelectOnlyOption', true);
+            question.setPropertyValue('autoSelectFirstOption', true);
+            question.setPropertyValue('autoSelectOnlyOption', false);
           }
         },
       });
