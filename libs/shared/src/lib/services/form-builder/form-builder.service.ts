@@ -237,6 +237,13 @@ export class FormBuilderService {
       }
     });
 
+    survey.onQuestionValueChanged = {};
+    survey.onValueChanged.add((_, options) => {
+      if (survey.onQuestionValueChanged[options.name]) {
+        survey.onQuestionValueChanged[options.name](options);
+      }
+    });
+
     // Handles logic for after record creation, selection and deselection on resource type questions
     survey.onCompleting.add(() => {
       survey.getAllQuestions().forEach((question) => {

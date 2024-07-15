@@ -78,11 +78,11 @@ export const functions = [
   { fn: renameColumn, name: 'renameColumn' },
   { fn: selectColumns, name: 'selectColumns' },
   { fn: log, name: 'log' },
+  { fn: getPrescriptionInfo, name: 'getPrescriptionInfo2' },
 ];
 
 /** Generators for each async custom function available  */
 export const asyncFunctions = [
   { fn: getComplaintsByType, name: 'getComplaintsByType' },
   { fn: getCurrentYearAids, name: 'getCurrentYearAids' },
-  { fn: getPrescriptionInfo, name: 'getPrescriptionInfo' },
 ];

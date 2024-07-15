@@ -712,7 +712,9 @@ export const init = (
           actionsButtons.appendChild(searchBtn);
         } else {
           // remove the search button from the actions buttons
-          actionsButtons.removeChild(searchBtn);
+          if (actionsButtons.contains(searchBtn)) {
+            actionsButtons.removeChild(searchBtn);
+          }
         }
       };
 

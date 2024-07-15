@@ -234,9 +234,7 @@ export const init = (environment: any): void => {
     isLocalizable: true,
     onExecuteExpression: (obj: QuestionPanelDynamicModel, res: any) => {
       // Weird bug with surveyJS, if we don't wait a bit, it doesn't work
-      setTimeout(() => {
-        obj.allowAddPanel = !!res;
-      }, 50);
+      obj.allowAddPanel = !!res;
     },
   });
 
