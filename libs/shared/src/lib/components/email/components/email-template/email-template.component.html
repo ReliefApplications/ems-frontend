@@ -46,36 +46,6 @@
       >
         {{ 'components.queryBuilder.dataset.title' | translate }}*
       </label>
-      <ng-select
-        id="select__data__set"
-        name="select__data__set"
-        [(ngModel)]="selectedDataset"
-        [ngModelOptions]="{ standalone: true }"
-        [items]="datasets"
-        bindLabel="blockName"
-        [searchable]="true"
-        [virtualScroll]="true"
-        (clear)="clearDatasetSelection()"
-        (change)="bindDataSetDetails($event)"
-        [placeholder]="'components.queryBuilder.dataset.select' | translate"
-      >
-        <ng-template disabled selected>
-          <span>{{
-            'components.queryBuilder.dataset.select' | translate
-          }}</span>
-        </ng-template>
-        <ng-template
-          ng-option-tmp
-          let-item="item"
-          let-index="index"
-          let-search="searchTerm"
-        >
-          <span>{{
-            this.emailService.replaceUnderscores(item.blockName || '')
-              | titlecase
-          }}</span>
-        </ng-template>
-      </ng-select>
     </div>
   </div>
 
@@ -104,27 +74,5 @@
     *ngIf="activeSegmentIndex === 1 || showPreview"
   >
     <div></div>
-  </div>
-
-  <div *ngIf="activeSegmentIndex === 2 && showBtnPreview">
-    <!-- Apply filter -->
-    <ui-button
-      *ngIf="datasetFilterInfo.controls"
-      class="float-right mt-8"
-      category="secondary"
-      variant="primary"
-      (click)="applyFilter('')"
-    >
-      {{ 'components.queryBuilder.filter.apply' | translate }}
-    </ui-button>
-    <!-- Preview dataset -->
-    <ui-button
-      class="float-right mt-8 mr-2"
-      category="secondary"
-      variant="primary"
-      (click)="applyFilter('')"
-    >
-      {{ 'common.preview' | translate }}
-    </ui-button>
   </div>
 </div>

@@ -1,12 +1,5 @@
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { EmailService } from '../../email.service';
-import { FormGroup } from '@angular/forms';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { DownloadService } from '../../../../services/download/download.service';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
@@ -24,7 +17,7 @@ const DISTRIBUTION_PAGE_SIZE = 5;
   templateUrl: './select-distribution.component.html',
   styleUrls: ['./select-distribution.component.scss'],
 })
-export class SelectDistributionComponent implements OnInit, OnDestroy {
+export class SelectDistributionComponent implements OnInit {
   /**
    * Composite email distribution.
    *
@@ -50,12 +43,6 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
   public showEmailTemplate = false;
   /** Type of email template. */
   public templateFor = '';
-  /** Filter form group for TO email. */
-  public toEmailFilter!: FormGroup | any;
-  /** Filter form group for CC email. */
-  public ccEmailFilter!: FormGroup | any;
-  /** Filter form group for BCC email. */
-  public bccEmailFilter!: FormGroup | any;
   /** Flag indicating whether existing distribution list is shown. */
   public showExistingDistributionList = false;
   /** Cached distribution list data. */
@@ -93,17 +80,7 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     limit: DEFAULT_PAGE_SIZE,
   };
   /** Recipients data. */
-  public emailDistributionList: {
-    name: string;
-    To: string[];
-    Cc: string[];
-    Bcc: string[];
-  } = {
-    name: '',
-    To: [],
-    Cc: [],
-    Bcc: [],
-  };
+  public emailDistributionList = this.emailService.emailDistributionList;
   /** Flag indicating loading state. */
   public isLoading = false;
   /** Cached data. */
@@ -128,10 +105,6 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     | undefined;
 
   ngOnInit(): void {
-    this.emailDistributionList = this.emailService.emailDistributionList;
-    this.toEmailFilter = this.emailService.toEmailFilter;
-    this.ccEmailFilter = this.emailService.ccEmailFilter;
-    this.bccEmailFilter = this.emailService.bccEmailFilter;
     this.validateDistributionList();
 
     // Toggle all dropdowns to open by default
@@ -227,50 +200,6 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * This method is used to set the 'To' field of the email.
-   *
-   * @param data The data to be set in the 'To' field.
-   * @param data.emails Array of email addresses to be set in the 'To' field.
-   * @param data.emailFilter The form group representing the email filter.
-   */
-  to(data: { emails: string[]; emailFilter: any }): void {
-    this.emailDistributionList.To = data.emails;
-    this.toEmailFilter = data.emailFilter;
-    this.validateDistributionList();
-  }
-
-  /**
-   * This method is used to set the 'CC' field of the email.
-   *
-   * @param data The data to be set in the 'CC' field.
-   * @param data.emails Array of email addresses to be set in the 'CC' field.
-   * @param data.emailFilter The form group representing the email filter.
-   */
-  cc(data: { emails: string[]; emailFilter: any }): void {
-    this.emailDistributionList.Cc = data.emails;
-    this.ccEmailFilter = data.emailFilter;
-  }
-
-  /**
-   * This method is used to set the 'BCC' field of the email.
-   *
-   * @param data The data to be set in the 'BCC' field.
-   * @param data.emails Array of email addresses to be set in the 'BCC' field.
-   * @param data.emailFilter The form group representing the email filter.
-   */
-  bcc(data: { emails: string[]; emailFilter: any }): void {
-    this.emailDistributionList.Bcc = data.emails;
-    this.bccEmailFilter = data.emailFilter;
-  }
-
-  ngOnDestroy(): void {
-    this.emailService.emailDistributionList = this.emailDistributionList;
-    this.emailService.toEmailFilter = this.toEmailFilter;
-    this.emailService.ccEmailFilter = this.ccEmailFilter;
-    this.emailService.bccEmailFilter = this.bccEmailFilter;
-  }
-
-  /**
    * Get existing distribution list template.
    */
   getExistingTemplate() {
@@ -345,6 +274,7 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
    * @param event file selection Event
    */
   fileSelectionHandler(event: any): void {
+    //TODO: change to match new schema
     this.showToTemplate = false;
     this.showCCTemplate = false;
     this.showBccTemplate = false;
@@ -385,6 +315,7 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
    * one To email address and name to proceed with next steps
    */
   validateDistributionList(): void {
+    // TODO: Change this to match new schema
     const isSaveAndProceedNotAllowed =
       this.emailDistributionList.To.length === 0 ||
       this.emailDistributionList.name.length === 0 ||

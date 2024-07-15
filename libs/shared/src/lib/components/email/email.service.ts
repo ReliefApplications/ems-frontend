@@ -4,17 +4,13 @@ import {
   ADD_EMAIL_NOTIFICATION,
   GET_AND_UPDATE_EMAIL_NOTIFICATION,
   GET_EMAIL_NOTIFICATIONS,
-  GET_QUERY_META_DATA,
   GET_RESOURCE_BY_ID,
 } from './graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { RestService } from '../../services/rest/rest.service';
-import { TYPE_LABEL } from './filter/filter.const';
 import { FieldStore } from './models/email.const';
-import { cloneDeep } from 'lodash';
-import { QueryMetaDataQueryResponse } from '../../models/metadata.model';
 import { ResourceQueryResponse } from '../../models/resource.model';
 import { prettifyLabel } from '../../utils/prettify';
 
@@ -76,8 +72,6 @@ export class EmailService {
   public stepperDisable = new BehaviorSubject<any>('');
   /** Should show existing distribution list */
   public showExistingDistributionList = false;
-  /** Flag indicating whether graphql is loading. */
-  public metaDataQueryLoading = false;
   /** Distribution list data */
   public emailDistributionList: {
     name: string;
@@ -186,10 +180,6 @@ export class EmailService {
   public cacheDistributionList: any = [];
   /** Final Email Preview */
   public finalEmailPreview: any = '';
-  /** Meta Data Query Loading State Subject  */
-  private metaDataQueryLoadingSource = new BehaviorSubject<boolean>(false);
-  /** Meta Data Query Loading State Observable */
-  metaDataQueryLoading$ = this.metaDataQueryLoadingSource.asObservable();
 
   /**
    * Generates new dataset group.
@@ -306,15 +296,6 @@ export class EmailService {
         this.allLayoutdata[key as keyof typeof defaultStyles] = styles[key];
       }
     });
-  }
-
-  /**
-   * Sets the metadata graphql query loading state.
-   *
-   * @param loadingState The loading state of metadata graphql query
-   */
-  updateMetaDataTypeLoading(loadingState: boolean): void {
-    this.metaDataQueryLoadingSource.next(loadingState);
   }
 
   /**
@@ -673,36 +654,6 @@ export class EmailService {
   }
 
   /**
-   * Manipulates the payload by modifying options of fields based on fetched dataset.
-   *
-   * @param {any} emailData - The payload to be manipulated with limited options.
-   * @returns {Promise<any>} A Promise that resolves with the modified emailData.
-   */
-  async getDataSetToSkipOptions(emailData: any) {
-    await Promise.all(
-      emailData.datasets.map(async (dataset: any) => {
-        const tempQuery = cloneDeep(dataset.query);
-        if (!dataset.resource) {
-          // TODO: Implement actual fix instead of quick fix
-          dataset.resource = tempQuery.resource;
-          dataset.query = {
-            name: tempQuery.name,
-            filter: tempQuery.filter,
-            fields: tempQuery.fields,
-          };
-          dataset.blockType = tempQuery.blockType;
-          dataset.textStyle = tempQuery.textStyle;
-          dataset.tableStyle = tempQuery.tableStyle;
-          dataset.pageSize = tempQuery.pageSize;
-          dataset.individualEmail = tempQuery.isIndividualEmail ?? false;
-          dataset.sendAsAttachment = tempQuery.sendAsAttachment ?? false;
-        }
-      })
-    );
-    return emailData;
-  }
-
-  /**
    * Gets the final email preview.
    *
    * @param configID - The configID of the email notification.
@@ -844,292 +795,6 @@ export class EmailService {
   }
 
   /**
-   * Get the data set and flatten it.
-   *
-   * @param emailData data to be sent.
-   * @param isSendEmail checks if sending email or not.
-   */
-  getDataSet(emailData: any, isSendEmail?: boolean) {
-    let count = 0;
-    isSendEmail;
-    for (const query of emailData.datasets) {
-      query?.fields?.forEach((x: any) => {
-        if (x.parentName) {
-          const child = x.name;
-          x.childName = child.split(' - ')[1];
-          x.name = x.parentName;
-          x.childType = x.type;
-          x.type = 'resource';
-        }
-      });
-      // const resourceInfo = { id: query.resource.id, name: query.resource.name };
-      query.tabIndex = count;
-      count++;
-      query.pageSize = Number(query.pageSize);
-      this.emailListLoading = false;
-    }
-    if (emailData?.datasets?.length == 0) {
-      this.emailListLoading = false;
-    }
-  }
-
-  /**
-   * Flattens the given record object into a single level object.
-   *
-   * @param record The record to be flattened.
-   * @param resourceInfo Name and Id of the supplied resource.
-   * @param query Form Query Object for field values.
-   * @returns The flattened record.
-   */
-  flattenRecord(record: any, resourceInfo: any, query?: any): any {
-    const result: any = {};
-    for (const key in record) {
-      if (Object.prototype.hasOwnProperty.call(record, key)) {
-        const value = record[key];
-        if (typeof value === 'object' && value !== null) {
-          if (value.data) {
-            query.fields.forEach((x: any) => {
-              if (x.childName) {
-                // Check if the childName exists in the records object
-                let matchingKey = Object.keys(record[key].data).find(
-                  (child) => child === x.childName
-                );
-                if (
-                  x.childName.split('.')[0] === '_createdBy' ||
-                  x.childName.split('.')[0] === '_createdBy'
-                ) {
-                  const namedChild = `${x.childName}`;
-                  matchingKey = Object.keys(
-                    record[key][namedChild.split('.')[0]][
-                      namedChild.split('.')[1]
-                    ]
-                  ).find((child) => child === namedChild.split('.')[2]);
-                }
-
-                if (
-                  matchingKey &&
-                  !(
-                    x.childName.split('.')[0] === '_createdBy' ||
-                    x.childName.split('.')[0] === '_lastUpdatedBy'
-                  )
-                ) {
-                  // If a match is found, map the child field to the corresponding value in records
-                  result[`${x.parentName} - ${x.childName}`] =
-                    value.data[matchingKey];
-                } else {
-                  matchingKey =
-                    matchingKey ??
-                    Object.keys(record[key]).find(
-                      (child) => child === x.childName
-                    ) ??
-                    Object.keys(record[key]).find(
-                      (child) => child === `_${x.childName}`
-                    );
-                  if (
-                    matchingKey &&
-                    !(
-                      x.childName.split('.')[0] === '_createdBy' ||
-                      x.childName.split('.')[0] === '_lastUpdatedBy'
-                    )
-                  ) {
-                    // If a match is found, searches for meta data and sets if found
-                    result[`${x.parentName} - ${x.childName}`] =
-                      record[key][matchingKey];
-                  } else if (matchingKey) {
-                    const namedChild = `${x.childName}`;
-                    result[`${x.parentName} - ${x.childName}`] =
-                      record[key][namedChild.split('.')[0]][
-                        namedChild.split('.')[1]
-                      ][namedChild.split('.')[2]];
-                  }
-                }
-              }
-            });
-          } else if (value.geometry) {
-            result[
-              key
-            ] = `${record[key].properties.countryName} (${record[key].properties.coordinates.lat}, ${record[key].properties.coordinates.lng})`;
-          } else {
-            const metaField = query.fields.find((field: any) => {
-              return field.name === key;
-            });
-
-            const fieldType = metaField?.type;
-
-            if (fieldType !== TYPE_LABEL.resources) {
-              const fieldName = query.fields.find((field: any) => {
-                return field.name === key;
-              });
-
-              if (fieldType === 'owner' || fieldType === 'users') {
-                const options = fieldName?.options?.filter((option: any) => {
-                  return Object.values(record[key]).some((array: any) =>
-                    array.includes(option.value)
-                  );
-                });
-
-                if (options && options.length > 0) {
-                  // Map over the options to extract the text values and join them with commas
-                  result[key] = options
-                    .map((option: any) => option.text)
-                    .join(', ');
-                } else {
-                  result[key] = record[key];
-                }
-              } else if (
-                metaField?.options?.every((x: any) => !isNaN(x.value)) &&
-                metaField?.options?.length
-              ) {
-                // Checks that all of the metafield options are numbers.
-                const findMatchingTexts = (options: any, keysToFind: any) => {
-                  return options
-                    .filter((values: any) =>
-                      keysToFind.includes(parseInt(values.value))
-                    )
-                    .map((values: any) => values.text)
-                    .join(', ');
-                };
-
-                const matchingTexts = findMatchingTexts(
-                  metaField?.options,
-                  record[key]
-                );
-                result[key] = matchingTexts;
-                if (matchingTexts === '') {
-                  result[key] = record[key].join(', ');
-                }
-              } else if (metaField?.options?.length) {
-                // Checks that all of the metafield options are not numbers.
-                result[key] = metaField?.options
-                  ?.filter((values: any) => value.includes(values.value))
-                  .map((values: any) => values.text)
-                  .join(', ');
-              } else if (
-                Array.isArray(record[key]) &&
-                record[key].some(
-                  (item: any) =>
-                    Object.prototype.hasOwnProperty.call(item, 'text') &&
-                    Object.prototype.hasOwnProperty.call(item, 'value')
-                )
-              ) {
-                const texts = record[key]
-                  .filter((item: any) =>
-                    Object.prototype.hasOwnProperty.call(item, 'text')
-                  )
-                  .map((item: any) => item.text);
-
-                // Decide whether to join with a comma based on the length of the texts array
-                result[key] = texts.length === 1 ? texts[0] : texts.join(', ');
-              } else {
-                result[key] = record[key];
-              }
-            } else {
-              // Takes the resources count and maps it to the resource name.
-              result[key] =
-                record[key].length > 1
-                  ? `${record[key].length} items`
-                  : `${record[key].length} item`;
-            }
-          }
-        } else {
-          if (
-            key.split('_')[1] == 'createdBy' ||
-            key.split('_')[1] == 'lastUpdatedBy'
-          ) {
-            if (key.split('_')[3] === 'id') {
-              // Takes the created by and last updated by values and persists them.
-              result[
-                `_${key.split('_')[1]}.${key.split('_')[2]}._${
-                  key.split('_')[3]
-                }`
-              ] = value;
-            } else if (key.split('_')[4] === 'id') {
-              // Takes the created by and last updated by values and persists them.
-              result[
-                `_${key.split('_')[1]}.${key.split('_')[2]}._${
-                  key.split('_')[4]
-                }`
-              ] = value;
-            } else {
-              // Takes the created by and last updated by values and persists them.
-              result[
-                `_${key.split('_')[1]}.${key.split('_')[2]}.${
-                  key.split('_')[3]
-                }`
-              ] = value;
-            }
-          } else if (key == 'form') {
-            const metaField = query.fields.find((field: any) => {
-              return field.name === key;
-            });
-            result[key] = metaField?.options?.filter(
-              (x: any) => x.value === record[key]
-            )[0]?.text;
-          } else if (key == 'lastUpdateForm') {
-            // TO DO
-            // Ideally we will run an apollo graphql query to fetch the form
-            // names from the id's passed into the form and lastUpdateForm
-            // fields. This isn't currently working due to the data configuration,
-            // likely will need to normalise the metaData so that we have options/choices.
-            result[key] = value;
-          } else {
-            const metaField = query.fields.find((field: any) => {
-              return field.name === key;
-            });
-
-            if (
-              metaField?.options?.every((x: any) => !isNaN(x.value)) &&
-              metaField?.options?.length
-            ) {
-              const findMatchingTexts = (options: any, keysToFind: any) => {
-                return options
-                  .filter((values: any) => {
-                    if (typeof keysToFind === 'object') {
-                      return keysToFind?.includes(parseInt(values.value));
-                    } else {
-                      const keyAsArray = [keysToFind];
-                      return keyAsArray?.includes(parseInt(values.value));
-                    }
-                  })
-                  .map((values: any) => values.text)
-                  .join(', ');
-              };
-
-              let matchingTexts = findMatchingTexts(
-                metaField?.options,
-                record[key]
-              );
-              if (matchingTexts === '') {
-                // If matching text is blank then needs to check with passing int data (Type cast issue)
-                matchingTexts = metaField?.options
-                  .filter((values: any) => {
-                    if (typeof record[key] === 'object') {
-                      return record[key]?.includes(values?.value);
-                    } else {
-                      const keyAsArray = [record[key]];
-                      return keyAsArray?.includes(values?.value);
-                    }
-                  })
-                  .map((values: any) => values.text)
-                  .join(', ');
-                // matchingTexts = findMatchingTexts(
-                //   metaField?.options,
-                //   record[key] ? parseInt(record[key]) : record[key]
-                // );
-              }
-              result[key] = matchingTexts;
-            } else {
-              result[key] = value;
-            }
-          }
-        }
-      }
-    }
-
-    return result;
-  }
-
-  /**
    * Checks if a given date string is a valid date in the format YYYY-MM-DD.
    *
    * @param {string} dateString The date string to validate.
@@ -1167,12 +832,10 @@ export class EmailService {
    * @param field Name of record field
    * @returns formatted data string ( can be original value )
    */
-  formatDataStrings(rowData: any, field: string): string {
-    const select = this.isSelect(field);
-
+  formatDataStrings(rowData: any, field?: string): string {
+    field;
     // Check if rowData is a string that can be parsed into a date
     if (
-      !select &&
       typeof rowData === 'string' &&
       !isNaN(Date.parse(rowData)) &&
       this.isValidDate(rowData)
@@ -1207,19 +870,6 @@ export class EmailService {
       return objectString;
     }
     return rowData ? JSON.stringify(rowData) : '';
-  }
-
-  /**
-   * Returns if field is Select
-   *
-   * @param fieldName Name of Field
-   * @returns boolean - true if field is Select
-   */
-  isSelect(fieldName: string) {
-    const field = this.fields.find((field: any) => {
-      return fieldName === field.name;
-    });
-    return field?.select;
   }
 
   /**
@@ -1258,21 +908,6 @@ export class EmailService {
         index: 0,
       },
     ];
-  }
-
-  /**
-   * Fetches Resource meta data
-   *
-   * @param selectedResourceId Id of the Resource
-   * @returns resource meta data
-   */
-  fetchResourceMetaData(selectedResourceId: any) {
-    return this.apollo.query<QueryMetaDataQueryResponse>({
-      query: GET_QUERY_META_DATA,
-      variables: {
-        id: selectedResourceId,
-      },
-    });
   }
 
   /**

@@ -8,7 +8,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { NgSelectComponent } from '@ng-select/ng-select';
-import { Subscription, takeUntil } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { convertToMinutes } from '../../../../utils/parser/utils';
 
@@ -134,17 +134,6 @@ export class LayoutComponent
       block: [''],
       body: [this.emailService.allLayoutdata.bodyHtml],
     });
-    this.loadChangeSubscription.add(
-      this.emailService.metaDataQueryLoading$
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((isLoading) => {
-          if (!isLoading) {
-            this.datasetOverflow =
-              this.emailService.allPreviewData.length > 1 ||
-              this.emailService.allPreviewData.length === 0;
-          }
-        })
-    );
 
     this.onTxtSubjectChange();
     this.initInTheLastDropdown();

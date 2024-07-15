@@ -525,9 +525,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       .get('applicationId')
       ?.setValue(this.applicationId);
 
-    this.emailService.metaDataQueryLoading = true;
-    this.emailService.updateMetaDataTypeLoading(true);
-
     // For each dataset, query its metadata
     const promises = emailData.datasets.map((dataset: any) => {
       return firstValueFrom(
@@ -550,14 +547,10 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     // Execute all queries in parallel and update metadata loading status when done
     Promise.all(promises).finally(() => {
       if (isSendEmail) {
-        this.emailService.getDataSet(emailData, true);
         this.emailService.stepperStep = 5;
       } else {
-        this.emailService.getDataSet(emailData, false);
         this.emailService.stepperStep = 0;
       }
-      this.emailService.metaDataQueryLoading = false;
-      this.emailService.updateMetaDataTypeLoading(false);
     });
   }
 

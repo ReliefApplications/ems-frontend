@@ -18,6 +18,7 @@ import { LayoutComponent } from '../../steps/layout/layout.component';
 import { SelectDistributionComponent } from '../../steps/select-distribution/select-distribution.component';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { SnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
+import { cloneDeep } from 'lodash';
 
 /** Snackbar duration in ms */
 const SNACKBAR_DURATION = 700;
@@ -400,6 +401,36 @@ export class EmsTemplateComponent
   }
 
   /**
+   * Manipulates the payload by modifying options of fields based on fetched dataset.
+   *
+   * @param {any} emailData - The payload to be manipulated with limited options.
+   * @returns {Promise<any>} A Promise that resolves with the modified emailData.
+   */
+  async getDataSetToSkipOptions(emailData: any) {
+    await Promise.all(
+      emailData.datasets.map(async (dataset: any) => {
+        const tempQuery = cloneDeep(dataset.query);
+        if (!dataset.resource) {
+          // TODO: Implement actual fix instead of quick fix
+          dataset.resource = tempQuery.resource;
+          dataset.query = {
+            name: tempQuery.name,
+            filter: tempQuery.filter,
+            fields: tempQuery.fields,
+          };
+          dataset.blockType = tempQuery.blockType;
+          dataset.textStyle = tempQuery.textStyle;
+          dataset.tableStyle = tempQuery.tableStyle;
+          dataset.pageSize = tempQuery.pageSize;
+          dataset.individualEmail = tempQuery.isIndividualEmail ?? false;
+          dataset.sendAsAttachment = tempQuery.sendAsAttachment ?? false;
+        }
+      })
+    );
+    return emailData;
+  }
+
+  /**
    * Submission for sending and saving emails
    */
   async saveAndSend(): Promise<void> {
@@ -448,9 +479,8 @@ export class EmsTemplateComponent
               this.emailService.allLayoutdata.bannerImage;
           }
 
-          await this.emailService
-            .getDataSetToSkipOptions(queryData)
-            .then((manipulatedDataWithoutOptions) => {
+          await this.getDataSetToSkipOptions(queryData).then(
+            (manipulatedDataWithoutOptions) => {
               this.emailService
                 .editEmailNotification(
                   this.emailService.editId,
@@ -483,7 +513,8 @@ export class EmsTemplateComponent
                     this.snackBar.openSnackBar(err.message, { error: true });
                   },
                 });
-            });
+            }
+          );
         } else {
           if (this.previewTriggered) {
             if (
@@ -508,9 +539,8 @@ export class EmsTemplateComponent
                 this.emailService.allLayoutdata.bannerImage;
             }
 
-            await this.emailService
-              .getDataSetToSkipOptions(queryData)
-              .then((manipulatedDataWithoutOptions) => {
+            await this.getDataSetToSkipOptions(queryData).then(
+              (manipulatedDataWithoutOptions) => {
                 this.emailService
                   .editEmailNotification(
                     this.emailService.configId as string,
@@ -543,12 +573,12 @@ export class EmsTemplateComponent
                       this.snackBar.openSnackBar(err.message, { error: true });
                     },
                   });
-              });
+              }
+            );
           } else {
             // For email notification create operation.
-            await this.emailService
-              .getDataSetToSkipOptions(queryData)
-              .then((manipulatedDataWithoutOptions) => {
+            await this.getDataSetToSkipOptions(queryData).then(
+              (manipulatedDataWithoutOptions) => {
                 this.emailService
                   .addEmailNotification(manipulatedDataWithoutOptions)
                   .subscribe({
@@ -578,7 +608,8 @@ export class EmsTemplateComponent
                       this.snackBar.openSnackBar(err.message, { error: true });
                     },
                   });
-              });
+              }
+            );
           }
         }
       } else {
@@ -640,11 +671,11 @@ export class EmsTemplateComponent
       // eslint-disable-next-line no-empty
     } catch (error: any) {}
     if (this.currentStep === 2) {
-      this.emailService.emailDistributionList =
-        this.distribution.emailDistributionList;
-      this.emailService.toEmailFilter = this.distribution.toEmailFilter;
-      this.emailService.ccEmailFilter = this.distribution.ccEmailFilter;
-      this.emailService.bccEmailFilter = this.distribution.bccEmailFilter;
+      // this.emailService.emailDistributionList =
+      //   this.distribution.emailDistributionList;
+      // this.emailService.toEmailFilter = this.distribution.toEmailFilter;
+      // this.emailService.ccEmailFilter = this.distribution.ccEmailFilter;
+      // this.emailService.bccEmailFilter = this.distribution.bccEmailFilter;
     }
     this.emailService.datasetsForm?.value?.datasets?.forEach((data: any) => {
       delete data.cacheData;
@@ -681,9 +712,8 @@ export class EmsTemplateComponent
         queryData.emailLayout.banner.bannerImage =
           this.emailService.allLayoutdata.bannerImage;
       }
-      await this.emailService
-        .getDataSetToSkipOptions(queryData)
-        .then((manipulatedDataWithoutOptions) => {
+      await this.getDataSetToSkipOptions(queryData).then(
+        (manipulatedDataWithoutOptions) => {
           this.emailService
             .editEmailNotification(
               this.emailService.editId,
@@ -699,11 +729,11 @@ export class EmsTemplateComponent
               this.emailService.datasetsForm.reset();
               this.navigateToEms.emit();
             });
-        });
+        }
+      );
     } else {
-      await this.emailService
-        .getDataSetToSkipOptions(queryData)
-        .then((manipulatedDataWithoutOptions) => {
+      await this.getDataSetToSkipOptions(queryData).then(
+        (manipulatedDataWithoutOptions) => {
           this.emailService
             .addEmailNotification(manipulatedDataWithoutOptions)
             .pipe(takeUntil(this.destroy$))
@@ -717,7 +747,8 @@ export class EmsTemplateComponent
               );
               this.navigateToEms.emit();
             });
-        });
+        }
+      );
     }
   }
 
@@ -770,9 +801,8 @@ export class EmsTemplateComponent
           queryData.emailLayout.banner.bannerImage =
             this.emailService.allLayoutdata.bannerImage;
         }
-        await this.emailService
-          .getDataSetToSkipOptions(queryData)
-          .then((manipulatedDataWithoutOptions) => {
+        await this.getDataSetToSkipOptions(queryData).then(
+          (manipulatedDataWithoutOptions) => {
             this.emailService
               .editEmailNotification(
                 this.emailService.editId,
@@ -814,13 +844,13 @@ export class EmsTemplateComponent
                   this.snackBar.openSnackBar(err.message, { error: true });
                 },
               });
-          });
+          }
+        );
       } else {
         // For email notification create operation.
 
-        await this.emailService
-          .getDataSetToSkipOptions(queryData)
-          .then((manipulatedDataWithoutOptions) => {
+        await this.getDataSetToSkipOptions(queryData).then(
+          (manipulatedDataWithoutOptions) => {
             this.emailService
               .addEmailNotification(manipulatedDataWithoutOptions)
               .subscribe({
@@ -856,7 +886,8 @@ export class EmsTemplateComponent
                   this.snackBar.openSnackBar(err.message, { error: true });
                 },
               });
-          });
+          }
+        );
       }
     }
   }

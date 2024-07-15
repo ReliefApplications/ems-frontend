@@ -1,9 +1,6 @@
 <!-- Loading indicator -->
-<ui-spinner
-  class="flex justify-center items-center h-screen"
-  *ngIf="emailService.metaDataQueryLoading"
-></ui-spinner>
-<form [formGroup]="layoutForm" *ngIf="!emailService.metaDataQueryLoading">
+<ui-spinner class="flex justify-center items-center h-screen"></ui-spinner>
+<form [formGroup]="layoutForm">
   <!-- 5th step Layout -->
   <div>
     <!-- Dropdowns and Subject Input -->
@@ -24,7 +21,6 @@
           [defaultMargin]="false"
           class="w-1/3 px-2"
           *ngIf="
-            !emailService.metaDataQueryLoading &&
             !(
               this.emailService.allPreviewData.length > 1 ||
               this.emailService.allPreviewData.length === 0
