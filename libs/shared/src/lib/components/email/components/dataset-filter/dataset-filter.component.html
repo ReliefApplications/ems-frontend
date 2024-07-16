@@ -177,7 +177,10 @@
               class="mt-2"
               *ngTemplateOutlet="tooManyRecordsAlertTmpl"
             ></ng-container>
-            <div id="tblPreview" [innerHTML]="previewHTML"></div>
+            <div class="overflow-x-auto">
+              <div id="tblPreview" [innerHTML]="previewHTML"></div>
+            </div>
+            
           </ng-template>
         </ui-tab>
 
