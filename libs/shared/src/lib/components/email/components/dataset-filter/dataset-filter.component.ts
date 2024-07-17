@@ -416,7 +416,7 @@ export class DatasetFilterComponent
         this.loading = true;
         for (const query of this.queryValue) {
           let objPreview: any = {};
-          query.query.fields.forEach((ele: any) => {
+          this.query.getRawValue().query?.fields.forEach((ele: any) => {
             const tempMatchedData = this.availableFields.find(
               (x) => prettifyLabel(x.name) === ele.label
             );
@@ -431,7 +431,7 @@ export class DatasetFilterComponent
             query: {
               name: query.query?.name,
               filter: query.query.filter,
-              fields: query.query.fields,
+              fields: this.query.getRawValue().query?.fields,
               sort: {
                 field: '',
                 order: 'asc',
