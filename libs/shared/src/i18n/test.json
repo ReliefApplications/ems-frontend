@@ -172,6 +172,9 @@
 		"duplicate": "******",
 		"edit": "******",
 		"email": {
+			"error": {
+				"duplicateName": "******"
+			},
 			"few": "******",
 			"none": "******",
 			"notification": {

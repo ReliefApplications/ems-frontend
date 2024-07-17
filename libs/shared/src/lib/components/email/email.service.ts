@@ -36,12 +36,6 @@ export class EmailService {
   }[];
   /** Selected dataset */
   public selectedDataSet: any;
-  /** Form group for to: email field */
-  public toEmailFilter!: FormGroup | any;
-  /** Form group for cc: email field */
-  public ccEmailFilter!: FormGroup | any;
-  /** Form group for bcc: email field */
-  public bccEmailFilter!: FormGroup | any;
   /** Email preview data */
   public allPreviewData: any[] = [];
   /** Email type ( only email supported now ) */
@@ -73,17 +67,7 @@ export class EmailService {
   /** Should show existing distribution list */
   public showExistingDistributionList = false;
   /** Distribution list data */
-  public emailDistributionList: {
-    name: string;
-    To: string[];
-    Cc: string[];
-    Bcc: string[];
-  } = {
-    name: '',
-    To: [],
-    Cc: [],
-    Bcc: [],
-  };
+  public emailDistributionList!: FormGroup | any;
   /** List of tabs */
   public tabs: any[] = [
     {
@@ -101,49 +85,9 @@ export class EmailService {
   /** Should stepper enable all steps */
   public enableAllSteps = new BehaviorSubject<boolean>(false);
   /** Email layout data */
-  public allLayoutdata: any = {
-    /** Images & styles */
-    bannerImage: null,
-    bannerImageStyle: '',
-    /** Container style */
-    containerStyle: '',
-    /** FOOTER COPYRIGHT STYLE */
-    copyrightStyle: '',
-    /** Email subject */
-    txtSubject: '',
-    /** Email header */
-    headerHtml: '',
-    headerLogo: null,
-    headerLogoStyle: '',
-    headerBackgroundColor: this.headerBackgroundColor,
-    headerTextColor: this.headerTextColor,
-    headerStyle: '',
-    /** Email body */
-    bodyHtml: '',
-    bodyBackgroundColor: this.bodyBackgroundColor,
-    bodyTextColor: this.bodyTextColor,
-    bodyStyle: '',
-    /** Email footer */
-    footerHtml: '',
-    footerLogo: null,
-    footerBackgroundColor: this.footerBackgroundColor,
-    footerTextColor: this.footerTextColor,
-    footerStyle: '',
-    footerImgStyle: '',
-    footerHtmlStyle: '',
-  };
-
+  public allLayoutdata!: any;
   /** Default block dataset table style*/
-  public defaultTableStyle: any = {
-    tableDivStyle: '',
-    labelStyle: '',
-    tableStyle: '',
-    theadStyle: '',
-    tbodyStyle: '',
-    thStyle: '',
-    trStyle: '',
-    tdStyle: '',
-  };
+  public defaultTableStyle!: any;
   /** Is distribution list existing */
   isExisting = true;
   /** Email notification id */
@@ -236,6 +180,57 @@ export class EmailService {
     private ngZone: NgZone
   ) {
     this.setDatasetForm();
+    this.initLayoutData();
+  }
+
+  /**
+   * Initialises email layout data and table data
+   */
+  initLayoutData() {
+    // Initialise all layout data
+    this.allLayoutdata = {
+      /** Images & styles */
+      bannerImage: null,
+      bannerImageStyle: '',
+      /** Container style */
+      containerStyle: '',
+      /** FOOTER COPYRIGHT STYLE */
+      copyrightStyle: '',
+      /** Email subject */
+      txtSubject: '',
+      /** Email header */
+      headerHtml: '',
+      headerLogo: null,
+      headerLogoStyle: '',
+      headerBackgroundColor: this.headerBackgroundColor,
+      headerTextColor: this.headerTextColor,
+      headerStyle: '',
+      /** Email body */
+      bodyHtml: '',
+      bodyBackgroundColor: this.bodyBackgroundColor,
+      bodyTextColor: this.bodyTextColor,
+      bodyStyle: '',
+      /** Email footer */
+      footerHtml: '',
+      footerLogo: null,
+      footerBackgroundColor: this.footerBackgroundColor,
+      footerTextColor: this.footerTextColor,
+      footerStyle: '',
+      footerImgStyle: '',
+      footerHtmlStyle: '',
+    };
+
+    //Initialise table data
+    this.defaultTableStyle = {
+      tableDivStyle: '',
+      labelStyle: '',
+      tableStyle: '',
+      theadStyle: '',
+      tbodyStyle: '',
+      thStyle: '',
+      trStyle: '',
+      tdStyle: '',
+    };
   }
 
   /**
@@ -248,6 +243,51 @@ export class EmailService {
   }
 
   /**
+   * Intialises Distribution List form group
+   *
+   * @returns Distribution List form group
+   */
+  initialiseDistributionList(): FormGroup {
+    return this.formBuilder.group({
+      name: null,
+      to: this.createDLGroup(),
+      cc: this.createDLGroup(),
+      bcc: this.createDLGroup(),
+    });
+  }
+
+  /**
+   * Generates new distribution list form for to, cc and bcc
+   *
+   * @returns new Distribution List input form group
+   */
+  createDLGroup(): FormGroup {
+    return this.formBuilder.group({
+      resource: null,
+      query: this.createQuerygroup(),
+      inputEmails: this.formBuilder.array([]),
+    });
+  }
+
+  /**
+   * Grabs filter row values.
+   *
+   *  @returns FormGroup
+   */
+  get getNewFilterFields(): FormGroup {
+    return this.formBuilder.group({
+      field: [],
+      operator: ['eq'],
+      value: [],
+      hideEditor: false,
+      inTheLast: this.formBuilder.group({
+        number: [1],
+        unit: ['days'],
+      }),
+    });
+  }
+
+  /**
    * Initializes the `datasetsForm` with a default structure and validators.
    */
   setDatasetForm() {
@@ -256,7 +296,7 @@ export class EmailService {
       notificationType: [null, Validators.required],
       applicationId: [''],
       datasets: new FormArray([this.createNewDataSetGroup()]),
-      emailDistributionList: this.emailDistributionList,
+      emailDistributionList: this.initialiseDistributionList(),
       emailLayout: this.emailLayout,
       schedule: [''],
     });

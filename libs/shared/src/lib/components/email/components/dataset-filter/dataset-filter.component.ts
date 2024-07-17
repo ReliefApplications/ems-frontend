@@ -271,8 +271,6 @@ export class DatasetFilterComponent
     this.showDatasetLimitWarning = false;
     this.emailService.disableSaveAndProceed.next(true);
     this.emailService.disableSaveAsDraft.next(false);
-    this.disabledFields = [];
-    this.disabledTypes = [];
     this.currentTabIndex = 0;
     if (fromHtml) {
       this.resetQuery(this.query.get('query'));
@@ -311,27 +309,9 @@ export class DatasetFilterComponent
     const filter = query.get('filter') as FormGroup;
     const filters = filter.get('filters') as FormArray;
     filters.clear();
-    filters.push(this.getNewFilterFields);
+    filters.push(this.emailService.getNewFilterFields);
 
     query.get('name')?.setValue('');
-  }
-
-  /**
-   * Grabs filter row values.
-   *
-   *  @returns FormGroup
-   */
-  get getNewFilterFields(): FormGroup {
-    return this.formGroup.group({
-      field: [],
-      operator: ['eq'],
-      value: [],
-      hideEditor: false,
-      inTheLast: this.formGroup.group({
-        number: [1],
-        unit: ['days'],
-      }),
-    });
   }
 
   /**
@@ -347,7 +327,7 @@ export class DatasetFilterComponent
    * To add new dataset filter in the form
    */
   addNewDatasetFilter(): void {
-    this.datasetFilterInfo.push(this.getNewFilterFields);
+    this.datasetFilterInfo.push(this.emailService.getNewFilterFields);
   }
 
   /**
@@ -486,9 +466,6 @@ export class DatasetFilterComponent
       this.query.controls['name'].markAsTouched();
     }
     this.emailService.selectedDataSet = '';
-    this.emailService.toEmailFilter = '';
-    this.emailService.ccEmailFilter = '';
-    this.emailService.bccEmailFilter = '';
   }
 
   /**

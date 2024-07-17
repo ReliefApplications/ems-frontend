@@ -411,7 +411,6 @@ export class EmsTemplateComponent
       emailData.datasets.map(async (dataset: any) => {
         const tempQuery = cloneDeep(dataset.query);
         if (!dataset.resource) {
-          // TODO: Implement actual fix instead of quick fix
           dataset.resource = tempQuery.resource;
           dataset.query = {
             name: tempQuery.name,

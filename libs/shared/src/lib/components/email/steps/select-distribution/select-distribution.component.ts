@@ -1,3 +1,4 @@
+import { DistributionList } from './../../../../models/distribution-list.model';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { EmailService } from '../../email.service';
 import { ApplicationService } from '../../../../services/application/application.service';
@@ -5,6 +6,7 @@ import { DownloadService } from '../../../../services/download/download.service'
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { FormGroup } from '@angular/forms';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
@@ -80,17 +82,12 @@ export class SelectDistributionComponent implements OnInit {
     limit: DEFAULT_PAGE_SIZE,
   };
   /** Recipients data. */
-  public emailDistributionList = this.emailService.emailDistributionList;
+  public emailDistributionList: FormGroup | any =
+    this.emailService.datasetsForm.get('emailDistributionList');
   /** Flag indicating loading state. */
   public isLoading = false;
   /** Cached data. */
   public cachedData: any = {};
-  /** Flag indicating whether the TO template is shown. */
-  public showToTemplate = false;
-  /** Flag indicating whether the CC template is shown. */
-  public showCCTemplate = false;
-  /** Flag indicating whether the BCC template is shown. */
-  public showBccTemplate = false;
 
   /** Checks for valid emails when filtering datasets   */
   public noEmail = {
@@ -107,10 +104,6 @@ export class SelectDistributionComponent implements OnInit {
   ngOnInit(): void {
     this.validateDistributionList();
 
-    // Toggle all dropdowns to open by default
-    this.showToTemplate = true;
-    this.showCCTemplate = true;
-    this.showBccTemplate = true;
     const existingDataIndex = this.emailService.cacheDistributionList
       .map((x: any) => x.node)
       .map((y: any) => y.emailDistributionList)
@@ -151,25 +144,6 @@ export class SelectDistributionComponent implements OnInit {
       !this.emailService.showExistingDistributionList;
     this.showExistingDistributionList =
       this.emailService.showExistingDistributionList;
-  }
-
-  /**
-   * This method is used to show/hide the email template
-   *
-   * @param templateFor distribution email template for [ to | cc | bcc ]
-   */
-  toggleDropdown(templateFor: string): void {
-    if (templateFor.toLocaleLowerCase() === 'to') {
-      this.showToTemplate = !this.showToTemplate;
-    } else if (templateFor.toLocaleLowerCase() === 'cc') {
-      this.showCCTemplate = !this.showCCTemplate;
-    } else if (templateFor.toLocaleLowerCase() === 'bcc') {
-      this.showBccTemplate = !this.showBccTemplate;
-    }
-    if (!this.templateFor || this.templateFor === templateFor) {
-      this.showEmailTemplate = !this.showEmailTemplate;
-    }
-    this.templateFor = templateFor;
   }
 
   /**
@@ -275,9 +249,6 @@ export class SelectDistributionComponent implements OnInit {
    */
   fileSelectionHandler(event: any): void {
     //TODO: change to match new schema
-    this.showToTemplate = false;
-    this.showCCTemplate = false;
-    this.showBccTemplate = false;
     const file: File = event.target.files[0];
     if (file) {
       this.downloadService
@@ -288,6 +259,14 @@ export class SelectDistributionComponent implements OnInit {
               'components.email.distributionList.import.loading'
             )
           );
+          //TODO: Use later
+          // this.emailDistributionList.to.inputEmails
+          //   .get([this.emailDistributionList.to.length - 1])
+          //   .patchValue(
+          //     ...To.map((email: string) => email.trim()).filter(
+          //       (email: string) => email.trim()
+          //     )
+          //   );
           this.emailDistributionList.To = [
             ...new Set([...this.emailDistributionList.To, ...To]),
           ];
@@ -297,7 +276,6 @@ export class SelectDistributionComponent implements OnInit {
           this.emailDistributionList.Bcc = [
             ...new Set([...this.emailDistributionList.Bcc, ...Bcc]),
           ];
-          this.showToTemplate = true;
           this.templateFor = 'to';
           this.validateDistributionList();
           if (this.fileElement) this.fileElement.nativeElement.value = '';

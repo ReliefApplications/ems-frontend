@@ -1,11 +1,10 @@
 <div *ngIf="!emailService.isExisting">
   <div class="flex gap-4" [formGroup]="formGroup">
     <!-- Notification name -->
-    <!-- todo: translate error message -->
     <div
       uiFormFieldDirective
       class="mt-4 w-full"
-      uiErrorMessage="Title already exists!"
+      [uiErrorMessage]="'common.email.error.duplicateName' | translate"
       [uiErrorMessageIf]="isNameDuplicate"
     >
       <label>{{ 'common.title' | translate }}</label>

@@ -191,7 +191,7 @@
             [existingId]="this.distributionListId"
             (noEmail)="update($event, 'to')"
             (listChange)="validateDistributionList()"
-            [emailBackLoad]="emailDistributionList.To"
+            [distributionList]="emailDistributionList.get('to')"
             >{{
               'components.email.distributionList.to' | translate
             }}</shared-email-template
@@ -212,7 +212,7 @@
             [existingId]="this.distributionListId"
             (noEmail)="update($event, 'cc')"
             (listChange)="validateDistributionList()"
-            [emailBackLoad]="emailDistributionList.Cc"
+            [distributionList]="emailDistributionList.get('cc')"
             >{{
               'components.email.distributionList.cc' | translate
             }}</shared-email-template
@@ -233,7 +233,7 @@
             [existingId]="this.distributionListId"
             (noEmail)="update($event, 'bcc')"
             (listChange)="validateDistributionList()"
-            [emailBackLoad]="emailDistributionList.Bcc"
+            [distributionList]="emailDistributionList.get('bcc')"
             >{{
               'components.email.distributionList.bcc' | translate
             }}</shared-email-template

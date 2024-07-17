@@ -6,7 +6,13 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+} from '@angular/forms';
 import { EmailService } from '../../email.service';
 import { FILTER_OPERATORS } from '../../filter/filter.const';
 import { Apollo } from 'apollo-angular';
@@ -15,6 +21,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { emailRegex } from '../../constant';
 import { FieldStore } from '../../models/email.const';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs';
+import { cloneDeep } from 'lodash';
+import { QueryBuilderService } from './../../../../services/query-builder/query-builder.service';
+import { prettifyLabel } from '../../../../../lib/utils/prettify';
+import { HttpClient } from '@angular/common/http';
+import { RestService } from '../../../../services/rest/rest.service';
 
 /**
  * Email template to create distribution list
@@ -99,38 +111,42 @@ export class EmailTemplateComponent
 
   /** It is for previously selected Dataset*/
   public prevDataset!: any | undefined;
-
-  /**
-   * Event Emitted for no email
-   */
-  @Output() noEmail = new EventEmitter();
-
-  /** List of emails for back loading. */
-  @Input() emailBackLoad: string[] | undefined;
-
-  /** Event emitter for list change. */
-  @Output() listChange = new EventEmitter<void>();
-
-  /** Existing ID. */
-  @Input() existingId = '';
+  /** Show preview for select with filter option  */
+  public showPreview = false;
+  /** Show preview button for select with fiter option  */
+  public showBtnPreview = false;
+  /** Array of fields */
+  public availableFields: any[] = [];
+  /** Selected resource ID */
+  public selectedResourceId = '';
+  /** Flag to indicate if the resource has been populated. */
+  public resourcePopulated = false;
+  /** Flag to indicate if the dataset limit warning should be shown. */
+  public showDatasetLimitWarning = false;
+  /** Current tab index. */
+  public currentTabIndex = 0;
+  /** Form group for filter query. */
+  public dlQuery!: FormGroup | any;
   /** Form group for segment */
   public segmentForm!: FormGroup;
   /** Index of active segment. */
   public activeSegmentIndex = 0;
-  /** Segment buttons for selection. */
-  public segmentButtons = [
-    'Add Manually',
-    'Select From List',
-    'Select With Filter',
-  ];
   /** List of selected item indexes. */
   public selectedItemIndexes: number[] | any[] = [];
   /** Flag to indicate if all items are selected. */
   public isAllSelected = false;
   /** Loading status. */
   public loading = false;
+  /** Query filter Preview HTML */
+  public previewHTML = '';
+  /** Total matching records */
+  public totalMatchingRecords = 0;
   /** List of display types */
-  public segmentList = ['Add Manually'];
+  public segmentList = [
+    'Add Manually',
+    'Select With Filter',
+    'Use Combination',
+  ];
   /** Time units for filtering. */
   public timeUnits = [
     { value: 'hours', label: 'Hours' },
@@ -139,12 +155,19 @@ export class EmailTemplateComponent
     { value: 'months', label: 'Months' },
     { value: 'years', label: 'Years' },
   ];
-  /** Show preview for select with filter option  */
-  public showPreview = false;
-  /** Show preview button for select with fiter option  */
-  public showBtnPreview = false;
-  /** Array of fields */
-  public availableFields: any[] = [];
+  /**
+   * Event Emitted for no email
+   */
+  @Output() noEmail = new EventEmitter();
+
+  /** List of emails for back loading. */
+  @Input() distributionList: FormGroup | any;
+
+  /** Event emitter for list change. */
+  @Output() listChange = new EventEmitter<void>();
+
+  /** Existing ID. */
+  @Input() existingId = '';
 
   /**
    * Composite filter group.
@@ -154,13 +177,21 @@ export class EmailTemplateComponent
    * @param apollo Apollo server
    * @param snackbar snackbar helper function
    * @param translate i18 translate service
+   * @param queryBuilder Shared query builder service
+   * @param formBuilder Angular form builder
+   * @param http Http client
+   * @param restService rest service
    */
   constructor(
     private fb: FormBuilder,
     public emailService: EmailService,
     private apollo: Apollo,
     public snackbar: SnackbarService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    public queryBuilder: QueryBuilderService,
+    public formBuilder: FormBuilder,
+    private http: HttpClient,
+    private restService: RestService
   ) {
     super();
   }
@@ -171,11 +202,240 @@ export class EmailTemplateComponent
       datasetSelect: '',
     });
 
-    this.selectedEmails = this.emailBackLoad;
+    this.dlQuery = this.distributionList.get('query') as FormGroup;
+
+    if (this.distributionList.controls.resource.value && !this.resource) {
+      this.selectedResourceId = this.distributionList.controls.resource.value;
+      this.getResourceData(false);
+    }
+    this.distributionList.controls.resource.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: any) => {
+        if (
+          value !== undefined &&
+          value !== null &&
+          this.selectedResourceId !== value
+        ) {
+          this.selectedResourceId = value;
+          if (this.resource?.fields) {
+            this.resource.fields = [];
+          }
+          this.getResourceData(true);
+        }
+      });
+    this.selectedEmails = this.distributionList.get('inputEmails') as FormArray;
+  }
+
+  /**
+   *
+   * @param fromHtml
+   */
+  getResourceData(fromHtml: boolean): void {
+    this.loading = true;
+    this.availableFields = [];
+    if (fromHtml) {
+      this.distributionList.controls.query.value.fields = [];
+      this.distributionList.controls.query.get('fields').value = [];
+      this.selectedFields = [];
+      this.filterFields = [];
+    }
+    this.showDatasetLimitWarning = false;
+    this.emailService.disableSaveAndProceed.next(true);
+    this.emailService.disableSaveAsDraft.next(false);
+    this.currentTabIndex = 0;
+    if (fromHtml) {
+      this.resetFilters(this.distributionList.get('query'));
+    }
+    if (this.selectedResourceId) {
+      this.emailService
+        .fetchResourceData(this.selectedResourceId)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          const queryTemp: any = data.resource;
+          const newData = this.queryBuilder.getFields(queryTemp.queryName);
+          if (this.distributionList.controls.query.get('name') === null) {
+            this.distributionList.controls.query.addControl(
+              'name',
+              new FormControl('')
+            );
+          }
+          this.distributionList.controls.query
+            .get('name')
+            .setValue(queryTemp.queryName);
+          this.availableFields = newData;
+          this.filterFields = cloneDeep(newData);
+          this.loading = false;
+          this.resourcePopulated = true;
+          this.resource = data.resource;
+        });
+    } else {
+      this.loading = false;
+    }
+  }
+
+  /**
+   * Handles Filter, Field, Style Tab selection changes
+   *
+   * @param event The tab selected
+   * @param fromHTML If state is in edit mode then false else true if new notification (means Event from UI)
+   */
+  onTabSelect(event: any, fromHTML: boolean): void {
+    const newIndex = event;
+    const previewTabIndex = 2;
+    //if new tab is preview, get preview data
+    if (fromHTML && newIndex === previewTabIndex) {
+      this.getDataSet('preview');
+    }
+    this.currentTabIndex = newIndex;
+  }
+
+  /**
+   * To get data set for the applied filters.
+   *
+   * @param tabName - The name of the tab for which to get the data set.
+   */
+  getDataSet(tabName?: any): void {
+    if (
+      this.dlQuery.controls['name'].value !== null &&
+      this.dlQuery.controls['name'].value !== ''
+    ) {
+      if (tabName == 'fields') {
+        this.onTabSelect(0, false);
+      }
+      if (tabName == 'filter') {
+        this.onTabSelect(1, false);
+      }
+      // const allPreviewData: any = [];
+      if (tabName == 'preview') {
+        this.loading = true;
+
+        let objPreview: any = {};
+        this.dlQuery.get('fields').value.forEach((ele: any) => {
+          const tempMatchedData = this.availableFields.find(
+            (x) => prettifyLabel(x.name) === ele.label
+          );
+          if (tempMatchedData) {
+            ele.name = tempMatchedData.name;
+            ele.type = tempMatchedData.type.name;
+          }
+        });
+        objPreview = {
+          resource: this.resource.id ?? '',
+          name: 'Distribution List Preview',
+          query: {
+            name: this.dlQuery?.get('name').value,
+            filter: this.dlQuery.get('filter').value,
+            fields: this.dlQuery.get('fields').value,
+            sort: {
+              field: '',
+              order: 'asc',
+            },
+            style: [],
+            pageSize: 10,
+            template: '',
+          },
+        };
+
+        this.http
+          .post(
+            `${this.restService.apiUrl}/notification/preview-dataset`,
+            objPreview
+          )
+          .subscribe(
+            (response: any) => {
+              this.onTabSelect(2, false);
+              this.showPreview = true;
+              if (response.count <= 50) {
+                this.showDatasetLimitWarning = false;
+                this.previewHTML = window.atob(response.tableHtml);
+                const previewHTML = document.getElementById(
+                  'tblPreview'
+                ) as HTMLInputElement;
+                if (previewHTML) {
+                  previewHTML.innerHTML = this.previewHTML;
+                }
+              } else {
+                this.totalMatchingRecords = response.count;
+                this.showDatasetLimitWarning = true;
+              }
+
+              // this.navigateToPreview.emit(response);
+              this.loading = false;
+            },
+            (error: string) => {
+              console.error('Error:', error);
+              this.loading = false;
+            }
+          );
+      }
+    }
+  }
+
+  /**
+   * Retrieves Fields Form array
+   *
+   * @returns FormArray of fields
+   */
+  getFieldsArray() {
+    const formArray = this.distributionList.controls.query.get(
+      'fields'
+    ) as FormArray;
+    this.selectedFields =
+      this.distributionList.controls.query.get('fields')?.value;
+    return formArray;
+  }
+
+  get inputEmails(): string[] {
+    return this.selectedEmails.controls.map(
+      (control: AbstractControl) => control.value
+    );
+  }
+
+  /**
+   * Resets the state `showDatasetLimitWarning` when the close button is clicked.
+   */
+  closeWarningMessage(): void {
+    this.showDatasetLimitWarning = false;
+  }
+
+  /**
+   * Reinitialises and resets Distribution List Filter values
+   *
+   * @param query - Dataset Form Group
+   */
+  resetFilters(query: FormGroup) {
+    const fields = query.get('fields') as FormArray;
+    fields.clear();
+
+    const filter = query.get('filter') as FormGroup;
+    const filters = filter.get('filters') as FormArray;
+    filters.clear();
+    filters.push(this.emailService.getNewFilterFields);
+
+    query.get('name')?.setValue('');
+  }
+
+  /**
+   * Reset given form field value if there is a value previously to avoid triggering
+   * not necessary actions
+   *
+   * @param formField Current form field
+   * @param event click event
+   */
+  clearFormField(formField: string, event: Event) {
+    if (this.distributionList.controls[formField]?.value) {
+      this.distributionList.controls[formField].setValue(null);
+      this.distributionList.controls.resource.value = null;
+    }
+    this.resetFilters(this.distributionList.get('query'));
+    this.resource.fields = [];
+    this.selectedResourceId = '';
+    event.stopPropagation();
   }
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    // this.distributionList.controls.resource.value = this.resource.id ?? ;
   }
 
   /**
@@ -239,25 +499,23 @@ export class EmailTemplateComponent
       this.bindDataSetDetails(this.selectedDataset);
     }
     if (this.activeSegmentIndex === 2) {
-      if (this.selectedEmails.length == 0) {
-        this.noEmail.emit(false);
-      } else {
-        if (this.datasetFilterInfo?.controls?.length > 0) {
-          this.noEmail.emit(true);
-        }
-      }
-      this.showBtnPreview =
-        this.datasetFilterInfo?.controls?.length == 0 ? false : true;
+      // if (this.selectedEmails.length == 0) {
+      //   this.noEmail.emit(false);
+      // } else {
+      //   if (this.datasetFilterInfo?.controls?.length > 0) {
+      //     this.noEmail.emit(true);
+      //   }
+      // }
     }
   }
 
   /**
-   * To
+   *
    *
    * @returns Form array
    */
   get datasetFilterInfo(): FormArray {
-    return this.filterQuery.get('filters') as FormArray;
+    return this.dlQuery.get('filters') as FormArray;
   }
 
   /**
@@ -266,7 +524,7 @@ export class EmailTemplateComponent
    * @param chipIndex chip index
    */
   removeEmailChip(chipIndex: number): void {
-    this.selectedEmails.splice(chipIndex, 1);
+    this.selectedEmails.removeAt(chipIndex);
     this.listChange.emit();
   }
 
@@ -276,11 +534,12 @@ export class EmailTemplateComponent
    * @param element Input Element
    */
   addEmailManually(element: HTMLInputElement): void {
-    if (
-      emailRegex.test(element.value) &&
-      !this.selectedEmails.includes(element?.value)
-    ) {
-      this.selectedEmails.push(element.value);
+    // Check if email already exists
+    const emailExists = this.selectedEmails.controls.some(
+      (control: AbstractControl) => control.value === element.value
+    );
+    if (emailRegex.test(element.value) && !emailExists) {
+      this.selectedEmails.push(this.formBuilder.control(element.value));
       element.value = '';
       this.emailValidationError = '';
       this.listChange.emit();

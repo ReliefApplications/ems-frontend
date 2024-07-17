@@ -430,8 +430,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     ];
     const dataArray: FormArray | any = new FormArray([]);
     for (let index = 0; index < emailData.datasets.length; index++) {
-      // TODO: Undo Hotfix
-
       //Adding Tabs detail
       dataArray.push(
         this.createNewDataSetGroup(emailData.datasets[index], index)

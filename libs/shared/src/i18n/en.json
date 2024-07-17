@@ -172,6 +172,9 @@
 		"duplicate": "Duplicate",
 		"edit": "Edit",
 		"email": {
+			"error": {
+				"duplicateName": "Title already exists!"
+			},
 			"few": "Emails",
 			"none": "No email",
 			"notification": {

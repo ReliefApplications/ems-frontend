@@ -1,7 +1,12 @@
 <div>
-  <div class="flex flex-row gap-2" [formGroup]="segmentForm">
+  <div class="flex flex-row gap-2">
     <!-- Select type of email input ( manual / from list / from resource ) -->
-    <div class="w-1/3" uiFormFieldDirective [defaultMargin]="false">
+    <div
+      class="w-1/3"
+      uiFormFieldDirective
+      [defaultMargin]="false"
+      [formGroup]="segmentForm"
+    >
       <label>{{
         'components.notifications.email.dropdown.emailInput' | translate
       }}</label>
@@ -18,6 +23,7 @@
         >
       </ui-select-menu>
     </div>
+
     <!-- Manual input -->
     <div class="w-1/3" *ngIf="activeSegmentIndex === 0" uiFormFieldDirective>
       <label>{{ 'components.select.distribution.email' | translate }}</label>
@@ -38,41 +44,383 @@
         [placeholder]="'components.select.distribution.email' | translate"
       />
     </div>
+    <div></div>
     <!-- Selection of resource -->
-    <div class="w-1/2" *ngIf="activeSegmentIndex >= 1">
+    <div
+      class="w-1/2"
+      *ngIf="activeSegmentIndex >= 1"
+      [formGroup]="distributionList"
+    >
       <label
         htmlFor="select__data__set"
         class="block text-sm font-medium leading-6 text-gray-900"
       >
         {{ 'components.queryBuilder.dataset.title' | translate }}*
       </label>
+      <div uiFormFieldDirective>
+        <shared-resource-select
+          formControlName="resource"
+          [selectedElements]="[resource]"
+        ></shared-resource-select>
+        <ui-button
+          *ngIf="distributionList?.value.resource"
+          uiSuffix
+          size="small"
+          [isIcon]="true"
+          (click)="clearFormField('resource', $event)"
+          icon="close"
+          variant="danger"
+          [uiTooltip]="'common.remove' | translate"
+        ></ui-button>
+      </div>
     </div>
   </div>
 
-  <!-- From resource filter -->
-  <div *ngIf="activeSegmentIndex === 2">
+  <div [formGroup]="distributionList">
+    <!-- From resource filter -->
+    <div *ngIf="activeSegmentIndex === 1">
+      <!-- Filter editor -->
+      <div formGroupName="query">
+        <ui-tabs
+          [selectedIndex]="currentTabIndex"
+          (selectedIndexChange)="onTabSelect($event, true)"
+          #datasetPreview
+          *ngIf="resource?.fields?.length"
+        >
+          <div class="mt-4 flex flex-row">
+            <!-- Fields Tab -->
+            <ui-tab [title]="'Fields'" [selected]="true">
+              <ng-container ngProjectAs="label">
+                {{ 'components.queryBuilder.fields.title' | translate }}
+              </ng-container>
+              <ng-template uiTabContent>
+                <ng-container
+                  class="mt-2"
+                  *ngTemplateOutlet="noSelectedFieldsAlertTmpl"
+                ></ng-container>
+                <div class="flex gap-4 mt-2">
+                  <div class="mt-2 overflow-auto">
+                    <!-- FIELDS -->
+                    <shared-tab-fields
+                      *ngIf="availableFields.length > 0"
+                      [form]="getFieldsArray()"
+                      [fields]="availableFields"
+                      [showLimit]="false"
+                      [showColumnWidth]="false"
+                    ></shared-tab-fields>
+                  </div>
+                </div>
+
+                <ui-button
+                  *ngIf="distributionList.controls"
+                  class="float-right mt-8"
+                  category="secondary"
+                  variant="primary"
+                  (click)="getDataSet('fields')"
+                >
+                  {{ 'components.queryBuilder.filter.applyField' | translate }}
+                </ui-button>
+              </ng-template>
+            </ui-tab>
+            <!-- Filter Tab -->
+            <ui-tab [title]="'Filter'" [disabled]="false">
+              <ng-container ngProjectAs="label">
+                {{ 'components.queryBuilder.filter.title' | translate }}
+              </ng-container>
+              <ng-template uiTabContent>
+                <ng-container *ngIf="resource?.fields?.length">
+                  <div class="flex gap-4 mt-2">
+                    <div class="mt-2">
+                      <!-- NESTED FILTER GROUP -->
+                      <!-- <shared-filter [form]="query.get('filter')" [fields]="filterFields" [isEmailNotification]="true"></shared-filter> -->
+                      <shared-tab-filter
+                        [form]="$any(dlQuery.get('filter'))"
+                        [query]="dlQuery.getRawValue()"
+                      >
+                      </shared-tab-filter>
+                    </div>
+                  </div>
+                  <ui-button
+                    class="float-right mt-8"
+                    category="secondary"
+                    variant="primary"
+                    (click)="getDataSet('preview'); showPreview = true"
+                    [disabled]="
+                      showDatasetLimitWarning || selectedFields.length === 0
+                    "
+                    [class.disabled-button]="
+                      showDatasetLimitWarning || selectedFields.length === 0
+                    "
+                  >
+                    {{ 'common.preview' | translate }}
+                  </ui-button>
+                </ng-container>
+              </ng-template>
+            </ui-tab>
+
+            <!-- Preview Tab -->
+            <ui-tab
+              [title]="'Preview'"
+              [disabled]="
+                showDatasetLimitWarning ||
+                this.dlQuery.get('fields')?.value.length === 0
+              "
+            >
+              <ng-container ngProjectAs="label">
+                {{ 'common.preview' | translate }}
+              </ng-container>
+              <ng-template uiTabContent>
+                <ng-container
+                  class="mt-2"
+                  *ngTemplateOutlet="tooManyRecordsAlertTmpl"
+                ></ng-container>
+                <div id="tblPreview" [innerHTML]="previewHTML"></div>
+              </ng-template>
+            </ui-tab>
+
+            <!-- Style Tab -->
+            <!-- <kendo-tabstrip-tab [disabled]="true">
+        <ng-template kendoTabTitle >
+          <div >
+            {{ 'components.queryBuilder.style.title' | translate }}
+          </div>
+        </ng-template>
+        <ng-template kendoTabContent>
+        </ng-template>
+      </kendo-tabstrip-tab> -->
+          </div>
+        </ui-tabs>
+      </div>
+    </div>
+    <div class="loadingSign" [ngClass]="{ active: loading }">
+      <ui-spinner *ngIf="loading" style="position: relative"></ui-spinner>
+    </div>
+  </div>
+  <!-- Use the template with *ngTemplateOutlet and context -->
+  <ng-container
+    *ngTemplateOutlet="
+      emailChipListTemplate;
+      context: {
+        $implicit: selectedEmails,
+        activeSegmentIndex: activeSegmentIndex,
+        isCombination: false
+      }
+    "
+  >
+  </ng-container>
+
+  <!-- From list ( selected from resource ) -->
+  <div class="overflow-hidden mt-2" *ngIf="activeSegmentIndex === 2">
     <!-- Filter editor -->
-    <div></div>
+    <div class="flex flex-col">
+      <div class="w-1/2">
+        <h3>Manual Email Input</h3>
+        <div uiFormFieldDirective>
+          <label>{{
+            'components.select.distribution.email' | translate
+          }}</label>
+          <ui-icon
+            icon="info_outline"
+            class="cursor-help"
+            variant="grey"
+            [uiTooltip]="
+              'components.select.distribution.emailError' | translate
+            "
+            uiSuffix
+          ></ui-icon>
+          <input
+            #filterInput
+            (keyup.enter)="addEmailManually(filterInput)"
+            (change)="validateEmail(filterInput)"
+            autocomplete="off"
+            aria-autocomplete="none"
+            type="text"
+            [placeholder]="'components.select.distribution.email' | translate"
+          />
+        </div>
+        <!-- Chip List-->
+        <ng-container
+          class="mb-2"
+          *ngTemplateOutlet="
+            emailChipListTemplate;
+            context: {
+              $implicit: selectedEmails,
+              activeSegmentIndex: activeSegmentIndex,
+              isCombination: true
+            }
+          "
+        >
+        </ng-container>
+      </div>
+      <div>
+        <h3>Filter</h3>
+        <div formGroupName="query">
+          <ui-tabs
+            [selectedIndex]="currentTabIndex"
+            (selectedIndexChange)="onTabSelect($event, true)"
+            #datasetPreview
+            *ngIf="resource?.fields?.length"
+          >
+            <div class="mt-4 flex flex-row">
+              <!-- Fields Tab -->
+              <ui-tab [title]="'Fields'" [selected]="true">
+                <ng-container ngProjectAs="label">
+                  {{ 'components.queryBuilder.fields.title' | translate }}
+                </ng-container>
+                <ng-template uiTabContent>
+                  <ng-container
+                    class="mt-2"
+                    *ngTemplateOutlet="noSelectedFieldsAlertTmpl"
+                  ></ng-container>
+                  <div class="flex gap-4 mt-2">
+                    <div class="mt-2 overflow-auto">
+                      <!-- FIELDS -->
+                      <shared-tab-fields
+                        *ngIf="availableFields.length > 0"
+                        [form]="getFieldsArray()"
+                        [fields]="availableFields"
+                        [showLimit]="false"
+                        [showColumnWidth]="false"
+                      ></shared-tab-fields>
+                    </div>
+                  </div>
+
+                  <ui-button
+                    *ngIf="distributionList.controls"
+                    class="float-right mt-8"
+                    category="secondary"
+                    variant="primary"
+                    (click)="getDataSet('fields')"
+                  >
+                    {{
+                      'components.queryBuilder.filter.applyField' | translate
+                    }}
+                  </ui-button>
+                </ng-template>
+              </ui-tab>
+              <!-- Filter Tab -->
+              <ui-tab [title]="'Filter'" [disabled]="false">
+                <ng-container ngProjectAs="label">
+                  {{ 'components.queryBuilder.filter.title' | translate }}
+                </ng-container>
+                <ng-template uiTabContent>
+                  <ng-container *ngIf="resource?.fields?.length">
+                    <div class="flex gap-4 mt-2">
+                      <div class="mt-2">
+                        <!-- NESTED FILTER GROUP -->
+                        <!-- <shared-filter [form]="query.get('filter')" [fields]="filterFields" [isEmailNotification]="true"></shared-filter> -->
+                        <shared-tab-filter
+                          [form]="$any(dlQuery.get('filter'))"
+                          [query]="dlQuery.getRawValue()"
+                        >
+                        </shared-tab-filter>
+                      </div>
+                    </div>
+                    <ui-button
+                      class="float-right mt-8"
+                      category="secondary"
+                      variant="primary"
+                      (click)="getDataSet('preview'); showPreview = true"
+                      [disabled]="
+                        showDatasetLimitWarning || selectedFields.length === 0
+                      "
+                      [class.disabled-button]="
+                        showDatasetLimitWarning || selectedFields.length === 0
+                      "
+                    >
+                      {{ 'common.preview' | translate }}
+                    </ui-button>
+                  </ng-container>
+                </ng-template>
+              </ui-tab>
+
+              <!-- Preview Tab -->
+              <ui-tab
+                [title]="'Preview'"
+                [disabled]="
+                  showDatasetLimitWarning ||
+                  dlQuery.get('fields')?.value.length === 0
+                "
+              >
+                <ng-container ngProjectAs="label">
+                  {{ 'common.preview' | translate }}
+                </ng-container>
+                <ng-template uiTabContent>
+                  <ng-container
+                    class="mt-2"
+                    *ngTemplateOutlet="tooManyRecordsAlertTmpl"
+                  ></ng-container>
+                  <div id="tblPreview" [innerHTML]="previewHTML"></div>
+                </ng-template>
+              </ui-tab>
+            </div>
+          </ui-tabs>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="loadingSign" [ngClass]="{ active: loading }">
-    <ui-spinner *ngIf="loading" style="position: relative"></ui-spinner>
-  </div>
-  <div uiChipList>
+</div>
+
+<!-- Email chip list template -->
+<ng-template
+  #emailChipListTemplate
+  let-selectedEmails="selectedEmails"
+  let-activeSegmentIndex="activeSegmentIndex"
+  let-isCombination="isCombination"
+>
+  <div uiChipList *ngIf="activeSegmentIndex === 0 || isCombination">
     <ui-chip
       variant="primary"
       class="text-xl px-1"
       [removable]="true"
       (removed)="removeEmailChip(chipIndex)"
-      *ngFor="let emailText of selectedEmails; let chipIndex = index"
-      >{{ emailText }}</ui-chip
+      *ngFor="let emailControl of inputEmails; let chipIndex = index"
+      >{{ emailControl }}</ui-chip
     >
   </div>
+</ng-template>
 
-  <!-- From list ( selected from resource ) -->
-  <div
-    class="overflow-hidden mt-2"
-    *ngIf="activeSegmentIndex === 1 || showPreview"
+<!-- Too many records in dataset -->
+<ng-template #tooManyRecordsAlertTmpl>
+  <ui-alert
+    variant="warning"
+    [closable]="true"
+    *ngIf="showDatasetLimitWarning"
+    (close)="closeWarningMessage()"
   >
-    <div></div>
-  </div>
-</div>
+    <div
+      [innerHTML]="
+        'components.email.alert.tooManyRecords'
+          | translate : { totalRecords: totalMatchingRecords }
+      "
+    ></div>
+  </ui-alert>
+</ng-template>
+<!-- No Fields in Resource Message -->
+<ng-template #noFieldsInResourceAlertTmpl>
+  <ui-alert
+    variant="warning"
+    [closable]="true"
+    *ngIf="
+      this.resourcePopulated &&
+      this.distributionList?.value?.resource !== null &&
+      !this.resource?.fields?.length
+    "
+  >
+    <div
+      [innerHTML]="'components.email.alert.noResourceFields' | translate"
+    ></div>
+  </ui-alert>
+</ng-template>
+<!-- No selected fields in dataset -->
+<ng-template #noSelectedFieldsAlertTmpl>
+  <ui-alert
+    variant="warning"
+    *ngIf="!selectedFields?.length && !showDatasetLimitWarning"
+    [closable]="true"
+  >
+    <div>
+      {{ 'components.email.alert.noSelectedFields' | translate }}
+    </div>
+  </ui-alert>
+</ng-template>

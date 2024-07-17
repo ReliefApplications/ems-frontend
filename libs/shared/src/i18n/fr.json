@@ -172,6 +172,9 @@
 		"duplicate": "Dupliquer",
 		"edit": "Modifier",
 		"email": {
+			"error": {
+				"duplicateName": "Le titre existe déjà !"
+			},
 			"few": "Emails",
 			"none": "Pas d'email",
 			"notification": {
