@@ -450,8 +450,6 @@ export class EmsTemplateComponent
             .get('applicationId')
             ?.setValue(res?.id);
           queryData.applicationId = res?.id;
-          queryData.emailDistributionList =
-            this.emailService.emailDistributionList;
         });
         queryData.isDraft = false;
         //For email notification edit operation.
@@ -683,7 +681,6 @@ export class EmsTemplateComponent
     this.applicationService.application$.subscribe((res: any) => {
       this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
       queryData.applicationId = res?.id;
-      queryData.emailDistributionList = this.emailService.emailDistributionList;
     });
     queryData.isDraft = true;
     queryData.draftStepper = this.currentStep;
@@ -773,8 +770,6 @@ export class EmsTemplateComponent
       this.applicationService.application$.subscribe((res: any) => {
         this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
         queryData.applicationId = res?.id;
-        queryData.emailDistributionList =
-          this.emailService.emailDistributionList;
       });
       queryData.isDraft = false;
       // For email notification edit operation.

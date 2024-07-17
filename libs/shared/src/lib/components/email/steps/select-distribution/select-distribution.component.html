@@ -44,17 +44,17 @@
         {{ 'components.select.distribution.label' | translate }}
       </label>
       <input
+        [formControl]="emailDistributionList.get('name')"
         (input)="validateDistributionList()"
         [class]="{
           'form-error':
             (isNameDuplicate() && !distributionListId) ||
-            !emailDistributionList.name ||
-            emailDistributionList.name.trim() === ''
+            !emailDistributionList.get('name').value ||
+            emailDistributionList.get('name').value.trim() === ''
         }"
         class="relative flex py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center w-full"
         (change)="validateDistributionList()"
-        [(ngModel)]="emailDistributionList.name"
-        [placeholder]="'common.name' | translate"
+        placeholder="{{ 'common.name' | translate }}"
       />
       <div
         *ngIf="isNameDuplicate() && !distributionListId"
@@ -192,6 +192,7 @@
             (noEmail)="update($event, 'to')"
             (listChange)="validateDistributionList()"
             [distributionList]="emailDistributionList.get('to')"
+            [type]="'to'"
             >{{
               'components.email.distributionList.to' | translate
             }}</shared-email-template
@@ -213,6 +214,7 @@
             (noEmail)="update($event, 'cc')"
             (listChange)="validateDistributionList()"
             [distributionList]="emailDistributionList.get('cc')"
+            [type]="'cc'"
             >{{
               'components.email.distributionList.cc' | translate
             }}</shared-email-template
@@ -234,6 +236,7 @@
             (noEmail)="update($event, 'bcc')"
             (listChange)="validateDistributionList()"
             [distributionList]="emailDistributionList.get('bcc')"
+            [type]="'bcc'"
             >{{
               'components.email.distributionList.bcc' | translate
             }}</shared-email-template

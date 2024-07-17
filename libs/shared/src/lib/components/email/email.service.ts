@@ -67,7 +67,7 @@ export class EmailService {
   /** Should show existing distribution list */
   public showExistingDistributionList = false;
   /** Distribution list data */
-  public emailDistributionList!: FormGroup | any;
+  public emailDistributionList: any = [];
   /** List of tabs */
   public tabs: any[] = [
     {
@@ -288,6 +288,88 @@ export class EmailService {
   }
 
   /**
+   * Creates and populates Distribution List form correctly
+   *
+   * @param emailDL The email distribution list
+   * @returns Distribution List form
+   */
+  populateDistributionListForm(emailDL: any): FormGroup {
+    const distributionListForm = this.initialiseDistributionList();
+
+    this.setDistributionListFormValues(distributionListForm, emailDL);
+    return distributionListForm;
+  }
+
+  /**
+   * Sets Distribution List form values
+   *
+   * @param form The Distribution List form
+   * @param emailDL The email distribution list data in object format
+   */
+  setDistributionListFormValues(form: FormGroup, emailDL: any) {
+    form.patchValue({
+      name: emailDL.name,
+    });
+
+    this.setDistributionListGroupValues(
+      form.get('to') as FormGroup,
+      emailDL.to
+    );
+    this.setDistributionListGroupValues(
+      form.get('cc') as FormGroup,
+      emailDL.cc
+    );
+    this.setDistributionListGroupValues(
+      form.get('bcc') as FormGroup,
+      emailDL.bcc
+    );
+  }
+
+  /**
+   * Sets Distribution List group values
+   *
+   * @param formGroup The Distribution List inner form (to, cc, bcc)
+   * @param emailDL The email distribution list data in object format
+   */
+  setDistributionListGroupValues(formGroup: FormGroup, emailDL: any) {
+    const inputArray =
+      emailDL?.inputEmails?.map((email: string) =>
+        this.formBuilder.control(email)
+      ) || [];
+    const dlGroup = formGroup as FormGroup;
+    dlGroup.setControl('resource', this.formBuilder.control(emailDL.resource));
+    // Map filters
+    dlGroup.setControl(
+      'query',
+      this.formBuilder.group({
+        name: emailDL.query.name,
+        filter: this.formBuilder.group({
+          logic: emailDL.query.filter.logic,
+          filters: this.formBuilder.array(
+            emailDL.query.filter.filters.map((filter: any) => {
+              return this.formBuilder.group({
+                ...filter,
+                inTheLast: this.formBuilder.group({
+                  number: [filter.inTheLast.number],
+                  unit: [filter.inTheLast.unit],
+                }),
+              });
+            })
+          ),
+        }),
+        // Map fields
+        fields: this.formBuilder.array(
+          emailDL.query.fields.map((field: any) =>
+            this.formBuilder.control(field)
+          )
+        ),
+      })
+    );
+    // Map input emails
+    dlGroup.setControl('inputEmails', this.formBuilder.array(inputArray));
+  }
+
+  /**
    * Initializes the `datasetsForm` with a default structure and validators.
    */
   setDatasetForm() {
@@ -300,6 +382,15 @@ export class EmailService {
       emailLayout: this.emailLayout,
       schedule: [''],
     });
+  }
+
+  /**
+   * Sets the email distribution list.
+   */
+  setDistributionList() {
+    this.emailDistributionList = this.datasetsForm.get(
+      'emailDistributionList'
+    )?.value;
   }
 
   /**
@@ -828,8 +919,10 @@ export class EmailService {
       const tempMatchedData = availableFields.find(
         (x: any) => prettifyLabel(x.name) === ele.label
       );
+      // Appends label onto the correct matched data
       if (tempMatchedData) {
-        ele = { label: ele.label, ...tempMatchedData };
+        ele.name = tempMatchedData.name;
+        ele.type = tempMatchedData.type.name;
       }
     });
   }

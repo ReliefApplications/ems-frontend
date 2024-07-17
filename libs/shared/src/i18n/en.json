@@ -790,6 +790,7 @@
 				"update": "Edit custom notification"
 			},
 			"errors": {
+				"duplicate": "Email already exists in distribution list",
 				"email": "Please input a valid email address",
 				"schedule": "Enter a valid cron expression"
 			},
@@ -818,7 +819,9 @@
 		},
 		"email": {
 			"alert": {
+				"dlPreview": "All emails showing in this table below will be used to create the distribution list",
 				"invalidFields": "The following fields are not available for selection: <strong>{{fields}}</strong> as they are of type <strong>{{types}}</strong> and cannot be properly displayed in the table for this form.",
+				"noResource": "Select a resource using the dropdown to display Distribution list filter wizard",
 				"noResourceFields": "Selected resource doesn't contain any fields",
 				"noSelectedFields": "Please select at least 1 field to save this dataset",
 				"tooManyRecords": "At this moment, we are limited to fetch only 50 records. Based on the provided filter conditions there are <strong>{{totalRecords}}</strong> matching records. Please add some additional filters to bring the record count less than or equals to 50."
@@ -836,6 +839,7 @@
 				"cc": "CC",
 				"createNew": "Or Create New",
 				"duplicate": "Title already exists",
+				"emailInput": "Manual email input",
 				"import": {
 					"download": "Download Template",
 					"import": "Import Distribution List",

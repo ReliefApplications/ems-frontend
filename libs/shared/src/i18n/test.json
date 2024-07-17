@@ -790,6 +790,7 @@
 				"update": "******"
 			},
 			"errors": {
+				"duplicate": "******",
 				"email": "******",
 				"schedule": "******"
 			},
@@ -818,7 +819,9 @@
 		},
 		"email": {
 			"alert": {
+				"dlPreview": "******",
 				"invalidFields": "****** {{fields}} ****** {{types}} ******",
+				"noResource": "******",
 				"noResourceFields": "******",
 				"noSelectedFields": "******",
 				"tooManyRecords": "****** {{totalRecords}} ******"
@@ -836,6 +839,7 @@
 				"cc": "******",
 				"createNew": "******",
 				"duplicate": "******",
+				"emailInput": "******",
 				"import": {
 					"download": "******",
 					"import": "******",

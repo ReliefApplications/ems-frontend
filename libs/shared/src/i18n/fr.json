@@ -790,6 +790,7 @@
 				"update": "Éditer la notification"
 			},
 			"errors": {
+				"duplicate": "L'e-mail existe déjà dans la liste de distribution",
 				"email": "Veuillez entrer une adresse email valide",
 				"schedule": "Veuillez entrer une expression cron valide"
 			},
@@ -818,7 +819,9 @@
 		},
 		"email": {
 			"alert": {
+				"dlPreview": "Tous les e-mails affichés dans ce tableau ci-dessous seront utilisés pour créer la liste de distribution",
 				"invalidFields": "Les champs suivants ne peuvent pas être sélectionnés: <strong>{{fields}}</strong> car ils sont du type <strong>{{types}}</strong> et ne peut pas être correctement affiché dans le tableau de ce formulaire.",
+				"noResource": "Sélectionnez une ressource à l'aide de la liste déroulante pour afficher l'assistant de filtrage de liste de distribution",
 				"noResourceFields": "La ressource sélectionnée ne contient aucun champ",
 				"noSelectedFields": "Veuillez sélectionner au moins 1 champ pour sauvegarder ce jeu de données",
 				"tooManyRecords": "Pour le moment, nous sommes limités à récupérer seulement 50 enregistrements. \nSur la base des conditions de filtre fournies, il existe <strong>{{totalRecords}></strong> enregistrements correspondants. \nVeuillez ajouter des filtres supplémentaires pour que le nombre d'enregistrements soit inférieur ou égal à 50."
@@ -836,6 +839,7 @@
 				"cc": "CC",
 				"createNew": "Ou créer un nouveau",
 				"duplicate": "Le nom existe déjà",
+				"emailInput": "Saisie manuelle des e-mails",
 				"import": {
 					"download": "Télécharger le modèle",
 					"import": "Liste de distribution d'importation",

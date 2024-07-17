@@ -1,12 +1,19 @@
-import { DistributionList } from './../../../../models/distribution-list.model';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { EmailService } from '../../email.service';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { DownloadService } from '../../../../services/download/download.service';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/public-api';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
@@ -19,7 +26,10 @@ const DISTRIBUTION_PAGE_SIZE = 5;
   templateUrl: './select-distribution.component.html',
   styleUrls: ['./select-distribution.component.scss'],
 })
-export class SelectDistributionComponent implements OnInit {
+export class SelectDistributionComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   /**
    * Composite email distribution.
    *
@@ -28,14 +38,17 @@ export class SelectDistributionComponent implements OnInit {
    * @param downloadService helper functions
    * @param snackBar snackbar helper function
    * @param translate translate helper function
+   * @param formBuilder form builder helper function
    */
   constructor(
     public emailService: EmailService,
     public applicationService: ApplicationService,
     public downloadService: DownloadService,
     public snackBar: SnackbarService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    public formBuilder: FormBuilder
   ) {
+    super();
     this.getExistingTemplate();
     this.showExistingDistributionList =
       this.emailService.showExistingDistributionList;
@@ -109,8 +122,8 @@ export class SelectDistributionComponent implements OnInit {
       .map((y: any) => y.emailDistributionList)
       .findIndex(
         (x: any) =>
-          x.name.toLowerCase() ==
-          this.emailDistributionList?.name?.trim().toLowerCase()
+          x.get('name').value.toLowerCase() ==
+          this.emailDistributionList?.('name')?.value.trim().toLowerCase()
       );
     if (existingDataIndex > -1) {
       this.distributionListId =
@@ -152,7 +165,10 @@ export class SelectDistributionComponent implements OnInit {
    * @returns boolean
    */
   isNameDuplicate(): boolean {
-    const enteredName = this.emailDistributionList?.name?.trim().toLowerCase();
+    const enteredName = this.emailDistributionList
+      ?.get('name')
+      ?.value?.trim()
+      .toLowerCase();
     return this.emailService.distributionListNames.includes(enteredName);
   }
 
@@ -163,8 +179,8 @@ export class SelectDistributionComponent implements OnInit {
   triggerDuplicateChecker() {
     const flag = this.isNameDuplicate();
     if (
-      this.emailDistributionList.To.length === 0 ||
-      this.emailDistributionList.name.length === 0 ||
+      // this.emailDistributionList.To.length === 0 ||
+      this.emailDistributionList.get('name').value.length === 0 ||
       flag
     ) {
       this.emailService.stepperDisable.next({ id: 2, isValid: false });
@@ -185,18 +201,19 @@ export class SelectDistributionComponent implements OnInit {
     this.isLoading = true;
     this.emailService
       .getEmailNotifications(this.applicationId)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((res: any) => {
         this.distributionLists = res?.data?.emailNotifications?.edges ?? [];
-        let uniquDistributionLists = Array.from(
+        let uniqueDistributionLists = Array.from(
           new Set(this.emailService.distributionListNames)
         );
         this.distributionLists = this.distributionLists.filter((ele: any) => {
           if (
-            uniquDistributionLists.includes(
+            uniqueDistributionLists.includes(
               ele.node.emailDistributionList.name?.toLowerCase()
             )
           ) {
-            uniquDistributionLists = uniquDistributionLists.filter(
+            uniqueDistributionLists = uniqueDistributionLists.filter(
               (name) =>
                 ele.node.emailDistributionList.name?.toLowerCase() !== name
             );
@@ -224,12 +241,39 @@ export class SelectDistributionComponent implements OnInit {
    * @param index table row index
    */
   selectDistributionListRow(index: number): void {
-    this.emailDistributionList =
-      this.distributionLists[index].node.emailDistributionList;
+    const emailDL = this.emailService.populateDistributionListForm(
+      this.distributionLists[index].node.emailDistributionList
+    );
+
+    this.emailDistributionList.patchValue({
+      name: '',
+      to: [],
+      cc: [],
+      bcc: [],
+    });
+    this.emailDistributionList
+      .get('name')
+      ?.patchValue(emailDL.get('name')?.value);
+    this.emailDistributionList.get('to')?.patchValue(emailDL.get('to')?.value);
+    this.emailDistributionList.get('cc')?.patchValue(emailDL.get('cc')?.value);
+    this.emailDistributionList
+      .get('bcc')
+      ?.patchValue(emailDL.get('bcc')?.value);
+
+    if (
+      this.emailDistributionList.value.to.query.name?.trim() !== '' &&
+      this.emailDistributionList.value.to.query.fields?.length === 0
+    ) {
+      this.emailDistributionList = emailDL;
+    }
     this.distributionListId = this.distributionLists[index].node.id;
     this.showExistingDistributionList = !this.showExistingDistributionList;
     this.validateDistributionList();
   }
+
+  // transformDL() {
+  // TODO: DL Transformation
+  // }
 
   /**
    * Download Distribution List Template
@@ -248,34 +292,42 @@ export class SelectDistributionComponent implements OnInit {
    * @param event file selection Event
    */
   fileSelectionHandler(event: any): void {
-    //TODO: change to match new schema
     const file: File = event.target.files[0];
     if (file) {
       this.downloadService
         .uploadFile('upload/distributionList', file)
+        .pipe(takeUntil(this.destroy$))
         .subscribe(({ To, Cc, Bcc }) => {
           this.snackBar.openSnackBar(
             this.translate.instant(
               'components.email.distributionList.import.loading'
             )
           );
-          //TODO: Use later
-          // this.emailDistributionList.to.inputEmails
-          //   .get([this.emailDistributionList.to.length - 1])
-          //   .patchValue(
-          //     ...To.map((email: string) => email.trim()).filter(
-          //       (email: string) => email.trim()
-          //     )
-          //   );
-          this.emailDistributionList.To = [
-            ...new Set([...this.emailDistributionList.To, ...To]),
-          ];
-          this.emailDistributionList.Cc = [
-            ...new Set([...this.emailDistributionList.Cc, ...Cc]),
-          ];
-          this.emailDistributionList.Bcc = [
-            ...new Set([...this.emailDistributionList.Bcc, ...Bcc]),
-          ];
+
+          To.forEach((email: string) => {
+            // Access the 'inputEmails' FormArray and push a new FormControl with the trimmed email
+            this.emailDistributionList
+              .get('to')
+              .get('inputEmails')
+              .push(this.formBuilder.control(email.trim()));
+          });
+
+          Cc.forEach((email: string) => {
+            // Access the 'inputEmails' FormArray and push a new FormControl with the trimmed email
+            this.emailDistributionList
+              .get('cc')
+              .get('inputEmails')
+              .push(this.formBuilder.control(email.trim()));
+          });
+
+          Bcc.forEach((email: string) => {
+            // Access the 'inputEmails' FormArray and push a new FormControl with the trimmed email
+            this.emailDistributionList
+              .get('bcc')
+              .get('inputEmails')
+              .push(this.formBuilder.control(email.trim()));
+          });
+
           this.templateFor = 'to';
           this.validateDistributionList();
           if (this.fileElement) this.fileElement.nativeElement.value = '';
@@ -288,6 +340,14 @@ export class SelectDistributionComponent implements OnInit {
     }
   }
 
+  override ngOnDestroy() {
+    super.ngOnDestroy();
+    this.emailService.datasetsForm.controls.emailDistributionList =
+      this.emailDistributionList.controls;
+    this.emailService.datasetsForm.value.emailDistributionList =
+      this.emailDistributionList;
+  }
+
   /**
    * The distribution list should have at least
    * one To email address and name to proceed with next steps
@@ -295,9 +355,9 @@ export class SelectDistributionComponent implements OnInit {
   validateDistributionList(): void {
     // TODO: Change this to match new schema
     const isSaveAndProceedNotAllowed =
-      this.emailDistributionList.To.length === 0 ||
-      this.emailDistributionList.name.length === 0 ||
-      this.emailDistributionList.name.trim() === '';
+      // this.emailDistributionList.To.length === 0 ||
+      !this.emailDistributionList.get('name')?.value ||
+      this.emailDistributionList.get('name')?.value.trim() === '';
     this.emailService.disableSaveAndProceed.next(isSaveAndProceedNotAllowed);
     if (isSaveAndProceedNotAllowed) {
       this.emailService.disableFormSteps.next({

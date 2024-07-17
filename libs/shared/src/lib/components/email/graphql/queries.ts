@@ -233,9 +233,33 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
           createdAt
           emailDistributionList {
             name
-            To
-            Bcc
-            Cc
+            to {
+              resource
+              query {
+                name
+                filter
+                fields
+              }
+              inputEmails
+            }
+            bcc {
+              resource
+              query {
+                name
+                filter
+                fields
+              }
+              inputEmails
+            }
+            cc {
+              resource
+              query {
+                name
+                filter
+                fields
+              }
+              inputEmails
+            }
           }
           name
           id
@@ -285,9 +309,33 @@ export const ADD_EMAIL_NOTIFICATION = gql`
       notificationType
       emailDistributionList {
         name
-        To
-        Bcc
-        Cc
+        to {
+          resource
+          query {
+            name
+            filter
+            fields
+          }
+          inputEmails
+        }
+        bcc {
+          resource
+          query {
+            name
+            filter
+            fields
+          }
+          inputEmails
+        }
+        cc {
+          resource
+          query {
+            name
+            filter
+            fields
+          }
+          inputEmails
+        }
       }
       recipientsType
       status
@@ -329,9 +377,33 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
       notificationType
       emailDistributionList {
         name
-        To
-        Bcc
-        Cc
+        to {
+          resource
+          query {
+            name
+            filter
+            fields
+          }
+          inputEmails
+        }
+        bcc {
+          resource
+          query {
+            name
+            filter
+            fields
+          }
+          inputEmails
+        }
+        cc {
+          resource
+          query {
+            name
+            filter
+            fields
+          }
+          inputEmails
+        }
       }
       status
       schedule

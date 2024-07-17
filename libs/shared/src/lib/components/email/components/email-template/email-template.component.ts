@@ -24,9 +24,9 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import { takeUntil } from 'rxjs';
 import { cloneDeep } from 'lodash';
 import { QueryBuilderService } from './../../../../services/query-builder/query-builder.service';
-import { prettifyLabel } from '../../../../../lib/utils/prettify';
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
+import { prettifyLabel } from '../../../../../lib/utils/prettify';
 
 /**
  * Email template to create distribution list
@@ -113,8 +113,6 @@ export class EmailTemplateComponent
   public prevDataset!: any | undefined;
   /** Show preview for select with filter option  */
   public showPreview = false;
-  /** Show preview button for select with fiter option  */
-  public showBtnPreview = false;
   /** Array of fields */
   public availableFields: any[] = [];
   /** Selected resource ID */
@@ -141,6 +139,8 @@ export class EmailTemplateComponent
   public previewHTML = '';
   /** Total matching records */
   public totalMatchingRecords = 0;
+  /** Send individual email check */
+  public individualEmail = false;
   /** List of display types */
   public segmentList = [
     'Add Manually',
@@ -162,6 +162,9 @@ export class EmailTemplateComponent
 
   /** List of emails for back loading. */
   @Input() distributionList: FormGroup | any;
+
+  /** Specifies if To, CC or BCC */
+  @Input() type: string | any;
 
   /** Event emitter for list change. */
   @Output() listChange = new EventEmitter<void>();
@@ -224,11 +227,48 @@ export class EmailTemplateComponent
         }
       });
     this.selectedEmails = this.distributionList.get('inputEmails') as FormArray;
+
+    // Check if send seperate email is active
+    if (this.emailService.datasetsForm?.get('datasets')?.value) {
+      for (const dataset of this.emailService.datasetsForm.get('datasets')
+        ?.value ?? []) {
+        if (dataset.individualEmail) {
+          this.individualEmail = true;
+          break;
+        }
+      }
+    }
+
+    const hasSelectedEmails = this.selectedEmails.value.length > 0;
+    const hasFields = this.dlQuery.get('fields')?.value.length > 0;
+    this.emailService.disableSaveAndProceed.next(true);
+    this.emailService.disableSaveAsDraft.next(true);
+    if (this.individualEmail) {
+      this.selectedEmails.setValue([]);
+      this.updateSegmentOptions('Select With Filter');
+    } else if (hasSelectedEmails && hasFields) {
+      this.updateSegmentOptions('Use Combination');
+    } else if (!hasSelectedEmails && hasFields) {
+      this.updateSegmentOptions('Select With Filter');
+    } else {
+      this.updateSegmentOptions('Add Manually');
+    }
   }
 
   /**
+   * Update segment options based on the form value
    *
-   * @param fromHtml
+   * @param segmentValue form value
+   */
+  updateSegmentOptions(segmentValue: string) {
+    this.segmentForm.get('segment')?.setValue(segmentValue);
+    this.onSegmentChange(segmentValue);
+  }
+
+  /**
+   * Gets resource data.
+   *
+   * @param fromHtml if called from email-template HTML or not
    */
   getResourceData(fromHtml: boolean): void {
     this.loading = true;
@@ -282,9 +322,21 @@ export class EmailTemplateComponent
   onTabSelect(event: any, fromHTML: boolean): void {
     const newIndex = event;
     const previewTabIndex = 2;
+    const isValid =
+      this.dlQuery.get('fields')?.value.length > 0 &&
+      !this.showDatasetLimitWarning;
     //if new tab is preview, get preview data
     if (fromHTML && newIndex === previewTabIndex) {
+      if (isValid) {
+        this.emailService.disableSaveAndProceed.next(false);
+        this.emailService.disableSaveAsDraft.next(false);
+      }
       this.getDataSet('preview');
+    } else if (newIndex >= 0) {
+      if (isValid) {
+        this.emailService.disableSaveAndProceed.next(false);
+        this.emailService.disableSaveAsDraft.next(false);
+      }
     }
     this.currentTabIndex = newIndex;
   }
@@ -310,22 +362,17 @@ export class EmailTemplateComponent
         this.loading = true;
 
         let objPreview: any = {};
-        this.dlQuery.get('fields').value.forEach((ele: any) => {
-          const tempMatchedData = this.availableFields.find(
-            (x) => prettifyLabel(x.name) === ele.label
-          );
-          if (tempMatchedData) {
-            ele.name = tempMatchedData.name;
-            ele.type = tempMatchedData.type.name;
-          }
-        });
+        this.emailService.convertFields(
+          this.distributionList.getRawValue().query?.fields,
+          this.availableFields
+        );
         objPreview = {
           resource: this.resource.id ?? '',
           name: 'Distribution List Preview',
           query: {
             name: this.dlQuery?.get('name').value,
             filter: this.dlQuery.get('filter').value,
-            fields: this.dlQuery.get('fields').value,
+            fields: this.distributionList.getRawValue().query?.fields,
             sort: {
               field: '',
               order: 'asc',
@@ -377,14 +424,41 @@ export class EmailTemplateComponent
    * @returns FormArray of fields
    */
   getFieldsArray() {
+    // this.emailService.convertFields(
+    //   this.distributionList.getRawValue().query?.fields,
+    //   this.availableFields
+    // );
     const formArray = this.distributionList.controls.query.get(
       'fields'
     ) as FormArray;
+    formArray.controls.forEach((field: any) => {
+      if (!field.value.name) {
+        const tempMatchedData = this.availableFields.find(
+          (x: any) => prettifyLabel(x.name) === field.value.label
+        );
+        if (tempMatchedData) {
+          const updatedField = {
+            ...field.value,
+            name: tempMatchedData.name,
+            type: tempMatchedData.type.name,
+          };
+          field.patchValue(updatedField);
+        }
+      }
+    });
+
     this.selectedFields =
       this.distributionList.controls.query.get('fields')?.value;
     return formArray;
   }
 
+  /**
+   * Returns an array of strings representing the values of each control in the
+   * selectedEmails FormArray.
+   *
+   * @returns An array of strings representing the values of each control
+   * in the selectedEmails FormArray.
+   */
   get inputEmails(): string[] {
     return this.selectedEmails.controls.map(
       (control: AbstractControl) => control.value
@@ -435,6 +509,7 @@ export class EmailTemplateComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    this.emailService.setDistributionList();
     // this.distributionList.controls.resource.value = this.resource.id ?? ;
   }
 
@@ -492,20 +567,25 @@ export class EmailTemplateComponent
   onSegmentChange(event: any): void {
     this.noEmail.emit(false);
     const segment = event?.target?.value || event;
-    this.activeSegmentIndex = this.segmentList.indexOf(segment);
+    this.activeSegmentIndex = this.individualEmail
+      ? 1
+      : this.segmentList.indexOf(segment);
     this.showPreview = false;
-    this.showBtnPreview = false;
-    if (this.selectedDataset !== null && this.activeSegmentIndex === 1) {
-      this.bindDataSetDetails(this.selectedDataset);
+    const isValid =
+      this.dlQuery.get('fields')?.value.length > 0 &&
+      !this.showDatasetLimitWarning;
+
+    if (this.activeSegmentIndex === 1) {
+      if (isValid) {
+        this.emailService.disableSaveAndProceed.next(false);
+        this.emailService.disableSaveAsDraft.next(false);
+      }
     }
     if (this.activeSegmentIndex === 2) {
-      // if (this.selectedEmails.length == 0) {
-      //   this.noEmail.emit(false);
-      // } else {
-      //   if (this.datasetFilterInfo?.controls?.length > 0) {
-      //     this.noEmail.emit(true);
-      //   }
-      // }
+      if (isValid) {
+        this.emailService.disableSaveAndProceed.next(false);
+        this.emailService.disableSaveAsDraft.next(false);
+      }
     }
   }
 
@@ -534,11 +614,16 @@ export class EmailTemplateComponent
    * @param element Input Element
    */
   addEmailManually(element: HTMLInputElement): void {
+    const emailDL = this.emailService.datasetsForm?.get(
+      'emailDistributionList'
+    );
+    const emailExists = this.isValidEmail(element, emailDL);
     // Check if email already exists
-    const emailExists = this.selectedEmails.controls.some(
+    const emailDuplicate = this.selectedEmails.controls.some(
       (control: AbstractControl) => control.value === element.value
     );
-    if (emailRegex.test(element.value) && !emailExists) {
+
+    if (emailRegex.test(element.value) && !emailExists && !emailDuplicate) {
       this.selectedEmails.push(this.formBuilder.control(element.value));
       element.value = '';
       this.emailValidationError = '';
@@ -552,7 +637,45 @@ export class EmailTemplateComponent
       );
 
       this.emailValidationError = '';
+    } else if (emailExists || emailDuplicate) {
+      this.snackbar.openSnackBar(
+        this.translate.instant(
+          'components.customNotifications.errors.duplicate'
+        ),
+        {
+          error: true,
+        }
+      );
+
+      this.emailValidationError = '';
     }
+  }
+
+  isValidEmail(element: HTMLInputElement, emailDL: any): boolean {
+    const toEmails = emailDL?.get('to')?.get('inputEmails')?.value;
+    const ccEmails = emailDL?.get('cc')?.get('inputEmails')?.value;
+    const bccEmails = emailDL?.get('bcc')?.get('inputEmails')?.value;
+
+    let emailExists = false;
+    switch (this.type) {
+      case 'to':
+        emailExists =
+          ccEmails.includes(element.value) || bccEmails.includes(element.value);
+        break;
+      case 'cc':
+        emailExists =
+          toEmails.includes(element.value) || bccEmails.includes(element.value);
+        break;
+      case 'bcc':
+        emailExists =
+          toEmails.includes(element.value) || ccEmails.includes(element.value);
+        break;
+      default:
+        // Handle unexpected type if necessary
+        break;
+    }
+
+    return emailExists;
   }
 
   /**

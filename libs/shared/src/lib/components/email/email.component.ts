@@ -241,12 +241,12 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
             ele.node.name?.trim()?.toLowerCase()
           );
         });
-        let uniquDistributionLists = Array.from(
+        let uniqueDistributionLists = Array.from(
           new Set(this.emailService.distributionListNames)
         );
         this.distributionLists = this.distributionLists.filter((ele: any) => {
-          if (uniquDistributionLists.includes(ele.name.toLowerCase())) {
-            uniquDistributionLists = uniquDistributionLists.filter(
+          if (uniqueDistributionLists.includes(ele.name.toLowerCase())) {
+            uniqueDistributionLists = uniqueDistributionLists.filter(
               (name) => ele.name.toLowerCase() !== name
             );
             return true;
@@ -414,12 +414,12 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.allLayoutdata = {};
     this.emailService.allPreviewData = [];
     this.emailService.emailLayout = {};
-    this.emailService.emailDistributionList = {
-      name: '',
-      To: [],
-      Cc: [],
-      Bcc: [],
-    };
+    // this.emailService.emailDistributionList =
+    //   emailData.emailDistributionList ??
+    //   this.emailService.datasetsForm?.get('emailDistributionList')?.value;
+    const emailDL = this.emailService.populateDistributionListForm(
+      emailData.emailDistributionList
+    );
     this.emailService.tabs = [
       {
         title: `Block 1`,
@@ -459,12 +459,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       datasets: emailData.datasets?.length
         ? dataArray
         : this.emailService.datasetsForm.controls.datasets,
-      emailDistributionList: {
-        name: emailData.emailDistributionList.name,
-        To: emailData.emailDistributionList.To,
-        Cc: emailData.emailDistributionList.Cc,
-        Bcc: emailData.emailDistributionList.Bcc,
-      },
+      emailDistributionList: emailDL,
       emailLayout: emailData.emailLayout,
       schedule: emailData.schedule,
     });
@@ -559,12 +554,17 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @returns The formatted data array
    */
   formatDataArray(dataArray: any): any {
+    // Iterate over each dataset in the dataArray
     dataArray.controls.forEach((dataset: FormGroup) => {
       let data = dataset.value;
       if (data.query && !data.resource) {
         const newDataset = this.emailService.createNewDataSetGroup();
         const newQuery = newDataset.get('query') as FormGroup;
+
+        // Clone the query data to prevent mutation
         const tempQueryData = cloneDeep(data.query);
+
+        // Set the name, filter, and fields of the new query group
         newQuery.get('name')?.setValue(tempQueryData.name);
         newQuery.get('filter')?.setValue(tempQueryData.filter);
         newQuery.get('fields')?.setValue(tempQueryData.fields);
@@ -581,9 +581,13 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         newDataset
           .get('sendAsAttachment')
           ?.setValue(tempQueryData.sendAsAttachment ?? false);
+
+        // Update the data with the new dataset group
         data = newDataset;
       }
     });
+
+    // Return the formatted data array
     return dataArray;
   }
 

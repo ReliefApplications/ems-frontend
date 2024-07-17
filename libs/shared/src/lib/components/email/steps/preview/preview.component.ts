@@ -65,6 +65,14 @@ export class PreviewComponent
   private metaDataLoadSubscription: Subscription = new Subscription();
   /** HTML content to be displayed in the email preview.*/
   emailPreviewHtml: any = '<div></div>';
+  /** Dataset form group */
+  query: any;
+  /** Distribution List To */
+  distributionListTo: string[] = [];
+  /** Distribution List Cc */
+  distributionListCc: string[] = [];
+  /** Distribution List Bcc */
+  distributionListBcc: string[] = [];
   /** Refernce to Subject */
   @ViewChild('subjectHtmlRef') subjectHtmlRef: any;
   /** Refernce to Subject */
@@ -117,26 +125,51 @@ export class PreviewComponent
   }
 
   ngOnInit() {
+    this.query = this.emailService.datasetsForm.value;
+    this.query.datasets = this.emailService.datasetsForm
+      ?.get('datasets')
+      ?.getRawValue();
+    this.query.emailDistributionList = this.emailService?.datasetsForm
+      ?.get('emailDistributionList')
+      ?.getRawValue();
+    this.loadDistributionList();
     this.loadFinalEmailPreview();
   }
 
   /**
+   * Loads the distribution list.
+   *
+   */
+  loadDistributionList() {
+    this.http
+      .post(
+        `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+        this.query
+      )
+      .subscribe((response: any) => {
+        this.distributionListTo = response?.to;
+        this.distributionListCc = response?.cc;
+        this.distributionListBcc = response?.bcc;
+      });
+  }
+
+  /**
    * Loads the final email preview.
+   *
    */
   loadFinalEmailPreview(): void {
     this.emailService.loading = true; // Show spinner
-    const query = this.emailService.datasetsForm.value;
-    query.datasets = this.emailService.datasetsForm
-      ?.get('datasets')
-      ?.getRawValue();
     this.http
-      .post(`${this.restService.apiUrl}/notification/preview-email/`, query)
+      .post(
+        `${this.restService.apiUrl}/notification/preview-email/`,
+        this.query
+      )
       .subscribe(
         (response: any) => {
           this.emailService.finalEmailPreview = response;
           this.updateEmailContainer(); // Update the email container with the new preview
           this.subjectString =
-            this.emailService.finalEmailPreview.subject ?? this.subjectString; // Updae/Replace the subject string from the response
+            this.emailService.finalEmailPreview.subject ?? this.subjectString; // Update/Replace the subject string from the response
 
           if (this.subjectHtmlRef?.nativeElement) {
             this.subjectHtmlRef.nativeElement.innerHTML = this.subjectString;
@@ -145,7 +178,7 @@ export class PreviewComponent
         },
         (error: string) => {
           console.error('Failed to load final email preview:', error);
-          this.emailService.loading = false; // Hide spinner in case of error
+          this.emailService.loading = false;
         }
       );
 
