@@ -166,7 +166,7 @@
           [title]="'Preview'"
           [disabled]="
             showDatasetLimitWarning ||
-            this.query.controls.query.get('fields')?.value.length === 0
+            this.query?.controls?.query.get('fields')?.value.length === 0
           "
         >
           <ng-container ngProjectAs="label">

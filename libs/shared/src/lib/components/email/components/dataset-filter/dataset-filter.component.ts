@@ -228,7 +228,7 @@ export class DatasetFilterComponent
       datasetResponse: this.datasetResponse,
       selectedResourceId: this.selectedResourceId,
     };
-    this.query.controls.query.get('cacheData')?.setValue(cacheData);
+    this.query?.controls?.query?.get('cacheData')?.setValue(cacheData);
 
     // Safely destroys dataset save subscription
     if (this.datasetSaveSubscription) {

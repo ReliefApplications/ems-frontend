@@ -211,12 +211,17 @@ export class CreateDatasetComponent implements OnInit {
     );
     this.emailService.setAllPreviewData(this.allPreviewData);
     this.tabs.splice(index, 1);
+
+    //Update the inex after splice - helpful when we are deleting the tab from inbetween index
+    this.tabs.forEach((ele: any, index: number) => {
+      ele.index = index;
+    });
     this.activeTab =
       this.activeTab.active == true && this.tabs.length > 0
         ? this.tabs[this.tabs.length - 1]
         : this.activeTab;
     this.activeTab.active = true;
-    this.activeTab.index = index;
+    this.changeTab(this.activeTab.index);
   }
 
   /**
