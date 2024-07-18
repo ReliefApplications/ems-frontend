@@ -692,7 +692,7 @@ export const init = (
       const canDisplayButtons =
         survey.mode !== 'display' && !question.isReadOnly;
 
-      const searchBtn = buildSearchButton(
+      let searchBtn = buildSearchButton(
         question,
         true,
         dialog,
@@ -709,6 +709,14 @@ export const init = (
         const shouldDisplay = survey.mode !== 'display' && !question.isReadOnly;
         if (shouldDisplay && question.canSearch) {
           // add the search button to the actions buttons
+          searchBtn = buildSearchButton(
+            question,
+            true,
+            dialog,
+            document,
+            ngZone,
+            resourcesFilterValues
+          );
           actionsButtons.appendChild(searchBtn);
         } else {
           // remove the search button from the actions buttons
@@ -718,7 +726,7 @@ export const init = (
         }
       };
 
-      const addBtn = buildAddButton(question, true, dialog, ngZone, document);
+      let addBtn = buildAddButton(question, true, dialog, ngZone, document);
       if (canDisplayButtons && question.addRecord && question.addTemplate) {
         actionsButtons.appendChild(addBtn);
       }
@@ -728,10 +736,13 @@ export const init = (
         const shouldDisplay = survey.mode !== 'display' && !question.isReadOnly;
         if (shouldDisplay && question.addRecord && question.addTemplate) {
           // add the add button to the actions buttons
+          addBtn = buildAddButton(question, true, dialog, ngZone, document);
           actionsButtons.appendChild(addBtn);
         } else {
           // remove the add button from the actions buttons
-          actionsButtons.removeChild(addBtn);
+          if (actionsButtons.contains(addBtn)) {
+            actionsButtons.removeChild(addBtn);
+          }
         }
       };
 

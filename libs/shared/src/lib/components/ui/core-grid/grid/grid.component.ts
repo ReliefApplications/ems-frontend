@@ -986,6 +986,15 @@ export class GridComponent
     if (this.selectable) {
       totalWidthSticky += 41;
     }
+    // Hide the columns that are hidden by default
+    const hiddenFields = this.fields.filter((field) => field.hiddenByDefault);
+    hiddenFields.forEach((field) => {
+      const column = this.columns.find((column) => column.field === field.name);
+      if (column && !(column as any).init) {
+        column.hidden = true;
+        (column as any).init = true;
+      }
+    });
 
     // Set the width of fixed width columns
     const fixedWidthColumns = this.columns.filter(
@@ -1307,8 +1316,26 @@ export class GridComponent
         this.widget?.settings?.widgetDisplay.showSingleActionAsButton &&
         size === ICON_SIZE
       ) {
-        // TODO: Figure out how to get the width of the button
-        this.actionsWidth = 100;
+        this.actionsWidth = 200;
+
+        let attempts = 0;
+        const maxAttempts = 10000;
+        const interval = 250; // 1 minute
+
+        const checkButtonWidth = () => {
+          const button = document.getElementById('single-action-button');
+          if (button) {
+            const buttonWidth = button.offsetWidth;
+            this.actionsWidth = buttonWidth + 12;
+          } else {
+            attempts++;
+            if (attempts < maxAttempts) {
+              setTimeout(checkButtonWidth, interval);
+            }
+          }
+        };
+
+        checkButtonWidth();
       } else if (size > 0) {
         // Show three dots menu
         this.actionsWidth = 56;

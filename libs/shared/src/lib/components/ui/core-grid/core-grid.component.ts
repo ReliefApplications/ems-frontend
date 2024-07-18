@@ -969,7 +969,7 @@ export class CoreGridComponent
     this.selectionChange.emit(selection);
 
     // Check if should automatically map selected rows into state automatically
-    if (this.widget.settings.actions.automaticallyMapSelected) {
+    if (this.widget?.settings?.actions.automaticallyMapSelected) {
       this.setState(this.selectedRows);
     }
   }
@@ -1606,8 +1606,17 @@ export class CoreGridComponent
    * @param search Search event.
    */
   public onSearchChange(search: string): void {
-    this.search = search;
+    this.search = typeof search === 'string' ? search.trim() : search;
     this.skip = 0;
+
+    // unselect all rows
+    this.onSelectionChange({
+      deselectedRows: this.selectedRows.map(
+        (x) => ({ dataItem: { id: x } } as any)
+      ),
+      selectedRows: [],
+    });
+
     this.onPageChange({ skip: this.skip, take: this.pageSize });
   }
 

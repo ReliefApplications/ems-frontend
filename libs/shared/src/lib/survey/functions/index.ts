@@ -38,6 +38,7 @@ import listRows from './matrices/listRows';
 import renameColumn from './matrices/renameColumn';
 import selectColumns from './matrices/selectColumns';
 import log from './log';
+import getFollowupSummary from './lift/getFollowupSummary';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -78,7 +79,8 @@ export const functions = [
   { fn: renameColumn, name: 'renameColumn' },
   { fn: selectColumns, name: 'selectColumns' },
   { fn: log, name: 'log' },
-  { fn: getPrescriptionInfo, name: 'getPrescriptionInfo2' },
+  { fn: getPrescriptionInfo, name: 'getPrescriptionInfo' },
+  { fn: getFollowupSummary, name: 'getFollowupSummary' },
 ];
 
 /** Generators for each async custom function available  */

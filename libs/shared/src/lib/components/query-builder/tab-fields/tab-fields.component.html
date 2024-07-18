@@ -173,6 +173,29 @@
           </label>
           <input formControlName="width" type="number" min="0" />
         </div>
+
+        <!-- toggle to hide the column -->
+        <ui-toggle
+          class="ml-auto grid"
+          formControlName="hiddenByDefault"
+          *ngIf="showColumnWidth"
+        >
+          <ng-container ngProjectAs="label">
+            {{
+              'components.queryBuilder.fields.hiddenByDefault.title' | translate
+            }}
+            <ui-icon
+              class="ml-1 cursor-help self-center"
+              variant="grey"
+              [size]="18"
+              icon="info_outline"
+              [uiTooltip]="
+                'components.queryBuilder.fields.hiddenByDefault.tooltip'
+                  | translate
+              "
+            ></ui-icon>
+          </ng-container>
+        </ui-toggle>
       </div>
       <!-- Display format -->
       <div uiFormFieldDirective class="w-full">
