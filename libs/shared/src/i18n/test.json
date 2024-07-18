@@ -1093,6 +1093,10 @@
           "info": "******",
           "title": "******"
         },
+        "hidden": {
+          "hiddenByDefault": "******",
+          "tooltip": "******"
+        },
         "search": "******",
         "selected": "******",
         "title": "******"

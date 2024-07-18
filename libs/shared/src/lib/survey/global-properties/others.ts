@@ -99,6 +99,7 @@ export const init = (environment: any): void => {
   // of the selected question (the value must be a page name)
   serializer.addProperty('survey', {
     name: 'openOnQuestionValuesPage',
+    displayName: 'Open survey on page based on question value',
     category: 'pages',
     choices: (survey: SurveyModel, choicesCallback: any) => {
       let questions: string[] = [''];

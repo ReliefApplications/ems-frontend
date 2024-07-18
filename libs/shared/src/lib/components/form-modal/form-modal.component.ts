@@ -272,7 +272,8 @@ export class FormModalComponent
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
       this.selectedPageIndex,
-      this.temporaryFilesStorage
+      this.temporaryFilesStorage,
+      this.destroy$
     );
 
     // Set questions readOnly propriety
@@ -643,10 +644,8 @@ export class FormModalComponent
    * @param i The index of the page
    */
   public onShowPage(i: number): void {
-    if (this.survey) {
-      setTimeout(() => {
-        this.survey.currentPageNo = i;
-      }, 50);
+    if (this.selectedPageIndex.getValue() !== i) {
+      this.selectedPageIndex.next(i);
     }
   }
 

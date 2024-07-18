@@ -1104,6 +1104,10 @@
           "info": "Laissez vide pour utiliser le mode classique",
           "title": "Mode d'affichage"
         },
+        "hidden": {
+          "hiddenByDefault": "Masquer la colonne par défaut",
+          "tooltip": "La colonne sera masquée par défaut, mais pourra toujours être affichée par l'utilisateur"
+        },
         "search": "Rechercher des champs...",
         "selected": "Champs sélectionnés",
         "title": "Champs"

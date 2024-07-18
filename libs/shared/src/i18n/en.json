@@ -1093,6 +1093,10 @@
           "info": "Left empty to ignore formatting",
           "title": "Display format"
         },
+        "hidden": {
+          "hiddenByDefault": "Hide column by default",
+          "tooltip": "Column will be hidden by default, but can still be shown by the user"
+        },
         "search": "Search fields...",
         "selected": "Selected fields",
         "title": "Fields"

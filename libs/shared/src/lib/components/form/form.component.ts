@@ -433,7 +433,8 @@ export class FormComponent
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
       this.selectedPageIndex,
-      this.temporaryFilesStorage
+      this.temporaryFilesStorage,
+      this.destroy$
     );
 
     this.survey.showCompletedPage = false;

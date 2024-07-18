@@ -18,7 +18,7 @@ import {
 } from '../../models/record.model';
 import { Metadata } from '../../models/metadata.model';
 import { RestService } from '../rest/rest.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { FormHelpersService } from '../form-helper/form-helper.service';
 import { cloneDeep, difference, get } from 'lodash';
@@ -352,13 +352,30 @@ export class FormBuilderService {
    * @param survey Survey where to add the callbacks
    * @param selectedPageIndex Current page of the survey
    * @param temporaryFilesStorage Temporary files saved while executing the survey
+   * @param destroy$ Subject to destroy the subscription
    */
   public addEventsCallBacksToSurvey(
     survey: SurveyModel,
     selectedPageIndex: BehaviorSubject<number>,
-    temporaryFilesStorage: TemporaryFilesStorage
+    temporaryFilesStorage: TemporaryFilesStorage,
+    destroy$: Subject<boolean>
   ) {
+    selectedPageIndex
+      .asObservable()
+      .pipe(takeUntil(destroy$))
+      .subscribe((index) => {
+        survey.currentPageNo = index;
+      });
+
     survey.onAfterRenderSurvey.add(() => {
+      // onAfterRenderSurvey is called after each page change,
+      // so we add a custom flag to avoid running the code multiple times
+      // as it should only be run once, on first loading the entire survey
+      if (survey.initialConfigurationDone) {
+        return;
+      }
+      survey.initialConfigurationDone = true;
+
       // Open survey on a specific page (openOnQuestionValuesPage has priority over openOnPage)
       if (survey.openOnQuestionValuesPage) {
         const question = survey.getQuestionByName(
@@ -367,7 +384,9 @@ export class FormBuilderService {
         if (question) {
           const page = survey.getPageByName(question.value);
           if (page) {
-            selectedPageIndex.next(page.visibleIndex);
+            setTimeout(() => {
+              selectedPageIndex.next(page.visibleIndex);
+            }, 100);
           }
         }
       } else if (survey.openOnPage) {
@@ -396,7 +415,9 @@ export class FormBuilderService {
     );
     survey.onCurrentPageChanged.add((survey: SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
-      selectedPageIndex.next(survey.currentPageNo);
+      if (survey.currentPageNo !== selectedPageIndex.getValue()) {
+        selectedPageIndex.next(survey.currentPageNo);
+      }
     });
   }
 
