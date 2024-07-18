@@ -123,12 +123,22 @@ export class GridComponent
   /** Input decorator for actions */
   @Input() actions: GridActions = {
     add: false,
-    update: false,
-    delete: false,
-    history: false,
-    convert: false,
+    update: {
+      display: false,
+    },
+    delete: {
+      display: false,
+    },
+    history: {
+      display: false,
+    },
+    convert: {
+      display: false,
+    },
     export: false,
-    showDetails: false,
+    showDetails: {
+      display: false,
+    },
     navigateToPage: false,
     navigateSettings: {
       field: '',

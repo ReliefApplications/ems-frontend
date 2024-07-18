@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+} from '@angular/core';
 import { rowActions } from '../grid/grid.component';
 import { get, intersection } from 'lodash';
 import { GridActions } from '../models/grid-settings.model';
@@ -10,7 +16,7 @@ const ACTIONS_TRANSLATIONS: Record<(typeof rowActions)[number], string> = {
   history: 'common.history',
   convert: 'models.record.convert',
   remove: 'components.widget.settings.grid.actions.remove',
-  showDetails: 'components.widget.settings.grid.actions.details',
+  showDetails: 'components.widget.settings.grid.actions.details.text',
 };
 
 /** Component for grid row actions */
@@ -19,18 +25,28 @@ const ACTIONS_TRANSLATIONS: Record<(typeof rowActions)[number], string> = {
   templateUrl: './row-actions.component.html',
   styleUrls: ['./row-actions.component.scss'],
 })
-export class GridRowActionsComponent {
+export class GridRowActionsComponent implements OnChanges {
   /** Item to be shown */
   @Input() item: any;
 
   /** Actions */
   @Input() actions: Partial<GridActions> = {
-    update: false,
-    delete: false,
-    history: false,
-    convert: false,
+    update: {
+      display: false,
+    },
+    delete: {
+      display: false,
+    },
+    history: {
+      display: false,
+    },
+    convert: {
+      display: false,
+    },
     remove: false,
-    showDetails: false,
+    showDetails: {
+      display: false,
+    },
     navigateSettings: {
       field: '',
       pageUrl: '',
@@ -39,11 +55,17 @@ export class GridRowActionsComponent {
     },
   };
 
+  /** The actions that should be displayed */
+  public availableActions: {
+    action: string;
+    label?: string;
+    translationKey: string;
+  }[] = [];
+
   /** Tells if only one action is enabled, if it should be displayed as a single button */
   @Input() singleActionAsButton = false;
   /** Tells if should be used instead of the menu the actions as icons side by side */
   @Input() actionsAsIcons = false;
-
   /** Input to indicate if has details */
   @Input() hasDetails = true;
 
@@ -61,17 +83,18 @@ export class GridRowActionsComponent {
     );
   }
 
-  /** @returns The number of actions active for the row */
-  get availableActions() {
-    return intersection(
+  ngOnChanges(): void {
+    console.log(this);
+    this.availableActions = intersection(
       Object.keys(this.actions).filter((key: string) =>
-        get(this.actions, key, false)
+        get(this.actions, `${key}.display`, false)
       ),
       rowActions
     ).map((action: string) => ({
       action,
       translationKey:
         ACTIONS_TRANSLATIONS[action as (typeof rowActions)[number]],
+      label: get(this.actions, `${action}.label`, undefined),
     }));
   }
 }

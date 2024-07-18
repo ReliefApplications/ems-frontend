@@ -299,17 +299,22 @@ export class CoreGridComponent
   /** Grid actions */
   public actions: GridActions = {
     add: false,
-    update: false,
-    updateLabel: '',
-    delete: false,
-    deleteLabel: '',
-    history: false,
-    historyLabel: '',
-    convert: false,
-    convertLabel: '',
+    update: {
+      display: false,
+    },
+    delete: {
+      display: false,
+    },
+    history: {
+      display: false,
+    },
+    convert: {
+      display: false,
+    },
     export: this.showExport,
-    showDetails: true,
-    showDetailsLabel: '',
+    showDetails: {
+      display: false,
+    },
     navigateToPage: false,
     navigateSettings: {
       field: '',
@@ -435,17 +440,27 @@ export class CoreGridComponent
       add:
         get(this.settings, 'actions.addRecord', false) &&
         this.settings.template,
-      history: get(this.settings, 'actions.history', false),
-      historyLabel: get(this.settings, 'actions.historyLabel', ''),
-      update: get(this.settings, 'actions.update', false),
-      updateLabel: get(this.settings, 'actions.updateLabel', ''),
-      delete: get(this.settings, 'actions.delete', false),
-      deleteLabel: get(this.settings, 'actions.deleteLabel', ''),
-      convert: get(this.settings, 'actions.convert', false),
-      convertLabel: get(this.settings, 'actions.convertLabel', ''),
+      history: {
+        display: get(this.settings, 'actions.history', false),
+        label: get(this.settings, 'actions.historyLabel', ''),
+      },
+      update: {
+        display: get(this.settings, 'actions.update', false),
+        label: get(this.settings, 'actions.updateLabel', ''),
+      },
+      delete: {
+        display: get(this.settings, 'actions.delete', false),
+        label: get(this.settings, 'actions.deleteLabel', ''),
+      },
+      convert: {
+        display: get(this.settings, 'actions.convert', false),
+        label: get(this.settings, 'actions.convertLabel', ''),
+      },
       export: get(this.settings, 'actions.export', false),
-      showDetails: get(this.settings, 'actions.showDetails', true),
-      showDetailsLabel: get(this.settings, 'actions.showDetailsLabel', ''),
+      showDetails: {
+        display: get(this.settings, 'actions.showDetails', true),
+        label: get(this.settings, 'actions.showDetailsLabel', ''),
+      },
       navigateToPage: get(this.settings, 'actions.navigateToPage', false),
       navigateSettings: {
         field: get(this.settings, 'actions.navigateSettings.field', false),

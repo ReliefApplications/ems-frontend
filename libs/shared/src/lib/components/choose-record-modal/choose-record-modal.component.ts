@@ -123,10 +123,18 @@ export class ChooseRecordModalComponent
     this.settings = {
       query: this.data.targetFormQuery,
       actions: {
-        delete: false,
-        history: false,
-        convert: false,
-        update: false,
+        delete: {
+          display: false,
+        },
+        history: {
+          display: false,
+        },
+        convert: {
+          display: false,
+        },
+        update: {
+          display: false,
+        },
         inlineEdition: false,
         remove: false,
       },

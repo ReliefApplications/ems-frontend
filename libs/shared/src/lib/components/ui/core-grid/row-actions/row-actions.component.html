@@ -8,7 +8,7 @@
       [look]="'flat'"
       (click)="action.emit({ action: 'details', items: item })"
       [uiTooltip]="
-        actions.showDetailsLabel ||
+        actions.showDetails.label ||
           'components.widget.settings.grid.actions.details.text' | translate
       "
     ></button>
@@ -19,7 +19,7 @@
       icon="edit"
       [look]="'flat'"
       (click)="action.emit({ action: 'update', item: item })"
-      [uiTooltip]="actions.updateLabel || 'common.update' | translate"
+      [uiTooltip]="actions.update.label || 'common.update' | translate"
     ></button>
 
     <button
@@ -28,7 +28,7 @@
       icon="clock-arrow-rotate"
       [look]="'flat'"
       (click)="action.emit({ action: 'history', item: item })"
-      [uiTooltip]="actions.historyLabel || 'common.history' | translate"
+      [uiTooltip]="actions.history.label || 'common.history' | translate"
     ></button>
 
     <button
@@ -37,7 +37,7 @@
       icon="connector"
       [look]="'flat'"
       (click)="action.emit({ action: 'convert', item: item })"
-      [uiTooltip]="actions.convertLabel || 'models.record.convert' | translate"
+      [uiTooltip]="actions.convert.label || 'models.record.convert' | translate"
     ></button>
 
     <button
@@ -46,7 +46,7 @@
       icon="trash"
       [look]="'flat'"
       (click)="action.emit({ action: 'delete', item: item })"
-      [uiTooltip]="actions.deleteLabel || 'common.delete' | translate"
+      [uiTooltip]="actions.delete.label || 'common.delete' | translate"
     ></button>
 
     <button
@@ -96,7 +96,10 @@
     class="text-center w-fit"
     (click)="action.emit({ action: availableActions[0].action, item })"
   >
-    {{ availableActions[0].translationKey | translate }}
+    {{
+      availableActions[0].label ||
+        (availableActions[0].translationKey | translate)
+    }}
     <div id="single-action-label"></div>
   </button>
   <ui-menu #menu>
@@ -106,7 +109,10 @@
       uiMenuItem
       (click)="action.emit({ action: 'details', items: item })"
     >
-      {{ 'components.widget.settings.grid.actions.details.text' | translate }}
+      {{
+        actions.showDetails.label ||
+          ('components.widget.settings.grid.actions.details.text' | translate)
+      }}
       <div id="details-action-label"></div>
     </button>
 
@@ -116,11 +122,7 @@
       uiMenuItem
       (click)="action.emit({ action: 'update', item: item })"
     >
-      {{
-        actions.updateLabel
-          ? actions.updateLabel
-          : ('common.update' | translate)
-      }}
+      {{ actions.update.label || ('common.update' | translate) }}
       <div id="update-action-label"></div>
     </button>
     <button
@@ -129,11 +131,7 @@
       uiMenuItem
       (click)="action.emit({ action: 'history', item: item })"
     >
-      {{
-        actions.historyLabel
-          ? actions.historyLabel
-          : ('common.history' | translate)
-      }}
+      {{ actions.history.label || ('common.history' | translate) }}
       <div id="history-action-label"></div>
     </button>
     <button
@@ -142,11 +140,7 @@
       uiMenuItem
       (click)="action.emit({ action: 'convert', item: item })"
     >
-      {{
-        actions.convertLabel
-          ? actions.convertLabel
-          : ('models.record.convert' | translate)
-      }}
+      {{ actions.convert.label || ('models.record.convert' | translate) }}
       <div id="convert-action-label"></div>
     </button>
     <button
@@ -155,11 +149,7 @@
       uiMenuItem
       (click)="action.emit({ action: 'delete', item: item })"
     >
-      {{
-        actions.deleteLabel
-          ? actions.deleteLabel
-          : ('common.delete' | translate)
-      }}
+      {{ actions.delete.label || ('common.delete' | translate) }}
       <div id="delete-action-label"></div>
     </button>
     <button
