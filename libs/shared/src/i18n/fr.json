@@ -340,10 +340,10 @@
       "objectNotCreated": "L'objet de type {{type}} n'a pas pu être créé. {{error}}",
       "objectNotDeleted": "L'objet {{value}} n'a pas pu être supprimé. {{error}}",
       "objectNotDuplicated": "L'objet de type {{type}} n'a pas pu être dupliqué. {{error}}",
+      "objectNotEdited": "{{type}} not modifié. {{error}}",
       "objectNotFound": "{{name}} n'a pas été trouvé.",
       "objectNotInvited": "L'invitation vers {{name}} a échoué.",
       "objectNotReordered": "{{type}} non réorganisé. {{error}}",
-      "objectNotEdited": "{{type}} not modifié. {{error}}",
       "objectNotRestored": "{{value}} non restauré. {{error}}",
       "objectNotUpdated": "L'objet de type {{type}} n'a pas pu être modifié. {{error}}",
       "objectReordered": "L'objet de type {{type}} a été réorganisé.",
@@ -849,18 +849,18 @@
           "apiConfiguration": {
             "placeholder": "Sélectionnez une configuration d'api"
           },
-          "label": "Identifiant du formulaire KoboToolbox",
-          "placeholder": "Entrez l'identifiant du formulaire KoboToolbox",
           "data": {
-            "synchronize": "Synchroniser les données Kobo",
-            "start": "Démarrer la synchronisation",
             "fromFormWithVersion": "Le formulaire '{{formName}}' a été créé à partir du formulaire Kobotoolbox d'origine avec l'ID de version de déploiement {{versionId}}",
-            "syncOnlyFromDeployedVersion": "Synchronisez les soumissions de données uniquement à partir de la même version de déploiement du formulaire",
             "nothingToSynchronize": "Aucune donnée trouvée pour la synchronisation",
+            "start": "Démarrer la synchronisation",
+            "syncOnlyFromDeployedVersion": "Synchronisez les soumissions de données uniquement à partir de la même version de déploiement du formulaire",
+            "synchronize": "Synchroniser les données Kobo",
             "tooltip": {
               "syncOnlyFromDeployedVersion": "Seules les soumissions de données envoyées lorsque le formulaire était dans la même version que lors de son importation seront utilisées pour créer des enregistrements. Les soumissions de données enregistrées dans des versions antérieures ou ultérieures seront ignorées."
             }
-          }
+          },
+          "label": "Identifiant du formulaire KoboToolbox",
+          "placeholder": "Entrez l'identifiant du formulaire KoboToolbox"
         },
         "template": {
           "from": "Depuis le modèle",

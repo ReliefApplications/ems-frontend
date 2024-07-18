@@ -22,6 +22,10 @@ import {
 import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { Apollo } from 'apollo-angular';
 import { takeUntil } from 'rxjs';
+import {
+  ADD_RECORDS_FROM_KOBO,
+  EDIT_FORM_KOBO_PREFERENCES,
+} from './graphql/mutations';
 
 /** Form and kobo information Dialog Data */
 interface DialogData {
@@ -31,10 +35,6 @@ interface DialogData {
   apiConfiguration: ApiConfiguration;
   form: { id: string; name: string };
 }
-import {
-  ADD_RECORDS_FROM_KOBO,
-  EDIT_FORM_KOBO_PREFERENCES,
-} from './graphql/mutations';
 
 /**
  * Synchronize kobo form data (modal, import data submissions from kobo)

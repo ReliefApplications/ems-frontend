@@ -340,6 +340,7 @@
       "objectNotCreated": "****** {{type}} ****** {{error}}",
       "objectNotDeleted": "{{value}} ****** {{error}}",
       "objectNotDuplicated": "****** {{type}} ****** {{error}}",
+      "objectNotEdited": "{{type}} ****** {{error}}",
       "objectNotFound": "{{name}} ******",
       "objectNotInvited": "{{name}} ******",
       "objectNotReordered": "{{type}} ****** {{error}}",
@@ -836,6 +837,16 @@
         "kobo": {
           "apiConfiguration": {
             "placeholder": "******"
+          },
+          "data": {
+            "fromFormWithVersion": "****** {{formName}} ****** {{versionId}}",
+            "nothingToSynchronize": "******",
+            "start": "******",
+            "syncOnlyFromDeployedVersion": "******",
+            "synchronize": "******",
+            "tooltip": {
+              "syncOnlyFromDeployedVersion": "******"
+            }
           },
           "label": "******",
           "placeholder": "******"

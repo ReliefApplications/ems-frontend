@@ -340,10 +340,10 @@
       "objectNotCreated": "The {{type}} was not created. {{error}}",
       "objectNotDeleted": "{{value}} deletion failed. {{error}}",
       "objectNotDuplicated": "The {{type}} was not duplicated. {{error}}",
+      "objectNotEdited": "{{type}} not edited. {{error}}",
       "objectNotFound": "{{name}} not found.",
       "objectNotInvited": "{{name}} invitation failed.",
       "objectNotReordered": "{{type}} not reordered. {{error}}",
-      "objectNotEdited": "{{type}} not edited. {{error}}",
       "objectNotRestored": "{{value}} not restored. {{error}}",
       "objectNotUpdated": "{{type}} not edited. {{error}}",
       "objectReordered": "{{type}} reordered.",
@@ -838,18 +838,18 @@
           "apiConfiguration": {
             "placeholder": "Select an api configuration"
           },
-          "label": "KoboToolbox form id",
-          "placeholder": "Enter a KoboToolbox form id",
           "data": {
-            "synchronize": "Synchronize kobo data",
-            "start": "Start synchronization",
             "fromFormWithVersion": "The form '{{formName}}' was created from the original Kobotoolbox form with the deploy version id {{versionId}}",
-            "syncOnlyFromDeployedVersion": "Synchronize data submissions only from the same form deploy version",
             "nothingToSynchronize": "No data found for synchronization",
+            "start": "Start synchronization",
+            "syncOnlyFromDeployedVersion": "Synchronize data submissions only from the same form deploy version",
+            "synchronize": "Synchronize kobo data",
             "tooltip": {
               "syncOnlyFromDeployedVersion": "Only data submissions sent when the form was in the same version as when it was imported will be used to create records. Data submissions registered in earlier or later versions will be disregarded."
             }
-          }
+          },
+          "label": "KoboToolbox form id",
+          "placeholder": "Enter a KoboToolbox form id"
         },
         "template": {
           "from": "From template",
