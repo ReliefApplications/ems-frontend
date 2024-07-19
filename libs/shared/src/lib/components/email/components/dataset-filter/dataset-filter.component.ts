@@ -24,6 +24,7 @@ import { QueryBuilderService } from '../../../../services/query-builder/query-bu
 import { prettifyLabel } from '../../../../utils/prettify';
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 /**
  * Component for filtering, selecting fields and styling block data sets.
@@ -125,6 +126,7 @@ export class DatasetFilterComponent
    * @param gridService Shared grid service
    * @param http Backend http client
    * @param restService rest service
+   * @param sanitizer
    */
   constructor(
     public emailService: EmailService,
@@ -134,7 +136,8 @@ export class DatasetFilterComponent
     public queryBuilder: QueryBuilderService,
     public gridService: GridService,
     private http: HttpClient,
-    private restService: RestService
+    private restService: RestService,
+    private sanitizer: DomSanitizer
   ) {
     super();
   }
@@ -468,12 +471,7 @@ export class DatasetFilterComponent
                     this.emailService.setAllPreviewData(allPreviewData);
                   }
                   this.previewHTML = window.atob(response.tableHtml);
-                  const previewHTML = document.getElementById(
-                    'tblPreview'
-                  ) as HTMLInputElement;
-                  if (previewHTML) {
-                    previewHTML.innerHTML = this.previewHTML;
-                  }
+                  this.sanitizeAndSetInnerHTML('tblPreview', this.previewHTML);
                 } else {
                   this.totalMatchingRecords = response.count;
                   this.showDatasetLimitWarning = true;
@@ -496,6 +494,18 @@ export class DatasetFilterComponent
     this.emailService.toEmailFilter = '';
     this.emailService.ccEmailFilter = '';
     this.emailService.bccEmailFilter = '';
+  }
+
+  /**
+   * Sanitize HTML
+   *
+   * @param elementId element Id of div
+   * @param htmlContent html content
+   */
+  sanitizeAndSetInnerHTML(elementId: string, htmlContent: string): void {
+    const sanitizedHtml: SafeHtml =
+      this.sanitizer.bypassSecurityTrustHtml(htmlContent);
+    this.previewHTML = sanitizedHtml as string;
   }
 
   /**
