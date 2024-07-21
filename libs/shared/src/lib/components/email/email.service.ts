@@ -16,6 +16,7 @@ import { FieldStore } from './models/email.const';
 import { cloneDeep } from 'lodash';
 import { QueryMetaDataQueryResponse } from '../../models/metadata.model';
 import { ResourceQueryResponse } from '../../models/resource.model';
+import { prettifyLabel } from '../../utils/prettify';
 
 /**
  * Helper functions service for emails template.
@@ -714,7 +715,6 @@ export class EmailService {
       )
       .subscribe(
         (response: any) => {
-          console.log('response', response);
           this.finalEmailPreview = response;
         },
         (error: string) => {
@@ -732,8 +732,7 @@ export class EmailService {
    */
   editEmailNotification(id: string, data: any) {
     const applicationId = data.applicationId;
-    console.log('EDIT DATA ');
-    console.log(data);
+
     return this.apollo.query<any>({
       query: GET_AND_UPDATE_EMAIL_NOTIFICATION,
       variables: {
@@ -824,6 +823,24 @@ export class EmailService {
       }
     });
     return separateEmail;
+  }
+
+  /**
+   * Iterates over the query formgroup, matches each element with availableFields,
+   * and updates the element if a match is found.
+   *
+   * @param query The raw formgroup value of elements to be converted.
+   * @param availableFields The array of available fields for matching.
+   */
+  convertFields(query: any, availableFields: any) {
+    query.forEach((ele: any) => {
+      const tempMatchedData = availableFields.find(
+        (x: any) => prettifyLabel(x.name) === ele.label
+      );
+      if (tempMatchedData) {
+        ele = { label: ele.label, ...tempMatchedData };
+      }
+    });
   }
 
   /**

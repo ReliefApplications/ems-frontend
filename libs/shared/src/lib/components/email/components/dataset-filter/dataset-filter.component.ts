@@ -21,7 +21,6 @@ import { Subscription, takeUntil } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
-import { prettifyLabel } from '../../../../utils/prettify';
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -126,7 +125,7 @@ export class DatasetFilterComponent
    * @param gridService Shared grid service
    * @param http Backend http client
    * @param restService rest service
-   * @param sanitizer
+   * @param sanitizer html sanitizer
    */
   constructor(
     public emailService: EmailService,
@@ -219,19 +218,18 @@ export class DatasetFilterComponent
   }
 
   override ngOnDestroy() {
-    console.log('QUERY DATA FROM DATASET QUERY', this.query);
-    const cacheData = {
-      dataList: this.dataList,
-      resource: this.resource,
-      operators: this.operators,
-      datasetFields: this.datasetFields,
-      selectedFields: this.selectedFields,
-      availableFields: this.availableFields,
-      filterFields: this.filterFields,
-      datasetResponse: this.datasetResponse,
-      selectedResourceId: this.selectedResourceId,
-    };
-    this.query?.controls?.query?.get('cacheData')?.setValue(cacheData);
+    // const cacheData = {
+    //   dataList: this.dataList,
+    //   resource: this.resource,
+    //   operators: this.operators,
+    //   datasetFields: this.datasetFields,
+    //   selectedFields: this.selectedFields,
+    //   availableFields: this.availableFields,
+    //   filterFields: this.filterFields,
+    //   datasetResponse: this.datasetResponse,
+    //   selectedResourceId: this.selectedResourceId,
+    // };
+    // this.query?.controls?.query?.get('cacheData')?.setValue(cacheData);
 
     // Safely destroys dataset save subscription
     if (this.datasetSaveSubscription) {
@@ -419,15 +417,12 @@ export class DatasetFilterComponent
         this.loading = true;
         for (const query of this.queryValue) {
           let objPreview: any = {};
-          this.query.getRawValue().query?.fields.forEach((ele: any) => {
-            const tempMatchedData = this.availableFields.find(
-              (x) => prettifyLabel(x.name) === ele.label
-            );
-            if (tempMatchedData) {
-              ele.name = tempMatchedData.name;
-              ele.type = tempMatchedData.type.name;
-            }
-          });
+
+          this.emailService.convertFields(
+            this.query.getRawValue().query?.fields,
+            this.availableFields
+          );
+
           objPreview = {
             resource: this.resource.id ?? '',
             name: query?.name,

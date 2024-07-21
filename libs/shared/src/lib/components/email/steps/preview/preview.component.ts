@@ -125,19 +125,19 @@ export class PreviewComponent
    */
   loadFinalEmailPreview(): void {
     this.emailService.loading = true; // Show spinner
-    console.log('configId', this.emailService.configId);
+    const query = this.emailService.datasetsForm.value;
+    query.datasets = this.emailService.datasetsForm
+      ?.get('datasets')
+      ?.getRawValue();
     this.http
-      .post(
-        `${this.restService.apiUrl}/notification/preview-email/${this.emailService.configId}`,
-        {}
-      )
+      .post(`${this.restService.apiUrl}/notification/preview-email/`, query)
       .subscribe(
         (response: any) => {
           this.emailService.finalEmailPreview = response;
           this.updateEmailContainer(); // Update the email container with the new preview
           this.subjectString =
             this.emailService.finalEmailPreview.subject ?? this.subjectString; // Updae/Replace the subject string from the response
-          console.log(this.subjectHtmlRef);
+
           if (this.subjectHtmlRef?.nativeElement) {
             this.subjectHtmlRef.nativeElement.innerHTML = this.subjectString;
           }

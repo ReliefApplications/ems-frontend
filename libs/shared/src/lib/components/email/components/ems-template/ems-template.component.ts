@@ -304,7 +304,8 @@ export class EmsTemplateComponent
       this.emailService
         .patchEmailLayout()
         .then(async () => {
-          await this.submit(true);
+          this.currentStep += 1;
+          this.steps[5].disabled = false;
         })
         .catch((err) => {
           throw new Error(err);
@@ -689,8 +690,6 @@ export class EmsTemplateComponent
               manipulatedDataWithoutOptions
             )
             .subscribe((res: any) => {
-              console.log('RES');
-              console.log(res);
               this.emailService.isEdit = false;
               this.emailService.editId = '';
               this.emailService.configId = res.data.editEmailNotification.id;
@@ -709,8 +708,6 @@ export class EmsTemplateComponent
             .addEmailNotification(manipulatedDataWithoutOptions)
             .pipe(takeUntil(this.destroy$))
             .subscribe((res: any) => {
-              console.log('RES');
-              console.log(res);
               this.emailService.configId = res.data.addEmailNotification.id;
 
               this.snackBar.openSnackBar(
@@ -727,9 +724,8 @@ export class EmsTemplateComponent
   /**
    * Submission
    *
-   * @param isPreview If it is preview or not
    */
-  async submit(isPreview?: boolean) {
+  async submit() {
     // await this.emailService.patchEmailLayout();
     if (Object.keys(this.emailService.datasetsForm.value).length) {
       this.emailService.datasetsForm?.value?.datasets?.forEach((data: any) => {
@@ -804,18 +800,13 @@ export class EmsTemplateComponent
                       this.emailService.configId =
                         data.editEmailNotification.id;
 
-                      if (!isPreview) {
-                        this.snackBar.openSnackBar(
-                          this.translate.instant(
-                            'pages.application.settings.emailEdited'
-                          )
-                        );
-                        this.emailService.datasetsForm.reset();
-                        this.navigateToEms.emit();
-                      } else {
-                        this.currentStep += 1;
-                        this.steps[5].disabled = false;
-                      }
+                      this.snackBar.openSnackBar(
+                        this.translate.instant(
+                          'pages.application.settings.emailEdited'
+                        )
+                      );
+                      this.emailService.datasetsForm.reset();
+                      this.navigateToEms.emit();
                     }
                   }
                 },
@@ -851,19 +842,13 @@ export class EmsTemplateComponent
                     if (data) {
                       this.emailService.configId = data.addEmailNotification.id;
 
-                      if (!isPreview) {
-                        this.snackBar.openSnackBar(
-                          this.translate.instant(
-                            'pages.application.settings.emailCreated'
-                          )
-                        );
-                        this.emailService.datasetsForm.reset();
-                        this.navigateToEms.emit();
-                      } else {
-                        this.currentStep += 1;
-                        this.steps[5].disabled = false;
-                        this.previewTriggered = true;
-                      }
+                      this.snackBar.openSnackBar(
+                        this.translate.instant(
+                          'pages.application.settings.emailCreated'
+                        )
+                      );
+                      this.emailService.datasetsForm.reset();
+                      this.navigateToEms.emit();
                     }
                   }
                 },
@@ -889,7 +874,6 @@ export class EmsTemplateComponent
       const groupedFields = fieldData.reduce((acc: any, field: any) => {
         if (field.name.includes('.')) {
           const fieldDataArr = field.name.split('.');
-          console.log('field arr >>> ', fieldDataArr);
 
           if (!acc[fieldDataArr[0]]) {
             acc[fieldDataArr[0]] = {

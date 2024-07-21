@@ -306,8 +306,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService
       .getEmailNotification(id, this.applicationId)
       .subscribe((res) => {
-        console.log('EMAIL EDIT RESPONSE  ');
-        console.log(res);
         const emailData = res.data.editEmailNotification;
         this.emailService.configId = emailData.id;
         if (isClone) {
@@ -606,7 +604,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @returns The newly created dataset group.
    */
   createNewDataSetGroup(ele: any, index: number): FormGroup {
-    console.log('ele', ele);
     const tempData = this.formBuilder.group({
       name: ele.name,
       query: this.formBuilder.group({
