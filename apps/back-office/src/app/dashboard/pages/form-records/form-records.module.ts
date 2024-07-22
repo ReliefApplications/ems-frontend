@@ -8,6 +8,7 @@ import {
   SkeletonTableModule,
   EmptyModule,
   UploadRecordsModule,
+  ReadableCronModule,
 } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -37,6 +38,7 @@ import {
     TableModule,
     EmptyModule,
     UploadRecordsModule,
+    ReadableCronModule,
   ],
   exports: [FormRecordsComponent],
 })

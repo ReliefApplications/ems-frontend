@@ -8,6 +8,7 @@ import {
   SkeletonTableModule,
   EmptyModule,
   UploadRecordsModule,
+  ReadableCronModule,
 } from '@oort-front/shared';
 import {
   TooltipModule,
@@ -36,6 +37,7 @@ import {
     TableModule,
     DividerModule,
     UploadRecordsModule,
+    ReadableCronModule,
   ],
 })
 export class RecordsTabModule {}

@@ -22,7 +22,7 @@ import {
 } from '@oort-front/shared';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { takeUntil } from 'rxjs/operators';
 import { Metadata } from '@oort-front/shared';
 import {
@@ -475,6 +475,43 @@ export class FormRecordsComponent
           this.snackBar.openSnackBar(err.message, { error: true });
         },
       });
+  }
+
+  /**
+   * Open the synchronize kobo at modal to schedule kobo form synchronization entries.
+   *
+   * @param e click event.
+   */
+  async onScheduleSyncKobo(e: any): Promise<void> {
+    e.stopPropagation();
+    const { SynchronizeKoboAtModalComponent } = await import(
+      '../../../components/synchronize-kobo-at-modal/synchronize-kobo-at-modal.component'
+    );
+    const dialogRef = this.dialog.open(SynchronizeKoboAtModalComponent, {
+      data: {
+        koboId: this.form?.kobo?.id,
+        deployedVersionId: this.form?.kobo?.deployedVersionId,
+        dataFromDeployedVersion: this.form?.kobo?.dataFromDeployedVersion,
+        cronSchedule: this.form?.kobo?.cronSchedule,
+        form: {
+          id: this.form?.id,
+          name: this.form?.name,
+        },
+      },
+    });
+
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((data: any) => {
+      if (!isNil(data)) {
+        this.form = {
+          ...this.form,
+          kobo: {
+            ...this.form.kobo,
+            dataFromDeployedVersion: data.dataFromDeployedVersion,
+            cronSchedule: data.cronSchedule ?? '',
+          },
+        };
+      }
+    });
   }
 
   /**

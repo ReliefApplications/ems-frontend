@@ -42,6 +42,22 @@
         [path]="'resource'"
         (uploaded)="fetchRecords(true)"
       ></shared-upload-records>
+      <div *ngIf="koboForm" class="flex flex-col max-w-min">
+        <ui-button
+          icon="sync"
+          category="secondary"
+          variant="primary"
+          (click)="onScheduleSyncKobo($event)"
+        >
+          {{ 'components.form.create.kobo.data.synchronizeAt' | translate }}
+        </ui-button>
+        <p 
+          class="text-gray-700 text-xs self-center"
+          *ngIf="koboForm.kobo?.cronSchedule"
+        >
+          {{ koboForm.kobo?.cronSchedule | sharedReadableCron }}
+        </p>
+      </div>
     </div>
   </div>
   <ng-container *ngIf="!empty; else emptyTmpl">

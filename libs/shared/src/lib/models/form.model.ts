@@ -57,6 +57,7 @@ export interface Form {
     deployedVersionId: string;
     dataFromDeployedVersion: boolean;
     apiConfiguration: ApiConfiguration;
+    cronSchedule?: string;
   };
 }
 

@@ -14,7 +14,7 @@ import {
   updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { DELETE_RECORD, RESTORE_RECORD } from '../graphql/mutations';
 import { GET_RESOURCE_RECORDS } from './graphql/queries';
 import {
@@ -24,6 +24,7 @@ import {
 } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
 import { GraphQLError } from 'graphql';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Quantity of resource that will be loaded at once. */
 const ITEMS_PER_PAGE = 10;
@@ -93,6 +94,11 @@ export class RecordsTabComponent
     return !this.loading && this.dataSource.length === 0;
   }
 
+  /** @returns If the resource has a core form created from a Kobo form, return form */
+  get koboForm(): Form | undefined {
+    return this.resource.forms?.find((form: Form) => form.kobo?.id);
+  }
+
   /**
    * Records tab of resource page
    *
@@ -101,13 +107,15 @@ export class RecordsTabComponent
    * @param snackBar Shared snackbar service
    * @param confirmService Shared confirm service
    * @param downloadService Service used to download.
+   * @param dialog Dialog service
    */
   constructor(
     private apollo: Apollo,
     private translate: TranslateService,
     private snackBar: SnackbarService,
     private confirmService: ConfirmService,
-    private downloadService: DownloadService
+    private downloadService: DownloadService,
+    public dialog: Dialog
   ) {
     super();
   }
@@ -408,6 +416,52 @@ export class RecordsTabComponent
           .then((results) => this.updateValues(results.data, results.loading));
       }
     }
+  }
+
+  /**
+   * Open the synchronize kobo at modal to schedule kobo form synchronization entries.
+   *
+   * @param e click event.
+   */
+  async onScheduleSyncKobo(e: any): Promise<void> {
+    e.stopPropagation();
+    const { SynchronizeKoboAtModalComponent } = await import(
+      '../../../../components/synchronize-kobo-at-modal/synchronize-kobo-at-modal.component'
+    );
+    const dialogRef = this.dialog.open(SynchronizeKoboAtModalComponent, {
+      data: {
+        koboId: this.koboForm?.kobo?.id,
+        deployedVersionId: this.koboForm?.kobo?.deployedVersionId,
+        dataFromDeployedVersion: this.koboForm?.kobo?.dataFromDeployedVersion,
+        cronSchedule: this.koboForm?.kobo?.cronSchedule,
+        form: {
+          id: this.koboForm?.id,
+          name: this.koboForm?.name,
+        },
+      },
+    });
+
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((data: any) => {
+      if (!isNil(data)) {
+        const forms = this.resource.forms?.map((x: Form) => {
+          if (x.id === this.koboForm?.id && x.kobo) {
+            return {
+              ...x,
+              kobo: {
+                ...x.kobo,
+                dataFromDeployedVersion: data.dataFromDeployedVersion,
+                cronSchedule: data.cronSchedule ?? '',
+              },
+            };
+          }
+          return x;
+        });
+        this.resource = {
+          ...this.resource,
+          forms,
+        };
+      }
+    });
   }
 
   /**

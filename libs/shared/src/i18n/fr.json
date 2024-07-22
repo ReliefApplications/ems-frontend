@@ -855,7 +855,9 @@
             "start": "Démarrer la synchronisation",
             "syncOnlyFromDeployedVersion": "Synchronisez les soumissions de données uniquement à partir de la même version de déploiement du formulaire",
             "synchronize": "Synchroniser les données Kobo",
+            "synchronizeAt": "Planifiez la synchronisation des données Kobo sur",
             "tooltip": {
+              "schedule": "Entrez l'heure programmée pour synchroniser les entrées Kobo",
               "syncOnlyFromDeployedVersion": "Seules les soumissions de données envoyées lorsque le formulaire était dans la même version que lors de son importation seront utilisées pour créer des enregistrements. Les soumissions de données enregistrées dans des versions antérieures ou ultérieures seront ignorées."
             }
           },

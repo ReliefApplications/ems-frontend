@@ -844,7 +844,9 @@
             "start": "Start synchronization",
             "syncOnlyFromDeployedVersion": "Synchronize data submissions only from the same form deploy version",
             "synchronize": "Synchronize kobo data",
+            "synchronizeAt": "Schedule sync kobo data at",
             "tooltip": {
+              "schedule": "Enter the schedule time to synchronize the Kobo entries",
               "syncOnlyFromDeployedVersion": "Only data submissions sent when the form was in the same version as when it was imported will be used to create records. Data submissions registered in earlier or later versions will be disregarded."
             }
           },
