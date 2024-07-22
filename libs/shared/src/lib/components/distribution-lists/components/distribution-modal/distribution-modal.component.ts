@@ -71,20 +71,25 @@ export function codesFactory(): () => {
 })
 export class DistributionModalComponent {
   // === REACTIVE FORM ===
+  /** Form */
   public form = this.fb.group({
     name: [get(this.data, 'name', null), [Validators.required]],
     to: [get(this.data, 'to', []), Validators.required],
     cc: [get(this.data, 'cc', [])],
     bcc: [get(this.data, 'bcc', [])],
   });
+  /** separatorKeysCodes */
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
+  /** errorEmails */
   errorEmails = new BehaviorSubject<boolean>(false);
+  /** Meesage for errorEmail */
   errorEmailMessages = new BehaviorSubject<string>('');
   /** Reference to file upload element. */
   @ViewChild('fileUpload', { static: true }) fileElement:
     | ElementRef
     | undefined;
 
+  /** checking that DistributionList Name is Duplicate or not */
   public isDistributionListNameDuplicate = false;
 
   /** @returns list of emails */
@@ -126,8 +131,11 @@ export class DistributionModalComponent {
     return '';
   }
 
+  /** Viewchild for toInput */
   @ViewChild('toInput') toInput!: ElementRef<HTMLInputElement>;
+  /** Viewchild for ccInput */
   @ViewChild('ccInput') ccInput!: ElementRef<HTMLInputElement>;
+  /** Viewchild for bccInput */
   @ViewChild('bccInput') bccInput!: ElementRef<HTMLInputElement>;
 
   /**
@@ -365,9 +373,8 @@ export class DistributionModalComponent {
     const file: File = event.target.files[0];
     if (file) {
       this.downloadService
-        .importDistributionList(file)
-        .subscribe((res: any) => {
-          console.log(res);
+        .uploadFile('upload/distributionList', file)
+        .subscribe(({ To, Cc, Bcc }) => {
           this.snackBar.openSnackBar(
             this.translate.instant(
               'components.email.distributionList.import.loading'
@@ -376,16 +383,16 @@ export class DistributionModalComponent {
 
           /* Need to check the existing value and append the new emails without any duplication */
           const toAfterImport = this.form.value?.to?.length
-            ? Array.from(new Set([...this.form.value.to, ...res.To]))
-            : res.To;
+            ? Array.from(new Set([...this.form.value.to, ...To]))
+            : To;
 
           const ccAfterImport = this.form.value?.cc?.length
-            ? Array.from(new Set([...this.form.value.cc, ...res.Cc]))
-            : res.Cc;
+            ? Array.from(new Set([...this.form.value.cc, ...Cc]))
+            : Cc;
 
           const bccAfterImport = this.form.value?.bcc?.length
-            ? Array.from(new Set([...this.form.value.bcc, ...res.Bcc]))
-            : res.Bcc;
+            ? Array.from(new Set([...this.form.value.bcc, ...Bcc]))
+            : Bcc;
 
           this.form.get('to')?.setValue(toAfterImport);
           this.form.get('cc')?.setValue(ccAfterImport);
