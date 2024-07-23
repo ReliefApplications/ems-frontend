@@ -1229,4 +1229,42 @@ export class EmailService {
     const urlWithConfigId = `${this.restService.apiUrl}/notification/send-quick-email`;
     return this.http.post<any>(urlWithConfigId, emailData);
   }
+
+  /**
+   *
+   * Reset All layout data
+   */
+  resetAllLayoutData() {
+    this.allLayoutdata = {
+      /** Images & styles */
+      bannerImage: null,
+      bannerImageStyle: '',
+      /** Container style */
+      containerStyle: '',
+      /** FOOTER COPYRIGHT STYLE */
+      copyrightStyle: '',
+      /** Email subject */
+      txtSubject: '',
+      /** Email header */
+      headerHtml: '',
+      headerLogo: null,
+      headerLogoStyle: '',
+      headerBackgroundColor: this.headerBackgroundColor,
+      headerTextColor: this.headerTextColor,
+      headerStyle: '',
+      /** Email body */
+      bodyHtml: '',
+      bodyBackgroundColor: this.bodyBackgroundColor,
+      bodyTextColor: this.bodyTextColor,
+      bodyStyle: '',
+      /** Email footer */
+      footerHtml: '',
+      footerLogo: null,
+      footerBackgroundColor: this.footerBackgroundColor,
+      footerTextColor: this.footerTextColor,
+      footerStyle: '',
+      footerImgStyle: '',
+      footerHtmlStyle: '',
+    };
+  }
 }

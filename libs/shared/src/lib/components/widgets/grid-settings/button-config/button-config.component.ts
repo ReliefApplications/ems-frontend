@@ -422,6 +422,7 @@ export class ButtonConfigComponent
 
   /** Opens modal for adding a new email template */
   public async addEmailTemplate() {
+    this.emailService.resetAllLayoutData();
     const { TemplateModalComponent } = await import(
       '../../../templates/components/template-modal/template-modal.component'
     );
