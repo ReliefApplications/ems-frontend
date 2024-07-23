@@ -25,6 +25,8 @@ import { DistributionModalComponent } from '../distribution-lists/components/dis
 const DEFAULT_PAGE_SIZE = 5;
 /** Current Distribution list items page size (for pagination) */
 const DISTRIBUTION_PAGE_SIZE = 5;
+/** Current Template list items page size (for pagination) */
+const TEMPLATE_PAGE_SIZE = 5;
 
 /** Email Notification setup component. */
 @Component({
@@ -65,14 +67,29 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     length: 0,
     endCursor: '',
   };
+
+  /** Page information for Template pagination. */
+  public templatePageInfo = {
+    pageIndex: 0,
+    pageSize: TEMPLATE_PAGE_SIZE,
+    length: 0,
+    endCursor: '',
+  };
+
+  /** Actual data for distribution. */
+  distributionActualData: any = [];
+  /** Actual data for Custom template. */
+  customActualData: any = [];
   /** Cached distribution list. */
   cacheDistributionList: any = [];
+  /** Cached Template list. */
+  cacheTemplateList: any = [];
 
   /** Custom Template Columns */
   public customTemplateColumns = ['subject', 'createdBy', 'actions'];
 
   /** An array to store custom template objects.*/
-  public customTemplates: any[] = [];
+  public customTemplates: any = [];
 
   /** Selected Tab Index - to manipulated button text based on selection */
   public selectedTabIndex = 0;
@@ -131,6 +148,13 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       this.customTemplates = res?.data?.customTemplates?.edges?.map(
         (template: any) => template?.node
       );
+      this.customActualData = this.customTemplates;
+      this.cacheTemplateList = this.customTemplates;
+      this.customTemplates = this.cacheTemplateList.slice(
+        this.templatePageInfo.pageSize * this.templatePageInfo.pageIndex,
+        this.templatePageInfo.pageSize * (this.templatePageInfo.pageIndex + 1)
+      );
+      this.templatePageInfo.length = this.cacheTemplateList.length;
     });
   }
 
@@ -284,6 +308,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         );
         this.pageInfo.length = res?.data?.emailNotifications?.edges.length;
 
+          this.distributionActualData = cloneDeep(this.distributionLists);
           this.cacheDistributionList = this.distributionLists;
           this.distributionLists = this.cacheDistributionList.slice(
             this.distributionPageInfo.pageSize *
@@ -302,15 +327,40 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param event The event object.
    */
   searchTemplate(event: any) {
-    const searchText = event.target.value?.trim()?.toLowerCase();
-    this.filterTemplateData = this.templateActualData.filter((x: any) =>
-      x.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-    this.emailNotifications = this.filterTemplateData.slice(
-      this.pageInfo.pageSize * this.pageInfo.pageIndex,
-      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-    );
-    this.pageInfo.length = this.filterTemplateData.length;
+    const searchText = event?.target?.value?.trim()?.toLowerCase() ?? event;
+    if (this.selectedTabIndex == 0) {
+      this.filterTemplateData = this.templateActualData.filter((x: any) =>
+        x.name.toLowerCase().includes(searchText.toLowerCase())
+      );
+      this.emailNotifications = this.filterTemplateData.slice(
+        this.pageInfo.pageSize * this.pageInfo.pageIndex,
+        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+      );
+      this.pageInfo.length = this.filterTemplateData.length;
+    } else if (this.selectedTabIndex == 1) {
+      this.cacheDistributionList = this.distributionActualData?.filter(
+        (x: any) =>
+          x.distributionListName
+            .toLowerCase()
+            .includes(searchText.toLowerCase())
+      );
+      this.distributionLists = this.cacheDistributionList.slice(
+        this.distributionPageInfo.pageSize *
+          this.distributionPageInfo.pageIndex,
+        this.distributionPageInfo.pageSize *
+          (this.distributionPageInfo.pageIndex + 1)
+      );
+      this.distributionPageInfo.length = this.cacheDistributionList.length;
+    } else if (this.selectedTabIndex == 2) {
+      this.cacheTemplateList = this.customActualData?.filter((x: any) =>
+        x.subject.toLowerCase().includes(searchText.toLowerCase())
+      );
+      this.customTemplates = this.cacheTemplateList.slice(
+        this.templatePageInfo.pageSize * this.templatePageInfo.pageIndex,
+        this.templatePageInfo.pageSize * (this.templatePageInfo.pageIndex + 1)
+      );
+      this.templatePageInfo.length = this.cacheTemplateList.length;
+    }
   }
 
   /**
@@ -849,6 +899,20 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
+   * Maintains distribution page data.
+   *
+   * @param e The page change event.
+   */
+  onTemplatePage(e: UIPageChangeEvent): void {
+    const cachedData = handleTablePageEvent(
+      e,
+      this.templatePageInfo,
+      this.cacheTemplateList
+    );
+    this.customTemplates = cachedData;
+  }
+
+  /**
    * used to create new custom template
    */
   createTemplate(): void {
@@ -958,5 +1022,19 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.isCustomTemplateEdit = false;
     this.emailService.allLayoutdata = {};
     this.emailService.emailLayout = {};
+  }
+
+  /**
+   *
+   * Tab change function
+   * @param event selected Tab
+   */
+  onTabSelect(event: any) {
+    console.log(event);
+    this.selectedTabIndex = event;
+    const searchText: any = document.getElementById(
+      'exampleSelect'
+    ) as HTMLElement;
+    this.searchTemplate(searchText?.value ?? '');
   }
 }
