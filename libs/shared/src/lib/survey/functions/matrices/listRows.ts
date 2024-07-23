@@ -11,7 +11,7 @@ const listRows = (params: any[]) => {
   const [matrix] = params;
 
   if (isNil(matrix) || typeof matrix !== 'object') {
-    return null;
+    return [];
   }
 
   return Object.keys(matrix);

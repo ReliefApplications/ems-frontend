@@ -21,29 +21,33 @@ function getFollowupSummary(this: { survey: SurveyModel }, params: any[]) {
     return {};
   }
 
-  const actions_checklist = this.survey.getQuestionByName(
-    // `checklist_${idx}_actions`
+  const actionsChecklist = this.survey.getQuestionByName(
     `checklist_${checklist}`
   );
   const followups = this.survey.getQuestionByName('follow_ups');
 
   const followup = followups?.value[idx];
-  const { previous_followup_rows_with_issues_gls } = followup;
+  const previousIssues =
+    followup?.[`previous_followup_rows_with_issues_${checklist}`];
   const res: Record<string, Record<string, string>> = {};
 
-  if (Array.isArray(previous_followup_rows_with_issues_gls)) {
-    (previous_followup_rows_with_issues_gls ?? []).forEach((row: string) => {
-      let summary = `Initial inspection: ${
-        actions_checklist?.value[row].inspection_action ?? ''
-      }\n\t${actions_checklist?.value[row].checklist_comment ?? ''}`;
+  if (Array.isArray(previousIssues)) {
+    (previousIssues ?? []).forEach((row: string) => {
+      const initialAction =
+        actionsChecklist?.value[row].inspection_action ?? '';
+      const initialComment =
+        actionsChecklist?.value[row].checklist_comment ?? 'N/A';
+      let summary = `Initial inspection\n\t➤ Comment: ${initialComment}\n\t➤ Inspection action: ${initialAction}`;
 
       for (let i = 0; i < idx; i++) {
         const followup = followups?.value[i];
-        const { checklist_gls } = followup;
-        if (checklist_gls[row]) {
-          summary += `\nFollow-up ${i + 1}: ${
-            checklist_gls[row].inspection_action ?? ''
-          }\n\t${checklist_gls[row].checklist_comment ?? ''}`;
+        const checklistPanel = followup[`checklist_${checklist}_panel`];
+        const comment = checklistPanel[row]?.checklist_comment ?? 'N/A';
+        const action = checklistPanel[row]?.inspection_action ?? '';
+        if (checklistPanel[row]) {
+          summary += `\n\nFollow-up #${
+            i + 1
+          }\n\t➤ Comment: ${comment}\n\t➤ Inspection action: ${action}`;
         }
       }
 

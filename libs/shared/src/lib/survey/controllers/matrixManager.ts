@@ -1,4 +1,5 @@
-import { SurveyModel } from 'survey-core';
+import { flatten } from 'lodash';
+import { Question, SurveyModel } from 'survey-core';
 
 /** Class that manages copy of rows/columns between questions */
 export class MatrixManager {
@@ -18,13 +19,7 @@ export class MatrixManager {
 
   /** Initialized questions to look for changes */
   private init(): void {
-    const MATRIX_TYPES = ['matrix', 'matrixdropdown', 'matrixdynamic'];
-    this.survey.getAllQuestions().forEach((question) => {
-      // Check if question is a matrix
-      if (!MATRIX_TYPES.includes(question.getType())) {
-        return;
-      }
-
+    this.getMatrixQuestions().forEach((question) => {
       // If so, check the the copyRowsFromAnotherMatrix and copyColumnsFromAnotherMatrix properties
       const copyRowFrom: string | undefined = question.getPropertyValue(
         'copyRowsFromAnotherMatrix'
@@ -73,13 +68,40 @@ export class MatrixManager {
   }
 
   /**
+   * Gets all matrix questions, including those in dynamic panels
+   *
+   * @returns Array of matrix questions
+   */
+  public getMatrixQuestions(): Question[] {
+    const MATRIX_TYPES = ['matrix', 'matrixdropdown', 'matrixdynamic'];
+    return flatten(
+      this.survey.getAllQuestions().map((q) => {
+        if (q.getType() === 'paneldynamic') {
+          return q.templateElements;
+        }
+        return q;
+      })
+    ).filter((q) => MATRIX_TYPES.includes(q.getType()));
+  }
+
+  /**
+   * Returns all the questions of the matrix, including those in templates of dynamic panels
+   *
+   * @param id ID of the matrix
+   * @returns array of questions
+   */
+  private getQuestionById(id: string): Question | undefined {
+    return this.getMatrixQuestions().find((q) => q.id === id);
+  }
+
+  /**
    * Update the rows of a matrix
    *
-   * @param matrixName Name of the matrix to update
+   * @param matrixID ID of the matrix to update
    */
-  private updateMatrixRows(matrixName: string): void {
-    const matrix = this.survey.getQuestionByName(matrixName);
-    const copyFrom = this.copyMap.get(matrixName)?.rows;
+  private updateMatrixRows(matrixID: string): void {
+    const matrix = this.getQuestionById(matrixID);
+    const copyFrom = this.copyMap.get(matrixID)?.rows;
 
     if (!matrix || !copyFrom) {
       return;
@@ -98,11 +120,11 @@ export class MatrixManager {
   /**
    * Update the columns of a matrix
    *
-   * @param matrixName Name of the matrix to update
+   * @param matrixID Name of the matrix to update
    */
-  private updateMatrixColumns(matrixName: string): void {
-    const matrix = this.survey.getQuestionByName(matrixName);
-    const copyFrom = this.copyMap.get(matrixName)?.columns;
+  private updateMatrixColumns(matrixID: string): void {
+    const matrix = this.getQuestionById(matrixID);
+    const copyFrom = this.copyMap.get(matrixID)?.columns;
 
     if (!matrix || !copyFrom) {
       return;
@@ -120,23 +142,23 @@ export class MatrixManager {
   /**
    * Add a matrix to the copy map
    *
-   * @param matrixName Matrix that will have its rows/columns copied
+   * @param matrix ID of the matrix that will have its rows/columns copied
    * @param copyFrom Object with the names of the matrixes to copy from
    * @param copyFrom.rows Name of the matrix to copy rows from
    * @param copyFrom.columns Name of the matrix to copy columns from
    */
   public addCopyConfig(
-    matrixName: string,
+    matrix: string,
     copyFrom?: { rows?: string; columns?: string }
   ): void {
-    this.copyMap.set(matrixName, copyFrom || {});
+    this.copyMap.set(matrix, copyFrom || {});
     this.setupListeners();
 
     if (copyFrom?.rows) {
-      this.updateMatrixRows(matrixName);
+      this.updateMatrixRows(matrix);
     }
     if (copyFrom?.columns) {
-      this.updateMatrixColumns(matrixName);
+      this.updateMatrixColumns(matrix);
     }
   }
 }
