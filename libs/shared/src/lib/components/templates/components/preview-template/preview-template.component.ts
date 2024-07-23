@@ -98,6 +98,7 @@ export class PreviewTemplate {
   ) {
     console.log('this email,', this.data);
     this.emailService.isQuickAction = true;
+    this.currentStep = !this.data.distributionListInfo ? 0 : 1;
     this.convertData(this.data.selectedRowsFromGrid, this.data.resourceData);
     this.emailService.emailDistributionList = this.data.distributionListInfo;
     // this.emailService.recipients = this.data.distributionListInfo;

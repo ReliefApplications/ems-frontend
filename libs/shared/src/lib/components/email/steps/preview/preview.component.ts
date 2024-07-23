@@ -272,7 +272,15 @@ export class PreviewComponent
   ngAfterViewInit(): void {
     this.replaceTokensWithTables();
     this.replaceDateTimeTokens();
-
+    this.emailService.emailDistributionList =
+      this.emailService.emailDistributionList == undefined
+        ? {
+            name: '',
+            To: [],
+            Cc: [],
+            Bcc: [],
+          }
+        : this.emailService.emailDistributionList;
     // this.bodyHtml.nativeElement.innerHTML = this.bodyString;
     // this.checkAndApplyBodyStyle();
     if (this.subjectHtmlRef?.nativeElement) {
@@ -306,6 +314,9 @@ export class PreviewComponent
           )
         ),
       ];
+    } else {
+      this.emailService.emailDistributionList.To =
+        this.emailService.customLayoutDL.To;
     }
 
     if (this.emailService.emailDistributionList?.Cc) {
@@ -316,6 +327,9 @@ export class PreviewComponent
           )
         ),
       ];
+    } else {
+      this.emailService.emailDistributionList.Cc =
+        this.emailService.customLayoutDL.Cc;
     }
 
     if (this.emailService.emailDistributionList?.Bcc) {
@@ -326,6 +340,9 @@ export class PreviewComponent
           )
         ),
       ];
+    } else {
+      this.emailService.emailDistributionList.Bcc =
+        this.emailService.customLayoutDL.Bcc;
     }
 
     if (
