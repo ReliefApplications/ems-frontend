@@ -177,47 +177,45 @@ export class PreviewComponent
     if (this.previewUrl) {
       this.emailService.loading = true; // Show spinner
       let emailLayout: any = {};
-      if (!this.emailService.datasetsForm.value.emailLayout) {
-        emailLayout = {
-          header: {
-            headerHtml: this.emailService.allLayoutdata?.headerHtml,
-            headerLogo: this.emailService.allLayoutdata.headerLogo,
-            headerLogoStyle: this.emailService.allLayoutdata.headerLogoStyle,
-            headerBackgroundColor:
-              this.emailService.allLayoutdata.headerBackgroundColor,
-            headerTextColor: this.emailService.allLayoutdata.headerTextColor,
-            headerHtmlStyle: this.emailService.allLayoutdata?.headerHtmlStyle,
-            headerStyle: this.emailService.allLayoutdata?.headerStyle,
-          },
-          body: {
-            bodyHtml: this.emailService.allLayoutdata?.bodyHtml,
-            bodyBackgroundColor:
-              this.emailService.allLayoutdata.bodyBackgroundColor,
-            bodyTextColor: this.emailService.allLayoutdata.bodyTextColor,
-            bodyStyle: this.emailService.allLayoutdata?.bodyStyle,
-          },
-          banner: {
-            bannerImage: this.emailService.allLayoutdata.bannerImage,
-            bannerImageStyle: this.emailService.allLayoutdata?.bannerImageStyle,
-            containerStyle: this.emailService.allLayoutdata?.containerStyle,
-            copyrightStyle: this.emailService.allLayoutdata?.copyrightStyle,
-          },
-          footer: {
-            footerHtml: this.emailService.allLayoutdata?.footerHtml,
-            footerLogo: this.emailService.allLayoutdata.footerLogo,
-            footerBackgroundColor:
-              this.emailService.allLayoutdata.footerBackgroundColor,
-            footerTextColor: this.emailService.allLayoutdata.footerTextColor,
-            footerStyle: this.emailService.allLayoutdata?.footerStyle,
-            footerImgStyle: this.emailService.allLayoutdata?.footerImgStyle,
-            footerHtmlStyle: this.emailService.allLayoutdata?.footerHtmlStyle,
-          },
-        };
-      }
+      // if (!this.emailService.datasetsForm.value.emailLayout) {
+      emailLayout = {
+        header: {
+          headerHtml: this.emailService.allLayoutdata?.headerHtml,
+          headerLogo: this.emailService.allLayoutdata.headerLogo,
+          headerLogoStyle: this.emailService.allLayoutdata.headerLogoStyle,
+          headerBackgroundColor:
+            this.emailService.allLayoutdata.headerBackgroundColor,
+          headerTextColor: this.emailService.allLayoutdata.headerTextColor,
+          headerHtmlStyle: this.emailService.allLayoutdata?.headerHtmlStyle,
+          headerStyle: this.emailService.allLayoutdata?.headerStyle,
+        },
+        body: {
+          bodyHtml: this.emailService.allLayoutdata?.bodyHtml,
+          bodyBackgroundColor:
+            this.emailService.allLayoutdata.bodyBackgroundColor,
+          bodyTextColor: this.emailService.allLayoutdata.bodyTextColor,
+          bodyStyle: this.emailService.allLayoutdata?.bodyStyle,
+        },
+        banner: {
+          bannerImage: this.emailService.allLayoutdata.bannerImage,
+          bannerImageStyle: this.emailService.allLayoutdata?.bannerImageStyle,
+          containerStyle: this.emailService.allLayoutdata?.containerStyle,
+          copyrightStyle: this.emailService.allLayoutdata?.copyrightStyle,
+        },
+        footer: {
+          footerHtml: this.emailService.allLayoutdata?.footerHtml,
+          footerLogo: this.emailService.allLayoutdata.footerLogo,
+          footerBackgroundColor:
+            this.emailService.allLayoutdata.footerBackgroundColor,
+          footerTextColor: this.emailService.allLayoutdata.footerTextColor,
+          footerStyle: this.emailService.allLayoutdata?.footerStyle,
+          footerImgStyle: this.emailService.allLayoutdata?.footerImgStyle,
+          footerHtmlStyle: this.emailService.allLayoutdata?.footerHtmlStyle,
+        },
+      };
+      // }
       const emailData: any = {
-        emailLayout: this.emailService.datasetsForm.value.emailLayout
-          ? this.emailService.datasetsForm.value.emailLayout
-          : emailLayout,
+        emailLayout: emailLayout,
         tableInfo: previewData?.datasetFieldsObj
           ? [
               {
