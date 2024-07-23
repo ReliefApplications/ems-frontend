@@ -31,7 +31,7 @@ export class MatrixManager {
 
       // Add dependencies to the map
       if (copyColumnsFrom || copyRowFrom) {
-        this.copyMap.set(question.name, {
+        this.copyMap.set(question.id, {
           rows: copyRowFrom,
           columns: copyColumnsFrom,
         });
@@ -41,14 +41,14 @@ export class MatrixManager {
 
   /** Setup listeners to update questions when needed */
   private setupListeners(): void {
-    for (const [matrixName, matrixCopy] of this.copyMap) {
+    for (const [matrixID, matrixCopy] of this.copyMap) {
       if (matrixCopy.rows) {
         const copyFrom = this.survey.getQuestionByName(matrixCopy.rows);
         if (copyFrom) {
           // Listen to row changes
           copyFrom.onItemValuePropertyChanged.add((_, options) => {
             if (options.propertyName === 'rows') {
-              this.updateMatrixRows(matrixName);
+              this.updateMatrixRows(matrixID);
             }
           });
         }
@@ -60,7 +60,7 @@ export class MatrixManager {
           // For some reason, surveyJS doesn't throw an event when columns are updated
           // Instead, we update the columns when the question is focused or blurred
           copyFrom.onPropertyChanged.add(() => {
-            this.updateMatrixColumns(matrixName);
+            this.updateMatrixColumns(matrixID);
           });
         }
       }
@@ -143,7 +143,7 @@ export class MatrixManager {
    * Add a matrix to the copy map
    *
    * @param matrix ID of the matrix that will have its rows/columns copied
-   * @param copyFrom Object with the names of the matrixes to copy from
+   * @param copyFrom Object with the ids of the matrixes to copy from
    * @param copyFrom.rows Name of the matrix to copy rows from
    * @param copyFrom.columns Name of the matrix to copy columns from
    */
