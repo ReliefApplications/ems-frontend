@@ -15,8 +15,6 @@ export class CustomTemplateComponent {
   /* Used to identify the current step */
   /** Current step of the custom template   */
   public currentStep = 0;
-  /** Boolean flag to disable the action button upon error state  */
-  public disableActionButton = false;
   /** NAVIGATE TO MAIN EMAIL LIST SCREEN */
   @Output() navigateToEms: EventEmitter<any> = new EventEmitter();
 
@@ -40,10 +38,14 @@ export class CustomTemplateComponent {
    * @param translate translate service
    */
   constructor(
-    private emailService: EmailService,
+    public emailService: EmailService,
     private snackBar: SnackbarService,
     private translate: TranslateService
-  ) {}
+  ) {
+    this.emailService.isQuickAction = true;
+    this.emailService.disableNextActionBtn = true;
+    this.updateStep(true);
+  }
 
   /**
    * The layout form data
@@ -117,5 +119,31 @@ export class CustomTemplateComponent {
       );
     }
     // console.log('query data', queryData);
+  }
+
+  /**
+   *
+   * Move to next step
+   */
+  next() {
+    this.currentStep = 1;
+    if (this.emailService.disableNextActionBtn) {
+      this.updateStep(false);
+    }
+  }
+
+  /**
+   *
+   *Change disable true or false for steps
+   *
+   * @param stepFlag boolean
+   */
+  updateStep(stepFlag: boolean) {
+    this.steps = this.steps.map((step, index) => {
+      if (index > this.currentStep) {
+        step.disabled = stepFlag;
+      }
+      return step;
+    });
   }
 }

@@ -148,6 +148,8 @@ export class EmailService {
   public customTemplateId = '';
   /** Quick action flag */
   public isQuickAction = false;
+  /** Disable Quick Action screen Next Button error state*/
+  public disableNextActionBtn = false;
 
   /**
    * Generates new dataset group.

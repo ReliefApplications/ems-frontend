@@ -313,6 +313,9 @@ export class LayoutComponent
           error: true,
         }
       );
+      if (this.emailService.isQuickAction && !this.showBodyValidator) {
+        this.emailService.disableNextActionBtn = true;
+      }
     }
 
     const bodyHtml = this.layoutForm.get('body')?.value;
@@ -330,9 +333,11 @@ export class LayoutComponent
     if (this.showSubjectValidator || this.showBodyValidator) {
       this.emailService.disableSaveAndProceed.next(true);
       this.emailService.stepperDisable.next({ id: 4, isValid: false });
+      this.emailService.disableNextActionBtn = true;
     } else {
       this.emailService.disableSaveAndProceed.next(false);
       this.emailService.stepperDisable.next({ id: 4, isValid: true });
+      this.emailService.disableNextActionBtn = false;
     }
   }
 

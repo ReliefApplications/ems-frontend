@@ -382,7 +382,7 @@
           </div>
         </div>
       </div>
-      <editor #headerEditor formControlName="header" [init]="editor"></editor>
+      <editor #headerEditor formControlName="header" [init]="editor" (ngModelChange)="onEditorContentChange()"></editor>
     </div>
 
     <!-- Body -->
@@ -591,6 +591,7 @@
         [(ngModel)]="emailService.allLayoutdata.footerHtml"
         [ngModelOptions]="{ standalone: true }"
         [init]="editor"
+        (ngModelChange)="onEditorContentChange()"
       ></editor>
     </div>
   </div>
