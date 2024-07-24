@@ -135,6 +135,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     });
     this.getExistingTemplate();
     this.getCustomTemplates();
+    this.getDistributionList();
   }
 
   /**
@@ -277,8 +278,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         if (res?.data?.emailNotifications?.edges?.length === 0) {
           this.emailService.emailListLoading = false;
         }
-        this.distributionLists = [];
-        this.emailService.distributionListNames = [];
+
         this.emailService.emailNotificationNames = [];
         res?.data?.emailNotifications?.edges?.forEach((ele: any) => {
           this.templateActualData.push(ele.node);
@@ -296,36 +296,62 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
             ele.node.name?.trim()?.toLowerCase()
           );
         });
-        let uniqueDistributionLists = Array.from(
-          new Set(this.emailService.distributionListNames)
-        );
-        this.distributionLists = this.distributionLists.filter((ele: any) => {
-          if (uniqueDistributionLists.includes(ele.name.toLowerCase())) {
-            uniqueDistributionLists = uniqueDistributionLists.filter(
-              (name) => ele.name.toLowerCase() !== name
-            );
-            return true;
-          } else {
-            return false;
-          }
-        });
+
         this.filterTemplateData = this.templateActualData;
         this.emailNotifications = this.filterTemplateData.slice(
           this.pageInfo.pageSize * this.pageInfo.pageIndex,
           this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
         );
         this.pageInfo.length = res?.data?.emailNotifications?.edges.length;
-
-        this.distributionActualData = cloneDeep(this.distributionLists);
-        this.cacheDistributionList = this.distributionLists;
-        this.distributionLists = this.cacheDistributionList.slice(
-          this.distributionPageInfo.pageSize *
-            this.distributionPageInfo.pageIndex,
-          this.distributionPageInfo.pageSize *
-            (this.distributionPageInfo.pageIndex + 1)
-        );
-        this.distributionPageInfo.length = this.cacheDistributionList.length;
       });
+  }
+
+  /**
+   * Get Distribution List data
+   *
+   */
+  getDistributionList() {
+    this.emailService.getEmailDistributionList().subscribe((list: any) => {
+      this.distributionLists = [];
+      this.emailService.distributionListNames = [];
+      list?.data?.emailDistributionLists?.edges?.forEach((ele: any) => {
+        if (
+          ele.node.distributionListName !== null &&
+          ele.node.distributionListName !== ''
+        ) {
+          this.distributionLists.push(ele.node);
+          this.emailService.distributionListNames.push(
+            ele.node?.distributionListName.trim().toLowerCase()
+          );
+        }
+      });
+      let uniqueDistributionLists = Array.from(
+        new Set(this.emailService.distributionListNames)
+      );
+      this.distributionLists = this.distributionLists.filter((ele: any) => {
+        if (
+          uniqueDistributionLists.includes(
+            ele?.distributionListName?.toLowerCase()
+          )
+        ) {
+          uniqueDistributionLists = uniqueDistributionLists.filter(
+            (name) => ele.distributionListName?.toLowerCase() !== name
+          );
+          return true;
+        } else {
+          return false;
+        }
+      });
+      this.distributionActualData = cloneDeep(this.distributionLists);
+      this.cacheDistributionList = this.distributionLists;
+      this.distributionLists = this.cacheDistributionList.slice(
+        this.distributionPageInfo.pageSize *
+          this.distributionPageInfo.pageIndex,
+        this.distributionPageInfo.pageSize *
+          (this.distributionPageInfo.pageIndex + 1)
+      );
+      this.distributionPageInfo.length = this.cacheDistributionList.length;
+    });
   }
 
   /**
@@ -337,7 +363,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     const searchText = event?.target?.value?.trim()?.toLowerCase() ?? event;
     if (this.selectedTabIndex == 0) {
       this.filterTemplateData = this.templateActualData.filter((x: any) =>
-        x.name.toLowerCase().includes(searchText.toLowerCase())
+        x.name?.toLowerCase().includes(searchText?.toLowerCase())
       );
       this.emailNotifications = this.filterTemplateData.slice(
         this.pageInfo.pageSize * this.pageInfo.pageIndex,
@@ -348,8 +374,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       this.cacheDistributionList = this.distributionActualData?.filter(
         (x: any) =>
           x.distributionListName
-            .toLowerCase()
-            .includes(searchText.toLowerCase())
+            ?.toLowerCase()
+            ?.includes(searchText?.toLowerCase())
       );
       this.distributionLists = this.cacheDistributionList.slice(
         this.distributionPageInfo.pageSize *
@@ -796,6 +822,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           if (res.data?.editAndGetDistributionList?.id) {
             this.emailService.emailListLoading = false;
             this.getExistingTemplate();
+            this.getDistributionList();
           }
         });
       }
@@ -961,6 +988,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       ({ isDistributionListUpdated }: any) => {
         if (isDistributionListUpdated) {
           this.getExistingTemplate();
+          this.getDistributionList();
         }
       }
     );

@@ -1,5 +1,11 @@
 import { EventEmitter, Injectable, NgZone, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import {
   ADD_CUSTOM_TEMPLATE,
   ADD_DISTRIBUTION_LIST,
@@ -1264,5 +1270,17 @@ export class EmailService {
       footerImgStyle: '',
       footerHtmlStyle: '',
     };
+  }
+
+  /**
+   *
+   * Assigning emails for Form
+   * @param dlArray
+   * @param input
+   */
+  populateEmails(dlArray: string[], input: FormArray) {
+    dlArray?.forEach((item: string) => {
+      input?.push(new FormControl(item));
+    });
   }
 }

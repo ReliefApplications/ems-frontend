@@ -8,7 +8,7 @@ import {
   TableModule,
 } from '@oort-front/ui';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { EmailService } from '../../../email/email.service';
@@ -106,6 +106,33 @@ export class PreviewTemplate {
     this.emailService.datasetsForm.patchValue({
       emailLayout: this.data.emailContent,
     });
+    this.emailService?.datasetsForm
+      ?.get('emailDistributionList')
+      ?.get('name')
+      ?.setValue(this.data.distributionListInfo?.distributionListName);
+    this.emailService.populateEmails(
+      this.data.distributionListInfo.To,
+      this.emailService?.datasetsForm
+        ?.get('emailDistributionList')
+        ?.get('to')
+        ?.get('inputEmails') as FormArray
+    );
+
+    this.emailService.populateEmails(
+      this.data.distributionListInfo.Cc,
+      this.emailService?.datasetsForm
+        ?.get('emailDistributionList')
+        ?.get('cc')
+        ?.get('inputEmails') as FormArray
+    );
+
+    this.emailService.populateEmails(
+      this.data.distributionListInfo.Bcc,
+      this.emailService?.datasetsForm
+        ?.get('emailDistributionList')
+        ?.get('bcc')
+        ?.get('inputEmails') as FormArray
+    );
 
     this.emailService.emailLayout = {
       subject: this.data.emailContent?.subject,
