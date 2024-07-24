@@ -267,7 +267,9 @@ export class SelectDistributionComponent
       this.emailDistributionList = emailDL;
     }
     this.distributionListId = this.distributionLists[index].node.id;
-    this.showExistingDistributionList = !this.showExistingDistributionList;
+    (this.emailDistributionList.name =
+      this.distributionLists[index].node.distributionListName),
+      (this.showExistingDistributionList = !this.showExistingDistributionList);
     this.validateDistributionList();
   }
 
