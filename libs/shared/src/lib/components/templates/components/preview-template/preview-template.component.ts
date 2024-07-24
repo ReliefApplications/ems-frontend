@@ -106,33 +106,9 @@ export class PreviewTemplate {
     this.emailService.datasetsForm.patchValue({
       emailLayout: this.data.emailContent,
     });
-    this.emailService?.datasetsForm
-      ?.get('emailDistributionList')
-      ?.get('name')
-      ?.setValue(this.data.distributionListInfo?.distributionListName);
-    this.emailService.populateEmails(
-      this.data.distributionListInfo.To,
-      this.emailService?.datasetsForm
-        ?.get('emailDistributionList')
-        ?.get('to')
-        ?.get('inputEmails') as FormArray
-    );
-
-    this.emailService.populateEmails(
-      this.data.distributionListInfo.Cc,
-      this.emailService?.datasetsForm
-        ?.get('emailDistributionList')
-        ?.get('cc')
-        ?.get('inputEmails') as FormArray
-    );
-
-    this.emailService.populateEmails(
-      this.data.distributionListInfo.Bcc,
-      this.emailService?.datasetsForm
-        ?.get('emailDistributionList')
-        ?.get('bcc')
-        ?.get('inputEmails') as FormArray
-    );
+    if (this.data.distributionListInfo) {
+      this.setDistributionData();
+    }
 
     this.emailService.emailLayout = {
       subject: this.data.emailContent?.subject,
@@ -177,6 +153,39 @@ export class PreviewTemplate {
     };
 
     console.log('The email content', this.data);
+  }
+
+  /**
+   * Set distribution data in the form
+   */
+  setDistributionData() {
+    this.emailService?.datasetsForm
+      ?.get('emailDistributionList')
+      ?.get('name')
+      ?.setValue(this.data.distributionListInfo?.distributionListName);
+    this.emailService.populateEmails(
+      this.data.distributionListInfo.To,
+      this.emailService?.datasetsForm
+        ?.get('emailDistributionList')
+        ?.get('to')
+        ?.get('inputEmails') as FormArray
+    );
+
+    this.emailService.populateEmails(
+      this.data.distributionListInfo.Cc,
+      this.emailService?.datasetsForm
+        ?.get('emailDistributionList')
+        ?.get('cc')
+        ?.get('inputEmails') as FormArray
+    );
+
+    this.emailService.populateEmails(
+      this.data.distributionListInfo.Bcc,
+      this.emailService?.datasetsForm
+        ?.get('emailDistributionList')
+        ?.get('bcc')
+        ?.get('inputEmails') as FormArray
+    );
   }
 
   /**
