@@ -139,6 +139,7 @@ export class PreviewComponent
     if (this.emailService.isQuickAction) {
       this.populateCustomDL();
     }
+
     this.query = this.emailService.datasetsForm.value;
     this.query.datasets = this.emailService.datasetsForm
       ?.get('datasets')

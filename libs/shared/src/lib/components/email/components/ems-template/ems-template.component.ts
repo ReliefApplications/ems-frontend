@@ -1,4 +1,3 @@
-import { DistributionList } from './../../../../models/distribution-list.model';
 import {
   Component,
   EventEmitter,
