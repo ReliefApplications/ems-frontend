@@ -442,7 +442,9 @@ export class DatasetFilterComponent
                   let allPreviewData: any = [];
                   allPreviewData.push({
                     dataList: response,
-                    datasetFields: this.selectedFields.map((x: any) => x.name),
+                    datasetFields: this.query
+                      .getRawValue()
+                      .query.fields.map((x: any) => x.name),
                     tabIndex: this.activeTab.index,
                     tabName: this.activeTab.title,
                   });

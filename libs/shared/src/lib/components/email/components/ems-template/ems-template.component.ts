@@ -443,14 +443,14 @@ export class EmsTemplateComponent
   async saveAndSend(): Promise<void> {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
-      if (Object.keys(this.emailService.datasetsForm.value).length) {
+      if (Object.keys(this.emailService.datasetsForm.getRawValue()).length) {
         this.emailService.datasetsForm?.value?.datasets?.forEach(
           (data: any) => {
             delete data.cacheData;
           }
         );
         // await this.emailService.patchEmailLayout();
-        const queryData = this.emailService.datasetsForm.value;
+        const queryData = this.emailService.datasetsForm.getRawValue();
         queryData.notificationType =
           this.emailService.datasetsForm.controls.notificationType.value;
         this.applicationService.application$.subscribe((res: any) => {
@@ -685,7 +685,7 @@ export class EmsTemplateComponent
     this.emailService.datasetsForm?.value?.datasets?.forEach((data: any) => {
       delete data.cacheData;
     });
-    const queryData = this.emailService.datasetsForm.value;
+    const queryData = this.emailService.datasetsForm.getRawValue();
     this.applicationService.application$.subscribe((res: any) => {
       this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
       queryData.applicationId = res?.id;
@@ -762,12 +762,12 @@ export class EmsTemplateComponent
    */
   async submit() {
     // await this.emailService.patchEmailLayout();
-    if (Object.keys(this.emailService.datasetsForm.value).length) {
+    if (Object.keys(this.emailService.datasetsForm.getRawValue()).length) {
       this.emailService.datasetsForm?.value?.datasets?.forEach((data: any) => {
         delete data.cacheData;
       });
 
-      const queryData = this.emailService.datasetsForm.value;
+      const queryData = this.emailService.datasetsForm.getRawValue();
 
       // const dataSet = queryData.datasets;
 
