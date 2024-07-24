@@ -17,6 +17,7 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
+import { FormArray } from '@angular/forms';
 /**
  * The preview component is used to display the email layout using user input from layout component.
  */
@@ -130,6 +131,14 @@ export class PreviewComponent
   }
 
   ngOnInit() {
+    this.emailService.datasetsForm?.value?.datasets?.forEach((data: any) => {
+      if (data.cacheData) {
+        delete data.cacheData;
+      }
+    });
+    if (this.emailService.isQuickAction) {
+      this.populateCustomDL();
+    }
     this.query = this.emailService.datasetsForm.value;
     this.query.datasets = this.emailService.datasetsForm
       ?.get('datasets')
@@ -142,6 +151,52 @@ export class PreviewComponent
       ?.getRawValue();
     this.loadDistributionList();
     this.loadFinalEmailPreview();
+  }
+
+  /**
+   *
+   */
+  populateCustomDL() {
+    if (this.emailService.isQuickAction) {
+      const { To, Cc, Bcc } = this.emailService.customLayoutDL;
+
+      const uniqueTo = [...new Set(To)];
+      const uniqueCc = [...new Set(Cc)];
+      const uniqueBcc = [...new Set(Bcc)];
+
+      const filteredCc = uniqueCc.filter((cc) => !uniqueTo.includes(cc));
+      const filteredBcc = uniqueBcc.filter(
+        (bcc) => !uniqueTo.includes(bcc) && !filteredCc.includes(bcc)
+      );
+
+      this.emailService.customLayoutDL.To = uniqueTo;
+      this.emailService.customLayoutDL.Cc = filteredCc;
+      this.emailService.customLayoutDL.Bcc = filteredBcc;
+
+      this.emailService.populateEmails(
+        this.emailService.customLayoutDL.To,
+        this.emailService?.datasetsForm
+          ?.get('emailDistributionList')
+          ?.get('to')
+          ?.get('inputEmails') as FormArray
+      );
+
+      this.emailService.populateEmails(
+        this.emailService.customLayoutDL.Cc,
+        this.emailService?.datasetsForm
+          ?.get('emailDistributionList')
+          ?.get('cc')
+          ?.get('inputEmails') as FormArray
+      );
+
+      this.emailService.populateEmails(
+        this.emailService.customLayoutDL.Bcc,
+        this.emailService?.datasetsForm
+          ?.get('emailDistributionList')
+          ?.get('bcc')
+          ?.get('inputEmails') as FormArray
+      );
+    }
   }
 
   /**

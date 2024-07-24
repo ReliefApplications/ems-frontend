@@ -1280,7 +1280,13 @@ export class EmailService {
    */
   populateEmails(dlArray: string[], input: FormArray) {
     dlArray?.forEach((item: string) => {
-      input?.push(new FormControl(item));
+      if (
+        !input.value
+          .map((v: string) => v.toLowerCase())
+          .includes(item.toLowerCase())
+      ) {
+        input?.push(new FormControl(item));
+      }
     });
   }
 }

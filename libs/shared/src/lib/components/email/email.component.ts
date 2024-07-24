@@ -129,6 +129,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.emailService.isQuickAction = false;
     this.applicationService.application$.subscribe((res: any) => {
       this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
       this.applicationId = res?.id;

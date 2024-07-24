@@ -1,3 +1,4 @@
+import { DistributionList } from './../../../../models/distribution-list.model';
 import {
   Component,
   EventEmitter,
@@ -411,21 +412,29 @@ export class EmsTemplateComponent
       emailData.datasets.map(async (dataset: any) => {
         const tempQuery = cloneDeep(dataset.query);
         if (!dataset.resource) {
-          dataset.resource = tempQuery.resource;
-          dataset.query = {
-            name: tempQuery.name,
-            filter: tempQuery.filter,
-            fields: tempQuery.fields,
-          };
-          dataset.blockType = tempQuery.blockType;
-          dataset.textStyle = tempQuery.textStyle;
-          dataset.tableStyle = tempQuery.tableStyle;
-          dataset.pageSize = tempQuery.pageSize;
-          dataset.individualEmail = tempQuery.isIndividualEmail ?? false;
-          dataset.sendAsAttachment = tempQuery.sendAsAttachment ?? false;
+          Object.assign(dataset, {
+            resource: tempQuery.resource,
+            query: {
+              name: tempQuery.name,
+              filter: tempQuery.filter,
+              fields: tempQuery.fields,
+            },
+            blockType: tempQuery.blockType,
+            textStyle: tempQuery.textStyle,
+            tableStyle: tempQuery.tableStyle,
+            pageSize: tempQuery.pageSize,
+            individualEmail: tempQuery.isIndividualEmail ?? false,
+            sendAsAttachment: tempQuery.sendAsAttachment ?? false,
+          });
         }
       })
     );
+    const { To, Bcc, Cc } = emailData.emailDistributionList || {};
+    if (To || Bcc || Cc) {
+      delete emailData.emailDistributionList?.To;
+      delete emailData.emailDistributionList?.Bcc;
+      delete emailData.emailDistributionList?.Cc;
+    }
     return emailData;
   }
 

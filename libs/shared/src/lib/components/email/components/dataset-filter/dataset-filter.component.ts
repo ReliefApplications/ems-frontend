@@ -24,6 +24,7 @@ import { QueryBuilderService } from '../../../../services/query-builder/query-bu
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { prettifyLabel } from '../../../../../lib/utils/prettify';
 
 /**
  * Component for filtering, selecting fields and styling block data sets.
@@ -230,6 +231,13 @@ export class DatasetFilterComponent
     //   selectedResourceId: this.selectedResourceId,
     // };
     // this.query?.controls?.query?.get('cacheData')?.setValue(cacheData);
+
+    if (this.query.get('cacheData')) {
+      this.query.get('cacheData').reset();
+      this.query.get('cacheData').clearValidators();
+      this.query.get('cacheData').clearAsyncValidators();
+      this.query.removeControl('cacheData');
+    }
 
     // Safely destroys dataset save subscription
     if (this.datasetSaveSubscription) {
@@ -537,6 +545,22 @@ export class DatasetFilterComponent
    */
   getFieldsArray() {
     const formArray = this.query.controls.query.get('fields') as FormArray;
+    formArray.controls.forEach((field: any) => {
+      if (!field.value.name) {
+        const tempMatchedData = this.availableFields.find(
+          (x: any) => prettifyLabel(x.name) === field.value.label
+        );
+        if (tempMatchedData) {
+          const updatedField = {
+            ...field.value,
+            name: tempMatchedData.name,
+            type: tempMatchedData.type.name,
+          };
+          field.patchValue(updatedField);
+        }
+      }
+    });
+
     this.selectedFields = this.query.controls.query.get('fields')?.value;
     return formArray;
   }
