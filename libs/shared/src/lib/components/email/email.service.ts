@@ -92,9 +92,7 @@ export class EmailService {
   public enableAllSteps = new BehaviorSubject<boolean>(false);
   /** Email layout data */
   public allLayoutdata!: any;
-  /**
-   *
-   */
+  /** Custom layout distribution list */
   public customLayoutDL: {
     To: string[];
     Cc: string[];

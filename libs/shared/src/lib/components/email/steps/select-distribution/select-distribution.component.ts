@@ -267,9 +267,7 @@ export class SelectDistributionComponent
       this.emailDistributionList = emailDL;
     }
     this.distributionListId = this.distributionLists[index].node.id;
-    (this.emailDistributionList.name =
-      this.distributionLists[index].node.distributionListName),
-      (this.showExistingDistributionList = !this.showExistingDistributionList);
+    this.showExistingDistributionList = !this.showExistingDistributionList;
     this.validateDistributionList();
   }
 
@@ -344,10 +342,11 @@ export class SelectDistributionComponent
 
   override ngOnDestroy() {
     super.ngOnDestroy();
-    this.emailService.datasetsForm.controls.emailDistributionList =
-      this.emailDistributionList.controls;
-    this.emailService.datasetsForm.value.emailDistributionList =
-      this.emailDistributionList;
+
+    this.emailService.datasetsForm.setControl(
+      'emailDistributionList',
+      this.emailDistributionList
+    );
   }
 
   /**

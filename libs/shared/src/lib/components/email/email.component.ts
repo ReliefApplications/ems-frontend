@@ -226,6 +226,14 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         }
         res?.data?.emailNotifications?.edges?.forEach((ele: any) => {
           this.emailService.emailListLoading = false;
+          if (
+            ele.node.emailDistributionList.name !== null &&
+            ele.node.emailDistributionList.name !== ''
+          ) {
+            this.emailService.distributionListNames.push(
+              ele.node?.emailDistributionList?.name.trim().toLowerCase()
+            );
+          }
           this.emailService.emailNotificationNames.push(
             ele?.node?.name?.trim()?.toLowerCase()
           );
@@ -308,16 +316,15 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         );
         this.pageInfo.length = res?.data?.emailNotifications?.edges.length;
 
-          this.distributionActualData = cloneDeep(this.distributionLists);
-          this.cacheDistributionList = this.distributionLists;
-          this.distributionLists = this.cacheDistributionList.slice(
-            this.distributionPageInfo.pageSize *
-              this.distributionPageInfo.pageIndex,
-            this.distributionPageInfo.pageSize *
-              (this.distributionPageInfo.pageIndex + 1)
-          );
-          this.distributionPageInfo.length = this.cacheDistributionList.length;
-        });
+        this.distributionActualData = cloneDeep(this.distributionLists);
+        this.cacheDistributionList = this.distributionLists;
+        this.distributionLists = this.cacheDistributionList.slice(
+          this.distributionPageInfo.pageSize *
+            this.distributionPageInfo.pageIndex,
+          this.distributionPageInfo.pageSize *
+            (this.distributionPageInfo.pageIndex + 1)
+        );
+        this.distributionPageInfo.length = this.cacheDistributionList.length;
       });
   }
 

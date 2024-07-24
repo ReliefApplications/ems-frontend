@@ -134,6 +134,9 @@ export class PreviewComponent
     this.query.datasets = this.emailService.datasetsForm
       ?.get('datasets')
       ?.getRawValue();
+    this.query.emailDistributionList = this.query.emailDistributionList
+      ? this.query.emailDistributionList
+      : {};
     this.query.emailDistributionList = this.emailService?.datasetsForm
       ?.get('emailDistributionList')
       ?.getRawValue();
@@ -234,15 +237,15 @@ export class PreviewComponent
   ngAfterViewInit(): void {
     this.replaceTokensWithTables();
     this.replaceDateTimeTokens();
-    this.emailService.emailDistributionList =
-      this.emailService.emailDistributionList == undefined
-        ? {
-            name: '',
-            To: [],
-            Cc: [],
-            Bcc: [],
-          }
-        : this.emailService.emailDistributionList;
+    // this.emailService.emailDistributionList =
+    //   this.emailService.emailDistributionList == undefined
+    //     ? {
+    //         name: '',
+    //         To: [],
+    //         Cc: [],
+    //         Bcc: [],
+    //       }
+    //     : this.emailService.emailDistributionList;
     // this.bodyHtml.nativeElement.innerHTML = this.bodyString;
     // this.checkAndApplyBodyStyle();
     if (this.subjectHtmlRef?.nativeElement) {
