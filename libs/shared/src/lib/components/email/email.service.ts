@@ -1281,7 +1281,7 @@ export class EmailService {
   populateEmails(dlArray: string[], input: FormArray) {
     dlArray?.forEach((item: string) => {
       if (
-        !input.value
+        !input?.value
           .map((v: string) => v.toLowerCase())
           .includes(item.toLowerCase())
       ) {
