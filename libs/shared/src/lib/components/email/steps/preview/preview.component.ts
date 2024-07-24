@@ -131,9 +131,13 @@ export class PreviewComponent
   }
 
   ngOnInit() {
-    this.emailService.datasetsForm?.value?.datasets?.forEach((data: any) => {
-      if (data.cacheData) {
-        delete data.cacheData;
+    const datasets = this.emailService.datasetsForm.get(
+      'datasets'
+    ) as FormArray;
+
+    datasets.controls.forEach((control: any) => {
+      if (control.get('cacheData')) {
+        control.removeControl('cacheData');
       }
     });
     if (this.emailService.isQuickAction) {
