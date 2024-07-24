@@ -952,8 +952,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    */
   createTemplate(): void {
     this.showTemplateCreationWizard = true;
-    this.emailService.isCustomTemplateEdit ??
-      this.emailService.resetAllLayoutData();
+    !this.emailService.isCustomTemplateEdit
+      ? this.emailService.resetAllLayoutData()
+      : '';
   }
 
   /**
