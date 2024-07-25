@@ -393,15 +393,15 @@ export class DistributionModalComponent {
           /* Need to check the existing value and append the new emails without any duplication */
           const toAfterImport = this.form.value?.to?.length
             ? Array.from(new Set([...this.form.value.to, ...To]))
-            : To;
+            : [...new Set(To)];
 
           const ccAfterImport = this.form.value?.cc?.length
             ? Array.from(new Set([...this.form.value.cc, ...Cc]))
-            : Cc;
+            : [...new Set(Cc)];
 
           const bccAfterImport = this.form.value?.bcc?.length
             ? Array.from(new Set([...this.form.value.bcc, ...Bcc]))
-            : Bcc;
+            : [...new Set(Bcc)];
 
           this.form.get('to')?.setValue(toAfterImport);
           this.form.get('cc')?.setValue(ccAfterImport);
