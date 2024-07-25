@@ -1,6 +1,6 @@
 <ng-container *ngIf="!showTemplateCreationWizard">
   <ui-spinner *ngIf="emailService.emailListLoading && emailService.isExisting" class="spinner"></ui-spinner>
-  <div class="container mx-auto py-8 flex justify-between" *ngIf="emailService.isExisting">
+  <div class="container emailListContainer py-8 flex justify-between" *ngIf="emailService.isExisting">
     <div
     uiFormFieldDirective
     [defaultMargin]="false"

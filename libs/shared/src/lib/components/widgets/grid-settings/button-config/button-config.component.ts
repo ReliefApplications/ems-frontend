@@ -414,9 +414,14 @@ export class ButtonConfigComponent
 
   /** Open edit modal components and create new distribution list */
   public async addDistributionList() {
-    this.dialog.open(DistributionModalComponent, {
+    const dialogRef = this.dialog.open(DistributionModalComponent, {
       data: { isEdit: false },
       disableClose: true,
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((data: any) => {
+      const dlData = data.dlData.addEmailDistributionList;
+      this.distributionLists = [dlData, ...this.distributionLists];
+      this.formGroup.get('distributionList')?.setValue(dlData.id);
     });
   }
 
@@ -427,27 +432,15 @@ export class ButtonConfigComponent
       '../../../templates/components/template-modal/template-modal.component'
     );
     const dialogRef = this.dialog.open(TemplateModalComponent, {
+      data: { isEdit: false },
       disableClose: true,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      // if (value)
-      //   this.applicationService.addTemplate(
-      //     {
-      //       name: value.name,
-      //       type: TemplateTypeEnum.EMAIL,
-      //       content: {
-      //         subject: value.subject,
-      //         body: value.body,
-      //       },
-      //     },
-      //     (template: Template) => {
-      //       const templates = [
-      //         ...(this.formGroup.get('templates')?.value || []),
-      //       ];
-      //       templates.push(template.id);
-      //       this.formGroup.get('templates')?.setValue(templates);
-      //     }
-      //   );
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        const data = value.result.data.addCustomTemplate;
+        this.allTemplateData = [data, ...this.allTemplateData];
+        this.formGroup.get('templates')?.setValue(data.id);
+      }
     });
   }
 

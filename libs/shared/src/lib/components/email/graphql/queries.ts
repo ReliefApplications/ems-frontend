@@ -480,6 +480,7 @@ export const ADD_CUSTOM_TEMPLATE = gql`
       body
       banner
       footer
+      id
     }
   }
 `;

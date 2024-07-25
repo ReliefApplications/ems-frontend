@@ -77,7 +77,7 @@ export class TemplateModalComponent extends EmailComponent {
    * @param queryBuilder Shared query builder service.
    */
   constructor(
-    public dialogRef: DialogRef<TemplateModalComponent>,
+    public dialogRef: DialogRef<any>,
     EmailService: EmailService,
     ApplicationService: ApplicationService,
     FormBuilder: FormBuilder,
@@ -107,12 +107,16 @@ export class TemplateModalComponent extends EmailComponent {
 
   /**
    * Handles custom template navigation
+   *
+   * @param event data from the emitter
    */
-  handleNavigation() {
+  handleNavigation(event: any) {
     this.emailService.datasetsForm.reset();
     this.showTemplateCreationWizard = false;
     this.getExistingTemplate();
     this.getCustomTemplates();
-    this.dialogRef.close();
+    this.dialogRef.close({
+      result: event.template,
+    });
   }
 }

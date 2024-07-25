@@ -335,13 +335,22 @@ export class DistributionModalComponent {
           distributionListFormData,
           this.data?.distributionListData?.id
         )
-        .subscribe();
+        .subscribe((res: any) => {
+          this.dialogRef.close({
+            isDistributionListUpdated: this.data?.isEdit,
+            dlData: res?.data,
+          });
+        });
     } else {
       this.emailService
         .addDistributionList(distributionListFormData)
-        .subscribe();
+        .subscribe((res: any) => {
+          this.dialogRef.close({
+            isDistributionListUpdated: this.data?.isEdit,
+            dlData: res?.data,
+          });
+        });
     }
-    this.dialogRef.close({ isDistributionListUpdated: this.data?.isEdit });
   }
 
   /**

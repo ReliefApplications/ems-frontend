@@ -99,15 +99,15 @@ export class CustomTemplateComponent {
     if (this.emailService.isCustomTemplateEdit) {
       this.emailService
         .editCustomTemplate(templateData, this.emailService.customTemplateId)
-        .subscribe(() => {
+        .subscribe((res: any) => {
           this.emailService.datasetsForm.reset();
-          this.navigateToEms.emit();
+          this.navigateToEms.emit({ template: res });
         });
     } else {
       this.emailService.addCustomTemplate(templateData).subscribe(
-        () => {
+        (res: any) => {
           this.emailService.datasetsForm.reset();
-          this.navigateToEms.emit();
+          this.navigateToEms.emit({ template: res });
         },
         (error: any) => {
           console.error('Error sending email:', error);
