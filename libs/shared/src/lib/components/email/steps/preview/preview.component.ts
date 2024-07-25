@@ -141,7 +141,7 @@ export class PreviewComponent
       }
     });
     if (this.emailService.isQuickAction) {
-      this.populateCustomDL();
+      this.populateDLForm();
     }
 
     this.query = this.emailService.datasetsForm.value;
@@ -159,9 +159,9 @@ export class PreviewComponent
   }
 
   /**
-   *
+   * Populates dataset Form using custom template DL object
    */
-  populateCustomDL() {
+  populateDLForm() {
     if (this.emailService.isQuickAction) {
       const { To, Cc, Bcc } = this.emailService.customLayoutDL;
 
@@ -268,7 +268,6 @@ export class PreviewComponent
             this.updateEmailContainer(); // Update the email container with the new preview
             this.subjectString =
               this.emailService.finalEmailPreview.subject ?? this.subjectString; // Updae/Replace the subject string from the response
-            console.log(this.subjectHtmlRef);
             if (this.subjectHtmlRef?.nativeElement) {
               this.subjectHtmlRef.nativeElement.innerHTML = this.subjectString;
             }

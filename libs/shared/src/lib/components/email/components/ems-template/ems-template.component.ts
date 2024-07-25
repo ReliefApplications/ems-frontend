@@ -403,8 +403,8 @@ export class EmsTemplateComponent
   /**
    * Manipulates the payload by modifying options of fields based on fetched dataset.
    *
-   * @param {any} emailData - The payload to be manipulated with limited options.
-   * @returns {Promise<any>} A Promise that resolves with the modified emailData.
+   * @param emailData - The payload to be manipulated with limited options.
+   * @returns A Promise that resolves with the modified emailData.
    */
   async getDataSetToSkipOptions(emailData: any) {
     await Promise.all(
@@ -440,16 +440,14 @@ export class EmsTemplateComponent
   /**
    * Submission for sending and saving emails
    */
-  async saveAndSend(): Promise<void> {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve) => {
+  saveAndSend(): Promise<void> {
+    return new Promise((resolve) => {
       if (Object.keys(this.emailService.datasetsForm.getRawValue()).length) {
         this.emailService.datasetsForm?.value?.datasets?.forEach(
           (data: any) => {
             delete data.cacheData;
           }
         );
-        // await this.emailService.patchEmailLayout();
         const queryData = this.emailService.datasetsForm.getRawValue();
         queryData.notificationType =
           this.emailService.datasetsForm.controls.notificationType.value;
@@ -460,7 +458,6 @@ export class EmsTemplateComponent
           queryData.applicationId = res?.id;
         });
         queryData.isDraft = false;
-        //For email notification edit operation.
         if (this.emailService.isEdit) {
           if (
             this.emailService.allLayoutdata.headerLogo &&
@@ -484,7 +481,7 @@ export class EmsTemplateComponent
               this.emailService.allLayoutdata.bannerImage;
           }
 
-          await this.getDataSetToSkipOptions(queryData).then(
+          this.getDataSetToSkipOptions(queryData).then(
             (manipulatedDataWithoutOptions) => {
               this.emailService
                 .editEmailNotification(
@@ -544,7 +541,7 @@ export class EmsTemplateComponent
                 this.emailService.allLayoutdata.bannerImage;
             }
 
-            await this.getDataSetToSkipOptions(queryData).then(
+            this.getDataSetToSkipOptions(queryData).then(
               (manipulatedDataWithoutOptions) => {
                 this.emailService
                   .editEmailNotification(
@@ -558,9 +555,9 @@ export class EmsTemplateComponent
                           this.translate.instant(
                             'common.notifications.objectNotSaved',
                             {
-                              type: this.translate.instant(
-                                'common.email.notification.one'
-                              ),
+                              type: this.translate
+                                .instant('common.email.notification.one')
+                                .toLowerCase(),
                               error: errors ? errors[0].message : '',
                             }
                           ),
@@ -581,8 +578,7 @@ export class EmsTemplateComponent
               }
             );
           } else {
-            // For email notification create operation.
-            await this.getDataSetToSkipOptions(queryData).then(
+            this.getDataSetToSkipOptions(queryData).then(
               (manipulatedDataWithoutOptions) => {
                 this.emailService
                   .addEmailNotification(manipulatedDataWithoutOptions)
@@ -673,14 +669,11 @@ export class EmsTemplateComponent
           this.layout.layoutForm.get('header')?.value;
         await this.emailService.patchEmailLayout();
       }
-      // eslint-disable-next-line no-empty
-    } catch (error: any) {}
+    } catch (error: any) {
+      console.error(`Error while saving as draft: ${error.message}`);
+    }
     if (this.currentStep === 2) {
-      // this.emailService.emailDistributionList =
-      //   this.distribution.emailDistributionList;
-      // this.emailService.toEmailFilter = this.distribution.toEmailFilter;
-      // this.emailService.ccEmailFilter = this.distribution.ccEmailFilter;
-      // this.emailService.bccEmailFilter = this.distribution.bccEmailFilter;
+      //TODO: Implement
     }
     this.emailService.datasetsForm?.value?.datasets?.forEach((data: any) => {
       delete data.cacheData;
@@ -758,21 +751,14 @@ export class EmsTemplateComponent
 
   /**
    * Submission
-   *
    */
   async submit() {
-    // await this.emailService.patchEmailLayout();
     if (Object.keys(this.emailService.datasetsForm.getRawValue()).length) {
       this.emailService.datasetsForm?.value?.datasets?.forEach((data: any) => {
         delete data.cacheData;
       });
 
       const queryData = this.emailService.datasetsForm.getRawValue();
-
-      // const dataSet = queryData.datasets;
-
-      // queryData['datasets'] = this.formatPayload(dataSet);
-
       queryData.notificationType =
         this.emailService.datasetsForm.controls.notificationType.value;
       this.applicationService.application$.subscribe((res: any) => {
@@ -850,7 +836,6 @@ export class EmsTemplateComponent
         );
       } else {
         // For email notification create operation.
-
         await this.getDataSetToSkipOptions(queryData).then(
           (manipulatedDataWithoutOptions) => {
             this.emailService

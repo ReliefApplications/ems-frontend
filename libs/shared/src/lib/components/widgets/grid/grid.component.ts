@@ -755,13 +755,13 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     await this.fetchResourceMetaData()
       .pipe(takeUntil(this.destroy$))
       .subscribe((res: any) => {
-        console.log('Res', res);
         this.metaResourceData = res.data.resource.metadata;
       });
   }
 
   /**
    * Fetches Resource meta data
+   *
    * @returns resource meta data
    */
   fetchResourceMetaData() {
@@ -775,7 +775,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
 
   /**
    * Gets whether the grid settings are loading.
-   * @param previewSettings
+   *
+   * @param previewSettings the preview settings
    * @returns true if the grid settings are loading, false otherwise
    */
   loadingSettings(previewSettings: any): boolean {

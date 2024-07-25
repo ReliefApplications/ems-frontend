@@ -88,7 +88,7 @@ export class ButtonConfigComponent
    * @param workflowService Shared workflow service
    * @param dialog Dialog service
    * @param applicationService Shared application service
-   * @param emailService
+   * @param emailService Shared email service
    */
   constructor(
     private fb: FormBuilder,

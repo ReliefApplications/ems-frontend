@@ -281,7 +281,7 @@ export class EmailTemplateComponent
     }
     this.showDatasetLimitWarning = false;
     this.emailService.disableSaveAndProceed.next(true);
-    this.emailService.disableSaveAsDraft.next(false);
+    this.emailService.disableSaveAsDraft.next(true);
     this.currentTabIndex = 0;
     if (fromHtml) {
       this.resetFilters(this.distributionList.get('query'));
@@ -651,6 +651,13 @@ export class EmailTemplateComponent
     }
   }
 
+  /**
+   * Checks if the email already exists
+   *
+   * @param element Input Element
+   * @param emailDL Current Email distribution list
+   * @returns true if the email already exists, false otherwise
+   */
   isValidEmail(element: HTMLInputElement, emailDL: any): boolean {
     const toEmails = emailDL?.get('to')?.get('inputEmails')?.value;
     const ccEmails = emailDL?.get('cc')?.get('inputEmails')?.value;

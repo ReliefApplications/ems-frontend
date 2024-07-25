@@ -108,8 +108,7 @@ export class LayoutComponent
   /** Bcc input HTML */
   @ViewChild('bccInput') bccInput!: ElementRef<HTMLInputElement>;
   /** Regex pattern for email */
-  // eslint-disable-next-line no-useless-escape
-  EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
   /** Key codes of separators */
   SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 
@@ -280,6 +279,7 @@ export class LayoutComponent
   }
 
   /**
+   * Getting distinct from PreviewArray
    *
    * @param dlArray
    * @param previewArray
@@ -843,7 +843,7 @@ export class LayoutComponent
   /**
    * Add the inputs emails to the distribution list
    *
-   * @param emailType
+   * @param emailType The type of the email (to, cc, bcc)
    * @param event The event triggered when we exit the input
    */
   addEmail(emailType: string, event: string | any): void {

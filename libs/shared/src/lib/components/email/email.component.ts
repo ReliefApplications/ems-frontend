@@ -1069,7 +1069,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param event selected Tab
    */
   onTabSelect(event: any) {
-    console.log(event);
     this.selectedTabIndex = event;
     const searchText: any = document.getElementById(
       'exampleSelect'

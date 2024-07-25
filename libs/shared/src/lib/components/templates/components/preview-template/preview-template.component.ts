@@ -84,11 +84,10 @@ export class PreviewTemplate {
   /**
    * Constructor for creating a new instance of a dialog component.
    *
-   * @param {any} data - Dialog data.
-   * @param {EmailService} emailService - An instance of the EmailService.
-   * @param apollo
-   * @param snackBar
-   * @param translate
+   * @param data - Dialog data.
+   * @param emailService - An instance of the EmailService.
+   * @param snackBar - Shared snackbar service
+   * @param translate - Angular Translate service
    */
   constructor(
     @Inject(DIALOG_DATA) public data: any,
@@ -96,12 +95,10 @@ export class PreviewTemplate {
     private snackBar: SnackbarService,
     private translate: TranslateService
   ) {
-    console.log('this email,', this.data);
     this.emailService.isQuickAction = true;
     this.currentStep = !this.data.distributionListInfo ? 0 : 1;
     this.convertData(this.data.selectedRowsFromGrid, this.data.resourceData);
     this.emailService.emailDistributionList = this.data.distributionListInfo;
-    // this.emailService.recipients = this.data.distributionListInfo;
 
     this.emailService.datasetsForm.patchValue({
       emailLayout: this.data.emailContent,
@@ -151,8 +148,6 @@ export class PreviewTemplate {
       footerImgStyle: this.data.emailContent?.footer?.footerImgStyle,
       footerHtmlStyle: this.data.emailContent?.footer?.footerHtmlStyle,
     };
-
-    console.log('The email content', this.data);
   }
 
   /**
@@ -192,7 +187,7 @@ export class PreviewTemplate {
    * Used to convert the data format suitable for the preview
    *
    * @param rowData The input array of data items to be converted.
-   * @param metaData
+   * @param metaData The metadata of the data items.
    */
   convertData(rowData: any, metaData: any) {
     // Initialize the datasetFields and dataList arrays
@@ -247,24 +242,6 @@ export class PreviewTemplate {
       },
     ];
   }
-
-  //   replaceTokensWithTables(): void {
-  //     // this.bodyString = this.emailService.allLayoutdata.bodyHtml;
-  //     // Token matching {{String}}
-  //     // const tokenRegex = /{{([^}]+)}}/g;
-  //     // let match;
-  //     // while ((match = tokenRegex.exec(this.bodyString)) !== null) {
-  //     //   const tabName = match[1]; // Extract the tab name from the token
-  //     //   const previewData = this.emailService.allPreviewData.find(
-  //     //     (data) => data.tabName === tabName
-  //     //   );
-
-  //       if (this.data.dataset) {
-  //         const tableHtml = this.convertPreviewDataToHtml(previewData);
-  //         this.bodyString = this.bodyString.replace(match[0], tableHtml);
-  //       }
-  //     }
-  //   }
 
   /**
    * To send the email from the GRID view

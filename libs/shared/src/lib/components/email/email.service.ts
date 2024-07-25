@@ -1224,9 +1224,7 @@ export class EmailService {
   /**
    * sending emails to endpoint
    *
-   * @param configId id of the config.
    * @param emailData data to be send.
-   * @param separateEmail trigger for sending individual emails
    * @returns rest post to end point.
    */
   sendQuickEmail(emailData: any): Observable<any> {
@@ -1273,10 +1271,10 @@ export class EmailService {
   }
 
   /**
+   * Populate Emails into distributionlist input emails form array using email string array
    *
-   * Assigning emails for Form
-   * @param dlArray
-   * @param input
+   * @param dlArray email string array
+   * @param input form group array
    */
   populateEmails(dlArray: string[], input: FormArray) {
     dlArray?.forEach((item: string) => {

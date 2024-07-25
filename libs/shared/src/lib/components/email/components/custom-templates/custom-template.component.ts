@@ -118,7 +118,6 @@ export class CustomTemplateComponent {
         }
       );
     }
-    // console.log('query data', queryData);
   }
 
   /**

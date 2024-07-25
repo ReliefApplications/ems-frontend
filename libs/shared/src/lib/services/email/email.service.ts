@@ -351,10 +351,11 @@ export class EmailService {
   /**
    * Previews custom email templates.
    *
-   * @param {any} emailContent - The content of the email template.
-   * @param {any} distributionListInfo - Information about the distribution list.
-   * @param selectedRowsFromGrid
-   * @param resourceId
+   * @param emailContent - The content of the email template.
+   * @param distributionListInfo - Information about the distribution list.
+   * @param selectedRowsFromGrid - Selected rows from the grid.
+   * @param resourceData - The resource data.
+   * @param selectedLayoutFields - The selected layout fields.
    */
   async previewCustomTemplates(
     emailContent: any,

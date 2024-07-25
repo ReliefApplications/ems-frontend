@@ -1,5 +1,3 @@
-/* eslint-disable @nrwl/nx/enforce-module-boundaries */
-/* eslint-disable @angular-eslint/no-empty-lifecycle-method */
 import { Component } from '@angular/core';
 import {
   DialogModule,
@@ -27,12 +25,12 @@ import {
   AuthService,
 } from '../../../../services/auth/auth.service';
 import { Dialog } from '@angular/cdk/dialog';
-import { ApplicationService } from 'libs/shared/src/lib/services/application/application.service';
-import { ConfirmService } from 'libs/shared/src/lib/services/confirm/confirm.service';
-import { DownloadService } from 'libs/shared/src/lib/services/download/download.service';
+import { ApplicationService } from '../../../../services/application/application.service';
+import { ConfirmService } from '../../../../services/confirm/confirm.service';
+import { DownloadService } from '../../../../services/download/download.service';
 import { EmailService } from '../../../email/email.service';
 import { DialogRef } from '@angular/cdk/dialog';
-import { QueryBuilderService } from 'libs/shared/src/lib/services/query-builder/query-builder.service';
+import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 
 /**
  *
@@ -63,18 +61,20 @@ import { QueryBuilderService } from 'libs/shared/src/lib/services/query-builder/
 })
 export class TemplateModalComponent extends EmailComponent {
   /**
+   * Modal for template actions.
    *
-   * @param dialogRef
-   * @param EmailService
-   * @param ApplicationService
-   * @param FormBuilder
-   * @param ConfirmService
-   * @param AuthService
-   * @param DownloadService
-   * @param Dialog
-   * @param TranslateService
-   * @param ability
-   * @param snackBar
+   * @param dialogRef CDK Dialog reference.
+   * @param EmailService Email service.
+   * @param ApplicationService Shared application service.
+   * @param FormBuilder Angular form builder.
+   * @param ConfirmService Shared confirmation service.
+   * @param AuthService Shared authentication service.
+   * @param DownloadService Shared download service.
+   * @param Dialog CDK Dialog service.
+   * @param TranslateService Angular translation service.
+   * @param ability App Ability object.
+   * @param snackBar Shared snackbar service.
+   * @param queryBuilder Shared query builder service.
    */
   constructor(
     public dialogRef: DialogRef<TemplateModalComponent>,
@@ -106,7 +106,7 @@ export class TemplateModalComponent extends EmailComponent {
   }
 
   /**
-   *
+   * Handles custom template navigation
    */
   handleNavigation() {
     this.emailService.datasetsForm.reset();
