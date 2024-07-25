@@ -406,7 +406,6 @@ export class EmailTemplateComponent
                 this.showDatasetLimitWarning = true;
               }
 
-              // this.navigateToPreview.emit(response);
               this.loading = false;
             },
             (error: string) => {
@@ -424,10 +423,6 @@ export class EmailTemplateComponent
    * @returns FormArray of fields
    */
   getFieldsArray() {
-    // this.emailService.convertFields(
-    //   this.distributionList.getRawValue().query?.fields,
-    //   this.availableFields
-    // );
     const formArray = this.distributionList.controls.query.get(
       'fields'
     ) as FormArray;
@@ -510,7 +505,6 @@ export class EmailTemplateComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.emailService.setDistributionList();
-    // this.distributionList.controls.resource.value = this.resource.id ?? ;
   }
 
   /**
@@ -542,8 +536,6 @@ export class EmailTemplateComponent
       this.datasetFields = [];
       this.selectedFields = [];
       this.loading = true;
-      // const { dataList, resource, dataSetFields, dataSetResponse } =
-      //   dataSet.cacheData;
 
       const { dataList, resource, datasetResponse } = dataset.cacheData;
       this.dataList = dataList;

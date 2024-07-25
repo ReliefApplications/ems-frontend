@@ -330,9 +330,6 @@ export class EmsTemplateComponent
     try {
       // Save email
       await this.saveAndSend();
-      const emailData = {
-        // Your email data here
-      };
 
       // Create a snackbar to indicate email is processing
       const snackBarRef = this.snackBar.openComponentSnackBar(
@@ -353,7 +350,7 @@ export class EmsTemplateComponent
       this.emailService
         .sendEmail(
           this.emailService.configId,
-          emailData,
+          {},
           this.emailService.sendSeparateEmail()
         )
         .pipe(takeUntil(this.destroy$))
