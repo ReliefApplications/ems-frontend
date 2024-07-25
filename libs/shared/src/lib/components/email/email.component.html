@@ -1,4 +1,4 @@
-<ng-container *ngIf="!showTemplateCreationWizard">
+<ng-container *ngIf="this.ability.can('read', 'EmailNotification') && !showTemplateCreationWizard">
   <ui-spinner *ngIf="emailService.emailListLoading && emailService.isExisting" class="spinner"></ui-spinner>
   <div class="container emailListContainer py-8 flex justify-between" *ngIf="emailService.isExisting">
     <div
