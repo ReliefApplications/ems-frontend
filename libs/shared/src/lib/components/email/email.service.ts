@@ -94,6 +94,11 @@ export class EmailService {
     stepperIndex: 0,
     disableAction: false,
   });
+  /** Email preview data */
+  public previewData!: {
+    fields: string[];
+    datasets: string[];
+  };
   /** Should stepper enable all steps */
   public enableAllSteps = new BehaviorSubject<boolean>(false);
   /** Email layout data */
@@ -513,6 +518,24 @@ export class EmailService {
    */
   getAllPreviewData(): any[] {
     return this.allPreviewData;
+  }
+
+  createPreviewData() {
+    if (this.datasetsForm?.get('datasets')?.value?.length > 0) {
+      const datasetsValues = this.datasetsForm?.get('datasets')?.value;
+      const datasets: string[] = [];
+      datasetsValues.forEach((dataset: any) => {
+        datasets.push(dataset.name);
+      });
+      const fields: string[] = [];
+      datasetsValues[0].query.fields.forEach((field: any) => {
+        fields.push(field.name);
+      });
+      this.previewData = {
+        datasets: datasets,
+        fields: fields,
+      };
+    }
   }
 
   /**

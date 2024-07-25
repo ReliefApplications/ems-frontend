@@ -168,6 +168,7 @@ export class LayoutComponent
   }
 
   ngOnInit(): void {
+    this.emailService.createPreviewData();
     if (!this.emailService.isCustomTemplateEdit) {
       this.layoutForm = this.fb.group({
         subjectField: [''],
@@ -459,9 +460,14 @@ export class LayoutComponent
    */
   initialiseFieldSelectDropdown(): void {
     const firstBlock = this.emailService.getAllPreviewData()[0];
-    if (firstBlock?.datasetFields?.length > 0) {
+    if (
+      firstBlock?.datasetFields?.length > 0 ||
+      this.emailService.previewData.fields?.length > 0
+    ) {
       // get the values of the first block
-      this.firstBlockFields = Object.values(firstBlock.datasetFields);
+      this.firstBlockFields =
+        this.emailService.previewData?.fields ??
+        Object.values(firstBlock.datasetFields);
     }
   }
 
