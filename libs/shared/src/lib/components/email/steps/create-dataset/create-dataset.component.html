@@ -3,7 +3,7 @@
     <div class="tab-container" style="width: 100%">
       <!-- Block Tabs -->
       <ui-tabs
-        [selectedIndex]="activeTab.index"
+        [selectedIndex]="activeTab?.index"
         #kendoStrip
         formArrayName="datasets"
         (tabSelect)="changeTab($event, $event)"

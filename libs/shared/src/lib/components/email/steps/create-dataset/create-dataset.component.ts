@@ -134,7 +134,7 @@ export class CreateDatasetComponent implements OnInit {
       this.activeTab = this.emailService.tabs[tabIndex];
       this.activeTab.active = true;
       this.activeTab.index = tabIndex;
-      this.kendoStrip.selectTab(tabIndex);
+      this.kendoStrip?.selectTab(tabIndex);
       this.emailService.tabs.forEach((tab, index) => {
         tab.active = index === tabIndex; // Set active to true for the selected index, false otherwise
       });
