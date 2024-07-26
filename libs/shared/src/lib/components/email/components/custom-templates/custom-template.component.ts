@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { EmailService } from '../../email.service';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
+import { ApplicationService } from '../../../../services/application/application.service';
 
 /**
  * Used to create custom template
@@ -11,12 +12,15 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './custom-template.component.html',
   styleUrls: ['./custom-template.component.scss'],
 })
-export class CustomTemplateComponent {
+export class CustomTemplateComponent implements OnInit {
   /* Used to identify the current step */
   /** Current step of the custom template   */
   public currentStep = 0;
   /** NAVIGATE TO MAIN EMAIL LIST SCREEN */
   @Output() navigateToEms: EventEmitter<any> = new EventEmitter();
+
+  /** Application ID. */
+  public applicationId = '';
 
   /** Stepper form Steps */
   public steps = [
@@ -33,6 +37,7 @@ export class CustomTemplateComponent {
   /**
    * Angular Component constructor
    *
+   * @param applicationService The service for handling applications.
    * @param emailService email service
    * @param snackBar snackbar service
    * @param translate translate service
@@ -40,11 +45,18 @@ export class CustomTemplateComponent {
   constructor(
     public emailService: EmailService,
     private snackBar: SnackbarService,
+    public applicationService: ApplicationService,
     private translate: TranslateService
   ) {
     this.emailService.isQuickAction = true;
     this.emailService.disableNextActionBtn = true;
     this.updateStep(true);
+  }
+
+  ngOnInit(): void {
+    this.applicationService.application$.subscribe((res: any) => {
+      this.applicationId = res?.id;
+    });
   }
 
   /**
@@ -56,6 +68,7 @@ export class CustomTemplateComponent {
   convertTemplateData(inputData: any): any {
     return {
       subject: inputData?.txtSubject ?? '',
+      applicationId: inputData?.applicationId ?? '',
       banner: {
         bannerImage: inputData?.bannerImage ?? null,
         bannerImageStyle: inputData?.bannerImageStyle ?? '',
@@ -93,9 +106,10 @@ export class CustomTemplateComponent {
    * Submits the form data to the email service.
    */
   submit() {
-    const templateData = this.convertTemplateData(
-      this.emailService.allLayoutdata
-    );
+    const templateData = this.convertTemplateData({
+      ...this.emailService.allLayoutdata,
+      applicationId: this.applicationId,
+    });
     if (this.emailService.isCustomTemplateEdit) {
       this.emailService
         .editCustomTemplate(templateData, this.emailService.customTemplateId)

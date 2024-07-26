@@ -80,6 +80,14 @@ export class EmailService {
   public showExistingDistributionList = false;
   /** Distribution list data */
   public emailDistributionList: any = [];
+  /** Initial tab value */
+  public initialTabValue = {
+    title: `Block 1`,
+    content: `Block 1 Content`,
+    active: true,
+    index: 0,
+    blockHeaderCount: 1,
+  };
   /** List of tabs */
   public tabs: any[] = [
     {
@@ -87,6 +95,7 @@ export class EmailService {
       content: `Block 1 Content`,
       active: true,
       index: 0,
+      blockHeaderCount: 1,
     },
   ];
   /** Used to disable stepper steps */
@@ -483,6 +492,24 @@ export class EmailService {
    */
   setSelectedDataSet(dataset: any): void {
     this.selectedDataSet = dataset;
+  }
+
+  /**
+   * Sets the tabs.
+   *
+   * @param tabs The tabs on DL page.
+   */
+  setTabs(tabs: any[]): void {
+    this.tabs = tabs;
+  }
+
+  /**
+   * Return tabs.
+   *
+   * @returns selected tabs
+   */
+  getTabs(): any[] {
+    return this.tabs;
   }
 
   /**
@@ -1087,21 +1114,23 @@ export class EmailService {
         content: `Block 1 Content`,
         active: true,
         index: 0,
+        blockHeaderCount: 1,
       },
     ];
   }
 
   /**
    * Adds an email distribution list with the provided data.
-   *
+   * @param applicationId The application id of the email notification.
    * @param data The notification data to be added.
    * @returns A query result after adding the email distribution list.
    */
-  addDistributionList(data: any) {
+  addDistributionList(data: any, applicationId?: string): Observable<any> {
     return this.apollo.query<any>({
       query: ADD_DISTRIBUTION_LIST,
       variables: {
         distributionList: data,
+        applicationId,
       },
     });
   }
@@ -1217,25 +1246,27 @@ export class EmailService {
 
   /**
    * Retrieves custom templates from the server.
-   *
+   * @param id The application ids of the email notifications.
    * @returns {Observable<any>} An observable that resolves with the result of the query.
    */
-  getCustomTemplates(): Observable<any> {
+  getCustomTemplates(id?: string): Observable<any> {
     return this.apollo.query<any>({
       query: GET_CUSTOM_TEMPLATES,
-      variables: {},
+      variables: {
+        applicationId: id,
+      },
     });
   }
 
   /**
    * Get an email distribution lists.
-   *
+   @param applicationId The application ids of the email notifications.
    * @returns Email distribution lists.
    */
-  getEmailDistributionList() {
+  getEmailDistributionList(applicationId?: string): Observable<any> {
     return this.apollo.query<any>({
       query: GET_DISTRIBUTION_LIST,
-      variables: {},
+      variables: { applicationId },
     });
   }
 

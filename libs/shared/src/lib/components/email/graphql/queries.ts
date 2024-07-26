@@ -438,8 +438,8 @@ export const GET_RESOURCE_BY_ID = gql`
 
 /** Graphql query for getting  EMAIL_DISTRIBUTION_LIST */
 export const GET_DISTRIBUTION_LIST = gql`
-  query EmailDistributionLists {
-    emailDistributionLists {
+  query EmailDistributionLists($applicationId: ID) {
+    emailDistributionLists(applicationId: $applicationId) {
       totalCount
       edges {
         node {
@@ -457,14 +457,21 @@ export const GET_DISTRIBUTION_LIST = gql`
 `;
 /** Graphql query for add  EMAIL_DISTRIBUTION_LIST */
 export const ADD_DISTRIBUTION_LIST = gql`
-  mutation AddEmailDistributionList($distributionList: JSON!) {
-    addEmailDistributionList(distributionList: $distributionList) {
+  mutation AddEmailDistributionList(
+    $distributionList: JSON!
+    $applicationId: ID
+  ) {
+    addEmailDistributionList(
+      distributionList: $distributionList
+      applicationId: $applicationId
+    ) {
       Bcc
       Cc
       To
       distributionListName
       id
       createdBy
+      applicationId
     }
   }
 `;
@@ -530,8 +537,8 @@ export const EDIT_CUSTOM_TEMPLATE = gql`
 
 /** Graphql query for getting  CUSTOM_TEMPLATES */
 export const GET_CUSTOM_TEMPLATES = gql`
-  query CustomTemplates {
-    customTemplates {
+  query CustomTemplates($applicationId: ID) {
+    customTemplates(applicationId: $applicationId) {
       totalCount
       edges {
         node {

@@ -145,19 +145,21 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @returns {void}
    */
   getCustomTemplates(): void {
-    this.emailService.getCustomTemplates().subscribe((res: any) => {
-      // this.customTemplates =
-      this.customTemplates = res?.data?.customTemplates?.edges?.map(
-        (template: any) => template?.node
-      );
-      this.customActualData = this.customTemplates;
-      this.cacheTemplateList = this.customTemplates;
-      this.customTemplates = this.cacheTemplateList.slice(
-        this.templatePageInfo.pageSize * this.templatePageInfo.pageIndex,
-        this.templatePageInfo.pageSize * (this.templatePageInfo.pageIndex + 1)
-      );
-      this.templatePageInfo.length = this.cacheTemplateList.length;
-    });
+    this.emailService
+      .getCustomTemplates(this.applicationId)
+      .subscribe((res: any) => {
+        // this.customTemplates =
+        this.customTemplates = res?.data?.customTemplates?.edges?.map(
+          (template: any) => template?.node
+        );
+        this.customActualData = this.customTemplates;
+        this.cacheTemplateList = this.customTemplates;
+        this.customTemplates = this.cacheTemplateList.slice(
+          this.templatePageInfo.pageSize * this.templatePageInfo.pageIndex,
+          this.templatePageInfo.pageSize * (this.templatePageInfo.pageIndex + 1)
+        );
+        this.templatePageInfo.length = this.cacheTemplateList.length;
+      });
   }
 
   /**
@@ -312,47 +314,49 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    *
    */
   getDistributionList() {
-    this.emailService.getEmailDistributionList().subscribe((list: any) => {
-      this.distributionLists = [];
-      this.emailService.distributionListNames = [];
-      list?.data?.emailDistributionLists?.edges?.forEach((ele: any) => {
-        if (
-          ele.node.distributionListName !== null &&
-          ele.node.distributionListName !== ''
-        ) {
-          this.distributionLists.push(ele.node);
-          this.emailService.distributionListNames.push(
-            ele.node?.distributionListName.trim().toLowerCase()
-          );
-        }
+    this.emailService
+      .getEmailDistributionList(this.applicationId)
+      .subscribe((list: any) => {
+        this.distributionLists = [];
+        this.emailService.distributionListNames = [];
+        list?.data?.emailDistributionLists?.edges?.forEach((ele: any) => {
+          if (
+            ele.node.distributionListName !== null &&
+            ele.node.distributionListName !== ''
+          ) {
+            this.distributionLists.push(ele.node);
+            this.emailService.distributionListNames.push(
+              ele.node?.distributionListName.trim().toLowerCase()
+            );
+          }
+        });
+        let uniqueDistributionLists = Array.from(
+          new Set(this.emailService.distributionListNames)
+        );
+        this.distributionLists = this.distributionLists.filter((ele: any) => {
+          if (
+            uniqueDistributionLists.includes(
+              ele?.distributionListName?.toLowerCase()
+            )
+          ) {
+            uniqueDistributionLists = uniqueDistributionLists.filter(
+              (name) => ele.distributionListName?.toLowerCase() !== name
+            );
+            return true;
+          } else {
+            return false;
+          }
+        });
+        this.distributionActualData = cloneDeep(this.distributionLists);
+        this.cacheDistributionList = this.distributionLists;
+        this.distributionLists = this.cacheDistributionList.slice(
+          this.distributionPageInfo.pageSize *
+            this.distributionPageInfo.pageIndex,
+          this.distributionPageInfo.pageSize *
+            (this.distributionPageInfo.pageIndex + 1)
+        );
+        this.distributionPageInfo.length = this.cacheDistributionList.length;
       });
-      let uniqueDistributionLists = Array.from(
-        new Set(this.emailService.distributionListNames)
-      );
-      this.distributionLists = this.distributionLists.filter((ele: any) => {
-        if (
-          uniqueDistributionLists.includes(
-            ele?.distributionListName?.toLowerCase()
-          )
-        ) {
-          uniqueDistributionLists = uniqueDistributionLists.filter(
-            (name) => ele.distributionListName?.toLowerCase() !== name
-          );
-          return true;
-        } else {
-          return false;
-        }
-      });
-      this.distributionActualData = cloneDeep(this.distributionLists);
-      this.cacheDistributionList = this.distributionLists;
-      this.distributionLists = this.cacheDistributionList.slice(
-        this.distributionPageInfo.pageSize *
-          this.distributionPageInfo.pageIndex,
-        this.distributionPageInfo.pageSize *
-          (this.distributionPageInfo.pageIndex + 1)
-      );
-      this.distributionPageInfo.length = this.cacheDistributionList.length;
-    });
   }
 
   /**
@@ -629,7 +633,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     // For each dataset, query its metadata
     const promises = emailData.datasets.map((dataset: any) => {
       return firstValueFrom(
-        this.emailService.fetchResourceData(dataset.resource.id)
+        this.emailService.fetchResourceData(dataset?.resource?.id)
       ).then(({ data }) => {
         if (data.resource.metadata) {
           // const queryTemp: any = data.resource;

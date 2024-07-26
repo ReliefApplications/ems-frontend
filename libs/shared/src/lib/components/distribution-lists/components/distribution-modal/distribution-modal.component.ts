@@ -1,4 +1,10 @@
-import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import get from 'lodash/get';
@@ -17,6 +23,7 @@ import {
 import { BehaviorSubject } from 'rxjs';
 import { EmailService } from '../../../email/email.service';
 import { DownloadService } from '../../../../services/download/download.service';
+import { ApplicationService } from '../../../../services/application/application.service';
 
 /** Model for the data input */
 interface DialogData {
@@ -28,6 +35,7 @@ interface DialogData {
   isEdit?: boolean;
   id?: string;
   distributionListData: any;
+  applicationId?: string;
 }
 
 /** Regex pattern for email */
@@ -69,7 +77,7 @@ export function codesFactory(): () => {
   templateUrl: './distribution-modal.component.html',
   styleUrls: ['./distribution-modal.component.scss'],
 })
-export class DistributionModalComponent {
+export class DistributionModalComponent implements OnInit {
   // === REACTIVE FORM ===
   /** Form */
   public form = this.fb.group({
@@ -82,6 +90,8 @@ export class DistributionModalComponent {
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
   /** errorEmails */
   errorEmails = new BehaviorSubject<boolean>(false);
+  /** Application ID. */
+  public applicationId = '';
   /** Meesage for errorEmail */
   errorEmailMessages = new BehaviorSubject<string>('');
   /** Reference to file upload element. */
@@ -142,6 +152,7 @@ export class DistributionModalComponent {
    * Component for edition of distribution list
    *
    * @param fb Angular form builder service
+   * @param applicationService The service for handling applications.
    * @param dialogRef Dialog ref of the component
    * @param data Data input of the modal
    * @param emailService email service
@@ -155,10 +166,17 @@ export class DistributionModalComponent {
     @Inject(DIALOG_DATA) public data: DialogData,
     public emailService: EmailService,
     public downloadService: DownloadService,
+    public applicationService: ApplicationService,
     public snackBar: SnackbarService,
     public translate: TranslateService
   ) {
     this.editActionHandler(data);
+  }
+
+  ngOnInit(): void {
+    this.applicationService.application$.subscribe((res: any) => {
+      this.applicationId = res?.id;
+    });
   }
 
   /**
@@ -343,7 +361,7 @@ export class DistributionModalComponent {
         });
     } else {
       this.emailService
-        .addDistributionList(distributionListFormData)
+        .addDistributionList(distributionListFormData, this.applicationId)
         .subscribe((res: any) => {
           this.dialogRef.close({
             isDistributionListUpdated: this.data?.isEdit,

@@ -426,8 +426,8 @@
                     this.emailService.getAllPreviewData();
                   let i = index
                 "
-                [value]="previewData.tabName ?? previewData"
-                >{{ previewData.tabName ?? previewData }}</ui-select-option
+                [value]="previewData?.tabName ?? previewData"
+                >{{ previewData?.tabName ?? previewData }}</ui-select-option
               >
             </ui-select-menu>
           </div>

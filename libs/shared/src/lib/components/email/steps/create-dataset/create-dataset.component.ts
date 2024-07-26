@@ -48,7 +48,8 @@ export class CreateDatasetComponent implements OnInit {
     content: string;
     active: boolean;
     index: number;
-  }[] = this.emailService.tabs;
+    blockHeaderCount: number;
+  }[] = JSON.parse(JSON.stringify(this.emailService.tabs));
   /** Search query. */
   public searchQuery = '';
   /** Selected search field. */
@@ -131,7 +132,9 @@ export class CreateDatasetComponent implements OnInit {
 
     if (tabIndex !== undefined) {
       this.tabIndex = tabIndex;
-      this.activeTab = this.emailService.tabs[tabIndex];
+      this.activeTab = this.tabs.length
+        ? this.tabs[tabIndex]
+        : this.emailService.initialTabValue;
       this.activeTab.active = true;
       this.activeTab.index = tabIndex;
       this.kendoStrip?.selectTab(tabIndex);
@@ -179,22 +182,34 @@ export class CreateDatasetComponent implements OnInit {
    */
   public addTab() {
     this.tabs.forEach(
-      (tab) => ((tab.active = false), (this.blockIndex = tab.index))
+      (tab) => ((tab.active = false), (this.blockIndex = tab.index + 2))
     );
     if (this.tabs.length === 0) {
-      this.blockIndex = -1;
+      this.blockIndex = 1;
     }
+    let isBlockHeaderPresent = this.tabs.some(
+      (tab) => tab.blockHeaderCount === this.blockIndex
+    );
+    while (isBlockHeaderPresent) {
+      this.blockIndex++;
+      isBlockHeaderPresent = this.tabs.some(
+        (tab) => tab.blockHeaderCount === this.blockIndex
+      );
+    }
+
     this.tabs.push({
-      title: `Block ${this.blockIndex + 2}`,
-      content: `Block ${this.blockIndex + 2} Content`,
+      title: `Block ${this.blockIndex} `,
+      content: `Block ${this.blockIndex} Content`,
       active: true,
-      index: this.blockIndex + 1,
+      index: this.tabs.length,
+      blockHeaderCount: this.blockIndex,
     });
     this.activeTab =
       this.tabs.filter((tab: any) => tab.active == true).length > 0
         ? this.tabs.filter((tab: any) => tab.active == true)[0]
         : '';
     this.datasetsFormArray.push(this.emailService.createNewDataSetGroup());
+    this.emailService.setTabs(this.tabs);
   }
 
   /**
@@ -221,6 +236,7 @@ export class CreateDatasetComponent implements OnInit {
         ? this.tabs[this.tabs.length - 1]
         : this.activeTab;
     this.activeTab.active = true;
+    this.emailService.setTabs(this.tabs);
     this.changeTab(this.activeTab.index);
   }
 

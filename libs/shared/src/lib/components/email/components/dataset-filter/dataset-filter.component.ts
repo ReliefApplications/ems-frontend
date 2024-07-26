@@ -177,7 +177,7 @@ export class DatasetFilterComponent
       this.activeTab.index
     );
     if (this.query.value.name == null) {
-      const name = 'Block ' + (this.activeTab.index + 1);
+      const name = 'Block ' + this.activeTab.blockHeaderCount;
       this.query.controls['name'].setValue(name);
     }
 
@@ -220,7 +220,7 @@ export class DatasetFilterComponent
 
   override ngOnDestroy() {
     // Delete cache data
-    if (this.query.get('cacheData')) {
+    if (this.query?.get('cacheData')) {
       this.query.get('cacheData').reset();
       this.query.get('cacheData').clearValidators();
       this.query.get('cacheData').clearAsyncValidators();
