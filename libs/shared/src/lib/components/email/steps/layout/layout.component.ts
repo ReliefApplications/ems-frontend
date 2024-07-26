@@ -280,10 +280,12 @@ export class LayoutComponent
   }
 
   /**
+   *
    * Getting distinct from PreviewArray
    *
-   * @param dlArray
-   * @param previewArray
+   * @param dlArray Array to add in the form
+   * @param previewArray formarray instance
+   * @returns returns the updated array
    */
   getDistinctArray(dlArray: any, previewArray: any) {
     previewArray = previewArray.filter((el: any) => {
