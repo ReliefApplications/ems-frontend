@@ -520,6 +520,9 @@ export class EmailService {
     return this.allPreviewData;
   }
 
+  /**
+   * Creates a preview data object.
+   */
   createPreviewData() {
     if (this.datasetsForm?.get('datasets')?.value?.length > 0) {
       const datasetsValues = this.datasetsForm?.get('datasets')?.value;

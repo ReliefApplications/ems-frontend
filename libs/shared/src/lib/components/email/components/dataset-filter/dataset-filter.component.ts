@@ -219,19 +219,7 @@ export class DatasetFilterComponent
   }
 
   override ngOnDestroy() {
-    // const cacheData = {
-    //   dataList: this.dataList,
-    //   resource: this.resource,
-    //   operators: this.operators,
-    //   datasetFields: this.datasetFields,
-    //   selectedFields: this.selectedFields,
-    //   availableFields: this.availableFields,
-    //   filterFields: this.filterFields,
-    //   datasetResponse: this.datasetResponse,
-    //   selectedResourceId: this.selectedResourceId,
-    // };
-    // this.query?.controls?.query?.get('cacheData')?.setValue(cacheData);
-
+    // Delete cache data
     if (this.query.get('cacheData')) {
       this.query.get('cacheData').reset();
       this.query.get('cacheData').clearValidators();

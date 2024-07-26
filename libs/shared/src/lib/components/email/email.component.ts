@@ -723,7 +723,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       }),
       resource: ele.resource,
       pageSize: ele.pageSize,
-      cacheData: {},
       blockType: 'table', // Either Table or Text
       tableStyle: this.emailService.getTableStyles(),
       textStyle: null,

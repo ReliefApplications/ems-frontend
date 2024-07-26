@@ -11,9 +11,9 @@
       "
       uiFormFieldDirective
     >
-      <label class="block text-sm font-medium leading-6 text-gray-900"
-        >To</label
-      >
+      <label class="block text-sm font-medium leading-6 text-gray-900">{{
+        'components.email.distributionList.to' | translate
+      }}</label>
       <div uiChipList #chipList formControlName="to">
         <ui-chip
           *ngFor="let to of layoutForm.get('to')?.value"
@@ -41,9 +41,9 @@
       "
       uiFormFieldDirective
     >
-      <label class="block text-sm font-medium leading-6 text-gray-900"
-        >CC</label
-      >
+      <label class="block text-sm font-medium leading-6 text-gray-900">{{
+        'components.email.distributionList.cc' | translate
+      }}</label>
       <div uiChipList #chipList formControlName="cc">
         <ui-chip
           *ngFor="let cc of layoutForm.get('cc')?.value"
@@ -71,9 +71,9 @@
       "
       uiFormFieldDirective
     >
-      <label class="block text-sm font-medium leading-6 text-gray-900"
-        >BCC</label
-      >
+      <label class="block text-sm font-medium leading-6 text-gray-900">{{
+        'components.email.distributionList.bcc' | translate
+      }}</label>
       <div uiChipList #chipList formControlName="bcc">
         <ui-chip
           *ngFor="let bcc of layoutForm.get('bcc')?.value"
@@ -110,10 +110,7 @@
           uiFormFieldDirective
           [defaultMargin]="false"
           class="w-1/3 px-2"
-          *ngIf="
-            this.emailService.previewData &&
-            this.emailService.previewData.datasets.length === 1
-          "
+          *ngIf="this.emailService?.previewData?.datasets?.length === 1"
         >
           <label
             for="fieldSelect"
