@@ -103,16 +103,6 @@ export class EmailService {
   public enableAllSteps = new BehaviorSubject<boolean>(false);
   /** Email layout data */
   public allLayoutdata!: any;
-  /** Custom layout distribution list */
-  public customLayoutDL: {
-    To: string[];
-    Cc: string[];
-    Bcc: string[];
-  } = {
-    To: [],
-    Cc: [],
-    Bcc: [],
-  };
   /** Default block dataset table style*/
   public defaultTableStyle!: any;
   /** Is distribution list existing */
@@ -1303,14 +1293,9 @@ export class EmailService {
    * @param input form group array
    */
   populateEmails(dlArray: string[], input: FormArray) {
+    input.clear();
     dlArray?.forEach((item: string) => {
-      if (
-        !input?.value
-          .map((v: string) => v.toLowerCase())
-          .includes(item.toLowerCase())
-      ) {
-        input?.push(new FormControl(item));
-      }
+      input?.push(new FormControl(item));
     });
   }
 }

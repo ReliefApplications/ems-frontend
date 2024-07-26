@@ -223,7 +223,7 @@ export class PreviewTemplate {
         ?.forEach((keyNm: any) => {
           const keyData = metaData
             .filter((x: any) => x.name == keyNm)?.[0]
-            .options?.filter((x: any) => item?.node[keyNm]?.includes(x.value))
+            ?.options?.filter((x: any) => item?.node[keyNm]?.includes(x.value))
             .map((y: any) => y.text);
           text[keyNm] = keyData?.length > 0 ? keyData : item?.node[keyNm];
         });
@@ -284,5 +284,21 @@ export class PreviewTemplate {
    */
   onClose() {
     this.emailService.datasetsForm.reset();
+  }
+
+  /**
+   * Method called when clicking on Next.
+   */
+  next() {
+    if (
+      !this.emailService.emailDistributionList ||
+      this.emailService.emailDistributionList?.To?.length === 0
+    ) {
+      this.snackBar.openSnackBar('To is required to proceed!', {
+        error: true,
+      });
+    } else {
+      this.currentStep = 1;
+    }
   }
 }

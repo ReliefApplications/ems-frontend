@@ -37,7 +37,7 @@
           class="bg-sky-500 hover:bg-sky-400 px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
           [ngClass]="disableActionButton ? 'inactive' : 'active'"
           [disabled]="disableActionButton"
-          (click)="currentStep = 1"
+          (click)="next()"
           *ngIf="currentStep !== 1"
         >
           {{ 'common.next' | translate }}

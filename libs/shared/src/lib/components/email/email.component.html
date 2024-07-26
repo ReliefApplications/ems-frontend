@@ -29,27 +29,31 @@
       {{  'components.email.notification.create' | translate  }}
       </ui-button>
     </ng-container>
-    
-    <ui-button
-        class="float-right"
-        icon="add"
-        category="secondary"
-        variant="primary"
-        (click)="distributionListDialogHandler()"
-        *ngSwitchCase="1"
-    >
-        Create Distribution List
-    </ui-button>
-    <ui-button
-        class="float-right"
-        icon="add"
-        category="secondary"
-        variant="primary"
-        (click)="createTemplate()"
-        *ngSwitchCase="2"
-    >
-        Custom Template
-    </ui-button>
+    <ng-container *ngIf="this.ability.can('create', 'EmailNotification')">
+      <ui-button
+          class="float-right"
+          icon="add"
+          category="secondary"
+          variant="primary"
+          (click)="distributionListDialogHandler()"
+          *ngSwitchCase="1"
+        >
+          Create Distribution List
+      </ui-button>
+    </ng-container>
+      <ng-container *ngIf="this.ability.can('create', 'EmailNotification')">
+        <ui-button
+            class="float-right"
+            icon="add"
+            category="secondary"
+            variant="primary"
+            (click)="createTemplate()"
+            *ngSwitchCase="2"
+        >
+            Custom Template
+        </ui-button>
+      </ng-container>
+
     <br>
   </div>
   </div>
@@ -57,6 +61,7 @@
   <div *ngIf="emailService.isExisting">
     <ui-tabs (openedTab)="selectedTabIndex = $event.index"
     (selectedIndexChange)="onTabSelect($event)">
+      <!-- Email Notification List -->
       <ui-tab>
         <ng-container ngProjectAs="label">{{
           'components.email.notification.list' | translate
@@ -206,10 +211,10 @@
           </div>
     
       </ui-tab>
-      <!-- Automated assignment -->
+      <!-- Distribution List -->
       <ui-tab>
         <ng-container ngProjectAs="label">{{'components.email.distributionList.list' | translate}}</ng-container>
-        <div *ngIf="emailService.isExisting && templateActualData.length" class="mt-4">
+        <div *ngIf="emailService.isExisting" class="mt-4">
           <div class="mt-4 overflow-x-hidden shadow-2lg">
             <div class="overflow-x-auto">
               <table cdk-table uiTableWrapper [dataSource]="distributionLists">
@@ -233,38 +238,46 @@
                     {{ element.createdBy?.name }}
                   </td>
                 </ng-container>
-                <ng-container cdkColumnDef="actions" [stickyEnd]="true" >
-                  <th uiCellHeader *cdkHeaderCellDef scope="col">
-                    <span class="headerTitle">
-                     Actions
-                    </span>
-                  </th>
-                  <td uiCell *cdkCellDef="let element" class="flex items-center">
-                    <ng-container>
-                      <ui-button
-                      [variant]="'grey'"
-                      class="hide-icons hover:text-primary-600"
-                      [isIcon]="true"
-                      size="large"
-                      [icon]="'edit'"
-                      (click)="editDistributionListHandler(element)"
-                      [uiTooltip]="'Edit'"
-                    >
-                  </ui-button>
-                  <ui-button
-                            [variant]="'danger'"
-                            class="hide-icons hover:text-primary-600"
-                            [isIcon]="true"
-                            size="large"
-                            (click)="deleteDistributionList(element)"
-                            [icon]="'delete'"
-                            [uiTooltip]="'Delete'"
-                          >
-                        </ui-button>
-  
-                    </ng-container>
-                  </td>
-                </ng-container>
+                <div *ngIf="this.ability.can('update', 'EmailNotification'); else elseBlock">
+                  <ng-container cdkColumnDef="actions" [stickyEnd]="true" >
+                    <th uiCellHeader *cdkHeaderCellDef scope="col">
+                      <span class="headerTitle">
+                       Actions
+                      </span>
+                    </th>
+                    <td uiCell *cdkCellDef="let element" class="flex items-center">
+                      <ng-container>
+                        <ui-button
+                        [variant]="'grey'"
+                        class="hide-icons hover:text-primary-600"
+                        [isIcon]="true"
+                        size="large"
+                        [icon]="'edit'"
+                        (click)="editDistributionListHandler(element)"
+                        [uiTooltip]="'Edit'"
+                      >
+                    </ui-button>
+                    <ui-button
+                              [variant]="'danger'"
+                              class="hide-icons hover:text-primary-600"
+                              [isIcon]="true"
+                              size="large"
+                              (click)="deleteDistributionList(element)"
+                              [icon]="'delete'"
+                              [uiTooltip]="'Delete'"
+                            >
+                          </ui-button>
+    
+                      </ng-container>
+                    </td>
+                  </ng-container>
+                </div>   
+                <ng-template #elseBlock>
+                  <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+                    <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+                    <td uiCell *cdkCellDef="let element" class="flex items-center"></td>
+                  </ng-container>
+                </ng-template>             
                 <tr cdk-header-row *cdkHeaderRowDef="distributionColumn"></tr>
                 <tr cdk-row *cdkRowDef="let row; columns: distributionColumn"></tr>
               </table>
@@ -285,6 +298,8 @@
         
           </div>
       </ui-tab>
+
+      <!-- Custom Template -->
       <ui-tab>
         <ng-container ngProjectAs="label">Custom Templates</ng-container>
         <div class="mt-4">
@@ -312,38 +327,46 @@
                       {{ element.createdBy?.name }}
                     </td>
                   </ng-container>
-                  <ng-container cdkColumnDef="actions" [stickyEnd]="true" >
-                    <th uiCellHeader *cdkHeaderCellDef scope="col">
-                      <span class="headerTitle">
-                       Actions
-                      </span>
-                    </th>
-                    <td uiCell *cdkCellDef="let element" class="flex items-center">
-                      <ng-container>
-                        <ui-button
-                        [variant]="'grey'"
-                        class="hide-icons hover:text-primary-600"
-                        [isIcon]="true"
-                        size="large"
-                        [icon]="'edit'"
-                        [uiTooltip]="'Edit'"
-                        (click)="editCustomTemplate(element)"
-                      >
-                    </ui-button>
-                    <ui-button
-                              [variant]="'danger'"
-                              class="hide-icons hover:text-primary-600"
-                              [isIcon]="true"
-                              size="large"
-                              (click)="deleteCustomTemplate(element)"
-                              [icon]="'delete'"
-                              [uiTooltip]="'Delete'"
-                            >
-                          </ui-button>
-    
-                      </ng-container>
-                    </td>
-                  </ng-container>
+                  <div *ngIf="this.ability.can('update', 'EmailNotification'); else elseBlock">
+                    <ng-container cdkColumnDef="actions" [stickyEnd]="true" >
+                      <th uiCellHeader *cdkHeaderCellDef scope="col">
+                        <span class="headerTitle">
+                         Actions
+                        </span>
+                      </th>
+                      <td uiCell *cdkCellDef="let element" class="flex items-center">
+                        <ng-container>
+                          <ui-button
+                          [variant]="'grey'"
+                          class="hide-icons hover:text-primary-600"
+                          [isIcon]="true"
+                          size="large"
+                          [icon]="'edit'"
+                          [uiTooltip]="'Edit'"
+                          (click)="editCustomTemplate(element)"
+                        >
+                      </ui-button>
+                      <ui-button
+                                [variant]="'danger'"
+                                class="hide-icons hover:text-primary-600"
+                                [isIcon]="true"
+                                size="large"
+                                (click)="deleteCustomTemplate(element)"
+                                [icon]="'delete'"
+                                [uiTooltip]="'Delete'"
+                              >
+                            </ui-button>
+      
+                        </ng-container>
+                      </td>
+                    </ng-container>
+                  </div>
+                  <ng-template #elseBlock>
+                    <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+                      <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+                      <td uiCell *cdkCellDef="let element" class="flex items-center"></td>
+                    </ng-container>
+                  </ng-template>             
                   <tr cdk-header-row *cdkHeaderRowDef="customTemplateColumns"></tr>
                   <tr cdk-row *cdkRowDef="let row; columns: customTemplateColumns"></tr>
                 </table>

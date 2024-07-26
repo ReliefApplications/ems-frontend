@@ -13,7 +13,7 @@
     >
       <label class="block text-sm font-medium leading-6 text-gray-900">{{
         'components.email.distributionList.to' | translate
-      }}</label>
+      }}*</label>
       <div uiChipList #chipList formControlName="to">
         <ui-chip
           *ngFor="let to of layoutForm.get('to')?.value"

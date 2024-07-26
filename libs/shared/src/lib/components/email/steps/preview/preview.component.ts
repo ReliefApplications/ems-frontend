@@ -163,23 +163,17 @@ export class PreviewComponent
    */
   populateDLForm() {
     if (this.emailService.isQuickAction) {
-      const { To, Cc, Bcc } = this.emailService.customLayoutDL;
+      const { To, Cc, Bcc } = this.emailService.emailDistributionList; //this.emailService.customLayoutDL;
 
       const uniqueTo = [...new Set(To)];
       const uniqueCc = [...new Set(Cc)];
       const uniqueBcc = [...new Set(Bcc)];
-
-      const filteredCc = uniqueCc.filter((cc) => !uniqueTo.includes(cc));
-      const filteredBcc = uniqueBcc.filter(
-        (bcc) => !uniqueTo.includes(bcc) && !filteredCc.includes(bcc)
-      );
-
-      this.emailService.customLayoutDL.To = uniqueTo;
-      this.emailService.customLayoutDL.Cc = filteredCc;
-      this.emailService.customLayoutDL.Bcc = filteredBcc;
+      this.emailService.emailDistributionList.To = uniqueTo;
+      this.emailService.emailDistributionList.Cc = uniqueCc;
+      this.emailService.emailDistributionList.Bcc = uniqueBcc;
 
       this.emailService.populateEmails(
-        this.emailService.customLayoutDL.To,
+        this.emailService.emailDistributionList.To,
         this.emailService?.datasetsForm
           ?.get('emailDistributionList')
           ?.get('to')
@@ -187,7 +181,7 @@ export class PreviewComponent
       );
 
       this.emailService.populateEmails(
-        this.emailService.customLayoutDL.Cc,
+        this.emailService.emailDistributionList.Cc,
         this.emailService?.datasetsForm
           ?.get('emailDistributionList')
           ?.get('cc')
@@ -195,7 +189,7 @@ export class PreviewComponent
       );
 
       this.emailService.populateEmails(
-        this.emailService.customLayoutDL.Bcc,
+        this.emailService.emailDistributionList.Bcc,
         this.emailService?.datasetsForm
           ?.get('emailDistributionList')
           ?.get('bcc')
@@ -328,45 +322,6 @@ export class PreviewComponent
           'image/png'
         )
       );
-    }
-
-    if (this.emailService.emailDistributionList?.To) {
-      this.emailService.emailDistributionList.To = [
-        ...new Set(
-          this.emailService.emailDistributionList.To.concat(
-            this.emailService.customLayoutDL.To
-          )
-        ),
-      ];
-    } else {
-      this.emailService.emailDistributionList.To =
-        this.emailService.customLayoutDL.To;
-    }
-
-    if (this.emailService.emailDistributionList?.Cc) {
-      this.emailService.emailDistributionList.Cc = [
-        ...new Set(
-          this.emailService.emailDistributionList.Cc.concat(
-            this.emailService.customLayoutDL.Cc
-          )
-        ),
-      ];
-    } else {
-      this.emailService.emailDistributionList.Cc =
-        this.emailService.customLayoutDL.Cc;
-    }
-
-    if (this.emailService.emailDistributionList?.Bcc) {
-      this.emailService.emailDistributionList.Bcc = [
-        ...new Set(
-          this.emailService.emailDistributionList.Bcc.concat(
-            this.emailService.customLayoutDL.Bcc
-          )
-        ),
-      ];
-    } else {
-      this.emailService.emailDistributionList.Bcc =
-        this.emailService.customLayoutDL.Bcc;
     }
 
     if (

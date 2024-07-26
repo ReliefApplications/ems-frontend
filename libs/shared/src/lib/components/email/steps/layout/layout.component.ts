@@ -254,44 +254,21 @@ export class LayoutComponent
           this.emailService.allLayoutdata.footerLogo;
       }
     }
-    if (this.emailService.customLayoutDL.To) {
-      this.layoutForm.get('to')?.setValue(this.emailService.customLayoutDL.To);
-      this.emailService.emailDistributionList.To = this.getDistinctArray(
-        this.emailService.customLayoutDL.To,
-        this.emailService.emailDistributionList.To
-      );
+    if (this.emailService.emailDistributionList.To) {
+      this.layoutForm
+        .get('to')
+        ?.setValue(this.emailService.emailDistributionList.To);
     }
-    if (this.emailService.customLayoutDL.Cc) {
-      this.layoutForm.get('cc')?.setValue(this.emailService.customLayoutDL.Cc);
-      this.emailService.emailDistributionList.Cc = this.getDistinctArray(
-        this.emailService.customLayoutDL.Cc,
-        this.emailService.emailDistributionList.Cc
-      );
+    if (this.emailService.emailDistributionList.Cc) {
+      this.layoutForm
+        .get('cc')
+        ?.setValue(this.emailService.emailDistributionList.Cc);
     }
-    if (this.emailService.customLayoutDL.Bcc) {
+    if (this.emailService.emailDistributionList.Bcc) {
       this.layoutForm
         .get('bcc')
-        ?.setValue(this.emailService.customLayoutDL.Bcc);
-      this.emailService.emailDistributionList.Bcc = this.getDistinctArray(
-        this.emailService.customLayoutDL.Bcc,
-        this.emailService.emailDistributionList.Bcc
-      );
+        ?.setValue(this.emailService.emailDistributionList.Bcc);
     }
-  }
-
-  /**
-   *
-   * Getting distinct from PreviewArray
-   *
-   * @param dlArray Array to add in the form
-   * @param previewArray formarray instance
-   * @returns returns the updated array
-   */
-  getDistinctArray(dlArray: any, previewArray: any) {
-    previewArray = previewArray.filter((el: any) => {
-      return dlArray.indexOf(el) < 0;
-    });
-    return previewArray;
   }
 
   /**
@@ -898,15 +875,19 @@ export class LayoutComponent
           control?.setErrors({ pattern: false });
           control?.updateValueAndValidity();
         }
+        this.emailService.emailDistributionList =
+          this.emailService.emailDistributionList === undefined
+            ? {}
+            : this.emailService.emailDistributionList;
         switch (emailType) {
           case 'to':
-            this.emailService.customLayoutDL.To = emails;
+            this.emailService.emailDistributionList.To = emails;
             break;
           case 'cc':
-            this.emailService.customLayoutDL.Cc = emails;
+            this.emailService.emailDistributionList.Cc = emails;
             break;
           case 'bcc':
-            this.emailService.customLayoutDL.Bcc = emails;
+            this.emailService.emailDistributionList.Bcc = emails;
             break;
           default:
             break;
@@ -928,21 +909,21 @@ export class LayoutComponent
         (emailData) => emailData.toLowerCase() !== email.toLowerCase()
       );
       this.layoutForm.get(type)?.setValue(emails);
-      this.emailService.customLayoutDL.To = emails;
+      this.emailService.emailDistributionList.To = emails;
     }
     if (type === 'cc') {
       const emails = [...this.cc].filter(
         (emailData) => emailData.toLowerCase() !== email.toLowerCase()
       );
       this.layoutForm.get(type)?.setValue(emails);
-      this.emailService.customLayoutDL.Cc = emails;
+      this.emailService.emailDistributionList.Cc = emails;
     }
     if (type === 'bcc') {
       const emails = [...this.bcc].filter(
         (emailData) => emailData.toLowerCase() !== email.toLowerCase()
       );
       this.layoutForm.get(type)?.setValue(emails);
-      this.emailService.customLayoutDL.Bcc = emails;
+      this.emailService.emailDistributionList.Bcc = emails;
     }
   }
 }
