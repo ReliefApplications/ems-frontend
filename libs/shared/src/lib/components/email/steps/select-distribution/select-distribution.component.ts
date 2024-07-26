@@ -355,12 +355,12 @@ export class SelectDistributionComponent
    */
   validateDistributionList(): void {
     // TODO: Change this to match new schema
-    const isSaveAndProceedNotAllowed =
-      // this.emailDistributionList.To.length === 0 ||
+    const noSaveAllowed =
       !this.emailDistributionList.get('name')?.value ||
       this.emailDistributionList.get('name')?.value.trim() === '';
-    this.emailService.disableSaveAndProceed.next(isSaveAndProceedNotAllowed);
-    if (isSaveAndProceedNotAllowed) {
+    this.emailService.disableSaveAndProceed.next(noSaveAllowed);
+    this.emailService.disableSaveAsDraft.next(noSaveAllowed);
+    if (noSaveAllowed) {
       this.emailService.disableFormSteps.next({
         stepperIndex: 2,
         disableAction: true,

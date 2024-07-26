@@ -283,6 +283,10 @@
           </ng-container>
           <ng-template uiTabContent>
             <ng-container *ngIf="resource?.fields?.length">
+              <ng-container
+                class="mt-2"
+                *ngTemplateOutlet="tooManyRecordsAlertTmpl"
+              ></ng-container>
               <div class="flex gap-4 mt-2">
                 <div class="mt-2">
                   <!-- NESTED FILTER GROUP -->
@@ -298,12 +302,7 @@
                 category="secondary"
                 variant="primary"
                 (click)="getDataSet('preview'); showPreview = true"
-                [disabled]="
-                  showDatasetLimitWarning || selectedFields.length === 0
-                "
-                [class.disabled-button]="
-                  showDatasetLimitWarning || selectedFields.length === 0
-                "
+                [disabled]="selectedFields.length === 0"
               >
                 {{ 'common.preview' | translate }}
               </ui-button>
