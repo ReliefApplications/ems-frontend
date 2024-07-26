@@ -254,9 +254,28 @@ export class DatasetFilterComponent
   onTabSelect(event: any, fromHTML: boolean): void {
     const newIndex = event;
     const previewTabIndex = 2;
+    const isValid =
+      this.query.get('query').get('fields')?.value.length > 0 &&
+      !this.showDatasetLimitWarning;
+    // Checks if entry is valid
+    if (
+      newIndex === previewTabIndex &&
+      this.currentTabIndex !== previewTabIndex
+    ) {
+      this.getDataSet('preview', true);
+    }
     //if new tab is preview, get preview data
     if (fromHTML && newIndex === previewTabIndex) {
+      if (isValid) {
+        this.emailService.disableSaveAndProceed.next(false);
+        this.emailService.disableSaveAsDraft.next(false);
+      }
       this.getDataSet('preview');
+    } else if (newIndex >= 0) {
+      if (isValid) {
+        this.emailService.disableSaveAndProceed.next(false);
+        this.emailService.disableSaveAsDraft.next(false);
+      }
     }
     this.currentTabIndex = newIndex;
   }
@@ -374,8 +393,9 @@ export class DatasetFilterComponent
    * To get data set for the applied filters.
    *
    * @param tabName - The name of the tab for which to get the data set.
+   * @param validCheck - Check if data needs validation
    */
-  getDataSet(tabName?: any): void {
+  getDataSet(tabName?: any, validCheck?: boolean): void {
     if (
       this.query.controls['name'].value !== null &&
       this.query.controls['name'].value !== ''
@@ -428,6 +448,8 @@ export class DatasetFilterComponent
             },
           };
 
+          this.previewHTML = '';
+
           this.http
             .post(
               `${this.restService.apiUrl}/notification/preview-dataset`,
@@ -435,31 +457,49 @@ export class DatasetFilterComponent
             )
             .subscribe(
               (response: any) => {
-                this.onTabSelect(2, false);
-                this.showPreview = true;
-                if (response.count <= 50) {
-                  this.showDatasetLimitWarning = false;
-                  let allPreviewData: any = [];
-                  allPreviewData.push({
-                    dataList: response,
-                    datasetFields: this.query
-                      .getRawValue()
-                      .query.fields.map((x: any) => x.name),
-                    tabIndex: this.activeTab.index,
-                    tabName: this.activeTab.title,
-                  });
-                  if (this.tabs.length == allPreviewData.length) {
-                    allPreviewData = allPreviewData.sort(
-                      (a: any, b: any) => a.tabIndex - b.tabIndex
-                    );
-                    this.loading = false;
-                    this.emailService.setAllPreviewData(allPreviewData);
+                // Navigates straight to preview tab if didn't fail before
+                if (validCheck) {
+                  if (response.count <= 50) {
+                    validCheck = false;
+                  } else {
+                    this.onTabSelect(this.currentTabIndex, false);
+                    this.totalMatchingRecords = response.count;
+                    this.showDatasetLimitWarning = true;
                   }
-                  this.previewHTML = window.atob(response.tableHtml);
-                  this.sanitizeAndSetInnerHTML('tblPreview', this.previewHTML);
-                } else {
-                  this.totalMatchingRecords = response.count;
-                  this.showDatasetLimitWarning = true;
+                }
+                if (!validCheck) {
+                  this.onTabSelect(2, false);
+                  this.showPreview = true;
+                  if (response.count <= 50) {
+                    this.showDatasetLimitWarning = false;
+                    let allPreviewData: any = [];
+                    allPreviewData.push({
+                      dataList: response,
+                      datasetFields: this.query
+                        .getRawValue()
+                        .query.fields.map((x: any) => x.name),
+                      tabIndex: this.activeTab.index,
+                      tabName: this.activeTab.title,
+                    });
+                    if (this.tabs.length == allPreviewData.length) {
+                      allPreviewData = allPreviewData.sort(
+                        (a: any, b: any) => a.tabIndex - b.tabIndex
+                      );
+                      this.loading = false;
+                      this.emailService.setAllPreviewData(allPreviewData);
+                    }
+                    this.previewHTML = window.atob(response.tableHtml);
+                    const previewHTML = document.getElementById(
+                      'tblPreview'
+                    ) as HTMLInputElement;
+                    if (previewHTML) {
+                      previewHTML.innerHTML = this.previewHTML;
+                    }
+                  } else {
+                    this.previewHTML = '';
+                    this.totalMatchingRecords = response.count;
+                    this.showDatasetLimitWarning = true;
+                  }
                 }
 
                 // this.navigateToPreview.emit(response);

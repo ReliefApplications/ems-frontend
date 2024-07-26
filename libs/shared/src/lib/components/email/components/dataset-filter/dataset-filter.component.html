@@ -56,7 +56,7 @@
         </div>
       </div>
       <!-- For phase 2 -->
-      <div class="w-1/2 individual-email-checkbox-container">
+      <div class="w-1/2 content-center text-center">
         <ui-checkbox
           formControlName="individualEmail"
           [(ngModel)]="separateEmail"
@@ -129,6 +129,10 @@
               *ngTemplateOutlet="invalidFieldsAlertTmpl"
             ></ng-container>
             <ng-container *ngIf="resource?.fields?.length">
+              <ng-container
+                class="mt-2"
+                *ngTemplateOutlet="tooManyRecordsAlertTmpl"
+              ></ng-container>
               <div class="flex gap-4 mt-2">
                 <div class="mt-2">
                   <!-- NESTED FILTER GROUP -->
@@ -148,12 +152,7 @@
                 category="secondary"
                 variant="primary"
                 (click)="getDataSet('preview'); showPreview = true"
-                [disabled]="
-                  showDatasetLimitWarning || selectedFields.length === 0
-                "
-                [class.disabled-button]="
-                  showDatasetLimitWarning || selectedFields.length === 0
-                "
+                [disabled]="selectedFields.length === 0"
               >
                 {{ 'common.preview' | translate }}
               </ui-button>
@@ -180,7 +179,6 @@
             <div class="overflow-x-auto">
               <div id="tblPreview" [innerHTML]="previewHTML"></div>
             </div>
-            
           </ng-template>
         </ui-tab>
 

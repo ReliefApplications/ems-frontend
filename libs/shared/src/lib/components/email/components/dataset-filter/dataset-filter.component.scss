@@ -1,55 +1,5 @@
-.field-list {
-  min-height: 400px;
-  @apply bg-zinc-200 border-zinc-200 border border-solid;
-  @apply overflow-auto max-h-[400px];
-  border-radius: 4px;
-  display: block;
-  box-sizing: border-box;
-  flex: 1;
-}
-
-.field-box {
-  padding: 20px 10px;
-  @apply border-b-zinc-200 bg-white border-b border-solid;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-  cursor: pointer;
-  font-size: 14px;
-  &:hover {
-    background-color: #007bff;
-    color: white;
-  }
-  height: 100%;
-}
-
-.field-box.field-select {
-  @apply border-b-zinc-200 bg-[#007bff] text-white;
-}
-
-.field-box:last-child {
-  border: none;
-}
-
-.clsFilters {
-  align-items: flex-end;
-}
-
 ::ng-deep .k-tabstrip > .k-content {
   padding: 5px 5px 5px 0px !important;
-}
-
-.btnDataSet {
-  border-radius: 8px;
-  border: 1px solid var(--Gray-300, #d0d5dd);
-  background: var(--Base-White, #fff);
-  /* Shadow/xs */
-  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
-  width: fit-content;
-  font-weight: 600;
-  color: #344054;
 }
 
 div .form-error {
@@ -80,28 +30,9 @@ div .form-error {
   }
 }
 
-.divScroll {
-  height: 250px !important;
-  overflow: scroll !important;
-}
-
 ::ng-deep .stepper-center {
   .ng-select.ng-select-single .ng-select-container {
     height: 37.6px;
-  }
-
-  .tab-container {
-    ul.k-tabstrip-items {
-      margin-top: 1rem;
-      li {
-        padding: 0px;
-        min-height: 40px;
-
-        .k-link {
-          padding-block: 0px;
-        }
-      }
-    }
   }
 }
 ::ng-deep .loadingSign {
@@ -115,23 +46,6 @@ div .form-error {
     width: 1.5rem !important;
     height: 1.5rem !important;
   }
-}
-
-.divFields {
-  div:first-child {
-    padding-top: 0rem;
-    padding-bottom: 0rem;
-  }
-}
-.max-limit-note {
-  padding: 15px 10px;
-  border: 1px solid #53514d59;
-  background: #ffab0082;
-  margin: 20px 0;
-  border-radius: 5px;
-}
-.btn-width {
-  width: fit-content !important;
 }
 
 ::ng-deep .stepper-center {
@@ -158,9 +72,4 @@ div .form-error {
   input {
     cursor: pointer !important;
   }
-}
-
-.individual-email-checkbox-container {
-  align-content: center;
-  text-align: center;
 }
