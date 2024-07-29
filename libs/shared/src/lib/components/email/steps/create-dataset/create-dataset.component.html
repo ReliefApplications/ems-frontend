@@ -37,7 +37,7 @@
                     *ngIf="tabIndex === tabs.length-1"
                   >
                 </ui-button> -->
-                <ng-template [formGroupName]="tabIndex" uiTabContent >
+                <ng-template [formGroupName]="tabIndex" uiTabContent>
                   <shared-dataset-filter
                     *ngIf="datasetsFormArray.controls?.length"
                     [query]="datasetsFormArray.controls[tabIndex]"
