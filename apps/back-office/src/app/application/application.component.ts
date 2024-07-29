@@ -126,18 +126,18 @@ export class ApplicationComponent
             this.adminNavItems = [];
 
             addNavItem('common.settings', './settings/edit', 'settings');
-            addNavItem(
-              'common.template.few',
-              './settings/templates',
-              'description',
-              true
-            );
-            addNavItem(
-              'common.distributionList.few',
-              './settings/distribution-lists',
-              'mail',
-              true
-            );
+            // addNavItem(
+            //   'common.template.few',
+            //   './settings/templates',
+            //   'description',
+            //   true
+            // );
+            // addNavItem(
+            //   'common.distributionList.few',
+            //   './settings/distribution-lists',
+            //   'mail',
+            //   true
+            // );
             addNavItem(
               'common.user.few',
               './settings/users',
