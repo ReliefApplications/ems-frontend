@@ -541,7 +541,7 @@ export class EmailTemplateComponent
     } else if (
       this.segmentForm.get('segment')?.value === 'Select With Filter'
     ) {
-      // Clear the inputemails form array
+      // Clear the input emails form array
       while (this.selectedEmails.length !== 0) {
         this.selectedEmails.removeAt(0);
       }
