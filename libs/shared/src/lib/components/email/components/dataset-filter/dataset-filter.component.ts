@@ -398,7 +398,7 @@ export class DatasetFilterComponent
           this.emailService.disableSaveAsDraft.next(false);
         } else {
           this.emailService.disableSaveAndProceed.next(true);
-          this.emailService.disableSaveAsDraft.next(true);
+          this.emailService.disableSaveAsDraft.next(false);
         }
       }
       if (
@@ -474,17 +474,16 @@ export class DatasetFilterComponent
                       this.loading = false;
                       this.emailService.setAllPreviewData(allPreviewData);
                     }
-                    this.previewHTML = window.atob(response.tableHtml);
-                    const previewHTML = document.getElementById(
-                      'tblPreview'
-                    ) as HTMLInputElement;
-                    if (previewHTML) {
-                      previewHTML.innerHTML = this.previewHTML;
-                    }
                   } else {
-                    this.previewHTML = '';
                     this.totalMatchingRecords = response.count;
                     this.showDatasetLimitWarning = true;
+                  }
+                  this.previewHTML = window.atob(response.tableHtml);
+                  const previewHTML = document.getElementById(
+                    'tblPreview'
+                  ) as HTMLInputElement;
+                  if (previewHTML) {
+                    previewHTML.innerHTML = this.previewHTML;
                   }
                 }
 

@@ -14,6 +14,9 @@ import { SnackbarService } from '@oort-front/ui';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/public-api';
+import { cloneDeep } from 'lodash';
+import { HttpClient } from '@angular/common/http';
+import { RestService } from '../../../../services/rest/rest.service';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
@@ -39,6 +42,8 @@ export class SelectDistributionComponent
    * @param snackBar snackbar helper function
    * @param translate translate helper function
    * @param formBuilder form builder helper function
+   * @param http http helper function
+   * @param restService rest helper function
    */
   constructor(
     public emailService: EmailService,
@@ -46,7 +51,9 @@ export class SelectDistributionComponent
     public downloadService: DownloadService,
     public snackBar: SnackbarService,
     public translate: TranslateService,
-    public formBuilder: FormBuilder
+    public formBuilder: FormBuilder,
+    private http: HttpClient,
+    private restService: RestService
   ) {
     super();
     this.getExistingTemplate();
@@ -271,6 +278,7 @@ export class SelectDistributionComponent
     this.distributionListId = this.distributionLists[index].node.id;
     this.showExistingDistributionList = !this.showExistingDistributionList;
     this.validateDistributionList();
+    this.emailService.setDistributionList();
   }
 
   // transformDL() {
@@ -351,17 +359,43 @@ export class SelectDistributionComponent
     );
   }
 
+  checkToValid() {
+    if (
+      this.emailService.toDLHasFilter &&
+      this.emailDistributionList.get('to').get('query').get('resource').value
+    ) {
+      const query = {
+        emailDistributionList: cloneDeep(
+          this.emailDistributionList.getRawValue()
+        ),
+      };
+      this.http
+        .post(
+          `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+          query
+        )
+        .subscribe((response: any) => {
+          return response?.to.length > 0;
+        });
+    } else {
+      return (
+        this.emailDistributionList.get('to').get('inputEmails').value.length > 0
+      );
+    }
+    return false;
+  }
+
   /**
    * The distribution list should have at least
    * one To email address and name to proceed with next steps
    */
   validateDistributionList(): void {
-    // TODO: Change this to match new schema
     const noSaveAllowed =
-      !this.emailDistributionList.get('name')?.value ||
-      this.emailDistributionList.get('name')?.value.trim() === '';
+      this.emailDistributionList.get('name')?.value.length < 1 ||
+      this.emailDistributionList.get('name')?.value.trim() === '' ||
+      this.isNameDuplicate();
     this.emailService.disableSaveAndProceed.next(noSaveAllowed);
-    this.emailService.disableSaveAsDraft.next(noSaveAllowed);
+    this.emailService.disableSaveAsDraft.next(false);
     if (noSaveAllowed) {
       this.emailService.disableFormSteps.next({
         stepperIndex: 2,
@@ -370,6 +404,18 @@ export class SelectDistributionComponent
     } else {
       this.emailService.distributionListName =
         this.emailDistributionList.get('name').value;
+    }
+
+    if (noSaveAllowed || !this.checkToValid()) {
+      this.emailService.disableSaveAndProceed.next(true);
+    }
+
+    if (
+      this.emailService.distributionListName &&
+      this.checkToValid() &&
+      !this.isNameDuplicate()
+    ) {
+      this.emailService.disableSaveAsDraft.next(false);
     }
   }
 

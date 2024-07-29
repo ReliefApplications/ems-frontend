@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { EventEmitter, Injectable, NgZone, Output } from '@angular/core';
 import {
   FormArray,
@@ -160,6 +161,10 @@ export class EmailService {
   public disableNextActionBtn = false;
   /** Distribution List Name */
   public distributionListName = '';
+  /** Checks if to in email distribution list is valid */
+  public isToValid = false;
+  public toDLHasFilter = false;
+  public displayDLToError = false;
 
   /**
    * Generates new dataset group.
@@ -181,6 +186,25 @@ export class EmailService {
       sendAsAttachment: false,
       individualEmail: false,
     });
+  }
+
+  checkToValid() {
+    if (this.toDLHasFilter && this.emailDistributionList.to.query.resource) {
+      const query = {
+        emailDistributionList: cloneDeep(this.emailDistributionList),
+      };
+      this.http
+        .post(
+          `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+          query
+        )
+        .subscribe((response: any) => {
+          return response?.to.length > 0;
+        });
+    } else {
+      return this.emailDistributionList.to.inputEmails.length > 0;
+    }
+    return false;
   }
 
   /**
@@ -424,9 +448,9 @@ export class EmailService {
    * Sets the email distribution list.
    */
   setDistributionList() {
-    this.emailDistributionList = this.datasetsForm.get(
-      'emailDistributionList'
-    )?.value;
+    this.emailDistributionList = this.datasetsForm
+      .get('emailDistributionList')
+      ?.getRawValue();
   }
 
   /**

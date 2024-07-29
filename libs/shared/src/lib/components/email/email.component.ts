@@ -580,8 +580,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.isExisting = !this.emailService.isExisting;
 
     // Setting up Recipients data
-    this.emailService.emailDistributionList =
-      this.emailService.datasetsForm.controls['emailDistributionList'].value;
+    this.emailService.emailDistributionList = this.emailService.datasetsForm
+      .get('emailDistributionList')
+      ?.getRawValue();
 
     // Setting up Layout Data
     this.emailService.emailLayout = {
