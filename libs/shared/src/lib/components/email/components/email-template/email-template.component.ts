@@ -538,6 +538,14 @@ export class EmailTemplateComponent
       const filter = this.dlQuery.get('filter') as FormGroup;
       const filters = filter.get('filters') as FormArray;
       filters.clear();
+    } else if (
+      this.segmentForm.get('segment')?.value === 'Select With Filter'
+    ) {
+      // Clear the inputemails form array
+      while (this.selectedEmails.length !== 0) {
+        this.selectedEmails.removeAt(0);
+      }
+      this.selectedEmails.reset();
     }
     this.emailService.setDistributionList();
   }
