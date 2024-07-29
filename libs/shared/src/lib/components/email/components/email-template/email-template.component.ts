@@ -650,16 +650,12 @@ export class EmailTemplateComponent
    * @param element Input Element
    */
   addEmailManually(element: HTMLInputElement): void {
-    const emailDL = this.emailService.datasetsForm?.get(
-      'emailDistributionList'
-    );
-    const emailExists = this.isValidEmail(element, emailDL);
     // Check if email already exists
     const emailDuplicate = this.selectedEmails.controls.some(
       (control: AbstractControl) => control.value === element.value
     );
 
-    if (emailRegex.test(element.value) && !emailExists && !emailDuplicate) {
+    if (emailRegex.test(element.value) && !emailDuplicate) {
       this.selectedEmails.push(this.formBuilder.control(element.value));
       element.value = '';
       this.emailValidationError = '';
@@ -673,7 +669,7 @@ export class EmailTemplateComponent
       );
 
       this.emailValidationError = '';
-    } else if (emailExists || emailDuplicate) {
+    } else if (emailDuplicate) {
       this.snackbar.openSnackBar(
         this.translate.instant(
           'components.customNotifications.errors.duplicate'
@@ -685,40 +681,6 @@ export class EmailTemplateComponent
 
       this.emailValidationError = '';
     }
-  }
-
-  /**
-   * Checks if the email already exists
-   *
-   * @param element Input Element
-   * @param emailDL Current Email distribution list
-   * @returns true if the email already exists, false otherwise
-   */
-  isValidEmail(element: HTMLInputElement, emailDL: any): boolean {
-    const toEmails = emailDL?.get('to')?.get('inputEmails')?.value;
-    const ccEmails = emailDL?.get('cc')?.get('inputEmails')?.value;
-    const bccEmails = emailDL?.get('bcc')?.get('inputEmails')?.value;
-
-    let emailExists = false;
-    switch (this.type) {
-      case 'to':
-        emailExists =
-          ccEmails.includes(element.value) || bccEmails.includes(element.value);
-        break;
-      case 'cc':
-        emailExists =
-          toEmails.includes(element.value) || bccEmails.includes(element.value);
-        break;
-      case 'bcc':
-        emailExists =
-          toEmails.includes(element.value) || ccEmails.includes(element.value);
-        break;
-      default:
-        // Handle unexpected type if necessary
-        break;
-    }
-
-    return emailExists;
   }
 
   /**
