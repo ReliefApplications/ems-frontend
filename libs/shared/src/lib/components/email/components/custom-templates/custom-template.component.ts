@@ -37,9 +37,9 @@ export class CustomTemplateComponent implements OnInit {
   /**
    * Angular Component constructor
    *
-   * @param applicationService The service for handling applications.
    * @param emailService email service
    * @param snackBar snackbar service
+   * @param applicationService The service for handling applications.
    * @param translate translate service
    */
   constructor(

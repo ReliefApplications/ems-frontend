@@ -1121,8 +1121,9 @@ export class EmailService {
 
   /**
    * Adds an email distribution list with the provided data.
-   * @param applicationId The application id of the email notification.
+   *
    * @param data The notification data to be added.
+   * @param applicationId The application id of the email notification.
    * @returns A query result after adding the email distribution list.
    */
   addDistributionList(data: any, applicationId?: string): Observable<any> {
@@ -1246,6 +1247,7 @@ export class EmailService {
 
   /**
    * Retrieves custom templates from the server.
+   *
    * @param id The application ids of the email notifications.
    * @returns {Observable<any>} An observable that resolves with the result of the query.
    */
@@ -1260,6 +1262,7 @@ export class EmailService {
 
   /**
    * Get an email distribution lists.
+   *
    @param applicationId The application ids of the email notifications.
    * @returns Email distribution lists.
    */

@@ -149,16 +149,16 @@ export class DistributionModalComponent implements OnInit {
   @ViewChild('bccInput') bccInput!: ElementRef<HTMLInputElement>;
 
   /**
-   * Component for edition of distribution list
+   * Component for editing a distribution list.
    *
-   * @param fb Angular form builder service
+   * @param fb The form builder service.
+   * @param dialogRef The dialog reference.
+   * @param data The modal data.
+   * @param emailService The service for handling emails.
+   * @param downloadService The service for downloading files.
    * @param applicationService The service for handling applications.
-   * @param dialogRef Dialog ref of the component
-   * @param data Data input of the modal
-   * @param emailService email service
-   * @param downloadService Download Service
-   * @param snackBar snackbar notification service
-   * @param translate translate service
+   * @param snackBar The snackbar notification service.
+   * @param translate The translation service.
    */
   constructor(
     private fb: FormBuilder,
