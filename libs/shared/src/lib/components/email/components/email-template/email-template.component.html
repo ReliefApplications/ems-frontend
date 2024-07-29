@@ -81,6 +81,11 @@
     <div *ngIf="activeSegmentIndex === 1">
       <!-- Filter editor -->
       <ng-container *ngTemplateOutlet="datasetPreviewTmpl"></ng-container>
+      <!-- Resource has no fields -->
+      <ng-container
+        class="mt-5"
+        *ngTemplateOutlet="noFieldsInResourceAlertTmpl"
+      ></ng-container>
     </div>
   </div>
   <!-- Use the template with *ngTemplateOutlet and context -->

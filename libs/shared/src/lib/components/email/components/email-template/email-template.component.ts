@@ -531,6 +531,14 @@ export class EmailTemplateComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    if (this.segmentForm.get('segment')?.value === 'Add Manually') {
+      const fields = this.dlQuery.get('fields') as FormArray;
+      fields.clear();
+
+      const filter = this.dlQuery.get('filter') as FormGroup;
+      const filters = filter.get('filters') as FormArray;
+      filters.clear();
+    }
     this.emailService.setDistributionList();
   }
 
