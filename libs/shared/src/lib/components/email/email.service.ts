@@ -149,6 +149,8 @@ export class EmailService {
   public isQuickAction = false;
   /** Disable Quick Action screen Next Button error state*/
   public disableNextActionBtn = false;
+  /** Distribution List Name */
+  public distributionListName = '';
 
   /**
    * Generates new dataset group.

@@ -265,7 +265,10 @@ export class DatasetFilterComponent
         this.emailService.disableSaveAsDraft.next(false);
       }
     }
-    this.currentTabIndex = newIndex;
+
+    if (!this.showDatasetLimitWarning) {
+      this.currentTabIndex = newIndex;
+    }
   }
 
   /**
@@ -413,11 +416,6 @@ export class DatasetFilterComponent
         this.loading = true;
         for (const query of this.queryValue) {
           let objPreview: any = {};
-
-          this.emailService.convertFields(
-            this.query.getRawValue().query?.fields,
-            this.availableFields
-          );
 
           objPreview = {
             resource: this.resource.id ?? '',
@@ -592,6 +590,12 @@ export class DatasetFilterComponent
     });
 
     this.selectedFields = this.query.controls.query.get('fields')?.value;
+    if (this.selectedFields.length > 0) {
+      this.onTabSelect(this.currentTabIndex, true);
+      this.showDatasetLimitWarning = false;
+      this.emailService.disableSaveAndProceed.next(false);
+      this.emailService.disableSaveAsDraft.next(false);
+    }
     return formArray;
   }
 

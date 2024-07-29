@@ -186,6 +186,8 @@ export class SelectDistributionComponent
       this.emailService.stepperDisable.next({ id: 2, isValid: false });
     } else {
       this.emailService.stepperDisable.next({ id: 2, isValid: true });
+      this.emailService.distributionListName =
+        this.emailDistributionList.get('name').value;
     }
   }
 
@@ -365,6 +367,9 @@ export class SelectDistributionComponent
         stepperIndex: 2,
         disableAction: true,
       });
+    } else {
+      this.emailService.distributionListName =
+        this.emailDistributionList.get('name').value;
     }
   }
 

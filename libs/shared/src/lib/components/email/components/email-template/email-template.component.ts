@@ -324,7 +324,8 @@ export class EmailTemplateComponent
     const previewTabIndex = 2;
     const isValid =
       this.dlQuery.get('fields')?.value.length > 0 &&
-      !this.showDatasetLimitWarning;
+      !this.showDatasetLimitWarning &&
+      this.emailService.distributionListName.length > 0;
     // Checks if entry is valid
     if (
       newIndex === previewTabIndex &&
@@ -345,7 +346,9 @@ export class EmailTemplateComponent
         this.emailService.disableSaveAsDraft.next(false);
       }
     }
-    this.currentTabIndex = newIndex;
+    if (!this.showDatasetLimitWarning) {
+      this.currentTabIndex = newIndex;
+    }
   }
 
   /**
@@ -360,10 +363,10 @@ export class EmailTemplateComponent
       this.dlQuery.controls['name'].value !== ''
     ) {
       if (tabName == 'fields') {
-        this.onTabSelect(0, false);
+        this.onTabSelect(1, false);
       }
       if (tabName == 'filter') {
-        this.onTabSelect(1, false);
+        this.onTabSelect(2, false);
       }
       // const allPreviewData: any = [];
       if (tabName == 'preview') {
@@ -589,9 +592,10 @@ export class EmailTemplateComponent
     this.showPreview = false;
     const hasEmails = this.selectedEmails?.value?.length > 0;
     const isValid =
-      (this.dlQuery.get('fields')?.value.length > 0 &&
+      ((this.dlQuery.get('fields')?.value.length > 0 &&
         !this.showDatasetLimitWarning) ||
-      hasEmails;
+        hasEmails) &&
+      this.emailService.distributionListName.length > 0;
 
     if (this.activeSegmentIndex === 0) {
       if (isValid) {
