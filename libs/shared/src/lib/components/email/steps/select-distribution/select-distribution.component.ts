@@ -391,8 +391,8 @@ export class SelectDistributionComponent
    */
   validateDistributionList(): void {
     const noSaveAllowed =
-      this.emailDistributionList.get('name')?.value.length < 1 ||
-      this.emailDistributionList.get('name')?.value.trim() === '' ||
+      this.emailDistributionList.get('name')?.value?.length < 1 ||
+      this.emailDistributionList.get('name')?.value?.trim() === '' ||
       this.isNameDuplicate();
     this.emailService.disableSaveAndProceed.next(noSaveAllowed);
     this.emailService.disableSaveAsDraft.next(false);
