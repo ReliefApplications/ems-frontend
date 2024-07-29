@@ -319,12 +319,15 @@
           <label>{{
             'components.emailBuilder.distribution' | translate
           }}</label>
-          <ui-select-menu formControlName="distributionList" [filterable]="true">
+          <ui-select-menu
+            formControlName="distributionList"
+            [filterable]="true"
+          >
             <ui-select-option
               *ngFor="let list of distributionLists"
               [value]="list.id"
             >
-              {{ list.distributionListName  }}
+              {{ list.distributionListName }}
             </ui-select-option>
           </ui-select-menu>
           <ui-icon
@@ -368,7 +371,7 @@
               *ngFor="let template of allTemplateData"
               [value]="template.id"
             >
-              {{ template.subject  }}
+              {{ template.subject }}
             </ui-select-option>
           </ui-select-menu>
           <ui-icon
