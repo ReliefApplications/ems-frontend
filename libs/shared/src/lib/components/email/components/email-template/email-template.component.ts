@@ -431,17 +431,17 @@ export class EmailTemplateComponent
                 if (response.count <= 50) {
                   this.showDatasetLimitWarning = false;
                   this.checkFilter();
-                  this.previewHTML = window.atob(response.tableHtml);
-                  const previewHTML = document.getElementById(
-                    'tblPreview'
-                  ) as HTMLInputElement;
-                  if (previewHTML) {
-                    previewHTML.innerHTML = this.previewHTML;
-                  }
                 } else {
                   this.previewHTML = '';
                   this.totalMatchingRecords = response.count;
                   this.showDatasetLimitWarning = true;
+                }
+                this.previewHTML = window.atob(response.tableHtml);
+                const previewHTML = document.getElementById(
+                  'tblPreview'
+                ) as HTMLInputElement;
+                if (previewHTML) {
+                  previewHTML.innerHTML = this.previewHTML;
                 }
               }
 
