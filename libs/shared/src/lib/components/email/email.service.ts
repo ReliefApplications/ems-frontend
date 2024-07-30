@@ -163,7 +163,13 @@ export class EmailService {
   public distributionListName = '';
   /** Checks if to in email distribution list is valid */
   public isToValid = false;
+  /**
+   *
+   */
   public toDLHasFilter = false;
+  /**
+   *
+   */
   public displayDLToError = false;
 
   /**
@@ -188,6 +194,11 @@ export class EmailService {
     });
   }
 
+  /**
+   * Checks if to in email distribution list is valid
+   *
+   * @returns true if to in email distribution list is valid
+   */
   checkToValid() {
     if (this.toDLHasFilter && this.emailDistributionList.to.query.resource) {
       const query = {
@@ -568,19 +579,39 @@ export class EmailService {
    */
   createPreviewData() {
     if (this.datasetsForm?.get('datasets')?.value?.length > 0) {
-      const datasetsValues = this.datasetsForm?.get('datasets')?.value;
+      const datasetsValues = this.datasetsForm?.get('datasets')?.getRawValue();
       const datasets: string[] = [];
       datasetsValues.forEach((dataset: any) => {
-        datasets.push(dataset.name);
+        if (dataset.query.name && dataset.resource) {
+          datasets.push(dataset.name);
+        }
       });
       const fields: string[] = [];
       datasetsValues[0].query.fields.forEach((field: any) => {
-        fields.push(field.name);
+        this.appendFields(field, field.name, fields);
       });
       this.previewData = {
         datasets: datasets,
         fields: fields,
       };
+    }
+  }
+
+  /**
+   * Creates Subject field values
+   *
+   * @param field Field to be appended
+   * @param parentName Name of the parent
+   * @param fields fields if it exists in the field
+   */
+  appendFields(field: any, parentName: string, fields: string[]): void {
+    if (field.fields && field.fields.length > 0) {
+      field.fields.forEach((child: any) => {
+        const childName = `${parentName}.${child.name}`;
+        this.appendFields(child, childName, fields);
+      });
+    } else {
+      fields.push(parentName);
     }
   }
 
