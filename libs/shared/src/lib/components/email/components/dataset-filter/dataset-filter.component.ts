@@ -114,6 +114,8 @@ export class DatasetFilterComponent
   resourcePopulated = false;
   /** Preview HTML */
   previewHTML = '';
+  /** Flag to show the Child fields limit warning. */
+  public showFieldsWarning = false;
 
   /**
    * To use helper functions, Apollo serve
@@ -592,8 +594,19 @@ export class DatasetFilterComponent
     if (this.selectedFields.length > 0) {
       this.onTabSelect(this.currentTabIndex, true);
       this.showDatasetLimitWarning = false;
-      this.emailService.disableSaveAndProceed.next(false);
-      this.emailService.disableSaveAsDraft.next(false);
+      if (
+        this.query
+          ?.getRawValue()
+          ?.query?.fields?.filter((x: any) => x?.fields?.length === 0).length >
+        0
+      ) {
+        this.emailService.disableSaveAndProceed.next(true);
+        this.showFieldsWarning = true;
+      } else {
+        this.showFieldsWarning = false;
+        this.emailService.disableSaveAndProceed.next(false);
+        this.emailService.disableSaveAsDraft.next(false);
+      }
     }
     return formArray;
   }
@@ -614,5 +627,12 @@ export class DatasetFilterComponent
     this.resource.fields = [];
     this.selectedResourceId = '';
     event.stopPropagation();
+  }
+
+  /**
+   * Resets the state `showFieldsWarning` when the close button is clicked.
+   */
+  closeFieldsWarningMessage(): void {
+    this.showFieldsWarning = false;
   }
 }

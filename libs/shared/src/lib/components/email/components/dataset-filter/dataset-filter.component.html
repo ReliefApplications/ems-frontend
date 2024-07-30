@@ -94,6 +94,10 @@
               class="mt-2"
               *ngTemplateOutlet="noSelectedFieldsAlertTmpl"
             ></ng-container>
+            <ng-container
+                class="mt-2"
+                *ngTemplateOutlet="ChildFieldAlertTmpl"
+            ></ng-container>
             <div class="flex gap-4 mt-2">
               <div class="mt-2 overflow-auto">
                 <!-- FIELDS -->
@@ -214,6 +218,23 @@
         'components.email.alert.tooManyRecords'
           | translate : { totalRecords: totalMatchingRecords }
       "
+    ></div>
+  </ui-alert>
+</ng-template>
+
+<!-- Please select the child fields of the Selected fields -->
+<ng-template #ChildFieldAlertTmpl>
+  <ui-alert
+    variant="warning"
+    [closable]="true"
+    *ngIf="showFieldsWarning"
+    (close)="closeFieldsWarningMessage()"
+  >
+    <div
+    [innerHTML]="
+    'components.email.alert.selectChildFields'
+      | translate : { totalRecords: totalMatchingRecords }
+  "
     ></div>
   </ui-alert>
 </ng-template>

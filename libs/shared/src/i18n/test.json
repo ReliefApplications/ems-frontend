@@ -826,6 +826,7 @@
 				"noResource": "******",
 				"noResourceFields": "******",
 				"noSelectedFields": "******",
+				"selectChildFields": "******",
 				"tooManyRecords": "****** {{totalRecords}} ******"
 			},
 			"back": "******",
