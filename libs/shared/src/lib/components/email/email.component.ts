@@ -246,8 +246,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
             );
           }
           this.uniqueDLNames = [];
-          this.distributionLists.forEach((ele: any) => {
-            this.uniqueDLNames.push(ele.name);
+          this.emailService.distributionListNames.forEach((name: any) => {
+            this.uniqueDLNames.push(name);
           });
           this.uniqueDLNames = Array.from(new Set(this.uniqueDLNames));
           this.emailService.emailNotificationNames.push(
@@ -343,8 +343,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         this.pageInfo.length = res?.data?.emailNotifications?.edges.length;
 
         this.uniqueDLNames = [];
-        this.distributionLists.forEach((ele: any) => {
-          this.uniqueDLNames.push(ele.name);
+        this.emailService.distributionListNames.forEach((name: any) => {
+          this.uniqueDLNames.push(name);
         });
         this.uniqueDLNames = Array.from(new Set(this.uniqueDLNames));
         this.distributionActualData = cloneDeep(this.distributionLists);
@@ -352,6 +352,12 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         this.cacheDistributionList = this.distributionLists;
         this.cacheDistributionListNames = this.uniqueDLNames;
         this.distributionLists = this.cacheDistributionList.slice(
+          this.distributionPageInfo.pageSize *
+            this.distributionPageInfo.pageIndex,
+          this.distributionPageInfo.pageSize *
+            (this.distributionPageInfo.pageIndex + 1)
+        );
+        this.uniqueDLNames = this.cacheDistributionListNames.slice(
           this.distributionPageInfo.pageSize *
             this.distributionPageInfo.pageIndex,
           this.distributionPageInfo.pageSize *
