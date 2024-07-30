@@ -266,89 +266,22 @@
         <div *ngIf="emailService.isExisting" class="mt-4">
           <div class="mt-4 overflow-x-hidden shadow-2lg">
             <div class="overflow-x-auto">
-              <table cdk-table uiTableWrapper [dataSource]="distributionLists">
+              <table cdk-table uiTableWrapper [dataSource]="uniqueDLNames">
                 <ng-container cdkColumnDef="name">
                   <th uiCellHeader *cdkHeaderCellDef scope="col">
                     <span class="headerTitle">
                       {{ 'common.name' | translate }}
                     </span>
                   </th>
-                  <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
-                    {{ element.distributionListName }}
+                  <td uiCell *cdkCellDef="let name" class="max-w-[30vw]">
+                    {{ name }}
                   </td>
                 </ng-container>
-                <ng-container cdkColumnDef="createdby">
-                  <th uiCellHeader *cdkHeaderCellDef scope="col">
-                    <span class="headerTitle"> Created By </span>
-                  </th>
-                  <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
-                    {{ element.createdBy?.name }}
-                  </td>
-                </ng-container>
-                <div
-                  *ngIf="
-                    this.ability.can('update', 'EmailNotification');
-                    else elseBlock
-                  "
-                >
-                  <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-                    <th uiCellHeader *cdkHeaderCellDef scope="col">
-                      <span class="headerTitle"> Actions </span>
-                    </th>
-                    <td
-                      uiCell
-                      *cdkCellDef="let element"
-                      class="flex items-center"
-                    >
-                      <ng-container>
-                        <ui-button
-                          [variant]="'grey'"
-                          class="hide-icons hover:text-primary-600"
-                          [isIcon]="true"
-                          size="large"
-                          [icon]="'edit'"
-                          (click)="editDistributionListHandler(element)"
-                          [uiTooltip]="'Edit'"
-                        >
-                        </ui-button>
-                        <ui-button
-                          [variant]="'danger'"
-                          class="hide-icons hover:text-primary-600"
-                          [isIcon]="true"
-                          size="large"
-                          (click)="deleteDistributionList(element)"
-                          [icon]="'delete'"
-                          [uiTooltip]="'Delete'"
-                        >
-                        </ui-button>
-                      </ng-container>
-                    </td>
-                  </ng-container>
-                </div>
-                <ng-template #elseBlock>
-                  <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-                    <th
-                      uiCellHeader
-                      *cdkHeaderCellDef
-                      scope="col"
-                      class="w-16"
-                    ></th>
-                    <td
-                      uiCell
-                      *cdkCellDef="let element"
-                      class="flex items-center"
-                    ></td>
-                  </ng-container>
-                </ng-template>
-                <tr cdk-header-row *cdkHeaderRowDef="distributionColumn"></tr>
-                <tr
-                  cdk-row
-                  *cdkRowDef="let row; columns: distributionColumn"
-                ></tr>
+                <tr cdk-header-row *cdkHeaderRowDef="['name']"></tr>
+                <tr cdk-row *cdkRowDef="let row; columns: ['name']"></tr>
               </table>
             </div>
           </div>
-
           <!-- Pagination -->
           <ui-paginator
             [disabled]="emailService.emailListLoading"
