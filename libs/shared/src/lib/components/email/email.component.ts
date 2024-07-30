@@ -312,9 +312,13 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           new Set(this.emailService.distributionListNames)
         );
         this.distributionLists = this.distributionLists.filter((ele: any) => {
-          if (uniqueDistributionLists.includes(ele.name.toLowerCase())) {
+          if (
+            uniqueDistributionLists.includes(
+              ele.name.toLowerCase().trim() || ele.name.toLowerCase()
+            )
+          ) {
             uniqueDistributionLists = uniqueDistributionLists.filter(
-              (name) => ele.name.toLowerCase() !== name
+              (name) => ele.name.toLowerCase().trim() !== name.trim()
             );
             return true;
           } else {
