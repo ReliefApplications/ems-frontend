@@ -415,9 +415,9 @@ export class EmailService {
       this.formBuilder.group({
         name: emailDL.query.name,
         filter: this.formBuilder.group({
-          logic: emailDL.query.filter.logic,
+          logic: emailDL?.query?.filter?.logic,
           filters: this.formBuilder.array(
-            emailDL.query.filter.filters.map((filter: any) => {
+            emailDL?.query?.filter?.filters.map((filter: any) => {
               return this.formBuilder.group({
                 ...filter,
                 inTheLast: this.formBuilder.group({
@@ -425,12 +425,12 @@ export class EmailService {
                   unit: [filter.inTheLast.unit],
                 }),
               });
-            })
+            }) || []
           ),
         }),
         // Map fields
         fields: this.formBuilder.array(
-          emailDL.query.fields.map((field: any) =>
+          emailDL?.query?.fields.map((field: any) =>
             this.formBuilder.control(field)
           )
         ),
@@ -840,8 +840,8 @@ export class EmailService {
    * @returns A query result after adding the email notification.
    */
   addEmailNotification(data: any) {
-    return this.apollo.query<any>({
-      query: ADD_EMAIL_NOTIFICATION,
+    return this.apollo.mutate<any>({
+      mutation: ADD_EMAIL_NOTIFICATION,
       variables: {
         notification: data,
       },
@@ -874,8 +874,8 @@ export class EmailService {
    * @returns Email notification.
    */
   getEmailNotification(id: string, applicationId: string) {
-    return this.apollo.query<any>({
-      query: GET_AND_UPDATE_EMAIL_NOTIFICATION,
+    return this.apollo.mutate<any>({
+      mutation: GET_AND_UPDATE_EMAIL_NOTIFICATION,
       variables: {
         notification: null,
         editEmailNotificationId: id,
@@ -945,8 +945,8 @@ export class EmailService {
   editEmailNotification(id: string, data: any) {
     const applicationId = data.applicationId;
 
-    return this.apollo.query<any>({
-      query: GET_AND_UPDATE_EMAIL_NOTIFICATION,
+    return this.apollo.mutate<any>({
+      mutation: GET_AND_UPDATE_EMAIL_NOTIFICATION,
       variables: {
         notification: data,
         applicationId: applicationId,

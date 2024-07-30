@@ -784,7 +784,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       filterArray.push(this.getNewFilterFields(ele));
     });
     return this.formBuilder.group({
-      logic: filterData.logic,
+      logic: filterData?.logic,
       filters: filterArray,
     });
   }
