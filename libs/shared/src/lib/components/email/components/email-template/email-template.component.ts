@@ -334,7 +334,7 @@ export class EmailTemplateComponent
     const isValid =
       this.dlQuery.get('fields')?.value.length > 0 &&
       !this.showDatasetLimitWarning &&
-      this.emailService.distributionListName.length > 0 &&
+      this.emailService.distributionListName?.length > 0 &&
       !this.distributionListValid;
     // Checks if entry is valid
     if (
@@ -389,7 +389,7 @@ export class EmailTemplateComponent
           this.availableFields
         );
         objPreview = {
-          resource: this.resource.id ?? '',
+          resource: this.resource?.id ?? '',
           name: 'Distribution List Preview',
           query: {
             name: this.dlQuery?.get('name').value,
@@ -584,7 +584,7 @@ export class EmailTemplateComponent
       ),
     };
     objPreview.emailDistributionList.to = {
-      resource: this.resource.id ?? '',
+      resource: this.resource?.id ?? '',
       query: {
         name: this.dlQuery?.get('name').value,
         filter: this.dlQuery.get('filter').value,

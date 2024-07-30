@@ -259,12 +259,8 @@ export class EmsTemplateComponent
       this.currentStep += 1;
       this.steps[3].disabled = false;
     } else if (this.currentStep === 3) {
-      if (this.emailService.checkToValid()) {
-        this.currentStep += 1;
-        this.steps[4].disabled = false;
-      } else {
-        this.emailService.displayDLToError = true;
-      }
+      this.currentStep += 1;
+      this.steps[4].disabled = false;
     } else if (this.currentStep === 4) {
       if (
         !(this.emailService.allLayoutdata.headerLogo instanceof File) &&

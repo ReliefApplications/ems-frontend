@@ -268,13 +268,7 @@ export class SelectDistributionComponent
     this.emailDistributionList
       .get('bcc')
       ?.patchValue(emailDL.get('bcc')?.value);
-
-    if (
-      this.emailDistributionList.value.to.query.name?.trim() !== '' &&
-      this.emailDistributionList.value.to.query.fields?.length === 0
-    ) {
-      this.emailDistributionList = emailDL;
-    }
+    this.emailDistributionList = emailDL;
     this.distributionListId = this.distributionLists[index].node.id;
     this.showExistingDistributionList = !this.showExistingDistributionList;
     this.validateDistributionList();
@@ -359,10 +353,17 @@ export class SelectDistributionComponent
     );
   }
 
+  /**
+   *
+   * check for valid email inouts
+   * @returns return true or false
+   *
+   */
   checkToValid() {
     if (
       this.emailService.toDLHasFilter &&
-      this.emailDistributionList.get('to').get('query').get('resource').value
+      this.emailDistributionList?.get('to')?.get('query')?.get('resource')
+        ?.value
     ) {
       const query = {
         emailDistributionList: cloneDeep(
