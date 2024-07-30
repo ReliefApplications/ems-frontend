@@ -121,7 +121,10 @@ export class FormComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.record) {
+    if (
+      changes.record &&
+      changes.record.currentValue.id !== changes.record.previousValue.id
+    ) {
       this.initSurvey();
     }
   }
