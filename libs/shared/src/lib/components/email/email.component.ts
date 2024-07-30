@@ -100,6 +100,10 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   /** DL names */
   public uniqueDLNames: string[] = [];
 
+  public cacheDistributionListNames: string[] = [];
+
+  public dlNamesActualData: string[] = [];
+
   /**
    * Email Notification setup component.
    *
@@ -241,9 +245,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
               ele.node?.emailDistributionList?.name.trim().toLowerCase()
             );
           }
-          this.uniqueDLNames = Array.from(
-            new Set(this.emailService.distributionListNames)
-          );
+          this.uniqueDLNames = [];
+          this.distributionLists.forEach((ele: any) => {
+            this.uniqueDLNames.push(ele.name);
+          });
+          this.uniqueDLNames = Array.from(new Set(this.uniqueDLNames));
           this.emailService.emailNotificationNames.push(
             ele?.node?.name?.trim()?.toLowerCase()
           );
@@ -253,7 +259,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           pageSize: this.distributionPageInfo.pageSize,
           previousPageIndex: 0,
           skip: 0,
-          totalItems: this.cacheDistributionList.length,
+          totalItems: this.cacheDistributionListNames.length,
         };
         const notificationListPaginationConfig = {
           pageIndex: 0,
@@ -311,14 +317,17 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         let uniqueDistributionLists = Array.from(
           new Set(this.emailService.distributionListNames)
         );
+        this.uniqueDLNames = Array.from(
+          new Set(this.emailService.distributionListNames)
+        );
         this.distributionLists = this.distributionLists.filter((ele: any) => {
           if (
             uniqueDistributionLists.includes(
-              ele.name.toLowerCase().trim() || ele.name.toLowerCase()
+              ele.name.toLowerCase() || ele.name.toLowerCase()
             )
           ) {
             uniqueDistributionLists = uniqueDistributionLists.filter(
-              (name) => ele.name.toLowerCase().trim() !== name.trim()
+              (name) => ele.name.toLowerCase() !== name
             );
             return true;
           } else {
@@ -333,16 +342,23 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         );
         this.pageInfo.length = res?.data?.emailNotifications?.edges.length;
 
+        this.uniqueDLNames = [];
+        this.distributionLists.forEach((ele: any) => {
+          this.uniqueDLNames.push(ele.name);
+        });
+        this.uniqueDLNames = Array.from(new Set(this.uniqueDLNames));
         this.distributionActualData = cloneDeep(this.distributionLists);
+        this.dlNamesActualData = cloneDeep(this.uniqueDLNames);
         this.cacheDistributionList = this.distributionLists;
+        this.cacheDistributionListNames = this.uniqueDLNames;
         this.distributionLists = this.cacheDistributionList.slice(
           this.distributionPageInfo.pageSize *
             this.distributionPageInfo.pageIndex,
           this.distributionPageInfo.pageSize *
             (this.distributionPageInfo.pageIndex + 1)
         );
-        this.distributionPageInfo.length = this.cacheDistributionList.length;
-        this.uniqueDLNames = uniqueDistributionLists;
+        this.distributionPageInfo.length =
+          this.cacheDistributionListNames.length;
       });
   }
 
@@ -413,11 +429,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       );
       this.pageInfo.length = this.filterTemplateData.length;
     } else if (this.selectedTabIndex == 1) {
-      this.cacheDistributionList = this.distributionActualData?.filter(
-        (x: any) =>
-          x.distributionListName
-            ?.toLowerCase()
-            ?.includes(searchText?.toLowerCase())
+      this.cacheDistributionListNames = this.dlNamesActualData?.filter(
+        (name: any) => name?.toLowerCase()?.includes(searchText?.toLowerCase())
       );
       this.distributionLists = this.cacheDistributionList.slice(
         this.distributionPageInfo.pageSize *
@@ -425,7 +438,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         this.distributionPageInfo.pageSize *
           (this.distributionPageInfo.pageIndex + 1)
       );
-      this.distributionPageInfo.length = this.cacheDistributionList.length;
+      this.distributionPageInfo.length = this.cacheDistributionListNames.length;
     } else if (this.selectedTabIndex == 2) {
       this.cacheTemplateList = this.customActualData?.filter((x: any) =>
         x.subject.toLowerCase().includes(searchText.toLowerCase())
@@ -969,7 +982,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     const cachedData = handleTablePageEvent(
       e,
       this.distributionPageInfo,
-      this.cacheDistributionList
+      this.cacheDistributionListNames
     );
     this.distributionLists = cachedData;
   }
