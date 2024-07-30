@@ -200,7 +200,7 @@ export class EmailService {
    * @returns true if to in email distribution list is valid
    */
   checkToValid() {
-    if (this.toDLHasFilter && this.emailDistributionList.to.query.resource) {
+    if (this.toDLHasFilter && this.emailDistributionList?.to?.query?.resource) {
       const query = {
         emailDistributionList: cloneDeep(this.emailDistributionList),
       };
@@ -213,7 +213,7 @@ export class EmailService {
           return response?.to.length > 0;
         });
     } else {
-      return this.emailDistributionList.to.inputEmails.length > 0;
+      return this.emailDistributionList?.to?.inputEmails?.length > 0;
     }
     return false;
   }
@@ -430,9 +430,19 @@ export class EmailService {
         }),
         // Map fields
         fields: this.formBuilder.array(
-          emailDL?.query?.fields.map((field: any) =>
-            this.formBuilder.control(field)
-          )
+          emailDL?.query?.fields.map((field: any) => {
+            // this.formBuilder.control(field)
+            if (field.kind === 'LIST' || field.kind === 'OBJECT') {
+              return this.formBuilder.group({
+                ...field,
+                fields: this.formBuilder.array([]),
+              });
+            } else {
+              return this.formBuilder.group({
+                ...field,
+              });
+            }
+          })
         ),
       })
     );

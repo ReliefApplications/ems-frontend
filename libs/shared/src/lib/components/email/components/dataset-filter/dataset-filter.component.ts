@@ -420,7 +420,7 @@ export class DatasetFilterComponent
           let objPreview: any = {};
 
           objPreview = {
-            resource: this.resource.id ?? '',
+            resource: this.resource?.id ?? '',
             name: query?.name,
             query: {
               name: query.query?.name,

@@ -174,6 +174,9 @@ export class EmailTemplateComponent
   /** Existing ID. */
   @Input() existingId = '';
 
+  /** Flag to show the Child fields limit warning. */
+  public showFieldsWarning = false;
+
   /**
    * Composite filter group.
    *
@@ -483,6 +486,24 @@ export class EmailTemplateComponent
 
     this.selectedFields =
       this.distributionList.controls.query.get('fields')?.value;
+
+    if (
+      this.distributionList
+        .getRawValue()
+        .query.fields?.filter((x: any) => x?.fields?.length === 0).length > 0
+    ) {
+      this.emailService.disableSaveAndProceed.next(true);
+      this.showFieldsWarning = true;
+    } else {
+      this.showFieldsWarning = false;
+      if (
+        this.emailService.datasetsForm?.value?.emailDistributionList?.name
+          ?.length > 0 &&
+        this.emailService.checkToValid()
+      ) {
+        this.emailService.disableSaveAndProceed.next(false);
+      }
+    }
     return formArray;
   }
 
@@ -802,7 +823,8 @@ export class EmailTemplateComponent
         (this.segmentForm.get('segment')?.value === 'Add Manually' ||
           (this.segmentForm.get('segment')?.value === 'Use Combination' &&
             !this.resource)) &&
-        this.emailService.distributionListName.length > 0
+        this.emailService.datasetsForm?.value?.emailDistributionList?.name
+          ?.length > 0
       ) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
         this.emailService.disableSaveAndProceed.next(false);
@@ -811,13 +833,15 @@ export class EmailTemplateComponent
         this.segmentForm.get('segment')?.value === 'Use Combination' &&
         this.resource &&
         this.distributionListValid &&
-        this.emailService.distributionListName.length > 0
+        this.emailService.datasetsForm?.value?.emailDistributionList?.name
+          ?.length > 0
       ) {
         if (
           this.dlQuery.get('fields')?.value.length > 0 ||
           (this.dlQuery.get('fields')?.value.length > 0 &&
             this.dlQuery.get('filter').get('filters').length > 0 &&
-            this.emailService.distributionListName.length > 0)
+            this.emailService.datasetsForm?.value?.emailDistributionList?.name
+              ?.length > 0)
         ) {
           // if (this.checkFilter()) {
           //   this.emailService.disableSaveAndProceed.next(false);
@@ -870,5 +894,12 @@ export class EmailTemplateComponent
     if (element.value === '') {
       this.emailValidationError = '';
     }
+  }
+
+  /**
+   * Resets the state `showFieldsWarning` when the close button is clicked.
+   */
+  closeFieldsWarningMessage(): void {
+    this.showFieldsWarning = false;
   }
 }

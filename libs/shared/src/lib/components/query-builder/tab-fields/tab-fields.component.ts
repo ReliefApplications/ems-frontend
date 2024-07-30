@@ -65,9 +65,22 @@ export class TabFieldsComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.setSelectedFields();
+    this.checkfieldsIsValid();
+  }
+
+  /**
+   * Checking that Selected fields form are valid or not
+   */
+  checkfieldsIsValid() {
     this.selectedFields.forEach((x, index) => {
       if (!x.type) {
         this.form.at(index).setErrors({ invalid: true });
+      }
+      if (x.type.kind === 'LIST' || x.type.kind === 'OBJECT') {
+        this.form.at(index).getRawValue().fields?.length === 0 ||
+        this.form.at(index).getRawValue().fields === null
+          ? this.form.at(index).setErrors({ invalid: true })
+          : '';
       }
     });
   }
@@ -181,6 +194,7 @@ export class TabFieldsComponent implements OnInit, OnChanges {
    */
   public onCloseField(): void {
     this.fieldForm = null;
+    this.checkfieldsIsValid();
   }
 
   /**
