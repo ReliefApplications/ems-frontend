@@ -204,7 +204,9 @@ export class PreviewTemplate {
         if (!datasetFieldsObj?.map((x: any) => x.field).includes(key.name)) {
           datasetFieldsObj.push({
             field: key.name,
-            name: key.label,
+            name:
+              key.label ||
+              (key.name ? this.emailService.titleCase(key.name) : ''),
             type: key.type,
           });
         }
