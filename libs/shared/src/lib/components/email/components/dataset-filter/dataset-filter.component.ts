@@ -637,6 +637,8 @@ export class DatasetFilterComponent
         this.emailService.disableSaveAndProceed.next(false);
         this.emailService.disableSaveAsDraft.next(false);
       }
+    } else {
+      this.emailService.disableSaveAndProceed.next(true);
     }
     return formArray;
   }
