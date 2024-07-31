@@ -210,6 +210,10 @@ export class EmailTemplateComponent
       datasetSelect: '',
     });
 
+    this.segmentForm.get('segment')?.valueChanges.subscribe((value: any) => {
+      this.clearUnusedValues(value);
+    });
+
     this.distributionListValid =
       (this.emailService.isToValid &&
         (this.type === 'bcc' || this.type === 'cc')) ||
@@ -254,6 +258,7 @@ export class EmailTemplateComponent
     this.type === 'to' ? (this.emailService.isToValid = false) : '';
     // this.emailService.disableSaveAndProceed.next(true);
     // this.emailService.disableSaveAsDraft.next(false);
+
     if (this.individualEmail) {
       this.selectedEmails.setValue([]);
       this.updateSegmentOptions('Select With Filter');
@@ -264,6 +269,33 @@ export class EmailTemplateComponent
     } else {
       this.updateSegmentOptions('Add Manually');
     }
+  }
+
+  /**
+   * Clear unused values for segments
+   *
+   * @param value form value
+   */
+  clearUnusedValues(value: string) {
+    if (value === 'Add Manually') {
+      const fields = this.dlQuery.get('fields') as FormArray;
+      fields.clear();
+
+      const filter = this.dlQuery.get('filter') as FormGroup;
+      const filters = filter.get('filters') as FormArray;
+      filters.clear();
+
+      this.distributionList.get('resource').setValue('');
+      this.dlQuery.get('name').setValue('');
+      this.resource = null;
+    } else if (value === 'Select With Filter') {
+      // Clear the input emails form array
+      while (this.selectedEmails.length !== 0) {
+        this.selectedEmails.removeAt(0);
+      }
+      this.selectedEmails.reset();
+    }
+    this.emailService.disableSaveAndProceed.next(true);
   }
 
   /**
@@ -650,22 +682,7 @@ export class EmailTemplateComponent
 
   override async ngOnDestroy(): Promise<void> {
     super.ngOnDestroy();
-    if (this.segmentForm.get('segment')?.value === 'Add Manually') {
-      const fields = this.dlQuery.get('fields') as FormArray;
-      fields.clear();
-
-      const filter = this.dlQuery.get('filter') as FormGroup;
-      const filters = filter.get('filters') as FormArray;
-      filters.clear();
-    } else if (
-      this.segmentForm.get('segment')?.value === 'Select With Filter'
-    ) {
-      // Clear the input emails form array
-      while (this.selectedEmails.length !== 0) {
-        this.selectedEmails.removeAt(0);
-      }
-      this.selectedEmails.reset();
-    }
+    this.clearUnusedValues(this.segmentForm.get('segment')?.value);
     if (this.type === 'to') {
       const valid = await this.isEmailInputValid();
       if (valid) {
@@ -730,6 +747,7 @@ export class EmailTemplateComponent
   onSegmentChange(event: any): void {
     this.noEmail.emit(false);
     const segment = event?.target?.value || event;
+    console.log('Cleared', segment);
     this.activeSegmentIndex = this.individualEmail
       ? 1
       : this.segmentList.indexOf(segment);
@@ -745,6 +763,7 @@ export class EmailTemplateComponent
       this.distributionListValid;
 
     if (this.activeSegmentIndex === 0) {
+      //Add Manually
       if (this.selectedEmails?.value?.length === 0 && this.type === 'to') {
         this.emailService.isToValid = false;
         isValid = false;

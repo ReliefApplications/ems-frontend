@@ -224,6 +224,11 @@ export class EmailService {
     return false;
   }
 
+  /**
+   * Checks if to in email distribution list is valid
+   *
+   * @returns true if to in email distribution list is valid
+   */
   checkDLToValid(): Promise<boolean> {
     return new Promise((resolve) => {
       let valid = false;

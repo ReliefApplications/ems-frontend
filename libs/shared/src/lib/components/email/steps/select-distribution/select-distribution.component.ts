@@ -505,7 +505,7 @@ export class SelectDistributionComponent
     }
 
     if (
-      this.emailService.distributionListName &&
+      this.emailDistributionList.get('name')?.value &&
       valid &&
       !this.isNameDuplicate()
     ) {
