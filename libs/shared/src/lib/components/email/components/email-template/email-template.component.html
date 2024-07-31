@@ -200,10 +200,10 @@
     (close)="closeFieldsWarningMessage()"
   >
     <div
-    [innerHTML]="
-    'components.email.alert.selectChildFields'
-      | translate : { totalRecords: totalMatchingRecords }
-  "
+      [innerHTML]="
+        'components.email.alert.selectChildFields'
+          | translate : { totalRecords: totalMatchingRecords }
+      "
     ></div>
   </ui-alert>
 </ng-template>
@@ -274,8 +274,8 @@
               *ngTemplateOutlet="noSelectedFieldsAlertTmpl"
             ></ng-container>
             <ng-container
-                class="mt-2"
-                *ngTemplateOutlet="ChildFieldAlertTmpl"
+              class="mt-2"
+              *ngTemplateOutlet="ChildFieldAlertTmpl"
             ></ng-container>
             <div class="flex gap-4 mt-2">
               <div class="mt-2 overflow-auto">
