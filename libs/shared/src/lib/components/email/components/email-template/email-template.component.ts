@@ -620,7 +620,6 @@ export class EmailTemplateComponent
         objPreview
       )
       .subscribe((response: any) => {
-        console.log('Response To', response);
         if (this.type === 'to') {
           if (response?.to?.length > 0 && response?.name?.length > 0) {
             this.emailService.disableSaveAndProceed.next(false);

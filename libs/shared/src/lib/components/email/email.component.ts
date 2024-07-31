@@ -100,8 +100,10 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   /** DL names */
   public uniqueDLNames: string[] = [];
 
+  /** Distribution list names cache data */
   public cacheDistributionListNames: string[] = [];
 
+  /** DL names unmodified data */
   public dlNamesActualData: string[] = [];
 
   /**

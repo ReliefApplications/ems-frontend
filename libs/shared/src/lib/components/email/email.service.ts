@@ -245,8 +245,7 @@ export class EmailService {
             .then((response: any) => {
               if (response.count > 50) {
                 badData.push(data.name);
-                console.log('Response', response);
-                console.log();
+
                 valid = false;
               }
             })
