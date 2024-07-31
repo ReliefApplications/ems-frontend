@@ -855,7 +855,8 @@
 				"to": "To"
 			},
 			"error": {
-				"invalidDataset": "Following datasets are not valid: {{badDatasets}}"
+				"invalidDataset": "Following datasets are not valid: {{badDatasets}}",
+				"invalidToValue": "List for To Recipients Invalid please fix!"
 			},
 			"image": {
 				"rectangleValidation": "Please upload an image with a more rectangular aspect ratio, similar to 960x80.",

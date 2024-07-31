@@ -821,7 +821,9 @@ export class EmailTemplateComponent
   addEmailManually(element: HTMLInputElement): void {
     // Check if email already exists
     const emailDuplicate = this.selectedEmails.controls.some(
-      (control: AbstractControl) => control.value === element.value
+      (control: AbstractControl) =>
+        control.value.toLowerCase().trim() ===
+        element.value.toLowerCase().trim()
     );
 
     if (emailRegex.test(element.value) && !emailDuplicate) {

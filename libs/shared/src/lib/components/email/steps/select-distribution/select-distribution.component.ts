@@ -372,6 +372,16 @@ export class SelectDistributionComponent
    * @returns return true or false
    */
   checkToValid() {
+    this.loading = true;
+    // Check if field
+    if (
+      this.emailDistributionList?.get('to')?.get('query')?.get('name')?.value ||
+      this.emailDistributionList?.get('to')?.get('resouce').value
+    ) {
+      if (this.emailService?.filterToEmails?.length === 0) {
+        return false;
+      }
+    }
     if (
       this.emailService.toDLHasFilter &&
       this.emailDistributionList?.get('to')?.get('query')?.get('name')?.value
@@ -388,6 +398,7 @@ export class SelectDistributionComponent
         )
         .subscribe(
           (response: any) => {
+            this.loading = false;
             this.emailService.filterToEmails =
               response?.to?.length > 0 ? response?.to : [];
             if (
@@ -409,6 +420,8 @@ export class SelectDistributionComponent
         this.emailDistributionList.get('to').get('inputEmails').value.length > 0
       );
     }
+    this.loading = false;
+    this.emailService.disableSaveAndProceed.next(true);
     return false;
   }
 
@@ -421,25 +434,24 @@ export class SelectDistributionComponent
       this.emailDistributionList.get('name')?.value?.length < 1 ||
       this.emailDistributionList.get('name')?.value?.trim() === '' ||
       this.isNameDuplicate();
-    this.emailService.disableSaveAndProceed.next(noSaveAllowed);
-    this.emailService.disableSaveAsDraft.next(false);
-    if (noSaveAllowed) {
-      this.emailService.disableFormSteps.next({
-        stepperIndex: 2,
-        disableAction: true,
-      });
-    } else {
+
+    //Distribution List name is valid
+    if (!noSaveAllowed) {
       this.emailService.distributionListName =
         this.emailDistributionList.get('name').value;
     }
 
-    if (noSaveAllowed || this.emailService?.filterToEmails?.length === 0) {
+    if (noSaveAllowed || !this.checkToValid()) {
+      this.emailService.disableFormSteps.next({
+        stepperIndex: 2,
+        disableAction: true,
+      });
       this.emailService.disableSaveAndProceed.next(true);
     }
 
     if (
       this.emailService.distributionListName &&
-      this.emailService?.filterToEmails?.length > 0 &&
+      this.checkToValid() &&
       !this.isNameDuplicate()
     ) {
       this.emailService.disableSaveAsDraft.next(false);

@@ -855,7 +855,8 @@
 				"to": "À"
 			},
 			"error": {
-				"invalidDataset": "Les ensembles de données suivants ne sont pas valides : {badDatasets}"
+				"invalidDataset": "Les ensembles de données suivants ne sont pas valides : {badDatasets}",
+				"invalidToValue": "Liste des destinataires non valide, veuillez corriger !"
 			},
 			"image": {
 				"rectangleValidation": "Veuillez télécharger une image avec un rapport hauteur/largeur plus rectangulaire, similaire à 960x80.",
