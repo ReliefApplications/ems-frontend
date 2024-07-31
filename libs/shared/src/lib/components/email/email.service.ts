@@ -173,6 +173,8 @@ export class EmailService {
    *
    */
   public displayDLToError = false;
+  /** Checks if Distribution list name is duplicate */
+  public isDLNameDuplicate = false;
   /** For storing emails For To from service response (In select with Filter option) */
   filterToEmails: any = [];
 
@@ -222,25 +224,39 @@ export class EmailService {
     return false;
   }
 
-  async checkDLToValid(): Promise<boolean> {
-    if (this.toDLHasFilter && this.emailDistributionList?.to?.query?.resource) {
-      const query = {
-        emailDistributionList: cloneDeep(this.emailDistributionList),
-      };
-      try {
-        const response: any = await this.http
+  checkDLToValid(): Promise<boolean> {
+    return new Promise((resolve) => {
+      let valid = false;
+      if (
+        this.toDLHasFilter &&
+        this.datasetsForm.getRawValue().emailDistributionList?.to?.resource
+      ) {
+        const query = {
+          emailDistributionList: cloneDeep(
+            this.datasetsForm.getRawValue()?.emailDistributionList
+          ),
+        };
+
+        this.http
           .post(
             `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
             query
           )
-          .toPromise();
-        return response?.to.length > 0;
-      } catch (error) {
-        return false;
+          .toPromise()
+          .then((response: any) => {
+            valid = response?.to.length > 0;
+            resolve(valid);
+          })
+          .catch(() => {
+            resolve(false);
+          });
+      } else {
+        resolve(
+          this.datasetsForm.getRawValue().emailDistributionList?.to?.inputEmails
+            ?.length > 0
+        );
       }
-    } else {
-      return this.emailDistributionList?.to?.inputEmails?.length > 0;
-    }
+    });
   }
 
   /**

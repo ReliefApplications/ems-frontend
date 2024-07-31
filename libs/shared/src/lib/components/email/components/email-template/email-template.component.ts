@@ -339,13 +339,7 @@ export class EmailTemplateComponent
       !this.showDatasetLimitWarning &&
       this.emailService.distributionListName?.length > 0 &&
       !this.distributionListValid;
-    // Checks if entry is valid
-    if (
-      newIndex === previewTabIndex &&
-      this.currentTabIndex !== previewTabIndex
-    ) {
-      this.getDataSet('preview', true);
-    }
+
     //if new tab is preview, get preview data
     if (fromHTML && newIndex === previewTabIndex) {
       if (isValid) {
@@ -369,9 +363,8 @@ export class EmailTemplateComponent
    * To get data set for the applied filters.
    *
    * @param tabName - The name of the tab for which to get the data set.
-   * @param validCheck - Check if data needs validation
    */
-  getDataSet(tabName?: any, validCheck?: boolean): void {
+  async getDataSet(tabName?: any): Promise<void> {
     if (
       this.dlQuery.controls['name'].value !== null &&
       this.dlQuery.controls['name'].value !== ''
@@ -416,37 +409,28 @@ export class EmailTemplateComponent
             objPreview
           )
           .subscribe(
-            (response: any) => {
+            async (response: any) => {
               this.showPreview = true;
               this.emailService.filterToEmails = [];
               // Navigates straight to preview tab if didn't fail before
-              if (validCheck) {
-                if (response.count <= 50) {
-                  validCheck = false;
-                } else {
-                  this.onTabSelect(this.currentTabIndex, false);
-                  this.totalMatchingRecords = response.count;
-                  this.showDatasetLimitWarning = true;
-                }
+
+              this.onTabSelect(2, false);
+              this.showPreview = true;
+              if (response.count <= 50) {
+                this.showDatasetLimitWarning = false;
+              } else {
+                this.previewHTML = '';
+                this.totalMatchingRecords = response.count;
+                this.showDatasetLimitWarning = true;
               }
-              if (!validCheck) {
-                this.onTabSelect(2, false);
-                this.showPreview = true;
-                if (response.count <= 50) {
-                  this.showDatasetLimitWarning = false;
-                  this.checkFilter();
-                } else {
-                  this.previewHTML = '';
-                  this.totalMatchingRecords = response.count;
-                  this.showDatasetLimitWarning = true;
-                }
-                this.previewHTML = window.atob(response.tableHtml);
-                const previewHTML = document.getElementById(
-                  'tblPreview'
-                ) as HTMLInputElement;
-                if (previewHTML) {
-                  previewHTML.innerHTML = this.previewHTML;
-                }
+              await this.checkFilter();
+
+              this.previewHTML = window.atob(response.tableHtml);
+              const previewHTML = document.getElementById(
+                'tblPreview'
+              ) as HTMLInputElement;
+              if (previewHTML) {
+                previewHTML.innerHTML = this.previewHTML;
               }
 
               this.loading = false;
@@ -500,6 +484,7 @@ export class EmailTemplateComponent
       if (
         this.emailService.datasetsForm?.value?.emailDistributionList?.name
           ?.length > 0 &&
+        !this.emailService.isDLNameDuplicate &&
         this.emailService.checkToValid()
       ) {
         this.emailService.disableSaveAndProceed.next(false);
@@ -569,16 +554,17 @@ export class EmailTemplateComponent
    *
    * @returns Returns true if email is valid
    */
-  isEmailInputValid(): boolean {
+  async isEmailInputValid(): Promise<boolean> {
     const inputsValid = this.selectedEmails.length > 0;
     if (this.segmentForm.get('segment')?.value === 'Add Manually') {
       return inputsValid;
     } else {
+      const valid = await this.checkFilter();
       if (this.segmentForm.get('segment')?.value === 'Select With Filter') {
-        return this.checkFilter();
+        return valid;
       } else {
         if (this.resource) {
-          return this.checkFilter() && inputsValid;
+          return valid && inputsValid;
         } else {
           return inputsValid;
         }
@@ -592,58 +578,77 @@ export class EmailTemplateComponent
    *
    * @returns returns true if filter has email
    */
-  checkFilter(): boolean {
-    let objPreview: any = {};
-    this.emailService.convertFields(
-      this.distributionList.getRawValue().query?.fields,
-      this.availableFields
-    );
-    objPreview = {
-      emailDistributionList: cloneDeep(
-        this.emailService.datasetsForm
-          .get('emailDistributionList')
-          ?.getRawValue()
-      ),
-    };
-    objPreview.emailDistributionList.to = {
-      resource: this.resource?.id ?? '',
-      query: {
-        name: this.dlQuery?.get('name').value,
-        filter: this.dlQuery.get('filter').value,
-        fields: this.distributionList.getRawValue().query?.fields,
-      },
-      inputEmails: [],
-    };
+  checkFilter(): Promise<boolean> {
+    return new Promise((resolve) => {
+      let objPreview: any = {};
+      this.emailService.convertFields(
+        this.distributionList.getRawValue().query?.fields,
+        this.availableFields
+      );
+      objPreview = {
+        emailDistributionList: cloneDeep(
+          this.emailService.datasetsForm
+            .get('emailDistributionList')
+            ?.getRawValue()
+        ),
+      };
+      objPreview.emailDistributionList.to = {
+        resource: this.resource?.id ?? '',
+        query: {
+          name: this.dlQuery?.get('name').value,
+          filter: this.dlQuery.get('filter').value,
+          fields: this.distributionList.getRawValue().query?.fields,
+        },
+        inputEmails: [],
+      };
 
-    this.http
-      .post(
-        `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
-        objPreview
-      )
-      .subscribe(
-        (response: any) => {
+      this.http
+        .post(
+          `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+          objPreview
+        )
+        .toPromise()
+        .then((response: any) => {
           if (this.type === 'to') {
             this.emailService.filterToEmails =
               response?.to?.length > 0 ? response?.to : [];
-            if (response?.to?.length > 0 && response?.name?.length > 0) {
+            if (
+              response?.to?.length > 0 &&
+              response?.name?.length > 0 &&
+              !this.emailService.isDLNameDuplicate
+            ) {
               this.emailService.disableSaveAndProceed.next(false);
               this.emailService.isToValid = true;
             } else {
-              this.emailService.disableSaveAndProceed.next(true);
-              this.emailService.isToValid = false;
+              // Check if To is use combination
+              if (
+                this.segmentForm.get('segment')?.value === 'Use Combination'
+              ) {
+                if (
+                  this.emailService.emailDistributionList?.to?.inputEmails
+                    ?.length > 0
+                ) {
+                  this.emailService.isToValid = true;
+                  this.emailService.disableSaveAndProceed.next(false);
+                }
+              } else {
+                // False if returned emails are not correct
+                this.emailService.disableSaveAndProceed.next(true);
+                this.emailService.isToValid = false;
+              }
             }
           }
-          return response?.to.length > 0;
-        },
-        (error: any) => {
-          console.log(error);
+          resolve(response?.to.length > 0);
+        })
+        .catch((error) => {
+          console.error(error);
           this.emailService.filterToEmails = [];
-        }
-      );
-    return false;
+          resolve(false);
+        });
+    });
   }
 
-  override ngOnDestroy(): void {
+  override async ngOnDestroy(): Promise<void> {
     super.ngOnDestroy();
     if (this.segmentForm.get('segment')?.value === 'Add Manually') {
       const fields = this.dlQuery.get('fields') as FormArray;
@@ -661,11 +666,15 @@ export class EmailTemplateComponent
       }
       this.selectedEmails.reset();
     }
-    if (this.type === 'to' && this.isEmailInputValid()) {
-      this.emailService.isToValid = true;
-    } else if (this.type === 'to' && !this.isEmailInputValid()) {
-      this.emailService.isToValid = false;
+    if (this.type === 'to') {
+      const valid = await this.isEmailInputValid();
+      if (valid) {
+        this.emailService.isToValid = true;
+      } else {
+        this.emailService.isToValid = false;
+      }
     }
+
     this.emailService.setDistributionList();
   }
 
@@ -732,6 +741,7 @@ export class EmailTemplateComponent
         hasEmails) &&
       this.emailService.datasetsForm?.value?.emailDistributionList?.name
         ?.length > 0 &&
+      !this.emailService.isDLNameDuplicate &&
       this.distributionListValid;
 
     if (this.activeSegmentIndex === 0) {
@@ -746,7 +756,8 @@ export class EmailTemplateComponent
       } else {
         this.emailService.isToValid &&
         this.emailService.datasetsForm?.value?.emailDistributionList?.name
-          ?.length > 0
+          ?.length > 0 &&
+        !this.emailService.isDLNameDuplicate
           ? this.emailService.disableSaveAndProceed.next(false)
           : this.emailService.disableSaveAndProceed.next(true);
       }
@@ -787,7 +798,7 @@ export class EmailTemplateComponent
    *
    * @param chipIndex chip index
    */
-  removeEmailChip(chipIndex: number): void {
+  async removeEmailChip(chipIndex: number): Promise<void> {
     this.selectedEmails.removeAt(chipIndex);
     this.listChange.emit();
 
@@ -798,7 +809,8 @@ export class EmailTemplateComponent
       this.type === 'to' ? (this.emailService.isToValid = false) : '';
       this.emailService.isToValid &&
       this.emailService.datasetsForm?.value?.emailDistributionList?.name
-        ?.length > 0
+        ?.length > 0 &&
+      !this.emailService.isDLNameDuplicate
         ? this.emailService.disableSaveAndProceed.next(false)
         : this.emailService.disableSaveAndProceed.next(true);
     } else if (
@@ -807,7 +819,7 @@ export class EmailTemplateComponent
       this.segmentForm.get('segment')?.value === 'Use Combination' &&
       (this.resource || this.type === 'to')
     ) {
-      this.checkFilter()
+      (await this.checkFilter())
         ? this.emailService.disableSaveAndProceed.next(false)
         : '';
     }
@@ -834,7 +846,8 @@ export class EmailTemplateComponent
           (this.segmentForm.get('segment')?.value === 'Use Combination' &&
             !this.resource)) &&
         this.emailService.datasetsForm?.value?.emailDistributionList?.name
-          ?.length > 0
+          ?.length > 0 &&
+        !this.emailService.isDLNameDuplicate
       ) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
         this.emailService.disableSaveAndProceed.next(false);
@@ -844,7 +857,8 @@ export class EmailTemplateComponent
         this.resource &&
         this.distributionListValid &&
         this.emailService.datasetsForm?.value?.emailDistributionList?.name
-          ?.length > 0
+          ?.length > 0 &&
+        !this.emailService.isDLNameDuplicate
       ) {
         if (
           this.dlQuery.get('fields')?.value.length > 0 ||

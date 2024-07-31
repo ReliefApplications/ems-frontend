@@ -339,10 +339,7 @@
         <!-- Preview Tab -->
         <ui-tab
           [title]="'Preview'"
-          [disabled]="
-            showDatasetLimitWarning ||
-            this.dlQuery.get('fields')?.value.length === 0
-          "
+          [disabled]="this.dlQuery.get('fields')?.value.length === 0"
         >
           <ng-container ngProjectAs="label">
             {{ 'common.preview' | translate }}

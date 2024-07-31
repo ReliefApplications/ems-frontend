@@ -176,7 +176,10 @@ export class SelectDistributionComponent
       ?.get('name')
       ?.value?.trim()
       .toLowerCase();
-    return this.emailService.distributionListNames.includes(enteredName);
+    const isDupe =
+      this.emailService.distributionListNames.includes(enteredName);
+    this.emailService.isDLNameDuplicate = isDupe;
+    return isDupe;
   }
 
   /**
@@ -313,39 +316,84 @@ export class SelectDistributionComponent
       this.downloadService
         .uploadFile('upload/distributionList', file)
         .pipe(takeUntil(this.destroy$))
-        .subscribe(({ To, Cc, Bcc }) => {
+        .subscribe(async ({ To, Cc, Bcc }) => {
           this.snackBar.openSnackBar(
             this.translate.instant(
               'components.email.distributionList.import.loading'
             )
           );
+          const toAfterImport: any =
+            To?.length > 0
+              ? [
+                  ...new Set(
+                    To.map((email: string) => email.trim().toLowerCase())
+                  ),
+                ]
+              : [];
 
-          To.forEach((email: string) => {
+          const ccAfterImport: any =
+            Cc?.length > 0
+              ? [
+                  ...new Set(
+                    Cc.map((email: string) => email.trim().toLowerCase())
+                  ),
+                ]
+              : [];
+
+          const bccAfterImport: any =
+            Bcc?.length > 0
+              ? [
+                  ...new Set(
+                    Bcc.map((email: string) => email.trim().toLowerCase())
+                  ),
+                ]
+              : [];
+
+          toAfterImport.forEach((email: string) => {
             // Access the 'inputEmails' FormArray and push a new FormControl with the trimmed email
-            this.emailDistributionList
-              .get('to')
-              .get('inputEmails')
-              .push(this.formBuilder.control(email.trim()));
+            if (
+              !this.emailDistributionList
+                ?.getRawValue()
+                ?.to?.inputEmails?.includes(email)
+            ) {
+              this.emailDistributionList
+                .get('to')
+                .get('inputEmails')
+                .push(this.formBuilder.control(email.trim()));
+            }
           });
 
-          Cc.forEach((email: string) => {
+          ccAfterImport.forEach((email: string) => {
             // Access the 'inputEmails' FormArray and push a new FormControl with the trimmed email
-            this.emailDistributionList
-              .get('cc')
-              .get('inputEmails')
-              .push(this.formBuilder.control(email.trim()));
+            if (
+              !this.emailDistributionList
+                ?.getRawValue()
+                ?.cc?.inputEmails?.includes(email)
+            ) {
+              this.emailDistributionList
+                .get('cc')
+                .get('inputEmails')
+                .push(this.formBuilder.control(email.trim()));
+            }
           });
 
-          Bcc.forEach((email: string) => {
+          bccAfterImport.forEach((email: string) => {
             // Access the 'inputEmails' FormArray and push a new FormControl with the trimmed email
-            this.emailDistributionList
-              .get('bcc')
-              .get('inputEmails')
-              .push(this.formBuilder.control(email.trim()));
+            if (
+              !this.emailDistributionList
+                ?.getRawValue()
+                ?.bcc?.inputEmails?.includes(email)
+            ) {
+              this.emailDistributionList
+                .get('bcc')
+                .get('inputEmails')
+                .push(this.formBuilder.control(email.trim()));
+            }
           });
 
           this.templateFor = 'to';
-          this.validateDistributionList();
+          await this.validateDistributionList();
+
           if (this.fileElement) this.fileElement.nativeElement.value = '';
           this.snackBar.openSnackBar(
             this.translate.instant(
@@ -371,65 +419,70 @@ export class SelectDistributionComponent
    *
    * @returns return true or false
    */
-  checkToValid() {
-    this.loading = true;
-    // Check if field
-    if (
-      this.emailDistributionList?.get('to')?.get('query')?.get('name')?.value ||
-      this.emailDistributionList?.get('to')?.get('resouce').value
-    ) {
-      if (this.emailService?.filterToEmails?.length === 0) {
-        return false;
+  checkToValid(): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.loading = true;
+      // Check if field
+      if (
+        this.emailDistributionList?.get('to')?.get('query')?.get('name')
+          ?.value ||
+        this.emailDistributionList?.get('to')?.get('resouce')?.value
+      ) {
+        if (this.emailService?.filterToEmails?.length === 0) {
+          resolve(false);
+        }
       }
-    }
-    if (
-      this.emailService.toDLHasFilter &&
-      this.emailDistributionList?.get('to')?.get('query')?.get('name')?.value
-    ) {
-      const query = {
-        emailDistributionList: cloneDeep(
-          this.emailDistributionList.getRawValue()
-        ),
-      };
-      this.http
-        .post(
-          `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
-          query
-        )
-        .subscribe(
-          (response: any) => {
+      if (
+        this.emailService.toDLHasFilter &&
+        this.emailDistributionList?.get('to')?.get('query')?.get('name')?.value
+      ) {
+        const query = {
+          emailDistributionList: cloneDeep(
+            this.emailDistributionList.getRawValue()
+          ),
+        };
+        this.http
+          .post(
+            `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+            query
+          )
+          .toPromise()
+          .then((response: any) => {
             this.loading = false;
             this.emailService.filterToEmails =
               response?.to?.length > 0 ? response?.to : [];
             if (
               this.emailService?.datasetsForm?.value?.emailDistributionList
                 ?.name?.length > 0 &&
+              !this.isNameDuplicate() &&
               response?.to.length > 0
             ) {
               this.emailService.disableSaveAndProceed.next(false);
             }
-            return response?.to.length > 0;
-          },
-          (error: any) => {
-            console.log(error);
+            resolve(response?.to.length > 0);
+          })
+          .catch((error) => {
+            console.error(error);
             this.emailService.filterToEmails = [];
-          }
+            resolve(false);
+          });
+      } else {
+        resolve(
+          this.emailDistributionList.get('to').get('inputEmails')?.value
+            ?.length > 0
         );
-    } else {
-      return (
-        this.emailDistributionList.get('to').get('inputEmails').value.length > 0
-      );
-    }
-    this.loading = false;
-    this.emailService.disableSaveAndProceed.next(true);
-    return false;
+      }
+      this.loading = false;
+      this.emailService.disableSaveAndProceed.next(true);
+      resolve(false);
+    });
   }
 
   /**
    * The distribution list should have at least
    * one To email address and name to proceed with next steps
    */
-  validateDistributionList(): void {
+  async validateDistributionList(): Promise<void> {
     const noSaveAllowed =
       this.emailDistributionList.get('name')?.value?.length < 1 ||
       this.emailDistributionList.get('name')?.value?.trim() === '' ||
@@ -441,7 +494,9 @@ export class SelectDistributionComponent
         this.emailDistributionList.get('name').value;
     }
 
-    if (noSaveAllowed || !this.checkToValid()) {
+    const valid = await this.checkToValid();
+
+    if (noSaveAllowed || !valid) {
       this.emailService.disableFormSteps.next({
         stepperIndex: 2,
         disableAction: true,
@@ -451,10 +506,10 @@ export class SelectDistributionComponent
 
     if (
       this.emailService.distributionListName &&
-      this.checkToValid() &&
+      valid &&
       !this.isNameDuplicate()
     ) {
-      this.emailService.disableSaveAsDraft.next(false);
+      this.emailService.disableSaveAndProceed.next(false);
     }
   }
 
