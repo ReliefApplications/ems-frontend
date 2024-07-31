@@ -600,18 +600,31 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     ];
     const dataArray: FormArray | any = new FormArray([]);
     for (let index = 0; index < emailData.datasets.length; index++) {
-      //Adding Tabs detail
-      dataArray.push(
-        this.createNewDataSetGroup(emailData.datasets[index], index)
-      );
+      if (
+        !emailData.datasets[index].name ||
+        emailData.datasets[index].name.trim() === ''
+      ) {
+        emailData.datasets[index].name = `Block ${index + 1}`;
+        dataArray.push(
+          this.createNewDataSetGroup(emailData.datasets[index], index)
+        );
+      } else {
+        //Adding Tabs detail
+        dataArray.push(
+          this.createNewDataSetGroup(emailData.datasets[index], index)
+        );
+      }
       // this.formatDataArray(this.emailService.datasetsForm.controls.datasets);
       if (index === 0) {
-        this.emailService.tabs[0].title = emailData.datasets[index].name;
-        this.emailService.tabs[0].content = emailData.datasets[index].name;
+        this.emailService.tabs[0].title =
+          emailData.datasets[index].name ?? 'Block 1';
+        this.emailService.tabs[0].content =
+          emailData.datasets[index].name ?? 'Block 1 Content';
       } else {
         this.emailService.tabs.push({
-          title: emailData.datasets[index].name,
-          content: emailData.datasets[index].name,
+          title: emailData.datasets[index].name ?? `Block ${index + 1}`,
+          content:
+            emailData.datasets[index].name ?? `Block ${index + 1} Content`,
           active: false,
           index: index,
         });
