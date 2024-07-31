@@ -55,6 +55,7 @@ export * from './lib/models/layout.model';
 export * from './lib/models/aggregation.model';
 export * from './lib/models/reference-data.model';
 export * from './lib/models/metadata.model';
+export * from './lib/models/custom-notification.model';
 
 // === COMPONENTS ===
 export * from './lib/components/aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
@@ -96,6 +97,7 @@ export * from './lib/components/users/public-api';
 export * from './lib/components/upload-records/public-api';
 export * from './lib/components/upload-menu/public-api';
 export * from './lib/components/payload-modal/payload-modal.component';
+export * from './lib/components/filter/public-api';
 
 // Export of controls
 export * from './lib/components/controls/public-api';

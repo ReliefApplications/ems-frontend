@@ -182,6 +182,14 @@ const routes: Routes = [
               },
             },
           },
+          {
+            path: 'triggers',
+            loadChildren: () =>
+              import('./pages/triggers/triggers.module').then(
+                (m) => m.TriggersModule
+              ),
+            canActivate: [PermissionGuard],
+          },
         ],
       },
       {

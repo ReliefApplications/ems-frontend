@@ -1,0 +1,128 @@
+<h1>{{ 'common.trigger.few' | translate }}</h1>
+
+<!-- Filtering -->
+<app-triggers-filter
+  class="block mb-8"
+  (filter)="onFilter($event)"
+  [loading]="filterLoading"
+></app-triggers-filter>
+
+<!-- Table container -->
+<div class="overflow-x-hidden shadow-2lg">
+  <!-- Table scroll container -->
+  <div class="overflow-x-auto">
+    <table
+      *ngIf="!loading"
+      cdk-table
+      uiTableWrapper
+      [dataSource]="resources"
+      [trackBy]="getUniqueIdentifier"
+      multiTemplateDataRows
+    >
+    <!-- Resource Name -->
+    <ng-container cdkColumnDef="name">
+      <th uiCellHeader *cdkHeaderCellDef scope="col">
+        {{ 'common.name' | translate }}
+      </th>
+      <td
+        uiCell
+        *cdkCellDef="let element"
+        class="!text-gray-900 !font-medium"
+      >
+        {{ element.resource.name }}
+      </td>
+    </ng-container>
+
+    <!-- Resource information about existing triggers -->
+    <ng-container cdkColumnDef="info" [stickyEnd]="true">
+      <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+      <td uiCell *cdkCellDef="let element">
+        <div class="flex flex-row items-center">
+          <!-- Info about existing triggers -->
+          <ng-container *ngFor="let trigger of element.triggers">
+            <ui-icon
+              class="ml-2"
+              [icon]="trigger.icon"
+              [variant]="trigger.variant"
+              [uiTooltip]="trigger.tooltip | translate"
+            >
+            </ui-icon>
+          </ng-container>
+          <!-- Open Resource -->
+          <ui-button
+            [isIcon]="true"
+            [icon]="
+              element.resource.id === openedResource?.id
+                ? 'keyboard_arrow_up'
+                : 'keyboard_arrow_down'
+            "
+            (click)="toggleResource(element.resource)"
+            [disabled]="loading || updating"
+            [uiTooltip]="
+              'common.' +
+                (element.resource.id === openedResource?.id
+                  ? 'close'
+                  : 'edit') | translate
+            "
+          >
+          </ui-button>
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Expanded details -->
+    <ng-container cdkColumnDef="expandedDetail">
+      <td
+      uiCell
+      *cdkCellDef="let element"
+      [attr.colspan]="displayedColumns.length"
+      [ngClass]="element.resource.id === openedResource?.id ? '' : 'hidden'"
+    >
+      <div
+        class="expanded-form"
+        [@detailExpand]="
+          element.resource.id === openedResource?.id
+            ? 'expanded'
+            : 'collapsed'
+        "
+      >
+        <ng-container
+          *ngIf="
+            openedResource && element.resource.id === openedResource?.id
+          "
+        >
+          Test text
+
+          <!-- ADD FILTERS LIKE shared-resource-access-filters HERE (to be created) -->
+          <!-- <shared-filter [form]="form" [fields]="filterFields"></shared-filter> -->
+
+          <!-- ADD BUTTONS TO OPEN MODALS FOR EACH TRIGGER TYPE HERE (to be created) -->
+        </ng-container>
+      </div>
+    </td>
+    </ng-container>
+
+    <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+    <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
+    <tr cdk-row *cdkRowDef="let row; columns: ['expandedDetail']"></tr>
+  </table>
+
+  <!-- Empty table skeleton -->
+  <shared-skeleton-table
+    class="my-4 mx-0 w-full"
+    *ngIf="loading"
+    [columns]="['common.name']"
+  ></shared-skeleton-table>
+  </div>
+</div>
+
+<ui-paginator
+  [disabled]="loading || updating"
+  [pageIndex]="pageInfo.pageIndex"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.resource.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>

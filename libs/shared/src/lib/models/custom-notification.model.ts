@@ -15,6 +15,10 @@ export interface CustomNotification {
   createdAt?: Date;
   modifiedAt?: Date;
   status?: string;
+  onRecordCreation?: boolean;
+  onRecordUpdate?: boolean;
+  applicationTrigger?: boolean;
+  filter?: any;
 }
 
 /** Model for add custom notification mutation response */

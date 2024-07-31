@@ -475,6 +475,11 @@
       }
     },
     "true": "Vrai",
+    "trigger": {
+      "few": "Déclencheurs",
+      "none": "Aucun déclencheur",
+      "one": "Déclenchement"
+    },
     "type": {
       "few": "Types",
       "none": "Aucun type",
@@ -1396,6 +1401,16 @@
       "type": {
         "email": "E-mail",
         "title": "Type de modèle"
+      }
+    },
+    "triggers": {
+      "tooltip": {
+        "withCronBasedTrigger": "Ressource avec un déclencheur basé sur cron",
+        "withoutCronBasedTrigger": "Ressource sans aucun déclencheur basé sur cron",
+        "withOnRecordCreationTrigger": "Ressource avec un déclencheur lors de la création d'un enregistrement",
+        "withoutOnRecordCreationTrigger": "Ressource sans aucun déclencheur lors de la création d'un enregistrement",
+        "withOnRecordUpdateTrigger": "Ressource avec un déclencheur lors de la mise à jour de l'enregistrement",
+        "withoutOnRecordUpdateTrigger": "Ressource sans aucun déclencheur lors de la mise à jour de l'enregistrement"
       }
     },
     "user": {

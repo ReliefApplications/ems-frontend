@@ -159,7 +159,7 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Filters applications and updates table.
+   * Filters resources and updates table.
    *
    * @param filter filter event.
    */

@@ -475,6 +475,11 @@
       }
     },
     "true": "True",
+    "trigger": {
+      "few": "Triggers",
+      "none": "No triggers",
+      "one": "Trigger"
+    },
     "type": {
       "few": "Types",
       "none": "No type",
@@ -1384,6 +1389,16 @@
       "type": {
         "email": "Email",
         "title": "Template type"
+      }
+    },
+    "triggers": {
+      "tooltip": {
+        "withCronBasedTrigger": "Resource with a cron based trigger",
+        "withoutCronBasedTrigger": "Resource without any cron based trigger",
+        "withOnRecordCreationTrigger": "Resource with a trigger on record creation",
+        "withoutOnRecordCreationTrigger": "Resource without any trigger on record creation",
+        "withOnRecordUpdateTrigger": "Resource with a trigger on record update",
+        "withoutOnRecordUpdateTrigger": "Resource without any trigger on record update"
       }
     },
     "user": {
