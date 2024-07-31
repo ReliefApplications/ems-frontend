@@ -355,15 +355,14 @@ export class SelectDistributionComponent
 
   /**
    *
-   * check for valid email inouts
-   * @returns return true or false
+   *check for valid email inouts
    *
+   * @returns return true or false
    */
   checkToValid() {
     if (
       this.emailService.toDLHasFilter &&
-      this.emailDistributionList?.get('to')?.get('query')?.get('resource')
-        ?.value
+      this.emailDistributionList?.get('to')?.get('query')?.get('name')?.value
     ) {
       const query = {
         emailDistributionList: cloneDeep(
@@ -376,6 +375,13 @@ export class SelectDistributionComponent
           query
         )
         .subscribe((response: any) => {
+          if (
+            this.emailService?.datasetsForm?.value?.emailDistributionList?.name
+              ?.length > 0 &&
+            response?.to.length > 0
+          ) {
+            this.emailService.disableSaveAndProceed.next(false);
+          }
           return response?.to.length > 0;
         });
     } else {
