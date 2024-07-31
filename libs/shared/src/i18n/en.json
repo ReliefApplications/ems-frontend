@@ -826,7 +826,7 @@
 				"noResource": "Select a resource using the dropdown to display Distribution list filter wizard",
 				"noResourceFields": "Selected resource doesn't contain any fields",
 				"noSelectedFields": "Please select at least 1 field to save this dataset",
-				"selectChildFields": "You have selected an Object/list field. Select atleast one child field to proceed further.",
+				"selectChildFields": "You have selected an Object/list field. Select atleast one child field to proceed further and/or preview.",
 				"tooManyRecords": "At this moment, we are limited to fetch only 50 records. Based on the provided filter conditions there are <strong>{{totalRecords}}</strong> matching records. Please add some additional filters to bring the record count less than or equals to 50."
 			},
 			"back": "Back to list",
@@ -853,6 +853,9 @@
 				"list": "Distribution List",
 				"name": "Distribution List name",
 				"to": "To"
+			},
+			"error": {
+				"invalidDataset": "Following datasets are not valid: {{badDatasets}}"
 			},
 			"image": {
 				"rectangleValidation": "Please upload an image with a more rectangular aspect ratio, similar to 960x80.",

@@ -26,6 +26,8 @@ import { RestService } from '../../services/rest/rest.service';
 import { FieldStore } from './models/email.const';
 import { ResourceQueryResponse } from '../../models/resource.model';
 import { prettifyLabel } from '../../utils/prettify';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Helper functions service for emails template.
@@ -219,6 +221,54 @@ export class EmailService {
   }
 
   /**
+   * Checks if all datasets are valid
+   *
+   * @returns if dataset is valid or not
+   */
+  checkDatasetsValid(): Promise<{ valid: boolean; badData: string[] }> {
+    return new Promise((resolve, reject) => {
+      let valid = true;
+      const badData: string[] = [];
+
+      const emailDatasets = cloneDeep(
+        this.datasetsForm.get('datasets')?.getRawValue()
+      );
+
+      const requests = emailDatasets.map((data: any) => {
+        if (data.resource) {
+          return this.http
+            .post(
+              `${this.restService.apiUrl}/notification/preview-dataset`,
+              data
+            )
+            .toPromise()
+            .then((response: any) => {
+              if (response.count > 50) {
+                badData.push(data.name);
+                console.log('Response', response);
+                console.log();
+                valid = false;
+              }
+            })
+            .catch(() => {
+              badData.push(data.name);
+              valid = false;
+            });
+        } else {
+          // Return a resolved promise for datasets without a resource
+          return Promise.resolve();
+        }
+      });
+
+      Promise.all(requests)
+        .then(() => {
+          resolve({ valid, badData });
+        })
+        .catch(reject);
+    });
+  }
+
+  /**
    * Generates new query form group.
    *
    * @returns new query form group.
@@ -242,13 +292,17 @@ export class EmailService {
    * @param http The HttpClient instance used for making HTTP requests
    * @param restService mapping of the url
    * @param ngZone The NgZone instance
+   * @param translate The TranslateService
+   * @param snackBar The SnackBarService
    */
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
     private http: HttpClient,
     private restService: RestService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private translate: TranslateService,
+    private snackBar: SnackbarService
   ) {
     this.setDatasetForm();
     this.initLayoutData();

@@ -210,14 +210,30 @@ export class DatasetFilterComponent
       this.availableFields = availableFields;
       this.selectedResourceId = selectedResourceId;
     }
+
+    this.setFieldsValidity();
     // Saves Dataset form form when called.
-    this.datasetSaveSubscription = this.emailService.datasetSave.subscribe(
-      (save) => {
-        if (save) {
-          this.getDataSet('preview');
+    // this.datasetSaveSubscription = this.emailService.datasetSave.subscribe(
+    //   (save) => {
+    //     if (save) {
+    //       this.getDataSet('preview');
+    //     }
+    //   }
+    // );
+  }
+
+  /**
+   * Checks if object and list have children set
+   */
+  setFieldsValidity() {
+    this.showFieldsWarning = false;
+    this.query.getRawValue().query?.fields.forEach((field: any) => {
+      if (field.kind == 'OBJECT' || field.kind == 'LIST') {
+        if (field.fields == undefined || field.fields.length == 0) {
+          this.showFieldsWarning = true;
         }
       }
-    );
+    });
   }
 
   override ngOnDestroy() {
@@ -436,67 +452,80 @@ export class DatasetFilterComponent
             },
           };
 
-          this.previewHTML = '';
-
-          this.http
-            .post(
-              `${this.restService.apiUrl}/notification/preview-dataset`,
-              objPreview
-            )
-            .subscribe(
-              (response: any) => {
-                // Navigates straight to preview tab if didn't fail before
-                if (validCheck) {
-                  if (response.count <= 50) {
-                    validCheck = false;
-                  } else {
-                    this.onTabSelect(this.currentTabIndex, false);
-                    this.totalMatchingRecords = response.count;
-                    this.showDatasetLimitWarning = true;
-                  }
-                }
-                if (!validCheck) {
-                  this.onTabSelect(2, false);
-                  this.showPreview = true;
-                  if (response.count <= 50) {
-                    this.showDatasetLimitWarning = false;
-                    let allPreviewData: any = [];
-                    allPreviewData.push({
-                      dataList: response,
-                      datasetFields: this.query
-                        .getRawValue()
-                        .query.fields.map((x: any) => x.name),
-                      tabIndex: this.activeTab.index,
-                      tabName: this.activeTab.title,
-                    });
-                    if (this.tabs.length == allPreviewData.length) {
-                      allPreviewData = allPreviewData.sort(
-                        (a: any, b: any) => a.tabIndex - b.tabIndex
-                      );
-                      this.loading = false;
-                      this.emailService.setAllPreviewData(allPreviewData);
-                    }
-                  } else {
-                    this.totalMatchingRecords = response.count;
-                    this.showDatasetLimitWarning = true;
-                  }
-                  this.previewHTML = window.atob(response.tableHtml);
-                  const previewHTML = document.getElementById(
-                    'tblPreview'
-                  ) as HTMLInputElement;
-                  if (previewHTML) {
-                    previewHTML.innerHTML = this.previewHTML;
-                  }
-                }
-
-                // this.navigateToPreview.emit(response);
-                this.loading = false;
-              },
-              (error: string) => {
-                console.error('Error:', error);
-                this.loading = false;
+          // TODO: Somehow make this go down recursively instead of just checking for just the child
+          this.showFieldsWarning = false;
+          this.query.getRawValue().query?.fields.forEach((field: any) => {
+            if (field.kind == 'OBJECT' || field.kind == 'LIST') {
+              if (field.fields == undefined || field.fields.length == 0) {
+                this.showFieldsWarning = true;
               }
-            );
+            }
+          });
+
+          this.previewHTML = '';
+          if (!this.showFieldsWarning) {
+            this.http
+              .post(
+                `${this.restService.apiUrl}/notification/preview-dataset`,
+                objPreview
+              )
+              .subscribe(
+                (response: any) => {
+                  // Navigates straight to preview tab if didn't fail before
+                  if (validCheck) {
+                    if (response.count <= 50) {
+                      validCheck = false;
+                    } else {
+                      this.onTabSelect(this.currentTabIndex, false);
+                      this.totalMatchingRecords = response.count;
+                      this.showDatasetLimitWarning = true;
+                    }
+                  }
+                  if (!validCheck) {
+                    this.onTabSelect(2, false);
+                    this.showPreview = true;
+                    if (response.count <= 50) {
+                      this.showDatasetLimitWarning = false;
+                      let allPreviewData: any = [];
+                      allPreviewData.push({
+                        dataList: response,
+                        datasetFields: this.query
+                          .getRawValue()
+                          .query.fields.map((x: any) => x.name),
+                        tabIndex: this.activeTab.index,
+                        tabName: this.activeTab.title,
+                      });
+                      if (this.tabs.length == allPreviewData.length) {
+                        allPreviewData = allPreviewData.sort(
+                          (a: any, b: any) => a.tabIndex - b.tabIndex
+                        );
+                        this.loading = false;
+                        this.emailService.setAllPreviewData(allPreviewData);
+                      }
+                    } else {
+                      this.totalMatchingRecords = response.count;
+                      this.showDatasetLimitWarning = true;
+                    }
+                    this.previewHTML = window.atob(response.tableHtml);
+                    const previewHTML = document.getElementById(
+                      'tblPreview'
+                    ) as HTMLInputElement;
+                    if (previewHTML) {
+                      previewHTML.innerHTML = this.previewHTML;
+                    }
+                  }
+
+                  // this.navigateToPreview.emit(response);
+                  this.loading = false;
+                },
+                (error: string) => {
+                  console.error('Error:', error);
+                  this.loading = false;
+                }
+              );
+          } else {
+            this.loading = false;
+          }
         }
       }
     } else {

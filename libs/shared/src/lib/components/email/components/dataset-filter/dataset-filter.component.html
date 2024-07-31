@@ -69,7 +69,10 @@
     </div>
 
     <div class="w-1/3 flex loadingSign">
-      <ui-spinner *ngIf="loading" style="position: relative"></ui-spinner>
+      <ui-spinner
+        *ngIf="loading || emailService.loading"
+        style="position: relative"
+      ></ui-spinner>
     </div>
   </div>
   <div formGroupName="query">
@@ -95,8 +98,8 @@
               *ngTemplateOutlet="noSelectedFieldsAlertTmpl"
             ></ng-container>
             <ng-container
-                class="mt-2"
-                *ngTemplateOutlet="ChildFieldAlertTmpl"
+              class="mt-2"
+              *ngTemplateOutlet="ChildFieldAlertTmpl"
             ></ng-container>
             <div class="flex gap-4 mt-2">
               <div class="mt-2 overflow-auto">
@@ -178,6 +181,10 @@
           <ng-template uiTabContent>
             <ng-container
               class="mt-2"
+              *ngTemplateOutlet="ChildFieldAlertTmpl"
+            ></ng-container>
+            <ng-container
+              class="mt-2"
               *ngTemplateOutlet="tooManyRecordsAlertTmpl"
             ></ng-container>
             <div class="overflow-x-auto">
@@ -225,16 +232,13 @@
 <!-- Please select the child fields of the Selected fields -->
 <ng-template #ChildFieldAlertTmpl>
   <ui-alert
-    variant="warning"
+    variant="danger"
     [closable]="true"
     *ngIf="showFieldsWarning"
     (close)="closeFieldsWarningMessage()"
   >
     <div
-    [innerHTML]="
-    'components.email.alert.selectChildFields'
-      | translate : { totalRecords: totalMatchingRecords }
-  "
+      [innerHTML]="'components.email.alert.selectChildFields' | translate"
     ></div>
   </ui-alert>
 </ng-template>
@@ -258,7 +262,7 @@
 <ng-template #noSelectedFieldsAlertTmpl>
   <ui-alert
     variant="warning"
-    *ngIf="!selectedFields?.length && !showDatasetLimitWarning"
+    *ngIf="query.get('query').get('fields').value.length === 0"
     [closable]="true"
   >
     <div>

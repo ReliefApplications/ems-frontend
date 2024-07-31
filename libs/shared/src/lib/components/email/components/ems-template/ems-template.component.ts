@@ -228,7 +228,7 @@ export class EmsTemplateComponent
   /**
    * Increments the current step by one.
    */
-  public next(): void {
+  public async next(): Promise<void> {
     this.setLayoutValidation = false;
     this.emailService.isLinear = false;
     if (this.currentStep === 0) {
@@ -244,8 +244,31 @@ export class EmsTemplateComponent
       }
     } else if (this.currentStep === 1) {
       if (this.emailService.datasetsForm.controls['name'].valid) {
-        this.currentStep += 1;
-        this.steps[2].disabled = false;
+        try {
+          this.emailService.loading = true;
+          const { valid, badData } =
+            await this.emailService.checkDatasetsValid();
+          this.emailService.loading = false;
+          if (valid) {
+            this.currentStep += 1;
+            this.steps[2].disabled = false;
+          } else {
+            if (badData.length > 0) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'components.email.error.invalidDataset',
+                  {
+                    badDatasets:
+                      badData.length > 1 ? badData.join(', ') : badData[0],
+                  }
+                ),
+                { error: true }
+              );
+            }
+          }
+        } catch (error) {
+          console.error('Error validating datasets:', error);
+        }
       } else {
         this.emailService.datasetsForm.controls['name'].markAsTouched();
         this.emailService.datasetsForm.controls[
