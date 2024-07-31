@@ -262,7 +262,8 @@ export class DatasetFilterComponent
     const previewTabIndex = 2;
     const isValid =
       this.query.get('query').get('fields')?.value.length > 0 &&
-      !this.showDatasetLimitWarning;
+      !this.showDatasetLimitWarning &&
+      !this.showFieldsWarning;
     // Checks if entry is valid
     if (
       newIndex === previewTabIndex &&
