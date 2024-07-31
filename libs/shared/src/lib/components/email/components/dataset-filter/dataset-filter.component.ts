@@ -167,6 +167,7 @@ export class DatasetFilterComponent
     this.query.controls.name.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((data: any) => {
+        this.activeTab = this.tabs.filter((x: any) => x.active)?.[0];
         if (data === null) {
           this.emailService.title.next(this.activeTab.title);
         } else {
@@ -433,7 +434,10 @@ export class DatasetFilterComponent
       // const allPreviewData: any = [];
       if (tabName == 'preview') {
         this.loading = true;
-        for (const query of this.queryValue) {
+        const currentQuery = this.queryValue?.filter(
+          (x: any) => x?.name === this.activeTab?.title
+        );
+        for (const query of currentQuery) {
           let objPreview: any = {};
 
           objPreview = {
@@ -507,12 +511,16 @@ export class DatasetFilterComponent
                       this.totalMatchingRecords = response.count;
                       this.showDatasetLimitWarning = true;
                     }
-                    this.previewHTML = window.atob(response.tableHtml);
-                    const previewHTML = document.getElementById(
-                      'tblPreview'
-                    ) as HTMLInputElement;
-                    if (previewHTML) {
-                      previewHTML.innerHTML = this.previewHTML;
+
+                    const previewRes = window.atob(response.tableHtml);
+                    if (previewRes.includes(this.activeTab.title)) {
+                      this.previewHTML = previewRes;
+                      const previewHTML = document.getElementById(
+                        'tblPreview'
+                      ) as HTMLInputElement;
+                      if (previewHTML) {
+                        previewHTML.innerHTML = this.previewHTML;
+                      }
                     }
                   }
 

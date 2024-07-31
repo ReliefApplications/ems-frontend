@@ -6,7 +6,7 @@
         [selectedIndex]="activeTab?.index"
         #kendoStrip
         formArrayName="datasets"
-        (tabSelect)="changeTab($event, $event)"
+        (selectedIndexChange)="changeTab($event)"
       >
         <div class="mt-4 flex flex-row">
           <ng-container *ngIf="showPreview === false">

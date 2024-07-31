@@ -418,6 +418,7 @@ export class EmailTemplateComponent
           .subscribe(
             (response: any) => {
               this.showPreview = true;
+              this.emailService.filterToEmails = [];
               // Navigates straight to preview tab if didn't fail before
               if (validCheck) {
                 if (response.count <= 50) {
@@ -619,18 +620,26 @@ export class EmailTemplateComponent
         `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
         objPreview
       )
-      .subscribe((response: any) => {
-        if (this.type === 'to') {
-          if (response?.to?.length > 0 && response?.name?.length > 0) {
-            this.emailService.disableSaveAndProceed.next(false);
-            this.emailService.isToValid = true;
-          } else {
-            this.emailService.disableSaveAndProceed.next(true);
-            this.emailService.isToValid = false;
+      .subscribe(
+        (response: any) => {
+          if (this.type === 'to') {
+            this.emailService.filterToEmails =
+              response?.to?.length > 0 ? response?.to : [];
+            if (response?.to?.length > 0 && response?.name?.length > 0) {
+              this.emailService.disableSaveAndProceed.next(false);
+              this.emailService.isToValid = true;
+            } else {
+              this.emailService.disableSaveAndProceed.next(true);
+              this.emailService.isToValid = false;
+            }
           }
+          return response?.to.length > 0;
+        },
+        (error: any) => {
+          console.log(error);
+          this.emailService.filterToEmails = [];
         }
-        return response?.to.length > 0;
-      });
+      );
     return false;
   }
 

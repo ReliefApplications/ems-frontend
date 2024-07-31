@@ -386,16 +386,24 @@ export class SelectDistributionComponent
           `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
           query
         )
-        .subscribe((response: any) => {
-          if (
-            this.emailService?.datasetsForm?.value?.emailDistributionList?.name
-              ?.length > 0 &&
-            response?.to.length > 0
-          ) {
-            this.emailService.disableSaveAndProceed.next(false);
+        .subscribe(
+          (response: any) => {
+            this.emailService.filterToEmails =
+              response?.to?.length > 0 ? response?.to : [];
+            if (
+              this.emailService?.datasetsForm?.value?.emailDistributionList
+                ?.name?.length > 0 &&
+              response?.to.length > 0
+            ) {
+              this.emailService.disableSaveAndProceed.next(false);
+            }
+            return response?.to.length > 0;
+          },
+          (error: any) => {
+            console.log(error);
+            this.emailService.filterToEmails = [];
           }
-          return response?.to.length > 0;
-        });
+        );
     } else {
       return (
         this.emailDistributionList.get('to').get('inputEmails').value.length > 0
@@ -425,13 +433,13 @@ export class SelectDistributionComponent
         this.emailDistributionList.get('name').value;
     }
 
-    if (noSaveAllowed || !this.checkToValid()) {
+    if (noSaveAllowed || this.emailService?.filterToEmails?.length === 0) {
       this.emailService.disableSaveAndProceed.next(true);
     }
 
     if (
       this.emailService.distributionListName &&
-      this.checkToValid() &&
+      this.emailService?.filterToEmails?.length > 0 &&
       !this.isNameDuplicate()
     ) {
       this.emailService.disableSaveAsDraft.next(false);

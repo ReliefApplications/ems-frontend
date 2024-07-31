@@ -173,6 +173,8 @@ export class EmailService {
    *
    */
   public displayDLToError = false;
+  /** For storing emails For To from service response (In select with Filter option) */
+  filterToEmails: any = [];
 
   /**
    * Generates new dataset group.

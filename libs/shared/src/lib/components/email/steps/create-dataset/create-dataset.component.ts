@@ -122,14 +122,8 @@ export class CreateDatasetComponent implements OnInit {
    *  This function is used to change to the correct tab.
    *
    * @param tabIndex The index of the tab thats been selected.
-   * @param event Event of tab selection
    */
-  changeTab(tabIndex: any, event?: any) {
-    if (event && !event?.title) {
-      event.preventDefault();
-      return;
-    }
-
+  changeTab(tabIndex: any) {
     if (tabIndex !== undefined) {
       this.tabIndex = tabIndex;
       this.activeTab = this.tabs.length
@@ -137,9 +131,8 @@ export class CreateDatasetComponent implements OnInit {
         : this.emailService.initialTabValue;
       this.activeTab.active = true;
       this.activeTab.index = tabIndex;
-      this.kendoStrip?.selectTab(tabIndex);
       this.emailService.tabs.forEach((tab, index) => {
-        tab.active = index === tabIndex; // Set active to true for the selected index, false otherwise
+        tab.active = index === tabIndex ? true : false; // Set active to true for the selected index, false otherwise
       });
     }
   }
