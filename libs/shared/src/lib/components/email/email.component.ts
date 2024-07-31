@@ -605,15 +605,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         emailData.datasets[index].name.trim() === ''
       ) {
         emailData.datasets[index].name = `Block ${index + 1}`;
-        dataArray.push(
-          this.createNewDataSetGroup(emailData.datasets[index], index)
-        );
-      } else {
-        //Adding Tabs detail
-        dataArray.push(
-          this.createNewDataSetGroup(emailData.datasets[index], index)
-        );
       }
+      //Adding Tabs detail
+      dataArray.push(
+        this.createNewDataSetGroup(emailData.datasets[index], index)
+      );
       // this.formatDataArray(this.emailService.datasetsForm.controls.datasets);
       if (index === 0) {
         this.emailService.tabs[0].title =
