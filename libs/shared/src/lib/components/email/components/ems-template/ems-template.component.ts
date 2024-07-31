@@ -253,6 +253,7 @@ export class EmsTemplateComponent
             this.currentStep += 1;
             this.steps[2].disabled = false;
           } else {
+            this.emailService.disableSaveAndProceed.next(true);
             if (badData.length > 0) {
               this.snackBar.openSnackBar(
                 this.translate.instant(
