@@ -215,7 +215,6 @@ export class SelectDistributionComponent
         this.distributionLists = res?.data?.emailNotifications?.edges ?? [];
         if (this.emailService.distributionListNames.length === 0) {
           res?.data?.emailNotifications?.edges?.forEach((ele: any) => {
-            this.emailService.emailListLoading = false;
             if (
               ele.node.emailDistributionList.name !== null &&
               ele.node.emailDistributionList.name !== ''
