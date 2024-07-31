@@ -280,8 +280,17 @@ export class EmsTemplateComponent
       this.emailService.datasetSave.emit(true);
       /* in future we will be modifying all the below else ifs */
     } else if (this.currentStep === 2) {
-      this.currentStep += 1;
-      this.steps[3].disabled = false;
+      const toValid = await this.emailService.checkDLToValid();
+      if (toValid) {
+        this.currentStep += 1;
+        this.steps[3].disabled = false;
+      } else {
+        this.emailService.disableSaveAndProceed.next(true);
+        this.snackBar.openSnackBar(
+          this.translate.instant('components.email.error.invalidToValue'),
+          { error: true }
+        );
+      }
     } else if (this.currentStep === 3) {
       this.currentStep += 1;
       this.steps[4].disabled = false;

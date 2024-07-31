@@ -222,6 +222,27 @@ export class EmailService {
     return false;
   }
 
+  async checkDLToValid(): Promise<boolean> {
+    if (this.toDLHasFilter && this.emailDistributionList?.to?.query?.resource) {
+      const query = {
+        emailDistributionList: cloneDeep(this.emailDistributionList),
+      };
+      try {
+        const response: any = await this.http
+          .post(
+            `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+            query
+          )
+          .toPromise();
+        return response?.to.length > 0;
+      } catch (error) {
+        return false;
+      }
+    } else {
+      return this.emailDistributionList?.to?.inputEmails?.length > 0;
+    }
+  }
+
   /**
    * Checks if all datasets are valid
    *
