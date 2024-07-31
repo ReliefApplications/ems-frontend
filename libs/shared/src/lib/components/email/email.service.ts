@@ -973,8 +973,8 @@ export class EmailService {
    * @returns Email Notification that has been deleted.
    */
   deleteEmailNotification(id: string, applicationId: string) {
-    return this.apollo.query<any>({
-      query: GET_AND_UPDATE_EMAIL_NOTIFICATION,
+    return this.apollo.mutate<any>({
+      mutation: GET_AND_UPDATE_EMAIL_NOTIFICATION,
       variables: {
         notification: {
           isDeleted: 1,
