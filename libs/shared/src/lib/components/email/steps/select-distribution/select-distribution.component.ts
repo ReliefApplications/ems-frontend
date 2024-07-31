@@ -213,6 +213,19 @@ export class SelectDistributionComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((res: any) => {
         this.distributionLists = res?.data?.emailNotifications?.edges ?? [];
+        if (this.emailService.distributionListNames.length === 0) {
+          res?.data?.emailNotifications?.edges?.forEach((ele: any) => {
+            this.emailService.emailListLoading = false;
+            if (
+              ele.node.emailDistributionList.name !== null &&
+              ele.node.emailDistributionList.name !== ''
+            ) {
+              this.emailService.distributionListNames.push(
+                ele.node?.emailDistributionList?.name.trim().toLowerCase()
+              );
+            }
+          });
+        }
         let uniqueDistributionLists = Array.from(
           new Set(this.emailService.distributionListNames)
         );
