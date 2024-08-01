@@ -785,7 +785,6 @@ export class EmailTemplateComponent
   onSegmentChange(event: any): void {
     this.noEmail.emit(false);
     const segment = event?.target?.value || event;
-    console.log('Cleared', segment);
     this.activeSegmentIndex = this.individualEmail
       ? 1
       : this.segmentList.indexOf(segment);
