@@ -390,7 +390,9 @@ export class CoreGridComponent
           (contextService.filterRegex.test(this.settings.contextFilters) &&
             this.contextService.shouldRefresh(this.settings, previous, current))
         ) {
-          if (this.dataQuery) this.reloadData();
+          if (this.dataQuery) {
+            this.reloadData();
+          }
         }
       });
 
@@ -408,7 +410,9 @@ export class CoreGridComponent
       this.dashboardService.states$
         .pipe(takeUntil(this.destroy$))
         .subscribe(() => {
-          if (this.dataQuery) this.reloadData();
+          if (this.dataQuery) {
+            this.reloadData();
+          }
         });
     }
   }
@@ -528,7 +532,8 @@ export class CoreGridComponent
               : undefined,
           },
           fetchPolicy: 'no-cache',
-          nextFetchPolicy: 'cache-first',
+          // Enabling the option bellow makes it so that sometimes the items permissions are different from rhe actual query for some reason
+          // nextFetchPolicy: 'cache-first',
         });
       }
 
@@ -1692,6 +1697,7 @@ export class CoreGridComponent
     this.gridData.data = this.gridData.data.filter(
       (x) => !selected.includes(x.id)
     );
+    console.log('this.gridData.data', this.gridData.data);
     this.items = [...this.gridData.data];
     this.removeRowIds.emit(selected);
   }

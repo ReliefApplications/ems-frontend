@@ -75,16 +75,16 @@ export class GridRowActionsComponent implements OnChanges {
   /** @returns A boolean indicating if the component must be shown */
   get display(): boolean {
     return (
-      this.actions.showDetails ||
-      this.actions.history ||
+      this.actions.showDetails?.display ||
+      this.actions.history?.display ||
       this.actions.remove ||
-      (this.item.canDelete && this.actions.delete) ||
-      (this.item.canUpdate && (this.actions.update || this.actions.convert))
+      (this.item.canDelete && this.actions.delete?.display) ||
+      (this.item.canUpdate &&
+        (this.actions.update?.display || this.actions.convert?.display))
     );
   }
 
   ngOnChanges(): void {
-    console.log(this);
     this.availableActions = intersection(
       Object.keys(this.actions).filter((key: string) =>
         get(this.actions, `${key}.display`, false)
