@@ -342,7 +342,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           this.pageInfo.pageSize * this.pageInfo.pageIndex,
           this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
         );
-        this.pageInfo.length = res?.data?.emailNotifications?.edges.length;
+        this.pageInfo.length = data?.emailNotifications?.edges.length;
 
         this.uniqueDLNames = [];
         this.emailService.distributionListNames.forEach((name: any) => {
