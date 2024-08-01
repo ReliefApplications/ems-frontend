@@ -2,6 +2,7 @@ import { Apollo } from 'apollo-angular';
 import {
   GET_SHORT_RESOURCE_BY_ID,
   GET_RESOURCE_BY_ID,
+  GET_RECORD_BY_ID,
 } from '../graphql/queries';
 import {
   ComponentCollection,
@@ -21,7 +22,7 @@ import {
 } from './utils';
 import { get, isNil } from 'lodash';
 import { Question as SharedQuestion, QuestionResource } from '../types';
-import { Record } from '../../models/record.model';
+import { Record, RecordQueryResponse } from '../../models/record.model';
 import { Injector, NgZone } from '@angular/core';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
@@ -30,40 +31,7 @@ import {
   CompositeFilterDescriptor,
   FilterDescriptor,
 } from '@progress/kendo-data-query';
-
-/** Cache for loaded records */
-const loadedRecords: Map<string, Record> = new Map();
-
-/**
- * Adds the selected record to the survey context.
- *
- * @param question resource question
- * @param recordID id of record to add context of
- */
-const addRecordToSurveyContext = (question: Question, recordID: string) => {
-  const survey = question.survey as SurveyModel;
-  if (!survey) {
-    return;
-  }
-  if (!recordID) {
-    // get survey variables
-    survey.getVariableNames().forEach((variable) => {
-      // remove variable if starts with question name
-      if (variable.startsWith(`${question.name}.`))
-        survey.setVariable(variable, null);
-    });
-    return;
-  }
-  // get record from cache
-  const record = loadedRecords.get(recordID);
-  if (!record) return;
-
-  const data = record?.data || {};
-  for (const field in data) {
-    // create survey expression in the format {[questionName].[fieldName]} = [value]
-    survey.setVariable(`${question.name}.${field}`, data[field]);
-  }
-};
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Get the updated filter for the question, with values included.
@@ -141,6 +109,58 @@ export const init = (
   const apollo = injector.get(Apollo);
   const dialog = injector.get(Dialog);
 
+  /** Cache for loaded records */
+  const loadedRecords: Map<string, Record> = new Map();
+
+  /**
+   * Adds the selected record to the survey context.
+   *
+   * @param question resource question
+   * @param recordID id of record to add context of
+   */
+  const addRecordToSurveyContext = async (
+    question: Question,
+    recordID: string
+  ) => {
+    const survey = question.survey as SurveyModel;
+    if (!survey) {
+      return;
+    }
+
+    if (!recordID) {
+      // get survey variables
+      survey.getVariableNames().forEach((variable) => {
+        // remove variable if starts with question name
+        if (variable.startsWith(`${question.name}.`))
+          survey.setVariable(variable, null);
+      });
+      return;
+    }
+    // get record from cache
+    let record = loadedRecords.get(recordID);
+    if (!record) {
+      const { data } = await firstValueFrom(
+        apollo.query<RecordQueryResponse>({
+          query: GET_RECORD_BY_ID,
+          variables: {
+            id: recordID,
+          },
+        })
+      );
+
+      if (data.record) {
+        record = data.record;
+        loadedRecords.set(recordID, record);
+      }
+    }
+
+    const data = record?.data || {};
+    for (const field in data) {
+      // create survey expression in the format {[questionName].[fieldName]} = [value]
+      survey.setVariable(`${question.name}.${field}`, data[field]);
+    }
+  };
+
   const getResourceById = (data: { id: string }) =>
     apollo.query<ResourceQueryResponse>({
       query: GET_SHORT_RESOURCE_BY_ID,
@@ -198,7 +218,6 @@ export const init = (
   const mapQuestionChoices = (data: any, question: any) => {
     return (
       data.resource.records?.edges?.map((x: any) => {
-        loadedRecords.set(x.node?.id || '', x.node);
         return {
           value: x.node?.id,
           text: `${x.node?.data[question.displayField || 'id']}`,
@@ -776,19 +795,20 @@ export const init = (
         actionsButtons.style.display = 'none';
       }
 
-      question.registerFunctionOnPropertyValueChanged(
-        'readOnly',
-        (value: boolean) => {
-          actionsButtons.style.display = value ? 'none' : 'block';
-        }
-      );
-
       // If the survey is not fillable or the config is missing, return
       if (survey.mode === 'display' || !question.resource) {
         return;
       }
 
       const dropdownInstance = question.contentQuestion.dropdownInstance;
+
+      question.registerFunctionOnPropertyValueChanged(
+        'readOnly',
+        (value: boolean) => {
+          actionsButtons.style.display = value ? 'none' : 'block';
+          dropdownInstance.disabled = value;
+        }
+      );
       const searchBtn = buildSearchButton(
         question,
         false,
