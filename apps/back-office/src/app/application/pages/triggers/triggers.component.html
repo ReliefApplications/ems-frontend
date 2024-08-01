@@ -91,10 +91,12 @@
             openedResource && element.resource.id === openedResource?.id
           "
         >
-          Test text
-
-          <!-- ADD FILTERS LIKE shared-resource-access-filters HERE (to be created) -->
-          <!-- <shared-filter [form]="form" [fields]="filterFields"></shared-filter> -->
+           <app-triggers-resource-filters
+            *ngIf="openedResource"
+            [disabled]="loading || updating"
+            [resource]="openedResource"
+            (update)="editResourceTriggersFilters(element.resource, $event)"
+           ></app-triggers-resource-filters>
 
           <!-- ADD BUTTONS TO OPEN MODALS FOR EACH TRIGGER TYPE HERE (to be created) -->
         </ng-container>

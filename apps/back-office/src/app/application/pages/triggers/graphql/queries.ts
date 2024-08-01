@@ -53,10 +53,25 @@ export const GET_RESOURCE = gql`
   query GetResources($id: ID!) {
     resource(id: $id) {
       id
-      forms {
-        id
+      name
+      fields
+      triggersFilters
+      metadata {
         name
-        fields
+        type
+        editor
+        filter
+        multiSelect
+        options
+        fields {
+          name
+          type
+          editor
+          filter
+          multiSelect
+          options
+        }
+        usedIn
       }
     }
   }

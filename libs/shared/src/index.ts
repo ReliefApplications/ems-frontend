@@ -26,6 +26,7 @@ export * from './lib/services/editor/editor.service';
 export * from './lib/services/rest/rest.service';
 export * from './lib/services/map/map-layers.service';
 export * from './lib/services/form-builder/form-builder.service';
+export * from './lib/services/filters/filters.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';

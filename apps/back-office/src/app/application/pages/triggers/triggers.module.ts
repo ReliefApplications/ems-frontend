@@ -19,12 +19,17 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TriggersFilterComponent } from './components/triggers-filter/triggers-filter.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TriggersRoutingModule } from './triggers-routing.module';
+import { TriggersResourceFiltersComponent } from './components/triggers-resource-filters/triggers-resource-filters.component';
 
 /**
  * Triggers page module.
  */
 @NgModule({
-  declarations: [TriggersComponent, TriggersFilterComponent],
+  declarations: [
+    TriggersComponent,
+    TriggersFilterComponent,
+    TriggersResourceFiltersComponent,
+  ],
   imports: [
     CommonModule,
     TranslateModule,

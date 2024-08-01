@@ -1392,13 +1392,20 @@
       }
     },
     "triggers": {
+      "noFilters": "No triggers filters detected",
       "tooltip": {
         "withCronBasedTrigger": "Resource with a cron based trigger",
         "withoutCronBasedTrigger": "Resource without any cron based trigger",
         "withOnRecordCreationTrigger": "Resource with a trigger on record creation",
         "withoutOnRecordCreationTrigger": "Resource without any trigger on record creation",
         "withOnRecordUpdateTrigger": "Resource with a trigger on record update",
-        "withoutOnRecordUpdateTrigger": "Resource without any trigger on record update"
+        "withoutOnRecordUpdateTrigger": "Resource without any trigger on record update",
+        "withFilterCronBasedTrigger": "This filter affects cron based triggers",
+        "noFilterCronBasedTrigger": "This filter doesn't affect cron based triggers",
+        "withFilterOnRecordCreationTrigger": "This filter affects on record creation triggers",
+        "noFilterOnRecordCreationTrigger": "This filter doesn't affect on record creation triggers",
+        "withFilterOnRecordUpdateTrigger": "This filter affects on record update triggers",
+        "noFilterOnRecordUpdateTrigger": "This filter doesn't affect on record update triggers"
       }
     },
     "user": {

@@ -7,6 +7,7 @@ import {
   CustomNotification,
   ApplicationService,
   ResourceQueryResponse,
+  EditResourceMutationResponse,
 } from '@oort-front/shared';
 import {
   animate,
@@ -23,22 +24,18 @@ import {
 } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
 import { GET_RESOURCE, GET_RESOURCES } from './graphql/queries';
+import { EDIT_RESOURCE_TRIGGERS_FILTERS } from './graphql/mutations';
+import { Triggers, TriggersType } from './triggers.types';
+import { isEqual } from 'lodash';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
-
-/** Triggers type for Resource */
-export enum Triggers {
-  cronBased = 'cronBased',
-  onRecordCreation = 'onRecordCreation',
-  onRecordUpdate = 'onRecordUpdate',
-}
 
 /** Interface of table elements */
 interface TableTriggerResourceElement {
   resource: Resource;
   triggers: {
-    name: 'cronBased' | 'onRecordCreation' | 'onRecordUpdate';
+    name: TriggersType;
     icon: string;
     variant: string;
     tooltip: string;
@@ -182,7 +179,7 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
    *
    * @param resource The resource element for the resource to be toggled
    */
-  toggleResource(resource: Resource): void {
+  public toggleResource(resource: Resource): void {
     if (resource.id === this.openedResource?.id) {
       this.openedResource = undefined;
     } else {
@@ -205,6 +202,77 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
+   * Edit resource triggers filter
+   *
+   * @param resource resource to update
+   * @param update update to perform
+   */
+  public editResourceTriggersFilters(resource: Resource, update: any): void {
+    this.updating = true;
+    this.apollo
+      .mutate<EditResourceMutationResponse>({
+        mutation: EDIT_RESOURCE_TRIGGERS_FILTERS,
+        variables: {
+          id: resource.id,
+          triggersFilters: update,
+          application: this.applicationId,
+        },
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ errors, data }) => {
+          this.handleResourceMutationResponse(resource, { data, errors });
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+          this.updating = false;
+        },
+      });
+  }
+
+  /**
+   * Handle snackbar and resource table element update for any given graphql mutation in resource
+   *
+   * @param resource given resource
+   * @param response mutation response
+   * @param response.data data from mutation response
+   * @param response.errors errors from mutation response
+   * @param updateCachedResources boolean to trigger if cached resources array should be updated or not, default value false
+   */
+  private handleResourceMutationResponse(
+    resource: any,
+    response: { data: any; errors: any },
+    updateCachedResources = false
+  ) {
+    this.updating = false;
+    const { data, errors } = response;
+    if (data?.editResource) {
+      const index = this.resources.findIndex(
+        (x) => x.resource.id === resource.id
+      );
+      const tableElements = [...this.resources];
+      tableElements[index] = this.setTableElement(
+        isEqual(resource.id, this.openedResource?.id)
+          ? { ...this.openedResource, ...data?.editResource }
+          : data?.editResource
+      );
+      this.resources = tableElements;
+      if (updateCachedResources) {
+        const cachedIndex = this.cachedResources.findIndex(
+          (x) => x.id === resource.id
+        );
+        this.cachedResources[cachedIndex] = tableElements[index].resource;
+      }
+      if (isEqual(resource.id, this.openedResource?.id)) {
+        this.openedResource = tableElements[index].resource;
+      }
+    }
+    if (errors) {
+      this.snackBar.openSnackBar(errors[0].message, { error: true });
+    }
+  }
+
+  /**
    * Serialize single table element from resource
    *
    * @param resource resource to serialize
@@ -217,11 +285,11 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
         Triggers.cronBased,
         Triggers.onRecordCreation,
         Triggers.onRecordUpdate,
-      ].map((x) => ({
-        name: x,
-        icon: this.getIcon(x),
-        variant: this.getVariant(resource, x),
-        tooltip: this.getTooltip(resource, x),
+      ].map((trigger) => ({
+        name: trigger,
+        icon: this.getIcon(trigger),
+        variant: this.getVariant(resource, trigger),
+        tooltip: this.getTooltip(resource, trigger),
       })),
     };
   }
@@ -244,7 +312,7 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Gets the correspondent variant for a given permission
+   * Gets the correspondent variant for a given trigger
    *
    * @param resource A resource
    * @param trigger The trigger name
@@ -265,7 +333,7 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Gets the correspondent tooltip for a given permission
+   * Gets the correspondent tooltip for a given trigger
    *
    * @param resource A resource
    * @param trigger The trigger name
