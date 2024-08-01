@@ -129,7 +129,7 @@ export class SelectDistributionComponent
       .map((y: any) => y.emailDistributionList)
       .findIndex(
         (x: any) =>
-          x.get('name').value.toLowerCase() ==
+          x?.get('name').value.toLowerCase() ==
           this.emailDistributionList?.('name')?.value.trim().toLowerCase()
       );
     if (existingDataIndex > -1) {
@@ -497,6 +497,7 @@ export class SelectDistributionComponent
       this.isNameDuplicate();
 
     //Distribution List name is valid
+    console.log(this.emailDistributionList.get('name').value);
     if (!noSaveAllowed) {
       this.emailService.distributionListName =
         this.emailDistributionList.get('name').value;
@@ -557,11 +558,18 @@ export class SelectDistributionComponent
   createNewDL() {
     this.showExistingDistributionList = !this.showExistingDistributionList;
     this.emailService.selectedDLName = '';
-    this.emailDistributionList.get('name').setValue('');
+    // this.emailDistributionList.get('name').setValue('');
+    this.emailService.datasetsForm
+      ?.get('emailDistributionList')
+      ?.get('name')
+      ?.setValue('');
 
     this.clearAllTabsData('to');
     this.clearAllTabsData('cc');
     this.clearAllTabsData('bcc');
+    this.emailDistributionList = this.emailService.datasetsForm.get(
+      'emailDistributionList'
+    );
   }
 
   /**
@@ -571,34 +579,35 @@ export class SelectDistributionComponent
    * @param type - Tab name
    */
   clearAllTabsData(type: any) {
-    const fields = this.emailDistributionList
-      .get(type)
-      .get('query')
-      .get('fields') as FormArray;
+    const query = this.emailDistributionList
+      ?.get(type)
+      ?.get('query') as FormGroup;
+    query.get('name')?.setValue('');
+    const fields = this.emailService.datasetsForm
+      ?.get('emailDistributionList')
+      ?.get(type)
+      ?.get('query')
+      ?.get('fields') as FormArray;
     fields.clear();
 
-    const inputEmails = this.emailDistributionList
-      .get(type)
-      .get('inputEmails') as FormArray;
+    const inputEmails = this.emailService.datasetsForm
+      ?.get('emailDistributionList')
+      ?.get(type)
+      ?.get('inputEmails') as FormArray;
     inputEmails.clear();
 
-    const filter = this.emailDistributionList
-      .get(type)
-      .get('query')
-      .get('filter') as FormGroup;
+    const filter = this.emailService.datasetsForm
+      ?.get('emailDistributionList')
+      ?.get(type)
+      ?.get('query')
+      ?.get('filter') as FormGroup;
     const filters = filter.get('filters') as FormArray;
     filters.clear();
 
-    this.emailDistributionList.get(type).get('resource').setValue('');
     this.emailService.datasetsForm
       ?.get('emailDistributionList')
       ?.get(type)
       ?.get('resource')
       ?.setValue('');
-    const toInput = this.emailService.datasetsForm
-      ?.get('emailDistributionList')
-      ?.get(type)
-      ?.get('inputEmails') as FormArray;
-    toInput.clear();
   }
 }
