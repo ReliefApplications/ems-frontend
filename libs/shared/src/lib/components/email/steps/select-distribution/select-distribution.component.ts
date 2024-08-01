@@ -11,7 +11,7 @@ import { DownloadService } from '../../../../services/download/download.service'
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/public-api';
 import { cloneDeep } from 'lodash';
@@ -176,10 +176,17 @@ export class SelectDistributionComponent
       ?.get('name')
       ?.value?.trim()
       .toLowerCase();
-    const isDupe =
-      this.emailService.distributionListNames.includes(enteredName);
-    this.emailService.isDLNameDuplicate = isDupe;
-    return isDupe;
+    if (
+      this.emailService.selectedDLName?.trim()?.toLowerCase() !==
+      enteredName?.trim()?.toLowerCase()
+    ) {
+      const isDupe =
+        this.emailService.distributionListNames.includes(enteredName);
+      this.emailService.isDLNameDuplicate = isDupe;
+      return isDupe;
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -284,6 +291,7 @@ export class SelectDistributionComponent
       .get('bcc')
       ?.patchValue(emailDL.get('bcc')?.value);
     this.emailDistributionList = emailDL;
+    this.emailService.selectedDLName = emailDL?.getRawValue()?.name;
     this.distributionListId = this.distributionLists[index].node.id;
     this.showExistingDistributionList = !this.showExistingDistributionList;
     this.validateDistributionList();
@@ -540,5 +548,45 @@ export class SelectDistributionComponent
       this.cacheDistributionList
     );
     this.distributionLists = this.cachedData;
+  }
+
+  /**
+   *
+   * click of create New DL , so we are clearingthe data or reseting the form for reuse again
+   */
+  createNewDL() {
+    this.showExistingDistributionList = !this.showExistingDistributionList;
+    this.emailService.selectedDLName = '';
+    this.emailDistributionList.get('name').setValue('');
+
+    this.clearAllTabsData('to');
+    this.clearAllTabsData('cc');
+    this.clearAllTabsData('bcc');
+  }
+
+  /**
+   *
+   * clearing data from To, CC, Bcc by passign th tabname
+   * @param type - Tab name
+   *
+   */
+  clearAllTabsData(type: any) {
+    const fields = this.emailDistributionList
+      .get(type)
+      .get('query')
+      .get('fields') as FormArray;
+    fields.clear();
+
+    const inputEmails = this.emailDistributionList
+      .get(type)
+      .get('inputEmails') as FormArray;
+    inputEmails.clear();
+
+    const filter = this.emailDistributionList
+      .get(type)
+      .get('query')
+      .get('filter') as FormGroup;
+    const filters = filter.get('filters') as FormArray;
+    filters.clear();
   }
 }

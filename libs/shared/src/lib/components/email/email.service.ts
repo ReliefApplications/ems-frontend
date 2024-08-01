@@ -177,6 +177,11 @@ export class EmailService {
   public isDLNameDuplicate = false;
   /** For storing emails For To from service response (In select with Filter option) */
   filterToEmails: any = [];
+  /**
+   * Name of selected DL name in DL screen used for use existing;
+   * 1) Assign value on select of existing; 2) Clear the value on click of Create New
+   */
+  public selectedDLName: any = '';
 
   /**
    * Generates new dataset group.

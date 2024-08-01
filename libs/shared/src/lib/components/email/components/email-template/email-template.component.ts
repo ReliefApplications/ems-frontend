@@ -669,6 +669,8 @@ export class EmailTemplateComponent
                 this.emailService.isToValid = false;
               }
             }
+          } else if (this.type === 'cc' || this.type === 'bcc') {
+            this.validateNextButton();
           }
           resolve(response?.to.length > 0);
         })
@@ -678,6 +680,24 @@ export class EmailTemplateComponent
           resolve(false);
         });
     });
+  }
+
+  /**
+   *
+   * validating next button by taking 3 conditions in consideration DL name mandatory, check duplicate name validation and requires To email
+   */
+  validateNextButton() {
+    const isDLNameExists =
+      this.emailService.datasetsForm
+        ?.getRawValue()
+        ?.emailDistributionList?.name?.trim()?.length > 0;
+    const isDlDuplicateNm = this.emailService.isDLNameDuplicate;
+    const isExistsToEmail = this.emailService.isToValid;
+    if (isDLNameExists && !isDlDuplicateNm && isExistsToEmail) {
+      this.emailService.disableSaveAndProceed.next(false);
+    } else {
+      this.emailService.disableSaveAndProceed.next(true);
+    }
   }
 
   override async ngOnDestroy(): Promise<void> {
