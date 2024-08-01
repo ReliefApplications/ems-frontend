@@ -161,9 +161,9 @@ export class EmsTemplateComponent
     });
     this.emailService.disableFormSteps
       .pipe(first())
-      .subscribe((res: { stepperIndex: number; disableAction: boolean }) => {
-        if (res.disableAction) {
-          this.disableAllNextSteps(res?.stepperIndex);
+      .subscribe(({ stepperIndex, disableAction }) => {
+        if (disableAction) {
+          this.disableAllNextSteps(stepperIndex);
         }
       });
     this.emailService.datasetsForm.controls['name'].valueChanges.subscribe(
@@ -746,7 +746,7 @@ export class EmsTemplateComponent
               this.emailService.editId,
               manipulatedDataWithoutOptions
             )
-            .subscribe((res: any) => {
+            .subscribe((res) => {
               this.emailService.isEdit = false;
               this.emailService.editId = '';
               this.emailService.configId = res.data.editEmailNotification.id;
@@ -764,8 +764,8 @@ export class EmsTemplateComponent
           this.emailService
             .addEmailNotification(manipulatedDataWithoutOptions)
             .pipe(takeUntil(this.destroy$))
-            .subscribe((res: any) => {
-              this.emailService.configId = res.data.addEmailNotification.id;
+            .subscribe(({ data }) => {
+              this.emailService.configId = data.addEmailNotification.id;
 
               this.snackBar.openSnackBar(
                 this.translate.instant(

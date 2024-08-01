@@ -231,13 +231,13 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.emailListLoading = true;
     this.emailService
       .getEmailNotifications(this.applicationId)
-      .subscribe((res: any) => {
+      .subscribe(({ data }: any) => {
         this.emailService.distributionListNames = [];
         this.emailService.emailNotificationNames = [];
-        if (res?.data?.emailNotifications?.edges?.length === 0) {
+        if (data?.emailNotifications?.edges?.length === 0) {
           this.emailService.emailListLoading = false;
         }
-        res?.data?.emailNotifications?.edges?.forEach((ele: any) => {
+        data?.emailNotifications?.edges?.forEach((ele: any) => {
           this.emailService.emailListLoading = false;
           if (
             ele.node.emailDistributionList.name !== null &&
@@ -290,15 +290,15 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     });
     this.emailService
       .getEmailNotifications(this.applicationId)
-      .subscribe((res: any) => {
+      .subscribe(({ data }: any) => {
         this.templateActualData = [];
-        if (res?.data?.emailNotifications?.edges?.length === 0) {
+        if (data?.emailNotifications?.edges?.length === 0) {
           this.emailService.emailListLoading = false;
         }
         this.distributionLists = [];
         this.emailService.distributionListNames = [];
         this.emailService.emailNotificationNames = [];
-        res?.data?.emailNotifications?.edges?.forEach((ele: any) => {
+        data?.emailNotifications?.edges?.forEach((ele: any) => {
           this.templateActualData.push(ele.node);
           this.emailService.emailListLoading = false;
           if (

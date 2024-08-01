@@ -523,7 +523,7 @@ export class ReferenceDataComponent
     data: EditReferenceDataMutationResponse | null | undefined,
     errors: readonly GraphQLError[] | undefined,
     loading: boolean,
-    usingForm: boolean = false
+    usingForm = false
   ) {
     if (errors) {
       this.snackBar.openSnackBar(

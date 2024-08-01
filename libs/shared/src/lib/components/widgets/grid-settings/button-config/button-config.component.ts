@@ -11,7 +11,10 @@ import { Form } from '../../../../models/form.model';
 import { Resource } from '../../../../models/resource.model';
 import { ContentType } from '../../../../models/page.model';
 import { WorkflowService } from '../../../../services/workflow/workflow.service';
-import { TemplateTypeEnum } from '../../../../models/template.model';
+import {
+  EmailTemplate,
+  TemplateTypeEnum,
+} from '../../../../models/template.model';
 import { Dialog } from '@angular/cdk/dialog';
 import { createQueryForm } from '../../../query-builder/query-builder-forms';
 import { ApplicationService } from '../../../../services/application/application.service';

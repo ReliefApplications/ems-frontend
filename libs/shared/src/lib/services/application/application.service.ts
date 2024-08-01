@@ -57,9 +57,9 @@ import {
   EDIT_CHANNEL,
   TOGGLE_APPLICATION_LOCK,
   DUPLICATE_PAGE,
-  ADD_TEMPLATE,
-  UPDATE_TEMPLATE,
-  DELETE_TEMPLATE,
+  ADD_EMAIL_TEMPLATE,
+  UPDATE_EMAIL_TEMPLATE,
+  DELETE_EMAIL_TEMPLATE,
   UPDATE_DISTRIBUTION_LIST,
   ADD_DISTRIBUTION_LIST,
   DELETE_DISTRIBUTION_LIST,
@@ -77,10 +77,10 @@ import {
 import { AuthService } from '../auth/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 import {
-  AddTemplateMutationResponse,
-  DeleteTemplateMutationResponse,
-  Template,
-  UpdateTemplateMutationResponse,
+  AddEmailTemplateMutationResponse,
+  DeleteEmailTemplateMutationResponse,
+  EmailTemplate,
+  UpdateEmailTemplateMutationResponse,
 } from '../../models/template.model';
 import {
   AddDistributionListMutationResponse,
@@ -183,7 +183,7 @@ export class ApplicationService {
   }
 
   /** @returns Current application's templates */
-  get templates(): Template[] {
+  get templates(): EmailTemplate[] {
     return this.application.value?.templates || [];
   }
 
@@ -1667,12 +1667,12 @@ export class ApplicationService {
    * @param template new template to be added
    * @param callback additional callback
    */
-  addTemplate(template: Template, callback?: any): void {
+  addEmailTemplate(template: EmailTemplate, callback?: any): void {
     const application = this.application.getValue();
     if (application?.id) {
       this.apollo
-        .mutate<AddTemplateMutationResponse>({
-          mutation: ADD_TEMPLATE,
+        .mutate<AddEmailTemplateMutationResponse>({
+          mutation: ADD_EMAIL_TEMPLATE,
           variables: {
             application: application.id,
             template: {
@@ -1686,11 +1686,14 @@ export class ApplicationService {
           if (data) {
             const newApplication: Application = {
               ...application,
-              templates: [...(application.templates || []), data.addTemplate],
+              templates: [
+                ...(application.templates || []),
+                data.addEmailTemplate,
+              ],
             };
 
             this.application.next(newApplication);
-            if (callback) callback(data.addTemplate);
+            if (callback) callback(data.addEmailTemplate);
           }
         });
     }
@@ -1705,8 +1708,8 @@ export class ApplicationService {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
-        .mutate<DeleteTemplateMutationResponse>({
-          mutation: DELETE_TEMPLATE,
+        .mutate<DeleteEmailTemplateMutationResponse>({
+          mutation: DELETE_EMAIL_TEMPLATE,
           variables: {
             application: application.id,
             id,
@@ -1729,12 +1732,12 @@ export class ApplicationService {
    *
    * @param template new template to be added
    */
-  editTemplate(template: Template): void {
+  editTemplate(template: EmailTemplate): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
-        .mutate<UpdateTemplateMutationResponse>({
-          mutation: UPDATE_TEMPLATE,
+        .mutate<UpdateEmailTemplateMutationResponse>({
+          mutation: UPDATE_EMAIL_TEMPLATE,
           variables: {
             application: application.id,
             id: template.id,
@@ -1746,8 +1749,8 @@ export class ApplicationService {
           },
         })
         .subscribe(({ data }) => {
-          if (data?.editTemplate) {
-            const updatedTemplate = data.editTemplate;
+          if (data?.editEmailTemplate) {
+            const updatedTemplate = data.editEmailTemplate;
             const newApplication: Application = {
               ...application,
               templates: application.templates?.map((t) => {
@@ -1960,6 +1963,7 @@ export class ApplicationService {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
     });
+
     return firstValueFrom(
       this.restService.get(path, { responseType: 'blob', headers })
     )

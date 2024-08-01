@@ -54,7 +54,7 @@ const createContextDatasourceForm = (data?: PageContextT) => {
 
 /** Component for selecting the dashboard context datasource */
 @Component({
-  selector: 'app-context-datasource',
+  selector: 'app-edit-context-modal',
   standalone: true,
   imports: [
     CommonModule,
@@ -72,10 +72,10 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     ReferenceDataSelectComponent,
     DividerModule,
   ],
-  templateUrl: './context-datasource.component.html',
-  styleUrls: ['./context-datasource.component.scss'],
+  templateUrl: './edit-context-modal.component.html',
+  styleUrls: ['./edit-context-modal.component.scss'],
 })
-export class ContextDatasourceComponent
+export class EditContextModalComponent
   extends UnsubscribeComponent
   implements OnInit
 {
@@ -100,7 +100,7 @@ export class ContextDatasourceComponent
   constructor(
     private apollo: Apollo,
     @Inject(DIALOG_DATA) public data: PageContextT,
-    public dialogRef: DialogRef<ContextDatasourceComponent>
+    public dialogRef: DialogRef<EditContextModalComponent>
   ) {
     super();
     this.form = createContextDatasourceForm(data);

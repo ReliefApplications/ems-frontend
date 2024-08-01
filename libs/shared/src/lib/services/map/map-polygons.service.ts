@@ -76,36 +76,42 @@ export class MapPolygonsService {
   public async getAdmin0Polygons() {
     if (this.admin0Url) {
       const fetchAdmin0 = () => {
-        this.restService.get(this.admin0Url).subscribe((value) => {
-          if (value) {
-            const mapping = [];
-            for (const feature of value.features) {
-              // Transform data to fit Admin0 type
-              try {
-                mapping.push({
-                  id: feature.id,
-                  centerlatitude: feature.properties.CENTER_LAT.toString(),
-                  centerlongitude: feature.properties.CENTER_LON.toString(),
-                  iso2code: feature.properties.ISO_2_CODE,
-                  iso3code: feature.properties.ISO_3_CODE,
-                  name: feature.properties.ADM0_VIZ_NAME,
-                  polygons: feature.geometry,
-                });
-              } catch (err: any) {
-                console.error(err.message);
-                return;
+        this.restService
+          .get(this.admin0Url, {
+            headers: {
+              'Access-Control-Allow-Origin': location.origin,
+            },
+          })
+          .subscribe((value) => {
+            if (value) {
+              const mapping = [];
+              for (const feature of value.features) {
+                // Transform data to fit Admin0 type
+                try {
+                  mapping.push({
+                    id: feature.id,
+                    centerlatitude: feature.properties.CENTER_LAT.toString(),
+                    centerlongitude: feature.properties.CENTER_LON.toString(),
+                    iso2code: feature.properties.ISO_2_CODE,
+                    iso3code: feature.properties.ISO_3_CODE,
+                    name: feature.properties.ADM0_VIZ_NAME,
+                    polygons: feature.geometry,
+                  });
+                } catch (err: any) {
+                  console.error(err.message);
+                  return;
+                }
               }
+              this.admin0s = mapping.sort((a: any, b: any) => {
+                const areaA = area(a.polygons);
+                const areaB = area(b.polygons);
+                return areaA - areaB;
+              });
+              setWithExpiry(CACHE_KEY, mapping, CACHE_TTL).then(() => {
+                this.admin0sReady.next(true);
+              });
             }
-            this.admin0s = mapping.sort((a: any, b: any) => {
-              const areaA = area(a.polygons);
-              const areaB = area(b.polygons);
-              return areaA - areaB;
-            });
-            setWithExpiry(CACHE_KEY, mapping, CACHE_TTL).then(() => {
-              this.admin0sReady.next(true);
-            });
-          }
-        });
+          });
       };
       const cacheValue = await getWithExpiry(CACHE_KEY);
       if (cacheValue) {

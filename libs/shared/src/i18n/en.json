@@ -1385,6 +1385,7 @@
 				"disallowFieldUpdate": "Disallow this role to update the field {{field}}",
 				"grantAddRecordsPermission": "Grant permission to add new records",
 				"grantDeleteRecordsPermission": "Grant permission to delete records",
+				"grantDownloadRecordsPermission": "Grant permission to download records",
 				"grantFilterDeleteRecordsPermission": "Grant permission to delete records that satisfies filter",
 				"grantFilterReadRecordsPermission": "Grant permission to see records that satisfies filter",
 				"grantFilterUpdateRecordsPermission": "Grant permission to update records that satisfies filter",
@@ -1396,6 +1397,7 @@
 				"limitedUpdateRecordsPermission": "Provide limited permission to update records, based on filters",
 				"notGrantAddRecordsPermission": "Does not grant permission to add new records",
 				"notGrantDeleteRecordsPermission": "Does not grant permission to delete records",
+				"notGrantDownloadRecordsPermission": "Does not grant permission to download records",
 				"notGrantFilterDeleteRecordsPermission": "Does not grant permission to delete records that satisfies filter",
 				"notGrantFilterReadRecordsPermission": "Does not grant permission to see records that satisfies filter",
 				"notGrantFilterUpdateRecordsPermission": "Does not grant permission to update records that satisfies filter",
@@ -2377,6 +2379,14 @@
 			},
 			"closable": "Closable",
 			"context": {
+				"addTemplate": "Create a template for this record",
+				"alert": {
+					"edition": {
+						"element": "You are editing the view for selected element.",
+						"template": "You are editing template of the page. It will be loaded by default if no specific view is created for a record."
+					},
+					"preview": "You are previewing the view for selected element.\nYou can create a specific template for this record."
+				},
 				"datasource": {
 					"alert": "Select a datasource, in order to set one page per record of the datasource. You can also set a template, which would be loaded by default if no specific page is created for a record.",
 					"info": "Indicate the field that would be use to select records",
@@ -2385,14 +2395,11 @@
 					"update": "Update context datasource"
 				},
 				"displayField": "Display field",
-				"edition": {
-					"element": "You are editing the view for selected element.",
-					"template": "You are editing template of the page. It will be loaded by default if no specific view is created for a record."
-				},
 				"notifications": {
 					"creatingTemplate": "Creating new template",
 					"loadDefault": "Displaying default template",
-					"templateCreated": "New template created"
+					"templateCreated": "New template created",
+					"templatesDeleted": "{{number}} templates were deleted for this dashboard"
 				},
 				"origin": "Context origin",
 				"refData": {
@@ -2408,6 +2415,12 @@
 			},
 			"contextFilter": "Context filter",
 			"dashboardFilter": "Dashboard filter",
+			"dashboardTemplates": {
+				"manage": {
+					"few": "Manage dashboard templates"
+				},
+				"none": "No additional template for this dashboard"
+			},
 			"deactivateFiltering": "Deactivate filtering",
 			"filterVariant": {
 				"title": "Filter variant",

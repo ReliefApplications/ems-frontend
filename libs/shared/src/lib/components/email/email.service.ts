@@ -21,7 +21,7 @@ import {
 } from './graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { RestService } from '../../services/rest/rest.service';
 import { FieldStore } from './models/email.const';
 import { ResourceQueryResponse } from '../../models/resource.model';

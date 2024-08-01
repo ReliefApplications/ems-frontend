@@ -119,17 +119,17 @@ export class QueryBuilderComponent
       }
     } else {
       this.availableQueries = this.queryBuilder.availableQueries$;
-      this.availableQueries.subscribe((res) => {
-        if (res && res.length > 0) {
+      this.availableQueries.subscribe((queries) => {
+        if (queries && queries.length > 0) {
           if (this.queryName) {
-            this.allQueries = res
+            this.allQueries = queries
               .filter((x) => x.name === this.queryName)
               .map((x) => x.name);
             if (this.allQueries.length === 1) {
               this.form?.get('name')?.setValue(this.allQueries[0]);
             }
           } else {
-            this.allQueries = res.filter((x) => x.name).map((x) => x.name);
+            this.allQueries = queries.filter((x) => x.name).map((x) => x.name);
           }
           this.filteredQueries = this.filterQueries(this.form?.value.name);
           this.availableFields = this.queryBuilder.getFields(
@@ -141,9 +141,7 @@ export class QueryBuilderComponent
           );
         }
       });
-      const setFormBuilderControls = (
-        fieldControlRequired: boolean = false
-      ) => {
+      const setFormBuilderControls = (fieldControlRequired = false) => {
         this.form?.setControl('filter', createFilterGroup(null));
         this.form?.setControl(
           'fields',

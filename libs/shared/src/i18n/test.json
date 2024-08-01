@@ -1385,6 +1385,7 @@
 				"disallowFieldUpdate": "****** {{field}}",
 				"grantAddRecordsPermission": "******",
 				"grantDeleteRecordsPermission": "******",
+				"grantDownloadRecordsPermission": "******",
 				"grantFilterDeleteRecordsPermission": "******",
 				"grantFilterReadRecordsPermission": "******",
 				"grantFilterUpdateRecordsPermission": "******",
@@ -1396,6 +1397,7 @@
 				"limitedUpdateRecordsPermission": "******",
 				"notGrantAddRecordsPermission": "******",
 				"notGrantDeleteRecordsPermission": "******",
+				"notGrantDownloadRecordsPermission": "******",
 				"notGrantFilterDeleteRecordsPermission": "******",
 				"notGrantFilterReadRecordsPermission": "******",
 				"notGrantFilterUpdateRecordsPermission": "******",
@@ -2377,6 +2379,14 @@
 			},
 			"closable": "******",
 			"context": {
+				"addTemplate": "******",
+				"alert": {
+					"edition": {
+						"element": "******",
+						"template": "******"
+					},
+					"preview": "******"
+				},
 				"datasource": {
 					"alert": "******",
 					"info": "******",
@@ -2385,14 +2395,11 @@
 					"update": "******"
 				},
 				"displayField": "******",
-				"edition": {
-					"element": "******",
-					"template": "******"
-				},
 				"notifications": {
 					"creatingTemplate": "******",
 					"loadDefault": "******",
-					"templateCreated": "******"
+					"templateCreated": "******",
+					"templatesDeleted": "{{number}} ******"
 				},
 				"origin": "******",
 				"refData": {
@@ -2408,6 +2415,12 @@
 			},
 			"contextFilter": "******",
 			"dashboardFilter": "******",
+			"dashboardTemplates": {
+				"manage": {
+					"few": "******"
+				},
+				"none": "******"
+			},
 			"deactivateFiltering": "******",
 			"filterVariant": {
 				"title": "******",

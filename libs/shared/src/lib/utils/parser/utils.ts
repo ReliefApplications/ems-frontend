@@ -94,7 +94,7 @@ export const parseHtml = (
  * @returns the html styles
  */
 export const getCardStyle = (
-  wholeCardStyles: boolean = false,
+  wholeCardStyles = false,
   fieldsValue: any,
   styles: any[] = []
 ) => {
