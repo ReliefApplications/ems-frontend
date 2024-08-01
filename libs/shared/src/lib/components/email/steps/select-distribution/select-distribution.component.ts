@@ -497,7 +497,6 @@ export class SelectDistributionComponent
       this.isNameDuplicate();
 
     //Distribution List name is valid
-    console.log(this.emailDistributionList.get('name').value);
     if (!noSaveAllowed) {
       this.emailService.distributionListName =
         this.emailDistributionList.get('name').value;
