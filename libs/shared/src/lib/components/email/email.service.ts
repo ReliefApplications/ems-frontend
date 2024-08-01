@@ -574,7 +574,7 @@ export class EmailService {
   /**
    * Sets the email distribution list.
    *
-   * @param dlList
+   * @param dlList The email distribution list
    */
   setDistributionList(dlList?: FormGroup) {
     if (dlList?.getRawValue()) {
