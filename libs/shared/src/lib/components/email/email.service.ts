@@ -224,7 +224,11 @@ export class EmailService {
           return response?.to.length > 0;
         });
     } else {
-      return this.emailDistributionList?.to?.inputEmails?.length > 0;
+      // return this.emailDistributionList?.to?.inputEmails?.length > 0;
+      return (
+        this.datasetsForm.getRawValue().emailDistributionList?.to?.inputEmails
+          ?.length > 0
+      );
     }
     return false;
   }
@@ -569,11 +573,52 @@ export class EmailService {
 
   /**
    * Sets the email distribution list.
+   *
+   * @param dlList
    */
-  setDistributionList() {
-    this.emailDistributionList = this.datasetsForm
-      .get('emailDistributionList')
-      ?.getRawValue();
+  setDistributionList(dlList?: FormGroup) {
+    if (dlList?.getRawValue()) {
+      this.emailDistributionList = dlList?.getRawValue();
+      const emailDL = this.datasetsForm?.get(
+        'emailDistributionList'
+      ) as FormGroup;
+
+      // Assuming dlList.get('to').value is an array of strings (emails)
+      const toEmails = dlList?.get('to')?.value;
+      const ccEmails = dlList?.get('cc')?.value;
+      const bccEmails = dlList?.get('bcc')?.value;
+
+      // Function to set input emails for to, cc, and bcc
+      const setInputEmails = (emailArray: string[], formArray: FormArray) => {
+        formArray?.clear(); // Clear existing values
+        emailArray?.forEach((email) => {
+          formArray.push(this.formBuilder.control(email)); // Add each email as a new FormControl
+        });
+      };
+
+      // Set input emails for 'to', 'cc', and 'bcc'
+      setInputEmails(
+        toEmails?.inputEmails,
+        emailDL?.get('to')?.get('inputEmails') as FormArray
+      );
+      setInputEmails(
+        ccEmails?.inputEmails,
+        emailDL?.get('cc')?.get('inputEmails') as FormArray
+      );
+      setInputEmails(
+        bccEmails?.inputEmails,
+        emailDL?.get('bcc')?.get('inputEmails') as FormArray
+      );
+
+      // Existing patchValue calls
+      emailDL?.get('to')?.patchValue(dlList?.get('to')?.value);
+      emailDL?.get('cc')?.patchValue(dlList?.get('cc')?.value);
+      emailDL?.get('bcc')?.patchValue(dlList?.get('bcc')?.value);
+    } else {
+      this.emailDistributionList = this.datasetsForm
+        .get('emailDistributionList')
+        ?.getRawValue();
+    }
   }
 
   /**

@@ -294,7 +294,25 @@ export class EmailTemplateComponent
         this.selectedEmails.removeAt(0);
       }
       this.selectedEmails.reset();
+      if (this.type) {
+        let type = this.type == 'to' ? 'To' : this.type == 'cc' ? 'Cc' : 'Bcc';
+        if (this.emailService.emailDistributionList[type]) {
+          this.emailService.emailDistributionList[type].inputEmails = this
+            .emailService.emailDistributionList[type]?.inputEmails
+            ? []
+            : this.emailService.emailDistributionList[type].inputEmails;
+        }
+
+        type = this.type == 'To' ? 'to' : this.type == 'Cc' ? 'cc' : 'bcc';
+        if (this.emailService.emailDistributionList[type]) {
+          this.emailService.emailDistributionList[type].inputEmails = this
+            .emailService.emailDistributionList[type]?.inputEmails
+            ? []
+            : this.emailService.emailDistributionList[type].inputEmails;
+        }
+      }
     }
+    // this.emailService.setDistributionList(this.distributionList);
     this.emailService.disableSaveAndProceed.next(true);
   }
 

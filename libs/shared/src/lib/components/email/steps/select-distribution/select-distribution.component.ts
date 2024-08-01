@@ -295,7 +295,7 @@ export class SelectDistributionComponent
     this.distributionListId = this.distributionLists[index].node.id;
     this.showExistingDistributionList = !this.showExistingDistributionList;
     this.validateDistributionList();
-    this.emailService.setDistributionList();
+    this.emailService.setDistributionList(this.emailDistributionList);
   }
 
   // transformDL() {
@@ -566,9 +566,9 @@ export class SelectDistributionComponent
 
   /**
    *
-   * clearing data from To, CC, Bcc by passign th tabname
-   * @param type - Tab name
+   *clearing data from To, CC, Bcc by passign th tabname
    *
+   * @param type - Tab name
    */
   clearAllTabsData(type: any) {
     const fields = this.emailDistributionList
@@ -588,5 +588,17 @@ export class SelectDistributionComponent
       .get('filter') as FormGroup;
     const filters = filter.get('filters') as FormArray;
     filters.clear();
+
+    this.emailDistributionList.get(type).get('resource').setValue('');
+    this.emailService.datasetsForm
+      ?.get('emailDistributionList')
+      ?.get(type)
+      ?.get('resource')
+      ?.setValue('');
+    const toInput = this.emailService.datasetsForm
+      ?.get('emailDistributionList')
+      ?.get(type)
+      ?.get('inputEmails') as FormArray;
+    toInput.clear();
   }
 }
