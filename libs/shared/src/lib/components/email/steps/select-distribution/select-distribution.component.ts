@@ -276,26 +276,73 @@ export class SelectDistributionComponent
       this.distributionLists[index].node.emailDistributionList
     );
 
-    this.emailDistributionList.patchValue({
-      name: '',
-      to: [],
-      cc: [],
-      bcc: [],
-    });
     this.emailDistributionList
       .get('name')
       ?.patchValue(emailDL.get('name')?.value);
-    this.emailDistributionList.get('to')?.patchValue(emailDL.get('to')?.value);
-    this.emailDistributionList.get('cc')?.patchValue(emailDL.get('cc')?.value);
-    this.emailDistributionList
-      .get('bcc')
-      ?.patchValue(emailDL.get('bcc')?.value);
-    this.emailDistributionList = emailDL;
+    this.clearAndPatch(
+      this.emailDistributionList.get('to') as FormGroup,
+      emailDL.get('to') as FormGroup
+    );
+    this.clearAndPatch(
+      this.emailDistributionList.get('cc') as FormGroup,
+      emailDL.get('cc') as FormGroup
+    );
+    this.clearAndPatch(
+      this.emailDistributionList.get('bcc') as FormGroup,
+      emailDL.get('bcc') as FormGroup
+    );
+    // this.emailDistributionList = emailDL;
     this.emailService.selectedDLName = emailDL?.getRawValue()?.name;
     this.distributionListId = this.distributionLists[index].node.id;
     this.showExistingDistributionList = !this.showExistingDistributionList;
     this.validateDistributionList();
     this.emailService.setDistributionList(this.emailDistributionList);
+  }
+
+  /**
+   * Clear and patch function
+   *
+   * @param targetGroup Form group you want to clear and patch
+   * @param sourceGroup Form group you are retrieving the values from
+   */
+  clearAndPatch(targetGroup: FormGroup, sourceGroup: FormGroup): void {
+    // Clear 'resource'
+    targetGroup.get('resource')?.patchValue(sourceGroup.get('resource')?.value);
+
+    // Clear 'query'
+    const targetQuery = targetGroup.get('query') as FormGroup;
+    const sourceQuery = sourceGroup.get('query') as FormGroup;
+    targetQuery.reset();
+
+    // Set 'name'
+    targetQuery.get('name')?.setValue(sourceQuery.get('name')?.value);
+
+    // Set 'filter'
+    const targetFilter = targetQuery.get('filter') as FormGroup;
+    const sourceFilter = sourceQuery.get('filter') as FormGroup;
+    targetFilter.get('logic')?.setValue(sourceFilter.get('logic')?.value);
+    const targetFiltersArray = targetFilter.get('filters') as FormArray;
+    const sourceFiltersArray = sourceFilter.get('filters') as FormArray;
+    targetFiltersArray.clear();
+    sourceFiltersArray.controls.forEach((control) => {
+      targetFiltersArray.push(this.formBuilder.control(control.value));
+    });
+
+    // Set 'fields'
+    const targetFieldsArray = targetQuery.get('fields') as FormArray;
+    const sourceFieldsArray = sourceQuery.get('fields') as FormArray;
+    targetFieldsArray.clear();
+    sourceFieldsArray.controls.forEach((control) => {
+      targetFieldsArray.push(this.formBuilder.control(control.value));
+    });
+
+    // Clear 'inputEmails'
+    const targetInputEmails = targetGroup.get('inputEmails') as FormArray;
+    const sourceInputEmails = sourceGroup.get('inputEmails') as FormArray;
+    targetInputEmails.clear();
+    sourceInputEmails.controls.forEach((control) => {
+      targetInputEmails.push(this.formBuilder.control(control.value));
+    });
   }
 
   // transformDL() {
