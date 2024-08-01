@@ -30,6 +30,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 
 /**
+ * Interface for InValidDataSets
+ */
+interface InValidDataSets {
+  name: string;
+  count: number;
+}
+
+/**
  * Helper functions service for emails template.
  */
 @Injectable({
@@ -375,43 +383,31 @@ export class EmailService {
    */
   checkDatasetsValid(): Promise<{ valid: boolean; badData: string[] }> {
     return new Promise((resolve, reject) => {
-      let valid = true;
-      const badData: string[] = [];
-
       const emailDatasets = cloneDeep(
         this.datasetsForm.get('datasets')?.getRawValue()
-      );
-
-      const requests = emailDatasets.map((data: any) => {
-        if (data.resource) {
-          return this.http
-            .post(
-              `${this.restService.apiUrl}/notification/preview-dataset`,
-              data
-            )
-            .toPromise()
-            .then((response: any) => {
-              if (response.count > 50) {
-                badData.push(data.name);
-
-                valid = false;
-              }
-            })
-            .catch(() => {
-              badData.push(data.name);
-              valid = false;
-            });
-        } else {
-          // Return a resolved promise for datasets without a resource
-          return Promise.resolve();
-        }
-      });
-
-      Promise.all(requests)
-        .then(() => {
-          resolve({ valid, badData });
-        })
-        .catch(reject);
+      ).filter((data: any) => data.resource);
+      if (emailDatasets.length) {
+        this.http
+          .post(
+            `${this.restService.apiUrl}/notification/validate-dataset`,
+            emailDatasets
+          )
+          .subscribe({
+            next: (data: any) => {
+              resolve({
+                valid: !data?.inValidDataSets?.length,
+                badData: data?.inValidDataSets?.map(
+                  ({ name }: InValidDataSets) => name // need only name to show error
+                ),
+              });
+            },
+            error: (error) => {
+              reject(error);
+            },
+          });
+      } else {
+        resolve({ valid: true, badData: [] });
+      }
     });
   }
 
