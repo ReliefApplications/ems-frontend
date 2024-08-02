@@ -1405,6 +1405,13 @@
     },
     "triggers": {
       "noFilters": "Aucun filtre de déclenchement détecté",
+      "noTriggers": "Aucun déclencheur {{type}} détecté",
+      "editTrigger": "Modifier {{type}} déclencheur",
+      "createTrigger": "Nouveau {{type}} déclencheur",
+      "addTrigger": "Ajouter un déclencheur",
+      "cronBased": "Basé sur Cron",
+      "onRecordCreation": "Création d'un enregistrement",
+      "onRecordUpdate": "Mise à jour sur l'enregistrement",
       "tooltip": {
         "withCronBasedTrigger": "Ressource avec un déclencheur basé sur cron",
         "withoutCronBasedTrigger": "Ressource sans aucun déclencheur basé sur cron",

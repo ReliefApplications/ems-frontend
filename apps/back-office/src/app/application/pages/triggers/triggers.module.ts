@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TriggersComponent } from './triggers.component';
 import {
   ButtonModule,
+  DialogModule,
   FormWrapperModule,
   IconModule,
   PaginatorModule,
@@ -11,8 +12,10 @@ import {
   DateModule as UiDateModule,
 } from '@oort-front/ui';
 import {
+  CronExpressionControlModule,
   FilterModule,
   ListFilterComponent,
+  ReadableCronModule,
   SkeletonTableModule,
 } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
@@ -20,6 +23,8 @@ import { TriggersFilterComponent } from './components/triggers-filter/triggers-f
 import { ReactiveFormsModule } from '@angular/forms';
 import { TriggersRoutingModule } from './triggers-routing.module';
 import { TriggersResourceFiltersComponent } from './components/triggers-resource-filters/triggers-resource-filters.component';
+import { ManageTriggerModalComponent } from './components/manage-trigger-modal/manage-trigger-modal.component';
+import { TriggersListComponent } from './components/triggers-list/triggers-list.component';
 
 /**
  * Triggers page module.
@@ -29,6 +34,8 @@ import { TriggersResourceFiltersComponent } from './components/triggers-resource
     TriggersComponent,
     TriggersFilterComponent,
     TriggersResourceFiltersComponent,
+    ManageTriggerModalComponent,
+    TriggersListComponent,
   ],
   imports: [
     CommonModule,
@@ -45,6 +52,9 @@ import { TriggersResourceFiltersComponent } from './components/triggers-resource
     TriggersRoutingModule,
     TooltipModule,
     FilterModule,
+    CronExpressionControlModule,
+    ReadableCronModule,
+    DialogModule,
   ],
 })
 export class TriggersModule {}

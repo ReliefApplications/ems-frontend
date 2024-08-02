@@ -1,3 +1,13 @@
+/**
+ * Enum of custom notification recipients type.
+ */
+export const customNotificationRecipientsType = {
+  email: 'email',
+  userField: 'userField',
+  emailField: 'userField',
+  distributionList: 'distributionList',
+};
+
 /** Interface of Custom Notification objects */
 export interface CustomNotification {
   id?: string;

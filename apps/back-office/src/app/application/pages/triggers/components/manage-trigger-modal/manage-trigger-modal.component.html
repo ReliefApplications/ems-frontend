@@ -1,0 +1,39 @@
+<ui-dialog size="medium">
+  <!-- Modal header -->
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{
+        data.trigger
+          ? ('components.triggers.editTrigger' | translate : { type: 'components.triggers.' + data.triggerType | translate} )
+          : ('components.triggers.createTrigger' | translate : { type: 'components.triggers.' + data.triggerType | translate} )
+      }}
+    </h3>
+  </ng-container>
+
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="formGroup">
+      <!-- Schedule -->
+      <ng-container *ngIf="data.triggerType === TriggersEnum.cronBased">
+        <shared-cron-expression-control
+          class="flex"
+          formControlName="schedule"
+        ></shared-cron-expression-control>
+      </ng-container>
+    </form>
+  </ng-container>
+
+  <!-- Modal actions -->
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">
+      {{ 'common.close' | translate }}
+    </ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="formGroup.getRawValue()"
+      [disabled]="!formGroup.valid || formGroup.pristine"
+    >
+      {{ (data.trigger ? 'common.update' : 'common.create') | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

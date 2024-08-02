@@ -1393,6 +1393,13 @@
     },
     "triggers": {
       "noFilters": "No triggers filters detected",
+      "noTriggers": "No {{type}} triggers detected",
+      "editTrigger": "Edit {{type}} Trigger",
+      "createTrigger": "New {{type}} Trigger",
+      "addTrigger": "Add trigger",
+      "cronBased": "Cron Based",
+      "onRecordCreation": "On Record Creation",
+      "onRecordUpdate": "On Record Update",
       "tooltip": {
         "withCronBasedTrigger": "Resource with a cron based trigger",
         "withoutCronBasedTrigger": "Resource without any cron based trigger",

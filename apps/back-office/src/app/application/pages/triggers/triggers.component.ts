@@ -8,6 +8,7 @@ import {
   ApplicationService,
   ResourceQueryResponse,
   EditResourceMutationResponse,
+  cronValidator,
 } from '@oort-front/shared';
 import {
   animate,
@@ -26,7 +27,9 @@ import { takeUntil } from 'rxjs';
 import { GET_RESOURCE, GET_RESOURCES } from './graphql/queries';
 import { EDIT_RESOURCE_TRIGGERS_FILTERS } from './graphql/mutations';
 import { Triggers, TriggersType } from './triggers.types';
-import { isEqual } from 'lodash';
+import { get, isEqual } from 'lodash';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
@@ -83,6 +86,20 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
   /** Opened resource */
   public openedResource?: Resource;
 
+  /** TRIGGERS */
+  /** Selected trigger */
+  public selectedTrigger?: CustomNotification;
+  /** Trigger form group */
+  public triggerFormGroup!: ReturnType<typeof this.getTriggerForm>;
+  /** List of the cron based triggers of the opened resource on this application */
+  public cronBasedTriggers: CustomNotification[] = [];
+  /** List of the onRecordCreation triggers of the opened resource on this application */
+  public onRecordCreationTriggers: CustomNotification[] = [];
+  /** List of the onRecordUpdate triggers of the opened resource on this application */
+  public onRecordUpdateTriggers: CustomNotification[] = [];
+  /** Triggers enum */
+  public TriggersEnum = Triggers;
+
   /** PAGINATION */
   /** Loading status */
   public loading = true; // First load && pagination
@@ -103,11 +120,15 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
    * @param apollo Apollo client service
    * @param snackBar shared snackbar service
    * @param applicationService Shared application service
+   * @param fb Angular form builder
+   * @param dialog Dialog service
    */
   constructor(
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private applicationService: ApplicationService
+    private applicationService: ApplicationService,
+    private fb: FormBuilder,
+    public dialog: Dialog
   ) {
     super();
     this.applicationId =
@@ -175,6 +196,73 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
+   * Delete selected trigger
+   *
+   * @param trigger Selected trigger
+   * @param triggerType Trigger type
+   */
+  public onDeleteTrigger(
+    trigger: CustomNotification,
+    triggerType: TriggersType
+  ): void {
+    console.log('onDeleteTrigger: ', trigger, triggerType);
+  }
+
+  /**
+   * Open modal to edit selected trigger
+   *
+   * @param trigger Selected trigger
+   * @param triggerType Trigger type
+   */
+  public async onEditTrigger(
+    trigger: CustomNotification,
+    triggerType: TriggersType
+  ): Promise<void> {
+    this.selectedTrigger = trigger;
+    const triggerFormGroup = this.getTriggerForm(trigger, triggerType);
+    const { ManageTriggerModalComponent } = await import(
+      './components/manage-trigger-modal/manage-trigger-modal.component'
+    );
+    const dialogRef = this.dialog.open(ManageTriggerModalComponent, {
+      data: {
+        trigger,
+        triggerType,
+        formGroup: triggerFormGroup,
+      },
+    });
+
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      console.log('close onEditTrigger:', value);
+      // if (value) {
+      // }
+    });
+  }
+
+  /**
+   * Open modal to create a new trigger of the selected type
+   *
+   * @param triggerType Trigger type
+   */
+  public async onCreateTrigger(triggerType: TriggersType): Promise<void> {
+    const triggerFormGroup = this.getTriggerForm(null, triggerType);
+    const { ManageTriggerModalComponent } = await import(
+      './components/manage-trigger-modal/manage-trigger-modal.component'
+    );
+    const dialogRef = this.dialog.open(ManageTriggerModalComponent, {
+      data: {
+        triggerType,
+        formGroup: triggerFormGroup,
+      },
+    });
+
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      console.log('close onCreateTrigger:', value);
+      // if (value) {
+      // }
+    });
+  }
+
+  /**
    * Toggles the accordion for the clicked resource and fetches its forms
    *
    * @param resource The resource element for the resource to be toggled
@@ -195,6 +283,26 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
         .subscribe(({ data }) => {
           if (data.resource) {
             this.openedResource = data.resource;
+
+            // Get triggers by type
+            const customNotifications = this.openedResource.customNotifications;
+            this.cronBasedTriggers =
+              customNotifications?.filter(
+                (notification: CustomNotification) =>
+                  notification.applicationTrigger && notification.schedule
+              ) ?? [];
+
+            this.onRecordCreationTriggers =
+              customNotifications?.filter(
+                (notification: CustomNotification) =>
+                  notification.onRecordCreation
+              ) ?? [];
+
+            this.onRecordUpdateTriggers =
+              customNotifications?.filter(
+                (notification: CustomNotification) =>
+                  notification.onRecordUpdate
+              ) ?? [];
           }
           this.updating = false;
         });
@@ -228,6 +336,56 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
           this.updating = false;
         },
       });
+  }
+
+  /**
+   * Build trigger reactive form group.
+   *
+   * @param trigger Selected trigger, if any
+   * @param triggerType Trigger type
+   * @returns Notification form group
+   */
+  private getTriggerForm(
+    trigger: CustomNotification | null,
+    triggerType: TriggersType
+  ): FormGroup {
+    const formGroup = this.fb.group({
+      name: [get(trigger, 'name', ''), Validators.required],
+      applicationTrigger: [{ value: 'true' }],
+      description: [get(trigger, 'description', '')],
+      schedule: [get(trigger, 'schedule', '')],
+      onRecordCreation: [get(trigger, 'onRecordCreation', false)],
+      onRecordUpdate: [get(trigger, 'onRecordUpdate', false)],
+      notificationType: [
+        get(trigger, 'notificationType', ''),
+        Validators.required,
+      ],
+      resource: [
+        get(trigger, 'resource', this.openedResource?.id),
+        Validators.required,
+      ],
+      layout: [get(trigger, 'layout', ''), Validators.required],
+      template: [get(trigger, 'template', ''), Validators.required],
+      recipientsType: [
+        get(trigger, 'recipientsType', 'email'),
+        Validators.required,
+      ],
+      recipients: [get(trigger, 'recipients', null), Validators.required],
+    });
+
+    if (triggerType === Triggers.cronBased) {
+      formGroup.controls.schedule.addValidators([
+        Validators.required,
+        cronValidator(),
+      ]);
+      formGroup.controls.schedule.updateValueAndValidity();
+    } else if (triggerType === Triggers.onRecordCreation) {
+      formGroup.controls.onRecordCreation.setValue(true);
+    } else if (triggerType === Triggers.onRecordUpdate) {
+      formGroup.controls.onRecordUpdate.setValue(true);
+    }
+
+    return formGroup;
   }
 
   /**

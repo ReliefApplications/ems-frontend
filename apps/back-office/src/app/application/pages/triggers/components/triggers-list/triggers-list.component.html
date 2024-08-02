@@ -1,0 +1,87 @@
+<!-- Header -->
+<div class="flex flex-row justify-between items-center">
+  <h2>{{ ('components.triggers.' + triggerType | translate) + ' ' + ('common.trigger.few' | translate) }}</h2>
+
+  <ui-button
+    variant="primary"
+    category="secondary"
+    (click)="
+      $event.stopPropagation();
+      onAdd.emit({ type: triggerType })
+    "
+    [disabled]="disabled"
+  >
+    {{ 'components.triggers.addTrigger' | translate }}
+  </ui-button>
+</div>
+
+<!-- No triggers template -->
+<div *ngIf="triggersList.length === 0" class="flex flex-col p-4 items-center">
+  <ui-icon icon="folder_open"></ui-icon>
+  <h3>
+    {{'components.triggers.noTriggers' | translate : { type: 'components.triggers.' + triggerType | translate} }}
+  </h3>
+</div>
+
+<!-- Table container -->
+<div class="overflow-x-hidden shadow-2lg">
+    <!-- Table scroll container -->
+    <div class="overflow-x-auto">
+      <table
+        cdk-table
+        uiTableWrapper
+        [dataSource]="triggers"
+        *ngIf="triggers.length > 0"
+      >
+        <!-- Name column -->
+        <ng-container cdkColumnDef="name">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            {{ 'common.trigger.one' | translate }}
+          </th>
+          <td
+            uiCell
+            *cdkCellDef="let element"
+            class="!text-gray-900 !font-medium"
+          >
+            {{ element.name }}
+          </td>
+        </ng-container>
+
+        <!-- Actions -->
+        <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+          <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+          <td uiCell *cdkCellDef="let element; let index = index">
+            <ui-button
+              [isIcon]="true"
+              icon="edit"
+              [isIcon]="true"
+              variant="primary"
+              (click)="
+                $event.stopPropagation();
+                onEdit.emit({ trigger: element.trigger, type: triggerType })
+              "
+              [disabled]="disabled"
+              [uiTooltip]="'common.edit' | translate"
+            >
+            </ui-button>
+            <ui-button
+              [isIcon]="true"
+              icon="delete"
+              [isIcon]="true"
+              variant="danger"
+              (click)="
+                $event.stopPropagation();
+                onDelete.emit({ trigger: element.trigger, type: triggerType })
+              "
+              [disabled]="disabled"
+              [uiTooltip]="'common.edit' | translate"
+            >
+            </ui-button>
+          </td>
+        </ng-container>
+
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+        <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
+      </table>
+    </div>
+</div>
