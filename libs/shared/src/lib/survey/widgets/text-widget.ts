@@ -19,6 +19,7 @@ import {
 } from '../components/utils/create-picker-instance';
 import { TranslateService } from '@ngx-translate/core';
 import { FieldSearchTableComponent } from '../components/field-search-table/field-search-table.component';
+import { isNaN } from 'lodash';
 
 /**
  * Custom definition for overriding the text question. Allowed support for dates.
@@ -260,7 +261,19 @@ export const init = (
             );
           }
         } else if (question.inputType === 'date') {
-          question.value = question.value?.split('T')[0];
+          if (
+            typeof question.value === 'string' &&
+            !isNaN(new Date(question.value).getTime())
+          ) {
+            question.value = question.value?.split('T')[0];
+          } else if (question.value instanceof Date) {
+            const date = question.value;
+            const padded = (num: number) => num.toString().padStart(2, '0');
+            const dateStr = `${date.getFullYear()}-${padded(
+              date.getMonth() + 1
+            )}-${padded(date.getDate())}`;
+            question.value = dateStr;
+          }
         } else {
           el.classList.add('flex-1', 'min-h-[36px]');
           el.style.display = 'initial';
