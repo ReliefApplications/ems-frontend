@@ -1,4 +1,4 @@
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import {
   Component,
   ElementRef,
@@ -19,10 +19,8 @@ import {
   DashboardService,
   Application,
   ConfirmService,
-  ReferenceDataService,
   Record,
   ButtonActionT,
-  ResourceRecordsNodesQueryResponse,
   DashboardQueryResponse,
   EditDashboardMutationResponse,
   DashboardComponent as SharedDashboardComponent,
