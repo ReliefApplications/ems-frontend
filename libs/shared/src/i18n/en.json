@@ -1392,6 +1392,7 @@
       }
     },
     "triggers": {
+      "notification": "Notification",
       "noFilters": "No triggers filters detected",
       "noTriggers": "No {{type}} triggers detected",
       "editTrigger": "Edit {{type}} Trigger",

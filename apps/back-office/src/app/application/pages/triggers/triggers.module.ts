@@ -4,9 +4,11 @@ import { TriggersComponent } from './triggers.component';
 import {
   ButtonModule,
   DialogModule,
+  DividerModule,
   FormWrapperModule,
   IconModule,
   PaginatorModule,
+  SelectMenuModule,
   TableModule,
   TooltipModule,
   DateModule as UiDateModule,
@@ -55,6 +57,8 @@ import { TriggersListComponent } from './components/triggers-list/triggers-list.
     CronExpressionControlModule,
     ReadableCronModule,
     DialogModule,
+    SelectMenuModule,
+    DividerModule,
   ],
 })
 export class TriggersModule {}

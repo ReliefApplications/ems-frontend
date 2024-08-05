@@ -12,6 +12,55 @@
 
   <ng-container ngProjectAs="content">
     <form [formGroup]="formGroup">
+      <!-- Name -->
+      <div uiFormFieldDirective class="flex-auto">
+        <label>{{ 'common.name' | translate }}</label>
+        <input
+          type="text"
+          [placeholder]="'common.placeholder.name' | translate"
+          formControlName="name"
+        />
+      </div>
+      <!-- Notification Type -->
+      <div uiFormFieldDirective [outline]="false" class="w-full">
+        <label>{{ 'models.customNotification.type' | translate }}</label>
+        <ui-select-menu (selectedOption)="notificationType = $any($event)" formControlName="notificationType">
+          <ui-select-option value="email">
+            {{ 'common.email.one' | translate }}
+          </ui-select-option>
+          <ui-select-option value="notification">
+            {{ 'components.triggers.notification' | translate }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <!-- Template -->
+      <div uiFormFieldDirective [outline]="false" class="w-full">
+        <label>{{ 'common.template.one' | translate }}</label>
+        <ui-select-menu formControlName="template">
+          <ui-select-option
+            *ngFor="let template of templates"
+            [value]="template.id"
+          >
+            {{ template.name }}
+          </ui-select-option>
+        </ui-select-menu>
+        <ui-icon
+          uiPrefix
+          icon="info_outline"
+          class="cursor-pointer"
+          variant="grey"
+          uiTooltip="HINT"
+        ></ui-icon>
+        <ui-button
+          uiSuffix
+          [isIcon]="true"
+          icon="add_circle_outline"
+          variant="primary"
+          (click)="$event.stopPropagation(); addEmailTemplate()"
+          [uiTooltip]="'components.templates.edit.new' | translate"
+        >
+        </ui-button>
+      </div>
       <!-- Schedule -->
       <ng-container *ngIf="data.triggerType === TriggersEnum.cronBased">
         <shared-cron-expression-control
@@ -19,6 +68,57 @@
           formControlName="schedule"
         ></shared-cron-expression-control>
       </ng-container>
+
+      <ui-divider class="mb-2"></ui-divider>
+
+      <h3>{{ 'components.customNotifications.edit.dataset' | translate }}</h3>
+      <!-- Resource (disabled) -->
+      <div uiFormFieldDirective [outline]="false" class="w-full">
+        <label>{{ 'common.resource.one' | translate }}</label>
+        <input [value]="data.resource.name" [disabled]="true" />
+      </div>
+      <!-- Layout -->
+      <ng-container *ngIf="layout">
+        <!-- Layout is selected -->
+        <div uiFormFieldDirective [outline]="false" class="w-full">
+          <label>{{ 'common.layout.one' | translate }}</label>
+          <input [value]="layout.name" [disabled]="true" />
+          <ui-button
+            uiPrefix
+            variant="primary"
+            [isIcon]="true"
+            icon="edit"
+            (click)="editLayout()"
+            [uiTooltip]="'common.edit' | translate"
+          ></ui-button>
+          <ui-button
+            uiSuffix
+            variant="danger"
+            [isIcon]="true"
+            icon="close"
+            (click)="removeLayout()"
+            [uiTooltip]="'common.remove' | translate"
+          ></ui-button>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!formGroup.value.layout">
+        <!-- Layout is not selected yet -->
+        <ui-button
+          class="!w-auto text-center"
+          category="tertiary"
+          variant="primary"
+          (click)="addLayout()"
+          >{{
+            'components.widget.settings.grid.layouts.add.title' | translate
+          }}</ui-button
+        >
+      </ng-container>
+
+      <ui-divider class="my-2"></ui-divider>
+      <!-- Recipients -->
+      <h3>{{ 'components.customNotifications.edit.recipients.title' | translate }}</h3>
+
+
     </form>
   </ng-container>
 

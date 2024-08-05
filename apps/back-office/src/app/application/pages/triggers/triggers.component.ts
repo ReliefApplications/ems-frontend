@@ -228,6 +228,7 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
         trigger,
         triggerType,
         formGroup: triggerFormGroup,
+        resource: this.openedResource,
       },
     });
 
@@ -252,6 +253,7 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
       data: {
         triggerType,
         formGroup: triggerFormGroup,
+        resource: this.openedResource,
       },
     });
 
@@ -352,16 +354,20 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
     const formGroup = this.fb.group({
       name: [get(trigger, 'name', ''), Validators.required],
       applicationTrigger: [{ value: 'true' }],
+      notification_status: [{ value: 'active' }],
       description: [get(trigger, 'description', '')],
       schedule: [get(trigger, 'schedule', '')],
       onRecordCreation: [get(trigger, 'onRecordCreation', false)],
       onRecordUpdate: [get(trigger, 'onRecordUpdate', false)],
       notificationType: [
-        get(trigger, 'notificationType', ''),
+        get(trigger, 'notificationType', 'email'),
         Validators.required,
       ],
       resource: [
-        get(trigger, 'resource', this.openedResource?.id),
+        {
+          value: get(trigger, 'resource', this.openedResource?.id),
+          disabled: true,
+        },
         Validators.required,
       ],
       layout: [get(trigger, 'layout', ''), Validators.required],

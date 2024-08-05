@@ -1404,6 +1404,7 @@
       }
     },
     "triggers": {
+      "notification": "Notification",
       "noFilters": "Aucun filtre de déclenchement détecté",
       "noTriggers": "Aucun déclencheur {{type}} détecté",
       "editTrigger": "Modifier {{type}} déclencheur",

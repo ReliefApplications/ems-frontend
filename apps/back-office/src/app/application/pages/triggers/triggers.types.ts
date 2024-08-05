@@ -7,6 +7,12 @@ export enum Triggers {
   onRecordUpdate = 'onRecordUpdate',
 }
 
+/** Triggers type for Resource */
+export enum NotificationType {
+  email = 'email',
+  notification = 'notification',
+}
+
 /** Resource triggers filters type */
 export type ResourceTriggersFilters = {
   filter: Access;

@@ -38,6 +38,7 @@ export interface Resource {
   };
   importField?: string;
   customNotifications?: CustomNotification[];
+  hasLayouts?: boolean;
 }
 
 /** Model for resource query response object */

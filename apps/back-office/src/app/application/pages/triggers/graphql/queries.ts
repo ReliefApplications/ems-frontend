@@ -56,6 +56,8 @@ export const GET_RESOURCE = gql`
       name
       fields
       triggersFilters
+      hasLayouts
+      queryName
       metadata {
         name
         type

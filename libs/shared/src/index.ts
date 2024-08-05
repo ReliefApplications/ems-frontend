@@ -57,6 +57,7 @@ export * from './lib/models/aggregation.model';
 export * from './lib/models/reference-data.model';
 export * from './lib/models/metadata.model';
 export * from './lib/models/custom-notification.model';
+export * from './lib/models/template.model';
 
 // === COMPONENTS ===
 export * from './lib/components/aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
@@ -75,6 +76,7 @@ export * from './lib/components/confirm-modal/public-api';
 export * from './lib/components/user-summary/public-api';
 export * from './lib/components/users/public-api';
 export * from './lib/components/templates/public-api';
+export * from './lib/components/templates/components/edit-template-modal/public-api';
 export * from './lib/components/roles/public-api';
 export * from './lib/components/convert-modal/public-api';
 export * from './lib/components/record-history/public-api';
@@ -120,6 +122,7 @@ export * from './lib/survey/components/test-service-dropdown/test-service-dropdo
 
 /** Grid Layouts */
 export * from './lib/components/grid-layout/edit-layout-modal/public-api';
+export * from './lib/components/grid-layout/add-layout-modal/add-layout-modal.component';
 
 // === UI ===
 export * from './lib/components/ui/aggregation-builder/public-api';
