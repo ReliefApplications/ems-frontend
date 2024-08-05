@@ -182,7 +182,8 @@
         >
           <ng-container ngProjectAs="label">
             {{
-              'components.queryBuilder.fields.hiddenByDefault.title' | translate
+              'components.queryBuilder.fields.hidden.hiddenByDefault'
+                | translate
             }}
             <ui-icon
               class="ml-1 cursor-help self-center"
@@ -190,8 +191,7 @@
               [size]="18"
               icon="info_outline"
               [uiTooltip]="
-                'components.queryBuilder.fields.hiddenByDefault.tooltip'
-                  | translate
+                'components.queryBuilder.fields.hidden.tooltip' | translate
               "
             ></ui-icon>
           </ng-container>
