@@ -287,6 +287,7 @@
     "name": "Name",
     "next": "Next",
     "noOptions": "No available choices",
+    "none": "None",
     "notifications": {
       "accessDenied": "You don't have permission to see the {{type}}.",
       "accessNotProvided": "No access provided to this {{type}}. {{error}}",
@@ -2742,6 +2743,19 @@
       "empty": {
         "add": "Add steps",
         "customize": "Customize each of the steps created"
+      }
+    }
+  },
+  "survey": {
+    "customFunctions": {
+      "getFollowupSummary": {
+        "comment": "Comment",
+        "followUp": {
+          "numbered": "Follow-up #{{number}}",
+          "one": "Follow-up"
+        },
+        "initialInspection": "Initial inspection",
+        "inspectionAction": "Inspection action"
       }
     }
   }

@@ -413,6 +413,7 @@ export class FormComponent
       authService: this.authService,
       apollo: this.apollo,
       form: this.form,
+      translateService: this.translate,
     });
 
     const structure = JSON.parse(this.form.structure || '{}');

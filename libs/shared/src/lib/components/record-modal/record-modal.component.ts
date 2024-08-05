@@ -189,6 +189,7 @@ export class RecordModalComponent
       authService: this.authService,
       apollo: this.apollo,
       form: this.form,
+      translateService: this.translate,
     });
     this.survey.data = this.record.data;
 

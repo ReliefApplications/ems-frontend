@@ -305,6 +305,7 @@ export class FormModalComponent
         authService: this.authService,
         apollo: this.apollo,
         form: this.form,
+        translateService: this.translate,
       });
       this.survey.data = this.isMultiEdition ? null : this.record.data;
       this.survey.showCompletedPage = false;
