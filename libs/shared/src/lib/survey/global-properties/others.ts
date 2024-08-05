@@ -69,7 +69,6 @@ export const init = (environment: any): void => {
     name: 'valueExpression:expression',
     category: 'logic',
     onExecuteExpression: (obj: Question, res: any) => {
-      // obj.readOnly = true;
       obj.value = res;
     },
   });
