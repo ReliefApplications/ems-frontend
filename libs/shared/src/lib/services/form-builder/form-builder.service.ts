@@ -88,6 +88,18 @@ export const transformSurveyData = (survey: SurveyModel) => {
       ) {
         delete data[filed];
       }
+
+      // Remove data from files if from URL
+      if (question.downloadFileFrom) {
+        data[filed] = [
+          {
+            name: question.fileName,
+            type: question.fileType,
+            content: `custom:${question.downloadFileFrom}`,
+            includeToken: question.includeOortToken,
+          },
+        ];
+      }
     }
   });
 
@@ -477,9 +489,32 @@ export class FormBuilderService {
   private onDownloadFile(options: any): void {
     if (
       options.content.indexOf('base64') !== -1 ||
-      options.content.indexOf('http') !== -1
+      options.content.startsWith('http')
     ) {
       options.callback('success', options.content);
+    } else if (options.content.startsWith('custom:')) {
+      fetch(options.content.slice(7), {
+        headers: options.fileValue.includeOortToken
+          ? {
+              Authorization: `Bearer ${localStorage.getItem('idtoken')}`,
+            }
+          : {},
+      })
+        .then((response) => response.blob())
+        .then((blob) => {
+          const file = new File([blob], options.fileValue.name, {
+            type: options.fileValue.fileType,
+          });
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            options.callback('success', e.target?.result);
+          };
+          reader.readAsDataURL(file);
+        })
+        .catch((error) => {
+          console.error('Error downloading file:', error);
+          options.callback('error', error);
+        });
     } else if (this.recordId) {
       /**
        * Only gets here if: editing record (we need to download the file to be available)

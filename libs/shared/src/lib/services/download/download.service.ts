@@ -15,9 +15,6 @@ import {
   EventType,
 } from '../analytics/analytics.service';
 
-/** LIFT case report api URL */
-const LIFT_REPORT_URL = 'https://lift-functions.azurewebsites.net/api/report/';
-
 /** Types of file we upload to blob storage */
 export enum BlobType {
   RECORD_FILE = 'file',
@@ -117,12 +114,7 @@ export class DownloadService {
       .get(path, {
         ...options,
         responseType: 'blob',
-        headers: path.startsWith(LIFT_REPORT_URL)
-          ? headers.append(
-              'Authorization',
-              `Bearer ${this.authService.getAuthToken()}`
-            )
-          : headers,
+        headers: options?.headers ?? headers,
       })
       .subscribe({
         next: (res) => {
@@ -349,7 +341,7 @@ export class DownloadService {
           }
         },
         error: (err) => {
-          console.log(err);
+          console.error(err);
           handleError(
             this.translate.instant('common.notifications.file.upload.error')
           );

@@ -55,9 +55,7 @@ import { DatePipe } from '../../../../pipes/date/date.pipe';
 import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
 import { formatGridRowData } from './utils/grid-data-formatter';
 import { GridActions } from '../models/grid-settings.model';
-
-/** LIFT case report api URL */
-const LIFT_REPORT_URL = 'https://lift-functions.azurewebsites.net/api/report/';
+import { HttpHeaders } from '@angular/common/http';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -782,6 +780,18 @@ export class GridComponent
       downloadLink.href = file.content;
       downloadLink.download = file.name;
       downloadLink.click();
+    } else if (file.content.startsWith('custom:')) {
+      this.downloadService.getFile(
+        file.content.slice(7),
+        file.type,
+        file.name,
+        {
+          headers: new HttpHeaders({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            Authorization: `Bearer ${localStorage.getItem('idtoken')}`,
+          }),
+        }
+      );
     } else {
       const path = `download/file/${file.content}/${recordId}/${fieldName}`;
       this.downloadService.getFile(path, file.type, file.name);
@@ -1258,29 +1268,6 @@ export class GridComponent
   public evaluateLabel(field: any, dataItem: any) {
     const quantityItems = dataItem[field.name].length;
     return field.itemsLabel.replaceAll('{{count}}', quantityItems);
-  }
-
-  /**
-   * \TODO: Find a better way to handle this
-   * Handle specific URLs
-   * Initially this is being used to add the token to the URL for downloading LIFT reports
-   *
-   * @param url URL to open
-   * @param event Click event
-   */
-  public onOpenURL(url: string, event: MouseEvent) {
-    if (url?.startsWith(LIFT_REPORT_URL)) {
-      event.preventDefault();
-      const urlList = url.split('/');
-      // We remove the incrementalID from the URL
-      // It should not be sent to the API, it's used only for the file name
-      const incrementalID = urlList.pop();
-      this.downloadService.getFile(
-        urlList.join('/'),
-        'pdf',
-        `Report-${incrementalID}.pdf`
-      );
-    }
   }
 
   /**
