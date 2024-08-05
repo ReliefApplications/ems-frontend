@@ -1468,8 +1468,16 @@
       "expand": "******",
       "form": {
         "addNewMapping": "******",
+        "directions": {
+          "both": "******",
+          "questionToState": "******",
+          "stateToQuestion": "******"
+        },
         "mapQuestionState": "******",
-        "questionStateTab": "******"
+        "questionStateTab": {
+          "label": "******",
+          "tooltip": "******"
+        }
       },
       "grid": {
         "actions": {

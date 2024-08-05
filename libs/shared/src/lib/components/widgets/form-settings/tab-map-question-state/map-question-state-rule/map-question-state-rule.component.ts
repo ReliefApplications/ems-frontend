@@ -18,4 +18,18 @@ export class MapQuestionStateRuleComponent {
   @Input() states: any[] = [];
   /** Delete filter event emitter */
   @Output() delete = new EventEmitter();
+
+  /** Toggles the direction */
+  public toggleDirection = () => {
+    const direction = this.form.get('direction')?.value;
+    this.form
+      .get('direction')
+      ?.setValue(
+        direction === 'both'
+          ? 'questionToState'
+          : direction === 'questionToState'
+          ? 'stateToQuestion'
+          : 'both'
+      );
+  };
 }

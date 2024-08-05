@@ -32,8 +32,6 @@ export class TabMapQuestionStateComponent
   public states!: string[];
   /** Loading indicator */
   public loading = true;
-  /** If mapping is being used */
-  public enableMapping = false;
 
   /**
    * Getter for the mappings
@@ -73,39 +71,13 @@ export class TabMapQuestionStateComponent
   }
 
   /**
-   * Toggle the mapping of questions values to dashboard states.
-   * If disabled resets the form value.
-   */
-  public toggleMapping(): void {
-    this.enableMapping = !this.enableMapping;
-    if (!this.enableMapping) {
-      if (this.mappings) {
-        this.formGroup.removeControl('mapQuestionState');
-      }
-    } else {
-      // If enabled mapping and form array for mapping didn't exist: create it
-      if (!this.mappings) {
-        const fb = new FormBuilder();
-        (this.formGroup as FormGroup).addControl(
-          'mapQuestionState',
-          fb.array([
-            fb.group({
-              question: null,
-              state: null,
-            }),
-          ])
-        );
-      }
-    }
-  }
-
-  /**
    * Add new filter row
    */
   public addMapping(): void {
     const filter = this.fb.group({
       question: null,
       state: null,
+      direction: 'both',
     });
     this.mappings.push(filter);
   }
@@ -129,9 +101,6 @@ export class TabMapQuestionStateComponent
       .getAllQuestions()
       .map((question: any) => question.name);
     this.loading = false;
-    if (this.mappings) {
-      this.enableMapping = true;
-    }
   }
 
   /**

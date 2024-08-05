@@ -33,9 +33,13 @@
       <ui-icon
         icon="list"
         [size]="24"
-        [uiTooltip]="'components.widget.form.questionStateTab' | translate"
+        [uiTooltip]="
+          'components.widget.form.questionStateTab.label' | translate
+        "
       ></ui-icon>
-      <span>{{ 'components.widget.form.questionStateTab' | translate }}</span>
+      <span>{{
+        'components.widget.form.questionStateTab.label' | translate
+      }}</span>
     </ng-container>
     <ng-template uiTabContent>
       <shared-tab-map-question-state

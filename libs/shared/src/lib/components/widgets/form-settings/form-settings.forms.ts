@@ -1,10 +1,4 @@
-import {
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { get } from 'lodash';
 
@@ -23,17 +17,15 @@ export const createFormWidgetFormGroup = (id: string, configuration: any) => {
     id,
     title: [get(configuration, 'title', ''), Validators.required],
     form: [get(configuration, 'form', null), Validators.required],
+    mapQuestionState: fb.array(
+      configuration.mapQuestionState?.length
+        ? configuration.mapQuestionState.map((x: any) =>
+            createQuestionValueToStateFormGroup(x)
+          )
+        : []
+    ),
   });
-  if (configuration.mapQuestionState && configuration.mapQuestionState.length) {
-    (formGroup as FormGroup).addControl(
-      'mapQuestionState',
-      fb.array(
-        configuration.mapQuestionState.map((x: any) =>
-          createQuestionValueToStateFormGroup(x)
-        )
-      ) as FormArray<FormControl<typeof createQuestionValueToStateFormGroup>>
-    );
-  }
+
   return extendWidgetForm(formGroup, configuration?.widgetDisplay);
 };
 
@@ -47,6 +39,7 @@ export const createQuestionValueToStateFormGroup = (value: any) => {
   const formGroup = fb.group({
     question: [get(value, 'question', null)],
     state: [get(value, 'state', null)],
+    direction: [get(value, 'direction', 'both')],
   });
   return formGroup;
 };

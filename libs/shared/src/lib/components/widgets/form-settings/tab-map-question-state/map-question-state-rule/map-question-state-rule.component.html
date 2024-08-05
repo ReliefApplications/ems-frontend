@@ -7,14 +7,33 @@
   >
     <label>{{ 'common.cronEditor.question.one' | translate }}</label>
     <ui-select-menu formControlName="question">
-      <ui-select-option
-        *ngFor="let question of questions"
-        [value]="question"
-      >
+      <ui-select-option *ngFor="let question of questions" [value]="question">
         {{ question }}
       </ui-select-option>
     </ui-select-menu>
   </div>
+
+  <ui-button
+    class="mt-2"
+    [isIcon]="true"
+    [icon]="
+      form.get('direction')?.value === 'both'
+        ? 'compare_arrows'
+        : form.get('direction')?.value === 'questionToState'
+        ? 'arrow_forward'
+        : 'arrow_back'
+    "
+    variant="primary"
+    (click)="toggleDirection()"
+    [uiTooltip]="
+      (form.get('direction')?.value === 'both'
+        ? 'components.widget.form.directions.both'
+        : form.get('direction')?.value === 'questionToState'
+        ? 'components.widget.form.directions.questionToState'
+        : 'components.widget.form.directions.stateToQuestion'
+      ) | translate
+    "
+  ></ui-button>
 
   <div
     uiFormFieldDirective
@@ -24,10 +43,7 @@
   >
     <label>{{ 'models.dashboard.states.one' | translate }}</label>
     <ui-select-menu formControlName="state">
-      <ui-select-option
-        *ngFor="let state of states"
-        [value]="state"
-      >
+      <ui-select-option *ngFor="let state of states" [value]="state">
         {{ state }}
       </ui-select-option>
     </ui-select-menu>
@@ -36,6 +52,7 @@
   <!-- Delete mapping rule -->
   <ui-button
     [isIcon]="true"
+    class="mt-2"
     icon="delete"
     variant="danger"
     (click)="delete.emit()"

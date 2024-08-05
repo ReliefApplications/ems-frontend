@@ -37,7 +37,6 @@ import { Router } from '@angular/router';
 import { DashboardService } from '../dashboard/dashboard.service';
 import { GET_RECORD_BY_UNIQUE_FIELD_VALUE } from './graphql/queries';
 import { Metadata } from '../../models/metadata.model';
-import { DashboardState } from '../../models/dashboard.model';
 
 export type CheckUniqueProprietyReturnT = {
   verified: boolean;
@@ -92,9 +91,6 @@ export const transformSurveyData = (survey: SurveyModel) => {
   providedIn: 'root',
 })
 export class FormHelpersService {
-  /** Dashboard state regex */
-  public dashboardStateRegex = /(?<={state\.)(.*?)(?=})/gim;
-
   /**
    * Shared survey helper service.
    *
@@ -448,26 +444,6 @@ export class FormHelpersService {
     // Allow us to select the current user
     // as a default question for Users question type
     survey.setVariable('user.id', user?.id || '');
-  };
-
-  /**
-   * If the survey structure has as variables dashboard state, using {state.STATE_NAME},
-   * we do the registration of custom variables for the survey.
-   * Custom variables can be used in the logic fields.
-   *
-   * @param survey survey instance
-   * @param structure structure instance
-   */
-  public addStateVariables = (survey: SurveyModel, structure: string) => {
-    const useStates = this.dashboardStateRegex.test(structure);
-    if (useStates) {
-      this.dashboardService.states$.subscribe(() => {
-        const states = this.dashboardService.states.getValue();
-        states.forEach((state: DashboardState) => {
-          survey.setVariable(`state.${state.name}`, state.value ?? null);
-        });
-      });
-    }
   };
 
   /**

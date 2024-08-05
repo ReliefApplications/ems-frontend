@@ -42,6 +42,7 @@ import { DashboardState } from '../../models/dashboard.model';
 interface MapQuestionToState {
   question: string;
   state: string;
+  direction: 'questionToState' | 'stateToQuestion' | 'both';
 }
 
 /**
@@ -140,36 +141,55 @@ export class FormComponent
 
   ngOnInit(): void {
     this.initSurvey();
-    if (this.mapQuestionState) {
-      const questions = this.mapQuestionState.map(
-        (rule: MapQuestionToState) => rule.question
-      );
-      const states = this.dashboardService.states.getValue();
-      // For each question, if question is present in the mapping rules,
-      // we will add a listener to the value change event so the state value change as well
-      this.survey.getAllQuestions().forEach((question) => {
-        if (questions.includes(question.name)) {
-          const questionMapRules = this.mapQuestionState?.filter(
-            (rule: MapQuestionToState) => (rule.question = question.name)
-          );
-          const statesToUpdate = states.filter((state: DashboardState) =>
-            questionMapRules?.find(
-              (rule: MapQuestionToState) => state.name === rule.state
-            )
-          );
-          question.registerFunctionOnPropertyValueChanged('value', () => {
-            if (statesToUpdate) {
-              statesToUpdate.forEach((state) =>
+    this.setupStateMappingListeners();
+  }
+
+  /** Sets up listeners to keep mapped fields updated */
+  private setupStateMappingListeners(): void {
+    this.mapQuestionState?.forEach((rule: MapQuestionToState) => {
+      const question = this.survey.getQuestionByName(rule.question);
+      if (!question) {
+        return;
+      }
+
+      if (rule.direction === 'questionToState' || rule.direction === 'both') {
+        (question.survey as SurveyModel)?.onValueChanged.add(
+          (_: any, options: any) => {
+            if (options.question.name === question.name) {
+              const state = this.dashboardService.states
+                .getValue()
+                .find((s: DashboardState) => s.name === rule.state);
+              if (state) {
                 this.dashboardService.setDashboardState(
-                  question.value,
-                  state?.id
-                )
-              );
+                  options.value,
+                  state.id
+                );
+              }
             }
-          });
-        }
-      });
-    }
+          }
+        );
+      }
+
+      if (rule.direction === 'stateToQuestion' || rule.direction === 'both') {
+        this.dashboardService.states$.subscribe(() => {
+          const states = this.dashboardService.states.getValue();
+          const state = states.find(
+            (s: DashboardState) => s.name === rule.state
+          );
+          if (state) {
+            if (question.isValueArray && Array.isArray(state.value)) {
+              question.value = state.value;
+            } else if (!question.isValueArray && !Array.isArray(state.value)) {
+              question.value = state.value;
+            } else if (question.isValueArray && !Array.isArray(state.value)) {
+              question.value = [state.value];
+            } else {
+              question.value = state.value[0];
+            }
+          }
+        });
+      }
+    });
   }
 
   /**

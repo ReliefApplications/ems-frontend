@@ -8,6 +8,7 @@ import {
   SelectMenuModule,
   SpinnerModule,
   TooltipModule,
+  IconModule,
 } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EmptyModule } from '../../../ui/empty/empty.module';
@@ -31,6 +32,7 @@ import { MapQuestionStateRuleComponent } from './map-question-state-rule/map-que
     FormWrapperModule,
     ButtonModule,
     TooltipModule,
+    IconModule,
   ],
   exports: [TabMapQuestionStateComponent],
 })

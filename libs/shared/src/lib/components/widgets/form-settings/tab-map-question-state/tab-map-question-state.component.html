@@ -1,35 +1,42 @@
 <!-- Loading indicator -->
-<ui-spinner class="flex justify-center items-center " *ngIf="loading"></ui-spinner>
+<ui-spinner
+  class="flex justify-center items-center"
+  *ngIf="loading"
+></ui-spinner>
 
 <ng-container *ngIf="!loading && form; else emptyTmpl">
-    <!-- Enable mapping checkbox -->
-    <ui-checkbox
-      class="ml-2"
-      (click)="$event.stopPropagation()"
-      (change)="toggleMapping()"
-      [checked]="enableMapping"
-      [ariaLabel]="'components.widget.form.mapQuestionState' | translate"
-      >
-        <ng-container ngProjectAs="label">
-          {{ 'components.widget.form.mapQuestionState' | translate }}
-        </ng-container>
-    </ui-checkbox>
-
-  <div *ngIf="enableMapping && mappings" class="ml-2">
+  <div class="flex justify-between items-center wrap">
+    <span class="flex gap-2 items-center">
+      <h2 class="m-0">
+        {{ 'components.widget.form.questionStateTab.label' | translate }}
+      </h2>
+      <ui-icon
+        icon="help"
+        [uiTooltip]="
+          'components.widget.form.questionStateTab.tooltip' | translate
+        "
+        variant="grey"
+      ></ui-icon>
+    </span>
     <!-- Add new mapping button -->
     <ui-button
-      class="my-2"
+      class="ml-auto"
       category="secondary"
       variant="primary"
-      (click)="addMapping()">
+      (click)="addMapping()"
+      icon="add"
+    >
       {{ 'components.widget.form.addNewMapping' | translate }}
     </ui-button>
+  </div>
+
+  <div *ngIf="mappings" class="ml-2 mt-3">
     <!-- Mappings -->
     <form [formGroup]="formGroup" class="flex">
       <div
         formArrayName="mapQuestionState"
         *ngIf="mappings.length > 0"
-        class="flex flex-col"
+        class="flex flex-col gap-2"
       >
         <ng-container *ngFor="let mapping of mappings.controls; let i = index">
           <!-- Nested mapping rules -->
@@ -47,6 +54,9 @@
 
 <!-- Empty template -->
 <ng-template #emptyTmpl>
-  <shared-empty *ngIf="!loading" [title]="'components.role.summary.noForm' | translate">
+  <shared-empty
+    *ngIf="!loading"
+    [title]="'components.role.summary.noForm' | translate"
+  >
   </shared-empty>
 </ng-template>
