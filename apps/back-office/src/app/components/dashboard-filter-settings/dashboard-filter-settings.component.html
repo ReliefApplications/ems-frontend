@@ -29,18 +29,31 @@
       'models.dashboard.activateFiltering' | translate
     }}</ng-container>
   </ui-toggle>
+  <!-- Keep values from last active filter -->
+  <ui-toggle formControlName="keepPrevious">
+    <ng-container ngProjectAs="label">
+      {{ 'models.dashboard.keepPrevious.title' | translate }}
+      <ui-icon
+        class="ml-1 cursor-help self-center"
+        variant="grey"
+        [size]="18"
+        icon="info_outline"
+        [uiTooltip]="'models.dashboard.keepPrevious.tooltip' | translate"
+      ></ui-icon>
+    </ng-container>
+  </ui-toggle>
   <!-- Closable status -->
   <ui-toggle formControlName="closable">
-    <ng-container ngProjectAs="label"
-      >{{ 'models.dashboard.closable' | translate
-      }}<ui-icon
+    <ng-container ngProjectAs="label">
+      {{ 'models.dashboard.closable' | translate }}
+      <ui-icon
         class="ml-1 cursor-help self-center"
         variant="grey"
         [size]="18"
         icon="info_outline"
         [uiTooltip]="'models.dashboard.tooltip.filter.closable' | translate"
-      ></ui-icon
-    ></ng-container>
+      ></ui-icon>
+    </ng-container>
   </ui-toggle>
   <div uiFormFieldDirective>
     <ui-select-menu

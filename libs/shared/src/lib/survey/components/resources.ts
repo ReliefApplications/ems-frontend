@@ -88,7 +88,7 @@ export const init = (
       query: GET_RESOURCE_BY_ID,
       variables: {
         id: data.id,
-        filter: data.filters,
+        filter: { logic: 'and', filters: data.filters },
       },
       fetchPolicy: 'no-cache',
     });
@@ -367,7 +367,7 @@ export const init = (
         name: 'selectQuestion:dropdown',
         category: 'Filter by Questions',
         dependsOn: ['resource', 'displayField'],
-        isRequired: true,
+        isRequired: false,
         visibleIf: visibleIfResourceAndDisplayField,
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
@@ -692,7 +692,7 @@ export const init = (
       const canDisplayButtons =
         survey.mode !== 'display' && !question.isReadOnly;
 
-      const searchBtn = buildSearchButton(
+      let searchBtn = buildSearchButton(
         question,
         true,
         dialog,
@@ -705,36 +705,54 @@ export const init = (
         actionsButtons.appendChild(searchBtn);
       }
 
-      question.registerFunctionOnPropertyValueChanged('canSearch', () => {
-        if (canDisplayButtons && question.canSearch) {
+      const setSearchBtn = () => {
+        const shouldDisplay = survey.mode !== 'display' && !question.isReadOnly;
+        if (shouldDisplay && question.canSearch) {
           // add the search button to the actions buttons
+          searchBtn = buildSearchButton(
+            question,
+            true,
+            dialog,
+            document,
+            ngZone,
+            resourcesFilterValues
+          );
           actionsButtons.appendChild(searchBtn);
         } else {
           // remove the search button from the actions buttons
-          actionsButtons.removeChild(searchBtn);
+          if (actionsButtons.contains(searchBtn)) {
+            actionsButtons.removeChild(searchBtn);
+          }
         }
-      });
+      };
 
-      const addBtn = buildAddButton(question, true, dialog, ngZone, document);
+      let addBtn = buildAddButton(question, true, dialog, ngZone, document);
       if (canDisplayButtons && question.addRecord && question.addTemplate) {
         actionsButtons.appendChild(addBtn);
       }
-      const removeAddBtn = () => {
-        if (canDisplayButtons && question.addRecord && question.addTemplate) {
+
+      // Checks whether the add button should be displayed based on current question state
+      const setAddBtn = () => {
+        const shouldDisplay = survey.mode !== 'display' && !question.isReadOnly;
+        if (shouldDisplay && question.addRecord && question.addTemplate) {
           // add the add button to the actions buttons
+          addBtn = buildAddButton(question, true, dialog, ngZone, document);
           actionsButtons.appendChild(addBtn);
         } else {
           // remove the add button from the actions buttons
-          actionsButtons.removeChild(addBtn);
+          if (actionsButtons.contains(addBtn)) {
+            actionsButtons.removeChild(addBtn);
+          }
         }
       };
-      question.registerFunctionOnPropertyValueChanged(
-        'addRecord',
-        removeAddBtn
-      );
-      question.registerFunctionOnPropertyValueChanged(
-        'addTemplate',
-        removeAddBtn
+
+      // Recalculate the add button visibility when the question properties change
+      question.registerFunctionOnPropertiesValueChanged(
+        ['addRecord', 'canSearch', 'readOnly'],
+        () => {
+          setAddBtn();
+          setSearchBtn();
+        }
       );
 
       let gridComponentRef!: ComponentRef<CoreGridComponent>;

@@ -385,11 +385,11 @@
       <div class="flex gap-2 items-center">
         <div uiFormFieldDirective class="flex-1">
           <label>{{ 'common.separator' | translate }}</label>
-          <ui-select-menu [formControl]="separator">
-            <ui-select-option value=",">{{
+          <ui-select-menu formControlName="separator">
+            <ui-select-option [value]="','">{{
               'common.comma' | translate
             }}</ui-select-option>
-            <ui-select-option value=";">{{
+            <ui-select-option [value]="';'">{{
               'common.semicolon' | translate
             }}</ui-select-option>
           </ui-select-menu>

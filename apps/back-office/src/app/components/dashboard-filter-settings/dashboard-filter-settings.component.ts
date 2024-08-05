@@ -117,6 +117,7 @@ export class DashboardFilterSettingsComponent
       closable: get(this.dashboard, 'filter.closable', false),
       structure: get(this.dashboard, 'filter.structure'),
       position: get(this.dashboard, 'filter.position', 'bottom'),
+      keepPrevious: get(this.dashboard, 'filter.keepPrevious', true),
     });
   }
 
@@ -126,6 +127,7 @@ export class DashboardFilterSettingsComponent
    * @param value Value to activate or deactivate the filter
    */
   onEdit(value: any): void {
+    console.log('onEdit', value);
     this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD,

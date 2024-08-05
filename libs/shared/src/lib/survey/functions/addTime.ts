@@ -7,7 +7,7 @@ import { GlobalOptions } from '../types';
  * @returns the new date
  */
 const addTime = (params: any[]) => {
-  const [dateStr, num, paramUnit] = params;
+  const [dateStr, num, paramUnit, dateOnly = false] = params;
   const unit = paramUnit?.toLowerCase() || 'days';
   if (!dateStr) {
     return null;
@@ -35,7 +35,11 @@ const addTime = (params: any[]) => {
       break;
   }
 
-  return date;
+  return dateOnly
+    ? `${date.getFullYear()}-${`${date.getMonth() + 1}`.padStart(2, '0')}-${`${
+        date.getDate() + 1
+      }`.padStart(2, '0')}`
+    : date;
 };
 
 /**

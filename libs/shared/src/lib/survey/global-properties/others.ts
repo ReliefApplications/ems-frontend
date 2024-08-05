@@ -69,7 +69,7 @@ export const init = (environment: any): void => {
     name: 'valueExpression:expression',
     category: 'logic',
     onExecuteExpression: (obj: Question, res: any) => {
-      obj.readOnly = true;
+      // obj.readOnly = true;
       obj.value = res;
     },
   });
@@ -99,6 +99,7 @@ export const init = (environment: any): void => {
   // of the selected question (the value must be a page name)
   serializer.addProperty('survey', {
     name: 'openOnQuestionValuesPage',
+    displayName: 'Open survey on page based on question value',
     category: 'pages',
     choices: (survey: SurveyModel, choicesCallback: any) => {
       let questions: string[] = [''];
@@ -234,9 +235,7 @@ export const init = (environment: any): void => {
     isLocalizable: true,
     onExecuteExpression: (obj: QuestionPanelDynamicModel, res: any) => {
       // Weird bug with surveyJS, if we don't wait a bit, it doesn't work
-      setTimeout(() => {
-        obj.allowAddPanel = !!res;
-      }, 50);
+      obj.allowAddPanel = !!res;
     },
   });
 
@@ -276,27 +275,28 @@ export const init = (environment: any): void => {
       ];
       const questions = (question.survey as SurveyModel)?.getAllQuestions?.();
       for (const surveyQuestion of questions) {
-        if (['matrix', 'matrixdropdown'].includes(surveyQuestion.getType())) {
+        if (
+          ['matrix', 'matrixdropdown'].includes(surveyQuestion.getType()) &&
+          question.id !== surveyQuestion.id
+        ) {
           choices.push({
             value: surveyQuestion.name,
             text: surveyQuestion.name,
           });
         }
       }
-      choicesCallback(
-        choices.filter((choice) => choice.value !== question.name)
-      );
+      choicesCallback(choices);
     },
 
     onSetValue: (question: Question, copyFrom: string | null) => {
       question.setPropertyValue('copyRowsFromAnotherMatrix', copyFrom);
-      const matrixManager: MatrixManager = (question.survey as SurveyModel)
-        .matrixManager;
+      const matrixManager: MatrixManager = (question?.survey as SurveyModel)
+        ?.matrixManager;
 
       if (!matrixManager) {
         return;
       }
-      matrixManager.addCopyConfig(question.name, {
+      matrixManager.addCopyConfig(question.id, {
         rows: copyFrom || undefined,
         columns: question.copyColumnsFromAnotherMatrix || undefined,
       });

@@ -25,6 +25,7 @@ export interface DashboardFilter {
   closable?: boolean;
   structure?: any;
   position?: string;
+  keepPrevious?: boolean;
 }
 
 /** Widget settings types */

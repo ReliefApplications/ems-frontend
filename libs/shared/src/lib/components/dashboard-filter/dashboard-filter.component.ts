@@ -146,7 +146,7 @@ export class DashboardFilterComponent
     if (changes.isFullScreen) {
       this.setFilterContainerDimensions();
     }
-    if (changes.dashboard) {
+    if (changes.dashboard && !changes.dashboard.isFirstChange()) {
       this.initSurvey();
     }
   }
@@ -199,7 +199,17 @@ export class DashboardFilterComponent
 
   /** Render the survey using the saved structure */
   private initSurvey(): void {
+    const oldFilterValues = this.contextService.filterValues.getValue();
     this.survey = this.contextService.initSurvey();
+
+    if (this.dashboard?.filter?.keepPrevious) {
+      Object.keys(oldFilterValues ?? {}).forEach((key) => {
+        const question = this.survey.getQuestionByName(key);
+        if (question) {
+          question.value = oldFilterValues[key];
+        }
+      });
+    }
 
     this.survey.showCompletedPage = false; // Hide completed page from the survey
     this.survey.showNavigationButtons = false; // Hide navigation buttons from the survey

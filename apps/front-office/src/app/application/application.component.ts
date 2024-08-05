@@ -1,4 +1,10 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { subject } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
@@ -14,6 +20,7 @@ import {
 import { SnackbarService } from '@oort-front/ui';
 import { get } from 'lodash';
 import { takeUntil } from 'rxjs/operators';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Front-office Application component.
@@ -60,6 +67,7 @@ export class ApplicationComponent
    * @param router Angular router
    * @param translate Angular translate service
    * @param ability user ability
+   * @param document Angular document
    */
   constructor(
     private authService: AuthService,
@@ -68,7 +76,8 @@ export class ApplicationComponent
     private snackBar: SnackbarService,
     private router: Router,
     private translate: TranslateService,
-    private ability: AppAbility
+    private ability: AppAbility,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
@@ -106,6 +115,9 @@ export class ApplicationComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
         if (application) {
+          // change the page title to the application name
+          this.document.title = application.name || '';
+
           this.loading = false;
           this.title = application.name || '';
           this.adminNavItems = [];

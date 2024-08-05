@@ -290,6 +290,7 @@
     "name": "******",
     "next": "******",
     "noOptions": "******",
+    "none": "******",
     "notifications": {
       "accessDenied": "****** {{type}} ******",
       "accessNotProvided": "****** {{type}} ****** {{error}}",
@@ -1095,6 +1096,10 @@
         "format": {
           "info": "******",
           "title": "******"
+        },
+        "hidden": {
+          "hiddenByDefault": "******",
+          "tooltip": "******"
         },
         "search": "******",
         "selected": "******",
@@ -2396,6 +2401,10 @@
         }
       },
       "historicalDate": "******",
+      "keepPrevious": {
+        "title": "******",
+        "tooltip": "******"
+      },
       "share": "******",
       "states": {
         "create": "******",
@@ -2526,7 +2535,13 @@
         "searchable": "******",
         "sortable": "******",
         "title": "******",
-        "tooltip": "******"
+        "tooltip": {
+          "content": "******",
+          "display": {
+            "title": "******",
+            "tooltip": "******"
+          }
+        }
       },
       "map": {
         "defaultTitle": "******",
@@ -2737,6 +2752,19 @@
       "empty": {
         "add": "******",
         "customize": "******"
+      }
+    }
+  },
+  "survey": {
+    "customFunctions": {
+      "getFollowupSummary": {
+        "comment": "******",
+        "followUp": {
+          "numbered": "****** {{number}}",
+          "one": "******"
+        },
+        "initialInspection": "******",
+        "inspectionAction": "******"
       }
     }
   }

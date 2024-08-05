@@ -68,7 +68,10 @@ export class ReferenceDataService {
    * Include caching for requests to optimize number of requests.
    *
    * @param referenceDataID ReferenceData ID.
-   * @param displayField Field used for display in the question.
+   * @param displayFieldOptions Display field options.
+   * @param displayFieldOptions.displayField The field to display in the choices.
+   * @param displayFieldOptions.tryLoadTranslations Whether to try to load translations for the display field.
+   * @param displayFieldOptions.lang The language to use for translations.
    * @param storePrimitiveValue Whether to store the whole item or only the primitive value given the displayField
    * @param filter The filter object
    * @param filter.foreignReferenceData The reference data name of the foreign question
@@ -80,7 +83,11 @@ export class ReferenceDataService {
    */
   public async getChoices(
     referenceDataID: string,
-    displayField: string,
+    displayFieldOptions: {
+      displayField: string;
+      tryLoadTranslations: boolean;
+      lang: string;
+    },
     storePrimitiveValue: boolean = true,
     filter?: {
       foreignReferenceData: string;
@@ -90,6 +97,8 @@ export class ReferenceDataService {
       operator: string;
     }
   ): Promise<{ value: string | number; text: string }[]> {
+    const { displayField, tryLoadTranslations, lang } = displayFieldOptions;
+
     const sortByDisplayField = (a: any, b: any) =>
       a[displayField] > b[displayField] ? 1 : -1;
 
@@ -136,13 +145,17 @@ export class ReferenceDataService {
         )
         .map((item) => ({
           value: storePrimitiveValue ? item[valueField] : item,
-          text: item[displayField],
+          text: tryLoadTranslations
+            ? item[`${displayField}_${lang}`] ?? item[displayField]
+            : item[displayField],
         }));
     }
     // if we don't have to filter
     return items.map((item) => ({
       value: storePrimitiveValue ? item[valueField] : item,
-      text: item[displayField],
+      text: tryLoadTranslations
+        ? item[`${displayField}_${lang}`] ?? item[displayField]
+        : item[displayField],
     }));
   }
 

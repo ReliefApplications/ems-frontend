@@ -1,12 +1,12 @@
-import { GlobalOptions } from '../types';
+import { GlobalOptions } from '../../types';
 import {
   QueryResponse,
   QueryVariables,
-} from '../../services/query-builder/query-builder.service';
+} from '../../../services/query-builder/query-builder.service';
 import { gql } from 'apollo-angular';
 import { SurveyModel } from 'survey-core';
 import { firstValueFrom } from 'rxjs';
-import { Resource } from '../../models/resource.model';
+import { Resource } from '../../../models/resource.model';
 
 /** Maps each complaint type to its value */
 const COMPLAINT_TYPE_MAP = {

@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { GlobalOptions } from '../types';
+import { GlobalOptions } from '../../types';
 import { SurveyModel } from 'survey-core';
 import { firstValueFrom } from 'rxjs';
 
@@ -103,6 +103,11 @@ export default (options: GlobalOptions) => {
                 operator: 'lte',
                 value: currentYearEnd.toISOString(),
               },
+              {
+                field: 'items_given',
+                operator: 'contains',
+                value: 'aide alimentaire',
+              },
             ],
           },
         },
@@ -113,7 +118,7 @@ export default (options: GlobalOptions) => {
     const prescriptionAids = [
       ...(prescriptions ?? []).reduce(
         (aids: Set<string>, prescription: any) => {
-          prescription.aids.forEach((aid: any) => aids.add(aid));
+          (prescription.aids ?? []).forEach((aid: any) => aids.add(aid));
           return aids;
         },
         new Set<string>()
@@ -142,6 +147,11 @@ export default (options: GlobalOptions) => {
                 field: 'createdAt',
                 operator: 'lte',
                 value: currentYearEnd.toISOString(),
+              },
+              {
+                field: 'items_given',
+                operator: 'contains',
+                value: 'aide alimentaire',
               },
             ],
           },

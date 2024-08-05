@@ -7,7 +7,9 @@ import { AggregationGridModule } from '../../aggregation/aggregation-grid/aggreg
 import {
   ButtonModule,
   FormWrapperModule,
+  IconModule,
   SelectMenuModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReferenceDataGridModule } from '../../ui/reference-data-grid/reference-data-grid.module';
@@ -25,6 +27,8 @@ import { ReferenceDataGridModule } from '../../ui/reference-data-grid/reference-
     SelectMenuModule,
     TranslateModule,
     ReferenceDataGridModule,
+    IconModule,
+    TooltipModule,
   ],
   exports: [GridWidgetComponent],
 })

@@ -12,10 +12,18 @@ export interface LayoutPreviewData {
 /** Default grid settings provided to core grid */
 const DEFAULT_GRID_SETTINGS = {
   actions: {
-    delete: false,
-    history: true,
-    convert: false,
-    update: false,
+    delete: {
+      display: false,
+    },
+    history: {
+      display: true,
+    },
+    convert: {
+      display: false,
+    },
+    update: {
+      display: false,
+    },
     inlineEdition: false,
     remove: false,
   },

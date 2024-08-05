@@ -1,13 +1,5 @@
 <ng-container *ngIf="canUpdate; else defaultTemplate">
   <div class="flex items-center" *ngIf="!collapsed">
-    <!-- Widget tooltip -->
-    <ui-button
-      *ngIf="widget.settings?.widgetDisplay?.showTooltip"
-      [isIcon]="true"
-      icon="info"
-      variant="grey"
-      [uiTooltip]="widget.settings.widgetDisplay.tooltip"
-    ></ui-button>
     <!-- Widget settings -->
     <ui-button
       [isIcon]="true"
@@ -46,13 +38,6 @@
 
   <!-- Only display if we have space to do it -->
   <div *ngIf="collapsed" class="flex items-center">
-    <ui-button
-      *ngIf="widget.settings?.widgetDisplay?.showTooltip"
-      [isIcon]="true"
-      icon="info"
-      variant="grey"
-      [uiTooltip]="widget.settings.widgetDisplay.tooltip"
-    ></ui-button>
     <ui-button
       [isIcon]="true"
       icon="more_vert"
@@ -96,14 +81,6 @@
 
 <ng-template #defaultTemplate>
   <div class="flex gap-1">
-    <!-- Widget tooltip -->
-    <ui-button
-      *ngIf="widget.settings?.widgetDisplay?.showTooltip"
-      [isIcon]="true"
-      icon="info"
-      variant="grey"
-      [uiTooltip]="widget.settings.widgetDisplay.tooltip"
-    ></ui-button>
     <!-- Expand widget -->
     <ui-button
       *ngIf="!(widget.component === 'map')"

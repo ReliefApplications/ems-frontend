@@ -7,6 +7,9 @@ import * as OwnerComponent from './components/owner';
 import * as UsersComponent from './components/users';
 import * as GeospatialComponent from './components/geospatial';
 import { Apollo } from 'apollo-angular';
+import { Dialog } from '@angular/cdk/dialog';
+import { SnackbarService } from '@oort-front/ui';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Custom question types for the survey creator toolbox
@@ -49,7 +52,19 @@ export const InitCustomQuestionComponent: {
   users: (options) => {
     const { injector, instance } = options;
     const domService = injector.get(DomService);
-    UsersComponent.init(instance, domService);
+    const dialog = injector.get(Dialog);
+    const apollo = injector.get(Apollo);
+    const snackBar = injector.get(SnackbarService);
+    const translate = injector.get(TranslateService);
+
+    UsersComponent.init(
+      instance,
+      domService,
+      dialog,
+      apollo,
+      snackBar,
+      translate
+    );
   },
   geoSpatial: (options) => {
     const { injector, instance } = options;

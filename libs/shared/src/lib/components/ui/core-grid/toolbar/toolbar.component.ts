@@ -19,10 +19,21 @@ export class GridToolbarComponent {
   // === ACTIONS ===
   /** Actions */
   @Input() actions: GridActions = {
-    update: false,
-    delete: false,
-    history: false,
-    convert: false,
+    update: {
+      display: false,
+    },
+    delete: {
+      display: false,
+    },
+    history: {
+      display: false,
+    },
+    convert: {
+      display: false,
+    },
+    showDetails: {
+      display: false,
+    },
     remove: false,
     mapSelected: false,
   };
@@ -36,9 +47,9 @@ export class GridToolbarComponent {
    */
   get display(): boolean {
     return (
-      this.actions.delete ||
-      this.actions.update ||
-      this.actions.convert ||
+      this.actions.delete.display ||
+      this.actions.update.display ||
+      this.actions.convert.display ||
       this.actions.remove ||
       (this.actions.mapSelected ?? false)
     );
