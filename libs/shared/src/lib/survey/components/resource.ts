@@ -2,6 +2,7 @@ import { Apollo } from 'apollo-angular';
 import {
   GET_SHORT_RESOURCE_BY_ID,
   GET_RESOURCE_BY_ID,
+  GET_RECORD_BY_ID,
 } from '../graphql/queries';
 import {
   ComponentCollection,
@@ -19,45 +20,75 @@ import {
   setUpActionsButtonWrapper,
   buildUpdateButton,
 } from './utils';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { Question as SharedQuestion, QuestionResource } from '../types';
-import { Record } from '../../models/record.model';
+import { Record, RecordQueryResponse } from '../../models/record.model';
 import { Injector, NgZone } from '@angular/core';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 import { ResourceQueryResponse } from '../../models/resource.model';
-
-/** Cache for loaded records */
-const loadedRecords: Map<string, Record> = new Map();
+import {
+  CompositeFilterDescriptor,
+  FilterDescriptor,
+} from '@progress/kendo-data-query';
+import { firstValueFrom } from 'rxjs';
 
 /**
- * Adds the selected record to the survey context.
+ * Get the updated filter for the question, with values included.
  *
  * @param question resource question
- * @param recordID id of record to add context of
+ * @returns updated filter with values
  */
-const addRecordToSurveyContext = (question: Question, recordID: string) => {
+const getUpdatedFilter = (
+  question: QuestionResource
+): CompositeFilterDescriptor => {
   const survey = question.survey as SurveyModel;
-  if (!survey) {
-    return;
-  }
-  if (!recordID) {
-    // get survey variables
-    survey.getVariableNames().forEach((variable) => {
-      // remove variable if starts with question name
-      if (variable.startsWith(`${question.name}.`))
-        survey.setVariable(variable, null);
-    });
-    return;
-  }
-  // get record from cache
-  const record = loadedRecords.get(recordID);
-  if (!record) return;
+  const filtersStr = question.customFilter;
 
-  const data = record?.data || {};
-  for (const field in data) {
-    // create survey expression in the format {[questionName].[fieldName]} = [value]
-    survey.setVariable(`${question.name}.${field}`, data[field]);
+  if (!survey || !filtersStr) {
+    return { logic: 'and', filters: [] };
+  }
+
+  const replaceFilterValue = (
+    filter: FilterDescriptor | CompositeFilterDescriptor
+  ): FilterDescriptor | CompositeFilterDescriptor | null => {
+    if ('filters' in filter && filter.filters) {
+      return {
+        ...filter,
+        filters: filter.filters
+          .map((f) => replaceFilterValue(f))
+          .filter(Boolean) as (FilterDescriptor | CompositeFilterDescriptor)[],
+      };
+    } else if ('value' in filter && typeof filter.value === 'string') {
+      const value = filter.value;
+      if (value.match(/^{*.*}$/)) {
+        // const quest = value.substr(1, value.length - 2);
+        // fix the deprecated method substr above
+        const quest = value.slice(1, value.length - 1);
+        const question = survey.getQuestionByName(quest);
+        if (question && !isNil(question.value)) {
+          return {
+            ...filter,
+            value: question.value,
+          };
+        } else {
+          return null;
+        }
+      }
+    }
+
+    return filter;
+  };
+
+  const parsed = JSON.parse(filtersStr);
+
+  if (Array.isArray(parsed) || ('field' in parsed && parsed.field)) {
+    return replaceFilterValue({
+      logic: 'and',
+      filters: parsed,
+    }) as CompositeFilterDescriptor;
+  } else {
+    return replaceFilterValue(parsed) as CompositeFilterDescriptor;
   }
 };
 
@@ -78,6 +109,58 @@ export const init = (
   const apollo = injector.get(Apollo);
   const dialog = injector.get(Dialog);
 
+  /** Cache for loaded records */
+  const loadedRecords: Map<string, Record> = new Map();
+
+  /**
+   * Adds the selected record to the survey context.
+   *
+   * @param question resource question
+   * @param recordID id of record to add context of
+   */
+  const addRecordToSurveyContext = async (
+    question: Question,
+    recordID: string
+  ) => {
+    const survey = question.survey as SurveyModel;
+    if (!survey) {
+      return;
+    }
+
+    if (!recordID) {
+      // get survey variables
+      survey.getVariableNames().forEach((variable) => {
+        // remove variable if starts with question name
+        if (variable.startsWith(`${question.name}.`))
+          survey.setVariable(variable, null);
+      });
+      return;
+    }
+    // get record from cache
+    let record = loadedRecords.get(recordID);
+    if (!record) {
+      const { data } = await firstValueFrom(
+        apollo.query<RecordQueryResponse>({
+          query: GET_RECORD_BY_ID,
+          variables: {
+            id: recordID,
+          },
+        })
+      );
+
+      if (data.record) {
+        record = data.record;
+        loadedRecords.set(recordID, record);
+      }
+    }
+
+    const data = record?.data || {};
+    for (const field in data) {
+      // create survey expression in the format {[questionName].[fieldName]} = [value]
+      survey.setVariable(`${question.name}.${field}`, data[field]);
+    }
+  };
+
   const getResourceById = (data: { id: string }) =>
     apollo.query<ResourceQueryResponse>({
       query: GET_SHORT_RESOURCE_BY_ID,
@@ -86,21 +169,9 @@ export const init = (
       },
     });
 
-  const mapQuestionChoices = (data: any, question: any) => {
-    return (
-      data.resource.records?.edges?.map((x: any) => {
-        loadedRecords.set(x.node?.id || '', x.node);
-        return {
-          value: x.node?.id,
-          text: `${x.node?.data[question.displayField || 'id']}`,
-        };
-      }) || []
-    );
-  };
-
   const getResourceRecordsById = (data: {
     id: string;
-    filters?: { field: string; operator: string; value: string }[];
+    filters?: CompositeFilterDescriptor;
   }) =>
     apollo.query<ResourceQueryResponse>({
       query: GET_RESOURCE_BY_ID,
@@ -111,7 +182,49 @@ export const init = (
       fetchPolicy: 'no-cache',
     });
 
-  let filters: { field: string; operator: string; value: string }[] = [];
+  const populateChoices = (question: QuestionResource): void => {
+    const filters = getUpdatedFilter(question);
+    if (
+      question.resource &&
+      !(question.customFilter && Array.isArray(filters) && filters.length === 0)
+    ) {
+      getResourceRecordsById({ id: question.resource, filters }).subscribe(
+        ({ data }) => {
+          const choices = mapQuestionChoices(data, question);
+          question.contentQuestion.choices = choices;
+
+          // Auto select the first option if the option is set, only applicable if question doesn't have a value yet
+          if (
+            (question.autoSelectFirstOption && choices.length > 0) ||
+            (question.autoSelectOnlyOption && choices.length === 1)
+          ) {
+            setTimeout(() => {
+              question.value = question.value ?? choices[0].value;
+            }, 500);
+          }
+
+          if (!question.placeholder) {
+            question.contentQuestion.optionsCaption =
+              'Select a record from ' + data.resource.name + '...';
+          }
+          addRecordToSurveyContext(question, question.value);
+        }
+      );
+    } else {
+      question.contentQuestion.choices = [];
+    }
+  };
+
+  const mapQuestionChoices = (data: any, question: any) => {
+    return (
+      data.resource.records?.edges?.map((x: any) => {
+        return {
+          value: x.node?.id,
+          text: `${x.node?.data[question.displayField || 'id']}`,
+        };
+      }) || []
+    );
+  };
 
   // const hasUniqueRecord = ((id: string) => false);
   // resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
@@ -206,7 +319,7 @@ export const init = (
         type: CustomPropertyGridComponentTypes.resourceTestService,
         category: 'Custom Questions',
         dependsOn: ['resource', 'displayField'],
-        isRequired: true,
+        isRequired: false,
         visibleIf: visibleIfResourceAndDisplayField,
         visibleIndex: 3,
       });
@@ -358,10 +471,40 @@ export const init = (
       });
 
       serializer.addProperty('resource', {
+        name: 'autoSelectFirstOption:boolean',
+        category: 'Custom Questions',
+        dependsOn: ['resource'],
+        default: false,
+        visibleIf: visibleIfResource,
+        visibleIndex: 17,
+        onSetValue: (question: QuestionResource, value: boolean) => {
+          if (value) {
+            question.setPropertyValue('autoSelectFirstOption', true);
+            question.setPropertyValue('autoSelectOnlyOption', false);
+          }
+        },
+      });
+
+      serializer.addProperty('resource', {
+        name: 'autoSelectOnlyOption:boolean',
+        category: 'Custom Questions',
+        dependsOn: ['resource'],
+        default: false,
+        visibleIf: visibleIfResource,
+        visibleIndex: 18,
+        onSetValue: (question: QuestionResource, value: boolean) => {
+          if (value) {
+            question.setPropertyValue('autoSelectFirstOption', false);
+            question.setPropertyValue('autoSelectOnlyOption', true);
+          }
+        },
+      });
+
+      serializer.addProperty('resource', {
         name: 'selectQuestion:dropdown',
         category: 'Filter by Questions',
         dependsOn: ['resource', 'displayField'],
-        isRequired: true,
+        isRequired: false,
         visibleIf: visibleIfResourceAndDisplayField,
         visibleIndex: 3,
         choices: (obj: QuestionResource, choicesCallback: any) => {
@@ -518,77 +661,69 @@ export const init = (
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = question.placeholder;
       }
-      if (question.resource) {
-        if (question.selectQuestion) {
-          filters[0].operator = question.filterCondition;
-          filters[0].field = question.filterBy;
-          question.registerFunctionOnPropertyValueChanged(
-            'filterCondition',
-            () => {
-              filters.map((i: any) => {
-                i.operator = question.filterCondition;
-              });
-            }
-          );
-        }
-        if (!question.filterBy || question.filterBy.length < 1) {
-          this.populateChoices(question);
-        }
-
-        if (question.selectQuestion) {
-          if (question.selectQuestion === '#staticValue') {
-            setAdvanceFilter(question.staticValue, question);
-            this.populateChoices(question);
-          } else {
-            (question.survey as SurveyModel).onValueChanged.add(
-              (_: any, options: any) => {
-                if (options.name === question.selectQuestion) {
-                  if (
-                    !!options.value ||
-                    (options.question.customQuestion &&
-                      options.question.customQuestion.name)
-                  ) {
-                    setAdvanceFilter(options.value, question);
-                    this.populateChoices(question);
-                  }
-                }
-              }
-            );
-          }
-        } else if (
-          !question.selectQuestion &&
-          question.customFilter &&
-          question.customFilter.trim().length > 0
-        ) {
-          const obj = JSON.parse(question.customFilter);
-          if (obj) {
-            for (const objElement of obj) {
-              const value = objElement.value;
-              if (typeof value === 'string' && value.match(/^{*.*}$/)) {
-                const quest = objElement.value.substr(
-                  1,
-                  objElement.value.length - 2
-                );
-                objElement.value = '';
-                (question.survey as SurveyModel).onValueChanged.add(
-                  (_: any, options: any) => {
-                    if (options.question.name === quest) {
-                      if (options.value) {
-                        setAdvanceFilter(options.value, objElement.field);
-                        this.populateChoices(question);
-                      }
-                    }
-                  }
-                );
-              }
-            }
-            filters = obj;
-            this.populateChoices(question);
-          }
-        } else if (!question.customFilter) {
-          filters = [];
-        }
+      if (question.selectQuestion && question.resource) {
+        // TODO: Recreate logic that was here in the populate choices function
       }
+
+      if (!question.filterBy || question.filterBy.length < 1) {
+        populateChoices(question);
+      }
+
+      // if (question.selectQuestion) {
+      //   if (question.selectQuestion === '#staticValue') {
+      //     setAdvanceFilter(question.staticValue, question);
+      //     populateChoices(question);
+      //   } else {
+      //     (question.survey as SurveyModel).onValueChanged.add(
+      //       (_: any, options: any) => {
+      //         if (options.name === question.selectQuestion) {
+      //           if (
+      //             !!options.value ||
+      //             (options.question.customQuestion &&
+      //               options.question.customQuestion.name)
+      //           ) {
+      //             setAdvanceFilter(options.value, question);
+      //             populateChoices(question);
+      //           }
+      //         }
+      //       }
+      //     );
+      //   }
+      // }
+      // else if (
+      //   !question.selectQuestion &&
+      //   question.customFilter &&
+      //   question.customFilter.trim().length > 0
+      // ) {
+      //   const obj = JSON.parse(question.customFilter);
+      //   // getUpdatedFilter(question);
+      //   if (obj) {
+      //     for (const objElement of obj) {
+      //       const value = objElement.value;
+      //       if (typeof value === 'string' && value.match(/^{*.*}$/)) {
+      //         const quest = objElement.value.substr(
+      //           1,
+      //           objElement.value.length - 2
+      //         );
+      //         objElement.value = '';
+      //         (question.survey as SurveyModel).onValueChanged.add(
+      //           (_: any, options: any) => {
+      //             if (options.question.name === quest) {
+      //               if (options.value) {
+      //                 setAdvanceFilter(options.value, objElement.field);
+      //                 this.populateChoices(question);
+      //               }
+      //             }
+      //           }
+      //         );
+      //       }
+      //     }
+      //     filters = obj;
+      //     this.populateChoices(question);
+      //   }
+      // } else if (!question.customFilter) {
+      //   filters = [];
+      // }
     },
     /**
      * Update the question properties when the resource property is changed
@@ -607,34 +742,33 @@ export const init = (
         question.prefillWithCurrentRecord = false;
       }
     },
-    populateChoices: (question: QuestionResource): void => {
-      if (
-        question.resource &&
-        !(
-          question.customFilter &&
-          Array.isArray(filters) &&
-          filters.length === 0
-        )
-      ) {
-        getResourceRecordsById({ id: question.resource, filters }).subscribe(
-          ({ data }) => {
-            const choices = mapQuestionChoices(data, question);
-            question.contentQuestion.choices = choices;
-            if (!question.placeholder) {
-              question.contentQuestion.optionsCaption =
-                'Select a record from ' + data.resource.name + '...';
-            }
-            addRecordToSurveyContext(question, question.value);
-          }
-        );
-      } else {
-        question.contentQuestion.choices = [];
-      }
-    },
     // Display of add button for resource question ans set placeholder, if any
     onAfterRender: (question: QuestionResource, el: HTMLElement): void => {
       const survey: SurveyModel = question.survey as SurveyModel;
+      loadedRecords.clear();
       survey.loadedRecords = loadedRecords;
+
+      // If using custom filters, we need to update the filters and populate the choices
+      // note: we do this here instead of onLoaded because we need the survey initial values
+      if (
+        !question.selectQuestion &&
+        question.customFilter &&
+        question.customFilter.trim().length > 0
+      ) {
+        // Fetch the initial records
+        populateChoices(question);
+
+        // Add listener to refetch the records when the filter changes
+        const usedQuestions = survey.getAllQuestions().filter((q) => {
+          return question.customFilter.includes(`{${q.name}}`);
+        });
+
+        survey.onValueChanged.add((_, options) => {
+          if (usedQuestions.some((q) => q.name === options.name)) {
+            populateChoices(question);
+          }
+        });
+      }
 
       // Add placeholder to the dropdown
       if (question.placeholder) {
@@ -647,7 +781,9 @@ export const init = (
 
       // Listen to value changes in order to add records to the survey context
       survey.onValueChanged.add((_, options) => {
-        addRecordToSurveyContext(options.question, options.value);
+        if (options.name === question.name) {
+          addRecordToSurveyContext(options.question, options.value);
+        }
       });
 
       // Create a div that will hold the buttons
@@ -659,19 +795,20 @@ export const init = (
         actionsButtons.style.display = 'none';
       }
 
-      question.registerFunctionOnPropertyValueChanged(
-        'readOnly',
-        (value: boolean) => {
-          actionsButtons.style.display = value ? 'none' : 'block';
-        }
-      );
-
       // If the survey is not fillable or the config is missing, return
       if (survey.mode === 'display' || !question.resource) {
         return;
       }
 
       const dropdownInstance = question.contentQuestion.dropdownInstance;
+
+      question.registerFunctionOnPropertyValueChanged(
+        'readOnly',
+        (value: boolean) => {
+          actionsButtons.style.display = value ? 'none' : 'block';
+          dropdownInstance.disabled = value;
+        }
+      );
       const searchBtn = buildSearchButton(
         question,
         false,
@@ -757,23 +894,6 @@ export const init = (
     },
   };
   componentCollectionInstance.add(component);
-
-  const setAdvanceFilter = (value: string, question: string | any) => {
-    const field = typeof question !== 'string' ? question.filterBy : question;
-    if (!filters.some((x: any) => x.field === field)) {
-      filters.push({
-        field: question.filterBy,
-        operator: question.filterCondition,
-        value,
-      });
-    } else {
-      filters.map((x: any) => {
-        if (x.field === field) {
-          x.value = value;
-        }
-      });
-    }
-  };
 };
 
 // console.log('question', question.name, question);

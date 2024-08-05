@@ -12,6 +12,16 @@ export const GET_ROLES_FROM_APPLICATIONS = gql`
   }
 `;
 
+/** Gets roles for a single application */
+export const GET_ROLES_FROM_APPLICATION = gql`
+  query GetRolesFromApplication($application: ID!) {
+    rolesFromApplications(applications: [$application]) {
+      id
+      title
+    }
+  }
+`;
+
 // === GET RESOURCE BY ID ===
 /** Graphql request for getting data of a resource by its id */
 export const GET_RESOURCE_BY_ID = gql`
@@ -67,6 +77,17 @@ export const UPDATE_RECORD = gql`
   mutation AutoSaveResourcesValue($id: ID!, $data: JSON!) {
     editRecord(id: $id, data: $data) {
       id
+      data
+    }
+  }
+`;
+
+/** Graphql request for getting a record by its id */
+export const GET_RECORD_BY_ID = gql`
+  query GetRecordById($id: ID!) {
+    record(id: $id) {
+      id
+      incrementalId
       data
     }
   }

@@ -45,6 +45,8 @@ export class UsersDropdownComponent
   @Input() applications?: string[];
   /** IDs of the initial user selection */
   @Input() initialSelectionIDs: string[] = [];
+  /** If the user can select multiple users */
+  @Input() multiple = true;
   /** Selection change emitter */
   @Output() selectionChange = new EventEmitter<string[]>();
   /** Initial selection of users */
@@ -137,5 +139,11 @@ export class UsersDropdownComponent
         ],
       } as CompositeFilterDescriptor,
     });
+  }
+
+  /** Reloads selected users */
+  public reloadSelectedUsers() {
+    this.initialSelectionIDs = this.control.value ?? [];
+    this.setupInitialSelection();
   }
 }

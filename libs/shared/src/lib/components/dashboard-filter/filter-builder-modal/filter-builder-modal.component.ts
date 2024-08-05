@@ -146,6 +146,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'addRecordText',
   'updateRecordText',
   'canSearch',
+  'autoSelectFirstOption',
   'searchButtonText',
   'canOnlyCreateRecords',
   'alwaysCreateRecord',

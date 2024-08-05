@@ -188,28 +188,26 @@ export class ContextService {
    * @param dashboard dashboard to get filter from
    */
   public setFilter(dashboard?: Dashboard) {
-    {
-      if (dashboard && dashboard.id) {
-        this.filterStructure.next(dashboard.filter?.structure);
-        localForage.getItem(this.positionKey(dashboard.id)).then((position) => {
-          if (position) {
-            this.filterPosition.next({
-              position: position as FilterPosition,
-              dashboardId: dashboard.id ?? '',
-            });
-          } else {
-            this.filterPosition.next({
-              position:
-                (dashboard.filter?.position as FilterPosition) ??
-                FilterPosition.BOTTOM,
-              dashboardId: dashboard.id ?? '',
-            });
-          }
-        });
-      } else {
-        this.filterStructure.next(null);
-        this.filterPosition.next(null);
-      }
+    if (dashboard && dashboard.id) {
+      this.filterStructure.next(dashboard.filter?.structure);
+      localForage.getItem(this.positionKey(dashboard.id)).then((position) => {
+        if (position) {
+          this.filterPosition.next({
+            position: position as FilterPosition,
+            dashboardId: dashboard.id ?? '',
+          });
+        } else {
+          this.filterPosition.next({
+            position:
+              (dashboard.filter?.position as FilterPosition) ??
+              FilterPosition.BOTTOM,
+            dashboardId: dashboard.id ?? '',
+          });
+        }
+      });
+    } else {
+      this.filterStructure.next(null);
+      this.filterPosition.next(null);
     }
   }
 

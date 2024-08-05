@@ -272,7 +272,8 @@ export class FormModalComponent
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
       this.selectedPageIndex,
-      this.temporaryFilesStorage
+      this.temporaryFilesStorage,
+      this.destroy$
     );
 
     // Set questions readOnly propriety
@@ -304,6 +305,7 @@ export class FormModalComponent
         authService: this.authService,
         apollo: this.apollo,
         form: this.form,
+        translateService: this.translate,
       });
       this.survey.data = this.isMultiEdition ? null : this.record.data;
       this.survey.showCompletedPage = false;
@@ -643,10 +645,8 @@ export class FormModalComponent
    * @param i The index of the page
    */
   public onShowPage(i: number): void {
-    if (this.survey) {
-      setTimeout(() => {
-        this.survey.currentPageNo = i;
-      }, 50);
+    if (this.selectedPageIndex.getValue() !== i) {
+      this.selectedPageIndex.next(i);
     }
   }
 

@@ -18,7 +18,7 @@ import {
 } from '../../models/record.model';
 import { Metadata } from '../../models/metadata.model';
 import { RestService } from '../rest/rest.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { FormHelpersService } from '../form-helper/form-helper.service';
 import { cloneDeep, difference, get } from 'lodash';
@@ -82,8 +82,23 @@ export const transformSurveyData = (survey: SurveyModel) => {
       };
 
       // Removes null values for invisible questions (or pages)
-      if (!isQuestionVisible(question) && data[filed] === null) {
+      if (
+        (!isQuestionVisible(question) && data[filed] === null) ||
+        question.omitField
+      ) {
         delete data[filed];
+      }
+
+      // Remove data from files if from URL
+      if (question.downloadFileFrom) {
+        data[filed] = [
+          {
+            name: question.fileName,
+            type: question.fileType,
+            content: `custom:${question.downloadFileFrom}`,
+            includeToken: question.includeOortToken,
+          },
+        ];
       }
     }
   });
@@ -234,6 +249,13 @@ export class FormBuilderService {
       }
     });
 
+    survey.onQuestionValueChanged = {};
+    survey.onValueChanged.add((_, options) => {
+      if (survey.onQuestionValueChanged[options.name]) {
+        survey.onQuestionValueChanged[options.name](options);
+      }
+    });
+
     // Handles logic for after record creation, selection and deselection on resource type questions
     survey.onCompleting.add(() => {
       survey.getAllQuestions().forEach((question) => {
@@ -342,13 +364,30 @@ export class FormBuilderService {
    * @param survey Survey where to add the callbacks
    * @param selectedPageIndex Current page of the survey
    * @param temporaryFilesStorage Temporary files saved while executing the survey
+   * @param destroy$ Subject to destroy the subscription
    */
   public addEventsCallBacksToSurvey(
     survey: SurveyModel,
     selectedPageIndex: BehaviorSubject<number>,
-    temporaryFilesStorage: TemporaryFilesStorage
+    temporaryFilesStorage: TemporaryFilesStorage,
+    destroy$: Subject<boolean>
   ) {
+    selectedPageIndex
+      .asObservable()
+      .pipe(takeUntil(destroy$))
+      .subscribe((index) => {
+        survey.currentPageNo = index;
+      });
+
     survey.onAfterRenderSurvey.add(() => {
+      // onAfterRenderSurvey is called after each page change,
+      // so we add a custom flag to avoid running the code multiple times
+      // as it should only be run once, on first loading the entire survey
+      if (survey.initialConfigurationDone) {
+        return;
+      }
+      survey.initialConfigurationDone = true;
+
       // Open survey on a specific page (openOnQuestionValuesPage has priority over openOnPage)
       if (survey.openOnQuestionValuesPage) {
         const question = survey.getQuestionByName(
@@ -357,7 +396,9 @@ export class FormBuilderService {
         if (question) {
           const page = survey.getPageByName(question.value);
           if (page) {
-            selectedPageIndex.next(page.visibleIndex);
+            setTimeout(() => {
+              selectedPageIndex.next(page.visibleIndex);
+            }, 100);
           }
         }
       } else if (survey.openOnPage) {
@@ -386,7 +427,9 @@ export class FormBuilderService {
     );
     survey.onCurrentPageChanged.add((survey: SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
-      selectedPageIndex.next(survey.currentPageNo);
+      if (survey.currentPageNo !== selectedPageIndex.getValue()) {
+        selectedPageIndex.next(survey.currentPageNo);
+      }
     });
   }
 
@@ -446,9 +489,32 @@ export class FormBuilderService {
   private onDownloadFile(options: any): void {
     if (
       options.content.indexOf('base64') !== -1 ||
-      options.content.indexOf('http') !== -1
+      options.content.startsWith('http')
     ) {
       options.callback('success', options.content);
+    } else if (options.content.startsWith('custom:')) {
+      fetch(options.content.slice(7), {
+        headers: options.fileValue.includeOortToken
+          ? {
+              Authorization: `Bearer ${localStorage.getItem('idtoken')}`,
+            }
+          : {},
+      })
+        .then((response) => response.blob())
+        .then((blob) => {
+          const file = new File([blob], options.fileValue.name, {
+            type: options.fileValue.fileType,
+          });
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            options.callback('success', e.target?.result);
+          };
+          reader.readAsDataURL(file);
+        })
+        .catch((error) => {
+          console.error('Error downloading file:', error);
+          options.callback('error', error);
+        });
     } else if (this.recordId) {
       /**
        * Only gets here if: editing record (we need to download the file to be available)

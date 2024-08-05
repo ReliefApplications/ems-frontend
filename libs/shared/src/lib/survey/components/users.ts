@@ -4,17 +4,123 @@ import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 import { QuestionUsers } from '../types';
 import { DomService } from '../../services/dom/dom.service';
 import { UsersDropdownComponent } from './users-dropdown/users-dropdown.component';
+import { Dialog } from '@angular/cdk/dialog';
+import { Apollo } from 'apollo-angular';
+import {
+  AddUsersMutationResponse,
+  RolesFromApplicationsQueryResponse,
+  User,
+} from '../../models/user.model';
+import { ADD_USERS } from '../graphql/mutations';
+import { SnackbarService } from '@oort-front/ui';
+import { TranslateService } from '@ngx-translate/core';
+import { firstValueFrom } from 'rxjs';
+import { GET_ROLES_FROM_APPLICATION } from '../graphql/queries';
 
 /**
  * Inits the users component.
  *
  * @param componentCollectionInstance ComponentCollection
  * @param domService DOM service.
+ * @param dialog Dialog service.
+ * @param apollo Apollo service.
+ * @param snackBar Snackbar service.
+ * @param translate Translate service.
  */
 export const init = (
   componentCollectionInstance: ComponentCollection,
-  domService: DomService
+  domService: DomService,
+  dialog: Dialog,
+  apollo: Apollo,
+  snackBar: SnackbarService,
+  translate: TranslateService
 ): void => {
+  /**
+   * Opens the invite users modal for the selected application.
+   *
+   * @param applicationId The id of the application to open the invite users modal for.
+   * @returns The list of user ids that were invited.
+   */
+  const inviteUserFromApplication = async (
+    applicationId: string
+  ): Promise<User[]> => {
+    // Get the roles from the application ID
+    const res = await firstValueFrom(
+      apollo.query<RolesFromApplicationsQueryResponse>({
+        query: GET_ROLES_FROM_APPLICATION,
+        variables: { application: applicationId },
+      })
+    );
+
+    const roles = res.data.rolesFromApplications ?? [];
+
+    const { InviteUsersModalComponent } = await import(
+      '../../components/users/public-api'
+    );
+
+    const dialogRef = dialog.open(InviteUsersModalComponent, {
+      data: {
+        roles: roles,
+        users: [],
+        downloadPath: 'download/invite',
+        uploadPath: 'upload/invite',
+      },
+    });
+
+    return new Promise<User[]>((resolve, reject) => {
+      dialogRef.closed.subscribe((value: any) => {
+        if (value) {
+          apollo
+            .mutate<AddUsersMutationResponse>({
+              mutation: ADD_USERS,
+              variables: {
+                users: value,
+                application: applicationId,
+              },
+            })
+            .subscribe({
+              next: ({ errors, data }) => {
+                if (!errors) {
+                  if (data?.addUsers.length) {
+                    snackBar.openSnackBar(
+                      translate.instant('components.users.onInvite.plural')
+                    );
+                  } else {
+                    snackBar.openSnackBar(
+                      translate.instant('components.users.onInvite.singular')
+                    );
+                  }
+
+                  resolve(data?.addUsers ?? []);
+                } else {
+                  if (value.length > 1) {
+                    snackBar.openSnackBar(
+                      translate.instant('components.users.onNotInvite.plural', {
+                        error: errors[0].message,
+                      }),
+                      { error: true }
+                    );
+                  } else {
+                    snackBar.openSnackBar(
+                      translate.instant(
+                        'components.users.onNotInvite.singular',
+                        {
+                          error: errors[0].message,
+                        }
+                      ),
+                      { error: true }
+                    );
+                  }
+
+                  reject(errors);
+                }
+              },
+            });
+        }
+      });
+    });
+  };
+
   // Registers icon-users in the SurveyJS library
   SvgRegistry.registerIconFromSvg(
     'users',
@@ -45,6 +151,24 @@ export const init = (
       registerCustomPropertyEditor(
         CustomPropertyGridComponentTypes.applicationsDropdown
       );
+
+      // Add 'invite users' property
+      Serializer.addProperty('users', {
+        name: 'inviteUsers:boolean',
+        category: 'Users properties',
+        default: false,
+        visibleIndex: 4,
+        visibleIf: (obj: null | QuestionUsers) =>
+          !!obj?.applications && obj.applications.length === 1,
+      });
+
+      // Can select multiple users
+      Serializer.addProperty('users', {
+        name: 'selectMultiple:boolean',
+        category: 'Users properties',
+        default: true,
+        visibleIndex: 5,
+      });
     },
     onAfterRender: async (question: QuestionUsers, el: HTMLElement) => {
       // Hides the tagbox element
@@ -72,10 +196,22 @@ export const init = (
       // Initial selection
       instance.initialSelectionIDs = selectedUserIDs;
 
+      // Set multiple selection
+      instance.multiple = question.selectMultiple ?? true;
+
       // Updates the question value when the selection changes
       instance.selectionChange.subscribe((value: string[]) => {
         question.value = value;
       });
+
+      // Update the dropdown value when the question value changes
+      question.registerFunctionOnPropertyValueChanged(
+        'value',
+        (value: string[]) => {
+          instance.control.setValue(value ?? []);
+          instance.reloadSelectedUsers();
+        }
+      );
 
       if (question.isReadOnly) {
         instance.control.disable();
@@ -91,6 +227,33 @@ export const init = (
           }
         }
       );
+
+      // Add invite users button, if configured
+      if (question.inviteUsers && question.applications?.length === 1) {
+        // Create a button to invite users
+        const inviteButton = document.createElement('button');
+        inviteButton.classList.add('sd-btn', '!px-3', '!py-1');
+        inviteButton.innerText = translate.instant(
+          'components.users.invite.add'
+        );
+
+        inviteButton.onclick = async () => {
+          const applicationId = question.applications[0];
+          const addedUser = await inviteUserFromApplication(applicationId);
+          const addedUserIds = addedUser.map((user) => user.id);
+          // Update the questions value and the dropdown selection
+          question.value = question.value.concat(addedUserIds);
+          instance.control.setValue(question.value);
+          // Refresh the dropdown options
+          instance.reloadSelectedUsers();
+        };
+
+        // Append it to the header
+        const header = el.querySelector(
+          '.sd-question__header'
+        ) as HTMLDivElement;
+        header.appendChild(inviteButton);
+      }
     },
   };
   componentCollectionInstance.add(component);

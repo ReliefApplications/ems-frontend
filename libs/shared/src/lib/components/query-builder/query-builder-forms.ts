@@ -68,6 +68,7 @@ export const addNewField = (field: any, newField?: boolean) => {
         label: [field.label],
         itemsLabel: [field.itemsLabel],
         width: [newField ? null : field.width],
+        hiddenByDefault: [newField ? false : field.hiddenByDefault],
         type: [newField ? field.type.ofType.name : field.type],
         kind: [newField ? field.type.kind : field.kind],
         fields: formBuilder.array(
@@ -118,6 +119,7 @@ export const addNewField = (field: any, newField?: boolean) => {
         ],
         width: [newField ? null : field.width],
         format: [get(field, 'format', null)],
+        hiddenByDefault: [newField ? false : field.hiddenByDefault],
       });
     }
   }

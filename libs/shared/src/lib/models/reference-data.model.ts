@@ -31,6 +31,7 @@ export interface ReferenceData {
   path?: string;
   data?: any;
   graphQLFilter?: string;
+  separator?: string;
   permissions?: any;
   canSee?: boolean;
   canUpdate?: boolean;

@@ -287,6 +287,7 @@
     "name": "Name",
     "next": "Next",
     "noOptions": "No available choices",
+    "none": "None",
     "notifications": {
       "accessDenied": "You don't have permission to see the {{type}}.",
       "accessNotProvided": "No access provided to this {{type}}. {{error}}",
@@ -1092,6 +1093,10 @@
         "format": {
           "info": "Left empty to ignore formatting",
           "title": "Display format"
+        },
+        "hidden": {
+          "hiddenByDefault": "Hide column by default",
+          "tooltip": "Column will be hidden by default, but can still be shown by the user"
         },
         "search": "Search fields...",
         "selected": "Selected fields",
@@ -2387,6 +2392,10 @@
         }
       },
       "historicalDate": "Get dataset at",
+      "keepPrevious": {
+        "title": "Keep previous filter values",
+        "tooltip": "If selected, when navigating from a dashboard to another, if the same filter is present in both dashboards, the value will be kept"
+      },
       "share": "Share Dashboard",
       "states": {
         "create": "Create a state",
@@ -2517,7 +2526,13 @@
         "searchable": "Allow search",
         "sortable": "Allow sorting",
         "title": "Widget display",
-        "tooltip": "Show tooltip"
+        "tooltip": {
+          "content": "Tooltip content",
+          "display": {
+            "title": "Display tooltip",
+            "tooltip": "When configured, the tooltip will be displayed when hovering over the icon next to the widget title"
+          }
+        }
       },
       "map": {
         "defaultTitle": "Map Widget",
@@ -2728,6 +2743,19 @@
       "empty": {
         "add": "Add steps",
         "customize": "Customize each of the steps created"
+      }
+    }
+  },
+  "survey": {
+    "customFunctions": {
+      "getFollowupSummary": {
+        "comment": "Comment",
+        "followUp": {
+          "numbered": "Follow-up #{{number}}",
+          "one": "Follow-up"
+        },
+        "initialInspection": "Initial inspection",
+        "inspectionAction": "Inspection action"
       }
     }
   }

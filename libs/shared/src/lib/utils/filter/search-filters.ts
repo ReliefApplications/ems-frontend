@@ -36,7 +36,7 @@ export const searchFilters = (
       filters.push({
         field: field.name,
         operator: 'contains',
-        value: search,
+        value: search.trim(),
       });
 
     // number

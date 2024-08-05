@@ -22,19 +22,29 @@ export interface GridSettings {
 
 /** Related grid actions */
 export interface GridActions {
-  update: boolean;
-  updateLabel?: string;
-  delete: boolean;
-  deleteLabel?: string;
-  history: boolean;
-  historyLabel?: string;
-  convert: boolean;
-  convertLabel?: string;
+  update: {
+    display: boolean;
+    label?: string;
+  };
+  delete: {
+    display: boolean;
+    label?: string;
+  };
+  history: {
+    display: boolean;
+    label?: string;
+  };
+  convert: {
+    display: boolean;
+    label?: string;
+  };
   remove: boolean;
   add?: boolean;
   export?: boolean;
-  showDetails?: boolean;
-  showDetailsLabel?: string;
+  showDetails?: {
+    display: boolean;
+    label?: string;
+  };
   navigateToPage?: boolean;
   navigateSettings?: {
     field: string;

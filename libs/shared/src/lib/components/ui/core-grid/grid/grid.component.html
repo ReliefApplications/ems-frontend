@@ -279,7 +279,6 @@
                 href="{{ dataItem.urlValue[field.name] }}"
                 target="_blank"
                 rel="noopener noreferrer"
-                (click)="onOpenURL(dataItem.urlValue[field.name], $event)"
               >
                 <div
                   class="truncate"
@@ -757,7 +756,7 @@
               [look]="'flat'"
               [uiTooltip]="file.name"
               (click)="onDownload(file, dataItem.id, field.name)"
-              class="w-full justify-start overflow-hidden text-overflow-ellipsis"
+              class="w-full justify-start overflow-hidden text-overflow-ellipsis download-button"
             >
               <span [class]="dataItem.icon[file.name]"></span>
               <span class="textbox">{{

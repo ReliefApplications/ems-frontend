@@ -14,7 +14,7 @@ import {
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
-import { isEqual, isNil, omit } from 'lodash';
+import { cloneDeep, isEqual, isNil, omit } from 'lodash';
 
 /**
  * Sets the choices on the default value modal editor for a reference data dropdown
@@ -130,6 +130,18 @@ export const init = (referenceDataService: ReferenceDataService): void => {
         Boolean(obj?.referenceData),
       visibleIndex: 3,
       default: true,
+    });
+
+    serializer.addProperty(type, {
+      displayName: 'Try loading translations',
+      name: 'referenceDataTryLoadTranslations',
+      type: 'boolean',
+      category: 'Choices from Reference data',
+      dependsOn: 'referenceData',
+      visibleIf: (obj: null | QuestionSelectBase): boolean =>
+        Boolean(obj?.referenceData),
+      visibleIndex: 4,
+      default: false,
     });
 
     serializer.addProperty(type, {
@@ -258,7 +270,7 @@ export const render = (
   questionElement: Question,
   referenceDataService: ReferenceDataService
 ): void => {
-  const updateChoices = (question: Question, element: any) => {
+  const updateChoices = (question: Question, element: any = question) => {
     if (element.referenceData && element.referenceDataDisplayField) {
       let filter;
       // create a filter object if all required properties for filtering are set
@@ -286,7 +298,11 @@ export const render = (
       referenceDataService
         .getChoices(
           element.referenceData,
-          element.referenceDataDisplayField,
+          {
+            displayField: element.referenceDataDisplayField,
+            tryLoadTranslations: element.referenceDataTryLoadTranslations,
+            lang: question.survey.getLocale(),
+          },
           element.isPrimitiveValue,
           filter
         )
@@ -307,7 +323,8 @@ export const render = (
           ) {
             // When using dashboard filters, the element.value object is truncated
             if (isEqual(element.value, element.defaultValue?.value)) {
-              return (element.value = element.defaultValue);
+              element.value = element.defaultValue;
+              return;
             }
 
             // First, if no value, we try to get the default value
@@ -321,6 +338,26 @@ export const render = (
               isEqual(choice.id, omit(valueItem.id as any, 'pos'))
             );
           }
+
+          // If the current value is not in the choices, we set it to null
+          if (element.getType() === 'dropdown') {
+            if (!choiceItems.find((c) => isEqual(c.id, element.value))) {
+              element.value = null;
+            }
+          } else if (element.getType() === 'matrixdropdowncolumn') {
+            const colName = element.value;
+            const currValue: {
+              [key: string]: { [key: string]: any };
+            } = cloneDeep(question.value) ?? {};
+
+            for (const values of Object.values(currValue)) {
+              if (!choiceItems.find((c) => isEqual(c.id, values[colName]))) {
+                values[colName] = null;
+              }
+            }
+
+            question.value = currValue;
+          }
         });
     } else {
       element.choices = [];
@@ -328,20 +365,14 @@ export const render = (
   };
 
   const initChoices = (question: Question, element: any) => {
-    // look on changes
-    element.registerFunctionOnPropertyValueChanged(
-      'referenceData',
-      (value: string) => {
-        element.referenceDataDisplayField = undefined;
-        if (!value) {
-          element.referenceDataDisplayField = undefined;
-          element.referenceDataFilterFilterFromQuestion = undefined;
-          element.referenceDataFilterForeignField = undefined;
-          element.referenceDataFilterFilterCondition = undefined;
-          element.referenceDataFilterLocalField = undefined;
-        }
-      }
-    );
+    // when refData changes, clear the properties that depend on it
+    element.registerFunctionOnPropertyValueChanged('referenceData', () => {
+      element.referenceDataDisplayField = undefined;
+      element.referenceDataFilterFilterFromQuestion = undefined;
+      element.referenceDataFilterForeignField = undefined;
+      element.referenceDataFilterFilterCondition = undefined;
+      element.referenceDataFilterLocalField = undefined;
+    });
     element.registerFunctionOnPropertyValueChanged(
       'isPrimitiveValue',
       updateChoices(question, element)
@@ -351,26 +382,30 @@ export const render = (
       updateChoices(question, element)
     );
 
+    // When the survey lang changes, we need to update the choices
+    (question.survey as SurveyModel).onLocaleChangedEvent.add(() => {
+      updateChoices(question, element);
+    });
+
     // Look for foreign question changes if needed for filter
     const foreignQuestion = (question.survey as SurveyModel)
       .getAllQuestions()
       .find(
         (x: any) => x.name === element.referenceDataFilterFilterFromQuestion
       ) as QuestionSelectBase | undefined;
-    foreignQuestion?.registerFunctionOnPropertyValueChanged(
-      'value',
-      updateChoices(question, element)
-    );
+    foreignQuestion?.registerFunctionOnPropertyValueChanged('value', () => {
+      updateChoices(question, element);
+    });
   };
 
   if (isSelectQuestion(questionElement) && questionElement.referenceData) {
     const question = questionElement as QuestionSelectBase;
 
     if (!question.referenceDataChoicesLoaded && question.referenceData) {
-      referenceDataService
-        .cacheItems(question.referenceData)
-        .then(() => updateChoices(question, question));
-      question.referenceDataChoicesLoaded = true;
+      referenceDataService.cacheItems(question.referenceData).then(() => {
+        updateChoices(question);
+        question.referenceDataChoicesLoaded = true;
+      });
     }
     // Prevent selected choices to be removed when sending the value
     // eslint-disable-next-line @typescript-eslint/no-empty-function

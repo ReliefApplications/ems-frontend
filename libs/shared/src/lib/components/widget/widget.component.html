@@ -33,14 +33,16 @@
           '!border-b-gray-300': showBorder,
         }"
       >
-        <ng-container
-          *ngIf="headerLeftTemplate && !fullscreen"
-          [ngTemplateOutlet]="headerLeftTemplate"
-        ></ng-container>
-        <ng-container
-          *ngIf="widgetContentComponent?.headerTemplate"
-          [ngTemplateOutlet]="widgetContentComponent.headerTemplate"
-        ></ng-container>
+        <div class="flex gap-1">
+          <ng-container
+            *ngIf="headerLeftTemplate && !fullscreen"
+            [ngTemplateOutlet]="headerLeftTemplate"
+          ></ng-container>
+          <ng-container
+            *ngIf="widgetContentComponent?.headerTemplate"
+            [ngTemplateOutlet]="widgetContentComponent.headerTemplate"
+          ></ng-container>
+        </div>
         <ng-container
           *ngIf="headerRightTemplate && !fullscreen"
           [ngTemplateOutlet]="headerRightTemplate"

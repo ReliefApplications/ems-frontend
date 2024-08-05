@@ -287,6 +287,7 @@
     "name": "Nom",
     "next": "Suivant",
     "noOptions": "Aucun choix disponible",
+    "none": "Aucun",
     "notifications": {
       "accessDenied": "Vous n'avez pas la permission pour accéder à cet objet de type {{type}}.",
       "accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
@@ -1103,6 +1104,10 @@
         "format": {
           "info": "Laissez vide pour utiliser le mode classique",
           "title": "Mode d'affichage"
+        },
+        "hidden": {
+          "hiddenByDefault": "Masquer la colonne par défaut",
+          "tooltip": "La colonne sera masquée par défaut, mais pourra toujours être affichée par l'utilisateur"
         },
         "search": "Rechercher des champs...",
         "selected": "Champs sélectionnés",
@@ -2401,6 +2406,10 @@
         }
       },
       "historicalDate": "Récupérer les données historiques",
+      "keepPrevious": {
+        "title": "Conserver les valeurs de filtre précédentes",
+        "tooltip": "Si sélectionné, lors de la navigation d'un tableau de bord à un autre, si le même filtre est présent dans les deux tableaux de bord, la valeur sera conservée"
+      },
       "share": "Partager le tableau de bord",
       "states": {
         "create": "Créer un état",
@@ -2531,7 +2540,13 @@
         "searchable": "Autoriser la recherche",
         "sortable": "Autoriser le tri",
         "title": "Affichage des widgets",
-        "tooltip": "afficher l'info-bulle"
+        "tooltip": {
+          "content": "Contenu de l'infobulle",
+          "display": {
+            "title": "Afficher l'infobulle",
+            "tooltip": "Lorsqu'il est configuré, l'infobulle s'affiche lorsque vous survolez l'icône à côté du titre du widget"
+          }
+        }
       },
       "map": {
         "defaultTitle": "Widget Carte",
@@ -2742,6 +2757,19 @@
       "empty": {
         "add": "Ajoutez des étapes",
         "customize": "Personnalisez chacune des étapes créées."
+      }
+    }
+  },
+  "survey": {
+    "customFunctions": {
+      "getFollowupSummary": {
+        "comment": "Commentaire",
+        "followUp": {
+          "numbered": "Suivi n°{{numéro}}",
+          "one": "Suivi"
+        },
+        "initialInspection": "Inspection initiale",
+        "inspectionAction": "Action d'inspection"
       }
     }
   }
