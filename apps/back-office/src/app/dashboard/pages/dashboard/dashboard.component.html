@@ -67,7 +67,7 @@
               [uiTooltip]="'common.settings' | translate"
             ></ui-button>
             <ui-button
-              *ngIf="canUpdate && !templateMode"
+              *ngIf="canUpdate"
               [icon]="editionActive ? 'edit' : 'preview'"
               (click)="editionActive = !editionActive"
               class="export-hide"
@@ -154,6 +154,7 @@
             <!-- More options -->
             <ui-button
               variant="grey"
+              class="export-hide"
               [isIcon]="true"
               icon="more_vert"
               [uiMenuTriggerFor]="menu"
