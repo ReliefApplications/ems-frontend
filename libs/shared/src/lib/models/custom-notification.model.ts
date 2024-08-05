@@ -4,8 +4,9 @@
 export const customNotificationRecipientsType = {
   email: 'email',
   userField: 'userField',
-  emailField: 'userField',
+  emailField: 'emailField',
   distributionList: 'distributionList',
+  channel: 'channel',
 };
 
 /** Interface of Custom Notification objects */

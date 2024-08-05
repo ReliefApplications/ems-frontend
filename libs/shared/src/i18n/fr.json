@@ -779,7 +779,8 @@
           "distributionList": "Utiliser une liste de distribution",
           "email": "Utiliser une adresse email unique",
           "title": "Destinataires",
-          "userField": "Grouper par utilisateurs détectés dans les enregistrements"
+          "userField": "Grouper par utilisateurs détectés dans les enregistrements",
+          "emailField": "Grouper par e-mail détectés dans les enregistrements"
         },
         "update": "Éditer la notification"
       },
@@ -1413,6 +1414,13 @@
       "cronBased": "Basé sur Cron",
       "onRecordCreation": "Création d'un enregistrement",
       "onRecordUpdate": "Mise à jour sur l'enregistrement",
+      "customNotificationRecipientsType": {
+        "email": "E-mail",
+        "emailField": "Champ e-mail",
+        "userField": "Champ de l'utilisateur",
+        "distributionList": "Liste de distribution",
+        "channel": "Canal"
+      },
       "tooltip": {
         "withCronBasedTrigger": "Ressource avec un déclencheur basé sur cron",
         "withoutCronBasedTrigger": "Ressource sans aucun déclencheur basé sur cron",

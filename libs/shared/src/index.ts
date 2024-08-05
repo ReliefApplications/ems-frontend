@@ -58,6 +58,7 @@ export * from './lib/models/reference-data.model';
 export * from './lib/models/metadata.model';
 export * from './lib/models/custom-notification.model';
 export * from './lib/models/template.model';
+export * from './lib/models/distribution-list.model';
 
 // === COMPONENTS ===
 export * from './lib/components/aggregation/edit-aggregation-modal/edit-aggregation-modal.component';

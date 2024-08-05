@@ -4,15 +4,18 @@ import { FormGroup } from '@angular/forms';
 import {
   ApplicationService,
   CustomNotification,
+  customNotificationRecipientsType,
   GridLayoutService,
   Layout,
   Resource,
   Template,
   TemplateTypeEnum,
   UnsubscribeComponent,
+  DistributionList,
 } from '@oort-front/shared';
 import { NotificationType, Triggers, TriggersType } from '../../triggers.types';
 import { takeUntil } from 'rxjs';
+import { get } from 'lodash';
 
 /**
  * Dialog data interface.
@@ -23,6 +26,20 @@ interface DialogData {
   formGroup: FormGroup;
   resource: Resource;
 }
+
+/** Recipients options for email type trigger */
+const emailRecipientsOptions = [
+  customNotificationRecipientsType.distributionList,
+  customNotificationRecipientsType.email,
+  customNotificationRecipientsType.userField,
+  customNotificationRecipientsType.emailField,
+];
+
+/** Recipients options for notification type trigger */
+const notificationRecipientsOptions = [
+  customNotificationRecipientsType.channel,
+  customNotificationRecipientsType.userField,
+];
 
 /**
  * Edit/create trigger modal.
@@ -41,11 +58,34 @@ export class ManageTriggerModalComponent extends UnsubscribeComponent {
   public notificationType: NotificationType = NotificationType.email;
   /** Layout */
   public layout?: Layout;
+  /** List of recipients options depending on selected type */
+  public recipientsTypeOptions?:
+    | typeof emailRecipientsOptions
+    | typeof notificationRecipientsOptions;
+
+  /** @returns application distribution lists */
+  get distributionLists(): DistributionList[] {
+    return this.applicationService.distributionLists || [];
+  }
 
   /** @returns application templates */
   get templates(): Template[] {
     return (this.applicationService.templates || []).filter(
       (x) => x.type === TemplateTypeEnum.EMAIL
+    );
+  }
+
+  /** @returns available users fields */
+  get userFields(): any[] {
+    return get(this.data.resource, 'metadata', []).filter(
+      (x) => x.type === 'users'
+    );
+  }
+
+  /** @returns available email fields */
+  get emailFields(): any[] {
+    return get(this.data.resource, 'metadata', []).filter(
+      (x) => x.type === 'email'
     );
   }
 
@@ -66,6 +106,9 @@ export class ManageTriggerModalComponent extends UnsubscribeComponent {
     super();
     this.formGroup = this.data.formGroup;
     console.log('this.data', this.data);
+    this.onNotificationTypeChange(
+      this.formGroup.controls.notificationType.value
+    );
   }
 
   /**
@@ -146,5 +189,19 @@ export class ManageTriggerModalComponent extends UnsubscribeComponent {
           }
         );
     });
+  }
+
+  /**
+   * Unset layout.
+   *
+   * @param type selected notification type
+   */
+  public onNotificationTypeChange(type: NotificationType): void {
+    this.notificationType = type;
+    if (type === NotificationType.email) {
+      this.recipientsTypeOptions = emailRecipientsOptions;
+    } else {
+      this.recipientsTypeOptions = notificationRecipientsOptions;
+    }
   }
 }

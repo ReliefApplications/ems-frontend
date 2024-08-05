@@ -8,6 +8,7 @@ import {
   FormWrapperModule,
   IconModule,
   PaginatorModule,
+  RadioModule,
   SelectMenuModule,
   TableModule,
   TooltipModule,
@@ -59,6 +60,7 @@ import { TriggersListComponent } from './components/triggers-list/triggers-list.
     DialogModule,
     SelectMenuModule,
     DividerModule,
+    RadioModule,
   ],
 })
 export class TriggersModule {}

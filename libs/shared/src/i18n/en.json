@@ -773,7 +773,8 @@
           "distributionList": "Use a distribution list",
           "email": "Input a single email address",
           "title": "Recipients",
-          "userField": "Group by dataset user field"
+          "userField": "Group by dataset user field",
+          "emailField": "Group by dataset email field"
         },
         "update": "Edit custom notification"
       },
@@ -1401,6 +1402,13 @@
       "cronBased": "Cron Based",
       "onRecordCreation": "On Record Creation",
       "onRecordUpdate": "On Record Update",
+      "customNotificationRecipientsType": {
+        "email": "Email",
+        "emailField": "Email field",
+        "userField": "User field",
+        "distributionList": "Distribution list",
+        "channel": "Channel"
+      },
       "tooltip": {
         "withCronBasedTrigger": "Resource with a cron based trigger",
         "withoutCronBasedTrigger": "Resource without any cron based trigger",
