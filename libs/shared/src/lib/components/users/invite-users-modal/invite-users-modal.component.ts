@@ -145,9 +145,7 @@ export class InviteUsersModalComponent extends UnsubscribeComponent {
       if (file && this.isValidFile(file)) {
         this.downloadService.uploadFile(this.data.uploadPath, file).subscribe({
           next: (res) => {
-            if (res.status === 'OK') {
-              this.gridData.data = this.gridData.data.concat(res);
-            }
+            this.gridData.data = this.gridData.data.concat(res);
           },
           error: (err) => {
             if (err.status === 400) {
