@@ -24,7 +24,10 @@
       <!-- Notification Type -->
       <div uiFormFieldDirective [outline]="false" class="w-full">
         <label>{{ 'models.customNotification.type' | translate }}</label>
-        <ui-select-menu (selectedOption)="onNotificationTypeChange($any($event))" formControlName="notificationType">
+        <ui-select-menu
+          (selectedOption)="onNotificationTypeChange($any($event))"
+          formControlName="notificationType"
+        >
           <ui-select-option value="email">
             {{ 'common.email.one' | translate }}
           </ui-select-option>
@@ -115,79 +118,129 @@
       </ng-container>
 
       <ui-divider class="my-2"></ui-divider>
+
       <!-- Recipients -->
       <h3>{{ 'components.customNotifications.edit.recipients.title' | translate }}</h3>
-      <!-- Recipients options -->
-      <div
-        class="space-y-4"
-        formControlName="recipientsType"
-        uiRadioGroupDirective="recipientsTypeOptionsRadioGroup"
-      >
-        <ui-radio
-          *ngFor="let option of recipientsTypeOptions"
-          [value]="option"
+      <!-- Alert message to select notification type first -->
+      <ui-alert *ngIf="!formGroup.value.notificationType" class="mb-4">
+        {{ 'components.triggers.selectNotificationType' | translate }}
+      </ui-alert>
+      
+      <ng-container *ngIf="formGroup.value.notificationType">
+        <!-- Recipients options -->
+        <div
+          class="space-y-4"
+          formControlName="recipientsType"
+          uiRadioGroupDirective="recipientsTypeOptionsRadioGroup"
         >
-          <ng-container ngProjectAs="label">{{ 'components.triggers.customNotificationRecipientsType.' + option | translate }}</ng-container>
-        </ui-radio>
-      </div>
-
-      <!-- Recipients == distribution list -->
-      <div
-        uiFormFieldDirective
-        [outline]="false"
-        class="w-60 flex-1"
-        *ngIf="formGroup.value.recipientsType === 'distributionList'"
-      >
-        <label>{{ 'common.distributionList.one' | translate }}</label>
-        <ui-select-menu formControlName="recipients">
-          <ui-select-option
-            *ngFor="let list of distributionLists"
-            [value]="list.id"
+          <ui-radio
+            *ngFor="let option of recipientsTypeOptions"
+            [value]="option"
           >
-            {{ list.name }}
-          </ui-select-option>
-        </ui-select-menu>
-      </div>
-
-      <!-- Recipients == user field -->
-      <div
-        uiFormFieldDirective
-        [outline]="false"
-        class="w-60 flex-1"
-        *ngIf="formGroup.value.recipientsType === 'userField'"
-      >
-        <label>
-          {{ 'components.customNotifications.edit.recipients.userField' | translate }}
-        </label>
-        <ui-select-menu formControlName="recipients">
-          <ui-select-option
-            *ngFor="let field of userFields"
-            [value]="field.name"
+            <ng-container ngProjectAs="label">{{ 'components.triggers.customNotificationRecipientsType.' + option | translate }}</ng-container>
+          </ui-radio>
+        </div>
+  
+        <!-- Recipients == distribution list -->
+        <div
+          uiFormFieldDirective
+          [outline]="false"
+          class="w-full"
+          *ngIf="formGroup.value.recipientsType === 'distributionList'"
+        >
+          <label>{{ 'common.distributionList.one' | translate }}</label>
+          <ui-select-menu formControlName="recipients">
+            <ui-select-option
+              *ngFor="let list of distributionLists"
+              [value]="list.id"
+            >
+              {{ list.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+  
+        <!-- Recipients == user field -->
+        <div
+          uiFormFieldDirective
+          [outline]="false"
+          class="w-full"
+          *ngIf="formGroup.value.recipientsType === 'userField'"
+        >
+          <label>
+            {{ 'components.customNotifications.edit.recipients.userField' | translate }}
+          </label>
+          <ui-select-menu formControlName="recipients">
+            <ui-select-option
+              *ngFor="let field of userFields"
+              [value]="field.name"
+            >
+              {{ field.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+  
+        <!-- Recipients == email field -->
+        <div
+          uiFormFieldDirective
+          [outline]="false"
+          class="w-full"
+          *ngIf="formGroup.value.recipientsType === 'emailField'"
+        >
+          <label>
+            {{ 'components.customNotifications.edit.recipients.emailField' | translate }}
+          </label>
+          <ui-select-menu formControlName="recipients">
+            <ui-select-option
+              *ngFor="let field of emailFields"
+              [value]="field.name"
+            >
+              {{ field.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+  
+        <!-- Recipients == single email -->
+        <div
+          uiFormFieldDirective
+          [uiErrorMessage]="
+            'components.customNotifications.errors.email' | translate
+          "
+          [uiErrorMessageIf]="
+            formGroup.get('recipients')?.errors &&
+            formGroup.get('recipients')?.touched
+          "
+          *ngIf="formGroup.value.recipientsType === 'email'"
+          class="w-full"
           >
-            {{ field.name }}
-          </ui-select-option>
-        </ui-select-menu>
-      </div>
+          <label>{{ 'common.email.one' | translate }}</label>
+          <input
+            type="text"
+            [placeholder]="'common.placeholder.email' | translate"
+            formControlName="recipients"
+          />
+        </div>
 
-      <!-- Recipients == email field -->
-      <div
-        uiFormFieldDirective
-        [outline]="false"
-        class="w-60 flex-1"
-        *ngIf="formGroup.value.recipientsType === 'emailField'"
-      >
-        <label>
-          {{ 'components.customNotifications.edit.recipients.emailField' | translate }}
-        </label>
-        <ui-select-menu formControlName="recipients">
-          <ui-select-option
-            *ngFor="let field of emailFields"
-            [value]="field.name"
+        <!-- Recipients == channel -->
+        <div
+          *ngIf="formGroup.value.recipientsType === 'channel'"
+          class="w-full"
+          uiFormFieldDirective
+        >
+          <label>{{ 'common.channel.one' | translate }}</label>
+          <ui-select-menu
+            formControlName="recipients"
+            [loading]="!channels"
+            [filterable]="true"
           >
-            {{ field.name }}
-          </ui-select-option>
-        </ui-select-menu>
-      </div>
+            <ui-select-option
+              *ngFor="let channel of channels"
+              [value]="channel.id"
+            >
+              {{ channel.title }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div> 
+      </ng-container>
     </form>
   </ng-container>
 

@@ -1,6 +1,6 @@
 import { Dialog, DIALOG_DATA } from '@angular/cdk/dialog';
-import { Component, Inject } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormGroup, Validators } from '@angular/forms';
 import {
   ApplicationService,
   CustomNotification,
@@ -12,10 +12,14 @@ import {
   TemplateTypeEnum,
   UnsubscribeComponent,
   DistributionList,
+  Channel,
+  ChannelsQueryResponse,
 } from '@oort-front/shared';
 import { NotificationType, Triggers, TriggersType } from '../../triggers.types';
 import { takeUntil } from 'rxjs';
 import { get } from 'lodash';
+import { Apollo } from 'apollo-angular';
+import { GET_CHANNELS } from './graphql/queries';
 
 /**
  * Dialog data interface.
@@ -49,15 +53,18 @@ const notificationRecipientsOptions = [
   templateUrl: './manage-trigger-modal.component.html',
   styleUrls: ['./manage-trigger-modal.component.scss'],
 })
-export class ManageTriggerModalComponent extends UnsubscribeComponent {
+export class ManageTriggerModalComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Trigger form group */
   public formGroup!: FormGroup;
   /** Triggers enum */
   public TriggersEnum = Triggers;
-  /** If triggers is for emails */
-  public notificationType: NotificationType = NotificationType.email;
   /** Layout */
   public layout?: Layout;
+  /** List of channels */
+  public channels?: Channel[];
   /** List of recipients options depending on selected type */
   public recipientsTypeOptions?:
     | typeof emailRecipientsOptions
@@ -96,12 +103,14 @@ export class ManageTriggerModalComponent extends UnsubscribeComponent {
    * @param gridLayoutService Shared dataset layout service
    * @param applicationService Shared application service
    * @param dialog Dialog service
+   * @param apollo The apollo client
    */
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
     private gridLayoutService: GridLayoutService,
     private applicationService: ApplicationService,
-    private dialog: Dialog
+    private dialog: Dialog,
+    private apollo: Apollo
   ) {
     super();
     this.formGroup = this.data.formGroup;
@@ -109,6 +118,22 @@ export class ManageTriggerModalComponent extends UnsubscribeComponent {
     this.onNotificationTypeChange(
       this.formGroup.controls.notificationType.value
     );
+  }
+
+  ngOnInit(): void {
+    this.getChannels();
+
+    // Add email validation to recipients field if recipients type is email
+    this.formGroup
+      .get('recipientsType')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value === 'email') {
+          this.formGroup.get('recipients')?.addValidators(Validators.email);
+        } else {
+          this.formGroup.get('recipients')?.removeValidators(Validators.email);
+        }
+      });
   }
 
   /**
@@ -196,12 +221,32 @@ export class ManageTriggerModalComponent extends UnsubscribeComponent {
    *
    * @param type selected notification type
    */
-  public onNotificationTypeChange(type: NotificationType): void {
-    this.notificationType = type;
-    if (type === NotificationType.email) {
-      this.recipientsTypeOptions = emailRecipientsOptions;
-    } else {
-      this.recipientsTypeOptions = notificationRecipientsOptions;
+  public onNotificationTypeChange(type: NotificationType | undefined): void {
+    this.formGroup.get('recipients')?.setValue('');
+    this.formGroup.get('recipientsType')?.setValue('');
+    if (type) {
+      if (type === NotificationType.email) {
+        this.recipientsTypeOptions = emailRecipientsOptions;
+      } else {
+        this.recipientsTypeOptions = notificationRecipientsOptions;
+      }
     }
+  }
+
+  /**
+   * Load GET_CHANNELS query data.
+   */
+  private getChannels(): void {
+    this.apollo
+      .query<ChannelsQueryResponse>({
+        query: GET_CHANNELS,
+        variables: {
+          application: this.applicationService.application.getValue()?.id,
+        },
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
+        this.channels = data.channels;
+      });
   }
 }

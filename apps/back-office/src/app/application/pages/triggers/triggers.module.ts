@@ -2,9 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TriggersComponent } from './triggers.component';
 import {
+  AlertModule,
   ButtonModule,
   DialogModule,
   DividerModule,
+  ErrorMessageModule,
   FormWrapperModule,
   IconModule,
   PaginatorModule,
@@ -61,6 +63,8 @@ import { TriggersListComponent } from './components/triggers-list/triggers-list.
     SelectMenuModule,
     DividerModule,
     RadioModule,
+    ErrorMessageModule,
+    AlertModule,
   ],
 })
 export class TriggersModule {}
