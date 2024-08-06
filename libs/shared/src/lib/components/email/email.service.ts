@@ -29,7 +29,6 @@ import { ResourceQueryResponse } from '../../models/resource.model';
 import { prettifyLabel } from '../../utils/prettify';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
-import { HttpHeaders } from '@angular/common/http';
 
 /**
  * Helper functions service for emails template.
