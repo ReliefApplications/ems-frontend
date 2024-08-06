@@ -221,7 +221,20 @@
                       uiCell
                       *cdkCellDef="let element"
                       class="flex items-center"
-                    ></td>
+                    >
+                      <ui-button
+                        icon="add"
+                        (click)="addSubscription(element.id)"
+                        >{{
+                          'components.email.subscribe.title' | translate
+                        }}</ui-button
+                      >
+                      <ng-template #subscribed>
+                        <ui-button icon="remove">{{
+                          'components.email.unsubscribe.title' | translate
+                        }}</ui-button>
+                      </ng-template>
+                    </td>
                   </ng-container>
                 </ng-template>
                 <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>

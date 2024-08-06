@@ -830,6 +830,9 @@
 				"noResourceFields": "La ressource sélectionnée ne contient aucun champ",
 				"noSelectedFields": "Veuillez sélectionner au moins 1 champ pour sauvegarder ce jeu de données",
 				"selectChildFields": "Vous avez sélectionné un champ Objet/liste. Sélectionnez au moins un champ enfant pour continuer.",
+				"subscribeExists": "Erreur! \n{{message}}",
+				"subscribeFailed": "Oups !... Une erreur s'est produite lors de l'abonnement. \n{{Message d'erreur}}",
+				"subscribeSuccess": "Succès! \nAbonné à la notification par e-mail : {{email}}.",
 				"tooManyRecords": "Pour le moment, nous sommes limités à récupérer seulement 50 enregistrements. \nSur la base des conditions de filtre fournies, il existe <strong>{{totalRecords}></strong> enregistrements correspondants. \nVeuillez ajouter des filtres supplémentaires pour que le nombre d'enregistrements soit inférieur ou égal à 50."
 			},
 			"back": "Retour à la liste",
@@ -878,6 +881,9 @@
 				"subject": "Sujet:"
 			},
 			"saveAsDraft": "Enregistrer comme brouillon",
+			"subscribe": {
+				"title": "S'abonner"
+			},
 			"tooltip": {
 				"reverseDate": "AAAA/MM/JJ"
 			}

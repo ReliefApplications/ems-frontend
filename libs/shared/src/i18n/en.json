@@ -830,6 +830,9 @@
 				"noResourceFields": "Selected resource doesn't contain any fields",
 				"noSelectedFields": "Please select at least 1 field to save this dataset",
 				"selectChildFields": "You have selected an Object/list field. Select atleast one child field to proceed further and/or preview.",
+				"subscribeExists": "Error! {{message}}",
+				"subscribeFailed": "Oops!... Something went wrong whilst subscribing. {{errorMessage}}",
+				"subscribeSuccess": "Success! {{message}}",
 				"tooManyRecords": "At this moment, we are limited to fetch only 50 records. Based on the provided filter conditions there are <strong>{{totalRecords}}</strong> matching records. Please add some additional filters to bring the record count less than or equals to 50."
 			},
 			"back": "Back to list",
@@ -878,6 +881,9 @@
 				"subject": "Subject:"
 			},
 			"saveAsDraft": "Save as draft",
+			"subscribe": {
+				"title": "Subscribe"
+			},
 			"tooltip": {
 				"reverseDate": "YYYY/MM/DD"
 			}

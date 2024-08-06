@@ -29,6 +29,7 @@ import { ResourceQueryResponse } from '../../models/resource.model';
 import { prettifyLabel } from '../../utils/prettify';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { HttpHeaders } from '@angular/common/http';
 
 /**
  * Helper functions service for emails template.
@@ -240,6 +241,64 @@ export class EmailService {
       );
     }
     return false;
+  }
+
+  /**
+   * Subscribes user to email notification
+   *
+   * @param id The email notification id
+   * @returns Promise
+   */
+  subscribeToEmail(id: string): Promise<void> {
+    return new Promise((resolve) => {
+      this.http
+        .post(
+          `${this.restService.apiUrl}/notification/update-subscription/`,
+          {
+            configId: id,
+          },
+          { responseType: 'json' }
+        )
+        .subscribe({
+          next: (response: any) => {
+            console.log(response);
+            if (!response.emailExists) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'components.email.alert.subscribeSuccess',
+                  {
+                    message: response.message,
+                  }
+                )
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'components.email.alert.subscribeExists',
+                  {
+                    message: response.message,
+                  }
+                ),
+                { error: true }
+              );
+            }
+
+            resolve();
+          },
+          error: (errMsg: any) => {
+            if (errMsg && errMsg.errorMessage) {
+              console.log('Error Message: ', errMsg.errorMessage);
+            }
+            this.snackBar.openSnackBar(
+              this.translate.instant('components.email.alert.subscribeFailed', {
+                errorMessage: errMsg.errorMessage,
+              }),
+              { error: true }
+            );
+            resolve();
+          },
+        });
+    });
   }
 
   /**

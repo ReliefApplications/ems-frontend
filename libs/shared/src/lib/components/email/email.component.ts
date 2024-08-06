@@ -189,6 +189,19 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
+   * Subscribes to an email notification.
+   *
+   * @param id The ID of the email notification to subscribe to.
+   */
+  async addSubscription(id: string) {
+    try {
+      await this.emailService.subscribeToEmail(id);
+    } catch (error) {
+      console.error('Subscription failed', error);
+    }
+  }
+
+  /**
    * Resets email notification for user to go back to list.
    *
    * @param isNew value of if the user is creating a new email notification.
