@@ -474,12 +474,12 @@
         "insert": "Type '{' to inject expressions and variables"
       }
     },
-    "true": "True",
     "trigger": {
       "few": "Triggers",
       "none": "No triggers",
       "one": "Trigger"
     },
+    "true": "True",
     "type": {
       "few": "Types",
       "none": "No type",
@@ -772,9 +772,9 @@
         "recipients": {
           "distributionList": "Use a distribution list",
           "email": "Input a single email address",
+          "emailField": "Group by dataset email field",
           "title": "Recipients",
-          "userField": "Group by dataset user field",
-          "emailField": "Group by dataset email field"
+          "userField": "Group by dataset user field"
         },
         "update": "Edit custom notification"
       },
@@ -1393,35 +1393,36 @@
       }
     },
     "triggers": {
-      "notification": "Notification",
-      "noFilters": "No triggers filters detected",
-      "noTriggers": "No {{type}} triggers detected",
-      "editTrigger": "Edit {{type}} Trigger",
-      "createTrigger": "New {{type}} Trigger",
       "addTrigger": "Add trigger",
+      "createTrigger": "New {{type}} Trigger",
       "cronBased": "Cron Based",
-      "onRecordCreation": "On Record Creation",
-      "onRecordUpdate": "On Record Update",
       "customNotificationRecipientsType": {
+        "channel": "Channel",
+        "distributionList": "Distribution list",
         "email": "Email",
         "emailField": "Email field",
-        "userField": "User field",
-        "distributionList": "Distribution list",
-        "channel": "Channel"
+        "userField": "User field"
       },
+      "editTrigger": "Edit {{type}} Trigger",
+      "noFilters": "No triggers filters detected",
+      "noTriggers": "No {{type}} triggers detected",
+      "notification": "Notification",
+      "onRecordCreation": "On Record Creation",
+      "onRecordUpdate": "On Record Update",
+      "selectNotificationType": "Please select a notification type first",
       "tooltip": {
-        "withCronBasedTrigger": "Resource with a cron based trigger",
-        "withoutCronBasedTrigger": "Resource without any cron based trigger",
-        "withOnRecordCreationTrigger": "Resource with a trigger on record creation",
-        "withoutOnRecordCreationTrigger": "Resource without any trigger on record creation",
-        "withOnRecordUpdateTrigger": "Resource with a trigger on record update",
-        "withoutOnRecordUpdateTrigger": "Resource without any trigger on record update",
-        "withFilterCronBasedTrigger": "This filter affects cron based triggers",
         "noFilterCronBasedTrigger": "This filter doesn't affect cron based triggers",
-        "withFilterOnRecordCreationTrigger": "This filter affects on record creation triggers",
         "noFilterOnRecordCreationTrigger": "This filter doesn't affect on record creation triggers",
+        "noFilterOnRecordUpdateTrigger": "This filter doesn't affect on record update triggers",
+        "withCronBasedTrigger": "Resource with a cron based trigger",
+        "withFilterCronBasedTrigger": "This filter affects cron based triggers",
+        "withFilterOnRecordCreationTrigger": "This filter affects on record creation triggers",
         "withFilterOnRecordUpdateTrigger": "This filter affects on record update triggers",
-        "noFilterOnRecordUpdateTrigger": "This filter doesn't affect on record update triggers"
+        "withOnRecordCreationTrigger": "Resource with a trigger on record creation",
+        "withOnRecordUpdateTrigger": "Resource with a trigger on record update",
+        "withoutCronBasedTrigger": "Resource without any cron based trigger",
+        "withoutOnRecordCreationTrigger": "Resource without any trigger on record creation",
+        "withoutOnRecordUpdateTrigger": "Resource without any trigger on record update"
       }
     },
     "user": {

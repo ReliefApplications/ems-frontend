@@ -474,12 +474,12 @@
         "insert": "Tapez '{' pour utiliser des expressions et des variables"
       }
     },
-    "true": "Vrai",
     "trigger": {
       "few": "Déclencheurs",
       "none": "Aucun déclencheur",
       "one": "Déclenchement"
     },
+    "true": "Vrai",
     "type": {
       "few": "Types",
       "none": "Aucun type",
@@ -778,9 +778,9 @@
         "recipients": {
           "distributionList": "Utiliser une liste de distribution",
           "email": "Utiliser une adresse email unique",
+          "emailField": "Grouper par e-mail détectés dans les enregistrements",
           "title": "Destinataires",
-          "userField": "Grouper par utilisateurs détectés dans les enregistrements",
-          "emailField": "Grouper par e-mail détectés dans les enregistrements"
+          "userField": "Grouper par utilisateurs détectés dans les enregistrements"
         },
         "update": "Éditer la notification"
       },
@@ -1405,35 +1405,36 @@
       }
     },
     "triggers": {
-      "notification": "Notification",
-      "noFilters": "Aucun filtre de déclenchement détecté",
-      "noTriggers": "Aucun déclencheur {{type}} détecté",
-      "editTrigger": "Modifier {{type}} déclencheur",
-      "createTrigger": "Nouveau {{type}} déclencheur",
       "addTrigger": "Ajouter un déclencheur",
+      "createTrigger": "Nouveau {{type}} déclencheur",
       "cronBased": "Basé sur Cron",
-      "onRecordCreation": "Création d'un enregistrement",
-      "onRecordUpdate": "Mise à jour sur l'enregistrement",
       "customNotificationRecipientsType": {
+        "channel": "Canal",
+        "distributionList": "Liste de distribution",
         "email": "E-mail",
         "emailField": "Champ e-mail",
-        "userField": "Champ de l'utilisateur",
-        "distributionList": "Liste de distribution",
-        "channel": "Canal"
+        "userField": "Champ de l'utilisateur"
       },
+      "editTrigger": "Modifier {{type}} déclencheur",
+      "noFilters": "Aucun filtre de déclenchement détecté",
+      "noTriggers": "Aucun déclencheur {{type}} détecté",
+      "notification": "Notification",
+      "onRecordCreation": "Création d'un enregistrement",
+      "onRecordUpdate": "Mise à jour sur l'enregistrement",
+      "selectNotificationType": "Veuillez d'abord sélectionner un type de notification",
       "tooltip": {
-        "withCronBasedTrigger": "Ressource avec un déclencheur basé sur cron",
-        "withoutCronBasedTrigger": "Ressource sans aucun déclencheur basé sur cron",
-        "withOnRecordCreationTrigger": "Ressource avec un déclencheur lors de la création d'un enregistrement",
-        "withoutOnRecordCreationTrigger": "Ressource sans aucun déclencheur lors de la création d'un enregistrement",
-        "withOnRecordUpdateTrigger": "Ressource avec un déclencheur lors de la mise à jour de l'enregistrement",
-        "withoutOnRecordUpdateTrigger": "Ressource sans aucun déclencheur lors de la mise à jour de l'enregistrement",
-        "withFilterCronBasedTrigger": "Ce filtre affecte les déclencheurs basés sur Cron",
         "noFilterCronBasedTrigger": "Ce filtre n'affecte pas les déclencheurs basés sur Cron",
-        "withFilterOnRecordCreationTrigger": "Ce filtre affecte les déclencheurs de création d'enregistrement",
         "noFilterOnRecordCreationTrigger": "Ce filtre n'affecte pas les déclencheurs de création d'enregistrement",
+        "noFilterOnRecordUpdateTrigger": "Ce filtre n'affecte pas les déclencheurs de mise à jour des enregistrements",
+        "withCronBasedTrigger": "Ressource avec un déclencheur basé sur cron",
+        "withFilterCronBasedTrigger": "Ce filtre affecte les déclencheurs basés sur Cron",
+        "withFilterOnRecordCreationTrigger": "Ce filtre affecte les déclencheurs de création d'enregistrement",
         "withFilterOnRecordUpdateTrigger": "Ce filtre affecte les déclencheurs de mise à jour des enregistrements",
-        "noFilterOnRecordUpdateTrigger": "Ce filtre n'affecte pas les déclencheurs de mise à jour des enregistrements"
+        "withOnRecordCreationTrigger": "Ressource avec un déclencheur lors de la création d'un enregistrement",
+        "withOnRecordUpdateTrigger": "Ressource avec un déclencheur lors de la mise à jour de l'enregistrement",
+        "withoutCronBasedTrigger": "Ressource sans aucun déclencheur basé sur cron",
+        "withoutOnRecordCreationTrigger": "Ressource sans aucun déclencheur lors de la création d'un enregistrement",
+        "withoutOnRecordUpdateTrigger": "Ressource sans aucun déclencheur lors de la mise à jour de l'enregistrement"
       }
     },
     "user": {

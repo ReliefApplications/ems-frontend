@@ -162,17 +162,7 @@ export class EditNotificationModalComponent
           this.formGroup.get('layout')?.setValue(null);
         }
       });
-    this.formGroup
-      .get('recipientsType')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.formGroup.get('recipients')?.setValue(null);
-        if (value === 'email') {
-          this.formGroup.get('recipients.')?.addValidators(Validators.email);
-        } else {
-          this.formGroup.get('recipients.')?.removeValidators(Validators.email);
-        }
-      });
+
     // Build resource query
     this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES,

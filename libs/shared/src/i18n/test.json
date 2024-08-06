@@ -474,6 +474,11 @@
         "insert": "******"
       }
     },
+    "trigger": {
+      "few": "******",
+      "none": "******",
+      "one": "******"
+    },
     "true": "******",
     "type": {
       "few": "******",
@@ -767,6 +772,7 @@
         "recipients": {
           "distributionList": "******",
           "email": "******",
+          "emailField": "******",
           "title": "******",
           "userField": "******"
         },
@@ -1384,6 +1390,39 @@
       "type": {
         "email": "******",
         "title": "******"
+      }
+    },
+    "triggers": {
+      "addTrigger": "******",
+      "createTrigger": "****** {{type}} ******",
+      "cronBased": "******",
+      "customNotificationRecipientsType": {
+        "channel": "******",
+        "distributionList": "******",
+        "email": "******",
+        "emailField": "******",
+        "userField": "******"
+      },
+      "editTrigger": "****** {{type}} ******",
+      "noFilters": "******",
+      "noTriggers": "****** {{type}} ******",
+      "notification": "******",
+      "onRecordCreation": "******",
+      "onRecordUpdate": "******",
+      "selectNotificationType": "******",
+      "tooltip": {
+        "noFilterCronBasedTrigger": "******",
+        "noFilterOnRecordCreationTrigger": "******",
+        "noFilterOnRecordUpdateTrigger": "******",
+        "withCronBasedTrigger": "******",
+        "withFilterCronBasedTrigger": "******",
+        "withFilterOnRecordCreationTrigger": "******",
+        "withFilterOnRecordUpdateTrigger": "******",
+        "withOnRecordCreationTrigger": "******",
+        "withOnRecordUpdateTrigger": "******",
+        "withoutCronBasedTrigger": "******",
+        "withoutOnRecordCreationTrigger": "******",
+        "withoutOnRecordUpdateTrigger": "******"
       }
     },
     "user": {
