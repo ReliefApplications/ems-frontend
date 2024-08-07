@@ -56,7 +56,7 @@
         </div>
       </div>
       <!-- For phase 2 -->
-      <!-- <div class="w-1/2 content-center text-center">
+      <div class="w-1/2 content-center text-center">
         <ui-checkbox
           formControlName="individualEmail"
           [(ngModel)]="separateEmail"
@@ -65,7 +65,7 @@
             'components.select.distribution.separateEmail' | translate
           }}</ng-container>
         </ui-checkbox>
-      </div> -->
+      </div>
     </div>
 
     <div class="w-1/3 flex loadingSign">
@@ -193,6 +193,55 @@
           </ng-template>
         </ui-tab>
 
+        <ui-tab
+          [title]="'Send Separate Fields'"
+          *ngIf="this.query.get('individualEmail').value"
+        >
+          <ng-container ngProjectAs="label">
+            {{ 'components.queryBuilder.sendSeparate.title' | translate }}
+          </ng-container>
+          <ng-template uiTabContent>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="invalidFieldsAlertTmpl"
+            ></ng-container>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="individualEmailsInfoMessageTmpl"
+            ></ng-container>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="noSelectedFieldsForIndividualFieldsTmpl"
+            ></ng-container>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="ChildFieldAlertTmpl"
+            ></ng-container>
+            <div class="flex gap-4 mt-2">
+              <div class="mt-2 overflow-auto">
+                <!-- FIELDS -->
+                <shared-tab-fields
+                  *ngIf="availableFieldsIndividualEmail.length > 0"
+                  [form]="getIndividualEmailFieldsArray()"
+                  [fields]="availableFieldsIndividualEmail"
+                  [showLimit]="false"
+                  [showColumnWidth]="false"
+                ></shared-tab-fields>
+              </div>
+            </div>
+
+            <ui-button
+              *ngIf="datasetFilterInfo.controls"
+              class="float-right mt-8"
+              category="secondary"
+              variant="primary"
+              (click)="getDataSet('separateEmails')"
+            >
+              {{ 'components.queryBuilder.filter.applyField' | translate }}
+            </ui-button>
+          </ng-template>
+        </ui-tab>
+
         <!-- Style Tab -->
         <!-- <kendo-tabstrip-tab [disabled]="true">
       <ng-template kendoTabTitle >
@@ -267,6 +316,25 @@
   >
     <div>
       {{ 'components.email.alert.noSelectedFields' | translate }}
+    </div>
+  </ui-alert>
+</ng-template>
+<!-- No selected fields for individual fields -->
+<ng-template #noSelectedFieldsForIndividualFieldsTmpl>
+  <ui-alert
+    variant="warning"
+    *ngIf="query.get('individualEmailFields').value.length === 0"
+    [closable]="true"
+  >
+    <div>
+      {{ 'components.email.alert.noSelectedFields' | translate }}
+    </div>
+  </ui-alert>
+</ng-template>
+<ng-template #individualEmailsInfoMessageTmpl>
+  <ui-alert variant="default" [closable]="true">
+    <div>
+      {{ 'components.email.alert.individualEmailsInfo' | translate }}
     </div>
   </ui-alert>
 </ng-template>

@@ -829,6 +829,7 @@
 			},
 			"alert": {
 				"dlPreview": "******",
+				"individualEmailsInfo": "******",
 				"invalidFields": "****** {{fields}} ****** {{types}} ******",
 				"noResource": "******",
 				"noResourceFields": "******",
@@ -1227,6 +1228,9 @@
 				"title": "******"
 			},
 			"preview": {
+				"title": "******"
+			},
+			"sendSeparate": {
 				"title": "******"
 			},
 			"sort": {

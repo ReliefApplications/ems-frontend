@@ -829,6 +829,7 @@
 			},
 			"alert": {
 				"dlPreview": "Tous les e-mails affichés dans ce tableau ci-dessous seront utilisés pour créer la liste de distribution",
+				"individualEmailsInfo": "Veuillez sélectionner les champs dans lesquels vous souhaitez récupérer les e-mails pour la fonctionnalité de messagerie utilisateur personnalisée.",
 				"invalidFields": "Les champs suivants ne peuvent pas être sélectionnés: <strong>{{fields}}</strong> car ils sont du type <strong>{{types}}</strong> et ne peut pas être correctement affiché dans le tableau de ce formulaire.",
 				"noResource": "Sélectionnez une ressource à l'aide de la liste déroulante pour afficher l'assistant de filtrage de liste de distribution",
 				"noResourceFields": "La ressource sélectionnée ne contient aucun champ",
@@ -1228,6 +1229,9 @@
 			},
 			"preview": {
 				"title": "Aperçu"
+			},
+			"sendSeparate": {
+				"title": "Envoyer des champs de courrier électronique séparés"
 			},
 			"sort": {
 				"ascending": "Croissant",

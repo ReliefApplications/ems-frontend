@@ -292,6 +292,7 @@ export const ADD_EMAIL_NOTIFICATION = gql`
         blockType
         textStyle
         individualEmail
+        individualEmailFields
         sendAsAttachment
         pageSize
       }
@@ -374,6 +375,7 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
         blockType
         textStyle
         individualEmail
+        individualEmailFields
         sendAsAttachment
         pageSize
       }

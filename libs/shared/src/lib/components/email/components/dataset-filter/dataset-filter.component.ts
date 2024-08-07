@@ -74,6 +74,10 @@ export class DatasetFilterComponent
   public filterFields: any[] = [];
   /** Available fields for filtering. */
   public availableFields: any[] = [];
+  /** Available fields for individual Emails. */
+  public availableFieldsIndividualEmail: any[] = [];
+  /** Selected fields for individual Emails. */
+  public selectedFieldsIndividualEmail: any[] = [];
   /** Operators for filtering. */
   public operators: { [key: number]: { value: string; label: string }[] } = {};
   /** Flag to show the dataset limit warning. */
@@ -200,6 +204,7 @@ export class DatasetFilterComponent
         availableFields,
         filterFields,
         selectedResourceId,
+        availableFieldsIndividualEmail,
       } = this.query.controls.query.get('cacheData').value;
 
       this.dataList = dataList;
@@ -209,6 +214,7 @@ export class DatasetFilterComponent
       this.selectedFields = selectedFields;
       this.filterFields = filterFields;
       this.availableFields = availableFields;
+      this.availableFieldsIndividualEmail = availableFieldsIndividualEmail;
       this.selectedResourceId = selectedResourceId;
     }
 
@@ -300,10 +306,12 @@ export class DatasetFilterComponent
     this.resourcePopulated = false;
     this.loading = true;
     this.availableFields = [];
+    this.availableFieldsIndividualEmail = [];
     if (fromHtml) {
       this.query.controls.query.value.fields = [];
       this.query.controls.query.get('fields').value = [];
       this.selectedFields = [];
+      this.selectedFieldsIndividualEmail = [];
       this.filterFields = [];
     }
     this.showDatasetLimitWarning = false;
@@ -325,6 +333,7 @@ export class DatasetFilterComponent
           }
           this.query.controls.query.get('name').setValue(queryTemp.queryName);
           this.availableFields = newData;
+          this.availableFieldsIndividualEmail = cloneDeep(newData);
           this.filterFields = cloneDeep(newData);
           this.loading = false;
           this.resourcePopulated = true;
@@ -603,6 +612,37 @@ export class DatasetFilterComponent
         !this.query.controls.sendAsAttachment.value
       );
     }
+  }
+
+  /**
+   * Retrieves Individual Email Fields
+   *
+   * @returns FormArray of fields
+   */
+  getIndividualEmailFieldsArray() {
+    const formArray = this.query.get('individualEmailFields') as FormArray;
+    formArray.controls.forEach((field: any) => {
+      if (!field.value.name) {
+        const tempMatchedData = this.availableFieldsIndividualEmail.find(
+          (x: any) => prettifyLabel(x.name) === field.value.label
+        );
+        if (tempMatchedData) {
+          const updatedField = {
+            ...field.value,
+            name: tempMatchedData.name,
+            type: tempMatchedData.type.name,
+          };
+          field.patchValue(updatedField);
+        }
+      }
+    });
+
+    this.selectedFieldsIndividualEmail = this.query.get(
+      'individualEmailFields'
+    )?.value;
+
+    return formArray;
+    console.log(this.query.getRawValue());
   }
 
   /**

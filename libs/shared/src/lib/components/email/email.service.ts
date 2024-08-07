@@ -206,6 +206,7 @@ export class EmailService {
       }), // Fields (field selected and style), Block Style (HTML wrapping field with token)
       sendAsAttachment: false,
       individualEmail: false,
+      individualEmailFields: this.formBuilder.array([]),
     });
   }
 
