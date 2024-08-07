@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { EditorService } from '../../../../services/editor/editor.service';
 import {
+  DESCRIPTION_EDITOR_CONFIG,
   EMAIL_EDITOR_CONFIG,
   INLINE_EDITOR_CONFIG,
 } from '../../../../const/tinymce.const';
@@ -20,6 +21,8 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { DialogModule, FormWrapperModule } from '@oort-front/ui';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs';
 
 /** Model for the data input */
 interface DialogData {
@@ -32,6 +35,12 @@ interface DialogData {
 const BODY_EDITOR_AUTOCOMPLETE_KEYS = ['{{now}}', '{{today}}', '{{dataset}}'];
 /** Available subject editor keys for autocompletion */
 const SUBJECT_EDITOR_AUTOCOMPLETE_KEYS = ['{{now}}', '{{today}}'];
+/** Available body editor keys for autocompletion */
+const DESCRIPTION_EDITOR_AUTOCOMPLETE_KEYS = [
+  '{{now}}',
+  '{{today}}',
+  '{{recordId}}',
+];
 
 /** Component for editing a template */
 @Component({
@@ -54,14 +63,20 @@ const SUBJECT_EDITOR_AUTOCOMPLETE_KEYS = ['{{now}}', '{{today}}'];
   templateUrl: './edit-template-modal.component.html',
   styleUrls: ['./edit-template-modal.component.scss'],
 })
-export class EditTemplateModalComponent implements OnInit {
+export class EditTemplateModalComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   // === REACTIVE FORM ===
   /** Reactive form for the template */
-  form = this.fb.group({
+  public form = this.fb.group({
     name: [get(this.data, 'name', null), Validators.required],
     type: [get(this.data, 'type', 'email'), Validators.required],
-    subject: [get(this.data, 'content.subject', null), Validators.required],
-    body: [get(this.data, 'content.body', ''), Validators.required],
+    subject: [get(this.data, 'content.subject', null)],
+    body: [get(this.data, 'content.body', '')],
+    description: [get(this.data, 'content.description', '')],
+    title: [get(this.data, 'content.title', null)],
+    redirect: [get(this.data, 'content.redirect', null)], // TODO
   });
 
   /** tinymce body editor */
@@ -69,6 +84,9 @@ export class EditTemplateModalComponent implements OnInit {
 
   /** tinymce subject editor */
   public subjectEditor: RawEditorSettings = INLINE_EDITOR_CONFIG;
+
+  /** tinymce description editor */
+  public descriptionEditor: RawEditorSettings = DESCRIPTION_EDITOR_CONFIG;
 
   /**
    * Component for editing a template
@@ -84,6 +102,7 @@ export class EditTemplateModalComponent implements OnInit {
     @Inject(DIALOG_DATA) public data: DialogData,
     private editorService: EditorService
   ) {
+    super();
     // Set the editor base url based on the environment file
     this.bodyEditor.base_url = editorService.url;
     // Set the editor language
@@ -104,5 +123,33 @@ export class EditTemplateModalComponent implements OnInit {
       this.subjectEditor,
       SUBJECT_EDITOR_AUTOCOMPLETE_KEYS.map((key) => ({ value: key, text: key }))
     );
+
+    this.editorService.addCalcAndKeysAutoCompleter(
+      this.descriptionEditor,
+      DESCRIPTION_EDITOR_AUTOCOMPLETE_KEYS.map((key) => ({
+        value: key,
+        text: key,
+      }))
+    );
+
+    // Add required validation fields depending on type
+    this.form
+      .get('type')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value === 'email') {
+          this.form.get('subject')?.addValidators(Validators.required);
+          this.form.get('body')?.addValidators(Validators.required);
+
+          this.form.get('title')?.removeValidators(Validators.required);
+          this.form.get('description')?.removeValidators(Validators.required);
+        } else {
+          this.form.get('title')?.addValidators(Validators.required);
+          this.form.get('description')?.addValidators(Validators.required);
+
+          this.form.get('subject')?.removeValidators(Validators.required);
+          this.form.get('body')?.removeValidators(Validators.required);
+        }
+      });
   }
 }

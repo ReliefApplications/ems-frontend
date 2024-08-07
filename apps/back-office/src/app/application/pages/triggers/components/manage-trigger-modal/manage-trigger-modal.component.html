@@ -36,6 +36,10 @@
           </ui-select-option>
         </ui-select-menu>
       </div>
+      <!-- Alert message to select notification type first -->
+      <ui-alert *ngIf="!formGroup.value.notificationType" class="mb-4">
+        {{ 'components.triggers.selectNotificationType' | translate }}
+      </ui-alert>
       <!-- Template -->
       <div uiFormFieldDirective [outline]="false" class="w-full">
         <label>{{ 'common.template.one' | translate }}</label>
@@ -59,7 +63,7 @@
           [isIcon]="true"
           icon="add_circle_outline"
           variant="primary"
-          (click)="$event.stopPropagation(); addEmailTemplate()"
+          (click)="$event.stopPropagation(); addTemplate()"
           [uiTooltip]="'components.templates.edit.new' | translate"
         >
         </ui-button>

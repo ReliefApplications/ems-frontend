@@ -284,20 +284,28 @@ export class EditNotificationModalComponent
       disableClose: true,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value)
+      if (value) {
+        const content =
+          value.type === TemplateTypeEnum.EMAIL
+            ? {
+                subject: value.subject,
+                body: value.body,
+              }
+            : {
+                title: value.title,
+                description: value.description,
+              };
         this.applicationService.addTemplate(
           {
             name: value.name,
-            type: TemplateTypeEnum.EMAIL,
-            content: {
-              subject: value.subject,
-              body: value.body,
-            },
+            type: value.type,
+            content,
           },
           (template: Template) => {
             this.formGroup.get('template')?.setValue(template.id || null);
           }
         );
+      }
     });
   }
 }

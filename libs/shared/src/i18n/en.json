@@ -1389,6 +1389,7 @@
       },
       "type": {
         "email": "Email",
+        "notification": "Notification",
         "title": "Template type"
       }
     },

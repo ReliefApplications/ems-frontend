@@ -328,3 +328,12 @@ export const INLINE_EDITOR_CONFIG: RawEditorSettings = {
   height: 50,
   content_style: 'p { margin: 0 !important; }',
 };
+
+/** Description Editor tinymce configuration. */
+export const DESCRIPTION_EDITOR_CONFIG: RawEditorSettings = {
+  menubar: false,
+  toolbar: '',
+  plugins: '',
+  height: 100,
+  content_style: 'p { margin: 0 !important; }',
+};

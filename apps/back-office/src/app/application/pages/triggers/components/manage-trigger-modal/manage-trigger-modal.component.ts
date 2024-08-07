@@ -78,7 +78,7 @@ export class ManageTriggerModalComponent
   /** @returns application templates */
   get templates(): Template[] {
     return (this.applicationService.templates || []).filter(
-      (x) => x.type === TemplateTypeEnum.EMAIL
+      (x) => x.type === this.formGroup.value.notificationType
     );
   }
 
@@ -193,26 +193,34 @@ export class ManageTriggerModalComponent
   /**
    * Opens modal for adding a new email template
    */
-  public async addEmailTemplate() {
+  public async addTemplate() {
     const { EditTemplateModalComponent } = await import('@oort-front/shared');
     const dialogRef = this.dialog.open(EditTemplateModalComponent, {
       disableClose: true,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value)
+      if (value) {
+        const content =
+          value.type === TemplateTypeEnum.EMAIL
+            ? {
+                subject: value.subject,
+                body: value.body,
+              }
+            : {
+                title: value.title,
+                description: value.description,
+              };
         this.applicationService.addTemplate(
           {
             name: value.name,
-            type: TemplateTypeEnum.EMAIL,
-            content: {
-              subject: value.subject,
-              body: value.body,
-            },
+            type: value.type,
+            content,
           },
           (template: Template) => {
             this.formGroup.get('template')?.setValue(template.id || null);
           }
         );
+      }
     });
   }
 

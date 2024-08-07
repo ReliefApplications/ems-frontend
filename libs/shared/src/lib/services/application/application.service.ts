@@ -1670,7 +1670,7 @@ export class ApplicationService {
             application: application.id,
             template: {
               name: template.name,
-              type: 'email',
+              type: template.type,
               content: template.content,
             },
           },

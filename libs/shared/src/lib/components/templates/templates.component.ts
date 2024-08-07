@@ -56,7 +56,7 @@ export class TemplatesComponent extends UnsubscribeComponent implements OnInit {
    *
    * @param template The template to edit
    */
-  async editEmailTemplate(template: any): Promise<void> {
+  async editTemplate(template: any): Promise<void> {
     const { EditTemplateModalComponent } = await import(
       './components/edit-template-modal/edit-template-modal.component'
     );
@@ -66,14 +66,21 @@ export class TemplatesComponent extends UnsubscribeComponent implements OnInit {
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
+        const content =
+          value.type === TemplateTypeEnum.EMAIL
+            ? {
+                subject: value.subject,
+                body: value.body,
+              }
+            : {
+                title: value.title,
+                description: value.description,
+              };
         this.applicationService.editTemplate({
           id: template.id,
           name: value.name,
-          type: TemplateTypeEnum.EMAIL,
-          content: {
-            subject: value.subject,
-            body: value.body,
-          },
+          type: value.type,
+          content,
         });
         this.snackBar.openSnackBar(
           this.translate.instant('common.notifications.objectUpdated', {
@@ -122,8 +129,8 @@ export class TemplatesComponent extends UnsubscribeComponent implements OnInit {
     });
   }
 
-  /** Opens modal for adding a new email template */
-  async addEmailTemplate(): Promise<void> {
+  /** Opens modal for adding a new template */
+  async addTemplate(): Promise<void> {
     const { EditTemplateModalComponent } = await import(
       './components/edit-template-modal/edit-template-modal.component'
     );
@@ -132,13 +139,20 @@ export class TemplatesComponent extends UnsubscribeComponent implements OnInit {
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
+        const content =
+          value.type === TemplateTypeEnum.EMAIL
+            ? {
+                subject: value.subject,
+                body: value.body,
+              }
+            : {
+                title: value.title,
+                description: value.description,
+              };
         this.applicationService.addTemplate({
           name: value.name,
-          type: TemplateTypeEnum.EMAIL,
-          content: {
-            subject: value.subject,
-            body: value.body,
-          },
+          type: value.type,
+          content,
         });
         this.snackBar.openSnackBar(
           this.translate.instant('common.notifications.objectCreated', {
