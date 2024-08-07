@@ -210,12 +210,16 @@ export class EmailService {
    *
    * @returns true if to in email distribution list is valid
    */
-  checkToValid() {
-    if (this.toDLHasFilter && this.emailDistributionList?.to?.query?.resource) {
+  async checkToValid() {
+    if (
+      this.toDLHasFilter &&
+      (this.emailDistributionList?.to?.query?.resource ||
+        this.datasetsForm?.getRawValue()?.emailDistributionList?.to?.resource)
+    ) {
       const query = {
         emailDistributionList: cloneDeep(this.emailDistributionList),
       };
-      this.http
+      await this.http
         .post(
           `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
           query
@@ -1545,5 +1549,47 @@ export class EmailService {
     dlArray?.forEach((item: string) => {
       input?.push(new FormControl(item));
     });
+  }
+
+  /**
+   *
+   * validating next button by taking 3 conditions in consideration DL name mandatory, check duplicate name validation and requires To email
+   */
+  async validateNextButton() {
+    const isDLNameExists = this.distributionListName?.trim()?.length > 0;
+    const isDlDuplicateNm = this.isDLNameDuplicate;
+    const isExistsToEmail = this.isToValid;
+
+    //Check To is valid or not (Including filter Emails or Manually added emails)
+    // const valid = await this.checkToValid();
+
+    if (isDLNameExists && !isDlDuplicateNm && isExistsToEmail) {
+      this.disableSaveAndProceed.next(false);
+    } else {
+      this.disableFormSteps.next({
+        stepperIndex: 2,
+        disableAction: true,
+      });
+      this.disableSaveAndProceed.next(true);
+    }
+  }
+
+  /**
+   * checking that To tab is valid or not
+   */
+  isToValidCheck() {
+    if (
+      this.datasetsForm.getRawValue().emailDistributionList?.to?.inputEmails
+        .length > 0 ||
+      (this.datasetsForm.getRawValue().emailDistributionList?.to?.resource !==
+        '' &&
+        this.datasetsForm.getRawValue().emailDistributionList?.to?.resource !==
+          null &&
+        this.filterToEmails?.length > 0)
+    ) {
+      this.isToValid = true;
+    } else {
+      this.isToValid = false;
+    }
   }
 }

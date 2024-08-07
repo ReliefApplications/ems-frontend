@@ -238,6 +238,9 @@ export class EmailTemplateComponent
             this.resource.fields = [];
           }
           this.getResourceData(true);
+        } else if (value === null) {
+          this.selectedResourceId = value;
+          this.clearUnusedValues(this.segmentList[this.activeSegmentIndex]);
         }
       });
     this.selectedEmails = this.distributionList.get('inputEmails') as FormArray;
@@ -275,6 +278,7 @@ export class EmailTemplateComponent
    * Clear unused values for segments
    *
    * @param value form value
+   * @param isDestroy
    */
   clearUnusedValues(value: string) {
     if (value === 'Add Manually') {
@@ -288,6 +292,7 @@ export class EmailTemplateComponent
       this.distributionList.get('resource').setValue('');
       this.dlQuery.get('name').setValue('');
       this.resource = null;
+      this.emailService.isToValidCheck();
     } else if (value === 'Select With Filter') {
       // Clear the input emails form array
       while (this.selectedEmails.length !== 0) {
@@ -311,9 +316,20 @@ export class EmailTemplateComponent
             : this.emailService.emailDistributionList[type].inputEmails;
         }
       }
+      this.emailService.isToValidCheck();
+    } else if (value === 'Use Combination') {
+      if (
+        this.emailService.datasetsForm.getRawValue().emailDistributionList?.to
+          ?.inputEmails?.length > 0 ||
+        this.emailService.datasetsForm.getRawValue().emailDistributionList.to
+          .resource !== null
+      ) {
+        this.emailService.isToValid = true;
+      } else {
+        this.emailService.isToValid = false;
+      }
     }
-    // this.emailService.setDistributionList(this.distributionList);
-    this.emailService.disableSaveAndProceed.next(true);
+    this.emailService.validateNextButton();
   }
 
   /**
@@ -394,13 +410,11 @@ export class EmailTemplateComponent
     if (fromHTML && newIndex === previewTabIndex) {
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
-        this.emailService.disableSaveAndProceed.next(false);
       }
       this.getDataSet('preview');
     } else if (newIndex >= 0) {
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
-        this.emailService.disableSaveAndProceed.next(false);
         this.emailService.disableSaveAsDraft.next(false);
       }
     }
@@ -527,18 +541,9 @@ export class EmailTemplateComponent
         .getRawValue()
         .query.fields?.filter((x: any) => x?.fields?.length === 0).length > 0
     ) {
-      this.emailService.disableSaveAndProceed.next(true);
       this.showFieldsWarning = true;
     } else {
       this.showFieldsWarning = false;
-      if (
-        this.emailService.datasetsForm?.value?.emailDistributionList?.name
-          ?.length > 0 &&
-        !this.emailService.isDLNameDuplicate &&
-        this.emailService.checkToValid()
-      ) {
-        this.emailService.disableSaveAndProceed.next(false);
-      }
     }
     return formArray;
   }
@@ -667,7 +672,6 @@ export class EmailTemplateComponent
               response?.name?.length > 0 &&
               !this.emailService.isDLNameDuplicate
             ) {
-              this.emailService.disableSaveAndProceed.next(false);
               this.emailService.isToValid = true;
             } else {
               // Check if To is use combination
@@ -679,16 +683,15 @@ export class EmailTemplateComponent
                     ?.length > 0
                 ) {
                   this.emailService.isToValid = true;
-                  this.emailService.disableSaveAndProceed.next(false);
                 }
               } else {
                 // False if returned emails are not correct
-                this.emailService.disableSaveAndProceed.next(true);
                 this.emailService.isToValid = false;
               }
             }
+            this.emailService.validateNextButton();
           } else if (this.type === 'cc' || this.type === 'bcc') {
-            this.validateNextButton();
+            this.emailService.validateNextButton();
           }
           resolve(response?.to.length > 0);
         })
@@ -698,24 +701,6 @@ export class EmailTemplateComponent
           resolve(false);
         });
     });
-  }
-
-  /**
-   *
-   * validating next button by taking 3 conditions in consideration DL name mandatory, check duplicate name validation and requires To email
-   */
-  validateNextButton() {
-    const isDLNameExists =
-      this.emailService.datasetsForm
-        ?.getRawValue()
-        ?.emailDistributionList?.name?.trim()?.length > 0;
-    const isDlDuplicateNm = this.emailService.isDLNameDuplicate;
-    const isExistsToEmail = this.emailService.isToValid;
-    if (isDLNameExists && !isDlDuplicateNm && isExistsToEmail) {
-      this.emailService.disableSaveAndProceed.next(false);
-    } else {
-      this.emailService.disableSaveAndProceed.next(true);
-    }
   }
 
   override async ngOnDestroy(): Promise<void> {
@@ -807,15 +792,7 @@ export class EmailTemplateComponent
       }
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
-        this.emailService.disableSaveAndProceed.next(false);
         this.emailService.disableSaveAsDraft.next(false);
-      } else {
-        this.emailService.isToValid &&
-        this.emailService.datasetsForm?.value?.emailDistributionList?.name
-          ?.length > 0 &&
-        !this.emailService.isDLNameDuplicate
-          ? this.emailService.disableSaveAndProceed.next(false)
-          : this.emailService.disableSaveAndProceed.next(true);
       }
 
       this.type === 'to' ? (this.emailService.toDLHasFilter = false) : '';
@@ -823,7 +800,6 @@ export class EmailTemplateComponent
     if (this.activeSegmentIndex === 1) {
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
-        this.emailService.disableSaveAndProceed.next(false);
         this.emailService.disableSaveAsDraft.next(false);
       }
 
@@ -832,7 +808,6 @@ export class EmailTemplateComponent
     if (this.activeSegmentIndex === 2) {
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
-        this.emailService.disableSaveAndProceed.next(false);
         this.emailService.disableSaveAsDraft.next(false);
       }
 
@@ -857,27 +832,15 @@ export class EmailTemplateComponent
   async removeEmailChip(chipIndex: number): Promise<void> {
     this.selectedEmails.removeAt(chipIndex);
     this.listChange.emit();
-
     if (
       this.selectedEmails.length < 1 &&
       this.segmentForm.get('segment')?.value === 'Add Manually'
     ) {
       this.type === 'to' ? (this.emailService.isToValid = false) : '';
-      this.emailService.isToValid &&
-      this.emailService.datasetsForm?.value?.emailDistributionList?.name
-        ?.length > 0 &&
-      !this.emailService.isDLNameDuplicate
-        ? this.emailService.disableSaveAndProceed.next(false)
-        : this.emailService.disableSaveAndProceed.next(true);
-    } else if (
-      this.distributionListValid &&
-      this.selectedEmails.length < 1 &&
-      this.segmentForm.get('segment')?.value === 'Use Combination' &&
-      (this.resource || this.type === 'to')
-    ) {
-      (await this.checkFilter())
-        ? this.emailService.disableSaveAndProceed.next(false)
-        : '';
+      this.emailService.validateNextButton();
+    } else {
+      this.emailService.isToValidCheck();
+      this.emailService.validateNextButton();
     }
   }
 
@@ -906,8 +869,6 @@ export class EmailTemplateComponent
         !this.emailService.isDLNameDuplicate
       ) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
-        this.emailService.disableSaveAndProceed.next(false);
-        this.emailService.disableSaveAndProceed.next(false);
       } else if (
         this.segmentForm.get('segment')?.value === 'Use Combination' &&
         this.resource &&
@@ -923,16 +884,9 @@ export class EmailTemplateComponent
             this.emailService.datasetsForm?.value?.emailDistributionList?.name
               ?.length > 0)
         ) {
-          // if (this.checkFilter()) {
-          //   this.emailService.disableSaveAndProceed.next(false);
-          //   this.type === 'to' ? (this.emailService.isToValid = true) : '';
-          // } else {
-          //   this.type === 'to' ? (this.emailService.isToValid = false) : '';
-          //   this.emailService.disableSaveAndProceed.next(true);
-          // }
+          console.log(this.dlQuery.get('fields')?.value);
         } else if (this.dlQuery.get('filter').get('filters').length > 0) {
           this.type === 'to' ? (this.emailService.isToValid = false) : '';
-          this.emailService.disableSaveAndProceed.next(true);
         }
       }
 

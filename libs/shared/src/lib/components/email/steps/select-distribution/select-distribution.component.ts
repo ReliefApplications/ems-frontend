@@ -528,7 +528,6 @@ export class SelectDistributionComponent
         );
       }
       this.loading = false;
-      this.emailService.disableSaveAndProceed.next(true);
       resolve(false);
     });
   }
@@ -537,35 +536,13 @@ export class SelectDistributionComponent
    * The distribution list should have at least
    * one To email address and name to proceed with next steps
    */
-  async validateDistributionList(): Promise<void> {
-    const noSaveAllowed =
-      this.emailDistributionList.get('name')?.value?.length < 1 ||
-      this.emailDistributionList.get('name')?.value?.trim() === '' ||
-      this.isNameDuplicate();
+  validateDistributionList() {
+    this.isNameDuplicate();
 
     //Distribution List name is valid
-    if (!noSaveAllowed) {
-      this.emailService.distributionListName =
-        this.emailDistributionList.get('name').value;
-    }
-
-    const valid = await this.checkToValid();
-
-    if (noSaveAllowed || !valid) {
-      this.emailService.disableFormSteps.next({
-        stepperIndex: 2,
-        disableAction: true,
-      });
-      this.emailService.disableSaveAndProceed.next(true);
-    }
-
-    if (
-      this.emailDistributionList.get('name')?.value &&
-      valid &&
-      !this.isNameDuplicate()
-    ) {
-      this.emailService.disableSaveAndProceed.next(false);
-    }
+    this.emailService.distributionListName =
+      this.emailDistributionList.get('name').value;
+    this.emailService.validateNextButton();
   }
 
   /**
@@ -602,6 +579,7 @@ export class SelectDistributionComponent
    * click of create New DL , so we are clearingthe data or reseting the form for reuse again
    */
   createNewDL() {
+    this.distributionListId = '';
     this.showExistingDistributionList = !this.showExistingDistributionList;
     this.emailService.selectedDLName = '';
     // this.emailDistributionList.get('name').setValue('');
