@@ -32,6 +32,7 @@ export const createRefDataForm = (refData?: ReferenceData) => {
     path: new FormControl(get(refData, 'path')),
     data: new FormControl(get(refData, 'data')),
     usePagination: new FormControl(!!get(refData, 'pageInfo.strategy')),
+    separator: new FormControl(get(refData, 'separator', ',') || ','),
     pageInfo: new FormGroup({
       strategy: new FormControl(get(refData, 'pageInfo.strategy')),
       totalCountField: new FormControl(

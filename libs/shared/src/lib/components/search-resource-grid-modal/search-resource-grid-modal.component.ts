@@ -79,10 +79,18 @@ export class ResourceGridModalComponent {
     this.gridSettings = {
       query: this.data.gridSettings,
       actions: {
-        delete: false,
-        history: false,
-        convert: false,
-        update: false,
+        delete: {
+          display: false,
+        },
+        history: {
+          display: false,
+        },
+        convert: {
+          display: false,
+        },
+        update: {
+          display: false,
+        },
         inlineEdition: false,
         remove: false,
       },

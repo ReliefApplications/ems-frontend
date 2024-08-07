@@ -2,51 +2,53 @@
 <ng-container *ngIf="actionsAsIcons">
   <div class="flex pr-1">
     <button
-      *ngIf="hasDetails && actions.showDetails"
+      *ngIf="hasDetails && actions.showDetails?.display"
       kendoButton
       icon="set-column-position"
       [look]="'flat'"
       (click)="action.emit({ action: 'details', items: item })"
       [uiTooltip]="
-        actions.showDetailsLabel ||
-          'components.widget.settings.grid.actions.details.text' | translate
+        actions.showDetails?.label ||
+        ('components.widget.settings.grid.actions.details.text' | translate)
       "
     ></button>
 
     <button
-      *ngIf="actions.update && item.canUpdate"
+      *ngIf="actions.update?.display"
       kendoButton
       icon="edit"
       [look]="'flat'"
       (click)="action.emit({ action: 'update', item: item })"
-      [uiTooltip]="actions.updateLabel || 'common.update' | translate"
+      [uiTooltip]="actions.update?.label || ('common.update' | translate)"
     ></button>
 
     <button
-      *ngIf="actions.history"
+      *ngIf="actions.history?.display"
       kendoButton
       icon="clock-arrow-rotate"
       [look]="'flat'"
       (click)="action.emit({ action: 'history', item: item })"
-      [uiTooltip]="actions.historyLabel || 'common.history' | translate"
+      [uiTooltip]="actions.history?.label || ('common.history' | translate)"
     ></button>
 
     <button
-      *ngIf="actions.convert && item.canUpdate"
+      *ngIf="actions.convert?.display && item.canUpdate"
       kendoButton
       icon="connector"
       [look]="'flat'"
       (click)="action.emit({ action: 'convert', item: item })"
-      [uiTooltip]="actions.convertLabel || 'models.record.convert' | translate"
+      [uiTooltip]="
+        actions.convert?.label || ('models.record.convert' | translate)
+      "
     ></button>
 
     <button
-      *ngIf="actions.delete && item.canDelete"
+      *ngIf="actions.delete?.display"
       kendoButton
       icon="trash"
       [look]="'flat'"
       (click)="action.emit({ action: 'delete', item: item })"
-      [uiTooltip]="actions.deleteLabel || 'common.delete' | translate"
+      [uiTooltip]="actions.delete?.label || ('common.delete' | translate)"
     ></button>
 
     <button
@@ -93,73 +95,63 @@
     *ngIf="display && availableActions.length === 1 && singleActionAsButton"
     id="single-action-button"
     kendoButton
-    class="text-center"
+    class="text-center w-fit"
     (click)="action.emit({ action: availableActions[0].action, item })"
   >
-    {{ availableActions[0].translationKey | translate }}
+    {{
+      availableActions[0].label ||
+        (availableActions[0].translationKey | translate)
+    }}
     <div id="single-action-label"></div>
   </button>
   <ui-menu #menu>
     <button
-      *ngIf="hasDetails && actions.showDetails"
+      *ngIf="hasDetails && actions.showDetails?.display"
       id="details-action-button"
       uiMenuItem
       (click)="action.emit({ action: 'details', items: item })"
     >
-      {{ 'components.widget.settings.grid.actions.details.text' | translate }}
+      {{
+        actions.showDetails?.label ||
+          ('components.widget.settings.grid.actions.details.text' | translate)
+      }}
       <div id="details-action-label"></div>
     </button>
 
     <button
-      *ngIf="actions.update && item.canUpdate"
+      *ngIf="actions.update?.display && item.canUpdate"
       id="update-action-button"
       uiMenuItem
       (click)="action.emit({ action: 'update', item: item })"
     >
-      {{
-        actions.updateLabel
-          ? actions.updateLabel
-          : ('common.update' | translate)
-      }}
+      {{ actions.update?.label || ('common.update' | translate) }}
       <div id="update-action-label"></div>
     </button>
     <button
-      *ngIf="actions.history"
+      *ngIf="actions.history?.display"
       id="history-action-button"
       uiMenuItem
       (click)="action.emit({ action: 'history', item: item })"
     >
-      {{
-        actions.historyLabel
-          ? actions.historyLabel
-          : ('common.history' | translate)
-      }}
+      {{ actions.history?.label || ('common.history' | translate) }}
       <div id="history-action-label"></div>
     </button>
     <button
-      *ngIf="actions.convert && item.canUpdate"
+      *ngIf="actions.convert?.display && item.canUpdate"
       id="convert-action-button"
       uiMenuItem
       (click)="action.emit({ action: 'convert', item: item })"
     >
-      {{
-        actions.convertLabel
-          ? actions.convertLabel
-          : ('models.record.convert' | translate)
-      }}
+      {{ actions.convert?.label || ('models.record.convert' | translate) }}
       <div id="convert-action-label"></div>
     </button>
     <button
-      *ngIf="actions.delete && item.canDelete"
+      *ngIf="actions.delete?.display && item.canDelete"
       id="delete-action-button"
       uiMenuItem
       (click)="action.emit({ action: 'delete', item: item })"
     >
-      {{
-        actions.deleteLabel
-          ? actions.deleteLabel
-          : ('common.delete' | translate)
-      }}
+      {{ actions.delete?.label || ('common.delete' | translate) }}
       <div id="delete-action-label"></div>
     </button>
     <button

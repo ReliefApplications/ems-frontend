@@ -118,7 +118,7 @@ export default (options: GlobalOptions) => {
     const prescriptionAids = [
       ...(prescriptions ?? []).reduce(
         (aids: Set<string>, prescription: any) => {
-          prescription.aids.forEach((aid: any) => aids.add(aid));
+          (prescription.aids ?? []).forEach((aid: any) => aids.add(aid));
           return aids;
         },
         new Set<string>()

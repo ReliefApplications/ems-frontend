@@ -43,6 +43,14 @@ import regex from './regex';
 import int from './int';
 import selected from './selected';
 import getLinkField from './solidarites-demo/getLinkField';
+import flatten from './flatten';
+import trim from './trim';
+import filterRowsByColValue from './matrices/filterRowsByColValue';
+import listRows from './matrices/listRows';
+import renameColumn from './matrices/renameColumn';
+import selectColumns from './matrices/selectColumns';
+import log from './log';
+import getFollowupSummary from './lift/getFollowupSummary';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -88,11 +96,19 @@ export const functions = [
   { fn: int, name: 'int' },
   { fn: selected, name: 'selected' },
   { fn: getLinkField, name: 'getLinkField' },
+  { fn: flatten, name: 'flatten' },
+  { fn: trim, name: 'trim' },
+  { fn: filterRowsByColValue, name: 'filterRowsByColValue' },
+  { fn: listRows, name: 'listRows' },
+  { fn: renameColumn, name: 'renameColumn' },
+  { fn: selectColumns, name: 'selectColumns' },
+  { fn: log, name: 'log' },
+  { fn: getPrescriptionInfo, name: 'getPrescriptionInfo' },
+  { fn: getFollowupSummary, name: 'getFollowupSummary' },
 ];
 
 /** Generators for each async custom function available  */
 export const asyncFunctions = [
   { fn: getComplaintsByType, name: 'getComplaintsByType' },
   { fn: getCurrentYearAids, name: 'getCurrentYearAids' },
-  { fn: getPrescriptionInfo, name: 'getPrescriptionInfo' },
 ];

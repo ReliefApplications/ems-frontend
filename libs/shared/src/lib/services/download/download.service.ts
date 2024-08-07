@@ -15,9 +15,6 @@ import {
   EventType,
 } from '../analytics/analytics.service';
 
-/** LIFT case report api URL */
-const LIFT_REPORT_URL = 'https://lift-functions.azurewebsites.net/api/report/';
-
 /** Types of file we upload to blob storage */
 export enum BlobType {
   RECORD_FILE = 'file',
@@ -117,12 +114,7 @@ export class DownloadService {
       .get(path, {
         ...options,
         responseType: 'blob',
-        headers: path.startsWith(LIFT_REPORT_URL)
-          ? headers.append(
-              'Authorization',
-              `Bearer ${this.authService.getAuthToken()}`
-            )
-          : headers,
+        headers: options?.headers ?? headers,
       })
       .subscribe({
         next: (res) => {
@@ -188,6 +180,48 @@ export class DownloadService {
             snackBarSpinner.instance.loading = false;
             snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
           }
+        },
+        error: () => {
+          snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.file.download.error'
+          );
+          snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.error = true;
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+        },
+      });
+  }
+
+  /**
+   * Downloads chart data from the server with a POST request
+   *
+   * @param path download path to append to base url
+   * @param type type of the file
+   * @param fileName name of the file
+   * @param body (optional) request body
+   */
+  getChartDataExport(
+    path: string,
+    type: string,
+    fileName: string,
+    body?: any
+  ): void {
+    const { snackBarRef, headers } = this.triggerFileDownloadMessage(
+      'common.notifications.file.download.processing'
+    );
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
+
+    this.restService
+      .post(path, body, { responseType: 'blob', headers })
+      .subscribe({
+        next: (res) => {
+          const blob = new Blob([res], { type });
+          this.saveFile(fileName, blob);
+          snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.file.download.ready'
+          );
+          snackBarSpinner.instance.loading = false;
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
         error: () => {
           snackBarSpinner.instance.message = this.translate.instant(
@@ -307,7 +341,7 @@ export class DownloadService {
           }
         },
         error: (err) => {
-          console.log(err);
+          console.error(err);
           handleError(
             this.translate.instant('common.notifications.file.upload.error')
           );

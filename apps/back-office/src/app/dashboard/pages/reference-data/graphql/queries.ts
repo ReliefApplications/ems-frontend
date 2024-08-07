@@ -18,6 +18,7 @@ export const GET_REFERENCE_DATA = gql`
       path
       data
       graphQLFilter
+      separator
       permissions {
         canSee {
           id

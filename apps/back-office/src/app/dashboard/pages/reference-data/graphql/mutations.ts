@@ -14,6 +14,7 @@ export const EDIT_REFERENCE_DATA = gql`
     $path: String
     $data: JSON
     $graphQLFilter: String
+    $separator: String
     $permissions: JSON
     $pageInfo: PageInfoInput
   ) {
@@ -28,6 +29,7 @@ export const EDIT_REFERENCE_DATA = gql`
       path: $path
       data: $data
       graphQLFilter: $graphQLFilter
+      separator: $separator
       permissions: $permissions
       pageInfo: $pageInfo
     ) {
@@ -43,6 +45,7 @@ export const EDIT_REFERENCE_DATA = gql`
       valueField
       path
       data
+      separator
       permissions {
         canSee {
           id

@@ -299,17 +299,22 @@ export class CoreGridComponent
   /** Grid actions */
   public actions: GridActions = {
     add: false,
-    update: false,
-    updateLabel: '',
-    delete: false,
-    deleteLabel: '',
-    history: false,
-    historyLabel: '',
-    convert: false,
-    convertLabel: '',
+    update: {
+      display: false,
+    },
+    delete: {
+      display: false,
+    },
+    history: {
+      display: false,
+    },
+    convert: {
+      display: false,
+    },
     export: this.showExport,
-    showDetails: true,
-    showDetailsLabel: '',
+    showDetails: {
+      display: false,
+    },
     navigateToPage: false,
     navigateSettings: {
       field: '',
@@ -385,7 +390,9 @@ export class CoreGridComponent
           (contextService.filterRegex.test(this.settings.contextFilters) &&
             this.contextService.shouldRefresh(this.settings, previous, current))
         ) {
-          if (this.dataQuery) this.reloadData();
+          if (this.dataQuery) {
+            this.reloadData();
+          }
         }
       });
 
@@ -403,7 +410,9 @@ export class CoreGridComponent
       this.dashboardService.states$
         .pipe(takeUntil(this.destroy$))
         .subscribe(() => {
-          if (this.dataQuery) this.reloadData();
+          if (this.dataQuery) {
+            this.reloadData();
+          }
         });
     }
   }
@@ -435,17 +444,27 @@ export class CoreGridComponent
       add:
         get(this.settings, 'actions.addRecord', false) &&
         this.settings.template,
-      history: get(this.settings, 'actions.history', false),
-      historyLabel: get(this.settings, 'actions.historyLabel', ''),
-      update: get(this.settings, 'actions.update', false),
-      updateLabel: get(this.settings, 'actions.updateLabel', ''),
-      delete: get(this.settings, 'actions.delete', false),
-      deleteLabel: get(this.settings, 'actions.deleteLabel', ''),
-      convert: get(this.settings, 'actions.convert', false),
-      convertLabel: get(this.settings, 'actions.convertLabel', ''),
+      history: {
+        display: get(this.settings, 'actions.history', false),
+        label: get(this.settings, 'actions.historyLabel', ''),
+      },
+      update: {
+        display: get(this.settings, 'actions.update', false),
+        label: get(this.settings, 'actions.updateLabel', ''),
+      },
+      delete: {
+        display: get(this.settings, 'actions.delete', false),
+        label: get(this.settings, 'actions.deleteLabel', ''),
+      },
+      convert: {
+        display: get(this.settings, 'actions.convert', false),
+        label: get(this.settings, 'actions.convertLabel', ''),
+      },
       export: get(this.settings, 'actions.export', false),
-      showDetails: get(this.settings, 'actions.showDetails', true),
-      showDetailsLabel: get(this.settings, 'actions.showDetailsLabel', ''),
+      showDetails: {
+        display: get(this.settings, 'actions.showDetails', true),
+        label: get(this.settings, 'actions.showDetailsLabel', ''),
+      },
       navigateToPage: get(this.settings, 'actions.navigateToPage', false),
       navigateSettings: {
         field: get(this.settings, 'actions.navigateSettings.field', false),
@@ -513,7 +532,8 @@ export class CoreGridComponent
               : undefined,
           },
           fetchPolicy: 'no-cache',
-          nextFetchPolicy: 'cache-first',
+          // Enabling the option bellow makes it so that sometimes the items permissions are different from rhe actual query for some reason
+          // nextFetchPolicy: 'cache-first',
         });
       }
 
@@ -969,7 +989,7 @@ export class CoreGridComponent
     this.selectionChange.emit(selection);
 
     // Check if should automatically map selected rows into state automatically
-    if (this.widget.settings.actions.automaticallyMapSelected) {
+    if (this.widget?.settings?.actions.automaticallyMapSelected) {
       this.setState(this.selectedRows);
     }
   }
@@ -1606,8 +1626,17 @@ export class CoreGridComponent
    * @param search Search event.
    */
   public onSearchChange(search: string): void {
-    this.search = search;
+    this.search = typeof search === 'string' ? search.trim() : search;
     this.skip = 0;
+
+    // unselect all rows
+    this.onSelectionChange({
+      deselectedRows: this.selectedRows.map(
+        (x) => ({ dataItem: { id: x } } as any)
+      ),
+      selectedRows: [],
+    });
+
     this.onPageChange({ skip: this.skip, take: this.pageSize });
   }
 
@@ -1668,6 +1697,7 @@ export class CoreGridComponent
     this.gridData.data = this.gridData.data.filter(
       (x) => !selected.includes(x.id)
     );
+    console.log('this.gridData.data', this.gridData.data);
     this.items = [...this.gridData.data];
     this.removeRowIds.emit(selected);
   }

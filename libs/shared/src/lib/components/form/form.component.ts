@@ -121,7 +121,10 @@ export class FormComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.record) {
+    if (
+      changes.record &&
+      changes.record.currentValue.id !== changes.record.previousValue.id
+    ) {
       this.initSurvey();
     }
   }
@@ -413,6 +416,7 @@ export class FormComponent
       authService: this.authService,
       apollo: this.apollo,
       form: this.form,
+      translateService: this.translate,
     });
 
     const structure = JSON.parse(this.form.structure || '{}');
@@ -433,7 +437,8 @@ export class FormComponent
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
       this.selectedPageIndex,
-      this.temporaryFilesStorage
+      this.temporaryFilesStorage,
+      this.destroy$
     );
 
     this.survey.showCompletedPage = false;

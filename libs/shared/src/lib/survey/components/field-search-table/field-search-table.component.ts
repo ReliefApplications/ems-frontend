@@ -144,7 +144,7 @@ export class FieldSearchTableComponent
 
     // Subscribe to value changes with debounce time
     this.valueChange
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(debounceTime(2000), takeUntil(this.destroy$))
       .subscribe(() => {
         this.isTouched =
           this.question.value !==
@@ -230,7 +230,8 @@ export class FieldSearchTableComponent
     data: ResourceRecordsConnectionsQueryResponse,
     loading: boolean
   ) {
-    const mappedValues = data.resource.records.edges.map((x) => x.node);
+    const mappedValues =
+      data?.resource?.records?.edges.map((x) => x.node) ?? [];
     this.cachedRecords = updateQueryUniqueValues(
       this.cachedRecords,
       mappedValues
@@ -243,7 +244,7 @@ export class FieldSearchTableComponent
         this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
       )
       .map(this.mapRecordToDataSource.bind(this))
-      .filter((x) => x.matchedText.includes('<b>'));
+      .filter((x) => x.matchedText?.includes('<b>'));
     this.loading = loading;
   }
 
@@ -261,7 +262,7 @@ export class FieldSearchTableComponent
     if (cachedData && cachedData.length === this.pageInfo.pageSize) {
       this.dataSource = cachedData
         .map(this.mapRecordToDataSource.bind(this))
-        .filter((x) => x.matchedText.includes('<b>'));
+        .filter((x) => x.matchedText?.includes('<b>'));
     } else {
       this.fetchRecordsData();
     }

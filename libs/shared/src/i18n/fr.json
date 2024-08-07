@@ -287,6 +287,7 @@
     "name": "Nom",
     "next": "Suivant",
     "noOptions": "Aucun choix disponible",
+    "none": "Aucun",
     "notifications": {
       "accessDenied": "Vous n'avez pas la permission pour accéder à cet objet de type {{type}}.",
       "accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
@@ -1125,6 +1126,10 @@
         "format": {
           "info": "Laissez vide pour utiliser le mode classique",
           "title": "Mode d'affichage"
+        },
+        "hidden": {
+          "hiddenByDefault": "Masquer la colonne par défaut",
+          "tooltip": "La colonne sera masquée par défaut, mais pourra toujours être affichée par l'utilisateur"
         },
         "search": "Rechercher des champs...",
         "selected": "Champs sélectionnés",
@@ -2776,6 +2781,19 @@
       "empty": {
         "add": "Ajoutez des étapes",
         "customize": "Personnalisez chacune des étapes créées."
+      }
+    }
+  },
+  "survey": {
+    "customFunctions": {
+      "getFollowupSummary": {
+        "comment": "Commentaire",
+        "followUp": {
+          "numbered": "Suivi n°{{numéro}}",
+          "one": "Suivi"
+        },
+        "initialInspection": "Inspection initiale",
+        "inspectionAction": "Action d'inspection"
       }
     }
   }

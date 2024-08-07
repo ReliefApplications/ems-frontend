@@ -14,6 +14,7 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { FormsModule } from '@angular/forms';
+import { ExportModule } from '../../ui/charts/export/export.module';
 
 /**
  * Module for the chart component
@@ -33,6 +34,7 @@ import { FormsModule } from '@angular/forms';
     SelectMenuModule,
     FormsModule,
     FormWrapperModule,
+    ExportModule,
   ],
   exports: [ChartComponent],
 })

@@ -11,6 +11,7 @@ import {
 import { Record } from '../models/record.model';
 import { Form } from '../models/form.model';
 import { AuthService } from '../services/auth/auth.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /** Custom global properties definition */
 export interface GlobalProperties {
@@ -106,6 +107,7 @@ export interface QuestionResource
 export type GlobalOptions = {
   apollo: Apollo;
   authService: AuthService;
+  translateService: TranslateService;
   record?: Record;
   form?: Form;
 };
