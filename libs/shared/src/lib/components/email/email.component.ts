@@ -842,6 +842,14 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       tableStyle: this.emailService.getTableStyles(),
       textStyle: null,
       individualEmail: ele.individualEmail,
+      individualEmailFields:
+        ele.individualEmailFields.length > 0
+          ? this.formBuilder.array(
+              ele?.individualEmailFields?.map((field: any) =>
+                this.formBuilder.control(field)
+              )
+            )
+          : this.formBuilder.array([]),
     });
     this.emailService.setEmailFields(ele.query.fields);
     this.emailService.setSeparateEmail(ele.individualEmail, index);

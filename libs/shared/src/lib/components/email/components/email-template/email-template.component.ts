@@ -139,8 +139,6 @@ export class EmailTemplateComponent
   public previewHTML = '';
   /** Total matching records */
   public totalMatchingRecords = 0;
-  /** Send individual email check */
-  public individualEmail = false;
   /** Checks if to is valid for distribution list */
   public distributionListValid!: boolean;
   /** List of display types */
@@ -245,27 +243,11 @@ export class EmailTemplateComponent
       });
     this.selectedEmails = this.distributionList.get('inputEmails') as FormArray;
 
-    // Check if send seperate email is active
-    if (this.emailService.datasetsForm?.get('datasets')?.value) {
-      for (const dataset of this.emailService.datasetsForm.get('datasets')
-        ?.value ?? []) {
-        if (dataset.individualEmail) {
-          this.individualEmail = true;
-          break;
-        }
-      }
-    }
-
     const hasSelectedEmails = this.selectedEmails.value.length > 0;
     const hasFields = this.dlQuery.get('fields')?.value.length > 0;
     this.type === 'to' ? (this.emailService.isToValid = false) : '';
-    // this.emailService.disableSaveAndProceed.next(true);
-    // this.emailService.disableSaveAsDraft.next(false);
 
-    if (this.individualEmail) {
-      this.selectedEmails.setValue([]);
-      this.updateSegmentOptions('Select With Filter');
-    } else if (hasSelectedEmails && hasFields) {
+    if (hasSelectedEmails && hasFields) {
       this.updateSegmentOptions('Use Combination');
     } else if (!hasSelectedEmails && hasFields) {
       this.updateSegmentOptions('Select With Filter');
@@ -771,9 +753,7 @@ export class EmailTemplateComponent
   onSegmentChange(event: any): void {
     this.noEmail.emit(false);
     const segment = event?.target?.value || event;
-    this.activeSegmentIndex = this.individualEmail
-      ? 1
-      : this.segmentList.indexOf(segment);
+    this.activeSegmentIndex = this.segmentList.indexOf(segment);
     this.showPreview = false;
     const hasEmails = this.selectedEmails?.value?.length > 0;
     let isValid =
