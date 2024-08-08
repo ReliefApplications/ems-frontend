@@ -411,7 +411,7 @@ export class EmailTemplateComponent
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
       }
-      this.getDataSet('preview');
+      this.currentTabIndex === newIndex ? this.getDataSet('preview') : '';
     } else if (newIndex >= 0) {
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
