@@ -4,7 +4,7 @@ import {
   UntypedFormArray,
   UntypedFormGroup,
 } from '@angular/forms';
-import { FiltersService, Resource, RestService } from '@oort-front/shared';
+import { FiltersService, Resource, TriggersFilters } from '@oort-front/shared';
 import {
   animate,
   state,
@@ -49,6 +49,8 @@ const BASE_TRIGGERS = {
 export class TriggersResourceFiltersComponent implements OnInit {
   /** Resource opened */
   @Input() resource!: Resource;
+  /** Id of the opened application */
+  @Input() applicationId!: string;
   /** If the resource is disabled */
   @Input() disabled = false;
   /** Event emitter for update */
@@ -66,49 +68,43 @@ export class TriggersResourceFiltersComponent implements OnInit {
   public displayedColumns: string[] = ['filter', 'actions'];
   /** Filters */
   public filters = new Array<ResourceTriggersFilters>();
-  /** Initial value */
-  private initialValue!: ResourceTriggersFilters[];
 
   /**
    * Component for displaying the filtering options for the resource triggers.
    *
    * @param translate Angular translate service
    * @param fb Angular form builder
-   * @param restService  REST service
    * @param filtersService  Filters service
    */
   constructor(
     public translate: TranslateService,
     private fb: FormBuilder,
-    private restService: RestService,
     public filtersService: FiltersService
   ) {}
 
   async ngOnInit(): Promise<void> {
     const filters: ResourceTriggersFilters[] = [];
-    Object.keys(get(this.resource, 'triggersFilters', {})).forEach(
-      (trigger) => {
-        const triggerFilter = get(
-          this.resource,
-          `triggersFilters.${trigger}`,
-          {}
-        );
-        for (const filter of get(triggerFilter, 'filters', [])) {
-          const existingFilter = filters.find((x) => isEqual(x.filter, filter));
-          if (existingFilter) {
-            set(existingFilter, `triggers.${trigger}`, true);
-          } else {
-            filters.push({
-              filter,
-              triggers: {
-                ...BASE_TRIGGERS,
-                [trigger]: true,
-              },
-            });
-          }
+    const triggersFilters = get(this.resource, 'triggersFilters', []).find(
+      (tf: TriggersFilters) => tf.application === this.applicationId
+    );
+    delete triggersFilters?.application;
+    Object.keys(triggersFilters || {}).forEach((trigger) => {
+      const triggerFilter = get(triggersFilters, trigger, {});
+      for (const filter of get(triggerFilter, 'filters', [])) {
+        const existingFilter = filters.find((x) => isEqual(x.filter, filter));
+        if (existingFilter) {
+          set(existingFilter, `triggers.${trigger}`, true);
+        } else {
+          filters.push({
+            filter,
+            triggers: {
+              ...BASE_TRIGGERS,
+              [trigger]: true,
+            },
+          });
         }
       }
-    );
+    });
 
     // Init table
     this.filters = this.setTableElements(filters);
@@ -116,7 +112,6 @@ export class TriggersResourceFiltersComponent implements OnInit {
     this.filtersFormArray = this.fb.array(
       filters.map((x) => this.createFilterFormGroup(x))
     );
-    this.initialValue = this.filtersFormArray.value;
 
     this.filterFields = get(this.resource, 'metadata', [])
       .filter((x: any) => x.filterable !== false)
@@ -186,7 +181,9 @@ export class TriggersResourceFiltersComponent implements OnInit {
    */
   public save() {
     const current = this.filtersFormArray.value as ResourceTriggersFilters[];
-    const triggersFilters: any = {};
+    const triggersFilters: any = {
+      application: this.applicationId,
+    };
     current.forEach((filter: any) => {
       Object.keys(filter.triggers).forEach((t: string) => {
         if (filter.triggers[t]) {
@@ -197,12 +194,6 @@ export class TriggersResourceFiltersComponent implements OnInit {
           }
         }
       });
-    });
-    // Make sure all triggers has a element in the object
-    triggers.forEach((t: string) => {
-      if (!Object.prototype.hasOwnProperty.call(triggersFilters, t)) {
-        triggersFilters[t] = null;
-      }
     });
     this.update.emit(triggersFilters);
   }
