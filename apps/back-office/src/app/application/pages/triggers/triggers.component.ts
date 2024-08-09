@@ -114,9 +114,6 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
   /** Current application id */
   public applicationId!: string;
 
-  /** Index of the opened resource */
-  private resourceIndex?: number;
-
   /**
    * Triggers page component for application.
    *
@@ -196,7 +193,7 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
       this.cachedResources
     );
     if (cachedData && cachedData.length === this.pageInfo.pageSize) {
-      this.resources = this.resources = this.setTableElements(cachedData);
+      this.resources = this.setTableElements(cachedData);
     } else {
       this.fetchResources();
     }
@@ -343,12 +340,10 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
    * Toggles the accordion for the clicked resource and fetches its forms
    *
    * @param resource The resource element for the resource to be toggled
-   * @param index Index of the opened resource
    */
-  public toggleResource(resource: Resource, index: number): void {
+  public toggleResource(resource: Resource): void {
     if (resource.id === this.openedResource?.id) {
       this.openedResource = undefined;
-      this.resourceIndex = undefined;
     } else {
       this.updating = true;
       this.apollo
@@ -362,7 +357,6 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
         .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
           if (data.resource) {
-            this.resourceIndex = index;
             this.openedResource = data.resource;
 
             // Get triggers by type
@@ -703,11 +697,14 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
       ...this.openedResource,
       customNotifications,
     };
-
-    const tableElements = [...this.resources];
-    tableElements[this.resourceIndex as number] = this.setTableElement(
-      this.openedResource
+    const tableElements = clone(this.resources);
+    const resourceIndex = tableElements.findIndex((element) =>
+      isEqual(element.resource.id, this.openedResource?.id)
     );
-    this.resources = tableElements;
+    if (!isNil(resourceIndex) && resourceIndex !== -1) {
+      const updatedElement = this.setTableElement(this.openedResource);
+      tableElements[resourceIndex] = updatedElement;
+      this.resources = tableElements;
+    }
   }
 }

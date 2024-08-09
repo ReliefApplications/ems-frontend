@@ -36,7 +36,7 @@
     <!-- Resource information about existing triggers -->
     <ng-container cdkColumnDef="info" [stickyEnd]="true">
       <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
-      <td uiCell *cdkCellDef="let element; let i = index">
+      <td uiCell *cdkCellDef="let element">
         <div class="flex flex-row items-center">
           <!-- Info about existing triggers -->
           <ng-container *ngFor="let trigger of element.triggers">
@@ -56,7 +56,7 @@
                 ? 'keyboard_arrow_up'
                 : 'keyboard_arrow_down'
             "
-            (click)="toggleResource(element.resource, i)"
+            (click)="toggleResource(element.resource)"
             [disabled]="loading || updating"
             [uiTooltip]="
               'common.' +
