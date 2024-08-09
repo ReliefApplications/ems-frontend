@@ -829,7 +829,7 @@
 			},
 			"alert": {
 				"dlPreview": "All emails showing in this table below will be used to create the distribution list",
-				"individualEmailsInfo": "Please select the fields you would like to fetch emails from for the custom user email functionality",
+				"individualEmailsInfo": "Select the email fields you would like to use to send record specific emails to",
 				"invalidFields": "The following fields are not available for selection: <strong>{{fields}}</strong> as they are of type <strong>{{types}}</strong> and cannot be properly displayed in the table for this form.",
 				"noResource": "Select a resource using the dropdown to display Distribution list filter wizard",
 				"noResourceFields": "Selected resource doesn't contain any fields",

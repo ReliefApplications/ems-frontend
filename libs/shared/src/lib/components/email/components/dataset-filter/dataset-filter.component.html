@@ -229,16 +229,6 @@
                 ></shared-tab-fields>
               </div>
             </div>
-
-            <ui-button
-              *ngIf="datasetFilterInfo.controls"
-              class="float-right mt-8"
-              category="secondary"
-              variant="primary"
-              (click)="getDataSet('separateEmails')"
-            >
-              {{ 'components.queryBuilder.filter.applyField' | translate }}
-            </ui-button>
           </ng-template>
         </ui-tab>
 
@@ -332,7 +322,7 @@
   </ui-alert>
 </ng-template>
 <ng-template #individualEmailsInfoMessageTmpl>
-  <ui-alert variant="default" [closable]="true">
+  <ui-alert variant="primary" [closable]="true">
     <div>
       {{ 'components.email.alert.individualEmailsInfo' | translate }}
     </div>

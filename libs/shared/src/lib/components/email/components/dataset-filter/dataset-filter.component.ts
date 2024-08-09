@@ -179,6 +179,7 @@ export class DatasetFilterComponent
         }
         this.emailService.index.next(this.activeTab.index);
       });
+
     // this.query.get('individualEmail').disable();
     this.separateEmail = this.emailService.updateSeparateEmail(
       this.activeTab.index
@@ -219,14 +220,19 @@ export class DatasetFilterComponent
     }
 
     this.setFieldsValidity();
-    // Saves Dataset form form when called.
-    // this.datasetSaveSubscription = this.emailService.datasetSave.subscribe(
-    //   (save) => {
-    //     if (save) {
-    //       this.getDataSet('preview');
-    //     }
-    //   }
-    // );
+
+    // Check for individual email checkbox value
+    this.query.controls.individualEmail.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: any) => {
+        if (
+          value === true &&
+          this.selectedFieldsIndividualEmail?.length === 0
+        ) {
+          this.onTabSelect(3, false);
+          this.emailService.disableSaveAndProceed.next(true);
+        }
+      });
   }
 
   /**
@@ -267,10 +273,16 @@ export class DatasetFilterComponent
   onTabSelect(event: any, fromHTML: boolean): void {
     const newIndex = event;
     const previewTabIndex = 2;
+
+    const isSeparateEmailValid =
+      (this.query.get('individualEmail').value === true &&
+        this.selectedFieldsIndividualEmail.length > 0) ||
+      this.query.get('individualEmail').value === false;
     const isValid =
       this.query.get('query').get('fields')?.value.length > 0 &&
       !this.showDatasetLimitWarning &&
-      !this.showFieldsWarning;
+      !this.showFieldsWarning &&
+      isSeparateEmailValid;
     // Checks if entry is valid
     if (
       newIndex === previewTabIndex &&
@@ -641,8 +653,25 @@ export class DatasetFilterComponent
       'individualEmailFields'
     )?.value;
 
+    if (
+      this.selectedFieldsIndividualEmail.length > 0 &&
+      this.query.get('individualEmail').value === true
+    ) {
+      if (
+        this.query
+          ?.getRawValue()
+          ?.fields?.filter((x: any) => x?.fields?.length === 0).length > 0
+      ) {
+        this.emailService.disableSaveAndProceed.next(true);
+      } else {
+        this.emailService.disableSaveAndProceed.next(false);
+        this.emailService.disableSaveAsDraft.next(false);
+      }
+    } else if (this.query.get('individualEmail').value === true) {
+      this.emailService.disableSaveAndProceed.next(true);
+    }
+
     return formArray;
-    console.log(this.query.getRawValue());
   }
 
   /**
