@@ -33,6 +33,8 @@ export class CustomTemplateComponent implements OnInit {
       disabled: false,
     },
   ];
+  /** Custom Layout tile */
+  public layoutTitle = '';
 
   /**
    * Angular Component constructor
@@ -48,6 +50,7 @@ export class CustomTemplateComponent implements OnInit {
     public applicationService: ApplicationService,
     private translate: TranslateService
   ) {
+    this.emailService.layoutTitle = '';
     this.emailService.isQuickAction = true;
     this.emailService.disableNextActionBtn = true;
     this.updateStep(true);
@@ -67,6 +70,7 @@ export class CustomTemplateComponent implements OnInit {
    */
   convertTemplateData(inputData: any): any {
     return {
+      name: inputData.name,
       subject: inputData?.txtSubject ?? '',
       applicationId: inputData?.applicationId ?? '',
       banner: {
@@ -109,17 +113,20 @@ export class CustomTemplateComponent implements OnInit {
     const templateData = this.convertTemplateData({
       ...this.emailService.allLayoutdata,
       applicationId: this.applicationId,
+      name: this.emailService.layoutTitle,
     });
     if (this.emailService.isCustomTemplateEdit) {
       this.emailService
         .editCustomTemplate(templateData, this.emailService.customTemplateId)
         .subscribe((res: any) => {
+          this.emailService.layoutTitle = '';
           this.emailService.datasetsForm.reset();
           this.navigateToEms.emit({ template: res });
         });
     } else {
       this.emailService.addCustomTemplate(templateData).subscribe(
         (res: any) => {
+          this.emailService.layoutTitle = '';
           this.emailService.datasetsForm.reset();
           this.navigateToEms.emit({ template: res });
         },
@@ -158,5 +165,35 @@ export class CustomTemplateComponent implements OnInit {
       }
       return step;
     });
+  }
+
+  /** Validate Next button */
+  validateNextButton() {
+    if (
+      !this.emailService.disableNextActionBtn &&
+      this.emailService.layoutTitle.trim() === ''
+    ) {
+      this.emailService.disableNextActionBtn = true;
+    } else {
+      if (
+        this.emailService.allLayoutdata.txtSubject.trim() === '' ||
+        this.emailService.allLayoutdata.bodyHtml.trim() === ''
+      ) {
+        this.emailService.disableNextActionBtn = true;
+      } else {
+        this.emailService.disableNextActionBtn = false;
+      }
+    }
+
+    if (this.emailService.layoutTitle.trim() === '') {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'common.notifications.email.errors.noCustomTitle'
+        ),
+        {
+          error: true,
+        }
+      );
+    }
   }
 }

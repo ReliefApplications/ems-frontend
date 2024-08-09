@@ -159,6 +159,8 @@ export class EmailService {
   public customTemplateId = '';
   /** Quick action flag */
   public isQuickAction = false;
+  /** Custom Layout tile */
+  public layoutTitle = '';
   /** Disable Quick Action screen Next Button error state*/
   public disableNextActionBtn = false;
   /** Distribution List Name */

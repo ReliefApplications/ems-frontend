@@ -273,6 +273,7 @@
 				"error": "******",
 				"errors": {
 					"noBody": "******",
+					"noCustomTitle": "******",
 					"noDistributionList": "******",
 					"noSubject": "******",
 					"noTemplate": "******"
@@ -307,6 +308,7 @@
 					"text": "******"
 				},
 				"subject": {
+					"customLayoutTitle": "******",
 					"textTitle": "******",
 					"title": "******"
 				},

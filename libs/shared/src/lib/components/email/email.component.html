@@ -71,6 +71,7 @@
   <div *ngIf="emailService.isExisting">
     <ui-tabs
       (openedTab)="selectedTabIndex = $event.index"
+      [selectedIndex]="selectedTabIndex"
       (selectedIndexChange)="onTabSelect($event)"
     >
       <!-- Email Notification List -->
@@ -315,7 +316,7 @@
                       </span>
                     </th>
                     <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
-                      {{ element.subject }}
+                      {{ element.name }}
                     </td>
                   </ng-container>
                   <ng-container cdkColumnDef="createdBy">
@@ -440,10 +441,11 @@
 </ng-container>
 <div *ngIf="showTemplateCreationWizard">
   <ng-container>
-    <div>
+
+    <div class="relative">
       <ui-button
         [variant]="'danger'"
-        class="hide-icons hover:text-primary-600 btnClose"
+        class="absolute -top-[22px] -right-[14px] btnClose"
         [isIcon]="true"
         size="large"
         (click)="showTemplateCreationWizard = false"

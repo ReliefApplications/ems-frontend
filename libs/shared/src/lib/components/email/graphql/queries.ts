@@ -488,6 +488,7 @@ export const ADD_CUSTOM_TEMPLATE = gql`
       banner
       footer
       id
+      name
     }
   }
 `;
@@ -531,6 +532,7 @@ export const EDIT_CUSTOM_TEMPLATE = gql`
       id
       isDeleted
       subject
+      name
     }
   }
 `;
@@ -550,6 +552,7 @@ export const GET_CUSTOM_TEMPLATES = gql`
           isDeleted
           createdBy
           id
+          name
         }
       }
     }

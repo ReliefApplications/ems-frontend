@@ -273,6 +273,7 @@
 				"error": "Un problème est survenu lors de l'envoi de l'e-mail",
 				"errors": {
 					"noBody": "Le corps doit continuer!",
+					"noCustomTitle": "Le titre du modèle personnalisé est requis pour continuer!",
 					"noDistributionList": "Un problème est survenu lors de l'envoi de l'e-mail: aucune liste de distribution détectée",
 					"noSubject": "Le sujet doit continuer!",
 					"noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté"
@@ -307,6 +308,7 @@
 					"text": "Text Color"
 				},
 				"subject": {
+					"customLayoutTitle": "Titre du modèle personnalisé*",
 					"textTitle": "Sujet Text*",
 					"title": "Sujet"
 				},

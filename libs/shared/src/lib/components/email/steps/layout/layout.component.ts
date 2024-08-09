@@ -170,6 +170,7 @@ export class LayoutComponent
   ngOnInit(): void {
     this.emailService.createPreviewData();
     if (!this.emailService.isCustomTemplateEdit) {
+      this.emailService.allLayoutdata.bodyHtml = '<p>{{Block 1}}</p>';
       this.layoutForm = this.fb.group({
         subjectField: [''],
         timeInput: [''],
@@ -297,6 +298,8 @@ export class LayoutComponent
         this.emailService.disableNextActionBtn = true;
       }
     }
+    this.emailService.allLayoutdata.txtSubject =
+      this.layoutForm.controls['subjectInput'].value;
 
     const bodyHtml = this.layoutForm.get('body')?.value;
     let isUndefined = !bodyHtml;
@@ -310,7 +313,11 @@ export class LayoutComponent
 
     this.showBodyValidator = isUndefined;
 
-    if (this.showSubjectValidator || this.showBodyValidator) {
+    if (
+      this.showSubjectValidator ||
+      this.showBodyValidator ||
+      this.emailService.layoutTitle.trim().length === 0
+    ) {
       this.emailService.disableSaveAndProceed.next(true);
       this.emailService.stepperDisable.next({ id: 4, isValid: false });
       this.emailService.disableNextActionBtn = true;
