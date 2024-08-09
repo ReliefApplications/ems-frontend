@@ -1389,11 +1389,13 @@
       },
       "type": {
         "email": "******",
+        "notification": "******",
         "title": "******"
       }
     },
     "triggers": {
       "addTrigger": "******",
+      "confirmDelete": "****** {{name}} ******",
       "createTrigger": "****** {{type}} ******",
       "cronBased": "******",
       "customNotificationRecipientsType": {

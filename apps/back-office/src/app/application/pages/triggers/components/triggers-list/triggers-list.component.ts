@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { TriggersType } from '../../triggers.types';
 import { CustomNotification } from '@oort-front/shared';
 
@@ -15,7 +22,7 @@ type TriggerTableElement = {
   templateUrl: './triggers-list.component.html',
   styleUrls: ['./triggers-list.component.scss'],
 })
-export class TriggersListComponent implements OnInit {
+export class TriggersListComponent implements OnChanges {
   /** Trigger list type */
   @Input() triggerType!: TriggersType;
   /** Triggers list */
@@ -33,7 +40,6 @@ export class TriggersListComponent implements OnInit {
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
   @Output() onDelete = new EventEmitter<{
     trigger: CustomNotification;
-    type: TriggersType;
   }>();
   /** Event emitter for add new trigger */
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
@@ -44,9 +50,10 @@ export class TriggersListComponent implements OnInit {
   /** Displayed columns */
   public displayedColumns: string[] = ['name', 'actions'];
 
-  ngOnInit(): void {
-    console.log('on init ', this.triggersList);
-    this.triggers = this.setTableElements(this.triggersList);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.triggersList) {
+      this.triggers = this.setTableElements(this.triggersList);
+    }
   }
 
   /**

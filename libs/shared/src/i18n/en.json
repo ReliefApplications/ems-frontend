@@ -1395,6 +1395,7 @@
     },
     "triggers": {
       "addTrigger": "Add trigger",
+      "confirmDelete": "Do you confirm the deletion of the trigger {{name}}?",
       "createTrigger": "New {{type}} Trigger",
       "cronBased": "Cron Based",
       "customNotificationRecipientsType": {

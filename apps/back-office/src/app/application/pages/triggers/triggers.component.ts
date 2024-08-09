@@ -9,6 +9,7 @@ import {
   ResourceQueryResponse,
   EditResourceMutationResponse,
   cronValidator,
+  ConfirmService,
 } from '@oort-front/shared';
 import {
   animate,
@@ -27,9 +28,10 @@ import { takeUntil } from 'rxjs';
 import { GET_RESOURCE, GET_RESOURCES } from './graphql/queries';
 import { EDIT_RESOURCE_TRIGGERS_FILTERS } from './graphql/mutations';
 import { Triggers, TriggersType } from './triggers.types';
-import { get, isEqual } from 'lodash';
+import { clone, get, isEqual, isNil } from 'lodash';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
+import { TranslateService } from '@ngx-translate/core';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
@@ -82,13 +84,11 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
 
   /** SINGLE RESOURCE */
   /** Updating status */
-  public updating = false; // Update of resource
+  public updating = false;
   /** Opened resource */
   public openedResource?: Resource;
 
   /** TRIGGERS */
-  /** Selected trigger */
-  public selectedTrigger?: CustomNotification;
   /** Trigger form group */
   public triggerFormGroup!: ReturnType<typeof this.getTriggerForm>;
   /** List of the cron based triggers of the opened resource on this application */
@@ -112,7 +112,10 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
   };
 
   /** Current application id */
-  private applicationId!: string;
+  public applicationId!: string;
+
+  /** Index of the opened resource */
+  private resourceIndex?: number;
 
   /**
    * Triggers page component for application.
@@ -122,13 +125,17 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
    * @param applicationService Shared application service
    * @param fb Angular form builder
    * @param dialog Dialog service
+   * @param confirmService Shared confirmation service
+   * @param translate Angular translate service
    */
   constructor(
     private apollo: Apollo,
     private snackBar: SnackbarService,
     private applicationService: ApplicationService,
     private fb: FormBuilder,
-    public dialog: Dialog
+    public dialog: Dialog,
+    private translate: TranslateService,
+    private confirmService: ConfirmService
   ) {
     super();
     this.applicationId =
@@ -199,13 +206,41 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
    * Delete selected trigger
    *
    * @param trigger Selected trigger
-   * @param triggerType Trigger type
    */
-  public onDeleteTrigger(
-    trigger: CustomNotification,
-    triggerType: TriggersType
-  ): void {
-    console.log('onDeleteTrigger: ', trigger, triggerType);
+  public onDeleteTrigger(trigger: CustomNotification): void {
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.trigger.one').toLowerCase(),
+      }),
+      content: this.translate.instant('components.triggers.confirmDelete', {
+        name: trigger.name,
+      }),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmVariant: 'danger',
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        this.applicationService.deleteCustomNotification(
+          trigger.id as string,
+          () => {
+            const index = this.openedResource?.customNotifications?.findIndex(
+              (cn: CustomNotification) => isEqual(cn.id, trigger.id)
+            );
+            if (!isNil(index) && index !== -1) {
+              const customNotifications = clone(
+                this.openedResource?.customNotifications
+              ) as CustomNotification[];
+              customNotifications.splice(index, 1);
+              this.setTriggersLists(customNotifications);
+
+              this.refreshResourcesOnCustomNotificationUpdate(
+                customNotifications
+              );
+            }
+          }
+        );
+      }
+    });
   }
 
   /**
@@ -218,8 +253,7 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
     trigger: CustomNotification,
     triggerType: TriggersType
   ): Promise<void> {
-    this.selectedTrigger = trigger;
-    const triggerFormGroup = this.getTriggerForm(trigger, triggerType);
+    const triggerFormGroup = await this.getTriggerForm(trigger, triggerType);
     const { ManageTriggerModalComponent } = await import(
       './components/manage-trigger-modal/manage-trigger-modal.component'
     );
@@ -233,9 +267,31 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
     });
 
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      console.log('close onEditTrigger:', value);
-      // if (value) {
-      // }
+      if (value) {
+        this.applicationService.updateCustomNotification(
+          trigger.id as string,
+          value,
+          () => {
+            const index = this.openedResource?.customNotifications?.findIndex(
+              (cn: CustomNotification) => isEqual(cn.id, trigger.id)
+            );
+            if (!isNil(index) && index !== -1) {
+              const customNotifications = clone(
+                this.openedResource?.customNotifications
+              ) as CustomNotification[];
+              const updatedTrigger = {
+                ...customNotifications[index],
+                ...value,
+              };
+              customNotifications[index] = updatedTrigger;
+              this.setTriggersLists(customNotifications);
+              this.refreshResourcesOnCustomNotificationUpdate(
+                customNotifications
+              );
+            }
+          }
+        );
+      }
     });
   }
 
@@ -245,7 +301,7 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
    * @param triggerType Trigger type
    */
   public async onCreateTrigger(triggerType: TriggersType): Promise<void> {
-    const triggerFormGroup = this.getTriggerForm(null, triggerType);
+    const triggerFormGroup = await this.getTriggerForm(null, triggerType);
     const { ManageTriggerModalComponent } = await import(
       './components/manage-trigger-modal/manage-trigger-modal.component'
     );
@@ -258,9 +314,28 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
     });
 
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      console.log('close onCreateTrigger:', value);
-      // if (value) {
-      // }
+      if (value) {
+        this.applicationService.addCustomNotification(
+          value,
+          (newTrigger: any) => {
+            if (newTrigger) {
+              const newValue = {
+                ...value,
+                ...newTrigger,
+              };
+
+              const customNotifications = (
+                this.openedResource?.customNotifications || []
+              ).concat([newValue]) as CustomNotification[];
+
+              this.setTriggersLists(customNotifications);
+              this.refreshResourcesOnCustomNotificationUpdate(
+                customNotifications
+              );
+            }
+          }
+        );
+      }
     });
   }
 
@@ -268,10 +343,12 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
    * Toggles the accordion for the clicked resource and fetches its forms
    *
    * @param resource The resource element for the resource to be toggled
+   * @param index Index of the opened resource
    */
-  public toggleResource(resource: Resource): void {
+  public toggleResource(resource: Resource, index: number): void {
     if (resource.id === this.openedResource?.id) {
       this.openedResource = undefined;
+      this.resourceIndex = undefined;
     } else {
       this.updating = true;
       this.apollo
@@ -279,32 +356,19 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
           query: GET_RESOURCE,
           variables: {
             id: resource.id,
+            application: this.applicationId,
           },
         })
         .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
           if (data.resource) {
+            this.resourceIndex = index;
             this.openedResource = data.resource;
 
             // Get triggers by type
-            const customNotifications = this.openedResource.customNotifications;
-            this.cronBasedTriggers =
-              customNotifications?.filter(
-                (notification: CustomNotification) =>
-                  notification.applicationTrigger && notification.schedule
-              ) ?? [];
-
-            this.onRecordCreationTriggers =
-              customNotifications?.filter(
-                (notification: CustomNotification) =>
-                  notification.onRecordCreation
-              ) ?? [];
-
-            this.onRecordUpdateTriggers =
-              customNotifications?.filter(
-                (notification: CustomNotification) =>
-                  notification.onRecordUpdate
-              ) ?? [];
+            const customNotifications =
+              this.openedResource.customNotifications ?? [];
+            this.setTriggersLists(customNotifications);
           }
           this.updating = false;
         });
@@ -350,48 +414,50 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
   private getTriggerForm(
     trigger: CustomNotification | null,
     triggerType: TriggersType
-  ): FormGroup {
-    const formGroup = this.fb.group({
-      name: [get(trigger, 'name', ''), Validators.required],
-      applicationTrigger: [{ value: 'true' }],
-      notification_status: [{ value: 'active' }],
-      description: [get(trigger, 'description', '')],
-      schedule: [get(trigger, 'schedule', '')],
-      onRecordCreation: [get(trigger, 'onRecordCreation', false)],
-      onRecordUpdate: [get(trigger, 'onRecordUpdate', false)],
-      notificationType: [
-        get(trigger, 'notificationType', 'email'),
-        Validators.required,
-      ],
-      resource: [
-        {
-          value: get(trigger, 'resource', this.openedResource?.id),
-          disabled: true,
-        },
-        Validators.required,
-      ],
-      layout: [get(trigger, 'layout', ''), Validators.required],
-      template: [get(trigger, 'template', ''), Validators.required],
-      recipientsType: [
-        get(trigger, 'recipientsType', 'email'),
-        Validators.required,
-      ],
-      recipients: [get(trigger, 'recipients', null), Validators.required],
+  ): Promise<FormGroup> {
+    return new Promise((resolve) => {
+      const formGroup = this.fb.group({
+        name: [get(trigger, 'name', ''), Validators.required],
+        applicationTrigger: true,
+        notification_status: 'active',
+        description: [get(trigger, 'description', '')],
+        schedule: [get(trigger, 'schedule', '')],
+        onRecordCreation: [get(trigger, 'onRecordCreation', false)],
+        onRecordUpdate: [get(trigger, 'onRecordUpdate', false)],
+        notificationType: [
+          get(trigger, 'notificationType', 'email'),
+          Validators.required,
+        ],
+        resource: [
+          {
+            value: get(trigger, 'resource', this.openedResource?.id),
+            disabled: true,
+          },
+          Validators.required,
+        ],
+        layout: [get(trigger, 'layout', ''), Validators.required],
+        template: [get(trigger, 'template', ''), Validators.required],
+        recipientsType: [
+          get(trigger, 'recipientsType', ''),
+          Validators.required,
+        ],
+        recipients: [get(trigger, 'recipients', ''), Validators.required],
+      });
+
+      if (triggerType === Triggers.cronBased) {
+        formGroup.controls.schedule.addValidators([
+          Validators.required,
+          cronValidator(),
+        ]);
+        formGroup.controls.schedule.updateValueAndValidity();
+      } else if (triggerType === Triggers.onRecordCreation) {
+        formGroup.controls.onRecordCreation.setValue(true);
+      } else if (triggerType === Triggers.onRecordUpdate) {
+        formGroup.controls.onRecordUpdate.setValue(true);
+      }
+
+      resolve(formGroup);
     });
-
-    if (triggerType === Triggers.cronBased) {
-      formGroup.controls.schedule.addValidators([
-        Validators.required,
-        cronValidator(),
-      ]);
-      formGroup.controls.schedule.updateValueAndValidity();
-    } else if (triggerType === Triggers.onRecordCreation) {
-      formGroup.controls.onRecordCreation.setValue(true);
-    } else if (triggerType === Triggers.onRecordUpdate) {
-      formGroup.controls.onRecordUpdate.setValue(true);
-    }
-
-    return formGroup;
   }
 
   /**
@@ -600,5 +666,48 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
           this.updateValues(results.data, results.loading)
         );
     }
+  }
+
+  /**
+   * Set the triggers lists by type of the current opened resource
+   *
+   * @param customNotifications custom notifications list of the opened resource
+   */
+  private setTriggersLists(customNotifications: CustomNotification[]): void {
+    this.cronBasedTriggers =
+      customNotifications?.filter(
+        (notification: CustomNotification) =>
+          notification.applicationTrigger && notification.schedule
+      ) ?? [];
+
+    this.onRecordCreationTriggers =
+      customNotifications?.filter(
+        (notification: CustomNotification) => notification.onRecordCreation
+      ) ?? [];
+
+    this.onRecordUpdateTriggers =
+      customNotifications?.filter(
+        (notification: CustomNotification) => notification.onRecordUpdate
+      ) ?? [];
+  }
+
+  /**
+   * Set the triggers lists by type of the current opened resource
+   *
+   * @param customNotifications updated custom notifications list of the opened resource
+   */
+  private refreshResourcesOnCustomNotificationUpdate(
+    customNotifications: CustomNotification[]
+  ): void {
+    this.openedResource = {
+      ...this.openedResource,
+      customNotifications,
+    };
+
+    const tableElements = [...this.resources];
+    tableElements[this.resourceIndex as number] = this.setTableElement(
+      this.openedResource
+    );
+    this.resources = tableElements;
   }
 }

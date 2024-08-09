@@ -14,12 +14,13 @@ import {
   DistributionList,
   Channel,
   ChannelsQueryResponse,
+  ResourceQueryResponse,
 } from '@oort-front/shared';
 import { NotificationType, Triggers, TriggersType } from '../../triggers.types';
 import { takeUntil } from 'rxjs';
 import { get } from 'lodash';
 import { Apollo } from 'apollo-angular';
-import { GET_CHANNELS } from './graphql/queries';
+import { GET_CHANNELS, GET_LAYOUT } from './graphql/queries';
 
 /**
  * Dialog data interface.
@@ -96,6 +97,9 @@ export class ManageTriggerModalComponent
     );
   }
 
+  /** Indicates if initiating component */
+  private init = true;
+
   /**
    * Edit/create trigger modal.
    *
@@ -121,7 +125,13 @@ export class ManageTriggerModalComponent
   }
 
   ngOnInit(): void {
+    // Load all application channels
     this.getChannels();
+
+    // If editing trigger, get layout
+    if (this.data.trigger?.layout) {
+      this.getLayout(this.data.trigger?.layout);
+    }
 
     // Add email validation to recipients field if recipients type is email
     this.formGroup
@@ -134,6 +144,8 @@ export class ManageTriggerModalComponent
           this.formGroup.get('recipients')?.removeValidators(Validators.email);
         }
       });
+
+    this.init = false;
   }
 
   /**
@@ -150,7 +162,7 @@ export class ManageTriggerModalComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         if (typeof value === 'string') {
-          this.formGroup.get('layout')?.setValue(value);
+          this.getLayout(value);
         } else {
           this.layout = value;
           this.formGroup.get('layout')?.setValue(value.id);
@@ -230,8 +242,10 @@ export class ManageTriggerModalComponent
    * @param type selected notification type
    */
   public onNotificationTypeChange(type: NotificationType | undefined): void {
-    this.formGroup.get('recipients')?.setValue('');
-    this.formGroup.get('recipientsType')?.setValue('');
+    if (!this.init) {
+      this.formGroup.get('recipients')?.setValue('');
+      this.formGroup.get('recipientsType')?.setValue('');
+    }
     if (type) {
       if (type === NotificationType.email) {
         this.recipientsTypeOptions = emailRecipientsOptions;
@@ -242,7 +256,7 @@ export class ManageTriggerModalComponent
   }
 
   /**
-   * Load GET_CHANNELS query data.
+   * Load channels query data.
    */
   private getChannels(): void {
     this.apollo
@@ -255,6 +269,27 @@ export class ManageTriggerModalComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data }) => {
         this.channels = data.channels;
+      });
+  }
+
+  /**
+   * Load layout by its id.
+   *
+   * @param layoutId id of the layout
+   */
+  private getLayout(layoutId: string): void {
+    this.apollo
+      .query<ResourceQueryResponse>({
+        query: GET_LAYOUT,
+        variables: {
+          id: layoutId,
+          resource: this.data.resource.id,
+        },
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
+        this.layout = data.resource.layouts?.edges[0]?.node;
+        this.formGroup.get('layout')?.setValue(this.layout?.id);
       });
   }
 }

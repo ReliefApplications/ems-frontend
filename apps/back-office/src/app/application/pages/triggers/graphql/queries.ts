@@ -22,6 +22,7 @@ export const GET_RESOURCES = gql`
           id
           name
           customNotifications(application: $application) {
+            id
             name
             description
             schedule
@@ -50,7 +51,7 @@ export const GET_RESOURCES = gql`
 
 /** GraphQL query to get a single resource */
 export const GET_RESOURCE = gql`
-  query GetResources($id: ID!) {
+  query GetResources($id: ID!, $application: ID!) {
     resource(id: $id) {
       id
       name
@@ -58,6 +59,22 @@ export const GET_RESOURCE = gql`
       triggersFilters
       hasLayouts
       queryName
+      customNotifications(application: $application) {
+        id
+        name
+        description
+        schedule
+        notificationType
+        resource
+        layout
+        template
+        recipients
+        recipientsType
+        status
+        onRecordCreation
+        onRecordUpdate
+        applicationTrigger
+      }
       metadata {
         name
         type

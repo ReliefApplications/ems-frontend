@@ -51,32 +51,34 @@
         <ng-container cdkColumnDef="actions" [stickyEnd]="true">
           <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
           <td uiCell *cdkCellDef="let element; let index = index">
-            <ui-button
-              [isIcon]="true"
-              icon="edit"
-              [isIcon]="true"
-              variant="primary"
-              (click)="
-                $event.stopPropagation();
-                onEdit.emit({ trigger: element.trigger, type: triggerType })
-              "
-              [disabled]="disabled"
-              [uiTooltip]="'common.edit' | translate"
-            >
-            </ui-button>
-            <ui-button
-              [isIcon]="true"
-              icon="delete"
-              [isIcon]="true"
-              variant="danger"
-              (click)="
-                $event.stopPropagation();
-                onDelete.emit({ trigger: element.trigger, type: triggerType })
-              "
-              [disabled]="disabled"
-              [uiTooltip]="'common.edit' | translate"
-            >
-            </ui-button>
+            <div class="flex flex-row items-center">
+              <ui-button
+                [isIcon]="true"
+                icon="edit"
+                [isIcon]="true"
+                variant="primary"
+                (click)="
+                  $event.stopPropagation();
+                  onEdit.emit({ trigger: element.trigger, type: triggerType })
+                "
+                [disabled]="disabled"
+                [uiTooltip]="'common.edit' | translate"
+              >
+              </ui-button>
+              <ui-button
+                [isIcon]="true"
+                icon="delete"
+                [isIcon]="true"
+                variant="danger"
+                (click)="
+                  $event.stopPropagation();
+                  onDelete.emit({ trigger: element.trigger })
+                "
+                [disabled]="disabled"
+                [uiTooltip]="'common.edit' | translate"
+              >
+              </ui-button>
+            </div>
           </td>
         </ng-container>
 
