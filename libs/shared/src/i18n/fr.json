@@ -845,6 +845,7 @@
 			"back": "Retour à la liste",
 			"distributionList": {
 				"alert": {
+					"allSeparate": "La liste de distribution sera composée de tous les e-mails des utilisateurs obtenus en envoyant un e-mail séparé. Si vous souhaitez envoyer à une liste d'utilisateurs, veuillez créer un bloc normal à l'étape 2.",
 					"and": "et",
 					"noEmail": "L'ensemble de données sélectionné ne contient pas d'adresses e-mail valides",
 					"partOne": "Pour continuer, veuillez saisir",

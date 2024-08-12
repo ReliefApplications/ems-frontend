@@ -845,6 +845,7 @@
 			"back": "Back to list",
 			"distributionList": {
 				"alert": {
+					"allSeparate": "Distribution list will be composed of all user emails obtained from send separate email, if you'd like to send to a list of users please create a normal block in step 2.",
 					"and": "and",
 					"noEmail": "Selected Dataset does not contain valid email addresses",
 					"partOne": "To proceed, please enter",

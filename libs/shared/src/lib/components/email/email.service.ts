@@ -169,13 +169,9 @@ export class EmailService {
   public distributionListName = '';
   /** Checks if to in email distribution list is valid */
   public isToValid = false;
-  /**
-   *
-   */
+  /** Checks if to in email distribution list is valid */
   public toDLHasFilter = false;
-  /**
-   *
-   */
+  /** Checks if to in email distribution list has a filter */
   public displayDLToError = false;
   /** Checks if Distribution list name is duplicate */
   public isDLNameDuplicate = false;
@@ -186,6 +182,8 @@ export class EmailService {
    * 1) Assign value on select of existing; 2) Clear the value on click of Create New
    */
   public selectedDLName: any = '';
+  /** Checks if separate emails is checked for all blocks */
+  public isAllSeparateEmail = false;
 
   /**
    * Generates new dataset group.
@@ -335,35 +333,39 @@ export class EmailService {
    */
   checkDLToValid(): Promise<boolean> {
     return new Promise((resolve) => {
-      let valid = false;
-      if (
-        this.toDLHasFilter &&
-        this.datasetsForm.getRawValue().emailDistributionList?.to?.resource
-      ) {
-        const query = {
-          emailDistributionList: cloneDeep(
-            this.datasetsForm.getRawValue()?.emailDistributionList
-          ),
-        };
-
-        this.http
-          .post(
-            `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
-            query
-          )
-          .toPromise()
-          .then((response: any) => {
-            valid = response?.to.length > 0;
-            resolve(valid);
-          })
-          .catch(() => {
-            resolve(false);
-          });
+      if (this.isAllSeparateEmail) {
+        resolve(true);
       } else {
-        resolve(
-          this.datasetsForm.getRawValue().emailDistributionList?.to?.inputEmails
-            ?.length > 0
-        );
+        let valid = false;
+        if (
+          this.toDLHasFilter &&
+          this.datasetsForm.getRawValue().emailDistributionList?.to?.resource
+        ) {
+          const query = {
+            emailDistributionList: cloneDeep(
+              this.datasetsForm.getRawValue()?.emailDistributionList
+            ),
+          };
+
+          this.http
+            .post(
+              `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+              query
+            )
+            .toPromise()
+            .then((response: any) => {
+              valid = response?.to.length > 0;
+              resolve(valid);
+            })
+            .catch(() => {
+              resolve(false);
+            });
+        } else {
+          resolve(
+            this.datasetsForm.getRawValue().emailDistributionList?.to
+              ?.inputEmails?.length > 0
+          );
+        }
       }
     });
   }

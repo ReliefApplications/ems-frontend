@@ -122,7 +122,9 @@ export class SelectDistributionComponent
     | undefined;
 
   ngOnInit(): void {
-    this.validateDistributionList();
+    if (!this.isAllSeparate()) {
+      this.validateDistributionList();
+    }
 
     const existingDataIndex = this.emailService.cacheDistributionList
       .map((x: any) => x.node)
@@ -136,6 +138,37 @@ export class SelectDistributionComponent
       this.distributionListId =
         this.emailService.cacheDistributionList[existingDataIndex].node.id;
     }
+  }
+
+  isAllSeparate(): boolean {
+    if (this.emailService.datasetsForm?.get('datasets')?.getRawValue()) {
+      let separateEmailCount = 0;
+      const datasetsCount =
+        this.emailService.datasetsForm.get('datasets')?.value.length;
+      for (const dataset of this.emailService.datasetsForm.get('datasets')
+        ?.value ?? []) {
+        if (dataset.individualEmail) {
+          separateEmailCount += 1;
+        }
+      }
+
+      if (separateEmailCount === datasetsCount) {
+        this.emailDistributionList.get('name')?.patchValue('');
+        this.clearDL(this.emailDistributionList.get('to') as FormGroup);
+        this.clearDL(this.emailDistributionList.get('cc') as FormGroup);
+        this.clearDL(this.emailDistributionList.get('bcc') as FormGroup);
+        this.emailService.selectedDLName = '';
+        this.distributionListId = '';
+
+        this.emailService.isAllSeparateEmail = true;
+
+        return true;
+      } else {
+        this.emailService.isAllSeparateEmail = false;
+        return false;
+      }
+    }
+    return false;
   }
 
   /**
@@ -297,6 +330,32 @@ export class SelectDistributionComponent
     this.showExistingDistributionList = !this.showExistingDistributionList;
     this.validateDistributionList();
     this.emailService.setDistributionList(this.emailDistributionList);
+  }
+
+  clearDL(targetGroup: FormGroup): void {
+    // Clear 'resource'
+    targetGroup.get('resource')?.patchValue('');
+
+    // Clear 'query'
+    const targetQuery = targetGroup.get('query') as FormGroup;
+    targetQuery.reset();
+
+    // Set 'name'
+    targetQuery.get('name')?.setValue('');
+
+    // Set 'filter'
+    const targetFilter = targetQuery.get('filter') as FormGroup;
+    targetFilter.get('logic')?.setValue('and');
+    const targetFiltersArray = targetFilter.get('filters') as FormArray;
+    targetFiltersArray.clear();
+
+    // Set 'fields'
+    const targetFieldsArray = targetQuery.get('fields') as FormArray;
+    targetFieldsArray.clear();
+
+    // Clear 'inputEmails'
+    const targetInputEmails = targetGroup.get('inputEmails') as FormArray;
+    targetInputEmails.clear();
   }
 
   /**
