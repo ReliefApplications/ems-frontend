@@ -831,10 +831,11 @@
 				"noSelectedFields": "Veuillez sélectionner au moins 1 champ pour sauvegarder ce jeu de données",
 				"selectChildFields": "Vous avez sélectionné un champ Objet/liste. Sélectionnez au moins un champ enfant pour continuer.",
 				"subscribeExists": "Erreur! \n{{message}}",
-				"subscribeFailed": "{{Message d'erreur}}",
-				"subscribeSuccess": "Succès! \nAbonné à la notification par e-mail : {{email}}.",
+				"subscribeFailed": "Oups!... Une erreur s'est produite lors de l'abonnement. \n{{Message d'erreur}}",
+				"subscribeSuccess": "Succès! \nAbonné à la notification par e-mail: {{email}}.",
 				"tooManyRecords": "Pour le moment, nous sommes limités à récupérer seulement 50 enregistrements. \nSur la base des conditions de filtre fournies, il existe <strong>{{totalRecords}></strong> enregistrements correspondants. \nVeuillez ajouter des filtres supplémentaires pour que le nombre d'enregistrements soit inférieur ou égal à 50.",
-				"unsubscribeFailed": "Oups !... Une erreur s'est produite lors de l'abonnement. \n{{Message d'erreur}}"
+				"unsubscribeFailed": "Oups!... Une erreur s'est produite lors de la désinscription. \n{{Message d'erreur}}",
+				"unsubscribeSuccess": "Succès! \n{{message}}"
 			},
 			"back": "Retour à la liste",
 			"distributionList": {
@@ -862,8 +863,8 @@
 				"to": "À"
 			},
 			"error": {
-				"invalidDataset": "Les ensembles de données suivants ne sont pas valides : {badDatasets}",
-				"invalidToValue": "Liste des destinataires non valide, veuillez corriger !"
+				"invalidDataset": "Les ensembles de données suivants ne sont pas valides: {badDatasets}",
+				"invalidToValue": "Liste des destinataires non valide, veuillez corriger!"
 			},
 			"image": {
 				"rectangleValidation": "Veuillez télécharger une image avec un rapport hauteur/largeur plus rectangulaire, similaire à 960x80.",
@@ -880,6 +881,10 @@
 				"less": "Montrer moins",
 				"more": "Afficher {{length}} e-mails restants...",
 				"subject": "Sujet:"
+			},
+			"restrictSubscription": {
+				"description": "Limite la possibilité pour les utilisateurs de s'abonner à cette notification par e-mail",
+				"title": "Restreindre l'abonnement des utilisateurs"
 			},
 			"saveAsDraft": "Enregistrer comme brouillon",
 			"subscribe": {
@@ -937,7 +942,7 @@
 				}
 			},
 			"delete": {
-				"confirmationMessage": "Voulez-vous vraiment supprimer le formulaire {{name}} ?"
+				"confirmationMessage": "Voulez-vous vraiment supprimer le formulaire {{name}}?"
 			},
 			"deleteRow": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer {{quantity}} {{rowText}}?"
@@ -966,7 +971,7 @@
 			},
 			"layout": {
 				"delete": {
-					"confirmationMessage": "Voulez-vous vraiment supprimer la mise en page {{name}} ?"
+					"confirmationMessage": "Voulez-vous vraiment supprimer la mise en page {{name}}?"
 				},
 				"errors": {
 					"invalid": "Le formulaire est invalide"
@@ -1004,7 +1009,7 @@
 			"propertyGrid": {
 				"resource": {
 					"availableGridFields": "Champs de grille disponibles",
-					"resourceSelectText": "Vous devez d’abord sélectionner une ressource avant de définir des filtres"
+					"resourceSelectText": "Vous devez d'abord sélectionner une ressource avant de définir des filtres"
 				}
 			},
 			"saveSurvey": "Sauvegarde du questionnaire"
@@ -1136,7 +1141,7 @@
 		},
 		"pullJob": {
 			"delete": {
-				"confirmationMessage": "Voulez-vous vraiment supprimer la tâche {{name}} ?",
+				"confirmationMessage": "Voulez-vous vraiment supprimer la tâche {{name}}?",
 				"title": "Supprimer la tâche"
 			},
 			"modal": {

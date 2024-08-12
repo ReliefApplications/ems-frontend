@@ -227,10 +227,16 @@
                           element.userSubscribed === false &&
                           element.restrictSubscription === false
                         "
-                        icon="add"
-                        (click)="addSubscription(element.id)"
+                        [variant]="'primary'"
+                        class="hide-icons hover:text-primary-600"
+                        [isIcon]="true"
+                        size="large"
+                        [uiTooltip]="
+                          'components.email.subscribe.title' | translate
+                        "
+                        [icon]="'notifications_on'"
+                        (click)="addSubscription(element, element.id)"
                       >
-                        {{ 'components.email.subscribe.title' | translate }}
                       </ui-button>
 
                       <ui-button
@@ -238,24 +244,27 @@
                           element.userSubscribed === true &&
                           element.restrictSubscription === false
                         "
-                        variant="danger"
-                        icon="remove"
-                        (click)="removeSubscription(element.id)"
-                        >{{
+                        [variant]="'danger'"
+                        class="hide-icons hover:text-primary-600"
+                        [isIcon]="true"
+                        size="large"
+                        [uiTooltip]="
                           'components.email.unsubscribe.title' | translate
-                        }}</ui-button
-                      >
+                        "
+                        [icon]="'notifications_off'"
+                        (click)="removeSubscription(element, element.id)"
+                      ></ui-button>
                       <ui-button
                         *ngIf="element.restrictSubscription === true"
                         variant="grey"
+                        class="hide-icons hover:text-primary-600"
+                        [isIcon]="true"
                         [disabled]="true"
-                        uiTooltip="Subscription restricted for this email notification"
-                        icon="add"
+                        [uiTooltip]="
+                          'Subscription restricted for this email notification'
+                        "
+                        [icon]="'notifications_on'"
                       >
-                        {{
-                          'components.email.subscribe.error.restricted'
-                            | translate
-                        }}
                       </ui-button>
                     </td>
                   </ng-container>

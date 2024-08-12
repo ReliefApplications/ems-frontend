@@ -233,7 +233,6 @@ export class EmailService {
           return response?.to.length > 0;
         });
     } else {
-      // return this.emailDistributionList?.to?.inputEmails?.length > 0;
       return (
         this.datasetsForm.getRawValue().emailDistributionList?.to?.inputEmails
           ?.length > 0
@@ -273,12 +272,9 @@ export class EmailService {
           },
           error: (errMsg: any) => {
             this.snackBar.openSnackBar(
-              this.translate.instant(
-                'components.email.alert.unsubscribeFailed',
-                {
-                  errorMessage: errMsg,
-                }
-              ),
+              this.translate.instant('components.email.alert.subscribeFailed', {
+                errorMessage: errMsg,
+              }),
               { error: true }
             );
             resolve();
@@ -307,7 +303,7 @@ export class EmailService {
           next: (response: any) => {
             this.snackBar.openSnackBar(
               this.translate.instant(
-                'components.email.alert.subscribeSuccess',
+                'components.email.alert.unsubscribeSuccess',
                 {
                   message: response,
                 }
@@ -318,9 +314,12 @@ export class EmailService {
           },
           error: (errMsg: any) => {
             this.snackBar.openSnackBar(
-              this.translate.instant('components.email.alert.subscribeFailed', {
-                errorMessage: errMsg,
-              }),
+              this.translate.instant(
+                'components.email.alert.unsubscribeFailed',
+                {
+                  errorMessage: errMsg,
+                }
+              ),
               { error: true }
             );
             resolve();

@@ -192,12 +192,13 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   /**
    * Subscribes to an email notification.
    *
+   * @param element The email notification object.
    * @param id The ID of the email notification to subscribe to.
    */
-  async addSubscription(id: string) {
+  async addSubscription(element: any, id: string) {
     try {
       await this.emailService.subscribeToEmail(id);
-      location.reload();
+      element.userSubscribed = true;
     } catch (error) {
       console.error('Subscription failed', error);
     }
@@ -206,12 +207,13 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   /**
    * Removes user from subscription to an email notification.
    *
+   * @param element The email notification object.
    * @param id The ID of the email notification to subscribe to.
    */
-  async removeSubscription(id: string) {
+  async removeSubscription(element: any, id: string) {
     try {
       await this.emailService.unsubscribeFromEmail(id);
-      location.reload();
+      element.userSubscribed = false;
     } catch (error) {
       console.error('Subscription failed', error);
     }

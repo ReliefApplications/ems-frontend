@@ -831,10 +831,11 @@
 				"noSelectedFields": "Please select at least 1 field to save this dataset",
 				"selectChildFields": "You have selected an Object/list field. Select atleast one child field to proceed further and/or preview.",
 				"subscribeExists": "Error! {{message}}",
-				"subscribeFailed": "{{errorMessage}}",
+				"subscribeFailed": "Oops!... Something went wrong whilst subscribing. {{errorMessage}}",
 				"subscribeSuccess": "Success! {{message}}",
 				"tooManyRecords": "At this moment, we are limited to fetch only 50 records. Based on the provided filter conditions there are <strong>{{totalRecords}}</strong> matching records. Please add some additional filters to bring the record count less than or equals to 50.",
-				"unsubscribeFailed": "Oops!... Something went wrong whilst subscribing. {{errorMessage}}"
+				"unsubscribeFailed": "Oops!... Something went wrong whilst unsubscribing. {{errorMessage}}",
+				"unsubscribeSuccess": "Success! {{message}}"
 			},
 			"back": "Back to list",
 			"distributionList": {
@@ -880,6 +881,10 @@
 				"less": "Show Less",
 				"more": "Show {{length}} remaining emails...",
 				"subject": "Subject:"
+			},
+			"restrictSubscription": {
+				"description": "Restricts users being able to subscribe to this email notification",
+				"title": "Restrict user subscription"
 			},
 			"saveAsDraft": "Save as draft",
 			"subscribe": {

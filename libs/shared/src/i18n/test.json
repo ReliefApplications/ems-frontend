@@ -831,10 +831,11 @@
 				"noSelectedFields": "******",
 				"selectChildFields": "******",
 				"subscribeExists": "****** {{message}}",
-				"subscribeFailed": "******",
+				"subscribeFailed": "****** {{errorMessage}}",
 				"subscribeSuccess": "****** {{message}}",
 				"tooManyRecords": "****** {{totalRecords}} ******",
-				"unsubscribeFailed": "****** {{errorMessage}}"
+				"unsubscribeFailed": "****** {{errorMessage}}",
+				"unsubscribeSuccess": "****** {{message}}"
 			},
 			"back": "******",
 			"distributionList": {
@@ -880,6 +881,10 @@
 				"less": "******",
 				"more": "****** {{length}} ******",
 				"subject": "******"
+			},
+			"restrictSubscription": {
+				"description": "******",
+				"title": "******"
 			},
 			"saveAsDraft": "******",
 			"subscribe": {
