@@ -333,7 +333,31 @@ export class SelectDistributionComponent
     const sourceFieldsArray = sourceQuery.get('fields') as FormArray;
     targetFieldsArray.clear();
     sourceFieldsArray.controls.forEach((control) => {
-      targetFieldsArray.push(this.formBuilder.control(control.value));
+      if (
+        control?.value?.kind === 'LIST' ||
+        control?.value?.kind === 'OBJECT'
+      ) {
+        const fieldsData: any = new FormArray([]);
+        control?.value?.fields?.forEach((y: any) => {
+          fieldsData.push(
+            this.formBuilder.group({
+              ...y,
+            })
+          );
+        });
+        targetFieldsArray.push(
+          this.formBuilder.group({
+            ...control.value,
+            fields: fieldsData,
+          })
+        );
+      } else {
+        targetFieldsArray.push(
+          this.formBuilder.group({
+            ...control.value,
+          })
+        );
+      }
     });
 
     // Clear 'inputEmails'

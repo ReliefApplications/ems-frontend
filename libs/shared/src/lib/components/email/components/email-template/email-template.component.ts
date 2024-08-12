@@ -321,8 +321,10 @@ export class EmailTemplateComponent
       if (
         this.emailService.datasetsForm.getRawValue().emailDistributionList?.to
           ?.inputEmails?.length > 0 ||
-        this.emailService.datasetsForm.getRawValue().emailDistributionList.to
-          .resource !== null
+        (this.emailService.datasetsForm.getRawValue().emailDistributionList.to
+          .resource !== null &&
+          this.emailService.datasetsForm.getRawValue().emailDistributionList.to
+            .resource !== '')
       ) {
         this.emailService.isToValid = true;
       } else {

@@ -548,9 +548,17 @@ export class EmailService {
           emailDL?.query?.fields.map((field: any) => {
             // this.formBuilder.control(field)
             if (field.kind === 'LIST' || field.kind === 'OBJECT') {
+              const fieldsData: any = new FormArray([]);
+              field?.fields?.forEach((y: any) => {
+                fieldsData.push(
+                  this.formBuilder.group({
+                    ...y,
+                  })
+                );
+              });
               return this.formBuilder.group({
                 ...field,
-                fields: this.formBuilder.array([]),
+                fields: fieldsData,
               });
             } else {
               return this.formBuilder.group({
@@ -1576,11 +1584,14 @@ export class EmailService {
    *
    * validating next button by taking 3 conditions in consideration DL name mandatory, check duplicate name validation and requires To email
    */
-  async validateNextButton() {
+  validateNextButton() {
     const isDLNameExists = this.distributionListName?.trim()?.length > 0;
     const isDlDuplicateNm = this.isDLNameDuplicate;
-    const isExistsToEmail = this.isToValid;
-
+    let isExistsToEmail = false;
+    // if (!isExistsToEmail) {
+    this.isToValidCheck();
+    isExistsToEmail = this.isToValid;
+    // }
     //Check To is valid or not (Including filter Emails or Manually added emails)
     // const valid = await this.checkToValid();
 
@@ -1598,7 +1609,7 @@ export class EmailService {
   /**
    * checking that To tab is valid or not
    */
-  isToValidCheck() {
+  async isToValidCheck() {
     if (
       this.datasetsForm.getRawValue().emailDistributionList?.to?.inputEmails
         .length > 0 ||
@@ -1610,7 +1621,7 @@ export class EmailService {
     ) {
       this.isToValid = true;
     } else {
-      this.isToValid = false;
+      this.isToValid = await this.checkToValid();
     }
   }
 }
