@@ -245,6 +245,18 @@
                           'components.email.unsubscribe.title' | translate
                         }}</ui-button
                       >
+                      <ui-button
+                        *ngIf="element.restrictSubscription === true"
+                        variant="grey"
+                        [disabled]="true"
+                        uiTooltip="Subscription restricted for this email notification"
+                        icon="add"
+                      >
+                        {{
+                          'components.email.subscribe.error.restricted'
+                            | translate
+                        }}
+                      </ui-button>
                     </td>
                   </ng-container>
                 </ng-template>

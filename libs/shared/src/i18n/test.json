@@ -831,7 +831,7 @@
 				"noSelectedFields": "******",
 				"selectChildFields": "******",
 				"subscribeExists": "****** {{message}}",
-				"subscribeFailed": "****** {{errorMessage}}",
+				"subscribeFailed": "******",
 				"subscribeSuccess": "****** {{message}}",
 				"tooManyRecords": "****** {{totalRecords}} ******",
 				"unsubscribeFailed": "****** {{errorMessage}}"
@@ -883,6 +883,9 @@
 			},
 			"saveAsDraft": "******",
 			"subscribe": {
+				"error": {
+					"restricted": "******"
+				},
 				"title": "******"
 			},
 			"tooltip": {

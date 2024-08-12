@@ -340,7 +340,6 @@ export const ADD_EMAIL_NOTIFICATION = gql`
           inputEmails
         }
       }
-      userSubscribed
       subscriptionList
       restrictSubscription
       recipientsType
@@ -411,7 +410,6 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
           inputEmails
         }
       }
-      userSubscribed
       subscriptionList
       restrictSubscription
       status

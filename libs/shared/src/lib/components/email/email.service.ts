@@ -260,8 +260,6 @@ export class EmailService {
         )
         .subscribe({
           next: (response: any) => {
-            console.log(response);
-
             this.snackBar.openSnackBar(
               this.translate.instant(
                 'components.email.alert.subscribeSuccess',
@@ -307,8 +305,6 @@ export class EmailService {
         )
         .subscribe({
           next: (response: any) => {
-            console.log(response);
-
             this.snackBar.openSnackBar(
               this.translate.instant(
                 'components.email.alert.subscribeSuccess',
