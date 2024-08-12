@@ -272,6 +272,7 @@
 				},
 				"error": "******",
 				"errors": {
+					"customTitleExist": "******",
 					"noBody": "******",
 					"noCustomTitle": "******",
 					"noDistributionList": "******",

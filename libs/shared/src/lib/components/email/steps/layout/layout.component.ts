@@ -316,7 +316,8 @@ export class LayoutComponent
     if (
       this.showSubjectValidator ||
       this.showBodyValidator ||
-      this.emailService.layoutTitle.trim().length === 0
+      this.emailService.layoutTitle.trim().length === 0 ||
+      !this.emailService.isValidLayoutTitle
     ) {
       this.emailService.disableSaveAndProceed.next(true);
       this.emailService.stepperDisable.next({ id: 4, isValid: false });

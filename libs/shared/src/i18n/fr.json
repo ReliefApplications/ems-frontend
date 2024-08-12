@@ -272,6 +272,7 @@
 				},
 				"error": "Un problème est survenu lors de l'envoi de l'e-mail",
 				"errors": {
+					"customTitleExist": "Le titre du modèle personnalisé existe déjà.",
 					"noBody": "Le corps doit continuer!",
 					"noCustomTitle": "Le titre du modèle personnalisé est requis pour continuer!",
 					"noDistributionList": "Un problème est survenu lors de l'envoi de l'e-mail: aucune liste de distribution détectée",

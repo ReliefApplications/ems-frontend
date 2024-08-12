@@ -272,6 +272,7 @@
 				},
 				"error": "Something went wrong during the email sending",
 				"errors": {
+					"customTitleExist": "Custom template title already exist.",
 					"noBody": "Body is required to proceed!",
 					"noCustomTitle": "Custom template title is required to proceed!",
 					"noDistributionList": "Something went wrong during the email sending: no distribution list found",

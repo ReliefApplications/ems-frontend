@@ -18,6 +18,7 @@ import {
   GET_AND_UPDATE_EMAIL_NOTIFICATION,
   GET_EMAIL_NOTIFICATIONS,
   GET_RESOURCE_BY_ID,
+  VALIDATE_CUSTOM_TEMPLATE,
 } from './graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
@@ -161,6 +162,8 @@ export class EmailService {
   public isQuickAction = false;
   /** Custom Layout tile */
   public layoutTitle = '';
+  /** Custom Layout tile valid status*/
+  public isValidLayoutTitle = true;
   /** Disable Quick Action screen Next Button error state*/
   public disableNextActionBtn = false;
   /** Distribution List Name */
@@ -1474,6 +1477,22 @@ export class EmailService {
       query: GET_CUSTOM_TEMPLATES,
       variables: {
         applicationId: id,
+      },
+    });
+  }
+
+  /**
+   * Validate custom templates name.
+   *
+   * @param id The application id of the email notifications.
+   * @returns {Observable<any>} An observable that resolves with the result of the query.
+   */
+  validateCustomTemplate(id?: string): Observable<any> {
+    return this.apollo.query<any>({
+      query: VALIDATE_CUSTOM_TEMPLATE,
+      variables: {
+        applicationId: id,
+        name: this.layoutTitle,
       },
     });
   }
