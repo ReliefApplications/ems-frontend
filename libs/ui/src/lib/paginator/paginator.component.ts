@@ -81,7 +81,7 @@ export class PaginatorComponent implements OnChanges, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.resizeObserver.disconnect();
+    this.resizeObserver?.disconnect();
   }
 
   /**

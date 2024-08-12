@@ -4,7 +4,6 @@ import { AggregationsTabRoutingModule } from './aggregations-tab-routing.module'
 import { OverlayModule } from '@angular/cdk/overlay';
 import { AggregationBuilderModule } from '@oort-front/shared';
 import { AggregationsTabComponent } from './aggregations-tab.component';
-import { PaginatorModule } from '@oort-front/ui';
 import { DataPresentationListComponent } from '../components/data-presentation-list/data-presentation-list.component';
 
 /**
@@ -17,7 +16,6 @@ import { DataPresentationListComponent } from '../components/data-presentation-l
     AggregationsTabRoutingModule,
     AggregationBuilderModule,
     OverlayModule,
-    PaginatorModule,
     DataPresentationListComponent,
   ],
 })
