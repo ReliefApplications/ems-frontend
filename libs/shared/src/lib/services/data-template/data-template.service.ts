@@ -15,6 +15,7 @@ import { Application } from '../../models/application.model';
 import { ContentType, Page } from '../../models/page.model';
 import { RawEditorSettings } from 'tinymce';
 import { LocationStrategy } from '@angular/common';
+import { HttpHeaders } from '@angular/common/http';
 
 /**
  * Data template service
@@ -146,8 +147,22 @@ export class DataTemplateService {
       const index = event.target.getAttribute('index');
       const file = get(data, `${fieldName}[${index}]`, null);
       if (file) {
-        const path = `download/file/${file.content}/${data.id}/${fieldName}`;
-        this.downloadService.getFile(path, file.type, file.name);
+        if (file.content.startsWith('custom:')) {
+          this.downloadService.getFile(
+            file.content.slice(7),
+            file.type,
+            file.name,
+            {
+              headers: new HttpHeaders({
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                Authorization: `Bearer ${localStorage.getItem('idtoken')}`,
+              }),
+            }
+          );
+        } else {
+          const path = `download/file/${file.content}/${data.id}/${fieldName}`;
+          this.downloadService.getFile(path, file.type, file.name);
+        }
       }
     }
   }

@@ -5,12 +5,12 @@ import {
   OnChanges,
   Output,
 } from '@angular/core';
-import { rowActions } from '../grid/grid.component';
+import { ROW_ACTIONS } from '../grid/grid.component';
 import { get, intersection } from 'lodash';
 import { GridActions } from '../models/grid-settings.model';
 
 /** Translation keys for each of the row action types */
-const ACTIONS_TRANSLATIONS: Record<(typeof rowActions)[number], string> = {
+const ACTIONS_TRANSLATIONS: Record<(typeof ROW_ACTIONS)[number], string> = {
   update: 'common.update',
   delete: 'common.delete',
   history: 'common.history',
@@ -89,11 +89,11 @@ export class GridRowActionsComponent implements OnChanges {
       Object.keys(this.actions).filter((key: string) =>
         get(this.actions, `${key}.display`, false)
       ),
-      rowActions
+      ROW_ACTIONS
     ).map((action: string) => ({
       action,
       translationKey:
-        ACTIONS_TRANSLATIONS[action as (typeof rowActions)[number]],
+        ACTIONS_TRANSLATIONS[action as (typeof ROW_ACTIONS)[number]],
       label: get(this.actions, `${action}.label`, undefined),
     }));
   }

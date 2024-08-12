@@ -73,7 +73,7 @@ const matches = (el: any, selector: any) =>
   (el.matches || el.msMatchesSelector).call(el, selector);
 
 /** Row actions. */
-export const rowActions = [
+export const ROW_ACTIONS = [
   'update',
   'delete',
   'history',
@@ -238,7 +238,7 @@ export class GridComponent
   /** Search control */
   public search = new UntypedFormControl('');
   /** Row actions for the component */
-  private readonly rowActions = ['update', 'delete', 'history', 'convert'];
+  private readonly rowActions = ROW_ACTIONS;
   /** Snackbar reference */
   private snackBarRef!: any;
   /** Column change timeout */
@@ -258,9 +258,11 @@ export class GridComponent
   get enabledActions() {
     return intersection(
       Object.keys(this.actions).filter((key: string) =>
-        get(this.actions, key, false)
+        typeof get(this.actions, key, false) === 'object'
+          ? get(this.actions, `${key}.display`, false)
+          : get(this.actions, key, false)
       ),
-      rowActions
+      this.rowActions
     );
   }
 
@@ -395,7 +397,9 @@ export class GridComponent
       this.hasEnabledActions =
         intersection(
           Object.keys(this.actions).filter((key: string) =>
-            get(this.actions, key, false)
+            typeof get(this.actions, key, false) === 'object'
+              ? get(this.actions, `${key}.display`, false)
+              : get(this.actions, key, false)
           ),
           this.rowActions
         ).length > 0;
