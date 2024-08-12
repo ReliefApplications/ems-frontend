@@ -118,7 +118,6 @@ export class ManageTriggerModalComponent
   ) {
     super();
     this.formGroup = this.data.formGroup;
-    console.log('this.data', this.data);
     this.onNotificationTypeChange(
       this.formGroup.controls.notificationType.value
     );

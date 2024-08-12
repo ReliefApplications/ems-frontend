@@ -122,8 +122,8 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
    * @param applicationService Shared application service
    * @param fb Angular form builder
    * @param dialog Dialog service
-   * @param confirmService Shared confirmation service
    * @param translate Angular translate service
+   * @param confirmService Shared confirmation service
    */
   constructor(
     private apollo: Apollo,

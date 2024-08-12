@@ -106,8 +106,23 @@
             (onDelete)="onDeleteTrigger($event.trigger)"
            ></app-triggers-list>
 
-           <!-- TODO: add other triggers type lists -->
+           <app-triggers-list
+              [disabled]="loading || updating"
+              [triggersList]="onRecordCreationTriggers"
+              [triggerType]="TriggersEnum.onRecordCreation"
+              (onAdd)="onCreateTrigger($event.type)"
+              (onEdit)="onEditTrigger($event.trigger, $event.type)"
+              (onDelete)="onDeleteTrigger($event.trigger)"
+            ></app-triggers-list>
 
+            <app-triggers-list
+              [disabled]="loading || updating"
+              [triggersList]="onRecordUpdateTriggers"
+              [triggerType]="TriggersEnum.onRecordUpdate"
+              (onAdd)="onCreateTrigger($event.type)"
+              (onEdit)="onEditTrigger($event.trigger, $event.type)"
+              (onDelete)="onDeleteTrigger($event.trigger)"
+            ></app-triggers-list>
         </ng-container>
       </div>
     </td>

@@ -131,11 +131,8 @@ export class RoleResourceFiltersComponent implements OnInit {
     this.filtersFormArray = this.fb.array(
       filters.map((x) => this.createAccessFilterFormGroup(x))
     );
-    console.log('this.filters: ', this.filters);
-    console.log('this.filtersFormArray: ', this.filtersFormArray);
 
     this.initialValue = this.filtersFormArray.value;
-    console.log('metadata: ', get(this.resource, 'metadata', []));
     this.filterFields = get(this.resource, 'metadata', [])
       .filter((x: any) => x.filterable !== false)
       .map((x: any) => ({ ...x }));
@@ -165,7 +162,6 @@ export class RoleResourceFiltersComponent implements OnInit {
       fields: attrFields,
       editor: null,
     });
-    console.log('this.filterFields: ', this.filterFields);
   }
 
   /**
