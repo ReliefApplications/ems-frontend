@@ -501,18 +501,6 @@ export const ADD_CUSTOM_TEMPLATE = gql`
 `;
 
 /**
- * Validate Custom Template
- */
-export const VALIDATE_CUSTOM_TEMPLATE = gql`
-  query ValidateCustomTemplate($applicationId: ID!, $name: String!) {
-    validateCustomTemplate(applicationId: $applicationId, name: $name) {
-      name
-      id
-    }
-  }
-`;
-
-/**
  * Distribution List related queries
  */
 export const EDIT_DISTRIBUTION_LIST = gql`

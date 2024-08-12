@@ -319,7 +319,9 @@ export class LayoutComponent
       this.showSubjectValidator ||
       this.showBodyValidator ||
       ((this.emailService.layoutTitle.trim().length === 0 ||
-        !this.emailService.isValidLayoutTitle) &&
+        this.emailService.customTemplateNames.includes(
+          this.emailService.layoutTitle.trim().toLowerCase()
+        )) &&
         this.emailService.isQuickAction)
     ) {
       this.emailService.disableSaveAndProceed.next(true);

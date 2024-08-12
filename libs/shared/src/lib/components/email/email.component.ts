@@ -162,6 +162,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         this.customTemplates = res?.data?.customTemplates?.edges?.map(
           (template: any) => template?.node
         );
+        this.emailService.customTemplateNames = this.customTemplates.map(
+          (template: any) => template?.name?.trim()?.toLowerCase()
+        );
         this.customActualData = this.customTemplates;
         this.cacheTemplateList = this.customTemplates;
         this.customTemplates = this.cacheTemplateList.slice(
@@ -1118,7 +1121,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.datasetsForm.patchValue({
       emailLayout: data,
     });
-
+    this.emailService.layoutTitle = data?.name;
+    this.emailService.customTemplateNames =
+      this.emailService.customTemplateNames.filter(
+        (name) => name !== data?.name
+      );
     this.emailService.emailLayout = {
       subject: data?.subject,
       header: data?.header,
@@ -1171,6 +1178,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.isCustomTemplateEdit = false;
     this.emailService.allLayoutdata = {};
     this.emailService.emailLayout = {};
+    this.emailService.customTemplateNames = this.customTemplates.map(
+      (template: any) => template?.name?.trim()?.toLowerCase()
+    );
   }
 
   /**
