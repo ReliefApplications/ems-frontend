@@ -32,7 +32,12 @@ interface DialogData {
 }
 
 /** Available body editor keys for autocompletion */
-const BODY_EDITOR_AUTOCOMPLETE_KEYS = ['{{now}}', '{{today}}', '{{dataset}}'];
+const BODY_EDITOR_AUTOCOMPLETE_KEYS = [
+  '{{now}}',
+  '{{today}}',
+  '{{dataset}}',
+  '{{recordId}}',
+];
 /** Available subject editor keys for autocompletion */
 const SUBJECT_EDITOR_AUTOCOMPLETE_KEYS = ['{{now}}', '{{today}}'];
 /** Available body editor keys for autocompletion */
