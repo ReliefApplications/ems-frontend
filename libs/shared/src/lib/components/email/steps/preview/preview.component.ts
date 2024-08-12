@@ -55,6 +55,8 @@ export class PreviewComponent
     this.emailService.allLayoutdata.footerHtml;
   /** Subscription for query. */
   private querySubscription: Subscription | null = null;
+  /** Expand for Subscription list items. */
+  isExpandedSubscription = false;
   /** Expand for "To" list items. */
   isExpandedTo = false;
   /** Expand for "CC" list items. */
@@ -83,6 +85,13 @@ export class PreviewComponent
   @Input() dataset!: any[];
   /** previewUrl for cehcking the preview Type */
   previewUrl = 'email';
+
+  /**
+   * Expand see more email list dropdown for Subscription List.
+   */
+  toggleExpandSubscription() {
+    this.isExpandedSubscription = !this.isExpandedSubscription;
+  }
 
   /**
    * Expand see more email list dropdown for "To".

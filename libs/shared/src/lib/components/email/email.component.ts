@@ -7,6 +7,7 @@ import {
   AbstractControl,
   FormArray,
   FormBuilder,
+  FormControl,
   FormGroup,
 } from '@angular/forms';
 import { ConfirmService } from '../../services/confirm/confirm.service';
@@ -196,6 +197,21 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   async addSubscription(id: string) {
     try {
       await this.emailService.subscribeToEmail(id);
+      location.reload();
+    } catch (error) {
+      console.error('Subscription failed', error);
+    }
+  }
+
+  /**
+   * Removes user from subscription to an email notification.
+   *
+   * @param id The ID of the email notification to subscribe to.
+   */
+  async removeSubscription(id: string) {
+    try {
+      await this.emailService.unsubscribeFromEmail(id);
+      location.reload();
     } catch (error) {
       console.error('Subscription failed', error);
     }
@@ -644,6 +660,13 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     });
     this.emailService.tabs[this.emailService.tabs.length - 1].active = true;
 
+    const subscriptionListArray = this.formBuilder.array([]);
+    if (emailData.subscriptionList.length > 0) {
+      emailData.subscriptionList.forEach((subscription: any) => {
+        subscriptionListArray.push(new FormControl(subscription));
+      });
+    }
+
     // Creating DatasetForm
     this.emailService.datasetsForm = this.formBuilder.group({
       name: emailData.name,
@@ -652,6 +675,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         ? dataArray
         : this.emailService.datasetsForm.controls.datasets,
       emailDistributionList: emailDL,
+      subscriptionList: subscriptionListArray,
+      restrictSubscription: emailData.restrictSubscription,
       emailLayout: emailData.emailLayout,
       schedule: emailData.schedule,
     });

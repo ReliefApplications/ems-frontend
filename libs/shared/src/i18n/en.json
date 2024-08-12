@@ -833,7 +833,8 @@
 				"subscribeExists": "Error! {{message}}",
 				"subscribeFailed": "Oops!... Something went wrong whilst subscribing. {{errorMessage}}",
 				"subscribeSuccess": "Success! {{message}}",
-				"tooManyRecords": "At this moment, we are limited to fetch only 50 records. Based on the provided filter conditions there are <strong>{{totalRecords}}</strong> matching records. Please add some additional filters to bring the record count less than or equals to 50."
+				"tooManyRecords": "At this moment, we are limited to fetch only 50 records. Based on the provided filter conditions there are <strong>{{totalRecords}}</strong> matching records. Please add some additional filters to bring the record count less than or equals to 50.",
+				"unsubscribeFailed": "Oops!... Something went wrong whilst subscribing. {{errorMessage}}"
 			},
 			"back": "Back to list",
 			"distributionList": {
@@ -886,6 +887,9 @@
 			},
 			"tooltip": {
 				"reverseDate": "YYYY/MM/DD"
+			},
+			"unsubscribe": {
+				"title": "Unsubscribe"
 			}
 		},
 		"emailBuilder": {
@@ -1432,6 +1436,7 @@
 				"label": "Distribution List Name*",
 				"noPreviewData": "Selected dataset does not contain any preview data",
 				"separateEmail": "Send separate email",
+				"subscriptionList": "Subscription list",
 				"to": "To"
 			}
 		},

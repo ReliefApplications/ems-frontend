@@ -488,6 +488,9 @@ export class EmsTemplateComponent
           queryData.applicationId = res?.id;
         });
         queryData.isDraft = false;
+        if (queryData.restrictSubscription === true) {
+          queryData.subscriptionList = [];
+        }
         if (this.emailService.isEdit) {
           if (
             this.emailService.allLayoutdata.headerLogo &&
@@ -717,6 +720,9 @@ export class EmsTemplateComponent
     queryData.draftStepper = this.currentStep;
     queryData.notificationType =
       this.emailService.datasetsForm.controls.notificationType.value;
+    if (queryData.restrictSubscription === true) {
+      queryData.subscriptionList = [];
+    }
     if (this.emailService.isEdit) {
       if (
         this.emailService.allLayoutdata.headerLogo &&
@@ -796,6 +802,9 @@ export class EmsTemplateComponent
         queryData.applicationId = res?.id;
       });
       queryData.isDraft = false;
+      if (queryData.restrictSubscription === true) {
+        queryData.subscriptionList = [];
+      }
       // For email notification edit operation.
       if (this.emailService.isEdit) {
         if (

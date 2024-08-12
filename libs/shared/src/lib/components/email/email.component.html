@@ -223,17 +223,28 @@
                       class="flex items-center"
                     >
                       <ui-button
+                        *ngIf="
+                          element.userSubscribed === false &&
+                          element.restrictSubscription === false
+                        "
                         icon="add"
                         (click)="addSubscription(element.id)"
+                      >
+                        {{ 'components.email.subscribe.title' | translate }}
+                      </ui-button>
+
+                      <ui-button
+                        *ngIf="
+                          element.userSubscribed === true &&
+                          element.restrictSubscription === false
+                        "
+                        variant="danger"
+                        icon="remove"
+                        (click)="removeSubscription(element.id)"
                         >{{
-                          'components.email.subscribe.title' | translate
+                          'components.email.unsubscribe.title' | translate
                         }}</ui-button
                       >
-                      <ng-template #subscribed>
-                        <ui-button icon="remove">{{
-                          'components.email.unsubscribe.title' | translate
-                        }}</ui-button>
-                      </ng-template>
                     </td>
                   </ng-container>
                 </ng-template>

@@ -252,45 +252,78 @@ export class EmailService {
     return new Promise((resolve) => {
       this.http
         .post(
-          `${this.restService.apiUrl}/notification/update-subscription/`,
+          `${this.restService.apiUrl}/notification/add-subscription/`,
           {
             configId: id,
           },
-          { responseType: 'json' }
+          { responseType: 'text' }
         )
         .subscribe({
           next: (response: any) => {
             console.log(response);
-            if (!response.emailExists) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'components.email.alert.subscribeSuccess',
-                  {
-                    message: response.message,
-                  }
-                )
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'components.email.alert.subscribeExists',
-                  {
-                    message: response.message,
-                  }
-                ),
-                { error: true }
-              );
-            }
+
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'components.email.alert.subscribeSuccess',
+                {
+                  message: response,
+                }
+              )
+            );
 
             resolve();
           },
           error: (errMsg: any) => {
-            if (errMsg && errMsg.errorMessage) {
-              console.log('Error Message: ', errMsg.errorMessage);
-            }
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'components.email.alert.unsubscribeFailed',
+                {
+                  errorMessage: errMsg,
+                }
+              ),
+              { error: true }
+            );
+            resolve();
+          },
+        });
+    });
+  }
+
+  /**
+   * Removes user subscription from email notification
+   *
+   * @param id The email notification id
+   * @returns Promise
+   */
+  unsubscribeFromEmail(id: string): Promise<void> {
+    return new Promise((resolve) => {
+      this.http
+        .post(
+          `${this.restService.apiUrl}/notification/remove-subscription/`,
+          {
+            configId: id,
+          },
+          { responseType: 'text' }
+        )
+        .subscribe({
+          next: (response: any) => {
+            console.log(response);
+
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'components.email.alert.subscribeSuccess',
+                {
+                  message: response,
+                }
+              )
+            );
+
+            resolve();
+          },
+          error: (errMsg: any) => {
             this.snackBar.openSnackBar(
               this.translate.instant('components.email.alert.subscribeFailed', {
-                errorMessage: errMsg.errorMessage,
+                errorMessage: errMsg,
               }),
               { error: true }
             );
@@ -641,6 +674,8 @@ export class EmailService {
       applicationId: [''],
       datasets: new FormArray([this.createNewDataSetGroup()]),
       emailDistributionList: this.initialiseDistributionList(),
+      subscriptionList: this.formBuilder.array([]),
+      restrictSubscription: false,
       emailLayout: this.emailLayout,
       schedule: [''],
     });

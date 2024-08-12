@@ -261,6 +261,9 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
               inputEmails
             }
           }
+          userSubscribed
+          subscriptionList
+          restrictSubscription
           name
           id
           notificationType
@@ -337,6 +340,9 @@ export const ADD_EMAIL_NOTIFICATION = gql`
           inputEmails
         }
       }
+      userSubscribed
+      subscriptionList
+      restrictSubscription
       recipientsType
       status
     }
@@ -405,6 +411,9 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
           inputEmails
         }
       }
+      userSubscribed
+      subscriptionList
+      restrictSubscription
       status
       schedule
       modifiedAt

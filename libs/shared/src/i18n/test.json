@@ -833,7 +833,8 @@
 				"subscribeExists": "****** {{message}}",
 				"subscribeFailed": "****** {{errorMessage}}",
 				"subscribeSuccess": "****** {{message}}",
-				"tooManyRecords": "****** {{totalRecords}} ******"
+				"tooManyRecords": "****** {{totalRecords}} ******",
+				"unsubscribeFailed": "****** {{errorMessage}}"
 			},
 			"back": "******",
 			"distributionList": {
@@ -886,6 +887,9 @@
 			},
 			"tooltip": {
 				"reverseDate": "******"
+			},
+			"unsubscribe": {
+				"title": "******"
 			}
 		},
 		"emailBuilder": {
@@ -1432,6 +1436,7 @@
 				"label": "******",
 				"noPreviewData": "******",
 				"separateEmail": "******",
+				"subscriptionList": "******",
 				"to": "******"
 			}
 		},

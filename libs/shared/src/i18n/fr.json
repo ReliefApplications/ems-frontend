@@ -833,7 +833,8 @@
 				"subscribeExists": "Erreur! \n{{message}}",
 				"subscribeFailed": "Oups !... Une erreur s'est produite lors de l'abonnement. \n{{Message d'erreur}}",
 				"subscribeSuccess": "Succès! \nAbonné à la notification par e-mail : {{email}}.",
-				"tooManyRecords": "Pour le moment, nous sommes limités à récupérer seulement 50 enregistrements. \nSur la base des conditions de filtre fournies, il existe <strong>{{totalRecords}></strong> enregistrements correspondants. \nVeuillez ajouter des filtres supplémentaires pour que le nombre d'enregistrements soit inférieur ou égal à 50."
+				"tooManyRecords": "Pour le moment, nous sommes limités à récupérer seulement 50 enregistrements. \nSur la base des conditions de filtre fournies, il existe <strong>{{totalRecords}></strong> enregistrements correspondants. \nVeuillez ajouter des filtres supplémentaires pour que le nombre d'enregistrements soit inférieur ou égal à 50.",
+				"unsubscribeFailed": "Oups !... Une erreur s'est produite lors de l'abonnement. \n{{Message d'erreur}}"
 			},
 			"back": "Retour à la liste",
 			"distributionList": {
@@ -886,6 +887,9 @@
 			},
 			"tooltip": {
 				"reverseDate": "AAAA/MM/JJ"
+			},
+			"unsubscribe": {
+				"title": "Se désabonner"
 			}
 		},
 		"emailBuilder": {
@@ -1432,6 +1436,7 @@
 				"label": "Nom de la liste de distribution*",
 				"noPreviewData": "L'ensemble de données sélectionné ne contient aucune donnée d'aperçu",
 				"separateEmail": "Envoyer un e-mail séparé",
+				"subscriptionList": "Liste d'abonnement",
 				"to": "À"
 			}
 		},

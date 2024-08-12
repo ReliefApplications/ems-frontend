@@ -45,6 +45,48 @@
       </ul>
     </div>
 
+    <!-- Subscription List -->
+    <div
+      class="mb-4"
+      *ngIf="
+        query.subscriptionList?.length > 0 &&
+        query.restrictSubscription === false
+      "
+    >
+      <h3>
+        {{ 'components.select.distribution.subscriptionList' | translate }}:
+      </h3>
+      <ul class="list-none space-y-1">
+        <div uiChipList>
+          <ng-container
+            *ngFor="let email of query?.subscriptionList; let i = index"
+          >
+            <ui-chip
+              *ngIf="i < 6 || isExpandedSubscription"
+              variant="primary"
+              class="w-full flex-row flex-wrap justify-between mr-1"
+              >{{ email }}</ui-chip
+            >
+          </ng-container>
+        </div>
+        <ui-button
+          *ngIf="query?.subscriptionList?.length > 6 && !isExpandedSubscription"
+          class="inline-block"
+          (click)="toggleExpandSubscription()"
+          >{{
+            'components.email.preview.more'
+              | translate : { length: query?.subscriptionList.length - 6 }
+          }}</ui-button
+        >
+        <ui-button
+          *ngIf="isExpandedSubscription"
+          class="inline-block"
+          (click)="toggleExpandSubscription()"
+          >{{ 'components.email.preview.less' | translate }}</ui-button
+        >
+      </ul>
+    </div>
+
     <!-- CC -->
     <div *ngIf="distributionListCc.length > 0" class="mb-4">
       <h2>{{ 'components.select.distribution.cc' | translate }}:</h2>
