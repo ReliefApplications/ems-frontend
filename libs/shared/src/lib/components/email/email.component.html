@@ -48,7 +48,7 @@
           (click)="distributionListDialogHandler()"
           *ngSwitchCase="1"
         >
-          Create Distribution List
+          {{ 'components.email.distributionList.create' | translate }}
         </ui-button>
       </ng-container>
       <ng-container *ngIf="this.ability.can('create', 'EmailNotification')">
@@ -60,7 +60,7 @@
           (click)="createTemplate()"
           *ngSwitchCase="2"
         >
-          Custom Template
+          {{ 'common.email.customTemplate' | translate }}
         </ui-button>
       </ng-container>
 
@@ -179,7 +179,7 @@
                           size="large"
                           (click)="getEmailNotificationById(element.id)"
                           [icon]="'edit'"
-                          [uiTooltip]="'Edit'"
+                          [uiTooltip]="'common.edit' | translate"
                         >
                         </ui-button>
 
@@ -190,7 +190,7 @@
                           size="large"
                           (click)="cloneEmailNotification(element)"
                           [icon]="'content_copy'"
-                          [uiTooltip]="'Clone'"
+                          [uiTooltip]="'common.clone' | translate"
                           *ngIf="!element.isDraft"
                         >
                         </ui-button>
@@ -202,7 +202,7 @@
                           size="large"
                           (click)="deleteEmailNotification(element)"
                           [icon]="'delete'"
-                          [uiTooltip]="'Delete'"
+                          [uiTooltip]="'common.delete' | translate"
                         >
                         </ui-button>
                       </ng-container>
@@ -261,7 +261,8 @@
                         [isIcon]="true"
                         [disabled]="true"
                         [uiTooltip]="
-                          'Subscription restricted for this email notification'
+                          'components.email.subscribe.restricted.title'
+                            | translate
                         "
                         [icon]="'notifications_on'"
                       >
@@ -366,7 +367,9 @@
                   </ng-container>
                   <ng-container cdkColumnDef="createdBy">
                     <th uiCellHeader *cdkHeaderCellDef scope="col">
-                      <span class="headerTitle"> Created By </span>
+                      <span class="headerTitle">
+                        {{ 'common.createdBy' | translate }}
+                      </span>
                     </th>
                     <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
                       {{ element.createdBy?.name }}
@@ -380,7 +383,9 @@
                   >
                     <ng-container cdkColumnDef="actions" [stickyEnd]="true">
                       <th uiCellHeader *cdkHeaderCellDef scope="col">
-                        <span class="headerTitle"> Actions </span>
+                        <span class="headerTitle">
+                          {{ 'components.email.action.header' | translate }}
+                        </span>
                       </th>
                       <td
                         uiCell
@@ -394,7 +399,7 @@
                             [isIcon]="true"
                             size="large"
                             [icon]="'edit'"
-                            [uiTooltip]="'Edit'"
+                            [uiTooltip]="'common.edit' | translate"
                             (click)="editCustomTemplate(element)"
                           >
                           </ui-button>
@@ -405,7 +410,7 @@
                             size="large"
                             (click)="deleteCustomTemplate(element)"
                             [icon]="'delete'"
-                            [uiTooltip]="'Delete'"
+                            [uiTooltip]="'common.delete' | translate"
                           >
                           </ui-button>
                         </ng-container>

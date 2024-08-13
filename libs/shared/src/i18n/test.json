@@ -70,6 +70,7 @@
 			"one": "******"
 		},
 		"clear": "******",
+		"clone": "******",
 		"close": "******",
 		"column": {
 			"few": "******",
@@ -823,6 +824,9 @@
 			}
 		},
 		"email": {
+			"action": {
+				"header": "******"
+			},
 			"alert": {
 				"dlPreview": "******",
 				"invalidFields": "****** {{fields}} ****** {{types}} ******",
@@ -848,9 +852,13 @@
 				},
 				"bcc": "******",
 				"cc": "******",
+				"create": "******",
 				"createNew": "******",
 				"duplicate": "******",
 				"emailInput": "******",
+				"errors": {
+					"duplicateName": "******"
+				},
 				"import": {
 					"download": "******",
 					"import": "******",
@@ -890,6 +898,9 @@
 			"subscribe": {
 				"error": {
 					"restricted": "******"
+				},
+				"restricted": {
+					"title": "******"
 				},
 				"title": "******"
 			},

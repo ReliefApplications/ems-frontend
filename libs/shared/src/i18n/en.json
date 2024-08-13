@@ -70,6 +70,7 @@
 			"one": "Child"
 		},
 		"clear": "Clear",
+		"clone": "Clone",
 		"close": "Close",
 		"column": {
 			"few": "Columns",
@@ -823,6 +824,9 @@
 			}
 		},
 		"email": {
+			"action": {
+				"header": "Actions"
+			},
 			"alert": {
 				"dlPreview": "All emails showing in this table below will be used to create the distribution list",
 				"invalidFields": "The following fields are not available for selection: <strong>{{fields}}</strong> as they are of type <strong>{{types}}</strong> and cannot be properly displayed in the table for this form.",
@@ -848,9 +852,13 @@
 				},
 				"bcc": "BCC",
 				"cc": "CC",
+				"create": "Create distribution list",
 				"createNew": "Or Create New",
 				"duplicate": "Title already exists",
 				"emailInput": "Manual email input",
+				"errors": {
+					"duplicateName": "This name already exists! Please enter a unique name."
+				},
 				"import": {
 					"download": "Download Template",
 					"import": "Import Distribution List",
@@ -890,6 +898,9 @@
 			"subscribe": {
 				"error": {
 					"restricted": "Subscription Restricted"
+				},
+				"restricted": {
+					"title": "Subscription restricted for this email notification"
 				},
 				"title": "Subscribe"
 			},

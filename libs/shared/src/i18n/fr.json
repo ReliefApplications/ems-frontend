@@ -70,6 +70,7 @@
 			"one": "Enfant"
 		},
 		"clear": "Annuler",
+		"clone": "Cloner",
 		"close": "Fermer",
 		"column": {
 			"few": "Colonnes",
@@ -823,6 +824,9 @@
 			}
 		},
 		"email": {
+			"action": {
+				"header": "Actes"
+			},
 			"alert": {
 				"dlPreview": "Tous les e-mails affichés dans ce tableau ci-dessous seront utilisés pour créer la liste de distribution",
 				"invalidFields": "Les champs suivants ne peuvent pas être sélectionnés: <strong>{{fields}}</strong> car ils sont du type <strong>{{types}}</strong> et ne peut pas être correctement affiché dans le tableau de ce formulaire.",
@@ -848,9 +852,13 @@
 				},
 				"bcc": "CCI",
 				"cc": "CC",
+				"create": "Créer une liste de distribution",
 				"createNew": "Ou créer un nouveau",
 				"duplicate": "Le nom existe déjà",
 				"emailInput": "Saisie manuelle des e-mails",
+				"errors": {
+					"duplicateName": "Ce nom existe déjà ! \nVeuillez saisir un nom unique."
+				},
 				"import": {
 					"download": "Télécharger le modèle",
 					"import": "Liste de distribution d'importation",
@@ -890,6 +898,9 @@
 			"subscribe": {
 				"error": {
 					"restricted": "Abonnement restreint"
+				},
+				"restricted": {
+					"title": "Abonnement restreint pour cette notification par e-mail"
 				},
 				"title": "S'abonner"
 			},

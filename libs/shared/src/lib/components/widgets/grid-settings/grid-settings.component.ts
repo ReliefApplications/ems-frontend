@@ -24,7 +24,6 @@ import {
   ResourceQueryResponse,
 } from '../../../models/resource.model';
 import { createGridWidgetFormGroup } from './grid-settings.forms';
-// import { DistributionList } from '../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';

@@ -65,7 +65,9 @@
           <input formControlName="name" type="text" />
         </div>
         <div class="warning" *ngIf="uniqueNameValidator(form.get('name'))">
-          This name already exists. Please enter a unique name.
+          {{
+            'components.email.distributionList.errors.duplicateName' | translate
+          }}
         </div>
 
         <div
