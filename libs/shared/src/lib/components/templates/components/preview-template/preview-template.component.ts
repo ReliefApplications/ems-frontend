@@ -208,6 +208,8 @@ export class PreviewTemplate {
               key.label ||
               (key.name ? this.emailService.titleCase(key.name) : ''),
             type: key.type,
+            fields: key?.fields,
+            kind: key.kind,
           });
         }
       });
