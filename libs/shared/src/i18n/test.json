@@ -1468,6 +1468,14 @@
       "expand": "******",
       "form": {
         "addNewMapping": "******",
+        "autoPopulateOnSubmit": {
+          "label": "******",
+          "omit": {
+            "label": "******",
+            "tooltip": "******"
+          },
+          "tooltip": "******"
+        },
         "directions": {
           "both": "******",
           "questionToState": "******",

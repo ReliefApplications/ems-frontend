@@ -17,4 +17,49 @@
     >
     </ui-graphql-select>
   </div>
+
+  <!-- re-populate just submitted records -->
+  <div class="mt-6" *ngIf="form">
+    <ui-toggle formControlName="autoPopulateOnSubmit">
+      <ng-container ngProjectAs="label">
+        {{ 'components.widget.form.autoPopulateOnSubmit.label' | translate }}
+        <ui-icon
+          class="ml-1 cursor-help self-center"
+          icon="info_outline"
+          variant="grey"
+          [size]="18"
+          [uiTooltip]="
+            'components.widget.form.autoPopulateOnSubmit.tooltip' | translate
+          "
+        ></ui-icon>
+      </ng-container>
+    </ui-toggle>
+  </div>
+
+  <div
+    class="mt-2"
+    *ngIf="form && formGroup.get('autoPopulateOnSubmit')?.value === true"
+  >
+    <label>
+      {{ 'components.widget.form.autoPopulateOnSubmit.omit.label' | translate }}
+      <ui-icon
+        class="ml-1 cursor-help self-center"
+        icon="info_outline"
+        variant="grey"
+        [size]="18"
+        [uiTooltip]="
+          'components.widget.form.autoPopulateOnSubmit.omit.tooltip' | translate
+        "
+      ></ui-icon>
+    </label>
+
+    <ui-select-menu
+      formControlName="autoPopulateOmitQuestions"
+      [multiselect]="true"
+    >
+      <ui-select-option *ngFor="let field of form?.fields" [value]="field.name">
+        {{ field.name }}
+      </ui-select-option>
+    </ui-select-menu>
+  </div>
 </div>

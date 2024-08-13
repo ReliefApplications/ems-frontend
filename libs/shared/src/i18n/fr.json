@@ -1480,6 +1480,14 @@
       "expand": "Étendre",
       "form": {
         "addNewMapping": "Ajouter un mappage",
+        "autoPopulateOnSubmit": {
+          "label": "Remplissage automatique lors de la soumission",
+          "omit": {
+            "label": "Omettre les champs",
+            "tooltip": "Champs à omettre pendant le remplissage automatique"
+          },
+          "tooltip": "Lors de la soumission d'un enregistrement à partir du widget, le formulaire sera automatiquement rempli avec les données de l'enregistrement après la soumission"
+        },
         "directions": {
           "both": "Les modifications apportées à l'état ou à la question seront répercutées sur l'autre",
           "questionToState": "Les modifications apportées à la question seront répercutées sur l'état",

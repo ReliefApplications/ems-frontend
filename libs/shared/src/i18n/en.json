@@ -1468,6 +1468,14 @@
       "expand": "Expand",
       "form": {
         "addNewMapping": "Add mapping",
+        "autoPopulateOnSubmit": {
+          "label": "Auto populate on submit",
+          "omit": {
+            "label": "Omit fields",
+            "tooltip": "Fields to omit during the auto-population"
+          },
+          "tooltip": "When submitting a record from the widget, the form will be automatically populated with the record's data after the submission"
+        },
         "directions": {
           "both": "Both changes on the state or the question will be reflected on the other",
           "questionToState": "Changes on the question will be reflected on the state",

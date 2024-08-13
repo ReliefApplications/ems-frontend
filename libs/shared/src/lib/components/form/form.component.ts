@@ -136,7 +136,7 @@ export class FormComponent
   ngOnChanges(changes: SimpleChanges): void {
     if (
       changes.record &&
-      changes.record.currentValue.id !== changes.record.previousValue.id
+      changes.record.currentValue?.id !== changes.record.previousValue?.id
     ) {
       this.initSurvey();
     }
@@ -144,7 +144,6 @@ export class FormComponent
 
   ngOnInit(): void {
     this.initSurvey();
-    this.setupStateMappingListeners();
   }
 
   /** Sets up listeners to keep mapped fields updated */
@@ -156,21 +155,18 @@ export class FormComponent
       }
 
       if (rule.direction === 'questionToState' || rule.direction === 'both') {
-        (question.survey as SurveyModel)?.onValueChanged.add(
-          (_: any, options: any) => {
-            if (options.question.name === question.name) {
-              const state = this.dashboardService.states
-                .getValue()
-                .find((s: DashboardState) => s.name === rule.state);
-              if (state) {
-                this.dashboardService.setDashboardState(
-                  options.value,
-                  state.id
-                );
-              }
+        const updateState = (_: any, options: any) => {
+          if (options.question.name === question.name) {
+            const state = this.dashboardService.states
+              .getValue()
+              .find((s: DashboardState) => s.name === rule.state);
+            if (state) {
+              this.dashboardService.setDashboardState(options.value, state.id);
             }
           }
-        );
+        };
+
+        (question.survey as SurveyModel)?.onValueChanged.add(updateState);
       }
 
       if (rule.direction === 'stateToQuestion' || rule.direction === 'both') {
@@ -219,6 +215,7 @@ export class FormComponent
     if (this.resetTimeoutListener) {
       clearTimeout(this.resetTimeoutListener);
     }
+    this.survey.data = {};
     this.resetTimeoutListener = setTimeout(
       () => (this.surveyActive = true),
       100
@@ -494,6 +491,10 @@ export class FormComponent
       this.record,
       this.form
     );
+
+    this.survey.onAfterRenderSurvey.add(() => {
+      this.setupStateMappingListeners();
+    });
 
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(

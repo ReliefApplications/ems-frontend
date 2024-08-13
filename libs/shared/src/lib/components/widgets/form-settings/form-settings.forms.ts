@@ -24,6 +24,10 @@ export const createFormWidgetFormGroup = (id: string, configuration: any) => {
           )
         : []
     ),
+    autoPopulateOnSubmit: [get(configuration, 'autoPopulateOnSubmit', false)],
+    autoPopulateOmitQuestions: [
+      get(configuration, 'autoPopulateOmitQuestions', []),
+    ],
   });
 
   return extendWidgetForm(formGroup, configuration?.widgetDisplay);

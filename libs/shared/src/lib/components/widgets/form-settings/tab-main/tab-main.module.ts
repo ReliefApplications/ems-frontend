@@ -2,7 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TabMainComponent } from './tab-main.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { GraphQLSelectModule } from '@oort-front/ui';
+import {
+  GraphQLSelectModule,
+  SelectMenuModule,
+  ToggleModule,
+} from '@oort-front/ui';
 import { IconModule } from '@oort-front/ui';
 import { TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
@@ -24,6 +28,8 @@ import { ButtonModule, FormWrapperModule, TooltipModule } from '@oort-front/ui';
     GraphQLSelectModule,
     ButtonModule,
     TooltipModule,
+    ToggleModule,
+    SelectMenuModule,
   ],
   exports: [TabMainComponent],
 })

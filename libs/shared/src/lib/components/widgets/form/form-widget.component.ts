@@ -130,6 +130,23 @@ export class FormWidgetComponent
   public onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
     this.completed = e.completed;
     this.hideNewRecord = e.hideNewRecord || false;
+
+    if (this.settings.autoPopulateOnSubmit && e.completed === true) {
+      // Reset the form
+      setTimeout(() => {
+        const data = structuredClone(
+          this.formComponent?.survey.getParsedData?.() || {}
+        );
+        this.settings.autoPopulateOmitQuestions.forEach((question: string) => {
+          delete data[question];
+        });
+        this.clearForm();
+        if (this.formComponent) {
+          this.formComponent.survey.data = data;
+          this.formComponent.survey.runExpressions();
+        }
+      }, 1000);
+    }
   }
 
   /**
