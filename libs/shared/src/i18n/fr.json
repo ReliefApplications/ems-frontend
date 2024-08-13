@@ -1419,7 +1419,7 @@
       },
       "editTrigger": "Modifier {{type}} déclencheur",
       "noFilters": "Aucun filtre de déclenchement détecté",
-      "noTriggers": "Aucun déclencheur {{type}} détecté",
+      "noTriggers": "Aucun déclencheur détecté",
       "notification": "Notification",
       "onRecordCreation": "Création d'un enregistrement",
       "onRecordUpdate": "Mise à jour sur l'enregistrement",

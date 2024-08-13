@@ -1407,7 +1407,7 @@
       },
       "editTrigger": "Edit {{type}} Trigger",
       "noFilters": "No triggers filters detected",
-      "noTriggers": "No {{type}} triggers detected",
+      "noTriggers": "No triggers detected",
       "notification": "Notification",
       "onRecordCreation": "On Record Creation",
       "onRecordUpdate": "On Record Update",

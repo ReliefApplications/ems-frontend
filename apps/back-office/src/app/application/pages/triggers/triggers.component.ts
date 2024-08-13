@@ -91,12 +91,6 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
   /** TRIGGERS */
   /** Trigger form group */
   public triggerFormGroup!: ReturnType<typeof this.getTriggerForm>;
-  /** List of the cron based triggers of the opened resource on this application */
-  public cronBasedTriggers: CustomNotification[] = [];
-  /** List of the onRecordCreation triggers of the opened resource on this application */
-  public onRecordCreationTriggers: CustomNotification[] = [];
-  /** List of the onRecordUpdate triggers of the opened resource on this application */
-  public onRecordUpdateTriggers: CustomNotification[] = [];
   /** Triggers enum */
   public TriggersEnum = Triggers;
 
@@ -228,7 +222,6 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
                 this.openedResource?.customNotifications
               ) as CustomNotification[];
               customNotifications.splice(index, 1);
-              this.setTriggersLists(customNotifications);
 
               this.refreshResourcesOnCustomNotificationUpdate(
                 customNotifications
@@ -281,7 +274,6 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
                 ...value,
               };
               customNotifications[index] = updatedTrigger;
-              this.setTriggersLists(customNotifications);
               this.refreshResourcesOnCustomNotificationUpdate(
                 customNotifications
               );
@@ -325,7 +317,6 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
                 this.openedResource?.customNotifications || []
               ).concat([newValue]) as CustomNotification[];
 
-              this.setTriggersLists(customNotifications);
               this.refreshResourcesOnCustomNotificationUpdate(
                 customNotifications
               );
@@ -358,11 +349,6 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
         .subscribe(({ data }) => {
           if (data.resource) {
             this.openedResource = data.resource;
-
-            // Get triggers by type
-            const customNotifications =
-              this.openedResource.customNotifications ?? [];
-            this.setTriggersLists(customNotifications);
           }
           this.updating = false;
         });
@@ -660,29 +646,6 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
           this.updateValues(results.data, results.loading)
         );
     }
-  }
-
-  /**
-   * Set the triggers lists by type of the current opened resource
-   *
-   * @param customNotifications custom notifications list of the opened resource
-   */
-  private setTriggersLists(customNotifications: CustomNotification[]): void {
-    this.cronBasedTriggers =
-      customNotifications?.filter(
-        (notification: CustomNotification) =>
-          notification.applicationTrigger && notification.schedule
-      ) ?? [];
-
-    this.onRecordCreationTriggers =
-      customNotifications?.filter(
-        (notification: CustomNotification) => notification.onRecordCreation
-      ) ?? [];
-
-    this.onRecordUpdateTriggers =
-      customNotifications?.filter(
-        (notification: CustomNotification) => notification.onRecordUpdate
-      ) ?? [];
   }
 
   /**

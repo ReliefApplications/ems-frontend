@@ -9,6 +9,7 @@ import {
   ErrorMessageModule,
   FormWrapperModule,
   IconModule,
+  MenuModule,
   PaginatorModule,
   RadioModule,
   SelectMenuModule,
@@ -65,6 +66,7 @@ import { TriggersListComponent } from './components/triggers-list/triggers-list.
     RadioModule,
     ErrorMessageModule,
     AlertModule,
+    MenuModule,
   ],
 })
 export class TriggersModule {}

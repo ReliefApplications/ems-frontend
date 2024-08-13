@@ -1,25 +1,33 @@
 <!-- Header -->
 <div class="flex flex-row justify-between items-center">
-  <h2>{{ ('components.triggers.' + triggerType | translate) + ' ' + ('common.trigger.few' | translate) }}</h2>
+  <h2>{{ ('common.trigger.few' | translate) }}</h2>
 
   <ui-button
     variant="primary"
     category="secondary"
-    (click)="
-      $event.stopPropagation();
-      onAdd.emit({ type: triggerType })
-    "
+    [uiMenuTriggerFor]="triggersOptionsMenu"
+    (click)="$event.stopPropagation()"
     [disabled]="disabled"
   >
     {{ 'components.triggers.addTrigger' | translate }}
   </ui-button>
 </div>
 
+<ui-menu #triggersOptionsMenu>
+  <button 
+    uiMenuItem
+    *ngFor="let item of TriggersTypes"
+    (click)="onAdd.emit({ type: item })"
+  >
+      {{ 'components.triggers.' + item | translate }}
+  </button>
+</ui-menu>
+
 <!-- No triggers template -->
 <div *ngIf="triggersList.length === 0" class="flex flex-col p-4 items-center">
   <ui-icon icon="folder_open"></ui-icon>
   <h3>
-    {{'components.triggers.noTriggers' | translate : { type: 'components.triggers.' + triggerType | translate} }}
+    {{ 'components.triggers.noTriggers' | translate }}
   </h3>
 </div>
 
@@ -47,6 +55,20 @@
           </td>
         </ng-container>
 
+        <!-- Type column -->
+        <ng-container cdkColumnDef="type">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            {{ 'common.type.one' | translate }}
+          </th>
+          <td
+            uiCell
+            *cdkCellDef="let element"
+            class="!text-gray-900 !font-medium"
+          >
+            {{ 'components.triggers.' + element.type | translate }}
+          </td>
+        </ng-container>
+
         <!-- Actions -->
         <ng-container cdkColumnDef="actions" [stickyEnd]="true">
           <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
@@ -59,7 +81,7 @@
                 variant="primary"
                 (click)="
                   $event.stopPropagation();
-                  onEdit.emit({ trigger: element.trigger, type: triggerType })
+                  onEdit.emit({ trigger: element.trigger, type: element.type })
                 "
                 [disabled]="disabled"
                 [uiTooltip]="'common.edit' | translate"

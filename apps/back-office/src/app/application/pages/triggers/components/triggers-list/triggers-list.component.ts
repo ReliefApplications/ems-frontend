@@ -6,11 +6,12 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { TriggersType } from '../../triggers.types';
+import { triggers, Triggers, TriggersType } from '../../triggers.types';
 import { CustomNotification } from '@oort-front/shared';
 
 type TriggerTableElement = {
   name: string;
+  type: Triggers;
   trigger: CustomNotification;
 };
 
@@ -23,8 +24,6 @@ type TriggerTableElement = {
   styleUrls: ['./triggers-list.component.scss'],
 })
 export class TriggersListComponent implements OnChanges {
-  /** Trigger list type */
-  @Input() triggerType!: TriggersType;
   /** Triggers list */
   @Input() triggersList: CustomNotification[] = [];
   /** Disabled flag */
@@ -47,8 +46,10 @@ export class TriggersListComponent implements OnChanges {
 
   /** Triggers */
   public triggers = new Array<TriggerTableElement>();
+  /** Triggers types */
+  public TriggersTypes = triggers;
   /** Displayed columns */
-  public displayedColumns: string[] = ['name', 'actions'];
+  public displayedColumns: string[] = ['name', 'type', 'actions'];
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.triggersList) {
@@ -77,6 +78,11 @@ export class TriggersListComponent implements OnChanges {
   private setTableElement(trigger: CustomNotification): TriggerTableElement {
     return {
       name: trigger.name ?? 'Nameless trigger',
+      type: trigger.onRecordCreation
+        ? Triggers.onRecordCreation
+        : trigger.onRecordUpdate
+        ? Triggers.onRecordUpdate
+        : Triggers.cronBased,
       trigger,
     };
   }
