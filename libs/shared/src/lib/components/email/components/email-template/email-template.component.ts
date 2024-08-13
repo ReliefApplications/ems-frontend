@@ -278,7 +278,6 @@ export class EmailTemplateComponent
    * Clear unused values for segments
    *
    * @param value form value
-   * @param isDestroy
    */
   clearUnusedValues(value: string) {
     if (value === 'Add Manually') {
