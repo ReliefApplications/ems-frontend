@@ -119,6 +119,9 @@
         "feminine": "On the",
         "masculine": "On the"
       },
+      "question": {
+        "one": "Question"
+      },
       "seconds": "Second(s)",
       "week": "Week",
       "weekDay": "Week Day (MON-FRI)",
@@ -1318,6 +1321,7 @@
         "newFilter": "New filter",
         "noFeatures": "No feature detected",
         "noFilters": "No access filters detected",
+        "noForm": "No form detected",
         "noForms": "No forms detected",
         "noSteps": "No steps detected",
         "removeFilter": "Remove filter",
@@ -1462,6 +1466,19 @@
         }
       },
       "expand": "Expand",
+      "form": {
+        "addNewMapping": "Add mapping",
+        "directions": {
+          "both": "Both changes on the state or the question will be reflected on the other",
+          "questionToState": "Changes on the question will be reflected on the state",
+          "stateToQuestion": "Changes on the state will be reflected on the question"
+        },
+        "mapQuestionState": "Map question value to state",
+        "questionStateTab": {
+          "label": "State mapping",
+          "tooltip": "Configure state mapping, allowing the widget to interact with dashboard states"
+        }
+      },
       "grid": {
         "actions": {
           "detail": "Open detail",

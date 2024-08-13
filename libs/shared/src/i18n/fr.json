@@ -119,6 +119,9 @@
         "feminine": "Pendant la",
         "masculine": "Pendant le"
       },
+      "question": {
+        "one": "Question"
+      },
       "seconds": "Seconde(s)",
       "week": "Semaine",
       "weekDay": "Jour de la semaine (LUN-VEN)",
@@ -1329,6 +1332,7 @@
         "newFilter": "Nouveau filtre",
         "noFeatures": "Aucune fonctionnalité détectée",
         "noFilters": "Aucun filtre d'accès détecté",
+        "noForm": "Aucun formulaire détecté",
         "noForms": "Aucun formulaire détecté",
         "noSteps": "Aucune étape détectée",
         "removeFilter": "Supprimer le filtre",
@@ -1474,6 +1478,19 @@
         }
       },
       "expand": "Étendre",
+      "form": {
+        "addNewMapping": "Ajouter un mappage",
+        "directions": {
+          "both": "Les modifications apportées à l'état ou à la question seront répercutées sur l'autre",
+          "questionToState": "Les modifications apportées à la question seront répercutées sur l'état",
+          "stateToQuestion": "Les modifications apportées à l'état seront répercutées sur la question"
+        },
+        "mapQuestionState": "Mappez la valeur de la question à l'état",
+        "questionStateTab": {
+          "label": "Mappage d'état",
+          "tooltip": "Configurez le mappage d'état, permettant au widget d'interagir avec les états du tableau de bord"
+        }
+      },
       "grid": {
         "actions": {
           "detail": "Ouvrir le détail",

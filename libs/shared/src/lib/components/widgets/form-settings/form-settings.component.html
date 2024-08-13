@@ -27,4 +27,26 @@
       ></shared-display-settings>
     </ng-template>
   </ui-tab>
+  <!-- Map question value to state tab -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="list"
+        [size]="24"
+        [uiTooltip]="
+          'components.widget.form.questionStateTab.label' | translate
+        "
+      ></ui-icon>
+      <span>{{
+        'components.widget.form.questionStateTab.label' | translate
+      }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-tab-map-question-state
+        [formGroup]="widgetFormGroup"
+        [form]="form"
+        [formId]="this.widgetFormGroup.get('form')?.value"
+      ></shared-tab-map-question-state>
+    </ng-template>
+  </ui-tab>
 </ui-tabs>

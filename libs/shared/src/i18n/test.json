@@ -119,6 +119,9 @@
         "feminine": "******",
         "masculine": "******"
       },
+      "question": {
+        "one": "******"
+      },
       "seconds": "******",
       "week": "******",
       "weekDay": "******",
@@ -1318,6 +1321,7 @@
         "newFilter": "******",
         "noFeatures": "******",
         "noFilters": "******",
+        "noForm": "******",
         "noForms": "******",
         "noSteps": "******",
         "removeFilter": "******",
@@ -1462,6 +1466,19 @@
         }
       },
       "expand": "******",
+      "form": {
+        "addNewMapping": "******",
+        "directions": {
+          "both": "******",
+          "questionToState": "******",
+          "stateToQuestion": "******"
+        },
+        "mapQuestionState": "******",
+        "questionStateTab": {
+          "label": "******",
+          "tooltip": "******"
+        }
+      },
       "grid": {
         "actions": {
           "detail": "******",

@@ -1,0 +1,62 @@
+<!-- Loading indicator -->
+<ui-spinner
+  class="flex justify-center items-center"
+  *ngIf="loading"
+></ui-spinner>
+
+<ng-container *ngIf="!loading && form; else emptyTmpl">
+  <div class="flex justify-between items-center wrap">
+    <span class="flex gap-2 items-center">
+      <h2 class="m-0">
+        {{ 'components.widget.form.questionStateTab.label' | translate }}
+      </h2>
+      <ui-icon
+        icon="help"
+        [uiTooltip]="
+          'components.widget.form.questionStateTab.tooltip' | translate
+        "
+        variant="grey"
+      ></ui-icon>
+    </span>
+    <!-- Add new mapping button -->
+    <ui-button
+      class="ml-auto"
+      category="secondary"
+      variant="primary"
+      (click)="addMapping()"
+      icon="add"
+    >
+      {{ 'components.widget.form.addNewMapping' | translate }}
+    </ui-button>
+  </div>
+
+  <div *ngIf="mappings" class="ml-2 mt-3">
+    <!-- Mappings -->
+    <form [formGroup]="formGroup" class="flex">
+      <div
+        formArrayName="mapQuestionState"
+        *ngIf="mappings.length > 0"
+        class="flex flex-col gap-2"
+      >
+        <ng-container *ngFor="let mapping of mappings.controls; let i = index">
+          <!-- Nested mapping rules -->
+          <shared-map-question-state-rule
+            [form]="$any(mapping)"
+            [questions]="questions"
+            [states]="states"
+            (delete)="deleteMapping(i)"
+          ></shared-map-question-state-rule>
+        </ng-container>
+      </div>
+    </form>
+  </div>
+</ng-container>
+
+<!-- Empty template -->
+<ng-template #emptyTmpl>
+  <shared-empty
+    *ngIf="!loading"
+    [title]="'components.role.summary.noForm' | translate"
+  >
+  </shared-empty>
+</ng-template>

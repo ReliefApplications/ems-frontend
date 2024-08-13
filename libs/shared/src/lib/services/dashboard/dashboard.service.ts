@@ -15,7 +15,7 @@ import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { EDIT_DASHBOARD, UPDATE_PAGE_CONTEXT } from './graphql/mutations';
 import { GraphQLError } from 'graphql';
-import { cloneDeep, get } from 'lodash';
+import { cloneDeep, get, isEqual } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
@@ -318,6 +318,11 @@ export class DashboardService {
         (state: DashboardState) => state.id === id
       );
       if (oldStateIndex !== -1) {
+        // If state didn't change, do nothing to prevent unnecessary updates
+        if (isEqual(states[oldStateIndex].value, value)) {
+          return;
+        }
+
         states[oldStateIndex] = {
           ...states[oldStateIndex],
           value,
