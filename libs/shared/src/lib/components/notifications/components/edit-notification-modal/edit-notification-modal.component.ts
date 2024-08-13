@@ -186,6 +186,7 @@ export class EditNotificationModalComponent
         get(this.notification, 'schedule', ''),
         [Validators.required, cronValidator()],
       ],
+      status: 'active',
       notificationType: [{ value: 'email', disabled: true }],
       resource: [get(this.notification, 'resource', ''), Validators.required],
       layout: [get(this.notification, 'layout', ''), Validators.required],

@@ -12,6 +12,7 @@ export interface Notification {
   createdAt?: Date;
   channel?: Channel;
   seenBy?: User[];
+  user?: User;
 }
 
 /** Model for notification subscription response */

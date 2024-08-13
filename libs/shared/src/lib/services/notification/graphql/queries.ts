@@ -18,6 +18,9 @@ export const GET_NOTIFICATIONS = gql`
               id
             }
           }
+          user {
+            id
+          }
           seenBy {
             id
             name

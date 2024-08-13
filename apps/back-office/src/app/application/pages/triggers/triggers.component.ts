@@ -413,7 +413,7 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
       const formGroup = this.fb.group({
         name: [get(trigger, 'name', ''), Validators.required],
         applicationTrigger: true,
-        notification_status: 'active',
+        status: 'active',
         description: [get(trigger, 'description', '')],
         schedule: [get(trigger, 'schedule', '')],
         onRecordCreation: [get(trigger, 'onRecordCreation', false)],
