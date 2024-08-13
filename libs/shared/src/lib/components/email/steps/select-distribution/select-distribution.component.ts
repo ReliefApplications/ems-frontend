@@ -140,15 +140,22 @@ export class SelectDistributionComponent
     }
   }
 
+  /**
+   * Checks if all datasets are send separate email
+   *
+   * @returns boolean true if all are send separate
+   */
   isAllSeparate(): boolean {
     if (this.emailService.datasetsForm?.get('datasets')?.getRawValue()) {
       let separateEmailCount = 0;
-      const datasetsCount =
-        this.emailService.datasetsForm.get('datasets')?.value.length;
+      let datasetsCount = 0;
       for (const dataset of this.emailService.datasetsForm.get('datasets')
         ?.value ?? []) {
-        if (dataset.individualEmail) {
+        if (dataset.resource && dataset.individualEmail) {
+          datasetsCount += 1;
           separateEmailCount += 1;
+        } else if (dataset.resource) {
+          datasetsCount += 1;
         }
       }
 
