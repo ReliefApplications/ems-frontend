@@ -471,10 +471,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       );
       this.pageInfo.length = this.filterTemplateData.length;
     } else if (this.selectedTabIndex == 1) {
-      this.cacheDistributionListNames = this.dlNamesActualData?.filter(
-        (name: any) => name?.toLowerCase()?.includes(searchText?.toLowerCase())
+      this.uniqueDLNames = this.dlNamesActualData?.filter((name: any) =>
+        name?.toLowerCase()?.includes(searchText?.toLowerCase())
       );
-      this.distributionLists = this.cacheDistributionList.slice(
+      this.cacheDistributionListNames = this.uniqueDLNames;
+      this.uniqueDLNames = this.cacheDistributionListNames.slice(
         this.distributionPageInfo.pageSize *
           this.distributionPageInfo.pageIndex,
         this.distributionPageInfo.pageSize *
@@ -483,7 +484,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       this.distributionPageInfo.length = this.cacheDistributionListNames.length;
     } else if (this.selectedTabIndex == 2) {
       this.cacheTemplateList = this.customActualData?.filter((x: any) =>
-        x.subject.toLowerCase().includes(searchText.toLowerCase())
+        x.name.toLowerCase().includes(searchText.toLowerCase())
       );
       this.customTemplates = this.cacheTemplateList.slice(
         this.templatePageInfo.pageSize * this.templatePageInfo.pageIndex,
