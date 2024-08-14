@@ -71,6 +71,8 @@ export class PreviewComponent
   emailPreviewHtml: any = '<div></div>';
   /** Dataset form group */
   query: any;
+  /** Distribution List Send Separate */
+  distributionListSeparate: any = [];
   /** Distribution List To */
   distributionListTo: string[] = [];
   /** Distribution List Cc */
@@ -221,6 +223,11 @@ export class PreviewComponent
         this.distributionListTo = response?.to;
         this.distributionListCc = response?.cc;
         this.distributionListBcc = response?.bcc;
+        this.distributionListSeparate = response?.individualEmailList;
+        this.distributionListSeparate?.forEach((block: any) => {
+          block.isExpanded = false;
+          block.emails = Array.from(new Set(block.emails)); // Remove duplicate emails
+        });
       });
   }
 

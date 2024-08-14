@@ -227,11 +227,12 @@ export class DatasetFilterComponent
       .subscribe((value: any) => {
         if (
           value === true &&
-          this.selectedFieldsIndividualEmail?.length === 0
+          this.selectedFieldsIndividualEmail?.length === 0 &&
+          this.resource
         ) {
           this.onTabSelect(3, false);
           this.emailService.disableSaveAndProceed.next(true);
-        } else {
+        } else if (this.resource) {
           this.onTabSelect(0, false);
         }
       });
@@ -252,6 +253,11 @@ export class DatasetFilterComponent
   }
 
   override ngOnDestroy() {
+    if (!this.resource) {
+      if (this.query?.get('individualEmail') === true) {
+        this.query?.get('individualEmail').setValue(false);
+      }
+    }
     // Delete cache data
     if (this.query?.get('cacheData')) {
       this.query.get('cacheData').reset();

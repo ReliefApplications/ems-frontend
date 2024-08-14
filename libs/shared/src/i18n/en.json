@@ -1459,6 +1459,9 @@
 				"emailError": "Type emails here and hit ENTER to add them to the distribution list",
 				"label": "Distribution List Name*",
 				"noPreviewData": "Selected dataset does not contain any preview data",
+				"sendseparate": {
+					"list": "Send separate email recipients"
+				},
 				"separateEmail": "Send separate email",
 				"subscriptionList": "Subscription list",
 				"to": "To"

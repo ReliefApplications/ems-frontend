@@ -1459,6 +1459,9 @@
 				"emailError": "******",
 				"label": "******",
 				"noPreviewData": "******",
+				"sendseparate": {
+					"list": "******"
+				},
 				"separateEmail": "******",
 				"subscriptionList": "******",
 				"to": "******"

@@ -1459,6 +1459,9 @@
 				"emailError": "Tapez les e-mails ici et appuyez sur ENTRÉE pour les ajouter à la liste de distribution",
 				"label": "Nom de la liste de distribution*",
 				"noPreviewData": "L'ensemble de données sélectionné ne contient aucune donnée d'aperçu",
+				"sendseparate": {
+					"list": "Envoyer des e-mails à des destinataires distincts"
+				},
 				"separateEmail": "Envoyer un e-mail séparé",
 				"subscriptionList": "Liste d'abonnement",
 				"to": "À"
