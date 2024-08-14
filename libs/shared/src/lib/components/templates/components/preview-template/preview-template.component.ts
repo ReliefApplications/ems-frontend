@@ -201,16 +201,8 @@ export class PreviewTemplate {
       const text: any = {};
       // Extract the keys from the object to populate datasetFields
       this.data.selectedLayoutFields.forEach((key: any) => {
-        if (!datasetFieldsObj?.map((x: any) => x.field).includes(key.name)) {
-          datasetFieldsObj.push({
-            field: key.name,
-            name:
-              key.label ||
-              (key.name ? this.emailService.titleCase(key.name) : ''),
-            type: key.type,
-            fields: key?.fields,
-            kind: key.kind,
-          });
+        if (!datasetFieldsObj?.map((x: any) => x.name).includes(key.name)) {
+          datasetFieldsObj.push(key);
         }
       });
 
@@ -223,7 +215,7 @@ export class PreviewTemplate {
         });
 
       datasetFieldsObj
-        ?.map((x: any) => x.field)
+        ?.map((x: any) => x.name)
         ?.forEach((keyNm: any) => {
           const keyData = metaData
             .filter((x: any) => x.name == keyNm)?.[0]
@@ -263,7 +255,7 @@ export class PreviewTemplate {
       emailLayout: this.emailService.datasetsForm.value.emailLayout,
       tableInfo: [
         {
-          columns: previewData?.datasetFields,
+          columns: previewData?.datasetFieldsObj,
           records: previewData?.dataList,
           index: previewData?.tabIndex,
           name: previewData?.tabName,
