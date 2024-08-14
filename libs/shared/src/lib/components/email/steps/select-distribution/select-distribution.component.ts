@@ -159,7 +159,7 @@ export class SelectDistributionComponent
         }
       }
 
-      if (separateEmailCount === datasetsCount) {
+      if (separateEmailCount === datasetsCount && datasetsCount > 0) {
         this.emailDistributionList.get('name')?.patchValue('');
         this.clearDL(this.emailDistributionList.get('to') as FormGroup);
         this.clearDL(this.emailDistributionList.get('cc') as FormGroup);
