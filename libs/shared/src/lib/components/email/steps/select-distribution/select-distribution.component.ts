@@ -339,6 +339,11 @@ export class SelectDistributionComponent
     this.emailService.setDistributionList(this.emailDistributionList);
   }
 
+  /**
+   * Clear distribution list
+   *
+   * @param targetGroup Form group you want to clear
+   */
   clearDL(targetGroup: FormGroup): void {
     // Clear 'resource'
     targetGroup.get('resource')?.patchValue('');
