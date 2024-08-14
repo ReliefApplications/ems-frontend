@@ -336,7 +336,6 @@ export class EmailService {
       if (this.isAllSeparateEmail) {
         resolve(true);
       } else {
-        let valid = false;
         if (
           this.toDLHasFilter &&
           this.datasetsForm.getRawValue().emailDistributionList?.to?.resource
@@ -354,8 +353,7 @@ export class EmailService {
             )
             .toPromise()
             .then((response: any) => {
-              valid = response?.to.length > 0;
-              resolve(valid);
+              resolve(response?.to.length > 0);
             })
             .catch(() => {
               resolve(false);
