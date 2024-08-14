@@ -231,6 +231,8 @@ export class DatasetFilterComponent
         ) {
           this.onTabSelect(3, false);
           this.emailService.disableSaveAndProceed.next(true);
+        } else {
+          this.onTabSelect(0, false);
         }
       });
   }
