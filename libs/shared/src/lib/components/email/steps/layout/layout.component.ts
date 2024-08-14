@@ -172,7 +172,7 @@ export class LayoutComponent
     if (!this.emailService.isCustomTemplateEdit) {
       this.emailService.allLayoutdata.bodyHtml = this.emailService.isQuickAction
         ? '<p>{{Block 1}}</p>'
-        : '';
+        : this.emailService.allLayoutdata.bodyHtml;
       this.layoutForm = this.fb.group({
         subjectField: [''],
         timeInput: [''],
