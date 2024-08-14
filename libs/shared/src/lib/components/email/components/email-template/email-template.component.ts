@@ -401,9 +401,9 @@ export class EmailTemplateComponent
         this.emailService.disableSaveAsDraft.next(false);
       }
     }
-    if (!this.showDatasetLimitWarning) {
-      this.currentTabIndex = newIndex;
-    }
+    // if (!this.showDatasetLimitWarning) {
+    this.currentTabIndex = newIndex;
+    // }
   }
 
   /**
@@ -527,6 +527,14 @@ export class EmailTemplateComponent
       this.showFieldsWarning = true;
     } else {
       this.showFieldsWarning = false;
+    }
+
+    if (this.selectedFields?.length === 0) {
+      this.emailService.disableSaveAndProceed.next(true);
+    } else {
+      if (this.emailService.isToValid) {
+        this.emailService.disableSaveAndProceed.next(false);
+      }
     }
     return formArray;
   }
