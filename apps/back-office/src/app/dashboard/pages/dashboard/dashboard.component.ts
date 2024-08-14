@@ -29,6 +29,7 @@ import {
   AddDashboardTemplateMutationResponse,
   DeleteDashboardTemplatesMutationResponse,
   DashboardTemplate,
+  SnackbarSpinnerComponent,
 } from '@oort-front/shared';
 import {
   ADD_DASHBOARD_TEMPLATE,
@@ -133,6 +134,9 @@ export class DashboardComponent
   private mapExists = false;
   /** Map Status Subscription */
   private mapStatusSubscription?: Subscription;
+  /** Spinning snackbar */
+  private snackBarSpinner!: any;
+  private snackBarRef!: any;
 
   /** @returns type of context element */
   get contextType() {
@@ -255,6 +259,21 @@ export class DashboardComponent
           );
         }
       });
+  }
+
+  startSpinSnackbar(spinMessage: string) {
+    // Create a snackbar to indicate email is processing
+    this.snackBarRef = this.snackBar.openComponentSnackBar(
+      SnackbarSpinnerComponent,
+      {
+        duration: 0,
+        data: {
+          message: spinMessage,
+          loading: true,
+        },
+      }
+    );
+    this.snackBarSpinner = this.snackBarRef.instance.nestedComponent;
   }
 
   /**
@@ -899,11 +918,13 @@ export class DashboardComponent
         };
         // Sends export = true to map component when kendo export starts
         this.mapStatusService.updateExportingStatus(true);
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.export.loading', {
+        const pdfMessage = this.translate.instant(
+          'common.notifications.export.loading',
+          {
             type: 'PDF',
-          })
+          }
         );
+        this.startSpinSnackbar(pdfMessage);
 
         if (this.mapExists) {
           this.mapStatusService.mapReadyForExport$
@@ -919,7 +940,7 @@ export class DashboardComponent
                   resultValue.paperSize
                 );
                 saveAs(pdfData, `${this.dashboard?.name}.pdf`);
-                this.mapStatusService.clearLoadedMaps();
+                await this.mapStatusService.clearLoadedMaps();
               }, 500);
             });
         } else {
@@ -929,12 +950,15 @@ export class DashboardComponent
             resultValue.paperSize
           );
           saveAs(pdfData, `${this.dashboard?.name}.pdf`);
-          this.mapStatusService.clearLoadedMaps();
+          await this.mapStatusService.clearLoadedMaps();
         }
+
         setTimeout(async () => {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.export.pdf')
+          this.snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.export.pdf'
           );
+          this.snackBarSpinner.instance.loading = false;
+          this.snackBarRef.instance.triggerSnackBar(700);
         }, 500);
       }
     });
@@ -1025,7 +1049,7 @@ export class DashboardComponent
           includeHeaderFooter: boolean;
         };
 
-        this.snackBar.openSnackBar(
+        this.startSpinSnackbar(
           this.translate.instant('common.notifications.export.loading', {
             type: resultValue.format.toUpperCase(),
           })
@@ -1049,7 +1073,7 @@ export class DashboardComponent
                 // Draws the Dashboard in its current state
                 const pngData = await this.pngDrawer(includeHeaderFooter);
                 saveAs(pngData, `${this.dashboard?.name}.${format}`);
-                this.mapStatusService.clearLoadedMaps();
+                await this.mapStatusService.clearLoadedMaps();
               }, 500);
             });
         } else {
@@ -1057,14 +1081,18 @@ export class DashboardComponent
           includeHeaderFooter = resultValue.includeHeaderFooter;
           const pngData = await this.pngDrawer(includeHeaderFooter);
           saveAs(pngData, `${this.dashboard?.name}.${format}`);
-          this.mapStatusService.clearLoadedMaps();
+          await this.mapStatusService.clearLoadedMaps();
         }
+
         setTimeout(async () => {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.export.image', {
+          this.snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.export.image',
+            {
               image: resultValue.format.toUpperCase(),
-            })
+            }
           );
+          this.snackBarSpinner.instance.loading = false;
+          this.snackBarRef.instance.triggerSnackBar(700);
         }, 1000);
       }
     });
