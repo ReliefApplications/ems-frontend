@@ -36,6 +36,7 @@ export const GET_RESOURCES = gql`
             onRecordCreation
             onRecordUpdate
             applicationTrigger
+            redirect
           }
         }
         cursor
@@ -74,6 +75,7 @@ export const GET_RESOURCE = gql`
         onRecordCreation
         onRecordUpdate
         applicationTrigger
+        redirect
       }
       metadata {
         name

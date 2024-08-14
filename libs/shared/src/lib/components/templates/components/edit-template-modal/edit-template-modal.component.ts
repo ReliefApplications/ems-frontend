@@ -81,7 +81,6 @@ export class EditTemplateModalComponent
     body: [get(this.data, 'content.body', '')],
     description: [get(this.data, 'content.description', '')],
     title: [get(this.data, 'content.title', null)],
-    redirect: [get(this.data, 'content.redirect', null)], // TODO
   });
 
   /** tinymce body editor */

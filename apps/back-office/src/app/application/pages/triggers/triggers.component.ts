@@ -96,7 +96,7 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
 
   /** PAGINATION */
   /** Loading status */
-  public loading = true; // First load && pagination
+  public loading = true;
   /** Page info */
   public pageInfo = {
     pageIndex: 0,
@@ -400,7 +400,6 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
         name: [get(trigger, 'name', ''), Validators.required],
         applicationTrigger: true,
         status: 'active',
-        description: [get(trigger, 'description', '')],
         schedule: [get(trigger, 'schedule', '')],
         onRecordCreation: [get(trigger, 'onRecordCreation', false)],
         onRecordUpdate: [get(trigger, 'onRecordUpdate', false)],
@@ -422,6 +421,11 @@ export class TriggersComponent extends UnsubscribeComponent implements OnInit {
           Validators.required,
         ],
         recipients: [get(trigger, 'recipients', ''), Validators.required],
+        redirect: this.fb.group({
+          active: [get(trigger, 'redirect.active', '')],
+          type: [get(trigger, 'redirect.type', '')],
+          url: [get(trigger, 'redirect.url', '')],
+        }),
       });
 
       if (triggerType === Triggers.cronBased) {

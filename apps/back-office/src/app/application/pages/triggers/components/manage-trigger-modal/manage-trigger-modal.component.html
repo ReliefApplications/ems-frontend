@@ -68,7 +68,7 @@
         >
         </ui-button>
       </div>
-      <!-- Schedule -->
+      <!-- Cron Schedule -->
       <ng-container *ngIf="data.triggerType === TriggersEnum.cronBased">
         <shared-cron-expression-control
           class="flex"
@@ -76,8 +76,54 @@
         ></shared-cron-expression-control>
       </ng-container>
 
-      <ui-divider class="mb-2"></ui-divider>
+      <ng-container *ngIf="formGroup.value.notificationType === 'notification'">
+        <!-- Notification redirect options for if trigger type is notification -->
+        <div formGroupName="redirect" class="flex flex-col mt-2">
+          <!-- Active notification redirection -->
+          <ui-checkbox formControlName="active" (change)="onRedirectToggle()">
+            <ng-container ngProjectAs="label">{{
+              'components.triggers.redirect.active'
+                | translate
+            }}</ng-container>
+          </ui-checkbox>
+          <ng-container *ngIf="formGroup.value.redirect.active">
+            <!-- Notification redirection type -->
+            <div uiFormFieldDirective [outline]="false" class="w-full">
+              <label>{{ 'components.triggers.redirect.type' | translate }}</label>
+              <ui-select-menu
+                (selectedOption)="onRedirectTypeChange($any($event))"
+                formControlName="type"
+              >
+                <ui-select-option value="url">
+                  {{ 'components.triggers.redirect.url' | translate }}
+                </ui-select-option>
+                <ui-select-option value="recordIds">
+                  {{ 'components.triggers.redirect.recordIds' | translate }}
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
+            <!--Ifn notification redirection type === url/page: select a page -->
+            <div *ngIf="formGroup.value.redirect.type === 'url'" uiFormFieldDirective class="w-full">
+              <ng-container ngProjectAs="label">
+                <label> {{ 'components.widget.settings.grid.actions.goTo.target.label' | translate }} </label>
+              </ng-container>
+              <ui-select-menu
+                formControlName="url"
+                [placeholder]="'components.widget.settings.grid.actions.goTo.target.placeholder' | translate "
+              >
+                <ui-select-option
+                  *ngFor="let page of pages"
+                  [value]="page.urlParams"
+                >
+                  {{ page.name }}
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
 
+      <ui-divider class="mb-2"></ui-divider>
       <h3>{{ 'components.customNotifications.edit.dataset' | translate }}</h3>
       <!-- Resource (disabled) -->
       <div uiFormFieldDirective [outline]="false" class="w-full">

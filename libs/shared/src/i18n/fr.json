@@ -1423,6 +1423,12 @@
       "notification": "Notification",
       "onRecordCreation": "Création d'un enregistrement",
       "onRecordUpdate": "Mise à jour sur l'enregistrement",
+      "redirect": {
+        "active": "Ajouter une redirection lors d'un clic sur une notification",
+        "recordIds": "Redirection vers les détails du ou des enregistrements",
+        "type": "Type de redirection",
+        "url": "Redirection vers la page"
+      },
       "selectNotificationType": "Veuillez d'abord sélectionner un type de notification",
       "tooltip": {
         "noFilterCronBasedTrigger": "Ce filtre n'affecte pas les déclencheurs basés sur Cron",

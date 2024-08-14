@@ -1411,6 +1411,12 @@
       "notification": "Notification",
       "onRecordCreation": "On Record Creation",
       "onRecordUpdate": "On Record Update",
+      "redirect": {
+        "active": "Add redirection when clicking on notification",
+        "recordIds": "Redirect to record(s) details",
+        "type": "Redirection type",
+        "url": "Redirect to page"
+      },
       "selectNotificationType": "Please select a notification type first",
       "tooltip": {
         "noFilterCronBasedTrigger": "This filter doesn't affect cron based triggers",

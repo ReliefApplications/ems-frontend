@@ -66,6 +66,8 @@ export class ManageTriggerModalComponent
   public layout?: Layout;
   /** List of channels */
   public channels?: Channel[];
+  /** Available pages from the application */
+  public pages: any[] = [];
   /** List of recipients options depending on selected type */
   public recipientsTypeOptions?:
     | typeof emailRecipientsOptions
@@ -131,6 +133,9 @@ export class ManageTriggerModalComponent
     if (this.data.trigger?.layout) {
       this.getLayout(this.data.trigger?.layout);
     }
+
+    // Get available application pages
+    this.pages = this.applicationService.getPages();
 
     // Add email validation to recipients field if recipients type is email
     this.formGroup
@@ -236,7 +241,47 @@ export class ManageTriggerModalComponent
   }
 
   /**
-   * Unset layout.
+   * Handle redirect active or not:
+   * If redirection not active, remove validator from url and type controls if necessary.
+   * If active, add validator to type.
+   */
+  public onRedirectToggle(): void {
+    if (!this.formGroup.value.redirect.active) {
+      this.formGroup
+        .get('redirect.type')
+        ?.removeValidators(Validators.required);
+      this.onRedirectTypeChange(undefined);
+    } else {
+      this.formGroup.get('redirect.type')?.addValidators(Validators.required);
+    }
+    this.formGroup.get('redirect.type')?.updateValueAndValidity();
+  }
+
+  /**
+   * Handle redirect type change.
+   *
+   * @param type selected notification type
+   */
+  public onRedirectTypeChange(type: 'url' | 'recordIds' | undefined): void {
+    if (!this.init) {
+      this.formGroup.get('redirect.url')?.setValue('');
+    }
+    if (type) {
+      if (type === 'url') {
+        this.formGroup.get('redirect.url')?.addValidators(Validators.required);
+      } else {
+        this.formGroup
+          .get('redirect.url')
+          ?.removeValidators(Validators.required);
+      }
+    } else {
+      this.formGroup.get('redirect.url')?.removeValidators(Validators.required);
+    }
+    this.formGroup.get('redirect.url')?.updateValueAndValidity();
+  }
+
+  /**
+   * Handle notification type change.
    *
    * @param type selected notification type
    */
@@ -244,11 +289,16 @@ export class ManageTriggerModalComponent
     if (!this.init) {
       this.formGroup.get('recipients')?.setValue('');
       this.formGroup.get('recipientsType')?.setValue('');
+      this.formGroup.get('template')?.setValue('');
     }
     if (type) {
       if (type === NotificationType.email) {
+        this.formGroup.get('redirect.active')?.setValue(false);
+        this.formGroup.get('redirect.type')?.setValue('');
+        this.onRedirectToggle();
         this.recipientsTypeOptions = emailRecipientsOptions;
       } else {
+        this.onRedirectToggle();
         this.recipientsTypeOptions = notificationRecipientsOptions;
       }
     }

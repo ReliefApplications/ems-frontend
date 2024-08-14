@@ -1411,6 +1411,12 @@
       "notification": "******",
       "onRecordCreation": "******",
       "onRecordUpdate": "******",
+      "redirect": {
+        "active": "******",
+        "recordIds": "******",
+        "type": "******",
+        "url": "******"
+      },
       "selectNotificationType": "******",
       "tooltip": {
         "noFilterCronBasedTrigger": "******",

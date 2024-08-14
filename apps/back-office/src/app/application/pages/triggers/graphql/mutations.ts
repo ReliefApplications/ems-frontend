@@ -20,6 +20,7 @@ export const EDIT_RESOURCE_TRIGGERS_FILTERS = gql`
         onRecordCreation
         onRecordUpdate
         applicationTrigger
+        redirect
       }
     }
   }

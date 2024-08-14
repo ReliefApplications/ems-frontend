@@ -29,7 +29,12 @@ export interface CustomNotification {
   onRecordCreation?: boolean;
   onRecordUpdate?: boolean;
   applicationTrigger?: boolean;
-  filter?: any;
+  redirect?: {
+    active: boolean;
+    type: 'url' | 'recordIds';
+    url?: string;
+    recordIds?: string[];
+  };
 }
 
 /** Model for add custom notification mutation response */

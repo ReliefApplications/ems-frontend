@@ -4,6 +4,7 @@ import { TriggersComponent } from './triggers.component';
 import {
   AlertModule,
   ButtonModule,
+  CheckboxModule,
   DialogModule,
   DividerModule,
   ErrorMessageModule,
@@ -67,6 +68,7 @@ import { TriggersListComponent } from './components/triggers-list/triggers-list.
     ErrorMessageModule,
     AlertModule,
     MenuModule,
+    CheckboxModule,
   ],
 })
 export class TriggersModule {}
