@@ -135,8 +135,6 @@ export class LayoutComponent
   public otherOffice = '';
   /** Environment */
   public environment: any;
-  /** Is in application */
-  private inApplication = false;
 
   // === APP SEARCH ===
   /** Show app search */
@@ -229,7 +227,6 @@ export class LayoutComponent
 
   ngOnInit(): void {
     if (this.environment.module === 'backoffice') {
-      this.inApplication = this.router.url.includes('/applications/');
       this.otherOffice = 'front office';
     } else {
       this.otherOffice = 'back office';
@@ -412,10 +409,15 @@ export class LayoutComponent
   onNotificationRedirect(notification: Notification): void {
     if (notification.redirect && notification.redirect.active) {
       const redirect = notification.redirect;
-      if (redirect.recordIds) {
+      if (redirect.type === 'recordIds' && redirect.recordIds) {
         this.notificationService.redirectToRecords(notification);
-      } else if (redirect.url) {
-        // TODO: add function redirectToPage
+      } else if (redirect.type === 'url' && redirect.url) {
+        // Redirect to page
+        const fullUrl =
+          this.environment.module === 'backoffice'
+            ? `applications/${redirect.url}`
+            : `${redirect.url}`;
+        this.router.navigateByUrl(fullUrl);
       }
     }
   }
