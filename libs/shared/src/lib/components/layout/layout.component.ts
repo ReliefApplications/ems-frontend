@@ -396,12 +396,28 @@ export class LayoutComponent
   }
 
   /**
-   * Marks notification as seen when clicking on it
+   * Marks notification as seen when clicking on the read button
    *
    * @param notification The notification that was clicked on
    */
-  onNotificationClick(notification: Notification): void {
+  onNotificationRead(notification: Notification): void {
     this.notificationService.markAsSeen(notification);
+  }
+
+  /**
+   * Check if notification has redirect option when clicking on it
+   *
+   * @param notification The notification that was clicked on
+   */
+  onNotificationRedirect(notification: Notification): void {
+    if (notification.redirect && notification.redirect.active) {
+      const redirect = notification.redirect;
+      if (redirect.recordIds) {
+        this.notificationService.redirectToRecords(notification);
+      } else if (redirect.url) {
+        // TODO: add function redirectToPage
+      }
+    }
   }
 
   /**

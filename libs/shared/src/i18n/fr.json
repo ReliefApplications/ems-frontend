@@ -1049,6 +1049,8 @@
       "value": "Valeur"
     },
     "notifications": {
+      "noRecord": "Aucun enregistrement à rediriger",
+      "noRedirect": "Impossible de rediriger. Informations manquantes.",
       "paginator": {
         "ariaLabel": "Sélectionnez la page de notifications"
       },

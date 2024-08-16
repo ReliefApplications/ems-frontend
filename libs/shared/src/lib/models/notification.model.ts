@@ -13,6 +13,14 @@ export interface Notification {
   channel?: Channel;
   seenBy?: User[];
   user?: User;
+  redirect?: {
+    active: boolean;
+    type: 'url' | 'recordIds';
+    url?: string;
+    recordIds?: string[];
+    layout?: string;
+    resource?: string;
+  };
 }
 
 /** Model for notification subscription response */

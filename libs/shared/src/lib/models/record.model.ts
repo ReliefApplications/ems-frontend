@@ -27,6 +27,7 @@ export interface Record {
   canUpdate?: boolean;
   canDelete?: boolean;
   validationErrors?: { question: string; errors: string[] }[];
+  userCanEdit?: boolean;
 }
 
 /** Model for record graphql query response */

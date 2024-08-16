@@ -1038,6 +1038,8 @@
       "value": "Value"
     },
     "notifications": {
+      "noRecord": "No record to be redirected",
+      "noRedirect": "Can't redirect. Missing information.",
       "paginator": {
         "ariaLabel": "Select page of notifications"
       },

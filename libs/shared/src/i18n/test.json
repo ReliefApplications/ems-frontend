@@ -1038,6 +1038,8 @@
       "value": "******"
     },
     "notifications": {
+      "noRecord": "******",
+      "noRedirect": "******",
       "paginator": {
         "ariaLabel": "******"
       },

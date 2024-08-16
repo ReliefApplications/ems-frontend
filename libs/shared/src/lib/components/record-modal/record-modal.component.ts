@@ -28,6 +28,7 @@ import { FormActionsModule } from '../form-actions/form-actions.module';
 import { DateModule } from '../../pipes/date/date.module';
 import { SpinnerModule, ButtonModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { isNil } from 'lodash';
 
 /**
  * Interface that describes the structure of the data that will be shown in the dialog
@@ -157,6 +158,9 @@ export class RecordModalComponent
           })
         ).then(({ data }) => {
           this.record = data.record;
+          this.canEdit = !isNil(this.data.canUpdate)
+            ? this.data.canUpdate
+            : this.record.userCanEdit;
           this.modifiedAt = this.record.modifiedAt || null;
           if (!this.data.template) {
             this.form = this.record.form;
