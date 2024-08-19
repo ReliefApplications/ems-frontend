@@ -9,7 +9,7 @@
       <h1>{{ 'common.distributionList.one' | translate }}</h1>
     </div>
     <div
-      *ngIf="this.emailService.datasetsForm.value.emailDistributionList.name"
+      *ngIf="this.emailService.datasetsForm.value.emailDistributionList?.name"
     >
       <!-- Distribution List -->
       <div class="mb-4">
@@ -120,7 +120,7 @@
             </ng-container>
           </div>
           <ui-button
-            *ngIf="distributionListCc.length > 6 && !isExpandedCc"
+            *ngIf="distributionListCc?.length > 6 && !isExpandedCc"
             variant="primary"
             class="inline-block"
             (click)="toggleExpandCc()"
