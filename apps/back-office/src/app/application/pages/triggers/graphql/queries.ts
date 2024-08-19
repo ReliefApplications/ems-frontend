@@ -37,6 +37,7 @@ export const GET_RESOURCES = gql`
             onRecordUpdate
             applicationTrigger
             redirect
+            filter
           }
         }
         cursor
@@ -57,7 +58,6 @@ export const GET_RESOURCE = gql`
       id
       name
       fields
-      triggersFilters
       hasLayouts
       queryName
       customNotifications(application: $application) {
@@ -76,6 +76,7 @@ export const GET_RESOURCE = gql`
         onRecordUpdate
         applicationTrigger
         redirect
+        filter
       }
       metadata {
         name

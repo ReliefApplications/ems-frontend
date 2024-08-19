@@ -29,6 +29,7 @@ export interface CustomNotification {
   onRecordCreation?: boolean;
   onRecordUpdate?: boolean;
   applicationTrigger?: boolean;
+  filter?: any;
   redirect?: {
     active: boolean;
     type: 'url' | 'recordIds';

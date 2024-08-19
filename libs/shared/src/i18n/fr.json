@@ -1420,11 +1420,11 @@
         "userField": "Champ de l'utilisateur"
       },
       "editTrigger": "Modifier {{type}} déclencheur",
-      "noFilters": "Aucun filtre de déclenchement détecté",
       "noTriggers": "Aucun déclencheur détecté",
       "notification": "Notification",
       "onRecordCreation": "Création d'un enregistrement",
       "onRecordUpdate": "Mise à jour sur l'enregistrement",
+      "openFilter": "OUVRIR LE FILTRE",
       "redirect": {
         "active": "Ajouter une redirection lors d'un clic sur une notification",
         "recordIds": "Redirection vers les détails du ou des enregistrements",
@@ -1433,13 +1433,7 @@
       },
       "selectNotificationType": "Veuillez d'abord sélectionner un type de notification",
       "tooltip": {
-        "noFilterCronBasedTrigger": "Ce filtre n'affecte pas les déclencheurs basés sur Cron",
-        "noFilterOnRecordCreationTrigger": "Ce filtre n'affecte pas les déclencheurs de création d'enregistrement",
-        "noFilterOnRecordUpdateTrigger": "Ce filtre n'affecte pas les déclencheurs de mise à jour des enregistrements",
         "withCronBasedTrigger": "Ressource avec un déclencheur basé sur cron",
-        "withFilterCronBasedTrigger": "Ce filtre affecte les déclencheurs basés sur Cron",
-        "withFilterOnRecordCreationTrigger": "Ce filtre affecte les déclencheurs de création d'enregistrement",
-        "withFilterOnRecordUpdateTrigger": "Ce filtre affecte les déclencheurs de mise à jour des enregistrements",
         "withOnRecordCreationTrigger": "Ressource avec un déclencheur lors de la création d'un enregistrement",
         "withOnRecordUpdateTrigger": "Ressource avec un déclencheur lors de la mise à jour de l'enregistrement",
         "withoutCronBasedTrigger": "Ressource sans aucun déclencheur basé sur cron",

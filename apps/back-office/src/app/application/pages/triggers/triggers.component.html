@@ -87,22 +87,17 @@
         "
       >
         <ng-container *ngIf="openedResource && element.resource.id === openedResource?.id">
-          <!-- Triggers filters -->
-           <app-triggers-resource-filters
-            *ngIf="openedResource"
-            [disabled]="loading || updating"
-            [resource]="openedResource"
-            [applicationId]="applicationId"
-            (update)="editResourceTriggersFilters(element.resource, $event)"
-           ></app-triggers-resource-filters>
-
            <!-- Triggers list -->
            <app-triggers-list
             [disabled]="loading || updating"
+            [applicationId]="applicationId"
+            [openedResource]="openedResource"
             [triggersList]="$any(openedResource.customNotifications)"
             (onAdd)="onCreateTrigger($event.type)"
             (onEdit)="onEditTrigger($event.trigger, $event.type)"
             (onDelete)="onDeleteTrigger($event.trigger)"
+            (edited)="handleTriggerEdition($event.trigger)"
+            (updating)="updating = $event"
            ></app-triggers-list>
         </ng-container>
       </div>

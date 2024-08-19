@@ -75,7 +75,18 @@
           <td uiCell *cdkCellDef="let element; let index = index">
             <div class="flex flex-row items-center">
               <ui-button
-                [isIcon]="true"
+                variant="primary"
+                category="secondary"
+                (click)="
+                  $event.stopPropagation();
+                  onOpenFilter(element.trigger)
+                "
+                [disabled]="disabled"
+                [uiTooltip]="'common.edit' | translate"
+              >
+                {{ 'components.triggers.openFilter' | translate }}
+              </ui-button>
+              <ui-button
                 icon="edit"
                 [isIcon]="true"
                 variant="primary"
@@ -88,7 +99,6 @@
               >
               </ui-button>
               <ui-button
-                [isIcon]="true"
                 icon="delete"
                 [isIcon]="true"
                 variant="danger"

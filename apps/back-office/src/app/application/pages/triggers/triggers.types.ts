@@ -1,5 +1,3 @@
-import { Access } from '@oort-front/shared';
-
 /** Triggers type for Resource */
 export enum Triggers {
   cronBased = 'cronBased',
@@ -12,14 +10,6 @@ export enum NotificationType {
   email = 'email',
   notification = 'notification',
 }
-
-/** Resource triggers filters type */
-export type ResourceTriggersFilters = {
-  filter: Access;
-  triggers: {
-    [key in Triggers]: boolean;
-  };
-};
 
 /**
  * Triggers typw

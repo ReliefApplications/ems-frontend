@@ -1,4 +1,3 @@
-import { Access } from '../services/filters/filters.service';
 import { Connection } from '../utils/graphql/connection.type';
 import { Aggregation } from './aggregation.model';
 import { CustomNotification } from './custom-notification.model';
@@ -40,16 +39,7 @@ export interface Resource {
   importField?: string;
   customNotifications?: CustomNotification[];
   hasLayouts?: boolean;
-  triggersFilters?: TriggersFilters[];
 }
-
-/** Resource triggers filters type */
-export type TriggersFilters = {
-  application?: string;
-  cronBased?: Access;
-  onRecordCreation?: Access;
-  onRecordUpdate?: Access;
-};
 
 /** Model for resource query response object */
 export interface ResourceQueryResponse {
