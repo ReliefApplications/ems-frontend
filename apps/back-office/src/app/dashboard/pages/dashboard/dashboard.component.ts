@@ -136,6 +136,7 @@ export class DashboardComponent
   private mapStatusSubscription?: Subscription;
   /** Spinning snackbar */
   private snackBarSpinner!: any;
+  /** Snack bar reference */
   private snackBarRef!: any;
 
   /** @returns type of context element */
@@ -261,6 +262,11 @@ export class DashboardComponent
       });
   }
 
+  /**
+   * Starts the spinning snackbar
+   *
+   * @param spinMessage Spin message for loading snackbar
+   */
   startSpinSnackbar(spinMessage: string) {
     // Create a snackbar to indicate email is processing
     this.snackBarRef = this.snackBar.openComponentSnackBar(
