@@ -978,7 +978,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
                   this.translate.instant(
                     'common.notifications.objectNotDeleted',
                     {
-                      type: this.translate.instant(
+                      value: this.translate.instant(
                         'common.email.notification.one'
                       ),
                       error: errors ? errors[0].message : '',
