@@ -545,6 +545,7 @@ export class SelectDistributionComponent
           await this.validateDistributionList();
 
           if (this.fileElement) this.fileElement.nativeElement.value = '';
+          event.target.value = null;
           this.snackBar.openSnackBar(
             this.translate.instant(
               'components.email.distributionList.import.success'
@@ -613,7 +614,7 @@ export class SelectDistributionComponent
           })
           .catch((error) => {
             console.error(error);
-            this.emailService.filterToEmails = [];
+            // this.emailService.filterToEmails = [];
             resolve(false);
           });
       } else {

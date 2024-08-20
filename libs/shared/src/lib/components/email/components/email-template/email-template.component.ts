@@ -461,7 +461,15 @@ export class EmailTemplateComponent
           .subscribe(
             async (response: any) => {
               this.showPreview = true;
-              this.emailService.filterToEmails = [];
+              const previewHTML = document.getElementById(
+                'tblPreview'
+              ) as HTMLInputElement;
+              if (previewHTML) {
+                previewHTML.innerHTML =
+                  '<table border="0" width="760" align="center" cellpadding="0" cellspacing="0">\n                <tbody><tr bgcolor="#00205c">\n                    <td height="40">\n                    Distribution List Preview</td>\n                </tr>\n                <tr>\n                    <td bgcolor="#fff" height="5"></td>\n            </tr>\n            </tbody>\n            </table><table bgcolor="ffffff" border="0" width="760" align="center" cellpadding="0" cellspacing="0"><thead><tr bgcolor="#00205c"><th align="left">Email</th></tr></thead><tbody><tr><td></td></tr></tbody></table>';
+              }
+              this.emailService.filterToEmails =
+                this.type === 'to' ? [] : this.emailService.filterToEmails;
               // Navigates straight to preview tab if didn't fail before
 
               this.onTabSelect(2, false);
@@ -469,18 +477,19 @@ export class EmailTemplateComponent
               if (response.count <= 50) {
                 this.showDatasetLimitWarning = false;
               } else {
-                this.previewHTML = '';
                 this.totalMatchingRecords = response.count;
                 this.showDatasetLimitWarning = true;
               }
               await this.checkFilter();
 
               this.previewHTML = window.atob(response.tableHtml);
-              const previewHTML = document.getElementById(
-                'tblPreview'
-              ) as HTMLInputElement;
+              // const previewHTML = document.getElementById(
+              //   'tblPreview'
+              // ) as HTMLInputElement;
               if (previewHTML) {
-                previewHTML.innerHTML = this.previewHTML;
+                setTimeout(() => {
+                  previewHTML.innerHTML = this.previewHTML;
+                }, 200);
               }
 
               this.loading = false;
@@ -532,7 +541,7 @@ export class EmailTemplateComponent
       this.showFieldsWarning = false;
     }
 
-    if (this.selectedFields?.length === 0) {
+    if (this.selectedFields?.length === 0 || this.showFieldsWarning) {
       this.emailService.disableSaveAndProceed.next(true);
     } else {
       if (this.emailService.isToValid) {
@@ -691,7 +700,8 @@ export class EmailTemplateComponent
         })
         .catch((error) => {
           console.error(error);
-          this.emailService.filterToEmails = [];
+          this.emailService.filterToEmails =
+            this.type === 'to' ? [] : this.emailService.filterToEmails;
           resolve(false);
         });
     });
