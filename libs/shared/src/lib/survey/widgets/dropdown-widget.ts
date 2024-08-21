@@ -1,8 +1,14 @@
+import { QuestionSelectBase } from './../types';
 import { ComboBoxComponent } from '@progress/kendo-angular-dropdowns';
 import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
-import { CustomWidgetCollection, QuestionDropdownModel } from 'survey-core';
-import { has, isArray, isEqual, isObject } from 'lodash';
+import {
+  CustomWidgetCollection,
+  ItemValue,
+  QuestionDropdownModel,
+  Serializer,
+} from 'survey-core';
+import { has, isArray, isEqual, isObject, isNil } from 'lodash';
 import { debounceTime, map, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
 
@@ -23,6 +29,19 @@ export const init = (
     widgetIsLoaded: (): boolean => true,
     isFit: (question: Question): boolean => question.getType() === 'dropdown',
     isDefaultRender: true,
+    init: (): void => {
+      Serializer.addProperty('selectbase', {
+        name: 'choicesExpression:expression',
+        category: 'Choices from expression',
+        onExecuteExpression: (obj: QuestionSelectBase, res: unknown) => {
+          if (Array.isArray(res)) {
+            obj.choices = res
+              .filter((item) => !isNil(item))
+              .map((item) => new ItemValue(item));
+          }
+        },
+      });
+    },
     afterRender: (
       question: QuestionDropdownModel,
       el: HTMLInputElement
