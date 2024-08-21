@@ -353,7 +353,7 @@
               class="mt-2"
               *ngTemplateOutlet="showDLPreview"
             ></ng-container>
-            <div id="tblPreview" [innerHTML]="previewHTML"></div>
+            <div id="tblPreview" #tblPreview [innerHTML]="previewHTML"></div>
           </ng-template>
         </ui-tab>
       </div>

@@ -1,10 +1,12 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnDestroy,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -174,6 +176,10 @@ export class EmailTemplateComponent
 
   /** Flag to show the Child fields limit warning. */
   public showFieldsWarning = false;
+
+  /** Reference to tblPreview element. */
+  @ViewChild('tblPreview', { static: false })
+  tblPreview!: ElementRef<any>;
 
   /**
    * Composite filter group.
@@ -479,12 +485,9 @@ export class EmailTemplateComponent
               await this.checkFilter();
 
               this.previewHTML = window.atob(response.tableHtml);
-              // const previewHTML = document.getElementById(
-              //   'tblPreview'
-              // ) as HTMLInputElement;
-              if (previewHTML) {
+              if (this.tblPreview?.nativeElement) {
                 setTimeout(() => {
-                  previewHTML.innerHTML = this.previewHTML;
+                  this.tblPreview.nativeElement.innerHTML = this.previewHTML;
                 }, 0);
               }
 
