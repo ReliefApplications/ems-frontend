@@ -249,7 +249,10 @@ export class EmailTemplateComponent
 
     if (hasSelectedEmails && hasFields) {
       this.updateSegmentOptions('Use Combination');
-    } else if (!hasSelectedEmails && hasFields) {
+    } else if (
+      !hasSelectedEmails &&
+      (hasFields || this.selectedResourceId !== '')
+    ) {
       this.updateSegmentOptions('Select With Filter');
     } else {
       this.updateSegmentOptions('Add Manually');
