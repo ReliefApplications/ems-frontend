@@ -170,9 +170,11 @@ export class LayoutComponent
   ngOnInit(): void {
     this.emailService.createPreviewData();
     if (!this.emailService.isCustomTemplateEdit) {
-      this.emailService.allLayoutdata.bodyHtml = this.emailService.isQuickAction
-        ? '<p>{{Block 1}}</p>'
-        : this.emailService.allLayoutdata.bodyHtml;
+      this.emailService.allLayoutdata.bodyHtml =
+        this.emailService.isQuickAction &&
+        this.emailService.allLayoutdata?.bodyHtml?.trim() === ''
+          ? '<p>{{Block 1}}</p>'
+          : this.emailService.allLayoutdata.bodyHtml;
       this.layoutForm = this.fb.group({
         subjectField: [''],
         timeInput: [''],
@@ -314,15 +316,19 @@ export class LayoutComponent
     }
 
     this.showBodyValidator = isUndefined;
-
+    let checkDuplicateName = false;
+    if (
+      this.emailService.customTemplateNames.includes(
+        this.emailService.layoutTitle.trim().toLowerCase()
+      ) &&
+      !this.emailService.isCustomTemplateEdit
+    ) {
+      checkDuplicateName = true;
+    }
     if (
       this.showSubjectValidator ||
       this.showBodyValidator ||
-      ((this.emailService.layoutTitle.trim().length === 0 ||
-        this.emailService.customTemplateNames.includes(
-          this.emailService.layoutTitle.trim().toLowerCase()
-        )) &&
-        this.emailService.isQuickAction)
+      (checkDuplicateName && this.emailService.isQuickAction)
     ) {
       this.emailService.disableSaveAndProceed.next(true);
       this.emailService.stepperDisable.next({ id: 4, isValid: false });

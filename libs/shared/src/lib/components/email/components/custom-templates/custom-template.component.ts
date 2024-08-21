@@ -35,6 +35,8 @@ export class CustomTemplateComponent implements OnInit {
   ];
   /** Custom Layout tile */
   public layoutTitle = '';
+  /** Custom Layout tile isDuplicate ? */
+  public isDuplicateTitle = false;
 
   /**
    * Angular Component constructor
@@ -157,9 +159,25 @@ export class CustomTemplateComponent implements OnInit {
    */
   next() {
     this.currentStep = 1;
-    if (this.emailService.disableNextActionBtn) {
+    if (!this.emailService.disableNextActionBtn) {
       this.updateStep(false);
+    } else {
+      this.updateStep(true);
     }
+  }
+
+  /**
+   *
+   * Move to next step
+   */
+  back() {
+    this.currentStep = 0;
+    this.steps = this.steps.map((step, index) => {
+      if (index > this.currentStep) {
+        step.disabled = true;
+      }
+      return step;
+    });
   }
 
   /**
@@ -170,7 +188,7 @@ export class CustomTemplateComponent implements OnInit {
    */
   updateStep(stepFlag: boolean) {
     this.steps = this.steps.map((step, index) => {
-      if (index > this.currentStep) {
+      if (index <= this.currentStep) {
         step.disabled = stepFlag;
       }
       return step;
@@ -187,7 +205,8 @@ export class CustomTemplateComponent implements OnInit {
     } else if (
       this.emailService.customTemplateNames.includes(
         this.emailService.layoutTitle.trim().toLowerCase()
-      )
+      ) &&
+      !this.emailService.isCustomTemplateEdit
     ) {
       this.snackBar.openSnackBar(
         this.translate.instant(
@@ -197,14 +216,17 @@ export class CustomTemplateComponent implements OnInit {
           error: true,
         }
       );
+      this.isDuplicateTitle = true;
       this.emailService.disableNextActionBtn = true;
     } else if (
       this.emailService.allLayoutdata.txtSubject.trim() === '' ||
       this.emailService.allLayoutdata.bodyHtml.trim() === ''
     ) {
       this.emailService.disableNextActionBtn = true;
+      this.isDuplicateTitle = false;
     } else {
       this.emailService.disableNextActionBtn = false;
+      this.isDuplicateTitle = false;
     }
 
     if (this.emailService.layoutTitle.trim() === '') {
