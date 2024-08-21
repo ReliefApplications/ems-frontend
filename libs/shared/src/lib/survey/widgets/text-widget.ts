@@ -363,6 +363,69 @@ export const init = (
         }
       }
 
+      if (question.inputType === 'range') {
+        const parentElement = el.parentElement;
+        if (parentElement) {
+          const valueIndicator = document.createElement('span');
+          valueIndicator.textContent = question.value;
+          valueIndicator.classList.add('font-black', 'text-center', 'text-xl');
+          parentElement.appendChild(valueIndicator);
+
+          const inputElement = el.querySelector('input');
+          if (inputElement) {
+            const createMinMaxSpan = (end: 'min' | 'max') => {
+              const DEFAULT_VALUE = end === 'min' ? '0' : '100';
+              const span = document.createElement('span');
+              span.classList.add('text-gray-500');
+
+              const updateValue = () => {
+                span.textContent =
+                  question[end + 'ValueExpression'] ||
+                  question[end] ||
+                  DEFAULT_VALUE;
+              };
+
+              updateValue();
+              question.registerFunctionOnPropertyValueChanged(
+                end,
+                updateValue,
+                el.id
+              );
+
+              return span;
+            };
+
+            const minSpan = createMinMaxSpan('min');
+            const maxSpan = createMinMaxSpan('max');
+
+            parentElement.appendChild(minSpan);
+            parentElement.appendChild(inputElement);
+            parentElement.appendChild(maxSpan);
+
+            el.style.display = 'none';
+
+            parentElement.style.display = 'grid';
+            parentElement.style.gridTemplateColumns =
+              'max-content 1fr max-content';
+            parentElement.style.gap = '1rem';
+            parentElement.style.alignItems = 'center';
+
+            valueIndicator.style.gridColumn = '1 / span 3';
+            minSpan.style.gridColumn = '1';
+            inputElement.style.gridColumn = '2';
+            maxSpan.style.gridColumn = '3';
+          }
+
+          question.registerFunctionOnPropertyValueChanged(
+            'value',
+            () => {
+              valueIndicator.textContent = question.value;
+            },
+            el.id
+          );
+        }
+      }
+
       // Adding search table below the input
       if (question.searchSimilarRecords && question.inputType === 'text') {
         const table = domService.appendComponentToBody(

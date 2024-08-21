@@ -845,7 +845,9 @@
             "start": "******",
             "syncOnlyFromDeployedVersion": "******",
             "synchronize": "******",
+            "synchronizeAt": "******",
             "tooltip": {
+              "schedule": "******",
               "syncOnlyFromDeployedVersion": "******"
             }
           },

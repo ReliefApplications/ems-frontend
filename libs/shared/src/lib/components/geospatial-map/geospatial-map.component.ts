@@ -7,7 +7,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { Feature, FeatureCollection } from 'geojson';
+import { Feature, Point } from 'geojson';
 import { MapConstructorSettings } from '../ui/map/interfaces/map.interface';
 import { UnsubscribeComponent } from '../utils/unsubscribe/public-api';
 // Leaflet
@@ -64,7 +64,7 @@ export class GeospatialMapComponent
   /**
    * Data to display on the map
    */
-  @Input() data?: Feature | FeatureCollection;
+  @Input() data?: Feature;
   /**
    * Geometry type
    */
@@ -125,6 +125,7 @@ export class GeospatialMapComponent
     drawPolygon: false,
     cutPolygon: false,
     rotateMode: false,
+    drawMarker: false,
     editMode: false,
   };
 
@@ -133,15 +134,10 @@ export class GeospatialMapComponent
    */
   private disableGeomanToolsFlag = false;
 
-  // output
-  /**
-   * Timeout for the reverse search
-   */
-  private timeout: ReturnType<typeof setTimeout> | null = null;
   /**
    * Output for the map change
    */
-  @Output() mapChange = new EventEmitter<Feature | FeatureCollection>();
+  @Output() mapChange = new EventEmitter<Feature>();
   /**
    * Map component
    */
@@ -167,34 +163,64 @@ export class GeospatialMapComponent
     this.geoForm = this.buildGeoForm();
   }
 
-  ngAfterViewInit(): void {
+  /** Sets up listeners according to geometry type */
+  private setListeners() {
+    // Set up listeners according to geometry type
+    switch (this.geometry) {
+      case 'Point':
+        this.setUpPmMarkerListeners();
+        break;
+      case 'Polygon':
+        this.setUpPmPolygonListeners();
+        break;
+      case 'PolyLine':
+        this.setUpPmPolylineListeners();
+        break;
+    }
+
+    this.mapComponent?.map.pm.setGlobalOptions({ continueDrawing: false });
     this.mapComponent?.map.pm.addControls(this.controls);
-    this.setUpPmListeners();
-    this.setDataLayers();
 
-    (['lat', 'lng'] as const).forEach((key) => {
-      this.geoForm
-        .get(`coordinates.${key}`)
-        ?.valueChanges.pipe(debounceTime(500), takeUntil(this.destroy$))
-        .subscribe(() => {
-          const lat = this.geoForm.get('coordinates.lat')?.value;
-          const lng = this.geoForm.get('coordinates.lng')?.value;
-
-          if (lat && lng && this.mapComponent?.map) {
-            const latlng = L.latLng(lat, lng);
-
-            // update the marker position on the map
-            updateGeoManLayerPosition(
-              this.mapComponent?.map,
-              { latlng },
-              this.selectedLayer
-            );
-
-            // updates the geospatial fields
-            this.onReverseSearch(latlng);
-          }
-        });
+    this.mapComponent?.map.on('pm:buttonclick', (e) => {
+      this.disableGeomanTools(e.btnName, e);
     });
+
+    this.mapComponent?.map.on('pm:actionclick', (e) => {
+      this.disableGeomanTools(e.btnName, e);
+    });
+
+    // updates question value on removing shapes
+    this.mapComponent?.map.on('pm:remove', () => {
+      this.selectedLayer = undefined;
+      // If no markers, we enable the point marker control again
+      if (this.noLayerContent()) {
+        this.geoForm.setValue(DEFAULT_GEOCODING);
+        this.mapChange.emit();
+      }
+    });
+
+    // set language
+    const setLang = (lang: string) => {
+      if (AVAILABLE_GEOMAN_LANGUAGES.includes(lang)) {
+        this.mapComponent?.map.pm.setLang(lang as any);
+      } else {
+        console.warn(`Language "${lang}" not supported by geoman`);
+        this.mapComponent?.map.pm.setLang('en');
+      }
+    };
+
+    setLang(this.translate.currentLang || 'en');
+
+    this.translate.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event) => {
+        setLang(event.lang);
+      });
+  }
+
+  ngAfterViewInit(): void {
+    this.setListeners();
+    this.setDataLayers();
   }
 
   /**
@@ -241,15 +267,55 @@ export class GeospatialMapComponent
     return !content || !containsPointMarker(content);
   }
 
-  /** Set geoman listeners */
-  private setUpPmListeners() {
-    // By default all drawn layer types have this property to false except for markers and circleMarkers
-    // https://github.com/geoman-io/leaflet-geoman#draw-mode
-    // We will enable this one for all layer types(including Markers) in order to auto blur when one marker is set
-    this.mapComponent?.map.pm.setGlobalOptions({ continueDrawing: false });
+  /** Set geoman listeners for marker maps */
+  private setUpPmMarkerListeners() {
+    // Subscribe to changes in the coordinates to update the location meta
+    (['lat', 'lng'] as const).forEach((key) => {
+      this.geoForm
+        .get(`coordinates.${key}`)
+        ?.valueChanges.pipe(debounceTime(500), takeUntil(this.destroy$))
+        .subscribe(() => {
+          const lat = this.geoForm.get('coordinates.lat')?.value;
+          const lng = this.geoForm.get('coordinates.lng')?.value;
+
+          if (lat && lng && this.mapComponent?.map) {
+            const latlng = L.latLng(lat, lng);
+
+            // updates the geospatial fields
+            this.onReverseSearch(latlng);
+          }
+        });
+    });
+
+    // We init the map in draw mode, if no data is present
+    if (!this.data) {
+      this.mapComponent?.map.pm.enableDraw('Marker', { snappable: false });
+    }
+
+    // Show marker selection on map UI
+    this.controls.drawMarker = true;
+
+    const updateMarker = (l: any) => {
+      if (l.shape === 'Marker') {
+        // Clear all previous markers
+        this.mapComponent?.map.eachLayer((layer) => {
+          if (layer instanceof L.Marker && layer !== l.layer) {
+            this.mapComponent?.map.removeLayer(layer);
+          }
+        });
+
+        this.onReverseSearch(l.layer._latlng).then(() => {
+          this.mapChange.emit({
+            ...l.layer.toGeoJSON(),
+            properties: this.geoForm.value,
+          });
+        });
+      }
+    };
+
     // updates question value on adding new shape
     this.mapComponent?.map.on('pm:create', (l: any) => {
-      if (this.geometry === 'Point' && l.shape === 'Marker') {
+      if (l.shape === 'Marker') {
         l.layer.setIcon(
           createCustomDivIcon({
             icon: 'leaflet_default',
@@ -259,73 +325,91 @@ export class GeospatialMapComponent
           })
         );
         this.selectedLayer = l.layer;
-        this.onReverseSearch(l.layer._latlng).then(() => {
-          this.mapChange.emit({
-            ...l.layer.toGeoJSON(),
-            properties: this.geoForm.value,
-          });
-        });
-        this.disableGeomanTools('drawMarker', l);
-        // If we add a Marker, we will disable the control to set new markers(currently we want to add just one)
-        this.mapComponent?.map.pm.Toolbar.setButtonDisabled('drawMarker', true);
+        updateMarker(l);
       }
 
       // subscribe to drag changes on the created layers
-      l.layer.on('pm:dragend', (l: any) => {
-        if (this.geometry == 'Point' && l.shape === 'Marker') {
-          this.onReverseSearch(l.layer._latlng).then(() => {
-            this.mapChange.emit({
-              ...l.layer.toGeoJSON(),
-              properties: this.geoForm.value,
-            });
-          });
+      l.layer.on('pm:dragend', updateMarker);
+      l.layer.on('pm:change', updateMarker);
+    });
+  }
+
+  /** Set geoman listeners for polygon maps */
+  private setUpPmPolygonListeners() {
+    // We init the map in draw mode, if no data is present
+    if (!this.data) {
+      this.mapComponent?.map.pm.enableDraw('Polygon', { snappable: false });
+    }
+
+    // Show polygon drawing tool on map UI
+    this.controls.drawPolygon = true;
+
+    const updateMarker = (l: any) => {
+      // Remove all previous layers
+      this.mapComponent?.map.eachLayer((layer) => {
+        if (layer instanceof L.Polygon && layer !== l.layer) {
+          this.mapComponent?.map.removeLayer(layer);
         }
       });
 
-      l.layer.on('pm:change', (l: any) => {
-        if (this.geometry == 'Point' && l.shape === 'Marker') {
-          this.mapChange.emit({
-            ...l.layer.toGeoJSON(),
-            properties: this.geoForm.value,
-          });
-        }
-      });
-    });
-    this.mapComponent?.map.on('pm:buttonclick', (e) => {
-      this.disableGeomanTools(e.btnName, e);
-    });
-
-    this.mapComponent?.map.on('pm:actionclick', (e) => {
-      this.disableGeomanTools(e.btnName, e);
-    });
-
-    // updates question value on removing shapes
-    this.mapComponent?.map.on('pm:remove', () => {
-      this.selectedLayer = undefined;
-      // If no markers, we enable the point marker control again
-      if (this.noLayerContent()) {
-        this.geoForm.setValue(DEFAULT_GEOCODING);
-        this.mapChange.emit();
-      }
-    });
-
-    // set language
-    const setLang = (lang: string) => {
-      if (AVAILABLE_GEOMAN_LANGUAGES.includes(lang)) {
-        this.mapComponent?.map.pm.setLang(lang as any);
-      } else {
-        console.warn(`Language "${lang}" not supported by geoman`);
-        this.mapComponent?.map.pm.setLang('en');
+      if (l.shape === 'Polygon') {
+        this.mapChange.emit({
+          ...l.layer.toGeoJSON(),
+          properties: this.geoForm.value,
+        });
       }
     };
 
-    setLang(this.translate.currentLang || 'en');
+    // updates question value on adding new shape
+    this.mapComponent?.map.on('pm:create', (l: any) => {
+      if (l.shape === 'Polygon') {
+        this.selectedLayer = l.layer;
+        updateMarker(l);
+      }
 
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((event) => {
-        setLang(event.lang);
+      // subscribe to drag changes on the created layers
+      l.layer.on('pm:dragend', updateMarker);
+      l.layer.on('pm:change', updateMarker);
+    });
+  }
+
+  /** Set geoman listeners for polyline maps */
+  private setUpPmPolylineListeners() {
+    // We init the map in draw mode, if no data is present
+    if (!this.data) {
+      this.mapComponent?.map.pm.enableDraw('Line', { snappable: false });
+    }
+
+    // Show polyline drawing tool on map UI
+    this.controls.drawPolyline = true;
+
+    const updateMarker = (l: any) => {
+      // Remove all previous layers
+      this.mapComponent?.map.eachLayer((layer) => {
+        if (layer instanceof L.Polyline && layer !== l.layer) {
+          this.mapComponent?.map.removeLayer(layer);
+        }
       });
+
+      if (l.shape === 'Line') {
+        this.mapChange.emit({
+          ...l.layer.toGeoJSON(),
+          properties: this.geoForm.value,
+        });
+      }
+    };
+
+    // updates question value on adding new shape
+    this.mapComponent?.map.on('pm:create', (l: any) => {
+      if (l.shape === 'Line') {
+        this.selectedLayer = l.layer;
+        updateMarker(l);
+      }
+
+      // subscribe to drag changes on the created layers
+      l.layer.on('pm:dragend', updateMarker);
+      l.layer.on('pm:change', updateMarker);
+    });
   }
 
   /**
@@ -381,14 +465,12 @@ export class GeospatialMapComponent
 
   /** Creates map */
   private setDataLayers(): void {
-    //init layers from question value
-    const geospatialData = this.data as any;
-    if (get(geospatialData, 'geometry.coordinates', []).length > 0) {
-      const latlng = L.latLng([
-        geospatialData.geometry.coordinates[1],
-        geospatialData.geometry.coordinates[0],
-      ]);
-      updateGeoManLayerPosition(this.mapComponent?.map, { latlng });
+    if (this.data) {
+      updateGeoManLayerPosition(
+        this.mapComponent?.map,
+        this.data,
+        this.selectedLayer
+      );
     }
   }
 
@@ -417,11 +499,17 @@ export class GeospatialMapComponent
         subRegion: get(address, 'properties.Subregion', DEFAULT_GEOCODING.city),
         address: get(address, 'properties.StAddr', DEFAULT_GEOCODING.city),
       };
+      const point: Feature<Point> = {
+        type: 'Feature',
+        properties: value,
+        geometry: {
+          type: 'Point',
+          coordinates: [value.coordinates.lng, value.coordinates.lat],
+        },
+      };
       updateGeoManLayerPosition(
         this.mapComponent?.map,
-        {
-          latlng: [value.coordinates.lat, value.coordinates.lng],
-        },
+        point,
         this.selectedLayer
       );
       this.geoForm.setValue(value, { emitEvent: false });
