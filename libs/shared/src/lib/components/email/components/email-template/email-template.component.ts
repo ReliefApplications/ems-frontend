@@ -467,9 +467,6 @@ export class EmailTemplateComponent
           .subscribe(
             async (response: any) => {
               this.showPreview = true;
-              const previewHTML = document.getElementById(
-                'tblPreview'
-              ) as HTMLInputElement;
               this.emailService.filterToEmails =
                 this.type === 'to' ? [] : this.emailService.filterToEmails;
               // Navigates straight to preview tab if didn't fail before
