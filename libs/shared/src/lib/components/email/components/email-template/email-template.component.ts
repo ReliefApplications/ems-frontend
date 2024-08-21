@@ -464,10 +464,6 @@ export class EmailTemplateComponent
               const previewHTML = document.getElementById(
                 'tblPreview'
               ) as HTMLInputElement;
-              if (previewHTML) {
-                previewHTML.innerHTML =
-                  '<table border="0" width="760" align="center" cellpadding="0" cellspacing="0">\n                <tbody><tr bgcolor="#00205c">\n                    <td height="40">\n                    Distribution List Preview</td>\n                </tr>\n                <tr>\n                    <td bgcolor="#fff" height="5"></td>\n            </tr>\n            </tbody>\n            </table><table bgcolor="ffffff" border="0" width="760" align="center" cellpadding="0" cellspacing="0"><thead><tr bgcolor="#00205c"><th align="left">Email</th></tr></thead><tbody><tr><td></td></tr></tbody></table>';
-              }
               this.emailService.filterToEmails =
                 this.type === 'to' ? [] : this.emailService.filterToEmails;
               // Navigates straight to preview tab if didn't fail before
@@ -489,7 +485,7 @@ export class EmailTemplateComponent
               if (previewHTML) {
                 setTimeout(() => {
                   previewHTML.innerHTML = this.previewHTML;
-                }, 200);
+                }, 0);
               }
 
               this.loading = false;
