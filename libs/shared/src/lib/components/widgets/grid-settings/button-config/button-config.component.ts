@@ -415,7 +415,12 @@ export class ButtonConfigComponent
   /** Open edit modal components and create new distribution list */
   public async addDistributionList() {
     const dialogRef = this.dialog.open(DistributionModalComponent, {
-      data: { isEdit: false },
+      data: {
+        isEdit: false,
+        distributionListNames: this.distributionLists?.map(
+          (x: any) => x.distributionListName
+        ),
+      },
       disableClose: true,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((data: any) => {

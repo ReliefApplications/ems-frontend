@@ -55,12 +55,12 @@ export class CustomTemplateComponent implements OnInit {
     if (!this.emailService.isCustomTemplateEdit) {
       this.emailService.layoutTitle = '';
     }
-    this.emailService.isQuickAction = true;
-    this.emailService.disableNextActionBtn = true;
     this.updateStep(true);
   }
 
   ngOnInit(): void {
+    this.emailService.isQuickAction = true;
+    this.emailService.disableNextActionBtn = true;
     this.applicationService.application$.subscribe((res: any) => {
       this.applicationId = res?.id;
     });
