@@ -589,7 +589,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
           });
       }
     } else {
-      this.grid.reloadData();
+      !options.sendMail ? this.grid.reloadData() : '';
     }
   }
 
@@ -813,6 +813,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
           sortOrder: this.layout?.query?.sortOrder,
           styles: this.layout?.query?.style,
           at: undefined,
+          skip: this.grid.skip,
         },
         fetchPolicy: 'no-cache',
         nextFetchPolicy: 'cache-first',

@@ -217,10 +217,25 @@ export class PreviewTemplate {
       datasetFieldsObj
         ?.map((x: any) => x.name)
         ?.forEach((keyNm: any) => {
-          const keyData = metaData
+          let keyData = metaData
             .filter((x: any) => x.name == keyNm)?.[0]
             ?.options?.filter((x: any) => item?.node[keyNm]?.includes(x.value))
             .map((y: any) => y.text);
+          let notMatchedData: any = '';
+          if (Array.isArray(item?.node[keyNm])) {
+            //Finding non matched data
+            const metaValArr = metaData
+              ?.filter((x: any) => x.name == keyNm)?.[0]
+              ?.options?.map((x: any) => x.value);
+            const gridaDataVal = item?.node[keyNm];
+            notMatchedData = gridaDataVal
+              ?.map((item: any) => (!metaValArr?.includes(item) ? item : null))
+              ?.filter((x: any) => x !== null);
+          }
+          keyData =
+            notMatchedData?.length > 0 && keyData?.length > 0
+              ? notMatchedData?.join(',') + ',' + keyData
+              : keyData;
           text[keyNm] = keyData?.length > 0 ? keyData : item?.node[keyNm];
         });
 
