@@ -240,6 +240,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     }
     this.emailService.isExisting = !this.emailService.isExisting;
     this.emailService.enableAllSteps.next(false);
+    this.emailService.isDirectSend = false;
     if (isNew) {
       this.emailService.disableFormSteps.next({
         stepperIndex: 0,
