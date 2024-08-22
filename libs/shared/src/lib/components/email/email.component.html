@@ -39,7 +39,7 @@
           {{ 'components.email.notification.create' | translate }}
         </ui-button>
       </ng-container>
-      <ng-container *ngIf="this.ability.can('create', 'EmailNotification')">
+      <!-- <ng-container *ngIf="this.ability.can('create', 'EmailNotification')">
         <ui-button
           class="float-right"
           icon="add"
@@ -50,7 +50,7 @@
         >
           {{ 'components.email.distributionList.create' | translate }}
         </ui-button>
-      </ng-container>
+      </ng-container> -->
       <ng-container *ngIf="this.ability.can('create', 'EmailNotification')">
         <ui-button
           class="float-right"
