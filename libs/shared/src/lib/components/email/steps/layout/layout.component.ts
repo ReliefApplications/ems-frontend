@@ -207,6 +207,14 @@ export class LayoutComponent
             ?.bodyHtml,
         ],
       });
+      if (this.emailService.isQuickAction) {
+        this.layoutForm = this.fb.group({
+          ...this.layoutForm,
+          to: [''],
+          cc: [''],
+          bcc: [''],
+        });
+      }
     }
 
     this.onTxtSubjectChange();

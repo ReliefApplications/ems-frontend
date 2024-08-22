@@ -23,7 +23,7 @@
         [dataset]="this.data.dataset"
       ></app-preview>
 
-      <div class="flex gap-5 mt-4 pb-4">
+      <div class="flex gap-1 mt-4 pb-4 justify-end">
         <button
           type="button"
           class="bg-sky-500 hover:bg-sky-400 text-white px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
@@ -34,7 +34,7 @@
         </button>
         <button
           type="submit"
-          class="bg-sky-500 hover:bg-sky-400 px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
+          class="bg-sky-500 hover:bg-sky-400 text-white px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
           [ngClass]="disableActionButton ? 'inactive' : 'active'"
           [disabled]="disableActionButton"
           (click)="next()"
