@@ -824,19 +824,40 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @returns The newly created dataset group.
    */
   createNewDataSetGroup(ele: any, index: number): FormGroup {
+    // Creating first fields Array of formgroup
+    const fieldsArray = this.formBuilder.array([]) as FormArray;
+    ele?.query?.fields?.length > 0
+      ? ele?.query?.fields?.forEach((field: any) => {
+          if (field?.kind === 'LIST' || field?.kind === 'OBJECT') {
+            const fieldsData: any = new FormArray([]);
+            field?.fields?.forEach((y: any) => {
+              fieldsData.push(
+                this.formBuilder.group({
+                  ...y,
+                })
+              );
+            });
+            fieldsArray.push(
+              this.formBuilder.group({
+                ...field,
+                fields: fieldsData,
+              })
+            );
+          } else {
+            fieldsArray.push(
+              this.formBuilder.group({
+                ...field,
+              })
+            );
+          }
+        })
+      : fieldsArray.push(this.formBuilder.array([]));
     const tempData = this.formBuilder.group({
       name: ele.name,
       query: this.formBuilder.group({
         name: ele.query.name,
         filter: this.getFilterGroup(ele.query.filter),
-        fields:
-          ele?.query?.fields?.length > 0
-            ? this.formBuilder.array(
-                ele?.query?.fields.map((field: any) =>
-                  this.formBuilder.control(field)
-                )
-              )
-            : this.formBuilder.array([]),
+        fields: fieldsArray,
       }),
       resource: ele.resource,
       pageSize: ele.pageSize,
