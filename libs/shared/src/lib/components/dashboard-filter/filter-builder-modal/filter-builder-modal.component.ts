@@ -250,6 +250,7 @@ export class FilterBuilderModalComponent
       customQuestions: [
         CustomQuestionTypes.RESOURCE,
         CustomQuestionTypes.RESOURCES,
+        CustomQuestionTypes.USERS,
       ],
     });
   }
