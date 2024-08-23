@@ -214,7 +214,7 @@ export class LayoutComponent
           cc: [''],
           bcc: [''],
         });
-         this.layoutForm.patchValue(dlForm);
+        this.layoutForm.patchValue(dlForm);
       }
     }
 
