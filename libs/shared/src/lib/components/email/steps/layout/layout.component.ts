@@ -208,12 +208,13 @@ export class LayoutComponent
         ],
       });
       if (this.emailService.isQuickAction) {
-        this.layoutForm = this.fb.group({
+        const dlForm = this.fb.group({
           ...this.layoutForm,
           to: [''],
           cc: [''],
           bcc: [''],
         });
+         this.layoutForm.patchValue(dlForm);
       }
     }
 

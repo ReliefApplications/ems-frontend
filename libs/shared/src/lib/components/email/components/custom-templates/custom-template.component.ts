@@ -59,6 +59,12 @@ export class CustomTemplateComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.steps
+      .filter((x: any) => x.label === 'Preview')
+      .forEach((y: any) => {
+        y.disabled = true;
+      });
+    this.emailService.allPreviewData = [];
     this.emailService.isQuickAction = true;
     this.emailService.disableNextActionBtn = true;
     this.applicationService.application$.subscribe((res: any) => {
@@ -188,8 +194,12 @@ export class CustomTemplateComponent implements OnInit {
    */
   updateStep(stepFlag: boolean) {
     this.steps = this.steps.map((step, index) => {
-      if (index <= this.currentStep) {
-        step.disabled = stepFlag;
+      if (index === 0) {
+        step.disabled = false;
+      } else {
+        if (index <= this.currentStep) {
+          step.disabled = stepFlag;
+        }
       }
       return step;
     });
