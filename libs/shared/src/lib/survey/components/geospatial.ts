@@ -84,7 +84,6 @@ export const init = (
 
       // updates the question value when the map changes
       instance.mapChange.subscribe((res) => {
-        console.log('res', res);
         question.value = res;
       });
     },

@@ -1697,7 +1697,6 @@ export class CoreGridComponent
     this.gridData.data = this.gridData.data.filter(
       (x) => !selected.includes(x.id)
     );
-    console.log('this.gridData.data', this.gridData.data);
     this.items = [...this.gridData.data];
     this.removeRowIds.emit(selected);
   }

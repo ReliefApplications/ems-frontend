@@ -172,7 +172,6 @@ export class AggregationGridComponent
       .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
       .subscribe({
         next: ({ data, loading }) => {
-          console.log('data', data);
           this.updateValues(data, loading);
         },
         error: (err: any) => {
@@ -243,7 +242,6 @@ export class AggregationGridComponent
             null,
             null
           );
-          console.log('allFields', this.allFields);
           this.loadingSettings = false;
           this.status = {
             error: false,
@@ -315,11 +313,9 @@ export class AggregationGridComponent
       );
     });
 
-    console.log('extraFields', extraFields);
     // show only fields that has at least one row with them present
     this.fields = this.allFields
       .filter((field) => {
-        console.log('field', field);
         return this.gridData.data.some((row) => !isNil(row[field.name]));
       })
       .concat(
@@ -334,8 +330,6 @@ export class AggregationGridComponent
           hidden: false,
         }))
       );
-
-    console.log(this.fields);
 
     this.loading = loading;
   }

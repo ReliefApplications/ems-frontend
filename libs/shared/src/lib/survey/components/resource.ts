@@ -896,8 +896,6 @@ export const init = (
   componentCollectionInstance.add(component);
 };
 
-// console.log('question', question.name, question);
-
 // // Check if we should add the buttons inside the dropdown
 // if (!question.showButtonsInDropdown) {
 //   return dropdownInstance;

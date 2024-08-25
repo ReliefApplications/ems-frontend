@@ -24,6 +24,7 @@ import { SnackbarService } from '@oort-front/ui';
  */
 const ENCRYPTED_VALUE = '●●●●●●●●●●●●●';
 
+/** Default prefix for the auth headers */
 const DEFAULT_PREFIX = 'Bearer';
 
 /**
