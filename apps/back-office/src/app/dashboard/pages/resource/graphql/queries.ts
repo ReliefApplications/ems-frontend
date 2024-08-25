@@ -23,6 +23,12 @@ export const GET_RESOURCE_BY_ID = gql`
         canUpdate
         canDelete
         canCreateRecords
+        kobo {
+          id
+          deployedVersionId
+          dataFromDeployedVersion
+          cronSchedule
+        }
       }
       permissions {
         canSee {

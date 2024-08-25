@@ -15,6 +15,12 @@ export const GET_FORM_RECORDS = gql`
       name
       createdAt
       structure
+      kobo {
+        id
+        deployedVersionId
+        dataFromDeployedVersion
+        cronSchedule
+      }
       metadata {
         name
         canSee

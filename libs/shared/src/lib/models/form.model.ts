@@ -1,5 +1,6 @@
 import { Connection } from '../utils/graphql/connection.type';
 import { Aggregation } from './aggregation.model';
+import { ApiConfiguration } from './api-configuration.model';
 import { GraphqlNodesResponse } from './graphql-query.model';
 import { Layout } from './layout.model';
 import { Metadata } from './metadata.model';
@@ -51,6 +52,13 @@ export interface Form {
   aggregations?: Connection<Aggregation>;
   metadata?: Metadata[];
   allowUploadRecords?: boolean;
+  kobo?: {
+    id: string;
+    deployedVersionId: string;
+    dataFromDeployedVersion: boolean;
+    apiConfiguration: ApiConfiguration;
+    cronSchedule?: string;
+  };
 }
 
 /** Model for form graphql graphql query response */

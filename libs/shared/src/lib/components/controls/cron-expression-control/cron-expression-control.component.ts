@@ -1,4 +1,4 @@
-import { Component, Optional, Self } from '@angular/core';
+import { Component, Input, Optional, Self } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
@@ -16,6 +16,8 @@ export class CronExpressionControlComponent
   extends UnsubscribeComponent
   implements ControlValueAccessor
 {
+  /** Tooltip text to be used in the button/icon to edit cron expression */
+  @Input() toolTip = '';
   // /** @returns the value */
   // get value(): string | undefined | null {
   //   return this.ngControl.value;

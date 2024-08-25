@@ -42,10 +42,10 @@ export const init = (
       serializer.addProperty('geospatial', {
         name: 'geometry',
         type: 'dropdown',
-        category: 'general',
+        category: 'Map Properties',
         isRequired: true,
         default: 'Point',
-        choices: ['Point'],
+        choices: ['Point', 'Polygon', 'PolyLine'],
       });
       // Display geofields
       serializer.addProperty('geospatial', {
@@ -53,8 +53,8 @@ export const init = (
         category: 'Map Properties',
         type: CustomPropertyGridComponentTypes.geospatialListbox,
         visibleIndex: 2,
-        // dependsOn: ['geometry'],
-        // visibleIf: (obj: null | any) => !!obj && obj.geometry === 'POINT',
+        dependsOn: ['geometry'],
+        visibleIf: (obj: null | any) => !!obj && obj.geometry === 'Point',
       });
       // Tagbox
       registerCustomPropertyEditor(
@@ -72,6 +72,7 @@ export const init = (
 
       // inits the map with the value of the question
       if (question.value) instance.data = question.value;
+      instance.geometry = question.geometry;
 
       // Set geo fields
       instance.fields = getGeoFields(question);
@@ -83,6 +84,7 @@ export const init = (
 
       // updates the question value when the map changes
       instance.mapChange.subscribe((res) => {
+        console.log('res', res);
         question.value = res;
       });
     },

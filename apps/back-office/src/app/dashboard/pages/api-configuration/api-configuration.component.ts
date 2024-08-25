@@ -24,6 +24,8 @@ import { SnackbarService } from '@oort-front/ui';
  */
 const ENCRYPTED_VALUE = '●●●●●●●●●●●●●';
 
+const DEFAULT_PREFIX = 'Bearer';
+
 /**
  * API configuration page component.
  */
@@ -213,6 +215,12 @@ export class ApiConfigurationComponent
             : '',
           Validators.required,
         ],
+        tokenPrefix: [
+          this.apiConfiguration?.settings &&
+          this.apiConfiguration?.settings.tokenPrefix
+            ? ENCRYPTED_VALUE
+            : DEFAULT_PREFIX,
+        ],
       });
     }
     return this.fb.group({});
@@ -298,6 +306,10 @@ export class ApiConfigurationComponent
           ...(this.apiForm.value.authType === authType.userToService &&
             this.apiForm.value.settings?.token !== ENCRYPTED_VALUE && {
               token: this.apiForm.value.settings?.token,
+            }),
+          ...(this.apiForm.value.authType === authType.userToService &&
+            this.apiForm.value.settings?.tokenPrefix !== DEFAULT_PREFIX && {
+              tokenPrefix: this.apiForm.value.settings?.tokenPrefix,
             }),
         },
       }

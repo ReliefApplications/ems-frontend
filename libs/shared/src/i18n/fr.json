@@ -344,6 +344,7 @@
       "objectNotCreated": "L'objet de type {{type}} n'a pas pu être créé. {{error}}",
       "objectNotDeleted": "L'objet {{value}} n'a pas pu être supprimé. {{error}}",
       "objectNotDuplicated": "L'objet de type {{type}} n'a pas pu être dupliqué. {{error}}",
+      "objectNotEdited": "{{type}} not modifié. {{error}}",
       "objectNotFound": "{{name}} n'a pas été trouvé.",
       "objectNotInvited": "L'invitation vers {{name}} a échoué.",
       "objectNotReordered": "{{type}} non réorganisé. {{error}}",
@@ -844,8 +845,29 @@
       "create": {
         "choice": {
           "inherit": "Copier un modèle de ressources existant",
+          "kobo": "Créer à partir de KoboToolbox",
           "resource": "Créer une nouvelle ressource",
           "template": "Commencer depuis un modèle existant"
+        },
+        "kobo": {
+          "apiConfiguration": {
+            "placeholder": "Sélectionnez une configuration d'API"
+          },
+          "data": {
+            "fromFormWithVersion": "Le formulaire \"{{formName}}\" a été importé avec l'ID de version <i>{{versionID}}</i>.<br>Spécifiez la fréquence à laquelle les entrées doivent être récupérées à partir de KoboToolbox ci-dessous ou appuyez sur le bouton pour importer maintenant.",
+            "nothingToFetch": "Aucune nouvelle entrée trouvée",
+            "start": "Récupérer maintenant",
+            "strictVersionPolicy": {
+              "label": "Politique de version stricte",
+              "tooltip": "Lors de l'importation d'un formulaire à partir de KoboToolbox, il est possible d'avoir plusieurs versions et itérations au fil du temps. L'activation de la politique de version stricte garantit que seules les entrées de formulaire avec la même version que celle au moment de l'importation seront récupérées. La désactivation de cette option permet de récupérer des entrées à partir de n'importe quelle version du formulaire."
+            },
+            "tooltip": {
+              "schedule": "Entrez l'heure de planification pour récupérer les entrées Kobo"
+            }
+          },
+          "label": "Identifiant du formulaire KoboToolbox",
+          "placeholder": "Entrez un identifiant de formulaire KoboToolbox",
+          "settings": "Paramètres KoboToolbox"
         },
         "template": {
           "from": "Depuis le modèle",
@@ -855,6 +877,7 @@
         },
         "tooltip": {
           "inherit": "Crée un formulaire hérité en utilisant comme modèle la ressource liée à un formulaire source.",
+          "kobo": "Crée un formulaire à partir d'un formulaire KoboToolbox, en utilisant le même modèle",
           "resource": "Crée un formulaire source permettant la création de formulaire hérités liés à celui-ci. Crée aussi une nouvelle ressource liée.",
           "template": "Si aucun modèle n'est sélectionné, la structure principale sera chargée"
         }
@@ -2644,11 +2667,13 @@
         "scope": "Entrer le scope",
         "secret": "Entrer le client secret",
         "token": "Entrez le jeton d'accès pour l'authentification",
+        "tokenPrefix": "Entrez un préfixe de jeton pour l'authentification",
         "tokenUrl": "Entrez l'URL du jeton d'accès"
       },
       "scope": "Scope",
       "secret": "Client Secret",
       "token": "Jeton d'accès",
+      "tokenPrefix": "Préfixe de jeton",
       "tokenUrl": "URL du jeton d'accès"
     },
     "apiConfigurations": {

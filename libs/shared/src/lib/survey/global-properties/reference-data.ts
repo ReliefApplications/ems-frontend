@@ -359,8 +359,6 @@ export const render = (
             question.value = currValue;
           }
         });
-    } else {
-      element.choices = [];
     }
   };
 

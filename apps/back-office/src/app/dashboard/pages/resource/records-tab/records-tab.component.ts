@@ -24,6 +24,7 @@ import {
 } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
 import { GraphQLError } from 'graphql';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Quantity of resource that will be loaded at once. */
 const ITEMS_PER_PAGE = 10;
@@ -93,6 +94,11 @@ export class RecordsTabComponent
     return !this.loading && this.dataSource.length === 0;
   }
 
+  /** @returns If the resource has a core form created from a Kobo form, return form */
+  get koboForm(): Form | undefined {
+    return this.resource.forms?.find((form: Form) => form.kobo?.id);
+  }
+
   /**
    * Records tab of resource page
    *
@@ -101,13 +107,15 @@ export class RecordsTabComponent
    * @param snackBar Shared snackbar service
    * @param confirmService Shared confirm service
    * @param downloadService Service used to download.
+   * @param dialog Dialog service
    */
   constructor(
     private apollo: Apollo,
     private translate: TranslateService,
     private snackBar: SnackbarService,
     private confirmService: ConfirmService,
-    private downloadService: DownloadService
+    private downloadService: DownloadService,
+    public dialog: Dialog
   ) {
     super();
   }

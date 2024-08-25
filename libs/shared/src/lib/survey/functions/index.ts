@@ -30,6 +30,18 @@ import round from './round';
 import parseJSON from './parseJSON';
 import getDepreciationPeriod from './solidarites-demo/getDepreciationPeriod';
 import calculateDepreciation from './solidarites-demo/calculateDepreciation';
+import once from './once';
+import formatDateTime from './formatDateTime';
+import join from './join';
+import concat from './concat';
+import indexedRepeat from './indexedRepeat';
+import string from './string';
+import sumElements from './sumElements';
+import maxElements from './maxElements';
+import minElements from './minElements';
+import regex from './regex';
+import int from './int';
+import selected from './selected';
 import getLinkField from './solidarites-demo/getLinkField';
 import flatten from './flatten';
 import trim from './trim';
@@ -58,6 +70,7 @@ export const functions = [
   { fn: push, name: 'push' },
   { fn: getNumberOfMembers, name: 'getNumberOfMembers' },
   { fn: formatDate, name: 'formatDate' },
+  { fn: formatDateTime, name: 'formatDateTime' },
   { fn: getLoadedRecord, name: 'getLoadedRecord' },
   { fn: getListByProp, name: 'getListByProp' },
   { fn: filter, name: 'filter' },
@@ -71,6 +84,17 @@ export const functions = [
   { fn: parseJSON, name: 'parseJSON' },
   { fn: getDepreciationPeriod, name: 'getDepreciationPeriod' },
   { fn: calculateDepreciation, name: 'calculateDepreciation' },
+  { fn: once, name: 'once' },
+  { fn: join, name: 'join' },
+  { fn: concat, name: 'concat' },
+  { fn: indexedRepeat, name: 'indexedRepeat' },
+  { fn: string, name: 'string' },
+  { fn: sumElements, name: 'sumElements' },
+  { fn: maxElements, name: 'maxElements' },
+  { fn: minElements, name: 'minElements' },
+  { fn: regex, name: 'regex' },
+  { fn: int, name: 'int' },
+  { fn: selected, name: 'selected' },
   { fn: getLinkField, name: 'getLinkField' },
   { fn: flatten, name: 'flatten' },
   { fn: trim, name: 'trim' },

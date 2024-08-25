@@ -344,6 +344,7 @@
       "objectNotCreated": "****** {{type}} ****** {{error}}",
       "objectNotDeleted": "{{value}} ****** {{error}}",
       "objectNotDuplicated": "****** {{type}} ****** {{error}}",
+      "objectNotEdited": "{{type}} ****** {{error}}",
       "objectNotFound": "{{name}} ******",
       "objectNotInvited": "{{name}} ******",
       "objectNotReordered": "{{type}} ****** {{error}}",
@@ -833,8 +834,29 @@
       "create": {
         "choice": {
           "inherit": "******",
+          "kobo": "******",
           "resource": "******",
           "template": "******"
+        },
+        "kobo": {
+          "apiConfiguration": {
+            "placeholder": "******"
+          },
+          "data": {
+            "fromFormWithVersion": "****** {{formName}} ****** {{versionID}} ******",
+            "nothingToFetch": "******",
+            "start": "******",
+            "strictVersionPolicy": {
+              "label": "******",
+              "tooltip": "******"
+            },
+            "tooltip": {
+              "schedule": "******"
+            }
+          },
+          "label": "******",
+          "placeholder": "******",
+          "settings": "******"
         },
         "template": {
           "from": "******",
@@ -844,6 +866,7 @@
         },
         "tooltip": {
           "inherit": "******",
+          "kobo": "******",
           "resource": "******",
           "template": "******"
         }
@@ -2630,11 +2653,13 @@
         "scope": "******",
         "secret": "******",
         "token": "******",
+        "tokenPrefix": "******",
         "tokenUrl": "******"
       },
       "scope": "******",
       "secret": "******",
       "token": "******",
+      "tokenPrefix": "******",
       "tokenUrl": "******"
     },
     "apiConfigurations": {

@@ -30,6 +30,15 @@ export const GET_SHORT_FORMS = gql`
           canCreateRecords
           canUpdate
           canDelete
+          kobo {
+            id
+            deployedVersionId
+            dataFromDeployedVersion
+            cronSchedule
+            apiConfiguration {
+              name
+            }
+          }
           resource {
             id
             coreForm {
