@@ -14,7 +14,7 @@ import {
   updateQueryUniqueValues,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { get, isNil } from 'lodash';
+import { get } from 'lodash';
 import { DELETE_RECORD, RESTORE_RECORD } from '../graphql/mutations';
 import { GET_RESOURCE_RECORDS } from './graphql/queries';
 import {
@@ -416,52 +416,6 @@ export class RecordsTabComponent
           .then((results) => this.updateValues(results.data, results.loading));
       }
     }
-  }
-
-  /**
-   * Open the synchronize kobo at modal to schedule kobo form synchronization entries.
-   *
-   * @param e click event.
-   */
-  async onScheduleSyncKobo(e: any): Promise<void> {
-    e.stopPropagation();
-    const { SynchronizeKoboAtModalComponent } = await import(
-      '../../../../components/synchronize-kobo-at-modal/synchronize-kobo-at-modal.component'
-    );
-    const dialogRef = this.dialog.open(SynchronizeKoboAtModalComponent, {
-      data: {
-        koboId: this.koboForm?.kobo?.id,
-        deployedVersionId: this.koboForm?.kobo?.deployedVersionId,
-        dataFromDeployedVersion: this.koboForm?.kobo?.dataFromDeployedVersion,
-        cronSchedule: this.koboForm?.kobo?.cronSchedule,
-        form: {
-          id: this.koboForm?.id,
-          name: this.koboForm?.name,
-        },
-      },
-    });
-
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((data: any) => {
-      if (!isNil(data)) {
-        const forms = this.resource.forms?.map((x: Form) => {
-          if (x.id === this.koboForm?.id && x.kobo) {
-            return {
-              ...x,
-              kobo: {
-                ...x.kobo,
-                dataFromDeployedVersion: data.dataFromDeployedVersion,
-                cronSchedule: data.cronSchedule ?? '',
-              },
-            };
-          }
-          return x;
-        });
-        this.resource = {
-          ...this.resource,
-          forms,
-        };
-      }
-    });
   }
 
   /**

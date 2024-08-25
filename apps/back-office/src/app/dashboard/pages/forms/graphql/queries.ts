@@ -34,6 +34,7 @@ export const GET_SHORT_FORMS = gql`
             id
             deployedVersionId
             dataFromDeployedVersion
+            cronSchedule
             apiConfiguration {
               name
             }

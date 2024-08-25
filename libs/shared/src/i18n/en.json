@@ -840,19 +840,20 @@
             "placeholder": "Select an api configuration"
           },
           "data": {
-            "fromFormWithVersion": "The form '{{formName}}' was created from the original Kobotoolbox form with the deploy version id {{versionId}}",
-            "nothingToSynchronize": "No data found for synchronization",
-            "start": "Start synchronization",
-            "syncOnlyFromDeployedVersion": "Synchronize data submissions only from the same form deploy version",
-            "synchronize": "Synchronize kobo data",
-            "synchronizeAt": "Schedule sync kobo data at",
+            "fromFormWithVersion": "Form \"{{formName}}\" was imported with version ID <i>{{versionID}}</i>.<br>Specify the frequency entries should be fetched from KoboToolbox below or press the button to import now.",
+            "nothingToFetch": "No new entries found",
+            "start": "Fetch now",
+            "strictVersionPolicy": {
+              "label": "Strict version policy",
+              "tooltip": "When importing a form from KoboToolbox, it is possible to have multiple versions and iterations over time. Enabling the strict version policy ensures that only form entries with the same version as the one at the time of import will be fetched. Disabling this option allows fetching entries from any version of the form."
+            },
             "tooltip": {
-              "schedule": "Enter the schedule time to synchronize the Kobo entries",
-              "syncOnlyFromDeployedVersion": "Only data submissions sent when the form was in the same version as when it was imported will be used to create records. Data submissions registered in earlier or later versions will be disregarded."
+              "schedule": "Enter the schedule time to fetch the Kobo entries"
             }
           },
           "label": "KoboToolbox form id",
-          "placeholder": "Enter a KoboToolbox form id"
+          "placeholder": "Enter a KoboToolbox form id",
+          "settings": "KoboToolbox settings"
         },
         "template": {
           "from": "From template",

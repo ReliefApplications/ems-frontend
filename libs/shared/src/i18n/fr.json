@@ -848,22 +848,23 @@
         },
         "kobo": {
           "apiConfiguration": {
-            "placeholder": "Sélectionnez une configuration d'api"
+            "placeholder": "Sélectionnez une configuration d'API"
           },
           "data": {
-            "fromFormWithVersion": "Le formulaire '{{formName}}' a été créé à partir du formulaire Kobotoolbox d'origine avec l'ID de version de déploiement {{versionId}}",
-            "nothingToSynchronize": "Aucune donnée trouvée pour la synchronisation",
-            "start": "Démarrer la synchronisation",
-            "syncOnlyFromDeployedVersion": "Synchronisez les soumissions de données uniquement à partir de la même version de déploiement du formulaire",
-            "synchronize": "Synchroniser les données Kobo",
-            "synchronizeAt": "Planifiez la synchronisation des données Kobo sur",
+            "fromFormWithVersion": "Le formulaire \"{{formName}}\" a été importé avec l'ID de version <i>{{versionID}}</i>.<br>Spécifiez la fréquence à laquelle les entrées doivent être récupérées à partir de KoboToolbox ci-dessous ou appuyez sur le bouton pour importer maintenant.",
+            "nothingToFetch": "Aucune nouvelle entrée trouvée",
+            "start": "Récupérer maintenant",
+            "strictVersionPolicy": {
+              "label": "Politique de version stricte",
+              "tooltip": "Lors de l'importation d'un formulaire à partir de KoboToolbox, il est possible d'avoir plusieurs versions et itérations au fil du temps. L'activation de la politique de version stricte garantit que seules les entrées de formulaire avec la même version que celle au moment de l'importation seront récupérées. La désactivation de cette option permet de récupérer des entrées à partir de n'importe quelle version du formulaire."
+            },
             "tooltip": {
-              "schedule": "Entrez l'heure programmée pour synchroniser les entrées Kobo",
-              "syncOnlyFromDeployedVersion": "Seules les soumissions de données envoyées lorsque le formulaire était dans la même version que lors de son importation seront utilisées pour créer des enregistrements. Les soumissions de données enregistrées dans des versions antérieures ou ultérieures seront ignorées."
+              "schedule": "Entrez l'heure de planification pour récupérer les entrées Kobo"
             }
           },
           "label": "Identifiant du formulaire KoboToolbox",
-          "placeholder": "Entrez l'identifiant du formulaire KoboToolbox"
+          "placeholder": "Entrez un identifiant de formulaire KoboToolbox",
+          "settings": "Paramètres KoboToolbox"
         },
         "template": {
           "from": "Depuis le modèle",

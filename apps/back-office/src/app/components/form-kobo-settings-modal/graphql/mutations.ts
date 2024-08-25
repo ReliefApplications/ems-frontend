@@ -16,8 +16,14 @@ export const EDIT_FORM_KOBO_PREFERENCES = gql`
       name
       kobo {
         dataFromDeployedVersion
-        cronSchedule
       }
     }
+  }
+`;
+
+/** For the form created from a Kobotoolbox form, import data submissions to create records. */
+export const ADD_RECORDS_FROM_KOBO = gql`
+  mutation addRecordsFromKobo($form: ID!) {
+    addRecordsFromKobo(form: $form)
   }
 `;

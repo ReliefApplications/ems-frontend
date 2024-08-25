@@ -142,19 +142,6 @@
           >
           </ui-button>
           <ui-menu #menu>
-            <ng-container *ngIf="element.canUpdate">
-              <button
-                uiMenuItem
-                [routerLink]="[element.id + '/builder']"
-              >
-                <ui-icon icon="edit" variant="grey"></ui-icon>
-                {{ 'common.edit' | translate }}
-              </button>
-              <button uiMenuItem *ngIf="element.kobo.id" (click)="onSynchronizeKobo(element, $event)">
-                <ui-icon icon="sync" variant="grey"></ui-icon>
-                {{ 'components.form.create.kobo.data.synchronize' | translate }}
-              </button>
-            </ng-container>
             <ng-container *ngIf="element.canSee">
               <button uiMenuItem [routerLink]="[element.id + '/records']">
                 <ui-icon icon="plagiarism" variant="grey"></ui-icon>
@@ -162,6 +149,24 @@
                   'common.viewObject'
                     | translate : { name: 'common.record.few' | translate }
                 }}
+              </button>
+            </ng-container>
+            <ng-container *ngIf="element.canUpdate">
+              <button uiMenuItem [routerLink]="[element.id + '/builder']">
+                <ui-icon icon="edit" variant="grey"></ui-icon>
+                {{ 'common.edit' | translate }}
+              </button>
+              <button
+                uiMenuItem
+                *ngIf="element.kobo.id && element.canUpdate"
+                (click)="onSynchronizeKobo(element, $event)"
+              >
+                <img
+                  src="/assets/kobo-logo.svg"
+                  class="h-6 m-1 mt-0"
+                  alt="Kobo"
+                />
+                {{ 'components.form.create.kobo.settings' | translate }}
               </button>
             </ng-container>
             <ng-container *ngIf="element.canDelete">

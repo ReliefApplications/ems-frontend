@@ -840,19 +840,20 @@
             "placeholder": "******"
           },
           "data": {
-            "fromFormWithVersion": "****** {{formName}} ****** {{versionId}}",
-            "nothingToSynchronize": "******",
+            "fromFormWithVersion": "****** {{formName}} ****** {{versionID}} ******",
+            "nothingToFetch": "******",
             "start": "******",
-            "syncOnlyFromDeployedVersion": "******",
-            "synchronize": "******",
-            "synchronizeAt": "******",
+            "strictVersionPolicy": {
+              "label": "******",
+              "tooltip": "******"
+            },
             "tooltip": {
-              "schedule": "******",
-              "syncOnlyFromDeployedVersion": "******"
+              "schedule": "******"
             }
           },
           "label": "******",
-          "placeholder": "******"
+          "placeholder": "******",
+          "settings": "******"
         },
         "template": {
           "from": "******",

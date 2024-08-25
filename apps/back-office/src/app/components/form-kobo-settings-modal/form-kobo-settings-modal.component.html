@@ -1,0 +1,79 @@
+<ui-dialog size="medium" [closable]="false">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{ 'components.form.create.kobo.settings' | translate }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="formGroup" class="flex flex-col gap-2">
+      <ui-toggle formControlName="dataFromDeployedVersion">
+        <ng-container ngProjectAs="label">
+          {{
+            'components.form.create.kobo.data.strictVersionPolicy.label'
+              | translate
+          }}
+          <ui-icon
+            class="ml-1 cursor-help grid items-center"
+            icon="info_outline"
+            variant="grey"
+            [size]="18"
+            [uiTooltip]="
+              'components.form.create.kobo.data.strictVersionPolicy.tooltip'
+                | translate
+            "
+          ></ui-icon>
+        </ng-container>
+      </ui-toggle>
+
+      <ui-alert>
+        <p
+          [innerHTML]="
+            'components.form.create.kobo.data.fromFormWithVersion'
+              | translate
+                : {
+                    formName: data.form.name,
+                    versionID: data.deployedVersionId
+                  }
+          "
+        ></p>
+      </ui-alert>
+
+      <shared-cron-expression-control
+        formControlName="cronSchedule"
+        [toolTip]="
+          'components.form.create.kobo.data.tooltip.schedule' | translate
+        "
+      ></shared-cron-expression-control>
+    </form>
+  </ng-container>
+
+  <ng-container ngProjectAs="actions">
+    <ui-button
+      class="mr-auto"
+      category="secondary"
+      icon="cloud_download"
+      variant="primary"
+      (click)="onSynchronize()"
+      >{{ 'components.form.create.kobo.data.start' | translate }}</ui-button
+    >
+    <ui-button
+      [uiDialogClose]="
+        updated ? formGroup.get('dataFromDeployedVersion')?.value : null
+      "
+      variant="default"
+      >{{ 'common.close' | translate }}</ui-button
+    >
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onSave()"
+      cdkFocusInitial
+      [disabled]="formGroup.pristine || formGroup.invalid || loading"
+    >
+      <ui-spinner *ngIf="loading" size="medium"></ui-spinner>
+      <ng-container *ngIf="!loading">
+        {{ 'common.save' | translate }}
+      </ng-container>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

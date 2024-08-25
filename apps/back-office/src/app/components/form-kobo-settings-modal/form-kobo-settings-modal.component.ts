@@ -1,6 +1,11 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   AlertModule,
@@ -16,6 +21,8 @@ import {
 import {
   AddRecordsFromKoboMutationResponse,
   ApiConfiguration,
+  CronExpressionControlModule,
+  cronValidator,
   EditFormMutationResponse,
   UnsubscribeComponent,
 } from '@oort-front/shared';
@@ -33,6 +40,7 @@ interface DialogData {
   deployedVersionId: string;
   dataFromDeployedVersion: boolean;
   apiConfiguration: ApiConfiguration;
+  cronSchedule?: string;
   form: { id: string; name: string };
 }
 
@@ -55,11 +63,12 @@ interface DialogData {
     TooltipModule,
     ButtonModule,
     SpinnerModule,
+    CronExpressionControlModule,
   ],
-  templateUrl: './synchronize-kobo-modal.component.html',
-  styleUrls: ['./synchronize-kobo-modal.component.scss'],
+  templateUrl: './form-kobo-settings-modal.component.html',
+  styleUrls: ['./form-kobo-settings-modal.component.scss'],
 })
-export class SynchronizeKoboModalComponent extends UnsubscribeComponent {
+export class KoboSettingsModalComponent extends UnsubscribeComponent {
   /** Reactive Form */
   public formGroup!: ReturnType<typeof this.createForm>;
   /** If kobo preferences were updated */
@@ -99,6 +108,7 @@ export class SynchronizeKoboModalComponent extends UnsubscribeComponent {
           id: this.data.form.id,
           dataFromDeployedVersion: this.formGroup.get('dataFromDeployedVersion')
             ?.value,
+          cronSchedule: this.formGroup.get('cronSchedule')?.value,
         },
       })
       .pipe(takeUntil(this.destroy$))
@@ -108,7 +118,7 @@ export class SynchronizeKoboModalComponent extends UnsubscribeComponent {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectUpdated', {
                 value: this.translate.instant(
-                  'components.form.create.kobo.data.synchronize'
+                  'components.form.create.kobo.data.fetch'
                 ),
                 type: '',
               })
@@ -119,7 +129,7 @@ export class SynchronizeKoboModalComponent extends UnsubscribeComponent {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotEdited', {
                 type: this.translate.instant(
-                  'components.form.create.kobo.data.synchronize'
+                  'components.form.create.kobo.data.fetch'
                 ),
                 error: errors ? errors[0].message : '',
               }),
@@ -161,7 +171,7 @@ export class SynchronizeKoboModalComponent extends UnsubscribeComponent {
             } else {
               this.snackBar.openSnackBar(
                 this.translate.instant(
-                  'components.form.create.kobo.data.nothingToSynchronize'
+                  'components.form.create.kobo.data.nothingToFetch'
                 )
               );
             }
@@ -190,9 +200,11 @@ export class SynchronizeKoboModalComponent extends UnsubscribeComponent {
    */
   private createForm() {
     return this.fb.group({
-      dataFromDeployedVersion: this.fb.control(
-        this.data?.dataFromDeployedVersion ?? false
-      ),
+      dataFromDeployedVersion: [this.data?.dataFromDeployedVersion ?? false],
+      cronSchedule: [
+        this.data?.cronSchedule ?? '',
+        [Validators.required, cronValidator()],
+      ],
     });
   }
 }

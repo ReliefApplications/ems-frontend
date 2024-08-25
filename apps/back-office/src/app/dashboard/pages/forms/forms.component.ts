@@ -127,15 +127,16 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
    */
   async onSynchronizeKobo(form: Form, e: any): Promise<void> {
     e.stopPropagation();
-    const { SynchronizeKoboModalComponent } = await import(
-      '../../../components/synchronize-kobo-modal/synchronize-kobo-modal.component'
+    const { KoboSettingsModalComponent } = await import(
+      '../../../components/form-kobo-settings-modal/form-kobo-settings-modal.component'
     );
-    const dialogRef = this.dialog.open(SynchronizeKoboModalComponent, {
+    const dialogRef = this.dialog.open(KoboSettingsModalComponent, {
       data: {
         koboId: form.kobo?.id,
         deployedVersionId: form.kobo?.deployedVersionId,
         dataFromDeployedVersion: form.kobo?.dataFromDeployedVersion,
         apiConfiguration: form.kobo?.apiConfiguration,
+        cronSchedule: form.kobo?.cronSchedule,
         form: {
           id: form.id,
           name: form.name,
