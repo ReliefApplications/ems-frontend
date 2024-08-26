@@ -856,6 +856,16 @@ export class EmailService {
   }
 
   /**
+   * Resets preview data object.
+   */
+  resetPreviewData() {
+    this.previewData = {
+      datasets: [],
+      fields: [],
+    };
+  }
+
+  /**
    * Creates Subject field values
    *
    * @param field Field to be appended

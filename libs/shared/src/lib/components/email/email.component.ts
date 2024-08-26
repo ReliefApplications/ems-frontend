@@ -308,6 +308,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         this.onDistributionPage(distributionListPaginationConfig);
         this.onPage(notificationListPaginationConfig);
       });
+    this.emailService.datasetsForm?.get('emailDistributionList')?.reset();
+    this.emailService.datasetsForm?.get('emailLayout')?.reset();
   }
 
   /**

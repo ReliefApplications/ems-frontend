@@ -1,4 +1,10 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { EmailService } from '../../email.service';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
@@ -12,7 +18,7 @@ import { ApplicationService } from '../../../../services/application/application
   templateUrl: './custom-template.component.html',
   styleUrls: ['./custom-template.component.scss'],
 })
-export class CustomTemplateComponent implements OnInit {
+export class CustomTemplateComponent implements OnInit, AfterViewInit {
   /* Used to identify the current step */
   /** Current step of the custom template   */
   public currentStep = 0;
@@ -70,6 +76,11 @@ export class CustomTemplateComponent implements OnInit {
     this.applicationService.application$.subscribe((res: any) => {
       this.applicationId = res?.id;
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.emailService.resetPreviewData();
+    this.emailService.emailDistributionList = [];
   }
 
   /**

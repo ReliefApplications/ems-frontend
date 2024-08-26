@@ -48,8 +48,11 @@
     <button
       type="submit"
       class="bg-sky-500 hover:bg-sky-400 px-4 py-2 rounded-md transition-colors duration-150 ease-in-out"
-      [ngClass]="emailService.disableNextActionBtn ? 'inactive' : 'active'"
-      [disabled]="emailService.disableNextActionBtn"
+      [ngClass]="{
+        'inactive': emailService.disableNextActionBtn || emailService.layoutTitle === '', 
+        'active': !emailService.disableNextActionBtn && emailService.layoutTitle !== ''
+      }"
+      [disabled]="emailService.disableNextActionBtn || emailService.layoutTitle === ''"
       (click)="next()"
       *ngIf="currentStep !== 1"
     >
