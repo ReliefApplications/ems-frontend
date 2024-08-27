@@ -567,3 +567,15 @@ export const GET_CUSTOM_TEMPLATES = gql`
     }
   }
 `;
+
+/**
+ *Graphql query for Delete email notification permanently
+ */
+export const DELETE_EMAIL_NOTIFICATION = gql`
+  mutation DeleteEmailNotification($id: ID!, $applicationId: ID!) {
+    deleteEmailNotification(id: $id, applicationId: $applicationId) {
+      success
+      message
+    }
+  }
+`;

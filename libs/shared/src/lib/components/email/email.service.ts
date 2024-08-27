@@ -18,6 +18,7 @@ import {
   GET_AND_UPDATE_EMAIL_NOTIFICATION,
   GET_EMAIL_NOTIFICATIONS,
   GET_RESOURCE_BY_ID,
+  DELETE_EMAIL_NOTIFICATION,
 } from './graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
@@ -1239,6 +1240,24 @@ export class EmailService {
           applicationId: applicationId,
         },
         editEmailNotificationId: id,
+        applicationId: applicationId,
+      },
+    });
+  }
+
+  /**
+   *
+   * Delete an email notification with the provided id Permanently.
+   *
+   * @param id The notification data id.
+   * @param applicationId The application id of the email notification.
+   * @returns Email Notification that has been deleted.
+   */
+  deleteEmailNotificationPermanently(id: string, applicationId: string) {
+    return this.apollo.mutate<any>({
+      mutation: DELETE_EMAIL_NOTIFICATION,
+      variables: {
+        id: id,
         applicationId: applicationId,
       },
     });

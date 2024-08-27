@@ -996,7 +996,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.emailService
-          .deleteEmailNotification(data.id, this.applicationId)
+          .deleteEmailNotificationPermanently(data.id, this.applicationId)
           .subscribe({
             next: ({ errors, data }) => {
               if (errors) {
