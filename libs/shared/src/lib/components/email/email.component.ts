@@ -932,7 +932,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       title: this.translate.instant('common.deleteObject', {
         name: this.translate.instant('common.email.customTemplate'),
       }),
-      content: 'Do you confirm the deletion of ' + data.subject + ' ?',
+      content: 'Do you confirm the deletion of ' + data.name + ' ?',
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
