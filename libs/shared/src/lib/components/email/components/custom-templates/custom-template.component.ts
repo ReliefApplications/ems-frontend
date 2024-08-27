@@ -70,6 +70,7 @@ export class CustomTemplateComponent implements OnInit, AfterViewInit {
       .forEach((y: any) => {
         y.disabled = true;
       });
+    this.emailService.setDatasetForm();
     this.emailService.allPreviewData = [];
     this.emailService.isQuickAction = true;
     this.emailService.disableNextActionBtn = true;
