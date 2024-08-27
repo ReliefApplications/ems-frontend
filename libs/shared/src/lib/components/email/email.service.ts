@@ -1251,7 +1251,7 @@ export class EmailService {
    *
    * @param id The notification data id.
    * @param applicationId The application id of the email notification.
-   * @returns Email Notification that has been deleted.
+   * @returns success or error message.
    */
   deleteEmailNotificationPermanently(id: string, applicationId: string) {
     return this.apollo.mutate<any>({
