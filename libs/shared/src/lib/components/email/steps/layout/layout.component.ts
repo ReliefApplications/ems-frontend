@@ -168,7 +168,13 @@ export class LayoutComponent
   }
 
   ngOnInit(): void {
-    this.emailService.createPreviewData();
+    if (this.emailService.isQuickAction) {
+      this.emailService.resetPreviewData();
+      this.emailService.previewData.datasets = ['Block 1'];
+    } else {
+      this.emailService.createPreviewData();
+    }
+
     if (!this.emailService.isCustomTemplateEdit) {
       this.emailService.allLayoutdata.bodyHtml =
         this.emailService.isQuickAction &&

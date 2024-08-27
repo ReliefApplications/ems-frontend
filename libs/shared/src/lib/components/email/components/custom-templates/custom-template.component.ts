@@ -71,6 +71,7 @@ export class CustomTemplateComponent implements OnInit, AfterViewInit {
         y.disabled = true;
       });
     this.emailService.setDatasetForm();
+    this.emailService.resetPreviewData();
     this.emailService.allPreviewData = [];
     this.emailService.isQuickAction = true;
     this.emailService.disableNextActionBtn = true;

@@ -110,7 +110,10 @@
           uiFormFieldDirective
           [defaultMargin]="false"
           class="w-1/3 px-2"
-          *ngIf="this.emailService?.previewData?.datasets?.length === 1"
+          *ngIf="
+            this.emailService?.previewData?.datasets?.length === 1 &&
+            !this.emailService.isQuickAction
+          "
         >
           <label
             for="fieldSelect"
