@@ -70,6 +70,8 @@ export class ReferenceDataService {
    * @param referenceDataID ReferenceData ID.
    * @param displayFieldOptions Display field options.
    * @param displayFieldOptions.displayField The field to display in the choices.
+   * @param displayFieldOptions.sortByField The field to sort the choices by.
+   * @param displayFieldOptions.sortDirection The direction to sort the choices.
    * @param displayFieldOptions.tryLoadTranslations Whether to try to load translations for the display field.
    * @param displayFieldOptions.lang The language to use for translations.
    * @param storePrimitiveValue Whether to store the whole item or only the primitive value given the displayField
@@ -85,6 +87,8 @@ export class ReferenceDataService {
     referenceDataID: string,
     displayFieldOptions: {
       displayField: string;
+      sortByField?: string;
+      sortDirection: 'asc' | 'desc';
       tryLoadTranslations: boolean;
       lang: string;
     },
@@ -97,10 +101,26 @@ export class ReferenceDataService {
       operator: string;
     }
   ): Promise<{ value: string | number; text: string }[]> {
-    const { displayField, tryLoadTranslations, lang } = displayFieldOptions;
+    const {
+      displayField,
+      sortByField,
+      sortDirection,
+      tryLoadTranslations,
+      lang,
+    } = displayFieldOptions;
 
-    const sortByDisplayField = (a: any, b: any) =>
-      a[displayField] > b[displayField] ? 1 : -1;
+    const sortByDisplayField = (a: any, b: any) => {
+      if (sortByField) {
+        if (sortDirection === 'asc') {
+          return a[sortByField] > b[sortByField] ? 1 : -1;
+        } else {
+          return a[sortByField] < b[sortByField] ? 1 : -1;
+        }
+      } else {
+        // No sorting, keep the order of the items
+        return 0;
+      }
+    };
 
     // get items
     const { items, referenceData } = await this.cacheItems(referenceDataID);

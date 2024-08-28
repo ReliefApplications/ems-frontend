@@ -95,6 +95,21 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       CustomPropertyGridComponentTypes.referenceDataDropdown
     );
 
+    const loadReferenceDataChoices = (
+      obj: null | QuestionSelectBase,
+      choicesCallback: (choices: any[]) => void
+    ) => {
+      if (obj?.referenceData) {
+        referenceDataService
+          .loadReferenceData(obj.referenceData)
+          .then((referenceData) =>
+            choicesCallback(
+              referenceData.fields?.map((x) => x?.name ?? x) || []
+            )
+          );
+      }
+    };
+
     serializer.addProperty(type, {
       displayName: 'Display field',
       name: 'referenceDataDisplayField',
@@ -104,20 +119,33 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       visibleIf: (obj: null | QuestionSelectBase): boolean =>
         Boolean(obj?.referenceData),
       visibleIndex: 2,
-      choices: (
-        obj: null | QuestionSelectBase,
-        choicesCallback: (choices: any[]) => void
-      ) => {
-        if (obj?.referenceData) {
-          referenceDataService
-            .loadReferenceData(obj.referenceData)
-            .then((referenceData) =>
-              choicesCallback(
-                referenceData.fields?.map((x) => x?.name ?? x) || []
-              )
-            );
-        }
-      },
+      choices: loadReferenceDataChoices,
+    });
+
+    serializer.addProperty(type, {
+      displayName: 'Sort by',
+      name: 'referenceDataSortBy',
+      category: 'Choices from Reference data',
+      dependsOn: 'referenceData',
+      visibleIf: (obj: null | QuestionSelectBase): boolean =>
+        Boolean(obj?.referenceData),
+      visibleIndex: 3,
+      choices: loadReferenceDataChoices,
+    });
+
+    serializer.addProperty(type, {
+      displayName: 'Sort direction',
+      name: 'referenceDataSortDirection',
+      type: 'dropdown',
+      category: 'Choices from Reference data',
+      dependsOn: 'referenceData',
+      visibleIf: (obj: null | QuestionSelectBase): boolean =>
+        Boolean(obj?.referenceData),
+      visibleIndex: 4,
+      choices: [
+        { value: 'asc', text: 'Ascending' },
+        { value: 'desc', text: 'Descending' },
+      ],
     });
 
     serializer.addProperty(type, {
@@ -128,7 +156,7 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       dependsOn: 'referenceData',
       visibleIf: (obj: null | QuestionSelectBase): boolean =>
         Boolean(obj?.referenceData),
-      visibleIndex: 3,
+      visibleIndex: 5,
       default: true,
     });
 
@@ -140,7 +168,7 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       dependsOn: 'referenceData',
       visibleIf: (obj: null | QuestionSelectBase): boolean =>
         Boolean(obj?.referenceData),
-      visibleIndex: 4,
+      visibleIndex: 6,
       default: false,
     });
 
@@ -152,7 +180,7 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       dependsOn: 'referenceData',
       visibleIf: (obj: null | QuestionSelectBase): boolean =>
         Boolean(obj?.referenceData),
-      visibleIndex: 3,
+      visibleIndex: 7,
       choices: (
         obj: null | QuestionSelectBase,
         choicesCallback: (choices: any[]) => void
@@ -186,7 +214,7 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       dependsOn: 'referenceDataFilterFilterFromQuestion',
       visibleIf: (obj: null | QuestionSelectBase): boolean =>
         Boolean(obj?.referenceDataFilterFilterFromQuestion),
-      visibleIndex: 4,
+      visibleIndex: 8,
       choices: (
         obj: null | QuestionSelectBase,
         choicesCallback: (choices: any[]) => void
@@ -218,7 +246,7 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       dependsOn: 'referenceDataFilterFilterFromQuestion',
       visibleIf: (obj: null | QuestionSelectBase): boolean =>
         Boolean(obj?.referenceDataFilterFilterFromQuestion),
-      visibleIndex: 5,
+      visibleIndex: 9,
       choices: [
         { value: 'eq', text: '==' },
         { value: 'neq', text: '!=' },
@@ -241,7 +269,7 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       dependsOn: 'referenceDataFilterFilterFromQuestion',
       visibleIf: (obj: null | QuestionSelectBase): boolean =>
         Boolean(obj?.referenceDataFilterFilterFromQuestion),
-      visibleIndex: 6,
+      visibleIndex: 10,
       choices: (
         obj: null | QuestionSelectBase,
         choicesCallback: (choices: any[]) => void
@@ -295,11 +323,14 @@ export const render = (
           };
         }
       }
+
       referenceDataService
         .getChoices(
           element.referenceData,
           {
             displayField: element.referenceDataDisplayField,
+            sortByField: element.referenceDataSortBy,
+            sortDirection: element.referenceDataSortDirection || 'asc',
             tryLoadTranslations: element.referenceDataTryLoadTranslations,
             lang: question.survey.getLocale(),
           },
@@ -312,6 +343,7 @@ export const render = (
           element.choices = [];
 
           const choiceItems = choices.map((choice) => new ItemValue(choice));
+          // console.log('choices', choiceItems);
           element.setPropertyValue('visibleChoices', choiceItems);
           element.setPropertyValue('choices', choiceItems);
           // manually set the selected option (not done by default)
