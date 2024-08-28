@@ -807,7 +807,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
       this.previewDataQuery = this.apollo.watchQuery({
         query: builtQuery,
         variables: {
-          first: this.layout?.query?.pageSize,
+          first: this.grid?.pageSize,
           filter: this.layout?.query?.queryFilter,
           sortField: this.layout?.query?.sortField || undefined,
           sortOrder: this.layout?.query?.sortOrder,
