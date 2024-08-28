@@ -100,7 +100,11 @@ export class ReferenceDataService {
       localField: string;
       operator: string;
     }
-  ): Promise<{ value: string | number; text: string }[]> {
+  ): Promise<{
+    valueField: string;
+    choices: { value: string | number; text: string }[];
+    items: any[];
+  }> {
     const {
       displayField,
       sortByField,
@@ -136,7 +140,11 @@ export class ReferenceDataService {
     ) {
       const res = await this.cacheItems(filter.foreignReferenceData);
       if (!res) {
-        return [];
+        return {
+          valueField,
+          choices: [],
+          items: [],
+        };
       }
       const { items: foreignItems, referenceData: foreignReferenceData } = res;
       const foreignValueField = foreignReferenceData.valueField || '';
@@ -155,28 +163,36 @@ export class ReferenceDataService {
           (item) => get(item, foreignValueField) === filter.foreignValue
         )[filter.foreignField];
       }
-      return items
-        .filter((item) =>
-          this.operate(
-            selectedForeignValue,
-            filter.operator,
-            item[filter.localField]
+      return {
+        valueField,
+        items,
+        choices: items
+          .filter((item) =>
+            this.operate(
+              selectedForeignValue,
+              filter.operator,
+              item[filter.localField]
+            )
           )
-        )
-        .map((item) => ({
-          value: storePrimitiveValue ? item[valueField] : item,
-          text: tryLoadTranslations
-            ? item[`${displayField}_${lang}`] ?? item[displayField]
-            : item[displayField],
-        }));
+          .map((item) => ({
+            value: storePrimitiveValue ? item[valueField] : item,
+            text: tryLoadTranslations
+              ? item[`${displayField}_${lang}`] ?? item[displayField]
+              : item[displayField],
+          })),
+      };
     }
-    // if we don't have to filter
-    return items.map((item) => ({
-      value: storePrimitiveValue ? item[valueField] : item,
-      text: tryLoadTranslations
-        ? item[`${displayField}_${lang}`] ?? item[displayField]
-        : item[displayField],
-    }));
+
+    return {
+      valueField,
+      items,
+      choices: items.map((item) => ({
+        value: storePrimitiveValue ? item[valueField] : item,
+        text: tryLoadTranslations
+          ? item[`${displayField}_${lang}`] ?? item[displayField]
+          : item[displayField],
+      })),
+    };
   }
 
   /**

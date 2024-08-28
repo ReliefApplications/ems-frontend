@@ -11,7 +11,6 @@ import * as TextWidget from './widgets/text-widget';
 import * as CommentWidget from './widgets/comment-widget';
 import * as DropdownWidget from './widgets/dropdown-widget';
 import * as TagboxWidget from './widgets/tagbox-widget';
-import * as Matrices from './components/matrices';
 import * as FileWidget from './widgets/file-widget';
 import * as OtherProperties from './global-properties/others';
 // import * as ChoicesByUrlProperties from './global-properties/choicesByUrl';
@@ -68,7 +67,6 @@ export const initCustomSurvey = (
     document
   );
   DropdownWidget.init(domService, CustomWidgetCollection.Instance, document);
-  Matrices.init(domService, referenceDataService);
   FileWidget.init(CustomWidgetCollection.Instance);
 
   if (customQuestions) {

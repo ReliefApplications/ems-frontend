@@ -7,6 +7,7 @@ import {
   QuestionCustomModel,
   QuestionDropdownModel,
   MatrixDropdownColumn,
+  ItemValue,
 } from 'survey-core';
 import { Record } from '../models/record.model';
 import { Form } from '../models/form.model';
@@ -62,6 +63,11 @@ export interface CustomMatrixDropdownColumn
   referenceDataFilterFilterCondition?: string;
   referenceDataFilterLocalField?: string;
   referenceDataChoicesLoaded?: boolean;
+  referenceDataSortBy?: string;
+  referenceDataFilter?: string;
+  referenceDataSortDirection?: 'asc' | 'desc';
+  referenceDataTryLoadTranslations?: boolean;
+  choices: ItemValue[];
 }
 
 // TYPES FOR CUSTOM QUESTIONS

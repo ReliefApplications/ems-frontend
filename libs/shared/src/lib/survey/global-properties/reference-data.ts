@@ -15,6 +15,7 @@ import { ReferenceDataService } from '../../services/reference-data/reference-da
 import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
 import { cloneDeep, isEqual, isNil, omit } from 'lodash';
+import { SurveyQuestionEditorDefinition } from 'survey-creator-core';
 
 /**
  * Sets the choices on the default value modal editor for a reference data dropdown
@@ -77,18 +78,23 @@ export const init = (referenceDataService: ReferenceDataService): void => {
     obj: Question
   ): boolean => !obj.referenceData;
 
-  for (const type of ['tagbox', 'dropdown']) {
-    // add properties
+  for (const type of ['tagbox', 'dropdown', 'matrixdropdowncolumn']) {
+    const isColumn = type === 'matrixdropdowncolumn';
+
     serializer.addProperty(type, {
       name: 'referenceData',
       category: 'Choices from Reference data',
       type: CustomPropertyGridComponentTypes.referenceDataDropdown,
       visibleIndex: 1,
       onSetValue: (obj: QuestionSelectBase, value: string) => {
-        obj.setPropertyValue('choicesByUrl', new ChoicesRestfull());
-        obj.choicesByUrl.setData([]);
+        if (!isColumn) {
+          obj.setPropertyValue('choicesByUrl', new ChoicesRestfull());
+          obj.choicesByUrl.setData([]);
+        }
+
         obj.setPropertyValue('referenceData', value);
       },
+      showMode: isColumn ? 'form' : undefined,
     });
 
     registerCustomPropertyEditor(
@@ -96,7 +102,7 @@ export const init = (referenceDataService: ReferenceDataService): void => {
     );
 
     const loadReferenceDataChoices = (
-      obj: null | QuestionSelectBase,
+      obj: null | QuestionSelectBase | CustomMatrixDropdownColumn,
       choicesCallback: (choices: any[]) => void
     ) => {
       if (obj?.referenceData) {
@@ -110,37 +116,51 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       }
     };
 
+    const visibleIfRefDataSelected = (
+      obj: null | QuestionSelectBase
+    ): boolean => {
+      if (!isColumn) {
+        return Boolean(obj?.referenceData);
+      }
+
+      const colObj = obj?.locOwner as CustomMatrixDropdownColumn;
+      if (colObj?.getType() !== 'matrixdropdowncolumn') {
+        return false;
+      }
+      return Boolean(colObj?.referenceData);
+    };
+
     serializer.addProperty(type, {
+      showMode: isColumn ? 'form' : undefined,
       displayName: 'Display field',
       name: 'referenceDataDisplayField',
       category: 'Choices from Reference data',
       isRequired: true,
       dependsOn: 'referenceData',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
-        Boolean(obj?.referenceData),
       visibleIndex: 2,
+      visibleIf: visibleIfRefDataSelected,
       choices: loadReferenceDataChoices,
     });
 
     serializer.addProperty(type, {
+      showMode: isColumn ? 'form' : undefined,
       displayName: 'Sort by',
       name: 'referenceDataSortBy',
       category: 'Choices from Reference data',
       dependsOn: 'referenceData',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
-        Boolean(obj?.referenceData),
       visibleIndex: 3,
+      visibleIf: visibleIfRefDataSelected,
       choices: loadReferenceDataChoices,
     });
 
     serializer.addProperty(type, {
+      showMode: isColumn ? 'form' : undefined,
       displayName: 'Sort direction',
       name: 'referenceDataSortDirection',
       type: 'dropdown',
       category: 'Choices from Reference data',
       dependsOn: 'referenceData',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
-        Boolean(obj?.referenceData),
+      visibleIf: visibleIfRefDataSelected,
       visibleIndex: 4,
       choices: [
         { value: 'asc', text: 'Ascending' },
@@ -149,38 +169,38 @@ export const init = (referenceDataService: ReferenceDataService): void => {
     });
 
     serializer.addProperty(type, {
+      showMode: isColumn ? 'form' : undefined,
       displayName: 'Is primitive value',
       name: 'isPrimitiveValue',
       type: 'boolean',
       category: 'Choices from Reference data',
       dependsOn: 'referenceData',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
-        Boolean(obj?.referenceData),
+      visibleIf: visibleIfRefDataSelected,
       visibleIndex: 5,
       default: true,
     });
 
     serializer.addProperty(type, {
+      showMode: isColumn ? 'form' : undefined,
       displayName: 'Try loading translations',
       name: 'referenceDataTryLoadTranslations',
       type: 'boolean',
       category: 'Choices from Reference data',
       dependsOn: 'referenceData',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
-        Boolean(obj?.referenceData),
+      visibleIf: visibleIfRefDataSelected,
       visibleIndex: 6,
       default: false,
     });
 
     serializer.addProperty(type, {
+      showMode: isColumn ? 'form' : undefined,
       displayName: 'Filter from question',
       name: 'referenceDataFilterFilterFromQuestion',
       type: 'dropdown',
       category: 'Choices from Reference data',
       dependsOn: 'referenceData',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
-        Boolean(obj?.referenceData),
       visibleIndex: 7,
+      visibleIf: visibleIfRefDataSelected,
       choices: (
         obj: null | QuestionSelectBase,
         choicesCallback: (choices: any[]) => void
@@ -206,25 +226,44 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       },
     });
 
+    const visibleIfFilterFromQuestion = (
+      obj: null | QuestionSelectBase
+    ): boolean => {
+      if (!isColumn) {
+        return Boolean(obj?.referenceDataFilterFilterFromQuestion);
+      }
+
+      const colObj = obj?.locOwner as CustomMatrixDropdownColumn;
+      if (colObj?.getType() !== 'matrixdropdowncolumn') {
+        return false;
+      }
+      return Boolean(obj?.referenceDataFilterFilterFromQuestion);
+    };
+
     serializer.addProperty(type, {
+      showMode: isColumn ? 'form' : undefined,
       displayName: 'Foreign field',
       name: 'referenceDataFilterForeignField',
       category: 'Choices from Reference data',
       isRequired: true,
       dependsOn: 'referenceDataFilterFilterFromQuestion',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
-        Boolean(obj?.referenceDataFilterFilterFromQuestion),
+      visibleIf: visibleIfFilterFromQuestion,
       visibleIndex: 8,
       choices: (
         obj: null | QuestionSelectBase,
         choicesCallback: (choices: any[]) => void
       ) => {
         if (obj?.referenceDataFilterFilterFromQuestion) {
-          const foreignQuestion = (obj.survey as SurveyModel)
+          const survey = (
+            isColumn ? obj.colOwnerValue?.survey : obj.survey
+          ) as SurveyModel;
+
+          const foreignQuestion = survey
             .getAllQuestions()
             .find(
               (q) => q.name === obj.referenceDataFilterFilterFromQuestion
             ) as QuestionSelectBase | undefined;
+
           if (foreignQuestion?.referenceData) {
             referenceDataService
               .loadReferenceData(foreignQuestion.referenceData)
@@ -239,13 +278,13 @@ export const init = (referenceDataService: ReferenceDataService): void => {
     });
 
     serializer.addProperty(type, {
+      showMode: isColumn ? 'form' : undefined,
       displayName: 'Filter condition',
       name: 'referenceDataFilterFilterCondition',
       category: 'Choices from Reference data',
       isRequired: true,
       dependsOn: 'referenceDataFilterFilterFromQuestion',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
-        Boolean(obj?.referenceDataFilterFilterFromQuestion),
+      visibleIf: visibleIfFilterFromQuestion,
       visibleIndex: 9,
       choices: [
         { value: 'eq', text: '==' },
@@ -262,6 +301,7 @@ export const init = (referenceDataService: ReferenceDataService): void => {
     });
 
     serializer.addProperty(type, {
+      showMode: isColumn ? 'form' : undefined,
       displayName: 'Local field',
       name: 'referenceDataFilterLocalField',
       category: 'Choices from Reference data',
@@ -270,21 +310,12 @@ export const init = (referenceDataService: ReferenceDataService): void => {
       visibleIf: (obj: null | QuestionSelectBase): boolean =>
         Boolean(obj?.referenceDataFilterFilterFromQuestion),
       visibleIndex: 10,
-      choices: (
-        obj: null | QuestionSelectBase,
-        choicesCallback: (choices: any[]) => void
-      ) => {
-        if (obj?.referenceData) {
-          referenceDataService
-            .loadReferenceData(obj.referenceData)
-            .then((referenceData) =>
-              choicesCallback(
-                referenceData.fields?.map((x) => x?.name ?? x) || []
-              )
-            );
-        }
-      },
+      choices: loadReferenceDataChoices,
     });
+
+    SurveyQuestionEditorDefinition.definition[
+      'matrixdropdowncolumn'
+    ].properties?.push('referenceData');
   }
 };
 
@@ -298,7 +329,11 @@ export const render = (
   questionElement: Question,
   referenceDataService: ReferenceDataService
 ): void => {
-  const updateChoices = (question: Question, element: any = question) => {
+  const survey = questionElement.survey as SurveyModel;
+  const updateChoices = (
+    question: Question,
+    element: Question | CustomMatrixDropdownColumn = question
+  ) => {
     if (element.referenceData && element.referenceDataDisplayField) {
       let filter;
       // create a filter object if all required properties for filtering are set
@@ -337,45 +372,60 @@ export const render = (
           element.isPrimitiveValue,
           filter
         )
-        .then((choices) => {
+        .then(({ choices, items, valueField }) => {
           // this is to avoid that the choices appear on the 'choices' tab
           // and also to avoid the choices being sent to the server
           element.choices = [];
 
           const choiceItems = choices.map((choice) => new ItemValue(choice));
-          // console.log('choices', choiceItems);
           element.setPropertyValue('visibleChoices', choiceItems);
           element.setPropertyValue('choices', choiceItems);
           // manually set the selected option (not done by default)
           // only affects dropdown questions (only one option selected) with reference data and non primitive values
-          if (
-            !element.isPrimitiveValue &&
-            (element.getType() === 'dropdown' ||
-              element.getType() === 'matrixdropdowncolumn')
-          ) {
+
+          const dropdown = element as QuestionSelectBase;
+          if (!dropdown.isPrimitiveValue && dropdown.getType() === 'dropdown') {
             // When using dashboard filters, the element.value object is truncated
-            if (isEqual(element.value, element.defaultValue?.value)) {
-              element.value = element.defaultValue;
+            if (isEqual(dropdown.value, dropdown.defaultValue?.value)) {
+              dropdown.value = dropdown.defaultValue;
               return;
             }
 
             // First, if no value, we try to get the default value
-            element.value = element.value ?? element.defaultValue;
+            dropdown.value = dropdown.value ?? dropdown.defaultValue;
 
             // We then create an ItemValue from the value
-            const valueItem = new ItemValue(element.value);
+            const valueItem = new ItemValue(dropdown.value);
 
             // Then, we try to find the value in the choices by comparing the ids
-            element.value = choiceItems.find((choice) =>
+            dropdown.value = choiceItems.find((choice) =>
               isEqual(choice.id, omit(valueItem.id as any, 'pos'))
             );
           }
 
           // If the current value is not in the choices, we set it to null
-          if (element.getType() === 'dropdown') {
+          if (dropdown.getType() === 'dropdown') {
             if (!choiceItems.find((c) => isEqual(c.id, element.value))) {
-              element.value = null;
+              dropdown.value = null;
             }
+
+            const updateVariables = (_: any, options: any) => {
+              const { name, value } = options;
+              if (questionElement.name !== name) {
+                return;
+              }
+
+              const item = items.find((i) => isEqual(i[valueField], value));
+
+              if (item) {
+                Object.entries(item).forEach(([key, value]) => {
+                  survey.setVariable(`${question.name}.${key}`, value);
+                });
+              }
+            };
+
+            survey.onValueChanged.remove(updateVariables);
+            survey.onValueChanged.add(updateVariables);
           } else if (element.getType() === 'matrixdropdowncolumn') {
             const colName = element.value;
             const currValue: {
@@ -394,7 +444,10 @@ export const render = (
     }
   };
 
-  const initChoices = (question: Question, element: any) => {
+  const initChoices = (
+    question: Question,
+    element: Question | CustomMatrixDropdownColumn = question
+  ) => {
     // when refData changes, clear the properties that depend on it
     element.registerFunctionOnPropertyValueChanged('referenceData', () => {
       element.referenceDataDisplayField = undefined;
@@ -440,7 +493,7 @@ export const render = (
     // Prevent selected choices to be removed when sending the value
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     question.clearIncorrectValuesCallback = () => {};
-    initChoices(question, question);
+    initChoices(question);
   } else if (isMatrixDropdownQuestion(questionElement)) {
     const visibleColumns = questionElement.visibleColumns;
     // init the choices
