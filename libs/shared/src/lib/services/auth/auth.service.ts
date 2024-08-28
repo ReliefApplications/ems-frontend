@@ -384,6 +384,15 @@ export class AuthService {
       can('manage', 'Record');
     }
 
+    // This was done as a short time fix to allow us to let some users manage only some resources on LIFT
+    // It's fine that the frontend thinks that everyone can manage resources, because
+    //    1. The server would still check the permissions, so no real security issue
+    //    2. No other project has users with back-office roles that aren't admins
+    //    3. Worst case scenario, someone will see an empty page)
+    //
+    // @TODO: Remove this when we have a better solution
+    can(['read', 'update'], ['Form', 'ReferenceData']);
+
     // === Role ===
     if (globalPermissions.includes('can_see_roles')) {
       can(['create', 'read', 'update', 'delete'], ['Role', 'Channel']);

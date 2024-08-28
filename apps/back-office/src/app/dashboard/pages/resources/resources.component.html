@@ -12,6 +12,7 @@
       category="secondary"
       variant="primary"
       (click)="onAdd()"
+      *ngIf="'create' | able : 'Resource'"
     >
       {{ 'models.resource.create' | translate }}
     </ui-button>

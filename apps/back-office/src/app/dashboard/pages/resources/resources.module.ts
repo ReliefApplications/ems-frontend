@@ -26,6 +26,7 @@ import {
 } from '@oort-front/ui';
 import { IdShapeModalComponent } from './id-shape-modal/id-shape-modal.component';
 import { ImportFieldModalComponent } from './import-field-modal/import-field-modal.component';
+import { AbilityModule } from '@casl/angular';
 
 /**
  * Resources page module.
@@ -58,6 +59,7 @@ import { ImportFieldModalComponent } from './import-field-modal/import-field-mod
     DialogModule,
     ErrorMessageModule,
     SelectMenuModule,
+    AbilityModule,
   ],
   exports: [ResourcesComponent],
 })

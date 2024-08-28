@@ -165,6 +165,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'afterRecordDeselection',
   'displayAsGrid',
   'valueExpression',
+  'applications',
   'canDelete',
   'history',
   'convert',

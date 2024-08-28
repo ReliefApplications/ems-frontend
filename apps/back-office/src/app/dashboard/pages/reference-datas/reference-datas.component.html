@@ -80,7 +80,7 @@
             icon="more_vert"
             [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
-            [disabled]="!(element.canUpdate || element.canDelete)"
+            [disabled]="!element.canDelete"
             [uiTooltip]="'common.actions' | translate"
           >
           </ui-button>
