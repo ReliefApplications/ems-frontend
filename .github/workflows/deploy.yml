@@ -28,9 +28,9 @@ jobs:
       - name: Install Dependencies
         run: npm i
       - name: Build Back-office ${{ github.event.client_payload.environment }} - ${{ steps.get_version.outputs.version }}
-        run: npx nx run back-office:build:${{ secrets.CONFIG }}
+        run: npx nx run back-office:build:${{ vars.CONFIG }}
       - name: Build Front-office ${{ github.event.client_payload.environment }} - ${{ steps.get_version.outputs.version }}
-        run: npx nx run front-office:build:${{ secrets.CONFIG }}
+        run: npx nx run front-office:build:${{ vars.CONFIG }}
       - name: Archive build Back-office
         if: success()
         uses: actions/upload-artifact@v4
@@ -66,8 +66,8 @@ jobs:
         id: deployment
         with:
           token: '${{ github.token }}'
-          environment-url: ${{ secrets.FRONT_END_URL }}
-          environment: ${{ secrets.ENVIRONMENT }}
+          environment-url: ${{ vars.FRONT_END_URL }}
+          environment: ${{ vars.ENVIRONMENT }}
 
   deploy:
     name: Deploy Back-office and Front-office 🚀
