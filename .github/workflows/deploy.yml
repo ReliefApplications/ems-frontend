@@ -5,61 +5,44 @@ on:
     types: [CD]
 
 jobs:
-  setup:
-    name: Setup Environment
-    runs-on: ubuntu-latest
-    environment: ${{ github.event.client_payload.environment }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.client_payload.ref }}
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-      - name: Install Dependencies
-        run: npm install
-      - name: Save Node Modules
-        uses: actions/upload-artifact@v4
-        with:
-          name: node_modules
-          path: node_modules
-
   build:
     name: Build and Test
     runs-on: ubuntu-latest
-    needs: setup
     environment: ${{ github.event.client_payload.environment }}
     strategy:
       matrix:
-        app: [back-office, front-office]
+        node-version: [20.x]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.client_payload.ref }}
-      - name: Use Node.js 20.x
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
-      - name: Download Node Modules
-        uses: actions/download-artifact@v4
-        with:
-          name: node-modules
+          node-version: ${{ matrix.node-version }}
       - name: Get package version
         id: get_version
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
-      - name: Build ${{ matrix.app }} ${{ github.event.client_payload.environment }} - ${{ steps.get_version.outputs.version }}
-        run: npx nx run ${{ matrix.app }}:build:${{ secrets.CONFIG }}
-      - name: Archive build ${{ matrix.app }}
+      - name: Install Dependencies
+        run: npm i
+      - name: Build Back-office ${{ github.event.client_payload.environment }} - ${{ steps.get_version.outputs.version }}
+        run: npx nx run back-office:build:${{ secrets.CONFIG }}
+      - name: Build Front-office ${{ github.event.client_payload.environment }} - ${{ steps.get_version.outputs.version }}
+        run: npx nx run front-office:build:${{ secrets.CONFIG }}
+      - name: Archive build Back-office
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.app }}_${{ github.event.client_payload.environment }}
-          path: dist/apps/${{ matrix.app }}
+          name: back-office_${{ github.event.client_payload.environment }}
+          path: dist/apps/back-office
+      - name: Archive build Front-office
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: front-office_${{ github.event.client_payload.environment }}
+          path: dist/apps/front-office
 
   create_deployment:
     name: Create Deployment
