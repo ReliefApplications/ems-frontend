@@ -68,7 +68,8 @@ jobs:
           initial-status: 'in_progress'
           token: '${{ github.token }}'
           environment-url: ${{ vars.FRONT_END_URL }}
-          environment: ${{ vars.ENVIRONMENT }}
+          environment: ${{ github.event.client_payload.environment }}
+          auto-inactive: false
 
   deploy:
     name: Deploy Back-office and Front-office 🚀
