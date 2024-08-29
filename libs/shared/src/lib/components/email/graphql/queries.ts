@@ -269,6 +269,7 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
           notificationType
           createdBy
           isDraft
+          isDeleted
           draftStepper
         }
       }

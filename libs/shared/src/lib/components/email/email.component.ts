@@ -336,7 +336,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         this.emailService.distributionListNames = [];
         this.emailService.emailNotificationNames = [];
         data?.emailNotifications?.edges?.forEach((ele: any) => {
-          this.templateActualData.push(ele.node);
+          if (!ele.node.isDeleted) {
+            this.templateActualData.push(ele.node);
+          }
           this.emailService.emailListLoading = false;
           if (
             ele.node.emailDistributionList.name !== null &&
@@ -379,7 +381,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           this.pageInfo.pageSize * this.pageInfo.pageIndex,
           this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
         );
-        this.pageInfo.length = data?.emailNotifications?.edges.length;
+        this.pageInfo.length = this.templateActualData.length;
 
         this.uniqueDLNames = [];
         this.emailService.distributionListNames.forEach((name: any) => {
@@ -520,6 +522,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           let maxCloneNumber = 0;
           const filteredEmailList: string[][] =
             this.emailService.emailNotificationNames
+              .filter((notification) => typeof notification === 'string')
               .map((notification: string) => notification.split('_clone'))
               .filter(
                 (cloneNotificationName) =>
