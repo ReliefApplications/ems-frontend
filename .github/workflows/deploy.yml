@@ -67,7 +67,7 @@ jobs:
         with:
           initial-status: 'in_progress'
           token: '${{ github.token }}'
-          environment-url: ${{ vars.FRONT_END_URL }}
+          environment-url: ${{ vars.DEPLOYMENT_URL }}
           environment: ${{ github.event.client_payload.environment }}
           auto-inactive: false
 
