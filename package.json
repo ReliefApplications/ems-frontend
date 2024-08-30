@@ -7,8 +7,7 @@
     "semantic-release": "semantic-release",
     "prepare": "husky install",
     "lint": "npx nx run-many --target=lint --verbose --projects=shared,front-office,back-office,ui,web-widgets",
-    "test": "npx nx run-many --target=test --projects=shared,front-office,back-office,ui --configuration=ci",
-    "bundle:widgets": "npx nx build web-widgets --configuration=azure-dev  && node .scripts/build-widgets.js"
+    "test": "npx nx run-many --target=test --projects=shared,front-office,back-office,ui --configuration=ci"
   },
   "private": true,
   "dependencies": {

@@ -41,19 +41,6 @@ One library exists:
 
 Library changes should automatically be detected when serving the other projects.
 
-# Azure configuration
-
-If you want to deploy on Azure, build back-office and front-office:
-```
-npx nx run back-office:build:azure-dev
-npx nx run front-office:build:azure-dev
-```
-
-For prod, replace `azure-dev` with `azure-prod`.
-For uat, replace `azure-dev` with `azure-uat`.
-
-The compiled applications can be found there in ./dist/apps/ folder.
-
 # Useful commands
 
 ## Development server
