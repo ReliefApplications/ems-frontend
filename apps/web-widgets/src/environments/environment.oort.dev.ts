@@ -4,7 +4,7 @@ import { sharedEnvironment } from './environment.shared';
 
 /** Authentication configuration */
 const authConfig: AuthConfig = {
-  issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
+  issuer: 'https://id-dev.oortcloud.tech/realms/oort',
   redirectUri: 'https://oort-dev.oortcloud.tech/widgets/',
   postLogoutRedirectUri: 'https://oort-dev.oortcloud.tech/widgets/auth/',
   clientId: 'oort-client',
