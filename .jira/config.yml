@@ -1,7 +1,6 @@
 deployments:
   environmentMapping:
     development:
-      - "development"
       - "DEV-*"
     testing:
       - "TST-*"
