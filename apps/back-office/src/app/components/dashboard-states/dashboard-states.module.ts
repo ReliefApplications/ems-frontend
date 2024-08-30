@@ -5,6 +5,7 @@ import { EmptyModule } from '@oort-front/shared';
 import {
   ButtonModule,
   DialogModule,
+  DividerModule,
   FormWrapperModule,
   IconModule,
   MenuModule,
@@ -35,6 +36,7 @@ import { StateModalComponent } from './state-modal/state-modal.component';
     MenuModule,
     TooltipModule,
     IconModule,
+    DividerModule,
   ],
   exports: [DashboardStatesComponent],
 })

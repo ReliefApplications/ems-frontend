@@ -23,6 +23,7 @@ import {
   DialogModule,
   ErrorMessageModule,
   SelectMenuModule,
+  DividerModule,
 } from '@oort-front/ui';
 import { IdShapeModalComponent } from './id-shape-modal/id-shape-modal.component';
 import { ImportFieldModalComponent } from './import-field-modal/import-field-modal.component';
@@ -58,6 +59,7 @@ import { ImportFieldModalComponent } from './import-field-modal/import-field-mod
     DialogModule,
     ErrorMessageModule,
     SelectMenuModule,
+    DividerModule,
   ],
   exports: [ResourcesComponent],
 })
