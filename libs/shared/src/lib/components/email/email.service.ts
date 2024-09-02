@@ -214,6 +214,8 @@ export class EmailService {
       sendAsAttachment: false,
       individualEmail: false,
       individualEmailFields: this.formBuilder.array([]),
+      dataType: null,
+      refernceData: null,
     });
   }
 

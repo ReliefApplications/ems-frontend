@@ -36,6 +36,8 @@ export class TabFilterComponent implements OnInit {
 
   /** Loading status of the filter fields */
   public loading = true;
+  /** referenceFields for reference data */
+  @Input() referenceFields: any;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -47,7 +49,10 @@ export class TabFilterComponent implements OnInit {
 
   ngOnInit(): void {
     this.queryBuilder.getFilterFields(this.query).then((fields) => {
-      const cloneFields = cloneDeep(fields);
+      let cloneFields = cloneDeep(fields);
+      if (this.referenceFields?.length > 0) {
+        cloneFields = cloneDeep(this.referenceFields);
+      }
       this.setCustomEditors(cloneFields);
       this.filterFields = cloneFields;
       this.loading = false;

@@ -553,3 +553,196 @@ export const DELETE_EMAIL_NOTIFICATION = gql`
     }
   }
 `;
+
+// === GET API CONFIGURATIONS ===
+
+/** Graphql query for getting multiple api configurations object with a cursor */
+export const GET_API_CONFIGURATIONS = gql`
+  query GetApiConfigurations(
+    $first: Int
+    $afterCursor: ID
+    $filter: JSON
+    $sortField: String
+    $sortOrder: String
+  ) {
+    apiConfigurations(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      sortField: $sortField
+      sortOrder: $sortOrder
+    ) {
+      edges {
+        node {
+          id
+          name
+          status
+          authType
+          endpoint
+          pingUrl
+          settings
+          permissions {
+            canSee {
+              id
+              title
+            }
+            canUpdate {
+              id
+              title
+            }
+            canDelete {
+              id
+              title
+            }
+          }
+          canSee
+          canUpdate
+          canDelete
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+/** Graphql query for getting an api configuration by its id */
+export const GET_API_CONFIGURATION = gql`
+  query GetApiConfiguration($id: ID!) {
+    apiConfiguration(id: $id) {
+      id
+      name
+      status
+      authType
+      endpoint
+      pingUrl
+      settings
+      graphQLEndpoint
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      canSee
+      canUpdate
+      canDelete
+    }
+  }
+`;
+
+// === GET REFERENCE DATAS ===
+/** Get list of ref data gql query definition */
+export const GET_REFERENCE_DATAS = gql`
+  query GetReferenceDatas(
+    $first: Int
+    $afterCursor: ID
+    $filter: JSON
+    $sortField: String
+    $sortOrder: String
+  ) {
+    referenceDatas(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      sortField: $sortField
+      sortOrder: $sortOrder
+    ) {
+      edges {
+        node {
+          id
+          name
+          modifiedAt
+          apiConfiguration {
+            id
+            name
+          }
+          type
+          permissions {
+            canSee {
+              id
+              title
+            }
+            canUpdate {
+              id
+              title
+            }
+            canDelete {
+              id
+              title
+            }
+          }
+          canSee
+          canUpdate
+          canDelete
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+// === GET REFERENCE DATA ===
+/** Get ref data gql query definition */
+export const GET_REFERENCE_DATA = gql`
+  query GetReferenceData($id: ID!) {
+    referenceData(id: $id) {
+      id
+      name
+      apiConfiguration {
+        id
+        name
+      }
+      type
+      query
+      fields
+      valueField
+      path
+      data
+      graphQLFilter
+      permissions {
+        canSee {
+          id
+          title
+        }
+        canUpdate {
+          id
+          title
+        }
+        canDelete {
+          id
+          title
+        }
+      }
+      pageInfo {
+        strategy
+        cursorField
+        cursorVar
+        offsetVar
+        pageVar
+        pageSizeVar
+        totalCountField
+      }
+      canSee
+      canUpdate
+      canDelete
+    }
+  }
+`;
