@@ -29,7 +29,7 @@ import {
   ApiConfigurationsQueryResponse,
   ReferenceDataQueryResponse,
   ReferenceDatasQueryResponse,
-} from '@oort-front/shared';
+} from '../../../../../index';
 import {
   GET_API_CONFIGURATIONS,
   GET_REFERENCE_DATA,
@@ -774,8 +774,7 @@ export class DatasetFilterComponent
   /**
    * Bind the reference data if reference data checkbox is checked.
    *
-   * @param event
-   *@event  - get selected datatype
+   * @param event selected Datatype Id
    */
   onDataTypeChange(event: any) {
     this.query.get('refernceData').setValue(null);
