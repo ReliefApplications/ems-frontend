@@ -349,7 +349,7 @@ export class AuthService {
     }
 
     // === Resource ===
-    if (globalPermissions.includes('can_read_resources')) {
+    if (globalPermissions.includes('can_see_resources')) {
       can('read', ['Resource', 'Record']);
     }
     if (globalPermissions.includes('can_create_resources')) {
