@@ -1,6 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormWrapperModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  FormWrapperModule,
+  IconModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { IconPickerModule } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -18,6 +23,9 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
     TranslateModule,
     ReactiveFormsModule,
     FormWrapperModule,
+    ButtonModule,
+    IconModule,
+    TooltipModule,
   ],
   templateUrl: './view-icon-selector.component.html',
   styleUrls: ['./view-icon-selector.component.scss'],

@@ -151,8 +151,8 @@ export class ViewSettingsModalComponent
     // Listen to icon updates
     this.settingsForm?.controls.icon.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value: string | null) => {
-        if (value) {
+      .subscribe((value) => {
+        if (value || value === '') {
           this.onUpdateIcon(value);
         }
       });

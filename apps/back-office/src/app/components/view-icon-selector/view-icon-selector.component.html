@@ -3,9 +3,20 @@
     {{ 'components.application.pages.settings.selectIcon' | translate }}
   </label>
   <shared-icon-picker
+    #picker
     [formControl]="iconControl"
     [placeholder]="
       'components.widget.settings.iconPicker.placeholder' | translate
     "
   ></shared-icon-picker>
+  <ui-button
+    *ngIf="iconControl.value"
+    uiSuffix
+    variant="danger"
+    [isIcon]="true"
+    icon="close"
+    size="small"
+    [uiTooltip]="'common.remove' | translate"
+    (click)="picker.setIcon('')"
+  ></ui-button>
 </div>

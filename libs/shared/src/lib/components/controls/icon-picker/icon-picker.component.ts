@@ -25,6 +25,7 @@ import {
   IconName,
   icon as iconCreator,
 } from '@fortawesome/fontawesome-svg-core';
+import { isNil } from 'lodash';
 
 type FormFieldValue = FaIconName | null;
 
@@ -293,7 +294,7 @@ export class IconPickerComponent
    */
   public setIcon(icon?: string) {
     this.showList = false;
-    if (icon) {
+    if (!isNil(icon)) {
       this.value = icon;
       // In order to render the value container after it contains value we set the timeout
       if (this.setIconTimeoutListener) {

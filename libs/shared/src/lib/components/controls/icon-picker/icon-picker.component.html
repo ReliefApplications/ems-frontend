@@ -13,11 +13,13 @@
   <div class="text-gray-400 text-sm">{{ placeholder }}</div>
 </ng-template>
 
+<!-- CDK overlay for popup list -->
 <ng-template
   cdkConnectedOverlay
   [cdkConnectedOverlayOrigin]="trigger"
   [cdkConnectedOverlayOpen]="showList"
 >
+  <!-- List of icons, in a popup -->
   <shared-icon-picker-popup
     [icons]="icons"
     [color]="color"
