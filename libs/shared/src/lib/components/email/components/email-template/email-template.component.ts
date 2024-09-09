@@ -31,6 +31,16 @@ import { QueryBuilderService } from './../../../../services/query-builder/query-
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
 import { prettifyLabel } from '../../../../../lib/utils/prettify';
+import {
+  ReferenceDataQueryResponse,
+  ReferenceDatasQueryResponse,
+} from 'libs/shared/src/lib/models/reference-data.model';
+import {
+  GET_API_CONFIGURATIONS,
+  GET_REFERENCE_DATA,
+  GET_REFERENCE_DATAS,
+} from '../../graphql/queries';
+import { ApiConfigurationsQueryResponse } from 'libs/shared/src/lib/models/api-configuration.model';
 
 /**
  * Email template to create distribution list
@@ -185,6 +195,12 @@ export class EmailTemplateComponent
   /** Reference to tblPreview element. */
   @ViewChild('tblPreview', { static: false })
   tblPreview!: ElementRef<any>;
+  /** Flag for data is Resource or Reference data */
+  public isReferenceData = false;
+  /** List of data types */
+  public dataTypeList: any = ['Resource', 'Reference Data'];
+  /** List of Reference  types */
+  public refernceData: any = [];
 
   /**
    * Composite filter group.
@@ -217,6 +233,7 @@ export class EmailTemplateComponent
     this.segmentForm = this.fb.group({
       segment: [this.segmentList[0]], // Set the initial value to the first display type
       datasetSelect: '',
+      dataType: null,
     });
     this.segmentForm.get('segment')?.valueChanges.subscribe((value: any) => {
       this.clearUnusedValues(value);
@@ -232,9 +249,13 @@ export class EmailTemplateComponent
 
     this.dlQuery = this.distributionList.get('query') as FormGroup;
 
-    if (this.distributionList.controls.resource.value && !this.resource) {
+    if (this.distributionList.controls.resource?.value && !this.resource) {
       this.selectedResourceId = this.distributionList.controls.resource.value;
+      this.segmentForm.get('dataType')?.setValue('Resource');
       this.getResourceData(false);
+    } else if (this.distributionList.controls.refernceData?.value) {
+      this.segmentForm.get('dataType')?.setValue('Reference Data');
+      this.onDataTypeChange('Reference Data', true);
     }
     this.distributionList.controls.resource.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -462,6 +483,7 @@ export class EmailTemplateComponent
         );
         objPreview = {
           resource: this.resource?.id ?? '',
+          reference: this.distributionList.get('refernceData')?.value ?? '',
           name: 'Distribution List Preview',
           query: {
             name: this.dlQuery?.get('name').value,
@@ -953,5 +975,199 @@ export class EmailTemplateComponent
    */
   closeFieldsWarningMessage(): void {
     this.showFieldsWarning = false;
+  }
+
+  /**
+   * Bind the reference data if reference data checkbox is checked.
+   *
+   * @param event selected Datatype Id
+   * @param isEdit
+   */
+  onDataTypeChange(event: any, isEdit?: boolean) {
+    // this.resetQuery(this.segmentForm.get('query'));
+    this.availableFields = [];
+    this.selectedFields = [];
+    if (event?.toLowerCase() === 'resource') {
+      this.refernceData = [];
+      this.distributionList.get('refernceData')?.setValue(null);
+    } else {
+      !isEdit ? this.segmentForm.get('resource')?.setValue(null) : '';
+      this.getRefernceData();
+    }
+  }
+
+  /**
+   * Bind the reference data if reference data checkbox is checked.
+   *
+   * @param refernceId selected refernce Id
+   */
+  getRefernceData(refernceId?: any): void {
+    this.loading = true;
+    this.apollo
+      .watchQuery<ApiConfigurationsQueryResponse>({
+        query: GET_API_CONFIGURATIONS,
+        variables: {
+          first: 10,
+          afterCursor: '',
+          filter: {
+            filters: [],
+            logic: 'and',
+          },
+          sortField: undefined,
+          sortOrder: undefined,
+        },
+      })
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ data }) => {
+          if (
+            data?.apiConfigurations?.edges?.filter(
+              (x) =>
+                x?.node?.status === 'active' &&
+                x?.node?.authType == 'serviceToService'
+            )
+          ) {
+            const configurations = data?.apiConfigurations.edges.filter(
+              (x) =>
+                x.node.status === 'active' &&
+                x.node.authType == 'serviceToService'
+            );
+            this.apollo
+              .watchQuery<ReferenceDatasQueryResponse>({
+                query: GET_REFERENCE_DATAS,
+                variables: {
+                  first: 10,
+                  afterCursor: '',
+                  filter: {
+                    filters: [],
+                    logic: 'and',
+                  },
+                  sortField: undefined,
+                  sortOrder: undefined,
+                },
+              })
+              .valueChanges.pipe(takeUntil(this.destroy$))
+              .subscribe(
+                ({ data }) => {
+                  this.loading = false;
+                  if (data?.referenceDatas) {
+                    const refernceData: any = data.referenceDatas.edges
+                      .map((x: any) => x.node)
+                      .filter((x: any) =>
+                        configurations
+                          .map((x: any) => x?.node?.id)
+                          .includes(x.apiConfiguration?.id)
+                      );
+                    this.refernceData = refernceData;
+                    if (
+                      refernceId ||
+                      this.distributionList.controls.refernceData?.value
+                    ) {
+                      this.getSelectedRefernceData(
+                        refernceId ??
+                          this.distributionList.controls.refernceData?.value
+                      );
+                    }
+                  }
+                },
+                (err) => {
+                  this.snackbar.openSnackBar(err.message, { error: true });
+                  this.loading = false;
+                }
+              );
+          }
+        },
+        error: (err) => {
+          this.snackbar.openSnackBar(err.message, { error: true });
+          this.loading = false;
+        },
+      });
+  }
+
+  /**
+   * Bind the reference data if reference data checkbox is checked.
+   *
+   * @param event get selected Id of refernce data
+   * @param fromHTML Method call isfrom UI
+   */
+  getSelectedRefernceData(event: any, fromHTML?: boolean) {
+    // this.resetQuery(this.query.get('query'));
+    if (this.refernceData.filter((x: any) => x.id === event).length > 0) {
+      this.dlQuery
+        ?.get('name')
+        .setValue(
+          this.refernceData.filter((x: any) => x.id === event)?.[0].name
+        );
+    }
+    this.availableFields = [];
+    this.selectedFields = [];
+    if (fromHTML) {
+      const fields = this.dlQuery.get('fields') as FormArray;
+      fields.clear();
+    }
+    this.loading = true;
+    this.apollo
+      .watchQuery<ReferenceDataQueryResponse>({
+        query: GET_REFERENCE_DATA,
+        variables: {
+          id: event,
+        },
+      })
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ data }) => {
+          this.loading = false;
+          if (data?.referenceData?.fields) {
+            const refernceFields: any = [];
+            data.referenceData.fields.forEach((ele: any) => {
+              const eleType = this.getEditorType(ele.type);
+              refernceFields.push({
+                graphQLFieldName: ele.graphQLFieldName,
+                name: ele.name,
+                kind: 'SCALAR',
+                type: eleType,
+                editor: eleType,
+              });
+            });
+            this.availableFields = refernceFields;
+          }
+        },
+        error: (err) => {
+          this.snackbar.openSnackBar(err.message, { error: true });
+          this.loading = false;
+        },
+      });
+  }
+
+  /**
+   * get the editor type name.
+   *
+   * @param type send the type name
+   * @returns type name
+   */
+  getEditorType(type: any) {
+    switch (type) {
+      case 'string':
+        return 'text';
+        break;
+      case 'integer':
+        return 'numeric';
+        break;
+      case 'number':
+        return 'numeric';
+        break;
+      case 'boolean':
+        return 'boolean';
+        break;
+      case 'object':
+        return '';
+        break;
+      case 'array':
+        return 'dropdown';
+        break;
+      default:
+        return 'text';
+        break;
+    }
   }
 }

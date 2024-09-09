@@ -538,6 +538,7 @@ export class EmailService {
       resource: null,
       query: this.createQuerygroup(),
       inputEmails: this.formBuilder.array([]),
+      refernceData: null,
     });
   }
 

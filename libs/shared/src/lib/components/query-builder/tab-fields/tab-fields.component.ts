@@ -75,10 +75,10 @@ export class TabFieldsComponent implements OnInit, OnChanges {
    */
   checkfieldsIsValid() {
     this.selectedFields.forEach((x, index) => {
-      if (!x.type) {
+      if (!x?.type) {
         this.form.at(index).setErrors({ invalid: true });
       }
-      if (x.type.kind === 'LIST' || x.type.kind === 'OBJECT') {
+      if (x?.type?.kind === 'LIST' || x?.type?.kind === 'OBJECT') {
         this.form.at(index).getRawValue().fields?.length === 0 ||
         this.form.at(index).getRawValue().fields === null
           ? this.form.at(index).setErrors({ invalid: true })

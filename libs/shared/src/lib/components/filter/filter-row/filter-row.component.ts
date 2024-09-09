@@ -198,7 +198,7 @@ export class FilterRowComponent
     // Loop over name fragments to find correct field
     for (const fragment of nameFragments) {
       field = fields.find((x) => x.name === fragment);
-      fields = clone(field.fields);
+      fields = clone(field?.fields);
     }
     if (field) {
       this.field = field;
