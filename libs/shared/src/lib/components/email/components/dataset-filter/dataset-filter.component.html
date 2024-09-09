@@ -67,7 +67,7 @@
           <ui-select-menu
             id="refernceData"
             formControlName="refernceData"
-            class="w-full" (ngModelChange)="getSelectedRefernceData($event)"
+            class="w-full" (ngModelChange)="getSelectedRefernceData($event, true)"
           >
             <ui-select-option
               *ngFor="let reference of refernceData"
@@ -118,7 +118,7 @@
       [selectedIndex]="currentTabIndex"
       (selectedIndexChange)="onTabSelect($event, true)"
       #datasetPreview
-      *ngIf="resource?.fields?.length || (refernceData.length > 0 && availableFields.length > 0)"
+      *ngIf="(query.get('dataType').value === 'Resource' && resource?.fields?.length) || (refernceData.length > 0 && availableFields.length > 0)"
     >
       <div class="mt-4 flex flex-row">
         <!-- Fields Tab -->

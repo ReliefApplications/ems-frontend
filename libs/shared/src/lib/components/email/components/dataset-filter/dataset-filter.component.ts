@@ -489,6 +489,7 @@ export class DatasetFilterComponent
 
           objPreview = {
             resource: this.resource?.id ?? '',
+            reference: this.query.get('refernceData').value ?? '',
             name: query?.name,
             query: {
               name: query.query?.name,
@@ -779,7 +780,7 @@ export class DatasetFilterComponent
   onDataTypeChange(event: any) {
     this.query.get('refernceData').setValue(null);
     this.query.get('resource').setValue(null);
-    this.resetQuery(this.query.get('query'));
+    // this.resetQuery(this.query.get('query'));
     this.availableFields = [];
     this.selectedFields = [];
     if (event?.toLowerCase() === 'resource') {
@@ -875,11 +876,16 @@ export class DatasetFilterComponent
    * Bind the reference data if reference data checkbox is checked.
    *
    * @param event get selected Id of refernce data
+   * @param fromHTML Method call isfrom UI
    */
-  getSelectedRefernceData(event: any) {
+  getSelectedRefernceData(event: any, fromHTML?: boolean) {
     // this.resetQuery(this.query.get('query'));
     this.availableFields = [];
     this.selectedFields = [];
+    fromHTML ? this.resetQuery(this.query.get('query')) : '';
+    if (this.resource?.id) {
+      this.resource.id = undefined;
+    }
     this.loading = true;
     this.apollo
       .watchQuery<ReferenceDataQueryResponse>({
@@ -891,6 +897,7 @@ export class DatasetFilterComponent
       .valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ data }) => {
+          this.onTabSelect(0, false);
           this.loading = false;
           if (data?.referenceData?.fields) {
             const refernceFields: any = [];
