@@ -34,13 +34,13 @@ import { prettifyLabel } from '../../../../../lib/utils/prettify';
 import {
   ReferenceDataQueryResponse,
   ReferenceDatasQueryResponse,
-} from 'libs/shared/src/lib/models/reference-data.model';
+} from '../../../../../lib/models/reference-data.model';
 import {
   GET_API_CONFIGURATIONS,
   GET_REFERENCE_DATA,
   GET_REFERENCE_DATAS,
 } from '../../graphql/queries';
-import { ApiConfigurationsQueryResponse } from 'libs/shared/src/lib/models/api-configuration.model';
+import { ApiConfigurationsQueryResponse } from '../../../../../lib/models/api-configuration.model';
 
 /**
  * Email template to create distribution list
