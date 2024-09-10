@@ -7,7 +7,7 @@ import { Environment } from './environment.type';
  * Authentication configuration
  */
 const authConfig: AuthConfig = {
-  issuer: 'https://id-demo.oortcloud.tech/auth/realms/oort',
+  issuer: 'https://id-demo.oortcloud.tech/realms/oort',
   redirectUri: 'https://demo.oortcloud.tech/admin/',
   postLogoutRedirectUri: 'https://demo.oortcloud.tech/admin/auth/',
   clientId: 'oort-client',
