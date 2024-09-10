@@ -522,6 +522,7 @@ export class EmailService {
       to: this.createDLGroup(),
       cc: this.createDLGroup(),
       bcc: this.createDLGroup(),
+      id: null,
     });
   }
 
@@ -578,6 +579,9 @@ export class EmailService {
   setDistributionListFormValues(form: FormGroup, emailDL: any) {
     form.patchValue({
       name: emailDL.name,
+    });
+    form.patchValue({
+      id: emailDL.id,
     });
 
     this.setDistributionListGroupValues(
@@ -1606,12 +1610,16 @@ export class EmailService {
    * Get an email distribution lists.
    *
    @param applicationId The application ids of the email notifications.
+  @param distributionListId The distributionList id to get specific distribution list.
    * @returns Email distribution lists.
    */
-  getEmailDistributionList(applicationId?: string): Observable<any> {
+  getEmailDistributionList(
+    applicationId?: string,
+    distributionListId?: string
+  ): Observable<any> {
     return this.apollo.query<any>({
       query: GET_DISTRIBUTION_LIST,
-      variables: { applicationId },
+      variables: { applicationId, id: distributionListId },
     });
   }
 

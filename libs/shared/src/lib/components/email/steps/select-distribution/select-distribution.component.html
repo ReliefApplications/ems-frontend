@@ -124,7 +124,7 @@
                 </span>
               </th>
               <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
-                {{ element.node.emailDistributionList.name }}
+                {{ element.distributionListName }}
               </td>
             </ng-container>
             <ng-container cdkColumnDef="createdBy">
@@ -134,7 +134,7 @@
                 </span>
               </th>
               <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
-                {{ element.node.createdBy.name }}
+                {{ element.createdBy.name }}
               </td>
             </ng-container>
             <ng-container cdkColumnDef="email">
@@ -144,7 +144,7 @@
                 </span>
               </th>
               <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
-                {{ element.node.createdBy.email }}
+                {{ element.createdBy.email }}
               </td>
             </ng-container>
             <tr cdk-header-row *cdkHeaderRowDef="distributionColumn"></tr>
@@ -194,6 +194,7 @@
             (listChange)="validateDistributionList()"
             [distributionList]="emailDistributionList.get('to')"
             [type]="'to'"
+            [isDisable]="this.emailDistributionList.get('id')?.value"
             >{{
               'components.email.distributionList.to' | translate
             }}</shared-email-template
@@ -216,6 +217,7 @@
             (listChange)="validateDistributionList()"
             [distributionList]="emailDistributionList.get('cc')"
             [type]="'cc'"
+            [isDisable]="this.emailDistributionList.get('id')?.value"
             >{{
               'components.email.distributionList.cc' | translate
             }}</shared-email-template
@@ -238,6 +240,7 @@
             (listChange)="validateDistributionList()"
             [distributionList]="emailDistributionList.get('bcc')"
             [type]="'bcc'"
+            [isDisable]="this.emailDistributionList.get('id')?.value"
             >{{
               'components.email.distributionList.bcc' | translate
             }}</shared-email-template

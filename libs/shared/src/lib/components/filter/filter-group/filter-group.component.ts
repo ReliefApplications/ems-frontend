@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { FormBuilder, FormGroup, UntypedFormArray } from '@angular/forms';
 
 /**
@@ -9,7 +16,7 @@ import { FormBuilder, FormGroup, UntypedFormArray } from '@angular/forms';
   templateUrl: './filter-group.component.html',
   styleUrls: ['./filter-group.component.scss'],
 })
-export class FilterGroupComponent {
+export class FilterGroupComponent implements OnChanges {
   /** Filter reactive form group */
   @Input() form!: FormGroup;
   /** Available fields */
@@ -22,6 +29,8 @@ export class FilterGroupComponent {
   @Input() canUseContext = false;
   /** Email Notification Check */
   @Input() isEmailNotification = false;
+  /** Disable fields */
+  @Input() isDisable = false;
 
   /**
    * Getter for the filters
@@ -62,6 +71,19 @@ export class FilterGroupComponent {
       }),
     });
     this.filters.push(filter);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      changes['isDisable'] &&
+      changes['isDisable'].previousValue !== changes['isDisable'].currentValue
+    ) {
+      if (this.isDisable) {
+        this.form?.get('logic')?.disable();
+      } else {
+        this.form?.get('logic')?.enable();
+      }
+    }
   }
 
   /**

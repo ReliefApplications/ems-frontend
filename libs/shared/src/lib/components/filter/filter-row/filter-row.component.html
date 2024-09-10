@@ -29,6 +29,7 @@
   <ui-button
     *ngIf="field && canUseContext"
     [isIcon]="true"
+    [disabled]="isDisable"
     icon="cached"
     (click)="toggleContextEditor()"
     [uiTooltip]="
@@ -58,6 +59,7 @@
   <ui-button
     [isIcon]="true"
     icon="delete"
+    [disabled]="isDisable"
     variant="danger"
     (click)="delete.emit()"
     [uiTooltip]="'common.delete' | translate"

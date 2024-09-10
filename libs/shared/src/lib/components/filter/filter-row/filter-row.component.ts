@@ -32,6 +32,8 @@ export class FilterRowComponent
 {
   /** Filter form group */
   @Input() form!: UntypedFormGroup;
+  /** is disable fields */
+  @Input() isDisable = false;
   /** Available fields */
   @Input() fields: any[] = [];
   /** Can use context variables */
@@ -135,6 +137,9 @@ export class FilterRowComponent
             });
         }
       });
+    if (this.isDisable) {
+      this.form.disable();
+    }
   }
 
   /**
@@ -162,6 +167,17 @@ export class FilterRowComponent
       !isEqual(changes.fields?.previousValue, changes.fields?.currentValue)
     ) {
       this.setField(initialField);
+    }
+
+    if (
+      changes['isDisable'] &&
+      changes['isDisable'].previousValue !== changes['isDisable'].currentValue
+    ) {
+      if (this.isDisable) {
+        this.form?.disable();
+      } else {
+        this.form?.enable();
+      }
     }
   }
 

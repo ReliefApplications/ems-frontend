@@ -343,9 +343,15 @@ export class DistributionModalComponent implements OnInit {
   addOrUpdateDistributionList() {
     const distributionListFormData = {
       distributionListName: this.form.value?.name,
-      To: this.form.value?.to,
-      Cc: this.form.value.cc,
-      Bcc: this.form.value.bcc,
+      To: {
+        inputEmails: this.form.value.to,
+      },
+      Cc: {
+        inputEmails: this.form.value.cc,
+      },
+      Bcc: {
+        inputEmails: this.form.value.bcc,
+      },
     };
     if (this.data?.isEdit) {
       this.emailService

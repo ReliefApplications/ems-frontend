@@ -308,6 +308,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         this.onDistributionPage(distributionListPaginationConfig);
         this.onPage(notificationListPaginationConfig);
       });
+    this.getDistributionList();
     this.emailService.datasetsForm?.get('emailDistributionList')?.reset();
     this.emailService.datasetsForm?.get('emailLayout')?.reset();
   }
@@ -332,7 +333,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         if (data?.emailNotifications?.edges?.length === 0) {
           this.emailService.emailListLoading = false;
         }
-        this.distributionLists = [];
+
         this.emailService.distributionListNames = [];
         this.emailService.emailNotificationNames = [];
         data?.emailNotifications?.edges?.forEach((ele: any) => {
@@ -340,40 +341,10 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
             this.templateActualData.push(ele.node);
           }
           this.emailService.emailListLoading = false;
-          if (
-            ele.node.emailDistributionList.name !== null &&
-            ele.node.emailDistributionList.name !== ''
-          ) {
-            this.distributionLists.push(ele.node.emailDistributionList);
-            this.emailService.distributionListNames.push(
-              ele.node?.emailDistributionList?.name.trim().toLowerCase()
-            );
-          }
+
           this.emailService.emailNotificationNames.push(
             ele.node.name?.trim()?.toLowerCase()
           );
-        });
-
-        // Use distribution list names to filter unique distribution lists
-        let uniqueDistributionLists = Array.from(
-          new Set(this.emailService.distributionListNames)
-        );
-        this.uniqueDLNames = Array.from(
-          new Set(this.emailService.distributionListNames)
-        );
-        this.distributionLists = this.distributionLists.filter((ele: any) => {
-          if (
-            uniqueDistributionLists.includes(
-              ele.name.toLowerCase() || ele.name.toLowerCase()
-            )
-          ) {
-            uniqueDistributionLists = uniqueDistributionLists.filter(
-              (name) => ele.name.toLowerCase() !== name
-            );
-            return true;
-          } else {
-            return false;
-          }
         });
 
         this.filterTemplateData = this.templateActualData;
@@ -382,31 +353,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
         );
         this.pageInfo.length = this.templateActualData.length;
-
-        this.uniqueDLNames = [];
-        this.emailService.distributionListNames.forEach((name: any) => {
-          this.uniqueDLNames.push(name);
-        });
-        this.uniqueDLNames = Array.from(new Set(this.uniqueDLNames));
-        this.distributionActualData = cloneDeep(this.distributionLists);
-        this.dlNamesActualData = cloneDeep(this.uniqueDLNames);
-        this.cacheDistributionList = this.distributionLists;
-        this.cacheDistributionListNames = this.uniqueDLNames;
-        this.distributionLists = this.cacheDistributionList.slice(
-          this.distributionPageInfo.pageSize *
-            this.distributionPageInfo.pageIndex,
-          this.distributionPageInfo.pageSize *
-            (this.distributionPageInfo.pageIndex + 1)
-        );
-        this.uniqueDLNames = this.cacheDistributionListNames.slice(
-          this.distributionPageInfo.pageSize *
-            this.distributionPageInfo.pageIndex,
-          this.distributionPageInfo.pageSize *
-            (this.distributionPageInfo.pageIndex + 1)
-        );
-        this.distributionPageInfo.length =
-          this.cacheDistributionListNames.length;
       });
+    this.getDistributionList();
   }
 
   /**
@@ -424,7 +372,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
             ele.node.distributionListName !== null &&
             ele.node.distributionListName !== ''
           ) {
-            // this.distributionLists.push(ele.node);
+            this.distributionLists.push(ele.node);
             this.emailService.distributionListNames.push(
               ele.node?.distributionListName.trim().toLowerCase()
             );
@@ -627,9 +575,17 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.allLayoutdata = {};
     this.emailService.allPreviewData = [];
     this.emailService.emailLayout = {};
-    // this.emailService.emailDistributionList =
-    //   emailData.emailDistributionList ??
-    //   this.emailService.datasetsForm?.get('emailDistributionList')?.value;
+    const distributionList = this.distributionActualData.find(
+      (dl: any) => dl.id === emailData.emailDistributionList
+    );
+    const { To, Cc, Bcc, distributionListName, id } = distributionList;
+    emailData.emailDistributionList = {
+      to: To,
+      cc: Cc,
+      bcc: Bcc,
+      name: distributionListName,
+      id: id,
+    };
     const emailDL = this.emailService.populateDistributionListForm(
       emailData.emailDistributionList
     );

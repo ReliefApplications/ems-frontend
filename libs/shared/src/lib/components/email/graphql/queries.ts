@@ -231,36 +231,7 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
         node {
           applicationId
           createdAt
-          emailDistributionList {
-            name
-            to {
-              resource
-              query {
-                name
-                filter
-                fields
-              }
-              inputEmails
-            }
-            bcc {
-              resource
-              query {
-                name
-                filter
-                fields
-              }
-              inputEmails
-            }
-            cc {
-              resource
-              query {
-                name
-                filter
-                fields
-              }
-              inputEmails
-            }
-          }
+          emailDistributionList
           userSubscribed
           subscriptionList
           restrictSubscription
@@ -312,36 +283,7 @@ export const ADD_EMAIL_NOTIFICATION = gql`
       lastExecution
       name
       notificationType
-      emailDistributionList {
-        name
-        to {
-          resource
-          query {
-            name
-            filter
-            fields
-          }
-          inputEmails
-        }
-        bcc {
-          resource
-          query {
-            name
-            filter
-            fields
-          }
-          inputEmails
-        }
-        cc {
-          resource
-          query {
-            name
-            filter
-            fields
-          }
-          inputEmails
-        }
-      }
+      emailDistributionList
       subscriptionList
       restrictSubscription
       recipientsType
@@ -383,36 +325,7 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
       id
       name
       notificationType
-      emailDistributionList {
-        name
-        to {
-          resource
-          query {
-            name
-            filter
-            fields
-          }
-          inputEmails
-        }
-        bcc {
-          resource
-          query {
-            name
-            filter
-            fields
-          }
-          inputEmails
-        }
-        cc {
-          resource
-          query {
-            name
-            filter
-            fields
-          }
-          inputEmails
-        }
-      }
+      emailDistributionList
       subscriptionList
       restrictSubscription
       status
@@ -448,14 +361,38 @@ export const GET_RESOURCE_BY_ID = gql`
 
 /** Graphql query for getting  EMAIL_DISTRIBUTION_LIST */
 export const GET_DISTRIBUTION_LIST = gql`
-  query EmailDistributionLists($applicationId: ID) {
-    emailDistributionLists(applicationId: $applicationId) {
+  query EmailDistributionLists($applicationId: ID, $id: ID) {
+    emailDistributionLists(applicationId: $applicationId, id: $id) {
       totalCount
       edges {
         node {
-          Bcc
-          Cc
-          To
+          Bcc {
+            resource
+            query {
+              name
+              filter
+              fields
+            }
+            inputEmails
+          }
+          Cc {
+            resource
+            query {
+              name
+              filter
+              fields
+            }
+            inputEmails
+          }
+          To {
+            resource
+            query {
+              name
+              filter
+              fields
+            }
+            inputEmails
+          }
           distributionListName
           id
           isDeleted
@@ -475,9 +412,33 @@ export const ADD_DISTRIBUTION_LIST = gql`
       distributionList: $distributionList
       applicationId: $applicationId
     ) {
-      Bcc
-      Cc
-      To
+      Bcc {
+        resource
+        query {
+          name
+          filter
+          fields
+        }
+        inputEmails
+      }
+      Cc {
+        resource
+        query {
+          name
+          filter
+          fields
+        }
+        inputEmails
+      }
+      To {
+        resource
+        query {
+          name
+          filter
+          fields
+        }
+        inputEmails
+      }
       distributionListName
       id
       createdBy
@@ -515,9 +476,33 @@ export const EDIT_DISTRIBUTION_LIST = gql`
       id: $editAndGetDistributionListId
       distributionList: $distributionList
     ) {
-      Bcc
-      Cc
-      To
+      Bcc {
+        resource
+        query {
+          name
+          filter
+          fields
+        }
+        inputEmails
+      }
+      Cc {
+        resource
+        query {
+          name
+          filter
+          fields
+        }
+        inputEmails
+      }
+      To {
+        resource
+        query {
+          name
+          filter
+          fields
+        }
+        inputEmails
+      }
       distributionListName
       id
       isDeleted

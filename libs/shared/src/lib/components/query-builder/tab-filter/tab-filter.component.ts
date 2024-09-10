@@ -25,6 +25,8 @@ export class TabFilterComponent implements OnInit {
   @Input() form: UntypedFormGroup = new UntypedFormGroup({});
   /** Query */
   @Input() query: any;
+  /** Disable fields */
+  @Input() isDisable = false;
 
   /** Date editor */
   @ViewChild('dateEditor', { static: false }) dateEditor!: TemplateRef<any>;

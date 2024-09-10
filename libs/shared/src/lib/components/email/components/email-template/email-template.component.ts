@@ -3,9 +3,11 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import {
@@ -40,13 +42,16 @@ import { prettifyLabel } from '../../../../../lib/utils/prettify';
 })
 export class EmailTemplateComponent
   extends UnsubscribeComponent
-  implements OnInit, OnDestroy
+  implements OnInit, OnDestroy, OnChanges
 {
   /** Data set containing emails and records. */
   public dataset?: {
     emails: string[];
     records: any[];
   };
+
+  /** Disable fields */
+  @Input() isDisable = false;
 
   /** records of selected Dataset*/
   public data!: any[];
@@ -213,10 +218,12 @@ export class EmailTemplateComponent
       segment: [this.segmentList[0]], // Set the initial value to the first display type
       datasetSelect: '',
     });
-
     this.segmentForm.get('segment')?.valueChanges.subscribe((value: any) => {
       this.clearUnusedValues(value);
     });
+    if (this.isDisable) {
+      this.segmentForm.get('segment')?.disable();
+    }
 
     this.distributionListValid =
       (this.emailService.isToValid &&
@@ -262,6 +269,19 @@ export class EmailTemplateComponent
       this.updateSegmentOptions('Select With Filter');
     } else {
       this.updateSegmentOptions('Add Manually');
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      changes['isDisable'] &&
+      changes['isDisable'].previousValue !== changes['isDisable'].currentValue
+    ) {
+      if (this.isDisable) {
+        this.segmentForm?.get('segment')?.disable();
+      } else {
+        this.segmentForm?.get('segment')?.enable();
+      }
     }
   }
 

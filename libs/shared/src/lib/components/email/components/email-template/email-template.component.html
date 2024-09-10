@@ -40,6 +40,7 @@
         (change)="validateEmail(filterInput)"
         autocomplete="off"
         aria-autocomplete="none"
+        [disabled]="isDisable"
         type="text"
         [placeholder]="'components.select.distribution.email' | translate"
       />
@@ -61,6 +62,7 @@
         <shared-resource-select
           formControlName="resource"
           [selectedElements]="[resource]"
+          [isDisable]="isDisable"
         ></shared-resource-select>
         <ui-button
           *ngIf="distributionList?.value.resource"
@@ -130,6 +132,7 @@
             (change)="validateEmail(filterInput)"
             autocomplete="off"
             aria-autocomplete="none"
+            [disabled]="isDisable"
             type="text"
             [placeholder]="'components.select.distribution.email' | translate"
           />
@@ -168,6 +171,7 @@
       variant="primary"
       class="text-xl px-1"
       [removable]="true"
+      [disabled]="isDisable"
       (removed)="removeEmailChip(chipIndex)"
       *ngFor="let emailControl of inputEmails; let chipIndex = index"
       >{{ emailControl }}</ui-chip
@@ -286,6 +290,7 @@
                   [fields]="availableFields"
                   [showLimit]="false"
                   [showColumnWidth]="false"
+                  [isDisable]="isDisable"
                 ></shared-tab-fields>
               </div>
             </div>
@@ -319,6 +324,7 @@
                   <shared-tab-filter
                     [form]="$any(dlQuery.get('filter'))"
                     [query]="dlQuery.getRawValue()"
+                    [isDisable]="isDisable"
                   >
                   </shared-tab-filter>
                 </div>

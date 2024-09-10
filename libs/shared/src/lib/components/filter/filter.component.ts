@@ -14,6 +14,8 @@ export class FilterComponent {
   @Input() form!: UntypedFormGroup;
   /** List of fields */
   @Input() fields: any[] = [];
+  /** Disable fields */
+  @Input() isDisable = false;
   /** Can use context variables */
   @Input() canUseContext = false;
   /** Email Notification Check */

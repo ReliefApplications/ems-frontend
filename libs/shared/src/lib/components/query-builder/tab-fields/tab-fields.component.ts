@@ -29,6 +29,8 @@ import { INLINE_EDITOR_CONFIG } from '../../../const/tinymce.const';
 export class TabFieldsComponent implements OnInit, OnChanges {
   /** Current form array */
   @Input() form: UntypedFormArray = new UntypedFormArray([]);
+  /** disable drag and drop */
+  @Input() isDisable = false;
   /** All fields */
   @Input() fields: any[] = [];
   /** Should show limit input */

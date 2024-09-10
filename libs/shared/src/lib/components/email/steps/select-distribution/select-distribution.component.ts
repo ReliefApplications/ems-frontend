@@ -125,6 +125,11 @@ export class SelectDistributionComponent
     if (!this.isAllSeparate()) {
       this.validateDistributionList();
     }
+    if (this.emailDistributionList.get('id')?.value) {
+      this.emailDistributionList.get('name').disable();
+    } else {
+      this.emailDistributionList.get('name').enable();
+    }
 
     const existingDataIndex = this.emailService.cacheDistributionList
       .map((x: any) => x.node)
@@ -258,41 +263,15 @@ export class SelectDistributionComponent
       this.applicationId = res?.id;
     });
     this.isLoading = true;
-    this.emailService
-      .getEmailNotifications(this.applicationId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((res: any) => {
-        this.distributionLists = res?.data?.emailNotifications?.edges ?? [];
-        if (this.emailService.distributionListNames.length === 0) {
-          res?.data?.emailNotifications?.edges?.forEach((ele: any) => {
-            if (
-              ele.node.emailDistributionList.name !== null &&
-              ele.node.emailDistributionList.name !== ''
-            ) {
-              this.emailService.distributionListNames.push(
-                ele.node?.emailDistributionList?.name.trim().toLowerCase()
-              );
-            }
-          });
-        }
-        let uniqueDistributionLists = Array.from(
-          new Set(this.emailService.distributionListNames)
-        );
-        this.distributionLists = this.distributionLists.filter((ele: any) => {
-          if (
-            uniqueDistributionLists.includes(
-              ele.node.emailDistributionList.name?.toLowerCase()
-            )
-          ) {
-            uniqueDistributionLists = uniqueDistributionLists.filter(
-              (name) =>
-                ele.node.emailDistributionList.name?.toLowerCase() !== name
+    this.emailService.getEmailDistributionList(this.applicationId).subscribe({
+      next: ({ data }: any) => {
+        this.distributionLists =
+          data?.emailDistributionLists?.edges?.map(({ node }: any) => {
+            this.emailService.distributionListNames.push(
+              node?.distributionListName?.trim()?.toLowerCase()
             );
-            return true;
-          } else {
-            return false;
-          }
-        });
+            return node;
+          }) || [];
         this.cacheDistributionList = this.distributionLists;
         this.emailService.cacheDistributionList = this.cacheDistributionList;
         this.distributionLists = this.cacheDistributionList.slice(
@@ -303,7 +282,11 @@ export class SelectDistributionComponent
         );
         this.distributionPageInfo.length = this.cacheDistributionList.length;
         this.isLoading = false;
-      });
+      },
+      error: (err: any) => {
+        this.snackBar.openSnackBar(err.message, { error: true });
+      },
+    });
   }
 
   /**
@@ -312,13 +295,22 @@ export class SelectDistributionComponent
    * @param index table row index
    */
   selectDistributionListRow(index: number): void {
-    const emailDL = this.emailService.populateDistributionListForm(
-      this.distributionLists[index].node.emailDistributionList
-    );
+    const { To, Cc, Bcc, distributionListName, id } =
+      this.distributionLists[index];
+    const distributionList = {
+      to: To,
+      cc: Cc,
+      bcc: Bcc,
+      name: distributionListName,
+      id: id,
+    };
+    const emailDL =
+      this.emailService.populateDistributionListForm(distributionList);
 
     this.emailDistributionList
       .get('name')
       ?.patchValue(emailDL.get('name')?.value);
+    this.emailDistributionList.get('id')?.patchValue(emailDL.get('id')?.value);
     this.clearAndPatch(
       this.emailDistributionList.get('to') as FormGroup,
       emailDL.get('to') as FormGroup
@@ -333,7 +325,7 @@ export class SelectDistributionComponent
     );
     // this.emailDistributionList = emailDL;
     this.emailService.selectedDLName = emailDL?.getRawValue()?.name;
-    this.distributionListId = this.distributionLists[index].node.id;
+    this.distributionListId = this.distributionLists[index]?.id;
     this.showExistingDistributionList = !this.showExistingDistributionList;
     this.validateDistributionList();
     this.emailService.setDistributionList(this.emailDistributionList);
@@ -683,6 +675,10 @@ export class SelectDistributionComponent
       ?.get('emailDistributionList')
       ?.get('name')
       ?.setValue('');
+    this.emailService.datasetsForm
+      ?.get('emailDistributionList')
+      ?.get('id')
+      ?.setValue(null);
 
     this.clearAllTabsData('to');
     this.clearAllTabsData('cc');

@@ -159,7 +159,7 @@ export class PreviewTemplate {
       ?.get('name')
       ?.setValue(this.data.distributionListInfo?.distributionListName);
     this.emailService.populateEmails(
-      this.data.distributionListInfo.To,
+      this.data.distributionListInfo.To?.inputEmails,
       this.emailService?.datasetsForm
         ?.get('emailDistributionList')
         ?.get('to')
@@ -167,7 +167,7 @@ export class PreviewTemplate {
     );
 
     this.emailService.populateEmails(
-      this.data.distributionListInfo.Cc,
+      this.data.distributionListInfo.Cc?.inputEmails,
       this.emailService?.datasetsForm
         ?.get('emailDistributionList')
         ?.get('cc')
@@ -175,7 +175,7 @@ export class PreviewTemplate {
     );
 
     this.emailService.populateEmails(
-      this.data.distributionListInfo.Bcc,
+      this.data.distributionListInfo.Bcc?.inputEmails,
       this.emailService?.datasetsForm
         ?.get('emailDistributionList')
         ?.get('bcc')

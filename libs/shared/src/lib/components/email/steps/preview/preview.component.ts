@@ -176,9 +176,9 @@ export class PreviewComponent
     if (this.emailService.isQuickAction) {
       const { To, Cc, Bcc } = this.emailService.emailDistributionList; //this.emailService.customLayoutDL;
 
-      const uniqueTo = [...new Set(To)];
-      const uniqueCc = [...new Set(Cc)];
-      const uniqueBcc = [...new Set(Bcc)];
+      const uniqueTo = [...new Set(To?.inputEmails)];
+      const uniqueCc = [...new Set(Cc?.inputEmails)];
+      const uniqueBcc = [...new Set(Bcc?.inputEmails)];
       this.emailService.emailDistributionList.To = uniqueTo;
       this.emailService.emailDistributionList.Cc = uniqueCc;
       this.emailService.emailDistributionList.Bcc = uniqueBcc;
