@@ -371,6 +371,62 @@ export class EmsTemplateComponent
   }
 
   /**
+   * Sending Azure emails function
+   */
+  public async sendEmailAzure(): Promise<void> {
+    try {
+      // Save email
+      await this.saveAndSend();
+
+      // Create a snackbar to indicate email is processing
+      const snackBarRef = this.snackBar.openComponentSnackBar(
+        SnackbarSpinnerComponent,
+        {
+          duration: 0,
+          data: {
+            message: this.translate.instant(
+              'common.notifications.email.processing'
+            ),
+            loading: true,
+          },
+        }
+      );
+      const snackBarSpinner = snackBarRef.instance.nestedComponent;
+      const sendAzure = true;
+      // Send email
+      this.emailService
+        .sendEmail(this.emailService.configId, {}, false, sendAzure)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.emailService.isEdit = false;
+            this.emailService.editId = '';
+            snackBarSpinner.instance.message = this.translate.instant(
+              'pages.application.settings.emailSent'
+            );
+            snackBarSpinner.instance.loading = false;
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+            this.emailService.datasetsForm.reset();
+            this.navigateToEms.emit();
+          },
+          error: (err) => {
+            console.error('Error sending email:', err);
+            snackBarSpinner.instance.message = this.translate.instant(
+              'pages.application.settings.emailFailMsg'
+            );
+            snackBarSpinner.instance.loading = false;
+            snackBarSpinner.instance.error = true;
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+            this.emailService.datasetsForm.reset();
+            this.navigateToEms.emit();
+          },
+        });
+    } catch (error) {
+      console.error('Error in saveAndSend:', error);
+    }
+  }
+
+  /**
    * This function returns the form group at the specified index.
    *
    * @param index The index of the form group.

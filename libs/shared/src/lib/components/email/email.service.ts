@@ -1308,15 +1308,20 @@ export class EmailService {
    * @param configId id of the config.
    * @param emailData data to be send.
    * @param separateEmail trigger for sending individual emails
+   * @param sendAzure trigger for sending emails to azure
    * @returns rest post to end point.
    */
   sendEmail(
     configId: string | undefined,
     emailData: any,
-    separateEmail: boolean
+    separateEmail: boolean,
+    sendAzure?: boolean
   ): Observable<any> {
     if (separateEmail) {
       const urlWithConfigId = `${this.restService.apiUrl}/notification/send-individual-email/${configId}`;
+      return this.http.post<any>(urlWithConfigId, emailData);
+    } else if (sendAzure) {
+      const urlWithConfigId = `${this.restService.apiUrl}/notification/send-email-azure/${configId}`;
       return this.http.post<any>(urlWithConfigId, emailData);
     } else {
       const urlWithConfigId = `${this.restService.apiUrl}/notification/send-email/${configId}`;
