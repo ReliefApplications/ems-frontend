@@ -174,17 +174,17 @@ export class PreviewComponent
    */
   populateDLForm() {
     if (this.emailService.isQuickAction) {
-      const { To, Cc, Bcc } = this.emailService.emailDistributionList; //this.emailService.customLayoutDL;
+      const { to, cc, bcc } = this.emailService.emailDistributionList; //this.emailService.customLayoutDL;
 
-      const uniqueTo = [...new Set(To?.inputEmails)];
-      const uniqueCc = [...new Set(Cc?.inputEmails)];
-      const uniqueBcc = [...new Set(Bcc?.inputEmails)];
-      this.emailService.emailDistributionList.To = uniqueTo;
-      this.emailService.emailDistributionList.Cc = uniqueCc;
-      this.emailService.emailDistributionList.Bcc = uniqueBcc;
+      const uniqueTo = [...new Set(to?.inputEmails)];
+      const uniqueCc = [...new Set(cc?.inputEmails)];
+      const uniqueBcc = [...new Set(bcc?.inputEmails)];
+      this.emailService.emailDistributionList.to = uniqueTo;
+      this.emailService.emailDistributionList.cc = uniqueCc;
+      this.emailService.emailDistributionList.bcc = uniqueBcc;
 
       this.emailService.populateEmails(
-        this.emailService.emailDistributionList.To,
+        this.emailService.emailDistributionList.to,
         this.emailService?.datasetsForm
           ?.get('emailDistributionList')
           ?.get('to')
@@ -192,7 +192,7 @@ export class PreviewComponent
       );
 
       this.emailService.populateEmails(
-        this.emailService.emailDistributionList.Cc,
+        this.emailService.emailDistributionList.cc,
         this.emailService?.datasetsForm
           ?.get('emailDistributionList')
           ?.get('cc')
@@ -200,7 +200,7 @@ export class PreviewComponent
       );
 
       this.emailService.populateEmails(
-        this.emailService.emailDistributionList.Bcc,
+        this.emailService.emailDistributionList.bcc,
         this.emailService?.datasetsForm
           ?.get('emailDistributionList')
           ?.get('bcc')
@@ -310,9 +310,9 @@ export class PreviewComponent
       this.emailService.emailDistributionList == undefined
         ? {
             name: '',
-            To: [],
-            Cc: [],
-            Bcc: [],
+            to: [],
+            cc: [],
+            bcc: [],
           }
         : this.emailService.emailDistributionList;
     // this.bodyHtml.nativeElement.innerHTML = this.bodyString;

@@ -13,7 +13,13 @@ import { EmailService } from '../../email.service';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, first, firstValueFrom, takeUntil } from 'rxjs';
+import {
+  Subscription,
+  first,
+  firstValueFrom,
+  firstValueFrom,
+  takeUntil,
+} from 'rxjs';
 import { LayoutComponent } from '../../steps/layout/layout.component';
 import { SelectDistributionComponent } from '../../steps/select-distribution/select-distribution.component';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -464,16 +470,9 @@ export class EmsTemplateComponent
       emailData.emailDistributionList?.to?.resource ||
       emailData.emailDistributionList?.to?.inputEmails?.length
     ) {
-      const { to, cc, bcc, name } = emailData.emailDistributionList;
-      const emailDistributionList = {
-        To: to,
-        Cc: cc,
-        Bcc: bcc,
-        distributionListName: name,
-      };
       const distributionList = await firstValueFrom(
         this.emailService.addDistributionList(
-          emailDistributionList,
+          emailData.emailDistributionList,
           emailData.applicationId
         )
       );

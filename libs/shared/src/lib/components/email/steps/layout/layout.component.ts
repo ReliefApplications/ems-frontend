@@ -274,20 +274,20 @@ export class LayoutComponent
           this.emailService.allLayoutdata.footerLogo;
       }
     }
-    if (this.emailService.emailDistributionList.To) {
+    if (this.emailService.emailDistributionList.to) {
       this.layoutForm
         .get('to')
-        ?.setValue(this.emailService.emailDistributionList.To);
+        ?.setValue(this.emailService.emailDistributionList.to);
     }
-    if (this.emailService.emailDistributionList.Cc) {
+    if (this.emailService.emailDistributionList.cc) {
       this.layoutForm
         .get('cc')
-        ?.setValue(this.emailService.emailDistributionList.Cc);
+        ?.setValue(this.emailService.emailDistributionList.cc);
     }
-    if (this.emailService.emailDistributionList.Bcc) {
+    if (this.emailService.emailDistributionList.bcc) {
       this.layoutForm
         .get('bcc')
-        ?.setValue(this.emailService.emailDistributionList.Bcc);
+        ?.setValue(this.emailService.emailDistributionList.bcc);
     }
   }
 
@@ -915,13 +915,13 @@ export class LayoutComponent
             : this.emailService.emailDistributionList;
         switch (emailType) {
           case 'to':
-            this.emailService.emailDistributionList.To = emails;
+            this.emailService.emailDistributionList.to = emails;
             break;
           case 'cc':
-            this.emailService.emailDistributionList.Cc = emails;
+            this.emailService.emailDistributionList.cc = emails;
             break;
           case 'bcc':
-            this.emailService.emailDistributionList.Bcc = emails;
+            this.emailService.emailDistributionList.bcc = emails;
             break;
           default:
             break;
@@ -943,21 +943,21 @@ export class LayoutComponent
         (emailData) => emailData.toLowerCase() !== email.toLowerCase()
       );
       this.layoutForm.get(type)?.setValue(emails);
-      this.emailService.emailDistributionList.To = emails;
+      this.emailService.emailDistributionList.to = emails;
     }
     if (type === 'cc') {
       const emails = [...this.cc].filter(
         (emailData) => emailData.toLowerCase() !== email.toLowerCase()
       );
       this.layoutForm.get(type)?.setValue(emails);
-      this.emailService.emailDistributionList.Cc = emails;
+      this.emailService.emailDistributionList.cc = emails;
     }
     if (type === 'bcc') {
       const emails = [...this.bcc].filter(
         (emailData) => emailData.toLowerCase() !== email.toLowerCase()
       );
       this.layoutForm.get(type)?.setValue(emails);
-      this.emailService.emailDistributionList.Bcc = emails;
+      this.emailService.emailDistributionList.bcc = emails;
     }
   }
 }

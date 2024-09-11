@@ -3,9 +3,9 @@ export interface DistributionList {
   id?: string;
   name: string;
   emails: string[];
-  Bcc?: string[];
-  Cc?: string[];
-  To?: string[];
+  to?: string[];
+  cc?: string[];
+  bcc?: string[];
   distributionListName?: string;
 }
 

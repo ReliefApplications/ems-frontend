@@ -417,9 +417,7 @@ export class ButtonConfigComponent
     const dialogRef = this.dialog.open(DistributionModalComponent, {
       data: {
         isEdit: false,
-        distributionListNames: this.distributionLists?.map(
-          (x: any) => x.distributionListName
-        ),
+        distributionListNames: this.distributionLists?.map((x: any) => x.name),
       },
       disableClose: true,
     });

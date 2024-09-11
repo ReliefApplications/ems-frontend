@@ -368,13 +368,10 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         // this.distributionLists = [];
         this.emailService.distributionListNames = [];
         list?.data?.emailDistributionLists?.edges?.forEach((ele: any) => {
-          if (
-            ele.node.distributionListName !== null &&
-            ele.node.distributionListName !== ''
-          ) {
+          if (ele.node.name !== null && ele.node.name !== '') {
             this.distributionLists.push(ele.node);
             this.emailService.distributionListNames.push(
-              ele.node?.distributionListName.trim().toLowerCase()
+              ele.node?.name.trim().toLowerCase()
             );
           }
         });
@@ -382,13 +379,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
           new Set(this.emailService.distributionListNames)
         );
         this.distributionLists = this.distributionLists.filter((ele: any) => {
-          if (
-            uniqueDistributionLists.includes(
-              ele?.distributionListName?.toLowerCase()
-            )
-          ) {
+          if (uniqueDistributionLists.includes(ele?.name?.toLowerCase())) {
             uniqueDistributionLists = uniqueDistributionLists.filter(
-              (name) => ele.distributionListName?.toLowerCase() !== name
+              (name) => ele.name?.toLowerCase() !== name
             );
             return true;
           } else {
@@ -578,17 +571,16 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     const distributionList = this.distributionActualData.find(
       (dl: any) => dl.id === emailData.emailDistributionList
     );
-    const { To, Cc, Bcc, distributionListName, id } = distributionList;
-    emailData.emailDistributionList = {
-      to: To,
-      cc: Cc,
-      bcc: Bcc,
-      name: distributionListName,
-      id: id,
-    };
-    const emailDL = this.emailService.populateDistributionListForm(
-      emailData.emailDistributionList
-    );
+    // const { To, Cc, Bcc, distributionListName, id } = distributionList;
+    // emailData.emailDistributionList = {
+    //   to: To,
+    //   cc: Cc,
+    //   bcc: Bcc,
+    //   name: distributionListName,
+    //   id: id,
+    // };
+    const emailDL =
+      this.emailService.populateDistributionListForm(distributionList);
     this.emailService.tabs = [
       {
         title: `Block 1`,
@@ -918,8 +910,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       title: this.translate.instant('common.deleteObject', {
         name: this.translate.instant('common.distributionList.one'),
       }),
-      content:
-        'Do you confirm the deletion of ' + data.distributionListName + ' ?',
+      content: 'Do you confirm the deletion of ' + data.name + ' ?',
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });

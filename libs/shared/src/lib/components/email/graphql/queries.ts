@@ -366,7 +366,7 @@ export const GET_DISTRIBUTION_LIST = gql`
       totalCount
       edges {
         node {
-          Bcc {
+          bcc {
             resource
             query {
               name
@@ -375,7 +375,7 @@ export const GET_DISTRIBUTION_LIST = gql`
             }
             inputEmails
           }
-          Cc {
+          cc {
             resource
             query {
               name
@@ -384,7 +384,7 @@ export const GET_DISTRIBUTION_LIST = gql`
             }
             inputEmails
           }
-          To {
+          to {
             resource
             query {
               name
@@ -393,7 +393,7 @@ export const GET_DISTRIBUTION_LIST = gql`
             }
             inputEmails
           }
-          distributionListName
+          name
           id
           isDeleted
           createdBy
@@ -412,7 +412,7 @@ export const ADD_DISTRIBUTION_LIST = gql`
       distributionList: $distributionList
       applicationId: $applicationId
     ) {
-      Bcc {
+      bcc {
         resource
         query {
           name
@@ -421,7 +421,7 @@ export const ADD_DISTRIBUTION_LIST = gql`
         }
         inputEmails
       }
-      Cc {
+      cc {
         resource
         query {
           name
@@ -430,7 +430,7 @@ export const ADD_DISTRIBUTION_LIST = gql`
         }
         inputEmails
       }
-      To {
+      to {
         resource
         query {
           name
@@ -439,7 +439,7 @@ export const ADD_DISTRIBUTION_LIST = gql`
         }
         inputEmails
       }
-      distributionListName
+      name
       id
       createdBy
       applicationId
@@ -476,7 +476,7 @@ export const EDIT_DISTRIBUTION_LIST = gql`
       id: $editAndGetDistributionListId
       distributionList: $distributionList
     ) {
-      Bcc {
+      bcc {
         resource
         query {
           name
@@ -485,7 +485,7 @@ export const EDIT_DISTRIBUTION_LIST = gql`
         }
         inputEmails
       }
-      Cc {
+      cc {
         resource
         query {
           name
@@ -494,7 +494,7 @@ export const EDIT_DISTRIBUTION_LIST = gql`
         }
         inputEmails
       }
-      To {
+      to {
         resource
         query {
           name
@@ -503,7 +503,7 @@ export const EDIT_DISTRIBUTION_LIST = gql`
         }
         inputEmails
       }
-      distributionListName
+      name
       id
       isDeleted
     }

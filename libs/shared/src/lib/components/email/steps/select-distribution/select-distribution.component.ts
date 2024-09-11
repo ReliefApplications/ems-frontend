@@ -268,7 +268,7 @@ export class SelectDistributionComponent
         this.distributionLists =
           data?.emailDistributionLists?.edges?.map(({ node }: any) => {
             this.emailService.distributionListNames.push(
-              node?.distributionListName?.trim()?.toLowerCase()
+              node?.name?.trim()?.toLowerCase()
             );
             return node;
           }) || [];
@@ -295,17 +295,9 @@ export class SelectDistributionComponent
    * @param index table row index
    */
   selectDistributionListRow(index: number): void {
-    const { To, Cc, Bcc, distributionListName, id } =
-      this.distributionLists[index];
-    const distributionList = {
-      to: To,
-      cc: Cc,
-      bcc: Bcc,
-      name: distributionListName,
-      id: id,
-    };
-    const emailDL =
-      this.emailService.populateDistributionListForm(distributionList);
+    const emailDL = this.emailService.populateDistributionListForm(
+      this.distributionLists[index]
+    );
 
     this.emailDistributionList
       .get('name')
@@ -458,35 +450,35 @@ export class SelectDistributionComponent
       this.downloadService
         .uploadFile('upload/distributionList', file)
         .pipe(takeUntil(this.destroy$))
-        .subscribe(async ({ To, Cc, Bcc }) => {
+        .subscribe(async ({ to, cc, bcc }) => {
           this.snackBar.openSnackBar(
             this.translate.instant(
               'components.email.distributionList.import.loading'
             )
           );
           const toAfterImport: any =
-            To?.length > 0
+            to?.length > 0
               ? [
                   ...new Set(
-                    To.map((email: string) => email.trim().toLowerCase())
+                    to.map((email: string) => email.trim().toLowerCase())
                   ),
                 ]
               : [];
 
           const ccAfterImport: any =
-            Cc?.length > 0
+            cc?.length > 0
               ? [
                   ...new Set(
-                    Cc.map((email: string) => email.trim().toLowerCase())
+                    cc.map((email: string) => email.trim().toLowerCase())
                   ),
                 ]
               : [];
 
           const bccAfterImport: any =
-            Bcc?.length > 0
+            bcc?.length > 0
               ? [
                   ...new Set(
-                    Bcc.map((email: string) => email.trim().toLowerCase())
+                    bcc.map((email: string) => email.trim().toLowerCase())
                   ),
                 ]
               : [];
@@ -690,7 +682,7 @@ export class SelectDistributionComponent
 
   /**
    *
-   *clearing data from To, CC, Bcc by passign th tabname
+   *clearing data from to, cc, bcc by passign th tabname
    *
    * @param type - Tab name
    */

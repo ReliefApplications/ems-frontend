@@ -186,12 +186,10 @@ export class DistributionModalComponent implements OnInit {
    */
   editActionHandler(data: any): void {
     if (data?.isEdit) {
-      this.form.get('to')?.setValue(data?.distributionListData?.To);
-      this.form.get('cc')?.setValue(data?.distributionListData?.Cc);
-      this.form.get('bcc')?.setValue(data?.distributionListData?.Bcc);
-      this.form
-        .get('name')
-        ?.setValue(data?.distributionListData?.distributionListName);
+      this.form.get('to')?.setValue(data?.distributionListData?.to);
+      this.form.get('cc')?.setValue(data?.distributionListData?.cc);
+      this.form.get('bcc')?.setValue(data?.distributionListData?.bcc);
+      this.form.get('name')?.setValue(data?.distributionListData?.name);
     }
   }
 
@@ -342,14 +340,14 @@ export class DistributionModalComponent implements OnInit {
    */
   addOrUpdateDistributionList() {
     const distributionListFormData = {
-      distributionListName: this.form.value?.name,
-      To: {
+      name: this.form.value?.name,
+      to: {
         inputEmails: this.form.value.to,
       },
-      Cc: {
+      cc: {
         inputEmails: this.form.value.cc,
       },
-      Bcc: {
+      bcc: {
         inputEmails: this.form.value.bcc,
       },
     };
@@ -407,7 +405,7 @@ export class DistributionModalComponent implements OnInit {
     if (file) {
       this.downloadService
         .uploadFile('upload/distributionList', file)
-        .subscribe(({ To, Cc, Bcc }) => {
+        .subscribe(({ to, cc, bcc }) => {
           this.snackBar.openSnackBar(
             this.translate.instant(
               'components.email.distributionList.import.loading'
@@ -416,16 +414,16 @@ export class DistributionModalComponent implements OnInit {
 
           /* Need to check the existing value and append the new emails without any duplication */
           const toAfterImport = this.form.value?.to?.length
-            ? Array.from(new Set([...this.form.value.to, ...To]))
-            : [...new Set(To)];
+            ? Array.from(new Set([...this.form.value.to, ...to]))
+            : [...new Set(to)];
 
           const ccAfterImport = this.form.value?.cc?.length
-            ? Array.from(new Set([...this.form.value.cc, ...Cc]))
-            : [...new Set(Cc)];
+            ? Array.from(new Set([...this.form.value.cc, ...cc]))
+            : [...new Set(cc)];
 
           const bccAfterImport = this.form.value?.bcc?.length
-            ? Array.from(new Set([...this.form.value.bcc, ...Bcc]))
-            : [...new Set(Bcc)];
+            ? Array.from(new Set([...this.form.value.bcc, ...bcc]))
+            : [...new Set(bcc)];
 
           this.form.get('to')?.setValue(toAfterImport);
           this.form.get('cc')?.setValue(ccAfterImport);

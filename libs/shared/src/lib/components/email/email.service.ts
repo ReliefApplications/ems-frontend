@@ -1450,9 +1450,9 @@ export class EmailService {
     this.emailLayout = {};
     this.emailDistributionList = {
       name: '',
-      To: [],
-      Cc: [],
-      Bcc: [],
+      to: [],
+      cc: [],
+      bcc: [],
     };
     this.tabs = [
       {

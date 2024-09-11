@@ -157,9 +157,9 @@ export class PreviewTemplate {
     this.emailService?.datasetsForm
       ?.get('emailDistributionList')
       ?.get('name')
-      ?.setValue(this.data.distributionListInfo?.distributionListName);
+      ?.setValue(this.data.distributionListInfo?.name);
     this.emailService.populateEmails(
-      this.data.distributionListInfo.To?.inputEmails,
+      this.data.distributionListInfo.to?.inputEmails,
       this.emailService?.datasetsForm
         ?.get('emailDistributionList')
         ?.get('to')
@@ -167,7 +167,7 @@ export class PreviewTemplate {
     );
 
     this.emailService.populateEmails(
-      this.data.distributionListInfo.Cc?.inputEmails,
+      this.data.distributionListInfo.cc?.inputEmails,
       this.emailService?.datasetsForm
         ?.get('emailDistributionList')
         ?.get('cc')
@@ -175,7 +175,7 @@ export class PreviewTemplate {
     );
 
     this.emailService.populateEmails(
-      this.data.distributionListInfo.Bcc?.inputEmails,
+      this.data.distributionListInfo.bcc?.inputEmails,
       this.emailService?.datasetsForm
         ?.get('emailDistributionList')
         ?.get('bcc')
@@ -262,10 +262,10 @@ export class PreviewTemplate {
     const previewData: any = this.emailService.allPreviewData?.[0];
     const emailData: any = {
       emailDistributionList: {
-        To: dlData.To,
-        Cc: dlData.Cc,
-        Bcc: dlData.Bcc,
-        name: dlData.distributionListName,
+        to: dlData.to,
+        cc: dlData.cc,
+        bcc: dlData.bcc,
+        name: dlData.name,
       },
       emailLayout: this.emailService.datasetsForm.value.emailLayout,
       tableInfo: [
@@ -303,7 +303,7 @@ export class PreviewTemplate {
   next() {
     if (
       !this.emailService.emailDistributionList ||
-      this.emailService.emailDistributionList?.To?.length === 0
+      this.emailService.emailDistributionList?.to?.length === 0
     ) {
       this.snackBar.openSnackBar('To is required to proceed!', {
         error: true,
