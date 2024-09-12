@@ -378,6 +378,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         let uniqueDistributionLists = Array.from(
           new Set(this.emailService.distributionListNames)
         );
+        // this.uniqueDLNames = [...uniqueDistributionLists];
+        // this.dlNamesActualData = cloneDeep(this.uniqueDLNames);
         this.distributionLists = this.distributionLists.filter((ele: any) => {
           if (uniqueDistributionLists.includes(ele?.name?.toLowerCase())) {
             uniqueDistributionLists = uniqueDistributionLists.filter(

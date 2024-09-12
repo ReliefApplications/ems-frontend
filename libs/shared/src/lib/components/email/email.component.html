@@ -312,39 +312,54 @@
         <ng-container ngProjectAs="label">{{
           'components.email.distributionList.list' | translate
         }}</ng-container>
-        <div *ngIf="emailService.isExisting" class="mt-4">
-          <div class="mt-4 overflow-x-hidden shadow-2lg">
-            <div class="overflow-x-auto">
-              <table cdk-table uiTableWrapper [dataSource]="uniqueDLNames">
-                <ng-container cdkColumnDef="name">
-                  <th uiCellHeader *cdkHeaderCellDef scope="col">
-                    <span class="headerTitle">
-                      {{ 'common.name' | translate }}
-                    </span>
-                  </th>
-                  <td uiCell *cdkCellDef="let name" class="max-w-[30vw]">
-                    {{ name }}
-                  </td>
-                </ng-container>
-                <tr cdk-header-row *cdkHeaderRowDef="['name']"></tr>
-                <tr cdk-row *cdkRowDef="let row; columns: ['name']"></tr>
-              </table>
+        <ng-container *ngIf="uniqueDLNames?.length; else noDl">
+          <div *ngIf="emailService.isExisting" class="mt-4">
+            <div class="mt-4 overflow-x-hidden shadow-2lg">
+              <div class="overflow-x-auto">
+                <table cdk-table uiTableWrapper [dataSource]="uniqueDLNames">
+                  <ng-container cdkColumnDef="name">
+                    <th uiCellHeader *cdkHeaderCellDef scope="col">
+                      <span class="headerTitle">
+                        {{ 'common.name' | translate }}
+                      </span>
+                    </th>
+                    <td uiCell *cdkCellDef="let name" class="max-w-[30vw]">
+                      {{ name }}
+                    </td>
+                  </ng-container>
+                  <tr cdk-header-row *cdkHeaderRowDef="['name']"></tr>
+                  <tr cdk-row *cdkRowDef="let row; columns: ['name']"></tr>
+                </table>
+              </div>
             </div>
+            <!-- Pagination -->
+            <ui-paginator
+              [disabled]="emailService.emailListLoading"
+              [pageIndex]="distributionPageInfo.pageIndex"
+              [pageSize]="distributionPageInfo.pageSize"
+              [pageSizeOptions]="[5, 10, 25, 50]"
+              [totalItems]="distributionPageInfo.length"
+              [ariaLabel]="
+                'components.notifications.paginator.ariaLabel' | translate
+              "
+              (pageChange)="onDistributionPage($event)"
+            >
+            </ui-paginator>
           </div>
-          <!-- Pagination -->
-          <ui-paginator
-            [disabled]="emailService.emailListLoading"
-            [pageIndex]="distributionPageInfo.pageIndex"
-            [pageSize]="distributionPageInfo.pageSize"
-            [pageSizeOptions]="[5, 10, 25, 50]"
-            [totalItems]="distributionPageInfo.length"
-            [ariaLabel]="
-              'components.notifications.paginator.ariaLabel' | translate
-            "
-            (pageChange)="onDistributionPage($event)"
-          >
-          </ui-paginator>
-        </div>
+        </ng-container>
+        <ng-template #noDl>
+          <div class="flex flex-col items-center">
+            <ui-icon
+              [isOutlined]="true"
+              [icon]="'folder_open'"
+              variant="grey"
+              [size]="48"
+            ></ui-icon>
+            <h3 class="mt-2 text-sm font-semibold text-gray-900">
+              {{ 'common.distributionList.none' | translate }}
+            </h3>
+          </div>
+        </ng-template>
       </ui-tab>
 
       <!-- Custom Template -->
@@ -352,7 +367,9 @@
         <ng-container ngProjectAs="label">Custom Templates</ng-container>
         <div class="mt-4">
           <div class="mt-4 overflow-x-hidden shadow-2lg">
-            <ng-container *ngIf="customTemplates?.length">
+            <ng-container
+              *ngIf="customTemplates?.length; else noCustomTemplate"
+            >
               <div class="overflow-x-auto">
                 <table cdk-table uiTableWrapper [dataSource]="customTemplates">
                   <ng-container cdkColumnDef="subject">
@@ -457,6 +474,19 @@
               >
               </ui-paginator>
             </ng-container>
+            <ng-template #noCustomTemplate>
+              <div class="flex flex-col items-center">
+                <ui-icon
+                  [isOutlined]="true"
+                  [icon]="'folder_open'"
+                  variant="grey"
+                  [size]="48"
+                ></ui-icon>
+                <h3 class="mt-2 text-sm font-semibold text-gray-900">
+                  {{ 'common.customTemplate.none' | translate }}
+                </h3>
+              </div>
+            </ng-template>
           </div>
         </div>
       </ui-tab>

@@ -152,6 +152,11 @@
 			"none": "Aucune notification",
 			"one": "Notification"
 		},
+		"customTemplate": {
+			"few": "Modèles personnalisés",
+			"none": "Aucun modèle personnalisé",
+			"one": "Modèle personnalisé"
+		},
 		"dashboard": {
 			"few": "Tableaux de bord",
 			"none": "Aucun tableau de bord",

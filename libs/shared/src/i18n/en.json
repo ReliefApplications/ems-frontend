@@ -152,6 +152,11 @@
 			"none": "No Custom notification",
 			"one": "Custom notification"
 		},
+		"customTemplate": {
+			"few": "Custom templates",
+			"none": "No custom template",
+			"one": "Custom template"
+		},
 		"dashboard": {
 			"few": "Dashboards",
 			"none": "No dashboard",
