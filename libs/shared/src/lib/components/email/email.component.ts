@@ -309,6 +309,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         this.onPage(notificationListPaginationConfig);
       });
     this.getDistributionList();
+    this.getCustomTemplates();
     this.emailService.datasetsForm?.get('emailDistributionList')?.reset();
     this.emailService.datasetsForm?.get('emailLayout')?.reset();
   }
@@ -547,11 +548,18 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       ? null
       : emailData.draftStepper;
     this.emailService.isLinear = false;
+    const distributionList = this.distributionActualData.find(
+      (dl: any) => dl.id === emailData.emailDistributionList
+    );
+    const emailLayout = this.customActualData.find(
+      (template: any) => template.id === emailData?.emailLayout
+    );
+    emailData.emailLayout = emailLayout;
     const distributionListNames = this.emailService.distributionListNames;
     const emailNotificationNames = this.emailService.emailNotificationNames;
     this.emailService.distributionListNames = distributionListNames.filter(
       (name) => {
-        const distributionListName = emailData.emailDistributionList?.name;
+        const distributionListName = distributionList?.name;
         return (
           distributionListName !== null &&
           distributionListName.trim().toLowerCase() !== name
@@ -570,17 +578,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.allLayoutdata = {};
     this.emailService.allPreviewData = [];
     this.emailService.emailLayout = {};
-    const distributionList = this.distributionActualData.find(
-      (dl: any) => dl.id === emailData.emailDistributionList
-    );
-    // const { To, Cc, Bcc, distributionListName, id } = distributionList;
-    // emailData.emailDistributionList = {
-    //   to: To,
-    //   cc: Cc,
-    //   bcc: Bcc,
-    //   name: distributionListName,
-    //   id: id,
-    // };
     const emailDL =
       this.emailService.populateDistributionListForm(distributionList);
     this.emailService.tabs = [
@@ -655,11 +652,12 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
 
     // Setting up Layout Data
     this.emailService.emailLayout = {
-      subject: emailData.emailLayout.subject,
-      header: emailData.emailLayout.header,
-      body: emailData.emailLayout.body,
-      banner: emailData.emailLayout.banner,
-      footer: emailData.emailLayout.footer,
+      subject: emailData.emailLayout?.subject,
+      header: emailData.emailLayout?.header,
+      body: emailData.emailLayout?.body,
+      banner: emailData.emailLayout?.banner,
+      footer: emailData.emailLayout?.footer,
+      id: emailData.emailLayout?.id,
     };
 
     this.emailService.allLayoutdata = {
@@ -694,6 +692,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       footerStyle: emailData?.emailLayout?.footer?.footerStyle,
       footerImgStyle: emailData?.emailLayout?.footer?.footerImgStyle,
       footerHtmlStyle: emailData?.emailLayout?.footer?.footerHtmlStyle,
+      id: emailData?.emailLayout?.id,
     };
 
     this.emailService.datasetsForm

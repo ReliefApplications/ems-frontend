@@ -271,13 +271,7 @@ export const ADD_EMAIL_NOTIFICATION = gql`
       modifiedAt
       schedule
       createdBy
-      emailLayout {
-        subject
-        header
-        footer
-        body
-        banner
-      }
+      emailLayout
       id
       isDeleted
       lastExecution
@@ -331,13 +325,7 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
       status
       schedule
       modifiedAt
-      emailLayout {
-        banner
-        body
-        footer
-        header
-        subject
-      }
+      emailLayout
       lastExecution
       recipientsType
       isDeleted

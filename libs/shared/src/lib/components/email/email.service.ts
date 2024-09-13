@@ -996,6 +996,7 @@ export class EmailService {
                 footerImgStyle: this.allLayoutdata?.footerImgStyle,
                 footerHtmlStyle: this.allLayoutdata?.footerHtmlStyle,
               },
+              id: this.allLayoutdata?.id,
             };
             this.datasetsForm.get('emailLayout')?.setValue(this.emailLayout);
             this.allLayoutdata.headerLogo = headerImg;

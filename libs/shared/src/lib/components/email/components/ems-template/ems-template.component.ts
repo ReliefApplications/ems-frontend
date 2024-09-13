@@ -487,6 +487,52 @@ export class EmsTemplateComponent
     } else {
       emailData.emailDistributionList = null;
     }
+    if (emailData?.emailLayout?.id) {
+      const emailLayout = await firstValueFrom(
+        this.emailService.editCustomTemplate(
+          {
+            ...emailData?.emailLayout,
+            applicationId: emailData.applicationId,
+            name: emailData?.name,
+          },
+          emailData?.emailLayout?.id
+        )
+      );
+      if (emailLayout?.data?.editAndGetCustomTemplate?.id) {
+        emailData.emailLayout = emailLayout?.data?.editAndGetCustomTemplate?.id;
+        this.emailService.datasetsForm
+          ?.get('emailLayout')
+          ?.get('id')
+          ?.setValue(emailLayout?.data?.editAndGetCustomTemplate?.id);
+      } else if (emailLayout.errors) {
+        this.snackBar.openSnackBar(
+          emailLayout?.errors ? emailLayout?.errors[0]?.message : '',
+          { error: true }
+        );
+        throw new Error(emailLayout?.errors[0].message);
+      }
+    } else {
+      const emailLayout = await firstValueFrom(
+        this.emailService.addCustomTemplate({
+          ...emailData?.emailLayout,
+          applicationId: emailData.applicationId,
+          name: emailData?.name,
+        })
+      );
+      if (emailLayout?.data?.addCustomTemplate?.id) {
+        emailData.emailLayout = emailLayout?.data?.addCustomTemplate?.id;
+        this.emailService.datasetsForm
+          ?.get('emailLayout')
+          ?.get('id')
+          ?.setValue(emailLayout?.data?.addCustomTemplate?.id);
+      } else if (emailLayout.errors) {
+        this.snackBar.openSnackBar(
+          emailLayout?.errors ? emailLayout?.errors[0]?.message : '',
+          { error: true }
+        );
+        throw new Error(emailLayout?.errors[0].message);
+      }
+    }
     const { To, Bcc, Cc } = emailData.emailDistributionList || {};
     if (To || Bcc || Cc) {
       delete emailData.emailDistributionList?.To;
