@@ -690,6 +690,7 @@ export class EmailTemplateComponent
       };
       objPreview.emailDistributionList.to = {
         resource: this.resource?.id ?? '',
+        reference: this.distributionList?.get('refernceData')?.value ?? '',
         query: {
           name: this.dlQuery?.get('name').value,
           filter: this.dlQuery.get('filter').value,

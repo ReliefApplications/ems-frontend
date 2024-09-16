@@ -886,6 +886,12 @@ export class DatasetFilterComponent
     if (this.resource?.id) {
       this.resource.id = undefined;
     }
+    const tempReferData = this.refernceData?.filter(
+      (x: any) => x?.id === event
+    );
+    if (tempReferData?.length > 0) {
+      this.query.get('query').get('name').setValue(tempReferData[0].name);
+    }
     this.loading = true;
     this.apollo
       .watchQuery<ReferenceDataQueryResponse>({

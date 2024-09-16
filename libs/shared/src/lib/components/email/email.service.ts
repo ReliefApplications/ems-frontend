@@ -850,6 +850,10 @@ export class EmailService {
       datasetsValues.forEach((dataset: any) => {
         if (dataset.query.name && dataset.resource) {
           datasets.push(dataset.name);
+        } else {
+          dataset.query.name && dataset.refernceData
+            ? datasets.push(dataset.name)
+            : '';
         }
       });
       const fields: string[] = [];
