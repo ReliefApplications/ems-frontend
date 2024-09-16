@@ -164,7 +164,7 @@
           </ng-template>
         </ui-tab>
         <!-- Filter Tab -->
-        <ui-tab [title]="'Filter'" [disabled]="false">
+        <ui-tab [title]="'Filter'" [disabled]="this.query.get('resource').value === null || this.query.get('resource').value === ''">
           <ng-container ngProjectAs="label">
             {{ 'components.queryBuilder.filter.title' | translate }}
           </ng-container>
