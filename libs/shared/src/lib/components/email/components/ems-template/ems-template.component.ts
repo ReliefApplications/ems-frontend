@@ -487,8 +487,37 @@ export class EmsTemplateComponent
     } else {
       emailData.emailDistributionList = null;
     }
+    const emailLayout = await this.addEditCustomTemplate(emailData);
+    if (emailLayout?.id) {
+      emailData.emailLayout = emailLayout?.id;
+      this.emailService.datasetsForm
+        ?.get('emailLayout')
+        ?.get('id')
+        ?.setValue(emailLayout?.id);
+    } else {
+      this.snackBar.openSnackBar(emailLayout?.errors || '', { error: true });
+      throw new Error(emailLayout?.errors);
+    }
+    const { To, Bcc, Cc } = emailData.emailDistributionList || {};
+    if (To || Bcc || Cc) {
+      delete emailData.emailDistributionList?.To;
+      delete emailData.emailDistributionList?.Bcc;
+      delete emailData.emailDistributionList?.Cc;
+    }
+    return emailData;
+  }
+
+  /**
+   * Adds or edits a custom email template depending on whether an ID is present.
+   * Updates the form with the template ID upon success, or throws an error if the request fails.
+   *
+   * @param emailData - The email data containing email layout and other information.
+   * @returns A promise that resolves to an object with either the template ID or errors.
+   */
+  private async addEditCustomTemplate(emailData: any) {
+    let emailLayout;
     if (emailData?.emailLayout?.id) {
-      const emailLayout = await firstValueFrom(
+      emailLayout = await firstValueFrom(
         this.emailService.editCustomTemplate(
           {
             ...emailData?.emailLayout,
@@ -498,48 +527,24 @@ export class EmsTemplateComponent
           emailData?.emailLayout?.id
         )
       );
-      if (emailLayout?.data?.editAndGetCustomTemplate?.id) {
-        emailData.emailLayout = emailLayout?.data?.editAndGetCustomTemplate?.id;
-        this.emailService.datasetsForm
-          ?.get('emailLayout')
-          ?.get('id')
-          ?.setValue(emailLayout?.data?.editAndGetCustomTemplate?.id);
-      } else if (emailLayout.errors) {
-        this.snackBar.openSnackBar(
-          emailLayout?.errors ? emailLayout?.errors[0]?.message : '',
-          { error: true }
-        );
-        throw new Error(emailLayout?.errors[0].message);
-      }
     } else {
-      const emailLayout = await firstValueFrom(
+      emailLayout = await firstValueFrom(
         this.emailService.addCustomTemplate({
           ...emailData?.emailLayout,
           applicationId: emailData.applicationId,
           name: emailData?.name,
         })
       );
-      if (emailLayout?.data?.addCustomTemplate?.id) {
-        emailData.emailLayout = emailLayout?.data?.addCustomTemplate?.id;
-        this.emailService.datasetsForm
-          ?.get('emailLayout')
-          ?.get('id')
-          ?.setValue(emailLayout?.data?.addCustomTemplate?.id);
-      } else if (emailLayout.errors) {
-        this.snackBar.openSnackBar(
-          emailLayout?.errors ? emailLayout?.errors[0]?.message : '',
-          { error: true }
-        );
-        throw new Error(emailLayout?.errors[0].message);
-      }
     }
-    const { To, Bcc, Cc } = emailData.emailDistributionList || {};
-    if (To || Bcc || Cc) {
-      delete emailData.emailDistributionList?.To;
-      delete emailData.emailDistributionList?.Bcc;
-      delete emailData.emailDistributionList?.Cc;
+    const id =
+      emailLayout?.data?.addCustomTemplate?.id ||
+      emailLayout?.data?.editAndGetCustomTemplate?.id;
+    if (id) {
+      return { id };
+    } else if (emailLayout.errors) {
+      return { errors: emailLayout?.errors[0]?.message };
     }
-    return emailData;
+    return null;
   }
 
   /**
