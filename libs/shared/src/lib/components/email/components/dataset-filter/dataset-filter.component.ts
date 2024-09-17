@@ -459,7 +459,15 @@ export class DatasetFilterComponent
       this.query.controls['name'].value !== ''
     ) {
       if (tabName == 'fields') {
-        this.onTabSelect(1, false);
+        if (
+          this.query.get('resource').value === null ||
+          this.query.get('resource').value === ''
+        ) {
+          //For refernce data selection needs to skip filter tab
+          this.onTabSelect(2, false);
+        } else {
+          this.onTabSelect(1, false);
+        }
         if (this.selectedFields.length) {
           this.emailService.disableSaveAndProceed.next(false);
           this.emailService.disableSaveAsDraft.next(false);

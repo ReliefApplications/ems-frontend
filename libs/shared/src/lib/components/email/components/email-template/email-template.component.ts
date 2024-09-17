@@ -467,7 +467,15 @@ export class EmailTemplateComponent
       this.dlQuery.controls['name'].value !== ''
     ) {
       if (tabName == 'fields') {
-        this.onTabSelect(1, false);
+        if (
+          this.distributionList.get('resource').value === null ||
+          this.distributionList.get('resource').value === ''
+        ) {
+          //For refernce data selection needs to skip filter tab
+          this.onTabSelect(2, false);
+        } else {
+          this.onTabSelect(1, false);
+        }
       }
       if (tabName == 'filter') {
         this.onTabSelect(2, false);
