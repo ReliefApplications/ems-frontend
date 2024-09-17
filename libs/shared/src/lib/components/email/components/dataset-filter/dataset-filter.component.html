@@ -65,8 +65,8 @@
         <!-- Reference Selection -->
         <div uiFormFieldDirective class="flex-1" *ngIf="query.get('dataType').value === 'Reference Data'">
           <ui-select-menu
-            id="refernceData"
-            formControlName="refernceData"
+            id="reference"
+            formControlName="reference"
             class="w-full" (ngModelChange)="getSelectedRefernceData($event, true)"
           >
             <ui-select-option

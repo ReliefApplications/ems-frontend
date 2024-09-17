@@ -215,7 +215,7 @@ export class EmailService {
       individualEmail: false,
       individualEmailFields: this.formBuilder.array([]),
       dataType: null,
-      refernceData: null,
+      reference: null,
     });
   }
 
@@ -538,7 +538,7 @@ export class EmailService {
       resource: null,
       query: this.createQuerygroup(),
       inputEmails: this.formBuilder.array([]),
-      refernceData: null,
+      reference: null,
     });
   }
 
@@ -851,7 +851,7 @@ export class EmailService {
         if (dataset.query.name && dataset.resource) {
           datasets.push(dataset.name);
         } else {
-          dataset.query.name && dataset.refernceData
+          dataset.query.name && dataset.reference
             ? datasets.push(dataset.name)
             : '';
         }

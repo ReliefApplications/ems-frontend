@@ -168,8 +168,8 @@ export class DatasetFilterComponent
       this.selectedResourceId = this.query.controls.resource.value;
       this.getResourceData(false);
     }
-    if (this.query.controls?.refernceData?.value) {
-      this.getRefernceData(this.query.controls?.refernceData?.value);
+    if (this.query.controls?.reference?.value) {
+      this.getRefernceData(this.query.controls?.reference?.value);
     }
     this.query.controls.resource.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -489,7 +489,7 @@ export class DatasetFilterComponent
 
           objPreview = {
             resource: this.resource?.id ?? '',
-            reference: this.query.get('refernceData').value ?? '',
+            reference: this.query.get('reference').value ?? '',
             name: query?.name,
             query: {
               name: query.query?.name,
@@ -778,7 +778,7 @@ export class DatasetFilterComponent
    * @param event selected Datatype Id
    */
   onDataTypeChange(event: any) {
-    this.query.get('refernceData').setValue(null);
+    this.query.get('reference').setValue(null);
     this.query.get('resource').setValue(null);
     // this.resetQuery(this.query.get('query'));
     this.availableFields = [];

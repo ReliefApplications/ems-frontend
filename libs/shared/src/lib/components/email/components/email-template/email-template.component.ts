@@ -253,7 +253,7 @@ export class EmailTemplateComponent
       this.selectedResourceId = this.distributionList.controls.resource.value;
       this.segmentForm.get('dataType')?.setValue('Resource');
       this.getResourceData(false);
-    } else if (this.distributionList.controls.refernceData?.value) {
+    } else if (this.distributionList.controls.reference?.value) {
       this.segmentForm.get('dataType')?.setValue('Reference Data');
       this.onDataTypeChange('Reference Data', true);
     }
@@ -483,7 +483,7 @@ export class EmailTemplateComponent
         );
         objPreview = {
           resource: this.resource?.id ?? '',
-          reference: this.distributionList.get('refernceData')?.value ?? '',
+          reference: this.distributionList.get('reference')?.value ?? '',
           name: 'Distribution List Preview',
           query: {
             name: this.dlQuery?.get('name').value,
@@ -690,7 +690,7 @@ export class EmailTemplateComponent
       };
       objPreview.emailDistributionList.to = {
         resource: this.resource?.id ?? '',
-        reference: this.distributionList?.get('refernceData')?.value ?? '',
+        reference: this.distributionList?.get('reference')?.value ?? '',
         query: {
           name: this.dlQuery?.get('name').value,
           filter: this.dlQuery.get('filter').value,
@@ -990,9 +990,10 @@ export class EmailTemplateComponent
     this.selectedFields = [];
     if (event?.toLowerCase() === 'resource') {
       this.refernceData = [];
-      this.distributionList.get('refernceData')?.setValue(null);
+      this.distributionList.get('reference')?.setValue(null);
     } else {
-      !isEdit ? this.segmentForm.get('resource')?.setValue(null) : '';
+      !isEdit ? this.distributionList.get('resource')?.setValue(null) : '';
+      this.resource = !isEdit ? null : this.resource;
       this.getRefernceData();
     }
   }
@@ -1062,11 +1063,11 @@ export class EmailTemplateComponent
                     this.refernceData = refernceData;
                     if (
                       refernceId ||
-                      this.distributionList.controls.refernceData?.value
+                      this.distributionList.controls.reference?.value
                     ) {
                       this.getSelectedRefernceData(
                         refernceId ??
-                          this.distributionList.controls.refernceData?.value
+                          this.distributionList.controls.reference?.value
                       );
                     }
                   }
