@@ -349,7 +349,10 @@ export class EmailService {
       } else {
         if (
           this.toDLHasFilter &&
-          this.datasetsForm.getRawValue().emailDistributionList?.to?.resource
+          (this.datasetsForm.getRawValue().emailDistributionList?.to
+            ?.resource ||
+            this.datasetsForm.getRawValue().emailDistributionList?.to
+              ?.reference)
         ) {
           const query = {
             emailDistributionList: cloneDeep(
