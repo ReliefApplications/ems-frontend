@@ -382,7 +382,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         this.uniqueDLNames = [...uniqueDistributionLists];
         this.dlNamesActualData = cloneDeep(this.uniqueDLNames);
         this.distributionLists = this.distributionLists.filter((ele: any) => {
-          if (uniqueDistributionLists.includes(ele?.name?.toLowerCase())) {
+          if (
+            uniqueDistributionLists.includes(ele?.name?.trim()?.toLowerCase())
+          ) {
             uniqueDistributionLists = uniqueDistributionLists.filter(
               (name) => ele.name?.toLowerCase() !== name
             );

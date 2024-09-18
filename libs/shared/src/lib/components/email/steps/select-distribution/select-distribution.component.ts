@@ -130,19 +130,15 @@ export class SelectDistributionComponent
     } else {
       this.emailDistributionList.get('name').enable();
     }
-
-    const existingDataIndex = this.emailService.cacheDistributionList
-      .map((x: any) => x.node)
-      .map((y: any) => y.emailDistributionList)
-      .findIndex(
-        (x: any) =>
-          x?.get('name').value.toLowerCase() ==
-          this.emailDistributionList?.('name')?.value.trim().toLowerCase()
-      );
-    if (existingDataIndex > -1) {
-      this.distributionListId =
-        this.emailService.cacheDistributionList[existingDataIndex].node.id;
-    }
+    this.emailDistributionList
+      .get('id')
+      ?.valueChanges.subscribe((value: string) => {
+        if (value) {
+          this.emailDistributionList.get('name').disable();
+        } else {
+          this.emailDistributionList.get('name').enable();
+        }
+      });
   }
 
   /**
@@ -274,6 +270,21 @@ export class SelectDistributionComponent
           }) || [];
         this.cacheDistributionList = this.distributionLists;
         this.emailService.cacheDistributionList = this.cacheDistributionList;
+        const existingDataIndex =
+          this.emailService.cacheDistributionList.findIndex(
+            (x: any) =>
+              x?.name?.toLowerCase() ==
+              this.emailDistributionList
+                ?.get('name')
+                ?.value.trim()
+                .toLowerCase()
+          );
+        if (existingDataIndex > -1) {
+          this.distributionListId =
+            this.emailService.cacheDistributionList[existingDataIndex].id;
+          this.emailService.selectedDLName =
+            this.emailService.cacheDistributionList[existingDataIndex].name;
+        }
         this.distributionLists = this.cacheDistributionList.slice(
           this.distributionPageInfo.pageSize *
             this.distributionPageInfo.pageIndex,
