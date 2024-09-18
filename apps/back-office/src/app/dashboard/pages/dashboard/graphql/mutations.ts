@@ -77,6 +77,7 @@ export const ADD_DASHBOARD_TEMPLATE = gql`
       page {
         id
         icon
+        showName
         visible
         application {
           id
@@ -89,6 +90,7 @@ export const ADD_DASHBOARD_TEMPLATE = gql`
       step {
         id
         icon
+        showName
         workflow {
           id
           page {

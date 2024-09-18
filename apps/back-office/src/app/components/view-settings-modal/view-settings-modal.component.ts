@@ -45,6 +45,7 @@ interface DialogData {
   step?: Step;
   icon?: string;
   visible?: boolean;
+  showName?: boolean;
   accessData: AccessData;
   canUpdate: boolean;
   dashboard?: Dashboard;
@@ -155,6 +156,13 @@ export class ViewSettingsModalComponent
         }
       });
 
+    // Listen to showName updates
+    this.settingsForm?.controls.showName?.valueChanges
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe((value: any) => {
+        this.onUpdateShowName(value);
+      });
+
     // Listen to visibility updates (only for pages)
     if (this.data.type === 'page') {
       this.settingsForm?.controls.visible.valueChanges
@@ -262,6 +270,7 @@ export class ViewSettingsModalComponent
       // initializes icon field with data info
       icon: this.fb.control(this.data.icon ?? ''),
       visible: this.fb.control(this.data.visible ?? true),
+      showName: this.fb.control(this.data.showName ?? true),
       ...(this.dashboard && {
         gridOptions: this.fb.group({
           minCols: this.fb.control(
@@ -324,7 +333,11 @@ export class ViewSettingsModalComponent
         const updates = { icon };
         this.onUpdate.emit(updates);
       };
-      this.workflowService.updateStepIcon(this.step as Step, icon, callback);
+      this.workflowService.updateStepParameter(
+        this.step as Step,
+        { icon },
+        callback
+      );
     } else {
       const callback = () => {
         this.page = {
@@ -336,9 +349,49 @@ export class ViewSettingsModalComponent
         this.onUpdate.emit(updates);
       };
       this.page &&
-        this.applicationService.changePageIcon(
+        this.applicationService.updatePageParameter(
           this.page as Page,
-          icon,
+          { icon },
+          callback
+        );
+    }
+  }
+
+  /**
+   * Save dashboard name display parameter.
+   *
+   * @param showName boolean
+   */
+  private onUpdateShowName(showName: boolean): void {
+    if (this.data.type === 'step' && this.step) {
+      const callback = () => {
+        this.step = {
+          ...this.step,
+          showName,
+        };
+        // Updates parent component
+        const updates = { showName };
+        this.onUpdate.emit(updates);
+      };
+      this.workflowService.updateStepParameter(
+        this.step as Step,
+        { showName },
+        callback
+      );
+    } else {
+      const callback = () => {
+        this.page = {
+          ...this.page,
+          showName,
+        };
+        // Updates parent component
+        const updates = { showName };
+        this.onUpdate.emit(updates);
+      };
+      this.page &&
+        this.applicationService.updatePageParameter(
+          this.page as Page,
+          { showName },
           callback
         );
     }

@@ -28,6 +28,12 @@
           </ng-container>
           <!-- Tab content -->
           <div class="flex gap-4 flex-col" *ngIf="settingsForm">
+            <!-- Show content name -->
+            <ui-toggle formControlName="showName">
+              <ng-container ngProjectAs="label">
+                {{ 'components.application.pages.settings.showName' | translate }}
+              </ng-container>
+            </ui-toggle>
             <!-- Page / step icon -->
             <app-view-icon-selector
               [iconControl]="this.settingsForm.controls.icon"

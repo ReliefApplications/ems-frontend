@@ -42,7 +42,9 @@
       >
         <!-- Dashboard title -->
         <div class="flex items-center gap-1">
+          <!-- Dashboard name, always display during edition -->
           <shared-editable-text
+            *ngIf="showName || editionActive"
             [text]="dashboard.name"
             [canEdit]="canUpdate"
             (onChange)="saveName($event)"
@@ -61,6 +63,7 @@
             icon="settings"
             [uiTooltip]="'common.settings' | translate"
           ></ui-button>
+          <!-- Switch between edition & preview -->
           <ui-button
             *ngIf="canUpdate && !templateMode"
             [icon]="editionActive ? 'edit' : 'preview'"

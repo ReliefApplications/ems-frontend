@@ -30,6 +30,7 @@ export const EDIT_APPLICATION = gql`
       pages {
         id
         icon
+        showName
         name
         createdAt
         type

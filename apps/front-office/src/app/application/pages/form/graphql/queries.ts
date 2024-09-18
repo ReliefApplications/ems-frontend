@@ -36,6 +36,7 @@ export const GET_STEP_BY_ID = gql`
     step(id: $id) {
       id
       name
+      showName
       createdAt
       modifiedAt
       content
@@ -52,6 +53,7 @@ export const GET_PAGE_BY_ID = gql`
     page(id: $id) {
       id
       name
+      showName
       createdAt
       modifiedAt
       type
