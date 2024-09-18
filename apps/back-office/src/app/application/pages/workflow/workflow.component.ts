@@ -451,6 +451,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
         page: this.workflow?.page,
         icon: this.workflow?.page?.icon,
         visible: this.workflow?.page?.visible,
+        showName: this.workflow?.page?.showName,
         accessData: {
           access: this.workflow?.permissions,
           application: this.applicationId,

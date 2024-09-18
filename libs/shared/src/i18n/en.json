@@ -664,6 +664,7 @@
 				"settings": {
 					"actions": "Actions",
 					"selectIcon": "Select an icon",
+					"showName": "Display name",
 					"tooltip": {
 						"autoSave": "Changes are automatically saved"
 					}

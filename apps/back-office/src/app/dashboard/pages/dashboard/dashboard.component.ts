@@ -39,7 +39,7 @@ import {
 } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import { cloneDeep, isEqual, omit } from 'lodash';
+import { cloneDeep, has, isEqual, omit } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import localForage from 'localforage';
@@ -115,6 +115,8 @@ export class DashboardComponent
   public editionActive = true;
   /** Additional grid configuration */
   public gridOptions: GridsterConfig = {};
+  /** Should show dashboard name */
+  public showName? = true;
 
   /** @returns type of context element */
   get contextType() {
@@ -315,6 +317,9 @@ export class DashboardComponent
             };
           }, 1000);
           this.contextService.setFilter(this.dashboard);
+          this.showName = this.dashboard.step
+            ? this.dashboard.step.showName
+            : this.dashboard.page?.showName;
         } else {
           this.contextService.isFilterEnabled.next(false);
           this.contextService.setFilter();
@@ -743,6 +748,9 @@ export class DashboardComponent
         icon: this.isStep
           ? this.dashboard?.step?.icon
           : this.dashboard?.page?.icon,
+        showName: this.isStep
+          ? this.dashboard?.step?.showName
+          : this.dashboard?.page?.showName,
         accessData: {
           access: this.dashboard?.permissions,
           application: this.applicationId,
@@ -771,7 +779,10 @@ export class DashboardComponent
               ...(updates.filter && updates),
               step: {
                 ...this.dashboard?.step,
-                ...(!updates.permissions && !updates.filter && updates),
+                ...((has(updates, 'showName') ||
+                  has(updates, 'permissions') ||
+                  has(updates, 'filter')) &&
+                  updates),
               },
             };
           } else {
@@ -782,7 +793,10 @@ export class DashboardComponent
               ...(updates.filter && updates),
               page: {
                 ...this.dashboard?.page,
-                ...(!updates.permissions && !updates.filter && updates),
+                ...((has(updates, 'showName') ||
+                  has(updates, 'permissions') ||
+                  has(updates, 'filter')) &&
+                  updates),
               },
             };
           }
