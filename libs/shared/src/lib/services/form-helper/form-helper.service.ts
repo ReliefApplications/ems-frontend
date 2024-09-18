@@ -469,7 +469,7 @@ export class FormHelpersService {
         );
         component.instance.icon = 'help';
         component.instance.variant = 'primary';
-        component.location.nativeElement.classList.add('ml-2'); // Add margin to the icon
+        component.location.nativeElement.classList.add('ml-2', 'inline-flex'); // Add margin to the icon
 
         // Sets the tooltip text
         component.instance.tooltip = options.question.tooltip;

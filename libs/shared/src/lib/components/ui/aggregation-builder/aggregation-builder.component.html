@@ -1,7 +1,7 @@
 <div class="w-full h-full flex flex-col">
   <ui-spinner size="large" *ngIf="loading"></ui-spinner>
   <ng-container *ngIf="!loading">
-    <div class="flex">
+    <div class="flex gap-2 items-center">
       <!-- Selection of fields -->
       <shared-tagbox
         class="flex flex-1"
@@ -11,7 +11,6 @@
       ></shared-tagbox>
       <!-- Toggle preview -->
       <ui-button
-        class="ml-3 mb-4 self-end max-h-min"
         [icon]="showPreview ? 'visibility_off' : 'visibility'"
         category="primary"
         (click)="showPreview = !showPreview"
