@@ -564,7 +564,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         const distributionListName = distributionList?.name;
         return (
           distributionListName !== null &&
-          distributionListName.trim().toLowerCase() !== name
+          distributionListName?.trim()?.toLowerCase() !== name
         );
       }
     );

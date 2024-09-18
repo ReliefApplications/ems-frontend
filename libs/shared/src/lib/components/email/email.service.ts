@@ -571,8 +571,8 @@ export class EmailService {
    */
   populateDistributionListForm(emailDL: any): FormGroup {
     const distributionListForm = this.initialiseDistributionList();
-
-    this.setDistributionListFormValues(distributionListForm, emailDL);
+    if (emailDL)
+      this.setDistributionListFormValues(distributionListForm, emailDL);
     return distributionListForm;
   }
 
@@ -584,10 +584,10 @@ export class EmailService {
    */
   setDistributionListFormValues(form: FormGroup, emailDL: any) {
     form.patchValue({
-      name: emailDL.name,
+      name: emailDL?.name || '',
     });
     form.patchValue({
-      id: emailDL.id,
+      id: emailDL?.id || null,
     });
 
     this.setDistributionListGroupValues(
