@@ -1192,6 +1192,8 @@
 				"title": "Bloc"
 			},
 			"dataset": {
+				"dataType": "Type de données",
+				"referenceData": "Reference Data",
 				"select": "Sélectionner un jeu de données",
 				"title": "Ressource"
 			},

@@ -1192,6 +1192,8 @@
 				"title": "Block"
 			},
 			"dataset": {
+				"dataType": "Data Type",
+				"referenceData": "Données de référence",
 				"select": "Select a dataset",
 				"title": "Resource"
 			},

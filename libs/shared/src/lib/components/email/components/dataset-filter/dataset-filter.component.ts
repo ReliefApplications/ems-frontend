@@ -827,7 +827,7 @@ export class DatasetFilterComponent
               (x) =>
                 x?.node?.status === 'active' &&
                 x?.node?.authType == 'serviceToService'
-            )
+            ).length > 0
           ) {
             const configurations = data?.apiConfigurations.edges.filter(
               (x) =>
