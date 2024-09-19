@@ -276,8 +276,8 @@ export class SelectDistributionComponent
               x?.name?.toLowerCase() ==
               this.emailDistributionList
                 ?.get('name')
-                ?.value.trim()
-                .toLowerCase()
+                ?.value?.trim()
+                ?.toLowerCase()
           );
         if (existingDataIndex > -1) {
           this.distributionListId =
