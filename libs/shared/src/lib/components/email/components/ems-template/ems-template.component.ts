@@ -523,6 +523,7 @@ export class EmsTemplateComponent
             ...emailData?.emailLayout,
             applicationId: emailData.applicationId,
             name: emailData?.name,
+            isFromEmailNotification: true,
           },
           emailData?.emailLayout?.id
         )
@@ -533,6 +534,7 @@ export class EmsTemplateComponent
           ...emailData?.emailLayout,
           applicationId: emailData.applicationId,
           name: emailData?.name,
+          isFromEmailNotification: true,
         })
       );
     }
