@@ -522,8 +522,11 @@ export const EDIT_CUSTOM_TEMPLATE = gql`
 
 /** Graphql query for getting  CUSTOM_TEMPLATES */
 export const GET_CUSTOM_TEMPLATES = gql`
-  query CustomTemplates($applicationId: ID) {
-    customTemplates(applicationId: $applicationId) {
+  query CustomTemplates($applicationId: ID, $isFromEmailNotification: Boolean) {
+    customTemplates(
+      applicationId: $applicationId
+      isFromEmailNotification: $isFromEmailNotification
+    ) {
       totalCount
       edges {
         node {
@@ -536,6 +539,7 @@ export const GET_CUSTOM_TEMPLATES = gql`
           createdBy
           id
           name
+          isFromEmailNotification
         }
       }
     }

@@ -92,6 +92,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   /** An array to store custom template objects.*/
   public customTemplates: any = [];
 
+  /** An array to store EN custom template objects.*/
+  public emailCustomTemplates: any = [];
+
   /** Selected Tab Index - to manipulated button text based on selection */
   public selectedTabIndex = 0;
 
@@ -156,11 +159,13 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    */
   getCustomTemplates(): void {
     this.emailService
-      .getCustomTemplates(this.applicationId)
+      .getCustomTemplates(this.applicationId, true)
       .subscribe((res: any) => {
-        // this.customTemplates =
-        this.customTemplates = res?.data?.customTemplates?.edges?.map(
+        this.emailCustomTemplates = res?.data?.customTemplates?.edges?.map(
           (template: any) => template?.node
+        );
+        this.customTemplates = this.emailCustomTemplates.filter(
+          ({ isFromEmailNotification }: any) => !isFromEmailNotification
         );
         this.emailService.customTemplateNames = this.customTemplates.map(
           (template: any) => template?.name?.trim()?.toLowerCase()
@@ -553,7 +558,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     const distributionList = this.distributionActualData.find(
       (dl: any) => dl.id === emailData.emailDistributionList
     );
-    const emailLayout = this.customActualData.find(
+    const emailLayout = this.emailCustomTemplates.find(
       (template: any) => template.id === emailData?.emailLayout
     );
     emailData.emailLayout = emailLayout;

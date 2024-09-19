@@ -1606,13 +1606,18 @@ export class EmailService {
    * Retrieves custom templates from the server.
    *
    * @param id The application ids of the email notifications.
+   * @param isFromEmailNotification - Indicates if the templates are related to email notifications. Optional.
    * @returns {Observable<any>} An observable that resolves with the result of the query.
    */
-  getCustomTemplates(id?: string): Observable<any> {
+  getCustomTemplates(
+    id?: string,
+    isFromEmailNotification?: boolean
+  ): Observable<any> {
     return this.apollo.query<any>({
       query: GET_CUSTOM_TEMPLATES,
       variables: {
         applicationId: id,
+        isFromEmailNotification,
       },
     });
   }
