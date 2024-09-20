@@ -158,6 +158,12 @@ export class EmsTemplateComponent
     }
     this.emailService.disableSaveAndProceed.subscribe((res: boolean) => {
       this.disableActionButton = res;
+      if (this.currentStep > 3 && !this.disableActionButton) {
+        this.steps = this.steps.map((step: any) => {
+          step.disabled = false;
+          return step;
+        });
+      }
     });
     this.emailService.disableFormSteps
       .pipe(first())
