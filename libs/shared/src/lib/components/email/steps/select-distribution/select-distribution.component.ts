@@ -123,17 +123,17 @@ export class SelectDistributionComponent
 
   ngOnInit(): void {
     if (
-      this.emailDistributionList?.get('to.query.filter.logic')?.value === null
+      !this.emailDistributionList?.get('to.query.filter.logic')?.value?.trim()
     ) {
       this.emailDistributionList.get('to.query.filter.logic').setValue('and');
     }
     if (
-      this.emailDistributionList?.get('cc.query.filter.logic')?.value === null
+      !this.emailDistributionList?.get('cc.query.filter.logic')?.value?.trim()
     ) {
       this.emailDistributionList.get('cc.query.filter.logic').setValue('and');
     }
     if (
-      this.emailDistributionList?.get('bcc.query.filter.logic')?.value === null
+      !this.emailDistributionList?.get('bcc.query.filter.logic')?.value?.trim()
     ) {
       this.emailDistributionList.get('bcc.query.filter.logic').setValue('and');
     }
