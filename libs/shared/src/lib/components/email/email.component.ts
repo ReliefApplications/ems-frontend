@@ -810,6 +810,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         fields: fieldsArray,
       }),
       resource: ele.resource,
+      reference: ele.reference,
+      dataType:
+        ele.resource !== null && ele.resource !== ''
+          ? 'Resource'
+          : 'Reference Data',
       pageSize: ele.pageSize,
       blockType: 'table', // Either Table or Text
       tableStyle: this.emailService.getTableStyles(),

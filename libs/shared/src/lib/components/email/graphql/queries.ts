@@ -308,6 +308,7 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
           fields
         }
         resource
+        reference
         tableStyle
         blockType
         textStyle
