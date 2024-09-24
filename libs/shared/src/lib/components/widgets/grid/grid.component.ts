@@ -808,7 +808,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
         query: builtQuery,
         variables: {
           first: this.grid?.pageSize,
-          filter: this.layout?.query?.queryFilter,
+          filter: this.gridSettings?.query?.filter,
           sortField: this.layout?.query?.sortField || undefined,
           sortOrder: this.layout?.query?.sortOrder,
           styles: this.layout?.query?.style,
