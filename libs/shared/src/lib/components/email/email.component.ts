@@ -548,6 +548,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     const emailLayout = this.emailCustomTemplates.find(
       (template: any) => template.id === emailData?.emailLayout
     );
+    if (isClone) {
+      delete emailLayout.id;
+    }
     emailData.emailLayout = emailLayout;
     const distributionListNames = this.emailService.distributionListNames;
     const emailNotificationNames = this.emailService.emailNotificationNames;

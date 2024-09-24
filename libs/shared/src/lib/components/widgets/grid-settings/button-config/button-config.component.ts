@@ -99,11 +99,6 @@ export class ButtonConfigComponent
     private emailService: EmailService
   ) {
     super();
-    this.emailService.getCustomTemplates().subscribe((res: any) => {
-      this.allTemplateData = res.data.customTemplates.edges.map(
-        (x: any) => x.node
-      );
-    });
   }
 
   ngOnInit(): void {
@@ -136,6 +131,13 @@ export class ButtonConfigComponent
           }
         });
     }
+    this.applicationService.application$.subscribe((res: any) => {
+      this.emailService.getCustomTemplates(res.id).subscribe((res: any) => {
+        this.allTemplateData = res.data.customTemplates.edges.map(
+          (x: any) => x.node
+        );
+      });
+    });
 
     this.formGroup
       ?.get('prefillForm')
