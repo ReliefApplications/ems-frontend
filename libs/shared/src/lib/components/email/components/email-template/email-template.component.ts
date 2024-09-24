@@ -313,10 +313,10 @@ export class EmailTemplateComponent
    */
   clearUnusedValues(value: string) {
     if (value === 'Add Manually') {
-      const fields = this.dlQuery.get('fields') as FormArray;
+      const fields = this.dlQuery?.get('fields') as FormArray;
       fields.clear();
 
-      const filter = this.dlQuery.get('filter') as FormGroup;
+      const filter = this.dlQuery?.get('filter') as FormGroup;
       const filters = filter.get('filters') as FormArray;
       filters.clear();
 
