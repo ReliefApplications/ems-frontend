@@ -151,6 +151,9 @@ export class PreviewComponent
         control.removeControl('cacheData');
       }
     });
+    const toData = this.emailService.emailDistributionList?.to;
+    const ccData = this.emailService.emailDistributionList?.cc;
+    const bccData = this.emailService.emailDistributionList?.bcc;
     if (this.emailService.isQuickAction) {
       this.populateDLForm();
     }
@@ -165,6 +168,11 @@ export class PreviewComponent
     this.query.emailDistributionList = this.emailService?.datasetsForm
       ?.get('emailDistributionList')
       ?.getRawValue();
+    if (this.emailService.isQuickAction) {
+      this.query.emailDistributionList.to = toData;
+      this.query.emailDistributionList.cc = ccData;
+      this.query.emailDistributionList.bcc = bccData;
+    }
     this.loadDistributionList();
     this.loadFinalEmailPreview();
   }
@@ -214,21 +222,29 @@ export class PreviewComponent
    *
    */
   loadDistributionList() {
+    this.emailService.loading = true;
     this.http
       .post(
         `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
         this.query
       )
-      .subscribe((response: any) => {
-        this.distributionListTo = response?.to;
-        this.distributionListCc = response?.cc;
-        this.distributionListBcc = response?.bcc;
-        this.distributionListSeparate = response?.individualEmailList;
-        this.distributionListSeparate?.forEach((block: any) => {
-          block.isExpanded = false;
-          block.emails = Array.from(new Set(block.emails)); // Remove duplicate emails
-        });
-      });
+      .subscribe(
+        (response: any) => {
+          this.distributionListTo = response?.to;
+          this.distributionListCc = response?.cc;
+          this.distributionListBcc = response?.bcc;
+          this.distributionListSeparate = response?.individualEmailList;
+          this.distributionListSeparate?.forEach((block: any) => {
+            block.isExpanded = false;
+            block.emails = Array.from(new Set(block.emails)); // Remove duplicate emails
+          });
+          this.emailService.loading = false;
+        },
+        (error: any) => {
+          console.log(error);
+          this.emailService.loading = false;
+        }
+      );
   }
 
   /**

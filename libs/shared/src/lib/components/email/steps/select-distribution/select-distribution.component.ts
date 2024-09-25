@@ -283,6 +283,32 @@ export class SelectDistributionComponent
             );
             return node;
           }) || [];
+
+        //START :- filter distribution list data according to the Resource
+        const allDatasetResources =
+          this.emailService.datasetsForm.value.datasets.map(
+            (ele: any) => ele.resource
+          );
+        let filtered_DL = this.distributionLists.filter(
+          (x: any) =>
+            x.to?.resource === null ||
+            x.to?.resource === '' ||
+            allDatasetResources.includes(x.to?.resource)
+        );
+        filtered_DL = filtered_DL.filter(
+          (x: any) =>
+            x.cc?.resource === null ||
+            x.cc?.resource === '' ||
+            allDatasetResources.includes(x.cc?.resource)
+        );
+        filtered_DL = filtered_DL.filter(
+          (x: any) =>
+            x.bcc?.resource === null ||
+            x.bcc?.resource === '' ||
+            allDatasetResources.includes(x.bcc?.resource)
+        );
+        this.distributionLists = filtered_DL;
+        // END
         this.cacheDistributionList = this.distributionLists;
         this.emailService.cacheDistributionList = this.cacheDistributionList;
         const existingDataIndex =

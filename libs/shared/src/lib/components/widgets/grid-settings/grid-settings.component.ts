@@ -349,6 +349,27 @@ export class GridSettingsComponent
                 this.resource.queryName as string
               );
             }
+
+            //filter distribution list data according to the Resource
+            let filtered_DL = this.distributionLists.filter(
+              (x: any) =>
+                x.to?.resource === null ||
+                x.to?.resource === '' ||
+                x.to?.resource === this.resource?.id
+            );
+            filtered_DL = filtered_DL.filter(
+              (x: any) =>
+                x.cc?.resource === null ||
+                x.cc?.resource === '' ||
+                x.cc?.resource === this.resource?.id
+            );
+            filtered_DL = filtered_DL.filter(
+              (x: any) =>
+                x.bcc?.resource === null ||
+                x.bcc?.resource === '' ||
+                x.bcc?.resource === this.resource?.id
+            );
+            this.distributionLists = filtered_DL;
           } else {
             this.relatedForms = [];
             this.templates = [];
