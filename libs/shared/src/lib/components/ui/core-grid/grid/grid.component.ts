@@ -245,17 +245,29 @@ export class GridComponent
 
   /** @returns Visible columns of the grid. */
   get visibleFields(): any {
-    const extractFieldFromColumn = (column: any): any => ({
-      [column.field]: {
-        field: column.field,
-        title: column.title,
-        width: column.width,
-        hidden: column.hidden,
-        order: column.orderIndex,
-        subFields:
-          this.fields.find((x) => x.name === column.field)?.subFields || [],
-      },
-    });
+    const extractFieldFromColumn = (column: any): any => {
+      // Get field from list of fields
+      const field = this.fields.find((x) => x.name === column.field);
+      return {
+        [column.field]: {
+          // Add basic info for formatting: field name, title, width, visibility, order
+          field: column.field,
+          title: column.title,
+          width: column.width,
+          hidden: column.hidden,
+          order: column.orderIndex,
+          // Add list of subfields
+          subFields: field?.subFields || [],
+          ...(field && {
+            // For related resources questions, add display info if any
+            ...(field.displayField && {
+              displayField: field.displayField,
+              separator: field.separator,
+            }),
+          }),
+        },
+      };
+    };
     return this.grid?.columns
       .toArray()
       .sort((a: any, b: any) => a.orderIndex - b.orderIndex)
