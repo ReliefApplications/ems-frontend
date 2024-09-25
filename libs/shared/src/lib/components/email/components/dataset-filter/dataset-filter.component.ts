@@ -890,6 +890,7 @@ export class DatasetFilterComponent
     // this.resetQuery(this.query.get('query'));
     this.availableFields = [];
     this.selectedFields = [];
+    this.availableFieldsIndividualEmail = [];
     fromHTML ? this.resetQuery(this.query.get('query')) : '';
     if (this.resource?.id) {
       this.resource.id = undefined;
@@ -926,6 +927,7 @@ export class DatasetFilterComponent
               });
             });
             this.availableFields = refernceFields;
+            this.availableFieldsIndividualEmail = cloneDeep(refernceFields);
           }
         },
         error: (err) => {
