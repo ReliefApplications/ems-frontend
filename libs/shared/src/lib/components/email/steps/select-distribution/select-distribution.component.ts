@@ -123,6 +123,14 @@ export class SelectDistributionComponent
 
   ngOnInit(): void {
     if (
+      this.emailService?.editId &&
+      this.emailService?.emailDistributionList?.id
+    ) {
+      this.distributionListId = this.emailService.emailDistributionList.id;
+      this.emailService.selectedDLName =
+        this.emailService.emailDistributionList?.name;
+    }
+    if (
       !this.emailDistributionList?.get('to.query.filter.logic')?.value?.trim()
     ) {
       this.emailDistributionList.get('to.query.filter.logic').setValue('and');
