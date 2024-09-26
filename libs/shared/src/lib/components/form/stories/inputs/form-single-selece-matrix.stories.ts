@@ -1,8 +1,7 @@
 import {
-  FormInputStory,
-  sharedForm,
-  sharedQuestion,
   FormInputStoryMeta,
+  DefaultFormInputStory,
+  ReadOnlyFormInputStory,
 } from './form-inputs.stories-shared';
 
 export default {
@@ -10,37 +9,28 @@ export default {
   title: 'Form/Inputs/Single Select Matrix',
 };
 
-/**
- * Default inputs Single Select Matrix
- */
-export const SingleSelectMatrix: FormInputStory = {
-  args: {
-    title: 'Single Select Matrix question',
-  },
-  render: (args) => {
-    return {
-      props: {
-        form: {
-          ...sharedForm,
-          structure: JSON.stringify({
-            pages: [
-              {
-                name: 'page1',
-                elements: [
-                  {
-                    type: 'matrix',
-                    name: 'Single-Select Matrix',
-                    columns: ['Column 1', 'Column 2', 'Column 3'],
-                    rows: ['Row 1', 'Row 2'],
-                    ...sharedQuestion(args),
-                  },
-                ],
-              },
-            ],
-            showQuestionNumbers: 'off',
-          }),
-        },
-      },
-    };
-  },
+/** Question name */
+const questionName = 'Single Select Matrix question';
+
+/** Base question */
+const baseQuestion = {
+  type: 'matrix',
+  columns: ['Column 1', 'Column 2', 'Column 3'],
+  rows: ['Row 1', 'Row 2'],
 };
+
+/**
+ * Default story.
+ */
+export const Text = DefaultFormInputStory(questionName, baseQuestion);
+
+/**
+ * ReadOnly story.
+ */
+export const ReadOnly = ReadOnlyFormInputStory(questionName, {
+  ...baseQuestion,
+  defaultValue: {
+    'Row 1': 'Column 1',
+    'Row 2': 'Column 2',
+  },
+});

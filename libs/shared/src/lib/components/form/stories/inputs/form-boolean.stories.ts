@@ -1,8 +1,7 @@
 import {
-  FormInputStory,
-  sharedForm,
-  sharedQuestion,
   FormInputStoryMeta,
+  DefaultFormInputStory,
+  ReadOnlyFormInputStory,
 } from './form-inputs.stories-shared';
 
 export default {
@@ -10,70 +9,23 @@ export default {
   title: 'Form/Inputs/Boolean',
 };
 
-/**
- * Default inputs Boolean
- */
-export const Default: FormInputStory = {
-  args: {
-    title: 'Boolean question',
-  },
-  render: (args) => {
-    return {
-      props: {
-        form: {
-          ...sharedForm,
-          structure: JSON.stringify({
-            pages: [
-              {
-                name: 'page1',
-                elements: [
-                  {
-                    type: 'boolean',
-                    name: 'question1',
-                    ...sharedQuestion(args),
-                  },
-                ],
-              },
-            ],
-            showQuestionNumbers: 'off',
-          }),
-        },
-      },
-    };
-  },
+/** Question name */
+const questionName = 'Boolean question';
+
+/** Base question */
+const baseQuestion = {
+  type: 'boolean',
 };
 
 /**
- * ReadOnly inputs Boolean
+ * Default story.
  */
-export const ReadOnly: FormInputStory = {
-  args: {
-    title: 'Boolean question',
-  },
-  render: (args) => {
-    return {
-      props: {
-        form: {
-          ...sharedForm,
-          structure: JSON.stringify({
-            pages: [
-              {
-                name: 'page1',
-                elements: [
-                  {
-                    type: 'boolean',
-                    name: 'question1',
-                    ...sharedQuestion(args),
-                    defaultValue: 'true',
-                  },
-                ],
-              },
-            ],
-            showQuestionNumbers: 'off',
-            mode: 'display',
-          }),
-        },
-      },
-    };
-  },
-};
+export const Text = DefaultFormInputStory(questionName, baseQuestion);
+
+/**
+ * ReadOnly story.
+ */
+export const ReadOnly = ReadOnlyFormInputStory(questionName, {
+  ...baseQuestion,
+  defaultValue: 'true',
+});

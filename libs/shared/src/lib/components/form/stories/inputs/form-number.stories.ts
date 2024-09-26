@@ -1,8 +1,7 @@
 import {
-  FormInputStory,
-  sharedForm,
-  sharedQuestion,
   FormInputStoryMeta,
+  DefaultFormInputStory,
+  ReadOnlyFormInputStory,
 } from './form-inputs.stories-shared';
 
 export default {
@@ -10,35 +9,24 @@ export default {
   title: 'Form/Inputs/Number',
 };
 
-/**
- * Default inputs Number
- */
-export const Number: FormInputStory = {
-  args: {
-    title: 'Number question',
-  },
-  render: (args) => {
-    return {
-      props: {
-        form: {
-          ...sharedForm,
-          structure: JSON.stringify({
-            pages: [
-              {
-                name: 'page1',
-                elements: [
-                  {
-                    type: 'text',
-                    inputType: 'number',
-                    ...sharedQuestion(args),
-                  },
-                ],
-              },
-            ],
-            showQuestionNumbers: 'off',
-          }),
-        },
-      },
-    };
-  },
+/** Question name */
+const questionName = 'Number question';
+
+/** Base question */
+const baseQuestion = {
+  type: 'text',
+  inputType: 'number',
 };
+
+/**
+ * Default story.
+ */
+export const Default = DefaultFormInputStory(questionName, baseQuestion);
+
+/**
+ * ReadOnly story.
+ */
+export const ReadOnly = ReadOnlyFormInputStory(questionName, {
+  ...baseQuestion,
+  defaultValue: 111,
+});

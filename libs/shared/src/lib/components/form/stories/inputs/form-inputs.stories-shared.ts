@@ -158,3 +158,82 @@ export const sharedQuestion = (args: ExtendedFormComponent) => ({
   description: args.description,
   descriptionLocation: args.descriptionLocation,
 });
+
+/**
+ * Generate a default story.
+ *
+ * @param title Question name
+ * @param question Question model
+ * @returns Default story
+ */
+export const DefaultFormInputStory = (title: string, question: any) => {
+  const story: FormInputStory = {
+    args: {
+      title,
+    },
+    render: (args) => {
+      return {
+        props: {
+          form: {
+            ...sharedForm,
+            structure: JSON.stringify({
+              pages: [
+                {
+                  name: 'page1',
+                  elements: [
+                    {
+                      ...question,
+                      ...sharedQuestion(args),
+                    },
+                  ],
+                },
+              ],
+              showQuestionNumbers: 'off',
+            }),
+          },
+        },
+      };
+    },
+  };
+  return story;
+};
+
+/**
+ * Generate a read only story.
+ *
+ * @param title Question name
+ * @param question Question model
+ * @returns Read only story
+ */
+export const ReadOnlyFormInputStory = (title: string, question: any) => {
+  const story: FormInputStory = {
+    args: {
+      title,
+    },
+    render: (args) => {
+      return {
+        props: {
+          form: {
+            ...sharedForm,
+            structure: JSON.stringify({
+              pages: [
+                {
+                  name: 'page1',
+                  elements: [
+                    {
+                      ...question,
+                      ...sharedQuestion(args),
+                    },
+                  ],
+                },
+              ],
+              showQuestionNumbers: 'off',
+              mode: 'display',
+            }),
+          },
+        },
+      };
+    },
+  };
+  return story;
+};

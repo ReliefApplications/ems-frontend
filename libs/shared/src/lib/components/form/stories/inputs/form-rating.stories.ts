@@ -1,8 +1,7 @@
 import {
-  FormInputStory,
-  sharedForm,
-  sharedQuestion,
   FormInputStoryMeta,
+  DefaultFormInputStory,
+  ReadOnlyFormInputStory,
 } from './form-inputs.stories-shared';
 
 export default {
@@ -10,32 +9,23 @@ export default {
   title: 'Form/Inputs/Rating',
 };
 
-/**
- * Default inputs Rating
- */
-export const Rating: FormInputStory = {
-  args: {
-    title: 'Rating',
-  },
-  render: (args) => ({
-    props: {
-      form: {
-        ...sharedForm,
-        structure: JSON.stringify({
-          pages: [
-            {
-              name: 'page1',
-              elements: [
-                {
-                  type: 'rating',
-                  ...sharedQuestion(args),
-                },
-              ],
-            },
-          ],
-          showQuestionNumbers: 'off',
-        }),
-      },
-    },
-  }),
+/** Question name */
+const questionName = 'Rating question';
+
+/** Base question */
+const baseQuestion = {
+  type: 'rating',
 };
+
+/**
+ * Default story.
+ */
+export const Text = DefaultFormInputStory(questionName, baseQuestion);
+
+/**
+ * ReadOnly story.
+ */
+export const ReadOnly = ReadOnlyFormInputStory(questionName, {
+  ...baseQuestion,
+  defaultValue: 3,
+});

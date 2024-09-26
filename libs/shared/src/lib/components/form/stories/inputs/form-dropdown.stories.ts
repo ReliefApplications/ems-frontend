@@ -1,8 +1,7 @@
 import {
-  FormInputStory,
-  sharedForm,
-  sharedQuestion,
   FormInputStoryMeta,
+  DefaultFormInputStory,
+  ReadOnlyFormInputStory,
 } from './form-inputs.stories-shared';
 
 export default {
@@ -10,36 +9,24 @@ export default {
   title: 'Form/Inputs/Dropdown',
 };
 
-/**
- * Default inputs Dropdown
- */
-export const Dropdown: FormInputStory = {
-  args: {
-    title: 'Dropdown question',
-  },
-  render: (args) => {
-    return {
-      props: {
-        form: {
-          ...sharedForm,
-          structure: JSON.stringify({
-            pages: [
-              {
-                name: 'page1',
-                elements: [
-                  {
-                    type: 'dropdown',
-                    name: 'question1',
-                    ...sharedQuestion(args),
-                    choices: ['Item 1', 'Item 2', 'Item 3'],
-                  },
-                ],
-              },
-            ],
-            showQuestionNumbers: 'off',
-          }),
-        },
-      },
-    };
-  },
+/** Question name */
+const questionName = 'Dropdown question';
+
+/** Base question */
+const baseQuestion = {
+  type: 'dropdown',
+  choices: ['Item 1', 'Item 2', 'Item 3'],
 };
+
+/**
+ * Default story.
+ */
+export const Text = DefaultFormInputStory(questionName, baseQuestion);
+
+/**
+ * ReadOnly story.
+ */
+export const ReadOnly = ReadOnlyFormInputStory(questionName, {
+  ...baseQuestion,
+  defaultValue: 'Item 1',
+});

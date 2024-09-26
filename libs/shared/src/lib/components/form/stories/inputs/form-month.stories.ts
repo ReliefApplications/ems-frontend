@@ -1,8 +1,7 @@
 import {
-  FormInputStory,
-  sharedForm,
-  sharedQuestion,
   FormInputStoryMeta,
+  DefaultFormInputStory,
+  ReadOnlyFormInputStory,
 } from './form-inputs.stories-shared';
 
 export default {
@@ -10,36 +9,24 @@ export default {
   title: 'Form/Inputs/Month',
 };
 
-/**
- * Default inputs Month
- */
-export const Month: FormInputStory = {
-  args: {
-    title: 'Month question',
-  },
-  render: (args) => {
-    return {
-      props: {
-        form: {
-          ...sharedForm,
-          structure: JSON.stringify({
-            pages: [
-              {
-                name: 'page1',
-                elements: [
-                  {
-                    type: 'text',
-                    name: 'question1',
-                    inputType: 'month',
-                    ...sharedQuestion(args),
-                  },
-                ],
-              },
-            ],
-            showQuestionNumbers: 'off',
-          }),
-        },
-      },
-    };
-  },
+/** Question name */
+const questionName = 'Month question';
+
+/** Base question */
+const baseQuestion = {
+  type: 'text',
+  inputType: 'month',
 };
+
+/**
+ * Default story.
+ */
+export const Text = DefaultFormInputStory(questionName, baseQuestion);
+
+/**
+ * ReadOnly story.
+ */
+export const ReadOnly = ReadOnlyFormInputStory(questionName, {
+  ...baseQuestion,
+  defaultValue: '2024-06',
+});

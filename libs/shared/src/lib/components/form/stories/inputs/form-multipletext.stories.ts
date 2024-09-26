@@ -6,16 +6,23 @@ import {
 
 export default {
   ...FormInputStoryMeta,
-  title: 'Form/Inputs/Password',
+  title: 'Form/Inputs/Multiple Text',
 };
 
 /** Question name */
-const questionName = 'Password question';
+const questionName = 'Multiple Text question';
 
 /** Base question */
 const baseQuestion = {
-  type: 'text',
-  inputType: 'password',
+  type: 'multipletext',
+  items: [
+    {
+      name: 'text1',
+    },
+    {
+      name: 'text2',
+    },
+  ],
 };
 
 /**
@@ -28,5 +35,8 @@ export const Text = DefaultFormInputStory(questionName, baseQuestion);
  */
 export const ReadOnly = ReadOnlyFormInputStory(questionName, {
   ...baseQuestion,
-  defaultValue: 'Default text',
+  defaultValue: {
+    text1: 'Text one',
+    text2: 'Text two',
+  },
 });

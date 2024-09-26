@@ -1,32 +1,23 @@
 import {
   FormInputStoryMeta,
   DefaultFormInputStory,
-  ReadOnlyFormInputStory,
 } from './form-inputs.stories-shared';
 
 export default {
   ...FormInputStoryMeta,
-  title: 'Form/Inputs/Password',
+  title: 'Form/Inputs/HTML',
 };
 
 /** Question name */
-const questionName = 'Password question';
+const questionName = 'HTML question';
 
 /** Base question */
 const baseQuestion = {
-  type: 'text',
-  inputType: 'password',
+  type: 'html',
+  html: '<div><b>Text</b></div>',
 };
 
 /**
  * Default story.
  */
 export const Text = DefaultFormInputStory(questionName, baseQuestion);
-
-/**
- * ReadOnly story.
- */
-export const ReadOnly = ReadOnlyFormInputStory(questionName, {
-  ...baseQuestion,
-  defaultValue: 'Default text',
-});

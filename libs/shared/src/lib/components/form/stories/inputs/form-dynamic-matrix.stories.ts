@@ -1,8 +1,7 @@
 import {
-  FormInputStory,
-  sharedForm,
-  sharedQuestion,
   FormInputStoryMeta,
+  DefaultFormInputStory,
+  ReadOnlyFormInputStory,
 } from './form-inputs.stories-shared';
 
 export default {
@@ -10,47 +9,43 @@ export default {
   title: 'Form/Inputs/Dynamic Matrix',
 };
 
-/**
- * Default inputs Dynamic Matrix
- */
-export const DynamicMatrix: FormInputStory = {
-  args: {
-    title: 'Dynamic Matrix',
-  },
-  render: (args) => {
-    return {
-      props: {
-        form: {
-          ...sharedForm,
-          structure: JSON.stringify({
-            pages: [
-              {
-                name: 'page1',
-                elements: [
-                  {
-                    type: 'matrixdynamic',
-                    name: 'Dynamic-Select Matrix',
-                    columns: [
-                      {
-                        name: 'Column 1',
-                      },
-                      {
-                        name: 'Column 2',
-                      },
-                      {
-                        name: 'Column 3',
-                      },
-                    ],
-                    choices: [1, 2, 3, 4, 5],
-                    ...sharedQuestion(args),
-                  },
-                ],
-              },
-            ],
-            showQuestionNumbers: 'off',
-          }),
-        },
-      },
-    };
-  },
+/** Question name */
+const questionName = 'Dynamic Matrix question';
+
+/** Base question */
+const baseQuestion = {
+  type: 'matrixdynamic',
+  columns: [
+    {
+      name: 'Column 1',
+    },
+    {
+      name: 'Column 2',
+    },
+    {
+      name: 'Column 3',
+    },
+  ],
+  choices: [1, 2, 3, 4, 5],
 };
+
+/**
+ * Default story.
+ */
+export const Text = DefaultFormInputStory(questionName, baseQuestion);
+
+/**
+ * ReadOnly story.
+ */
+export const ReadOnly = ReadOnlyFormInputStory(questionName, {
+  ...baseQuestion,
+  defaultValue: [
+    {
+      'Column 1': 1,
+      'Column 3': 3,
+    },
+    {
+      'Column 2': 2,
+    },
+  ],
+});

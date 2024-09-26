@@ -6,16 +6,15 @@ import {
 
 export default {
   ...FormInputStoryMeta,
-  title: 'Form/Inputs/Password',
+  title: 'Form/Inputs/Comment',
 };
 
 /** Question name */
-const questionName = 'Password question';
+const questionName = 'Comment question';
 
 /** Base question */
 const baseQuestion = {
-  type: 'text',
-  inputType: 'password',
+  type: 'comment',
 };
 
 /**
@@ -28,5 +27,5 @@ export const Text = DefaultFormInputStory(questionName, baseQuestion);
  */
 export const ReadOnly = ReadOnlyFormInputStory(questionName, {
   ...baseQuestion,
-  defaultValue: 'Default text',
+  defaultValue: 'Long text',
 });
