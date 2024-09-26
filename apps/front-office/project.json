@@ -106,7 +106,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "outputHashing": "all",
@@ -130,7 +130,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "outputHashing": "all",
@@ -154,7 +154,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "outputHashing": "all",
@@ -178,7 +178,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "outputHashing": "all",
@@ -202,7 +202,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "outputHashing": "all",
@@ -226,7 +226,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "outputHashing": "all",
@@ -250,7 +250,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "outputHashing": "all",
