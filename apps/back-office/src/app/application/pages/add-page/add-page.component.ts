@@ -9,6 +9,7 @@ import {
   FormsQueryResponse,
   AddFormMutationResponse,
   DashboardService,
+  WidgetType,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
 import { ADD_FORM } from './graphql/mutations';
@@ -34,7 +35,7 @@ export class AddPageComponent extends UnsubscribeComponent implements OnInit {
   /** Available content types */
   public contentTypes = CONTENT_TYPES;
   /** Available widgets for addition */
-  public availableWidgets: any[] = [];
+  public availableWidgets: WidgetType[] = [];
   /** Forms query */
   public formsQuery!: QueryRef<FormsQueryResponse>;
   /** New page form */

@@ -4,7 +4,7 @@ import { SnackbarService } from '@oort-front/ui';
 import {
   Dashboard,
   EditDashboardMutationResponse,
-  WIDGET_TYPES_TOKEN,
+  WIDGET_TYPES,
 } from '../../models/dashboard.model';
 import {
   EditPageContextMutationResponse,
@@ -23,6 +23,8 @@ import { GraphQLError } from 'graphql';
   providedIn: 'root',
 })
 export class DashboardService {
+  /** Available widgets */
+  public availableWidgets = WIDGET_TYPES;
   /** If dashboard content should be updated and empty widgets hidden */
   public widgetContentRefreshed = new BehaviorSubject<any>(null);
   /** Shared property to keep track of current loaded dashboard widgets */
@@ -42,16 +44,14 @@ export class DashboardService {
    * @param apollo Apollo client
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
-   * @param availableWidgets List of available widgets
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private translate: TranslateService,
-    @Inject(WIDGET_TYPES_TOKEN) public availableWidgets: any[]
+    private translate: TranslateService
   ) {
-    this.availableWidgets = availableWidgets.filter((widget) =>
+    this.availableWidgets = this.availableWidgets.filter((widget) =>
       get(environment, 'availableWidgets', []).includes(widget.id)
     );
   }
@@ -84,21 +84,6 @@ export class DashboardService {
         })
       );
     }
-  }
-
-  /**
-   * Finds the settings component from the widget.
-   *
-   * @param widget widget to get settings of.
-   * @returns Widget settings template.
-   */
-  public findSettingsTemplate(widget: any): any {
-    const availableWidget = this.availableWidgets.find(
-      (x) => x.component === widget.component
-    );
-    return availableWidget && availableWidget.settingsTemplate
-      ? availableWidget.settingsTemplate
-      : null;
   }
 
   /**

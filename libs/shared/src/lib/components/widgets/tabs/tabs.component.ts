@@ -11,7 +11,6 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { takeUntil } from 'rxjs';
 import { DomPortal } from '@angular/cdk/portal';
 import { TabsComponent as UiTabsComponent } from '@oort-front/ui';
@@ -56,12 +55,10 @@ export class TabsComponent
    *
    * @param widgetComponent parent widget component ( optional )
    * @param dialog Dialog service
-   * @param dashboardService Shared dashboard service
    */
   constructor(
     @Optional() public widgetComponent: WidgetComponent,
-    private dialog: Dialog,
-    private dashboardService: DashboardService
+    private dialog: Dialog
   ) {
     super();
   }
@@ -93,7 +90,6 @@ export class TabsComponent
         disableClose: true,
         data: {
           widget: this.widget,
-          template: this.dashboardService.findSettingsTemplate(this.widget),
         },
       });
       dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {

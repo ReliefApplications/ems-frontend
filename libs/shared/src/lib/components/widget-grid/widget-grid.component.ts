@@ -28,6 +28,7 @@ import {
 import { cloneDeep, set } from 'lodash';
 import { ResizeObservable } from '../../utils/rxjs/resize-observable.util';
 import { ContextService } from '../../services/context/context.service';
+import { WidgetType } from '../../models/dashboard.model';
 
 /** Maximum height of the widget in row units when loading grid */
 const MAX_ROW_SPAN_LOADING = 4;
@@ -48,7 +49,7 @@ export class WidgetGridComponent
   implements OnInit, OnChanges, OnDestroy
 {
   /** Available widgets */
-  public availableWidgets: any[] = [];
+  public availableWidgets: WidgetType[] = [];
   /** Loading status */
   @Input() loading = false;
   /** Widgets */
@@ -388,7 +389,6 @@ export class WidgetGridComponent
           disableClose: true,
           data: {
             widget,
-            template: this.dashboardService.findSettingsTemplate(widget),
           },
         });
         dialogRef.closed
