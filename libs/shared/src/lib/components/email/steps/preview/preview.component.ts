@@ -282,7 +282,8 @@ export class PreviewComponent
             ]
           : [],
       };
-
+      this.query.emailLayout.subject =
+        this.emailService.allLayoutdata?.txtSubject;
       this.http
         .post(
           this.previewUrl,
