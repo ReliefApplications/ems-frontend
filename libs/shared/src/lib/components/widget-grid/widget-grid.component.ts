@@ -12,7 +12,6 @@ import {
   ViewChildren,
 } from '@angular/core';
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
-import { WIDGET_TYPES } from '../../models/dashboard.model';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { WidgetComponent } from '../widget/widget.component';
 import { Subject, Subscription, debounceTime, takeUntil } from 'rxjs';
@@ -49,7 +48,7 @@ export class WidgetGridComponent
   implements OnInit, OnChanges, OnDestroy
 {
   /** Available widgets */
-  public availableWidgets: any[] = WIDGET_TYPES;
+  public availableWidgets: any[] = [];
   /** Loading status */
   @Input() loading = false;
   /** Widgets */

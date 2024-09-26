@@ -6,7 +6,7 @@ import { MapSettingsComponent } from '../components/widgets/map-settings/map-set
 import { EditorSettingsComponent } from '../components/widgets/editor-settings/editor-settings.component';
 import { SummaryCardSettingsComponent } from '../components/widgets/summary-card-settings/summary-card-settings.component';
 import { TabsSettingsComponent } from '../components/widgets/tabs-settings/tabs-settings.component';
-import { EventEmitter } from '@angular/core';
+import { EventEmitter, InjectionToken } from '@angular/core';
 import { ButtonActionT } from '../components/button-action/button-action-type';
 
 /** Model for IWidgetType object */
@@ -241,6 +241,8 @@ export const WIDGET_TYPES = [
     settingsTemplate: TabsSettingsComponent,
   },
 ];
+
+export const WIDGET_TYPES_TOKEN = new InjectionToken('WIDGET_TYPES');
 
 /** Model for Dashboard object. */
 export interface Dashboard {

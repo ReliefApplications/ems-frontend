@@ -29,6 +29,8 @@ import {
   AppAbility,
   FormService,
   DatePipe,
+  WIDGET_TYPES_TOKEN,
+  WIDGET_TYPES,
 } from '@oort-front/shared';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
@@ -159,6 +161,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
     IconsService,
     DatePipe,
     { provide: OverlayContainer, useClass: FullscreenOverlayContainer },
+    { provide: WIDGET_TYPES_TOKEN, useValue: WIDGET_TYPES },
     // Sentry
     ...(environment.sentry
       ? [

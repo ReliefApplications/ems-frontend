@@ -4,11 +4,11 @@ import { FormBuilder, Validators } from '@angular/forms';
 import {
   ContentType,
   CONTENT_TYPES,
-  WIDGET_TYPES,
   ApplicationService,
   UnsubscribeComponent,
   FormsQueryResponse,
   AddFormMutationResponse,
+  DashboardService,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
 import { ADD_FORM } from './graphql/mutations';
@@ -34,7 +34,7 @@ export class AddPageComponent extends UnsubscribeComponent implements OnInit {
   /** Available content types */
   public contentTypes = CONTENT_TYPES;
   /** Available widgets for addition */
-  public availableWidgets: any[] = WIDGET_TYPES;
+  public availableWidgets: any[] = [];
   /** Forms query */
   public formsQuery!: QueryRef<FormsQueryResponse>;
   /** New page form */
@@ -55,6 +55,7 @@ export class AddPageComponent extends UnsubscribeComponent implements OnInit {
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     private fb: FormBuilder,
@@ -62,7 +63,8 @@ export class AddPageComponent extends UnsubscribeComponent implements OnInit {
     private applicationService: ApplicationService,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private dashboardService: DashboardService
   ) {
     super();
   }
@@ -89,13 +91,15 @@ export class AddPageComponent extends UnsubscribeComponent implements OnInit {
     });
 
     // Set the available widgets that can directly be added as single widget dashboard
-    this.availableWidgets = this.availableWidgets.filter((widget: any) => {
-      for (const wid of SINGLE_WIDGET_PAGE_TYPES) {
-        if (widget.id.includes(wid)) {
-          return widget;
+    this.availableWidgets = this.dashboardService.availableWidgets.filter(
+      (widget: any) => {
+        for (const wid of SINGLE_WIDGET_PAGE_TYPES) {
+          if (widget.id.includes(wid)) {
+            return widget;
+          }
         }
       }
-    });
+    );
   }
 
   /**

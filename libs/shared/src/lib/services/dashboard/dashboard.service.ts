@@ -4,7 +4,7 @@ import { SnackbarService } from '@oort-front/ui';
 import {
   Dashboard,
   EditDashboardMutationResponse,
-  WIDGET_TYPES,
+  WIDGET_TYPES_TOKEN,
 } from '../../models/dashboard.model';
 import {
   EditPageContextMutationResponse,
@@ -23,8 +23,6 @@ import { GraphQLError } from 'graphql';
   providedIn: 'root',
 })
 export class DashboardService {
-  /** List of available widgets */
-  public availableWidgets = WIDGET_TYPES;
   /** If dashboard content should be updated and empty widgets hidden */
   public widgetContentRefreshed = new BehaviorSubject<any>(null);
   /** Shared property to keep track of current loaded dashboard widgets */
@@ -44,14 +42,16 @@ export class DashboardService {
    * @param apollo Apollo client
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param availableWidgets List of available widgets
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    @Inject(WIDGET_TYPES_TOKEN) public availableWidgets: any[]
   ) {
-    this.availableWidgets = WIDGET_TYPES.filter((widget) =>
+    this.availableWidgets = availableWidgets.filter((widget) =>
       get(environment, 'availableWidgets', []).includes(widget.id)
     );
   }
