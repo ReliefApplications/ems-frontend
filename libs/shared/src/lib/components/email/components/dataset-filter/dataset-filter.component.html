@@ -59,24 +59,37 @@
           htmlFor="select__dataset"
           class="block text-sm font-medium leading-6 text-gray-900"
         >
-          {{query.get('dataType').value === 'Reference Data' ? 'Reference Data' : 'components.queryBuilder.dataset.title' | translate }}
+          {{
+            query.get('dataType').value === 'Reference Data'
+              ? 'Reference Data'
+              : ('components.queryBuilder.dataset.title' | translate)
+          }}
         </label>
         <!-- Reference Selection -->
-        <div uiFormFieldDirective class="flex-1" *ngIf="query.get('dataType').value === 'Reference Data'">
+        <div
+          uiFormFieldDirective
+          class="flex-1"
+          *ngIf="query.get('dataType').value === 'Reference Data'"
+        >
           <ui-select-menu
             id="reference"
             formControlName="reference"
-            class="w-full" (ngModelChange)="getSelectedRefernceData($event, true)"
+            class="w-full"
+            (ngModelChange)="getSelectedRefernceData($event, true)"
           >
             <ui-select-option
               *ngFor="let reference of refernceData"
-              [value]="reference?.id"              
+              [value]="reference?.id"
               >{{ reference?.name | titlecase }}</ui-select-option
             >
           </ui-select-menu>
         </div>
-        <!-- Resource selection -->        
-        <div uiFormFieldDirective class="flex-1" *ngIf="query.get('dataType').value === 'Resource'">
+        <!-- Resource selection -->
+        <div
+          uiFormFieldDirective
+          class="flex-1"
+          *ngIf="query.get('dataType').value === 'Resource'"
+        >
           <shared-resource-select
             formControlName="resource"
             [selectedElements]="[resource]"
@@ -97,7 +110,8 @@
       <div class="w-1/2 content-center text-center">
         <ui-checkbox
           formControlName="individualEmail"
-          [(ngModel)]="separateEmail">
+          [(ngModel)]="separateEmail"
+        >
           <ng-container ngProjectAs="label">{{
             'components.select.distribution.separateEmail' | translate
           }}</ng-container>
@@ -117,7 +131,11 @@
       [selectedIndex]="currentTabIndex"
       (selectedIndexChange)="onTabSelect($event, true)"
       #datasetPreview
-      *ngIf="(query.get('dataType').value === 'Resource' && resource?.fields?.length) || (refernceData.length > 0 && availableFields.length > 0)"
+      *ngIf="
+        (query.get('dataType').value === 'Resource' &&
+          resource?.fields?.length) ||
+        (refernceData.length > 0 && availableFields.length > 0)
+      "
     >
       <div class="mt-4 flex flex-row">
         <!-- Fields Tab -->
@@ -163,7 +181,13 @@
           </ng-template>
         </ui-tab>
         <!-- Filter Tab -->
-        <ui-tab [title]="'Filter'" [disabled]="this.query.get('resource').value === null || this.query.get('resource').value === ''">
+        <ui-tab
+          [title]="'Filter'"
+          [disabled]="
+            this.query.get('resource').value === null ||
+            this.query.get('resource').value === ''
+          "
+        >
           <ng-container ngProjectAs="label">
             {{ 'components.queryBuilder.filter.title' | translate }}
           </ng-container>
@@ -172,7 +196,12 @@
               class="mt-2"
               *ngTemplateOutlet="invalidFieldsAlertTmpl"
             ></ng-container>
-            <ng-container *ngIf="resource?.fields?.length  || (refernceData.length > 0 && availableFields.length > 0)">
+            <ng-container
+              *ngIf="
+                resource?.fields?.length ||
+                (refernceData.length > 0 && availableFields.length > 0)
+              "
+            >
               <ng-container
                 class="mt-2"
                 *ngTemplateOutlet="tooManyRecordsAlertTmpl"
@@ -184,15 +213,16 @@
                   <shared-tab-filter
                     [form]="$any(query.controls.query.get('filter'))"
                     [query]="query.controls.query.getRawValue()"
-                    [referenceFields]="query.get('dataType').value === 'Reference Data' ? availableFields : []"
+                    [referenceFields]="
+                      query.get('dataType').value === 'Reference Data'
+                        ? availableFields
+                        : []
+                    "
                   >
                   </shared-tab-filter>
                 </div>
               </div>
               <ui-button
-                *ngIf="
-                  tabs?.length === 1 || activeTab?.index === tabs?.length - 1
-                "
                 class="float-right mt-8"
                 category="secondary"
                 variant="primary"
