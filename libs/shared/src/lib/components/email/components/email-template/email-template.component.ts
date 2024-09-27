@@ -312,16 +312,16 @@ export class EmailTemplateComponent
    * @param value form value
    */
   clearUnusedValues(value: string) {
-    if (value === 'Add Manually') {
+    if (value === 'Add Manually' && this.dlQuery) {
       const fields = this.dlQuery?.get('fields') as FormArray;
-      fields.clear();
+      fields?.clear();
 
       const filter = this.dlQuery?.get('filter') as FormGroup;
-      const filters = filter.get('filters') as FormArray;
-      filters.clear();
+      const filters = filter?.get('filters') as FormArray;
+      filters?.clear();
 
-      this.distributionList.get('resource').setValue('');
-      this.dlQuery.get('name').setValue('');
+      this.distributionList.get('resource')?.setValue('');
+      this.dlQuery?.get('name')?.setValue('');
       this.resource = null;
       this.emailService.isToValidCheck();
     } else if (value === 'Select With Filter') {
