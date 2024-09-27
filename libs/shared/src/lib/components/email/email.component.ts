@@ -449,6 +449,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     isClone?: boolean,
     isSendEmail?: boolean
   ) {
+    this.emailService.isQuickAction = false
     this.emailService.isDLNameDuplicate = false;
     this.emailService.emailListLoading = true;
     this.emailService.enableAllSteps.next(true);

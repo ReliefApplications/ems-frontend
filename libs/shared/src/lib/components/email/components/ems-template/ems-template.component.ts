@@ -301,55 +301,7 @@ export class EmsTemplateComponent
       this.currentStep += 1;
       this.steps[4].disabled = false;
     } else if (this.currentStep === 4) {
-      if (
-        !(this.emailService.allLayoutdata.headerLogo instanceof File) &&
-        this.emailService.allLayoutdata.headerLogo
-      ) {
-        this.emailService.allLayoutdata.headerLogo =
-          this.emailService.convertBase64ToFile(
-            this.emailService.allLayoutdata.headerLogo,
-            'image.png',
-            'image/png'
-          );
-      }
-      if (
-        !(this.emailService.allLayoutdata.bannerImage instanceof File) &&
-        this.emailService.allLayoutdata.bannerImage
-      ) {
-        this.emailService.allLayoutdata.bannerImage =
-          this.emailService.convertBase64ToFile(
-            this.emailService.allLayoutdata.bannerImage,
-            'image.png',
-            'image/png'
-          );
-      }
-      if (
-        !(this.emailService.allLayoutdata.footerLogo instanceof File) &&
-        this.emailService.allLayoutdata.footerLogo
-      ) {
-        this.emailService.allLayoutdata.footerLogo =
-          this.emailService.convertBase64ToFile(
-            this.emailService.allLayoutdata.footerLogo,
-            'image.png',
-            'image/png'
-          );
-      }
-      this.layout.getColors();
-      this.emailService.allLayoutdata.txtSubject =
-        this.layout.layoutForm.get('subjectInput')?.value;
-      this.emailService.allLayoutdata.bodyHtml =
-        this.layout.layoutForm.get('body')?.value;
-      this.emailService.allLayoutdata.headerHtml =
-        this.layout.layoutForm.get('header')?.value;
-      this.emailService
-        .patchEmailLayout()
-        .then(async () => {
-          this.currentStep += 1;
-          this.steps[5].disabled = false;
-        })
-        .catch((err) => {
-          throw new Error(err);
-        });
+      this.showPreview();
     } else {
       this.currentStep += 1;
     }
@@ -1082,5 +1034,75 @@ export class EmsTemplateComponent
       }
       return step;
     });
+  }
+
+  /**
+   * Get stepper change event
+   *
+   * @param e stepper change event
+   */
+  currentStepChange(e: number) {
+    console.log(e);
+    if (e === 5) {
+      this.showPreview();
+    }
+  }
+
+  /**
+   * Move to Preivew screen with All layout data
+   */
+  showPreview() {
+    if (
+      !(this.emailService.allLayoutdata.headerLogo instanceof File) &&
+      this.emailService.allLayoutdata.headerLogo
+    ) {
+      this.emailService.allLayoutdata.headerLogo =
+        this.emailService.convertBase64ToFile(
+          this.emailService.allLayoutdata.headerLogo,
+          'image.png',
+          'image/png'
+        );
+    }
+    if (
+      !(this.emailService.allLayoutdata.bannerImage instanceof File) &&
+      this.emailService.allLayoutdata.bannerImage
+    ) {
+      this.emailService.allLayoutdata.bannerImage =
+        this.emailService.convertBase64ToFile(
+          this.emailService.allLayoutdata.bannerImage,
+          'image.png',
+          'image/png'
+        );
+    }
+    if (
+      !(this.emailService.allLayoutdata.footerLogo instanceof File) &&
+      this.emailService.allLayoutdata.footerLogo
+    ) {
+      this.emailService.allLayoutdata.footerLogo =
+        this.emailService.convertBase64ToFile(
+          this.emailService.allLayoutdata.footerLogo,
+          'image.png',
+          'image/png'
+        );
+    }
+    this.layout.getColors();
+    this.emailService.allLayoutdata.txtSubject =
+      this.layout.layoutForm.get('subjectInput')?.value;
+    this.emailService.allLayoutdata.bodyHtml =
+      this.layout.layoutForm.get('body')?.value;
+    this.emailService.allLayoutdata.headerHtml =
+      this.layout.layoutForm.get('header')?.value;
+    this.currentStep = this.currentStep == 5 ? 4 : this.currentStep;
+    if (this.currentStep == 4) {
+      this.emailService
+        .patchEmailLayout()
+        .then(async () => {
+          this.currentStep += 1;
+          this.steps[5].disabled = false;
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
+    }
   }
 }

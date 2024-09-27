@@ -253,7 +253,12 @@ export class PreviewComponent
    */
   async loadFinalEmailPreview(): Promise<void> {
     const previewData: any = this.emailService.allPreviewData?.[0];
-    if (!this.emailService.datasetsForm.value.emailLayout) {
+    console.log(this.emailService.datasetsForm.value.emailLayout);
+    if (
+      this.emailService.datasetsForm.value.emailLayout !== null &&
+      this.emailService.datasetsForm.value.emailLayout !== undefined &&
+      !this.emailService.datasetsForm.value.emailLayout
+    ) {
       this.emailService.isQuickAction = true;
     }
     this.previewUrl = this.emailService.isQuickAction
@@ -282,8 +287,8 @@ export class PreviewComponent
             ]
           : [],
       };
-      this.query.emailLayout.subject =
-        this.emailService.allLayoutdata?.txtSubject;
+      // this.query.emailLayout.subject =
+      //   this.emailService.allLayoutdata?.txtSubject;
       this.http
         .post(
           this.previewUrl,
