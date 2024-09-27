@@ -175,10 +175,13 @@ export class SelectDistributionComponent
       let datasetsCount = 0;
       for (const dataset of this.emailService.datasetsForm.get('datasets')
         ?.value ?? []) {
-        if (dataset.resource && dataset.individualEmail) {
+        if (
+          (dataset.resource || dataset.reference) &&
+          dataset.individualEmail
+        ) {
           datasetsCount += 1;
           separateEmailCount += 1;
-        } else if (dataset.resource) {
+        } else if (dataset.resource || dataset.reference) {
           datasetsCount += 1;
         }
       }
