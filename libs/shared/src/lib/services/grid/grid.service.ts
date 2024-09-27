@@ -203,6 +203,8 @@ export class GridService {
               },
               subFields,
               canSee: true,
+              displayField: f.displayField,
+              separator: f.separator,
             };
           }
           default: {

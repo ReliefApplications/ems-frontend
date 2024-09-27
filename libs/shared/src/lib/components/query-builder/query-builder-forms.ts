@@ -54,6 +54,8 @@ export const addNewField = (field: any, newField?: boolean) => {
         name: [{ value: field.name, disabled: true }],
         label: [field.label],
         width: [newField ? null : field.width],
+        displayField: [field.displayField],
+        separator: [field.separator ? field.separator : ';'],
         type: [newField ? field.type.ofType.name : field.type],
         kind: [newField ? field.type.kind : field.kind],
         fields: formBuilder.array(
