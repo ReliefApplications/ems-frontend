@@ -92,6 +92,8 @@ export class EmailService {
   public showExistingDistributionList = false;
   /** Distribution list data */
   public emailDistributionList: any = [];
+  /** Quick send email  DL query list data */
+  public quickEmailDLQuery: any = [];
   /** Initial tab value */
   public initialTabValue = {
     title: `Block 1`,

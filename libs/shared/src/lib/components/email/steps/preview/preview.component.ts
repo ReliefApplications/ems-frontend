@@ -18,6 +18,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
 import { FormArray } from '@angular/forms';
+import { cloneDeep } from 'lodash';
 /**
  * The preview component is used to display the email layout using user input from layout component.
  */
@@ -74,11 +75,11 @@ export class PreviewComponent
   /** Distribution List Send Separate */
   distributionListSeparate: any = [];
   /** Distribution List To */
-  distributionListTo: string[] = [];
+  distributionListTo: any[] = [];
   /** Distribution List Cc */
-  distributionListCc: string[] = [];
+  distributionListCc: any[] = [];
   /** Distribution List Bcc */
-  distributionListBcc: string[] = [];
+  distributionListBcc: any[] = [];
   /** Refernce to Subject */
   @ViewChild('subjectHtmlRef') subjectHtmlRef: any;
   /** Refernce to Subject */
@@ -151,9 +152,20 @@ export class PreviewComponent
         control.removeControl('cacheData');
       }
     });
-    const toData = this.emailService.emailDistributionList?.to;
-    const ccData = this.emailService.emailDistributionList?.cc;
-    const bccData = this.emailService.emailDistributionList?.bcc;
+
+    if (
+      this.emailService.isQuickAction &&
+      this.emailService.quickEmailDLQuery?.length === 0
+    ) {
+      const toData = this.emailService.emailDistributionList?.to;
+      const ccData = this.emailService.emailDistributionList?.cc;
+      const bccData = this.emailService.emailDistributionList?.bcc;
+      this.emailService.quickEmailDLQuery = { to: [], cc: [], bcc: [] };
+      this.emailService.quickEmailDLQuery.to = cloneDeep(toData);
+      this.emailService.quickEmailDLQuery.cc = cloneDeep(ccData);
+      this.emailService.quickEmailDLQuery.bcc = cloneDeep(bccData);
+    }
+
     if (this.emailService.isQuickAction) {
       this.populateDLForm();
     }
@@ -169,9 +181,12 @@ export class PreviewComponent
       ?.get('emailDistributionList')
       ?.getRawValue();
     if (this.emailService.isQuickAction) {
-      this.query.emailDistributionList.to = toData;
-      this.query.emailDistributionList.cc = ccData;
-      this.query.emailDistributionList.bcc = bccData;
+      this.query.emailDistributionList.to =
+        this.emailService.quickEmailDLQuery.to;
+      this.query.emailDistributionList.cc =
+        this.emailService.quickEmailDLQuery.cc;
+      this.query.emailDistributionList.bcc =
+        this.emailService.quickEmailDLQuery.bcc;
     }
     this.loadDistributionList();
     this.loadFinalEmailPreview();
@@ -184,12 +199,17 @@ export class PreviewComponent
     if (this.emailService.isQuickAction) {
       const { to, cc, bcc } = this.emailService.emailDistributionList; //this.emailService.customLayoutDL;
 
-      const uniqueTo = [...new Set(to?.inputEmails)];
-      const uniqueCc = [...new Set(cc?.inputEmails)];
-      const uniqueBcc = [...new Set(bcc?.inputEmails)];
+      const uniqueTo: any = [...new Set(to?.inputEmails ?? to)];
+      const uniqueCc: any = [...new Set(cc?.inputEmails ?? cc)];
+      const uniqueBcc: any = [...new Set(bcc?.inputEmails ?? bcc)];
+
       this.emailService.emailDistributionList.to = uniqueTo;
       this.emailService.emailDistributionList.cc = uniqueCc;
       this.emailService.emailDistributionList.bcc = uniqueBcc;
+
+      this.distributionListTo = this.emailService.emailDistributionList.to;
+      this.distributionListCc = this.emailService.emailDistributionList.cc;
+      this.distributionListBcc = this.emailService.emailDistributionList.bcc;
 
       this.emailService.populateEmails(
         this.emailService.emailDistributionList.to,
@@ -230,9 +250,38 @@ export class PreviewComponent
       )
       .subscribe(
         (response: any) => {
-          this.distributionListTo = response?.to;
-          this.distributionListCc = response?.cc;
-          this.distributionListBcc = response?.bcc;
+          if (
+            this.query.emailDistributionList.to?.resource?.trim() !== '' ||
+            this.query.emailDistributionList.cc?.resource.trim() !== '' ||
+            this.query.emailDistributionList.bcc?.resource?.trim() !== ''
+          ) {
+            this.distributionListTo = [
+              ...new Set(
+                response?.to.concat(this.emailService.emailDistributionList.to)
+              ),
+            ];
+
+            this.distributionListCc = [
+              ...new Set(
+                response?.cc.concat(this.emailService.emailDistributionList.cc)
+              ),
+            ];
+
+            this.distributionListBcc = [
+              ...new Set(
+                response?.bcc.concat(
+                  this.emailService.emailDistributionList.bcc
+                )
+              ),
+            ];
+            this.emailService.emailDistributionList.to =
+              this.distributionListTo;
+            this.emailService.emailDistributionList.cc =
+              this.distributionListCc;
+            this.emailService.emailDistributionList.bcc =
+              this.distributionListBcc;
+          }
+
           this.distributionListSeparate = response?.individualEmailList;
           this.distributionListSeparate?.forEach((block: any) => {
             block.isExpanded = false;
@@ -260,6 +309,7 @@ export class PreviewComponent
       !this.emailService.datasetsForm.value.emailLayout
     ) {
       this.emailService.isQuickAction = true;
+      this.emailService.quickEmailDLQuery = [];
     }
     this.previewUrl = this.emailService.isQuickAction
       ? `${this.restService.apiUrl}/notification/preview-quick-email`
