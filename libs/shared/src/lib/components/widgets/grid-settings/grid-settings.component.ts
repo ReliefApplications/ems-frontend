@@ -82,9 +82,10 @@ export class GridSettingsComponent
 
   /**
    *Distribution list
+   * @param appId application id
    */
-  distributionListsData() {
-    this.emailService.getEmailDistributionList().subscribe((res: any) => {
+  distributionListsData(appId?: string) {
+    this.emailService.getEmailDistributionList(appId).subscribe((res: any) => {
       if (res.data?.emailDistributionLists?.edges) {
         const distributionList = res.data.emailDistributionLists.edges.map(
           (e: any) => e.node
@@ -130,6 +131,13 @@ export class GridSettingsComponent
   }
 
   ngOnInit(): void {
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
+        if (application) {
+          this.distributionListsData(application?.id);
+        }
+      });
     if (!this.widgetFormGroup) {
       this.buildSettingsForm();
     }
@@ -429,7 +437,6 @@ export class GridSettingsComponent
       this.widget.id,
       this.widget.settings
     );
-    this.distributionListsData();
     this.emailTemplateData();
   }
 }
