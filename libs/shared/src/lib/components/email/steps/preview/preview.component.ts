@@ -252,25 +252,32 @@ export class PreviewComponent
         (response: any) => {
           if (
             this.query.emailDistributionList.to?.resource?.trim() !== '' ||
-            this.query.emailDistributionList.cc?.resource.trim() !== '' ||
+            this.query.emailDistributionList.cc?.resource?.trim() !== '' ||
             this.query.emailDistributionList.bcc?.resource?.trim() !== ''
           ) {
             this.distributionListTo = [
               ...new Set(
-                response?.to.concat(this.emailService.emailDistributionList.to)
+                response?.to.concat(
+                  this.emailService.emailDistributionList.to?.inputEmails ??
+                    this.emailService.emailDistributionList.to
+                )
               ),
             ];
 
             this.distributionListCc = [
               ...new Set(
-                response?.cc.concat(this.emailService.emailDistributionList.cc)
+                response?.cc.concat(
+                  this.emailService.emailDistributionList.cc?.inputEmails ??
+                    this.emailService.emailDistributionList.cc
+                )
               ),
             ];
 
             this.distributionListBcc = [
               ...new Set(
                 response?.bcc.concat(
-                  this.emailService.emailDistributionList.bcc
+                  this.emailService.emailDistributionList.bcc?.inputEmails ??
+                    this.emailService.emailDistributionList.bcc
                 )
               ),
             ];
