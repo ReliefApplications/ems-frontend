@@ -840,6 +840,7 @@
 				"noResourceFields": "Selected resource doesn't contain any fields",
 				"noSelectedFields": "Please select at least 1 field to save this dataset",
 				"selectChildFields": "You have selected an Object/list field. Select atleast one child field to proceed further and/or preview.",
+				"selectedNonEmailFields": "The selected field is not configured as an email field. Do you want to proceed?",
 				"subscribeExists": "Error! {{message}}",
 				"subscribeFailed": "Oops!... Something went wrong whilst subscribing. {{errorMessage}}",
 				"subscribeSuccess": "Success! {{message}}",

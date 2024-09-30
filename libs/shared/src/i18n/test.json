@@ -840,6 +840,7 @@
 				"noResourceFields": "******",
 				"noSelectedFields": "******",
 				"selectChildFields": "******",
+				"selectedNonEmailFields": "******",
 				"subscribeExists": "****** {{message}}",
 				"subscribeFailed": "****** {{errorMessage}}",
 				"subscribeSuccess": "****** {{message}}",

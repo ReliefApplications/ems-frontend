@@ -201,6 +201,8 @@ export class EmailTemplateComponent
   public dataTypeList: any = ['Resource', 'Reference Data'];
   /** List of Reference  types */
   public refernceData: any = [];
+  /** Show NonEmail Fields Alert */
+  public nonEmailFieldsAlert = false;
 
   /**
    * Composite filter group.
@@ -571,6 +573,14 @@ export class EmailTemplateComponent
           };
           field.patchValue(updatedField);
         }
+        if (
+          !this.nonEmailFieldsAlert &&
+          this.selectedFields?.length !==
+            this.distributionList.controls.query.get('fields')?.value.length &&
+          tempMatchedData.type.name?.toLowerCase()?.trim() !== 'email'
+        ) {
+          this.nonEmailFieldsAlert = true;
+        }
       }
     });
 
@@ -738,6 +748,9 @@ export class EmailTemplateComponent
                 // False if returned emails are not correct
                 this.emailService.isToValid = false;
               }
+            }
+            if (response?.to?.length === 0) {
+              this.emailService.isToValid = true;
             }
             this.emailService.validateNextButton();
           } else if (this.type === 'cc' || this.type === 'bcc') {
@@ -1179,5 +1192,12 @@ export class EmailTemplateComponent
         return 'text';
         break;
     }
+  }
+
+  /**
+   * Resets the state `nonemailfields` when the close button is clicked.
+   */
+  closenonEmailFieldsAlert(): void {
+    this.nonEmailFieldsAlert = false;
   }
 }

@@ -840,6 +840,7 @@
 				"noResourceFields": "La ressource sélectionnée ne contient aucun champ",
 				"noSelectedFields": "Veuillez sélectionner au moins 1 champ pour sauvegarder ce jeu de données",
 				"selectChildFields": "Vous avez sélectionné un champ Objet/liste. Sélectionnez au moins un champ enfant pour continuer.",
+				"selectedNonEmailFields": "Le champ sélectionné n'est pas configuré comme champ de courrier électronique. Voulez-vous continuer ?",
 				"subscribeExists": "Erreur! \n{{message}}",
 				"subscribeFailed": "Oups!... Une erreur s'est produite lors de l'abonnement. \n{{Message d'erreur}}",
 				"subscribeSuccess": "Succès! \nAbonné à la notification par e-mail: {{email}}.",
