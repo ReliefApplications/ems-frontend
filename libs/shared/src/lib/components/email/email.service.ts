@@ -368,7 +368,7 @@ export class EmailService {
               query
             )
             .toPromise()
-            .then((response: any) => {
+            .then(() => {
               resolve(true);
             })
             .catch(() => {
