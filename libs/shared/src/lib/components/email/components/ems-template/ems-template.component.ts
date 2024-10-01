@@ -292,10 +292,6 @@ export class EmsTemplateComponent
         this.steps[3].disabled = false;
       } else {
         this.emailService.disableSaveAndProceed.next(true);
-        // this.snackBar.openSnackBar(
-        //   this.translate.instant('components.email.error.invalidToValue'),
-        //   { error: true }
-        // );
       }
     } else if (this.currentStep === 3) {
       this.currentStep += 1;
