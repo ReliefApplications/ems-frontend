@@ -573,14 +573,15 @@ export class EmailTemplateComponent
           };
           field.patchValue(updatedField);
         }
-        if (
-          !this.nonEmailFieldsAlert &&
-          this.selectedFields?.length !==
-            this.distributionList.controls.query.get('fields')?.value.length &&
-          tempMatchedData.type.name?.toLowerCase()?.trim() !== 'email'
-        ) {
-          this.nonEmailFieldsAlert = true;
-        }
+        // if (
+        //   this.selectedFields?.length > 0 &&
+        //   !this.nonEmailFieldsAlert &&
+        //   this.selectedFields?.length !==
+        //     this.distributionList.controls.query.get('fields')?.value.length &&
+        //   tempMatchedData.type.name?.toLowerCase()?.trim() !== 'email'
+        // ) {
+        //   this.nonEmailFieldsAlert = true;
+        // }
       }
     });
 
@@ -1199,5 +1200,19 @@ export class EmailTemplateComponent
    */
   closenonEmailFieldsAlert(): void {
     this.nonEmailFieldsAlert = false;
+  }
+
+  /**
+   * Emitted event from the tab-fields component
+   *
+   * @param event - emitted data
+   */
+  setNonEmailFields(event: any) {
+    if (
+      !this.nonEmailFieldsAlert &&
+      event?.type?.name?.toLowerCase()?.trim() !== 'email'
+    ) {
+      this.nonEmailFieldsAlert = true;
+    }
   }
 }

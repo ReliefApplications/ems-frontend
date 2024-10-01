@@ -369,7 +369,7 @@ export class EmailService {
             )
             .toPromise()
             .then((response: any) => {
-              resolve(response?.to.length > 0);
+              resolve(true);
             })
             .catch(() => {
               resolve(false);

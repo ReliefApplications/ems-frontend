@@ -5,9 +5,11 @@ import {
 } from '@angular/cdk/drag-drop';
 import {
   Component,
+  EventEmitter,
   Input,
   OnChanges,
   OnInit,
+  Output,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
@@ -52,6 +54,10 @@ export class TabFieldsComponent implements OnInit, OnChanges {
   public searchSelected = '';
   /** Tinymce editor configuration */
   public editor: any = INLINE_EDITOR_CONFIG;
+  /**
+   *Event emitted for the selected fields
+   */
+  @Output() droppedFields = new EventEmitter();
 
   /**
    * Component used for the selection of fields to display the fields in tabs.
@@ -156,6 +162,9 @@ export class TabFieldsComponent implements OnInit, OnChanges {
           this.searchAvailable,
           event.previousIndex
         );
+        if (index > -1) {
+          this.droppedFields.emit(this.availableFields[index]);
+        }
         // Move to selected fields
         transferArrayItem(
           event.previousContainer.data,

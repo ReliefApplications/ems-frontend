@@ -261,9 +261,7 @@
     (close)="closenonEmailFieldsAlert()"
   >
     <div
-      [innerHTML]="
-        'components.email.alert.selectedNonEmailFields'
-          | translate"
+      [innerHTML]="'components.email.alert.selectedNonEmailFields'| translate"
     ></div>
   </ui-alert>
 </ng-template>
@@ -351,6 +349,7 @@
                   [showLimit]="false"
                   [showColumnWidth]="false"
                   [isDisable]="isDisable"
+                  (droppedFields)="setNonEmailFields($event)"
                 ></shared-tab-fields>
               </div>
             </div>
@@ -420,7 +419,7 @@
               class="mt-2"
               *ngTemplateOutlet="showDLPreview"
             ></ng-container>
-            <div id="tblPreview" #tblPreview [innerHTML]="previewHTML"></div>
+            <div id="tblPreview" class="previewScroll" #tblPreview [innerHTML]="previewHTML"></div>
           </ng-template>
         </ui-tab>
       </div>
