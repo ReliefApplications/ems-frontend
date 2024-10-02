@@ -42,7 +42,7 @@ interface DialogData {
 }
 
 /**
- * Component used to display a modal to modify a record
+ *  Modal to display a record ( read-only mode ).
  */
 @Component({
   standalone: true,
@@ -67,7 +67,6 @@ export class RecordModalComponent
   extends UnsubscribeComponent
   implements AfterViewInit, OnDestroy
 {
-  // === DATA ===
   /** Loading state */
   public loading = true;
   /** Form */
@@ -93,8 +92,7 @@ export class RecordModalComponent
   public selectedPageIndex$ = this.selectedPageIndex.asObservable();
 
   /**
-   * The constructor function is a special function that is called when a new instance of the class is
-   * created.
+   * Modal to view a record ( read-only mode ).
    *
    * @param dialogRef This is the reference to the dialog that is being opened.
    * @param data This is the data that is passed to the modal when it is opened.
@@ -141,11 +139,12 @@ export class RecordModalComponent
       );
     }
 
+    // Skip data fetch is record is temporary
     if (this.data.isTemporary) {
       this.modifiedAt = new Date();
       this.record = { data: this.data.temporaryRecordData };
     }
-    // Fetch record data
+    // Else, fetch record data
     else {
       promises.push(
         firstValueFrom(
@@ -153,6 +152,7 @@ export class RecordModalComponent
             query: GET_RECORD_BY_ID,
             variables: {
               id: this.data.recordId,
+              getForm: !this.data.template,
             },
           })
         ).then(({ data }) => {
@@ -165,7 +165,8 @@ export class RecordModalComponent
       );
     }
     await Promise.all(promises);
-    // INIT SURVEY
+
+    // Initialize survey
     this.initSurvey();
   }
 

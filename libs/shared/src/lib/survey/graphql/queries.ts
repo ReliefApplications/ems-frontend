@@ -22,7 +22,6 @@ export const GET_ROLES_FROM_APPLICATION = gql`
   }
 `;
 
-// === GET RESOURCE BY ID ===
 /** Graphql request for getting data of a resource by its id */
 export const GET_RESOURCE_BY_ID = gql`
   query GetResourceById($id: ID!, $filter: JSON, $display: Boolean) {
@@ -48,9 +47,14 @@ export const GET_RESOURCE_BY_ID = gql`
   }
 `;
 
-/** Get short resource graphql query definition */
-export const GET_SHORT_RESOURCE_BY_ID = gql`
-  query GetShortResourceById($id: ID!) {
+/**
+ * Get short resource graphql query definition
+ *
+ * @param graphQlIdentifier GraphQL identifier
+ * @returns GraphQL query
+ */
+export const GET_SHORT_RESOURCE_BY_ID = (graphQlIdentifier: string) => gql`
+  query ${graphQlIdentifier}_GetShortResourceById($id: ID!) {
     resource(id: $id) {
       id
       name
@@ -70,7 +74,19 @@ export const GET_SHORT_RESOURCE_BY_ID = gql`
   }
 `;
 
-// === UPDATE RECORD ===
+/**
+ * Get resource name
+ *
+ * @param graphQlIdentifier Graphql identifier
+ * @returns Graphql query
+ */
+export const GET_RESOURCE_NAME = (graphQlIdentifier: string) => gql`
+query ${graphQlIdentifier}_GetShortResourceById($id: ID!) {
+  resource(id: $id) {
+    id
+    name
+  }
+}`;
 
 /** Graphql request for updating a record */
 export const UPDATE_RECORD = gql`

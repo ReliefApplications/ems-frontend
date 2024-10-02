@@ -33,6 +33,9 @@ import {
 } from '@progress/kendo-data-query';
 import { firstValueFrom } from 'rxjs';
 
+/** Identifier for GraphQl requests */
+const GRAPHQL_IDENTIFIER = 'ResourceQuestion';
+
 /**
  * Get the updated filter for the question, with values included.
  *
@@ -163,7 +166,7 @@ export const init = (
 
   const getResourceById = (data: { id: string }) =>
     apollo.query<ResourceQueryResponse>({
-      query: GET_SHORT_RESOURCE_BY_ID,
+      query: GET_SHORT_RESOURCE_BY_ID(GRAPHQL_IDENTIFIER),
       variables: {
         id: data.id,
       },

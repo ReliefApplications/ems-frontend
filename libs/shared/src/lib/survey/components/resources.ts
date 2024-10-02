@@ -3,6 +3,7 @@ import {
   GET_SHORT_RESOURCE_BY_ID,
   GET_RESOURCE_BY_ID,
   UPDATE_RECORD,
+  GET_RESOURCE_NAME,
 } from '../graphql/queries';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { UntypedFormGroup } from '@angular/forms';
@@ -43,6 +44,9 @@ export const resourceConditions = [
   { value: '<=', text: 'less or equals' },
 ];
 
+/** Identifier for GraphQl requests */
+const GRAPHQL_IDENTIFIER = 'ResourcesQuestion';
+
 /**
  * Inits the resources question component for survey.
  *
@@ -63,9 +67,17 @@ export const init = (
 
   const getResourceById = (data: { id: string }) =>
     apollo.query<ResourceQueryResponse>({
-      query: GET_SHORT_RESOURCE_BY_ID,
+      query: GET_SHORT_RESOURCE_BY_ID(GRAPHQL_IDENTIFIER),
       variables: {
         id: data.id,
+      },
+    });
+
+  const getResourceName = (id: string) =>
+    apollo.query<ResourceQueryResponse>({
+      query: GET_RESOURCE_NAME(GRAPHQL_IDENTIFIER),
+      variables: {
+        id,
       },
     });
 
@@ -544,7 +556,7 @@ export const init = (
             this.populateChoices(question);
           }
         }
-        getResourceById({ id: question.resource }).subscribe(({ data }) => {
+        getResourceName(question.resource).subscribe(({ data }) => {
           // const choices = mapQuestionChoices(data, question);
           // question.contentQuestion.choices = choices;
           if (!question.placeholder) {

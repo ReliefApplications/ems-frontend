@@ -1,10 +1,28 @@
 import { gql } from 'apollo-angular';
 
-// === GET RECORD BY ID ===
+/** Identifier for GraphQl requests */
+const GRAPHQL_IDENTIFIER = 'RecordModal';
+
+/** GraphQl form fields for record modal queries */
+export const FORM_FIELDS = gql`
+  fragment FormFields on Form {
+    id
+    structure
+    metadata {
+      name
+      automated
+      canSee
+      canUpdate
+    }
+  }
+`;
 
 /** Graphql request for getting a record by its id */
 export const GET_RECORD_BY_ID = gql`
-  query GetRecordById($id: ID!) {
+  query ${GRAPHQL_IDENTIFIER}_GetRecordById(
+    $id: ID!
+    $getForm: Boolean!
+  ) {
     record(id: $id) {
       id
       data
@@ -16,38 +34,20 @@ export const GET_RECORD_BY_ID = gql`
       modifiedBy {
         name
       }
-      form {
-        id
-        structure
-        permissions {
-          recordsUnicity
-        }
-        fields
-        metadata {
-          name
-          automated
-          canSee
-          canUpdate
-        }
+      form @include(if: $getForm) {
+        ...FormFields
       }
     }
   }
+  ${FORM_FIELDS}
 `;
-
-// === GET FORM BY ID ===
 
 /** Graphql request for getting the form structure by its id */
 export const GET_FORM_STRUCTURE = gql`
-  query GetFormById($id: ID!) {
+  query ${GRAPHQL_IDENTIFIER}_GetFormById($id: ID!) {
     form(id: $id) {
-      id
-      structure
-      metadata {
-        name
-        automated
-        canSee
-        canUpdate
-      }
+      ...FormFields
     }
   }
+  ${FORM_FIELDS}
 `;

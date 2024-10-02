@@ -74,7 +74,7 @@ interface DialogData {
 const DEFAULT_DIALOG_DATA = { askForConfirm: true };
 
 /**
- * Display a form instance in a modal.
+ * Modal to edit or add a record.
  */
 @Component({
   standalone: true,
@@ -139,7 +139,7 @@ export class FormModalComponent
   private uploadedRecords = false;
 
   /**
-   * Display a form instance in a modal.
+   * Modal to edit or add a record.
    *
    * @param data This is the data that is passed to the modal when it is opened.
    * @param dialog This is the Angular Dialog service.
@@ -177,6 +177,7 @@ export class FormModalComponent
     this.isMultiEdition = Array.isArray(this.data.recordId);
     const promises: Promise<FormQueryResponse | RecordQueryResponse | void>[] =
       [];
+    // Fetch record data if record id provided
     if (this.data.recordId) {
       const id = this.isMultiEdition
         ? this.data.recordId[0]
@@ -187,6 +188,7 @@ export class FormModalComponent
             query: GET_RECORD_BY_ID,
             variables: {
               id,
+              getForm: !this.data.template,
             },
           })
         ).then(({ data }) => {
@@ -200,6 +202,7 @@ export class FormModalComponent
         })
       );
     }
+    // Fetch form if no record id provided or specific template provided
     if (!this.data.recordId || this.data.template) {
       promises.push(
         firstValueFrom(
