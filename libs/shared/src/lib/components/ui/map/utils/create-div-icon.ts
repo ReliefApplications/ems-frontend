@@ -128,6 +128,9 @@ export const createCustomDivIcon = (
       htmlIcon.insertAdjacentElement('afterbegin', htmlTemplate as HTMLElement);
     }
     htmlTemplate = htmlIcon;
+    // Rerender users chosen color value for icon
+    const pathTag = htmlIcon.getElementsByTagName('path');
+    pathTag[0].style.fill = color;
   } else {
     // The default icon(leaflet-default) uses the markerHtmlStyles
     // size set for marker is half that the one for the icon to keep same proportion
