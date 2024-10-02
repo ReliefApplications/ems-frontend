@@ -497,7 +497,7 @@ export class EmailTemplateComponent
           name: 'Distribution List Preview',
           query: {
             name: this.dlQuery?.get('name').value,
-            filter: this.dlQuery.get('filter').value,
+            filter: this.distributionList.getRawValue().query?.filter, // this.dlQuery.get('filter').value,
             fields: this.distributionList.getRawValue().query?.fields,
             sort: {
               field: '',

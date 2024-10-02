@@ -99,7 +99,7 @@ export class FilterRowComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         // remove value
-        this.form.get('value')?.setValue(null);
+        // this.form.get('value')?.setValue(null);
         this.setField(value, true);
       });
     this.form
