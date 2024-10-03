@@ -9,12 +9,65 @@ import { Dialog } from '@angular/cdk/dialog';
 import { ReferenceData } from '../../../../models/reference-data.model';
 import { ReferenceDataService } from '../../../../services/reference-data/reference-data.service';
 import { createEditorForm } from '../editor-settings.forms';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import {
+  FormWrapperModule,
+  SelectMenuModule,
+  SelectOptionModule,
+  ButtonModule,
+  TabsModule,
+  TooltipModule,
+  IconModule,
+  CheckboxModule,
+  RadioModule,
+  DividerModule,
+  ToggleModule,
+  SpinnerModule,
+} from '@oort-front/ui';
+import { EditorModule } from '@tinymce/tinymce-angular';
+import {
+  ResourceSelectComponent,
+  ReferenceDataSelectComponent,
+} from '../../../controls/public-api';
+import { CoreGridModule } from '../../../ui/core-grid/core-grid.module';
+import { DisplaySettingsComponent } from '../../common/display-settings/display-settings.component';
+import { TabWidgetAutomationsComponent } from '../../common/tab-widget-automations/tab-widget-automations.component';
+import { TemplateAggregationsComponent } from '../../common/template-aggregations/template-aggregations.component';
 
 /** Component for the record selection in the editor widget settings */
 @Component({
   selector: 'shared-record-selection-tab',
   templateUrl: './record-selection-tab.component.html',
   styleUrls: ['./record-selection-tab.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    FormWrapperModule,
+    TranslateModule,
+    DisplaySettingsComponent,
+    CoreGridModule,
+    EditorModule,
+    SelectMenuModule,
+    SelectOptionModule,
+    ButtonModule,
+    TabsModule,
+    TooltipModule,
+    IconModule,
+    CheckboxModule,
+    RadioModule,
+    DividerModule,
+    ToggleModule,
+    ResourceSelectComponent,
+    ReferenceDataSelectComponent,
+    SpinnerModule,
+    TemplateAggregationsComponent,
+    // todo: rename ( remove s )
+    TabWidgetAutomationsComponent,
+  ],
 })
 export class RecordSelectionTabComponent
   extends UnsubscribeComponent

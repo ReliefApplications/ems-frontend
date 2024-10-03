@@ -70,6 +70,8 @@ export class DashboardComponent
   public closable = true;
   /** Dashboard button actions */
   public buttonActions: ButtonActionT[] = [];
+  /** Should show dashboard name */
+  public showName? = true;
 
   /**
    * Dashboard page.
@@ -205,6 +207,9 @@ export class DashboardComponent
           this.contextService.setFilter(this.dashboard);
           this.variant = this.dashboard.filter?.variant || 'default';
           this.closable = this.dashboard.filter?.closable ?? false;
+          this.showName = this.dashboard.step
+            ? this.dashboard.step.showName
+            : this.dashboard.page?.showName;
         } else {
           this.contextService.isFilterEnabled.next(false);
           this.contextService.setFilter();

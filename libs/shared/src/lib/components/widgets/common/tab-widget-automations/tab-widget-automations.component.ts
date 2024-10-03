@@ -7,7 +7,6 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   TableModule,
@@ -40,7 +39,6 @@ import { createAutomationForm } from '../../../../forms/automation.forms';
     FormsModule,
     ReactiveFormsModule,
     ButtonModule,
-    BrowserModule,
     TooltipModule,
     CdkTableModule,
     FormWrapperModule,
