@@ -1,3 +1,17 @@
+# [2.17.0-beta.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.1...v2.17.0-beta.2) (2024-10-03)
+
+
+### Bug Fixes
+
+* incorrect integrity key for aria-query package ([728cef0](https://github.com/ReliefApplications/ems-frontend/commit/728cef0fac57c3961ac3e45694ca360cf446a7af))
+* incorrect permission check for visibility of resource page in back-office ([#2627](https://github.com/ReliefApplications/ems-frontend/issues/2627)) ([3f0946a](https://github.com/ReliefApplications/ems-frontend/commit/3f0946ab14a4788fb617e93a037c83c833e7ae69))
+* resources question incorrect default display in html widgets ([#2634](https://github.com/ReliefApplications/ems-frontend/issues/2634)) ([6278861](https://github.com/ReliefApplications/ems-frontend/commit/627886146076ac7cd20dd914e12bb282b586be9c)), closes [AB#104166](https://github.com/AB/issues/104166)
+
+
+### Features
+
+* add possibility to show or hide page / step name ([#2628](https://github.com/ReliefApplications/ems-frontend/issues/2628)) ([2df7954](https://github.com/ReliefApplications/ems-frontend/commit/2df79544e8aeb479f7b669bb562a37b912744dc7)), closes [AB#102826](https://github.com/AB/issues/102826)
+
 # [2.17.0-beta.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.16.0...v2.17.0-beta.1) (2024-07-04)
 
 
