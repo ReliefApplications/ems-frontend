@@ -1,3 +1,10 @@
+# [2.17.0-rc.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-rc.3...v2.17.0-rc.4) (2024-10-03)
+
+
+### Bug Fixes
+
+* resources question incorrect default display in html widgets ([#2634](https://github.com/ReliefApplications/ems-frontend/issues/2634)) ([6278861](https://github.com/ReliefApplications/ems-frontend/commit/627886146076ac7cd20dd914e12bb282b586be9c)), closes [AB#104166](https://github.com/AB/issues/104166)
+
 # [2.17.0-rc.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-rc.2...v2.17.0-rc.3) (2024-10-03)
 
 
