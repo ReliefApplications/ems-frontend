@@ -4,6 +4,26 @@ import { CHART_TYPES } from './constants';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
 import { WidgetSettings } from '../../../models/dashboard.model';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import {
+  IconModule,
+  TabsModule,
+  ExpansionPanelModule,
+  TooltipModule,
+  SelectMenuModule,
+} from '@oort-front/ui';
+import { PaletteControlModule } from '../../controls/palette-control/palette-control.module';
+import { QueryBuilderModule } from '../../query-builder/query-builder.module';
+import { AggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
+import { ChartModule } from '../chart/chart.module';
+import { ContextualFiltersSettingsComponent } from '../common/contextual-filters-settings/contextual-filters-settings.component';
+import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
+import { TabDisplayModule } from './tab-display/tab-display.module';
+import { TabFiltersComponent } from './tab-filters/tab-filters.component';
+import { TabMainModule } from './tab-main/tab-main.module';
 
 /**
  * Chart settings component
@@ -12,6 +32,28 @@ import { WidgetSettings } from '../../../models/dashboard.model';
   selector: 'shared-chart-settings',
   templateUrl: './chart-settings.component.html',
   styleUrls: ['./chart-settings.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    IconModule,
+    TextFieldModule,
+    QueryBuilderModule,
+    ChartModule,
+    TabsModule,
+    ExpansionPanelModule,
+    TranslateModule,
+    AggregationBuilderModule,
+    PaletteControlModule,
+    TabMainModule,
+    TabDisplayModule,
+    TooltipModule,
+    SelectMenuModule,
+    DisplaySettingsComponent,
+    ContextualFiltersSettingsComponent,
+    TabFiltersComponent,
+  ],
 })
 /** Modal content for the settings of the chart widgets. */
 export class ChartSettingsComponent

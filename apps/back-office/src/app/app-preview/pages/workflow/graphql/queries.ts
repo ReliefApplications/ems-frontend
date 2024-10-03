@@ -27,6 +27,7 @@ export const GET_WORKFLOW_BY_ID = gql`
       steps {
         id
         icon
+        showName
         name
         type
         content
