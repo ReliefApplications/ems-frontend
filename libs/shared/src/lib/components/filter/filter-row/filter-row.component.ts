@@ -99,8 +99,12 @@ export class FilterRowComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         // remove value
-        // this.form.get('value')?.setValue(null);
-        this.setField(value, true);
+        if (this.form?.get('operator')?.value) {
+          this.setField(value);
+        } else {
+          this.form.get('value')?.setValue(null);
+          this.setField(value, true);
+        }
       });
     this.form
       .get('operator')
@@ -301,6 +305,11 @@ export class FilterRowComponent
         default: {
           this.editor = this.textEditor;
         }
+      }
+      if (this.isDisable) {
+        this.form.get('value')?.disable();
+      } else {
+        this.form.get('value')?.enable();
       }
     }
   }

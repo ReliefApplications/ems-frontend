@@ -203,6 +203,8 @@ export class EmailTemplateComponent
   public refernceData: any = [];
   /** Show NonEmail Fields Alert */
   public nonEmailFieldsAlert = false;
+  /** Actual resourceFields data  */
+  public resourceFields: any = [];
 
   /**
    * Composite filter group.
@@ -241,7 +243,8 @@ export class EmailTemplateComponent
       this.clearUnusedValues(value);
     });
     if (this.isDisable) {
-      this.segmentForm.get('segment')?.disable();
+      this.segmentForm?.get('segment')?.disable();
+      this.segmentForm?.get('dataType')?.disable();
     }
 
     this.distributionListValid =
@@ -302,8 +305,10 @@ export class EmailTemplateComponent
     ) {
       if (this.isDisable) {
         this.segmentForm?.get('segment')?.disable();
+        this.segmentForm?.get('dataType')?.disable();
       } else {
         this.segmentForm?.get('segment')?.enable();
+        this.segmentForm?.get('dataType')?.enable();
       }
     }
   }
@@ -383,6 +388,7 @@ export class EmailTemplateComponent
    * @param fromHtml if called from email-template HTML or not
    */
   getResourceData(fromHtml: boolean): void {
+    this.resourceFields = [];
     this.loading = true;
     this.availableFields = [];
     if (fromHtml) {
@@ -405,6 +411,7 @@ export class EmailTemplateComponent
         .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
           const queryTemp: any = data.resource;
+          this.resourceFields = queryTemp?.fields;
           const newData = this.queryBuilder.getFields(queryTemp.queryName);
           if (this.distributionList.controls.query.get('name') === null) {
             this.distributionList.controls.query.addControl(
@@ -634,6 +641,7 @@ export class EmailTemplateComponent
    * @param query - Dataset Form Group
    */
   resetFilters(query: FormGroup) {
+    this.resourceFields = [];
     const fields = query.get('fields') as FormArray;
     fields.clear();
 
@@ -1208,10 +1216,15 @@ export class EmailTemplateComponent
    * @param event - emitted data
    */
   setNonEmailFields(event: any) {
-    if (
-      !this.nonEmailFieldsAlert &&
-      event?.type?.name?.toLowerCase()?.trim() !== 'email'
-    ) {
+    const matchedData =
+      this.resourceFields.filter(
+        (x: any) => x?.name.toLowerCase() == event?.name?.toLowerCase()
+      ).length > 0
+        ? this.resourceFields.filter(
+            (x: any) => x?.name.toLowerCase() == event?.name?.toLowerCase()
+          )?.[0].type
+        : '';
+    if (!this.nonEmailFieldsAlert && matchedData !== 'email') {
       this.nonEmailFieldsAlert = true;
     }
   }

@@ -394,7 +394,7 @@ export class EmsTemplateComponent
     await Promise.all(
       emailData.datasets.map(async (dataset: any) => {
         const tempQuery = cloneDeep(dataset.query);
-        if (!dataset.resource) {
+        if (!(dataset.resource || dataset.reference)) {
           Object.assign(dataset, {
             resource: tempQuery.resource,
             query: {

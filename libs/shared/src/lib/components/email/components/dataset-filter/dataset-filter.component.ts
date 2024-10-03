@@ -246,7 +246,7 @@ export class DatasetFilterComponent
         if (
           value === true &&
           this.selectedFieldsIndividualEmail?.length === 0 &&
-          this.resource
+          (this.resource || this.refernceData)
         ) {
           this.onTabSelect(3, false);
           this.emailService.disableSaveAndProceed.next(true);
@@ -271,7 +271,7 @@ export class DatasetFilterComponent
   }
 
   override ngOnDestroy() {
-    if (!this.resource) {
+    if (!(this.resource || this.refernceData?.length > 0)) {
       if (this.query?.get('individualEmail') === true) {
         this.query?.get('individualEmail').setValue(false);
       }
