@@ -779,60 +779,53 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @returns The newly created dataset group.
    */
   createNewDataSetGroup(ele: any, index: number): FormGroup {
-    // Creating first fields Array of formgroup
-    const fieldsArray = this.formBuilder.array([]) as FormArray;
-    ele?.query?.fields?.length > 0
-      ? ele?.query?.fields?.forEach((field: any) => {
-          if (field?.kind === 'LIST' || field?.kind === 'OBJECT') {
-            const fieldsData: any = new FormArray([]);
-            field?.fields?.forEach((y: any) => {
-              fieldsData.push(
-                this.formBuilder.group({
-                  ...y,
-                })
-              );
-            });
-            fieldsArray.push(
-              this.formBuilder.group({
-                ...field,
-                fields: fieldsData,
-              })
-            );
-          } else {
-            fieldsArray.push(
-              this.formBuilder.group({
-                ...field,
-              })
-            );
-          }
-        })
-      : fieldsArray.push(this.formBuilder.array([]));
+    const fieldsArray = new FormArray<FormGroup>([]);
+    ele?.query?.fields?.forEach((field: any) => {
+      fieldsArray.push(
+        this.emailService.createFieldsFormGroup(field, this.formBuilder)
+      );
+    });
+
+    const individualEmailFieldsArray =
+      ele.individualEmailFields.length > 0
+        ? this.formBuilder.array(
+            ele.individualEmailFields.map((field: any) => {
+              if (field?.kind === 'LIST' || field?.kind === 'OBJECT') {
+                const nestedIndividualFields = new FormArray<FormGroup>([]);
+                field?.fields?.forEach((nestedField: any) => {
+                  nestedIndividualFields.push(
+                    this.emailService.createFieldsFormGroup(
+                      nestedField,
+                      this.formBuilder
+                    )
+                  );
+                });
+                return this.formBuilder.group({
+                  ...field,
+                  fields: nestedIndividualFields,
+                });
+              } else {
+                return this.formBuilder.control(field);
+              }
+            })
+          )
+        : this.formBuilder.array([]);
     const tempData = this.formBuilder.group({
-      name: ele.name,
+      name: new FormControl(ele.name),
       query: this.formBuilder.group({
-        name: ele.query.name,
+        name: new FormControl(ele.query.name),
         filter: this.getFilterGroup(ele.query.filter),
         fields: fieldsArray,
       }),
-      resource: ele.resource,
-      reference: ele.reference,
-      dataType:
-        ele.resource !== null && ele.resource !== ''
-          ? 'Resource'
-          : 'Reference Data',
-      pageSize: ele.pageSize,
-      blockType: 'table', // Either Table or Text
-      tableStyle: this.emailService.getTableStyles(),
-      textStyle: null,
-      individualEmail: ele.individualEmail,
-      individualEmailFields:
-        ele.individualEmailFields.length > 0
-          ? this.formBuilder.array(
-              ele?.individualEmailFields?.map((field: any) =>
-                this.formBuilder.control(field)
-              )
-            )
-          : this.formBuilder.array([]),
+      resource: new FormControl(ele.resource),
+      reference: new FormControl(ele.reference),
+      dataType: new FormControl(ele.resource ? 'Resource' : 'Reference Data'),
+      pageSize: new FormControl(ele.pageSize),
+      blockType: new FormControl('table'),
+      tableStyle: new FormControl(this.emailService.getTableStyles()),
+      textStyle: new FormControl(null),
+      individualEmail: new FormControl(ele.individualEmail),
+      individualEmailFields: individualEmailFieldsArray, // Attach individualEmailFields array
     });
     this.emailService.setEmailFields(ele.query.fields);
     this.emailService.setSeparateEmail(ele.individualEmail, index);

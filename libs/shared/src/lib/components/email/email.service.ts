@@ -623,49 +623,63 @@ export class EmailService {
     dlGroup.setControl(
       'query',
       this.formBuilder.group({
-        name: emailDL.query.name,
+        name: new FormControl(emailDL.query.name || null), // Query name
         filter: this.formBuilder.group({
-          logic: emailDL?.query?.filter?.logic,
+          logic: new FormControl(emailDL?.query?.filter?.logic || null), // Filter logic
           filters: this.formBuilder.array(
             emailDL?.query?.filter?.filters.map((filter: any) => {
               return this.formBuilder.group({
                 ...filter,
                 inTheLast: this.formBuilder.group({
-                  number: [filter.inTheLast.number],
-                  unit: [filter.inTheLast.unit],
+                  number: new FormControl(filter.inTheLast?.number || null),
+                  unit: new FormControl(filter.inTheLast?.unit || null),
                 }),
               });
             }) || []
           ),
         }),
-        // Map fields
         fields: this.formBuilder.array(
-          emailDL?.query?.fields.map((field: any) => {
-            // this.formBuilder.control(field)
-            if (field.kind === 'LIST' || field.kind === 'OBJECT') {
-              const fieldsData: any = new FormArray([]);
-              field?.fields?.forEach((y: any) => {
-                fieldsData.push(
-                  this.formBuilder.group({
-                    ...y,
-                  })
-                );
-              });
-              return this.formBuilder.group({
-                ...field,
-                fields: fieldsData,
-              });
-            } else {
-              return this.formBuilder.group({
-                ...field,
-              });
-            }
-          })
+          emailDL?.query?.fields.map(
+            (field: any) => this.createFieldsFormGroup(field, this.formBuilder) // Using the utility function
+          )
         ),
       })
     );
-    // Map input emails
+
     dlGroup.setControl('inputEmails', this.formBuilder.array(inputArray));
+  }
+
+  /**
+   * Common function
+   * @param field nested field
+   * @param formBuilder form
+   */
+  createFieldsFormGroup(field: any, formBuilder: FormBuilder): FormGroup {
+    if (field?.kind === 'LIST' || field?.kind === 'OBJECT') {
+      const nestedFieldsArray = new FormArray<FormGroup>([]);
+
+      field?.fields?.forEach((nestedField: any) => {
+        nestedFieldsArray.push(
+          this.createFieldsFormGroup(nestedField, formBuilder)
+        );
+      });
+
+      return formBuilder.group({
+        name: new FormControl(field.name),
+        type: new FormControl(field.type),
+        kind: new FormControl(field.kind),
+        fields: nestedFieldsArray, // Handle nested fields
+      });
+    } else {
+      return formBuilder.group({
+        name: new FormControl(field.name),
+        type: new FormControl(field.type),
+        kind: new FormControl(field.kind),
+        label: new FormControl(field.label || null),
+        width: new FormControl(field.width || null),
+        format: new FormControl(field.format || null),
+      });
+    }
   }
 
   /**
