@@ -412,7 +412,11 @@ export class EmsTemplateComponent
         }
       })
     );
-    if (emailData?.emailDistributionList?.id) {
+    const isAllSendSeparate = emailData.datasets?.every(
+      (dataset: any) => dataset.individualEmail
+    );
+    //Check if DL id exist or all the dataset are to be send separate
+    if (emailData?.emailDistributionList?.id && !isAllSendSeparate) {
       emailData.emailDistributionList = emailData.emailDistributionList.id;
     } else if (
       emailData.emailDistributionList?.to?.resource ||
@@ -443,11 +447,16 @@ export class EmsTemplateComponent
     }
     const emailLayout = await this.addEditCustomTemplate(emailData);
     if (emailLayout?.id) {
-      emailData.emailLayout = emailLayout?.id;
-      this.emailService.datasetsForm
-        ?.get('emailLayout')
-        ?.get('id')
-        ?.setValue(emailLayout?.id);
+      emailData.emailLayout = emailLayout.id;
+      const emailLayoutControl =
+        this.emailService.datasetsForm?.get('emailLayout');
+      //Storing Custom Template in Dataset
+      if (emailLayoutControl) {
+        emailLayoutControl.setValue({
+          ...(emailLayoutControl.value || {}),
+          id: emailLayout.id,
+        });
+      }
     } else {
       this.snackBar.openSnackBar(emailLayout?.errors || '', { error: true });
       throw new Error(emailLayout?.errors);
