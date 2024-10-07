@@ -419,7 +419,9 @@ export class EmsTemplateComponent
     if (emailData?.emailDistributionList?.id && !isAllSendSeparate) {
       emailData.emailDistributionList = emailData.emailDistributionList.id;
     } else if (
-      emailData.emailDistributionList?.to?.resource ||
+      ((emailData.emailDistributionList?.to?.resource ||
+        emailData.emailDistributionList?.to?.reference) &&
+        emailData.emailDistributionList?.to?.query?.fields?.length) ||
       emailData.emailDistributionList?.to?.inputEmails?.length
     ) {
       const distributionList = await firstValueFrom(
