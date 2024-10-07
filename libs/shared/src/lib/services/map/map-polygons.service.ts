@@ -227,37 +227,31 @@ export class MapPolygonsService {
       geographicExtentValue.forEach((x) => {
         switch (x.extent) {
           case 'admin0': {
+            let admin0s: Admin0[] = [];
             if (isArray(x.value)) {
-              const admin0s = this.admin0s.filter(
+              admin0s = this.admin0s.filter(
                 (data) =>
                   x.value.includes(data.iso2code) ||
                   x.value.includes(data.iso3code) ||
                   x.value.includes(data.name)
               );
-              if (admin0s.length > 0) {
-                geoJSON.features.push({
-                  type: 'FeatureCollection',
-                  features: admin0s.map((x: any) => ({
-                    type: 'Feature',
-                    geometry: x.polygons,
-                    properties: {},
-                  })),
-                });
-              }
             } else {
-              const admin0 = this.admin0s.find(
+              admin0s = this.admin0s.filter(
                 (data) =>
                   data.iso2code === x.value ||
                   data.iso3code === x.value ||
                   data.name === x.value
               );
-              if (admin0) {
-                geoJSON.features.push({
+            }
+            if (admin0s.length > 0) {
+              geoJSON.features.push({
+                type: 'FeatureCollection',
+                features: admin0s.map((x: any) => ({
                   type: 'Feature',
-                  geometry: admin0.polygons,
+                  geometry: x.polygons,
                   properties: {},
-                });
-              }
+                })),
+              });
             }
             break;
           }
