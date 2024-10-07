@@ -547,7 +547,6 @@ export class ContextService {
       // Returns context element
       callback({ element: contextEl });
     } else if ('resource' in dashboard.page.context) {
-      console.log('GET RECORD');
       // Get record by id
       this.apollo
         .query<RecordQueryResponse>({
@@ -557,7 +556,6 @@ export class ContextService {
           },
         })
         .subscribe(({ data }) => {
-          console.log(data);
           if (data) {
             callback({
               record: contextEl,
