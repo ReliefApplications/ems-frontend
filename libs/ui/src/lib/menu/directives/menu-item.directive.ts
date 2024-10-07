@@ -15,7 +15,7 @@ export class MenuItemDirective {
     'py-2',
     'px-3',
     'text-gray-700',
-    'hover:text-gray-900',
+    'hover:text-neutral-850',
     'cursor-pointer',
     'hover:bg-gray-50',
   ] as const;

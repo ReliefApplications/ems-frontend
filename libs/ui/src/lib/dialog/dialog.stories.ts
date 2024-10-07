@@ -91,7 +91,7 @@ class LaunchDialogComponent implements OnDestroy {
         <div class="flex flex-col h-full">
           <div class="my-auto text-center">
             <h3
-              class="text-base font-semibold leading-6 text-gray-900"
+              class="text-base font-semibold leading-6 text-neutral-850"
               id="modal-title"
             >
               Payment successful

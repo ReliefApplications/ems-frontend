@@ -8,7 +8,7 @@
   <ng-container ngProjectAs="content" *ngIf="!loading; else loadingTmpl">
     <ng-container *ngIf="!empty; else emptyTmpl">
       <!-- Table container -->
-      <div class="mt-4 overflow-x-hidden shadow-2lg">
+      <div class="mt-4 overflow-x-hidden">
         <!-- Table scroll container -->
         <div class="overflow-x-auto">
           <table cdk-table uiTableWrapper [dataSource]="draftRecords">
@@ -21,7 +21,7 @@
               <td
                 uiCell
                 *cdkCellDef="let element"
-                class="!text-gray-900 !font-medium max-w-[30vw]"
+                class="!text-neutral-850 !font-medium max-w-[30vw]"
               >
                 {{ element.createdAt | sharedDate : 'short' }}
               </td>

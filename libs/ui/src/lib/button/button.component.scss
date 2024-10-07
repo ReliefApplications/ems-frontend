@@ -13,20 +13,20 @@
 
 .ui-button {
   &.primary {
-    @apply rounded-md text-sm font-medium shadow-sm ring-1 ring-inset ring-gray-300;
+    @apply text-sm font-medium shadow-sm ring-1 ring-inset ring-gray-300;
   }
   &.secondary {
-    @apply rounded-md text-sm font-medium shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;
+    @apply text-sm font-medium shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;
   }
   &.tertiary {
-    @apply rounded-md bg-white text-sm font-medium shadow-sm shadow-gray-300;
+    @apply bg-white text-sm font-medium shadow-sm shadow-gray-300;
     box-shadow: 0 0 0 1px inset !important;
   }
   &.small {
     @apply px-2.5 py-1.5;
   }
   &.medium {
-    @apply px-3 py-2;
+    @apply px-4 py-2;
   }
   &.large {
     @apply px-3.5 py-2.5;
@@ -55,7 +55,7 @@
 
 .button-default {
   &.primary {
-    @apply text-gray-900;
+    @apply text-neutral-850;
   }
   &:not(:disabled) {
     @apply hover:bg-gray-50;
@@ -67,7 +67,7 @@
     @apply hover:bg-gray-500 focus-visible:outline-gray-600;
   }
   &.tertiary {
-    @apply shadow-gray-900 text-gray-900;
+    @apply shadow-gray-900 text-neutral-850;
   }
 }
 
@@ -86,6 +86,21 @@
   }
   &.tertiary {
     @apply shadow-primary-400 text-primary-400;
+  }
+}
+
+.button-dark {
+  &.primary {
+    @apply text-neutral-850 shadow-none;
+  }
+  &:not(:disabled) {
+    @apply hover:bg-primary-50 text-neutral-850;
+  }
+  &.secondary {
+    @apply text-neutral-850 bg-primary-100 font-medium shadow-none;
+  }
+  &.secondary:not(:disabled) {
+    @apply hover:bg-primary-200;
   }
 }
 

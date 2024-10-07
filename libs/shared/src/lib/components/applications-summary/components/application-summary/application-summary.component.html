@@ -1,10 +1,10 @@
 <!-- Main application block -->
 <div
-  class="w-48 h-48 bg-white flex flex-col justify-between items-center cursor-pointer rounded-lg box-border border"
+  class="w-56 h-48 bg-white flex flex-col justify-between items-center cursor-pointer rounded-xl box-border shadow-xs p-4"
 >
   <!-- Top line -->
   <div
-    class="flex flex-row justify-between items-center text-sm text-gray-600 w-full box-border pt-2 pb-2 px-2"
+    class="flex flex-row justify-between items-center text-sm text-gray-600 w-full box-border"
   >
     <div class="flex items-center gap-1">
       <ui-icon icon="person"></ui-icon>
@@ -21,13 +21,13 @@
   </div>
   <!-- Application name -->
   <div
-    class="text-ellipsis box-border w-full py-1 px-2 overflow-hidden text-center text-lg font-medium text-gray-600"
+    class="text-ellipsis box-border w-full overflow-hidden text-lg font-medium text-gray-600"
   >
     {{ application.name }}
   </div>
   <!-- Bottom line -->
   <div
-    class="flex flex-row justify-between items-center text-sm text-gray-600 w-full box-border pt-0 pr-0 pb-2 pl-2"
+    class="flex flex-row justify-between items-center text-sm text-gray-600 w-full box-border pt-0 pr-0"
   >
     <!-- Edition date -->
     <span

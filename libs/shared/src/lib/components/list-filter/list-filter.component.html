@@ -4,9 +4,13 @@
   <div
     uiFormFieldDirective
     [defaultMargin]="false"
-    class="p-0 max-sm:flex-auto"
+    class="p-0 max-sm:flex-auto [&>div]:h-9 [&>div]:w-72 mr-2"
   >
-    <ui-icon icon="search" uiPrefix></ui-icon>
+    <ui-icon
+      icon="search"
+      uiPrefix
+      class="[&>i]:text-neutral-450 items-center flex"
+    ></ui-icon>
     <input
       type="text"
       [formControlName]="controlKey"
@@ -18,8 +22,8 @@
   <ng-container *ngIf="hasSiblingFilters">
     <ui-button
       icon="filter_list"
-      category="tertiary"
-      variant="primary"
+      category="secondary"
+      variant="dark"
       (click)="showSiblingFilters()"
     >
       {{

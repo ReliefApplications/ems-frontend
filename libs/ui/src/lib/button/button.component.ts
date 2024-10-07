@@ -4,6 +4,7 @@ import { Category } from '../types/category';
 import { Variant } from '../types/variant';
 import { Subject } from 'rxjs';
 import { Size } from '../types/size';
+import { Shape } from '../types/shape';
 
 /**
  * UI Button Component.
@@ -21,12 +22,14 @@ export class ButtonComponent {
   @Input() icon = '';
   /** Icon position, either before or after text */
   @Input() iconPosition: ButtonIconPosition = 'prefix';
-  /** Button category, define shape */
+  /** Button category, define color */
   @Input() category: Category = 'primary';
   /** Button size */
   @Input() size: Size = 'medium';
   /** Button variant, define color */
   @Input() variant: Variant = 'primary';
+  /** Button shape */
+  @Input() shape: Shape = 'square';
   /** Is button only icon */
   @Input() isIcon = false;
   /** Should button appear as block */
@@ -73,6 +76,13 @@ export class ButtonComponent {
     }
     if (this.disabled) {
       classes.push('opacity-70');
+    }
+    if (this.shape === 'round') {
+      classes.push('rounded-full');
+      classes.push('!px-4');
+    }
+    if (this.shape === 'square') {
+      classes.push('rounded-md');
     }
     return classes;
   }

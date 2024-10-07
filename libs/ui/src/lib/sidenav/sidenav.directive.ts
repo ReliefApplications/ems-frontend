@@ -133,7 +133,7 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
    */
   private createOverlay() {
     this.overlayRef = this.overlay.create({
-      panelClass: ['bg-white', 'shadow-2lg', 'overflow-y-auto'],
+      panelClass: ['bg-white', 'overflow-y-auto'],
       hasBackdrop: false,
       scrollStrategy: this.overlay.scrollStrategies.noop(),
       positionStrategy: this.overlay

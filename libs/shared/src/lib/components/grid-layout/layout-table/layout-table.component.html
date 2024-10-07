@@ -1,5 +1,5 @@
 <!-- Table container -->
-<div class="overflow-x-hidden shadow-2lg" *ngIf="layouts.length > 0">
+<div class="overflow-x-hidden" *ngIf="layouts.length > 0">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <table
@@ -17,7 +17,7 @@
         <td
           uiCell
           *cdkCellDef="let element"
-          class="!text-gray-900 !font-medium max-w-[30vw]"
+          class="!text-neutral-850 !font-medium max-w-[30vw]"
         >
           {{ element.name }}
         </td>

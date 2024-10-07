@@ -53,10 +53,16 @@
   <ng-container *ngTemplateOutlet="filter.expandedFilter"></ng-container>
 </div>
 <!-- Table container -->
-<div class="overflow-x-hidden shadow-2lg">
+<div class="overflow-x-hidden">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" cdk-table uiTableWrapper [dataSource]="users">
+    <table
+      *ngIf="!loading"
+      cdk-table
+      uiTableWrapper
+      [hasPagination]="true"
+      [dataSource]="users"
+    >
       <!-- Checkbox Column -->
       <ng-container cdkColumnDef="select">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
@@ -96,7 +102,7 @@
         <td
           uiCell
           *cdkCellDef="let element"
-          class="!text-gray-900 !font-medium"
+          class="!text-neutral-850 !font-medium"
         >
           {{ element.name }}
         </td>

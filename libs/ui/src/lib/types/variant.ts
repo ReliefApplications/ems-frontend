@@ -9,5 +9,6 @@ export const variants = [
   'grey',
   'light',
   'warning',
+  'dark',
 ] as const;
 export type Variant = (typeof variants)[number];

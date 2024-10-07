@@ -32,12 +32,13 @@ export class CellDirective extends CdkCell implements AfterContentInit {
   classes = [
     'whitespace-nowrap',
     'h-16',
-    'pl-4',
+    'pl-6',
     'pr-3',
     'text-sm',
     'text-gray-500',
     'text-ellipsis',
     'overflow-hidden',
+    'font-normal',
   ];
 
   ngAfterContentInit(): void {

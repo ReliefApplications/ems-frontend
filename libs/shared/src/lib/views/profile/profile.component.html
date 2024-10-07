@@ -1,32 +1,34 @@
 <form [formGroup]="userForm" *ngIf="userForm">
   <h1>{{ 'pages.profile.title' | translate }}</h1>
   <!-- User details -->
-  <div class="flex flex-col">
-    <div class="flex gap-2 flex-wrap">
-      <div uiFormFieldDirective class="flex-1">
+  <div class="flex flex-col bg-white p-8 rounded-xl shadow-2xs mb-8">
+    <div class="flex gap-6 flex-wrap">
+      <div uiFormFieldDirective class="flex-1" [outline]="true">
         <label>
           {{ 'models.user.firstName' | translate }}
         </label>
         <input formControlName="firstName" type="text" />
       </div>
-      <div uiFormFieldDirective class="flex-1">
+      <div uiFormFieldDirective class="flex-1" [outline]="true">
         <label>
           {{ 'models.user.lastName' | translate }}
         </label>
         <input formControlName="lastName" type="text" />
       </div>
-    </div>
-    <div class="flex gap-2 flex-wrap items-center">
-      <div uiFormFieldDirective class="grow">
+      <div uiFormFieldDirective class="flex-1" [outline]="true">
         <label>
           {{ 'models.user.username' | translate }}
         </label>
         <input formControlName="username" type="text" />
       </div>
+    </div>
+    <div class="flex">
       <ui-button
         category="secondary"
+        shape="round"
         variant="primary"
-        icon="vpn_key"
+        icon="key"
+        [isOutlined]="true"
         class="mt-1.5"
         (click)="updatePassword()"
       >
@@ -34,8 +36,18 @@
       </ui-button>
     </div>
   </div>
-  <!-- Table container -->
-  <div class="overflow-x-hidden shadow-2lg mt-6">
+  <h2 class="text-light-200 font-semibold">
+    {{ 'common.application.few' | translate }} ({{ user.applications.length }})
+  </h2>
+  <!-- Application summary container -->
+  <shared-applications-summary
+    class="block mb-14"
+    [loading]="loading"
+    [applications]="user.applications"
+    (openApplication)="onOpenApplication($event)"
+  ></shared-applications-summary>
+
+  <div class="overflow-x-hidden mt-6 p-4 bg-red-400">
     <!-- Table scroll container -->
     <div class="overflow-x-auto">
       <table cdk-table uiTableWrapper [dataSource]="user.applications">
@@ -50,7 +62,7 @@
           <td
             uiCell
             *cdkCellDef="let element"
-            class="!text-gray-900 !font-medium max-w-[30vw]"
+            class="!text-neutral-850 !font-medium max-w-[30vw]"
           >
             {{ element.name }}
             <span *ngIf="user.favoriteApp === element.id">
@@ -110,6 +122,7 @@
     <ui-button
       category="secondary"
       variant="primary"
+      shape="round"
       (click)="onSubmit()"
       [disabled]="userForm.invalid || !userForm.dirty"
     >

@@ -17,13 +17,25 @@ export type StatusOptions = (typeof statusOptions)[number];
   standalone: true,
   imports: [CommonModule, ChipModule, TranslateModule],
   template: `<div uiChipList>
-    <ui-chip class="!rounded-lg" variant="success" *ngIf="status === 'active'">
+    <ui-chip
+      class="!rounded-lg [&>:first-child]:w-16 [&>:first-child]:justify-center"
+      variant="success"
+      *ngIf="status === 'active'"
+    >
       {{ 'common.status_active' | translate | titlecase }}
     </ui-chip>
-    <ui-chip class="!rounded-lg" variant="warning" *ngIf="status === 'pending'">
+    <ui-chip
+      class="!rounded-lg [&>:first-child]:w-16 [&>:first-child]:justify-center"
+      variant="warning"
+      *ngIf="status === 'pending'"
+    >
       {{ 'common.status_pending' | translate | titlecase }}
     </ui-chip>
-    <ui-chip class="!rounded-lg" variant="danger" *ngIf="status === 'archived'">
+    <ui-chip
+      class="!rounded-lg [&>:first-child]:w-16 [&>:first-child]:justify-center"
+      variant="danger"
+      *ngIf="status === 'archived'"
+    >
       {{ 'common.status_archived' | translate | titlecase }}
     </ui-chip>
   </div>`,

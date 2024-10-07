@@ -1,17 +1,22 @@
 <ng-container *ngIf="!loading; else loadingTmpl">
   <ng-container *ngIf="!empty; else emptyTmpl">
     <!-- Table container -->
-    <div class="overflow-x-hidden shadow-2lg">
+    <div class="overflow-x-hidden">
       <!-- Table scroll container -->
       <div class="overflow-x-auto">
-        <table cdk-table uiTableWrapper [dataSource]="users">
+        <table
+          cdk-table
+          uiTableWrapper
+          [hasPagination]="true"
+          [dataSource]="users"
+        >
           <ng-container cdkColumnDef="name">
             <th uiCellHeader *cdkHeaderCellDef scope="col">
               <span class="headerTitle">
                 {{ 'common.name' | translate }}
               </span>
             </th>
-            <td uiCell *cdkCellDef="let element" class="text-gray-900">
+            <td uiCell *cdkCellDef="let element" class="text-neutral-850">
               {{ element.name }}
             </td>
           </ng-container>

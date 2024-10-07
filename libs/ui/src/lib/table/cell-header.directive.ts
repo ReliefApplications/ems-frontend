@@ -34,13 +34,14 @@ export class CellHeaderDirective
   /** Cell header classes */
   classes = [
     'capitalize',
-    'py-3.5',
-    'pl-4',
+    'pt-3.5',
+    'pb-5',
+    'pl-6',
     'pr-3',
     'text-left',
     'text-sm',
-    'font-medium',
-    'text-gray-900',
+    'font-bold',
+    'text-light-200',
   ];
 
   ngAfterContentInit(): void {

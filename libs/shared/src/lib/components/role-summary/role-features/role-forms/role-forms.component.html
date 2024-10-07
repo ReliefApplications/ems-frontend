@@ -1,7 +1,7 @@
 <div *ngIf="filteredPages.length">
   <h2>{{ 'common.form.few' | translate }}</h2>
   <!-- Table container -->
-  <div class="overflow-x-hidden shadow-2lg">
+  <div class="overflow-x-hidden">
     <!-- Table scroll container -->
     <div class="overflow-x-auto">
       <table cdk-table uiTableWrapper [dataSource]="filteredPages">
@@ -12,7 +12,7 @@
           <td
             uiCell
             *cdkCellDef="let element"
-            class="!text-gray-900 !font-medium"
+            class="!text-neutral-850 !font-medium"
           >
             {{ element.name }}
           </td>

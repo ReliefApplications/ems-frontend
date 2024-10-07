@@ -13,6 +13,7 @@ import {
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProfileRoutingModule } from './profile-routing.module';
+import { ApplicationsSummaryModule } from '../../components/applications-summary/applications-summary.module';
 
 /**
  * Shared profile page module.
@@ -32,6 +33,7 @@ import { ProfileRoutingModule } from './profile-routing.module';
     TableModule,
     FixedWrapperModule,
     TooltipModule,
+    ApplicationsSummaryModule,
   ],
   exports: [ProfileComponent],
 })

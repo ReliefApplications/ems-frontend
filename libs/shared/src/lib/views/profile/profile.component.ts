@@ -8,6 +8,7 @@ import { UnsubscribeComponent } from '../../components/utils/unsubscribe/unsubsc
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { EditUserProfileMutationResponse, User } from '../../models/user.model';
+import { Router } from '@angular/router';
 
 /**
  * Shared profile page.
@@ -19,6 +20,8 @@ import { EditUserProfileMutationResponse, User } from '../../models/user.model';
   styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent extends UnsubscribeComponent implements OnInit {
+  /** Loading state */
+  public loading = true;
   /** Current user */
   public user: any;
   /** Form to edit the user */
@@ -43,6 +46,7 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
    * @param authService Shared authentication service
    * @param fb Angular form builder
    * @param translate Translation service
+   * @param router Angular router
    */
   constructor(
     @Inject('environment') environment: any,
@@ -50,7 +54,8 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
     private snackBar: SnackbarService,
     private authService: AuthService,
     private fb: FormBuilder,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private router: Router
   ) {
     super();
 
@@ -69,6 +74,7 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
       if (user) {
         this.user = { ...user };
         this.userForm = this.createUserForm(user);
+        this.loading = false;
       }
     });
   }
@@ -173,5 +179,14 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
   public updatePassword(): void {
     // Redirect to update password URL
     window.location.href = this.updatePasswordUrl;
+  }
+
+  /**
+   * Navigates to application.
+   *
+   * @param id application id.
+   */
+  onOpenApplication(id: string): void {
+    this.router.navigate(['/applications', id]);
   }
 }

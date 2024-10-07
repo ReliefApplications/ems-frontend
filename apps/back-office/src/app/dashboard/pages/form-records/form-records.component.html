@@ -55,13 +55,14 @@
   </div>
   <ng-container *ngIf="!empty; else emptyTmpl">
     <!-- Table container -->
-    <div class="overflow-x-hidden shadow-2lg grow">
+    <div class="overflow-x-hidden grow">
       <!-- Table scroll container -->
       <div class="overflow-x-auto h-full">
         <!-- Records table -->
         <table
           cdk-table
           uiTableWrapper
+          [hasPagination]="true"
           [dataSource]="dataSource"
           class="h-full"
         >

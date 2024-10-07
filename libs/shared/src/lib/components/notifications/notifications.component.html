@@ -17,10 +17,15 @@
   </ng-template>
   <ng-container *ngIf="notifications?.length; else emptyTmpl">
     <!-- Table container -->
-    <div class="mt-4 overflow-x-hidden shadow-2lg">
+    <div class="mt-4 overflow-x-hidden">
       <!-- Table scroll container -->
       <div class="overflow-x-auto">
-        <table cdk-table uiTableWrapper [dataSource]="notifications">
+        <table
+          cdk-table
+          uiTableWrapper
+          [hasPagination]="true"
+          [dataSource]="notifications"
+        >
           <ng-container cdkColumnDef="name">
             <th uiCellHeader *cdkHeaderCellDef scope="col">
               <span class="headerTitle">

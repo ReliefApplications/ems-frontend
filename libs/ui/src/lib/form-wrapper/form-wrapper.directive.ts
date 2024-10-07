@@ -85,7 +85,7 @@ export class FormWrapperDirective
     'text-sm',
     'font-medium',
     'leading-6',
-    'text-gray-900',
+    'text-neutral-850',
   ] as const;
 
   /** Input classes */
@@ -98,8 +98,8 @@ export class FormWrapperDirective
     'rounded-md',
     'w-full',
     'p-0',
-    'text-gray-900',
-    'placeholder:text-gray-400',
+    'text-neutral-850',
+    'placeholder:text-neutral-350',
     'text-sm',
     'sm:leading-6',
     'focus:ring-0',
@@ -115,8 +115,8 @@ export class FormWrapperDirective
     'border-0',
     'p-0',
     'bg-gray-50',
-    'text-gray-900',
-    'placeholder:text-gray-400',
+    'text-neutral-850',
+    'placeholder:text-neutral-350',
     'focus:ring-0',
     'text-sm',
     'sm:leading-6',
@@ -135,7 +135,7 @@ export class FormWrapperDirective
   ] as const;
 
   /** Beyond label general classes */
-  private beyondLabelGeneral = ['relative', 'flex', 'py-1.5', 'px-2'] as const;
+  private beyondLabelGeneral = ['relative', 'flex', 'py-1.5', 'px-3'] as const;
   /** Beyond label classes with no chiplist */
   private beyondLabelNoChipList = ['flex', 'items-center', 'w-full'] as const;
   /** Beyond label classes with no outline */
@@ -143,21 +143,17 @@ export class FormWrapperDirective
     'focus-within:ring-2',
     'focus-within:ring-inset',
     'focus-within:ring-primary-600',
-    'shadow-sm',
     'rounded-md',
     'border-0',
-    'ring-1',
-    'ring-inset',
-    'ring-gray-300',
+    'bg-white',
   ] as const;
   /** Beyond label classes with outline */
   private beyondLabelOutline = [
-    'bg-gray-50',
+    'bg-light-50',
     'border-0',
-    'border-b',
-    'border-b-gray-300',
-    'focus-within:border-b-2',
-    'focus-within:border-b-primary-600',
+    'rounded-lg',
+    'px-3',
+    'font-medium',
   ] as const;
   /** Select button classes to remove */
   private selectButtonRemove = [

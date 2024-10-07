@@ -21,13 +21,14 @@
 </div>
 
 <!-- Table container -->
-<div class="overflow-x-hidden shadow-2lg">
+<div class="overflow-x-hidden">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <table
       *ngIf="!loading"
       cdk-table
       uiTableWrapper
+      [hasPagination]="true"
       (sortChange)="onSort($event)"
       [dataSource]="dataSource"
     >
@@ -40,7 +41,7 @@
         <td
           uiCell
           *cdkCellDef="let element"
-          class="!text-gray-900 !font-medium max-w-[30vw]"
+          class="!text-neutral-850 !font-medium max-w-[30vw]"
         >
           {{ element.name }}
         </td>

@@ -19,7 +19,11 @@ import { By } from '@angular/platform-browser';
       <th uiCellHeader *cdkHeaderCellDef scope="col">
         {{ 'common.title' | translate }}
       </th>
-      <td uiCell *cdkCellDef="let element" class="!text-gray-900 !font-medium">
+      <td
+        uiCell
+        *cdkCellDef="let element"
+        class="!text-neutral-850 !font-medium"
+      >
         {{ element.name }}
       </td>
     </ng-container>

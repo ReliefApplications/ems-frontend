@@ -2,10 +2,10 @@
 <div class="w-full relative">
   <div
     [ngClass]="{ 'z-0': !disabled, 'z-10': disabled }"
-    class="absolute inset-0 bg-white opacity-50"
+    class="absolute inset-0 bg-white rounded-b-xl border-t border-t-light-75 drop-shadow-xs"
   ></div>
   <kendo-datapager
-    class="!border-none"
+    class="!border-none !bg-transparent flex"
     [ngClass]="{ 
       'hide-first-last': hideFirstLastButtons,
       'hide-info': !showTotalItems,

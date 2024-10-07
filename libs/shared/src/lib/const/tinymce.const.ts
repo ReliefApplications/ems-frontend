@@ -27,7 +27,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
     'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
   toolbar_mode: 'sliding',
   contextmenu: 'link image imagetools table',
-  content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
+  content_style: 'body { font-family: Lato, "Helvetica Neue", sans-serif; }',
   help_tabs: [
     'shortcuts', // the default shortcuts tab
     'keyboardnav', // the default keyboard navigation tab
@@ -266,7 +266,7 @@ export const EMAIL_EDITOR_CONFIG: RawEditorSettings = {
     'bold italic | quicklink h2 h3 blockquote quicktable',
   toolbar_mode: 'sliding',
   contextmenu: 'link image imagetools table',
-  content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
+  content_style: 'body { font-family: Lato, "Helvetica Neue", sans-serif; }',
   file_browser_callback: false, // removes possibility to upload files
   help_tabs: [
     'shortcuts', // the default shortcuts tab
@@ -285,7 +285,7 @@ export const FIELD_EDITOR_CONFIG: RawEditorSettings = {
   importcss_append: true,
   height: 90,
   quickbars_selection_toolbar: '',
-  content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
+  content_style: 'body { font-family: Lato, "Helvetica Neue", sans-serif; }',
   help_tabs: [
     'shortcuts', // the default shortcuts tab
     'keyboardnav', // the default keyboard navigation tab
@@ -311,7 +311,7 @@ export const POPUP_EDITOR_CONFIG: RawEditorSettings = {
     'bold italic | quicklink h2 h3 blockquote quicktable',
   toolbar_mode: 'sliding',
   contextmenu: 'link image imagetools table',
-  content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
+  content_style: 'body { font-family: Lato, "Helvetica Neue", sans-serif; }',
   file_browser_callback: false, // removes possibility to upload files
   help_tabs: [
     'shortcuts', // the default shortcuts tab

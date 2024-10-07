@@ -4,6 +4,7 @@ import {
   Directive,
   ElementRef,
   EventEmitter,
+  Input,
   OnDestroy,
   OnInit,
   Output,
@@ -22,6 +23,10 @@ import { Observable, Subject, filter, merge, startWith, takeUntil } from 'rxjs';
 })
 export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
   /**
+   * Table has pagination
+   */
+  @Input() hasPagination = false;
+  /**
    * Table sort change event emitter
    */
   @Output() sortChange = new EventEmitter<TableSort>();
@@ -35,22 +40,14 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
   /** Table wrapper classes */
   private tableWrapperClasses = [
     'overflow-x-auto',
-    'shadow',
-    'border',
     'pt-2',
-    'sm:rounded-lg',
-    'bg-gray-100',
+    'bg-white',
+    'drop-shadow-xs',
   ];
   /** Table classes */
-  private tableClasses = ['min-w-full', 'divide-y', 'divide-gray-300'];
+  private tableClasses = ['min-w-full', 'divide-y', 'divide-light-100'];
   /** Table body classes */
-  private tbodyClasses = [
-    'divide-y',
-    'divide-gray-200',
-    'bg-white',
-    'even:[&>tr]:bg-gray-50',
-    'odd:[&>tr]:bg-white',
-  ];
+  private tbodyClasses = ['divide-y', 'divide-light-100', 'bg-white'];
 
   /** Table wrapper element */
   private tableWrapperElement!: HTMLDivElement;
@@ -78,6 +75,12 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
     }
     // Render default classes for the host table parent
     this.tableWrapperElement = this.renderer.createElement('div');
+    // If the page has pagination, we dont round the bottom corners
+    if (this.hasPagination) {
+      this.tableWrapperClasses.push('rounded-t-xl');
+    } else {
+      this.tableWrapperClasses.push('rounded-xl');
+    }
     this.tableWrapperClasses.forEach((twClass) => {
       this.renderer.addClass(this.tableWrapperElement, twClass);
     });
@@ -87,6 +90,7 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
       this.tableWrapperElement
     );
     this.renderer.appendChild(this.tableWrapperElement, this.el.nativeElement);
+    // Check if
   }
 
   ngAfterViewInit(): void {

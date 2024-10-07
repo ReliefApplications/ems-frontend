@@ -1,12 +1,10 @@
 kendo-datapager {
-  @apply p-3 bg-white border-l-0 border-b-0 border-r-0 border-t;
+  @apply p-3 bg-white border-l-0 border-b-0 border-r-0 border-t focus:shadow-none text-light-200;
 }
 
 :host ::ng-deep {
   .k-pager-md .k-pager-numbers-wrap .k-button {
-    --tw-border-opacity: 1 !important;
-    border-color: rgb(212 212 212 / var(--tw-border-opacity)) !important;
-    @apply h-full text-base border-r border-l-0 border-t-0 border-b-0;
+    @apply h-full text-base border-0 rounded-md mr-0.5 focus:after:opacity-0;
   }
 
   // When cursor pagination, hide first & last buttons
@@ -19,9 +17,6 @@ kendo-datapager {
     kendo-datapager-next-buttons {
       .k-pager-last {
         display: none !important;
-      }
-      button:first-child {
-        border-right: 0 !important;
       }
     }
   }
@@ -42,35 +37,40 @@ kendo-datapager {
     }
   }
 
-  // Hide last border ( duplicated )
-  kendo-datapager-next-buttons button:last-child {
-    border-right: 0 !important;
+  kendo-datapager-next-buttons,
+  kendo-datapager-prev-buttons {
+    @apply text-light-200;
+  }
+
+  kendo-datapager-next-buttons .k-disabled,
+  kendo-datapager-prev-buttons .k-disabled {
+    @apply text-neutral-350;
   }
 
   kendo-dropdownlist,
   select {
     background-image: none !important;
-    @apply border-0 border-b border-neutral-500 bg-inherit;
+    @apply bg-light-50 border-0 border-b border-slate-200 rounded-t-md;
+
+    .k-input-inner {
+      @apply pl-4 pr-0 text-base;
+    }
+    .k-input-button {
+      @apply pl-0;
+    }
   }
 
   k-pager {
     @apply border-0 focus:shadow-none;
   }
 
-  kendo-datapager-info {
-    order: 1;
-    @apply text-sm text-gray-700;
-    justify-content: flex-start;
-  }
-
   // Change native order of elements
-  kendo-datapager-page-sizes {
-    order: 2;
+  kendo-datapager-info {
+    @apply text-sm grow-0 ml-4;
   }
 
   .k-pager-numbers-wrap {
-    order: 3;
-    @apply border rounded-md ml-auto;
+    @apply ml-auto grow;
   }
 
   kendo-datapager-numeric-buttons {

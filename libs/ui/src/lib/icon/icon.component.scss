@@ -10,13 +10,14 @@
 .icon-warning {
   @apply text-yellow-400;
 }
-
 .icon-light {
   @apply text-white;
 }
-
 .icon-grey {
   @apply text-neutral-400;
+}
+.icon-dark {
+  @apply text-neutral-850;
 }
 
 .material-icons-outlined {

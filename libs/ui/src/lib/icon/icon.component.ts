@@ -75,7 +75,9 @@ export class IconComponent implements OnChanges {
       }
     }
     classes.push(
-      this.category === 'secondary' || this.variant === 'light'
+      this.variant === 'dark'
+        ? 'icon-dark'
+        : this.category === 'secondary' || this.variant === 'light'
         ? 'icon-light'
         : this.variant === 'primary'
         ? 'icon-primary'

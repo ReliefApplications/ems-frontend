@@ -46,11 +46,16 @@
   </div>
   <ng-container *ngIf="!empty; else emptyTmpl">
     <!-- Table container -->
-    <div class="overflow-x-hidden shadow-2lg">
+    <div class="overflow-x-hidden">
       <!-- Table scroll container -->
       <div class="overflow-x-scroll">
         <!-- Records table -->
-        <table cdk-table uiTableWrapper [dataSource]="dataSource">
+        <table
+          cdk-table
+          uiTableWrapper
+          [hasPagination]="true"
+          [dataSource]="dataSource"
+        >
           <ng-container
             *ngFor="let column of displayedColumnsRecords"
             [cdkColumnDef]="column"
