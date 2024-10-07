@@ -1,3 +1,10 @@
+# [2.17.0-beta.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.3...v2.17.0-beta.4) (2024-10-07)
+
+
+### Bug Fixes
+
+* single geographic extent should now use all items with target value ([#2638](https://github.com/ReliefApplications/ems-frontend/issues/2638)) ([24fb86f](https://github.com/ReliefApplications/ems-frontend/commit/24fb86f4d2dc2282a577e29ab5ef6207899ac31f)), closes [AB#104254](https://github.com/AB/issues/104254)
+
 # [2.17.0-beta.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.2...v2.17.0-beta.3) (2024-10-07)
 
 
