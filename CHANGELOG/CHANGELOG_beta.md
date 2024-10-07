@@ -1,3 +1,10 @@
+# [2.17.0-beta.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.2...v2.17.0-beta.3) (2024-10-07)
+
+
+### Bug Fixes
+
+* improve replaceContext method of context service ([#2636](https://github.com/ReliefApplications/ems-frontend/issues/2636)) ([a75e1cc](https://github.com/ReliefApplications/ems-frontend/commit/a75e1cc52af1e388c8892d23086fe5ebfa069bd2)), closes [AB#104226](https://github.com/AB/issues/104226)
+
 # [2.17.0-beta.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.1...v2.17.0-beta.2) (2024-10-03)
 
 
