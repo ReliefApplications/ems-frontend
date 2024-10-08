@@ -8,6 +8,7 @@ import { map, takeUntil } from 'rxjs';
 import { LayerModel } from '../../../../models/layer.model';
 import { MapLayersService } from '../../../../services/map/map-layers.service';
 import { LayerType } from '../../../ui/map/interfaces/layer-settings.type';
+import { MapControls } from '../../../ui/map/interfaces/map.interface';
 import { MapComponent } from '../../../ui/map/map.component';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { AddLayerModalComponent } from '../add-layer-modal/add-layer-modal.component';
@@ -215,12 +216,18 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
   public onListDrop(e: CdkDragDrop<LayerModel[]>) {
     moveItemInArray(this.mapLayers, e.previousIndex, e.currentIndex);
     this.mapLayers = [...this.mapLayers];
-    this.mapComponent?.layers[e.currentIndex].orderLayersByIndex(
-      this.mapComponent.map
-    );
-    this.control.setValue(
-      this.mapLayers.map((x) => x.id),
-      { emitEvent: false }
+    const layers = this.mapLayers.map((x) => x.id);
+    this.control.setValue(layers, { emitEvent: false });
+    const encapsulatedSettings = this.mapComponent?.mapSettingsWithoutLayers;
+    // Reset using current layers order
+    this.mapComponent?.setupMapLayers(
+      {
+        layers,
+        arcGisWebMap: undefined,
+        basemap: undefined,
+        controls: encapsulatedSettings?.settings.controls as MapControls,
+      },
+      true
     );
   }
 

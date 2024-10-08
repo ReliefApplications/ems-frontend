@@ -55,9 +55,6 @@ import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
   providedIn: 'root',
 })
 export class MapLayersService {
-  /** Flag used in Layer class to trigger layer order action*/
-  public reorderingLayers = false;
-
   /**
    * Shared map layer service
    *
@@ -868,4 +865,19 @@ export class MapLayersService {
     }
     return false;
   };
+
+  /**
+   * Create panes for each layer taking
+   *
+   * @param map Current leaflet map
+   * @param layersCount Layers count
+   */
+  generateStackPanes(map: L.Map, layersCount: number) {
+    for (let index = 0; index < layersCount; index++) {
+      const paneName = (500 + layersCount - index).toString();
+      if (!map.getPane(paneName)) {
+        map.createPane(paneName).style.zIndex = paneName;
+      }
+    }
+  }
 }

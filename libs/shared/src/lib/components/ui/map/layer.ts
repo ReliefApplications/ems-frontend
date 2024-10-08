@@ -306,7 +306,9 @@ export class Layer implements LayerModel {
     this.opacity = get(options, 'opacity', 1);
     this.visibility = get(options, 'visibility', true);
     this.layerDefinition = get(options, 'layerDefinition');
-    this.zIndex = get(options, 'zIndex');
+    // Default zIndex values for layers are above 500, popups work around 600 and above,
+    // This way we make sure panes are correctly placed in the general stack
+    this.zIndex = get(options, 'zIndex') + 500;
 
     if (options.type !== 'GroupLayer') {
       this.sublayersLoaded.next(true);
@@ -481,7 +483,9 @@ export class Layer implements LayerModel {
             const uniqueValueSymbol =
               uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
               uniqueValueDefaultSymbol;
-            return new L.Marker(latlng).setIcon(
+            return new L.Marker(latlng, {
+              pane: this.zIndex.toString(),
+            }).setIcon(
               createCustomDivIcon({
                 icon: uniqueValueSymbol.style,
                 color: uniqueValueSymbol.color,
@@ -490,7 +494,9 @@ export class Layer implements LayerModel {
               })
             );
           } else {
-            return new L.Marker(latlng).setIcon(
+            return new L.Marker(latlng, {
+              pane: this.zIndex.toString(),
+            }).setIcon(
               createCustomDivIcon({
                 icon: symbol.style,
                 color: symbol.color,
@@ -557,16 +563,17 @@ export class Layer implements LayerModel {
       //     // weight: style.borderWidth,
       //   };
       // },
+      pane: this.zIndex.toString(),
     };
 
     switch (this.type) {
       case 'GroupLayer':
-        const ChildrenIds = this.getChildren();
-        const layerPromises = ChildrenIds.map((layer, index) => {
+        const childrenIds = this.getChildren();
+        const layerPromises = childrenIds.map((layer, index) => {
           return this.layerService.createLayersFromId(
             layer,
             this.injector,
-            index + 1
+            childrenIds.length - index
           );
         });
         const sublayers = await Promise.all(layerPromises);
@@ -580,7 +587,7 @@ export class Layer implements LayerModel {
         const layers = sublayers
           .map((child) => child.layer)
           .filter((layer) => layer !== undefined) as L.Layer[];
-        const layer = L.layerGroup(layers);
+        const layer = L.layerGroup(layers, { pane: this.zIndex.toString() });
         layer.onAdd = (map: L.Map) => {
           const l = L.LayerGroup.prototype.onAdd.call(layer, map);
           // Leaflet.heat doesn't support click events, so we have to do it ourselves
@@ -658,6 +665,7 @@ export class Layer implements LayerModel {
             );
 
             const heatmapOptions: HeatMapOptions = {
+              pane: this.zIndex.toString(),
               opacity: this.opacity,
               blur: get(
                 this.layerDefinition,
@@ -758,6 +766,7 @@ export class Layer implements LayerModel {
                   symbol
                 );
                 const clusterGroup = L.markerClusterGroup({
+                  pane: this.zIndex.toString(),
                   chunkedLoading: true, // Load markers in chunks
                   chunkInterval: 250, // Time interval (in ms) during which addLayers works before pausing to let the rest of the page process
                   chunkDelay: 50, // Time delay (in ms) between consecutive periods of processing for addLayers
@@ -822,6 +831,7 @@ export class Layer implements LayerModel {
                 });
 
                 const clusterLayer = L.geoJSON(data, geoJSONopts);
+
                 clusterLayer.onAdd = (map: L.Map) => {
                   const l = L.GeoJSON.prototype.onAdd.call(clusterLayer, map);
                   this.onAddLayer(map, clusterLayer);
@@ -955,40 +965,7 @@ export class Layer implements LayerModel {
       // Attach the event listener
       map.on('zoomend', this.zoomListener);
     }
-    if (!isNil(this.zIndex) && !this.layerService.reorderingLayers) {
-      this.orderLayersByIndex(map);
-    }
   }
-
-  /**
-   * Order related layers from the given map by it's zIndex number, on reverse value
-   * Small index means first in the stack context
-   *
-   * @param map Current map
-   */
-  orderLayersByIndex = (map: L.Map) => {
-    if (this.layerService.reorderingLayers) {
-      return;
-    }
-    this.layerService.reorderingLayers = true;
-    const layers: any[] = [];
-    // Get all system layers, remove them and place it in the layers helper property
-    map.eachLayer((layer) => {
-      if ((layer as any).id) {
-        layers.push(layer as any);
-        map.removeLayer(layer);
-      }
-    });
-    // Rever sort from their zIndex stack context value
-    layers.sort((l1, l2) => l2.zIndex - l1.zIndex);
-    // Place them back in order
-    layers.forEach(async (layer) => {
-      if ((layer as any).shouldDisplay) {
-        map.addLayer(layer);
-      }
-    });
-    this.layerService.reorderingLayers = false;
-  };
 
   /**
    * Subscribe to zoom events

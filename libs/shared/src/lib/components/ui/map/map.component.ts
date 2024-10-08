@@ -763,9 +763,13 @@ export class MapComponent
 
       if (layer.type === 'GroupLayer') {
         const children = layer.getChildren();
-        const childrenPromises = children.map((Childrenlayer, index) => {
+        const childrenPromises = children.map((childrenlayer, index) => {
           return this.mapLayersService
-            .createLayersFromId(Childrenlayer, this.injector, index + 1)
+            .createLayersFromId(
+              childrenlayer,
+              this.injector,
+              children.length - index
+            )
             .then(async (sublayer) => {
               sublayer.parent = layer;
               if (sublayer.type === 'GroupLayer') {
@@ -804,11 +808,12 @@ export class MapComponent
     };
 
     return new Promise<{ layers: L.Control.Layers.TreeObject[] }>((resolve) => {
+      this.mapLayersService.generateStackPanes(this.map, layerIds.length);
       const layerPromises = layerIds.map((id, index) => {
         const existingLayer = this.layers.find((layer) => layer.id === id);
         if (!existingLayer || existingLayer?.shouldRefresh) {
           return this.mapLayersService
-            .createLayersFromId(id, this.injector, index + 1)
+            .createLayersFromId(id, this.injector, layerIds.length - index)
             .then((layer) => {
               return parseTreeNode(layer, undefined, displayLayers);
             });
