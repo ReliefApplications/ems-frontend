@@ -216,6 +216,8 @@ export class Layer implements LayerModel {
   public shouldRefresh = false;
   /** Parent layer ( optional, only for sub-layer ) */
   public parent?: Layer;
+  /** Given layer index position in the map */
+  public zIndex!: number;
 
   /**
    * Get layer children. Await for sub-layers to be loaded first.
@@ -304,6 +306,7 @@ export class Layer implements LayerModel {
     this.opacity = get(options, 'opacity', 1);
     this.visibility = get(options, 'visibility', true);
     this.layerDefinition = get(options, 'layerDefinition');
+    this.zIndex = get(options, 'zIndex');
 
     if (options.type !== 'GroupLayer') {
       this.sublayersLoaded.next(true);
@@ -559,8 +562,12 @@ export class Layer implements LayerModel {
     switch (this.type) {
       case 'GroupLayer':
         const ChildrenIds = this.getChildren();
-        const layerPromises = ChildrenIds.map((layer) => {
-          return this.layerService.createLayersFromId(layer, this.injector);
+        const layerPromises = ChildrenIds.map((layer, index) => {
+          return this.layerService.createLayersFromId(
+            layer,
+            this.injector,
+            index + 1
+          );
         });
         const sublayers = await Promise.all(layerPromises);
 
@@ -585,10 +592,7 @@ export class Layer implements LayerModel {
           this.onRemoveLayer(map, layer);
           return l;
         };
-        this.layer = layer;
-        (this.layer as any).origin = 'app-builder';
-        (this.layer as any).id = this.id;
-        return this.layer;
+        return this.updateLayerContextInformation(layer);
 
       default:
         switch (
@@ -744,10 +748,7 @@ export class Layer implements LayerModel {
               this.onRemoveLayer(map, layer);
               return l;
             };
-            this.layer = layer;
-            (this.layer as any).origin = 'app-builder';
-            (this.layer as any).id = this.id;
-            return this.layer;
+            return this.updateLayerContextInformation(layer);
           default:
             switch (get(this.layerDefinition, 'featureReduction.type')) {
               case 'cluster':
@@ -832,10 +833,7 @@ export class Layer implements LayerModel {
                   return l;
                 };
                 clusterGroup.addLayer(clusterLayer);
-                this.layer = clusterGroup;
-                (this.layer as any).origin = 'app-builder';
-                (this.layer as any).id = this.id;
-                return this.layer;
+                return this.updateLayerContextInformation(clusterGroup);
               default:
                 const layer = L.geoJSON(data, geoJSONopts);
 
@@ -849,13 +847,27 @@ export class Layer implements LayerModel {
                   this.onRemoveLayer(map, layer);
                   return l;
                 };
-                this.layer = layer;
-                (this.layer as any).origin = 'app-builder';
-                (this.layer as any).id = this.id;
-                return this.layer;
+                return this.updateLayerContextInformation(layer);
             }
         }
     }
+  }
+
+  /**
+   * Update given layer with necessary context information, including
+   * - Related system layer id
+   * - Layer origin
+   * - Z index in the layer stack context
+   *
+   * @param layer Layer to update with context information
+   * @returns layer with updated context information
+   */
+  private updateLayerContextInformation(layer: L.Layer): L.Layer {
+    this.layer = layer;
+    (this.layer as any).origin = 'app-builder';
+    (this.layer as any).id = this.id;
+    (this.layer as any).zIndex = this.zIndex;
+    return this.layer;
   }
 
   /**
@@ -943,7 +955,40 @@ export class Layer implements LayerModel {
       // Attach the event listener
       map.on('zoomend', this.zoomListener);
     }
+    if (!isNil(this.zIndex) && !this.layerService.reorderingLayers) {
+      this.orderLayersByIndex(map);
+    }
   }
+
+  /**
+   * Order related layers from the given map by it's zIndex number, on reverse value
+   * Small index means first in the stack context
+   *
+   * @param map Current map
+   */
+  orderLayersByIndex = (map: L.Map) => {
+    if (this.layerService.reorderingLayers) {
+      return;
+    }
+    this.layerService.reorderingLayers = true;
+    const layers: any[] = [];
+    // Get all system layers, remove them and place it in the layers helper property
+    map.eachLayer((layer) => {
+      if ((layer as any).id) {
+        layers.push(layer as any);
+        map.removeLayer(layer);
+      }
+    });
+    // Rever sort from their zIndex stack context value
+    layers.sort((l1, l2) => l2.zIndex - l1.zIndex);
+    // Place them back in order
+    layers.forEach(async (layer) => {
+      if ((layer as any).shouldDisplay) {
+        map.addLayer(layer);
+      }
+    });
+    this.layerService.reorderingLayers = false;
+  };
 
   /**
    * Subscribe to zoom events

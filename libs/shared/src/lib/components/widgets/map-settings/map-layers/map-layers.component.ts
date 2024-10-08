@@ -1,16 +1,16 @@
+import { Dialog } from '@angular/cdk/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DomPortal } from '@angular/cdk/portal';
+import { CdkTable } from '@angular/cdk/table';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
+import { map, takeUntil } from 'rxjs';
+import { LayerModel } from '../../../../models/layer.model';
+import { MapLayersService } from '../../../../services/map/map-layers.service';
+import { LayerType } from '../../../ui/map/interfaces/layer-settings.type';
+import { MapComponent } from '../../../ui/map/map.component';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { AddLayerModalComponent } from '../add-layer-modal/add-layer-modal.component';
-import { MapLayersService } from '../../../../services/map/map-layers.service';
-import { LayerModel } from '../../../../models/layer.model';
-import { LayerType } from '../../../ui/map/interfaces/layer-settings.type';
-import { Dialog } from '@angular/cdk/dialog';
-import { takeUntil } from 'rxjs';
-import { UntypedFormControl } from '@angular/forms';
-import { MapComponent } from '../../../ui/map/map.component';
-import { CdkTable } from '@angular/cdk/table';
-import { DomPortal } from '@angular/cdk/portal';
 
 /**
  * Layers configuration component of Map Widget.
@@ -58,10 +58,25 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
    */
   private updateLayerList(): void {
     const layerIds = this.control.value;
-    this.mapLayersService.getLayers(layerIds).subscribe((layers) => {
-      this.mapLayers = layers;
-      this.loading = false;
-    });
+    this.mapLayersService
+      .getLayers(layerIds)
+      .pipe(
+        // Sort layers list with the same order as the one in the given control
+        map((layers) => {
+          const sortedLayers: LayerModel[] = [];
+          layerIds.forEach((layerId: string) => {
+            const layer = layers.find((l) => layerId === l.id);
+            if (layer) {
+              sortedLayers.push(layer);
+            }
+          });
+          return sortedLayers;
+        })
+      )
+      .subscribe((layers) => {
+        this.mapLayers = layers;
+        this.loading = false;
+      });
   }
 
   /**
@@ -200,6 +215,9 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
   public onListDrop(e: CdkDragDrop<LayerModel[]>) {
     moveItemInArray(this.mapLayers, e.previousIndex, e.currentIndex);
     this.mapLayers = [...this.mapLayers];
+    this.mapComponent?.layers[e.currentIndex].orderLayersByIndex(
+      this.mapComponent.map
+    );
     this.control.setValue(
       this.mapLayers.map((x) => x.id),
       { emitEvent: false }

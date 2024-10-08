@@ -55,6 +55,9 @@ import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
   providedIn: 'root',
 })
 export class MapLayersService {
+  /** Flag used in Layer class to trigger layer order action*/
+  public reorderingLayers = false;
+
   /**
    * Shared map layer service
    *
@@ -389,11 +392,13 @@ export class MapLayersService {
    *
    * @param layerIds layer settings saved from the layer editor
    * @param injector Injector containing all needed providers for layer class
+   * @param zIndex Current layer's stack order in the map
    * @returns Observable of LayerSettingsI
    */
   async createLayersFromId(
     layerIds: string,
-    injector: Injector
+    injector: Injector,
+    zIndex?: number
   ): Promise<Layer> {
     const promise: Promise<Layer> = lastValueFrom(
       this.getLayerById(layerIds).pipe(
@@ -411,14 +416,14 @@ export class MapLayersService {
             });
           }
         }),
-        map(
-          (layer: { layer: LayerModel; geojson: any }) =>
-            new Layer(
-              { ...layer.layer, geojson: layer.geojson },
-              injector,
-              this.document
-            )
-        )
+        map((layer: { layer: LayerModel; geojson: any }) => {
+          const layerOptions = {
+            ...layer.layer,
+            ...(!isNil(zIndex) && { zIndex }),
+            geojson: layer.geojson,
+          };
+          return new Layer(layerOptions, injector, this.document);
+        })
       )
     );
 
@@ -430,9 +435,14 @@ export class MapLayersService {
    *
    * @param layer Layer to get definition of.
    * @param injector Injector containing all needed providers for layer class
+   * @param zIndex Current layer's stack order in the map
    * @returns Layer for map widget
    */
-  async createLayerFromDefinition(layer: LayerModel, injector: Injector) {
+  async createLayerFromDefinition(
+    layer: LayerModel,
+    injector: Injector,
+    zIndex: number
+  ) {
     if (this.isDatasourceValid(layer.datasource)) {
       const data = await lastValueFrom(
         forkJoin({
@@ -443,13 +453,18 @@ export class MapLayersService {
       return new Layer(
         {
           ...data.layer,
+          ...(!isNil(zIndex) && { zIndex }),
           geojson: data.geojson,
         },
         injector,
         this.document
       );
     } else {
-      return new Layer(layer, injector, this.document);
+      return new Layer(
+        { ...layer, ...(!isNil(zIndex) && { zIndex }) },
+        injector,
+        this.document
+      );
     }
   }
 

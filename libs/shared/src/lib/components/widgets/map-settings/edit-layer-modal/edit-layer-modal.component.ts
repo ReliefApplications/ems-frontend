@@ -286,7 +286,8 @@ export class EditLayerModalComponent
     this.mapLayersService
       .createLayerFromDefinition(
         this.form.value as LayerModel,
-        this.data.mapComponent.injector
+        this.data.mapComponent.injector,
+        this.data.mapComponent.layers.length + 1
       )
       .then((layer) => {
         if (layer) {
