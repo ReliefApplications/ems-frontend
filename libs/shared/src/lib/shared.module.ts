@@ -3,10 +3,6 @@ import { FormModule } from './components/form/form.module';
 import { AccessModule } from './components/access/access.module';
 import { LayoutModule } from './components/layout/layout.module';
 import { FormBuilderModule } from './components/form-builder/form-builder.module';
-import { ChartSettingsModule } from './components/widgets/chart-settings/chart-settings.module';
-import { EditorSettingsModule } from './components/widgets/editor-settings/editor-settings.module';
-import { GridSettingsModule } from './components/widgets/grid-settings/grid-settings.module';
-import { MapSettingsModule } from './components/widgets/map-settings/map-settings.module';
 import { WidgetGridModule } from './components/widget-grid/widget-grid.module';
 import { RolesModule } from './components/roles/roles.module';
 import { RecordHistoryModule } from './components/record-history/record-history.module';
@@ -21,7 +17,6 @@ import { SkeletonTableModule } from './components/skeleton/skeleton-table/skelet
 import { SkeletonModule } from './directives/skeleton/skeleton.module';
 import { UserSummaryModule } from './components/user-summary/user-summary.module';
 import { DateModule } from './pipes/date/date.module';
-import { SummaryCardSettingsModule } from './components/widgets/summary-card-settings/summary-card-settings.module';
 import { RoleSummaryModule } from './components/role-summary/role-summary.module';
 import { EmptyModule } from './components/ui/empty/empty.module';
 import { NavbarModule } from './components/navbar/navbar.module';
@@ -38,26 +33,19 @@ import { ButtonActionModule } from './components/button-action/button-action.mod
 import { GraphQLSelectModule } from '@oort-front/ui';
 import { SortingSettingsModule } from './components/widgets/common/sorting-settings/sorting-settings.module';
 import { WidgetChoiceModule } from './components/widget-choice/widget-choice.module';
-import { TabsSettingsModule } from './components/widgets/tabs-settings/tabs-settings.module';
 import { ApplicationsArchiveModule } from './components/applications-archive/applications-archive.module';
 import { ReferenceDataDropdownModule } from './survey/components/reference-data-dropdown/reference-data-dropdown.module';
 import { ListFilterComponent } from './components/list-filter/list-filter.component';
 import { StatusOptionsComponent } from './components/status-options/status-options.component';
 import { DashboardFilterIconComponent } from './components/dashboard-filter-icon/dashboard-filter-icon.component';
-import { PayloadModalComponent } from './components/payload-modal/payload-modal.component';
 
 /** Main module for the shared project */
 @NgModule({
   exports: [
-    PayloadModalComponent,
     LayoutModule,
     AccessModule,
     FormModule,
     FormBuilderModule,
-    ChartSettingsModule,
-    EditorSettingsModule,
-    GridSettingsModule,
-    MapSettingsModule,
     WidgetGridModule,
     SortingSettingsModule,
     RolesModule,
@@ -80,14 +68,12 @@ import { PayloadModalComponent } from './components/payload-modal/payload-modal.
     DashboardFilterIconComponent,
     ButtonActionModule,
     WidgetChoiceModule,
-    TabsSettingsModule,
     ReferenceDataDropdownModule,
     StatusOptionsComponent,
     // === Pipes ===
     DateModule,
     ReadableCronModule,
     CronParserModule,
-    SummaryCardSettingsModule,
     RoleSummaryModule,
     GraphQLSelectModule,
     EmptyModule,
@@ -105,7 +91,6 @@ import { PayloadModalComponent } from './components/payload-modal/payload-modal.
     ListFilterComponent,
     StatusOptionsComponent,
     DashboardFilterIconComponent,
-    PayloadModalComponent,
   ],
 })
 export class Module {}

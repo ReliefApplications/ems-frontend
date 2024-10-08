@@ -430,6 +430,9 @@ export class AutocompleteDirective
     if (this.clickOutsideListener) {
       this.clickOutsideListener();
     }
+    if (this.autocompleteClosingActionsSubscription) {
+      this.autocompleteClosingActionsSubscription.unsubscribe();
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }

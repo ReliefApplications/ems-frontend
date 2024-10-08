@@ -30,6 +30,8 @@ export class MapPopupService {
   private isPopupOutOfBounds = { x: false, y: false };
   /** Timeout to open popup */
   private timeoutListener!: NodeJS.Timeout;
+  /** Timeout to close popup */
+  private timeoutPopupCloseListener!: NodeJS.Timeout;
 
   /**
    * Injects DomService and TranslateService instances to the service
@@ -86,6 +88,12 @@ export class MapPopupService {
       );
 
       popup.on('remove', () => {
+        if (this.timeoutListener) {
+          clearTimeout(this.timeoutListener);
+        }
+        if (this.timeoutPopupCloseListener) {
+          clearTimeout(this.timeoutPopupCloseListener);
+        }
         // prevent visual bug (bottom-popup switch + content destruction)
         this.popupPane
           ?.querySelector('.leaflet-popup')
@@ -101,7 +109,7 @@ export class MapPopupService {
       if (this.timeoutListener) {
         clearTimeout(this.timeoutListener);
       }
-      setTimeout(() => {
+      this.timeoutListener = setTimeout(() => {
         // Reset default popup
         if (this.popupPane) {
           this.popupPane.className = 'leaflet-pane leaflet-popup-pan';
@@ -263,7 +271,12 @@ export class MapPopupService {
     popupComponent.instance.closePopup
       .pipe(takeUntil(popupComponent.instance.destroy$))
       .subscribe(() => {
-        popup.remove();
+        if (this.timeoutPopupCloseListener) {
+          clearTimeout(this.timeoutPopupCloseListener);
+        }
+        this.timeoutPopupCloseListener = setTimeout(() => {
+          popup.remove();
+        }, 0);
       });
 
     // listen to popup zoom to event

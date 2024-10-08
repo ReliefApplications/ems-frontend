@@ -22,6 +22,7 @@ import {
 } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
+import { get } from 'lodash';
 
 /**
  * Default number of resources that will be shown at once.
@@ -305,8 +306,19 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
                 );
               } else {
                 if (data) {
-                  const { id } = data.addForm;
-                  this.router.navigate(['/forms/builder', id]);
+                  const resourceId = get(data.addForm, 'resource.id');
+                  this.router.navigate(['/resources/' + resourceId]);
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectCreated',
+                      {
+                        type: this.translate
+                          .instant('common.resource.one')
+                          .toLowerCase(),
+                        value: value.name,
+                      }
+                    )
+                  );
                 }
               }
             },

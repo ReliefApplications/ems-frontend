@@ -6,7 +6,6 @@ import {
   OnDestroy,
   OnInit,
   Renderer2,
-  TemplateRef,
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -26,7 +25,6 @@ import { AggregationService } from '../../../services/aggregation/aggregation.se
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { GET_RESOURCE_METADATA } from './graphql/queries';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
 import { Record } from '../../../models/record.model';
 
@@ -52,12 +50,16 @@ import { ReferenceDataService } from '../../../services/reference-data/reference
 import searchFilters from '../../../utils/filter/search-filters';
 import filterReferenceData from '../../../utils/filter/reference-data-filter.util';
 import { ReferenceData } from '../../../models/reference-data.model';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
+import { BaseWidgetComponent } from '../base-widget/base-widget.component';
+import { PageSizeChangeEvent } from '@progress/kendo-angular-pager';
+import { WidgetService } from '../../../services/widget/widget.service';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
 
-/** Default page size for pagination */
-const DEFAULT_PAGE_SIZE = 25;
+/** Key to store user selected page size, in local storage */
+const SELECTED_PAGE_SIZE_KEY = 'selectedPageSize';
 
 /**
  * Summary Card Widget component.
@@ -68,7 +70,7 @@ const DEFAULT_PAGE_SIZE = 25;
   styleUrls: ['./summary-card.component.scss'],
 })
 export class SummaryCardComponent
-  extends UnsubscribeComponent
+  extends BaseWidgetComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
   /** Widget definition */
@@ -77,8 +79,6 @@ export class SummaryCardComponent
   @Input() settings!: SummaryCardFormT['value'];
   /** Should show padding */
   @Input() usePadding = true;
-  /** Reference to header template */
-  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
   /** Reference to summary card grid */
   @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
   /** Reference to pdf */
@@ -94,7 +94,7 @@ export class SummaryCardComponent
   /** Pagination info */
   public pageInfo = {
     pageIndex: 0,
-    pageSize: DEFAULT_PAGE_SIZE,
+    pageSize: this.defaultPageSize,
     length: 0,
     skip: 0,
     lastCursor: null as any,
@@ -176,7 +176,10 @@ export class SummaryCardComponent
         filters: this.layout?.query.filter ? [this.layout?.query.filter] : [],
       };
     }
-    return filter;
+    return {
+      logic: 'and',
+      filters: [filter, this.contextService.injectContext(this.contextFilters)],
+    };
   }
 
   /** @returns does the card use resource aggregation */
@@ -214,6 +217,33 @@ export class SummaryCardComponent
     return get(this.settings, 'widgetDisplay.exportable', true);
   }
 
+  /** @returns default page size, for initialization */
+  private get defaultPageSize(): number {
+    const selectedPageSize = localStorage.getItem(SELECTED_PAGE_SIZE_KEY);
+    if (selectedPageSize) {
+      return Number(selectedPageSize);
+    } else {
+      const windowHeight = window.innerHeight;
+      switch (true) {
+        case windowHeight < 600: {
+          return 10;
+        }
+        case windowHeight >= 600 && windowHeight < 1200: {
+          return 25;
+        }
+        case windowHeight >= 1200 && windowHeight < 1800: {
+          return 50;
+        }
+        case windowHeight >= 1800: {
+          return 100;
+        }
+        default: {
+          return 25;
+        }
+      }
+    }
+  }
+
   /**
    * Get the summary card pdf name
    *
@@ -235,20 +265,12 @@ export class SummaryCardComponent
     return this.pageInfo.length !== Number.MAX_SAFE_INTEGER;
   }
 
-  /** @returns the graphql query variables object */
-  get graphqlVariables() {
-    try {
-      let mapping = JSON.parse(
-        this.settings.card?.referenceDataVariableMapping || ''
-      );
-      mapping = this.contextService.replaceContext(mapping);
-      mapping = this.contextService.replaceFilter(mapping);
-      mapping = this.replaceWidgetVariables(mapping);
-      this.contextService.removeEmptyPlaceholders(mapping);
-      return mapping;
-    } catch {
-      return null;
-    }
+  /** @returns reference data (graphql or rest) query params */
+  get queryParams() {
+    return this.widgetService.replaceReferenceDataQueryParams(
+      this.settings.card?.referenceDataVariableMapping as any,
+      this.replaceWidgetVariables.bind(this)
+    );
   }
 
   /**
@@ -266,6 +288,8 @@ export class SummaryCardComponent
    * @param gridService grid service
    * @param referenceDataService Shared reference data service
    * @param renderer Angular renderer service
+   * @param dashboardService Shared dashboard service
+   * @param widgetService Shared widget service
    */
   constructor(
     private apollo: Apollo,
@@ -279,7 +303,9 @@ export class SummaryCardComponent
     private elementRef: ElementRef,
     private gridService: GridService,
     private referenceDataService: ReferenceDataService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private dashboardService: DashboardService,
+    private widgetService: WidgetService
   ) {
     super();
   }
@@ -442,7 +468,7 @@ export class SummaryCardComponent
       if (this.useAggregation) {
         this.getCardsFromAggregation(card);
       } else if (this.useLayout) {
-        this.createDynamicQueryFromLayout(card);
+        await this.createDynamicQueryFromLayout(card);
       }
     } else if (this.useReferenceData) {
       // Using reference data
@@ -460,9 +486,9 @@ export class SummaryCardComponent
       }
       const variables = this.queryPaginationVariables();
       from(
-        this.referenceDataService.cacheItems(this.refData, {
+        this.referenceDataService.fetchItems(this.refData, {
           ...variables,
-          ...(this.graphqlVariables ?? {}),
+          ...(this.queryParams ?? {}),
         })
       )
         .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
@@ -546,17 +572,25 @@ export class SummaryCardComponent
   /**
    * Updates the cards from fetched custom query
    *
-   * @param res Query result
+   * @param data Query result
+   * @param data.data Data field
+   * @param data.loading Loading status
    */
-  private updateRecordCards(res: any) {
-    if (!res?.data) {
+  private updateRecordCards({
+    data,
+    loading,
+  }: {
+    data: any;
+    loading: boolean;
+  }) {
+    if (!data) {
       return;
     }
     let newCards: any[] = [];
 
     const layoutQueryName = this.layout?.query.name;
     if (this.layout) {
-      const edges = res.data?.[layoutQueryName].edges;
+      const edges = data?.[layoutQueryName].edges;
       if (!edges) {
         return;
       }
@@ -569,8 +603,8 @@ export class SummaryCardComponent
         style: e.meta.style,
       }));
     } else if (this.settings.card?.aggregation) {
-      if (!res.data?.recordsAggregation?.items) return;
-      newCards = res.data.recordsAggregation.items.map((x: any) => ({
+      if (!data?.recordsAggregation?.items) return;
+      newCards = data.recordsAggregation.items.map((x: any) => ({
         ...this.settings.card,
         rawValue: x,
       }));
@@ -581,6 +615,11 @@ export class SummaryCardComponent
     // update card list and scroll behavior according to the card items display
 
     this.cards = newCards;
+    if (this.widget.settings.widgetDisplay.hideEmpty) {
+      // Listen to cards data changes to know when widget is empty and will be hidden
+      this.isEmpty = this.cards.length ? false : true;
+      this.dashboardService.widgetContentRefreshed.next(null);
+    }
     if (
       this.settings.widgetDisplay?.usePagination ||
       this.triggerRefreshCardList
@@ -594,13 +633,13 @@ export class SummaryCardComponent
       }
     }
     this.pageInfo.length = get(
-      res.data[layoutQueryName ?? 'recordsAggregation'],
+      data[layoutQueryName ?? 'recordsAggregation'],
       'totalCount',
       0
     );
     this.scrolling = false;
     this.triggerRefreshCardList = false;
-    this.loading = res.loading;
+    this.loading = loading;
   }
 
   /**
@@ -612,7 +651,7 @@ export class SummaryCardComponent
   private async updateReferenceDataCards(
     items: any[],
     pageInfo: Awaited<
-      ReturnType<typeof this.referenceDataService.cacheItems>
+      ReturnType<typeof this.referenceDataService.fetchItems>
     >['pageInfo']
   ) {
     if (!this.refData) {
@@ -724,6 +763,11 @@ export class SummaryCardComponent
         this.pageInfo.skip + this.pageInfo.pageSize
       );
     }
+    if (this.widget.settings.widgetDisplay.hideEmpty) {
+      // Listen to cards data changes to know when widget is empty and will be hidden
+      this.isEmpty = this.cards.length ? false : true;
+      this.dashboardService.widgetContentRefreshed.next(null);
+    }
 
     if (!isPaginated) {
       this.pageInfo.length = this.sortedCachedCards.length;
@@ -799,11 +843,13 @@ export class SummaryCardComponent
         },
       })
     );
-
-    this.gridLayoutService
-      .getLayouts(card.resource, { ids: [card.layout], first: 1 })
-      .then((res) => {
-        const layouts = res.edges.map((edge) => edge.node);
+    await this.gridLayoutService
+      .getLayouts(card.resource, {
+        ids: [card.layout],
+        first: 1,
+      })
+      .then(async ({ edges }) => {
+        const layouts = edges.map((edge) => edge.node);
         if (layouts.length > 0) {
           this.layout = layouts[0];
           const layoutQuery = this.layout.query;
@@ -860,37 +906,43 @@ export class SummaryCardComponent
           this.metaQuery = this.queryBuilder.buildMetaQuery(this.layout.query);
           if (this.metaQuery) {
             this.loading = true;
-            this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe({
-              next: async ({ data }: any) => {
-                for (const field in data) {
-                  if (Object.prototype.hasOwnProperty.call(data, field)) {
-                    this.metaFields = Object.assign({}, data[field]);
-                    try {
-                      await this.gridService.populateMetaFields(
-                        this.metaFields
-                      );
-                      this.fields = this.fields.map((field) => {
-                        //add shape for columns and matrices
-                        const metaData = this.metaFields[field.name];
-                        if (metaData && (metaData.columns || metaData.rows)) {
-                          return {
-                            ...field,
-                            columns: metaData.columns,
-                            rows: metaData.rows,
-                          };
-                        }
-                        return field;
-                      });
-                    } catch (err) {
-                      console.error(err);
+            const { data } = await this.metaQuery
+              .pipe(takeUntil(this.destroy$))
+              .toPromise();
+
+            const promises = Object.entries(data).map(async ([key]) => {
+              if (Object.prototype.hasOwnProperty.call(data, key)) {
+                this.metaFields = Object.assign({}, data[key]);
+                try {
+                  await this.gridService.populateMetaFields(this.metaFields);
+                  this.fields = this.fields.map((field) => {
+                    const metaData = this.metaFields[field.name];
+                    if (metaData) {
+                      field = {
+                        ...field,
+                        meta: metaData,
+                      };
+                      if (metaData.columns || metaData.row) {
+                        return {
+                          ...field,
+                          columns: metaData.columns,
+                          rows: metaData.rows,
+                        };
+                      }
                     }
-                  }
+                    return field;
+                  });
+                } catch (err) {
+                  console.error(err);
                 }
-              },
-              error: () => {
-                this.loading = false;
-              },
+              }
             });
+            await Promise.all(promises);
+            // Update cards metadata (will be the fields value in the cards content)
+            this.cards = this.cards.map((c: CardT) => ({
+              ...c,
+              metadata: this.fields,
+            }));
           }
         }
       });
@@ -1056,9 +1108,9 @@ export class SummaryCardComponent
       const variables = this.queryPaginationVariables(event.pageIndex);
 
       from(
-        this.referenceDataService.cacheItems(this.refData, {
+        this.referenceDataService.fetchItems(this.refData, {
           ...variables,
-          ...(this.graphqlVariables ?? {}),
+          ...(this.queryParams ?? {}),
         })
       )
         .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
@@ -1067,6 +1119,15 @@ export class SummaryCardComponent
           this.loading = false;
         });
     }
+  }
+
+  /**
+   * Store new page size in local storage, so next time widgets are drawn, remembers it
+   *
+   * @param event page size change event
+   */
+  public onPageSizeChange(event: PageSizeChangeEvent): void {
+    localStorage.setItem(SELECTED_PAGE_SIZE_KEY, event.newPageSize.toString());
   }
 
   /**

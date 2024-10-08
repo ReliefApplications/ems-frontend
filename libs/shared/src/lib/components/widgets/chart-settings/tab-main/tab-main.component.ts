@@ -42,6 +42,8 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
   public aggregation?: Aggregation;
   /** Available fields */
   public availableSeriesFields: any[] = [];
+  /** Loading status */
+  public loading = false;
 
   /**
    * Get the selected chart type object
@@ -110,6 +112,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
    * @param id resource id
    */
   private getResource(id: string): void {
+    this.loading = true;
     const aggregationId = this.formGroup.get('chart.aggregationId')?.value;
     this.apollo
       .query<ResourceQueryResponse>({
@@ -121,6 +124,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data }) => {
+        this.loading = false;
         this.resource = data.resource;
         if (aggregationId && this.resource.aggregations?.edges[0]) {
           this.aggregation = this.resource.aggregations.edges[0].node;
@@ -140,6 +144,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
    * @param id reference data id
    */
   private getReferenceData(id: string): void {
+    this.loading = true;
     const aggregationId = this.formGroup.get('chart.aggregationId')?.value;
     this.apollo
       .query<ReferenceDataQueryResponse>({
@@ -151,6 +156,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data }) => {
+        this.loading = false;
         this.referenceData = data.referenceData;
         if (aggregationId && this.referenceData.aggregations?.edges[0]) {
           this.aggregation = this.referenceData.aggregations.edges[0].node;

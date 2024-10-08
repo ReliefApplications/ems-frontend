@@ -21,7 +21,11 @@ export class CanDeactivateGuard {
    * @returns A boolean indicating if the component can deactivate
    */
   canDeactivate(component: CanComponentDeactivate): any {
-    return component.canDeactivate ? component.canDeactivate() : true;
+    if (component) {
+      return component.canDeactivate ? component.canDeactivate() : true;
+    } else {
+      return true;
+    }
   }
 }
 

@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   Inject,
+  OnChanges,
   OnDestroy,
   OnInit,
 } from '@angular/core';
@@ -118,6 +119,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'enableIf',
   'visibleIf',
   'tooltip',
+  'popupWidth',
   'referenceData',
   'referenceDataDisplayField',
   'isPrimitiveValue',
@@ -139,6 +141,13 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'valueName',
   'inputType',
   'html',
+  'calendarType',
+  'gqlUrl',
+  'gqlQuery',
+  'gqlPath',
+  'gqlValueName',
+  'gqlTitleName',
+  'gqlVariableMapping',
 ];
 
 /**
@@ -165,7 +174,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   ],
 })
 export class FilterBuilderModalComponent
-  implements OnInit, AfterViewInit, OnDestroy
+  implements OnInit, AfterViewInit, OnChanges, OnDestroy
 {
   /** Survey creator instance */
   surveyCreator!: SurveyCreatorModel;
@@ -200,6 +209,14 @@ export class FilterBuilderModalComponent
     this.setFormBuilder();
   }
 
+  ngOnChanges(): void {
+    if (this.surveyCreator) {
+      this.surveyCreator.survey.onAfterRenderQuestion.add(
+        this.formHelpersService.addQuestionTooltips
+      );
+    }
+  }
+
   /**
    * Creates the form builder and sets up all the options.
    */
@@ -212,6 +229,13 @@ export class FilterBuilderModalComponent
       questionTypes: QUESTION_TYPES,
     };
     this.surveyCreator = new SurveyCreatorModel(creatorOptions);
+
+    this.surveyCreator.onPreviewSurveyCreated.add((_: any, options: any) => {
+      const survey: SurveyModel = options.survey;
+      survey.onAfterRenderQuestion.add(
+        this.formHelpersService.addQuestionTooltips
+      );
+    });
 
     new SurveyCustomJSONEditorPlugin(this.surveyCreator);
 
@@ -242,18 +266,22 @@ export class FilterBuilderModalComponent
     const survey = new SurveyModel(
       this.data?.surveyStructure || DEFAULT_STRUCTURE
     );
+    this.formHelpersService.addUserVariables(survey);
     this.surveyCreator.JSON = survey.toJSON();
 
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
-      renderGlobalProperties(this.referenceDataService, this.http) as any
+      renderGlobalProperties(this.referenceDataService, this.http)
     );
-    (this.surveyCreator.onTestSurveyCreated as any).add(
-      (sender: any, opt: any) =>
-        opt.survey.onAfterRenderQuestion.add(
-          renderGlobalProperties(this.referenceDataService, this.http)
-        )
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      this.formHelpersService.addQuestionTooltips
     );
+    this.surveyCreator.onPreviewSurveyCreated.add((sender: any, opt: any) => {
+      this.formHelpersService.addUserVariables(opt.survey);
+      opt.survey.onAfterRenderQuestion.add(
+        renderGlobalProperties(this.referenceDataService, this.http)
+      );
+    });
 
     this.surveyCreator.onPropertyGridShowModal.add(updateModalChoicesAndValue);
   }

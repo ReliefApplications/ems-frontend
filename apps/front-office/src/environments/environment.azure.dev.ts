@@ -35,6 +35,7 @@ export const environment: Environment = {
     tracePropagationTargets: ['ems-safe-dev.who.int'],
   },
   user: {
-    attributes: ['country', 'region', 'location'],
+    attributes: ['country', 'region', 'location', 'department'],
   },
+  admin0Url: 'https://ems2-dev.who.int/app-builder/admin0.json',
 };

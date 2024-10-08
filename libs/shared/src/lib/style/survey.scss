@@ -1,4 +1,4 @@
-@import 'variables.scss';
+@import "variables.scss";
 
 ::ng-deep .sv-boolean:not(.sv-boolean--checked) {
   .sv-boolean__switch {
@@ -15,7 +15,7 @@
 
 // === QUESTION CONTENT ===
 ::ng-deep .sd-question__content {
-  .sv_q_erbox:not([style*='display: none']):not([style*='display:none']) {
+  .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) {
     background-color: transparent;
     border: none;
     order: 2;
@@ -70,6 +70,8 @@
   margin-left: 0.25rem;
   font-size: 0.75rem !important;
   font-weight: bold;
+  height: 17px;
+  line-height: 17px;
 }
 
 ::ng-deep .sd-matrixdropdown.sd-table,
@@ -97,8 +99,7 @@
 ::ng-deep survey,
 ::ng-deep survey-creator {
   .sd-input {
-    padding: calc(1 * var(--sjs-base-unit, var(--base-unit, 8px)))
-      calc(2 * var(--sjs-base-unit, var(--base-unit, 8px)));
+    padding: calc(1 * var(--sjs-base-unit, var(--base-unit, 8px))) calc(2 * var(--sjs-base-unit, var(--base-unit, 8px)));
   }
   .k-combobox,
   .k-multiselect,
@@ -300,10 +301,24 @@
   shared-core-grid {
     display: block;
     height: 410px;
-  
+
     .sv_row div {
       min-width: unset;
     }
+  }
+  // Input disabled
+  .sd-input--disabled {
+    opacity: 1;
+    @apply disabled:bg-gray-50 disabled:text-gray-500 disabled:ring-gray-200;
+  }
+  // Radio & Checkbox disabled
+  .sd-item--disabled .sd-item__control-label {
+    opacity: 1;
+    @apply text-gray-500 #{!important};
+  }
+  // Boolean disabled
+  .sd-boolean--disabled .sd-boolean__thumb {
+    opacity: 0.75;
   }
 }
 

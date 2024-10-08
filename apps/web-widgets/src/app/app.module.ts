@@ -54,6 +54,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import get from 'lodash/get';
+import { ShadowDomService } from '@oort-front/ui';
 
 // Register local translations for dates
 registerLocaleData(localeFr);
@@ -122,11 +123,15 @@ export const httpTranslateLoader = (http: HttpClient) =>
 /**
  * Provides custom overlay to inject modals / snackbars in shadow root.
  *
+ * @param shadowDomService Shadow Dom service
  * @param _platform CDK platform.
  * @returns custom Overlay container.
  */
-const provideOverlay = (_platform: Platform): AppOverlayContainer =>
-  new AppOverlayContainer(_platform, document);
+const provideOverlay = (
+  shadowDomService: ShadowDomService,
+  _platform: Platform
+): AppOverlayContainer =>
+  new AppOverlayContainer(shadowDomService, _platform, document);
 
 /**
  * Get base href from window configuration.
@@ -178,7 +183,7 @@ export const getBaseHref = () => {
     {
       provide: OverlayContainer,
       useFactory: provideOverlay,
-      deps: [Platform],
+      deps: [ShadowDomService, Platform],
     },
     {
       provide: MessageService,

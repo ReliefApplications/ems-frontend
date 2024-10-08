@@ -25,6 +25,7 @@ import { set } from 'lodash';
 import { DEFAULT_MARKER_ICON_OPTIONS } from '../../ui/map/utils/create-div-icon';
 import { FaIconName, faV4toV6Mapper } from '@oort-front/ui';
 import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';
+import { createAutomationForm } from '../../../forms/automation.forms';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 
@@ -36,6 +37,7 @@ const DEFAULT_MAP: Nullable<MapConstructorSettings> = {
   title: null,
   basemap: null,
   initialState: {
+    useWebMapInitialState: true,
     viewpoint: {
       center: {
         latitude: 0,
@@ -143,11 +145,9 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
       layout: [get(value, 'layout', null)],
       aggregation: [get(value, 'aggregation', null)],
       refData: [get(value, 'refData', null)],
-      referenceDataVariableMapping: get<string | null>(
-        value,
-        'referenceDataVariableMapping',
-        null
-      ),
+      referenceDataVariableMapping: [
+        get<string | null>(value, 'referenceDataVariableMapping', null),
+      ],
       geoField: [
         {
           value: get(value, 'geoField', null),
@@ -365,7 +365,7 @@ export const createLayerDrawingInfoForm = (
       }),
       ...(type === 'heatmap' && {
         gradient: [
-          get(value, 'gradient', DEFAULT_GRADIENT),
+          get(value, 'renderer.gradient', DEFAULT_GRADIENT),
           Validators.required,
         ],
         blur: [get<number>(value, 'renderer.blur', 15), Validators.required],
@@ -377,6 +377,7 @@ export const createLayerDrawingInfoForm = (
           get<number>(value, 'renderer.minOpacity', 0.4),
           Validators.required,
         ],
+        field1: [get(value, 'renderer.field1', null)],
       }),
       ...(type === 'uniqueValue' && {
         defaultLabel: get(value, 'renderer.defaultLabel', 'Other'),
@@ -541,6 +542,13 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
     id,
     title: [get(value, 'title', DEFAULT_MAP.title)],
     initialState: fb.group({
+      useWebMapInitialState: [
+        get(
+          value,
+          'initialState.useWebMapInitialState',
+          DEFAULT_MAP.initialState?.useWebMapInitialState
+        ),
+      ],
       viewpoint: fb.group({
         zoom: [
           get(
@@ -583,6 +591,12 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
       get(value, 'controls', DEFAULT_MAP.controls)
     ),
     arcGisWebMap: [get(value, 'arcGisWebMap', DEFAULT_MAP.arcGisWebMap)],
+    // Automation
+    automationRules: fb.array<ReturnType<typeof createAutomationForm>>(
+      get(value, 'automationRules', []).map((rule: any) =>
+        createAutomationForm(rule)
+      )
+    ),
   });
   if (formGroup.get('arcGisWebMap')?.value) {
     formGroup.get('basemap')?.disable({ emitEvent: false });

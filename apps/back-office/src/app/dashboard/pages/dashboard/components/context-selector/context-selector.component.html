@@ -1,0 +1,56 @@
+<ui-alert *ngIf="!contextRecord" class="mb-4">{{
+  'models.dashboard.context.alert.edition.template' | translate
+}}</ui-alert>
+<ui-alert *ngIf="contextRecord && !defaultTemplate" class="mb-4">{{
+  'models.dashboard.context.alert.edition.element' | translate
+}}</ui-alert>
+<ui-alert *ngIf="contextRecord && defaultTemplate" class="mb-4">{{
+  'models.dashboard.context.alert.preview' | translate
+}}</ui-alert>
+<span>
+  <!-- Selection of record, to see dashboard per record -->
+  <div uiFormFieldDirective *ngIf="$any(context).resource && recordsQuery">
+    <label>{{ 'common.record.one' | translate }}</label>
+    <ui-graphql-select
+      [query]="recordsQuery"
+      [formControl]="contextId"
+      [filterable]="true"
+      (searchChange)="onSearchChange($event)"
+      path="records"
+      valueField="id"
+      textField="data.{{ context.displayField }}"
+      [selectedElements]="contextRecord ? [contextRecord] : []"
+    >
+    </ui-graphql-select>
+    <ui-button
+      *ngIf="contextRecord"
+      uiSuffix
+      [isIcon]="true"
+      icon="close"
+      variant="danger"
+      [uiTooltip]="'common.clear' | translate"
+      (click)="contextId.setValue(null)"
+    ></ui-button>
+  </div>
+  <!-- Selection of element from reference data -->
+  <div uiFormFieldDirective [outline]="false" *ngIf="$any(context).refData">
+    <label>{{ 'models.dashboard.context.refData.element' | translate }}</label>
+    <ui-select-menu [formControl]="contextId" [filterable]="true">
+      <ui-select-option
+        *ngFor="let element of refDataElements"
+        [value]="element[refDataValueField]"
+      >
+        {{ element[context.displayField] }}
+      </ui-select-option>
+    </ui-select-menu>
+    <ui-button
+      *ngIf="contextRecord"
+      uiSuffix
+      [isIcon]="true"
+      icon="close"
+      variant="danger"
+      [uiTooltip]="'common.clear' | translate"
+      (click)="contextId.setValue(null)"
+    ></ui-button>
+  </div>
+</span>

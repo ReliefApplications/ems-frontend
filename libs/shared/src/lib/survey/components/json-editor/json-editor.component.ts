@@ -11,6 +11,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { QuestionAngular } from 'survey-angular-ui';
 import { JSONEditorModel } from './json-editor.model';
 import { Subject, takeUntil } from 'rxjs';
+import { AsyncMonacoEditorDirective } from '../../../directives/async-monaco-editor/async-monaco-editor.directive';
 
 /**
  * JSON editor component for Form Builder.
@@ -19,7 +20,13 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'shared-json-editor',
   standalone: true,
-  imports: [CommonModule, MonacoEditorModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    MonacoEditorModule,
+    FormsModule,
+    ReactiveFormsModule,
+    AsyncMonacoEditorDirective,
+  ],
   templateUrl: './json-editor.component.html',
   styleUrls: ['./json-editor.component.scss'],
 })

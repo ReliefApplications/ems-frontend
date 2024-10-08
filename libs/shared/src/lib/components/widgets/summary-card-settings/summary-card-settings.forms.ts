@@ -10,6 +10,7 @@ import { createGridActionsFormGroup } from '../grid-settings/grid-settings.forms
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import isNil from 'lodash/isNil';
 import { mutuallyExclusive } from '../../../utils/validators/mutuallyExclusive.validator';
+import { createAutomationForm } from '../../../forms/automation.forms';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
@@ -35,6 +36,12 @@ export const createSummaryCardForm = (id: string, configuration: any) => {
       ),
       actions: createGridActionsFormGroup(configuration),
       at: get<string>(configuration, 'at', ''),
+      // Automation
+      automationRules: fb.array<ReturnType<typeof createAutomationForm>>(
+        get(configuration, 'automationRules', []).map((rule: any) =>
+          createAutomationForm(rule)
+        )
+      ),
     },
     {
       validators: [templateRequiredWhenAddRecord],
@@ -125,11 +132,9 @@ const createCardForm = (value?: any) => {
     {
       title: get<string>(value, 'title', 'New Card'),
       referenceData: get<string | null>(value, 'referenceData', null),
-      referenceDataVariableMapping: get<string | null>(
-        value,
-        'referenceDataVariableMapping',
-        null
-      ),
+      referenceDataVariableMapping: [
+        get<string | null>(value, 'referenceDataVariableMapping', null),
+      ],
       resource: get<string | null>(value, 'resource', null),
       template: get<string | null>(value, 'template', null),
       layout: get<string | null>(value, 'layout', null),

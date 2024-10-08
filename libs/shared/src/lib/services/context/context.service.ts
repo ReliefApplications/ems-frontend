@@ -58,8 +58,10 @@ export class ContextService {
   public filterValues = new BehaviorSubject<any>(null);
   /** Is filter opened */
   public filterOpened = new BehaviorSubject<boolean>(false);
+  /** Should skip filter, used by the web widgets app, so when a page is redrawn, emit a value */
+  public skipFilter = false;
   /** Web component filter surveys */
-  webComponentsFilterSurvey: Model[] = [];
+  public webComponentsFilterSurvey: Model[] = [];
   /** Regex used to allow widget refresh */
   public filterRegex = /["']?{{filter\.(.*?)}}["']?/;
   /** Regex to detect the value of {{filter.}} in object */
@@ -95,6 +97,8 @@ export class ContextService {
         ([prev, curr]: [Record<string, any>, Record<string, any>]) =>
           !isEqual(prev, curr)
       ),
+      // Deactivate the filter emit when the context service is disabled ( when changing dashboard in web-widgets )
+      filter(() => !this.skipFilter),
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       map(([prev, curr]: [Record<string, any>, Record<string, any>]) => ({
         previous: prev,
@@ -218,18 +222,34 @@ export class ContextService {
    */
   public replaceContext(object: any): any {
     const context = this.context;
+
     if (!context) {
       return object;
     }
-    return JSON.parse(
-      JSON.stringify(object).replace(
-        new RegExp(this.contextRegex, 'g'),
-        (match) => {
+
+    // Function to recursively replace context placeholders in the object
+    const replacePlaceholders = (obj: any): any => {
+      if (typeof obj === 'string') {
+        // Replace only within strings
+        return obj.replace(new RegExp(this.contextRegex, 'g'), (match) => {
           const field = match.replace('{{context.', '').replace('}}', '');
-          return get(context, field) || match;
+          return get(context, field) || '';
+        });
+      } else if (Array.isArray(obj)) {
+        // Recursively replace in arrays
+        return obj.map((item) => replacePlaceholders(item));
+      } else if (obj && typeof obj === 'object') {
+        // Recursively replace in objects
+        const newObj = { ...obj };
+        for (const key in newObj) {
+          newObj[key] = replacePlaceholders(newObj[key]);
         }
-      )
-    );
+        return newObj;
+      }
+      return obj; // Return primitive types unchanged
+    };
+
+    return replacePlaceholders(object);
   }
 
   /**
@@ -423,11 +443,13 @@ export class ContextService {
   public initSurvey(structure: any): SurveyModel {
     const survey = this.formBuilderService.createSurvey(structure);
     // set each question value manually otherwise the defaultValueExpression is not loaded
-    forEach(this.filterValues.getValue(), (value, key) => {
-      if (survey.getQuestionByName(key)) {
-        survey.getQuestionByName(key).value = value;
-      }
-    });
+    if (!this.shadowDomService.isShadowRoot) {
+      forEach(this.filterValues.getValue(), (value, key) => {
+        if (survey.getQuestionByName(key)) {
+          survey.getQuestionByName(key).value = value;
+        }
+      });
+    }
 
     // prevent the default value from being applied when a question has been intentionally cleared
     const handleValueChanged = (sender: any, options: any) => {
@@ -511,33 +533,33 @@ export class ContextService {
    *
    * @param dashboard Current dashboard
    * @param callback additional callback
+   * @param contextEl id of the current context element
    */
-  public initContext(dashboard: Dashboard, callback: any): void {
-    if (!dashboard?.page?.context || !dashboard?.id) return;
-    // Checks if the dashboard has context attached to it
-    const contentWithContext = dashboard?.page?.contentWithContext || [];
-    const id = dashboard.id;
-    const dContext = contentWithContext.find((c) => c.content === id);
-
-    if (!dContext) return;
-
-    if ('element' in dContext) {
+  public initContext(
+    dashboard: Dashboard,
+    callback: any,
+    contextEl?: string | null
+  ): void {
+    if (!dashboard.page?.context || !contextEl) {
+      return;
+    }
+    if ('refData' in dashboard.page.context) {
       // Returns context element
-      callback({ element: dContext.element });
-    } else if ('record' in dContext) {
+      callback({ element: contextEl });
+    } else if ('resource' in dashboard.page.context) {
       // Get record by id
       this.apollo
         .query<RecordQueryResponse>({
           query: GET_RECORD_BY_ID,
           variables: {
-            id: dContext.record,
+            id: contextEl,
           },
         })
-        .subscribe((res) => {
-          if (res?.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             callback({
-              record: dContext.record,
-              recordData: res.data.record,
+              record: contextEl,
+              recordData: data.record,
             });
           }
         });

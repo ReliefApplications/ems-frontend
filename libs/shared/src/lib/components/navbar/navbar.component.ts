@@ -43,7 +43,7 @@ export class NavbarComponent {
    * Handles the click event
    *
    * @param callback Callback that defines the action to perform on click
-   * @param event Event that happends with the click
+   * @param event Event that happens with the click
    */
   onClick(callback: () => any, event: any): void {
     callback();

@@ -28,7 +28,8 @@ import {
 import uniqBy from 'lodash/uniqBy';
 
 /**
- *
+ * Web map selector.
+ * Web maps are coming from arcgis.
  */
 @Component({
   standalone: true,
@@ -80,7 +81,8 @@ export class WebmapSelectComponent
   private onChanged = (_: any) => {};
 
   /**
-   * Map Properties of Map widget.
+   * Web map selector.
+   * Web maps are coming from arcgis.
    *
    * @param arcgis service
    * @param document Document

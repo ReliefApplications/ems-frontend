@@ -57,9 +57,9 @@ import {
   EDIT_CHANNEL,
   TOGGLE_APPLICATION_LOCK,
   DUPLICATE_PAGE,
-  ADD_TEMPLATE,
-  UPDATE_TEMPLATE,
-  DELETE_TEMPLATE,
+  ADD_EMAIL_TEMPLATE,
+  UPDATE_EMAIL_TEMPLATE,
+  DELETE_EMAIL_TEMPLATE,
   UPDATE_DISTRIBUTION_LIST,
   ADD_DISTRIBUTION_LIST,
   DELETE_DISTRIBUTION_LIST,
@@ -77,10 +77,10 @@ import {
 import { AuthService } from '../auth/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 import {
-  AddTemplateMutationResponse,
-  DeleteTemplateMutationResponse,
-  Template,
-  UpdateTemplateMutationResponse,
+  AddEmailTemplateMutationResponse,
+  DeleteEmailTemplateMutationResponse,
+  EmailTemplate,
+  UpdateEmailTemplateMutationResponse,
 } from '../../models/template.model';
 import {
   AddDistributionListMutationResponse,
@@ -115,6 +115,7 @@ import { RestService } from '../rest/rest.service';
 import { DownloadService } from '../download/download.service';
 import { DOCUMENT } from '@angular/common';
 import { GraphQLError } from 'graphql';
+import { has } from 'lodash';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -146,6 +147,8 @@ export class ApplicationService {
   public customStyle?: HTMLStyleElement;
   /** Custom style edited */
   public customStyleEdited = false;
+  /** application has errors */
+  public hasErrors = false;
 
   /** @returns Path to download application users */
   get usersDownloadPath(): string {
@@ -181,7 +184,7 @@ export class ApplicationService {
   }
 
   /** @returns Current application's templates */
-  get templates(): Template[] {
+  get templates(): EmailTemplate[] {
     return this.application.value?.templates || [];
   }
 
@@ -244,6 +247,7 @@ export class ApplicationService {
       .subscribe(async ({ data }) => {
         // extend user abilities for application
         if (data.application) {
+          this.hasErrors = false;
           // Map all previously configured icons in v4 to v6 so on application edit, new icons are saved in DB
           data.application.pages?.map((page: Page) => {
             if (faV4toV6Mapper[page.icon as string]) {
@@ -256,8 +260,10 @@ export class ApplicationService {
             }
           });
           this.authService.extendAbilityForApplication(data.application);
+          await this.getCustomStyle(data.application);
+        } else {
+          this.hasErrors = true;
         }
-        await this.getCustomStyle(data.application);
         this.application.next(data.application);
         const application = this.application.getValue();
         if (data.application?.locked) {
@@ -730,13 +736,22 @@ export class ApplicationService {
   }
 
   /**
-   * Change page icon, by sending a mutation to the back-end.
+   * Update page parameter (icon or showName ), by sending a mutation to the back-end.
    *
    * @param page Edited page
-   * @param icon new icon
+   * @param update page update
+   * @param update.icon page icon
+   * @param update.showName should show page name
    * @param callback callback method, allow the component calling the service to do some logic.
    */
-  changePageIcon(page: Page, icon: string, callback?: any): void {
+  updatePageParameter(
+    page: Page,
+    update: {
+      icon?: string;
+      showName?: boolean;
+    },
+    callback?: any
+  ): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
@@ -744,7 +759,8 @@ export class ApplicationService {
           mutation: EDIT_PAGE,
           variables: {
             id: page.id,
-            icon,
+            ...(has(update, 'icon') && { icon: update.icon }),
+            ...(has(update, 'showName') && { showName: update.showName }),
           },
         })
         .subscribe(({ errors, data }) => {
@@ -757,7 +773,11 @@ export class ApplicationService {
               ...application,
               pages: application.pages?.map((x) => {
                 if (x.id === page.id) {
-                  x = { ...x, icon: data.editPage.icon };
+                  x = {
+                    ...x,
+                    icon: data.editPage.icon,
+                    showName: data.editPage.showName,
+                  };
                 }
                 return x;
               }),
@@ -1660,12 +1680,12 @@ export class ApplicationService {
    * @param template new template to be added
    * @param callback additional callback
    */
-  addTemplate(template: Template, callback?: any): void {
+  addEmailTemplate(template: EmailTemplate, callback?: any): void {
     const application = this.application.getValue();
     if (application?.id) {
       this.apollo
-        .mutate<AddTemplateMutationResponse>({
-          mutation: ADD_TEMPLATE,
+        .mutate<AddEmailTemplateMutationResponse>({
+          mutation: ADD_EMAIL_TEMPLATE,
           variables: {
             application: application.id,
             template: {
@@ -1679,11 +1699,14 @@ export class ApplicationService {
           if (data) {
             const newApplication: Application = {
               ...application,
-              templates: [...(application.templates || []), data.addTemplate],
+              templates: [
+                ...(application.templates || []),
+                data.addEmailTemplate,
+              ],
             };
 
             this.application.next(newApplication);
-            if (callback) callback(data.addTemplate);
+            if (callback) callback(data.addEmailTemplate);
           }
         });
     }
@@ -1698,8 +1721,8 @@ export class ApplicationService {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
-        .mutate<DeleteTemplateMutationResponse>({
-          mutation: DELETE_TEMPLATE,
+        .mutate<DeleteEmailTemplateMutationResponse>({
+          mutation: DELETE_EMAIL_TEMPLATE,
           variables: {
             application: application.id,
             id,
@@ -1722,12 +1745,12 @@ export class ApplicationService {
    *
    * @param template new template to be added
    */
-  editTemplate(template: Template): void {
+  editTemplate(template: EmailTemplate): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
-        .mutate<UpdateTemplateMutationResponse>({
-          mutation: UPDATE_TEMPLATE,
+        .mutate<UpdateEmailTemplateMutationResponse>({
+          mutation: UPDATE_EMAIL_TEMPLATE,
           variables: {
             application: application.id,
             id: template.id,
@@ -1739,8 +1762,8 @@ export class ApplicationService {
           },
         })
         .subscribe(({ data }) => {
-          if (data?.editTemplate) {
-            const updatedTemplate = data.editTemplate;
+          if (data?.editEmailTemplate) {
+            const updatedTemplate = data.editEmailTemplate;
             const newApplication: Application = {
               ...application,
               templates: application.templates?.map((t) => {
@@ -1953,6 +1976,7 @@ export class ApplicationService {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
     });
+
     return firstValueFrom(
       this.restService.get(path, { responseType: 'blob', headers })
     )

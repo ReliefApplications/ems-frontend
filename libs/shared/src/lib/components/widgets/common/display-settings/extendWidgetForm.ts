@@ -8,6 +8,7 @@ import { get } from 'lodash';
  * @param settings settings to apply
  * @param settings.showBorder show border setting
  * @param settings.showHeader show border header
+ * @param settings.hideEmpty hide empty widget on preview, front-office and web-widgets apps
  * @param settings.style custom style of the widget
  * @param settings.expandable show expand button
  * @param specificControls specific controls to add to the form, on a widget basis
@@ -21,6 +22,7 @@ export const extendWidgetForm = <
   settings?: {
     showBorder?: boolean;
     showHeader?: boolean;
+    hideEmpty?: boolean;
     expandable: boolean;
     style?: string;
   },
@@ -29,7 +31,9 @@ export const extendWidgetForm = <
   const controls = {
     showBorder: new FormControl(get(settings, 'showBorder', true)),
     showHeader: new FormControl(get(settings, 'showHeader', true)),
+    hideEmpty: new FormControl(get(settings, 'hideEmpty', false)),
     expandable: new FormControl(get(settings, 'expandable', false)),
+    tooltip: new FormControl(get(settings, 'tooltip', null)),
     style: new FormControl(get(settings, 'style', '')),
   };
   Object.assign(controls, specificControls);
@@ -41,7 +45,9 @@ export const extendWidgetForm = <
         {
           showBorder: FormControl<boolean>;
           showHeader: FormControl<boolean>;
+          hideEmpty: FormControl<boolean>;
           expandable: FormControl<boolean>;
+          tooltip: FormControl<string>;
           style: FormControl<string>;
         } & T2
       >;

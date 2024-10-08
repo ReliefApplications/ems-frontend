@@ -4,17 +4,19 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
+  OnInit,
   Optional,
   Output,
-  TemplateRef,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { DashboardService } from '../../../services/dashboard/dashboard.service';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
 import { DomPortal } from '@angular/cdk/portal';
 import { TabsComponent as UiTabsComponent } from '@oort-front/ui';
 import { WidgetComponent } from '../../widget/widget.component';
+import { BaseWidgetComponent } from '../base-widget/base-widget.component';
+import { cloneDeep } from 'lodash';
 
 /**
  * Tabs widget component.
@@ -25,8 +27,8 @@ import { WidgetComponent } from '../../widget/widget.component';
   styleUrls: ['./tabs.component.scss'],
 })
 export class TabsComponent
-  extends UnsubscribeComponent
-  implements AfterViewInit
+  extends BaseWidgetComponent
+  implements AfterViewInit, OnChanges, OnInit
 {
   /** Widget settings */
   @Input() settings: any;
@@ -38,8 +40,6 @@ export class TabsComponent
   @Input() usePadding = true;
   /** Widget edit event */
   @Output() edit: EventEmitter<any> = new EventEmitter();
-  /** Header template reference */
-  @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
   /** Reference to ui tab group */
   @ViewChild(UiTabsComponent)
   tabGroup?: UiTabsComponent;
@@ -47,20 +47,30 @@ export class TabsComponent
   portal?: DomPortal;
   /** Selected tab index */
   selectedIndex = 0;
+  /** Current tabs */
+  tabs: any[] = [];
 
   /**
    * Tabs widget component.
    *
    * @param widgetComponent parent widget component ( optional )
    * @param dialog Dialog service
-   * @param dashboardService Shared dashboard service
    */
   constructor(
     @Optional() public widgetComponent: WidgetComponent,
-    private dialog: Dialog,
-    private dashboardService: DashboardService
+    private dialog: Dialog
   ) {
     super();
+  }
+
+  ngOnInit() {
+    this.tabs = cloneDeep(this.settings.tabs);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['settings']?.currentValue) {
+      this.tabs = cloneDeep(changes['settings'].currentValue.tabs);
+    }
   }
 
   ngAfterViewInit(): void {
@@ -80,7 +90,6 @@ export class TabsComponent
         disableClose: true,
         data: {
           widget: this.widget,
-          template: this.dashboardService.findSettingsTemplate(this.widget),
         },
       });
       dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {

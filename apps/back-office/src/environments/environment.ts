@@ -3,23 +3,11 @@ import { theme } from '../themes/default/default.local';
 import { sharedEnvironment } from './environment.shared';
 import { Environment } from './environment.type';
 
-// const authConfig: AuthConfig = {
-//   issuer:
-//     'https://login.microsoftonline.com/fbacd48d-ccf4-480d-baf0-31048368055f/v2.0',
-//   redirectUri: 'http://localhost:4200/',
-//   postLogoutRedirectUri: 'http://localhost:4200/auth/',
-//   clientId: 'd62083d8-fdc0-4a6a-8618-652380eebdb9',
-//   scope: 'openid profile email offline_access',
-//   responseType: 'code',
-//   showDebugInformation: true,
-//   strictDiscoveryDocumentValidation: false,
-// };
-
 /**
  * Authentication configuration
  */
 const authConfig: AuthConfig = {
-  issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
+  issuer: 'https://id-dev.oortcloud.tech/realms/oort',
   redirectUri: 'http://localhost:4200/',
   postLogoutRedirectUri: 'http://localhost:4200/auth/',
   clientId: 'oort-client',
@@ -57,4 +45,5 @@ export const environment: Environment = {
     'summaryCard',
     'tabs',
   ],
+  admin0Url: 'https://ems2-dev.who.int/app-builder/admin0.json',
 };

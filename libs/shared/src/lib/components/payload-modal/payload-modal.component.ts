@@ -5,6 +5,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from '@oort-front/ui';
+import { AsyncMonacoEditorDirective } from '../../directives/async-monaco-editor/async-monaco-editor.directive';
 
 /** Interface of data passed to dialog */
 interface DialogData {
@@ -25,6 +26,7 @@ interface DialogData {
     ReactiveFormsModule,
     CommonModule,
     ButtonModule,
+    AsyncMonacoEditorDirective,
   ],
   templateUrl: './payload-modal.component.html',
   styleUrls: ['./payload-modal.component.scss'],

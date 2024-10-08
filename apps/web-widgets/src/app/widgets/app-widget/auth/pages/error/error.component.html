@@ -1,0 +1,12 @@
+<div class="flex h-full items-center justify-center">
+  <shared-empty
+    icon="lock"
+    [title]="authError.title"
+    [footerTemplate]="footerTpml"
+  ></shared-empty>
+</div>
+
+<!-- Footer template, if set in the auth error -->
+<ng-template #footerTpml>
+  <div *ngIf="authError.footer" [innerHTML]="authError.footer"></div>
+</ng-template>

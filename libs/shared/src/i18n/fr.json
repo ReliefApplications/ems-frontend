@@ -78,7 +78,11 @@
 		},
 		"comma": "virgule",
 		"copy": "Copier",
+		"copyright": {
+			"who": "Copyright © World Health Organization 2024."
+		},
 		"create": "Créer",
+		"createdBy": "Créé par",
 		"createdOn": "Date de création",
 		"cronEditor": {
 			"advanced": "Avancé",
@@ -170,10 +174,16 @@
 		"email": {
 			"few": "Emails",
 			"none": "Pas d'email",
+			"notification": {
+				"few": "Notifications par email",
+				"none": "Aucune Notification par email",
+				"one": "Notification par email"
+			},
 			"one": "Email"
 		},
 		"errors": {
 			"few": "Erreurs",
+			"invalidJson": "Veuillez utiliser un JSON valide",
 			"objectDuplicated": "{{type}} {{value}} existe déjà."
 		},
 		"exitFullscreen": "Quitter le mode plein écran",
@@ -224,10 +234,12 @@
 			"none": "Aucune mise en page",
 			"one": "Mise en page"
 		},
+		"legacy": "Obsolète",
 		"loading": "Chargement",
 		"modifiedOn": "Modifié le ",
 		"name": "Nom",
 		"next": "Suivant",
+		"noData": "Aucune donnée disponible",
 		"noOptions": "Aucun choix disponible",
 		"notifications": {
 			"accessDenied": "Vous n'avez pas la permission pour accéder à cet objet de type {{type}}.",
@@ -237,14 +249,64 @@
 			"dataNotRecovered": "Échec de la récupération des données",
 			"dataRecovered": "Les données ont été récupérées !",
 			"email": {
+				"banner": {
+					"image": "Bannière Image",
+					"removeTooltip": "Supprimer Bannière Image"
+				},
+				"body": {
+					"title": "Corps*"
+				},
+				"close": "Êtes-vous sûr de vouloir fermer cette notification? Les modifications apportées ne seront pas enregistrées.",
+				"dropdown": {
+					"emailInput": "Type de saisie d'e-mail",
+					"inTheLast": {
+						"placeholder": "Sélectionnez l'horodatage à partir des filtres...",
+						"tooltip": "Utilisez cette configuration uniquement si vous avez filtré les données à l'aide de l'opérateur « dans le dernier ». \nPar exemple, au cours des 2 derniers jours ou 24 heures"
+					},
+					"selectBlock": "Select a block",
+					"timestamp": "Select a timestamp"
+				},
 				"error": "Un problème est survenu lors de l'envoi de l'e-mail",
 				"errors": {
+					"noBody": "Le corps doit continuer!",
 					"noDistributionList": "Un problème est survenu lors de l'envoi de l'e-mail: aucune liste de distribution détectée",
+					"noSubject": "Le sujet doit continuer!",
 					"noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté"
+				},
+				"existing": "Ou utilisez l'existant",
+				"field": {
+					"filtered": "Select Filtered Field",
+					"noBlocks": "No blocks configured",
+					"selectBlock": "Block Select",
+					"selectPlaceholder": "Select Block Field",
+					"selectTitle": "Champ Select"
+				},
+				"fieldselect": {
+					"placeholder": "Sélection de champ",
+					"tooltip": "Sélectionnez l'option de champ uniquement si le champ contient une valeur unique ; \nsinon, le système utilisera par défaut le premier enregistrement dans les résultats"
+				},
+				"footer": {
+					"logo": "Pied-de-page Logo",
+					"removeTooltip": "Supprimer Pied-de-page Logo",
+					"style": "Pied-de-page Style"
+				},
+				"header": {
+					"logo": "En-tête Logo",
+					"removeTooltip": "Supprimer En-tête Logo",
+					"style": "En-tête Style"
 				},
 				"processing": "Envoi en cours...",
 				"ready": "E-mail prêt",
-				"sent": "E-mail envoyé"
+				"sent": "E-mail envoyé",
+				"style": {
+					"background": "Background Color",
+					"text": "Text Color"
+				},
+				"subject": {
+					"textTitle": "Sujet Text*",
+					"title": "Sujet"
+				},
+				"timestamp": "Horodatage"
 			},
 			"fetchingGroups": "Fetching groups from service...",
 			"file": {
@@ -375,6 +437,7 @@
 		"selectStatus": "Sélectionner un statut",
 		"semicolon": "point-virgule",
 		"send": "Envoyer",
+		"sendEmail": "Envoyer un e-mail",
 		"separator": "Séparateur",
 		"settings": "Paramètres",
 		"status": "Statut",
@@ -398,6 +461,9 @@
 			"one": "Modèle de notification"
 		},
 		"title": "Titre",
+		"toolTip": {
+			"newBlock": "Ajouter un nouveau bloc"
+		},
 		"tooltip": {
 			"dragDrop": "Glissez-déposez pour réorganiser",
 			"editor": {
@@ -463,6 +529,7 @@
 			"fieldName": "Nom du champ",
 			"groupBy": "Regrouper par",
 			"groupingRules": "Grouper par",
+			"keepNull": "Conserver les valeurs vides",
 			"mapping": {
 				"category": "Catégorie",
 				"field": "Valeur",
@@ -502,7 +569,8 @@
 				"selectedFields": "Seuls les champs non utilisés peuvent être supprimés.",
 				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.\nLa mise en place de des étapes de tri successives triera simultanément tous les champs.",
 				"unwind": "Déconstruit un tableau depuis les documents d'entrée et ressort un document pour chaque élément."
-			}
+			},
+			"unavailableFields": "Ces champs ne sont pas disponibles car leurs types ne sont pas supportés"
 		},
 		"apiConfiguration": {
 			"create": {
@@ -597,6 +665,7 @@
 				"settings": {
 					"actions": "Actions",
 					"selectIcon": "Sélectionnez une icône",
+					"showName": "Afficher le nom",
 					"tooltip": {
 						"autoSave": "Les modifications sont automatiquement enregistrées"
 					}
@@ -656,6 +725,28 @@
 			"paginator": {
 				"ariaLabel": "Sélectionnez la page d'applications"
 			}
+		},
+		"automation": {
+			"actions": {
+				"add.layer": "Ajouter une couche",
+				"add.tab": "Ajouter un onglet",
+				"display.collapse": "Réduire l'affichage",
+				"display.expand": "Développer l'affichage",
+				"map.click": "En cliquant sur la carte",
+				"map.get.country": "Obtenir le pays sur la carte",
+				"open.tab": "Ouvrir un onglet",
+				"remove.layer": "Supprimer une couche",
+				"remove.tab": "Supprimer un onglet",
+				"set.context": "Définir le contexte"
+			},
+			"addRule": "Ajouter une nouvelle règle d'automatisation",
+			"component": {
+				"add": "Ajoutez un nouveau composant",
+				"select": "Sélectionnez un composant"
+			},
+			"configuration": "Configuration de l'automatisation",
+			"ruleName": "Nom de la règle d'automatisation",
+			"rules": "Règles d'automatisation"
 		},
 		"calculatedFields": {
 			"add": "Créer un nouveau champ dérivé",
@@ -723,6 +814,58 @@
 				}
 			}
 		},
+		"email": {
+			"alert": {
+				"invalidFields": "Les champs suivants ne peuvent pas être sélectionnés: <strong>{{fields}}</strong> car ils sont du type <strong>{{types}}</strong> et ne peut pas être correctement affiché dans le tableau de ce formulaire.",
+				"noResourceFields": "La ressource sélectionnée ne contient aucun champ",
+				"noSelectedFields": "Veuillez sélectionner au moins 1 champ pour sauvegarder ce jeu de données",
+				"tooManyRecords": "Pour le moment, nous sommes limités à récupérer seulement 50 enregistrements. Sur la base des conditions de filtre fournies, il existe <strong>{{totalRecords}}</strong> enregistrements correspondants. Veuillez ajouter des filtres supplémentaires pour que le nombre d'enregistrements soit inférieur ou égal à 50."
+			},
+			"back": "Retour à la liste",
+			"distributionList": {
+				"alert": {
+					"and": "et",
+					"noEmail": "L'ensemble de données sélectionné ne contient pas d'adresses e-mail valides",
+					"partOne": "Pour continuer, veuillez saisir",
+					"partThree": "au moins une adresse email de destinataire",
+					"partTwo": "un nom de liste de distribution"
+				},
+				"bcc": "CCI",
+				"cc": "CC",
+				"createNew": "Ou créer un nouveau",
+				"duplicate": "Le nom existe déjà",
+				"import": {
+					"download": "Télécharger le modèle",
+					"import": "Liste de distribution d'importation",
+					"loading": "Importation du fichier...",
+					"name": "Importer",
+					"success": "Importation réussie"
+				},
+				"list": "Liste de distribution",
+				"name": "Nom de la liste de distribution",
+				"to": "À"
+			},
+			"image": {
+				"rectangleValidation": "Veuillez télécharger une image avec un rapport hauteur/largeur plus rectangulaire, similaire à 960x80.",
+				"squareValidation": "Veuillez télécharger une image avec un rapport hauteur/largeur plus carré, ou similaire à 200x200."
+			},
+			"name": "Email",
+			"notification": {
+				"create": "Créer une notification",
+				"list": "Liste des notifications",
+				"type": "Type d'alerte",
+				"validTitle": "Veuillez saisir un titre"
+			},
+			"preview": {
+				"less": "Montrer moins",
+				"more": "Afficher {{length}} e-mails restants...",
+				"subject": "Sujet:"
+			},
+			"saveAsDraft": "Enregistrer comme brouillon",
+			"tooltip": {
+				"reverseDate": "AAAA/MM/JJ"
+			}
+		},
 		"emailBuilder": {
 			"body": "Corps du texte",
 			"default": "Défaut",
@@ -739,11 +882,6 @@
 			"subject": "Objet",
 			"title": "Prévisualisation de mail",
 			"to": "À"
-		},
-		"floating": {
-			"menuButton": {
-				"ariaLabel": "***"
-			}
 		},
 		"form": {
 			"aggregation": {
@@ -930,6 +1068,10 @@
 						"all": "Toute la carte",
 						"current": "Vue actuelle"
 					}
+				},
+				"fullScreen": {
+					"exitFullscreen": "Quitter le mode plein écran",
+					"viewFullscreen": "Voir en plein écran"
 				}
 			}
 		},
@@ -941,6 +1083,11 @@
 			"value": "Valeur"
 		},
 		"notifications": {
+			"email": {
+				"dropdown": {
+					"emailInput": "Type de saisie d'e-mail"
+				}
+			},
 			"paginator": {
 				"ariaLabel": "Sélectionnez la page de notifications"
 			},
@@ -987,8 +1134,14 @@
 			}
 		},
 		"queryBuilder": {
+			"apply": "Appliquer le filtre",
+			"block": {
+				"label": "Titre du Bloc",
+				"title": "Bloc"
+			},
 			"dataset": {
-				"select": "Sélectionner un jeu de données"
+				"select": "Sélectionner un jeu de données",
+				"title": "Ressource"
 			},
 			"errors": {
 				"field": {
@@ -1008,12 +1161,15 @@
 			},
 			"filter": {
 				"and": "Et",
+				"apply": "Appliquer le filtre",
+				"field": "Champ",
 				"logic": "Logique de filtre",
 				"new": "Ajouter un nouveau filtre",
 				"newGroup": "Ajouter un nouveau groupe de filtres",
 				"operator": "Opérateur",
 				"or": "Ou",
-				"title": "Filtre"
+				"title": "Filtre",
+				"value": "Valeur"
 			},
 			"hint": {
 				"fields": "Sélectionnez des champs ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite",
@@ -1023,6 +1179,9 @@
 			"pagination": {
 				"first": "Limite",
 				"title": "Pagination"
+			},
+			"preview": {
+				"title": "Aperçu"
 			},
 			"sort": {
 				"ascending": "Croissant",
@@ -1212,6 +1371,7 @@
 				"disallowFieldUpdate": "Interdire ce rôle pour mettre à jour le champ {{field}}",
 				"grantAddRecordsPermission": "Permet de créer de nouveaux enregistrements",
 				"grantDeleteRecordsPermission": "Permet de supprimer tous les enregistrements",
+				"grantDownloadRecordsPermission": "Permet de télécharger les enregistrements",
 				"grantFilterDeleteRecordsPermission": "Permet de supprimer les enregistremetns satisfaisant le filtre",
 				"grantFilterReadRecordsPermission": "Permet de voir les enregistrements satisfaisant le filtre",
 				"grantFilterUpdateRecordsPermission": "Permet de mettre à jour les enregistrements satisfaisant le filtre",
@@ -1223,6 +1383,7 @@
 				"limitedUpdateRecordsPermission": "Permet de mettre à jour les enregistrements satisfaisant les filtres",
 				"notGrantAddRecordsPermission": "Ne donne pas la permission d'ajouter de nouveaux enregistrements",
 				"notGrantDeleteRecordsPermission": "Ne donne pas la permission de supprimer les enregistrements",
+				"notGrantDownloadRecordsPermission": "Ne donne pas la permission de télécharger les enregistrements",
 				"notGrantFilterDeleteRecordsPermission": "Ne donne pas la permission de supprimer les enregistrements satisfaisant le filtre",
 				"notGrantFilterReadRecordsPermission": "Ne donne pas la permission de voir les enregistrements satisfaisant le filtre",
 				"notGrantFilterUpdateRecordsPermission": "Ne donne pas la permission de mettre à jour les enregistrements satisfaisant le filtre",
@@ -1233,6 +1394,22 @@
 			"update": {
 				"permissions": "Permissions",
 				"title": "Modifier les permissions des rôles et les canaux de diffusion"
+			}
+		},
+		"select": {
+			"distribution": {
+				"SelectFromList": "Selecteer uit Lijst",
+				"alertMe": "Alerte moi",
+				"apply": "Appliquer",
+				"bcc": "Cci",
+				"cc": "Cc",
+				"createFilterLogic": "Créer une logique de filtre",
+				"email": "Email",
+				"emailError": "Tapez les e-mails ici et appuyez sur ENTRÉE pour les ajouter à la liste de distribution",
+				"label": "Nom de la liste de distribution*",
+				"noPreviewData": "L'ensemble de données sélectionné ne contient aucune donnée d'aperçu",
+				"separateEmail": "Envoyer un e-mail séparé",
+				"to": "À"
 			}
 		},
 		"share": {
@@ -1401,8 +1578,10 @@
 					"mapDetailsTitle": "Cartographie des données",
 					"mapDetailsTooltip": "Centré par defaut sur l'enregistrement sélectionné"
 				},
+				"openEditor": "Afficher le html",
 				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {
+					"displayEditor": "Afficher le html dans un modal",
 					"displayMap": "Afficher la carte",
 					"openPage": "Aller à la page",
 					"saved": "Changements sauvegardés",
@@ -1670,7 +1849,7 @@
 						"styling": {
 							"heatmapOptions": {
 								"blur": "Flou",
-								"gradient": "Gradient",
+								"gradient": "Dégradé",
 								"minOpacity": "Opacité minimum",
 								"radius": "Rayon"
 							}
@@ -1791,6 +1970,7 @@
 						"longitude": "Longitude du centre de la carte",
 						"setByMap": "Utiliser la vue actuelle",
 						"title": "Affichage par défaut",
+						"useWebMapInitialState": "Utiliser l'affichage par défaut de la webmap",
 						"webmap": "WebMap",
 						"zoom": "Zoom par défaut"
 					},
@@ -1820,6 +2000,9 @@
 							"region": "Utilisez le nom de région",
 							"remove": "Supprimer le type d'étendue",
 							"value": "Vous pouvez entrer une valeur statique, ou utiliser les notations {{context}} ou {{filter}} pour injecter la valeur"
+						},
+						"gradient": {
+							"reverse": "Inverser le dégradé"
 						}
 					}
 				},
@@ -1832,11 +2015,18 @@
 						"dataSource": {
 							"layoutStyles": {
 								"queryFilters": {
+									"error": "Erreur lors de la création des variables de données de référence disponibles",
+									"graphql": {
+										"title": "Mappage de variables GraphQL",
+										"tooltip": "Définissez les valeurs des variables GraphQL définies dans la requête de données de référence. Vous pouvez obtenir les valeurs des filtres à l'aide des modèles {{filter.<question-name>}}. Par exemple: { \"region\": {{filter.region}} }"
+									},
 									"help": "N'oubliez pas de supprimer les variables non utilisées.",
 									"noVariables": "Aucune variable définie",
 									"refresh": "Afficher toutes les variables graphQL",
-									"title": "Mappage de variables GraphQL",
-									"tooltip": "Définissez les valeurs des variables GraphQL définies dans la requête de données de référence. Vous pouvez obtenir les valeurs des filtres à l'aide des modèles {{filter.<question-name>}}. Par exemple : { \"region\": {{filter.region}} }"
+									"rest": {
+										"title": "Mappage de paramètres de requête REST",
+										"tooltip": "Définir les valeurs pour les paramètres de requête du point de terminaison REST disponibles dans les données de référence. Vous pouvez obtenir les valeurs des filtres à l'aide des modèles {{filter.<question-name>}}. Par exemple: { \"region\": {{filter.region}} }"
+									}
 								},
 								"title": "Styles de mise en page",
 								"use": "Utiliser les styles de mise en page",
@@ -2038,6 +2228,7 @@
 			"filterIsNotNullOperator": "Est non-nul",
 			"filterIsNullOperator": "Est nul",
 			"filterIsTrue": "est vrai",
+			"filterIsWithinTheLast": "Est dans le dernier",
 			"filterLtOperator": "Est plus petit que",
 			"filterLteOperator": "Est plus petit que ou égal à",
 			"filterMenuLogicDropDownLabel": "'Logique de filtre sur {columnName}'",
@@ -2152,23 +2343,38 @@
 		"customNotification": {
 			"lastExecution": "Dernière exécution",
 			"schedule": "Fréquence",
+			"select": "Sélectionnez le type de notification",
 			"type": "Type"
 		},
 		"dashboard": {
 			"activateFiltering": "Activer le filtre",
 			"buttonActions": {
-				"add": "Ajouter une action de bouton",
 				"category": "Catégorie de bouton",
 				"confirmDelete": "Voulez-vous vraiment supprimer cette action de bouton ?",
-				"edit": "Modifier l'action du bouton",
+				"create": "Créer un bouton d'action",
+				"edit": {
+					"few": "Modifier les boutons d'action",
+					"one": "Modifier le bouton d'action"
+				},
+				"hasRoleRestriction": "Limiter l'accès",
 				"href": "Bouton href",
-				"one": "Action du bouton",
+				"none": "Pas de bouton d'action",
+				"one": "Bouton d'action",
 				"openInNewTab": "Ouvrir dans un nouvel onglet",
 				"text": "Texte du bouton",
-				"variant": "Variante de bouton"
+				"variant": "Variante de bouton",
+				"visibleTo": "Visible pour les rôles"
 			},
 			"closable": "Peut être fermé",
 			"context": {
+				"addTemplate": "Créer un modèle pour cet élément",
+				"alert": {
+					"edition": {
+						"element": "Vous éditez la page qui sera affichée pour l'élément sélectionné.",
+						"template": "Vous éditez le modèle de base de la page. Il sera utilisé par défaut si aucune vue n'a été créée pour l'élément à charger."
+					},
+					"preview": "Vous visualisez la page qui sera affichée pour l'élément sélectionné.\nVous pouvez aussi créer un modèle spécifique pour cet élément."
+				},
 				"datasource": {
 					"alert": "Sélectionnez une source de données, afin de définir une page par enregistrement de la source de données. Vous pouvez également définir un modèle qui sera chargé par défaut si aucune page spécifique n'est créée pour un enregistrement.",
 					"info": "Indiquez le champ à utiliser lors de la sélection des enregistrements.",
@@ -2177,14 +2383,11 @@
 					"update": "Mettre à jour la source de données contextuelle"
 				},
 				"displayField": "Champ d'affichage",
-				"edition": {
-					"element": "Vous éditez la page qui sera affichée pour l'élément sélectionné.",
-					"template": "Vous éditez le modèle de base de la page. Il sera utilisé par défaut si aucune vue n'a été créée pour l'élément à charger."
-				},
 				"notifications": {
 					"creatingTemplate": "Création d'une nouvelle vue",
 					"loadDefault": "Affichage de la vue générique",
-					"templateCreated": "Nouvelle vue créée"
+					"templateCreated": "Nouvelle vue créée",
+					"templatesDeleted": "{{number}} modèles ont été supprimés pour ce tableau de bord"
 				},
 				"origin": "Origine du contexte",
 				"refData": {
@@ -2200,6 +2403,12 @@
 			},
 			"contextFilter": "Filtre contextuel",
 			"dashboardFilter": "Filtre du tableau de bord",
+			"dashboardTemplates": {
+				"manage": {
+					"few": "Gérer les modèles de tableaux de bord"
+				},
+				"none": "Pas de modèle supplémentaire pour ce tableau de bord"
+			},
 			"deactivateFiltering": "Désactiver le filtre",
 			"filterVariant": {
 				"title": "Variante de filtre",
@@ -2319,10 +2528,12 @@
 				"border": "Afficher la bordure du widget",
 				"expand": "Afficher le bouton pour développer le widget",
 				"header": "Afficher l'en-tête du widget",
+				"hideEmpty": "Masquer si le widget ne contient aucune donnée",
 				"padding": "Utiliser la marge intérieure du widget",
 				"searchable": "Autoriser la recherche",
 				"sortable": "Autoriser le tri",
-				"title": "Affichage des widgets"
+				"title": "Affichage des widgets",
+				"tooltip": "Info-bulle"
 			},
 			"map": {
 				"defaultTitle": "Widget Carte",
@@ -2347,10 +2558,12 @@
 					"help": "Apparaît uniquement dans le front-office ou en mode prévisualisation.",
 					"restore": "Restaurer la taille"
 				},
+				"hideEmpty": "Se cache uniquement en front-office ou en mode aperçu",
 				"selector": {
 					"collapse": "Fermer la sélection de widget",
 					"expand": "Afficher la sélection de widget"
-				}
+				},
+				"tooltip": "Laissez vide pour ne pas afficher"
 			}
 		},
 		"workflow": {
@@ -2426,7 +2639,12 @@
 				"title": "Attributs"
 			},
 			"settings": {
-				"actions": "Actions"
+				"actions": "Actions",
+				"emailCreated": "Nouvelle notification par e-mail créée",
+				"emailDeleted": "Notification par e-mail supprimée avec succès",
+				"emailEdited": "Notification par e-mail modifiée avec succès.",
+				"emailFailMsg": "Oups !... Quelque chose ne va pas lors de l'envoi d'un e-mail",
+				"emailSent": "La notification par e-mail a été enregistrée et envoyée avec succès"
 			}
 		},
 		"applications": {

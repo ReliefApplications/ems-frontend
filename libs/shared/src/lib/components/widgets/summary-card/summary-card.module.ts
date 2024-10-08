@@ -18,6 +18,7 @@ import { InputsModule } from '@progress/kendo-angular-inputs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SkeletonModule } from '../../../directives/skeleton/skeleton.module';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
+import { EmptyModule } from '../../ui/empty/empty.module';
 
 /** Summary Card Widget Module */
 @NgModule({
@@ -40,6 +41,7 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
     DropDownsModule,
     SelectMenuModule,
     FormWrapperModule,
+    EmptyModule,
   ],
   exports: [SummaryCardComponent],
 })

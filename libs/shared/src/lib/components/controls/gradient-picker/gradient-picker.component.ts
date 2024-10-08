@@ -292,4 +292,18 @@ export class GradientPickerComponent
       this.onTouched();
     }
   }
+
+  /**
+   * Reverse gradient.
+   */
+  public onReverse() {
+    if (this.value) {
+      let gradient = this.value;
+      gradient = gradient.map((x) => ({
+        color: x.color,
+        ratio: 1 - x.ratio,
+      }));
+      this.setGradient(gradient);
+    }
+  }
 }

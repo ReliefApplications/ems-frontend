@@ -1,10 +1,11 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/default';
 import { sharedEnvironment } from './environment.shared';
+import { Environment } from './environment.type';
 
 /** Authentication configuration */
 const authConfig: AuthConfig = {
-  issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
+  issuer: 'https://id-dev.oortcloud.tech/realms/oort',
   redirectUri: 'https://oort-dev.oortcloud.tech/widgets/',
   postLogoutRedirectUri: 'https://oort-dev.oortcloud.tech/widgets/auth/',
   clientId: 'oort-client',
@@ -16,15 +17,16 @@ const authConfig: AuthConfig = {
 /**
  * Environment file for local development.
  */
-export const environment = {
+export const environment: Environment = {
   ...sharedEnvironment,
   production: true,
   apiUrl: 'https://oort-dev.oortcloud.tech/api',
   subscriptionApiUrl: 'wss://oort-dev.oortcloud.tech/api',
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
-  module: 'widgets',
   availableLanguages: ['en', 'test'],
   authConfig,
   theme,
+  tinymceBaseUrl: '',
+  i18nUrl: '',
 };

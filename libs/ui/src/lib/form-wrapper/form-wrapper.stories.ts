@@ -7,6 +7,7 @@ import { SelectMenuModule } from '../select-menu/select-menu.module';
 import { AutocompleteModule } from '../autocomplete/autocomplete.module';
 import { ButtonModule } from '../button/button.module';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { StorybookTranslateModule } from '../../storybook-translate.module';
 
 export default {
   title: 'Components/Form Wrapper',
@@ -22,6 +23,7 @@ export default {
         AutocompleteModule,
         ButtonModule,
         ReactiveFormsModule,
+        StorybookTranslateModule,
       ],
     }),
   ],
@@ -47,15 +49,26 @@ const options = [
 ];
 
 /** Form group to test story with disable option */
-const formControl = new FormGroup({
+const formGroup = new FormGroup({
   name: new FormControl(''),
 });
 /** Callback to test story with disable option */
 const toggleDisabled = () => {
+  const formControl = formGroup.controls.name;
   if (formControl.disabled) {
     formControl.enable();
   } else {
     formControl.disable();
+  }
+};
+
+/** Callback to set status of form control to invalid */
+const toggleInvalid = () => {
+  const formControl = formGroup.controls.name;
+  if (formControl.valid) {
+    formControl.setErrors({ customError: true });
+  } else {
+    formControl.setErrors(null);
   }
 };
 
@@ -67,14 +80,26 @@ const toggleDisabled = () => {
  */
 const Template: StoryFn<any> = (args: any) => {
   return {
-    template: `<div uiFormFieldDirective [outline]="${args.outline}">
+    template: `
+    <div [formGroup]="formGroup">
+    <div uiFormFieldDirective [outline]="${args.outline}">
     <label>Phone Number</label>
-    <input type="text" name="account-number" id="account-number" placeholder="000-00-0000"/>
+    <input type="text" name="account-number" id="account-number" placeholder="000-00-0000" formControlName="name"/>
     <ui-spinner [size]="'medium'" uiSuffix></ui-spinner>
     <ui-icon icon="search" uiPrefix></ui-icon>
-  </div>`,
+  </div></div>
+  <ui-button (click)="toggleDisabled()">
+  Enable/disabled
+</ui-button>
+<ui-button (click)="toggleInvalid()">
+  Valid/Invalid
+</ui-button>
+  `,
     props: {
       ...args,
+      toggleInvalid,
+      toggleDisabled,
+      formGroup,
     },
   };
 };
@@ -87,9 +112,12 @@ const Template: StoryFn<any> = (args: any) => {
  */
 const TemplateSelect: StoryFn<any> = (args: any) => {
   return {
-    template: `<div uiFormFieldDirective [outline]="${args.outline}">
+    template: `
+    <div [formGroup]="formGroup">
+    <div uiFormFieldDirective [outline]="${args.outline}">
     <label>Choose language</label>
     <ui-select-menu 
+      formControlName="name"
       [multiselect]="false"
       [disabled]="false">
         <ui-select-option *ngFor="let option of options" [value]="option">
@@ -98,10 +126,21 @@ const TemplateSelect: StoryFn<any> = (args: any) => {
     </ui-select-menu>
     <ui-spinner [size]="'medium'" uiSuffix></ui-spinner>
     <ui-icon icon="search" uiPrefix></ui-icon>
-  </div>`,
+  </div>
+    </div>
+    <ui-button (click)="toggleDisabled()">
+    Enable/disabled
+  </ui-button>
+  <ui-button (click)="toggleInvalid()">
+    Valid/Invalid
+  </ui-button>
+  `,
     props: {
       ...args,
       options,
+      toggleInvalid,
+      toggleDisabled,
+      formGroup,
     },
   };
 };
@@ -115,7 +154,7 @@ const TemplateSelect: StoryFn<any> = (args: any) => {
 const TemplateAutocomplete: StoryFn<any> = (args: any) => {
   return {
     template: `
-    <div [formGroup]="formControl">
+    <div [formGroup]="formGroup">
       <div uiFormFieldDirective  [outline]="${args.outline}">
         <label>Choose language</label>
         <input
@@ -143,12 +182,16 @@ const TemplateAutocomplete: StoryFn<any> = (args: any) => {
   <ui-button (click)="toggleDisabled()">
     Enable/disabled
   </ui-button>
+  <ui-button (click)="toggleInvalid()">
+    Valid/Invalid
+  </ui-button>
   `,
     props: {
       ...args,
       options,
       toggleDisabled,
-      formControl,
+      toggleInvalid,
+      formGroup,
     },
   };
 };

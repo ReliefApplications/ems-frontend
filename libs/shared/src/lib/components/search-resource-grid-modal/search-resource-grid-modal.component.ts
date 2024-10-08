@@ -122,7 +122,7 @@ export class ResourceGridModalComponent {
    *
    * @param saveChanges is update required
    */
-  closeModal(saveChanges: boolean = true): void {
+  closeModal(saveChanges = true): void {
     this.ref.tick();
     if (saveChanges) {
       this.dialogRef.close(this.selectedRows as any);

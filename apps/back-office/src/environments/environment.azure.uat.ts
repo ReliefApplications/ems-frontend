@@ -4,7 +4,7 @@ import { sharedEnvironment } from './environment.shared';
 import { Environment } from './environment.type';
 
 /**
- * Authentification configuration
+ * Authentication configuration
  */
 const authConfig: AuthConfig = {
   issuer:
@@ -54,6 +54,7 @@ export const environment: Environment = {
     tracePropagationTargets: ['ems-safe-test.who.int'],
   },
   user: {
-    attributes: ['country', 'region', 'location'],
+    attributes: ['country', 'region', 'location', 'department'],
   },
+  admin0Url: 'https://ems2-test.who.int/app-builder/admin0.json',
 };

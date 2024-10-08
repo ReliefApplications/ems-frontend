@@ -10,7 +10,7 @@ import {
   EditPageContextMutationResponse,
   PageContextT,
 } from '../../models/page.model';
-import { firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { EDIT_DASHBOARD, UPDATE_PAGE_CONTEXT } from './graphql/mutations';
 import get from 'lodash/get';
@@ -23,8 +23,19 @@ import { GraphQLError } from 'graphql';
   providedIn: 'root',
 })
 export class DashboardService {
-  /** List of available widgets */
+  /** Available widgets */
   public availableWidgets = WIDGET_TYPES;
+  /** If dashboard content should be updated and empty widgets hidden */
+  public widgetContentRefreshed = new BehaviorSubject<any>(null);
+  /** Shared property to keep track of current loaded dashboard widgets */
+  public widgets: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  /** Observable of current loaded dashboard widgets */
+  public widgets$ = this.widgets.asObservable();
+
+  /** @returns To listen when dashboard widgets that can be hidden refreshes its contents */
+  get widgetContentRefreshed$(): Observable<any> {
+    return this.widgetContentRefreshed.asObservable();
+  }
 
   /**
    * Shared dashboard service. Handles dashboard events.
@@ -40,7 +51,7 @@ export class DashboardService {
     private snackBar: SnackbarService,
     private translate: TranslateService
   ) {
-    this.availableWidgets = WIDGET_TYPES.filter((widget) =>
+    this.availableWidgets = this.availableWidgets.filter((widget) =>
       get(environment, 'availableWidgets', []).includes(widget.id)
     );
   }
@@ -73,21 +84,6 @@ export class DashboardService {
         })
       );
     }
-  }
-
-  /**
-   * Finds the settings component from the widget.
-   *
-   * @param widget widget to get settings of.
-   * @returns Widget settings template.
-   */
-  public findSettingsTemplate(widget: any): any {
-    const availableWidget = this.availableWidgets.find(
-      (x) => x.component === widget.component
-    );
-    return availableWidget && availableWidget.settingsTemplate
-      ? availableWidget.settingsTemplate
-      : null;
   }
 
   /**

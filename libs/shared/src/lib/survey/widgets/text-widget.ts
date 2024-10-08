@@ -31,7 +31,6 @@ export const init = (
   customWidgetCollectionInstance: CustomWidgetCollection,
   document: Document
 ): void => {
-  let dateRangeObserver!: MutationObserver;
   let currentQuestionElementId!: string;
   const widget = {
     name: 'text-widget',
@@ -85,6 +84,17 @@ export const init = (
           obj.setPropertyValue('max', value);
         },
       });
+      serializer.addProperty('text', {
+        name: 'calendarType',
+        visibleIndex: 2,
+        category: 'layout',
+        type: 'string',
+        choices: ['infinite', 'classic'],
+        default: 'infinite',
+        dependsOn: ['inputType'],
+        visibleIf: (obj: QuestionText) =>
+          ['date', 'datetime', 'datetime-local'].includes(obj.inputType || ''),
+      });
       // register the editor for type "date" with kendo date picker
       registerCustomPropertyEditor(
         CustomPropertyGridComponentTypes.dateTypeDisplayer
@@ -96,8 +106,6 @@ export const init = (
       currentQuestionElementId = el.id;
       // add kendo date pickers for text inputs with dates types
       const updateTextInput = () => {
-        // Stop any previous observer if exist as it may not be used again in the new input type selected
-        dateRangeObserver?.disconnect();
         if (question._dateDisplayCallback) {
           // Unregister any previous date display callback associated to the question as it may not be used again in the new input type selected
           question.unRegisterFunctionOnPropertyValueChanged(
@@ -120,7 +128,8 @@ export const init = (
           const pickerInstance = createPickerInstance(
             question.inputType as DateInputFormat,
             pickerDiv,
-            domService
+            domService,
+            question.calendarType || 'infinite'
           );
 
           if (pickerInstance) {
@@ -186,18 +195,22 @@ export const init = (
               updatePickerInstance('min');
               updatePickerInstance('max');
 
-              dateRangeObserver = new MutationObserver((mutationsList) => {
-                mutationsList
-                  .filter((mutation) =>
-                    ['min', 'max'].includes(mutation.attributeName || '')
-                  )
-                  .forEach((mutation) => {
-                    updatePickerInstance(
-                      mutation.attributeName as 'min' | 'max'
-                    );
-                  });
+              question._dateRangeObserver = new MutationObserver(
+                (mutationsList) => {
+                  mutationsList
+                    .filter((mutation) =>
+                      ['min', 'max'].includes(mutation.attributeName || '')
+                    )
+                    .forEach((mutation) => {
+                      updatePickerInstance(
+                        mutation.attributeName as 'min' | 'max'
+                      );
+                    });
+                }
+              );
+              question._dateRangeObserver.observe(originalInput, {
+                attributes: true,
               });
-              dateRangeObserver.observe(originalInput, { attributes: true });
             }
 
             pickerInstance.readonly = question.isReadOnly;
@@ -338,8 +351,10 @@ export const init = (
           'inputType',
           currentQuestionElementId
         );
+        if (question._dateRangeObserver) {
+          question._dateRangeObserver.disconnect();
+        }
       }
-      dateRangeObserver?.disconnect();
     },
   };
 

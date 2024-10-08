@@ -51,7 +51,8 @@ type Subjects =
   | 'PullJob'
   | 'Group'
   | 'CustomNotification'
-  | 'Form';
+  | 'Form'
+  | 'EmailNotification';
 
 export type AppAbility = Ability<
   [Actions, Subjects | ForcedSubject<Subjects>],
@@ -96,6 +97,14 @@ export class AuthService {
   private isDoneLoading = new ReplaySubject<boolean>();
   /** Boolean for loading as observable */
   public isDoneLoading$ = this.isDoneLoading.asObservable();
+  /** Boolean to send a flag for token refresh */
+  public refreshToken = new BehaviorSubject<boolean>(false);
+  /** Boolean to send a flag for token refresh as observable */
+  public refreshToken$ = this.refreshToken.asObservable();
+  /** Boolean to send if token is refreshed */
+  public isTokenRefreshed = new BehaviorSubject<boolean>(false);
+  /** Boolean to send if token is refreshed as observable */
+  public isTokenRefreshed$ = this.isTokenRefreshed.asObservable();
 
   /** Boolean for protected route activation */
   public canActivateProtectedRoutes$: Observable<boolean> = combineLatest([
@@ -140,30 +149,18 @@ export class AuthService {
       .pipe(filter((e) => ['token_received'].includes(e.type)))
       .subscribe(() => {
         localStorage.setItem('idtoken', this.oauthService.getIdToken());
-        this.oauthService.loadUserProfile();
+        const redirectPath = localStorage.getItem('redirectPath');
+        // Redirect to previous path for backoffice, frontoffice is handled directly from the redirect component
+        if (redirectPath && this.environment.module === 'backoffice') {
+          // Current URL has finished loading, navigate to the desired URL
+          this.router.navigateByUrl(redirectPath);
+          localStorage.removeItem('redirectPath');
+        }
       });
     this.oauthService.events
       .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
       .subscribe(() => {
         this.oauthService.initLoginFlow();
-      });
-    // Redirect to previous path
-    this.oauthService.events
-      .pipe(filter((e: any) => e.type === 'user_profile_loaded'))
-      .subscribe(() => {
-        const redirectPath = localStorage.getItem('redirectPath');
-        if (redirectPath) {
-          // Current URL has finished loading, navigate to the desired URL
-          this.router.navigateByUrl(redirectPath);
-        } else {
-          // Fallback to the location origin with a new url state with clean params
-          // Chrome does not delete state and session state params once the oauth is successful
-          // Which triggers a new token fetch with an invalid(deprecated) code
-          // can cause an issue with navigation
-          // console.log(e);
-          // this.router.navigateByUrl(this.environment.authConfig.redirectUri);
-        }
-        localStorage.removeItem('redirectPath');
       });
     this.oauthService.setupAutomaticSilentRefresh();
     this.user$.subscribe((user) => this.updateAbility(user));
@@ -177,7 +174,7 @@ export class AuthService {
    * @param global is the permission global or not
    * @returns Does the user have access
    */
-  userHasClaim(permission: string | string[], global: boolean = true): boolean {
+  userHasClaim(permission: string | string[], global = true): boolean {
     const user = this.user.getValue();
     if (user) {
       if (
@@ -352,7 +349,7 @@ export class AuthService {
     }
 
     // === Resource ===
-    if (globalPermissions.includes('can_read_resources')) {
+    if (globalPermissions.includes('can_see_resources')) {
       can('read', ['Resource', 'Record']);
     }
     if (globalPermissions.includes('can_create_resources')) {
@@ -387,6 +384,11 @@ export class AuthService {
         ['create', 'read', 'update', 'delete'],
         ['ApiConfiguration', 'PullJob', 'ReferenceData']
       );
+    }
+
+    // === Email Notifications ===
+    if (globalPermissions.includes('can_manage_email_notifications')) {
+      can(['create', 'read', 'update', 'delete'], 'EmailNotification');
     }
 
     this.ability.update(rules);
@@ -473,6 +475,18 @@ export class AuthService {
           application: app.id,
         }
       );
+    }
+
+    // === Email Notifications ===
+    if (appPermissions.has('can_see_email_notifications')) {
+      can('read', 'EmailNotification');
+    }
+    if (appPermissions.has('can_update_email_notifications')) {
+      can(['update', 'delete'], 'EmailNotification');
+    }
+
+    if (appPermissions.has('can_create_email_notifications')) {
+      can('create', 'EmailNotification');
     }
 
     this.ability.update(rules);

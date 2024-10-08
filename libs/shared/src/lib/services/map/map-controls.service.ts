@@ -13,7 +13,6 @@ import { DomService } from '../dom/dom.service';
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
 import * as L from 'leaflet';
 import 'esri-leaflet';
-import 'leaflet-fullscreen';
 import 'leaflet-measure';
 import * as Geocoding from 'esri-leaflet-geocoder';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/language';
@@ -49,6 +48,10 @@ export class MapControlsService {
   private renderer!: Renderer2;
   /** Listener on sidenav control click */
   private sidenavControlClickListener!: any;
+  /** Listener on fullscreen control click */
+  private fullscreenControlClickListener!: any;
+  /** Listener on fullscreen event */
+  private fullScreenChangeListener!: any;
   /** Listener on sidenav control wheel */
   private sidenavControlWheelListener!: any;
   /** Listener on download control click */
@@ -95,6 +98,9 @@ export class MapControlsService {
     const layerControl = new L.Control({ position: 'topright' });
     layerControl.onAdd = () => {
       const container = L.DomUtil.create('div');
+      L.DomEvent.disableScrollPropagation(container).disableClickPropagation(
+        container
+      );
       const mapSidenavControlsComponent = this.domService.appendComponentToBody(
         MapSidenavControlsComponent,
         container
@@ -105,41 +111,6 @@ export class MapControlsService {
       (layerControl as any)._component = mapSidenavControlsComponent.instance;
       return container;
     };
-    layerControl.onRemove = () => {
-      if (this.sidenavControlClickListener) {
-        this.sidenavControlClickListener();
-        this.sidenavControlClickListener = null;
-      }
-      if (this.sidenavControlWheelListener) {
-        this.sidenavControlWheelListener();
-        this.sidenavControlWheelListener = null;
-      }
-    };
-    const container = layerControl.getContainer();
-    if (container) {
-      if (this.sidenavControlClickListener) {
-        this.sidenavControlClickListener();
-      }
-      // prevent click events from propagating to the map
-      this.sidenavControlClickListener = this.renderer.listen(
-        container,
-        'click',
-        (e: any) => {
-          L.DomEvent.stopPropagation(e);
-        }
-      );
-      if (this.sidenavControlWheelListener) {
-        this.sidenavControlWheelListener();
-      }
-      // prevent mouse wheel events from propagating to the map
-      this.sidenavControlWheelListener = this.renderer.listen(
-        container,
-        'wheel',
-        (e: any) => {
-          L.DomEvent.stopPropagation(e);
-        }
-      );
-    }
     return (layerControl as any)?.addTo(mapComponent.map);
   }
 
@@ -209,12 +180,91 @@ export class MapControlsService {
     if (this.fullscreenControl) {
       map.removeControl(this.fullscreenControl);
     }
-    this.fullscreenControl = new (L.Control as any).Fullscreen({
-      title: {
-        false: this.translate.instant('common.viewFullscreen'),
-        true: this.translate.instant('common.exitFullscreen'),
-      },
-    });
+    this.fullscreenControl = new L.Control({ position: 'topleft' });
+    const viewScreenText = this.translate.instant(
+      'components.map.controls.fullScreen.viewFullscreen'
+    );
+    const exitScreenText = this.translate.instant(
+      'components.map.controls.fullScreen.exitFullscreen'
+    );
+    this.fullscreenControl.onAdd = () => {
+      const mapContainer = map.getContainer()?.parentElement;
+      const expandIcon = createFontAwesomeIcon(
+        {
+          icon: 'expand',
+          color: 'none',
+          opacity: 1,
+          size: 18,
+        },
+        this.document
+      );
+      const compressIcon = createFontAwesomeIcon(
+        {
+          icon: 'compress',
+          color: 'none',
+          opacity: 1,
+          size: 18,
+        },
+        this.document
+      );
+      const container = L.DomUtil.create('div');
+      this.renderer.addClass(container, 'fullscreen-control');
+      this.renderer.setProperty(container, 'title', viewScreenText);
+      container?.appendChild(expandIcon);
+      if (this.fullscreenControlClickListener) {
+        this.fullscreenControlClickListener();
+      }
+      let triggerElementUpdate = false;
+      this.fullscreenControlClickListener = this.renderer.listen(
+        container,
+        'click',
+        (e: any) => {
+          // prevent click events from propagating to the map
+          L.DomEvent.stopPropagation(e);
+          if (!this.document.fullscreenElement) {
+            triggerElementUpdate = true;
+            mapContainer?.requestFullscreen();
+            this.renderer.setProperty(container, 'title', exitScreenText);
+            container?.removeChild(expandIcon);
+            container?.appendChild(compressIcon);
+          } else {
+            if (this.document.fullscreenElement) {
+              triggerElementUpdate = false;
+              this.document.exitFullscreen();
+              this.renderer.setProperty(container, 'title', viewScreenText);
+              container?.appendChild(expandIcon);
+              container?.removeChild(compressIcon);
+            }
+          }
+        }
+      );
+      if (this.fullScreenChangeListener) {
+        this.fullScreenChangeListener();
+      }
+      this.fullScreenChangeListener = this.renderer.listen(
+        mapContainer,
+        'fullscreenchange',
+        () => {
+          if (triggerElementUpdate && !this.document.fullscreenElement) {
+            triggerElementUpdate = false;
+            container?.appendChild(expandIcon);
+            container?.removeChild(compressIcon);
+            this.renderer.setProperty(container, 'title', viewScreenText);
+          }
+        }
+      );
+      return container;
+    };
+    this.fullscreenControl.onRemove = () => {
+      if (this.fullscreenControlClickListener) {
+        this.fullscreenControlClickListener();
+        this.fullscreenControlClickListener = null;
+      }
+      if (this.fullScreenChangeListener) {
+        this.fullScreenChangeListener();
+        this.fullScreenChangeListener = null;
+      }
+    };
     this.fullscreenControl?.addTo(map);
   }
 

@@ -82,7 +82,50 @@ export const parseHtml = (
       options.styles
     );
   }
+  formattedHtml = applyTableStyle(formattedHtml);
   return applyOperations(formattedHtml);
+};
+
+/**
+ * Function to apply table width based on existing 'border' property
+ *
+ * @param formattedHtml html to parse
+ * @returns formatted html string
+ */
+const applyTableStyle = (formattedHtml: string) => {
+  if (!formattedHtml.includes('table')) {
+    return formattedHtml;
+  }
+  // Create a temporary container element to work with the HTML string
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = formattedHtml;
+
+  const applyChildStyle = (table: HTMLTableElement, tag: 'th' | 'td') => {
+    const elements = table.querySelectorAll(tag);
+    for (let i = 0; i < elements.length; i++) {
+      const element = elements[i];
+      if (table.style.borderColor && !element.style.borderColor) {
+        element.style.borderColor = table.style.borderColor;
+      }
+      if (table.style.borderWidth && !element.style.borderWidth) {
+        element.style.borderWidth = table.style.borderWidth;
+      }
+    }
+  };
+
+  // Find all table elements within the temporary container
+  const tables = tempDiv.getElementsByTagName('table');
+
+  // Loop through each table element
+  for (let i = 0; i < tables.length; i++) {
+    const table = tables[i];
+    applyChildStyle(table, 'th');
+    applyChildStyle(table, 'td');
+    table.style.borderWidth = `${table.getAttribute('border')}px` || '';
+  }
+
+  // Return the modified HTML content as a string
+  return tempDiv.innerHTML;
 };
 
 /**
@@ -94,7 +137,7 @@ export const parseHtml = (
  * @returns the html styles
  */
 export const getCardStyle = (
-  wholeCardStyles: boolean = false,
+  wholeCardStyles = false,
   fieldsValue: any,
   styles: any[] = []
 ) => {
@@ -179,6 +222,7 @@ const replaceRecordFields = (
       );
 
       const length = get(fieldsValue, field.name)?.length ?? 0;
+
       // Start from 1 because we already have the first element (the one being used as a template)
       for (let i = 1; i < length; i++) {
         subFields.forEach((subField: any) => {
@@ -218,7 +262,14 @@ const replaceRecordFields = (
         return obj;
       };
 
-      const value = toReadableObject(get(fieldsValue, field.name));
+      let value = get(fieldsValue, field.name);
+      // If object is of type resource, transform each associated record
+      if (field.type === 'resources') {
+        value = (value || []).map((x: any) => toReadableObject(x));
+      } else {
+        // Else, transform value into readable one
+        value = toReadableObject(value);
+      }
 
       const style = getLayoutsStyle(styles, field.name, fieldsValue);
       let convertedValue = '';
@@ -376,11 +427,13 @@ const replaceRecordFields = (
             break;
           case 'owner':
           case 'users':
-          case 'resources':
-            convertedValue = `<span style='${style}'>${
-              value ? value.length : 0
-            } items</span>`;
+          case 'resources': {
+            const length = value ? value.length : 0;
+            convertedValue = `<span style='${style}'>${length} item${
+              length > 1 ? 's' : ''
+            }</span>`;
             break;
+          }
           case 'matrixdropdown':
           case 'matrixdynamic': {
             convertedValue = '<table><tr><th></th>';
@@ -613,9 +666,12 @@ export const getPageKeys = (
  * @returns Formatted field value
  */
 export const applyLayoutFormat = (value: any, field: any): any => {
-  // replaces value for label, if it exists
-  if (field.options)
-    value = field.options.find((o: any) => o.value === value)?.text || value;
+  // Get choices from field
+  const options = field.options ?? field.meta?.choices;
+  if (options) {
+    // replaces value for label, if it exists
+    value = options.find((o: any) => o.value == value)?.text || value;
+  }
 
   if (value && field.layoutFormat && field.layoutFormat.length > 1) {
     const regex = new RegExp(

@@ -25,10 +25,12 @@ export * from './lib/services/data-template/data-template.service';
 export * from './lib/services/editor/editor.service';
 export * from './lib/services/rest/rest.service';
 export * from './lib/services/map/map-layers.service';
+export * from './lib/services/dashboard-automation/dashboard-automation.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
 export * from './lib/directives/fullscreen/public-api';
+export * from './lib/directives/async-monaco-editor/public-api';
 
 // === GUARDS ===
 export * from './lib/guards/permission.guard';
@@ -54,6 +56,7 @@ export * from './lib/models/layout.model';
 export * from './lib/models/aggregation.model';
 export * from './lib/models/reference-data.model';
 export * from './lib/models/metadata.model';
+export * from './lib/models/automation.model';
 
 // === COMPONENTS ===
 export * from './lib/components/aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
@@ -93,6 +96,8 @@ export * from './lib/components/utils/unsubscribe/public-api';
 export * from './lib/components/editable-text/public-api';
 export * from './lib/components/users/public-api';
 export * from './lib/components/payload-modal/payload-modal.component';
+export * from './lib/components/widgets/map/public-api';
+export * from './lib/components/dashboard/public-api';
 
 // Export of controls
 export * from './lib/components/controls/public-api';

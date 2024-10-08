@@ -137,6 +137,18 @@ export class ApplicationComponent
         } else {
           this.title = '';
           this.navGroups = [];
+          if (this.applicationService.hasErrors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.accessNotProvided', {
+                type: this.translate
+                  .instant('common.application.one')
+                  .toLowerCase(),
+                error: '',
+              }),
+              { error: true }
+            );
+            this.router.navigate(['/']);
+          }
         }
       });
   }
@@ -218,6 +230,19 @@ export class ApplicationComponent
         icon: 'admin_panel_settings',
       });
     }
+    // if (
+    //   this.ability.can(
+    //     'manage',
+    //     subject('Template', { application: application.id })
+    //   )
+    // ) {
+    //   // if can manage apps / can manage email notifications in app
+    //   this.adminNavItems.push({
+    //     name: this.translate.instant('common.email.notification.few'),
+    //     path: './settings/email-notifications',
+    //     icon: 'mail',
+    //   });
+    // }
     if (
       this.ability.can(
         'manage',
@@ -229,6 +254,7 @@ export class ApplicationComponent
         name: this.translate.instant('common.template.few'),
         path: `./settings/templates`,
         icon: 'description',
+        legacy: true,
       });
     }
     if (
@@ -242,6 +268,7 @@ export class ApplicationComponent
         name: this.translate.instant('common.distributionList.few'),
         path: `./settings/distribution-lists`,
         icon: 'mail',
+        legacy: true,
       });
     }
     if (
@@ -255,6 +282,7 @@ export class ApplicationComponent
         name: this.translate.instant('common.customNotification.few'),
         path: './settings/notifications',
         icon: 'schedule_send',
+        legacy: true,
       });
     }
   }

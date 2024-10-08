@@ -61,7 +61,6 @@
           "node_modules/leaflet/dist/leaflet.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
-          "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
           "node_modules/leaflet-measure/dist/leaflet-measure.css",
           "node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css",
           "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css"
@@ -92,7 +91,8 @@
           "esri-leaflet-heatmap",
           "esri-leaflet-renderers",
           "jsonpath",
-          "to-json-schema"
+          "to-json-schema",
+          "email-validator"
         ]
       },
       "configurations": {
@@ -107,12 +107,12 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/backoffice/",
@@ -132,12 +132,12 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/backoffice/",
@@ -157,12 +157,12 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/backoffice/",
@@ -182,12 +182,12 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/backoffice/",
@@ -207,12 +207,12 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/admin/",
@@ -232,12 +232,12 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/admin/",
@@ -257,12 +257,12 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/admin/",

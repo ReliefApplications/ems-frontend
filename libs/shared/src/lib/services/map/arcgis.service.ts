@@ -63,17 +63,24 @@ export class ArcgisService {
    *
    * @param {L.Map} map to add the webmap
    * @param {string} id webmap id
+   * @param options additional options
+   * @param options.skipDefaultView skip default view ( map won't change zoom / bounds )
    * @returns basemaps and layers
    */
   public loadWebMap(
     map: L.Map,
-    id: string
+    id: string,
+    options?: {
+      skipDefaultView: boolean;
+    }
   ): Promise<{ basemaps: TreeObject[]; layers: TreeObject[] }> {
     return new Promise((resolve) => {
       getItemData(id, {
         authentication: this.session,
       }).then((webMap: any) => {
-        this.setDefaultView(map, webMap);
+        if (!options?.skipDefaultView) {
+          this.setDefaultView(map, webMap);
+        }
         Promise.all([
           this.loadBaseMap(map, webMap),
           this.loadOperationalLayers(map, webMap),

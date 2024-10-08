@@ -3,6 +3,7 @@ import {
   DetachedRouteHandle,
   RouteReuseStrategy,
 } from '@angular/router';
+import { isNil } from 'lodash';
 
 /**
  * Get resolve url, that will be used to compare pages.
@@ -14,19 +15,24 @@ function getResolvedUrl(route: ActivatedRouteSnapshot): string {
   let url = route.pathFromRoot
     .map((v) => v.url.map((segment) => segment.toString()).join('/'))
     .join('/');
-  const queryParam = route.queryParamMap;
-  if (queryParam.keys.length > 0) {
-    url +=
-      '?' +
-      queryParam.keys
-        .map((key) =>
-          queryParam
-            .getAll(key)
-            .map((value) => key + '=' + value)
-            .join('&')
-        )
-        .join('&');
+  // Make sure to only include query params when the route is the last piece of the url
+  // Otherwise, it could create duplicate layouts
+  if (route.children.length === 0) {
+    const queryParam = route.queryParamMap;
+    if (queryParam.keys.length > 0) {
+      url +=
+        '?' +
+        queryParam.keys
+          .map((key) =>
+            queryParam
+              .getAll(key)
+              .map((value) => key + '=' + value)
+              .join('&')
+          )
+          .join('&');
+    }
   }
+
   return url;
 }
 
@@ -40,10 +46,19 @@ export class AppRouteReuseStrategy implements RouteReuseStrategy {
   /**
    * Should detach the route when navigating
    *
+   * @param route activated route snapshot
    * @returns always true
    */
-  shouldDetach(): boolean {
-    return true;
+  shouldDetach(route: ActivatedRouteSnapshot): boolean {
+    if (!isNil(route.data.reuse)) {
+      if (route.data.reuse) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
   }
 
   /**

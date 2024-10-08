@@ -14,6 +14,8 @@ import {
   FormControl,
   FormArray,
   FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
@@ -33,9 +35,33 @@ import {
   ReferenceData,
   ReferenceDataQueryResponse,
 } from '../../../models/reference-data.model';
-import { TabComponent, TabsComponent } from '@oort-front/ui';
+import {
+  ButtonModule,
+  DividerModule,
+  FormWrapperModule,
+  IconModule,
+  MenuModule,
+  RadioModule,
+  TabComponent,
+  TabsComponent,
+  TabsModule,
+  ToggleModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { WidgetService } from '../../../services/widget/widget.service';
 import { WidgetSettings } from '../../../models/dashboard.model';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { ContextualFiltersSettingsComponent } from '../common/contextual-filters-settings/contextual-filters-settings.component';
+import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
+import { TabWidgetAutomationsComponent } from '../common/tab-widget-automations/tab-widget-automations.component';
+import { SummaryCardItemModule } from '../summary-card/summary-card-item/summary-card-item.module';
+import { SummaryCardModule } from '../summary-card/summary-card.module';
+import { SummaryCardGeneralComponent } from './summary-card-general/summary-card-general.component';
+import { TextEditorTabModule } from './text-editor-tab/text-editor.module';
+import { DisplayTabModule } from './display-tab/display.module';
+import { TabActionsModule } from '../common/tab-actions/tab-actions.module';
+import { SortingSettingsModule } from '../common/sorting-settings/sorting-settings.module';
 
 export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 
@@ -46,6 +72,33 @@ export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
   selector: 'shared-summary-card-settings',
   templateUrl: './summary-card-settings.component.html',
   styleUrls: ['./summary-card-settings.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    TranslateModule,
+    DisplaySettingsComponent,
+    SummaryCardGeneralComponent,
+    TextEditorTabModule,
+    DisplayTabModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    TooltipModule,
+    MenuModule,
+    IconModule,
+    DividerModule,
+    SummaryCardItemModule,
+    RadioModule,
+    ButtonModule,
+    FormWrapperModule,
+    SummaryCardModule,
+    TabsModule,
+    ToggleModule,
+    SortingSettingsModule,
+    ContextualFiltersSettingsComponent,
+    TabActionsModule,
+    TabWidgetAutomationsComponent,
+  ],
 })
 export class SummaryCardSettingsComponent
   extends UnsubscribeComponent
@@ -77,6 +130,8 @@ export class SummaryCardSettingsComponent
   private previousTabsLength = 0;
   /** Current active settings tab index */
   public activeSettingsTab = 0;
+  /** Loading status */
+  public loading = false;
 
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
@@ -285,6 +340,7 @@ export class SummaryCardSettingsComponent
    * @param id resource id
    */
   private getResource(id: string): void {
+    this.loading = true;
     const formValue = this.widgetFormGroup.getRawValue();
     const layoutID = get(formValue, 'card.layout');
     const aggregationID = get(formValue, 'card.aggregation');
@@ -328,6 +384,7 @@ export class SummaryCardSettingsComponent
             this.getCustomAggregation();
           }
         }
+        this.loading = false;
       });
   }
 
@@ -337,6 +394,7 @@ export class SummaryCardSettingsComponent
    * @param id reference data id
    */
   private getReferenceData(id: string): void {
+    this.loading = true;
     this.apollo
       .query<ReferenceDataQueryResponse>({
         query: GET_REFERENCE_DATA,
@@ -360,6 +418,7 @@ export class SummaryCardSettingsComponent
               };
             });
         }
+        this.loading = false;
       });
   }
 

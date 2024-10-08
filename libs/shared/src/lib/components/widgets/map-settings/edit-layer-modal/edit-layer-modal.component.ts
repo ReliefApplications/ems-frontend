@@ -133,6 +133,8 @@ export class EditLayerModalComponent
   public isDatasourceValid = false;
   /** Map dom portal */
   public mapPortal?: DomPortal;
+  /** Loading status */
+  public loading = false;
   /**
    * This property would handle the form change side effects to be triggered once all
    * layer related updates are done in order to avoid multiple mismatches and duplications between
@@ -375,7 +377,9 @@ export class EditLayerModalComponent
 
     if (this.form.controls.datasource) {
       // Reference data changes
-      this.getReferenceData();
+      if (this.form.value.datasource.refData) {
+        this.getReferenceData();
+      }
       this.form
         .get('datasource.refData')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
@@ -394,7 +398,9 @@ export class EditLayerModalComponent
         });
 
       // Resource changes
-      this.getResource();
+      if (this.form.value.datasource.resource) {
+        this.getResource();
+      }
       this.form
         .get('datasource.resource')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
@@ -513,6 +519,7 @@ export class EditLayerModalComponent
    * Get resource from graphql
    */
   getResource(): void {
+    this.loading = true;
     this.fields.next([]);
     const formValue = this.form.getRawValue();
     const resourceID = get(formValue, 'datasource.resource');
@@ -544,7 +551,7 @@ export class EditLayerModalComponent
               );
               this.fields.next(
                 this.aggregation
-                  ? this.mapLayersService.getAggregationFields(
+                  ? this.mapLayersService.getResourceAggregationFields(
                       data.resource.queryName ?? '',
                       this.aggregation
                     )
@@ -552,6 +559,7 @@ export class EditLayerModalComponent
               );
             }
           }
+          this.loading = false;
         });
     }
   }
@@ -560,6 +568,7 @@ export class EditLayerModalComponent
    * Get reference data from graphql
    */
   getReferenceData(): void {
+    this.loading = true;
     this.fields.next([]);
     const formValue = this.form.getRawValue();
     const referenceDataId = get(formValue, 'datasource.refData');
@@ -583,8 +592,8 @@ export class EditLayerModalComponent
             );
             this.fields.next(
               this.aggregation
-                ? this.mapLayersService.getAggregationFields(
-                    data.referenceData.graphQLTypeName ?? '',
+                ? this.mapLayersService.getReferenceDataAggregationFields(
+                    data.referenceData,
                     this.aggregation
                   )
                 : []
@@ -594,7 +603,10 @@ export class EditLayerModalComponent
               this.getFieldsFromRefData(this.referenceData?.fields || [])
             );
           }
+          this.loading = false;
         });
+    } else {
+      this.loading = false;
     }
   }
 

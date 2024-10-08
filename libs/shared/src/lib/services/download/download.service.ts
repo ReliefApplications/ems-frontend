@@ -281,10 +281,15 @@ export class DownloadService {
    * @param entity ID of the entity the file is related to
    * @returns The path of the uploaded file
    */
-  uploadBlob(file: any, type: BlobType, entity: string): Promise<string> {
+  uploadBlob(
+    file: any,
+    type: BlobType,
+    entity: string
+  ): Promise<string | void> {
     const snackBarRef = this.createLoadingSnackbarRef(
       'common.notifications.file.upload.processing'
     );
+    const snackBarInstance = snackBarRef.instance.nestedComponent.instance;
     const path = `upload/${BLOB_TYPE_TO_PATH[type]}/${entity}`;
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -293,27 +298,34 @@ export class DownloadService {
     const formData = new FormData();
     formData.append('file', file, file.name);
     return new Promise((resolve, reject) => {
-      this.restService
-        .post(path, formData, { headers })
-        .subscribe((res: { path: string }) => {
+      this.restService.post(path, formData, { headers }).subscribe({
+        next: (res: { path: string }) => {
           const { path } = res ?? {};
           if (path) {
-            snackBarRef.instance.message = this.translate.instant(
+            snackBarInstance.message = this.translate.instant(
               'common.notifications.file.upload.ready'
             );
-            snackBarRef.instance.loading = false;
+            snackBarInstance.loading = false;
             snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
             resolve(path);
           } else {
-            snackBarRef.instance.message = this.translate.instant(
+            snackBarInstance.message = this.translate.instant(
               'common.notifications.file.upload.error'
             );
-            snackBarRef.instance.loading = false;
-            snackBarRef.instance.error = true;
+            snackBarInstance.loading = false;
+            snackBarInstance.error = true;
             snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
             reject();
           }
-        });
+        },
+        error: (error) => {
+          snackBarInstance.message = error.message;
+          snackBarInstance.loading = false;
+          snackBarInstance.error = true;
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+          reject();
+        },
+      });
     });
   }
 }

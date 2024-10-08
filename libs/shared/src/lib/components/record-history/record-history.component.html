@@ -92,6 +92,7 @@
         category="secondary"
         variant="primary"
         [uiMenuTriggerFor]="menu"
+        [disabled]="!record"
       >
         {{ 'components.history.download' | translate }}
       </ui-button>

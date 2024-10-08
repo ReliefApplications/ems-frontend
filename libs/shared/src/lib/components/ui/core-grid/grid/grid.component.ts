@@ -45,7 +45,6 @@ import { DownloadService } from '../../../../services/download/download.service'
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { GridLayout } from '../models/grid-layout.model';
 import { get, intersection, isNil, has, isEqual } from 'lodash';
-import { DashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService, TooltipDirective } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -132,6 +131,8 @@ export class GridComponent
   @Input() reorderable = true;
   /** Add permission */
   @Input() canAdd = false;
+  /** Download permission */
+  @Input() canDownload = false;
   /** Selectable status */
   @Input() selectable = true;
   /** Multi-select status */
@@ -227,6 +228,8 @@ export class GridComponent
   public hasEnabledActions = false;
   /** Reference to the column chooser element */
   private columnChooserRef: PopupRef | null = null;
+  /** Prevent next column reset */
+  private preventColumnResize = false;
 
   /** @returns show border of grid */
   get showBorder(): boolean {
@@ -295,7 +298,6 @@ export class GridComponent
    * @param gridService The grid service
    * @param renderer The renderer library
    * @param downloadService The download service
-   * @param dashboardService Dashboard service
    * @param translate The translate service
    * @param snackBar The snackbar service
    * @param el Ref to html element
@@ -310,7 +312,6 @@ export class GridComponent
     private gridService: GridService,
     private renderer: Renderer2,
     private downloadService: DownloadService,
-    private dashboardService: DashboardService,
     private translate: TranslateService,
     private snackBar: SnackbarService,
     private el: ElementRef,
@@ -385,7 +386,9 @@ export class GridComponent
           this.updateColumnShowFullScreenButton((column as any).field);
         });
       }, 0);
-      this.setColumnsWidth();
+      this.preventColumnResize
+        ? (this.preventColumnResize = false)
+        : this.setColumnsWidth();
     }
   }
 
@@ -442,6 +445,7 @@ export class GridComponent
         logic: 'and',
         filters: this.showFilter ? [] : this.filter.filters,
       });
+      this.preventColumnResize = true;
     }
   }
 
@@ -770,31 +774,36 @@ export class GridComponent
    * Expands text in a full window modal.
    *
    * @param item Item to display data of.
-   * @param field field name.
+   * @param fieldName field name.
+   * @param fieldTitle title of the field
    */
-  public async onExpandText(item: any, field: string): Promise<void> {
+  public async onExpandText(
+    item: any,
+    fieldName: string,
+    fieldTitle: string
+  ): Promise<void> {
     // Lazy load expended comment component
     const { ExpandedCommentComponent } = await import(
       '../expanded-comment/expanded-comment.component'
     );
     const dialogRef = this.dialog.open(ExpandedCommentComponent, {
       data: {
-        title: field,
-        value: get(item, field),
+        title: fieldTitle,
+        value: get(item, fieldName),
         // Disable edition if cannot update / cannot do inline edition / cannot update item / field is readonly
         readonly:
           !this.actions.update ||
           !this.editable ||
           !item.canUpdate ||
-          this.fields.find((val) => val.name === field).meta.readOnly,
+          this.fields.find((val) => val.name === fieldName).meta.readOnly,
       },
       autoFocus: false,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       // Only update if value is not null or undefined, and different from previous value
-      if (!isNil(value) && value !== get(item, field)) {
+      if (!isNil(value) && value !== get(item, fieldName)) {
         // Create update
-        const update = { [field]: value };
+        const update = { [fieldName]: value };
         // Emit update so the grid can handle the event and update its content
         this.action.emit({ action: 'edit', item, value: update });
       }
@@ -836,7 +845,6 @@ export class GridComponent
         disableClose: true,
         data: {
           widget: this.widget,
-          template: this.dashboardService.findSettingsTemplate(this.widget),
         },
       });
       dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
@@ -898,6 +906,20 @@ export class GridComponent
   public onOpenMapModal(dataItem: any, field: any) {
     this.action.emit({
       action: 'map',
+      item: dataItem,
+      field,
+    });
+  }
+
+  /**
+   * Open editor around clicked item
+   *
+   * @param dataItem Clicked item
+   * @param field html field
+   */
+  public onOpenEditorModal(dataItem: any, field: any) {
+    this.action.emit({
+      action: 'editor',
       item: dataItem,
       field,
     });

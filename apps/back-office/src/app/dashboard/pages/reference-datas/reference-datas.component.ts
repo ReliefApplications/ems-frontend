@@ -185,10 +185,32 @@ export class ReferenceDatasComponent
                 );
               } else {
                 if (data) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectCreated',
+                      {
+                        type: this.translate.instant(
+                          'common.referenceData.one'
+                        ),
+                        value: value.name,
+                      }
+                    )
+                  );
                   this.router.navigate([
                     '/referencedata',
                     data.addReferenceData.id,
                   ]);
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectCreated',
+                      {
+                        type: this.translate
+                          .instant('common.referenceData.one')
+                          .toLowerCase(),
+                        value: value.name,
+                      }
+                    )
+                  );
                 }
               }
             },
@@ -229,8 +251,8 @@ export class ReferenceDatasComponent
             },
           })
           .subscribe({
-            next: (res) => {
-              if (res && !res.errors) {
+            next: ({ errors }) => {
+              if (!errors) {
                 this.snackBar.openSnackBar(
                   this.translate.instant('common.notifications.objectDeleted', {
                     value: this.translate.instant('common.referenceData.one'),
@@ -240,20 +262,16 @@ export class ReferenceDatasComponent
                   (x) => x.id !== element.id
                 );
               } else {
-                if (res.errors) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectNotDeleted',
-                      {
-                        value: this.translate.instant(
-                          'common.referenceData.one'
-                        ),
-                        error: res.errors ? res.errors[0] : '',
-                      }
-                    ),
-                    { error: true }
-                  );
-                }
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.objectNotDeleted',
+                    {
+                      value: this.translate.instant('common.referenceData.one'),
+                      error: errors[0].message,
+                    }
+                  ),
+                  { error: true }
+                );
               }
             },
             error: (err) => {

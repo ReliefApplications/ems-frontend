@@ -16,11 +16,13 @@ import * as TextWidget from './widgets/text-widget';
 import * as CommentWidget from './widgets/comment-widget';
 import * as DropdownWidget from './widgets/dropdown-widget';
 import * as TagboxWidget from './widgets/tagbox-widget';
+import * as EditorComponent from './components/editor';
 import * as OtherProperties from './global-properties/others';
 // import * as ChoicesByUrlProperties from './global-properties/choicesByUrl';
 import * as ChoicesByGraphQLProperties from './global-properties/choices-by-graphql';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
+import * as PopupWidthProperty from './global-properties/popup-width';
 import { initLocalization } from './localization';
 import { Injector, NgZone } from '@angular/core';
 import {
@@ -41,6 +43,7 @@ const CUSTOM_COMPONENTS = [
   'owner',
   'users',
   'geospatial',
+  'editor',
 ];
 
 /**
@@ -124,12 +127,14 @@ export const initCustomSurvey = (
     OwnerComponent.init(apollo, ComponentCollection.Instance);
     UsersComponent.init(ComponentCollection.Instance, domService);
     GeospatialComponent.init(domService, ComponentCollection.Instance);
+    EditorComponent.init(injector, ComponentCollection.Instance);
   }
 
   // load global properties
   ChoicesByGraphQLProperties.init();
   ReferenceDataProperties.init(referenceDataService);
   TooltipProperty.init();
+  PopupWidthProperty.init();
   OtherProperties.init(environment);
 
   // enables POST requests for choicesByUrl

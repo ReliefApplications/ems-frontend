@@ -16,6 +16,7 @@
 
   <!-- Using an additional div to prevent the grid from overlapping the parent's padding -->
   <div
+    *ngIf="widgets.length > 0"
     class="h-full"
     [ngClass]="{
       'pb-[32px] mb-[-32px] box-content': isMinHeightEnabled
@@ -31,7 +32,7 @@
       <gridster-item
         [item]="widget"
         class="max-w-full"
-        *ngFor="let widget of widgets; let i = index"
+        *ngFor="let widget of visibleWidgets; let i = index"
       >
         <shared-widget
           #widgetElement
@@ -51,6 +52,7 @@
             class="cursor-grab drag-handler flex items-center justify-center h-[40px] w-[40px] -ml-3 bg-white/70 rounded-2xl pointer-events-auto"
             variant="grey"
             [uiTooltip]="'common.tooltip.dragDrop' | translate"
+            [tooltipDisabled]="tooltipDisabled"
           >
           </ui-icon>
         </ng-template>

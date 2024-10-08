@@ -1,6 +1,8 @@
 import { FaIconName } from '@oort-front/ui';
 import { Gradient } from '../components/controls/gradient-picker/gradient-picker.component';
 import { LayerType } from '../components/ui/map/interfaces/layer-settings.type';
+import { HeatMapOptions as HeatMapOptionsWithoutOpacity } from 'leaflet';
+import { AdminIdentifier } from '../services/map/map-polygons.service';
 
 /**
  * Layer types for backend
@@ -134,7 +136,7 @@ export interface LayerDatasource {
   layout?: string;
   aggregation?: string;
   geoField?: string;
-  adminField?: string;
+  adminField?: AdminIdentifier;
   latitudeField?: string;
   longitudeField?: string;
   type?: LayerDatasourceType;
@@ -182,4 +184,11 @@ export interface LayerQueryResponse {
 /** Model for GetLayersQueryResponse object */
 export interface LayersQueryResponse {
   layers: LayerModel[];
+}
+
+/**
+ * Extend heat map options interface with opacity
+ */
+export interface HeatMapOptions extends HeatMapOptionsWithoutOpacity {
+  opacity?: number | undefined;
 }
