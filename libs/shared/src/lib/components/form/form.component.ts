@@ -196,26 +196,21 @@ export class FormComponent
    */
   public reset(): void {
     this.survey.clear();
-    /** Adding variables */
-    this.formHelpersService.addUserVariables(this.survey);
-    this.formHelpersService.addApplicationVariables(this.survey);
-    this.formHelpersService.setWorkflowContextVariable(this.survey);
+    this.survey.data = {};
     /** Clear temporary files */
     this.temporaryFilesStorage.clear();
-    /** Reset custom variables */
-    this.formHelpersService.addUserVariables(this.survey);
     /** Force reload of the survey so default value are being applied */
     this.survey.fromJSON(this.survey.toJSON());
     /** Adding variables */
     this.formHelpersService.addUserVariables(this.survey);
     this.formHelpersService.addApplicationVariables(this.survey);
     this.formHelpersService.setWorkflowContextVariable(this.survey);
+    /** Reset custom variables */
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
     if (this.resetTimeoutListener) {
       clearTimeout(this.resetTimeoutListener);
     }
-    this.survey.data = {};
     this.resetTimeoutListener = setTimeout(
       () => (this.surveyActive = true),
       100
