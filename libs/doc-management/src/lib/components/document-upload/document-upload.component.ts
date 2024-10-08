@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 
 /** todo: change, static for testing */
 const SCRIPT_URL =
-  'https://ems2-dev.who.int/csdocui/Scripts/build/docui.esm.js';
+  'https://hems-dev.who.int/csdocui/Scripts/build/docui.esm.js';
 
 /** Allowed file types */ // We may need to allow configuration about that
 const ALLOWED_FILE_TYPES =
@@ -21,7 +21,7 @@ const MAX_UPLOAD_SIZE = '26214400';
 const MAX_UPLOAD_FILES = 5;
 
 /** todo: change, static for testing */
-const BASE_API_URL = 'https://ems2-dev.who.int/csapi/api/';
+const BASE_API_URL = 'https://hems-dev.who.int/csapi/api/';
 
 // const AUTH_SCOPES = 'api://75deca06-ae07-4765-85c0-23e719062833/access_as_user';
 
@@ -46,6 +46,18 @@ interface DocumentUploadConfig {
   };
 }
 
+/** Interface of document configuration */
+interface documentConfig {
+  Occurrence?: string;
+  DocumentType?: number;
+  Region?: number[];
+  Country?: number[];
+  Aetiology?: number[];
+  Syndrome?: number[];
+  Hazard?: number[];
+  ['Disease Condition']?: number[];
+}
+
 /**
  * Document upload component.
  * Uses web element from CS in order to display an upload modal.
@@ -61,9 +73,11 @@ interface DocumentUploadConfig {
 export class DocumentUploadComponent implements OnInit {
   /** Authorization token */
   @Input() token =
-    'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ik1jN2wzSXo5M2c3dXdnTmVFbW13X1dZR1BrbyIsImtpZCI6Ik1jN2wzSXo5M2c3dXdnTmVFbW13X1dZR1BrbyJ9.eyJhdWQiOiJhcGk6Ly83NWRlY2EwNi1hZTA3LTQ3NjUtODVjMC0yM2U3MTkwNjI4MzMiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9mNjEwYzBiNy1iZDI0LTRiMzktODEwYi0zZGMyODBhZmI1OTAvIiwiaWF0IjoxNzI4Mzg1MDQxLCJuYmYiOjE3MjgzODUwNDEsImV4cCI6MTcyODM4OTIyMiwiYWNyIjoiMSIsImFpbyI6IkFaUUFhLzhZQUFBQVRmR3hmOGZZLzJMOHRiZVd6KzNOL2toZW91blNISEU4RnViOFllUmUxSmg0UXpMUFJLRWorNlZFL3NydDhneTUvZ21YcE82ZU1DQmFyWFRGSnJwd2dMdml2SHVkRWlqUmpBK2R0dFdTTGpGTVZNSUh5MW16bDVhUzVIbHNjbHdtNHRxSmxsZFN2dUcyek03YjhJcFdhTmNLWm41UmdycXFrVzBtVnRQL3l0Zk9ubDROZkw4QW5NTVN4Qm4yemxiTSIsImFtciI6WyJwd2QiLCJtZmEiXSwiYXBwaWQiOiIwMjEyMDJhYy1kMjNiLTQ3NTctODNlMy1mNmVjZGUxMjI2NmIiLCJhcHBpZGFjciI6IjAiLCJlbWFpbCI6ImFudG9pbmVAcmVsaWVmYXBwbGljYXRpb25zLm9yZyIsImlkcCI6Imh0dHBzOi8vc3RzLndpbmRvd3MubmV0L2ZiYWNkNDhkLWNjZjQtNDgwZC1iYWYwLTMxMDQ4MzY4MDU1Zi8iLCJpcGFkZHIiOiIyYTA0OmNlYzI6MmM6NmZhODo3MGI5OjIyZDA6ZmIwNzoxNGVmIiwibmFtZSI6IkFudG9pbmUgSHVyYXJkIChhbnRvaW5lQHJlbGllZmFwcGxpY2F0aW9ucy5vcmcpIiwib2lkIjoiZWFiNjA5ZDgtYjdjYi00NzUzLWI5ODktNWMzZDE3YzI1NGUyIiwicmgiOiIwLkFVY0F0OEFROWlTOU9VdUJDejNDZ0stMWtBYkszblVIcm1WSGhjQWo1eGtHS0ROSEFLay4iLCJzY3AiOiJhY2Nlc3NfYXNfdXNlciIsInNpZCI6ImRjMjBjZjhmLWNiMTUtNGFmYi1iN2U4LTA2M2VlZWFjNzc1MCIsInN1YiI6IlI0LTRxSXczMHBXdURDdTN4OHVPTk50VlRvSFhFWC1iekZFbzJ4QThWMG8iLCJ0aWQiOiJmNjEwYzBiNy1iZDI0LTRiMzktODEwYi0zZGMyODBhZmI1OTAiLCJ1bmlxdWVfbmFtZSI6ImFudG9pbmVAcmVsaWVmYXBwbGljYXRpb25zLm9yZyIsInV0aSI6IllhMzE5X3lWZTBTWnFWSTJRcjU1QUEiLCJ2ZXIiOiIxLjAifQ.ra7obaTR5sSmpw0SdYUd3Nve0bP8mx3FPC5tJ8SjvsxBLBtvyMl0M008UUrg9H4_KRpsGG1S_S2DSafc2rxb5Ygn61b_z0mM6VGpCvwMQahy_BxweGQSsl29Wl8-vYhb8V6V6yr7WbvHN3XRr6rmsrBqv7zpFTmX56XEQ_RtKCH8JxdE75bWmi9bY13Mty3bEKfwE2CNCLNkZ7TcSAN3B3abLnYIi6gpk3gwOJ3EB9LSowLyEofrmozfVXQEzz4ZSS0AdfnB7eVNvq35-N6iL2jrqeFO8j_AKr6Rv3A4JiT9C-86qokQHqM_5uL4hJ50Rc9Fyw2boGfhAmzzwVhHNA';
+    'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ik1jN2wzSXo5M2c3dXdnTmVFbW13X1dZR1BrbyIsImtpZCI6Ik1jN2wzSXo5M2c3dXdnTmVFbW13X1dZR1BrbyJ9.eyJhdWQiOiJhcGk6Ly83NWRlY2EwNi1hZTA3LTQ3NjUtODVjMC0yM2U3MTkwNjI4MzMiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC9mNjEwYzBiNy1iZDI0LTRiMzktODEwYi0zZGMyODBhZmI1OTAvIiwiaWF0IjoxNzI4Mzk3MjM2LCJuYmYiOjE3MjgzOTcyMzYsImV4cCI6MTcyODQwMTY0NiwiYWNyIjoiMSIsImFpbyI6IkFaUUFhLzhZQUFBQVlQZ0ozQVVOV2pKL3dPWEhQenpJdk5mK3dEbjdpNHZxMXdqTjFLMnRyWDhuRFVTUnJGNUhyUnpjbGlPeXp3TEpQQWtINWZqQ1V5OHFvZGd2VGZsd2Y0dEI4aWdIVlluaFpQUVF0ZzVtOENaRlk3NVQrMDE0MlFMNHNJaXp4Z3NDeFZLTkxsVWUvQUNxdzJmWmN1Tzk4NFQxR1VFYmZNbWc1WmhFSzJQUDhOeWV6VXJoZTRoWVVrVFNnYVo1b1NTQiIsImFtciI6WyJwd2QiLCJtZmEiXSwiYXBwaWQiOiIwMjEyMDJhYy1kMjNiLTQ3NTctODNlMy1mNmVjZGUxMjI2NmIiLCJhcHBpZGFjciI6IjAiLCJlbWFpbCI6ImFudG9pbmVAcmVsaWVmYXBwbGljYXRpb25zLm9yZyIsImlkcCI6Imh0dHBzOi8vc3RzLndpbmRvd3MubmV0L2ZiYWNkNDhkLWNjZjQtNDgwZC1iYWYwLTMxMDQ4MzY4MDU1Zi8iLCJpcGFkZHIiOiIyYTA0OmNlYzI6MmM6NmZhODo3MGI5OjIyZDA6ZmIwNzoxNGVmIiwibmFtZSI6IkFudG9pbmUgSHVyYXJkIChhbnRvaW5lQHJlbGllZmFwcGxpY2F0aW9ucy5vcmcpIiwib2lkIjoiZWFiNjA5ZDgtYjdjYi00NzUzLWI5ODktNWMzZDE3YzI1NGUyIiwicmgiOiIwLkFVY0F0OEFROWlTOU9VdUJDejNDZ0stMWtBYkszblVIcm1WSGhjQWo1eGtHS0ROSEFLay4iLCJzY3AiOiJhY2Nlc3NfYXNfdXNlciIsInNpZCI6ImRjMjBjZjhmLWNiMTUtNGFmYi1iN2U4LTA2M2VlZWFjNzc1MCIsInN1YiI6IlI0LTRxSXczMHBXdURDdTN4OHVPTk50VlRvSFhFWC1iekZFbzJ4QThWMG8iLCJ0aWQiOiJmNjEwYzBiNy1iZDI0LTRiMzktODEwYi0zZGMyODBhZmI1OTAiLCJ1bmlxdWVfbmFtZSI6ImFudG9pbmVAcmVsaWVmYXBwbGljYXRpb25zLm9yZyIsInV0aSI6ImNPc3I4ek1zVFVHbEJVb1A0aEZ3QUEiLCJ2ZXIiOiIxLjAifQ.uN-2dj9wdYWk9hSbzyH3EZ3wv9h-srxzqCwccZxqdq92-tGCaeztSZPL2RFhtq5Q4EXWpGG831pVGkjh9SGr2vclyp2REDj0FCUN7xiwMzxJQOpoe2Q61TlgMGFmkcMFUN2ZzCjTjTyeihcYAjsG9seabI2tX41Ifa43x_ljaxHRNiAcjsW0Af7Kf1uzGoEqo8JWv-T39VTKKjsIWmEQR8wIPJzM4RYwIteriEzjGSFlY1YUfwOqMjPz34QFA46QXxGDK7ftQIB4HEq-EZINJGc4x5qleLP2xObyjaTD4p7Vucz6uHRrRWnVD7oYjAKI1JmtE7Ieb277elgxeIZeUg';
+  /** Document configuration, can set tags by default, document type & occurence */
+  @Input() documentConfig: documentConfig = {};
   /** Configuration for document upload web element settings. */
-  public config: DocumentUploadConfig = {
+  public uploadConfig: DocumentUploadConfig = {
     userid: USER_ID,
     mode: 'new',
     allowedFileTypes: ALLOWED_FILE_TYPES,
@@ -95,9 +109,9 @@ export class DocumentUploadComponent implements OnInit {
    */
   public onClick() {
     try {
-      const filterObject = {};
+      console.log(this.documentConfig);
       const uploadEvent = new CustomEvent('documentDataForUpload', {
-        detail: { filterObject },
+        detail: { filterObject: this.documentConfig },
       });
       document.dispatchEvent(uploadEvent);
     } catch (error) {
