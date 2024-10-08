@@ -1,4 +1,9 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import {
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  OnInit,
+  Input,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 const SCRIPT_URL =
@@ -19,8 +24,26 @@ const USER_ID = 'eab609d8-b7cb-4753-b989-5c3d17c254e2';
 
 const USERNAME = 'antoine@reliefapplications.org';
 
-const AUTH_TOKEN = '';
+/** Configuration interface for document upload settings. */
+interface DocumentUploadConfig {
+  userid: string;
+  mode: string;
+  allowedFileTypes: string;
+  maxUploadSize: string;
+  maxUploadFiles: number;
+  baseApiUrl: string;
+  msalConfig: {
+    scopes: string;
+    userid: string;
+    token: string;
+    username: string;
+  };
+}
 
+/**
+ * Document upload component.
+ * Uses web element from CS in order to display an upload modal.
+ */
 @Component({
   selector: 'doc-upload',
   standalone: true,
@@ -30,7 +53,11 @@ const AUTH_TOKEN = '';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class DocumentUploadComponent implements OnInit {
-  public documentUploadData = {
+  /** Authorization token */
+  @Input() token = '';
+
+  /** Configuration for document upload web element settings. */
+  public config: DocumentUploadConfig = {
     userid: USER_ID,
     mode: 'new',
     allowedFileTypes: ALLOWED_FILE_TYPES,
@@ -40,35 +67,47 @@ export class DocumentUploadComponent implements OnInit {
     msalConfig: {
       scopes: AUTH_SCOPES,
       userid: USER_ID,
-      token: AUTH_TOKEN,
+      token: this.token,
       username: USERNAME,
     },
   };
 
-  ngOnInit(): void {
-    this.loadScript()
-      .then(() => {
-        console.log('script loaded');
-      })
-      .catch((error) => console.error('Error loading the script: ', error));
+  async ngOnInit(): Promise<void> {
+    try {
+      await this.loadScript();
+      console.log('Script loaded');
+    } catch (error) {
+      console.error('Error loading the script: ', error);
+    }
   }
 
+  /**
+   * Handle click event to dispatch a custom event for document upload.
+   */
   public onClick() {
-    const filterObject = {};
-    const uploadEvent = new CustomEvent('documentDataForUpload', {
-      detail: { filterObject },
-    });
-    document.dispatchEvent(uploadEvent);
+    try {
+      const filterObject = {};
+      const uploadEvent = new CustomEvent('documentDataForUpload', {
+        detail: { filterObject },
+      });
+      document.dispatchEvent(uploadEvent);
+    } catch (error) {
+      console.error('Error during dispatching upload event:', error);
+    }
   }
 
-  // If we can load it by CDN later
+  /**
+   * Loads scrip asynchronously.
+   *
+   * @returns Resolve when script is loaded
+   */
   private loadScript(): Promise<void> {
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
       script.src = SCRIPT_URL;
       script.async = true;
       script.type = 'module';
-      script.crossOrigin = 'anonymous';
+      // script.crossOrigin = 'anonymous';
       script.onload = () => resolve();
       script.onerror = () =>
         reject(new Error(`Failed to load script: ${SCRIPT_URL}`));

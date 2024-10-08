@@ -1,15 +1,19 @@
 import { moduleMetadata, Meta, StoryObj } from '@storybook/angular';
 import { DocumentUploadComponent } from './document-upload.component';
 
-export default {
-  title: 'DocumentUploadComponent',
+const meta: Meta<DocumentUploadComponent> = {
+  title: 'Document Upload',
   component: DocumentUploadComponent,
   decorators: [
     moduleMetadata({
       imports: [],
     }),
   ],
-} as Meta<DocumentUploadComponent>;
+  args: {
+    token: '',
+  },
+};
+export default meta;
 
 type DocumentUploadStory = StoryObj<DocumentUploadComponent>;
 

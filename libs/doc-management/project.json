@@ -32,7 +32,7 @@
     "storybook": {
       "executor": "@storybook/angular:start-storybook",
       "options": {
-        "port": 4400,
+        "port": 4200,
         "configDir": "libs/doc-management/.storybook",
         "browserTarget": "doc-management:build-storybook",
         "compodoc": false
