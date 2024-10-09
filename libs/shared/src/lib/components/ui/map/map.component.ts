@@ -817,7 +817,6 @@ export class MapComponent
       });
 
       Promise.all(layerPromises).then((layersTree: any) => {
-        this.mapLayersService.generateStackPanes(this.map, layersTree.length);
         this.refreshLastUpdate();
         resolve({ layers: layersTree });
       });

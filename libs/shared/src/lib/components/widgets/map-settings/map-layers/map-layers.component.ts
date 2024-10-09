@@ -62,7 +62,7 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
     this.mapLayersService
       .getLayers(layerIds)
       .pipe(
-        // Sort layers list with the same order as the one in the given control
+        // Sort layers list with the same order as the one in the given layer ids
         map((layers) => {
           const sortedLayers: LayerModel[] = [];
           layerIds.forEach((layerId: string) => {
