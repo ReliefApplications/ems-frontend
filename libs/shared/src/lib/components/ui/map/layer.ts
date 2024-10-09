@@ -216,6 +216,8 @@ export class Layer implements LayerModel {
   public shouldRefresh = false;
   /** Parent layer ( optional, only for sub-layer ) */
   public parent?: Layer;
+  /** All children layer classes if exits */
+  public children?: Layer[] = [];
   /** Given layer index position in the map */
   public zIndex!: number;
 
@@ -569,26 +571,29 @@ export class Layer implements LayerModel {
     switch (this.type) {
       case 'GroupLayer':
         const childrenIds = this.getChildren();
-        const layerPromises = childrenIds.map((layer, index) => {
+        const layerPromises = childrenIds.map((layer) => {
           return this.layerService.createLayersFromId(
             layer,
             this.injector,
-            childrenIds.length - index
+            // children layers would have same index context as the parent
+            this.zIndex - 500
           );
         });
         const sublayers = await Promise.all(layerPromises);
-
+        this.children = [];
         for (const child of sublayers) {
           child.opacity = child.opacity * this.opacity;
           child.visibility = this.visibility && child.visibility;
           child.parent = this;
           child.layer = await child.getLayer();
+          this.children.push(child);
         }
         const layers = sublayers
           .map((child) => child.layer)
           .filter((layer) => layer !== undefined) as L.Layer[];
         const layer = L.layerGroup(layers, { pane: this.zIndex.toString() });
         layer.onAdd = (map: L.Map) => {
+          this.updateMapPanesStatus(map);
           const l = L.LayerGroup.prototype.onAdd.call(layer, map);
           // Leaflet.heat doesn't support click events, so we have to do it ourselves
           this.onAddLayer(map, layer);
@@ -731,6 +736,7 @@ export class Layer implements LayerModel {
               }
             };
             layer.onAdd = (map: L.Map) => {
+              this.updateMapPanesStatus(map);
               // So we can use onAdd method from HeatLayer class
               const l = (L as any).HeatLayer.prototype.onAdd.call(layer, map);
               // Leaflet.heat doesn't support click events, so we have to do it ourselves
@@ -766,7 +772,7 @@ export class Layer implements LayerModel {
                   symbol
                 );
                 const clusterGroup = L.markerClusterGroup({
-                  pane: this.zIndex.toString(),
+                  clusterPane: this.zIndex.toString(),
                   chunkedLoading: true, // Load markers in chunks
                   chunkInterval: 250, // Time interval (in ms) during which addLayers works before pausing to let the rest of the page process
                   chunkDelay: 50, // Time delay (in ms) between consecutive periods of processing for addLayers
@@ -801,6 +807,7 @@ export class Layer implements LayerModel {
                   },
                 });
                 clusterGroup.onAdd = (map: L.Map) => {
+                  this.updateMapPanesStatus(map);
                   const l = L.MarkerClusterGroup.prototype.onAdd.call(
                     clusterGroup,
                     map
@@ -833,6 +840,7 @@ export class Layer implements LayerModel {
                 const clusterLayer = L.geoJSON(data, geoJSONopts);
 
                 clusterLayer.onAdd = (map: L.Map) => {
+                  this.updateMapPanesStatus(map);
                   const l = L.GeoJSON.prototype.onAdd.call(clusterLayer, map);
                   this.onAddLayer(map, clusterLayer);
                   return l;
@@ -848,6 +856,7 @@ export class Layer implements LayerModel {
                 const layer = L.geoJSON(data, geoJSONopts);
 
                 layer.onAdd = (map: L.Map) => {
+                  this.updateMapPanesStatus(map);
                   const l = L.GeoJSON.prototype.onAdd.call(layer, map);
                   this.onAddLayer(map, layer);
                   return l;
@@ -878,6 +887,17 @@ export class Layer implements LayerModel {
     (this.layer as any).id = this.id;
     (this.layer as any).zIndex = this.zIndex;
     return this.layer;
+  }
+
+  /**
+   * Set up panes to keep current map layers stack in order
+   * @param map Current map instance
+   */
+  private updateMapPanesStatus(map: L.Map) {
+    if (!map.getPane(this.zIndex.toString())) {
+      map.createPane(this.zIndex.toString()).style.zIndex =
+        this.zIndex.toString();
+    }
   }
 
   /**
