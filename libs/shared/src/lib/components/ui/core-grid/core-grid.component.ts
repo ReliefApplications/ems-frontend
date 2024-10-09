@@ -1056,7 +1056,7 @@ export class CoreGridComponent
             this.dialog.open(EditorModalComponent, {
               data: {
                 html: event.item[event.field.name],
-                title: event.field.name,
+                title: event.field.title,
               },
             });
           }
