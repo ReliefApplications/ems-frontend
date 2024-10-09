@@ -1882,12 +1882,12 @@
 					},
 					"help": {
 						"geographicExtent": "Utilisez le filtre et/ou le contexte de la page pour zoomer sur la carte",
-						"layers": "*******************"
+						"layers": "Les calques seront affichés sur la carte selon leur ordre dans la liste, les couches en haut apparaissant au-dessus des couches avec un index plus bas."
 					},
 					"layers": {
 						"add": "Ajouter un nouveau calque",
 						"chooseLayer": "Choisir un calque existant",
-						"createGroup": "Créer un nouveau groupe de couches",
+						"createGroup": "Créer un nouveau groupe de calques",
 						"createLayer": "Créer un nouveau calque",
 						"dataSource": {
 							"fieldMapping": "Mapping des Champs",

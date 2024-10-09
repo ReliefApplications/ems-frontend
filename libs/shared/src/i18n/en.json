@@ -1882,7 +1882,7 @@
 					},
 					"help": {
 						"geographicExtent": "Use filter and / or page context to zoom on the map",
-						"layers": "Layer stack order on the map would be applied based on the layer list"
+						"layers": "The layers will be displayed on the map according to their order in the list, with layers at the top appearing above layers with a lower index."
 					},
 					"layers": {
 						"add": "Add new layer",
