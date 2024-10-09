@@ -1881,7 +1881,8 @@
 						}
 					},
 					"help": {
-						"geographicExtent": "Use filter and / or page context to zoom on the map"
+						"geographicExtent": "Use filter and / or page context to zoom on the map",
+						"layers": "The layers will be displayed on the map according to their order in the list, with layers at the top appearing above layers with a lower index."
 					},
 					"layers": {
 						"add": "Add new layer",
