@@ -1151,6 +1151,10 @@
 			"fields": {
 				"available": "Champs disponibles",
 				"column": "Largeur de la colonne (px)",
+				"displayInGrid": {
+					"info": "******************",
+					"text": "Afficher le contenu du champ dans la grille"
+				},
 				"format": {
 					"info": "Laissez vide pour utiliser le mode classique",
 					"title": "Mode d'affichage"

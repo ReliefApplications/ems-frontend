@@ -226,6 +226,7 @@ export class GridService {
                 get(metaData, 'isCalculated', false),
               hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
+              displayContent: f.displayContent,
               fixedWidth: f.width, // width used to overwrite autocalculation
               order: cachedField?.order,
               canSee,

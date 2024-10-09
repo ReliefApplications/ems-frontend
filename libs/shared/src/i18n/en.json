@@ -1151,6 +1151,10 @@
 			"fields": {
 				"available": "Available fields",
 				"column": "Column width (px)",
+				"displayInGrid": {
+					"info": "By default, display a link to open field content in modal. Enable this option to display the field content directly in the column. \nPlease note that HTML content may not render well in grid",
+					"text": "Display field content in grid"
+				},
 				"format": {
 					"info": "Left empty to ignore formatting",
 					"title": "Display format"
