@@ -245,6 +245,7 @@ export class EmailTemplateComponent
     if (this.isDisable) {
       this.segmentForm?.get('segment')?.disable();
       this.segmentForm?.get('dataType')?.disable();
+      this.distributionList?.get('reference')?.disable();
     }
 
     this.distributionListValid =
@@ -306,9 +307,11 @@ export class EmailTemplateComponent
       if (this.isDisable) {
         this.segmentForm?.get('segment')?.disable();
         this.segmentForm?.get('dataType')?.disable();
+        this.distributionList?.get('reference')?.disable();
       } else {
         this.segmentForm?.get('segment')?.enable();
         this.segmentForm?.get('dataType')?.enable();
+        this.distributionList?.get('reference')?.enable();
       }
     }
   }

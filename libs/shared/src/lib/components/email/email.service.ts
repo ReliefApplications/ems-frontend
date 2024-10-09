@@ -619,6 +619,10 @@ export class EmailService {
       ) || [];
     const dlGroup = formGroup as FormGroup;
     dlGroup.setControl('resource', this.formBuilder.control(emailDL.resource));
+    dlGroup.setControl(
+      'reference',
+      this.formBuilder.control(emailDL.reference)
+    );
     // Map filters
     dlGroup.setControl(
       'query',

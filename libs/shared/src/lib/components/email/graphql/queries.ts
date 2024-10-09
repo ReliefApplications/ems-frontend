@@ -260,6 +260,7 @@ export const ADD_EMAIL_NOTIFICATION = gql`
           fields
         }
         resource
+        reference
         tableStyle
         blockType
         textStyle
@@ -357,6 +358,7 @@ export const GET_DISTRIBUTION_LIST = gql`
         node {
           bcc {
             resource
+            reference
             query {
               name
               filter
@@ -366,6 +368,7 @@ export const GET_DISTRIBUTION_LIST = gql`
           }
           cc {
             resource
+            reference
             query {
               name
               filter
@@ -375,6 +378,7 @@ export const GET_DISTRIBUTION_LIST = gql`
           }
           to {
             resource
+            reference
             query {
               name
               filter
@@ -403,6 +407,7 @@ export const ADD_DISTRIBUTION_LIST = gql`
     ) {
       bcc {
         resource
+        reference
         query {
           name
           filter
@@ -412,6 +417,7 @@ export const ADD_DISTRIBUTION_LIST = gql`
       }
       cc {
         resource
+        reference
         query {
           name
           filter
@@ -421,6 +427,7 @@ export const ADD_DISTRIBUTION_LIST = gql`
       }
       to {
         resource
+        reference
         query {
           name
           filter
@@ -467,6 +474,7 @@ export const EDIT_DISTRIBUTION_LIST = gql`
     ) {
       bcc {
         resource
+        reference
         query {
           name
           filter
@@ -476,6 +484,7 @@ export const EDIT_DISTRIBUTION_LIST = gql`
       }
       cc {
         resource
+        reference
         query {
           name
           filter
@@ -485,6 +494,7 @@ export const EDIT_DISTRIBUTION_LIST = gql`
       }
       to {
         resource
+        reference
         query {
           name
           filter
