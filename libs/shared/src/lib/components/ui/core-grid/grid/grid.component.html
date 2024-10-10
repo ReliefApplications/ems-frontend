@@ -671,10 +671,9 @@
         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
           <div class="textbox-container" [style]="dataItem.style[field.name]">
             <ng-container *ngIf="field.displayContent; else linkTmpl">
-              <div
-                class="truncate"
-                [innerHTML]="dataItem[field.name] ?? ''"
-              ></div>
+              <div class="truncate">
+                {{ dataItem[field.name] | sharedStripHtml }}
+              </div>
             </ng-container>
             <ng-template #linkTmpl>
               <a
