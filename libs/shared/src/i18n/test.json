@@ -1151,6 +1151,10 @@
 			"fields": {
 				"available": "******",
 				"column": "******",
+				"displayInGrid": {
+					"info": "******",
+					"text": "******"
+				},
 				"format": {
 					"info": "******",
 					"title": "******"

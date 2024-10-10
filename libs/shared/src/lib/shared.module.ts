@@ -86,7 +86,6 @@ import { DashboardFilterIconComponent } from './components/dashboard-filter-icon
     // === VIEWS ===
     ViewsModule,
   ],
-  declarations: [],
   imports: [
     ListFilterComponent,
     StatusOptionsComponent,

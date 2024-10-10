@@ -23,6 +23,7 @@ import { GridToolbarModule } from '../toolbar/toolbar.module';
 import { GridComponent } from './grid.component';
 import { GridFilterModule } from '../filter/filter.module';
 import { GridFilterMenuModule } from '../filter-menu/filter-menu.module';
+import { StripHtmlPipe } from '../../../../pipes/strip-html/strip-html.pipe';
 
 /** Module for the grid component */
 @NgModule({
@@ -58,6 +59,8 @@ import { GridFilterMenuModule } from '../filter-menu/filter-menu.module';
     DateModule,
     TextareaModule,
     uiButtonModule,
+    // === Pipes ==
+    StripHtmlPipe,
   ],
   exports: [GridComponent],
 })
