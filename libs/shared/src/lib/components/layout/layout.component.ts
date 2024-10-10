@@ -138,8 +138,6 @@ export class LayoutComponent
   public otherOffice = '';
   /** Environment */
   public environment: any;
-  /** Is in application */
-  private inApplication = false;
 
   // === APP SEARCH ===
   /** Show app search */
@@ -239,7 +237,6 @@ export class LayoutComponent
 
   ngOnInit(): void {
     if (this.environment.module === 'backoffice') {
-      this.inApplication = this.router.url.includes('/applications/');
       this.otherOffice = 'front office';
     } else {
       this.otherOffice = 'back office';

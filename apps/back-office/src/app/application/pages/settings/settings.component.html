@@ -41,6 +41,31 @@
           [placeholder]="'common.placeholder.name' | translate"
         />
       </div>
+      <div
+        [uiErrorMessage]="
+          (shortcut?.errors?.isNotValid
+            ? 'models.application.shortcut.errors.isNotValid'
+            : shortcut?.errors?.isNotUnique
+            ? 'models.application.shortcut.errors.isNotUnique'
+            : ''
+          ) | translate
+        "
+        [uiErrorMessageIf]="shortcut?.errors && shortcut?.touched"
+        uiFormFieldDirective
+        class="flex-auto"
+      >
+        <label>
+          {{ 'models.application.shortcut.text' | translate }}
+        </label>
+        <input formControlName="shortcut" type="text" />
+        <ui-icon
+          icon="info_outline"
+          class="cursor-help"
+          variant="grey"
+          uiSuffix
+          [uiTooltip]="'models.application.shortcut.info' | translate"
+        ></ui-icon>
+      </div>
       <div uiFormFieldDirective class="flex-1">
         <label>
           {{ 'models.application.id' | translate }}

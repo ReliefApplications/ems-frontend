@@ -162,6 +162,16 @@ export class ApplicationService {
     return `upload/application/${id}/invite`;
   }
 
+  /**
+   * Extract wanted path from the given application
+   *
+   * @param application Application from where to extract the path
+   * @returns Path to current application
+   */
+  getApplicationPath(application: Application): string {
+    return (application?.shortcut ?? application?.id) as string;
+  }
+
   /** @returns Edit status of the application */
   get isUnlocked(): boolean {
     const application = this.application.getValue();
@@ -389,6 +399,7 @@ export class ApplicationService {
             sideMenu: value.sideMenu,
             hideMenu: value.hideMenu,
             status: value.status,
+            shortcut: value.shortcut,
           },
         })
         .subscribe(({ errors, data }) => {
@@ -406,6 +417,7 @@ export class ApplicationService {
                 sideMenu: value.sideMenu,
                 hideMenu: value.hideMenu,
                 status: data.editApplication.status,
+                shortcut: data.editApplication.shortcut,
               };
               this.application.next(newApplication);
             }

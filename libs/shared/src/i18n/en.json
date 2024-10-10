@@ -2332,6 +2332,14 @@
 				"updated": "Application updated."
 			},
 			"setAsFavorite": "Set as favorite",
+			"shortcut": {
+				"errors": {
+					"isNotUnique": "**************unique",
+					"isNotValid": "**************valid"
+				},
+				"info": "Application shortcut must be an unique string in the system. It can only contain letters, numbers and hyphens",
+				"text": "Shortcut"
+			},
 			"subscription": {
 				"create": "Create a subscription"
 			}

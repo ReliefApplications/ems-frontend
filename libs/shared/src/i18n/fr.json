@@ -2332,6 +2332,14 @@
 				"updated": "Application modifiée."
 			},
 			"setAsFavorite": "Ajouter aux favoris",
+			"shortcut": {
+				"errors": {
+					"isNotUnique": "**************",
+					"isNotValid": "**************"
+				},
+				"info": "***********",
+				"text": "***********"
+			},
 			"subscription": {
 				"create": "Créer un abonnement"
 			}

@@ -3,13 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { subject } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
 import {
+  AppAbility,
   Application,
-  User,
-  AuthService,
   ApplicationService,
+  AuthService,
   ContentType,
   UnsubscribeComponent,
-  AppAbility,
+  User,
 } from '@oort-front/shared';
 import { SnackbarService } from '@oort-front/ui';
 import get from 'lodash/get';
@@ -49,6 +49,8 @@ export class ApplicationComponent
   public largeDevice: boolean;
   /** Is loading */
   public loading = true;
+  /** Current profile route */
+  public profileRoute = '/profile';
 
   /**
    * Front-office Application component.
@@ -90,10 +92,10 @@ export class ApplicationComponent
    */
   ngOnInit(): void {
     // Subscribe to params change
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+    this.route.data.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.loading = true;
-      this.applicationService.loadApplication(params.id);
-      this.appID = params.id;
+      this.applicationService.loadApplication(data.id);
+      this.appID = data.id;
     });
     // Get list of available applications
     this.authService.user$
@@ -106,6 +108,10 @@ export class ApplicationComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
         if (application) {
+          this.profileRoute =
+            '/' +
+            this.applicationService.getApplicationPath(application) +
+            '/profile';
           this.loading = false;
           this.title = application.name || '';
           this.adminNavItems = [];
@@ -113,7 +119,12 @@ export class ApplicationComponent
           this.setNavGroups(application);
           if (!this.application || application.id !== this.application.id) {
             const firstPage = get(application, 'pages', [])[0];
-            if (this.router.url.endsWith(application?.id || '') || !firstPage) {
+            if (
+              this.router.url.endsWith(
+                this.applicationService.getApplicationPath(application) || ''
+              ) ||
+              !firstPage
+            ) {
               // If a page is configured
               if (firstPage) {
                 this.router.navigate(
@@ -135,6 +146,7 @@ export class ApplicationComponent
           this.sideMenu = this.application?.sideMenu ?? true;
           this.hideMenu = this.application?.hideMenu ?? false;
         } else {
+          this.profileRoute = '/profile';
           this.title = '';
           this.navGroups = [];
           if (this.applicationService.hasErrors) {
@@ -159,7 +171,9 @@ export class ApplicationComponent
    * @param application Application to open
    */
   onOpenApplication(application: Application): void {
-    this.router.navigate([`/${application.id}`]);
+    this.router.navigate([
+      `/${this.applicationService.getApplicationPath(application)}`,
+    ]);
   }
 
   /**

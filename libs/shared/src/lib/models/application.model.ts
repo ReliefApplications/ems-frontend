@@ -38,6 +38,7 @@ export interface Application {
   templates?: EmailTemplate[];
   distributionLists?: DistributionList[];
   customNotifications?: Connection<CustomNotification>;
+  shortcut?: string;
 }
 
 /** Model for application query response object */
