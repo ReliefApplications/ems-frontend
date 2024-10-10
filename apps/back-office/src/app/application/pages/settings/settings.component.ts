@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
-  ApplicationsApplicationNodesQueryResponse,
   ApplicationService,
   ConfirmService,
   DeleteApplicationMutationResponse,
@@ -19,11 +18,9 @@ import {
 } from '@oort-front/shared';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
-import { iif, of, Subscription } from 'rxjs';
-import { debounceTime, map, switchMap, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { CustomStyleComponent } from '../../../components/custom-style/custom-style.component';
 import { DELETE_APPLICATION } from './graphql/mutations';
-import { GET_APPLICATION_WITH_SHORTCUT } from './graphql/queries';
 
 /**
  * Validators for checking that given shortcut value is valid
@@ -74,8 +71,6 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
   public locked: boolean | undefined = undefined;
   /** Is application locked for edition by current user */
   public lockedByUser: boolean | undefined = undefined;
-  /** Current form values subscription */
-  private formSubscription!: Subscription;
 
   /** @returns Application shortcut form field */
   get shortcut(): AbstractControl | null {
@@ -116,51 +111,10 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
         if (application) {
           this.application = application;
           this.settingsForm = this.createSettingsForm(application);
-          this.updateCurrentFormSubscriptionListener();
           this.locked = this.application?.locked;
           this.lockedByUser = this.application?.lockedByUser;
         }
       });
-  }
-
-  /**
-   * Update current form subscription listeners
-   */
-  private updateCurrentFormSubscriptionListener() {
-    this.formSubscription?.unsubscribe();
-    this.formSubscription = this.settingsForm
-      .get('shortcut')
-      ?.valueChanges.pipe(
-        debounceTime(1000),
-        switchMap((shortcut: string | undefined | null) => {
-          return iif(
-            () => (shortcut as string).length >= 2,
-            (async () => {
-              await this.existsApplicationWithShortcutQuery(
-                shortcut as string
-              ).refetch();
-              return this.existsApplicationWithShortcutQuery(
-                shortcut as string
-              ).valueChanges.pipe(
-                map((data) => {
-                  return data.data.applications.edges.length;
-                })
-              );
-            })(),
-            of(null)
-          );
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: (data) => {
-          if (data) {
-            this.settingsForm.get('shortcut')?.setErrors({ isNotUnique: true });
-          } else {
-            this.settingsForm.get('shortcut')?.setErrors(null);
-          }
-        },
-      }) as Subscription;
   }
 
   /**
@@ -300,34 +254,5 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
    */
   saveAccess(e: any): void {
     this.applicationService.editPermissions(e);
-  }
-
-  /**
-   * Check if an application exists with the given shortcut
-   *
-   * @param shortcut Shortcut to check
-   * @returns query
-   */
-  private existsApplicationWithShortcutQuery(shortcut: string) {
-    return this.apollo.watchQuery<ApplicationsApplicationNodesQueryResponse>({
-      query: GET_APPLICATION_WITH_SHORTCUT,
-      variables: {
-        filter: {
-          logic: 'and',
-          filters: [
-            {
-              field: 'shortcut',
-              operator: 'eq',
-              value: shortcut,
-            },
-            {
-              field: 'id',
-              operator: 'neq',
-              value: this.application?.id,
-            },
-          ],
-        },
-      },
-    });
   }
 }
