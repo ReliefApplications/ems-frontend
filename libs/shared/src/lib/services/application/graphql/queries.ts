@@ -3,8 +3,16 @@ import { gql } from 'apollo-angular';
 // === GET APPLICATION BY ID ===
 /** Graphql request for getting application data by its id */
 export const GET_APPLICATION_BY_ID = gql`
-  query GetApplicationById($id: ID!, $asRole: ID) {
-    application(id: $id, asRole: $asRole) {
+  query GetApplicationById(
+    $id: ID!
+    $asRole: ID
+    $isFrontOfficeModule: Boolean
+  ) {
+    application(
+      id: $id
+      asRole: $asRole
+      isFrontOfficeModule: $isFrontOfficeModule
+    ) {
       id
       name
       description
