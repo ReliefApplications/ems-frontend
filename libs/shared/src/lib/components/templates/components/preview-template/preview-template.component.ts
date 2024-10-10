@@ -96,6 +96,7 @@ export class PreviewTemplate {
     private translate: TranslateService
   ) {
     this.emailService.isQuickAction = true;
+    this.emailService.datasetsForm.get('emailDistributionList')?.reset();
     this.emailService.quickEmailDLQuery = [];
     this.currentStep = !this.data.distributionListInfo ? 0 : 1;
     this.convertData(this.data.selectedRowsFromGrid, this.data.resourceData);

@@ -9,10 +9,10 @@
       <h1>{{ 'common.distributionList.one' | translate }}</h1>
     </div>
     <div
-      *ngIf="this.emailService.datasetsForm?.getRawValue()?.emailDistributionList?.name"
+      *ngIf="distributionListTo?.length > 0 || this.emailService.datasetsForm?.getRawValue()?.emailDistributionList?.name"
     >
       <!-- Distribution List -->
-      <div class="mb-4">
+      <div class="mb-4" *ngIf="this.emailService.datasetsForm?.getRawValue()?.emailDistributionList?.name">
         <h2>{{ 'components.email.distributionList.name' | translate }}</h2>
         <p>
           {{ this.emailService.datasetsForm.getRawValue()?.emailDistributionList?.name }}

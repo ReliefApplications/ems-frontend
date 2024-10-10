@@ -75,7 +75,7 @@ export class PreviewComponent
   /** Distribution List Send Separate */
   distributionListSeparate: any = [];
   /** Distribution List To */
-  distributionListTo: any[] = [];
+  distributionListTo: any = [];
   /** Distribution List Cc */
   distributionListCc: any[] = [];
   /** Distribution List Bcc */
