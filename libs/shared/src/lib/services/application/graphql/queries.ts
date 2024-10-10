@@ -10,6 +10,7 @@ export const GET_APPLICATION_BY_ID = gql`
       description
       sideMenu
       hideMenu
+      shortcut
       createdAt
       status
       templates {

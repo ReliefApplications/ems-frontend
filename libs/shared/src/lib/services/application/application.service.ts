@@ -389,6 +389,7 @@ export class ApplicationService {
             sideMenu: value.sideMenu,
             hideMenu: value.hideMenu,
             status: value.status,
+            shortcut: value.shortcut,
           },
         })
         .subscribe(({ errors, data }) => {
@@ -406,6 +407,7 @@ export class ApplicationService {
                 sideMenu: value.sideMenu,
                 hideMenu: value.hideMenu,
                 status: data.editApplication.status,
+                shortcut: data.editApplication.shortcut,
               };
               this.application.next(newApplication);
             }
