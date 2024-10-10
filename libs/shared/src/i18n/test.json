@@ -70,6 +70,7 @@
 			"one": "******"
 		},
 		"clear": "******",
+		"clone": "******",
 		"close": "******",
 		"column": {
 			"few": "******",
@@ -151,6 +152,11 @@
 			"none": "******",
 			"one": "******"
 		},
+		"customTemplate": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"dashboard": {
 			"few": "******",
 			"none": "******",
@@ -172,6 +178,10 @@
 		"duplicate": "******",
 		"edit": "******",
 		"email": {
+			"customTemplate": "******",
+			"error": {
+				"duplicateName": "******"
+			},
 			"few": "******",
 			"none": "******",
 			"notification": {
@@ -268,7 +278,9 @@
 				},
 				"error": "******",
 				"errors": {
+					"customTitleExist": "******",
 					"noBody": "******",
+					"noCustomTitle": "******",
 					"noDistributionList": "******",
 					"noSubject": "******",
 					"noTemplate": "******"
@@ -303,11 +315,13 @@
 					"text": "******"
 				},
 				"subject": {
+					"customLayoutTitle": "******",
 					"textTitle": "******",
 					"title": "******"
 				},
 				"timestamp": "******"
 			},
+			"emailSent": "******",
 			"fetchingGroups": "******",
 			"file": {
 				"download": {
@@ -346,6 +360,7 @@
 			"objectNotInvited": "{{name}} ******",
 			"objectNotReordered": "{{type}} ****** {{error}}",
 			"objectNotRestored": "{{value}} ****** {{error}}",
+			"objectNotSaved": "{{type}} ****** {{error}}",
 			"objectNotUpdated": "{{type}} ****** {{error}}",
 			"objectReordered": "{{type}} ******",
 			"objectRestored": "{{value}} ******",
@@ -787,6 +802,7 @@
 				"update": "******"
 			},
 			"errors": {
+				"duplicate": "******",
 				"email": "******",
 				"schedule": "******"
 			},
@@ -814,15 +830,29 @@
 			}
 		},
 		"email": {
+			"action": {
+				"header": "******"
+			},
 			"alert": {
+				"dlPreview": "******",
+				"individualEmailsInfo": "******",
 				"invalidFields": "****** {{fields}} ****** {{types}} ******",
+				"noResource": "******",
 				"noResourceFields": "******",
 				"noSelectedFields": "******",
-				"tooManyRecords": "****** {{totalRecords}} ******"
+				"selectChildFields": "******",
+				"selectedNonEmailFields": "******",
+				"subscribeExists": "****** {{message}}",
+				"subscribeFailed": "****** {{errorMessage}}",
+				"subscribeSuccess": "****** {{message}}",
+				"tooManyRecords": "****** {{totalRecords}} ******",
+				"unsubscribeFailed": "****** {{errorMessage}}",
+				"unsubscribeSuccess": "****** {{message}}"
 			},
 			"back": "******",
 			"distributionList": {
 				"alert": {
+					"allSeparate": "******",
 					"and": "******",
 					"noEmail": "******",
 					"partOne": "******",
@@ -831,8 +861,13 @@
 				},
 				"bcc": "******",
 				"cc": "******",
+				"create": "******",
 				"createNew": "******",
 				"duplicate": "******",
+				"emailInput": "******",
+				"errors": {
+					"duplicateName": "******"
+				},
 				"import": {
 					"download": "******",
 					"import": "******",
@@ -843,6 +878,10 @@
 				"list": "******",
 				"name": "******",
 				"to": "******"
+			},
+			"error": {
+				"invalidDataset": "****** {{badDatasets}}",
+				"invalidToValue": "******"
 			},
 			"image": {
 				"rectangleValidation": "******",
@@ -860,9 +899,25 @@
 				"more": "****** {{length}} ******",
 				"subject": "******"
 			},
+			"restrictSubscription": {
+				"description": "******",
+				"title": "******"
+			},
 			"saveAsDraft": "******",
+			"subscribe": {
+				"error": {
+					"restricted": "******"
+				},
+				"restricted": {
+					"title": "******"
+				},
+				"title": "******"
+			},
 			"tooltip": {
 				"reverseDate": "******"
+			},
+			"unsubscribe": {
+				"title": "******"
 			}
 		},
 		"emailBuilder": {
@@ -1139,6 +1194,8 @@
 				"title": "******"
 			},
 			"dataset": {
+				"dataType": "******",
+				"referenceData": "******",
 				"select": "******",
 				"title": "******"
 			},
@@ -1161,6 +1218,7 @@
 			"filter": {
 				"and": "******",
 				"apply": "******",
+				"applyField": "******",
 				"field": "******",
 				"logic": "******",
 				"new": "******",
@@ -1180,6 +1238,9 @@
 				"title": "******"
 			},
 			"preview": {
+				"title": "******"
+			},
+			"sendSeparate": {
 				"title": "******"
 			},
 			"sort": {
@@ -1407,7 +1468,11 @@
 				"emailError": "******",
 				"label": "******",
 				"noPreviewData": "******",
+				"sendseparate": {
+					"list": "******"
+				},
 				"separateEmail": "******",
+				"subscriptionList": "******",
 				"to": "******"
 			}
 		},

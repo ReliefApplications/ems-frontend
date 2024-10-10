@@ -5,9 +5,11 @@ import {
 } from '@angular/cdk/drag-drop';
 import {
   Component,
+  EventEmitter,
   Input,
   OnChanges,
   OnInit,
+  Output,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
@@ -29,6 +31,8 @@ import { INLINE_EDITOR_CONFIG } from '../../../const/tinymce.const';
 export class TabFieldsComponent implements OnInit, OnChanges {
   /** Current form array */
   @Input() form: UntypedFormArray = new UntypedFormArray([]);
+  /** disable drag and drop */
+  @Input() isDisable = false;
   /** All fields */
   @Input() fields: any[] = [];
   /** Should show limit input */
@@ -50,6 +54,10 @@ export class TabFieldsComponent implements OnInit, OnChanges {
   public searchSelected = '';
   /** Tinymce editor configuration */
   public editor: any = INLINE_EDITOR_CONFIG;
+  /**
+   *Event emitted for the selected fields
+   */
+  @Output() droppedFields = new EventEmitter();
 
   /**
    * Component used for the selection of fields to display the fields in tabs.
@@ -65,9 +73,22 @@ export class TabFieldsComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.setSelectedFields();
+    this.checkfieldsIsValid();
+  }
+
+  /**
+   * Checking that Selected fields form are valid or not
+   */
+  checkfieldsIsValid() {
     this.selectedFields.forEach((x, index) => {
-      if (!x.type) {
+      if (!x?.type) {
         this.form.at(index).setErrors({ invalid: true });
+      }
+      if (x?.type?.kind === 'LIST' || x?.type?.kind === 'OBJECT') {
+        this.form.at(index).getRawValue().fields?.length === 0 ||
+        this.form.at(index).getRawValue().fields === null
+          ? this.form.at(index).setErrors({ invalid: true })
+          : '';
       }
     });
   }
@@ -141,14 +162,17 @@ export class TabFieldsComponent implements OnInit, OnChanges {
           this.searchAvailable,
           event.previousIndex
         );
+        if (index > -1) {
+          this.droppedFields.emit(this.availableFields[index]);
+        }
         // Move to selected fields
         transferArrayItem(
           event.previousContainer.data,
-          event.container.data,
+          event?.container?.data,
           index,
           event.currentIndex
         );
-        this.form.insert(
+        this.form?.insert(
           event.currentIndex,
           addNewField(this.selectedFields[event.currentIndex], true)
         );
@@ -181,6 +205,7 @@ export class TabFieldsComponent implements OnInit, OnChanges {
    */
   public onCloseField(): void {
     this.fieldForm = null;
+    this.checkfieldsIsValid();
   }
 
   /**

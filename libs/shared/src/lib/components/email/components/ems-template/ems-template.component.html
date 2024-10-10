@@ -6,6 +6,7 @@
     [(currentStep)]="currentStep"
     orientation="horizontal"
     [linear]="emailService.isLinear"
+    (currentStepChange)="currentStepChange($event)"
   >
   </kendo-stepper>
   <ui-divider class="mt-10"></ui-divider>

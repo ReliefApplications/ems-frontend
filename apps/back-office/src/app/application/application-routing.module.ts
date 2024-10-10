@@ -146,36 +146,36 @@ const routes: Routes = [
               ),
             // canActivate: [PermissionGuard]
           },
-          {
-            path: 'templates',
-            loadChildren: () =>
-              import('@oort-front/shared').then(
-                (m) => m.ApplicationTemplatesViewModule
-              ),
-            // canActivate: [PermissionGuard]
-          },
+          // {
+          //   path: 'templates',
+          //   loadChildren: () =>
+          //     import('@oort-front/shared').then(
+          //       (m) => m.ApplicationTemplatesViewModule
+          //     ),
+          //   // canActivate: [PermissionGuard]
+          // },
           {
             path: 'email-notifications',
             loadChildren: () =>
               import('@oort-front/shared').then((m) => m.EmailModule),
             // canActivate: [PermissionGuard]
           },
-          {
-            path: 'distribution-lists',
-            loadChildren: () =>
-              import('@oort-front/shared').then(
-                (m) => m.ApplicationDistributionListsViewModule
-              ),
-            // canActivate: [PermissionGuard]
-          },
-          {
-            path: 'notifications',
-            loadChildren: () =>
-              import('@oort-front/shared').then(
-                (m) => m.ApplicationNotificationsViewModule
-              ),
-            // canActivate: [PermissionGuard]
-          },
+          // {
+          //   path: 'distribution-lists',
+          //   loadChildren: () =>
+          //     import('@oort-front/shared').then(
+          //       (m) => m.ApplicationDistributionListsViewModule
+          //     ),
+          //   // canActivate: [PermissionGuard]
+          // },
+          // {
+          //   path: 'notifications',
+          //   loadChildren: () =>
+          //     import('@oort-front/shared').then(
+          // (m) => m.ApplicationNotificationsViewModule
+          //     ),
+          //   // canActivate: [PermissionGuard]
+          // },
           {
             path: 'archive',
             loadChildren: () =>

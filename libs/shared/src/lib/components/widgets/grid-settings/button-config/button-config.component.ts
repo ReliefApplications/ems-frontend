@@ -11,16 +11,14 @@ import { Form } from '../../../../models/form.model';
 import { Resource } from '../../../../models/resource.model';
 import { ContentType } from '../../../../models/page.model';
 import { WorkflowService } from '../../../../services/workflow/workflow.service';
-import {
-  EmailTemplate,
-  TemplateTypeEnum,
-} from '../../../../models/template.model';
+import { TemplateTypeEnum } from '../../../../models/template.model';
 import { Dialog } from '@angular/cdk/dialog';
 import { createQueryForm } from '../../../query-builder/query-builder-forms';
-import { DistributionList } from '../../../../models/distribution-list.model';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { DistributionModalComponent } from '../../../distribution-lists/components/distribution-modal/distribution-modal.component';
 import { takeUntil } from 'rxjs/operators';
+import { EmailService } from '../../../email/email.service';
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -53,9 +51,9 @@ export class ButtonConfigComponent
   public relatedResources: Resource[] = [];
 
   /** List of distribution lists */
-  @Input() distributionLists: DistributionList[] = [];
+  @Input() distributionLists: any = [];
   /** List of templates */
-  @Input() templates: EmailTemplate[] = [];
+  @Input() templates: any[] = [];
   /** Indicate is the page is a single dashboard.*/
   public isDashboard = false;
 
@@ -79,6 +77,9 @@ export class ButtonConfigComponent
     return this.templates.filter((x) => x.type === TemplateTypeEnum.EMAIL);
   }
 
+  /** All template related information */
+  public allTemplateData: any;
+
   /**
    * Configuration component for grid widget button.
    *
@@ -87,13 +88,15 @@ export class ButtonConfigComponent
    * @param workflowService Shared workflow service
    * @param dialog Dialog service
    * @param applicationService Shared application service
+   * @param emailService Shared email service
    */
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private workflowService: WorkflowService,
     public dialog: Dialog,
-    private applicationService: ApplicationService
+    private applicationService: ApplicationService,
+    private emailService: EmailService
   ) {
     super();
   }
@@ -128,6 +131,13 @@ export class ButtonConfigComponent
           }
         });
     }
+    this.applicationService.application$.subscribe((res: any) => {
+      this.emailService.getCustomTemplates(res.id).subscribe((res: any) => {
+        this.allTemplateData = res.data.customTemplates.edges.map(
+          (x: any) => x.node
+        );
+      });
+    });
 
     this.formGroup
       ?.get('prefillForm')
@@ -406,55 +416,36 @@ export class ButtonConfigComponent
 
   /** Open edit modal components and create new distribution list */
   public async addDistributionList() {
-    const { EditDistributionListModalComponent } = await import(
-      '../../../distribution-lists/components/edit-distribution-list-modal/edit-distribution-list-modal.component'
-    );
-    const dialogRef = this.dialog.open(EditDistributionListModalComponent, {
-      data: null,
+    const dialogRef = this.dialog.open(DistributionModalComponent, {
+      data: {
+        isEdit: false,
+        distributionListNames: this.distributionLists?.map((x: any) => x.name),
+      },
       disableClose: true,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.applicationService.addDistributionList(
-          {
-            name: value.name,
-            emails: value.emails,
-          },
-          (list: DistributionList) => {
-            this.formGroup.get('distributionList')?.setValue(list.id);
-          }
-        );
-      }
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((data: any) => {
+      const dlData = data.dlData.addEmailDistributionList;
+      this.distributionLists = [dlData, ...this.distributionLists];
+      this.formGroup.get('distributionList')?.setValue(dlData.id);
     });
   }
 
   /** Opens modal for adding a new email template */
   public async addEmailTemplate() {
-    const { EditTemplateModalComponent } = await import(
-      '../../../templates/components/edit-template-modal/edit-template-modal.component'
+    this.emailService.resetAllLayoutData();
+    const { TemplateModalComponent } = await import(
+      '../../../templates/components/template-modal/template-modal.component'
     );
-    const dialogRef = this.dialog.open(EditTemplateModalComponent, {
+    const dialogRef = this.dialog.open(TemplateModalComponent, {
+      data: { isEdit: false },
       disableClose: true,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value)
-        this.applicationService.addEmailTemplate(
-          {
-            name: value.name,
-            type: TemplateTypeEnum.EMAIL,
-            content: {
-              subject: value.subject,
-              body: value.body,
-            },
-          },
-          (template: EmailTemplate) => {
-            const templates = [
-              ...(this.formGroup.get('templates')?.value || []),
-            ];
-            templates.push(template.id);
-            this.formGroup.get('templates')?.setValue(templates);
-          }
-        );
+      if (value) {
+        const data = value.result.data.addCustomTemplate;
+        this.allTemplateData = [data, ...this.allTemplateData];
+        this.formGroup.get('templates')?.setValue(data.id);
+      }
     });
   }
 

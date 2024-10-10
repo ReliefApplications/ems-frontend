@@ -69,6 +69,9 @@ export class EditDistributionListModalComponent implements OnDestroy {
   public form = this.fb.group({
     name: [get(this.data, 'name', null), Validators.required],
     emails: [get(this.data, 'emails', []), Validators.required],
+    cc: [get(this.data, 'emails', []), Validators.required],
+    bcc: [get(this.data, 'emails', []), Validators.required],
+    to: [get(this.data, 'emails', []), Validators.required],
   });
   /** Separator keys codes */
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;

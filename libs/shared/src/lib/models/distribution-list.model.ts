@@ -3,6 +3,10 @@ export interface DistributionList {
   id?: string;
   name: string;
   emails: string[];
+  to?: string[];
+  cc?: string[];
+  bcc?: string[];
+  distributionListName?: string;
 }
 
 /** Model for add distribution list mutation response */

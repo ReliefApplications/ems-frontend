@@ -48,7 +48,7 @@ export const createFilterGroup = (filter: any) => {
  * @returns Field form
  */
 export const addNewField = (field: any, newField?: boolean) => {
-  switch (newField ? field.type.kind : field.kind) {
+  switch (newField ? field?.type?.kind : field.kind) {
     case 'LIST': {
       return formBuilder.group({
         name: [{ value: field.name, disabled: true }],
@@ -95,7 +95,14 @@ export const addNewField = (field: any, newField?: boolean) => {
       return formBuilder.group({
         name: [{ value: field.name, disabled: true }],
         type: [
-          { value: newField ? field.type.name : field.type, disabled: true },
+          {
+            value: newField
+              ? field?.type?.name
+                ? field.type.name
+                : field.type
+              : field.type,
+            disabled: true,
+          },
         ],
         kind: [newField ? field.type.kind : field.kind],
         label: [

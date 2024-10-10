@@ -75,6 +75,10 @@ export class DialogComponent implements OnChanges, OnInit {
         this.dialogRef.updateSize('100vw', '98%');
         break;
       }
+      case 'xlg': {
+        this.dialogRef.updateSize('80vw');
+        break;
+      }
       default: {
         this.dialogRef.removePanelClass('fullscreen-dialog');
         break;

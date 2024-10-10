@@ -46,6 +46,9 @@ import { EmailTemplateComponent } from './components/email-template/email-templa
 import { DatasetFilterComponent } from './components/dataset-filter/dataset-filter.component';
 import { EmsTemplateComponent } from './components/ems-template/ems-template.component';
 import { EmptyModule } from '../ui/empty/empty.module';
+import { FilterModule } from '../filter/filter.module';
+import { ResourceSelectComponent } from '../controls/public-api';
+import { CustomTemplateComponent } from './components/custom-templates/custom-template.component';
 
 /**
  * Email module.
@@ -63,6 +66,7 @@ import { EmptyModule } from '../ui/empty/empty.module';
     EmailTemplateComponent,
     DatasetFilterComponent,
     EmsTemplateComponent,
+    CustomTemplateComponent,
   ],
   imports: [
     FormsModule,
@@ -101,7 +105,10 @@ import { EmptyModule } from '../ui/empty/empty.module';
     FixedWrapperModule,
     EmptyModule,
     ErrorMessageModule,
+    FilterModule,
+    ResourceSelectComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA],
+  exports: [CustomTemplateComponent, PreviewComponent, LayoutComponent],
 })
 export class EmailModule {}

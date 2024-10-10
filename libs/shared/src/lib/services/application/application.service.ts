@@ -115,8 +115,8 @@ import { RestService } from '../rest/rest.service';
 import { DownloadService } from '../download/download.service';
 import { DOCUMENT } from '@angular/common';
 import { GraphQLError } from 'graphql';
+import { EmailService } from '../../components/email/email.service';
 import { has } from 'lodash';
-
 /**
  * Shared application service. Handles events of opened application.
  */
@@ -207,6 +207,7 @@ export class ApplicationService {
    * @param {DownloadService} downloadService - The download service.
    * @param {Document} document - The Document object.
    * @param shadowDomService shadow dom service to handle the current host of the component
+   * @param emailService email service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -219,7 +220,8 @@ export class ApplicationService {
     private restService: RestService,
     private downloadService: DownloadService,
     @Inject(DOCUMENT) private document: Document,
-    private shadowDomService: ShadowDomService
+    private shadowDomService: ShadowDomService,
+    private emailService: EmailService
   ) {
     this.environment = environment;
   }

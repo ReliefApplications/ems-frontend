@@ -230,61 +230,61 @@ export class ApplicationComponent
         icon: 'admin_panel_settings',
       });
     }
+    if (
+      this.ability.can(
+        'read',
+        subject('EmailNotification', { application: application.id })
+      )
+    ) {
+      // if can manage apps / can manage email notifications in app
+      this.adminNavItems.push({
+        name: this.translate.instant('common.email.notification.few'),
+        path: './settings/email-notifications',
+        icon: 'mail',
+      });
+    }
     // if (
     //   this.ability.can(
     //     'manage',
     //     subject('Template', { application: application.id })
     //   )
     // ) {
-    //   // if can manage apps / can manage email notifications in app
+    //   // if can manage apps / can manage templates in app
     //   this.adminNavItems.push({
-    //     name: this.translate.instant('common.email.notification.few'),
-    //     path: './settings/email-notifications',
-    //     icon: 'mail',
+    //     name: this.translate.instant('common.template.few'),
+    //     path: `./settings/templates`,
+    //     icon: 'description',
+    //     legacy: true,
     //   });
     // }
-    if (
-      this.ability.can(
-        'manage',
-        subject('Template', { application: application.id })
-      )
-    ) {
-      // if can manage apps / can manage templates in app
-      this.adminNavItems.push({
-        name: this.translate.instant('common.template.few'),
-        path: `./settings/templates`,
-        icon: 'description',
-        legacy: true,
-      });
-    }
-    if (
-      this.ability.can(
-        'manage',
-        subject('DistributionList', { application: application.id })
-      )
-    ) {
-      // if can manage apps / can manage distribution lists in app
-      this.adminNavItems.push({
-        name: this.translate.instant('common.distributionList.few'),
-        path: `./settings/distribution-lists`,
-        icon: 'mail',
-        legacy: true,
-      });
-    }
-    if (
-      this.ability.can(
-        'manage',
-        subject('CustomNotification', { application: application.id })
-      )
-    ) {
-      // if can manage apps / can manage distribution lists in app
-      this.adminNavItems.push({
-        name: this.translate.instant('common.customNotification.few'),
-        path: './settings/notifications',
-        icon: 'schedule_send',
-        legacy: true,
-      });
-    }
+    // if (
+    //   this.ability.can(
+    //     'manage',
+    //     subject('DistributionList', { application: application.id })
+    //   )
+    // ) {
+    //   // if can manage apps / can manage distribution lists in app
+    //   this.adminNavItems.push({
+    //     name: this.translate.instant('common.distributionList.few'),
+    //     path: `./settings/distribution-lists`,
+    //     icon: 'mail',
+    //     legacy: true,
+    //   });
+    // }
+    // if (
+    //   this.ability.can(
+    //     'manage',
+    //     subject('CustomNotification', { application: application.id })
+    //   )
+    // ) {
+    //   // if can manage apps / can manage distribution lists in app
+    //   this.adminNavItems.push({
+    //     name: this.translate.instant('common.customNotification.few'),
+    //     path: './settings/notifications',
+    //     icon: 'schedule_send',
+    //     legacy: true,
+    //   });
+    // }
   }
 
   override ngOnDestroy(): void {
