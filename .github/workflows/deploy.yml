@@ -11,15 +11,15 @@ jobs:
     environment: ${{ github.event.client_payload.environment }}
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.client_payload.ref }}
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
       - name: Get package version
@@ -33,13 +33,13 @@ jobs:
         run: npx nx run front-office:build:${{ secrets.CONFIG }}
       - name: Archive build Back-office
         if: success()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: back_office_${{ github.event.client_payload.environment }}
           path: dist/apps/back-office
       - name: Archive build Front-office
         if: success()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: front_office_${{ github.event.client_payload.environment }}
           path: dist/apps/front-office
@@ -51,9 +51,9 @@ jobs:
     needs: build
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Download build
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: back_office_${{ github.event.client_payload.environment }}
           path: dist/apps/back-office
@@ -76,9 +76,9 @@ jobs:
     needs: build
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Download build
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: front_office_${{ github.event.client_payload.environment }}
           path: dist/apps/front-office

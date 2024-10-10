@@ -179,6 +179,7 @@ const replaceRecordFields = (
       );
 
       const length = get(fieldsValue, field.name)?.length ?? 0;
+
       // Start from 1 because we already have the first element (the one being used as a template)
       for (let i = 1; i < length; i++) {
         subFields.forEach((subField: any) => {
@@ -218,7 +219,14 @@ const replaceRecordFields = (
         return obj;
       };
 
-      const value = toReadableObject(get(fieldsValue, field.name));
+      let value = get(fieldsValue, field.name);
+      // If object is of type resource, transform each associated record
+      if (field.type === 'resources') {
+        value = (value || []).map((x: any) => toReadableObject(x));
+      } else {
+        // Else, transform value into readable one
+        value = toReadableObject(value);
+      }
 
       const style = getLayoutsStyle(styles, field.name, fieldsValue);
       let convertedValue = '';
@@ -376,11 +384,13 @@ const replaceRecordFields = (
             break;
           case 'owner':
           case 'users':
-          case 'resources':
-            convertedValue = `<span style='${style}'>${
-              value ? value.length : 0
-            } items</span>`;
+          case 'resources': {
+            const length = value ? value.length : 0;
+            convertedValue = `<span style='${style}'>${length} item${
+              length > 1 ? 's' : ''
+            }</span>`;
             break;
+          }
           case 'matrixdropdown':
           case 'matrixdynamic': {
             convertedValue = '<table><tr><th></th>';

@@ -7,8 +7,7 @@ import { Environment } from './environment.type';
  *
  */
 const authConfig: AuthConfig = {
-  issuer:
-    'https://login.microsoftonline.com/76d22fc8-2330-45cf-ab36-51074cf8f1e2/v2.0',
+  issuer: 'https://id-dev.oortcloud.tech/realms/oort',
   redirectUri: 'http://localhost:4200/',
   postLogoutRedirectUri: 'http://localhost:4200/auth/',
   clientId: 'db40357f-374e-476e-9ce8-5c9b3cbe475a',

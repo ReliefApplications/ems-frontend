@@ -12,6 +12,8 @@ import {
   Validators,
   FormBuilder,
   FormArray,
+  FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { GET_CHANNELS, GET_GRID_RESOURCE_META } from './graphql/queries';
@@ -29,6 +31,21 @@ import { takeUntil } from 'rxjs/operators';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { WidgetSettings } from '../../../models/dashboard.model';
 import { EmailService } from '../../email/email.service';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import {
+  TabsModule,
+  IconModule,
+  TooltipModule,
+  ToggleModule,
+} from '@oort-front/ui';
+import { ContextualFiltersSettingsComponent } from '../common/contextual-filters-settings/contextual-filters-settings.component';
+import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
+import { SortingSettingsModule } from '../common/sorting-settings/sorting-settings.module';
+import { TabActionsModule } from '../common/tab-actions/tab-actions.module';
+import { TabButtonsModule } from './tab-buttons/tab-buttons.module';
+import { TabMainModule } from './tab-main/tab-main.module';
+
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -37,6 +54,23 @@ import { EmailService } from '../../email/email.service';
   selector: 'shared-grid-settings',
   templateUrl: './grid-settings.component.html',
   styleUrls: ['./grid-settings.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TabsModule,
+    TranslateModule,
+    IconModule,
+    TabActionsModule,
+    TabButtonsModule,
+    TabMainModule,
+    TooltipModule,
+    DisplaySettingsComponent,
+    SortingSettingsModule,
+    ToggleModule,
+    ContextualFiltersSettingsComponent,
+  ],
 })
 export class GridSettingsComponent
   extends UnsubscribeComponent

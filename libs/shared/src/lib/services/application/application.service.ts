@@ -116,6 +116,7 @@ import { DownloadService } from '../download/download.service';
 import { DOCUMENT } from '@angular/common';
 import { GraphQLError } from 'graphql';
 import { EmailService } from '../../components/email/email.service';
+import { has } from 'lodash';
 /**
  * Shared application service. Handles events of opened application.
  */
@@ -737,13 +738,22 @@ export class ApplicationService {
   }
 
   /**
-   * Change page icon, by sending a mutation to the back-end.
+   * Update page parameter (icon or showName ), by sending a mutation to the back-end.
    *
    * @param page Edited page
-   * @param icon new icon
+   * @param update page update
+   * @param update.icon page icon
+   * @param update.showName should show page name
    * @param callback callback method, allow the component calling the service to do some logic.
    */
-  changePageIcon(page: Page, icon: string, callback?: any): void {
+  updatePageParameter(
+    page: Page,
+    update: {
+      icon?: string;
+      showName?: boolean;
+    },
+    callback?: any
+  ): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
@@ -751,7 +761,8 @@ export class ApplicationService {
           mutation: EDIT_PAGE,
           variables: {
             id: page.id,
-            icon,
+            ...(has(update, 'icon') && { icon: update.icon }),
+            ...(has(update, 'showName') && { showName: update.showName }),
           },
         })
         .subscribe(({ errors, data }) => {
@@ -764,7 +775,11 @@ export class ApplicationService {
               ...application,
               pages: application.pages?.map((x) => {
                 if (x.id === page.id) {
-                  x = { ...x, icon: data.editPage.icon };
+                  x = {
+                    ...x,
+                    icon: data.editPage.icon,
+                    showName: data.editPage.showName,
+                  };
                 }
                 return x;
               }),

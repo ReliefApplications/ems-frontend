@@ -14,6 +14,7 @@ import {
 import { ApplicationService } from '../application/application.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { has } from 'lodash';
 
 /**
  * Workflow service. Handles modification of workflow ( step addition / step name update ) and some workflow actions.
@@ -166,13 +167,22 @@ export class WorkflowService {
   }
 
   /**
-   * Update step icon, sending a mutation to the back-end.
+   * Update step parameter (icon or showName), sending a mutation to the back-end.
    *
    * @param step Edited step
-   * @param icon new icon
+   * @param update step update
+   * @param update.icon step icon
+   * @param update.showName should show step name
    * @param callback callback method, allow the component calling the service to do some logic.
    */
-  updateStepIcon(step: Step, icon: string, callback?: any): void {
+  updateStepParameter(
+    step: Step,
+    update: {
+      icon?: string;
+      showName?: boolean;
+    },
+    callback?: any
+  ): void {
     const workflow = this.workflow.getValue();
     if (workflow) {
       this.apollo
@@ -180,7 +190,8 @@ export class WorkflowService {
           mutation: EDIT_STEP,
           variables: {
             id: step.id,
-            icon,
+            ...(has(update, 'icon') && { icon: update.icon }),
+            ...(has(update, 'showName') && { showName: update.showName }),
           },
         })
         .subscribe(({ errors, data }) => {
@@ -194,7 +205,11 @@ export class WorkflowService {
               ...workflow,
               steps: workflow.steps?.map((x) => {
                 if (x.id === step.id) {
-                  x = { ...x, icon: data.editStep.icon };
+                  x = {
+                    ...x,
+                    icon: data.editStep.icon,
+                    showName: data.editStep.showName,
+                  };
                 }
                 return x;
               }),
