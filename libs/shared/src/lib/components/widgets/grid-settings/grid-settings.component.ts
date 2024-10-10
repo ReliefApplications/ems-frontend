@@ -81,7 +81,8 @@ export class GridSettingsComponent
   public emailTemplates: any[] = [];
 
   /**
-   *Distribution list
+   * Distribution list
+   *
    * @param appId application id
    */
   distributionListsData(appId?: string) {

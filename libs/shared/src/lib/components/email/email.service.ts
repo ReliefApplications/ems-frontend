@@ -655,8 +655,10 @@ export class EmailService {
 
   /**
    * Common function
+   *
    * @param field nested field
    * @param formBuilder form
+   * @returns FormGroup with nested fields
    */
   createFieldsFormGroup(field: any, formBuilder: FormBuilder): FormGroup {
     if (field?.kind === 'LIST' || field?.kind === 'OBJECT') {

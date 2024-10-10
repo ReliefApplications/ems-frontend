@@ -1015,7 +1015,7 @@ export class EmailTemplateComponent
    * Bind the reference data if reference data checkbox is checked.
    *
    * @param event selected Datatype Id
-   * @param isEdit
+   * @param isEdit if edit mode, then true else false
    */
   onDataTypeChange(event: any, isEdit?: boolean) {
     // this.resetQuery(this.segmentForm.get('query'));
