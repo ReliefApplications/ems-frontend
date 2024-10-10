@@ -26,24 +26,29 @@ const applicationIdResolver: ResolveFn<any> = async (
 ): Promise<any> => {
   const id = route.paramMap.get('id');
   const apollo = inject(Apollo);
-  const data = await lastValueFrom(
-    apollo.query<ApplicationsApplicationNodesQueryResponse>({
-      query: GET_APPLICATION_WITH_SHORTCUT,
-      variables: {
-        filter: {
-          logic: 'and',
-          filters: [
-            {
-              field: 'shortcut',
-              operator: 'eq',
-              value: id,
-            },
-          ],
+  let data: any = id;
+  try {
+    data = await lastValueFrom(
+      apollo.query<ApplicationsApplicationNodesQueryResponse>({
+        query: GET_APPLICATION_WITH_SHORTCUT,
+        variables: {
+          filter: {
+            logic: 'and',
+            filters: [
+              {
+                field: 'shortcut',
+                operator: 'eq',
+                value: id,
+              },
+            ],
+          },
         },
-      },
-    })
-  );
-  return data.data.applications.edges?.[0]?.node?.id ?? id;
+      })
+    );
+  } catch (error) {
+    data = id;
+  }
+  return data?.data?.applications?.edges?.[0]?.node?.id ?? data;
 };
 
 /**
