@@ -15,7 +15,7 @@ import { AuthGuard } from './guards/auth.guard';
 /**
  * Resolve application id
  * Application can use shortcut values to generate the url
- * We check the given para for the application route and check if it's a shortcut
+ * We check the given params for the application route and check if it's a shortcut
  * If it's a shortcut, return the related application id, if not return current param
  *
  * @param route ActivatedRouteSnapshot
