@@ -1,0 +1,7 @@
+<button (click)="onClick()">Upload</button>
+
+<document-upload
+  *ngIf="!loading"
+  #documentUpload
+  [data]="uploadConfig"
+></document-upload>
