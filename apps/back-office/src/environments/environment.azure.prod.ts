@@ -40,12 +40,15 @@ export const environment: Environment = {
     'bar-chart',
     'column-chart',
     'pie-chart',
+    'polar-chart',
+    'radar-chart',
     'grid',
     'text',
+    'map',
     'summaryCard',
     'tabs',
   ],
   user: {
-    attributes: ['country', 'region', 'location'],
+    attributes: ['country', 'region', 'location', 'department'],
   },
 };

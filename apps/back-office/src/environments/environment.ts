@@ -4,17 +4,16 @@ import { sharedEnvironment } from './environment.shared';
 import { Environment } from './environment.type';
 
 /**
- *
+ * Authentication configuration
  */
 const authConfig: AuthConfig = {
   issuer: 'https://id-dev.oortcloud.tech/realms/oort',
   redirectUri: 'http://localhost:4200/',
   postLogoutRedirectUri: 'http://localhost:4200/auth/',
-  clientId: 'db40357f-374e-476e-9ce8-5c9b3cbe475a',
+  clientId: 'oort-client',
   scope: 'openid profile email offline_access',
   responseType: 'code',
   showDebugInformation: true,
-  strictDiscoveryDocumentValidation: false,
 };
 
 /**

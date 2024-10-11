@@ -4,7 +4,7 @@ import { sharedEnvironment } from './environment.shared';
 import { Environment } from './environment.type';
 
 /**
- * Authentification configuration
+ * Authentication configuration
  */
 const authConfig: AuthConfig = {
   issuer:
@@ -40,8 +40,11 @@ export const environment: Environment = {
     'bar-chart',
     'column-chart',
     'pie-chart',
+    'polar-chart',
+    'radar-chart',
     'grid',
     'text',
+    'map',
     'summaryCard',
     'tabs',
   ],
