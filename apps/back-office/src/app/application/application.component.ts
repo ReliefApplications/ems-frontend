@@ -13,8 +13,8 @@ import get from 'lodash/get';
 import { takeUntil, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
-/** Admin Navigation item type */
-type adminNavItem = {
+/** Navigation item type */
+type NavigationItem = {
   name: string;
   icon: string;
   path: string;
@@ -37,8 +37,8 @@ export class ApplicationComponent
   public title = '';
   /** Navigation groups */
   public navGroups: any[] = [];
-  /** Admin pages */
-  public adminNavItems: adminNavItem[] = [];
+  /** Application settings navigation items */
+  public appSettingsNavItems: NavigationItem[] = [];
   /** Current application */
   public application?: Application;
   /** Use side menu or not */
@@ -49,6 +49,27 @@ export class ApplicationComponent
   public largeDevice: boolean;
   /** Loading indicator */
   public loading = true;
+  /**
+   * Helper function to create navigation item for application settings
+   *
+   * @param nameKey Translation key
+   * @param path Path to component
+   * @param icon Icon to display
+   * @param legacy If legacy option
+   */
+  private addNavItem = (
+    nameKey: string,
+    path: string,
+    icon: string,
+    legacy?: boolean
+  ) => {
+    this.appSettingsNavItems.push({
+      name: this.translate.instant(nameKey),
+      path: path,
+      icon: icon,
+      legacy: legacy,
+    });
+  };
 
   /**
    * Main component of application view
@@ -72,6 +93,90 @@ export class ApplicationComponent
     this.largeDevice = window.innerWidth > 1024;
   }
 
+  /**
+   * Build pages navigation item list from the given application
+   *
+   * @param application Application from to build navigation items
+   * @returns Navigation items
+   */
+  private buildPagesNavItems(application: Application) {
+    return (
+      application.pages
+        ?.filter((x: any) => x.content && x.canSee)
+        .map((x: any) => ({
+          id: x.id,
+          name: x.name,
+          path:
+            x.type === ContentType.form
+              ? `./${x.type}/${x.id}`
+              : `./${x.type}/${x.content}`,
+          icon: x.icon || this.getNavIcon(x.type || ''),
+          fontFamily: x.icon ? 'fa' : 'material',
+          class: null,
+          orderable: true,
+          visible: x.visible ?? true,
+          action: x.canDelete && {
+            icon: 'delete',
+            toolTip: this.translate.instant('common.deleteObject', {
+              name: this.translate.instant('common.page.one').toLowerCase(),
+            }),
+            callback: () => this.onDelete(x),
+          },
+        })) || []
+    );
+  }
+
+  /**
+   * Build current application settings navigation item list
+   */
+  private buildAppSettingsNavItems() {
+    this.appSettingsNavItems = [];
+    this.addNavItem('common.settings', './settings/edit', 'settings');
+    this.addNavItem(
+      'common.template.few',
+      './settings/templates',
+      'description',
+      true
+    );
+    this.addNavItem(
+      'common.distributionList.few',
+      './settings/distribution-lists',
+      'mail',
+      true
+    );
+    this.addNavItem(
+      'common.user.few',
+      './settings/users',
+      'supervisor_account'
+    );
+    this.addNavItem('common.role.few', './settings/roles', 'verified_user');
+    this.addNavItem(
+      'pages.application.positionAttributes.title',
+      './settings/position',
+      'edit_attributes'
+    );
+    if (this.ability.can('read', 'EmailNotification')) {
+      this.addNavItem(
+        'common.email.notification.few',
+        './settings/email-notifications',
+        'mail'
+      );
+    }
+    this.addNavItem('common.channel.few', './settings/channels', 'dns');
+    this.addNavItem(
+      'common.subscription.few',
+      './settings/subscriptions',
+      'add_to_queue'
+    );
+    this.addNavItem('common.archive.few', './settings/archive', 'delete');
+
+    // {
+    //   name: this.translate.instant('common.customNotification.few'),
+    //   path: './settings/notifications',
+    //   icon: 'schedule_send',
+    // },
+  }
+
   ngOnInit(): void {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.loading = true;
@@ -83,97 +188,13 @@ export class ApplicationComponent
         if (application) {
           this.loading = false;
           this.title = application.name || '';
-          const displayNavItems: any[] =
-            application.pages
-              ?.filter((x: any) => x.content && x.canSee)
-              .map((x: any) => ({
-                id: x.id,
-                name: x.name,
-                path:
-                  x.type === ContentType.form
-                    ? `./${x.type}/${x.id}`
-                    : `./${x.type}/${x.content}`,
-                icon: x.icon || this.getNavIcon(x.type || ''),
-                fontFamily: x.icon ? 'fa' : 'material',
-                class: null,
-                orderable: true,
-                visible: x.visible ?? true,
-                action: x.canDelete && {
-                  icon: 'delete',
-                  toolTip: this.translate.instant('common.deleteObject', {
-                    name: this.translate
-                      .instant('common.page.one')
-                      .toLowerCase(),
-                  }),
-                  callback: () => this.onDelete(x),
-                },
-              })) || [];
           if (application.canUpdate) {
-            const addNavItem = (
-              nameKey: string,
-              path: string,
-              icon: string,
-              legacy?: boolean
-            ) => {
-              this.adminNavItems.push({
-                name: this.translate.instant(nameKey),
-                path: path,
-                icon: icon,
-                legacy: legacy,
-              });
-            };
-
-            this.adminNavItems = [];
-
-            addNavItem('common.settings', './settings/edit', 'settings');
-            addNavItem(
-              'common.template.few',
-              './settings/templates',
-              'description',
-              true
-            );
-            addNavItem(
-              'common.distributionList.few',
-              './settings/distribution-lists',
-              'mail',
-              true
-            );
-            addNavItem(
-              'common.user.few',
-              './settings/users',
-              'supervisor_account'
-            );
-            addNavItem('common.role.few', './settings/roles', 'verified_user');
-            addNavItem(
-              'pages.application.positionAttributes.title',
-              './settings/position',
-              'edit_attributes'
-            );
-            if (this.ability.can('read', 'EmailNotification')) {
-              addNavItem(
-                'common.email.notification.few',
-                './settings/email-notifications',
-                'mail'
-              );
-            }
-            addNavItem('common.channel.few', './settings/channels', 'dns');
-            addNavItem(
-              'common.subscription.few',
-              './settings/subscriptions',
-              'add_to_queue'
-            );
-            addNavItem('common.archive.few', './settings/archive', 'delete');
-
-            // {
-            //   name: this.translate.instant('common.customNotification.few'),
-            //   path: './settings/notifications',
-            //   icon: 'schedule_send',
-            // },
+            this.buildAppSettingsNavItems();
           }
           this.navGroups = [
             {
               name: this.translate.instant('common.page.few'),
-              navItems: displayNavItems,
+              navItems: this.buildPagesNavItems(application),
             },
           ];
           if (!this.application || application.id !== this.application.id) {
