@@ -1,4 +1,7 @@
-import { Apollo } from 'apollo-angular';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { Dialog } from '@angular/cdk/dialog';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DOCUMENT } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -10,50 +13,49 @@ import {
   Output,
   Renderer2,
 } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import {
-  Dashboard,
-  ApplicationService,
-  WorkflowService,
-  DashboardService,
-  Application,
-  ConfirmService,
-  Record,
-  ButtonActionT,
-  DashboardQueryResponse,
-  EditDashboardMutationResponse,
-  DashboardComponent as SharedDashboardComponent,
-  DashboardAutomationService,
-  DashboardQueryType,
   AddDashboardTemplateMutationResponse,
-  DeleteDashboardTemplatesMutationResponse,
+  Application,
+  ApplicationService,
+  ButtonActionT,
+  ConfirmService,
+  ContextService,
+  CustomWidgetStyleComponent,
+  Dashboard,
+  DashboardAutomationService,
+  DashboardQueryResponse,
+  DashboardQueryType,
+  DashboardService,
   DashboardTemplate,
+  DeleteDashboardTemplatesMutationResponse,
+  EditDashboardMutationResponse,
+  ExporterService,
+  Record,
+  DashboardComponent as SharedDashboardComponent,
+  WorkflowService,
 } from '@oort-front/shared';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
+import { GridsterConfig } from 'angular-gridster2';
+import { Apollo } from 'apollo-angular';
+import localForage from 'localforage';
+import { cloneDeep, has, isEqual, omit } from 'lodash';
+import { Observable, firstValueFrom } from 'rxjs';
+import {
+  debounceTime,
+  filter,
+  map,
+  startWith,
+  takeUntil,
+} from 'rxjs/operators';
 import {
   ADD_DASHBOARD_TEMPLATE,
   DELETE_DASHBOARD_TEMPLATES,
   EDIT_DASHBOARD,
 } from './graphql/mutations';
 import { GET_DASHBOARD_BY_ID } from './graphql/queries';
-import { TranslateService } from '@ngx-translate/core';
-import {
-  map,
-  takeUntil,
-  filter,
-  startWith,
-  debounceTime,
-} from 'rxjs/operators';
-import { Observable, firstValueFrom } from 'rxjs';
-import { FormControl } from '@angular/forms';
-import { cloneDeep, has, isEqual, omit } from 'lodash';
-import { Dialog } from '@angular/cdk/dialog';
-import { SnackbarService, UILayoutService } from '@oort-front/ui';
-import localForage from 'localforage';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
-import { DOCUMENT } from '@angular/common';
-import { Clipboard } from '@angular/cdk/clipboard';
-import { GridsterConfig } from 'angular-gridster2';
 
 /**
  * Back-office Dashboard page.
@@ -167,6 +169,7 @@ export class DashboardComponent
    * @param document Document
    * @param clipboard Angular clipboard service
    * @param dashboardAutomationService Dashboard automation service
+   * @param exporterService Exporter service for files
    */
   constructor(
     private applicationService: ApplicationService,
@@ -185,7 +188,8 @@ export class DashboardComponent
     private layoutService: UILayoutService,
     @Inject(DOCUMENT) private document: Document,
     private clipboard: Clipboard,
-    private dashboardAutomationService: DashboardAutomationService
+    private dashboardAutomationService: DashboardAutomationService,
+    private exporterService: ExporterService
   ) {
     super();
     this.dashboardAutomationService.dashboard = this;
@@ -249,8 +253,9 @@ export class DashboardComponent
         ?.filter((x: any) => x !== null)
         .map((widget: any) => {
           const contextData = this.dashboard?.contextData;
-          this.contextService.context =
-            { id: contextID, ...contextData } || null;
+          this.contextService.context = contextID
+            ? { id: contextID, ...(contextData && { contextData }) }
+            : null;
           if (!contextData) {
             return widget;
           }
@@ -282,11 +287,11 @@ export class DashboardComponent
     if (!id) {
       return;
     }
-
     const rootElement = this.elementRef.nativeElement;
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.formActive = false;
     this.loading = true;
+
     return firstValueFrom(
       this.apollo.query<
         DashboardQueryResponse | AddDashboardTemplateMutationResponse
@@ -891,5 +896,25 @@ export class DashboardComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
       subscription?.unsubscribe();
     });
+  }
+
+  /**
+   * Export current dashboard as pdf
+   */
+  async pdfExporter() {
+    await this.exporterService.pdfExporter(
+      this.elementRef,
+      this.dashboard?.name as string
+    );
+  }
+
+  /**
+   * Export current dashboard as image
+   */
+  async imageExporter() {
+    await this.exporterService.imageExporter(
+      this.elementRef,
+      this.dashboard?.name as string
+    );
   }
 }

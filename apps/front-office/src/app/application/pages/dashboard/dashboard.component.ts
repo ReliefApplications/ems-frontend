@@ -1,33 +1,33 @@
-import { Apollo } from 'apollo-angular';
+import { Dialog } from '@angular/cdk/dialog';
+import { DOCUMENT } from '@angular/common';
 import {
   Component,
   ElementRef,
   EventEmitter,
   Inject,
-  OnDestroy,
   OnInit,
   Output,
   Renderer2,
 } from '@angular/core';
-import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { GET_DASHBOARD_BY_ID } from './graphql/queries';
+import { TranslateService } from '@ngx-translate/core';
 import {
-  Dashboard,
-  ConfirmService,
   ButtonActionT,
+  ConfirmService,
   ContextService,
+  Dashboard,
+  DashboardAutomationService,
   DashboardQueryResponse,
+  ExporterService,
   Record,
   DashboardComponent as SharedDashboardComponent,
-  DashboardAutomationService,
 } from '@oort-front/shared';
-import { TranslateService } from '@ngx-translate/core';
-import { filter, map, startWith, takeUntil } from 'rxjs/operators';
-import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
-import { DOCUMENT } from '@angular/common';
+import { Apollo } from 'apollo-angular';
 import { cloneDeep } from 'lodash';
+import { Observable, firstValueFrom } from 'rxjs';
+import { filter, map, startWith, takeUntil } from 'rxjs/operators';
+import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 
 /**
  * Dashboard page.
@@ -46,7 +46,7 @@ import { cloneDeep } from 'lodash';
 })
 export class DashboardComponent
   extends SharedDashboardComponent
-  implements OnInit, OnDestroy
+  implements OnInit
 {
   /** Change step event ( in workflow ) */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
@@ -88,6 +88,7 @@ export class DashboardComponent
    * @param document Document
    * @param contextService Dashboard context service
    * @param dashboardAutomationService Dashboard automation service
+   * @param exporterService Exporter service for files
    */
   constructor(
     private apollo: Apollo,
@@ -101,7 +102,8 @@ export class DashboardComponent
     private elementRef: ElementRef,
     @Inject(DOCUMENT) private document: Document,
     private contextService: ContextService,
-    private dashboardAutomationService: DashboardAutomationService
+    private dashboardAutomationService: DashboardAutomationService,
+    private exporterService: ExporterService
   ) {
     super();
     this.dashboardAutomationService.dashboard = this;
@@ -144,8 +146,9 @@ export class DashboardComponent
         ?.filter((x: any) => x !== null)
         .map((widget: any) => {
           const contextData = this.dashboard?.contextData;
-          this.contextService.context =
-            { id: this.contextId, ...contextData } || null;
+          this.contextService.context = this.contextId
+            ? { id: this.contextId, ...(contextData && { contextData }) }
+            : null;
           if (!contextData) {
             return widget;
           }
@@ -181,6 +184,7 @@ export class DashboardComponent
     // Doing this to be able to use custom styles on specific dashboards
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.loading = true;
+
     return firstValueFrom(
       this.apollo.query<DashboardQueryResponse>({
         query: GET_DASHBOARD_BY_ID,
@@ -270,5 +274,25 @@ export class DashboardComponent
       );
     };
     this.contextService.initContext(this.dashboard as Dashboard, callback);
+  }
+
+  /**
+   * Export current dashboard as pdf
+   */
+  async pdfExporter() {
+    await this.exporterService.pdfExporter(
+      this.elementRef,
+      this.dashboard?.name as string
+    );
+  }
+
+  /**
+   * Export current dashboard as image
+   */
+  async imageExporter() {
+    await this.exporterService.imageExporter(
+      this.elementRef,
+      this.dashboard?.name as string
+    );
   }
 }

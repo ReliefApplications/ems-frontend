@@ -6,6 +6,7 @@
   [closable]="dashboard?.filter?.closable ?? false"
   [dashboard]="dashboard"
   [structure]="dashboard?.filter?.structure"
+  class="export-hide"
 ></shared-dashboard-filter>
 <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
 <div
@@ -22,6 +23,7 @@
     [closable]="dashboard?.filter?.closable ?? false"
     [dashboard]="dashboard"
     [structure]="dashboard?.filter?.structure"
+    class="export-hide"
   ></shared-dashboard-filter>
   <ng-container
     sharedFullScreen
@@ -42,23 +44,25 @@
       >
         <!-- Dashboard title -->
         <div class="flex items-center gap-1">
-          <!-- Dashboard name, always display during edition -->
-          <shared-editable-text
-            *ngIf="showName || editionActive"
-            [text]="dashboard.name"
-            [canEdit]="canUpdate"
-            (onChange)="saveName($event)"
-            (formActiveEvent)="formActive = $event"
-          >
-            <h1 class="!m-0 overflow-hidden text-ellipsis">
-              {{ dashboard.name }}
-            </h1>
-          </shared-editable-text>
+          <ng-container *ngIf="showName || editionActive">
+            <!-- Dashboard name, always display during edition -->
+            <shared-editable-text
+              [text]="dashboard.name"
+              [canEdit]="canUpdate"
+              (onChange)="saveName($event)"
+              (formActiveEvent)="formActive = $event"
+            >
+              <h1 class="!m-0 overflow-hidden text-ellipsis">
+                {{ dashboard.name }}
+              </h1>
+            </shared-editable-text>
+          </ng-container>
           <!-- Settings -->
           <ui-button
             *ngIf="!formActive"
             variant="grey"
             (click)="onOpenSettings()"
+            class="export-hide"
             [isIcon]="true"
             icon="settings"
             [uiTooltip]="'common.settings' | translate"
@@ -83,7 +87,7 @@
         </div>
         <!-- Other dashboard settings -->
         <div
-          class="flex items-center gap-1"
+          class="flex items-center gap-1 export-hide"
           *ngIf="!formActive"
           cdkDropList
           (cdkDropListDropped)="onButtonActionDrop($event)"
@@ -93,11 +97,13 @@
             [buttonActions]="buttonActions"
             [dashboard]="dashboard"
             [canUpdate]="canUpdate"
+            class="export-hide"
           ></shared-button-action>
 
           <!-- Fullscreen -->
           <ui-button
             variant="grey"
+            class="export-hide"
             [isIcon]="true"
             icon="{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}"
             (click)="isFullScreen = !isFullScreen"
@@ -110,6 +116,7 @@
           <!-- Context -->
           <ui-button
             variant="grey"
+            class="export-hide"
             [isIcon]="true"
             [icon]="dashboard.page?.context ? 'cached' : 'add'"
             (click)="selectContextDatasource()"
@@ -121,9 +128,30 @@
             "
           >
           </ui-button>
+          <!-- PDF + PNG Export -->
+          <ui-button
+            variant="grey"
+            class="export-hide"
+            [isIcon]="true"
+            icon="get_app"
+            [uiMenuTriggerFor]="exportMenu"
+            [uiTooltip]="'common.export' | translate"
+          ></ui-button>
+          <ui-menu #exportMenu class="export-hide">
+            <!-- Export menu -->
+            <button uiMenuItem (click)="pdfExporter()">
+              <ui-icon icon="file_download" variant="grey"></ui-icon>
+              {{ 'common.exportType.pdf' | translate }}
+            </button>
+            <button uiMenuItem (click)="imageExporter()">
+              <ui-icon icon="add_a_photo" variant="grey"></ui-icon>
+              {{ 'common.exportType.png' | translate }}
+            </button>
+          </ui-menu>
           <!-- More options -->
           <ui-button
             variant="grey"
+            class="export-hide"
             [isIcon]="true"
             icon="more_vert"
             [uiMenuTriggerFor]="menu"

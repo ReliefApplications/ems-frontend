@@ -12,6 +12,7 @@ export * from './lib/services/form-builder/form-builder.service';
 export * from './lib/services/form/form.service';
 export * from './lib/services/api-proxy/api-proxy.service';
 export * from './lib/services/dashboard/dashboard.service';
+export * from './lib/services/exporter/exporter.service';
 export * from './lib/services/grid-layout/grid-layout.service';
 export * from './lib/services/reference-data/reference-data.service';
 export * from './lib/services/kendo-translation/kendo-translation.service';
@@ -96,6 +97,7 @@ export * from './lib/components/utils/unsubscribe/public-api';
 export * from './lib/components/editable-text/public-api';
 export * from './lib/components/users/public-api';
 export * from './lib/components/payload-modal/payload-modal.component';
+export * from './lib/components/dashboard-export-action/dashboard-export-action.component';
 export * from './lib/components/widgets/map/public-api';
 export * from './lib/components/dashboard/public-api';
 

@@ -24,6 +24,7 @@ import {
   DialogModule,
   GraphQLSelectModule,
   IconModule,
+  ToggleModule,
 } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ContextSelectorComponent } from './components/context-selector/context-selector.component';
@@ -57,6 +58,7 @@ import { ContextSelectorComponent } from './components/context-selector/context-
     AlertModule,
     DragDropModule,
     ButtonActionModule,
+    ToggleModule,
     ContextSelectorComponent,
   ],
   exports: [DashboardComponent],

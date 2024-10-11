@@ -27,15 +27,6 @@ import { QueryBuilderService } from '../../../services/query-builder/query-build
 import { GET_RESOURCE_METADATA } from './graphql/queries';
 import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
 import { Record } from '../../../models/record.model';
-
-export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
-  Partial<{
-    index: number;
-    record: Record;
-    metadata: any[];
-    layout: Layout;
-    rawValue: any;
-  }>;
 import { Layout } from '../../../models/layout.model';
 import { FormControl } from '@angular/forms';
 import { clone, cloneDeep, isNaN, isNil } from 'lodash';
@@ -60,6 +51,15 @@ const MAX_COL_SPAN = 8;
 
 /** Key to store user selected page size, in local storage */
 const SELECTED_PAGE_SIZE_KEY = 'selectedPageSize';
+
+export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
+  Partial<{
+    index: number;
+    record: Record;
+    metadata: any[];
+    layout: Layout;
+    rawValue: any;
+  }>;
 
 /**
  * Summary Card Widget component.
