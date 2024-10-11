@@ -1,11 +1,11 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - main
-      - next
-      - next-major
+  # push:
+  #   branches:
+  #     - main
+  #     - next
+  #     - next-major
   workflow_dispatch:
 
 concurrency:
