@@ -86,6 +86,8 @@ export class DashboardComponent
   private mapExists = false;
   /** Map Status Subscription */
   private mapStatusSubscription?: Subscription;
+  /** Should show dashboard name */
+  public showName? = true;
 
   /**
    * Dashboard page.
@@ -160,8 +162,9 @@ export class DashboardComponent
         ?.filter((x: any) => x !== null)
         .map((widget: any) => {
           const contextData = this.dashboard?.contextData;
-          this.contextService.context =
-            { id: this.contextId, ...contextData } || null;
+          this.contextService.context = this.contextId
+            ? { id: this.contextId, ...(contextData && { contextData }) }
+            : null;
           if (!contextData) {
             return widget;
           }
@@ -238,6 +241,9 @@ export class DashboardComponent
           this.contextService.setFilter(this.dashboard);
           this.variant = this.dashboard.filter?.variant || 'default';
           this.closable = this.dashboard.filter?.closable ?? false;
+          this.showName = this.dashboard.step
+            ? this.dashboard.step.showName
+            : this.dashboard.page?.showName;
         } else {
           this.contextService.isFilterEnabled.next(false);
           this.contextService.setFilter();

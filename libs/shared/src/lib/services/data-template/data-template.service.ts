@@ -91,7 +91,7 @@ export class DataTemplateService {
       aggregation?: any;
       fields?: any[];
       styles?: any[];
-    }
+    } = {}
   ) {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();

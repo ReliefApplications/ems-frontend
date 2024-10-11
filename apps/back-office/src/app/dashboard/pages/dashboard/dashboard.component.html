@@ -46,16 +46,19 @@
         >
           <!-- Dashboard title -->
           <div class="flex items-center gap-1">
-            <shared-editable-text
-              [text]="dashboard.name"
-              [canEdit]="canUpdate"
-              (onChange)="saveName($event)"
-              (formActiveEvent)="formActive = $event"
-            >
-              <h1 class="!m-0 overflow-hidden text-ellipsis">
-                {{ dashboard.name }}
-              </h1>
-            </shared-editable-text>
+            <ng-container *ngIf="showName || editionActive">
+              <!-- Dashboard name, always display during edition -->
+              <shared-editable-text
+                [text]="dashboard.name"
+                [canEdit]="canUpdate"
+                (onChange)="saveName($event)"
+                (formActiveEvent)="formActive = $event"
+              >
+                <h1 class="!m-0 overflow-hidden text-ellipsis">
+                  {{ dashboard.name }}
+                </h1>
+              </shared-editable-text>
+            </ng-container>
             <!-- Settings -->
             <ui-button
               *ngIf="!formActive"
@@ -66,11 +69,11 @@
               icon="settings"
               [uiTooltip]="'common.settings' | translate"
             ></ui-button>
+            <!-- Switch between edition & preview -->
             <ui-button
-              *ngIf="canUpdate"
+              *ngIf="canUpdate && !templateMode"
               [icon]="editionActive ? 'edit' : 'preview'"
               (click)="editionActive = !editionActive"
-              class="export-hide"
               >{{
                 (editionActive
                   ? 'components.application.dashboard.enterPreviewMode'

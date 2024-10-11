@@ -231,7 +231,6 @@ export class AuthService {
       }
       redirectUri.search = '';
       if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
-        console.log('setting redirect uri', redirectUri.pathname);
         localStorage.setItem('redirectPath', redirectUri.pathname);
       }
     }
@@ -350,7 +349,7 @@ export class AuthService {
     }
 
     // === Resource ===
-    if (globalPermissions.includes('can_read_resources')) {
+    if (globalPermissions.includes('can_see_resources')) {
       can('read', ['Resource', 'Record']);
     }
     if (globalPermissions.includes('can_create_resources')) {

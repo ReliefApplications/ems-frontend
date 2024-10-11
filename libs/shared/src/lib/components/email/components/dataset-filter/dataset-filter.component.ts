@@ -620,6 +620,7 @@ export class DatasetFilterComponent
           (data: any) => data.name === fieldName.field.split('.')[0]
         )
       : null;
+    console.log(field);
     if (field && field?.type === TYPE_LABEL.resources) {
       field = fieldName
         ? field.fields?.find(

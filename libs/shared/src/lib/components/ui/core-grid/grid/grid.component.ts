@@ -45,7 +45,6 @@ import { DownloadService } from '../../../../services/download/download.service'
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { GridLayout } from '../models/grid-layout.model';
 import { get, intersection, isNil, has, isEqual } from 'lodash';
-import { DashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService, TooltipDirective } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -299,7 +298,6 @@ export class GridComponent
    * @param gridService The grid service
    * @param renderer The renderer library
    * @param downloadService The download service
-   * @param dashboardService Dashboard service
    * @param translate The translate service
    * @param snackBar The snackbar service
    * @param el Ref to html element
@@ -314,7 +312,6 @@ export class GridComponent
     private gridService: GridService,
     private renderer: Renderer2,
     private downloadService: DownloadService,
-    private dashboardService: DashboardService,
     private translate: TranslateService,
     private snackBar: SnackbarService,
     private el: ElementRef,
@@ -848,7 +845,6 @@ export class GridComponent
         disableClose: true,
         data: {
           widget: this.widget,
-          template: this.dashboardService.findSettingsTemplate(this.widget),
         },
       });
       dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
@@ -910,6 +906,20 @@ export class GridComponent
   public onOpenMapModal(dataItem: any, field: any) {
     this.action.emit({
       action: 'map',
+      item: dataItem,
+      field,
+    });
+  }
+
+  /**
+   * Open editor around clicked item
+   *
+   * @param dataItem Clicked item
+   * @param field html field
+   */
+  public onOpenEditorModal(dataItem: any, field: any) {
+    this.action.emit({
+      action: 'editor',
       item: dataItem,
       field,
     });

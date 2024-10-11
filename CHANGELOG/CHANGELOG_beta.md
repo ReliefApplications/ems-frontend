@@ -1,3 +1,65 @@
+# [2.17.0-beta.5](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.4...v2.17.0-beta.5) (2024-10-09)
+
+
+### Bug Fixes
+
+* html question shows correct field title when expanded from grid ([#2642](https://github.com/ReliefApplications/ems-frontend/issues/2642)) ([9658f9f](https://github.com/ReliefApplications/ems-frontend/commit/9658f9f7ca8fa76b292a8989e2923e3e0de84553)), closes [AB#104241](https://github.com/AB/issues/104241)
+
+
+### Features
+
+* layers in maps are now ordered based on how they appear in the settings ([#2639](https://github.com/ReliefApplications/ems-frontend/issues/2639)) ([bcf4ddc](https://github.com/ReliefApplications/ems-frontend/commit/bcf4ddc8d6680c09f334802021c08c01be22347f)), closes [AB#104252](https://github.com/AB/issues/104252)
+
+# [2.17.0-beta.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.3...v2.17.0-beta.4) (2024-10-07)
+
+
+### Bug Fixes
+
+* single geographic extent should now use all items with target value ([#2638](https://github.com/ReliefApplications/ems-frontend/issues/2638)) ([24fb86f](https://github.com/ReliefApplications/ems-frontend/commit/24fb86f4d2dc2282a577e29ab5ef6207899ac31f)), closes [AB#104254](https://github.com/AB/issues/104254)
+
+# [2.17.0-beta.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.2...v2.17.0-beta.3) (2024-10-07)
+
+
+### Bug Fixes
+
+* improve replaceContext method of context service ([#2636](https://github.com/ReliefApplications/ems-frontend/issues/2636)) ([a75e1cc](https://github.com/ReliefApplications/ems-frontend/commit/a75e1cc52af1e388c8892d23086fe5ebfa069bd2)), closes [AB#104226](https://github.com/AB/issues/104226)
+
+# [2.17.0-beta.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.1...v2.17.0-beta.2) (2024-10-03)
+
+
+### Bug Fixes
+
+* incorrect integrity key for aria-query package ([728cef0](https://github.com/ReliefApplications/ems-frontend/commit/728cef0fac57c3961ac3e45694ca360cf446a7af))
+* incorrect permission check for visibility of resource page in back-office ([#2627](https://github.com/ReliefApplications/ems-frontend/issues/2627)) ([3f0946a](https://github.com/ReliefApplications/ems-frontend/commit/3f0946ab14a4788fb617e93a037c83c833e7ae69))
+* resources question incorrect default display in html widgets ([#2634](https://github.com/ReliefApplications/ems-frontend/issues/2634)) ([6278861](https://github.com/ReliefApplications/ems-frontend/commit/627886146076ac7cd20dd914e12bb282b586be9c)), closes [AB#104166](https://github.com/AB/issues/104166)
+
+
+### Features
+
+* add possibility to show or hide page / step name ([#2628](https://github.com/ReliefApplications/ems-frontend/issues/2628)) ([2df7954](https://github.com/ReliefApplications/ems-frontend/commit/2df79544e8aeb479f7b669bb562a37b912744dc7)), closes [AB#102826](https://github.com/AB/issues/102826)
+
+# [2.17.0-beta.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.16.0...v2.17.0-beta.1) (2024-07-04)
+
+
+### Bug Fixes
+
+* add better error handling for upload files AB[#64764](https://github.com/ReliefApplications/ems-frontend/issues/64764) ([7296228](https://github.com/ReliefApplications/ems-frontend/commit/72962285363130599868dbc003d7e6f08d95b6f3))
+* charts using auth code ref data would break if using context ([#2570](https://github.com/ReliefApplications/ems-frontend/issues/2570)) ([27af861](https://github.com/ReliefApplications/ems-frontend/commit/27af8617882437454ef0183e0e76cf5dd5e5d6f3))
+* email distribution list filter logic not taken into account ([#2623](https://github.com/ReliefApplications/ems-frontend/issues/2623)) ([4cc4b91](https://github.com/ReliefApplications/ems-frontend/commit/4cc4b913e5b578135dc0512f2c3ef5afc5b89aae))
+* expand text modal in grids not showing correct field title ([#2568](https://github.com/ReliefApplications/ems-frontend/issues/2568)) ([09cead3](https://github.com/ReliefApplications/ems-frontend/commit/09cead38e03908c23b3b73a856b165e7ea0eb55f))
+* gql ref data would not query from correct endpoint when editing ([745a14c](https://github.com/ReliefApplications/ems-frontend/commit/745a14c6da2b7dfea9d20ac8997c5045dd1bba59))
+
+
+### Features
+
+* add canDownloadRecords permission ([#2600](https://github.com/ReliefApplications/ems-frontend/issues/2600)) ([259ae8c](https://github.com/ReliefApplications/ems-frontend/commit/259ae8c404bab47dba4992aab47ceac618aaf224))
+* html question ([#2522](https://github.com/ReliefApplications/ems-frontend/issues/2522)) ([51f3362](https://github.com/ReliefApplications/ems-frontend/commit/51f33620d5a09568ce00d46d33e2d36f5b82988b))
+
+
+### Reverts
+
+* Revert ""AB#91806 revert changes" revert (#2536)" (#2540) ([c99c97b](https://github.com/ReliefApplications/ems-frontend/commit/c99c97b6d27f78f07ac192fc29e617a6cfef62bb)), closes [AB#91806](https://github.com/AB/issues/91806) [#2536](https://github.com/ReliefApplications/ems-frontend/issues/2536) [#2540](https://github.com/ReliefApplications/ems-frontend/issues/2540)
+
 # [2.16.0-beta.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.16.0-beta.1...v2.16.0-beta.2) (2024-06-14)
 
 
