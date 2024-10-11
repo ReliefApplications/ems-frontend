@@ -574,12 +574,30 @@ export const getFieldsValue = (record: any) => {
  * @returns The html body with the calculated result of the functions
  */
 const applyOperations = (html: string): string => {
+  // // Define the regex pattern to match all {{calc.
+  const pattern = new RegExp(`${CALC_PREFIX}.*?${PLACEHOLDER_SUFFIX}`, 'g');
+  // Use replace method with a callback function to handle all occurrences
+  const modifiedHtml = html.replace(pattern, (fullMatch) => {
+    // span regex to match span content inside fullMatch
+    const spanRegex = /<span[^>]*>(.*?)<\/span>/g;
+    const match = spanRegex.exec(fullMatch);
+    // verify if have <span> inside {{calc.
+    if (match && match[0]) {
+      // remove the span and replace for the value inside span
+      const cleanedSpan = fullMatch.replace(spanRegex, match[1]);
+      // get the span and its style attributes
+      const spanPart = match[0].split('>')[0] + '>';
+      // return calc inside the span to apply style
+      return `${spanPart}${cleanedSpan}</span>`;
+    }
+    return fullMatch;
+  });
   const regex = new RegExp(
     `${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)${PLACEHOLDER_SUFFIX}`,
     'gm'
   );
-  let parsedHtml = html;
-  let result = regex.exec(html);
+  let parsedHtml = modifiedHtml;
+  let result = regex.exec(parsedHtml);
   while (result !== null) {
     // get the function
     const calcFunc = get(calcFunctions, result[1]);
@@ -597,7 +615,11 @@ const applyOperations = (html: string): string => {
       }
       parsedHtml = parsedHtml.replace(result[0], resultText);
     }
-    result = regex.exec(html);
+    const regex = new RegExp(
+      `${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)${PLACEHOLDER_SUFFIX}`,
+      'gm'
+    );
+    result = regex.exec(parsedHtml);
   }
   return parsedHtml;
 };
