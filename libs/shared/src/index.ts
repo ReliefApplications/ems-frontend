@@ -26,7 +26,6 @@ export * from './lib/services/data-template/data-template.service';
 export * from './lib/services/editor/editor.service';
 export * from './lib/services/rest/rest.service';
 export * from './lib/services/map/map-layers.service';
-export * from './lib/services/map/map-status.service';
 export * from './lib/services/dashboard-automation/dashboard-automation.service';
 
 // === DIRECTIVES ===

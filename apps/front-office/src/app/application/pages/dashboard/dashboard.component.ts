@@ -19,7 +19,6 @@ import {
   DashboardAutomationService,
   DashboardQueryResponse,
   ExporterService,
-  MapStatusService,
   Record,
   DashboardComponent as SharedDashboardComponent,
 } from '@oort-front/shared';
@@ -88,7 +87,6 @@ export class DashboardComponent
    * @param elementRef Angular element ref
    * @param document Document
    * @param contextService Dashboard context service
-   * @param mapStatusService Service for managing map ready and export status
    * @param dashboardAutomationService Dashboard automation service
    * @param exporterService Exporter service for files
    */
@@ -104,7 +102,6 @@ export class DashboardComponent
     private elementRef: ElementRef,
     @Inject(DOCUMENT) private document: Document,
     private contextService: ContextService,
-    private mapStatusService: MapStatusService,
     private dashboardAutomationService: DashboardAutomationService,
     private exporterService: ExporterService
   ) {
@@ -182,9 +179,6 @@ export class DashboardComponent
     if (this.dashboard?.id === id && this.contextId === contextId) {
       return;
     }
-
-    // Ensures cleanup of the count of map widgets present on the dashboard to 0.
-    this.mapStatusService.resetMapCount();
 
     const rootElement = this.elementRef.nativeElement;
     // Doing this to be able to use custom styles on specific dashboards
@@ -293,10 +287,10 @@ export class DashboardComponent
   }
 
   /**
-   * Export current dashboard as png
+   * Export current dashboard as image
    */
-  async pngExporter() {
-    await this.exporterService.pngExporter(
+  async imageExporter() {
+    await this.exporterService.imageExporter(
       this.elementRef,
       this.dashboard?.name as string
     );

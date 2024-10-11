@@ -1,61 +1,59 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
 import {
-  Component,
   AfterViewInit,
-  Input,
-  Inject,
-  Output,
-  EventEmitter,
-  OnDestroy,
-  Injector,
+  Component,
   ElementRef,
+  EventEmitter,
+  Inject,
+  Injector,
+  Input,
+  OnDestroy,
   Optional,
+  Output,
   SkipSelf,
 } from '@angular/core';
 import { take } from 'rxjs/operators';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
-import 'leaflet';
-import 'leaflet.markercluster';
-import 'leaflet.control.layers.tree';
+import { TranslateService } from '@ngx-translate/core';
 import 'esri-leaflet';
 import * as Vector from 'esri-leaflet-vector';
-import { TranslateService } from '@ngx-translate/core';
+import 'leaflet';
+import 'leaflet.control.layers.tree';
+import 'leaflet.markercluster';
 //import { takeUntil } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
+import { BASEMAP_LAYERS } from './const/baseMaps';
 import {
-  OverlayLayerTree,
   LayerActionOnMap,
+  OverlayLayerTree,
 } from './interfaces/map-layers.interface';
 import {
+  DefaultMapControls,
   MapConstructorSettings,
+  MapControls,
   MapEvent,
   MapEventType,
-  DefaultMapControls,
-  MapControls,
 } from './interfaces/map.interface';
-import { BASEMAP_LAYERS } from './const/baseMaps';
 // import { timeDimensionGeoJSON } from './test/timedimension-test';
-import { MapControlsService } from '../../../services/map/map-controls.service';
 import * as L from 'leaflet';
+import { MapControlsService } from '../../../services/map/map-controls.service';
 import { Layer } from './layer';
 // import { GeoJsonObject } from 'geojson';
+import { Platform } from '@angular/cdk/platform';
+import { DOCUMENT } from '@angular/common';
+import { ShadowDomService } from '@oort-front/ui';
 import {
-  ArcgisService,
-  TreeObject,
-} from '../../../services/map/arcgis.service';
-import { MapLayersService } from '../../../services/map/map-layers.service';
-import {
+  clone,
+  difference,
+  flatMapDeep,
   flatten,
+  get,
+  isEqual,
   isNil,
   omitBy,
-  get,
-  difference,
-  isEqual,
-  flatMapDeep,
   pick,
-  clone,
 } from 'lodash';
 import {
   Subject,
@@ -66,15 +64,17 @@ import {
   merge,
   takeUntil,
 } from 'rxjs';
-import { MapPopupService } from './map-popup/map-popup.service';
-import { Platform } from '@angular/cdk/platform';
-import { ContextService } from '../../../services/context/context.service';
-import { MapPolygonsService } from '../../../services/map/map-polygons.service';
-import { DOCUMENT } from '@angular/common';
-import { ShadowDomService } from '@oort-front/ui';
-import { MapStatusService } from '../../../services/map/map-status.service';
-import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
 import { ActionComponent, ActionType } from '../../../models/automation.model';
+import { ContextService } from '../../../services/context/context.service';
+import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
+import { ExporterService } from '../../../services/exporter/exporter.service';
+import {
+  ArcgisService,
+  TreeObject,
+} from '../../../services/map/arcgis.service';
+import { MapLayersService } from '../../../services/map/map-layers.service';
+import { MapPolygonsService } from '../../../services/map/map-polygons.service';
+import { MapPopupService } from './map-popup/map-popup.service';
 
 /** Component for the map widget */
 @Component({
@@ -175,10 +175,6 @@ export class MapComponent
   private overlaysTree: L.Control.Layers.TreeObject[][] = [];
   /** Revert Map Exporting subscription */
   private revertMapSubscription?: Subscription;
-  /** Base export Layer Checker */
-  private basemapLoaded = false;
-  /** Web export Layer Checker */
-  private webmapLoaded = false;
   /** Current geographic extent value */
   private geographicExtentValue: any;
   /** Subject to emit signals for cancelling previous data queries */
@@ -196,7 +192,7 @@ export class MapComponent
    * @param arcgisService Shared arcgis service
    * @param mapLayersService MapLayersService
    * @param mapPopupService The map popup handler service
-   * @param mapStatusService The map status service for exporting dashboard
+   * @param exporterService Export service for file generation
    * @param contextService The context service
    * @param platform Platform
    * @param injector Injector containing all needed providers
@@ -213,7 +209,7 @@ export class MapComponent
     private arcgisService: ArcgisService,
     public mapLayersService: MapLayersService,
     public mapPopupService: MapPopupService,
-    private mapStatusService: MapStatusService,
+    private exporterService: ExporterService,
     private contextService: ContextService,
     private platform: Platform,
     public injector: Injector,
@@ -227,7 +223,6 @@ export class MapComponent
     super();
     this.esriApiKey = environment.esriApiKey;
     this.mapId = uuidv4();
-    this.mapStatusService.incrementMapCount();
   }
 
   /** Once template is ready, build the map. */
@@ -297,89 +292,75 @@ export class MapComponent
           this.filterLayers();
         });
     }
+  }
 
-    this.mapStatusService.isExporting$
+  /**
+   * Init necessary listeners for exporting map as pdf or image
+   */
+  private initExportMapListeners() {
+    this.exporterService.isExporting$
       .pipe(takeUntil(this.destroy$))
       .subscribe((isExporting) => {
         if (isExporting) {
-          // Saves the current basemap and webmap
-          const originalBasemap = this.basemap;
-          const originalWebMap = this.arcGisWebMap;
-
-          // Replaces the current map layer with the WHO Polygon Raster Basemap
-          this.basemap = L.tileLayer(
-            'https://tiles.arcgis.com/tiles/5T5nSi527N4F7luB/arcgis/rest/services/WHO_Polygon_Raster_Basemap_with_labels/MapServer/tile/{z}/{y}/{x}',
-            {
-              attribution: '&copy; WHO',
-            }
-          );
-
-          // Listens for the 'load' event to know once the tiles are loaded
-          this.basemap
-            .on('load', () => {
-              this.onBasemapLoad();
-              // Replaces the current webmap with an empty layer group
-              this.arcGisWebMap = L.layerGroup().addTo(this.map);
-              this.onWebmapLoad();
-              this.checkIfMapIsFullyReady();
-            })
-            .addTo(this.map);
-
-          // If there's an existing subscription to revert the map, unsubscribe first
-          if (this.revertMapSubscription) {
-            this.revertMapSubscription?.unsubscribe();
-          }
-
+          const { originalBasemap, originalWebMap } = this.buildMapToExport();
           // After the export is done, restore the original basemap and webmap
-          this.revertMapSubscription = this.mapStatusService.isExporting$
+          this.revertMapSubscription = this.exporterService.isExporting$
             .pipe(
               filter((isExporting) => !isExporting),
               take(1),
               takeUntil(this.destroy$)
             )
             .subscribe(() => {
-              this.map.removeLayer(this.basemap);
-              this.map.removeLayer(this.arcGisWebMap);
-              this.basemap = originalBasemap.addTo(this.map); // Add the basemap back first
-              if (originalWebMap) {
-                this.arcGisWebMap = originalWebMap.addTo(this.map); // Then add the webmap on top
-              }
-              // Unsubscribe to clean up
-              this.revertMapSubscription?.unsubscribe();
-              // Reset the map ready status to false
-              this.mapStatusService.decrementMapLoadedCount();
-              this.basemapLoaded = false;
-              this.webmapLoaded = false;
+              this.setMapBackToOriginState(originalBasemap, originalWebMap);
             });
         }
       });
   }
 
   /**
-   * Sets the basemap status to loaded for export
-   */
-  onBasemapLoad() {
-    this.basemapLoaded = true;
-  }
-
-  /**
-   * Sets the webmap status to loaded for export
-   */
-  onWebmapLoad() {
-    this.webmapLoaded = true;
-  }
-
-  /**
-   * Checks if the map is fully loaded.
+   * Build map for export as pdf or image
    *
-   * @returns true if the map is fully loaded, else false
+   * @returns base map and web map set for the dashboard before the map build for export
    */
-  checkIfMapIsFullyReady(): boolean {
-    const isFullyReady = this.basemapLoaded && this.webmapLoaded;
-    if (isFullyReady) {
-      this.mapStatusService.incrementMapLoadedCount();
+  private buildMapToExport() {
+    // If there's an existing subscription to revert the map, unsubscribe first
+    this.revertMapSubscription?.unsubscribe();
+    // Saves the current basemap and webmap
+    const originalBasemap = this.basemap;
+    const originalWebMap = this.arcGisWebMap;
+    // Replaces the current map layer with the WHO Polygon Raster Basemap
+    this.basemap = L.tileLayer(
+      'https://tiles.arcgis.com/tiles/5T5nSi527N4F7luB/arcgis/rest/services/WHO_Polygon_Raster_Basemap_with_labels/MapServer/tile/{z}/{y}/{x}',
+      {
+        attribution: '&copy; WHO',
+      }
+    );
+    // Listens for the 'load' event to know once the tiles are loaded
+    this.basemap
+      .on('load', () => {
+        // Replaces the current webmap with an empty layer group
+        this.arcGisWebMap = L.layerGroup().addTo(this.map);
+        this.exporterService.incrementMapLoadedCount();
+      })
+      .addTo(this.map);
+    return { originalBasemap, originalWebMap };
+  }
+
+  /**
+   * Set map as it was before exporting it to pdf or image
+   *
+   * @param originalBasemap Original base map set before exporting map to pdf or image
+   * @param originalWebMap Original web map set before exporting map to pdf or image
+   */
+  private setMapBackToOriginState(originalBasemap: any, originalWebMap: any) {
+    this.map.removeLayer(this.basemap);
+    this.map.removeLayer(this.arcGisWebMap);
+    this.basemap = originalBasemap.addTo(this.map); // Add the basemap back first
+    if (originalWebMap) {
+      this.arcGisWebMap = originalWebMap.addTo(this.map); // Then add the webmap on top
     }
-    return isFullyReady;
+    // Unsubscribe to clean up
+    this.revertMapSubscription?.unsubscribe();
   }
 
   override ngOnDestroy(): void {
@@ -388,7 +369,6 @@ export class MapComponent
       clearTimeout(this.firstLoadEmitTimeoutListener);
     }
     this.resizeObserver?.disconnect();
-    this.mapStatusService.decrementMapCount();
   }
 
   /** Set map listeners */
@@ -734,6 +714,7 @@ export class MapComponent
         }
         // When layers are created, filters are then initialized
         this.initFilters();
+        this.initExportMapListeners();
       });
     } else {
       // No update on the layers, we only update the controls

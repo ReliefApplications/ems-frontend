@@ -33,7 +33,6 @@ import {
   DeleteDashboardTemplatesMutationResponse,
   EditDashboardMutationResponse,
   ExporterService,
-  MapStatusService,
   Record,
   DashboardComponent as SharedDashboardComponent,
   WorkflowService,
@@ -166,7 +165,6 @@ export class DashboardComponent
    * @param contextService Dashboard context service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
-   * @param mapStatusService Service for managing map ready and export status
    * @param layoutService Shared layout service
    * @param document Document
    * @param clipboard Angular clipboard service
@@ -187,7 +185,6 @@ export class DashboardComponent
     private contextService: ContextService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
-    private mapStatusService: MapStatusService,
     private layoutService: UILayoutService,
     @Inject(DOCUMENT) private document: Document,
     private clipboard: Clipboard,
@@ -290,10 +287,6 @@ export class DashboardComponent
     if (!id) {
       return;
     }
-
-    // Ensures cleanup of the count of map widgets present on the dashboard to 0.
-    this.mapStatusService.resetMapCount();
-
     const rootElement = this.elementRef.nativeElement;
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.formActive = false;
@@ -916,10 +909,10 @@ export class DashboardComponent
   }
 
   /**
-   * Export current dashboard as png
+   * Export current dashboard as image
    */
-  async pngExporter() {
-    await this.exporterService.pngExporter(
+  async imageExporter() {
+    await this.exporterService.imageExporter(
       this.elementRef,
       this.dashboard?.name as string
     );
