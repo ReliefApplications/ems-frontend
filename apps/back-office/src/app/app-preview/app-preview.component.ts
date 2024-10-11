@@ -136,6 +136,92 @@ export class AppPreviewComponent
   }
 
   /**
+   * Build pages navigation item list from the given application
+   *
+   * @param application Application from to build navigation items
+   * @returns Navigation items
+   */
+  private buildPagesNavItems(application: Application) {
+    return (
+      application.pages
+        ?.filter((x) => x.content)
+        .map((x) => ({
+          id: x.id,
+          name: x.name,
+          path:
+            x.type === ContentType.form
+              ? `./${x.type}/${x.id}`
+              : `./${x.type}/${x.content}`,
+          icon: x.icon || this.getNavIcon(x.type || ''),
+          fontFamily: x.icon ? 'fa' : 'material',
+          visible: x.visible ?? false,
+        })) || []
+    );
+  }
+
+  /**
+   * Build administration navigation item list from the given application
+   *
+   * @param application Application from to build navigation items
+   * @returns Navigation items
+   */
+  private buildAdminNavItems(application: Application) {
+    const ability = getAbilityForAppPreview(application, this.role);
+    const adminNavItems: any[] = [];
+    if (ability.can('read', 'EmailNotification')) {
+      adminNavItems.push({
+        name: this.translate.instant('common.email.notification.few'),
+        path: './settings/email-notifications',
+        icon: 'mail',
+        visible: true,
+      });
+    }
+    if (ability.can('manage', 'Template')) {
+      adminNavItems.push({
+        name: this.translate.instant('common.template.few'),
+        path: './settings/templates',
+        icon: 'description',
+        visible: true,
+        legacy: true,
+      });
+    }
+    if (ability.can('manage', 'DistributionList')) {
+      adminNavItems.push({
+        name: this.translate.instant('common.distributionList.few'),
+        path: './settings/distribution-lists',
+        icon: 'mail',
+        visible: true,
+        legacy: true,
+      });
+    }
+    if (ability.can('manage', 'CustomNotification')) {
+      adminNavItems.push({
+        name: this.translate.instant('common.customNotification.few'),
+        path: './settings/notifications',
+        icon: 'schedule_send',
+        visible: true,
+      });
+    }
+    if (ability.can('read', 'User')) {
+      adminNavItems.push({
+        name: this.translate.instant('common.user.few'),
+        path: './settings/users',
+        icon: 'supervisor_account',
+        visible: true,
+      });
+    }
+    if (ability.can('read', 'Role')) {
+      adminNavItems.push({
+        name: this.translate.instant('common.role.few'),
+        path: './settings/roles',
+        icon: 'verified_user',
+        visible: true,
+      });
+    }
+    return adminNavItems;
+  }
+
+  /**
    * Generates the routes from the application that is loaded.
    */
   ngOnInit(): void {
@@ -152,80 +238,14 @@ export class AppPreviewComponent
       .subscribe((application: Application | null) => {
         if (application) {
           this.title = application.name + ' (Preview)';
-          const ability = getAbilityForAppPreview(application, this.role);
-          const displayNavItems: any[] =
-            application.pages
-              ?.filter((x) => x.content)
-              .map((x) => ({
-                id: x.id,
-                name: x.name,
-                path:
-                  x.type === ContentType.form
-                    ? `./${x.type}/${x.id}`
-                    : `./${x.type}/${x.content}`,
-                icon: x.icon || this.getNavIcon(x.type || ''),
-                fontFamily: x.icon ? 'fa' : 'material',
-                visible: x.visible ?? false,
-              })) || [];
-          const adminNavItems: any[] = [];
-          if (ability.can('read', 'EmailNotification')) {
-            adminNavItems.push({
-              name: this.translate.instant('common.email.notification.few'),
-              path: './settings/email-notifications',
-              icon: 'mail',
-              visible: true,
-            });
-          }
-          if (ability.can('manage', 'Template')) {
-            adminNavItems.push({
-              name: this.translate.instant('common.template.few'),
-              path: './settings/templates',
-              icon: 'description',
-              visible: true,
-              legacy: true,
-            });
-          }
-          if (ability.can('manage', 'DistributionList')) {
-            adminNavItems.push({
-              name: this.translate.instant('common.distributionList.few'),
-              path: './settings/distribution-lists',
-              icon: 'mail',
-              visible: true,
-              legacy: true,
-            });
-          }
-          if (ability.can('manage', 'CustomNotification')) {
-            adminNavItems.push({
-              name: this.translate.instant('common.customNotification.few'),
-              path: './settings/notifications',
-              icon: 'schedule_send',
-              visible: true,
-            });
-          }
-          if (ability.can('read', 'User')) {
-            adminNavItems.push({
-              name: this.translate.instant('common.user.few'),
-              path: './settings/users',
-              icon: 'supervisor_account',
-              visible: true,
-            });
-          }
-          if (ability.can('read', 'Role')) {
-            adminNavItems.push({
-              name: this.translate.instant('common.role.few'),
-              path: './settings/roles',
-              icon: 'verified_user',
-              visible: true,
-            });
-          }
           this.navGroups = [
             {
               name: this.translate.instant('common.page.few'),
-              navItems: displayNavItems,
+              navItems: this.buildPagesNavItems(application),
             },
             {
-              name: 'Administration',
-              navItems: adminNavItems,
+              name: this.translate.instant('pages.administration.title'),
+              navItems: this.buildAdminNavItems(application),
             },
           ];
           if (!this.application || application.id !== this.application.id) {

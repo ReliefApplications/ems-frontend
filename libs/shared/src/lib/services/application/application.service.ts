@@ -242,9 +242,6 @@ export class ApplicationService {
         variables: {
           id,
           asRole,
-          ...(this.environment.module === 'frontoffice' && {
-            isFrontOfficeModule: true,
-          }),
         },
       })
       .subscribe(async ({ data }) => {
