@@ -77,3 +77,13 @@ export const ICON_EXTENSIONS: any = {
   xlsm: 'k-i-file-excel',
   xml: 'k-i-file-excel',
 };
+
+/** Keys added to grid row to display data in the html grid template */
+export const FORMAT_KEYS = [
+  'style',
+  'text',
+  'icon',
+  'urlValue',
+  'value',
+  'showFullScreenButton',
+];
