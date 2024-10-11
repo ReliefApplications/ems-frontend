@@ -284,8 +284,8 @@ export class ExporterService {
             iif(
               () => this.mapExistsInExportComponent() > 0,
               this.mapReadyForExport$.pipe(
-                // Sets 0.5 second timeout to ensure the map layer is fully loaded
                 filter((ready) => !!ready),
+                // Sets 0.5 second timeout to ensure the map layer is fully loaded
                 debounceTime(500),
                 first(),
                 map(() => result)
@@ -348,8 +348,8 @@ export class ExporterService {
             iif(
               () => this.mapExistsInExportComponent() > 0,
               this.mapReadyForExport$.pipe(
-                // Sets 0.5 second timeout to ensure the map layer is fully loaded
                 filter((ready) => !!ready),
+                // Sets 0.5 second timeout to ensure the map layer is fully loaded
                 debounceTime(500),
                 first(),
                 map(() => result)

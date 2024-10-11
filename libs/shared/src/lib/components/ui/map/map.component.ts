@@ -299,21 +299,22 @@ export class MapComponent
    */
   private initExportMapListeners() {
     this.exporterService.isExporting$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((isExporting) => {
-        if (isExporting) {
-          const { originalBasemap, originalWebMap } = this.buildMapToExport();
-          // After the export is done, restore the original basemap and webmap
-          this.revertMapSubscription = this.exporterService.isExporting$
-            .pipe(
-              filter((isExporting) => !isExporting),
-              take(1),
-              takeUntil(this.destroy$)
-            )
-            .subscribe(() => {
-              this.setMapBackToOriginState(originalBasemap, originalWebMap);
-            });
-        }
+      .pipe(
+        filter((isExporting) => !!isExporting),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        const { originalBasemap, originalWebMap } = this.buildMapToExport();
+        // After the export is done, restore the original basemap and webmap
+        this.revertMapSubscription = this.exporterService.isExporting$
+          .pipe(
+            filter((isExporting) => !isExporting),
+            take(1),
+            takeUntil(this.destroy$)
+          )
+          .subscribe(() => {
+            this.setMapBackToOriginState(originalBasemap, originalWebMap);
+          });
       });
   }
 
