@@ -46,7 +46,6 @@ import { TabActionsModule } from '../common/tab-actions/tab-actions.module';
 import { TabButtonsModule } from './tab-buttons/tab-buttons.module';
 import { TabMainModule } from './tab-main/tab-main.module';
 
-
 /**
  * Modal content for the settings of the grid widgets.
  */

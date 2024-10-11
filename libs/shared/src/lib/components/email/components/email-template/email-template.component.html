@@ -71,10 +71,11 @@
       </div>
     </div>
 
-
     <div
       class="w-1/2"
-      *ngIf="activeSegmentIndex >= 1 && segmentForm.get('dataType')?.value !== null"
+      *ngIf="
+        activeSegmentIndex >= 1 && segmentForm.get('dataType')?.value !== null
+      "
       [formGroup]="distributionList"
     >
       <label
@@ -82,24 +83,37 @@
         class="block text-sm font-medium leading-6 text-gray-900"
       >
         <!-- {{ 'components.queryBuilder.dataset.title' | translate }}* -->
-        {{segmentForm.get('dataType')?.value === 'Reference Data' ? 'Reference Data' : 'components.queryBuilder.dataset.title' | translate }}*
+        {{
+          segmentForm.get('dataType')?.value === 'Reference Data'
+            ? 'Reference Data'
+            : ('components.queryBuilder.dataset.title' | translate)
+        }}*
       </label>
       <!-- Reference Selection -->
-      <div uiFormFieldDirective class="flex-1" [formGroup]="distributionList" *ngIf="segmentForm.get('dataType')?.value === 'Reference Data'">
+      <div
+        uiFormFieldDirective
+        class="flex-1"
+        [formGroup]="distributionList"
+        *ngIf="segmentForm.get('dataType')?.value === 'Reference Data'"
+      >
         <ui-select-menu
           id="reference"
-          formControlName="reference"          
-          class="w-full" (ngModelChange)="getSelectedRefernceData($event, true)"
+          formControlName="reference"
+          class="w-full"
+          (ngModelChange)="getSelectedRefernceData($event, true)"
         >
           <ui-select-option
             *ngFor="let reference of refernceData"
-            [value]="reference?.id"              
+            [value]="reference?.id"
             >{{ reference?.name | titlecase }}</ui-select-option
           >
         </ui-select-menu>
       </div>
       <!-- Resource selection -->
-      <div uiFormFieldDirective *ngIf="segmentForm.get('dataType')?.value === 'Resource'">
+      <div
+        uiFormFieldDirective
+        *ngIf="segmentForm.get('dataType')?.value === 'Resource'"
+      >
         <shared-resource-select
           formControlName="resource"
           [selectedElements]="[resource]"
@@ -261,7 +275,7 @@
     (close)="closenonEmailFieldsAlert()"
   >
     <div
-      [innerHTML]="'components.email.alert.selectedNonEmailFields'| translate"
+      [innerHTML]="'components.email.alert.selectedNonEmailFields' | translate"
     ></div>
   </ui-alert>
 </ng-template>
@@ -318,7 +332,11 @@
       [selectedIndex]="currentTabIndex"
       (selectedIndexChange)="onTabSelect($event, true)"
       #datasetPreview
-      *ngIf="(segmentForm.get('dataType')?.value === 'Resource' && resource?.fields?.length) || (refernceData.length > 0 && availableFields.length > 0)"
+      *ngIf="
+        (segmentForm.get('dataType')?.value === 'Resource' &&
+          resource?.fields?.length) ||
+        (refernceData.length > 0 && availableFields.length > 0)
+      "
     >
       <div class="mt-4 flex flex-row">
         <!-- Fields Tab -->
@@ -367,12 +385,23 @@
           </ng-template>
         </ui-tab>
         <!-- Filter Tab -->
-        <ui-tab [title]="'Filter'" [disabled]="this.distributionList.get('resource').value === null || this.distributionList.get('resource').value === ''">
+        <ui-tab
+          [title]="'Filter'"
+          [disabled]="
+            this.distributionList.get('resource').value === null ||
+            this.distributionList.get('resource').value === ''
+          "
+        >
           <ng-container ngProjectAs="label">
             {{ 'components.queryBuilder.filter.title' | translate }}
           </ng-container>
           <ng-template uiTabContent>
-            <ng-container *ngIf="resource?.fields?.length || (refernceData.length > 0 && availableFields.length > 0)">
+            <ng-container
+              *ngIf="
+                resource?.fields?.length ||
+                (refernceData.length > 0 && availableFields.length > 0)
+              "
+            >
               <ng-container
                 class="mt-2"
                 *ngTemplateOutlet="tooManyRecordsAlertTmpl"
@@ -384,7 +413,11 @@
                     [form]="$any(dlQuery.get('filter'))"
                     [query]="dlQuery.getRawValue()"
                     [isDisable]="isDisable"
-                    [referenceFields]="segmentForm.get('dataType')?.value === 'Reference Data' ? availableFields : []"
+                    [referenceFields]="
+                      segmentForm.get('dataType')?.value === 'Reference Data'
+                        ? availableFields
+                        : []
+                    "
                   >
                   </shared-tab-filter>
                 </div>
@@ -419,7 +452,12 @@
               class="mt-2"
               *ngTemplateOutlet="showDLPreview"
             ></ng-container>
-            <div id="tblPreview" class="previewScroll" #tblPreview [innerHTML]="previewHTML"></div>
+            <div
+              id="tblPreview"
+              class="previewScroll"
+              #tblPreview
+              [innerHTML]="previewHTML"
+            ></div>
           </ng-template>
         </ui-tab>
       </div>
