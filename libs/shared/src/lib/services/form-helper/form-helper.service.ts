@@ -11,7 +11,11 @@ import { ConfirmService } from '../confirm/confirm.service';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { ADD_RECORD } from '../../components/form/graphql/mutations';
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
-import { IconComponent, SnackbarService } from '@oort-front/ui';
+import {
+  IconComponent,
+  SnackbarService,
+  TooltipDirective,
+} from '@oort-front/ui';
 import localForage from 'localforage';
 import { snakeCase, cloneDeep, set, get, isNil, flattenDeep } from 'lodash';
 import { AuthService } from '../auth/auth.service';
@@ -37,6 +41,7 @@ import { Router } from '@angular/router';
 import { DashboardService } from '../dashboard/dashboard.service';
 import { GET_RECORD_BY_UNIQUE_FIELD_VALUE } from './graphql/queries';
 import { Metadata } from '../../models/metadata.model';
+import { Overlay, OverlayPositionBuilder } from '@angular/cdk/overlay';
 
 export type CheckUniqueProprietyReturnT = {
   verified: boolean;
@@ -107,6 +112,8 @@ export class FormHelpersService {
    * @param router Angular router service.
    * @param dialog Dialogs service
    * @param dashboardService Shared dashboard service
+   * @param overlay Overlay
+   * @param overlayPositionBuilder cdk overlay position builder
    */
   constructor(
     @Inject('environment') private environment: any,
@@ -121,7 +128,9 @@ export class FormHelpersService {
     private domService: DomService,
     private router: Router,
     public dialog: Dialog,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private overlay: Overlay,
+    private overlayPositionBuilder: OverlayPositionBuilder
   ) {}
 
   /**
@@ -470,6 +479,35 @@ export class FormHelpersService {
         component.instance.icon = 'help';
         component.instance.variant = 'primary';
         component.location.nativeElement.classList.add('ml-2', 'inline-flex'); // Add margin to the icon
+
+        // Create and apply the UiTooltipDirective
+        const tooltipDirective = new TooltipDirective(
+          'default',
+          component.location,
+          this.overlay,
+          this.overlayPositionBuilder
+        );
+        tooltipDirective.uiTooltip = options.question.tooltip;
+
+        tooltipDirective.onMouseEnter =
+          tooltipDirective.onMouseEnter.bind(tooltipDirective);
+        tooltipDirective.onMouseLeave =
+          tooltipDirective.onMouseLeave.bind(tooltipDirective);
+        tooltipDirective.onMouseDown =
+          tooltipDirective.onMouseDown.bind(tooltipDirective);
+
+        component.location.nativeElement.addEventListener(
+          'mouseenter',
+          tooltipDirective.onMouseEnter
+        );
+        component.location.nativeElement.addEventListener(
+          'mouseleave',
+          tooltipDirective.onMouseLeave
+        );
+        component.location.nativeElement.addEventListener(
+          'mousedown',
+          tooltipDirective.onMouseDown
+        );
 
         // Sets the tooltip text
         component.instance.tooltip = options.question.tooltip;
