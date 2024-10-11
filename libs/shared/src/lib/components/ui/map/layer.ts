@@ -891,6 +891,7 @@ export class Layer implements LayerModel {
 
   /**
    * Set up panes to keep current map layers stack in order
+   *
    * @param map Current map instance
    */
   private updateMapPanesStatus(map: L.Map) {
