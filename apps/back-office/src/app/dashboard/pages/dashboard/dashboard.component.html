@@ -1,7 +1,22 @@
-<!-- PDF Exporter -->
-<div #pdfExport>
+<shared-dashboard-filter
+  *ngIf="showFilter && !isFullScreen"
+  [editable]="true"
+  [isFullScreen]="isFullScreen"
+  [variant]="dashboard?.filter?.variant ?? 'default'"
+  [closable]="dashboard?.filter?.closable ?? false"
+  [dashboard]="dashboard"
+  [structure]="dashboard?.filter?.structure"
+  class="export-hide"
+></shared-dashboard-filter>
+<!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
+<div
+  class="grow flex flex-col"
+  [ngClass]="{
+    'py-8 px-6 bg-white overflow-y-auto overflow-x-hidden': isFullScreen
+  }"
+>
   <shared-dashboard-filter
-    *ngIf="showFilter && !isFullScreen"
+    *ngIf="showFilter && isFullScreen"
     [editable]="true"
     [isFullScreen]="isFullScreen"
     [variant]="dashboard?.filter?.variant ?? 'default'"
@@ -10,200 +25,176 @@
     [structure]="dashboard?.filter?.structure"
     class="export-hide"
   ></shared-dashboard-filter>
-  <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
-  <div
-    class="grow flex flex-col"
-    [ngClass]="{
-      'py-8 px-6 bg-white overflow-y-auto overflow-x-hidden': isFullScreen
-    }"
+  <ng-container
+    sharedFullScreen
+    [(isFullScreenMode)]="isFullScreen"
+    *sharedSkeleton="
+      loading;
+      repeat: 1;
+      height: '32px';
+      width: '120px';
+      shape: 'rectangle'
+    "
   >
-    <shared-dashboard-filter
-      *ngIf="showFilter && isFullScreen"
-      [editable]="true"
-      [isFullScreen]="isFullScreen"
-      [variant]="dashboard?.filter?.variant ?? 'default'"
-      [closable]="dashboard?.filter?.closable ?? false"
-      [dashboard]="dashboard"
-      [structure]="dashboard?.filter?.structure"
-      class="export-hide"
-    ></shared-dashboard-filter>
-    <ng-container
-      sharedFullScreen
-      [(isFullScreenMode)]="isFullScreen"
-      *sharedSkeleton="
-        loading;
-        repeat: 1;
-        height: '32px';
-        width: '120px';
-        shape: 'rectangle'
-      "
-    >
-      <!-- Dashboard options -->
-      <ng-container *ngIf="dashboard">
-        <div
-          id="dashboard-header"
-          class="flex flex-wrap items-center justify-between mb-6 gap-4"
-        >
-          <!-- Dashboard title -->
-          <div class="flex items-center gap-1">
-            <ng-container *ngIf="showName || editionActive">
-              <!-- Dashboard name, always display during edition -->
-              <shared-editable-text
-                [text]="dashboard.name"
-                [canEdit]="canUpdate"
-                (onChange)="saveName($event)"
-                (formActiveEvent)="formActive = $event"
-              >
-                <h1 class="!m-0 overflow-hidden text-ellipsis">
-                  {{ dashboard.name }}
-                </h1>
-              </shared-editable-text>
-            </ng-container>
-            <!-- Settings -->
-            <ui-button
-              *ngIf="!formActive"
-              variant="grey"
-              (click)="onOpenSettings()"
-              class="export-hide"
-              [isIcon]="true"
-              icon="settings"
-              [uiTooltip]="'common.settings' | translate"
-            ></ui-button>
-            <!-- Switch between edition & preview -->
-            <ui-button
-              *ngIf="canUpdate && !templateMode"
-              [icon]="editionActive ? 'edit' : 'preview'"
-              (click)="editionActive = !editionActive"
-              >{{
-                (editionActive
-                  ? 'components.application.dashboard.enterPreviewMode'
-                  : 'components.application.dashboard.enterEditMode'
-                ) | translate
-              }}</ui-button
+    <!-- Dashboard options -->
+    <ng-container *ngIf="dashboard">
+      <div
+        id="dashboard-header"
+        class="flex flex-wrap items-center justify-between mb-6 gap-4"
+      >
+        <!-- Dashboard title -->
+        <div class="flex items-center gap-1">
+          <ng-container *ngIf="showName || editionActive">
+            <!-- Dashboard name, always display during edition -->
+            <shared-editable-text
+              [text]="dashboard.name"
+              [canEdit]="canUpdate"
+              (onChange)="saveName($event)"
+              (formActiveEvent)="formActive = $event"
             >
-            <ui-button
-              *ngIf="canUpdate && templateMode"
-              (click)="onCreateTemplate()"
-              >{{
-                'models.dashboard.context.addTemplate' | translate
-              }}</ui-button
-            >
-          </div>
-          <!-- Other dashboard settings -->
-          <div
-            class="flex items-center gap-1 export-hide"
+              <h1 class="!m-0 overflow-hidden text-ellipsis">
+                {{ dashboard.name }}
+              </h1>
+            </shared-editable-text>
+          </ng-container>
+          <!-- Settings -->
+          <ui-button
             *ngIf="!formActive"
-            cdkDropList
-            (cdkDropListDropped)="onButtonActionDrop($event)"
+            variant="grey"
+            (click)="onOpenSettings()"
+            class="export-hide"
+            [isIcon]="true"
+            icon="settings"
+            [uiTooltip]="'common.settings' | translate"
+          ></ui-button>
+          <!-- Switch between edition & preview -->
+          <ui-button
+            *ngIf="canUpdate && !templateMode"
+            [icon]="editionActive ? 'edit' : 'preview'"
+            (click)="editionActive = !editionActive"
+            >{{
+              (editionActive
+                ? 'components.application.dashboard.enterPreviewMode'
+                : 'components.application.dashboard.enterEditMode'
+              ) | translate
+            }}</ui-button
           >
-            <!-- Button actions -->
-            <shared-button-action
-              [buttonActions]="buttonActions"
-              [dashboard]="dashboard"
-              [canUpdate]="canUpdate"
-              class="export-hide"
-            ></shared-button-action>
-
-            <!-- Fullscreen -->
-            <ui-button
-              variant="grey"
-              class="export-hide"
-              [isIcon]="true"
-              icon="{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}"
-              (click)="isFullScreen = !isFullScreen"
-              [uiTooltip]="
-                (isFullScreen
-                  ? 'common.exitFullscreen'
-                  : 'common.openFullScreen'
-                ) | translate
-              "
-            >
-            </ui-button>
-            <!-- Context -->
-            <ui-button
-              variant="grey"
-              class="export-hide"
-              [isIcon]="true"
-              [icon]="dashboard.page?.context ? 'cached' : 'add'"
-              (click)="selectContextDatasource()"
-              [uiTooltip]="
-                (dashboard.page?.context
-                  ? 'models.dashboard.context.datasource.update'
-                  : 'models.dashboard.context.datasource.set'
-                ) | translate
-              "
-            >
-            </ui-button>
-            <!-- PDF + PNG Export -->
-            <ui-button
-              variant="grey"
-              class="export-hide"
-              [isIcon]="true"
-              icon="get_app"
-              [uiMenuTriggerFor]="exportMenu"
-              [uiTooltip]="'common.export' | translate"
-            ></ui-button>
-            <ui-menu #exportMenu class="export-hide">
-              <!-- Export menu -->
-              <button uiMenuItem (click)="pdfExporter()">
-                <ui-icon icon="file_download" variant="grey"></ui-icon>
-                {{ 'common.exportType.pdf' | translate }}
-              </button>
-              <button uiMenuItem (click)="pngExporter()">
-                <ui-icon icon="add_a_photo" variant="grey"></ui-icon>
-                {{ 'common.exportType.png' | translate }}
-              </button>
-            </ui-menu>
-            <!-- More options -->
-            <ui-button
-              variant="grey"
-              class="export-hide"
-              [isIcon]="true"
-              icon="more_vert"
-              [uiMenuTriggerFor]="menu"
-              [uiTooltip]="'common.options' | translate"
-            >
-            </ui-button>
-            <ui-menu #menu width="w-72">
-              <button uiMenuItem (click)="onEditButtonActions()">
-                <ui-icon icon="touch_app" variant="grey"></ui-icon>
-                {{ 'models.dashboard.buttonActions.edit.few' | translate }}
-              </button>
-              <button uiMenuItem (click)="onShare()">
-                <ui-icon icon="share" variant="grey"></ui-icon>
-                {{ 'models.dashboard.share' | translate }}
-              </button>
-              <button uiMenuItem (click)="onManageTemplates()">
-                <ui-icon icon="dashboard" variant="grey"></ui-icon>
-                {{
-                  'models.dashboard.dashboardTemplates.manage.few' | translate
-                }}
-              </button>
-            </ui-menu>
-          </div>
+          <ui-button
+            *ngIf="canUpdate && templateMode"
+            (click)="onCreateTemplate()"
+            >{{ 'models.dashboard.context.addTemplate' | translate }}</ui-button
+          >
         </div>
-        <!-- Context selector. Only appears for dashboard with templates. -->
-        <app-context-selector
-          *ngIf="dashboard.page && dashboard.page.context"
-          [context]="dashboard.page.context"
-          [contextId]="contextId"
-          [contextRecord]="contextRecord"
-          [defaultTemplate]="dashboard.defaultTemplate"
-        ></app-context-selector>
-      </ng-container>
+        <!-- Other dashboard settings -->
+        <div
+          class="flex items-center gap-1 export-hide"
+          *ngIf="!formActive"
+          cdkDropList
+          (cdkDropListDropped)="onButtonActionDrop($event)"
+        >
+          <!-- Button actions -->
+          <shared-button-action
+            [buttonActions]="buttonActions"
+            [dashboard]="dashboard"
+            [canUpdate]="canUpdate"
+            class="export-hide"
+          ></shared-button-action>
+
+          <!-- Fullscreen -->
+          <ui-button
+            variant="grey"
+            class="export-hide"
+            [isIcon]="true"
+            icon="{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}"
+            (click)="isFullScreen = !isFullScreen"
+            [uiTooltip]="
+              (isFullScreen ? 'common.exitFullscreen' : 'common.openFullScreen')
+                | translate
+            "
+          >
+          </ui-button>
+          <!-- Context -->
+          <ui-button
+            variant="grey"
+            class="export-hide"
+            [isIcon]="true"
+            [icon]="dashboard.page?.context ? 'cached' : 'add'"
+            (click)="selectContextDatasource()"
+            [uiTooltip]="
+              (dashboard.page?.context
+                ? 'models.dashboard.context.datasource.update'
+                : 'models.dashboard.context.datasource.set'
+              ) | translate
+            "
+          >
+          </ui-button>
+          <!-- PDF + PNG Export -->
+          <ui-button
+            variant="grey"
+            class="export-hide"
+            [isIcon]="true"
+            icon="get_app"
+            [uiMenuTriggerFor]="exportMenu"
+            [uiTooltip]="'common.export' | translate"
+          ></ui-button>
+          <ui-menu #exportMenu class="export-hide">
+            <!-- Export menu -->
+            <button uiMenuItem (click)="pdfExporter()">
+              <ui-icon icon="file_download" variant="grey"></ui-icon>
+              {{ 'common.exportType.pdf' | translate }}
+            </button>
+            <button uiMenuItem (click)="pngExporter()">
+              <ui-icon icon="add_a_photo" variant="grey"></ui-icon>
+              {{ 'common.exportType.png' | translate }}
+            </button>
+          </ui-menu>
+          <!-- More options -->
+          <ui-button
+            variant="grey"
+            class="export-hide"
+            [isIcon]="true"
+            icon="more_vert"
+            [uiMenuTriggerFor]="menu"
+            [uiTooltip]="'common.options' | translate"
+          >
+          </ui-button>
+          <ui-menu #menu width="w-72">
+            <button uiMenuItem (click)="onEditButtonActions()">
+              <ui-icon icon="touch_app" variant="grey"></ui-icon>
+              {{ 'models.dashboard.buttonActions.edit.few' | translate }}
+            </button>
+            <button uiMenuItem (click)="onShare()">
+              <ui-icon icon="share" variant="grey"></ui-icon>
+              {{ 'models.dashboard.share' | translate }}
+            </button>
+            <button uiMenuItem (click)="onManageTemplates()">
+              <ui-icon icon="dashboard" variant="grey"></ui-icon>
+              {{ 'models.dashboard.dashboardTemplates.manage.few' | translate }}
+            </button>
+          </ui-menu>
+        </div>
+      </div>
+      <!-- Context selector. Only appears for dashboard with templates. -->
+      <app-context-selector
+        *ngIf="dashboard.page && dashboard.page.context"
+        [context]="dashboard.page.context"
+        [contextId]="contextId"
+        [contextRecord]="contextRecord"
+        [defaultTemplate]="dashboard.defaultTemplate"
+      ></app-context-selector>
     </ng-container>
-    <!-- Widgets -->
-    <shared-widget-grid
-      class="flex-1"
-      [loading]="loading"
-      [widgets]="widgets"
-      [options]="gridOptions"
-      [canUpdate]="(canUpdate && editionActive) || false"
-      (edit)="onEditTile($event)"
-      (delete)="onDeleteTile($event)"
-      (style)="onStyleTile($event)"
-      (changeStep)="changeStep.emit($event)"
-      (add)="onAdd($event)"
-    ></shared-widget-grid>
-  </div>
+  </ng-container>
+  <!-- Widgets -->
+  <shared-widget-grid
+    class="flex-1"
+    [loading]="loading"
+    [widgets]="widgets"
+    [options]="gridOptions"
+    [canUpdate]="(canUpdate && editionActive) || false"
+    (edit)="onEditTile($event)"
+    (delete)="onDeleteTile($event)"
+    (style)="onStyleTile($event)"
+    (changeStep)="changeStep.emit($event)"
+    (add)="onAdd($event)"
+  ></shared-widget-grid>
 </div>

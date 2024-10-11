@@ -1,4 +1,7 @@
-import { Apollo } from 'apollo-angular';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { Dialog } from '@angular/cdk/dialog';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DOCUMENT } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -9,61 +12,51 @@ import {
   OnInit,
   Output,
   Renderer2,
-  ViewChild,
 } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import {
-  Dashboard,
-  ApplicationService,
-  WorkflowService,
-  DashboardService,
-  Application,
-  ConfirmService,
-  Record,
-  ButtonActionT,
-  DashboardQueryResponse,
-  EditDashboardMutationResponse,
-  DashboardComponent as SharedDashboardComponent,
-  DashboardAutomationService,
-  DashboardQueryType,
   AddDashboardTemplateMutationResponse,
-  DeleteDashboardTemplatesMutationResponse,
+  Application,
+  ApplicationService,
+  ButtonActionT,
+  ConfirmService,
+  ContextService,
+  CustomWidgetStyleComponent,
+  Dashboard,
+  DashboardAutomationService,
+  DashboardQueryResponse,
+  DashboardQueryType,
+  DashboardService,
   DashboardTemplate,
-  SnackbarSpinnerComponent,
+  DeleteDashboardTemplatesMutationResponse,
+  EditDashboardMutationResponse,
+  ExporterService,
+  MapStatusService,
+  Record,
+  DashboardComponent as SharedDashboardComponent,
+  WorkflowService,
 } from '@oort-front/shared';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
+import { GridsterConfig } from 'angular-gridster2';
+import { Apollo } from 'apollo-angular';
+import localForage from 'localforage';
+import { cloneDeep, has, isEqual, omit } from 'lodash';
+import { Observable, firstValueFrom } from 'rxjs';
+import {
+  debounceTime,
+  filter,
+  map,
+  startWith,
+  takeUntil,
+} from 'rxjs/operators';
 import {
   ADD_DASHBOARD_TEMPLATE,
   DELETE_DASHBOARD_TEMPLATES,
   EDIT_DASHBOARD,
 } from './graphql/mutations';
 import { GET_DASHBOARD_BY_ID } from './graphql/queries';
-import { TranslateService } from '@ngx-translate/core';
-import {
-  map,
-  takeUntil,
-  filter,
-  startWith,
-  debounceTime,
-} from 'rxjs/operators';
-import { Observable, Subscription, firstValueFrom, first } from 'rxjs';
-import { FormControl } from '@angular/forms';
-import { cloneDeep, has, isEqual, omit } from 'lodash';
-import { Dialog } from '@angular/cdk/dialog';
-import { SnackbarService, UILayoutService } from '@oort-front/ui';
-import localForage from 'localforage';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import {
-  ContextService,
-  MapStatusService,
-  CustomWidgetStyleComponent,
-  DashboardExportActionComponent,
-} from '@oort-front/shared';
-import { DOCUMENT } from '@angular/common';
-import { Clipboard } from '@angular/cdk/clipboard';
-import { GridsterConfig } from 'angular-gridster2';
-import { PDFExportComponent } from '@progress/kendo-angular-pdf-export';
-import { drawDOM, exportPDF, exportImage } from '@progress/kendo-drawing';
-import { saveAs } from '@progress/kendo-file-saver';
 
 /**
  * Back-office Dashboard page.
@@ -87,10 +80,6 @@ export class DashboardComponent
 {
   /** Change step event ( in workflow ) */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
-  /** PDF Export Component View Child */
-  @ViewChild(PDFExportComponent) pdfExport!: PDFExportComponent;
-  /** PDF Export Div View Child */
-  @ViewChild('pdfExport') exporter!: ElementRef;
   /** Is dashboard in fullscreen mode */
   public isFullScreen = false;
   /** Dashboard id */
@@ -128,16 +117,6 @@ export class DashboardComponent
   public templateMode = false;
   /** Additional grid configuration */
   public gridOptions: GridsterConfig = {};
-  /** Map Loaded subscription */
-  private mapReadyForExportSubscription?: Subscription;
-  /** Map Exists State */
-  private mapExists = false;
-  /** Map Status Subscription */
-  private mapStatusSubscription?: Subscription;
-  /** Spinning snackbar */
-  private snackBarSpinner!: any;
-  /** Snack bar reference */
-  private snackBarRef!: any;
   /** Should show dashboard name */
   public showName? = true;
 
@@ -192,6 +171,7 @@ export class DashboardComponent
    * @param document Document
    * @param clipboard Angular clipboard service
    * @param dashboardAutomationService Dashboard automation service
+   * @param exporterService Exporter service for files
    */
   constructor(
     private applicationService: ApplicationService,
@@ -211,14 +191,14 @@ export class DashboardComponent
     private layoutService: UILayoutService,
     @Inject(DOCUMENT) private document: Document,
     private clipboard: Clipboard,
-    private dashboardAutomationService: DashboardAutomationService
+    private dashboardAutomationService: DashboardAutomationService,
+    private exporterService: ExporterService
   ) {
     super();
     this.dashboardAutomationService.dashboard = this;
   }
 
   ngOnInit(): void {
-    this.mapExists = false;
     this.contextId.valueChanges
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -262,26 +242,6 @@ export class DashboardComponent
           );
         }
       });
-  }
-
-  /**
-   * Starts the spinning snackbar
-   *
-   * @param spinMessage Spin message for loading snackbar
-   */
-  startSpinSnackbar(spinMessage: string) {
-    // Create a snackbar to indicate email is processing
-    this.snackBarRef = this.snackBar.openComponentSnackBar(
-      SnackbarSpinnerComponent,
-      {
-        duration: 0,
-        data: {
-          message: spinMessage,
-          loading: true,
-        },
-      }
-    );
-    this.snackBarSpinner = this.snackBarRef.instance.nestedComponent;
   }
 
   /**
@@ -333,22 +293,11 @@ export class DashboardComponent
 
     // Ensures cleanup of the count of map widgets present on the dashboard to 0.
     this.mapStatusService.resetMapCount();
-    this.mapExists = false; // MapExists state reset
 
     const rootElement = this.elementRef.nativeElement;
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.formActive = false;
     this.loading = true;
-
-    // Returns true if a map exists in the dashboard
-    this.mapStatusSubscription = this.mapStatusService.mapStatus$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((status: any) => {
-        if (status) {
-          console.log(status);
-          this.mapExists = status;
-        }
-      });
 
     return firstValueFrom(
       this.apollo.query<
@@ -464,14 +413,6 @@ export class DashboardComponent
     }
     localForage.removeItem(this.applicationId + 'position'); //remove temporary contextual filter data
     localForage.removeItem(this.applicationId + 'filterStructure');
-
-    // Unsubscribe from map export subscription
-    if (this.mapReadyForExportSubscription) {
-      this.mapReadyForExportSubscription.unsubscribe();
-    }
-    // Unsubscribe from map exist status subscription
-    this.mapStatusSubscription?.unsubscribe();
-    this.mapExists = false;
   }
 
   /**
@@ -879,238 +820,6 @@ export class DashboardComponent
   }
 
   /**
-   * This method generates a PDF with the user input provided parameters.
-   *
-   * @param includeHeaderFooter Whether to include headers and footers in the PDF.
-   * @param pdfSize The size of the PDF to be generated.
-   * @returns {Promise<string>} A promise that resolves to a string representing the PDF data.
-   */
-  public async pdfDrawer(
-    includeHeaderFooter: boolean,
-    pdfSize: string
-  ): Promise<string> {
-    if (includeHeaderFooter) {
-      this.addHeaderAndFooter();
-    }
-
-    const drawing = await drawDOM(this.exporter.nativeElement, {
-      paperSize: pdfSize,
-    });
-    const pdfData = await exportPDF(drawing);
-    if (includeHeaderFooter) {
-      this.removeHeaderAndFooter();
-    }
-    this.mapStatusService.updateExportingStatus(false);
-    return pdfData;
-  }
-
-  /**
-   * Saves the dashboard as a PDF file.
-   */
-  public async pdfExporter(): Promise<void> {
-    const data = {
-      exportType: 'pdf',
-    };
-
-    if (this.mapReadyForExportSubscription) {
-      this.mapReadyForExportSubscription.unsubscribe();
-    }
-
-    // Open the DashboardExportActionComponent dialog
-    const dialogRef = this.dialog.open(DashboardExportActionComponent, {
-      data,
-    });
-
-    // Handle the dialog result
-    dialogRef.closed.subscribe(async (result) => {
-      if (result !== true && result !== undefined) {
-        const resultValue = result as {
-          includeHeaderFooter: boolean;
-          paperSize: string;
-        };
-        // Sends export = true to map component when kendo export starts
-        this.mapStatusService.updateExportingStatus(true);
-        const pdfMessage = this.translate.instant(
-          'common.notifications.export.loading',
-          {
-            type: 'PDF',
-          }
-        );
-        this.startSpinSnackbar(pdfMessage);
-
-        if (this.mapExists) {
-          this.mapStatusService.mapReadyForExport$
-            .pipe(
-              filter((ready) => ready === true), // Waits until map is ready
-              first()
-            )
-            .subscribe(async () => {
-              // Sets 0.5 second timeout to ensure the map layer is fully loaded
-              setTimeout(async () => {
-                const pdfData = await this.pdfDrawer(
-                  resultValue.includeHeaderFooter,
-                  resultValue.paperSize
-                );
-                saveAs(pdfData, `${this.dashboard?.name}.pdf`);
-                await this.mapStatusService.clearLoadedMaps();
-              }, 500);
-            });
-        } else {
-          // If no map exists, proceed as normal
-          const pdfData = await this.pdfDrawer(
-            resultValue.includeHeaderFooter,
-            resultValue.paperSize
-          );
-          saveAs(pdfData, `${this.dashboard?.name}.pdf`);
-          await this.mapStatusService.clearLoadedMaps();
-        }
-
-        setTimeout(async () => {
-          this.snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.export.pdf'
-          );
-          this.snackBarSpinner.instance.loading = false;
-          this.snackBarRef.instance.triggerSnackBar(700);
-        }, 500);
-      }
-    });
-  }
-
-  /**
-   * Adds header and footer to the top and bottom of a
-   * PDF and Image export.
-   */
-  private addHeaderAndFooter(): void {
-    // Create header and footer elements
-    const header = this.document.createElement('div');
-    const footer = this.document.createElement('div');
-
-    // Add date and time to header
-    const dateTime = new Date();
-    const dateTimeText =
-      dateTime.toLocaleDateString() + ' ' + dateTime.toLocaleTimeString();
-    const pageTitle = this.dashboard?.name;
-    header.innerHTML = `<span class="float-left">${dateTimeText}</span><span class="block text-center">${pageTitle}</span>`;
-
-    // Add URL to footer
-    const url = window.location.href;
-    footer.innerHTML = `<span class="text-center">${url}</span>`;
-
-    // Append header and footer to the dashboard
-    this.exporter.nativeElement.prepend(header);
-    this.exporter.nativeElement.append(footer);
-  }
-
-  /**
-   * Removes header and footer from pdf and image export.
-   */
-  private removeHeaderAndFooter(): void {
-    const header = this.exporter.nativeElement.firstChild;
-    const footer = this.exporter.nativeElement.lastChild;
-    this.exporter.nativeElement.removeChild(header);
-    this.exporter.nativeElement.removeChild(footer);
-  }
-
-  /**
-   * This function draws a PNG image from the current state of the dashboard.
-   *
-   * @param includeHeaderFooter Whether to include a header and footer in the image.
-   * @returns {Promise<string>} A promise that resolves to a string representing the PNG data.
-   */
-  public async pngDrawer(includeHeaderFooter: boolean): Promise<string> {
-    if (includeHeaderFooter) {
-      this.addHeaderAndFooter();
-    }
-    const background = this.exporter.nativeElement.style.color;
-    this.exporter.nativeElement.style.background = '#fff';
-    const drawing = await drawDOM(this.exporter.nativeElement, {
-      margin: { top: 10, left: 10, right: 10, bottom: 10 },
-    });
-    this.exporter.nativeElement.style.background = background;
-    const pngData = await exportImage(drawing);
-    if (includeHeaderFooter) {
-      this.removeHeaderAndFooter();
-    }
-    this.mapStatusService.updateExportingStatus(false);
-    return pngData;
-  }
-
-  /**
-   * Exports the dashboard to PNG
-   *
-   */
-  public async pngExporter(): Promise<void> {
-    let format: 'png' | 'jpeg';
-    let includeHeaderFooter: boolean;
-    const data = {
-      exportType: 'image',
-    };
-
-    this.mapReadyForExportSubscription?.unsubscribe();
-
-    // Open the DashboardExportActionComponent dialog
-    const dialogRef = this.dialog.open(DashboardExportActionComponent, {
-      data,
-    });
-
-    // Sets the user input values from dialog box
-    dialogRef.closed.subscribe(async (result) => {
-      if (result !== true && result !== undefined) {
-        const resultValue = result as {
-          format: 'png' | 'jpeg';
-          includeHeaderFooter: boolean;
-        };
-
-        this.startSpinSnackbar(
-          this.translate.instant('common.notifications.export.loading', {
-            type: resultValue.format.toUpperCase(),
-          })
-        );
-
-        // Sets exporting status to true
-        this.mapStatusService.updateExportingStatus(true);
-
-        if (this.mapExists) {
-          this.mapStatusService.mapReadyForExport$
-            .pipe(
-              filter((ready) => ready === true), // Waits until map is ready
-              first()
-            )
-            .subscribe(async () => {
-              // Sets 0.5 second timeout to ensure the map layer is fully loaded
-              setTimeout(async () => {
-                format = resultValue.format;
-                includeHeaderFooter = resultValue.includeHeaderFooter;
-
-                // Draws the Dashboard in its current state
-                const pngData = await this.pngDrawer(includeHeaderFooter);
-                saveAs(pngData, `${this.dashboard?.name}.${format}`);
-                await this.mapStatusService.clearLoadedMaps();
-              }, 500);
-            });
-        } else {
-          format = resultValue.format;
-          includeHeaderFooter = resultValue.includeHeaderFooter;
-          const pngData = await this.pngDrawer(includeHeaderFooter);
-          saveAs(pngData, `${this.dashboard?.name}.${format}`);
-          await this.mapStatusService.clearLoadedMaps();
-        }
-
-        setTimeout(async () => {
-          this.snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.export.image',
-            {
-              image: resultValue.format.toUpperCase(),
-            }
-          );
-          this.snackBarSpinner.instance.loading = false;
-          this.snackBarRef.instance.triggerSnackBar(700);
-        }, 1000);
-      }
-    });
-  }
-
-  /**
    * Open settings modal.
    */
   public async onOpenSettings(): Promise<void> {
@@ -1194,5 +903,25 @@ export class DashboardComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
       subscription?.unsubscribe();
     });
+  }
+
+  /**
+   * Export current dashboard as pdf
+   */
+  async pdfExporter() {
+    await this.exporterService.pdfExporter(
+      this.elementRef,
+      this.dashboard?.name as string
+    );
+  }
+
+  /**
+   * Export current dashboard as png
+   */
+  async pngExporter() {
+    await this.exporterService.pngExporter(
+      this.elementRef,
+      this.dashboard?.name as string
+    );
   }
 }

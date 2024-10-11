@@ -27,7 +27,6 @@ import {
   ToggleModule,
 } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
 import { ContextSelectorComponent } from './components/context-selector/context-selector.component';
 
 /**
@@ -38,7 +37,6 @@ import { ContextSelectorComponent } from './components/context-selector/context-
   imports: [
     CommonModule,
     DashboardRoutingModule,
-    PDFExportModule,
     WidgetGridModule,
     IconModule,
     DialogModule,

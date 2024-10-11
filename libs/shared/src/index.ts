@@ -12,6 +12,7 @@ export * from './lib/services/form-builder/form-builder.service';
 export * from './lib/services/form/form.service';
 export * from './lib/services/api-proxy/api-proxy.service';
 export * from './lib/services/dashboard/dashboard.service';
+export * from './lib/services/exporter/exporter.service';
 export * from './lib/services/grid-layout/grid-layout.service';
 export * from './lib/services/reference-data/reference-data.service';
 export * from './lib/services/kendo-translation/kendo-translation.service';
