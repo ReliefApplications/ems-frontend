@@ -234,7 +234,16 @@ export class HtmlParserService {
     date: {
       signature: 'date( value ; format )',
       call: (value, format) => {
-        return this.datePipe.transform(value, format) as string;
+        // Extract the exact date value from the span label
+        // This regex works as  => <span>6/6/2012</span>, returns
+        // 0: <span>6/6/2012</span>
+        // 1: 6/6/2012
+        const dateValue = /<span?.*>(.*)<\/span>/.exec(value)?.[1] as string;
+        const formattedDate = this.datePipe.transform(
+          dateValue,
+          format
+        ) as string;
+        return value.replace(dateValue, formattedDate);
       },
     },
   };
@@ -259,7 +268,15 @@ export class HtmlParserService {
         // get the arguments and clean the numbers to be parsed correctly
         const args = result[2]
           .split(';')
-          .map((arg) => arg.replace(/[\s,]/gm, ''));
+          .map((arg) => {
+            /** Make sure that the new date case does not break any previous clean up */
+            return result?.[1] === 'date'
+              ? arg.trim()
+              : // Replace below replaces the space space between span and style property from arg as elements,
+                // breaking any style application from given element
+                arg.replace(/[\s,]/gm, '');
+          })
+          .filter((arg) => !!arg);
         // apply the function
         let resultText;
         try {
