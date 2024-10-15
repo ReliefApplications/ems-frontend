@@ -1,20 +1,14 @@
+import { LocationStrategy } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { DownloadService } from '../download/download.service';
 import get from 'lodash/get';
-import {
-  getAggregationKeys,
-  getCalcKeys,
-  getCardStyle,
-  getDataKeys,
-  getPageKeys,
-  parseHtml,
-} from '../../utils/parser/utils';
-import { ApplicationService } from '../application/application.service';
+import { RawEditorSettings } from 'tinymce';
 import { Application } from '../../models/application.model';
 import { ContentType, Page } from '../../models/page.model';
-import { RawEditorSettings } from 'tinymce';
-import { LocationStrategy } from '@angular/common';
+import { ApplicationService } from '../application/application.service';
+import { DocumentationService } from '../documentation/documentation.service';
+import { DownloadService } from '../download/download.service';
+import { HtmlParserService } from '../html-parser/html-parser.service';
 
 /**
  * Data template service
@@ -35,13 +29,17 @@ export class DataTemplateService {
    * @param applicationService Shared application service
    * @param environment Current environment
    * @param locationStrategy Angular location strategy
+   * @param htmlParserService Html parser service to parse the values for html layout
+   * @param documentationService cs documentation api service
    */
   constructor(
     private sanitizer: DomSanitizer,
     private downloadService: DownloadService,
     private applicationService: ApplicationService,
     @Inject('environment') environment: any,
-    private locationStrategy: LocationStrategy
+    private locationStrategy: LocationStrategy,
+    private htmlParserService: HtmlParserService,
+    private documentationService: DocumentationService
   ) {
     this.environment = environment;
   }
@@ -55,9 +53,9 @@ export class DataTemplateService {
    */
   public getAutoCompleterKeys(fields: any[], aggregations?: any[]) {
     return [
-      ...getDataKeys(fields),
-      ...getAggregationKeys(aggregations || []),
-      ...getCalcKeys(),
+      ...this.htmlParserService.getDataKeys(fields),
+      ...this.htmlParserService.getAggregationKeys(aggregations || []),
+      ...this.htmlParserService.getCalcKeys(),
     ];
   }
 
@@ -70,7 +68,7 @@ export class DataTemplateService {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
     const pages = application?.pages || [];
-    return getPageKeys(pages);
+    return this.htmlParserService.getPageKeys(pages);
   }
 
   /**
@@ -96,7 +94,7 @@ export class DataTemplateService {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
     return this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(html, {
+      this.htmlParserService.parseHtml(html, {
         data: options.data,
         aggregation: options.aggregation,
         fields: options.fields,
@@ -115,7 +113,7 @@ export class DataTemplateService {
   public renderLink(href: string) {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
-    return parseHtml(href, {
+    return this.htmlParserService.parseHtml(href, {
       pages: this.getPages(application),
     });
   }
@@ -129,7 +127,7 @@ export class DataTemplateService {
    * @returns style to render
    */
   public renderStyle(allContent: boolean, data: any, styles: any[]) {
-    return getCardStyle(allContent, data, styles);
+    return this.htmlParserService.getCardStyle(allContent, data, styles);
   }
 
   /**
@@ -146,8 +144,12 @@ export class DataTemplateService {
       const index = event.target.getAttribute('index');
       const file = get(data, `${fieldName}[${index}]`, null);
       if (file) {
-        const path = `download/file/${file.content}`;
-        this.downloadService.getFile(path, file.type, file.name);
+        if (this.documentationService.isCSApiUrl(file.content)) {
+          this.documentationService.getFile(file.content, file.name);
+        } else {
+          const path = `download/file/${file.content}`;
+          this.downloadService.getFile(path, file.type, file.name);
+        }
       }
     }
   }

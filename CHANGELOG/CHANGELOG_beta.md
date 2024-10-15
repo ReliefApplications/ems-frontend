@@ -1,3 +1,22 @@
+# [2.17.0-beta.6](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.5...v2.17.0-beta.6) (2024-10-11)
+
+
+### Bug Fixes
+
+* pages marked as hidden should not display in front-office  ([#2647](https://github.com/ReliefApplications/ems-frontend/issues/2647)) ([3c3b942](https://github.com/ReliefApplications/ems-frontend/commit/3c3b9426bc4be8994b13411becdc39077b4534a8)), closes [AB#104349](https://github.com/AB/issues/104349)
+
+# [2.17.0-beta.5](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.4...v2.17.0-beta.5) (2024-10-09)
+
+
+### Bug Fixes
+
+* html question shows correct field title when expanded from grid ([#2642](https://github.com/ReliefApplications/ems-frontend/issues/2642)) ([9658f9f](https://github.com/ReliefApplications/ems-frontend/commit/9658f9f7ca8fa76b292a8989e2923e3e0de84553)), closes [AB#104241](https://github.com/AB/issues/104241)
+
+
+### Features
+
+* layers in maps are now ordered based on how they appear in the settings ([#2639](https://github.com/ReliefApplications/ems-frontend/issues/2639)) ([bcf4ddc](https://github.com/ReliefApplications/ems-frontend/commit/bcf4ddc8d6680c09f334802021c08c01be22347f)), closes [AB#104252](https://github.com/AB/issues/104252)
+
 # [2.17.0-beta.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.3...v2.17.0-beta.4) (2024-10-07)
 
 

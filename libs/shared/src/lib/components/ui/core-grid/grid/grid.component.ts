@@ -38,9 +38,9 @@ import {
 } from '@progress/kendo-data-query';
 import { get, has, intersection, isEqual, isNil } from 'lodash';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { DatePipe } from '../../../../pipes/date/date.pipe';
 import { DocumentationService } from '../../../../services/documentation/documentation.service';
 import { DownloadService } from '../../../../services/download/download.service';
+import { GridDataFormatterService } from '../../../../services/grid-data-formatter/grid-data-formatter.service';
 import { GridService } from '../../../../services/grid/grid.service';
 import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -54,7 +54,6 @@ import {
   PAGER_SETTINGS,
   SELECTABLE_SETTINGS,
 } from './grid.constants';
-import { formatGridRowData } from './utils/grid-data-formatter';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -76,7 +75,7 @@ const matches = (el: any, selector: any) =>
   selector: 'shared-grid',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss'],
-  providers: [PopupService, ResizeBatchService, DatePipe],
+  providers: [PopupService, ResizeBatchService],
 })
 export class GridComponent
   extends UnsubscribeComponent
@@ -189,6 +188,8 @@ export class GridComponent
   @ViewChildren(TooltipDirective) tooltips!: QueryList<TooltipDirective>;
   /** Array of multi-select types. */
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
+  /** Environment of the grid. */
+  public environment: 'frontoffice' | 'backoffice';
   /** Status message of the grid. */
   public statusMessage = '';
   /** Form group for the component */
@@ -292,7 +293,6 @@ export class GridComponent
    *
    * @param widgetComponent parent widget component ( optional )
    * @param environment Current environment
-   * @param datePipe Shared date pipe
    * @param dialog The Dialog service
    * @param gridService The grid service
    * @param renderer The renderer library
@@ -303,11 +303,11 @@ export class GridComponent
    * @param document document
    * @param popupService Kendo popup service
    * @param documentationService Shared cs documentation service
+   * @param gridDataFormatterService GridDataFormatterService
    */
   constructor(
     @Optional() public widgetComponent: WidgetComponent,
-    @Inject('environment') private environment: any,
-    @Inject(DatePipe) private datePipe: DatePipe,
+    @Inject('environment') environment: any,
     private dialog: Dialog,
     private gridService: GridService,
     private renderer: Renderer2,
@@ -317,10 +317,11 @@ export class GridComponent
     private el: ElementRef,
     @Inject(DOCUMENT) private document: Document,
     private popupService: PopupService,
-    private documentationService: DocumentationService
+    private documentationService: DocumentationService,
+    private gridDataFormatterService: GridDataFormatterService
   ) {
     super();
-    this.environment.module = environment.module || 'frontoffice';
+    this.environment = environment.module || 'frontoffice';
   }
 
   ngOnInit(): void {
@@ -370,7 +371,7 @@ export class GridComponent
       (changes['fields']?.currentValue?.length || this.fields.length)
     ) {
       this.data.data.forEach((gridRow) => {
-        formatGridRowData(gridRow, this.fields, this.datePipe);
+        this.gridDataFormatterService.formatGridRowData(gridRow, this.fields);
       });
     }
     // First load of records, or on page change
@@ -747,10 +748,7 @@ export class GridComponent
       downloadLink.download = file.name;
       downloadLink.click();
     } else {
-      if (
-        this.environment.csapiUrl &&
-        new RegExp(this.environment.csapiUrl).test(file.content)
-      ) {
+      if (this.documentationService.isCSApiUrl(file.content)) {
         this.documentationService.getFile(file.content, file.name);
       } else {
         const path = `download/file/${file.content}`;
@@ -874,7 +872,7 @@ export class GridComponent
    */
   public getStatusMessage(): string {
     if (this.status.error) {
-      if (this.status.message && this.environment.module === 'backoffice') {
+      if (this.status.message && this.environment === 'backoffice') {
         if (this.snackBarRef) {
           this.snackBarRef.instance.dismiss();
         }
@@ -883,18 +881,18 @@ export class GridComponent
         });
       }
       return this.translate.instant(
-        `components.widget.grid.errors.invalid.${this.environment.module}`
+        `components.widget.grid.errors.invalid.${this.environment}`
       );
     }
     if (this.loadingSettings) {
       return this.translate.instant('components.widget.grid.loading.settings');
     }
-    if (this.blank && this.environment.module === 'backoffice') {
+    if (this.blank && this.environment === 'backoffice') {
       return this.translate.instant(
         'components.widget.grid.errors.missingDataset'
       );
     }
-    if (this.blank && this.environment.module === 'frontoffice') {
+    if (this.blank && this.environment === 'frontoffice') {
       return this.translate.instant(
         'components.widget.grid.errors.invalid.frontoffice'
       );
@@ -1056,8 +1054,11 @@ export class GridComponent
             case 'datetime-local':
             case 'datetime':
             case 'date': {
-              contentSize = (this.datePipe.transform(data[type.field]) || '')
-                .length;
+              contentSize = (
+                this.gridDataFormatterService.datePipe.transform(
+                  data[type.field]
+                ) || ''
+              ).length;
               break;
             }
             case 'file': {

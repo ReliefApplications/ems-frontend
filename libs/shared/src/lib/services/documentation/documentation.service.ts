@@ -27,6 +27,19 @@ const SNACKBAR_DURATION = 3000;
 })
 export class DocumentationService {
   /**
+   * Check if given url is cs documenation api type
+   *
+   * @param url url to check   *
+   * @returns true if above condition is satisfied
+   */
+  public isCSApiUrl = (url: string) => {
+    return (
+      this.environment.csapiUrl &&
+      new RegExp(this.environment.csapiUrl).test(url)
+    );
+  };
+
+  /**
    * Shared documentation service. Handles export and upload documentation.
    *
    * @param snackBar Shared snackbar service

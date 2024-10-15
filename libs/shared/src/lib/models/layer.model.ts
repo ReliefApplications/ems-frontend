@@ -191,4 +191,5 @@ export interface LayersQueryResponse {
  */
 export interface HeatMapOptions extends HeatMapOptionsWithoutOpacity {
   opacity?: number | undefined;
+  pane?: any;
 }
