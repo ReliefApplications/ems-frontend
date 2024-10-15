@@ -4,6 +4,7 @@ import {
   Output,
   EventEmitter,
   HostListener,
+  Inject,
 } from '@angular/core';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 /**
@@ -34,8 +35,10 @@ export class NavbarComponent {
   /**
    * Navbar used in the main layout.
    * Can be horizontal or vertical.
+   *
+   * @param environment Current environment options
    */
-  constructor() {
+  constructor(@Inject('environment') public environment: any) {
     this.largeDevice = window.innerWidth > 1024;
   }
 
