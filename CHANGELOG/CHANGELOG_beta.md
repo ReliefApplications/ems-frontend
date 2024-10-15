@@ -1,3 +1,10 @@
+# [2.17.0-beta.6](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.5...v2.17.0-beta.6) (2024-10-11)
+
+
+### Bug Fixes
+
+* pages marked as hidden should not display in front-office  ([#2647](https://github.com/ReliefApplications/ems-frontend/issues/2647)) ([3c3b942](https://github.com/ReliefApplications/ems-frontend/commit/3c3b9426bc4be8994b13411becdc39077b4534a8)), closes [AB#104349](https://github.com/AB/issues/104349)
+
 # [2.17.0-beta.5](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.4...v2.17.0-beta.5) (2024-10-09)
 
 

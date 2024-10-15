@@ -19,7 +19,11 @@ import { environment } from '../environments/environment';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 
 // TRANSLATOR
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import {
+  TranslateLoader,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import { MessageService } from '@progress/kendo-angular-l10n';
@@ -184,4 +188,14 @@ export const httpTranslateLoader = (http: HttpClient) =>
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  /**
+   * Main module of Back-Office project.
+   *
+   * @param translate Angular translate service
+   */
+  constructor(private translate: TranslateService) {
+    this.translate.addLangs(environment.availableLanguages);
+    this.translate.setDefaultLang(environment.availableLanguages[0]);
+  }
+}
