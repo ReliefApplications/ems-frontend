@@ -279,6 +279,7 @@ export class WidgetGridComponent
       swapWhileDragging: true,
       disablePushOnDrag: false,
       disablePushOnResize: false,
+      disableWarnings: true,
       pushDirections: { north: true, east: true, south: true, west: true },
       disableScrollHorizontal: true,
       setGridSize: true,
