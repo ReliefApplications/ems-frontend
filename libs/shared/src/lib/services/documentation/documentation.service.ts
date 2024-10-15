@@ -161,7 +161,7 @@ export class DocumentationService {
       FileStream: fileStream,
       FileName: file.name,
     };
-    return new Promise((reject, resolve) => {
+    return new Promise((resolve, reject) => {
       this.restService
         .post(
           `${this.environment.csapiUrl}/documents/drives/${driveId}/items`,

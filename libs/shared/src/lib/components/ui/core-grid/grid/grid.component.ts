@@ -747,7 +747,10 @@ export class GridComponent
       downloadLink.download = file.name;
       downloadLink.click();
     } else {
-      if (this.environment.csapiUrl) {
+      if (
+        this.environment.csapiUrl &&
+        new RegExp(this.environment.csapiUrl).test(file.content)
+      ) {
         this.documentationService.getFile(file.content, file.name);
       } else {
         const path = `download/file/${file.content}`;
