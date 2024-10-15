@@ -201,7 +201,7 @@ export class ApplicationComponent
   private setNavGroups(application: Application): void {
     this.navGroups = [
       {
-        name: 'Pages',
+        name: this.translate.instant('common.page.few'),
         navItems: application.pages
           ?.filter((x) => x.content)
           .map((x) => ({
