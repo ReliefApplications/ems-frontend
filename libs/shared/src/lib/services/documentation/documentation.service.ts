@@ -3,7 +3,6 @@ import { HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
-import { tap } from 'rxjs/operators';
 import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { RestService } from '../rest/rest.service';
 
@@ -75,9 +74,12 @@ export class DocumentationService {
   private triggerFileDownloadMessage(translationKey: string) {
     // Opens a loader in a snackbar
     const snackBarRef = this.createLoadingSnackbarRef(translationKey);
+    // Should be added into the request for cs documentation api
+    const token = localStorage.getItem('access_token');
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
     });
     return { snackBarRef, headers };
   }
@@ -140,7 +142,7 @@ export class DocumentationService {
    * @param driveId Drive where to upload current file
    * @returns http upload request
    */
-  uploadFile(
+  async uploadFile(
     file: any,
     driveId: string = '866da8cf-3d36-43e5-b54a-1d5b1ec2226d'
   ): Promise<any> {
@@ -148,55 +150,64 @@ export class DocumentationService {
       'common.notifications.file.upload.processing'
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
-
-    const formData = new FormData();
-    /**Static parameters for testing */
-    formData.append('AssignmentFunction', [2].toString());
-    formData.append(
-      'Country',
-      [181, 27, 44, 76, 111, 143, 148, 159, 150].toString()
-    );
-    formData.append('DocumentRole', [3].toString());
-    formData.append('Hazard', [10].toString());
-    formData.append('InformationConfidentiality', [1].toString());
-    formData.append('Region', [4].toString());
-    /** Dynamic parameters */
-    formData.append('FileStream', file);
-    formData.append('FileName', file.name);
-
+    const fileStream = await this.transformFileToValidInput(file);
+    const body = {
+      AssignmentFunction: [2],
+      Country: [181, 27, 44, 76, 111, 143, 148, 159, 150],
+      DocumentRole: [3],
+      Hazard: [10],
+      InformationConfidentiality: [1],
+      Region: [4],
+      FileStream: fileStream,
+      FileName: file.name,
+    };
     return new Promise((reject, resolve) => {
       this.restService
         .post(
           `${this.environment.csapiUrl}/documents/drives/${driveId}/items`,
-          formData,
+          body,
           {
             headers,
           }
         )
-        .pipe(
-          tap({
-            next: (data) => {
-              const { itemId, driveId } = data;
-              snackBarSpinner.instance.message = this.translate.instant(
-                'common.notifications.file.upload.ready'
-              );
-              snackBarSpinner.instance.loading = false;
-              snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-              resolve(
-                `${this.environment.csapiUrl}/documents/drives/${driveId}/items/${itemId}/content`
-              );
-            },
-            error: () => {
-              snackBarSpinner.instance.message = this.translate.instant(
-                'common.notifications.file.upload.error'
-              );
-              snackBarSpinner.instance.loading = false;
-              snackBarSpinner.instance.error = true;
-              snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-              reject(null);
-            },
-          })
-        );
+        .subscribe({
+          next: (data) => {
+            const { itemId, driveId } = data;
+            snackBarSpinner.instance.message = this.translate.instant(
+              'common.notifications.file.upload.ready'
+            );
+            snackBarSpinner.instance.loading = false;
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+            resolve(
+              `${this.environment.csapiUrl}/documents/drives/${driveId}/items/${itemId}/content`
+            );
+          },
+          error: () => {
+            snackBarSpinner.instance.message = this.translate.instant(
+              'common.notifications.file.upload.error'
+            );
+            snackBarSpinner.instance.loading = false;
+            snackBarSpinner.instance.error = true;
+            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+            reject(null);
+          },
+        });
+    });
+  }
+
+  /**
+   * Transforms given file value into a valid base 64 input for cs documentation api
+   *
+   * @param file File to transform
+   * @returns A valid base 64 input value for the cs api endpoint
+   */
+  private transformFileToValidInput(file: any) {
+    const fileReader = new FileReader();
+    return new Promise((resolve) => {
+      (fileReader as any).onload = () => {
+        resolve(fileReader.result?.toString().split(',')[1]);
+      };
+      fileReader.readAsDataURL(file);
     });
   }
 }
