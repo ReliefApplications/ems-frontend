@@ -1,55 +1,7 @@
-import { inject, NgModule } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  ResolveFn,
-  RouterModule,
-  Routes,
-} from '@angular/router';
-import { ApplicationsApplicationNodesQueryResponse } from '@oort-front/shared';
-import { Apollo } from 'apollo-angular';
-import { lastValueFrom } from 'rxjs';
-import { GET_APPLICATION_WITH_SHORTCUT } from './application/graphql/queries';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import { AccessGuard } from './guards/access.guard';
 import { AuthGuard } from './guards/auth.guard';
-
-/**
- * Resolve application id
- * Application can use shortcut values to generate the url
- * We check the given params for the application route and check if it's a shortcut
- * If it's a shortcut, return the related application id, if not return current param
- *
- * @param route ActivatedRouteSnapshot
- * @returns resolved application id
- */
-const applicationIdResolver: ResolveFn<any> = async (
-  route: ActivatedRouteSnapshot
-): Promise<any> => {
-  const id = route.paramMap.get('id');
-  const apollo = inject(Apollo);
-  let data: any = id;
-  try {
-    data = await lastValueFrom(
-      apollo.query<ApplicationsApplicationNodesQueryResponse>({
-        query: GET_APPLICATION_WITH_SHORTCUT,
-        variables: {
-          filter: {
-            logic: 'and',
-            filters: [
-              {
-                field: 'shortcut',
-                operator: 'eq',
-                value: id,
-              },
-            ],
-          },
-        },
-      })
-    );
-  } catch (error) {
-    data = id;
-  }
-  return data?.data?.applications?.edges?.[0]?.node?.id ?? data;
-};
 
 /**
  * List of top level routes of the Front-Office.
@@ -75,7 +27,6 @@ const routes: Routes = [
           import('./application/application.module').then(
             (m) => m.ApplicationModule
           ),
-        resolve: { id: applicationIdResolver },
         // canActivate: [AccessGuard],
       },
     ],

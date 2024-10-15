@@ -29,8 +29,6 @@ export class ApplicationComponent
 {
   /** Application title */
   public title = '';
-  /** Stores current app ID */
-  public appID = '';
   /** Stores current app page */
   public appPage = '';
   /** List of accessible applications */
@@ -92,10 +90,9 @@ export class ApplicationComponent
    */
   ngOnInit(): void {
     // Subscribe to params change
-    this.route.data.pipe(takeUntil(this.destroy$)).subscribe((data) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.loading = true;
-      this.applicationService.loadApplication(data.id);
-      this.appID = data.id;
+      this.applicationService.loadApplication(params.id);
     });
     // Get list of available applications
     this.authService.user$
