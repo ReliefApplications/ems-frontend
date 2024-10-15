@@ -145,7 +145,8 @@ export class DocumentationService {
     link.download = fileName;
     this.document.body.append(link);
     link.click();
-    setTimeout(() => link.remove(), 0);
+    URL.revokeObjectURL(link.href);
+    link.remove();
   }
 
   /**
