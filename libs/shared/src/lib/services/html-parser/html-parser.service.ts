@@ -234,16 +234,15 @@ export class HtmlParserService {
     date: {
       signature: 'date( value ; format )',
       call: (value, format) => {
-        // Extract the exact date value from the span label
-        // This regex works as  => <span>6/6/2012</span>, returns
-        // 0: <span>6/6/2012</span>
-        // 1: 6/6/2012
-        const dateValue = /<span?.*>(.*)<\/span>/.exec(value)?.[1] as string;
-        const formattedDate = this.datePipe.transform(
-          dateValue,
-          format
-        ) as string;
-        return value.replace(dateValue, formattedDate);
+        try {
+          const formattedDate = this.datePipe.transform(
+            new Date(value),
+            format
+          ) as string;
+          return formattedDate || '';
+        } catch {
+          return '';
+        }
       },
     },
   };
