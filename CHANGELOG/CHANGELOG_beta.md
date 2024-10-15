@@ -1,3 +1,11 @@
+# [2.17.0-beta.7](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.6...v2.17.0-beta.7) (2024-10-15)
+
+
+### Features
+
+* add date calc method for html widgets ([#2648](https://github.com/ReliefApplications/ems-frontend/issues/2648)) ([a4b7857](https://github.com/ReliefApplications/ems-frontend/commit/a4b785793157137776778c120e52a8e9f0ed188c)), closes [AB#104296](https://github.com/AB/issues/104296)
+* allow html questions to display as text in grids ([#2643](https://github.com/ReliefApplications/ems-frontend/issues/2643)) ([d371f47](https://github.com/ReliefApplications/ems-frontend/commit/d371f471fb29247edc6571b0f5bf91d38e6bc7ab)), closes [AB#104243](https://github.com/AB/issues/104243)
+
 # [2.17.0-beta.6](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.5...v2.17.0-beta.6) (2024-10-11)
 
 
