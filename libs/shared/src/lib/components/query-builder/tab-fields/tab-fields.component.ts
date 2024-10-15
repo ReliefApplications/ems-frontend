@@ -38,8 +38,6 @@ export class TabFieldsComponent implements OnInit, OnChanges {
   /** Reference to child template, in order to inject query builder component */
   @ViewChild('childTemplate', { read: ViewContainerRef })
   childTemplate?: ViewContainerRef;
-  /** Is the display in grid field displayed */
-  public showDisplayInGrid = true;
   /** Available fields */
   public availableFields: any[] = [];
   /** Selected fields */
@@ -193,7 +191,6 @@ export class TabFieldsComponent implements OnInit, OnChanges {
   public onEdit(index: number): void {
     this.fieldForm = this.form.at(index) as UntypedFormGroup;
     if (this.fieldForm.value.kind === 'SCALAR') {
-      this.showDisplayInGrid = true;
       // Setup field format editor auto completer
       const dataKeys = getDataKeys([
         { name: this.fieldForm.controls.name.value },
@@ -203,7 +200,6 @@ export class TabFieldsComponent implements OnInit, OnChanges {
 
       this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
     } else {
-      this.showDisplayInGrid = false;
       if (this.childTemplate) {
         const componentRef = this.childTemplate.createComponent(
           QueryBuilderComponent

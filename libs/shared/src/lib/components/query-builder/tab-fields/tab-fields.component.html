@@ -173,28 +173,6 @@
           </label>
           <input formControlName="width" type="number" min="0" />
         </div>
-        <ng-container *ngIf="showDisplayInGrid">
-          <div class="flex flex-col justify-center">
-            <ui-toggle formControlName="displayContent">
-              <ng-container ngProjectAs="label">
-                {{
-                  'components.queryBuilder.fields.displayInGrid.text'
-                    | translate
-                }}<ui-icon
-                  class="ml-1 cursor-help self-center"
-                  variant="grey"
-                  icon="info_outline"
-                  [size]="18"
-                  [uiTooltip]="
-                    'components.queryBuilder.fields.displayInGrid.info'
-                      | translate
-                  "
-                  uiTooltipPosition="top"
-                ></ui-icon>
-              </ng-container>
-            </ui-toggle>
-          </div>
-        </ng-container>
       </div>
       <!-- Display format -->
       <div uiFormFieldDirective class="w-full">

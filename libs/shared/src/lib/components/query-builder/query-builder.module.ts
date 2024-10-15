@@ -35,7 +35,6 @@ import {
   DividerModule,
   IconModule,
   SpinnerModule,
-  ToggleModule,
 } from '@oort-front/ui';
 import { TreeViewModule } from '@progress/kendo-angular-treeview';
 
@@ -86,7 +85,6 @@ import { TreeViewModule } from '@progress/kendo-angular-treeview';
     DividerModule,
     TreeViewModule,
     SpinnerModule,
-    ToggleModule,
   ],
   exports: [
     QueryBuilderComponent,

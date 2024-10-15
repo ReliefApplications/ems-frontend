@@ -103,7 +103,6 @@ export const addNewField = (field: any, newField?: boolean) => {
           Validators.required,
         ],
         width: [newField ? null : field.width],
-        displayContent: [newField ? null : field.displayContent],
         format: [get(field, 'format', null)],
       });
     }
