@@ -1,3 +1,5 @@
+import { Dialog } from '@angular/cdk/dialog';
+import { DOCUMENT } from '@angular/common';
 import {
   AfterViewInit,
   Component,
@@ -17,15 +19,34 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService, TooltipDirective } from '@oort-front/ui';
+import { ResizeBatchService } from '@progress/kendo-angular-common';
 import {
-  GridComponent as KendoGridComponent,
+  ColumnComponent,
   GridDataResult,
+  GridComponent as KendoGridComponent,
   PageChangeEvent,
   RowArgs,
   SelectionEvent,
-  ColumnComponent,
 } from '@progress/kendo-angular-grid';
-import { Dialog } from '@angular/cdk/dialog';
+import { PopupRef, PopupService } from '@progress/kendo-angular-popup';
+import {
+  CompositeFilterDescriptor,
+  SortDescriptor,
+} from '@progress/kendo-data-query';
+import { get, has, intersection, isEqual, isNil } from 'lodash';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { DatePipe } from '../../../../pipes/date/date.pipe';
+import { DocumentationService } from '../../../../services/documentation/documentation.service';
+import { DownloadService } from '../../../../services/download/download.service';
+import { GridService } from '../../../../services/grid/grid.service';
+import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { WidgetComponent } from '../../../widget/widget.component';
+import { GridLayout } from '../models/grid-layout.model';
+import { GridActions } from '../models/grid-settings.model';
 import {
   EXPORT_SETTINGS,
   GRADIENT_SETTINGS,
@@ -33,27 +54,7 @@ import {
   PAGER_SETTINGS,
   SELECTABLE_SETTINGS,
 } from './grid.constants';
-import {
-  CompositeFilterDescriptor,
-  SortDescriptor,
-} from '@progress/kendo-data-query';
-import { ResizeBatchService } from '@progress/kendo-angular-common';
-import { PopupRef, PopupService } from '@progress/kendo-angular-popup';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { GridService } from '../../../../services/grid/grid.service';
-import { DownloadService } from '../../../../services/download/download.service';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { GridLayout } from '../models/grid-layout.model';
-import { get, intersection, isNil, has, isEqual } from 'lodash';
-import { TranslateService } from '@ngx-translate/core';
-import { SnackbarService, TooltipDirective } from '@oort-front/ui';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { DOCUMENT } from '@angular/common';
-import { WidgetComponent } from '../../../widget/widget.component';
-import { DatePipe } from '../../../../pipes/date/date.pipe';
-import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
 import { formatGridRowData } from './utils/grid-data-formatter';
-import { GridActions } from '../models/grid-settings.model';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -188,8 +189,6 @@ export class GridComponent
   @ViewChildren(TooltipDirective) tooltips!: QueryList<TooltipDirective>;
   /** Array of multi-select types. */
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
-  /** Environment of the grid. */
-  public environment: 'frontoffice' | 'backoffice';
   /** Status message of the grid. */
   public statusMessage = '';
   /** Form group for the component */
@@ -303,10 +302,11 @@ export class GridComponent
    * @param el Ref to html element
    * @param document document
    * @param popupService Kendo popup service
+   * @param documentationService Shared cs documentation service
    */
   constructor(
     @Optional() public widgetComponent: WidgetComponent,
-    @Inject('environment') environment: any,
+    @Inject('environment') private environment: any,
     @Inject(DatePipe) private datePipe: DatePipe,
     private dialog: Dialog,
     private gridService: GridService,
@@ -316,10 +316,11 @@ export class GridComponent
     private snackBar: SnackbarService,
     private el: ElementRef,
     @Inject(DOCUMENT) private document: Document,
-    private popupService: PopupService
+    private popupService: PopupService,
+    private documentationService: DocumentationService
   ) {
     super();
-    this.environment = environment.module || 'frontoffice';
+    this.environment.module = environment.module || 'frontoffice';
   }
 
   ngOnInit(): void {
@@ -746,8 +747,12 @@ export class GridComponent
       downloadLink.download = file.name;
       downloadLink.click();
     } else {
-      const path = `download/file/${file.content}`;
-      this.downloadService.getFile(path, file.type, file.name);
+      if (this.environment.csapiUrl) {
+        this.documentationService.getFile(file.content, file.name);
+      } else {
+        const path = `download/file/${file.content}`;
+        this.downloadService.getFile(path, file.type, file.name);
+      }
     }
   }
 
@@ -866,7 +871,7 @@ export class GridComponent
    */
   public getStatusMessage(): string {
     if (this.status.error) {
-      if (this.status.message && this.environment === 'backoffice') {
+      if (this.status.message && this.environment.module === 'backoffice') {
         if (this.snackBarRef) {
           this.snackBarRef.instance.dismiss();
         }
@@ -875,18 +880,18 @@ export class GridComponent
         });
       }
       return this.translate.instant(
-        `components.widget.grid.errors.invalid.${this.environment}`
+        `components.widget.grid.errors.invalid.${this.environment.module}`
       );
     }
     if (this.loadingSettings) {
       return this.translate.instant('components.widget.grid.loading.settings');
     }
-    if (this.blank && this.environment === 'backoffice') {
+    if (this.blank && this.environment.module === 'backoffice') {
       return this.translate.instant(
         'components.widget.grid.errors.missingDataset'
       );
     }
-    if (this.blank && this.environment === 'frontoffice') {
+    if (this.blank && this.environment.module === 'frontoffice') {
       return this.translate.instant(
         'components.widget.grid.errors.invalid.frontoffice'
       );

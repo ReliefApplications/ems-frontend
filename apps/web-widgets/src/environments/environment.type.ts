@@ -28,4 +28,5 @@ export interface Environment {
   tinymceBaseUrl: string;
   i18nUrl: string;
   admin0Url?: string;
+  csapiUrl?: string;
 }

@@ -1,27 +1,29 @@
-import { Inject, Injectable } from '@angular/core';
-import { PageModel, SurveyModel } from 'survey-core';
-import { Apollo } from 'apollo-angular';
-import { TranslateService } from '@ngx-translate/core';
-import { ConfirmService } from '../confirm/confirm.service';
-import { firstValueFrom } from 'rxjs';
-import { ADD_RECORD } from '../../components/form/graphql/mutations';
 import { DialogRef } from '@angular/cdk/dialog';
+import { Inject, Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
 import localForage from 'localforage';
-import { snakeCase, cloneDeep, set, get, isNil } from 'lodash';
-import { AuthService } from '../auth/auth.service';
-import { BlobType, DownloadService } from '../download/download.service';
+import { cloneDeep, get, isNil, set, snakeCase } from 'lodash';
+import { firstValueFrom } from 'rxjs';
+import { PageModel, SurveyModel } from 'survey-core';
+import { ADD_RECORD } from '../../components/form/graphql/mutations';
 import {
   AddDraftRecordMutationResponse,
   AddRecordMutationResponse,
   EditDraftRecordMutationResponse,
 } from '../../models/record.model';
 import { Question } from '../../survey/types';
+import { AuthService } from '../auth/auth.service';
+import { ConfirmService } from '../confirm/confirm.service';
+import { DocumentationService } from '../documentation/documentation.service';
+import { BlobType, DownloadService } from '../download/download.service';
 import {
   ADD_DRAFT_RECORD,
   DELETE_DRAFT_RECORD,
   EDIT_DRAFT_RECORD,
 } from './graphql/mutations';
+
 /**
  * Shared survey helper service.
  */
@@ -39,6 +41,7 @@ export class FormHelpersService {
    * @param translate This is the service that allows us to translate the text in our application.
    * @param authService Shared auth service
    * @param downloadService Shared download service
+   * @param documentationService Shared cs documentation
    */
   constructor(
     @Inject('environment') private environment: any,
@@ -47,7 +50,8 @@ export class FormHelpersService {
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private authService: AuthService,
-    private downloadService: DownloadService
+    private downloadService: DownloadService,
+    private documentationService: DocumentationService
   ) {}
 
   /**
@@ -121,14 +125,20 @@ export class FormHelpersService {
 
     const data = survey.data;
     const questionsToUpload = Object.keys(temporaryFilesStorage);
+    const csApiUrl = this.environment.csapiUrl;
     for (const name of questionsToUpload) {
       const files = temporaryFilesStorage[name];
       for (const [index, file] of files.entries()) {
-        const path = await this.downloadService.uploadBlob(
-          file,
-          BlobType.RECORD_FILE,
-          formId
-        );
+        let path = '';
+        if (csApiUrl) {
+          path = (await this.documentationService.uploadFile(file)) as string;
+        } else {
+          path = (await this.downloadService.uploadBlob(
+            file,
+            BlobType.RECORD_FILE,
+            formId
+          )) as string;
+        }
         if (path) {
           const fileContent = data[name][index].content;
           data[name][index].content = path;
