@@ -695,7 +695,7 @@
         [filterable]="true"
         [title]="field.title"
         [editor]="field.editor"
-        [editable]="!field.disabled"
+        [editable]="false"
         [width]="field.width"
         [hidden]="field.hidden"
         [minResizableWidth]="50"
@@ -703,17 +703,19 @@
       >
         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
           <div class="textbox-container" [style]="dataItem.style[field.name]">
-            <a
-              class="url-container textbox cursor-pointer"
-              rel="noopener noreferrer"
+            <div class="truncate">
+              {{ dataItem[field.name] | sharedStripHtml }}
+            </div>
+            <button
               *ngIf="dataItem[field.name]"
+              kendoButton
+              icon="hyperlink-open-sm"
               (click)="onOpenEditorModal(dataItem, field)"
+              [look]="'flat'"
               [uiTooltip]="
                 'components.widget.grid.tooltip.displayEditor' | translate
               "
-            >
-              {{ 'components.widget.grid.openEditor' | translate }}
-            </a>
+            ></button>
           </div>
         </ng-template>
         <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
