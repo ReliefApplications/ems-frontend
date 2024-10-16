@@ -19,6 +19,7 @@ interface DialogData {
   multiselect?: boolean;
   selectedRows?: string[];
   selectable?: boolean;
+  customFilter?: any;
 }
 
 /**
@@ -89,6 +90,7 @@ export class ResourceGridModalComponent {
         remove: false,
       },
     };
+    console.log('customFilter', this.data.customFilter);
     this.ref.tick();
   }
 

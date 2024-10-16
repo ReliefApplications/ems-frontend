@@ -54,7 +54,7 @@ export const buildSearchButton = (
               ? [question.value]
               : [],
             selectable: true,
-            customFilter: question.getConditionJson().customFilter,
+            customFilter: question.getConditionJson().customFilter ?? {},
           },
           panelClass: 'closable-dialog',
         });
