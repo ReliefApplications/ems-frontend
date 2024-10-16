@@ -97,7 +97,6 @@ export class DocumentUploadComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     try {
       await this.loadScript();
-      console.log('Script loaded');
       this.loading = false;
     } catch (error) {
       console.error('Error loading the script: ', error);
@@ -109,7 +108,6 @@ export class DocumentUploadComponent implements OnInit {
    */
   public onClick() {
     try {
-      console.log(this.documentConfig);
       const uploadEvent = new CustomEvent('documentDataForUpload', {
         detail: { filterObject: this.documentConfig },
       });

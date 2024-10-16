@@ -38,7 +38,6 @@ import {
 } from '@progress/kendo-data-query';
 import { get, has, intersection, isEqual, isNil } from 'lodash';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { DocumentationService } from '../../../../services/documentation/documentation.service';
 import { DownloadService } from '../../../../services/download/download.service';
 import { GridDataFormatterService } from '../../../../services/grid-data-formatter/grid-data-formatter.service';
 import { GridService } from '../../../../services/grid/grid.service';
@@ -54,6 +53,7 @@ import {
   PAGER_SETTINGS,
   SELECTABLE_SETTINGS,
 } from './grid.constants';
+import { DocumentManagementService } from '../../../../services/document-management/document-management.service';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -302,7 +302,7 @@ export class GridComponent
    * @param el Ref to html element
    * @param document document
    * @param popupService Kendo popup service
-   * @param documentationService Shared cs documentation service
+   * @param documentManagementService Shared document management service
    * @param gridDataFormatterService GridDataFormatterService
    */
   constructor(
@@ -317,7 +317,7 @@ export class GridComponent
     private el: ElementRef,
     @Inject(DOCUMENT) private document: Document,
     private popupService: PopupService,
-    private documentationService: DocumentationService,
+    private documentManagementService: DocumentManagementService,
     private gridDataFormatterService: GridDataFormatterService
   ) {
     super();
@@ -742,18 +742,18 @@ export class GridComponent
    * @param file File to download.
    */
   public onDownload(file: any): void {
-    if (file.content.startsWith('data')) {
-      const downloadLink = this.document.createElement('a');
-      downloadLink.href = file.content;
-      downloadLink.download = file.name;
-      downloadLink.click();
-    } else {
-      if (this.documentationService.isCSApiUrl(file.content)) {
-        this.documentationService.getFile(file.content, file.name);
+    if (typeof file.content === 'string') {
+      if (file.content.startsWith('data')) {
+        const downloadLink = this.document.createElement('a');
+        downloadLink.href = file.content;
+        downloadLink.download = file.name;
+        downloadLink.click();
       } else {
         const path = `download/file/${file.content}`;
         this.downloadService.getFile(path, file.type, file.name);
       }
+    } else {
+      this.documentManagementService.getFile(file);
     }
   }
 

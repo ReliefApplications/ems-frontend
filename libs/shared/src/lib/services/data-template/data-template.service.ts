@@ -6,9 +6,9 @@ import { RawEditorSettings } from 'tinymce';
 import { Application } from '../../models/application.model';
 import { ContentType, Page } from '../../models/page.model';
 import { ApplicationService } from '../application/application.service';
-import { DocumentationService } from '../documentation/documentation.service';
 import { DownloadService } from '../download/download.service';
 import { HtmlParserService } from '../html-parser/html-parser.service';
+import { DocumentManagementService } from '../document-management/document-management.service';
 
 /**
  * Data template service
@@ -30,7 +30,7 @@ export class DataTemplateService {
    * @param environment Current environment
    * @param locationStrategy Angular location strategy
    * @param htmlParserService Html parser service to parse the values for html layout
-   * @param documentationService cs documentation api service
+   * @param documentManagementService Shared document management service
    */
   constructor(
     private sanitizer: DomSanitizer,
@@ -39,7 +39,7 @@ export class DataTemplateService {
     @Inject('environment') environment: any,
     private locationStrategy: LocationStrategy,
     private htmlParserService: HtmlParserService,
-    private documentationService: DocumentationService
+    private documentManagementService: DocumentManagementService
   ) {
     this.environment = environment;
   }
@@ -144,11 +144,11 @@ export class DataTemplateService {
       const index = event.target.getAttribute('index');
       const file = get(data, `${fieldName}[${index}]`, null);
       if (file) {
-        if (this.documentationService.isCSApiUrl(file.content)) {
-          this.documentationService.getFile(file.content, file.name);
-        } else {
+        if (typeof file.content === 'string') {
           const path = `download/file/${file.content}`;
           this.downloadService.getFile(path, file.type, file.name);
+        } else {
+          this.documentManagementService.getFile(file);
         }
       }
     }

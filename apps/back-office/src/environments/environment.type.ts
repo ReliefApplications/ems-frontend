@@ -27,5 +27,5 @@ export interface Environment {
   maxFileSize?: number;
   user?: UserConfiguration;
   admin0Url?: string;
-  csapiUrl?: string;
+  csApiUrl?: string;
 }

@@ -1,6 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { DocumentationService } from './documenation.service';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import {
   TranslateFakeLoader,
@@ -8,9 +7,10 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
+import { DocumentManagementService } from './document-management.service';
 
-describe('DocumentationService', () => {
-  let service: DocumentationService;
+describe('DocumentManagementService', () => {
+  let service: DocumentManagementService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -26,7 +26,7 @@ describe('DocumentationService', () => {
         }),
       ],
     });
-    service = TestBed.inject(DocumentationService);
+    service = TestBed.inject(DocumentManagementService);
   });
 
   it('should be created', () => {

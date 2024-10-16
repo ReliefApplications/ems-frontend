@@ -15,7 +15,7 @@ export * from './lib/services/dashboard-automation/dashboard-automation.service'
 export * from './lib/services/dashboard/dashboard.service';
 export * from './lib/services/data-template/data-template.service';
 export * from './lib/services/date-translate/date-translate.service';
-export * from './lib/services/documentation/documentation.service';
+export * from './lib/services/document-management/document-management.service';
 export * from './lib/services/download/download.service';
 export * from './lib/services/editor/editor.service';
 export * from './lib/services/form-builder/form-builder.service';

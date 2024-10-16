@@ -20,33 +20,20 @@ import { RestService } from '../rest/rest.service';
 const SNACKBAR_DURATION = 3000;
 
 /**
- * Shared documentation service. Handles export and upload documentation.
+ * Shared document management service. Handles export and upload documents in document management system.
  */
 @Injectable({
   providedIn: 'root',
 })
-export class DocumentationService {
+export class DocumentManagementService {
   /**
-   * Check if given url is cs documenation api type
-   *
-   * @param url url to check   *
-   * @returns true if above condition is satisfied
-   */
-  public isCSApiUrl = (url: string) => {
-    return (
-      this.environment.csapiUrl &&
-      new RegExp(this.environment.csapiUrl).test(url)
-    );
-  };
-
-  /**
-   * Shared documentation service. Handles export and upload documentation.
+   * Shared document management service. Handles export and upload documents in document management system.
    *
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param restService Shared rest service
-   * @param document document
-   * @param environment environment data
+   * @param document Document
+   * @param environment Environment
    */
   constructor(
     private snackBar: SnackbarService,
@@ -100,22 +87,29 @@ export class DocumentationService {
   /**
    * Downloads file from the server
    *
-   * @param path download path to append to base url
-   * @param fileName download file name
+   * @param file Uploaded file
+   * @param file.name file name
+   * @param file.content file content information
+   * @param file.content.driveId file drive id
+   * @param file.content.itemId file item id
    * @param options (optional) request options
    */
-  getFile(path: string, fileName: string, options?: any): void {
+  getFile(
+    file: { name: string; content: { driveId: string; itemId: string } },
+    options?: any
+  ): void {
     const { snackBarRef, headers } = this.triggerFileDownloadMessage(
       'common.notifications.file.download.processing'
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
 
+    const url = `${this.environment.csApiUrl}/documents/drives/${file.content.driveId}/items/${file.content.itemId}/content`;
     this.restService
-      .get(path, { ...options, responseType: 'blob', headers })
+      .get(url, { ...options, responseType: 'blob', headers })
       .subscribe({
         next: (res) => {
           const blob = new Blob([res]);
-          this.saveFile(fileName, blob);
+          this.saveFile(file.name, blob);
           snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.file.download.ready'
           );
@@ -158,7 +152,7 @@ export class DocumentationService {
    */
   async uploadFile(
     file: any,
-    driveId: string = '866da8cf-3d36-43e5-b54a-1d5b1ec2226d'
+    driveId: string = '866da8cf-3d36-43e5-b54a-1d5b1ec2226d' // todo: must be made dynamic
   ): Promise<any> {
     const { snackBarRef, headers } = this.triggerFileDownloadMessage(
       'common.notifications.file.upload.processing'
@@ -178,7 +172,7 @@ export class DocumentationService {
     return new Promise((resolve, reject) => {
       this.restService
         .post(
-          `${this.environment.csapiUrl}/documents/drives/${driveId}/items`,
+          `${this.environment.csApiUrl}/documents/drives/${driveId}/items`,
           body,
           {
             headers,
@@ -192,9 +186,10 @@ export class DocumentationService {
             );
             snackBarSpinner.instance.loading = false;
             snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-            resolve(
-              `${this.environment.csapiUrl}/documents/drives/${driveId}/items/${itemId}/content`
-            );
+            resolve({
+              driveId,
+              itemId,
+            });
           },
           error: () => {
             snackBarSpinner.instance.message = this.translate.instant(
@@ -210,7 +205,7 @@ export class DocumentationService {
   }
 
   /**
-   * Transforms given file value into a valid base 64 input for cs documentation api
+   * Transforms given file value into a valid base 64 input for document management api.
    *
    * @param file File to transform
    * @returns A valid base 64 input value for the cs api endpoint
