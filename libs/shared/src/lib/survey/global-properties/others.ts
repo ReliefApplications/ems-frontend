@@ -96,7 +96,7 @@ export const init = (environment: any): void => {
         return true;
       }
     },
-    visibleIndex: 11,
+    visibleIndex: 10,
     default: 5,
     minValue: 2,
   });

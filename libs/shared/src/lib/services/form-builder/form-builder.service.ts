@@ -188,6 +188,19 @@ export class FormBuilderService {
    * @param options Options regarding the upload
    */
   private onUploadFiles(temporaryFilesStorage: any, options: any): void {
+    if (
+      options.question.jsonObj.allowMultiple &&
+      options.files.length > options.question.jsonObj.allowedFileNumber
+    ) {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'components.formBuilder.errors.maximumAllowedFiles',
+          { number: options.question.jsonObj.allowedFileNumber }
+        ),
+        { error: true }
+      );
+      return;
+    }
     if (temporaryFilesStorage[options.name] !== undefined) {
       temporaryFilesStorage[options.name].concat(options.files);
     } else {
