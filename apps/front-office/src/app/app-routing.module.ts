@@ -29,6 +29,14 @@ const routes: Routes = [
           ),
         // canActivate: [AccessGuard],
       },
+      {
+        path: 'share/:id',
+        loadChildren: () =>
+          import('./application/pages/share/share.module').then(
+            (m) => m.ShareModule
+          ),
+        // canActivate: [AccessGuard],
+      },
     ],
     canActivate: [AuthGuard, AccessGuard],
   },
