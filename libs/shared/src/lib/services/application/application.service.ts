@@ -1,28 +1,23 @@
-import { Apollo } from 'apollo-angular';
+import { DOCUMENT } from '@angular/common';
+import { HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import {
+  ShadowDomService,
+  SnackbarService,
+  UILayoutService,
+  faV4toV6Mapper,
+} from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
+import { GraphQLError } from 'graphql';
+import { has } from 'lodash';
 import {
   BehaviorSubject,
   Observable,
   Subscription,
   firstValueFrom,
 } from 'rxjs';
-import {
-  AddRoleMutationResponse,
-  DeleteRoleMutationResponse,
-  DeleteUsersFromApplicationMutationResponse,
-  EditRoleMutationResponse,
-  Role,
-} from '../../models/user.model';
-import {
-  Page,
-  ContentType,
-  DeletePageMutationResponse,
-  RestorePageMutationResponse,
-  EditPageMutationResponse,
-  AddPageMutationResponse,
-  DuplicatePageMutationResponse,
-} from '../../models/page.model';
 import {
   Application,
   ApplicationEditedSubscriptionResponse,
@@ -37,51 +32,12 @@ import {
   DeleteChannelMutationResponse,
   EditChannelMutationResponse,
 } from '../../models/channel.model';
-import { HttpHeaders } from '@angular/common/http';
 import {
-  ADD_PAGE,
-  ADD_ROLE,
-  DELETE_PAGE,
-  DELETE_ROLE,
-  EDIT_APPLICATION,
-  EDIT_ROLE,
-  ADD_CHANNEL,
-  DELETE_CHANNEL,
-  ADD_SUBSCRIPTION,
-  EDIT_SUBSCRIPTION,
-  DELETE_SUBSCRIPTION,
-  ADD_POSITION_ATTRIBUTE_CATEGORY,
-  DELETE_USERS_FROM_APPLICATION,
-  DELETE_POSITION_ATTRIBUTE_CATEGORY,
-  EDIT_POSITION_ATTRIBUTE_CATEGORY,
-  EDIT_CHANNEL,
-  TOGGLE_APPLICATION_LOCK,
-  DUPLICATE_PAGE,
-  ADD_EMAIL_TEMPLATE,
-  UPDATE_EMAIL_TEMPLATE,
-  DELETE_EMAIL_TEMPLATE,
-  UPDATE_DISTRIBUTION_LIST,
-  ADD_DISTRIBUTION_LIST,
-  DELETE_DISTRIBUTION_LIST,
-  EDIT_PAGE,
-  ADD_CUSTOM_NOTIFICATION,
-  DELETE_CUSTOM_NOTIFICATION,
-  RESTORE_PAGE,
-} from './graphql/mutations';
-import { GET_APPLICATION_BY_ID } from './graphql/queries';
-import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
-import {
-  APPLICATION_EDITED_SUBSCRIPTION,
-  APPLICATION_UNLOCKED_SUBSCRIPTION,
-} from './graphql/subscriptions';
-import { AuthService } from '../auth/auth.service';
-import { TranslateService } from '@ngx-translate/core';
-import {
-  AddEmailTemplateMutationResponse,
-  DeleteEmailTemplateMutationResponse,
-  EmailTemplate,
-  UpdateEmailTemplateMutationResponse,
-} from '../../models/template.model';
+  AddCustomNotificationMutationResponse,
+  CustomNotification,
+  DeleteCustomNotificationMutationResponse,
+  UpdateCustomNotificationMutationResponse,
+} from '../../models/custom-notification.model';
 import {
   AddDistributionListMutationResponse,
   DeleteDistributionListMutationResponse,
@@ -89,18 +45,15 @@ import {
   UpdateDistributionListMutationResponse,
 } from '../../models/distribution-list.model';
 import {
-  AddCustomNotificationMutationResponse,
-  CustomNotification,
-  DeleteCustomNotificationMutationResponse,
-  UpdateCustomNotificationMutationResponse,
-} from '../../models/custom-notification.model';
-import { UPDATE_CUSTOM_NOTIFICATION } from '../application-notifications/graphql/mutations';
-import {
-  ShadowDomService,
-  SnackbarService,
-  UILayoutService,
-  faV4toV6Mapper,
-} from '@oort-front/ui';
+  AddPageMutationResponse,
+  ContentType,
+  DeletePageMutationResponse,
+  DuplicatePageMutationResponse,
+  EditPageMutationResponse,
+  Page,
+  RestorePageMutationResponse,
+} from '../../models/page.model';
+import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import {
   AddPositionAttributeCategoryMutationResponse,
   DeletePositionAttributeCategoryMutationResponse,
@@ -111,11 +64,58 @@ import {
   DeleteSubscriptionMutationResponse,
   EditSubscriptionMutationResponse,
 } from '../../models/subscription.model';
-import { RestService } from '../rest/rest.service';
+import {
+  AddEmailTemplateMutationResponse,
+  DeleteEmailTemplateMutationResponse,
+  EmailTemplate,
+  UpdateEmailTemplateMutationResponse,
+} from '../../models/template.model';
+import {
+  AddRoleMutationResponse,
+  DeleteRoleMutationResponse,
+  DeleteUsersFromApplicationMutationResponse,
+  EditRoleMutationResponse,
+  Role,
+} from '../../models/user.model';
+import { UPDATE_CUSTOM_NOTIFICATION } from '../application-notifications/graphql/mutations';
+import { AuthService } from '../auth/auth.service';
 import { DownloadService } from '../download/download.service';
-import { DOCUMENT } from '@angular/common';
-import { GraphQLError } from 'graphql';
-import { has } from 'lodash';
+import { RestService } from '../rest/rest.service';
+import {
+  ADD_CHANNEL,
+  ADD_CUSTOM_NOTIFICATION,
+  ADD_DISTRIBUTION_LIST,
+  ADD_EMAIL_TEMPLATE,
+  ADD_PAGE,
+  ADD_POSITION_ATTRIBUTE_CATEGORY,
+  ADD_ROLE,
+  ADD_SUBSCRIPTION,
+  DELETE_CHANNEL,
+  DELETE_CUSTOM_NOTIFICATION,
+  DELETE_DISTRIBUTION_LIST,
+  DELETE_EMAIL_TEMPLATE,
+  DELETE_PAGE,
+  DELETE_POSITION_ATTRIBUTE_CATEGORY,
+  DELETE_ROLE,
+  DELETE_SUBSCRIPTION,
+  DELETE_USERS_FROM_APPLICATION,
+  DUPLICATE_PAGE,
+  EDIT_APPLICATION,
+  EDIT_CHANNEL,
+  EDIT_PAGE,
+  EDIT_POSITION_ATTRIBUTE_CATEGORY,
+  EDIT_ROLE,
+  EDIT_SUBSCRIPTION,
+  RESTORE_PAGE,
+  TOGGLE_APPLICATION_LOCK,
+  UPDATE_DISTRIBUTION_LIST,
+  UPDATE_EMAIL_TEMPLATE,
+} from './graphql/mutations';
+import { GET_APPLICATION_BY_ID } from './graphql/queries';
+import {
+  APPLICATION_EDITED_SUBSCRIPTION,
+  APPLICATION_UNLOCKED_SUBSCRIPTION,
+} from './graphql/subscriptions';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -169,7 +169,7 @@ export class ApplicationService {
    * @returns Path to current application
    */
   getApplicationPath(application: Application): string {
-    return (application?.shortcut ?? application?.id) as string;
+    return (application?.shortcut || application?.id) as string;
   }
 
   /** @returns Edit status of the application */
@@ -251,40 +251,47 @@ export class ApplicationService {
         query: GET_APPLICATION_BY_ID,
         variables: {
           id,
+          shortcut: id,
           asRole,
         },
       })
-      .subscribe(async ({ data }) => {
-        // extend user abilities for application
-        if (data.application) {
-          this.hasErrors = false;
-          // Map all previously configured icons in v4 to v6 so on application edit, new icons are saved in DB
-          data.application.pages?.map((page: Page) => {
-            if (faV4toV6Mapper[page.icon as string]) {
-              return {
-                ...page,
-                icon: faV4toV6Mapper[page.icon as string],
-              };
-            } else {
-              return page;
-            }
-          });
-          this.authService.extendAbilityForApplication(data.application);
-          await this.getCustomStyle(data.application);
-        } else {
-          this.hasErrors = true;
-        }
-        this.application.next(data.application);
-        const application = this.application.getValue();
-        if (data.application?.locked) {
-          if (!application?.lockedByUser) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectLocked', {
-                name: data.application.name,
-              })
-            );
+      .subscribe({
+        next: async ({ data }) => {
+          // extend user abilities for application
+          if (data?.application) {
+            this.hasErrors = false;
+            // Map all previously configured icons in v4 to v6 so on application edit, new icons are saved in DB
+            data.application.pages?.map((page: Page) => {
+              if (faV4toV6Mapper[page.icon as string]) {
+                return {
+                  ...page,
+                  icon: faV4toV6Mapper[page.icon as string],
+                };
+              } else {
+                return page;
+              }
+            });
+            this.authService.extendAbilityForApplication(data.application);
+            await this.getCustomStyle(data.application);
+          } else {
+            this.hasErrors = true;
           }
-        }
+          this.application.next(data?.application);
+          const application = this.application.getValue();
+          if (data?.application?.locked) {
+            if (!application?.lockedByUser) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectLocked', {
+                  name: data?.application.name,
+                })
+              );
+            }
+          }
+        },
+        error: () => {
+          this.hasErrors = true;
+          this.application.next(null);
+        },
       });
     this.notificationSubscription = this.apollo
       .subscribe<ApplicationEditedSubscriptionResponse>({
@@ -531,15 +538,19 @@ export class ApplicationService {
                 value: this.translate.instant('common.page.one'),
               })
             );
-            const app = this.application.getValue();
-            if (app) {
+            const application = this.application.getValue();
+            if (application) {
               const newApplication = {
-                ...app,
-                pages: app.pages?.filter((x) => x.id !== data?.deletePage.id),
+                ...application,
+                pages: application.pages?.filter(
+                  (x) => x.id !== data?.deletePage.id
+                ),
               };
               this.application.next(newApplication);
               if (!stayOnPage) {
-                this.router.navigate([`./applications/${app.id}`]);
+                this.router.navigate([
+                  `./applications/${this.getApplicationPath(application)}`,
+                ]);
               }
             }
           } else {
@@ -586,8 +597,12 @@ export class ApplicationService {
               this.application.next(newApplication);
               this.router.navigate([
                 data.restorePage.type === ContentType.form
-                  ? `/applications/${application.id}/${data.restorePage.type}/${data.restorePage.id}`
-                  : `/applications/${application.id}/${data.restorePage.type}/${data.restorePage.content}`,
+                  ? `/applications/${this.getApplicationPath(application)}/${
+                      data.restorePage.type
+                    }/${data.restorePage.id}`
+                  : `/applications/${this.getApplicationPath(application)}/${
+                      data.restorePage.type
+                    }/${data.restorePage.content}`,
               ]);
             }
           } else {
@@ -837,8 +852,12 @@ export class ApplicationService {
             this.application.next(newApplication);
             this.router.navigate([
               page.type === ContentType.form
-                ? `/applications/${application.id}/${page.type}/${data.addPage.id}`
-                : `/applications/${application.id}/${page.type}/${content}`,
+                ? `/applications/${this.getApplicationPath(application)}/${
+                    page.type
+                  }/${data.addPage.id}`
+                : `/applications/${this.getApplicationPath(application)}/${
+                    page.type
+                  }/${content}`,
             ]);
           } else {
             this.snackBar.openSnackBar(
@@ -1673,8 +1692,12 @@ export class ApplicationService {
       if (this.environment.module === 'backoffice') {
         this.router.navigate([
           page.type === ContentType.form
-            ? `applications/${application.id}/${page.type}/${page.id}`
-            : `applications/${application.id}/${page.type}/${page.content}`,
+            ? `applications/${this.getApplicationPath(application)}/${
+                page.type
+              }/${page.id}`
+            : `applications/${this.getApplicationPath(application)}/${
+                page.type
+              }/${page.content}`,
         ]);
       } else {
         this.router.navigate([

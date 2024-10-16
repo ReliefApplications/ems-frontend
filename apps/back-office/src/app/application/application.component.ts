@@ -185,8 +185,8 @@ export class ApplicationComponent
     this.applicationService.application$
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
+        this.loading = false;
         if (application) {
-          this.loading = false;
           this.title = application.name || '';
           if (application.canUpdate) {
             this.buildAppSettingsNavItems();
@@ -199,7 +199,11 @@ export class ApplicationComponent
           ];
           if (!this.application || application.id !== this.application.id) {
             const firstPage = get(application, 'pages', [])[0];
-            if (this.router.url.endsWith(application?.id || '') || !firstPage) {
+            if (
+              this.router.url.endsWith(application?.id || '') ||
+              this.router.url.endsWith(application?.shortcut || '') ||
+              !firstPage
+            ) {
               if (firstPage) {
                 this.router.navigate(
                   [
@@ -222,6 +226,9 @@ export class ApplicationComponent
         } else {
           this.title = '';
           this.navGroups = [];
+          if (this.applicationService.hasErrors) {
+            this.router.navigate(['/auth/error']);
+          }
         }
       });
   }

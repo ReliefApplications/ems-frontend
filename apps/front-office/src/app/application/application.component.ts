@@ -104,12 +104,12 @@ export class ApplicationComponent
     this.applicationService.application$
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
+        this.loading = false;
         if (application) {
           this.profileRoute =
             '/' +
             this.applicationService.getApplicationPath(application) +
             '/profile';
-          this.loading = false;
           this.title = application.name || '';
           this.adminNavItems = [];
           this.setAdminNavItems(application);
@@ -117,9 +117,8 @@ export class ApplicationComponent
           if (!this.application || application.id !== this.application.id) {
             const firstPage = get(application, 'pages', [])[0];
             if (
-              this.router.url.endsWith(
-                this.applicationService.getApplicationPath(application) || ''
-              ) ||
+              this.router.url.endsWith(application?.id || '') ||
+              this.router.url.endsWith(application?.shortcut || '') ||
               !firstPage
             ) {
               // If a page is configured
@@ -147,16 +146,7 @@ export class ApplicationComponent
           this.title = '';
           this.navGroups = [];
           if (this.applicationService.hasErrors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.accessNotProvided', {
-                type: this.translate
-                  .instant('common.application.one')
-                  .toLowerCase(),
-                error: '',
-              }),
-              { error: true }
-            );
-            this.router.navigate(['/']);
+            this.router.navigate(['/auth/error']);
           }
         }
       });
