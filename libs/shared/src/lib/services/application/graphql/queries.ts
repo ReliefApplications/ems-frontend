@@ -58,6 +58,7 @@ export const GET_APPLICATION_BY_ID = gql`
         application {
           id
           name
+          shortcut
         }
       }
       userRoles {
