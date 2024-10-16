@@ -175,12 +175,20 @@ export class DataTemplateService {
     const baseHref = this.locationStrategy.getBaseHref();
     if (this.environment.module === 'backoffice') {
       return page.type === ContentType.form
-        ? `./applications/${application.id}/${page.type}/${page.id}`
-        : `./applications/${application.id}/${page.type}/${page.content}`;
+        ? `./applications/${this.applicationService.getApplicationPath(
+            application
+          )}/${page.type}/${page.id}`
+        : `./applications/${this.applicationService.getApplicationPath(
+            application
+          )}/${page.type}/${page.content}`;
     } else {
       return page.type === ContentType.form
-        ? `.${baseHref}${application.id}/${page.type}/${page.id}`
-        : `.${baseHref}${application.id}/${page.type}/${page.content}`;
+        ? `.${baseHref}${this.applicationService.getApplicationPath(
+            application
+          )}/${page.type}/${page.id}`
+        : `.${baseHref}${this.applicationService.getApplicationPath(
+            application
+          )}/${page.type}/${page.content}`;
     }
   }
 
