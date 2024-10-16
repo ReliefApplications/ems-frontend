@@ -2668,6 +2668,12 @@
 				"exitMessage": "******"
 			}
 		},
+		"error": {
+			"unauthorized": {
+				"footer": "******",
+				"title": "******"
+			}
+		},
 		"formBuilder": {
 			"errors": {
 				"choices": {

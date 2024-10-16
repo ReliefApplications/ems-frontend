@@ -595,14 +595,11 @@ export class ApplicationService {
                 pages: application.pages?.concat([data.restorePage]),
               };
               this.application.next(newApplication);
+              const applicationPath = this.getApplicationPath(application);
               this.router.navigate([
                 data.restorePage.type === ContentType.form
-                  ? `/applications/${this.getApplicationPath(application)}/${
-                      data.restorePage.type
-                    }/${data.restorePage.id}`
-                  : `/applications/${this.getApplicationPath(application)}/${
-                      data.restorePage.type
-                    }/${data.restorePage.content}`,
+                  ? `/applications/${applicationPath}/${data.restorePage.type}/${data.restorePage.id}`
+                  : `/applications/${applicationPath}/${data.restorePage.type}/${data.restorePage.content}`,
               ]);
             }
           } else {
@@ -850,14 +847,11 @@ export class ApplicationService {
               pages: application.pages?.concat([data.addPage]),
             };
             this.application.next(newApplication);
+            const applicationPath = this.getApplicationPath(application);
             this.router.navigate([
               page.type === ContentType.form
-                ? `/applications/${this.getApplicationPath(application)}/${
-                    page.type
-                  }/${data.addPage.id}`
-                : `/applications/${this.getApplicationPath(application)}/${
-                    page.type
-                  }/${content}`,
+                ? `/applications/${applicationPath}/${page.type}/${data.addPage.id}`
+                : `/applications/${applicationPath}/${page.type}/${content}`,
             ]);
           } else {
             this.snackBar.openSnackBar(
@@ -1690,14 +1684,11 @@ export class ApplicationService {
     if (application?.pages && application.pages.length > 0) {
       const page = application.pages[0];
       if (this.environment.module === 'backoffice') {
+        const applicationPath = this.getApplicationPath(application);
         this.router.navigate([
           page.type === ContentType.form
-            ? `applications/${this.getApplicationPath(application)}/${
-                page.type
-              }/${page.id}`
-            : `applications/${this.getApplicationPath(application)}/${
-                page.type
-              }/${page.content}`,
+            ? `applications/${applicationPath}/${page.type}/${page.id}`
+            : `applications/${applicationPath}/${page.type}/${page.content}`,
         ]);
       } else {
         this.router.navigate([
