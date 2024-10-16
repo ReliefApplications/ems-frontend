@@ -32,6 +32,7 @@ export const environment: Environment = {
   // tinymceBaseUrl: 'https://ems2-dev.who.int/app-builder/tinymce',
   // i18nUrl: 'https://ems2-dev.who.int/app-builder/i18n/',
   admin0Url: 'https://ems2-dev.who.int/app-builder/admin0.json',
+  csApiUrl: 'https://hems-dev.who.int/csapi/api',
   user: {
     attributes: ['country', 'region', 'location', 'department'],
   },

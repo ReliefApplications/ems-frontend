@@ -1,27 +1,29 @@
-import { Inject, Injectable } from '@angular/core';
-import { PageModel, SurveyModel } from 'survey-core';
-import { Apollo } from 'apollo-angular';
-import { TranslateService } from '@ngx-translate/core';
-import { ConfirmService } from '../confirm/confirm.service';
-import { firstValueFrom } from 'rxjs';
-import { ADD_RECORD } from '../../components/form/graphql/mutations';
 import { DialogRef } from '@angular/cdk/dialog';
+import { Inject, Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
 import localForage from 'localforage';
-import { snakeCase, cloneDeep, set, get, isNil } from 'lodash';
-import { AuthService } from '../auth/auth.service';
-import { BlobType, DownloadService } from '../download/download.service';
+import { cloneDeep, get, isNil, set, snakeCase } from 'lodash';
+import { firstValueFrom } from 'rxjs';
+import { PageModel, SurveyModel } from 'survey-core';
+import { ADD_RECORD } from '../../components/form/graphql/mutations';
 import {
   AddDraftRecordMutationResponse,
   AddRecordMutationResponse,
   EditDraftRecordMutationResponse,
 } from '../../models/record.model';
 import { Question } from '../../survey/types';
+import { AuthService } from '../auth/auth.service';
+import { ConfirmService } from '../confirm/confirm.service';
+import { BlobType, DownloadService } from '../download/download.service';
 import {
   ADD_DRAFT_RECORD,
   DELETE_DRAFT_RECORD,
   EDIT_DRAFT_RECORD,
 } from './graphql/mutations';
+import { DocumentManagementService } from '../document-management/document-management.service';
+
 /**
  * Shared survey helper service.
  */
@@ -39,6 +41,7 @@ export class FormHelpersService {
    * @param translate This is the service that allows us to translate the text in our application.
    * @param authService Shared auth service
    * @param downloadService Shared download service
+   * @param documentManagementService Shared cs documentation
    */
   constructor(
     @Inject('environment') private environment: any,
@@ -47,7 +50,8 @@ export class FormHelpersService {
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private authService: AuthService,
-    private downloadService: DownloadService
+    private downloadService: DownloadService,
+    private documentManagementService: DocumentManagementService
   ) {}
 
   /**
@@ -121,36 +125,74 @@ export class FormHelpersService {
 
     const data = survey.data;
     const questionsToUpload = Object.keys(temporaryFilesStorage);
+    // Is using document management system
+    const useDocumentManagement = !!this.environment.csApiUrl;
     for (const name of questionsToUpload) {
       const files = temporaryFilesStorage[name];
       for (const [index, file] of files.entries()) {
-        const path = await this.downloadService.uploadBlob(
-          file,
-          BlobType.RECORD_FILE,
-          formId
-        );
-        if (path) {
-          const fileContent = data[name][index].content;
-          data[name][index].content = path;
+        // Upload the file using document management system
+        if (useDocumentManagement) {
+          const { driveId, itemId } =
+            await this.documentManagementService.uploadFile(file);
+          if (driveId && itemId) {
+            const fileContent = data[name][index].content;
+            data[name][index].content = {
+              driveId,
+              itemId,
+            };
 
-          // Check if any other question is using the same file
-          survey.getAllQuestions().forEach((question) => {
-            const questionType = question.getType();
-            if (
-              questionType !== 'file' ||
-              // Only change files that are not in the temporary storage
-              // meaning their values came from the default values
-              !!temporaryFilesStorage[question.name]
-            )
-              return;
+            // Check if any other question is using the same file
+            survey.getAllQuestions().forEach((question) => {
+              const questionType = question.getType();
+              if (
+                questionType !== 'file' ||
+                // Only change files that are not in the temporary storage
+                // meaning their values came from the default values
+                !!temporaryFilesStorage[question.name]
+              )
+                return;
 
-            const files = data[question.name] ?? [];
-            files.forEach((file: any) => {
-              if (file && file.content === fileContent) {
-                file.content = path;
-              }
+              const files = data[question.name] ?? [];
+              files.forEach((file: any) => {
+                if (file && file.content === fileContent) {
+                  file.content = {
+                    driveId,
+                    itemId,
+                  };
+                }
+              });
             });
-          });
+          }
+        } else {
+          // Default behavior, use app builder back-end
+          const path = (await this.downloadService.uploadBlob(
+            file,
+            BlobType.RECORD_FILE,
+            formId
+          )) as string;
+          if (path) {
+            const fileContent = data[name][index].content;
+            data[name][index].content = path;
+
+            // Check if any other question is using the same file
+            survey.getAllQuestions().forEach((question) => {
+              const questionType = question.getType();
+              if (
+                questionType !== 'file' ||
+                // Only change files that are not in the temporary storage
+                // meaning their values came from the default values
+                !!temporaryFilesStorage[question.name]
+              )
+                return;
+
+              const files = data[question.name] ?? [];
+              files.forEach((file: any) => {
+                if (file && file.content === fileContent) {
+                  file.content = path;
+                }
+              });
+            });
+          }
         }
       }
     }

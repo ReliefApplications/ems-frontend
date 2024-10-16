@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Model, SurveyModel, settings } from 'survey-core';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
@@ -36,6 +36,7 @@ export class FormBuilderService {
    * @param restService This is the service that is used to make http requests.
    * @param formHelpersService Shared form helper service.
    * @param http Http client
+   * @param environment Environment
    */
   constructor(
     private referenceDataService: ReferenceDataService,
@@ -44,7 +45,8 @@ export class FormBuilderService {
     private snackBar: SnackbarService,
     private restService: RestService,
     private formHelpersService: FormHelpersService,
-    private http: HttpClient
+    private http: HttpClient,
+    @Inject('environment') private environment: any
   ) {}
 
   /**
@@ -223,21 +225,10 @@ export class FormBuilderService {
    * @param options Options regarding the download
    */
   private onDownloadFile(options: any): void {
-    if (
-      options.content.indexOf('base64') !== -1 ||
-      options.content.indexOf('http') !== -1
-    ) {
-      options.callback('success', options.content);
-    } else {
+    const buildRequest = (token: string, url: string) => {
       const xhr = new XMLHttpRequest();
-      xhr.open(
-        'GET',
-        `${this.restService.apiUrl}/download/file/${options.content}`
-      );
-      xhr.setRequestHeader(
-        'Authorization',
-        `Bearer ${localStorage.getItem('idtoken')}`
-      );
+      xhr.open('GET', url);
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
       xhr.onloadstart = () => {
         xhr.responseType = 'blob';
       };
@@ -252,6 +243,24 @@ export class FormBuilderService {
         reader.readAsDataURL(file);
       };
       xhr.send();
+    };
+    // Default behavior
+    if (typeof options.content === 'string') {
+      if (
+        options.content.indexOf('base64') !== -1 ||
+        options.content.indexOf('http') !== -1
+      ) {
+        options.callback('success', options.content);
+      } else {
+        const token = localStorage.getItem('idtoken') as string;
+        const url = `${this.restService.apiUrl}/download/file/${options.content}`;
+        buildRequest(token, url);
+      }
+    } else {
+      // Using document management
+      const token = localStorage.getItem('access_token') as string;
+      const url = `${this.environment.csApiUrl}/documents/drives/${options.content.driveId}/items/${options.content.itemId}/content`;
+      buildRequest(token, url);
     }
   }
 
