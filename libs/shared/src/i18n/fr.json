@@ -973,6 +973,11 @@
 				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
 			},
 			"propertyGrid": {
+				"file": {
+					"acceptedFiles": {
+						"clear": "Effacer(Tous les types de fichiers acceptés)"
+					}
+				},
 				"resource": {
 					"availableGridFields": "Champs de grille disponibles",
 					"resourceSelectText": "Vous devez d’abord sélectionner une ressource avant de définir des filtres"

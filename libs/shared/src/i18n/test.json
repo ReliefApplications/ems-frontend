@@ -973,6 +973,11 @@
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
 			},
 			"propertyGrid": {
+				"file": {
+					"acceptedFiles": {
+						"clear": "******"
+					}
+				},
 				"resource": {
 					"availableGridFields": "******",
 					"resourceSelectText": "******"
