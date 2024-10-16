@@ -2338,6 +2338,14 @@
 				"updated": "******"
 			},
 			"setAsFavorite": "******",
+			"shortcut": {
+				"errors": {
+					"isNotUnique": "******",
+					"isNotValid": "******"
+				},
+				"info": "******",
+				"text": "******"
+			},
 			"subscription": {
 				"create": "******"
 			}
@@ -2664,6 +2672,12 @@
 			"update": {
 				"exit": "******",
 				"exitMessage": "******"
+			}
+		},
+		"error": {
+			"unauthorized": {
+				"footer": "******",
+				"title": "******"
 			}
 		},
 		"formBuilder": {

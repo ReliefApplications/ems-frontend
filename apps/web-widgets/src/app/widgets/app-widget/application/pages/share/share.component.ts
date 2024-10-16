@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import {
+  Application,
+  ApplicationService,
   Dashboard,
   DashboardQueryResponse,
   UnsubscribeComponent,
@@ -28,13 +30,15 @@ export class ShareComponent extends UnsubscribeComponent implements OnInit {
    * @param apollo Apollo client service
    * @param snackBar Shared snackbar service
    * @param translateService Angular Translate service
+   * @param applicationService Application service
    */
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private applicationService: ApplicationService
   ) {
     super();
   }
@@ -59,11 +63,19 @@ export class ShareComponent extends UnsubscribeComponent implements OnInit {
             if (dashboard) {
               if (dashboard.step) {
                 url +=
-                  '/' + data.dashboard.step?.workflow?.page?.application?.id;
+                  '/' +
+                  this.applicationService.getApplicationPath(
+                    data.dashboard.step?.workflow?.page
+                      ?.application as Application
+                  );
                 url += '/workflow/' + data.dashboard.step?.workflow?.id;
                 url += '/dashboard/' + data.dashboard.id;
               } else {
-                url += '/' + data.dashboard.page?.application?.id;
+                url +=
+                  '/' +
+                  this.applicationService.getApplicationPath(
+                    data.dashboard.page?.application as Application
+                  );
                 url += '/dashboard/' + data.dashboard.id;
               }
             } else {

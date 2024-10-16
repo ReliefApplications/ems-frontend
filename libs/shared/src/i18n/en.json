@@ -2338,6 +2338,14 @@
 				"updated": "Application updated."
 			},
 			"setAsFavorite": "Set as favorite",
+			"shortcut": {
+				"errors": {
+					"isNotUnique": "**************unique",
+					"isNotValid": "**************valid"
+				},
+				"info": "Application shortcut must be an unique string in the system. It can only contain letters, numbers and hyphens",
+				"text": "Shortcut"
+			},
 			"subscription": {
 				"create": "Create a subscription"
 			}
@@ -2664,6 +2672,12 @@
 			"update": {
 				"exit": "Exit without saving changes",
 				"exitMessage": "There are unsaved changes on the page. Are you sure you want to exit?"
+			}
+		},
+		"error": {
+			"unauthorized": {
+				"footer": "Please contact <a class=\"underline text-primary-500 hover:text-primary-600\" href=\"mailto:ems2@who.int\">ems2@who.int</a> for more information.",
+				"title": "Your user account does not have access to this content."
 			}
 		},
 		"formBuilder": {

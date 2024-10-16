@@ -15,7 +15,7 @@
     <shared-application-summary
       *ngFor="let application of applications; let index = index"
       [application]="application"
-      (click)="openApplication.emit(application.id)"
+      (click)="emitApplicationToOpen(application)"
       (delete)="delete.emit(application)"
       (preview)="preview.emit(application)"
       (clone)="clone.emit(application)"

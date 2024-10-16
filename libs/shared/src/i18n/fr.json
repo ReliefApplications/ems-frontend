@@ -2338,6 +2338,14 @@
 				"updated": "Application modifiée."
 			},
 			"setAsFavorite": "Ajouter aux favoris",
+			"shortcut": {
+				"errors": {
+					"isNotUnique": "**************",
+					"isNotValid": "**************"
+				},
+				"info": "***********",
+				"text": "***********"
+			},
 			"subscription": {
 				"create": "Créer un abonnement"
 			}
@@ -2664,6 +2672,12 @@
 			"update": {
 				"exit": "Quitter sans sauvegarder les changements",
 				"exitMessage": "Il y a des changements non sauvegardés dans la page, voulez-vous vraiment quitter cette page ?"
+			}
+		},
+		"error": {
+			"unauthorized": {
+				"footer": "Veuillez contacter <a class=\"underline text-primary-500 hover:text-primary-600\" href=\"mailto:ems2@who.int\">ems2@who.int</a> pour plus d'information.",
+				"title": "Votre compte n'a pas accès à ce contenu."
 			}
 		},
 		"formBuilder": {

@@ -73,6 +73,7 @@ export * from './lib/components/dashboard-filter/public-api';
 export * from './lib/components/dashboard/public-api';
 export * from './lib/components/edit-calculated-field-modal/public-api';
 export * from './lib/components/editable-text/public-api';
+export * from './lib/components/error/error.module';
 export * from './lib/components/form-builder/public-api';
 export * from './lib/components/form/public-api';
 export * from './lib/components/layout/public-api';
