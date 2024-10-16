@@ -32,7 +32,6 @@ import {
   PaginatorModule,
   DateModule,
 } from '@oort-front/ui';
-import { DocumentUploadComponent } from '@oort-front/doc-management';
 
 /**
  * Applications page module.
@@ -65,7 +64,6 @@ import { DocumentUploadComponent } from '@oort-front/doc-management';
     StatusOptionsComponent,
     TooltipModule,
     ListFilterComponent,
-    DocumentUploadComponent,
   ],
   exports: [ApplicationsComponent],
 })
