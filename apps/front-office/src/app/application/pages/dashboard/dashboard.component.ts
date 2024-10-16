@@ -56,8 +56,6 @@ export class DashboardComponent
   public id = '';
   /** Context id */
   public contextId?: string;
-  /** Application id */
-  public applicationId?: string;
   /** Is dashboard loading */
   public loading = true;
   /** Current dashboard */

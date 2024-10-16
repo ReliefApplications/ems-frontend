@@ -14,18 +14,19 @@ import { takeUntil } from 'rxjs/operators';
 import { PreviewService } from '../services/preview.service';
 
 /**
- * Creates a ability object the app preview
+ * Creates a ability object the application preview
  * given the application and the role to preview with
  *
- * @param app The application being previewed
+ * @param application The application being previewed
  * @param role The role to preview with
  * @returns The ability object
  */
-const getAbilityForAppPreview = (app: Application, role: string) => {
+const getAbilityForAppPreview = (application: Application, role: string) => {
   const { can, rules } = new AbilityBuilder(AppAbility);
   const permissions =
-    app.roles?.find((x) => x.id === role)?.permissions?.map((p) => p.type) ||
-    [];
+    application.roles
+      ?.find((x) => x.id === role)
+      ?.permissions?.map((p) => p.type) || [];
   // === Role ===
   if (permissions.includes('can_see_roles')) {
     can(['create', 'read', 'update', 'delete'], ['Role', 'Channel']);
@@ -250,7 +251,11 @@ export class AppPreviewComponent
           ];
           if (!this.application || application.id !== this.application.id) {
             const firstPage = get(application, 'pages', [])[0];
-            if (this.router.url.endsWith(application?.id || '') || !firstPage) {
+            if (
+              this.router.url.endsWith(application?.id || '') ||
+              this.router.url.endsWith(application?.shortcut || '') ||
+              !firstPage
+            ) {
               if (firstPage) {
                 this.router.navigate(
                   [
