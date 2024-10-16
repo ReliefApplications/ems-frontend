@@ -671,10 +671,10 @@
         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
           <div class="textbox-container" [style]="dataItem.style[field.name]">
             <div class="truncate">
-              {{ dataItem[field.name] | sharedStripHtml }}
+              {{ dataItem.text[field.name] | sharedStripHtml }}
             </div>
             <button
-              *ngIf="dataItem[field.name]"
+              *ngIf="dataItem.text[field.name]"
               kendoButton
               icon="hyperlink-open-sm"
               (click)="onOpenEditorModal(dataItem, field)"
