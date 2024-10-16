@@ -53,7 +53,7 @@ export class RedirectComponent extends UnsubscribeComponent implements OnInit {
             localStorage.removeItem('redirectPath');
           } else if (user.favoriteApp) {
             const favoriteApp = this.applications.find(
-              (app) => app.id === user.favoriteApp
+              (application) => application.id === user.favoriteApp
             );
             if (favoriteApp) {
               this.router.navigate([
