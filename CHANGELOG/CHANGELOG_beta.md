@@ -1,3 +1,16 @@
+# [2.17.0-beta.8](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.7...v2.17.0-beta.8) (2024-10-16)
+
+
+### Bug Fixes
+
+* in some cases, html value would not render in grid ([e84e095](https://github.com/ReliefApplications/ems-frontend/commit/e84e09522d98421794d35501fb440d34d83510dc))
+* on quick action, rows would not be cleared ([#2649](https://github.com/ReliefApplications/ems-frontend/issues/2649)) ([1e59bcb](https://github.com/ReliefApplications/ems-frontend/commit/1e59bcbae711450143f7f7d3721cce77a3dfbb02)), closes [AB#104381](https://github.com/AB/issues/104381)
+
+
+### Features
+
+* can set application shortcut ([#2644](https://github.com/ReliefApplications/ems-frontend/issues/2644)) ([c637d6f](https://github.com/ReliefApplications/ems-frontend/commit/c637d6fa936630edfa990c5dc267e7422d33fcc6)), closes [AB#104315](https://github.com/AB/issues/104315)
+
 # [2.17.0-beta.7](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.6...v2.17.0-beta.7) (2024-10-15)
 
 
