@@ -403,7 +403,9 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
       await this.promisedRowsModifications(
         options.modifications,
         this.grid.selectedRows
-      );
+      ).then(() => {
+        this.grid.selectedRows = [];
+      });
     }
     const promises: Promise<any>[] = [];
     // Notifies on a channel.
