@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { EmptyModule } from '../ui/empty/empty.module';
 import { ErrorRoutingModule } from './error-routing.module';
 import { ErrorComponent } from './error.component';
-import { EmptyModule } from '@oort-front/shared';
 
 /**
  * Error page module.

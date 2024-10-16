@@ -5,7 +5,7 @@ import { Component, Inject } from '@angular/core';
  * Used to display authentication issue or access issue.
  */
 @Component({
-  selector: 'app-error',
+  selector: 'shared-error',
   templateUrl: './error.component.html',
   styleUrls: ['./error.component.scss'],
 })
