@@ -185,8 +185,8 @@ export class ApplicationComponent
     this.applicationService.application$
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
-        this.loading = false;
         if (application) {
+          this.loading = false;
           this.title = application.name || '';
           if (application.canUpdate) {
             this.buildAppSettingsNavItems();
