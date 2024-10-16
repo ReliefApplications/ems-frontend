@@ -533,6 +533,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
           });
       }
     } else {
+      this.grid.selectedRows = [];
       this.grid.reloadData();
     }
   }
