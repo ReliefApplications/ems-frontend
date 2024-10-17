@@ -30,7 +30,6 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { DashboardExportActionComponent } from '../dashboard-export-action/dashboard-export-action.component';
 import { SnackbarSpinnerComponent } from '../snackbar-spinner/snackbar-spinner.component';
 import { DashboardExportService } from '../../services/dashboard-export/dashboard-export.service';
 
@@ -95,7 +94,10 @@ export class DashboardExportButtonComponent {
     this.dashboardExportService.mapLoadedCount.next(0);
 
     // Open dashboard export modal
-    const dialogRef = this.dialog.open(DashboardExportActionComponent, {
+    const { DashboardExportModalComponent } = await import(
+      '../dashboard-export-modal/dashboard-export-modal.component'
+    );
+    const dialogRef = this.dialog.open(DashboardExportModalComponent, {
       data: {
         exportType: 'pdf',
       },
@@ -150,7 +152,10 @@ export class DashboardExportButtonComponent {
     this.dashboardExportService.mapLoadedCount.next(0);
 
     // Open the DashboardExportActionComponent dialog
-    const dialogRef = this.dialog.open(DashboardExportActionComponent, {
+    const { DashboardExportModalComponent } = await import(
+      '../dashboard-export-modal/dashboard-export-modal.component'
+    );
+    const dialogRef = this.dialog.open(DashboardExportModalComponent, {
       data: {
         exportType: 'image',
       },

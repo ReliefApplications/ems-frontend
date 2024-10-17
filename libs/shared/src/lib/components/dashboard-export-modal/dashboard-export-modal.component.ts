@@ -46,11 +46,11 @@ type DialogResultI = {
     FormWrapperModule,
     DialogModule,
   ],
-  selector: 'app-dashboard-export-action',
-  templateUrl: './dashboard-export-action.component.html',
-  styleUrls: ['./dashboard-export-action.component.scss'],
+  selector: 'app-dashboard-export-modal',
+  templateUrl: './dashboard-export-modal.component.html',
+  styleUrls: ['./dashboard-export-modal.component.scss'],
 })
-export class DashboardExportActionComponent {
+export class DashboardExportModalComponent {
   /** Reactive form */
   public form!: ReturnType<typeof this.getExportForm>;
   /** Dialog data */
@@ -71,7 +71,7 @@ export class DashboardExportActionComponent {
    */
   constructor(
     @Inject(DIALOG_DATA) public dialogData: DialogInputI,
-    public dialogRef: DialogRef<DialogResultI, DashboardExportActionComponent>
+    public dialogRef: DialogRef<DialogResultI, DashboardExportModalComponent>
   ) {
     this.data = dialogData;
     this.form = this.getExportForm();
