@@ -10,6 +10,7 @@ import {
   ResourceSelectTextComponent,
   TestServiceDropdownComponent,
   CodeEditorComponent,
+  CsDocsPropertiesDropdownComponent,
 } from '@oort-front/shared';
 
 /**
@@ -32,6 +33,7 @@ export class AppComponent implements OnInit {
     ResourceSelectTextComponent,
     TestServiceDropdownComponent,
     CodeEditorComponent,
+    CsDocsPropertiesDropdownComponent,
   ];
   /** Application title */
   title = 'back-office';

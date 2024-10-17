@@ -1,0 +1,30 @@
+<div uiFormFieldDirective [outline]="false" class="grow">
+  <ui-select-menu
+    [formControl]="propertyItemsControl"
+    [filterable]="true"
+    [multiselect]="true"
+  >
+    <ui-select-option
+      *ngFor="let value of selectedPropertyItems"
+      [value]="value.id"
+    >
+      {{ value.name }}
+    </ui-select-option>
+  </ui-select-menu>
+  <ng-container *ngIf="loading; else clearTmpl">
+    <ui-spinner size="small" uiSuffix></ui-spinner>
+  </ng-container>
+  <ng-template #clearTmpl>
+    <ui-button
+      uiSuffix
+      variant="danger"
+      [isIcon]="true"
+      icon="close"
+      class="mr-1 pl-0"
+      (click)="clearSelection()"
+      [uiTooltip]="
+        'components.formBuilder.propertyGrid.file.acceptedFiles.clear' | translate
+      "
+    ></ui-button>
+  </ng-template>
+</div>
