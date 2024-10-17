@@ -70,7 +70,7 @@ export const init = (
       displayName: property.text,
       default: property.value,
       required: true,
-      visibleIndex: index,
+      visibleIndex: index + 1,
     });
 
     serializer.addProperty('file', {
@@ -79,6 +79,16 @@ export const init = (
       visible: false,
       required: true,
     });
+  });
+
+  serializer.addProperty('file', {
+    category: 'CS Document API',
+    name: `querySort`,
+    visible: true,
+    default: 'ASC',
+    choices: ['ASC', 'DESC'],
+    visibleIndex: 0,
+    required: true,
   });
 
   //  CS Documentation Properties dropdown

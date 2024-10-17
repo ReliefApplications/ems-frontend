@@ -3,10 +3,12 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  ViewChild,
   ViewContainerRef,
 } from '@angular/core';
 import { FormControl, UntypedFormControl } from '@angular/forms';
 import { gql } from '@apollo/client';
+import { SelectMenuComponent } from '@oort-front/ui';
 import { Apollo, ApolloBase } from 'apollo-angular';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -63,6 +65,12 @@ export class CsDocsPropertiesDropdownComponent
   private destroy$: Subject<void> = new Subject<void>();
 
   /**
+   * Select menu component
+   */
+  @ViewChild(SelectMenuComponent, { static: true })
+  selectMenu!: SelectMenuComponent;
+
+  /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created
    *
@@ -81,13 +89,21 @@ export class CsDocsPropertiesDropdownComponent
 
   override ngOnInit(): void {
     super.ngOnInit();
+    // Listen to select menu UI event in order to update UI
+    this.selectMenu.triggerUIChange$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((hasChanged: boolean) => {
+        if (hasChanged) {
+          this.changeDetectorRef.detectChanges();
+        }
+      });
     if (this.model.value) {
       this.loading = true;
       this.csDocsApolloClient
         .query<PropertyQueryResponse>({
           query: gql`
             {
-              ${this.model.value}(sortBy: { field: "name", direction: "ASC" }) {
+              ${this.model.value}(sortBy: { field: "name", direction: "${this.model.obj.querySort}" }) {
                 id
                 name
                 __typename
@@ -101,6 +117,11 @@ export class CsDocsPropertiesDropdownComponent
             if (data[this.model.value as string]) {
               this.selectedPropertyItems = data[this.model.value as string];
             }
+            if (this.model.obj[`selected${this.model.value}PropertyItems`]) {
+              this.propertyItemsControl.setValue(
+                this.model.obj[`selected${this.model.value}PropertyItems`]
+              );
+            }
             this.changeDetectorRef.detectChanges();
           },
           error: () => {
@@ -112,8 +133,8 @@ export class CsDocsPropertiesDropdownComponent
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (items) => {
-            this.changeDetectorRef.detectChanges();
             this.model.obj[`selected${this.model.value}PropertyItems`] = items;
+            this.changeDetectorRef.detectChanges();
           },
         });
     }
