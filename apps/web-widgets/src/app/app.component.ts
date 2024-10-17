@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {
   ApplicationDropdownComponent,
+  CsDocsPropertiesDropdownComponent,
   GeofieldsListboxComponent,
   ReferenceDataDropdownComponent,
   ResourceAvailableFieldsComponent,
@@ -28,6 +29,7 @@ export class AppComponent {
     ResourceDropdownComponent,
     ResourceSelectTextComponent,
     TestServiceDropdownComponent,
+    CsDocsPropertiesDropdownComponent,
   ];
 
   /** Title of web-widgets app */

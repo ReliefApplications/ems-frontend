@@ -1,6 +1,7 @@
 import {
   ChangeDetectorRef,
   Component,
+  OnDestroy,
   OnInit,
   ViewContainerRef,
 } from '@angular/core';
@@ -26,7 +27,7 @@ import { Subject } from 'rxjs';
 })
 export class ResourceDropdownComponent
   extends QuestionAngular<QuestionResourceDropdownModel>
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   /** Selected resource */
   public selectedResource?: Resource;
@@ -75,5 +76,11 @@ export class ResourceDropdownComponent
           }
         });
     }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
