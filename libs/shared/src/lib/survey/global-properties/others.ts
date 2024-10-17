@@ -66,8 +66,10 @@ export const init = (environment: any): void => {
     },
   });
 
-  /** REadonly default accepted types, will use the acceptedTypesValues component */
+  /** Readonly default accepted types, will use the acceptedTypesValues component */
   serializer.getProperty('file', 'acceptedTypes').readOnly = true;
+  /** Size per file is mandatory */
+  serializer.getProperty('file', 'maxSize').isRequired = true;
 
   serializer.addProperty('file', {
     category: 'general',
