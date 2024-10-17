@@ -97,7 +97,7 @@ export * from './lib/components/utils/unsubscribe/public-api';
 export * from './lib/components/editable-text/public-api';
 export * from './lib/components/users/public-api';
 export * from './lib/components/payload-modal/payload-modal.component';
-export * from './lib/components/dashboard-export-action/dashboard-export-action.component';
+export * from './lib/components/dashboard-export-button/dashboard-export-button.component';
 export * from './lib/components/widgets/map/public-api';
 export * from './lib/components/dashboard/public-api';
 

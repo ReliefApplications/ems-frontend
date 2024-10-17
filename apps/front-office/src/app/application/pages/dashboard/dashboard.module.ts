@@ -4,6 +4,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import {
   ButtonActionModule,
+  DashboardExportButtonComponent,
   DashboardFilterModule,
   FullScreenModule,
   SkeletonModule,
@@ -36,6 +37,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ButtonActionModule,
     MenuModule,
     IconModule,
+    DashboardExportButtonComponent,
   ],
   exports: [DashboardComponent],
 })

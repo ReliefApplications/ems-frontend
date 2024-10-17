@@ -29,6 +29,7 @@ import {
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
 import { ContextSelectorComponent } from './components/context-selector/context-selector.component';
+import { DashboardExportButtonComponent } from '../../../../../../../libs/shared/src/lib/components/dashboard-export-button/dashboard-export-button.component';
 
 /**
  * Dashboard page module.
@@ -62,6 +63,7 @@ import { ContextSelectorComponent } from './components/context-selector/context-
     ButtonActionModule,
     ToggleModule,
     ContextSelectorComponent,
+    DashboardExportButtonComponent,
   ],
   exports: [DashboardComponent],
 })

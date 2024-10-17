@@ -4,11 +4,10 @@ import {
   ElementRef,
   EventEmitter,
   Inject,
-  OnDestroy,
   OnInit,
   Output,
   Renderer2,
-  ViewChild,
+  // ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -20,20 +19,15 @@ import {
   ContextService,
   DashboardQueryResponse,
   Record,
-  MapStatusService,
-  DashboardExportActionComponent,
   DashboardComponent as SharedDashboardComponent,
   DashboardAutomationService,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
-import { filter, first, map, startWith, takeUntil } from 'rxjs/operators';
-import { Observable, Subscription, firstValueFrom } from 'rxjs';
+import { filter, map, startWith, takeUntil } from 'rxjs/operators';
+import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
-import { cloneDeep, upperCase } from 'lodash';
-import { PDFExportComponent } from '@progress/kendo-angular-pdf-export';
-import { drawDOM, exportPDF, exportImage } from '@progress/kendo-drawing';
-import { saveAs } from '@progress/kendo-file-saver';
+import { cloneDeep } from 'lodash';
 
 /**
  * Dashboard page.
@@ -52,14 +46,12 @@ import { saveAs } from '@progress/kendo-file-saver';
 })
 export class DashboardComponent
   extends SharedDashboardComponent
-  implements OnInit, OnDestroy
+  implements OnInit
 {
   /** Change step event ( in workflow ) */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
-  /** PDF Export Component View Child */
-  @ViewChild(PDFExportComponent) pdfExport!: PDFExportComponent;
   /** PDF Export Div View Child */
-  @ViewChild('pdfExport') exporter!: ElementRef;
+  // @ViewChild('pdfExport') exporter!: ElementRef;
   /** Is dashboard in fullscreen mode */
   public isFullScreen = false;
   /** Dashboard id */
@@ -80,12 +72,6 @@ export class DashboardComponent
   public closable = true;
   /** Dashboard button actions */
   public buttonActions: ButtonActionT[] = [];
-  /** Map Loaded subscription */
-  private mapReadyForExportSubscription?: Subscription;
-  /** Map Exists State */
-  private mapExists = false;
-  /** Map Status Subscription */
-  private mapStatusSubscription?: Subscription;
 
   /**
    * Dashboard page.
@@ -101,7 +87,6 @@ export class DashboardComponent
    * @param elementRef Angular element ref
    * @param document Document
    * @param contextService Dashboard context service
-   * @param mapStatusService Service for managing map ready and export status
    * @param dashboardAutomationService Dashboard automation service
    */
   constructor(
@@ -113,10 +98,9 @@ export class DashboardComponent
     private translate: TranslateService,
     private confirmService: ConfirmService,
     private renderer: Renderer2,
-    private elementRef: ElementRef,
+    public elementRef: ElementRef,
     @Inject(DOCUMENT) private document: Document,
     private contextService: ContextService,
-    private mapStatusService: MapStatusService,
     private dashboardAutomationService: DashboardAutomationService
   ) {
     super();
@@ -193,24 +177,10 @@ export class DashboardComponent
       return;
     }
 
-    // Ensures cleanup of the count of map widgets present on the dashboard to 0.
-    this.mapStatusService.resetMapCount();
-    this.mapExists = false; // MapExists state reset
-
     const rootElement = this.elementRef.nativeElement;
     // Doing this to be able to use custom styles on specific dashboards
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.loading = true;
-
-    // Returns true if a map exists in the dashboard
-    this.mapStatusSubscription = this.mapStatusService.mapStatus$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((status: any) => {
-        if (status) {
-          console.log(status);
-          this.mapExists = status;
-        }
-      });
 
     return firstValueFrom(
       this.apollo.query<DashboardQueryResponse>({
@@ -298,239 +268,5 @@ export class DashboardComponent
       );
     };
     this.contextService.initContext(this.dashboard as Dashboard, callback);
-  }
-
-  /**
-   * This method generates a PDF with the user input provided parameters.
-   *
-   * @param includeHeaderFooter Whether to include headers and footers in the PDF.
-   * @param pdfSize The size of the PDF to be generated.
-   * @returns {Promise<string>} A promise that resolves to a string representing the PDF data.
-   */
-  public async pdfDrawer(
-    includeHeaderFooter: boolean,
-    pdfSize: string
-  ): Promise<string> {
-    if (includeHeaderFooter) {
-      this.addHeaderAndFooter();
-    }
-
-    const drawing = await drawDOM(this.exporter.nativeElement, {
-      paperSize: pdfSize,
-    });
-    const pdfData = await exportPDF(drawing);
-    if (includeHeaderFooter) {
-      this.removeHeaderAndFooter();
-    }
-    this.mapStatusService.updateExportingStatus(false);
-    return pdfData;
-  }
-
-  /**
-   * Saves the dashboard as a PDF file.
-   */
-  public async pdfExporter(): Promise<void> {
-    const data = {
-      exportType: 'pdf',
-    };
-
-    if (this.mapReadyForExportSubscription) {
-      this.mapReadyForExportSubscription.unsubscribe();
-    }
-
-    // Open the DashboardExportActionComponent dialog
-    const dialogRef = this.dialog.open(DashboardExportActionComponent, {
-      data,
-    });
-
-    // Handle the dialog result
-    dialogRef.closed.subscribe(async (result) => {
-      if (result !== true && result !== undefined) {
-        const resultValue = result as {
-          includeHeaderFooter: boolean;
-          paperSize: string;
-        };
-        // Sends export = true to map component when kendo export starts
-        this.mapStatusService.updateExportingStatus(true);
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.export.loading', {
-            type: 'PDF',
-          })
-        );
-
-        if (this.mapExists) {
-          this.mapStatusService.mapReadyForExport$
-            .pipe(
-              filter((ready) => ready === true), // Waits until map is ready
-              first()
-            )
-            .subscribe(async () => {
-              // Sets 0.5 second timeout to ensure the map layer is fully loaded
-              setTimeout(async () => {
-                const pdfData = await this.pdfDrawer(
-                  resultValue.includeHeaderFooter,
-                  resultValue.paperSize
-                );
-                saveAs(pdfData, `${this.dashboard?.name}.pdf`);
-                this.mapStatusService.clearLoadedMaps();
-              }, 500);
-            });
-        } else {
-          // If no map exists, proceed as normal
-          const pdfData = await this.pdfDrawer(
-            resultValue.includeHeaderFooter,
-            resultValue.paperSize
-          );
-          saveAs(pdfData, `${this.dashboard?.name}.pdf`);
-          this.mapStatusService.clearLoadedMaps();
-        }
-        setTimeout(async () => {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.export.pdf')
-          );
-        }, 500);
-      }
-    });
-  }
-
-  /**
-   * Adds header and footer to the top and bottom of a
-   * PDF and Image export.
-   */
-  private addHeaderAndFooter(): void {
-    // Create header and footer elements
-    const header = this.document.createElement('div');
-    const footer = this.document.createElement('div');
-
-    // Add date and time to header
-    const dateTime = new Date();
-    const dateTimeText =
-      dateTime.toLocaleDateString() + ' ' + dateTime.toLocaleTimeString();
-    const pageTitle = this.dashboard?.name;
-    header.innerHTML = `<span class="float-left">${dateTimeText}</span><span class="block text-center">${pageTitle}</span>`;
-
-    // Add URL to footer
-    const url = window.location.href;
-    footer.innerHTML = `<span class="text-center">${url}</span>`;
-
-    // Append header and footer to the dashboard
-    this.exporter.nativeElement.prepend(header);
-    this.exporter.nativeElement.append(footer);
-  }
-
-  /**
-   * Removes header and footer from pdf and image export.
-   */
-  private removeHeaderAndFooter(): void {
-    const header = this.exporter.nativeElement.firstChild;
-    const footer = this.exporter.nativeElement.lastChild;
-    this.exporter.nativeElement.removeChild(header);
-    this.exporter.nativeElement.removeChild(footer);
-  }
-
-  /**
-   * This function draws a PNG image from the current state of the dashboard.
-   *
-   * @param includeHeaderFooter Whether to include a header and footer in the image.
-   * @returns {Promise<string>} A promise that resolves to a string representing the PNG data.
-   */
-  public async pngDrawer(includeHeaderFooter: boolean): Promise<string> {
-    if (includeHeaderFooter) {
-      this.addHeaderAndFooter();
-    }
-    const background = this.exporter.nativeElement.style.color;
-    this.exporter.nativeElement.style.background = '#fff';
-    const drawing = await drawDOM(this.exporter.nativeElement, {
-      margin: { top: 10, left: 10, right: 10, bottom: 10 },
-    });
-    this.exporter.nativeElement.style.background = background;
-    const pngData = await exportImage(drawing);
-    if (includeHeaderFooter) {
-      this.removeHeaderAndFooter();
-    }
-    this.mapStatusService.updateExportingStatus(false);
-    return pngData;
-  }
-
-  /**
-   * Exports the dashboard to PNG
-   *
-   */
-  public async pngExporter(): Promise<void> {
-    let format: 'png' | 'jpeg';
-    let includeHeaderFooter: boolean;
-    const data = {
-      exportType: 'image',
-    };
-
-    this.mapReadyForExportSubscription?.unsubscribe();
-
-    // Open the DashboardExportActionComponent dialog
-    const dialogRef = this.dialog.open(DashboardExportActionComponent, {
-      data,
-    });
-
-    // Sets the user input values from dialog box
-    dialogRef.closed.subscribe(async (result) => {
-      if (result !== true && result !== undefined) {
-        const resultValue = result as {
-          format: 'png' | 'jpeg';
-          includeHeaderFooter: boolean;
-        };
-
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.export.loading', {
-            type: upperCase(resultValue.format),
-          })
-        );
-
-        // Sets exporting status to true
-        this.mapStatusService.updateExportingStatus(true);
-
-        if (this.mapExists) {
-          this.mapStatusService.mapReadyForExport$
-            .pipe(
-              filter((ready) => ready === true), // Waits until map is ready
-              first()
-            )
-            .subscribe(async () => {
-              // Sets 0.5 second timeout to ensure the map layer is fully loaded
-              setTimeout(async () => {
-                format = resultValue.format;
-                includeHeaderFooter = resultValue.includeHeaderFooter;
-
-                // Draws the Dashboard in its current state
-                const pngData = await this.pngDrawer(includeHeaderFooter);
-                saveAs(pngData, `${this.dashboard?.name}.${format}`);
-                this.mapStatusService.clearLoadedMaps();
-              }, 500);
-            });
-        } else {
-          format = resultValue.format;
-          includeHeaderFooter = resultValue.includeHeaderFooter;
-          const pngData = await this.pngDrawer(includeHeaderFooter);
-          saveAs(pngData, `${this.dashboard?.name}.${format}`);
-          this.mapStatusService.clearLoadedMaps();
-        }
-        setTimeout(async () => {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.export.image', {
-              image: upperCase(resultValue.format),
-            })
-          );
-        }, 1000);
-      }
-    });
-  }
-
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    // Unsubscribe from map export subscription
-    if (this.mapReadyForExportSubscription) {
-      this.mapReadyForExportSubscription.unsubscribe();
-    }
-    // Unsubscribe from map exist status subscription
-    this.mapStatusSubscription?.unsubscribe();
-    this.mapExists = false;
   }
 }

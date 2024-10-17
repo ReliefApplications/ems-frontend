@@ -1,5 +1,5 @@
-<!-- PDF Exporter -->
-<div #pdfExport>
+<!-- Element to export -->
+<div #exporter>
   <shared-dashboard-filter
     *ngIf="showFilter && !isFullScreen"
     [editable]="true"
@@ -132,25 +132,10 @@
             >
             </ui-button>
             <!-- PDF + PNG Export -->
-            <ui-button
-              variant="grey"
-              class="export-hide"
-              [isIcon]="true"
-              icon="get_app"
-              [uiMenuTriggerFor]="exportMenu"
-              [uiTooltip]="'common.export' | translate"
-            ></ui-button>
-            <ui-menu #exportMenu class="export-hide">
-              <!-- Export menu -->
-              <button uiMenuItem (click)="pdfExporter()">
-                <ui-icon icon="file_download" variant="grey"></ui-icon>
-                {{ 'common.exportType.pdf' | translate }}
-              </button>
-              <button uiMenuItem (click)="pngExporter()">
-                <ui-icon icon="add_a_photo" variant="grey"></ui-icon>
-                {{ 'common.exportType.png' | translate }}
-              </button>
-            </ui-menu>
+            <shared-dashboard-export-button
+              [title]="dashboard.name"
+              [exporter]="exporter"
+            ></shared-dashboard-export-button>
             <!-- More options -->
             <ui-button
               variant="grey"

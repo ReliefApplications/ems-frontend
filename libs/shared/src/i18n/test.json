@@ -190,8 +190,8 @@
 		"export": "******",
 		"exportObject": "****** {{name}}",
 		"exportType": {
-			"pdf": "******",
-			"png": "******"
+			"image": "******",
+			"pdf": "******"
 		},
 		"false": "******",
 		"field": {

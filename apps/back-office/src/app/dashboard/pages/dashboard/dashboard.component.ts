@@ -61,7 +61,6 @@ import {
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { GridsterConfig } from 'angular-gridster2';
-import { PDFExportComponent } from '@progress/kendo-angular-pdf-export';
 import { drawDOM, exportPDF, exportImage } from '@progress/kendo-drawing';
 import { saveAs } from '@progress/kendo-file-saver';
 
@@ -87,8 +86,6 @@ export class DashboardComponent
 {
   /** Change step event ( in workflow ) */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
-  /** PDF Export Component View Child */
-  @ViewChild(PDFExportComponent) pdfExport!: PDFExportComponent;
   /** PDF Export Div View Child */
   @ViewChild('pdfExport') exporter!: ElementRef;
   /** Is dashboard in fullscreen mode */
