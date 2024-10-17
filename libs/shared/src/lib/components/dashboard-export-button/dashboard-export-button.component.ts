@@ -32,6 +32,7 @@ import {
 } from 'rxjs';
 import { DashboardExportActionComponent } from '../dashboard-export-action/dashboard-export-action.component';
 import { SnackbarSpinnerComponent } from '../snackbar-spinner/snackbar-spinner.component';
+import { DashboardExportService } from '../../services/dashboard-export/dashboard-export.service';
 
 /**
  * Shared dashboard export button.
@@ -56,10 +57,8 @@ export class DashboardExportButtonComponent {
   @Input() exporter!: ElementRef;
   /** Document title */
   @Input() title?: string;
+  /** Wrapper element where exporter will be put into */
   private wrapper: any;
-  /** BehaviorSubject that holds the current status of the pdf or image export.*/
-  private isExportingSubject: BehaviorSubject<boolean> =
-    new BehaviorSubject<boolean>(false);
   /**
    * BehaviorSubject that is set to true true if all the maps on the dashboard
    * are loaded and ready for exporting.
@@ -68,8 +67,6 @@ export class DashboardExportButtonComponent {
   /** Observable that observes true if the pdf or image export is in progress. */
   public mapReadyForExport$: Observable<boolean> =
     this.mapReadyForExportSubject.asObservable();
-  /** BehaviorSubject that holds the count of loaded maps during current dashboard export. */
-  private mapLoadedCount = new BehaviorSubject<number>(0);
 
   /**
    * Shared dashboard export button.
@@ -80,27 +77,28 @@ export class DashboardExportButtonComponent {
    * @param translate Angular translate service
    * @param snackBar Shared snackbar service
    * @param renderer Angular renderer
+   * @param dashboardExportService Dashboard export service
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private dialog: Dialog,
     private translate: TranslateService,
     private snackBar: SnackbarService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private dashboardExportService: DashboardExportService
   ) {}
 
   /**
    * Saves the dashboard as a PDF file.
    */
   public async pdfExporter(): Promise<void> {
-    const data = {
-      exportType: 'pdf',
-    };
-    this.mapLoadedCount.next(0);
+    this.dashboardExportService.mapLoadedCount.next(0);
 
     // Open dashboard export modal
     const dialogRef = this.dialog.open(DashboardExportActionComponent, {
-      data,
+      data: {
+        exportType: 'pdf',
+      },
     });
 
     // Handle the dialog result
@@ -113,12 +111,12 @@ export class DashboardExportButtonComponent {
             paperSize: string;
           };
         }),
-        tap(() => this.isExportingSubject.next(true)),
+        tap(() => this.dashboardExportService.isExportingSubject.next(true)),
         switchMap((result) =>
           iif(
-            () => this.mapExistsInExportComponent() > 0,
-            this.mapReadyForExport$.pipe(
-              filter((ready) => !!ready),
+            () => this.numberOfMaps() > 0,
+            this.dashboardExportService.mapLoadedCount$.pipe(
+              filter((count) => count >= this.numberOfMaps()),
               // Sets 0.5 second timeout to ensure the map layer is fully loaded
               debounceTime(500),
               first(),
@@ -149,14 +147,13 @@ export class DashboardExportButtonComponent {
    *
    */
   public async imageExporter(): Promise<void> {
-    const data = {
-      exportType: 'image',
-    };
-    this.mapLoadedCount.next(0);
+    this.dashboardExportService.mapLoadedCount.next(0);
 
     // Open the DashboardExportActionComponent dialog
     const dialogRef = this.dialog.open(DashboardExportActionComponent, {
-      data,
+      data: {
+        exportType: 'image',
+      },
     });
 
     // Sets the user input values from dialog box
@@ -169,12 +166,12 @@ export class DashboardExportButtonComponent {
             includeHeaderFooter: boolean;
           };
         }),
-        tap(() => this.isExportingSubject.next(true)),
+        tap(() => this.dashboardExportService.isExportingSubject.next(true)),
         switchMap((result) =>
           iif(
-            () => this.mapExistsInExportComponent() > 0,
-            this.mapReadyForExport$.pipe(
-              filter((ready) => !!ready),
+            () => this.numberOfMaps() > 0,
+            this.dashboardExportService.mapLoadedCount$.pipe(
+              filter((count) => count >= this.numberOfMaps()),
               // Sets 0.5 second timeout to ensure the map layer is fully loaded
               debounceTime(500),
               first(),
@@ -214,7 +211,7 @@ export class DashboardExportButtonComponent {
   }) {
     const pdfData = await this.pdfDrawer(resultValue);
     saveAs(pdfData, `${this.title}.pdf`);
-    this.isExportingSubject.next(false);
+    this.dashboardExportService.isExportingSubject.next(false);
     // this.currentDialogSubscriptions?.unsubscribe();
   }
 
@@ -262,7 +259,7 @@ export class DashboardExportButtonComponent {
     // Draws the Dashboard in its current state
     const pngData = await this.imageDrawer(includeHeaderFooter);
     saveAs(pngData, `${this.title}.${format}`);
-    this.isExportingSubject.next(false);
+    this.dashboardExportService.isExportingSubject.next(false);
     // this.currentDialogSubscriptions?.unsubscribe();
   }
 
@@ -344,14 +341,12 @@ export class DashboardExportButtonComponent {
   }
 
   /**
-   * Check if any map component exists in the given element source
+   * Provide number of map elements
    *
-   * @returns Map components number of items in given source element
+   * @returns Number of map elements in provided native element
    */
-  private mapExistsInExportComponent(): number {
-    const hasMaps =
-      this.exporter.nativeElement.querySelectorAll('shared-map')?.length;
-    return hasMaps;
+  private numberOfMaps(): number {
+    return this.exporter.nativeElement.querySelectorAll('shared-map')?.length;
   }
 
   private createWrapper() {
