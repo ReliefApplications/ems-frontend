@@ -463,6 +463,13 @@ export const init = (
         // type: 'expression',
         category: 'logic',
       });
+
+      Serializer.addProperty('resources', {
+        name: 'filters',
+        category: 'Custom Questions',
+        visible: false,
+        isSerializable: false,
+      });
     },
     /**
      * Fetch the resources when the question is loaded
@@ -535,8 +542,8 @@ export const init = (
           question.customFilter &&
           question.customFilter.trim().length > 0
         ) {
-          const obj = JSON.parse(question.customFilter);
-          if (obj) {
+          const obj = JSON.parse(question.customFilter || '[]');
+          if (Array.isArray(obj) && obj.length) {
             for (const objElement of obj) {
               const value = objElement.value;
               if (typeof value === 'string' && value.match(/^{*.*}$/)) {
@@ -544,15 +551,19 @@ export const init = (
                 objElement.value = '';
                 question.survey?.onValueChanged.add((_: any, options: any) => {
                   if (options.question.name === quest) {
-                    if (options.value) {
+                    if (options.value || options.value === 0) {
                       setAdvanceFilter(options.value, objElement.field);
                       if (question.displayAsGrid) {
                         resourcesFilterValues.next(filters);
                       } else {
                         this.populateChoices(question, objElement.field);
                       }
+                    } else {
+                      // Remove filter if value is null, undefined or empty
+                      setAdvanceFilter(null, objElement.field);
                     }
                   }
+                  question.filters = filters;
                 });
               }
             }
@@ -748,19 +759,22 @@ export const init = (
    * @param value Value of the filter
    * @param question The question object
    */
-  const setAdvanceFilter = (value: string, question: string | any) => {
+  const setAdvanceFilter = (value: string | null, question: string | any) => {
     const field = typeof question !== 'string' ? question.filterBy : question;
-    if (!filters.some((x: any) => x.field === field)) {
+    const existingFilter = filters.find((x: any) => x.field === field);
+
+    if (existingFilter) {
+      if (value === null || value === undefined || value === '') {
+        // Delete the filter if value is null, undefined, or empty
+        filters = filters.filter((x: any) => x.field !== field);
+      } else {
+        existingFilter.value = value;
+      }
+    } else if (value !== null && value !== undefined && value !== '') {
       filters.push({
-        field: question.filterBy,
+        field,
         operator: question.filterCondition,
         value,
-      });
-    } else {
-      filters.map((x: any) => {
-        if (x.field === field) {
-          x.value = value;
-        }
       });
     }
   };
