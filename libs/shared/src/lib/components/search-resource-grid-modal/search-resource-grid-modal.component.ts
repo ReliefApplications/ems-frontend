@@ -19,7 +19,6 @@ interface DialogData {
   multiselect?: boolean;
   selectedRows?: string[];
   selectable?: boolean;
-  customFilter?: any;
 }
 
 /**
