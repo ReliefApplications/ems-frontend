@@ -545,23 +545,27 @@ export const init = (
           const obj = JSON.parse(question.customFilter);
           if (obj) {
             for (const objElement of obj) {
-              const value = objElement.value;
+              const value: string = objElement.value;
               if (typeof value === 'string' && value.match(/^{*.*}$/)) {
-                const quest = value.substr(1, value.length - 2);
+                const quest: string = value.substr(1, value.length - 2);
                 objElement.value = '';
-                question.survey?.onValueChanged.add((_: any, options: any) => {
-                  if (options.question.name === quest) {
-                    if (options.value) {
+                question.survey?.onValueChanged.add(
+                  (
+                    _: any,
+                    options: { question: { name: string }; value: any }
+                  ) => {
+                    if (options.question.name === quest) {
                       setAdvanceFilter(options.value, objElement.field);
+
                       if (question.displayAsGrid) {
                         resourcesFilterValues.next(filters);
                       } else {
                         this.populateChoices(question, objElement.field);
                       }
                     }
+                    question.filters = filters;
                   }
-                  question.filters = filters;
-                });
+                );
               }
             }
             filters = obj;
@@ -757,18 +761,21 @@ export const init = (
    * @param question The question object
    */
   const setAdvanceFilter = (value: string, question: string | any) => {
+    if (!value) {
+      filters = [];
+      return;
+    }
+
     const field = typeof question !== 'string' ? question.filterBy : question;
-    if (!filters.some((x: any) => x.field === field)) {
+    const existingFilter = filters.find((x: any) => x.field === field);
+
+    if (existingFilter) {
+      existingFilter.value = value;
+    } else {
       filters.push({
-        field: question.filterBy,
+        field,
         operator: question.filterCondition,
         value,
-      });
-    } else {
-      filters.map((x: any) => {
-        if (x.field === field) {
-          x.value = value;
-        }
       });
     }
   };
