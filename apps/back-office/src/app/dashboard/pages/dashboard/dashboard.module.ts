@@ -10,6 +10,7 @@ import {
   FullScreenModule,
   DashboardFilterModule,
   ButtonActionModule,
+  DashboardExportButtonComponent,
 } from '@oort-front/shared';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { TranslateModule } from '@ngx-translate/core';
@@ -29,7 +30,6 @@ import {
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PDFExportModule } from '@progress/kendo-angular-pdf-export';
 import { ContextSelectorComponent } from './components/context-selector/context-selector.component';
-import { DashboardExportButtonComponent } from '../../../../../../../libs/shared/src/lib/components/dashboard-export-button/dashboard-export-button.component';
 
 /**
  * Dashboard page module.
