@@ -29,6 +29,7 @@ export const GET_DASHBOARD_BY_ID = gql`
         id
         showName
         application {
+          shortcut
           id
         }
         canUpdate
@@ -42,6 +43,7 @@ export const GET_DASHBOARD_BY_ID = gql`
           page {
             id
             application {
+              shortcut
               id
             }
           }

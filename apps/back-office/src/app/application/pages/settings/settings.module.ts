@@ -13,6 +13,7 @@ import {
   FixedWrapperModule,
   IconModule,
   TooltipModule,
+  ErrorMessageModule,
 } from '@oort-front/ui';
 import { AccessModule, StatusOptionsComponent } from '@oort-front/shared';
 import { AbilityModule } from '@casl/angular';
@@ -39,6 +40,7 @@ import { AbilityModule } from '@casl/angular';
     AbilityModule,
     IconModule,
     TooltipModule,
+    ErrorMessageModule,
   ],
 })
 export class SettingsModule {}

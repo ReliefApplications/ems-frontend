@@ -45,6 +45,7 @@ export const EDIT_DASHBOARD = gql`
         name
         application {
           id
+          shortcut
         }
       }
     }

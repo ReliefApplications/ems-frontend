@@ -17,6 +17,7 @@ export const GET_STEP_BY_ID = gql`
         page {
           id
           application {
+            shortcut
             id
           }
         }
@@ -69,6 +70,7 @@ export const GET_PAGE_BY_ID = gql`
         }
       }
       application {
+        shortcut
         id
       }
       canSee

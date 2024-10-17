@@ -40,6 +40,7 @@ export const EDIT_DASHBOARD = gql`
         id
         name
         application {
+          shortcut
           id
         }
       }
@@ -79,6 +80,7 @@ export const ADD_DASHBOARD_TEMPLATE = gql`
         icon
         visible
         application {
+          shortcut
           id
         }
         canUpdate
@@ -94,6 +96,7 @@ export const ADD_DASHBOARD_TEMPLATE = gql`
           page {
             id
             application {
+              shortcut
               id
             }
           }

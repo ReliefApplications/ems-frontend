@@ -124,8 +124,10 @@ export class TabActionsComponent
    * @returns url of the page
    */
   private getPageUrlParams(application: Application, page: Page): string {
+    const applicationPath =
+      this.applicationService.getApplicationPath(application);
     return page.type === ContentType.form
-      ? `${application.id}/${page.type}/${page.id}`
-      : `${application.id}/${page.type}/${page.content}`;
+      ? `${applicationPath}/${page.type}/${page.id}`
+      : `${applicationPath}/${page.type}/${page.content}`;
   }
 }

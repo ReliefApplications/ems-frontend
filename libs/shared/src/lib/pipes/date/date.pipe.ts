@@ -47,7 +47,16 @@ export class DatePipe implements PipeTransform {
     timezone: string | undefined = undefined
   ): string | null {
     try {
-      const datePipe = new AngularDatePipe(this.dateTranslate.currentLang);
+      let datePipe!: AngularDatePipe;
+      try {
+        datePipe = new AngularDatePipe(this.dateTranslate.currentLang);
+      } catch {
+        console.warn(
+          `Dates are not available with language ${this.dateTranslate.currentLang},`,
+          `please change the language or add it to the app.module.ts file.`
+        );
+      }
+
       return datePipe.transform(
         value,
         format,
@@ -55,10 +64,6 @@ export class DatePipe implements PipeTransform {
         this.dateTranslate.currentLang
       );
     } catch {
-      console.warn(
-        `Dates are not available with language ${this.dateTranslate.currentLang},`,
-        `please change the language or add it to the app.module.ts file.`
-      );
       return null;
     }
   }

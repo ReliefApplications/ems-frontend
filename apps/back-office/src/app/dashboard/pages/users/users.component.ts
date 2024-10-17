@@ -32,7 +32,7 @@ import { ApolloQueryResult } from '@apollo/client';
 const ITEMS_PER_PAGE = 10;
 
 /**
- * Component which will show all the user in the app.
+ * Component which will show all the user in the application.
  * Accessible with '/settings/users' route.
  * Management of users.
  */
@@ -80,7 +80,7 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
   private usersQuery!: QueryRef<UsersNodeQueryResponse>;
 
   /**
-   * Component which will show all the user in the app.
+   * Component which will show all the user in the application.
    * Accessible with '/settings/users' route.
    * Management of users.
    *
