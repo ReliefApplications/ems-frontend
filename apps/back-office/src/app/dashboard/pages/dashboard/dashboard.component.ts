@@ -51,11 +51,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import {
-  ContextService,
-  MapStatusService,
-  CustomWidgetStyleComponent,
-} from '@oort-front/shared';
+import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { GridsterConfig } from 'angular-gridster2';
@@ -82,8 +78,6 @@ export class DashboardComponent
 {
   /** Change step event ( in workflow ) */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
-  /** PDF Export Div View Child */
-  @ViewChild('pdfExport') exporter!: ElementRef;
   /** Is dashboard in fullscreen mode */
   public isFullScreen = false;
   /** Dashboard id */
@@ -168,7 +162,6 @@ export class DashboardComponent
    * @param contextService Dashboard context service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
-   * @param mapStatusService Service for managing map ready and export status
    * @param layoutService Shared layout service
    * @param document Document
    * @param clipboard Angular clipboard service
@@ -188,7 +181,6 @@ export class DashboardComponent
     private contextService: ContextService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
-    private mapStatusService: MapStatusService,
     private layoutService: UILayoutService,
     @Inject(DOCUMENT) private document: Document,
     private clipboard: Clipboard,
