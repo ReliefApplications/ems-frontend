@@ -9,7 +9,6 @@ import {
   OnInit,
   Output,
   Renderer2,
-  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {

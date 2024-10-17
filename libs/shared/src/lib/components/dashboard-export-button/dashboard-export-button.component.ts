@@ -349,6 +349,9 @@ export class DashboardExportButtonComponent {
     return this.exporter.nativeElement.querySelectorAll('shared-map')?.length;
   }
 
+  /**
+   * Create a wrapper to encapsulate exporter native element.
+   */
   private createWrapper() {
     const originalElement = this.exporter.nativeElement;
     const parent = originalElement.parentNode;
@@ -357,9 +360,11 @@ export class DashboardExportButtonComponent {
       this.renderer.appendChild(this.wrapper, originalElement.firstChild);
     }
     this.renderer.insertBefore(parent, this.wrapper, originalElement);
-    // this.renderer.removeChild(parent, originalElement);
   }
 
+  /**
+   * Remove wrapper that encapsulated exporter native element.
+   */
   private removeWrapper() {
     const originalElement = this.exporter.nativeElement;
     const parent = originalElement.parentNode;
