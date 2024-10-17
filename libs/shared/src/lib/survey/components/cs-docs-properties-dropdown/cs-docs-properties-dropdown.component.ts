@@ -89,6 +89,11 @@ export class CsDocsPropertiesDropdownComponent
 
   override ngOnInit(): void {
     super.ngOnInit();
+    /** Upload item list on query sort change */
+    this.model.obj.registerFunctionOnPropertyValueChanged(
+      'querySort',
+      this.loadPropertyItems.bind(this)
+    );
     // Listen to select menu UI event in order to update UI
     this.selectMenu.triggerUIChange$
       .pipe(takeUntil(this.destroy$))
@@ -97,8 +102,24 @@ export class CsDocsPropertiesDropdownComponent
           this.changeDetectorRef.detectChanges();
         }
       });
+    this.propertyItemsControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (items) => {
+          this.model.obj[`selected${this.model.value}PropertyItems`] = items;
+          this.changeDetectorRef.detectChanges();
+        },
+      });
+    this.loadPropertyItems();
+  }
+
+  /**
+   * Load given property items list
+   */
+  private loadPropertyItems() {
     if (this.model.value) {
       this.loading = true;
+      this.changeDetectorRef.detectChanges();
       this.csDocsApolloClient
         .query<PropertyQueryResponse>({
           query: gql`
@@ -129,14 +150,6 @@ export class CsDocsPropertiesDropdownComponent
             this.changeDetectorRef.detectChanges();
           },
         });
-      this.propertyItemsControl.valueChanges
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (items) => {
-            this.model.obj[`selected${this.model.value}PropertyItems`] = items;
-            this.changeDetectorRef.detectChanges();
-          },
-        });
     }
   }
 
@@ -151,6 +164,7 @@ export class CsDocsPropertiesDropdownComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    this.model.unregisterFunctionOnPropertyValueChanged('querySort');
     this.destroy$.next();
     this.destroy$.complete();
   }
