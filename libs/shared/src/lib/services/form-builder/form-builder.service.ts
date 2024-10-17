@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Model, SurveyModel, settings } from 'survey-core';
+import { Model, Question, SurveyModel, settings } from 'survey-core';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
@@ -173,6 +173,30 @@ export class FormBuilderService {
   }
 
   /**
+   * Check if given files are valid for given file type question
+   *
+   * @param question File question to apply checks
+   * @param files Uploaded files
+   * @returns Given files validity against given question
+   */
+  private checkFileUploadValidity(question: Question, files: File[]) {
+    let isValid = true;
+    const allowMultiple = question.getPropertyValue('allowMultiple');
+    const allowedFileNumber = question.getPropertyValue('allowedFileNumber');
+    if (allowMultiple && files.length > allowedFileNumber) {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'components.formBuilder.errors.maximumAllowedFiles',
+          { number: allowedFileNumber }
+        ),
+        { error: true }
+      );
+      isValid = false;
+    }
+    return isValid;
+  }
+
+  /**
    * Handles the clearing of files
    *
    * @param options Options regarding the files
@@ -188,17 +212,11 @@ export class FormBuilderService {
    * @param options Options regarding the upload
    */
   private onUploadFiles(temporaryFilesStorage: any, options: any): void {
-    if (
-      options.question.jsonObj.allowMultiple &&
-      options.files.length > options.question.jsonObj.allowedFileNumber
-    ) {
-      this.snackBar.openSnackBar(
-        this.translate.instant(
-          'components.formBuilder.errors.maximumAllowedFiles',
-          { number: options.question.jsonObj.allowedFileNumber }
-        ),
-        { error: true }
-      );
+    const isUploadValid = this.checkFileUploadValidity(
+      options.question,
+      options.files
+    );
+    if (!isUploadValid) {
       return;
     }
     if (temporaryFilesStorage[options.name] !== undefined) {

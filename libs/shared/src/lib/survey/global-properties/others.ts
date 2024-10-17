@@ -108,8 +108,8 @@ export const init = (environment: any): void => {
  * @param question The question object
  */
 export const render = (question: Question): void => {
-  // define the max size for files
-  if (question.getType() === 'file') {
+  // define the default max size for files
+  if (question.getType() === 'file' && !question.getPropertyValue('maxSize')) {
     (question as QuestionFileModel).maxSize = 7340032;
   }
 };
