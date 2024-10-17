@@ -90,7 +90,6 @@ export class ResourceGridModalComponent {
         remove: false,
       },
     };
-    console.log('customFilter', this.data.customFilter);
     this.ref.tick();
   }
 

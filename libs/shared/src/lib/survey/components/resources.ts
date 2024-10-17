@@ -463,6 +463,13 @@ export const init = (
         // type: 'expression',
         category: 'logic',
       });
+
+      Serializer.addProperty('resources', {
+        name: 'filters',
+        category: 'Custom Questions',
+        visible: false,
+        isSerializable: false,
+      });
     },
     /**
      * Fetch the resources when the question is loaded
@@ -553,6 +560,7 @@ export const init = (
                       }
                     }
                   }
+                  question.filters = filters;
                 });
               }
             }

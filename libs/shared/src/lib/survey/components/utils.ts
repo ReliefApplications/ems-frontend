@@ -47,14 +47,19 @@ export const buildSearchButton = (
         const dialogRef = dialog.open(ResourceGridModalComponent, {
           data: {
             multiselect,
-            gridSettings: { ...fieldsSettingsForm },
+            gridSettings: {
+              ...fieldsSettingsForm,
+              filter: {
+                logic: 'and',
+                filters: question.filters,
+              },
+            },
             selectedRows: Array.isArray(question.value)
               ? question.value
               : question.value
               ? [question.value]
               : [],
             selectable: true,
-            customFilter: question.getConditionJson().customFilter ?? {},
           },
           panelClass: 'closable-dialog',
         });
