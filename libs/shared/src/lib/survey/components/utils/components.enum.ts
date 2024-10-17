@@ -47,6 +47,10 @@ import {
   JSONEditorComponent,
   JSONEditorModel,
 } from '../json-editor/public-api';
+import {
+  AcceptedValueTypesTextComponent,
+  QuestionAcceptedValueTypesTextModel,
+} from '../accepted-value-types-text/public-api';
 
 /**
  * Custom component types for the survey creator property grid editor
@@ -64,6 +68,7 @@ export enum CustomPropertyGridComponentTypes {
   codeEditor = 'code-editor',
   queryEditor = 'query-editor',
   jsonEditor = 'json-editor',
+  acceptedTypesValues = 'acceptedTypesValues',
 }
 
 /**
@@ -120,5 +125,9 @@ export const CustomPropertyGridEditors: Record<
   [CustomPropertyGridComponentTypes.jsonEditor]: {
     component: JSONEditorComponent,
     model: JSONEditorModel,
+  },
+  [CustomPropertyGridComponentTypes.acceptedTypesValues]: {
+    component: AcceptedValueTypesTextComponent,
+    model: QuestionAcceptedValueTypesTextModel,
   },
 };
