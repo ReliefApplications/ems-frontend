@@ -542,30 +542,29 @@ export const init = (
           question.customFilter &&
           question.customFilter.trim().length > 0
         ) {
-          const obj = JSON.parse(question.customFilter);
-          if (obj) {
+          const obj = JSON.parse(question.customFilter || '[]');
+          if (Array.isArray(obj) && obj.length) {
             for (const objElement of obj) {
-              const value: string = objElement.value;
+              const value = objElement.value;
               if (typeof value === 'string' && value.match(/^{*.*}$/)) {
-                const quest: string = value.substr(1, value.length - 2);
+                const quest = value.substr(1, value.length - 2);
                 objElement.value = '';
-                question.survey?.onValueChanged.add(
-                  (
-                    _: any,
-                    options: { question: { name: string }; value: any }
-                  ) => {
-                    if (options.question.name === quest) {
+                question.survey?.onValueChanged.add((_: any, options: any) => {
+                  if (options.question.name === quest) {
+                    if (options.value || options.value === 0) {
                       setAdvanceFilter(options.value, objElement.field);
-
                       if (question.displayAsGrid) {
                         resourcesFilterValues.next(filters);
                       } else {
                         this.populateChoices(question, objElement.field);
                       }
+                    } else {
+                      // Remove filter if value is null, undefined or empty
+                      setAdvanceFilter(null, objElement.field);
                     }
-                    question.filters = filters;
                   }
-                );
+                  question.filters = filters;
+                });
               }
             }
             filters = obj;
@@ -760,18 +759,18 @@ export const init = (
    * @param value Value of the filter
    * @param question The question object
    */
-  const setAdvanceFilter = (value: string, question: string | any) => {
-    if (!value) {
-      filters = [];
-      return;
-    }
-
+  const setAdvanceFilter = (value: string | null, question: string | any) => {
     const field = typeof question !== 'string' ? question.filterBy : question;
     const existingFilter = filters.find((x: any) => x.field === field);
 
     if (existingFilter) {
-      existingFilter.value = value;
-    } else {
+      if (value === null || value === undefined || value === '') {
+        // Delete the filter if value is null, undefined, or empty
+        filters = filters.filter((x: any) => x.field !== field);
+      } else {
+        existingFilter.value = value;
+      }
+    } else if (value !== null && value !== undefined && value !== '') {
       filters.push({
         field,
         operator: question.filterCondition,
