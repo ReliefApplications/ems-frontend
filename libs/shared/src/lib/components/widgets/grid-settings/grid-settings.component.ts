@@ -26,11 +26,11 @@ import {
   ResourceQueryResponse,
 } from '../../../models/resource.model';
 import { createGridWidgetFormGroup } from './grid-settings.forms';
-import { DistributionList } from '../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { WidgetSettings } from '../../../models/dashboard.model';
+import { EmailService } from '../../email/email.service';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -109,8 +109,38 @@ export class GridSettingsComponent
   }
 
   /** @returns application distribution lists */
-  get distributionLists(): DistributionList[] {
-    return this.applicationService.distributionLists || [];
+  public distributionLists: any[] = [];
+  /** Stores the email template */
+  public emailTemplates: any[] = [];
+
+  /**
+   * Distribution list
+   *
+   * @param appId application id
+   */
+  distributionListsData(appId?: string) {
+    this.emailService.getEmailDistributionList(appId).subscribe((res: any) => {
+      if (res.data?.emailDistributionLists?.edges) {
+        const distributionList = res.data.emailDistributionLists.edges.map(
+          (e: any) => e.node
+        );
+        this.distributionLists = distributionList || [];
+      }
+    });
+  }
+
+  /**
+   * Custom email templates
+   */
+  emailTemplateData() {
+    this.emailService.getCustomTemplates().subscribe((res: any) => {
+      if (res.data?.customTemplates?.edges) {
+        const emailTemplates = res.data.customTemplates.edges.map(
+          (e: any) => e.node
+        );
+        this.emailTemplates = emailTemplates || [];
+      }
+    });
   }
 
   /**
@@ -121,18 +151,27 @@ export class GridSettingsComponent
    * @param queryBuilder Shared query builder service
    * @param fb Angular form builder
    * @param aggregationService Shared aggregation service
+   * @param emailService Email Service
    */
   constructor(
     private apollo: Apollo,
     private applicationService: ApplicationService,
     private queryBuilder: QueryBuilderService,
     private fb: FormBuilder,
-    private aggregationService: AggregationService
+    private aggregationService: AggregationService,
+    private emailService: EmailService
   ) {
     super();
   }
 
   ngOnInit(): void {
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((application: Application | null) => {
+        if (application) {
+          this.distributionListsData(application?.id);
+        }
+      });
     if (!this.widgetFormGroup) {
       this.buildSettingsForm();
     }
@@ -352,6 +391,27 @@ export class GridSettingsComponent
                 this.resource.queryName as string
               );
             }
+
+            //filter distribution list data according to the Resource
+            let filtered_DL = this.distributionLists.filter(
+              (x: any) =>
+                x.to?.resource === null ||
+                x.to?.resource === '' ||
+                x.to?.resource === this.resource?.id
+            );
+            filtered_DL = filtered_DL.filter(
+              (x: any) =>
+                x.cc?.resource === null ||
+                x.cc?.resource === '' ||
+                x.cc?.resource === this.resource?.id
+            );
+            filtered_DL = filtered_DL.filter(
+              (x: any) =>
+                x.bcc?.resource === null ||
+                x.bcc?.resource === '' ||
+                x.bcc?.resource === this.resource?.id
+            );
+            this.distributionLists = filtered_DL;
           } else {
             this.relatedForms = [];
             this.templates = [];
@@ -411,5 +471,6 @@ export class GridSettingsComponent
       this.widget.id,
       this.widget.settings
     );
+    this.emailTemplateData();
   }
 }

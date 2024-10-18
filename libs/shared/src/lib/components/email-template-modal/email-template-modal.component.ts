@@ -61,6 +61,6 @@ export class EmailTemplateModalComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.templates.length === 1)
-      this.dialogRef.close({ template: this.templates[0] } as any);
+      this.dialogRef.close({ template: this.templates[0].subject } as any);
   }
 }

@@ -1,4 +1,4 @@
-import { Apollo } from 'apollo-angular';
+import { Apollo, QueryRef } from 'apollo-angular';
 import {
   EDIT_RECORDS,
   PUBLISH,
@@ -20,7 +20,10 @@ import {
 } from '@angular/core';
 import { WorkflowService } from '../../../services/workflow/workflow.service';
 import { EmailService } from '../../../services/email/email.service';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import {
+  QueryBuilderService,
+  QueryResponse,
+} from '../../../services/query-builder/query-builder.service';
 import { CoreGridComponent } from '../../ui/core-grid/core-grid.component';
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
@@ -47,6 +50,9 @@ import { FormQueryResponse } from '../../../models/form.model';
 import { AggregationGridComponent } from '../../aggregation/aggregation-grid/aggregation-grid.component';
 import { ReferenceDataGridComponent } from '../../ui/reference-data-grid/reference-data-grid.component';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
+import { QueryMetaDataQueryResponse } from '../../../models/metadata.model';
+import { GET_QUERY_META_DATA } from '../../email/graphql/queries';
+import { clone } from 'lodash';
 
 /** Component for the grid widget */
 @Component({
@@ -68,6 +74,9 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
   /** Reference to reference data grid */
   @ViewChild(ReferenceDataGridComponent)
   referenceDataGridComponent?: ReferenceDataGridComponent;
+
+  /** Selected Items from the grid */
+  public selectedRows: any = [];
 
   /** Data */
   @Input() widget: any;
@@ -132,6 +141,11 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     return (this.settings.floatingButtons || []).filter((x: any) => x.show);
   }
 
+  /** Resource data list */
+  metaResourceData: any = [];
+  /** Data query for preview  */
+  private previewDataQuery!: QueryRef<QueryResponse>;
+
   /**
    * Heavy constructor for the grid widget component
    *
@@ -168,6 +182,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     delete this.gridSettings.query;
     let buildSortFields = false;
     if (this.settings.resource) {
+      this.getResourceMetaData();
       this.useReferenceData = false;
       const layouts = get(this.settings, 'layouts', []);
       const aggregations = get(this.settings, 'aggregations', []);
@@ -288,6 +303,27 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
           dir: e ? e.order : 'asc',
         },
       ]);
+    }
+  }
+
+  /**
+   * Handles the selection of rows in a grid.
+   *
+   * @param selectionEvent the event of selected and unselected Items
+   */
+  onGridRowSelection(selectionEvent: any) {
+    const deselectedRows = selectionEvent.deselectedRows || [];
+    const selectedRows = selectionEvent.selectedRows || [];
+    if (deselectedRows.length > 0) {
+      this.selectedRows = [
+        ...this.selectedRows.filter(
+          (x: any) =>
+            !deselectedRows.some((y: any) => x.dataItem.id === y.dataItem.id)
+        ),
+      ];
+    }
+    if (selectedRows.length > 0) {
+      this.selectedRows = this.selectedRows.concat(selectedRows);
     }
   }
 
@@ -442,65 +478,85 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     }
     // Send email using backend mail service.
     if (options.sendMail) {
-      const templates =
-        this.applicationService.templates.filter((x) =>
-          options.templates?.includes(x.id)
-        ) || [];
-      if (templates.length === 0) {
-        // no template found, skip
-        this.snackBar.openSnackBar(
-          this.translate.instant(
-            'common.notifications.email.errors.noTemplate'
-          ),
-          { error: true }
+      this.emailService.getCustomTemplates().subscribe((res: any) => {
+        const allTemplateData = res.data.customTemplates.edges.map(
+          (x: any) => x.node
         );
-      } else {
-        // find recipients
-        const recipients =
-          this.applicationService.distributionLists.find(
-            (x) => x.id === options.distributionList
-          )?.emails || [];
-
-        // select template
-        const { EmailTemplateModalComponent } = await import(
-          '../../email-template-modal/email-template-modal.component'
+        const templates = allTemplateData.filter((template: any) =>
+          options.templates?.includes(template.id)
         );
-        const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
-          data: {
-            templates,
-          },
-        });
-
-        const value = await firstValueFrom<any>(
-          dialogRef.closed.pipe(takeUntil(this.destroy$))
-        );
-        const template = value?.template;
-
-        if (template) {
-          this.emailService.previewMail(
-            recipients,
-            template.content.subject,
-            template.content.body,
-            {
-              logic: 'and',
-              filters: [
-                {
-                  operator: 'eq',
-                  field: 'ids',
-                  value: this.grid.selectedRows,
-                },
-              ],
-            },
-            {
-              name: this.grid.settings.query.name,
-              fields: options.bodyFields,
-            },
-            this.grid.sortField || undefined,
-            this.grid.sortOrder || undefined,
-            options.export
+        if (templates.length === 0) {
+          // no template found, skip
+          this.snackBar.openSnackBar(
+            this.translate.instant(
+              'common.notifications.email.errors.noTemplate'
+            ),
+            { error: true }
           );
+        } else {
+          this.emailService
+            .getEmailDistributionList()
+            .subscribe(async (res) => {
+              const allDistributionLists =
+                res.data.emailDistributionLists.edges.map((x: any) => x.node);
+
+              const selectedDL = allDistributionLists.filter(
+                (dl: any) => options.distributionList === dl.id
+              );
+
+              console.log('', selectedDL);
+              const { EmailTemplateModalComponent } = await import(
+                '../../email-template-modal/email-template-modal.component'
+              );
+              const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
+                data: {
+                  templates,
+                },
+              });
+              const value = await firstValueFrom<any>(
+                dialogRef.closed.pipe(takeUntil(this.destroy$))
+              );
+              const template = value?.template;
+
+              const selectedTemplate = templates.filter(
+                (temp: any) => temp.subject === template
+              );
+
+              console.log('selected Template', selectedTemplate);
+
+              this.getPreviewData();
+              if (this.previewDataQuery) {
+                this.previewDataQuery.valueChanges
+                  .pipe(takeUntil(this.destroy$))
+                  .subscribe({
+                    next: ({ data }) => {
+                      let selectedPreviewData: any = [];
+                      Object.keys(data)?.forEach((lKey: any) => {
+                        selectedPreviewData = data[lKey].edges.filter(
+                          (item: any) =>
+                            this.selectedRows
+                              ?.map((x: any) => x?.dataItem?.id)
+                              .includes(item?.node?.id)
+                        );
+                      });
+                      if (selectedTemplate?.length) {
+                        this.emailService.previewCustomTemplates(
+                          selectedTemplate[0],
+                          selectedDL[0],
+                          selectedPreviewData,
+                          this.metaResourceData,
+                          this.gridSettings?.floatingButtons?.[0]?.bodyFields
+                        );
+                      }
+                      this.status = {
+                        error: false,
+                      };
+                    },
+                  });
+              }
+            });
         }
-      }
+      });
     }
 
     // Workflow only: goes to next step, goes to the previous step, or closes the workflow.
@@ -533,6 +589,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
           });
       }
     } else {
+      // todo(email): not applicable if !options.sendMail ?
       this.grid.selectedRows = [];
       this.grid.reloadData();
     }
@@ -700,5 +757,69 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
    */
   onAggregationChange(aggregation: Aggregation): void {
     this.aggregation = aggregation;
+  }
+
+  /** getResourceMetaData */
+  async getResourceMetaData() {
+    await this.fetchResourceMetaData()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        this.metaResourceData = res.data.resource.metadata;
+      });
+  }
+
+  /**
+   * Fetches Resource meta data
+   *
+   * @returns resource meta data
+   */
+  fetchResourceMetaData() {
+    return this.apollo.query<QueryMetaDataQueryResponse>({
+      query: GET_QUERY_META_DATA,
+      variables: {
+        id: this.settings.resource,
+      },
+    });
+  }
+
+  /**
+   * Gets whether the grid settings are loading.
+   *
+   * @param previewSettings the preview settings
+   * @returns true if the grid settings are loading, false otherwise
+   */
+  loadingSettings(previewSettings: any): boolean {
+    return previewSettings.resource && !previewSettings.query;
+  }
+
+  /** Get preview data for the Preview screen */
+  getPreviewData() {
+    const settingsData: any = clone(this.layout);
+    settingsData.query.fields =
+      this.settings?.floatingButtons?.[0].bodyFields || [];
+    const builtQuery = this.queryBuilder.buildQuery(settingsData);
+    if (!builtQuery) {
+      this.status = {
+        error: !this.loadingSettings(settingsData),
+        message: this.translate.instant(
+          'components.widget.grid.errors.queryBuildFailed'
+        ),
+      };
+    } else {
+      this.previewDataQuery = this.apollo.watchQuery({
+        query: builtQuery,
+        variables: {
+          first: this.grid?.pageSize,
+          filter: this.gridSettings?.query?.filter,
+          sortField: this.layout?.query?.sortField || undefined,
+          sortOrder: this.layout?.query?.sortOrder,
+          styles: this.layout?.query?.style,
+          at: undefined,
+          skip: this.grid.skip,
+        },
+        fetchPolicy: 'no-cache',
+        nextFetchPolicy: 'cache-first',
+      });
+    }
   }
 }

@@ -4,6 +4,7 @@
     'min-h-[32px] relative flex justify-between items-center w-full cursor-default rounded-md px-3 text-left shadow-sm ring-1 ring-inset ring-gray-300 sm:leading-6 overflow-hidden ' +
     extraClasses!
   "
+  [disabled]="disabled"
   (click)="openSelectPanel()"
   [ngClass]="{
     'non_selectable text-gray-400': disabled,

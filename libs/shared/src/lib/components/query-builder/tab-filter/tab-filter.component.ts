@@ -25,6 +25,8 @@ export class TabFilterComponent implements OnInit {
   @Input() form: UntypedFormGroup = new UntypedFormGroup({});
   /** Query */
   @Input() query: any;
+  /** Disable fields */
+  @Input() isDisable = false;
 
   /** Date editor */
   @ViewChild('dateEditor', { static: false }) dateEditor!: TemplateRef<any>;
@@ -34,6 +36,8 @@ export class TabFilterComponent implements OnInit {
 
   /** Loading status of the filter fields */
   public loading = true;
+  /** referenceFields for reference data */
+  @Input() referenceFields: any;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -44,8 +48,14 @@ export class TabFilterComponent implements OnInit {
   constructor(private queryBuilder: QueryBuilderService) {}
 
   ngOnInit(): void {
+    if (this.referenceFields?.length > 0) {
+      this.query.name = null;
+    }
     this.queryBuilder.getFilterFields(this.query).then((fields) => {
-      const cloneFields = cloneDeep(fields);
+      let cloneFields = cloneDeep(fields);
+      if (this.referenceFields?.length > 0) {
+        cloneFields = cloneDeep(this.referenceFields);
+      }
       this.setCustomEditors(cloneFields);
       this.filterFields = cloneFields;
       this.loading = false;
