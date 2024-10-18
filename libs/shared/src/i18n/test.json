@@ -2376,6 +2376,17 @@
 		"dashboard": {
 			"activateFiltering": "******",
 			"buttonActions": {
+				"action": "******",
+				"actions": {
+					"addRecord": "******",
+					"editRecord": "******",
+					"navigateTo": "******",
+					"openInNewTab": "******",
+					"previousPage": "******",
+					"sendNotification": "******",
+					"suscribeToNotification": "******",
+					"url": "******"
+				},
 				"category": "******",
 				"confirmDelete": "******",
 				"create": "******",
