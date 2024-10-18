@@ -39,7 +39,7 @@ import {
 })
 export class DuplicateApplicationModalComponent {
   /** Application to duplicate */
-  public currentApp: Application;
+  public currentApplication: Application;
   /** Duplication form group */
   public duplicateForm = this.fb.group({
     name: ['', Validators.required],
@@ -65,7 +65,7 @@ export class DuplicateApplicationModalComponent {
     private translateService: TranslateService,
     @Inject(DIALOG_DATA) public data: any
   ) {
-    this.currentApp = data;
+    this.currentApplication = data;
   }
 
   /**
@@ -90,7 +90,7 @@ export class DuplicateApplicationModalComponent {
         mutation: DUPLICATE_APPLICATION,
         variables: {
           name: this.duplicateForm.value.name,
-          application: this.currentApp.id,
+          application: this.currentApplication.id,
         },
       })
       .subscribe({
@@ -113,7 +113,7 @@ export class DuplicateApplicationModalComponent {
                 type: this.translateService
                   .instant('common.application.one')
                   .toLowerCase(),
-                value: this.currentApp.name,
+                value: this.currentApplication.name,
               }
             );
           }

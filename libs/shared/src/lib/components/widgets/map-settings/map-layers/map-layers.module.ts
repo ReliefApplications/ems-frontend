@@ -10,6 +10,7 @@ import {
   TableModule,
   TabsModule,
   TooltipModule,
+  AlertModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -38,6 +39,7 @@ import { PortalModule } from '@angular/cdk/portal';
     SkeletonTableModule,
     TooltipModule,
     PortalModule,
+    AlertModule,
   ],
   exports: [MapLayersComponent],
 })

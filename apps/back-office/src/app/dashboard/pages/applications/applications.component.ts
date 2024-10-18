@@ -12,6 +12,7 @@ import {
   EditApplicationMutationResponse,
   getCachedValues,
   updateQueryUniqueValues,
+  ApplicationService,
 } from '@oort-front/shared';
 import {
   DELETE_APPLICATION,
@@ -90,6 +91,7 @@ export class ApplicationsComponent
    * @param previewService Shared preview service
    * @param confirmService Share confirm service
    * @param translate Angular translate service
+   * @param applicationService Application service
    */
   constructor(
     private apollo: Apollo,
@@ -98,7 +100,8 @@ export class ApplicationsComponent
     private snackBar: SnackbarService,
     private previewService: PreviewService,
     private confirmService: ConfirmService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private applicationService: ApplicationService
   ) {
     super();
   }
@@ -319,7 +322,9 @@ export class ApplicationsComponent
                   value: data.addApplication.name,
                 })
               );
-              const id = data.addApplication.id;
+              const id = this.applicationService.getApplicationPath(
+                data.addApplication
+              );
               this.router.navigate(['/applications', id]);
             }
           }
@@ -417,7 +422,9 @@ export class ApplicationsComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.onOpenApplication(value.id);
+        this.onOpenApplication(
+          this.applicationService.getApplicationPath(value)
+        );
       }
     });
   }
@@ -425,7 +432,7 @@ export class ApplicationsComponent
   /**
    * Navigates to application.
    *
-   * @param id application id.
+   * @param id application id or shortcut.
    */
   onOpenApplication(id: string): void {
     this.router.navigate(['/applications', id]);

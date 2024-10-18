@@ -32,14 +32,19 @@ export const GET_DASHBOARD_BY_ID = gql`
       gridOptions
       page {
         id
+        showName
         visible
         application {
           id
+          shortcut
         }
         canUpdate
         context
         content
         contentWithContext
+      }
+      step {
+        showName
       }
     }
   }

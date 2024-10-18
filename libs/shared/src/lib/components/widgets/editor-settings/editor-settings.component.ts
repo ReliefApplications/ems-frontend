@@ -28,8 +28,37 @@ import { createEditorForm } from './editor-settings.forms';
 import { WidgetSettings } from '../../../models/dashboard.model';
 import { WidgetService } from '../../../services/widget/widget.service';
 import { RawEditorSettings } from 'tinymce';
-
-// export type EditorFormType = ReturnType<typeof createEditorForm>;
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import {
+  FormWrapperModule,
+  SelectMenuModule,
+  SelectOptionModule,
+  ButtonModule,
+  TabsModule,
+  TooltipModule,
+  IconModule,
+  CheckboxModule,
+  RadioModule,
+  DividerModule,
+  ToggleModule,
+  SpinnerModule,
+} from '@oort-front/ui';
+import {
+  ResourceSelectComponent,
+  ReferenceDataSelectComponent,
+} from '../../controls/public-api';
+import { CoreGridModule } from '../../ui/core-grid/core-grid.module';
+import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
+import { TabWidgetAutomationsComponent } from '../common/tab-widget-automations/tab-widget-automations.component';
+import { TemplateAggregationsComponent } from '../common/template-aggregations/template-aggregations.component';
+import {
+  EditorModule as TinyMceEditorModule,
+  TINYMCE_SCRIPT_SRC,
+} from '@tinymce/tinymce-angular';
+import { RecordSelectionTabComponent } from './record-selection-tab/record-selection-tab.component';
+import { EditorModule } from '../editor/editor.module';
 
 /**
  * Modal content for the settings of the editor widgets.
@@ -38,6 +67,38 @@ import { RawEditorSettings } from 'tinymce';
   selector: 'shared-editor-settings',
   templateUrl: './editor-settings.component.html',
   styleUrls: ['./editor-settings.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    FormWrapperModule,
+    TinyMceEditorModule,
+    TranslateModule,
+    DisplaySettingsComponent,
+    CoreGridModule,
+    EditorModule,
+    SelectMenuModule,
+    SelectOptionModule,
+    ButtonModule,
+    TabsModule,
+    TooltipModule,
+    IconModule,
+    CheckboxModule,
+    RadioModule,
+    DividerModule,
+    ToggleModule,
+    ResourceSelectComponent,
+    ReferenceDataSelectComponent,
+    SpinnerModule,
+    TemplateAggregationsComponent,
+    // todo: rename ( remove s )
+    TabWidgetAutomationsComponent,
+    RecordSelectionTabComponent,
+  ],
+  providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+  ],
 })
 export class EditorSettingsComponent
   extends UnsubscribeComponent

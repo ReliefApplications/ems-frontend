@@ -1,11 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { createTabsWidgetFormGroup } from './tabs-settings.form';
 import get from 'lodash/get';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
 import { WidgetSettings } from '../../../models/dashboard.model';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { IconModule, TooltipModule, TabsModule } from '@oort-front/ui';
+import { TabMainModule } from './tab-main/tab-main.module';
+import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 
 /**
  * Settings of tabs widget.
@@ -16,6 +21,18 @@ import { WidgetSettings } from '../../../models/dashboard.model';
   selector: 'shared-tabs-settings',
   templateUrl: './tabs-settings.component.html',
   styleUrls: ['./tabs-settings.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    TranslateModule,
+    IconModule,
+    DisplaySettingsComponent,
+    TooltipModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TabsModule,
+    TabMainModule,
+  ],
 })
 export class TabsSettingsComponent
   extends UnsubscribeComponent

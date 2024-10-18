@@ -19,7 +19,6 @@ import {
 } from '../../../models/aggregation.model';
 import { getReferenceMetadata } from '../../../utils/reference-data-metadata.util';
 import { PipelineStage } from './pipeline/pipeline-stage.enum';
-import { getReferenceDataAggregationFields } from '../../../utils/reference-data/aggregation-fields.util';
 
 /**
  * Main component of Aggregation builder.
@@ -44,6 +43,8 @@ export class AggregationBuilderComponent
   public loading = true;
   /** Available fields */
   private fields = new BehaviorSubject<any[]>([]);
+  /** Fields removed because of their types */
+  public removedFields: string[] = [];
   /** Available fields as observable */
   public fields$ = this.fields.asObservable();
   /** Available filter fields */
@@ -207,9 +208,14 @@ export class AggregationBuilderComponent
    * Updates fields depending on selected form.
    */
   private updateFields(): void {
-    if (this.resource) {
+    const query = this.resource
+      ? this.resource.queryName
+      : this.referenceData
+      ? this.referenceData.graphQLTypeName
+      : null;
+    if (query) {
       const fields = this.queryBuilder
-        .getFields(this.resource.queryName as string)
+        .getFields(query)
         .filter(
           (field: any) =>
             !(
@@ -220,12 +226,38 @@ export class AggregationBuilderComponent
             )
         );
       this.fields.next(fields);
-    } else if (this.referenceData) {
-      const fields = getReferenceDataAggregationFields(
-        this.referenceData,
-        this.queryBuilder
-      );
-      this.fields.next(fields);
+      if (this.resource) {
+        const metaQuery = this.queryBuilder.buildMetaQuery({
+          name: query,
+          fields: fields.map((field) => {
+            return { ...field.type, name: field.name };
+          }),
+        });
+        if (metaQuery) {
+          metaQuery.pipe(takeUntil(this.destroy$)).subscribe({
+            next: async ({ data }: any) => {
+              for (const field in data) {
+                if (Object.prototype.hasOwnProperty.call(data, field)) {
+                  const metaFields = Object.assign({}, data[field]);
+                  let fieldsWithMeta = fields.map((currentField) => {
+                    return {
+                      ...currentField,
+                      meta: metaFields[currentField.name],
+                    };
+                  });
+                  this.removedFields = fieldsWithMeta
+                    .filter((field) => field.meta.type === 'editor')
+                    .map((field) => field.name);
+                  fieldsWithMeta = fieldsWithMeta.filter(
+                    (field) => !(field.meta.type === 'editor')
+                  ); //TODO: filter out other unusable fields
+                  this.fields.next(fieldsWithMeta);
+                }
+              }
+            },
+          });
+        }
+      }
     }
   }
 

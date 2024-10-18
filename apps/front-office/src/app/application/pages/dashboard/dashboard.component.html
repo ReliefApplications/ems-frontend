@@ -37,7 +37,7 @@
         id="dashboard-header"
         class="flex flex-wrap items-center mb-6 gap-4 justify-between"
       >
-        <ng-container>
+        <ng-container *ngIf="showName">
           <h1 class="!m-0 overflow-hidden text-ellipsis">
             {{ dashboard.name }}
           </h1>
@@ -45,11 +45,13 @@
         <div class="flex items-center gap-1">
           <!-- Button actions -->
           <shared-button-action
+            class="export-hide"
             [buttonActions]="buttonActions"
             [dashboard]="dashboard"
           ></shared-button-action>
           <!-- Dashboard export -->
           <shared-dashboard-export-button
+            *ngIf="showName || buttonActions.length > 0"
             [title]="dashboard.name"
             [exporter]="elementRef"
           ></shared-dashboard-export-button>

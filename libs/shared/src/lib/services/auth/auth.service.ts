@@ -1,29 +1,29 @@
-import { Apollo } from 'apollo-angular';
-import { Injectable, Inject } from '@angular/core';
-import {
-  Permission,
-  ProfileQueryResponse,
-  User,
-} from '../../models/user.model';
-import { GET_PROFILE } from './graphql/queries';
-import {
-  BehaviorSubject,
-  combineLatest,
-  Observable,
-  ReplaySubject,
-} from 'rxjs';
-import { ApolloQueryResult } from '@apollo/client';
-import { OAuthService } from 'angular-oauth2-oidc';
-import { filter, map } from 'rxjs/operators';
+import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { ApolloQueryResult } from '@apollo/client';
 import {
   Ability,
   AbilityBuilder,
   AbilityClass,
   ForcedSubject,
 } from '@casl/ability';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
+import {
+  BehaviorSubject,
+  combineLatest,
+  Observable,
+  ReplaySubject,
+} from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { Application } from '../../models/application.model';
+import {
+  Permission,
+  ProfileQueryResponse,
+  User,
+} from '../../models/user.model';
+import { GET_PROFILE } from './graphql/queries';
 
 /** Defining the interface for the account object. */
 export interface Account {
@@ -231,7 +231,6 @@ export class AuthService {
       }
       redirectUri.search = '';
       if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
-        console.log('setting redirect uri', redirectUri.pathname);
         localStorage.setItem('redirectPath', redirectUri.pathname);
       }
     }
@@ -350,7 +349,7 @@ export class AuthService {
     }
 
     // === Resource ===
-    if (globalPermissions.includes('can_read_resources')) {
+    if (globalPermissions.includes('can_see_resources')) {
       can('read', ['Resource', 'Record']);
     }
     if (globalPermissions.includes('can_create_resources')) {
@@ -398,17 +397,17 @@ export class AuthService {
   /**
    * Extend user ability on application
    *
-   * @param app Application to extend ability on
+   * @param application Application to extend ability on
    */
-  public extendAbilityForApplication(app: Application) {
-    if (!app?.id) return;
+  public extendAbilityForApplication(application: Application) {
+    if (!application?.id) return;
     const { can, rules } = new AbilityBuilder(AppAbility);
 
     // Copy existing rules
     rules.push(...this.ability.rules);
 
     // Get user app permissions
-    const appRoles = app.userRoles || [];
+    const appRoles = application.userRoles || [];
     const appPermissions = new Set<string>();
     appRoles.forEach((role) => {
       const rolePermissions = role.permissions?.map((x) => x.type) || [];
@@ -422,7 +421,7 @@ export class AuthService {
     //   cannot(['create', 'read', 'update', 'delete'], ['Role', 'Channel']);
     if (appPermissions.has('can_see_roles')) {
       can(['create', 'read', 'update', 'delete'], ['Role', 'Channel'], {
-        application: app.id,
+        application: application.id,
       });
     }
 
@@ -431,7 +430,7 @@ export class AuthService {
     //   cannot(['create', 'read', 'update', 'delete'], ['User', 'Channel']);
     if (appPermissions.has('can_see_users')) {
       can(['create', 'read', 'update', 'delete'], 'User', {
-        application: app.id,
+        application: application.id,
       });
     }
 
@@ -442,7 +441,7 @@ export class AuthService {
       this.ability.can('manage', 'Application')
     ) {
       can(['create', 'read', 'update', 'delete', 'manage'], 'Template', {
-        application: app.id,
+        application: application.id,
       });
     }
 
@@ -459,7 +458,7 @@ export class AuthService {
         ['create', 'read', 'update', 'delete', 'manage'],
         'DistributionList',
         {
-          application: app.id,
+          application: application.id,
         }
       );
     }
@@ -473,7 +472,7 @@ export class AuthService {
         ['create', 'read', 'update', 'delete', 'manage'],
         'CustomNotification',
         {
-          application: app.id,
+          application: application.id,
         }
       );
     }

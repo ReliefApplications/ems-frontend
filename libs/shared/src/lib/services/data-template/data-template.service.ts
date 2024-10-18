@@ -1,20 +1,13 @@
+import { LocationStrategy } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { DownloadService } from '../download/download.service';
 import get from 'lodash/get';
-import {
-  getAggregationKeys,
-  getCalcKeys,
-  getCardStyle,
-  getDataKeys,
-  getPageKeys,
-  parseHtml,
-} from '../../utils/parser/utils';
-import { ApplicationService } from '../application/application.service';
+import { RawEditorSettings } from 'tinymce';
 import { Application } from '../../models/application.model';
 import { ContentType, Page } from '../../models/page.model';
-import { RawEditorSettings } from 'tinymce';
-import { LocationStrategy } from '@angular/common';
+import { ApplicationService } from '../application/application.service';
+import { DownloadService } from '../download/download.service';
+import { HtmlParserService } from '../html-parser/html-parser.service';
 
 /**
  * Data template service
@@ -35,13 +28,15 @@ export class DataTemplateService {
    * @param applicationService Shared application service
    * @param environment Current environment
    * @param locationStrategy Angular location strategy
+   * @param htmlParserService Html parser service to parse the values for html layout
    */
   constructor(
     private sanitizer: DomSanitizer,
     private downloadService: DownloadService,
     private applicationService: ApplicationService,
     @Inject('environment') environment: any,
-    private locationStrategy: LocationStrategy
+    private locationStrategy: LocationStrategy,
+    private htmlParserService: HtmlParserService
   ) {
     this.environment = environment;
   }
@@ -55,9 +50,9 @@ export class DataTemplateService {
    */
   public getAutoCompleterKeys(fields: any[], aggregations?: any[]) {
     return [
-      ...getDataKeys(fields),
-      ...getAggregationKeys(aggregations || []),
-      ...getCalcKeys(),
+      ...this.htmlParserService.getDataKeys(fields),
+      ...this.htmlParserService.getAggregationKeys(aggregations || []),
+      ...this.htmlParserService.getCalcKeys(),
     ];
   }
 
@@ -70,7 +65,7 @@ export class DataTemplateService {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
     const pages = application?.pages || [];
-    return getPageKeys(pages);
+    return this.htmlParserService.getPageKeys(pages);
   }
 
   /**
@@ -91,12 +86,12 @@ export class DataTemplateService {
       aggregation?: any;
       fields?: any[];
       styles?: any[];
-    }
+    } = {}
   ) {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
     return this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(html, {
+      this.htmlParserService.parseHtml(html, {
         data: options.data,
         aggregation: options.aggregation,
         fields: options.fields,
@@ -115,7 +110,7 @@ export class DataTemplateService {
   public renderLink(href: string) {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
-    return parseHtml(href, {
+    return this.htmlParserService.parseHtml(href, {
       pages: this.getPages(application),
     });
   }
@@ -129,7 +124,7 @@ export class DataTemplateService {
    * @returns style to render
    */
   public renderStyle(allContent: boolean, data: any, styles: any[]) {
-    return getCardStyle(allContent, data, styles);
+    return this.htmlParserService.getCardStyle(allContent, data, styles);
   }
 
   /**
@@ -178,14 +173,16 @@ export class DataTemplateService {
    */
   private getPageUrl(application: Application, page: Page): string {
     const baseHref = this.locationStrategy.getBaseHref();
+    const applicationPath =
+      this.applicationService.getApplicationPath(application);
     if (this.environment.module === 'backoffice') {
       return page.type === ContentType.form
-        ? `./applications/${application.id}/${page.type}/${page.id}`
-        : `./applications/${application.id}/${page.type}/${page.content}`;
+        ? `./applications/${applicationPath}/${page.type}/${page.id}`
+        : `./applications/${applicationPath}/${page.type}/${page.content}`;
     } else {
       return page.type === ContentType.form
-        ? `.${baseHref}${application.id}/${page.type}/${page.id}`
-        : `.${baseHref}${application.id}/${page.type}/${page.content}`;
+        ? `.${baseHref}${applicationPath}/${page.type}/${page.id}`
+        : `.${baseHref}${applicationPath}/${page.type}/${page.content}`;
     }
   }
 

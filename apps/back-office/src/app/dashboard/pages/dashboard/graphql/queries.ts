@@ -30,9 +30,11 @@ export const GET_DASHBOARD_BY_ID = gql`
       page {
         id
         icon
+        showName
         visible
         application {
           id
+          shortcut
         }
         canUpdate
         context
@@ -42,12 +44,14 @@ export const GET_DASHBOARD_BY_ID = gql`
       step {
         id
         icon
+        showName
         workflow {
           id
           page {
             id
             application {
               id
+              shortcut
             }
           }
         }

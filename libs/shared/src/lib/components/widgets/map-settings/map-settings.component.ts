@@ -18,11 +18,26 @@ import {
 import { debounceTime, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { LayerModel } from '../../../models/layer.model';
-import { MapComponent } from '../../ui/map';
+import { MapComponent, MapModule } from '../../ui/map';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
-import { UILayoutService } from '@oort-front/ui';
-import { DomPortal } from '@angular/cdk/portal';
+import {
+  ButtonModule,
+  DividerModule,
+  IconModule,
+  SidenavContainerModule,
+  TabsModule,
+  TooltipModule,
+  UILayoutService,
+} from '@oort-front/ui';
+import { DomPortal, PortalModule } from '@angular/cdk/portal';
 import { WidgetSettings } from '../../../models/dashboard.model';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
+import { TabWidgetAutomationsComponent } from '../common/tab-widget-automations/tab-widget-automations.component';
+import { MapLayersModule } from './map-layers/map-layers.module';
+import { MapPropertiesModule } from './map-properties/map-properties.module';
 
 /**
  * Map widget settings editor.
@@ -31,6 +46,28 @@ import { WidgetSettings } from '../../../models/dashboard.model';
   selector: 'shared-map-settings',
   templateUrl: './map-settings.component.html',
   styleUrls: ['./map-settings.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    IconModule,
+    TranslateModule,
+    TabsModule,
+    MapLayersModule,
+    MapPropertiesModule,
+    TooltipModule,
+    MapModule,
+    ButtonModule,
+    DividerModule,
+    TabsModule,
+    SidenavContainerModule,
+    MapLayersModule,
+    TooltipModule,
+    DisplaySettingsComponent,
+    PortalModule,
+    TabWidgetAutomationsComponent,
+  ],
 })
 export class MapSettingsComponent
   extends UnsubscribeComponent

@@ -301,6 +301,11 @@ export const FIELD_TYPES = [
     defaultOperator: 'eq',
     operators: ['eq'],
   },
+  {
+    editor: 'editor',
+    defaultOperator: 'isnull',
+    operators: ['isnull', 'isnotnull'],
+  },
 ];
 
 /**

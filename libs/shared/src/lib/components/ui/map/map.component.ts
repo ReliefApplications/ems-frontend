@@ -777,17 +777,17 @@ export class MapComponent
       }
 
       if (layer.type === 'GroupLayer') {
+        /** Generate layers for grouplayer */
+        await layer.getLayer();
         const children = layer.getChildren();
-        const childrenPromises = children.map((Childrenlayer) => {
-          return this.mapLayersService
-            .createLayersFromId(Childrenlayer, this.injector)
-            .then(async (sublayer) => {
-              sublayer.parent = layer;
-              if (sublayer.type === 'GroupLayer') {
-                const layer = await sublayer.getLayer();
-                return parseTreeNode(sublayer, layer, displayLayers);
-              } else return parseTreeNode(sublayer, undefined, displayLayers);
-            });
+        const childrenClass = layer.children ?? [];
+        const childrenPromises = childrenClass.map(async (childrenlayer) => {
+          if (childrenlayer.type === 'GroupLayer') {
+            const layer = await childrenlayer.getLayer();
+            return parseTreeNode(childrenlayer, layer, displayLayers);
+          } else {
+            return parseTreeNode(childrenlayer, undefined, displayLayers);
+          }
         });
 
         // It is a group, it should not have any layer but it should be able to check/uncheck its children
@@ -817,13 +817,12 @@ export class MapComponent
         };
       }
     };
-
     return new Promise<{ layers: L.Control.Layers.TreeObject[] }>((resolve) => {
-      const layerPromises = layerIds.map((id) => {
+      const layerPromises = layerIds.map((id, index) => {
         const existingLayer = this.layers.find((layer) => layer.id === id);
         if (!existingLayer || existingLayer?.shouldRefresh) {
           return this.mapLayersService
-            .createLayersFromId(id, this.injector)
+            .createLayersFromId(id, this.injector, layerIds.length - index)
             .then((layer) => {
               return parseTreeNode(layer, undefined, displayLayers);
             });

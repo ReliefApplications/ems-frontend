@@ -222,18 +222,34 @@ export class ContextService {
    */
   public replaceContext(object: any): any {
     const context = this.context;
+
     if (!context) {
       return object;
     }
-    return JSON.parse(
-      JSON.stringify(object).replace(
-        new RegExp(this.contextRegex, 'g'),
-        (match) => {
+
+    // Function to recursively replace context placeholders in the object
+    const replacePlaceholders = (obj: any): any => {
+      if (typeof obj === 'string') {
+        // Replace only within strings
+        return obj.replace(new RegExp(this.contextRegex, 'g'), (match) => {
           const field = match.replace('{{context.', '').replace('}}', '');
-          return get(context, field) || match;
+          return get(context, field) || '';
+        });
+      } else if (Array.isArray(obj)) {
+        // Recursively replace in arrays
+        return obj.map((item) => replacePlaceholders(item));
+      } else if (obj && typeof obj === 'object') {
+        // Recursively replace in objects
+        const newObj = { ...obj };
+        for (const key in newObj) {
+          newObj[key] = replacePlaceholders(newObj[key]);
         }
-      )
-    );
+        return newObj;
+      }
+      return obj; // Return primitive types unchanged
+    };
+
+    return replacePlaceholders(object);
   }
 
   /**
