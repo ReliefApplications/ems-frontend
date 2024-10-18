@@ -16,7 +16,7 @@ import { takeUntil } from 'rxjs/operators';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 import { EmailService } from '../../email/email.service';
-import { convertToMinutes } from '../../../utils/parser/utils';
+import convertToMinutes from '../../../utils/convert-to-minutes';
 
 /**
  * Composite filter row.

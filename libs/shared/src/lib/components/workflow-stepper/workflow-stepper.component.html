@@ -15,6 +15,7 @@
         ></shared-step>
       </ng-container>
     </ui-tab>
+    <ng-content></ng-content>
   </ng-container>
   <ng-template #loadingTemplate>
     <ui-tab *ngFor="let step of steps; let i = index">

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard } from './guards/auth.guard';
+import { RouterModule, Routes } from '@angular/router';
 import { AccessGuard } from './guards/access.guard';
+import { AuthGuard } from './guards/auth.guard';
 
 /**
  * List of top level routes of the Front-Office.
@@ -26,6 +26,14 @@ const routes: Routes = [
         loadChildren: () =>
           import('./application/application.module').then(
             (m) => m.ApplicationModule
+          ),
+        // canActivate: [AccessGuard],
+      },
+      {
+        path: 'share/:id',
+        loadChildren: () =>
+          import('./application/pages/share/share.module').then(
+            (m) => m.ShareModule
           ),
         // canActivate: [AccessGuard],
       },

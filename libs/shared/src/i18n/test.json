@@ -199,6 +199,10 @@
 		"exitFullscreen": "******",
 		"export": "******",
 		"exportObject": "****** {{name}}",
+		"exportType": {
+			"image": "******",
+			"pdf": "******"
+		},
 		"false": "******",
 		"field": {
 			"few": "******",
@@ -322,6 +326,19 @@
 				"timestamp": "******"
 			},
 			"emailSent": "******",
+			"export": {
+				"download": "******",
+				"format": "******",
+				"image": "{{image}} ******",
+				"includeHeaderFooter": "******",
+				"landscape": "******",
+				"loading": "****** {{type}} ******",
+				"options": "******",
+				"orientation": "******",
+				"paperSize": "******",
+				"pdf": "******",
+				"portrait": "******"
+			},
 			"fetchingGroups": "******",
 			"file": {
 				"download": {
@@ -584,7 +601,8 @@
 				"selectedFields": "******",
 				"sort": "******",
 				"unwind": "******"
-			}
+			},
+			"unavailableFields": "******"
 		},
 		"apiConfiguration": {
 			"create": {
@@ -1642,8 +1660,10 @@
 					"mapDetailsTitle": "******",
 					"mapDetailsTooltip": "******"
 				},
+				"openEditor": "******",
 				"openSettings": "******",
 				"tooltip": {
+					"displayEditor": "******",
 					"displayMap": "******",
 					"openPage": "******",
 					"saved": "******",
@@ -1943,7 +1963,8 @@
 						}
 					},
 					"help": {
-						"geographicExtent": "******"
+						"geographicExtent": "******",
+						"layers": "******"
 					},
 					"layers": {
 						"add": "******",
@@ -2393,6 +2414,14 @@
 				"updated": "******"
 			},
 			"setAsFavorite": "******",
+			"shortcut": {
+				"errors": {
+					"isNotUnique": "******",
+					"isNotValid": "******"
+				},
+				"info": "******",
+				"text": "******"
+			},
 			"subscription": {
 				"create": "******"
 			}
@@ -2719,6 +2748,12 @@
 			"update": {
 				"exit": "******",
 				"exitMessage": "******"
+			}
+		},
+		"error": {
+			"unauthorized": {
+				"footer": "******",
+				"title": "******"
 			}
 		},
 		"formBuilder": {

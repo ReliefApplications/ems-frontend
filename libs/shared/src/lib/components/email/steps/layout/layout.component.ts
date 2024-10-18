@@ -10,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { Subscription } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { convertToMinutes } from '../../../../utils/parser/utils';
+import convertToMinutes from '../../../../utils/convert-to-minutes';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 
 /**

@@ -13,6 +13,7 @@ import {
   Optional,
   SkipSelf,
 } from '@angular/core';
+import { take } from 'rxjs/operators';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
 import 'leaflet';
@@ -56,7 +57,15 @@ import {
   pick,
   clone,
 } from 'lodash';
-import { Subject, debounceTime, filter, from, merge, takeUntil } from 'rxjs';
+import {
+  Subject,
+  Subscription,
+  debounceTime,
+  filter,
+  from,
+  merge,
+  takeUntil,
+} from 'rxjs';
 import { MapPopupService } from './map-popup/map-popup.service';
 import { Platform } from '@angular/cdk/platform';
 import { ContextService } from '../../../services/context/context.service';
@@ -65,6 +74,7 @@ import { DOCUMENT } from '@angular/common';
 import { ShadowDomService } from '@oort-front/ui';
 import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
 import { ActionComponent, ActionType } from '../../../models/automation.model';
+import { DashboardExportService } from '../../../services/dashboard-export/dashboard-export.service';
 
 /** Component for the map widget */
 @Component({
@@ -169,6 +179,8 @@ export class MapComponent
   private cancelRefresh$ = new Subject<void>();
   /** Should use context zoom */
   private useContextZoom = false;
+  /** Revert Map Exporting subscription */
+  private revertMapSubscription?: Subscription;
 
   /**
    * Map widget component
@@ -186,6 +198,7 @@ export class MapComponent
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
    * @param el Element reference,
    * @param mapPolygonsService Shared map polygons service
+   * @param dashboardExportService Shared dashboard export service
    * @param dashboardAutomationService Shared dashboard automation service (Optional, so not active while editing widget)
    */
   constructor(
@@ -202,6 +215,7 @@ export class MapComponent
     private shadowDomService: ShadowDomService,
     public el: ElementRef,
     private mapPolygonsService: MapPolygonsService,
+    private dashboardExportService: DashboardExportService,
     @Optional()
     @SkipSelf()
     private dashboardAutomationService: DashboardAutomationService
@@ -631,6 +645,7 @@ export class MapComponent
         }
         // When layers are created, filters are then initialized
         this.initFilters();
+        this.initExportMapListeners();
       });
     } else {
       // No update on the layers, we only update the controls
@@ -762,17 +777,17 @@ export class MapComponent
       }
 
       if (layer.type === 'GroupLayer') {
+        /** Generate layers for grouplayer */
+        await layer.getLayer();
         const children = layer.getChildren();
-        const childrenPromises = children.map((Childrenlayer) => {
-          return this.mapLayersService
-            .createLayersFromId(Childrenlayer, this.injector)
-            .then(async (sublayer) => {
-              sublayer.parent = layer;
-              if (sublayer.type === 'GroupLayer') {
-                const layer = await sublayer.getLayer();
-                return parseTreeNode(sublayer, layer, displayLayers);
-              } else return parseTreeNode(sublayer, undefined, displayLayers);
-            });
+        const childrenClass = layer.children ?? [];
+        const childrenPromises = childrenClass.map(async (childrenlayer) => {
+          if (childrenlayer.type === 'GroupLayer') {
+            const layer = await childrenlayer.getLayer();
+            return parseTreeNode(childrenlayer, layer, displayLayers);
+          } else {
+            return parseTreeNode(childrenlayer, undefined, displayLayers);
+          }
         });
 
         // It is a group, it should not have any layer but it should be able to check/uncheck its children
@@ -802,13 +817,12 @@ export class MapComponent
         };
       }
     };
-
     return new Promise<{ layers: L.Control.Layers.TreeObject[] }>((resolve) => {
-      const layerPromises = layerIds.map((id) => {
+      const layerPromises = layerIds.map((id, index) => {
         const existingLayer = this.layers.find((layer) => layer.id === id);
         if (!existingLayer || existingLayer?.shouldRefresh) {
           return this.mapLayersService
-            .createLayersFromId(id, this.injector)
+            .createLayersFromId(id, this.injector, layerIds.length - index)
             .then((layer) => {
               return parseTreeNode(layer, undefined, displayLayers);
             });
@@ -896,6 +910,7 @@ export class MapComponent
     this.resetLayers();
     this.layers = [];
   }
+
   //   /**
   //  * Function used to apply options
   //  *
@@ -1289,5 +1304,75 @@ export class MapComponent
       );
     }
     controlButton?.click();
+  }
+
+  /**
+   * Init necessary listeners for exporting map as pdf or image
+   */
+  private initExportMapListeners() {
+    this.dashboardExportService.isExporting$
+      .pipe(
+        filter((isExporting) => !!isExporting),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        const { originalBasemap, originalWebMap } = this.buildMapToExport();
+        // After the export is done, restore the original basemap and webmap
+        this.revertMapSubscription = this.dashboardExportService.isExporting$
+          .pipe(
+            filter((isExporting) => !isExporting),
+            take(1),
+            takeUntil(this.destroy$)
+          )
+          .subscribe(() => {
+            this.setMapBackToOriginState(originalBasemap, originalWebMap);
+          });
+      });
+  }
+
+  /**
+   * Build map for export as pdf or image
+   *
+   * @returns base map and web map set for the dashboard before the map build for export
+   */
+  private buildMapToExport() {
+    // If there's an existing subscription to revert the map, unsubscribe first
+    this.revertMapSubscription?.unsubscribe();
+    // Saves the current basemap and webmap
+    const originalBasemap = this.basemap;
+    const originalWebMap = this.arcGisWebMap;
+    // Replaces the current map layer with the WHO Polygon Raster Basemap
+    this.basemap = L.tileLayer(
+      'https://tiles.arcgis.com/tiles/5T5nSi527N4F7luB/arcgis/rest/services/WHO_Polygon_Raster_Basemap_with_labels/MapServer/tile/{z}/{y}/{x}',
+      {
+        attribution: '&copy; WHO',
+      }
+    );
+    // Listens for the 'load' event to know once the tiles are loaded
+    this.basemap
+      .on('load', () => {
+        // Replaces the current webmap with an empty layer group
+        this.arcGisWebMap = L.layerGroup().addTo(this.map);
+        this.dashboardExportService.incrementMapLoadedCount();
+      })
+      .addTo(this.map);
+    return { originalBasemap, originalWebMap };
+  }
+
+  /**
+   * Set map as it was before exporting it to pdf or image
+   *
+   * @param originalBasemap Original base map set before exporting map to pdf or image
+   * @param originalWebMap Original web map set before exporting map to pdf or image
+   */
+  private setMapBackToOriginState(originalBasemap: any, originalWebMap: any) {
+    this.map.removeLayer(this.basemap);
+    this.map.removeLayer(this.arcGisWebMap);
+    this.basemap = originalBasemap.addTo(this.map); // Add the basemap back first
+    if (originalWebMap) {
+      this.arcGisWebMap = originalWebMap.addTo(this.map); // Then add the webmap on top
+    }
+    // Unsubscribe to clean up
+    this.revertMapSubscription?.unsubscribe();
   }
 }

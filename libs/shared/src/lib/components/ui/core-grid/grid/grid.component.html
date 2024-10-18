@@ -39,9 +39,10 @@
     "
     kendoGridToolbarTemplate
     position="top"
+    class="export-hide"
   >
     <kendo-textbox
-      class="!w-full"
+      class="!w-full export-hide"
       *ngIf="searchable"
       [placeholder]="'common.placeholder.search' | translate"
       [formControl]="search"
@@ -55,6 +56,7 @@
       fillMode="flat"
       (click)="toggleColumnChooser(anchor.element, columnChooser)"
       icon="columns"
+      class="export-hide"
     ></kendo-button>
     <ng-template #columnChooser>
       <shared-grid-column-chooser
@@ -62,6 +64,7 @@
         (hideColumnChooser)="
           toggleColumnChooser(anchor.element, columnChooser, $event)
         "
+        class="export-hide"
       ></shared-grid-column-chooser>
     </ng-template>
 
@@ -69,6 +72,7 @@
       *ngIf="actions.add && canAdd"
       kendoButton
       (click)="action.emit({ action: 'add' })"
+      class="export-hide"
     >
       {{ 'common.add' | translate }}
     </button>
@@ -80,10 +84,20 @@
       {{ 'common.export' | translate }}
     </button>
     <ng-container *ngIf="editable">
-      <button kendoButton (click)="onSave()" [disabled]="!hasChanges">
+      <button
+        kendoButton
+        (click)="onSave()"
+        [disabled]="!hasChanges"
+        class="export-hide"
+      >
         {{ 'common.save' | translate }}
       </button>
-      <button kendoButton (click)="onCancel()" [disabled]="!hasChanges">
+      <button
+        kendoButton
+        (click)="onCancel()"
+        [disabled]="!hasChanges"
+        class="export-hide"
+      >
         {{ 'common.cancel' | translate }}
       </button>
     </ng-container>
@@ -93,6 +107,7 @@
       kendoButton
       icon="eye"
       (click)="onToggleFilter()"
+      class="export-hide"
     >
       {{
         (showFilter ? 'common.filter.hide' : 'common.filter.show') | translate
@@ -104,6 +119,7 @@
       kendoButton
       [title]="'components.widget.grid.layout.button.title' | translate"
       (click)="action.emit({ action: 'resetLayout' }); restoreColumns()"
+      class="export-hide"
     >
       {{ 'components.widget.grid.layout.reset' | translate }}
     </button>
@@ -111,6 +127,7 @@
       [actions]="actions"
       [items]="selectedItems"
       (action)="action.emit($event)"
+      class="export-hide"
     >
     </shared-grid-toolbar>
   </ng-template>
@@ -132,7 +149,9 @@
       <kendo-grid-column
         *ngIf="
           field.type !== 'JSON' &&
-          (!field.meta || field.meta.type !== 'referenceData')
+          (!field.meta ||
+            (field.meta.type !== 'referenceData' &&
+              field.meta.type !== 'editor'))
         "
         [field]="field.name"
         [title]="field.title"
@@ -228,6 +247,7 @@
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
+                class="export-hide"
                 (click)="onExpandText(dataItem, field.name, field.title)"
                 [look]="'flat'"
                 [uiTooltip]="'common.viewFullscreen' | translate"
@@ -651,6 +671,58 @@
               {{ dataItem.text[field.name] }}
             </a>
           </div>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- Editor -->
+      <kendo-grid-column
+        *ngIf="field.meta.type === 'editor'"
+        [field]="field.name"
+        [filterable]="true"
+        [title]="field.title"
+        [editor]="field.editor"
+        [editable]="false"
+        [width]="field.width"
+        [hidden]="field.hidden"
+        [minResizableWidth]="50"
+        class="no-padding"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div class="textbox-container" [style]="dataItem.style[field.name]">
+            <div class="truncate">
+              {{ dataItem.text[field.name] | sharedStripHtml }}
+            </div>
+            <button
+              *ngIf="dataItem.text[field.name]"
+              kendoButton
+              icon="hyperlink-open-sm"
+              (click)="onOpenEditorModal(dataItem, field)"
+              [look]="'flat'"
+              [uiTooltip]="
+                'components.widget.grid.tooltip.displayEditor' | translate
+              "
+            ></button>
+          </div>
+        </ng-template>
+        <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
+          <kendo-grid-string-filter-cell [column]="column" [filter]="filter">
+            <kendo-filter-isnull-operator></kendo-filter-isnull-operator>
+            <kendo-filter-isnotnull-operator></kendo-filter-isnotnull-operator>
+          </kendo-grid-string-filter-cell>
+        </ng-template>
+        <ng-template
+          kendoGridFilterMenuTemplate
+          let-filter
+          let-column="column"
+          let-filterService="filterService"
+        >
+          <kendo-grid-string-filter-menu
+            [column]="column"
+            [filter]="filter"
+            [filterService]="filterService"
+          >
+            <kendo-filter-isnull-operator></kendo-filter-isnull-operator>
+            <kendo-filter-isnotnull-operator></kendo-filter-isnotnull-operator>
+          </kendo-grid-string-filter-menu>
         </ng-template>
       </kendo-grid-column>
       <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox / owner / users ) -->

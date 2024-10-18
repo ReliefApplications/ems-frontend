@@ -589,7 +589,9 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
           });
       }
     } else {
-      !options.sendMail ? this.grid.reloadData() : '';
+      // todo(email): not applicable if !options.sendMail ?
+      this.grid.selectedRows = [];
+      this.grid.reloadData();
     }
   }
 

@@ -8,6 +8,7 @@ export const GET_SHARE_DASHBOARD_BY_ID = gql`
       id
       page {
         application {
+          shortcut
           id
         }
       }
@@ -16,6 +17,7 @@ export const GET_SHARE_DASHBOARD_BY_ID = gql`
           id
           page {
             application {
+              shortcut
               id
             }
           }

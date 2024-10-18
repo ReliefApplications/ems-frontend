@@ -199,6 +199,10 @@
 		"exitFullscreen": "Exit Fullscreen",
 		"export": "Export",
 		"exportObject": "Export {{name}}",
+		"exportType": {
+			"image": "Export to image",
+			"pdf": "Export to PDF"
+		},
 		"false": "False",
 		"field": {
 			"few": "Fields",
@@ -322,6 +326,19 @@
 				"timestamp": "Timestamp"
 			},
 			"emailSent": "Email sent successfully.",
+			"export": {
+				"download": "Download",
+				"format": "Format:",
+				"image": "{{image}} Ready",
+				"includeHeaderFooter": "Include Header and Footer",
+				"landscape": "Landscape",
+				"loading": "Loading {{type}} export",
+				"options": "Export options",
+				"orientation": "Orientation:",
+				"paperSize": "Paper Size:",
+				"pdf": "PDF Ready",
+				"portrait": "Portrait"
+			},
 			"fetchingGroups": "Fetching groups from service...",
 			"file": {
 				"download": {
@@ -584,7 +601,8 @@
 				"selectedFields": "Only unused fields can be removed.",
 				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.\nEstablishing consecutive sorting stages will simultaneously sort all fields.",
 				"unwind": "Deconstructs an array field from the input documents to output a document for each element."
-			}
+			},
+			"unavailableFields": "These fields are unavailable because their types are not supported"
 		},
 		"apiConfiguration": {
 			"create": {
@@ -1642,8 +1660,10 @@
 					"mapDetailsTitle": "Query Map View",
 					"mapDetailsTooltip": "Centered by default on selected record"
 				},
+				"openEditor": "Open html",
 				"openSettings": "Open settings",
 				"tooltip": {
+					"displayEditor": "Display html in modal",
 					"displayMap": "Display map",
 					"openPage": "Navigate to page",
 					"saved": "Changes saved",
@@ -1943,7 +1963,8 @@
 						}
 					},
 					"help": {
-						"geographicExtent": "Use filter and / or page context to zoom on the map"
+						"geographicExtent": "Use filter and / or page context to zoom on the map",
+						"layers": "The layers will be displayed on the map according to their order in the list, with layers at the top appearing above layers with a lower index."
 					},
 					"layers": {
 						"add": "Add new layer",
@@ -2393,6 +2414,14 @@
 				"updated": "Application updated."
 			},
 			"setAsFavorite": "Set as favorite",
+			"shortcut": {
+				"errors": {
+					"isNotUnique": "**************unique",
+					"isNotValid": "**************valid"
+				},
+				"info": "Application shortcut must be an unique string in the system. It can only contain letters, numbers and hyphens",
+				"text": "Shortcut"
+			},
 			"subscription": {
 				"create": "Create a subscription"
 			}
@@ -2719,6 +2748,12 @@
 			"update": {
 				"exit": "Exit without saving changes",
 				"exitMessage": "There are unsaved changes on the page. Are you sure you want to exit?"
+			}
+		},
+		"error": {
+			"unauthorized": {
+				"footer": "Please contact <a class=\"underline text-primary-500 hover:text-primary-600\" href=\"mailto:ems2@who.int\">ems2@who.int</a> for more information.",
+				"title": "Your user account does not have access to this content."
 			}
 		},
 		"formBuilder": {
