@@ -45,6 +45,7 @@ import { Router } from '@angular/router';
  */
 const createButtonActionForm = (data: ButtonActionT, roles: Role[]) => {
   return new FormGroup({
+    // General
     text: new FormControl(get(data, 'text', ''), Validators.required),
     href: new FormControl(get(data, 'href', ''), Validators.required),
     hasRoleRestriction: new FormControl(
@@ -61,6 +62,17 @@ const createButtonActionForm = (data: ButtonActionT, roles: Role[]) => {
     variant: new FormControl(get(data, 'variant', 'primary')),
     category: new FormControl(get(data, 'category', 'secondary')),
     openInNewTab: new FormControl(get(data, 'openInNewTab', true)),
+    // Actions
+    navigateTo: new FormControl(get(data, 'navigateTo', false)),
+    previousPage: new FormControl(get(data, 'previousPage', false)),
+    url: new FormControl(get(data, 'url', false)),
+    urlValue: new FormControl(get(data, 'urlValue', '')),
+    editRecord: new FormControl(get(data, 'editRecord', false)),
+    addRecord: new FormControl(get(data, 'addRecord', false)),
+    suscribeToNotification: new FormControl(
+      get(data, 'suscribeToNotification', false)
+    ),
+    sendNotification: new FormControl(get(data, 'sendNotification', false)),
   });
 };
 
