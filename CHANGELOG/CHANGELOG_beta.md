@@ -1,3 +1,10 @@
+# [2.17.0-beta.9](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.8...v2.17.0-beta.9) (2024-10-18)
+
+
+### Features
+
+* dashboard export ([#2653](https://github.com/ReliefApplications/ems-frontend/issues/2653)) ([891c164](https://github.com/ReliefApplications/ems-frontend/commit/891c164a8fc590df54ee034c4096070c108e8d50)), closes [Ab#104302](https://github.com/Ab/issues/104302)
+
 # [2.17.0-beta.8](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.7...v2.17.0-beta.8) (2024-10-16)
 
 
