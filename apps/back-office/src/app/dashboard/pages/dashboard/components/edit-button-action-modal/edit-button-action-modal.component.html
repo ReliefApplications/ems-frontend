@@ -18,7 +18,7 @@
           <!-- Section Name -->
           <ng-container ngProjectAs="label">
             <ui-icon
-              icon="settings"
+              icon="preview"
               [size]="18"
               uiTooltip="{{ 'common.general' | translate }}"
             ></ui-icon>
@@ -124,6 +124,7 @@
             </div>
           </div>
         </ui-tab>
+
         <!-- Action -->
         <ui-tab>
           <!-- Section Name -->
@@ -133,8 +134,92 @@
               [size]="18"
               uiTooltip="{{ 'common.general' | translate }}"
             ></ui-icon>
-            <span>{{ 'models.dashboard.buttonActions.action' | translate }}</span>
+            <span>{{
+              'models.dashboard.buttonActions.action' | translate
+            }}</span>
           </ng-container>
+          <!-- Section Content -->
+          <div class="flex gap-4 flex-col">
+            <!-- Navigate to -->
+            <ng-container>
+              <ui-toggle formControlName="navigateTo">
+                <ng-container ngProjectAs="label">
+                  {{
+                    'models.dashboard.buttonActions.actions.navigateTo'
+                      | translate
+                  }}
+                </ng-container>
+              </ui-toggle>
+              <div class="flex flex-col ml-[55px]">
+                <!-- Previous page -->
+                <ui-toggle formControlName="previousPage">
+                  <ng-container ngProjectAs="label">
+                    {{
+                      'models.dashboard.buttonActions.actions.previousPage'
+                        | translate
+                    }}
+                  </ng-container>
+                </ui-toggle>
+                <ui-toggle formControlName="url">
+                  <ng-container ngProjectAs="label">
+                    {{
+                      'models.dashboard.buttonActions.actions.url' | translate
+                    }}
+                  </ng-container>
+                </ui-toggle>
+                <div uiFormFieldDirective>
+                  <label>{{
+                    'models.dashboard.buttonActions.actions.url' | translate
+                  }}</label>
+                  <input formControlName="text" type="string" />
+                </div>
+                <ui-toggle formControlName="openInNewTab">
+                  <ng-container ngProjectAs="label">
+                    {{
+                      'models.dashboard.buttonActions.actions.openInNewTab'
+                        | translate
+                    }}
+                  </ng-container>
+                </ui-toggle>
+              </div>
+            </ng-container>
+
+            <!-- Edit record -->
+            <ui-toggle formControlName="editRecord">
+              <ng-container ngProjectAs="label">
+                {{
+                  'models.dashboard.buttonActions.actions.editRecord'
+                    | translate
+                }}
+              </ng-container>
+            </ui-toggle>
+            <!-- Add record -->
+            <ui-toggle formControlName="addRecord">
+              <ng-container ngProjectAs="label">
+                {{
+                  'models.dashboard.buttonActions.actions.addRecord' | translate
+                }}
+              </ng-container>
+            </ui-toggle>
+            <!-- Suscribe to notification -->
+            <ui-toggle formControlName="suscribeToNotification">
+              <ng-container ngProjectAs="label">
+                {{
+                  'models.dashboard.buttonActions.actions.suscribeToNotification'
+                    | translate
+                }}
+              </ng-container>
+            </ui-toggle>
+            <!-- Send notification -->
+            <ui-toggle formControlName="sendNotification">
+              <ng-container ngProjectAs="label">
+                {{
+                  'models.dashboard.buttonActions.actions.sendNotification'
+                    | translate
+                }}
+              </ng-container>
+            </ui-toggle>
+          </div>
         </ui-tab>
       </ui-tabs>
     </form>
