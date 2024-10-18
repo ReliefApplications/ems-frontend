@@ -124,6 +124,18 @@
             </div>
           </div>
         </ui-tab>
+        <!-- Action -->
+        <ui-tab>
+          <!-- Section Name -->
+          <ng-container ngProjectAs="label">
+            <ui-icon
+              icon="toggle_on"
+              [size]="18"
+              uiTooltip="{{ 'common.general' | translate }}"
+            ></ui-icon>
+            <span>{{ 'models.dashboard.buttonActions.action' | translate }}</span>
+          </ng-container>
+        </ui-tab>
       </ui-tabs>
     </form>
   </ng-container>

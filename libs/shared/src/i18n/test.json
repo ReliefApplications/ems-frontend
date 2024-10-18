@@ -2376,6 +2376,7 @@
 		"dashboard": {
 			"activateFiltering": "******",
 			"buttonActions": {
+				"action": "******",
 				"category": "******",
 				"confirmDelete": "******",
 				"create": "******",
