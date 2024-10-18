@@ -4,6 +4,7 @@ import { NgZone } from '@angular/core';
 // todo: as it something to do with survey-angular
 import { SurveyModel, surveyLocalization } from 'survey-core';
 import { Question } from '../types';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 /**
  * Build the search button for resource and resources components
@@ -39,20 +40,56 @@ export const buildSearchButton = (
         fieldsSettingsForm.temporaryRecords = res;
       }
     });
+
+    const buildFilter = () => {
+      // Calculated at runtime
+      const dynamicFilter = question.filters;
+      // Static, in question settings
+      const preBuiltFilter = fieldsSettingsForm.filter;
+      const filter: CompositeFilterDescriptor = {
+        logic: 'and',
+        filters: [],
+      };
+
+      if (dynamicFilter) {
+        if (dynamicFilter.filters) {
+          filter.filters.push(dynamicFilter);
+        } else {
+          if (Array.isArray(dynamicFilter)) {
+            filter.filters.push(...dynamicFilter);
+          } else {
+            filter.filters.push(dynamicFilter);
+          }
+        }
+      }
+
+      if (preBuiltFilter) {
+        if (preBuiltFilter.filters) {
+          filter.filters.push(preBuiltFilter);
+        } else {
+          if (Array.isArray(preBuiltFilter)) {
+            filter.filters.push(...preBuiltFilter);
+          } else {
+            filter.filters.push(preBuiltFilter);
+          }
+        }
+      }
+
+      return filter;
+    };
+
     searchButton.onclick = async () => {
       const { ResourceGridModalComponent } = await import(
         '../../components/search-resource-grid-modal/search-resource-grid-modal.component'
       );
       ngZone.run(() => {
+        console.log(fieldsSettingsForm);
         const dialogRef = dialog.open(ResourceGridModalComponent, {
           data: {
             multiselect,
             gridSettings: {
               ...fieldsSettingsForm,
-              filter: {
-                logic: 'and',
-                filters: question.filters,
-              },
+              filter: buildFilter(),
             },
             selectedRows: Array.isArray(question.value)
               ? question.value

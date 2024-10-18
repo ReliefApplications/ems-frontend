@@ -26,6 +26,12 @@ import {
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 import { ResourceQueryResponse } from '../../models/resource.model';
+import {
+  CompositeFilterDescriptor,
+  FilterDescriptor,
+} from '@progress/kendo-data-query';
+import get from 'lodash/get';
+import { isNil } from 'lodash';
 
 /** Create the list of filter values for resources */
 export const resourcesFilterValues = new BehaviorSubject<
@@ -438,7 +444,7 @@ export const init = (
 
       Serializer.addProperty('resources', {
         category: 'Filter by Questions',
-        type: 'text',
+        type: CustomPropertyGridComponentTypes.jsonEditor,
         name: 'customFilter',
         displayName: ' ',
         dependsOn: ['resource', 'selectQuestion'],
@@ -542,34 +548,80 @@ export const init = (
           question.customFilter &&
           question.customFilter.trim().length > 0
         ) {
-          const obj = JSON.parse(question.customFilter || '[]');
-          if (Array.isArray(obj) && obj.length) {
-            for (const objElement of obj) {
-              const value = objElement.value;
-              if (typeof value === 'string' && value.match(/^{*.*}$/)) {
-                const quest = value.substr(1, value.length - 2);
-                objElement.value = '';
-                question.survey?.onValueChanged.add((_: any, options: any) => {
-                  if (options.question.name === quest) {
-                    if (options.value || options.value === 0) {
-                      setAdvanceFilter(options.value, objElement.field);
-                      if (question.displayAsGrid) {
-                        resourcesFilterValues.next(filters);
-                      } else {
-                        this.populateChoices(question, objElement.field);
-                      }
-                    } else {
-                      // Remove filter if value is null, undefined or empty
-                      setAdvanceFilter(null, objElement.field);
-                    }
+          question.survey?.onValueChanged.add(() => {
+            const surveyData = question.survey.data;
+
+            const updateFilter = (
+              data: any,
+              filter: CompositeFilterDescriptor | FilterDescriptor
+            ): CompositeFilterDescriptor | FilterDescriptor | null => {
+              if ('filters' in filter) {
+                return {
+                  logic: filter.logic,
+                  filters: filter.filters
+                    .map((x) => updateFilter(data, x))
+                    .filter((x) => !isNil(x)) as (
+                    | FilterDescriptor
+                    | CompositeFilterDescriptor
+                  )[],
+                };
+              } else {
+                // Extract the placeholder (if present)
+                const matches = filter.value.match(/\{([^}]+)\}/);
+                if (matches) {
+                  const field = matches[1]; // extract the part between { }
+                  const value = get(data, field);
+                  if (isNil(value)) {
+                    return null;
+                  } else {
+                    return {
+                      ...filter,
+                      value,
+                    };
                   }
-                  question.filters = filters;
-                });
+                } else {
+                  return filter;
+                }
               }
+            };
+
+            const customFilter = JSON.parse(question.customFilter);
+            if (Array.isArray(customFilter)) {
+              question.filters = customFilter
+                .map((x) => updateFilter(surveyData, x))
+                .filter((x) => !isNil(x));
+            } else {
+              question.filters = updateFilter(surveyData, customFilter);
             }
-            filters = obj;
-            this.populateChoices(question);
-          }
+          });
+          // if (Array.isArray(obj) && obj.length) {
+          //   for (const objElement of obj) {
+          //     const value = objElement.value;
+          //     if (typeof value === 'string' && value.match(/^{*.*}$/)) {
+          //       const quest = value.substr(1, value.length - 2);
+          //       objElement.value = '';
+          //       question.survey?.onValueChanged.add((_: any, options: any) => {
+          //         console.log(question.survey.data);
+          //         if (options.question.name === quest) {
+          //           if (options.value || options.value === 0) {
+          //             setAdvanceFilter(options.value, objElement.field);
+          //             if (question.displayAsGrid) {
+          //               resourcesFilterValues.next(filters);
+          //             } else {
+          //               this.populateChoices(question, objElement.field);
+          //             }
+          //           } else {
+          //             // Remove filter if value is null, undefined or empty
+          //             setAdvanceFilter(null, objElement.field);
+          //           }
+          //         }
+          //         question.filters = filters;
+          //       });
+          //     }
+          //   }
+          //   filters = obj;
+          //   this.populateChoices(question);
+          // }
         }
       }
     },
