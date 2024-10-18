@@ -2376,6 +2376,7 @@
 		"dashboard": {
 			"activateFiltering": "Activer le filtre",
 			"buttonActions": {
+				"action": "Action",
 				"category": "Catégorie de bouton",
 				"confirmDelete": "Voulez-vous vraiment supprimer cette action de bouton ?",
 				"create": "Créer un bouton d'action",
