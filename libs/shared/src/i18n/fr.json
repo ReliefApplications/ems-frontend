@@ -1978,7 +1978,15 @@
 					"renderer": {
 						"classBreak": "************",
 						"default": "Défaut",
-						"defaultLabel": "Libellé par défaut",
+						"defaultLabel": {
+							"info": "************",
+							"text": "Libellé par défaut"
+						},
+						"errors": {
+							"invalidClassBreakOrder": "**************",
+							"repeatedValues": "**************",
+							"valuesOrder": "**************"
+						},
 						"label": "Libellé",
 						"maxValue": "************",
 						"minValue": "************",

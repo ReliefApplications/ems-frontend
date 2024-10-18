@@ -10,11 +10,17 @@
       >
     </ui-select-menu>
   </div>
-  <div uiFormFieldDirective>
+  <div
+    [uiErrorMessage]="
+      'components.widget.settings.map.renderer.errors.valuesOrder' | translate
+    "
+    [uiErrorMessageIf]="formGroup && formGroup.errors?.incorrectMaxValueOrder"
+    uiFormFieldDirective
+  >
     <label>{{
       'components.widget.settings.map.renderer.minValue' | translate
     }}</label>
-    <input type="number" formControlName="minValue" type="text" />
+    <input type="number" formControlName="minValue" />
   </div>
   <!-- Class break values -->
   <div>
@@ -41,6 +47,16 @@
         >
           <!-- header -->
           <div
+            [uiErrorMessage]="
+              ($any(classBreakInfos.at(index))?.errors?.repeatedValues
+                ? 'components.widget.settings.map.renderer.errors.repeatedValues'
+                : 'components.widget.settings.map.renderer.errors.invalidClassBreakOrder'
+              ) | translate
+            "
+            [uiErrorMessageIf]="
+              $any(classBreakInfos.at(index))?.errors?.repeatedValues ||
+              $any(classBreakInfos.at(index))?.errors?.invalidClassBreakOrder
+            "
             class="flex justify-between items-center w-full"
             [ngClass]="{ 'pb-2': index === openedIndex }"
           >
@@ -80,7 +96,7 @@
               <label>{{
                 'components.widget.settings.map.renderer.maxValue' | translate
               }}</label>
-              <input type="number" formControlName="maxValue" type="text" />
+              <input type="number" formControlName="maxValue" />
             </div>
             <shared-simple-renderer
               [geometryType]="geometryType"
@@ -97,9 +113,19 @@
     <h2>{{ 'components.widget.settings.map.renderer.default' | translate }}</h2>
     <div uiFormFieldDirective>
       <label>{{
-        'components.widget.settings.map.renderer.defaultLabel' | translate
+        'components.widget.settings.map.renderer.defaultLabel.text' | translate
       }}</label>
       <input formControlName="defaultLabel" type="text" />
+      <ui-icon
+        icon="info_outline"
+        class="cursor-help"
+        variant="grey"
+        uiSuffix
+        [uiTooltip]="
+          'components.widget.settings.map.renderer.defaultLabel.info'
+            | translate
+        "
+      ></ui-icon>
     </div>
     <h3>{{ 'components.widget.settings.map.renderer.symbol' | translate }}</h3>
     <shared-simple-renderer

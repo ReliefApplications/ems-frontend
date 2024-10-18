@@ -4,6 +4,7 @@ import {
   FormArray,
   FormGroup,
   ReactiveFormsModule,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import {
@@ -13,6 +14,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
+  ErrorMessageModule,
   FormWrapperModule,
   IconModule,
   SelectMenuModule,
@@ -26,6 +28,94 @@ import { GeometryType } from '../../../../../ui/map/interfaces/layer-settings.ty
 import { UnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';
 import { createClassBreakInfoForm } from '../../../map-forms';
 import { SimpleRendererComponent } from '../simple-renderer/simple-renderer.component';
+
+/**
+ * Updates form validation checking if set values order set is correct
+ * - ASC from top to bottom
+ *
+ * @returns validation success or fail for incorrect values order set
+ */
+function isMaxValueOrderValid(): any {
+  return (group: FormGroup): ValidationErrors | null => {
+    let isValid = true;
+    if (group.get('minValue')?.dirty && group.get('minValue')?.value) {
+      for (
+        let index = 0;
+        index < (group.get('classBreakInfos') as FormArray).length;
+        index++
+      ) {
+        const maxValue = (group.get('classBreakInfos') as FormArray).at(index)
+          .value.maxValue;
+        if (group.get('minValue')?.value > maxValue) {
+          isValid = false;
+          break;
+        }
+      }
+    }
+    if (!isValid) {
+      return { incorrectMaxValueOrder: true };
+    }
+    return null;
+  };
+}
+
+/**
+ * Updates form validation checking if there given class break items value are in order:
+ * - ASC from top to bottom
+ *
+ * @returns validation success or fail for same values set
+ */
+function isClassBreakOrderValid(): any {
+  return (formArray: FormArray): ValidationErrors | null => {
+    let invalidClassBreakIndex = -1;
+    if (formArray.length >= 2) {
+      for (let index = 1; index < formArray.length; index++) {
+        formArray.at(index).setErrors(null);
+        const maxValue = formArray.at(index).value.maxValue;
+        if (
+          formArray.at(index).get('maxValue')?.dirty &&
+          maxValue < formArray.at(index - 1).value.maxValue &&
+          invalidClassBreakIndex === -1
+        ) {
+          invalidClassBreakIndex = index;
+        }
+      }
+    }
+    if (invalidClassBreakIndex !== -1) {
+      formArray
+        .at(invalidClassBreakIndex)
+        .setErrors({ invalidClassBreakOrder: true });
+    }
+    return null;
+  };
+}
+
+/**
+ * Updates form validation checking if there are repeated set values
+ *
+ * @returns validation success or fail for same values set
+ */
+function isThereRepeatedValues(): any {
+  return (formArray: FormArray): ValidationErrors | null => {
+    let invalidClassBreakIndex = -1;
+    if (formArray.length >= 2) {
+      for (let index = 0; index < formArray.length; index++) {
+        formArray.at(index).setErrors(null);
+        const maxValue = formArray.at(index).value.maxValue;
+        const maxValues = formArray.controls
+          .filter((_, i) => i !== index)
+          .map((control) => control.value.maxValue);
+        if (maxValues.includes(maxValue) && invalidClassBreakIndex === -1) {
+          invalidClassBreakIndex = index;
+        }
+      }
+    }
+    if (invalidClassBreakIndex !== -1) {
+      formArray.at(invalidClassBreakIndex).setErrors({ repeatedValues: true });
+    }
+    return null;
+  };
+}
 
 /**
  * Class break renderer layer settings.
@@ -44,6 +134,7 @@ import { SimpleRendererComponent } from '../simple-renderer/simple-renderer.comp
     TranslateModule,
     TooltipModule,
     SanitizeHTMLModule,
+    ErrorMessageModule,
   ],
   templateUrl: './class-break-renderer.component.html',
   styleUrls: ['./class-break-renderer.component.scss'],
@@ -73,6 +164,9 @@ export class ClassBreakRendererComponent
   }
 
   ngOnInit(): void {
+    this.formGroup.addValidators(isMaxValueOrderValid());
+    this.classBreakInfos.addValidators(isThereRepeatedValues());
+    this.classBreakInfos.addValidators(isClassBreakOrderValid());
     this.fields$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.scalarFields.next(
         value.filter((field) =>

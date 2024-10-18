@@ -1978,7 +1978,15 @@
 					"renderer": {
 						"classBreak": "Class Break",
 						"default": "Default",
-						"defaultLabel": "Default label",
+						"defaultLabel": {
+							"info": "**************",
+							"text": "Default label"
+						},
+						"errors": {
+							"invalidClassBreakOrder": "**************class",
+							"repeatedValues": "**************repeat",
+							"valuesOrder": "**************values"
+						},
 						"label": "Label",
 						"maxValue": "Maximum value",
 						"minValue": "Minimum value",

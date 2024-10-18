@@ -42,7 +42,7 @@ export interface UniqueValueInfo extends BaseInfo {
  * Class break info
  */
 export interface ClassBreakInfo extends BaseInfo {
-  maxValue: string;
+  maxValue: number;
 }
 
 /**
@@ -59,7 +59,7 @@ export interface DrawingInfo {
     defaultLabel?: string;
     defaultSymbol?: LayerSymbol;
     field1?: string;
-    minValue?: string;
+    minValue?: number;
     uniqueValueInfos?: UniqueValueInfo[];
     classBreakInfos?: ClassBreakInfo[];
   };
