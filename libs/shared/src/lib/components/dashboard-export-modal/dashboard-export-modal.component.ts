@@ -31,7 +31,7 @@ type DialogResultI = {
     }
 );
 
-/** Component for export options modal */
+/** Dashboard export modal. */
 @Component({
   standalone: true,
   imports: [
@@ -64,10 +64,10 @@ export class DashboardExportModalComponent {
   public paperSizes = [{ value: 'auto', label: 'Auto' }];
 
   /**
-   * Component for export options modal
+   * Dashboard export modal.
    *
-   * @param dialogData - The data for the dialog (takes in export type [PNG or PDF]).
-   * @param dialogRef - A reference to the dialog in dashboard class.
+   * @param dialogData - Dialog data ( PDF or image )
+   * @param dialogRef - Reference to dialog.
    */
   constructor(
     @Inject(DIALOG_DATA) public dialogData: DialogInputI,
@@ -80,7 +80,7 @@ export class DashboardExportModalComponent {
   /**
    * Creates export form based on the export type.
    *
-   * @returns the export form
+   * @returns Form group
    */
   private getExportForm() {
     return new FormGroup(

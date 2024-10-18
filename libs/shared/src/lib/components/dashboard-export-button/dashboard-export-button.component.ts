@@ -19,13 +19,11 @@ import { Dialog } from '@angular/cdk/dialog';
 import { drawDOM, exportPDF, exportImage } from '@progress/kendo-drawing';
 import { saveAs } from '@progress/kendo-file-saver';
 import {
-  BehaviorSubject,
   debounceTime,
   filter,
   first,
   iif,
   map,
-  Observable,
   of,
   switchMap,
   tap,
@@ -58,14 +56,6 @@ export class DashboardExportButtonComponent {
   @Input() title?: string;
   /** Wrapper element where exporter will be put into */
   private wrapper: any;
-  /**
-   * BehaviorSubject that is set to true true if all the maps on the dashboard
-   * are loaded and ready for exporting.
-   */
-  private mapReadyForExportSubject = new BehaviorSubject<boolean>(false);
-  /** Observable that observes true if the pdf or image export is in progress. */
-  public mapReadyForExport$: Observable<boolean> =
-    this.mapReadyForExportSubject.asObservable();
 
   /**
    * Shared dashboard export button.
@@ -88,12 +78,12 @@ export class DashboardExportButtonComponent {
   ) {}
 
   /**
-   * Saves the dashboard as a PDF file.
+   * Open PDF exporter modal.
+   * Call PDF export if user confirms export.
    */
   public async pdfExporter(): Promise<void> {
     this.dashboardExportService.mapLoadedCount.next(0);
 
-    // Open dashboard export modal
     const { DashboardExportModalComponent } = await import(
       '../dashboard-export-modal/dashboard-export-modal.component'
     );
@@ -103,7 +93,6 @@ export class DashboardExportButtonComponent {
       },
     });
 
-    // Handle the dialog result
     dialogRef.closed
       .pipe(
         filter((result) => result !== true && result !== undefined),
@@ -129,7 +118,6 @@ export class DashboardExportButtonComponent {
         )
       )
       .subscribe(async (result: any) => {
-        console.log(result);
         const snackBarRef = this.createLoadingSnackBar(
           this.translate.instant('common.notifications.export.loading', {
             type: 'PDF',
@@ -145,13 +133,59 @@ export class DashboardExportButtonComponent {
   }
 
   /**
-   * Exports the dashboard to image ( png or jpeg )
+   * Generate and save pdf with given configuration and data
    *
+   * @param resultValue PDF configuration.
+   * @param resultValue.includeHeaderFooter Whether to include headers and footers in the PDF.
+   * @param resultValue.paperSize PDF size.
+   */
+  private async savePdf(resultValue: {
+    includeHeaderFooter: boolean;
+    paperSize: string;
+  }) {
+    const pdfData = await this.pdfDrawer(resultValue);
+    saveAs(pdfData, `${this.title}.pdf`);
+    this.dashboardExportService.isExportingSubject.next(false);
+    // this.currentDialogSubscriptions?.unsubscribe();
+  }
+
+  /**
+   * Draw PDF.
+   * Create a wrapper to put all elements in it.
+   *
+   * @param pdfConfig PDF configuration
+   * @param pdfConfig.includeHeaderFooter Whether to include headers and footers in the PDF.
+   * @param pdfConfig.paperSize PDF size.
+   * @returns {Promise<string>} PDF data.
+   */
+  private async pdfDrawer(pdfConfig: {
+    includeHeaderFooter: boolean;
+    paperSize: string;
+  }): Promise<string> {
+    this.createWrapper();
+    const { includeHeaderFooter, paperSize } = pdfConfig;
+    if (includeHeaderFooter) {
+      this.addHeaderAndFooter();
+    }
+
+    const drawing = await drawDOM(this.wrapper, {
+      paperSize,
+    });
+    const pdfData = await exportPDF(drawing);
+    if (includeHeaderFooter) {
+      this.removeHeaderAndFooter();
+    }
+    this.removeWrapper();
+    return pdfData;
+  }
+
+  /**
+   * Open image exporter modal.
+   * Call image export if user confirms export.
    */
   public async imageExporter(): Promise<void> {
     this.dashboardExportService.mapLoadedCount.next(0);
 
-    // Open the DashboardExportActionComponent dialog
     const { DashboardExportModalComponent } = await import(
       '../dashboard-export-modal/dashboard-export-modal.component'
     );
@@ -161,7 +195,6 @@ export class DashboardExportButtonComponent {
       },
     });
 
-    // Sets the user input values from dialog box
     dialogRef.closed
       .pipe(
         filter((result) => result !== true && result !== undefined),
@@ -204,57 +237,11 @@ export class DashboardExportButtonComponent {
   }
 
   /**
-   * Generate and save pdf with given configuration and data
-   *
-   * @param resultValue Pdf configuration
-   * @param resultValue.includeHeaderFooter Whether to include headers and footers in the PDF.
-   * @param resultValue.paperSize The size of the PDF to be generated.
-   */
-  private async savePdf(resultValue: {
-    includeHeaderFooter: boolean;
-    paperSize: string;
-  }) {
-    const pdfData = await this.pdfDrawer(resultValue);
-    saveAs(pdfData, `${this.title}.pdf`);
-    this.dashboardExportService.isExportingSubject.next(false);
-    // this.currentDialogSubscriptions?.unsubscribe();
-  }
-
-  /**
-   * This method generates a PDF with the user input provided parameters.
-   *
-   * @param pdfConfig Pdf configuration
-   * @param pdfConfig.includeHeaderFooter Whether to include headers and footers in the PDF.
-   * @param pdfConfig.paperSize The size of the PDF to be generated.
-   * @returns {Promise<string>} A promise that resolves to a string representing the PDF data.
-   */
-  private async pdfDrawer(pdfConfig: {
-    includeHeaderFooter: boolean;
-    paperSize: string;
-  }): Promise<string> {
-    this.createWrapper();
-    const { includeHeaderFooter, paperSize } = pdfConfig;
-    if (includeHeaderFooter) {
-      this.addHeaderAndFooter();
-    }
-
-    const drawing = await drawDOM(this.wrapper, {
-      paperSize,
-    });
-    const pdfData = await exportPDF(drawing);
-    if (includeHeaderFooter) {
-      this.removeHeaderAndFooter();
-    }
-    this.removeWrapper();
-    return pdfData;
-  }
-
-  /**
-   * Generate and save png with given configuration and data
+   * Generate and save image with given configuration and data
    *
    * @param resultValue Image configuration
-   * @param resultValue.includeHeaderFooter Whether to include headers and footers in the PDF.
-   * @param resultValue.format The format of the image to be generated.
+   * @param resultValue.includeHeaderFooter Whether to include headers and footers in the image.
+   * @param resultValue.format Format of generated image.
    */
   private async saveImage(resultValue: {
     format: 'png' | 'jpeg';
@@ -269,10 +256,11 @@ export class DashboardExportButtonComponent {
   }
 
   /**
-   * This function draws a PNG image from the current state of the dashboard.
+   * Draw image.
+   * Create a wrapper to put all elements in it.
    *
    * @param includeHeaderFooter Whether to include a header and footer in the image.
-   * @returns {Promise<string>} A promise that resolves to a string representing the PNG data.
+   * @returns {Promise<string>} Image data.
    */
   private async imageDrawer(includeHeaderFooter: boolean): Promise<string> {
     this.createWrapper();

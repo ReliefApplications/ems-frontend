@@ -68,7 +68,7 @@
           ></ui-button>
           <!-- Switch between edition & preview -->
           <ui-button
-            *ngIf="canUpdate"
+            *ngIf="canUpdate && !templateMode"
             [icon]="editionActive ? 'edit' : 'preview'"
             (click)="editionActive = !editionActive"
             class="export-hide"
@@ -82,6 +82,7 @@
           <ui-button
             *ngIf="canUpdate && templateMode"
             (click)="onCreateTemplate()"
+            class="export-hide"
             >{{ 'models.dashboard.context.addTemplate' | translate }}</ui-button
           >
         </div>
@@ -162,6 +163,7 @@
       <!-- Context selector. Only appears for dashboard with templates. -->
       <app-context-selector
         *ngIf="dashboard.page && dashboard.page.context"
+        class="export-hide"
         [context]="dashboard.page.context"
         [contextId]="contextId"
         [contextRecord]="contextRecord"

@@ -7,7 +7,6 @@ import {
   OnInit,
   Output,
   Renderer2,
-  // ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -50,8 +49,6 @@ export class DashboardComponent
 {
   /** Change step event ( in workflow ) */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
-  /** PDF Export Div View Child */
-  // @ViewChild('pdfExport') exporter!: ElementRef;
   /** Is dashboard in fullscreen mode */
   public isFullScreen = false;
   /** Dashboard id */
