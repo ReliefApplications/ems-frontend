@@ -189,6 +189,10 @@
 		"exitFullscreen": "Quitter le mode plein écran",
 		"export": "Exporter",
 		"exportObject": "Exporter {{name}}",
+		"exportType": {
+			"image": "Exporter en image",
+			"pdf": "Exporter au format PDF"
+		},
 		"false": "Faux",
 		"field": {
 			"few": "Champs",
@@ -307,6 +311,20 @@
 					"title": "Sujet"
 				},
 				"timestamp": "Horodatage"
+			},
+			"emailSent": "E-mail envoyé avec succès.",
+			"export": {
+				"download": "Télécharger",
+				"format": "Format:",
+				"image": "{{image}} prêt",
+				"includeHeaderFooter": "Inclure l'en-tête et le pied de page",
+				"landscape": "Paysage",
+				"loading": "Chargement de l'exportation {{type}}",
+				"options": "Options d'exportation",
+				"orientation": "Orientation:",
+				"paperSize": "Format du papier:",
+				"pdf": "PDF prêt",
+				"portrait": "portrait"
 			},
 			"fetchingGroups": "Fetching groups from service...",
 			"file": {
