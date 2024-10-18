@@ -59,6 +59,7 @@ export const GET_LAYER_BY_ID = gql`
             gradient
             minOpacity
             field1
+            minValue
             defaultLabel
             defaultSymbol {
               color
@@ -72,6 +73,19 @@ export const GET_LAYER_BY_ID = gql`
             uniqueValueInfos {
               label
               value
+              symbol {
+                color
+                size
+                style
+                outline {
+                  color
+                  width
+                }
+              }
+            }
+            classBreakInfos {
+              label
+              maxValue
               symbol {
                 color
                 size

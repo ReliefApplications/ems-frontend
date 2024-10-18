@@ -464,6 +464,12 @@ export class Layer implements LayerModel {
       []
     );
 
+    const classBreakInfos = get(
+      this.layerDefinition,
+      'drawingInfo.renderer.classBreakInfos',
+      []
+    );
+
     const valueField = get(
       this.layerDefinition,
       'drawingInfo.renderer.field1',
@@ -475,6 +481,27 @@ export class Layer implements LayerModel {
       'drawingInfo.renderer.defaultSymbol',
       symbol
     );
+
+    const getClassBreakSymbol = (feature: Feature<any, any>) => {
+      const minValue = get(
+        this.layerDefinition,
+        'drawingInfo.renderer.minValue',
+        0
+      );
+      const fieldValue = get(feature, `properties.${valueField}`, null);
+      let classBreakSymbol = uniqueValueDefaultSymbol;
+      for (let i = 0; i < classBreakInfos.length; i++) {
+        if (
+          classBreakInfos[i].maxValue >= fieldValue &&
+          ((i === 0 && fieldValue > minValue) ||
+            fieldValue > classBreakInfos[i - 1 >= 0 ? i - 1 : 0].maxValue)
+        ) {
+          classBreakSymbol = classBreakInfos[i].symbol;
+          break;
+        }
+      }
+      return classBreakSymbol;
+    };
 
     // options used for parsing geojson to leaflet layer
     const geoJSONopts: L.GeoJSONOptions<any> = {
@@ -492,6 +519,18 @@ export class Layer implements LayerModel {
                 icon: uniqueValueSymbol.style,
                 color: uniqueValueSymbol.color,
                 size: uniqueValueSymbol.size,
+                opacity: this.opacity,
+              })
+            );
+          } else if (rendererType === 'classBreak') {
+            const classBreakSymbol = getClassBreakSymbol(feature);
+            return new L.Marker(latlng, {
+              pane: this.zIndex.toString(),
+            }).setIcon(
+              createCustomDivIcon({
+                icon: classBreakSymbol.style,
+                color: classBreakSymbol.color,
+                size: classBreakSymbol.size,
                 opacity: this.opacity,
               })
             );
@@ -520,6 +559,17 @@ export class Layer implements LayerModel {
               fillColor: uniqueValueSymbol.color,
               color: uniqueValueSymbol.outline?.color,
               weight: uniqueValueSymbol.outline?.width,
+              fillOpacity: this.opacity,
+              opacity: this.opacity,
+            };
+          } else if (rendererType === 'classBreak') {
+            const classBreakSymbol = getClassBreakSymbol(
+              feature as Feature<any, any>
+            );
+            return {
+              fillColor: classBreakSymbol.color,
+              color: classBreakSymbol.outline?.color,
+              weight: classBreakSymbol.outline?.width,
               fillOpacity: this.opacity,
               opacity: this.opacity,
             };
@@ -1048,11 +1098,14 @@ export class Layer implements LayerModel {
   get legend() {
     let html = '';
     const geometryType = get(this.datasource, 'type') || 'Point';
+    const rendererType = get(
+      this.layerDefinition,
+      'drawingInfo.renderer.type',
+      'simple'
+    );
     switch (this.type) {
       case 'FeatureLayer': {
-        switch (
-          get(this.layerDefinition, 'drawingInfo.renderer.type', 'simple')
-        ) {
+        switch (rendererType) {
           case 'heatmap':
             const gradient = get(
               this.layerDefinition,
@@ -1074,14 +1127,15 @@ export class Layer implements LayerModel {
             container.innerHTML = linearGradient.outerHTML + legend.outerHTML;
             html = container.outerHTML;
             break;
-          case 'uniqueValue': {
+          case 'uniqueValue':
+          case 'classBreak': {
             const defaultSymbol: LayerSymbol | undefined = get(
               this.layerDefinition,
               'drawingInfo.renderer.defaultSymbol'
             );
             for (const info of get(
               this.layerDefinition,
-              'drawingInfo.renderer.uniqueValueInfos',
+              `drawingInfo.renderer.${rendererType}Infos` as any,
               []
             )) {
               const symbol: LayerSymbol = info.symbol;

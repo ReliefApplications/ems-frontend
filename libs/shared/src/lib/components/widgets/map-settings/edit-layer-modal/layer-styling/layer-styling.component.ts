@@ -6,9 +6,9 @@ import { Fields } from '../../../../../models/layer.model';
 import { DomPortal } from '@angular/cdk/portal';
 
 /** Available renderer types for point */
-const POINT_RENDERER_TYPES = ['simple', 'heatmap', 'uniqueValue'];
+const POINT_RENDERER_TYPES = ['simple', 'heatmap', 'uniqueValue', 'classBreak'];
 /** Available renderer types for polygon */
-const POLYGON_RENDERER_TYPES = ['simple', 'uniqueValue'];
+const POLYGON_RENDERER_TYPES = ['simple', 'uniqueValue', 'classBreak'];
 
 /**
  * Layer styling component.

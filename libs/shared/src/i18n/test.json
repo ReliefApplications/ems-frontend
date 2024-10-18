@@ -1994,9 +1994,20 @@
 						"zoom": "******"
 					},
 					"renderer": {
+						"classBreak": "******",
 						"default": "******",
-						"defaultLabel": "******",
+						"defaultLabel": {
+							"info": "******",
+							"text": "******"
+						},
+						"errors": {
+							"invalidClassBreakOrder": "******",
+							"repeatedValues": "******",
+							"valuesOrder": "******"
+						},
 						"label": "******",
+						"maxValue": "******",
+						"minValue": "******",
 						"symbol": "******",
 						"uniqueValue": "******",
 						"value": "******"

@@ -24,12 +24,25 @@ export type LayerSymbol = {
 };
 
 /**
+ * Base info
+ */
+interface BaseInfo {
+  label: string;
+  symbol: LayerSymbol;
+}
+
+/**
  * Unique value info
  */
-export interface UniqueValueInfo {
-  label: string;
+export interface UniqueValueInfo extends BaseInfo {
   value: string;
-  symbol: LayerSymbol;
+}
+
+/**
+ * Class break info
+ */
+export interface ClassBreakInfo extends BaseInfo {
+  maxValue: number;
 }
 
 /**
@@ -46,7 +59,9 @@ export interface DrawingInfo {
     defaultLabel?: string;
     defaultSymbol?: LayerSymbol;
     field1?: string;
+    minValue?: number;
     uniqueValueInfos?: UniqueValueInfo[];
+    classBreakInfos?: ClassBreakInfo[];
   };
 }
 

@@ -22,6 +22,9 @@
         <div *ngSwitchCase="'uniqueValue'">
           <ng-container *ngTemplateOutlet="uniqueValueRenderer"></ng-container>
         </div>
+        <div *ngSwitchCase="'classBreak'">
+          <ng-container *ngTemplateOutlet="classBreakRenderer"></ng-container>
+        </div>
       </div>
     </div>
   </div>
@@ -53,4 +56,12 @@
     [formGroup]="$any(formGroup.get('renderer'))"
     [fields$]="fields$"
   ></shared-unique-value-renderer>
+</ng-template>
+
+<ng-template #classBreakRenderer>
+  <shared-class-break-renderer
+    [geometryType]="geometryType"
+    [formGroup]="$any(formGroup.get('renderer'))"
+    [fields$]="fields$"
+  ></shared-class-break-renderer>
 </ng-template>
