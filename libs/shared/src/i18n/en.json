@@ -189,6 +189,10 @@
 		"exitFullscreen": "Exit Fullscreen",
 		"export": "Export",
 		"exportObject": "Export {{name}}",
+		"exportType": {
+			"image": "Export to image",
+			"pdf": "Export to PDF"
+		},
 		"false": "False",
 		"field": {
 			"few": "Fields",
@@ -307,6 +311,20 @@
 					"title": "Subject*"
 				},
 				"timestamp": "Timestamp"
+			},
+			"emailSent": "Email sent successfully.",
+			"export": {
+				"download": "Download",
+				"format": "Format:",
+				"image": "{{image}} Ready",
+				"includeHeaderFooter": "Include Header and Footer",
+				"landscape": "Landscape",
+				"loading": "Loading {{type}} export",
+				"options": "Export options",
+				"orientation": "Orientation:",
+				"paperSize": "Paper Size:",
+				"pdf": "PDF Ready",
+				"portrait": "Portrait"
 			},
 			"fetchingGroups": "Fetching groups from service...",
 			"file": {
