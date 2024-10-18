@@ -438,7 +438,9 @@ export class ButtonConfigComponent
     );
     const dialogRef = this.dialog.open(TemplateModalComponent, {
       data: { isEdit: false },
+      autoFocus: false,
       disableClose: true,
+      width: '80%',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {

@@ -7,15 +7,9 @@
     *ngIf="emailService.emailListLoading && emailService.isExisting"
     class="spinner"
   ></ui-spinner>
-  <div
-    class="container emailListContainer py-8 flex justify-between"
-    *ngIf="emailService.isExisting"
-  >
-    <div
-      uiFormFieldDirective
-      [defaultMargin]="false"
-      class="p-4 flex max-sm:flex-auto"
-    >
+  <div class="flex justify-between mb-5" *ngIf="emailService.isExisting">
+    <!-- Searchbar -->
+    <div uiFormFieldDirective [defaultMargin]="false" class="max-sm:flex-auto">
       <ui-icon icon="search" uiPrefix></ui-icon>
       <input
         id="exampleSelect"
@@ -26,8 +20,10 @@
       />
     </div>
 
-    <div class="p-4" [ngSwitch]="selectedTabIndex">
-      <ng-container *ngIf="this.ability.can('create', 'EmailNotification')">
+    <!-- Actions -->
+    <ng-container *ngIf="this.ability.can('create', 'EmailNotification')">
+      <ng-container [ngSwitch]="selectedTabIndex">
+        <!-- Create a new email -->
         <ui-button
           class="float-right"
           icon="add"
@@ -38,20 +34,7 @@
         >
           {{ 'components.email.notification.create' | translate }}
         </ui-button>
-      </ng-container>
-      <!-- <ng-container *ngIf="this.ability.can('create', 'EmailNotification')">
-        <ui-button
-          class="float-right"
-          icon="add"
-          category="secondary"
-          variant="primary"
-          (click)="distributionListDialogHandler()"
-          *ngSwitchCase="1"
-        >
-          {{ 'components.email.distributionList.create' | translate }}
-        </ui-button>
-      </ng-container> -->
-      <ng-container *ngIf="this.ability.can('create', 'EmailNotification')">
+        <!-- Create a new custom template -->
         <ui-button
           class="float-right"
           icon="add"
@@ -63,9 +46,7 @@
           {{ 'common.email.customTemplate' | translate }}
         </ui-button>
       </ng-container>
-
-      <br />
-    </div>
+    </ng-container>
   </div>
 
   <div *ngIf="emailService.isExisting">
@@ -523,7 +504,7 @@
   <ng-container>
     <div class="relative">
       <ui-button
-        [variant]="'danger'"
+        variant="danger"
         class="absolute -top-[22px] -right-[14px] btnClose"
         [isIcon]="true"
         size="large"
