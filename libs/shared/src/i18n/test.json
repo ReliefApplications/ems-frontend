@@ -1976,9 +1976,12 @@
 						"zoom": "******"
 					},
 					"renderer": {
+						"classBreak": "******",
 						"default": "******",
 						"defaultLabel": "******",
 						"label": "******",
+						"maxValue": "******",
+						"minValue": "******",
 						"symbol": "******",
 						"uniqueValue": "******",
 						"value": "******"

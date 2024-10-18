@@ -1976,9 +1976,12 @@
 						"zoom": "Default zoom"
 					},
 					"renderer": {
+						"classBreak": "Class Break",
 						"default": "Default",
 						"defaultLabel": "Default label",
 						"label": "Label",
+						"maxValue": "Maximum value",
+						"minValue": "Minimum value",
 						"symbol": "Symbol",
 						"uniqueValue": "Unique values",
 						"value": "Value"

@@ -1976,9 +1976,12 @@
 						"zoom": "Zoom par défaut"
 					},
 					"renderer": {
+						"classBreak": "************",
 						"default": "Défaut",
 						"defaultLabel": "Libellé par défaut",
 						"label": "Libellé",
+						"maxValue": "************",
+						"minValue": "************",
 						"symbol": "Symbole",
 						"uniqueValue": "Valeurs uniques",
 						"value": "Valeur"

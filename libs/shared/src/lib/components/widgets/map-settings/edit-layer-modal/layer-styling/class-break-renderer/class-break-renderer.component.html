@@ -1,0 +1,110 @@
+<div [formGroup]="formGroup" class="flex flex-col gap-y-8">
+  <!-- Field -->
+  <div uiFormFieldDirective>
+    <label>{{ 'common.field.one' | translate }}</label>
+    <ui-select-menu formControlName="field1">
+      <ui-select-option
+        *ngFor="let field of scalarFields$ | async"
+        [value]="field.name"
+        >{{ field.label }}</ui-select-option
+      >
+    </ui-select-menu>
+  </div>
+  <div uiFormFieldDirective>
+    <label>{{
+      'components.widget.settings.map.renderer.minValue' | translate
+    }}</label>
+    <input type="number" formControlName="minValue" type="text" />
+  </div>
+  <!-- Class break values -->
+  <div>
+    <div class="flex gap-1 items-center mb-2">
+      <h2 class="m-0">
+        {{ 'components.widget.settings.map.renderer.classBreak' | translate }}
+      </h2>
+      <ui-button
+        (click)="onAddInfo()"
+        [isIcon]="true"
+        icon="add_circle_outline"
+        variant="primary"
+        [uiTooltip]="'common.add' | translate"
+      ></ui-button>
+    </div>
+
+    <ng-container *ngIf="classBreakInfos.length > 0">
+      <ul
+        class="divide-y divide-gray-100 bg-white ring-1 ring-gray-900/5 rounded-xl mx-2"
+      >
+        <li
+          *ngFor="let info of classBreakInfos.controls; let index = index"
+          class="hover:bg-gray-50 p-4 flex flex-col divide-y divide-gray-100"
+        >
+          <!-- header -->
+          <div
+            class="flex justify-between items-center w-full"
+            [ngClass]="{ 'pb-2': index === openedIndex }"
+          >
+            <div class="flex flex-1 gap-4 items-center cursor-pointer">
+              <div
+                class="flex flex-1 gap-2 items-center"
+                (click)="openedIndex = openedIndex === index ? -1 : index"
+              >
+                <span [innerHTML]="svgIcons[index] | sharedSanitizeHtml"></span>
+                <span
+                  >{{ index }} -
+                  {{ classBreakInfos.at(index).value.label }}</span
+                >
+              </div>
+            </div>
+            <ui-button
+              (click)="onRemoveInfo(index)"
+              [isIcon]="true"
+              icon="delete"
+              variant="danger"
+              [uiTooltip]="'common.delete' | translate"
+            ></ui-button>
+          </div>
+          <!-- body -->
+          <div
+            [formGroup]="$any(classBreakInfos.at(index))"
+            class="flex flex-col pt-2 w-full"
+            *ngIf="index === openedIndex"
+          >
+            <div uiFormFieldDirective>
+              <label>{{
+                'components.widget.settings.map.renderer.label' | translate
+              }}</label>
+              <input formControlName="label" type="text" />
+            </div>
+            <div uiFormFieldDirective>
+              <label>{{
+                'components.widget.settings.map.renderer.maxValue' | translate
+              }}</label>
+              <input type="number" formControlName="maxValue" type="text" />
+            </div>
+            <shared-simple-renderer
+              [geometryType]="geometryType"
+              [formGroup]="$any(classBreakInfos.at(index).get('symbol'))"
+            ></shared-simple-renderer>
+          </div>
+        </li>
+      </ul>
+    </ng-container>
+  </div>
+
+  <!-- Default -->
+  <div>
+    <h2>{{ 'components.widget.settings.map.renderer.default' | translate }}</h2>
+    <div uiFormFieldDirective>
+      <label>{{
+        'components.widget.settings.map.renderer.defaultLabel' | translate
+      }}</label>
+      <input formControlName="defaultLabel" type="text" />
+    </div>
+    <h3>{{ 'components.widget.settings.map.renderer.symbol' | translate }}</h3>
+    <shared-simple-renderer
+      [geometryType]="geometryType"
+      [formGroup]="$any(formGroup.get('defaultSymbol'))"
+    ></shared-simple-renderer>
+  </div>
+</div>
