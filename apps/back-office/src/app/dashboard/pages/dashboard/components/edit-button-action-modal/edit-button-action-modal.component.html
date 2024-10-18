@@ -34,27 +34,6 @@
               <input formControlName="text" type="string" />
             </div>
 
-            <!-- href -->
-            <div uiFormFieldDirective>
-              <label>{{
-                'models.dashboard.buttonActions.href' | translate
-              }}</label>
-              <shared-editor-control
-                formControlName="href"
-                [editorConfig]="hrefEditor"
-              ></shared-editor-control>
-            </div>
-
-            <!-- New tab toggle -->
-            <ui-toggle formControlName="hasRoleRestriction" class="mb-4">
-              <ng-container ngProjectAs="label">
-                {{
-                  'models.dashboard.buttonActions.hasRoleRestriction'
-                    | translate
-                }}</ng-container
-              >
-            </ui-toggle>
-
             <!-- Roles -->
             <div uiFormFieldDirective *ngIf="form.value.hasRoleRestriction">
               <label>{{

@@ -68,6 +68,7 @@ const createButtonActionForm = (data: ButtonActionT, roles: Role[]) => {
     url: new FormControl(get(data, 'url', false)),
     urlValue: new FormControl(get(data, 'urlValue', '')),
     editRecord: new FormControl(get(data, 'editRecord', false)),
+    template: new FormControl(get(data, 'template', '')),
     addRecord: new FormControl(get(data, 'addRecord', false)),
     suscribeToNotification: new FormControl(
       get(data, 'suscribeToNotification', false)
