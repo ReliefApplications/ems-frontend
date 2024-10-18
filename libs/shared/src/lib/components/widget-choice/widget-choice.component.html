@@ -3,9 +3,9 @@
 ></ng-container>
 
 <ng-template #listTemplate>
-  <div class="shared-widget-choice">
+  <div class="shared-widget-choice export-hide">
     <div
-      class="shared-widget-type"
+      class="shared-widget-type export-hide"
       *ngFor="let type of widgetTypes"
       (click)="onSelect(type)"
       [ngStyle]="hovered === type.id ? { 'border-color': type.color } : null"
@@ -26,8 +26,8 @@
   ></ng-container>
 </ng-template>
 
-<ng-template #barTemplate>
-  <div class="shared-floating-widget-choice shadow-lg" cdkDrag>
+<ng-template #barTemplate class="export-hide">
+  <div class="shared-floating-widget-choice shadow-lg export-hide" cdkDrag>
     <div class="shared-widget-type-list">
       <div
         class="shared-widget-type"
@@ -58,7 +58,7 @@
 
 <ng-template #collapsedTemplate>
   <div
-    class="rounded-full ml-auto mr-6 shadow-lg bg-white pointer-events-auto"
+    class="rounded-full ml-auto mr-6 shadow-lg bg-white pointer-events-auto export-hide"
     cdkDrag
   >
     <ui-button

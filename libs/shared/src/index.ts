@@ -68,6 +68,7 @@ export * from './lib/components/applications-summary/public-api';
 export * from './lib/components/confirm-modal/public-api';
 export * from './lib/components/content-choice/public-api';
 export * from './lib/components/convert-modal/public-api';
+export * from './lib/components/dashboard-export-button/dashboard-export-button.component';
 export * from './lib/components/dashboard-filter-icon/public-api';
 export * from './lib/components/dashboard-filter/public-api';
 export * from './lib/components/dashboard/public-api';
