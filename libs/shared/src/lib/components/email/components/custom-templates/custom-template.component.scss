@@ -1,8 +1,3 @@
-.example {
-  // display: table;
-  margin-left: 8px;
-  width: 90%;
-}
 .k-stepper {
   align-self: center;
 }
@@ -32,9 +27,6 @@
 .form-error {
   border: 2px solid red;
   outline-color: red;
-  .ng-select-container {
-    border: transparent !important;
-  }
 
   &:focus-within {
     --tw-ring-color: #ff0000;

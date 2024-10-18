@@ -142,7 +142,7 @@
                     >
                       <ng-container>
                         <ui-button
-                          [variant]="'grey'"
+                          variant="grey"
                           class="hide-icons hover:text-primary-600"
                           [isIcon]="true"
                           size="large"
@@ -154,7 +154,7 @@
                         </ui-button>
 
                         <ui-button
-                          [variant]="'grey'"
+                          variant="grey"
                           class="hide-icons hover:text-primary-600"
                           [isIcon]="true"
                           size="large"
@@ -165,7 +165,7 @@
                         </ui-button>
 
                         <ui-button
-                          [variant]="'grey'"
+                          variant="grey"
                           class="hide-icons hover:text-primary-600"
                           [isIcon]="true"
                           size="large"
@@ -177,7 +177,7 @@
                         </ui-button>
 
                         <ui-button
-                          [variant]="'danger'"
+                          variant="danger"
                           class="hide-icons hover:text-primary-600"
                           [isIcon]="true"
                           size="large"
@@ -345,6 +345,7 @@
 
       <!-- Custom Template -->
       <ui-tab>
+        <!-- todo(email): translate!! -->
         <ng-container ngProjectAs="label">Custom Templates</ng-container>
         <div class="mt-4">
           <div class="mt-4 overflow-x-hidden shadow-2lg">
@@ -380,11 +381,12 @@
                     "
                   >
                     <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-                      <th uiCellHeader *cdkHeaderCellDef scope="col">
-                        <span class="headerTitle">
-                          {{ 'components.email.action.header' | translate }}
-                        </span>
-                      </th>
+                      <th
+                        uiCellHeader
+                        *cdkHeaderCellDef
+                        scope="col"
+                        class="w-16"
+                      ></th>
                       <td
                         uiCell
                         *cdkCellDef="let element"
@@ -392,7 +394,7 @@
                       >
                         <ng-container>
                           <ui-button
-                            [variant]="'grey'"
+                            variant="grey"
                             class="hide-icons hover:text-primary-600"
                             [isIcon]="true"
                             size="large"
@@ -402,7 +404,7 @@
                           >
                           </ui-button>
                           <ui-button
-                            [variant]="'danger'"
+                            variant="danger"
                             class="hide-icons hover:text-primary-600"
                             [isIcon]="true"
                             size="large"
@@ -472,18 +474,11 @@
         </div>
       </ui-tab>
     </ui-tabs>
-    <!-- <button
-      type="button"
-      class="font-semibold mt-2 text-blue-500 py-2 px-4 rounded-md"
-      (click)="toggle()"
-    >
-      or Create New
-    </button> -->
   </div>
   <ng-container *ngIf="!emailService.isExisting">
     <div class="relative">
       <ui-button
-        [variant]="'danger'"
+        variant="danger"
         class="absolute -top-[22px] -right-[14px] btnClose"
         [isIcon]="true"
         size="large"
@@ -496,7 +491,6 @@
     <ems-template
       (navigateToEms)="toggle(); getExistingTemplate()"
       [currentStep]="emailService.stepperStep"
-      class="stepper-center"
     ></ems-template>
   </ng-container>
 </ng-container>

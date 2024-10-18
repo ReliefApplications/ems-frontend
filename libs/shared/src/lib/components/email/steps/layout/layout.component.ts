@@ -7,7 +7,6 @@ import { ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
-import { NgSelectComponent } from '@ng-select/ng-select';
 import { Subscription } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import convertToMinutes from '../../../../utils/convert-to-minutes';
@@ -84,18 +83,6 @@ export class LayoutComponent
   @Input() setLayoutValidation = false;
   /** Form array for 'in the last' dropdown. */
   public inTheLastDropdown = new FormArray<FormControl>([]);
-  /** NgSelect component */
-  @ViewChild('ngSelectComponent', { static: false })
-  ngSelectComponent!: NgSelectComponent;
-  /** Timestamp NgSelect component */
-  @ViewChild('ngTimestampComponent', { static: false })
-  ngTimestampComponent!: NgSelectComponent;
-  /** Filtered Field NgSelect component */
-  @ViewChild('ngFilteredFieldComponent', { static: false })
-  ngFilteredFieldComponent!: NgSelectComponent;
-  /** Field NgSelect component */
-  @ViewChild('ngFieldComponent', { static: false })
-  ngFieldComponent!: NgSelectComponent;
   /** DATASETS LIST GREATER THAN 1 CHECK */
   public datasetOverflow = false;
   /** Subscription for the graphql load change event. */

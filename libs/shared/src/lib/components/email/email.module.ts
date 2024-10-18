@@ -40,7 +40,6 @@ import { ScheduleAlertComponent } from './steps/schedule-alert/schedule-alert.co
 import { SelectDistributionComponent } from './steps/select-distribution/select-distribution.component';
 import { PreviewComponent } from './steps/preview/preview.component';
 import { TabStripModule } from '@progress/kendo-angular-layout';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { EmailTemplateComponent } from './components/email-template/email-template.component';
 import { DatasetFilterComponent } from './components/dataset-filter/dataset-filter.component';
@@ -89,7 +88,6 @@ import { CustomTemplateComponent } from './components/custom-templates/custom-te
     GraphQLSelectModule,
     TabStripModule,
     IconModule,
-    NgSelectModule,
     EditorModule,
     ButtonModule,
     SpinnerModule,

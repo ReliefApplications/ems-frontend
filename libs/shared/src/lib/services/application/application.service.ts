@@ -80,7 +80,6 @@ import {
 import { UPDATE_CUSTOM_NOTIFICATION } from '../application-notifications/graphql/mutations';
 import { AuthService } from '../auth/auth.service';
 import { DownloadService } from '../download/download.service';
-import { EmailService } from '../../components/email/email.service';
 import { RestService } from '../rest/rest.service';
 import {
   ADD_CHANNEL,
@@ -218,7 +217,6 @@ export class ApplicationService {
    * @param {DownloadService} downloadService - The download service.
    * @param {Document} document - The Document object.
    * @param shadowDomService shadow dom service to handle the current host of the component
-   * @param emailService email service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -231,8 +229,7 @@ export class ApplicationService {
     private restService: RestService,
     private downloadService: DownloadService,
     @Inject(DOCUMENT) private document: Document,
-    private shadowDomService: ShadowDomService,
-    private emailService: EmailService
+    private shadowDomService: ShadowDomService
   ) {
     this.environment = environment;
   }

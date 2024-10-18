@@ -6,7 +6,6 @@ export interface DistributionList {
   to?: string[];
   cc?: string[];
   bcc?: string[];
-  distributionListName?: string;
 }
 
 /** Model for add distribution list mutation response */

@@ -4,6 +4,8 @@ import {
   EventEmitter,
   OnInit,
   Output,
+  TemplateRef,
+  ViewChild,
 } from '@angular/core';
 import { EmailService } from '../../email.service';
 import { SnackbarService } from '@oort-front/ui';
@@ -19,11 +21,12 @@ import { ApplicationService } from '../../../../services/application/application
   styleUrls: ['./custom-template.component.scss'],
 })
 export class CustomTemplateComponent implements OnInit, AfterViewInit {
-  /* Used to identify the current step */
-  /** Current step of the custom template   */
+  /** Current step of the custom template */
   public currentStep = 0;
   /** NAVIGATE TO MAIN EMAIL LIST SCREEN */
   @Output() navigateToEms: EventEmitter<any> = new EventEmitter();
+  /** Reference to actions template */
+  @ViewChild('actionsTmpl') actionsTemplate!: TemplateRef<any>;
 
   /** Application ID. */
   public applicationId = '';
