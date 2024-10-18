@@ -36,47 +36,6 @@ import {
 } from '@oort-front/shared';
 import { Router } from '@angular/router';
 
-/**
- * Create a form group for the button action
- *
- * @param data Data to initialize the form
- * @param roles roles of the application
- * @returns the form group
- */
-const createButtonActionForm = (data: ButtonActionT, roles: Role[]) => {
-  return new FormGroup({
-    // General
-    text: new FormControl(get(data, 'text', ''), Validators.required),
-    href: new FormControl(get(data, 'href', ''), Validators.required),
-    hasRoleRestriction: new FormControl(
-      get(data, 'hasRoleRestriction', false),
-      Validators.required
-    ),
-    roles: new FormControl(
-      get(
-        data,
-        'roles',
-        roles.map((role) => role.id || '')
-      )
-    ),
-    variant: new FormControl(get(data, 'variant', 'primary')),
-    category: new FormControl(get(data, 'category', 'secondary')),
-    openInNewTab: new FormControl(get(data, 'openInNewTab', true)),
-    // Actions
-    navigateTo: new FormControl(get(data, 'navigateTo', false)),
-    previousPage: new FormControl(get(data, 'previousPage', false)),
-    url: new FormControl(get(data, 'url', false)),
-    urlValue: new FormControl(get(data, 'urlValue', '')),
-    editRecord: new FormControl(get(data, 'editRecord', false)),
-    template: new FormControl(get(data, 'template', '')),
-    addRecord: new FormControl(get(data, 'addRecord', false)),
-    suscribeToNotification: new FormControl(
-      get(data, 'suscribeToNotification', false)
-    ),
-    sendNotification: new FormControl(get(data, 'sendNotification', false)),
-  });
-};
-
 /** Component for editing a dashboard button action */
 @Component({
   selector: 'app-edit-button-action-modal',
@@ -103,7 +62,7 @@ const createButtonActionForm = (data: ButtonActionT, roles: Role[]) => {
 })
 export class EditButtonActionModalComponent implements OnInit {
   /** Form group */
-  public form: ReturnType<typeof createButtonActionForm>;
+  public form: ReturnType<typeof this.createButtonActionForm>;
 
   /** Variants */
   public variants = ButtonVariants;
@@ -137,7 +96,7 @@ export class EditButtonActionModalComponent implements OnInit {
     public applicationService: ApplicationService
   ) {
     this.roles = this.applicationService.application.value?.roles || [];
-    this.form = createButtonActionForm(data, this.roles);
+    this.form = this.createButtonActionForm(data, this.roles);
     this.isNew = !data;
 
     // Set the editor base url based on the environment file
@@ -173,4 +132,45 @@ export class EditButtonActionModalComponent implements OnInit {
   public onSubmit(): void {
     this.dialogRef.close(this.form.value as any);
   }
+
+  /**
+   * Create a form group for the button action
+   *
+   * @param data Data to initialize the form
+   * @param roles roles of the application
+   * @returns the form group
+   */
+  createButtonActionForm = (data: ButtonActionT, roles: Role[]) => {
+    return new FormGroup({
+      // General
+      text: new FormControl(get(data, 'text', ''), Validators.required),
+      href: new FormControl(get(data, 'href', ''), Validators.required),
+      hasRoleRestriction: new FormControl(
+        get(data, 'hasRoleRestriction', false),
+        Validators.required
+      ),
+      roles: new FormControl(
+        get(
+          data,
+          'roles',
+          roles.map((role) => role.id || '')
+        )
+      ),
+      variant: new FormControl(get(data, 'variant', 'primary')),
+      category: new FormControl(get(data, 'category', 'secondary')),
+      openInNewTab: new FormControl(get(data, 'openInNewTab', true)),
+      // Actions
+      navigateTo: new FormControl(get(data, 'navigateTo', false)),
+      previousPage: new FormControl(get(data, 'previousPage', false)),
+      url: new FormControl(get(data, 'url', false)),
+      urlValue: new FormControl(get(data, 'urlValue', '')),
+      editRecord: new FormControl(get(data, 'editRecord', false)),
+      template: new FormControl(get(data, 'template', '')),
+      addRecord: new FormControl(get(data, 'addRecord', false)),
+      suscribeToNotification: new FormControl(
+        get(data, 'suscribeToNotification', false)
+      ),
+      sendNotification: new FormControl(get(data, 'sendNotification', false)),
+    });
+  };
 }
