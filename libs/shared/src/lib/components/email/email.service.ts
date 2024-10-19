@@ -29,6 +29,7 @@ import { ResourceQueryResponse } from '../../models/resource.model';
 import { prettifyLabel } from '../../utils/prettify';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { addNewField } from '../query-builder/query-builder-forms';
 
 /**
  * Interface for InValidDataSets
@@ -644,7 +645,7 @@ export class EmailService {
         }),
         fields: this.formBuilder.array(
           emailDL?.query?.fields.map(
-            (field: any) => this.createFieldsFormGroup(field, this.formBuilder) // Using the utility function
+            (field: any) => this.createFieldsFormGroup(field) // Using the utility function
           )
         ),
       })
@@ -662,32 +663,8 @@ export class EmailService {
    * @param formBuilder form
    * @returns FormGroup with nested fields
    */
-  createFieldsFormGroup(field: any, formBuilder: FormBuilder): FormGroup {
-    if (field?.kind === 'LIST' || field?.kind === 'OBJECT') {
-      const nestedFieldsArray = new FormArray<FormGroup>([]);
-
-      field?.fields?.forEach((nestedField: any) => {
-        nestedFieldsArray.push(
-          this.createFieldsFormGroup(nestedField, formBuilder)
-        );
-      });
-
-      return formBuilder.group({
-        name: new FormControl(field.name),
-        type: new FormControl(field.type),
-        kind: new FormControl(field.kind),
-        fields: nestedFieldsArray, // Handle nested fields
-      });
-    } else {
-      return formBuilder.group({
-        name: new FormControl(field.name),
-        type: new FormControl(field.type),
-        kind: new FormControl(field.kind),
-        label: new FormControl(field.label || null),
-        width: new FormControl(field.width || null),
-        format: new FormControl(field.format || null),
-      });
-    }
+  createFieldsFormGroup(field: any): FormGroup {
+    return addNewField(field);
   }
 
   /**

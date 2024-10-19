@@ -781,9 +781,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   createNewDataSetGroup(ele: any, index: number): FormGroup {
     const fieldsArray = new FormArray<FormGroup>([]);
     ele?.query?.fields?.forEach((field: any) => {
-      fieldsArray.push(
-        this.emailService.createFieldsFormGroup(field, this.formBuilder)
-      );
+      fieldsArray.push(this.emailService.createFieldsFormGroup(field));
     });
 
     const individualEmailFieldsArray =
@@ -794,10 +792,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
                 const nestedIndividualFields = new FormArray<FormGroup>([]);
                 field?.fields?.forEach((nestedField: any) => {
                   nestedIndividualFields.push(
-                    this.emailService.createFieldsFormGroup(
-                      nestedField,
-                      this.formBuilder
-                    )
+                    this.emailService.createFieldsFormGroup(nestedField)
                   );
                 });
                 return this.formBuilder.group({
