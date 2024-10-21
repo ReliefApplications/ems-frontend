@@ -1,0 +1,63 @@
+<ui-dialog #dialogRef (closed)="onClose()">
+  <ng-container ngProjectAs="content">
+    <div class="example">
+      <!-- Stepper -->
+      <kendo-stepper
+        #stepper
+        [steps]="steps"
+        stepType="full"
+        [(currentStep)]="currentStep"
+        orientation="horizontal"
+        [linear]="true"
+      >
+      </kendo-stepper>
+      <ui-divider class="my-10"></ui-divider>
+      <!-- Template configuration -->
+      <app-layout
+        [isPreviewTemplate]="true"
+        *ngIf="currentStep === 0"
+        type="custom"
+      ></app-layout>
+      <!-- Preview -->
+      <app-preview
+        *ngIf="currentStep === 1"
+        [dataset]="this.data.dataset"
+      ></app-preview>
+    </div>
+  </ng-container>
+  <!-- Actions -->
+  <ng-container ngProjectAs="actions">
+    <div class="flex justify-end gap-2 flex-wrap">
+      <!-- Back -->
+      <ui-button
+        *ngIf="currentStep !== 0"
+        type="button"
+        category="tertiary"
+        variant="primary"
+        (click)="currentStep = 0"
+      >
+        {{ 'common.back' | translate }}
+      </ui-button>
+      <!-- Next button -->
+      <ui-button
+        *ngIf="currentStep !== 1"
+        type="submit"
+        category="secondary"
+        [disabled]="disableActionButton"
+        (click)="next()"
+      >
+        {{ 'common.next' | translate }}
+      </ui-button>
+      <!-- Send -->
+      <ui-button
+        *ngIf="currentStep === 1"
+        type="submit"
+        category="secondary"
+        variant="primary"
+        (click)="send()"
+      >
+        {{ 'common.sendEmail' | translate }}
+      </ui-button>
+    </div>
+  </ng-container>
+</ui-dialog>

@@ -9,6 +9,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { RestService } from '../rest/rest.service';
 import { SnackbarService } from '@oort-front/ui';
 import { flatDeep } from '../../utils/array-filter';
+import {
+  GET_CUSTOM_TEMPLATES,
+  GET_DISTRIBUTION_LIST,
+} from '../../components/email/graphql/queries';
+import { Apollo } from 'apollo-angular';
 
 /** Snackbar duration in ms */
 const SNACKBAR_DURATION = 1000;
@@ -29,12 +34,14 @@ export class EmailService {
    * @param dialog The Dialog service.
    * @param translate Angular translate service.
    * @param restService Shared rest service.
+   * @param apollo the graphQL client service
    */
   constructor(
     private snackBar: SnackbarService,
     private dialog: Dialog,
     private translate: TranslateService,
-    private restService: RestService
+    private restService: RestService,
+    private apollo: Apollo
   ) {}
 
   /**
@@ -315,5 +322,62 @@ export class EmailService {
         }
       })
     );
+  }
+
+  /**
+   * Retrieves custom templates from the server.
+   *
+   * @returns {Observable<any>} An observable that resolves with the result of the query.
+   */
+  getCustomTemplates(): Observable<any> {
+    return this.apollo.query<any>({
+      query: GET_CUSTOM_TEMPLATES,
+      variables: {},
+    });
+  }
+
+  /**
+   * Get an email distribution lists.
+   *
+   * @returns Email distribution lists.
+   */
+  getEmailDistributionList() {
+    return this.apollo.query<any>({
+      query: GET_DISTRIBUTION_LIST,
+      variables: {},
+    });
+  }
+
+  /**
+   * Preview custom email template.
+   *
+   * @param emailContent Email content
+   * @param distributionListInfo Distribution list
+   * @param selectedRowsFromGrid Selected rows from grid
+   * @param resourceData Resource metadata
+   * @param selectedLayoutFields Selected layout fields
+   */
+  async previewCustomTemplate(
+    emailContent: any,
+    distributionListInfo: any,
+    selectedRowsFromGrid: any,
+    resourceData: any,
+    selectedLayoutFields: any
+  ) {
+    const { PreviewTemplateModalComponent } = await import(
+      '../../components/templates/components/preview-template-modal/preview-template-modal.component'
+    );
+    this.dialog.open(PreviewTemplateModalComponent, {
+      data: {
+        emailContent,
+        distributionListInfo,
+        selectedRowsFromGrid,
+        resourceData,
+        selectedLayoutFields,
+      },
+      autoFocus: false,
+      disableClose: true,
+      width: '80%',
+    });
   }
 }
