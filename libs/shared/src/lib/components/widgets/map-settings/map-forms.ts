@@ -394,7 +394,7 @@ export const createLayerDrawingInfoForm = (
         ),
       }),
       ...(type === 'classBreak' && {
-        minValue: get(value, 'renderer.minValue'),
+        minValue: get(value, 'renderer.minValue', null),
         defaultLabel: get(value, 'renderer.defaultLabel', 'Other'),
         defaultSymbol: createSymbolForm(
           get(value, 'renderer.defaultSymbol'),
@@ -447,7 +447,7 @@ export const createClassBreakInfoForm = (
   fb.group({
     label: [get(value, 'label', ''), Validators.required],
     maxValue: [
-      get(value, 'maxValue', ''),
+      get(value, 'maxValue', null),
       index !== 0 ? Validators.required : null,
     ],
     symbol: createSymbolForm(get(value, 'symbol'), geometryType),

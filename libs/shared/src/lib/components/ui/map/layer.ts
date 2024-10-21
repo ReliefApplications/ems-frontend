@@ -490,6 +490,13 @@ export class Layer implements LayerModel {
       );
       const fieldValue = get(feature, `properties.${valueField}`, null);
       let classBreakSymbol = uniqueValueDefaultSymbol;
+      /**
+       * According to the value field to check, we set on symbol or other
+       * The value in the class break should be contained in a range, otherwise if not or nullish, the default symbol is applied
+       *
+       * - We use generic minValue as the start range in where to be included, if not provided, just use the roof value to calculate the associated symbol
+       * - After the first item in the class break, other ranges are calculated with current class break maxValue and the previous class break item maxValue
+       */
       for (let i = 0; i < classBreakInfos.length; i++) {
         if (
           classBreakInfos[i].maxValue >= fieldValue &&
