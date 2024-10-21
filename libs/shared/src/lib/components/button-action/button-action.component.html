@@ -5,11 +5,11 @@
 >
   <div class="group relative">
     <ui-button
-      [variant]="button.variant"
-      [category]="button.category"
+      [variant]="button.general.variant"
+      [category]="button.general.category"
       (click)="onButtonActionClick(button)"
     >
-      {{ button.text }}
+      {{ button.general.buttonText }}
     </ui-button>
   </div>
 </div>
