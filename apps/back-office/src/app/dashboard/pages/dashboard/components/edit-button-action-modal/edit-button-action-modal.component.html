@@ -34,8 +34,21 @@
               <input formControlName="buttonText" type="string" />
             </div>
 
+            <!-- New tab toggle -->
+            <ui-toggle formControlName="hasRoleRestriction" class="mb-4">
+              <ng-container ngProjectAs="label">
+                {{
+                  'models.dashboard.buttonActions.hasRoleRestriction'
+                    | translate
+                }}</ng-container
+              >
+            </ui-toggle>
+
             <!-- Roles -->
-            <div uiFormFieldDirective *ngIf="form.value.hasRoleRestriction">
+            <div
+              uiFormFieldDirective
+              *ngIf="form.value.general.hasRoleRestriction"
+            >
               <label>{{
                 'models.dashboard.buttonActions.visibleTo' | translate
               }}</label>
@@ -141,7 +154,9 @@
                       }}
                     </ng-container>
                   </ui-toggle>
-                  <ng-container *ngIf="form.value.action.navigateTo.targetUrl.enabled">
+                  <ng-container
+                    *ngIf="form.value.action.navigateTo.targetUrl.enabled"
+                  >
                     <div uiFormFieldDirective>
                       <label>{{
                         'models.dashboard.buttonActions.actions.url' | translate
