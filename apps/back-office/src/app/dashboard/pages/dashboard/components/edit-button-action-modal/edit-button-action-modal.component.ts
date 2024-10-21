@@ -144,20 +144,20 @@ export class EditButtonActionModalComponent implements OnInit {
   createButtonActionForm = (data: ButtonActionT, roles: Role[]): FormGroup => {
     const form = this.fb.group({
       general: this.fb.group({
-        buttonText: [get(data, 'text', ''), Validators.required],
+        buttonText: [get(data, 'general.buttonText', ''), Validators.required],
         hasRoleRestriction: [
-          get(data, 'hasRoleRestriction', false),
+          get(data, 'general.hasRoleRestriction', false),
           Validators.required,
         ],
         roles: [
           get(
             data,
-            'roles',
+            'general.roles',
             roles.map((role) => role.id || '')
           ),
         ],
-        category: [get(data, 'category', 'secondary')],
-        variant: [get(data, 'variant', 'primary')],
+        category: [get(data, 'general.category', 'secondary')],
+        variant: [get(data, 'general.variant', 'primary')],
       }),
       action: this.fb.group({
         navigateTo: this.fb.group({
