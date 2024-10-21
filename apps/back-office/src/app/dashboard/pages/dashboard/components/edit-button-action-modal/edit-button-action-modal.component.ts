@@ -14,8 +14,7 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import {
-  AbstractControl,
-  FormControl,
+  FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
@@ -63,7 +62,7 @@ import { Router } from '@angular/router';
 })
 export class EditButtonActionModalComponent implements OnInit {
   /** Form group */
-  public form: ReturnType<typeof this.createButtonActionForm>;
+  form: FormGroup;
 
   /** Variants */
   public variants = ButtonVariants;
@@ -94,7 +93,8 @@ export class EditButtonActionModalComponent implements OnInit {
     private editorService: EditorService,
     private dataTemplateService: DataTemplateService,
     private router: Router,
-    public applicationService: ApplicationService
+    public applicationService: ApplicationService,
+    private fb: FormBuilder
   ) {
     this.roles = this.applicationService.application.value?.roles || [];
     this.form = this.createButtonActionForm(data, this.roles);
@@ -141,88 +141,43 @@ export class EditButtonActionModalComponent implements OnInit {
    * @param roles roles of the application
    * @returns the form group
    */
-  createButtonActionForm = (data: ButtonActionT, roles: Role[]) => {
-    const form = new FormGroup({
-      // General
-      text: new FormControl(get(data, 'text', ''), Validators.required),
-      hasRoleRestriction: new FormControl(
-        get(data, 'hasRoleRestriction', false),
-        Validators.required
-      ),
-      roles: new FormControl(
-        get(
-          data,
-          'roles',
-          roles.map((role) => role.id || '')
-        )
-      ),
-      variant: new FormControl(get(data, 'variant', 'primary')),
-      category: new FormControl(get(data, 'category', 'secondary')),
-      openInNewTab: new FormControl(get(data, 'openInNewTab', true)),
-      // Actions
-      navigateTo: new FormControl(get(data, 'navigateTo', false)),
-      previousPage: new FormControl(get(data, 'previousPage', false)),
-      url: new FormControl(get(data, 'url', false)),
-      href: new FormControl(get(data, 'href', '')),
-      editRecord: new FormControl(get(data, 'editRecord', false)),
-      template: new FormControl(get(data, 'template', '')),
-      addRecord: new FormControl(get(data, 'addRecord', false)),
-      suscribeToNotification: new FormControl(
-        get(data, 'suscribeToNotification', false)
-      ),
-      sendNotification: new FormControl(get(data, 'sendNotification', false)),
+  createButtonActionForm = (data: ButtonActionT, roles: Role[]): FormGroup => {
+    const form = this.fb.group({
+      general: this.fb.group({
+        buttonText: [get(data, 'text', ''), Validators.required],
+        hasRoleRestriction: [
+          get(data, 'hasRoleRestriction', false),
+          Validators.required,
+        ],
+        roles: [
+          get(
+            data,
+            'roles',
+            roles.map((role) => role.id || '')
+          ),
+        ],
+        category: [get(data, 'category', ''), Validators.required],
+        variant: [get(data, 'variant', ''), Validators.required],
+      }),
+      action: this.fb.group({
+        navigateTo: this.fb.group({
+          enabled: [false],
+          previousPage: [false],
+          targetUrl: this.fb.group({
+            enabled: [false],
+            href: [''],
+            openInNewTab: [true],
+          }),
+        }),
+        editRecord: this.fb.group({
+          enabled: [false],
+          template: [''],
+        }),
+        addRecord: [false],
+        suscribeToNotification: [false],
+        sendNotification: [false],
+      }),
     });
-
-    // Define mutually exclusive groups
-    const mutuallyExclusiveGroups = [
-      [
-        'navigateTo',
-        'editRecord',
-        'addRecord',
-        'suscribeToNotification',
-        'sendNotification',
-      ],
-      ['previousPage', 'url'],
-    ];
-
-    // Helper function to make fields mutually exclusive
-    const makeMutuallyExclusive = (fields: string[]) => {
-      fields.forEach((field) => {
-        form.get(field)?.valueChanges.subscribe((value) => {
-          if (value) {
-            fields
-              .filter((otherField) => otherField !== field)
-              .forEach((otherField) => {
-                form.get(otherField)?.setValue(false, { emitEvent: false });
-              });
-          }
-        });
-      });
-    };
-
-    // Apply mutually exclusive behavior to each group
-    mutuallyExclusiveGroups.forEach(makeMutuallyExclusive);
-
-    // Apply at least one required validator to each group
-    form.setValidators(
-      this.atLeastOneRequiredValidator([
-        'navigateTo',
-        'editRecord',
-        'addRecord',
-        'suscribeToNotification',
-        'sendNotification',
-      ])
-    );
-
     return form;
-  };
-  atLeastOneRequiredValidator = (fields: string[]) => {
-    return (control: AbstractControl) => {
-      const formGroup = control as FormGroup;
-      const atLeastOneSelected = fields.some(
-        (field) => formGroup.get(field)?.value
-      );
-      return atLeastOneSelected ? null : { atLeastOneRequired: true };
-    };
   };
 }
