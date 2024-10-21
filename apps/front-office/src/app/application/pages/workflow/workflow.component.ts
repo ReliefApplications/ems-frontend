@@ -1,6 +1,11 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
 import {
   ContentType,
   Step,
@@ -23,6 +28,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./workflow.component.scss'],
 })
 export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
+  /** Reference to router outlet */
+  @ViewChild(RouterOutlet) routerOutlet?: RouterOutlet;
   /** Loading state of the page */
   public loading = true;
   /** Current workflow id */

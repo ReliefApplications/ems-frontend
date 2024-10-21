@@ -189,6 +189,10 @@
 		"exitFullscreen": "******",
 		"export": "******",
 		"exportObject": "****** {{name}}",
+		"exportType": {
+			"image": "******",
+			"pdf": "******"
+		},
 		"false": "******",
 		"field": {
 			"few": "******",
@@ -307,6 +311,20 @@
 					"title": "******"
 				},
 				"timestamp": "******"
+			},
+			"emailSent": "******",
+			"export": {
+				"download": "******",
+				"format": "******",
+				"image": "{{image}} ******",
+				"includeHeaderFooter": "******",
+				"landscape": "******",
+				"loading": "****** {{type}} ******",
+				"options": "******",
+				"orientation": "******",
+				"paperSize": "******",
+				"pdf": "******",
+				"portrait": "******"
 			},
 			"fetchingGroups": "******",
 			"file": {
