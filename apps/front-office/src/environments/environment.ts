@@ -25,4 +25,5 @@ export const environment: Environment = {
   availableLanguages: ['en', 'fr', 'test'],
   authConfig,
   theme,
+  admin0Url: 'https://ems2-dev.who.int/app-builder/admin0.json',
 };
