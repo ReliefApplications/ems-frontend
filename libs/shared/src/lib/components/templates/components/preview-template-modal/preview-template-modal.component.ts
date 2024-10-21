@@ -1,22 +1,22 @@
 import { CommonModule } from '@angular/common';
 import { EmailModule } from '../../../email/email.module';
-import { Component, Inject, ViewChild } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import {
   ButtonModule,
   DialogModule,
+  DividerModule,
   SnackbarService,
   TableModule,
 } from '@oort-front/ui';
-import { DIALOG_DATA } from '@angular/cdk/dialog';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
-
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { EmailService } from '../../../email/email.service';
-import { Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
- *
+ * Preview template modal.
+ * Triggered by grid widgets when sending emails.
  */
 @Component({
   standalone: true,
@@ -29,39 +29,18 @@ import { TranslateService } from '@ngx-translate/core';
     ReactiveFormsModule,
     TableModule,
     LayoutModule,
+    DividerModule,
   ],
-  selector: 'shared-preview-modal',
-  templateUrl: './preview-template.component.html',
-  styleUrls: ['./preview-template.component.scss'],
+  selector: 'shared-preview-template-modal',
+  templateUrl: './preview-template-modal.component.html',
+  styleUrls: ['./preview-template-modal.component.scss'],
 })
-// eslint-disable-next-line @angular-eslint/component-class-suffix
-export class PreviewTemplate {
-  /**
-   *
-   */
-  public displayedColumns: string[] = [
-    'Alerts',
-    'Cause',
-    'Date of Disaster',
-    'Date of Logging',
-    'Plan',
-    'Notes',
-    'Description',
-    'Level of Alert',
-  ];
-  /**
-   *
-   */
+export class PreviewTemplateModalComponent {
+  /** Current step */
   public currentStep = 1;
-  /**
-   *
-   */
+  /** Should disable action button */
   public disableActionButton = false;
-  /** NAVIGATE TO MAIN EMAIL LIST SCREEN */
-
-  /**
-   *
-   */
+  /** Available steps, for kendo stepper */
   public steps = [
     {
       label: 'Layout',
@@ -76,24 +55,23 @@ export class PreviewTemplate {
       disabled: false,
     },
   ];
-  /**  */
-  destroy$: Subject<boolean> = new Subject<boolean>();
-  /** dialog ref */
-  @ViewChild('dialogRef') dialogRef?: any;
 
   /**
-   * Constructor for creating a new instance of a dialog component.
+   * Preview template modal.
+   * Triggered by grid widgets when sending emails.
    *
-   * @param data - Dialog data.
-   * @param emailService - An instance of the EmailService.
-   * @param snackBar - Shared snackbar service
-   * @param translate - Angular Translate service
+   * @param data Dialog data.
+   * @param emailService Shared email service
+   * @param snackBar Shared snackbar service
+   * @param translate Angular Translate service
+   * @param dialogRef Dialog reference
    */
   constructor(
     @Inject(DIALOG_DATA) public data: any,
     private emailService: EmailService,
     private snackBar: SnackbarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private dialogRef: DialogRef
   ) {
     this.emailService.isQuickAction = true;
     this.emailService.datasetsForm.get('emailDistributionList')?.reset();
@@ -156,32 +134,25 @@ export class PreviewTemplate {
    * Set distribution data in the form
    */
   setDistributionData() {
-    this.emailService?.datasetsForm
-      ?.get('emailDistributionList')
+    const distributionListForm = this.emailService?.datasetsForm?.get(
+      'emailDistributionList'
+    );
+    distributionListForm
       ?.get('name')
       ?.setValue(this.data.distributionListInfo?.name);
     this.emailService.populateEmails(
       this.data.distributionListInfo.to?.inputEmails,
-      this.emailService?.datasetsForm
-        ?.get('emailDistributionList')
-        ?.get('to')
-        ?.get('inputEmails') as FormArray
+      distributionListForm?.get('to')?.get('inputEmails') as FormArray
     );
 
     this.emailService.populateEmails(
       this.data.distributionListInfo.cc?.inputEmails,
-      this.emailService?.datasetsForm
-        ?.get('emailDistributionList')
-        ?.get('cc')
-        ?.get('inputEmails') as FormArray
+      distributionListForm?.get('cc')?.get('inputEmails') as FormArray
     );
 
     this.emailService.populateEmails(
       this.data.distributionListInfo.bcc?.inputEmails,
-      this.emailService?.datasetsForm
-        ?.get('emailDistributionList')
-        ?.get('bcc')
-        ?.get('inputEmails') as FormArray
+      distributionListForm?.get('bcc')?.get('inputEmails') as FormArray
     );
   }
 
@@ -279,7 +250,7 @@ export class PreviewTemplate {
         },
       ],
     };
-    this.dialogRef?.onClose();
+    this.dialogRef.close();
     this.emailService.sendQuickEmail(emailData).subscribe(() => {
       this.onClose();
       this.snackBar.openSnackBar(

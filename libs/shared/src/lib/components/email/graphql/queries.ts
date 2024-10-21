@@ -145,37 +145,6 @@ export const GET_QUERY_TYPES = gql`
   }
 `;
 
-/**
- * Get metadata of form / resource query definition.
- */
-export const GET_QUERY_META_DATA = gql`
-  query GetQueryMetaData($id: ID!) {
-    resource(id: $id) {
-      id
-      metadata {
-        name
-        automated
-        type
-        editor
-        filter
-        multiSelect
-        filterable
-        options
-        fields {
-          name
-          automated
-          type
-          editor
-          filter
-          multiSelect
-          filterable
-          options
-        }
-      }
-    }
-  }
-`;
-
 /** Graphql query for getting multiple resources with a cursor */
 export const GET_RESOURCES = gql`
   query GetResources(

@@ -473,6 +473,7 @@ export class QueryBuilderService {
    * @returns metadata query
    */
   public getQueryMetaData(id: string) {
+    console.log('query metadata');
     return this.apollo.query<QueryMetaDataQueryResponse>({
       query: GET_QUERY_META_DATA,
       variables: {
@@ -535,6 +536,7 @@ export class QueryBuilderService {
    * @returns filter fields as Promise
    */
   public async getFilterFields(query: any): Promise<Field[]> {
+    console.log('filter fields');
     if (query) {
       const querySource$ = this.getQuerySource(query);
       const sourceQuery = querySource$ && firstValueFrom(querySource$);

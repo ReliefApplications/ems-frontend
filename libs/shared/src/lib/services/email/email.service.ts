@@ -349,25 +349,25 @@ export class EmailService {
   }
 
   /**
-   * Previews custom email templates.
+   * Preview custom email template.
    *
-   * @param emailContent - The content of the email template.
-   * @param distributionListInfo - Information about the distribution list.
-   * @param selectedRowsFromGrid - Selected rows from the grid.
-   * @param resourceData - The resource data.
-   * @param selectedLayoutFields - The selected layout fields.
+   * @param emailContent Email content
+   * @param distributionListInfo Distribution list
+   * @param selectedRowsFromGrid Selected rows from grid
+   * @param resourceData Resource metadata
+   * @param selectedLayoutFields Selected layout fields
    */
-  async previewCustomTemplates(
+  async previewCustomTemplate(
     emailContent: any,
     distributionListInfo: any,
     selectedRowsFromGrid: any,
     resourceData: any,
     selectedLayoutFields: any
   ) {
-    const { PreviewTemplate } = await import(
-      '../../../lib/components/templates/components/preview-template/preview-template.component'
+    const { PreviewTemplateModalComponent } = await import(
+      '../../components/templates/components/preview-template-modal/preview-template-modal.component'
     );
-    const customTemplateDialogRef = this.dialog.open(PreviewTemplate, {
+    this.dialog.open(PreviewTemplateModalComponent, {
       data: {
         emailContent,
         distributionListInfo,
@@ -378,11 +378,6 @@ export class EmailService {
       autoFocus: false,
       disableClose: true,
       width: '80%',
-    });
-    customTemplateDialogRef.closed.subscribe((value: any) => {
-      if (value) {
-        // this.dataset = [];
-      }
     });
   }
 }
