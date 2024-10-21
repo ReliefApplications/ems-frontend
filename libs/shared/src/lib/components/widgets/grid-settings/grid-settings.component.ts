@@ -102,46 +102,10 @@ export class GridSettingsComponent
   public loading = false;
   /** Stores the selected tab */
   public selectedTab = 0;
-
-  /** @returns application templates */
-  get appTemplates(): any[] {
-    return this.applicationService.templates || [];
-  }
-
-  /** @returns application distribution lists */
+  /** Available distribution lists */
   public distributionLists: any[] = [];
-  /** Stores the email template */
+  /** Available email templates */
   public emailTemplates: any[] = [];
-
-  /**
-   * Distribution list
-   *
-   * @param appId application id
-   */
-  distributionListsData(appId?: string) {
-    this.emailService.getEmailDistributionList(appId).subscribe((res: any) => {
-      if (res.data?.emailDistributionLists?.edges) {
-        const distributionList = res.data.emailDistributionLists.edges.map(
-          (e: any) => e.node
-        );
-        this.distributionLists = distributionList || [];
-      }
-    });
-  }
-
-  /**
-   * Custom email templates
-   */
-  emailTemplateData() {
-    this.emailService.getCustomTemplates().subscribe((res: any) => {
-      if (res.data?.customTemplates?.edges) {
-        const emailTemplates = res.data.customTemplates.edges.map(
-          (e: any) => e.node
-        );
-        this.emailTemplates = emailTemplates || [];
-      }
-    });
-  }
 
   /**
    * Modal content for the settings of the grid widgets.
@@ -169,7 +133,8 @@ export class GridSettingsComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
         if (application) {
-          this.distributionListsData(application?.id);
+          this.getDistributionLists(application?.id);
+          this.getEmailTemplates(application?.id);
         }
       });
     if (!this.widgetFormGroup) {
@@ -392,26 +357,26 @@ export class GridSettingsComponent
               );
             }
 
-            //filter distribution list data according to the Resource
-            let filtered_DL = this.distributionLists.filter(
+            // Filter distribution list based on grid resource
+            let filteredDistributionLists = this.distributionLists.filter(
               (x: any) =>
                 x.to?.resource === null ||
                 x.to?.resource === '' ||
                 x.to?.resource === this.resource?.id
             );
-            filtered_DL = filtered_DL.filter(
+            filteredDistributionLists = filteredDistributionLists.filter(
               (x: any) =>
                 x.cc?.resource === null ||
                 x.cc?.resource === '' ||
                 x.cc?.resource === this.resource?.id
             );
-            filtered_DL = filtered_DL.filter(
+            filteredDistributionLists = filteredDistributionLists.filter(
               (x: any) =>
                 x.bcc?.resource === null ||
                 x.bcc?.resource === '' ||
                 x.bcc?.resource === this.resource?.id
             );
-            this.distributionLists = filtered_DL;
+            this.distributionLists = filteredDistributionLists;
           } else {
             this.relatedForms = [];
             this.templates = [];
@@ -471,6 +436,43 @@ export class GridSettingsComponent
       this.widget.id,
       this.widget.settings
     );
-    this.emailTemplateData();
+  }
+
+  /**
+   * Distribution list
+   *
+   * @param appId application id
+   */
+  private getDistributionLists(appId?: string) {
+    this.emailService
+      .getEmailDistributionList(appId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        if (res.data?.emailDistributionLists?.edges) {
+          const distributionList = res.data.emailDistributionLists.edges.map(
+            (e: any) => e.node
+          );
+          this.distributionLists = distributionList || [];
+        }
+      });
+  }
+
+  /**
+   * Fetch email templates
+   *
+   * @param appId application id
+   */
+  private getEmailTemplates(appId?: string) {
+    this.emailService
+      .getCustomTemplates(appId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((res: any) => {
+        if (res.data?.customTemplates?.edges) {
+          const emailTemplates = res.data.customTemplates.edges.map(
+            (e: any) => e.node
+          );
+          this.emailTemplates = emailTemplates || [];
+        }
+      });
   }
 }

@@ -330,19 +330,6 @@ export class DownloadService {
   }
 
   /**
-   * to import the distribution list
-   *
-   * @param file selected file to be imported
-   *
-   * @returns observable of file import operation
-   */
-  importDistributionList(file: File): Observable<any> {
-    const formData = new FormData();
-    formData.append('file', file, file.name);
-    return this.restService.post('/upload/distributionList', formData);
-  }
-
-  /**
    * to download the Distribution List template for bulk import via excel file
    */
   downloadDistributionListTemplate(): void {

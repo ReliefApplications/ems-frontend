@@ -14,7 +14,6 @@ import { WorkflowService } from '../../../../services/workflow/workflow.service'
 import { TemplateTypeEnum } from '../../../../models/template.model';
 import { Dialog } from '@angular/cdk/dialog';
 import { createQueryForm } from '../../../query-builder/query-builder-forms';
-import { ApplicationService } from '../../../../services/application/application.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { DistributionModalComponent } from '../../../distribution-lists/components/distribution-modal/distribution-modal.component';
 import { takeUntil } from 'rxjs/operators';
@@ -77,9 +76,6 @@ export class ButtonConfigComponent
     return this.templates.filter((x) => x.type === TemplateTypeEnum.EMAIL);
   }
 
-  /** All template related information */
-  public allTemplateData: any;
-
   /**
    * Configuration component for grid widget button.
    *
@@ -87,7 +83,6 @@ export class ButtonConfigComponent
    * @param router Angular Router service
    * @param workflowService Shared workflow service
    * @param dialog Dialog service
-   * @param applicationService Shared application service
    * @param emailService Shared email service
    */
   constructor(
@@ -95,7 +90,6 @@ export class ButtonConfigComponent
     private router: Router,
     private workflowService: WorkflowService,
     public dialog: Dialog,
-    private applicationService: ApplicationService,
     private emailService: EmailService
   ) {
     super();
@@ -131,13 +125,6 @@ export class ButtonConfigComponent
           }
         });
     }
-    this.applicationService.application$.subscribe((res: any) => {
-      this.emailService.getCustomTemplates(res.id).subscribe((res: any) => {
-        this.allTemplateData = res.data.customTemplates.edges.map(
-          (x: any) => x.node
-        );
-      });
-    });
 
     this.formGroup
       ?.get('prefillForm')
@@ -445,7 +432,7 @@ export class ButtonConfigComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const data = value.result.data.addCustomTemplate;
-        this.allTemplateData = [data, ...this.allTemplateData];
+        this.templates = [data, ...this.templates];
         this.formGroup.get('templates')?.setValue(data.id);
       }
     });

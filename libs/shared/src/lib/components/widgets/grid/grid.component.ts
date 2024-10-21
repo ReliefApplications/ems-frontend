@@ -453,7 +453,6 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     if (promises.length > 0) {
       await Promise.all(promises);
     }
-    // Need to put some async there.
 
     // Send email using backend mail service.
     if (options.sendMail) {

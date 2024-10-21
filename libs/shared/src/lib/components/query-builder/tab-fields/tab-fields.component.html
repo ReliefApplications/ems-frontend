@@ -35,7 +35,7 @@
         class="field-list"
         cdkDropListSortingDisabled
         (cdkDropListDropped)="drop($event)"
-        [cdkDropListDisabled]="isDisable"
+        [cdkDropListDisabled]="disabled"
       >
         <ng-container *ngFor="let field of availableFields">
           <div
@@ -83,7 +83,7 @@
         [cdkDropListSortingDisabled]="searchSelected.length > 0"
         class="field-list"
         (cdkDropListDropped)="drop($event)"
-        [cdkDropListDisabled]="isDisable"
+        [cdkDropListDisabled]="disabled"
       >
         <ng-container *ngFor="let field of selectedFields; let index = index">
           <div

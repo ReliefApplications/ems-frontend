@@ -31,8 +31,8 @@ import { QueryBuilderComponent } from '../query-builder.component';
 export class TabFieldsComponent implements OnInit, OnChanges {
   /** Current form array */
   @Input() form: UntypedFormArray = new UntypedFormArray([]);
-  /** disable drag and drop */
-  @Input() isDisable = false;
+  /** Should disable */
+  @Input() disabled = false;
   /** All fields */
   @Input() fields: any[] = [];
   /** Should show limit input */
