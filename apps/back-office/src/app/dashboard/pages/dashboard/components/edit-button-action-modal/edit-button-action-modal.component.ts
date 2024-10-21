@@ -156,8 +156,8 @@ export class EditButtonActionModalComponent implements OnInit {
             roles.map((role) => role.id || '')
           ),
         ],
-        category: [get(data, 'category', 'secondary'), Validators.required],
-        variant: [get(data, 'variant', 'primary'), Validators.required],
+        category: [get(data, 'category', 'secondary')],
+        variant: [get(data, 'variant', 'primary')],
       }),
       action: this.fb.group({
         navigateTo: this.fb.group({

@@ -11,9 +11,4 @@ export type ButtonActionT = {
   variant: Variant;
   category: Category;
   openInNewTab: boolean;
-  navigateTo: boolean;
-  editRecord: boolean;
-  addRecord: boolean;
-  suscribeToNotification: boolean;
-  sendNotification: boolean;
 };

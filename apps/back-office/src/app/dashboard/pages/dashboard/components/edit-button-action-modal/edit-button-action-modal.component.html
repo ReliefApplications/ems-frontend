@@ -96,13 +96,13 @@
             <div>
               <!-- Button preview -->
               <ui-button
-                *ngIf="form.get('buttonText')?.value"
+                *ngIf="form.value.general.buttonText"
                 class="w-fit mx-auto mt-3"
-                [category]="form.get('category')?.value || 'secondary'"
-                [variant]="form.get('variant')?.value || 'primary'"
+                [category]="form.value.general.category || 'secondary'"
+                [variant]="form.value.general.variant || 'primary'"
                 (click)="preview()"
               >
-                {{ form.get('buttonText')?.value }}
+                {{ form.value.general.buttonText }}
               </ui-button>
             </div>
           </div>
@@ -161,7 +161,10 @@
                       <label>{{
                         'models.dashboard.buttonActions.actions.url' | translate
                       }}</label>
-                      <input formControlName="href" type="string" />
+                      <shared-editor-control
+                        formControlName="href"
+                        [editorConfig]="hrefEditor"
+                      ></shared-editor-control>
                     </div>
                     <ui-toggle formControlName="openInNewTab">
                       <ng-container ngProjectAs="label">
