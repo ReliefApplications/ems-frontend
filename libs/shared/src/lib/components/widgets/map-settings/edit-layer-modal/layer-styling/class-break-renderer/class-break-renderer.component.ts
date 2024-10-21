@@ -63,55 +63,49 @@ function isMaxValueOrderValid(): any {
  * Updates form validation checking if there given class break items value are in order:
  * - ASC from top to bottom
  *
- * @returns validation success or fail for same values set
- */
-function isClassBreakOrderValid(): any {
-  return (formArray: FormArray): ValidationErrors | null => {
-    let invalidClassBreakIndex = -1;
-    if (formArray.length >= 2) {
-      for (let index = 1; index < formArray.length; index++) {
-        formArray.at(index).setErrors(null);
-        const maxValue = formArray.at(index).value.maxValue;
-        if (
-          formArray.at(index).get('maxValue')?.dirty &&
-          maxValue < formArray.at(index - 1).value.maxValue &&
-          invalidClassBreakIndex === -1
-        ) {
-          invalidClassBreakIndex = index;
-        }
-      }
-    }
-    if (invalidClassBreakIndex !== -1) {
-      formArray
-        .at(invalidClassBreakIndex)
-        .setErrors({ invalidClassBreakOrder: true });
-    }
-    return null;
-  };
-}
-
-/**
  * Updates form validation checking if there are repeated set values
  *
  * @returns validation success or fail for same values set
  */
-function isThereRepeatedValues(): any {
+function classBreakValidators(): any {
   return (formArray: FormArray): ValidationErrors | null => {
     let invalidClassBreakIndex = -1;
+    let repeatedValues = false;
+    let invalidClassBreak = false;
     if (formArray.length >= 2) {
-      for (let index = 0; index < formArray.length; index++) {
+      for (let index = 1; index < formArray.length; index++) {
         formArray.at(index).setErrors(null);
         const maxValue = formArray.at(index).value.maxValue;
         const maxValues = formArray.controls
           .filter((_, i) => i !== index)
           .map((control) => control.value.maxValue);
-        if (maxValues.includes(maxValue) && invalidClassBreakIndex === -1) {
+        if (
+          formArray.at(index).get('maxValue')?.dirty &&
+          (maxValue < formArray.at(index - 1).value.maxValue ||
+            maxValues.includes(maxValue)) &&
+          invalidClassBreakIndex === -1
+        ) {
+          if (maxValue < formArray.at(index - 1).value.maxValue) {
+            invalidClassBreak = true;
+          }
+          if (maxValues.includes(maxValue)) {
+            repeatedValues = true;
+          }
           invalidClassBreakIndex = index;
         }
       }
     }
     if (invalidClassBreakIndex !== -1) {
-      formArray.at(invalidClassBreakIndex).setErrors({ repeatedValues: true });
+      if (invalidClassBreak) {
+        formArray
+          .at(invalidClassBreakIndex)
+          .setErrors({ invalidClassBreakOrder: true });
+      }
+      if (repeatedValues) {
+        formArray
+          .at(invalidClassBreakIndex)
+          .setErrors({ repeatedValues: true });
+      }
     }
     return null;
   };
@@ -165,8 +159,7 @@ export class ClassBreakRendererComponent
 
   ngOnInit(): void {
     this.formGroup.addValidators(isMaxValueOrderValid());
-    this.classBreakInfos.addValidators(isThereRepeatedValues());
-    this.classBreakInfos.addValidators(isClassBreakOrderValid());
+    this.classBreakInfos.addValidators(classBreakValidators());
     this.fields$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.scalarFields.next(
         value.filter((field) =>
