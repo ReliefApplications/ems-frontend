@@ -213,6 +213,7 @@ export class ClassBreakRendererComponent
     if (index === this.openedIndex) {
       this.openedIndex = -1;
     }
+    /** First class break item max value is not mandatory as it depends on minValue, not other class break items in the list for range set */
     if (index === 0) {
       this.classBreakInfos
         .at(index)
