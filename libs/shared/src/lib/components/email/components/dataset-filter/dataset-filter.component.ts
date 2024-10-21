@@ -862,7 +862,7 @@ export class DatasetFilterComponent
                       );
                     this.refernceData = refernceData;
                     if (refernceId) {
-                      this.getSelectedRefernceData(refernceId);
+                      this.getSelectedReferenceData(refernceId);
                     }
                   }
                 },
@@ -886,7 +886,7 @@ export class DatasetFilterComponent
    * @param event get selected Id of refernce data
    * @param fromHTML Method call isfrom UI
    */
-  getSelectedRefernceData(event: any, fromHTML?: boolean) {
+  getSelectedReferenceData(event: any, fromHTML?: boolean) {
     // this.resetQuery(this.query.get('query'));
     this.availableFields = [];
     this.selectedFields = [];

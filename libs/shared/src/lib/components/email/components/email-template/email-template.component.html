@@ -100,7 +100,7 @@
           id="reference"
           formControlName="reference"
           class="w-full"
-          (ngModelChange)="getSelectedRefernceData($event, true)"
+          (ngModelChange)="getSelectedReferenceData($event, true)"
         >
           <ui-select-option
             *ngFor="let reference of refernceData"
@@ -110,6 +110,8 @@
         </ui-select-menu>
       </div>
       <!-- Resource selection -->
+      <div>OK OK OK OK</div>
+      <div>Is Disable: {{ isDisable }}</div>
       <div
         uiFormFieldDirective
         *ngIf="segmentForm.get('dataType')?.value === 'Resource'"
@@ -272,7 +274,7 @@
     variant="warning"
     [closable]="true"
     *ngIf="nonEmailFieldsAlert"
-    (close)="closenonEmailFieldsAlert()"
+    (close)="closeNonEmailFieldsAlert()"
   >
     <div
       [innerHTML]="'components.email.alert.selectedNonEmailFields' | translate"
@@ -412,7 +414,7 @@
                   <shared-tab-filter
                     [form]="$any(dlQuery.get('filter'))"
                     [query]="dlQuery.getRawValue()"
-                    [isDisable]="isDisable"
+                    [disabled]="isDisable"
                     [referenceFields]="
                       segmentForm.get('dataType')?.value === 'Reference Data'
                         ? availableFields

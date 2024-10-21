@@ -172,29 +172,21 @@ export class EmailTemplateComponent
     { value: 'months', label: 'Months' },
     { value: 'years', label: 'Years' },
   ];
-  /**
-   * Event Emitted for no email
-   */
-  @Output() noEmail = new EventEmitter();
-
   /** List of emails for back loading. */
   @Input() distributionList: FormGroup | any;
-
   /** Specifies if To, CC or BCC */
   @Input() type: string | any;
-
-  /** Event emitter for list change. */
-  @Output() listChange = new EventEmitter<void>();
-
   /** Existing ID. */
   @Input() existingId = '';
-
-  /** Flag to show the Child fields limit warning. */
-  public showFieldsWarning = false;
-
+  /** Event Emitted for no email */
+  @Output() noEmail = new EventEmitter();
+  /** Event emitter for list change. */
+  @Output() listChange = new EventEmitter<void>();
   /** Reference to tblPreview element. */
   @ViewChild('tblPreview', { static: false })
   tblPreview!: ElementRef<any>;
+  /** Flag to show the Child fields limit warning. */
+  public showFieldsWarning = false;
   /** Flag for data is Resource or Reference data */
   public isReferenceData = false;
   /** List of data types */
@@ -1098,7 +1090,7 @@ export class EmailTemplateComponent
                       refernceId ||
                       this.distributionList.controls.reference?.value
                     ) {
-                      this.getSelectedRefernceData(
+                      this.getSelectedReferenceData(
                         refernceId ??
                           this.distributionList.controls.reference?.value
                       );
@@ -1125,7 +1117,7 @@ export class EmailTemplateComponent
    * @param event get selected Id of refernce data
    * @param fromHTML Method call isfrom UI
    */
-  getSelectedRefernceData(event: any, fromHTML?: boolean) {
+  getSelectedReferenceData(event: any, fromHTML?: boolean) {
     // this.resetQuery(this.query.get('query'));
     if (this.refernceData.filter((x: any) => x.id === event).length > 0) {
       this.dlQuery
@@ -1184,32 +1176,25 @@ export class EmailTemplateComponent
     switch (type) {
       case 'string':
         return 'text';
-        break;
       case 'integer':
         return 'numeric';
-        break;
       case 'number':
         return 'numeric';
-        break;
       case 'boolean':
         return 'boolean';
-        break;
       case 'object':
         return '';
-        break;
       case 'array':
         return 'dropdown';
-        break;
       default:
         return 'text';
-        break;
     }
   }
 
   /**
    * Resets the state `nonemailfields` when the close button is clicked.
    */
-  closenonEmailFieldsAlert(): void {
+  closeNonEmailFieldsAlert(): void {
     this.nonEmailFieldsAlert = false;
   }
 

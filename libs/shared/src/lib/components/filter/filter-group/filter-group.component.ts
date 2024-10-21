@@ -29,8 +29,8 @@ export class FilterGroupComponent implements OnChanges {
   @Input() canUseContext = false;
   /** Email Notification Check */
   @Input() isEmailNotification = false;
-  /** Disable fields */
-  @Input() isDisable = false;
+  /** Is disabled */
+  @Input() disabled = false;
 
   /**
    * Getter for the filters
@@ -75,10 +75,10 @@ export class FilterGroupComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (
-      changes['isDisable'] &&
-      changes['isDisable'].previousValue !== changes['isDisable'].currentValue
+      changes['disabled'] &&
+      changes['disabled'].previousValue !== changes['disabled'].currentValue
     ) {
-      if (this.isDisable) {
+      if (this.disabled) {
         this.form?.get('logic')?.disable();
       } else {
         this.form?.get('logic')?.enable();

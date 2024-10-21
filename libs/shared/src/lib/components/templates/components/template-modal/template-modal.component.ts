@@ -33,7 +33,7 @@ import { DialogRef } from '@angular/cdk/dialog';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 
 /**
- *
+ * Custom template modal edition.
  */
 @Component({
   standalone: true,
@@ -61,7 +61,7 @@ import { QueryBuilderService } from '../../../../services/query-builder/query-bu
 })
 export class TemplateModalComponent extends EmailComponent {
   /**
-   * Modal for template actions.
+   * Custom template modal edition.
    *
    * @param dialogRef CDK Dialog reference.
    * @param EmailService Email service.
