@@ -63,16 +63,6 @@
         {{ 'components.email.distributionList.duplicate' | translate }}
       </div>
     </div>
-    <div
-      class="text-gray-700 text-xs gap-1 flex items-end"
-      *ngIf="false"
-      style="font-weight: 500"
-    >
-      <input id="Alert_me" type="checkbox" />
-      <label for="Alert_me">
-        {{ 'components.select.distribution.alertMe' | translate }}
-      </label>
-    </div>
   </div>
   <div class="use-existing" *ngIf="!showExistingDistributionList">
     <p (click)="toggleExistingDistributionList()">
@@ -235,12 +225,12 @@
             {{ 'components.email.distributionList.alert.noEmail' | translate }}
           </ui-alert>
           <shared-email-template
-            [existingId]="this.distributionListId"
+            [existingId]="distributionListId"
             (noEmail)="update($event, 'bcc')"
             (listChange)="validateDistributionList()"
             [distributionList]="emailDistributionList.get('bcc')"
             [type]="'bcc'"
-            [isDisable]="this.emailDistributionList.get('id')?.value"
+            [isDisable]="emailDistributionList.get('id')?.value"
             >{{
               'components.email.distributionList.bcc' | translate
             }}</shared-email-template
@@ -271,16 +261,6 @@
         class="relative flex py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center w-full"
         placeholder="{{ 'common.name' | translate }}"
       />
-    </div>
-    <div
-      class="text-gray-700 text-xs gap-1 flex items-end"
-      *ngIf="false"
-      style="font-weight: 500"
-    >
-      <input id="Alert_me" type="checkbox" />
-      <label for="Alert_me">
-        {{ 'components.select.distribution.alertMe' | translate }}
-      </label>
     </div>
   </div>
   <!-- TO CC BCC Disabled Tabs -->

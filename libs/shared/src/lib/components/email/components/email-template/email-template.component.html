@@ -71,6 +71,7 @@
       </div>
     </div>
 
+    <!-- Distribution list -->
     <div
       class="w-1/2"
       *ngIf="
@@ -110,8 +111,6 @@
         </ui-select-menu>
       </div>
       <!-- Resource selection -->
-      <div>OK OK OK OK</div>
-      <div>Is Disable: {{ isDisable }}</div>
       <div
         uiFormFieldDirective
         *ngIf="segmentForm.get('dataType')?.value === 'Resource'"
@@ -119,7 +118,6 @@
         <shared-resource-select
           formControlName="resource"
           [selectedElements]="[resource]"
-          [isDisable]="isDisable"
         ></shared-resource-select>
         <ui-button
           *ngIf="distributionList?.value.resource"
@@ -388,7 +386,7 @@
         </ui-tab>
         <!-- Filter Tab -->
         <ui-tab
-          [title]="'Filter'"
+          [title]="'components.queryBuilder.filter.title' | translate"
           [disabled]="
             this.distributionList.get('resource').value === null ||
             this.distributionList.get('resource').value === ''

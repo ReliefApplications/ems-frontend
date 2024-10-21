@@ -309,7 +309,6 @@ export class PreviewComponent
    */
   async loadFinalEmailPreview(): Promise<void> {
     const previewData: any = this.emailService.allPreviewData?.[0];
-    console.log(this.emailService.datasetsForm.value.emailLayout);
     if (
       this.emailService.datasetsForm.value.emailLayout !== null &&
       this.emailService.datasetsForm.value.emailLayout !== undefined &&

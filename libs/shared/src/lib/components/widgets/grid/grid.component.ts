@@ -504,7 +504,6 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                 (dl: any) => options.distributionList === dl.id
               );
 
-              console.log('', selectedDL);
               const { EmailTemplateModalComponent } = await import(
                 '../../email-template-modal/email-template-modal.component'
               );
@@ -521,8 +520,6 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
               const selectedTemplate = templates.filter(
                 (temp: any) => temp.subject === template
               );
-
-              console.log('selected Template', selectedTemplate);
 
               this.getPreviewData();
               if (this.previewDataQuery) {

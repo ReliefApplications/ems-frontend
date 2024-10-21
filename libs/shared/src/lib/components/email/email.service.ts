@@ -651,6 +651,8 @@ export class EmailService {
     );
 
     dlGroup.setControl('inputEmails', this.formBuilder.array(inputArray));
+
+    dlGroup.disable();
   }
 
   /**

@@ -750,35 +750,24 @@ export class SelectDistributionComponent
    * @param type - Tab name
    */
   clearAllTabsData(type: any) {
-    const query = this.emailDistributionList
-      ?.get(type)
-      ?.get('query') as FormGroup;
-    query.get('name')?.setValue('');
-    const fields = this.emailService.datasetsForm
+    const form = this.emailService.datasetsForm
       ?.get('emailDistributionList')
-      ?.get(type)
-      ?.get('query')
-      ?.get('fields') as FormArray;
+      ?.get(type);
+    const query = form?.get('query') as FormGroup;
+    query.get('name')?.setValue('');
+    const fields = form?.get('query')?.get('fields') as FormArray;
     fields.clear();
 
-    const inputEmails = this.emailService.datasetsForm
-      ?.get('emailDistributionList')
-      ?.get(type)
-      ?.get('inputEmails') as FormArray;
+    const inputEmails = form?.get('inputEmails') as FormArray;
     inputEmails.clear();
 
-    const filter = this.emailService.datasetsForm
-      ?.get('emailDistributionList')
-      ?.get(type)
-      ?.get('query')
-      ?.get('filter') as FormGroup;
+    const filter = form?.get('query')?.get('filter') as FormGroup;
     const filters = filter.get('filters') as FormArray;
     filters.clear();
 
-    this.emailService.datasetsForm
-      ?.get('emailDistributionList')
-      ?.get(type)
-      ?.get('resource')
-      ?.setValue('');
+    form?.get('resource')?.setValue('');
+
+    // Enable changes on the form
+    form?.enable();
   }
 }

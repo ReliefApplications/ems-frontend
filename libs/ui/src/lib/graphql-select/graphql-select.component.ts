@@ -55,8 +55,6 @@ export class GraphQLSelectComponent
   @Input() textField = '';
   /** Input decorator for path */
   @Input() path = '';
-  /** Disable fields */
-  @Input() isDisable = false;
   /** Whether you can select multiple items or not */
   @Input() multiselect = false;
   /** Whether it is a survey question or not */
@@ -341,9 +339,6 @@ export class GraphQLSelectComponent
         this.elementSelect.resetSubscriptions();
         this.searchChange.emit(value);
       });
-    if (this.isDisable) {
-      this.ngControl?.control?.disable();
-    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -393,17 +388,6 @@ export class GraphQLSelectComponent
           )
       );
       this.elements.next([...selectedElements, ...elements]);
-    }
-
-    if (
-      changes['isDisable'] &&
-      changes['isDisable'].previousValue !== changes['isDisable'].currentValue
-    ) {
-      if (this.isDisable) {
-        this.ngControl?.control?.disable();
-      } else {
-        this.ngControl?.control?.enable();
-      }
     }
   }
 
