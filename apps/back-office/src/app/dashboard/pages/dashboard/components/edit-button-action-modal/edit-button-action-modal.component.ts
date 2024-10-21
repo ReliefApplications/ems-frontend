@@ -141,10 +141,9 @@ export class EditButtonActionModalComponent implements OnInit {
    * @returns the form group
    */
   createButtonActionForm = (data: ButtonActionT, roles: Role[]) => {
-    return new FormGroup({
+    const form = new FormGroup({
       // General
       text: new FormControl(get(data, 'text', ''), Validators.required),
-      href: new FormControl(get(data, 'href', ''), Validators.required),
       hasRoleRestriction: new FormControl(
         get(data, 'hasRoleRestriction', false),
         Validators.required
@@ -163,7 +162,7 @@ export class EditButtonActionModalComponent implements OnInit {
       navigateTo: new FormControl(get(data, 'navigateTo', false)),
       previousPage: new FormControl(get(data, 'previousPage', false)),
       url: new FormControl(get(data, 'url', false)),
-      urlValue: new FormControl(get(data, 'urlValue', '')),
+      href: new FormControl(get(data, 'href', '')),
       editRecord: new FormControl(get(data, 'editRecord', false)),
       template: new FormControl(get(data, 'template', '')),
       addRecord: new FormControl(get(data, 'addRecord', false)),
@@ -172,5 +171,37 @@ export class EditButtonActionModalComponent implements OnInit {
       ),
       sendNotification: new FormControl(get(data, 'sendNotification', false)),
     });
+
+    // Define mutually exclusive groups
+    const mutuallyExclusiveGroups = [
+      [
+        'navigateTo',
+        'editRecord',
+        'addRecord',
+        'suscribeToNotification',
+        'sendNotification',
+      ],
+      ['previousPage', 'url'],
+    ];
+
+    // Helper function to make fields mutually exclusive
+    const makeMutuallyExclusive = (fields: string[]) => {
+      fields.forEach((field) => {
+        form.get(field)?.valueChanges.subscribe((value) => {
+          if (value) {
+            fields
+              .filter((otherField) => otherField !== field)
+              .forEach((otherField) => {
+                form.get(otherField)?.setValue(false, { emitEvent: false });
+              });
+          }
+        });
+      });
+    };
+
+    // Apply mutually exclusive behavior to each group
+    mutuallyExclusiveGroups.forEach(makeMutuallyExclusive);
+
+    return form;
   };
 }
