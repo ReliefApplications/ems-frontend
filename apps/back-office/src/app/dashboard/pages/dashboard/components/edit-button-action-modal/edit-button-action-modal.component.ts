@@ -14,6 +14,7 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import {
+  AbstractControl,
   FormControl,
   FormGroup,
   FormsModule,
@@ -202,6 +203,26 @@ export class EditButtonActionModalComponent implements OnInit {
     // Apply mutually exclusive behavior to each group
     mutuallyExclusiveGroups.forEach(makeMutuallyExclusive);
 
+    // Apply at least one required validator to each group
+    form.setValidators(
+      this.atLeastOneRequiredValidator([
+        'navigateTo',
+        'editRecord',
+        'addRecord',
+        'suscribeToNotification',
+        'sendNotification',
+      ])
+    );
+
     return form;
+  };
+  atLeastOneRequiredValidator = (fields: string[]) => {
+    return (control: AbstractControl) => {
+      const formGroup = control as FormGroup;
+      const atLeastOneSelected = fields.some(
+        (field) => formGroup.get(field)?.value
+      );
+      return atLeastOneSelected ? null : { atLeastOneRequired: true };
+    };
   };
 }
