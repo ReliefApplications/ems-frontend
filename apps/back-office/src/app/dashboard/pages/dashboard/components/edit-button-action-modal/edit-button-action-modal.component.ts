@@ -14,6 +14,7 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
   FormsModule,
@@ -180,7 +181,24 @@ export class EditButtonActionModalComponent implements OnInit {
       }),
     });
 
-    // Setting up mutual exclusivity for action controls
+    // Utility function for setting up mutual exclusivity
+    const setupMutualExclusivity = (controls: AbstractControl[]) => {
+      controls.forEach((control, index) => {
+        if (control) {
+          control.valueChanges.subscribe((value: boolean | null) => {
+            if (value) {
+              controls.forEach((otherControl, otherIndex) => {
+                if (index !== otherIndex && otherControl) {
+                  otherControl.setValue(false, { emitEvent: false });
+                }
+              });
+            }
+          });
+        }
+      });
+    };
+
+    // Setting up mutual exclusivity for action controls and navigateTo controls
     const actionControls = [
       form.get('action.navigateTo.enabled'),
       form.get('action.editRecord.enabled'),
@@ -189,20 +207,14 @@ export class EditButtonActionModalComponent implements OnInit {
       form.get('action.sendNotification'),
     ];
 
-    actionControls.forEach((control, index) => {
-      if (control) {
-        control.valueChanges.subscribe((value: boolean | null) => {
-          if (value) {
-            // Disable all other controls when one is set to true
-            actionControls.forEach((otherControl, otherIndex) => {
-              if (index !== otherIndex && otherControl) {
-                otherControl.setValue(false, { emitEvent: false });
-              }
-            });
-          }
-        });
-      }
-    });
+    const navigateToControls = [
+      form.get('action.navigateTo.previousPage'),
+      form.get('action.navigateTo.targetUrl.enabled'),
+    ];
+
+    // Apply the utility function to both sets of controls
+    setupMutualExclusivity(actionControls as AbstractControl[]);
+    setupMutualExclusivity(navigateToControls as AbstractControl[]);
 
     return form;
   };
