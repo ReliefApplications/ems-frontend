@@ -1,5 +1,9 @@
 import { Type } from '@angular/core';
 import {
+  AcceptedValueTypesTextComponent,
+  QuestionAcceptedValueTypesTextModel,
+} from '../accepted-value-types-text/public-api';
+import {
   ApplicationDropdownComponent,
   QuestionOwnerApplicationsDropdownModel,
 } from '../application-dropdown/public-api';
@@ -69,6 +73,7 @@ export enum CustomPropertyGridComponentTypes {
   codeEditor = 'code-editor',
   queryEditor = 'query-editor',
   jsonEditor = 'json-editor',
+  acceptedTypesValues = 'acceptedTypesValues',
 }
 
 /**
@@ -129,5 +134,9 @@ export const CustomPropertyGridEditors: Record<
   [CustomPropertyGridComponentTypes.csDocsPropertiesDropdown]: {
     component: CsDocsPropertiesDropdownComponent,
     model: QuestionCsDocsPropertiesDropdownModel,
+  },
+  [CustomPropertyGridComponentTypes.acceptedTypesValues]: {
+    component: AcceptedValueTypesTextComponent,
+    model: QuestionAcceptedValueTypesTextModel,
   },
 };

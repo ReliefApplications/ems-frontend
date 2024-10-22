@@ -1,6 +1,13 @@
 import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Model, SurveyModel, settings } from 'survey-core';
+import {
+  Model,
+  Question,
+  QuestionFileModel,
+  SurveyModel,
+  settings,
+  surveyLocalization,
+} from 'survey-core';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
@@ -143,6 +150,20 @@ export class FormBuilderService {
     survey.showProgressBar = 'off';
     survey.focusFirstQuestionAutomatic = false;
     survey.applyTheme({ isPanelless: true });
+    /** Apply placeholders with limitations to all file type questions */
+    survey.onGetQuestionTitle.add((_, options) => {
+      if (options.question instanceof QuestionFileModel) {
+        const text = surveyLocalization.getString(
+          'oort:fileLimitations',
+          (options.question.survey as SurveyModel).locale
+        )(
+          options.question.getPropertyValue('maxSize'),
+
+          options.question.getPropertyValue('allowedFileNumber')
+        );
+        options.question.dragAreaPlaceholder = text;
+      }
+    });
     return survey;
   }
 
@@ -173,6 +194,30 @@ export class FormBuilderService {
   }
 
   /**
+   * Check if given files are valid for given file type question
+   *
+   * @param question File question to apply checks
+   * @param files Uploaded files
+   * @returns Given files validity against given question
+   */
+  private checkFileUploadValidity(question: Question, files: File[]) {
+    let isValid = true;
+    const allowMultiple = question.getPropertyValue('allowMultiple');
+    const allowedFileNumber = question.getPropertyValue('allowedFileNumber');
+    if (allowMultiple && files.length > allowedFileNumber) {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'components.formBuilder.errors.maximumAllowedFiles',
+          { number: allowedFileNumber }
+        ),
+        { error: true }
+      );
+      isValid = false;
+    }
+    return isValid;
+  }
+
+  /**
    * Handles the clearing of files
    *
    * @param options Options regarding the files
@@ -188,6 +233,13 @@ export class FormBuilderService {
    * @param options Options regarding the upload
    */
   private onUploadFiles(temporaryFilesStorage: any, options: any): void {
+    const isUploadValid = this.checkFileUploadValidity(options.question, [
+      ...options.files,
+      ...(temporaryFilesStorage[options.name] ?? []),
+    ]);
+    if (!isUploadValid) {
+      return;
+    }
     if (temporaryFilesStorage[options.name] !== undefined) {
       temporaryFilesStorage[options.name].concat(options.files);
     } else {
