@@ -6,7 +6,7 @@ import { DistributionListsModule } from '../../components/distribution-lists/dis
 import { SpinnerModule } from '@oort-front/ui';
 
 /**
- * Page to view distribution lists within app.
+ * Page to view distribution lists within application.
  */
 @NgModule({
   declarations: [ApplicationDistributionListsComponent],

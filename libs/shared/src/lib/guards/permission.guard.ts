@@ -8,11 +8,11 @@ import {
 } from '@angular/router';
 import { subject } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
 import { get } from 'lodash';
 import { Observable } from 'rxjs';
 import { ApplicationService } from '../services/application/application.service';
 import { AppAbility } from '../services/auth/auth.service';
-import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Check if the logged user has an access to the route.
@@ -79,17 +79,17 @@ export class PermissionGuard implements CanActivate {
         : null;
 
     // If the user is navigating in an application, returns
-    // a promise that will resolve when the app is loaded (and the ability extended)
+    // a promise that will resolve when the application is loaded (and the ability extended)
     if (appId) {
       this.appService.loadApplication(appId);
       return new Promise((resolve) => {
-        const sub = this.appService.application$.subscribe((app) => {
-          if (!app?.id) return;
+        const sub = this.appService.application$.subscribe((application) => {
+          if (!application?.id) return;
           sub.unsubscribe();
           const hasPermission = this.ability.can(
             permission.action,
             subject(permission.subject, {
-              application: app.id,
+              application: application.id,
             })
           );
           resolve(hasPermission ? true : this.router.parseUrl('/'));
@@ -97,7 +97,7 @@ export class PermissionGuard implements CanActivate {
       });
     }
 
-    // If not in app, and no global permission, deny access
+    // If not in application, and no global permission, deny access
     // show error message and redirect to the root route
     this.snackBar.openSnackBar(this.translate.instant('common.accessDenied'), {
       error: true,

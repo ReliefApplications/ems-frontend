@@ -157,8 +157,12 @@ export class AppWidgetComponent
               name: x.name,
               path:
                 x.type === ContentType.form
-                  ? `./${application.id}/${x.type}/${x.id}`
-                  : `./${application.id}/${x.type}/${x.content}`,
+                  ? `./${this.applicationService.getApplicationPath(
+                      application
+                    )}/${x.type}/${x.id}`
+                  : `./${this.applicationService.getApplicationPath(
+                      application
+                    )}/${x.type}/${x.content}`,
               icon: x.icon || this.getNavIcon(x.type || ''),
               fontFamily: x.icon ? 'fa' : 'material',
               visible: x.visible,

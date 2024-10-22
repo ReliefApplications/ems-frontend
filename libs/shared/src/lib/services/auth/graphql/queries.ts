@@ -17,6 +17,7 @@ export const GET_PROFILE = gql`
         title
         application {
           id
+          shortcut
         }
         permissions {
           id
@@ -29,6 +30,7 @@ export const GET_PROFILE = gql`
       }
       applications {
         id
+        shortcut
         positionAttributes {
           value
         }
