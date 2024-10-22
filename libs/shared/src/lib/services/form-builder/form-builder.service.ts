@@ -233,10 +233,10 @@ export class FormBuilderService {
    * @param options Options regarding the upload
    */
   private onUploadFiles(temporaryFilesStorage: any, options: any): void {
-    const isUploadValid = this.checkFileUploadValidity(
-      options.question,
-      options.files
-    );
+    const isUploadValid = this.checkFileUploadValidity(options.question, [
+      ...options.files,
+      ...(temporaryFilesStorage[options.name] ?? []),
+    ]);
     if (!isUploadValid) {
       return;
     }

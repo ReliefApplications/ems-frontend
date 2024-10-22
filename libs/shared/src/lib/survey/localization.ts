@@ -15,13 +15,13 @@ const SURVEY_LOCALIZABLE_STRINGS = [
       en: (maxSize: number, maxFiles: number) => `
       Drag and drop a file here or click the button below and choose a file to upload.
       ${maxFiles ? 'Attach up to ' + maxFiles + ' files. ' : ''}${
-        maxSize ? 'Max ' + maxSize + ' bytes' : ''
+        maxSize ? 'Max ' + Math.floor(maxSize / 1024) + ' KB' : ''
       }
       `,
       fr: (maxSize: number, maxFiles: number) => `
       Faites glisser et déposez un fichier ici ou cliquez sur le bouton ci-dessous et choisissez un fichier à télécharger.
       ${maxFiles ? "Joindre jusqu'à " + maxFiles + ' fichiers. ' : ''}${
-        maxSize ? 'Max ' + maxSize + ' bytes' : ''
+        maxSize ? 'Max ' + Math.floor(maxSize / 1024) + ' KB' : ''
       }
       `,
     },
