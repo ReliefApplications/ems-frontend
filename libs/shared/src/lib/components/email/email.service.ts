@@ -1571,7 +1571,7 @@ export class EmailService {
     return this.apollo.query<any>({
       query: EDIT_CUSTOM_TEMPLATE,
       variables: {
-        editAndGetCustomTemplateId: id,
+        editCustomTemplateId: id,
         customTemplate,
       },
     });
@@ -1588,7 +1588,7 @@ export class EmailService {
     return this.apollo.query<any>({
       query: EDIT_DISTRIBUTION_LIST,
       variables: {
-        editAndGetDistributionListId: id,
+        editDistributionListId: id,
         distributionList,
       },
     });
@@ -1604,7 +1604,7 @@ export class EmailService {
     return this.apollo.query<any>({
       query: EDIT_DISTRIBUTION_LIST,
       variables: {
-        editAndGetDistributionListId: id,
+        editDistributionListId: id,
         distributionList: { isDeleted: 1 },
       },
     });
@@ -1620,7 +1620,7 @@ export class EmailService {
     return this.apollo.query<any>({
       query: EDIT_CUSTOM_TEMPLATE,
       variables: {
-        editAndGetCustomTemplateId: id,
+        editCustomTemplateId: id,
         customTemplate: { isDeleted: 1 },
       },
     });

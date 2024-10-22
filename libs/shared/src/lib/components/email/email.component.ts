@@ -889,7 +889,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       if (value) {
         this.emailService.emailListLoading = true;
         this.emailService.deleteCustomTemplate(data.id).subscribe((res) => {
-          if (res.data?.editAndGetCustomTemplate?.id) {
+          if (res.data?.editCustomTemplate?.id) {
             this.emailService.emailListLoading = false;
             this.getCustomTemplates();
           }
@@ -917,7 +917,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         this.emailService.emailListLoading = true;
         this.emailService.deleteDistributionList(data.id).subscribe((res) => {
           this.emailService.emailListLoading = false;
-          if (res.data?.editAndGetDistributionList?.id) {
+          if (res.data?.editDistributionList?.id) {
             this.emailService.emailListLoading = false;
             this.getExistingTemplate();
             // this.getDistributionList();

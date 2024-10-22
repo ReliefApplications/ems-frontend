@@ -505,7 +505,7 @@ export class EmsTemplateComponent
     }
     const id =
       emailLayout?.data?.addCustomTemplate?.id ||
-      emailLayout?.data?.editAndGetCustomTemplate?.id;
+      emailLayout?.data?.editCustomTemplate?.id;
     if (id) {
       return { id };
     } else if (emailLayout.errors) {
