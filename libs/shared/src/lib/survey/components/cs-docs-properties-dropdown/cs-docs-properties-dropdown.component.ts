@@ -13,6 +13,7 @@ import { Apollo, ApolloBase } from 'apollo-angular';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { QuestionAngular } from 'survey-angular-ui';
+import { CS_DOCUMENTS_PROPERTIES } from '../../../services/document-management/document-management.service';
 import { QuestionCsDocsPropertiesDropdownModel } from './cs-docs-properties-dropdown.model';
 
 /**
@@ -42,14 +43,6 @@ export class CsDocsPropertiesDropdownComponent
   private csDocsApolloClient!: ApolloBase<any>;
   /** Loading flag */
   public loading = false;
-  // private propertyToBodyParamMapper = {
-  //   assignmentfunctions: 'AssignmentFunction',
-  //   countrys: 'Country',
-  //   documentroles: 'DocumentRole',
-  //   hazards: 'Hazard',
-  //   sourceofinformations: 'InformationConfidentiality',
-  //   regions: 'Region',
-  // } as const;
 
   /** Selected property */
   public selectedPropertyItems: {
@@ -63,6 +56,8 @@ export class CsDocsPropertiesDropdownComponent
 
   /** Destroy subject */
   private destroy$: Subject<void> = new Subject<void>();
+  /** Current body key to save the value */
+  private bodyKey!: string;
 
   /**
    * Select menu component
@@ -89,6 +84,9 @@ export class CsDocsPropertiesDropdownComponent
 
   override ngOnInit(): void {
     super.ngOnInit();
+    this.bodyKey = CS_DOCUMENTS_PROPERTIES.find(
+      (dp) => dp.value === this.model.value
+    )?.bodyKey as string;
     /** Upload item list on query sort change */
     this.model.obj.registerFunctionOnPropertyValueChanged(
       'querySort',
@@ -106,7 +104,7 @@ export class CsDocsPropertiesDropdownComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (items) => {
-          this.model.obj[`selected${this.model.value}PropertyItems`] = items;
+          this.model.obj[this.bodyKey] = items;
           this.changeDetectorRef.detectChanges();
         },
       });
@@ -138,10 +136,8 @@ export class CsDocsPropertiesDropdownComponent
             if (data[this.model.value as string]) {
               this.selectedPropertyItems = data[this.model.value as string];
             }
-            if (this.model.obj[`selected${this.model.value}PropertyItems`]) {
-              this.propertyItemsControl.setValue(
-                this.model.obj[`selected${this.model.value}PropertyItems`]
-              );
+            if (this.model.obj[this.bodyKey]) {
+              this.propertyItemsControl.setValue(this.model.obj[this.bodyKey]);
             }
             this.changeDetectorRef.detectChanges();
           },
@@ -164,7 +160,7 @@ export class CsDocsPropertiesDropdownComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    this.model.unregisterFunctionOnPropertyValueChanged('querySort');
+    this.model.obj.unRegisterFunctionOnPropertyValueChanged('querySort');
     this.destroy$.next();
     this.destroy$.complete();
   }

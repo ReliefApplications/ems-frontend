@@ -16,13 +16,13 @@ import {
 import { Question } from '../../survey/types';
 import { AuthService } from '../auth/auth.service';
 import { ConfirmService } from '../confirm/confirm.service';
+import { DocumentManagementService } from '../document-management/document-management.service';
 import { BlobType, DownloadService } from '../download/download.service';
 import {
   ADD_DRAFT_RECORD,
   DELETE_DRAFT_RECORD,
   EDIT_DRAFT_RECORD,
 } from './graphql/mutations';
-import { DocumentManagementService } from '../document-management/document-management.service';
 
 /**
  * Shared survey helper service.
@@ -132,8 +132,9 @@ export class FormHelpersService {
       for (const [index, file] of files.entries()) {
         // Upload the file using document management system
         if (useDocumentManagement) {
+          const question = survey.getQuestionByName(name);
           const { driveId, itemId } =
-            await this.documentManagementService.uploadFile(file);
+            await this.documentManagementService.uploadFile(file, question);
           if (driveId && itemId) {
             const fileContent = data[name][index].content;
             data[name][index].content = {

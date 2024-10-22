@@ -5,16 +5,49 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { RestService } from '../rest/rest.service';
+import { Question } from 'survey-core';
 
-/** Allowed file types */ // We may need to allow configuration about that
-// const ALLOWED_FILE_TYPES =
-//   '.BMP,.GIF,.JPG,.JPEG,.PNG,.HTM,.TXT,.XPS,.PDF,.DOCX,.DOC,.DOCM,.XLSX,.XLS,.XLSM,.PPTX,.PPT,.PPTM,.MSG,.XML,.ODT,.ODS,.ODP,.HTML,.XML,.ZIP,.GZ,.EPUB,.EML,.RTF,.XT,.CSV,.JSON,.7Z,.EMF,.KML,.KMZ,.MDI,.MHT,.MSGT,.ODT,.OFT,.PUB,.RAR,.SVG,.TEXTCLIPPING,.TIF,.TMP,.URL,.WEBARCHIVE,.WEBP,.WMF';
-
-// /** Maximum upload size in bytes */
-// const MAX_UPLOAD_SIZE = '26214400';
-
-// /** Maximum number of files uploaded in same segment */
-// const MAX_UPLOAD_FILES = 5;
+/**
+ * Available properties from the CS API Documentation
+ */
+export const CS_DOCUMENTS_PROPERTIES = [
+  { text: 'Aetiology', value: 'aetiologys', bodyKey: 'Aetiology' },
+  {
+    text: 'Confidentiality',
+    value: 'informationconfidentialitys',
+    bodyKey: 'InformationConfidentiality',
+  },
+  { text: 'Country', value: 'countrys', bodyKey: 'Country' },
+  { text: 'Disease Condition', value: 'diseaseconds', bodyKey: 'DiseaseCond' },
+  // { text: 'Document Category', value: 'documentcategorys', bodyKey: '' },
+  { text: 'Document Type', value: 'documenttypes', bodyKey: 'DocumentType' },
+  { text: 'Hazard', value: 'hazards', bodyKey: 'Hazard' },
+  {
+    text: 'IHR Communication',
+    value: 'ihrcommunications',
+    bodyKey: 'IhrCommunication',
+  },
+  {
+    text: 'IMS Function',
+    value: 'assignmentfunctions',
+    bodyKey: 'AssignmentFunction',
+  },
+  // { text: 'IMS Role', value: 'documentroles', bodyKey: '' },
+  { text: 'Language', value: 'languages', bodyKey: 'Language' },
+  // { text: 'Occurrence', value: 'occurrences', bodyKey: '' },
+  {
+    text: 'Occurrence Type',
+    value: 'occurrencetypes',
+    bodyKey: 'OccurrenceType',
+  },
+  { text: 'Region', value: 'regions', bodyKey: 'Region' },
+  {
+    text: 'Source of information - type',
+    value: 'sourceofinformations',
+    bodyKey: 'SourceOfInformation',
+  },
+  { text: 'Syndrome', value: 'syndromes', bodyKey: 'Syndrome' },
+];
 
 /** Snackbar duration in ms */
 const SNACKBAR_DURATION = 3000;
@@ -147,11 +180,13 @@ export class DocumentManagementService {
    * Uploads a file
    *
    * @param file file to upload
+   * @param question related question from where to extract body params on cs upload
    * @param driveId Drive where to upload current file
    * @returns http upload request
    */
   async uploadFile(
     file: any,
+    question: Question,
     driveId: string = '866da8cf-3d36-43e5-b54a-1d5b1ec2226d' // todo: must be made dynamic
   ): Promise<any> {
     const { snackBarRef, headers } = this.triggerFileDownloadMessage(
@@ -159,13 +194,15 @@ export class DocumentManagementService {
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
     const fileStream = await this.transformFileToValidInput(file);
+    const bodyFilter = Object.create({});
+    CS_DOCUMENTS_PROPERTIES.forEach((dp) => {
+      const value = question.getPropertyValue(dp.bodyKey);
+      if (!!value && value.length) {
+        Object.assign(bodyFilter, { [dp.bodyKey]: value });
+      }
+    });
     const body = {
-      AssignmentFunction: [2],
-      Country: [181, 27, 44, 76, 111, 143, 148, 159, 150],
-      DocumentRole: [3],
-      Hazard: [10],
-      InformationConfidentiality: [1],
-      Region: [4],
+      ...bodyFilter,
       FileStream: fileStream,
       FileName: file.name,
     };
