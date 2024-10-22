@@ -393,6 +393,21 @@ export const createLayerDrawingInfoForm = (
           )
         ),
       }),
+      ...(type === 'classBreak' && {
+        minValue: get(value, 'renderer.minValue', null),
+        defaultLabel: get(value, 'renderer.defaultLabel', 'Other'),
+        defaultSymbol: createSymbolForm(
+          get(value, 'renderer.defaultSymbol'),
+          geometryType
+        ),
+        field1: [get(value, 'renderer.field1', null), Validators.required],
+        classBreakInfos: fb.array(
+          get(value, 'renderer.classBreakInfos', []).map(
+            (uniqueValueInfo: UniqueValueInfo, index: number) =>
+              createClassBreakInfoForm(geometryType, index, uniqueValueInfo)
+          )
+        ),
+      }),
     }),
   });
   return formGroup;
@@ -412,6 +427,29 @@ export const createUniqueValueInfoForm = (
   fb.group({
     label: [get(value, 'label', ''), Validators.required],
     value: [get(value, 'value', ''), Validators.required],
+    symbol: createSymbolForm(get(value, 'symbol'), geometryType),
+  });
+
+/**
+ * Create class break form group
+ *
+ * @param geometryType layer geometry type
+ * @param index Class break info position in the group
+ * - First class break max value is not mandatory, as it works with parent form's min value property
+ * @param value class break
+ * @returns class break form group
+ */
+export const createClassBreakInfoForm = (
+  geometryType: GeometryType = 'Point',
+  index: number,
+  value?: any
+) =>
+  fb.group({
+    label: [get(value, 'label', ''), Validators.required],
+    maxValue: [
+      get(value, 'maxValue', null),
+      index !== 0 ? Validators.required : null,
+    ],
     symbol: createSymbolForm(get(value, 'symbol'), geometryType),
   });
 
