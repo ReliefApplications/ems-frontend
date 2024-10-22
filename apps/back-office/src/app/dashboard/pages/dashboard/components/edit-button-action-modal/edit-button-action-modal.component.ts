@@ -86,6 +86,7 @@ export class EditButtonActionModalComponent implements OnInit {
    * @param dataTemplateService Shared data template service
    * @param router Router service
    * @param applicationService shared application service
+   * @param fb form builder
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
@@ -178,6 +179,31 @@ export class EditButtonActionModalComponent implements OnInit {
         sendNotification: [false],
       }),
     });
+
+    // Setting up mutual exclusivity for action controls
+    const actionControls = [
+      form.get('action.navigateTo.enabled'),
+      form.get('action.editRecord.enabled'),
+      form.get('action.addRecord'),
+      form.get('action.suscribeToNotification'),
+      form.get('action.sendNotification'),
+    ];
+
+    actionControls.forEach((control, index) => {
+      if (control) {
+        control.valueChanges.subscribe((value: boolean | null) => {
+          if (value) {
+            // Disable all other controls when one is set to true
+            actionControls.forEach((otherControl, otherIndex) => {
+              if (index !== otherIndex && otherControl) {
+                otherControl.setValue(false, { emitEvent: false });
+              }
+            });
+          }
+        });
+      }
+    });
+
     return form;
   };
 }
