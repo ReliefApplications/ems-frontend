@@ -74,7 +74,6 @@ export class EditWidgetModalComponent
   async ngOnInit() {
     // Component of the edited widget, must match with one defined angular component
     const widgetComponent: WidgetTypeComponent = this.data.widget.component;
-    console.log(widgetComponent);
     let template: Type<WidgetSettingsType> | undefined = undefined;
     switch (widgetComponent) {
       case 'chart': {
@@ -120,7 +119,6 @@ export class EditWidgetModalComponent
         break;
       }
     }
-    console.log(template);
     if (template) {
       // Create the settings component in the modal constructor to keep all hooks ready for the view insertion
       this.componentRef = createComponent<WidgetSettingsType>(template, {
@@ -136,7 +134,6 @@ export class EditWidgetModalComponent
         .subscribe((e: any) => {
           this.widgetForm = e;
         });
-      console.log(this.componentRef);
       this.settingsContainer.insert(this.componentRef.hostView);
     } else {
       // todo: We can display an error there
