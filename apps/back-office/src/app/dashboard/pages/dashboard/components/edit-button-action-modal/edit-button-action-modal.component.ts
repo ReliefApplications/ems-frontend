@@ -19,6 +19,8 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -172,42 +174,31 @@ export class EditButtonActionModalComponent implements OnInit {
         category: [get(data, 'category', 'secondary')],
         variant: [get(data, 'variant', 'primary')],
       }),
-      action: this.fb.group({
-        navigateTo: this.fb.group({
-          enabled: [!!get(data, 'href', false)],
-          previousPage: [false],
-          targetUrl: this.fb.group({
-            enabled: [!!get(data, 'href', false)],
-            href: [get(data, 'href', '')],
-            openInNewTab: [get(data, 'openInNewTab', true)],
+      action: this.fb.group(
+        {
+          navigateTo: this.fb.group(
+            {
+              enabled: [!!get(data, 'href', false)],
+              previousPage: [false],
+              targetUrl: this.fb.group({
+                enabled: [!!get(data, 'href', false)],
+                href: [get(data, 'href', '')],
+                openInNewTab: [get(data, 'openInNewTab', true)],
+              }),
+            },
+            { validator: this.navigateToValidator }
+          ),
+          editRecord: this.fb.group({
+            enabled: [false],
+            template: [''],
           }),
-        }),
-        editRecord: this.fb.group({
-          enabled: [false],
-          template: [''],
-        }),
-        addRecord: [false],
-        suscribeToNotification: [false],
-        sendNotification: [false],
-      }),
+          addRecord: [false],
+          suscribeToNotification: [false],
+          sendNotification: [false],
+        },
+        { validator: this.actionValidator }
+      ),
     });
-
-    // Utility function for setting up mutual exclusivity
-    const setupMutualExclusivity = (controls: AbstractControl[]) => {
-      controls.forEach((control, index) => {
-        if (control) {
-          control.valueChanges.subscribe((value: boolean | null) => {
-            if (value) {
-              controls.forEach((otherControl, otherIndex) => {
-                if (index !== otherIndex && otherControl) {
-                  otherControl.setValue(false, { emitEvent: false });
-                }
-              });
-            }
-          });
-        }
-      });
-    };
 
     // Setting up mutual exclusivity for action controls and navigateTo controls
     const actionControls = [
@@ -224,9 +215,73 @@ export class EditButtonActionModalComponent implements OnInit {
     ];
 
     // Apply the utility function to both sets of controls
-    setupMutualExclusivity(actionControls as AbstractControl[]);
-    setupMutualExclusivity(navigateToControls as AbstractControl[]);
+    this.setupMutualExclusivity(actionControls as AbstractControl[]);
+    this.setupMutualExclusivity(navigateToControls as AbstractControl[]);
 
     return form;
+  };
+
+  /**
+   * Utility function to set up mutual exclusivity for a set of controls
+   *
+   * @param controls Array of controls to set up mutual exclusivity for
+   */
+  setupMutualExclusivity = (controls: AbstractControl[]) => {
+    controls.forEach((control, index) => {
+      control?.valueChanges.subscribe((value: boolean | null) => {
+        if (value) {
+          controls.forEach((otherControl, otherIndex) => {
+            if (index !== otherIndex) {
+              otherControl?.setValue(false, { emitEvent: false });
+            }
+          });
+        }
+      });
+    });
+  };
+
+  /**
+   * Validator to ensure that at least one action is enabled
+   *
+   * @param control form group
+   * @returns validation errors
+   */
+  actionValidator: ValidatorFn = (
+    control: AbstractControl
+  ): ValidationErrors | null => {
+    const actions = control.value;
+    if (actions) {
+      const atLeastOneEnabled =
+        actions.navigateTo?.enabled ||
+        actions.editRecord?.enabled ||
+        actions.addRecord ||
+        actions.suscribeToNotification ||
+        actions.sendNotification;
+
+      return atLeastOneEnabled ? null : { atLeastOneRequired: true };
+    }
+    return { atLeastOneRequired: true };
+  };
+
+  /**
+   * Validator to ensure that at least one navigateTo action is enabled
+   *
+   * @param control form group
+   * @returns validation errors
+   */
+  navigateToValidator: ValidatorFn = (
+    control: AbstractControl
+  ): ValidationErrors | null => {
+    const navigateTo = control.value;
+    if (navigateTo) {
+      const atLeastOneEnabled =
+        navigateTo.previousPage || navigateTo.targetUrl?.enabled;
+      const hrefValid =
+        !navigateTo.targetUrl?.enabled ||
+        (navigateTo.targetUrl.enabled && navigateTo.targetUrl.href);
+      if (!atLeastOneEnabled) return { atLeastOneRequired: true };
+      if (!hrefValid) return { hrefRequired: true };
+    }
+    return null;
   };
 }
