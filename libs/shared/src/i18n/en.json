@@ -2000,15 +2000,33 @@
 						"zoom": "Default zoom"
 					},
 					"renderer": {
+						"classBreak": "Class Breaks",
 						"default": "Default",
-						"defaultLabel": "Default label",
+						"defaultLabel": {
+							"info": "Leave empty to hide in legend",
+							"text": "Default label"
+						},
+						"errors": {
+							"invalidClassBreakOrder": "Incorrect class breaks ordering",
+							"repeatedValues": "Maximum value is repeated",
+							"valuesOrder": "Minimum value must be lower than maximum values in class breaks"
+						},
 						"label": "Label",
+						"maxValue": "Maximum value",
+						"minValue": "Minimum value",
 						"symbol": "Symbol",
 						"uniqueValue": "Unique values",
 						"value": "Value"
 					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
+						"classBreak": {
+							"maxValue": {
+								"first": "Leave blank to include all items with value greater than the maximum values of subsequent class breaks",
+								"general": "Must be higher than the maximum values of subsequent class breaks"
+							},
+							"minValue": "All items with values lower than the minimum set will use default rendering"
+						},
 						"cluster": {
 							"autoSize": "If enabled, size of clusters is automated. Else, you can select one.",
 							"lightMode": "If enabled, label uses white. Else, it displays in black."
@@ -2358,8 +2376,8 @@
 			"setAsFavorite": "Set as favorite",
 			"shortcut": {
 				"errors": {
-					"isNotUnique": "**************unique",
-					"isNotValid": "**************valid"
+					"isNotUnique": "Shortcut is already used in the platform",
+					"isNotValid": "Shortcut is not valid"
 				},
 				"info": "Application shortcut must be an unique string in the system. It can only contain letters, numbers and hyphens",
 				"text": "Shortcut"

@@ -2000,15 +2000,33 @@
 						"zoom": "Zoom par défaut"
 					},
 					"renderer": {
+						"classBreak": "Intervalles de classe",
 						"default": "Défaut",
-						"defaultLabel": "Libellé par défaut",
+						"defaultLabel": {
+							"info": "​Laisser vide pour masquer dans la légende",
+							"text": "Libellé par défaut"
+						},
+						"errors": {
+							"invalidClassBreakOrder": "Ordre des intervalles de classe incorrect",
+							"repeatedValues": "La valeur maximale est répétée",
+							"valuesOrder": "La valeur minimale doit être inférieure aux valeurs maximales dans les intervalles de classe"
+						},
 						"label": "Libellé",
+						"maxValue": "Valeur maximale",
+						"minValue": "Valeur minimale",
 						"symbol": "Symbole",
 						"uniqueValue": "Valeurs uniques",
 						"value": "Valeur"
 					},
 					"tooltip": {
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
+						"classBreak": {
+							"maxValue": {
+								"first": "Laisser vide pour inclure tous les éléments avec une valeur supérieure aux valeurs maximales des intervalles de classe suivants",
+								"general": "Doit être supérieur aux valeurs maximales des intervalles de classe suivants"
+							},
+							"minValue": "Tous les éléments avec des valeurs inférieures au minimum défini utiliseront le rendu par défaut"
+						},
 						"cluster": {
 							"autoSize": "La taille des clusters est automatique si activé, sinon, vous pouvez la définir.",
 							"lightMode": "Le texte s'affichera en blanc si activé, sinon en noir."
@@ -2358,11 +2376,11 @@
 			"setAsFavorite": "Ajouter aux favoris",
 			"shortcut": {
 				"errors": {
-					"isNotUnique": "**************",
-					"isNotValid": "**************"
+					"isNotUnique": "Ce raccourci existe déjà dans la plateforme",
+					"isNotValid": "Ce raccourci n'est pas valide"
 				},
-				"info": "***********",
-				"text": "***********"
+				"info": "Le raccourci de l'application doit être une chaîne unique dans le système. Il ne peut contenir que des lettres, des chiffres et des tirets.",
+				"text": "Raccourci"
 			},
 			"subscription": {
 				"create": "Créer un abonnement"
