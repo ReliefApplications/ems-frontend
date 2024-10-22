@@ -58,7 +58,7 @@
                 *cdkCellDef="let element"
                 class="!text-gray-900 !font-medium max-w-[30vw]"
               >
-                {{ element.general.buttonText }}
+                {{ element.text }}
               </td>
             </ng-container>
 
@@ -72,8 +72,8 @@
                 class="!text-gray-900 !font-medium max-w-[30vw]"
               >
                 {{
-                  element.general.hasRoleRestriction
-                    ? getCorrespondingRoles(element.general.roles)
+                  element.hasRoleRestriction
+                    ? getCorrespondingRoles(element.roles)
                     : ''
                 }}
               </td>

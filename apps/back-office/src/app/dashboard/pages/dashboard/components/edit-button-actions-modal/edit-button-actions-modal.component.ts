@@ -217,9 +217,7 @@ export class EditButtonActionsModalComponent
 
     if (this.searchTerm !== '') {
       buttonActions = this.buttonActions.filter((action) =>
-        action.general.buttonText
-          .toLowerCase()
-          .includes(this.searchTerm.toLowerCase())
+        action.text.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
     } else {
       buttonActions = this.buttonActions;

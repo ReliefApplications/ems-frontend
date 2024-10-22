@@ -38,11 +38,9 @@ export class ButtonActionComponent {
    * @param button Button action to be executed
    */
   public onButtonActionClick(button: ButtonActionT) {
-    if (button.action.navigateTo.targetUrl.href) {
-      const href = this.dataTemplateService.renderLink(
-        button.action.navigateTo.targetUrl.href
-      );
-      if (button.action.navigateTo.targetUrl.openInNewTab) {
+    if (button.href) {
+      const href = this.dataTemplateService.renderLink(button.href);
+      if (button.openInNewTab) {
         window.open(href, '_blank');
       } else {
         if (href?.startsWith('./')) {

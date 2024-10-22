@@ -133,7 +133,18 @@ export class EditButtonActionModalComponent implements OnInit {
 
   /** On click on the save button close the dialog with the form value */
   public onSubmit(): void {
-    this.dialogRef.close(this.form.value as any);
+    const mappedData: ButtonActionT = {
+      text: this.form.get('general.buttonText')?.value,
+      hasRoleRestriction: this.form.get('general.hasRoleRestriction')?.value,
+      roles: this.form.get('general.roles')?.value,
+      category: this.form.get('general.category')?.value,
+      variant: this.form.get('general.variant')?.value,
+      href: this.form.get('action.navigateTo.targetUrl.href')?.value,
+      openInNewTab: this.form.get('action.navigateTo.targetUrl.openInNewTab')
+        ?.value,
+    };
+
+    this.dialogRef.close(mappedData);
   }
 
   /**
@@ -146,29 +157,29 @@ export class EditButtonActionModalComponent implements OnInit {
   createButtonActionForm = (data: ButtonActionT, roles: Role[]): FormGroup => {
     const form = this.fb.group({
       general: this.fb.group({
-        buttonText: [get(data, 'general.buttonText', ''), Validators.required],
+        buttonText: [get(data, 'text', ''), Validators.required],
         hasRoleRestriction: [
-          get(data, 'general.hasRoleRestriction', false),
+          get(data, 'hasRoleRestriction', false),
           Validators.required,
         ],
         roles: [
           get(
             data,
-            'general.roles',
+            'roles',
             roles.map((role) => role.id || '')
           ),
         ],
-        category: [get(data, 'general.category', 'secondary')],
-        variant: [get(data, 'general.variant', 'primary')],
+        category: [get(data, 'category', 'secondary')],
+        variant: [get(data, 'variant', 'primary')],
       }),
       action: this.fb.group({
         navigateTo: this.fb.group({
-          enabled: [false],
+          enabled: [!!get(data, 'href', false)],
           previousPage: [false],
           targetUrl: this.fb.group({
-            enabled: [false],
-            href: [''],
-            openInNewTab: [true],
+            enabled: [!!get(data, 'href', false)],
+            href: [get(data, 'href', '')],
+            openInNewTab: [get(data, 'openInNewTab', true)],
           }),
         }),
         editRecord: this.fb.group({
