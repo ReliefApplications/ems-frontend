@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   Application,
+  ApplicationService,
   AuthService,
   UnsubscribeComponent,
   User,
@@ -30,8 +31,13 @@ export class RedirectComponent extends UnsubscribeComponent implements OnInit {
    *
    * @param authService shared authentication service
    * @param router Angular router
+   * @param applicationService Application service
    */
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private applicationService: ApplicationService
+  ) {
     super();
   }
 
@@ -46,13 +52,26 @@ export class RedirectComponent extends UnsubscribeComponent implements OnInit {
             this.router.navigateByUrl(redirectPath);
             localStorage.removeItem('redirectPath');
           } else if (user.favoriteApp) {
-            if (this.applications.find((app) => app.id === user.favoriteApp)) {
-              this.router.navigate([`./${user.favoriteApp}`]);
+            const favoriteApp = this.applications.find(
+              (application) => application.id === user.favoriteApp
+            );
+            if (favoriteApp) {
+              this.router.navigate([
+                `./${this.applicationService.getApplicationPath(favoriteApp)}`,
+              ]);
             } else {
-              this.router.navigate([`./${this.applications[0].id}`]);
+              this.router.navigate([
+                `./${this.applicationService.getApplicationPath(
+                  this.applications[0]
+                )}`,
+              ]);
             }
           } else {
-            this.router.navigate([`./${this.applications[0].id}`]);
+            this.router.navigate([
+              `./${this.applicationService.getApplicationPath(
+                this.applications[0]
+              )}`,
+            ]);
           }
         } else {
           this.applications = [];

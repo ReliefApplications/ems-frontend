@@ -24,6 +24,7 @@ export const EDIT_ROLE = gql`
       description
       application {
         id
+        shortcut
       }
       permissions {
         id

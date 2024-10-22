@@ -93,12 +93,16 @@ export class ApplicationComponent
     this.applicationService.application$
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
+        this.loading = false;
         if (application) {
-          this.loading = false;
           this.title = application.name || '';
           if (!this.application || application.id !== this.application.id) {
             const firstPage = get(application, 'pages', [])[0];
-            if (this.router.url.endsWith(application?.id || '') || !firstPage) {
+            if (
+              this.router.url.endsWith(application?.id || '') ||
+              this.router.url.endsWith(application?.shortcut || '') ||
+              !firstPage
+            ) {
               // If a page is configured
               if (firstPage) {
                 this.router.navigate(
@@ -117,7 +121,10 @@ export class ApplicationComponent
                 });
               }
             } else {
-              if (!this.router.url.includes(application?.id || '')) {
+              if (
+                !this.router.url.includes(application?.id || '') &&
+                !this.router.url.includes(application?.shortcut || '')
+              ) {
                 // If a page is configured
                 if (firstPage) {
                   this.router.navigate(

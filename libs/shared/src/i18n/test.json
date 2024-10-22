@@ -189,6 +189,10 @@
 		"exitFullscreen": "******",
 		"export": "******",
 		"exportObject": "****** {{name}}",
+		"exportType": {
+			"image": "******",
+			"pdf": "******"
+		},
 		"false": "******",
 		"field": {
 			"few": "******",
@@ -307,6 +311,20 @@
 					"title": "******"
 				},
 				"timestamp": "******"
+			},
+			"emailSent": "******",
+			"export": {
+				"download": "******",
+				"format": "******",
+				"image": "{{image}} ******",
+				"includeHeaderFooter": "******",
+				"landscape": "******",
+				"loading": "****** {{type}} ******",
+				"options": "******",
+				"orientation": "******",
+				"paperSize": "******",
+				"pdf": "******",
+				"portrait": "******"
 			},
 			"fetchingGroups": "******",
 			"file": {
@@ -1976,15 +1994,33 @@
 						"zoom": "******"
 					},
 					"renderer": {
+						"classBreak": "******",
 						"default": "******",
-						"defaultLabel": "******",
+						"defaultLabel": {
+							"info": "******",
+							"text": "******"
+						},
+						"errors": {
+							"invalidClassBreakOrder": "******",
+							"repeatedValues": "******",
+							"valuesOrder": "******"
+						},
 						"label": "******",
+						"maxValue": "******",
+						"minValue": "******",
 						"symbol": "******",
 						"uniqueValue": "******",
 						"value": "******"
 					},
 					"tooltip": {
 						"category": "******",
+						"classBreak": {
+							"maxValue": {
+								"first": "******",
+								"general": "******"
+							},
+							"minValue": "******"
+						},
 						"cluster": {
 							"autoSize": "******",
 							"lightMode": "******"
@@ -2332,6 +2368,14 @@
 				"updated": "******"
 			},
 			"setAsFavorite": "******",
+			"shortcut": {
+				"errors": {
+					"isNotUnique": "******",
+					"isNotValid": "******"
+				},
+				"info": "******",
+				"text": "******"
+			},
 			"subscription": {
 				"create": "******"
 			}
@@ -2658,6 +2702,12 @@
 			"update": {
 				"exit": "******",
 				"exitMessage": "******"
+			}
+		},
+		"error": {
+			"unauthorized": {
+				"footer": "******",
+				"title": "******"
 			}
 		},
 		"formBuilder": {

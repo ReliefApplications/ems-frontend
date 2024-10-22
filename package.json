@@ -1,6 +1,6 @@
 {
   "name": "oort-front",
-  "version": "2.17.0-beta.7",
+  "version": "2.17.0-beta.10",
   "license": "MIT",
   "scripts": {
     "check-i18n": "node .scripts/check-i18n",
@@ -89,6 +89,7 @@
     "graphql": "^16",
     "graphql-ws": "^5.14.0",
     "hammerjs": "^2.0.8",
+    "html2canvas": "^1.4.1",
     "jsonpath": "^1.1.1",
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.3",

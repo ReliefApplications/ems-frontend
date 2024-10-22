@@ -3,9 +3,8 @@ const ref = process.env.GITHUB_REF;
 /** Name of the branch */
 const branch = ref.split('/').pop();
 /** If main branch, then use main changelog. Otherwise, use other changelogs. */
-const changelog = ['main', 'next'].includes(branch)
-  ? 'CHANGELOG.md'
-  : `CHANGELOG/CHANGELOG_${branch}.md`;
+const changelog =
+  'main' === branch ? 'CHANGELOG.md' : `CHANGELOG/CHANGELOG_${branch}.md`;
 
 module.exports = {
   branches: [
