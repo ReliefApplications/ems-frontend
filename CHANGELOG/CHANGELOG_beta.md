@@ -1,3 +1,10 @@
+# [2.17.0-beta.10](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.9...v2.17.0-beta.10) (2024-10-22)
+
+
+### Features
+
+* add class break layer ([#2656](https://github.com/ReliefApplications/ems-frontend/issues/2656)) ([e08bc09](https://github.com/ReliefApplications/ems-frontend/commit/e08bc090a0103e3c56591bceb185f4038235e6d7)), closes [AB#104485](https://github.com/AB/issues/104485)
+
 # [2.17.0-beta.9](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.8...v2.17.0-beta.9) (2024-10-18)
 
 
