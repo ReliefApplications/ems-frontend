@@ -22,6 +22,7 @@ import {
 } from '@oort-front/shared';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { R } from '@angular/cdk/keycodes';
 
 /** Component for editing dashboard action buttons */
 @Component({
@@ -69,7 +70,7 @@ export class EditButtonActionsModalComponent
    * @param applicationService shared application service
    */
   constructor(
-    public dialogRef: DialogRef<ButtonActionT[]>,
+    public dialogRef: DialogRef<any[]>,
     @Inject(DIALOG_DATA) private data: { buttonActions: ButtonActionT[] },
     public dialog: Dialog,
     public translateService: TranslateService,
@@ -206,7 +207,24 @@ export class EditButtonActionsModalComponent
 
   /** On click on the save button close the dialog with the form value */
   public onSubmit(): void {
-    this.dialogRef.close(this.buttonActions);
+    // text
+    // href
+    // hasRoleRestriction
+    // roles
+    // variant
+    // category
+    // openInNewTab
+    const buttons = this.buttonActions.map((action) => ({
+      text: action.general.buttonText,
+      href: action.action.navigateTo.targetUrl.href,
+      hasRoleRestriction: action.general.hasRoleRestriction,
+      roles: action.general.roles,
+      variant: action.general.variant,
+      category: action.general.category,
+      openInNewTab: action.action.navigateTo.targetUrl.openInNewTab,
+    }));
+
+    this.dialogRef.close(buttons);
   }
 
   /**
