@@ -28,6 +28,7 @@ import { GeometryType } from '../../../../../ui/map/interfaces/layer-settings.ty
 import { UnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';
 import { createClassBreakInfoForm } from '../../../map-forms';
 import { SimpleRendererComponent } from '../simple-renderer/simple-renderer.component';
+import { isNil } from 'lodash';
 
 /**
  * Updates form validation checking if set values order set is correct
@@ -46,7 +47,7 @@ function isMaxValueOrderValid(): any {
       ) {
         const maxValue = (group.get('classBreakInfos') as FormArray).at(index)
           .value.maxValue;
-        if (group.get('minValue')?.value > maxValue) {
+        if (group.get('minValue')?.value >= maxValue && !isNil(maxValue)) {
           isValid = false;
           break;
         }
@@ -74,24 +75,33 @@ function classBreakValidators(): any {
     let invalidClassBreak = false;
     if (formArray.length >= 2) {
       for (let index = 1; index < formArray.length; index++) {
-        formArray.at(index).setErrors(null);
+        formArray.at(index).setErrors(null); // Reset errors
         const maxValue = formArray.at(index).value.maxValue;
-        const maxValues = formArray.controls
-          .filter((_, i) => i !== index)
-          .map((control) => control.value.maxValue);
-        if (
-          formArray.at(index).get('maxValue')?.dirty &&
-          (maxValue < formArray.at(index - 1).value.maxValue ||
-            maxValues.includes(maxValue)) &&
-          invalidClassBreakIndex === -1
-        ) {
-          if (maxValue < formArray.at(index - 1).value.maxValue) {
+        const previousMaxValue = formArray.at(index - 1).value.maxValue;
+
+        // Handle invalid order
+        if (formArray.at(index).get('maxValue')?.dirty) {
+          // If the first maxValue is blank, assume it's larger than the second
+          const previousIsBlankOrUndefined =
+            isNil(previousMaxValue) && index - 1 === 0;
+
+          if (!previousIsBlankOrUndefined && maxValue >= previousMaxValue) {
             invalidClassBreak = true;
+            invalidClassBreakIndex = index;
           }
+        }
+
+        // Handle repeated values
+        if (!isNil(maxValue)) {
+          const maxValues = formArray.controls
+            .filter((_, i) => i !== index)
+            .map((control) => control.value.maxValue);
+
           if (maxValues.includes(maxValue)) {
             repeatedValues = true;
+            invalidClassBreakIndex =
+              invalidClassBreakIndex === -1 ? index : invalidClassBreakIndex;
           }
-          invalidClassBreakIndex = index;
         }
       }
     }

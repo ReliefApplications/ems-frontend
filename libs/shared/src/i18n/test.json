@@ -2014,6 +2014,13 @@
 					},
 					"tooltip": {
 						"category": "******",
+						"classBreak": {
+							"maxValue": {
+								"first": "******",
+								"general": "******"
+							},
+							"minValue": "******"
+						},
 						"cluster": {
 							"autoSize": "******",
 							"lightMode": "******"

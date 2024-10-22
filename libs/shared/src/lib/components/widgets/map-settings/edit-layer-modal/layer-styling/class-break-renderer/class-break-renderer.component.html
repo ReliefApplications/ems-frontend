@@ -21,6 +21,15 @@
       'components.widget.settings.map.renderer.minValue' | translate
     }}</label>
     <input type="number" formControlName="minValue" />
+    <ui-icon
+      icon="info_outline"
+      class="cursor-help"
+      variant="grey"
+      uiSuffix
+      [uiTooltip]="
+        'components.widget.settings.map.tooltip.classBreak.minValue' | translate
+      "
+    ></ui-icon>
   </div>
   <!-- Class break values -->
   <div>
@@ -97,6 +106,18 @@
                 'components.widget.settings.map.renderer.maxValue' | translate
               }}</label>
               <input type="number" formControlName="maxValue" />
+              <ui-icon
+                icon="info_outline"
+                class="cursor-help"
+                variant="grey"
+                uiSuffix
+                [uiTooltip]="
+                  (index === 0
+                    ? 'components.widget.settings.map.tooltip.classBreak.maxValue.first'
+                    : 'components.widget.settings.map.tooltip.classBreak.maxValue.general'
+                  ) | translate
+                "
+              ></ui-icon>
             </div>
             <shared-simple-renderer
               [geometryType]="geometryType"

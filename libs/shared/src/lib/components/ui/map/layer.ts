@@ -4,7 +4,7 @@ import 'leaflet.heat';
 import 'leaflet.markercluster';
 import './utils/leaflet-heatmap.js';
 import { Feature, Geometry } from 'geojson';
-import { get, isNaN, isNil, max, maxBy, min, set } from 'lodash';
+import { clone, get, isNaN, isNil, max, maxBy, min, set } from 'lodash';
 import {
   LayerType,
   LayerFilter,
@@ -476,7 +476,7 @@ export class Layer implements LayerModel {
       ''
     );
 
-    const uniqueValueDefaultSymbol = get(
+    const defaultSymbol = get(
       this.layerDefinition,
       'drawingInfo.renderer.defaultSymbol',
       symbol
@@ -486,10 +486,10 @@ export class Layer implements LayerModel {
       const minValue = get(
         this.layerDefinition,
         'drawingInfo.renderer.minValue',
-        0
+        undefined
       );
       const fieldValue = get(feature, `properties.${valueField}`, null);
-      let classBreakSymbol = uniqueValueDefaultSymbol;
+      let classBreakSymbol = defaultSymbol;
       /**
        * According to the value field to check, we set on symbol or other
        * The value in the class break should be contained in a range, otherwise if not or nullish, the default symbol is applied
@@ -497,14 +497,19 @@ export class Layer implements LayerModel {
        * - We use generic minValue as the start range in where to be included, if not provided, just use the roof value to calculate the associated symbol
        * - After the first item in the class break, other ranges are calculated with current class break maxValue and the previous class break item maxValue
        */
-      for (let i = 0; i < classBreakInfos.length; i++) {
+      const ascendingMaxBreaks = clone(classBreakInfos).reverse();
+      for (let i = 0; i < ascendingMaxBreaks.length; i++) {
+        const currentSymbol = ascendingMaxBreaks[i].symbol;
+        const from = i > 0 ? ascendingMaxBreaks[i - 1].maxValue : minValue;
+        const to = ascendingMaxBreaks[i].maxValue;
+
+        // Check if fieldValue is within the range [from, to]
         if (
-          classBreakInfos[i].maxValue >= fieldValue &&
-          ((i === 0 && fieldValue > minValue) ||
-            fieldValue > classBreakInfos[i - 1 >= 0 ? i - 1 : 0].maxValue)
+          (isNil(from) || fieldValue > from) &&
+          (isNil(to) || fieldValue <= to)
         ) {
-          classBreakSymbol = classBreakInfos[i].symbol;
-          break;
+          classBreakSymbol = currentSymbol;
+          break; // No need to continue once the correct symbol is found
         }
       }
       return classBreakSymbol;
@@ -518,7 +523,7 @@ export class Layer implements LayerModel {
             const fieldValue = get(feature, `properties.${valueField}`, null);
             const uniqueValueSymbol =
               uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
-              uniqueValueDefaultSymbol;
+              defaultSymbol;
             return new L.Marker(latlng, {
               pane: this.zIndex.toString(),
             }).setIcon(
@@ -561,7 +566,7 @@ export class Layer implements LayerModel {
             const fieldValue = get(feature, `properties.${valueField}`, null);
             const uniqueValueSymbol =
               uniqueValueInfos.find((x) => x.value == fieldValue)?.symbol ||
-              uniqueValueDefaultSymbol;
+              defaultSymbol;
             return {
               fillColor: uniqueValueSymbol.color,
               color: uniqueValueSymbol.outline?.color,
