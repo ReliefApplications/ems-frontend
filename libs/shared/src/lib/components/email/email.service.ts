@@ -961,17 +961,17 @@ export class EmailService {
         const headerPromise =
           this.allLayoutdata?.headerLogo instanceof File
             ? this.convertFileToBase64(this.allLayoutdata?.headerLogo)
-            : Promise.resolve(null);
+            : this.allLayoutdata?.headerLogo;
 
         const footerPromise =
           this.allLayoutdata?.footerLogo instanceof File
             ? this.convertFileToBase64(this.allLayoutdata?.footerLogo)
-            : Promise.resolve(null);
+            : this.allLayoutdata?.footerLogo;
 
         const bannerPromise =
           this.allLayoutdata?.bannerImage instanceof File
             ? this.convertFileToBase64(this.allLayoutdata?.bannerImage)
-            : Promise.resolve(null);
+            : this.allLayoutdata?.bannerImage;
 
         Promise.all([headerPromise, footerPromise, bannerPromise])
           .then(([headerImg, footerImg, bannerLogo]) => {
