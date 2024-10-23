@@ -156,11 +156,7 @@ export class FormBuilderService {
         const text = surveyLocalization.getString(
           'oort:fileLimitations',
           (options.question.survey as SurveyModel).locale
-        )(
-          options.question.getPropertyValue('maxSize'),
-
-          options.question.getPropertyValue('allowedFileNumber')
-        );
+        )(options.question);
         options.question.dragAreaPlaceholder = text;
       }
     });
