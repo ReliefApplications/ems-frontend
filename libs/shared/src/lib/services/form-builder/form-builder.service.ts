@@ -176,7 +176,9 @@ export class FormBuilderService {
     selectedPageIndex: BehaviorSubject<number>,
     temporaryFilesStorage: Record<string, Array<File>>
   ) {
-    survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
+    survey.onClearFiles.add((_, options: any) =>
+      this.onClearFiles(temporaryFilesStorage, options)
+    );
     survey.onUploadFiles.add((_, options: any) =>
       this.onUploadFiles(temporaryFilesStorage, options)
     );
@@ -216,9 +218,11 @@ export class FormBuilderService {
   /**
    * Handles the clearing of files
    *
+   * @param temporaryFilesStorage Temporary files saved while executing the survey
    * @param options Options regarding the files
    */
-  private onClearFiles(options: any): void {
+  private onClearFiles(temporaryFilesStorage: any, options: any): void {
+    temporaryFilesStorage[options.name] = options.value;
     options.callback('success');
   }
 
