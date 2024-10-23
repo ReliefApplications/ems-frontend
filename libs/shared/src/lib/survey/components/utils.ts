@@ -83,7 +83,6 @@ export const buildSearchButton = (
         '../../components/search-resource-grid-modal/search-resource-grid-modal.component'
       );
       ngZone.run(() => {
-        console.log(fieldsSettingsForm);
         const dialogRef = dialog.open(ResourceGridModalComponent, {
           data: {
             multiselect,
