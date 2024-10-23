@@ -176,6 +176,7 @@ export class FormBuilderService {
     selectedPageIndex: BehaviorSubject<number>,
     temporaryFilesStorage: Record<string, Array<File>>
   ) {
+    this.updateTemporaryFileStorage(survey, temporaryFilesStorage);
     survey.onClearFiles.add((_, options: any) =>
       this.onClearFiles(temporaryFilesStorage, options)
     );
@@ -188,6 +189,24 @@ export class FormBuilderService {
     survey.onCurrentPageChanged.add((survey: SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
       selectedPageIndex.next(survey.currentPageNo);
+    });
+  }
+
+  /**
+   * Set temporary file storage
+   *
+   * @param survey Survey where to add the callbacks
+   * @param temporaryFilesStorage Temporary files saved while executing the survey
+   */
+  private updateTemporaryFileStorage(
+    survey: SurveyModel,
+    temporaryFilesStorage: Record<string, Array<File>>
+  ) {
+    const fileQuestions =
+      survey.getAllQuestions()?.filter((q) => q instanceof QuestionFileModel) ??
+      [];
+    fileQuestions.forEach((fq) => {
+      temporaryFilesStorage[fq.name] = fq.value;
     });
   }
 
