@@ -28,7 +28,7 @@ export const GET_REFERENCE_DATAS = gql`
 
 /** Graphql query to get reference data */
 export const GET_SHORT_REFERENCE_DATA_BY_ID = gql`
-  query GetShortReferenceDataById($id: ID!) {
+  query ReferenceDataDropDown_GetShortReferenceDataById($id: ID!) {
     referenceData(id: $id) {
       id
       name

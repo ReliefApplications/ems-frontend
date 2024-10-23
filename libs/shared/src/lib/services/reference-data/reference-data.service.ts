@@ -207,7 +207,7 @@ export class ReferenceDataService {
     const isCached =
       cacheTimestamp &&
       cacheTimestamp >= modifiedAt &&
-      (await localForage.keys()).includes(cacheKey);
+      (await localForage.getItem(cacheKey));
 
     // If it isn't cached, fetch items and cache them
     if (!isCached) {
