@@ -1,5 +1,11 @@
+import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
+import { isNil } from 'lodash';
+import get from 'lodash/get';
+import { BehaviorSubject } from 'rxjs';
 import {
   Model,
   Question,
@@ -8,21 +14,16 @@ import {
   settings,
   surveyLocalization,
 } from 'survey-core';
-import { ReferenceDataService } from '../reference-data/reference-data.service';
-import { renderGlobalProperties } from '../../survey/render-global-properties';
-import { Apollo } from 'apollo-angular';
-import get from 'lodash/get';
-import { EDIT_RECORD } from './graphql/mutations';
+import { Metadata } from '../../models/metadata.model';
 import {
   EditRecordMutationResponse,
   Record as RecordModel,
 } from '../../models/record.model';
-import { Metadata } from '../../models/metadata.model';
-import { RestService } from '../rest/rest.service';
-import { BehaviorSubject } from 'rxjs';
-import { SnackbarService } from '@oort-front/ui';
+import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { FormHelpersService } from '../form-helper/form-helper.service';
-import { HttpClient } from '@angular/common/http';
+import { ReferenceDataService } from '../reference-data/reference-data.service';
+import { RestService } from '../rest/rest.service';
+import { EDIT_RECORD } from './graphql/mutations';
 
 /**
  * Shared form builder service.
@@ -259,8 +260,10 @@ export class FormBuilderService {
     if (!isUploadValid) {
       return;
     }
-    if (temporaryFilesStorage[options.name] !== undefined) {
-      temporaryFilesStorage[options.name].concat(options.files);
+    if (!isNil(temporaryFilesStorage[options.name])) {
+      temporaryFilesStorage[options.name] = temporaryFilesStorage[
+        options.name
+      ].concat(options.files);
     } else {
       temporaryFilesStorage[options.name] = options.files;
     }

@@ -158,7 +158,18 @@ export class DocumentManagementService {
       'common.notifications.file.upload.processing'
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
-    const fileStream = await this.transformFileToValidInput(file);
+    let fileStream;
+    try {
+      fileStream = await this.transformFileToValidInput(file);
+    } catch (error) {
+      snackBarSpinner.instance.message = this.translate.instant(
+        'common.notifications.file.upload.error'
+      );
+      snackBarSpinner.instance.loading = false;
+      snackBarSpinner.instance.error = true;
+      snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+      return null;
+    }
     const body = {
       AssignmentFunction: [2],
       Country: [181, 27, 44, 76, 111, 143, 148, 159, 150],
@@ -212,9 +223,12 @@ export class DocumentManagementService {
    */
   private transformFileToValidInput(file: any) {
     const fileReader = new FileReader();
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       (fileReader as any).onload = () => {
         resolve(fileReader.result?.toString().split(',')[1]);
+      };
+      (fileReader as any).onerror = (error: any) => {
+        reject(error);
       };
       fileReader.readAsDataURL(file);
     });
