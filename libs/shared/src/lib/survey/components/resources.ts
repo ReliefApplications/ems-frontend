@@ -539,7 +539,10 @@ export const init = (
       if (question.resource) {
         searchBtn.style.display = 'block';
         if (parentElement) {
-          gridComponentRef = buildGridDisplay(question, parentElement);
+          if (question.displayAsGrid) {
+            gridComponentRef = buildGridDisplay(question, parentElement);
+          }
+
           if ((question.survey as SurveyModel).mode !== 'display') {
             searchBtn.style.display = 'block';
             const addBtn = buildAddButton(
