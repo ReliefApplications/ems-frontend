@@ -35,28 +35,37 @@ export const init = (
 
   // declare the serializer
   const serializer: JsonMetadata = Serializer;
-
-  CS_DOCUMENTS_PROPERTIES.forEach((property, index) => {
+  let index = 0;
+  CS_DOCUMENTS_PROPERTIES.forEach((property) => {
+    index = index + 1;
     serializer.addProperty('file', {
-      category: 'CS Document API',
+      category: 'Document Properties',
       type: CustomPropertyGridComponentTypes.csDocsPropertiesDropdown,
       name: property.value,
       displayName: property.text,
       default: property.value,
       required: true,
-      visibleIndex: index + 1,
+      visibleIndex: index,
     });
-
+    index = index + 1;
     serializer.addProperty('file', {
-      category: 'CS Document API',
+      category: 'Document Properties',
+      type: 'expression',
+      name: `valueExpression${property.value}`,
+      displayName: 'Default value expression for ' + property.text,
+      visibleIndex: index,
+    });
+    serializer.addProperty('file', {
+      category: 'Document Properties',
       name: property.bodyKey,
       visible: false,
       required: true,
+      defaultValueExpression: `{valueExpression${property.value}}`,
     });
   });
 
   serializer.addProperty('file', {
-    category: 'CS Document API',
+    category: 'Document Properties',
     name: `querySort`,
     visible: true,
     default: 'ASC',
