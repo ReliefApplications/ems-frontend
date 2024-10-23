@@ -1994,15 +1994,33 @@
 						"zoom": "******"
 					},
 					"renderer": {
+						"classBreak": "******",
 						"default": "******",
-						"defaultLabel": "******",
+						"defaultLabel": {
+							"info": "******",
+							"text": "******"
+						},
+						"errors": {
+							"invalidClassBreakOrder": "******",
+							"repeatedValues": "******",
+							"valuesOrder": "******"
+						},
 						"label": "******",
+						"maxValue": "******",
+						"minValue": "******",
 						"symbol": "******",
 						"uniqueValue": "******",
 						"value": "******"
 					},
 					"tooltip": {
 						"category": "******",
+						"classBreak": {
+							"maxValue": {
+								"first": "******",
+								"general": "******"
+							},
+							"minValue": "******"
+						},
 						"cluster": {
 							"autoSize": "******",
 							"lightMode": "******"
