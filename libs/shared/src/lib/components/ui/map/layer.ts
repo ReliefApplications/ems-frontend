@@ -4,7 +4,7 @@ import 'leaflet.heat';
 import 'leaflet.markercluster';
 import './utils/leaflet-heatmap.js';
 import { Feature, Geometry } from 'geojson';
-import { get, isNaN, isNil, max, maxBy, min, set } from 'lodash';
+import { clone, get, isNaN, isNil, max, maxBy, min, set } from 'lodash';
 import {
   LayerType,
   LayerFilter,
@@ -464,17 +464,56 @@ export class Layer implements LayerModel {
       []
     );
 
+    const classBreakInfos = get(
+      this.layerDefinition,
+      'drawingInfo.renderer.classBreakInfos',
+      []
+    );
+
     const valueField = get(
       this.layerDefinition,
       'drawingInfo.renderer.field1',
       ''
     );
 
-    const uniqueValueDefaultSymbol = get(
+    const defaultSymbol = get(
       this.layerDefinition,
       'drawingInfo.renderer.defaultSymbol',
       symbol
     );
+
+    const getClassBreakSymbol = (feature: Feature<any, any>) => {
+      const minValue = get(
+        this.layerDefinition,
+        'drawingInfo.renderer.minValue',
+        undefined
+      );
+      const fieldValue = get(feature, `properties.${valueField}`, null);
+      let classBreakSymbol = defaultSymbol;
+      /**
+       * According to the value field to check, we set on symbol or other
+       * The value in the class break should be contained in a range, otherwise if not or nullish, the default symbol is applied
+       *
+       * - We use generic minValue as the start range in where to be included, if not provided, just use the roof value to calculate the associated symbol
+       * - After the first item in the class break, other ranges are calculated with current class break maxValue and the previous class break item maxValue
+       */
+      const ascendingMaxBreaks = clone(classBreakInfos).reverse();
+      for (let i = 0; i < ascendingMaxBreaks.length; i++) {
+        const currentSymbol = ascendingMaxBreaks[i].symbol;
+        const from = i > 0 ? ascendingMaxBreaks[i - 1].maxValue : minValue;
+        const to = ascendingMaxBreaks[i].maxValue;
+
+        // Check if fieldValue is within the range [from, to]
+        if (
+          (isNil(from) || fieldValue > from) &&
+          (isNil(to) || fieldValue <= to)
+        ) {
+          classBreakSymbol = currentSymbol;
+          break; // No need to continue once the correct symbol is found
+        }
+      }
+      return classBreakSymbol;
+    };
 
     // options used for parsing geojson to leaflet layer
     const geoJSONopts: L.GeoJSONOptions<any> = {
@@ -484,7 +523,7 @@ export class Layer implements LayerModel {
             const fieldValue = get(feature, `properties.${valueField}`, null);
             const uniqueValueSymbol =
               uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
-              uniqueValueDefaultSymbol;
+              defaultSymbol;
             return new L.Marker(latlng, {
               pane: this.zIndex.toString(),
             }).setIcon(
@@ -492,6 +531,18 @@ export class Layer implements LayerModel {
                 icon: uniqueValueSymbol.style,
                 color: uniqueValueSymbol.color,
                 size: uniqueValueSymbol.size,
+                opacity: this.opacity,
+              })
+            );
+          } else if (rendererType === 'classBreak') {
+            const classBreakSymbol = getClassBreakSymbol(feature);
+            return new L.Marker(latlng, {
+              pane: this.zIndex.toString(),
+            }).setIcon(
+              createCustomDivIcon({
+                icon: classBreakSymbol.style,
+                color: classBreakSymbol.color,
+                size: classBreakSymbol.size,
                 opacity: this.opacity,
               })
             );
@@ -515,11 +566,22 @@ export class Layer implements LayerModel {
             const fieldValue = get(feature, `properties.${valueField}`, null);
             const uniqueValueSymbol =
               uniqueValueInfos.find((x) => x.value == fieldValue)?.symbol ||
-              uniqueValueDefaultSymbol;
+              defaultSymbol;
             return {
               fillColor: uniqueValueSymbol.color,
               color: uniqueValueSymbol.outline?.color,
               weight: uniqueValueSymbol.outline?.width,
+              fillOpacity: this.opacity,
+              opacity: this.opacity,
+            };
+          } else if (rendererType === 'classBreak') {
+            const classBreakSymbol = getClassBreakSymbol(
+              feature as Feature<any, any>
+            );
+            return {
+              fillColor: classBreakSymbol.color,
+              color: classBreakSymbol.outline?.color,
+              weight: classBreakSymbol.outline?.width,
               fillOpacity: this.opacity,
               opacity: this.opacity,
             };
@@ -1048,11 +1110,14 @@ export class Layer implements LayerModel {
   get legend() {
     let html = '';
     const geometryType = get(this.datasource, 'type') || 'Point';
+    const rendererType = get(
+      this.layerDefinition,
+      'drawingInfo.renderer.type',
+      'simple'
+    );
     switch (this.type) {
       case 'FeatureLayer': {
-        switch (
-          get(this.layerDefinition, 'drawingInfo.renderer.type', 'simple')
-        ) {
+        switch (rendererType) {
           case 'heatmap':
             const gradient = get(
               this.layerDefinition,
@@ -1074,14 +1139,15 @@ export class Layer implements LayerModel {
             container.innerHTML = linearGradient.outerHTML + legend.outerHTML;
             html = container.outerHTML;
             break;
-          case 'uniqueValue': {
+          case 'uniqueValue':
+          case 'classBreak': {
             const defaultSymbol: LayerSymbol | undefined = get(
               this.layerDefinition,
               'drawingInfo.renderer.defaultSymbol'
             );
             for (const info of get(
               this.layerDefinition,
-              'drawingInfo.renderer.uniqueValueInfos',
+              `drawingInfo.renderer.${rendererType}Infos` as any,
               []
             )) {
               const symbol: LayerSymbol = info.symbol;

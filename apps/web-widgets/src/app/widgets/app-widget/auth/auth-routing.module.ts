@@ -23,7 +23,7 @@ export const routes: Routes = [
       {
         path: 'error',
         loadChildren: () =>
-          import('./pages/error/error.module').then((m) => m.ErrorModule),
+          import('@oort-front/shared').then((m) => m.ErrorModule),
       },
     ],
   },

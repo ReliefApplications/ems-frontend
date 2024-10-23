@@ -4,7 +4,6 @@ import {
   ElementRef,
   EventEmitter,
   Inject,
-  OnDestroy,
   OnInit,
   Output,
   Renderer2,
@@ -46,7 +45,7 @@ import { cloneDeep } from 'lodash';
 })
 export class DashboardComponent
   extends SharedDashboardComponent
-  implements OnInit, OnDestroy
+  implements OnInit
 {
   /** Change step event ( in workflow ) */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
@@ -56,8 +55,6 @@ export class DashboardComponent
   public id = '';
   /** Context id */
   public contextId?: string;
-  /** Application id */
-  public applicationId?: string;
   /** Is dashboard loading */
   public loading = true;
   /** Current dashboard */
@@ -98,7 +95,7 @@ export class DashboardComponent
     private translate: TranslateService,
     private confirmService: ConfirmService,
     private renderer: Renderer2,
-    private elementRef: ElementRef,
+    public elementRef: ElementRef,
     @Inject(DOCUMENT) private document: Document,
     private contextService: ContextService,
     private dashboardAutomationService: DashboardAutomationService
@@ -181,6 +178,7 @@ export class DashboardComponent
     // Doing this to be able to use custom styles on specific dashboards
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.loading = true;
+
     return firstValueFrom(
       this.apollo.query<DashboardQueryResponse>({
         query: GET_DASHBOARD_BY_ID,

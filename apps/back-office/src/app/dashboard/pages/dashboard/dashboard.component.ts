@@ -181,7 +181,7 @@ export class DashboardComponent
     private confirmService: ConfirmService,
     private contextService: ContextService,
     private renderer: Renderer2,
-    private elementRef: ElementRef,
+    public elementRef: ElementRef,
     private layoutService: UILayoutService,
     @Inject(DOCUMENT) private document: Document,
     private clipboard: Clipboard,
@@ -287,6 +287,7 @@ export class DashboardComponent
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.formActive = false;
     this.loading = true;
+
     return firstValueFrom(
       this.apollo.query<
         DashboardQueryResponse | AddDashboardTemplateMutationResponse
