@@ -34,7 +34,7 @@ export const CS_DOCUMENTS_PROPERTIES = [
   },
   // { text: 'IMS Role', value: 'documentroles', bodyKey: '' },
   { text: 'Language', value: 'languages', bodyKey: 'Language' },
-  // { text: 'Occurrence', value: 'occurrences', bodyKey: '' },
+  { text: 'Occurrence', value: 'occurrences', bodyKey: '' },
   {
     text: 'Occurrence Type',
     value: 'occurrencetypes',
@@ -181,20 +181,16 @@ export class DocumentManagementService {
    *
    * @param file file to upload
    * @param question related question from where to extract body params on cs upload
-   * @param driveId Drive where to upload current file
    * @returns http upload request
    */
-  async uploadFile(
-    file: any,
-    question: Question,
-    driveId: string = '866da8cf-3d36-43e5-b54a-1d5b1ec2226d' // todo: must be made dynamic
-  ): Promise<any> {
+  async uploadFile(file: any, question: Question): Promise<any> {
     const { snackBarRef, headers } = this.triggerFileDownloadMessage(
       'common.notifications.file.upload.processing'
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
     const fileStream = await this.transformFileToValidInput(file);
     const bodyFilter = Object.create({});
+    const driveId = question.getPropertyValue('driveoccurrencesvalue');
     CS_DOCUMENTS_PROPERTIES.forEach((dp) => {
       const value = question.getPropertyValue(dp.bodyKey);
       if (!!value && value.length) {

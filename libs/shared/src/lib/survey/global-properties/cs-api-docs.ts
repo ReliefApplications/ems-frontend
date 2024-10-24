@@ -38,30 +38,62 @@ export const init = (
   let index = 0;
   CS_DOCUMENTS_PROPERTIES.forEach((property) => {
     index = index + 1;
-    serializer.addProperty('file', {
-      category: 'Document Properties',
-      type: CustomPropertyGridComponentTypes.csDocsPropertiesDropdown,
-      name: property.value,
-      displayName: property.text,
-      default: property.value,
-      required: true,
-      visibleIndex: index,
-    });
-    index = index + 1;
-    serializer.addProperty('file', {
-      category: 'Document Properties',
-      type: 'expression',
-      name: `valueExpression${property.value}`,
-      displayName: 'Default value expression for ' + property.text,
-      visibleIndex: index,
-    });
-    serializer.addProperty('file', {
-      category: 'Document Properties',
-      name: property.bodyKey,
-      visible: false,
-      required: true,
-      defaultValueExpression: `{valueExpression${property.value}}`,
-    });
+    // Related Occurrence category (for fetching correct drive id to upload files)
+    if (
+      property.value === 'occurrencetypes' ||
+      property.value === 'occurrences'
+    ) {
+      serializer.addProperty('file', {
+        category: 'Related Occurrence',
+        type: CustomPropertyGridComponentTypes.csDocsPropertiesDropdown,
+        name: `drive${property.value}`,
+        displayName: property.text,
+        default: property.value,
+        required: true,
+        ...(property.value === 'occurrences' && {
+          visibleIf: (obj: any) => {
+            if (!obj || !obj[`driveoccurrencetypesvalue`]) {
+              return false;
+            } else {
+              return true;
+            }
+          },
+        }),
+        visibleIndex: property.value === 'occurrencetypes' ? 0 : 1,
+      });
+      serializer.addProperty('file', {
+        category: 'Related Occurrence',
+        name: `drive${property.value}value`,
+        required: true,
+        visible: false,
+      });
+    }
+    if (property.bodyKey) {
+      serializer.addProperty('file', {
+        category: 'Document Properties',
+        type: CustomPropertyGridComponentTypes.csDocsPropertiesDropdown,
+        name: property.value,
+        displayName: property.text,
+        default: property.value,
+        required: true,
+        visibleIndex: index,
+      });
+      index = index + 1;
+      serializer.addProperty('file', {
+        category: 'Document Properties',
+        type: 'expression',
+        name: `valueExpression${property.value}`,
+        displayName: 'Default value expression for ' + property.text,
+        visibleIndex: index,
+      });
+      serializer.addProperty('file', {
+        category: 'Document Properties',
+        name: property.bodyKey,
+        visible: false,
+        required: true,
+        defaultValueExpression: `{valueExpression${property.value}}`,
+      });
+    }
   });
 
   serializer.addProperty('file', {

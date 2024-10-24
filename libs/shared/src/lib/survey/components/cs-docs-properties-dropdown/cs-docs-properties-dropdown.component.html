@@ -2,13 +2,13 @@
   <ui-select-menu
     [formControl]="propertyItemsControl"
     [filterable]="true"
-    [multiselect]="true"
+    [multiselect]="!isDriveModel"
   >
     <ui-select-option
       *ngFor="let value of selectedPropertyItems"
-      [value]="value.id"
+      [value]="value.driveid ?? value.id"
     >
-      {{ value.name }}
+      {{ value.occurrencename ?? value.name }}
     </ui-select-option>
   </ui-select-menu>
   <ng-container *ngIf="loading; else clearTmpl">

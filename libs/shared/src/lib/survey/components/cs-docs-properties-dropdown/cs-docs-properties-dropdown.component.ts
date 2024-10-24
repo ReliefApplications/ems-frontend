@@ -10,6 +10,7 @@ import { FormControl, UntypedFormControl } from '@angular/forms';
 import { gql } from '@apollo/client';
 import { SelectMenuComponent } from '@oort-front/ui';
 import { Apollo, ApolloBase } from 'apollo-angular';
+import { isNil } from 'lodash';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { QuestionAngular } from 'survey-angular-ui';
@@ -29,6 +30,12 @@ interface PropertyQueryResponse {
 
 /**
  * This component is used to create a dropdown where the user can select a properties from a given CS Documentation API Property.
+ * It can:
+ * - Handle properties attache as body params in the CS Doc upload file
+ * - Handle the driveId value used to build the path onto upload the files with the previously mentioned configurations
+ *
+ * - If is handling drive id set, then the dropdown is single select and has to work with occurrence types and occurrences
+ *    - The first one filters the occurrences displayed that would contain the needed driveId used to build the upload path
  */
 @Component({
   selector: 'shared-cs-docs-properties-dropdown',
@@ -47,7 +54,9 @@ export class CsDocsPropertiesDropdownComponent
   /** Selected property */
   public selectedPropertyItems: {
     id: string;
-    name: string;
+    name?: string;
+    occurrencename?: string;
+    driveid?: string;
     _typename: string;
   }[] = [];
 
@@ -64,6 +73,58 @@ export class CsDocsPropertiesDropdownComponent
    */
   @ViewChild(SelectMenuComponent, { static: true })
   selectMenu!: SelectMenuComponent;
+
+  /**
+   * GraphQL query to fetch items for a given document property(tag)
+   * - Result would be sort according to the query sort configuration of the question
+   *
+   * @returns gql for tag properties list
+   */
+  private tagQuery = () => gql`
+  {
+    ${this.model?.value}(sortBy: { field: "name", direction: "${this.model?.obj?.querySort}" }) {
+      id
+      name
+      __typename
+    }
+  }
+`;
+
+  /**
+   * GraphQL query to fetch occurrences for a given occurrence type
+   *
+   * @returns gql for occurrences list
+   */
+  private occurrenceQuery = () => gql`
+  {
+    ${this.model?.value}(occurrencetype: ${Number(
+    this.model?.obj['driveoccurrencetypesvalue']
+  )}, sortBy: { field: "occurrencename", direction: "ASC" }) {
+      id
+      occurrencename
+      driveid
+      __typename
+    }
+  }
+`;
+
+  /**
+   * If loaded component instance is linked to related occurrences category
+   *
+   * @returns boolean flag indicating previously mentioned check
+   */
+  private get isOccurrenceRelated() {
+    return !isNil(this.model?.value) && this.model.value === 'occurrences';
+  }
+
+  /**
+   * If loaded component instance is linked to get drive id
+   *
+   * @returns boolean flag indicating previously mentioned check
+   */
+  public get isDriveModel() {
+    return /drive/gi.test(this.model?.name);
+  }
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -84,14 +145,23 @@ export class CsDocsPropertiesDropdownComponent
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.bodyKey = CS_DOCUMENTS_PROPERTIES.find(
-      (dp) => dp.value === this.model.value
-    )?.bodyKey as string;
-    /** Upload item list on query sort change */
-    this.model.obj.registerFunctionOnPropertyValueChanged(
-      'querySort',
-      this.loadPropertyItems.bind(this)
-    );
+    this.bodyKey = this.isDriveModel
+      ? `${this.model.name}value`
+      : (CS_DOCUMENTS_PROPERTIES.find((dp) => dp.value === this.model.value)
+          ?.bodyKey as string);
+    if (!this.isOccurrenceRelated) {
+      /** Upload item list on query sort change */
+      this.model.obj.registerFunctionOnPropertyValueChanged(
+        'querySort',
+        this.loadPropertyItems.bind(this)
+      );
+    } else {
+      /** Upload item list on query sort change */
+      this.model.obj.registerFunctionOnPropertyValueChanged(
+        'driveoccurrencetypesvalue',
+        this.loadPropertyItems.bind(this)
+      );
+    }
     // Listen to select menu UI event in order to update UI
     this.selectMenu.triggerUIChange$
       .pipe(takeUntil(this.destroy$))
@@ -108,7 +178,21 @@ export class CsDocsPropertiesDropdownComponent
           this.changeDetectorRef.detectChanges();
         },
       });
-    this.loadPropertyItems();
+    /**
+     * If is not a drive model
+     * Or is a drive model
+     * - and is not the occurrences list
+     * - or is the occurrences list but an occurrence type value is already set
+     */
+    if (
+      !this.isDriveModel ||
+      (this.isDriveModel &&
+        (this.model.name !== 'driveoccurrences' ||
+          (this.model.name === 'driveoccurrences' &&
+            !isNil(this.model?.obj['driveoccurrencetypes']))))
+    ) {
+      this.loadPropertyItems();
+    }
   }
 
   /**
@@ -120,15 +204,9 @@ export class CsDocsPropertiesDropdownComponent
       this.changeDetectorRef.detectChanges();
       this.csDocsApolloClient
         .query<PropertyQueryResponse>({
-          query: gql`
-            {
-              ${this.model.value}(sortBy: { field: "name", direction: "${this.model.obj.querySort}" }) {
-                id
-                name
-                __typename
-              }
-            }
-          `,
+          query: this.isOccurrenceRelated
+            ? this.occurrenceQuery()
+            : this.tagQuery(),
         })
         .subscribe({
           next: ({ data }) => {
@@ -160,7 +238,13 @@ export class CsDocsPropertiesDropdownComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    this.model.obj.unRegisterFunctionOnPropertyValueChanged('querySort');
+    if (!this.isOccurrenceRelated) {
+      this.model.obj.unRegisterFunctionOnPropertyValueChanged('querySort');
+    } else {
+      this.model.obj.unRegisterFunctionOnPropertyValueChanged(
+        'driveoccurrencetypes'
+      );
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }
