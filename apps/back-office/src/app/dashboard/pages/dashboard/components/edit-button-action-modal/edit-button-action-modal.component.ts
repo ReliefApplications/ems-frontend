@@ -135,6 +135,42 @@ export class EditButtonActionModalComponent implements OnInit {
 
   /** On click on the save button close the dialog with the form value */
   public onSubmit(): void {
+    // Recursive function to update the form group based on the enabled field
+    const updateFormGroup = (formGroup: FormGroup) => {
+      for (const key in formGroup.controls) {
+        const control = formGroup.get(key);
+
+        if (control instanceof FormGroup) {
+          const enabledControl = control.get('enabled');
+          if (enabledControl && !enabledControl.value) {
+            // Reset all first-level children except 'enabled'
+            for (const subKey in control.controls) {
+              if (subKey !== 'enabled') {
+                const childControl = control.get(subKey);
+                // Reset the value based on the type
+                if (typeof childControl?.value === 'boolean') {
+                  childControl.setValue(false);
+                } else if (typeof childControl?.value === 'string') {
+                  childControl?.setValue('');
+                } else if (Array.isArray(childControl?.value)) {
+                  childControl?.setValue([]);
+                } else if (typeof childControl?.value === 'object') {
+                  childControl?.setValue({});
+                } else {
+                  childControl?.setValue(null);
+                }
+              }
+            }
+          } else {
+            updateFormGroup(control); // Continue recursion if 'enabled' is true
+          }
+        }
+      }
+    };
+
+    // Apply the update to the action form group
+    updateFormGroup(this.form.get('action') as FormGroup);
+
     const mappedData: ButtonActionT = {
       text: this.form.get('general.buttonText')?.value,
       hasRoleRestriction: this.form.get('general.hasRoleRestriction')?.value,
