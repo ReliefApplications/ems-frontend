@@ -40,48 +40,46 @@ export const init = (
   CS_DOCUMENTS_PROPERTIES.forEach((property) => {
     index = index + 1;
     // Related Occurrence category (for fetching correct drive id to upload files)
-    if (
-      property.value === 'occurrencetypes' ||
-      property.value === 'occurrences'
-    ) {
+    if (property.value === 'occurrences') {
       serializer.addProperty('file', {
         category: 'Related Occurrence',
         type: CustomPropertyGridComponentTypes.csDocsPropertiesDropdown,
-        name: `drive${property.value}`,
+        name: property.value,
         displayName: property.text,
         default: property.value,
         required: true,
-        ...(property.value === 'occurrences' && {
-          visibleIf: (obj: any) => {
-            if (
-              isNil(obj) ||
-              isNil(obj[`driveoccurrencetypesvalue`]) ||
-              obj[`driveoccurrencetypesvalue`] === ''
-            ) {
-              return false;
-            } else {
-              return true;
-            }
-          },
-        }),
-        visibleIndex: property.value === 'occurrencetypes' ? 0 : 1,
+        visibleIf: (obj: any) => {
+          if (
+            isNil(obj) ||
+            isNil(obj['OccurrenceType']) ||
+            obj['OccurrenceType'] === ''
+          ) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        visibleIndex: 1,
       });
       serializer.addProperty('file', {
         category: 'Related Occurrence',
-        name: `drive${property.value}value`,
+        name: 'Occurrence',
         required: true,
         visible: false,
       });
     }
     if (property.bodyKey) {
       serializer.addProperty('file', {
-        category: 'Document Properties',
+        category:
+          property.value === 'occurrencetypes'
+            ? 'Related Occurrence'
+            : 'Document Properties',
         type: CustomPropertyGridComponentTypes.csDocsPropertiesDropdown,
         name: property.value,
         displayName: property.text,
         default: property.value,
         required: true,
-        visibleIndex: index,
+        visibleIndex: property.value === 'occurrencetypes' ? 0 : index,
       });
       index = index + 1;
       serializer.addProperty('file', {

@@ -2,7 +2,7 @@
   <ui-select-menu
     [formControl]="propertyItemsControl"
     [filterable]="true"
-    [multiselect]="!isDriveModel"
+    [multiselect]="!isOccurrenceRelated && bodyKey !== 'OccurrenceType'"
   >
     <ui-select-option
       *ngFor="let value of selectedPropertyItems"

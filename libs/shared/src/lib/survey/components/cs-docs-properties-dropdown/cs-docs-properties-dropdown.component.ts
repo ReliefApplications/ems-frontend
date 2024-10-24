@@ -66,7 +66,7 @@ export class CsDocsPropertiesDropdownComponent
   /** Destroy subject */
   private destroy$: Subject<void> = new Subject<void>();
   /** Current body key to save the value */
-  private bodyKey!: string;
+  public bodyKey!: string;
 
   /**
    * Select menu component
@@ -98,7 +98,7 @@ export class CsDocsPropertiesDropdownComponent
   private occurrenceQuery = () => gql`
   {
     ${this.model?.value}(occurrencetype: ${Number(
-    this.model?.obj['driveoccurrencetypesvalue']
+    this.model?.obj['OccurrenceType']
   )}, sortBy: { field: "occurrencename", direction: "ASC" }) {
       id
       occurrencename
@@ -113,17 +113,8 @@ export class CsDocsPropertiesDropdownComponent
    *
    * @returns boolean flag indicating previously mentioned check
    */
-  private get isOccurrenceRelated() {
+  public get isOccurrenceRelated() {
     return !isNil(this.model?.value) && this.model.value === 'occurrences';
-  }
-
-  /**
-   * If loaded component instance is linked to get drive id
-   *
-   * @returns boolean flag indicating previously mentioned check
-   */
-  public get isDriveModel() {
-    return /drive/gi.test(this.model?.name);
   }
 
   /**
@@ -145,10 +136,9 @@ export class CsDocsPropertiesDropdownComponent
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.bodyKey = this.isDriveModel
-      ? `${this.model.name}value`
-      : (CS_DOCUMENTS_PROPERTIES.find((dp) => dp.value === this.model.value)
-          ?.bodyKey as string);
+    this.bodyKey =
+      (CS_DOCUMENTS_PROPERTIES.find((dp) => dp.value === this.model.value)
+        ?.bodyKey as string) || 'Occurrence';
     if (!this.isOccurrenceRelated) {
       /** Upload item list on query sort change */
       this.model.obj.registerFunctionOnPropertyValueChanged(
@@ -156,9 +146,9 @@ export class CsDocsPropertiesDropdownComponent
         this.loadPropertyItems.bind(this)
       );
     } else {
-      /** Upload item list on query sort change */
+      /** Upload item list on occurrence type selection if current model is occurrence related */
       this.model.obj.registerFunctionOnPropertyValueChanged(
-        'driveoccurrencetypesvalue',
+        'OccurrenceType',
         this.loadPropertyItems.bind(this)
       );
     }
@@ -185,11 +175,10 @@ export class CsDocsPropertiesDropdownComponent
      * - or is the occurrences list but an occurrence type value is already set
      */
     if (
-      !this.isDriveModel ||
-      (this.isDriveModel &&
-        (this.model.name !== 'driveoccurrences' ||
-          (this.model.name === 'driveoccurrences' &&
-            !isNil(this.model?.obj['driveoccurrencetypes']))))
+      !this.isOccurrenceRelated ||
+      (this.isOccurrenceRelated &&
+        !isNil(this.model?.obj['OccurrenceType']) &&
+        this.model?.obj['OccurrenceType'] !== '')
     ) {
       this.loadPropertyItems();
     }
@@ -202,8 +191,8 @@ export class CsDocsPropertiesDropdownComponent
     if (
       (this.model.value && !this.isOccurrenceRelated) ||
       (this.isOccurrenceRelated &&
-        this.model?.obj['driveoccurrencetypesvalue'] !== '' &&
-        !isNil(this.model?.obj['driveoccurrencetypesvalue']))
+        !isNil(this.model?.obj['OccurrenceType']) &&
+        this.model?.obj['OccurrenceType'] !== '')
     ) {
       this.loading = true;
       this.changeDetectorRef.detectChanges();
@@ -229,6 +218,8 @@ export class CsDocsPropertiesDropdownComponent
             this.changeDetectorRef.detectChanges();
           },
         });
+    } else {
+      this.model.obj[this.bodyKey] = null;
     }
   }
 
@@ -246,9 +237,7 @@ export class CsDocsPropertiesDropdownComponent
     if (!this.isOccurrenceRelated) {
       this.model.obj.unRegisterFunctionOnPropertyValueChanged('querySort');
     } else {
-      this.model.obj.unRegisterFunctionOnPropertyValueChanged(
-        'driveoccurrencetypes'
-      );
+      this.model.obj.unRegisterFunctionOnPropertyValueChanged('OccurrenceType');
     }
     this.destroy$.next();
     this.destroy$.complete();

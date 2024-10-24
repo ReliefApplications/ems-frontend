@@ -3,9 +3,10 @@ import { HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { isNil } from 'lodash';
+import { Question } from 'survey-core';
 import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { RestService } from '../rest/rest.service';
-import { Question } from 'survey-core';
 
 /**
  * Available properties from the CS API Documentation
@@ -34,7 +35,7 @@ export const CS_DOCUMENTS_PROPERTIES = [
   },
   // { text: 'IMS Role', value: 'documentroles', bodyKey: '' },
   { text: 'Language', value: 'languages', bodyKey: 'Language' },
-  { text: 'Occurrence', value: 'occurrences', bodyKey: '' },
+  { text: 'Occurrence', value: 'occurrences', bodyKey: null },
   {
     text: 'Occurrence Type',
     value: 'occurrencetypes',
@@ -190,15 +191,25 @@ export class DocumentManagementService {
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
     let fileStream;
     const bodyFilter = Object.create({});
-    const driveId = question.getPropertyValue('driveoccurrencesvalue');
+    const driveId = question.getPropertyValue('Occurrence');
     try {
       fileStream = await this.transformFileToValidInput(file);
-      CS_DOCUMENTS_PROPERTIES.forEach((dp) => {
-        const value = question.getPropertyValue(dp.bodyKey);
-        if (!!value && value.length) {
-          Object.assign(bodyFilter, { [dp.bodyKey]: value });
+      CS_DOCUMENTS_PROPERTIES.filter((dp) => !isNil(dp.bodyKey)).forEach(
+        (dp) => {
+          const value = question.getPropertyValue(dp.bodyKey as string);
+          // OccurrenceType is single select value, but body receives it as array
+          if (
+            !!value &&
+            ((dp.bodyKey !== 'OccurrenceType' && value.length) ||
+              dp.bodyKey === 'OccurrenceType')
+          ) {
+            Object.assign(bodyFilter, {
+              [dp.bodyKey as string]:
+                dp.bodyKey === 'OccurrenceType' ? [value] : value,
+            });
+          }
         }
-      });
+      );
     } catch (error) {
       snackBarSpinner.instance.message = this.translate.instant(
         'common.notifications.file.upload.error'
