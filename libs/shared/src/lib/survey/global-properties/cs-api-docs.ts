@@ -5,6 +5,7 @@ import { JsonMetadata, Serializer } from 'survey-core';
 import { CS_DOCUMENTS_PROPERTIES } from '../../services/document-management/document-management.service';
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
 import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
+import { isNil } from 'lodash';
 
 /**
  * Add support for custom properties to the survey
@@ -52,7 +53,11 @@ export const init = (
         required: true,
         ...(property.value === 'occurrences' && {
           visibleIf: (obj: any) => {
-            if (!obj || !obj[`driveoccurrencetypesvalue`]) {
+            if (
+              isNil(obj) ||
+              isNil(obj[`driveoccurrencetypesvalue`]) ||
+              obj[`driveoccurrencetypesvalue`] === ''
+            ) {
               return false;
             } else {
               return true;

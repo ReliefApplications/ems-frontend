@@ -199,7 +199,12 @@ export class CsDocsPropertiesDropdownComponent
    * Load given property items list
    */
   private loadPropertyItems() {
-    if (this.model.value) {
+    if (
+      (this.model.value && !this.isOccurrenceRelated) ||
+      (this.isOccurrenceRelated &&
+        this.model?.obj['driveoccurrencetypesvalue'] !== '' &&
+        !isNil(this.model?.obj['driveoccurrencetypesvalue']))
+    ) {
       this.loading = true;
       this.changeDetectorRef.detectChanges();
       this.csDocsApolloClient
