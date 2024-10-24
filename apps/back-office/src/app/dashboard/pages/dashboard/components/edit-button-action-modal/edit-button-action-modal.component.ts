@@ -119,7 +119,7 @@ export class EditButtonActionModalComponent implements OnInit {
 
   /** On click on the preview button open the href */
   public preview(): void {
-    let href = this.form.get('href')?.value;
+    let href = this.form.get('action.navigateTo.targetUrl.href')?.value;
     if (href) {
       //regex to verify if it's a page id key
       const regex = /{{page\((.*?)\)}}/;
@@ -193,7 +193,7 @@ export class EditButtonActionModalComponent implements OnInit {
             template: [''],
           }),
           addRecord: [false],
-          suscribeToNotification: [false],
+          subscribeToNotification: [false],
           sendNotification: [false],
         },
         { validator: this.actionValidator }
@@ -205,7 +205,7 @@ export class EditButtonActionModalComponent implements OnInit {
       form.get('action.navigateTo.enabled'),
       form.get('action.editRecord.enabled'),
       form.get('action.addRecord'),
-      form.get('action.suscribeToNotification'),
+      form.get('action.subscribeToNotification'),
       form.get('action.sendNotification'),
     ];
 
@@ -255,7 +255,7 @@ export class EditButtonActionModalComponent implements OnInit {
         actions.navigateTo?.enabled ||
         actions.editRecord?.enabled ||
         actions.addRecord ||
-        actions.suscribeToNotification ||
+        actions.subscribeToNotification ||
         actions.sendNotification;
 
       return atLeastOneEnabled ? null : { atLeastOneRequired: true };
