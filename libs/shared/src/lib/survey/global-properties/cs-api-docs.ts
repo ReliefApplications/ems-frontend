@@ -51,7 +51,7 @@ export const init = (
     serializer.addProperty('file', {
       category: 'Document Properties',
       type: 'expression',
-      name: `valueExpression${property.value}`,
+      name: `valueExpression${property.bodyKey}`,
       displayName: 'Default value expression for ' + property.text,
       visibleIndex: index,
     });
@@ -60,7 +60,6 @@ export const init = (
       name: property.bodyKey,
       visible: false,
       required: true,
-      defaultValueExpression: `{valueExpression${property.value}}`,
     });
   });
 

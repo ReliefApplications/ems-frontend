@@ -1,6 +1,12 @@
 import { CustomWidgetCollection, SurveyModel } from 'survey-core';
+import { CS_DOCUMENTS_PROPERTIES } from '../../services/document-management/document-management.service';
 import { Question, QuestionFile } from '../types';
 
+/**
+ * Update file widget in order to be able to update properties with default value expressions
+ *
+ * @param customWidgetCollectionInstance CustomWidgetCollection
+ */
 export const init = (
   customWidgetCollectionInstance: CustomWidgetCollection
 ): void => {
@@ -10,15 +16,15 @@ export const init = (
     isFit: (question: Question): boolean => question.getType() === 'file',
     isDefaultRender: true,
     afterRender: (question: QuestionFile): void => {
-      console.log(question);
       (question.survey as SurveyModel)?.onValueChanged.add((sender) => {
-        if (question.valueExpressionaetiologys) {
+        CS_DOCUMENTS_PROPERTIES.filter(
+          (cs) => !!question[`valueExpression${cs.bodyKey}`]
+        ).forEach((cs) => {
           const result = sender.runExpression(
-            question.valueExpressionaetiologys
+            question[`valueExpression${cs.bodyKey}`]
           );
-          question.Aetiology = [result];
-          console.log(question);
-        }
+          question[cs.bodyKey] = Array.isArray(result) ? result : [result];
+        });
       });
     },
   };
