@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { ReferenceDataService } from '../reference-data/reference-data.service';
+import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
 import { isNil } from 'lodash';
@@ -19,9 +21,7 @@ import {
   EditRecordMutationResponse,
   Record as RecordModel,
 } from '../../models/record.model';
-import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { FormHelpersService } from '../form-helper/form-helper.service';
-import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { RestService } from '../rest/rest.service';
 import { EDIT_RECORD } from './graphql/mutations';
 

@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
   EventEmitter,
@@ -6,16 +7,15 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { GraphQLSelectModule, SelectMenuComponent } from '@oort-front/ui';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../components/utils/unsubscribe/unsubscribe.component';
 import { User, UsersNodeQueryResponse } from '../../../models/user.model';
 import { GET_USERS } from './graphql/queries';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
-import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs';
 
 /** Default page size */
 const ITEMS_PER_PAGE = 10;
@@ -80,7 +80,7 @@ export class UsersDropdownComponent
       },
     });
 
-    this.control.valueChanges?.subscribe(() => {
+    this.control.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.selectionChange.emit(this.control.value ?? []);
     });
   }
