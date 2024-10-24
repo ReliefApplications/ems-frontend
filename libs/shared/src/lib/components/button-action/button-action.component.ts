@@ -4,6 +4,7 @@ import { DataTemplateService } from '../../services/data-template/data-template.
 import { Dashboard } from '../../models/dashboard.model';
 import { ButtonActionT } from './button-action-type';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 /** Component for display action buttons */
 @Component({
@@ -25,11 +26,13 @@ export class ButtonActionComponent {
    * @param dialog Dialog service
    * @param dataTemplateService DataTemplate service
    * @param router Angular router
+   * @param location Angular location
    */
   constructor(
     public dialog: Dialog,
     private dataTemplateService: DataTemplateService,
-    private router: Router
+    private router: Router,
+    private location: Location
   ) {}
 
   /**
@@ -50,6 +53,9 @@ export class ButtonActionComponent {
           window.location.href = href;
         }
       }
+    }
+    if (button.previousPage) {
+      this.location.back();
     }
   }
 }
