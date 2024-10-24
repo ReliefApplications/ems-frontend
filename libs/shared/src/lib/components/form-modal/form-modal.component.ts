@@ -230,12 +230,6 @@ export class FormModalComponent
       this.form?.metadata,
       this.record
     );
-    // After the survey is created we add common callback to survey events
-    this.formBuilderService.addEventsCallBacksToSurvey(
-      this.survey,
-      this.selectedPageIndex,
-      this.temporaryFilesStorage
-    );
 
     if (this.data.recordId && this.record) {
       addCustomFunctions(this.authService, this.record);
@@ -257,6 +251,14 @@ export class FormModalComponent
         ...omitBy(this.storedMergedData, isNil),
       };
     }
+
+    // After the survey is created and all values set, we add common callback to survey events
+    this.formBuilderService.addEventsCallBacksToSurvey(
+      this.survey,
+      this.selectedPageIndex,
+      this.temporaryFilesStorage
+    );
+
     this.loading = false;
   }
 

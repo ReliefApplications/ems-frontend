@@ -1,5 +1,13 @@
+import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { ReferenceDataService } from '../reference-data/reference-data.service';
+import { renderGlobalProperties } from '../../survey/render-global-properties';
+import { SnackbarService } from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
+import { isNil } from 'lodash';
+import get from 'lodash/get';
+import { BehaviorSubject } from 'rxjs';
 import {
   Model,
   Question,
@@ -8,21 +16,14 @@ import {
   settings,
   surveyLocalization,
 } from 'survey-core';
-import { ReferenceDataService } from '../reference-data/reference-data.service';
-import { renderGlobalProperties } from '../../survey/render-global-properties';
-import { Apollo } from 'apollo-angular';
-import get from 'lodash/get';
-import { EDIT_RECORD } from './graphql/mutations';
+import { Metadata } from '../../models/metadata.model';
 import {
   EditRecordMutationResponse,
   Record as RecordModel,
 } from '../../models/record.model';
-import { Metadata } from '../../models/metadata.model';
-import { RestService } from '../rest/rest.service';
-import { BehaviorSubject } from 'rxjs';
-import { SnackbarService } from '@oort-front/ui';
 import { FormHelpersService } from '../form-helper/form-helper.service';
-import { HttpClient } from '@angular/common/http';
+import { RestService } from '../rest/rest.service';
+import { EDIT_RECORD } from './graphql/mutations';
 
 /**
  * Shared form builder service.
@@ -156,11 +157,7 @@ export class FormBuilderService {
         const text = surveyLocalization.getString(
           'oort:fileLimitations',
           (options.question.survey as SurveyModel).locale
-        )(
-          options.question.getPropertyValue('maxSize'),
-
-          options.question.getPropertyValue('allowedFileNumber')
-        );
+        )(options.question);
         options.question.dragAreaPlaceholder = text;
       }
     });
@@ -180,7 +177,10 @@ export class FormBuilderService {
     selectedPageIndex: BehaviorSubject<number>,
     temporaryFilesStorage: Record<string, Array<File>>
   ) {
-    survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
+    this.updateTemporaryFileStorage(survey, temporaryFilesStorage);
+    survey.onClearFiles.add((_, options: any) =>
+      this.onClearFiles(temporaryFilesStorage, options)
+    );
     survey.onUploadFiles.add((_, options: any) =>
       this.onUploadFiles(temporaryFilesStorage, options)
     );
@@ -190,6 +190,24 @@ export class FormBuilderService {
     survey.onCurrentPageChanged.add((survey: SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
       selectedPageIndex.next(survey.currentPageNo);
+    });
+  }
+
+  /**
+   * Set temporary file storage
+   *
+   * @param survey Survey where to add the callbacks
+   * @param temporaryFilesStorage Temporary files saved while executing the survey
+   */
+  private updateTemporaryFileStorage(
+    survey: SurveyModel,
+    temporaryFilesStorage: Record<string, Array<File>>
+  ) {
+    const fileQuestions =
+      survey.getAllQuestions()?.filter((q) => q instanceof QuestionFileModel) ??
+      [];
+    fileQuestions.forEach((fq) => {
+      temporaryFilesStorage[fq.name] = fq.value;
     });
   }
 
@@ -220,9 +238,21 @@ export class FormBuilderService {
   /**
    * Handles the clearing of files
    *
+   * @param temporaryFilesStorage Temporary files saved while executing the survey
    * @param options Options regarding the files
    */
-  private onClearFiles(options: any): void {
+  private onClearFiles(temporaryFilesStorage: any, options: any): void {
+    if (options.question.allowMultiple) {
+      // Filtering the temp storage to remove the file based on filename
+      if (temporaryFilesStorage[options.name]) {
+        temporaryFilesStorage[options.name] = temporaryFilesStorage[
+          options.name
+        ].filter((x: File) => x.name !== options.fileName);
+      }
+    } else {
+      // If single upload, the options doesn't contain fileName, so we can just clear the temp storage
+      temporaryFilesStorage[options.name] = [];
+    }
     options.callback('success');
   }
 
@@ -240,8 +270,10 @@ export class FormBuilderService {
     if (!isUploadValid) {
       return;
     }
-    if (temporaryFilesStorage[options.name] !== undefined) {
-      temporaryFilesStorage[options.name].concat(options.files);
+    if (!isNil(temporaryFilesStorage[options.name])) {
+      temporaryFilesStorage[options.name] = temporaryFilesStorage[
+        options.name
+      ].concat(options.files);
     } else {
       temporaryFilesStorage[options.name] = options.files;
     }
