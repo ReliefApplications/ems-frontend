@@ -144,6 +144,7 @@ export class EditButtonActionModalComponent implements OnInit {
       href: this.form.get('action.navigateTo.targetUrl.href')?.value,
       openInNewTab: this.form.get('action.navigateTo.targetUrl.openInNewTab')
         ?.value,
+      previousPage: this.form.get('action.navigateTo.previousPage')?.value,
     };
 
     this.dialogRef.close(mappedData);
@@ -178,8 +179,10 @@ export class EditButtonActionModalComponent implements OnInit {
         {
           navigateTo: this.fb.group(
             {
-              enabled: [!!get(data, 'href', false)],
-              previousPage: [false],
+              enabled: [
+                !!get(data, 'href', false) || get(data, 'previousPage'),
+              ],
+              previousPage: [get(data, 'previousPage', false)],
               targetUrl: this.fb.group({
                 enabled: [!!get(data, 'href', false)],
                 href: [get(data, 'href', '')],
