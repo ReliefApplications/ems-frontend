@@ -986,11 +986,17 @@
 			"errors": {
 				"duplicatedRelatedName": "Nom lié en double pour la question {{question}} à la page {{page}}. Veuillez fournir un nom lié unique (au format snake_case) pour sauvegarder le formulaire.",
 				"incorrectJSON": "Le JSON est invalide dans le JSON Editor, les changements n'ont pas été sauvegardés",
+				"maximumAllowedFiles": "Nombre maximum de fichiers autorisés: {{number}}",
 				"missingGridField": "Champs disponible de table de données manquant pour la question {{question}} à la page {{page}}. Veuillez en sélectionner au moins un dans la propriété Custom Question pour sauvegarder le formulaire.",
 				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake_case) pour sauvegarder le formulaire.",
 				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
 			},
 			"propertyGrid": {
+				"file": {
+					"acceptedFiles": {
+						"clear": "Effacer(Tous les types de fichiers acceptés)"
+					}
+				},
 				"resource": {
 					"availableGridFields": "Champs de grille disponibles",
 					"resourceSelectText": "Vous devez d’abord sélectionner une ressource avant de définir des filtres"
