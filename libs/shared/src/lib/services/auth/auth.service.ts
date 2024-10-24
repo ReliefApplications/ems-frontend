@@ -229,9 +229,12 @@ export class AuthService {
       } else {
         redirectUri = new URL(pathName, this.environment.frontOfficeUri);
       }
-      redirectUri.search = '';
       if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
-        localStorage.setItem('redirectPath', redirectUri.pathname);
+        localStorage.setItem(
+          'redirectPath',
+          pathName
+          // redirectUri.pathname + redirectUri.search + redirectUri.hash || This would also work but since it does a concat, the other would be faster
+        );
       }
     }
     return this.oauthService

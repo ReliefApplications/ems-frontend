@@ -189,7 +189,8 @@ export class ApplicationComponent
             const firstPage = get(application, 'pages', [])[0];
             if (
               this.router.url.endsWith(application?.id || '') ||
-              this.router.url.endsWith(application?.shortcut || '') ||
+              (application?.shortcut &&
+                this.router.url.endsWith(application?.shortcut || '')) ||
               !firstPage
             ) {
               if (firstPage) {
