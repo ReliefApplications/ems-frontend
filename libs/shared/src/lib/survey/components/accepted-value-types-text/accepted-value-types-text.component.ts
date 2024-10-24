@@ -55,7 +55,7 @@ const DEFAULT_ACCEPTED_TYPES = [
 ];
 
 /**
- * This component is used to select accepted file types for a file question
+ * Selection of accepted file types for a file question
  */
 @Component({
   selector: 'shared-accepted-value-text',
@@ -166,8 +166,7 @@ export class AcceptedValueTypesTextComponent
   private destroy$: Subject<void> = new Subject<void>();
 
   /**
-   * The constructor function is a special function that is called when a new instance of the class is
-   * created
+   * Selection of accepted file types for a file question
    *
    * @param {ChangeDetectorRef} changeDetectorRef - Angular - This is angular change detector ref of the component instance needed for the survey AngularQuestion class
    * @param {ViewContainerRef} viewContainerRef - Angular - This is angular view container ref of the component instance needed for the survey AngularQuestion class

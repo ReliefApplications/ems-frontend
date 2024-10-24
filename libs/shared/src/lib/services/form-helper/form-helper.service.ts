@@ -134,7 +134,11 @@ export class FormHelpersService {
           // Upload the file using document management system
           if (useDocumentManagement) {
             // Avoid already uploaded ones checking if contains an itemId
-            if (isNil(file.content) || !('itemId' in file.content)) {
+            if (
+              isNil(file.content) ||
+              typeof file.content === 'string' ||
+              !('itemId' in file.content)
+            ) {
               const { driveId, itemId } =
                 await this.documentManagementService.uploadFile(file);
               if (driveId && itemId) {

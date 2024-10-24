@@ -242,7 +242,17 @@ export class FormBuilderService {
    * @param options Options regarding the files
    */
   private onClearFiles(temporaryFilesStorage: any, options: any): void {
-    temporaryFilesStorage[options.name] = options.value;
+    if (options.question.allowMultiple) {
+      // Filtering the temp storage to remove the file based on filename
+      if (temporaryFilesStorage[options.name]) {
+        temporaryFilesStorage[options.name] = temporaryFilesStorage[
+          options.name
+        ].filter((x: File) => x.name !== options.fileName);
+      }
+    } else {
+      // If single upload, the options doesn't contain fileName, so we can just clear the temp storage
+      temporaryFilesStorage[options.name] = [];
+    }
     options.callback('success');
   }
 
