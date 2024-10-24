@@ -9,12 +9,18 @@ import {
   ButtonModule,
   ToggleModule,
   DividerModule,
+  TabsModule,
+  IconModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import {
-  FormControl,
+  AbstractControl,
+  FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -33,34 +39,6 @@ import {
 } from '@oort-front/shared';
 import { Router } from '@angular/router';
 
-/**
- * Create a form group for the button action
- *
- * @param data Data to initialize the form
- * @param roles roles of the application
- * @returns the form group
- */
-const createButtonActionForm = (data: ButtonActionT, roles: Role[]) => {
-  return new FormGroup({
-    text: new FormControl(get(data, 'text', ''), Validators.required),
-    href: new FormControl(get(data, 'href', ''), Validators.required),
-    hasRoleRestriction: new FormControl(
-      get(data, 'hasRoleRestriction', false),
-      Validators.required
-    ),
-    roles: new FormControl(
-      get(
-        data,
-        'roles',
-        roles.map((role) => role.id || '')
-      )
-    ),
-    variant: new FormControl(get(data, 'variant', 'primary')),
-    category: new FormControl(get(data, 'category', 'secondary')),
-    openInNewTab: new FormControl(get(data, 'openInNewTab', true)),
-  });
-};
-
 /** Component for editing a dashboard button action */
 @Component({
   selector: 'app-edit-button-action-modal',
@@ -78,13 +56,16 @@ const createButtonActionForm = (data: ButtonActionT, roles: Role[]) => {
     EditorModule,
     EditorControlComponent,
     DividerModule,
+    TabsModule,
+    IconModule,
+    TooltipModule,
   ],
   templateUrl: './edit-button-action-modal.component.html',
   styleUrls: ['./edit-button-action-modal.component.scss'],
 })
 export class EditButtonActionModalComponent implements OnInit {
   /** Form group */
-  public form: ReturnType<typeof createButtonActionForm>;
+  form: FormGroup;
 
   /** Variants */
   public variants = ButtonVariants;
@@ -108,6 +89,7 @@ export class EditButtonActionModalComponent implements OnInit {
    * @param dataTemplateService Shared data template service
    * @param router Router service
    * @param applicationService shared application service
+   * @param fb form builder
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
@@ -115,10 +97,11 @@ export class EditButtonActionModalComponent implements OnInit {
     private editorService: EditorService,
     private dataTemplateService: DataTemplateService,
     private router: Router,
-    public applicationService: ApplicationService
+    public applicationService: ApplicationService,
+    private fb: FormBuilder
   ) {
     this.roles = this.applicationService.application.value?.roles || [];
-    this.form = createButtonActionForm(data, this.roles);
+    this.form = this.createButtonActionForm(data, this.roles);
     this.isNew = !data;
 
     // Set the editor base url based on the environment file
@@ -136,7 +119,7 @@ export class EditButtonActionModalComponent implements OnInit {
 
   /** On click on the preview button open the href */
   public preview(): void {
-    let href = this.form.get('href')?.value;
+    let href = this.form.get('action.navigateTo.targetUrl.href')?.value;
     if (href) {
       //regex to verify if it's a page id key
       const regex = /{{page\((.*?)\)}}/;
@@ -152,6 +135,153 @@ export class EditButtonActionModalComponent implements OnInit {
 
   /** On click on the save button close the dialog with the form value */
   public onSubmit(): void {
-    this.dialogRef.close(this.form.value as any);
+    const mappedData: ButtonActionT = {
+      text: this.form.get('general.buttonText')?.value,
+      hasRoleRestriction: this.form.get('general.hasRoleRestriction')?.value,
+      roles: this.form.get('general.roles')?.value,
+      category: this.form.get('general.category')?.value,
+      variant: this.form.get('general.variant')?.value,
+      href: this.form.get('action.navigateTo.targetUrl.href')?.value,
+      openInNewTab: this.form.get('action.navigateTo.targetUrl.openInNewTab')
+        ?.value,
+    };
+
+    this.dialogRef.close(mappedData);
   }
+
+  /**
+   * Create a form group for the button action
+   *
+   * @param data Data to initialize the form
+   * @param roles roles of the application
+   * @returns the form group
+   */
+  createButtonActionForm = (data: ButtonActionT, roles: Role[]): FormGroup => {
+    const form = this.fb.group({
+      general: this.fb.group({
+        buttonText: [get(data, 'text', ''), Validators.required],
+        hasRoleRestriction: [
+          get(data, 'hasRoleRestriction', false),
+          Validators.required,
+        ],
+        roles: [
+          get(
+            data,
+            'roles',
+            roles.map((role) => role.id || '')
+          ),
+        ],
+        category: [get(data, 'category', 'secondary')],
+        variant: [get(data, 'variant', 'primary')],
+      }),
+      action: this.fb.group(
+        {
+          navigateTo: this.fb.group(
+            {
+              enabled: [!!get(data, 'href', false)],
+              previousPage: [false],
+              targetUrl: this.fb.group({
+                enabled: [!!get(data, 'href', false)],
+                href: [get(data, 'href', '')],
+                openInNewTab: [get(data, 'openInNewTab', true)],
+              }),
+            },
+            { validator: this.navigateToValidator }
+          ),
+          editRecord: this.fb.group({
+            enabled: [false],
+            template: [''],
+          }),
+          addRecord: [false],
+          subscribeToNotification: [false],
+          sendNotification: [false],
+        },
+        { validator: this.actionValidator }
+      ),
+    });
+
+    // Setting up mutual exclusivity for action controls and navigateTo controls
+    const actionControls = [
+      form.get('action.navigateTo.enabled'),
+      form.get('action.editRecord.enabled'),
+      form.get('action.addRecord'),
+      form.get('action.subscribeToNotification'),
+      form.get('action.sendNotification'),
+    ];
+
+    const navigateToControls = [
+      form.get('action.navigateTo.previousPage'),
+      form.get('action.navigateTo.targetUrl.enabled'),
+    ];
+
+    // Apply the utility function to both sets of controls
+    this.setupMutualExclusivity(actionControls as AbstractControl[]);
+    this.setupMutualExclusivity(navigateToControls as AbstractControl[]);
+
+    return form;
+  };
+
+  /**
+   * Utility function to set up mutual exclusivity for a set of controls
+   *
+   * @param controls Array of controls to set up mutual exclusivity for
+   */
+  setupMutualExclusivity = (controls: AbstractControl[]) => {
+    controls.forEach((control, index) => {
+      control?.valueChanges.subscribe((value: boolean | null) => {
+        if (value) {
+          controls.forEach((otherControl, otherIndex) => {
+            if (index !== otherIndex) {
+              otherControl?.setValue(false, { emitEvent: false });
+            }
+          });
+        }
+      });
+    });
+  };
+
+  /**
+   * Validator to ensure that at least one action is enabled
+   *
+   * @param control form group
+   * @returns validation errors
+   */
+  actionValidator: ValidatorFn = (
+    control: AbstractControl
+  ): ValidationErrors | null => {
+    const actions = control.value;
+    if (actions) {
+      const atLeastOneEnabled =
+        actions.navigateTo?.enabled ||
+        actions.editRecord?.enabled ||
+        actions.addRecord ||
+        actions.subscribeToNotification ||
+        actions.sendNotification;
+
+      return atLeastOneEnabled ? null : { atLeastOneRequired: true };
+    }
+    return { atLeastOneRequired: true };
+  };
+
+  /**
+   * Validator to ensure that at least one navigateTo action is enabled
+   *
+   * @param control form group
+   * @returns validation errors
+   */
+  navigateToValidator: ValidatorFn = (
+    control: AbstractControl
+  ): ValidationErrors | null => {
+    const navigateTo = control.value;
+    if (navigateTo) {
+      const atLeastOneEnabled =
+        navigateTo.previousPage || navigateTo.targetUrl?.enabled;
+      const hrefValid =
+        !navigateTo.targetUrl?.enabled ||
+        (navigateTo.targetUrl.enabled && navigateTo.targetUrl.href);
+      if (!atLeastOneEnabled) return { atLeastOneRequired: true };
+      if (!hrefValid) return { hrefRequired: true };
+    }
+    return null;
+  };
 }
