@@ -706,39 +706,6 @@ export class EmsTemplateComponent
     try {
       // convert base64 to file
       if (this.currentStep === 4) {
-        if (
-          !(this.emailService.allLayoutdata.headerLogo instanceof File) &&
-          this.emailService.allLayoutdata.headerLogo
-        ) {
-          this.emailService.allLayoutdata.headerLogo =
-            this.emailService.convertBase64ToFile(
-              this.emailService.allLayoutdata.headerLogo,
-              'image.png',
-              'image/png'
-            );
-        }
-        if (
-          !(this.emailService.allLayoutdata.bannerImage instanceof File) &&
-          this.emailService.allLayoutdata.bannerImage
-        ) {
-          this.emailService.allLayoutdata.bannerImage =
-            this.emailService.convertBase64ToFile(
-              this.emailService.allLayoutdata.bannerImage,
-              'image.png',
-              'image/png'
-            );
-        }
-        if (
-          !(this.emailService.allLayoutdata.footerLogo instanceof File) &&
-          this.emailService.allLayoutdata.footerLogo
-        ) {
-          this.emailService.allLayoutdata.footerLogo =
-            this.emailService.convertBase64ToFile(
-              this.emailService.allLayoutdata.footerLogo,
-              'image.png',
-              'image/png'
-            );
-        }
         // patch layout data
         this.layout.getColors();
         this.emailService.allLayoutdata.txtSubject =
@@ -1059,39 +1026,6 @@ export class EmsTemplateComponent
    * Move to Preivew screen with All layout data
    */
   showPreview() {
-    if (
-      !(this.emailService.allLayoutdata.headerLogo instanceof File) &&
-      this.emailService.allLayoutdata.headerLogo
-    ) {
-      this.emailService.allLayoutdata.headerLogo =
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.headerLogo,
-          'image.png',
-          'image/png'
-        );
-    }
-    if (
-      !(this.emailService.allLayoutdata.bannerImage instanceof File) &&
-      this.emailService.allLayoutdata.bannerImage
-    ) {
-      this.emailService.allLayoutdata.bannerImage =
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.bannerImage,
-          'image.png',
-          'image/png'
-        );
-    }
-    if (
-      !(this.emailService.allLayoutdata.footerLogo instanceof File) &&
-      this.emailService.allLayoutdata.footerLogo
-    ) {
-      this.emailService.allLayoutdata.footerLogo =
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.footerLogo,
-          'image.png',
-          'image/png'
-        );
-    }
     this.layout.getColors();
     this.emailService.allLayoutdata.txtSubject =
       this.layout.layoutForm.get('subjectInput')?.value;

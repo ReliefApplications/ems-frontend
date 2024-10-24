@@ -660,7 +660,6 @@ export class EmailService {
    * Common function
    *
    * @param field nested field
-   * @param formBuilder form
    * @returns FormGroup with nested fields
    */
   createFieldsFormGroup(field: any): FormGroup {

@@ -214,33 +214,15 @@ export class LayoutComponent
     this.onTxtSubjectChange();
     this.initInTheLastDropdown();
     if (this.emailService.allLayoutdata.headerLogo) {
-      this.headerLogo = URL.createObjectURL(
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.headerLogo,
-          'image.png',
-          'image/png'
-        )
-      );
+      this.headerLogo = this.emailService.allLayoutdata.headerLogo;
     }
 
     if (this.emailService.allLayoutdata.footerLogo) {
-      this.footerLogo = URL.createObjectURL(
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.footerLogo,
-          'image.png',
-          'image/png'
-        )
-      );
+      this.footerLogo = this.emailService.allLayoutdata.footerLogo;
     }
 
     if (this.emailService.allLayoutdata.bannerImage) {
-      this.bannerImage = URL.createObjectURL(
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.bannerImage,
-          'image.png',
-          'image/png'
-        )
-      );
+      this.bannerImage = this.emailService.allLayoutdata.bannerImage;
     }
     this.initialiseFieldSelectDropdown();
     if (this.headerLogoInput) {

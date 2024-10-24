@@ -409,13 +409,7 @@ export class PreviewComponent
 
     // this.loadFinalEmailPreview();
     if (this.emailService.allLayoutdata.bannerImage) {
-      this.bannerImage = URL.createObjectURL(
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.bannerImage,
-          'image.png',
-          'image/png'
-        )
-      );
+      this.bannerImage = this.emailService.allLayoutdata.bannerImage;
     }
 
     if (
