@@ -13,11 +13,14 @@ import { IconModule } from '@oort-front/ui';
   imports: [CommonModule, IconModule],
   template: `
     <p>
-      <ui-icon icon="info"></ui-icon> You can use curly brackets to get access
-      to the question values.
+      <ui-icon icon="info" class="inline-flex"></ui-icon> You can use curly
+      brackets to get access to the question values.
     </p>
     <p><b>field</b>: select the field to be filter by:</p>
-    <p><b>operator</b>: contains, =, !=, >, <, >=, <=</p>
+    <p>
+      <b>operator</b>eq, neq, gte, gt, lte, lt, isnull, isnotnull, isempty,
+      isnotempty, contains, doesnotcontain, startswith, endswith, in, notin
+    </p>
     <p class="mb-1"><b>value</b>: &#123;question1&#125; or static value</p>
     <p><b>Example</b>:</p>
     <pre><code>[{{filterExample1 | json}}, {{filterExample2 | json}}]</code></pre>
@@ -31,7 +34,7 @@ export class ResourceCustomFiltersComponent extends QuestionAngular<QuestionReso
   /**
    * Filter example 2
    */
-  filterExample2 = { field: 'age', operator: '>', value: '{question1}' };
+  filterExample2 = { field: 'age', operator: 'gt', value: '{question1}' };
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
