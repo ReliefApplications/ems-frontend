@@ -193,14 +193,25 @@ export class DocumentManagementService {
       'common.notifications.file.upload.processing'
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
-    const fileStream = await this.transformFileToValidInput(file);
+    let fileStream;
     const bodyFilter = Object.create({});
-    CS_DOCUMENTS_PROPERTIES.forEach((dp) => {
-      const value = question.getPropertyValue(dp.bodyKey);
-      if (!!value && value.length) {
-        Object.assign(bodyFilter, { [dp.bodyKey]: value });
-      }
-    });
+    try {
+      fileStream = await this.transformFileToValidInput(file);
+      CS_DOCUMENTS_PROPERTIES.forEach((dp) => {
+        const value = question.getPropertyValue(dp.bodyKey);
+        if (!!value && value.length) {
+          Object.assign(bodyFilter, { [dp.bodyKey]: value });
+        }
+      });
+    } catch (error) {
+      snackBarSpinner.instance.message = this.translate.instant(
+        'common.notifications.file.upload.error'
+      );
+      snackBarSpinner.instance.loading = false;
+      snackBarSpinner.instance.error = true;
+      snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+      return null;
+    }
     const body = {
       ...bodyFilter,
       FileStream: fileStream,
@@ -249,9 +260,12 @@ export class DocumentManagementService {
    */
   private transformFileToValidInput(file: any) {
     const fileReader = new FileReader();
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       (fileReader as any).onload = () => {
         resolve(fileReader.result?.toString().split(',')[1]);
+      };
+      (fileReader as any).onerror = (error: any) => {
+        reject(error);
       };
       fileReader.readAsDataURL(file);
     });

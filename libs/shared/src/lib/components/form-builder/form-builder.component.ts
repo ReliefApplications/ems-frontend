@@ -241,17 +241,13 @@ export class FormBuilderComponent
       /** Apply all placeholder with limitation info to all file questions */
       survey
         .getAllQuestions()
-        .filter((qu) => qu instanceof QuestionFileModel)
-        .forEach((qu) => {
+        .filter((question) => question instanceof QuestionFileModel)
+        .forEach((question) => {
           const text = surveyLocalization.getString(
             'oort:fileLimitations',
             (survey as SurveyModel).locale
-          )(
-            qu.getPropertyValue('maxSize'),
-
-            qu.getPropertyValue('allowedFileNumber')
-          );
-          qu.dragAreaPlaceholder = text;
+          )(question);
+          question.dragAreaPlaceholder = text;
         });
     });
     this.surveyCreator.haveCommercialLicense = true;

@@ -12,7 +12,12 @@ const SURVEY_LOCALIZABLE_STRINGS = [
   {
     key: 'fileLimitations',
     locales: {
-      en: (maxSize: number, maxFiles: number) => {
+      en: (question: any) => {
+        const allowMultiple = question.getPropertyValue('allowMultiple');
+        const maxSize = question.getPropertyValue('maxSize');
+        const maxFiles = allowMultiple
+          ? question.getPropertyValue('allowedFileNumber')
+          : null;
         const sizeOnKB = Math.floor(maxSize / 1024);
         const isMB = Math.floor(sizeOnKB / 1024) >= 1;
         return `Drag and drop a file here or click the button below and choose a file to upload.
@@ -25,7 +30,12 @@ const SURVEY_LOCALIZABLE_STRINGS = [
         }
       `;
       },
-      fr: (maxSize: number, maxFiles: number) => {
+      fr: (question: any) => {
+        const allowMultiple = question.getPropertyValue('allowMultiple');
+        const maxSize = question.getPropertyValue('maxSize');
+        const maxFiles = allowMultiple
+          ? question.getPropertyValue('allowedFileNumber')
+          : null;
         const sizeOnKB = Math.floor(maxSize / 1024);
         const isMB = Math.floor(sizeOnKB / 1024) >= 1;
         return `Faites glisser et déposez un fichier ici ou cliquez sur le bouton ci-dessous et choisissez un fichier à télécharger.

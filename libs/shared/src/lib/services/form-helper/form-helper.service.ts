@@ -129,70 +129,80 @@ export class FormHelpersService {
     const useDocumentManagement = !!this.environment.csApiUrl;
     for (const name of questionsToUpload) {
       const files = temporaryFilesStorage[name];
-      for (const [index, file] of files.entries()) {
-        // Upload the file using document management system
-        if (useDocumentManagement) {
-          const question = survey.getQuestionByName(name);
-          const { driveId, itemId } =
-            await this.documentManagementService.uploadFile(file, question);
-          if (driveId && itemId) {
-            const fileContent = data[name][index].content;
-            data[name][index].content = {
-              driveId,
-              itemId,
-            };
+      if (!isNil(files)) {
+        for (const [index, file] of files.entries()) {
+          // Upload the file using document management system
+          if (useDocumentManagement) {
+            // Avoid already uploaded ones checking if contains an itemId
+            if (
+              isNil(file.content) ||
+              typeof file.content === 'string' ||
+              !('itemId' in file.content)
+            ) {
+              const question = survey.getQuestionByName(name);
+              const { driveId, itemId } =
+                await this.documentManagementService.uploadFile(file, question);
+              if (driveId && itemId) {
+                const fileContent = data[name][index].content;
+                data[name][index].content = {
+                  driveId,
+                  itemId,
+                };
 
-            // Check if any other question is using the same file
-            survey.getAllQuestions().forEach((question) => {
-              const questionType = question.getType();
-              if (
-                questionType !== 'file' ||
-                // Only change files that are not in the temporary storage
-                // meaning their values came from the default values
-                !!temporaryFilesStorage[question.name]
-              )
-                return;
+                // Check if any other question is using the same file
+                survey.getAllQuestions().forEach((question) => {
+                  const questionType = question.getType();
+                  if (
+                    questionType !== 'file' ||
+                    // Only change files that are not in the temporary storage
+                    // meaning their values came from the default values
+                    !!temporaryFilesStorage[question.name]
+                  )
+                    return;
 
-              const files = data[question.name] ?? [];
-              files.forEach((file: any) => {
-                if (file && file.content === fileContent) {
-                  file.content = {
-                    driveId,
-                    itemId,
-                  };
+                  const files = data[question.name] ?? [];
+                  files.forEach((file: any) => {
+                    if (file && file.content === fileContent) {
+                      file.content = {
+                        driveId,
+                        itemId,
+                      };
+                    }
+                  });
+                });
+              }
+            }
+          } else {
+            // Default behavior, use app builder back-end
+            const path = (await this.downloadService.uploadBlob(
+              file,
+              BlobType.RECORD_FILE,
+              formId
+            )) as string;
+            if (path) {
+              const fileContent = data[name][index].content;
+              data[name][index].content = path;
+
+              // Check if any other question is using the same file
+              survey.getAllQuestions().forEach((question) => {
+                const questionType = question.getType();
+                if (
+                  questionType !== 'file' ||
+                  // Only change files that are not in the temporary storage
+                  // meaning their values came from the default values
+                  !!temporaryFilesStorage[question.name]
+                ) {
+                  return;
                 }
-              });
-            });
-          }
-        } else {
-          // Default behavior, use app builder back-end
-          const path = (await this.downloadService.uploadBlob(
-            file,
-            BlobType.RECORD_FILE,
-            formId
-          )) as string;
-          if (path) {
-            const fileContent = data[name][index].content;
-            data[name][index].content = path;
 
-            // Check if any other question is using the same file
-            survey.getAllQuestions().forEach((question) => {
-              const questionType = question.getType();
-              if (
-                questionType !== 'file' ||
-                // Only change files that are not in the temporary storage
-                // meaning their values came from the default values
-                !!temporaryFilesStorage[question.name]
-              )
-                return;
-
-              const files = data[question.name] ?? [];
-              files.forEach((file: any) => {
-                if (file && file.content === fileContent) {
-                  file.content = path;
-                }
+                const files = data[question.name] ?? [];
+                files.forEach((file: any) => {
+                  if (file && file.content === fileContent) {
+                    file.content = path;
+                  }
+                });
               });
-            });
+            }
           }
         }
       }
