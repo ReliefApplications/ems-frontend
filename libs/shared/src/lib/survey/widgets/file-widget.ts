@@ -18,12 +18,14 @@ export const init = (
     afterRender: (question: QuestionFile): void => {
       (question.survey as SurveyModel)?.onValueChanged.add((sender) => {
         CS_DOCUMENTS_PROPERTIES.filter(
-          (cs) => !!question[`valueExpression${cs.bodyKey}`]
+          (cs) => !!question[`valueExpression${cs.bodyKey as string}`]
         ).forEach((cs) => {
           const result = sender.runExpression(
             question[`valueExpression${cs.bodyKey}`]
           );
-          question[cs.bodyKey] = Array.isArray(result) ? result : [result];
+          question[cs.bodyKey as string] = Array.isArray(result)
+            ? result
+            : [result];
         });
       });
     },
