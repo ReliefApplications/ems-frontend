@@ -19,6 +19,7 @@ import * as CommentWidget from './widgets/comment-widget';
 import * as DropdownWidget from './widgets/dropdown-widget';
 import * as TagboxWidget from './widgets/tagbox-widget';
 import * as TextWidget from './widgets/text-widget';
+import * as FileWidget from './widgets/file-widget';
 // import * as ChoicesByUrlProperties from './global-properties/choicesByUrl';
 import { Injector, NgZone } from '@angular/core';
 import { HttpLink } from 'apollo-angular/http';
@@ -89,6 +90,7 @@ export const initCustomSurvey = (
   TagboxWidget.init(domService, CustomWidgetCollection.Instance, document);
   TextWidget.init(domService, CustomWidgetCollection.Instance, document);
   DropdownWidget.init(domService, CustomWidgetCollection.Instance, document);
+  FileWidget.init(CustomWidgetCollection.Instance);
 
   if (containsCustomQuestions) {
     // Register all custom property grid component types
