@@ -1,3 +1,10 @@
+# [2.17.0-beta.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.10...v2.17.0-beta.11) (2024-10-23)
+
+
+### Features
+
+* working custom filter property in resource.s questions ([#2650](https://github.com/ReliefApplications/ems-frontend/issues/2650)) ([2e8ce0e](https://github.com/ReliefApplications/ems-frontend/commit/2e8ce0e2dcf2c38c874c2e17f5fac54d7b90b5e5)), closes [AB#104427](https://github.com/AB/issues/104427)
+
 # [2.17.0-beta.10](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.9...v2.17.0-beta.10) (2024-10-22)
 
 
