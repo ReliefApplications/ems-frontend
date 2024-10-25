@@ -31,7 +31,7 @@ interface PropertyQueryResponse {
 /**
  * This component is used to create a dropdown where the user can select a properties from a given CS Documentation API Property.
  * It can:
- * - Handle properties attache as body params in the CS Doc upload file
+ * - Handle properties attached as body params in the CS Doc upload file
  * - Handle the driveId value used to build the path onto upload the files with the previously mentioned configurations
  *
  * - If is handling drive id set, then the dropdown is single select and has to work with occurrence types and occurrences
@@ -168,6 +168,7 @@ export class CsDocsPropertiesDropdownComponent
           this.changeDetectorRef.detectChanges();
         },
       });
+
     /**
      * If is not a drive model
      * Or is a drive model
