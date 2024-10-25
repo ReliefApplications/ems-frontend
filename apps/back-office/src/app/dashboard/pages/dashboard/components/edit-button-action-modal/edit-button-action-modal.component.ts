@@ -154,8 +154,8 @@ export class EditButtonActionModalComponent implements OnInit {
                   childControl?.setValue('');
                 } else if (Array.isArray(childControl?.value)) {
                   childControl?.setValue([]);
-                } else if (typeof childControl?.value === 'object') {
-                  childControl?.setValue({});
+                  // } else if (typeof childControl?.value === 'object') {
+                  //   childControl?.setValue({});
                 } else {
                   childControl?.setValue(null);
                 }
@@ -228,10 +228,18 @@ export class EditButtonActionModalComponent implements OnInit {
             { validator: this.navigateToValidator }
           ),
           editRecord: this.fb.group({
-            enabled: [false],
-            template: [''],
+            enabled: [!!get(data, 'template', false)],
+            template: [get(data, 'template', {})],
           }),
-          addRecord: [false],
+          addRecord: this.fb.group({
+            enabled: [!!get(data, 'addRecord', false)],
+            resource: [get(data, 'addRecord.resource', {})],
+            template: [get(data, 'addRecord.template', {})],
+            editCurrentRecord: [get(data, 'addRecord.editCurrentRecord', true)],
+            attachNewToCurrentFields: [
+              get(data, 'addRecord.attachNewToCurrentFields', {}),
+            ],
+          }),
           subscribeToNotification: [false],
           sendNotification: [false],
         },
@@ -243,7 +251,7 @@ export class EditButtonActionModalComponent implements OnInit {
     const actionControls = [
       form.get('action.navigateTo.enabled'),
       form.get('action.editRecord.enabled'),
-      form.get('action.addRecord'),
+      form.get('action.addRecord.enabled'),
       form.get('action.subscribeToNotification'),
       form.get('action.sendNotification'),
     ];
