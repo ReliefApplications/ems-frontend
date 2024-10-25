@@ -198,9 +198,17 @@
                   *ngIf="form.value.action.editRecord.enabled"
                 >
                   <div uiFormFieldDirective class="flex-1">
-                    <label>{{ 'models.form.template' | translate }}</label>
-                    <ui-select-menu formControlName="template">
-                      <ui-select-option>-</ui-select-option>
+                    <label>{{
+                      'models.dashboard.buttonActions.actions.template'
+                        | translate
+                    }}</label>
+                    <ui-select-menu
+                      formControlName="template"
+                      placeholder="{{
+                        'models.dashboard.buttonActions.actions.templatePlaceholder'
+                          | translate
+                      }}"
+                    >
                       <ui-select-option> template.name </ui-select-option>
                     </ui-select-menu>
                     <ui-icon
@@ -208,7 +216,7 @@
                       icon="info_outline"
                       variant="grey"
                       [uiTooltip]="
-                        'components.widget.settings.grid.tooltip.template'
+                        'models.dashboard.buttonActions.actions.templateTooltip'
                           | translate
                       "
                     ></ui-icon>
@@ -231,62 +239,72 @@
                 >
                   <!-- Resource -->
                   <div uiFormFieldDirective class="flex-1">
-                    <label>{{ 'models.form.resource' | translate }}</label>
-                    <ui-select-menu formControlName="resource">
-                      <ui-select-option>-</ui-select-option>
+                    <label>{{
+                      'models.dashboard.buttonActions.actions.resource'
+                        | translate
+                    }}</label>
+                    <ui-select-menu
+                      formControlName="resource"
+                      placeholder="{{
+                        'models.dashboard.buttonActions.actions.resourcePlaceholder'
+                          | translate
+                      }}"
+                    >
                       <ui-select-option> resource.name </ui-select-option>
                     </ui-select-menu>
-                    <ui-icon
-                      uiSuffix
-                      icon="info_outline"
-                      variant="grey"
-                      [uiTooltip]="
-                        'components.widget.settings.grid.tooltip.resource'
-                          | translate
-                      "
-                    ></ui-icon>
                   </div>
                   <!-- Template -->
                   <div uiFormFieldDirective class="flex-1">
-                    <label>{{ 'models.form.template' | translate }}</label>
-                    <ui-select-menu formControlName="template">
-                      <ui-select-option>-</ui-select-option>
+                    <label>{{
+                      'models.dashboard.buttonActions.actions.template'
+                        | translate
+                    }}</label>
+                    <ui-select-menu
+                      formControlName="template"
+                      placeholder="{{
+                        'models.dashboard.buttonActions.actions.templatePlaceholder'
+                          | translate
+                      }}"
+                    >
                       <ui-select-option> template.name </ui-select-option>
                     </ui-select-menu>
-                    <ui-icon
-                      uiSuffix
-                      icon="info_outline"
-                      variant="grey"
-                      [uiTooltip]="
-                        'components.widget.settings.grid.tooltip.template'
-                          | translate
-                      "
-                    ></ui-icon>
                   </div>
                   <!-- Edit current record -->
                   <ui-toggle formControlName="editCurrentRecord">
                     <ng-container ngProjectAs="label">
                       {{
-                        'models.dashboard.buttonActions.actions.addRecord'
+                        'models.dashboard.buttonActions.actions.editCurrentRecord'
                           | translate
                       }}
                     </ng-container>
                   </ui-toggle>
                   <!-- Attach record -->
                   <div uiFormFieldDirective class="flex-1">
-                    <label>{{ 'models.form.template' | translate }}</label>
-                    <ui-select-menu formControlName="attachNewToCurrentFields">
-                      <ui-select-option>-</ui-select-option>
-                      <ui-select-option> template.name </ui-select-option>
+                    <label>{{
+                      'models.dashboard.buttonActions.actions.attachNewToCurrentFields'
+                        | translate
+                    }}</label>
+                    <ui-select-menu
+                      formControlName="attachNewToCurrentFields"
+                      [multiselect]="true"
+                      placeholder="{{
+                        'models.dashboard.buttonActions.actions.attachNewToCurrentFieldsPlaceholder'
+                          | translate
+                      }}"
+                    >
+                      <ui-select-option>
+                        attachNewToCurrentFields.name
+                      </ui-select-option>
                     </ui-select-menu>
                     <ui-icon
                       uiSuffix
                       icon="info_outline"
                       variant="grey"
                       [uiTooltip]="
-                        'components.widget.settings.grid.tooltip.template'
+                        'models.dashboard.buttonActions.actions.attachNewToCurrentFieldsTooltip'
                           | translate
                       "
+                      
                     ></ui-icon>
                   </div>
                 </div>
