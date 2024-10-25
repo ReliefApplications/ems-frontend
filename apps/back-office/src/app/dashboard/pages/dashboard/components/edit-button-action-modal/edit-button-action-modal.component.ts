@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   DialogModule,
@@ -38,6 +38,7 @@ import {
   Role,
 } from '@oort-front/shared';
 import { Router } from '@angular/router';
+import { Form } from '@oort-front/shared';
 
 /** Component for editing a dashboard button action */
 @Component({
@@ -79,6 +80,15 @@ export class EditButtonActionModalComponent implements OnInit {
   public hrefEditor: RawEditorSettings = INLINE_EDITOR_CONFIG;
   /** Roles from current application */
   public roles: Role[];
+
+  /** Edit record Templates */
+  @Input() editRecordTemplates: Form[] = [];
+
+  /** Add record resources */
+  @Input() addRecordResources: Form[] = [];
+
+  /** Add record Templates */
+  @Input() addRecordTemplates: Form[] = [];
 
   /**
    * Component for editing a dashboard button action
