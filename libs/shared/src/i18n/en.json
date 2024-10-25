@@ -2398,6 +2398,7 @@
 				"actions": {
 					"addRecord": "Add record",
 					"attachNewToCurrentFields": "Attach newly created record to current record fields",
+					"attachNewToCurrentFieldsPlaceholder": "Select fields",
 					"attachNewToCurrentFieldsTooltip": "Newly created record can be attached to resource & resource fields.",
 					"editCurrentRecord": "Edit current record",
 					"editRecord": "Edit record",

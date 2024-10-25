@@ -2398,6 +2398,7 @@
 				"actions": {
 					"addRecord": "******",
 					"attachNewToCurrentFields": "******",
+					"attachNewToCurrentFieldsPlaceholder": "******",
 					"attachNewToCurrentFieldsTooltip": "******",
 					"editCurrentRecord": "******",
 					"editRecord": "******",

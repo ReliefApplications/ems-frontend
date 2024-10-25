@@ -2398,6 +2398,7 @@
 				"actions": {
 					"addRecord": "Ajouter un enregistrement",
 					"attachNewToCurrentFields": "Joindre l’enregistrement nouvellement créé aux champs d’enregistrement actuels",
+					"attachNewToCurrentFieldsPlaceholder": "Sélectionnez les champs",
 					"attachNewToCurrentFieldsTooltip": "L'enregistrement nouvellement créé peut être attaché à la ressource et aux champs de ressource.",
 					"editCurrentRecord": "Modifier l'enregistrement actuel",
 					"editRecord": "Modifier un enregistrement",

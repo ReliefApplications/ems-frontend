@@ -181,6 +181,14 @@ export class EditButtonActionModalComponent implements OnInit {
       openInNewTab: this.form.get('action.navigateTo.targetUrl.openInNewTab')
         ?.value,
       previousPage: this.form.get('action.navigateTo.previousPage')?.value,
+      editRecordTemplate: this.form.get('action.editRecord.template')?.value,
+      addRecordResource: this.form.get('action.addRecord.resource')?.value,
+      addRecordTemplate: this.form.get('action.addRecord.template')?.value,
+      editCurrentRecord: this.form.get('action.addRecord.editCurrentRecord')
+        ?.value,
+      attachNewToCurrentFields: this.form.get(
+        'action.addRecord.attachNewToCurrentFields'
+      )?.value,
     };
 
     this.dialogRef.close(mappedData);

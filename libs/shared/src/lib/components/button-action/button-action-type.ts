@@ -12,4 +12,9 @@ export type ButtonActionT = {
   category: Category;
   openInNewTab: boolean;
   previousPage: boolean;
+  editRecordTemplate: string;
+  addRecordResource: string;
+  addRecordTemplate: string;
+  editCurrentRecord: boolean;
+  attachNewToCurrentFields: string[];
 };
