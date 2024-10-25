@@ -11,4 +11,5 @@ export type ButtonActionT = {
   variant: Variant;
   category: Category;
   openInNewTab: boolean;
+  notification?: string;
 };

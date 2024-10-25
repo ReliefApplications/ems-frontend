@@ -1,18 +1,6 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
-import {
-  DialogModule,
-  variants as ButtonVariants,
-  categories as ButtonCategories,
-  FormWrapperModule,
-  SelectMenuModule,
-  ButtonModule,
-  ToggleModule,
-  DividerModule,
-  TabsModule,
-  IconModule,
-  TooltipModule,
-} from '@oort-front/ui';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -23,21 +11,37 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
-import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { get } from 'lodash';
-import { RawEditorSettings } from 'tinymce';
-import { EditorModule } from '@tinymce/tinymce-angular';
-import {
-  EditorService,
-  EditorControlComponent,
-  DataTemplateService,
-  INLINE_EDITOR_CONFIG,
-  ButtonActionT,
-  ApplicationService,
-  Role,
-} from '@oort-front/shared';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import {
+  ApplicationService,
+  ButtonActionT,
+  DataTemplateService,
+  EditorControlComponent,
+  EditorService,
+  EmailNotification,
+  EmailService,
+  INLINE_EDITOR_CONFIG,
+  Role,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
+import {
+  categories as ButtonCategories,
+  ButtonModule,
+  variants as ButtonVariants,
+  DialogModule,
+  DividerModule,
+  FormWrapperModule,
+  IconModule,
+  SelectMenuModule,
+  TabsModule,
+  ToggleModule,
+  TooltipModule,
+} from '@oort-front/ui';
+import { EditorModule } from '@tinymce/tinymce-angular';
+import { get, isNil } from 'lodash';
+import { filter, switchMap, takeUntil } from 'rxjs';
+import { RawEditorSettings } from 'tinymce';
 
 /** Component for editing a dashboard button action */
 @Component({
@@ -63,7 +67,10 @@ import { Router } from '@angular/router';
   templateUrl: './edit-button-action-modal.component.html',
   styleUrls: ['./edit-button-action-modal.component.scss'],
 })
-export class EditButtonActionModalComponent implements OnInit {
+export class EditButtonActionModalComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Form group */
   form: FormGroup;
 
@@ -79,6 +86,8 @@ export class EditButtonActionModalComponent implements OnInit {
   public hrefEditor: RawEditorSettings = INLINE_EDITOR_CONFIG;
   /** Roles from current application */
   public roles: Role[];
+  /** Email notification list */
+  public emailNotifications: EmailNotification[] = [];
 
   /**
    * Component for editing a dashboard button action
@@ -90,6 +99,7 @@ export class EditButtonActionModalComponent implements OnInit {
    * @param router Router service
    * @param applicationService shared application service
    * @param fb form builder
+   * @param emailService Email service
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
@@ -98,8 +108,10 @@ export class EditButtonActionModalComponent implements OnInit {
     private dataTemplateService: DataTemplateService,
     private router: Router,
     public applicationService: ApplicationService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private emailService: EmailService
   ) {
+    super();
     this.roles = this.applicationService.application.value?.roles || [];
     this.form = this.createButtonActionForm(data, this.roles);
     this.isNew = !data;
@@ -110,11 +122,50 @@ export class EditButtonActionModalComponent implements OnInit {
     this.hrefEditor.language = editorService.language;
   }
 
+  /**
+   * Set all needed form listeners
+   */
+  private setFormListeners() {
+    if (this.form.get('action.subscribeToNotification.enabled')?.value) {
+      this.emailService
+        .getEmailNotifications(
+          this.applicationService.application?.getValue()?.id as string
+        )
+        .subscribe({
+          next: ({ data }) => {
+            this.emailNotifications = data.emailNotifications.edges.map(
+              (item) => item.node
+            );
+          },
+        });
+    }
+    /** Fetch email notification list on subscribe to notification is enabled */
+    this.form
+      .get('action.subscribeToNotification.enabled')
+      ?.valueChanges.pipe(
+        filter((value) => !!value),
+        switchMap(() =>
+          this.emailService.getEmailNotifications(
+            this.applicationService.application?.getValue()?.id as string
+          )
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data }) => {
+          this.emailNotifications = data.emailNotifications.edges.map(
+            (item) => item.node
+          );
+        },
+      });
+  }
+
   ngOnInit(): void {
     this.editorService.addCalcAndKeysAutoCompleter(
       this.hrefEditor,
       this.dataTemplateService.getAutoCompleterPageKeys()
     );
+    this.setFormListeners();
   }
 
   /** On click on the preview button open the href */
@@ -143,6 +194,8 @@ export class EditButtonActionModalComponent implements OnInit {
       variant: this.form.get('general.variant')?.value,
       href: this.form.get('action.navigateTo.targetUrl.href')?.value,
       openInNewTab: this.form.get('action.navigateTo.targetUrl.openInNewTab')
+        ?.value,
+      notification: this.form.get('action.subscribeToNotification.notification')
         ?.value,
     };
 
@@ -193,7 +246,20 @@ export class EditButtonActionModalComponent implements OnInit {
             template: [''],
           }),
           addRecord: [false],
-          subscribeToNotification: [false],
+          subscribeToNotification: this.fb.group(
+            {
+              enabled: [!!get(data, 'notification', false)],
+              notification: [get(data, 'notification', '')],
+            },
+            {
+              validator: (control: AbstractControl): ValidationErrors | null =>
+                !control.value.enabled ||
+                (control.value.notification !== '' &&
+                  !isNil(control.value.notification))
+                  ? null
+                  : { atLeastOneRequired: true },
+            }
+          ),
           sendNotification: [false],
         },
         { validator: this.actionValidator }
@@ -205,7 +271,7 @@ export class EditButtonActionModalComponent implements OnInit {
       form.get('action.navigateTo.enabled'),
       form.get('action.editRecord.enabled'),
       form.get('action.addRecord'),
-      form.get('action.subscribeToNotification'),
+      form.get('action.subscribeToNotification.enabled'),
       form.get('action.sendNotification'),
     ];
 
@@ -228,15 +294,17 @@ export class EditButtonActionModalComponent implements OnInit {
    */
   setupMutualExclusivity = (controls: AbstractControl[]) => {
     controls.forEach((control, index) => {
-      control?.valueChanges.subscribe((value: boolean | null) => {
-        if (value) {
-          controls.forEach((otherControl, otherIndex) => {
-            if (index !== otherIndex) {
-              otherControl?.setValue(false, { emitEvent: false });
-            }
-          });
-        }
-      });
+      control?.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: boolean | null) => {
+          if (value) {
+            controls.forEach((otherControl, otherIndex) => {
+              if (index !== otherIndex) {
+                otherControl?.setValue(false, { emitEvent: false });
+              }
+            });
+          }
+        });
     });
   };
 
@@ -255,7 +323,7 @@ export class EditButtonActionModalComponent implements OnInit {
         actions.navigateTo?.enabled ||
         actions.editRecord?.enabled ||
         actions.addRecord ||
-        actions.subscribeToNotification ||
+        actions.subscribeToNotification.enabled ||
         actions.sendNotification;
 
       return atLeastOneEnabled ? null : { atLeastOneRequired: true };
@@ -273,7 +341,7 @@ export class EditButtonActionModalComponent implements OnInit {
     control: AbstractControl
   ): ValidationErrors | null => {
     const navigateTo = control.value;
-    if (navigateTo) {
+    if (navigateTo?.enabled) {
       const atLeastOneEnabled =
         navigateTo.previousPage || navigateTo.targetUrl?.enabled;
       const hrefValid =

@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { DataTemplateService } from '../../services/data-template/data-template.service';
-import { Dashboard } from '../../models/dashboard.model';
-import { ButtonActionT } from './button-action-type';
+import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
+import { Dashboard } from '../../models/dashboard.model';
+import { DataTemplateService } from '../../services/data-template/data-template.service';
+import { EmailService } from '../email/email.service';
+import { ButtonActionT } from './button-action-type';
 
 /** Component for display action buttons */
 @Component({
@@ -25,11 +26,13 @@ export class ButtonActionComponent {
    * @param dialog Dialog service
    * @param dataTemplateService DataTemplate service
    * @param router Angular router
+   * @param emailService Email service
    */
   constructor(
     public dialog: Dialog,
     private dataTemplateService: DataTemplateService,
-    private router: Router
+    private router: Router,
+    private emailService: EmailService
   ) {}
 
   /**
@@ -50,6 +53,8 @@ export class ButtonActionComponent {
           window.location.href = href;
         }
       }
+    } else if (button.notification) {
+      this.emailService.subscribeToEmail(button.notification);
     }
   }
 }
