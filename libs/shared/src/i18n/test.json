@@ -2460,7 +2460,14 @@
 			"buttonActions": {
 				"action": "******",
 				"actions": {
-					"addRecord": "******",
+					"addRecord": {
+						"edition": "******",
+						"recordFields": {
+							"info": "******",
+							"text": "******"
+						},
+						"text": "******"
+					},
 					"editRecord": "******",
 					"navigateTo": "******",
 					"openInNewTab": "******",

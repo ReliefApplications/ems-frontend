@@ -1,18 +1,6 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
-import {
-  DialogModule,
-  variants as ButtonVariants,
-  categories as ButtonCategories,
-  FormWrapperModule,
-  SelectMenuModule,
-  ButtonModule,
-  ToggleModule,
-  DividerModule,
-  TabsModule,
-  IconModule,
-  TooltipModule,
-} from '@oort-front/ui';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -23,21 +11,41 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
-import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { get } from 'lodash';
-import { RawEditorSettings } from 'tinymce';
-import { EditorModule } from '@tinymce/tinymce-angular';
-import {
-  EditorService,
-  EditorControlComponent,
-  DataTemplateService,
-  INLINE_EDITOR_CONFIG,
-  ButtonActionT,
-  ApplicationService,
-  Role,
-} from '@oort-front/shared';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import {
+  ApplicationService,
+  ButtonActionT,
+  Dashboard,
+  DataTemplateService,
+  EditorControlComponent,
+  EditorService,
+  Form,
+  INLINE_EDITOR_CONFIG,
+  ResourceQueryResponse,
+  ResourceSelectComponent,
+  Role,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
+import {
+  categories as ButtonCategories,
+  ButtonModule,
+  variants as ButtonVariants,
+  DialogModule,
+  DividerModule,
+  FormWrapperModule,
+  IconModule,
+  SelectMenuModule,
+  TabsModule,
+  ToggleModule,
+  TooltipModule,
+} from '@oort-front/ui';
+import { EditorModule } from '@tinymce/tinymce-angular';
+import { Apollo } from 'apollo-angular';
+import { get, isNil } from 'lodash';
+import { filter, switchMap, takeUntil } from 'rxjs';
+import { RawEditorSettings } from 'tinymce';
+import { GET_RESOURCE_TEMPLATES } from './graphql/queries';
 
 /** Component for editing a dashboard button action */
 @Component({
@@ -59,11 +67,15 @@ import { Router } from '@angular/router';
     TabsModule,
     IconModule,
     TooltipModule,
+    ResourceSelectComponent,
   ],
   templateUrl: './edit-button-action-modal.component.html',
   styleUrls: ['./edit-button-action-modal.component.scss'],
 })
-export class EditButtonActionModalComponent implements OnInit {
+export class EditButtonActionModalComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Form group */
   form: FormGroup;
 
@@ -79,6 +91,12 @@ export class EditButtonActionModalComponent implements OnInit {
   public hrefEditor: RawEditorSettings = INLINE_EDITOR_CONFIG;
   /** Roles from current application */
   public roles: Role[];
+  /** Record fields current application */
+  public recordFields: any[] = [];
+  /** Resource template list */
+  public templates: Form[] = [];
+  /** Dashboard page where the button is attached */
+  private currentDashboardPage!: Dashboard;
 
   /**
    * Component for editing a dashboard button action
@@ -90,16 +108,19 @@ export class EditButtonActionModalComponent implements OnInit {
    * @param router Router service
    * @param applicationService shared application service
    * @param fb form builder
+   * @param apollo Angular Apollo client
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
-    @Inject(DIALOG_DATA) private data: ButtonActionT,
+    @Inject(DIALOG_DATA) data: ButtonActionT,
     private editorService: EditorService,
     private dataTemplateService: DataTemplateService,
     private router: Router,
     public applicationService: ApplicationService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private apollo: Apollo
   ) {
+    super();
     this.roles = this.applicationService.application.value?.roles || [];
     this.form = this.createButtonActionForm(data, this.roles);
     this.isNew = !data;
@@ -110,45 +131,6 @@ export class EditButtonActionModalComponent implements OnInit {
     this.hrefEditor.language = editorService.language;
   }
 
-  ngOnInit(): void {
-    this.editorService.addCalcAndKeysAutoCompleter(
-      this.hrefEditor,
-      this.dataTemplateService.getAutoCompleterPageKeys()
-    );
-  }
-
-  /** On click on the preview button open the href */
-  public preview(): void {
-    let href = this.form.get('action.navigateTo.targetUrl.href')?.value;
-    if (href) {
-      //regex to verify if it's a page id key
-      const regex = /{{page\((.*?)\)}}/;
-      const match = href.match(regex);
-      if (match) {
-        href = this.dataTemplateService.getButtonLink(match[1]);
-      }
-      const isNewTab = this.form.get('openInNewTab')?.value ?? true;
-      if (isNewTab) window.open(href, '_blank');
-      else this.router.navigate([href]);
-    }
-  }
-
-  /** On click on the save button close the dialog with the form value */
-  public onSubmit(): void {
-    const mappedData: ButtonActionT = {
-      text: this.form.get('general.buttonText')?.value,
-      hasRoleRestriction: this.form.get('general.hasRoleRestriction')?.value,
-      roles: this.form.get('general.roles')?.value,
-      category: this.form.get('general.category')?.value,
-      variant: this.form.get('general.variant')?.value,
-      href: this.form.get('action.navigateTo.targetUrl.href')?.value,
-      openInNewTab: this.form.get('action.navigateTo.targetUrl.openInNewTab')
-        ?.value,
-    };
-
-    this.dialogRef.close(mappedData);
-  }
-
   /**
    * Create a form group for the button action
    *
@@ -156,7 +138,10 @@ export class EditButtonActionModalComponent implements OnInit {
    * @param roles roles of the application
    * @returns the form group
    */
-  createButtonActionForm = (data: ButtonActionT, roles: Role[]): FormGroup => {
+  private createButtonActionForm = (
+    data: ButtonActionT,
+    roles: Role[]
+  ): FormGroup => {
     const form = this.fb.group({
       general: this.fb.group({
         buttonText: [get(data, 'text', ''), Validators.required],
@@ -192,7 +177,44 @@ export class EditButtonActionModalComponent implements OnInit {
             enabled: [false],
             template: [''],
           }),
-          addRecord: [false],
+          addRecord: this.fb.group(
+            {
+              enabled: [!!get(data, 'resource', false)],
+              resource: [
+                get(
+                  data,
+                  'resource',
+                  this.currentDashboardPage.page?.context?.resource ?? ''
+                ),
+              ],
+              template: [get(data, 'template', '')],
+              edition: [!!get(data, 'recordFields', false)],
+              recordFields: [
+                get(data, 'recordFields', [
+                  this.currentDashboardPage.page?.context?.displayField ?? '',
+                ]),
+              ],
+            },
+            {
+              validator: (
+                control: AbstractControl
+              ): ValidationErrors | null => {
+                const isEnabledAndHasResourceWithTemplate =
+                  control.value.enabled &&
+                  control.value.resource !== '' &&
+                  !isNil(control.value.resource) &&
+                  control.value.template !== '' &&
+                  !isNil(control.value.template);
+                if (
+                  !control.value.enabled ||
+                  isEnabledAndHasResourceWithTemplate
+                ) {
+                  return null;
+                }
+                return { atLeastOneRequired: true };
+              },
+            }
+          ),
           subscribeToNotification: [false],
           sendNotification: [false],
         },
@@ -204,7 +226,7 @@ export class EditButtonActionModalComponent implements OnInit {
     const actionControls = [
       form.get('action.navigateTo.enabled'),
       form.get('action.editRecord.enabled'),
-      form.get('action.addRecord'),
+      form.get('action.addRecord.enabled'),
       form.get('action.subscribeToNotification'),
       form.get('action.sendNotification'),
     ];
@@ -222,21 +244,103 @@ export class EditButtonActionModalComponent implements OnInit {
   };
 
   /**
+   * Set all needed form listeners
+   */
+  private setFormListeners() {
+    if (this.form.get('action.addRecord.enabled')?.value) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE_TEMPLATES,
+          variables: {
+            resource: this.form.get('action.addRecord.resource')?.value,
+          },
+        })
+        .subscribe({
+          next: ({ data }) => {
+            this.templates = data.resource.forms ?? [];
+          },
+        });
+    }
+    /** Fetch email notification list on subscribe to notification is enabled */
+    this.form
+      .get('action.addRecord.resource')
+      ?.valueChanges.pipe(
+        filter((value) => !!value),
+        switchMap((resource) =>
+          this.apollo.query<ResourceQueryResponse>({
+            query: GET_RESOURCE_TEMPLATES,
+            variables: {
+              resource,
+            },
+          })
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data }) => {
+          this.templates = data.resource.forms ?? [];
+        },
+      });
+  }
+
+  ngOnInit(): void {
+    this.editorService.addCalcAndKeysAutoCompleter(
+      this.hrefEditor,
+      this.dataTemplateService.getAutoCompleterPageKeys()
+    );
+    this.setFormListeners();
+  }
+
+  /** On click on the preview button open the href */
+  public preview(): void {
+    let href = this.form.get('action.navigateTo.targetUrl.href')?.value;
+    if (href) {
+      //regex to verify if it's a page id key
+      const regex = /{{page\((.*?)\)}}/;
+      const match = href.match(regex);
+      if (match) {
+        href = this.dataTemplateService.getButtonLink(match[1]);
+      }
+      const isNewTab = this.form.get('openInNewTab')?.value ?? true;
+      if (isNewTab) window.open(href, '_blank');
+      else this.router.navigate([href]);
+    }
+  }
+
+  /** On click on the save button close the dialog with the form value */
+  public onSubmit(): void {
+    const mappedData: ButtonActionT = {
+      text: this.form.get('general.buttonText')?.value,
+      hasRoleRestriction: this.form.get('general.hasRoleRestriction')?.value,
+      roles: this.form.get('general.roles')?.value,
+      category: this.form.get('general.category')?.value,
+      variant: this.form.get('general.variant')?.value,
+      href: this.form.get('action.navigateTo.targetUrl.href')?.value,
+      openInNewTab: this.form.get('action.navigateTo.targetUrl.openInNewTab')
+        ?.value,
+    };
+
+    this.dialogRef.close(mappedData);
+  }
+
+  /**
    * Utility function to set up mutual exclusivity for a set of controls
    *
    * @param controls Array of controls to set up mutual exclusivity for
    */
   setupMutualExclusivity = (controls: AbstractControl[]) => {
     controls.forEach((control, index) => {
-      control?.valueChanges.subscribe((value: boolean | null) => {
-        if (value) {
-          controls.forEach((otherControl, otherIndex) => {
-            if (index !== otherIndex) {
-              otherControl?.setValue(false, { emitEvent: false });
-            }
-          });
-        }
-      });
+      control?.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: boolean | null) => {
+          if (value) {
+            controls.forEach((otherControl, otherIndex) => {
+              if (index !== otherIndex) {
+                otherControl?.setValue(false, { emitEvent: false });
+              }
+            });
+          }
+        });
     });
   };
 
@@ -254,7 +358,7 @@ export class EditButtonActionModalComponent implements OnInit {
       const atLeastOneEnabled =
         actions.navigateTo?.enabled ||
         actions.editRecord?.enabled ||
-        actions.addRecord ||
+        actions.addRecord.enabled ||
         actions.subscribeToNotification ||
         actions.sendNotification;
 
@@ -273,7 +377,7 @@ export class EditButtonActionModalComponent implements OnInit {
     control: AbstractControl
   ): ValidationErrors | null => {
     const navigateTo = control.value;
-    if (navigateTo) {
+    if (navigateTo?.enabled) {
       const atLeastOneEnabled =
         navigateTo.previousPage || navigateTo.targetUrl?.enabled;
       const hrefValid =

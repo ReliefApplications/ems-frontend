@@ -2460,7 +2460,14 @@
 			"buttonActions": {
 				"action": "Action",
 				"actions": {
-					"addRecord": "Add record",
+					"addRecord": {
+						"edition": "Edit current record",
+						"recordFields": {
+							"info": "Newly created record can be attached to resource & resources fields",
+							"text": "Attach newly created record to current record fields"
+						},
+						"text": "Add record"
+					},
 					"editRecord": "Edit record",
 					"navigateTo": "Navigate to",
 					"openInNewTab": "Open in new tab",

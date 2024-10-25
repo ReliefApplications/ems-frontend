@@ -2460,7 +2460,14 @@
 			"buttonActions": {
 				"action": "Action",
 				"actions": {
-					"addRecord": "Ajouter un enregistrement",
+					"addRecord": {
+						"edition": "****************",
+						"recordFields": {
+							"info": "****************",
+							"text": "****************"
+						},
+						"text": "Ajouter un enregistrement"
+					},
 					"editRecord": "Modifier un enregistrement",
 					"navigateTo": "Naviguer vers",
 					"openInNewTab": "Ouvrir dans un nouvel onglet",

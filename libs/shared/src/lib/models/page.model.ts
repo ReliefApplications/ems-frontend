@@ -21,14 +21,9 @@ export interface IContentType {
 }
 
 /** Interface for the page context */
-export type PageContextT = (
-  | {
-      refData: string;
-    }
-  | {
-      resource: string;
-    }
-) & {
+export type PageContextT = {
+  refData?: string;
+  resource?: string;
   displayField: string;
 };
 
