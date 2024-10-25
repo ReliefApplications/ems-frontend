@@ -3,7 +3,7 @@ import { CS_DOCUMENTS_PROPERTIES } from '../../services/document-management/docu
 import { Question, QuestionFile } from '../types';
 
 /**
- * Update file widget in order to be able to update properties with default value expressions
+ * Update file widget in order to be able to update properties with value expressions
  *
  * @param customWidgetCollectionInstance CustomWidgetCollection
  */

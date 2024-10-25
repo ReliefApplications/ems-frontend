@@ -52,7 +52,7 @@ export const init = (
       category: 'Document Properties',
       type: 'expression',
       name: `valueExpression${property.bodyKey}`,
-      displayName: 'Default value expression for ' + property.text,
+      displayName: 'Value expression for ' + property.text,
       visibleIndex: index,
     });
     serializer.addProperty('file', {
