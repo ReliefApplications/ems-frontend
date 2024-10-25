@@ -237,15 +237,15 @@ export class EditButtonActionModalComponent implements OnInit {
           ),
           editRecord: this.fb.group({
             enabled: [!!get(data, 'template', false)],
-            template: [get(data, 'template', {})],
+            template: [get(data, 'template', '')],
           }),
           addRecord: this.fb.group({
             enabled: [!!get(data, 'addRecord', false)],
-            resource: [get(data, 'addRecord.resource', {})],
-            template: [get(data, 'addRecord.template', {})],
+            resource: [get(data, 'addRecord.resource', '')],
+            template: [get(data, 'addRecord.template', '')],
             editCurrentRecord: [get(data, 'addRecord.editCurrentRecord', true)],
             attachNewToCurrentFields: [
-              get(data, 'addRecord.attachNewToCurrentFields', {}),
+              get(data, 'addRecord.attachNewToCurrentFields', []),
             ],
           }),
           subscribeToNotification: [false],
