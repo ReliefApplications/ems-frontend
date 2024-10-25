@@ -112,9 +112,11 @@ export * from './lib/components/list-filter/list-filter.component';
 export * from './lib/components/status-options/status-options.component';
 
 // === CUSTOM COMPONENTS FOR SURVEY CREATOR PROPERTY GRID === //
+export * from './lib/survey/components/accepted-value-types-text/accepted-value-types-text.component';
 export * from './lib/survey/components/application-dropdown/application-dropdown.component';
 export * from './lib/survey/components/accepted-value-types-text/accepted-value-types-text.component';
 export * from './lib/survey/components/code-editor/code-editor.component';
+export * from './lib/survey/components/cs-docs-properties-dropdown/cs-docs-properties-dropdown.component';
 export * from './lib/survey/components/geofields-listbox/geofields-listbox.component';
 export * from './lib/survey/components/reference-data-dropdown/reference-data-dropdown.component';
 export * from './lib/survey/components/resource-available-fields/resource-available-fields.component';

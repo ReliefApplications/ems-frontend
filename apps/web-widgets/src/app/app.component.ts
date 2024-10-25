@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {
   AcceptedValueTypesTextComponent,
   ApplicationDropdownComponent,
+  CsDocsPropertiesDropdownComponent,
   GeofieldsListboxComponent,
   ReferenceDataDropdownComponent,
   ResourceAvailableFieldsComponent,
@@ -29,6 +30,7 @@ export class AppComponent {
     ResourceDropdownComponent,
     ResourceSelectTextComponent,
     TestServiceDropdownComponent,
+    CsDocsPropertiesDropdownComponent,
     AcceptedValueTypesTextComponent,
   ];
 

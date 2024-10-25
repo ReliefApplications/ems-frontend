@@ -1,62 +1,67 @@
 import { Type } from '@angular/core';
 import {
-  QuestionResourceDropdownModel,
-  ResourceDropdownComponent,
-} from '../resource-dropdown/public-api';
-import {
-  ResourceAvailableFieldsComponent,
-  QuestionResourceAvailableFieldsModel,
-} from '../resource-available-fields/public-api';
-import {
-  TestServiceDropdownComponent,
-  QuestionTestServiceDropdownModel,
-} from '../test-service-dropdown/public-api';
-import {
-  ResourceSelectTextComponent,
-  QuestionResourceSelectTextModel,
-} from '../resource-select-text/public-api';
-import {
-  ResourceCustomFiltersComponent,
-  QuestionResourceCustomFiltersModel,
-} from '../resource-custom-filters/public-api';
-import {
-  GeofieldsListboxComponent,
-  QuestionGeospatialListboxModel,
-} from '../geofields-listbox/public-api';
+  AcceptedValueTypesTextComponent,
+  QuestionAcceptedValueTypesTextModel,
+} from '../accepted-value-types-text/public-api';
 import {
   ApplicationDropdownComponent,
   QuestionOwnerApplicationsDropdownModel,
 } from '../application-dropdown/public-api';
 import {
-  ReferenceDataDropdownComponent,
-  QuestionReferenceDataDropdownModel,
-} from '../reference-data-dropdown/public-api';
-import {
-  QuestionDateTypeDisplayerModel,
-  DateTypeDisplayerComponent,
-} from '../date-type-displayer/public-api';
-import {
   CodeEditorComponent,
   CodeEditorModel,
 } from '../code-editor/public-api';
 import {
-  QueryEditorModel,
-  QueryEditorComponent,
-} from '../query-editor/public-api';
+  CsDocsPropertiesDropdownComponent,
+  QuestionCsDocsPropertiesDropdownModel,
+} from '../cs-docs-properties-dropdown/public-api';
+import {
+  DateTypeDisplayerComponent,
+  QuestionDateTypeDisplayerModel,
+} from '../date-type-displayer/public-api';
+import {
+  GeofieldsListboxComponent,
+  QuestionGeospatialListboxModel,
+} from '../geofields-listbox/public-api';
 import {
   JSONEditorComponent,
   JSONEditorModel,
 } from '../json-editor/public-api';
 import {
-  AcceptedValueTypesTextComponent,
-  QuestionAcceptedValueTypesTextModel,
-} from '../accepted-value-types-text/public-api';
+  QueryEditorComponent,
+  QueryEditorModel,
+} from '../query-editor/public-api';
+import {
+  QuestionReferenceDataDropdownModel,
+  ReferenceDataDropdownComponent,
+} from '../reference-data-dropdown/public-api';
+import {
+  QuestionResourceAvailableFieldsModel,
+  ResourceAvailableFieldsComponent,
+} from '../resource-available-fields/public-api';
+import {
+  QuestionResourceCustomFiltersModel,
+  ResourceCustomFiltersComponent,
+} from '../resource-custom-filters/public-api';
+import {
+  QuestionResourceDropdownModel,
+  ResourceDropdownComponent,
+} from '../resource-dropdown/public-api';
+import {
+  QuestionResourceSelectTextModel,
+  ResourceSelectTextComponent,
+} from '../resource-select-text/public-api';
+import {
+  QuestionTestServiceDropdownModel,
+  TestServiceDropdownComponent,
+} from '../test-service-dropdown/public-api';
 
 /**
  * Custom component types for the survey creator property grid editor
  */
 export enum CustomPropertyGridComponentTypes {
   applicationsDropdown = 'applicationsDropdown',
+  csDocsPropertiesDropdown = 'csDocsPropertiesDropdown',
   dateTypeDisplayer = 'date',
   geospatialListbox = 'listBox',
   referenceDataDropdown = 'reference-data-dropdown',
@@ -125,6 +130,10 @@ export const CustomPropertyGridEditors: Record<
   [CustomPropertyGridComponentTypes.jsonEditor]: {
     component: JSONEditorComponent,
     model: JSONEditorModel,
+  },
+  [CustomPropertyGridComponentTypes.csDocsPropertiesDropdown]: {
+    component: CsDocsPropertiesDropdownComponent,
+    model: QuestionCsDocsPropertiesDropdownModel,
   },
   [CustomPropertyGridComponentTypes.acceptedTypesValues]: {
     component: AcceptedValueTypesTextComponent,
