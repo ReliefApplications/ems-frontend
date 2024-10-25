@@ -70,6 +70,7 @@
 			"one": "Child"
 		},
 		"clear": "Clear",
+		"clone": "Clone",
 		"close": "Close",
 		"column": {
 			"few": "Columns",
@@ -151,6 +152,11 @@
 			"none": "No Custom notification",
 			"one": "Custom notification"
 		},
+		"customTemplate": {
+			"few": "Custom templates",
+			"none": "No custom template",
+			"one": "Custom template"
+		},
 		"dashboard": {
 			"few": "Dashboards",
 			"none": "No dashboard",
@@ -172,6 +178,10 @@
 		"duplicate": "Duplicate",
 		"edit": "Edit",
 		"email": {
+			"customTemplate": "Custom template",
+			"error": {
+				"duplicateName": "Title already exists!"
+			},
 			"few": "Emails",
 			"none": "No email",
 			"notification": {
@@ -272,7 +282,9 @@
 				},
 				"error": "Something went wrong during the email sending",
 				"errors": {
+					"customTitleExist": "Custom template title already exist.",
 					"noBody": "Body is required to proceed!",
+					"noCustomTitle": "Custom template title is required to proceed!",
 					"noDistributionList": "Something went wrong during the email sending: no distribution list found",
 					"noSubject": "Subject is required to proceed!",
 					"noTemplate": "Something went wrong during the email sending: no template found"
@@ -307,6 +319,7 @@
 					"text": "Text color"
 				},
 				"subject": {
+					"customLayoutTitle": "Custom Template Title*",
 					"textTitle": "Subject text*",
 					"title": "Subject*"
 				},
@@ -364,6 +377,7 @@
 			"objectNotInvited": "{{name}} invitation failed.",
 			"objectNotReordered": "{{type}} not reordered. {{error}}",
 			"objectNotRestored": "{{value}} not restored. {{error}}",
+			"objectNotSaved": "{{type}} not saved. {{error}}",
 			"objectNotUpdated": "{{type}} not edited. {{error}}",
 			"objectReordered": "{{type}} reordered.",
 			"objectRestored": "{{value}} restored.",
@@ -806,6 +820,7 @@
 				"update": "Edit custom notification"
 			},
 			"errors": {
+				"duplicate": "Email already exists in distribution list",
 				"email": "Please input a valid email address",
 				"schedule": "Enter a valid cron expression"
 			},
@@ -833,15 +848,29 @@
 			}
 		},
 		"email": {
+			"action": {
+				"header": "Actions"
+			},
 			"alert": {
+				"dlPreview": "All emails showing in this table below will be used to create the distribution list",
+				"individualEmailsInfo": "Select the email fields you would like to use to send record specific emails to",
 				"invalidFields": "The following fields are not available for selection: <strong>{{fields}}</strong> as they are of type <strong>{{types}}</strong> and cannot be properly displayed in the table for this form.",
+				"noResource": "Select a resource using the dropdown to display Distribution list filter wizard",
 				"noResourceFields": "Selected resource doesn't contain any fields",
 				"noSelectedFields": "Please select at least 1 field to save this dataset",
-				"tooManyRecords": "At this moment, we are limited to fetch only 50 records. Based on the provided filter conditions there are <strong>{{totalRecords}}</strong> matching records. Kindly add some additional filters to bring the record count less than or equals to 50."
+				"selectChildFields": "You have selected an Object/list field. Select atleast one child field to proceed further and/or preview.",
+				"selectedNonEmailFields": "The selected field is not configured as an email field. Do you want to proceed?",
+				"subscribeExists": "Error! {{message}}",
+				"subscribeFailed": "Oops!... Something went wrong whilst subscribing. {{errorMessage}}",
+				"subscribeSuccess": "Success! {{message}}",
+				"tooManyRecords": "At this moment, we are limited to fetch only 50 records. Based on the provided filter conditions there are <strong>{{totalRecords}}</strong> matching records. Please add some additional filters to bring the record count less than or equals to 50.",
+				"unsubscribeFailed": "Oops!... Something went wrong whilst unsubscribing. {{errorMessage}}",
+				"unsubscribeSuccess": "Success! {{message}}"
 			},
 			"back": "Back to list",
 			"distributionList": {
 				"alert": {
+					"allSeparate": "Distribution list will be composed of all user emails obtained from send separate email, if you'd like to send to a list of users please create a normal block in step 2.",
 					"and": "and",
 					"noEmail": "Selected Dataset does not contain valid email addresses",
 					"partOne": "To proceed, please enter",
@@ -850,8 +879,13 @@
 				},
 				"bcc": "BCC",
 				"cc": "CC",
+				"create": "Create distribution list",
 				"createNew": "Or Create New",
 				"duplicate": "Title already exists",
+				"emailInput": "Manual email input",
+				"errors": {
+					"duplicateName": "This name already exists! Please enter a unique name."
+				},
 				"import": {
 					"download": "Download Template",
 					"import": "Import Distribution List",
@@ -862,6 +896,10 @@
 				"list": "Distribution List",
 				"name": "Distribution List name",
 				"to": "To"
+			},
+			"error": {
+				"invalidDataset": "Following datasets are not valid: {{badDatasets}}",
+				"invalidToValue": "List for To Recipients Invalid please fix!"
 			},
 			"image": {
 				"rectangleValidation": "Please upload an image with a more rectangular aspect ratio, similar to 960x80.",
@@ -879,9 +917,25 @@
 				"more": "Show {{length}} remaining emails...",
 				"subject": "Subject:"
 			},
+			"restrictSubscription": {
+				"description": "Restricts users being able to subscribe to this email notification",
+				"title": "Restrict user subscription"
+			},
 			"saveAsDraft": "Save as draft",
+			"subscribe": {
+				"error": {
+					"restricted": "Subscription Restricted"
+				},
+				"restricted": {
+					"title": "Subscription restricted for this email notification"
+				},
+				"title": "Subscribe"
+			},
 			"tooltip": {
 				"reverseDate": "YYYY/MM/DD"
+			},
+			"unsubscribe": {
+				"title": "Unsubscribe"
 			}
 		},
 		"emailBuilder": {
@@ -1158,6 +1212,8 @@
 				"title": "Block"
 			},
 			"dataset": {
+				"dataType": "Data Type",
+				"referenceData": "Données de référence",
 				"select": "Select a dataset",
 				"title": "Resource"
 			},
@@ -1180,6 +1236,7 @@
 			"filter": {
 				"and": "And",
 				"apply": "Apply filter",
+				"applyField": "Set Fields",
 				"field": "Field",
 				"logic": "Filter logic",
 				"new": "Add new filter",
@@ -1200,6 +1257,9 @@
 			},
 			"preview": {
 				"title": "Preview"
+			},
+			"sendSeparate": {
+				"title": "Send Separate Email Fields"
 			},
 			"sort": {
 				"ascending": "Ascending",
@@ -1426,7 +1486,11 @@
 				"emailError": "Type emails here and hit ENTER to add them to the distribution list",
 				"label": "Distribution List Name*",
 				"noPreviewData": "Selected dataset does not contain any preview data",
+				"sendseparate": {
+					"list": "Send separate email recipients"
+				},
 				"separateEmail": "Send separate email",
+				"subscriptionList": "Subscription list",
 				"to": "To"
 			}
 		},
