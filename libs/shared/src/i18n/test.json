@@ -2458,6 +2458,17 @@
 		"dashboard": {
 			"activateFiltering": "******",
 			"buttonActions": {
+				"action": "******",
+				"actions": {
+					"addRecord": "******",
+					"editRecord": "******",
+					"navigateTo": "******",
+					"openInNewTab": "******",
+					"previousPage": "******",
+					"sendNotification": "******",
+					"subscribeToNotification": "******",
+					"url": "******"
+				},
 				"category": "******",
 				"confirmDelete": "******",
 				"create": "******",

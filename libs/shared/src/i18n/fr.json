@@ -2458,6 +2458,17 @@
 		"dashboard": {
 			"activateFiltering": "Activer le filtre",
 			"buttonActions": {
+				"action": "Action",
+				"actions": {
+					"addRecord": "Ajouter un enregistrement",
+					"editRecord": "Modifier un enregistrement",
+					"navigateTo": "Naviguer vers",
+					"openInNewTab": "Ouvrir dans un nouvel onglet",
+					"previousPage": "Page précédente",
+					"sendNotification": "Envoyer une notification",
+					"subscribeToNotification": "S'abonner à une notification",
+					"url": "URL cible"
+				},
 				"category": "Catégorie de bouton",
 				"confirmDelete": "Voulez-vous vraiment supprimer cette action de bouton ?",
 				"create": "Créer un bouton d'action",
