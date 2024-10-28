@@ -24,6 +24,7 @@ import {
   ResourceSelectComponent,
 } from '../../../controls/public-api';
 import { QueryParamsMappingComponent } from '../../common/query-params-mapping/query-params-mapping.component';
+import { AssetPipe } from '../../../../pipes/asset/asset.pipe';
 
 /**
  * Main tab of chart settings modal.
@@ -54,6 +55,7 @@ import { QueryParamsMappingComponent } from '../../common/query-params-mapping/q
     DividerModule,
     QueryParamsMappingComponent,
     SpinnerModule,
+    AssetPipe,
   ],
   exports: [TabMainComponent],
 })
