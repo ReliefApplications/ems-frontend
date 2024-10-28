@@ -88,7 +88,7 @@ export const init = (
             ? 'Related Occurrence'
             : 'Document Properties',
         type: 'expression',
-        name: `valueExpression${property.value}`,
+        name: `valueExpression${property.bodyKey}`,
         displayName: 'Value expression for ' + property.text,
         visibleIndex: property.value === 'occurrencetypes' ? 1 : index,
       });

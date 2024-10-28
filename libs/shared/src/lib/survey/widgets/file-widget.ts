@@ -1,3 +1,4 @@
+import { isNil } from 'lodash';
 import { CustomWidgetCollection, SurveyModel } from 'survey-core';
 import { CS_DOCUMENTS_PROPERTIES } from '../../services/document-management/document-management.service';
 import { Question, QuestionFile } from '../types';
@@ -23,9 +24,11 @@ export const init = (
           const result = sender.runExpression(
             question[`valueExpression${cs.bodyKey}`]
           );
-          question[cs.bodyKey as string] = Array.isArray(result)
-            ? result
-            : [result];
+          question[cs.bodyKey as string] = !isNil(result)
+            ? Array.isArray(result)
+              ? result
+              : [result]
+            : result;
         });
       });
     },
