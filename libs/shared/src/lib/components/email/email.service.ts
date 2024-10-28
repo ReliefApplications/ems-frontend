@@ -406,19 +406,19 @@ export class EmailService {
       ).filter((data: any) => data.resource);
 
       if (emailDatasets.length) {
-        const missingFieldsBlocks: string[] = [];
-        // Check if dataset has fields defined
-        const allDatasetValid = emailDatasets.forEach((dataset: any) => {
+        const inValidBlocks: string[] = [];
+
+        // Check for missing fields using forEach
+        emailDatasets.forEach((dataset: any) => {
           const fields = dataset.query.fields;
           if (!fields || fields.length === 0) {
-            // If fields are missing in the block ,  add the block to the missingBlock array
-            missingFieldsBlocks.push(dataset.name);
-            return false;
+            // If fields are missing, add the dataset name to the inValidBlocks array
+            inValidBlocks.push(dataset.name);
           }
-          return true;
         });
 
-        if (allDatasetValid) {
+        // Check if there are any missing fields
+        if (inValidBlocks.length === 0) {
           this.http
             .post(
               `${this.restService.apiUrl}/notification/validate-dataset`,
@@ -441,7 +441,7 @@ export class EmailService {
           // If there are missing fields, resolve with invalid status and the messages
           resolve({
             valid: false,
-            badData: missingFieldsBlocks,
+            badData: inValidBlocks, // Provide specific messages about which fields are missing
           });
         }
       } else {
