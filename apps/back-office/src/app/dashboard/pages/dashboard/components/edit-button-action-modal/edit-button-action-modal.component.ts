@@ -127,6 +127,22 @@ export class EditButtonActionModalComponent implements OnInit {
       this.hrefEditor,
       this.dataTemplateService.getAutoCompleterPageKeys()
     );
+
+    // Get the resource templates
+    this.apollo
+      .query<ResourceQueryResponse>({
+        query: GET_RESOURCE,
+        variables: {
+          resource:
+            this.dashboardService.currentDashboard.page?.context?.resource ??
+            '',
+        },
+      })
+      .subscribe({
+        next: ({ data }) => {
+          this.templates = data.resource.forms ?? [];
+        },
+      });
   }
 
   /** On click on the preview button open the href */
@@ -214,22 +230,6 @@ export class EditButtonActionModalComponent implements OnInit {
    * @returns the form group
    */
   createButtonActionForm = (data: ButtonActionT, roles: Role[]): FormGroup => {
-    // Get the resource templates
-    this.apollo
-      .query<ResourceQueryResponse>({
-        query: GET_RESOURCE,
-        variables: {
-          resource:
-            this.dashboardService.currentDashboard.page?.context?.resource ??
-            '',
-        },
-      })
-      .subscribe({
-        next: ({ data }) => {
-          this.templates = data.resource.forms ?? [];
-        },
-      });
-
     const form = this.fb.group({
       general: this.fb.group({
         buttonText: [get(data, 'text', ''), Validators.required],
@@ -263,10 +263,21 @@ export class EditButtonActionModalComponent implements OnInit {
             },
             { validator: this.navigateToValidator }
           ),
-          editRecord: this.fb.group({
-            enabled: [!!get(data, 'template', false)],
-            template: [get(data, 'template', this.templates)],
-          }),
+          editRecord: this.fb.group(
+            {
+              enabled: [!!get(data, 'template', false)],
+              template: [get(data, 'template', '')],
+            },
+            {
+              validator: (
+                control: AbstractControl
+              ): ValidationErrors | null => {
+                return control.get('enabled')?.value
+                  ? null
+                  : { atLeastOneRequired: true };
+              },
+            }
+          ),
           addRecord: this.fb.group({
             enabled: [!!get(data, 'addRecord', false)],
             resource: [get(data, 'addRecord.resource', '')],
@@ -356,7 +367,7 @@ export class EditButtonActionModalComponent implements OnInit {
     control: AbstractControl
   ): ValidationErrors | null => {
     const navigateTo = control.value;
-    if (navigateTo) {
+    if (navigateTo?.enabled) {
       const atLeastOneEnabled =
         navigateTo.previousPage || navigateTo.targetUrl?.enabled;
       const hrefValid =

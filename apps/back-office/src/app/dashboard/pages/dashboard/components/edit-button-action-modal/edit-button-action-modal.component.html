@@ -202,6 +202,9 @@
                       'models.dashboard.buttonActions.actions.template'
                         | translate
                     }}</label>
+                    <!-- <div *ngFor="let template of templates">
+                      {{ template | json }}
+                    </div> -->
                     <ui-select-menu
                       formControlName="template"
                       placeholder="{{
@@ -211,7 +214,7 @@
                     >
                       <ui-select-option
                         *ngFor="let template of templates"
-                        [value]="template"
+                        [value]="template.id"
                       >
                         {{ template.name }}
                       </ui-select-option>
