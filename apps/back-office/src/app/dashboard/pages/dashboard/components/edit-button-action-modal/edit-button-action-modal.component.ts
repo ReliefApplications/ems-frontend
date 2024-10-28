@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   DialogModule,
@@ -31,14 +31,18 @@ import { EditorModule } from '@tinymce/tinymce-angular';
 import {
   EditorService,
   EditorControlComponent,
+  DashboardService,
   DataTemplateService,
   INLINE_EDITOR_CONFIG,
   ButtonActionT,
   ApplicationService,
   Role,
+  ResourceQueryResponse,
 } from '@oort-front/shared';
 import { Router } from '@angular/router';
 import { Form } from '@oort-front/shared';
+import { Apollo } from 'apollo-angular';
+import { GET_RESOURCE } from './graphql/queries';
 
 /** Component for editing a dashboard button action */
 @Component({
@@ -81,14 +85,8 @@ export class EditButtonActionModalComponent implements OnInit {
   /** Roles from current application */
   public roles: Role[];
 
-  /** Edit record Templates */
-  @Input() editRecordTemplates: Form[] = [];
-
-  /** Add record resources */
-  @Input() addRecordResources: Form[] = [];
-
-  /** Add record Templates */
-  @Input() addRecordTemplates: Form[] = [];
+  /** Templates for the resource */
+  public templates: Form[] = [];
 
   /**
    * Component for editing a dashboard button action
@@ -100,6 +98,8 @@ export class EditButtonActionModalComponent implements OnInit {
    * @param router Router service
    * @param applicationService shared application service
    * @param fb form builder
+   * @param apollo apollo client
+   * @param dashboardService dashboard service
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
@@ -108,7 +108,9 @@ export class EditButtonActionModalComponent implements OnInit {
     private dataTemplateService: DataTemplateService,
     private router: Router,
     public applicationService: ApplicationService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private apollo: Apollo,
+    private dashboardService: DashboardService
   ) {
     this.roles = this.applicationService.application.value?.roles || [];
     this.form = this.createButtonActionForm(data, this.roles);
@@ -212,6 +214,22 @@ export class EditButtonActionModalComponent implements OnInit {
    * @returns the form group
    */
   createButtonActionForm = (data: ButtonActionT, roles: Role[]): FormGroup => {
+    // Get the resource templates
+    this.apollo
+      .query<ResourceQueryResponse>({
+        query: GET_RESOURCE,
+        variables: {
+          resource:
+            this.dashboardService.currentDashboard.page?.context?.resource ??
+            '',
+        },
+      })
+      .subscribe({
+        next: ({ data }) => {
+          this.templates = data.resource.forms ?? [];
+        },
+      });
+
     const form = this.fb.group({
       general: this.fb.group({
         buttonText: [get(data, 'text', ''), Validators.required],
@@ -247,7 +265,7 @@ export class EditButtonActionModalComponent implements OnInit {
           ),
           editRecord: this.fb.group({
             enabled: [!!get(data, 'template', false)],
-            template: [get(data, 'template', '')],
+            template: [get(data, 'template', this.templates)],
           }),
           addRecord: this.fb.group({
             enabled: [!!get(data, 'addRecord', false)],
