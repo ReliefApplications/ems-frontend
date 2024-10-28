@@ -373,6 +373,9 @@ export class EditButtonActionModalComponent
       href: this.form.get('action.navigateTo.targetUrl.href')?.value,
       openInNewTab: this.form.get('action.navigateTo.targetUrl.openInNewTab')
         ?.value,
+      resource: this.form.get('action.addRecord.resource')?.value,
+      template: this.form.get('action.addRecord.template')?.value,
+      recordFields: this.form.get('action.addRecord.recordFields')?.value,
     };
 
     this.dialogRef.close(mappedData);
