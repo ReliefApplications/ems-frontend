@@ -404,25 +404,46 @@ export class EmailService {
       const emailDatasets = cloneDeep(
         this.datasetsForm.get('datasets')?.getRawValue()
       ).filter((data: any) => data.resource);
+
       if (emailDatasets.length) {
-        this.http
-          .post(
-            `${this.restService.apiUrl}/notification/validate-dataset`,
-            emailDatasets
-          )
-          .subscribe({
-            next: (data: any) => {
-              resolve({
-                valid: !data?.inValidDataSets?.length,
-                badData: data?.inValidDataSets?.map(
-                  ({ name }: InValidDataSets) => name // need only name to show error
-                ),
-              });
-            },
-            error: (error) => {
-              reject(error);
-            },
+        const missingFieldsBlocks: string[] = [];
+        // Check if dataset has fields defined
+        const allDatasetValid = emailDatasets.forEach((dataset: any) => {
+          const fields = dataset.query.fields;
+          if (!fields || fields.length === 0) {
+            // If fields are missing in the block ,  add the block to the missingBlock array
+            missingFieldsBlocks.push(dataset.name);
+            return false;
+          }
+          return true;
+        });
+
+        if (allDatasetValid) {
+          this.http
+            .post(
+              `${this.restService.apiUrl}/notification/validate-dataset`,
+              emailDatasets
+            )
+            .subscribe({
+              next: (data: any) => {
+                resolve({
+                  valid: !data?.inValidDataSets?.length,
+                  badData: data?.inValidDataSets?.map(
+                    ({ name }: InValidDataSets) => name // only name to show error
+                  ),
+                });
+              },
+              error: (error) => {
+                reject(error);
+              },
+            });
+        } else {
+          // If there are missing fields, resolve with invalid status and the messages
+          resolve({
+            valid: false,
+            badData: missingFieldsBlocks,
           });
+        }
       } else {
         resolve({ valid: true, badData: [] });
       }
