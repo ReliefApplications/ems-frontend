@@ -264,9 +264,9 @@ export class EditButtonActionModalComponent
   };
 
   /**
-   * Set all needed form listeners
+   * Set needed listeners for add record form
    */
-  private setFormListeners() {
+  private prepareAddRecordFormListeners() {
     if (this.form.get('action.addRecord.enabled')?.value) {
       this.apollo
         .query<ResourceQueryResponse>({
@@ -287,12 +287,13 @@ export class EditButtonActionModalComponent
     this.form
       .get('action.addRecord.enabled')
       ?.valueChanges.pipe(
-        filter(
-          (value) =>
+        filter((value) => {
+          const isFirstEnabled =
             !!value &&
             !this.selectedResource &&
-            this.form.get('action.addRecord.resource')?.value
-        ),
+            this.form.get('action.addRecord.resource')?.value;
+          return isFirstEnabled;
+        }),
         switchMap(() =>
           this.apollo.query<ResourceQueryResponse>({
             query: GET_RESOURCE,
@@ -336,6 +337,13 @@ export class EditButtonActionModalComponent
           this.recordFields = this.getFields(data?.resource.fields);
         },
       });
+  }
+
+  /**
+   * Set all needed form listeners
+   */
+  private setFormListeners() {
+    this.prepareAddRecordFormListeners();
   }
 
   ngOnInit(): void {

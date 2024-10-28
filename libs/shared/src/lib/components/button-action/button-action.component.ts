@@ -1,9 +1,11 @@
-import { Component, Input } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { DataTemplateService } from '../../services/data-template/data-template.service';
+import { Component, Input } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntil } from 'rxjs';
 import { Dashboard } from '../../models/dashboard.model';
+import { DataTemplateService } from '../../services/data-template/data-template.service';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { ButtonActionT } from './button-action-type';
-import { Router } from '@angular/router';
 
 /** Component for display action buttons */
 @Component({
@@ -11,13 +13,15 @@ import { Router } from '@angular/router';
   templateUrl: './button-action.component.html',
   styleUrls: ['./button-action.component.scss'],
 })
-export class ButtonActionComponent {
+export class ButtonActionComponent extends UnsubscribeComponent {
   /** Button actions */
   @Input() buttonActions: ButtonActionT[] = [];
   /** Dashboard */
   @Input() dashboard?: Dashboard;
   /** Can update dashboard or not */
   @Input() canUpdate = false;
+  /** Context id of the current dashboard */
+  private contextId!: string;
 
   /**
    * Action buttons
@@ -25,12 +29,21 @@ export class ButtonActionComponent {
    * @param dialog Dialog service
    * @param dataTemplateService DataTemplate service
    * @param router Angular router
+   * @param activatedRoute Activated route
    */
   constructor(
     public dialog: Dialog,
     private dataTemplateService: DataTemplateService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {
+    super();
+    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe({
+      next: ({ id }) => {
+        this.contextId = id;
+      },
+    });
+  }
 
   /**
    * Opens link of button action.
@@ -50,6 +63,28 @@ export class ButtonActionComponent {
           window.location.href = href;
         }
       }
+    } else if (button.resource) {
+      this.openRecordModal(button.template as string);
     }
+  }
+
+  /**
+   * Open record modal to add/edit a record
+   *
+   * @param template Template id
+   */
+  private async openRecordModal(template: string) {
+    const { FormModalComponent } = await import(
+      '../form-modal/form-modal.component'
+    );
+    this.dialog.open(FormModalComponent, {
+      disableClose: true,
+      data: {
+        recordId: this.contextId,
+        template,
+        actionButtonCtx: true,
+      },
+      autoFocus: false,
+    });
   }
 }
