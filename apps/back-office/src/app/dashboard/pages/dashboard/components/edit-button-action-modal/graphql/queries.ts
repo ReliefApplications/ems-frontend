@@ -1,7 +1,7 @@
 import { gql } from 'apollo-angular';
 
-/** Graphql request for getting resource meta date for a grid */
-export const GET_RESOURCE_TEMPLATES = gql`
+/** Graphql request for getting resource data */
+export const GET_RESOURCE = gql`
   query GetGridResourceMeta($resource: ID!) {
     resource(id: $resource) {
       id
@@ -11,17 +11,7 @@ export const GET_RESOURCE_TEMPLATES = gql`
         id
         name
       }
-      relatedForms {
-        id
-        name
-        fields
-        resource {
-          id
-          queryName
-          name
-          fields
-        }
-      }
+      fields
     }
   }
 `;

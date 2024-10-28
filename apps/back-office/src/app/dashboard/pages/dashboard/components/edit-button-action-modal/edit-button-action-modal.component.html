@@ -232,9 +232,7 @@
                       <label>{{ 'models.resource.select' | translate }}</label>
                       <shared-resource-select
                         formControlName="resource"
-                        [selectedElements]="[
-                          form.value.action.addRecord.resource
-                        ]"
+                        [selectedElements]="[selectedResource]"
                       ></shared-resource-select>
                     </div>
                     <!-- Template selection -->
@@ -280,8 +278,8 @@
                           formControlName="recordFields"
                         >
                           <ng-container *ngFor="let field of recordFields">
-                            <ui-select-option [value]="field.id">
-                              {{ field.name }}
+                            <ui-select-option [value]="field">
+                              {{ field }}
                             </ui-select-option>
                           </ng-container>
                         </ui-select-menu>

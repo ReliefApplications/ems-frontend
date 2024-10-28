@@ -16,12 +16,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   ApplicationService,
   ButtonActionT,
-  Dashboard,
+  DashboardService,
   DataTemplateService,
   EditorControlComponent,
   EditorService,
   Form,
   INLINE_EDITOR_CONFIG,
+  Resource,
   ResourceQueryResponse,
   ResourceSelectComponent,
   Role,
@@ -43,9 +44,9 @@ import {
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { Apollo } from 'apollo-angular';
 import { get, isNil } from 'lodash';
-import { filter, switchMap, takeUntil } from 'rxjs';
+import { filter, iif, of, switchMap, takeUntil } from 'rxjs';
 import { RawEditorSettings } from 'tinymce';
-import { GET_RESOURCE_TEMPLATES } from './graphql/queries';
+import { GET_RESOURCE } from './graphql/queries';
 
 /** Component for editing a dashboard button action */
 @Component({
@@ -92,11 +93,19 @@ export class EditButtonActionModalComponent
   /** Roles from current application */
   public roles: Role[];
   /** Record fields current application */
-  public recordFields: any[] = [];
+  public recordFields: string[] = [];
   /** Resource template list */
   public templates: Form[] = [];
-  /** Dashboard page where the button is attached */
-  private currentDashboardPage!: Dashboard;
+  /** Selected resource */
+  public selectedResource!: Resource;
+  /**
+   * Map current available fields options to name
+   *
+   * @param fields current fields array
+   * @returns map fields array to name
+   */
+  private getFields = (fields: any[]) =>
+    (fields ?? []).map((f: { name: string }) => f.name);
 
   /**
    * Component for editing a dashboard button action
@@ -109,6 +118,7 @@ export class EditButtonActionModalComponent
    * @param applicationService shared application service
    * @param fb form builder
    * @param apollo Angular Apollo client
+   * @param dashboardService Dashboard service
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
@@ -118,7 +128,8 @@ export class EditButtonActionModalComponent
     private router: Router,
     public applicationService: ApplicationService,
     private fb: FormBuilder,
-    private apollo: Apollo
+    private apollo: Apollo,
+    public dashboardService: DashboardService
   ) {
     super();
     this.roles = this.applicationService.application.value?.roles || [];
@@ -184,15 +195,24 @@ export class EditButtonActionModalComponent
                 get(
                   data,
                   'resource',
-                  this.currentDashboardPage.page?.context?.resource ?? ''
+                  this.dashboardService.currentSelectedDashboard.page?.context
+                    ?.resource ?? ''
                 ),
               ],
               template: [get(data, 'template', '')],
               edition: [!!get(data, 'recordFields', false)],
               recordFields: [
-                get(data, 'recordFields', [
-                  this.currentDashboardPage.page?.context?.displayField ?? '',
-                ]),
+                get(
+                  data,
+                  'recordFields',
+                  this.dashboardService.currentSelectedDashboard.page?.context
+                    ?.displayField
+                    ? [
+                        this.dashboardService.currentSelectedDashboard.page
+                          ?.context?.displayField,
+                      ]
+                    : []
+                ),
               ],
             },
             {
@@ -250,27 +270,34 @@ export class EditButtonActionModalComponent
     if (this.form.get('action.addRecord.enabled')?.value) {
       this.apollo
         .query<ResourceQueryResponse>({
-          query: GET_RESOURCE_TEMPLATES,
+          query: GET_RESOURCE,
           variables: {
             resource: this.form.get('action.addRecord.resource')?.value,
           },
         })
         .subscribe({
           next: ({ data }) => {
+            this.selectedResource = data.resource;
             this.templates = data.resource.forms ?? [];
+            this.recordFields = this.getFields(data.resource.fields);
           },
         });
     }
     /** Fetch email notification list on subscribe to notification is enabled */
     this.form
-      .get('action.addRecord.resource')
+      .get('action.addRecord.enabled')
       ?.valueChanges.pipe(
-        filter((value) => !!value),
-        switchMap((resource) =>
+        filter(
+          (value) =>
+            !!value &&
+            !this.selectedResource &&
+            this.form.get('action.addRecord.resource')?.value
+        ),
+        switchMap(() =>
           this.apollo.query<ResourceQueryResponse>({
-            query: GET_RESOURCE_TEMPLATES,
+            query: GET_RESOURCE,
             variables: {
-              resource,
+              resource: this.form.get('action.addRecord.resource')?.value,
             },
           })
         ),
@@ -278,7 +305,35 @@ export class EditButtonActionModalComponent
       )
       .subscribe({
         next: ({ data }) => {
+          this.selectedResource = data.resource;
           this.templates = data.resource.forms ?? [];
+          this.recordFields = this.getFields(data.resource.fields);
+        },
+      });
+    this.form
+      .get('action.addRecord.resource')
+      ?.valueChanges.pipe(
+        switchMap((resource) =>
+          iif(
+            () => !!resource,
+            this.apollo.query<ResourceQueryResponse>({
+              query: GET_RESOURCE,
+              variables: {
+                resource,
+              },
+            }),
+            of({ data: null })
+          )
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data }) => {
+          this.form.get('action.addRecord.template')?.setValue('');
+          this.form.get('action.addRecord.recordFields')?.setValue([]);
+          this.selectedResource = data?.resource as Resource;
+          this.templates = data?.resource?.forms ?? [];
+          this.recordFields = this.getFields(data?.resource.fields);
         },
       });
   }
