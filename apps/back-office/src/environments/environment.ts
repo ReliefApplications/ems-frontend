@@ -12,7 +12,6 @@ const authConfig: AuthConfig = {
   postLogoutRedirectUri: 'http://localhost:4200/auth/',
   clientId: 'oort-client',
   scope: 'openid profile email offline_access',
-  // Last scope is used to authenticate against Common Services
   responseType: 'code',
   showDebugInformation: true,
 };
