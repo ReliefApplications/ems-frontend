@@ -10,6 +10,7 @@ import {
   StepQueryResponse,
   FormQueryResponse,
   PageQueryResponse,
+  ButtonActionT,
 } from '@oort-front/shared';
 import {
   GET_FORM_BY_ID,
@@ -53,6 +54,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   public step?: Step;
   /** Tells if the form is within a workflow */
   public isStep = false;
+  /** Form button actions */
+  public buttonActions: ButtonActionT[] = [];
 
   /**
    * Form page.

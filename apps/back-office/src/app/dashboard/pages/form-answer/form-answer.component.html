@@ -2,7 +2,10 @@
   <!-- Form -->
   <shared-form [form]="form" (save)="onComplete($event)"></shared-form>
   <!-- Form actions -->
-  <div class="mt-6 flex justify-center" *ngIf="completed && !form.uniqueRecord">
+  <div
+    class="mt-6 flex justify-center gap-x-4"
+    *ngIf="completed && !form.uniqueRecord"
+  >
     <!-- New record -->
     <ui-button
       [isBlock]="true"
@@ -12,5 +15,10 @@
       (click)="clearForm()"
       >{{ 'models.record.new' | translate }}</ui-button
     >
+    <!-- Button actions -->
+    <shared-button-action
+      class="export-hide"
+      [buttonActions]="buttonActions"
+    ></shared-button-action>
   </div>
 </ng-container>

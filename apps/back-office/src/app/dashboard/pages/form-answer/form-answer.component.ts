@@ -6,6 +6,7 @@ import {
   FormQueryResponse,
   BreadcrumbService,
   FormComponent,
+  ButtonActionT,
 } from '@oort-front/shared';
 import { GET_SHORT_FORM_BY_ID } from './graphql/queries';
 
@@ -29,6 +30,8 @@ export class FormAnswerComponent implements OnInit {
   public form?: Form;
   /** Is form completed */
   public completed = false;
+  /** Form button actions */
+  public buttonActions: ButtonActionT[] = [];
 
   /**
    * Form answer page component.

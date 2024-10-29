@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormAnswerRoutingModule } from './form-answer-routing.module';
 import { FormAnswerComponent } from './form-answer.component';
-import { FormModule } from '@oort-front/shared';
+import { FormModule, ButtonActionModule } from '@oort-front/shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule } from '@oort-front/ui';
@@ -20,6 +20,7 @@ import { ButtonModule } from '@oort-front/ui';
     FormModule,
     TranslateModule,
     ButtonModule,
+    ButtonActionModule,
   ],
   exports: [FormAnswerComponent],
 })
