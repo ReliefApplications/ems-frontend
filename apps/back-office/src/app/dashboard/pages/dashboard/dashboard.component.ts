@@ -304,7 +304,6 @@ export class DashboardComponent
         if (dashboard) {
           this.id = dashboard.id || id;
           this.dashboard = dashboard;
-          this.dashboardService.currentDashboard = dashboard;
           this.gridOptions = {
             ...omit(this.gridOptions, ['gridType', 'minimumHeight']), // Prevent issue when gridType or minimumHeight was not set
             ...this.dashboard?.gridOptions,
