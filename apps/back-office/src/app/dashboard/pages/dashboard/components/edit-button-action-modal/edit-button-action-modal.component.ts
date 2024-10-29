@@ -1,6 +1,18 @@
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
+import {
+  DialogModule,
+  variants as ButtonVariants,
+  categories as ButtonCategories,
+  FormWrapperModule,
+  SelectMenuModule,
+  ButtonModule,
+  ToggleModule,
+  DividerModule,
+  TabsModule,
+  IconModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import {
   AbstractControl,
   FormBuilder,
@@ -11,7 +23,10 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
+import { Apollo } from 'apollo-angular';
+import { GET_RESOURCE } from './graphql/queries';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ApplicationService,
@@ -28,25 +43,10 @@ import {
   Role,
   UnsubscribeComponent,
 } from '@oort-front/shared';
-import {
-  categories as ButtonCategories,
-  ButtonModule,
-  variants as ButtonVariants,
-  DialogModule,
-  DividerModule,
-  FormWrapperModule,
-  IconModule,
-  SelectMenuModule,
-  TabsModule,
-  ToggleModule,
-  TooltipModule,
-} from '@oort-front/ui';
 import { EditorModule } from '@tinymce/tinymce-angular';
-import { Apollo } from 'apollo-angular';
 import { get, isNil } from 'lodash';
 import { filter, iif, of, switchMap, takeUntil } from 'rxjs';
 import { RawEditorSettings } from 'tinymce';
-import { GET_RESOURCE } from './graphql/queries';
 
 /** Dialog data interface */
 interface DialogData {
@@ -112,7 +112,7 @@ export class EditButtonActionModalComponent
    * @param router Router service
    * @param applicationService shared application service
    * @param fb form builder
-   * @param apollo Angular Apollo client
+   * @param apollo apollo client
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
@@ -167,8 +167,10 @@ export class EditButtonActionModalComponent
         {
           navigateTo: this.fb.group(
             {
-              enabled: [!!get(data, 'href', false)],
-              previousPage: [false],
+              enabled: [
+                !!get(data, 'href', false) || get(data, 'previousPage'),
+              ],
+              previousPage: [get(data, 'previousPage', false)],
               targetUrl: this.fb.group({
                 enabled: [!!get(data, 'href', false)],
                 href: [get(data, 'href', '')],
@@ -178,8 +180,8 @@ export class EditButtonActionModalComponent
             { validator: this.navigateToValidator }
           ),
           editRecord: this.fb.group({
-            enabled: [false],
-            template: [''],
+            enabled: [!!get(data, 'template', false)],
+            template: [get(data, 'template', '')],
           }),
           addRecord: this.fb.group(
             {
@@ -215,8 +217,12 @@ export class EditButtonActionModalComponent
               },
             }
           ),
-          subscribeToNotification: [false],
-          sendNotification: [false],
+          subscribeToNotification: this.fb.group({
+            enabled: [false],
+          }),
+          sendNotification: this.fb.group({
+            enabled: [false],
+          }),
         },
         { validator: this.actionValidator }
       ),
@@ -227,8 +233,8 @@ export class EditButtonActionModalComponent
       form.get('action.navigateTo.enabled'),
       form.get('action.editRecord.enabled'),
       form.get('action.addRecord.enabled'),
-      form.get('action.subscribeToNotification'),
-      form.get('action.sendNotification'),
+      form.get('action.subscribeToNotification.enabled'),
+      form.get('action.sendNotification.enabled'),
     ];
 
     const navigateToControls = [
@@ -341,6 +347,7 @@ export class EditButtonActionModalComponent
         })
         .subscribe({
           next: ({ data }) => {
+            this.templates = data.resource.forms ?? [];
             this.resourceFields = data.resource.fields.filter((f: any) =>
               ['resource', 'resources'].includes(f.type)
             );
@@ -373,12 +380,27 @@ export class EditButtonActionModalComponent
       roles: this.form.get('general.roles')?.value,
       category: this.form.get('general.category')?.value,
       variant: this.form.get('general.variant')?.value,
-      href: this.form.get('action.navigateTo.targetUrl.href')?.value,
-      openInNewTab: this.form.get('action.navigateTo.targetUrl.openInNewTab')
-        ?.value,
-      resource: this.form.get('action.addRecord.resource')?.value,
-      template: this.form.get('action.addRecord.template')?.value,
-      recordFields: this.form.get('action.addRecord.recordFields')?.value,
+      // If navigateTo enabled
+      ...(this.form.get('action.navigateTo.enabled')?.value && {
+        previousPage: this.form.get('action.navigateTo.previousPage')?.value,
+        // If targetUrl enabled
+        ...(this.form.get('action.navigateTo.targetUrl.enabled')?.value && {
+          href: this.form.get('action.navigateTo.targetUrl.href')?.value,
+          openInNewTab: this.form.get(
+            'action.navigateTo.targetUrl.openInNewTab'
+          )?.value,
+        }),
+      }),
+      // If editRecord enabled
+      ...(this.form.get('actions.editRecord.enabled')?.value && {
+        template: this.form.get('action.editRecord.template')?.value,
+      }),
+      // If addRecord enabled
+      ...(this.form.get('actions.addRecord.enabled')?.value && {
+        resource: this.form.get('action.addRecord.resource')?.value,
+        template: this.form.get('action.addRecord.template')?.value,
+        recordFields: this.form.get('action.addRecord.recordFields')?.value,
+      }),
     };
 
     this.dialogRef.close(mappedData);
@@ -419,9 +441,9 @@ export class EditButtonActionModalComponent
       const atLeastOneEnabled =
         actions.navigateTo?.enabled ||
         actions.editRecord?.enabled ||
-        actions.addRecord.enabled ||
-        actions.subscribeToNotification ||
-        actions.sendNotification;
+        actions.addRecord?.enabled ||
+        actions.subscribeToNotification?.enabled ||
+        actions.sendNotification?.enabled;
 
       return atLeastOneEnabled ? null : { atLeastOneRequired: true };
     }

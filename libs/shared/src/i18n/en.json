@@ -2464,12 +2464,20 @@
 					"addRecord": {
 						"edition": "Edit current record",
 						"recordFields": {
-							"info": "Newly created record can be attached to resource & resources fields",
 							"text": "Attach newly created record to current record fields"
 						},
-						"text": "Add record"
+						"text": "Add record",
+						"tooltip": {
+							"recordFields": "Newly created record can be attached to resource & resources fields",
+							"template": "Select a resource template for addition of new records"
+						}
 					},
-					"editRecord": "Edit record",
+					"editRecord": {
+						"text": "Edit record",
+						"tooltip": {
+							"template": "Select a resource template for edition of current record.\n If no template is selected, latest form used by the record will be used"
+						}
+					},
 					"navigateTo": "Navigate to",
 					"openInNewTab": "Open in new tab",
 					"previousPage": "Previous page",

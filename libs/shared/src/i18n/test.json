@@ -2464,12 +2464,20 @@
 					"addRecord": {
 						"edition": "******",
 						"recordFields": {
-							"info": "******",
 							"text": "******"
 						},
-						"text": "******"
+						"text": "******",
+						"tooltip": {
+							"recordFields": "******",
+							"template": "******"
+						}
 					},
-					"editRecord": "******",
+					"editRecord": {
+						"text": "******",
+						"tooltip": {
+							"template": "******"
+						}
+					},
 					"navigateTo": "******",
 					"openInNewTab": "******",
 					"previousPage": "******",

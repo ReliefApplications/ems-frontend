@@ -188,7 +188,7 @@
                 <ui-toggle formControlName="enabled">
                   <ng-container ngProjectAs="label">
                     {{
-                      'models.dashboard.buttonActions.actions.editRecord'
+                      'models.dashboard.buttonActions.actions.editRecord.text'
                         | translate
                     }}
                   </ng-container>
@@ -201,14 +201,19 @@
                     <label>{{ 'models.form.template' | translate }}</label>
                     <ui-select-menu formControlName="template">
                       <ui-select-option>-</ui-select-option>
-                      <ui-select-option> template.name </ui-select-option>
+                      <ui-select-option
+                        *ngFor="let template of templates"
+                        [value]="template.id"
+                      >
+                        {{ template.name }}
+                      </ui-select-option>
                     </ui-select-menu>
                     <ui-icon
                       uiSuffix
                       icon="info_outline"
                       variant="grey"
                       [uiTooltip]="
-                        'components.widget.settings.grid.tooltip.template'
+                        'models.dashboard.buttonActions.actions.editRecord.tooltip.template'
                           | translate
                       "
                     ></ui-icon>
@@ -252,7 +257,7 @@
                         icon="info_outline"
                         variant="grey"
                         [uiTooltip]="
-                          'components.widget.settings.grid.tooltip.template'
+                          'models.dashboard.buttonActions.actions.addRecord.tooltip.template'
                             | translate
                         "
                       ></ui-icon>
@@ -294,7 +299,7 @@
                           variant="grey"
                           uiSuffix
                           [uiTooltip]="
-                            'models.dashboard.buttonActions.actions.addRecord.recordFields.info'
+                            'models.dashboard.buttonActions.actions.addRecord.tooltip.recordFields'
                               | translate
                           "
                         ></ui-icon>
@@ -304,23 +309,27 @@
                 </ng-container>
               </ng-container>
               <!-- Subscribe to notification -->
-              <ui-toggle formControlName="subscribeToNotification">
-                <ng-container ngProjectAs="label">
-                  {{
-                    'models.dashboard.buttonActions.actions.subscribeToNotification'
-                      | translate
-                  }}
-                </ng-container>
-              </ui-toggle>
+              <ng-container formGroupName="subscribeToNotification">
+                <ui-toggle formControlName="enabled">
+                  <ng-container ngProjectAs="label">
+                    {{
+                      'models.dashboard.buttonActions.actions.subscribeToNotification'
+                        | translate
+                    }}
+                  </ng-container>
+                </ui-toggle>
+              </ng-container>
               <!-- Send notification -->
-              <ui-toggle formControlName="sendNotification">
-                <ng-container ngProjectAs="label">
-                  {{
-                    'models.dashboard.buttonActions.actions.sendNotification'
-                      | translate
-                  }}
-                </ng-container>
-              </ui-toggle>
+              <ng-container formGroupName="sendNotification">
+                <ui-toggle formControlName="enabled">
+                  <ng-container ngProjectAs="label">
+                    {{
+                      'models.dashboard.buttonActions.actions.sendNotification'
+                        | translate
+                    }}
+                  </ng-container>
+                </ui-toggle>
+              </ng-container>
             </div>
           </ng-template>
         </ui-tab>

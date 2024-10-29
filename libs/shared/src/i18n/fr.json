@@ -2462,14 +2462,22 @@
 				"action": "Action",
 				"actions": {
 					"addRecord": {
-						"edition": "****************",
+						"edition": "Éditer l'enregistrement actuel",
 						"recordFields": {
-							"info": "****************",
-							"text": "****************"
+							"text": "Attacher le nouvel enregistrement à l'enregistrement actuel"
 						},
-						"text": "Ajouter un enregistrement"
+						"text": "Ajouter un enregistrement",
+						"tooltip": {
+							"recordFields": "Le nouvel enregistrement sera attaché aux champs sélectionnés",
+							"template": "Sélectionner un modèle pour l'ajout de nouveaux enregistrements"
+						}
 					},
-					"editRecord": "Modifier un enregistrement",
+					"editRecord": {
+						"text": "Modifier l'enregistrement actuel",
+						"tooltip": {
+							"template": "Sélectionner un modèle pour l'édition de l'enregistrement actuel.\n Si aucun modèle n'est sélectionné, le dernier modèle utilisé par l'enregistrement actuel sera utilisé"
+						}
+					},
 					"navigateTo": "Naviguer vers",
 					"openInNewTab": "Ouvrir dans un nouvel onglet",
 					"previousPage": "Page précédente",

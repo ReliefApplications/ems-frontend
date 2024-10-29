@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil } from 'rxjs';
 import { Dashboard } from '../../models/dashboard.model';
 import { DataTemplateService } from '../../services/data-template/data-template.service';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { ButtonActionT } from './button-action-type';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { Apollo } from 'apollo-angular';
 import {
   EditRecordMutationResponse,
@@ -14,6 +14,7 @@ import {
 import { GET_RECORD_BY_ID } from './graphql/queries';
 import { EDIT_RECORD } from './graphql/mutations';
 import { isEmpty, set, get } from 'lodash';
+import { Location } from '@angular/common';
 
 /** Component for display action buttons */
 @Component({
@@ -37,15 +38,17 @@ export class ButtonActionComponent extends UnsubscribeComponent {
    * @param dialog Dialog service
    * @param dataTemplateService DataTemplate service
    * @param router Angular router
-   * @param activatedRoute Activated route
+   * @param activatedRoute Angular activated route
    * @param apollo Apollo
+   * @param location Angular location
    */
   constructor(
     public dialog: Dialog,
     private dataTemplateService: DataTemplateService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private location: Location
   ) {
     super();
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe({
@@ -76,6 +79,12 @@ export class ButtonActionComponent extends UnsubscribeComponent {
     } else if (button.resource) {
       this.openRecordModal(button);
     }
+    if (button.previousPage) {
+      this.location.back();
+    }
+    if (button.template) {
+      this.openRecordModal(button);
+    }
   }
 
   /**
@@ -84,6 +93,8 @@ export class ButtonActionComponent extends UnsubscribeComponent {
    * @param button action to be executed
    */
   private async openRecordModal(button: ButtonActionT) {
+    // recordId: this.contextId,
+    // todo: distinction between addRecord & editRecord
     const { FormModalComponent } = await import(
       '../form-modal/form-modal.component'
     );
