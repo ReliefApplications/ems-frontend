@@ -28,6 +28,5 @@ export type ButtonActionT = {
   // Notifications
   subscribeToNotification?: {
     notification?: string;
-  }
-  
+  };
 };
