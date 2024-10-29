@@ -53,7 +53,8 @@ import { RawEditorSettings } from 'tinymce';
 /** Dialog data interface */
 interface DialogData {
   button: ButtonActionT;
-  dashboard: Dashboard;
+  dashboard?: Dashboard;
+  form?: Form;
 }
 
 /** Component for editing a dashboard button action */
@@ -121,7 +122,7 @@ export class EditButtonActionModalComponent
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
-    @Inject(DIALOG_DATA) private data: DialogData,
+    @Inject(DIALOG_DATA) public data: DialogData,
     private editorService: EditorService,
     private dataTemplateService: DataTemplateService,
     private router: Router,
@@ -174,7 +175,10 @@ export class EditButtonActionModalComponent
           navigateTo: this.fb.group(
             {
               enabled: [
-                !!get(data, 'href', false) || get(data, 'previousPage'),
+                !!get(data, 'href', false) ||
+                  get(data, 'previousPage') ||
+                  // if it's for a form, then enabled by default as it only has the navigate to action available
+                  !isNil(this.data.form),
               ],
               previousPage: [get(data, 'previousPage', false)],
               targetUrl: this.fb.group({
@@ -185,60 +189,64 @@ export class EditButtonActionModalComponent
             },
             { validator: this.navigateToValidator }
           ),
-          editRecord: this.fb.group({
-            enabled: [!!get(data, 'template', false)],
-            template: [get(data, 'template', '')],
-          }),
-          addRecord: this.fb.group(
-            {
-              enabled: [!!get(data, 'resource', false)],
-              resource: [
-                get(
-                  data,
-                  'resource',
-                  this.data.dashboard.page?.context?.resource ?? ''
-                ),
-              ],
+          ...(!isNil(this.data.dashboard) && {
+            editRecord: this.fb.group({
+              enabled: [!!get(data, 'template', false)],
               template: [get(data, 'template', '')],
-              edition: [!!get(data, 'recordFields', false)],
-              recordFields: [get(data, 'recordFields', [])],
-            },
-            {
-              validator: (
-                control: AbstractControl
-              ): ValidationErrors | null => {
-                const isEnabledAndHasResourceWithTemplate =
-                  control.value.enabled &&
-                  control.value.resource !== '' &&
-                  !isNil(control.value.resource) &&
-                  control.value.template !== '' &&
-                  !isNil(control.value.template);
-                if (
-                  !control.value.enabled ||
-                  isEnabledAndHasResourceWithTemplate
-                ) {
-                  return null;
-                }
-                return { atLeastOneRequired: true };
+            }),
+            addRecord: this.fb.group(
+              {
+                enabled: [!!get(data, 'resource', false)],
+                resource: [
+                  get(
+                    data,
+                    'resource',
+                    this.data.dashboard.page?.context?.resource ?? ''
+                  ),
+                ],
+                template: [get(data, 'template', '')],
+                edition: [!!get(data, 'recordFields', false)],
+                recordFields: [get(data, 'recordFields', [])],
               },
-            }
-          ),
-          subscribeToNotification: this.fb.group(
-            {
-              enabled: [!!get(data, 'notification', false)],
-              notification: [get(data, 'notification', '')],
-            },
-            {
-              validator: (control: AbstractControl): ValidationErrors | null =>
-                !control.value.enabled ||
-                (control.value.notification !== '' &&
-                  !isNil(control.value.notification))
-                  ? null
-                  : { atLeastOneRequired: true },
-            }
-          ),
-          sendNotification: this.fb.group({
-            enabled: [false],
+              {
+                validator: (
+                  control: AbstractControl
+                ): ValidationErrors | null => {
+                  const isEnabledAndHasResourceWithTemplate =
+                    control.value.enabled &&
+                    control.value.resource !== '' &&
+                    !isNil(control.value.resource) &&
+                    control.value.template !== '' &&
+                    !isNil(control.value.template);
+                  if (
+                    !control.value.enabled ||
+                    isEnabledAndHasResourceWithTemplate
+                  ) {
+                    return null;
+                  }
+                  return { atLeastOneRequired: true };
+                },
+              }
+            ),
+            subscribeToNotification: this.fb.group(
+              {
+                enabled: [!!get(data, 'notification', false)],
+                notification: [get(data, 'notification', '')],
+              },
+              {
+                validator: (
+                  control: AbstractControl
+                ): ValidationErrors | null =>
+                  !control.value.enabled ||
+                  (control.value.notification !== '' &&
+                    !isNil(control.value.notification))
+                    ? null
+                    : { atLeastOneRequired: true },
+              }
+            ),
+            sendNotification: this.fb.group({
+              enabled: [false],
+            }),
           }),
         },
         { validator: this.actionValidator }
@@ -379,36 +387,38 @@ export class EditButtonActionModalComponent
       this.hrefEditor,
       this.dataTemplateService.getAutoCompleterPageKeys()
     );
-    this.setFormListeners();
-    if (this.data.dashboard.page?.context?.resource) {
-      this.apollo
-        .query<ResourceQueryResponse>({
-          query: GET_RESOURCE,
-          variables: {
-            resource: this.data.dashboard.page?.context?.resource,
-          },
-        })
-        .subscribe({
-          next: ({ data }) => {
-            this.templates = data.resource.forms ?? [];
-            this.resourceFields = data.resource.fields.filter((f: any) =>
-              ['resource', 'resources'].includes(f.type)
-            );
-          },
-        });
-    }
-    if (this.form.get('action.subscribeToNotification.enabled')?.value) {
-      this.emailService
-        .getEmailNotifications(
-          this.applicationService.application?.getValue()?.id as string
-        )
-        .subscribe({
-          next: ({ data }) => {
-            this.emailNotifications = data.emailNotifications.edges.map(
-              (item) => item.node
-            );
-          },
-        });
+    if (!isNil(this.data.dashboard)) {
+      this.setFormListeners();
+      if (this.data.dashboard?.page?.context?.resource) {
+        this.apollo
+          .query<ResourceQueryResponse>({
+            query: GET_RESOURCE,
+            variables: {
+              resource: this.data.dashboard.page.context.resource,
+            },
+          })
+          .subscribe({
+            next: ({ data }) => {
+              this.templates = data.resource.forms ?? [];
+              this.resourceFields = data.resource.fields.filter((f: any) =>
+                ['resource', 'resources'].includes(f.type)
+              );
+            },
+          });
+      }
+      if (this.form.get('action.subscribeToNotification.enabled')?.value) {
+        this.emailService
+          .getEmailNotifications(
+            this.applicationService.application?.getValue()?.id as string
+          )
+          .subscribe({
+            next: ({ data }) => {
+              this.emailNotifications = data.emailNotifications.edges.map(
+                (item) => item.node
+              );
+            },
+          });
+      }
     }
   }
 

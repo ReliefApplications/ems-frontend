@@ -1,28 +1,30 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { DIALOG_DATA, Dialog, DialogRef } from '@angular/cdk/dialog';
+import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import {
-  DialogModule,
-  FormWrapperModule,
-  ButtonModule,
-  DividerModule,
-  TableModule,
-  MenuModule,
-  TooltipModule,
-  IconModule,
-} from '@oort-front/ui';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { DialogRef, DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
 import {
-  ButtonActionT,
-  UnsubscribeComponent,
   ApplicationService,
-  Role,
-  EmptyModule,
+  ButtonActionT,
   Dashboard,
+  EmptyModule,
+  Form,
+  Role,
+  UnsubscribeComponent,
 } from '@oort-front/shared';
+import {
+  ButtonModule,
+  DialogModule,
+  DividerModule,
+  FormWrapperModule,
+  IconModule,
+  MenuModule,
+  TableModule,
+  TooltipModule,
+} from '@oort-front/ui';
+import { isNil } from 'lodash';
 import { BehaviorSubject, takeUntil } from 'rxjs';
-import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 
 /** Component for editing dashboard action buttons */
 @Component({
@@ -65,6 +67,7 @@ export class EditButtonActionsModalComponent
    * @param dialogRef dialog reference
    * @param data data passed to the modal
    * @param data.dashboard Current dashboard
+   * @param data.form Current form
    * @param dialog dialog module for button edition / creation / deletion
    * @param translateService used to translate modal text
    * @param applicationService shared application service
@@ -72,7 +75,7 @@ export class EditButtonActionsModalComponent
   constructor(
     public dialogRef: DialogRef<ButtonActionT[]>,
     @Inject(DIALOG_DATA)
-    private data: { dashboard: Dashboard },
+    private data: { dashboard?: Dashboard; form?: Form },
     public dialog: Dialog,
     public translateService: TranslateService,
     public applicationService: ApplicationService
@@ -81,8 +84,10 @@ export class EditButtonActionsModalComponent
   }
 
   ngOnInit(): void {
-    if (this.data && this.data.dashboard?.buttons) {
-      this.buttonActions = [...this.data.dashboard.buttons];
+    if (this.data) {
+      const buttons =
+        this.data.dashboard?.buttons ?? this.data.form?.buttons ?? [];
+      this.buttonActions = [...buttons];
       this.updateTable();
     }
   }
@@ -100,7 +105,12 @@ export class EditButtonActionsModalComponent
       EditButtonActionModalComponent,
       {
         data: {
-          dashboard: this.data.dashboard,
+          ...(!isNil(this.data.dashboard) && {
+            dashboard: this.data.dashboard,
+          }),
+          ...(!isNil(this.data.form) && {
+            form: this.data.form,
+          }),
         },
         disableClose: true,
       }
@@ -130,7 +140,12 @@ export class EditButtonActionsModalComponent
       {
         data: {
           button: buttonAction,
-          dashboard: this.data.dashboard,
+          ...(!isNil(this.data.dashboard) && {
+            dashboard: this.data.dashboard,
+          }),
+          ...(!isNil(this.data.form) && {
+            form: this.data.form,
+          }),
         },
         disableClose: true,
       }
