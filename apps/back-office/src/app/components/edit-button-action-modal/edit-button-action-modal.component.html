@@ -203,7 +203,7 @@
                       <ui-select-menu formControlName="template">
                         <ui-select-option>-</ui-select-option>
                         <ui-select-option
-                          *ngFor="let template of templates"
+                          *ngFor="let template of editRecordTemplates"
                           [value]="template.id"
                         >
                           {{ template.name }}
@@ -249,7 +249,7 @@
                         <ui-select-menu formControlName="template">
                           <ui-select-option>-</ui-select-option>
                           <ui-select-option
-                            *ngFor="let template of templates"
+                            *ngFor="let template of addRecordTemplates"
                             [value]="template.id"
                           >
                             {{ template.name }}
@@ -277,13 +277,13 @@
                         <!-- Record fields selection -->
                         <div uiFormFieldDirective class="mt-2 flex-1">
                           <label>{{
-                            'models.dashboard.buttonActions.actions.addRecord.recordFields.text'
+                            'models.dashboard.buttonActions.actions.addRecord.fieldsForUpdate.text'
                               | translate
                           }}</label>
                           <ui-select-menu
                             [filterable]="true"
                             [multiselect]="true"
-                            formControlName="recordFields"
+                            formControlName="fieldsForUpdate"
                           >
                             <ng-container *ngFor="let field of resourceFields">
                               <ui-select-option
@@ -302,7 +302,7 @@
                             variant="grey"
                             uiSuffix
                             [uiTooltip]="
-                              'models.dashboard.buttonActions.actions.addRecord.tooltip.recordFields'
+                              'models.dashboard.buttonActions.actions.addRecord.tooltip.fieldsForUpdate'
                                 | translate
                             "
                           ></ui-icon>

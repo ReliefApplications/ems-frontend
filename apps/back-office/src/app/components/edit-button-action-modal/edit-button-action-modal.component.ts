@@ -102,8 +102,10 @@ export class EditButtonActionModalComponent
   public emailNotifications: EmailNotification[] = [];
   /** Resources fields, of current page context resource, if any */
   public resourceFields: any[] = [];
-  /** Resource template list */
-  public templates: Form[] = [];
+  /** Add record template list */
+  public addRecordTemplates: Form[] = [];
+  /** Edit record template list */
+  public editRecordTemplates: Form[] = [];
   /** Selected resource */
   public selectedResource!: Resource;
 
@@ -143,6 +145,158 @@ export class EditButtonActionModalComponent
   }
 
   /**
+   * Set needed listeners for add record form
+   */
+  private prepareAddRecordFormListeners() {
+    // Query data on init, if needed
+    if (this.form.get('action.addRecord.enabled')?.value) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE,
+          variables: {
+            resource: this.form.get('action.addRecord.resource')?.value,
+          },
+        })
+        .subscribe({
+          next: ({ data }) => {
+            this.selectedResource = data.resource;
+            this.addRecordTemplates = data.resource.forms ?? [];
+          },
+        });
+    }
+    // Subscribe to changes on addRecord action to fetch data
+    this.form
+      .get('action.addRecord.enabled')
+      ?.valueChanges.pipe(
+        filter((value) => {
+          const isFirstEnabled =
+            !!value &&
+            !this.selectedResource &&
+            this.form.get('action.addRecord.resource')?.value;
+          return isFirstEnabled;
+        }),
+        switchMap(() =>
+          this.apollo.query<ResourceQueryResponse>({
+            query: GET_RESOURCE,
+            variables: {
+              resource: this.form.get('action.addRecord.resource')?.value,
+            },
+          })
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data }) => {
+          this.selectedResource = data.resource;
+          this.addRecordTemplates = data.resource.forms ?? [];
+        },
+      });
+    // Subscribe to changes on addRecord resource to fetch data
+    this.form
+      .get('action.addRecord.resource')
+      ?.valueChanges.pipe(
+        switchMap((resource) =>
+          iif(
+            () => !!resource,
+            this.apollo.query<ResourceQueryResponse>({
+              query: GET_RESOURCE,
+              variables: {
+                resource,
+              },
+            }),
+            of({ data: null })
+          )
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data }) => {
+          this.form.get('action.addRecord.template')?.setValue('');
+          this.form.get('action.addRecord.fieldsForUpdate')?.setValue([]);
+          this.selectedResource = data?.resource as Resource;
+          this.addRecordTemplates = data?.resource?.forms ?? [];
+        },
+      });
+  }
+
+  /**
+   * Set needed listeners for subscribe to notification form
+   */
+  private prepareSubscribeToNotificationFormListeners() {
+    /** Fetch email notification list on subscribe to notification is enabled */
+    this.form
+      .get('action.subscribeToNotification.enabled')
+      ?.valueChanges.pipe(
+        filter((value) => !!value),
+        switchMap(() =>
+          this.emailService.getEmailNotifications(
+            this.applicationService.application?.getValue()?.id as string
+          )
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data }) => {
+          this.emailNotifications = data.emailNotifications.edges.map(
+            (item) => item.node
+          );
+        },
+      });
+  }
+
+  /**
+   * Set all needed form listeners
+   */
+  private setFormListeners() {
+    this.prepareAddRecordFormListeners();
+    this.prepareSubscribeToNotificationFormListeners();
+  }
+
+  ngOnInit(): void {
+    // Build list of pages for autocompletion in navigation settings
+    this.editorService.addCalcAndKeysAutoCompleter(
+      this.hrefEditor,
+      this.dataTemplateService.getAutoCompleterPageKeys()
+    );
+    if (!isNil(this.data.dashboard)) {
+      // Listen to form changes
+      this.setFormListeners();
+      // Get context resource data, if any
+      if (this.data.dashboard.page?.context?.resource) {
+        this.apollo
+          .query<ResourceQueryResponse>({
+            query: GET_RESOURCE,
+            variables: {
+              resource: this.data.dashboard.page.context.resource,
+            },
+          })
+          .subscribe({
+            next: ({ data }) => {
+              this.editRecordTemplates = data.resource.forms ?? [];
+              this.resourceFields = data.resource.fields.filter((f: any) =>
+                ['resource', 'resources'].includes(f.type)
+              );
+            },
+          });
+      }
+      // Get list of email notifications for application
+      if (this.form.get('action.subscribeToNotification.enabled')?.value) {
+        this.emailService
+          .getEmailNotifications(
+            this.applicationService.application?.getValue()?.id as string
+          )
+          .subscribe({
+            next: ({ data }) => {
+              this.emailNotifications = data.emailNotifications.edges.map(
+                (item) => item.node
+              );
+            },
+          });
+      }
+    }
+  }
+
+  /**
    * Create a form group for the button action
    *
    * @param data Data to initialize the form
@@ -153,6 +307,7 @@ export class EditButtonActionModalComponent
     data: ButtonActionT,
     roles: Role[]
   ): FormGroup => {
+    console.log(data);
     const form = this.fb.group({
       general: this.fb.group({
         buttonText: [get(data, 'text', ''), Validators.required],
@@ -191,22 +346,22 @@ export class EditButtonActionModalComponent
           ),
           ...(!isNil(this.data.dashboard) && {
             editRecord: this.fb.group({
-              enabled: [!!get(data, 'template', false)],
-              template: [get(data, 'template', '')],
+              enabled: [!!get(data, 'editRecord', false)],
+              template: [get(data, 'editRecord.template', '')],
             }),
             addRecord: this.fb.group(
               {
-                enabled: [!!get(data, 'resource', false)],
+                enabled: [!!get(data, 'addRecord', false)],
                 resource: [
                   get(
                     data,
-                    'resource',
+                    'addRecord.resource',
                     this.data.dashboard.page?.context?.resource ?? ''
                   ),
                 ],
-                template: [get(data, 'template', '')],
-                edition: [!!get(data, 'recordFields', false)],
-                recordFields: [get(data, 'recordFields', [])],
+                template: [get(data, 'addRecord.template', '')],
+                edition: [!!get(data, 'addRecord.fieldsForUpdate', false)],
+                fieldsForUpdate: [get(data, 'addRecord.fieldsForUpdate', [])],
               },
               {
                 validator: (
@@ -230,8 +385,10 @@ export class EditButtonActionModalComponent
             ),
             subscribeToNotification: this.fb.group(
               {
-                enabled: [!!get(data, 'notification', false)],
-                notification: [get(data, 'notification', '')],
+                enabled: [!!get(data, 'subscribeToNotification', false)],
+                notification: [
+                  get(data, 'subscribeToNotification.notification', ''),
+                ],
               },
               {
                 validator: (
@@ -274,154 +431,6 @@ export class EditButtonActionModalComponent
     return form;
   };
 
-  /**
-   * Set needed listeners for add record form
-   */
-  private prepareAddRecordFormListeners() {
-    // Query data on init, if needed
-    if (this.form.get('action.addRecord.enabled')?.value) {
-      this.apollo
-        .query<ResourceQueryResponse>({
-          query: GET_RESOURCE,
-          variables: {
-            resource: this.form.get('action.addRecord.resource')?.value,
-          },
-        })
-        .subscribe({
-          next: ({ data }) => {
-            this.selectedResource = data.resource;
-            this.templates = data.resource.forms ?? [];
-          },
-        });
-    }
-    // Subscribe to changes on addRecord action to fetch data
-    this.form
-      .get('action.addRecord.enabled')
-      ?.valueChanges.pipe(
-        filter((value) => {
-          const isFirstEnabled =
-            !!value &&
-            !this.selectedResource &&
-            this.form.get('action.addRecord.resource')?.value;
-          return isFirstEnabled;
-        }),
-        switchMap(() =>
-          this.apollo.query<ResourceQueryResponse>({
-            query: GET_RESOURCE,
-            variables: {
-              resource: this.form.get('action.addRecord.resource')?.value,
-            },
-          })
-        ),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: ({ data }) => {
-          this.selectedResource = data.resource;
-          this.templates = data.resource.forms ?? [];
-        },
-      });
-    // Subscribe to changes on addRecord resource to fetch data
-    this.form
-      .get('action.addRecord.resource')
-      ?.valueChanges.pipe(
-        switchMap((resource) =>
-          iif(
-            () => !!resource,
-            this.apollo.query<ResourceQueryResponse>({
-              query: GET_RESOURCE,
-              variables: {
-                resource,
-              },
-            }),
-            of({ data: null })
-          )
-        ),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: ({ data }) => {
-          this.form.get('action.addRecord.template')?.setValue('');
-          this.form.get('action.addRecord.recordFields')?.setValue([]);
-          this.selectedResource = data?.resource as Resource;
-          this.templates = data?.resource?.forms ?? [];
-        },
-      });
-  }
-
-  /**
-   * Set needed listeners for subscribe to notification form
-   */
-  private prepareSubscribeToNotificationFormListeners() {
-    /** Fetch email notification list on subscribe to notification is enabled */
-    this.form
-      .get('action.subscribeToNotification.enabled')
-      ?.valueChanges.pipe(
-        filter((value) => !!value),
-        switchMap(() =>
-          this.emailService.getEmailNotifications(
-            this.applicationService.application?.getValue()?.id as string
-          )
-        ),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: ({ data }) => {
-          this.emailNotifications = data.emailNotifications.edges.map(
-            (item) => item.node
-          );
-        },
-      });
-  }
-
-  /**
-   * Set all needed form listeners
-   */
-  private setFormListeners() {
-    this.prepareAddRecordFormListeners();
-    this.prepareSubscribeToNotificationFormListeners();
-  }
-
-  ngOnInit(): void {
-    this.editorService.addCalcAndKeysAutoCompleter(
-      this.hrefEditor,
-      this.dataTemplateService.getAutoCompleterPageKeys()
-    );
-    if (!isNil(this.data.dashboard)) {
-      this.setFormListeners();
-      if (this.data.dashboard?.page?.context?.resource) {
-        this.apollo
-          .query<ResourceQueryResponse>({
-            query: GET_RESOURCE,
-            variables: {
-              resource: this.data.dashboard.page.context.resource,
-            },
-          })
-          .subscribe({
-            next: ({ data }) => {
-              this.templates = data.resource.forms ?? [];
-              this.resourceFields = data.resource.fields.filter((f: any) =>
-                ['resource', 'resources'].includes(f.type)
-              );
-            },
-          });
-      }
-      if (this.form.get('action.subscribeToNotification.enabled')?.value) {
-        this.emailService
-          .getEmailNotifications(
-            this.applicationService.application?.getValue()?.id as string
-          )
-          .subscribe({
-            next: ({ data }) => {
-              this.emailNotifications = data.emailNotifications.edges.map(
-                (item) => item.node
-              );
-            },
-          });
-      }
-    }
-  }
-
   /** On click on the preview button open the href */
   public preview(): void {
     let href = this.form.get('action.navigateTo.targetUrl.href')?.value;
@@ -440,7 +449,7 @@ export class EditButtonActionModalComponent
 
   /** On click on the save button close the dialog with the form value */
   public onSubmit(): void {
-    const mappedData: ButtonActionT = {
+    const button: ButtonActionT = {
       text: this.form.get('general.buttonText')?.value,
       hasRoleRestriction: this.form.get('general.hasRoleRestriction')?.value,
       roles: this.form.get('general.roles')?.value,
@@ -458,24 +467,33 @@ export class EditButtonActionModalComponent
         }),
       }),
       // If editRecord enabled
-      ...(this.form.get('actions.editRecord.enabled')?.value && {
-        template: this.form.get('action.editRecord.template')?.value,
+      ...(this.form.get('action.editRecord.enabled')?.value && {
+        editRecord: {
+          template: this.form.get('action.editRecord.template')?.value,
+        },
       }),
       // If addRecord enabled
-      ...(this.form.get('actions.addRecord.enabled')?.value && {
-        resource: this.form.get('action.addRecord.resource')?.value,
-        template: this.form.get('action.addRecord.template')?.value,
-        recordFields: this.form.get('action.addRecord.recordFields')?.value,
+      ...(this.form.get('action.addRecord.enabled')?.value && {
+        addRecord: {
+          resource: this.form.get('action.addRecord.resource')?.value,
+          template: this.form.get('action.addRecord.template')?.value,
+          fieldsForUpdate: this.form.get('action.addRecord.fieldsForUpdate')
+            ?.value,
+        },
       }),
       // If subscribeToNotification enabled
       ...(this.form.get('action.subscribeToNotification.enabled')?.value && {
-        notification: this.form.get(
-          'action.subscribeToNotification.notification'
-        )?.value,
+        subscribeToNotification: {
+          notification: this.form.get(
+            'action.subscribeToNotification.notification'
+          )?.value,
+        },
       }),
     };
 
-    this.dialogRef.close(mappedData);
+    console.log(button);
+
+    this.dialogRef.close(button);
   }
 
   /**

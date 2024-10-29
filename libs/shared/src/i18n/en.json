@@ -2463,12 +2463,12 @@
 				"actions": {
 					"addRecord": {
 						"edition": "Edit current record",
-						"recordFields": {
+						"fieldsForUpdate": {
 							"text": "Attach newly created record to current record fields"
 						},
 						"text": "Add record",
 						"tooltip": {
-							"recordFields": "Newly created record can be attached to resource & resources fields",
+							"fieldsForUpdate": "Newly created record can be attached to resource & resources fields",
 							"template": "Select a resource template for addition of new records"
 						}
 					},

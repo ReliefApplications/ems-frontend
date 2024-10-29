@@ -5,15 +5,28 @@ import { Category, Variant } from '@oort-front/ui';
  */
 export type ButtonActionT = {
   text: string;
-  href?: string;
-  hasRoleRestriction: boolean;
-  roles: string[];
+  // Display
   variant: Variant;
   category: Category;
+  // Role restriction
+  hasRoleRestriction: boolean;
+  roles: string[];
+  // Navigation
+  href?: string;
   openInNewTab: boolean;
-  notification?: string;
   previousPage?: boolean;
-  resource?: string;
-  template?: string;
-  recordFields?: Array<string>;
+  // Edit Record
+  editRecord?: {
+    template?: string;
+  };
+  // Add Record
+  addRecord?: {
+    resource?: string;
+    template?: string;
+    fieldsForUpdate?: Array<string>;
+  };
+  // Notifications
+  subscribeToNotification?: {
+    notification?: string;
+  };
 };
