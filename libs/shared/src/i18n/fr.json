@@ -1029,6 +1029,7 @@
 				"modifiedBy": "Modifié pour la dernière fois par {{user}} le {{date}}"
 			},
 			"update": {
+				"confirmMessage": "************************?",
 				"exit": "Quitter sans sauvegarder les changements",
 				"exitMessage": "Il y a des changements non sauvegardés dans votre formulaire, voulez-vous vraiment quitter cette page ?"
 			},
@@ -2460,7 +2461,14 @@
 			"buttonActions": {
 				"action": "Action",
 				"actions": {
-					"addRecord": "Ajouter un enregistrement",
+					"addRecord": {
+						"edition": "****************",
+						"recordFields": {
+							"info": "****************",
+							"text": "****************"
+						},
+						"text": "Ajouter un enregistrement"
+					},
 					"editRecord": "Modifier un enregistrement",
 					"navigateTo": "Naviguer vers",
 					"openInNewTab": "Ouvrir dans un nouvel onglet",
