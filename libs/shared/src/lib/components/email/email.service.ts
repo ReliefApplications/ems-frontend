@@ -1342,8 +1342,8 @@ export class EmailService {
       const urlWithConfigId = `${this.restService.apiUrl}/notification/send-individual-email/${configId}`;
       return this.http.post<any>(urlWithConfigId, emailData);
     } else if (sendAzure) {
-      const urlWithConfigId = `${this.restService.apiUrl}/notification/send-email-azure/${configId}`;
-      return this.http.post<any>(urlWithConfigId, emailData);
+      const urlWithConfigId = `${this.restService.apiUrl}/notification/azure/sendEmail/${configId}`;
+      return this.http.get<any>(urlWithConfigId);
     } else {
       const urlWithConfigId = `${this.restService.apiUrl}/notification/send-email/${configId}`;
       return this.http.post<any>(urlWithConfigId, emailData);
