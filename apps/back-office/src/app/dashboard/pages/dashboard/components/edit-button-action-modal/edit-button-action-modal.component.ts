@@ -163,41 +163,25 @@ export class EditButtonActionModalComponent implements OnInit {
 
   /** On click on the save button close the dialog with the form value */
   public onSubmit(): void {
-    // Recursive function to update the form group based on the enabled field
-    const updateFormGroup = (formGroup: FormGroup) => {
-      for (const key in formGroup.controls) {
-        const control = formGroup.get(key);
+    if (!this.form.get('action.navigateTo.enabled')?.value) {
+      this.form.get('action.navigateTo.previousPage')?.setValue(false);
+      this.form.get('action.navigateTo.targetUrl.enabled')?.setValue(false);
+      this.form.get('action.navigateTo.targetUrl.href')?.setValue('');
+      this.form
+        .get('action.navigateTo.targetUrl.openInNewTab')
+        ?.setValue(false);
+    }
 
-        if (control instanceof FormGroup) {
-          const enabledControl = control.get('enabled');
-          if (enabledControl && !enabledControl.value) {
-            // Reset all first-level children except 'enabled'
-            for (const subKey in control.controls) {
-              if (subKey !== 'enabled') {
-                const childControl = control.get(subKey);
-                // Reset the value based on the type
-                if (typeof childControl?.value === 'boolean') {
-                  childControl.setValue(false);
-                } else if (typeof childControl?.value === 'string') {
-                  childControl?.setValue('');
-                } else if (Array.isArray(childControl?.value)) {
-                  childControl?.setValue([]);
-                  // } else if (typeof childControl?.value === 'object') {
-                  //   childControl?.setValue({});
-                } else {
-                  childControl?.setValue(null);
-                }
-              }
-            }
-          } else {
-            updateFormGroup(control); // Continue recursion if 'enabled' is true
-          }
-        }
-      }
-    };
+    if (!this.form.get('action.navigateTo.targetUrl.enabled')?.value) {
+      this.form.get('action.navigateTo.targetUrl.href')?.setValue('');
+      this.form
+        .get('action.navigateTo.targetUrl.openInNewTab')
+        ?.setValue(false);
+    }
 
-    // Apply the update to the action form group
-    updateFormGroup(this.form.get('action') as FormGroup);
+    if (!this.form.get('action.editRecord.enabled')?.value) {
+      this.form.get('action.editRecord.template')?.setValue('');
+    }
 
     const mappedData: ButtonActionT = {
       text: this.form.get('general.buttonText')?.value,
@@ -209,14 +193,7 @@ export class EditButtonActionModalComponent implements OnInit {
       openInNewTab: this.form.get('action.navigateTo.targetUrl.openInNewTab')
         ?.value,
       previousPage: this.form.get('action.navigateTo.previousPage')?.value,
-      editRecordTemplate: this.form.get('action.editRecord.template')?.value,
-      addRecordResource: this.form.get('action.addRecord.resource')?.value,
-      addRecordTemplate: this.form.get('action.addRecord.template')?.value,
-      editCurrentRecord: this.form.get('action.addRecord.editCurrentRecord')
-        ?.value,
-      attachNewToCurrentFields: this.form.get(
-        'action.addRecord.attachNewToCurrentFields'
-      )?.value,
+      template: this.form.get('action.editRecord.template')?.value,
     };
 
     this.dialogRef.close(mappedData);
@@ -260,23 +237,23 @@ export class EditButtonActionModalComponent implements OnInit {
                 href: [get(data, 'href', '')],
                 openInNewTab: [get(data, 'openInNewTab', true)],
               }),
-            },
-            { validator: this.navigateToValidator }
+            }
+            // { validator: this.navigateToValidator }
           ),
           editRecord: this.fb.group(
             {
               enabled: [!!get(data, 'template', false)],
               template: [get(data, 'template', '')],
-            },
-            {
-              validator: (
-                control: AbstractControl
-              ): ValidationErrors | null => {
-                return control.get('enabled')?.value
-                  ? null
-                  : { atLeastOneRequired: true };
-              },
             }
+            // {
+            //   validator: (
+            //     control: AbstractControl
+            //   ): ValidationErrors | null => {
+            //     return control.get('enabled')?.value
+            //       ? null
+            //       : { atLeastOneRequired: true };
+            //   },
+            // }
           ),
           addRecord: this.fb.group({
             enabled: [!!get(data, 'addRecord', false)],
@@ -287,10 +264,14 @@ export class EditButtonActionModalComponent implements OnInit {
               get(data, 'addRecord.attachNewToCurrentFields', []),
             ],
           }),
-          subscribeToNotification: [false],
-          sendNotification: [false],
-        },
-        { validator: this.actionValidator }
+          subscribeToNotification: this.fb.group({
+            enabled: [false],
+          }),
+          sendNotification: this.fb.group({
+            enabled: [false],
+          }),
+        }
+        // { validator: this.actionValidator }
       ),
     });
 
@@ -299,8 +280,8 @@ export class EditButtonActionModalComponent implements OnInit {
       form.get('action.navigateTo.enabled'),
       form.get('action.editRecord.enabled'),
       form.get('action.addRecord.enabled'),
-      form.get('action.subscribeToNotification'),
-      form.get('action.sendNotification'),
+      form.get('action.subscribeToNotification.enabled'),
+      form.get('action.sendNotification.enabled'),
     ];
 
     const navigateToControls = [
@@ -348,9 +329,9 @@ export class EditButtonActionModalComponent implements OnInit {
       const atLeastOneEnabled =
         actions.navigateTo?.enabled ||
         actions.editRecord?.enabled ||
-        actions.addRecord ||
-        actions.subscribeToNotification ||
-        actions.sendNotification;
+        actions.addRecord?.enabled ||
+        actions.subscribeToNotification?.enabled ||
+        actions.sendNotification?.enabled;
 
       return atLeastOneEnabled ? null : { atLeastOneRequired: true };
     }

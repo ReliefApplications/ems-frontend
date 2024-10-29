@@ -3,8 +3,9 @@ import { Dialog } from '@angular/cdk/dialog';
 import { DataTemplateService } from '../../services/data-template/data-template.service';
 import { Dashboard } from '../../models/dashboard.model';
 import { ButtonActionT } from './button-action-type';
-import { Router } from '@angular/router';
-import { Location } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs';
 
 /** Component for display action buttons */
 @Component({
@@ -12,13 +13,16 @@ import { Location } from '@angular/common';
   templateUrl: './button-action.component.html',
   styleUrls: ['./button-action.component.scss'],
 })
-export class ButtonActionComponent {
+export class ButtonActionComponent extends UnsubscribeComponent {
   /** Button actions */
   @Input() buttonActions: ButtonActionT[] = [];
   /** Dashboard */
   @Input() dashboard?: Dashboard;
   /** Can update dashboard or not */
   @Input() canUpdate = false;
+  /** Context id of the current dashboard */
+  private contextId!: string;
+  location: any;
 
   /**
    * Action buttons
@@ -27,13 +31,21 @@ export class ButtonActionComponent {
    * @param dataTemplateService DataTemplate service
    * @param router Angular router
    * @param location Angular location
+   * @param activatedRoute Angular activated route
    */
   constructor(
     public dialog: Dialog,
     private dataTemplateService: DataTemplateService,
     private router: Router,
-    private location: Location
-  ) {}
+    private activatedRoute: ActivatedRoute
+  ) {
+    super();
+    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe({
+      next: ({ id }) => {
+        this.contextId = id;
+      },
+    });
+  }
 
   /**
    * Opens link of button action.
@@ -58,5 +70,28 @@ export class ButtonActionComponent {
     if (button.previousPage) {
       this.location.back();
     }
+    if (button.template) {
+      this.openRecordModal(button.template as string);
+    }
+  }
+
+  /**
+   * Open record modal to add/edit a record
+   *
+   * @param template Template id
+   */
+  private async openRecordModal(template: string) {
+    const { FormModalComponent } = await import(
+      '../form-modal/form-modal.component'
+    );
+    this.dialog.open(FormModalComponent, {
+      disableClose: true,
+      data: {
+        recordId: this.contextId,
+        template,
+        actionButtonCtx: true,
+      },
+      autoFocus: false,
+    });
   }
 }
