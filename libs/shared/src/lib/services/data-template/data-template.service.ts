@@ -172,7 +172,6 @@ export class DataTemplateService {
    * @returns url of the page
    */
   private getPageUrl(application: Application, page: Page): string {
-    const baseHref = this.locationStrategy.getBaseHref();
     const applicationPath =
       this.applicationService.getApplicationPath(application);
     if (this.environment.module === 'backoffice') {
@@ -181,8 +180,8 @@ export class DataTemplateService {
         : `./applications/${applicationPath}/${page.type}/${page.content}`;
     } else {
       return page.type === ContentType.form
-        ? `.${baseHref}${applicationPath}/${page.type}/${page.id}`
-        : `.${baseHref}${applicationPath}/${page.type}/${page.content}`;
+        ? `./${applicationPath}/${page.type}/${page.id}`
+        : `./${applicationPath}/${page.type}/${page.content}`;
     }
   }
 

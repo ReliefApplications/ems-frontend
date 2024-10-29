@@ -1,3 +1,10 @@
+# [2.17.0-beta.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.12...v2.17.0-beta.13) (2024-10-29)
+
+
+### Bug Fixes
+
+* Broken navigation to some pages after baseHref change ([#2666](https://github.com/ReliefApplications/ems-frontend/issues/2666)) ([7797221](https://github.com/ReliefApplications/ems-frontend/commit/779722185d92c8f89fa19772980281ece97ceda9)), closes [AB#104811](https://github.com/AB/issues/104811)
+
 # [2.17.0-beta.12](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.11...v2.17.0-beta.12) (2024-10-24)
 
 
