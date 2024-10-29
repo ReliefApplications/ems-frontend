@@ -131,6 +131,7 @@ export const GET_SHORT_FORM_BY_ID = gql`
         }
       }
       canUpdate
+      buttons
     }
   }
 `;

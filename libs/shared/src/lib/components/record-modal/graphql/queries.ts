@@ -48,6 +48,7 @@ export const GET_FORM_STRUCTURE = gql`
         canSee
         canUpdate
       }
+      buttons
     }
   }
 `;

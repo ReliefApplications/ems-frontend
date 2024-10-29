@@ -22,6 +22,7 @@ export const GET_FORM_BY_ID = gql`
         canUpdate
       }
       canUpdate
+      buttons
     }
   }
 `;
