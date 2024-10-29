@@ -277,9 +277,15 @@
                           [multiselect]="true"
                           formControlName="recordFields"
                         >
-                          <ng-container *ngFor="let field of recordFields">
-                            <ui-select-option [value]="field">
-                              {{ field }}
+                          <ng-container *ngFor="let field of resourceFields">
+                            <ui-select-option
+                              *ngIf="
+                                field.resource ===
+                                form.value.action.addRecord.resource
+                              "
+                              [value]="field.name"
+                            >
+                              {{ field.name }}
                             </ui-select-option>
                           </ng-container>
                         </ui-select-menu>

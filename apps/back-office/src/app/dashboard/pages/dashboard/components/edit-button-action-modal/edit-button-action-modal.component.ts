@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   ApplicationService,
   ButtonActionT,
-  DashboardService,
+  Dashboard,
   DataTemplateService,
   EditorControlComponent,
   EditorService,
@@ -48,6 +48,12 @@ import { filter, iif, of, switchMap, takeUntil } from 'rxjs';
 import { RawEditorSettings } from 'tinymce';
 import { GET_RESOURCE } from './graphql/queries';
 
+/** Dialog data interface */
+interface DialogData {
+  button: ButtonActionT;
+  dashboard: Dashboard;
+}
+
 /** Component for editing a dashboard button action */
 @Component({
   selector: 'app-edit-button-action-modal',
@@ -78,63 +84,50 @@ export class EditButtonActionModalComponent
   implements OnInit
 {
   /** Form group */
-  form: FormGroup;
-
-  /** Variants */
+  public form: FormGroup;
+  /** Button variants */
   public variants = ButtonVariants;
-  /** Categories */
+  /** Button categories */
   public categories = ButtonCategories;
-
   /** Is the action new */
   public isNew: boolean;
-
   /** tinymce href editor */
   public hrefEditor: RawEditorSettings = INLINE_EDITOR_CONFIG;
   /** Roles from current application */
   public roles: Role[];
-  /** Record fields current application */
-  public recordFields: string[] = [];
+  /** Resource.s fields, of current page context resource, if any */
+  public resourceFields: any[] = [];
   /** Resource template list */
   public templates: Form[] = [];
   /** Selected resource */
   public selectedResource!: Resource;
-  /**
-   * Map current available fields options to name
-   *
-   * @param fields current fields array
-   * @returns map fields array to name
-   */
-  private getFields = (fields: any[]) =>
-    (fields ?? []).map((f: { name: string }) => f.name);
 
   /**
    * Component for editing a dashboard button action
    *
    * @param dialogRef dialog reference
-   * @param data initial button action
+   * @param data Dialog data
    * @param editorService editor service used to get main URL and current language
    * @param dataTemplateService Shared data template service
    * @param router Router service
    * @param applicationService shared application service
    * @param fb form builder
    * @param apollo Angular Apollo client
-   * @param dashboardService Dashboard service
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
-    @Inject(DIALOG_DATA) data: ButtonActionT,
+    @Inject(DIALOG_DATA) private data: DialogData,
     private editorService: EditorService,
     private dataTemplateService: DataTemplateService,
     private router: Router,
     public applicationService: ApplicationService,
     private fb: FormBuilder,
-    private apollo: Apollo,
-    public dashboardService: DashboardService
+    private apollo: Apollo
   ) {
     super();
     this.roles = this.applicationService.application.value?.roles || [];
-    this.form = this.createButtonActionForm(data, this.roles);
-    this.isNew = !data;
+    this.form = this.createButtonActionForm(data.button, this.roles);
+    this.isNew = !data.button;
 
     // Set the editor base url based on the environment file
     this.hrefEditor.base_url = editorService.url;
@@ -195,25 +188,12 @@ export class EditButtonActionModalComponent
                 get(
                   data,
                   'resource',
-                  this.dashboardService.currentSelectedDashboard.page?.context
-                    ?.resource ?? ''
+                  this.data.dashboard.page?.context?.resource ?? ''
                 ),
               ],
               template: [get(data, 'template', '')],
               edition: [!!get(data, 'recordFields', false)],
-              recordFields: [
-                get(
-                  data,
-                  'recordFields',
-                  this.dashboardService.currentSelectedDashboard.page?.context
-                    ?.displayField
-                    ? [
-                        this.dashboardService.currentSelectedDashboard.page
-                          ?.context?.displayField,
-                      ]
-                    : []
-                ),
-              ],
+              recordFields: [get(data, 'recordFields', [])],
             },
             {
               validator: (
@@ -267,6 +247,7 @@ export class EditButtonActionModalComponent
    * Set needed listeners for add record form
    */
   private prepareAddRecordFormListeners() {
+    // Query data on init, if needed
     if (this.form.get('action.addRecord.enabled')?.value) {
       this.apollo
         .query<ResourceQueryResponse>({
@@ -279,11 +260,10 @@ export class EditButtonActionModalComponent
           next: ({ data }) => {
             this.selectedResource = data.resource;
             this.templates = data.resource.forms ?? [];
-            this.recordFields = this.getFields(data.resource.fields);
           },
         });
     }
-    /** Fetch email notification list on subscribe to notification is enabled */
+    // Subscribe to changes on addRecord action to fetch data
     this.form
       .get('action.addRecord.enabled')
       ?.valueChanges.pipe(
@@ -308,9 +288,9 @@ export class EditButtonActionModalComponent
         next: ({ data }) => {
           this.selectedResource = data.resource;
           this.templates = data.resource.forms ?? [];
-          this.recordFields = this.getFields(data.resource.fields);
         },
       });
+    // Subscribe to changes on addRecord resource to fetch data
     this.form
       .get('action.addRecord.resource')
       ?.valueChanges.pipe(
@@ -334,7 +314,6 @@ export class EditButtonActionModalComponent
           this.form.get('action.addRecord.recordFields')?.setValue([]);
           this.selectedResource = data?.resource as Resource;
           this.templates = data?.resource?.forms ?? [];
-          this.recordFields = this.getFields(data?.resource.fields);
         },
       });
   }
@@ -352,6 +331,22 @@ export class EditButtonActionModalComponent
       this.dataTemplateService.getAutoCompleterPageKeys()
     );
     this.setFormListeners();
+    if (this.data.dashboard.page?.context?.resource) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE,
+          variables: {
+            resource: this.data.dashboard.page?.context?.resource,
+          },
+        })
+        .subscribe({
+          next: ({ data }) => {
+            this.resourceFields = data.resource.fields.filter((f: any) =>
+              ['resource', 'resources'].includes(f.type)
+            );
+          },
+        });
+    }
   }
 
   /** On click on the preview button open the href */
