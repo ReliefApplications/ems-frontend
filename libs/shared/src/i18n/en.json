@@ -1029,6 +1029,7 @@
 				"modifiedBy": "Last modified by {{user}} on {{date}}"
 			},
 			"update": {
+				"confirmMessage": "Do you confirm the {{action}} of the current record?",
 				"exit": "Exit without saving changes",
 				"exitMessage": "There are unsaved changes on your form. Are you sure you want to exit?"
 			},
@@ -2460,8 +2461,23 @@
 			"buttonActions": {
 				"action": "Action",
 				"actions": {
-					"addRecord": "Add record",
-					"editRecord": "Edit record",
+					"addRecord": {
+						"edition": "Edit current record",
+						"recordFields": {
+							"text": "Attach newly created record to current record fields"
+						},
+						"text": "Add record",
+						"tooltip": {
+							"recordFields": "Newly created record can be attached to resource & resources fields",
+							"template": "Select a resource template for addition of new records"
+						}
+					},
+					"editRecord": {
+						"text": "Edit record",
+						"tooltip": {
+							"template": "Select a resource template for edition of current record.\n If no template is selected, latest form used by the record will be used"
+						}
+					},
 					"navigateTo": "Navigate to",
 					"openInNewTab": "Open in new tab",
 					"previousPage": "Previous page",

@@ -1029,6 +1029,7 @@
 				"modifiedBy": "****** {{user}} ****** {{date}}"
 			},
 			"update": {
+				"confirmMessage": "****** {{action}} ******",
 				"exit": "******",
 				"exitMessage": "******"
 			},
@@ -2460,8 +2461,23 @@
 			"buttonActions": {
 				"action": "******",
 				"actions": {
-					"addRecord": "******",
-					"editRecord": "******",
+					"addRecord": {
+						"edition": "******",
+						"recordFields": {
+							"text": "******"
+						},
+						"text": "******",
+						"tooltip": {
+							"recordFields": "******",
+							"template": "******"
+						}
+					},
+					"editRecord": {
+						"text": "******",
+						"tooltip": {
+							"template": "******"
+						}
+					},
 					"navigateTo": "******",
 					"openInNewTab": "******",
 					"previousPage": "******",

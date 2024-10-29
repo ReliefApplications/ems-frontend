@@ -45,6 +45,7 @@ export * from './lib/models/application.model';
 export * from './lib/models/automation.model';
 export * from './lib/models/channel.model';
 export * from './lib/models/dashboard.model';
+export * from './lib/models/email-notifications.model';
 export * from './lib/models/form.model';
 export * from './lib/models/layout.model';
 export * from './lib/models/metadata.model';

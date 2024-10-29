@@ -31,12 +31,12 @@
           {
             "glob": "**/*",
             "input": "node_modules/tinymce",
-            "output": "/tinymce/"
+            "output": "/assets/tinymce/"
           },
           {
             "glob": "**/*",
             "input": "libs/shared/src/i18n/tinymce/",
-            "output": "/tinymce/langs"
+            "output": "/assets/tinymce/langs"
           },
           {
             "glob": "**/*",
