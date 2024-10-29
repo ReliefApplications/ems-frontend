@@ -237,24 +237,13 @@ export class EditButtonActionModalComponent implements OnInit {
                 href: [get(data, 'href', '')],
                 openInNewTab: [get(data, 'openInNewTab', true)],
               }),
-            }
-            // { validator: this.navigateToValidator }
+            },
+            { validator: this.navigateToValidator }
           ),
-          editRecord: this.fb.group(
-            {
-              enabled: [!!get(data, 'template', false)],
-              template: [get(data, 'template', '')],
-            }
-            // {
-            //   validator: (
-            //     control: AbstractControl
-            //   ): ValidationErrors | null => {
-            //     return control.get('enabled')?.value
-            //       ? null
-            //       : { atLeastOneRequired: true };
-            //   },
-            // }
-          ),
+          editRecord: this.fb.group({
+            enabled: [!!get(data, 'template', false)],
+            template: [get(data, 'template', '')],
+          }),
           addRecord: this.fb.group({
             enabled: [!!get(data, 'addRecord', false)],
             resource: [get(data, 'addRecord.resource', '')],
@@ -270,8 +259,8 @@ export class EditButtonActionModalComponent implements OnInit {
           sendNotification: this.fb.group({
             enabled: [false],
           }),
-        }
-        // { validator: this.actionValidator }
+        },
+        { validator: this.actionValidator }
       ),
     });
 
