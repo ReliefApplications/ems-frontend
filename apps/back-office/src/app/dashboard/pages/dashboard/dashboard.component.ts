@@ -658,6 +658,9 @@ export class DashboardComponent
           ?.pipe(takeUntil(this.destroy$))
           .subscribe(({ errors }) => {
             this.buttonActions = buttons;
+            if (this.dashboard) {
+              this.dashboard.buttons = buttons;
+            }
             this.applicationService.handleEditionMutationResponse(
               errors,
               this.translate.instant('common.dashboard.one')
