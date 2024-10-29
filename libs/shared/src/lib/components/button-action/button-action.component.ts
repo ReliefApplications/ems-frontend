@@ -5,16 +5,17 @@ import { Apollo } from 'apollo-angular';
 import { get, isEmpty, set } from 'lodash';
 import { takeUntil } from 'rxjs';
 import { Dashboard } from '../../models/dashboard.model';
+import { DataTemplateService } from '../../services/data-template/data-template.service';
+import { ButtonActionT } from './button-action-type';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import {
   EditRecordMutationResponse,
   RecordQueryResponse,
 } from '../../models/record.model';
-import { DataTemplateService } from '../../services/data-template/data-template.service';
 import { EmailService } from '../email/email.service';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { ButtonActionT } from './button-action-type';
 import { EDIT_RECORD } from './graphql/mutations';
 import { GET_RECORD_BY_ID } from './graphql/queries';
+import { Location } from '@angular/common';
 
 /** Component for display action buttons */
 @Component({
@@ -41,6 +42,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
    * @param emailService Email service
    * @param activatedRoute Activated route
    * @param apollo Apollo
+   * @param location Angular location
    */
   constructor(
     public dialog: Dialog,
@@ -48,7 +50,8 @@ export class ButtonActionComponent extends UnsubscribeComponent {
     private router: Router,
     private emailService: EmailService,
     private activatedRoute: ActivatedRoute,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private location: Location
   ) {
     super();
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe({
@@ -81,6 +84,12 @@ export class ButtonActionComponent extends UnsubscribeComponent {
     } else if (button.resource) {
       this.openRecordModal(button);
     }
+    if (button.previousPage) {
+      this.location.back();
+    }
+    if (button.template) {
+      this.openRecordModal(button);
+    }
   }
 
   /**
@@ -89,6 +98,8 @@ export class ButtonActionComponent extends UnsubscribeComponent {
    * @param button action to be executed
    */
   private async openRecordModal(button: ButtonActionT) {
+    // recordId: this.contextId,
+    // todo: distinction between addRecord & editRecord
     const { FormModalComponent } = await import(
       '../form-modal/form-modal.component'
     );

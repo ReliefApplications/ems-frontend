@@ -12,6 +12,7 @@ export type ButtonActionT = {
   category: Category;
   openInNewTab: boolean;
   notification?: string;
+  previousPage?: boolean;
   resource?: string;
   template?: string;
   recordFields?: Array<string>;
