@@ -249,8 +249,9 @@ export class DashboardComponent
         ?.filter((x: any) => x !== null)
         .map((widget: any) => {
           const contextData = this.dashboard?.contextData;
-          this.contextService.context =
-            { id: contextID, ...contextData } || null;
+          this.contextService.context = contextID
+            ? { id: contextID, ...contextData }
+            : null;
           if (!contextData) {
             return widget;
           }
@@ -637,7 +638,12 @@ export class DashboardComponent
     const dialogRef = this.dialog.open<ButtonActionT[] | undefined>(
       EditButtonActionsModalComponent,
       {
-        data: { buttonActions: this.buttonActions },
+        data: {
+          dashboard: {
+            ...this.dashboard,
+            buttonActions: this.buttonActions,
+          },
+        },
         disableClose: true,
       }
     );

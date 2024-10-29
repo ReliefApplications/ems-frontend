@@ -216,14 +216,93 @@
                 </div>
               </ng-container>
               <!-- Add record -->
-              <ui-toggle formControlName="addRecord">
-                <ng-container ngProjectAs="label">
-                  {{
-                    'models.dashboard.buttonActions.actions.addRecord'
-                      | translate
-                  }}
+              <ng-container formGroupName="addRecord">
+                <ui-toggle formControlName="enabled">
+                  <ng-container ngProjectAs="label">
+                    {{
+                      'models.dashboard.buttonActions.actions.addRecord.text'
+                        | translate
+                    }}
+                  </ng-container>
+                </ui-toggle>
+                <ng-container *ngIf="form.value.action.addRecord.enabled">
+                  <div class="flex flex-col ml-[55px]">
+                    <!-- Resource selection -->
+                    <div uiFormFieldDirective class="flex-1">
+                      <label>{{ 'models.resource.select' | translate }}</label>
+                      <shared-resource-select
+                        formControlName="resource"
+                        [selectedElements]="[selectedResource]"
+                      ></shared-resource-select>
+                    </div>
+                    <!-- Template selection -->
+                    <div uiFormFieldDirective class="flex-1">
+                      <label>{{ 'models.form.template' | translate }}</label>
+                      <ui-select-menu formControlName="template">
+                        <ui-select-option>-</ui-select-option>
+                        <ui-select-option
+                          *ngFor="let template of templates"
+                          [value]="template.id"
+                        >
+                          {{ template.name }}
+                        </ui-select-option>
+                      </ui-select-menu>
+                      <ui-icon
+                        uiSuffix
+                        icon="info_outline"
+                        variant="grey"
+                        [uiTooltip]="
+                          'components.widget.settings.grid.tooltip.template'
+                            | translate
+                        "
+                      ></ui-icon>
+                    </div>
+                    <ui-toggle formControlName="edition">
+                      <ng-container ngProjectAs="label">
+                        {{
+                          'models.dashboard.buttonActions.actions.addRecord.edition'
+                            | translate
+                        }}
+                      </ng-container>
+                    </ui-toggle>
+                    <ng-container *ngIf="form.value.action.addRecord.edition">
+                      <!-- Record fields selection -->
+                      <div uiFormFieldDirective class="mt-2 flex-1">
+                        <label>{{
+                          'models.dashboard.buttonActions.actions.addRecord.recordFields.text'
+                            | translate
+                        }}</label>
+                        <ui-select-menu
+                          [filterable]="true"
+                          [multiselect]="true"
+                          formControlName="recordFields"
+                        >
+                          <ng-container *ngFor="let field of resourceFields">
+                            <ui-select-option
+                              *ngIf="
+                                field.resource ===
+                                form.value.action.addRecord.resource
+                              "
+                              [value]="field.name"
+                            >
+                              {{ field.name }}
+                            </ui-select-option>
+                          </ng-container>
+                        </ui-select-menu>
+                        <ui-icon
+                          icon="info_outline"
+                          variant="grey"
+                          uiSuffix
+                          [uiTooltip]="
+                            'models.dashboard.buttonActions.actions.addRecord.recordFields.info'
+                              | translate
+                          "
+                        ></ui-icon>
+                      </div>
+                    </ng-container>
+                  </div>
                 </ng-container>
-              </ui-toggle>
+              </ng-container>
               <!-- Subscribe to notification -->
               <ng-container formGroupName="subscribeToNotification">
                 <ui-toggle formControlName="enabled">

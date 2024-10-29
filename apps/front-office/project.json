@@ -134,6 +134,7 @@
               "maximumError": "20kb"
             }
           ],
+          "baseHref": "/apps/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/styles/src/lib/themes/default"]

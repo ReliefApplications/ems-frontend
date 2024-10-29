@@ -12,7 +12,7 @@
       (mouseover)="hovered = type.id"
       (mouseout)="hovered = ''"
     >
-      <img [src]="type.icon" />
+      <img [src]="type.icon | sharedAsset" />
       <span class="text-xl text-gray-500 mb-4">{{
         type.name | titlecase
       }}</span>
@@ -37,7 +37,7 @@
         (mouseover)="hovered = type.id"
         (mouseout)="hovered = ''"
       >
-        <img [src]="type.icon" />
+        <img [src]="type.icon | sharedAsset" />
         <div
           *ngIf="hovered === type.id"
           [style.background]="type.color"

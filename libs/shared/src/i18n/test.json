@@ -1029,6 +1029,7 @@
 				"modifiedBy": "****** {{user}} ****** {{date}}"
 			},
 			"update": {
+				"confirmMessage": "****** {{action}} ******",
 				"exit": "******",
 				"exitMessage": "******"
 			},
@@ -2460,7 +2461,14 @@
 			"buttonActions": {
 				"action": "******",
 				"actions": {
-					"addRecord": "******",
+					"addRecord": {
+						"edition": "******",
+						"recordFields": {
+							"info": "******",
+							"text": "******"
+						},
+						"text": "******"
+					},
 					"editRecord": "******",
 					"navigateTo": "******",
 					"openInNewTab": "******",
