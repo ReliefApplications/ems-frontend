@@ -6,7 +6,12 @@ import {
   FormModule as SharedFormModule,
   EditableTextModule,
 } from '@oort-front/shared';
-import { ButtonModule, SpinnerModule, TooltipModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  IconModule,
+  SpinnerModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -23,6 +28,7 @@ import { TranslateModule } from '@ngx-translate/core';
     EditableTextModule,
     ButtonModule,
     TooltipModule,
+    IconModule,
   ],
   exports: [FormComponent],
 })

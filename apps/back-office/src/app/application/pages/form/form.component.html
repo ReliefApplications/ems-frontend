@@ -26,6 +26,10 @@
     </div>
     <!-- Page actions -->
     <div class="flex items-center" *ngIf="!formActive">
+      <button (click)="onEditButtonActions()">
+        <ui-icon icon="touch_app" variant="grey"></ui-icon>
+        {{ 'models.dashboard.buttonActions.edit.few' | translate }}
+      </button>
       <!-- Edit name -->
       <ui-button
         icon="edit"
