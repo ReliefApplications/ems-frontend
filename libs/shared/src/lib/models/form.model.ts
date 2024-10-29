@@ -1,3 +1,4 @@
+import { ButtonActionT } from '../components/button-action/button-action-type';
 import { Connection } from '../utils/graphql/connection.type';
 import { Aggregation } from './aggregation.model';
 import { GraphqlNodesResponse } from './graphql-query.model';
@@ -50,6 +51,7 @@ export interface Form {
   layouts?: Connection<Layout>;
   aggregations?: Connection<Aggregation>;
   metadata?: Metadata[];
+  buttons?: ButtonActionT[];
 }
 
 /** Model for form graphql graphql query response */

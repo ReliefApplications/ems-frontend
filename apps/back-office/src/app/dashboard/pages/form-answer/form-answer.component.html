@@ -8,8 +8,8 @@
   >
     <!-- New record -->
     <ui-button
-      [isBlock]="true"
-      class="flex-1 max-w-xs"
+      [isBlock]="!buttonActions.length"
+      class="max-w-xs"
       variant="primary"
       category="secondary"
       (click)="clearForm()"

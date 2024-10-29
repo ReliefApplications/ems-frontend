@@ -153,6 +153,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   ) {
     if (data) {
       this.form = data.form;
+      this.buttonActions = data.form.buttons as ButtonActionT[];
     }
     if (
       !this.form ||

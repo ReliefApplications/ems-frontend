@@ -1,10 +1,11 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
-import { Apollo } from 'apollo-angular';
+import { ButtonActionT } from '@oort-front/shared';
 import {
-  FormComponent as SharedFormComponent,
   Form,
   FormQueryResponse,
+  FormComponent as SharedFormComponent,
 } from '@oort-front/shared/widgets';
+import { Apollo } from 'apollo-angular';
 import { GET_SHORT_FORM_BY_ID } from '../graphql/queries';
 
 /** Form component */
@@ -30,6 +31,8 @@ export class FormComponent implements OnInit, OnChanges {
   public completed = false;
   /** boolean, whether to hid or not the new record */
   public hideNewRecord = false;
+  /** Configured form quick actions */
+  public buttonActions: ButtonActionT[] = [];
 
   /** Get the form query */
   private getFormQuery = this.apollo.query<FormQueryResponse>({
@@ -61,6 +64,7 @@ export class FormComponent implements OnInit, OnChanges {
     this.getFormQuery.subscribe(({ data, loading }) => {
       if (data) {
         this.form = data.form;
+        this.buttonActions = data.form.buttons as ButtonActionT[];
         this.loading = loading;
       }
     });

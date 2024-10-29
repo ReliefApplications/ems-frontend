@@ -59,6 +59,7 @@ export class FormAnswerComponent implements OnInit {
         .valueChanges.subscribe(({ data, loading }) => {
           this.loading = loading;
           this.form = data.form;
+          this.buttonActions = data.form.buttons as ButtonActionT[];
           this.breadcrumbService.setBreadcrumb(
             '@form',
             this.form.name as string

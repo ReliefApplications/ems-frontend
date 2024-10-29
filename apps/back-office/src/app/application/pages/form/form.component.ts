@@ -167,6 +167,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   ) {
     this.form = data.form;
     this.canEditName = this.form?.canUpdate ?? false;
+    this.buttonActions = this.form?.buttons as ButtonActionT[];
     this.applicationId =
       (from === 'step'
         ? this.step?.workflow?.page?.application?.id
@@ -322,7 +323,12 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     const dialogRef = this.dialog.open<ButtonActionT[] | undefined>(
       EditButtonActionsModalComponent,
       {
-        data: { buttonActions: this.buttonActions },
+        data: {
+          form: {
+            ...this.form,
+            buttonActions: this.buttonActions,
+          },
+        },
         disableClose: true,
       }
     );
@@ -338,6 +344,9 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           ?.pipe(takeUntil(this.destroy$))
           .subscribe(({ errors }) => {
             this.buttonActions = buttons as ButtonActionT[];
+            if (this.form) {
+              this.form.buttons = buttons;
+            }
             this.applicationService.handleEditionMutationResponse(
               errors,
               this.translate.instant('common.form.one')
