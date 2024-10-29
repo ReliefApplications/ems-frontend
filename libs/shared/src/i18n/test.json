@@ -2463,12 +2463,12 @@
 				"actions": {
 					"addRecord": {
 						"edition": "******",
-						"recordFields": {
+						"fieldsForUpdate": {
 							"text": "******"
 						},
 						"text": "******",
 						"tooltip": {
-							"recordFields": "******",
+							"fieldsForUpdate": "******",
 							"template": "******"
 						}
 					},

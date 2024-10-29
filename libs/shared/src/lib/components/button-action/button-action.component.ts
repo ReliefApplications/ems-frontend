@@ -31,7 +31,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
   /** Can update dashboard or not */
   @Input() canUpdate = false;
   /** Context id of the current dashboard */
-  private contextId!: string;
+  public contextId!: string;
 
   /**
    * Action buttons
@@ -67,6 +67,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
    * @param button Button action to be executed
    */
   public onButtonActionClick(button: ButtonActionT) {
+    // Navigation to url
     if (button.href) {
       const href = this.dataTemplateService.renderLink(button.href);
       if (button.openInNewTab) {
@@ -79,16 +80,26 @@ export class ButtonActionComponent extends UnsubscribeComponent {
           window.location.href = href;
         }
       }
-    } else if (button.notification) {
-      this.emailService.subscribeToEmail(button.notification);
-    } else if (button.resource) {
-      this.openRecordModal(button);
+      return;
     }
+    // Navigation to previous page
     if (button.previousPage) {
       this.location.back();
+      return;
     }
-    if (button.template) {
+    // Edit Record & Add Record
+    if (button.editRecord || button.addRecord) {
       this.openRecordModal(button);
+      return;
+    }
+    // Notifications
+    if (
+      button.subscribeToNotification &&
+      button.subscribeToNotification.notification
+    ) {
+      this.emailService.subscribeToEmail(
+        button.subscribeToNotification.notification
+      );
     }
   }
 
@@ -103,22 +114,27 @@ export class ButtonActionComponent extends UnsubscribeComponent {
     const { FormModalComponent } = await import(
       '../form-modal/form-modal.component'
     );
+    const template = button.editRecord
+      ? button.editRecord.template
+      : button.addRecord?.template;
     const dialogRef = this.dialog.open(FormModalComponent, {
       disableClose: true,
       data: {
-        template: button.template,
+        ...(button.editRecord && { recordId: this.contextId }), // button must be hidden in html if editRecord is enabled & no contextId
+        ...(template && { template }),
         actionButtonCtx: true,
       },
       autoFocus: false,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value && value.data?.id) {
+      if (value && value.data?.id && button.addRecord) {
         const newRecordId = value.data.id;
+        const fieldsForUpdate = button.addRecord.fieldsForUpdate || [];
         // Execute callback if possible
         if (
           this.contextId &&
-          Array.isArray(button.recordFields) &&
-          button.recordFields.length > 0
+          Array.isArray(fieldsForUpdate) &&
+          fieldsForUpdate.length > 0
         ) {
           this.apollo
             .query<RecordQueryResponse>({
@@ -130,7 +146,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
             .pipe(takeUntil(this.destroy$))
             .subscribe(({ data }) => {
               const update = {};
-              for (const field of button.recordFields as string[]) {
+              for (const field of fieldsForUpdate as string[]) {
                 const resourceField = data.record.resource?.fields.find(
                   (f: any) => f.name === field
                 );

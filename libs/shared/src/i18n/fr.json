@@ -2463,12 +2463,12 @@
 				"actions": {
 					"addRecord": {
 						"edition": "Éditer l'enregistrement actuel",
-						"recordFields": {
+						"fieldsForUpdate": {
 							"text": "Attacher le nouvel enregistrement à l'enregistrement actuel"
 						},
 						"text": "Ajouter un enregistrement",
 						"tooltip": {
-							"recordFields": "Le nouvel enregistrement sera attaché aux champs sélectionnés",
+							"fieldsForUpdate": "Le nouvel enregistrement sera attaché aux champs sélectionnés",
 							"template": "Sélectionner un modèle pour l'ajout de nouveaux enregistrements"
 						}
 					},
