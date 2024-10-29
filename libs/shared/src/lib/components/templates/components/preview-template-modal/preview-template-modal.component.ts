@@ -89,6 +89,7 @@ export class PreviewTemplateModalComponent {
 
     this.emailService.emailLayout = {
       subject: this.data.emailContent?.subject,
+      name: this.data.emailContent?.name,
       header: this.data.emailContent?.header,
       body: this.data.emailContent?.body,
       banner: this.data.emailContent?.banner,

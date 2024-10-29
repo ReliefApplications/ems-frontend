@@ -1006,6 +1006,7 @@ export class EmailService {
           .then(([headerImg, footerImg, bannerLogo]) => {
             this.emailLayout = {
               subject: this.allLayoutdata?.txtSubject,
+              name: this.emailLayout?.name,
               header: {
                 headerHtml: this.allLayoutdata?.headerHtml,
                 headerLogo: headerImg,
