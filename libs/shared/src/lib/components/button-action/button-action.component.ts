@@ -1,11 +1,20 @@
-import { Component, Input } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { DataTemplateService } from '../../services/data-template/data-template.service';
-import { Dashboard } from '../../models/dashboard.model';
-import { ButtonActionT } from './button-action-type';
+import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
+import { Dashboard } from '../../models/dashboard.model';
+import { DataTemplateService } from '../../services/data-template/data-template.service';
+import { ButtonActionT } from './button-action-type';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { Apollo } from 'apollo-angular';
+import {
+  EditRecordMutationResponse,
+  RecordQueryResponse,
+} from '../../models/record.model';
+import { GET_RECORD_BY_ID } from './graphql/queries';
+import { EDIT_RECORD } from './graphql/mutations';
+import { isEmpty, set, get } from 'lodash';
+import { Location } from '@angular/common';
 
 /** Component for display action buttons */
 @Component({
@@ -22,7 +31,6 @@ export class ButtonActionComponent extends UnsubscribeComponent {
   @Input() canUpdate = false;
   /** Context id of the current dashboard */
   private contextId!: string;
-  location: any;
 
   /**
    * Action buttons
@@ -30,14 +38,17 @@ export class ButtonActionComponent extends UnsubscribeComponent {
    * @param dialog Dialog service
    * @param dataTemplateService DataTemplate service
    * @param router Angular router
-   * @param location Angular location
    * @param activatedRoute Angular activated route
+   * @param apollo Apollo
+   * @param location Angular location
    */
   constructor(
     public dialog: Dialog,
     private dataTemplateService: DataTemplateService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private apollo: Apollo,
+    private location: Location
   ) {
     super();
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe({
@@ -65,32 +76,96 @@ export class ButtonActionComponent extends UnsubscribeComponent {
           window.location.href = href;
         }
       }
+    } else if (button.resource) {
+      this.openRecordModal(button);
     }
     if (button.previousPage) {
       this.location.back();
     }
     if (button.template) {
-      this.openRecordModal(button.template as string);
+      this.openRecordModal(button);
     }
   }
 
   /**
    * Open record modal to add/edit a record
    *
-   * @param template Template id
+   * @param button action to be executed
    */
-  private async openRecordModal(template: string) {
+  private async openRecordModal(button: ButtonActionT) {
+    // recordId: this.contextId,
+    // todo: distinction between addRecord & editRecord
     const { FormModalComponent } = await import(
       '../form-modal/form-modal.component'
     );
-    this.dialog.open(FormModalComponent, {
+    const dialogRef = this.dialog.open(FormModalComponent, {
       disableClose: true,
       data: {
-        recordId: this.contextId,
-        template,
+        template: button.template,
         actionButtonCtx: true,
       },
       autoFocus: false,
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value && value.data?.id) {
+        const newRecordId = value.data.id;
+        // Execute callback if possible
+        if (
+          this.contextId &&
+          Array.isArray(button.recordFields) &&
+          button.recordFields.length > 0
+        ) {
+          this.apollo
+            .query<RecordQueryResponse>({
+              query: GET_RECORD_BY_ID,
+              variables: {
+                id: this.contextId,
+              },
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(({ data }) => {
+              const update = {};
+              for (const field of button.recordFields as string[]) {
+                const resourceField = data.record.resource?.fields.find(
+                  (f: any) => f.name === field
+                );
+                if (resourceField) {
+                  // Current field value in record
+                  const value = get(data.record.data, field);
+                  switch (resourceField.type) {
+                    case 'resource': {
+                      set(update, field, newRecordId);
+                      break;
+                    }
+                    case 'resources': {
+                      if (Array.isArray(value)) {
+                        set(update, field, [...value, newRecordId]);
+                      } else {
+                        set(update, field, [newRecordId]);
+                      }
+                      break;
+                    }
+                    // Else, skip
+                  }
+                }
+                // Else, skip
+              }
+              // If update not empty
+              if (!isEmpty(update)) {
+                this.apollo
+                  .mutate<EditRecordMutationResponse>({
+                    mutation: EDIT_RECORD,
+                    variables: {
+                      id: this.contextId,
+                      data: update,
+                    },
+                  })
+                  .pipe(takeUntil(this.destroy$))
+                  .subscribe();
+              }
+            });
+        }
+      }
     });
   }
 }

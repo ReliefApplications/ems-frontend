@@ -4,7 +4,7 @@ import { gql } from 'apollo-angular';
  * Get metadata of form / resource query definition.
  */
 export const GET_QUERY_META_DATA = gql`
-  query GetQueryMetaData($id: ID!) {
+  query QueryBuilderService_GetQueryMetaData($id: ID!) {
     form(id: $id) {
       id
       metadata {

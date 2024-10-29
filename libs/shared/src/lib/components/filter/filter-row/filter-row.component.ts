@@ -15,6 +15,8 @@ import { clone, get, isEqual } from 'lodash';
 import { takeUntil } from 'rxjs/operators';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
+import { EmailService } from '../../email/email.service';
+import convertToMinutes from '../../../utils/convert-to-minutes';
 
 /**
  * Composite filter row.
@@ -30,10 +32,14 @@ export class FilterRowComponent
 {
   /** Filter form group */
   @Input() form!: UntypedFormGroup;
+  /** Is disabled */
+  @Input() disabled = false;
   /** Available fields */
   @Input() fields: any[] = [];
   /** Can use context variables */
   @Input() canUseContext = false;
+  /** Email Notification Check */
+  @Input() isEmailNotification = false;
   /** Delete filter event emitter */
   @Output() delete = new EventEmitter();
   /** Text field editor template */
@@ -51,6 +57,9 @@ export class FilterRowComponent
   /** Reference to context editor template */
   @ViewChild('contextEditor', { static: false })
   contextEditor!: TemplateRef<any>;
+  /** In the last operator editor template */
+  @ViewChild('inTheLastEditor', { static: false })
+  inTheLastEditor!: TemplateRef<any>;
   /** Current field */
   public field?: any;
   /** Template reference to the editor */
@@ -61,6 +70,14 @@ export class FilterRowComponent
   public operators: any[] = [];
   /** Is context editor used */
   public contextEditorIsActivated = false;
+  /** Time units for filtering. */
+  public timeUnits = [
+    { value: 'hours', label: 'Hours' },
+    { value: 'days', label: 'Days' },
+    { value: 'weeks', label: 'Weeks' },
+    { value: 'months', label: 'Months' },
+    { value: 'years', label: 'Years' },
+  ];
 
   /** @returns value form field as form control. */
   get valueControl(): UntypedFormControl {
@@ -69,8 +86,10 @@ export class FilterRowComponent
 
   /**
    * Composite filter row.
+   *
+   * @param emailService email notifications helper functions
    */
-  constructor() {
+  constructor(public emailService: EmailService) {
     super();
   }
 
@@ -80,15 +99,61 @@ export class FilterRowComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         // remove value
-        this.form.get('value')?.setValue(null);
-        this.setField(value, true);
+        if (this.form?.get('operator')?.value) {
+          this.setField(value);
+        } else {
+          this.form.get('value')?.setValue(null);
+          this.setField(value, true);
+        }
       });
     this.form
       .get('operator')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.setHideEditor(value);
+        // Checks for in the last operator
+        if (value === 'inthelast') {
+          // Replaces the date editor with in the last
+          this.setEditor(this.field);
+          // Subscribes to in the last value changes
+          this.form
+            .get('inTheLast')
+            ?.valueChanges.subscribe((inTheLastValues) => {
+              if (this.form.get('operator')?.value === 'inthelast') {
+                if (
+                  inTheLastValues.number !== 1 ||
+                  inTheLastValues.unit !== 'days'
+                ) {
+                  // Sets value of inTheLast
+                  this.form
+                    .get('value')
+                    ?.setValue(
+                      convertToMinutes(
+                        inTheLastValues.number,
+                        inTheLastValues.unit
+                      )
+                    );
+                } else {
+                  // Sets default value if not changed
+                  this.form.get('value')?.setValue(convertToMinutes(1, 'days'));
+                }
+              }
+            });
+        }
       });
+    if (this.disabled) {
+      this.form.disable();
+    }
+  }
+
+  /**
+   * Returns an array of numbers from 1 to 90
+   * for the "In the last" dropdown.
+   *
+   * @returns an array of numbers from 1 to 90.
+   */
+  getNumbersArray(): number[] {
+    return Array.from({ length: 90 }, (_, i) => i + 1);
   }
 
   ngAfterViewInit(): void {
@@ -106,6 +171,17 @@ export class FilterRowComponent
       !isEqual(changes.fields?.previousValue, changes.fields?.currentValue)
     ) {
       this.setField(initialField);
+    }
+
+    if (
+      changes['disabled'] &&
+      changes['disabled'].previousValue !== changes['disabled'].currentValue
+    ) {
+      if (this.disabled) {
+        this.form?.disable();
+      } else {
+        this.form?.enable();
+      }
     }
   }
 
@@ -126,7 +202,7 @@ export class FilterRowComponent
     // Loop over name fragments to find correct field
     for (const fragment of nameFragments) {
       field = fields.find((x) => x.name === fragment);
-      fields = clone(field.fields);
+      fields = clone(field?.fields);
     }
     if (field) {
       this.field = field;
@@ -186,7 +262,10 @@ export class FilterRowComponent
     // let editorSet = false;
     // const value = this.form.get('value')?.value;
     // this.isFilterEditorOnView = false;
-    if (get(field, 'filter.template', null)) {
+    if (
+      get(field, 'filter.template', null) &&
+      this.form?.get('operator')?.value !== 'inthelast'
+    ) {
       this.editor = field.filter.template;
     } else if (
       typeof value === 'string' &&
@@ -216,12 +295,21 @@ export class FilterRowComponent
         }
         case 'datetime':
         case 'date': {
-          this.editor = this.dateEditor;
+          if (this.form?.get('operator')?.value === 'inthelast') {
+            this.editor = this.inTheLastEditor;
+          } else {
+            this.editor = this.dateEditor;
+          }
           break;
         }
         default: {
           this.editor = this.textEditor;
         }
+      }
+      if (this.disabled) {
+        this.form.get('value')?.disable();
+      } else {
+        this.form.get('value')?.enable();
       }
     }
   }

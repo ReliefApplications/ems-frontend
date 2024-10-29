@@ -4,6 +4,7 @@ import { WidgetChoiceComponent } from './widget-choice.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule, ButtonModule } from '@oort-front/ui';
+import { AssetPipe } from '../../pipes/asset/asset.pipe';
 
 /** Module for widget choice component */
 @NgModule({
@@ -14,6 +15,7 @@ import { TooltipModule, ButtonModule } from '@oort-front/ui';
     TooltipModule,
     DragDropModule,
     ButtonModule,
+    AssetPipe,
   ],
   exports: [WidgetChoiceComponent],
 })
