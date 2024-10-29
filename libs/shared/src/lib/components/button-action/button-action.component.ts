@@ -1,19 +1,20 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Apollo } from 'apollo-angular';
+import { get, isEmpty, set } from 'lodash';
 import { takeUntil } from 'rxjs';
 import { Dashboard } from '../../models/dashboard.model';
 import { DataTemplateService } from '../../services/data-template/data-template.service';
 import { ButtonActionT } from './button-action-type';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { Apollo } from 'apollo-angular';
 import {
   EditRecordMutationResponse,
   RecordQueryResponse,
 } from '../../models/record.model';
-import { GET_RECORD_BY_ID } from './graphql/queries';
+import { EmailService } from '../email/email.service';
 import { EDIT_RECORD } from './graphql/mutations';
-import { isEmpty, set, get } from 'lodash';
+import { GET_RECORD_BY_ID } from './graphql/queries';
 import { Location } from '@angular/common';
 
 /** Component for display action buttons */
@@ -38,7 +39,8 @@ export class ButtonActionComponent extends UnsubscribeComponent {
    * @param dialog Dialog service
    * @param dataTemplateService DataTemplate service
    * @param router Angular router
-   * @param activatedRoute Angular activated route
+   * @param emailService Email service
+   * @param activatedRoute Activated route
    * @param apollo Apollo
    * @param location Angular location
    */
@@ -46,6 +48,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
     public dialog: Dialog,
     private dataTemplateService: DataTemplateService,
     private router: Router,
+    private emailService: EmailService,
     private activatedRoute: ActivatedRoute,
     private apollo: Apollo,
     private location: Location
@@ -76,6 +79,8 @@ export class ButtonActionComponent extends UnsubscribeComponent {
           window.location.href = href;
         }
       }
+    } else if (button.notification) {
+      this.emailService.subscribeToEmail(button.notification);
     } else if (button.resource) {
       this.openRecordModal(button);
     }

@@ -81,7 +81,7 @@ export class EditButtonActionsModalComponent
   }
 
   ngOnInit(): void {
-    if (this.data && this.data.dashboard.buttons) {
+    if (this.data && this.data.dashboard?.buttons) {
       this.buttonActions = [...this.data.dashboard.buttons];
       this.updateTable();
     }

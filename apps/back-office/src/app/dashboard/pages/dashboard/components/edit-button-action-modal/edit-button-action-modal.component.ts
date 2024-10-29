@@ -35,6 +35,8 @@ import {
   DataTemplateService,
   EditorControlComponent,
   EditorService,
+  EmailNotification,
+  EmailService,
   Form,
   INLINE_EDITOR_CONFIG,
   Resource,
@@ -95,7 +97,9 @@ export class EditButtonActionModalComponent
   public hrefEditor: RawEditorSettings = INLINE_EDITOR_CONFIG;
   /** Roles from current application */
   public roles: Role[];
-  /** Resource.s fields, of current page context resource, if any */
+  /** Email notification list */
+  public emailNotifications: EmailNotification[] = [];
+  /** Resources fields, of current page context resource, if any */
   public resourceFields: any[] = [];
   /** Resource template list */
   public templates: Form[] = [];
@@ -112,7 +116,8 @@ export class EditButtonActionModalComponent
    * @param router Router service
    * @param applicationService shared application service
    * @param fb form builder
-   * @param apollo apollo client
+   * @param emailService Email service
+   * @param apollo Angular Apollo client
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
@@ -122,6 +127,7 @@ export class EditButtonActionModalComponent
     private router: Router,
     public applicationService: ApplicationService,
     private fb: FormBuilder,
+    private emailService: EmailService,
     private apollo: Apollo
   ) {
     super();
@@ -217,9 +223,20 @@ export class EditButtonActionModalComponent
               },
             }
           ),
-          subscribeToNotification: this.fb.group({
-            enabled: [false],
-          }),
+          subscribeToNotification: this.fb.group(
+            {
+              enabled: [!!get(data, 'notification', false)],
+              notification: [get(data, 'notification', '')],
+            },
+            {
+              validator: (control: AbstractControl): ValidationErrors | null =>
+                !control.value.enabled ||
+                (control.value.notification !== '' &&
+                  !isNil(control.value.notification))
+                  ? null
+                  : { atLeastOneRequired: true },
+            }
+          ),
           sendNotification: this.fb.group({
             enabled: [false],
           }),
@@ -325,10 +342,36 @@ export class EditButtonActionModalComponent
   }
 
   /**
+   * Set needed listeners for subscribe to notification form
+   */
+  private prepareSubscribeToNotificationFormListeners() {
+    /** Fetch email notification list on subscribe to notification is enabled */
+    this.form
+      .get('action.subscribeToNotification.enabled')
+      ?.valueChanges.pipe(
+        filter((value) => !!value),
+        switchMap(() =>
+          this.emailService.getEmailNotifications(
+            this.applicationService.application?.getValue()?.id as string
+          )
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data }) => {
+          this.emailNotifications = data.emailNotifications.edges.map(
+            (item) => item.node
+          );
+        },
+      });
+  }
+
+  /**
    * Set all needed form listeners
    */
   private setFormListeners() {
     this.prepareAddRecordFormListeners();
+    this.prepareSubscribeToNotificationFormListeners();
   }
 
   ngOnInit(): void {
@@ -350,6 +393,19 @@ export class EditButtonActionModalComponent
             this.templates = data.resource.forms ?? [];
             this.resourceFields = data.resource.fields.filter((f: any) =>
               ['resource', 'resources'].includes(f.type)
+            );
+          },
+        });
+    }
+    if (this.form.get('action.subscribeToNotification.enabled')?.value) {
+      this.emailService
+        .getEmailNotifications(
+          this.applicationService.application?.getValue()?.id as string
+        )
+        .subscribe({
+          next: ({ data }) => {
+            this.emailNotifications = data.emailNotifications.edges.map(
+              (item) => item.node
             );
           },
         });
@@ -400,6 +456,12 @@ export class EditButtonActionModalComponent
         resource: this.form.get('action.addRecord.resource')?.value,
         template: this.form.get('action.addRecord.template')?.value,
         recordFields: this.form.get('action.addRecord.recordFields')?.value,
+      }),
+      // If subscribeToNotification enabled
+      ...(this.form.get('action.subscribeToNotification.enabled')?.value && {
+        notification: this.form.get(
+          'action.subscribeToNotification.notification'
+        )?.value,
       }),
     };
 

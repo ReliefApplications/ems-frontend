@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable, NgZone, Output } from '@angular/core';
 import {
   FormArray,
@@ -7,28 +7,33 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
+import { cloneDeep } from 'lodash';
+import { BehaviorSubject, Observable } from 'rxjs';
+import {
+  EMAIL_NOTIFICATION_TYPES,
+  EmailNotificationsQueryResponse,
+  EmailNotificationTypes,
+} from '../../models/email-notifications.model';
+import { ResourceQueryResponse } from '../../models/resource.model';
+import { RestService } from '../../services/rest/rest.service';
+import { prettifyLabel } from '../../utils/prettify';
 import {
   ADD_CUSTOM_TEMPLATE,
   ADD_DISTRIBUTION_LIST,
   ADD_EMAIL_NOTIFICATION,
+  DELETE_EMAIL_NOTIFICATION,
   EDIT_CUSTOM_TEMPLATE,
   EDIT_DISTRIBUTION_LIST,
+  GET_AND_UPDATE_EMAIL_NOTIFICATION,
   GET_CUSTOM_TEMPLATES,
   GET_DISTRIBUTION_LIST,
-  GET_AND_UPDATE_EMAIL_NOTIFICATION,
   GET_EMAIL_NOTIFICATIONS,
   GET_RESOURCE_BY_ID,
-  DELETE_EMAIL_NOTIFICATION,
 } from './graphql/queries';
-import { Apollo } from 'apollo-angular';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { RestService } from '../../services/rest/rest.service';
 import { FieldStore } from './models/email.const';
-import { ResourceQueryResponse } from '../../models/resource.model';
-import { prettifyLabel } from '../../utils/prettify';
-import { TranslateService } from '@ngx-translate/core';
-import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Interface for InValidDataSets
@@ -63,7 +68,7 @@ export class EmailService {
   /** Email preview data */
   public allPreviewData: any[] = [];
   /** Email type ( only email supported now ) */
-  public notificationTypes: string[] = ['email', 'alert', 'push notification'];
+  public notificationTypes: EmailNotificationTypes[] = EMAIL_NOTIFICATION_TYPES;
   /** Email layout data + styles */
   public emailLayout!: any;
   /** Email header background color */
@@ -1131,7 +1136,7 @@ export class EmailService {
    * @returns Email notifications query result.
    */
   getEmailNotifications(id: string, limit?: number, skip?: number) {
-    return this.apollo.query<any>({
+    return this.apollo.query<EmailNotificationsQueryResponse>({
       query: GET_EMAIL_NOTIFICATIONS,
       variables: {
         applicationId: id,

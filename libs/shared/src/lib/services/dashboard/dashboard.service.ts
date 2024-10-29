@@ -37,9 +37,6 @@ export class DashboardService {
     return this.widgetContentRefreshed.asObservable();
   }
 
-  /** Shared property to keep track of current loaded dashboard */
-  public currentDashboard!: Dashboard;
-
   /**
    * Shared dashboard service. Handles dashboard events.
    *

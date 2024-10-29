@@ -318,6 +318,31 @@
                     }}
                   </ng-container>
                 </ui-toggle>
+                <ng-container
+                  *ngIf="form.value.action.subscribeToNotification.enabled"
+                >
+                  <div class="flex flex-col ml-[55px]">
+                    <div uiFormFieldDirective class="flex-1">
+                      <label>{{
+                        'components.notifications.title' | translate
+                      }}</label>
+                      <ui-select-menu
+                        [filterable]="true"
+                        [multiselect]="false"
+                        formControlName="notification"
+                      >
+                        <ui-select-option [value]="''">-</ui-select-option>
+                        <ng-container
+                          *ngFor="let notification of emailNotifications"
+                        >
+                          <ui-select-option [value]="notification.id">
+                            {{ notification.name }}
+                          </ui-select-option>
+                        </ng-container>
+                      </ui-select-menu>
+                    </div>
+                  </div>
+                </ng-container>
               </ng-container>
               <!-- Send notification -->
               <ng-container formGroupName="sendNotification">

@@ -11,7 +11,8 @@ export type ButtonActionT = {
   variant: Variant;
   category: Category;
   openInNewTab: boolean;
-  previousPage: boolean;
+  notification?: string;
+  previousPage?: boolean;
   resource?: string;
   template?: string;
   recordFields?: Array<string>;
