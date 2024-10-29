@@ -53,7 +53,6 @@ export class ButtonActionComponent extends UnsubscribeComponent {
    * @param button Button action to be executed
    */
   public onButtonActionClick(button: ButtonActionT) {
-    console.log('Button action clicked', button);
     if (button.href) {
       const href = this.dataTemplateService.renderLink(button.href);
       if (button.openInNewTab) {
