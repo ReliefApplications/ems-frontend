@@ -25,8 +25,11 @@
       ></ui-button>
     </div>
     <!-- Page actions -->
-    <div class="flex items-center" *ngIf="!formActive">
-      <button (click)="onEditButtonActions()">
+    <div class="flex items-center gap-x-3" *ngIf="!formActive">
+      <button
+        class="flex flex-row gap-4 py-2 px-3 text-gray-700 hover:text-gray-900 cursor-pointer hover:bg-gray-50"
+        (click)="onEditButtonActions()"
+      >
         <ui-icon icon="touch_app" variant="grey"></ui-icon>
         {{ 'models.dashboard.buttonActions.edit.few' | translate }}
       </button>

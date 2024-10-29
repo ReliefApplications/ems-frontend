@@ -337,7 +337,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           .savePageButtons(this.form?.id, buttons, 'form')
           ?.pipe(takeUntil(this.destroy$))
           .subscribe(({ errors }) => {
-            this.buttonActions = buttons;
+            this.buttonActions = buttons as ButtonActionT[];
             this.applicationService.handleEditionMutationResponse(
               errors,
               this.translate.instant('common.form.one')
