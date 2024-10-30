@@ -22,8 +22,11 @@ import {
   SelectMenuModule,
   IconModule,
   CheckboxModule,
+  AlertModule,
 } from '@oort-front/ui';
 import { UserStageComponent } from './user-stage/user-stage.component';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { ResizableModule } from 'angular-resizable-element';
 
 /**
  * Aggregation builder pipeline module.
@@ -56,6 +59,9 @@ import { UserStageComponent } from './user-stage/user-stage.component';
     FormWrapperModule,
     SelectMenuModule,
     CheckboxModule,
+    MonacoEditorModule,
+    ResizableModule,
+    AlertModule,
   ],
   exports: [
     PipelineComponent,

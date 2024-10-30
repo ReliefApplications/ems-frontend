@@ -235,6 +235,7 @@
     },
     "errors": {
       "few": "Erreurs",
+      "invalidJson": "Veuillez utiliser un JSON valide",
       "objectDuplicated": "{{type}} {{value}} existe déjà."
     },
     "exitFullscreen": "Quitter le mode plein écran",
@@ -567,7 +568,7 @@
       "sourceFields": "Sélectionner les champs",
       "stages": {
         "addFields": "Ajouter des champs",
-        "custom": "Personnaliser",
+        "custom": "Personnalisé",
         "filter": "Filtrer",
         "group": "Grouper & Accumulateur",
         "label": "Étiqueter",
