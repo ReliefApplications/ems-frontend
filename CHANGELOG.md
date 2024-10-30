@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/ReliefApplications/oort-frontend/compare/v1.0.1...v1.0.2) (2024-10-30)
+
+
+### Bug Fixes
+
+* reference data in forms taking too much time to load ([8ad2b45](https://github.com/ReliefApplications/oort-frontend/commit/8ad2b45c065cfed27d746b42f4970394f34e7f7c))
+
 ## [2.8.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.8.0...v2.8.1) (2024-02-07)
 
 
