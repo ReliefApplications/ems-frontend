@@ -1,29 +1,30 @@
 import { Dialog } from '@angular/cdk/dialog';
+import { Location } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
-import { get, isEmpty, set } from 'lodash';
+import { get, isEmpty, isNil, set } from 'lodash';
 import { lastValueFrom, takeUntil } from 'rxjs';
 import { Dashboard } from '../../models/dashboard.model';
-import { DataTemplateService } from '../../services/data-template/data-template.service';
-import { ButtonActionT } from './button-action-type';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { Metadata } from '../../models/metadata.model';
 import {
   EditRecordMutationResponse,
   RecordQueryResponse,
 } from '../../models/record.model';
-import { EmailService } from '../email/email.service';
+import { ResourceQueryResponse } from '../../models/resource.model';
+import { ApplicationService } from '../../services/application/application.service';
+import { DataTemplateService } from '../../services/data-template/data-template.service';
 import { EmailService as SharedEmailService } from '../../services/email/email.service';
+import { GridLayoutService } from '../../services/grid-layout/grid-layout.service';
+import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
+import { EmailService } from '../email/email.service';
+import { GET_RESOURCE } from '../email/graphql/queries';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { ButtonActionT } from './button-action-type';
 import { EDIT_RECORD } from './graphql/mutations';
 import { GET_RECORD_BY_ID } from './graphql/queries';
-import { Location } from '@angular/common';
-import { ApplicationService } from '../../services/application/application.service';
-import { SnackbarService } from '@oort-front/ui';
-import { TranslateService } from '@ngx-translate/core';
-import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
-import { ResourceQueryResponse } from '../../models/resource.model';
-import { GET_RESOURCE } from '../email/graphql/queries';
-import { GridLayoutService } from '../../services/grid-layout/grid-layout.service';
 
 /** Component for display action buttons */
 @Component({
@@ -52,11 +53,11 @@ export class ButtonActionComponent extends UnsubscribeComponent {
    * @param apollo Apollo
    * @param location Angular location
    * @param sharedEmailService Shared email service
-   * @param applicationService: ApplicationService
-   * @param snackBar: SnackbarService
-   * @param translate: TranslateService
-   * @param queryBuilder: QueryBuilderService
-   * @param gridLayoutService: GridLayoutService
+   * @param applicationService ApplicationService
+   * @param snackBar SnackbarService
+   * @param translate TranslateService
+   * @param queryBuilder QueryBuilderService
+   * @param gridLayoutService GridLayoutService
    */
   constructor(
     public dialog: Dialog,
@@ -123,7 +124,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
     }
     if (button.sendNotification && button.sendNotification.distributionList) {
       try {
-        const selectedIds = [this.contextId];
+        const selectedIds = !isNil(this.contextId) ? [this.contextId] : [];
         const templates = await this.getSelectedNotificationTemplates(
           button.sendNotification.templates || []
         );
@@ -138,10 +139,14 @@ export class ButtonActionComponent extends UnsubscribeComponent {
           return;
         }
         let bodyFields: any[] = [];
+        let resourceMetaData: Metadata[] = [];
         if (this.dashboard?.page?.context?.resource) {
           bodyFields = await this.getSelectedResourceFieldsData(
             button.sendNotification.fields || []
           );
+          resourceMetaData = (await this.getResourceMetaData(
+            button.sendNotification.fields || []
+          )) as Metadata[];
         }
         const distributionList = await this.getSelectedDistributionListData(
           button.sendNotification.distributionList
@@ -165,24 +170,23 @@ export class ButtonActionComponent extends UnsubscribeComponent {
           if (template) {
             const layout = await this.buildDefaultResourceLayout(bodyFields);
             const emailQuery = this.buildEmailQuery(selectedIds, layout);
+
+            let emailData: any = [];
             if (emailQuery) {
-              const resourceMetaData = await this.getResourceMetaData();
-              emailQuery.pipe(takeUntil(this.destroy$)).subscribe({
-                next: ({ data }) => {
-                  let emailData: any = [];
-                  Object.keys(data)?.forEach((key: any) => {
-                    emailData = data[key].edges;
-                  });
-                  this.sharedEmailService.previewCustomTemplate(
-                    template,
-                    distributionList,
-                    emailData,
-                    resourceMetaData,
-                    bodyFields
-                  );
-                },
+              const { data } = await lastValueFrom(
+                emailQuery.pipe(takeUntil(this.destroy$))
+              );
+              Object.keys(data)?.forEach((key: any) => {
+                emailData = data[key].edges;
               });
             }
+            this.sharedEmailService.previewCustomTemplate(
+              template,
+              distributionList,
+              emailData,
+              resourceMetaData,
+              bodyFields
+            );
           }
         }
       } catch (error) {
@@ -358,16 +362,19 @@ export class ButtonActionComponent extends UnsubscribeComponent {
   /**
    * Get default resource meta data
    *
+   * @param buttonActionFields Selected resource fields for the given quick action button
    * @returns default resource meta data
    */
-  private async getResourceMetaData() {
+  private async getResourceMetaData(buttonActionFields: string[]) {
     const { data: resourceMetaDataResponse } = await lastValueFrom(
       // Fetch resource metadata for email sending
       this.queryBuilder.getQueryMetaData(
         this.dashboard?.page?.context?.resource as string
       )
     );
-    return resourceMetaDataResponse.resource.metadata;
+    return resourceMetaDataResponse.resource.metadata?.filter((md) =>
+      buttonActionFields.includes(md.name)
+    );
   }
 
   /**

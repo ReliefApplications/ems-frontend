@@ -111,6 +111,8 @@ export class EditButtonActionModalComponent
   public sendNotificationDistributionList: any[] = [];
   /** Send notification template list */
   public sendNotificationTemplates: Form[] = [];
+  /** Fields, of current page context resource, if any */
+  public sendNotificationFields: Form[] = [];
 
   /**
    * Component for editing a dashboard button action
@@ -167,6 +169,7 @@ export class EditButtonActionModalComponent
         .subscribe({
           next: ({ data }) => {
             this.editRecordTemplates = data.resource.forms ?? [];
+            this.sendNotificationFields = data.resource.fields || [];
             this.resourceFields = data.resource.fields.filter((f: any) =>
               ['resource', 'resources'].includes(f.type)
             );

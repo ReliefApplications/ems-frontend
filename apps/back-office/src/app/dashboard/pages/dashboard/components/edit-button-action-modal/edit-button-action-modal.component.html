@@ -416,7 +416,7 @@
                     ></ui-icon>
                   </div>
                   <!-- Select fields -->
-                  <ng-container *ngIf="resourceFields.length">
+                  <ng-container *ngIf="sendNotificationFields.length">
                     <div uiFormFieldDirective>
                       <label>{{
                         'models.dashboard.buttonActions.actions.sendNotification.selectFields'
@@ -429,7 +429,7 @@
                         [filterable]="true"
                       >
                         <ui-select-option
-                          *ngFor="let field of resourceFields"
+                          *ngFor="let field of sendNotificationFields"
                           [value]="field.name"
                         >
                           {{ field.name }}
