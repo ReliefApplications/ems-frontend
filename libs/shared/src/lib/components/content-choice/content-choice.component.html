@@ -5,7 +5,7 @@
     (click)="onSelect(type.value)"
     [style.background]="type.color"
   >
-    <img [src]="type.img" />
+    <img [src]="type.img | sharedAsset" />
     <span>{{ type.name | titlecase }}</span>
     <div
       *ngIf="type.value === selected"

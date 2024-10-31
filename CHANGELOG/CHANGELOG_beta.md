@@ -1,3 +1,18 @@
+# [2.17.0-beta.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.12...v2.17.0-beta.13) (2024-10-29)
+
+
+### Bug Fixes
+
+* Broken navigation to some pages after baseHref change ([#2666](https://github.com/ReliefApplications/ems-frontend/issues/2666)) ([7797221](https://github.com/ReliefApplications/ems-frontend/commit/779722185d92c8f89fa19772980281ece97ceda9)), closes [AB#104811](https://github.com/AB/issues/104811)
+
+# [2.17.0-beta.12](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.11...v2.17.0-beta.12) (2024-10-24)
+
+
+### Bug Fixes
+
+* issue with missing shortcut would always redirect to default page of app ([3858947](https://github.com/ReliefApplications/ems-frontend/commit/385894778f08fd8ec571af7399f9db09272d726f))
+* search not included in redirection after login ([#2658](https://github.com/ReliefApplications/ems-frontend/issues/2658)) ([b99b7ae](https://github.com/ReliefApplications/ems-frontend/commit/b99b7ae9647bf1317932c33b940019988a4a00fe)), closes [AB#104570](https://github.com/AB/issues/104570)
+
 # [2.17.0-beta.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.10...v2.17.0-beta.11) (2024-10-23)
 
 

@@ -3,6 +3,7 @@ import { EDITOR_LANGUAGE_PAIRS } from '../../const/tinymce.const';
 import { TranslateService } from '@ngx-translate/core';
 import { Editor, RawEditorSettings } from 'tinymce';
 import { DOCUMENT } from '@angular/common';
+import isNil from 'lodash/isNil';
 
 /**
  * Shared editor service
@@ -31,7 +32,11 @@ export class EditorService {
     if (this.environment.tinymceBaseUrl) {
       return this.environment.tinymceBaseUrl;
     } else {
-      return '/tinymce';
+      if (!isNil(this.environment.href)) {
+        return this.environment.href + '/assets/tinymce';
+      } else {
+        return '/assets/tinymce';
+      }
     }
   }
 
