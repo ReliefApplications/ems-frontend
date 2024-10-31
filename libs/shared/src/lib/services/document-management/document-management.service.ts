@@ -7,6 +7,12 @@ import { isNil } from 'lodash';
 import { Question } from 'survey-core';
 import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { RestService } from '../rest/rest.service';
+import { Apollo } from 'apollo-angular';
+import { DriveQueryResponse, GET_DRIVE_ID } from './graphql/queries';
+import { firstValueFrom } from 'rxjs';
+import { InMemoryCache } from '@apollo/client';
+import { HttpLink } from 'apollo-angular/http';
+import { setContext } from '@apollo/client/link/context';
 
 /**
  * Available properties from the CS API Documentation
@@ -60,12 +66,17 @@ const SNACKBAR_DURATION = 3000;
   providedIn: 'root',
 })
 export class DocumentManagementService {
+  /** Default drive id. Will be populated when uploading files. */
+  public defaultDriveId = '';
+
   /**
    * Shared document management service. Handles export and upload documents in document management system.
    *
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param restService Shared rest service
+   * @param apollo Apollo service
+   * @param httpLink Apollo http link
    * @param document Document
    * @param environment Environment
    */
@@ -73,9 +84,13 @@ export class DocumentManagementService {
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private restService: RestService,
+    private apollo: Apollo,
+    private httpLink: HttpLink,
     @Inject(DOCUMENT) private document: Document,
     @Inject('environment') private environment: any
-  ) {}
+  ) {
+    this.createCSApolloClient();
+  }
 
   /**
    * Set up a snackbar element with the given message and duration
@@ -185,13 +200,18 @@ export class DocumentManagementService {
    * @returns http upload request
    */
   async uploadFile(file: any, question: Question): Promise<any> {
+    // Get default data, if not already fetched
+    if (!this.defaultDriveId) {
+      await this.getDriveId();
+    }
     const { snackBarRef, headers } = this.triggerFileDownloadMessage(
       'common.notifications.file.upload.processing'
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
     let fileStream;
     const bodyFilter = Object.create({});
-    const driveId = question.getPropertyValue('Occurrence');
+    const driveId =
+      question.getPropertyValue('Occurrence') || this.defaultDriveId;
     try {
       fileStream = await this.transformFileToValidInput(file);
       CS_DOCUMENTS_PROPERTIES.filter((dp) => !isNil(dp.bodyKey)).forEach(
@@ -275,6 +295,54 @@ export class DocumentManagementService {
         reject(error);
       };
       fileReader.readAsDataURL(file);
+    });
+  }
+
+  /**
+   * Create Apollo Client to contact CS API.
+   */
+  private createCSApolloClient() {
+    // Remove client if previously set
+    this.apollo.removeClient('csDocApi');
+
+    const httpLink = this.httpLink.create({
+      uri: `${this.environment.csApiUrl}/graphql`,
+    });
+
+    const authLink = setContext(() => {
+      const token = localStorage.getItem('access_token');
+      return {
+        headers: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          Accept: 'application/json; charset=utf-8',
+          UserTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          Authorization: token ? `Bearer ${token}` : '',
+        },
+      };
+    });
+
+    const link = authLink.concat(httpLink);
+
+    this.apollo.createNamed('csDocApi', {
+      cache: new InMemoryCache(),
+      link,
+    });
+  }
+
+  /**
+   * Get default drive id
+   *
+   * @returns Query subscription to fetch default drive id
+   */
+  private getDriveId() {
+    const apolloClient = this.apollo.use('csDocApi');
+    return firstValueFrom(
+      apolloClient.query<DriveQueryResponse>({
+        query: GET_DRIVE_ID,
+      })
+    ).then(({ data }) => {
+      console.log('done');
+      this.defaultDriveId = data.storagedrive.driveid;
     });
   }
 }
