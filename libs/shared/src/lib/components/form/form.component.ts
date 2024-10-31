@@ -126,13 +126,6 @@ export class FormComponent
       this.record
     );
 
-    // After the survey is created we add common callback to survey events
-    this.formBuilderService.addEventsCallBacksToSurvey(
-      this.survey,
-      this.selectedPageIndex,
-      this.temporaryFilesStorage
-    );
-
     this.survey.showCompletedPage = false;
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
@@ -141,7 +134,9 @@ export class FormComponent
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
     });
-    this.survey.onComplete.add(this.onComplete);
+    this.survey.onComplete.add(() => {
+      this.onComplete();
+    });
 
     // Unset readOnly fields if it's the record creation
     // It's a requirement to let all fields been editable during addition of records
@@ -178,6 +173,13 @@ export class FormComponent
       this.survey.data = this.record.data;
       this.modifiedAt = this.record.modifiedAt || null;
     }
+
+    // After the survey is created and all values set, we add common callback to survey events
+    this.formBuilderService.addEventsCallBacksToSurvey(
+      this.survey,
+      this.selectedPageIndex,
+      this.temporaryFilesStorage
+    );
 
     // if (this.survey.getUsedLocales().length > 1) {
     //   this.survey.getUsedLocales().forEach((lang) => {
@@ -257,7 +259,7 @@ export class FormComponent
   /**
    * Creates the record when it is complete, or update it if provided.
    */
-  public onComplete = async () => {
+  public async onComplete() {
     let mutation: any;
     this.surveyActive = false;
 
@@ -272,6 +274,7 @@ export class FormComponent
       this.surveyActive = true;
       return;
     }
+
     this.formHelpersService.setEmptyQuestions(this.survey);
     // We wait for the resources questions to update their ids
     await this.formHelpersService.createTemporaryRecords(this.survey);
@@ -334,7 +337,7 @@ export class FormComponent
         });
       }
     });
-  };
+  }
 
   /**
    * Handles the show page event

@@ -5,6 +5,7 @@ import {
   QuestionSelectBase as SurveyCoreQuestionSelectBase,
   QuestionCustomModel,
   QuestionDropdownModel,
+  QuestionFileModel,
 } from 'survey-core';
 
 /** Custom global properties definition */
@@ -22,6 +23,9 @@ export interface QuestionText extends QuestionTextModel, GlobalProperties {
   dateMin?: Date;
   dateMax?: Date;
 }
+
+/** File question interface */
+export interface QuestionFile extends QuestionFileModel, GlobalProperties {}
 
 /** Type for comment question */
 export interface QuestionComment
