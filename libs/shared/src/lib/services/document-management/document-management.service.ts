@@ -3,12 +3,17 @@ import { HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
-import { isNil } from 'lodash';
+import { isNil, set } from 'lodash';
 import { Question } from 'survey-core';
 import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { RestService } from '../rest/rest.service';
 import { Apollo } from 'apollo-angular';
-import { DriveQueryResponse, GET_DRIVE_ID } from './graphql/queries';
+import {
+  DriveQueryResponse,
+  GET_DRIVE_ID,
+  GET_OCCURRENCE_BY_ID,
+  OccurrenceQueryResponse,
+} from './graphql/queries';
 import { firstValueFrom } from 'rxjs';
 import { InMemoryCache } from '@apollo/client';
 import { HttpLink } from 'apollo-angular/http';
@@ -200,36 +205,48 @@ export class DocumentManagementService {
    * @returns http upload request
    */
   async uploadFile(file: any, question: Question): Promise<any> {
-    // Get default data, if not already fetched
-    if (!this.defaultDriveId) {
-      await this.getDriveId();
-    }
     const { snackBarRef, headers } = this.triggerFileDownloadMessage(
       'common.notifications.file.upload.processing'
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
     let fileStream;
     const bodyFilter = Object.create({});
-    const driveId =
-      question.getPropertyValue('Occurrence') || this.defaultDriveId;
+    const occurrenceId = question.getPropertyValue('Occurrence');
+    let driveId = '';
+    let occurrenceType: number | undefined = undefined;
     try {
-      fileStream = await this.transformFileToValidInput(file);
-      CS_DOCUMENTS_PROPERTIES.filter((dp) => !isNil(dp.bodyKey)).forEach(
-        (dp) => {
-          const value = question.getPropertyValue(dp.bodyKey as string);
-          // OccurrenceType is single select value, but body receives it as array
-          if (
-            !!value &&
-            ((dp.bodyKey !== 'OccurrenceType' && value.length) ||
-              dp.bodyKey === 'OccurrenceType')
-          ) {
-            Object.assign(bodyFilter, {
-              [dp.bodyKey as string]:
-                dp.bodyKey === 'OccurrenceType' ? [value] : value,
-            });
+      // If occurrence, fetch related drive id
+      if (occurrenceId) {
+        const occurrence = (await this.getOccurrenceById(occurrenceId)).data
+          .occurrence;
+        if (occurrence && occurrence.driveid) {
+          driveId = occurrence.driveid;
+          occurrenceType = occurrence.occurrencetype;
+          // Set occurrence type if any
+          if (!isNil(occurrenceType)) {
+            set(bodyFilter, 'OccurrenceType', [occurrenceType]);
           }
+        } else {
+          throw new Error('Could not fetch occurrence');
         }
-      );
+      }
+      if (!driveId) {
+        // Get default data, if not already fetched
+        if (!this.defaultDriveId) {
+          await this.getDriveId();
+        }
+        driveId = this.defaultDriveId;
+      }
+      fileStream = await this.transformFileToValidInput(file);
+      CS_DOCUMENTS_PROPERTIES.filter(
+        (prop) => !isNil(prop.bodyKey) && prop.bodyKey !== 'OccurrenceType'
+      ).forEach((prop) => {
+        const value = question.getPropertyValue(prop.bodyKey as string);
+        // OccurrenceType is single select value, but body receives it as array
+        if (!!value && value.length) {
+          set(bodyFilter, prop.bodyKey as string, value);
+        }
+      });
     } catch (error) {
       snackBarSpinner.instance.message = this.translate.instant(
         'common.notifications.file.upload.error'
@@ -332,7 +349,7 @@ export class DocumentManagementService {
   /**
    * Get default drive id
    *
-   * @returns Query subscription to fetch default drive id
+   * @returns Query to fetch default drive id
    */
   private getDriveId() {
     const apolloClient = this.apollo.use('csDocApi');
@@ -341,8 +358,25 @@ export class DocumentManagementService {
         query: GET_DRIVE_ID,
       })
     ).then(({ data }) => {
-      console.log('done');
       this.defaultDriveId = data.storagedrive.driveid;
     });
+  }
+
+  /**
+   * Get occurrence by id
+   *
+   * @param id occurrence id
+   * @returns Query to fetch occurrence by id
+   */
+  private getOccurrenceById(id: string) {
+    const apolloClient = this.apollo.use('csDocApi');
+    return firstValueFrom(
+      apolloClient.query<OccurrenceQueryResponse>({
+        query: GET_OCCURRENCE_BY_ID,
+        variables: {
+          id,
+        },
+      })
+    );
   }
 }

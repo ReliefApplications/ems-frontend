@@ -6,7 +6,7 @@
   >
     <ui-select-option
       *ngFor="let value of selectedPropertyItems"
-      [value]="value.driveid ?? value.id"
+      [value]="value.id"
     >
       {{ value.occurrencename ?? value.name }}
     </ui-select-option>

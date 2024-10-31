@@ -19,7 +19,9 @@ export const init = (
     afterRender: (question: QuestionFile): void => {
       (question.survey as SurveyModel)?.onValueChanged.add((sender) => {
         CS_DOCUMENTS_PROPERTIES.filter(
-          (cs) => !!question[`valueExpression${cs.bodyKey as string}`]
+          (prop) =>
+            prop.bodyKey &&
+            !!question[`valueExpression${prop.bodyKey as string}`]
         ).forEach((cs) => {
           const result = sender.runExpression(
             question[`valueExpression${cs.bodyKey}`]
@@ -30,6 +32,13 @@ export const init = (
               : [result]
             : result;
         });
+        // Specific for occurrence, we don't need to build an array
+        if (question['valueExpressionOccurrence']) {
+          const result = sender.runExpression(
+            question['valueExpressionOccurrence']
+          );
+          question['Occurrence'] = result;
+        }
       });
     },
   };

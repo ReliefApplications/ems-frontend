@@ -56,7 +56,6 @@ export class CsDocsPropertiesDropdownComponent
     id: string;
     name?: string;
     occurrencename?: string;
-    driveid?: string;
     _typename: string;
   }[] = [];
 
@@ -102,7 +101,6 @@ export class CsDocsPropertiesDropdownComponent
   )}, sortBy: { field: "occurrencename", direction: "ASC" }) {
       id
       occurrencename
-      driveid
       __typename
     }
   }

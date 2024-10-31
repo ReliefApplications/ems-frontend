@@ -37,6 +37,13 @@ export const init = (): void => {
       });
       serializer.addProperty('file', {
         category: 'Related Occurrence',
+        type: 'expression',
+        name: 'valueExpressionOccurrence',
+        displayName: 'Value expression for ' + property.text,
+        visibleIndex: 2,
+      });
+      serializer.addProperty('file', {
+        category: 'Related Occurrence',
         name: 'Occurrence',
         required: true,
         visible: false,
@@ -56,16 +63,17 @@ export const init = (): void => {
         visibleIndex: property.value === 'occurrencetypes' ? 0 : index,
       });
       index = index + 1;
-      serializer.addProperty('file', {
-        category:
-          property.value === 'occurrencetypes'
-            ? 'Related Occurrence'
-            : 'Document Properties',
-        type: 'expression',
-        name: `valueExpression${property.bodyKey}`,
-        displayName: 'Value expression for ' + property.text,
-        visibleIndex: property.value === 'occurrencetypes' ? 1 : index,
-      });
+      // Add expression builder to dynamically set the value, skip for occurrence type
+      if (property.value !== 'occurrencetypes') {
+        serializer.addProperty('file', {
+          category: 'Document Properties',
+          type: 'expression',
+          name: `valueExpression${property.bodyKey}`,
+          displayName: 'Value expression for ' + property.text,
+          visibleIndex: property.value === 'occurrencetypes' ? 1 : index,
+        });
+      }
+
       serializer.addProperty('file', {
         category: 'Document Properties',
         name: property.bodyKey,
