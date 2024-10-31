@@ -29,4 +29,9 @@ export type ButtonActionT = {
   subscribeToNotification?: {
     notification?: string;
   };
+  sendNotification?: {
+    distributionList?: string;
+    templates?: Array<string>;
+    fields?: Array<string>;
+  };
 };

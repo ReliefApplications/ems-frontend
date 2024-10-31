@@ -2481,7 +2481,10 @@
 					"navigateTo": "Naviguer vers",
 					"openInNewTab": "Ouvrir dans un nouvel onglet",
 					"previousPage": "Page précédente",
-					"sendNotification": "Envoyer une notification",
+					"sendNotification": {
+						"selectFields": "**************",
+						"text": "Envoyer une notification"
+					},
 					"subscribeToNotification": "S'abonner à une notification",
 					"url": "URL cible"
 				},

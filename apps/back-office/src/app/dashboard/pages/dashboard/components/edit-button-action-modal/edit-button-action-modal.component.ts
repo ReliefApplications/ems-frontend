@@ -47,7 +47,7 @@ import {
 } from '@oort-front/shared';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { get, isNil } from 'lodash';
-import { filter, iif, of, switchMap, takeUntil } from 'rxjs';
+import { filter, iif, map, of, switchMap, takeUntil } from 'rxjs';
 import { RawEditorSettings } from 'tinymce';
 
 /** Dialog data interface */
@@ -107,6 +107,10 @@ export class EditButtonActionModalComponent
   public editRecordTemplates: Form[] = [];
   /** Selected resource */
   public selectedResource!: Resource;
+  /** Send notification distribution list */
+  public sendNotificationDistributionList: any[] = [];
+  /** Send notification template list */
+  public sendNotificationTemplates: Form[] = [];
 
   /**
    * Component for editing a dashboard button action
@@ -179,6 +183,37 @@ export class EditButtonActionModalComponent
           next: ({ data }) => {
             this.emailNotifications = data.emailNotifications.edges.map(
               (item) => item.node
+            );
+          },
+        });
+    }
+    // Get list of distribution list for application
+    if (this.form.get('action.sendNotification.enabled')?.value) {
+      this.emailService
+        .getEmailDistributionList(
+          this.applicationService.application?.getValue()?.id as string
+        )
+        .pipe(
+          switchMap(({ data }) => {
+            const emailDistributionLists = data.emailDistributionLists;
+            return this.emailService
+              .getCustomTemplates(
+                this.applicationService.application?.getValue()?.id as string
+              )
+              .pipe(
+                map(({ data }) => ({
+                  emailDistributionLists,
+                  customTemplates: data.customTemplates,
+                }))
+              );
+          })
+        )
+        .subscribe({
+          next: ({ customTemplates, emailDistributionLists }) => {
+            this.sendNotificationDistributionList =
+              emailDistributionLists.edges.map((item: any) => item.node);
+            this.sendNotificationTemplates = customTemplates.edges.map(
+              (item: any) => item.node
             );
           },
         });
@@ -284,9 +319,35 @@ export class EditButtonActionModalComponent
                   : { atLeastOneRequired: true },
             }
           ),
-          sendNotification: this.fb.group({
-            enabled: [false],
-          }),
+          sendNotification: this.fb.group(
+            {
+              enabled: [!!get(data, 'sendNotification', false)],
+              distributionList: [
+                get(data, 'sendNotification.distributionList', ''),
+              ],
+              templates: [get(data, 'sendNotification.templates', [])],
+              fields: [get(data, 'sendNotification.fields', [])],
+            },
+            {
+              validator: (
+                control: AbstractControl
+              ): ValidationErrors | null => {
+                const isEnabledAndHasDistributionListWithTemplate =
+                  control.value.enabled &&
+                  control.value.distributionList !== '' &&
+                  !isNil(control.value.distributionList) &&
+                  !isNil(control.value.templates) &&
+                  control.value.templates.length;
+                if (
+                  !control.value.enabled ||
+                  isEnabledAndHasDistributionListWithTemplate
+                ) {
+                  return null;
+                }
+                return { atLeastOneRequired: true };
+              },
+            }
+          ),
         },
         { validator: this.actionValidator }
       ),
@@ -414,11 +475,52 @@ export class EditButtonActionModalComponent
   }
 
   /**
+   * Set needed listeners for send notification form
+   */
+  private prepareSendNotificationFormListeners() {
+    /** Fetch distribution list on send notification is enabled */
+    this.form
+      .get('action.sendNotification.enabled')
+      ?.valueChanges.pipe(
+        filter((value) => !!value),
+        switchMap(() =>
+          this.emailService.getEmailDistributionList(
+            this.applicationService.application?.getValue()?.id as string
+          )
+        ),
+        switchMap(({ data }) => {
+          const emailDistributionLists = data.emailDistributionLists;
+          return this.emailService
+            .getCustomTemplates(
+              this.applicationService.application?.getValue()?.id as string
+            )
+            .pipe(
+              map(({ data }) => ({
+                emailDistributionLists,
+                customTemplates: data.customTemplates,
+              }))
+            );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ customTemplates, emailDistributionLists }) => {
+          this.sendNotificationDistributionList =
+            emailDistributionLists.edges.map((item: any) => item.node);
+          this.sendNotificationTemplates = customTemplates.edges.map(
+            (item: any) => item.node
+          );
+        },
+      });
+  }
+
+  /**
    * Set all needed form listeners
    */
   private setFormListeners() {
     this.prepareAddRecordFormListeners();
     this.prepareSubscribeToNotificationFormListeners();
+    this.prepareSendNotificationFormListeners();
   }
 
   /** On click on the preview button open the href */
@@ -477,6 +579,16 @@ export class EditButtonActionModalComponent
           notification: this.form.get(
             'action.subscribeToNotification.notification'
           )?.value,
+        },
+      }),
+      // If sendNotification enabled
+      ...(this.form.get('action.sendNotification.enabled')?.value && {
+        sendNotification: {
+          distributionList: this.form.get(
+            'action.sendNotification.distributionList'
+          )?.value,
+          templates: this.form.get('action.sendNotification.templates')?.value,
+          fields: this.form.get('action.sendNotification.fields')?.value,
         },
       }),
     };

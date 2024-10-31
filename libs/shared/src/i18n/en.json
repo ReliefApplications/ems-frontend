@@ -2481,7 +2481,10 @@
 					"navigateTo": "Navigate to",
 					"openInNewTab": "Open in new tab",
 					"previousPage": "Previous page",
-					"sendNotification": "Send notification",
+					"sendNotification": {
+						"selectFields": "Select current resource fields",
+						"text": "Send notification"
+					},
 					"subscribeToNotification": "Subscribe to notification",
 					"url": "Target URL"
 				},

@@ -2481,7 +2481,10 @@
 					"navigateTo": "******",
 					"openInNewTab": "******",
 					"previousPage": "******",
-					"sendNotification": "******",
+					"sendNotification": {
+						"selectFields": "******",
+						"text": "******"
+					},
 					"subscribeToNotification": "******",
 					"url": "******"
 				},

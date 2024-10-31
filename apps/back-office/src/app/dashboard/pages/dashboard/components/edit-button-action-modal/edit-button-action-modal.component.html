@@ -349,11 +349,95 @@
                 <ui-toggle formControlName="enabled">
                   <ng-container ngProjectAs="label">
                     {{
-                      'models.dashboard.buttonActions.actions.sendNotification'
+                      'models.dashboard.buttonActions.actions.sendNotification.text'
                         | translate
                     }}
                   </ng-container>
                 </ui-toggle>
+                <ng-container
+                  *ngIf="form.value.action.sendNotification.enabled"
+                >
+                  <!-- Distribution list -->
+                  <div uiFormFieldDirective>
+                    <label>{{
+                      'components.emailBuilder.distribution' | translate
+                    }}</label>
+                    <ui-select-menu
+                      formControlName="distributionList"
+                      [filterable]="true"
+                    >
+                      <ui-select-option
+                        *ngFor="let list of sendNotificationDistributionList"
+                        [value]="list.id"
+                      >
+                        {{ list.name }}
+                      </ui-select-option>
+                    </ui-select-menu>
+                    <ui-icon
+                      uiSuffix
+                      icon="info_outline"
+                      class="cursor-pointer"
+                      variant="grey"
+                      [uiTooltip]="
+                        'components.widget.settings.grid.buttons.tooltip.mail.selectDistributionList'
+                          | translate
+                      "
+                      class="self-center ml-1 cursor-help"
+                    ></ui-icon>
+                  </div>
+                  <!-- Templates -->
+                  <div uiFormFieldDirective>
+                    <label>{{
+                      'components.templates.available' | translate
+                    }}</label>
+                    <ui-select-menu
+                      class="select"
+                      formControlName="templates"
+                      [multiselect]="true"
+                      [filterable]="true"
+                    >
+                      <ui-select-option
+                        *ngFor="let template of sendNotificationTemplates"
+                        [value]="template.id"
+                      >
+                        {{ template.name }}
+                      </ui-select-option>
+                    </ui-select-menu>
+                    <ui-icon
+                      icon="info_outline"
+                      class="cursor-pointer"
+                      variant="grey"
+                      uiSuffix
+                      [uiTooltip]="
+                        'components.widget.settings.grid.buttons.tooltip.mail.selectTemplates'
+                          | translate
+                      "
+                      class="self-center ml-1 cursor-help"
+                    ></ui-icon>
+                  </div>
+                  <!-- Select fields -->
+                  <ng-container *ngIf="resourceFields.length">
+                    <div uiFormFieldDirective>
+                      <label>{{
+                        'models.dashboard.buttonActions.actions.sendNotification.selectFields'
+                          | translate
+                      }}</label>
+                      <ui-select-menu
+                        class="select"
+                        formControlName="fields"
+                        [multiselect]="true"
+                        [filterable]="true"
+                      >
+                        <ui-select-option
+                          *ngFor="let field of resourceFields"
+                          [value]="field.name"
+                        >
+                          {{ field.name }}
+                        </ui-select-option>
+                      </ui-select-menu>
+                    </div>
+                  </ng-container>
+                </ng-container>
               </ng-container>
             </div>
           </ng-template>

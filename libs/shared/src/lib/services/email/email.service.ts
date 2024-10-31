@@ -197,19 +197,6 @@ export class EmailService {
     sortOrder?: string,
     attachment?: boolean
   ): Promise<void> {
-    const snackBarRef = this.snackBar.openComponentSnackBar(
-      SnackbarSpinnerComponent,
-      {
-        duration: 0,
-        data: {
-          message: this.translate.instant(
-            'common.notifications.email.processing'
-          ),
-          loading: true,
-        },
-      }
-    );
-    const snackBarSpinner = snackBarRef.instance.nestedComponent;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
@@ -231,29 +218,52 @@ export class EmailService {
       )
       .subscribe({
         next: async (res) => {
-          snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.email.ready'
-          );
-          snackBarSpinner.instance.loading = false;
-          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
           const { EmailPreviewModalComponent } = await import(
             '../../components/email-preview-modal/email-preview-modal.component'
           );
           this.dialog.open(EmailPreviewModalComponent, {
             data: {
               ...res,
-              onSubmit: (value: any) =>
-                this.sendMail(
-                  value.to,
-                  value.subject,
-                  value.html,
-                  filter,
-                  query,
-                  sortField,
-                  sortOrder,
-                  attachment,
-                  value.files
-                ),
+              onSubmit: async (value: any) => {
+                const snackBarRef = this.snackBar.openComponentSnackBar(
+                  SnackbarSpinnerComponent,
+                  {
+                    duration: 0,
+                    data: {
+                      message: this.translate.instant(
+                        'common.notifications.email.processing'
+                      ),
+                      loading: true,
+                    },
+                  }
+                );
+                const snackBarSpinner = snackBarRef.instance.nestedComponent;
+                try {
+                  await this.sendMail(
+                    value.to,
+                    value.subject,
+                    value.html,
+                    filter,
+                    query,
+                    sortField,
+                    sortOrder,
+                    attachment,
+                    value.files
+                  );
+                  snackBarSpinner.instance.message = this.translate.instant(
+                    'common.notifications.email.ready'
+                  );
+                  snackBarSpinner.instance.loading = false;
+                  snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+                } catch (error) {
+                  snackBarSpinner.instance.message = this.translate.instant(
+                    'common.notifications.email.error'
+                  );
+                  snackBarSpinner.instance.loading = false;
+                  snackBarSpinner.instance.error = true;
+                  snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+                }
+              },
             },
             autoFocus: false,
             disableClose: true,
@@ -275,14 +285,7 @@ export class EmailService {
           //   }
           // });
         },
-        error: () => {
-          snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.email.error'
-          );
-          snackBarSpinner.instance.loading = false;
-          snackBarSpinner.instance.error = true;
-          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-        },
+        // error: () => {},
       });
   }
 

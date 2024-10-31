@@ -13,6 +13,7 @@ import {
   RecordQueryResponse,
 } from '../../models/record.model';
 import { EmailService } from '../email/email.service';
+import { EmailService as SharedEmailService } from '../../services/email/email.service';
 import { EDIT_RECORD } from './graphql/mutations';
 import { GET_RECORD_BY_ID } from './graphql/queries';
 import { Location } from '@angular/common';
@@ -43,6 +44,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
    * @param activatedRoute Activated route
    * @param apollo Apollo
    * @param location Angular location
+   * @param sharedEmailService Shared email service
    */
   constructor(
     public dialog: Dialog,
@@ -51,7 +53,8 @@ export class ButtonActionComponent extends UnsubscribeComponent {
     private emailService: EmailService,
     private activatedRoute: ActivatedRoute,
     private apollo: Apollo,
-    private location: Location
+    private location: Location,
+    private sharedEmailService: SharedEmailService
   ) {
     super();
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe({
@@ -100,6 +103,9 @@ export class ButtonActionComponent extends UnsubscribeComponent {
       this.emailService.subscribeToEmail(
         button.subscribeToNotification.notification
       );
+    }
+    if (button.sendNotification && button.sendNotification.distributionList) {
+      // this.sharedEmailService.previewMail();
     }
   }
 
