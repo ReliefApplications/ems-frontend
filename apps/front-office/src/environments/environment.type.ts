@@ -11,6 +11,7 @@ interface UserConfiguration {
  * Interface of Angular environment configuration.
  */
 export interface Environment {
+  href?: string;
   module: string;
   version: any;
   production: boolean;

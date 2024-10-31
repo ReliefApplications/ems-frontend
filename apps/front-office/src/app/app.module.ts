@@ -91,7 +91,11 @@ const initializeApp =
  * @returns Translator.
  */
 export const httpTranslateLoader = (http: HttpClient) =>
-  new TranslateHttpLoader(http);
+  new TranslateHttpLoader(
+    http,
+    `${environment.frontOfficeUri}assets/i18n/`,
+    '.json'
+  );
 
 /**
  * Main module of Front-Office project.
