@@ -3,9 +3,21 @@ import { HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { isNil, set } from 'lodash';
+import { Question } from 'survey-core';
 import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { RestService } from '../rest/rest.service';
-import { Question } from 'survey-core';
+import { Apollo } from 'apollo-angular';
+import {
+  DriveQueryResponse,
+  GET_DRIVE_ID,
+  GET_OCCURRENCE_BY_ID,
+  OccurrenceQueryResponse,
+} from './graphql/queries';
+import { firstValueFrom } from 'rxjs';
+import { InMemoryCache } from '@apollo/client';
+import { HttpLink } from 'apollo-angular/http';
+import { setContext } from '@apollo/client/link/context';
 
 /**
  * Available properties from the CS API Documentation
@@ -34,7 +46,7 @@ export const CS_DOCUMENTS_PROPERTIES = [
   },
   // { text: 'IMS Role', value: 'documentroles', bodyKey: '' },
   { text: 'Language', value: 'languages', bodyKey: 'Language' },
-  // { text: 'Occurrence', value: 'occurrences', bodyKey: '' },
+  { text: 'Occurrence', value: 'occurrences', bodyKey: null },
   {
     text: 'Occurrence Type',
     value: 'occurrencetypes',
@@ -59,12 +71,17 @@ const SNACKBAR_DURATION = 3000;
   providedIn: 'root',
 })
 export class DocumentManagementService {
+  /** Default drive id. Will be populated when uploading files. */
+  public defaultDriveId = '';
+
   /**
    * Shared document management service. Handles export and upload documents in document management system.
    *
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param restService Shared rest service
+   * @param apollo Apollo service
+   * @param httpLink Apollo http link
    * @param document Document
    * @param environment Environment
    */
@@ -72,9 +89,13 @@ export class DocumentManagementService {
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private restService: RestService,
+    private apollo: Apollo,
+    private httpLink: HttpLink,
     @Inject(DOCUMENT) private document: Document,
     @Inject('environment') private environment: any
-  ) {}
+  ) {
+    this.createCSApolloClient();
+  }
 
   /**
    * Set up a snackbar element with the given message and duration
@@ -181,26 +202,49 @@ export class DocumentManagementService {
    *
    * @param file file to upload
    * @param question related question from where to extract body params on cs upload
-   * @param driveId Drive where to upload current file
    * @returns http upload request
    */
-  async uploadFile(
-    file: any,
-    question: Question,
-    driveId: string = '866da8cf-3d36-43e5-b54a-1d5b1ec2226d' // todo: must be made dynamic
-  ): Promise<any> {
+  async uploadFile(file: any, question: Question): Promise<any> {
     const { snackBarRef, headers } = this.triggerFileDownloadMessage(
       'common.notifications.file.upload.processing'
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
     let fileStream;
     const bodyFilter = Object.create({});
+    const occurrenceId = question.getPropertyValue('Occurrence');
+    let driveId = '';
+    let occurrenceType: number | undefined = undefined;
     try {
+      // If occurrence, fetch related drive id
+      if (occurrenceId) {
+        const occurrence = (await this.getOccurrenceById(occurrenceId)).data
+          .occurrence;
+        if (occurrence && occurrence.driveid) {
+          driveId = occurrence.driveid;
+          occurrenceType = occurrence.occurrencetype;
+          // Set occurrence type if any
+          if (!isNil(occurrenceType)) {
+            set(bodyFilter, 'OccurrenceType', [occurrenceType]);
+          }
+        } else {
+          throw new Error('Could not fetch occurrence');
+        }
+      }
+      if (!driveId) {
+        // Get default data, if not already fetched
+        if (!this.defaultDriveId) {
+          await this.getDriveId();
+        }
+        driveId = this.defaultDriveId;
+      }
       fileStream = await this.transformFileToValidInput(file);
-      CS_DOCUMENTS_PROPERTIES.forEach((dp) => {
-        const value = question.getPropertyValue(dp.bodyKey);
+      CS_DOCUMENTS_PROPERTIES.filter(
+        (prop) => !isNil(prop.bodyKey) && prop.bodyKey !== 'OccurrenceType'
+      ).forEach((prop) => {
+        const value = question.getPropertyValue(prop.bodyKey as string);
+        // OccurrenceType is single select value, but body receives it as array
         if (!!value && value.length) {
-          Object.assign(bodyFilter, { [dp.bodyKey]: value });
+          set(bodyFilter, prop.bodyKey as string, value);
         }
       });
     } catch (error) {
@@ -269,5 +313,70 @@ export class DocumentManagementService {
       };
       fileReader.readAsDataURL(file);
     });
+  }
+
+  /**
+   * Create Apollo Client to contact CS API.
+   */
+  private createCSApolloClient() {
+    // Remove client if previously set
+    this.apollo.removeClient('csDocApi');
+
+    const httpLink = this.httpLink.create({
+      uri: `${this.environment.csApiUrl}/graphql`,
+    });
+
+    const authLink = setContext(() => {
+      const token = localStorage.getItem('access_token');
+      return {
+        headers: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          Accept: 'application/json; charset=utf-8',
+          UserTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          Authorization: token ? `Bearer ${token}` : '',
+        },
+      };
+    });
+
+    const link = authLink.concat(httpLink);
+
+    this.apollo.createNamed('csDocApi', {
+      cache: new InMemoryCache(),
+      link,
+    });
+  }
+
+  /**
+   * Get default drive id
+   *
+   * @returns Query to fetch default drive id
+   */
+  private getDriveId() {
+    const apolloClient = this.apollo.use('csDocApi');
+    return firstValueFrom(
+      apolloClient.query<DriveQueryResponse>({
+        query: GET_DRIVE_ID,
+      })
+    ).then(({ data }) => {
+      this.defaultDriveId = data.storagedrive.driveid;
+    });
+  }
+
+  /**
+   * Get occurrence by id
+   *
+   * @param id occurrence id
+   * @returns Query to fetch occurrence by id
+   */
+  private getOccurrenceById(id: string) {
+    const apolloClient = this.apollo.use('csDocApi');
+    return firstValueFrom(
+      apolloClient.query<OccurrenceQueryResponse>({
+        query: GET_OCCURRENCE_BY_ID,
+        variables: {
+          id,
+        },
+      })
+    );
   }
 }

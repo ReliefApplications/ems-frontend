@@ -22,7 +22,6 @@ import * as TextWidget from './widgets/text-widget';
 import * as FileWidget from './widgets/file-widget';
 // import * as ChoicesByUrlProperties from './global-properties/choicesByUrl';
 import { Injector, NgZone } from '@angular/core';
-import { HttpLink } from 'apollo-angular/http';
 import { AngularComponentFactory } from 'survey-angular-ui';
 import {
   ComponentCollection,
@@ -67,7 +66,6 @@ export const initCustomSurvey = (
 ): void => {
   const domService = injector.get(DomService);
   const apollo = injector.get(Apollo);
-  const httpLink = injector.get(HttpLink);
   const authService = injector.get(AuthService);
   const referenceDataService = injector.get(ReferenceDataService);
 
@@ -142,7 +140,7 @@ export const initCustomSurvey = (
   PopupWidthProperty.init();
   OtherProperties.init(environment);
   if (environment.csApiUrl) {
-    CsApiDocsProperties.init(environment.csApiUrl, apollo, httpLink);
+    CsApiDocsProperties.init();
   }
   // enables POST requests for choicesByUrl
   // ChoicesByUrlProperties.init();

@@ -1,3 +1,4 @@
+import { isNil } from 'lodash';
 import { CustomWidgetCollection, SurveyModel } from 'survey-core';
 import { CS_DOCUMENTS_PROPERTIES } from '../../services/document-management/document-management.service';
 import { Question, QuestionFile } from '../types';
@@ -18,13 +19,26 @@ export const init = (
     afterRender: (question: QuestionFile): void => {
       (question.survey as SurveyModel)?.onValueChanged.add((sender) => {
         CS_DOCUMENTS_PROPERTIES.filter(
-          (cs) => !!question[`valueExpression${cs.bodyKey}`]
+          (prop) =>
+            prop.bodyKey &&
+            !!question[`valueExpression${prop.bodyKey as string}`]
         ).forEach((cs) => {
           const result = sender.runExpression(
             question[`valueExpression${cs.bodyKey}`]
           );
-          question[cs.bodyKey] = Array.isArray(result) ? result : [result];
+          question[cs.bodyKey as string] = !isNil(result)
+            ? Array.isArray(result)
+              ? result
+              : [result]
+            : result;
         });
+        // Specific for occurrence, we don't need to build an array
+        if (question['valueExpressionOccurrence']) {
+          const result = sender.runExpression(
+            question['valueExpressionOccurrence']
+          );
+          question['Occurrence'] = result;
+        }
       });
     },
   };
