@@ -244,14 +244,13 @@ export class MapPolygonsService {
               );
             }
             if (admin0s.length > 0) {
-              geoJSON.features.push({
-                type: 'FeatureCollection',
-                features: admin0s.map((x: any) => ({
+              geoJSON.features.push(
+                ...admin0s.map((x: any) => ({
                   type: 'Feature',
                   geometry: x.polygons,
                   properties: {},
-                })),
-              });
+                }))
+              );
             }
             break;
           }
@@ -261,14 +260,13 @@ export class MapPolygonsService {
                 x.value.includes(data.name)
               );
               if (regions.length > 0) {
-                geoJSON.features.push({
-                  type: 'FeatureCollection',
-                  features: regions.map((x) => ({
+                geoJSON.features.push(
+                  ...regions.map((x) => ({
                     type: 'Feature',
                     geometry: x.geometry,
                     properties: {},
-                  })),
-                });
+                  }))
+                );
               }
             } else {
               const region = REGIONS.find((data) => data.name === x.value);
@@ -286,9 +284,17 @@ export class MapPolygonsService {
       });
 
       if (geoJSON.features.length > 0) {
+        const bounds = L.geoJSON(geoJSON).getBounds();
+        const padding = 5;
+        console.log(geoJSON);
         // Timeout seems to be needed for first load of the map.
         setTimeout(() => {
-          map.fitBounds(L.geoJSON(geoJSON).getBounds());
+          map.fitBounds(
+            L.latLngBounds(
+              L.latLng(bounds.getSouth() - padding, bounds.getWest() - padding), // Southwest corner
+              L.latLng(bounds.getNorth() + padding, bounds.getEast() + padding) // Northeast corner
+            )
+          );
         }, 500);
       }
     });
