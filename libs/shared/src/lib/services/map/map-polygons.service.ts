@@ -11,6 +11,7 @@ import { Feature, MultiPolygon, Polygon } from 'geojson';
 import { LayerDatasourceType } from '../../models/layer.model';
 import { getWithExpiry, setWithExpiry } from '../../utils/cache-with-expiry';
 import area from '@turf/area';
+import transformScale from '@turf/transform-scale';
 
 /** Available admin identifiers */
 export type AdminIdentifier =
@@ -244,14 +245,13 @@ export class MapPolygonsService {
               );
             }
             if (admin0s.length > 0) {
-              geoJSON.features.push({
-                type: 'FeatureCollection',
-                features: admin0s.map((x: any) => ({
+              geoJSON.features.push(
+                ...admin0s.map((x: any) => ({
                   type: 'Feature',
                   geometry: x.polygons,
                   properties: {},
-                })),
-              });
+                }))
+              );
             }
             break;
           }
@@ -261,14 +261,13 @@ export class MapPolygonsService {
                 x.value.includes(data.name)
               );
               if (regions.length > 0) {
-                geoJSON.features.push({
-                  type: 'FeatureCollection',
-                  features: regions.map((x) => ({
+                geoJSON.features.push(
+                  ...regions.map((x) => ({
                     type: 'Feature',
                     geometry: x.geometry,
                     properties: {},
-                  })),
-                });
+                  }))
+                );
               }
             } else {
               const region = REGIONS.find((data) => data.name === x.value);
@@ -286,9 +285,10 @@ export class MapPolygonsService {
       });
 
       if (geoJSON.features.length > 0) {
+        console.log(geoJSON);
         // Timeout seems to be needed for first load of the map.
         setTimeout(() => {
-          map.fitBounds(L.geoJSON(geoJSON).getBounds());
+          map.fitBounds(L.geoJSON(transformScale(geoJSON, 1.5)).getBounds());
         }, 500);
       }
     });

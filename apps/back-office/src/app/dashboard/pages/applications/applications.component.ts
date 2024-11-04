@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import {
@@ -80,31 +80,15 @@ export class ApplicationsComponent
     length: 0,
     endCursor: '',
   };
-
-  /**
-   * Applications page component
-   *
-   * @param apollo Apollo service
-   * @param dialog Dialog service
-   * @param router Angular router
-   * @param snackBar Shared snackbar service
-   * @param previewService Shared preview service
-   * @param confirmService Share confirm service
-   * @param translate Angular translate service
-   * @param applicationService Application service
-   */
-  constructor(
-    private apollo: Apollo,
-    public dialog: Dialog,
-    private router: Router,
-    private snackBar: SnackbarService,
-    private previewService: PreviewService,
-    private confirmService: ConfirmService,
-    private translate: TranslateService,
-    private applicationService: ApplicationService
-  ) {
-    super();
-  }
+  /** Apollo service */
+  private apollo = inject(Apollo);
+  private dialog = inject(Dialog);
+  private router = inject(Router);
+  private snackBar = inject(SnackbarService);
+  private previewService = inject(PreviewService);
+  private confirmService = inject(ConfirmService);
+  private translate = inject(TranslateService);
+  private applicationService = inject(ApplicationService);
 
   /**
    * Creates the application query and subscribes to the query changes.
