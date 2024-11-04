@@ -220,13 +220,12 @@ export class AuthService {
   public initLoginSequence(): Promise<void> {
     if (!localStorage.getItem('idtoken')) {
       let redirectUri: URL;
-      const pathName = location.href.replace(
-        this.environment.backOfficeUri,
-        '/'
-      );
+      let pathName: string;
       if (this.environment.module === 'backoffice') {
+        pathName = location.href.replace(this.environment.backOfficeUri, '/');
         redirectUri = new URL(pathName, this.environment.backOfficeUri);
       } else {
+        pathName = location.href.replace(this.environment.frontOfficeUri, '/');
         redirectUri = new URL(pathName, this.environment.frontOfficeUri);
       }
       if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {

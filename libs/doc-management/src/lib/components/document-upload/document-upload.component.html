@@ -1,0 +1,4 @@
+<button (click)="onClick()">Upload</button>
+<ng-container *ngIf="!loading">
+  <document-upload #documentUpload [data]="uploadConfig"></document-upload>
+</ng-container>
