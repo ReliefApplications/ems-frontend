@@ -32,6 +32,13 @@ export type ButtonActionT = {
   sendNotification?: {
     distributionList?: string;
     templates?: Array<string>;
-    fields?: Array<string>;
+    fields?: Array<{
+      format: any;
+      name: string;
+      type: string;
+      kind: string;
+      label: string;
+      width: number;
+    }>;
   };
 };

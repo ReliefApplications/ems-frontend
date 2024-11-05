@@ -30,7 +30,7 @@ import { ButtonActionT } from './button-action-type';
 import { EDIT_RECORD } from './graphql/mutations';
 import { GET_RECORD_BY_ID, GET_RESOURCE_BY_ID } from './graphql/queries';
 import { Layout } from '../../models/layout.model';
-import { addNewField } from '../query-builder/query-builder-forms';
+import { SnackbarSpinnerComponent } from '../snackbar-spinner/public-api';
 
 /** Component for display action buttons */
 @Component({
@@ -144,11 +144,24 @@ export class ButtonActionComponent extends UnsubscribeComponent {
           );
           return;
         }
+        const snackBarRef = this.snackBar.openComponentSnackBar(
+          SnackbarSpinnerComponent,
+          {
+            duration: 0,
+            data: {
+              message: this.translate.instant(
+                'common.notifications.email.preview.processing'
+              ),
+              loading: true,
+            },
+          }
+        );
+        const snackBarSpinner = snackBarRef.instance.nestedComponent;
         let resourceMetaData: Metadata[] = [];
         let resource!: Resource;
         if (this.dashboard?.page?.context?.resource) {
           resourceMetaData = (await this.getResourceMetaData(
-            button.sendNotification.fields || []
+            (button.sendNotification.fields || []).map((x) => x.name)
           )) as Metadata[];
           resource = (await this.getResourceById(
             this.dashboard?.page?.context?.resource
@@ -171,6 +184,8 @@ export class ButtonActionComponent extends UnsubscribeComponent {
           dialogRef.closed.pipe(takeUntil(this.destroy$))
         );
         if (value?.template) {
+          snackBarSpinner.instance.loading = false;
+          snackBarRef.instance.triggerSnackBar(50);
           const selectedId = value?.template;
           const template = templates.filter((x: any) => x.id === selectedId)[0];
           if (template) {
@@ -180,14 +195,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
             let layout!: Layout;
             if (!isNil(resource)) {
               layout = await this.buildDefaultResourceLayout();
-              const fields = this.queryBuilder.getFields(
-                resource?.queryName as string
-              );
-              layout.query.fields = fields
-                .filter((f) =>
-                  (button.sendNotification?.fields || []).includes(f.name)
-                )
-                .map((x) => addNewField(x, true)?.getRawValue());
+              layout.query.fields = button.sendNotification?.fields;
               emailQuery = this.buildEmailQuery(selectedIds, layout);
             }
             let emailData: any = [];

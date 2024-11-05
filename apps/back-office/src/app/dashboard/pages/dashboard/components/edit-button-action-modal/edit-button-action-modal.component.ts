@@ -30,6 +30,7 @@ import {
   Role,
   UnsubscribeComponent,
   QueryBuilderService,
+  QueryBuilderModule,
 } from '@oort-front/shared';
 import {
   categories as ButtonCategories,
@@ -78,6 +79,7 @@ interface DialogData {
     IconModule,
     TooltipModule,
     ResourceSelectComponent,
+    QueryBuilderModule,
   ],
   templateUrl: './edit-button-action-modal.component.html',
   styleUrls: ['./edit-button-action-modal.component.scss'],
@@ -131,7 +133,7 @@ export class EditButtonActionModalComponent
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
-    @Inject(DIALOG_DATA) private data: DialogData,
+    @Inject(DIALOG_DATA) public data: DialogData,
     private editorService: EditorService,
     private dataTemplateService: DataTemplateService,
     private router: Router,
@@ -334,7 +336,7 @@ export class EditButtonActionModalComponent
                 get(data, 'sendNotification.distributionList', ''),
               ],
               templates: [get(data, 'sendNotification.templates', [])],
-              fields: [get(data, 'sendNotification.fields', [])],
+              fields: this.fb.array(get(data, 'sendNotification.fields', [])),
             },
             {
               validator: (
@@ -596,7 +598,9 @@ export class EditButtonActionModalComponent
             'action.sendNotification.distributionList'
           )?.value,
           templates: this.form.get('action.sendNotification.templates')?.value,
-          fields: this.form.get('action.sendNotification.fields')?.value,
+          fields: this.form
+            .get('action.sendNotification.fields')
+            ?.getRawValue(),
         },
       }),
     };

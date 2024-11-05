@@ -1,4 +1,7 @@
-<ui-dialog size="medium" [closable]="true">
+<ui-dialog
+  [size]="form.value.action.sendNotification.enabled ? 'big' : 'medium'"
+  [closable]="true"
+>
   <ng-container ngProjectAs="header">
     <h3 class="font-semibold">
       {{
@@ -416,26 +419,19 @@
                     ></ui-icon>
                   </div>
                   <!-- Select fields -->
-                  <ng-container *ngIf="sendNotificationFields.length">
-                    <div uiFormFieldDirective>
-                      <label>{{
-                        'models.dashboard.buttonActions.actions.sendNotification.selectFields'
-                          | translate
-                      }}</label>
-                      <ui-select-menu
-                        class="select"
-                        formControlName="fields"
-                        [multiselect]="true"
-                        [filterable]="true"
-                      >
-                        <ui-select-option
-                          *ngFor="let field of sendNotificationFields"
-                          [value]="field.name"
-                        >
-                          {{ field.name }}
-                        </ui-select-option>
-                      </ui-select-menu>
-                    </div>
+                  <ng-container *ngIf="data.dashboard.page?.context?.resource">
+                    <!-- Select fields to see in dataset -->
+                    <h2>{{ 'components.emailBuilder.fields' | translate }}</h2>
+                    <ng-container *ngIf="sendNotificationFields.length > 0">
+                      <shared-tab-fields
+                        [form]="
+                          $any(form.get('action.sendNotification.fields'))
+                        "
+                        [fields]="sendNotificationFields"
+                        [showLimit]="true"
+                        [showColumnWidth]="true"
+                      ></shared-tab-fields>
+                    </ng-container>
                   </ng-container>
                 </ng-container>
               </ng-container>

@@ -104,6 +104,7 @@ export * from './lib/components/widgets/map-settings/public-api';
 export * from './lib/components/widgets/map/public-api';
 export * from './lib/components/widgets/summary-card-settings/public-api';
 export * from './lib/components/workflow-stepper/public-api';
+export * from './lib/components/query-builder/query-builder.module';
 
 // Export of controls
 export * from './lib/components/applications-archive/public-api';

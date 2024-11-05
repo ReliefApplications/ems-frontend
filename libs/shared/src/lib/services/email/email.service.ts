@@ -174,11 +174,11 @@ export class EmailService {
    *
    * @param recipient Recipient of the email.
    * @param subject Subject of the email.
-   * @param body Body of the email, if not given we put the formatted records.
-   * @param filter Filters for sending the mail
    * @param query Query settings
    * @param query.name Name of the query
    * @param query.fields Fields requested in the query
+   * @param filter Filters for sending the mail
+   * @param body Body of the email, if not given we put the formatted records.
    * @param sortField Sort field (optional).
    * @param sortOrder Sort order (optional).
    * @param attachment Whether an excel with the dataset is attached to the mail
@@ -187,12 +187,12 @@ export class EmailService {
   public async previewMail(
     recipient: string[],
     subject: string,
-    body: string,
-    filter: CompositeFilterDescriptor,
     query: {
       name: string;
       fields: any[];
     },
+    filter: CompositeFilterDescriptor,
+    body?: string,
     sortField?: string,
     sortOrder?: string,
     attachment?: boolean
@@ -200,6 +200,19 @@ export class EmailService {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
+    const snackBarRef = this.snackBar.openComponentSnackBar(
+      SnackbarSpinnerComponent,
+      {
+        duration: 0,
+        data: {
+          message: this.translate.instant(
+            'common.notifications.email.preview.processing'
+          ),
+          loading: true,
+        },
+      }
+    );
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
     this.restService
       .post(
         '/email/preview/',
@@ -221,23 +234,20 @@ export class EmailService {
           const { EmailPreviewModalComponent } = await import(
             '../../components/email-preview-modal/email-preview-modal.component'
           );
+          snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.email.ready'
+          );
+          snackBarSpinner.instance.loading = false;
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
           this.dialog.open(EmailPreviewModalComponent, {
             data: {
               ...res,
               onSubmit: async (value: any) => {
-                const snackBarRef = this.snackBar.openComponentSnackBar(
-                  SnackbarSpinnerComponent,
-                  {
-                    duration: 0,
-                    data: {
-                      message: this.translate.instant(
-                        'common.notifications.email.processing'
-                      ),
-                      loading: true,
-                    },
-                  }
+                snackBarSpinner.instance.message = this.translate.instant(
+                  'common.notifications.email.processing'
                 );
-                const snackBarSpinner = snackBarRef.instance.nestedComponent;
+                snackBarSpinner.instance.loading = true;
+                snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
                 try {
                   await this.sendMail(
                     value.to,
@@ -251,7 +261,7 @@ export class EmailService {
                     value.files
                   );
                   snackBarSpinner.instance.message = this.translate.instant(
-                    'common.notifications.email.ready'
+                    'common.notifications.email.sent'
                   );
                   snackBarSpinner.instance.loading = false;
                   snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
@@ -285,7 +295,14 @@ export class EmailService {
           //   }
           // });
         },
-        // error: () => {},
+        error: () => {
+          snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.email.errors.preview'
+          );
+          snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.error = true;
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+        },
       });
   }
 
