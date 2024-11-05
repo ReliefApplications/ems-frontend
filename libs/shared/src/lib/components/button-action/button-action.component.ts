@@ -189,7 +189,12 @@ export class ButtonActionComponent extends UnsubscribeComponent {
             });
         }
       }
-      this.reloadDashboard.emit();
+      if (
+        button.editRecord?.reloadDashboard ||
+        button.addRecord?.reloadDashboard
+      ) {
+        this.reloadDashboard.emit();
+      }
     });
   }
 }

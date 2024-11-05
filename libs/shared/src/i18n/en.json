@@ -2487,6 +2487,7 @@
 					"navigateTo": "Navigate to",
 					"openInNewTab": "Open in new tab",
 					"previousPage": "Previous page",
+					"reloadDashboard": "Reload dashboard",
 					"sendNotification": "Send notification",
 					"subscribeToNotification": "Subscribe to notification",
 					"url": "Target URL"

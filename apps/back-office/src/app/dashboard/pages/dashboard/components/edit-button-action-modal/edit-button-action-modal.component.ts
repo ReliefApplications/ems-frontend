@@ -233,6 +233,7 @@ export class EditButtonActionModalComponent
           editRecord: this.fb.group({
             enabled: [!!get(data, 'editRecord', false)],
             template: [get(data, 'editRecord.template', '')],
+            reloadDashboard: [get(data, 'reloadDashboard', true)],
           }),
           addRecord: this.fb.group(
             {
@@ -247,6 +248,7 @@ export class EditButtonActionModalComponent
               template: [get(data, 'addRecord.template', '')],
               edition: [!!get(data, 'addRecord.fieldsForUpdate', false)],
               fieldsForUpdate: [get(data, 'addRecord.fieldsForUpdate', [])],
+              reloadDashboard: [get(data, 'addRecord.reloadDashboard', true)],
             },
             {
               validator: (
@@ -460,6 +462,8 @@ export class EditButtonActionModalComponent
       ...(this.form.get('action.editRecord.enabled')?.value && {
         editRecord: {
           template: this.form.get('action.editRecord.template')?.value,
+          reloadDashboard: this.form.get('action.editRecord.reloadDashboard')
+            ?.value,
         },
       }),
       // If addRecord enabled
@@ -468,6 +472,8 @@ export class EditButtonActionModalComponent
           resource: this.form.get('action.addRecord.resource')?.value,
           template: this.form.get('action.addRecord.template')?.value,
           fieldsForUpdate: this.form.get('action.addRecord.fieldsForUpdate')
+            ?.value,
+          reloadDashboard: this.form.get('action.addRecord.reloadDashboard')
             ?.value,
         },
       }),

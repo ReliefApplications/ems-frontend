@@ -18,12 +18,14 @@ export type ButtonActionT = {
   // Edit Record
   editRecord?: {
     template?: string;
+    reloadDashboard?: boolean;
   };
   // Add Record
   addRecord?: {
     resource?: string;
     template?: string;
     fieldsForUpdate?: Array<string>;
+    reloadDashboard?: boolean;
   };
   // Notifications
   subscribeToNotification?: {

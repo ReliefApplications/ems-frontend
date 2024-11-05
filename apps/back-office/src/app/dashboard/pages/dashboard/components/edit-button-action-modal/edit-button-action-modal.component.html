@@ -218,6 +218,14 @@
                       "
                     ></ui-icon>
                   </div>
+                  <ui-toggle formControlName="reloadDashboard">
+                    <ng-container ngProjectAs="label">
+                      {{
+                        'models.dashboard.buttonActions.actions.reloadDashboard'
+                          | translate
+                      }}
+                    </ng-container>
+                  </ui-toggle>
                 </div>
               </ng-container>
               <!-- Add record -->
@@ -305,6 +313,14 @@
                         ></ui-icon>
                       </div>
                     </ng-container>
+                    <ui-toggle formControlName="reloadDashboard">
+                      <ng-container ngProjectAs="label">
+                        {{
+                          'models.dashboard.buttonActions.actions.reloadDashboard'
+                            | translate
+                        }}
+                      </ng-container>
+                    </ui-toggle>
                   </div>
                 </ng-container>
               </ng-container>
