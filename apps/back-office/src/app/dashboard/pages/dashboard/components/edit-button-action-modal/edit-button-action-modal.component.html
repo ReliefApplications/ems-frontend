@@ -262,6 +262,14 @@
                         "
                       ></ui-icon>
                     </div>
+                    <!-- Mapping -->
+                    <shared-field-mapper
+                      class="my-2"
+                      [formGroupInstance]="
+                        $any(form.get('action.addRecord'))
+                      "
+                      [fields]="resourceFields"
+                    ></shared-field-mapper>
                     <ui-toggle formControlName="edition">
                       <ng-container ngProjectAs="label">
                         {{

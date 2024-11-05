@@ -1,0 +1,77 @@
+<ui-expansion-panel [expanded]="false" [disabled]="disabled">
+  <ng-container ngProjectAs="title">
+    {{ 'components.pullJob.modal.mapping' | translate }}
+  </ng-container>
+  <div class="flex flex-col gap-4">
+    <div class="flex justify-end">
+      <!-- Switch edition mode (raw / ui) -->
+      <ui-button
+        icon="edit_note"
+        category="secondary"
+        variant="primary"
+        (click)="toggleRawJSON()"
+      >
+        {{ 'components.pullJob.modal.switch' | translate }}
+      </ui-button>
+    </div>
+    <!-- Raw edition mode (json) -->
+    <ng-container *ngIf="openRawJSON">
+      <div class="grow h-[300px]">
+        <ngx-monaco-editor
+          sharedAsyncMonacoEditor
+          class="!h-full"
+          formControlName="rawMapping"
+          [options]="editorOptions"
+        ></ngx-monaco-editor>
+      </div>
+    </ng-container>
+    <!-- UI edition mode -->
+    <ng-container *ngIf="!openRawJSON">
+      <div class="flex flex-col gap-2 overflow-x-auto">
+        <form
+          [formGroup]="$any(element)"
+          *ngFor="let element of mappingArray.controls; index as i"
+          class="flex gap-x-2 items-end"
+        >
+          <div uiFormFieldDirective [defaultMargin]="false" class="flex-1">
+            <label>{{ 'common.field.one' | translate }}</label>
+            <ui-select-menu formControlName="name">
+              <ui-select-option
+                *ngFor="let field of filteredFields(element.value.name)"
+                [value]="field.name"
+              >
+                {{ field.name }}
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
+          <div
+            *ngIf="element.value.name"
+            uiFormFieldDirective
+            [defaultMargin]="false"
+            class="flex-1"
+          >
+            <label>{{ 'common.value.one' | translate }}</label>
+            <input formControlName="value" type="string" />
+          </div>
+          <ui-button
+            [isIcon]="true"
+            icon="remove_circle_outline"
+            variant="danger"
+            (click)="onDeleteElement(i)"
+            [uiTooltip]="'common.delete' | translate"
+          >
+          </ui-button>
+        </form>
+        <ng-container *ngIf="filteredFields('').length > 0">
+          <ui-button
+            icon="add_circle_outline"
+            variant="primary"
+            (click)="onAddElement()"
+          >
+            {{ 'components.pullJob.modal.addMappingField' | translate }}
+          </ui-button>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+</ui-expansion-panel>
