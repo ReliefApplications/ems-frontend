@@ -16,7 +16,7 @@
     </div>
     <!-- Raw edition mode (json) -->
     <ng-container *ngIf="openRawJSON">
-      <div class="grow h-[300px]">
+      <div [formGroup]="formGroupInstance" class="grow h-[300px]">
         <ngx-monaco-editor
           sharedAsyncMonacoEditor
           class="!h-full"
