@@ -194,8 +194,12 @@ export class ButtonActionComponent extends UnsubscribeComponent {
               | undefined;
             let layout!: Layout;
             if (!isNil(resource)) {
-              layout = await this.buildDefaultResourceLayout();
-              layout.query.fields = button.sendNotification?.fields;
+              layout = {
+                query: {
+                  name: resource.queryName,
+                  fields: button.sendNotification?.fields,
+                },
+              };
               emailQuery = this.buildEmailQuery(selectedIds, layout);
             }
             let emailData: any = [];
@@ -212,12 +216,12 @@ export class ButtonActionComponent extends UnsubscribeComponent {
               distributionList,
               emailData,
               resourceMetaData,
-              layout.query.fields
+              button.sendNotification?.fields
             );
           }
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
   }
@@ -365,23 +369,6 @@ export class ButtonActionComponent extends UnsubscribeComponent {
       )
     );
     return distributionListResponse.emailDistributionLists.edges[0].node;
-  }
-
-  /**
-   * Get default resource layout data
-   *
-   * @returns default resource layout data
-   */
-  private async buildDefaultResourceLayout() {
-    const { edges: layoutsResponse } = await this.gridLayoutService.getLayouts(
-      this.dashboard?.page?.context?.resource as string,
-      {
-        ids: [],
-        first: 1,
-      }
-    );
-    const layout = layoutsResponse[0].node || null;
-    return layout;
   }
 
   /**

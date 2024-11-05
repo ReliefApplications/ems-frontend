@@ -1,5 +1,19 @@
 import { Category, Variant } from '@oort-front/ui';
 
+/** Field interface for sendNotification action */
+interface Field {
+  format: any;
+  name: string;
+  type: string;
+  kind: string;
+  label: string;
+  width: number;
+  filter: any;
+  sort: any;
+  fields?: Array<Field>;
+  first: number;
+}
+
 /**
  * Button Action Type
  */
@@ -32,13 +46,6 @@ export type ButtonActionT = {
   sendNotification?: {
     distributionList?: string;
     templates?: Array<string>;
-    fields?: Array<{
-      format: any;
-      name: string;
-      type: string;
-      kind: string;
-      label: string;
-      width: number;
-    }>;
+    fields?: Array<Field>;
   };
 };

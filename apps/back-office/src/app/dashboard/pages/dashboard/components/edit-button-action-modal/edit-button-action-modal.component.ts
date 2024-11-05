@@ -31,6 +31,7 @@ import {
   UnsubscribeComponent,
   QueryBuilderService,
   QueryBuilderModule,
+  addNewField,
 } from '@oort-front/shared';
 import {
   categories as ButtonCategories,
@@ -115,7 +116,7 @@ export class EditButtonActionModalComponent
   /** Send notification template list */
   public sendNotificationTemplates: Form[] = [];
   /** Fields, of current page context resource, if any */
-  public sendNotificationFields: Form[] = [];
+  public sendNotificationFields: any[] = [];
 
   /**
    * Component for editing a dashboard button action
@@ -241,7 +242,6 @@ export class EditButtonActionModalComponent
     data: ButtonActionT,
     roles: Role[]
   ): FormGroup => {
-    console.log(data);
     const form = this.fb.group({
       general: this.fb.group({
         buttonText: [get(data, 'text', ''), Validators.required],
@@ -336,7 +336,11 @@ export class EditButtonActionModalComponent
                 get(data, 'sendNotification.distributionList', ''),
               ],
               templates: [get(data, 'sendNotification.templates', [])],
-              fields: this.fb.array(get(data, 'sendNotification.fields', [])),
+              fields: this.fb.array(
+                get(data, 'sendNotification.fields', []).map((x: any) =>
+                  addNewField(x)
+                )
+              ),
             },
             {
               validator: (
@@ -604,8 +608,6 @@ export class EditButtonActionModalComponent
         },
       }),
     };
-
-    console.log(button);
 
     this.dialogRef.close(button);
   }
