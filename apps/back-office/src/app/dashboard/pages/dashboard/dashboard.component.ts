@@ -238,6 +238,13 @@ export class DashboardComponent
   }
 
   /**
+   * Reload the dashboard.
+   */
+  reloadDashboard(): void {
+    this.ngOnInit();
+  }
+
+  /**
    * Sets up the widgets from the dashboard structure
    *
    * @param dashboard Dashboard

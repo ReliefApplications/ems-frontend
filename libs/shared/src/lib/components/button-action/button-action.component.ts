@@ -1,5 +1,5 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { get, isEmpty, set } from 'lodash';
@@ -30,6 +30,8 @@ export class ButtonActionComponent extends UnsubscribeComponent {
   @Input() dashboard?: Dashboard;
   /** Can update dashboard or not */
   @Input() canUpdate = false;
+  /** Reload dashboard event emitter */
+  @Output() reloadDashboard = new EventEmitter<void>();
   /** Context id of the current dashboard */
   public contextId!: string;
 
@@ -187,6 +189,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
             });
         }
       }
+      this.reloadDashboard.emit();
     });
   }
 }
