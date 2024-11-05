@@ -641,7 +641,7 @@ export class SelectDistributionComponent
         };
         this.http
           .post(
-            `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+            `${this.restService.apiUrl}/notification/azure/preview-distribution-lists/`,
             query
           )
           .toPromise()

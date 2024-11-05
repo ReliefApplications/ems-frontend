@@ -254,7 +254,7 @@ export class EmailService {
       };
       await this.http
         .post(
-          `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+          `${this.restService.apiUrl}/notification/azure/preview-distribution-lists/`,
           query
         )
         .subscribe((response: any) => {
@@ -381,7 +381,7 @@ export class EmailService {
 
           this.http
             .post(
-              `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+              `${this.restService.apiUrl}/notification/azure/preview-distribution-lists/`,
               query
             )
             .toPromise()
@@ -428,7 +428,7 @@ export class EmailService {
         if (inValidBlocks.length === 0) {
           this.http
             .post(
-              `${this.restService.apiUrl}/notification/validate-dataset`,
+              `${this.restService.apiUrl}/notification/azure/validate-dataset`,
               emailDatasets
             )
             .subscribe({
@@ -1259,7 +1259,7 @@ export class EmailService {
   async getFinalEmail(configID: any) {
     this.http
       .post(
-        `${this.restService.apiUrl}/notification/preview-email/${configID}`,
+        `${this.restService.apiUrl}/notification/azure/preview-email/${configID}`,
         {}
       )
       .subscribe(
@@ -1347,10 +1347,10 @@ export class EmailService {
     sendAzure?: boolean
   ): Observable<any> {
     if (separateEmail) {
-      const urlWithConfigId = `${this.restService.apiUrl}/notification/send-individual-email/${configId}`;
+      const urlWithConfigId = `${this.restService.apiUrl}/notification/azure/send-individual-email/${configId}`;
       return this.http.post<any>(urlWithConfigId, emailData);
     } else if (sendAzure) {
-      const urlWithConfigId = `${this.restService.apiUrl}/notification/azure/sendEmail/${configId}`;
+      const urlWithConfigId = `${this.restService.apiUrl}/notification/azure/send-email/${configId}`;
       return this.http.get<any>(urlWithConfigId);
     } else {
       const urlWithConfigId = `${this.restService.apiUrl}/notification/send-email/${configId}`;
@@ -1558,7 +1558,7 @@ export class EmailService {
    * @returns rest post to end point.
    */
   getPreviewDataSet(queryData: any): Observable<any> {
-    const url = `${this.restService.apiUrl}/notification/preview-dataset`;
+    const url = `${this.restService.apiUrl}/notification/azure/preview-dataset`;
     return this.http.post<any>(url, queryData, {
       headers: { responseType: 'text/html' },
     });
@@ -1701,7 +1701,7 @@ export class EmailService {
    * @returns rest post to end point.
    */
   sendQuickEmail(emailData: any): Observable<any> {
-    const urlWithConfigId = `${this.restService.apiUrl}/notification/send-quick-email`;
+    const urlWithConfigId = `${this.restService.apiUrl}/notification/azure/send-quick-email`;
     return this.http.post<any>(urlWithConfigId, emailData);
   }
 

@@ -523,7 +523,7 @@ export class EmailTemplateComponent
 
         this.http
           .post(
-            `${this.restService.apiUrl}/notification/preview-dataset`,
+            `${this.restService.apiUrl}/notification/azure/preview-dataset`,
             objPreview
           )
           .subscribe(
@@ -739,7 +739,7 @@ export class EmailTemplateComponent
 
       this.http
         .post(
-          `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+          `${this.restService.apiUrl}/notification/azure/preview-distribution-lists/`,
           objPreview
         )
         .toPromise()
