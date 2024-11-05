@@ -27,6 +27,7 @@ export * from './lib/services/html-parser/html-parser.service';
 export * from './lib/services/kendo-translation/kendo-translation.service';
 export * from './lib/services/map/map-layers.service';
 export * from './lib/services/reference-data/reference-data.service';
+export * from './lib/services/query-builder/query-builder.service';
 export * from './lib/services/rest/rest.service';
 export * from './lib/services/workflow/workflow.service';
 

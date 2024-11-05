@@ -1,18 +1,6 @@
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  DialogModule,
-  variants as ButtonVariants,
-  categories as ButtonCategories,
-  FormWrapperModule,
-  SelectMenuModule,
-  ButtonModule,
-  ToggleModule,
-  DividerModule,
-  TabsModule,
-  IconModule,
-  TooltipModule,
-} from '@oort-front/ui';
 import {
   AbstractControl,
   FormBuilder,
@@ -23,10 +11,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
-import { Apollo } from 'apollo-angular';
-import { GET_RESOURCE } from './graphql/queries';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ApplicationService,
@@ -44,11 +29,27 @@ import {
   ResourceSelectComponent,
   Role,
   UnsubscribeComponent,
+  QueryBuilderService,
 } from '@oort-front/shared';
+import {
+  categories as ButtonCategories,
+  ButtonModule,
+  variants as ButtonVariants,
+  DialogModule,
+  DividerModule,
+  FormWrapperModule,
+  IconModule,
+  SelectMenuModule,
+  TabsModule,
+  ToggleModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { EditorModule } from '@tinymce/tinymce-angular';
+import { Apollo } from 'apollo-angular';
 import { get, isNil } from 'lodash';
 import { filter, iif, map, of, switchMap, takeUntil } from 'rxjs';
 import { RawEditorSettings } from 'tinymce';
+import { GET_RESOURCE } from './graphql/queries';
 
 /** Dialog data interface */
 interface DialogData {
@@ -126,6 +127,7 @@ export class EditButtonActionModalComponent
    * @param fb form builder
    * @param emailService Email service
    * @param apollo Angular Apollo client
+   * @param queryBuilder Query builder service
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
@@ -136,7 +138,8 @@ export class EditButtonActionModalComponent
     public applicationService: ApplicationService,
     private fb: FormBuilder,
     private emailService: EmailService,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private queryBuilder: QueryBuilderService
   ) {
     super();
     this.roles = this.applicationService.application.value?.roles || [];
@@ -169,7 +172,9 @@ export class EditButtonActionModalComponent
         .subscribe({
           next: ({ data }) => {
             this.editRecordTemplates = data.resource.forms ?? [];
-            this.sendNotificationFields = data.resource.fields || [];
+            this.sendNotificationFields = this.queryBuilder.getFields(
+              data.resource?.queryName as string
+            );
             this.resourceFields = data.resource.fields.filter((f: any) =>
               ['resource', 'resources'].includes(f.type)
             );
