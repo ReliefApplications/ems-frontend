@@ -27,6 +27,7 @@ export * from './lib/services/html-parser/html-parser.service';
 export * from './lib/services/kendo-translation/kendo-translation.service';
 export * from './lib/services/map/map-layers.service';
 export * from './lib/services/reference-data/reference-data.service';
+export * from './lib/services/query-builder/query-builder.service';
 export * from './lib/services/rest/rest.service';
 export * from './lib/services/workflow/workflow.service';
 
@@ -103,6 +104,7 @@ export * from './lib/components/widgets/map-settings/public-api';
 export * from './lib/components/widgets/map/public-api';
 export * from './lib/components/widgets/summary-card-settings/public-api';
 export * from './lib/components/workflow-stepper/public-api';
+export * from './lib/components/query-builder/public-api';
 
 // Export of controls
 export * from './lib/components/applications-archive/public-api';
