@@ -2,29 +2,35 @@ import { Dialog } from '@angular/cdk/dialog';
 import { Location } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ApolloQueryResult } from '@apollo/client';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
 import { get, isEmpty, isNil, set } from 'lodash';
-import { lastValueFrom, takeUntil } from 'rxjs';
+import { lastValueFrom, Observable, takeUntil } from 'rxjs';
 import { Dashboard } from '../../models/dashboard.model';
 import { Metadata } from '../../models/metadata.model';
 import {
   EditRecordMutationResponse,
   RecordQueryResponse,
 } from '../../models/record.model';
-import { ResourceQueryResponse } from '../../models/resource.model';
+import { Resource, ResourceQueryResponse } from '../../models/resource.model';
 import { ApplicationService } from '../../services/application/application.service';
 import { DataTemplateService } from '../../services/data-template/data-template.service';
 import { EmailService as SharedEmailService } from '../../services/email/email.service';
 import { GridLayoutService } from '../../services/grid-layout/grid-layout.service';
-import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
+import {
+  QueryBuilderService,
+  QueryResponse,
+} from '../../services/query-builder/query-builder.service';
 import { EmailService } from '../email/email.service';
 import { GET_RESOURCE } from '../email/graphql/queries';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { ButtonActionT } from './button-action-type';
 import { EDIT_RECORD } from './graphql/mutations';
-import { GET_RECORD_BY_ID } from './graphql/queries';
+import { GET_RECORD_BY_ID, GET_RESOURCE_BY_ID } from './graphql/queries';
+import { Layout } from '../../models/layout.model';
+import { addNewField } from '../query-builder/query-builder-forms';
 
 /** Component for display action buttons */
 @Component({
@@ -138,15 +144,15 @@ export class ButtonActionComponent extends UnsubscribeComponent {
           );
           return;
         }
-        let bodyFields: any[] = [];
         let resourceMetaData: Metadata[] = [];
+        let resource!: Resource;
         if (this.dashboard?.page?.context?.resource) {
-          bodyFields = await this.getSelectedResourceFieldsData(
-            button.sendNotification.fields || []
-          );
           resourceMetaData = (await this.getResourceMetaData(
             button.sendNotification.fields || []
           )) as Metadata[];
+          resource = (await this.getResourceById(
+            this.dashboard?.page?.context?.resource
+          )) as Resource;
         }
         const distributionList = await this.getSelectedDistributionListData(
           button.sendNotification.distributionList
@@ -168,9 +174,22 @@ export class ButtonActionComponent extends UnsubscribeComponent {
           const selectedId = value?.template;
           const template = templates.filter((x: any) => x.id === selectedId)[0];
           if (template) {
-            const layout = await this.buildDefaultResourceLayout(bodyFields);
-            const emailQuery = this.buildEmailQuery(selectedIds, layout);
-
+            let emailQuery!:
+              | Observable<ApolloQueryResult<QueryResponse>>
+              | undefined;
+            let layout!: Layout;
+            if (!isNil(resource)) {
+              layout = await this.buildDefaultResourceLayout();
+              const fields = this.queryBuilder.getFields(
+                resource?.queryName as string
+              );
+              layout.query.fields = fields
+                .filter((f) =>
+                  (button.sendNotification?.fields || []).includes(f.name)
+                )
+                .map((x) => addNewField(x, true)?.getRawValue());
+              emailQuery = this.buildEmailQuery(selectedIds, layout);
+            }
             let emailData: any = [];
             if (emailQuery) {
               const { data } = await lastValueFrom(
@@ -185,7 +204,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
               distributionList,
               emailData,
               resourceMetaData,
-              bodyFields
+              layout.query.fields
             );
           }
         }
@@ -343,10 +362,9 @@ export class ButtonActionComponent extends UnsubscribeComponent {
   /**
    * Get default resource layout data
    *
-   * @param bodyFields default resource layout for the given quick action button
    * @returns default resource layout data
    */
-  private async buildDefaultResourceLayout(bodyFields: any[]) {
+  private async buildDefaultResourceLayout() {
     const { edges: layoutsResponse } = await this.gridLayoutService.getLayouts(
       this.dashboard?.page?.context?.resource as string,
       {
@@ -355,7 +373,6 @@ export class ButtonActionComponent extends UnsubscribeComponent {
       }
     );
     const layout = layoutsResponse[0].node || null;
-    layout.query.fields = bodyFields;
     return layout;
   }
 
@@ -375,6 +392,24 @@ export class ButtonActionComponent extends UnsubscribeComponent {
     return resourceMetaDataResponse.resource.metadata?.filter((md) =>
       buttonActionFields.includes(md.name)
     );
+  }
+
+  /**
+   * Fetch resource data needed for field display
+   *
+   * @param resourceId resource id
+   * @returns resource
+   */
+  private async getResourceById(resourceId: string) {
+    const { data: resource } = await lastValueFrom(
+      this.apollo.query<ResourceQueryResponse>({
+        query: GET_RESOURCE_BY_ID,
+        variables: {
+          id: resourceId,
+        },
+      })
+    );
+    return resource.resource;
   }
 
   /**

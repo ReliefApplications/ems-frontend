@@ -190,10 +190,15 @@ export class PreviewTemplateModalComponent {
       datasetFieldsObj
         ?.map((x: any) => x.name)
         ?.forEach((keyNm: any) => {
-          let keyData = metaData
-            .filter((x: any) => x.name == keyNm)?.[0]
-            ?.options?.filter((x: any) => item?.node[keyNm]?.includes(x.value))
-            .map((y: any) => y.text);
+          let keyData!: any;
+          const relatedMetadata = metaData.filter(
+            (x: any) => x.name == keyNm
+          )?.[0];
+          const relatedMetadataInTheGivenNode =
+            relatedMetadata?.options?.filter((x: any) =>
+              item?.node[keyNm]?.includes(x.value)
+            );
+          keyData = relatedMetadataInTheGivenNode?.map((y: any) => y.text);
           let notMatchedData: any = '';
           if (Array.isArray(item?.node[keyNm])) {
             //Finding non matched data
