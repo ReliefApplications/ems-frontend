@@ -288,7 +288,7 @@
 					"noDistributionList": "Un problème est survenu lors de l'envoi de l'e-mail: aucune liste de distribution détectée",
 					"noSubject": "Le sujet doit continuer!",
 					"noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté",
-					"preview": "**********************"
+					"preview": "Erreur lors de la génération de l'e-mail"
 				},
 				"existing": "Ou utilisez l'existant",
 				"field": {
@@ -313,7 +313,7 @@
 					"style": "En-tête Style"
 				},
 				"preview": {
-					"processing": "****************"
+					"processing": "Préparation de l'e-mail..."
 				},
 				"processing": "Envoi en cours...",
 				"ready": "E-mail prêt",
@@ -2494,7 +2494,6 @@
 					"openInNewTab": "Ouvrir dans un nouvel onglet",
 					"previousPage": "Page précédente",
 					"sendNotification": {
-						"selectFields": "**************",
 						"text": "Envoyer une notification"
 					},
 					"subscribeToNotification": "S'abonner à une notification",
