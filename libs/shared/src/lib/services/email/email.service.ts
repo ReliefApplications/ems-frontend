@@ -174,11 +174,11 @@ export class EmailService {
    *
    * @param recipient Recipient of the email.
    * @param subject Subject of the email.
-   * @param body Body of the email, if not given we put the formatted records.
-   * @param filter Filters for sending the mail
    * @param query Query settings
    * @param query.name Name of the query
    * @param query.fields Fields requested in the query
+   * @param filter Filters for sending the mail
+   * @param body Body of the email, if not given we put the formatted records.
    * @param sortField Sort field (optional).
    * @param sortOrder Sort order (optional).
    * @param attachment Whether an excel with the dataset is attached to the mail
@@ -187,32 +187,32 @@ export class EmailService {
   public async previewMail(
     recipient: string[],
     subject: string,
-    body: string,
-    filter: CompositeFilterDescriptor,
     query: {
       name: string;
       fields: any[];
     },
+    filter: CompositeFilterDescriptor,
+    body?: string,
     sortField?: string,
     sortOrder?: string,
     attachment?: boolean
   ): Promise<void> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
     const snackBarRef = this.snackBar.openComponentSnackBar(
       SnackbarSpinnerComponent,
       {
         duration: 0,
         data: {
           message: this.translate.instant(
-            'common.notifications.email.processing'
+            'common.notifications.email.preview.processing'
           ),
           loading: true,
         },
       }
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
     this.restService
       .post(
         '/email/preview/',
@@ -231,29 +231,49 @@ export class EmailService {
       )
       .subscribe({
         next: async (res) => {
+          const { EmailPreviewModalComponent } = await import(
+            '../../components/email-preview-modal/email-preview-modal.component'
+          );
           snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.email.ready'
           );
           snackBarSpinner.instance.loading = false;
           snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-          const { EmailPreviewModalComponent } = await import(
-            '../../components/email-preview-modal/email-preview-modal.component'
-          );
           this.dialog.open(EmailPreviewModalComponent, {
             data: {
               ...res,
-              onSubmit: (value: any) =>
-                this.sendMail(
-                  value.to,
-                  value.subject,
-                  value.html,
-                  filter,
-                  query,
-                  sortField,
-                  sortOrder,
-                  attachment,
-                  value.files
-                ),
+              onSubmit: async (value: any) => {
+                snackBarSpinner.instance.message = this.translate.instant(
+                  'common.notifications.email.processing'
+                );
+                snackBarSpinner.instance.loading = true;
+                snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+                try {
+                  await this.sendMail(
+                    value.to,
+                    value.subject,
+                    value.html,
+                    filter,
+                    query,
+                    sortField,
+                    sortOrder,
+                    attachment,
+                    value.files
+                  );
+                  snackBarSpinner.instance.message = this.translate.instant(
+                    'common.notifications.email.sent'
+                  );
+                  snackBarSpinner.instance.loading = false;
+                  snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+                } catch (error) {
+                  snackBarSpinner.instance.message = this.translate.instant(
+                    'common.notifications.email.error'
+                  );
+                  snackBarSpinner.instance.loading = false;
+                  snackBarSpinner.instance.error = true;
+                  snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+                }
+              },
             },
             autoFocus: false,
             disableClose: true,
@@ -277,7 +297,7 @@ export class EmailService {
         },
         error: () => {
           snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.email.error'
+            'common.notifications.email.errors.preview'
           );
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;

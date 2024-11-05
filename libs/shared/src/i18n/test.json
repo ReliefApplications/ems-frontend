@@ -287,7 +287,8 @@
 					"noCustomTitle": "******",
 					"noDistributionList": "******",
 					"noSubject": "******",
-					"noTemplate": "******"
+					"noTemplate": "******",
+					"preview": "******"
 				},
 				"existing": "******",
 				"field": {
@@ -310,6 +311,9 @@
 					"logo": "******",
 					"removeTooltip": "******",
 					"style": "******"
+				},
+				"preview": {
+					"processing": "******"
 				},
 				"processing": "******",
 				"ready": "******",
@@ -2489,7 +2493,9 @@
 					"navigateTo": "******",
 					"openInNewTab": "******",
 					"previousPage": "******",
-					"sendNotification": "******",
+					"sendNotification": {
+						"text": "******"
+					},
 					"subscribeToNotification": "******",
 					"url": "******"
 				},

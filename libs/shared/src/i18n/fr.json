@@ -287,7 +287,8 @@
 					"noCustomTitle": "Le titre du modèle personnalisé est requis pour continuer!",
 					"noDistributionList": "Un problème est survenu lors de l'envoi de l'e-mail: aucune liste de distribution détectée",
 					"noSubject": "Le sujet doit continuer!",
-					"noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté"
+					"noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté",
+					"preview": "Erreur lors de la génération de l'e-mail"
 				},
 				"existing": "Ou utilisez l'existant",
 				"field": {
@@ -310,6 +311,9 @@
 					"logo": "En-tête Logo",
 					"removeTooltip": "Supprimer En-tête Logo",
 					"style": "En-tête Style"
+				},
+				"preview": {
+					"processing": "Préparation de l'e-mail..."
 				},
 				"processing": "Envoi en cours...",
 				"ready": "E-mail prêt",
@@ -2489,7 +2493,9 @@
 					"navigateTo": "Naviguer vers",
 					"openInNewTab": "Ouvrir dans un nouvel onglet",
 					"previousPage": "Page précédente",
-					"sendNotification": "Envoyer une notification",
+					"sendNotification": {
+						"text": "Envoyer une notification"
+					},
 					"subscribeToNotification": "S'abonner à une notification",
 					"url": "URL cible"
 				},

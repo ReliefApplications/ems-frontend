@@ -29,7 +29,17 @@ export interface EmailNotification {
   __typename: string;
 }
 
-/** Model for API configuration nodes graphql query response */
+/** Model for email notification nodes graphql query response */
 export interface EmailNotificationsQueryResponse {
   emailNotifications: GraphqlNodesResponse<EmailNotification>;
+}
+
+/** Model for email distribution lists nodes graphql query response */
+export interface EmailDistributionListQueryResponse {
+  emailDistributionLists: GraphqlNodesResponse<any>;
+}
+
+/** Model for email templates nodes graphql query response */
+export interface EmailTemplatesQueryResponse {
+  customTemplates: GraphqlNodesResponse<any>;
 }
