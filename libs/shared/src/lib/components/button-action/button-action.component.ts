@@ -227,6 +227,27 @@ export class ButtonActionComponent extends UnsubscribeComponent {
   }
 
   /**
+   * Map button action mapping value using given contextData or default set values
+   *
+   * @param mapping Current action button mapping value
+   * @returns Mapped value using given contextData or default set values
+   */
+  private buildMappingFieldsFromContext(mapping: any) {
+    // Regex to detect {{context.}} in object
+    const contextRegex = /(?<={{context\.)(.*?)(?=}})/gim;
+    const recordData = {};
+    Object.keys(mapping).forEach((key) => {
+      const contextName = mapping[key]?.match(contextRegex)?.[0];
+      Object.assign(recordData, {
+        [key]: contextName
+          ? this.dashboard?.contextData?.[contextName]
+          : mapping[key],
+      });
+    });
+    return recordData;
+  }
+
+  /**
    * Open record modal to add/edit a record
    *
    * @param button action to be executed
@@ -240,12 +261,16 @@ export class ButtonActionComponent extends UnsubscribeComponent {
     const template = button.editRecord
       ? button.editRecord.template
       : button.addRecord?.template;
+    const prefillData = this.buildMappingFieldsFromContext(
+      button.addRecord?.mapping || {}
+    );
     const dialogRef = this.dialog.open(FormModalComponent, {
       disableClose: true,
       data: {
         ...(button.editRecord && { recordId: this.contextId }), // button must be hidden in html if editRecord is enabled & no contextId
         ...(template && { template }),
         actionButtonCtx: true,
+        prefillData,
       },
       autoFocus: false,
     });

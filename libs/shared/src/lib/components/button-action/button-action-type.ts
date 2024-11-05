@@ -38,6 +38,7 @@ export type ButtonActionT = {
     resource?: string;
     template?: string;
     fieldsForUpdate?: Array<string>;
+    mapping?: any;
   };
   // Notifications
   subscribeToNotification?: {
