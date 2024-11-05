@@ -211,12 +211,14 @@ export class MapPolygonsService {
   /**
    * Fit bounds & zoom on country
    *
-   * @param geographicExtentValue geographic extent value
    * @param map leaflet map
+   * @param geographicExtentValue geographic extent value
+   * @param geographicExtentPadding Geographic extent padding, may be null
    */
   public zoomOn(
+    map: L.Map,
     geographicExtentValue: { extent: string; value: string | string[] }[],
-    map: L.Map
+    geographicExtentPadding?: number
   ): void {
     this.admin0sReady$.pipe(first((v) => v)).subscribe(() => {
       // let layer: L.GeoJSON | undefined = undefined;
@@ -285,8 +287,7 @@ export class MapPolygonsService {
 
       if (geoJSON.features.length > 0) {
         const bounds = L.geoJSON(geoJSON).getBounds();
-        const padding = 5;
-        console.log(geoJSON);
+        const padding = geographicExtentPadding || 0;
         // Timeout seems to be needed for first load of the map.
         setTimeout(() => {
           map.fitBounds(

@@ -1984,6 +1984,7 @@
 							"title": "******"
 						},
 						"geographicExtent": "******",
+						"geographicExtentPadding": "******",
 						"geographicExtentValue": "******",
 						"latitude": "******",
 						"longitude": "******",
@@ -2034,6 +2035,7 @@
 						"geographicExtent": {
 							"add": "******",
 							"admin0": "******",
+							"padding": "******",
 							"region": "******",
 							"remove": "******",
 							"value": "****** {{context}} ****** {{filter}} ******"
