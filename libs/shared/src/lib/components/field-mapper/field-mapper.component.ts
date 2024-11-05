@@ -64,8 +64,7 @@ export class FieldMapperComponent
   }
 
   /**
-   * Dashboard filter icon.
-   * Appears in application header.
+   * Resource field mapper component.
    *
    * @param fb Angular form builder
    */
