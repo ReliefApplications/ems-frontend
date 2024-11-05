@@ -402,6 +402,11 @@ export class MapComponent
     const controls = get(mapSettings, 'controls', DefaultMapControls);
     const arcGisWebMap = get(mapSettings, 'arcGisWebMap', undefined);
     const geographicExtents = get(mapSettings, 'geographicExtents', []);
+    const geographicExtentPadding = get(
+      mapSettings,
+      'geographicExtentPadding',
+      null
+    );
     const layers = get(mapSettings, 'layers', []);
     const automationRules = get(mapSettings, 'automationRules', []);
 
@@ -417,6 +422,7 @@ export class MapComponent
       controls,
       arcGisWebMap,
       geographicExtents,
+      geographicExtentPadding,
       automationRules,
     };
   }
@@ -1265,6 +1271,8 @@ export class MapComponent
    * If geographicExtentValue exists, calls mapPolygonsService to zoom on it
    */
   private zoomOn(): void {
+    const geographicExtentPadding =
+      this.extractSettings().geographicExtentPadding;
     const geographicExtentValue = this.getGeographicExtents();
     if (!isEqual(this.geographicExtentValue, geographicExtentValue)) {
       this.geographicExtentValue = geographicExtentValue;
@@ -1273,7 +1281,11 @@ export class MapComponent
         geographicExtentValue.some((x: any) => x.value)
       ) {
         this.useContextZoom = true;
-        this.mapPolygonsService.zoomOn(geographicExtentValue, this.map);
+        this.mapPolygonsService.zoomOn(
+          this.map,
+          geographicExtentValue,
+          geographicExtentPadding
+        );
       } else {
         this.setDefaultZoom();
       }
