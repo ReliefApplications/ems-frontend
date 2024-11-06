@@ -63,6 +63,8 @@ export class ButtonConfigComponent
   @Output() loadChannels = new EventEmitter<void>();
   /** Saves if the channels has been fetched */
   public loadedChannel = false;
+  /** form Actions Details */
+  @Input() formActions: any = [];
 
   /** @returns The list of fields which are of type scalar and not disabled */
   get scalarFields(): any[] {
@@ -315,6 +317,19 @@ export class ButtonConfigComponent
         if (selectPage) {
           this.formGroup?.controls.selectAll.setValue(false);
           this.formGroup?.get('selectAll')?.updateValueAndValidity();
+        }
+      });
+
+    this.formGroup
+      ?.get('navigateToPage')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.formGroup
+            .get('navigateSettings')
+            ?.setValue(this.formActions.navigateSettings);
+        } else {
+          this.formGroup.get('navigateSettings')?.setValue(null);
         }
       });
   }

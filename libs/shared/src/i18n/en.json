@@ -1825,6 +1825,7 @@
 							"modify": "Auto-modify selected rows",
 							"modifyField": "Field to update",
 							"modifyValue": "Value to attribute",
+							"navigateToPage": "Include navigate To Page",
 							"notify": {
 								"message": "Notification message"
 							},

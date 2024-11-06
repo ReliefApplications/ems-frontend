@@ -1825,6 +1825,7 @@
 							"modify": "Modifier automatiquement les lignes sélectionnées",
 							"modifyField": "Champ à modifier",
 							"modifyValue": "Value to attribute",
+							"navigateToPage": "Inclusief navigeren naar pagina",
 							"notify": {
 								"message": "Message de notification"
 							},
