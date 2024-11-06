@@ -645,7 +645,7 @@ export class DashboardComponent
         data: {
           dashboard: {
             ...this.dashboard,
-            buttonActions: this.buttonActions,
+            buttons: this.buttonActions,
           },
         },
         disableClose: true,

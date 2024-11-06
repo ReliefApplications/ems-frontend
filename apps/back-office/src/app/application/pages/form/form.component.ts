@@ -111,6 +111,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.step = data.step;
+              this.buttonActions = this.step?.buttons as ButtonActionT[];
               return this.getFormQuery(this.step.content ?? '');
             })
           )
@@ -129,6 +130,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.page = data.page;
+              this.buttonActions = this.page?.buttons as ButtonActionT[];
               return this.getFormQuery(this.page.content ?? '');
             })
           )
@@ -167,7 +169,6 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   ) {
     this.form = data.form;
     this.canEditName = this.form?.canUpdate ?? false;
-    this.buttonActions = this.form?.buttons as ButtonActionT[];
     this.applicationId =
       (from === 'step'
         ? this.step?.workflow?.page?.application?.id
@@ -325,14 +326,14 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
       {
         data: {
           form: {
-            ...this.form,
-            buttonActions: this.buttonActions,
+            ...(this.isStep && this.step),
+            ...(!this.isStep && this.page),
+            buttons: this.buttonActions,
           },
         },
         disableClose: true,
       }
     );
-
     dialogRef.closed
       .pipe(
         filter((buttons) => !!buttons),
@@ -340,12 +341,19 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
       )
       .subscribe(async (buttons) => {
         this.quickActionsService
-          .savePageButtons(this.form?.id, buttons, 'form')
+          .savePageButtons(
+            this.isStep ? this.step?.id : this.page?.id,
+            buttons,
+            'form',
+            this.isStep
+          )
           ?.pipe(takeUntil(this.destroy$))
           .subscribe(({ errors }) => {
             this.buttonActions = buttons as ButtonActionT[];
-            if (this.form) {
-              this.form.buttons = buttons;
+            if (this.isStep) {
+              (this.step as Step).buttons = buttons;
+            } else {
+              (this.page as Page).buttons = buttons;
             }
             this.applicationService.handleEditionMutationResponse(
               errors,

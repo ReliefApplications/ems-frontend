@@ -40,10 +40,20 @@ export const EDIT_DASHBOARD_ACTIONS = gql`
   }
 `;
 
-/** Graphql request for editing a form quick action buttons by its id */
-export const EDIT_FORM_ACTIONS = gql`
-  mutation editForm($id: ID!, $buttons: [ButtonActionInputType]) {
-    editForm(id: $id, buttons: $buttons) {
+/** Graphql request for editing a page form quick action buttons by its id */
+export const EDIT_PAGE_ACTIONS = gql`
+  mutation editPage($id: ID!, $buttons: [ButtonActionInputType]) {
+    editPage(id: $id, buttons: $buttons) {
+      id
+      name
+      buttons
+    }
+  }
+`;
+/** Graphql request for editing a step form quick action buttons by its id */
+export const EDIT_STEP_ACTIONS = gql`
+  mutation editStep($id: ID!, $buttons: [ButtonActionInputType]) {
+    editStep(id: $id, buttons: $buttons) {
       id
       name
       buttons

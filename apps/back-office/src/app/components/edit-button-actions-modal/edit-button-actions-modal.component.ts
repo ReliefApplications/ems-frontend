@@ -9,8 +9,9 @@ import {
   ButtonActionT,
   Dashboard,
   EmptyModule,
-  Form,
+  Page,
   Role,
+  Step,
   UnsubscribeComponent,
 } from '@oort-front/shared';
 import {
@@ -75,7 +76,7 @@ export class EditButtonActionsModalComponent
   constructor(
     public dialogRef: DialogRef<ButtonActionT[]>,
     @Inject(DIALOG_DATA)
-    private data: { dashboard?: Dashboard; form?: Form },
+    private data: { dashboard?: Dashboard; form?: Page | Step },
     public dialog: Dialog,
     public translateService: TranslateService,
     public applicationService: ApplicationService

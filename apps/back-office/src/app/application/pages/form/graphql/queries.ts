@@ -24,6 +24,7 @@ export const GET_STEP_BY_ID = gql`
           }
         }
       }
+      buttons
       permissions {
         canSee {
           id
@@ -60,6 +61,7 @@ export const GET_PAGE_BY_ID = gql`
       modifiedAt
       type
       content
+      buttons
       permissions {
         canSee {
           id
@@ -123,7 +125,6 @@ export const GET_SHORT_FORM_BY_ID = gql`
         canUpdate
       }
       canUpdate
-      buttons
     }
   }
 `;

@@ -1,5 +1,6 @@
 import { Workflow } from './workflow.model';
 import { ContentType } from './page.model';
+import { ButtonActionT } from '../components/button-action/button-action-type';
 
 /** Model for Step object. */
 export interface Step {
@@ -17,6 +18,7 @@ export interface Step {
   canDelete?: boolean;
   icon?: string;
   showName?: boolean;
+  buttons?: ButtonActionT[];
 }
 
 /** Model for step graphql query response */

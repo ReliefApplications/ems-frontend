@@ -1,3 +1,4 @@
+import { ButtonActionT } from '../components/button-action/button-action-type';
 import { Application } from './application.model';
 
 /**
@@ -86,6 +87,7 @@ export interface Page {
     content: string;
   })[];
   autoDeletedAt?: Date;
+  buttons?: ButtonActionT[];
 }
 
 /** Model for page graphql query response */
