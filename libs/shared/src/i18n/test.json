@@ -287,7 +287,8 @@
 					"noCustomTitle": "******",
 					"noDistributionList": "******",
 					"noSubject": "******",
-					"noTemplate": "******"
+					"noTemplate": "******",
+					"preview": "******"
 				},
 				"existing": "******",
 				"field": {
@@ -310,6 +311,9 @@
 					"logo": "******",
 					"removeTooltip": "******",
 					"style": "******"
+				},
+				"preview": {
+					"processing": "******"
 				},
 				"processing": "******",
 				"ready": "******",
@@ -2055,6 +2059,7 @@
 							"title": "******"
 						},
 						"geographicExtent": "******",
+						"geographicExtentPadding": "******",
 						"geographicExtentValue": "******",
 						"latitude": "******",
 						"longitude": "******",
@@ -2105,6 +2110,7 @@
 						"geographicExtent": {
 							"add": "******",
 							"admin0": "******",
+							"padding": "******",
 							"region": "******",
 							"remove": "******",
 							"value": "****** {{context}} ****** {{filter}} ******"
@@ -2488,7 +2494,9 @@
 					"openInNewTab": "******",
 					"previousPage": "******",
 					"reloadDashboard": "******",
-					"sendNotification": "******",
+					"sendNotification": {
+						"text": "******"
+					},
 					"subscribeToNotification": "******",
 					"url": "******"
 				},
