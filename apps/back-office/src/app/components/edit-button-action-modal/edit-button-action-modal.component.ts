@@ -1,18 +1,6 @@
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  DialogModule,
-  variants as ButtonVariants,
-  categories as ButtonCategories,
-  FormWrapperModule,
-  SelectMenuModule,
-  ButtonModule,
-  ToggleModule,
-  DividerModule,
-  TabsModule,
-  IconModule,
-  TooltipModule,
-} from '@oort-front/ui';
 import {
   AbstractControl,
   FormBuilder,
@@ -23,10 +11,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
-import { Apollo } from 'apollo-angular';
-import { GET_RESOURCE } from './graphql/queries';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ApplicationService,
@@ -39,16 +24,34 @@ import {
   EmailService,
   Form,
   INLINE_EDITOR_CONFIG,
+  QueryBuilderModule,
+  QueryBuilderService,
   Resource,
   ResourceQueryResponse,
   ResourceSelectComponent,
   Role,
   UnsubscribeComponent,
+  addNewField,
 } from '@oort-front/shared';
+import {
+  categories as ButtonCategories,
+  ButtonModule,
+  variants as ButtonVariants,
+  DialogModule,
+  DividerModule,
+  FormWrapperModule,
+  IconModule,
+  SelectMenuModule,
+  TabsModule,
+  ToggleModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { EditorModule } from '@tinymce/tinymce-angular';
+import { Apollo } from 'apollo-angular';
 import { get, isNil } from 'lodash';
-import { filter, iif, of, switchMap, takeUntil } from 'rxjs';
+import { filter, iif, map, of, switchMap, takeUntil } from 'rxjs';
 import { RawEditorSettings } from 'tinymce';
+import { GET_RESOURCE } from './graphql/queries';
 
 /** Dialog data interface */
 interface DialogData {
@@ -78,6 +81,7 @@ interface DialogData {
     IconModule,
     TooltipModule,
     ResourceSelectComponent,
+    QueryBuilderModule,
   ],
   templateUrl: './edit-button-action-modal.component.html',
   styleUrls: ['./edit-button-action-modal.component.scss'],
@@ -108,6 +112,12 @@ export class EditButtonActionModalComponent
   public editRecordTemplates: Form[] = [];
   /** Selected resource */
   public selectedResource!: Resource;
+  /** Send notification distribution list */
+  public sendNotificationDistributionList: any[] = [];
+  /** Send notification template list */
+  public sendNotificationTemplates: Form[] = [];
+  /** Fields, of current page context resource, if any */
+  public sendNotificationFields: any[] = [];
 
   /**
    * Component for editing a dashboard button action
@@ -121,6 +131,7 @@ export class EditButtonActionModalComponent
    * @param fb form builder
    * @param emailService Email service
    * @param apollo Angular Apollo client
+   * @param queryBuilder Query builder service
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
@@ -131,7 +142,8 @@ export class EditButtonActionModalComponent
     public applicationService: ApplicationService,
     private fb: FormBuilder,
     private emailService: EmailService,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private queryBuilder: QueryBuilderService
   ) {
     super();
     this.roles = this.applicationService.application.value?.roles || [];
@@ -142,6 +154,84 @@ export class EditButtonActionModalComponent
     this.hrefEditor.base_url = editorService.url;
     // Set the editor language
     this.hrefEditor.language = editorService.language;
+  }
+
+  ngOnInit(): void {
+    // Build list of pages for autocompletion in navigation settings
+    this.editorService.addCalcAndKeysAutoCompleter(
+      this.hrefEditor,
+      this.dataTemplateService.getAutoCompleterPageKeys()
+    );
+    if (!isNil(this.data.dashboard)) {
+      // Listen to form changes
+      this.setFormListeners();
+      // Get context resource data, if any
+      if (this.data.dashboard.page?.context?.resource) {
+        this.apollo
+          .query<ResourceQueryResponse>({
+            query: GET_RESOURCE,
+            variables: {
+              resource: this.data.dashboard.page?.context?.resource,
+            },
+          })
+          .subscribe({
+            next: ({ data }) => {
+              this.editRecordTemplates = data.resource.forms ?? [];
+              this.sendNotificationFields = this.queryBuilder.getFields(
+                data.resource?.queryName as string
+              );
+              this.resourceFields = data.resource.fields.filter((f: any) =>
+                ['resource', 'resources'].includes(f.type)
+              );
+            },
+          });
+      }
+      // Get list of email notifications for application
+      if (this.form.get('action.subscribeToNotification.enabled')?.value) {
+        this.emailService
+          .getEmailNotifications(
+            this.applicationService.application?.getValue()?.id as string
+          )
+          .subscribe({
+            next: ({ data }) => {
+              this.emailNotifications = data.emailNotifications.edges.map(
+                (item) => item.node
+              );
+            },
+          });
+      }
+      // Get list of distribution list for application
+      if (this.form.get('action.sendNotification.enabled')?.value) {
+        this.emailService
+          .getEmailDistributionList(
+            this.applicationService.application?.getValue()?.id as string
+          )
+          .pipe(
+            switchMap(({ data }) => {
+              const emailDistributionLists = data.emailDistributionLists;
+              return this.emailService
+                .getCustomTemplates(
+                  this.applicationService.application?.getValue()?.id as string
+                )
+                .pipe(
+                  map(({ data }) => ({
+                    emailDistributionLists,
+                    customTemplates: data.customTemplates,
+                  }))
+                );
+            })
+          )
+          .subscribe({
+            next: ({ customTemplates, emailDistributionLists }) => {
+              this.sendNotificationDistributionList =
+                emailDistributionLists.edges.map((item: any) => item.node);
+              this.sendNotificationTemplates = customTemplates.edges.map(
+                (item: any) => item.node
+              );
+            },
+          });
+      }
+    }
   }
 
   /**
@@ -245,55 +335,52 @@ export class EditButtonActionModalComponent
   }
 
   /**
+   * Set needed listeners for send notification form
+   */
+  private prepareSendNotificationFormListeners() {
+    /** Fetch distribution list on send notification is enabled */
+    this.form
+      .get('action.sendNotification.enabled')
+      ?.valueChanges.pipe(
+        filter((value) => !!value),
+        switchMap(() =>
+          this.emailService.getEmailDistributionList(
+            this.applicationService.application?.getValue()?.id as string
+          )
+        ),
+        switchMap(({ data }) => {
+          const emailDistributionLists = data.emailDistributionLists;
+          return this.emailService
+            .getCustomTemplates(
+              this.applicationService.application?.getValue()?.id as string
+            )
+            .pipe(
+              map(({ data }) => ({
+                emailDistributionLists,
+                customTemplates: data.customTemplates,
+              }))
+            );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ customTemplates, emailDistributionLists }) => {
+          this.sendNotificationDistributionList =
+            emailDistributionLists.edges.map((item: any) => item.node);
+          this.sendNotificationTemplates = customTemplates.edges.map(
+            (item: any) => item.node
+          );
+        },
+      });
+  }
+
+  /**
    * Set all needed form listeners
    */
   private setFormListeners() {
     this.prepareAddRecordFormListeners();
     this.prepareSubscribeToNotificationFormListeners();
-  }
-
-  ngOnInit(): void {
-    // Build list of pages for autocompletion in navigation settings
-    this.editorService.addCalcAndKeysAutoCompleter(
-      this.hrefEditor,
-      this.dataTemplateService.getAutoCompleterPageKeys()
-    );
-    if (!isNil(this.data.dashboard)) {
-      // Listen to form changes
-      this.setFormListeners();
-      // Get context resource data, if any
-      if (this.data.dashboard.page?.context?.resource) {
-        this.apollo
-          .query<ResourceQueryResponse>({
-            query: GET_RESOURCE,
-            variables: {
-              resource: this.data.dashboard.page.context.resource,
-            },
-          })
-          .subscribe({
-            next: ({ data }) => {
-              this.editRecordTemplates = data.resource.forms ?? [];
-              this.resourceFields = data.resource.fields.filter((f: any) =>
-                ['resource', 'resources'].includes(f.type)
-              );
-            },
-          });
-      }
-      // Get list of email notifications for application
-      if (this.form.get('action.subscribeToNotification.enabled')?.value) {
-        this.emailService
-          .getEmailNotifications(
-            this.applicationService.application?.getValue()?.id as string
-          )
-          .subscribe({
-            next: ({ data }) => {
-              this.emailNotifications = data.emailNotifications.edges.map(
-                (item) => item.node
-              );
-            },
-          });
-      }
-    }
+    this.prepareSendNotificationFormListeners();
   }
 
   /**
@@ -401,9 +488,39 @@ export class EditButtonActionModalComponent
                     : { atLeastOneRequired: true },
               }
             ),
-            sendNotification: this.fb.group({
-              enabled: [false],
-            }),
+            sendNotification: this.fb.group(
+              {
+                enabled: [!!get(data, 'sendNotification', false)],
+                distributionList: [
+                  get(data, 'sendNotification.distributionList', ''),
+                ],
+                templates: [get(data, 'sendNotification.templates', [])],
+                fields: this.fb.array(
+                  get(data, 'sendNotification.fields', []).map((x: any) =>
+                    addNewField(x)
+                  )
+                ),
+              },
+              {
+                validator: (
+                  control: AbstractControl
+                ): ValidationErrors | null => {
+                  const isEnabledAndHasDistributionListWithTemplate =
+                    control.value.enabled &&
+                    control.value.distributionList !== '' &&
+                    !isNil(control.value.distributionList) &&
+                    !isNil(control.value.templates) &&
+                    control.value.templates.length;
+                  if (
+                    !control.value.enabled ||
+                    isEnabledAndHasDistributionListWithTemplate
+                  ) {
+                    return null;
+                  }
+                  return { atLeastOneRequired: true };
+                },
+              }
+            ),
           }),
         },
         { validator: this.actionValidator }
@@ -489,9 +606,19 @@ export class EditButtonActionModalComponent
           )?.value,
         },
       }),
+      // If sendNotification enabled
+      ...(this.form.get('action.sendNotification.enabled')?.value && {
+        sendNotification: {
+          distributionList: this.form.get(
+            'action.sendNotification.distributionList'
+          )?.value,
+          templates: this.form.get('action.sendNotification.templates')?.value,
+          fields: this.form
+            .get('action.sendNotification.fields')
+            ?.getRawValue(),
+        },
+      }),
     };
-
-    console.log(button);
 
     this.dialogRef.close(button);
   }

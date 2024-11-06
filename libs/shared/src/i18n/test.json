@@ -287,7 +287,8 @@
 					"noCustomTitle": "******",
 					"noDistributionList": "******",
 					"noSubject": "******",
-					"noTemplate": "******"
+					"noTemplate": "******",
+					"preview": "******"
 				},
 				"existing": "******",
 				"field": {
@@ -310,6 +311,9 @@
 					"logo": "******",
 					"removeTooltip": "******",
 					"style": "******"
+				},
+				"preview": {
+					"processing": "******"
 				},
 				"processing": "******",
 				"ready": "******",
@@ -1041,11 +1045,17 @@
 			"errors": {
 				"duplicatedRelatedName": "****** {{question}} ****** {{page}} ******",
 				"incorrectJSON": "******",
+				"maximumAllowedFiles": "****** {{number}}",
 				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
 			},
 			"propertyGrid": {
+				"file": {
+					"acceptedFiles": {
+						"clear": "******"
+					}
+				},
 				"resource": {
 					"availableGridFields": "******",
 					"resourceSelectText": "******"
@@ -2049,6 +2059,7 @@
 							"title": "******"
 						},
 						"geographicExtent": "******",
+						"geographicExtentPadding": "******",
 						"geographicExtentValue": "******",
 						"latitude": "******",
 						"longitude": "******",
@@ -2099,6 +2110,7 @@
 						"geographicExtent": {
 							"add": "******",
 							"admin0": "******",
+							"padding": "******",
 							"region": "******",
 							"remove": "******",
 							"value": "****** {{context}} ****** {{filter}} ******"
@@ -2481,7 +2493,9 @@
 					"navigateTo": "******",
 					"openInNewTab": "******",
 					"previousPage": "******",
-					"sendNotification": "******",
+					"sendNotification": {
+						"text": "******"
+					},
 					"subscribeToNotification": "******",
 					"url": "******"
 				},

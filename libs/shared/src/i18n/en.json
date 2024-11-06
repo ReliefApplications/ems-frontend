@@ -287,7 +287,8 @@
 					"noCustomTitle": "Custom template title is required to proceed!",
 					"noDistributionList": "Something went wrong during the email sending: no distribution list found",
 					"noSubject": "Subject is required to proceed!",
-					"noTemplate": "Something went wrong during the email sending: no template found"
+					"noTemplate": "Something went wrong during the email sending: no template found",
+					"preview": "Preview of email failed"
 				},
 				"existing": "Or use existing",
 				"field": {
@@ -310,6 +311,9 @@
 					"logo": "Header logo",
 					"removeTooltip": "Remove header logo",
 					"style": "Header style"
+				},
+				"preview": {
+					"processing": "Creating email preview..."
 				},
 				"processing": "Sending email...",
 				"ready": "Email ready",
@@ -1041,11 +1045,17 @@
 			"errors": {
 				"duplicatedRelatedName": "Duplicated related name for question {{question}} on page {{page}}. Please provide a unique related name (snake case format) to save the form.",
 				"incorrectJSON": "JSON is invalid in JSON Editor, changes haven't been saved",
+				"maximumAllowedFiles": "Maximum number of files allowed: {{number}}",
 				"missingGridField": "Missing an available field grid for question {{question}} on page {{page}}. Please select a least one in Custom Question Properties to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
 			},
 			"propertyGrid": {
+				"file": {
+					"acceptedFiles": {
+						"clear": "Clear(All file types accepted)"
+					}
+				},
 				"resource": {
 					"availableGridFields": "Available grid fields",
 					"resourceSelectText": "First you have to select a resource before setting any filters"
@@ -2049,6 +2059,7 @@
 							"title": "Visible Map Controls"
 						},
 						"geographicExtent": "Geographic extent",
+						"geographicExtentPadding": "Padding (degrees)",
 						"geographicExtentValue": "Geographic extent value",
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
@@ -2099,6 +2110,7 @@
 						"geographicExtent": {
 							"add": "Add new geographic extent",
 							"admin0": "Use either iso2code, iso3code or country name",
+							"padding": "You can choose to add additional space in degrees to be added around the geographic extent when zooming in, for additional context.",
 							"region": "Use region name",
 							"remove": "Remove geographic extent",
 							"value": "You can input a static value, or use {{context}} or {{filter}} notation to dynamically inject a value"
@@ -2481,7 +2493,9 @@
 					"navigateTo": "Navigate to",
 					"openInNewTab": "Open in new tab",
 					"previousPage": "Previous page",
-					"sendNotification": "Send notification",
+					"sendNotification": {
+						"text": "Send notification"
+					},
 					"subscribeToNotification": "Subscribe to notification",
 					"url": "Target URL"
 				},

@@ -14,8 +14,10 @@ import { cloneDeep } from 'lodash';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
   EMAIL_NOTIFICATION_TYPES,
+  EmailDistributionListQueryResponse,
   EmailNotificationsQueryResponse,
   EmailNotificationTypes,
+  EmailTemplatesQueryResponse,
 } from '../../models/email-notifications.model';
 import { ResourceQueryResponse } from '../../models/resource.model';
 import { RestService } from '../../services/rest/rest.service';
@@ -1636,13 +1638,10 @@ export class EmailService {
    *
    * @param id The application ids of the email notifications.
    * @param isFromEmailNotification - Indicates if the templates are related to email notifications. Optional.
-   * @returns {Observable<any>} An observable that resolves with the result of the query.
+   * @returns Observable that resolves with the result of the query.
    */
-  getCustomTemplates(
-    id?: string,
-    isFromEmailNotification?: boolean
-  ): Observable<any> {
-    return this.apollo.query<any>({
+  getCustomTemplates(id?: string, isFromEmailNotification?: boolean) {
+    return this.apollo.query<EmailTemplatesQueryResponse>({
       query: GET_CUSTOM_TEMPLATES,
       variables: {
         applicationId: id,
@@ -1654,15 +1653,15 @@ export class EmailService {
   /**
    * Get an email distribution lists.
    *
-   @param applicationId The application ids of the email notifications.
-  @param distributionListId The distributionList id to get specific distribution list.
+   * @param applicationId The application ids of the email notifications.
+   * @param distributionListId The distributionList id to get specific distribution list.
    * @returns Email distribution lists.
    */
   getEmailDistributionList(
     applicationId?: string,
     distributionListId?: string
-  ): Observable<any> {
-    return this.apollo.query<any>({
+  ) {
+    return this.apollo.query<EmailDistributionListQueryResponse>({
       query: GET_DISTRIBUTION_LIST,
       variables: { applicationId, id: distributionListId },
     });
