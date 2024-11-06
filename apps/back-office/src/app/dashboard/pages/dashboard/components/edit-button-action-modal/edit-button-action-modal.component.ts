@@ -35,6 +35,7 @@ import {
   addNewField,
 } from '@oort-front/shared';
 import {
+  AlertModule,
   categories as ButtonCategories,
   ButtonModule,
   variants as ButtonVariants,
@@ -83,6 +84,7 @@ interface DialogData {
     ResourceSelectComponent,
     FieldMapperComponent,
     QueryBuilderModule,
+    AlertModule,
   ],
   templateUrl: './edit-button-action-modal.component.html',
   styleUrls: ['./edit-button-action-modal.component.scss'],
@@ -109,6 +111,8 @@ export class EditButtonActionModalComponent
   public resourceFields: any[] = [];
   /** Add record template list */
   public addRecordTemplates: Form[] = [];
+  /** Add Record fields */
+  public addRecordFields: any[] = [];
   /** Edit record template list */
   public editRecordTemplates: Form[] = [];
   /** Selected resource */
@@ -419,6 +423,7 @@ export class EditButtonActionModalComponent
           next: ({ data }) => {
             this.selectedResource = data.resource;
             this.addRecordTemplates = data.resource.forms ?? [];
+            this.addRecordFields = data.resource.fields ?? [];
           },
         });
     }
@@ -447,6 +452,7 @@ export class EditButtonActionModalComponent
         next: ({ data }) => {
           this.selectedResource = data.resource;
           this.addRecordTemplates = data.resource.forms ?? [];
+          this.addRecordFields = data.resource.fields ?? [];
         },
       });
     // Subscribe to changes on addRecord resource to fetch data
@@ -473,6 +479,7 @@ export class EditButtonActionModalComponent
           this.form.get('action.addRecord.fieldsForUpdate')?.setValue([]);
           this.selectedResource = data?.resource as Resource;
           this.addRecordTemplates = data?.resource?.forms ?? [];
+          this.addRecordFields = data?.resource?.fields ?? [];
         },
       });
   }

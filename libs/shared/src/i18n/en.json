@@ -2478,6 +2478,9 @@
 						"fieldsForUpdate": {
 							"text": "Attach newly created record to current record fields"
 						},
+						"help": {
+							"mapping": "Prefill fields of new records by providing static values or mapping them from the dashboard context using the {{context.<fieldName>}} syntax."
+						},
 						"text": "Add record",
 						"tooltip": {
 							"fieldsForUpdate": "Newly created record can be attached to resource & resources fields",
