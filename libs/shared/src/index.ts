@@ -77,6 +77,7 @@ export * from './lib/components/dashboard/public-api';
 export * from './lib/components/edit-calculated-field-modal/public-api';
 export * from './lib/components/editable-text/public-api';
 export * from './lib/components/error/error.module';
+export * from './lib/components/field-mapper/public-api';
 export * from './lib/components/form-builder/public-api';
 export * from './lib/components/form/public-api';
 export * from './lib/components/layout/public-api';
@@ -117,7 +118,6 @@ export * from './lib/components/status-options/status-options.component';
 // === CUSTOM COMPONENTS FOR SURVEY CREATOR PROPERTY GRID === //
 export * from './lib/survey/components/accepted-value-types-text/accepted-value-types-text.component';
 export * from './lib/survey/components/application-dropdown/application-dropdown.component';
-export * from './lib/survey/components/accepted-value-types-text/accepted-value-types-text.component';
 export * from './lib/survey/components/code-editor/code-editor.component';
 export * from './lib/survey/components/cs-docs-properties-dropdown/cs-docs-properties-dropdown.component';
 export * from './lib/survey/components/geofields-listbox/geofields-listbox.component';

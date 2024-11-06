@@ -2478,6 +2478,9 @@
 						"fieldsForUpdate": {
 							"text": "******"
 						},
+						"help": {
+							"mapping": "****** {{context.<fieldName>}} ******"
+						},
 						"text": "******",
 						"tooltip": {
 							"fieldsForUpdate": "******",

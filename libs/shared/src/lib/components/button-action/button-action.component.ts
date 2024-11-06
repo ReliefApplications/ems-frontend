@@ -18,7 +18,6 @@ import { Resource, ResourceQueryResponse } from '../../models/resource.model';
 import { ApplicationService } from '../../services/application/application.service';
 import { DataTemplateService } from '../../services/data-template/data-template.service';
 import { EmailService as SharedEmailService } from '../../services/email/email.service';
-import { GridLayoutService } from '../../services/grid-layout/grid-layout.service';
 import {
   QueryBuilderService,
   QueryResponse,
@@ -31,6 +30,7 @@ import { EDIT_RECORD } from './graphql/mutations';
 import { GET_RECORD_BY_ID, GET_RESOURCE_BY_ID } from './graphql/queries';
 import { Layout } from '../../models/layout.model';
 import { SnackbarSpinnerComponent } from '../snackbar-spinner/public-api';
+import { ContextService } from '../../services/context/context.service';
 
 /** Component for display action buttons */
 @Component({
@@ -63,7 +63,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
    * @param snackBar SnackbarService
    * @param translate TranslateService
    * @param queryBuilder QueryBuilderService
-   * @param gridLayoutService GridLayoutService
+   * @param contextService Shared context service
    */
   constructor(
     public dialog: Dialog,
@@ -78,7 +78,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private queryBuilder: QueryBuilderService,
-    private gridLayoutService: GridLayoutService
+    private contextService: ContextService
   ) {
     super();
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe({
@@ -240,12 +240,16 @@ export class ButtonActionComponent extends UnsubscribeComponent {
     const template = button.editRecord
       ? button.editRecord.template
       : button.addRecord?.template;
+    const prefillData = this.contextService.replaceContext(
+      button.addRecord?.mapping || {}
+    );
     const dialogRef = this.dialog.open(FormModalComponent, {
       disableClose: true,
       data: {
         ...(button.editRecord && { recordId: this.contextId }), // button must be hidden in html if editRecord is enabled & no contextId
         ...(template && { template }),
         actionButtonCtx: true,
+        prefillData,
       },
       autoFocus: false,
     });
