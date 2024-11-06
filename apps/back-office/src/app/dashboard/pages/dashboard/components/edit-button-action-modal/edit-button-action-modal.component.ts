@@ -287,6 +287,7 @@ export class EditButtonActionModalComponent
           editRecord: this.fb.group({
             enabled: [!!get(data, 'editRecord', false)],
             template: [get(data, 'editRecord.template', '')],
+            autoReload: [get(data, 'editRecord.autoReload', false)],
           }),
           addRecord: this.fb.group(
             {
@@ -310,6 +311,7 @@ export class EditButtonActionModalComponent
               rawMapping: [JSON.stringify(mapping, null, 2)],
               edition: [!!get(data, 'addRecord.fieldsForUpdate', false)],
               fieldsForUpdate: [get(data, 'addRecord.fieldsForUpdate', [])],
+              autoReload: [get(data, 'addRecord.autoReload', false)],
             },
             {
               validator: (
@@ -597,6 +599,7 @@ export class EditButtonActionModalComponent
       ...(this.form.get('action.editRecord.enabled')?.value && {
         editRecord: {
           template: this.form.get('action.editRecord.template')?.value,
+          autoReload: this.form.get('action.editRecord.autoReload')?.value,
         },
       }),
       // If addRecord enabled
@@ -606,6 +609,7 @@ export class EditButtonActionModalComponent
           template: this.form.get('action.addRecord.template')?.value,
           fieldsForUpdate: this.form.get('action.addRecord.fieldsForUpdate')
             ?.value,
+          autoReload: this.form.get('action.addRecord.autoReload')?.value,
           mapping:
             this.form.get('action.addRecord.mapping')?.value &&
             this.form.get('action.addRecord.mapping')?.value.length

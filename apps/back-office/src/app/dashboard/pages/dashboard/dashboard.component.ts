@@ -238,6 +238,25 @@ export class DashboardComponent
   }
 
   /**
+   * Reload the dashboard.
+   */
+  reload(): void {
+    if (this.dashboardId) {
+      this.loadDashboard(
+        {
+          query: GET_DASHBOARD_BY_ID,
+          variables: {
+            id: this.dashboardId,
+            contextEl: this.contextEl,
+          },
+        },
+        this.dashboardId,
+        this.contextEl?.trim()
+      );
+    }
+  }
+
+  /**
    * Sets up the widgets from the dashboard structure
    *
    * @param dashboard Dashboard

@@ -134,6 +134,15 @@ export class DashboardComponent
       });
   }
 
+  /**
+   * Reload the dashboard.
+   */
+  reload(): void {
+    if (this.id) {
+      this.loadDashboard(this.id, this.contextId);
+    }
+  }
+
   /** Sets up the widgets from the dashboard structure */
   private setWidgets() {
     this.widgets = cloneDeep(

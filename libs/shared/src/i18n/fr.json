@@ -2487,6 +2487,7 @@
 							"template": "Sélectionner un modèle pour l'ajout de nouveaux enregistrements"
 						}
 					},
+					"autoReload": "Recharger le tableau de bord après la sauvegarde",
 					"editRecord": {
 						"text": "Modifier l'enregistrement actuel",
 						"tooltip": {

@@ -95,10 +95,11 @@
         >
           <!-- Button actions -->
           <shared-button-action
+            class="export-hide"
             [buttonActions]="buttonActions"
             [dashboard]="dashboard"
             [canUpdate]="canUpdate"
-            class="export-hide"
+            (reloadDashboard)="reload()"
           ></shared-button-action>
 
           <!-- Fullscreen -->

@@ -2487,6 +2487,7 @@
 							"template": "******"
 						}
 					},
+					"autoReload": "******",
 					"editRecord": {
 						"text": "******",
 						"tooltip": {

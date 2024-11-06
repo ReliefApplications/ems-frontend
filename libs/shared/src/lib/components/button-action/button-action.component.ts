@@ -1,6 +1,6 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { Location } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApolloQueryResult } from '@apollo/client';
 import { TranslateService } from '@ngx-translate/core';
@@ -45,6 +45,8 @@ export class ButtonActionComponent extends UnsubscribeComponent {
   @Input() dashboard?: Dashboard;
   /** Can update dashboard or not */
   @Input() canUpdate = false;
+  /** Reload dashboard event emitter */
+  @Output() reloadDashboard = new EventEmitter<void>();
   /** Context id of the current dashboard */
   public contextId!: string;
 
@@ -243,6 +245,14 @@ export class ButtonActionComponent extends UnsubscribeComponent {
     const prefillData = this.contextService.replaceContext(
       button.addRecord?.mapping || {}
     );
+    const shouldReload =
+      button.editRecord?.autoReload || button.addRecord?.autoReload;
+    // Callback to be executed at the end of action
+    const callback = () => {
+      if (shouldReload) {
+        this.reloadDashboard.emit();
+      }
+    };
     const dialogRef = this.dialog.open(FormModalComponent, {
       disableClose: true,
       data: {
@@ -254,64 +264,74 @@ export class ButtonActionComponent extends UnsubscribeComponent {
       autoFocus: false,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value && value.data?.id && button.addRecord) {
-        const newRecordId = value.data.id;
-        const fieldsForUpdate = button.addRecord.fieldsForUpdate || [];
-        // Execute callback if possible
-        if (
-          this.contextId &&
-          Array.isArray(fieldsForUpdate) &&
-          fieldsForUpdate.length > 0
-        ) {
-          this.apollo
-            .query<RecordQueryResponse>({
-              query: GET_RECORD_BY_ID,
-              variables: {
-                id: this.contextId,
-              },
-            })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(({ data }) => {
-              const update = {};
-              for (const field of fieldsForUpdate as string[]) {
-                const resourceField = data.record.resource?.fields.find(
-                  (f: any) => f.name === field
-                );
-                if (resourceField) {
-                  // Current field value in record
-                  const value = get(data.record.data, field);
-                  switch (resourceField.type) {
-                    case 'resource': {
-                      set(update, field, newRecordId);
-                      break;
-                    }
-                    case 'resources': {
-                      if (Array.isArray(value)) {
-                        set(update, field, [...value, newRecordId]);
-                      } else {
-                        set(update, field, [newRecordId]);
+      if (value && value.data?.id) {
+        // Add record action
+        if (button.addRecord) {
+          const newRecordId = value.data.id;
+          const fieldsForUpdate = button.addRecord.fieldsForUpdate || [];
+          // Execute callback if possible
+          if (
+            this.contextId &&
+            Array.isArray(fieldsForUpdate) &&
+            fieldsForUpdate.length > 0
+          ) {
+            this.apollo
+              .query<RecordQueryResponse>({
+                query: GET_RECORD_BY_ID,
+                variables: {
+                  id: this.contextId,
+                },
+              })
+              .pipe(takeUntil(this.destroy$))
+              .subscribe(({ data }) => {
+                const update = {};
+                for (const field of fieldsForUpdate as string[]) {
+                  const resourceField = data.record.resource?.fields.find(
+                    (f: any) => f.name === field
+                  );
+                  if (resourceField) {
+                    // Current field value in record
+                    const value = get(data.record.data, field);
+                    switch (resourceField.type) {
+                      case 'resource': {
+                        set(update, field, newRecordId);
+                        break;
                       }
-                      break;
+                      case 'resources': {
+                        if (Array.isArray(value)) {
+                          set(update, field, [...value, newRecordId]);
+                        } else {
+                          set(update, field, [newRecordId]);
+                        }
+                        break;
+                      }
+                      // Else, skip
                     }
-                    // Else, skip
                   }
+                  // Else, skip
                 }
-                // Else, skip
-              }
-              // If update not empty
-              if (!isEmpty(update)) {
-                this.apollo
-                  .mutate<EditRecordMutationResponse>({
-                    mutation: EDIT_RECORD,
-                    variables: {
-                      id: this.contextId,
-                      data: update,
-                    },
-                  })
-                  .pipe(takeUntil(this.destroy$))
-                  .subscribe();
-              }
-            });
+                // If update not empty
+                if (!isEmpty(update)) {
+                  this.apollo
+                    .mutate<EditRecordMutationResponse>({
+                      mutation: EDIT_RECORD,
+                      variables: {
+                        id: this.contextId,
+                        data: update,
+                      },
+                    })
+                    .pipe(takeUntil(this.destroy$))
+                    .subscribe({ next: () => callback() });
+                } else {
+                  callback();
+                }
+              });
+          } else {
+            callback();
+          }
+        } else {
+          // Edit record action
+          callback();
         }
       }
     });

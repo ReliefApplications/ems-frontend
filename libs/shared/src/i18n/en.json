@@ -2487,6 +2487,7 @@
 							"template": "Select a resource template for addition of new records"
 						}
 					},
+					"autoReload": "Auto reload dashboard on save",
 					"editRecord": {
 						"text": "Edit record",
 						"tooltip": {

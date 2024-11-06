@@ -32,12 +32,14 @@ export type ButtonActionT = {
   // Edit Record
   editRecord?: {
     template?: string;
+    autoReload?: boolean;
   };
   // Add Record
   addRecord?: {
     resource?: string;
     template?: string;
     fieldsForUpdate?: Array<string>;
+    autoReload?: boolean;
     mapping?: any;
   };
   // Notifications

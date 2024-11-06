@@ -221,6 +221,15 @@
                       "
                     ></ui-icon>
                   </div>
+                  <!-- Auto reload on save -->
+                  <ui-toggle formControlName="autoReload">
+                    <ng-container ngProjectAs="label">
+                      {{
+                        'models.dashboard.buttonActions.actions.autoReload'
+                          | translate
+                      }}
+                    </ng-container>
+                  </ui-toggle>
                 </div>
               </ng-container>
               <!-- Add record -->
@@ -265,6 +274,15 @@
                         "
                       ></ui-icon>
                     </div>
+                    <!-- Auto reload on save -->
+                    <ui-toggle formControlName="autoReload">
+                      <ng-container ngProjectAs="label">
+                        {{
+                          'models.dashboard.buttonActions.actions.autoReload'
+                            | translate
+                        }}
+                      </ng-container>
+                    </ui-toggle>
                     <!-- Edit record callback -->
                     <ui-toggle formControlName="edition">
                       <ng-container ngProjectAs="label">
