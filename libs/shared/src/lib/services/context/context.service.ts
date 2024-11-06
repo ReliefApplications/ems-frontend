@@ -708,45 +708,44 @@ export class ContextService {
   }
 
   /**
-   * Get default resource meta data
+   * Get default resource meta data for file type fields
    *
-   * @param contextFields Selected context available fields
-   * @returns default resource meta data
+   * @param contextFields Selected context available file type fields
+   * @returns resource meta data of file type
    */
   private async getResourceMetaData(contextFields: string[]) {
     const { data: resourceMetaDataResponse } = await lastValueFrom(
       // Fetch resource metadata fields
       this.queryBuilder.getQueryMetaData(this.contextId)
     );
-    return (resourceMetaDataResponse.resource?.metadata || []).filter((md) =>
-      contextFields.includes(md.name)
+    return (resourceMetaDataResponse.resource?.metadata || []).filter(
+      (md) => contextFields.includes(md.name) && md.type === 'file'
     );
   }
 
   /**
-   * Checks any context elements in the given html
-   * - If yes, get the context and metadata for current context fields and prepare the context values in the html to be replaced by default html parser logic
+   * Checks any file context elements in the given html
+   * - If yes, get the context and metadata for current context fields of type file
    * - If no, return empty fields and fields metadata and default html
    *
-   * @param html HTML where to clean context values
-   * @returns fields, fields metadata and clean html value ready to be replaced in the given html
+   * @param html HTML where to check this file context data
+   * @returns fields, fields metadata
    */
-  public async setContextDataForHtml(html: string) {
-    const containsContext = /{{(.*?)\.context\.(.*?)}}/gi.test(html);
+  public async setContextFileDataForHtml(html: string) {
+    const containsContext = /{{file\.context\.(.*?)}}/gi.test(html);
     let contextFields: Metadata[] = [];
-    let contextData: any = {};
+    const contextData: any = {};
     if (containsContext) {
-      contextData = this.context;
       contextFields = (await this.getResourceMetaData(
         Object.keys(this.context || {})
       )) as Metadata[];
-      let matches = new RegExp(/{{.*?(\.context\.).*?}}/, 'gi').exec(html);
-      do {
-        matches = new RegExp(/{{.*?(\.context\.).*?}}/, 'gi').exec(html);
-        const cleanData = matches?.at(0)?.replace(matches.at(1) as string, '.');
-        html = html.replace(matches?.at(0) as string, cleanData as string);
-      } while (!isNil(matches));
+      Object.keys(this.context || {}).forEach((k) => {
+        const field = contextFields.find((f) => f.name === k);
+        if (field) {
+          Object.assign(contextData, { [k]: this.context?.[k] });
+        }
+      });
     }
-    return { contextFields, contextData, cleanHTML: html };
+    return { contextFields, contextData };
   }
 }

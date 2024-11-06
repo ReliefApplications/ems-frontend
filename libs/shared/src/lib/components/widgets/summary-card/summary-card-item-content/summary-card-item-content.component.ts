@@ -59,6 +59,8 @@ export class SummaryCardItemContentComponent
   public formattedStyle?: string;
   /** Timeout to init active filter */
   private timeoutListener!: NodeJS.Timeout;
+  /** Files value */
+  private filesValue: any;
 
   /**
    * Listen to click events from host element, and trigger any action attached to the content clicked in the summary card item
@@ -131,14 +133,13 @@ export class SummaryCardItemContentComponent
       this.fieldsValue,
       this.styles
     );
-    const { contextFields, contextData, cleanHTML } =
-      await this.contextService.setContextDataForHtml(this.html);
-    this.formattedHtml = this.dataTemplateService.renderHtml(cleanHTML, {
+    const { contextFields, contextData } =
+      await this.contextService.setContextFileDataForHtml(this.html);
+    this.filesValue = contextData;
+    this.formattedHtml = this.dataTemplateService.renderHtml(this.html, {
       fields: [...this.fields, ...contextFields],
-      data: {
-        ...(this.fieldsValue || {}),
-        ...(contextData && contextData),
-      },
+      data: this.fieldsValue,
+      files: this.filesValue,
       styles: this.styles,
     });
     if (this.timeoutListener) {
@@ -179,7 +180,10 @@ export class SummaryCardItemContentComponent
    * @param event Click event
    */
   public onClick(event: any) {
-    this.dataTemplateService.onClick(event, this.fieldsValue);
+    this.dataTemplateService.onClick(event, {
+      ...this.fieldsValue,
+      ...this.filesValue,
+    });
   }
 
   /**

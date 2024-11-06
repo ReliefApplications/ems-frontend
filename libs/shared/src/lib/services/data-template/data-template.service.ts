@@ -80,6 +80,7 @@ export class DataTemplateService {
    * @param options.aggregation aggregation data
    * @param options.fields definition of fields
    * @param options.styles definition of styles
+   * @param options.files definition files
    * @returns html to render
    */
   public renderHtml(
@@ -89,6 +90,7 @@ export class DataTemplateService {
       aggregation?: any;
       fields?: any[];
       styles?: any[];
+      files?: any;
     } = {}
   ) {
     // Add available pages to the list of available keys
@@ -97,6 +99,7 @@ export class DataTemplateService {
       this.htmlParserService.parseHtml(html, {
         data: options.data,
         aggregation: options.aggregation,
+        files: options.files,
         fields: options.fields,
         pages: this.getPages(application),
         styles: options.styles,
