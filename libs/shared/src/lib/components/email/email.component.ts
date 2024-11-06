@@ -821,6 +821,12 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       textStyle: new FormControl(null),
       individualEmail: new FormControl(ele.individualEmail),
       individualEmailFields: individualEmailFieldsArray, // Attach individualEmailFields array
+      navigateToPage: new FormControl(ele.navigateToPage),
+      navigateSettings: this.formBuilder.group({
+        title: new FormControl(ele.navigateSettings.title),
+        pageUrl: new FormControl(ele.navigateSettings.pageUrl),
+        field: new FormControl(ele.navigateSettings.field),
+      }),
     });
     this.emailService.setEmailFields(ele.query.fields);
     this.emailService.setSeparateEmail(ele.individualEmail, index);

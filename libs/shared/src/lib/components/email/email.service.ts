@@ -39,6 +39,7 @@ import { FieldStore } from './models/email.const';
 import { ResourceQueryResponse } from '../../models/resource.model';
 import { prettifyLabel } from '../../utils/prettify';
 import { addNewField } from '../query-builder/query-builder-forms';
+import get from 'lodash/get';
 
 /**
  * Interface for InValidDataSets
@@ -228,6 +229,12 @@ export class EmailService {
       individualEmailFields: this.formBuilder.array([]),
       dataType: null,
       reference: null,
+      navigateToPage: false,
+      navigateSettings: this.formBuilder.group({
+        title: get('', 'actions.navigateSettings.title', 'Details view'),
+        pageUrl: [''],
+        field: [''],
+      }),
     });
   }
 

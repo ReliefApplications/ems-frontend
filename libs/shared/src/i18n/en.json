@@ -1218,6 +1218,9 @@
 			}
 		},
 		"queryBuilder": {
+			"action": {
+				"title": "Navigate to Page"
+			},
 			"apply": "Apply filter",
 			"block": {
 				"label": "Block title",

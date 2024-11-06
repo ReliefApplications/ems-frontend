@@ -1218,6 +1218,9 @@
 			}
 		},
 		"queryBuilder": {
+			"action": {
+				"title": "******"
+			},
 			"apply": "******",
 			"block": {
 				"label": "******",

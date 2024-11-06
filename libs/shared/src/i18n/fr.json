@@ -1218,6 +1218,9 @@
 			}
 		},
 		"queryBuilder": {
+			"action": {
+				"title": "Aller à la page"
+			},
 			"apply": "Appliquer le filtre",
 			"block": {
 				"label": "Titre du Bloc",

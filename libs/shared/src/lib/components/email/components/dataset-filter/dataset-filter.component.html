@@ -126,7 +126,7 @@
       ></ui-spinner>
     </div>
   </div>
-  <div formGroupName="query">
+  <div>
     <ui-tabs
       [selectedIndex]="currentTabIndex"
       (selectedIndexChange)="onTabSelect($event, true)"
@@ -156,7 +156,7 @@
               class="mt-2"
               *ngTemplateOutlet="ChildFieldAlertTmpl"
             ></ng-container>
-            <div class="flex gap-4 mt-2">
+            <div class="flex gap-4 mt-2" formGroupName="query">
               <div class="mt-2 overflow-auto">
                 <!-- FIELDS -->
                 <shared-tab-fields
@@ -206,7 +206,7 @@
                 class="mt-2"
                 *ngTemplateOutlet="tooManyRecordsAlertTmpl"
               ></ng-container>
-              <div class="flex gap-4 mt-2">
+              <div class="flex gap-4 mt-2" formGroupName="query">
                 <div class="mt-2">
                   <!-- NESTED FILTER GROUP -->
                   <!-- <shared-filter [form]="query.get('filter')" [fields]="filterFields" [isEmailNotification]="true"></shared-filter> -->
@@ -235,6 +235,90 @@
           </ng-template>
         </ui-tab>
 
+        <!-- navigate to page Tab -->
+        <ui-tab
+        [title]="'Action'">
+          <ng-container ngProjectAs="label">
+            {{ 'components.queryBuilder.action.title' | translate }}
+          </ng-container>
+          <ng-template uiTabContent>
+            <!-- Redirect to specific page action details -->
+        <div
+        formGroupName="navigateSettings"
+        class="flex flex-col ml-[55px]"
+          >
+            <div uiFormFieldDirective class="w-80">
+              <label>{{
+                'components.widget.settings.grid.actions.goTo.column.label'
+                  | translate
+              }}</label>
+              <input
+                formControlName="title"
+                [placeholder]="
+                  'components.widget.settings.grid.actions.goTo.column.placeholder'
+                    | translate
+                "
+              />
+            </div>
+            <div uiFormFieldDirective class="w-80">
+              <label>
+                {{
+                  'components.widget.settings.grid.actions.goTo.target.label'
+                    | translate
+                }}
+              </label>
+              <ui-select-menu
+                formControlName="pageUrl"
+                [placeholder]="
+                  'components.widget.settings.grid.actions.goTo.target.placeholder'
+                    | translate
+                "
+              >
+                <ui-select-option
+                  *ngFor="let page of pages"
+                  [value]="page.urlParams"
+                >
+                  {{ page.name }}
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
+            <div uiFormFieldDirective class="w-80">
+              {{
+                'components.widget.settings.grid.actions.goTo.field.label'
+                  | translate
+              }}
+              <ui-select-menu
+                formControlName="field"
+                [placeholder]="
+                  'components.widget.settings.grid.actions.goTo.field.placeholder'
+                    | translate
+                "
+              >
+                <ng-container *ngFor="let field of availableFields">
+                  <ui-select-option *ngIf="!field.fields" [value]="field.name">
+                    {{ field.text || field.name }}
+                  </ui-select-option>
+                
+                  <ui-select-option *ngIf="field.fields" [isGroup]="true">
+                    {{ field.text || field.name }}
+                    <ui-select-option
+                      *ngFor="let subField of field.fields"
+                      [value]="field.name + '.' + subField.name"
+                    >
+                      {{
+                        field.name === '$attribute'
+                          ? subField.text || subField.name
+                          : field.name + ' - ' + (subField.text || subField.name)
+                      }}
+                    </ui-select-option>
+                  </ui-select-option>
+                </ng-container>
+              </ui-select-menu>
+            </div>
+          </div>
+          </ng-template>
+        </ui-tab>
+
         <!-- Preview Tab -->
         <ui-tab
           [title]="'Preview'"
@@ -255,7 +339,7 @@
               class="mt-2"
               *ngTemplateOutlet="tooManyRecordsAlertTmpl"
             ></ng-container>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto" formGroupName="query">
               <div id="tblPreview" [innerHTML]="previewHTML"></div>
             </div>
           </ng-template>
@@ -286,7 +370,7 @@
               class="mt-2"
               *ngTemplateOutlet="ChildFieldAlertTmpl"
             ></ng-container>
-            <div class="flex gap-4 mt-2">
+            <div class="flex gap-4 mt-2" formGroupName="query">
               <div class="mt-2 overflow-auto">
                 <!-- FIELDS -->
                 <shared-tab-fields

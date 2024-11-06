@@ -27,6 +27,10 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { prettifyLabel } from '../../../../../lib/utils/prettify';
 import {
   ApiConfigurationsQueryResponse,
+  Application,
+  ApplicationService,
+  ContentType,
+  Page,
   ReferenceDataQueryResponse,
   ReferenceDatasQueryResponse,
 } from '../../../../../index';
@@ -135,6 +139,8 @@ export class DatasetFilterComponent
   public dataTypeList: any = ['Resource', 'Reference Data'];
   /** List of Reference  types */
   public refernceData: any = [];
+  /** Available pages from the application */
+  public pages: any[] = [];
 
   /**
    * To use helper functions, Apollo serve
@@ -148,6 +154,7 @@ export class DatasetFilterComponent
    * @param http Backend http client
    * @param restService rest service
    * @param sanitizer html sanitizer
+   * @param applicationService
    */
   constructor(
     public emailService: EmailService,
@@ -158,12 +165,15 @@ export class DatasetFilterComponent
     public gridService: GridService,
     private http: HttpClient,
     private restService: RestService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    public applicationService: ApplicationService
   ) {
     super();
   }
 
   ngOnInit(): void {
+    const application = this.applicationService.application.getValue();
+    this.pages = this.getPages(application);
     if (this.query.controls.resource.value && !this.resource) {
       this.selectedResourceId = this.query.controls.resource.value;
       this.getResourceData(false);
@@ -197,7 +207,15 @@ export class DatasetFilterComponent
         }
         this.emailService.index.next(this.activeTab.index);
       });
-
+    this.query.controls?.navigateSettings?.controls?.field?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data: any) => {
+        if (data) {
+          this.query.controls['navigateToPage'].setValue(true);
+        } else {
+          this.query.controls['navigateToPage'].setValue(false);
+        }
+      });
     // this.query.get('individualEmail').disable();
     this.separateEmail = this.emailService.updateSeparateEmail(
       this.activeTab.index
@@ -967,5 +985,51 @@ export class DatasetFilterComponent
         return 'text';
         break;
     }
+  }
+
+  /**
+   *
+   */
+  getApplicationPages() {
+    const application = this.applicationService.application.getValue();
+    this.pages = this.getPages(application);
+    // this.formGroup.controls.actions
+    //   .get('navigateToPage')
+    //   ?.valueChanges.pipe(takeUntil(this.destroy$))
+    //   .subscribe((val: boolean) => {
+    //     this.showSelectPage = val;
+    //   });
+  }
+
+  /**
+   * Get available pages from app
+   *
+   * @param application application
+   * @returns list of pages and their url
+   */
+  private getPages(application: Application | null) {
+    return (
+      application?.pages?.map((page: any) => ({
+        id: page.id,
+        name: page.name,
+        urlParams: this.getPageUrlParams(application, page),
+        placeholder: `{{page(${page.id})}}`,
+      })) || []
+    );
+  }
+
+  /**
+   * Get page url params
+   *
+   * @param application application
+   * @param page page to get url from
+   * @returns url of the page
+   */
+  private getPageUrlParams(application: Application, page: Page): string {
+    const applicationPath =
+      this.applicationService.getApplicationPath(application);
+    return page.type === ContentType.form
+      ? `${applicationPath}/${page.type}/${page.id}`
+      : `${applicationPath}/${page.type}/${page.content}`;
   }
 }
