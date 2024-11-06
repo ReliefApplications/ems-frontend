@@ -24,6 +24,7 @@ export * from './lib/services/grid-layout/grid-layout.service';
 export * from './lib/services/grid/grid.service';
 export * from './lib/services/html-parser/html-parser.service';
 export * from './lib/services/kendo-translation/kendo-translation.service';
+export * from './lib/services/logger/logger.service';
 export * from './lib/services/map/map-layers.service';
 export * from './lib/services/reference-data/reference-data.service';
 export * from './lib/services/rest/rest.service';
