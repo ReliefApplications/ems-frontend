@@ -42,14 +42,12 @@ export const GET_FORM_STRUCTURE = gql`
       name
       structure
       fields
-      buttons
       metadata {
         name
         automated
         canSee
         canUpdate
       }
-      buttons
     }
   }
 `;

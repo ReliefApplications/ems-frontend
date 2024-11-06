@@ -17,7 +17,6 @@ export const GET_DRAFT_RECORDS = gql`
         canSee
         canUpdate
       }
-      buttons
     }
   }
 `;
