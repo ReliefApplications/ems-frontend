@@ -950,7 +950,7 @@ export class EmailTemplateComponent
             this.emailService.datasetsForm?.value?.emailDistributionList?.name
               ?.length > 0)
         ) {
-          console.log(this.dlQuery.get('fields')?.value);
+          // console.log(this.dlQuery.get('fields')?.value);
         } else if (this.dlQuery.get('filter').get('filters').length > 0) {
           this.type === 'to' ? (this.emailService.isToValid = false) : '';
         }

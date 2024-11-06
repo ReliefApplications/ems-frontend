@@ -2478,12 +2478,16 @@
 						"fieldsForUpdate": {
 							"text": "Attacher le nouvel enregistrement à l'enregistrement actuel"
 						},
+						"help": {
+							"mapping": "Prémplissez les champs des nouveaux enregistrements en fournissant des valeurs statiques ou en les mappant depuis le contexte du tableau de bord à l'aide de la syntaxe {{context.<fieldName>}}."
+						},
 						"text": "Ajouter un enregistrement",
 						"tooltip": {
 							"fieldsForUpdate": "Le nouvel enregistrement sera attaché aux champs sélectionnés",
 							"template": "Sélectionner un modèle pour l'ajout de nouveaux enregistrements"
 						}
 					},
+					"autoReload": "Recharger le tableau de bord après la sauvegarde",
 					"editRecord": {
 						"text": "Modifier l'enregistrement actuel",
 						"tooltip": {
@@ -2493,7 +2497,6 @@
 					"navigateTo": "Naviguer vers",
 					"openInNewTab": "Ouvrir dans un nouvel onglet",
 					"previousPage": "Page précédente",
-					"reloadDashboard": "Recharger le tableau de bord",
 					"sendNotification": {
 						"text": "Envoyer une notification"
 					},

@@ -48,6 +48,7 @@
             class="export-hide"
             [buttonActions]="buttonActions"
             [dashboard]="dashboard"
+            (reloadDashboard)="reload()" 
           ></shared-button-action>
           <!-- Dashboard export -->
           <shared-dashboard-export-button

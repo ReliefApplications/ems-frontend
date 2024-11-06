@@ -221,10 +221,11 @@
                       "
                     ></ui-icon>
                   </div>
-                  <ui-toggle formControlName="reloadDashboard">
+                  <!-- Auto reload on save -->
+                  <ui-toggle formControlName="autoReload">
                     <ng-container ngProjectAs="label">
                       {{
-                        'models.dashboard.buttonActions.actions.reloadDashboard'
+                        'models.dashboard.buttonActions.actions.autoReload'
                           | translate
                       }}
                     </ng-container>
@@ -273,6 +274,16 @@
                         "
                       ></ui-icon>
                     </div>
+                    <!-- Auto reload on save -->
+                    <ui-toggle formControlName="autoReload">
+                      <ng-container ngProjectAs="label">
+                        {{
+                          'models.dashboard.buttonActions.actions.autoReload'
+                            | translate
+                        }}
+                      </ng-container>
+                    </ui-toggle>
+                    <!-- Edit record callback -->
                     <ui-toggle formControlName="edition">
                       <ng-container ngProjectAs="label">
                         {{
@@ -316,14 +327,18 @@
                         ></ui-icon>
                       </div>
                     </ng-container>
-                    <ui-toggle formControlName="reloadDashboard">
-                      <ng-container ngProjectAs="label">
-                        {{
-                          'models.dashboard.buttonActions.actions.reloadDashboard'
-                            | translate
-                        }}
-                      </ng-container>
-                    </ui-toggle>
+                    <!-- Mapping -->
+                    <ui-alert
+                      >{{
+                        'models.dashboard.buttonActions.actions.addRecord.help.mapping'
+                          | translate
+                      }}
+                    </ui-alert>
+                    <shared-field-mapper
+                      class="my-2"
+                      [formGroupInstance]="$any(form.get('action.addRecord'))"
+                      [fields]="addRecordFields"
+                    ></shared-field-mapper>
                   </div>
                 </ng-container>
               </ng-container>

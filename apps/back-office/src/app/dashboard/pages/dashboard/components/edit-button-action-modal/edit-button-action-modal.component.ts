@@ -22,18 +22,20 @@ import {
   EditorService,
   EmailNotification,
   EmailService,
+  FieldMapperComponent,
   Form,
   INLINE_EDITOR_CONFIG,
+  QueryBuilderModule,
+  QueryBuilderService,
   Resource,
   ResourceQueryResponse,
   ResourceSelectComponent,
   Role,
   UnsubscribeComponent,
-  QueryBuilderService,
-  QueryBuilderModule,
   addNewField,
 } from '@oort-front/shared';
 import {
+  AlertModule,
   categories as ButtonCategories,
   ButtonModule,
   variants as ButtonVariants,
@@ -80,7 +82,9 @@ interface DialogData {
     IconModule,
     TooltipModule,
     ResourceSelectComponent,
+    FieldMapperComponent,
     QueryBuilderModule,
+    AlertModule,
   ],
   templateUrl: './edit-button-action-modal.component.html',
   styleUrls: ['./edit-button-action-modal.component.scss'],
@@ -107,6 +111,8 @@ export class EditButtonActionModalComponent
   public resourceFields: any[] = [];
   /** Add record template list */
   public addRecordTemplates: Form[] = [];
+  /** Add Record fields */
+  public addRecordFields: any[] = [];
   /** Edit record template list */
   public editRecordTemplates: Form[] = [];
   /** Selected resource */
@@ -242,6 +248,9 @@ export class EditButtonActionModalComponent
     data: ButtonActionT,
     roles: Role[]
   ): FormGroup => {
+    const mapping = get(data, 'addRecord.mapping', {}) as {
+      [key: string]: any;
+    };
     const form = this.fb.group({
       general: this.fb.group({
         buttonText: [get(data, 'text', ''), Validators.required],
@@ -278,7 +287,7 @@ export class EditButtonActionModalComponent
           editRecord: this.fb.group({
             enabled: [!!get(data, 'editRecord', false)],
             template: [get(data, 'editRecord.template', '')],
-            reloadDashboard: [get(data, 'reloadDashboard', true)],
+            autoReload: [get(data, 'editRecord.autoReload', false)],
           }),
           addRecord: this.fb.group(
             {
@@ -291,9 +300,18 @@ export class EditButtonActionModalComponent
                 ),
               ],
               template: [get(data, 'addRecord.template', '')],
+              mapping: this.fb.array(
+                Object.keys(mapping).map((x: any) =>
+                  this.fb.group({
+                    name: [x, Validators.required],
+                    value: [mapping[x], Validators.required],
+                  })
+                )
+              ),
+              rawMapping: [JSON.stringify(mapping, null, 2)],
               edition: [!!get(data, 'addRecord.fieldsForUpdate', false)],
               fieldsForUpdate: [get(data, 'addRecord.fieldsForUpdate', [])],
-              reloadDashboard: [get(data, 'addRecord.reloadDashboard', true)],
+              autoReload: [get(data, 'addRecord.autoReload', false)],
             },
             {
               validator: (
@@ -407,6 +425,7 @@ export class EditButtonActionModalComponent
           next: ({ data }) => {
             this.selectedResource = data.resource;
             this.addRecordTemplates = data.resource.forms ?? [];
+            this.addRecordFields = data.resource.fields ?? [];
           },
         });
     }
@@ -435,6 +454,7 @@ export class EditButtonActionModalComponent
         next: ({ data }) => {
           this.selectedResource = data.resource;
           this.addRecordTemplates = data.resource.forms ?? [];
+          this.addRecordFields = data.resource.fields ?? [];
         },
       });
     // Subscribe to changes on addRecord resource to fetch data
@@ -461,6 +481,7 @@ export class EditButtonActionModalComponent
           this.form.get('action.addRecord.fieldsForUpdate')?.setValue([]);
           this.selectedResource = data?.resource as Resource;
           this.addRecordTemplates = data?.resource?.forms ?? [];
+          this.addRecordFields = data?.resource?.fields ?? [];
         },
       });
   }
@@ -578,8 +599,7 @@ export class EditButtonActionModalComponent
       ...(this.form.get('action.editRecord.enabled')?.value && {
         editRecord: {
           template: this.form.get('action.editRecord.template')?.value,
-          reloadDashboard: this.form.get('action.editRecord.reloadDashboard')
-            ?.value,
+          autoReload: this.form.get('action.editRecord.autoReload')?.value,
         },
       }),
       // If addRecord enabled
@@ -589,8 +609,12 @@ export class EditButtonActionModalComponent
           template: this.form.get('action.addRecord.template')?.value,
           fieldsForUpdate: this.form.get('action.addRecord.fieldsForUpdate')
             ?.value,
-          reloadDashboard: this.form.get('action.addRecord.reloadDashboard')
-            ?.value,
+          autoReload: this.form.get('action.addRecord.autoReload')?.value,
+          mapping:
+            this.form.get('action.addRecord.mapping')?.value &&
+            this.form.get('action.addRecord.mapping')?.value.length
+              ? JSON.parse(this.form.get('action.addRecord.rawMapping')?.value)
+              : {},
         },
       }),
       // If subscribeToNotification enabled

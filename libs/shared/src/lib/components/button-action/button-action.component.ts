@@ -18,7 +18,6 @@ import { Resource, ResourceQueryResponse } from '../../models/resource.model';
 import { ApplicationService } from '../../services/application/application.service';
 import { DataTemplateService } from '../../services/data-template/data-template.service';
 import { EmailService as SharedEmailService } from '../../services/email/email.service';
-import { GridLayoutService } from '../../services/grid-layout/grid-layout.service';
 import {
   QueryBuilderService,
   QueryResponse,
@@ -31,6 +30,7 @@ import { EDIT_RECORD } from './graphql/mutations';
 import { GET_RECORD_BY_ID, GET_RESOURCE_BY_ID } from './graphql/queries';
 import { Layout } from '../../models/layout.model';
 import { SnackbarSpinnerComponent } from '../snackbar-spinner/public-api';
+import { ContextService } from '../../services/context/context.service';
 
 /** Component for display action buttons */
 @Component({
@@ -65,7 +65,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
    * @param snackBar SnackbarService
    * @param translate TranslateService
    * @param queryBuilder QueryBuilderService
-   * @param gridLayoutService GridLayoutService
+   * @param contextService Shared context service
    */
   constructor(
     public dialog: Dialog,
@@ -80,7 +80,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private queryBuilder: QueryBuilderService,
-    private gridLayoutService: GridLayoutService
+    private contextService: ContextService
   ) {
     super();
     this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe({
@@ -242,81 +242,97 @@ export class ButtonActionComponent extends UnsubscribeComponent {
     const template = button.editRecord
       ? button.editRecord.template
       : button.addRecord?.template;
+    const prefillData = this.contextService.replaceContext(
+      button.addRecord?.mapping || {}
+    );
+    const shouldReload =
+      button.editRecord?.autoReload || button.addRecord?.autoReload;
+    // Callback to be executed at the end of action
+    const callback = () => {
+      if (shouldReload) {
+        this.reloadDashboard.emit();
+      }
+    };
     const dialogRef = this.dialog.open(FormModalComponent, {
       disableClose: true,
       data: {
         ...(button.editRecord && { recordId: this.contextId }), // button must be hidden in html if editRecord is enabled & no contextId
         ...(template && { template }),
         actionButtonCtx: true,
+        prefillData,
       },
       autoFocus: false,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value && value.data?.id && button.addRecord) {
-        const newRecordId = value.data.id;
-        const fieldsForUpdate = button.addRecord.fieldsForUpdate || [];
-        // Execute callback if possible
-        if (
-          this.contextId &&
-          Array.isArray(fieldsForUpdate) &&
-          fieldsForUpdate.length > 0
-        ) {
-          this.apollo
-            .query<RecordQueryResponse>({
-              query: GET_RECORD_BY_ID,
-              variables: {
-                id: this.contextId,
-              },
-            })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(({ data }) => {
-              const update = {};
-              for (const field of fieldsForUpdate as string[]) {
-                const resourceField = data.record.resource?.fields.find(
-                  (f: any) => f.name === field
-                );
-                if (resourceField) {
-                  // Current field value in record
-                  const value = get(data.record.data, field);
-                  switch (resourceField.type) {
-                    case 'resource': {
-                      set(update, field, newRecordId);
-                      break;
-                    }
-                    case 'resources': {
-                      if (Array.isArray(value)) {
-                        set(update, field, [...value, newRecordId]);
-                      } else {
-                        set(update, field, [newRecordId]);
+      if (value && value.data?.id) {
+        // Add record action
+        if (button.addRecord) {
+          const newRecordId = value.data.id;
+          const fieldsForUpdate = button.addRecord.fieldsForUpdate || [];
+          // Execute callback if possible
+          if (
+            this.contextId &&
+            Array.isArray(fieldsForUpdate) &&
+            fieldsForUpdate.length > 0
+          ) {
+            this.apollo
+              .query<RecordQueryResponse>({
+                query: GET_RECORD_BY_ID,
+                variables: {
+                  id: this.contextId,
+                },
+              })
+              .pipe(takeUntil(this.destroy$))
+              .subscribe(({ data }) => {
+                const update = {};
+                for (const field of fieldsForUpdate as string[]) {
+                  const resourceField = data.record.resource?.fields.find(
+                    (f: any) => f.name === field
+                  );
+                  if (resourceField) {
+                    // Current field value in record
+                    const value = get(data.record.data, field);
+                    switch (resourceField.type) {
+                      case 'resource': {
+                        set(update, field, newRecordId);
+                        break;
                       }
-                      break;
+                      case 'resources': {
+                        if (Array.isArray(value)) {
+                          set(update, field, [...value, newRecordId]);
+                        } else {
+                          set(update, field, [newRecordId]);
+                        }
+                        break;
+                      }
+                      // Else, skip
                     }
-                    // Else, skip
                   }
+                  // Else, skip
                 }
-                // Else, skip
-              }
-              // If update not empty
-              if (!isEmpty(update)) {
-                this.apollo
-                  .mutate<EditRecordMutationResponse>({
-                    mutation: EDIT_RECORD,
-                    variables: {
-                      id: this.contextId,
-                      data: update,
-                    },
-                  })
-                  .pipe(takeUntil(this.destroy$))
-                  .subscribe();
-              }
-            });
+                // If update not empty
+                if (!isEmpty(update)) {
+                  this.apollo
+                    .mutate<EditRecordMutationResponse>({
+                      mutation: EDIT_RECORD,
+                      variables: {
+                        id: this.contextId,
+                        data: update,
+                      },
+                    })
+                    .pipe(takeUntil(this.destroy$))
+                    .subscribe({ next: () => callback() });
+                } else {
+                  callback();
+                }
+              });
+          } else {
+            callback();
+          }
+        } else {
+          // Edit record action
+          callback();
         }
-      }
-      if (
-        button.editRecord?.reloadDashboard ||
-        button.addRecord?.reloadDashboard
-      ) {
-        this.reloadDashboard.emit();
       }
     });
   }

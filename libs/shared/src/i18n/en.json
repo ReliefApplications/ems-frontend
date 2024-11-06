@@ -2478,12 +2478,16 @@
 						"fieldsForUpdate": {
 							"text": "Attach newly created record to current record fields"
 						},
+						"help": {
+							"mapping": "Prefill fields of new records by providing static values or mapping them from the dashboard context using the {{context.<fieldName>}} syntax."
+						},
 						"text": "Add record",
 						"tooltip": {
 							"fieldsForUpdate": "Newly created record can be attached to resource & resources fields",
 							"template": "Select a resource template for addition of new records"
 						}
 					},
+					"autoReload": "Auto reload dashboard on save",
 					"editRecord": {
 						"text": "Edit record",
 						"tooltip": {
@@ -2493,7 +2497,6 @@
 					"navigateTo": "Navigate to",
 					"openInNewTab": "Open in new tab",
 					"previousPage": "Previous page",
-					"reloadDashboard": "Reload dashboard",
 					"sendNotification": {
 						"text": "Send notification"
 					},

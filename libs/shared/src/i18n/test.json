@@ -2478,12 +2478,16 @@
 						"fieldsForUpdate": {
 							"text": "******"
 						},
+						"help": {
+							"mapping": "****** {{context.<fieldName>}} ******"
+						},
 						"text": "******",
 						"tooltip": {
 							"fieldsForUpdate": "******",
 							"template": "******"
 						}
 					},
+					"autoReload": "******",
 					"editRecord": {
 						"text": "******",
 						"tooltip": {
@@ -2493,7 +2497,6 @@
 					"navigateTo": "******",
 					"openInNewTab": "******",
 					"previousPage": "******",
-					"reloadDashboard": "******",
 					"sendNotification": {
 						"text": "******"
 					},
