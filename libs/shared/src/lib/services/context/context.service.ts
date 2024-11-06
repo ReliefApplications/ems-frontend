@@ -35,11 +35,12 @@ import {
 } from '../../models/dashboard.model';
 import { Metadata } from '../../models/metadata.model';
 import { RecordQueryResponse } from '../../models/record.model';
+import { ReferenceDataQueryResponse } from '../../models/reference-data.model';
 import { ApplicationService } from '../application/application.service';
 import { FormBuilderService } from '../form-builder/form-builder.service';
 import { QueryBuilderService } from '../query-builder/query-builder.service';
 import { EDIT_DASHBOARD_FILTER } from './graphql/mutations';
-import { GET_RECORD_BY_ID } from './graphql/queries';
+import { GET_RECORD_BY_ID, GET_REFERENCE_DATA_FIELDS } from './graphql/queries';
 
 /**
  * Dashboard context service
@@ -136,8 +137,8 @@ export class ContextService {
   public context: {
     [key: string]: any;
   } | null = null;
-  /** Selected context id */
-  public contextId = '';
+  /** Selected context source */
+  public contextSource = {};
 
   /**
    * Dashboard context service
@@ -550,11 +551,11 @@ export class ContextService {
       return;
     }
     if ('refData' in dashboard.page.context) {
-      this.contextId = dashboard.page.context.refData;
+      this.contextSource = { refData: dashboard.page.context.refData };
       // Returns context element
       callback({ element: contextEl });
     } else if ('resource' in dashboard.page.context) {
-      this.contextId = dashboard.page.context.resource;
+      this.contextSource = { resource: dashboard.page.context.resource };
       // Get record by id
       this.apollo
         .query<RecordQueryResponse>({
@@ -714,11 +715,27 @@ export class ContextService {
    * @returns resource meta data of file type
    */
   private async getResourceMetaData(contextFields: string[]) {
-    const { data: resourceMetaDataResponse } = await lastValueFrom(
-      // Fetch resource metadata fields
-      this.queryBuilder.getQueryMetaData(this.contextId)
-    );
-    return (resourceMetaDataResponse.resource?.metadata || []).filter(
+    let fields: any[] = [];
+    if ('refData' in this.contextSource) {
+      const { data } = await lastValueFrom(
+        this.apollo.query<ReferenceDataQueryResponse>({
+          query: GET_REFERENCE_DATA_FIELDS,
+          variables: {
+            id: this.contextSource.refData,
+          },
+        })
+      );
+      fields = data.referenceData.fields || [];
+    } else if ('resource' in this.contextSource) {
+      const { data } = await lastValueFrom(
+        // Fetch resource metadata fields
+        this.queryBuilder.getQueryMetaData(
+          this.contextSource.resource as string
+        )
+      );
+      fields = data.resource.metadata || [];
+    }
+    return fields.filter(
       (md) => contextFields.includes(md.name) && md.type === 'file'
     );
   }
