@@ -4,5 +4,10 @@
     <ui-button category="secondary" (click)="clearForm()">{{
       'models.record.new' | translate
     }}</ui-button>
+    <!-- Button actions -->
+    <shared-button-action
+      class="export-hide"
+      [buttonActions]="buttonActions"
+    ></shared-button-action>
   </ng-container>
 </ng-container>

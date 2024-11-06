@@ -99,6 +99,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.step = data.step;
+              this.buttonActions = data.step.buttons as ButtonActionT[];
               return this.getFormQuery(this.step.content ?? '');
             })
           )
@@ -116,6 +117,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.page = data.page;
+              this.buttonActions = data.page.buttons as ButtonActionT[];
               return this.getFormQuery(this.page.content ?? '');
             })
           )
@@ -153,7 +155,6 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   ) {
     if (data) {
       this.form = data.form;
-      this.buttonActions = data.form.buttons as ButtonActionT[];
     }
     if (
       !this.form ||

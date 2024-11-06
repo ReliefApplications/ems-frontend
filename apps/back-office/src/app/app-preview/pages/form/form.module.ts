@@ -1,10 +1,13 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
+import {
+  ButtonActionModule,
+  FormModule as SharedFormModule,
+} from '@oort-front/shared';
+import { ButtonModule } from '@oort-front/ui';
 import { FormRoutingModule } from './form-routing.module';
 import { FormComponent } from './form.component';
-import { FormModule as SharedFormModule } from '@oort-front/shared';
-import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Application preview form page module.
@@ -17,6 +20,7 @@ import { ButtonModule } from '@oort-front/ui';
     SharedFormModule,
     TranslateModule,
     ButtonModule,
+    ButtonActionModule,
   ],
   exports: [FormComponent],
 })

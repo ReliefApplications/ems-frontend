@@ -64,7 +64,6 @@ export class FormComponent implements OnInit, OnChanges {
     this.getFormQuery.subscribe(({ data, loading }) => {
       if (data) {
         this.form = data.form;
-        this.buttonActions = data.form.buttons as ButtonActionT[];
         this.loading = loading;
       }
     });

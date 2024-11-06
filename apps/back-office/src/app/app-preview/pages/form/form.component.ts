@@ -11,6 +11,7 @@ import {
   StepQueryResponse,
   FormQueryResponse,
   PageQueryResponse,
+  ButtonActionT,
 } from '@oort-front/shared';
 import {
   GET_SHORT_FORM_BY_ID,
@@ -43,6 +44,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   public completed = false;
   /** Should possibility to add new records be hidden */
   public hideNewRecord = false;
+  /** Form button actions */
+  public buttonActions: ButtonActionT[] = [];
 
   // === ROUTER ===
   /** Current page */
@@ -87,6 +90,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           })
           .subscribe(({ data }) => {
             this.step = data.step;
+            this.buttonActions = data.step.buttons as ButtonActionT[];
             this.apollo
               .query<FormQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
@@ -109,6 +113,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           })
           .subscribe(({ data }) => {
             this.page = data.page;
+            this.buttonActions = data.page.buttons as ButtonActionT[];
             this.apollo
               .query<FormQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,

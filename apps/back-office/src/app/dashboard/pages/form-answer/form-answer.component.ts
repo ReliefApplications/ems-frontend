@@ -59,23 +59,28 @@ export class FormAnswerComponent
     super();
   }
 
+  /**
+   * Load any action buttons needed for the form
+   */
+  private async loadActionButtons() {
+    const isStep = this.router.url.includes('/workflow/');
+    const query = isStep ? GET_STEP_BY_ID : GET_PAGE_BY_ID;
+    const { data } = (await lastValueFrom(
+      this.apollo.query<any>({
+        query,
+        variables: {
+          id: this.id,
+        },
+      })
+    )) as { data: { step?: any; page?: any } };
+    this.buttonActions = data[isStep ? 'step' : 'page']
+      .buttons as ButtonActionT[];
+  }
+
   async ngOnInit(): Promise<void> {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
-      const query = this.router.url.includes('/workflow/')
-        ? GET_STEP_BY_ID
-        : GET_PAGE_BY_ID;
-      const { data: pageData } = (await lastValueFrom(
-        this.apollo.query<any>({
-          query,
-          variables: {
-            id: this.id,
-          },
-        })
-      )) as { data: { step?: any; page?: any } };
-      this.buttonActions = pageData[
-        this.router.url.includes('/workflow/') ? 'step' : 'page'
-      ].buttons as ButtonActionT[];
+      await this.loadActionButtons();
       this.apollo
         .watchQuery<FormQueryResponse>({
           query: GET_SHORT_FORM_BY_ID,
