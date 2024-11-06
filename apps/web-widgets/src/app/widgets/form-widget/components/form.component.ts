@@ -1,5 +1,4 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
-import { ButtonActionT } from '@oort-front/shared';
 import {
   Form,
   FormQueryResponse,
@@ -31,8 +30,6 @@ export class FormComponent implements OnInit, OnChanges {
   public completed = false;
   /** boolean, whether to hid or not the new record */
   public hideNewRecord = false;
-  /** Configured form quick actions */
-  public buttonActions: ButtonActionT[] = [];
 
   /** Get the form query */
   private getFormQuery = this.apollo.query<FormQueryResponse>({
