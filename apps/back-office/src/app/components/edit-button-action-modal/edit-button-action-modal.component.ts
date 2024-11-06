@@ -22,6 +22,7 @@ import {
   EditorService,
   EmailNotification,
   EmailService,
+  FieldMapperComponent,
   Form,
   INLINE_EDITOR_CONFIG,
   QueryBuilderModule,
@@ -34,6 +35,7 @@ import {
   addNewField,
 } from '@oort-front/shared';
 import {
+  AlertModule,
   categories as ButtonCategories,
   ButtonModule,
   variants as ButtonVariants,
@@ -81,7 +83,9 @@ interface DialogData {
     IconModule,
     TooltipModule,
     ResourceSelectComponent,
+    FieldMapperComponent,
     QueryBuilderModule,
+    AlertModule,
   ],
   templateUrl: './edit-button-action-modal.component.html',
   styleUrls: ['./edit-button-action-modal.component.scss'],
@@ -108,6 +112,8 @@ export class EditButtonActionModalComponent
   public resourceFields: any[] = [];
   /** Add record template list */
   public addRecordTemplates: Form[] = [];
+  /** Add Record fields */
+  public addRecordFields: any[] = [];
   /** Edit record template list */
   public editRecordTemplates: Form[] = [];
   /** Selected resource */
@@ -235,155 +241,6 @@ export class EditButtonActionModalComponent
   }
 
   /**
-   * Set needed listeners for add record form
-   */
-  private prepareAddRecordFormListeners() {
-    // Query data on init, if needed
-    if (this.form.get('action.addRecord.enabled')?.value) {
-      this.apollo
-        .query<ResourceQueryResponse>({
-          query: GET_RESOURCE,
-          variables: {
-            resource: this.form.get('action.addRecord.resource')?.value,
-          },
-        })
-        .subscribe({
-          next: ({ data }) => {
-            this.selectedResource = data.resource;
-            this.addRecordTemplates = data.resource.forms ?? [];
-          },
-        });
-    }
-    // Subscribe to changes on addRecord action to fetch data
-    this.form
-      .get('action.addRecord.enabled')
-      ?.valueChanges.pipe(
-        filter((value) => {
-          const isFirstEnabled =
-            !!value &&
-            !this.selectedResource &&
-            this.form.get('action.addRecord.resource')?.value;
-          return isFirstEnabled;
-        }),
-        switchMap(() =>
-          this.apollo.query<ResourceQueryResponse>({
-            query: GET_RESOURCE,
-            variables: {
-              resource: this.form.get('action.addRecord.resource')?.value,
-            },
-          })
-        ),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: ({ data }) => {
-          this.selectedResource = data.resource;
-          this.addRecordTemplates = data.resource.forms ?? [];
-        },
-      });
-    // Subscribe to changes on addRecord resource to fetch data
-    this.form
-      .get('action.addRecord.resource')
-      ?.valueChanges.pipe(
-        switchMap((resource) =>
-          iif(
-            () => !!resource,
-            this.apollo.query<ResourceQueryResponse>({
-              query: GET_RESOURCE,
-              variables: {
-                resource,
-              },
-            }),
-            of({ data: null })
-          )
-        ),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: ({ data }) => {
-          this.form.get('action.addRecord.template')?.setValue('');
-          this.form.get('action.addRecord.fieldsForUpdate')?.setValue([]);
-          this.selectedResource = data?.resource as Resource;
-          this.addRecordTemplates = data?.resource?.forms ?? [];
-        },
-      });
-  }
-
-  /**
-   * Set needed listeners for subscribe to notification form
-   */
-  private prepareSubscribeToNotificationFormListeners() {
-    /** Fetch email notification list on subscribe to notification is enabled */
-    this.form
-      .get('action.subscribeToNotification.enabled')
-      ?.valueChanges.pipe(
-        filter((value) => !!value),
-        switchMap(() =>
-          this.emailService.getEmailNotifications(
-            this.applicationService.application?.getValue()?.id as string
-          )
-        ),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: ({ data }) => {
-          this.emailNotifications = data.emailNotifications.edges.map(
-            (item) => item.node
-          );
-        },
-      });
-  }
-
-  /**
-   * Set needed listeners for send notification form
-   */
-  private prepareSendNotificationFormListeners() {
-    /** Fetch distribution list on send notification is enabled */
-    this.form
-      .get('action.sendNotification.enabled')
-      ?.valueChanges.pipe(
-        filter((value) => !!value),
-        switchMap(() =>
-          this.emailService.getEmailDistributionList(
-            this.applicationService.application?.getValue()?.id as string
-          )
-        ),
-        switchMap(({ data }) => {
-          const emailDistributionLists = data.emailDistributionLists;
-          return this.emailService
-            .getCustomTemplates(
-              this.applicationService.application?.getValue()?.id as string
-            )
-            .pipe(
-              map(({ data }) => ({
-                emailDistributionLists,
-                customTemplates: data.customTemplates,
-              }))
-            );
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: ({ customTemplates, emailDistributionLists }) => {
-          this.sendNotificationDistributionList =
-            emailDistributionLists.edges.map((item: any) => item.node);
-          this.sendNotificationTemplates = customTemplates.edges.map(
-            (item: any) => item.node
-          );
-        },
-      });
-  }
-
-  /**
-   * Set all needed form listeners
-   */
-  private setFormListeners() {
-    this.prepareAddRecordFormListeners();
-    this.prepareSubscribeToNotificationFormListeners();
-    this.prepareSendNotificationFormListeners();
-  }
-
-  /**
    * Create a form group for the button action
    *
    * @param data Data to initialize the form
@@ -394,7 +251,9 @@ export class EditButtonActionModalComponent
     data: ButtonActionT,
     roles: Role[]
   ): FormGroup => {
-    console.log(data);
+    const mapping = get(data, 'addRecord.mapping', {}) as {
+      [key: string]: any;
+    };
     const form = this.fb.group({
       general: this.fb.group({
         buttonText: [get(data, 'text', ''), Validators.required],
@@ -447,6 +306,15 @@ export class EditButtonActionModalComponent
                   ),
                 ],
                 template: [get(data, 'addRecord.template', '')],
+                mapping: this.fb.array(
+                  Object.keys(mapping).map((x: any) =>
+                    this.fb.group({
+                      name: [x, Validators.required],
+                      value: [mapping[x], Validators.required],
+                    })
+                  )
+                ),
+                rawMapping: [JSON.stringify(mapping, null, 2)],
                 edition: [!!get(data, 'addRecord.fieldsForUpdate', false)],
                 fieldsForUpdate: [get(data, 'addRecord.fieldsForUpdate', [])],
               },
@@ -548,6 +416,158 @@ export class EditButtonActionModalComponent
     return form;
   };
 
+  /**
+   * Set needed listeners for add record form
+   */
+  private prepareAddRecordFormListeners() {
+    // Query data on init, if needed
+    if (this.form.get('action.addRecord.enabled')?.value) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE,
+          variables: {
+            resource: this.form.get('action.addRecord.resource')?.value,
+          },
+        })
+        .subscribe({
+          next: ({ data }) => {
+            this.selectedResource = data.resource;
+            this.addRecordTemplates = data.resource.forms ?? [];
+            this.addRecordFields = data.resource.fields ?? [];
+          },
+        });
+    }
+    // Subscribe to changes on addRecord action to fetch data
+    this.form
+      .get('action.addRecord.enabled')
+      ?.valueChanges.pipe(
+        filter((value) => {
+          const isFirstEnabled =
+            !!value &&
+            !this.selectedResource &&
+            this.form.get('action.addRecord.resource')?.value;
+          return isFirstEnabled;
+        }),
+        switchMap(() =>
+          this.apollo.query<ResourceQueryResponse>({
+            query: GET_RESOURCE,
+            variables: {
+              resource: this.form.get('action.addRecord.resource')?.value,
+            },
+          })
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data }) => {
+          this.selectedResource = data.resource;
+          this.addRecordTemplates = data.resource.forms ?? [];
+          this.addRecordFields = data.resource.fields ?? [];
+        },
+      });
+    // Subscribe to changes on addRecord resource to fetch data
+    this.form
+      .get('action.addRecord.resource')
+      ?.valueChanges.pipe(
+        switchMap((resource) =>
+          iif(
+            () => !!resource,
+            this.apollo.query<ResourceQueryResponse>({
+              query: GET_RESOURCE,
+              variables: {
+                resource,
+              },
+            }),
+            of({ data: null })
+          )
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data }) => {
+          this.form.get('action.addRecord.template')?.setValue('');
+          this.form.get('action.addRecord.fieldsForUpdate')?.setValue([]);
+          this.selectedResource = data?.resource as Resource;
+          this.addRecordTemplates = data?.resource?.forms ?? [];
+          this.addRecordFields = data?.resource?.fields ?? [];
+        },
+      });
+  }
+
+  /**
+   * Set needed listeners for subscribe to notification form
+   */
+  private prepareSubscribeToNotificationFormListeners() {
+    /** Fetch email notification list on subscribe to notification is enabled */
+    this.form
+      .get('action.subscribeToNotification.enabled')
+      ?.valueChanges.pipe(
+        filter((value) => !!value),
+        switchMap(() =>
+          this.emailService.getEmailNotifications(
+            this.applicationService.application?.getValue()?.id as string
+          )
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data }) => {
+          this.emailNotifications = data.emailNotifications.edges.map(
+            (item) => item.node
+          );
+        },
+      });
+  }
+
+  /**
+   * Set needed listeners for send notification form
+   */
+  private prepareSendNotificationFormListeners() {
+    /** Fetch distribution list on send notification is enabled */
+    this.form
+      .get('action.sendNotification.enabled')
+      ?.valueChanges.pipe(
+        filter((value) => !!value),
+        switchMap(() =>
+          this.emailService.getEmailDistributionList(
+            this.applicationService.application?.getValue()?.id as string
+          )
+        ),
+        switchMap(({ data }) => {
+          const emailDistributionLists = data.emailDistributionLists;
+          return this.emailService
+            .getCustomTemplates(
+              this.applicationService.application?.getValue()?.id as string
+            )
+            .pipe(
+              map(({ data }) => ({
+                emailDistributionLists,
+                customTemplates: data.customTemplates,
+              }))
+            );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ customTemplates, emailDistributionLists }) => {
+          this.sendNotificationDistributionList =
+            emailDistributionLists.edges.map((item: any) => item.node);
+          this.sendNotificationTemplates = customTemplates.edges.map(
+            (item: any) => item.node
+          );
+        },
+      });
+  }
+
+  /**
+   * Set all needed form listeners
+   */
+  private setFormListeners() {
+    this.prepareAddRecordFormListeners();
+    this.prepareSubscribeToNotificationFormListeners();
+    this.prepareSendNotificationFormListeners();
+  }
+
   /** On click on the preview button open the href */
   public preview(): void {
     let href = this.form.get('action.navigateTo.targetUrl.href')?.value;
@@ -596,6 +616,11 @@ export class EditButtonActionModalComponent
           template: this.form.get('action.addRecord.template')?.value,
           fieldsForUpdate: this.form.get('action.addRecord.fieldsForUpdate')
             ?.value,
+          mapping:
+            this.form.get('action.addRecord.mapping')?.value &&
+            this.form.get('action.addRecord.mapping')?.value.length
+              ? JSON.parse(this.form.get('action.addRecord.rawMapping')?.value)
+              : {},
         },
       }),
       // If subscribeToNotification enabled

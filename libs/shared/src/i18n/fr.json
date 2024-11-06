@@ -2478,6 +2478,9 @@
 						"fieldsForUpdate": {
 							"text": "Attacher le nouvel enregistrement à l'enregistrement actuel"
 						},
+						"help": {
+							"mapping": "Prémplissez les champs des nouveaux enregistrements en fournissant des valeurs statiques ou en les mappant depuis le contexte du tableau de bord à l'aide de la syntaxe {{context.<fieldName>}}."
+						},
 						"text": "Ajouter un enregistrement",
 						"tooltip": {
 							"fieldsForUpdate": "Le nouvel enregistrement sera attaché aux champs sélectionnés",
