@@ -1,6 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { ceil, floor, get, isArray, isNil, max, min, round } from 'lodash';
+import { ICON_EXTENSIONS } from '../../components/ui/core-grid/grid/grid.constants';
 import { Page } from '../../models/page.model';
+import { DatePipe } from '../../pipes/date/date.pipe';
+import { REFERENCE_DATA_END } from '../query-builder/query-builder.service';
 import {
   applyFilters,
   applyTableStyle,
@@ -11,9 +14,6 @@ import {
   replaceAggregationData,
   replacePages,
 } from './html-parser-helper';
-import { DatePipe } from '../../pipes/date/date.pipe';
-import { REFERENCE_DATA_END } from '../query-builder/query-builder.service';
-import { ICON_EXTENSIONS } from '../../components/ui/core-grid/grid/grid.constants';
 
 type Shape = 'circle' | 'square';
 
@@ -327,8 +327,6 @@ export class HtmlParserService {
         }
       );
 
-      const links = formattedHtml.match(`href=["]?[^" >]+`);
-
       // We check for LIST fields and duplicate their only element for each subfield
       const listFields = fields.filter((field: any) => field.kind === 'LIST');
       listFields.forEach((field: any) => {
@@ -353,30 +351,29 @@ export class HtmlParserService {
         }
       });
 
-      for (const field of fields) {
-        const toReadableObject = (obj: any): any => {
-          // If value exists keep checking
-          if (obj) {
-            if (typeof obj === 'object') {
-              // If array, return mapped elements
-              if (Array.isArray(obj)) {
-                return obj.map((o) => toReadableObject(o)).join('<br>');
-              } else {
-                // If object, return object keys and values as strings
-                return Object.keys(obj)
-                  .filter((key) => key !== '__typename')
-                  .map((key) => `${key}: ${obj[key]}`)
-                  .join(', ');
-              }
+      const toReadableObject = (obj: any): any => {
+        // If value exists keep checking
+        if (obj) {
+          if (typeof obj === 'object') {
+            // If array, return mapped elements
+            if (Array.isArray(obj)) {
+              return obj.map((o) => toReadableObject(o)).join('<br>');
             } else {
-              // If not an object, return string representation
-              return `${obj}`;
+              // If object, return object keys and values as strings
+              return Object.keys(obj)
+                .filter((key) => key !== '__typename')
+                .map((key) => `${key}: ${obj[key]}`)
+                .join(', ');
             }
+          } else {
+            // If not an object, return string representation
+            return `${obj}`;
           }
-          // Return default undefined/null value if no obj
-          return obj;
-        };
-
+        }
+        // Return default undefined/null value if no obj
+        return obj;
+      };
+      for (const field of fields) {
         let value = get(fieldsValue, field.name);
         // If object is of type resource, transform each associated record
         if (field.type === 'resources') {
@@ -441,7 +438,7 @@ export class HtmlParserService {
             'gi'
           );
           formattedHtml = formattedHtml.replace(srcRegex, `src=${value}`);
-
+          const links = formattedHtml.match(`href=["]?[^" >]+`);
           // Prevent URL from containing style
           links?.forEach((link) => {
             if (
@@ -661,7 +658,10 @@ export class HtmlParserService {
         options.aggregation
       );
     }
-    if (options.data) {
+    if (
+      options.data &&
+      Object.keys(options.data).some((key) => !isNil(options.data[key]))
+    ) {
       formattedHtml = this.replaceRecordFields(
         formattedHtml,
         options.data,

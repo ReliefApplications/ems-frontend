@@ -1,42 +1,44 @@
+import { Dialog } from '@angular/cdk/dialog';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, filter, map, pairwise } from 'rxjs';
-import localForage from 'localforage';
+import { ActivatedRoute, Router } from '@angular/router';
+import { cloneDeep } from '@apollo/client/utilities';
+import { TranslateService } from '@ngx-translate/core';
+import { ShadowDomService, SnackbarService } from '@oort-front/ui';
 import {
   CompositeFilterDescriptor,
   FilterDescriptor,
 } from '@progress/kendo-data-query';
-import { cloneDeep } from '@apollo/client/utilities';
+import { Apollo } from 'apollo-angular';
+import localForage from 'localforage';
 import {
-  isNil,
-  isEmpty,
-  get,
-  isEqual,
-  isObject,
+  every,
   forEach,
-  set,
+  get,
   has,
   isArray,
-  every,
+  isEmpty,
+  isEqual,
+  isNil,
+  isObject,
+  isString,
   mapValues,
   mergeWith,
+  set,
   uniq,
-  isString,
 } from 'lodash';
+import { BehaviorSubject, filter, lastValueFrom, map, pairwise } from 'rxjs';
+import { Model, SurveyModel } from 'survey-core';
+import { FilterPosition } from '../../components/dashboard-filter/enums/dashboard-filters.enum';
 import {
   Dashboard,
   EditDashboardMutationResponse,
 } from '../../models/dashboard.model';
-import { FilterPosition } from '../../components/dashboard-filter/enums/dashboard-filters.enum';
-import { Dialog } from '@angular/cdk/dialog';
-import { EDIT_DASHBOARD_FILTER } from './graphql/mutations';
-import { Apollo } from 'apollo-angular';
-import { ShadowDomService, SnackbarService } from '@oort-front/ui';
-import { TranslateService } from '@ngx-translate/core';
-import { Model, SurveyModel } from 'survey-core';
-import { FormBuilderService } from '../form-builder/form-builder.service';
-import { ApplicationService } from '../application/application.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Metadata } from '../../models/metadata.model';
 import { RecordQueryResponse } from '../../models/record.model';
+import { ApplicationService } from '../application/application.service';
+import { FormBuilderService } from '../form-builder/form-builder.service';
+import { QueryBuilderService } from '../query-builder/query-builder.service';
+import { EDIT_DASHBOARD_FILTER } from './graphql/mutations';
 import { GET_RECORD_BY_ID } from './graphql/queries';
 
 /**
@@ -134,6 +136,8 @@ export class ContextService {
   public context: {
     [key: string]: any;
   } | null = null;
+  /** Selected context id */
+  public contextId = '';
 
   /**
    * Dashboard context service
@@ -146,6 +150,7 @@ export class ContextService {
    * @param applicationService Shared application service
    * @param router Angular router
    * @param {ShadowDomService} shadowDomService Shadow dom service containing the current DOM host
+   * @param queryBuilder Query builder service
    */
   constructor(
     private dialog: Dialog,
@@ -155,7 +160,8 @@ export class ContextService {
     private formBuilderService: FormBuilderService,
     private applicationService: ApplicationService,
     private router: Router,
-    public shadowDomService: ShadowDomService
+    public shadowDomService: ShadowDomService,
+    private queryBuilder: QueryBuilderService
   ) {
     this.filterPosition$.subscribe(
       (value: { position: FilterPosition; dashboardId: string } | null) => {
@@ -544,9 +550,11 @@ export class ContextService {
       return;
     }
     if ('refData' in dashboard.page.context) {
+      this.contextId = dashboard.page.context.refData;
       // Returns context element
       callback({ element: contextEl });
     } else if ('resource' in dashboard.page.context) {
+      this.contextId = dashboard.page.context.resource;
       // Get record by id
       this.apollo
         .query<RecordQueryResponse>({
@@ -697,5 +705,48 @@ export class ContextService {
       });
     };
     return transformFilter(obj);
+  }
+
+  /**
+   * Get default resource meta data
+   *
+   * @param contextFields Selected context available fields
+   * @returns default resource meta data
+   */
+  private async getResourceMetaData(contextFields: string[]) {
+    const { data: resourceMetaDataResponse } = await lastValueFrom(
+      // Fetch resource metadata fields
+      this.queryBuilder.getQueryMetaData(this.contextId)
+    );
+    return (resourceMetaDataResponse.resource?.metadata || []).filter((md) =>
+      contextFields.includes(md.name)
+    );
+  }
+
+  /**
+   * Checks any context elements in the given html
+   * - If yes, get the context and metadata for current context fields and prepare the context values in the html to be replaced by default html parser logic
+   * - If no, return empty fields and fields metadata and default html
+   *
+   * @param html HTML where to clean context values
+   * @returns fields, fields metadata and clean html value ready to be replaced in the given html
+   */
+  public async setContextDataForHtml(html: string) {
+    const containsContext = /{{(.*?)\.context\.(.*?)}}/gi.test(html);
+    let contextFields: Metadata[] = [];
+    let contextData: any = {};
+    if (containsContext) {
+      contextData = this.context;
+      contextFields = (await this.getResourceMetaData(
+        Object.keys(this.context || {})
+      )) as Metadata[];
+      let matches = new RegExp(/{{.*?(\.context\.).*?}}/, 'gi').exec(html);
+      do {
+        matches = new RegExp(/{{.*?(\.context\.).*?}}/, 'gi').exec(html);
+        const cleanData = matches?.at(0)?.replace(matches.at(1) as string, '.');
+        html = html.replace(matches?.at(0) as string, cleanData as string);
+      } while (!isNil(matches));
+    }
+    return { contextFields, contextData, cleanHTML: html };
   }
 }

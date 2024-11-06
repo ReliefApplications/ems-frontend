@@ -24,10 +24,12 @@ import {
   from,
   takeUntil,
 } from 'rxjs';
+import { authType } from '../../../models/api-configuration.model';
 import { ReferenceData } from '../../../models/reference-data.model';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { ContextService } from '../../../services/context/context.service';
+import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
 import { GridService } from '../../../services/grid/grid.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -39,8 +41,6 @@ import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
-import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
-import { authType } from '../../../models/api-configuration.model';
 
 /**
  * Text widget component using Tinymce.
@@ -273,7 +273,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
   /**
    * Set widget html.
    */
-  private setHtml() {
+  private async setHtml() {
     const callback = () => {
       if (this.timeoutListener) {
         clearTimeout(this.timeoutListener);
@@ -387,17 +387,19 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
           callback();
         });
     } else {
+      const { contextFields, contextData, cleanHTML } =
+        await this.contextService.setContextDataForHtml(this.settings.text);
       from(Promise.all([this.getAggregationsData()]))
         .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
-          this.formattedHtml = this.dataTemplateService.renderHtml(
-            this.settings.text,
-            {
-              data: this.fieldsValue,
-              aggregation: this.aggregations,
-              fields: this.fields,
-            }
-          );
+          this.formattedHtml = this.dataTemplateService.renderHtml(cleanHTML, {
+            data: {
+              ...(this.fieldsValue || {}),
+              ...contextData,
+            },
+            aggregation: this.aggregations,
+            fields: [...this.fields, ...contextFields],
+          });
           this.loading = false;
           callback();
         });

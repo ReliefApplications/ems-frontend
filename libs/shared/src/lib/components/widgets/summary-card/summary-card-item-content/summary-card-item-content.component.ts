@@ -15,13 +15,14 @@ import {
 import { SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { takeUntil } from 'rxjs';
+import { ContextService } from '../../../../services/context/context.service';
+import { DashboardAutomationService } from '../../../../services/dashboard-automation/dashboard-automation.service';
 import { DataTemplateService } from '../../../../services/data-template/data-template.service';
 import { WidgetService } from '../../../../services/widget/widget.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { HtmlWidgetContentComponent } from '../../common/html-widget-content/html-widget-content.component';
 import { SummaryCardFormT } from '../../summary-card-settings/summary-card-settings.component';
 import { SummaryCardItemComponent } from '../summary-card-item/summary-card-item.component';
-import { DashboardAutomationService } from '../../../../services/dashboard-automation/dashboard-automation.service';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -92,6 +93,7 @@ export class SummaryCardItemContentComponent
    * @param router Angular router
    * @param widgetService Shared widget service
    * @param dashboardAutomationService Dashboard automation service (Optional, so not active while editing widget)
+   * @param contextService Context service
    */
   constructor(
     private dataTemplateService: DataTemplateService,
@@ -103,7 +105,8 @@ export class SummaryCardItemContentComponent
     private widgetService: WidgetService,
     @Optional()
     @SkipSelf()
-    private dashboardAutomationService: DashboardAutomationService
+    private dashboardAutomationService: DashboardAutomationService,
+    private contextService: ContextService
   ) {
     super();
   }
@@ -122,15 +125,20 @@ export class SummaryCardItemContentComponent
   /**
    * Set widget html.
    */
-  private setHtml() {
+  private async setHtml() {
     this.formattedStyle = this.dataTemplateService.renderStyle(
       this.wholeCardStyles,
       this.fieldsValue,
       this.styles
     );
-    this.formattedHtml = this.dataTemplateService.renderHtml(this.html, {
-      fields: this.fields,
-      data: this.fieldsValue,
+    const { contextFields, contextData, cleanHTML } =
+      await this.contextService.setContextDataForHtml(this.html);
+    this.formattedHtml = this.dataTemplateService.renderHtml(cleanHTML, {
+      fields: [...this.fields, ...contextFields],
+      data: {
+        ...(this.fieldsValue || {}),
+        ...(contextData && contextData),
+      },
       styles: this.styles,
     });
     if (this.timeoutListener) {
