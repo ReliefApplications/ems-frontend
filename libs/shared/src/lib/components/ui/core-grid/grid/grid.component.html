@@ -839,7 +839,10 @@
                 [uiMenuTriggerFor]="fileMenu"
                 (click)="$event.stopPropagation()"
               >
-                {{ 'components.widget.grid.files' | translate }}
+                {{
+                  'components.widget.grid.files'
+                    | translate : { number: dataItem[field.name].length }
+                }}
               </button>
               <ui-menu #fileMenu [closeOnClick]="false">
                 <button
