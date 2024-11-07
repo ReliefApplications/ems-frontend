@@ -35,7 +35,7 @@
         >
           <div uiFormFieldDirective [defaultMargin]="false" class="flex-1">
             <label>{{ 'common.field.one' | translate }}</label>
-            <ui-select-menu formControlName="name">
+            <ui-select-menu [filterable]="true" formControlName="name">
               <ui-select-option
                 *ngFor="let field of filteredFields(element.value.name)"
                 [value]="field.name"
