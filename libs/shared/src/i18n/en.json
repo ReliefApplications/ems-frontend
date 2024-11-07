@@ -1580,6 +1580,7 @@
 						"title": "Select export format"
 					}
 				},
+				"files": "Open file list",
 				"filter": {
 					"toggle": "Toggle visibility of filter"
 				},
