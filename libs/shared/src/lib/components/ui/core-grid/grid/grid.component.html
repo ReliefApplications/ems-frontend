@@ -809,21 +809,61 @@
         [minResizableWidth]="50"
         class="no-padding"
       >
-        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <ng-template
+          kendoGridCellTemplate
+          let-dataItem="dataItem"
+          let-idx="rowIndex"
+        >
           <div class="textbox-container" [style]="dataItem.style[field.name]">
-            <button
-              kendoButton
-              *ngFor="let file of dataItem[field.name]"
-              [look]="'flat'"
-              [uiTooltip]="file.name"
-              (click)="onDownload(file)"
-              class="w-full justify-start overflow-hidden text-overflow-ellipsis"
-            >
-              <span [class]="dataItem.icon[file.name]"></span>
-              <span class="textbox">{{
-                dataItem.text[field.name][file.name]
-              }}</span>
-            </button>
+            <!-- Single file -->
+            <ng-container *ngIf="dataItem[field.name]?.length === 1">
+              <button
+                kendoButton
+                *ngFor="let file of dataItem[field.name]"
+                [look]="'flat'"
+                [uiTooltip]="file.name"
+                (click)="$event.stopPropagation(); onDownload(file)"
+                class="w-full !justify-start overflow-hidden text-ellipsis"
+              >
+                <span [class]="dataItem.icon[file.name]"></span>
+                <span class="textbox">{{
+                  dataItem.text[field.name][file.name] || file.name
+                }}</span>
+              </button>
+            </ng-container>
+            <!-- Multiple files -->
+            <ng-container *ngIf="dataItem[field.name]?.length > 1">
+              <button
+                kendoButton
+                class="w-full text-center"
+                icon="file"
+                [look]="'flat'"
+                [uiMenuTriggerFor]="fileMenu"
+                (click)="$event.stopPropagation()"
+              >
+                {{
+                  'components.widget.grid.files'
+                    | translate : { number: dataItem[field.name].length }
+                }}
+              </button>
+              <ui-menu #fileMenu [closeOnClick]="false">
+                <button
+                  kendoButton
+                  *ngFor="let file of dataItem[field.name]"
+                  [look]="'flat'"
+                  [uiTooltip]="file.name"
+                  (click)="onDownload(file)"
+                  class="w-full justify-start overflow-hidden text-overflow-ellipsis"
+                >
+                  <p style="text-wrap: auto" class="max-w-full">
+                    <span [class]="dataItem.icon[file.name]"></span>
+                    <span class="textbox">{{
+                      dataItem.text[field.name][file.name] || file.name
+                    }}</span>
+                  </p>
+                </button>
+              </ui-menu>
+            </ng-container>
           </div>
         </ng-template>
       </kendo-grid-column>

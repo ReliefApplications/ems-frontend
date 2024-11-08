@@ -1649,6 +1649,7 @@
 						"title": "Select export format"
 					}
 				},
+				"files": "{{number}} files",
 				"filter": {
 					"toggle": "Toggle visibility of filter"
 				},

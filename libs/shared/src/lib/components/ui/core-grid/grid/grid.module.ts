@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   IconModule,
+  MenuModule,
   TextareaModule,
   TooltipModule,
   ButtonModule as uiButtonModule,
@@ -33,6 +34,7 @@ import { StripHtmlPipe } from '../../../../pipes/strip-html/strip-html.pipe';
     ReactiveFormsModule,
     IconModule,
     TooltipModule,
+    MenuModule,
     // === KENDO ===
     KendoGridModule,
     ButtonModule,

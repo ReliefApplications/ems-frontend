@@ -1649,6 +1649,7 @@
 						"title": "Sélectionner le format d'export"
 					}
 				},
+				"files": "{{number}} fichiers",
 				"filter": {
 					"toggle": "Activer la visibilité du filtre"
 				},
