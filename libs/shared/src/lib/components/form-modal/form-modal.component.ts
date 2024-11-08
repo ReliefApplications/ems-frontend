@@ -11,7 +11,10 @@ import {
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { GET_RECORD_BY_ID, GET_FORM_BY_ID } from './graphql/queries';
 import { Form, FormQueryResponse } from '../../models/form.model';
-import { ConfirmService } from '../../services/confirm/confirm.service';
+import {
+  ConfirmDialogData,
+  ConfirmService,
+} from '../../services/confirm/confirm.service';
 import { SurveyModel } from 'survey-core';
 import { SurveyModule } from 'survey-angular-ui';
 import {
@@ -52,6 +55,7 @@ interface DialogData {
   prefillData?: any;
   askForConfirm?: boolean;
   recordData?: any;
+  actionButtonCtx?: boolean;
 }
 /**
  * Defines the default Dialog data
@@ -147,6 +151,61 @@ export class FormModalComponent
     protected ngZone: NgZone
   ) {
     super();
+  }
+
+  /**
+   * Create confirmation message on save edition based on action button or default context
+   *
+   * @returns Confirmation message for form record edit for each context
+   */
+  private getConfirmMessageByContext(): ConfirmDialogData {
+    const rowsSelected = Array.isArray(this.data.recordId)
+      ? this.data.recordId.length
+      : 1;
+    let confirmMessage: ConfirmDialogData = {
+      title: this.translate.instant('common.updateObject', {
+        name:
+          rowsSelected > 1
+            ? this.translate.instant('common.row.few')
+            : this.translate.instant('common.row.one'),
+      }),
+      content: this.translate.instant(
+        'components.form.updateRow.confirmationMessage',
+        {
+          quantity: rowsSelected,
+          rowText:
+            rowsSelected > 1
+              ? this.translate.instant('common.row.few')
+              : this.translate.instant('common.row.one'),
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.confirm'),
+      confirmVariant: 'primary',
+    };
+    if (this.data.actionButtonCtx) {
+      confirmMessage = {
+        title: this.translate.instant(
+          this.data.recordId ? 'common.updateObject' : 'common.uploadObject',
+          {
+            name:
+              this.translate.instant('common.record.one') +
+              ' ' +
+              this.form?.name,
+          }
+        ),
+        content: this.translate.instant(
+          'components.form.update.confirmMessage',
+          {
+            action: this.translate.instant(
+              this.data.recordId ? 'common.update' : 'common.create'
+            ),
+          }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmVariant: 'primary',
+      };
+    }
+    return confirmMessage;
   }
 
   async ngOnInit(): Promise<void> {
@@ -285,34 +344,13 @@ export class FormModalComponent
    */
   public onComplete = (survey: any) => {
     this.survey?.clear(false);
-    const rowsSelected = Array.isArray(this.data.recordId)
-      ? this.data.recordId.length
-      : 1;
 
     /** we can send to backend empty data if they are not required */
     this.formHelpersService.setEmptyQuestions(survey);
     // Displays confirmation modal.
     if (this.data.askForConfirm) {
-      const dialogRef = this.confirmService.openConfirmModal({
-        title: this.translate.instant('common.updateObject', {
-          name:
-            rowsSelected > 1
-              ? this.translate.instant('common.row.few')
-              : this.translate.instant('common.row.one'),
-        }),
-        content: this.translate.instant(
-          'components.form.updateRow.confirmationMessage',
-          {
-            quantity: rowsSelected,
-            rowText:
-              rowsSelected > 1
-                ? this.translate.instant('common.row.few')
-                : this.translate.instant('common.row.one'),
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmVariant: 'primary',
-      });
+      const confirmMessage = this.getConfirmMessageByContext();
+      const dialogRef = this.confirmService.openConfirmModal(confirmMessage);
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))
         .subscribe(async (value: any) => {
@@ -386,6 +424,11 @@ export class FormModalComponent
                   template: this.data.template,
                   data: data?.addRecord,
                 } as any);
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.form.display.submissionMessage'
+                  )
+                );
               });
             }
           },

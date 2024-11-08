@@ -14,18 +14,19 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DialogRef, DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
 import {
-  ButtonActionT,
+  ActionButton,
   UnsubscribeComponent,
   ApplicationService,
   Role,
   EmptyModule,
+  Dashboard,
 } from '@oort-front/shared';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 
 /** Component for editing dashboard action buttons */
 @Component({
-  selector: 'app-edit-button-actions-modal',
+  selector: 'app-edit-action-buttons-modal',
   standalone: true,
   imports: [
     CommonModule,
@@ -42,17 +43,17 @@ import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
     DragDropModule,
     EmptyModule,
   ],
-  templateUrl: './edit-button-actions-modal.component.html',
-  styleUrls: ['./edit-button-actions-modal.component.scss'],
+  templateUrl: './edit-action-buttons-modal.component.html',
+  styleUrls: ['./edit-action-buttons-modal.component.scss'],
 })
-export class EditButtonActionsModalComponent
+export class EditActionButtonsModalComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
-  /** List of button actions from dashboard */
-  public buttonActions: ButtonActionT[] = [];
+  /** List of action buttons from dashboard */
+  public actionButtons: ActionButton[] = [];
   /** Behavior subject to track change in action buttons */
-  public datasource = new BehaviorSubject(this.buttonActions);
+  public datasource = new BehaviorSubject(this.actionButtons);
   /** Current search string */
   public searchTerm = '';
   /** Columns to display */
@@ -63,14 +64,15 @@ export class EditButtonActionsModalComponent
    *
    * @param dialogRef dialog reference
    * @param data data passed to the modal
-   * @param data.buttonActions list of button actions
+   * @param data.dashboard Current dashboard
    * @param dialog dialog module for button edition / creation / deletion
    * @param translateService used to translate modal text
    * @param applicationService shared application service
    */
   constructor(
-    public dialogRef: DialogRef<ButtonActionT[]>,
-    @Inject(DIALOG_DATA) private data: { buttonActions: ButtonActionT[] },
+    public dialogRef: DialogRef<ActionButton[]>,
+    @Inject(DIALOG_DATA)
+    private data: { dashboard: Dashboard },
     public dialog: Dialog,
     public translateService: TranslateService,
     public applicationService: ApplicationService
@@ -79,8 +81,8 @@ export class EditButtonActionsModalComponent
   }
 
   ngOnInit(): void {
-    if (this.data && this.data.buttonActions) {
-      this.buttonActions = [...this.data.buttonActions];
+    if (this.data && this.data.dashboard?.buttons) {
+      this.actionButtons = [...this.data.dashboard.buttons];
       this.updateTable();
     }
   }
@@ -89,14 +91,17 @@ export class EditButtonActionsModalComponent
     super.ngOnDestroy();
   }
 
-  /** Open modal to add new button action */
-  public async onAddButtonAction() {
-    const { EditButtonActionModalComponent } = await import(
-      '../edit-button-action-modal/edit-button-action-modal.component'
+  /** Open modal to add new action button */
+  public async onAddActionButton() {
+    const { EditActionButtonModalComponent } = await import(
+      '../edit-action-button-modal/edit-action-button-modal.component'
     );
-    const dialogRef = this.dialog.open<ButtonActionT | undefined>(
-      EditButtonActionModalComponent,
+    const dialogRef = this.dialog.open<ActionButton | undefined>(
+      EditActionButtonModalComponent,
       {
+        data: {
+          dashboard: this.data.dashboard,
+        },
         disableClose: true,
       }
     );
@@ -105,54 +110,60 @@ export class EditButtonActionsModalComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(async (button) => {
         if (!button) return;
-        this.buttonActions.push(button);
+        this.actionButtons.push(button);
         this.searchTerm = '';
         this.updateTable();
       });
   }
 
   /**
-   * Open modal to edit button action
+   * Open modal to edit action button
    *
-   * @param buttonAction Button action to edit
+   * @param actionButton action button to edit
    */
-  public async onEditButtonAction(buttonAction: ButtonActionT) {
-    const { EditButtonActionModalComponent } = await import(
-      '../edit-button-action-modal/edit-button-action-modal.component'
+  public async onEditActionButton(actionButton: ActionButton) {
+    const { EditActionButtonModalComponent } = await import(
+      '../edit-action-button-modal/edit-action-button-modal.component'
     );
-    const dialogRef = this.dialog.open<ButtonActionT | undefined>(
-      EditButtonActionModalComponent,
-      { data: buttonAction, disableClose: true }
+    const dialogRef = this.dialog.open<ActionButton | undefined>(
+      EditActionButtonModalComponent,
+      {
+        data: {
+          button: actionButton,
+          dashboard: this.data.dashboard,
+        },
+        disableClose: true,
+      }
     );
 
     dialogRef.closed
       .pipe(takeUntil(this.destroy$))
       .subscribe(async (button) => {
         if (!button) return;
-        const index = this.buttonActions.indexOf(buttonAction);
+        const index = this.actionButtons.indexOf(actionButton);
         if (index > -1) {
-          this.buttonActions[index] = button;
+          this.actionButtons[index] = button;
           this.updateTable();
         }
       });
   }
 
   /**
-   * Removes button action
+   * Removes action button
    *
-   * @param buttonAction button Action
+   * @param actionButton action button
    */
-  public async onDeleteButtonAction(buttonAction: ButtonActionT) {
+  public async onDeleteActionButton(actionButton: ActionButton) {
     const { ConfirmModalComponent } = await import('@oort-front/shared');
     const dialogRef = this.dialog.open(ConfirmModalComponent, {
       data: {
         title: this.translateService.instant('common.deleteObject', {
           name: this.translateService.instant(
-            'models.dashboard.buttonActions.one'
+            'models.dashboard.actionButtons.one'
           ),
         }),
         content: this.translateService.instant(
-          'models.dashboard.buttonActions.confirmDelete'
+          'models.dashboard.actionButtons.confirmDelete'
         ),
         confirmText: this.translateService.instant(
           'components.confirmModal.delete'
@@ -166,9 +177,9 @@ export class EditButtonActionsModalComponent
 
     dialogRef.closed.subscribe((value: any) => {
       if (value) {
-        const index = this.buttonActions.indexOf(buttonAction);
+        const index = this.actionButtons.indexOf(actionButton);
         if (index > -1) {
-          this.buttonActions.splice(index, 1);
+          this.actionButtons.splice(index, 1);
           this.searchTerm = '';
           this.updateTable();
         }
@@ -197,7 +208,7 @@ export class EditButtonActionsModalComponent
   drop(event: any) {
     if (this.searchTerm) return;
     moveItemInArray(
-      this.buttonActions,
+      this.actionButtons,
       event.previousIndex,
       event.currentIndex
     );
@@ -206,22 +217,22 @@ export class EditButtonActionsModalComponent
 
   /** On click on the save button close the dialog with the form value */
   public onSubmit(): void {
-    this.dialogRef.close(this.buttonActions);
+    this.dialogRef.close(this.actionButtons);
   }
 
   /**
-   * Updates the datasource to reflect the state of the buttonActions and to apply the filter
+   * Updates the datasource to reflect the state of the action buttons and to apply the filter
    */
   public updateTable() {
-    let buttonActions: ButtonActionT[];
+    let actionButtons: ActionButton[];
 
     if (this.searchTerm !== '') {
-      buttonActions = this.buttonActions.filter((action) =>
+      actionButtons = this.actionButtons.filter((action) =>
         action.text.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
     } else {
-      buttonActions = this.buttonActions;
+      actionButtons = this.actionButtons;
     }
-    this.datasource.next([...buttonActions]);
+    this.datasource.next([...actionButtons]);
   }
 }

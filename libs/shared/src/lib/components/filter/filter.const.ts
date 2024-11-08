@@ -70,6 +70,10 @@ export const FILTER_OPERATORS = [
     value: 'notin',
     label: 'kendo.grid.filterIsNotInOperator',
   },
+  {
+    value: 'inthelast',
+    label: 'kendo.grid.filterIsWithinTheLast',
+  },
 ];
 
 /**
@@ -179,12 +183,32 @@ export const FIELD_TYPES = [
   {
     editor: 'date',
     defaultOperator: 'eq',
-    operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull'],
+    operators: [
+      'eq',
+      'neq',
+      'gte',
+      'gt',
+      'lte',
+      'lt',
+      'isnull',
+      'isnotnull',
+      'inthelast',
+    ],
   },
   {
     editor: 'datetime',
     defaultOperator: 'eq',
-    operators: ['eq', 'neq', 'gte', 'gt', 'lte', 'lt', 'isnull', 'isnotnull'],
+    operators: [
+      'eq',
+      'neq',
+      'gte',
+      'gt',
+      'lte',
+      'lt',
+      'isnull',
+      'isnotnull',
+      'inthelast',
+    ],
   },
   {
     editor: 'attribute',

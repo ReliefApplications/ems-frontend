@@ -1,13 +1,13 @@
 <ui-dialog size="medium" [closable]="true">
   <ng-container ngProjectAs="header">
     <h3 class="font-semibold">
-      {{ 'models.dashboard.buttonActions.edit.few' | translate }}
+      {{ 'models.dashboard.actionButtons.edit.few' | translate }}
     </h3>
   </ng-container>
 
   <ng-container
     ngProjectAs="content"
-    *ngIf="buttonActions.length; else emptyTmpl"
+    *ngIf="actionButtons.length; else emptyTmpl"
   >
     <div class="flex justify-between mb-4">
       <div uiFormFieldDirective [defaultMargin]="false" class="p-0">
@@ -64,7 +64,7 @@
 
             <ng-container cdkColumnDef="roles">
               <th uiCellHeader *cdkHeaderCellDef>
-                {{ 'models.dashboard.buttonActions.visibleTo' | translate }}
+                {{ 'models.dashboard.actionButtons.visibleTo' | translate }}
               </th>
               <td
                 uiCell
@@ -91,12 +91,12 @@
                 >
                 </ui-button>
                 <ui-menu #menu>
-                  <button uiMenuItem (click)="onEditButtonAction(element)">
+                  <button uiMenuItem (click)="onEditActionButton(element)">
                     <ui-icon icon="edit" variant="grey"></ui-icon>
                     {{ 'common.edit' | translate }}
                   </button>
                   <ui-divider class="py-1"></ui-divider>
-                  <button uiMenuItem (click)="onDeleteButtonAction(element)">
+                  <button uiMenuItem (click)="onDeleteActionButton(element)">
                     <ui-icon icon="delete" variant="danger"></ui-icon>
                     {{ 'common.delete' | translate }}
                   </button>
@@ -121,15 +121,15 @@
       category="secondary"
       variant="primary"
       icon="add"
-      (click)="onAddButtonAction()"
+      (click)="onAddActionButton()"
     >
-      {{ 'models.dashboard.buttonActions.create' | translate }}
+      {{ 'models.dashboard.actionButtons.create' | translate }}
     </ui-button>
   </ng-template>
   <ng-template #emptyTmpl>
     <!-- Empty indicator -->
     <shared-empty
-      [title]="'models.dashboard.buttonActions.none' | translate"
+      [title]="'models.dashboard.actionButtons.none' | translate"
       [footerTemplate]="newActionButtonTmpl"
     ></shared-empty>
   </ng-template>

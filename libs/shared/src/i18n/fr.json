@@ -70,6 +70,7 @@
 			"one": "Enfant"
 		},
 		"clear": "Annuler",
+		"clone": "Cloner",
 		"close": "Fermer",
 		"column": {
 			"few": "Colonnes",
@@ -151,6 +152,11 @@
 			"none": "Aucune notification",
 			"one": "Notification"
 		},
+		"customTemplate": {
+			"few": "Modèles personnalisés",
+			"none": "Aucun modèle personnalisé",
+			"one": "Modèle personnalisé"
+		},
 		"dashboard": {
 			"few": "Tableaux de bord",
 			"none": "Aucun tableau de bord",
@@ -172,6 +178,10 @@
 		"duplicate": "Dupliquer",
 		"edit": "Modifier",
 		"email": {
+			"customTemplate": "Modèle personnalisé",
+			"error": {
+				"duplicateName": "Le titre existe déjà !"
+			},
 			"few": "Emails",
 			"none": "Pas d'email",
 			"notification": {
@@ -272,10 +282,13 @@
 				},
 				"error": "Un problème est survenu lors de l'envoi de l'e-mail",
 				"errors": {
+					"customTitleExist": "Le titre du modèle personnalisé existe déjà.",
 					"noBody": "Le corps doit continuer!",
+					"noCustomTitle": "Le titre du modèle personnalisé est requis pour continuer!",
 					"noDistributionList": "Un problème est survenu lors de l'envoi de l'e-mail: aucune liste de distribution détectée",
 					"noSubject": "Le sujet doit continuer!",
-					"noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté"
+					"noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté",
+					"preview": "Erreur lors de la génération de l'e-mail"
 				},
 				"existing": "Ou utilisez l'existant",
 				"field": {
@@ -299,6 +312,9 @@
 					"removeTooltip": "Supprimer En-tête Logo",
 					"style": "En-tête Style"
 				},
+				"preview": {
+					"processing": "Préparation de l'e-mail..."
+				},
 				"processing": "Envoi en cours...",
 				"ready": "E-mail prêt",
 				"sent": "E-mail envoyé",
@@ -307,6 +323,7 @@
 					"text": "Text Color"
 				},
 				"subject": {
+					"customLayoutTitle": "Titre du modèle personnalisé*",
 					"textTitle": "Sujet Text*",
 					"title": "Sujet"
 				},
@@ -364,6 +381,7 @@
 			"objectNotInvited": "L'invitation vers {{name}} a échoué.",
 			"objectNotReordered": "{{type}} non réorganisé. {{error}}",
 			"objectNotRestored": "{{value}} non restauré. {{error}}",
+			"objectNotSaved": "{{type}} non enregistré. \n{{erreur}}",
 			"objectNotUpdated": "L'objet de type {{type}} n'a pas pu être modifié. {{error}}",
 			"objectReordered": "L'objet de type {{type}} a été réorganisé.",
 			"objectRestored": "{{value}} restauré.",
@@ -806,6 +824,7 @@
 				"update": "Éditer la notification"
 			},
 			"errors": {
+				"duplicate": "L'e-mail existe déjà dans la liste de distribution",
 				"email": "Veuillez entrer une adresse email valide",
 				"schedule": "Veuillez entrer une expression cron valide"
 			},
@@ -833,15 +852,29 @@
 			}
 		},
 		"email": {
+			"action": {
+				"header": "Actes"
+			},
 			"alert": {
+				"dlPreview": "Tous les e-mails affichés dans ce tableau ci-dessous seront utilisés pour créer la liste de distribution",
+				"individualEmailsInfo": "Sélectionnez les champs de courrier électronique que vous souhaitez utiliser pour envoyer des courriers électroniques spécifiques à un enregistrement.",
 				"invalidFields": "Les champs suivants ne peuvent pas être sélectionnés: <strong>{{fields}}</strong> car ils sont du type <strong>{{types}}</strong> et ne peut pas être correctement affiché dans le tableau de ce formulaire.",
+				"noResource": "Sélectionnez une ressource à l'aide de la liste déroulante pour afficher l'assistant de filtrage de liste de distribution",
 				"noResourceFields": "La ressource sélectionnée ne contient aucun champ",
 				"noSelectedFields": "Veuillez sélectionner au moins 1 champ pour sauvegarder ce jeu de données",
-				"tooManyRecords": "Pour le moment, nous sommes limités à récupérer seulement 50 enregistrements. Sur la base des conditions de filtre fournies, il existe <strong>{{totalRecords}}</strong> enregistrements correspondants. Veuillez ajouter des filtres supplémentaires pour que le nombre d'enregistrements soit inférieur ou égal à 50."
+				"selectChildFields": "Vous avez sélectionné un champ Objet/liste. Sélectionnez au moins un champ enfant pour continuer.",
+				"selectedNonEmailFields": "Le champ sélectionné n'est pas configuré comme champ de courrier électronique. Voulez-vous continuer ?",
+				"subscribeExists": "Erreur! \n{{message}}",
+				"subscribeFailed": "Oups!... Une erreur s'est produite lors de l'abonnement. \n{{Message d'erreur}}",
+				"subscribeSuccess": "Succès! \nAbonné à la notification par e-mail: {{email}}.",
+				"tooManyRecords": "Pour le moment, nous sommes limités à récupérer seulement 50 enregistrements. \nSur la base des conditions de filtre fournies, il existe <strong>{{totalRecords}></strong> enregistrements correspondants. \nVeuillez ajouter des filtres supplémentaires pour que le nombre d'enregistrements soit inférieur ou égal à 50.",
+				"unsubscribeFailed": "Oups!... Une erreur s'est produite lors de la désinscription. \n{{Message d'erreur}}",
+				"unsubscribeSuccess": "Succès! \n{{message}}"
 			},
 			"back": "Retour à la liste",
 			"distributionList": {
 				"alert": {
+					"allSeparate": "La liste de distribution sera composée de tous les e-mails des utilisateurs obtenus en envoyant un e-mail séparé. Si vous souhaitez envoyer à une liste d'utilisateurs, veuillez créer un bloc normal à l'étape 2.",
 					"and": "et",
 					"noEmail": "L'ensemble de données sélectionné ne contient pas d'adresses e-mail valides",
 					"partOne": "Pour continuer, veuillez saisir",
@@ -850,8 +883,13 @@
 				},
 				"bcc": "CCI",
 				"cc": "CC",
+				"create": "Créer une liste de distribution",
 				"createNew": "Ou créer un nouveau",
 				"duplicate": "Le nom existe déjà",
+				"emailInput": "Saisie manuelle des e-mails",
+				"errors": {
+					"duplicateName": "Ce nom existe déjà ! \nVeuillez saisir un nom unique."
+				},
 				"import": {
 					"download": "Télécharger le modèle",
 					"import": "Liste de distribution d'importation",
@@ -862,6 +900,10 @@
 				"list": "Liste de distribution",
 				"name": "Nom de la liste de distribution",
 				"to": "À"
+			},
+			"error": {
+				"invalidDataset": "Les ensembles de données suivants ne sont pas valides: {badDatasets}",
+				"invalidToValue": "Liste des destinataires non valide, veuillez corriger!"
 			},
 			"image": {
 				"rectangleValidation": "Veuillez télécharger une image avec un rapport hauteur/largeur plus rectangulaire, similaire à 960x80.",
@@ -879,9 +921,25 @@
 				"more": "Afficher {{length}} e-mails restants...",
 				"subject": "Sujet:"
 			},
+			"restrictSubscription": {
+				"description": "Limite la possibilité pour les utilisateurs de s'abonner à cette notification par e-mail",
+				"title": "Restreindre l'abonnement des utilisateurs"
+			},
 			"saveAsDraft": "Enregistrer comme brouillon",
+			"subscribe": {
+				"error": {
+					"restricted": "Abonnement restreint"
+				},
+				"restricted": {
+					"title": "Abonnement restreint pour cette notification par e-mail"
+				},
+				"title": "S'abonner"
+			},
 			"tooltip": {
 				"reverseDate": "AAAA/MM/JJ"
+			},
+			"unsubscribe": {
+				"title": "Se désabonner"
 			}
 		},
 		"emailBuilder": {
@@ -926,7 +984,7 @@
 				}
 			},
 			"delete": {
-				"confirmationMessage": "Voulez-vous vraiment supprimer le formulaire {{name}} ?"
+				"confirmationMessage": "Voulez-vous vraiment supprimer le formulaire {{name}}?"
 			},
 			"deleteRow": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer {{quantity}} {{rowText}}?"
@@ -955,7 +1013,7 @@
 			},
 			"layout": {
 				"delete": {
-					"confirmationMessage": "Voulez-vous vraiment supprimer la mise en page {{name}} ?"
+					"confirmationMessage": "Voulez-vous vraiment supprimer la mise en page {{name}}?"
 				},
 				"errors": {
 					"invalid": "Le formulaire est invalide"
@@ -975,6 +1033,7 @@
 				"modifiedBy": "Modifié pour la dernière fois par {{user}} le {{date}}"
 			},
 			"update": {
+				"confirmMessage": "************************?",
 				"exit": "Quitter sans sauvegarder les changements",
 				"exitMessage": "Il y a des changements non sauvegardés dans votre formulaire, voulez-vous vraiment quitter cette page ?"
 			},
@@ -999,7 +1058,7 @@
 				},
 				"resource": {
 					"availableGridFields": "Champs de grille disponibles",
-					"resourceSelectText": "Vous devez d’abord sélectionner une ressource avant de définir des filtres"
+					"resourceSelectText": "Vous devez d'abord sélectionner une ressource avant de définir des filtres"
 				}
 			},
 			"saveSurvey": "Sauvegarde du questionnaire"
@@ -1131,7 +1190,7 @@
 		},
 		"pullJob": {
 			"delete": {
-				"confirmationMessage": "Voulez-vous vraiment supprimer la tâche {{name}} ?",
+				"confirmationMessage": "Voulez-vous vraiment supprimer la tâche {{name}}?",
 				"title": "Supprimer la tâche"
 			},
 			"modal": {
@@ -1164,6 +1223,8 @@
 				"title": "Bloc"
 			},
 			"dataset": {
+				"dataType": "Type de données",
+				"referenceData": "Reference Data",
 				"select": "Sélectionner un jeu de données",
 				"title": "Ressource"
 			},
@@ -1186,6 +1247,7 @@
 			"filter": {
 				"and": "Et",
 				"apply": "Appliquer le filtre",
+				"applyField": "Définir les champs",
 				"field": "Champ",
 				"logic": "Logique de filtre",
 				"new": "Ajouter un nouveau filtre",
@@ -1206,6 +1268,9 @@
 			},
 			"preview": {
 				"title": "Aperçu"
+			},
+			"sendSeparate": {
+				"title": "Envoyer des champs de courrier électronique séparés"
 			},
 			"sort": {
 				"ascending": "Croissant",
@@ -1432,7 +1497,11 @@
 				"emailError": "Tapez les e-mails ici et appuyez sur ENTRÉE pour les ajouter à la liste de distribution",
 				"label": "Nom de la liste de distribution*",
 				"noPreviewData": "L'ensemble de données sélectionné ne contient aucune donnée d'aperçu",
+				"sendseparate": {
+					"list": "Envoyer des e-mails à des destinataires distincts"
+				},
 				"separateEmail": "Envoyer un e-mail séparé",
+				"subscriptionList": "Liste d'abonnement",
 				"to": "À"
 			}
 		},
@@ -1991,6 +2060,7 @@
 							"title": "Contrôles de la carte"
 						},
 						"geographicExtent": "Type d'étendue",
+						"geographicExtentPadding": "Marge ( en degrés )",
 						"geographicExtentValue": "Valeur de l'étendue",
 						"latitude": "Latitude du centre de la carte",
 						"longitude": "Longitude du centre de la carte",
@@ -2041,6 +2111,7 @@
 						"geographicExtent": {
 							"add": "Ajouter un nouveau type d'étendue",
 							"admin0": "Utiliez le code iso2, le code iso3, ou le nom du pays",
+							"padding": "Vous pouvez choisir d'ajouter un espace supplémentaire en degrés autour de l'étendue géographique lors du zoom automatique, pour ajouter du contexte.",
 							"region": "Utilisez le nom de région",
 							"remove": "Supprimer le type d'étendue",
 							"value": "Vous pouvez entrer une valeur statique, ou utiliser les notations {{context}} ou {{filter}} pour injecter la valeur"
@@ -2399,8 +2470,40 @@
 			"type": "Type"
 		},
 		"dashboard": {
-			"activateFiltering": "Activer le filtre",
-			"buttonActions": {
+			"actionButtons": {
+				"action": "Action",
+				"actions": {
+					"addRecord": {
+						"edition": "Éditer l'enregistrement actuel",
+						"fieldsForUpdate": {
+							"text": "Attacher le nouvel enregistrement à l'enregistrement actuel"
+						},
+						"help": {
+							"mapping": "Prémplissez les champs des nouveaux enregistrements en fournissant des valeurs statiques ou en les mappant depuis le contexte du tableau de bord à l'aide de la syntaxe {{context.<fieldName>}}."
+						},
+						"text": "Ajouter un enregistrement",
+						"tooltip": {
+							"fieldsForUpdate": "Le nouvel enregistrement sera attaché aux champs sélectionnés",
+							"template": "Sélectionner un modèle pour l'ajout de nouveaux enregistrements"
+						}
+					},
+					"autoReload": "Recharger le tableau de bord après la sauvegarde",
+					"editRecord": {
+						"text": "Modifier l'enregistrement actuel",
+						"tooltip": {
+							"template": "Sélectionner un modèle pour l'édition de l'enregistrement actuel.\n Si aucun modèle n'est sélectionné, le dernier modèle utilisé par l'enregistrement actuel sera utilisé"
+						}
+					},
+					"navigateTo": "Naviguer vers",
+					"openInNewTab": "Ouvrir dans un nouvel onglet",
+					"previousPage": "Page précédente",
+					"sendNotification": {
+						"text": "Envoyer une notification"
+					},
+					"subscribeToNotification": "S'abonner à une notification",
+					"unsubscribeFromNotification": "Se désabonner à une notification",
+					"url": "URL cible"
+				},
 				"category": "Catégorie de bouton",
 				"confirmDelete": "Voulez-vous vraiment supprimer cette action de bouton ?",
 				"create": "Créer un bouton d'action",
@@ -2417,6 +2520,7 @@
 				"variant": "Variante de bouton",
 				"visibleTo": "Visible pour les rôles"
 			},
+			"activateFiltering": "Activer le filtre",
 			"closable": "Peut être fermé",
 			"context": {
 				"addTemplate": "Créer un modèle pour cet élément",

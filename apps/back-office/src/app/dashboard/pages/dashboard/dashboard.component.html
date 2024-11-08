@@ -91,15 +91,15 @@
           class="flex items-center gap-1 export-hide"
           *ngIf="!formActive"
           cdkDropList
-          (cdkDropListDropped)="onButtonActionDrop($event)"
+          (cdkDropListDropped)="onActionButtonDrop($event)"
         >
-          <!-- Button actions -->
-          <shared-button-action
-            [buttonActions]="buttonActions"
-            [dashboard]="dashboard"
-            [canUpdate]="canUpdate"
+          <!-- Action buttons -->
+          <shared-action-buttons
             class="export-hide"
-          ></shared-button-action>
+            [actionButtons]="actionButtons"
+            [dashboard]="dashboard"
+            (reloadDashboard)="reload()"
+          ></shared-action-buttons>
 
           <!-- Fullscreen -->
           <ui-button
@@ -145,9 +145,9 @@
           >
           </ui-button>
           <ui-menu #menu width="w-72">
-            <button uiMenuItem (click)="onEditButtonActions()">
+            <button uiMenuItem (click)="onEditActionButtons()">
               <ui-icon icon="touch_app" variant="grey"></ui-icon>
-              {{ 'models.dashboard.buttonActions.edit.few' | translate }}
+              {{ 'models.dashboard.actionButtons.edit.few' | translate }}
             </button>
             <button uiMenuItem (click)="onShare()">
               <ui-icon icon="share" variant="grey"></ui-icon>
