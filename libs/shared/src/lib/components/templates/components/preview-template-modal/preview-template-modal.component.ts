@@ -13,6 +13,7 @@ import { FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { EmailService } from '../../../email/email.service';
 import { TranslateService } from '@ngx-translate/core';
+import { get } from 'lodash';
 
 /**
  * Preview template modal.
@@ -56,23 +57,30 @@ export class PreviewTemplateModalComponent {
     },
   ];
 
+  /** Current environment */
+  private environment: any;
+
   /**
    * Preview template modal.
    * Triggered by grid widgets when sending emails.
    *
+   * @param environment platform environment
    * @param data Dialog data.
    * @param emailService Shared email service
    * @param snackBar Shared snackbar service
    * @param translate Angular Translate service
    * @param dialogRef Dialog reference
+   * @param environment
    */
   constructor(
     @Inject(DIALOG_DATA) public data: any,
     private emailService: EmailService,
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private dialogRef: DialogRef
+    private dialogRef: DialogRef,
+    @Inject('environment') environment: any
   ) {
+    this.environment = environment;
     this.emailService.isQuickAction = true;
     this.emailService.datasetsForm.get('emailDistributionList')?.reset();
     this.emailService.quickEmailDLQuery = [];
@@ -217,11 +225,25 @@ export class PreviewTemplateModalComponent {
               : keyData;
           text[keyNm] = keyData?.length > 0 ? keyData : item?.node[keyNm];
         });
-
+      if (this.data.widgetSettings.navigateToPage) {
+        text[this.data.widgetSettings.navigateSettings.title] =
+          this.getPageURL(text);
+      }
       // Add the text object to the dataList array
       dataList.push(text);
     });
 
+    if (this.data.widgetSettings.navigateToPage) {
+      datasetFields.push(this.data.widgetSettings.navigateSettings.title);
+      datasetFieldsObj.push({
+        name: this.data.widgetSettings.navigateSettings.title,
+        type: 'string',
+        kind: 'SCALAR',
+        label: this.data.widgetSettings.navigateSettings.title,
+        width: null,
+        format: null,
+      });
+    }
     this.emailService.allPreviewData = [
       {
         datasetFields,
@@ -290,5 +312,35 @@ export class PreviewTemplateModalComponent {
     } else {
       this.currentStep = 1;
     }
+  }
+
+  /**
+   * create page URL for Navigate serttings
+   *
+   * @param item selected row data
+   * @returns url
+   */
+  getPageURL(item: any) {
+    const event: any = this.data.widgetSettings.navigateSettings;
+    event['item'] = item;
+    let fullUrl = this.getPageUrl(event.pageUrl as string);
+    if (event.field) {
+      const field = get(event, 'field', '');
+      const value = get(event, `item.${field}`);
+      fullUrl = `${fullUrl}?id=${value}`;
+    }
+    return fullUrl;
+  }
+
+  /**
+   * Get page url full link taking into account the environment.
+   *
+   * @param pageUrlParams page url params
+   * @returns url of the page
+   */
+  private getPageUrl(pageUrlParams: string): string {
+    return this.environment.module === 'backoffice'
+      ? `applications/${pageUrlParams}`
+      : `${pageUrlParams}`;
   }
 }
