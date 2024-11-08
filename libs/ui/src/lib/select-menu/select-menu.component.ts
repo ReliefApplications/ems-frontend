@@ -312,7 +312,9 @@ export class SelectMenuComponent
     } else {
       // Manage control access value
       if (this.onChange && this.onTouch) {
-        this.onChange(this.selectedValues[0]);
+        if (Array.isArray(this.selectedValues)) {
+          this.onChange(this.selectedValues[0]);
+        }
         this.onTouch();
       }
       this.selectedOption.emit(this.selectedValues[0]);
@@ -376,7 +378,7 @@ export class SelectMenuComponent
   getValuesLabel(selectedValues: any[]) {
     let values = this.optionList.filter((option: any) => {
       for (const value of selectedValues) {
-        if (value === option.value) {
+        if (value == option.value) {
           return option;
         }
       }

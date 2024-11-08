@@ -21,14 +21,9 @@ export interface IContentType {
 }
 
 /** Interface for the page context */
-export type PageContextT = (
-  | {
-      refData: string;
-    }
-  | {
-      resource: string;
-    }
-) & {
+export type PageContextT = {
+  refData?: string;
+  resource?: string;
   displayField: string;
 };
 
@@ -78,6 +73,7 @@ export interface Page {
   context?: PageContextT;
   visible?: boolean;
   icon?: string;
+  showName?: boolean;
   contentWithContext?: ((
     | {
         // The element string is the value for the value field of the refData

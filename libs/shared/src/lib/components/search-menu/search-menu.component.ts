@@ -89,10 +89,10 @@ export class SearchMenuComponent implements OnInit {
   /**
    * Handles the click on application
    *
-   * @param app Item that the user clicked on
+   * @param application Item that the user clicked on
    */
-  onClick(app: any) {
-    this.open.emit(app);
+  onClick(application: Application) {
+    this.open.emit(application);
     this.close.emit();
   }
 }

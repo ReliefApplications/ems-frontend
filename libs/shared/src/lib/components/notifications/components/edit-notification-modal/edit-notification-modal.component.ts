@@ -13,7 +13,10 @@ import {
 import { Layout } from '../../../../models/layout.model';
 import { isEqual, get } from 'lodash';
 import { GridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
-import { Template, TemplateTypeEnum } from '../../../../models/template.model';
+import {
+  EmailTemplate,
+  TemplateTypeEnum,
+} from '../../../../models/template.model';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { DistributionList } from '../../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -88,7 +91,7 @@ export class EditNotificationModalComponent
   public layout?: Layout;
 
   /** @returns application templates */
-  get templates(): Template[] {
+  get templates(): EmailTemplate[] {
     return (this.applicationService.templates || []).filter(
       (x) => x.type === TemplateTypeEnum.EMAIL
     );
@@ -223,8 +226,8 @@ export class EditNotificationModalComponent
           layoutIds: layoutId ? [layoutId] : null,
         },
       })
-      .subscribe((res) => {
-        this.resource = res.data.resource;
+      .subscribe(({ data }) => {
+        this.resource = data.resource;
         if (layoutId && this.resource.layouts?.edges[0]) {
           this.layout = this.resource.layouts.edges[0].node;
         }
@@ -272,8 +275,10 @@ export class EditNotificationModalComponent
       if (value && this.layout) {
         this.gridLayoutService
           .editLayout(this.layout, value, this.resource?.id)
-          .subscribe((res: any) => {
-            this.layout = res.data?.editLayout;
+          .subscribe(({ data }) => {
+            if (data) {
+              this.layout = data.editLayout;
+            }
           });
       }
     });
@@ -295,7 +300,7 @@ export class EditNotificationModalComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value)
-        this.applicationService.addTemplate(
+        this.applicationService.addEmailTemplate(
           {
             name: value.name,
             type: TemplateTypeEnum.EMAIL,
@@ -304,7 +309,7 @@ export class EditNotificationModalComponent
               body: value.body,
             },
           },
-          (template: Template) => {
+          (template: EmailTemplate) => {
             this.formGroup.get('template')?.setValue(template.id || null);
           }
         );

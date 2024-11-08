@@ -8,7 +8,7 @@
     shape: 'rectangle'
   "
 >
-  <ng-container *ngIf="workflow">
+  <ng-container *ngIf="workflow && workflow.page?.showName">
     <div class="flex flex-wrap items-center justify-between mb-3 gap-4">
       <!-- Title -->
       <div class="flex items-center gap-1">
@@ -27,9 +27,14 @@
   [activeStep]="activeStep"
   class="block"
 >
+  <shared-dashboard-export-button
+    *ngIf="$any(routerOutlet?.component)?.dashboard"
+    [title]="$any(routerOutlet?.component)?.dashboard?.name"
+    [exporter]="$any(routerOutlet?.component)?.elementRef"
+    class="self-center"
+  ></shared-dashboard-export-button>
 </shared-workflow-stepper>
 <router-outlet
   (activate)="onActivate($event)"
   (deactivate)="clearSubscriptions()"
 ></router-outlet>
-<!-- todo(beta): check -->

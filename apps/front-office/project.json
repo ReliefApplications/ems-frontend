@@ -31,12 +31,12 @@
           {
             "glob": "**/*",
             "input": "node_modules/tinymce",
-            "output": "/tinymce/"
+            "output": "/assets/tinymce/"
           },
           {
             "glob": "**/*",
             "input": "libs/shared/src/i18n/tinymce/",
-            "output": "/tinymce/langs"
+            "output": "/assets/tinymce/langs"
           },
           {
             "glob": "**/*",
@@ -86,7 +86,7 @@
           "esri-leaflet-heatmap",
           "esri-leaflet-renderers",
           "jsonpath",
-          "to-json-schema", 
+          "to-json-schema",
           "email-validator"
         ]
       },
@@ -107,7 +107,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "outputHashing": "all",
@@ -131,9 +131,10 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
+          "baseHref": "/apps/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/styles/src/lib/themes/default"]
@@ -155,7 +156,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "outputHashing": "all",
@@ -179,7 +180,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "outputHashing": "all",
@@ -203,7 +204,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "outputHashing": "all",
@@ -227,7 +228,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "outputHashing": "all",
@@ -251,7 +252,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "outputHashing": "all",

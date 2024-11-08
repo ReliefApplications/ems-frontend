@@ -70,7 +70,8 @@ export class MapModalComponent implements AfterViewInit {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
-        mapComponent.injector
+        mapComponent.injector,
+        1
       )
       .then((layer) => {
         mapComponent.addLayer(layer);

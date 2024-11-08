@@ -1,0 +1,46 @@
+<div *ngIf="!emailService.isExisting">
+  <div class="flex gap-4 mt-4" [formGroup]="emailService.datasetsForm">
+    <div class="flex items-center w-full">
+      <div
+        uiFormFieldDirective
+        class="w-3/4"
+        [uiErrorMessage]="'common.email.error.duplicateName' | translate"
+        [uiErrorMessageIf]="isNameDuplicate"
+      >
+        <label>{{ 'common.title' | translate }}</label>
+        <input
+          type="text"
+          [placeholder]="'common.title' | translate"
+          formControlName="name"
+        />
+      </div>
+      <div class="ml-4 w-1/4">
+        <ui-checkbox
+          uiTooltip="{{
+            'components.email.restrictSubscription.description' | translate
+          }}"
+          formControlName="restrictSubscription"
+        >
+          <ng-container ngProjectAs="label">{{
+            'components.email.restrictSubscription.title' | translate
+          }}</ng-container>
+        </ui-checkbox>
+      </div>
+    </div>
+    <!-- Disabled, enable again when different types are available -->
+    <!-- <div class="mt-4 w-1/3" uiFormFieldDirective [outline]="false">
+      <label htmlFor="notification__type" class="mb-1">
+        {{ 'models.customNotification.type' | translate }}
+      </label>
+      <ui-select-menu
+        [disabled]="true"
+        formControlName="notificationType"
+        placeholder="{{ 'models.customNotification.select' | translate }}"
+      >
+        <ui-select-option [disabled]="true" [selected]="true" value="email">{{
+          'common.email.one' | translate
+        }}</ui-select-option>
+      </ui-select-menu>
+    </div> -->
+  </div>
+</div>

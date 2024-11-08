@@ -147,23 +147,43 @@ export class CalculatedFieldsTabComponent
           },
         })
         .subscribe({
-          next: (res) => {
-            if (res.data?.editResource) {
+          next: ({ data, errors }) => {
+            if (data?.editResource) {
               // Needed to update the field as table data source
               this.fields = field
-                ? res.data.editResource.fields.filter(
-                    (f: any) => f.isCalculated
-                  )
+                ? data.editResource.fields.filter((f: any) => f.isCalculated)
                 : this.fields.concat(
-                    res.data.editResource.fields.find(
+                    data.editResource.fields.find(
                       (f: any) => f.name === value.name
                     )
                   );
             }
-            if (res.errors) {
-              this.snackBar.openSnackBar(res.errors[0].message, {
+            if (errors) {
+              this.snackBar.openSnackBar(errors[0].message, {
                 error: true,
               });
+            } else {
+              if (!field) {
+                // New field
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.calculatedField.one')
+                      .toLowerCase(),
+                    value: value.name,
+                  })
+                );
+              } else {
+                // Existing field
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectUpdated', {
+                    type: this.translate
+                      .instant('common.calculatedField.one')
+                      .toLowerCase(),
+                    value: value.name,
+                  })
+                );
+              }
             }
           },
           error: (err) => {
@@ -211,14 +231,19 @@ export class CalculatedFieldsTabComponent
             },
           })
           .subscribe({
-            next: (res) => {
-              if (res.data?.editResource) {
+            next: ({ data, errors }) => {
+              if (data?.editResource) {
                 this.fields = this.fields.filter(
                   (f: any) => f.name !== field.name
                 );
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: this.translate.instant('common.calculatedField.one'),
+                  })
+                );
               }
-              if (res.errors) {
-                this.snackBar.openSnackBar(res.errors[0].message, {
+              if (errors) {
+                this.snackBar.openSnackBar(errors[0].message, {
                   error: true,
                 });
               }

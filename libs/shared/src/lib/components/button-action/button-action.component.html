@@ -1,10 +1,10 @@
 <div
   class="inline-flex mr-1"
   *ngFor="let button of buttonActions; let i = index"
-  cdkDrag
 >
   <div class="group relative">
     <ui-button
+      *ngIf="!(button.editRecord && !this.contextId)"
       [variant]="button.variant"
       [category]="button.category"
       (click)="onButtonActionClick(button)"

@@ -287,7 +287,7 @@ export class QueryBuilderService {
    * @param fields List of fields to query.
    * @returns QL document to build the query.
    */
-  private buildMetaFields(fields: any[]): any {
+  public buildMetaFields(fields: any[]): any {
     if (!fields) {
       return '';
     }
@@ -539,10 +539,10 @@ export class QueryBuilderService {
       const querySource$ = this.getQuerySource(query);
       const sourceQuery = querySource$ && firstValueFrom(querySource$);
       if (sourceQuery) {
-        const res = await sourceQuery;
-        for (const field in res.data) {
-          if (Object.prototype.hasOwnProperty.call(res.data, field)) {
-            const source = get(res.data[field], '_source', null);
+        const { data } = await sourceQuery;
+        for (const field in data) {
+          if (Object.prototype.hasOwnProperty.call(data, field)) {
+            const source = get(data[field], '_source', null);
             if (source) {
               const metaQuery = firstValueFrom(this.getQueryMetaData(source));
               const res2 = await metaQuery;

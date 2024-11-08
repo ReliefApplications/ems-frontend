@@ -1,0 +1,75 @@
+<form class="" [formGroup]="datasetFormGroup">
+  <div class="text-left">
+    <div class="tab-container" style="width: 100%">
+      <!-- Block Tabs -->
+      <ui-tabs
+        [selectedIndex]="activeTab?.index"
+        #kendoStrip
+        formArrayName="datasets"
+        (selectedIndexChange)="changeTab($event)"
+      >
+        <div class="mt-4 flex flex-row">
+          <ng-container *ngIf="showPreview === false">
+            <ui-tab
+              *ngFor="let tab of tabs; let tabIndex = index"
+              [title]="tab.title"
+              [selected]="tab.active"
+            >
+              <ng-container ngProjectAs="label">
+                <div class="flex gap-5 justify-between items-center">
+                  <span>{{ tab.title }}</span>
+                  <ui-button
+                    [variant]="'danger'"
+                    [isIcon]="true"
+                    size="large"
+                    (click)="deleteTab(tabIndex, $event)"
+                    [icon]="'delete'"
+                    [uiTooltip]="'common.archive.delete' | translate"
+                  >
+                  </ui-button>
+                </div>
+                <!-- <ui-button
+                    [isIcon]="true"
+                    size="large"
+                    (click)="addTab()"
+                    [icon]="'add'"
+                    [uiTooltip]="'Add New Block'"
+                    *ngIf="tabIndex === tabs.length-1"
+                  >
+                </ui-button> -->
+                <ng-template [formGroupName]="tabIndex" uiTabContent>
+                  <shared-dataset-filter
+                    *ngIf="datasetsFormArray.controls?.length"
+                    [query]="datasetsFormArray.controls[tabIndex]"
+                    [queryValue]="datasetsFormArray.value"
+                    (changeMainTab)="changeTab($event)"
+                    (navigateToPreview)="bindPreviewTbl($event)"
+                    [activeTab]="activeTab"
+                    [tabs]="tabs"
+                  ></shared-dataset-filter>
+                </ng-template>
+              </ng-container>
+              <ng-template ngProjectAs="label"> </ng-template>
+            </ui-tab>
+          </ng-container>
+          <ng-container
+            *ngIf="!showPreview"
+            class="add-block"
+            ngProjectAs="label"
+          >
+            <span class="k-link py-2" id="addIcon">
+              <ui-button
+                [isIcon]="true"
+                size="large"
+                (click)="addTab()"
+                [icon]="'add'"
+                [uiTooltip]="'common.toolTip.newBlock' | translate"
+              >
+              </ui-button>
+            </span>
+          </ng-container>
+        </div>
+      </ui-tabs>
+    </div>
+  </div>
+</form>

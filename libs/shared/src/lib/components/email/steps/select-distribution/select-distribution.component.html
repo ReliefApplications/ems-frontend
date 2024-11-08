@@ -1,0 +1,300 @@
+<div class="distribution_list" *ngIf="!isAllSeparate()">
+  <div class="mt-4 flex gap-2 justify-end">
+    <!-- Email List Import Button -->
+    <div>
+      <input
+        type="file"
+        class="hidden"
+        #fileUpload
+        (change)="fileSelectionHandler($event)"
+        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      />
+    </div>
+    <!-- Import file -->
+    <ui-button
+      icon="cloud_download"
+      category="secondary"
+      variant="primary"
+      [uiTooltip]="
+        'components.email.distributionList.import.import' | translate
+      "
+      (click)="fileUpload.click()"
+    >
+      {{ 'components.email.distributionList.import.name' | translate }}
+    </ui-button>
+    <!-- Download import template -->
+    <ui-button
+      icon="download"
+      category="secondary"
+      variant="primary"
+      [uiTooltip]="
+        'components.email.distributionList.import.download' | translate
+      "
+      (click)="onDownloadTemplate()"
+    >
+      {{ 'components.email.distributionList.import.download' | translate }}
+    </ui-button>
+  </div>
+  <div class="flex gap-4" *ngIf="!showExistingDistributionList">
+    <div class="mt-4 w-1/3">
+      <label
+        htmlFor="exampleSelect"
+        class="block text-sm font-medium leading-6 text-gray-900 mb-1"
+      >
+        {{ 'components.select.distribution.label' | translate }}
+      </label>
+      <input
+        [formControl]="emailDistributionList.get('name')"
+        (input)="validateDistributionList()"
+        [class]="{
+          'form-error':
+            (isNameDuplicate() && !distributionListId) ||
+            !emailDistributionList.get('name').value ||
+            emailDistributionList.get('name').value.trim() === ''
+        }"
+        class="relative flex py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center w-full"
+        (change)="validateDistributionList()"
+        placeholder="{{ 'common.name' | translate }}"
+      />
+      <div
+        *ngIf="isNameDuplicate() && !distributionListId"
+        class="text-red-500 text-sm mt-1"
+      >
+        {{ 'components.email.distributionList.duplicate' | translate }}
+      </div>
+    </div>
+  </div>
+  <div class="use-existing" *ngIf="!showExistingDistributionList">
+    <p (click)="toggleExistingDistributionList()">
+      {{ 'common.notifications.email.existing' | translate }}
+    </p>
+  </div>
+  <ui-alert
+    class="mb-4"
+    variant="warning"
+    *ngIf="
+      emailDistributionList?.name?.length === 0 ||
+      emailDistributionList?.To?.length === 0
+    "
+  >
+    {{ 'components.email.distributionList.alert.partOne' | translate }}
+    <strong
+      *ngIf="
+        emailDistributionList?.name?.length === 0 ||
+        emailDistributionList?.name?.trim() === ''
+      "
+    >
+      {{
+        'components.email.distributionList.alert.partTwo' | translate
+      }}</strong
+    >
+    <strong
+      *ngIf="
+        emailDistributionList?.To?.length === 0 &&
+        (emailDistributionList?.name?.length === 0 ||
+          emailDistributionList?.name?.trim() === '')
+      "
+    >
+      {{ 'components.email.distributionList.alert.and' | translate }} </strong
+    ><strong *ngIf="emailDistributionList?.To?.length === 0">{{
+      'components.email.distributionList.alert.partThree' | translate
+    }}</strong
+    >.
+  </ui-alert>
+  <!-- Existing Distribution List -->
+  <div *ngIf="showExistingDistributionList">
+    <div class="mt-4" *ngIf="!isLoading; else loaderContainer">
+      <div class="mt-4 overflow-x-hidden shadow-2lg">
+        <div class="overflow-x-auto">
+          <table cdk-table uiTableWrapper [dataSource]="distributionLists">
+            <ng-container cdkColumnDef="name">
+              <th uiCellHeader *cdkHeaderCellDef scope="col">
+                <span class="headerTitle">
+                  {{ 'common.name' | translate }}
+                </span>
+              </th>
+              <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
+                {{ element.name }}
+              </td>
+            </ng-container>
+            <ng-container cdkColumnDef="createdBy">
+              <th uiCellHeader *cdkHeaderCellDef scope="col">
+                <span class="headerTitle">
+                  {{ 'common.createdBy' | translate }}
+                </span>
+              </th>
+              <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
+                {{ element.createdBy.name }}
+              </td>
+            </ng-container>
+            <ng-container cdkColumnDef="email">
+              <th uiCellHeader *cdkHeaderCellDef scope="col">
+                <span class="headerTitle">
+                  {{ 'components.email.name' | translate }}
+                </span>
+              </th>
+              <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
+                {{ element.createdBy.email }}
+              </td>
+            </ng-container>
+            <tr cdk-header-row *cdkHeaderRowDef="distributionColumn"></tr>
+            <tr
+              cdk-row
+              *cdkRowDef="let row; columns: distributionColumn; let i = index"
+              (click)="selectDistributionListRow(i)"
+              class="table-row"
+            ></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Distribution List Pagination -->
+      <ui-paginator
+        [disabled]="false"
+        [pageIndex]="distributionPageInfo.pageIndex"
+        [pageSize]="distributionPageInfo.pageSize"
+        [pageSizeOptions]="[5, 10, 25, 50]"
+        [totalItems]="distributionPageInfo.length"
+        [ariaLabel]="'components.notifications.paginator.ariaLabel' | translate"
+        (pageChange)="onExistingList($event)"
+      >
+      </ui-paginator>
+    </div>
+    <ng-template #loaderContainer>
+      <div class="loadingSign">
+        <ui-spinner style="position: relative"></ui-spinner>
+      </div>
+    </ng-template>
+  </div>
+  <!-- To, CC, BCC Templates -->
+  <div *ngIf="!showExistingDistributionList">
+    <ui-tabs>
+      <!-- TO Tab -->
+      <ui-tab [title]="'TO'">
+        <ng-container ngProjectAs="label">
+          {{ 'components.select.distribution.to' | translate }}
+        </ng-container>
+        <ng-template uiTabContent>
+          <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.to">
+            {{ 'components.email.distributionList.alert.noEmail' | translate }}
+          </ui-alert>
+          <shared-email-template
+            [existingId]="this.distributionListId"
+            (noEmail)="update($event, 'to')"
+            (listChange)="validateDistributionList()"
+            [distributionList]="emailDistributionList.get('to')"
+            [type]="'to'"
+            [isDisable]="this.emailDistributionList.get('id')?.value"
+            >{{
+              'components.email.distributionList.to' | translate
+            }}</shared-email-template
+          >
+        </ng-template>
+      </ui-tab>
+
+      <!-- CC Tab -->
+      <ui-tab [title]="'CC'">
+        <ng-container ngProjectAs="label">
+          {{ 'components.select.distribution.cc' | translate }}
+        </ng-container>
+        <ng-template uiTabContent>
+          <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.cc">
+            {{ 'components.email.distributionList.alert.noEmail' | translate }}
+          </ui-alert>
+          <shared-email-template
+            [existingId]="this.distributionListId"
+            (noEmail)="update($event, 'cc')"
+            (listChange)="validateDistributionList()"
+            [distributionList]="emailDistributionList.get('cc')"
+            [type]="'cc'"
+            [isDisable]="this.emailDistributionList.get('id')?.value"
+            >{{
+              'components.email.distributionList.cc' | translate
+            }}</shared-email-template
+          >
+        </ng-template>
+      </ui-tab>
+
+      <!-- BCC Tab -->
+      <ui-tab [title]="'BCC'">
+        <ng-container ngProjectAs="label">
+          {{ 'components.select.distribution.bcc' | translate }}
+        </ng-container>
+        <ng-template uiTabContent>
+          <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.bcc">
+            {{ 'components.email.distributionList.alert.noEmail' | translate }}
+          </ui-alert>
+          <shared-email-template
+            [existingId]="distributionListId"
+            (noEmail)="update($event, 'bcc')"
+            (listChange)="validateDistributionList()"
+            [distributionList]="emailDistributionList.get('bcc')"
+            [type]="'bcc'"
+            [isDisable]="emailDistributionList.get('id')?.value"
+            >{{
+              'components.email.distributionList.bcc' | translate
+            }}</shared-email-template
+          >
+        </ng-template>
+      </ui-tab>
+    </ui-tabs>
+  </div>
+  <div class="use-existing" *ngIf="showExistingDistributionList">
+    <p (click)="createNewDL()">
+      {{ 'components.email.distributionList.createNew' | translate }}
+    </p>
+  </div>
+</div>
+
+<div class="no_distribution_list" *ngIf="isAllSeparate()">
+  <!-- Top Header -->
+  <div class="flex gap-4">
+    <div class="mt-4 w-1/3">
+      <label
+        htmlFor="exampleSelect"
+        class="block text-sm font-medium leading-6 text-gray-900 mb-1"
+      >
+        {{ 'components.select.distribution.label' | translate }}
+      </label>
+      <input
+        [disabled]="true"
+        class="relative flex py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center w-full"
+        placeholder="{{ 'common.name' | translate }}"
+      />
+    </div>
+  </div>
+  <!-- TO CC BCC Disabled Tabs -->
+  <div>
+    <ui-tabs>
+      <!-- TO Tab -->
+      <ui-tab [title]="'TO'">
+        <ng-container ngProjectAs="label">
+          {{ 'components.select.distribution.to' | translate }}
+        </ng-container>
+        <ng-template uiTabContent>
+          <ui-alert class="mb-4" variant="primary">
+            {{
+              'components.email.distributionList.alert.allSeparate' | translate
+            }}
+          </ui-alert>
+        </ng-template>
+      </ui-tab>
+
+      <!-- CC Tab -->
+      <ui-tab [title]="'CC'" [disabled]="true">
+        <ng-container ngProjectAs="label">
+          {{ 'components.select.distribution.cc' | translate }}
+        </ng-container>
+        <ng-template uiTabContent> </ng-template>
+      </ui-tab>
+
+      <!-- BCC Tab -->
+      <ui-tab [title]="'BCC'" [disabled]="true">
+        <ng-container ngProjectAs="label">
+          {{ 'components.select.distribution.bcc' | translate }}
+        </ng-container>
+        <ng-template uiTabContent> </ng-template>
+      </ui-tab>
+    </ui-tabs>
+  </div>
+</div>

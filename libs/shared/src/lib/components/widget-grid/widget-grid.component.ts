@@ -12,7 +12,6 @@ import {
   ViewChildren,
 } from '@angular/core';
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
-import { WIDGET_TYPES } from '../../models/dashboard.model';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { WidgetComponent } from '../widget/widget.component';
 import { Subject, Subscription, debounceTime, takeUntil } from 'rxjs';
@@ -29,6 +28,7 @@ import {
 import { cloneDeep, set } from 'lodash';
 import { ResizeObservable } from '../../utils/rxjs/resize-observable.util';
 import { ContextService } from '../../services/context/context.service';
+import { WidgetType } from '../../models/dashboard.model';
 
 /** Maximum height of the widget in row units when loading grid */
 const MAX_ROW_SPAN_LOADING = 4;
@@ -49,7 +49,7 @@ export class WidgetGridComponent
   implements OnInit, OnChanges, OnDestroy
 {
   /** Available widgets */
-  public availableWidgets: any[] = WIDGET_TYPES;
+  public availableWidgets: WidgetType[] = [];
   /** Loading status */
   @Input() loading = false;
   /** Widgets */
@@ -279,6 +279,7 @@ export class WidgetGridComponent
       swapWhileDragging: true,
       disablePushOnDrag: false,
       disablePushOnResize: false,
+      disableWarnings: true,
       pushDirections: { north: true, east: true, south: true, west: true },
       disableScrollHorizontal: true,
       setGridSize: true,
@@ -389,7 +390,6 @@ export class WidgetGridComponent
           disableClose: true,
           data: {
             widget,
-            template: this.dashboardService.findSettingsTemplate(widget),
           },
         });
         dialogRef.closed

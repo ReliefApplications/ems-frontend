@@ -3,37 +3,40 @@
 /// <reference path="../../typings/extract-files/index.d.ts" />
 
 import { Apollo } from 'apollo-angular';
-import { DomService } from '../services/dom/dom.service';
 import { AuthService } from '../services/auth/auth.service';
+import { DomService } from '../services/dom/dom.service';
 import { ReferenceDataService } from '../services/reference-data/reference-data.service';
 import addCustomFunctions from '../utils/custom-functions';
+import * as EditorComponent from './components/editor';
+import * as GeospatialComponent from './components/geospatial';
+import * as OwnerComponent from './components/owner';
 import * as ResourceComponent from './components/resource';
 import * as ResourcesComponent from './components/resources';
-import * as OwnerComponent from './components/owner';
 import * as UsersComponent from './components/users';
-import * as GeospatialComponent from './components/geospatial';
-import * as TextWidget from './widgets/text-widget';
+import * as CsApiDocsProperties from './global-properties/cs-api-docs';
+import * as OtherProperties from './global-properties/others';
 import * as CommentWidget from './widgets/comment-widget';
 import * as DropdownWidget from './widgets/dropdown-widget';
 import * as TagboxWidget from './widgets/tagbox-widget';
-import * as OtherProperties from './global-properties/others';
+import * as TextWidget from './widgets/text-widget';
+import * as FileWidget from './widgets/file-widget';
 // import * as ChoicesByUrlProperties from './global-properties/choicesByUrl';
-import * as ChoicesByGraphQLProperties from './global-properties/choices-by-graphql';
-import * as ReferenceDataProperties from './global-properties/reference-data';
-import * as TooltipProperty from './global-properties/tooltip';
-import * as PopupWidthProperty from './global-properties/popup-width';
-import { initLocalization } from './localization';
 import { Injector, NgZone } from '@angular/core';
+import { AngularComponentFactory } from 'survey-angular-ui';
 import {
   ComponentCollection,
   CustomWidgetCollection,
   ElementFactory,
 } from 'survey-core';
-import { AngularComponentFactory } from 'survey-angular-ui';
 import {
   CustomPropertyGridComponentTypes,
   CustomPropertyGridEditors,
 } from './components/utils/components.enum';
+import * as ChoicesByGraphQLProperties from './global-properties/choices-by-graphql';
+import * as PopupWidthProperty from './global-properties/popup-width';
+import * as ReferenceDataProperties from './global-properties/reference-data';
+import * as TooltipProperty from './global-properties/tooltip';
+import { initLocalization } from './localization';
 
 /** Name of the custom components we add to the survey */
 const CUSTOM_COMPONENTS = [
@@ -42,6 +45,7 @@ const CUSTOM_COMPONENTS = [
   'owner',
   'users',
   'geospatial',
+  'editor',
 ];
 
 /**
@@ -84,6 +88,7 @@ export const initCustomSurvey = (
   TagboxWidget.init(domService, CustomWidgetCollection.Instance, document);
   TextWidget.init(domService, CustomWidgetCollection.Instance, document);
   DropdownWidget.init(domService, CustomWidgetCollection.Instance, document);
+  FileWidget.init(CustomWidgetCollection.Instance);
 
   if (containsCustomQuestions) {
     // Register all custom property grid component types
@@ -125,6 +130,7 @@ export const initCustomSurvey = (
     OwnerComponent.init(apollo, ComponentCollection.Instance);
     UsersComponent.init(ComponentCollection.Instance, domService);
     GeospatialComponent.init(domService, ComponentCollection.Instance);
+    EditorComponent.init(injector, ComponentCollection.Instance);
   }
 
   // load global properties
@@ -133,7 +139,9 @@ export const initCustomSurvey = (
   TooltipProperty.init();
   PopupWidthProperty.init();
   OtherProperties.init(environment);
-
+  if (environment.csApiUrl) {
+    CsApiDocsProperties.init();
+  }
   // enables POST requests for choicesByUrl
   // ChoicesByUrlProperties.init();
 

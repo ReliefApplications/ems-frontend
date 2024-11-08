@@ -29,6 +29,7 @@ export interface MapConstructorSettings {
   controls: MapControls;
   arcGisWebMap?: string;
   geographicExtents?: { value: string; extent: string }[];
+  geographicExtentPadding?: number;
   automationRules?: any[];
 }
 

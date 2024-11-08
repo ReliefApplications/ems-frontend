@@ -84,6 +84,9 @@ export class GraphQLSelectComponent
 
   /** Sets the value */
   set value(val: string | string[] | null) {
+    if (val == null) {
+      this.searchControl.setValue('');
+    }
     this.onChange(val);
     this.stateChanges.next();
     this.selectionChange.emit(val);

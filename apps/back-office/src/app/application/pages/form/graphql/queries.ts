@@ -8,6 +8,7 @@ export const GET_STEP_BY_ID = gql`
     step(id: $id) {
       id
       icon
+      showName
       name
       createdAt
       modifiedAt
@@ -18,6 +19,7 @@ export const GET_STEP_BY_ID = gql`
         page {
           id
           application {
+            shortcut
             id
           }
         }
@@ -51,6 +53,7 @@ export const GET_PAGE_BY_ID = gql`
     page(id: $id) {
       id
       icon
+      showName
       name
       visible
       createdAt
@@ -72,6 +75,7 @@ export const GET_PAGE_BY_ID = gql`
         }
       }
       application {
+        shortcut
         id
       }
       canSee

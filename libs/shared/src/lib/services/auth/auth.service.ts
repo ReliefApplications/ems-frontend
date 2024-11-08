@@ -1,29 +1,29 @@
-import { Apollo } from 'apollo-angular';
-import { Injectable, Inject } from '@angular/core';
-import {
-  Permission,
-  ProfileQueryResponse,
-  User,
-} from '../../models/user.model';
-import { GET_PROFILE } from './graphql/queries';
-import {
-  BehaviorSubject,
-  combineLatest,
-  Observable,
-  ReplaySubject,
-} from 'rxjs';
-import { ApolloQueryResult } from '@apollo/client';
-import { OAuthService } from 'angular-oauth2-oidc';
-import { filter, map } from 'rxjs/operators';
+import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { ApolloQueryResult } from '@apollo/client';
 import {
   Ability,
   AbilityBuilder,
   AbilityClass,
   ForcedSubject,
 } from '@casl/ability';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
+import {
+  BehaviorSubject,
+  combineLatest,
+  Observable,
+  ReplaySubject,
+} from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { Application } from '../../models/application.model';
+import {
+  Permission,
+  ProfileQueryResponse,
+  User,
+} from '../../models/user.model';
+import { GET_PROFILE } from './graphql/queries';
 
 /** Defining the interface for the account object. */
 export interface Account {
@@ -51,7 +51,8 @@ type Subjects =
   | 'PullJob'
   | 'Group'
   | 'CustomNotification'
-  | 'Form';
+  | 'Form'
+  | 'EmailNotification';
 
 export type AppAbility = Ability<
   [Actions, Subjects | ForcedSubject<Subjects>],
@@ -148,30 +149,18 @@ export class AuthService {
       .pipe(filter((e) => ['token_received'].includes(e.type)))
       .subscribe(() => {
         localStorage.setItem('idtoken', this.oauthService.getIdToken());
-        this.oauthService.loadUserProfile();
+        const redirectPath = localStorage.getItem('redirectPath');
+        // Redirect to previous path for backoffice, frontoffice is handled directly from the redirect component
+        if (redirectPath && this.environment.module === 'backoffice') {
+          // Current URL has finished loading, navigate to the desired URL
+          this.router.navigateByUrl(redirectPath);
+          localStorage.removeItem('redirectPath');
+        }
       });
     this.oauthService.events
       .pipe(filter((e: any) => e.type === 'invalid_nonce_in_state'))
       .subscribe(() => {
         this.oauthService.initLoginFlow();
-      });
-    // Redirect to previous path
-    this.oauthService.events
-      .pipe(filter((e: any) => e.type === 'user_profile_loaded'))
-      .subscribe(() => {
-        const redirectPath = localStorage.getItem('redirectPath');
-        if (redirectPath) {
-          // Current URL has finished loading, navigate to the desired URL
-          this.router.navigateByUrl(redirectPath);
-        } else {
-          // Fallback to the location origin with a new url state with clean params
-          // Chrome does not delete state and session state params once the oauth is successful
-          // Which triggers a new token fetch with an invalid(deprecated) code
-          // can cause an issue with navigation
-          // console.log(e);
-          // this.router.navigateByUrl(this.environment.authConfig.redirectUri);
-        }
-        localStorage.removeItem('redirectPath');
       });
     this.oauthService.setupAutomaticSilentRefresh();
     this.user$.subscribe((user) => this.updateAbility(user));
@@ -231,18 +220,20 @@ export class AuthService {
   public initLoginSequence(): Promise<void> {
     if (!localStorage.getItem('idtoken')) {
       let redirectUri: URL;
-      const pathName = location.href.replace(
-        this.environment.backOfficeUri,
-        '/'
-      );
+      let pathName: string;
       if (this.environment.module === 'backoffice') {
+        pathName = location.href.replace(this.environment.backOfficeUri, '/');
         redirectUri = new URL(pathName, this.environment.backOfficeUri);
       } else {
+        pathName = location.href.replace(this.environment.frontOfficeUri, '/');
         redirectUri = new URL(pathName, this.environment.frontOfficeUri);
       }
-      redirectUri.search = '';
       if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
-        localStorage.setItem('redirectPath', redirectUri.pathname);
+        localStorage.setItem(
+          'redirectPath',
+          pathName
+          // redirectUri.pathname + redirectUri.search + redirectUri.hash || This would also work but since it does a concat, the other would be faster
+        );
       }
     }
     return this.oauthService
@@ -360,7 +351,7 @@ export class AuthService {
     }
 
     // === Resource ===
-    if (globalPermissions.includes('can_read_resources')) {
+    if (globalPermissions.includes('can_see_resources')) {
       can('read', ['Resource', 'Record']);
     }
     if (globalPermissions.includes('can_create_resources')) {
@@ -397,23 +388,28 @@ export class AuthService {
       );
     }
 
+    // === Email Notifications ===
+    if (globalPermissions.includes('can_manage_email_notifications')) {
+      can(['create', 'read', 'update', 'delete'], 'EmailNotification');
+    }
+
     this.ability.update(rules);
   }
 
   /**
    * Extend user ability on application
    *
-   * @param app Application to extend ability on
+   * @param application Application to extend ability on
    */
-  public extendAbilityForApplication(app: Application) {
-    if (!app?.id) return;
+  public extendAbilityForApplication(application: Application) {
+    if (!application?.id) return;
     const { can, rules } = new AbilityBuilder(AppAbility);
 
     // Copy existing rules
     rules.push(...this.ability.rules);
 
     // Get user app permissions
-    const appRoles = app.userRoles || [];
+    const appRoles = application.userRoles || [];
     const appPermissions = new Set<string>();
     appRoles.forEach((role) => {
       const rolePermissions = role.permissions?.map((x) => x.type) || [];
@@ -427,7 +423,7 @@ export class AuthService {
     //   cannot(['create', 'read', 'update', 'delete'], ['Role', 'Channel']);
     if (appPermissions.has('can_see_roles')) {
       can(['create', 'read', 'update', 'delete'], ['Role', 'Channel'], {
-        application: app.id,
+        application: application.id,
       });
     }
 
@@ -436,7 +432,7 @@ export class AuthService {
     //   cannot(['create', 'read', 'update', 'delete'], ['User', 'Channel']);
     if (appPermissions.has('can_see_users')) {
       can(['create', 'read', 'update', 'delete'], 'User', {
-        application: app.id,
+        application: application.id,
       });
     }
 
@@ -447,7 +443,7 @@ export class AuthService {
       this.ability.can('manage', 'Application')
     ) {
       can(['create', 'read', 'update', 'delete', 'manage'], 'Template', {
-        application: app.id,
+        application: application.id,
       });
     }
 
@@ -464,7 +460,7 @@ export class AuthService {
         ['create', 'read', 'update', 'delete', 'manage'],
         'DistributionList',
         {
-          application: app.id,
+          application: application.id,
         }
       );
     }
@@ -478,9 +474,21 @@ export class AuthService {
         ['create', 'read', 'update', 'delete', 'manage'],
         'CustomNotification',
         {
-          application: app.id,
+          application: application.id,
         }
       );
+    }
+
+    // === Email Notifications ===
+    if (appPermissions.has('can_see_email_notifications')) {
+      can('read', 'EmailNotification');
+    }
+    if (appPermissions.has('can_update_email_notifications')) {
+      can(['update', 'delete'], 'EmailNotification');
+    }
+
+    if (appPermissions.has('can_create_email_notifications')) {
+      can('create', 'EmailNotification');
     }
 
     this.ability.update(rules);

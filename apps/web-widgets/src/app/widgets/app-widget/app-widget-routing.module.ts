@@ -24,6 +24,14 @@ const routes: Routes = [
       ),
     canActivate: [IsNormalizeUrl],
   },
+  {
+    path: 'share/:id',
+    loadChildren: () =>
+      import('./application/pages/share/share.module').then(
+        (m) => m.ShareModule
+      ),
+    canActivate: [IsNormalizeUrl],
+  },
   // {
   //   path: '**',
   //   redirectTo: '/',

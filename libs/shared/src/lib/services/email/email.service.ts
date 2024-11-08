@@ -9,6 +9,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { RestService } from '../rest/rest.service';
 import { SnackbarService } from '@oort-front/ui';
 import { flatDeep } from '../../utils/array-filter';
+import {
+  GET_CUSTOM_TEMPLATES,
+  GET_DISTRIBUTION_LIST,
+} from '../../components/email/graphql/queries';
+import { Apollo } from 'apollo-angular';
 
 /** Snackbar duration in ms */
 const SNACKBAR_DURATION = 1000;
@@ -29,12 +34,14 @@ export class EmailService {
    * @param dialog The Dialog service.
    * @param translate Angular translate service.
    * @param restService Shared rest service.
+   * @param apollo the graphQL client service
    */
   constructor(
     private snackBar: SnackbarService,
     private dialog: Dialog,
     private translate: TranslateService,
-    private restService: RestService
+    private restService: RestService,
+    private apollo: Apollo
   ) {}
 
   /**
@@ -167,11 +174,11 @@ export class EmailService {
    *
    * @param recipient Recipient of the email.
    * @param subject Subject of the email.
-   * @param body Body of the email, if not given we put the formatted records.
-   * @param filter Filters for sending the mail
    * @param query Query settings
    * @param query.name Name of the query
    * @param query.fields Fields requested in the query
+   * @param filter Filters for sending the mail
+   * @param body Body of the email, if not given we put the formatted records.
    * @param sortField Sort field (optional).
    * @param sortOrder Sort order (optional).
    * @param attachment Whether an excel with the dataset is attached to the mail
@@ -180,32 +187,32 @@ export class EmailService {
   public async previewMail(
     recipient: string[],
     subject: string,
-    body: string,
-    filter: CompositeFilterDescriptor,
     query: {
       name: string;
       fields: any[];
     },
+    filter: CompositeFilterDescriptor,
+    body?: string,
     sortField?: string,
     sortOrder?: string,
     attachment?: boolean
   ): Promise<void> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
     const snackBarRef = this.snackBar.openComponentSnackBar(
       SnackbarSpinnerComponent,
       {
         duration: 0,
         data: {
           message: this.translate.instant(
-            'common.notifications.email.processing'
+            'common.notifications.email.preview.processing'
           ),
           loading: true,
         },
       }
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
     this.restService
       .post(
         '/email/preview/',
@@ -224,29 +231,49 @@ export class EmailService {
       )
       .subscribe({
         next: async (res) => {
+          const { EmailPreviewModalComponent } = await import(
+            '../../components/email-preview-modal/email-preview-modal.component'
+          );
           snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.email.ready'
           );
           snackBarSpinner.instance.loading = false;
           snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-          const { EmailPreviewModalComponent } = await import(
-            '../../components/email-preview-modal/email-preview-modal.component'
-          );
           this.dialog.open(EmailPreviewModalComponent, {
             data: {
               ...res,
-              onSubmit: (value: any) =>
-                this.sendMail(
-                  value.to,
-                  value.subject,
-                  value.html,
-                  filter,
-                  query,
-                  sortField,
-                  sortOrder,
-                  attachment,
-                  value.files
-                ),
+              onSubmit: async (value: any) => {
+                snackBarSpinner.instance.message = this.translate.instant(
+                  'common.notifications.email.processing'
+                );
+                snackBarSpinner.instance.loading = true;
+                snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+                try {
+                  await this.sendMail(
+                    value.to,
+                    value.subject,
+                    value.html,
+                    filter,
+                    query,
+                    sortField,
+                    sortOrder,
+                    attachment,
+                    value.files
+                  );
+                  snackBarSpinner.instance.message = this.translate.instant(
+                    'common.notifications.email.sent'
+                  );
+                  snackBarSpinner.instance.loading = false;
+                  snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+                } catch (error) {
+                  snackBarSpinner.instance.message = this.translate.instant(
+                    'common.notifications.email.error'
+                  );
+                  snackBarSpinner.instance.loading = false;
+                  snackBarSpinner.instance.error = true;
+                  snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+                }
+              },
             },
             autoFocus: false,
             disableClose: true,
@@ -270,7 +297,7 @@ export class EmailService {
         },
         error: () => {
           snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.email.error'
+            'common.notifications.email.errors.preview'
           );
           snackBarSpinner.instance.loading = false;
           snackBarSpinner.instance.error = true;
@@ -315,5 +342,62 @@ export class EmailService {
         }
       })
     );
+  }
+
+  /**
+   * Retrieves custom templates from the server.
+   *
+   * @returns {Observable<any>} An observable that resolves with the result of the query.
+   */
+  getCustomTemplates(): Observable<any> {
+    return this.apollo.query<any>({
+      query: GET_CUSTOM_TEMPLATES,
+      variables: {},
+    });
+  }
+
+  /**
+   * Get an email distribution lists.
+   *
+   * @returns Email distribution lists.
+   */
+  getEmailDistributionList() {
+    return this.apollo.query<any>({
+      query: GET_DISTRIBUTION_LIST,
+      variables: {},
+    });
+  }
+
+  /**
+   * Preview custom email template.
+   *
+   * @param emailContent Email content
+   * @param distributionListInfo Distribution list
+   * @param selectedRowsFromGrid Selected rows from grid
+   * @param resourceData Resource metadata
+   * @param selectedLayoutFields Selected layout fields
+   */
+  async previewCustomTemplate(
+    emailContent: any,
+    distributionListInfo: any,
+    selectedRowsFromGrid: any,
+    resourceData: any,
+    selectedLayoutFields: any
+  ) {
+    const { PreviewTemplateModalComponent } = await import(
+      '../../components/templates/components/preview-template-modal/preview-template-modal.component'
+    );
+    this.dialog.open(PreviewTemplateModalComponent, {
+      data: {
+        emailContent,
+        distributionListInfo,
+        selectedRowsFromGrid,
+        resourceData,
+        selectedLayoutFields,
+      },
+      autoFocus: false,
+      disableClose: true,
+      width: '80%',
+    });
   }
 }

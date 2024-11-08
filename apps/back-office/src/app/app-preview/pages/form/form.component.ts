@@ -85,8 +85,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
               id: this.id,
             },
           })
-          .subscribe((res) => {
-            this.step = res.data.step;
+          .subscribe(({ data }) => {
+            this.step = data.step;
             this.apollo
               .query<FormQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
@@ -107,8 +107,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
               id: this.id,
             },
           })
-          .subscribe((res) => {
-            this.page = res.data.page;
+          .subscribe(({ data }) => {
+            this.page = data.page;
             this.apollo
               .query<FormQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,

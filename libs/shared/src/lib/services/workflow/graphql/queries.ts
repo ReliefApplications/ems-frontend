@@ -28,6 +28,7 @@ export const GET_WORKFLOW_BY_ID = gql`
       steps {
         id
         icon
+        showName
         name
         type
         content
@@ -37,6 +38,7 @@ export const GET_WORKFLOW_BY_ID = gql`
       page {
         id
         icon
+        showName
         name
         visible
         canUpdate
@@ -56,6 +58,7 @@ export const GET_WORKFLOW_BY_ID = gql`
         }
         application {
           id
+          shortcut
         }
       }
     }

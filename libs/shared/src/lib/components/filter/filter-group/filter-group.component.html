@@ -13,14 +13,19 @@
       </ui-select-menu>
     </div>
 
-    <ui-button category="tertiary" (click)="addFilter()">
+    <ui-button category="tertiary" (click)="addFilter()" [disabled]="disabled">
       {{ 'components.queryBuilder.filter.new' | translate }}
     </ui-button>
-    <ui-button category="tertiary" (click)="addGroup()">
+    <ui-button
+      category="tertiary"
+      (click)="addGroup()"
+      *ngIf="!isEmailNotification"
+      [disabled]="disabled"
+    >
       {{ 'components.queryBuilder.filter.newGroup' | translate }}
     </ui-button>
     <ui-button
-      *ngIf="parent"
+      [disabled]="disabled"
       [isIcon]="true"
       icon="delete"
       variant="danger"
@@ -45,6 +50,8 @@
           [parent]="this"
           (delete)="deleteFilter(i)"
           [canUseContext]="canUseContext"
+          [isEmailNotification]="isEmailNotification"
+          [disabled]="disabled"
         ></shared-filter-group>
       </ng-container>
       <ng-container *ngIf="!filter.value.logic">
@@ -55,6 +62,7 @@
           [fields]="fields"
           (delete)="deleteFilter(i)"
           [canUseContext]="canUseContext"
+          [disabled]="disabled"
         ></shared-filter-row>
       </ng-container>
     </ng-container>

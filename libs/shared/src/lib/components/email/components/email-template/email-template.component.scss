@@ -1,0 +1,14 @@
+.loadingSign {
+  display: none;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+
+  &.active {
+    display: flex;
+  }
+}
+.previewScroll {
+  overflow: scroll;
+}

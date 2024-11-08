@@ -57,7 +57,7 @@
 		"calculatedField": {
 			"few": "Calculated Fields",
 			"none": "No Calculated field",
-			"one": "calculated Field"
+			"one": "Calculated Field"
 		},
 		"cancel": "Cancel",
 		"channel": {
@@ -70,6 +70,7 @@
 			"one": "Child"
 		},
 		"clear": "Clear",
+		"clone": "Clone",
 		"close": "Close",
 		"column": {
 			"few": "Columns",
@@ -78,7 +79,11 @@
 		},
 		"comma": "comma",
 		"copy": "Copy",
+		"copyright": {
+			"who": "Copyright © World Health Organization 2024."
+		},
 		"create": "Create",
+		"createdBy": "Created By",
 		"createdOn": "Created on",
 		"cronEditor": {
 			"advanced": "Advanced",
@@ -147,6 +152,11 @@
 			"none": "No Custom notification",
 			"one": "Custom notification"
 		},
+		"customTemplate": {
+			"few": "Custom templates",
+			"none": "No custom template",
+			"one": "Custom template"
+		},
 		"dashboard": {
 			"few": "Dashboards",
 			"none": "No dashboard",
@@ -168,8 +178,17 @@
 		"duplicate": "Duplicate",
 		"edit": "Edit",
 		"email": {
+			"customTemplate": "Custom template",
+			"error": {
+				"duplicateName": "Title already exists!"
+			},
 			"few": "Emails",
 			"none": "No email",
+			"notification": {
+				"few": "Email Notifications",
+				"none": "No Email Notification",
+				"one": "Email Notification"
+			},
 			"one": "Email"
 		},
 		"errors": {
@@ -180,6 +199,10 @@
 		"exitFullscreen": "Exit Fullscreen",
 		"export": "Export",
 		"exportObject": "Export {{name}}",
+		"exportType": {
+			"image": "Export to image",
+			"pdf": "Export to PDF"
+		},
 		"false": "False",
 		"field": {
 			"few": "Fields",
@@ -225,6 +248,7 @@
 			"none": "No layout",
 			"one": "Layout"
 		},
+		"legacy": "Legacy",
 		"loading": "Loading",
 		"modifiedOn": "Modified On",
 		"name": "Name",
@@ -239,14 +263,85 @@
 			"dataNotRecovered": "Failure on data recovery",
 			"dataRecovered": "The data has been recovered",
 			"email": {
+				"banner": {
+					"image": "Banner image",
+					"removeTooltip": "Remove banner image"
+				},
+				"body": {
+					"title": "Body*"
+				},
+				"close": "Are you sure you want to close this notification? Any changes made will not be saved.",
+				"dropdown": {
+					"emailInput": "Email input",
+					"inTheLast": {
+						"placeholder": "Select timestamp from filters...",
+						"tooltip": "Use this configuration only if you’ve filtered data using the ‘within last’ operator. For example, within the last 2 days or 24 hours"
+					},
+					"selectBlock": "Select a block",
+					"timestamp": "Select a timestamp"
+				},
 				"error": "Something went wrong during the email sending",
 				"errors": {
+					"customTitleExist": "Custom template title already exist.",
+					"noBody": "Body is required to proceed!",
+					"noCustomTitle": "Custom template title is required to proceed!",
 					"noDistributionList": "Something went wrong during the email sending: no distribution list found",
-					"noTemplate": "Something went wrong during the email sending: no template found"
+					"noSubject": "Subject is required to proceed!",
+					"noTemplate": "Something went wrong during the email sending: no template found",
+					"preview": "Preview of email failed"
+				},
+				"existing": "Or use existing",
+				"field": {
+					"filtered": "Select filtered field",
+					"noBlocks": "No blocks configured",
+					"selectBlock": "Block select",
+					"selectPlaceholder": "Select block field",
+					"selectTitle": "Field select"
+				},
+				"fieldselect": {
+					"placeholder": "Field Select",
+					"tooltip": "Select the field option only if the field contains a unique value; otherwise, the system will default to the first record in the results"
+				},
+				"footer": {
+					"logo": "Footer logo",
+					"removeTooltip": "Remove footer logo",
+					"style": "Footer style"
+				},
+				"header": {
+					"logo": "Header logo",
+					"removeTooltip": "Remove header logo",
+					"style": "Header style"
+				},
+				"preview": {
+					"processing": "Creating email preview..."
 				},
 				"processing": "Sending email...",
 				"ready": "Email ready",
-				"sent": "Email sent"
+				"sent": "Email sent",
+				"style": {
+					"background": "Background color",
+					"text": "Text color"
+				},
+				"subject": {
+					"customLayoutTitle": "Custom Template Title*",
+					"textTitle": "Subject text*",
+					"title": "Subject*"
+				},
+				"timestamp": "Timestamp"
+			},
+			"emailSent": "Email sent successfully.",
+			"export": {
+				"download": "Download",
+				"format": "Format:",
+				"image": "{{image}} Ready",
+				"includeHeaderFooter": "Include Header and Footer",
+				"landscape": "Landscape",
+				"loading": "Loading {{type}} export",
+				"options": "Export options",
+				"orientation": "Orientation:",
+				"paperSize": "Paper Size:",
+				"pdf": "PDF Ready",
+				"portrait": "Portrait"
 			},
 			"fetchingGroups": "Fetching groups from service...",
 			"file": {
@@ -286,6 +381,7 @@
 			"objectNotInvited": "{{name}} invitation failed.",
 			"objectNotReordered": "{{type}} not reordered. {{error}}",
 			"objectNotRestored": "{{value}} not restored. {{error}}",
+			"objectNotSaved": "{{type}} not saved. {{error}}",
 			"objectNotUpdated": "{{type}} not edited. {{error}}",
 			"objectReordered": "{{type}} reordered.",
 			"objectRestored": "{{value}} restored.",
@@ -377,6 +473,7 @@
 		"selectStatus": "Select a status",
 		"semicolon": "semicolon",
 		"send": "Send",
+		"sendEmail": "Send email",
 		"separator": "Separator",
 		"settings": "Settings",
 		"status": "Status",
@@ -400,6 +497,9 @@
 			"one": "Notification template"
 		},
 		"title": "Title",
+		"toolTip": {
+			"newBlock": "Add New Block"
+		},
 		"tooltip": {
 			"dragDrop": "Drag and drop to reorder",
 			"editor": {
@@ -465,6 +565,7 @@
 			"fieldName": "Field name",
 			"groupBy": "Group by",
 			"groupingRules": "Grouping rules",
+			"keepNull": "Preserve null values",
 			"mapping": {
 				"category": "Category",
 				"field": "Value",
@@ -504,7 +605,8 @@
 				"selectedFields": "Only unused fields can be removed.",
 				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.\nEstablishing consecutive sorting stages will simultaneously sort all fields.",
 				"unwind": "Deconstructs an array field from the input documents to output a document for each element."
-			}
+			},
+			"unavailableFields": "These fields are unavailable because their types are not supported"
 		},
 		"apiConfiguration": {
 			"create": {
@@ -599,6 +701,7 @@
 				"settings": {
 					"actions": "Actions",
 					"selectIcon": "Select an icon",
+					"showName": "Display name",
 					"tooltip": {
 						"autoSave": "Changes are automatically saved"
 					}
@@ -721,6 +824,7 @@
 				"update": "Edit custom notification"
 			},
 			"errors": {
+				"duplicate": "Email already exists in distribution list",
 				"email": "Please input a valid email address",
 				"schedule": "Enter a valid cron expression"
 			},
@@ -733,7 +837,7 @@
 				"confirmationMessage": "Are you sure you want to delete the distribution list '{{name}}'?"
 			},
 			"edit": {
-				"name": "Distribution list name",
+				"name": "Distribution List Name",
 				"new": "New distribution list",
 				"update": "Edit distribution list"
 			},
@@ -745,6 +849,97 @@
 				"name": {
 					"required": "Please provide a name"
 				}
+			}
+		},
+		"email": {
+			"action": {
+				"header": "Actions"
+			},
+			"alert": {
+				"dlPreview": "All emails showing in this table below will be used to create the distribution list",
+				"individualEmailsInfo": "Select the email fields you would like to use to send record specific emails to",
+				"invalidFields": "The following fields are not available for selection: <strong>{{fields}}</strong> as they are of type <strong>{{types}}</strong> and cannot be properly displayed in the table for this form.",
+				"noResource": "Select a resource using the dropdown to display Distribution list filter wizard",
+				"noResourceFields": "Selected resource doesn't contain any fields",
+				"noSelectedFields": "Please select at least 1 field to save this dataset",
+				"selectChildFields": "You have selected an Object/list field. Select atleast one child field to proceed further and/or preview.",
+				"selectedNonEmailFields": "The selected field is not configured as an email field. Do you want to proceed?",
+				"subscribeExists": "Error! {{message}}",
+				"subscribeFailed": "Oops!... Something went wrong whilst subscribing. {{errorMessage}}",
+				"subscribeSuccess": "Success! {{message}}",
+				"tooManyRecords": "At this moment, we are limited to fetch only 50 records. Based on the provided filter conditions there are <strong>{{totalRecords}}</strong> matching records. Please add some additional filters to bring the record count less than or equals to 50.",
+				"unsubscribeFailed": "Oops!... Something went wrong whilst unsubscribing. {{errorMessage}}",
+				"unsubscribeSuccess": "Success! {{message}}"
+			},
+			"back": "Back to list",
+			"distributionList": {
+				"alert": {
+					"allSeparate": "Distribution list will be composed of all user emails obtained from send separate email, if you'd like to send to a list of users please create a normal block in step 2.",
+					"and": "and",
+					"noEmail": "Selected Dataset does not contain valid email addresses",
+					"partOne": "To proceed, please enter",
+					"partThree": "at least one recipient email address",
+					"partTwo": "a distribution list name"
+				},
+				"bcc": "BCC",
+				"cc": "CC",
+				"create": "Create distribution list",
+				"createNew": "Or Create New",
+				"duplicate": "Title already exists",
+				"emailInput": "Manual email input",
+				"errors": {
+					"duplicateName": "This name already exists! Please enter a unique name."
+				},
+				"import": {
+					"download": "Download Template",
+					"import": "Import Distribution List",
+					"loading": "Importing file...",
+					"name": "Import",
+					"success": "Import Successful"
+				},
+				"list": "Distribution List",
+				"name": "Distribution List name",
+				"to": "To"
+			},
+			"error": {
+				"invalidDataset": "Following datasets are not valid: {{badDatasets}}",
+				"invalidToValue": "List for To Recipients Invalid please fix!"
+			},
+			"image": {
+				"rectangleValidation": "Please upload an image with a more rectangular aspect ratio, similar to 960x80.",
+				"squareValidation": "Please upload an image with a more square aspect ratio, or similar to 200x200."
+			},
+			"name": "Email",
+			"notification": {
+				"create": "Create Notification",
+				"list": "Notification List",
+				"type": "Alert Type",
+				"validTitle": "Please enter a title"
+			},
+			"preview": {
+				"less": "Show Less",
+				"more": "Show {{length}} remaining emails...",
+				"subject": "Subject:"
+			},
+			"restrictSubscription": {
+				"description": "Restricts users being able to subscribe to this email notification",
+				"title": "Restrict user subscription"
+			},
+			"saveAsDraft": "Save as draft",
+			"subscribe": {
+				"error": {
+					"restricted": "Subscription Restricted"
+				},
+				"restricted": {
+					"title": "Subscription restricted for this email notification"
+				},
+				"title": "Subscribe"
+			},
+			"tooltip": {
+				"reverseDate": "YYYY/MM/DD"
+			},
+			"unsubscribe": {
+				"title": "Unsubscribe"
 			}
 		},
 		"emailBuilder": {
@@ -838,6 +1033,7 @@
 				"modifiedBy": "Last modified by {{user}} on {{date}}"
 			},
 			"update": {
+				"confirmMessage": "Do you confirm the {{action}} of the current record?",
 				"exit": "Exit without saving changes",
 				"exitMessage": "There are unsaved changes on your form. Are you sure you want to exit?"
 			},
@@ -849,11 +1045,17 @@
 			"errors": {
 				"duplicatedRelatedName": "Duplicated related name for question {{question}} on page {{page}}. Please provide a unique related name (snake case format) to save the form.",
 				"incorrectJSON": "JSON is invalid in JSON Editor, changes haven't been saved",
+				"maximumAllowedFiles": "Maximum number of files allowed: {{number}}",
 				"missingGridField": "Missing an available field grid for question {{question}} on page {{page}}. Please select a least one in Custom Question Properties to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
 			},
 			"propertyGrid": {
+				"file": {
+					"acceptedFiles": {
+						"clear": "Clear(All file types accepted)"
+					}
+				},
 				"resource": {
 					"availableGridFields": "Available grid fields",
 					"resourceSelectText": "First you have to select a resource before setting any filters"
@@ -964,6 +1166,11 @@
 			"value": "Value"
 		},
 		"notifications": {
+			"email": {
+				"dropdown": {
+					"emailInput": "Email input"
+				}
+			},
 			"paginator": {
 				"ariaLabel": "Select page of notifications"
 			},
@@ -1010,8 +1217,16 @@
 			}
 		},
 		"queryBuilder": {
+			"apply": "Apply filter",
+			"block": {
+				"label": "Block title",
+				"title": "Block"
+			},
 			"dataset": {
-				"select": "Select a dataset"
+				"dataType": "Data Type",
+				"referenceData": "Données de référence",
+				"select": "Select a dataset",
+				"title": "Resource"
 			},
 			"errors": {
 				"field": {
@@ -1031,12 +1246,16 @@
 			},
 			"filter": {
 				"and": "And",
+				"apply": "Apply filter",
+				"applyField": "Set Fields",
+				"field": "Field",
 				"logic": "Filter logic",
 				"new": "Add new filter",
 				"newGroup": "Add new filter group",
 				"operator": "Operator",
 				"or": "Or",
-				"title": "Filter"
+				"title": "Filter",
+				"value": "Value"
 			},
 			"hint": {
 				"fields": "Select data points below and drag them to 'selected fields' on the right",
@@ -1046,6 +1265,12 @@
 			"pagination": {
 				"first": "Limit",
 				"title": "Pagination"
+			},
+			"preview": {
+				"title": "Preview"
+			},
+			"sendSeparate": {
+				"title": "Send Separate Email Fields"
 			},
 			"sort": {
 				"ascending": "Ascending",
@@ -1260,6 +1485,26 @@
 				"title": "Update role permissions and channels"
 			}
 		},
+		"select": {
+			"distribution": {
+				"SelectFromList": "Select from list",
+				"alertMe": "Alert me",
+				"apply": "Apply",
+				"bcc": "BCC",
+				"cc": "CC",
+				"createFilterLogic": "Create filter logic",
+				"email": "Email",
+				"emailError": "Type emails here and hit ENTER to add them to the distribution list",
+				"label": "Distribution List Name*",
+				"noPreviewData": "Selected dataset does not contain any preview data",
+				"sendseparate": {
+					"list": "Send separate email recipients"
+				},
+				"separateEmail": "Send separate email",
+				"subscriptionList": "Subscription list",
+				"to": "To"
+			}
+		},
 		"share": {
 			"modal": {
 				"copy": "Copy to clipboard",
@@ -1426,8 +1671,10 @@
 					"mapDetailsTitle": "Query Map View",
 					"mapDetailsTooltip": "Centered by default on selected record"
 				},
+				"openEditor": "Open html",
 				"openSettings": "Open settings",
 				"tooltip": {
+					"displayEditor": "Display html in modal",
 					"displayMap": "Display map",
 					"openPage": "Navigate to page",
 					"saved": "Changes saved",
@@ -1727,7 +1974,8 @@
 						}
 					},
 					"help": {
-						"geographicExtent": "Use filter and / or page context to zoom on the map"
+						"geographicExtent": "Use filter and / or page context to zoom on the map",
+						"layers": "The layers will be displayed on the map according to their order in the list, with layers at the top appearing above layers with a lower index."
 					},
 					"layers": {
 						"add": "Add new layer",
@@ -1811,6 +2059,7 @@
 							"title": "Visible Map Controls"
 						},
 						"geographicExtent": "Geographic extent",
+						"geographicExtentPadding": "Padding (degrees)",
 						"geographicExtentValue": "Geographic extent value",
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
@@ -1821,15 +2070,33 @@
 						"zoom": "Default zoom"
 					},
 					"renderer": {
+						"classBreak": "Class Breaks",
 						"default": "Default",
-						"defaultLabel": "Default label",
+						"defaultLabel": {
+							"info": "Leave empty to hide in legend",
+							"text": "Default label"
+						},
+						"errors": {
+							"invalidClassBreakOrder": "Incorrect class breaks ordering",
+							"repeatedValues": "Maximum value is repeated",
+							"valuesOrder": "Minimum value must be lower than maximum values in class breaks"
+						},
 						"label": "Label",
+						"maxValue": "Maximum value",
+						"minValue": "Minimum value",
 						"symbol": "Symbol",
 						"uniqueValue": "Unique values",
 						"value": "Value"
 					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
+						"classBreak": {
+							"maxValue": {
+								"first": "Leave blank to include all items with value greater than the maximum values of subsequent class breaks",
+								"general": "Must be higher than the maximum values of subsequent class breaks"
+							},
+							"minValue": "All items with values lower than the minimum set will use default rendering"
+						},
 						"cluster": {
 							"autoSize": "If enabled, size of clusters is automated. Else, you can select one.",
 							"lightMode": "If enabled, label uses white. Else, it displays in black."
@@ -1843,6 +2110,7 @@
 						"geographicExtent": {
 							"add": "Add new geographic extent",
 							"admin0": "Use either iso2code, iso3code or country name",
+							"padding": "You can choose to add additional space in degrees to be added around the geographic extent when zooming in, for additional context.",
 							"region": "Use region name",
 							"remove": "Remove geographic extent",
 							"value": "You can input a static value, or use {{context}} or {{filter}} notation to dynamically inject a value"
@@ -2074,6 +2342,7 @@
 			"filterIsNotNullOperator": "Is not null",
 			"filterIsNullOperator": "Is null",
 			"filterIsTrue": "is true",
+			"filterIsWithinTheLast": "Is within the last",
 			"filterLtOperator": "Is less than",
 			"filterLteOperator": "Is less than or equal to",
 			"filterMenuLogicDropDownLabel": "'{columnName} Filter Logic'",
@@ -2176,6 +2445,14 @@
 				"updated": "Application updated."
 			},
 			"setAsFavorite": "Set as favorite",
+			"shortcut": {
+				"errors": {
+					"isNotUnique": "Shortcut is already used in the platform",
+					"isNotValid": "Shortcut is not valid"
+				},
+				"info": "Application shortcut must be an unique string in the system. It can only contain letters, numbers and hyphens",
+				"text": "Shortcut"
+			},
 			"subscription": {
 				"create": "Create a subscription"
 			}
@@ -2188,11 +2465,44 @@
 		"customNotification": {
 			"lastExecution": "Last execution",
 			"schedule": "Schedule",
+			"select": "Select Notification type",
 			"type": "Notification type"
 		},
 		"dashboard": {
 			"activateFiltering": "Activate filtering",
 			"buttonActions": {
+				"action": "Action",
+				"actions": {
+					"addRecord": {
+						"edition": "Edit current record",
+						"fieldsForUpdate": {
+							"text": "Attach newly created record to current record fields"
+						},
+						"help": {
+							"mapping": "Prefill fields of new records by providing static values or mapping them from the dashboard context using the {{context.<fieldName>}} syntax."
+						},
+						"text": "Add record",
+						"tooltip": {
+							"fieldsForUpdate": "Newly created record can be attached to resource & resources fields",
+							"template": "Select a resource template for addition of new records"
+						}
+					},
+					"autoReload": "Auto reload dashboard on save",
+					"editRecord": {
+						"text": "Edit record",
+						"tooltip": {
+							"template": "Select a resource template for edition of current record.\n If no template is selected, latest form used by the record will be used"
+						}
+					},
+					"navigateTo": "Navigate to",
+					"openInNewTab": "Open in new tab",
+					"previousPage": "Previous page",
+					"sendNotification": {
+						"text": "Send notification"
+					},
+					"subscribeToNotification": "Subscribe to notification",
+					"url": "Target URL"
+				},
 				"category": "Button category",
 				"confirmDelete": "Are you sure you want to delete this action button?",
 				"create": "Create an action button",
@@ -2211,6 +2521,14 @@
 			},
 			"closable": "Closable",
 			"context": {
+				"addTemplate": "Create a template for this record",
+				"alert": {
+					"edition": {
+						"element": "You are editing the view for selected element.",
+						"template": "You are editing template of the page. It will be loaded by default if no specific view is created for a record."
+					},
+					"preview": "You are previewing the view for selected element.\nYou can create a specific template for this record."
+				},
 				"datasource": {
 					"alert": "Select a datasource, in order to set one page per record of the datasource. You can also set a template, which would be loaded by default if no specific page is created for a record.",
 					"info": "Indicate the field that would be use to select records",
@@ -2219,14 +2537,11 @@
 					"update": "Update context datasource"
 				},
 				"displayField": "Display field",
-				"edition": {
-					"element": "You are editing the view for selected element.",
-					"template": "You are editing template of the page. It will be loaded by default if no specific view is created for a record."
-				},
 				"notifications": {
 					"creatingTemplate": "Creating new template",
 					"loadDefault": "Displaying default template",
-					"templateCreated": "New template created"
+					"templateCreated": "New template created",
+					"templatesDeleted": "{{number}} templates were deleted for this dashboard"
 				},
 				"origin": "Context origin",
 				"refData": {
@@ -2242,6 +2557,12 @@
 			},
 			"contextFilter": "Context filter",
 			"dashboardFilter": "Dashboard filter",
+			"dashboardTemplates": {
+				"manage": {
+					"few": "Manage dashboard templates"
+				},
+				"none": "No additional template for this dashboard"
+			},
 			"deactivateFiltering": "Deactivate filtering",
 			"filterVariant": {
 				"title": "Filter variant",
@@ -2472,7 +2793,12 @@
 				"title": "Attributes"
 			},
 			"settings": {
-				"actions": "Actions"
+				"actions": "Actions",
+				"emailCreated": "New email notification created",
+				"emailDeleted": "Email notification deleted successfully",
+				"emailEdited": "Email notification edited successfully",
+				"emailFailMsg": "Oops!... Something went wrong while sending the email",
+				"emailSent": "Email notification has successfully been saved and sent"
 			}
 		},
 		"applications": {
@@ -2485,6 +2811,12 @@
 			"update": {
 				"exit": "Exit without saving changes",
 				"exitMessage": "There are unsaved changes on the page. Are you sure you want to exit?"
+			}
+		},
+		"error": {
+			"unauthorized": {
+				"footer": "Please contact <a class=\"underline text-primary-500 hover:text-primary-600\" href=\"mailto:ems2@who.int\">ems2@who.int</a> for more information.",
+				"title": "Your user account does not have access to this content."
 			}
 		},
 		"formBuilder": {

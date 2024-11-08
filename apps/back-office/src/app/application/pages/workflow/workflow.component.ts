@@ -1,7 +1,12 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
 import {
   Workflow,
   Step,
@@ -30,11 +35,10 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./workflow.component.scss'],
 })
 export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
-  // === DATA ===
+  /** Reference to router outlet */
+  @ViewChild(RouterOutlet) routerOutlet?: RouterOutlet;
   /** Loading state */
   public loading = true;
-
-  // === WORKFLOW ===
   /** Workflow id */
   public id = '';
   /** Application id */
@@ -43,22 +47,16 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   public workflow?: Workflow;
   /** Workflow steps */
   public steps: Step[] = [];
-
-  // === WORKFLOW EDITION ===
   /** True if the user can edit the workflow name */
   public canEditName = false;
   /** True if the workflow name form is active */
   public formActive = false;
   /** True if the user can update the workflow */
   public canUpdate = false;
-
-  // === ACTIVE STEP ===
   /** Active step index */
   public activeStep = 0;
   /** Subscription to change step events */
   private changeStepSubscription!: Subscription;
-
-  // === DUP APP SELECTION ===
   /** True if the application menu is open */
   public showAppMenu = false;
   /** Application list */
@@ -451,6 +449,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
         page: this.workflow?.page,
         icon: this.workflow?.page?.icon,
         visible: this.workflow?.page?.visible,
+        showName: this.workflow?.page?.showName,
         accessData: {
           access: this.workflow?.permissions,
           application: this.applicationId,

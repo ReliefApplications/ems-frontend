@@ -1,0 +1,93 @@
+<div class="flex flex-col items-center">
+  <div class="max-w-5xl w-full">
+    <kendo-stepper
+      #stepper
+      [steps]="steps"
+      stepType="full"
+      [(currentStep)]="currentStep"
+      orientation="horizontal"
+      [linear]="emailService.isLinear"
+      (currentStepChange)="currentStepChange($event)"
+    >
+    </kendo-stepper>
+    <ui-divider class="mt-10"></ui-divider>
+    <!-- General settings ( title / type ) -->
+    <app-create-notification
+      *ngIf="currentStep === 0"
+      (navigateToListScreen)="navigateToListScreen()"
+    ></app-create-notification>
+    <!-- Dataset creation -->
+    <app-create-dataset *ngIf="currentStep === 1"></app-create-dataset>
+    <!-- Distribution list selection -->
+    <app-select-distribution
+      *ngIf="currentStep === 2"
+    ></app-select-distribution>
+    <!-- Schedule of notification -->
+    <app-schedule-alert *ngIf="currentStep === 3"></app-schedule-alert>
+    <!-- Notification layout edition -->
+    <app-layout
+      [setLayoutValidation]="setLayoutValidation"
+      *ngIf="currentStep === 4"
+    ></app-layout>
+    <!-- Notification preview -->
+    <app-preview *ngIf="currentStep === 5"></app-preview>
+  </div>
+</div>
+
+<!-- Floating div for actions buttons -->
+<ui-fixed-wrapper>
+  <div class="flex justify-end gap-2 flex-wrap">
+    <!-- Back button -->
+    <ui-button
+      *ngIf="currentStep !== 0"
+      category="tertiary"
+      variant="primary"
+      (click)="prev()"
+    >
+      {{ 'common.back' | translate }}
+    </ui-button>
+    <!-- Next button -->
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="next()"
+      [disabled]="disableActionButton"
+      *ngIf="currentStep !== 5"
+    >
+      {{ 'common.next' | translate }}
+    </ui-button>
+    <!-- Save as draft -->
+    <ui-button
+      type="button"
+      class="my-0 mx-1"
+      category="secondary"
+      variant="primary"
+      (click)="saveDraft()"
+      *ngIf="currentStep !== 5"
+      [disabled]="disableSaveAsDraft"
+    >
+      {{ 'components.email.saveAsDraft' | translate }}
+    </ui-button>
+    <!-- Only activate at last step -->
+    <ng-container *ngIf="currentStep === 5">
+      <!-- Save notification button -->
+      <ui-button
+        type="submit"
+        category="secondary"
+        variant="primary"
+        (click)="submit()"
+      >
+        {{ 'common.save' | translate }}
+      </ui-button>
+      <!-- Save & send button -->
+      <ui-button
+        type="button"
+        category="secondary"
+        variant="primary"
+        (click)="send()"
+      >
+        {{ 'common.sendEmail' | translate }}
+      </ui-button>
+    </ng-container>
+  </div>
+</ui-fixed-wrapper>

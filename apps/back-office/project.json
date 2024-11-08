@@ -31,12 +31,12 @@
           {
             "glob": "**/*",
             "input": "node_modules/tinymce",
-            "output": "/tinymce/"
+            "output": "/assets/tinymce/"
           },
           {
             "glob": "**/*",
             "input": "libs/shared/src/i18n/tinymce/",
-            "output": "/tinymce/langs"
+            "output": "/assets/tinymce/langs"
           },
           {
             "glob": "**/*",
@@ -112,7 +112,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/backoffice/",
@@ -137,7 +137,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/backoffice/",
@@ -162,7 +162,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/backoffice/",
@@ -187,7 +187,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/backoffice/",
@@ -212,7 +212,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/admin/",
@@ -237,7 +237,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/admin/",
@@ -262,7 +262,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/admin/",

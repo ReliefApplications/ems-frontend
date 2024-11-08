@@ -1,0 +1,466 @@
+<div>
+  <div class="flex flex-row gap-2">
+    <!-- Select type of email input ( manual / from filter / combined ) -->
+    <div
+      class="w-1/3"
+      uiFormFieldDirective
+      [defaultMargin]="false"
+      [formGroup]="segmentForm"
+    >
+      <label>{{
+        'components.notifications.email.dropdown.emailInput' | translate
+      }}</label>
+      <ui-select-menu
+        id="segmentSelect"
+        formControlName="segment"
+        (ngModelChange)="onSegmentChange($event)"
+        class="w-full"
+      >
+        <ui-select-option
+          *ngFor="let segment of segmentList"
+          [value]="segment"
+          >{{ segment | titlecase }}</ui-select-option
+        >
+      </ui-select-menu>
+    </div>
+
+    <!-- Manual input -->
+    <div class="w-1/3" *ngIf="activeSegmentIndex === 0" uiFormFieldDirective>
+      <label>{{ 'components.select.distribution.email' | translate }}</label>
+      <ui-icon
+        icon="info_outline"
+        class="cursor-help"
+        variant="grey"
+        [uiTooltip]="'components.select.distribution.emailError' | translate"
+        uiSuffix
+      ></ui-icon>
+      <input
+        #filterInput
+        (keyup.enter)="addEmailManually(filterInput)"
+        (change)="validateEmail(filterInput)"
+        autocomplete="off"
+        aria-autocomplete="none"
+        [disabled]="isDisable"
+        type="text"
+        [placeholder]="'components.select.distribution.email' | translate"
+      />
+    </div>
+    <div></div>
+    <!-- Selection of resource -->
+    <div class="w-1/2" *ngIf="activeSegmentIndex >= 1">
+      <label
+        htmlFor="select__dataset"
+        class="block text-sm font-medium leading-6 text-gray-900"
+      >
+        {{ 'components.queryBuilder.dataset.dataType' | translate }}
+      </label>
+      <!-- Data type selection -->
+      <div uiFormFieldDirective class="flex-1" [formGroup]="segmentForm">
+        <ui-select-menu
+          id="dataType"
+          formControlName="dataType"
+          (ngModelChange)="onDataTypeChange($event)"
+          class="w-full"
+        >
+          <ui-select-option
+            *ngFor="let dataType of dataTypeList"
+            [value]="dataType"
+            >{{ dataType | titlecase }}</ui-select-option
+          >
+        </ui-select-menu>
+      </div>
+    </div>
+
+    <!-- Distribution list -->
+    <div
+      class="w-1/2"
+      *ngIf="
+        activeSegmentIndex >= 1 && segmentForm.get('dataType')?.value !== null
+      "
+      [formGroup]="distributionList"
+    >
+      <label
+        htmlFor="select__data__set"
+        class="block text-sm font-medium leading-6 text-gray-900"
+      >
+        <!-- {{ 'components.queryBuilder.dataset.title' | translate }}* -->
+        {{
+          segmentForm.get('dataType')?.value === 'Reference Data'
+            ? 'Reference Data'
+            : ('components.queryBuilder.dataset.title' | translate)
+        }}*
+      </label>
+      <!-- Reference Selection -->
+      <div
+        uiFormFieldDirective
+        class="flex-1"
+        [formGroup]="distributionList"
+        *ngIf="segmentForm.get('dataType')?.value === 'Reference Data'"
+      >
+        <ui-select-menu
+          id="reference"
+          formControlName="reference"
+          class="w-full"
+          (ngModelChange)="getSelectedReferenceData($event, true)"
+        >
+          <ui-select-option
+            *ngFor="let reference of refernceData"
+            [value]="reference?.id"
+            >{{ reference?.name | titlecase }}</ui-select-option
+          >
+        </ui-select-menu>
+      </div>
+      <!-- Resource selection -->
+      <div
+        uiFormFieldDirective
+        *ngIf="segmentForm.get('dataType')?.value === 'Resource'"
+      >
+        <shared-resource-select
+          formControlName="resource"
+          [selectedElements]="[resource]"
+        ></shared-resource-select>
+        <ui-button
+          *ngIf="distributionList?.value.resource"
+          uiSuffix
+          size="small"
+          [isIcon]="true"
+          (click)="clearFormField('resource', $event)"
+          icon="close"
+          variant="danger"
+          [uiTooltip]="'common.remove' | translate"
+        ></ui-button>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <!-- From resource filter -->
+    <div *ngIf="activeSegmentIndex === 1">
+      <!-- Filter editor -->
+      <ng-container *ngTemplateOutlet="datasetPreviewTmpl"></ng-container>
+      <!-- Resource has no fields -->
+      <ng-container
+        class="mt-5"
+        *ngTemplateOutlet="noFieldsInResourceAlertTmpl"
+      ></ng-container>
+    </div>
+  </div>
+  <!-- Use the template with *ngTemplateOutlet and context -->
+  <ng-container
+    *ngTemplateOutlet="
+      emailChipListTemplate;
+      context: {
+        $implicit: selectedEmails,
+        activeSegmentIndex: activeSegmentIndex,
+        isCombination: false
+      }
+    "
+  >
+  </ng-container>
+  <div class="loadingSign" [ngClass]="{ active: loading }">
+    <ui-spinner *ngIf="loading" style="position: relative"></ui-spinner>
+  </div>
+
+  <!-- Combination ( selected from resource ) -->
+  <div class="overflow-hidden mt-2" *ngIf="activeSegmentIndex === 2">
+    <div class="flex flex-col">
+      <div class="w-1/2">
+        <h3>
+          {{ 'components.email.distributionList.emailInput' | translate }}
+        </h3>
+        <div uiFormFieldDirective>
+          <label>{{
+            'components.select.distribution.email' | translate
+          }}</label>
+          <ui-icon
+            icon="info_outline"
+            class="cursor-help"
+            variant="grey"
+            [uiTooltip]="
+              'components.select.distribution.emailError' | translate
+            "
+            uiSuffix
+          ></ui-icon>
+          <input
+            #filterInput
+            (keyup.enter)="addEmailManually(filterInput)"
+            (change)="validateEmail(filterInput)"
+            autocomplete="off"
+            aria-autocomplete="none"
+            [disabled]="isDisable"
+            type="text"
+            [placeholder]="'components.select.distribution.email' | translate"
+          />
+        </div>
+        <!-- Chip List-->
+        <ng-container
+          class="mb-2"
+          *ngTemplateOutlet="
+            emailChipListTemplate;
+            context: {
+              $implicit: selectedEmails,
+              activeSegmentIndex: activeSegmentIndex,
+              isCombination: true
+            }
+          "
+        >
+        </ng-container>
+      </div>
+      <div>
+        <h3>{{ 'components.queryBuilder.filter.title' | translate }}</h3>
+        <ng-container *ngTemplateOutlet="datasetPreviewTmpl"></ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Email chip list template -->
+<ng-template
+  #emailChipListTemplate
+  let-selectedEmails="selectedEmails"
+  let-activeSegmentIndex="activeSegmentIndex"
+  let-isCombination="isCombination"
+>
+  <div uiChipList *ngIf="activeSegmentIndex === 0 || isCombination">
+    <ui-chip
+      variant="primary"
+      class="text-xl px-1"
+      [removable]="true"
+      [disabled]="isDisable"
+      (removed)="removeEmailChip(chipIndex)"
+      *ngFor="let emailControl of inputEmails; let chipIndex = index"
+      >{{ emailControl }}</ui-chip
+    >
+  </div>
+</ng-template>
+
+<!-- Too many records in dataset -->
+<ng-template #tooManyRecordsAlertTmpl>
+  <ui-alert
+    variant="warning"
+    [closable]="true"
+    *ngIf="showDatasetLimitWarning"
+    (close)="closeWarningMessage()"
+  >
+    <div
+      [innerHTML]="
+        'components.email.alert.tooManyRecords'
+          | translate : { totalRecords: totalMatchingRecords }
+      "
+    ></div>
+  </ui-alert>
+</ng-template>
+<!-- Please select the child fields of the Selected fields -->
+<ng-template #ChildFieldAlertTmpl>
+  <ui-alert
+    variant="warning"
+    [closable]="true"
+    *ngIf="showFieldsWarning"
+    (close)="closeFieldsWarningMessage()"
+  >
+    <div
+      [innerHTML]="
+        'components.email.alert.selectChildFields'
+          | translate : { totalRecords: totalMatchingRecords }
+      "
+    ></div>
+  </ui-alert>
+</ng-template>
+<!-- Selected NonEmail Fields -->
+<ng-template #NonEmailFieldAlertTmpl>
+  <ui-alert
+    variant="warning"
+    [closable]="true"
+    *ngIf="nonEmailFieldsAlert"
+    (close)="closeNonEmailFieldsAlert()"
+  >
+    <div
+      [innerHTML]="'components.email.alert.selectedNonEmailFields' | translate"
+    ></div>
+  </ui-alert>
+</ng-template>
+<!-- No Fields in Resource Message -->
+<ng-template #noFieldsInResourceAlertTmpl>
+  <ui-alert
+    variant="warning"
+    [closable]="true"
+    *ngIf="
+      this.resourcePopulated &&
+      this.distributionList?.value?.resource !== null &&
+      !this.resource?.fields?.length
+    "
+  >
+    <div
+      [innerHTML]="'components.email.alert.noResourceFields' | translate"
+    ></div>
+  </ui-alert>
+</ng-template>
+<!-- No selected fields in dataset -->
+<ng-template #noSelectedFieldsAlertTmpl>
+  <ui-alert
+    variant="warning"
+    *ngIf="!selectedFields?.length && !showDatasetLimitWarning"
+    [closable]="true"
+  >
+    <div>
+      {{ 'components.email.alert.noSelectedFields' | translate }}
+    </div>
+  </ui-alert>
+</ng-template>
+<!-- Showing Email Preview -->
+<ng-template #showDLPreview>
+  <ui-alert variant="default" *ngIf="showPreview" [closable]="true">
+    <div>
+      {{ 'components.email.alert.dlPreview' | translate }}
+    </div>
+  </ui-alert>
+</ng-template>
+
+<ng-template #showQuery>
+  <ui-alert variant="default" *ngIf="!resource?.id" [closable]="true">
+    <div>
+      {{ 'components.email.alert.noResource' | translate }}
+    </div>
+  </ui-alert>
+</ng-template>
+
+<!-- Distribution List Filter-Fields-Preview Query -->
+<ng-template #datasetPreviewTmpl>
+  <ng-container class="mt-2" *ngTemplateOutlet="showQuery"></ng-container>
+  <div [formGroup]="dlQuery">
+    <ui-tabs
+      [selectedIndex]="currentTabIndex"
+      (selectedIndexChange)="onTabSelect($event, true)"
+      #datasetPreview
+      *ngIf="
+        (segmentForm.get('dataType')?.value === 'Resource' &&
+          resource?.fields?.length) ||
+        (refernceData.length > 0 && availableFields.length > 0)
+      "
+    >
+      <div class="mt-4 flex flex-row">
+        <!-- Fields Tab -->
+        <ui-tab [title]="'Fields'" [selected]="true">
+          <ng-container ngProjectAs="label">
+            {{ 'components.queryBuilder.fields.title' | translate }}
+          </ng-container>
+          <ng-template uiTabContent>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="noSelectedFieldsAlertTmpl"
+            ></ng-container>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="ChildFieldAlertTmpl"
+            ></ng-container>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="NonEmailFieldAlertTmpl"
+            ></ng-container>
+            <div class="flex gap-4 mt-2">
+              <div class="mt-2 overflow-auto">
+                <!-- FIELDS -->
+                <shared-tab-fields
+                  *ngIf="availableFields.length > 0"
+                  [form]="getFieldsArray()"
+                  [fields]="availableFields"
+                  [showLimit]="false"
+                  [showColumnWidth]="false"
+                  [disabled]="isDisable"
+                  (droppedFields)="setNonEmailFields($event)"
+                ></shared-tab-fields>
+              </div>
+            </div>
+
+            <ui-button
+              *ngIf="distributionList.controls"
+              class="float-right mt-8"
+              category="secondary"
+              variant="primary"
+              (click)="getDataSet('fields')"
+              [disabled]="showFieldsWarning"
+            >
+              {{ 'components.queryBuilder.filter.applyField' | translate }}
+            </ui-button>
+          </ng-template>
+        </ui-tab>
+        <!-- Filter Tab -->
+        <ui-tab
+          [title]="'components.queryBuilder.filter.title' | translate"
+          [disabled]="
+            this.distributionList.get('resource').value === null ||
+            this.distributionList.get('resource').value === ''
+          "
+        >
+          <ng-container ngProjectAs="label">
+            {{ 'components.queryBuilder.filter.title' | translate }}
+          </ng-container>
+          <ng-template uiTabContent>
+            <ng-container
+              *ngIf="
+                resource?.fields?.length ||
+                (refernceData.length > 0 && availableFields.length > 0)
+              "
+            >
+              <ng-container
+                class="mt-2"
+                *ngTemplateOutlet="tooManyRecordsAlertTmpl"
+              ></ng-container>
+              <div class="flex gap-4 mt-2">
+                <div class="mt-2">
+                  <!-- NESTED FILTER GROUP -->
+                  <shared-tab-filter
+                    [form]="$any(dlQuery.get('filter'))"
+                    [query]="dlQuery.getRawValue()"
+                    [disabled]="isDisable"
+                    [referenceFields]="
+                      segmentForm.get('dataType')?.value === 'Reference Data'
+                        ? availableFields
+                        : []
+                    "
+                  >
+                  </shared-tab-filter>
+                </div>
+              </div>
+              <ui-button
+                class="float-right mt-8"
+                category="secondary"
+                variant="primary"
+                (click)="getDataSet('preview'); showPreview = true"
+                [disabled]="selectedFields.length === 0"
+              >
+                {{ 'common.preview' | translate }}
+              </ui-button>
+            </ng-container>
+          </ng-template>
+        </ui-tab>
+
+        <!-- Preview Tab -->
+        <ui-tab
+          [title]="'Preview'"
+          [disabled]="this.dlQuery.get('fields')?.value.length === 0"
+        >
+          <ng-container ngProjectAs="label">
+            {{ 'common.preview' | translate }}
+          </ng-container>
+          <ng-template uiTabContent>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="tooManyRecordsAlertTmpl"
+            ></ng-container>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="showDLPreview"
+            ></ng-container>
+            <div
+              id="tblPreview"
+              class="previewScroll"
+              #tblPreview
+              [innerHTML]="previewHTML"
+            ></div>
+          </ng-template>
+        </ui-tab>
+      </div>
+    </ui-tabs>
+  </div>
+</ng-template>

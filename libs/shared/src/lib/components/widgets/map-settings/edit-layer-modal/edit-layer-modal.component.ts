@@ -286,7 +286,8 @@ export class EditLayerModalComponent
     this.mapLayersService
       .createLayerFromDefinition(
         this.form.value as LayerModel,
-        this.data.mapComponent.injector
+        this.data.mapComponent.injector,
+        1
       )
       .then((layer) => {
         if (layer) {
@@ -377,7 +378,9 @@ export class EditLayerModalComponent
 
     if (this.form.controls.datasource) {
       // Reference data changes
-      this.getReferenceData();
+      if (this.form.value.datasource.refData) {
+        this.getReferenceData();
+      }
       this.form
         .get('datasource.refData')
         ?.valueChanges.pipe(takeUntil(this.destroy$))
@@ -396,7 +399,9 @@ export class EditLayerModalComponent
         });
 
       // Resource changes
-      this.getResource();
+      if (this.form.value.datasource.resource) {
+        this.getResource();
+      }
       this.form
         .get('datasource.resource')
         ?.valueChanges.pipe(takeUntil(this.destroy$))

@@ -19,6 +19,7 @@ import {
   ApplicationService,
   Role,
   EmptyModule,
+  Dashboard,
 } from '@oort-front/shared';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -63,14 +64,15 @@ export class EditButtonActionsModalComponent
    *
    * @param dialogRef dialog reference
    * @param data data passed to the modal
-   * @param data.buttonActions list of button actions
+   * @param data.dashboard Current dashboard
    * @param dialog dialog module for button edition / creation / deletion
    * @param translateService used to translate modal text
    * @param applicationService shared application service
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT[]>,
-    @Inject(DIALOG_DATA) private data: { buttonActions: ButtonActionT[] },
+    @Inject(DIALOG_DATA)
+    private data: { dashboard: Dashboard },
     public dialog: Dialog,
     public translateService: TranslateService,
     public applicationService: ApplicationService
@@ -79,8 +81,8 @@ export class EditButtonActionsModalComponent
   }
 
   ngOnInit(): void {
-    if (this.data && this.data.buttonActions) {
-      this.buttonActions = [...this.data.buttonActions];
+    if (this.data && this.data.dashboard?.buttons) {
+      this.buttonActions = [...this.data.dashboard.buttons];
       this.updateTable();
     }
   }
@@ -97,6 +99,9 @@ export class EditButtonActionsModalComponent
     const dialogRef = this.dialog.open<ButtonActionT | undefined>(
       EditButtonActionModalComponent,
       {
+        data: {
+          dashboard: this.data.dashboard,
+        },
         disableClose: true,
       }
     );
@@ -122,7 +127,13 @@ export class EditButtonActionsModalComponent
     );
     const dialogRef = this.dialog.open<ButtonActionT | undefined>(
       EditButtonActionModalComponent,
-      { data: buttonAction, disableClose: true }
+      {
+        data: {
+          button: buttonAction,
+          dashboard: this.data.dashboard,
+        },
+        disableClose: true,
+      }
     );
 
     dialogRef.closed

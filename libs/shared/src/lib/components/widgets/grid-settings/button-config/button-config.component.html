@@ -27,7 +27,6 @@
 
       <!-- Select all records of query -->
       <ui-checkbox formControlName="selectAll">
-        here
         <ng-container ngProjectAs="label">{{
           'components.widget.settings.grid.buttons.callback.selectAllRecords'
             | translate
@@ -320,7 +319,10 @@
           <label>{{
             'components.emailBuilder.distribution' | translate
           }}</label>
-          <ui-select-menu formControlName="distributionList">
+          <ui-select-menu
+            formControlName="distributionList"
+            [filterable]="true"
+          >
             <ui-select-option
               *ngFor="let list of distributionLists"
               [value]="list.id"
@@ -363,9 +365,10 @@
             class="select"
             formControlName="templates"
             [multiselect]="true"
+            [filterable]="true"
           >
             <ui-select-option
-              *ngFor="let template of mailTemplates"
+              *ngFor="let template of templates"
               [value]="template.id"
             >
               {{ template.name }}

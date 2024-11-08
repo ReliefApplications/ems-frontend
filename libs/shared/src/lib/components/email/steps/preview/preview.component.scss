@@ -1,0 +1,20 @@
+:host {
+  // Needed to prevent fixed wrapper to appear on top of it
+  display: block;
+}
+::ng-deep {
+  .body-wrap {
+    div {
+      flex-direction: unset !important;
+    }
+  }
+}
+::ng-deep {
+  #mainTable {
+    ol,
+    ul {
+      list-style-type: revert !important;
+      padding-inline-start: 40px !important;
+    }
+  }
+}

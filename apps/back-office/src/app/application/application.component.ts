@@ -7,10 +7,19 @@ import {
   ApplicationService,
   ConfirmService,
   UnsubscribeComponent,
+  AppAbility,
 } from '@oort-front/shared';
 import get from 'lodash/get';
 import { takeUntil, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+
+/** Navigation item type */
+type NavigationItem = {
+  name: string;
+  icon: string;
+  path: string;
+  legacy?: boolean;
+};
 
 /**
  * Main component of Application view.
@@ -28,8 +37,8 @@ export class ApplicationComponent
   public title = '';
   /** Navigation groups */
   public navGroups: any[] = [];
-  /** Admin pages */
-  public adminNavItems: any[] = [];
+  /** Application settings navigation items */
+  public appSettingsNavItems: NavigationItem[] = [];
   /** Current application */
   public application?: Application;
   /** Use side menu or not */
@@ -40,6 +49,27 @@ export class ApplicationComponent
   public largeDevice: boolean;
   /** Loading indicator */
   public loading = true;
+  /**
+   * Helper function to create navigation item for application settings
+   *
+   * @param nameKey Translation key
+   * @param path Path to component
+   * @param icon Icon to display
+   * @param legacy If legacy option
+   */
+  private addNavItem = (
+    nameKey: string,
+    path: string,
+    icon: string,
+    legacy?: boolean
+  ) => {
+    this.appSettingsNavItems.push({
+      name: this.translate.instant(nameKey),
+      path: path,
+      icon: icon,
+      legacy: legacy,
+    });
+  };
 
   /**
    * Main component of application view
@@ -49,16 +79,90 @@ export class ApplicationComponent
    * @param router Angular router
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
+   * @param ability Shared app ability service
    */
   constructor(
     private applicationService: ApplicationService,
     public route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
-    private confirmService: ConfirmService
+    private confirmService: ConfirmService,
+    private ability: AppAbility
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
+  }
+
+  /**
+   * Build pages navigation item list from the given application
+   *
+   * @param application Application from to build navigation items
+   * @returns Navigation items
+   */
+  private buildPagesNavItems(application: Application) {
+    return (
+      application.pages
+        ?.filter((x: any) => x.content && x.canSee)
+        .map((x: any) => ({
+          id: x.id,
+          name: x.name,
+          path:
+            x.type === ContentType.form
+              ? `./${x.type}/${x.id}`
+              : `./${x.type}/${x.content}`,
+          icon: x.icon || this.getNavIcon(x.type || ''),
+          fontFamily: x.icon ? 'fa' : 'material',
+          class: null,
+          orderable: true,
+          visible: x.visible ?? true,
+          action: x.canDelete && {
+            icon: 'delete',
+            toolTip: this.translate.instant('common.deleteObject', {
+              name: this.translate.instant('common.page.one').toLowerCase(),
+            }),
+            callback: () => this.onDelete(x),
+          },
+        })) || []
+    );
+  }
+
+  /**
+   * Build current application settings navigation item list
+   */
+  private buildAppSettingsNavItems() {
+    this.appSettingsNavItems = [];
+    this.addNavItem('common.settings', './settings/edit', 'settings');
+    this.addNavItem(
+      'common.user.few',
+      './settings/users',
+      'supervisor_account'
+    );
+    this.addNavItem('common.role.few', './settings/roles', 'verified_user');
+    this.addNavItem(
+      'pages.application.positionAttributes.title',
+      './settings/position',
+      'edit_attributes'
+    );
+    if (this.ability.can('read', 'EmailNotification')) {
+      this.addNavItem(
+        'common.email.notification.few',
+        './settings/email-notifications',
+        'mail'
+      );
+    }
+    this.addNavItem('common.channel.few', './settings/channels', 'dns');
+    this.addNavItem(
+      'common.subscription.few',
+      './settings/subscriptions',
+      'add_to_queue'
+    );
+    this.addNavItem('common.archive.few', './settings/archive', 'delete');
+
+    // {
+    //   name: this.translate.instant('common.customNotification.few'),
+    //   path: './settings/notifications',
+    //   icon: 'schedule_send',
+    // },
   }
 
   ngOnInit(): void {
@@ -72,98 +176,23 @@ export class ApplicationComponent
         if (application) {
           this.loading = false;
           this.title = application.name || '';
-          const displayNavItems: any[] =
-            application.pages
-              ?.filter((x: any) => x.content && x.canSee)
-              .map((x: any) => ({
-                id: x.id,
-                name: x.name,
-                path:
-                  x.type === ContentType.form
-                    ? `./${x.type}/${x.id}`
-                    : `./${x.type}/${x.content}`,
-                icon: x.icon || this.getNavIcon(x.type || ''),
-                fontFamily: x.icon ? 'fa' : 'material',
-                class: null,
-                orderable: true,
-                visible: x.visible ?? true,
-                action: x.canDelete && {
-                  icon: 'delete',
-                  toolTip: this.translate.instant('common.deleteObject', {
-                    name: this.translate
-                      .instant('common.page.one')
-                      .toLowerCase(),
-                  }),
-                  callback: () => this.onDelete(x),
-                },
-              })) || [];
           if (application.canUpdate) {
-            this.adminNavItems = [
-              {
-                name: this.translate.instant('common.settings'),
-                path: './settings/edit',
-                icon: 'settings',
-              },
-              {
-                name: this.translate.instant('common.template.few'),
-                path: './settings/templates',
-                icon: 'description',
-              },
-              {
-                name: this.translate.instant('common.distributionList.few'),
-                path: './settings/distribution-lists',
-                icon: 'mail',
-              },
-              {
-                name: this.translate.instant('common.customNotification.few'),
-                path: './settings/notifications',
-                icon: 'schedule_send',
-              },
-              {
-                name: this.translate.instant('common.user.few'),
-                path: './settings/users',
-                icon: 'supervisor_account',
-              },
-              {
-                name: this.translate.instant('common.role.few'),
-                path: './settings/roles',
-                icon: 'verified_user',
-              },
-              {
-                name: this.translate.instant(
-                  'pages.application.positionAttributes.title'
-                ),
-                path: './settings/position',
-                icon: 'edit_attributes',
-              },
-              {
-                name: this.translate.instant('common.channel.few'),
-                path: './settings/channels',
-                icon: 'dns',
-              },
-              {
-                name: this.translate.instant('common.subscription.few'),
-                path: './settings/subscriptions',
-                icon: 'add_to_queue',
-              },
-            ];
-          }
-          if (application.canUpdate) {
-            this.adminNavItems.push({
-              name: this.translate.instant('common.archive.few'),
-              path: './settings/archive',
-              icon: 'delete',
-            });
+            this.buildAppSettingsNavItems();
           }
           this.navGroups = [
             {
               name: this.translate.instant('common.page.few'),
-              navItems: displayNavItems,
+              navItems: this.buildPagesNavItems(application),
             },
           ];
           if (!this.application || application.id !== this.application.id) {
             const firstPage = get(application, 'pages', [])[0];
-            if (this.router.url.endsWith(application?.id || '') || !firstPage) {
+            if (
+              this.router.url.endsWith(application?.id || '') ||
+              (application?.shortcut &&
+                this.router.url.endsWith(application?.shortcut || '')) ||
+              !firstPage
+            ) {
               if (firstPage) {
                 this.router.navigate(
                   [
@@ -186,6 +215,9 @@ export class ApplicationComponent
         } else {
           this.title = '';
           this.navGroups = [];
+          if (this.applicationService.hasErrors) {
+            this.router.navigate(['/auth/error']);
+          }
         }
       });
   }

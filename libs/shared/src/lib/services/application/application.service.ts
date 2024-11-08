@@ -1,28 +1,23 @@
-import { Apollo } from 'apollo-angular';
+import { DOCUMENT } from '@angular/common';
+import { HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import {
+  ShadowDomService,
+  SnackbarService,
+  UILayoutService,
+  faV4toV6Mapper,
+} from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
+import { GraphQLError } from 'graphql';
+import { has } from 'lodash';
 import {
   BehaviorSubject,
   Observable,
   Subscription,
   firstValueFrom,
 } from 'rxjs';
-import {
-  AddRoleMutationResponse,
-  DeleteRoleMutationResponse,
-  DeleteUsersFromApplicationMutationResponse,
-  EditRoleMutationResponse,
-  Role,
-} from '../../models/user.model';
-import {
-  Page,
-  ContentType,
-  DeletePageMutationResponse,
-  RestorePageMutationResponse,
-  EditPageMutationResponse,
-  AddPageMutationResponse,
-  DuplicatePageMutationResponse,
-} from '../../models/page.model';
 import {
   Application,
   ApplicationEditedSubscriptionResponse,
@@ -37,51 +32,12 @@ import {
   DeleteChannelMutationResponse,
   EditChannelMutationResponse,
 } from '../../models/channel.model';
-import { HttpHeaders } from '@angular/common/http';
 import {
-  ADD_PAGE,
-  ADD_ROLE,
-  DELETE_PAGE,
-  DELETE_ROLE,
-  EDIT_APPLICATION,
-  EDIT_ROLE,
-  ADD_CHANNEL,
-  DELETE_CHANNEL,
-  ADD_SUBSCRIPTION,
-  EDIT_SUBSCRIPTION,
-  DELETE_SUBSCRIPTION,
-  ADD_POSITION_ATTRIBUTE_CATEGORY,
-  DELETE_USERS_FROM_APPLICATION,
-  DELETE_POSITION_ATTRIBUTE_CATEGORY,
-  EDIT_POSITION_ATTRIBUTE_CATEGORY,
-  EDIT_CHANNEL,
-  TOGGLE_APPLICATION_LOCK,
-  DUPLICATE_PAGE,
-  ADD_TEMPLATE,
-  UPDATE_TEMPLATE,
-  DELETE_TEMPLATE,
-  UPDATE_DISTRIBUTION_LIST,
-  ADD_DISTRIBUTION_LIST,
-  DELETE_DISTRIBUTION_LIST,
-  EDIT_PAGE,
-  ADD_CUSTOM_NOTIFICATION,
-  DELETE_CUSTOM_NOTIFICATION,
-  RESTORE_PAGE,
-} from './graphql/mutations';
-import { GET_APPLICATION_BY_ID } from './graphql/queries';
-import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
-import {
-  APPLICATION_EDITED_SUBSCRIPTION,
-  APPLICATION_UNLOCKED_SUBSCRIPTION,
-} from './graphql/subscriptions';
-import { AuthService } from '../auth/auth.service';
-import { TranslateService } from '@ngx-translate/core';
-import {
-  AddTemplateMutationResponse,
-  DeleteTemplateMutationResponse,
-  Template,
-  UpdateTemplateMutationResponse,
-} from '../../models/template.model';
+  AddCustomNotificationMutationResponse,
+  CustomNotification,
+  DeleteCustomNotificationMutationResponse,
+  UpdateCustomNotificationMutationResponse,
+} from '../../models/custom-notification.model';
 import {
   AddDistributionListMutationResponse,
   DeleteDistributionListMutationResponse,
@@ -89,18 +45,15 @@ import {
   UpdateDistributionListMutationResponse,
 } from '../../models/distribution-list.model';
 import {
-  AddCustomNotificationMutationResponse,
-  CustomNotification,
-  DeleteCustomNotificationMutationResponse,
-  UpdateCustomNotificationMutationResponse,
-} from '../../models/custom-notification.model';
-import { UPDATE_CUSTOM_NOTIFICATION } from '../application-notifications/graphql/mutations';
-import {
-  ShadowDomService,
-  SnackbarService,
-  UILayoutService,
-  faV4toV6Mapper,
-} from '@oort-front/ui';
+  AddPageMutationResponse,
+  ContentType,
+  DeletePageMutationResponse,
+  DuplicatePageMutationResponse,
+  EditPageMutationResponse,
+  Page,
+  RestorePageMutationResponse,
+} from '../../models/page.model';
+import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import {
   AddPositionAttributeCategoryMutationResponse,
   DeletePositionAttributeCategoryMutationResponse,
@@ -111,10 +64,58 @@ import {
   DeleteSubscriptionMutationResponse,
   EditSubscriptionMutationResponse,
 } from '../../models/subscription.model';
-import { RestService } from '../rest/rest.service';
+import {
+  AddEmailTemplateMutationResponse,
+  DeleteEmailTemplateMutationResponse,
+  EmailTemplate,
+  UpdateEmailTemplateMutationResponse,
+} from '../../models/template.model';
+import {
+  AddRoleMutationResponse,
+  DeleteRoleMutationResponse,
+  DeleteUsersFromApplicationMutationResponse,
+  EditRoleMutationResponse,
+  Role,
+} from '../../models/user.model';
+import { UPDATE_CUSTOM_NOTIFICATION } from '../application-notifications/graphql/mutations';
+import { AuthService } from '../auth/auth.service';
 import { DownloadService } from '../download/download.service';
-import { DOCUMENT } from '@angular/common';
-import { GraphQLError } from 'graphql';
+import { RestService } from '../rest/rest.service';
+import {
+  ADD_CHANNEL,
+  ADD_CUSTOM_NOTIFICATION,
+  ADD_DISTRIBUTION_LIST,
+  ADD_EMAIL_TEMPLATE,
+  ADD_PAGE,
+  ADD_POSITION_ATTRIBUTE_CATEGORY,
+  ADD_ROLE,
+  ADD_SUBSCRIPTION,
+  DELETE_CHANNEL,
+  DELETE_CUSTOM_NOTIFICATION,
+  DELETE_DISTRIBUTION_LIST,
+  DELETE_EMAIL_TEMPLATE,
+  DELETE_PAGE,
+  DELETE_POSITION_ATTRIBUTE_CATEGORY,
+  DELETE_ROLE,
+  DELETE_SUBSCRIPTION,
+  DELETE_USERS_FROM_APPLICATION,
+  DUPLICATE_PAGE,
+  EDIT_APPLICATION,
+  EDIT_CHANNEL,
+  EDIT_PAGE,
+  EDIT_POSITION_ATTRIBUTE_CATEGORY,
+  EDIT_ROLE,
+  EDIT_SUBSCRIPTION,
+  RESTORE_PAGE,
+  TOGGLE_APPLICATION_LOCK,
+  UPDATE_DISTRIBUTION_LIST,
+  UPDATE_EMAIL_TEMPLATE,
+} from './graphql/mutations';
+import { GET_APPLICATION_BY_ID } from './graphql/queries';
+import {
+  APPLICATION_EDITED_SUBSCRIPTION,
+  APPLICATION_UNLOCKED_SUBSCRIPTION,
+} from './graphql/subscriptions';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -161,6 +162,16 @@ export class ApplicationService {
     return `upload/application/${id}/invite`;
   }
 
+  /**
+   * Extract wanted path from the given application
+   *
+   * @param application Application from where to extract the path
+   * @returns Path to current application
+   */
+  getApplicationPath(application: Application): string {
+    return (application?.shortcut || application?.id) as string;
+  }
+
   /** @returns Edit status of the application */
   get isUnlocked(): boolean {
     const application = this.application.getValue();
@@ -183,7 +194,7 @@ export class ApplicationService {
   }
 
   /** @returns Current application's templates */
-  get templates(): Template[] {
+  get templates(): EmailTemplate[] {
     return this.application.value?.templates || [];
   }
 
@@ -240,40 +251,47 @@ export class ApplicationService {
         query: GET_APPLICATION_BY_ID,
         variables: {
           id,
+          shortcut: id,
           asRole,
         },
       })
-      .subscribe(async ({ data }) => {
-        // extend user abilities for application
-        if (data.application) {
-          this.hasErrors = false;
-          // Map all previously configured icons in v4 to v6 so on application edit, new icons are saved in DB
-          data.application.pages?.map((page: Page) => {
-            if (faV4toV6Mapper[page.icon as string]) {
-              return {
-                ...page,
-                icon: faV4toV6Mapper[page.icon as string],
-              };
-            } else {
-              return page;
-            }
-          });
-          this.authService.extendAbilityForApplication(data.application);
-          await this.getCustomStyle(data.application);
-        } else {
-          this.hasErrors = true;
-        }
-        this.application.next(data.application);
-        const application = this.application.getValue();
-        if (data.application?.locked) {
-          if (!application?.lockedByUser) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectLocked', {
-                name: data.application.name,
-              })
-            );
+      .subscribe({
+        next: async ({ data }) => {
+          // extend user abilities for application
+          if (data?.application) {
+            this.hasErrors = false;
+            // Map all previously configured icons in v4 to v6 so on application edit, new icons are saved in DB
+            data.application.pages?.map((page: Page) => {
+              if (faV4toV6Mapper[page.icon as string]) {
+                return {
+                  ...page,
+                  icon: faV4toV6Mapper[page.icon as string],
+                };
+              } else {
+                return page;
+              }
+            });
+            this.authService.extendAbilityForApplication(data.application);
+            await this.getCustomStyle(data.application);
+          } else {
+            this.hasErrors = true;
           }
-        }
+          this.application.next(data?.application);
+          const application = this.application.getValue();
+          if (data?.application?.locked) {
+            if (!application?.lockedByUser) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectLocked', {
+                  name: data?.application.name,
+                })
+              );
+            }
+          }
+        },
+        error: () => {
+          this.hasErrors = true;
+          this.application.next(null);
+        },
       });
     this.notificationSubscription = this.apollo
       .subscribe<ApplicationEditedSubscriptionResponse>({
@@ -388,6 +406,7 @@ export class ApplicationService {
             sideMenu: value.sideMenu,
             hideMenu: value.hideMenu,
             status: value.status,
+            shortcut: value.shortcut,
           },
         })
         .subscribe(({ errors, data }) => {
@@ -405,6 +424,7 @@ export class ApplicationService {
                 sideMenu: value.sideMenu,
                 hideMenu: value.hideMenu,
                 status: data.editApplication.status,
+                shortcut: data.editApplication.shortcut,
               };
               this.application.next(newApplication);
             }
@@ -518,15 +538,19 @@ export class ApplicationService {
                 value: this.translate.instant('common.page.one'),
               })
             );
-            const app = this.application.getValue();
-            if (app) {
+            const application = this.application.getValue();
+            if (application) {
               const newApplication = {
-                ...app,
-                pages: app.pages?.filter((x) => x.id !== data?.deletePage.id),
+                ...application,
+                pages: application.pages?.filter(
+                  (x) => x.id !== data?.deletePage.id
+                ),
               };
               this.application.next(newApplication);
               if (!stayOnPage) {
-                this.router.navigate([`./applications/${app.id}`]);
+                this.router.navigate([
+                  `./applications/${this.getApplicationPath(application)}`,
+                ]);
               }
             }
           } else {
@@ -571,10 +595,11 @@ export class ApplicationService {
                 pages: application.pages?.concat([data.restorePage]),
               };
               this.application.next(newApplication);
+              const applicationPath = this.getApplicationPath(application);
               this.router.navigate([
                 data.restorePage.type === ContentType.form
-                  ? `/applications/${application.id}/${data.restorePage.type}/${data.restorePage.id}`
-                  : `/applications/${application.id}/${data.restorePage.type}/${data.restorePage.content}`,
+                  ? `/applications/${applicationPath}/${data.restorePage.type}/${data.restorePage.id}`
+                  : `/applications/${applicationPath}/${data.restorePage.type}/${data.restorePage.content}`,
               ]);
             }
           } else {
@@ -735,13 +760,22 @@ export class ApplicationService {
   }
 
   /**
-   * Change page icon, by sending a mutation to the back-end.
+   * Update page parameter (icon or showName ), by sending a mutation to the back-end.
    *
    * @param page Edited page
-   * @param icon new icon
+   * @param update page update
+   * @param update.icon page icon
+   * @param update.showName should show page name
    * @param callback callback method, allow the component calling the service to do some logic.
    */
-  changePageIcon(page: Page, icon: string, callback?: any): void {
+  updatePageParameter(
+    page: Page,
+    update: {
+      icon?: string;
+      showName?: boolean;
+    },
+    callback?: any
+  ): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
@@ -749,7 +783,8 @@ export class ApplicationService {
           mutation: EDIT_PAGE,
           variables: {
             id: page.id,
-            icon,
+            ...(has(update, 'icon') && { icon: update.icon }),
+            ...(has(update, 'showName') && { showName: update.showName }),
           },
         })
         .subscribe(({ errors, data }) => {
@@ -762,7 +797,11 @@ export class ApplicationService {
               ...application,
               pages: application.pages?.map((x) => {
                 if (x.id === page.id) {
-                  x = { ...x, icon: data.editPage.icon };
+                  x = {
+                    ...x,
+                    icon: data.editPage.icon,
+                    showName: data.editPage.showName,
+                  };
                 }
                 return x;
               }),
@@ -808,10 +847,11 @@ export class ApplicationService {
               pages: application.pages?.concat([data.addPage]),
             };
             this.application.next(newApplication);
+            const applicationPath = this.getApplicationPath(application);
             this.router.navigate([
               page.type === ContentType.form
-                ? `/applications/${application.id}/${page.type}/${data.addPage.id}`
-                : `/applications/${application.id}/${page.type}/${content}`,
+                ? `/applications/${applicationPath}/${page.type}/${data.addPage.id}`
+                : `/applications/${applicationPath}/${page.type}/${content}`,
             ]);
           } else {
             this.snackBar.openSnackBar(
@@ -1644,10 +1684,11 @@ export class ApplicationService {
     if (application?.pages && application.pages.length > 0) {
       const page = application.pages[0];
       if (this.environment.module === 'backoffice') {
+        const applicationPath = this.getApplicationPath(application);
         this.router.navigate([
           page.type === ContentType.form
-            ? `applications/${application.id}/${page.type}/${page.id}`
-            : `applications/${application.id}/${page.type}/${page.content}`,
+            ? `applications/${applicationPath}/${page.type}/${page.id}`
+            : `applications/${applicationPath}/${page.type}/${page.content}`,
         ]);
       } else {
         this.router.navigate([
@@ -1665,12 +1706,12 @@ export class ApplicationService {
    * @param template new template to be added
    * @param callback additional callback
    */
-  addTemplate(template: Template, callback?: any): void {
+  addEmailTemplate(template: EmailTemplate, callback?: any): void {
     const application = this.application.getValue();
     if (application?.id) {
       this.apollo
-        .mutate<AddTemplateMutationResponse>({
-          mutation: ADD_TEMPLATE,
+        .mutate<AddEmailTemplateMutationResponse>({
+          mutation: ADD_EMAIL_TEMPLATE,
           variables: {
             application: application.id,
             template: {
@@ -1684,11 +1725,14 @@ export class ApplicationService {
           if (data) {
             const newApplication: Application = {
               ...application,
-              templates: [...(application.templates || []), data.addTemplate],
+              templates: [
+                ...(application.templates || []),
+                data.addEmailTemplate,
+              ],
             };
 
             this.application.next(newApplication);
-            if (callback) callback(data.addTemplate);
+            if (callback) callback(data.addEmailTemplate);
           }
         });
     }
@@ -1703,8 +1747,8 @@ export class ApplicationService {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
-        .mutate<DeleteTemplateMutationResponse>({
-          mutation: DELETE_TEMPLATE,
+        .mutate<DeleteEmailTemplateMutationResponse>({
+          mutation: DELETE_EMAIL_TEMPLATE,
           variables: {
             application: application.id,
             id,
@@ -1727,12 +1771,12 @@ export class ApplicationService {
    *
    * @param template new template to be added
    */
-  editTemplate(template: Template): void {
+  editTemplate(template: EmailTemplate): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
-        .mutate<UpdateTemplateMutationResponse>({
-          mutation: UPDATE_TEMPLATE,
+        .mutate<UpdateEmailTemplateMutationResponse>({
+          mutation: UPDATE_EMAIL_TEMPLATE,
           variables: {
             application: application.id,
             id: template.id,
@@ -1744,8 +1788,8 @@ export class ApplicationService {
           },
         })
         .subscribe(({ data }) => {
-          if (data?.editTemplate) {
-            const updatedTemplate = data.editTemplate;
+          if (data?.editEmailTemplate) {
+            const updatedTemplate = data.editEmailTemplate;
             const newApplication: Application = {
               ...application,
               templates: application.templates?.map((t) => {

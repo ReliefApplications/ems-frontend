@@ -8,7 +8,7 @@
     <div uiFormFieldDirective>
       <label>{{ 'components.widget.settings.chart.type' | translate }}</label>
       <ng-template #chartTemplate let-type>
-        <img class="chart-icon" [src]="type?.icon" />{{
+        <img class="chart-icon" [src]="type?.icon | sharedAsset" />{{
           type?.name | uppercase
         }}
       </ng-template>
@@ -21,7 +21,7 @@
       >
         <ui-select-option *ngFor="let type of types" [value]="type.name">
           <ng-container ngProjectAs="icon">
-            <img class="chart-icon" [src]="type.icon" />
+            <img class="chart-icon" [src]="type.icon | sharedAsset" />
           </ng-container>
           {{ type.name | uppercase }}
         </ui-select-option>

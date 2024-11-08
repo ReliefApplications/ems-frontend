@@ -5,7 +5,7 @@ import { Application } from '../../models/application.model';
 import { ApplicationService } from '../../services/application/application.service';
 
 /**
- * Page to view distribution lists within app.
+ * Page to view distribution lists within application.
  */
 @Component({
   selector: 'shared-application-distribution-lists',
@@ -23,7 +23,7 @@ export class ApplicationDistributionListsComponent
   public templates = new Array<any>();
 
   /**
-   * Page to view distribution lists within app.
+   * Page to view distribution lists within application.
    *
    * @param applicationService application service
    */

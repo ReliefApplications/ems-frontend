@@ -263,6 +263,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
         step: this.isStep ? this.step : undefined,
         icon: this.isStep ? this.step?.icon : this.page?.icon,
         visible: this.page?.visible,
+        showName: this.isStep ? this.step?.showName : this.page?.showName,
         accessData: {
           access: this.page
             ? this.page.permissions

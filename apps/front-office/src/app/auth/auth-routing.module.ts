@@ -20,6 +20,11 @@ export const routes: Routes = [
         redirectTo: '',
         pathMatch: 'full',
       },
+      {
+        path: 'error',
+        loadChildren: () =>
+          import('@oort-front/shared').then((m) => m.ErrorModule),
+      },
     ],
   },
 ];

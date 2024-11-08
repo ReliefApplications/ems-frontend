@@ -81,17 +81,20 @@ export const EDIT_PAGE = gql`
     $icon: String
     $permissions: JSON
     $visible: Boolean
+    $showName: Boolean
   ) {
     editPage(
       id: $id
       name: $name
       icon: $icon
+      showName: $showName
       permissions: $permissions
       visible: $visible
     ) {
       id
       name
       icon
+      showName
       visible
       permissions {
         canSee {
@@ -394,6 +397,7 @@ export const EDIT_APPLICATION = gql`
     $description: String
     $sideMenu: Boolean
     $hideMenu: Boolean
+    $shortcut: String
   ) {
     editApplication(
       id: $id
@@ -404,11 +408,13 @@ export const EDIT_APPLICATION = gql`
       description: $description
       sideMenu: $sideMenu
       hideMenu: $hideMenu
+      shortcut: $shortcut
     ) {
       id
       description
       sideMenu
       hideMenu
+      shortcut
       name
       createdAt
       modifiedAt
@@ -416,6 +422,7 @@ export const EDIT_APPLICATION = gql`
       pages {
         id
         icon
+        showName
         name
         visible
         createdAt
@@ -465,9 +472,9 @@ export const TOGGLE_APPLICATION_LOCK = gql`
 // TEMPLATE OPERATIONS
 
 /** Graphql request for adding a template to an application */
-export const ADD_TEMPLATE = gql`
-  mutation addTemplate($application: ID!, $template: TemplateInputType!) {
-    addTemplate(application: $application, template: $template) {
+export const ADD_EMAIL_TEMPLATE = gql`
+  mutation addEmailTemplate($application: ID!, $template: TemplateInputType!) {
+    addEmailTemplate(application: $application, template: $template) {
       id
       name
       type
@@ -477,7 +484,7 @@ export const ADD_TEMPLATE = gql`
 `;
 
 /** Graphql request for editing a template of an application */
-export const UPDATE_TEMPLATE = gql`
+export const UPDATE_EMAIL_TEMPLATE = gql`
   mutation editTemplate(
     $application: ID!
     $id: ID!
@@ -493,7 +500,7 @@ export const UPDATE_TEMPLATE = gql`
 `;
 
 /** Graphql request for deleting a template of an application */
-export const DELETE_TEMPLATE = gql`
+export const DELETE_EMAIL_TEMPLATE = gql`
   mutation deleteTemplate($application: ID!, $id: ID!) {
     deleteTemplate(application: $application, id: $id) {
       id

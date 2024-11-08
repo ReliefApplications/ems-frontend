@@ -222,18 +222,34 @@ export class ContextService {
    */
   public replaceContext(object: any): any {
     const context = this.context;
+
     if (!context) {
       return object;
     }
-    return JSON.parse(
-      JSON.stringify(object).replace(
-        new RegExp(this.contextRegex, 'g'),
-        (match) => {
+
+    // Function to recursively replace context placeholders in the object
+    const replacePlaceholders = (obj: any): any => {
+      if (typeof obj === 'string') {
+        // Replace only within strings
+        return obj.replace(new RegExp(this.contextRegex, 'g'), (match) => {
           const field = match.replace('{{context.', '').replace('}}', '');
-          return get(context, field) || match;
+          return get(context, field) || '';
+        });
+      } else if (Array.isArray(obj)) {
+        // Recursively replace in arrays
+        return obj.map((item) => replacePlaceholders(item));
+      } else if (obj && typeof obj === 'object') {
+        // Recursively replace in objects
+        const newObj = { ...obj };
+        for (const key in newObj) {
+          newObj[key] = replacePlaceholders(newObj[key]);
         }
-      )
-    );
+        return newObj;
+      }
+      return obj; // Return primitive types unchanged
+    };
+
+    return replacePlaceholders(object);
   }
 
   /**
@@ -517,33 +533,33 @@ export class ContextService {
    *
    * @param dashboard Current dashboard
    * @param callback additional callback
+   * @param contextEl id of the current context element
    */
-  public initContext(dashboard: Dashboard, callback: any): void {
-    if (!dashboard?.page?.context || !dashboard?.id) return;
-    // Checks if the dashboard has context attached to it
-    const contentWithContext = dashboard?.page?.contentWithContext || [];
-    const id = dashboard.id;
-    const dContext = contentWithContext.find((c) => c.content === id);
-
-    if (!dContext) return;
-
-    if ('element' in dContext) {
+  public initContext(
+    dashboard: Dashboard,
+    callback: any,
+    contextEl?: string | null
+  ): void {
+    if (!dashboard.page?.context || !contextEl) {
+      return;
+    }
+    if ('refData' in dashboard.page.context) {
       // Returns context element
-      callback({ element: dContext.element });
-    } else if ('record' in dContext) {
+      callback({ element: contextEl });
+    } else if ('resource' in dashboard.page.context) {
       // Get record by id
       this.apollo
         .query<RecordQueryResponse>({
           query: GET_RECORD_BY_ID,
           variables: {
-            id: dContext.record,
+            id: contextEl,
           },
         })
-        .subscribe((res) => {
-          if (res?.data) {
+        .subscribe(({ data }) => {
+          if (data) {
             callback({
-              record: dContext.record,
-              recordData: res.data.record,
+              record: contextEl,
+              recordData: data.record,
             });
           }
         });

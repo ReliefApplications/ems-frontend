@@ -4,7 +4,7 @@ import 'leaflet.heat';
 import 'leaflet.markercluster';
 import './utils/leaflet-heatmap.js';
 import { Feature, Geometry } from 'geojson';
-import { get, isNaN, isNil, max, maxBy, min, set } from 'lodash';
+import { clone, get, isNaN, isNil, max, maxBy, min, set } from 'lodash';
 import {
   LayerType,
   LayerFilter,
@@ -216,6 +216,10 @@ export class Layer implements LayerModel {
   public shouldRefresh = false;
   /** Parent layer ( optional, only for sub-layer ) */
   public parent?: Layer;
+  /** All children layer classes if exits */
+  public children?: Layer[] = [];
+  /** Given layer index position in the map */
+  public zIndex!: number;
 
   /**
    * Get layer children. Await for sub-layers to be loaded first.
@@ -304,6 +308,9 @@ export class Layer implements LayerModel {
     this.opacity = get(options, 'opacity', 1);
     this.visibility = get(options, 'visibility', true);
     this.layerDefinition = get(options, 'layerDefinition');
+    // Default zIndex values for layers are above 500, popups work around 600 and above,
+    // This way we make sure panes are correctly placed in the general stack
+    this.zIndex = get(options, 'zIndex') + 500;
 
     if (options.type !== 'GroupLayer') {
       this.sublayersLoaded.next(true);
@@ -457,17 +464,56 @@ export class Layer implements LayerModel {
       []
     );
 
+    const classBreakInfos = get(
+      this.layerDefinition,
+      'drawingInfo.renderer.classBreakInfos',
+      []
+    );
+
     const valueField = get(
       this.layerDefinition,
       'drawingInfo.renderer.field1',
       ''
     );
 
-    const uniqueValueDefaultSymbol = get(
+    const defaultSymbol = get(
       this.layerDefinition,
       'drawingInfo.renderer.defaultSymbol',
       symbol
     );
+
+    const getClassBreakSymbol = (feature: Feature<any, any>) => {
+      const minValue = get(
+        this.layerDefinition,
+        'drawingInfo.renderer.minValue',
+        undefined
+      );
+      const fieldValue = get(feature, `properties.${valueField}`, null);
+      let classBreakSymbol = defaultSymbol;
+      /**
+       * According to the value field to check, we set on symbol or other
+       * The value in the class break should be contained in a range, otherwise if not or nullish, the default symbol is applied
+       *
+       * - We use generic minValue as the start range in where to be included, if not provided, just use the roof value to calculate the associated symbol
+       * - After the first item in the class break, other ranges are calculated with current class break maxValue and the previous class break item maxValue
+       */
+      const ascendingMaxBreaks = clone(classBreakInfos).reverse();
+      for (let i = 0; i < ascendingMaxBreaks.length; i++) {
+        const currentSymbol = ascendingMaxBreaks[i].symbol;
+        const from = i > 0 ? ascendingMaxBreaks[i - 1].maxValue : minValue;
+        const to = ascendingMaxBreaks[i].maxValue;
+
+        // Check if fieldValue is within the range [from, to]
+        if (
+          (isNil(from) || fieldValue > from) &&
+          (isNil(to) || fieldValue <= to)
+        ) {
+          classBreakSymbol = currentSymbol;
+          break; // No need to continue once the correct symbol is found
+        }
+      }
+      return classBreakSymbol;
+    };
 
     // options used for parsing geojson to leaflet layer
     const geoJSONopts: L.GeoJSONOptions<any> = {
@@ -477,8 +523,10 @@ export class Layer implements LayerModel {
             const fieldValue = get(feature, `properties.${valueField}`, null);
             const uniqueValueSymbol =
               uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
-              uniqueValueDefaultSymbol;
-            return new L.Marker(latlng).setIcon(
+              defaultSymbol;
+            return new L.Marker(latlng, {
+              pane: this.zIndex.toString(),
+            }).setIcon(
               createCustomDivIcon({
                 icon: uniqueValueSymbol.style,
                 color: uniqueValueSymbol.color,
@@ -486,8 +534,22 @@ export class Layer implements LayerModel {
                 opacity: this.opacity,
               })
             );
+          } else if (rendererType === 'classBreak') {
+            const classBreakSymbol = getClassBreakSymbol(feature);
+            return new L.Marker(latlng, {
+              pane: this.zIndex.toString(),
+            }).setIcon(
+              createCustomDivIcon({
+                icon: classBreakSymbol.style,
+                color: classBreakSymbol.color,
+                size: classBreakSymbol.size,
+                opacity: this.opacity,
+              })
+            );
           } else {
-            return new L.Marker(latlng).setIcon(
+            return new L.Marker(latlng, {
+              pane: this.zIndex.toString(),
+            }).setIcon(
               createCustomDivIcon({
                 icon: symbol.style,
                 color: symbol.color,
@@ -504,11 +566,22 @@ export class Layer implements LayerModel {
             const fieldValue = get(feature, `properties.${valueField}`, null);
             const uniqueValueSymbol =
               uniqueValueInfos.find((x) => x.value == fieldValue)?.symbol ||
-              uniqueValueDefaultSymbol;
+              defaultSymbol;
             return {
               fillColor: uniqueValueSymbol.color,
               color: uniqueValueSymbol.outline?.color,
               weight: uniqueValueSymbol.outline?.width,
+              fillOpacity: this.opacity,
+              opacity: this.opacity,
+            };
+          } else if (rendererType === 'classBreak') {
+            const classBreakSymbol = getClassBreakSymbol(
+              feature as Feature<any, any>
+            );
+            return {
+              fillColor: classBreakSymbol.color,
+              color: classBreakSymbol.outline?.color,
+              weight: classBreakSymbol.outline?.width,
               fillOpacity: this.opacity,
               opacity: this.opacity,
             };
@@ -554,27 +627,35 @@ export class Layer implements LayerModel {
       //     // weight: style.borderWidth,
       //   };
       // },
+      pane: this.zIndex.toString(),
     };
 
     switch (this.type) {
       case 'GroupLayer':
-        const ChildrenIds = this.getChildren();
-        const layerPromises = ChildrenIds.map((layer) => {
-          return this.layerService.createLayersFromId(layer, this.injector);
+        const childrenIds = this.getChildren();
+        const layerPromises = childrenIds.map((layer) => {
+          return this.layerService.createLayersFromId(
+            layer,
+            this.injector,
+            // children layers would have same index context as the parent
+            this.zIndex - 500
+          );
         });
         const sublayers = await Promise.all(layerPromises);
-
+        this.children = [];
         for (const child of sublayers) {
           child.opacity = child.opacity * this.opacity;
           child.visibility = this.visibility && child.visibility;
           child.parent = this;
           child.layer = await child.getLayer();
+          this.children.push(child);
         }
         const layers = sublayers
           .map((child) => child.layer)
           .filter((layer) => layer !== undefined) as L.Layer[];
-        const layer = L.layerGroup(layers);
+        const layer = L.layerGroup(layers, { pane: this.zIndex.toString() });
         layer.onAdd = (map: L.Map) => {
+          this.updateMapPanesStatus(map);
           const l = L.LayerGroup.prototype.onAdd.call(layer, map);
           // Leaflet.heat doesn't support click events, so we have to do it ourselves
           this.onAddLayer(map, layer);
@@ -585,10 +666,7 @@ export class Layer implements LayerModel {
           this.onRemoveLayer(map, layer);
           return l;
         };
-        this.layer = layer;
-        (this.layer as any).origin = 'app-builder';
-        (this.layer as any).id = this.id;
-        return this.layer;
+        return this.updateLayerContextInformation(layer);
 
       default:
         switch (
@@ -654,6 +732,7 @@ export class Layer implements LayerModel {
             );
 
             const heatmapOptions: HeatMapOptions = {
+              pane: this.zIndex.toString(),
               opacity: this.opacity,
               blur: get(
                 this.layerDefinition,
@@ -719,6 +798,7 @@ export class Layer implements LayerModel {
               }
             };
             layer.onAdd = (map: L.Map) => {
+              this.updateMapPanesStatus(map);
               // So we can use onAdd method from HeatLayer class
               const l = (L as any).HeatLayer.prototype.onAdd.call(layer, map);
               // Leaflet.heat doesn't support click events, so we have to do it ourselves
@@ -744,10 +824,7 @@ export class Layer implements LayerModel {
               this.onRemoveLayer(map, layer);
               return l;
             };
-            this.layer = layer;
-            (this.layer as any).origin = 'app-builder';
-            (this.layer as any).id = this.id;
-            return this.layer;
+            return this.updateLayerContextInformation(layer);
           default:
             switch (get(this.layerDefinition, 'featureReduction.type')) {
               case 'cluster':
@@ -757,6 +834,7 @@ export class Layer implements LayerModel {
                   symbol
                 );
                 const clusterGroup = L.markerClusterGroup({
+                  clusterPane: this.zIndex.toString(),
                   chunkedLoading: true, // Load markers in chunks
                   chunkInterval: 250, // Time interval (in ms) during which addLayers works before pausing to let the rest of the page process
                   chunkDelay: 50, // Time delay (in ms) between consecutive periods of processing for addLayers
@@ -791,6 +869,7 @@ export class Layer implements LayerModel {
                   },
                 });
                 clusterGroup.onAdd = (map: L.Map) => {
+                  this.updateMapPanesStatus(map);
                   const l = L.MarkerClusterGroup.prototype.onAdd.call(
                     clusterGroup,
                     map
@@ -821,7 +900,9 @@ export class Layer implements LayerModel {
                 });
 
                 const clusterLayer = L.geoJSON(data, geoJSONopts);
+
                 clusterLayer.onAdd = (map: L.Map) => {
+                  this.updateMapPanesStatus(map);
                   const l = L.GeoJSON.prototype.onAdd.call(clusterLayer, map);
                   this.onAddLayer(map, clusterLayer);
                   return l;
@@ -832,14 +913,12 @@ export class Layer implements LayerModel {
                   return l;
                 };
                 clusterGroup.addLayer(clusterLayer);
-                this.layer = clusterGroup;
-                (this.layer as any).origin = 'app-builder';
-                (this.layer as any).id = this.id;
-                return this.layer;
+                return this.updateLayerContextInformation(clusterGroup);
               default:
                 const layer = L.geoJSON(data, geoJSONopts);
 
                 layer.onAdd = (map: L.Map) => {
+                  this.updateMapPanesStatus(map);
                   const l = L.GeoJSON.prototype.onAdd.call(layer, map);
                   this.onAddLayer(map, layer);
                   return l;
@@ -849,12 +928,38 @@ export class Layer implements LayerModel {
                   this.onRemoveLayer(map, layer);
                   return l;
                 };
-                this.layer = layer;
-                (this.layer as any).origin = 'app-builder';
-                (this.layer as any).id = this.id;
-                return this.layer;
+                return this.updateLayerContextInformation(layer);
             }
         }
+    }
+  }
+
+  /**
+   * Update given layer with necessary context information, including
+   * - Related system layer id
+   * - Layer origin
+   * - Z index in the layer stack context
+   *
+   * @param layer Layer to update with context information
+   * @returns layer with updated context information
+   */
+  private updateLayerContextInformation(layer: L.Layer): L.Layer {
+    this.layer = layer;
+    (this.layer as any).origin = 'app-builder';
+    (this.layer as any).id = this.id;
+    (this.layer as any).zIndex = this.zIndex;
+    return this.layer;
+  }
+
+  /**
+   * Set up panes to keep current map layers stack in order
+   *
+   * @param map Current map instance
+   */
+  private updateMapPanesStatus(map: L.Map) {
+    if (!map.getPane(this.zIndex.toString())) {
+      map.createPane(this.zIndex.toString()).style.zIndex =
+        this.zIndex.toString();
     }
   }
 
@@ -1005,11 +1110,14 @@ export class Layer implements LayerModel {
   get legend() {
     let html = '';
     const geometryType = get(this.datasource, 'type') || 'Point';
+    const rendererType = get(
+      this.layerDefinition,
+      'drawingInfo.renderer.type',
+      'simple'
+    );
     switch (this.type) {
       case 'FeatureLayer': {
-        switch (
-          get(this.layerDefinition, 'drawingInfo.renderer.type', 'simple')
-        ) {
+        switch (rendererType) {
           case 'heatmap':
             const gradient = get(
               this.layerDefinition,
@@ -1031,14 +1139,15 @@ export class Layer implements LayerModel {
             container.innerHTML = linearGradient.outerHTML + legend.outerHTML;
             html = container.outerHTML;
             break;
-          case 'uniqueValue': {
+          case 'uniqueValue':
+          case 'classBreak': {
             const defaultSymbol: LayerSymbol | undefined = get(
               this.layerDefinition,
               'drawingInfo.renderer.defaultSymbol'
             );
             for (const info of get(
               this.layerDefinition,
-              'drawingInfo.renderer.uniqueValueInfos',
+              `drawingInfo.renderer.${rendererType}Infos` as any,
               []
             )) {
               const symbol: LayerSymbol = info.symbol;
@@ -1130,7 +1239,7 @@ export class Layer implements LayerModel {
       }
     }
     if (html) {
-      html = `<div class="font-bold truncate">${this.name}</div>` + html;
+      html = `<div class="font-bold">${this.name}</div>` + html;
     }
     return html;
   }

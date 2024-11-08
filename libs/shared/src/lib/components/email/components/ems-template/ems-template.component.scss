@@ -1,0 +1,15 @@
+.page {
+  align-self: center;
+}
+
+.active {
+  background: #269ed1;
+  color: #fff;
+  cursor: pointer;
+}
+
+.inactive {
+  background: #c3cacdbd;
+  color: #fff;
+  cursor: not-allowed;
+}

@@ -1,3 +1,5 @@
+import { Dialog } from '@angular/cdk/dialog';
+import { DOCUMENT } from '@angular/common';
 import {
   AfterViewInit,
   Component,
@@ -17,15 +19,33 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService, TooltipDirective } from '@oort-front/ui';
+import { ResizeBatchService } from '@progress/kendo-angular-common';
 import {
-  GridComponent as KendoGridComponent,
+  ColumnComponent,
   GridDataResult,
+  GridComponent as KendoGridComponent,
   PageChangeEvent,
   RowArgs,
   SelectionEvent,
-  ColumnComponent,
 } from '@progress/kendo-angular-grid';
-import { Dialog } from '@angular/cdk/dialog';
+import { PopupRef, PopupService } from '@progress/kendo-angular-popup';
+import {
+  CompositeFilterDescriptor,
+  SortDescriptor,
+} from '@progress/kendo-data-query';
+import { get, has, intersection, isEqual, isNil } from 'lodash';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { DownloadService } from '../../../../services/download/download.service';
+import { GridDataFormatterService } from '../../../../services/grid-data-formatter/grid-data-formatter.service';
+import { GridService } from '../../../../services/grid/grid.service';
+import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { WidgetComponent } from '../../../widget/widget.component';
+import { GridLayout } from '../models/grid-layout.model';
+import { GridActions } from '../models/grid-settings.model';
 import {
   EXPORT_SETTINGS,
   GRADIENT_SETTINGS,
@@ -33,28 +53,7 @@ import {
   PAGER_SETTINGS,
   SELECTABLE_SETTINGS,
 } from './grid.constants';
-import {
-  CompositeFilterDescriptor,
-  SortDescriptor,
-} from '@progress/kendo-data-query';
-import { ResizeBatchService } from '@progress/kendo-angular-common';
-import { PopupRef, PopupService } from '@progress/kendo-angular-popup';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { GridService } from '../../../../services/grid/grid.service';
-import { DownloadService } from '../../../../services/download/download.service';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { GridLayout } from '../models/grid-layout.model';
-import { get, intersection, isNil, has, isEqual } from 'lodash';
-import { DashboardService } from '../../../../services/dashboard/dashboard.service';
-import { TranslateService } from '@ngx-translate/core';
-import { SnackbarService, TooltipDirective } from '@oort-front/ui';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { DOCUMENT } from '@angular/common';
-import { WidgetComponent } from '../../../widget/widget.component';
-import { DatePipe } from '../../../../pipes/date/date.pipe';
-import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
-import { formatGridRowData } from './utils/grid-data-formatter';
-import { GridActions } from '../models/grid-settings.model';
+import { DocumentManagementService } from '../../../../services/document-management/document-management.service';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -76,7 +75,7 @@ const matches = (el: any, selector: any) =>
   selector: 'shared-grid',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss'],
-  providers: [PopupService, ResizeBatchService, DatePipe],
+  providers: [PopupService, ResizeBatchService],
 })
 export class GridComponent
   extends UnsubscribeComponent
@@ -294,32 +293,32 @@ export class GridComponent
    *
    * @param widgetComponent parent widget component ( optional )
    * @param environment Current environment
-   * @param datePipe Shared date pipe
    * @param dialog The Dialog service
    * @param gridService The grid service
    * @param renderer The renderer library
    * @param downloadService The download service
-   * @param dashboardService Dashboard service
    * @param translate The translate service
    * @param snackBar The snackbar service
    * @param el Ref to html element
    * @param document document
    * @param popupService Kendo popup service
+   * @param documentManagementService Shared document management service
+   * @param gridDataFormatterService GridDataFormatterService
    */
   constructor(
     @Optional() public widgetComponent: WidgetComponent,
     @Inject('environment') environment: any,
-    @Inject(DatePipe) private datePipe: DatePipe,
     private dialog: Dialog,
     private gridService: GridService,
     private renderer: Renderer2,
     private downloadService: DownloadService,
-    private dashboardService: DashboardService,
     private translate: TranslateService,
     private snackBar: SnackbarService,
     private el: ElementRef,
     @Inject(DOCUMENT) private document: Document,
-    private popupService: PopupService
+    private popupService: PopupService,
+    private documentManagementService: DocumentManagementService,
+    private gridDataFormatterService: GridDataFormatterService
   ) {
     super();
     this.environment = environment.module || 'frontoffice';
@@ -372,7 +371,7 @@ export class GridComponent
       (changes['fields']?.currentValue?.length || this.fields.length)
     ) {
       this.data.data.forEach((gridRow) => {
-        formatGridRowData(gridRow, this.fields, this.datePipe);
+        this.gridDataFormatterService.formatGridRowData(gridRow, this.fields);
       });
     }
     // First load of records, or on page change
@@ -743,14 +742,18 @@ export class GridComponent
    * @param file File to download.
    */
   public onDownload(file: any): void {
-    if (file.content.startsWith('data')) {
-      const downloadLink = this.document.createElement('a');
-      downloadLink.href = file.content;
-      downloadLink.download = file.name;
-      downloadLink.click();
+    if (typeof file.content === 'string') {
+      if (file.content.startsWith('data')) {
+        const downloadLink = this.document.createElement('a');
+        downloadLink.href = file.content;
+        downloadLink.download = file.name;
+        downloadLink.click();
+      } else {
+        const path = `download/file/${file.content}`;
+        this.downloadService.getFile(path, file.type, file.name);
+      }
     } else {
-      const path = `download/file/${file.content}`;
-      this.downloadService.getFile(path, file.type, file.name);
+      this.documentManagementService.getFile(file);
     }
   }
 
@@ -848,7 +851,6 @@ export class GridComponent
         disableClose: true,
         data: {
           widget: this.widget,
-          template: this.dashboardService.findSettingsTemplate(this.widget),
         },
       });
       dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
@@ -910,6 +912,20 @@ export class GridComponent
   public onOpenMapModal(dataItem: any, field: any) {
     this.action.emit({
       action: 'map',
+      item: dataItem,
+      field,
+    });
+  }
+
+  /**
+   * Open editor around clicked item
+   *
+   * @param dataItem Clicked item
+   * @param field html field
+   */
+  public onOpenEditorModal(dataItem: any, field: any) {
+    this.action.emit({
+      action: 'editor',
       item: dataItem,
       field,
     });
@@ -1038,8 +1054,11 @@ export class GridComponent
             case 'datetime-local':
             case 'datetime':
             case 'date': {
-              contentSize = (this.datePipe.transform(data[type.field]) || '')
-                .length;
+              contentSize = (
+                this.gridDataFormatterService.datePipe.transform(
+                  data[type.field]
+                ) || ''
+              ).length;
               break;
             }
             case 'file': {

@@ -12,7 +12,14 @@ describe('SnackbarComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SnackbarComponent],
-      imports: [SnackbarModule, TranslateTestingModule],
+      imports: [
+        SnackbarModule,
+        TranslateTestingModule.withTranslations('en', {
+          common: {
+            close: 'Close',
+          },
+        }),
+      ],
       providers: [
         {
           provide: SNACKBAR_DATA,
