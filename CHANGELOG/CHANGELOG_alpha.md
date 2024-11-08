@@ -1,3 +1,10 @@
+# [2.17.0-alpha.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.1...v2.17.0-alpha.2) (2024-11-08)
+
+
+### Features
+
+* add unsubscribe from notification action in custom action buttons ([#2682](https://github.com/ReliefApplications/ems-frontend/issues/2682)) ([aff79c5](https://github.com/ReliefApplications/ems-frontend/commit/aff79c540285544170c645db0560bc519d6e9fb3)), closes [AB#105519](https://github.com/AB/issues/105519)
+
 # [2.17.0-alpha.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.16.0...v2.17.0-alpha.1) (2024-11-08)
 
 
