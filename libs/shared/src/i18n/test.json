@@ -2469,8 +2469,7 @@
 			"type": "******"
 		},
 		"dashboard": {
-			"activateFiltering": "******",
-			"buttonActions": {
+			"actionButtons": {
 				"action": "******",
 				"actions": {
 					"addRecord": {
@@ -2519,6 +2518,7 @@
 				"variant": "******",
 				"visibleTo": "******"
 			},
+			"activateFiltering": "******",
 			"closable": "******",
 			"context": {
 				"addTemplate": "******",

@@ -1,0 +1,12 @@
+<div
+  class="inline-flex mr-1"
+  *ngFor="let button of actionButtons; let i = index"
+>
+  <div class="group relative">
+    <shared-action-button
+      [actionButton]="button"
+      [dashboard]="dashboard"
+      (reloadDashboard)="reloadDashboard.emit()"
+    ></shared-action-button>
+  </div>
+</div>

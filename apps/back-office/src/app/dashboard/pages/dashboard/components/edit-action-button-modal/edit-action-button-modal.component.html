@@ -6,8 +6,8 @@
     <h3 class="font-semibold">
       {{
         (isNew
-          ? 'models.dashboard.buttonActions.create'
-          : 'models.dashboard.buttonActions.edit.one'
+          ? 'models.dashboard.actionButtons.create'
+          : 'models.dashboard.actionButtons.edit.one'
         ) | translate
       }}
     </h3>
@@ -31,7 +31,7 @@
               <!-- Button text -->
               <div uiFormFieldDirective>
                 <label>{{
-                  'models.dashboard.buttonActions.text' | translate
+                  'models.dashboard.actionButtons.text' | translate
                 }}</label>
                 <input formControlName="buttonText" type="string" />
               </div>
@@ -40,7 +40,7 @@
               <ui-toggle formControlName="hasRoleRestriction" class="mb-4">
                 <ng-container ngProjectAs="label">
                   {{
-                    'models.dashboard.buttonActions.hasRoleRestriction'
+                    'models.dashboard.actionButtons.hasRoleRestriction'
                       | translate
                   }}</ng-container
                 >
@@ -52,7 +52,7 @@
                 *ngIf="form.value.general.hasRoleRestriction"
               >
                 <label>{{
-                  'models.dashboard.buttonActions.visibleTo' | translate
+                  'models.dashboard.actionButtons.visibleTo' | translate
                 }}</label>
                 <ui-select-menu formControlName="roles" [multiselect]="true">
                   <ui-select-option
@@ -69,7 +69,7 @@
                 <!-- Button category -->
                 <div uiFormFieldDirective [outline]="false" class="grow">
                   <label>{{
-                    'models.dashboard.buttonActions.category' | translate
+                    'models.dashboard.actionButtons.category' | translate
                   }}</label>
                   <ui-select-menu formControlName="category">
                     <ui-select-option
@@ -84,7 +84,7 @@
                 <!-- Button variant -->
                 <div uiFormFieldDirective [outline]="false" class="grow">
                   <label>{{
-                    'models.dashboard.buttonActions.variant' | translate
+                    'models.dashboard.actionButtons.variant' | translate
                   }}</label>
                   <ui-select-menu formControlName="variant">
                     <ui-select-option
@@ -124,7 +124,7 @@
               uiTooltip="{{ 'common.general' | translate }}"
             ></ui-icon>
             <span>{{
-              'models.dashboard.buttonActions.action' | translate
+              'models.dashboard.actionButtons.action' | translate
             }}</span>
           </ng-container>
           <ng-template uiTabContent>
@@ -134,7 +134,7 @@
                 <ui-toggle formControlName="enabled">
                   <ng-container ngProjectAs="label">
                     {{
-                      'models.dashboard.buttonActions.actions.navigateTo'
+                      'models.dashboard.actionButtons.actions.navigateTo'
                         | translate
                     }}
                   </ng-container>
@@ -147,7 +147,7 @@
                   <ui-toggle formControlName="previousPage">
                     <ng-container ngProjectAs="label">
                       {{
-                        'models.dashboard.buttonActions.actions.previousPage'
+                        'models.dashboard.actionButtons.actions.previousPage'
                           | translate
                       }}
                     </ng-container>
@@ -156,7 +156,7 @@
                     <ui-toggle formControlName="enabled">
                       <ng-container ngProjectAs="label">
                         {{
-                          'models.dashboard.buttonActions.actions.url'
+                          'models.dashboard.actionButtons.actions.url'
                             | translate
                         }}
                       </ng-container>
@@ -166,7 +166,7 @@
                     >
                       <div uiFormFieldDirective>
                         <label>{{
-                          'models.dashboard.buttonActions.actions.url'
+                          'models.dashboard.actionButtons.actions.url'
                             | translate
                         }}</label>
                         <shared-editor-control
@@ -177,7 +177,7 @@
                       <ui-toggle formControlName="openInNewTab">
                         <ng-container ngProjectAs="label">
                           {{
-                            'models.dashboard.buttonActions.actions.openInNewTab'
+                            'models.dashboard.actionButtons.actions.openInNewTab'
                               | translate
                           }}
                         </ng-container>
@@ -191,7 +191,7 @@
                 <ui-toggle formControlName="enabled">
                   <ng-container ngProjectAs="label">
                     {{
-                      'models.dashboard.buttonActions.actions.editRecord.text'
+                      'models.dashboard.actionButtons.actions.editRecord.text'
                         | translate
                     }}
                   </ng-container>
@@ -216,7 +216,7 @@
                       icon="info_outline"
                       variant="grey"
                       [uiTooltip]="
-                        'models.dashboard.buttonActions.actions.editRecord.tooltip.template'
+                        'models.dashboard.actionButtons.actions.editRecord.tooltip.template'
                           | translate
                       "
                     ></ui-icon>
@@ -225,7 +225,7 @@
                   <ui-toggle formControlName="autoReload">
                     <ng-container ngProjectAs="label">
                       {{
-                        'models.dashboard.buttonActions.actions.autoReload'
+                        'models.dashboard.actionButtons.actions.autoReload'
                           | translate
                       }}
                     </ng-container>
@@ -237,7 +237,7 @@
                 <ui-toggle formControlName="enabled">
                   <ng-container ngProjectAs="label">
                     {{
-                      'models.dashboard.buttonActions.actions.addRecord.text'
+                      'models.dashboard.actionButtons.actions.addRecord.text'
                         | translate
                     }}
                   </ng-container>
@@ -269,7 +269,7 @@
                         icon="info_outline"
                         variant="grey"
                         [uiTooltip]="
-                          'models.dashboard.buttonActions.actions.addRecord.tooltip.template'
+                          'models.dashboard.actionButtons.actions.addRecord.tooltip.template'
                             | translate
                         "
                       ></ui-icon>
@@ -278,7 +278,7 @@
                     <ui-toggle formControlName="autoReload">
                       <ng-container ngProjectAs="label">
                         {{
-                          'models.dashboard.buttonActions.actions.autoReload'
+                          'models.dashboard.actionButtons.actions.autoReload'
                             | translate
                         }}
                       </ng-container>
@@ -287,7 +287,7 @@
                     <ui-toggle formControlName="edition">
                       <ng-container ngProjectAs="label">
                         {{
-                          'models.dashboard.buttonActions.actions.addRecord.edition'
+                          'models.dashboard.actionButtons.actions.addRecord.edition'
                             | translate
                         }}
                       </ng-container>
@@ -296,7 +296,7 @@
                       <!-- Record fields selection -->
                       <div uiFormFieldDirective class="mt-2 flex-1">
                         <label>{{
-                          'models.dashboard.buttonActions.actions.addRecord.fieldsForUpdate.text'
+                          'models.dashboard.actionButtons.actions.addRecord.fieldsForUpdate.text'
                             | translate
                         }}</label>
                         <ui-select-menu
@@ -321,7 +321,7 @@
                           variant="grey"
                           uiSuffix
                           [uiTooltip]="
-                            'models.dashboard.buttonActions.actions.addRecord.tooltip.fieldsForUpdate'
+                            'models.dashboard.actionButtons.actions.addRecord.tooltip.fieldsForUpdate'
                               | translate
                           "
                         ></ui-icon>
@@ -330,7 +330,7 @@
                     <!-- Mapping -->
                     <ui-alert
                       >{{
-                        'models.dashboard.buttonActions.actions.addRecord.help.mapping'
+                        'models.dashboard.actionButtons.actions.addRecord.help.mapping'
                           | translate
                       }}
                     </ui-alert>
@@ -347,7 +347,7 @@
                 <ui-toggle formControlName="enabled">
                   <ng-container ngProjectAs="label">
                     {{
-                      'models.dashboard.buttonActions.actions.subscribeToNotification'
+                      'models.dashboard.actionButtons.actions.subscribeToNotification'
                         | translate
                     }}
                   </ng-container>
@@ -383,7 +383,7 @@
                 <ui-toggle formControlName="enabled">
                   <ng-container ngProjectAs="label">
                     {{
-                      'models.dashboard.buttonActions.actions.sendNotification.text'
+                      'models.dashboard.actionButtons.actions.sendNotification.text'
                         | translate
                     }}
                   </ng-container>

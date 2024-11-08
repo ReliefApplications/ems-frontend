@@ -29,6 +29,11 @@ export interface EmailNotification {
   __typename: string;
 }
 
+/** Email notification query response interface */
+export interface EmailNotificationQueryResponse {
+  emailNotification: EmailNotification;
+}
+
 /** Model for email notification nodes graphql query response */
 export interface EmailNotificationsQueryResponse {
   emailNotifications: GraphqlNodesResponse<EmailNotification>;

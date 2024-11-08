@@ -15,9 +15,9 @@ interface Field {
 }
 
 /**
- * Button Action Type
+ * Action button Type
  */
-export type ButtonActionT = {
+export type ActionButton = {
   text: string;
   // Display
   variant: Variant;

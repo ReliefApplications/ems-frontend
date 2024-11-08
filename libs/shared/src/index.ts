@@ -106,10 +106,10 @@ export * from './lib/components/widgets/map/public-api';
 export * from './lib/components/widgets/summary-card-settings/public-api';
 export * from './lib/components/workflow-stepper/public-api';
 export * from './lib/components/query-builder/public-api';
+export * from './lib/components/action-buttons/public-api';
 
 // Export of controls
 export * from './lib/components/applications-archive/public-api';
-export * from './lib/components/button-action/public-api';
 export * from './lib/components/controls/public-api';
 export * from './lib/components/custom-widget-style/custom-widget-style.component';
 export * from './lib/components/list-filter/list-filter.component';

@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ApplicationService,
-  ButtonActionT,
+  ActionButton,
   Dashboard,
   DataTemplateService,
   EditorControlComponent,
@@ -57,13 +57,13 @@ import { GET_RESOURCE } from './graphql/queries';
 
 /** Dialog data interface */
 interface DialogData {
-  button: ButtonActionT;
+  button: ActionButton;
   dashboard: Dashboard;
 }
 
-/** Component for editing a dashboard button action */
+/** Component for editing a dashboard action button */
 @Component({
-  selector: 'app-edit-button-action-modal',
+  selector: 'app-edit-action-button-modal',
   standalone: true,
   imports: [
     CommonModule,
@@ -86,10 +86,10 @@ interface DialogData {
     QueryBuilderModule,
     AlertModule,
   ],
-  templateUrl: './edit-button-action-modal.component.html',
-  styleUrls: ['./edit-button-action-modal.component.scss'],
+  templateUrl: './edit-action-button-modal.component.html',
+  styleUrls: ['./edit-action-button-modal.component.scss'],
 })
-export class EditButtonActionModalComponent
+export class EditActionButtonModalComponent
   extends UnsubscribeComponent
   implements OnInit
 {
@@ -125,7 +125,7 @@ export class EditButtonActionModalComponent
   public sendNotificationFields: any[] = [];
 
   /**
-   * Component for editing a dashboard button action
+   * Component for editing a dashboard action button
    *
    * @param dialogRef dialog reference
    * @param data Dialog data
@@ -139,7 +139,7 @@ export class EditButtonActionModalComponent
    * @param queryBuilder Query builder service
    */
   constructor(
-    public dialogRef: DialogRef<ButtonActionT>,
+    public dialogRef: DialogRef<ActionButton>,
     @Inject(DIALOG_DATA) public data: DialogData,
     private editorService: EditorService,
     private dataTemplateService: DataTemplateService,
@@ -152,7 +152,7 @@ export class EditButtonActionModalComponent
   ) {
     super();
     this.roles = this.applicationService.application.value?.roles || [];
-    this.form = this.createButtonActionForm(data.button, this.roles);
+    this.form = this.createActionButtonForm(data.button, this.roles);
     this.isNew = !data.button;
 
     // Set the editor base url based on the environment file
@@ -238,14 +238,14 @@ export class EditButtonActionModalComponent
   }
 
   /**
-   * Create a form group for the button action
+   * Create a form group for the action button
    *
    * @param data Data to initialize the form
    * @param roles roles of the application
    * @returns the form group
    */
-  private createButtonActionForm = (
-    data: ButtonActionT,
+  private createActionButtonForm = (
+    data: ActionButton,
     roles: Role[]
   ): FormGroup => {
     const mapping = get(data, 'addRecord.mapping', {}) as {
@@ -578,7 +578,7 @@ export class EditButtonActionModalComponent
 
   /** On click on the save button close the dialog with the form value */
   public onSubmit(): void {
-    const button: ButtonActionT = {
+    const button: ActionButton = {
       text: this.form.get('general.buttonText')?.value,
       hasRoleRestriction: this.form.get('general.hasRoleRestriction')?.value,
       roles: this.form.get('general.roles')?.value,

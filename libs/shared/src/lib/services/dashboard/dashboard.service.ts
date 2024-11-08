@@ -137,7 +137,7 @@ export class DashboardService {
    * Saves the buttons of the dashboard.
    *
    * @param dashboardId id of the dashboard
-   * @param buttons Button actions to save
+   * @param buttons Action buttons to save
    * @returns apollo mutation
    */
   public saveDashboardButtons(

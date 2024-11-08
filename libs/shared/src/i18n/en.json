@@ -2469,8 +2469,7 @@
 			"type": "Notification type"
 		},
 		"dashboard": {
-			"activateFiltering": "Activate filtering",
-			"buttonActions": {
+			"actionButtons": {
 				"action": "Action",
 				"actions": {
 					"addRecord": {
@@ -2519,6 +2518,7 @@
 				"variant": "Button variant",
 				"visibleTo": "Visible to roles"
 			},
+			"activateFiltering": "Activate filtering",
 			"closable": "Closable",
 			"context": {
 				"addTemplate": "Create a template for this record",

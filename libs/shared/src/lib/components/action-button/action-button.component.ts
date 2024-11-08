@@ -1,57 +1,81 @@
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
+import { ActionButton } from './action-button.type';
+import { ButtonModule, TooltipModule } from '@oort-front/ui';
+import { TranslateModule } from '@ngx-translate/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { Location } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ApolloQueryResult } from '@apollo/client';
-import { TranslateService } from '@ngx-translate/core';
-import { SnackbarService } from '@oort-front/ui';
-import { Apollo } from 'apollo-angular';
-import { get, isEmpty, isNil, set } from 'lodash';
-import { lastValueFrom, Observable, takeUntil } from 'rxjs';
-import { Dashboard } from '../../models/dashboard.model';
-import { Metadata } from '../../models/metadata.model';
-import {
-  EditRecordMutationResponse,
-  RecordQueryResponse,
-} from '../../models/record.model';
-import { Resource, ResourceQueryResponse } from '../../models/resource.model';
-import { ApplicationService } from '../../services/application/application.service';
 import { DataTemplateService } from '../../services/data-template/data-template.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { EmailService } from '../email/email.service';
+import { Apollo } from 'apollo-angular';
 import { EmailService as SharedEmailService } from '../../services/email/email.service';
+import { ApplicationService } from '../../services/application/application.service';
+import { SnackbarService } from '@oort-front/ui';
+import { TranslateService } from '@ngx-translate/core';
 import {
   QueryBuilderService,
   QueryResponse,
 } from '../../services/query-builder/query-builder.service';
-import { EmailService } from '../email/email.service';
-import { GET_RESOURCE } from '../email/graphql/queries';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { ButtonActionT } from './button-action-type';
-import { EDIT_RECORD } from './graphql/mutations';
-import { GET_RECORD_BY_ID, GET_RESOURCE_BY_ID } from './graphql/queries';
-import { Layout } from '../../models/layout.model';
-import { SnackbarSpinnerComponent } from '../snackbar-spinner/public-api';
 import { ContextService } from '../../services/context/context.service';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { lastValueFrom, Observable, takeUntil } from 'rxjs';
+import { Resource, ResourceQueryResponse } from '../../models/resource.model';
+import { GET_RECORD_BY_ID, GET_RESOURCE_BY_ID } from './graphql/queries';
+import { EDIT_RECORD } from './graphql/mutations';
+import { Dashboard } from '../../models/dashboard.model';
+import {
+  EditRecordMutationResponse,
+  RecordQueryResponse,
+} from '../../models/record.model';
+import { Metadata } from '../../models/metadata.model';
+import { get, isEmpty, isNil, set } from 'lodash';
+import { SnackbarSpinnerComponent } from '../snackbar-spinner/snackbar-spinner.component';
+import { ApolloQueryResult } from '@apollo/client';
+import { Layout } from '../../models/layout.model';
+import { EmailNotification } from '../../models/email-notifications.model';
 
-/** Component for display action buttons */
+/**
+ * Dashboard action button component.
+ */
 @Component({
-  selector: 'shared-button-action',
-  templateUrl: './button-action.component.html',
-  styleUrls: ['./button-action.component.scss'],
+  selector: 'shared-action-button',
+  standalone: true,
+  imports: [CommonModule, ButtonModule, TooltipModule, TranslateModule],
+  templateUrl: './action-button.component.html',
+  styleUrls: ['./action-button.component.scss'],
 })
-export class ButtonActionComponent extends UnsubscribeComponent {
-  /** Button actions */
-  @Input() buttonActions: ButtonActionT[] = [];
+export class ActionButtonComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
+  /** Action button definition */
+  @Input() actionButton!: ActionButton;
   /** Dashboard */
   @Input() dashboard?: Dashboard;
-  /** Can update dashboard or not */
-  @Input() canUpdate = false;
   /** Reload dashboard event emitter */
   @Output() reloadDashboard = new EventEmitter<void>();
   /** Context id of the current dashboard */
   public contextId!: string;
+  /** Email notification, for subscribe & unsubscribe actions */
+  private emailNotification?: EmailNotification;
+
+  /** @returns Should hide button */
+  get showButton(): boolean {
+    if (this.actionButton.editRecord && !this.contextId) {
+      return false;
+    }
+    if (this.actionButton.subscribeToNotification) {
+      if (this.emailNotification && !this.emailNotification.userSubscribed) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return true;
+  }
 
   /**
-   * Action buttons
+   * Dashboard action button component.
    *
    * @param dialog Dialog service
    * @param dataTemplateService DataTemplate service
@@ -90,16 +114,32 @@ export class ButtonActionComponent extends UnsubscribeComponent {
     });
   }
 
+  ngOnInit(): void {
+    if (
+      this.actionButton.subscribeToNotification &&
+      this.actionButton.subscribeToNotification.notification
+    ) {
+      this.emailService
+        .getEmailNotification(
+          this.actionButton.subscribeToNotification.notification
+        )
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: ({ data }) => {
+            this.emailNotification = data.emailNotification;
+          },
+        });
+    }
+  }
+
   /**
-   * Opens link of button action.
-   *
-   * @param button Button action to be executed
+   * Handle action button click.
    */
-  public async onButtonActionClick(button: ButtonActionT) {
+  public async onClick() {
     // Navigation to url
-    if (button.href) {
-      const href = this.dataTemplateService.renderLink(button.href);
-      if (button.openInNewTab) {
+    if (this.actionButton.href) {
+      const href = this.dataTemplateService.renderLink(this.actionButton.href);
+      if (this.actionButton.openInNewTab) {
         window.open(href, '_blank');
       } else {
         if (href?.startsWith('./')) {
@@ -112,29 +152,32 @@ export class ButtonActionComponent extends UnsubscribeComponent {
       return;
     }
     // Navigation to previous page
-    if (button.previousPage) {
+    if (this.actionButton.previousPage) {
       this.location.back();
       return;
     }
     // Edit Record & Add Record
-    if (button.editRecord || button.addRecord) {
-      this.openRecordModal(button);
+    if (this.actionButton.editRecord || this.actionButton.addRecord) {
+      this.openRecordModal();
       return;
     }
     // Notifications
     if (
-      button.subscribeToNotification &&
-      button.subscribeToNotification.notification
+      this.actionButton.subscribeToNotification &&
+      this.actionButton.subscribeToNotification.notification
     ) {
       this.emailService.subscribeToEmail(
-        button.subscribeToNotification.notification
+        this.actionButton.subscribeToNotification.notification
       );
     }
-    if (button.sendNotification && button.sendNotification.distributionList) {
+    if (
+      this.actionButton.sendNotification &&
+      this.actionButton.sendNotification.distributionList
+    ) {
       try {
         const selectedIds = !isNil(this.contextId) ? [this.contextId] : [];
         const templates = await this.getSelectedNotificationTemplates(
-          button.sendNotification.templates || []
+          this.actionButton.sendNotification.templates || []
         );
         if (templates.length === 0) {
           // no template found, skip
@@ -163,14 +206,14 @@ export class ButtonActionComponent extends UnsubscribeComponent {
         let resource!: Resource;
         if (this.dashboard?.page?.context?.resource) {
           resourceMetaData = (await this.getResourceMetaData(
-            (button.sendNotification.fields || []).map((x) => x.name)
+            (this.actionButton.sendNotification.fields || []).map((x) => x.name)
           )) as Metadata[];
           resource = (await this.getResourceById(
             this.dashboard?.page?.context?.resource
           )) as Resource;
         }
         const distributionList = await this.getSelectedDistributionListData(
-          button.sendNotification.distributionList
+          this.actionButton.sendNotification.distributionList
         );
         // Open email template selection
         const { EmailTemplateModalComponent } = await import(
@@ -199,7 +242,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
               layout = {
                 query: {
                   name: resource.queryName,
-                  fields: button.sendNotification?.fields,
+                  fields: this.actionButton.sendNotification?.fields,
                 },
               };
               emailQuery = this.buildEmailQuery(selectedIds, layout);
@@ -218,7 +261,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
               distributionList,
               emailData,
               resourceMetaData,
-              button.sendNotification?.fields
+              this.actionButton.sendNotification?.fields
             );
           }
         }
@@ -230,23 +273,22 @@ export class ButtonActionComponent extends UnsubscribeComponent {
 
   /**
    * Open record modal to add/edit a record
-   *
-   * @param button action to be executed
    */
-  private async openRecordModal(button: ButtonActionT) {
+  private async openRecordModal() {
     // recordId: this.contextId,
     // todo: distinction between addRecord & editRecord
     const { FormModalComponent } = await import(
       '../form-modal/form-modal.component'
     );
-    const template = button.editRecord
-      ? button.editRecord.template
-      : button.addRecord?.template;
+    const template = this.actionButton.editRecord
+      ? this.actionButton.editRecord.template
+      : this.actionButton.addRecord?.template;
     const prefillData = this.contextService.replaceContext(
-      button.addRecord?.mapping || {}
+      this.actionButton.addRecord?.mapping || {}
     );
     const shouldReload =
-      button.editRecord?.autoReload || button.addRecord?.autoReload;
+      this.actionButton.editRecord?.autoReload ||
+      this.actionButton.addRecord?.autoReload;
     // Callback to be executed at the end of action
     const callback = () => {
       if (shouldReload) {
@@ -256,7 +298,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
     const dialogRef = this.dialog.open(FormModalComponent, {
       disableClose: true,
       data: {
-        ...(button.editRecord && { recordId: this.contextId }), // button must be hidden in html if editRecord is enabled & no contextId
+        ...(this.actionButton.editRecord && { recordId: this.contextId }), // button must be hidden in html if editRecord is enabled & no contextId
         ...(template && { template }),
         actionButtonCtx: true,
         prefillData,
@@ -266,9 +308,10 @@ export class ButtonActionComponent extends UnsubscribeComponent {
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value && value.data?.id) {
         // Add record action
-        if (button.addRecord) {
+        if (this.actionButton.addRecord) {
           const newRecordId = value.data.id;
-          const fieldsForUpdate = button.addRecord.fieldsForUpdate || [];
+          const fieldsForUpdate =
+            this.actionButton.addRecord.fieldsForUpdate || [];
           // Execute callback if possible
           if (
             this.contextId &&
@@ -340,12 +383,10 @@ export class ButtonActionComponent extends UnsubscribeComponent {
   /**
    * Get selected templates data
    *
-   * @param buttonActionTemplates Selected templates for the given quick action button
+   * @param templates Selected templates for the given quick action button
    * @returns selected templates data
    */
-  private async getSelectedNotificationTemplates(
-    buttonActionTemplates: string[]
-  ) {
+  private async getSelectedNotificationTemplates(templates: string[]) {
     const { data: templateResponse } = await lastValueFrom(
       this.emailService.getCustomTemplates(
         this.applicationService.application?.getValue()?.id as string
@@ -355,27 +396,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
       (x: any) => x.node
     );
     return allTemplateData.filter((template: any) =>
-      buttonActionTemplates.includes(template.id)
-    );
-  }
-
-  /**
-   * Get selected resource fields data
-   *
-   * @param buttonActionFields Selected resource fields for the given quick action button
-   * @returns selected resource fields data
-   */
-  private async getSelectedResourceFieldsData(buttonActionFields: string[]) {
-    const { data: resourcesFieldsResponse } = await lastValueFrom(
-      this.apollo.query<ResourceQueryResponse>({
-        query: GET_RESOURCE,
-        variables: {
-          id: this.dashboard?.page?.context?.resource as string,
-        },
-      })
-    );
-    return resourcesFieldsResponse.resource.fields.filter((f: any) =>
-      buttonActionFields.includes(f.name)
+      templates.includes(template.id)
     );
   }
 
@@ -398,10 +419,10 @@ export class ButtonActionComponent extends UnsubscribeComponent {
   /**
    * Get default resource meta data
    *
-   * @param buttonActionFields Selected resource fields for the given quick action button
+   * @param fields Selected resource fields for the given quick action button
    * @returns default resource meta data
    */
-  private async getResourceMetaData(buttonActionFields: string[]) {
+  private async getResourceMetaData(fields: string[]) {
     const { data: resourceMetaDataResponse } = await lastValueFrom(
       // Fetch resource metadata for email sending
       this.queryBuilder.getQueryMetaData(
@@ -409,7 +430,7 @@ export class ButtonActionComponent extends UnsubscribeComponent {
       )
     );
     return resourceMetaDataResponse.resource.metadata?.filter((md) =>
-      buttonActionFields.includes(md.name)
+      fields.includes(md.name)
     );
   }
 

@@ -2469,8 +2469,7 @@
 			"type": "Type"
 		},
 		"dashboard": {
-			"activateFiltering": "Activer le filtre",
-			"buttonActions": {
+			"actionButtons": {
 				"action": "Action",
 				"actions": {
 					"addRecord": {
@@ -2519,6 +2518,7 @@
 				"variant": "Variante de bouton",
 				"visibleTo": "Visible pour les rôles"
 			},
+			"activateFiltering": "Activer le filtre",
 			"closable": "Peut être fermé",
 			"context": {
 				"addTemplate": "Créer un modèle pour cet élément",

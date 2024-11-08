@@ -15,6 +15,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import {
   EMAIL_NOTIFICATION_TYPES,
   EmailDistributionListQueryResponse,
+  EmailNotificationQueryResponse,
   EmailNotificationsQueryResponse,
   EmailNotificationTypes,
   EmailTemplatesQueryResponse,
@@ -32,6 +33,7 @@ import {
   GET_AND_UPDATE_EMAIL_NOTIFICATION,
   GET_CUSTOM_TEMPLATES,
   GET_DISTRIBUTION_LIST,
+  GET_EMAIL_NOTIFICATION_BY_ID,
   GET_EMAIL_NOTIFICATIONS,
   GET_RESOURCE_BY_ID,
 } from './graphql/queries';
@@ -1182,13 +1184,28 @@ export class EmailService {
   }
 
   /**
+   * Get email notification by id
+   *
+   * @param id Email notification id
+   * @returns Email notification query
+   */
+  public getEmailNotification(id: string) {
+    return this.apollo.query<EmailNotificationQueryResponse>({
+      query: GET_EMAIL_NOTIFICATION_BY_ID,
+      variables: {
+        id,
+      },
+    });
+  }
+
+  /**
    * Get an email notification with the provided id.
    *
    * @param id The notification data id.
    * @param applicationId The application id of the email notification.
    * @returns Email notification.
    */
-  getEmailNotification(id: string, applicationId: string) {
+  getEmailNotificationForEdition(id: string, applicationId: string) {
     return this.apollo.mutate<any>({
       mutation: GET_AND_UPDATE_EMAIL_NOTIFICATION,
       variables: {
