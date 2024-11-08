@@ -46,6 +46,9 @@ export type ActionButton = {
   subscribeToNotification?: {
     notification?: string;
   };
+  unsubscribeFromNotification?: {
+    notification?: string;
+  };
   sendNotification?: {
     distributionList?: string;
     templates?: Array<string>;

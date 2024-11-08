@@ -2500,6 +2500,7 @@
 						"text": "Send notification"
 					},
 					"subscribeToNotification": "Subscribe to notification",
+					"unsubscribeFromNotification": "Unsubscribe from notification",
 					"url": "Target URL"
 				},
 				"category": "Button category",

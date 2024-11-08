@@ -18,7 +18,7 @@ import {
 } from '../../services/query-builder/query-builder.service';
 import { ContextService } from '../../services/context/context.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { lastValueFrom, Observable, takeUntil } from 'rxjs';
+import { lastValueFrom, Observable, Subject, takeUntil } from 'rxjs';
 import { Resource, ResourceQueryResponse } from '../../models/resource.model';
 import { GET_RECORD_BY_ID, GET_RESOURCE_BY_ID } from './graphql/queries';
 import { EDIT_RECORD } from './graphql/mutations';
@@ -52,6 +52,8 @@ export class ActionButtonComponent
   @Input() actionButton!: ActionButton;
   /** Dashboard */
   @Input() dashboard?: Dashboard;
+  /** Should refresh button, some of them ( subscribe / unsubscribe ) can depend on other buttons */
+  @Input() refresh!: Subject<void>;
   /** Reload dashboard event emitter */
   @Output() reloadDashboard = new EventEmitter<void>();
   /** Context id of the current dashboard */
@@ -66,6 +68,13 @@ export class ActionButtonComponent
     }
     if (this.actionButton.subscribeToNotification) {
       if (this.emailNotification && !this.emailNotification.userSubscribed) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    if (this.actionButton.unsubscribeFromNotification) {
+      if (this.emailNotification && this.emailNotification.userSubscribed) {
         return true;
       } else {
         return false;
@@ -116,19 +125,21 @@ export class ActionButtonComponent
 
   ngOnInit(): void {
     if (
-      this.actionButton.subscribeToNotification &&
-      this.actionButton.subscribeToNotification.notification
+      this.actionButton.subscribeToNotification ||
+      this.actionButton.unsubscribeFromNotification
     ) {
-      this.emailService
-        .getEmailNotification(
-          this.actionButton.subscribeToNotification.notification
-        )
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: ({ data }) => {
-            this.emailNotification = data.emailNotification;
-          },
-        });
+      const notificationId = this.actionButton.subscribeToNotification
+        ? this.actionButton.subscribeToNotification.notification
+        : this.actionButton.unsubscribeFromNotification?.notification;
+      if (notificationId) {
+        this.getNotification(notificationId);
+      }
+      // As other buttons may update the subscription to notification, we listen to these changes
+      this.refresh.pipe(takeUntil(this.destroy$)).subscribe(() => {
+        if (notificationId) {
+          this.getNotification(notificationId);
+        }
+      });
     }
   }
 
@@ -166,8 +177,24 @@ export class ActionButtonComponent
       this.actionButton.subscribeToNotification &&
       this.actionButton.subscribeToNotification.notification
     ) {
-      this.emailService.subscribeToEmail(
+      await this.emailService.subscribeToEmail(
         this.actionButton.subscribeToNotification.notification
+      );
+      this.refresh.next();
+      this.getNotification(
+        this.actionButton.subscribeToNotification.notification
+      );
+    }
+    if (
+      this.actionButton.unsubscribeFromNotification &&
+      this.actionButton.unsubscribeFromNotification.notification
+    ) {
+      await this.emailService.unsubscribeFromEmail(
+        this.actionButton.unsubscribeFromNotification.notification
+      );
+      this.refresh.next();
+      this.getNotification(
+        this.actionButton.unsubscribeFromNotification.notification
       );
     }
     if (
@@ -493,5 +520,21 @@ export class ActionButtonComponent
         fetchPolicy: 'no-cache',
       });
     }
+  }
+
+  /**
+   * Get notification, configured in subscribeTo or unsubscribeTo
+   *
+   * @param id notification id
+   */
+  private getNotification(id: string) {
+    this.emailService
+      .getEmailNotification(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ data }) => {
+          this.emailNotification = data.emailNotification;
+        },
+      });
   }
 }

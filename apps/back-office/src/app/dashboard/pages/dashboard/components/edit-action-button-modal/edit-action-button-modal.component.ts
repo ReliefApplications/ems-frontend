@@ -191,7 +191,10 @@ export class EditActionButtonModalComponent
         });
     }
     // Get list of email notifications for application
-    if (this.form.get('action.subscribeToNotification.enabled')?.value) {
+    if (
+      this.form.get('action.subscribeToNotification.enabled')?.value ||
+      this.form.get('action.unsubscribeFromNotification.enabled')?.value
+    ) {
       this.emailService
         .getEmailNotifications(
           this.applicationService.application?.getValue()?.id as string
@@ -349,6 +352,22 @@ export class EditActionButtonModalComponent
                   : { atLeastOneRequired: true },
             }
           ),
+          unsubscribeFromNotification: this.fb.group(
+            {
+              enabled: [!!get(data, 'unsubscribeFromNotification', false)],
+              notification: [
+                get(data, 'unsubscribeFromNotification.notification', ''),
+              ],
+            },
+            {
+              validator: (control: AbstractControl): ValidationErrors | null =>
+                !control.value.enabled ||
+                (control.value.notification !== '' &&
+                  !isNil(control.value.notification))
+                  ? null
+                  : { atLeastOneRequired: true },
+            }
+          ),
           sendNotification: this.fb.group(
             {
               enabled: [!!get(data, 'sendNotification', false)],
@@ -393,6 +412,7 @@ export class EditActionButtonModalComponent
       form.get('action.editRecord.enabled'),
       form.get('action.addRecord.enabled'),
       form.get('action.subscribeToNotification.enabled'),
+      form.get('action.unsubscribeFromNotification.enabled'),
       form.get('action.sendNotification.enabled'),
     ];
 
@@ -487,12 +507,31 @@ export class EditActionButtonModalComponent
   }
 
   /**
-   * Set needed listeners for subscribe to notification form
+   * Set needed listeners for subscribe / unsubscribe action
    */
-  private prepareSubscribeToNotificationFormListeners() {
+  private prepareNotificationSubscriptionsFormListeners() {
     /** Fetch email notification list on subscribe to notification is enabled */
     this.form
       .get('action.subscribeToNotification.enabled')
+      ?.valueChanges.pipe(
+        filter((value) => !!value),
+        switchMap(() =>
+          this.emailService.getEmailNotifications(
+            this.applicationService.application?.getValue()?.id as string
+          )
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ({ data }) => {
+          this.emailNotifications = data.emailNotifications.edges.map(
+            (item) => item.node
+          );
+        },
+      });
+    /** Fetch email notification list on unsubscribe from notification is enabled */
+    this.form
+      .get('action.unsubscribeFromNotification.enabled')
       ?.valueChanges.pipe(
         filter((value) => !!value),
         switchMap(() =>
@@ -556,7 +595,7 @@ export class EditActionButtonModalComponent
    */
   private setFormListeners() {
     this.prepareAddRecordFormListeners();
-    this.prepareSubscribeToNotificationFormListeners();
+    this.prepareNotificationSubscriptionsFormListeners();
     this.prepareSendNotificationFormListeners();
   }
 
@@ -625,6 +664,15 @@ export class EditActionButtonModalComponent
           )?.value,
         },
       }),
+      // If unsubscribeFromNotification enabled
+      ...(this.form.get('action.unsubscribeFromNotification.enabled')
+        ?.value && {
+        unsubscribeFromNotification: {
+          notification: this.form.get(
+            'action.unsubscribeFromNotification.notification'
+          )?.value,
+        },
+      }),
       // If sendNotification enabled
       ...(this.form.get('action.sendNotification.enabled')?.value && {
         sendNotification: {
@@ -679,6 +727,7 @@ export class EditActionButtonModalComponent
         actions.editRecord?.enabled ||
         actions.addRecord?.enabled ||
         actions.subscribeToNotification?.enabled ||
+        actions.unsubscribeFromNotification?.enabled ||
         actions.sendNotification?.enabled;
 
       return atLeastOneEnabled ? null : { atLeastOneRequired: true };
