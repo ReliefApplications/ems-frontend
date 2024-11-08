@@ -2,7 +2,7 @@
      not in the body while not interfering with the list of tabs -->
 <div
   #tabGroupWrapper
-  class="overflow-x-hidden"
+  class="overflow-x-hidden h-full"
   [ngClass]="{ flex: vertical }"
   id="tab-group-wrapper"
 >
@@ -18,7 +18,7 @@
   <!-- The directive will display the content here -->
   <div
     id="tab-body-host"
-    [ngClass]="{ 'overflow-x-hidden': vertical }"
+    [ngClass]="{ 'overflow-x-hidden overflow-y-auto max-h-full': vertical }"
     class="flex-1"
     [@tabContentDisplay]="triggerAnimation ? 'initial' : 'loadContent'"
   >
