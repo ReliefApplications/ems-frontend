@@ -815,6 +815,7 @@
           let-idx="rowIndex"
         >
           <div class="textbox-container" [style]="dataItem.style[field.name]">
+            <!-- Single file -->
             <ng-container *ngIf="dataItem[field.name]?.length === 1">
               <button
                 kendoButton
@@ -822,7 +823,7 @@
                 [look]="'flat'"
                 [uiTooltip]="file.name"
                 (click)="$event.stopPropagation(); onDownload(file)"
-                class="w-full justify-start overflow-hidden text-overflow-ellipsis"
+                class="w-full !justify-start overflow-hidden text-ellipsis"
               >
                 <span [class]="dataItem.icon[file.name]"></span>
                 <span class="textbox">{{
@@ -830,10 +831,11 @@
                 }}</span>
               </button>
             </ng-container>
+            <!-- Multiple files -->
             <ng-container *ngIf="dataItem[field.name]?.length > 1">
               <button
                 kendoButton
-                class="text-center"
+                class="w-full text-center"
                 icon="file"
                 [look]="'flat'"
                 [uiMenuTriggerFor]="fileMenu"
