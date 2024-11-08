@@ -1435,10 +1435,6 @@ export class CoreGridComponent
               .map((y: any) => ({
                 name: y.name,
                 title: y.title,
-                ...(y.displayField && {
-                  displayField: y.displayField,
-                  separator: y.separator,
-                }),
               })),
             ...(x.displayField && {
               displayField: x.displayField,
@@ -1456,6 +1452,10 @@ export class CoreGridComponent
             subFields: x.subFields.map((y: any) => ({
               name: y.name,
               title: y.title,
+              ...(y.displayField && {
+                displayField: y.displayField,
+                separator: y.separator,
+              }),
             })),
           })),
       }),
