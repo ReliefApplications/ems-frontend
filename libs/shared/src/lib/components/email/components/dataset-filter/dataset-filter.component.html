@@ -134,7 +134,7 @@
       *ngIf="
         (query.get('dataType').value === 'Resource' &&
           resource?.fields?.length) ||
-        (refernceData.length > 0 && availableFields.length > 0)
+        (refernceData?.length > 0 && availableFields?.length > 0)
       "
     >
       <div class="mt-4 flex flex-row">
@@ -324,7 +324,7 @@
           [title]="'Preview'"
           [disabled]="
             showDatasetLimitWarning ||
-            this.query?.controls?.query.get('fields')?.value.length === 0
+            this.query?.controls?.query?.get('fields')?.value.length === 0
           "
         >
           <ng-container ngProjectAs="label">

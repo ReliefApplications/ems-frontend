@@ -86,7 +86,7 @@ export class DatasetFilterComponent
   /** Fields for filtering. */
   public filterFields: any[] = [];
   /** Available fields for filtering. */
-  public availableFields: any[] = [];
+  public availableFields: any = [];
   /** Available fields for individual Emails. */
   public availableFieldsIndividualEmail: any[] = [];
   /** Selected fields for individual Emails. */
