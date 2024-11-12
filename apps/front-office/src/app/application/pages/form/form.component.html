@@ -14,14 +14,12 @@
     <shared-form [form]="form" (save)="onComplete($event)"></shared-form>
     <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">
       <div class="flex gap-x-4 justify-center">
-        <ui-button category="secondary" (click)="clearForm()">{{
-          'models.record.new' | translate
-        }}</ui-button>
         <!-- Action buttons -->
-        <shared-action-buttons
-          class="export-hide"
-          [actionButtons]="actionButtons"
-        ></shared-action-buttons>
+        <shared-action-buttons [actionButtons]="actionButtons">
+          <ui-button category="secondary" (click)="clearForm()">{{
+            'models.record.new' | translate
+          }}</ui-button>
+        </shared-action-buttons>
       </div>
     </ng-container>
   </ng-container>

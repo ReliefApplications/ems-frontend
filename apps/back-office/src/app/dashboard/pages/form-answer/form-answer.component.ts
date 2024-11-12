@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import {
-  ActionButton,
   BreadcrumbService,
   Form,
   FormComponent,
@@ -9,12 +8,8 @@ import {
   UnsubscribeComponent,
 } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
-import { lastValueFrom, takeUntil } from 'rxjs';
-import {
-  GET_PAGE_BY_ID,
-  GET_SHORT_FORM_BY_ID,
-  GET_STEP_BY_ID,
-} from './graphql/queries';
+import { takeUntil } from 'rxjs';
+import { GET_SHORT_FORM_BY_ID } from './graphql/queries';
 
 /**
  * Form answer page component.
@@ -39,8 +34,6 @@ export class FormAnswerComponent
   public form?: Form;
   /** Is form completed */
   public completed = false;
-  /** Form button actions */
-  public actionButtons: ActionButton[] = [];
 
   /**
    * Form answer page component.
@@ -48,39 +41,18 @@ export class FormAnswerComponent
    * @param apollo Apollo service
    * @param route Angular activated route
    * @param breadcrumbService Shared breadcrumb service
-   * @param router Angular router
    */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private breadcrumbService: BreadcrumbService,
-    private router: Router
+    private breadcrumbService: BreadcrumbService
   ) {
     super();
   }
 
-  /**
-   * Load any action buttons needed for the form
-   */
-  private async loadActionButtons() {
-    const isStep = this.router.url.includes('/workflow/');
-    const query = isStep ? GET_STEP_BY_ID : GET_PAGE_BY_ID;
-    const { data } = (await lastValueFrom(
-      this.apollo.query<any>({
-        query,
-        variables: {
-          id: this.id,
-        },
-      })
-    )) as { data: { step?: any; page?: any } };
-    this.actionButtons = data[isStep ? 'step' : 'page']
-      .buttons as ActionButton[];
-  }
-
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
-      await this.loadActionButtons();
       this.apollo
         .watchQuery<FormQueryResponse>({
           query: GET_SHORT_FORM_BY_ID,
