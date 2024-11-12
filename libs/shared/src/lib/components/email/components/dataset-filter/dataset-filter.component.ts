@@ -316,7 +316,7 @@ export class DatasetFilterComponent
    */
   onTabSelect(event: any, fromHTML: boolean): void {
     const newIndex = event;
-    const previewTabIndex = 2;
+    const previewTabIndex = 3;
 
     const isSeparateEmailValid =
       (this.query.get('individualEmail').value === true &&
@@ -482,7 +482,7 @@ export class DatasetFilterComponent
           this.query.get('resource').value === ''
         ) {
           //For refernce data selection needs to skip filter tab
-          this.onTabSelect(2, false);
+          this.onTabSelect(3, false);
         } else {
           this.onTabSelect(1, false);
         }
@@ -529,6 +529,8 @@ export class DatasetFilterComponent
               pageSize: 10,
               template: '',
             },
+            navigateSettings: this.query.value.navigateSettings,
+            navigateToPage: this.query.value.navigateToPage,
           };
 
           // TODO: Somehow make this go down recursively instead of just checking for just the child
@@ -561,7 +563,7 @@ export class DatasetFilterComponent
                     }
                   }
                   if (!validCheck) {
-                    this.onTabSelect(2, false);
+                    this.onTabSelect(3, false);
                     this.showPreview = true;
                     if (response.count <= 50) {
                       this.showDatasetLimitWarning = false;
