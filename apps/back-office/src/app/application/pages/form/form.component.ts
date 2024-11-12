@@ -17,8 +17,8 @@ import {
   WorkflowService,
 } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
-import { Subscription } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import {
   GET_PAGE_BY_ID,
   GET_SHORT_FORM_BY_ID,
@@ -337,29 +337,37 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     dialogRef.closed
       .pipe(
         filter((buttons) => !!buttons),
+        switchMap(
+          (buttons) =>
+            this.quickActionsService
+              .savePageButtons(
+                this.isStep ? this.step?.id : this.page?.id,
+                buttons,
+                'form',
+                this.isStep
+              )
+              ?.pipe(
+                map(({ errors }) => {
+                  return {
+                    errors,
+                    buttons,
+                  };
+                })
+              ) as Observable<any>
+        ),
         takeUntil(this.destroy$)
       )
-      .subscribe(async (buttons) => {
-        this.quickActionsService
-          .savePageButtons(
-            this.isStep ? this.step?.id : this.page?.id,
-            buttons,
-            'form',
-            this.isStep
-          )
-          ?.pipe(takeUntil(this.destroy$))
-          .subscribe(({ errors }) => {
-            this.actionButtons = buttons as ActionButton[];
-            if (this.isStep) {
-              (this.step as Step).buttons = buttons;
-            } else {
-              (this.page as Page).buttons = buttons;
-            }
-            this.applicationService.handleEditionMutationResponse(
-              errors,
-              this.translate.instant('common.form.one')
-            );
-          });
+      .subscribe(({ errors, buttons }) => {
+        this.actionButtons = buttons as ActionButton[];
+        if (this.isStep) {
+          (this.step as Step).buttons = buttons;
+        } else {
+          (this.page as Page).buttons = buttons;
+        }
+        this.applicationService.handleEditionMutationResponse(
+          errors,
+          this.translate.instant('common.form.one')
+        );
       });
   }
 }
