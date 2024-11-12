@@ -287,7 +287,8 @@
 					"noCustomTitle": "Custom template title is required to proceed!",
 					"noDistributionList": "Something went wrong during the email sending: no distribution list found",
 					"noSubject": "Subject is required to proceed!",
-					"noTemplate": "Something went wrong during the email sending: no template found"
+					"noTemplate": "Something went wrong during the email sending: no template found",
+					"preview": "Preview of email failed"
 				},
 				"existing": "Or use existing",
 				"field": {
@@ -310,6 +311,9 @@
 					"logo": "Header logo",
 					"removeTooltip": "Remove header logo",
 					"style": "Header style"
+				},
+				"preview": {
+					"processing": "Creating email preview..."
 				},
 				"processing": "Sending email...",
 				"ready": "Email ready",
@@ -1029,6 +1033,7 @@
 				"modifiedBy": "Last modified by {{user}} on {{date}}"
 			},
 			"update": {
+				"confirmMessage": "Do you confirm the {{action}} of the current record?",
 				"exit": "Exit without saving changes",
 				"exitMessage": "There are unsaved changes on your form. Are you sure you want to exit?"
 			},
@@ -1040,11 +1045,17 @@
 			"errors": {
 				"duplicatedRelatedName": "Duplicated related name for question {{question}} on page {{page}}. Please provide a unique related name (snake case format) to save the form.",
 				"incorrectJSON": "JSON is invalid in JSON Editor, changes haven't been saved",
+				"maximumAllowedFiles": "Maximum number of files allowed: {{number}}",
 				"missingGridField": "Missing an available field grid for question {{question}} on page {{page}}. Please select a least one in Custom Question Properties to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
 			},
 			"propertyGrid": {
+				"file": {
+					"acceptedFiles": {
+						"clear": "Clear(All file types accepted)"
+					}
+				},
 				"resource": {
 					"availableGridFields": "Available grid fields",
 					"resourceSelectText": "First you have to select a resource before setting any filters"
@@ -1638,6 +1649,7 @@
 						"title": "Select export format"
 					}
 				},
+				"files": "{{number}} files",
 				"filter": {
 					"toggle": "Toggle visibility of filter"
 				},
@@ -2048,6 +2060,7 @@
 							"title": "Visible Map Controls"
 						},
 						"geographicExtent": "Geographic extent",
+						"geographicExtentPadding": "Padding (degrees)",
 						"geographicExtentValue": "Geographic extent value",
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
@@ -2098,6 +2111,7 @@
 						"geographicExtent": {
 							"add": "Add new geographic extent",
 							"admin0": "Use either iso2code, iso3code or country name",
+							"padding": "You can choose to add additional space in degrees to be added around the geographic extent when zooming in, for additional context.",
 							"region": "Use region name",
 							"remove": "Remove geographic extent",
 							"value": "You can input a static value, or use {{context}} or {{filter}} notation to dynamically inject a value"
@@ -2456,17 +2470,38 @@
 			"type": "Notification type"
 		},
 		"dashboard": {
-			"activateFiltering": "Activate filtering",
-			"buttonActions": {
+			"actionButtons": {
 				"action": "Action",
 				"actions": {
-					"addRecord": "Add record",
-					"editRecord": "Edit record",
+					"addRecord": {
+						"edition": "Edit current record",
+						"fieldsForUpdate": {
+							"text": "Attach newly created record to current record fields"
+						},
+						"help": {
+							"mapping": "Prefill fields of new records by providing static values or mapping them from the dashboard context using the {{context.<fieldName>}} syntax."
+						},
+						"text": "Add record",
+						"tooltip": {
+							"fieldsForUpdate": "Newly created record can be attached to resource & resources fields",
+							"template": "Select a resource template for addition of new records"
+						}
+					},
+					"autoReload": "Auto reload dashboard on save",
+					"editRecord": {
+						"text": "Edit record",
+						"tooltip": {
+							"template": "Select a resource template for edition of current record.\n If no template is selected, latest form used by the record will be used"
+						}
+					},
 					"navigateTo": "Navigate to",
 					"openInNewTab": "Open in new tab",
 					"previousPage": "Previous page",
-					"sendNotification": "Send notification",
+					"sendNotification": {
+						"text": "Send notification"
+					},
 					"subscribeToNotification": "Subscribe to notification",
+					"unsubscribeFromNotification": "Unsubscribe from notification",
 					"url": "Target URL"
 				},
 				"category": "Button category",
@@ -2485,6 +2520,7 @@
 				"variant": "Button variant",
 				"visibleTo": "Visible to roles"
 			},
+			"activateFiltering": "Activate filtering",
 			"closable": "Closable",
 			"context": {
 				"addTemplate": "Create a template for this record",

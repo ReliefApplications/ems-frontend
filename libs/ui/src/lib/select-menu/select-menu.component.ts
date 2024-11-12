@@ -312,7 +312,7 @@ export class SelectMenuComponent
     } else {
       // Manage control access value
       if (this.onChange && this.onTouch) {
-        if (this.selectedValues.length > 0) {
+        if (Array.isArray(this.selectedValues)) {
           this.onChange(this.selectedValues[0]);
         }
         this.onTouch();

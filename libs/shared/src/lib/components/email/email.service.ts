@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable, NgZone, Output } from '@angular/core';
 import {
   FormArray,
@@ -7,28 +7,37 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
+import { cloneDeep } from 'lodash';
+import { BehaviorSubject, Observable } from 'rxjs';
+import {
+  EMAIL_NOTIFICATION_TYPES,
+  EmailDistributionListQueryResponse,
+  EmailNotificationQueryResponse,
+  EmailNotificationsQueryResponse,
+  EmailNotificationTypes,
+  EmailTemplatesQueryResponse,
+} from '../../models/email-notifications.model';
+import { RestService } from '../../services/rest/rest.service';
 import {
   ADD_CUSTOM_TEMPLATE,
   ADD_DISTRIBUTION_LIST,
   ADD_EMAIL_NOTIFICATION,
+  DELETE_EMAIL_NOTIFICATION,
   EDIT_CUSTOM_TEMPLATE,
   EDIT_DISTRIBUTION_LIST,
+  GET_AND_UPDATE_EMAIL_NOTIFICATION,
   GET_CUSTOM_TEMPLATES,
   GET_DISTRIBUTION_LIST,
-  GET_AND_UPDATE_EMAIL_NOTIFICATION,
+  GET_EMAIL_NOTIFICATION_BY_ID,
   GET_EMAIL_NOTIFICATIONS,
   GET_RESOURCE_BY_ID,
-  DELETE_EMAIL_NOTIFICATION,
 } from './graphql/queries';
-import { Apollo } from 'apollo-angular';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { RestService } from '../../services/rest/rest.service';
 import { FieldStore } from './models/email.const';
 import { ResourceQueryResponse } from '../../models/resource.model';
 import { prettifyLabel } from '../../utils/prettify';
-import { TranslateService } from '@ngx-translate/core';
-import { SnackbarService } from '@oort-front/ui';
 import { addNewField } from '../query-builder/query-builder-forms';
 
 /**
@@ -64,7 +73,7 @@ export class EmailService {
   /** Email preview data */
   public allPreviewData: any[] = [];
   /** Email type ( only email supported now ) */
-  public notificationTypes: string[] = ['email', 'alert', 'push notification'];
+  public notificationTypes: EmailNotificationTypes[] = EMAIL_NOTIFICATION_TYPES;
   /** Email layout data + styles */
   public emailLayout!: any;
   /** Email header background color */
@@ -1107,7 +1116,7 @@ export class EmailService {
    * @returns Email notifications query result.
    */
   getEmailNotifications(id: string, limit?: number, skip?: number) {
-    return this.apollo.query<any>({
+    return this.apollo.query<EmailNotificationsQueryResponse>({
       query: GET_EMAIL_NOTIFICATIONS,
       variables: {
         applicationId: id,
@@ -1151,13 +1160,28 @@ export class EmailService {
   }
 
   /**
+   * Get email notification by id
+   *
+   * @param id Email notification id
+   * @returns Email notification query
+   */
+  public getEmailNotification(id: string) {
+    return this.apollo.query<EmailNotificationQueryResponse>({
+      query: GET_EMAIL_NOTIFICATION_BY_ID,
+      variables: {
+        id,
+      },
+    });
+  }
+
+  /**
    * Get an email notification with the provided id.
    *
    * @param id The notification data id.
    * @param applicationId The application id of the email notification.
    * @returns Email notification.
    */
-  getEmailNotification(id: string, applicationId: string) {
+  getEmailNotificationForEdition(id: string, applicationId: string) {
     return this.apollo.mutate<any>({
       mutation: GET_AND_UPDATE_EMAIL_NOTIFICATION,
       variables: {
@@ -1607,13 +1631,10 @@ export class EmailService {
    *
    * @param id The application ids of the email notifications.
    * @param isFromEmailNotification - Indicates if the templates are related to email notifications. Optional.
-   * @returns {Observable<any>} An observable that resolves with the result of the query.
+   * @returns Observable that resolves with the result of the query.
    */
-  getCustomTemplates(
-    id?: string,
-    isFromEmailNotification?: boolean
-  ): Observable<any> {
-    return this.apollo.query<any>({
+  getCustomTemplates(id?: string, isFromEmailNotification?: boolean) {
+    return this.apollo.query<EmailTemplatesQueryResponse>({
       query: GET_CUSTOM_TEMPLATES,
       variables: {
         applicationId: id,
@@ -1625,15 +1646,15 @@ export class EmailService {
   /**
    * Get an email distribution lists.
    *
-   @param applicationId The application ids of the email notifications.
-  @param distributionListId The distributionList id to get specific distribution list.
+   * @param applicationId The application ids of the email notifications.
+   * @param distributionListId The distributionList id to get specific distribution list.
    * @returns Email distribution lists.
    */
   getEmailDistributionList(
     applicationId?: string,
     distributionListId?: string
-  ): Observable<any> {
-    return this.apollo.query<any>({
+  ) {
+    return this.apollo.query<EmailDistributionListQueryResponse>({
       query: GET_DISTRIBUTION_LIST,
       variables: { applicationId, id: distributionListId },
     });

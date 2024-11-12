@@ -188,6 +188,17 @@ export const GET_EMAIL_DATA_SET = gql`
   }
 `;
 
+/** Get Email notification by id GQL query */
+export const GET_EMAIL_NOTIFICATION_BY_ID = gql`
+  query EmailNotification($id: ID!) {
+    emailNotification(id: $id) {
+      id
+      name
+      userSubscribed
+    }
+  }
+`;
+
 /** Graphql query for getting data set by filter layout */
 export const GET_EMAIL_NOTIFICATIONS = gql`
   query EmailNotifications($applicationId: ID!, $limit: Int, $skip: Int) {

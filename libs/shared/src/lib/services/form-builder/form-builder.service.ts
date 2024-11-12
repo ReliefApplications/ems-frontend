@@ -1,21 +1,29 @@
-import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Model, SurveyModel, settings } from 'survey-core';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
+import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
+import { isNil } from 'lodash';
 import get from 'lodash/get';
-import { EDIT_RECORD } from './graphql/mutations';
+import { BehaviorSubject } from 'rxjs';
+import {
+  Model,
+  Question,
+  QuestionFileModel,
+  SurveyModel,
+  settings,
+  surveyLocalization,
+} from 'survey-core';
+import { Metadata } from '../../models/metadata.model';
 import {
   EditRecordMutationResponse,
   Record as RecordModel,
 } from '../../models/record.model';
-import { Metadata } from '../../models/metadata.model';
-import { RestService } from '../rest/rest.service';
-import { BehaviorSubject } from 'rxjs';
-import { SnackbarService } from '@oort-front/ui';
 import { FormHelpersService } from '../form-helper/form-helper.service';
-import { HttpClient } from '@angular/common/http';
+import { RestService } from '../rest/rest.service';
+import { EDIT_RECORD } from './graphql/mutations';
 
 /**
  * Shared form builder service.
@@ -36,6 +44,7 @@ export class FormBuilderService {
    * @param restService This is the service that is used to make http requests.
    * @param formHelpersService Shared form helper service.
    * @param http Http client
+   * @param environment Environment
    */
   constructor(
     private referenceDataService: ReferenceDataService,
@@ -44,7 +53,8 @@ export class FormBuilderService {
     private snackBar: SnackbarService,
     private restService: RestService,
     private formHelpersService: FormHelpersService,
-    private http: HttpClient
+    private http: HttpClient,
+    @Inject('environment') private environment: any
   ) {}
 
   /**
@@ -141,6 +151,16 @@ export class FormBuilderService {
     survey.showProgressBar = 'off';
     survey.focusFirstQuestionAutomatic = false;
     survey.applyTheme({ isPanelless: true });
+    /** Apply placeholders with limitations to all file type questions */
+    survey.onGetQuestionTitle.add((_, options) => {
+      if (options.question instanceof QuestionFileModel) {
+        const text = surveyLocalization.getString(
+          'oort:fileLimitations',
+          (options.question.survey as SurveyModel).locale
+        )(options.question);
+        options.question.dragAreaPlaceholder = text;
+      }
+    });
     return survey;
   }
 
@@ -157,7 +177,10 @@ export class FormBuilderService {
     selectedPageIndex: BehaviorSubject<number>,
     temporaryFilesStorage: Record<string, Array<File>>
   ) {
-    survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
+    this.updateTemporaryFileStorage(survey, temporaryFilesStorage);
+    survey.onClearFiles.add((_, options: any) =>
+      this.onClearFiles(temporaryFilesStorage, options)
+    );
     survey.onUploadFiles.add((_, options: any) =>
       this.onUploadFiles(temporaryFilesStorage, options)
     );
@@ -171,11 +194,65 @@ export class FormBuilderService {
   }
 
   /**
+   * Set temporary file storage
+   *
+   * @param survey Survey where to add the callbacks
+   * @param temporaryFilesStorage Temporary files saved while executing the survey
+   */
+  private updateTemporaryFileStorage(
+    survey: SurveyModel,
+    temporaryFilesStorage: Record<string, Array<File>>
+  ) {
+    const fileQuestions =
+      survey.getAllQuestions()?.filter((q) => q instanceof QuestionFileModel) ??
+      [];
+    fileQuestions.forEach((fq) => {
+      temporaryFilesStorage[fq.name] = fq.value;
+    });
+  }
+
+  /**
+   * Check if given files are valid for given file type question
+   *
+   * @param question File question to apply checks
+   * @param files Uploaded files
+   * @returns Given files validity against given question
+   */
+  private checkFileUploadValidity(question: Question, files: File[]) {
+    let isValid = true;
+    const allowMultiple = question.getPropertyValue('allowMultiple');
+    const allowedFileNumber = question.getPropertyValue('allowedFileNumber');
+    if (allowMultiple && files.length > allowedFileNumber) {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'components.formBuilder.errors.maximumAllowedFiles',
+          { number: allowedFileNumber }
+        ),
+        { error: true }
+      );
+      isValid = false;
+    }
+    return isValid;
+  }
+
+  /**
    * Handles the clearing of files
    *
+   * @param temporaryFilesStorage Temporary files saved while executing the survey
    * @param options Options regarding the files
    */
-  private onClearFiles(options: any): void {
+  private onClearFiles(temporaryFilesStorage: any, options: any): void {
+    if (options.question.allowMultiple) {
+      // Filtering the temp storage to remove the file based on filename
+      if (temporaryFilesStorage[options.name]) {
+        temporaryFilesStorage[options.name] = temporaryFilesStorage[
+          options.name
+        ].filter((x: File) => x.name !== options.fileName);
+      }
+    } else {
+      // If single upload, the options doesn't contain fileName, so we can just clear the temp storage
+      temporaryFilesStorage[options.name] = [];
+    }
     options.callback('success');
   }
 
@@ -186,8 +263,17 @@ export class FormBuilderService {
    * @param options Options regarding the upload
    */
   private onUploadFiles(temporaryFilesStorage: any, options: any): void {
-    if (temporaryFilesStorage[options.name] !== undefined) {
-      temporaryFilesStorage[options.name].concat(options.files);
+    const isUploadValid = this.checkFileUploadValidity(options.question, [
+      ...options.files,
+      ...(temporaryFilesStorage[options.name] ?? []),
+    ]);
+    if (!isUploadValid) {
+      return;
+    }
+    if (!isNil(temporaryFilesStorage[options.name])) {
+      temporaryFilesStorage[options.name] = temporaryFilesStorage[
+        options.name
+      ].concat(options.files);
     } else {
       temporaryFilesStorage[options.name] = options.files;
     }
@@ -223,21 +309,10 @@ export class FormBuilderService {
    * @param options Options regarding the download
    */
   private onDownloadFile(options: any): void {
-    if (
-      options.content.indexOf('base64') !== -1 ||
-      options.content.indexOf('http') !== -1
-    ) {
-      options.callback('success', options.content);
-    } else {
+    const buildRequest = (token: string, url: string) => {
       const xhr = new XMLHttpRequest();
-      xhr.open(
-        'GET',
-        `${this.restService.apiUrl}/download/file/${options.content}`
-      );
-      xhr.setRequestHeader(
-        'Authorization',
-        `Bearer ${localStorage.getItem('idtoken')}`
-      );
+      xhr.open('GET', url);
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
       xhr.onloadstart = () => {
         xhr.responseType = 'blob';
       };
@@ -252,6 +327,24 @@ export class FormBuilderService {
         reader.readAsDataURL(file);
       };
       xhr.send();
+    };
+    // Default behavior
+    if (typeof options.content === 'string') {
+      if (
+        options.content.indexOf('base64') !== -1 ||
+        options.content.indexOf('http') !== -1
+      ) {
+        options.callback('success', options.content);
+      } else {
+        const token = localStorage.getItem('idtoken') as string;
+        const url = `${this.restService.apiUrl}/download/file/${options.content}`;
+        buildRequest(token, url);
+      }
+    } else {
+      // Using document management
+      const token = localStorage.getItem('access_token') as string;
+      const url = `${this.environment.csApiUrl}/documents/drives/${options.content.driveId}/items/${options.content.itemId}/content`;
+      buildRequest(token, url);
     }
   }
 

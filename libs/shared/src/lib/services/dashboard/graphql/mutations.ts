@@ -8,7 +8,7 @@ export const EDIT_DASHBOARD = gql`
     $id: ID!
     $structure: JSON
     $name: String
-    $buttons: [ButtonActionInputType]
+    $buttons: [ActionButtonInputType]
     $gridOptions: JSON
   ) {
     editDashboard(

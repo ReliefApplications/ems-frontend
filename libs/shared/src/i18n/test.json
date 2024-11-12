@@ -287,7 +287,8 @@
 					"noCustomTitle": "******",
 					"noDistributionList": "******",
 					"noSubject": "******",
-					"noTemplate": "******"
+					"noTemplate": "******",
+					"preview": "******"
 				},
 				"existing": "******",
 				"field": {
@@ -310,6 +311,9 @@
 					"logo": "******",
 					"removeTooltip": "******",
 					"style": "******"
+				},
+				"preview": {
+					"processing": "******"
 				},
 				"processing": "******",
 				"ready": "******",
@@ -1029,6 +1033,7 @@
 				"modifiedBy": "****** {{user}} ****** {{date}}"
 			},
 			"update": {
+				"confirmMessage": "****** {{action}} ******",
 				"exit": "******",
 				"exitMessage": "******"
 			},
@@ -1040,11 +1045,17 @@
 			"errors": {
 				"duplicatedRelatedName": "****** {{question}} ****** {{page}} ******",
 				"incorrectJSON": "******",
+				"maximumAllowedFiles": "****** {{number}}",
 				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
 			},
 			"propertyGrid": {
+				"file": {
+					"acceptedFiles": {
+						"clear": "******"
+					}
+				},
 				"resource": {
 					"availableGridFields": "******",
 					"resourceSelectText": "******"
@@ -1638,6 +1649,7 @@
 						"title": "******"
 					}
 				},
+				"files": "{{number}} ******",
 				"filter": {
 					"toggle": "******"
 				},
@@ -2048,6 +2060,7 @@
 							"title": "******"
 						},
 						"geographicExtent": "******",
+						"geographicExtentPadding": "******",
 						"geographicExtentValue": "******",
 						"latitude": "******",
 						"longitude": "******",
@@ -2098,6 +2111,7 @@
 						"geographicExtent": {
 							"add": "******",
 							"admin0": "******",
+							"padding": "******",
 							"region": "******",
 							"remove": "******",
 							"value": "****** {{context}} ****** {{filter}} ******"
@@ -2456,17 +2470,38 @@
 			"type": "******"
 		},
 		"dashboard": {
-			"activateFiltering": "******",
-			"buttonActions": {
+			"actionButtons": {
 				"action": "******",
 				"actions": {
-					"addRecord": "******",
-					"editRecord": "******",
+					"addRecord": {
+						"edition": "******",
+						"fieldsForUpdate": {
+							"text": "******"
+						},
+						"help": {
+							"mapping": "****** {{context.<fieldName>}} ******"
+						},
+						"text": "******",
+						"tooltip": {
+							"fieldsForUpdate": "******",
+							"template": "******"
+						}
+					},
+					"autoReload": "******",
+					"editRecord": {
+						"text": "******",
+						"tooltip": {
+							"template": "******"
+						}
+					},
 					"navigateTo": "******",
 					"openInNewTab": "******",
 					"previousPage": "******",
-					"sendNotification": "******",
+					"sendNotification": {
+						"text": "******"
+					},
 					"subscribeToNotification": "******",
+					"unsubscribeFromNotification": "******",
 					"url": "******"
 				},
 				"category": "******",
@@ -2485,6 +2520,7 @@
 				"variant": "******",
 				"visibleTo": "******"
 			},
+			"activateFiltering": "******",
 			"closable": "******",
 			"context": {
 				"addTemplate": "******",

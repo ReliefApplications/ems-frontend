@@ -454,7 +454,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.emailListLoading = true;
     this.emailService.enableAllSteps.next(true);
     this.emailService
-      .getEmailNotification(id, this.applicationId)
+      .getEmailNotificationForEdition(id, this.applicationId)
       .subscribe((res) => {
         const emailData = res.data.editEmailNotification;
         this.emailService.configId = emailData.id;
