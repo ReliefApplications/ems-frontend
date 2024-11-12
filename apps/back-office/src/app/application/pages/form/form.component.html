@@ -25,7 +25,14 @@
       ></ui-button>
     </div>
     <!-- Page actions -->
-    <div class="flex items-center" *ngIf="!formActive">
+    <div class="flex items-center gap-x-3" *ngIf="!formActive">
+      <button
+        class="flex flex-row gap-4 py-2 px-3 text-gray-700 hover:text-gray-900 cursor-pointer hover:bg-gray-50"
+        (click)="onEditButtonActions()"
+      >
+        <ui-icon icon="touch_app" variant="grey"></ui-icon>
+        {{ 'models.dashboard.actionButtons.edit.few' | translate }}
+      </button>
       <!-- Edit name -->
       <ui-button
         icon="edit"
@@ -42,18 +49,23 @@
   <shared-form [form]="form" (save)="onComplete($event)"></shared-form>
   <!-- Form actions -->
   <div
-    class="mt-6 flex justify-center"
+    class="mt-6 flex justify-center gap-x-4"
     *ngIf="completed && !form.uniqueRecord && !hideNewRecord"
   >
     <!-- New record -->
     <ui-button
-      [isBlock]="true"
-      class="flex-1 max-w-xs"
+      [isBlock]="!actionButtons.length"
+      class="max-w-xs"
       variant="primary"
       category="secondary"
       (click)="clearForm()"
     >
       {{ 'models.record.new' | translate }}
     </ui-button>
+    <!-- Action buttons -->
+    <shared-action-buttons
+      class="export-hide"
+      [actionButtons]="actionButtons"
+    ></shared-action-buttons>
   </div>
 </ng-container>

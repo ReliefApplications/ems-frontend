@@ -2,6 +2,7 @@ import { Apollo } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+  ActionButton,
   Form,
   Page,
   Step,
@@ -53,6 +54,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   public step?: Step;
   /** Tells if the form is within a workflow */
   public isStep = false;
+  /** Form button actions */
+  public actionButtons: ActionButton[] = [];
 
   /**
    * Form page.
@@ -96,6 +99,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.step = data.step;
+              this.actionButtons = data.step.buttons as ActionButton[];
               return this.getFormQuery(this.step.content ?? '');
             })
           )
@@ -113,6 +117,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.page = data.page;
+              this.actionButtons = data.page.buttons as ActionButton[];
               return this.getFormQuery(this.page.content ?? '');
             })
           )

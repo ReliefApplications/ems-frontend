@@ -1,27 +1,29 @@
-import { Apollo } from 'apollo-angular';
+import { Dialog } from '@angular/cdk/dialog';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import {
-  Form,
-  Page,
-  Step,
-  FormComponent as SharedFormComponent,
+  ActionButton,
   ApplicationService,
-  WorkflowService,
-  UnsubscribeComponent,
-  StepQueryResponse,
+  Form,
   FormQueryResponse,
+  Page,
   PageQueryResponse,
+  QuickActionsService,
+  FormComponent as SharedFormComponent,
+  Step,
+  StepQueryResponse,
+  UnsubscribeComponent,
+  WorkflowService,
 } from '@oort-front/shared';
+import { Apollo } from 'apollo-angular';
+import { Subscription } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import {
-  GET_SHORT_FORM_BY_ID,
   GET_PAGE_BY_ID,
+  GET_SHORT_FORM_BY_ID,
   GET_STEP_BY_ID,
 } from './graphql/queries';
-import { switchMap, takeUntil } from 'rxjs/operators';
-import { TranslateService } from '@ngx-translate/core';
-import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Form page in application.
@@ -60,6 +62,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   public step?: Step;
   /** Is form part of workflow step */
   public isStep = false;
+  /** Configured form quick actions */
+  public actionButtons: ActionButton[] = [];
 
   /**
    * Form page in application
@@ -71,6 +75,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * @param router Angular router
    * @param translate Angular translate service
    * @param dialog CDK Dialog service
+   * @param quickActionsService Quick action button service
    */
   constructor(
     private applicationService: ApplicationService,
@@ -79,7 +84,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
-    private dialog: Dialog
+    private dialog: Dialog,
+    private quickActionsService: QuickActionsService
   ) {
     super();
   }
@@ -105,6 +111,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.step = data.step;
+              this.actionButtons = data.step.buttons as ActionButton[];
               return this.getFormQuery(this.step.content ?? '');
             })
           )
@@ -123,6 +130,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.page = data.page;
+              this.actionButtons = data.page.buttons as ActionButton[];
               return this.getFormQuery(this.page.content ?? '');
             })
           )
@@ -306,5 +314,52 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
       subscription?.unsubscribe();
     });
+  }
+
+  /** Opens modal to modify button actions */
+  public async onEditButtonActions() {
+    const { EditActionButtonsModalComponent } = await import(
+      '../../../components/edit-action-buttons-modal/edit-action-buttons-modal.component'
+    );
+    const dialogRef = this.dialog.open<ActionButton[] | undefined>(
+      EditActionButtonsModalComponent,
+      {
+        data: {
+          form: {
+            ...(this.isStep && this.step),
+            ...(!this.isStep && this.page),
+            buttons: this.actionButtons,
+          },
+        },
+        disableClose: true,
+      }
+    );
+    dialogRef.closed
+      .pipe(
+        filter((buttons) => !!buttons),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(async (buttons) => {
+        this.quickActionsService
+          .savePageButtons(
+            this.isStep ? this.step?.id : this.page?.id,
+            buttons,
+            'form',
+            this.isStep
+          )
+          ?.pipe(takeUntil(this.destroy$))
+          .subscribe(({ errors }) => {
+            this.actionButtons = buttons as ActionButton[];
+            if (this.isStep) {
+              (this.step as Step).buttons = buttons;
+            } else {
+              (this.page as Page).buttons = buttons;
+            }
+            this.applicationService.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.form.one')
+            );
+          });
+      });
   }
 }

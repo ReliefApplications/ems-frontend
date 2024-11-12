@@ -58,7 +58,8 @@ import { GET_RESOURCE } from './graphql/queries';
 /** Dialog data interface */
 interface DialogData {
   button: ActionButton;
-  dashboard: Dashboard;
+  dashboard?: Dashboard;
+  form?: Form;
 }
 
 /** Component for editing a dashboard action button */
@@ -167,76 +168,78 @@ export class EditActionButtonModalComponent
       this.hrefEditor,
       this.dataTemplateService.getAutoCompleterPageKeys()
     );
-    // Listen to form changes
-    this.setFormListeners();
-    // Get context resource data, if any
-    if (this.data.dashboard.page?.context?.resource) {
-      this.apollo
-        .query<ResourceQueryResponse>({
-          query: GET_RESOURCE,
-          variables: {
-            resource: this.data.dashboard.page?.context?.resource,
-          },
-        })
-        .subscribe({
-          next: ({ data }) => {
-            this.editRecordTemplates = data.resource.forms ?? [];
-            this.sendNotificationFields = this.queryBuilder.getFields(
-              data.resource?.queryName as string
-            );
-            this.resourceFields = data.resource.fields.filter((f: any) =>
-              ['resource', 'resources'].includes(f.type)
-            );
-          },
-        });
-    }
-    // Get list of email notifications for application
-    if (
-      this.form.get('action.subscribeToNotification.enabled')?.value ||
-      this.form.get('action.unsubscribeFromNotification.enabled')?.value
-    ) {
-      this.emailService
-        .getEmailNotifications(
-          this.applicationService.application?.getValue()?.id as string
-        )
-        .subscribe({
-          next: ({ data }) => {
-            this.emailNotifications = data.emailNotifications.edges.map(
-              (item) => item.node
-            );
-          },
-        });
-    }
-    // Get list of distribution list for application
-    if (this.form.get('action.sendNotification.enabled')?.value) {
-      this.emailService
-        .getEmailDistributionList(
-          this.applicationService.application?.getValue()?.id as string
-        )
-        .pipe(
-          switchMap(({ data }) => {
-            const emailDistributionLists = data.emailDistributionLists;
-            return this.emailService
-              .getCustomTemplates(
-                this.applicationService.application?.getValue()?.id as string
-              )
-              .pipe(
-                map(({ data }) => ({
-                  emailDistributionLists,
-                  customTemplates: data.customTemplates,
-                }))
-              );
+    if (!isNil(this.data.dashboard)) {
+      // Listen to form changes
+      this.setFormListeners();
+      // Get context resource data, if any
+      if (this.data.dashboard.page?.context?.resource) {
+        this.apollo
+          .query<ResourceQueryResponse>({
+            query: GET_RESOURCE,
+            variables: {
+              resource: this.data.dashboard.page?.context?.resource,
+            },
           })
-        )
-        .subscribe({
-          next: ({ customTemplates, emailDistributionLists }) => {
-            this.sendNotificationDistributionList =
-              emailDistributionLists.edges.map((item: any) => item.node);
-            this.sendNotificationTemplates = customTemplates.edges.map(
-              (item: any) => item.node
-            );
-          },
-        });
+          .subscribe({
+            next: ({ data }) => {
+              this.editRecordTemplates = data.resource.forms ?? [];
+              this.sendNotificationFields = this.queryBuilder.getFields(
+                data.resource?.queryName as string
+              );
+              this.resourceFields = data.resource.fields.filter((f: any) =>
+                ['resource', 'resources'].includes(f.type)
+              );
+            },
+          });
+      }
+      // Get list of email notifications for application
+      if (
+        this.form.get('action.subscribeToNotification.enabled')?.value ||
+        this.form.get('action.unsubscribeFromNotification.enabled')?.value
+      ) {
+        this.emailService
+          .getEmailNotifications(
+            this.applicationService.application?.getValue()?.id as string
+          )
+          .subscribe({
+            next: ({ data }) => {
+              this.emailNotifications = data.emailNotifications.edges.map(
+                (item) => item.node
+              );
+            },
+          });
+      }
+      // Get list of distribution list for application
+      if (this.form.get('action.sendNotification.enabled')?.value) {
+        this.emailService
+          .getEmailDistributionList(
+            this.applicationService.application?.getValue()?.id as string
+          )
+          .pipe(
+            switchMap(({ data }) => {
+              const emailDistributionLists = data.emailDistributionLists;
+              return this.emailService
+                .getCustomTemplates(
+                  this.applicationService.application?.getValue()?.id as string
+                )
+                .pipe(
+                  map(({ data }) => ({
+                    emailDistributionLists,
+                    customTemplates: data.customTemplates,
+                  }))
+                );
+            })
+          )
+          .subscribe({
+            next: ({ customTemplates, emailDistributionLists }) => {
+              this.sendNotificationDistributionList =
+                emailDistributionLists.edges.map((item: any) => item.node);
+              this.sendNotificationTemplates = customTemplates.edges.map(
+                (item: any) => item.node
+              );
+            },
+          });
+      }
     }
   }
 
@@ -276,7 +279,10 @@ export class EditActionButtonModalComponent
           navigateTo: this.fb.group(
             {
               enabled: [
-                !!get(data, 'href', false) || get(data, 'previousPage'),
+                !!get(data, 'href', false) ||
+                  get(data, 'previousPage') ||
+                  // if it's for a form, then enabled by default as it only has the navigate to action available
+                  !isNil(this.data.form),
               ],
               previousPage: [get(data, 'previousPage', false)],
               targetUrl: this.fb.group({
@@ -287,120 +293,126 @@ export class EditActionButtonModalComponent
             },
             { validator: this.navigateToValidator }
           ),
-          editRecord: this.fb.group({
-            enabled: [!!get(data, 'editRecord', false)],
-            template: [get(data, 'editRecord.template', '')],
-            autoReload: [get(data, 'editRecord.autoReload', false)],
-          }),
-          addRecord: this.fb.group(
-            {
-              enabled: [!!get(data, 'addRecord', false)],
-              resource: [
-                get(
-                  data,
-                  'addRecord.resource',
-                  this.data.dashboard.page?.context?.resource ?? ''
+          ...(!isNil(this.data.dashboard) && {
+            editRecord: this.fb.group({
+              enabled: [!!get(data, 'editRecord', false)],
+              template: [get(data, 'editRecord.template', '')],
+              autoReload: [get(data, 'editRecord.autoReload', false)],
+            }),
+            addRecord: this.fb.group(
+              {
+                enabled: [!!get(data, 'addRecord', false)],
+                resource: [
+                  get(
+                    data,
+                    'addRecord.resource',
+                    this.data.dashboard.page?.context?.resource ?? ''
+                  ),
+                ],
+                template: [get(data, 'addRecord.template', '')],
+                mapping: this.fb.array(
+                  Object.keys(mapping).map((x: any) =>
+                    this.fb.group({
+                      name: [x, Validators.required],
+                      value: [mapping[x], Validators.required],
+                    })
+                  )
                 ),
-              ],
-              template: [get(data, 'addRecord.template', '')],
-              mapping: this.fb.array(
-                Object.keys(mapping).map((x: any) =>
-                  this.fb.group({
-                    name: [x, Validators.required],
-                    value: [mapping[x], Validators.required],
-                  })
-                )
-              ),
-              rawMapping: [JSON.stringify(mapping, null, 2)],
-              edition: [!!get(data, 'addRecord.fieldsForUpdate', false)],
-              fieldsForUpdate: [get(data, 'addRecord.fieldsForUpdate', [])],
-              autoReload: [get(data, 'addRecord.autoReload', false)],
-            },
-            {
-              validator: (
-                control: AbstractControl
-              ): ValidationErrors | null => {
-                const isEnabledAndHasResourceWithTemplate =
-                  control.value.enabled &&
-                  control.value.resource !== '' &&
-                  !isNil(control.value.resource) &&
-                  control.value.template !== '' &&
-                  !isNil(control.value.template);
-                if (
-                  !control.value.enabled ||
-                  isEnabledAndHasResourceWithTemplate
-                ) {
-                  return null;
-                }
-                return { atLeastOneRequired: true };
+                rawMapping: [JSON.stringify(mapping, null, 2)],
+                edition: [!!get(data, 'addRecord.fieldsForUpdate', false)],
+                fieldsForUpdate: [get(data, 'addRecord.fieldsForUpdate', [])],
+                autoReload: [get(data, 'addRecord.autoReload', false)],
               },
-            }
-          ),
-          subscribeToNotification: this.fb.group(
-            {
-              enabled: [!!get(data, 'subscribeToNotification', false)],
-              notification: [
-                get(data, 'subscribeToNotification.notification', ''),
-              ],
-            },
-            {
-              validator: (control: AbstractControl): ValidationErrors | null =>
-                !control.value.enabled ||
-                (control.value.notification !== '' &&
-                  !isNil(control.value.notification))
-                  ? null
-                  : { atLeastOneRequired: true },
-            }
-          ),
-          unsubscribeFromNotification: this.fb.group(
-            {
-              enabled: [!!get(data, 'unsubscribeFromNotification', false)],
-              notification: [
-                get(data, 'unsubscribeFromNotification.notification', ''),
-              ],
-            },
-            {
-              validator: (control: AbstractControl): ValidationErrors | null =>
-                !control.value.enabled ||
-                (control.value.notification !== '' &&
-                  !isNil(control.value.notification))
-                  ? null
-                  : { atLeastOneRequired: true },
-            }
-          ),
-          sendNotification: this.fb.group(
-            {
-              enabled: [!!get(data, 'sendNotification', false)],
-              distributionList: [
-                get(data, 'sendNotification.distributionList', ''),
-              ],
-              templates: [get(data, 'sendNotification.templates', [])],
-              fields: this.fb.array(
-                get(data, 'sendNotification.fields', []).map((x: any) =>
-                  addNewField(x)
-                )
-              ),
-            },
-            {
-              validator: (
-                control: AbstractControl
-              ): ValidationErrors | null => {
-                const isEnabledAndHasDistributionListWithTemplate =
-                  control.value.enabled &&
-                  control.value.distributionList !== '' &&
-                  !isNil(control.value.distributionList) &&
-                  !isNil(control.value.templates) &&
-                  control.value.templates.length;
-                if (
-                  !control.value.enabled ||
-                  isEnabledAndHasDistributionListWithTemplate
-                ) {
-                  return null;
-                }
-                return { atLeastOneRequired: true };
+              {
+                validator: (
+                  control: AbstractControl
+                ): ValidationErrors | null => {
+                  const isEnabledAndHasResourceWithTemplate =
+                    control.value.enabled &&
+                    control.value.resource !== '' &&
+                    !isNil(control.value.resource) &&
+                    control.value.template !== '' &&
+                    !isNil(control.value.template);
+                  if (
+                    !control.value.enabled ||
+                    isEnabledAndHasResourceWithTemplate
+                  ) {
+                    return null;
+                  }
+                  return { atLeastOneRequired: true };
+                },
+              }
+            ),
+            subscribeToNotification: this.fb.group(
+              {
+                enabled: [!!get(data, 'subscribeToNotification', false)],
+                notification: [
+                  get(data, 'subscribeToNotification.notification', ''),
+                ],
               },
-            }
-          ),
+              {
+                validator: (
+                  control: AbstractControl
+                ): ValidationErrors | null =>
+                  !control.value.enabled ||
+                  (control.value.notification !== '' &&
+                    !isNil(control.value.notification))
+                    ? null
+                    : { atLeastOneRequired: true },
+              }
+            ),
+            unsubscribeFromNotification: this.fb.group(
+              {
+                enabled: [!!get(data, 'unsubscribeFromNotification', false)],
+                notification: [
+                  get(data, 'unsubscribeFromNotification.notification', ''),
+                ],
+              },
+              {
+                validator: (
+                  control: AbstractControl
+                ): ValidationErrors | null =>
+                  !control.value.enabled ||
+                  (control.value.notification !== '' &&
+                    !isNil(control.value.notification))
+                    ? null
+                    : { atLeastOneRequired: true },
+              }
+            ),
+            sendNotification: this.fb.group(
+              {
+                enabled: [!!get(data, 'sendNotification', false)],
+                distributionList: [
+                  get(data, 'sendNotification.distributionList', ''),
+                ],
+                templates: [get(data, 'sendNotification.templates', [])],
+                fields: this.fb.array(
+                  get(data, 'sendNotification.fields', []).map((x: any) =>
+                    addNewField(x)
+                  )
+                ),
+              },
+              {
+                validator: (
+                  control: AbstractControl
+                ): ValidationErrors | null => {
+                  const isEnabledAndHasDistributionListWithTemplate =
+                    control.value.enabled &&
+                    control.value.distributionList !== '' &&
+                    !isNil(control.value.distributionList) &&
+                    !isNil(control.value.templates) &&
+                    control.value.templates.length;
+                  if (
+                    !control.value.enabled ||
+                    isEnabledAndHasDistributionListWithTemplate
+                  ) {
+                    return null;
+                  }
+                  return { atLeastOneRequired: true };
+                },
+              }
+            ),
+          }),
         },
         { validator: this.actionValidator }
       ),

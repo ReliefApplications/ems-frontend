@@ -28,6 +28,7 @@ import {
   AddDashboardTemplateMutationResponse,
   DeleteDashboardTemplatesMutationResponse,
   DashboardTemplate,
+  QuickActionsService,
 } from '@oort-front/shared';
 import {
   ADD_DASHBOARD_TEMPLATE,
@@ -167,6 +168,7 @@ export class DashboardComponent
    * @param document Document
    * @param clipboard Angular clipboard service
    * @param dashboardAutomationService Dashboard automation service
+   * @param quickActionsService Quick action button service
    */
   constructor(
     private applicationService: ApplicationService,
@@ -185,7 +187,8 @@ export class DashboardComponent
     private layoutService: UILayoutService,
     @Inject(DOCUMENT) private document: Document,
     private clipboard: Clipboard,
-    private dashboardAutomationService: DashboardAutomationService
+    private dashboardAutomationService: DashboardAutomationService,
+    private quickActionsService: QuickActionsService
   ) {
     super();
     this.dashboardAutomationService.dashboard = this;
@@ -652,7 +655,7 @@ export class DashboardComponent
   /** Opens modal to modify action buttons */
   public async onEditActionButtons() {
     const { EditActionButtonsModalComponent } = await import(
-      './components/edit-action-buttons-modal/edit-action-buttons-modal.component'
+      '../../../components/edit-action-buttons-modal/edit-action-buttons-modal.component'
     );
     const dialogRef = this.dialog.open<ActionButton[] | undefined>(
       EditActionButtonsModalComponent,
@@ -672,8 +675,8 @@ export class DashboardComponent
       .subscribe(async (buttons) => {
         if (!buttons) return;
 
-        this.dashboardService
-          .saveDashboardButtons(this.dashboard?.id, buttons)
+        this.quickActionsService
+          .savePageButtons(this.dashboard?.id, buttons)
           ?.pipe(takeUntil(this.destroy$))
           .subscribe(({ errors }) => {
             this.actionButtons = buttons;
@@ -826,8 +829,8 @@ export class DashboardComponent
       event.currentIndex
     );
 
-    this.dashboardService
-      .saveDashboardButtons(this.dashboard?.id, this.actionButtons)
+    this.quickActionsService
+      .savePageButtons(this.dashboard?.id, this.actionButtons)
       ?.subscribe(() => {
         this.dashboard = {
           ...this.dashboard,
