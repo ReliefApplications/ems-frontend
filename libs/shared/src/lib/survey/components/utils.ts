@@ -96,6 +96,7 @@ export const buildSearchButton = (
               ? [question.value]
               : [],
             selectable: true,
+            autoSelectFirstOption: question.autoSelectFirstOption,
           },
           panelClass: 'closable-dialog',
         });

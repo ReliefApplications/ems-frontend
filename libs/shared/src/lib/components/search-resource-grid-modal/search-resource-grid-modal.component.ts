@@ -1,15 +1,14 @@
-import { ApplicationRef, Component, Inject } from '@angular/core';
-import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
-import { SpinnerModule } from '@oort-front/ui';
-import { ResourceDropdownModule } from '../../survey/components/resource-dropdown/resource-dropdown.module';
+import { ApplicationRef, Component, Inject } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule, DialogModule, SpinnerModule } from '@oort-front/ui';
+import { GridDataResult } from '@progress/kendo-angular-grid';
 import { ApplicationDropdownModule } from '../../survey/components/application-dropdown/application-dropdown.module';
+import { ResourceDropdownModule } from '../../survey/components/resource-dropdown/resource-dropdown.module';
 import { RecordDropdownModule } from '../record-dropdown/record-dropdown.module';
 import { CoreGridModule } from '../ui/core-grid/core-grid.module';
-import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule } from '@oort-front/ui';
-import { DialogModule } from '@oort-front/ui';
+import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 
 /**
  * Dialog data interface of the component
@@ -19,6 +18,7 @@ interface DialogData {
   multiselect?: boolean;
   selectedRows?: string[];
   selectable?: boolean;
+  autoSelectFirstOption?: boolean;
 }
 
 /**
@@ -70,10 +70,12 @@ export class ResourceGridModalComponent {
     public dialogRef: DialogRef<ResourceGridModalComponent>,
     private ref: ApplicationRef
   ) {
-    if (this.data.multiselect !== undefined)
+    if (this.data.multiselect !== undefined) {
       this.multiSelect = this.data.multiselect;
-    if (this.data.selectedRows !== undefined)
+    }
+    if (this.data.selectedRows !== undefined) {
       this.selectedRows = [...this.data.selectedRows];
+    }
 
     if (this.data.gridSettings.sort && !this.data.gridSettings.sort.field) {
       delete this.data.gridSettings.sort;
@@ -90,6 +92,17 @@ export class ResourceGridModalComponent {
       },
     };
     this.ref.tick();
+  }
+
+  /**
+   * If autoSelectFirstOption is enabled, select first option of grid once data is ready
+   *
+   * @param event grid data result event
+   */
+  onDataReady(event: GridDataResult) {
+    if (this.data.autoSelectFirstOption && event.data?.length === 1) {
+      this.selectedRows = [event.data[0].id];
+    }
   }
 
   /**
