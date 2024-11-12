@@ -262,6 +262,8 @@ export class PreviewTemplateModalComponent {
           records: previewData?.dataList,
           index: previewData?.tabIndex,
           name: previewData?.tabName,
+          navigateToPage: previewData?.navigateToPage,
+          navigateSettings: previewData?.navigateSettings,
         },
       ],
     };

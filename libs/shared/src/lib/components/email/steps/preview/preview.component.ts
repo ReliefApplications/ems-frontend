@@ -339,6 +339,8 @@ export class PreviewComponent
                 records: previewData?.dataList,
                 index: previewData?.tabIndex,
                 name: previewData?.tabName ? previewData?.tabName : [],
+                navigateToPage: previewData?.navigateToPage,
+                navigateSettings: previewData?.navigateSettings,
               },
             ]
           : [],
