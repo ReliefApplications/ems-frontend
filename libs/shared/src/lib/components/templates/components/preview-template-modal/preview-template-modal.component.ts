@@ -225,25 +225,10 @@ export class PreviewTemplateModalComponent {
               : keyData;
           text[keyNm] = keyData?.length > 0 ? keyData : item?.node[keyNm];
         });
-      // if (this.data.widgetSettings.navigateToPage) {
-      //   text[this.data.widgetSettings.navigateSettings.title] =
-      //     this.getPageURL(text);
-      // }
       // Add the text object to the dataList array
       dataList.push(text);
     });
 
-    // if (this.data.widgetSettings.navigateToPage) {
-    //   datasetFields.push(this.data.widgetSettings.navigateSettings.title);
-    //   datasetFieldsObj.push({
-    //     name: this.data.widgetSettings.navigateSettings.title,
-    //     type: 'string',
-    //     kind: 'SCALAR',
-    //     label: this.data.widgetSettings.navigateSettings.title,
-    //     width: null,
-    //     format: null,
-    //   });
-    // }
     this.emailService.allPreviewData = [
       {
         datasetFields,
