@@ -3,6 +3,7 @@
  */
 
 // === SERVICES ===
+export * from './lib/services/action-button/action-button.service';
 export * from './lib/services/aggregation/aggregation.service';
 export * from './lib/services/api-proxy/api-proxy.service';
 export * from './lib/services/application/application.service';

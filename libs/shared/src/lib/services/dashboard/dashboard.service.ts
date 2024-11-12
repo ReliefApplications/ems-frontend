@@ -1,8 +1,11 @@
 import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
+import { GraphQLError } from 'graphql';
+import get from 'lodash/get';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import {
-  Dashboard,
   EditDashboardMutationResponse,
   WIDGET_TYPES,
 } from '../../models/dashboard.model';
@@ -10,11 +13,7 @@ import {
   EditPageContextMutationResponse,
   PageContextT,
 } from '../../models/page.model';
-import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
-import { Apollo } from 'apollo-angular';
 import { EDIT_DASHBOARD, UPDATE_PAGE_CONTEXT } from './graphql/mutations';
-import get from 'lodash/get';
-import { GraphQLError } from 'graphql';
 
 /**
  * Shared dashboard service. Handles dashboard events.
@@ -131,29 +130,6 @@ export class DashboardService {
       .subscribe(() => {
         if (callback) callback();
       });
-  }
-
-  /**
-   * Saves the buttons of the dashboard.
-   *
-   * @param dashboardId id of the dashboard
-   * @param buttons Action buttons to save
-   * @returns apollo mutation
-   */
-  public saveDashboardButtons(
-    dashboardId: string | undefined,
-    buttons: Dashboard['buttons']
-  ) {
-    if (!dashboardId) return;
-    buttons = buttons || [];
-
-    return this.apollo.mutate<EditDashboardMutationResponse>({
-      mutation: EDIT_DASHBOARD,
-      variables: {
-        id: dashboardId,
-        buttons,
-      },
-    });
   }
 
   /**
