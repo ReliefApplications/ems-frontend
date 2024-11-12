@@ -444,12 +444,12 @@ export const ADD_CUSTOM_TEMPLATE = gql`
  * Distribution List related queries
  */
 export const EDIT_DISTRIBUTION_LIST = gql`
-  mutation EditAndGetDistributionList(
-    $editAndGetDistributionListId: ID!
+  mutation EditDistributionList(
+    $editDistributionListId: ID!
     $distributionList: JSON
   ) {
-    editAndGetDistributionList(
-      id: $editAndGetDistributionListId
+    editDistributionList(
+      id: $editDistributionListId
       distributionList: $distributionList
     ) {
       bcc {
@@ -493,9 +493,12 @@ export const EDIT_DISTRIBUTION_LIST = gql`
  * Custom Template related queries
  */
 export const EDIT_CUSTOM_TEMPLATE = gql`
-  mutation Mutation($editAndGetCustomTemplateId: ID!, $customTemplate: JSON) {
-    editAndGetCustomTemplate(
-      id: $editAndGetCustomTemplateId
+  mutation EditCustomTemplate(
+    $editCustomTemplateId: ID!
+    $customTemplate: JSON
+  ) {
+    editCustomTemplate(
+      id: $editCustomTemplateId
       customTemplate: $customTemplate
     ) {
       banner

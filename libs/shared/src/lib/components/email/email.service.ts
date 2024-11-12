@@ -20,9 +20,7 @@ import {
   EmailNotificationTypes,
   EmailTemplatesQueryResponse,
 } from '../../models/email-notifications.model';
-import { ResourceQueryResponse } from '../../models/resource.model';
 import { RestService } from '../../services/rest/rest.service';
-import { prettifyLabel } from '../../utils/prettify';
 import {
   ADD_CUSTOM_TEMPLATE,
   ADD_DISTRIBUTION_LIST,
@@ -38,6 +36,9 @@ import {
   GET_RESOURCE_BY_ID,
 } from './graphql/queries';
 import { FieldStore } from './models/email.const';
+import { ResourceQueryResponse } from '../../models/resource.model';
+import { prettifyLabel } from '../../utils/prettify';
+import { addNewField } from '../query-builder/query-builder-forms';
 
 /**
  * Interface for InValidDataSets
@@ -653,7 +654,7 @@ export class EmailService {
         }),
         fields: this.formBuilder.array(
           emailDL?.query?.fields.map(
-            (field: any) => this.createFieldsFormGroup(field, this.formBuilder) // Using the utility function
+            (field: any) => this.createFieldsFormGroup(field) // Using the utility function
           )
         ),
       })
@@ -668,35 +669,10 @@ export class EmailService {
    * Common function
    *
    * @param field nested field
-   * @param formBuilder form
    * @returns FormGroup with nested fields
    */
-  createFieldsFormGroup(field: any, formBuilder: FormBuilder): FormGroup {
-    if (field?.kind === 'LIST' || field?.kind === 'OBJECT') {
-      const nestedFieldsArray = new FormArray<FormGroup>([]);
-
-      field?.fields?.forEach((nestedField: any) => {
-        nestedFieldsArray.push(
-          this.createFieldsFormGroup(nestedField, formBuilder)
-        );
-      });
-
-      return formBuilder.group({
-        name: new FormControl(field.name),
-        type: new FormControl(field.type),
-        kind: new FormControl(field.kind),
-        fields: nestedFieldsArray, // Handle nested fields
-      });
-    } else {
-      return formBuilder.group({
-        name: new FormControl(field.name),
-        type: new FormControl(field.type),
-        kind: new FormControl(field.kind),
-        label: new FormControl(field.label || null),
-        width: new FormControl(field.width || null),
-        format: new FormControl(field.format || null),
-      });
-    }
+  createFieldsFormGroup(field: any): FormGroup {
+    return addNewField(field);
   }
 
   /**
@@ -993,17 +969,17 @@ export class EmailService {
         const headerPromise =
           this.allLayoutdata?.headerLogo instanceof File
             ? this.convertFileToBase64(this.allLayoutdata?.headerLogo)
-            : Promise.resolve(null);
+            : this.allLayoutdata?.headerLogo;
 
         const footerPromise =
           this.allLayoutdata?.footerLogo instanceof File
             ? this.convertFileToBase64(this.allLayoutdata?.footerLogo)
-            : Promise.resolve(null);
+            : this.allLayoutdata?.footerLogo;
 
         const bannerPromise =
           this.allLayoutdata?.bannerImage instanceof File
             ? this.convertFileToBase64(this.allLayoutdata?.bannerImage)
-            : Promise.resolve(null);
+            : this.allLayoutdata?.bannerImage;
 
         Promise.all([headerPromise, footerPromise, bannerPromise])
           .then(([headerImg, footerImg, bannerLogo]) => {
@@ -1595,7 +1571,7 @@ export class EmailService {
     return this.apollo.query<any>({
       query: EDIT_CUSTOM_TEMPLATE,
       variables: {
-        editAndGetCustomTemplateId: id,
+        editCustomTemplateId: id,
         customTemplate,
       },
     });
@@ -1612,7 +1588,7 @@ export class EmailService {
     return this.apollo.query<any>({
       query: EDIT_DISTRIBUTION_LIST,
       variables: {
-        editAndGetDistributionListId: id,
+        editDistributionListId: id,
         distributionList,
       },
     });
@@ -1628,7 +1604,7 @@ export class EmailService {
     return this.apollo.query<any>({
       query: EDIT_DISTRIBUTION_LIST,
       variables: {
-        editAndGetDistributionListId: id,
+        editDistributionListId: id,
         distributionList: { isDeleted: 1 },
       },
     });
@@ -1644,7 +1620,7 @@ export class EmailService {
     return this.apollo.query<any>({
       query: EDIT_CUSTOM_TEMPLATE,
       variables: {
-        editAndGetCustomTemplateId: id,
+        editCustomTemplateId: id,
         customTemplate: { isDeleted: 1 },
       },
     });
