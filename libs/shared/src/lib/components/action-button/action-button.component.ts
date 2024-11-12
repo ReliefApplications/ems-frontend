@@ -410,7 +410,7 @@ export class ActionButtonComponent
   /**
    * Get selected templates data
    *
-   * @param templates Selected templates for the given quick action button
+   * @param templates Selected templates for the given action button
    * @returns selected templates data
    */
   private async getSelectedNotificationTemplates(templates: string[]) {
@@ -430,7 +430,7 @@ export class ActionButtonComponent
   /**
    * Get selected distribution list data
    *
-   * @param distributionListId Selected distribution list for the given quick action button
+   * @param distributionListId Selected distribution list for the given action button
    * @returns selected distribution list data
    */
   private async getSelectedDistributionListData(distributionListId: string) {
@@ -446,7 +446,7 @@ export class ActionButtonComponent
   /**
    * Get default resource meta data
    *
-   * @param fields Selected resource fields for the given quick action button
+   * @param fields Selected resource fields for the given action button
    * @returns default resource meta data
    */
   private async getResourceMetaData(fields: string[]) {
@@ -480,7 +480,7 @@ export class ActionButtonComponent
   }
 
   /**
-   * Build email query for quick action button.
+   * Build email query for action button.
    *
    * @param selectedIds Ids selected in the grid for email sending
    * @param settingsData resource layout settings data

@@ -28,7 +28,7 @@ import {
   AddDashboardTemplateMutationResponse,
   DeleteDashboardTemplatesMutationResponse,
   DashboardTemplate,
-  QuickActionsService,
+  ActionButtonService,
 } from '@oort-front/shared';
 import {
   ADD_DASHBOARD_TEMPLATE,
@@ -102,7 +102,7 @@ export class DashboardComponent
   public contextId = new FormControl<string | number | null>(null);
   /** Contextual record */
   public contextRecord: Record | null = null;
-  /** Configured dashboard quick actions */
+  /** Configured dashboard action buttons */
   public actionButtons: ActionButton[] = [];
   /** Timeout to scroll to newly added widget */
   private addTimeoutListener!: NodeJS.Timeout;
@@ -168,7 +168,7 @@ export class DashboardComponent
    * @param document Document
    * @param clipboard Angular clipboard service
    * @param dashboardAutomationService Dashboard automation service
-   * @param quickActionsService Quick action button service
+   * @param actionButtonService action button service
    */
   constructor(
     private applicationService: ApplicationService,
@@ -188,7 +188,7 @@ export class DashboardComponent
     @Inject(DOCUMENT) private document: Document,
     private clipboard: Clipboard,
     private dashboardAutomationService: DashboardAutomationService,
-    private quickActionsService: QuickActionsService
+    private actionButtonService: ActionButtonService
   ) {
     super();
     this.dashboardAutomationService.dashboard = this;
@@ -675,7 +675,7 @@ export class DashboardComponent
       .subscribe(async (buttons) => {
         if (!buttons) return;
 
-        this.quickActionsService
+        this.actionButtonService
           .savePageButtons(this.dashboard?.id, buttons)
           ?.pipe(takeUntil(this.destroy$))
           .subscribe(({ errors }) => {
@@ -829,7 +829,7 @@ export class DashboardComponent
       event.currentIndex
     );
 
-    this.quickActionsService
+    this.actionButtonService
       .savePageButtons(this.dashboard?.id, this.actionButtons)
       ?.subscribe(() => {
         this.dashboard = {

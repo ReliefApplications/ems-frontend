@@ -11,14 +11,14 @@ import {
 } from './graphql/mutations';
 
 /**
- * Shared quick actions service. Handles quick action button updates.
+ * Shared action button service. Handles action button updates.
  */
 @Injectable({
   providedIn: 'root',
 })
-export class QuickActionsService {
+export class ActionButtonService {
   /**
-   * Shared quick actions service. Handles quick action button updates.
+   * Shared action button service. Handles action button updates.
    *
    * @param apollo Apollo client
    */

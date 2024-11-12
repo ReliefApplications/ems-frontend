@@ -9,7 +9,7 @@ import {
   FormQueryResponse,
   Page,
   PageQueryResponse,
-  QuickActionsService,
+  ActionButtonService,
   FormComponent as SharedFormComponent,
   Step,
   StepQueryResponse,
@@ -62,7 +62,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   public step?: Step;
   /** Is form part of workflow step */
   public isStep = false;
-  /** Configured form quick actions */
+  /** Configured form action buttons */
   public actionButtons: ActionButton[] = [];
 
   /**
@@ -75,7 +75,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * @param router Angular router
    * @param translate Angular translate service
    * @param dialog CDK Dialog service
-   * @param quickActionsService Quick action button service
+   * @param actionButtonService Action button service
    */
   constructor(
     private applicationService: ApplicationService,
@@ -85,7 +85,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     private router: Router,
     private translate: TranslateService,
     private dialog: Dialog,
-    private quickActionsService: QuickActionsService
+    private actionButtonService: ActionButtonService
   ) {
     super();
   }
@@ -339,7 +339,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
         filter((buttons) => !!buttons),
         switchMap(
           (buttons) =>
-            this.quickActionsService
+            this.actionButtonService
               .savePageButtons(
                 this.isStep ? this.step?.id : this.page?.id,
                 buttons,

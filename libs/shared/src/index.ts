@@ -3,6 +3,7 @@
  */
 
 // === SERVICES ===
+export * from './lib/services/action-button/action-button.service';
 export * from './lib/services/aggregation/aggregation.service';
 export * from './lib/services/api-proxy/api-proxy.service';
 export * from './lib/services/application/application.service';
@@ -26,7 +27,6 @@ export * from './lib/services/grid/grid.service';
 export * from './lib/services/html-parser/html-parser.service';
 export * from './lib/services/kendo-translation/kendo-translation.service';
 export * from './lib/services/map/map-layers.service';
-export * from './lib/services/quick-actions/quick-actions.service';
 export * from './lib/services/reference-data/reference-data.service';
 export * from './lib/services/query-builder/query-builder.service';
 export * from './lib/services/rest/rest.service';

@@ -1,17 +1,17 @@
 import { TestBed } from '@angular/core/testing';
-import { QuickActionsService } from './quick-actions.service';
+import { ActionButtonService } from './action-button.service';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { HttpClientModule } from '@angular/common/http';
 
-describe('QuickActionsService', () => {
-  let service: QuickActionsService;
+describe('ActionButtonService', () => {
+  let service: ActionButtonService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [{ provide: 'environment', useValue: {} }],
       imports: [ApolloTestingModule, HttpClientModule],
     });
-    service = TestBed.inject(QuickActionsService);
+    service = TestBed.inject(ActionButtonService);
   });
 
   it('should be created', () => {
