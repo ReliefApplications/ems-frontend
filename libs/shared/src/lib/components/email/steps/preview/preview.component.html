@@ -10,7 +10,7 @@
     </div>
     <div
       *ngIf="
-        distributionListTo?.length > 0 ||
+        (distributionListTo && distributionListTo.length > 0) ||
         this.emailService.datasetsForm?.getRawValue()?.emailDistributionList
           ?.name
       "

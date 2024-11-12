@@ -781,9 +781,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   createNewDataSetGroup(ele: any, index: number): FormGroup {
     const fieldsArray = new FormArray<FormGroup>([]);
     ele?.query?.fields?.forEach((field: any) => {
-      fieldsArray.push(
-        this.emailService.createFieldsFormGroup(field, this.formBuilder)
-      );
+      fieldsArray.push(this.emailService.createFieldsFormGroup(field));
     });
 
     const individualEmailFieldsArray =
@@ -794,10 +792,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
                 const nestedIndividualFields = new FormArray<FormGroup>([]);
                 field?.fields?.forEach((nestedField: any) => {
                   nestedIndividualFields.push(
-                    this.emailService.createFieldsFormGroup(
-                      nestedField,
-                      this.formBuilder
-                    )
+                    this.emailService.createFieldsFormGroup(nestedField)
                   );
                 });
                 return this.formBuilder.group({
@@ -889,7 +884,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       if (value) {
         this.emailService.emailListLoading = true;
         this.emailService.deleteCustomTemplate(data.id).subscribe((res) => {
-          if (res.data?.editAndGetCustomTemplate?.id) {
+          if (res.data?.editCustomTemplate?.id) {
             this.emailService.emailListLoading = false;
             this.getCustomTemplates();
           }
@@ -917,7 +912,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         this.emailService.emailListLoading = true;
         this.emailService.deleteDistributionList(data.id).subscribe((res) => {
           this.emailService.emailListLoading = false;
-          if (res.data?.editAndGetDistributionList?.id) {
+          if (res.data?.editDistributionList?.id) {
             this.emailService.emailListLoading = false;
             this.getExistingTemplate();
             // this.getDistributionList();
