@@ -1,8 +1,13 @@
-import { Apollo } from 'apollo-angular';
+import { Dialog } from '@angular/cdk/dialog';
+import { Injector, NgZone } from '@angular/core';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import {
-  GET_SHORT_RESOURCE_BY_ID,
-  GET_RESOURCE_BY_ID,
-} from '../graphql/queries';
+  CompositeFilterDescriptor,
+  FilterDescriptor,
+} from '@progress/kendo-data-query';
+import { Apollo } from 'apollo-angular';
+import { isNil } from 'lodash';
+import get from 'lodash/get';
 import {
   ComponentCollection,
   JsonMetadata,
@@ -11,26 +16,21 @@ import {
   SurveyModel,
   SvgRegistry,
 } from 'survey-core';
-import { Dialog } from '@angular/cdk/dialog';
-import { FormControl } from '@angular/forms';
+import { Record } from '../../models/record.model';
+import { ResourceQueryResponse } from '../../models/resource.model';
 import {
-  buildSearchButton,
+  GET_RESOURCE_BY_ID,
+  GET_SHORT_RESOURCE_BY_ID,
+} from '../graphql/queries';
+import { QuestionResource } from '../types';
+import {
   buildAddButton,
+  buildSearchButton,
   processNewCreatedRecords,
   setUpActionsButtonWrapper,
 } from './utils';
-import get from 'lodash/get';
-import { QuestionResource } from '../types';
-import { Record } from '../../models/record.model';
-import { Injector, NgZone } from '@angular/core';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
-import { ResourceQueryResponse } from '../../models/resource.model';
-import {
-  CompositeFilterDescriptor,
-  FilterDescriptor,
-} from '@progress/kendo-data-query';
-import { isNil } from 'lodash';
 
 /** Question temporary records */
 const temporaryRecordsForm = new FormControl([]);
@@ -301,17 +301,6 @@ export const init = (
         visibleIndex: 3,
       });
 
-      // Build set available grid fields button
-      serializer.addProperty('resource', {
-        name: 'Search resource table',
-        type: CustomPropertyGridComponentTypes.resourcesAvailableFields,
-        isRequired: true,
-        category: 'Custom Questions',
-        dependsOn: ['resource'],
-        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.resource,
-        visibleIndex: 5,
-      });
-
       serializer.addProperty('resource', {
         name: 'addTemplate',
         category: 'Custom Questions',
@@ -343,6 +332,18 @@ export const init = (
         visibleIndex: 8,
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      serializer.addProperty('resource', {
+        name: 'gridFieldsSettings',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          obj.gridFieldsSettings = obj.resource
+            ? obj.gridFieldsSettings
+            : new UntypedFormGroup({}).getRawValue();
+          return false;
+        },
+      });
+
       serializer.addProperty('resource', {
         category: 'Dynamic filtering',
         type: CustomPropertyGridComponentTypes.resourceCustomFilters,
@@ -367,6 +368,18 @@ export const init = (
         visibleIf: (obj: null | QuestionResource) =>
           obj && !isNil(obj.resource),
         visibleIndex: 4,
+      });
+
+      Serializer.addProperty('resource', {
+        category: 'Dynamic filtering',
+        type: 'boolean',
+        name: 'autoSelectFirstOption',
+        displayName:
+          'Automatically selects the first option when only one option is available',
+        dependsOn: ['resource'],
+        visibleIf: (obj: any) =>
+          obj && !isNil(obj.resource) && !!obj.customFilter,
+        visibleIndex: 5,
       });
 
       serializer.addProperty('resource', {
@@ -417,9 +430,12 @@ export const init = (
 
             const customFilter = JSON.parse(question.customFilter);
             if (Array.isArray(customFilter)) {
-              question.filters = customFilter
-                .map((x) => updateFilter(surveyData, x))
-                .filter((x) => !isNil(x));
+              question.filters = {
+                logic: 'and',
+                filters: customFilter
+                  .map((x) => updateFilter(surveyData, x))
+                  .filter((x) => !isNil(x)),
+              };
             } else {
               question.filters = updateFilter(surveyData, customFilter);
             }
@@ -480,6 +496,13 @@ export const init = (
         getResourceRecordsById(question).subscribe(({ data }) => {
           const choices = mapQuestionChoices(data, question);
           question.contentQuestion.choices = choices;
+          if (
+            choices.length === 1 &&
+            !!question.customFilter &&
+            question.autoSelectFirstOption
+          ) {
+            question.value = question.contentQuestion.choices[0].value;
+          }
           if (!question.placeholder) {
             question.contentQuestion.optionsCaption =
               'Select a record from ' + data.resource.name + '...';

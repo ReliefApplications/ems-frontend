@@ -1,10 +1,10 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { UntypedFormControl } from '@angular/forms';
 import { NgZone } from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
 // todo: as it something to do with survey-angular
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { SurveyModel, surveyLocalization } from 'survey-core';
 import { Question } from '../types';
-import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 /**
  * Build the search button for resource and resources components
