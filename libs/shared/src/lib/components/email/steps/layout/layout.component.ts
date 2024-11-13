@@ -420,6 +420,10 @@ export class LayoutComponent
             token
           );
         }
+        this.headerEditor.editor.selection.setCursorLocation(
+          this.headerEditor.editor.getBody(),
+          cursorPosition + token.length
+        );
 
         // Reset the dropdown value
         if (tokenType === 'time') {
@@ -654,8 +658,16 @@ export class LayoutComponent
         //   true
         // );
         // this.bodyEditor.editor.selection.collapse(false);
+        const range = this.bodyEditor.editor.selection.getRng();
+
+        // Get the current cursor position as a number
+        const cursorPosition = range.startOffset;
 
         this.bodyEditor.editor.insertContent(token);
+        this.bodyEditor.editor.selection.setCursorLocation(
+          this.bodyEditor.editor.getBody(),
+          cursorPosition + token.length
+        );
         this.layoutForm
           .get('body')
           ?.setValue(this.bodyEditor.editor.getContent());
