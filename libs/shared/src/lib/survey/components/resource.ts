@@ -1,8 +1,13 @@
-import { Apollo } from 'apollo-angular';
+import { Dialog } from '@angular/cdk/dialog';
+import { Injector, NgZone } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import {
-  GET_SHORT_RESOURCE_BY_ID,
-  GET_RESOURCE_BY_ID,
-} from '../graphql/queries';
+  CompositeFilterDescriptor,
+  FilterDescriptor,
+} from '@progress/kendo-data-query';
+import { Apollo } from 'apollo-angular';
+import { isNil } from 'lodash';
+import get from 'lodash/get';
 import {
   ComponentCollection,
   JsonMetadata,
@@ -11,26 +16,21 @@ import {
   SurveyModel,
   SvgRegistry,
 } from 'survey-core';
-import { Dialog } from '@angular/cdk/dialog';
-import { FormControl } from '@angular/forms';
+import { Record } from '../../models/record.model';
+import { ResourceQueryResponse } from '../../models/resource.model';
 import {
-  buildSearchButton,
+  GET_RESOURCE_BY_ID,
+  GET_SHORT_RESOURCE_BY_ID,
+} from '../graphql/queries';
+import { QuestionResource } from '../types';
+import {
   buildAddButton,
+  buildSearchButton,
   processNewCreatedRecords,
   setUpActionsButtonWrapper,
 } from './utils';
-import get from 'lodash/get';
-import { QuestionResource } from '../types';
-import { Record } from '../../models/record.model';
-import { Injector, NgZone } from '@angular/core';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
-import { ResourceQueryResponse } from '../../models/resource.model';
-import {
-  CompositeFilterDescriptor,
-  FilterDescriptor,
-} from '@progress/kendo-data-query';
-import { isNil } from 'lodash';
 
 /** Question temporary records */
 const temporaryRecordsForm = new FormControl([]);
@@ -367,6 +367,18 @@ export const init = (
         visibleIf: (obj: null | QuestionResource) =>
           obj && !isNil(obj.resource),
         visibleIndex: 4,
+      });
+
+      Serializer.addProperty('resource', {
+        category: 'Dynamic filtering',
+        type: 'boolean',
+        name: 'autoSelectFirstOption',
+        displayName:
+          'Automatically selects the first option when only one option is available',
+        dependsOn: ['resource'],
+        visibleIf: (obj: any) =>
+          obj && !isNil(obj.resource) && !!obj.customFilter,
+        visibleIndex: 5,
       });
 
       serializer.addProperty('resource', {

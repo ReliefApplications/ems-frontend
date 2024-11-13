@@ -400,16 +400,6 @@ export const init = (
         visibleIf: (obj: any) => obj && !isNil(obj.resource),
         visibleIndex: 4,
       });
-      Serializer.addProperty('resources', {
-        category: 'Dynamic filtering',
-        type: 'boolean',
-        name: 'autoSelectFirstOption',
-        displayName:
-          'Automatically selects the first option when only one option is available',
-        dependsOn: ['resource'],
-        visibleIf: (obj: any) => obj && !isNil(obj.resource),
-        visibleIndex: 5,
-      });
 
       Serializer.addProperty('resources', {
         name: 'newCreatedRecords',

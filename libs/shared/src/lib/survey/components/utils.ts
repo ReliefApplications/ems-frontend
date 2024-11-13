@@ -1,10 +1,10 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { UntypedFormControl } from '@angular/forms';
 import { NgZone } from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
 // todo: as it something to do with survey-angular
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { SurveyModel, surveyLocalization } from 'survey-core';
 import { Question } from '../types';
-import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 /**
  * Build the search button for resource and resources components
@@ -96,7 +96,9 @@ export const buildSearchButton = (
               ? [question.value]
               : [],
             selectable: true,
-            autoSelectFirstOption: question.autoSelectFirstOption,
+            /** Auto select first option is only enabled if dynamic filters exist for the given question */
+            autoSelectFirstOption:
+              question.autoSelectFirstOption && !!question.filters,
           },
           panelClass: 'closable-dialog',
         });
