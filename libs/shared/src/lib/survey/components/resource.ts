@@ -492,6 +492,13 @@ export const init = (
         getResourceRecordsById(question).subscribe(({ data }) => {
           const choices = mapQuestionChoices(data, question);
           question.contentQuestion.choices = choices;
+          if (
+            choices.length === 1 &&
+            !!question.customFilter &&
+            question.autoSelectFirstOption
+          ) {
+            question.value = [question.contentQuestion.choices[0].value];
+          }
           if (!question.placeholder) {
             question.contentQuestion.optionsCaption =
               'Select a record from ' + data.resource.name + '...';
