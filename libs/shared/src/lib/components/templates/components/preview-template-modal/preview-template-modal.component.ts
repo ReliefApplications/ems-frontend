@@ -198,32 +198,21 @@ export class PreviewTemplateModalComponent {
 
       datasetFieldsObj
         ?.map((x: any) => x.name)
-        ?.forEach((keyNm: any) => {
-          let keyData!: any;
-          const relatedMetadata = metaData.filter(
-            (x: any) => x.name == keyNm
-          )?.[0];
-          const relatedMetadataInTheGivenNode =
-            relatedMetadata?.options?.filter((x: any) =>
-              item?.node[keyNm]?.includes(x.value)
+        ?.forEach((keyNm: any, index: number) => {
+          text[keyNm] = this.getValueOfKey(item, keyNm, metaData);
+          const widgetSettings = this.data.widgetSettings;
+          if (
+            !datasetFields.includes(widgetSettings?.navigateSettings?.field) &&
+            index === datasetFieldsObj.length - 1 &&
+            widgetSettings?.navigateToPage &&
+            widgetSettings?.navigateSettings?.field
+          ) {
+            text[widgetSettings.navigateSettings.field] = this.getValueOfKey(
+              item,
+              widgetSettings?.navigateSettings?.field,
+              metaData
             );
-          keyData = relatedMetadataInTheGivenNode?.map((y: any) => y.text);
-          let notMatchedData: any = '';
-          if (Array.isArray(item?.node[keyNm])) {
-            //Finding non matched data
-            const metaValArr = metaData
-              ?.filter((x: any) => x.name == keyNm)?.[0]
-              ?.options?.map((x: any) => x.value);
-            const gridaDataVal = item?.node[keyNm];
-            notMatchedData = gridaDataVal
-              ?.map((item: any) => (!metaValArr?.includes(item) ? item : null))
-              ?.filter((x: any) => x !== null);
           }
-          keyData =
-            notMatchedData?.length > 0 && keyData?.length > 0
-              ? notMatchedData?.join(',') + ',' + keyData
-              : keyData;
-          text[keyNm] = keyData?.length > 0 ? keyData : item?.node[keyNm];
         });
       // Add the text object to the dataList array
       dataList.push(text);
@@ -240,6 +229,39 @@ export class PreviewTemplateModalComponent {
         navigateSettings: this.data.widgetSettings.navigateSettings,
       },
     ];
+  }
+
+  /**
+   * Get value of key of record
+   *
+   * @param item selected row
+   * @param keyNm key name
+   * @param metaData metadata contaning all key data
+   * @returns the value of the key
+   */
+  getValueOfKey(item: any, keyNm: any, metaData: any) {
+    let keyData!: any;
+    const relatedMetadata = metaData.filter((x: any) => x.name == keyNm)?.[0];
+    const relatedMetadataInTheGivenNode = relatedMetadata?.options?.filter(
+      (x: any) => item?.node[keyNm]?.includes(x.value)
+    );
+    keyData = relatedMetadataInTheGivenNode?.map((y: any) => y.text);
+    let notMatchedData: any = '';
+    if (Array.isArray(item?.node[keyNm])) {
+      //Finding non matched data
+      const metaValArr = metaData
+        ?.filter((x: any) => x.name == keyNm)?.[0]
+        ?.options?.map((x: any) => x.value);
+      const gridaDataVal = item?.node[keyNm];
+      notMatchedData = gridaDataVal
+        ?.map((item: any) => (!metaValArr?.includes(item) ? item : null))
+        ?.filter((x: any) => x !== null);
+    }
+    keyData =
+      notMatchedData?.length > 0 && keyData?.length > 0
+        ? notMatchedData?.join(',') + ',' + keyData
+        : keyData;
+    return keyData?.length > 0 ? keyData : item?.node[keyNm];
   }
 
   /**
