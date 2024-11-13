@@ -305,10 +305,10 @@ export class FormModalComponent
     });
     this.survey.onComplete.add(this.onComplete);
     if (this.storedMergedData) {
-      this.survey.data = {
-        ...this.survey.data,
-        ...omitBy(this.storedMergedData, isNil),
-      };
+      const notNullValues = omitBy(this.storedMergedData, isNil);
+      Object.keys(notNullValues).forEach((question) => {
+        this.survey.setValue(question, notNullValues[question]);
+      });
     }
 
     // After the survey is created and all values set, we add common callback to survey events

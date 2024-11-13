@@ -1,20 +1,13 @@
-import { Apollo } from 'apollo-angular';
-import {
-  GET_SHORT_RESOURCE_BY_ID,
-  GET_RESOURCE_BY_ID,
-} from '../graphql/queries';
-import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
-import { CoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
-import { DomService } from '../../services/dom/dom.service';
-import {
-  buildAddButton,
-  buildSearchButton,
-  processNewCreatedRecords,
-  setUpActionsButtonWrapper,
-} from './utils';
-import { QuestionResource } from '../types';
 import { ComponentRef, Injector, NgZone } from '@angular/core';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
+import {
+  CompositeFilterDescriptor,
+  FilterDescriptor,
+} from '@progress/kendo-data-query';
+import { Apollo } from 'apollo-angular';
+import { isNil } from 'lodash';
+import get from 'lodash/get';
 import {
   ComponentCollection,
   JsonObject,
@@ -22,15 +15,22 @@ import {
   SurveyModel,
   SvgRegistry,
 } from 'survey-core';
+import { CoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
+import { ResourceQueryResponse } from '../../models/resource.model';
+import { DomService } from '../../services/dom/dom.service';
+import {
+  GET_RESOURCE_BY_ID,
+  GET_SHORT_RESOURCE_BY_ID,
+} from '../graphql/queries';
+import { QuestionResource } from '../types';
+import {
+  buildAddButton,
+  buildSearchButton,
+  processNewCreatedRecords,
+  setUpActionsButtonWrapper,
+} from './utils';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
-import { ResourceQueryResponse } from '../../models/resource.model';
-import {
-  CompositeFilterDescriptor,
-  FilterDescriptor,
-} from '@progress/kendo-data-query';
-import get from 'lodash/get';
-import { isNil } from 'lodash';
 
 /** Question temporary records */
 const temporaryRecordsForm = new FormControl([]);
@@ -457,9 +457,12 @@ export const init = (
 
             const customFilter = JSON.parse(question.customFilter);
             if (Array.isArray(customFilter)) {
-              question.filters = customFilter
-                .map((x) => updateFilter(surveyData, x))
-                .filter((x) => !isNil(x));
+              question.filters = {
+                logic: 'and',
+                filters: customFilter
+                  .map((x) => updateFilter(surveyData, x))
+                  .filter((x) => !isNil(x)),
+              };
             } else {
               question.filters = updateFilter(surveyData, customFilter);
             }
