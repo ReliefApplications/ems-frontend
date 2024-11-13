@@ -19,24 +19,56 @@ export class StripHtmlPipe implements PipeTransform {
     const helperDiv = document.createElement('div');
     helperDiv.innerHTML = (value || '').trim();
     const nodes = helperDiv.childNodes;
-    const cleanNodes = Array.from(nodes)
+    const cleanNodes = this.cleanUpNodes(nodes);
+    return cleanNodes; // Return the plain text
+  }
+
+  /**
+   * Remove any element fetching the text content of elements that are not paragraphs, spans or text elements
+   *
+   * @param nodes Nodes to search and clean
+   * @returns clean html string
+   */
+  private cleanUpNodes(nodes: NodeListOf<ChildNode>): string {
+    return Array.from(nodes)
       .map((node) => {
-        // Get text content of any other element that is not a paragraph, an span or a text element
+        // If node contains inner children that are not plain text, keep going deeper in the nodes
         if (
-          !(
-            node instanceof HTMLParagraphElement ||
-            node instanceof HTMLSpanElement ||
-            node.nodeName === '#text'
+          node.hasChildNodes() &&
+          !Array.from(node.childNodes).every(
+            (node) => node.nodeName === '#text'
           )
         ) {
-          return (node as HTMLElement).textContent;
+          (node as HTMLElement).innerHTML = this.cleanUpNodes(node.childNodes);
+          const parentForInnerHTML = document.createElement('div');
+          const span = document.createElement('span');
+          if ((node as HTMLElement).style?.cssText) {
+            span.setAttribute('style', (node as HTMLElement).style.cssText);
+            (node as HTMLElement).setAttribute('style', '');
+          }
+          /** Could happen that current node is a text format tag, like strong tag */
+          /** We keep it using the outerHTML and moving styles back to the span wrapper (step above) */
+          span.innerHTML = (node as HTMLElement).outerHTML.trim();
+          if (span.innerHTML) {
+            parentForInnerHTML.appendChild(span);
+            return parentForInnerHTML.innerHTML;
+          } else {
+            return '';
+          }
+        } else {
+          const parentForInnerHTML = document.createElement('div');
+          const span = document.createElement('span');
+          if ((node as HTMLElement).style?.cssText) {
+            span.setAttribute('style', (node as HTMLElement).style.cssText);
+          }
+          span.textContent = (node as HTMLElement).textContent;
+          if (span.textContent) {
+            parentForInnerHTML.appendChild(span);
+            return parentForInnerHTML.innerHTML;
+          }
+          return '';
         }
-        // Get text content if text element, or the html if is paragraph or span
-        return node.nodeName === '#text'
-          ? (node as HTMLElement).textContent
-          : (node as HTMLElement).innerHTML;
       })
       .join('');
-    return cleanNodes; // Return the plain text
   }
 }
