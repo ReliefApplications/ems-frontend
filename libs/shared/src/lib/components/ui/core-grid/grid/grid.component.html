@@ -690,7 +690,7 @@
           <div class="textbox-container" [style]="dataItem.style[field.name]">
             <div
               class="truncate"
-              [innerHTML]="dataItem.text[field.name] | sharedSanitizeHtml"
+              [innerHTML]="dataItem.text[field.name] | sharedStripHtml | sharedSanitizeHtml"
             ></div>
             <button
               *ngIf="dataItem.text[field.name]"
