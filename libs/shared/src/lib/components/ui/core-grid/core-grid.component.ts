@@ -140,8 +140,6 @@ export class CoreGridComponent
   @Output() edit: EventEmitter<any> = new EventEmitter();
   /** Event emitter for inline edition of records */
   @Output() inlineEdition: EventEmitter<any> = new EventEmitter();
-  /** Event emitter for inline edition of records */
-  @Output() dataReady: EventEmitter<GridDataResult> = new EventEmitter();
 
   // === SELECTION OUTPUTS ===
   /** Event emitter for row selection */
@@ -881,7 +879,6 @@ export class CoreGridComponent
       data: this.items,
       total: this.totalCount,
     };
-    this.dataReady.emit(this.gridData);
   }
 
   /**

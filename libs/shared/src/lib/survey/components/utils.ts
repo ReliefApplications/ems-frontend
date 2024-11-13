@@ -96,9 +96,6 @@ export const buildSearchButton = (
               ? [question.value]
               : [],
             selectable: true,
-            /** Auto select first option is only enabled if dynamic filters exist for the given question */
-            autoSelectFirstOption:
-              question.autoSelectFirstOption && !!question.filters,
           },
           panelClass: 'closable-dialog',
         });

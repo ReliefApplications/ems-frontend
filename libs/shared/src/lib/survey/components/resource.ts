@@ -1,6 +1,6 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { Injector, NgZone } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import {
   CompositeFilterDescriptor,
   FilterDescriptor,
@@ -301,17 +301,6 @@ export const init = (
         visibleIndex: 3,
       });
 
-      // Build set available grid fields button
-      serializer.addProperty('resource', {
-        name: 'Search resource table',
-        type: CustomPropertyGridComponentTypes.resourcesAvailableFields,
-        isRequired: true,
-        category: 'Custom Questions',
-        dependsOn: ['resource'],
-        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.resource,
-        visibleIndex: 5,
-      });
-
       serializer.addProperty('resource', {
         name: 'addTemplate',
         category: 'Custom Questions',
@@ -341,6 +330,18 @@ export const init = (
         dependsOn: ['addRecord', 'resource'],
         visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
         visibleIndex: 8,
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      serializer.addProperty('resource', {
+        name: 'gridFieldsSettings',
+        dependsOn: 'resource',
+        visibleIf: (obj: any) => {
+          obj.gridFieldsSettings = obj.resource
+            ? obj.gridFieldsSettings
+            : new UntypedFormGroup({}).getRawValue();
+          return false;
+        },
       });
 
       serializer.addProperty('resource', {
@@ -429,9 +430,12 @@ export const init = (
 
             const customFilter = JSON.parse(question.customFilter);
             if (Array.isArray(customFilter)) {
-              question.filters = customFilter
-                .map((x) => updateFilter(surveyData, x))
-                .filter((x) => !isNil(x));
+              question.filters = {
+                logic: 'and',
+                filters: customFilter
+                  .map((x) => updateFilter(surveyData, x))
+                  .filter((x) => !isNil(x)),
+              };
             } else {
               question.filters = updateFilter(surveyData, customFilter);
             }
@@ -497,7 +501,7 @@ export const init = (
             !!question.customFilter &&
             question.autoSelectFirstOption
           ) {
-            question.value = [question.contentQuestion.choices[0].value];
+            question.value = question.contentQuestion.choices[0].value;
           }
           if (!question.placeholder) {
             question.contentQuestion.optionsCaption =

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ApplicationRef, Component, Inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule, DialogModule, SpinnerModule } from '@oort-front/ui';
-import { GridDataResult } from '@progress/kendo-angular-grid';
 import { ApplicationDropdownModule } from '../../survey/components/application-dropdown/application-dropdown.module';
 import { ResourceDropdownModule } from '../../survey/components/resource-dropdown/resource-dropdown.module';
 import { RecordDropdownModule } from '../record-dropdown/record-dropdown.module';
@@ -18,7 +17,6 @@ interface DialogData {
   multiselect?: boolean;
   selectedRows?: string[];
   selectable?: boolean;
-  autoSelectFirstOption?: boolean;
 }
 
 /**
@@ -92,17 +90,6 @@ export class ResourceGridModalComponent {
       },
     };
     this.ref.tick();
-  }
-
-  /**
-   * If autoSelectFirstOption is enabled, select first option of grid once data is ready
-   *
-   * @param event grid data result event
-   */
-  onDataReady(event: GridDataResult) {
-    if (this.data.autoSelectFirstOption && event.data?.length === 1) {
-      this.selectedRows = [event.data[0].id];
-    }
   }
 
   /**

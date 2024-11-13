@@ -457,9 +457,12 @@ export const init = (
 
             const customFilter = JSON.parse(question.customFilter);
             if (Array.isArray(customFilter)) {
-              question.filters = customFilter
-                .map((x) => updateFilter(surveyData, x))
-                .filter((x) => !isNil(x));
+              question.filters = {
+                logic: 'and',
+                filters: customFilter
+                  .map((x) => updateFilter(surveyData, x))
+                  .filter((x) => !isNil(x)),
+              };
             } else {
               question.filters = updateFilter(surveyData, customFilter);
             }
