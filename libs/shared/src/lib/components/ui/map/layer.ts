@@ -408,6 +408,10 @@ export class Layer implements LayerModel {
   //   : DEFAULT_LAYER_STYLE;
   // }
 
+  public getStyle() {
+    return this.layerDefinition;
+  }
+
   /**
    * Get leaflet layer from layer definition
    *

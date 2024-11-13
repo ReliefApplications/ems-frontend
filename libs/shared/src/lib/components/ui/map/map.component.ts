@@ -18,6 +18,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 // Leaflet plugins
 import 'leaflet';
 import 'leaflet.markercluster';
+import 'leaflet.vectorgrid';
 import 'leaflet.control.layers.tree';
 import 'esri-leaflet';
 import * as Vector from 'esri-leaflet-vector';
@@ -390,13 +391,9 @@ export class MapComponent
         zoom: 3,
       },
     });
-    const maxBounds = get(mapSettings, 'maxBounds', [
-      [-90, -180],
-      [90, 180],
-    ]);
     const basemap = get(mapSettings, 'basemap', 'OSM');
     const maxZoom = get(mapSettings, 'maxZoom', 18);
-    const minZoom = get(mapSettings, 'minZoom', 2);
+    const minZoom = get(mapSettings, 'minZoom', -20);
     const worldCopyJump = get(mapSettings, 'worldCopyJump', true);
     const zoomControl = get(mapSettings, 'zoomControl', false);
     const controls = get(mapSettings, 'controls', DefaultMapControls);
@@ -412,7 +409,6 @@ export class MapComponent
 
     return {
       initialState,
-      maxBounds,
       basemap,
       maxZoom,
       minZoom,
@@ -435,7 +431,6 @@ export class MapComponent
   private drawMap(initMap = true): void {
     const {
       initialState,
-      maxBounds,
       basemap,
       maxZoom,
       minZoom,
@@ -460,12 +455,6 @@ export class MapComponent
           : this.mapId,
         {
           zoomControl,
-          maxBounds: maxBounds
-            ? L.latLngBounds(
-                L.latLng(maxBounds[0][0], maxBounds[0][1]),
-                L.latLng(maxBounds[1][0], maxBounds[1][1])
-              )
-            : undefined,
           minZoom,
           maxZoom,
           worldCopyJump,
@@ -495,9 +484,6 @@ export class MapComponent
       }
       if (this.map.getMinZoom() !== minZoom) {
         this.map.setMinZoom(minZoom as number);
-      }
-      if (maxBounds) {
-        this.map.setMaxBounds(maxBounds as L.LatLngBoundsExpression);
       }
       if (this.map.getZoom() !== initialState.viewpoint.zoom) {
         this.map.setZoom(initialState.viewpoint.zoom);
@@ -753,6 +739,59 @@ export class MapComponent
     }
   }
 
+  /** Code to create a grid with tiles */
+
+  // const DebugCoords = L.GridLayer.extend({
+  //   options: {
+  //     // maxNativeZoom, noWrap and keepBuffer should **never** be changed
+  //     // by users of this plugin.
+  //     maxNativeZoom: 0,
+  //     noWrap: true,
+  //     keepBuffer: 0,
+  //     maxZoom: Infinity,
+  //   },
+
+  //   createTile: function (coords: any) {
+  //     const tile = document.createElement('div');
+  //     tile.style.outline = '1px solid red';
+  //     tile.style.position = 'relative';
+
+  //     // Display coordinates in the tile for debugging
+  //     const coordText = document.createElement('div');
+  //     coordText.innerHTML = [coords.x, coords.y, coords.z].join(', ');
+  //     coordText.style.position = 'absolute';
+  //     coordText.style.top = '0';
+  //     coordText.style.left = '0';
+  //     tile.appendChild(coordText);
+
+  //     // // Create a new GeoJSON layer for each tile, using featureLayer data
+  //     // const tileFeatureLayer = L.geoJSON(
+  //     //   (featureLayer as any).toGeoJSON(),
+  //     //   {
+  //     //     style: function () {
+  //     //       return { color: 'blue' }; // Customize feature style as needed
+  //     //     },
+  //     //   }
+  //     // );
+
+  //     // // Convert Leaflet layer to HTML and add it to the tile
+  //     // tileFeatureLayer.eachLayer((layer) => {
+  //     //   const layerElement = (layer as any)._path; // SVG path element for feature
+  //     //   if (layerElement) {
+  //     //     tile.appendChild(layerElement);
+  //     //   }
+  //     // });
+
+  //     return tile;
+  //   },
+  // });
+
+  // const debugCoords = function () {
+  //   return new DebugCoords();
+  // };
+
+  // this.map.addLayer(debugCoords());
+
   /**
    * Setup and draw layers on map and sets the baseTree.
    *
@@ -809,6 +848,24 @@ export class MapComponent
         // Gets the leaflet layer. Either the one passed as parameter
         // (from parent) or the one created by the layer itself (if no parent)
         const featureLayer = leafletLayer ?? (await layer.getLayer());
+        const style = layer.getStyle()?.drawingInfo?.renderer?.defaultSymbol;
+        console.log(leafletLayer, layer.getStyle());
+        const geoJSONLayer = featureLayer as L.GeoJSON;
+        console.log('geojson', geoJSONLayer, featureLayer);
+        if (geoJSONLayer && geoJSONLayer.toGeoJSON instanceof Function) {
+          // Applying styles to Vector Grid layer
+          (L as any).vectorGrid
+            .slicer(geoJSONLayer.toGeoJSON(), {
+              vectorTileLayerStyles: {
+                sliced: (properties: any) => {
+                  console.log(properties, 'properties', style);
+                  return { ...style, color: '#800026' };
+                },
+                interactive: true,
+              },
+            })
+            .addTo(this.map);
+        }
 
         // Adds the layer to the map if not already added
         // note: group layers are of type L.LayerGroup
