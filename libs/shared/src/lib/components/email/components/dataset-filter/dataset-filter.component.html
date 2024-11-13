@@ -90,7 +90,7 @@
           class="flex-1"
           *ngIf="query.get('dataType').value === 'Resource'"
         >
-          <shared-resource-select
+          <shared-resource-select class="resourceSelect"
             formControlName="resource"
             [selectedElements]="[resource]"
           ></shared-resource-select>
