@@ -68,8 +68,6 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
   private fields: any[] = [];
   /** Fields value */
   private fieldsValue: any;
-  /** files value */
-  private filesValue: any;
   /** Styles */
   private styles: any[] = [];
   /** Should use whole card styles */
@@ -389,21 +387,17 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
           callback();
         });
     } else {
-      const { contextFields, contextData } =
-        await this.contextService.setContextFileDataForHtml(this.settings.text);
-      this.filesValue = contextData;
+      const { contextFields, contextData, cleanHTML } =
+        await this.contextService.setContextDataForHtml(this.settings.text);
+      this.fieldsValue = { ...(this.fieldsValue || {}), ...contextData };
       from(Promise.all([this.getAggregationsData()]))
         .pipe(takeUntil(this.cancelRefresh$))
         .subscribe(() => {
-          this.formattedHtml = this.dataTemplateService.renderHtml(
-            this.settings.text,
-            {
-              data: this.fieldsValue,
-              files: this.filesValue,
-              aggregation: this.aggregations,
-              fields: [...this.fields, ...contextFields],
-            }
-          );
+          this.formattedHtml = this.dataTemplateService.renderHtml(cleanHTML, {
+            data: this.fieldsValue,
+            aggregation: this.aggregations,
+            fields: [...this.fields, ...contextFields],
+          });
           this.loading = false;
           callback();
         });
@@ -657,10 +651,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
    * @param event Click event
    */
   public onClick(event: any) {
-    this.dataTemplateService.onClick(event, {
-      ...this.fieldsValue,
-      ...this.filesValue,
-    });
+    this.dataTemplateService.onClick(event, this.fieldsValue);
   }
 
   /**

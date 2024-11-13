@@ -19,8 +19,6 @@ type Shape = 'circle' | 'square';
 
 /** Prefix for data keys */
 const DATA_PREFIX = '{{data.';
-/** Prefix for file context keys */
-const FILE_PREFIX = '{{file.context.';
 /** Prefix for aggregation keys */
 const AGGREGATION_PREFIX = '{{aggregation.';
 /** Prefix for calc keys */
@@ -626,7 +624,6 @@ export class HtmlParserService {
    * @param options.fields Available fields.
    * @param options.pages list of application pages
    * @param options.styles Array of layout styles.
-   * @param options.files Available files
    * @returns The parsed html.
    */
   public parseHtml(
@@ -637,7 +634,6 @@ export class HtmlParserService {
       fields?: any;
       pages: any[];
       styles?: any[];
-      files?: any;
     }
   ) {
     let formattedHtml = replacePages(html, options.pages);
@@ -647,15 +643,10 @@ export class HtmlParserService {
         options.aggregation
       );
     }
-    if (options.files && Object.keys(options.files).length) {
-      formattedHtml = this.replaceFilesData(
-        formattedHtml,
-        options.fields,
-        options.files,
-        options.styles
-      );
-    }
-    if (options.data) {
+    if (
+      options.data &&
+      Object.keys(options.data).some((key) => !isNil(options.data[key]))
+    ) {
       formattedHtml = this.replaceRecordFields(
         formattedHtml,
         options.data,
@@ -837,46 +828,4 @@ export class HtmlParserService {
     </button>`.replace(/\n/g, ''); // add elements to be able to identify file when clicking on button
     return fileButton;
   }
-
-  /**
-   * Replace file placeholders in template with given file data
-   *
-   * @param html html template
-   * @param fields fields to set the given files data
-   * @param files files data
-   * @param style style
-   * @returns formatted html
-   */
-  replaceFilesData = (
-    html: string,
-    fields: any[],
-    files: any,
-    style: any
-  ): string => {
-    let formattedHtml = html;
-    const escapeFieldNameForRegex = (fieldName: string): string =>
-      fieldName.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
-    for (let index = 0; index < fields.length; index++) {
-      let convertedValue = '';
-      const filesData = get(files, fields[index].name);
-      for (let i = 0; filesData[i]; i++) {
-        convertedValue += this.buildFileButton(
-          i,
-          filesData[i],
-          fields[index],
-          style
-        );
-      }
-      const regex = new RegExp(
-        `${FILE_PREFIX}${escapeFieldNameForRegex(
-          fields[index].name
-        )}${PLACEHOLDER_SUFFIX}`,
-        'gi'
-      );
-      formattedHtml = formattedHtml.replace(regex, convertedValue);
-    }
-    // replace all /n, removing it since we don't need because tailwind already styles it
-    formattedHtml = formattedHtml.replace(/\n/g, '');
-    return formattedHtml;
-  };
 }
