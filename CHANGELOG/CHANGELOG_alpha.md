@@ -1,3 +1,16 @@
+# [2.17.0-alpha.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.2...v2.17.0-alpha.3) (2024-11-13)
+
+
+### Bug Fixes
+
+* custom filtering for resources question not correctly setting filter when value prepopulated in form ([#2684](https://github.com/ReliefApplications/ems-frontend/issues/2684)) ([9e1a6ad](https://github.com/ReliefApplications/ems-frontend/commit/9e1a6addbb6c592e041e7daf79beff544dffe886)), closes [AB#105484](https://github.com/AB/issues/105484)
+
+
+### Features
+
+* allow to auto select first element from choices if unique choice provided, in resource question  ([#2685](https://github.com/ReliefApplications/ems-frontend/issues/2685)) ([cb259cf](https://github.com/ReliefApplications/ems-frontend/commit/cb259cff481b143d198bf6e2af78442059736547)), closes [AB#105619](https://github.com/AB/issues/105619)
+* form quick action buttons ([#2683](https://github.com/ReliefApplications/ems-frontend/issues/2683)) ([e6dfff8](https://github.com/ReliefApplications/ems-frontend/commit/e6dfff8b04c85b33fb48d53fcaac39aec7285fa9)), closes [AB#104815](https://github.com/AB/issues/104815)
+
 # [2.17.0-alpha.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.1...v2.17.0-alpha.2) (2024-11-08)
 
 
