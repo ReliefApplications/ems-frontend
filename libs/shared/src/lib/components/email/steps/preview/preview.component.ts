@@ -253,7 +253,10 @@ export class PreviewComponent
           if (
             this.query.emailDistributionList.to?.resource?.trim() !== '' ||
             this.query.emailDistributionList.cc?.resource?.trim() !== '' ||
-            this.query.emailDistributionList.bcc?.resource?.trim() !== ''
+            this.query.emailDistributionList.bcc?.resource?.trim() !== '' ||
+            this.query.emailDistributionList?.to?.inputEmails?.length > 0 ||
+            this.query.emailDistributionList?.to?.inputEmails?.length > 0 ||
+            this.query.emailDistributionList?.to?.inputEmails?.length > 0
           ) {
             this.distributionListTo = [
               ...new Set(
