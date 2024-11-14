@@ -239,18 +239,18 @@ export class AggregationBuilderComponent
               for (const field in data) {
                 if (Object.prototype.hasOwnProperty.call(data, field)) {
                   const metaFields = Object.assign({}, data[field]);
-                  let fieldsWithMeta = fields.map((currentField) => {
+                  const fieldsWithMeta = fields.map((currentField) => {
                     return {
                       ...currentField,
                       meta: metaFields[currentField.name],
                     };
                   });
-                  this.removedFields = fieldsWithMeta
-                    .filter((field) => field.meta.type === 'editor')
-                    .map((field) => field.name);
-                  fieldsWithMeta = fieldsWithMeta.filter(
-                    (field) => !(field.meta.type === 'editor')
-                  ); //TODO: filter out other unusable fields
+                  // this.removedFields = fieldsWithMeta
+                  //   .filter((field) => field.meta.type === 'editor')
+                  //   .map((field) => field.name);
+                  // fieldsWithMeta = fieldsWithMeta.filter(
+                  //   (field) => !(field.meta.type === 'editor')
+                  // );
                   this.fields.next(fieldsWithMeta);
                 }
               }
