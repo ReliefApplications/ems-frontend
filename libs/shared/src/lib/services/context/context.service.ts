@@ -135,6 +135,11 @@ export class ContextService {
     [key: string]: any;
   } | null = null;
 
+  /** New record context */
+  public newRecordContext: {
+    [key: string]: any;
+  } | null = null;
+
   /**
    * Dashboard context service
    *
@@ -215,63 +220,46 @@ export class ContextService {
   }
 
   /**
-   * Replace {{context}} placeholders in object, with context values
+   * Set the context of the dashboard
    *
-   * @param object object with placeholders
-   * @returns object with replaced placeholders
+   * @param context context to set
    */
-  public replaceContext(object: any): any {
-    const context = this.context;
-
-    if (!context) {
-      return object;
-    }
-
-    // Function to recursively replace context placeholders in the object
-    const replacePlaceholders = (obj: any): any => {
-      if (typeof obj === 'string') {
-        // Replace only within strings
-        return obj.replace(new RegExp(this.contextRegex, 'g'), (match) => {
-          const field = match.replace('{{context.', '').replace('}}', '');
-          return get(context, field) || '';
-        });
-      } else if (Array.isArray(obj)) {
-        // Recursively replace in arrays
-        return obj.map((item) => replacePlaceholders(item));
-      } else if (obj && typeof obj === 'object') {
-        // Recursively replace in objects
-        const newObj = { ...obj };
-        for (const key in newObj) {
-          newObj[key] = replacePlaceholders(newObj[key]);
-        }
-        return newObj;
-      }
-      return obj; // Return primitive types unchanged
-    };
-
-    return replacePlaceholders(object);
+  public setNewRecordContext(context: any) {
+    this.newRecordContext = context;
   }
 
   /**
-   * Remove {{context}} placeholders in object
+   * Process {{context}} placeholders in an object.
+   * Replaces placeholders with context values if context exists;
+   * otherwise, removes the placeholders.
    *
-   * @param obj object to clean
-   * @returns object without placeholders
+   * @param obj object with placeholders
+   * @returns object with placeholders processed (replaced or removed)
    */
-  public removeContext = (obj: any): any => {
-    if (typeof obj === 'string') {
-      return obj.replace(new RegExp(this.contextRegex, 'g'), '');
-    } else if (Array.isArray(obj)) {
-      return obj.map((item) => this.removeContext(item));
-    } else if (obj && typeof obj === 'object') {
-      const newObj = { ...obj };
-      for (const key in newObj) {
-        newObj[key] = this.removeContext(newObj[key]);
+  public replaceContext(obj: any): any {
+    const context = this.newRecordContext
+      ? this.newRecordContext
+      : this.context;
+    const replaceOrRemovePlaceholders = (value: any): any => {
+      if (typeof value === 'string') {
+        return value.replace(new RegExp(this.contextRegex, 'g'), (match) => {
+          const field = match.replace('{{context.', '').replace('}}', '');
+          return context ? get(context, field) || '' : '';
+        });
+      } else if (Array.isArray(value)) {
+        return value.map((item) => replaceOrRemovePlaceholders(item));
+      } else if (value && typeof value === 'object') {
+        const newObj = { ...value };
+        for (const key in newObj) {
+          newObj[key] = replaceOrRemovePlaceholders(newObj[key]);
+        }
+        return newObj;
       }
-      return newObj;
-    }
-    return obj;
-  };
+      return value;
+    };
+
+    return replaceOrRemovePlaceholders(obj);
+  }
 
   /**
    * Parse JSON values of object.

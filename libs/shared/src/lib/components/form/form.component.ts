@@ -28,6 +28,7 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { isNil } from 'lodash';
+import { ContextService } from '../../services/context/context.service';
 
 /**
  * This component is used to display forms
@@ -95,6 +96,7 @@ export class FormComponent
    * @param formBuilderService This is the service that will be used to build forms.
    * @param formHelpersService This is the service that will handle forms.
    * @param translate This is the service used to translate text
+   * @param contextService This is the service that will handle the context of the application.
    */
   constructor(
     public dialog: Dialog,
@@ -104,7 +106,8 @@ export class FormComponent
     private layoutService: UILayoutService,
     private formBuilderService: FormBuilderService,
     public formHelpersService: FormHelpersService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private contextService: ContextService
   ) {
     super();
   }
@@ -331,6 +334,7 @@ export class FormComponent
         } else {
           this.survey.showCompletedPage = true;
         }
+        this.contextService.setNewRecordContext(data.addRecord);
         this.save.emit({
           completed: true,
           hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,

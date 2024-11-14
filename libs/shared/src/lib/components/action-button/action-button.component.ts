@@ -150,14 +150,9 @@ export class ActionButtonComponent
     // Navigation to url
     if (this.actionButton.href) {
       // If contextId is present, replace context in href else remove context placeholder
-      const href = this.contextId
-        ? this.contextService.replaceContext(
-            this.dataTemplateService.renderLink(this.actionButton.href)
-          )
-        : this.contextService.removeContext(
-            this.dataTemplateService.renderLink(this.actionButton.href)
-          );
-
+      const href = this.contextService.replaceContext(
+        this.dataTemplateService.renderLink(this.actionButton.href)
+      );
       if (this.actionButton.openInNewTab) {
         window.open(href, '_blank');
       } else {
