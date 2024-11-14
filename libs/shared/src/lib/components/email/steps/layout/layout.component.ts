@@ -158,6 +158,8 @@ export class LayoutComponent
     if (this.emailService.isQuickAction) {
       this.emailService.resetPreviewData();
       this.emailService.previewData.datasets = ['Block 1'];
+      this.emailService.emailLayout = {};
+      this.emailService.emailLayout.name = 'Block 1';
     } else {
       this.emailService.createPreviewData();
     }
@@ -168,6 +170,8 @@ export class LayoutComponent
         this.emailService.allLayoutdata?.bodyHtml?.trim() === ''
           ? '<p>{{Block 1}}</p>'
           : this.emailService.allLayoutdata.bodyHtml;
+      this.emailService.emailLayout = {};
+      this.emailService.emailLayout.name = 'Block 1';
       this.layoutForm = this.fb.group({
         subjectField: [''],
         timeInput: [''],
