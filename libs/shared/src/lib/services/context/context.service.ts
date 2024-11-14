@@ -253,6 +253,27 @@ export class ContextService {
   }
 
   /**
+   * Remove {{context}} placeholders in object
+   *
+   * @param obj object to clean
+   * @returns object without placeholders
+   */
+  public removeContext = (obj: any): any => {
+    if (typeof obj === 'string') {
+      return obj.replace(new RegExp(this.contextRegex, 'g'), '');
+    } else if (Array.isArray(obj)) {
+      return obj.map((item) => this.removeContext(item));
+    } else if (obj && typeof obj === 'object') {
+      const newObj = { ...obj };
+      for (const key in newObj) {
+        newObj[key] = this.removeContext(newObj[key]);
+      }
+      return newObj;
+    }
+    return obj;
+  };
+
+  /**
    * Parse JSON values of object.
    *
    * @param obj object to transform
