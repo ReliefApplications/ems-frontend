@@ -846,7 +846,7 @@
                     | translate : { number: dataItem[field.name].length }
                 }}
               </button>
-              <ui-menu #fileMenu [closeOnClick]="false">
+              <ui-menu #fileMenu>
                 <button
                   kendoButton
                   *ngFor="let file of dataItem[field.name]"
