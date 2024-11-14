@@ -102,7 +102,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   public showTemplateCreationWizard = false;
 
   /** DL names */
-  public uniqueDLNames: string[] = [];
+  public uniqueDLNames: any = [];
 
   /** Distribution list names cache data */
   public cacheDistributionListNames: string[] = [];
@@ -1031,7 +1031,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       this.distributionPageInfo,
       this.cacheDistributionListNames
     );
-    this.distributionLists = cachedData;
+    this.uniqueDLNames = cachedData;
   }
 
   /**
