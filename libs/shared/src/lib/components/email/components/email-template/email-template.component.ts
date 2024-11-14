@@ -448,7 +448,10 @@ export class EmailTemplateComponent
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
       }
-      this.currentTabIndex === newIndex ? this.getDataSet('preview') : '';
+      // this.currentTabIndex === newIndex ? this.getDataSet('preview') : '';
+      this.showDatasetLimitWarning = fromHTML
+        ? false
+        : this.showDatasetLimitWarning;
     } else if (newIndex >= 0) {
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
@@ -524,11 +527,13 @@ export class EmailTemplateComponent
               this.emailService.filterToEmails =
                 this.type === 'to' ? [] : this.emailService.filterToEmails;
               // Navigates straight to preview tab if didn't fail before
-
+              if (response.count <= 50) {
+                this.showDatasetLimitWarning = false;
+              }
               this.onTabSelect(2, false);
               this.showPreview = true;
               if (response.count <= 50) {
-                this.showDatasetLimitWarning = false;
+                // this.showDatasetLimitWarning = false;
               } else {
                 this.totalMatchingRecords = response.count;
                 this.showDatasetLimitWarning = true;

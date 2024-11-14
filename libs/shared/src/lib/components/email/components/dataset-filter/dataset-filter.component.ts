@@ -328,13 +328,16 @@ export class DatasetFilterComponent
       !this.showFieldsWarning &&
       isSeparateEmailValid;
     // Checks if entry is valid
-    if (
-      newIndex === previewTabIndex &&
-      this.currentTabIndex !== previewTabIndex
-    ) {
-      this.getDataSet('preview', true);
-    }
+    // if (
+    //   newIndex === previewTabIndex &&
+    //   this.currentTabIndex !== previewTabIndex
+    // ) {
+    //   this.getDataSet('preview', true);
+    // }
     //if new tab is preview, get preview data
+    this.showDatasetLimitWarning = fromHTML
+      ? false
+      : this.showDatasetLimitWarning;
     if (fromHTML && newIndex === previewTabIndex) {
       if (isValid) {
         this.emailService.disableSaveAndProceed.next(false);
@@ -563,10 +566,12 @@ export class DatasetFilterComponent
                     }
                   }
                   if (!validCheck) {
-                    this.onTabSelect(3, false);
-                    this.showPreview = true;
                     if (response.count <= 50) {
                       this.showDatasetLimitWarning = false;
+                    }
+                    this.onTabSelect(3, false);
+                    if (response.count <= 50) {
+                      // this.showDatasetLimitWarning = false;
                       let allPreviewData: any = [];
                       allPreviewData.push({
                         dataList: response,
