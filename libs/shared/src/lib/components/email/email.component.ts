@@ -587,6 +587,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         index: 0,
       },
     ];
+    this.emailService.title = this.emailService.tabs.filter(
+      (x: any) => x.active
+    )?.[0].title;
     const dataArray: FormArray | any = new FormArray([]);
     for (let index = 0; index < emailData.datasets.length; index++) {
       if (
