@@ -130,7 +130,7 @@ export class DatasetFilterComponent
   /** Resource Populated Check */
   resourcePopulated = false;
   /** Preview HTML */
-  previewHTML = '';
+  previewHTML: any = '';
   /** Flag to show the Child fields limit warning. */
   public showFieldsWarning = false;
   /** Flag for data is Resource or Reference data */
@@ -590,13 +590,10 @@ export class DatasetFilterComponent
 
                     const previewRes = window.atob(response.tableHtml);
                     if (previewRes.includes(this.activeTab.title)) {
-                      this.previewHTML = previewRes;
-                      const previewHTML = document.getElementById(
-                        'tblPreview'
-                      ) as HTMLInputElement;
-                      if (previewHTML) {
-                        previewHTML.innerHTML = this.previewHTML;
-                      }
+                      setTimeout(() => {
+                        this.previewHTML =
+                          this.sanitizer.bypassSecurityTrustHtml(previewRes);
+                      }, 100);
                     }
                   }
 
