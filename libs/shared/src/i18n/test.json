@@ -587,8 +587,7 @@
 				"selectedFields": "******",
 				"sort": "******",
 				"unwind": "******"
-			},
-			"unavailableFields": "******"
+			}
 		},
 		"apiConfiguration": {
 			"create": {
