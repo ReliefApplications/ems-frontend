@@ -203,13 +203,21 @@ export class EditContextModalComponent
   private updateDisplayFieldOptions(): void {
     if (this.resource) {
       this.availableFields =
-        this.resource?.fields.map((x: any) => x.name) ?? [];
+        this.resource?.fields
+          ?.map((x: any) => x.name)
+          ?.sort((field1: string, field2: string) => {
+            return field1.localeCompare(field2);
+          }) ?? [];
     } else if (this.refData) {
       // TODO: When frontend changes about referenceData fields are merged,
       // swap to the commented line to remove any casting
       // this.availableFields = this.refData?.fields?.map((x) => x.name) ?? [];
       this.availableFields =
-        this.refData?.fields?.map((x: any) => x.name) ?? [];
+        this.refData?.fields
+          ?.map((x: any) => x.name)
+          ?.sort((field1: string, field2) => {
+            return field1.localeCompare(field2);
+          }) ?? [];
     } else {
       this.availableFields = [];
     }
