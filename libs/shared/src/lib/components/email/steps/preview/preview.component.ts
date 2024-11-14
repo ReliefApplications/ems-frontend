@@ -255,8 +255,8 @@ export class PreviewComponent
             this.query.emailDistributionList.cc?.resource?.trim() !== '' ||
             this.query.emailDistributionList.bcc?.resource?.trim() !== '' ||
             this.query.emailDistributionList?.to?.inputEmails?.length > 0 ||
-            this.query.emailDistributionList?.to?.inputEmails?.length > 0 ||
-            this.query.emailDistributionList?.to?.inputEmails?.length > 0
+            this.query.emailDistributionList?.cc?.inputEmails?.length > 0 ||
+            this.query.emailDistributionList?.bcc?.inputEmails?.length > 0
           ) {
             this.distributionListTo = [
               ...new Set(
