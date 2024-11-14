@@ -15,6 +15,8 @@ import {
   StepQueryResponse,
   UnsubscribeComponent,
   WorkflowService,
+  ContextService,
+  Record,
 } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import { Observable, Subscription } from 'rxjs';
@@ -76,6 +78,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * @param translate Angular translate service
    * @param dialog CDK Dialog service
    * @param actionButtonService Action button service
+   * @param contextService Shared context service
    */
   constructor(
     private applicationService: ApplicationService,
@@ -85,7 +88,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     private router: Router,
     private translate: TranslateService,
     private dialog: Dialog,
-    private actionButtonService: ActionButtonService
+    private actionButtonService: ActionButtonService,
+    private contextService: ContextService
   ) {
     super();
   }
@@ -226,8 +230,19 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * @param e completion event
    * @param e.completed is completed
    * @param e.hideNewRecord do we show new record button
+   * @param e.record Saved record
    */
-  onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
+  onComplete(e: {
+    completed: boolean;
+    hideNewRecord?: boolean;
+    record?: Record;
+  }): void {
+    if (e.record) {
+      this.contextService.context = {
+        ...e.record.data,
+        id: e.record.id,
+      };
+    }
     this.completed = e.completed;
     this.hideNewRecord = e.hideNewRecord || false;
   }

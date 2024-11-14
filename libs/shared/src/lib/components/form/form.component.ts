@@ -49,6 +49,7 @@ export class FormComponent
   @Output() save: EventEmitter<{
     completed: boolean;
     hideNewRecord?: boolean;
+    record?: RecordModel;
   }> = new EventEmitter();
   /** Survey model */
   public survey!: SurveyModel;
@@ -334,6 +335,7 @@ export class FormComponent
         this.save.emit({
           completed: true,
           hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,
+          record: data.addRecord || data.editRecord,
         });
       }
     });
