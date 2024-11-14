@@ -1,3 +1,10 @@
+# [2.17.0-alpha.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.3...v2.17.0-alpha.4) (2024-11-14)
+
+
+### Features
+
+* add context after record addition / edition in application pages / steps forms ([#2691](https://github.com/ReliefApplications/ems-frontend/issues/2691)) ([5041042](https://github.com/ReliefApplications/ems-frontend/commit/504104201ef1bfe8f372f905a339c5bccf2a3532)), closes [AB#105659](https://github.com/AB/issues/105659)
+
 # [2.17.0-alpha.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.2...v2.17.0-alpha.3) (2024-11-13)
 
 
