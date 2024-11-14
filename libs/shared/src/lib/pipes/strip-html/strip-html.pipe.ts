@@ -1,5 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { isNil } from 'lodash';
+import { SanitizeHtmlPipe } from '../sanitize-html/sanitize-html.pipe';
+import { SafeHtml } from '@angular/platform-browser';
 
 /**
  * Text format tags that should be kept
@@ -54,20 +56,21 @@ const TEXT_FORMAT_STYLE_PROPERTIES = [
   name: 'sharedStripHtml',
   standalone: true,
 })
-export class StripHtmlPipe implements PipeTransform {
+export class StripHtmlPipe extends SanitizeHtmlPipe implements PipeTransform {
   /**
    * Transform html into text.
    *
    * @param value html value
    * @returns text
    */
-  transform(value: string): string {
+  override transform(value: string): SafeHtml {
     // Create a temporary DOM element to navigate through all nodes in the given html string
     const helperDiv = document.createElement('div');
     helperDiv.innerHTML = (value || '').trim();
     const nodes = helperDiv.childNodes;
     const cleanNodes = this.cleanUpNodes(nodes);
-    return cleanNodes; // Return the plain text
+    return super.transform(cleanNodes);
+    // return cleanNodes; // Return the plain text
   }
 
   /**

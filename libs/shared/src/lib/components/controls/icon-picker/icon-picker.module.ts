@@ -6,7 +6,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IconPickerPopupComponent } from './icon-picker-popup/icon-picker-popup.component';
 import { ButtonModule, SelectMenuModule, TooltipModule } from '@oort-front/ui';
-import { SanitizeHTMLModule } from '../../../pipes/sanitize-html/sanitize-html.module';
+import { SanitizeHtmlPipe } from '../../../pipes/sanitize-html/sanitize-html.pipe';
 
 /** Module for icon picker component */
 @NgModule({
@@ -20,7 +20,7 @@ import { SanitizeHTMLModule } from '../../../pipes/sanitize-html/sanitize-html.m
     ReactiveFormsModule,
     ButtonModule,
     SelectMenuModule,
-    SanitizeHTMLModule,
+    SanitizeHtmlPipe,
   ],
   exports: [IconPickerComponent],
 })

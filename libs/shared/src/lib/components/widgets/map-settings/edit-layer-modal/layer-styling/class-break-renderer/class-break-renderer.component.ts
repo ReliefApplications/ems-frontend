@@ -23,12 +23,12 @@ import {
 } from '@oort-front/ui';
 import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
 import { Fields } from '../../../../../../models/layer.model';
-import { SanitizeHTMLModule } from '../../../../../../pipes/sanitize-html/sanitize-html.module';
 import { GeometryType } from '../../../../../ui/map/interfaces/layer-settings.type';
 import { UnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';
 import { createClassBreakInfoForm } from '../../../map-forms';
 import { SimpleRendererComponent } from '../simple-renderer/simple-renderer.component';
 import { isNil } from 'lodash';
+import { SanitizeHtmlPipe } from '../../../../../../pipes/sanitize-html/sanitize-html.pipe';
 
 /**
  * Updates form validation checking if set values order set is correct
@@ -137,7 +137,7 @@ function classBreakValidators(): any {
     IconModule,
     TranslateModule,
     TooltipModule,
-    SanitizeHTMLModule,
+    SanitizeHtmlPipe,
     ErrorMessageModule,
   ],
   templateUrl: './class-break-renderer.component.html',
