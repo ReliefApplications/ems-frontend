@@ -149,7 +149,9 @@ export class ActionButtonComponent
   public async onClick() {
     // Navigation to url
     if (this.actionButton.href) {
-      const href = this.dataTemplateService.renderLink(this.actionButton.href);
+      const href = this.contextService.replaceContext(
+        this.dataTemplateService.renderLink(this.actionButton.href)
+      );
       if (this.actionButton.openInNewTab) {
         window.open(href, '_blank');
       } else {

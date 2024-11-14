@@ -11,6 +11,8 @@ import {
   FormQueryResponse,
   PageQueryResponse,
   ActionButton,
+  Record,
+  ContextService,
 } from '@oort-front/shared';
 import {
   GET_FORM_BY_ID,
@@ -65,13 +67,15 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * @param router Angular router
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param contextService Shared context service
    */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: SnackbarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private contextService: ContextService
   ) {
     super();
   }
@@ -175,13 +179,24 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Updates status of the page.
+   * Complete form
    *
    * @param e completion event
-   * @param e.completed is form completed
-   * @param e.hideNewRecord is it needed to hide new record button
+   * @param e.completed is completed
+   * @param e.hideNewRecord do we show new record button
+   * @param e.record Saved record
    */
-  onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
+  onComplete(e: {
+    completed: boolean;
+    hideNewRecord?: boolean;
+    record?: Record;
+  }): void {
+    if (e.record) {
+      this.contextService.context = {
+        ...e.record.data,
+        id: e.record.id,
+      };
+    }
     this.completed = e.completed;
     this.hideNewRecord = e.hideNewRecord || false;
   }
