@@ -129,7 +129,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedIndex']) {
+    if (changes['selectedIndex'] && this.tabs) {
       this.setSelectedTab();
       this.showContent(this.tabs.filter((tab: any) => tab.selected)?.[0]);
     }
