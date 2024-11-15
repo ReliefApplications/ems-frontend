@@ -41,6 +41,7 @@ import {
   GET_REFERENCE_DATAS,
 } from '../../graphql/queries';
 import { ApiConfigurationsQueryResponse } from '../../../../../lib/models/api-configuration.model';
+import { DomSanitizer } from '@angular/platform-browser';
 
 /**
  * Email template to create distribution list
@@ -153,7 +154,7 @@ export class EmailTemplateComponent
   /** Loading status. */
   public loading = false;
   /** Query filter Preview HTML */
-  public previewHTML = '';
+  public previewHTML: any = '';
   /** Total matching records */
   public totalMatchingRecords = 0;
   /** Checks if to is valid for distribution list */
@@ -210,6 +211,7 @@ export class EmailTemplateComponent
    * @param formBuilder Angular form builder
    * @param http Http client
    * @param restService rest service
+   * @param sanitizer html sanitizer
    */
   constructor(
     private fb: FormBuilder,
@@ -220,7 +222,8 @@ export class EmailTemplateComponent
     public queryBuilder: QueryBuilderService,
     public formBuilder: FormBuilder,
     private http: HttpClient,
-    private restService: RestService
+    private restService: RestService,
+    private sanitizer: DomSanitizer
   ) {
     super();
   }
@@ -448,7 +451,7 @@ export class EmailTemplateComponent
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
       }
-      // this.currentTabIndex === newIndex ? this.getDataSet('preview') : '';
+      this.currentTabIndex === newIndex ? this.getDataSet('preview') : '';
       this.showDatasetLimitWarning = fromHTML
         ? false
         : this.showDatasetLimitWarning;
@@ -543,7 +546,9 @@ export class EmailTemplateComponent
               this.previewHTML = window.atob(response.tableHtml);
               if (this.tblPreview?.nativeElement) {
                 setTimeout(() => {
-                  this.tblPreview.nativeElement.innerHTML = this.previewHTML;
+                  this.previewHTML = this.sanitizer.bypassSecurityTrustHtml(
+                    this.previewHTML
+                  );
                 }, 0);
               }
 
