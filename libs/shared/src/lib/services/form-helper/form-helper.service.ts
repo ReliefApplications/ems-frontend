@@ -140,36 +140,44 @@ export class FormHelpersService {
               !('itemId' in file.content)
             ) {
               const question = survey.getQuestionByName(name);
-              const { driveId, itemId } =
-                await this.documentManagementService.uploadFile(file, question);
-              if (driveId && itemId) {
-                const fileContent = data[name][index].content;
-                data[name][index].content = {
-                  driveId,
-                  itemId,
-                };
+              try {
+                const { driveId, itemId } =
+                  await this.documentManagementService.uploadFile(
+                    file,
+                    question
+                  );
+                if (driveId && itemId) {
+                  const fileContent = data[name][index].content;
+                  data[name][index].content = {
+                    driveId,
+                    itemId,
+                  };
 
-                // Check if any other question is using the same file
-                survey.getAllQuestions().forEach((question) => {
-                  const questionType = question.getType();
-                  if (
-                    questionType !== 'file' ||
-                    // Only change files that are not in the temporary storage
-                    // meaning their values came from the default values
-                    !!temporaryFilesStorage[question.name]
-                  )
-                    return;
-
-                  const files = data[question.name] ?? [];
-                  files.forEach((file: any) => {
-                    if (file && file.content === fileContent) {
-                      file.content = {
-                        driveId,
-                        itemId,
-                      };
+                  // Check if any other question is using the same file
+                  survey.getAllQuestions().forEach((question) => {
+                    const questionType = question.getType();
+                    if (
+                      questionType !== 'file' ||
+                      // Only change files that are not in the temporary storage
+                      // meaning their values came from the default values
+                      !!temporaryFilesStorage[question.name]
+                    ) {
+                      return;
                     }
+                    const files = data[question.name] ?? [];
+                    files.forEach((file: any) => {
+                      if (file && file.content === fileContent) {
+                        file.content = {
+                          driveId,
+                          itemId,
+                        };
+                      }
+                    });
                   });
-                });
+                }
+              } catch (error) {
+                /** If upload fails, remove the failed file from the record question */
+                data[name] = data[name].splice(index, 1);
               }
             }
           } else {
@@ -329,12 +337,23 @@ export class FormHelpersService {
         };
       });
     });
-
     for (const element of nestedRecordsToAdd) {
       for (const draftId of element.draftIds) {
         const data = element.question.draftData[draftId];
         const template = element.question.template;
-
+        /** If any file attached to the temporary record, first upload them before record creation */
+        if (!isNil(element.question.temporaryFilesStorage)) {
+          try {
+            await this.uploadFiles(
+              survey,
+              element.question.temporaryFilesStorage,
+              formId
+            );
+          } catch (error) {
+            /** If there is an error, remove the files from the question */
+            delete element.question.temporaryFilesStorage;
+          }
+        }
         promises.push(
           firstValueFrom(
             this.apollo.mutate<AddRecordMutationResponse>({
@@ -345,18 +364,6 @@ export class FormHelpersService {
               },
             })
           ).then(async ({ data }) => {
-            /** If any file attached to the temporary record, upload them once the record is created */
-            if (!isNil(element.question.temporaryFilesStorage)) {
-              try {
-                await this.uploadFiles(
-                  survey,
-                  element.question.temporaryFilesStorage,
-                  formId
-                );
-              } catch (error) {
-                // How to handle the upload error of nested records?
-              }
-            }
             // change the draftId to the new recordId
             const newId = data?.addRecord?.id;
             if (!newId) return;
