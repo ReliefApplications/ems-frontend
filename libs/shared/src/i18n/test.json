@@ -1759,8 +1759,20 @@
 					"confirmationMessage": "******"
 				},
 				"editor": {
-					"recordSelection": "******",
-					"title": "******"
+					"record": {
+						"choices": {
+							"expression": "******",
+							"manual": "******"
+						},
+						"expression": "******",
+						"title": "******"
+					},
+					"title": "******",
+					"tooltip": {
+						"record": {
+							"expression": "****** {{context}} ******"
+						}
+					}
 				},
 				"grid": {
 					"actions": {
