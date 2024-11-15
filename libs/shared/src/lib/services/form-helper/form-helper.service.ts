@@ -291,8 +291,12 @@ export class FormHelpersService {
    * Create temporary records (from resource/s questions) of passed survey.
    *
    * @param survey Survey to get questions from
+   * @param formId Current form id
    */
-  public async createTemporaryRecords(survey: SurveyModel): Promise<void> {
+  public async createTemporaryRecords(
+    survey: SurveyModel,
+    formId: string
+  ): Promise<void> {
     const promises: Promise<any>[] = [];
     const questions = survey.getAllQuestions();
     const nestedRecordsToAdd: { draftIds: []; question: Question }[] = [];
@@ -340,7 +344,15 @@ export class FormHelpersService {
                 data,
               },
             })
-          ).then(({ data }) => {
+          ).then(async ({ data }) => {
+            /** If any file attached to the temporary record, upload them once the record is created */
+            if (!isNil(element.question.temporaryFilesStorage)) {
+              await this.uploadFiles(
+                survey,
+                element.question.temporaryFilesStorage,
+                formId
+              );
+            }
             // change the draftId to the new recordId
             const newId = data?.addRecord?.id;
             if (!newId) return;

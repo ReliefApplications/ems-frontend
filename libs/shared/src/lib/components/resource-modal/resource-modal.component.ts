@@ -81,6 +81,7 @@ export class ResourceModalComponent extends FormModalComponent {
               id: details.id,
               data: survey.data,
             },
+            temporaryFilesStorage: this.temporaryFilesStorage,
           } as any);
         });
       };

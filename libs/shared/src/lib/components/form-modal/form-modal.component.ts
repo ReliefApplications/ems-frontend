@@ -383,7 +383,10 @@ export class FormModalComponent
       return;
     }
     // await Promise.allSettled(promises);
-    await this.formHelpersService.createTemporaryRecords(survey);
+    await this.formHelpersService.createTemporaryRecords(
+      survey,
+      this.form?.id as string
+    );
 
     if (this.data.recordId) {
       if (this.isMultiEdition) {
