@@ -36,59 +36,15 @@
           htmlFor="select__dataset"
           class="block text-sm font-medium leading-6 text-gray-900"
         >
-          {{ 'components.queryBuilder.dataset.dataType' | translate }}
-        </label>
-        <!-- Data type selection -->
-        <div uiFormFieldDirective class="flex-1">
-          <ui-select-menu
-            id="dataType"
-            formControlName="dataType"
-            (ngModelChange)="onDataTypeChange($event)"
-            class="w-full"
-          >
-            <ui-select-option
-              *ngFor="let dataType of dataTypeList"
-              [value]="dataType"
-              >{{ dataType | titlecase }}</ui-select-option
-            >
-          </ui-select-menu>
-        </div>
-      </div>
-      <div class="w-1/2" *ngIf="query.get('dataType').value !== null">
-        <label
-          htmlFor="select__dataset"
-          class="block text-sm font-medium leading-6 text-gray-900"
-        >
           {{
-            query.get('dataType').value === 'Reference Data'
-              ? 'Reference Data'
-              : ('components.queryBuilder.dataset.title' | translate)
+            ('components.queryBuilder.dataset.title' | translate)
           }}
         </label>
-        <!-- Reference Selection -->
-        <div
-          uiFormFieldDirective
-          class="flex-1"
-          *ngIf="query.get('dataType').value === 'Reference Data'"
-        >
-          <ui-select-menu
-            id="reference"
-            formControlName="reference"
-            class="w-full"
-            (ngModelChange)="getSelectedReferenceData($event, true)"
-          >
-            <ui-select-option
-              *ngFor="let reference of refernceData"
-              [value]="reference?.id"
-              >{{ reference?.name | titlecase }}</ui-select-option
-            >
-          </ui-select-menu>
-        </div>
+       
         <!-- Resource selection -->
         <div
           uiFormFieldDirective
           class="flex-1"
-          *ngIf="query.get('dataType').value === 'Resource'"
         >
           <shared-resource-select class="w-8/10"
             formControlName="resource"
@@ -131,12 +87,8 @@
       [selectedIndex]="currentTabIndex"
       (selectedIndexChange)="onTabSelect($event, true)"
       #datasetPreview
-      *ngIf="
-        (query.get('dataType').value === 'Resource' &&
-          resource?.fields?.length) ||
-        (refernceData?.length > 0 && availableFields?.length > 0)
-      "
-    >
+      *ngIf="resource?.fields?.length ||
+        availableFields.length > 0">
       <div class="mt-4 flex flex-row">
         <!-- Fields Tab -->
         <ui-tab [title]="'Fields'" [selected]="true">
@@ -182,12 +134,7 @@
         </ui-tab>
         <!-- Filter Tab -->
         <ui-tab
-          [title]="'Filter'"
-          [disabled]="
-            this.query.get('resource').value === null ||
-            this.query.get('resource').value === ''
-          "
-        >
+          [title]="'Filter'">
           <ng-container ngProjectAs="label">
             {{ 'components.queryBuilder.filter.title' | translate }}
           </ng-container>
@@ -198,8 +145,7 @@
             ></ng-container>
             <ng-container
               *ngIf="
-                resource?.fields?.length ||
-                (refernceData.length > 0 && availableFields.length > 0)
+                resource?.fields?.length || availableFields.length > 0
               "
             >
               <ng-container
@@ -211,15 +157,11 @@
                   <!-- NESTED FILTER GROUP -->
                   <!-- <shared-filter [form]="query.get('filter')" [fields]="filterFields" [isEmailNotification]="true"></shared-filter> -->
                   <shared-tab-filter
-                    [form]="$any(query.controls.query.get('filter'))"
-                    [query]="query.controls.query.getRawValue()"
-                    [referenceFields]="
-                      query.get('dataType').value === 'Reference Data'
-                        ? availableFields
-                        : []
-                    "
-                  >
-                  </shared-tab-filter>
+                  [form]="$any(query.controls.query.get('filter'))"
+                  [query]="query.controls.query.getRawValue()"
+                  [referenceFields]="[]"
+                >
+                </shared-tab-filter>
                 </div>
               </div>
               <ui-button
