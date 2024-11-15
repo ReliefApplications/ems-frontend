@@ -1,3 +1,15 @@
+# [2.17.0-alpha.5](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.4...v2.17.0-alpha.5) (2024-11-15)
+
+
+### Bug Fixes
+
+* step redirection within a loaded workflow using workflow outside actions, e.g. action buttons ([#2695](https://github.com/ReliefApplications/ems-frontend/issues/2695)) ([fecbf5a](https://github.com/ReliefApplications/ems-frontend/commit/fecbf5a62243e7abca565195245360c093c32431)), closes [AB#105859](https://github.com/AB/issues/105859)
+
+
+### Features
+
+* allow expression builder to inject in editor widgets a record from context ([#2693](https://github.com/ReliefApplications/ems-frontend/issues/2693)) ([f0feab6](https://github.com/ReliefApplications/ems-frontend/commit/f0feab6ae9ff6617fca884f720bd126fccfcb5a7)), closes [AB#105413](https://github.com/AB/issues/105413)
+
 # [2.17.0-alpha.4](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.3...v2.17.0-alpha.4) (2024-11-14)
 
 
