@@ -347,11 +347,15 @@ export class FormHelpersService {
           ).then(async ({ data }) => {
             /** If any file attached to the temporary record, upload them once the record is created */
             if (!isNil(element.question.temporaryFilesStorage)) {
-              await this.uploadFiles(
-                survey,
-                element.question.temporaryFilesStorage,
-                formId
-              );
+              try {
+                await this.uploadFiles(
+                  survey,
+                  element.question.temporaryFilesStorage,
+                  formId
+                );
+              } catch (error) {
+                // How to handle the upload error of nested records?
+              }
             }
             // change the draftId to the new recordId
             const newId = data?.addRecord?.id;
