@@ -125,6 +125,7 @@ export class FormHelpersService {
 
     const data = survey.data;
     const questionsToUpload = Object.keys(temporaryFilesStorage);
+    const filesToRemove: { question: string; file: File }[] = [];
     // Is using document management system
     const useDocumentManagement = !!this.environment.csApiUrl;
     for (const name of questionsToUpload) {
@@ -176,8 +177,7 @@ export class FormHelpersService {
                   });
                 }
               } catch (error) {
-                /** If upload fails, remove the failed file from the record question */
-                data[name] = data[name].splice(index, 1);
+                filesToRemove.push({ question: name, file });
               }
             }
           } else {
@@ -212,6 +212,18 @@ export class FormHelpersService {
               });
             }
           }
+        }
+      }
+    }
+    /** Remove any fail file uploads from the question data before updating survey */
+    for (let index = 0; index < filesToRemove.length; index++) {
+      const { question, file } = filesToRemove[index];
+      if (data[question]) {
+        const indexFile = data[question]?.findIndex(
+          (f: File) => f.name === file.name && f.type === file.type
+        );
+        if (indexFile !== -1) {
+          data[question].splice(indexFile, 1);
         }
       }
     }
