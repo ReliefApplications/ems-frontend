@@ -39,7 +39,7 @@ export class StripHtmlPipe extends SanitizeHtmlPipe implements PipeTransform {
     const helperDiv = document.createElement('div');
     helperDiv.innerHTML = (value || '').trim();
     const transformedDiv = this.transformNode(helperDiv);
-    transformedDiv.style.display = 'inline-flex';
+    transformedDiv.style.display = 'inline';
     transformedDiv.style.whiteSpace = 'nowrap';
     return super.transform(transformedDiv.outerHTML);
   }
@@ -86,13 +86,13 @@ export class StripHtmlPipe extends SanitizeHtmlPipe implements PipeTransform {
         if (subNode.nodeType === Node.TEXT_NODE) {
           const child = document.createElement('span');
           child.innerText = subNode.textContent || '';
-          child.style.display = 'inline-flex';
+          child.style.display = 'inline';
           child.style.whiteSpace = 'nowrap';
           span.appendChild(child);
         } else if (subNode.nodeType === Node.ELEMENT_NODE) {
           const child = this.transformNode(subNode as HTMLElement);
           this.setStyle(subNode as HTMLElement, child);
-          child.style.display = 'inline-flex';
+          child.style.display = 'inline';
           child.style.whiteSpace = 'nowrap';
           span.appendChild(child);
         }
@@ -100,8 +100,10 @@ export class StripHtmlPipe extends SanitizeHtmlPipe implements PipeTransform {
     } else if (node.nodeType === Node.TEXT_NODE) {
       span.innerHTML = node.textContent || '';
     }
-    span.style.display = 'inline-flex';
+    span.style.display = 'inline';
     span.style.whiteSpace = 'nowrap';
+    const brElements = span.querySelectorAll('br');
+    brElements.forEach((br) => br.remove());
     return span;
   }
 }
