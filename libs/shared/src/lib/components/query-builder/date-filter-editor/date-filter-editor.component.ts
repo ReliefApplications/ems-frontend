@@ -23,7 +23,7 @@ export class DateFilterEditorComponent implements OnInit {
   /** @returns Is the first input a date or not. */
   get isDate(): boolean {
     const value = this.control.value;
-    if (value.includes('{{')) {
+    if (value?.includes('{{')) {
       return false;
     }
     const dateValue = new Date(value);

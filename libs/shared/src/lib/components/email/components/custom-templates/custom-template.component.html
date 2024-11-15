@@ -1,0 +1,93 @@
+<div class="flex flex-col items-center">
+  <div class="max-w-5xl w-full">
+    <kendo-stepper
+      #stepper
+      [steps]="steps"
+      stepType="full"
+      [(currentStep)]="currentStep"
+      orientation="horizontal"
+      [linear]="true"
+    >
+    </kendo-stepper>
+    <ui-divider class="my-10"></ui-divider>
+    <ng-container *ngIf="currentStep === 0">
+      <!-- Title Input -->
+      <div uiFormFieldDirective>
+        <label>{{
+          'common.notifications.email.subject.customLayoutTitle' | translate
+        }}</label>
+        <input
+          type="text"
+          [placeholder]="'common.title' | translate"
+          [(ngModel)]="emailService.layoutTitle"
+          [ngModelOptions]="{ standalone: true }"
+          (ngModelChange)="validateNextButton()"
+        />
+      </div>
+      <!-- <div class="flex-grow pt-4">
+      <label
+        for="fieldSelect"
+        class="block text-base font-medium leading-6 text-gray-900"
+      >
+        {{ 'common.notifications.email.subject.customLayoutTitle' | translate }}
+      </label>
+      <input
+        id="titleInput"
+        name="titleInput"
+        type="text"
+        [(ngModel)]="emailService.layoutTitle"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="validateNextButton()"
+        [ngClass]="{
+          'form-error': emailService.layoutTitle === '' || isDuplicateTitle
+        }"
+        class="mt-1 block py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center w-full"
+        placeholder="Enter Title"
+      />
+    </div> -->
+    </ng-container>
+    <app-layout *ngIf="currentStep === 0"></app-layout>
+    <app-preview *ngIf="currentStep === 1"></app-preview>
+  </div>
+</div>
+
+<!-- Floating div for actions buttons -->
+<ui-fixed-wrapper>
+  <ng-container *ngTemplateOutlet="actionsTmpl"></ng-container>
+</ui-fixed-wrapper>
+
+<ng-template #actionsTmpl>
+  <div class="flex justify-end gap-2 flex-wrap">
+    <!-- Back button -->
+    <ui-button
+      *ngIf="currentStep !== 0"
+      category="tertiary"
+      variant="primary"
+      (click)="back()"
+    >
+      {{ 'common.back' | translate }}
+    </ui-button>
+    <!-- Next button -->
+    <ui-button
+      *ngIf="currentStep !== 1"
+      type="button"
+      category="secondary"
+      [disabled]="
+        emailService.disableNextActionBtn || emailService.layoutTitle === ''
+      "
+      (click)="next()"
+    >
+      {{ 'common.next' | translate }}
+    </ui-button>
+    <!-- Save -->
+    <ui-button
+      *ngIf="currentStep === 1"
+      type="submit"
+      category="secondary"
+      variant="primary"
+      (click)="submit()"
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </div>
+</ng-template>

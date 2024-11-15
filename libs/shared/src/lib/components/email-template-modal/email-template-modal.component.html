@@ -11,7 +11,7 @@
         <ui-select-menu formControlName="template">
           <ui-select-option
             *ngFor="let template of templates"
-            [value]="template"
+            [value]="template.id"
           >
             {{ template.name }}
           </ui-select-option>

@@ -1,3 +1,29 @@
+# [2.17.0-beta.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.15...v2.17.0-beta.16) (2024-11-13)
+
+
+### Bug Fixes
+
+* custom filtering for resources question not correctly setting filter when value prepopulated in form ([#2684](https://github.com/ReliefApplications/ems-frontend/issues/2684)) ([9e1a6ad](https://github.com/ReliefApplications/ems-frontend/commit/9e1a6addbb6c592e041e7daf79beff544dffe886)), closes [AB#105484](https://github.com/AB/issues/105484)
+
+
+### Features
+
+* allow to auto select first element from choices if unique choice provided, in resource question  ([#2685](https://github.com/ReliefApplications/ems-frontend/issues/2685)) ([cb259cf](https://github.com/ReliefApplications/ems-frontend/commit/cb259cff481b143d198bf6e2af78442059736547)), closes [AB#105619](https://github.com/AB/issues/105619)
+
+# [2.17.0-beta.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.14...v2.17.0-beta.15) (2024-11-05)
+
+
+### Features
+
+* admins can add paddings to geographic extent when zooming in ([#2673](https://github.com/ReliefApplications/ems-frontend/issues/2673)) ([53da375](https://github.com/ReliefApplications/ems-frontend/commit/53da375a206d39972bc8a6ea66ab0c0a4fc50702)), closes [AB#105312](https://github.com/AB/issues/105312)
+
+# [2.17.0-beta.14](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.13...v2.17.0-beta.14) (2024-11-04)
+
+
+### Bug Fixes
+
+* incorrect pathname stored in redirectPath before auth, for front-office instances using href ([5cbf38c](https://github.com/ReliefApplications/ems-frontend/commit/5cbf38c0b1ae9646bd30fb8d22ed1c9ebb167163))
+
 # [2.17.0-beta.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.12...v2.17.0-beta.13) (2024-10-29)
 
 

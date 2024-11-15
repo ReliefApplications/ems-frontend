@@ -1,7 +1,7 @@
 import { Step } from './step.model';
 import { Page } from './page.model';
 import { EventEmitter } from '@angular/core';
-import { ButtonActionT } from '../components/button-action/button-action-type';
+import { ActionButton } from '../components/action-button/action-button.type';
 
 /** Model for IWidgetType object */
 export interface IWidgetType {
@@ -274,7 +274,7 @@ export interface Dashboard {
   contextData?: {
     [key: string]: any;
   };
-  buttons?: ButtonActionT[];
+  buttons?: ActionButton[];
   filter?: DashboardFilter;
   gridOptions?: any;
   defaultTemplate?: boolean;

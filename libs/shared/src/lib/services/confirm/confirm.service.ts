@@ -4,7 +4,7 @@ import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { Variant } from '@oort-front/ui';
 
 /** Interface of confirm dialog data */
-interface ConfirmDialogData {
+export interface ConfirmDialogData {
   title?: string;
   content?: string;
   confirmText?: string;
