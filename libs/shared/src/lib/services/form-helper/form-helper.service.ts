@@ -375,7 +375,7 @@ export class FormHelpersService {
                 data,
               },
             })
-          ).then(async ({ data }) => {
+          ).then(({ data }) => {
             // change the draftId to the new recordId
             const newId = data?.addRecord?.id;
             if (!newId) return;
