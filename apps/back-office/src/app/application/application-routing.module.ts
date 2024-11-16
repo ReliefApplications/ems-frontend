@@ -4,7 +4,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { CanDeactivateGuard } from '../guards/can-deactivate.guard';
 import { ApplicationComponent } from './application.component';
 import { PermissionGuard } from '@oort-front/shared';
-
+// import { ActivityLogModule } from './pages/activity-log/activity-log.module';
+// import { ActivityLogComponent } from './pages/activity-log/activity-log.component';
 /** Routes of application module */
 const routes: Routes = [
   {
@@ -188,6 +189,13 @@ const routes: Routes = [
                 key: 'common.archive.few',
               },
             },
+          },
+          {
+            path: 'activity-log',
+            loadChildren: () =>
+              import('./pages/activity-log/activity-log.module').then(
+                (m) => m.ActivityLogModule
+              ),
           },
         ],
       },

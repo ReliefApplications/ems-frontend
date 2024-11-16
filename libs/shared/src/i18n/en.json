@@ -40,6 +40,11 @@
 			"none": "No archived items",
 			"restore": "Restore"
 		},
+		"activity": {
+			"few": "Activities",
+			"none": "No activity",
+			"one": "Activity"
+		},
 		"ariaLabel": {
 			"search": {
 				"clear": "Clear search"

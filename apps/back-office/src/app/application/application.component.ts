@@ -169,6 +169,11 @@ export class ApplicationComponent
       'add_to_queue'
     );
     this.addNavItem('common.archive.few', './settings/archive', 'delete');
+    this.addNavItem(
+      'common.activity.few',
+      './settings/activity-log',
+      'timeline'
+    );
 
     // {
     //   name: this.translate.instant('common.customNotification.few'),
