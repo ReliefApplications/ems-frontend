@@ -634,6 +634,10 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
               this.fields = this.fields.map((field) => {
                 //add shape for columns and matrices
                 const metaData = metaFields[field.name];
+                field = {
+                  ...field,
+                  meta: metaData,
+                };
                 if (metaData && (metaData.columns || metaData.rows)) {
                   return {
                     ...field,
