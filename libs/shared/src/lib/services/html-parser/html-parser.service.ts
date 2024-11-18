@@ -306,7 +306,7 @@ export class HtmlParserService {
           regExForRightSide
         ) || '';
       parsedHtml = parsedHtml.replace(textToReplace, resultText);
-      result = mainStructureRegExp.exec(html);
+      result = mainStructureRegExp.exec(parsedHtml);
     }
     return parsedHtml;
   }
