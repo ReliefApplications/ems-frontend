@@ -1402,9 +1402,6 @@ export class CoreGridComponent
 
     // Builds the request body with all the useful data
     const currentLayout = this.layout;
-    console.log(
-      Object.values(currentLayout.fields).filter((x: any) => !x.hidden)
-    );
     const body = {
       filter:
         e.records === 'selected'
