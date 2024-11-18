@@ -1228,6 +1228,10 @@
 				"select": "Select a dataset",
 				"title": "Resource"
 			},
+			"displayField": {
+				"separator": "Value separator",
+				"text": "Grid display field"
+			},
 			"errors": {
 				"field": {
 					"invalid": "Invalid field. Please click to remove."
@@ -1305,6 +1309,7 @@
 				"title": "Style"
 			},
 			"tooltip": {
+				"displayField": "Once a text field is selected, grids will display the values of this field, rather than showing the count of items",
 				"filter": {
 					"date": {
 						"useExpression": "Use Expression editor",

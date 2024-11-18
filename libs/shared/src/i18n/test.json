@@ -1228,6 +1228,10 @@
 				"select": "******",
 				"title": "******"
 			},
+			"displayField": {
+				"separator": "******",
+				"text": "******"
+			},
 			"errors": {
 				"field": {
 					"invalid": "******"
@@ -1305,6 +1309,7 @@
 				"title": "******"
 			},
 			"tooltip": {
+				"displayField": "******",
 				"filter": {
 					"date": {
 						"useExpression": "******",
