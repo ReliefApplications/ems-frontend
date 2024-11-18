@@ -1,3 +1,10 @@
+# [2.17.0-beta.17](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.16...v2.17.0-beta.17) (2024-11-18)
+
+
+### Features
+
+* add option to use a display field for records elements of queries ([#2630](https://github.com/ReliefApplications/ems-frontend/issues/2630)) ([27a7d90](https://github.com/ReliefApplications/ems-frontend/commit/27a7d90288c004d7a909d837c526913663cb798d)), closes [AB#103431](https://github.com/AB/issues/103431)
+
 # [2.17.0-beta.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.15...v2.17.0-beta.16) (2024-11-13)
 
 
