@@ -330,7 +330,7 @@ export class DatasetFilterComponent
         this.emailService.disableSaveAndProceed.next(false);
         this.emailService.disableSaveAsDraft.next(false);
       }
-      this.getDataSet('preview');
+      this.currentTabIndex !== newIndex ? this.getDataSet('preview') : '';
     } else if (newIndex >= 0) {
       if (isValid) {
         this.emailService.disableSaveAndProceed.next(false);
