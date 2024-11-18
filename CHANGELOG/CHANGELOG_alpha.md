@@ -1,3 +1,10 @@
+# [2.17.0-alpha.8](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.7...v2.17.0-alpha.8) (2024-11-18)
+
+
+### Features
+
+* prevent map auto jump when close to bounds, and allow map to duplicate on left & right ([#2698](https://github.com/ReliefApplications/ems-frontend/issues/2698)) ([44b4d77](https://github.com/ReliefApplications/ems-frontend/commit/44b4d774fb141210515c95229a78d1a01a000604)), closes [Ab#105504](https://github.com/Ab/issues/105504)
+
 # [2.17.0-alpha.7](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.6...v2.17.0-alpha.7) (2024-11-18)
 
 
