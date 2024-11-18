@@ -302,6 +302,7 @@ export class GridService {
   public async populateMetaFields(metaFields: any): Promise<void> {
     const promises: Promise<any>[] = [];
     const cachedKeys = await getListOfKeys();
+    const allChoises: any = {};
     /**
      * Fetches choices, cache them and set meta.
      *
@@ -339,6 +340,10 @@ export class GridService {
               ...meta,
               choices,
             };
+            allChoises[fieldName] = choices.reduce((start: any, next: any) => {
+              start[next.value] = next.text;
+              return start;
+            }, {});
           });
       }
       return Promise.resolve();
@@ -367,6 +372,13 @@ export class GridService {
                     ...meta,
                     choices,
                   };
+                  allChoises[fieldName] = choices.reduce(
+                    (start: any, next: any) => {
+                      start[next.value] = next.text;
+                      return start;
+                    },
+                    {}
+                  );
                   return;
                 }
               }
@@ -390,6 +402,7 @@ export class GridService {
       }
     }
     await Promise.all(promises);
+    await setWithExpiry('allChoice', allChoises);
   }
 
   /**

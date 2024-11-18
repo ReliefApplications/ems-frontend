@@ -19,6 +19,7 @@ import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
 import { FormArray } from '@angular/forms';
 import { cloneDeep } from 'lodash';
+import { getWithExpiry } from '../../../../utils/cache-with-expiry';
 /**
  * The preview component is used to display the email layout using user input from layout component.
  */
@@ -331,6 +332,25 @@ export class PreviewComponent
       this.emailService.loading = true; // Show spinner
       // if (!this.emailService.datasetsForm.value.emailLayout) {
       await this.emailService.patchEmailLayout();
+
+      const allChoises = await getWithExpiry('allChoice');
+
+      if (previewData?.dataList && Array.isArray(previewData.dataList)) {
+        for (const record of previewData.dataList) {
+          const recordKey = Object.keys(record);
+          for (const questionData of recordKey) {
+            if (allChoises[questionData]) {
+              const regionValue = allChoises[questionData];
+              if (record[questionData] && Array.isArray(record[questionData])) {
+                record[questionData] = record[questionData].map(
+                  (data: any) => regionValue[data] || data
+                );
+              }
+            }
+          }
+        }
+      }
+
       const emailData: any = {
         emailLayout: this.emailService.emailLayout,
         tableInfo: previewData?.datasetFieldsObj
