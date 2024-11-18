@@ -1,11 +1,5 @@
 import { Step } from './step.model';
 import { Page } from './page.model';
-import { ChartSettingsComponent } from '../components/widgets/chart-settings/chart-settings.component';
-import { GridSettingsComponent } from '../components/widgets/grid-settings/grid-settings.component';
-import { MapSettingsComponent } from '../components/widgets/map-settings/map-settings.component';
-import { EditorSettingsComponent } from '../components/widgets/editor-settings/editor-settings.component';
-import { SummaryCardSettingsComponent } from '../components/widgets/summary-card-settings/summary-card-settings.component';
-import { TabsSettingsComponent } from '../components/widgets/tabs-settings/tabs-settings.component';
 import { EventEmitter } from '@angular/core';
 import { ButtonActionT } from '../components/button-action/button-action-type';
 
@@ -45,8 +39,42 @@ export abstract class WidgetSettings<T extends (...args: any[]) => any> {
   public buildSettingsForm!: () => void;
 }
 
+/** Available widget type component */
+export type WidgetTypeComponent =
+  | 'chart'
+  | 'grid'
+  | 'map'
+  | 'editor'
+  | 'summaryCard'
+  | 'tabs';
+
+/**
+ * Widget type interface
+ *
+ * @property {string} id widget type identifier
+ * @property {string} name display name
+ * @property {string} icon display icon
+ * @property {string} color display color
+ * @property {any} settings default settings
+ * @property {number} cols number of default columns
+ * @property {number} rows number of default rows
+ * @property {number} minItemRows minimum number of rows the widget should use
+ * @property {WidgetTypeComponent} component Angular component identifier
+ */
+export interface WidgetType {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  settings: any;
+  cols: number;
+  rows: number;
+  minItemRows: number;
+  component: WidgetTypeComponent;
+}
+
 /** List of Widget types with their properties */
-export const WIDGET_TYPES = [
+export const WIDGET_TYPES: WidgetType[] = [
   {
     id: 'donut-chart',
     name: 'Donut chart',
@@ -62,7 +90,6 @@ export const WIDGET_TYPES = [
     rows: 3,
     minItemRows: 1,
     component: 'chart',
-    settingsTemplate: ChartSettingsComponent,
   },
   {
     id: 'column-chart',
@@ -79,7 +106,6 @@ export const WIDGET_TYPES = [
     rows: 3,
     minItemRows: 1,
     component: 'chart',
-    settingsTemplate: ChartSettingsComponent,
   },
   {
     id: 'line-chart',
@@ -96,7 +122,6 @@ export const WIDGET_TYPES = [
     rows: 3,
     minItemRows: 1,
     component: 'chart',
-    settingsTemplate: ChartSettingsComponent,
   },
   {
     id: 'pie-chart',
@@ -113,7 +138,6 @@ export const WIDGET_TYPES = [
     rows: 3,
     minItemRows: 1,
     component: 'chart',
-    settingsTemplate: ChartSettingsComponent,
   },
   {
     id: 'polar-chart',
@@ -130,7 +154,6 @@ export const WIDGET_TYPES = [
     rows: 3,
     minItemRows: 1,
     component: 'chart',
-    settingsTemplate: ChartSettingsComponent,
   },
   {
     id: 'bar-chart',
@@ -147,7 +170,6 @@ export const WIDGET_TYPES = [
     rows: 3,
     minItemRows: 1,
     component: 'chart',
-    settingsTemplate: ChartSettingsComponent,
   },
   {
     id: 'radar-chart',
@@ -164,7 +186,6 @@ export const WIDGET_TYPES = [
     rows: 3,
     minItemRows: 1,
     component: 'chart',
-    settingsTemplate: ChartSettingsComponent,
   },
   {
     id: 'grid',
@@ -185,7 +206,6 @@ export const WIDGET_TYPES = [
     rows: 4,
     minItemRows: 2,
     component: 'grid',
-    settingsTemplate: GridSettingsComponent,
   },
   {
     id: 'map',
@@ -199,7 +219,6 @@ export const WIDGET_TYPES = [
     rows: 4,
     minItemRows: 1,
     component: 'map',
-    settingsTemplate: MapSettingsComponent,
   },
   {
     id: 'text',
@@ -214,7 +233,6 @@ export const WIDGET_TYPES = [
     rows: 3,
     minItemRows: 1,
     component: 'editor',
-    settingsTemplate: EditorSettingsComponent,
   },
   {
     id: 'summaryCard',
@@ -226,7 +244,6 @@ export const WIDGET_TYPES = [
     rows: 3,
     minItemRows: 1,
     component: 'summaryCard',
-    settingsTemplate: SummaryCardSettingsComponent,
   },
   {
     id: 'tabs',
@@ -238,7 +255,6 @@ export const WIDGET_TYPES = [
     rows: 4,
     minItemRows: 2,
     component: 'tabs',
-    settingsTemplate: TabsSettingsComponent,
   },
 ];
 

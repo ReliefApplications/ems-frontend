@@ -81,17 +81,20 @@ export const EDIT_PAGE = gql`
     $icon: String
     $permissions: JSON
     $visible: Boolean
+    $showName: Boolean
   ) {
     editPage(
       id: $id
       name: $name
       icon: $icon
+      showName: $showName
       permissions: $permissions
       visible: $visible
     ) {
       id
       name
       icon
+      showName
       visible
       permissions {
         canSee {
@@ -416,6 +419,7 @@ export const EDIT_APPLICATION = gql`
       pages {
         id
         icon
+        showName
         name
         visible
         createdAt

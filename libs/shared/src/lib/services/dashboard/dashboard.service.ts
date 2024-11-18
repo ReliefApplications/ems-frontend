@@ -23,7 +23,7 @@ import { GraphQLError } from 'graphql';
   providedIn: 'root',
 })
 export class DashboardService {
-  /** List of available widgets */
+  /** Available widgets */
   public availableWidgets = WIDGET_TYPES;
   /** If dashboard content should be updated and empty widgets hidden */
   public widgetContentRefreshed = new BehaviorSubject<any>(null);
@@ -51,7 +51,7 @@ export class DashboardService {
     private snackBar: SnackbarService,
     private translate: TranslateService
   ) {
-    this.availableWidgets = WIDGET_TYPES.filter((widget) =>
+    this.availableWidgets = this.availableWidgets.filter((widget) =>
       get(environment, 'availableWidgets', []).includes(widget.id)
     );
   }
@@ -84,21 +84,6 @@ export class DashboardService {
         })
       );
     }
-  }
-
-  /**
-   * Finds the settings component from the widget.
-   *
-   * @param widget widget to get settings of.
-   * @returns Widget settings template.
-   */
-  public findSettingsTemplate(widget: any): any {
-    const availableWidget = this.availableWidgets.find(
-      (x) => x.component === widget.component
-    );
-    return availableWidget && availableWidget.settingsTemplate
-      ? availableWidget.settingsTemplate
-      : null;
   }
 
   /**

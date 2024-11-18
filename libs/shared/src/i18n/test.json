@@ -664,6 +664,7 @@
 				"settings": {
 					"actions": "******",
 					"selectIcon": "******",
+					"showName": "******",
 					"tooltip": {
 						"autoSave": "******"
 					}
