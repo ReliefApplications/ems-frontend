@@ -610,6 +610,16 @@
 			}
 		},
 		"application": {
+			"activities": {
+				"downloadXlsx": "Download XLSX",
+				"empty": "No activities available",
+				"eventType": "Event type",
+				"few": "Activities",
+				"metadata": "Metadata",
+				"one": "Activity",
+				"url": "URL",
+				"userId": "User ID"
+			},
 			"archive": {
 				"autoDeletedAt": "Automatically removed on",
 				"name": "Name"

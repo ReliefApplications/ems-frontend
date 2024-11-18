@@ -610,6 +610,16 @@
 			}
 		},
 		"application": {
+			"activities": {
+				"downloadXlsx": "Download XLSX",
+				"empty": "Aucune activité n'est disponible.",
+				"eventType": "Type d'événement",
+				"few": "Activités",
+				"metadata": "Métadonnées",
+				"one": "Activité",
+				"url": "URL",
+				"userId": "Identifiant de l'utilisateur"
+			},
 			"archive": {
 				"autoDeletedAt": "Date de suppression automatique",
 				"name": "Nom"

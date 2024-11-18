@@ -610,6 +610,16 @@
 			}
 		},
 		"application": {
+			"activities": {
+				"downloadXlsx": "******",
+				"empty": "******",
+				"eventType": "******",
+				"few": "******",
+				"metadata": "******",
+				"one": "******",
+				"url": "******",
+				"userId": "******"
+			},
 			"archive": {
 				"autoDeletedAt": "******",
 				"name": "******"

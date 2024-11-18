@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { LIST_ACTIVITIES } from './graphql/queries';
 import { OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-// import { Activity } from './models/activity';
+import { ActivityLog } from '../../models/activity-log.model';
 
 /**
  * Shared activity log component.
@@ -16,7 +16,8 @@ export class ActivityLogComponent implements OnInit {
   /**
    * List of activities to display.
    */
-  activitiesLogs: any[] = [];
+  activitiesLogs: ActivityLog[] = [];
+  displayedColumns: string[] = ['userId', 'eventType', 'url'];
 
   /**
    * Constructor that injects the Apollo service.
@@ -31,12 +32,16 @@ export class ActivityLogComponent implements OnInit {
   ngOnInit(): void {
     // Use Apollo service to watch the LIST_ACTIVITIES query
     this.apollo
-      .watchQuery<{ activityLogs: any[] }>({
+      .watchQuery<{ activityLogs: ActivityLog[] }>({
         query: LIST_ACTIVITIES,
       })
       .valueChanges.subscribe((result) => {
         // Update the activities array with the fetched data
         this.activitiesLogs = result.data.activityLogs;
       });
+  }
+
+  download() {
+    console.log('file downloaded');
   }
 }
