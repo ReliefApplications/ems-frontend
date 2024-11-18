@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { DashboardService } from '../../../services/dashboard/dashboard.service';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Dialog } from '@angular/cdk/dialog';
@@ -38,13 +37,11 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
    * actions for that widget.
    *
    * @param dialog Dialog service
-   * @param dashboardService Dashboard service
    * @param confirmService Confirm service
    * @param translate Translation service
    */
   constructor(
     public dialog: Dialog,
-    private dashboardService: DashboardService,
     private confirmService: ConfirmService,
     private translate: TranslateService
   ) {
@@ -70,7 +67,6 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
             ...this.widget,
             settings: this.widget.originalSettings || this.widget.settings,
           },
-          template: this.dashboardService.findSettingsTemplate(this.widget),
         },
       });
       dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {

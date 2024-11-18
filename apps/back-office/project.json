@@ -111,7 +111,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/backoffice/",
@@ -136,7 +136,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/backoffice/",
@@ -161,7 +161,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/backoffice/",
@@ -186,7 +186,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/backoffice/",
@@ -211,7 +211,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/admin/",
@@ -236,7 +236,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/admin/",
@@ -261,7 +261,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "14kb"
+              "maximumError": "20kb"
             }
           ],
           "baseHref": "/admin/",

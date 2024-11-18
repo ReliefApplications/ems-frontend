@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
 import { SortingSettingsComponent } from './sorting-settings.component';
 import {
   ButtonModule,
@@ -33,7 +32,6 @@ import { EmptyModule } from '../../../ui/empty/empty.module';
     FormsModule,
     ReactiveFormsModule,
     ButtonModule,
-    BrowserModule,
     TooltipModule,
     CdkTableModule,
     FormWrapperModule,
