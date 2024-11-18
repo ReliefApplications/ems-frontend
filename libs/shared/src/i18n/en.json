@@ -1228,6 +1228,10 @@
 				"select": "Select a dataset",
 				"title": "Resource"
 			},
+			"displayField": {
+				"separator": "Value separator",
+				"text": "Grid display field"
+			},
 			"errors": {
 				"field": {
 					"invalid": "Invalid field. Please click to remove."
@@ -1305,6 +1309,7 @@
 				"title": "Style"
 			},
 			"tooltip": {
+				"displayField": "Once a text field is selected, grids will display the values of this field, rather than showing the count of items",
 				"filter": {
 					"date": {
 						"useExpression": "Use Expression editor",
@@ -1759,8 +1764,20 @@
 					"confirmationMessage": "Some changes will be lost when closing edition. Do you want to continue?"
 				},
 				"editor": {
-					"recordSelection": "Record selection",
-					"title": "Editor"
+					"record": {
+						"choices": {
+							"expression": "Use an expression",
+							"manual": "Manual selection"
+						},
+						"expression": "Record value expression",
+						"title": "Record selection"
+					},
+					"title": "Editor",
+					"tooltip": {
+						"record": {
+							"expression": "You can input a static value, or use {{context}} notation to dynamically inject a value"
+						}
+					}
 				},
 				"grid": {
 					"actions": {

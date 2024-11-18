@@ -27,29 +27,6 @@ export class QueryBuilderComponent
   extends UnsubscribeComponent
   implements OnChanges
 {
-  // === QUERY BUILDER ===
-  /** Available queries observable */
-  public availableQueries?: Observable<any[]>;
-  /** Available fields */
-  public availableFields: any[] = [];
-
-  /** All queries array */
-  public allQueries: any[] = [];
-  /** Filtered queries array */
-  public filteredQueries: any[] = [];
-
-  /**
-   * Getter for the available scalar fields
-   *
-   * @returns the available scalar fields
-   */
-  get availableScalarFields(): any[] {
-    return this.availableFields.filter(
-      (x) => x.type.kind === 'SCALAR' || x.type.kind === 'OBJECT'
-    );
-    // return this.availableFields.filter((x) => x.type.kind === 'SCALAR');
-  }
-
   /** Form group */
   @Input() form?: FormGroup;
   /** CanExpand boolean control */
@@ -70,20 +47,37 @@ export class QueryBuilderComponent
   @Input() showSort = true;
   /** Toggles the column width parameter */
   @Input() showColumnWidth = false;
-
-  // Tab options
   /** Show limit option */
   @Input() showLimit = false;
-
-  // === FIELD EDITION ===
-  /** Is field boolean control */
-  public isField = false;
   /** Close field event emitter */
   @Output() closeField: EventEmitter<boolean> = new EventEmitter();
+  /** Is field boolean control */
+  public isField = false;
+  /** Available queries observable */
+  public availableQueries?: Observable<any[]>;
+  /** Available fields */
+  public availableFields: any[] = [];
+  /** All queries array */
+  public allQueries: any[] = [];
+  /** Filtered queries array */
+  public filteredQueries: any[] = [];
+  /** Selected text fields */
+  public selectedTextFields: any[] = [];
 
   /**
-   * The constructor function is a special function that is called when a new instance of the class is
-   * created.
+   * Getter for the available scalar fields
+   *
+   * @returns the available scalar fields
+   */
+  get availableScalarFields(): any[] {
+    return this.availableFields.filter(
+      (x) => x.type.kind === 'SCALAR' || x.type.kind === 'OBJECT'
+    );
+  }
+
+  /**
+   * Main query builder component.
+   * Enables admin user to build a query from GraphQL API schema.
    *
    * @param fb This is the Angular FormBuilder service.
    * @param queryBuilder This is the service that will be used to build the query.
@@ -116,6 +110,22 @@ export class QueryBuilderComponent
           'filter',
           createFilterGroup(this.form?.value.filter)
         );
+      }
+      if (this.form?.get('displayField')) {
+        // Build list of selected text fields on loading & form changes.
+        const setSelectedTextFields = () => {
+          const fields = this.form?.getRawValue().fields || [];
+          this.selectedTextFields = fields.filter((x: any) =>
+            ['String', 'ID'].includes(x.type)
+          );
+        };
+        setSelectedTextFields();
+        this.form
+          .get('fields')
+          ?.valueChanges.pipe(takeUntil(this.destroy$))
+          .subscribe(() => {
+            setSelectedTextFields();
+          });
       }
     } else {
       this.availableQueries = this.queryBuilder.availableQueries$;

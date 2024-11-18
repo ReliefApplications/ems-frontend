@@ -149,9 +149,10 @@
 </div>
 <!-- Edited field -->
 <div class="flex-1" *ngIf="fieldForm">
+  <!-- If scalar field -->
   <ng-container *ngIf="fieldForm.value.kind === 'SCALAR'">
     <form [formGroup]="fieldForm" class="p-4 rounded-lg border border-gray-300">
-      <div class="flex gap-2">
+      <div class="flex items-end gap-2 mb-4">
         <!-- Go back to list of fields -->
         <ui-button
           [isIcon]="true"
@@ -159,21 +160,28 @@
           (click)="onCloseField()"
           [uiTooltip]="'common.back' | translate"
         ></ui-button>
-        <!-- Field name (static) -->
-        <div uiFormFieldDirective>
-          <label>{{ 'models.form.field.name' | translate }}</label>
-          <input formControlName="name" type="text" [disabled]="true" />
-        </div>
-        <!-- Field label -->
-        <div uiFormFieldDirective>
-          <label>{{ 'models.form.field.label' | translate }}</label>
-          <input formControlName="label" type="text" />
-        </div>
-        <div *ngIf="showColumnWidth" uiFormFieldDirective>
-          <label>
-            {{ 'components.queryBuilder.fields.column' | translate }}
-          </label>
-          <input formControlName="width" type="number" min="0" />
+        <div class="flex flex-wrap gap-2">
+          <!-- Field name (static) -->
+          <div uiFormFieldDirective [defaultMargin]="false">
+            <label>{{ 'models.form.field.name' | translate }}</label>
+            <input formControlName="name" type="text" [disabled]="true" />
+          </div>
+          <!-- Displayed label -->
+          <div uiFormFieldDirective [defaultMargin]="false">
+            <label>{{ 'models.form.field.label' | translate }}</label>
+            <input formControlName="label" type="text" />
+          </div>
+          <!-- Column width -->
+          <div
+            *ngIf="showColumnWidth"
+            uiFormFieldDirective
+            [defaultMargin]="false"
+          >
+            <label>
+              {{ 'components.queryBuilder.fields.column' | translate }}
+            </label>
+            <input formControlName="width" type="number" min="0" />
+          </div>
         </div>
       </div>
       <!-- Display format -->
@@ -196,6 +204,7 @@
       </div>
     </form>
   </ng-container>
+  <!-- If not scalar field, display child template -->
   <ng-container
     *ngIf="fieldForm.value.kind !== 'SCALAR'"
     [ngTemplateOutlet]="childTemplate"

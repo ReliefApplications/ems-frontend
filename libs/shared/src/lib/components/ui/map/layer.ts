@@ -29,6 +29,7 @@ import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
 import { MapLayersService } from '../../../services/map/map-layers.service';
 import { BehaviorSubject } from 'rxjs';
 import centroid from '@turf/centroid';
+import { coordEach } from '@turf/meta';
 import { Injector, Renderer2, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import {
@@ -631,7 +632,7 @@ export class Layer implements LayerModel {
     };
 
     switch (this.type) {
-      case 'GroupLayer':
+      case 'GroupLayer': {
         const childrenIds = this.getChildren();
         const layerPromises = childrenIds.map((layer) => {
           return this.layerService.createLayersFromId(
@@ -667,12 +668,14 @@ export class Layer implements LayerModel {
           return l;
         };
         return this.updateLayerContextInformation(layer);
-
-      default:
+      }
+      // Single layer
+      default: {
         switch (
           get(this.layerDefinition, 'drawingInfo.renderer.type', 'simple')
         ) {
-          case 'heatmap':
+          // Heatmap
+          case 'heatmap': {
             // check data type
             if (data.type !== 'FeatureCollection') {
               throw new Error(
@@ -696,9 +699,13 @@ export class Layer implements LayerModel {
                   const long = parseFloat(get(feature, 'coordinates[0]'));
                   if (!isNaN(lat) && !isNaN(long)) {
                     if (valueField) {
+                      heatArray.push([lat, long - 360, intensity(feature)]);
                       heatArray.push([lat, long, intensity(feature)]);
+                      heatArray.push([lat, long + 360, intensity(feature)]);
                     } else {
+                      heatArray.push([lat, long - 360]);
                       heatArray.push([lat, long]);
+                      heatArray.push([lat, long + 360]);
                     }
                   }
                   break;
@@ -712,9 +719,13 @@ export class Layer implements LayerModel {
                   );
                   if (!isNaN(lat) && !isNaN(long)) {
                     if (valueField) {
+                      heatArray.push([lat, long - 360, intensity(feature)]);
                       heatArray.push([lat, long, intensity(feature)]);
+                      heatArray.push([lat, long + 360, intensity(feature)]);
                     } else {
+                      heatArray.push([lat, long - 360]);
                       heatArray.push([lat, long]);
+                      heatArray.push([lat, long + 360]);
                     }
                   }
                   break;
@@ -825,9 +836,12 @@ export class Layer implements LayerModel {
               return l;
             };
             return this.updateLayerContextInformation(layer);
-          default:
+          }
+          // Cluster & everything else
+          default: {
             switch (get(this.layerDefinition, 'featureReduction.type')) {
-              case 'cluster':
+              // Cluster
+              case 'cluster': {
                 const clusterSymbol: LayerSymbol = get(
                   this.layerDefinition,
                   'featureReduction.drawingInfo.renderer.symbol',
@@ -899,7 +913,23 @@ export class Layer implements LayerModel {
                   );
                 });
 
-                const clusterLayer = L.geoJSON(data, geoJSONopts);
+                const leftData = JSON.parse(JSON.stringify(data));
+                coordEach(leftData, (coord) => {
+                  coord[0] += -360;
+                });
+
+                const rightData = JSON.parse(JSON.stringify(data));
+                coordEach(rightData, (coord) => {
+                  coord[0] += 360;
+                });
+
+                const clusterLayer = L.geoJSON(
+                  {
+                    type: 'FeatureCollection',
+                    features: [leftData, data, rightData],
+                  } as any,
+                  geoJSONopts
+                );
 
                 clusterLayer.onAdd = (map: L.Map) => {
                   this.updateMapPanesStatus(map);
@@ -908,14 +938,35 @@ export class Layer implements LayerModel {
                   return l;
                 };
                 clusterLayer.onRemove = (map: L.Map) => {
-                  const l = L.GeoJSON.prototype.onRemove.call(layer, map);
+                  const l = L.GeoJSON.prototype.onRemove.call(
+                    clusterLayer,
+                    map
+                  );
                   this.onRemoveLayer(map, clusterLayer);
                   return l;
                 };
                 clusterGroup.addLayer(clusterLayer);
                 return this.updateLayerContextInformation(clusterGroup);
-              default:
-                const layer = L.geoJSON(data, geoJSONopts);
+              }
+              // Everything else
+              default: {
+                const leftData = JSON.parse(JSON.stringify(data));
+                coordEach(leftData, (coord) => {
+                  coord[0] += -360;
+                });
+
+                const rightData = JSON.parse(JSON.stringify(data));
+                coordEach(rightData, (coord) => {
+                  coord[0] += 360;
+                });
+
+                const layer = L.geoJSON(
+                  {
+                    type: 'FeatureCollection',
+                    features: [leftData, data, rightData],
+                  } as any,
+                  geoJSONopts
+                );
 
                 layer.onAdd = (map: L.Map) => {
                   this.updateMapPanesStatus(map);
@@ -929,8 +980,11 @@ export class Layer implements LayerModel {
                   return l;
                 };
                 return this.updateLayerContextInformation(layer);
+              }
             }
+          }
         }
+      }
     }
   }
 

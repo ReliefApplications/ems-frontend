@@ -788,6 +788,17 @@ export class HtmlParserService {
    * @returns Formatted field value
    */
   public applyLayoutFormat(value: any, field: any): any {
+    if (field.meta?.type === 'records') {
+      // If using a display field, build a list of separated values
+      if (field.displayField && isArray(value)) {
+        return value
+          .map((x) => get(x, field.displayField))
+          .filter((x) => x)
+          .join(`${field.separator} `);
+      } else {
+        return value;
+      }
+    }
     // Get choices from field
     const options = field.options ?? field.meta?.choices;
     if (options) {

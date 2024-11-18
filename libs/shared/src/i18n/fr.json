@@ -1228,6 +1228,10 @@
 				"select": "Sélectionner un jeu de données",
 				"title": "Ressource"
 			},
+			"displayField": {
+				"separator": "Séparateur de valeurs",
+				"text": "Champ d'affichage"
+			},
 			"errors": {
 				"field": {
 					"invalid": "Champ invalide. Veuillez cliquer pour le retirer."
@@ -1305,6 +1309,7 @@
 				"title": "Style"
 			},
 			"tooltip": {
+				"displayField": "Si un champ est sélectionné, les grilles afficheront les valeurs de ce champ, à la place du nombre d'éléments liés",
 				"filter": {
 					"date": {
 						"useExpression": "Utiliser une expression",
@@ -1759,8 +1764,20 @@
 					"confirmationMessage": "Vos changements vont être perdus si vous fermez la fenêtre d'édition. Voulez-vous continuer ?"
 				},
 				"editor": {
-					"recordSelection": "Sélection d'enregistrement",
-					"title": "Éditeur"
+					"record": {
+						"choices": {
+							"expression": "Utiliser une expression",
+							"manual": "Sélection manuelle"
+						},
+						"expression": "Expression",
+						"title": "Sélection d'enregistrement"
+					},
+					"title": "Éditeur",
+					"tooltip": {
+						"record": {
+							"expression": "Vous pouvez utiliser une valeur statique, ou utiliser la notation {{context}} afin d'injecter une valeur dynamiquement"
+						}
+					}
 				},
 				"grid": {
 					"actions": {
