@@ -1402,6 +1402,9 @@ export class CoreGridComponent
 
     // Builds the request body with all the useful data
     const currentLayout = this.layout;
+    console.log(
+      Object.values(currentLayout.fields).filter((x: any) => !x.hidden)
+    );
     const body = {
       filter:
         e.records === 'selected'
@@ -1433,6 +1436,10 @@ export class CoreGridComponent
                 name: y.name,
                 title: y.title,
               })),
+            ...(x.displayField && {
+              displayField: x.displayField,
+              separator: x.separator,
+            }),
           })),
       }),
       // we export ALL fields of the grid ( including hidden columns )
@@ -1445,6 +1452,10 @@ export class CoreGridComponent
             subFields: x.subFields.map((y: any) => ({
               name: y.name,
               title: y.title,
+              ...(y.displayField && {
+                displayField: y.displayField,
+                separator: y.separator,
+              }),
             })),
           })),
       }),
