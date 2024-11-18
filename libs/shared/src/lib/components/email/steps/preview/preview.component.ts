@@ -333,14 +333,14 @@ export class PreviewComponent
       // if (!this.emailService.datasetsForm.value.emailLayout) {
       await this.emailService.patchEmailLayout();
 
-      const allChoises = await getWithExpiry('allChoice');
+      const allChoices = await getWithExpiry('allChoice');
 
       if (previewData?.dataList && Array.isArray(previewData.dataList)) {
         for (const record of previewData.dataList) {
           const recordKey = Object.keys(record);
           for (const questionData of recordKey) {
-            if (allChoises[questionData]) {
-              const regionValue = allChoises[questionData];
+            if (allChoices[questionData]) {
+              const regionValue = allChoices[questionData];
               if (record[questionData] && Array.isArray(record[questionData])) {
                 record[questionData] = record[questionData].map(
                   (data: any) => regionValue[data] || data
