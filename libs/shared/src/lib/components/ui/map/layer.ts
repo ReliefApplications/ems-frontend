@@ -29,6 +29,7 @@ import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
 import { MapLayersService } from '../../../services/map/map-layers.service';
 import { BehaviorSubject } from 'rxjs';
 import centroid from '@turf/centroid';
+import { coordEach } from '@turf/meta';
 import { Injector, Renderer2, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import {
@@ -915,7 +916,23 @@ export class Layer implements LayerModel {
                 clusterGroup.addLayer(clusterLayer);
                 return this.updateLayerContextInformation(clusterGroup);
               default:
-                const layer = L.geoJSON(data, geoJSONopts);
+                const leftData = JSON.parse(JSON.stringify(data));
+                coordEach(leftData, (coord) => {
+                  coord[0] += -360;
+                });
+
+                const rightData = JSON.parse(JSON.stringify(data));
+                coordEach(rightData, (coord) => {
+                  coord[0] += 360;
+                });
+
+                const layer = L.geoJSON(
+                  {
+                    type: 'FeatureCollection',
+                    features: [leftData, data, rightData],
+                  } as any,
+                  geoJSONopts
+                );
 
                 layer.onAdd = (map: L.Map) => {
                   this.updateMapPanesStatus(map);
