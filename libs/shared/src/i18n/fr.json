@@ -4,6 +4,11 @@
 		"accessDenied": "Accès refusé",
 		"account": "Compte",
 		"actions": "Actions",
+		"activity": {
+			"few": "Activités",
+			"none": "Aucune activité",
+			"one": "Activité"
+		},
 		"add": "Ajouter",
 		"adminField": "Champ administrateur",
 		"aggregation": {
@@ -39,11 +44,6 @@
 			},
 			"none": "Aucun élément archivé",
 			"restore": "Restaurer"
-		},
-		"activity": {
-			"few": "Activités",
-			"none": "Aucune activité",
-			"one": "Activité"
 		},
 		"ariaLabel": {
 			"search": {

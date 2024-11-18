@@ -4,6 +4,11 @@
 		"accessDenied": "******",
 		"account": "******",
 		"actions": "******",
+		"activity": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"add": "******",
 		"adminField": "******",
 		"aggregation": {

@@ -5,7 +5,7 @@ import { gql } from 'apollo-angular';
  */
 export const LIST_ACTIVITIES = gql`
   query ListActivities {
-    activity {
+    activityLogs {
       userId
       eventType
       url

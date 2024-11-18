@@ -16,7 +16,7 @@ export class ActivityLogComponent implements OnInit {
   /**
    * List of activities to display.
    */
-  activities: any[] = [];
+  activitiesLogs: any[] = [];
 
   /**
    * Constructor that injects the Apollo service.
@@ -31,13 +31,12 @@ export class ActivityLogComponent implements OnInit {
   ngOnInit(): void {
     // Use Apollo service to watch the LIST_ACTIVITIES query
     this.apollo
-      .watchQuery<{ activity: any[] }>({
+      .watchQuery<{ activityLogs: any[] }>({
         query: LIST_ACTIVITIES,
       })
       .valueChanges.subscribe((result) => {
         // Update the activities array with the fetched data
-        this.activities = result.data.activity;
-        console.log('Activities:', result);
+        this.activitiesLogs = result.data.activityLogs;
       });
   }
 }

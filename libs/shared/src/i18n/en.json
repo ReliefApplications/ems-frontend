@@ -4,6 +4,11 @@
 		"accessDenied": "Access denied",
 		"account": "Account",
 		"actions": "Actions",
+		"activity": {
+			"few": "Activities",
+			"none": "No activity",
+			"one": "Activity"
+		},
 		"add": "Add",
 		"adminField": "Admin field",
 		"aggregation": {
@@ -39,11 +44,6 @@
 			},
 			"none": "No archived items",
 			"restore": "Restore"
-		},
-		"activity": {
-			"few": "Activities",
-			"none": "No activity",
-			"one": "Activity"
 		},
 		"ariaLabel": {
 			"search": {
