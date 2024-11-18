@@ -102,6 +102,13 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
     return this.settings.aggregations || [];
   }
 
+  /** @returns Record id, manual selection or based on expression */
+  get recordId() {
+    return this.settings.record
+      ? this.settings.record
+      : this.contextService.replaceContext(this.settings.recordExpression);
+  }
+
   /**
    * Listen to click events from host element, and trigger any action attached to the content clicked in the editor
    *
@@ -310,7 +317,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
         });
       }, 500);
     };
-    if (this.settings.record && this.settings.resource) {
+    if (this.recordId && this.settings.resource) {
       from(
         Promise.all([
           new Promise<void>((resolve) => {
@@ -607,7 +614,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
                 {
                   field: 'id',
                   operator: 'eq',
-                  value: this.settings.record,
+                  value: this.recordId,
                 },
               ],
             },
@@ -627,6 +634,10 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
               this.fields = this.fields.map((field) => {
                 //add shape for columns and matrices
                 const metaData = metaFields[field.name];
+                field = {
+                  ...field,
+                  meta: metaData,
+                };
                 if (metaData && (metaData.columns || metaData.rows)) {
                   return {
                     ...field,

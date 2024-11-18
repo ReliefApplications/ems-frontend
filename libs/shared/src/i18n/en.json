@@ -1759,8 +1759,20 @@
 					"confirmationMessage": "Some changes will be lost when closing edition. Do you want to continue?"
 				},
 				"editor": {
-					"recordSelection": "Record selection",
-					"title": "Editor"
+					"record": {
+						"choices": {
+							"expression": "Use an expression",
+							"manual": "Manual selection"
+						},
+						"expression": "Record value expression",
+						"title": "Record selection"
+					},
+					"title": "Editor",
+					"tooltip": {
+						"record": {
+							"expression": "You can input a static value, or use {{context}} notation to dynamically inject a value"
+						}
+					}
 				},
 				"grid": {
 					"actions": {

@@ -688,9 +688,10 @@
       >
         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
           <div class="textbox-container" [style]="dataItem.style[field.name]">
-            <div class="truncate">
-              {{ dataItem.text[field.name] | sharedStripHtml }}
-            </div>
+            <div
+              class="truncate"
+              [innerHTML]="dataItem.text[field.name] | sharedStripHtml"
+            ></div>
             <button
               *ngIf="dataItem.text[field.name]"
               kendoButton
