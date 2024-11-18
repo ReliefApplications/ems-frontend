@@ -44,8 +44,12 @@
     }}</span>
   </div>
 </ng-template>
-<div class="flex justify-end mt-4">
-    <button (click)="download()" class="btn btn-primary">
-        {{ 'components.application.activities.downloadXlsx' | translate }}
-    </button>
+<div>
+  <ui-button
+    category="secondary"
+    variant="primary"
+    (click)="downloadActivities()"
+  >
+    {{ 'components.application.activities.downloadXlsx' | translate }}
+  </ui-button>
 </div>
