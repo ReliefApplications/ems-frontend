@@ -1449,6 +1449,10 @@ export class CoreGridComponent
                 name: y.name,
                 title: y.title,
               })),
+            ...(x.displayField && {
+              displayField: x.displayField,
+              separator: x.separator,
+            }),
           })),
       }),
       // we export ALL fields of the grid ( including hidden columns )
@@ -1461,6 +1465,10 @@ export class CoreGridComponent
             subFields: x.subFields.map((y: any) => ({
               name: y.name,
               title: y.title,
+              ...(y.displayField && {
+                displayField: y.displayField,
+                separator: y.separator,
+              }),
             })),
           })),
       }),
