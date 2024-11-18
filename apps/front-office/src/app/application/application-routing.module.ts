@@ -153,6 +153,13 @@ export const routes: Routes = [
               },
             },
           },
+          {
+            path: 'activity-log',
+            loadChildren: () =>
+              import('./pages/activity-log/activity-log.module').then(
+                (m) => m.ActivityLogModule
+              ),
+          },
         ],
       },
     ],

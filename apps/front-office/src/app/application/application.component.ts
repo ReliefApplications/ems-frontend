@@ -287,6 +287,11 @@ export class ApplicationComponent
         legacy: true,
       });
     }
+    this.adminNavItems.push({
+      name: this.translate.instant('common.activity.few'),
+      path: './settings/activity-log',
+      icon: 'timeline',
+    });
   }
 
   override ngOnDestroy(): void {
