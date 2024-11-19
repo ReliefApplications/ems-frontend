@@ -235,11 +235,18 @@ export class HtmlParserService {
       signature: 'date( value ; format )',
       call: (value, format) => {
         try {
+          const spanRegex = /<span[^>]*>(.*?)<\/span>/gi;
+          const spanContent = spanRegex.exec(value)?.[1]?.trim();
+          const valueToFormat = !isNil(spanContent) ? spanContent : value;
           const formattedDate = this.datePipe.transform(
-            new Date(value),
+            new Date(valueToFormat),
             format
           ) as string;
-          return formattedDate || '';
+          // Replace original value inside the span tag with the formatted value
+          if (!isNil(spanContent)) {
+            value = value.replace(spanContent, formattedDate || '');
+          }
+          return (!isNil(spanContent) ? value : formattedDate) || '';
         } catch {
           return '';
         }
@@ -255,7 +262,7 @@ export class HtmlParserService {
    */
   private applyOperations(html: string): string {
     const regex = new RegExp(
-      `${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)${PLACEHOLDER_SUFFIX}`,
+      `${CALC_PREFIX}(\\w+)\\((.*?)\\)${PLACEHOLDER_SUFFIX}`,
       'gm'
     );
     let parsedHtml = html;
@@ -265,17 +272,18 @@ export class HtmlParserService {
       const calcFunc = get(this.calcFunctions, result[1]);
       if (calcFunc) {
         // get the arguments and clean the numbers to be parsed correctly
-        const args = result[2]
-          .split(';')
-          .map((arg) => {
-            /** Make sure that the new date case does not break any previous clean up */
-            return result?.[1] === 'date'
-              ? arg.trim()
-              : // Replace below replaces the space space between span and style property from arg as elements,
-                // breaking any style application from given element
-                arg.replace(/[\s,]/gm, '');
-          })
-          .filter((arg) => !!arg);
+        const args =
+          result[2]
+            .match(/(?:<[^>]+>|[^<;]+)+/g)
+            ?.map((arg) => {
+              /** Make sure that the new date case does not break any previous clean up */
+              return result?.[1] === 'date'
+                ? arg.trim()
+                : // Replace below replaces the space space between span and style property from arg as elements,
+                  // breaking any style application from given element
+                  arg.replace(/[\s,]/gm, '');
+            })
+            .filter((arg) => !!arg) || [];
         // apply the function
         let resultText;
         try {
@@ -475,7 +483,7 @@ export class HtmlParserService {
               convertedValue =
                 `<span style='${style}'>` +
                 this.applyLayoutFormat(
-                  new Date(value).toLocaleString().split(',')[0],
+                  new Date(value).toLocaleString('en').split(',')[0],
                   field
                 ) +
                 '</span>';
@@ -493,7 +501,7 @@ export class HtmlParserService {
               convertedValue =
                 `<span style='${style}'>` +
                 this.applyLayoutFormat(
-                  date.toLocaleString().split(',')[0] +
+                  date.toLocaleString('en').split(',')[0] +
                     ', ' +
                     hour +
                     ':' +
