@@ -125,7 +125,7 @@ export class FormHelpersService {
 
     const data = survey.data;
     const questionsToUpload = Object.keys(temporaryFilesStorage);
-    const filesToRemove: { question: string; file: File }[] = [];
+    const failedFilesToUpload: { question: string; file: File }[] = [];
     // Is using document management system
     const useDocumentManagement = !!this.environment.csApiUrl;
     for (const name of questionsToUpload) {
@@ -177,7 +177,7 @@ export class FormHelpersService {
                   });
                 }
               } catch (error) {
-                filesToRemove.push({ question: name, file });
+                failedFilesToUpload.push({ question: name, file });
               }
             }
           } else {
@@ -215,17 +215,11 @@ export class FormHelpersService {
         }
       }
     }
-    /** Remove any fail file uploads from the question data before updating survey */
-    for (let index = 0; index < filesToRemove.length; index++) {
-      const { question, file } = filesToRemove[index];
-      if (data[question]) {
-        const indexFile = data[question]?.findIndex(
-          (f: File) => f.name === file.name && f.type === file.type
-        );
-        if (indexFile !== -1) {
-          data[question].splice(indexFile, 1);
-        }
-      }
+    /** Throw error if any file upload has failed before updating survey */
+    if (failedFilesToUpload.length) {
+      await new Promise((resolve, reject) => {
+        reject(failedFilesToUpload);
+      });
     }
     survey.data = cloneDeep(data);
   }
@@ -311,12 +305,8 @@ export class FormHelpersService {
    * Create temporary records (from resource/s questions) of passed survey.
    *
    * @param survey Survey to get questions from
-   * @param formId Current form id
    */
-  public async createTemporaryRecords(
-    survey: SurveyModel,
-    formId: string
-  ): Promise<void> {
+  public async createTemporaryRecords(survey: SurveyModel): Promise<void> {
     const promises: Promise<any>[] = [];
     const questions = survey.getAllQuestions();
     const nestedRecordsToAdd: { draftIds: []; question: Question }[] = [];
@@ -353,19 +343,6 @@ export class FormHelpersService {
       for (const draftId of element.draftIds) {
         const data = element.question.draftData[draftId];
         const template = element.question.template;
-        /** If any file attached to the temporary record, first upload them before record creation */
-        if (!isNil(element.question.temporaryFilesStorage)) {
-          try {
-            await this.uploadFiles(
-              survey,
-              element.question.temporaryFilesStorage,
-              formId
-            );
-          } catch (error) {
-            /** If there is an error, remove the files from the question */
-            delete element.question.temporaryFilesStorage;
-          }
-        }
         promises.push(
           firstValueFrom(
             this.apollo.mutate<AddRecordMutationResponse>({

@@ -278,10 +278,7 @@ export class FormComponent
 
     this.formHelpersService.setEmptyQuestions(this.survey);
     // We wait for the resources questions to update their ids
-    await this.formHelpersService.createTemporaryRecords(
-      this.survey,
-      this.form?.id as string
-    );
+    await this.formHelpersService.createTemporaryRecords(this.survey);
     // If is an already saved record, edit it
     if (this.record || this.form.uniqueRecord) {
       const recordId = this.record

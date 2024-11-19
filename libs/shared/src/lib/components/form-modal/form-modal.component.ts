@@ -1,4 +1,5 @@
-import { Apollo } from 'apollo-angular';
+import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -8,15 +9,22 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { GET_RECORD_BY_ID, GET_FORM_BY_ID } from './graphql/queries';
-import { Form, FormQueryResponse } from '../../models/form.model';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
-  ConfirmDialogData,
-  ConfirmService,
-} from '../../services/confirm/confirm.service';
-import { SurveyModel } from 'survey-core';
+  ButtonModule,
+  DialogModule,
+  IconModule,
+  SnackbarService,
+  SpinnerModule,
+  TabsModule,
+} from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
+import isNil from 'lodash/isNil';
+import omitBy from 'lodash/omitBy';
+import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';
 import { SurveyModule } from 'survey-angular-ui';
+import { SurveyModel } from 'survey-core';
+import { Form, FormQueryResponse } from '../../models/form.model';
 import {
   AddRecordMutationResponse,
   EditRecordMutationResponse,
@@ -24,26 +32,21 @@ import {
   Record,
   RecordQueryResponse,
 } from '../../models/record.model';
-import { EDIT_RECORD, ADD_RECORD, EDIT_RECORDS } from './graphql/mutations';
-import addCustomFunctions from '../../utils/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
+import {
+  ConfirmDialogData,
+  ConfirmService,
+} from '../../services/confirm/confirm.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
-import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';
-import isNil from 'lodash/isNil';
-import omitBy from 'lodash/omitBy';
-import { TranslateService } from '@ngx-translate/core';
-import { cleanRecord } from '../../utils/cleanRecord';
-import { CommonModule } from '@angular/common';
-import { IconModule } from '@oort-front/ui';
-import { ButtonModule, SnackbarService, TabsModule } from '@oort-front/ui';
-import { RecordSummaryModule } from '../record-summary/record-summary.module';
-import { FormActionsModule } from '../form-actions/form-actions.module';
-import { TranslateModule } from '@ngx-translate/core';
-import { SpinnerModule } from '@oort-front/ui';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
-import { DialogModule } from '@oort-front/ui';
+import { cleanRecord } from '../../utils/cleanRecord';
+import addCustomFunctions from '../../utils/custom-functions';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
+import { FormActionsModule } from '../form-actions/form-actions.module';
+import { RecordSummaryModule } from '../record-summary/record-summary.module';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { ADD_RECORD, EDIT_RECORD, EDIT_RECORDS } from './graphql/mutations';
+import { GET_FORM_BY_ID, GET_RECORD_BY_ID } from './graphql/queries';
 
 /**
  * Interface of Dialog data.
@@ -324,13 +327,37 @@ export class FormModalComponent
   /**
    * Calls the complete method of the survey if no error.
    */
-  public submit(): void {
+  public async submit(): Promise<void> {
     this.saving = true;
-    if (!this.survey?.hasErrors()) {
+    let uploadErrors;
+    /** If any file attached, first upload them before record creation */
+    if (
+      !isNil(this.temporaryFilesStorage) &&
+      Object.keys(this.temporaryFilesStorage).length
+    ) {
+      try {
+        await this.formHelpersService.uploadFiles(
+          this.survey,
+          this.temporaryFilesStorage,
+          this.form?.id as string
+        );
+      } catch (errors) {
+        /** If there is any upload errors, save them for display */
+        uploadErrors = (errors as { question: string; file: File }[]).map(
+          (error) => {
+            return `${error.question}: ${error.file.name}`;
+          }
+        );
+      }
+    }
+    if (!this.survey?.hasErrors() && isNil(uploadErrors)) {
       this.survey?.completeLastPage();
     } else {
       this.snackBar.openSnackBar(
-        this.translate.instant('models.form.notifications.savingFailed'),
+        this.translate.instant('models.form.notifications.savingFailed') +
+          !isNil(uploadErrors)
+          ? '\n' + uploadErrors?.join('\n')
+          : '',
         { error: true }
       );
       this.saving = false;
@@ -372,21 +399,8 @@ export class FormModalComponent
    * @param survey current survey
    */
   public async onUpdate(survey: any): Promise<void> {
-    try {
-      await this.formHelpersService.uploadFiles(
-        survey,
-        this.temporaryFilesStorage,
-        this.form?.id
-      );
-    } catch {
-      this.saving = false;
-      return;
-    }
     // await Promise.allSettled(promises);
-    await this.formHelpersService.createTemporaryRecords(
-      survey,
-      this.form?.id as string
-    );
+    await this.formHelpersService.createTemporaryRecords(survey);
 
     if (this.data.recordId) {
       if (this.isMultiEdition) {

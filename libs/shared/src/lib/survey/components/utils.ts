@@ -168,8 +168,6 @@ export const buildAddButton = (
               ...question.draftData,
               [data.id]: data.data,
             };
-            /** Attach any temporaryFilesStorage for the draft record to be uploaded */
-            question.temporaryFilesStorage = result.temporaryFilesStorage;
             // TODO: call reload method
             // if (question.displayAsGrid && gridComponent) {
             //   gridComponent.availableRecords.push({

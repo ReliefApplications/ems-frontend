@@ -4,8 +4,6 @@ import { FormModalComponent } from '../form-modal/form-modal.component';
 // import localForage from 'localforage';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
-import { RecordSummaryModule } from '../record-summary/record-summary.module';
-import { FormActionsModule } from '../form-actions/form-actions.module';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
@@ -16,6 +14,8 @@ import {
 } from '@oort-front/ui';
 import { SurveyModule } from 'survey-angular-ui';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
+import { FormActionsModule } from '../form-actions/form-actions.module';
+import { RecordSummaryModule } from '../record-summary/record-summary.module';
 
 /**
  * Factory for creating scroll strategy
@@ -58,15 +58,6 @@ export class ResourceModalComponent extends FormModalComponent {
    */
   public override async onUpdate(survey: any): Promise<void> {
     if (this.data.recordId) {
-      try {
-        await this.formHelpersService.uploadFiles(
-          survey,
-          this.temporaryFilesStorage,
-          this.form?.id
-        );
-      } catch {
-        return;
-      }
       if (this.isMultiEdition) {
         this.updateMultipleData(this.data.recordId, survey);
       } else {
@@ -81,7 +72,6 @@ export class ResourceModalComponent extends FormModalComponent {
               id: details.id,
               data: survey.data,
             },
-            temporaryFilesStorage: this.temporaryFilesStorage,
           } as any);
         });
       };
