@@ -1337,23 +1337,17 @@ export class EmailService {
    * @param configId id of the config.
    * @param emailData data to be send.
    * @param separateEmail trigger for sending individual emails
-   * @param sendAzure trigger for sending emails to azure
    * @returns rest post to end point.
    */
   sendEmail(
     configId: string | undefined,
     emailData: any,
-    separateEmail: boolean,
-    sendAzure?: boolean
+    separateEmail: boolean
   ): Observable<any> {
     if (separateEmail) {
       const urlWithConfigId = `${this.restService.apiUrl}/notification/azure/send-individual-email/${configId}`;
       return this.http.post<any>(urlWithConfigId, emailData);
-    } else if (sendAzure) {
-      const urlWithConfigId = `${this.restService.apiUrl}/notification/azure/send-email/${configId}`;
-      return this.http.get<any>(urlWithConfigId);
     } else {
-      // TODO Remove Send Email (Azure) button as the behaviour is now identical
       const urlWithConfigId = `${this.restService.apiUrl}/notification/azure/send-email/${configId}`;
       return this.http.get<any>(urlWithConfigId);
     }
