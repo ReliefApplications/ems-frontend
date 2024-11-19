@@ -1,3 +1,10 @@
+# [2.17.0-beta.18](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.17...v2.17.0-beta.18) (2024-11-19)
+
+
+### Bug Fixes
+
+* html parser date calculation not working for resource field injection, using styling ([#2702](https://github.com/ReliefApplications/ems-frontend/issues/2702)) ([d9d049a](https://github.com/ReliefApplications/ems-frontend/commit/d9d049a61fd61aa09c94c8f1854daede722f5e6f)), closes [AB#105869](https://github.com/AB/issues/105869)
+
 # [2.17.0-beta.17](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.16...v2.17.0-beta.17) (2024-11-18)
 
 
