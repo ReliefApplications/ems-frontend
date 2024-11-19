@@ -459,6 +459,8 @@ export class EmailTemplateComponent
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
         this.emailService.disableSaveAsDraft.next(false);
+      } else {
+        this.emailService.validateNextButton();
       }
     }
     // if (!this.showDatasetLimitWarning) {
@@ -613,7 +615,11 @@ export class EmailTemplateComponent
     if (this.selectedFields?.length === 0 || this.showFieldsWarning) {
       this.emailService.disableSaveAndProceed.next(true);
     } else {
-      if (this.emailService.isToValid) {
+      if (
+        this.emailService.isToValid &&
+        this.emailService.distributionListName?.trim()?.length > 0 &&
+        this.emailService.isDLNameDuplicate
+      ) {
         this.emailService.disableSaveAndProceed.next(false);
       }
     }
