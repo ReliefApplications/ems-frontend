@@ -353,11 +353,8 @@ export class FormModalComponent
     if (!this.survey?.hasErrors() && isNil(uploadErrors)) {
       this.survey?.completeLastPage();
     } else {
-      const errorMessage = this.translate.instant(
-        'models.form.notifications.savingFailed'
-      );
       this.snackBar.openSnackBar(
-        errorMessage +
+        this.translate.instant('models.form.notifications.savingFailed') +
           (!isNil(uploadErrors) ? '\n' + uploadErrors?.join('\n') : ''),
         { error: true }
       );
