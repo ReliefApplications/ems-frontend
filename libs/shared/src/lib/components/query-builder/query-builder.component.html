@@ -1,7 +1,8 @@
 <ng-container *ngIf="form">
   <form [formGroup]="form" [ngClass]="{ 'field-form': isField }">
-    <div>
-      <div uiFormFieldDirective *ngIf="!isField && canSelectDataSet">
+    <div *ngIf="!isField && canSelectDataSet">
+      <!-- Dataset selector -->
+      <div uiFormFieldDirective>
         <label>{{
           'components.queryBuilder.dataset.select' | translate
         }}</label>
@@ -26,10 +27,8 @@
         ></ui-icon>
       </div>
 
-      <div
-        *ngIf="!isField && canSelectDataSet && templates.length > 0"
-        uiFormFieldDirective
-      >
+      <!-- Template selector -->
+      <div *ngIf="templates.length > 0" uiFormFieldDirective>
         <label>{{ 'models.form.template' | translate }}</label>
         <ui-select-menu formControlName="template">
           <ui-select-option>-</ui-select-option>
@@ -43,8 +42,10 @@
       </div>
     </div>
 
+    <!-- Single field -->
     <ng-container *ngIf="isField">
-      <div class="flex items-end gap-2">
+      <div class="flex items-end gap-2 mb-4">
+        <!-- Go back to list of fields -->
         <ui-button
           [isIcon]="true"
           icon="arrow_back"
@@ -52,31 +53,94 @@
           [uiTooltip]="'common.back' | translate"
         >
         </ui-button>
-        <div uiFormFieldDirective [defaultMargin]="false">
-          <label>{{ 'models.form.field.name' | translate }}</label>
-          <input formControlName="name" type="text" />
-        </div>
-        <div
-          uiFormFieldDirective
-          [defaultMargin]="false"
-          *ngIf="form.get('label')"
-        >
-          <label>{{ 'models.form.field.label' | translate }}</label>
-          <input formControlName="label" type="text" />
-        </div>
-        <div
-          *ngIf="form.get('width') && showColumnWidth"
-          uiFormFieldDirective
-          [defaultMargin]="false"
-        >
-          <label>
-            {{ 'components.queryBuilder.fields.column' | translate }}
-          </label>
-          <input formControlName="width" type="number" min="0" />
+        <div class="flex flex-wrap gap-2">
+          <!-- Field name (static) -->
+          <div uiFormFieldDirective [defaultMargin]="false">
+            <label>{{ 'models.form.field.name' | translate }}</label>
+            <input formControlName="name" type="text" />
+          </div>
+          <!-- Displayed label -->
+          <div
+            uiFormFieldDirective
+            [defaultMargin]="false"
+            *ngIf="form.get('label')"
+          >
+            <label>{{ 'models.form.field.label' | translate }}</label>
+            <input formControlName="label" type="text" />
+          </div>
+          <!-- Column width -->
+          <div
+            *ngIf="form.get('width') && showColumnWidth"
+            uiFormFieldDirective
+            [defaultMargin]="false"
+          >
+            <label>
+              {{ 'components.queryBuilder.fields.column' | translate }}
+            </label>
+            <input formControlName="width" type="number" min="0" />
+          </div>
+          <!-- Display field ( only for list ) -->
+          <div
+            uiFormFieldDirective
+            class="w-44"
+            [defaultMargin]="false"
+            *ngIf="form.get('displayField')"
+          >
+            <label class="flex items-center gap-1"
+              >{{ 'components.queryBuilder.displayField.text' | translate
+              }}<ui-icon
+                class="cursor-help self-center"
+                icon="info_outline"
+                variant="grey"
+                [size]="18"
+                [uiTooltip]="
+                  'components.queryBuilder.tooltip.displayField' | translate
+                "
+              ></ui-icon
+            ></label>
+            <ui-select-menu formControlName="displayField" [filterable]="true">
+              <ng-container *ngFor="let field of selectedTextFields">
+                <ui-select-option [value]="field.name">
+                  {{ field.label }}
+                </ui-select-option>
+              </ng-container>
+            </ui-select-menu>
+            <ui-button
+              *ngIf="form.get('displayField')?.value"
+              uiSuffix
+              [isIcon]="true"
+              variant="danger"
+              icon="close"
+              [uiTooltip]="'common.remove' | translate"
+              size="small"
+              (click)="form.get('displayField')?.setValue(null)"
+            ></ui-button>
+          </div>
+          <!-- Value separator -->
+          <div
+            uiFormFieldDirective
+            class="w-44"
+            [defaultMargin]="false"
+            *ngIf="form.get('displayField')?.value"
+          >
+            <label>{{
+              'components.queryBuilder.displayField.separator' | translate
+            }}</label>
+            <ui-select-menu formControlName="separator">
+              <ng-container *ngFor="let separator of [',', ';']">
+                <ui-select-option [value]="separator">
+                  {{ separator }}
+                </ui-select-option>
+              </ng-container>
+            </ui-select-menu>
+          </div>
         </div>
       </div>
     </ng-container>
+
+    <!-- Fields -->
     <ui-tabs *ngIf="form.getRawValue().name">
+      <!-- Available & selected fields -->
       <ui-tab>
         <ng-container ngProjectAs="label">{{
           'components.queryBuilder.fields.title' | translate
@@ -92,6 +156,7 @@
           ></shared-tab-fields>
         </ng-template>
       </ui-tab>
+      <!-- Sort parameters -->
       <ui-tab *ngIf="form.get('sort')">
         <ng-container ngProjectAs="label">{{
           (showLimit && form.get('first') !== null
@@ -108,6 +173,7 @@
           ></shared-tab-sort>
         </ng-template>
       </ui-tab>
+      <!-- Filter parameters -->
       <ui-tab *ngIf="showFilter && form.get('filter')">
         <ng-container ngProjectAs="label">{{
           'components.queryBuilder.filter.title' | translate
@@ -121,6 +187,7 @@
           </shared-tab-filter>
         </ng-template>
       </ui-tab>
+      <!-- Style parameters -->
       <ui-tab *ngIf="showStyle && form.get('style')">
         <ng-container ngProjectAs="label">{{
           'components.queryBuilder.style.title' | translate
@@ -135,6 +202,7 @@
           </shared-tab-style>
         </ng-template>
       </ui-tab>
+      <!-- Preview -->
       <ui-tab *ngIf="layoutPreviewData">
         <ng-container ngProjectAs="label">{{
           'common.preview' | translate

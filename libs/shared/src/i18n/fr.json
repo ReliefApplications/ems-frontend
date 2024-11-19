@@ -1161,6 +1161,10 @@
 				"select": "Sélectionner un jeu de données",
 				"title": "Ressource"
 			},
+			"displayField": {
+				"separator": "Séparateur de valeurs",
+				"text": "Champ d'affichage"
+			},
 			"errors": {
 				"field": {
 					"invalid": "Champ invalide. Veuillez cliquer pour le retirer."
@@ -1234,6 +1238,7 @@
 				"title": "Style"
 			},
 			"tooltip": {
+				"displayField": "Si un champ est sélectionné, les grilles afficheront les valeurs de ce champ, à la place du nombre d'éléments liés",
 				"filter": {
 					"date": {
 						"useExpression": "Utiliser une expression",
