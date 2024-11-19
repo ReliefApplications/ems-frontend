@@ -125,6 +125,7 @@ export class FormHelpersService {
 
     const data = survey.data;
     const questionsToUpload = Object.keys(temporaryFilesStorage);
+    const failedFilesToUpload: { question: string; file: File }[] = [];
     // Is using document management system
     const useDocumentManagement = !!this.environment.csApiUrl;
     for (const name of questionsToUpload) {
@@ -140,36 +141,43 @@ export class FormHelpersService {
               !('itemId' in file.content)
             ) {
               const question = survey.getQuestionByName(name);
-              const { driveId, itemId } =
-                await this.documentManagementService.uploadFile(file, question);
-              if (driveId && itemId) {
-                const fileContent = data[name][index].content;
-                data[name][index].content = {
-                  driveId,
-                  itemId,
-                };
+              try {
+                const { driveId, itemId } =
+                  await this.documentManagementService.uploadFile(
+                    file,
+                    question
+                  );
+                if (driveId && itemId) {
+                  const fileContent = data[name][index].content;
+                  data[name][index].content = {
+                    driveId,
+                    itemId,
+                  };
 
-                // Check if any other question is using the same file
-                survey.getAllQuestions().forEach((question) => {
-                  const questionType = question.getType();
-                  if (
-                    questionType !== 'file' ||
-                    // Only change files that are not in the temporary storage
-                    // meaning their values came from the default values
-                    !!temporaryFilesStorage[question.name]
-                  )
-                    return;
-
-                  const files = data[question.name] ?? [];
-                  files.forEach((file: any) => {
-                    if (file && file.content === fileContent) {
-                      file.content = {
-                        driveId,
-                        itemId,
-                      };
+                  // Check if any other question is using the same file
+                  survey.getAllQuestions().forEach((question) => {
+                    const questionType = question.getType();
+                    if (
+                      questionType !== 'file' ||
+                      // Only change files that are not in the temporary storage
+                      // meaning their values came from the default values
+                      !!temporaryFilesStorage[question.name]
+                    ) {
+                      return;
                     }
+                    const files = data[question.name] ?? [];
+                    files.forEach((file: any) => {
+                      if (file && file.content === fileContent) {
+                        file.content = {
+                          driveId,
+                          itemId,
+                        };
+                      }
+                    });
                   });
-                });
+                }
+              } catch (error) {
+                failedFilesToUpload.push({ question: name, file });
               }
             }
           } else {
@@ -206,6 +214,12 @@ export class FormHelpersService {
           }
         }
       }
+    }
+    /** Throw error if any file upload has failed before updating survey */
+    if (failedFilesToUpload.length) {
+      await new Promise((resolve, reject) => {
+        reject(failedFilesToUpload);
+      });
     }
     survey.data = cloneDeep(data);
   }
@@ -325,12 +339,10 @@ export class FormHelpersService {
         };
       });
     });
-
     for (const element of nestedRecordsToAdd) {
       for (const draftId of element.draftIds) {
         const data = element.question.draftData[draftId];
         const template = element.question.template;
-
         promises.push(
           firstValueFrom(
             this.apollo.mutate<AddRecordMutationResponse>({

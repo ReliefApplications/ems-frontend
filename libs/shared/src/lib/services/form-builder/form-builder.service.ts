@@ -245,9 +245,12 @@ export class FormBuilderService {
     if (options.question.allowMultiple) {
       // Filtering the temp storage to remove the file based on filename
       if (temporaryFilesStorage[options.name]) {
-        temporaryFilesStorage[options.name] = temporaryFilesStorage[
-          options.name
-        ].filter((x: File) => x.name !== options.fileName);
+        /** If there is no fileName from the options, it means that the user has click on clear all files from the upload */
+        temporaryFilesStorage[options.name] = !isNil(options.fileName)
+          ? temporaryFilesStorage[options.name].filter(
+              (x: File) => x.name !== options.fileName
+            )
+          : [];
       }
     } else {
       // If single upload, the options doesn't contain fileName, so we can just clear the temp storage

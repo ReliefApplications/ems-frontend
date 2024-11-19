@@ -270,7 +270,18 @@ export class FormComponent
         this.temporaryFilesStorage,
         this.form?.id
       );
-    } catch {
+    } catch (errors) {
+      /** If there is any upload errors, save them for display */
+      const uploadErrors = (errors as { question: string; file: File }[]).map(
+        (error) => {
+          return `${error.question}: ${error.file.name}`;
+        }
+      );
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.form.notifications.savingFailed') +
+          (!isNil(uploadErrors) ? '\n' + uploadErrors?.join('\n') : ''),
+        { error: true }
+      );
       this.survey.clear(false, true);
       this.surveyActive = true;
       return;
