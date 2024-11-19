@@ -402,10 +402,12 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       );
       this.pageInfo.length = this.filterTemplateData.length;
     } else if (this.selectedTabIndex == 1) {
-      this.uniqueDLNames = this.dlNamesActualData?.filter((name: any) =>
-        name?.toLowerCase()?.includes(searchText?.toLowerCase())
+      this.cacheDistributionListNames = this.dlNamesActualData?.filter(
+        (name: any) => name?.toLowerCase()?.includes(searchText?.toLowerCase())
       );
-      this.cacheDistributionListNames = this.uniqueDLNames;
+      if (this.cacheDistributionListNames.length > 0) {
+        this.distributionPageInfo.pageIndex = 0;
+      }
       this.uniqueDLNames = this.cacheDistributionListNames.slice(
         this.distributionPageInfo.pageSize *
           this.distributionPageInfo.pageIndex,
