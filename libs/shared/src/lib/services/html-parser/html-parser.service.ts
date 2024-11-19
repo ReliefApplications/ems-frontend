@@ -31,6 +31,19 @@ const ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.png', '.jpeg', '.gif', '.bmp'];
 const PLACEHOLDER_SUFFIX = '}}';
 
 /**
+ * This regex would get the operation for the calc of the done match, with nested calc within or not
+ * e.g. {{calc.max({{calc.round(65.4, 1)}};{{calc.round(65.4, 1)}})}} => max would be the operation returned
+ */
+const REGEX_CALC_OPERATION = /\{\{calc\.(\w+)/;
+
+/**
+ * This regex would get the whole calc match respecting the closure of parenthesis,
+ * meaning that it would extract the parent calc if it contains inner calcs withing, e.g.
+ * {{calc.max({{calc.round(65.4, 1)}};{{calc.round(65.4, 1)}})}}
+ */
+const REGEX_CALC_MAIN_STRUCTURE = `${CALC_PREFIX}[^()]*\\((?:[^()]*|\\((?:[^()]*|\\([^()]*\\))*\\))*\\)${PLACEHOLDER_SUFFIX}`;
+
+/**
  * Creates the html element faking an avatar group
  *
  * @param value Array of urls of the images
@@ -235,11 +248,18 @@ export class HtmlParserService {
       signature: 'date( value ; format )',
       call: (value, format) => {
         try {
+          const spanRegex = /<span[^>]*>(.*?)<\/span>/gi;
+          const spanContent = spanRegex.exec(value)?.[1]?.trim();
+          const valueToFormat = !isNil(spanContent) ? spanContent : value;
           const formattedDate = this.datePipe.transform(
-            new Date(value),
+            new Date(valueToFormat),
             format
           ) as string;
-          return formattedDate || '';
+          // Replace original value inside the span tag with the formatted value
+          if (!isNil(spanContent)) {
+            value = value.replace(spanContent, formattedDate);
+          }
+          return (!isNil(spanContent) ? value : formattedDate) || '';
         } catch {
           return '';
         }
@@ -254,40 +274,113 @@ export class HtmlParserService {
    * @returns The html body with the calculated result of the functions
    */
   private applyOperations(html: string): string {
-    const regex = new RegExp(
-      `${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)${PLACEHOLDER_SUFFIX}`,
-      'gm'
-    );
     let parsedHtml = html;
-    let result = regex.exec(html);
+    const mainStructureRegExp = new RegExp(REGEX_CALC_MAIN_STRUCTURE, 'gm');
+    let result = mainStructureRegExp.exec(html);
+    /**
+     * Get the right side content of the calc function, including the format param for the given calc function,
+     * e.g. 'yyyy )}}' is extracted from a '{{calc.date( 2024-08-08T12:24:03.000Z ; yyyy )}}'
+     * it's stable across any calculation to be done
+     */
+    const regExForRightSide = new RegExp(
+      `([^;]*)(?=\\s*\\)${PLACEHOLDER_SUFFIX})`,
+      'i'
+    );
     while (result !== null) {
       // get the function
-      const calcFunc = get(this.calcFunctions, result[1]);
-      if (calcFunc) {
-        // get the arguments and clean the numbers to be parsed correctly
-        const args = result[2]
-          .split(';')
-          .map((arg) => {
-            /** Make sure that the new date case does not break any previous clean up */
-            return result?.[1] === 'date'
-              ? arg.trim()
-              : // Replace below replaces the space space between span and style property from arg as elements,
-                // breaking any style application from given element
-                arg.replace(/[\s,]/gm, '');
-          })
-          .filter((arg) => !!arg);
-        // apply the function
-        let resultText;
-        try {
-          resultText = calcFunc.call(...args);
-        } catch (err: any) {
-          resultText = `<span style="text-decoration: red wavy underline" title="${err.message}"> ${err.name}</span>`;
-        }
-        parsedHtml = parsedHtml.replace(result[0], resultText);
-      }
-      result = regex.exec(html);
+      const calcOperation = REGEX_CALC_OPERATION.exec(result?.[0] || '')?.[1];
+      // Get the left side, including the operation value and the base value for the calculation
+      const regExForLeftSide = new RegExp(
+        `${CALC_PREFIX}${calcOperation as string}\\((.*);(?=[^;]*$)`,
+        'i'
+      );
+      /** Save the original text to be replaced with all the calculations done */
+      const textToReplace = result[0];
+      let resultText = '';
+      resultText =
+        this.replaceCalcValues(
+          result,
+          mainStructureRegExp,
+          calcOperation as string,
+          regExForLeftSide,
+          regExForRightSide
+        ) || '';
+      parsedHtml = parsedHtml.replace(textToReplace, resultText);
+      result = mainStructureRegExp.exec(parsedHtml);
     }
     return parsedHtml;
+  }
+
+  /**
+   * Extract and executes any given calculations, including nested ones by executing inner calc operations first and propagating the values up in the function
+   *
+   * @param result Main content with the calculations and params to be executed
+   * @param mainStructureRegExp Regex to extract the main calculations structure, keeping nested ones inside
+   * @param calcOperation calc operation to be executed for the current content
+   * @param regExForLeftSide regex to extract the left side operation and value for the calculation
+   * @param regExForRightSide regex to extract the right side operation and format property for the calculation
+   * @returns the complete executed values for the given calc content
+   */
+  private replaceCalcValues(
+    result: any[],
+    mainStructureRegExp: RegExp,
+    calcOperation: string,
+    regExForLeftSide: RegExp,
+    regExForRightSide: RegExp
+  ) {
+    let resultText = '';
+    const hasInnerCalcs = result[0].match(
+      new RegExp(`${CALC_PREFIX}[^{}]*${PLACEHOLDER_SUFFIX}`, 'gi')
+    ) as string[];
+    /**
+     * This regexp is not perfect and would match a whole calc without nested,
+     * so we also check that given inner calc content is not the same as the parent calc content
+     */
+    if (hasInnerCalcs?.length && hasInnerCalcs[0] !== result[0]) {
+      hasInnerCalcs.forEach((calc) => {
+        // Extract the related content and calc operation to execute
+        const resultInner = calc.match(mainStructureRegExp) as any[];
+        // get the function
+        const calcOperation = REGEX_CALC_OPERATION.exec(
+          resultInner?.[0] || ''
+        )?.[1];
+        const innerRegExForLeftSide = new RegExp(
+          `${CALC_PREFIX}${calcOperation as string}\\((.*);(?=[^;]*$)`,
+          'i'
+        );
+        const innerResultText = this.replaceCalcValues(
+          resultInner,
+          mainStructureRegExp,
+          calcOperation as string,
+          innerRegExForLeftSide,
+          regExForRightSide
+        );
+        result[0] = result[0].replace(calc, innerResultText);
+      });
+    }
+    const calcFunc = get(this.calcFunctions, calcOperation);
+    if (calcFunc) {
+      // get the arguments and clean the numbers to be parsed correctly
+      const leftSide = regExForLeftSide.exec(result[0])?.[1] as string;
+      const rightSide = regExForRightSide.exec(result[0])?.[0] as string;
+      const args = [leftSide, rightSide]
+        ?.map((arg) => {
+          /** Make sure that the new date case does not break any previous clean up */
+          return calcOperation === 'date'
+            ? arg?.trim()
+            : // Replace below replaces the space space between span and style property from arg as elements,
+              // breaking any style application from given element
+              arg?.replace(/[\s,]/gm, '');
+        })
+        .filter((arg) => !!arg);
+      try {
+        // apply the function
+        resultText = calcFunc.call(...args);
+      } catch (err: any) {
+        resultText = `<span style="text-decoration: red wavy underline" title="${err.message}"> ${err.name}</span>`;
+      }
+    }
+    return resultText;
   }
 
   /**
