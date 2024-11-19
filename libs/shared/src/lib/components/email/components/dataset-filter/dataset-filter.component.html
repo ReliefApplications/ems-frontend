@@ -46,7 +46,8 @@
           uiFormFieldDirective
           class="flex-1"
         >
-          <shared-resource-select class="w-8/10"
+          <shared-resource-select
+            [ngClass]="{ resourceSelect: this.query.get('resource').value }"
             formControlName="resource"
             [selectedElements]="[resource]"
           ></shared-resource-select>
