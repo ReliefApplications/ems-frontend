@@ -1353,8 +1353,9 @@ export class EmailService {
       const urlWithConfigId = `${this.restService.apiUrl}/notification/azure/send-email/${configId}`;
       return this.http.get<any>(urlWithConfigId);
     } else {
-      const urlWithConfigId = `${this.restService.apiUrl}/notification/send-email/${configId}`;
-      return this.http.post<any>(urlWithConfigId, emailData);
+      // TODO Remove Send Email (Azure) button as the behaviour is now identical
+      const urlWithConfigId = `${this.restService.apiUrl}/notification/azure/send-email/${configId}`;
+      return this.http.get<any>(urlWithConfigId);
     }
   }
 
