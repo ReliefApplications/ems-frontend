@@ -253,7 +253,7 @@ export class DatasetFilterComponent
           this.selectedFieldsIndividualEmail?.length === 0 &&
           this.resource
         ) {
-          this.onTabSelect(3, false);
+          this.onTabSelect(4, false);
           this.emailService.disableSaveAndProceed.next(true);
         } else if (this.resource) {
           this.onTabSelect(0, false);
