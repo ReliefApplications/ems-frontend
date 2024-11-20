@@ -311,7 +311,7 @@
             ></ng-container>
             <ng-container
               class="mt-2"
-              *ngTemplateOutlet="ChildFieldAlertTmpl"
+              *ngTemplateOutlet="ChildFieldAlertTmpl_individualEmail"
             ></ng-container>
             <div class="flex gap-4 mt-2" formGroupName="query">
               <div class="mt-2 overflow-auto">
@@ -440,6 +440,19 @@
                 types: disabledTypes.join(', ')
               }
       "
+    ></div>
+  </ui-alert>
+</ng-template>
+<!-- Please select the child fields of the Selected fields in Send Seperate Email Fields -->
+<ng-template #ChildFieldAlertTmpl_individualEmail>
+  <ui-alert
+    variant="danger"
+    [closable]="true"
+    *ngIf="showFieldsWarning_SSE"
+    (close)="closeFieldsWarningMessage()"
+  >
+    <div
+      [innerHTML]="'components.email.alert.selectChildFields' | translate"
     ></div>
   </ui-alert>
 </ng-template>

@@ -131,6 +131,8 @@ export class DatasetFilterComponent
   public dataTypeList: any = ['Resource', 'Reference Data'];
   /** Available pages from the application */
   public pages: any[] = [];
+  /** Flag to show the Child fields limit warning. */
+  public showFieldsWarning_SSE = false;
 
   /**
    * To use helper functions, Apollo serve
@@ -595,7 +597,15 @@ export class DatasetFilterComponent
         }
       }
     } else {
-      this.query.controls['name'].markAsTouched();
+      // TODO: Somehow make this go down recursively instead of just checking for just the child
+      this.showFieldsWarning_SSE = false;
+      this.query.getRawValue().query?.fields.forEach((field: any) => {
+        if (field.kind == 'OBJECT' || field.kind == 'LIST') {
+          if (field.fields == undefined || field.fields.length == 0) {
+            this.showFieldsWarning_SSE = true;
+          }
+        }
+      });
     }
     this.emailService.selectedDataSet = '';
   }
@@ -695,11 +705,14 @@ export class DatasetFilterComponent
     ) {
       if (
         this.query
+          ?.get('individualEmailFields')
           ?.getRawValue()
-          ?.fields?.filter((x: any) => x?.fields?.length === 0).length > 0
+          ?.filter((x: any) => x?.fields?.length === 0).length > 0
       ) {
         this.emailService.disableSaveAndProceed.next(true);
+        this.showFieldsWarning_SSE = true;
       } else {
+        this.showFieldsWarning_SSE = false;
         this.emailService.disableSaveAndProceed.next(false);
         this.emailService.disableSaveAsDraft.next(false);
       }
