@@ -31,16 +31,6 @@ import { QueryBuilderService } from './../../../../services/query-builder/query-
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
 import { prettifyLabel } from '../../../../../lib/utils/prettify';
-import {
-  ReferenceDataQueryResponse,
-  ReferenceDatasQueryResponse,
-} from '../../../../../lib/models/reference-data.model';
-import {
-  GET_API_CONFIGURATIONS,
-  GET_REFERENCE_DATA,
-  GET_REFERENCE_DATAS,
-} from '../../graphql/queries';
-import { ApiConfigurationsQueryResponse } from '../../../../../lib/models/api-configuration.model';
 import { DomSanitizer } from '@angular/platform-browser';
 
 /**
