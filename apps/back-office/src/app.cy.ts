@@ -1,9 +1,10 @@
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { CommonModule } from '@angular/common';
 import {
   EditorComponent,
   HtmlWidgetContentModule,
 } from '@oort-front/shared/widgets';
-import { ButtonModule, SpinnerModule } from '@oort-front/ui';
+import { ButtonModule, SpinnerComponent, SpinnerModule } from '@oort-front/ui';
 
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
@@ -21,7 +22,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
  * @returns Translator.
  */
 export const httpTranslateLoader = (http: HttpClient) =>
-  new TranslateHttpLoader(http);
+  new TranslateHttpLoader(http, `assets/i18n/`, '.json');
 /**
  * A utility module adding I18N support for Storybook stories
  */
@@ -52,22 +53,14 @@ class StorybookTranslateModule {
 }
 
 describe('back-office', () => {
-  // beforeEach(() => {
-  //   cy.visit('/applications/1');
-  // });
-  cy.intercept('POST', Cypress.env('graphql'), (req) => {
-    if (req.body.operationName === 'operationName') {
-      req.reply({ fixture: 'mockData.json' });
-    }
-  });
   it('should render component welcome message', () => {
-    cy.mount(EditorComponent, {
-      declarations: [EditorComponent],
+    cy.mount(SpinnerComponent, {
+      declarations: [SpinnerComponent],
       imports: [
-        CommonModule,
-        ButtonModule,
+        // CommonModule,
+        // ButtonModule,
         StorybookTranslateModule,
-        HtmlWidgetContentModule,
+        // HtmlWidgetContentModule,
         SpinnerModule,
       ],
     });

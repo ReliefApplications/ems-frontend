@@ -395,6 +395,15 @@
           "quiet": true
         }
       }
+    },
+    "component-test": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/back-office/cypress.config.ts",
+        "testingType": "component",
+        "skipServe": true, 
+        "devServerTarget": "back-office:build:development",
+      }
     }
   },
   "tags": []

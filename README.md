@@ -189,3 +189,15 @@ In case you still face issues, you can still increase it:
 ```
 set NODE_OPTIONS="--max-old-space-size=8192"
 ```
+
+### E2E Tests
+
+```
+NODE_OPTIONS="--max-old-space-size=4096" npx nx run back-office:component-test --headed --no-exit
+```
+
+In cmd:
+
+```
+set NODE_OPTIONS="--max-old-space-size=4096" npx nx run back-office:component-test --headed --no-exit
+```

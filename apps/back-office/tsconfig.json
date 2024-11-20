@@ -23,6 +23,9 @@
     },
     {
       "path": "./.storybook/tsconfig.json"
+    },
+    {
+      "path": "./cypress/tsconfig.cy.json"
     }
   ],
   "extends": "../../tsconfig.base.json",
