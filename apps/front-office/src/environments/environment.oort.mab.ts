@@ -7,9 +7,9 @@ import { Environment } from './environment.type';
  * Authentication configuration
  */
 const authConfig: AuthConfig = {
-  issuer: 'https://id-lift.oortcloud.tech/realms/oort',
-  redirectUri: 'https://lift.oortcloud.tech/',
-  postLogoutRedirectUri: 'https://lift.oortcloud.tech/auth/',
+  issuer: 'https://id-mab.unesco.oortcloud.tech/realms/oort',
+  redirectUri: 'https://mab.unesco.oortcloud.tech/',
+  postLogoutRedirectUri: 'https://mab.unesco.oortcloud.tech/auth/',
   clientId: 'oort-client',
   scope: 'openid profile email offline_access',
   responseType: 'code',
@@ -22,10 +22,10 @@ const authConfig: AuthConfig = {
 export const environment: Environment = {
   ...sharedEnvironment,
   production: true,
-  apiUrl: 'https://lift.oortcloud.tech/api',
-  subscriptionApiUrl: 'wss://lift.oortcloud.tech/api',
-  frontOfficeUri: 'https://lift.oortcloud.tech',
-  backOfficeUri: 'https://lift.oortcloud.tech/admin/',
+  apiUrl: 'https://mab.unesco.oortcloud.tech/api',
+  subscriptionApiUrl: 'wss://mab.unesco.oortcloud.tech/api',
+  frontOfficeUri: 'https://mab.unesco.oortcloud.tech',
+  backOfficeUri: 'https://mab.unesco.oortcloud.tech/admin/',
   availableLanguages: ['en', 'fr'],
   authConfig,
   theme,
