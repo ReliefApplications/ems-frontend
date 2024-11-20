@@ -23,6 +23,15 @@
       "options": {
         "lintFilePatterns": ["apps/back-office-e2e/**/*.{js,ts}"]
       }
+    },
+    "component-test": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/back-office-e2e/cypress.config.ts",
+        "testingType": "component",
+        "skipServe": true,
+        "devServerTarget": "back-office:build:development"
+      }
     }
   },
   "tags": [],

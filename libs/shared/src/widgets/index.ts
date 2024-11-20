@@ -21,3 +21,5 @@ export * from '../lib/models/form.model';
 // === COMPONENTS ===
 
 export * from '../lib/components/form/public-api';
+export * from '../lib/components/widgets/editor/public-api';
+export * from '../lib/components/widgets/common/html-widget-content/html-widget-content.module';

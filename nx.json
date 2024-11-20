@@ -10,7 +10,8 @@
           "lint",
           "test",
           "e2e",
-          "build-storybook"
+          "build-storybook",
+          "component-test"
         ],
         "accessToken": "YThkMzZlZmYtNDU3My00YjdmLTkxM2QtOGZiZGNhNjg1MTljfHJlYWQtd3JpdGU="
       }
@@ -36,6 +37,9 @@
     },
     "build-storybook": {
       "inputs": ["default", "^production", "!{projectRoot}/.storybook/**/*"]
+    },
+    "component-test": {
+      "inputs": ["default", "^production"]
     }
   },
   "namedInputs": {
@@ -47,7 +51,10 @@
       "!{projectRoot}/jest.config.[jt]s",
       "!{projectRoot}/.eslintrc.json",
       "!{projectRoot}/.storybook/**/*",
-      "!{projectRoot}/**/*.stories.@(js|jsx|ts|tsx|mdx)"
+      "!{projectRoot}/**/*.stories.@(js|jsx|ts|tsx|mdx)",
+      "!{projectRoot}/cypress/**/*",
+      "!{projectRoot}/**/*.cy.[jt]s?(x)",
+      "!{projectRoot}/cypress.config.[jt]s"
     ],
     "sharedGlobals": []
   },
