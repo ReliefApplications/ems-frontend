@@ -33,6 +33,7 @@ export const init = (
       el.parentElement?.querySelector('.k-input')?.parentElement?.remove();
       widget.willUnmount(question);
       question.destroy$ = new Subject<void>();
+      question.abortSignal = new AbortController();
       // remove default render
       el.parentElement?.querySelector('.sv_select_wrapper')?.remove();
       let dropdownDiv: HTMLDivElement | null = null;
@@ -120,6 +121,7 @@ export const init = (
     willUnmount: (question: any): void => {
       question.destroy$?.next();
       question.destroy$?.complete();
+      question.abortSignal?.abort();
       if (!question._propertyValueChangedVirtual) return;
       question.readOnlyChangedCallback = null;
       question.valueChangedCallback = null;
@@ -162,13 +164,17 @@ export const init = (
       width: question.popupWidth,
     };
     // Automatic display of dropdown panel on element focus by default
-    dropdownInstance.onFocus.pipe(takeUntil(question.destroy$)).subscribe({
-      next: () => {
-        if (!dropdownInstance.isOpen) {
-          dropdownInstance.toggle(true);
-        }
-      },
-    });
+    dropdownInstance.wrapper.nativeElement
+      .querySelector('input')
+      ?.addEventListener(
+        'click',
+        () => {
+          if (!dropdownInstance.isOpen) {
+            dropdownInstance.toggle(true);
+          }
+        },
+        { signal: question.abortSignal.signal }
+      );
     dropdownInstance.fillMode = 'none';
     return dropdownInstance;
   };
