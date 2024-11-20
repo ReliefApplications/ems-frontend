@@ -725,6 +725,7 @@ export class SelectDistributionComponent
     this.distributionListId = '';
     this.showExistingDistributionList = !this.showExistingDistributionList;
     this.emailService.selectedDLName = '';
+    this.emailService.distributionListName = '';
     // this.emailDistributionList.get('name').setValue('');
     this.emailService.datasetsForm
       ?.get('emailDistributionList')
