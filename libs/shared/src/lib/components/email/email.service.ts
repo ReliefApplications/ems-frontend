@@ -1788,12 +1788,12 @@ export class EmailService {
   async isToValidCheck() {
     if (
       this.datasetsForm.getRawValue().emailDistributionList?.to?.inputEmails
-        .length > 0 ||
+        .length >= 0 ||
       (this.datasetsForm.getRawValue().emailDistributionList?.to?.resource !==
         '' &&
         this.datasetsForm.getRawValue().emailDistributionList?.to?.resource !==
           null &&
-        this.filterToEmails?.length > 0)
+        this.filterToEmails?.length >= 0)
     ) {
       this.isToValid = true;
     } else {
