@@ -2632,6 +2632,7 @@
 		},
 		"aggregation": {
 			"preview": {
+				"information": "Only the first 10 elements are displayed for preview",
 				"label": "Aggregation data preview",
 				"missingAggregation": "Cannot load selected aggregation. Aggregation not found"
 			}

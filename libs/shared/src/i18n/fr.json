@@ -2632,6 +2632,7 @@
 		},
 		"aggregation": {
 			"preview": {
+				"information": "************************",
 				"label": "Aperçu des données d'agrégation",
 				"missingAggregation": "Impossible de charger l'agrégation sélectionnée. Agrégation introuvable"
 			}

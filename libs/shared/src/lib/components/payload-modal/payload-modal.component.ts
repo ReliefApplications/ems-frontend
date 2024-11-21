@@ -1,6 +1,6 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { DialogModule } from '@oort-front/ui';
+import { AlertModule, DialogModule } from '@oort-front/ui';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -27,11 +27,17 @@ interface DialogData {
     CommonModule,
     ButtonModule,
     AsyncMonacoEditorDirective,
+    AlertModule,
   ],
   templateUrl: './payload-modal.component.html',
   styleUrls: ['./payload-modal.component.scss'],
 })
 export class PayloadModalComponent implements OnInit, OnDestroy {
+  /**
+   * Default information about the payload
+   * Default message is the item limit display of 10
+   */
+  @Input() payloadInformation = 'pages.aggregation.preview.information';
   /** Monaco editor configuration */
   public editorOptions = {
     theme: 'vs-dark',
