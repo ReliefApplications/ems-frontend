@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { AlertModule, DialogModule } from '@oort-front/ui';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
@@ -11,6 +11,7 @@ import { AsyncMonacoEditorDirective } from '../../directives/async-monaco-editor
 interface DialogData {
   payload: any;
   aggregationPayload?: boolean;
+  helpText: string;
 }
 
 /**
@@ -33,11 +34,6 @@ interface DialogData {
   styleUrls: ['./payload-modal.component.scss'],
 })
 export class PayloadModalComponent implements OnInit, OnDestroy {
-  /**
-   * Default information about the payload
-   * Default message is the item limit display of 10
-   */
-  @Input() payloadInformation = 'pages.aggregation.preview.help';
   /** Monaco editor configuration */
   public editorOptions = {
     theme: 'vs-dark',

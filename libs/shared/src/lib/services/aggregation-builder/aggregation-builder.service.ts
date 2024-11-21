@@ -347,6 +347,7 @@ export class AggregationBuilderService {
             ? aggregationData.recordsAggregation
             : aggregationData.referenceDataAggregation,
         aggregationPayload: true,
+        helpText: 'pages.aggregation.preview.help',
       },
     });
   }
