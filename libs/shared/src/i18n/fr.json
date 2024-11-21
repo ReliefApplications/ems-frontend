@@ -2632,7 +2632,7 @@
 		},
 		"aggregation": {
 			"preview": {
-				"information": "************************",
+				"help": "Seul les 10 premiers résultats peuvent être affichés",
 				"label": "Aperçu des données d'agrégation",
 				"missingAggregation": "Impossible de charger l'agrégation sélectionnée. Agrégation introuvable"
 			}

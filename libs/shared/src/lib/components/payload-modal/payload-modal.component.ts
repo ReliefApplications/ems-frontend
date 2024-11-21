@@ -37,7 +37,7 @@ export class PayloadModalComponent implements OnInit, OnDestroy {
    * Default information about the payload
    * Default message is the item limit display of 10
    */
-  @Input() payloadInformation = 'pages.aggregation.preview.information';
+  @Input() payloadInformation = 'pages.aggregation.preview.help';
   /** Monaco editor configuration */
   public editorOptions = {
     theme: 'vs-dark',

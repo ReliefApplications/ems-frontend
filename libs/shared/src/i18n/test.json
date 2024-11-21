@@ -2632,7 +2632,7 @@
 		},
 		"aggregation": {
 			"preview": {
-				"information": "******",
+				"help": "******",
 				"label": "******",
 				"missingAggregation": "******"
 			}
