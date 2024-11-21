@@ -401,8 +401,8 @@
       "options": {
         "cypressConfig": "apps/back-office/cypress.config.ts",
         "testingType": "component",
-        "skipServe": true, 
-        "devServerTarget": "back-office:build:development",
+        "skipServe": true,
+        "devServerTarget": "back-office:build:development"
       }
     }
   },

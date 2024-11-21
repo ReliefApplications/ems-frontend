@@ -1,13 +1,8 @@
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
-import { CommonModule } from '@angular/common';
-import {
-  EditorComponent,
-  HtmlWidgetContentModule,
-} from '@oort-front/shared/widgets';
-import { ButtonModule, SpinnerComponent, SpinnerModule } from '@oort-front/ui';
+import { SpinnerModule } from '@oort-front/ui';
 
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import {
   TranslateLoader,
   TranslateModule,
@@ -41,8 +36,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
 })
 class StorybookTranslateModule {
   /**
-   * The constructor function is a special function that is called when a new instance of the class is
-   * created
+   * Constructor
    *
    * @param translateService The translate service that will be used to translate the text.
    */
@@ -52,17 +46,23 @@ class StorybookTranslateModule {
   }
 }
 
+@Component({
+  standalone: true,
+  imports: [
+    // CommonModule,
+    // ButtonModule,
+    StorybookTranslateModule,
+    // HtmlWidgetContentModule,
+    SpinnerModule,
+  ],
+  template: `<ui-spinner></ui-spinner>`,
+})
+class WrapperComponent {}
+
 describe('back-office', () => {
   it('should render component welcome message', () => {
-    cy.mount(SpinnerComponent, {
-      declarations: [SpinnerComponent],
-      imports: [
-        // CommonModule,
-        // ButtonModule,
-        StorybookTranslateModule,
-        // HtmlWidgetContentModule,
-        SpinnerModule,
-      ],
+    cy.mount(WrapperComponent, {
+      imports: [WrapperComponent],
     });
   });
 });

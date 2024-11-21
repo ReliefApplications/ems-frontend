@@ -3,9 +3,9 @@
 module.exports = {
   content: [
     './apps/**/src/**/*.{html,ts}',
+    './apps/**/cypress/**/*.{html,ts}',
     './libs/shared/**/*.{html,ts,js,mjs}',
     './libs/ui/**/*.{html,ts,js,mjs}',
-    './src/**/*.{html,ts}',
   ],
   theme: {
     extend: {
