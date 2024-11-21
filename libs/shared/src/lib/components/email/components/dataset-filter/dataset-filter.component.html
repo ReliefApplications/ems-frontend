@@ -277,7 +277,11 @@
               class="mt-2"
               *ngTemplateOutlet="tooManyRecordsAlertTmpl"
             ></ng-container>
-            <div class="overflow-x-auto" formGroupName="query">
+            <div
+              *ngIf="!showDatasetLimitWarning"
+              class="overflow-x-auto"
+              formGroupName="query"
+            >
               <div id="tblPreview" [innerHTML]="previewHTML"></div>
             </div>
           </ng-template>
