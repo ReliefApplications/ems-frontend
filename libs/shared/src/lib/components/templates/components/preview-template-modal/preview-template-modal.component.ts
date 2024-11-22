@@ -64,13 +64,12 @@ export class PreviewTemplateModalComponent {
    * Preview template modal.
    * Triggered by grid widgets when sending emails.
    *
-   * @param environment platform environment
    * @param data Dialog data.
    * @param emailService Shared email service
    * @param snackBar Shared snackbar service
    * @param translate Angular Translate service
    * @param dialogRef Dialog reference
-   * @param environment
+   * @param environment platform environment
    */
   constructor(
     @Inject(DIALOG_DATA) public data: any,
