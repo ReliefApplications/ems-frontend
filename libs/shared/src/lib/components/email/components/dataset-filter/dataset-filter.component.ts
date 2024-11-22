@@ -146,7 +146,7 @@ export class DatasetFilterComponent
    * @param http Backend http client
    * @param restService rest service
    * @param sanitizer html sanitizer
-   * @param applicationService
+   * @param applicationService application service
    */
   constructor(
     public emailService: EmailService,
