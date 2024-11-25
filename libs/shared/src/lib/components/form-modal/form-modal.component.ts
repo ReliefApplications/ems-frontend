@@ -303,7 +303,7 @@ export class FormModalComponent
       });
     }
 
-    // After the survey is created and all values set, we add common callback to survey events
+    // After the survey is created, we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
       this.selectedPageIndex,
