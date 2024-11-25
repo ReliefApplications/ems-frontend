@@ -3,11 +3,9 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  OnChanges,
   OnDestroy,
   OnInit,
   Output,
-  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import {
@@ -43,7 +41,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class EmailTemplateComponent
   extends UnsubscribeComponent
-  implements OnInit, OnDestroy, OnChanges
+  implements OnInit, OnDestroy
 {
   /** Data set containing emails and records. */
   public dataset?: {
@@ -269,10 +267,6 @@ export class EmailTemplateComponent
     } else {
       this.updateSegmentOptions('Add Manually');
     }
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
   }
 
   /**
