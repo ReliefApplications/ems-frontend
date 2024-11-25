@@ -33,6 +33,7 @@ import {
   AuthInterceptorService,
   FormService,
   DatePipe,
+  EISDocsInterceptorService,
 } from '@oort-front/shared';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
@@ -148,6 +149,11 @@ export const httpTranslateLoader = (http: HttpClient) =>
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: EISDocsInterceptorService,
       multi: true,
     },
     {

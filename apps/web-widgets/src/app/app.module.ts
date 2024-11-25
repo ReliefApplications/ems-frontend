@@ -28,6 +28,7 @@ import {
   AuthInterceptorService,
   FormService,
   DatePipe,
+  EISDocsInterceptorService,
 } from '@oort-front/shared';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
@@ -196,6 +197,11 @@ export const getBaseHref = () => {
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: EISDocsInterceptorService,
       multi: true,
     },
     {

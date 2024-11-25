@@ -19,6 +19,7 @@ export * from './lib/services/date-translate/date-translate.service';
 export * from './lib/services/document-management/document-management.service';
 export * from './lib/services/download/download.service';
 export * from './lib/services/editor/editor.service';
+export * from './lib/services/eis-docs-interceptor/eis-docs-interceptor.service';
 export * from './lib/services/form-builder/form-builder.service';
 export * from './lib/services/form/form.service';
 export * from './lib/services/grid-data-formatter/grid-data-formatter.service';
@@ -27,8 +28,8 @@ export * from './lib/services/grid/grid.service';
 export * from './lib/services/html-parser/html-parser.service';
 export * from './lib/services/kendo-translation/kendo-translation.service';
 export * from './lib/services/map/map-layers.service';
-export * from './lib/services/reference-data/reference-data.service';
 export * from './lib/services/query-builder/query-builder.service';
+export * from './lib/services/reference-data/reference-data.service';
 export * from './lib/services/rest/rest.service';
 export * from './lib/services/workflow/workflow.service';
 
@@ -66,6 +67,7 @@ export * from './lib/models/workflow.model';
 
 // === COMPONENTS ===
 export * from './lib/components/access/public-api';
+export * from './lib/components/action-buttons/public-api';
 export * from './lib/components/aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 export * from './lib/components/applications-summary/public-api';
 export * from './lib/components/confirm-modal/public-api';
@@ -85,6 +87,7 @@ export * from './lib/components/layout/public-api';
 export * from './lib/components/mapping/public-api';
 export * from './lib/components/navbar/public-api';
 export * from './lib/components/payload-modal/payload-modal.component';
+export * from './lib/components/query-builder/public-api';
 export * from './lib/components/record-history/public-api';
 export * from './lib/components/record-modal/public-api';
 export * from './lib/components/role-summary/public-api';
@@ -106,8 +109,6 @@ export * from './lib/components/widgets/map-settings/public-api';
 export * from './lib/components/widgets/map/public-api';
 export * from './lib/components/widgets/summary-card-settings/public-api';
 export * from './lib/components/workflow-stepper/public-api';
-export * from './lib/components/query-builder/public-api';
-export * from './lib/components/action-buttons/public-api';
 
 // Export of controls
 export * from './lib/components/applications-archive/public-api';

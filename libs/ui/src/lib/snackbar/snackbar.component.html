@@ -23,9 +23,10 @@
               ></ui-icon>
             </div>
             <div class="flex w-0 flex-1 justify-between">
-              <p class="w-0 m-0 flex-1 text-sm font-medium text-gray-900">
-                {{ message }}
-              </p>
+              <p
+                [innerText]="message"
+                class="w-0 m-0 flex-1 text-sm font-medium text-gray-900"
+              ></p>
             </div>
           </ng-container>
           <div class="ml-4 flex flex-shrink-0">
