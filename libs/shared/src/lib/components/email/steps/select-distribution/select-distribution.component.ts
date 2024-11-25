@@ -151,20 +151,6 @@ export class SelectDistributionComponent
     if (!this.isAllSeparate()) {
       this.validateDistributionList();
     }
-    // if (this.emailDistributionList.get('id')?.value) {
-    //   this.emailDistributionList.get('name').disable();
-    // } else {
-    //   this.emailDistributionList.get('name').enable();
-    // }
-    // this.emailDistributionList
-    //   .get('id')
-    //   ?.valueChanges.subscribe((value: string) => {
-    //     if (value) {
-    //       this.emailDistributionList.get('name').disable();
-    //     } else {
-    //       this.emailDistributionList.get('name').enable();
-    //     }
-    //   });
   }
 
   /**
