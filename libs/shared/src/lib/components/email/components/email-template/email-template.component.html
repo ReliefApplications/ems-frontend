@@ -40,7 +40,6 @@
         (change)="validateEmail(filterInput)"
         autocomplete="off"
         aria-autocomplete="none"
-        [disabled]="isDisable"
         type="text"
         [placeholder]="'components.select.distribution.email' | translate"
       />
@@ -135,7 +134,6 @@
             (change)="validateEmail(filterInput)"
             autocomplete="off"
             aria-autocomplete="none"
-            [disabled]="isDisable"
             type="text"
             [placeholder]="'components.select.distribution.email' | translate"
           />
@@ -174,7 +172,6 @@
       variant="primary"
       class="text-xl px-1"
       [removable]="true"
-      [disabled]="isDisable"
       (removed)="removeEmailChip(chipIndex)"
       *ngFor="let emailControl of inputEmails; let chipIndex = index"
       >{{ emailControl }}</ui-chip
@@ -310,7 +307,6 @@
                   [fields]="availableFields"
                   [showLimit]="false"
                   [showColumnWidth]="false"
-                  [disabled]="isDisable"
                   (droppedFields)="setNonEmailFields($event)"
                 ></shared-tab-fields>
               </div>
@@ -383,6 +379,7 @@
               *ngTemplateOutlet="showDLPreview"
             ></ng-container>
             <div
+              *ngIf="!showDatasetLimitWarning"
               id="tblPreview"
               class="overflow-scroll"
               #tblPreview

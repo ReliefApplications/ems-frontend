@@ -833,6 +833,9 @@
 			}
 		},
 		"distributionLists": {
+			"DLWarning": {
+				"message": "******"
+			},
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
 			},

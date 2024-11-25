@@ -12,7 +12,6 @@
     </div>
     <!-- Import file -->
     <ui-button
-      [disabled]="this.emailDistributionList?.get('id')?.value"
       icon="cloud_download"
       category="secondary"
       variant="primary"
@@ -169,6 +168,8 @@
   </div>
   <!-- To, CC, BCC Templates -->
   <div *ngIf="!showExistingDistributionList">
+    <!-- //Show validation/Warning message that you are editing DL -->
+     
     <ui-tabs>
       <!-- TO Tab -->
       <ui-tab [title]="'TO'">
@@ -176,6 +177,9 @@
           {{ 'components.select.distribution.to' | translate }}
         </ng-container>
         <ng-template uiTabContent>
+          <ui-alert class="mb-4" variant="warning" *ngIf="emailService?.isEdit">
+            {{ 'components.distributionLists.DLWarning.message' | translate }}
+          </ui-alert>
           <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.to">
             {{ 'components.email.distributionList.alert.noEmail' | translate }}
           </ui-alert>
@@ -185,7 +189,6 @@
             (listChange)="validateDistributionList()"
             [distributionList]="emailDistributionList.get('to')"
             [type]="'to'"
-            [isDisable]="this.emailDistributionList.get('id')?.value"
             >{{
               'components.email.distributionList.to' | translate
             }}</shared-email-template
@@ -199,6 +202,9 @@
           {{ 'components.select.distribution.cc' | translate }}
         </ng-container>
         <ng-template uiTabContent>
+          <ui-alert class="mb-4" variant="warning" *ngIf="emailService?.isEdit">
+            {{ 'components.distributionLists.DLWarning.message' | translate }}
+          </ui-alert>
           <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.cc">
             {{ 'components.email.distributionList.alert.noEmail' | translate }}
           </ui-alert>
@@ -208,7 +214,6 @@
             (listChange)="validateDistributionList()"
             [distributionList]="emailDistributionList.get('cc')"
             [type]="'cc'"
-            [isDisable]="this.emailDistributionList.get('id')?.value"
             >{{
               'components.email.distributionList.cc' | translate
             }}</shared-email-template
@@ -222,6 +227,9 @@
           {{ 'components.select.distribution.bcc' | translate }}
         </ng-container>
         <ng-template uiTabContent>
+          <ui-alert class="mb-4" variant="warning" *ngIf="emailService?.isEdit">
+            {{ 'components.distributionLists.DLWarning.message' | translate }}
+          </ui-alert>
           <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.bcc">
             {{ 'components.email.distributionList.alert.noEmail' | translate }}
           </ui-alert>
@@ -231,7 +239,6 @@
             (listChange)="validateDistributionList()"
             [distributionList]="emailDistributionList.get('bcc')"
             [type]="'bcc'"
-            [isDisable]="emailDistributionList.get('id')?.value"
             >{{
               'components.email.distributionList.bcc' | translate
             }}</shared-email-template

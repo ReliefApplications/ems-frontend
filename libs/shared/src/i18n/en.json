@@ -833,6 +833,9 @@
 			}
 		},
 		"distributionLists": {
+			"DLWarning": {
+				"message": "Any modifications made to a distribution list will be reflected in all areas where the DL is utilized."
+			},
 			"delete": {
 				"confirmationMessage": "Are you sure you want to delete the distribution list '{{name}}'?"
 			},

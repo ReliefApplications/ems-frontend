@@ -122,6 +122,9 @@ export class SelectDistributionComponent
     | undefined;
 
   ngOnInit(): void {
+    this.enableForm('to');
+    this.enableForm('cc');
+    this.enableForm('bcc');
     if (
       this.emailService?.editId &&
       this.emailService?.emailDistributionList?.id
@@ -148,20 +151,20 @@ export class SelectDistributionComponent
     if (!this.isAllSeparate()) {
       this.validateDistributionList();
     }
-    if (this.emailDistributionList.get('id')?.value) {
-      this.emailDistributionList.get('name').disable();
-    } else {
-      this.emailDistributionList.get('name').enable();
-    }
-    this.emailDistributionList
-      .get('id')
-      ?.valueChanges.subscribe((value: string) => {
-        if (value) {
-          this.emailDistributionList.get('name').disable();
-        } else {
-          this.emailDistributionList.get('name').enable();
-        }
-      });
+    // if (this.emailDistributionList.get('id')?.value) {
+    //   this.emailDistributionList.get('name').disable();
+    // } else {
+    //   this.emailDistributionList.get('name').enable();
+    // }
+    // this.emailDistributionList
+    //   .get('id')
+    //   ?.valueChanges.subscribe((value: string) => {
+    //     if (value) {
+    //       this.emailDistributionList.get('name').disable();
+    //     } else {
+    //       this.emailDistributionList.get('name').enable();
+    //     }
+    //   });
   }
 
   /**
@@ -769,6 +772,18 @@ export class SelectDistributionComponent
     form?.get('resource')?.setValue('');
 
     // Enable changes on the form
+    form?.enable();
+  }
+
+  /**
+   * Enable form To, cc, bcc dropdown
+   *
+   * @param type tab name
+   */
+  enableForm(type: string) {
+    const form = this.emailService.datasetsForm
+      ?.get('emailDistributionList')
+      ?.get(type);
     form?.enable();
   }
 }

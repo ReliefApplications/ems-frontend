@@ -51,9 +51,6 @@ export class EmailTemplateComponent
     records: any[];
   };
 
-  /** Disable fields */
-  @Input() isDisable = false;
-
   /** records of selected Dataset*/
   public data!: any[];
 
@@ -225,11 +222,6 @@ export class EmailTemplateComponent
     this.segmentForm.get('segment')?.valueChanges.subscribe((value: any) => {
       this.clearUnusedValues(value);
     });
-    if (this.isDisable) {
-      this.segmentForm?.get('segment')?.disable();
-      this.segmentForm?.get('dataType')?.disable();
-      this.distributionList?.get('reference')?.disable();
-    }
 
     this.distributionListValid =
       (this.emailService.isToValid &&
@@ -280,20 +272,7 @@ export class EmailTemplateComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (
-      changes['isDisable'] &&
-      changes['isDisable'].previousValue !== changes['isDisable'].currentValue
-    ) {
-      if (this.isDisable) {
-        this.segmentForm?.get('segment')?.disable();
-        this.segmentForm?.get('dataType')?.disable();
-        this.distributionList?.get('reference')?.disable();
-      } else {
-        this.segmentForm?.get('segment')?.enable();
-        this.segmentForm?.get('dataType')?.enable();
-        this.distributionList?.get('reference')?.enable();
-      }
-    }
+    console.log(changes);
   }
 
   /**
