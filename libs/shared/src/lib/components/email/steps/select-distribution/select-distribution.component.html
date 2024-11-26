@@ -176,7 +176,7 @@
           {{ 'components.select.distribution.to' | translate }}
         </ng-container>
         <ng-template uiTabContent>
-          <ui-alert class="mb-4" variant="warning" *ngIf="emailService?.isEdit">
+          <ui-alert class="mb-4" variant="warning" *ngIf="distributionListId">
             {{ 'components.distributionLists.DLWarning.message' | translate }}
           </ui-alert>
           <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.to">
@@ -201,7 +201,7 @@
           {{ 'components.select.distribution.cc' | translate }}
         </ng-container>
         <ng-template uiTabContent>
-          <ui-alert class="mb-4" variant="warning" *ngIf="emailService?.isEdit">
+          <ui-alert class="mb-4" variant="warning" *ngIf="distributionListId">
             {{ 'components.distributionLists.DLWarning.message' | translate }}
           </ui-alert>
           <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.cc">
@@ -226,7 +226,7 @@
           {{ 'components.select.distribution.bcc' | translate }}
         </ng-container>
         <ng-template uiTabContent>
-          <ui-alert class="mb-4" variant="warning" *ngIf="emailService?.isEdit">
+          <ui-alert class="mb-4" variant="warning" *ngIf="distributionListId">
             {{ 'components.distributionLists.DLWarning.message' | translate }}
           </ui-alert>
           <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.bcc">
