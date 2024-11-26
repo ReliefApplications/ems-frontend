@@ -552,4 +552,37 @@ export class ReferenceDataService {
       console.error(err);
     }
   }
+
+  /**
+   * Get common service filter data
+   *
+   * @param key selected field key
+   * @returns options for the selected fields
+   */
+  public async getFilterData(key: string): Promise<any> {
+    //  todo Modify API environment changes dynamically
+
+    // Construct the dynamic URL based on the key
+    const requestUrl = `http://localhost:3000/proxy/CS_DEV/referenceData/items/${key}`;
+
+    try {
+      // Make the GET request using the common method
+      const data = await this.apiProxy.promisedRequestWithHeaders(requestUrl);
+
+      if (
+        key === 'Users' &&
+        data?.value &&
+        Array.isArray(data.value) &&
+        data.value.length > 0
+      ) {
+        const keys = Object.keys(data.value[0]);
+        return keys;
+      }
+
+      return data || [];
+    } catch (error) {
+      console.error(`Error fetching data for key ${key}:`, error);
+      throw error;
+    }
+  }
 }

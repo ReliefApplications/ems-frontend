@@ -149,6 +149,7 @@ export class EmailTemplateComponent
     'Add Manually',
     'Select With Filter',
     'Use Combination',
+    'Select from Common Servcies',
   ];
   /** Time units for filtering. */
   public timeUnits = [
@@ -181,12 +182,31 @@ export class EmailTemplateComponent
   public nonEmailFieldsAlert = false;
   /** Actual resourceFields data  */
   public resourceFields: any = [];
+  /** Actual referenceFields common service data  */
+  public commonServiceFields: any = [];
   /** Expand for "To" list items. */
   isExpandedPreview = false;
   /** Expand for "To" list items. */
   isPreviewEmail = true;
   /** DL preview emails  */
   previewDLEmails: any = [];
+  /** accordion items */
+  public accordionItems: any = [
+    'Add Manually',
+    'Select With Filter',
+    'Select from Common Servcies',
+  ];
+  /** accordion expandedIndex */
+  expandedIndex = 0;
+  /** Form group for Common service filter query. */
+  public dlCommonQuery!: FormGroup | any;
+  /** Common service Query filter Preview HTML */
+  public previewCommonHTML: any = '';
+
+  /** Declare Dropdown Userfields property */
+  userTableFields: string[] = [];
+  /** Declare Dropdown fields property */
+  // fields: { key: string; la: string }[] = [];
 
   /**
    * Composite filter group.
@@ -226,6 +246,7 @@ export class EmailTemplateComponent
     this.segmentForm.get('segment')?.valueChanges.subscribe((value: any) => {
       this.clearUnusedValues(value);
     });
+    this.setCommonServiceFields();
 
     this.distributionListValid =
       (this.emailService.isToValid &&
@@ -233,7 +254,8 @@ export class EmailTemplateComponent
       this.type === 'to';
 
     this.dlQuery = this.distributionList.get('query') as FormGroup;
-
+    this.dlCommonQuery = this.emailService.createQuerygroup() as FormGroup;
+    this.resetFilters(this.dlCommonQuery);
     if (this.distributionList.controls.resource?.value && !this.resource) {
       this.selectedResourceId = this.distributionList.controls.resource.value;
       this.segmentForm.get('dataType')?.setValue('Resource');
@@ -277,6 +299,21 @@ export class EmailTemplateComponent
       this.updateSegmentOptions('Select With Filter');
     } else {
       this.updateSegmentOptions('Add Manually');
+    }
+  }
+
+  /**
+   * Get the user table fields from common service
+   */
+  public async getUserTableFields() {
+    try {
+      // Fetch the user table fields from the getFilterData
+      const data = await this.referenceData.getFilterData('Users');
+      if (data) {
+        this.userTableFields = data;
+      }
+    } catch (error) {
+      console.error('Error fetching user table fields:', error);
     }
   }
 
@@ -826,6 +863,7 @@ export class EmailTemplateComponent
    */
   onSegmentChange(event: any): void {
     this.noEmail.emit(false);
+    // this.commonServiceFields = [];
     const segment = event?.target?.value || event;
     this.activeSegmentIndex = this.segmentList.indexOf(segment);
     this.showPreview = false;
@@ -867,6 +905,9 @@ export class EmailTemplateComponent
       }
 
       this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
+    }
+    if (this.activeSegmentIndex === 3) {
+      this.onTabSelect(0, false);
     }
   }
 
@@ -1016,6 +1057,52 @@ export class EmailTemplateComponent
     if (!this.nonEmailFieldsAlert && matchedData !== 'email') {
       this.nonEmailFieldsAlert = true;
     }
+  }
+
+  /**
+   * To get data set for the applied filters.
+   *
+   */
+  getCommonServiceDataSet() {
+    console.log('Test');
+  }
+
+  /**
+   * Set the common service fields.
+   *
+   */
+  async setCommonServiceFields() {
+    await this.getUserTableFields();
+    const fields = [
+      { key: 'Application', label: 'Application' },
+      { key: 'PermissionAccessType', label: ' Access Type' },
+      { key: 'SystemRole', label: ' Role' },
+      { key: ' SystemPosition', label: 'Position' },
+      { key: ' Country', label: 'Country' },
+      { key: ' Region', label: 'Region' },
+    ];
+
+    fields?.forEach((ele: any) => {
+      this.commonServiceFields.push({
+        graphQLFieldName: ele,
+        name: ele.key,
+        kind: 'SCALAR',
+        type: 'checkbox',
+        editor: 'select',
+        isCommonService: true,
+      });
+    });
+
+    this.userTableFields?.forEach((ele: any) => {
+      this.commonServiceFields.push({
+        graphQLFieldName: ele,
+        name: ele,
+        kind: 'SCALAR',
+        type: 'text',
+        editor: 'text',
+        isCommonService: true,
+      });
+    });
   }
 
   /**
