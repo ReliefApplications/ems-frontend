@@ -452,7 +452,26 @@ export class GridSettingsComponent
           const distributionList = res.data.emailDistributionLists.edges.map(
             (e: any) => e.node
           );
-          this.distributionLists = distributionList || [];
+          // Filter distribution list based on grid resource
+          let filteredDistributionLists = distributionList?.filter(
+            (x: any) =>
+              x.to?.resource === null ||
+              x.to?.resource === '' ||
+              x.to?.resource === this.resource?.id
+          );
+          filteredDistributionLists = filteredDistributionLists?.filter(
+            (x: any) =>
+              x.cc?.resource === null ||
+              x.cc?.resource === '' ||
+              x.cc?.resource === this.resource?.id
+          );
+          filteredDistributionLists = filteredDistributionLists?.filter(
+            (x: any) =>
+              x.bcc?.resource === null ||
+              x.bcc?.resource === '' ||
+              x.bcc?.resource === this.resource?.id
+          );
+          this.distributionLists = filteredDistributionLists || [];
         }
       });
   }

@@ -535,7 +535,7 @@ export class QueryBuilderService {
    * @returns filter fields as Promise
    */
   public async getFilterFields(query: any): Promise<Field[]> {
-    if (query) {
+    if (query && query?.name) {
       const querySource$ = this.getQuerySource(query);
       const sourceQuery = querySource$ && firstValueFrom(querySource$);
       if (sourceQuery) {
