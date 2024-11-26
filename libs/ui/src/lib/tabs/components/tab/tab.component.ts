@@ -1,6 +1,7 @@
 import {
   AfterContentChecked,
   AfterContentInit,
+  ChangeDetectorRef,
   Component,
   ContentChild,
   ElementRef,
@@ -54,22 +55,36 @@ export class TabComponent implements AfterContentChecked, AfterContentInit {
   variant: Variant = 'default';
   /** Whether the tab is vertical or not */
   vertical = false;
-  /** Whether the tab is selected or not */
-  selected = false;
+  /** Store selected status */
+  _selected = false;
   /** Tab index */
   index = 0;
   /** Tab classes */
   resolveTabClasses: string[] = [];
-
   /** Content portal */
   contentPortal: TemplatePortal | null = null;
+
+  /** Whether the tab is selected or not */
+  set selected(value: boolean) {
+    this._selected = value;
+    this.cdr.detectChanges();
+  }
+
+  /** @returns is the tab selected */
+  get selected() {
+    return this._selected;
+  }
 
   /**
    * UI tab component
    *
    * @param viewContainerRef Angular view container reference
+   * @param cdr Change detected ref
    */
-  constructor(private viewContainerRef: ViewContainerRef) {}
+  constructor(
+    private viewContainerRef: ViewContainerRef,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngAfterContentInit(): void {
     this.contentPortal = new TemplatePortal(
