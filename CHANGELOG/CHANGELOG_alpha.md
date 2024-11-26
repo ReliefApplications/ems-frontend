@@ -1,3 +1,10 @@
+# [2.17.0-alpha.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.10...v2.17.0-alpha.11) (2024-11-26)
+
+
+### Bug Fixes
+
+* default path generating incorrect redirection after login ([26b853e](https://github.com/ReliefApplications/ems-frontend/commit/26b853ea56c42373fa49cf4f7a766e3592bc6f94))
+
 # [2.17.0-alpha.10](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.9...v2.17.0-alpha.10) (2024-11-26)
 
 
