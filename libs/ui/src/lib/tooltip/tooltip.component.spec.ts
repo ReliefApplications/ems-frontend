@@ -1,8 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TooltipComponent } from './tooltip.component';
 import { TooltipDirective } from './tooltip.directive';
-import { By } from '@angular/platform-browser';
 
 describe('TooltipComponent', () => {
   let component: TooltipComponent;
@@ -19,10 +17,15 @@ describe('TooltipComponent', () => {
   });
 
   it('should create an instance', () => {
-    const directiveEl = fixture.debugElement.query(
-      By.directive(TooltipDirective)
-    );
-    expect(directiveEl).not.toBeNull();
     expect(component).toBeTruthy();
+  });
+
+  it('should display the tooltip text', () => {
+    component.uiTooltip = 'Sample Tooltip';
+    fixture.detectChanges(); // Trigger change detection
+
+    const tooltipElement: HTMLElement =
+      fixture.nativeElement.querySelector('span');
+    expect(tooltipElement.textContent).toBe('Sample Tooltip');
   });
 });

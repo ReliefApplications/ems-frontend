@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -68,8 +69,13 @@ export class PaginatorComponent implements OnChanges, AfterViewInit, OnDestroy {
    *
    * @param renderer Angular renderer
    * @param el Element reference
+   * @param cdr Change detector ref
    */
-  constructor(private renderer: Renderer2, private el: ElementRef) {}
+  constructor(
+    private renderer: Renderer2,
+    private el: ElementRef,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngAfterViewInit() {
     this.updateDisplay();
@@ -77,6 +83,7 @@ export class PaginatorComponent implements OnChanges, AfterViewInit, OnDestroy {
       this.updateDisplay();
     });
     this.resizeObserver.observe(this.el.nativeElement.parentElement);
+    this.cdr.detectChanges(); // Avoid Change after checked issue
   }
 
   ngOnChanges(changes: SimpleChanges) {
