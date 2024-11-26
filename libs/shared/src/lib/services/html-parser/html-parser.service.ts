@@ -215,7 +215,7 @@ export class HtmlParserService {
        */
       call: (...values) => {
         // Ensure that the values are treated as numbers
-        return min(values.map((x) => Number(x)))?.toString() || '';
+        return min(values?.map((x) => Number(x)))?.toString() || '';
       },
     },
     max: {
@@ -228,7 +228,7 @@ export class HtmlParserService {
        */
       call: (...values) => {
         // Ensure that the values are treated as numbers
-        return max(values.map((x) => Number(x)))?.toString() || '';
+        return max(values?.map((x) => Number(x)))?.toString() || '';
       },
     },
     date: {
