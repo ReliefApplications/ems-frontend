@@ -221,13 +221,17 @@ export class AuthService {
     if (!localStorage.getItem('idtoken')) {
       let redirectUri: URL;
       let pathName: string;
+      console.log(location.href);
       if (this.environment.module === 'backoffice') {
         pathName = location.href.replace(this.environment.backOfficeUri, '/');
         redirectUri = new URL(pathName, this.environment.backOfficeUri);
       } else {
+        console.log(this.environment.frontOfficeUri);
         pathName = location.href.replace(this.environment.frontOfficeUri, '/');
         redirectUri = new URL(pathName, this.environment.frontOfficeUri);
       }
+      console.log(pathName);
+      console.log(redirectUri);
       if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
         localStorage.setItem(
           'redirectPath',
