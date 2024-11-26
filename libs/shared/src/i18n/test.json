@@ -2632,6 +2632,7 @@
 		},
 		"aggregation": {
 			"preview": {
+				"help": "******",
 				"label": "******",
 				"missingAggregation": "******"
 			}
