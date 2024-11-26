@@ -168,7 +168,7 @@
           {{ 'components.select.distribution.bcc' | translate }}
         </ng-container>
         <ng-template uiTabContent>
-          <ui-alert class="mb-4" variant="warning" *ngIf="emailService?.isEdit">
+          <ui-alert class="mb-4" variant="warning" *ngIf="distributionListId">
             {{ 'components.distributionLists.DLWarning.message' | translate }}
           </ui-alert>
           <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.bcc">

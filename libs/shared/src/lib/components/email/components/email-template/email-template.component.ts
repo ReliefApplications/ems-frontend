@@ -215,7 +215,6 @@ export class EmailTemplateComponent
     { key: 'Country', label: 'Country' },
     { key: 'Region', label: 'Region' },
   ];
-
   /**
    * Composite filter group.
    *
