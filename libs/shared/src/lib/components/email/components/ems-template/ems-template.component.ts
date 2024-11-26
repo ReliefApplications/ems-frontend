@@ -417,8 +417,25 @@ export class EmsTemplateComponent
     );
     //Check if DL id exist or all the dataset are to be send separate
     if (emailData?.emailDistributionList?.id && !isAllSendSeparate) {
-      const dlList: any = emailData?.emailDistributionList;
-      emailData.emailDistributionList = emailData.emailDistributionList.id;
+      //Common service payload rebuild
+      const objData: any = cloneDeep(emailData);
+      objData.emailDistributionList.to.commonServiceFilter =
+        this.emailService.setCommonServicePayload(
+          objData.emailDistributionList.to.commonServiceFilter.filter
+        )?.commonServiceFilter;
+
+      objData.emailDistributionList.cc.commonServiceFilter =
+        this.emailService.setCommonServicePayload(
+          objData.emailDistributionList.cc.commonServiceFilter.filter
+        )?.commonServiceFilter;
+
+      objData.emailDistributionList.bcc.commonServiceFilter =
+        this.emailService.setCommonServicePayload(
+          objData.emailDistributionList.bcc.commonServiceFilter.filter
+        )?.commonServiceFilter;
+
+      const dlList: any = objData.emailDistributionList;
+      emailData.emailDistributionList = objData.emailDistributionList.id;
       if (
         emailData.emailDistributionList ||
         emailData.emailDistributionList?.id
@@ -431,11 +448,30 @@ export class EmsTemplateComponent
       ((emailData.emailDistributionList?.to?.resource ||
         emailData.emailDistributionList?.to?.reference) &&
         emailData.emailDistributionList?.to?.query?.fields?.length) ||
-      emailData.emailDistributionList?.to?.inputEmails?.length
+      emailData.emailDistributionList?.to?.inputEmails?.length ||
+      emailData.emailDistributionList?.to?.commonServiceFilter?.filter?.filters
+        ?.length > 0
     ) {
+      //Common service payload rebuild
+      const objData: any = cloneDeep(emailData);
+      objData.emailDistributionList.to.commonServiceFilter =
+        this.emailService.setCommonServicePayload(
+          objData.emailDistributionList.to.commonServiceFilter.filter
+        )?.commonServiceFilter;
+
+      objData.emailDistributionList.cc.commonServiceFilter =
+        this.emailService.setCommonServicePayload(
+          objData.emailDistributionList.cc.commonServiceFilter.filter
+        )?.commonServiceFilter;
+
+      objData.emailDistributionList.bcc.commonServiceFilter =
+        this.emailService.setCommonServicePayload(
+          objData.emailDistributionList.bcc.commonServiceFilter.filter
+        )?.commonServiceFilter;
+
       const distributionList = await firstValueFrom(
         this.emailService.addDistributionList(
-          emailData.emailDistributionList,
+          objData.emailDistributionList,
           emailData.applicationId
         )
       );

@@ -244,10 +244,34 @@ export class PreviewComponent
    */
   loadDistributionList() {
     this.emailService.loading = true;
+    const objData: any = cloneDeep(this.query);
+    //Updating payload
+
+    if (objData.emailDistributionList?.bcc?.commonServiceFilter?.filter) {
+      objData.emailDistributionList.to.commonServiceFilter =
+        this.emailService.setCommonServicePayload(
+          objData.emailDistributionList?.to?.commonServiceFilter?.filter
+        )?.commonServiceFilter;
+    }
+
+    if (objData.emailDistributionList?.cc?.commonServiceFilter) {
+      objData.emailDistributionList.cc.commonServiceFilter =
+        this.emailService.setCommonServicePayload(
+          objData.emailDistributionList?.cc?.commonServiceFilter?.filter
+        )?.commonServiceFilter;
+    }
+
+    if (objData.emailDistributionList?.bcc?.commonServiceFilter) {
+      objData.emailDistributionList.bcc.commonServiceFilter =
+        this.emailService.setCommonServicePayload(
+          objData.emailDistributionList?.bcc?.commonServiceFilter?.filter
+        )?.commonServiceFilter;
+    }
+
     this.http
       .post(
-        `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
-        this.query
+        `${this.restService.apiUrl}/notification/azure/preview-distribution-lists/`,
+        objData
       )
       .subscribe(
         (response: any) => {
@@ -323,7 +347,7 @@ export class PreviewComponent
     this.previewUrl = this.emailService.isQuickAction
       ? `${this.restService.apiUrl}/notification/preview-quick-email`
       : this.query
-      ? `${this.restService.apiUrl}/notification/preview-email/`
+      ? `${this.restService.apiUrl}/notification/azure/preview-email/`
       : '';
 
     // Checks if url exists
@@ -349,12 +373,30 @@ export class PreviewComponent
             ]
           : [],
       };
+      const objData: any = cloneDeep(this.query);
+      if (!this.emailService.isQuickAction) {
+        //Updating payload
+        objData.emailDistributionList.to.commonServiceFilter =
+          this.emailService.setCommonServicePayload(
+            objData.emailDistributionList.to.commonServiceFilter.filter
+          )?.commonServiceFilter;
+
+        objData.emailDistributionList.cc.commonServiceFilter =
+          this.emailService.setCommonServicePayload(
+            objData.emailDistributionList.cc.commonServiceFilter.filter
+          )?.commonServiceFilter;
+
+        objData.emailDistributionList.bcc.commonServiceFilter =
+          this.emailService.setCommonServicePayload(
+            objData.emailDistributionList.bcc.commonServiceFilter.filter
+          )?.commonServiceFilter;
+      }
       // this.query.emailLayout.subject =
       //   this.emailService.allLayoutdata?.txtSubject;
       this.http
         .post(
           this.previewUrl,
-          this.emailService.isQuickAction ? emailData : this.query
+          this.emailService.isQuickAction ? emailData : objData
         )
         .subscribe(
           (response: any) => {

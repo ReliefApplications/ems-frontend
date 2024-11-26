@@ -17,6 +17,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 import { EmailService } from '../../email/email.service';
 import convertToMinutes from '../../../utils/convert-to-minutes';
+import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 
 /**
  * Composite filter row.
@@ -78,6 +79,8 @@ export class FilterRowComponent
     { value: 'months', label: 'Months' },
     { value: 'years', label: 'Years' },
   ];
+  /** Show loading sign */
+  public loading = false;
 
   /** @returns value form field as form control. */
   get valueControl(): UntypedFormControl {
@@ -88,8 +91,12 @@ export class FilterRowComponent
    * Composite filter row.
    *
    * @param emailService email notifications helper functions
+   * @param referenceDataService
    */
-  constructor(public emailService: EmailService) {
+  constructor(
+    public emailService: EmailService,
+    private referenceDataService: ReferenceDataService
+  ) {
     super();
   }
 
@@ -97,8 +104,15 @@ export class FilterRowComponent
     this.form
       .get('field')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
+      .subscribe(async (value) => {
         // remove value
+        const selectedField = this.fields.filter((x: any) => x.name == value);
+        if (
+          selectedField?.[0]?.isCommonService &&
+          selectedField?.[0]?.editor === 'select'
+        ) {
+          await this.getFilterdata(value, selectedField[0]);
+        }
         if (this.form?.get('operator')?.value) {
           this.setField(value);
         } else {
@@ -143,6 +157,9 @@ export class FilterRowComponent
       });
     if (this.disabled) {
       this.form.disable();
+    }
+    if (this.field?.isCommonService) {
+      this.field.options = this.getFilterdata(this.field?.name, this.field);
     }
   }
 
@@ -335,5 +352,22 @@ export class FilterRowComponent
       this.editor = this.contextEditor;
       this.contextEditorIsActivated = true;
     }
+  }
+
+  /**
+   * Get common service filter data
+   *
+   * @param key selected key name
+   * @param selectedField selected field object
+   */
+  async getFilterdata(key: string, selectedField: any) {
+    this.loading = true;
+    const data = await this.referenceDataService.getFilterData(key);
+    this.loading = false;
+    selectedField.options =
+      data?.value.map((x: any) => ({
+        text: x?.Name,
+        value: x?.Name,
+      })) || [];
   }
 }

@@ -533,7 +533,7 @@ export class DatasetFilterComponent
           if (!this.showFieldsWarning) {
             this.http
               .post(
-                `${this.restService.apiUrl}/notification/preview-dataset`,
+                `${this.restService.apiUrl}/notification/azure/preview-dataset`,
                 objPreview
               )
               .subscribe(
