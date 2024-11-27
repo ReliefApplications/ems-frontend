@@ -658,7 +658,7 @@ export class HtmlParserService {
       data?: any;
       aggregation?: any;
       fields?: any;
-      pages: any[];
+      pages?: any[];
       styles?: any[];
     }
   ) {
