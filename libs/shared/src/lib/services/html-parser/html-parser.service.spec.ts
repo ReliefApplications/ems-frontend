@@ -288,7 +288,9 @@ describe('HtmlParserService', () => {
       replaceAggregationData = jest.spyOn(service, 'replaceAggregationData');
     });
     it('executes replaceAggregationData function', () => {
-      service.parseHtml(aggregationFormatElement.before, {});
+      service.parseHtml(aggregationFormatElement.before, {
+        aggregation: optionsAggregation,
+      });
       expect(replaceAggregationData).toHaveBeenCalled();
     });
     it('executes html element parse with aggregation data correctly', () => {
