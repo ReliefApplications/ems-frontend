@@ -154,7 +154,7 @@ const predefinedDateFormats = [
     result: `1:00:00 PM GMT+01:00`,
   }, // Example: 1:00:00 PM GMT+00:00
 ];
-
+/** Html with calc functions */
 const calcFormatElement = {
   before: `
 <p>{{calc.round( 9.5 ; 1 )}}</p>

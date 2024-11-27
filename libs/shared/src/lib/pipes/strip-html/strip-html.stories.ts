@@ -102,7 +102,7 @@ export const ComplexHTML: Story = {
     `,
   },
 };
-
+/** all inline tags html story */
 export const allInlineTags: Story = {
   args: {
     htmlValue: `
