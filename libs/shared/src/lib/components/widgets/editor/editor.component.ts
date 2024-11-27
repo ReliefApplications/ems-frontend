@@ -84,6 +84,8 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
   private cancelRefresh$ = new Subject<void>();
   /** Timeout to init active filter */
   private timeoutListener!: NodeJS.Timeout;
+  /** Aggregation data for render html data */
+  private aggregationData = {};
 
   /** @returns does the card use reference data */
   get useReferenceData() {
@@ -274,6 +276,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
    * Set widget html.
    */
   private setHtml() {
+    this.aggregationData = {};
     const callback = () => {
       if (this.timeoutListener) {
         clearTimeout(this.timeoutListener);
@@ -332,7 +335,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
             this.settings.text,
             {
               data: this.fieldsValue,
-              aggregation: this.aggregations,
+              aggregation: this.aggregationData,
               fields: this.fields,
               styles: this.styles,
             }
@@ -379,7 +382,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
             this.settings.text,
             {
               data: this.fieldsValue,
-              aggregation: this.aggregations,
+              aggregation: this.aggregationData,
               fields: this.fields,
             }
           );
@@ -394,7 +397,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
             this.settings.text,
             {
               data: this.fieldsValue,
-              aggregation: this.aggregations,
+              aggregation: this.aggregationData,
               fields: this.fields,
             }
           );
@@ -436,13 +439,13 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
           .then(({ data }) => {
             if (aggregation.resource) {
               set(
-                this.aggregations,
+                this.aggregationData,
                 aggregation.id,
                 (data as any).recordsAggregation
               );
             } else {
               set(
-                this.aggregations,
+                this.aggregationData,
                 aggregation.id,
                 (data as any).referenceDataAggregation
               );
@@ -483,7 +486,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
                             ),
                         })
                         .then((data) => {
-                          set(this.aggregations, aggregation.id, data);
+                          set(this.aggregationData, aggregation.id, data);
                         })
                         .finally(() => resolve());
                     })
@@ -536,7 +539,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
                 this.settings.text,
                 {
                   data: this.fieldsValue,
-                  aggregation: this.aggregations,
+                  aggregation: this.aggregationData,
                   fields: this.fields,
                   styles: this.styles,
                 }

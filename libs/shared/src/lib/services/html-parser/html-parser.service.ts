@@ -115,6 +115,8 @@ const createAvatarGroup = (
 export class HtmlParserService {
   /** Date pipe used for transforming date calc values */
   private datePipe = inject(DatePipe);
+  /** Function for replacing aggregation data in html */
+  replaceAggregationData = replaceAggregationData;
 
   /**
    * Definition of all supported functions for calculations inside the text of a
@@ -307,7 +309,7 @@ export class HtmlParserService {
    * @param styles Array of layout styles.
    * @returns formatted html.
    */
-  private replaceRecordFields(
+  replaceRecordFields(
     html: string,
     fieldsValue: any,
     fields: any,
@@ -663,8 +665,8 @@ export class HtmlParserService {
     }
   ) {
     let formattedHtml = replacePages(html, options.pages);
-    if (options.aggregation) {
-      formattedHtml = replaceAggregationData(
+    if (Object.keys(options.aggregation || {})?.length) {
+      formattedHtml = this.replaceAggregationData(
         formattedHtml,
         options.aggregation
       );
