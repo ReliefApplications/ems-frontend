@@ -65,46 +65,46 @@ export const customDateFormats = [
   }, // Tuesday, November 26, 2024: Full day name, month name, day, year
   {
     format: 'MMM d, y, h:mm a',
-    result: `Nov 26, 2024, 1:00 PM`,
-  }, // Nov 26, 2024, 1:00 PM: Short month name, day, year, 12-hour time
+    result: `Nov 26, 2024, 12:00 PM`,
+  }, // Nov 26, 2024, 12:00 PM: Short month name, day, year, 12-hour time
   {
     format: "MMMM d, y 'at' h:mm a",
-    result: `November 26, 2024 at 1:00 PM`,
-  }, // November 26, 2024 at 1:00 PM: Full month, day, year with literal text
+    result: `November 26, 2024 at 12:00 PM`,
+  }, // November 26, 2024 at 12:00 PM: Full month, day, year with literal text
   {
     format: 'yyyy/MM/dd HH:mm:ss Z',
-    result: `2024/11/26 13:00:00 +0100`,
+    result: `2024/11/26 12:00:00 +0000`,
   }, // 2024/11/26 1:00:00 +0000: ISO-like with timezone offset
   {
     format: 'yyyy-MM-ddTHH:mm:ss',
-    result: `2024-11-26T13:00:00`,
+    result: `2024-11-26T12:00:00`,
   }, // 2024-11-26T1:00:00: ISO 8601 with "T" separator for time
-  { format: 'hh:mm a', result: `01:00 PM` }, // 1:00 PM: 12-hour time with AM/PM
-  { format: 'HH:mm:ss', result: `13:00:00` }, // 1:00:00: 24-hour time with seconds
+  { format: 'hh:mm a', result: `12:00 PM` }, // 1:00 PM: 12-hour time with AM/PM
+  { format: 'HH:mm:ss', result: `12:00:00` }, // 1:00:00: 24-hour time with seconds
   { format: 'MMMM d', result: `November 26` }, // November 26: Full month name and day (no year)
   { format: 'E, MMM dd yyyy', result: `Tue, Nov 26 2024` }, // Tue, Nov 26 2024: Short day name, short month, day, year
   { format: 'yyyy MMMM dd', result: `2024 November 26` }, // 2024 November 26: Year, full month name, day
   {
     format: 'yyyy-MM-dd HH:mm',
-    result: `2024-11-26 13:00`,
+    result: `2024-11-26 12:00`,
   }, // 2024-11-26 1:00: ISO-like date with hours and minutes
   { format: 'dd-MMM-yyyy', result: `26-Nov-2024` }, // 26-Nov-2024: Day, short month name, year
   { format: 'MM/yyyy', result: `11/2024` }, // 11/2024: Month and year only
   {
     format: 'HH:mm:ss.SSS',
-    result: `13:00:00.000`,
+    result: `12:00:00.000`,
   }, // 1:00:00.000: 24-hour time with milliseconds
   {
     format: 'EEE, d MMM yyyy HH:mm:ss Z',
-    result: `Tue, 26 Nov 2024 13:00:00 +0100`,
+    result: `Tue, 26 Nov 2024 12:00:00 +0000`,
   }, // Tue, 26 Nov 2024 1:00:00 +0000: RFC 2822 format (emails)
   {
     format: 'yyyy-MM-dd HH:mm:ss zzzz',
-    result: `2024-11-26 13:00:00 GMT+01:00`,
-  }, // 2024-11-26 1:00:00 GMT+01:00: Full timezone name
+    result: `2024-11-26 12:00:00 GMT+00:00`,
+  }, // 2024-11-26 1:00:00 GMT+00:00: Full timezone name
   {
     format: 'h:mm:ss a z',
-    result: `1:00:00 PM GMT+1`,
+    result: `12:00:00 PM GMT+0`,
   }, // 12:00:00 PM GMT: 12-hour time with seconds and timezone abbreviation
   { format: 'G yyyy-MM-dd', result: 'AD 2024-11-26' }, // AD 2024-11-26: Era designator (AD/BC), year, month, day
 ];
@@ -112,20 +112,20 @@ export const customDateFormats = [
 export const predefinedDateFormats = [
   {
     format: 'short',
-    result: `11/26/24, 1:00 PM`,
-  }, // Example: 11/26/24, 1:00 PM
+    result: `11/26/24, 12:00 PM`,
+  }, // Example: 11/26/24, 12:00 PM
   {
     format: 'medium',
-    result: `Nov 26, 2024, 1:00:00 PM`,
-  }, // Example: Nov 26, 2024, 1:00:00 PM
+    result: `Nov 26, 2024, 12:00:00 PM`,
+  }, // Example: Nov 26, 2024, 12:00:00 PM
   {
     format: 'long',
-    result: `November 26, 2024 at 1:00:00 PM GMT+1`,
-  }, // Example: November 26, 2024 at 1:00:00 PM GMT+1
+    result: `November 26, 2024 at 12:00:00 PM GMT+0`,
+  }, // Example: November 26, 2024 at 12:00:00 PM GMT+0
   {
     format: 'full',
-    result: `Tuesday, November 26, 2024 at 1:00:00 PM GMT+01:00`,
-  }, // Example: Tuesday, November 26, 2024 at 1:00:00 PM GMT+01:00
+    result: `Tuesday, November 26, 2024 at 12:00:00 PM GMT+00:00`,
+  }, // Example: Tuesday, November 26, 2024 at 12:00:00 PM GMT+00:00
   { format: 'shortDate', result: '11/26/24' }, // Example: 11/26/24
   { format: 'mediumDate', result: 'Nov 26, 2024' }, // Example: Nov 26, 2024
   { format: 'longDate', result: 'November 26, 2024' }, // Example: November 26, 2024
@@ -133,19 +133,19 @@ export const predefinedDateFormats = [
     format: 'fullDate',
     result: 'Tuesday, November 26, 2024',
   }, // Example: Tuesday, November 26, 2024
-  { format: 'shortTime', result: `1:00 PM` }, // Example: 1:00 PM
+  { format: 'shortTime', result: `12:00 PM` }, // Example: 12:00 PM
   {
     format: 'mediumTime',
-    result: `1:00:00 PM`,
-  }, // Example: 1:00:00 PM
+    result: `12:00:00 PM`,
+  }, // Example: 12:00:00 PM
   {
     format: 'longTime',
-    result: `1:00:00 PM GMT+1`,
-  }, // Example: 1:00:00 PM GMT
+    result: `12:00:00 PM GMT+0`,
+  }, // Example: 12:00:00 PM GMT
   {
     format: 'fullTime',
-    result: `1:00:00 PM GMT+01:00`,
-  }, // Example: 1:00:00 PM GMT+00:00
+    result: `12:00:00 PM GMT+00:00`,
+  }, // Example: 12:00:00 PM GMT+00:00
 ];
 /** Html with calc functions */
 export const calcFormatElement = {
@@ -306,7 +306,7 @@ export const dataFormatElement = {
 <p>{{data.createdAt}}</p>
 <p>{{data.modifiedAt}}</p>
  `,
-  after: `<p>66fa9502760ab688bf8508e9s</p><p>Published</p><p>I can't believe this is a title</p><p>Super duper dubi dat gua trikili dup description</p><p><input type="checkbox" style="margin: 0; height: 16px; width: 16px;" checked disabled></input></p><p><span style=''>9/28/2024, 2:21 PM</span></p><p><span style=''>9/30/2024</span></p> `,
+  after: `<p>66fa9502760ab688bf8508e9s</p><p>Published</p><p>I can't believe this is a title</p><p>Super duper dubi dat gua trikili dup description</p><p><input type="checkbox" style="margin: 0; height: 16px; width: 16px;" checked disabled></input></p><p><span style=''>9/28/2024, 0:21 PM</span></p><p><span style=''>9/30/2024</span></p> `,
 };
 /** Record data */
 export const optionsData = {
