@@ -223,7 +223,7 @@ export class AuthService {
         this.environment.module === 'backoffice'
           ? this.environment.backOfficeUri
           : this.environment.frontOfficeUri;
-      environmentUri = environmentUri.endsWith('/').replace(/\/$/, '');
+      environmentUri = environmentUri.replace(/\/$/, '');
       const pathName = location.href.replace(environmentUri, '/');
       const redirectUri = new URL(pathName, environmentUri);
       if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
