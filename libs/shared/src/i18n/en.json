@@ -2753,6 +2753,7 @@
 		},
 		"aggregation": {
 			"preview": {
+				"help": "Only the first 10 items can be displayed during preview",
 				"label": "Aggregation data preview",
 				"missingAggregation": "Cannot load selected aggregation. Aggregation not found"
 			}

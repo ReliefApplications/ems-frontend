@@ -3,6 +3,12 @@ import { PaginatorComponent } from './paginator.component';
 import { PaginatorModule } from './paginator.module';
 import { TranslateTestingModule } from 'ngx-translate-testing';
 
+global.ResizeObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}));
+
 describe('PaginatorComponent', () => {
   let component: PaginatorComponent;
   let fixture: ComponentFixture<PaginatorComponent>;
