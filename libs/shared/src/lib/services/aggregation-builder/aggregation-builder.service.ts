@@ -1,14 +1,22 @@
+import { Dialog } from '@angular/cdk/dialog';
 import { Injectable } from '@angular/core';
-import { PipelineStage } from '../../components/ui/aggregation-builder/pipeline/pipeline-stage.enum';
-import { Accumulators } from '../../components/ui/aggregation-builder/pipeline/expressions/operators';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { addNewField } from '../../components/query-builder/query-builder-forms';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { GraphQLError } from 'graphql';
 import { cloneDeep } from 'lodash';
-import { QueryBuilderService } from '../query-builder/query-builder.service';
-import { Aggregation } from '../../models/aggregation.model';
-import { Resource } from '../../models/resource.model';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
+import { addNewField } from '../../components/query-builder/query-builder-forms';
+import { Accumulators } from '../../components/ui/aggregation-builder/pipeline/expressions/operators';
+import { PipelineStage } from '../../components/ui/aggregation-builder/pipeline/pipeline-stage.enum';
+import {
+  Aggregation,
+  AggregationDataQueryResponse,
+  ReferenceDataAggregationQueryResponse,
+} from '../../models/aggregation.model';
 import { ReferenceData } from '../../models/reference-data.model';
+import { Resource } from '../../models/resource.model';
 import getReferenceDataAggregationFields from '../../utils/reference-data/aggregation-fields.util';
+import { AggregationService } from '../aggregation/aggregation.service';
+import { QueryBuilderService } from '../query-builder/query-builder.service';
 
 /**
  * Shared aggregation service.
@@ -26,8 +34,14 @@ export class AggregationBuilderService {
    * Aggregation builder service
    *
    * @param queryBuilder shared query builder service
+   * @param aggregationService Aggregation service
+   * @param dialog CDK dialog service
    */
-  constructor(private queryBuilder: QueryBuilderService) {}
+  constructor(
+    private queryBuilder: QueryBuilderService,
+    private aggregationService: AggregationService,
+    private dialog: Dialog
+  ) {}
 
   /**
    * Get the data for grid preview as an observable.
@@ -267,5 +281,74 @@ export class AggregationBuilderService {
       })
       .filter((x: any) => x !== null);
     return this.fieldsAfter(selectedFields, aggregation?.pipeline);
+  }
+
+  /**
+   * Open a preview modal for the given aggregation
+   * Preview data is displayed using a monaco editor
+   *
+   * @param aggregationDataOptions Aggregation data options
+   * @param aggregationDataOptions.referenceData Related reference data
+   * @param aggregationDataOptions.resource Related resource
+   * @param aggregationDataOptions.aggregation Aggregation to fetch
+   * @param aggregationDataOptions.sourceFields Source fields to display
+   * @param aggregationDataOptions.pipeline Pipeline to be applied
+   * @param aggregationDataOptions.mapping Mapping to be applied
+   * @param aggregationDataOptions.contextFilters Any context filters to apply
+   * @param aggregationDataOptions.at Date from where to fetch items
+   * @param aggregationDataOptions.first How many items to fetch
+   * @param aggregationDataOptions.queryParams Any query params for the request
+   * @returns errors to be displayed or undefined if successful load
+   */
+  public async onPreviewAggregation(aggregationDataOptions: {
+    referenceData?: string;
+    resource?: string;
+    aggregation: string;
+    sourceFields?: any;
+    pipeline?: any;
+    mapping?: any;
+    contextFilters?: CompositeFilterDescriptor;
+    at?: Date;
+    first?: number;
+    queryParams?: any;
+  }): Promise<readonly GraphQLError[] | undefined> {
+    const query$ = this.aggregationService.aggregationDataQuery({
+      ...aggregationDataOptions,
+      first: 10,
+    });
+
+    const { data: aggregationData, errors } = await firstValueFrom(query$);
+    if (!aggregationData || errors) {
+      return errors;
+    }
+    this.openAggregationPayload(aggregationData);
+    return;
+  }
+
+  /**
+   * Opens a dialog displaying the aggregation data given
+   *
+   * @param aggregationData Aggregation data to display in the preview dialog
+   *
+   * @returns dialog ref instance
+   */
+  private async openAggregationPayload(
+    aggregationData:
+      | AggregationDataQueryResponse
+      | ReferenceDataAggregationQueryResponse
+  ) {
+    const { PayloadModalComponent } = await import(
+      '../../components/payload-modal/payload-modal.component'
+    );
+    this.dialog.open(PayloadModalComponent, {
+      data: {
+        payload:
+          'recordsAggregation' in aggregationData
+            ? aggregationData.recordsAggregation
+            : aggregationData.referenceDataAggregation,
+        aggregationPayload: true,
+        helpText: 'pages.aggregation.preview.help',
+      },
+    });
   }
 }

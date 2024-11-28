@@ -1,3 +1,17 @@
+# [2.17.0-alpha.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.10...v2.17.0-alpha.11) (2024-11-26)
+
+
+### Bug Fixes
+
+* default path generating incorrect redirection after login ([26b853e](https://github.com/ReliefApplications/ems-frontend/commit/26b853ea56c42373fa49cf4f7a766e3592bc6f94))
+
+# [2.17.0-alpha.10](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.9...v2.17.0-alpha.10) (2024-11-26)
+
+
+### Bug Fixes
+
+* ui tabs component not displaying correct tab if changing selected tab index programatically ([1befcf1](https://github.com/ReliefApplications/ems-frontend/commit/1befcf10330fa141832653de0110cc87a8d10314))
+
 # [2.17.0-alpha.9](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.8...v2.17.0-alpha.9) (2024-11-19)
 
 

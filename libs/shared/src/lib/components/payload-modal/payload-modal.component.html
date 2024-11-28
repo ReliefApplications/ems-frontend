@@ -9,6 +9,10 @@
     </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
+    <!-- Help text -->
+    <ui-alert *ngIf="data.helpText" class="block mb-2">{{
+      data.helpText | translate
+    }}</ui-alert>
     <!-- Style editor -->
     <div class="h-[400px]">
       <ngx-monaco-editor

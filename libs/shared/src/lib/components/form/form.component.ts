@@ -167,6 +167,14 @@ export class FormComponent
     //this.survey.data = cachedData;
     // this.setUserVariables();
     //}
+
+    // After the survey is created, we add common callback to survey events
+    this.formBuilderService.addEventsCallBacksToSurvey(
+      this.survey,
+      this.selectedPageIndex,
+      this.temporaryFilesStorage
+    );
+
     if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
@@ -174,13 +182,6 @@ export class FormComponent
       this.survey.data = this.record.data;
       this.modifiedAt = this.record.modifiedAt || null;
     }
-
-    // After the survey is created and all values set, we add common callback to survey events
-    this.formBuilderService.addEventsCallBacksToSurvey(
-      this.survey,
-      this.selectedPageIndex,
-      this.temporaryFilesStorage
-    );
 
     // if (this.survey.getUsedLocales().length > 1) {
     //   this.survey.getUsedLocales().forEach((lang) => {
