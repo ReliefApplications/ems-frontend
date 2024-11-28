@@ -47,7 +47,7 @@
           class="flex-1"
         >
           <shared-resource-select
-            [ngClass]="{ resourceSelect: this.query.get('resource').value }"
+            [ngClass]="{ 'w-[80%]': this.query.get('resource').value }"
             formControlName="resource"
             [selectedElements]="[resource]"
           ></shared-resource-select>

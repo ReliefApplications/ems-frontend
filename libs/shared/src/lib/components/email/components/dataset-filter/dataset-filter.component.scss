@@ -40,14 +40,6 @@ div .form-error {
   }
 }
 
-::ng-deep
-  .ng-dropdown-panel
-  .ng-dropdown-panel-items
-  .ng-option.ng-option-selected {
-  color: white !important;
-  background-color: #4dafd9 !important;
-}
-
 .resourceSelect {
   width: 80% !important;
 }
