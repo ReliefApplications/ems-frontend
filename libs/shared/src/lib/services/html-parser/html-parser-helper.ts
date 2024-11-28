@@ -103,7 +103,7 @@ export const applyTableStyle = (formattedHtml: string) => {
  * @param pages array of pages
  * @returns formatted html
  */
-export const replacePages = (html: string, pages: any[]): string => {
+export const replacePages = (html: string, pages?: any[]): string => {
   let formattedHtml = html;
   if (pages) {
     for (const page of pages) {
