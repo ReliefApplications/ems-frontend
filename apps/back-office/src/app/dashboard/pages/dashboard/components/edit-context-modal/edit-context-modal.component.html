@@ -58,6 +58,7 @@
       <div uiFormFieldDirective [outline]="false">
         <label>{{ 'models.dashboard.context.displayField' | translate }}</label>
         <ui-select-menu
+          [filterable]="true"
           formControlName="displayField"
           [placeholder]="
             'models.dashboard.context.selectDisplayField' | translate

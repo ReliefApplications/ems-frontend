@@ -20,8 +20,8 @@ import {
   IconName,
   icon as iconCreator,
 } from '@fortawesome/fontawesome-svg-core';
-import { SanitizeHTMLModule } from '../../../../../../pipes/sanitize-html/sanitize-html.module';
 import { UnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';
+import { SanitizeHtmlPipe } from '../../../../../../pipes/sanitize-html/sanitize-html.pipe';
 
 /**
  * Unique value renderer layer settings.
@@ -40,7 +40,7 @@ import { UnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscri
     IconModule,
     TranslateModule,
     TooltipModule,
-    SanitizeHTMLModule,
+    SanitizeHtmlPipe,
   ],
   templateUrl: './unique-value-renderer.component.html',
   styleUrls: ['./unique-value-renderer.component.scss'],

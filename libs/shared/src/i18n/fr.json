@@ -1176,6 +1176,10 @@
 				"select": "Sélectionner un jeu de données",
 				"title": "Ressource"
 			},
+			"displayField": {
+				"separator": "Séparateur de valeurs",
+				"text": "Champ d'affichage"
+			},
 			"errors": {
 				"field": {
 					"invalid": "Champ invalide. Veuillez cliquer pour le retirer."
@@ -1249,6 +1253,7 @@
 				"title": "Style"
 			},
 			"tooltip": {
+				"displayField": "Si un champ est sélectionné, les grilles afficheront les valeurs de ce champ, à la place du nombre d'éléments liés",
 				"filter": {
 					"date": {
 						"useExpression": "Utiliser une expression",
@@ -2642,6 +2647,7 @@
 		},
 		"aggregation": {
 			"preview": {
+				"help": "Seul les 10 premiers résultats peuvent être affichés",
 				"label": "Aperçu des données d'agrégation",
 				"missingAggregation": "Impossible de charger l'agrégation sélectionnée. Agrégation introuvable"
 			}
