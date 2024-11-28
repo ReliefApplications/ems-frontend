@@ -41,7 +41,6 @@ import { FormBuilderService } from '../../services/form-builder/form-builder.ser
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { cleanRecord } from '../../utils/cleanRecord';
 import addCustomFunctions from '../../utils/custom-functions';
-import { DraftRecordComponent } from '../draft-record/draft-record.component';
 import { FormActionsModule } from '../form-actions/form-actions.module';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
@@ -84,7 +83,6 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     ButtonModule,
     SpinnerModule,
     SurveyModule,
-    DraftRecordComponent,
   ],
 })
 export class FormModalComponent
@@ -293,15 +291,6 @@ export class FormModalComponent
       this.record
     );
 
-    if (this.data.recordId && this.record) {
-      addCustomFunctions(this.authService, this.record);
-      this.survey.data = this.isMultiEdition ? null : this.record.data;
-      this.survey.showCompletedPage = false;
-      this.form?.fields?.forEach((field) => {
-        if (field.readOnly && this.survey.getQuestionByName(field.name))
-          this.survey.getQuestionByName(field.name).readOnly = true;
-      });
-    }
     this.survey.onValueChanged.add(() => {
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
@@ -314,12 +303,22 @@ export class FormModalComponent
       });
     }
 
-    // After the survey is created and all values set, we add common callback to survey events
+    // After the survey is created, we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
       this.selectedPageIndex,
       this.temporaryFilesStorage
     );
+
+    if (this.data.recordId && this.record) {
+      this.survey.data = this.isMultiEdition ? null : this.record.data;
+      addCustomFunctions(this.authService, this.record);
+      this.survey.showCompletedPage = false;
+      this.form?.fields?.forEach((field) => {
+        if (field.readOnly && this.survey.getQuestionByName(field.name))
+          this.survey.getQuestionByName(field.name).readOnly = true;
+      });
+    }
 
     this.loading = false;
   }
