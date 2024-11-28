@@ -1,23 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
-import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
-import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
-import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import { Resource } from '../../../models/resource.model';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { SnackbarService } from '@oort-front/ui';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { Metadata } from '../../../models/metadata.model';
 import { ReferenceData } from '../../../models/reference-data.model';
-import { Dialog } from '@angular/cdk/dialog';
-import { SnackbarService } from '@oort-front/ui';
-import { TranslateService } from '@ngx-translate/core';
-import { AggregationService } from '../../../services/aggregation/aggregation.service';
-import {
-  AggregationDataQueryResponse,
-  ReferenceDataAggregationQueryResponse,
-} from '../../../models/aggregation.model';
+import { Resource } from '../../../models/resource.model';
+import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
+import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { getReferenceMetadata } from '../../../utils/reference-data-metadata.util';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { PipelineStage } from './pipeline/pipeline-stage.enum';
 
 /**
@@ -85,18 +77,12 @@ export class AggregationBuilderComponent
    * Main component of Aggregation builder.
    * Aggregation are used to generate charts.
    *
-   * @param dialog CDK dialog service
    * @param snackBar UI Snackbar service
-   * @param translateService TranslateService
-   * @param aggregationService Shared Aggregation Service
    * @param queryBuilder Shared query builder service
    * @param aggregationBuilder Shared aggregation builder service
    */
   constructor(
-    private dialog: Dialog,
     private snackBar: SnackbarService,
-    private translateService: TranslateService,
-    private aggregationService: AggregationService,
     private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService
   ) {
@@ -239,18 +225,18 @@ export class AggregationBuilderComponent
               for (const field in data) {
                 if (Object.prototype.hasOwnProperty.call(data, field)) {
                   const metaFields = Object.assign({}, data[field]);
-                  let fieldsWithMeta = fields.map((currentField) => {
+                  const fieldsWithMeta = fields.map((currentField) => {
                     return {
                       ...currentField,
                       meta: metaFields[currentField.name],
                     };
                   });
-                  this.removedFields = fieldsWithMeta
-                    .filter((field) => field.meta.type === 'editor')
-                    .map((field) => field.name);
-                  fieldsWithMeta = fieldsWithMeta.filter(
-                    (field) => !(field.meta.type === 'editor')
-                  ); //TODO: filter out other unusable fields
+                  // this.removedFields = fieldsWithMeta
+                  //   .filter((field) => field.meta.type === 'editor')
+                  //   .map((field) => field.name);
+                  // fieldsWithMeta = fieldsWithMeta.filter(
+                  //   (field) => !(field.meta.type === 'editor')
+                  // );
                   this.fields.next(fieldsWithMeta);
                 }
               }
@@ -309,7 +295,6 @@ export class AggregationBuilderComponent
 
   /**
    * Preview aggregation, opening dialog with monaco editor to display data.
-   *
    */
   public async onPreviewAggregation() {
     if (this.loadingAggregationRecords) {
@@ -317,48 +302,16 @@ export class AggregationBuilderComponent
     }
     // get the aggregation data
     this.loadingAggregationRecords = true;
-    const query$ = this.aggregationService.aggregationDataQuery({
+    const result = await this.aggregationBuilder.onPreviewAggregation({
       referenceData: this.referenceData?.id || '',
       resource: this.resource?.id || '',
       aggregation: this.aggregationForm.value.id || '',
       sourceFields: this.aggregationForm.value.sourceFields,
       pipeline: this.aggregationForm.value.pipeline,
-      first: -1,
     });
-
-    const { data: aggregationData, errors } = await firstValueFrom(query$);
-    if (!aggregationData || errors) {
-      this.loadingAggregationRecords = false;
-      if (errors?.length) {
-        this.snackBar.openSnackBar(errors[0].message, { error: true });
-      }
-      return;
-    }
     this.loadingAggregationRecords = false;
-    this.openAggregationPayload(aggregationData);
-  }
-
-  /**
-   * Opens a dialog displaying the aggregation data given
-   *
-   * @param aggregationData Aggregation data to display in the preview dialog
-   */
-  public async openAggregationPayload(
-    aggregationData:
-      | AggregationDataQueryResponse
-      | ReferenceDataAggregationQueryResponse
-  ) {
-    const { PayloadModalComponent } = await import(
-      '../../payload-modal/payload-modal.component'
-    );
-    this.dialog.open(PayloadModalComponent, {
-      data: {
-        payload:
-          'recordsAggregation' in aggregationData
-            ? aggregationData.recordsAggregation
-            : aggregationData.referenceDataAggregation,
-        aggregationPayload: true,
-      },
-    });
+    if (Array.isArray(result) && result.length) {
+      this.snackBar.openSnackBar(result[0].message, { error: true });
+    }
   }
 }

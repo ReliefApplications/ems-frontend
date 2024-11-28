@@ -115,6 +115,8 @@ const createAvatarGroup = (
 export class HtmlParserService {
   /** Date pipe used for transforming date calc values */
   private datePipe = inject(DatePipe);
+  /** Function for replacing aggregation data in html */
+  replaceAggregationData = replaceAggregationData;
 
   /**
    * Definition of all supported functions for calculations inside the text of a
@@ -215,7 +217,7 @@ export class HtmlParserService {
        */
       call: (...values) => {
         // Ensure that the values are treated as numbers
-        return min(values.map((x) => Number(x)))?.toString() || '';
+        return min(values?.map((x) => Number(x)))?.toString() || '';
       },
     },
     max: {
@@ -228,18 +230,25 @@ export class HtmlParserService {
        */
       call: (...values) => {
         // Ensure that the values are treated as numbers
-        return max(values.map((x) => Number(x)))?.toString() || '';
+        return max(values?.map((x) => Number(x)))?.toString() || '';
       },
     },
     date: {
       signature: 'date( value ; format )',
       call: (value, format) => {
         try {
+          const spanRegex = /<span[^>]*>(.*?)<\/span>/gi;
+          const spanContent = spanRegex.exec(value)?.[1]?.trim();
+          const valueToFormat = !isNil(spanContent) ? spanContent : value;
           const formattedDate = this.datePipe.transform(
-            new Date(value),
+            new Date(valueToFormat),
             format
           ) as string;
-          return formattedDate || '';
+          // Replace original value inside the span tag with the formatted value
+          if (!isNil(spanContent)) {
+            value = value.replace(spanContent, formattedDate || '');
+          }
+          return (!isNil(spanContent) ? value : formattedDate) || '';
         } catch {
           return '';
         }
@@ -255,7 +264,7 @@ export class HtmlParserService {
    */
   private applyOperations(html: string): string {
     const regex = new RegExp(
-      `${CALC_PREFIX}(\\w+)\\(([^\\)]+)\\)${PLACEHOLDER_SUFFIX}`,
+      `${CALC_PREFIX}(\\w+)\\((.*?)\\)${PLACEHOLDER_SUFFIX}`,
       'gm'
     );
     let parsedHtml = html;
@@ -265,17 +274,18 @@ export class HtmlParserService {
       const calcFunc = get(this.calcFunctions, result[1]);
       if (calcFunc) {
         // get the arguments and clean the numbers to be parsed correctly
-        const args = result[2]
-          .split(';')
-          .map((arg) => {
-            /** Make sure that the new date case does not break any previous clean up */
-            return result?.[1] === 'date'
-              ? arg.trim()
-              : // Replace below replaces the space space between span and style property from arg as elements,
-                // breaking any style application from given element
-                arg.replace(/[\s,]/gm, '');
-          })
-          .filter((arg) => !!arg);
+        const args =
+          result[2]
+            .match(/(?:<[^>]+>|[^<;]+)+/g)
+            ?.map((arg) => {
+              /** Make sure that the new date case does not break any previous clean up */
+              return result?.[1] === 'date'
+                ? arg.trim()
+                : // Replace below replaces the space space between span and style property from arg as elements,
+                  // breaking any style application from given element
+                  arg.replace(/[\s,]/gm, '');
+            })
+            .filter((arg) => !!arg) || [];
         // apply the function
         let resultText;
         try {
@@ -299,7 +309,7 @@ export class HtmlParserService {
    * @param styles Array of layout styles.
    * @returns formatted html.
    */
-  private replaceRecordFields(
+  replaceRecordFields(
     html: string,
     fieldsValue: any,
     fields: any,
@@ -475,7 +485,7 @@ export class HtmlParserService {
               convertedValue =
                 `<span style='${style}'>` +
                 this.applyLayoutFormat(
-                  new Date(value).toLocaleString().split(',')[0],
+                  new Date(value).toLocaleString('en').split(',')[0],
                   field
                 ) +
                 '</span>';
@@ -493,7 +503,7 @@ export class HtmlParserService {
               convertedValue =
                 `<span style='${style}'>` +
                 this.applyLayoutFormat(
-                  date.toLocaleString().split(',')[0] +
+                  date.toLocaleString('en').split(',')[0] +
                     ', ' +
                     hour +
                     ':' +
@@ -650,13 +660,13 @@ export class HtmlParserService {
       data?: any;
       aggregation?: any;
       fields?: any;
-      pages: any[];
+      pages?: any[];
       styles?: any[];
     }
   ) {
     let formattedHtml = replacePages(html, options.pages);
-    if (options.aggregation) {
-      formattedHtml = replaceAggregationData(
+    if (Object.keys(options.aggregation || {})?.length) {
+      formattedHtml = this.replaceAggregationData(
         formattedHtml,
         options.aggregation
       );
@@ -788,6 +798,17 @@ export class HtmlParserService {
    * @returns Formatted field value
    */
   public applyLayoutFormat(value: any, field: any): any {
+    if (field.meta?.type === 'records') {
+      // If using a display field, build a list of separated values
+      if (field.displayField && isArray(value)) {
+        return value
+          .map((x) => get(x, field.displayField))
+          .filter((x) => x)
+          .join(`${field.separator} `);
+      } else {
+        return value;
+      }
+    }
     // Get choices from field
     const options = field.options ?? field.meta?.choices;
     if (options) {

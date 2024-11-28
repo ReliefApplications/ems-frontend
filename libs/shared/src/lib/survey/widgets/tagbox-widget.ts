@@ -7,7 +7,7 @@ import {
   SvgRegistry,
   DropdownMultiSelectListModel,
 } from 'survey-core';
-import { debounceTime, map, tap } from 'rxjs';
+import { debounceTime, map, Subject, takeUntil, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
 
 /**
@@ -120,6 +120,7 @@ export const init = (
       // Remove previous input if already rendered
       el.parentElement?.querySelector('.k-input')?.parentElement?.remove();
       widget.willUnmount(question);
+      question.destroy$ = new Subject<void>();
       let tagboxDiv: HTMLDivElement | null = null;
       tagboxDiv = document.createElement('div');
       tagboxDiv.classList.add('flex', 'min-h-[36px]');
@@ -147,7 +148,8 @@ export const init = (
         .pipe(
           debounceTime(500), // Debounce time to limit quantity of updates
           tap(() => (tagboxInstance.loading = true)),
-          map((searchValue: string) => searchValue?.toLowerCase()) // Make the filter non-case sensitive
+          map((searchValue: string) => searchValue?.toLowerCase()), // Make the filter non-case sensitive
+          takeUntil(question.destroy$)
         )
         .subscribe((searchValue: string) => {
           currentSearchValue = searchValue;
@@ -212,6 +214,8 @@ export const init = (
       defaultTagbox?.replaceWith(tagboxDiv);
     },
     willUnmount: (question: any): void => {
+      question.destroy$?.next();
+      question.destroy$?.complete();
       if (!question._propertyValueChangedVirtual) return;
       question.readOnlyChangedCallback = null;
       question.valueChangedCallback = null;

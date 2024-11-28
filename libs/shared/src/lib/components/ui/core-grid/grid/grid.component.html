@@ -447,14 +447,16 @@
                 "
               >
                 {{
-                  (dataItem[field.name].length > 1
-                    ? 'components.widget.grid.item.few'
-                    : 'components.widget.grid.item.one'
-                  )
-                    | translate
-                      : {
-                          count: dataItem[field.name].length
-                        }
+                  field.displayField
+                    ? dataItem.text[field.name]
+                    : ((dataItem[field.name].length > 1
+                        ? 'components.widget.grid.item.few'
+                        : 'components.widget.grid.item.one'
+                      )
+                      | translate
+                        : {
+                            count: dataItem[field.name].length
+                          })
                 }}
               </div>
             </div>
@@ -688,9 +690,10 @@
       >
         <ng-template kendoGridCellTemplate let-dataItem="dataItem">
           <div class="textbox-container" [style]="dataItem.style[field.name]">
-            <div class="truncate">
-              {{ dataItem.text[field.name] | sharedStripHtml }}
-            </div>
+            <div
+              class="truncate"
+              [innerHTML]="dataItem.text[field.name] | sharedStripHtml"
+            ></div>
             <button
               *ngIf="dataItem.text[field.name]"
               kendoButton

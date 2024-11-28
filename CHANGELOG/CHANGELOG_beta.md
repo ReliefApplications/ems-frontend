@@ -1,3 +1,36 @@
+# [2.17.0-beta.19](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.18...v2.17.0-beta.19) (2024-11-26)
+
+
+### Bug Fixes
+
+* default path generating incorrect redirection after login ([26b853e](https://github.com/ReliefApplications/ems-frontend/commit/26b853ea56c42373fa49cf4f7a766e3592bc6f94))
+
+# [2.17.0-beta.18](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.17...v2.17.0-beta.18) (2024-11-19)
+
+
+### Bug Fixes
+
+* html parser date calculation not working for resource field injection, using styling ([#2702](https://github.com/ReliefApplications/ems-frontend/issues/2702)) ([d9d049a](https://github.com/ReliefApplications/ems-frontend/commit/d9d049a61fd61aa09c94c8f1854daede722f5e6f)), closes [AB#105869](https://github.com/AB/issues/105869)
+
+# [2.17.0-beta.17](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.16...v2.17.0-beta.17) (2024-11-18)
+
+
+### Features
+
+* add option to use a display field for records elements of queries ([#2630](https://github.com/ReliefApplications/ems-frontend/issues/2630)) ([27a7d90](https://github.com/ReliefApplications/ems-frontend/commit/27a7d90288c004d7a909d837c526913663cb798d)), closes [AB#103431](https://github.com/AB/issues/103431)
+
+# [2.17.0-beta.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.15...v2.17.0-beta.16) (2024-11-13)
+
+
+### Bug Fixes
+
+* custom filtering for resources question not correctly setting filter when value prepopulated in form ([#2684](https://github.com/ReliefApplications/ems-frontend/issues/2684)) ([9e1a6ad](https://github.com/ReliefApplications/ems-frontend/commit/9e1a6addbb6c592e041e7daf79beff544dffe886)), closes [AB#105484](https://github.com/AB/issues/105484)
+
+
+### Features
+
+* allow to auto select first element from choices if unique choice provided, in resource question  ([#2685](https://github.com/ReliefApplications/ems-frontend/issues/2685)) ([cb259cf](https://github.com/ReliefApplications/ems-frontend/commit/cb259cff481b143d198bf6e2af78442059736547)), closes [AB#105619](https://github.com/AB/issues/105619)
+
 # [2.17.0-beta.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.14...v2.17.0-beta.15) (2024-11-05)
 
 

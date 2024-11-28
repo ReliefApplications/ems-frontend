@@ -1,7 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Dialog } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
+  AlertModule,
   ButtonModule,
   DividerModule,
   IconModule,
@@ -10,22 +12,16 @@ import {
   SpinnerModule,
   TableModule,
   TooltipModule,
-  AlertModule,
 } from '@oort-front/ui';
-import { Dialog } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
+import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
+import { ContextService } from '../../../../services/context/context.service';
+import { EmptyModule } from '../../../ui/empty/empty.module';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { firstValueFrom, takeUntil } from 'rxjs';
 import {
   createEditorForm,
   createTemplateAggregationForm,
 } from '../../editor-settings/editor-settings.forms';
-import { AggregationService } from '../../../../services/aggregation/aggregation.service';
-import { ContextService } from '../../../../services/context/context.service';
-import { EmptyModule } from '../../../ui/empty/empty.module';
-import {
-  AggregationDataQueryResponse,
-  ReferenceDataAggregationQueryResponse,
-} from '../../../../models/aggregation.model';
 
 /**
  * Template aggregations component.
@@ -79,14 +75,14 @@ export class TemplateAggregationsComponent
    * @param snackBar UI Snackbar service
    * @param translateService TranslateService
    * @param contextService Shared context service
-   * @param aggregationService Shared Aggregation Service
+   * @param aggregationBuilder Shared Aggregation Builder Service
    */
   constructor(
     private dialog: Dialog,
     private snackBar: SnackbarService,
     private translateService: TranslateService,
     private contextService: ContextService,
-    private aggregationService: AggregationService
+    private aggregationBuilder: AggregationBuilderService
   ) {
     super();
   }
@@ -171,7 +167,7 @@ export class TemplateAggregationsComponent
     }
     // get the aggregation data
     this.loadingAggregationRecords = true;
-    const query$ = this.aggregationService.aggregationDataQuery({
+    const result = await this.aggregationBuilder.onPreviewAggregation({
       referenceData: selectedAggregation.referenceData || '',
       resource: selectedAggregation.resource || '',
       aggregation: selectedAggregation.aggregation || '',
@@ -185,42 +181,10 @@ export class TemplateAggregationsComponent
       at: selectedAggregation.at
         ? this.contextService.atArgumentValue(selectedAggregation.at)
         : undefined,
-      first: -1,
     });
-
-    const { data: aggregationData, errors } = await firstValueFrom(query$);
-    if (!aggregationData || errors) {
-      this.loadingAggregationRecords = false;
-      if (errors?.length) {
-        this.snackBar.openSnackBar(errors[0].message, { error: true });
-      }
-      return;
-    }
     this.loadingAggregationRecords = false;
-    this.openAggregationPayload(aggregationData);
-  }
-
-  /**
-   * Opens a dialog displaying the aggregation data given
-   *
-   * @param aggregationData Aggregation data to display in the preview dialog
-   */
-  public async openAggregationPayload(
-    aggregationData:
-      | AggregationDataQueryResponse
-      | ReferenceDataAggregationQueryResponse
-  ) {
-    const { PayloadModalComponent } = await import(
-      '../../../payload-modal/payload-modal.component'
-    );
-    this.dialog.open(PayloadModalComponent, {
-      data: {
-        payload:
-          'recordsAggregation' in aggregationData
-            ? aggregationData.recordsAggregation
-            : aggregationData.referenceDataAggregation,
-        aggregationPayload: true,
-      },
-    });
+    if (Array.isArray(result) && result.length) {
+      this.snackBar.openSnackBar(result[0].message, { error: true });
+    }
   }
 }

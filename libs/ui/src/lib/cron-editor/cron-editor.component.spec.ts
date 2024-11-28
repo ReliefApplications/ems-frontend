@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CronEditorComponent } from './cron-editor.component';
 import { TranslateTestingModule } from 'ngx-translate-testing';
 import { TabsModule } from '../tabs/tabs.module';

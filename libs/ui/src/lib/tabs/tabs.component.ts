@@ -106,6 +106,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
       classes.push('flex-col');
       classes.push('h-full');
       classes.push('mr-4');
+      classes.push('sticky');
     } else {
       classes.push('border-b');
       classes.push('mb-4');
