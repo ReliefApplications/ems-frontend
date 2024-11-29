@@ -89,13 +89,6 @@ export class ResourceSelectComponent extends GraphQLSelectComponent {
           sortField: 'name',
         },
       });
-
-      this.query.valueChanges
-        .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
-        .subscribe(({ data, loading }) => {
-          this.queryName = Object.keys(data)[0];
-          this.updateValues(data, loading);
-        });
     }
     this.searchChange.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.onSearchChange(value);
