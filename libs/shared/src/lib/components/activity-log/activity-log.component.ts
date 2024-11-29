@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { LIST_ACTIVITIES } from './graphql/queries';
 import { OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
@@ -18,6 +18,16 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./activity-log.component.scss'],
 })
 export class ActivityLogComponent implements OnInit {
+  /**
+   * User ID to filter activities.
+   */
+  @Input() userId: string | undefined;
+
+  /**
+   * Application ID to filter activities.
+   */
+  @Input() applicationId: string | undefined;
+
   /**
    * List of activities to display.
    */
@@ -49,6 +59,7 @@ export class ActivityLogComponent implements OnInit {
     this.apollo
       .watchQuery<{ activityLogs: ActivityLog[] }>({
         query: LIST_ACTIVITIES,
+        variables: { userId: this.userId, applicationId: this.applicationId },
       })
       .valueChanges.subscribe((result) => {
         // Update the activities array with the fetched data

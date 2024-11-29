@@ -25,6 +25,18 @@ export class LoggerService {
    * @returns Observable of the activity
    */
   public track(activity: any) {
+    // I am not sure if this is the best way to handle this
+    // but the application service observable retunrs a null in the subscribe
+    // method on first call under all circumstances
+    if (activity.metadata.url.includes('/applications/')) {
+      const applicationId = activity.metadata.url
+        .split('/applications/')[1]
+        .split('/')[0];
+      activity.metadata.applicationId = applicationId;
+    }
+
+    // TODO: Alias or shortcut?
+
     return this.restService.post(this.activityBasePath, activity).subscribe(
       (response) => {
         console.log('Activity tracked successfully', response);
