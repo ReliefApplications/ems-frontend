@@ -115,6 +115,8 @@ const createAvatarGroup = (
 export class HtmlParserService {
   /** Date pipe used for transforming date calc values */
   private datePipe = inject(DatePipe);
+  /** Function for replacing aggregation data in html */
+  replaceAggregationData = replaceAggregationData;
 
   /**
    * Definition of all supported functions for calculations inside the text of a
@@ -215,7 +217,7 @@ export class HtmlParserService {
        */
       call: (...values) => {
         // Ensure that the values are treated as numbers
-        return min(values.map((x) => Number(x)))?.toString() || '';
+        return min(values?.map((x) => Number(x)))?.toString() || '';
       },
     },
     max: {
@@ -228,7 +230,7 @@ export class HtmlParserService {
        */
       call: (...values) => {
         // Ensure that the values are treated as numbers
-        return max(values.map((x) => Number(x)))?.toString() || '';
+        return max(values?.map((x) => Number(x)))?.toString() || '';
       },
     },
     date: {
@@ -307,7 +309,7 @@ export class HtmlParserService {
    * @param styles Array of layout styles.
    * @returns formatted html.
    */
-  private replaceRecordFields(
+  replaceRecordFields(
     html: string,
     fieldsValue: any,
     fields: any,
@@ -658,13 +660,13 @@ export class HtmlParserService {
       data?: any;
       aggregation?: any;
       fields?: any;
-      pages: any[];
+      pages?: any[];
       styles?: any[];
     }
   ) {
     let formattedHtml = replacePages(html, options.pages);
-    if (options.aggregation) {
-      formattedHtml = replaceAggregationData(
+    if (Object.keys(options.aggregation || {})?.length) {
+      formattedHtml = this.replaceAggregationData(
         formattedHtml,
         options.aggregation
       );
