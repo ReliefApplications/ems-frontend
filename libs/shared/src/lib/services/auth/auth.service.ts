@@ -219,24 +219,19 @@ export class AuthService {
    */
   public initLoginSequence(): Promise<void> {
     if (!localStorage.getItem('idtoken')) {
-      /**
-       * Would fetch all // in the path except for the first appearance in the url that follows ":" character, http:// or https://
-       * If any other double slash in the url present following a ":", would be also corrected, e.g.
-       */
-      const duplicateSlashRegex = /((?<!:)|(?<=.*\/\/.*))\/\//g;
       let environmentUri =
         this.environment.module === 'backoffice'
           ? this.environment.backOfficeUri
           : this.environment.frontOfficeUri;
+      let pathName = '/';
+      // If href starts with environment uri, remove it to get pathname
+      if (location.href.startsWith(environmentUri)) {
+        pathName = location.href.replace(environmentUri, '/');
+      }
+      // else, the href is the environment uri without the trailing '/'
+      // We remove the trailing '/' from the environment uri as we would add it back
       environmentUri = environmentUri.replace(/\/$/, '');
-      const pathName = location.href
-        .replace(environmentUri, '/')
-        .replace(duplicateSlashRegex, '/');
       const redirectUri = new URL(pathName, environmentUri);
-      redirectUri.pathname = redirectUri.pathname.replace(
-        duplicateSlashRegex,
-        '/'
-      );
       if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
         localStorage.setItem(
           'redirectPath',
