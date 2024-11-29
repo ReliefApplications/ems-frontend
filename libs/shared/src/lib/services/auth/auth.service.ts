@@ -219,8 +219,11 @@ export class AuthService {
    */
   public initLoginSequence(): Promise<void> {
     if (!localStorage.getItem('idtoken')) {
-      /** Would fetch all // in the path except for the ones after http:// or https:// */
-      const duplicateSlashRegex = /(?<!:)\/\//g;
+      /**
+       * Would fetch all // in the path except for the first appearance in the url that follows ":" character, http:// or https://
+       * If any other double slash in the url present following a ":", would be also corrected, e.g.
+       */
+      const duplicateSlashRegex = /((?<!:)|(?<=.*\/\/.*))\/\//g;
       let environmentUri =
         this.environment.module === 'backoffice'
           ? this.environment.backOfficeUri
