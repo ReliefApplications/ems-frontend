@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
-import { LIST_ACTIVITIES } from './graphql/queries';
-import { OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { ActivityLog } from '../../models/activity-log.model';
-import { HttpClient } from '@angular/common/http';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { LIST_ACTIVITIES } from './graphql/queries';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * URL to download activities.
@@ -17,7 +18,10 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './activity-log.component.html',
   styleUrls: ['./activity-log.component.scss'],
 })
-export class ActivityLogComponent implements OnInit {
+export class ActivityLogComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /**
    * List of activities to display.
    */
@@ -26,20 +30,34 @@ export class ActivityLogComponent implements OnInit {
   /**
    * Columns to display in the table.
    */
-  displayedColumns: string[] = ['userId', 'eventType', 'url'];
+  displayedColumns: string[] = [
+    'userId',
+    'url',
+    'username',
+    'region',
+    'country',
+  ];
 
   /**
    * URL to download activities.
    */
-  downloadUrl = 'http://localhost:3000/activity/download-activities';
+  downloadUrl = '';
 
   /**
    * Constructor that injects the Apollo service.
    *
+   * @param environment environment values
    * @param apollo The Apollo service for interacting with GraphQL API.
    * @param http The HttpClient service for making HTTP requests.
    */
-  constructor(private apollo: Apollo, private http: HttpClient) {}
+  constructor(
+    @Inject('environment') environment: any,
+    private apollo: Apollo,
+    private http: HttpClient
+  ) {
+    super();
+    this.downloadUrl = `${environment.apiUrl}/activity/download-activities`;
+  }
 
   /**
    * OnInit lifecycle hook to fetch activities when the component initializes.
@@ -50,7 +68,8 @@ export class ActivityLogComponent implements OnInit {
       .watchQuery<{ activityLogs: ActivityLog[] }>({
         query: LIST_ACTIVITIES,
       })
-      .valueChanges.subscribe((result) => {
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((result) => {
         // Update the activities array with the fetched data
         this.activitiesLogs = result.data.activityLogs;
       });

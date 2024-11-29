@@ -611,12 +611,14 @@
 		},
 		"application": {
 			"activities": {
+				"country": "******",
 				"downloadXlsx": "******",
+				"email": "******",
 				"empty": "******",
-				"eventType": "******",
 				"few": "******",
 				"metadata": "******",
 				"one": "******",
+				"region": "******",
 				"url": "******",
 				"userId": "******"
 			},

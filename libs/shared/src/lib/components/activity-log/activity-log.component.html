@@ -11,15 +11,14 @@
           {{ activity.userId }}
         </td>
       </ng-container>
-      <ng-container cdkColumnDef="eventType">
+      <ng-container cdkColumnDef="username">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
-          <span></span>
           <span>{{
-            'components.application.activities.eventType' | translate
+            'components.application.activities.email' | translate
           }}</span>
         </th>
         <td uiCell *cdkCellDef="let activity">
-          {{ activity.eventType }}
+          {{ activity.username }}
         </td>
       </ng-container>
       <ng-container cdkColumnDef="url">
@@ -28,6 +27,26 @@
         </th>
         <td uiCell *cdkCellDef="let activity">
           {{ activity.url }}
+        </td>
+      </ng-container>
+      <ng-container cdkColumnDef="country">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span>{{
+            'components.application.activities.country' | translate
+          }}</span>
+        </th>
+        <td uiCell *cdkCellDef="let activity">
+          {{ activity.attributes?.country }}
+        </td>
+      </ng-container>
+      <ng-container cdkColumnDef="region">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span>{{
+            'components.application.activities.region' | translate
+          }}</span>
+        </th>
+        <td uiCell *cdkCellDef="let activity">
+          {{ activity.attributes?.region }}
         </td>
       </ng-container>
       <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
