@@ -1,6 +1,6 @@
 /** Not number value examples */
 export const notNumberValueExamples = [
-  'a',
+  'k',
   '?',
   '/',
   '%%',
