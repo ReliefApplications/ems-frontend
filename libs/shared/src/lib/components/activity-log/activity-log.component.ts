@@ -39,11 +39,6 @@ export class ActivityLogComponent implements OnInit {
   displayedColumns: string[] = ['userId', 'eventType', 'url'];
 
   /**
-   * URL to download activities.
-   */
-  downloadUrl = 'http://localhost:3000/activity/download-activities';
-
-  /**
    * Constructor that injects the Apollo service.
    *
    * @param apollo The Apollo service for interacting with GraphQL API.
@@ -71,15 +66,20 @@ export class ActivityLogComponent implements OnInit {
    * Method to download activities when the link is clicked.
    */
   downloadActivities(): void {
-    this.http
-      .get(this.downloadUrl, { responseType: 'blob' })
-      .subscribe((blob: any) => {
-        const downloadUrl = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = 'activities.xlsx';
-        link.click();
-        window.URL.revokeObjectURL(downloadUrl);
-      });
+    const queryParams = [];
+    if (this.userId) queryParams.push(`userId=${this.userId}`);
+    if (this.applicationId)
+      queryParams.push(`applicationId=${this.applicationId}`);
+    const queryString =
+      queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
+    const url = `http://localhost:3000/activity/download-activities${queryString}`;
+    this.http.get(url, { responseType: 'blob' }).subscribe((blob: any) => {
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = 'activities.xlsx';
+      link.click();
+      window.URL.revokeObjectURL(downloadUrl);
+    });
   }
 }
