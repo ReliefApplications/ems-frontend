@@ -26,4 +26,10 @@
       [loading]="loading"
     ></shared-user-roles>
   </ui-tab>
+  <ui-tab>
+    <ng-container ngProjectAs="label">{{
+      'common.activity.few' | translate
+    }}</ng-container>
+    <shared-activity-log [userId]="user?.id"></shared-activity-log>
+  </ui-tab>
 </ui-tabs>
