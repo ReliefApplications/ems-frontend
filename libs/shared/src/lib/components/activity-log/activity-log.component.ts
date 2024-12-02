@@ -251,7 +251,11 @@ export class ActivityLogComponent
    */
   downloadActivities(): void {
     this.restService
-      .get('/activity/download-activities', { responseType: 'blob' })
+      .post(
+        '/activity/download-activities',
+        { filter: this.filter },
+        { responseType: 'blob' }
+      )
       .subscribe((blob: any) => {
         const downloadUrl = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
