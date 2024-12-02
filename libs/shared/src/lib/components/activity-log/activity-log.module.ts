@@ -7,6 +7,7 @@ import {
   DateModule,
   FormWrapperModule,
   IconModule,
+  PaginatorModule,
   TableModule,
 } from '@oort-front/ui';
 import { SkeletonTableModule } from '../skeleton/skeleton-table/public-api';
@@ -25,6 +26,7 @@ import { ActivityLogComponent } from './activity-log.component';
     FormWrapperModule,
     DateModule,
     SkeletonTableModule,
+    PaginatorModule,
   ],
   exports: [ActivityLogComponent],
 })

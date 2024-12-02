@@ -18,7 +18,7 @@ import {
 import { ApolloQueryResult } from '@apollo/client/core/types';
 
 /** Default number of items per request for pagination */
-const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE = 100;
 
 /**
  * Shared activity log component.
@@ -78,6 +78,7 @@ export class ActivityLogComponent
    *
    * @param apollo The Apollo service for interacting with GraphQL API.
    * @param http The HttpClient service for making HTTP requests.
+   * @param fb Angular form builder instance
    */
   constructor(
     private apollo: Apollo,
@@ -101,6 +102,13 @@ export class ActivityLogComponent
           filter: this.filter,
         },
       });
+    this.setValueChangeListeners();
+  }
+
+  /**
+   * Set any needed listeners for the current query or filter form
+   */
+  private setValueChangeListeners() {
     this.activityLogsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(
@@ -108,8 +116,7 @@ export class ActivityLogComponent
           results: ApolloQueryResult<ActivityLogsActivityLogNodesQueryResponse>
         ) => {
           this.updateValues(
-            results.errors?.length ? { activityLogs: [] as any } : results.data,
-            results.loading
+            results.errors?.length ? { activityLogs: [] as any } : results.data
           );
         }
       );
@@ -172,7 +179,7 @@ export class ActivityLogComponent
    * @param refetch erase previous query results
    */
   private fetchActivities(refetch?: boolean): void {
-    // this.updating = true;
+    this.loading = true;
     const variables = {
       first: this.pageInfo.pageSize,
       afterCursor: refetch ? null : this.pageInfo.endCursor,
@@ -185,7 +192,7 @@ export class ActivityLogComponent
       this.pageInfo.pageIndex = 0;
     }
     if (cachedValues) {
-      this.updateValues(cachedValues, false);
+      this.updateValues(cachedValues);
     } else {
       if (refetch) {
         // Rebuild the query
@@ -200,7 +207,7 @@ export class ActivityLogComponent
             (
               results: ApolloQueryResult<ActivityLogsActivityLogNodesQueryResponse>
             ) => {
-              this.updateValues(results.data, results.loading);
+              this.updateValues(results.data);
             }
           );
       }
@@ -211,12 +218,8 @@ export class ActivityLogComponent
    * Updates local list with given data
    *
    * @param data New values to update forms
-   * @param loading Loading state
    */
-  private updateValues(
-    data: ActivityLogsActivityLogNodesQueryResponse,
-    loading: boolean
-  ): void {
+  private updateValues(data: ActivityLogsActivityLogNodesQueryResponse): void {
     const mappedValues = data.activityLogs.edges.map((x) => x.node);
     this.cachedActivities = updateQueryUniqueValues(
       this.cachedActivities,
@@ -224,7 +227,6 @@ export class ActivityLogComponent
     );
     this.pageInfo.length = data.activityLogs.totalCount;
     this.pageInfo.endCursor = data.activityLogs.pageInfo.endCursor;
-    this.loading = loading;
     this.activitiesLogs = this.cachedActivities.slice(
       this.pageInfo.pageSize * this.pageInfo.pageIndex,
       this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)

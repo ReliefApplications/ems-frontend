@@ -78,6 +78,7 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
     }
     // Render default classes for the host table parent
     this.tableWrapperElement = this.renderer.createElement('div');
+    this.tableWrapperElement.id = '#tableWrapper';
     this.tableWrapperClasses.forEach((twClass) => {
       this.renderer.addClass(this.tableWrapperElement, twClass);
     });

@@ -8,6 +8,7 @@ export const LIST_ACTIVITIES = gql`
     activityLogs(first: $first, afterCursor: $afterCursor, filter: $filter) {
       edges {
         node {
+          id
           userId
           eventType
           url
