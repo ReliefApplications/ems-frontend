@@ -1,3 +1,10 @@
+# [2.17.0-beta.20](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.19...v2.17.0-beta.20) (2024-12-02)
+
+
+### Bug Fixes
+
+* allow tagbox & checkbox to appear as list ([#2719](https://github.com/ReliefApplications/ems-frontend/issues/2719)) ([7ed0b1d](https://github.com/ReliefApplications/ems-frontend/commit/7ed0b1df66240116eae1647e5999a42937a43023)), closes [AB#106859](https://github.com/AB/issues/106859)
+
 # [2.17.0-beta.19](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.18...v2.17.0-beta.19) (2024-11-26)
 
 
