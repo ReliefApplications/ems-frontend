@@ -43,6 +43,7 @@
           class="max-h-full"
           cdk-table
           uiTableWrapper
+          [additionalClasses]="['h-full']"
           [dataSource]="activitiesLogs"
         >
           <ng-container cdkColumnDef="userId">
