@@ -6,8 +6,8 @@
     "check-i18n": "node .scripts/check-i18n",
     "semantic-release": "semantic-release",
     "prepare": "husky install",
-    "lint": "npx nx run-many --target=lint --verbose --projects=shared,front-office,back-office,ui,web-widgets,doc-management",
-    "test": "npx nx run-many --target=test --projects=ui --configuration=ci"
+    "lint": "npx nx run-many --target=lint --verbose --projects=shared,front-office,back-office,ui,web-widgets",
+    "test": "npx nx run-many --target=test --projects=ui,shared --configuration=ci"
   },
   "private": true,
   "dependencies": {

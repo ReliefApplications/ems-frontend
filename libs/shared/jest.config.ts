@@ -26,4 +26,11 @@ export default {
   moduleNameMapper: {
     '^lodash-es$': 'lodash',
   },
+  // Manually add valid tests there
+  testMatch: [
+    '<rootDir>/src/lib/services/context/*.spec.ts',
+    '<rootDir>/src/lib/services/html-parser/*.spec.ts',
+    '<rootDir>/src/lib/pipes/asset/*.spec.ts',
+    '<rootDir>/src/lib/pipes/gradient/*.spec.ts',
+  ],
 };

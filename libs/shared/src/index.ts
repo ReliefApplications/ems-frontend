@@ -142,6 +142,7 @@ export * from './lib/views/public-api';
 // === MODULE ===
 export * from './lib/components/widget-choice/widget-choice.module';
 export * from './lib/shared.module';
+export * from '../.storybook/storybook-translate.module';
 
 // === PIPES ===
 export * from './lib/pipes/cron-parser/public-api';
