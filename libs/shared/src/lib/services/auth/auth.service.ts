@@ -223,8 +223,14 @@ export class AuthService {
         this.environment.module === 'backoffice'
           ? this.environment.backOfficeUri
           : this.environment.frontOfficeUri;
+      let pathName = '/';
+      // If href starts with environment uri, remove it to get pathname
+      if (location.href.startsWith(environmentUri)) {
+        pathName = location.href.replace(environmentUri, '/');
+      }
+      // else, the href is the environment uri without the trailing '/'
+      // We remove the trailing '/' from the environment uri as we would add it back
       environmentUri = environmentUri.replace(/\/$/, '');
-      const pathName = location.href.replace(environmentUri, '/');
       const redirectUri = new URL(pathName, environmentUri);
       if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
         localStorage.setItem(
