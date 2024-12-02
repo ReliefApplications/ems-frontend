@@ -389,7 +389,7 @@ export class HtmlParserService {
 
         let value = get(fieldsValue, field.name);
         // If object is of type resource, transform each associated record
-        if (field.type === 'resources') {
+        if (['resources', 'checkbox', 'tagbox'].includes(field.type)) {
           value = (value || []).map((x: any) => toReadableObject(x));
         } else {
           // Else, transform value into readable one
@@ -812,8 +812,14 @@ export class HtmlParserService {
     // Get choices from field
     const options = field.options ?? field.meta?.choices;
     if (options) {
-      // replaces value for label, if it exists
-      value = options.find((o: any) => o.value == value)?.text || value;
+      // replaces value for labels, if associated option(s) exist(s)
+      if (Array.isArray(value)) {
+        value = value.map(
+          (x) => options.find((o: any) => o.value == x)?.text || x
+        );
+      } else {
+        value = options.find((o: any) => o.value == value)?.text || value;
+      }
     }
 
     if (value && field.layoutFormat && field.layoutFormat.length > 1) {
