@@ -1,3 +1,13 @@
+# [2.17.0-alpha.12](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.11...v2.17.0-alpha.12) (2024-12-02)
+
+
+### Bug Fixes
+
+* allow tagbox & checkbox to appear as list ([#2719](https://github.com/ReliefApplications/ems-frontend/issues/2719)) ([7ed0b1d](https://github.com/ReliefApplications/ems-frontend/commit/7ed0b1df66240116eae1647e5999a42937a43023)), closes [AB#106859](https://github.com/AB/issues/106859)
+* download of file not possible during record edition through form template ([#2709](https://github.com/ReliefApplications/ems-frontend/issues/2709)) ([cc479ee](https://github.com/ReliefApplications/ems-frontend/commit/cc479ee34e29fb389a60701346fe93d47d4de393)), closes [AB#106239](https://github.com/AB/issues/106239)
+* incorrect replace in init login sequence ([59146c1](https://github.com/ReliefApplications/ems-frontend/commit/59146c143ddc7b93465fd2daa7e61ed5815297a9))
+* redirection issue after login ([#2716](https://github.com/ReliefApplications/ems-frontend/issues/2716)) ([408b25c](https://github.com/ReliefApplications/ems-frontend/commit/408b25c7d85e4ef183128364e065fa0f0797892b)), closes [AB#106613](https://github.com/AB/issues/106613)
+
 # [2.17.0-alpha.11](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.10...v2.17.0-alpha.11) (2024-11-26)
 
 
