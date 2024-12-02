@@ -53,12 +53,31 @@
               {{ activity.userId }}
             </td>
           </ng-container>
+          <ng-container cdkColumnDef="username">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              <span>{{ 'common.email.one' | translate }}</span>
+            </th>
+            <td uiCell *cdkCellDef="let activity">
+              {{ activity.username }}
+            </td>
+          </ng-container>
           <ng-container cdkColumnDef="eventType">
             <th uiCellHeader *cdkHeaderCellDef scope="col">
               {{ 'components.application.activities.eventType' | translate }}
             </th>
             <td uiCell *cdkCellDef="let activity" class="min-w-[100px]">
               {{ activity.eventType }}
+            </td>
+          </ng-container>
+          <ng-container
+            *ngFor="let attribute of attributes"
+            [cdkColumnDef]="attribute.value"
+          >
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              <span>{{ attribute.text }}</span>
+            </th>
+            <td uiCell *cdkCellDef="let activity">
+              {{ activity.attributes?.[attribute.value] }}
             </td>
           </ng-container>
           <ng-container cdkColumnDef="url">

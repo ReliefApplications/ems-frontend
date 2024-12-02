@@ -13,6 +13,7 @@ export const LIST_ACTIVITIES = gql`
           eventType
           url
           metadata
+          attributes
         }
         cursor
       }

@@ -11,6 +11,7 @@ import {
   TableModule,
 } from '@oort-front/ui';
 import { SkeletonTableModule } from '../skeleton/skeleton-table/public-api';
+import { EmptyModule } from '../ui/empty/empty.module';
 import { ActivityLogComponent } from './activity-log.component';
 
 /** Module for components related to templates */
@@ -27,6 +28,7 @@ import { ActivityLogComponent } from './activity-log.component';
     DateModule,
     SkeletonTableModule,
     PaginatorModule,
+    EmptyModule,
   ],
   exports: [ActivityLogComponent],
 })

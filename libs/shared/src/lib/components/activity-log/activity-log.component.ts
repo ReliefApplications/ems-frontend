@@ -1,21 +1,20 @@
-import { Component } from '@angular/core';
-import { LIST_ACTIVITIES } from './graphql/queries';
-import { OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { ApolloQueryResult } from '@apollo/client/core/types';
+import { handleTablePageEvent, UIPageChangeEvent } from '@oort-front/ui';
 import { Apollo, QueryRef } from 'apollo-angular';
+import { takeUntil } from 'rxjs';
 import {
   ActivityLog,
   ActivityLogsActivityLogNodesQueryResponse,
 } from '../../models/activity-log.model';
-import { HttpClient } from '@angular/common/http';
-import { FormBuilder } from '@angular/forms';
-import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { handleTablePageEvent, UIPageChangeEvent } from '@oort-front/ui';
+import { RestService } from '../../services/rest/rest.service';
 import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../utils/public-api';
-import { ApolloQueryResult } from '@apollo/client/core/types';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { LIST_ACTIVITIES } from './graphql/queries';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 100;
@@ -32,33 +31,24 @@ export class ActivityLogComponent
   extends UnsubscribeComponent
   implements OnInit
 {
-  /**
-   * List of activities to display.
-   */
-  activitiesLogs: ActivityLog[] = [];
-
-  /**
-   * Columns to display in the table.
-   */
-  displayedColumns: string[] = ['userId', 'eventType', 'url'];
-
-  /**
-   * URL to download activities.
-   */
-  downloadUrl = 'http://localhost:3000/activity/download-activities';
+  /** List of activities to display. */
+  public activitiesLogs: ActivityLog[] = [];
+  /** Columns to display in the table. */
+  public displayedColumns: string[] = [];
+  /** Attributes */
+  public attributes: { text: string; value: string }[] = [];
+  /** Loading flag */
   public loading = false;
   /** Filter form group */
   public filterForm = this.fb.group({
     startDate: [null],
     endDate: [null],
   });
-
   /** Filter */
   public filter: any = {
     filters: [],
     logic: 'and',
   };
-
   /** Page info */
   public pageInfo = {
     pageIndex: 0,
@@ -66,23 +56,21 @@ export class ActivityLogComponent
     length: 0,
     endCursor: '',
   };
-
   /** Cached activity logs */
   public cachedActivities: ActivityLog[] = [];
-
   /** Activity logs query */
   private activityLogsQuery!: QueryRef<ActivityLogsActivityLogNodesQueryResponse>;
 
   /**
-   * Constructor that injects the Apollo service.
+   * Shared activity log component.
    *
-   * @param apollo The Apollo service for interacting with GraphQL API.
-   * @param http The HttpClient service for making HTTP requests.
+   * @param apollo Apollo Client
+   * @param restService Shared rest service
    * @param fb Angular form builder instance
    */
   constructor(
     private apollo: Apollo,
-    private http: HttpClient,
+    private restService: RestService,
     private fb: FormBuilder
   ) {
     super();
@@ -102,7 +90,31 @@ export class ActivityLogComponent
           filter: this.filter,
         },
       });
+    this.getAttributes();
     this.setValueChangeListeners();
+  }
+
+  /**
+   * Fetch attributes to build columns
+   */
+  private getAttributes(): void {
+    this.restService
+      .get('/permissions/attributes')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (attributes: any) => {
+          this.attributes = attributes;
+          this.displayedColumns = [
+            'userId',
+            'username',
+            ...this.attributes.map((x) => x.value),
+            'url',
+          ];
+        },
+        error: () => {
+          this.displayedColumns = ['userId', 'username', 'url'];
+        },
+      });
   }
 
   /**
@@ -238,8 +250,8 @@ export class ActivityLogComponent
    * Method to download activities when the link is clicked.
    */
   downloadActivities(): void {
-    this.http
-      .get(this.downloadUrl, { responseType: 'blob' })
+    this.restService
+      .get('/activity/download-activities', { responseType: 'blob' })
       .subscribe((blob: any) => {
         const downloadUrl = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
