@@ -43,6 +43,8 @@ export class AppComponent implements OnInit {
    * Root component of back-office
    *
    * @param authService Shared authentication service
+   * @param router Angular router
+   * @param logger Shared logger service
    */
   constructor(
     private authService: AuthService,
