@@ -613,7 +613,6 @@
 			"activities": {
 				"downloadXlsx": "Download XLSX",
 				"empty": "Aucune activité n'est disponible.",
-				"eventType": "Type d'événement",
 				"few": "Activités",
 				"metadata": "Métadonnées",
 				"one": "Activité",

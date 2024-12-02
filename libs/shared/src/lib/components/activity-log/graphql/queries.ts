@@ -7,9 +7,10 @@ export const LIST_ACTIVITIES = gql`
   query ListActivities {
     activityLogs {
       userId
-      eventType
+      username
       url
       metadata
+      attributes
     }
   }
 `;
