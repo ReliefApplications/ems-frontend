@@ -611,14 +611,11 @@
 		},
 		"application": {
 			"activities": {
-				"country": "Country",
 				"downloadXlsx": "Download XLSX",
-				"email": "Email",
 				"empty": "No activities available",
 				"few": "Activities",
 				"metadata": "Metadata",
 				"one": "Activity",
-				"region": "Region",
 				"url": "URL",
 				"userId": "User ID"
 			},

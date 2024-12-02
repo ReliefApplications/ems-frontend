@@ -611,14 +611,11 @@
 		},
 		"application": {
 			"activities": {
-				"country": "******",
 				"downloadXlsx": "******",
-				"email": "******",
 				"empty": "******",
 				"few": "******",
 				"metadata": "******",
 				"one": "******",
-				"region": "******",
 				"url": "******",
 				"userId": "******"
 			},
