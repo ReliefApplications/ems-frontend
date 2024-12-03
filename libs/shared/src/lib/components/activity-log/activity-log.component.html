@@ -47,6 +47,14 @@
           uiTableWrapper
           [dataSource]="activitiesLogs"
         >
+          <ng-container cdkColumnDef="createdAt">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              {{ 'components.application.activities.createdAt' | translate }}
+            </th>
+            <td uiCell *cdkCellDef="let activity">
+              {{ activity.createdAt | date }}
+            </td>
+          </ng-container>
           <ng-container cdkColumnDef="userId">
             <th uiCellHeader *cdkHeaderCellDef scope="col">
               {{ 'components.application.activities.userId' | translate }}

@@ -105,6 +105,7 @@ export class ActivityLogComponent
         next: (attributes: any) => {
           this.attributes = attributes;
           this.displayedColumns = [
+            'createdAt',
             'userId',
             'username',
             ...this.attributes.map((x) => x.value),
@@ -112,7 +113,7 @@ export class ActivityLogComponent
           ];
         },
         error: () => {
-          this.displayedColumns = ['userId', 'username', 'url'];
+          this.displayedColumns = ['createdAt', 'userId', 'username', 'url'];
         },
       });
   }
