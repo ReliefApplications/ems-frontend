@@ -174,6 +174,48 @@ export class DownloadService {
   }
 
   /**
+   * Downloads activities for current application
+   *
+   * @param filter Filter
+   */
+  getActivitiesExport(filter: any) {
+    const { snackBarRef } = this.triggerFileDownloadMessage(
+      'common.notifications.file.download.processing'
+    );
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
+
+    this.restService
+      .post(
+        '/activity/download-activities',
+        { filter },
+        { responseType: 'blob' }
+      )
+      .subscribe({
+        next: (blob: any) => {
+          const downloadUrl = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = downloadUrl;
+          link.download = 'activities.xlsx';
+          link.click();
+          window.URL.revokeObjectURL(downloadUrl);
+          snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.file.download.ready'
+          );
+          snackBarSpinner.instance.loading = false;
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+        },
+        error: () => {
+          snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.file.download.error'
+          );
+          snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.error = true;
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+        },
+      });
+  }
+
+  /**
    * Downloads file with users from the server
    *
    * @param type type of the file

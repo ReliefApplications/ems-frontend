@@ -1,3 +1,4 @@
+import { DownloadService } from './../../services/download/download.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client/core/types';
@@ -67,11 +68,13 @@ export class ActivityLogComponent
    * @param apollo Apollo Client
    * @param restService Shared rest service
    * @param fb Angular form builder instance
+   * @param downloadService Shared download service
    */
   constructor(
     private apollo: Apollo,
     private restService: RestService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private downloadService: DownloadService
   ) {
     super();
   }
@@ -250,20 +253,7 @@ export class ActivityLogComponent
    * Method to download activities when the link is clicked.
    */
   downloadActivities(): void {
-    this.restService
-      .post(
-        '/activity/download-activities',
-        { filter: this.filter },
-        { responseType: 'blob' }
-      )
-      .subscribe((blob: any) => {
-        const downloadUrl = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = 'activities.xlsx';
-        link.click();
-        window.URL.revokeObjectURL(downloadUrl);
-      });
+    this.downloadService.getActivitiesExport(this.filter);
   }
 
   /**
