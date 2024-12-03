@@ -1,30 +1,31 @@
-import { Apollo } from 'apollo-angular';
-import { Component, OnInit, ViewChild } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   ActivatedRoute,
   NavigationEnd,
   Router,
   RouterOutlet,
 } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import {
-  Workflow,
-  Step,
+  Application,
+  ApplicationService,
+  AuthService,
   ConfirmService,
   ContentType,
-  ApplicationService,
-  WorkflowService,
-  AuthService,
-  Application,
-  UnsubscribeComponent,
   DeleteStepMutationResponse,
   EditWorkflowMutationResponse,
+  Step,
+  UnsubscribeComponent,
+  Workflow,
+  WorkflowService,
 } from '@oort-front/shared';
-import { DELETE_STEP, EDIT_WORKFLOW } from './graphql/mutations';
-import { TranslateService } from '@ngx-translate/core';
-import { filter, takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
+import { isNil } from 'lodash';
 import { Subscription } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
+import { DELETE_STEP, EDIT_WORKFLOW } from './graphql/mutations';
 
 /**
  * Application workflow page component.
@@ -99,12 +100,30 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe((e) => {
+        let validActiveStepIndex = -1;
+        if (!isNil(this.workflow)) {
+          const routeStepContent = /[^/]*$/gi.exec(
+            (e as NavigationEnd).urlAfterRedirects
+          )?.[0];
+          const afterRedirectionActiveStepIndex = this.steps?.findIndex(
+            (step) => step.content === routeStepContent
+          );
+          if (
+            afterRedirectionActiveStepIndex !== -1 &&
+            this.activeStep !== afterRedirectionActiveStepIndex
+          ) {
+            validActiveStepIndex = afterRedirectionActiveStepIndex;
+          }
+        }
         // If going back or clicking on route in sidenav, go to first step
+        // If there is a redirection done in the workflow from outside the component, e.g. action buttons, go to that redirected step
         if (
           e instanceof NavigationEnd &&
-          e.urlAfterRedirects.endsWith(this.id)
+          (e.urlAfterRedirects.endsWith(this.id) || validActiveStepIndex !== -1)
         ) {
-          this.onOpenStep(0);
+          this.onOpenStep(
+            validActiveStepIndex !== -1 ? validActiveStepIndex : 0
+          );
         }
       });
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {

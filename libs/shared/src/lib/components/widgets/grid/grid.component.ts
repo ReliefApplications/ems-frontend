@@ -47,6 +47,7 @@ import { FormQueryResponse } from '../../../models/form.model';
 import { AggregationGridComponent } from '../../aggregation/aggregation-grid/aggregation-grid.component';
 import { ReferenceDataGridComponent } from '../../ui/reference-data-grid/reference-data-grid.component';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
+import { clone } from 'lodash';
 
 /** Component for the grid widget */
 @Component({
@@ -132,6 +133,9 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     return (this.settings.floatingButtons || []).filter((x: any) => x.show);
   }
 
+  /** Resource data list */
+  private metaResourceData: any = [];
+
   /**
    * Heavy constructor for the grid widget component
    *
@@ -168,6 +172,15 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     delete this.gridSettings.query;
     let buildSortFields = false;
     if (this.settings.resource) {
+      // Fetch resource metadata for email sending
+      this.queryBuilder
+        .getQueryMetaData(this.settings.resource)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: ({ data }) => {
+            this.metaResourceData = data.resource.metadata;
+          },
+        });
       this.useReferenceData = false;
       const layouts = get(this.settings, 'layouts', []);
       const aggregations = get(this.settings, 'aggregations', []);
@@ -440,67 +453,87 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     if (promises.length > 0) {
       await Promise.all(promises);
     }
+
     // Send email using backend mail service.
     if (options.sendMail) {
-      const templates =
-        this.applicationService.templates.filter((x) =>
-          options.templates?.includes(x.id)
-        ) || [];
-      if (templates.length === 0) {
-        // no template found, skip
-        this.snackBar.openSnackBar(
-          this.translate.instant(
-            'common.notifications.email.errors.noTemplate'
-          ),
-          { error: true }
-        );
-      } else {
-        // find recipients
-        const recipients =
-          this.applicationService.distributionLists.find(
-            (x) => x.id === options.distributionList
-          )?.emails || [];
-
-        // select template
-        const { EmailTemplateModalComponent } = await import(
-          '../../email-template-modal/email-template-modal.component'
-        );
-        const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
-          data: {
-            templates,
-          },
-        });
-
-        const value = await firstValueFrom<any>(
-          dialogRef.closed.pipe(takeUntil(this.destroy$))
-        );
-        const template = value?.template;
-
-        if (template) {
-          this.emailService.previewMail(
-            recipients,
-            template.content.subject,
-            template.content.body,
-            {
-              logic: 'and',
-              filters: [
-                {
-                  operator: 'eq',
-                  field: 'ids',
-                  value: this.grid.selectedRows,
-                },
-              ],
-            },
-            {
-              name: this.grid.settings.query.name,
-              fields: options.bodyFields,
-            },
-            this.grid.sortField || undefined,
-            this.grid.sortOrder || undefined,
-            options.export
+      const selectedIds = clone(this.grid.selectedRows);
+      this.emailService.getCustomTemplates().subscribe({
+        next: ({ data }) => {
+          const allTemplateData = data.customTemplates.edges.map(
+            (x: any) => x.node
           );
-        }
-      }
+          const templates = allTemplateData.filter((template: any) =>
+            options.templates?.includes(template.id)
+          );
+          if (templates.length === 0) {
+            // no template found, skip
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'common.notifications.email.errors.noTemplate'
+              ),
+              { error: true }
+            );
+          } else {
+            this.emailService.getEmailDistributionList().subscribe({
+              next: async ({ data }) => {
+                const allDistributionLists =
+                  data.emailDistributionLists.edges.map((x: any) => x.node);
+
+                const distributionList = allDistributionLists.filter(
+                  (dl: any) => options.distributionList === dl.id
+                )[0];
+
+                // Open email template selection
+                const { EmailTemplateModalComponent } = await import(
+                  '../../email-template-modal/email-template-modal.component'
+                );
+                const dialogRef = this.dialog.open(
+                  EmailTemplateModalComponent,
+                  {
+                    data: {
+                      templates,
+                    },
+                  }
+                );
+
+                // Get template from dialog ref
+                const value = await firstValueFrom<any>(
+                  dialogRef.closed.pipe(takeUntil(this.destroy$))
+                );
+                if (value?.template) {
+                  const selectedId = value?.template;
+                  const template = templates.filter(
+                    (x: any) => x.id === selectedId
+                  )[0];
+                  if (template) {
+                    const emailQuery = this.buildEmailQuery(selectedIds);
+                    if (emailQuery) {
+                      emailQuery.pipe(takeUntil(this.destroy$)).subscribe({
+                        next: ({ data }) => {
+                          let emailData: any = [];
+                          Object.keys(data)?.forEach((key: any) => {
+                            emailData = data[key].edges;
+                          });
+                          this.emailService.previewCustomTemplate(
+                            template,
+                            distributionList,
+                            emailData,
+                            this.metaResourceData,
+                            options.bodyFields
+                          );
+                          this.status = {
+                            error: false,
+                          };
+                        },
+                      });
+                    }
+                  }
+                }
+              },
+            });
+          }
+        },
+      });
     }
 
     // Workflow only: goes to next step, goes to the previous step, or closes the workflow.
@@ -700,5 +733,50 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
    */
   onAggregationChange(aggregation: Aggregation): void {
     this.aggregation = aggregation;
+  }
+
+  /**
+   * Build email query for quick action button.
+   *
+   * @param selectedIds Ids selected in the grid for email sending
+   * @returns Records graphql query.
+   */
+  private buildEmailQuery(selectedIds: string[]) {
+    const settingsData: any = clone(this.layout);
+    settingsData.query.fields =
+      this.settings?.floatingButtons?.[0].bodyFields || [];
+    const builtQuery = this.queryBuilder.buildQuery(settingsData);
+    if (!builtQuery) {
+      this.status = {
+        error: settingsData.resource || settingsData.query,
+        message: this.translate.instant(
+          'components.widget.grid.errors.queryBuildFailed'
+        ),
+      };
+      return;
+    } else {
+      return this.apollo.query({
+        query: builtQuery,
+        variables: {
+          first: selectedIds.length,
+          filter: {
+            logic: 'and',
+            filters: [
+              {
+                operator: 'eq',
+                field: 'ids',
+                value: selectedIds,
+              },
+            ],
+          },
+          sortField: this.grid.sortField || undefined,
+          sortOrder: this.grid.sortOrder || undefined,
+          styles: this.layout?.query?.style,
+          at: undefined,
+          skip: this.grid.skip,
+        },
+        fetchPolicy: 'no-cache',
+      });
+    }
   }
 }

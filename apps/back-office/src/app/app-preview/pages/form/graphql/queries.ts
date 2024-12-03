@@ -22,6 +22,7 @@ export const GET_STEP_BY_ID = gql`
           }
         }
       }
+      buttons
       permissions {
         canSee {
           id
@@ -69,6 +70,7 @@ export const GET_PAGE_BY_ID = gql`
           title
         }
       }
+      buttons
       application {
         shortcut
         id

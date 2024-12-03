@@ -43,15 +43,16 @@
           </h1>
         </ng-container>
         <div class="flex items-center gap-1">
-          <!-- Button actions -->
-          <shared-button-action
+          <!-- Action buttons -->
+          <shared-action-buttons
             class="export-hide"
-            [buttonActions]="buttonActions"
+            [actionButtons]="actionButtons"
             [dashboard]="dashboard"
-          ></shared-button-action>
+            (reloadDashboard)="reload()"
+          ></shared-action-buttons>
           <!-- Dashboard export -->
           <shared-dashboard-export-button
-            *ngIf="showName || buttonActions.length > 0"
+            *ngIf="showName || actionButtons.length > 0"
             [title]="dashboard.name"
             [exporter]="elementRef"
           ></shared-dashboard-export-button>
