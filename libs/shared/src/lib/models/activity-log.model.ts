@@ -1,3 +1,5 @@
+import { GraphqlNodesResponse } from './graphql-query.model';
+
 /**
  * Interface for ActivityLog objects.
  */
@@ -22,4 +24,8 @@ export interface ActivityLog {
    * The description of the activity.
    */
   description: string;
+}
+/** Model for activity logs application nodes graphql query response*/
+export interface ActivityLogsActivityLogNodesQueryResponse {
+  activityLogs: GraphqlNodesResponse<ActivityLog>;
 }
