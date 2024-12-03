@@ -187,6 +187,7 @@ export class EmailTemplateComponent
   isPreviewEmail = true;
   /** DL preview emails  */
   previewDLEmails: any = [];
+
   /**
    * Composite filter group.
    *
