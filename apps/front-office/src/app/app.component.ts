@@ -9,6 +9,7 @@ import {
   ResourceSelectTextComponent,
   TestServiceDropdownComponent,
   AuthService,
+  LoggerService,
 } from '@oort-front/shared';
 
 /**
@@ -37,9 +38,13 @@ export class AppComponent implements OnInit {
   /**
    * Main component of Front-office.
    *
-   * @param authService Shared authentication service
+   * @param authService Shared authentication service,
+   * @param logger Shared logger service
    */
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private logger: LoggerService
+  ) {}
 
   /**
    * Configuration of the Authentication behavior
