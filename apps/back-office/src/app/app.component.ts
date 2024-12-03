@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {
   GeofieldsListboxComponent,
   ApplicationDropdownComponent,
@@ -13,7 +12,6 @@ import {
   CodeEditorComponent,
   LoggerService,
 } from '@oort-front/shared';
-import { filter } from 'rxjs';
 
 /**
  * Root component of back-office.
@@ -43,7 +41,6 @@ export class AppComponent implements OnInit {
    * Root component of back-office
    *
    * @param authService Shared authentication service
-   * @param router Angular router service
    * @param logger Shared logger service
    */
   constructor(
