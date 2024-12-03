@@ -10,6 +10,7 @@ export const LIST_ACTIVITIES = gql`
         node {
           id
           userId
+          username
           eventType
           url
           metadata

@@ -4,7 +4,6 @@ import {
   Directive,
   ElementRef,
   EventEmitter,
-  Input,
   OnDestroy,
   OnInit,
   Output,
@@ -22,8 +21,6 @@ import { Observable, Subject, filter, merge, startWith, takeUntil } from 'rxjs';
   selector: '[uiTableWrapper]',
 })
 export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
-  /** Any additional classes that we should add to the table wrapper element */
-  @Input() additionalClasses = [''];
   /**
    * Table sort change event emitter
    */
@@ -81,11 +78,9 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
     }
     // Render default classes for the host table parent
     this.tableWrapperElement = this.renderer.createElement('div');
-    [...this.tableWrapperClasses, ...this.additionalClasses].forEach(
-      (twClass) => {
-        this.renderer.addClass(this.tableWrapperElement, twClass);
-      }
-    );
+    this.tableWrapperClasses.forEach((twClass) => {
+      this.renderer.addClass(this.tableWrapperElement, twClass);
+    });
     // Append new wrapped up table
     this.renderer.appendChild(
       this.el.nativeElement.parentElement,

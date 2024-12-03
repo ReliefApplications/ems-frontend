@@ -1,4 +1,5 @@
-<div class="flex flex-wrap justify-between items-end mb-8">
+<!-- Actions -->
+<div class="flex flex-wrap justify-between items-end mb-8 gap-2">
   <div class="flex flex-wrap gap-2 items-end">
     <!-- Date range filter -->
     <div uiFormFieldDirective [defaultMargin]="false">
@@ -21,6 +22,7 @@
       'common.filter.clear' | translate
     }}</ui-button>
   </div>
+  <!-- Export logs as xlsx -->
   <ui-button
     category="secondary"
     variant="primary"
@@ -43,7 +45,6 @@
           class="max-h-full"
           cdk-table
           uiTableWrapper
-          [additionalClasses]="['h-full']"
           [dataSource]="activitiesLogs"
         >
           <ng-container cdkColumnDef="userId">
@@ -95,15 +96,13 @@
       </ng-container>
       <ng-template #emptyTmpl>
         <!-- Empty indicator -->
-        <div class="flex items-center justify-center h-64">
-          <ui-icon icon="info" variant="grey" class="w-12 h-12"></ui-icon>
-          <span class="ml-4 text-gray-500">{{
-            'components.application.activities.empty' | translate
-          }}</span>
-        </div>
+        <shared-empty
+          [title]="'components.application.activities.empty' | translate"
+        ></shared-empty>
       </ng-template>
     </ng-template>
   </div>
+  <!-- Pagination -->
   <ui-paginator
     [disabled]="loading"
     [pageIndex]="pageInfo.pageIndex"
