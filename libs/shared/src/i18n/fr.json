@@ -834,7 +834,8 @@
 		},
 		"distributionLists": {
 			"DLWarning": {
-				"message": "Toute modification apportée à une liste de distribution sera reflétée dans toutes les zones où le DL est utilisé."
+				"message": "Toute modification apportée à une liste de distribution sera reflétée dans toutes les zones où le DL est utilisé.",
+				"noData": "Aucun e-mail trouvé"
 			},
 			"delete": {
 				"confirmationMessage": "Voulez-vous vraiment supprimer la liste de distribution: '{{name}}'?"

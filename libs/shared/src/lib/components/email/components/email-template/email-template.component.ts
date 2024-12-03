@@ -181,7 +181,12 @@ export class EmailTemplateComponent
   public nonEmailFieldsAlert = false;
   /** Actual resourceFields data  */
   public resourceFields: any = [];
-
+  /** Expand for "To" list items. */
+  isExpandedPreview = false;
+  /** Expand for "To" list items. */
+  isPreviewEmail = true;
+  /** DL preview emails  */
+  previewDLEmails: any = [];
   /**
    * Composite filter group.
    *
@@ -470,6 +475,7 @@ export class EmailTemplateComponent
         };
 
         this.previewHTML = '';
+        this.previewDLEmails = [];
 
         this.http
           .post(
@@ -494,7 +500,17 @@ export class EmailTemplateComponent
                 this.showDatasetLimitWarning = true;
               }
               await this.checkFilter();
-
+              if (this.type === 'to') {
+                this.previewDLEmails = this.emailService.filterToEmails;
+              }
+              if (this.type === 'cc') {
+                this.previewDLEmails = this.emailService.filterCCEmails;
+              }
+              if (this.type === 'bcc') {
+                this.previewDLEmails = this.emailService.filterBCCEmails;
+              }
+              this.isPreviewEmail =
+                this.previewDLEmails?.length > 0 ? true : false;
               this.previewHTML = window.atob(response.tableHtml);
               if (this.tblPreview?.nativeElement) {
                 setTimeout(() => {
@@ -725,6 +741,14 @@ export class EmailTemplateComponent
             this.emailService.validateNextButton();
           } else if (this.type === 'cc' || this.type === 'bcc') {
             this.emailService.validateNextButton();
+            if (this.type === 'cc') {
+              this.emailService.filterCCEmails =
+                response?.cc?.length > 0 ? response?.cc : [];
+            }
+            if (this.type === 'bcc') {
+              this.emailService.filterBCCEmails =
+                response?.bcc?.length > 0 ? response?.bcc : [];
+            }
           }
           resolve(response?.to.length > 0);
         })
@@ -993,5 +1017,12 @@ export class EmailTemplateComponent
     if (!this.nonEmailFieldsAlert && matchedData !== 'email') {
       this.nonEmailFieldsAlert = true;
     }
+  }
+
+  /**
+   * Expand see more email list dropdown for "To".
+   */
+  toggleExpandPreview() {
+    this.isExpandedPreview = !this.isExpandedPreview;
   }
 }

@@ -834,7 +834,8 @@
 		},
 		"distributionLists": {
 			"DLWarning": {
-				"message": "******"
+				"message": "******",
+				"noData": "******"
 			},
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"

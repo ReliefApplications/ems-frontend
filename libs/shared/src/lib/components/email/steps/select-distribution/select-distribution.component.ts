@@ -381,6 +381,7 @@ export class SelectDistributionComponent
    * @param targetGroup Form group you want to clear
    */
   clearDL(targetGroup: FormGroup): void {
+    this.emailService.filterToEmails = [];
     // Clear 'resource'
     targetGroup.get('resource')?.patchValue('');
 
