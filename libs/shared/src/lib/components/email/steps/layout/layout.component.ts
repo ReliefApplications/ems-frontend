@@ -7,9 +7,10 @@ import { ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
-import { NgSelectComponent } from '@ng-select/ng-select';
-import { Subscription, takeUntil } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import convertToMinutes from '../../../../utils/convert-to-minutes';
+import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 
 /**
  * Email layout page component.
@@ -82,22 +83,53 @@ export class LayoutComponent
   @Input() setLayoutValidation = false;
   /** Form array for 'in the last' dropdown. */
   public inTheLastDropdown = new FormArray<FormControl>([]);
-  /** NgSelect component */
-  @ViewChild('ngSelectComponent', { static: false })
-  ngSelectComponent!: NgSelectComponent;
-  /** Timestamp NgSelect component */
-  @ViewChild('ngTimestampComponent', { static: false })
-  ngTimestampComponent!: NgSelectComponent;
-  /** Filtered Field NgSelect component */
-  @ViewChild('ngFilteredFieldComponent', { static: false })
-  ngFilteredFieldComponent!: NgSelectComponent;
-  /** Field NgSelect component */
-  @ViewChild('ngFieldComponent', { static: false })
-  ngFieldComponent!: NgSelectComponent;
   /** DATASETS LIST GREATER THAN 1 CHECK */
   public datasetOverflow = false;
   /** Subscription for the graphql load change event. */
   private loadChangeSubscription: Subscription = new Subscription();
+
+  /** To input HTML */
+  @ViewChild('toInput') toInput!: ElementRef<HTMLInputElement>;
+  /** Cc input HTML */
+  @ViewChild('ccInput') ccInput!: ElementRef<HTMLInputElement>;
+  /** Bcc input HTML */
+  @ViewChild('bccInput') bccInput!: ElementRef<HTMLInputElement>;
+  /** Regex pattern for email */
+  EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+  /** Key codes of separators */
+  SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
+
+  /** @returns list of emails */
+  get emails(): string[] {
+    return this.layoutForm.get('to')?.value || [];
+  }
+
+  /** @returns {string[]} An array containing the CC values.*/
+  get cc(): string[] {
+    return this.layoutForm.get('cc')?.value || [];
+  }
+
+  /** @returns {string[]} An array containing the BCC values. */
+  get bcc(): string[] {
+    return this.layoutForm.get('bcc')?.value || [];
+  }
+
+  /** @returns error message */
+  get emailsError(): string {
+    const control = this.layoutForm.get('to');
+    if (control?.hasError('required')) {
+      return 'components.distributionLists.errors.emails.required';
+    }
+    if (control?.hasError('pattern')) {
+      return 'components.distributionLists.errors.emails.pattern';
+    }
+    return '';
+  }
+
+  /** separatorKeysCodes  */
+  readonly separatorKeysCodes: number[] = this.SEPARATOR_KEYS_CODE;
+  /** flag for custom preview template  */
+  @Input() isPreviewTemplate = false;
 
   /**
    * Email layout page component.
@@ -123,58 +155,74 @@ export class LayoutComponent
   }
 
   ngOnInit(): void {
-    this.layoutForm = this.fb.group({
-      subjectField: [''],
-      timeInput: [''],
-      subjectInput: [this.emailService.allLayoutdata.txtSubject],
-      inTheLastDropdown: [''],
-      headerTimeInput: [''],
-      header: [this.emailService.allLayoutdata.headerHtml],
-      block: [''],
-      body: [this.emailService.allLayoutdata.bodyHtml],
-    });
-    this.loadChangeSubscription.add(
-      this.emailService.metaDataQueryLoading$
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((isLoading) => {
-          if (!isLoading) {
-            this.datasetOverflow =
-              this.emailService.allPreviewData.length > 1 ||
-              this.emailService.allPreviewData.length === 0;
-          }
-        })
-    );
+    if (this.emailService.isQuickAction) {
+      this.emailService.resetPreviewData();
+      this.emailService.previewData.datasets = ['Block 1'];
+    } else {
+      this.emailService.createPreviewData();
+    }
+
+    if (!this.emailService.isCustomTemplateEdit) {
+      this.emailService.allLayoutdata.bodyHtml =
+        this.emailService.isQuickAction &&
+        this.emailService.allLayoutdata?.bodyHtml?.trim() === ''
+          ? '<p>{{Block 1}}</p>'
+          : this.emailService.allLayoutdata.bodyHtml;
+      this.layoutForm = this.fb.group({
+        subjectField: [''],
+        timeInput: [''],
+        subjectInput: [this.emailService.allLayoutdata.txtSubject],
+        inTheLastDropdown: [''],
+        headerTimeInput: [''],
+        header: [this.emailService.allLayoutdata.headerHtml],
+        block: [''],
+        body: [this.emailService.allLayoutdata.bodyHtml],
+        to: [''],
+        cc: [''],
+        bcc: [''],
+      });
+    } else {
+      this.layoutForm = this.fb.group({
+        subjectField: [''],
+        timeInput: [''],
+        subjectInput: [
+          this.emailService.datasetsForm?.get('emailLayout')?.value.subject,
+        ],
+        inTheLastDropdown: [''],
+        headerTimeInput: [''],
+        header: [
+          this.emailService.datasetsForm?.get('emailLayout')?.value?.header
+            ?.headerHtml,
+        ],
+        block: [''],
+        body: [
+          this.emailService.datasetsForm?.get('emailLayout')?.value?.body
+            ?.bodyHtml,
+        ],
+      });
+      if (this.emailService.isQuickAction) {
+        const dlForm = this.fb.group({
+          ...this.layoutForm,
+          to: [''],
+          cc: [''],
+          bcc: [''],
+        });
+        this.layoutForm.patchValue(dlForm);
+      }
+    }
 
     this.onTxtSubjectChange();
     this.initInTheLastDropdown();
     if (this.emailService.allLayoutdata.headerLogo) {
-      this.headerLogo = URL.createObjectURL(
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.headerLogo,
-          'image.png',
-          'image/png'
-        )
-      );
+      this.headerLogo = this.emailService.allLayoutdata.headerLogo;
     }
 
     if (this.emailService.allLayoutdata.footerLogo) {
-      this.footerLogo = URL.createObjectURL(
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.footerLogo,
-          'image.png',
-          'image/png'
-        )
-      );
+      this.footerLogo = this.emailService.allLayoutdata.footerLogo;
     }
 
     if (this.emailService.allLayoutdata.bannerImage) {
-      this.bannerImage = URL.createObjectURL(
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.bannerImage,
-          'image.png',
-          'image/png'
-        )
-      );
+      this.bannerImage = this.emailService.allLayoutdata.bannerImage;
     }
     this.initialiseFieldSelectDropdown();
     if (this.headerLogoInput) {
@@ -195,6 +243,21 @@ export class LayoutComponent
           this.emailService.allLayoutdata.footerLogo;
       }
     }
+    if (this.emailService.emailDistributionList.to) {
+      this.layoutForm
+        .get('to')
+        ?.setValue(this.emailService.emailDistributionList.to);
+    }
+    if (this.emailService.emailDistributionList.cc) {
+      this.layoutForm
+        .get('cc')
+        ?.setValue(this.emailService.emailDistributionList.cc);
+    }
+    if (this.emailService.emailDistributionList.bcc) {
+      this.layoutForm
+        .get('bcc')
+        ?.setValue(this.emailService.emailDistributionList.bcc);
+    }
   }
 
   /**
@@ -206,6 +269,9 @@ export class LayoutComponent
       !this.layoutForm.controls['subjectInput'].value ||
       this.layoutForm.controls['subjectInput'].value.trim() === '';
 
+    // this.emailService.allLayoutdata.txtSubject =
+    //   this.layoutForm.controls['subjectInput'].value;
+
     if (
       this.layoutForm.controls['subjectInput'].touched &&
       this.showSubjectValidator
@@ -216,7 +282,12 @@ export class LayoutComponent
           error: true,
         }
       );
+      if (this.emailService.isQuickAction && !this.showBodyValidator) {
+        this.emailService.disableNextActionBtn = true;
+      }
     }
+    this.emailService.allLayoutdata.txtSubject =
+      this.layoutForm.controls['subjectInput'].value;
 
     const bodyHtml = this.layoutForm.get('body')?.value;
     let isUndefined = !bodyHtml;
@@ -229,13 +300,27 @@ export class LayoutComponent
     }
 
     this.showBodyValidator = isUndefined;
-
-    if (this.showSubjectValidator || this.showBodyValidator) {
+    let checkDuplicateName = false;
+    if (
+      this.emailService.customTemplateNames.includes(
+        this.emailService.layoutTitle.trim().toLowerCase()
+      ) &&
+      !this.emailService.isCustomTemplateEdit
+    ) {
+      checkDuplicateName = true;
+    }
+    if (
+      this.showSubjectValidator ||
+      this.showBodyValidator ||
+      (checkDuplicateName && this.emailService.isQuickAction)
+    ) {
       this.emailService.disableSaveAndProceed.next(true);
       this.emailService.stepperDisable.next({ id: 4, isValid: false });
+      this.emailService.disableNextActionBtn = true;
     } else {
       this.emailService.disableSaveAndProceed.next(false);
       this.emailService.stepperDisable.next({ id: 4, isValid: true });
+      this.emailService.disableNextActionBtn = false;
     }
   }
 
@@ -259,10 +344,13 @@ export class LayoutComponent
    */
   private initInTheLastDropdown(): void {
     const blocks = this.emailService.datasetsForm.get('datasets') as FormArray;
-    blocks.controls.forEach((blockFormGroup, index) => {
+    blocks.controls.forEach((blockFormGroup: any, index) => {
       const blockName =
         blockFormGroup.get('name')?.value || `Block ${index + 1}`;
-      const filters = blockFormGroup.get('filter')?.get('filters') as FormArray;
+      const filters = blockFormGroup
+        .get('query')
+        .get('filter')
+        .get('filters') as FormArray;
       filters.controls.forEach((filterControl) => {
         if (filterControl.get('operator')?.value === 'inthelast') {
           const field = filterControl.get('field')?.value;
@@ -294,10 +382,7 @@ export class LayoutComponent
         const [numberString, unit] = inTheLastText.split(' ');
 
         // Converts in the last value to minutes
-        const unitInMinutes = this.emailService.convertToMinutes(
-          +numberString,
-          unit
-        );
+        const unitInMinutes = convertToMinutes(+numberString, unit);
 
         // Builds Token
         token = ` {{${blockName}.${field}.${unitInMinutes}}} `;
@@ -357,9 +442,14 @@ export class LayoutComponent
    */
   initialiseFieldSelectDropdown(): void {
     const firstBlock = this.emailService.getAllPreviewData()[0];
-    if (firstBlock?.datasetFields?.length > 0) {
+    if (
+      firstBlock?.datasetFields?.length > 0 ||
+      this.emailService.previewData.fields?.length > 0
+    ) {
       // get the values of the first block
-      this.firstBlockFields = Object.values(firstBlock.datasetFields);
+      this.firstBlockFields =
+        this.emailService.previewData?.fields ??
+        Object.values(firstBlock.datasetFields);
     }
   }
 
@@ -736,5 +826,107 @@ export class LayoutComponent
     this.emailService.allLayoutdata.headerHtml =
       this.layoutForm.get('header')?.value;
     // this.emailService.patchEmailLayout();
+  }
+
+  /**
+   * Add the inputs emails to the distribution list
+   *
+   * @param emailType The type of the email (to, cc, bcc)
+   * @param event The event triggered when we exit the input
+   */
+  addEmail(emailType: string, event: string | any): void {
+    const control = this.layoutForm.get(emailType);
+    // use setTimeout to prevent add input value on focusout
+    setTimeout(
+      () => {
+        const value: string =
+          event.type === 'focusout' ? this.toInput.nativeElement.value : event;
+
+        // Add the mail
+        const emails =
+          emailType === 'to'
+            ? [...this.emails]
+            : emailType === 'cc'
+            ? [...this.cc]
+            : [...this.bcc];
+        if ((value || '').trim()) {
+          if (this.EMAIL_REGEX.test(value.trim())) {
+            emails.push(value.trim());
+            const uniqueEmails = Array.from(new Set(emails));
+            control?.patchValue(uniqueEmails);
+            control?.updateValueAndValidity();
+            if (event.type === 'focusout') {
+              switch (emailType) {
+                case 'to':
+                  this.toInput.nativeElement.value = '';
+                  break;
+                case 'cc':
+                  this.ccInput.nativeElement.value = '';
+                  break;
+                case 'bcc':
+                  this.bccInput.nativeElement.value = '';
+                  break;
+                default:
+                  break;
+              }
+            }
+          } else {
+            control?.setErrors({ pattern: true });
+          }
+        } else {
+          // no value
+          control?.setErrors({ pattern: false });
+          control?.updateValueAndValidity();
+        }
+        this.emailService.emailDistributionList =
+          this.emailService.emailDistributionList === undefined
+            ? {}
+            : this.emailService.emailDistributionList;
+        switch (emailType) {
+          case 'to':
+            this.emailService.emailDistributionList.to = emails;
+            break;
+          case 'cc':
+            this.emailService.emailDistributionList.cc = emails;
+            break;
+          case 'bcc':
+            this.emailService.emailDistributionList.bcc = emails;
+            break;
+          default:
+            break;
+        }
+      },
+      event.type === 'focusout' ? 500 : 0
+    );
+  }
+
+  /**
+   * Remove an email from the distribution list
+   *
+   * @param email The email to remove
+   * @param type the type as string
+   */
+  removeEmail(email: string, type: string): void {
+    if (type === 'to') {
+      const emails = [...this.emails].filter(
+        (emailData) => emailData.toLowerCase() !== email.toLowerCase()
+      );
+      this.layoutForm.get(type)?.setValue(emails);
+      this.emailService.emailDistributionList.to = emails;
+    }
+    if (type === 'cc') {
+      const emails = [...this.cc].filter(
+        (emailData) => emailData.toLowerCase() !== email.toLowerCase()
+      );
+      this.layoutForm.get(type)?.setValue(emails);
+      this.emailService.emailDistributionList.cc = emails;
+    }
+    if (type === 'bcc') {
+      const emails = [...this.bcc].filter(
+        (emailData) => emailData.toLowerCase() !== email.toLowerCase()
+      );
+      this.layoutForm.get(type)?.setValue(emails);
+      this.emailService.emailDistributionList.bcc = emails;
+    }
   }
 }

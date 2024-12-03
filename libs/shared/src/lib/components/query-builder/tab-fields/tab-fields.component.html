@@ -35,6 +35,7 @@
         class="field-list"
         cdkDropListSortingDisabled
         (cdkDropListDropped)="drop($event)"
+        [cdkDropListDisabled]="disabled"
       >
         <ng-container *ngFor="let field of availableFields">
           <div
@@ -46,8 +47,8 @@
             "
           >
             {{ field.name }}
-            <span class="text-gray-500" *ngIf="field.type.kind !== 'SCALAR'">
-              {{ field.type.kind }}
+            <span class="text-gray-500" *ngIf="field?.type?.kind !== 'SCALAR'">
+              {{ field?.type?.kind }}
             </span>
           </div>
         </ng-container>
@@ -82,6 +83,7 @@
         [cdkDropListSortingDisabled]="searchSelected.length > 0"
         class="field-list"
         (cdkDropListDropped)="drop($event)"
+        [cdkDropListDisabled]="disabled"
       >
         <ng-container *ngFor="let field of selectedFields; let index = index">
           <div

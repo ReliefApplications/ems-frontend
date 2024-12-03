@@ -62,7 +62,7 @@ export class ManageTemplateModalComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
-  /** List of button actions from dashboard */
+  /** List of action buttons from dashboard */
   public dashboardTemplates: DashboardTemplate[] = [];
   /** Behavior subject to track change in action buttons */
   public dataSource = new BehaviorSubject(this.dashboardTemplates);
@@ -197,7 +197,7 @@ export class ManageTemplateModalComponent
   }
 
   /**
-   * Updates the dataSource to reflect the state of the buttonActions and to apply the filter
+   * Updates the dataSource to reflect the state of the action buttons and to apply the filter
    */
   public updateTable() {
     let templates: DashboardTemplate[];

@@ -1,8 +1,13 @@
 <ng-container *ngIf="!loading && form && canCreateRecords">
   <shared-form [form]="form" (save)="onComplete($event)"></shared-form>
   <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">
-    <ui-button category="secondary" (click)="clearForm()">{{
-      'models.record.new' | translate
-    }}</ui-button>
+    <div class="flex justify-center gap-x-4">
+      <!-- Action buttons -->
+      <shared-action-buttons [actionButtons]="actionButtons">
+        <ui-button category="secondary" (click)="clearForm()">{{
+          'models.record.new' | translate
+        }}</ui-button>
+      </shared-action-buttons>
+    </div>
   </ng-container>
 </ng-container>

@@ -12,6 +12,8 @@ import {
   TestServiceDropdownComponent,
   CodeEditorComponent,
   LoggerService,
+  CsDocsPropertiesDropdownComponent,
+  AcceptedValueTypesTextComponent,
 } from '@oort-front/shared';
 import { filter } from 'rxjs';
 
@@ -35,6 +37,8 @@ export class AppComponent implements OnInit {
     ResourceSelectTextComponent,
     TestServiceDropdownComponent,
     CodeEditorComponent,
+    CsDocsPropertiesDropdownComponent,
+    AcceptedValueTypesTextComponent,
   ];
   /** Application title */
   title = 'back-office';
