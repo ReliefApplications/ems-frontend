@@ -3,6 +3,7 @@
  */
 
 // === SERVICES ===
+export * from './lib/services/action-button/action-button.service';
 export * from './lib/services/aggregation/aggregation.service';
 export * from './lib/services/api-proxy/api-proxy.service';
 export * from './lib/services/application/application.service';
@@ -15,6 +16,7 @@ export * from './lib/services/dashboard-automation/dashboard-automation.service'
 export * from './lib/services/dashboard/dashboard.service';
 export * from './lib/services/data-template/data-template.service';
 export * from './lib/services/date-translate/date-translate.service';
+export * from './lib/services/document-management/document-management.service';
 export * from './lib/services/download/download.service';
 export * from './lib/services/editor/editor.service';
 export * from './lib/services/form-builder/form-builder.service';
@@ -27,6 +29,7 @@ export * from './lib/services/kendo-translation/kendo-translation.service';
 export * from './lib/services/logger/logger.service';
 export * from './lib/services/map/map-layers.service';
 export * from './lib/services/reference-data/reference-data.service';
+export * from './lib/services/query-builder/query-builder.service';
 export * from './lib/services/rest/rest.service';
 export * from './lib/services/workflow/workflow.service';
 
@@ -45,6 +48,7 @@ export * from './lib/models/application.model';
 export * from './lib/models/automation.model';
 export * from './lib/models/channel.model';
 export * from './lib/models/dashboard.model';
+export * from './lib/models/email-notifications.model';
 export * from './lib/models/form.model';
 export * from './lib/models/layout.model';
 export * from './lib/models/metadata.model';
@@ -75,6 +79,7 @@ export * from './lib/components/dashboard/public-api';
 export * from './lib/components/edit-calculated-field-modal/public-api';
 export * from './lib/components/editable-text/public-api';
 export * from './lib/components/error/error.module';
+export * from './lib/components/field-mapper/public-api';
 export * from './lib/components/form-builder/public-api';
 export * from './lib/components/form/public-api';
 export * from './lib/components/layout/public-api';
@@ -103,18 +108,21 @@ export * from './lib/components/widgets/map/public-api';
 export * from './lib/components/widgets/summary-card-settings/public-api';
 export * from './lib/components/workflow-stepper/public-api';
 export * from './lib/components/activity-log/public-api';
+export * from './lib/components/query-builder/public-api';
+export * from './lib/components/action-buttons/public-api';
 
 // Export of controls
 export * from './lib/components/applications-archive/public-api';
-export * from './lib/components/button-action/public-api';
 export * from './lib/components/controls/public-api';
 export * from './lib/components/custom-widget-style/custom-widget-style.component';
 export * from './lib/components/list-filter/list-filter.component';
 export * from './lib/components/status-options/status-options.component';
 
 // === CUSTOM COMPONENTS FOR SURVEY CREATOR PROPERTY GRID === //
+export * from './lib/survey/components/accepted-value-types-text/accepted-value-types-text.component';
 export * from './lib/survey/components/application-dropdown/application-dropdown.component';
 export * from './lib/survey/components/code-editor/code-editor.component';
+export * from './lib/survey/components/cs-docs-properties-dropdown/cs-docs-properties-dropdown.component';
 export * from './lib/survey/components/geofields-listbox/geofields-listbox.component';
 export * from './lib/survey/components/reference-data-dropdown/reference-data-dropdown.component';
 export * from './lib/survey/components/resource-available-fields/resource-available-fields.component';

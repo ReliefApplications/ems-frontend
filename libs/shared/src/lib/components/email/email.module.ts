@@ -40,12 +40,14 @@ import { ScheduleAlertComponent } from './steps/schedule-alert/schedule-alert.co
 import { SelectDistributionComponent } from './steps/select-distribution/select-distribution.component';
 import { PreviewComponent } from './steps/preview/preview.component';
 import { TabStripModule } from '@progress/kendo-angular-layout';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { EmailTemplateComponent } from './components/email-template/email-template.component';
 import { DatasetFilterComponent } from './components/dataset-filter/dataset-filter.component';
 import { EmsTemplateComponent } from './components/ems-template/ems-template.component';
 import { EmptyModule } from '../ui/empty/empty.module';
+import { FilterModule } from '../filter/filter.module';
+import { ResourceSelectComponent } from '../controls/public-api';
+import { CustomTemplateComponent } from './components/custom-templates/custom-template.component';
 
 /**
  * Email module.
@@ -63,6 +65,7 @@ import { EmptyModule } from '../ui/empty/empty.module';
     EmailTemplateComponent,
     DatasetFilterComponent,
     EmsTemplateComponent,
+    CustomTemplateComponent,
   ],
   imports: [
     FormsModule,
@@ -85,7 +88,6 @@ import { EmptyModule } from '../ui/empty/empty.module';
     GraphQLSelectModule,
     TabStripModule,
     IconModule,
-    NgSelectModule,
     EditorModule,
     ButtonModule,
     SpinnerModule,
@@ -101,7 +103,10 @@ import { EmptyModule } from '../ui/empty/empty.module';
     FixedWrapperModule,
     EmptyModule,
     ErrorMessageModule,
+    FilterModule,
+    ResourceSelectComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA],
+  exports: [CustomTemplateComponent, PreviewComponent, LayoutComponent],
 })
 export class EmailModule {}

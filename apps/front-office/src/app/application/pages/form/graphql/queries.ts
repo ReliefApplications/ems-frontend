@@ -41,6 +41,7 @@ export const GET_STEP_BY_ID = gql`
       modifiedAt
       content
       canSee
+      buttons
     }
   }
 `;
@@ -59,6 +60,7 @@ export const GET_PAGE_BY_ID = gql`
       type
       content
       canSee
+      buttons
     }
   }
 `;

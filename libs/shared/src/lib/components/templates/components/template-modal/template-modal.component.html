@@ -1,0 +1,13 @@
+<ui-dialog>
+  <ng-container ngProjectAs="content">
+    <ems-custom-template
+      #customTemplateEditor
+      (navigateToEms)="handleNavigation($event)"
+    ></ems-custom-template>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ng-container
+      *ngTemplateOutlet="customTemplateEditor.actionsTemplate"
+    ></ng-container>
+  </ng-container>
+</ui-dialog>

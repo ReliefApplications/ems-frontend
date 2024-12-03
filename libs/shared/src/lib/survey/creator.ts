@@ -15,5 +15,4 @@ export const initCreatorSettings = (): void => {
   serializer.findProperty('file', 'storeDataAsText').onGetValue = () => false;
   serializer.findProperty('file', 'storeDataAsText').readOnly = true;
   serializer.findProperty('file', 'storeDataAsText').visible = false;
-  serializer.findProperty('file', 'maxSize').onGetValue = () => 7340032;
 };

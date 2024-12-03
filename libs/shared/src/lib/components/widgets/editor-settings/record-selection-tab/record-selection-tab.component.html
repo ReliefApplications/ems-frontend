@@ -87,7 +87,9 @@
         ></ui-button>
       </div>
 
-      <ng-container *ngIf="layout && selectedRecordID">
+      <ng-container
+        *ngIf="layout && (form.value.record || form.value.recordExpression)"
+      >
         <h2>
           {{
             'components.widget.settings.summaryCard.card.dataSource.layoutStyles.title'
@@ -137,16 +139,49 @@
 
   <div class="flex flex-col mt-2" *ngIf="resource && layout">
     <h2>{{ 'models.record.select' | translate }}</h2>
-    <shared-core-grid
-      class="h-96"
-      [settings]="layout"
-      [multiSelect]="false"
-      [selectable]="true"
-      [showExport]="false"
-      [selectedRows]="selectedRecordID ? [selectedRecordID] : []"
-      (selectionChange)="onSelectionChange($event)"
-    >
-    </shared-core-grid>
+    <div class="flex flex-col gap-2">
+      <!-- Manual selection -->
+      <ui-toggle [formControl]="manualControl"
+        ><ng-container ngProjectAs="label">{{
+          'components.widget.settings.editor.record.choices.manual' | translate
+        }}</ng-container></ui-toggle
+      >
+      <shared-core-grid
+        *ngIf="manualControl.value"
+        class="h-96"
+        [settings]="layout"
+        [multiSelect]="false"
+        [selectable]="true"
+        [showExport]="false"
+        [selectedRows]="selectedRecordID ? [selectedRecordID] : []"
+        (selectionChange)="onSelectionChange($event)"
+      >
+      </shared-core-grid>
+      <!-- Expression builder -->
+      <ui-toggle [formControl]="expressionControl"
+        ><ng-container ngProjectAs="label">{{
+          'components.widget.settings.editor.record.choices.expression'
+            | translate
+        }}</ng-container></ui-toggle
+      >
+      <div uiFormFieldDirective *ngIf="expressionControl.value">
+        <label>{{
+          'components.widget.settings.editor.record.expression' | translate
+        }}</label>
+        <input formControlName="recordExpression" type="text" />
+        <ui-icon
+          uiSuffix
+          class="ml-1 cursor-help self-center"
+          icon="info_outline"
+          variant="grey"
+          [size]="18"
+          [uiTooltip]="
+            'components.widget.settings.editor.tooltip.record.expression'
+              | translate
+          "
+        ></ui-icon>
+      </div>
+    </div>
   </div>
 
   <div class="flex flex-col mt-2" *ngIf="referenceData">

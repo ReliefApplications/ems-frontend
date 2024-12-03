@@ -33,7 +33,7 @@
         shape: 'rectangle'
       "
     >
-      <ng-container *ngIf="dashboard && (showName || buttonActions.length > 0)">
+      <ng-container *ngIf="dashboard && (showName || actionButtons.length > 0)">
         <div
           id="dashboard-header"
           class="flex flex-wrap items-center mb-6 gap-4 justify-between"
@@ -44,11 +44,12 @@
             </h1>
           </ng-container>
           <div class="flex items-center gap-1">
-            <!-- Button actions -->
-            <shared-button-action
-              [buttonActions]="buttonActions"
+            <!-- Action buttons -->
+            <shared-action-buttons
+              [actionButtons]="actionButtons"
               [dashboard]="dashboard"
-            ></shared-button-action>
+              (reloadDashboard)="reload()"
+            ></shared-action-buttons>
             <!-- Fullscreen -->
             <!-- <ui-button
           variant="grey"

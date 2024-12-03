@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import {
-  ButtonActionModule,
+  ActionButtonsComponent,
   DashboardExportButtonComponent,
   DashboardFilterModule,
   FullScreenModule,
@@ -29,7 +29,7 @@ import { TranslateModule } from '@ngx-translate/core';
     DashboardFilterModule,
     TooltipModule,
     TranslateModule,
-    ButtonActionModule,
+    ActionButtonsComponent,
     DashboardExportButtonComponent,
   ],
   exports: [DashboardComponent],

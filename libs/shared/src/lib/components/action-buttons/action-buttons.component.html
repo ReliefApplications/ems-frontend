@@ -1,0 +1,10 @@
+<div class="flex gap-1 flex-wrap justify-center">
+  <ng-content></ng-content>
+  <shared-action-button
+    *ngFor="let button of actionButtons; let i = index"
+    [actionButton]="button"
+    [dashboard]="dashboard"
+    [refresh]="refresh"
+    (reloadDashboard)="reloadDashboard.emit()"
+  ></shared-action-button>
+</div>

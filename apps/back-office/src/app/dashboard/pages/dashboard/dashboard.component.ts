@@ -19,7 +19,7 @@ import {
   Application,
   ConfirmService,
   Record,
-  ButtonActionT,
+  ActionButton,
   DashboardQueryResponse,
   EditDashboardMutationResponse,
   DashboardComponent as SharedDashboardComponent,
@@ -28,6 +28,7 @@ import {
   AddDashboardTemplateMutationResponse,
   DeleteDashboardTemplatesMutationResponse,
   DashboardTemplate,
+  ActionButtonService,
 } from '@oort-front/shared';
 import {
   ADD_DASHBOARD_TEMPLATE,
@@ -101,8 +102,8 @@ export class DashboardComponent
   public contextId = new FormControl<string | number | null>(null);
   /** Contextual record */
   public contextRecord: Record | null = null;
-  /** Configured dashboard quick actions */
-  public buttonActions: ButtonActionT[] = [];
+  /** Configured dashboard action buttons */
+  public actionButtons: ActionButton[] = [];
   /** Timeout to scroll to newly added widget */
   private addTimeoutListener!: NodeJS.Timeout;
   /** Timeout to load grid options */
@@ -167,6 +168,7 @@ export class DashboardComponent
    * @param document Document
    * @param clipboard Angular clipboard service
    * @param dashboardAutomationService Dashboard automation service
+   * @param actionButtonService action button service
    */
   constructor(
     private applicationService: ApplicationService,
@@ -185,7 +187,8 @@ export class DashboardComponent
     private layoutService: UILayoutService,
     @Inject(DOCUMENT) private document: Document,
     private clipboard: Clipboard,
-    private dashboardAutomationService: DashboardAutomationService
+    private dashboardAutomationService: DashboardAutomationService,
+    private actionButtonService: ActionButtonService
   ) {
     super();
     this.dashboardAutomationService.dashboard = this;
@@ -238,6 +241,25 @@ export class DashboardComponent
   }
 
   /**
+   * Reload the dashboard.
+   */
+  reload(): void {
+    if (this.dashboardId) {
+      this.loadDashboard(
+        {
+          query: GET_DASHBOARD_BY_ID,
+          variables: {
+            id: this.dashboardId,
+            contextEl: this.contextEl,
+          },
+        },
+        this.dashboardId,
+        this.contextEl?.trim()
+      );
+    }
+  }
+
+  /**
    * Sets up the widgets from the dashboard structure
    *
    * @param dashboard Dashboard
@@ -249,8 +271,9 @@ export class DashboardComponent
         ?.filter((x: any) => x !== null)
         .map((widget: any) => {
           const contextData = this.dashboard?.contextData;
-          this.contextService.context =
-            { id: contextID, ...contextData } || null;
+          this.contextService.context = contextID
+            ? { id: contextID, ...contextData }
+            : null;
           if (!contextData) {
             return widget;
           }
@@ -322,7 +345,7 @@ export class DashboardComponent
             : this.dashboard.step
             ? this.dashboard.step.workflow?.page?.application?.id
             : '';
-          this.buttonActions = this.dashboard.buttons || [];
+          this.actionButtons = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
           this.contextService.filterPosition.next({
@@ -629,15 +652,20 @@ export class DashboardComponent
     );
   }
 
-  /** Opens modal to modify button actions */
-  public async onEditButtonActions() {
-    const { EditButtonActionsModalComponent } = await import(
-      './components/edit-button-actions-modal/edit-button-actions-modal.component'
+  /** Opens modal to modify action buttons */
+  public async onEditActionButtons() {
+    const { EditActionButtonsModalComponent } = await import(
+      '../../../components/edit-action-buttons-modal/edit-action-buttons-modal.component'
     );
-    const dialogRef = this.dialog.open<ButtonActionT[] | undefined>(
-      EditButtonActionsModalComponent,
+    const dialogRef = this.dialog.open<ActionButton[] | undefined>(
+      EditActionButtonsModalComponent,
       {
-        data: { buttonActions: this.buttonActions },
+        data: {
+          dashboard: {
+            ...this.dashboard,
+            actionButtons: this.actionButtons,
+          },
+        },
         disableClose: true,
       }
     );
@@ -647,11 +675,14 @@ export class DashboardComponent
       .subscribe(async (buttons) => {
         if (!buttons) return;
 
-        this.dashboardService
-          .saveDashboardButtons(this.dashboard?.id, buttons)
+        this.actionButtonService
+          .savePageButtons(this.dashboard?.id, buttons)
           ?.pipe(takeUntil(this.destroy$))
           .subscribe(({ errors }) => {
-            this.buttonActions = buttons;
+            this.actionButtons = buttons;
+            if (this.dashboard) {
+              this.dashboard.buttons = buttons;
+            }
             this.applicationService.handleEditionMutationResponse(
               errors,
               this.translate.instant('common.dashboard.one')
@@ -785,25 +816,25 @@ export class DashboardComponent
   }
 
   /**
-   * Reorders button actions.
+   * Reorders action buttons.
    *
    * @param event Drop event
    */
-  public onButtonActionDrop(event: CdkDragDrop<typeof this.buttonActions>) {
+  public onActionButtonDrop(event: CdkDragDrop<typeof this.actionButtons>) {
     if (event.previousIndex === event.currentIndex) return;
 
     moveItemInArray(
-      this.buttonActions,
+      this.actionButtons,
       event.previousIndex,
       event.currentIndex
     );
 
-    this.dashboardService
-      .saveDashboardButtons(this.dashboard?.id, this.buttonActions)
+    this.actionButtonService
+      .savePageButtons(this.dashboard?.id, this.actionButtons)
       ?.subscribe(() => {
         this.dashboard = {
           ...this.dashboard,
-          buttons: this.buttonActions,
+          buttons: this.actionButtons,
         };
       });
   }
