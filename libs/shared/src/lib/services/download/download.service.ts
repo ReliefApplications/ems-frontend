@@ -176,28 +176,21 @@ export class DownloadService {
   /**
    * Downloads activities for current application
    *
+   * @param path download path to append to base url
    * @param filter Filter
    */
-  getActivitiesExport(filter: any) {
+  getActivitiesExport(path: string, filter: any) {
     const { snackBarRef } = this.triggerFileDownloadMessage(
       'common.notifications.file.download.processing'
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
 
     this.restService
-      .post(
-        '/activity/download-activities',
-        { filter },
-        { responseType: 'blob' }
-      )
+      .post(path, { filter }, { responseType: 'blob' })
       .subscribe({
-        next: (blob: any) => {
-          const downloadUrl = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = downloadUrl;
-          link.download = 'activities.xlsx';
-          link.click();
-          window.URL.revokeObjectURL(downloadUrl);
+        next: (res: any) => {
+          const blob = new Blob([res], { type: 'xlsx' });
+          this.saveFile('activities.xlsx', blob);
           snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.file.download.ready'
           );
