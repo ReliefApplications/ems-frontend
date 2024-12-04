@@ -78,6 +78,10 @@
       ></ui-spinner>
     </div>
   </div>
+  <ng-container
+    class="mt-5"
+    *ngTemplateOutlet="noFieldsInResourceAlertTmpl"
+  ></ng-container>
   <div>
     <ui-tabs
       [selectedIndex]="currentTabIndex"
@@ -335,11 +339,7 @@
     </kendo-tabstrip-tab> -->
       </div>
     </ui-tabs>
-  </div>
-  <ng-container
-    class="mt-5"
-    *ngTemplateOutlet="noFieldsInResourceAlertTmpl"
-  ></ng-container>
+  </div>  
 </form>
 
 <!-- Too many records in dataset -->
