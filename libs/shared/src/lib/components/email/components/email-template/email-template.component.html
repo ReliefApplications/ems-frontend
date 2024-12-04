@@ -52,7 +52,7 @@
       class="w-1/2"
       *ngIf="activeSegmentIndex >= 1"
       [formGroup]="distributionList"
-      [ngClass]="{ disableDiv: isDisable }"
+      [ngClass]="{ 'pointer-events-none': isDisable }"
     >
       <label
         htmlFor="select__data__set"
@@ -384,7 +384,7 @@
             ></ng-container>
             <div
               id="tblPreview"
-              class="previewScroll"
+              class="overflow-scroll"
               #tblPreview
               [innerHTML]="previewHTML"
             ></div>
