@@ -35,6 +35,8 @@ export class ButtonConfigComponent
 {
   /** Event emitted when the user clicks on the delete button */
   @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
+  /** Widget form group */
+  @Input() widgetFormGroup!: FormGroup;
   /** Form group */
   @Input() formGroup!: FormGroup;
   /** List of fields */
@@ -63,8 +65,6 @@ export class ButtonConfigComponent
   @Output() loadChannels = new EventEmitter<void>();
   /** Saves if the channels has been fetched */
   public loadedChannel = false;
-  /** form Actions Details */
-  @Input() formActions: any = [];
 
   /** @returns The list of fields which are of type scalar and not disabled */
   get scalarFields(): any[] {
@@ -317,19 +317,6 @@ export class ButtonConfigComponent
         if (selectPage) {
           this.formGroup?.controls.selectAll.setValue(false);
           this.formGroup?.get('selectAll')?.updateValueAndValidity();
-        }
-      });
-
-    this.formGroup
-      ?.get('navigateToPage')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
-          this.formGroup
-            .get('navigateSettings')
-            ?.setValue(this.formActions.navigateSettings);
-        } else {
-          this.formGroup.get('navigateSettings')?.setValue(null);
         }
       });
   }

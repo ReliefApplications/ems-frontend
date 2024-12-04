@@ -212,7 +212,6 @@ describe('HtmlParserService', () => {
       ).toISOString();
       notNumberValueExamples.forEach((noNumberValue) => {
         it(`and sets given not date format ${noNumberValue} to same ${noNumberValue}`, () => {
-          console.log(noNumberValue);
           const result = dateFunc.call(fixedDate, noNumberValue);
           expect(result).toBe(noNumberValue);
         });

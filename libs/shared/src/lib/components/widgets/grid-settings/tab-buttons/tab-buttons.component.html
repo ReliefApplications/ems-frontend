@@ -55,6 +55,7 @@
     </ng-container>
     <!-- Button form - tab content -->
     <shared-button-config
+      [widgetFormGroup]="formGroup"
       [formGroup]="$any(button)"
       [fields]="fields"
       [channels]="channels"
@@ -63,7 +64,6 @@
       [relatedForms]="relatedForms"
       (deleteButton)="deleteButton(i)"
       (loadChannels)="loadChannels.emit()"
-      [formActions]="this.formGroup.value.actions"
     >
     </shared-button-config>
   </ui-tab>

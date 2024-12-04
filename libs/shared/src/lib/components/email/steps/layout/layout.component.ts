@@ -402,13 +402,6 @@ export class LayoutComponent
         // Get the current content of the editor
         const currentContent = this.headerEditor.editor.getContent();
 
-        //Its for selecting body text and move cursor to the end
-        // this.headerEditor.editor.selection.select(
-        //   this.headerEditor.editor.getBody(),
-        //   true
-        // );
-        // this.headerEditor.editor.selection.collapse(false);
-
         // Check if the cursor is at the beginning or end of the content
         if (cursorPosition === 0) {
           // If at the beginning, remove the leading whitespace from the token
@@ -424,6 +417,7 @@ export class LayoutComponent
             token
           );
         }
+        // Move cursor to end of token after insertion
         this.headerEditor.editor.selection.setCursorLocation(
           this.headerEditor.editor.getBody(),
           cursorPosition + token.length
@@ -656,18 +650,13 @@ export class LayoutComponent
       const token = `{{${tabName}}}`;
 
       if (this.bodyEditor && this.bodyEditor.editor) {
-        //Its for selecting body text and move cursor to the end
-        // this.bodyEditor.editor.selection.select(
-        //   this.bodyEditor.editor.getBody(),
-        //   true
-        // );
-        // this.bodyEditor.editor.selection.collapse(false);
         const range = this.bodyEditor.editor.selection.getRng();
 
         // Get the current cursor position as a number
         const cursorPosition = range.startOffset;
 
         this.bodyEditor.editor.insertContent(token);
+        // Move cursor to end of token after insertion
         this.bodyEditor.editor.selection.setCursorLocation(
           this.bodyEditor.editor.getBody(),
           cursorPosition + token.length

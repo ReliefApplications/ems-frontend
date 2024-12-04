@@ -106,9 +106,6 @@ export const createButtonFormGroup = (value: any) => {
     navigateToPage: [
       value && value.navigateToPage ? value.navigateToPage : false,
     ],
-    navigateSettings: [
-      value && value.navigateSettings ? value.navigateSettings : null,
-    ],
   });
   // Avoid goToNextStep & goToPreviousStep to coexist
   if (formGroup.get('goToNextStep')?.value) {

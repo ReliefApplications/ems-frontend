@@ -404,7 +404,10 @@
         </ui-checkbox>
 
         <!-- Include navigate To Page -->
-        <ui-checkbox formControlName="navigateToPage" *ngIf="formActions.navigateToPage">
+        <ui-checkbox
+          formControlName="navigateToPage"
+          *ngIf="widgetFormGroup.value.actions.navigateToPage"
+        >
           <ng-container ngProjectAs="label">{{
             'components.widget.settings.grid.buttons.callback.navigateToPage'
               | translate

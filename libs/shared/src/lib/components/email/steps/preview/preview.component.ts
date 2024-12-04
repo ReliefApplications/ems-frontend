@@ -300,8 +300,7 @@ export class PreviewComponent
           });
           this.emailService.loading = false;
         },
-        (error: any) => {
-          console.log(error);
+        () => {
           this.emailService.loading = false;
         }
       );

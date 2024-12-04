@@ -9,7 +9,7 @@ import {
   OnInit,
   Type,
 } from '@angular/core';
-import { FormArray, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
@@ -144,22 +144,6 @@ export class EditWidgetModalComponent
    * Closes the modal sending widget form value.
    */
   onSubmit(): void {
-    //Updating floating button Navigate settings value
-    const floatingButtonData = this.widgetForm?.get(
-      'floatingButtons'
-    ) as FormArray;
-    for (let index = 0; index < floatingButtonData.length; index++) {
-      if (floatingButtonData.at(index).value.navigateToPage) {
-        floatingButtonData
-          .at(index)
-          .get('navigateSettings')
-          ?.setValue(
-            this.widgetForm?.controls?.actions?.value?.navigateSettings
-          );
-      } else {
-        floatingButtonData.at(index).get('navigateSettings')?.setValue(null);
-      }
-    }
     this.dialogRef.close(this.widgetForm?.getRawValue());
   }
 

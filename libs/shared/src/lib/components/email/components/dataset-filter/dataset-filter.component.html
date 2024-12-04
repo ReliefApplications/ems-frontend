@@ -87,7 +87,7 @@
     >
       <div class="mt-4 flex flex-row">
         <!-- Fields Tab -->
-        <ui-tab [title]="'Fields'" [selected]="true">
+        <ui-tab title="Fields" [selected]="true">
           <ng-container ngProjectAs="label">
             {{ 'components.queryBuilder.fields.title' | translate }}
           </ng-container>
@@ -129,7 +129,7 @@
           </ng-template>
         </ui-tab>
         <!-- Filter Tab -->
-        <ui-tab [title]="'Filter'">
+        <ui-tab title="Filter">
           <ng-container ngProjectAs="label">
             {{ 'components.queryBuilder.filter.title' | translate }}
           </ng-container>
@@ -171,7 +171,7 @@
         </ui-tab>
 
         <!-- navigate to page Tab -->
-        <ui-tab [title]="'Action'">
+        <ui-tab title="Action">
           <ng-container ngProjectAs="label">
             {{ 'components.email.dataset.navigateToPage.title' | translate }}
           </ng-container>
@@ -286,7 +286,7 @@
 
         <!-- Send Separate Email Fields -->
         <ui-tab
-          [title]="'Send Separate Fields'"
+          title="Send Separate Fields"
           *ngIf="this.query.get('individualEmail').value"
         >
           <ng-container ngProjectAs="label">
