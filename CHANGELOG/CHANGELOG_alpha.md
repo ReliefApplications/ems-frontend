@@ -1,3 +1,15 @@
+# [2.17.0-alpha.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.12...v2.17.0-alpha.13) (2024-12-04)
+
+
+### Bug Fixes
+
+* allow choices by url fields to use api configuration using auth code ([d9fbb09](https://github.com/ReliefApplications/ems-frontend/commit/d9fbb0956d5dc4eef3fe0795176330240fa354c2))
+
+
+### Features
+
+* Email functions hosted on serverless function ([#2705](https://github.com/ReliefApplications/ems-frontend/issues/2705)) ([c0caec2](https://github.com/ReliefApplications/ems-frontend/commit/c0caec2fdbb577b338d9c0af5f6a646e223e6bd8))
+
 # [2.17.0-alpha.12](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.11...v2.17.0-alpha.12) (2024-12-02)
 
 
