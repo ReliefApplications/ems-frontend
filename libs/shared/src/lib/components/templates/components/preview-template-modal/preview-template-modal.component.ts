@@ -13,7 +13,7 @@ import { FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { EmailService } from '../../../email/email.service';
 import { TranslateService } from '@ngx-translate/core';
-import { get, isNil } from 'lodash';
+import { isNil } from 'lodash';
 
 /**
  * Preview template modal.
@@ -322,35 +322,5 @@ export class PreviewTemplateModalComponent {
     } else {
       this.currentStep = 1;
     }
-  }
-
-  /**
-   * create page URL for Navigate serttings
-   *
-   * @param item selected row data
-   * @returns url
-   */
-  getPageURL(item: any) {
-    const event: any = this.data.navigateSettings;
-    event['item'] = item;
-    let fullUrl = this.getPageUrl(event.pageUrl as string);
-    if (event.field) {
-      const field = get(event, 'field', '');
-      const value = get(event, `item.${field}`);
-      fullUrl = `${fullUrl}?id=${value}`;
-    }
-    return fullUrl;
-  }
-
-  /**
-   * Get page url full link taking into account the environment.
-   *
-   * @param pageUrlParams page url params
-   * @returns url of the page
-   */
-  private getPageUrl(pageUrlParams: string): string {
-    return this.environment.module === 'backoffice'
-      ? `applications/${pageUrlParams}`
-      : `${pageUrlParams}`;
   }
 }
