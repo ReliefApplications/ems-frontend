@@ -30,6 +30,8 @@
     <ng-container ngProjectAs="label">{{
       'common.activity.few' | translate
     }}</ng-container>
-    <shared-activity-log [userId]="user?.id"></shared-activity-log>
+    <ng-container *ngIf="user">
+      <shared-activity-log [userId]="user.id"></shared-activity-log>
+    </ng-container>
   </ui-tab>
 </ui-tabs>
