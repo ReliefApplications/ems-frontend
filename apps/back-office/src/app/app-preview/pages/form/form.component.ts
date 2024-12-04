@@ -11,6 +11,9 @@ import {
   StepQueryResponse,
   FormQueryResponse,
   PageQueryResponse,
+  ActionButton,
+  ContextService,
+  Record,
 } from '@oort-front/shared';
 import {
   GET_SHORT_FORM_BY_ID,
@@ -43,6 +46,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   public completed = false;
   /** Should possibility to add new records be hidden */
   public hideNewRecord = false;
+  /** Form button actions */
+  public actionButtons: ActionButton[] = [];
 
   // === ROUTER ===
   /** Current page */
@@ -60,11 +65,13 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * @param apollo Apollo service
    * @param route Angular current route
    * @param router Angular router
+   * @param contextService Shared context service
    */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private contextService: ContextService
   ) {
     super();
   }
@@ -87,6 +94,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           })
           .subscribe(({ data }) => {
             this.step = data.step;
+            this.actionButtons = data.step.buttons as ActionButton[];
             this.apollo
               .query<FormQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
@@ -109,6 +117,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           })
           .subscribe(({ data }) => {
             this.page = data.page;
+            this.actionButtons = data.page.buttons as ActionButton[];
             this.apollo
               .query<FormQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
@@ -133,8 +142,19 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * @param e complete event
    * @param e.completed is event completed
    * @param e.hideNewRecord do we need to hide new record
+   * @param e.record Saved record
    */
-  onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
+  onComplete(e: {
+    completed: boolean;
+    hideNewRecord?: boolean;
+    record?: Record;
+  }): void {
+    if (e.record) {
+      this.contextService.context = {
+        ...e.record.data,
+        id: e.record.id,
+      };
+    }
     this.completed = e.completed;
     this.hideNewRecord = e.hideNewRecord || false;
   }

@@ -4,13 +4,37 @@ import { gql } from 'apollo-angular';
  * GraphQL query to list all activities.
  */
 export const LIST_ACTIVITIES = gql`
-  query ListActivities($userId: String, $applicationId: String) {
-    activityLogs(userId: $userId, applicationId: $applicationId) {
-      userId
-      applicationId
-      eventType
-      url
-      metadata
+  query ListActivities(
+    $first: Int
+    $afterCursor: ID
+    $filter: JSON
+    $userId: String
+    $applicationId: String
+  ) {
+    activityLogs(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      userId: $userId
+      applicationId: $applicationId
+    ) {
+      edges {
+        node {
+          id
+          userId
+          username
+          eventType
+          url
+          metadata
+          attributes
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
 `;

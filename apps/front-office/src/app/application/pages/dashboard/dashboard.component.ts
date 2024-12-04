@@ -14,7 +14,7 @@ import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
   ConfirmService,
-  ButtonActionT,
+  ActionButton,
   ContextService,
   DashboardQueryResponse,
   Record,
@@ -65,8 +65,8 @@ export class DashboardComponent
   public variant!: string;
   /** hide / show the close icon on the right */
   public closable = true;
-  /** Dashboard button actions */
-  public buttonActions: ButtonActionT[] = [];
+  /** Dashboard action buttons */
+  public actionButtons: ActionButton[] = [];
   /** Should show dashboard name */
   public showName? = true;
 
@@ -134,6 +134,15 @@ export class DashboardComponent
       });
   }
 
+  /**
+   * Reload the dashboard.
+   */
+  reload(): void {
+    if (this.id) {
+      this.loadDashboard(this.id, this.contextId);
+    }
+  }
+
   /** Sets up the widgets from the dashboard structure */
   private setWidgets() {
     this.widgets = cloneDeep(
@@ -195,7 +204,7 @@ export class DashboardComponent
           this.dashboard = data.dashboard;
           this.initContext();
           this.setWidgets();
-          this.buttonActions = this.dashboard.buttons || [];
+          this.actionButtons = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
           this.contextService.filterPosition.next({

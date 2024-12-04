@@ -18,6 +18,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
   AsyncMonacoEditorDirective,
+  FieldMapperComponent,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -82,6 +83,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     StatusOptionsComponent,
     MonacoEditorModule,
     AsyncMonacoEditorDirective,
+    FieldMapperComponent,
   ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',
@@ -327,41 +329,6 @@ export class EditPullJobModalComponent implements OnInit {
           );
         }
       });
-  }
-
-  /**
-   * Filters fields so we cannot add a multiple mapping for the same one.
-   *
-   * @param name Field name.
-   * @returns Filtered fields.
-   */
-  public filteredFields(name: string): any[] {
-    return this.fields.filter(
-      (field) =>
-        field.name === name ||
-        !this.formGroup.value.mapping?.some((x: any) => x.name === field.name)
-    );
-  }
-
-  /**
-   * Removes element from the mapping
-   *
-   * @param index mapping element index.
-   */
-  onDeleteElement(index: number): void {
-    this.mappingArray.removeAt(index);
-  }
-
-  /**
-   * Adds new element to the mapping.
-   */
-  onAddElement(): void {
-    this.mappingArray.push(
-      this.fb.group({
-        name: ['', Validators.required],
-        value: ['', Validators.required],
-      })
-    );
   }
 
   /**

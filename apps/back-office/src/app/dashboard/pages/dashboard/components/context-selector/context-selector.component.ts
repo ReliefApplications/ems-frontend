@@ -118,7 +118,7 @@ export class ContextSelectorComponent implements OnInit {
 
     if ('refData' in this.context) {
       this.refDataService
-        .loadReferenceData(this.context.refData)
+        .loadReferenceData(this.context.refData as string)
         .then((refData) => {
           this.refDataValueField = refData.valueField || '';
           this.refDataService.fetchItems(refData).then(({ items }) => {

@@ -174,6 +174,41 @@ export class DownloadService {
   }
 
   /**
+   * Downloads activities for current application
+   *
+   * @param path download path to append to base url
+   * @param filter Filter
+   */
+  getActivitiesExport(path: string, filter: any) {
+    const { snackBarRef } = this.triggerFileDownloadMessage(
+      'common.notifications.file.download.processing'
+    );
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
+
+    this.restService
+      .post(path, { filter }, { responseType: 'blob' })
+      .subscribe({
+        next: (res: any) => {
+          const blob = new Blob([res], { type: 'xlsx' });
+          this.saveFile('activities.xlsx', blob);
+          snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.file.download.ready'
+          );
+          snackBarSpinner.instance.loading = false;
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+        },
+        error: () => {
+          snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.file.download.error'
+          );
+          snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.error = true;
+          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+        },
+      });
+  }
+
+  /**
    * Downloads file with users from the server
    *
    * @param type type of the file
@@ -234,7 +269,8 @@ export class DownloadService {
     link.download = fileName;
     this.document.body.append(link);
     link.click();
-    setTimeout(() => link.remove(), 0);
+    URL.revokeObjectURL(link.href);
+    link.remove();
   }
 
   /**
@@ -327,5 +363,38 @@ export class DownloadService {
         },
       });
     });
+  }
+
+  /**
+   * to download the Distribution List template for bulk import via excel file
+   */
+  downloadDistributionListTemplate(): void {
+    const { snackBarRef, headers } = this.triggerFileDownloadMessage(
+      'common.notifications.file.download.processing'
+    );
+
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
+
+    this.restService
+      .get('/download/templates', { responseType: 'blob', headers })
+      .subscribe(
+        (res) => {
+          const blob = new Blob([res], { type: `text/xlsx;charset=utf-8;` });
+          this.saveFile('template.xlsx', blob);
+          snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.file.download.ready'
+          );
+          snackBarSpinner.instance.loading = false;
+          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+        },
+        () => {
+          snackBarSpinner.instance.message = this.translate.instant(
+            'common.notifications.file.download.error'
+          );
+          snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.error = true;
+          setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+        }
+      );
   }
 }

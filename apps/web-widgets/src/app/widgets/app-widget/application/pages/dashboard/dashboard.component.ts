@@ -15,7 +15,7 @@ import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
   ConfirmService,
-  ButtonActionT,
+  ActionButton,
   ContextService,
   DashboardQueryResponse,
   Record,
@@ -66,8 +66,8 @@ export class DashboardComponent
   public showFilter!: boolean;
   /** Show name ( contextual pages ) */
   public showName = false;
-  /** button actions */
-  public buttonActions: ButtonActionT[] = [];
+  /** Action buttons */
+  public actionButtons: ActionButton[] = [];
 
   /**
    * Dashboard page.
@@ -125,6 +125,15 @@ export class DashboardComponent
       this.loadDashboard(id, queryId?.trim()).then(
         () => (this.loading = false)
       );
+    }
+  }
+
+  /**
+   * Reload the dashboard.
+   */
+  reload(): void {
+    if (this.id) {
+      this.loadDashboard(this.id, this.contextId);
     }
   }
 
@@ -187,7 +196,7 @@ export class DashboardComponent
             { id: contextId, ...this.dashboard.contextData } || null;
           this.initContext();
           this.setWidgets();
-          this.buttonActions = this.dashboard.buttons || [];
+          this.actionButtons = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
           this.contextService.setFilter(this.dashboard);

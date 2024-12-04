@@ -9,3 +9,12 @@
     }
   }
 }
+::ng-deep {
+  #mainTable {
+    ol,
+    ul {
+      list-style-type: revert !important;
+      padding-inline-start: 40px !important;
+    }
+  }
+}

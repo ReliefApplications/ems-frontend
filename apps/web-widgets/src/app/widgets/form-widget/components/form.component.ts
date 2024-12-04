@@ -6,6 +6,7 @@ import {
   FormQueryResponse,
 } from '@oort-front/shared/widgets';
 import { GET_SHORT_FORM_BY_ID } from '../graphql/queries';
+import { ContextService, Record } from '@oort-front/shared';
 
 /** Form component */
 @Component({
@@ -43,8 +44,9 @@ export class FormComponent implements OnInit, OnChanges {
    * Form component
    *
    * @param apollo Apollo service
+   * @param contextService Shared context service
    */
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo, private contextService: ContextService) {}
 
   ngOnInit(): void {
     this.getFormById();
@@ -70,10 +72,21 @@ export class FormComponent implements OnInit, OnChanges {
    * Complete form
    *
    * @param e completion event
-   * @param e.completed is form completed
-   * @param e.hideNewRecord is it needed to show 'new record' button
+   * @param e.completed is completed
+   * @param e.hideNewRecord do we show new record button
+   * @param e.record Saved record
    */
-  onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
+  onComplete(e: {
+    completed: boolean;
+    hideNewRecord?: boolean;
+    record?: Record;
+  }): void {
+    if (e.record) {
+      this.contextService.context = {
+        ...e.record.data,
+        id: e.record.id,
+      };
+    }
     this.completed = e.completed;
     this.hideNewRecord = e.hideNewRecord || false;
   }

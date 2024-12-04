@@ -1,8 +1,18 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivityLogComponent } from './activity-log.component';
-import { TableModule, IconModule, ButtonModule } from '@oort-front/ui';
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import {
+  ButtonModule,
+  DateModule,
+  FormWrapperModule,
+  IconModule,
+  PaginatorModule,
+  TableModule,
+} from '@oort-front/ui';
+import { SkeletonTableModule } from '../skeleton/skeleton-table/public-api';
+import { EmptyModule } from '../ui/empty/empty.module';
+import { ActivityLogComponent } from './activity-log.component';
 
 /** Module for components related to templates */
 @NgModule({
@@ -13,6 +23,12 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule,
     IconModule,
     ButtonModule,
+    ReactiveFormsModule,
+    FormWrapperModule,
+    DateModule,
+    SkeletonTableModule,
+    PaginatorModule,
+    EmptyModule,
   ],
   exports: [ActivityLogComponent],
 })

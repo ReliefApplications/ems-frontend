@@ -95,14 +95,13 @@ describe('HtmlParserService', () => {
                 break;
             }
           });
-          const noNumberValue =
-            notNumberValueExamples[
-              Math.floor(notNumberValueExamples.length * Math.random())
-            ];
-          it(`and rounds not number value ${noNumberValue} to '0'`, () => {
-            const result = currentRoundFunction.call(noNumberValue);
-            expect(result).toBe('0');
+          notNumberValueExamples.forEach((noNumberValue) => {
+            it(`and rounds not number value ${noNumberValue} to '0'`, () => {
+              const result = currentRoundFunction.call(noNumberValue);
+              expect(result).toBe('0');
+            });
           });
+
           it(`and rounds no value to '0'`, () => {
             const result = currentRoundFunction.call();
             expect(result).toBe('0');
@@ -124,14 +123,13 @@ describe('HtmlParserService', () => {
       });
     });
     describe('handles percentage calculation errors gracefully', () => {
-      const noNumberValue =
-        notNumberValueExamples[
-          Math.floor(notNumberValueExamples.length * Math.random())
-        ];
-      it(`and sets percentage of not number value ${noNumberValue} to '0'`, () => {
-        const result = percentageFunc.call(noNumberValue);
-        expect(result).toBe('0');
+      notNumberValueExamples.forEach((noNumberValue) => {
+        it(`and sets percentage of not number value ${noNumberValue} to '0'`, () => {
+          const result = percentageFunc.call(noNumberValue);
+          expect(result).toBe('0');
+        });
       });
+
       it(`and sets percentage of no value to '0'`, () => {
         const result = percentageFunc.call();
         expect(result).toBe('0');
@@ -209,17 +207,17 @@ describe('HtmlParserService', () => {
       });
     });
     describe('handles date calculation errors gracefully', () => {
-      const noNumberValue =
-        notNumberValueExamples[
-          Math.floor(notNumberValueExamples.length * Math.random())
-        ];
       const fixedDate = new Date(
         Date.UTC(2024, 10, 26, 12, 0, 0)
       ).toISOString();
-      it(`and sets given not date format ${noNumberValue} to same ${noNumberValue}`, () => {
-        const result = dateFunc.call(fixedDate, noNumberValue);
-        expect(result).toBe(noNumberValue);
+      notNumberValueExamples.forEach((noNumberValue) => {
+        it(`and sets given not date format ${noNumberValue} to same ${noNumberValue}`, () => {
+          console.log(noNumberValue);
+          const result = dateFunc.call(fixedDate, noNumberValue);
+          expect(result).toBe(noNumberValue);
+        });
       });
+
       it(`and sets no value to ''`, () => {
         const result = dateFunc.call();
         expect(result).toBe('');

@@ -60,7 +60,8 @@ export class EmailTemplateModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Automatically close the template selection
     if (this.templates.length === 1)
-      this.dialogRef.close({ template: this.templates[0] } as any);
+      this.dialogRef.close({ template: this.templates[0].id } as any);
   }
 }
