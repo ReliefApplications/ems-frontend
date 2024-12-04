@@ -1,3 +1,10 @@
+# [2.17.0-beta.21](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.20...v2.17.0-beta.21) (2024-12-04)
+
+
+### Bug Fixes
+
+* allow choices by url fields to use api configuration using auth code ([d9fbb09](https://github.com/ReliefApplications/ems-frontend/commit/d9fbb0956d5dc4eef3fe0795176330240fa354c2))
+
 # [2.17.0-beta.20](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.19...v2.17.0-beta.20) (2024-12-02)
 
 
