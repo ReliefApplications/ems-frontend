@@ -172,6 +172,13 @@ const routes: Routes = [
               import('./pages/activity-log/activity-log.module').then(
                 (m) => m.ActivityLogModule
               ),
+            canActivate: [PermissionGuard],
+            data: {
+              permission: {
+                action: 'read',
+                subject: 'User',
+              },
+            },
           },
         ],
       },
