@@ -629,6 +629,7 @@
 		},
 		"application": {
 			"activities": {
+				"createdAt": "Created at",
 				"downloadXlsx": "Download XLSX",
 				"empty": "No activities available",
 				"few": "Activities",

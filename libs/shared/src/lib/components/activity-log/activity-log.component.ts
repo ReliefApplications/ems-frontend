@@ -15,6 +15,7 @@ import {
 } from '../../utils/public-api';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { LIST_ACTIVITIES } from './graphql/queries';
+import { DateTranslateService } from '../../services/date-translate/date-translate.service';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 100;
@@ -67,11 +68,13 @@ export class ActivityLogComponent
    * @param apollo Apollo Client
    * @param restService Shared rest service
    * @param fb Angular form builder instance
+   * @param dateFormat Date translate service
    */
   constructor(
     private apollo: Apollo,
     private restService: RestService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dateFormat: DateTranslateService
   ) {
     super();
   }
@@ -253,7 +256,7 @@ export class ActivityLogComponent
   downloadActivities(): void {
     this.restService
       .post(
-        '/activity/download-activities',
+        `/activity/download-activities?dateLocale=${this.dateFormat.currentLang}`,
         { filter: this.filter },
         { responseType: 'blob' }
       )
