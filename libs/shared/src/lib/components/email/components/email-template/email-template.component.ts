@@ -25,7 +25,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { emailRegex } from '../../constant';
 import { FieldStore } from '../../models/email.const';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs';
+import { firstValueFrom, takeUntil } from 'rxjs';
 import { cloneDeep } from 'lodash';
 import { QueryBuilderService } from './../../../../services/query-builder/query-builder.service';
 import { HttpClient } from '@angular/common/http';
@@ -500,7 +500,7 @@ export class EmailTemplateComponent
 
         this.http
           .post(
-            `${this.restService.apiUrl}/notification/azure/preview-dataset`,
+            `${this.restService.apiUrl}/notification/preview-dataset`,
             objPreview
           )
           .subscribe(
@@ -714,12 +714,12 @@ export class EmailTemplateComponent
         inputEmails: [],
       };
 
-      this.http
-        .post(
-          `${this.restService.apiUrl}/notification/azure/preview-distribution-lists/`,
+      firstValueFrom(
+        this.http.post(
+          `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
           objPreview
         )
-        .toPromise()
+      )
         .then((response: any) => {
           if (this.type === 'to') {
             this.emailService.filterToEmails =

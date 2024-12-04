@@ -246,7 +246,7 @@ export class PreviewComponent
     this.emailService.loading = true;
     this.http
       .post(
-        `${this.restService.apiUrl}/notification/azure/preview-distribution-lists/`,
+        `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
         this.query
       )
       .subscribe(
@@ -322,9 +322,9 @@ export class PreviewComponent
       this.emailService.quickEmailDLQuery = [];
     }
     this.previewUrl = this.emailService.isQuickAction
-      ? `${this.restService.apiUrl}/notification/azure/preview-quick-email`
+      ? `${this.restService.apiUrl}/notification/preview-quick-email`
       : this.query
-      ? `${this.restService.apiUrl}/notification/azure/preview-email/`
+      ? `${this.restService.apiUrl}/notification/preview-email/`
       : '';
 
     // Checks if url exists

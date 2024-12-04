@@ -12,7 +12,7 @@ import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
-import { takeUntil } from 'rxjs';
+import { firstValueFrom, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/public-api';
 import { cloneDeep } from 'lodash';
 import { HttpClient } from '@angular/common/http';
@@ -639,12 +639,12 @@ export class SelectDistributionComponent
             this.emailDistributionList.getRawValue()
           ),
         };
-        this.http
-          .post(
-            `${this.restService.apiUrl}/notification/azure/preview-distribution-lists/`,
+        firstValueFrom(
+          this.http.post(
+            `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
             query
           )
-          .toPromise()
+        )
           .then((response: any) => {
             this.loading = false;
             this.emailService.filterToEmails =
