@@ -524,7 +524,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                             emailData,
                             this.metaResourceData,
                             options.bodyFields,
-                            selectedQuickAction
+                            selectedQuickAction.navigateSettings
                           );
                           this.status = {
                             error: false,

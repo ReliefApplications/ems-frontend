@@ -13,7 +13,7 @@ import { FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { EmailService } from '../../../email/email.service';
 import { TranslateService } from '@ngx-translate/core';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 
 /**
  * Preview template modal.
@@ -199,16 +199,16 @@ export class PreviewTemplateModalComponent {
         ?.map((x: any) => x.name)
         ?.forEach((keyNm: any, index: number) => {
           text[keyNm] = this.getValueOfKey(item, keyNm, metaData);
-          const widgetSettings = this.data.widgetSettings;
+          const navigateSettings = this.data.navigateSettings;
           if (
-            !datasetFields.includes(widgetSettings?.navigateSettings?.field) &&
-            index === datasetFieldsObj.length - 1 &&
-            widgetSettings?.navigateToPage &&
-            widgetSettings?.navigateSettings?.field
+            navigateSettings &&
+            navigateSettings.field &&
+            !datasetFields.includes(navigateSettings.field) &&
+            index === datasetFieldsObj.length - 1
           ) {
-            text[widgetSettings.navigateSettings.field] = this.getValueOfKey(
+            text[navigateSettings.field] = this.getValueOfKey(
               item,
-              widgetSettings?.navigateSettings?.field,
+              navigateSettings.field,
               metaData
             );
           }
@@ -224,8 +224,8 @@ export class PreviewTemplateModalComponent {
         dataList,
         tabIndex: 0,
         tabName: 'Block 1',
-        navigateToPage: this.data.widgetSettings.navigateToPage,
-        navigateSettings: this.data.widgetSettings.navigateSettings,
+        navigateToPage: !isNil(this.data.navigateSettings),
+        navigateSettings: this.data.navigateSettings,
       },
     ];
   }
@@ -331,7 +331,7 @@ export class PreviewTemplateModalComponent {
    * @returns url
    */
   getPageURL(item: any) {
-    const event: any = this.data.widgetSettings.navigateSettings;
+    const event: any = this.data.navigateSettings;
     event['item'] = item;
     let fullUrl = this.getPageUrl(event.pageUrl as string);
     if (event.field) {
