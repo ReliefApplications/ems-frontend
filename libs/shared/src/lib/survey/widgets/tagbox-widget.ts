@@ -54,7 +54,7 @@ export const init = (
   };
   const componentName = QuestionType.TAGBOX;
   const widget = {
-    name: componentName,
+    name: 'tagbox',
     title: 'Tagbox',
     iconName: iconId,
     category: 'Custom Questions',

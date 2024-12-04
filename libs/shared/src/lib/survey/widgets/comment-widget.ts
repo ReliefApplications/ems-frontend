@@ -20,7 +20,7 @@ export const init = (
     name: 'comment-widget',
     widgetIsLoaded: (): boolean => true,
     isFit: (question: Question): boolean =>
-      question.getType() === QuestionType.DROPDOWN,
+      question.getType() === QuestionType.COMMENT,
     init: (): void => {
       Serializer.addProperty('comment', {
         name: 'allowEdition:boolean',
