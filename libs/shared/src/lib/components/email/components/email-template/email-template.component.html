@@ -182,22 +182,6 @@
   </div>
 </ng-template>
 
-<!-- Too many records in dataset -->
-<ng-template #tooManyRecordsAlertTmpl>
-  <ui-alert
-    variant="warning"
-    [closable]="true"
-    *ngIf="showDatasetLimitWarning"
-    (close)="closeWarningMessage()"
-  >
-    <div
-      [innerHTML]="
-        'components.email.alert.tooManyRecords'
-          | translate : { totalRecords: totalMatchingRecords }
-      "
-    ></div>
-  </ui-alert>
-</ng-template>
 <!-- Please select the child fields of the Selected fields -->
 <ng-template #ChildFieldAlertTmpl>
   <ui-alert
@@ -337,10 +321,6 @@
             <ng-container
               *ngIf="resource?.fields?.length || availableFields.length > 0"
             >
-              <ng-container
-                class="mt-2"
-                *ngTemplateOutlet="tooManyRecordsAlertTmpl"
-              ></ng-container>
               <div class="flex gap-4 mt-2">
                 <div class="mt-2 w-full">
                   <!-- NESTED FILTER GROUP -->
@@ -374,10 +354,6 @@
             {{ 'common.preview' | translate }}
           </ng-container>
           <ng-template uiTabContent>
-            <ng-container
-              class="mt-2"
-              *ngTemplateOutlet="tooManyRecordsAlertTmpl"
-            ></ng-container>
             <ng-container
               class="mt-2"
               *ngTemplateOutlet="showDLPreview"

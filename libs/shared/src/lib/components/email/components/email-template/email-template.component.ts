@@ -617,13 +617,6 @@ export class EmailTemplateComponent
   }
 
   /**
-   * Resets the state `showDatasetLimitWarning` when the close button is clicked.
-   */
-  closeWarningMessage(): void {
-    this.showDatasetLimitWarning = false;
-  }
-
-  /**
    * Reinitialises and resets Distribution List Filter values
    *
    * @param query - Dataset Form Group
