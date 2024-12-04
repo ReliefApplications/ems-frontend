@@ -185,27 +185,25 @@ export class DownloadService {
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
 
-    this.restService
-      .post(path, { filter }, { responseType: 'blob' })
-      .subscribe({
-        next: (res: any) => {
-          const blob = new Blob([res], { type: 'xlsx' });
-          this.saveFile('activities.xlsx', blob);
-          snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.file.download.ready'
-          );
-          snackBarSpinner.instance.loading = false;
-          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-        },
-        error: () => {
-          snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.file.download.error'
-          );
-          snackBarSpinner.instance.loading = false;
-          snackBarSpinner.instance.error = true;
-          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-        },
-      });
+    this.restService.post(path, filter, { responseType: 'blob' }).subscribe({
+      next: (res: any) => {
+        const blob = new Blob([res], { type: 'xlsx' });
+        this.saveFile('activities.xlsx', blob);
+        snackBarSpinner.instance.message = this.translate.instant(
+          'common.notifications.file.download.ready'
+        );
+        snackBarSpinner.instance.loading = false;
+        snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+      },
+      error: () => {
+        snackBarSpinner.instance.message = this.translate.instant(
+          'common.notifications.file.download.error'
+        );
+        snackBarSpinner.instance.loading = false;
+        snackBarSpinner.instance.error = true;
+        snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
+      },
+    });
   }
 
   /**

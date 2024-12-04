@@ -256,7 +256,13 @@ export class ActivityLogComponent
    */
   downloadActivities(): void {
     const path = '/activity/download-activities';
-    this.downloadService.getActivitiesExport(path, this.filter);
+    const payload = {
+      userId: this.userId,
+      applicationId: this.applicationId,
+      filter: this.filter.filters,
+    };
+    console.log('payload', payload);
+    this.downloadService.getActivitiesExport(path, payload);
   }
 
   /**

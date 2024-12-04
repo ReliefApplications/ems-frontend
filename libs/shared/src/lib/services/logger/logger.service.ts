@@ -19,16 +19,16 @@ export class LoggerService {
    *
    * @param restService Service to make REST calls
    * @param applicationService Service to manage applications
-   * @param route Angular route service
+   * @param router Angular router service
    * @param activatedRoute Angular activated route service
    */
   constructor(
     private restService: RestService,
     private applicationService: ApplicationService,
-    public route: Router,
+    public router: Router,
     private activatedRoute: ActivatedRoute
   ) {
-    this.route.events
+    this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event) => {
         console.log('NavigationEnd:', event);
@@ -47,40 +47,21 @@ export class LoggerService {
    * Track an activity
    *
    * @param activity Activity to track
-   * @returns Observable of the tracked activity
    */
   public track(activity: any) {
-    let route = this.activatedRoute;
-    const componentAndParams: Record<string, any> = {};
+    const componentAndParams = this.getComponentAndParams(
+      this.activatedRoute.root
+    );
 
-    // Traverse the route tree to gather components and their parameters
-    while (route.firstChild) {
-      route = route.firstChild;
-
-      // Get route parameters for the current component
-      route.params.subscribe((params) => {
-        if (route.component) {
-          const componentName = route.component.name;
-          if (componentName) {
-            // Attach the corresponding params to the component
-            componentAndParams[componentName] = {
-              ...(componentAndParams[componentName] || {}),
-              ...params,
-            };
-          }
-        }
-      });
-    }
-
-    if (componentAndParams.ApplicationComponent) {
-      activity.applicationId = componentAndParams.ApplicationComponent.id;
-      activity.metadata.applicationId =
-        componentAndParams.ApplicationComponent.id;
+    if (componentAndParams['ApplicationComponent']) {
+      const appParams = componentAndParams['ApplicationComponent'];
+      activity.applicationId = appParams.id;
+      activity.metadata.applicationId = appParams.id;
     }
 
     console.log('Activity:', activity);
 
-    return this.restService.post(this.activityBasePath, activity).subscribe(
+    this.restService.post(this.activityBasePath, activity).subscribe(
       (response) => {
         console.log('Activity tracked successfully', response);
       },
@@ -88,5 +69,33 @@ export class LoggerService {
         console.error('Error tracking activity', error);
       }
     );
+  }
+
+  /**
+   * Recursively traverse the route tree to gather components and their parameters
+   *
+   * @param route The current activated route
+   * @param componentAndParams Accumulator for components and their parameters
+   * @returns An object mapping component names to their parameters
+   */
+  private getComponentAndParams(
+    route: ActivatedRoute,
+    componentAndParams: Record<string, any> = {}
+  ): Record<string, any> {
+    if (route.component) {
+      const componentName = (route.component as any).name;
+      if (componentName) {
+        componentAndParams[componentName] = {
+          ...(componentAndParams[componentName] || {}),
+          ...route.snapshot.params,
+        };
+      }
+    }
+
+    route.children.forEach((childRoute) => {
+      this.getComponentAndParams(childRoute, componentAndParams);
+    });
+
+    return componentAndParams;
   }
 }
