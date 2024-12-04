@@ -853,7 +853,7 @@
 		},
 		"email": {
 			"action": {
-				"header": "Actes"
+				"header": "Actions"
 			},
 			"alert": {
 				"dlPreview": "Tous les e-mails affichés dans ce tableau ci-dessous seront utilisés pour créer la liste de distribution",
@@ -872,6 +872,15 @@
 				"unsubscribeSuccess": "Succès! \n{{message}}"
 			},
 			"back": "Retour à la liste",
+			"dataset": {
+				"block": {
+					"label": "Titre du Bloc",
+					"title": "Bloc"
+				},
+				"navigateToPage": {
+					"title": "Aller à la page"
+				}
+			},
 			"distributionList": {
 				"alert": {
 					"allSeparate": "La liste de distribution sera composée de tous les e-mails des utilisateurs obtenus en envoyant un e-mail séparé. Si vous souhaitez envoyer à une liste d'utilisateurs, veuillez créer un bloc normal à l'étape 2.",
@@ -1221,10 +1230,6 @@
 				"title": "Aller à la page"
 			},
 			"apply": "Appliquer le filtre",
-			"block": {
-				"label": "Titre du Bloc",
-				"title": "Bloc"
-			},
 			"dataset": {
 				"dataType": "Type de données",
 				"referenceData": "Reference Data",
@@ -1827,7 +1832,7 @@
 							"modify": "Modifier automatiquement les lignes sélectionnées",
 							"modifyField": "Champ à modifier",
 							"modifyValue": "Value to attribute",
-							"navigateToPage": "Inclusief navigeren naar pagina",
+							"navigateToPage": "Inclure le lien généré par Aller à la page",
 							"notify": {
 								"message": "Message de notification"
 							},

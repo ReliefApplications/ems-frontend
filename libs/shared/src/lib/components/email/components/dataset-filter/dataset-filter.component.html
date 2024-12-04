@@ -6,7 +6,7 @@
         class="block text-sm font-medium leading-6 text-gray-900"
         htmlFor="exampleSelect"
       >
-        {{ 'components.queryBuilder.block.label' | translate }}
+        {{ 'components.email.dataset.block.label' | translate }}
       </label>
       <div
         class="relative flex py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center w-full"
@@ -21,7 +21,7 @@
           id="block_title"
           class="form-input bg-transparent block overflow-hidden border-0 rounded-md w-full p-0 text-gray-900 placeholder:text-gray-400 text-sm sm:leading-6 focus:ring-0 focus:ring-inset ng-valid ng-dirty ng-touched"
           type="text"
-          [placeholder]="'components.queryBuilder.block.label' | translate"
+          [placeholder]="'components.email.dataset.block.label' | translate"
           formControlName="name"
           [ngModelOptions]="{ standalone: true }"
           (ngModelChange)="changeBlockTitle()"
@@ -36,16 +36,11 @@
           htmlFor="select__dataset"
           class="block text-sm font-medium leading-6 text-gray-900"
         >
-          {{
-            ('components.queryBuilder.dataset.title' | translate)
-          }}
+          {{ 'components.queryBuilder.dataset.title' | translate }}
         </label>
-       
+
         <!-- Resource selection -->
-        <div
-          uiFormFieldDirective
-          class="flex-1"
-        >
+        <div uiFormFieldDirective class="flex-1">
           <shared-resource-select
             [ngClass]="{ 'w-[80%]': this.query.get('resource').value }"
             formControlName="resource"
@@ -88,8 +83,8 @@
       [selectedIndex]="currentTabIndex"
       (selectedIndexChange)="onTabSelect($event, true)"
       #datasetPreview
-      *ngIf="resource?.fields?.length ||
-        availableFields.length > 0">
+      *ngIf="resource?.fields?.length || availableFields.length > 0"
+    >
       <div class="mt-4 flex flex-row">
         <!-- Fields Tab -->
         <ui-tab [title]="'Fields'" [selected]="true">
@@ -134,8 +129,7 @@
           </ng-template>
         </ui-tab>
         <!-- Filter Tab -->
-        <ui-tab
-          [title]="'Filter'">
+        <ui-tab [title]="'Filter'">
           <ng-container ngProjectAs="label">
             {{ 'components.queryBuilder.filter.title' | translate }}
           </ng-container>
@@ -145,9 +139,7 @@
               *ngTemplateOutlet="invalidFieldsAlertTmpl"
             ></ng-container>
             <ng-container
-              *ngIf="
-                resource?.fields?.length || availableFields.length > 0
-              "
+              *ngIf="resource?.fields?.length || availableFields.length > 0"
             >
               <ng-container
                 class="mt-2"
@@ -158,11 +150,11 @@
                   <!-- NESTED FILTER GROUP -->
                   <!-- <shared-filter [form]="query.get('filter')" [fields]="filterFields" [isEmailNotification]="true"></shared-filter> -->
                   <shared-tab-filter
-                  [form]="$any(query.controls.query.get('filter'))"
-                  [query]="query.controls.query.getRawValue()"
-                  [referenceFields]="[]"
-                >
-                </shared-tab-filter>
+                    [form]="$any(query.controls.query.get('filter'))"
+                    [query]="query.controls.query.getRawValue()"
+                    [referenceFields]="[]"
+                  >
+                  </shared-tab-filter>
                 </div>
               </div>
               <ui-button
@@ -179,86 +171,90 @@
         </ui-tab>
 
         <!-- navigate to page Tab -->
-        <ui-tab
-        [title]="'Action'">
+        <ui-tab [title]="'Action'">
           <ng-container ngProjectAs="label">
-            {{ 'components.queryBuilder.action.title' | translate }}
+            {{ 'components.email.dataset.navigateToPage.title' | translate }}
           </ng-container>
           <ng-template uiTabContent>
             <!-- Redirect to specific page action details -->
-        <div
-        formGroupName="navigateSettings"
-        class="flex flex-col ml-[55px]"
-          >
-            <div uiFormFieldDirective class="w-80">
-              <label>{{
-                'components.widget.settings.grid.actions.goTo.column.label'
-                  | translate
-              }}</label>
-              <input
-                formControlName="title"
-                [placeholder]="
-                  'components.widget.settings.grid.actions.goTo.column.placeholder'
+            <div
+              formGroupName="navigateSettings"
+              class="flex flex-col ml-[55px]"
+            >
+              <div uiFormFieldDirective class="w-80">
+                <label>{{
+                  'components.widget.settings.grid.actions.goTo.column.label'
                     | translate
-                "
-              />
-            </div>
-            <div uiFormFieldDirective class="w-80">
-              <label>
+                }}</label>
+                <input
+                  formControlName="title"
+                  [placeholder]="
+                    'components.widget.settings.grid.actions.goTo.column.placeholder'
+                      | translate
+                  "
+                />
+              </div>
+              <div uiFormFieldDirective class="w-80">
+                <label>
+                  {{
+                    'components.widget.settings.grid.actions.goTo.target.label'
+                      | translate
+                  }}
+                </label>
+                <ui-select-menu
+                  formControlName="pageUrl"
+                  [placeholder]="
+                    'components.widget.settings.grid.actions.goTo.target.placeholder'
+                      | translate
+                  "
+                >
+                  <ui-select-option
+                    *ngFor="let page of pages"
+                    [value]="page.urlParams"
+                  >
+                    {{ page.name }}
+                  </ui-select-option>
+                </ui-select-menu>
+              </div>
+              <div uiFormFieldDirective class="w-80">
                 {{
-                  'components.widget.settings.grid.actions.goTo.target.label'
+                  'components.widget.settings.grid.actions.goTo.field.label'
                     | translate
                 }}
-              </label>
-              <ui-select-menu
-                formControlName="pageUrl"
-                [placeholder]="
-                  'components.widget.settings.grid.actions.goTo.target.placeholder'
-                    | translate
-                "
-              >
-                <ui-select-option
-                  *ngFor="let page of pages"
-                  [value]="page.urlParams"
+                <ui-select-menu
+                  formControlName="field"
+                  [placeholder]="
+                    'components.widget.settings.grid.actions.goTo.field.placeholder'
+                      | translate
+                  "
                 >
-                  {{ page.name }}
-                </ui-select-option>
-              </ui-select-menu>
-            </div>
-            <div uiFormFieldDirective class="w-80">
-              {{
-                'components.widget.settings.grid.actions.goTo.field.label'
-                  | translate
-              }}
-              <ui-select-menu
-                formControlName="field"
-                [placeholder]="
-                  'components.widget.settings.grid.actions.goTo.field.placeholder'
-                    | translate
-                "
-              >
-                <ng-container *ngFor="let field of availableFields">
-                  <ui-select-option *ngIf="!field.fields" [value]="field.name">
-                    {{ field.text || field.name }}
-                  </ui-select-option>
-                
-                  <ui-select-option *ngIf="field.fields" [isGroup]="true">
-                    {{ field.text || field.name }}
+                  <ng-container *ngFor="let field of availableFields">
                     <ui-select-option
-                      *ngFor="let subField of field.fields"
-                      [value]="field.name + '.' + subField.name"
+                      *ngIf="!field.fields"
+                      [value]="field.name"
                     >
-                      {{
-                        field.name === '$attribute'
-                          ? subField.text || subField.name
-                          : field.name + ' - ' + (subField.text || subField.name)
-                      }}
+                      {{ field.text || field.name }}
                     </ui-select-option>
-                  </ui-select-option>
-                </ng-container>
-              </ui-select-menu>
+
+                    <ui-select-option *ngIf="field.fields" [isGroup]="true">
+                      {{ field.text || field.name }}
+                      <ui-select-option
+                        *ngFor="let subField of field.fields"
+                        [value]="field.name + '.' + subField.name"
+                      >
+                        {{
+                          field.name === '$attribute'
+                            ? subField.text || subField.name
+                            : field.name +
+                              ' - ' +
+                              (subField.text || subField.name)
+                        }}
+                      </ui-select-option>
+                    </ui-select-option>
+                  </ng-container>
+                </ui-select-menu>
+              </div>
             </div>
-          </div>
           </ng-template>
         </ui-tab>
 

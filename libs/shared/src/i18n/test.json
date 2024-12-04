@@ -872,6 +872,15 @@
 				"unsubscribeSuccess": "****** {{message}}"
 			},
 			"back": "******",
+			"dataset": {
+				"block": {
+					"label": "******",
+					"title": "******"
+				},
+				"navigateToPage": {
+					"title": "******"
+				}
+			},
 			"distributionList": {
 				"alert": {
 					"allSeparate": "******",
@@ -1217,14 +1226,7 @@
 			}
 		},
 		"queryBuilder": {
-			"action": {
-				"title": "******"
-			},
 			"apply": "******",
-			"block": {
-				"label": "******",
-				"title": "******"
-			},
 			"dataset": {
 				"dataType": "******",
 				"referenceData": "******",
