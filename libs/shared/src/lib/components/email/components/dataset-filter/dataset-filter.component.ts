@@ -179,6 +179,9 @@ export class DatasetFilterComponent
             this.resource.fields = [];
           }
           this.getResourceData(true);
+        } else if (value === null) {
+          this.availableFields = [];
+          this.selectedFields = [];
         }
       });
     this.query.controls.name.valueChanges
