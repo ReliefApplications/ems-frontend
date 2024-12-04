@@ -8,6 +8,7 @@ import {
   QuestionMatrixModel,
   SurveyModel,
 } from 'survey-core';
+import { isMatrix } from '../services/form-helper/form-helper.service';
 
 /**
  * Registration of new custom functions for the survey.
@@ -58,7 +59,7 @@ const addCustomFunctions = (
       const colValue = params[2];
 
       const question = this.survey.getQuestionByName(params[0]);
-      if (!question || !question.getType().startsWith('matrix')) return [];
+      if (!question || !isMatrix(question.getType())) return [];
       if (typeof colName !== 'string') return [];
 
       const matrixQuestion = question as
@@ -95,7 +96,7 @@ const addCustomFunctions = (
       if (!questionName || !rows) return [];
 
       const question = this.survey.getQuestionByName(questionName);
-      if (!question || !question.getType().startsWith('matrix')) return [];
+      if (!question || !isMatrix(question.getType())) return [];
 
       const matrix = question as
         | QuestionMatrixDropdownModel
@@ -176,7 +177,7 @@ const addCustomFunctions = (
       const gettingRows = isNil(isRow) ? true : isRow;
 
       const question = this.survey.getQuestionByName(params[0]);
-      if (!question || !question.getType().startsWith('matrix')) return [];
+      if (!question || !isMatrix(question.getType())) return [];
 
       const matrix = question as
         | QuestionMatrixDropdownModel

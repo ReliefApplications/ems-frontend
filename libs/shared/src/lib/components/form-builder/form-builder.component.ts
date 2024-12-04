@@ -24,7 +24,10 @@ import {
 } from 'survey-core';
 import { SurveyCreatorModel } from 'survey-creator-core';
 import { Form } from '../../models/form.model';
-import { FormHelpersService } from '../../services/form-helper/form-helper.service';
+import {
+  FormHelpersService,
+  QuestionType,
+} from '../../services/form-helper/form-helper.service';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { updateModalChoicesAndValue } from '../../survey/global-properties/reference-data';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
@@ -542,7 +545,7 @@ export class FormBuilderComponent
         question.choices = [];
       }
     }
-    if (question.getType() === 'multipletext') {
+    if (question.getType() === QuestionType.MULTIPLE_TEXT) {
       let validQuestion = true;
       // Check if every item of the questions is valid, otherwise stop loop and function
       question.items.every((item: any) => {
@@ -569,7 +572,7 @@ export class FormBuilderComponent
         return false;
       }
     }
-    if (question.getType() === 'matrix') {
+    if (question.getType() === QuestionType.MATRIX) {
       question.columns.forEach((x: any) => {
         x.text = x.text || x.value || x;
         x.value = this.formHelpersService.toSnakeCase(x.value || x.text || x);
@@ -579,7 +582,7 @@ export class FormBuilderComponent
         x.value = this.formHelpersService.toSnakeCase(x.value || x.text || x);
       });
     }
-    if (question.getType() === 'matrixdropdown') {
+    if (question.getType() === QuestionType.MATRIX_DROPDOWN) {
       question.columns.forEach((x: any) => {
         x.title = x.title || x.name || x;
         x.name = this.formHelpersService.toSnakeCase(x.name || x.title || x);
@@ -589,7 +592,10 @@ export class FormBuilderComponent
         x.value = this.formHelpersService.toSnakeCase(x.value || x.text || x);
       });
     }
-    if (['resource', 'resources'].includes(question.getType())) {
+    if (
+      question.getType() === QuestionType.RESOURCE ||
+      question.getType() === QuestionType.RESOURCES
+    ) {
       if (question.relatedName) {
         question.relatedName = this.formHelpersService.toSnakeCase(
           question.relatedName
@@ -664,7 +670,10 @@ export class FormBuilderComponent
       }
     }
     // Check that at least an application is selected in the properties of users and owner question
-    if (['users', 'owner'].includes(question.getType())) {
+    if (
+      question.getType() === QuestionType.USERS ||
+      question.getType() === QuestionType.OWNER
+    ) {
       if (!question.applications) {
         this.snackBar.openSnackBar(
           this.translate.instant('pages.formBuilder.errors.selectApplication', {

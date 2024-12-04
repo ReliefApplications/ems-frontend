@@ -9,6 +9,7 @@ import {
 } from 'survey-core';
 import { debounceTime, map, Subject, takeUntil, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
+import { QuestionType } from '../../services/form-helper/form-helper.service';
 
 /**
  * Init tagbox question
@@ -51,9 +52,9 @@ export const init = (
       question._useSummaryTagModeChangeCallback
     );
   };
-  const componentName = 'tagbox';
+  const componentName = QuestionType.TAGBOX;
   const widget = {
-    name: 'tagbox',
+    name: componentName,
     title: 'Tagbox',
     iconName: iconId,
     category: 'Custom Questions',
@@ -112,8 +113,8 @@ export const init = (
       const parentQuestion = question.parentQuestion;
       if (
         parentQuestion &&
-        (parentQuestion.getType() === 'matrixdynamic' ||
-          parentQuestion.getType() === 'matrixdropdown')
+        (parentQuestion.getType() === QuestionType.MATRIX_DYNAMIC ||
+          parentQuestion.getType() === QuestionType.MATRIX_DROPDOWN)
       ) {
         question.choices = parentQuestion.choices;
       }

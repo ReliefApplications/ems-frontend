@@ -5,6 +5,7 @@ import {
   surveyLocalization,
 } from 'survey-core';
 import { Question, QuestionComment } from '../types';
+import { QuestionType } from '../../services/form-helper/form-helper.service';
 /**
  * Custom definition for overriding the comment question. Add edit functionality.
  *
@@ -18,7 +19,8 @@ export const init = (
   const widget = {
     name: 'comment-widget',
     widgetIsLoaded: (): boolean => true,
-    isFit: (question: Question): boolean => question.getType() === 'comment',
+    isFit: (question: Question): boolean =>
+      question.getType() === QuestionType.DROPDOWN,
     init: (): void => {
       Serializer.addProperty('comment', {
         name: 'allowEdition:boolean',

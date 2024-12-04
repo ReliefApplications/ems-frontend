@@ -9,6 +9,7 @@ import {
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
 import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
 import { Question } from '../types';
+import { QuestionType } from '../../services/form-helper/form-helper.service';
 
 /**
  * Add support for custom properties to the survey
@@ -111,7 +112,10 @@ export const init = (environment: any): void => {
  */
 export const render = (question: Question): void => {
   // define the default max size for files
-  if (question.getType() === 'file' && !question.getPropertyValue('maxSize')) {
+  if (
+    question.getType() === QuestionType.FILE &&
+    !question.getPropertyValue('maxSize')
+  ) {
     (question as QuestionFileModel).maxSize = 7340032;
   }
 };

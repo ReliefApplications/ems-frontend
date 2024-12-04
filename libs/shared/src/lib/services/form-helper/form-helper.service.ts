@@ -24,6 +24,40 @@ import {
   EDIT_DRAFT_RECORD,
 } from './graphql/mutations';
 
+/** types for the surveyjs question types */
+export enum QuestionType {
+  CHECKBOX = 'checkbox',
+  COMMENT = 'comment',
+  DROPDOWN = 'dropdown',
+  FILE = 'file',
+  HTML = 'html',
+  MATRIX = 'matrix',
+  MATRIX_DROPDOWN = 'matrixdropdown',
+  MATRIX_DYNAMIC = 'matrixdynamic',
+  MULTIPLE_TEXT = 'multipletext',
+  OWNER = 'owner',
+  RADIO_GROUP = 'radiogroup',
+  RESOURCES = 'resources',
+  RESOURCE = 'resource',
+  TAGBOX = 'tagbox',
+  TEXT = 'text',
+  USERS = 'users',
+}
+
+/**
+ * Checks if a question is of type matrix
+ *
+ * @param type type of the question
+ * @returns whether of matrix type or not
+ */
+export const isMatrix = (type: string) => {
+  return (
+    type === QuestionType.MATRIX ||
+    type === QuestionType.MATRIX_DROPDOWN ||
+    type === QuestionType.MATRIX_DYNAMIC
+  );
+};
+
 /**
  * Shared survey helper service.
  */
@@ -158,7 +192,7 @@ export class FormHelpersService {
                   survey.getAllQuestions().forEach((question) => {
                     const questionType = question.getType();
                     if (
-                      questionType !== 'file' ||
+                      questionType !== QuestionType.FILE ||
                       // Only change files that are not in the temporary storage
                       // meaning their values came from the default values
                       !!temporaryFilesStorage[question.name]
@@ -195,7 +229,7 @@ export class FormHelpersService {
               survey.getAllQuestions().forEach((question) => {
                 const questionType = question.getType();
                 if (
-                  questionType !== 'file' ||
+                  questionType !== QuestionType.FILE ||
                   // Only change files that are not in the temporary storage
                   // meaning their values came from the default values
                   !!temporaryFilesStorage[question.name]
@@ -237,8 +271,8 @@ export class FormHelpersService {
     for (const question of questions) {
       if (question && question.value) {
         if (
-          question.getType() === 'resources' ||
-          question.getType() == 'resource'
+          question.getType() === QuestionType.RESOURCES ||
+          question.getType() === QuestionType.RESOURCE
         ) {
           //We save the records created from the resources question
           for (const recordId of question.value) {
@@ -319,10 +353,13 @@ export class FormHelpersService {
     // Get all nested records to add
     questions.forEach((question: Question) => {
       const type = question.getType();
-      if (!['resource', 'resources'].includes(type) || !question.draftData) {
+      if (
+        !(type === QuestionType.RESOURCE || QuestionType.RESOURCES) ||
+        !question.draftData
+      ) {
         return;
       }
-      const isResource = type === 'resource';
+      const isResource = type === QuestionType.RESOURCE;
       const toAdd = (isResource ? [question.value] : question.value).filter(
         (id: string) => id in question.draftData
       );
@@ -358,7 +395,8 @@ export class FormHelpersService {
             if (!newId) return;
             updateIds[draftId](newId);
             // update question.newCreatedRecords too
-            const isResource = element.question.getType() === 'resource';
+            const isResource =
+              element.question.getType() === QuestionType.RESOURCE;
             const draftIndex = (
               isResource
                 ? [element.question.newCreatedRecords]
@@ -461,7 +499,7 @@ export class FormHelpersService {
       titleElement.querySelectorAll(selector).forEach((el: Element) => {
         createTooltip(el);
       });
-    } else if (options.question.getType() === 'html') {
+    } else if (options.question.getType() === QuestionType.RESOURCE) {
       const wrapper = document.createElement('div');
       wrapper.classList.add('flex', 'items-center');
       const htmlQuestion = options.htmlElement.querySelector('.sd-html');
