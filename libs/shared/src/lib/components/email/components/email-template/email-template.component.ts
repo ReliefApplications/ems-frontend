@@ -259,6 +259,11 @@ export class EmailTemplateComponent
         } else if (value === null) {
           this.selectedResourceId = value;
           this.clearUnusedValues(this.segmentList[this.activeSegmentIndex]);
+          this.availableFields = [];
+          this.selectedFields = [];
+          if (this.resource?.fields) {
+            this.resource.fields = [];
+          }
         }
       });
     this.selectedEmails = this.distributionList.get('inputEmails') as FormArray;
