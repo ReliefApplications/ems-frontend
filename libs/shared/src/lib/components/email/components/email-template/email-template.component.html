@@ -50,21 +50,19 @@
     <!-- Distribution list -->
     <div
       class="w-1/2"
-      *ngIf="
-        activeSegmentIndex >= 1"
+      *ngIf="activeSegmentIndex >= 1"
       [formGroup]="distributionList"
-      [ngClass]="{'disableDiv': isDisable}"
+      [ngClass]="{ disableDiv: isDisable }"
     >
       <label
         htmlFor="select__data__set"
         class="block text-sm font-medium leading-6 text-gray-900"
       >
-        {{ 'components.queryBuilder.dataset.title' | translate }}*        
+        {{ 'components.queryBuilder.dataset.title' | translate }}*
       </label>
-      
+
       <!-- Resource selection -->
-      <div
-        uiFormFieldDirective>
+      <div uiFormFieldDirective>
         <shared-resource-select
           formControlName="resource"
           [selectedElements]="[resource]"
@@ -331,14 +329,14 @@
           </ng-template>
         </ui-tab>
         <!-- Filter Tab -->
-        <ui-tab
-          [title]="'components.queryBuilder.filter.title' | translate">
+        <ui-tab [title]="'components.queryBuilder.filter.title' | translate">
           <ng-container ngProjectAs="label">
             {{ 'components.queryBuilder.filter.title' | translate }}
           </ng-container>
           <ng-template uiTabContent>
             <ng-container
-              *ngIf="resource?.fields?.length || availableFields.length > 0">
+              *ngIf="resource?.fields?.length || availableFields.length > 0"
+            >
               <ng-container
                 class="mt-2"
                 *ngTemplateOutlet="tooManyRecordsAlertTmpl"
@@ -350,7 +348,6 @@
                     [form]="$any(dlQuery.get('filter'))"
                     [query]="dlQuery.getRawValue()"
                     [disabled]="isDisable"
-                    [referenceFields]="[]"
                   >
                   </shared-tab-filter>
                 </div>

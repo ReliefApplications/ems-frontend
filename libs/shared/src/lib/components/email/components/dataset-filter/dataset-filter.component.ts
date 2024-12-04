@@ -8,8 +8,8 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { QueryRef } from 'apollo-angular';
 import { cloneDeep } from 'lodash';
 import {
   Resource,
@@ -138,8 +138,6 @@ export class DatasetFilterComponent
    * To use helper functions, Apollo serve
    *
    * @param emailService helper functions
-   * @param apollo server
-   * @param formGroup Angular form builder
    * @param snackBar snackbar helper function
    * @param queryBuilder Shared query builder service
    * @param gridService Shared grid service
@@ -150,8 +148,6 @@ export class DatasetFilterComponent
    */
   constructor(
     public emailService: EmailService,
-    private apollo: Apollo,
-    private formGroup: FormBuilder,
     public snackBar: SnackbarService,
     public queryBuilder: QueryBuilderService,
     public gridService: GridService,
