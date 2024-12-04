@@ -1016,7 +1016,6 @@ export class EmsTemplateComponent
    * @param e stepper change event
    */
   currentStepChange(e: number) {
-    console.log(e);
     if (e === 5) {
       this.showPreview();
     }

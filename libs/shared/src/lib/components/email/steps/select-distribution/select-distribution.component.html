@@ -12,6 +12,7 @@
     </div>
     <!-- Import file -->
     <ui-button
+      [disabled]="this.emailDistributionList?.get('id')?.value"
       icon="cloud_download"
       category="secondary"
       variant="primary"

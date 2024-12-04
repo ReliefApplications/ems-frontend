@@ -872,6 +872,15 @@
 				"unsubscribeSuccess": "Success! {{message}}"
 			},
 			"back": "Back to list",
+			"dataset": {
+				"block": {
+					"label": "Block title",
+					"title": "Block"
+				},
+				"navigateToPage": {
+					"title": "Navigate to Page"
+				}
+			},
 			"distributionList": {
 				"alert": {
 					"allSeparate": "Distribution list will be composed of all user emails obtained from send separate email, if you'd like to send to a list of users please create a normal block in step 2.",
@@ -1218,13 +1227,9 @@
 		},
 		"queryBuilder": {
 			"apply": "Apply filter",
-			"block": {
-				"label": "Block title",
-				"title": "Block"
-			},
 			"dataset": {
 				"dataType": "Data Type",
-				"referenceData": "Données de référence",
+				"referenceData": "Reference data",
 				"select": "Select a dataset",
 				"title": "Resource"
 			},
@@ -1824,6 +1829,7 @@
 							"modify": "Auto-modify selected rows",
 							"modifyField": "Field to update",
 							"modifyValue": "Value to attribute",
+							"navigateToPage": "Include navigate to page link",
 							"notify": {
 								"message": "Notification message"
 							},

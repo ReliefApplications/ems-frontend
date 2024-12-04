@@ -12,7 +12,7 @@ import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
-import { takeUntil } from 'rxjs';
+import { firstValueFrom, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/public-api';
 import { cloneDeep } from 'lodash';
 import { HttpClient } from '@angular/common/http';
@@ -639,12 +639,12 @@ export class SelectDistributionComponent
             this.emailDistributionList.getRawValue()
           ),
         };
-        this.http
-          .post(
+        firstValueFrom(
+          this.http.post(
             `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
             query
           )
-          .toPromise()
+        )
           .then((response: any) => {
             this.loading = false;
             this.emailService.filterToEmails =
@@ -725,6 +725,7 @@ export class SelectDistributionComponent
     this.distributionListId = '';
     this.showExistingDistributionList = !this.showExistingDistributionList;
     this.emailService.selectedDLName = '';
+    this.emailService.distributionListName = '';
     // this.emailDistributionList.get('name').setValue('');
     this.emailService.datasetsForm
       ?.get('emailDistributionList')

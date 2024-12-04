@@ -11,7 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
 import { cloneDeep } from 'lodash';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import {
   EMAIL_NOTIFICATION_TYPES,
   EmailDistributionListQueryResponse,
@@ -39,6 +39,7 @@ import { FieldStore } from './models/email.const';
 import { ResourceQueryResponse } from '../../models/resource.model';
 import { prettifyLabel } from '../../utils/prettify';
 import { addNewField } from '../query-builder/query-builder-forms';
+import get from 'lodash/get';
 
 /**
  * Interface for InValidDataSets
@@ -228,6 +229,12 @@ export class EmailService {
       individualEmailFields: this.formBuilder.array([]),
       dataType: null,
       reference: null,
+      navigateToPage: false,
+      navigateSettings: this.formBuilder.group({
+        title: get('', 'actions.navigateSettings.title', 'Details view'),
+        pageUrl: [''],
+        field: [''],
+      }),
     });
   }
 
@@ -372,12 +379,12 @@ export class EmailService {
             ),
           };
 
-          this.http
-            .post(
+          firstValueFrom(
+            this.http.post(
               `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
               query
             )
-            .toPromise()
+          )
             .then(() => {
               resolve(true);
             })
@@ -404,25 +411,46 @@ export class EmailService {
       const emailDatasets = cloneDeep(
         this.datasetsForm.get('datasets')?.getRawValue()
       ).filter((data: any) => data.resource);
+
       if (emailDatasets.length) {
-        this.http
-          .post(
-            `${this.restService.apiUrl}/notification/validate-dataset`,
-            emailDatasets
-          )
-          .subscribe({
-            next: (data: any) => {
-              resolve({
-                valid: !data?.inValidDataSets?.length,
-                badData: data?.inValidDataSets?.map(
-                  ({ name }: InValidDataSets) => name // need only name to show error
-                ),
-              });
-            },
-            error: (error) => {
-              reject(error);
-            },
+        const inValidBlocks: string[] = [];
+
+        // Check for missing fields using forEach
+        emailDatasets.forEach((dataset: any) => {
+          const fields = dataset.query.fields;
+          if (!fields || fields.length === 0) {
+            // If fields are missing, add the dataset name to the inValidBlocks array
+            inValidBlocks.push(dataset.name);
+          }
+        });
+
+        // Check if there are any missing fields
+        if (inValidBlocks.length === 0) {
+          this.http
+            .post(
+              `${this.restService.apiUrl}/notification/validate-dataset`,
+              emailDatasets
+            )
+            .subscribe({
+              next: (data: any) => {
+                resolve({
+                  valid: !data?.inValidDataSets?.length,
+                  badData: data?.inValidDataSets?.map(
+                    ({ name }: InValidDataSets) => name // only name to show error
+                  ),
+                });
+              },
+              error: (error) => {
+                reject(error);
+              },
+            });
+        } else {
+          // If there are missing fields, resolve with invalid status and the messages
+          resolve({
+            valid: false,
+            badData: inValidBlocks, // Provide specific messages about which fields are missing
           });
+        }
       } else {
         resolve({ valid: true, badData: [] });
       }
@@ -985,6 +1013,7 @@ export class EmailService {
           .then(([headerImg, footerImg, bannerLogo]) => {
             this.emailLayout = {
               subject: this.allLayoutdata?.txtSubject,
+              name: this.emailLayout?.name,
               header: {
                 headerHtml: this.allLayoutdata?.headerHtml,
                 headerLogo: headerImg,
@@ -1320,7 +1349,7 @@ export class EmailService {
       return this.http.post<any>(urlWithConfigId, emailData);
     } else {
       const urlWithConfigId = `${this.restService.apiUrl}/notification/send-email/${configId}`;
-      return this.http.post<any>(urlWithConfigId, emailData);
+      return this.http.get<any>(urlWithConfigId);
     }
   }
 
@@ -1754,12 +1783,12 @@ export class EmailService {
   async isToValidCheck() {
     if (
       this.datasetsForm.getRawValue().emailDistributionList?.to?.inputEmails
-        .length > 0 ||
+        .length >= 0 ||
       (this.datasetsForm.getRawValue().emailDistributionList?.to?.resource !==
         '' &&
         this.datasetsForm.getRawValue().emailDistributionList?.to?.resource !==
           null &&
-        this.filterToEmails?.length > 0)
+        this.filterToEmails?.length >= 0)
     ) {
       this.isToValid = true;
     } else {

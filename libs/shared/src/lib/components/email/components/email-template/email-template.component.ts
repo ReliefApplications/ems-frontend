@@ -25,22 +25,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { emailRegex } from '../../constant';
 import { FieldStore } from '../../models/email.const';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs';
+import { firstValueFrom, takeUntil } from 'rxjs';
 import { cloneDeep } from 'lodash';
 import { QueryBuilderService } from './../../../../services/query-builder/query-builder.service';
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
 import { prettifyLabel } from '../../../../../lib/utils/prettify';
-import {
-  ReferenceDataQueryResponse,
-  ReferenceDatasQueryResponse,
-} from '../../../../../lib/models/reference-data.model';
-import {
-  GET_API_CONFIGURATIONS,
-  GET_REFERENCE_DATA,
-  GET_REFERENCE_DATAS,
-} from '../../graphql/queries';
-import { ApiConfigurationsQueryResponse } from '../../../../../lib/models/api-configuration.model';
+import { DomSanitizer } from '@angular/platform-browser';
 
 /**
  * Email template to create distribution list
@@ -153,7 +144,7 @@ export class EmailTemplateComponent
   /** Loading status. */
   public loading = false;
   /** Query filter Preview HTML */
-  public previewHTML = '';
+  public previewHTML: any = '';
   /** Total matching records */
   public totalMatchingRecords = 0;
   /** Checks if to is valid for distribution list */
@@ -191,8 +182,6 @@ export class EmailTemplateComponent
   public isReferenceData = false;
   /** List of data types */
   public dataTypeList: any = ['Resource', 'Reference Data'];
-  /** List of Reference  types */
-  public refernceData: any = [];
   /** Show NonEmail Fields Alert */
   public nonEmailFieldsAlert = false;
   /** Actual resourceFields data  */
@@ -210,6 +199,7 @@ export class EmailTemplateComponent
    * @param formBuilder Angular form builder
    * @param http Http client
    * @param restService rest service
+   * @param sanitizer html sanitizer
    */
   constructor(
     private fb: FormBuilder,
@@ -220,7 +210,8 @@ export class EmailTemplateComponent
     public queryBuilder: QueryBuilderService,
     public formBuilder: FormBuilder,
     private http: HttpClient,
-    private restService: RestService
+    private restService: RestService,
+    private sanitizer: DomSanitizer
   ) {
     super();
   }
@@ -251,9 +242,6 @@ export class EmailTemplateComponent
       this.selectedResourceId = this.distributionList.controls.resource.value;
       this.segmentForm.get('dataType')?.setValue('Resource');
       this.getResourceData(false);
-    } else if (this.distributionList.controls.reference?.value) {
-      this.segmentForm.get('dataType')?.setValue('Reference Data');
-      this.onDataTypeChange('Reference Data', true);
     }
     this.distributionList.controls.resource.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -449,10 +437,15 @@ export class EmailTemplateComponent
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
       }
       this.currentTabIndex === newIndex ? this.getDataSet('preview') : '';
+      this.showDatasetLimitWarning = fromHTML
+        ? false
+        : this.showDatasetLimitWarning;
     } else if (newIndex >= 0) {
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
         this.emailService.disableSaveAsDraft.next(false);
+      } else {
+        this.emailService.validateNextButton();
       }
     }
     // if (!this.showDatasetLimitWarning) {
@@ -471,15 +464,7 @@ export class EmailTemplateComponent
       this.dlQuery.controls['name'].value !== ''
     ) {
       if (tabName == 'fields') {
-        if (
-          this.distributionList.get('resource').value === null ||
-          this.distributionList.get('resource').value === ''
-        ) {
-          //For refernce data selection needs to skip filter tab
-          this.onTabSelect(2, false);
-        } else {
-          this.onTabSelect(1, false);
-        }
+        this.onTabSelect(1, false);
       }
       if (tabName == 'filter') {
         this.onTabSelect(2, false);
@@ -524,11 +509,13 @@ export class EmailTemplateComponent
               this.emailService.filterToEmails =
                 this.type === 'to' ? [] : this.emailService.filterToEmails;
               // Navigates straight to preview tab if didn't fail before
-
+              if (response.count <= 50) {
+                this.showDatasetLimitWarning = false;
+              }
               this.onTabSelect(2, false);
               this.showPreview = true;
               if (response.count <= 50) {
-                this.showDatasetLimitWarning = false;
+                // this.showDatasetLimitWarning = false;
               } else {
                 this.totalMatchingRecords = response.count;
                 this.showDatasetLimitWarning = true;
@@ -538,7 +525,9 @@ export class EmailTemplateComponent
               this.previewHTML = window.atob(response.tableHtml);
               if (this.tblPreview?.nativeElement) {
                 setTimeout(() => {
-                  this.tblPreview.nativeElement.innerHTML = this.previewHTML;
+                  this.previewHTML = this.sanitizer.bypassSecurityTrustHtml(
+                    this.previewHTML
+                  );
                 }, 0);
               }
 
@@ -603,7 +592,11 @@ export class EmailTemplateComponent
     if (this.selectedFields?.length === 0 || this.showFieldsWarning) {
       this.emailService.disableSaveAndProceed.next(true);
     } else {
-      if (this.emailService.isToValid) {
+      if (
+        this.emailService.isToValid &&
+        this.emailService.distributionListName?.trim()?.length > 0 &&
+        this.emailService.isDLNameDuplicate
+      ) {
         this.emailService.disableSaveAndProceed.next(false);
       }
     }
@@ -721,12 +714,12 @@ export class EmailTemplateComponent
         inputEmails: [],
       };
 
-      this.http
-        .post(
+      firstValueFrom(
+        this.http.post(
           `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
           objPreview
         )
-        .toPromise()
+      )
         .then((response: any) => {
           if (this.type === 'to') {
             this.emailService.filterToEmails =
@@ -1001,194 +994,6 @@ export class EmailTemplateComponent
    */
   closeFieldsWarningMessage(): void {
     this.showFieldsWarning = false;
-  }
-
-  /**
-   * Bind the reference data if reference data checkbox is checked.
-   *
-   * @param event selected Datatype Id
-   * @param isEdit if edit mode, then true else false
-   */
-  onDataTypeChange(event: any, isEdit?: boolean) {
-    // this.resetQuery(this.segmentForm.get('query'));
-    this.availableFields = [];
-    this.selectedFields = [];
-    if (event?.toLowerCase() === 'resource') {
-      this.refernceData = [];
-      this.distributionList.get('reference')?.setValue(null);
-    } else {
-      !isEdit ? this.distributionList.get('resource')?.setValue(null) : '';
-      this.resource = !isEdit ? null : this.resource;
-      this.getRefernceData();
-    }
-  }
-
-  /**
-   * Bind the reference data if reference data checkbox is checked.
-   *
-   * @param refernceId selected refernce Id
-   */
-  getRefernceData(refernceId?: any): void {
-    this.loading = true;
-    this.apollo
-      .watchQuery<ApiConfigurationsQueryResponse>({
-        query: GET_API_CONFIGURATIONS,
-        variables: {
-          first: 10,
-          afterCursor: '',
-          filter: {
-            filters: [],
-            logic: 'and',
-          },
-          sortField: undefined,
-          sortOrder: undefined,
-        },
-      })
-      .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: ({ data }) => {
-          if (
-            data?.apiConfigurations?.edges?.filter(
-              (x) =>
-                x?.node?.status === 'active' &&
-                x?.node?.authType == 'serviceToService'
-            )
-          ) {
-            const configurations = data?.apiConfigurations.edges.filter(
-              (x) =>
-                x.node.status === 'active' &&
-                x.node.authType == 'serviceToService'
-            );
-            this.apollo
-              .watchQuery<ReferenceDatasQueryResponse>({
-                query: GET_REFERENCE_DATAS,
-                variables: {
-                  first: 10,
-                  afterCursor: '',
-                  filter: {
-                    filters: [],
-                    logic: 'and',
-                  },
-                  sortField: undefined,
-                  sortOrder: undefined,
-                },
-              })
-              .valueChanges.pipe(takeUntil(this.destroy$))
-              .subscribe(
-                ({ data }) => {
-                  this.loading = false;
-                  if (data?.referenceDatas) {
-                    const refernceData: any = data.referenceDatas.edges
-                      .map((x: any) => x.node)
-                      .filter((x: any) =>
-                        configurations
-                          .map((x: any) => x?.node?.id)
-                          .includes(x.apiConfiguration?.id)
-                      );
-                    this.refernceData = refernceData;
-                    if (
-                      refernceId ||
-                      this.distributionList.controls.reference?.value
-                    ) {
-                      this.getSelectedReferenceData(
-                        refernceId ??
-                          this.distributionList.controls.reference?.value
-                      );
-                    }
-                  }
-                },
-                (err) => {
-                  this.snackbar.openSnackBar(err.message, { error: true });
-                  this.loading = false;
-                }
-              );
-          }
-        },
-        error: (err) => {
-          this.snackbar.openSnackBar(err.message, { error: true });
-          this.loading = false;
-        },
-      });
-  }
-
-  /**
-   * Bind the reference data if reference data checkbox is checked.
-   *
-   * @param event get selected Id of refernce data
-   * @param fromHTML Method call isfrom UI
-   */
-  getSelectedReferenceData(event: any, fromHTML?: boolean) {
-    // this.resetQuery(this.query.get('query'));
-    if (this.refernceData.filter((x: any) => x.id === event).length > 0) {
-      this.dlQuery
-        ?.get('name')
-        .setValue(
-          this.refernceData.filter((x: any) => x.id === event)?.[0].name
-        );
-    }
-    this.availableFields = [];
-    this.selectedFields = [];
-    if (fromHTML) {
-      const fields = this.dlQuery.get('fields') as FormArray;
-      fields.clear();
-    }
-    this.loading = true;
-    this.apollo
-      .watchQuery<ReferenceDataQueryResponse>({
-        query: GET_REFERENCE_DATA,
-        variables: {
-          id: event,
-        },
-      })
-      .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: ({ data }) => {
-          this.loading = false;
-          if (data?.referenceData?.fields) {
-            const refernceFields: any = [];
-            data.referenceData.fields.forEach((ele: any) => {
-              const eleType = this.getEditorType(ele.type);
-              refernceFields.push({
-                graphQLFieldName: ele.graphQLFieldName,
-                name: ele.name,
-                kind: 'SCALAR',
-                type: eleType,
-                editor: eleType,
-              });
-            });
-            this.availableFields = refernceFields;
-          }
-        },
-        error: (err) => {
-          this.snackbar.openSnackBar(err.message, { error: true });
-          this.loading = false;
-        },
-      });
-  }
-
-  /**
-   * get the editor type name.
-   *
-   * @param type send the type name
-   * @returns type name
-   */
-  getEditorType(type: any) {
-    switch (type) {
-      case 'string':
-        return 'text';
-      case 'integer':
-        return 'numeric';
-      case 'number':
-        return 'numeric';
-      case 'boolean':
-        return 'boolean';
-      case 'object':
-        return '';
-      case 'array':
-        return 'dropdown';
-      default:
-        return 'text';
-    }
   }
 
   /**

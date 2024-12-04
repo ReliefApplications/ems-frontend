@@ -519,7 +519,11 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                             distributionList,
                             emailData,
                             this.metaResourceData,
-                            options.bodyFields
+                            options.bodyFields,
+                            options.navigateToPage &&
+                              this.widget.settings.actions.navigateToPage
+                              ? this.widget.settings.actions.navigateSettings
+                              : undefined
                           );
                           this.status = {
                             error: false,
