@@ -308,11 +308,14 @@ export class EmailTemplateComponent
   public async getUserTableFields() {
     try {
       // Fetch the user table fields from the getFilterData
+      this.loading = true;
       const data = await this.referenceData.getFilterData('Users');
       if (data) {
         this.userTableFields = data;
+        this.loading = false;
       }
     } catch (error) {
+      this.loading = false;
       console.error('Error fetching user table fields:', error);
     }
   }
@@ -478,11 +481,13 @@ export class EmailTemplateComponent
    * To get data set for the applied filters.
    *
    * @param tabName - The name of the tab for which to get the data set.
+   * @param fromCommomService = It is common service save or ot
    */
-  async getDataSet(tabName?: any): Promise<void> {
+  async getDataSet(tabName?: any, fromCommomService?: any): Promise<void> {
     if (
-      this.dlQuery.controls['name'].value !== null &&
-      this.dlQuery.controls['name'].value !== ''
+      (this.dlQuery.controls['name'].value !== null &&
+        this.dlQuery.controls['name'].value !== '') ||
+      fromCommomService
     ) {
       if (tabName == 'fields') {
         this.onTabSelect(1, false);
@@ -515,6 +520,7 @@ export class EmailTemplateComponent
             pageSize: 10,
             template: '',
           },
+          commonServiceFilter: this.dlCommonQuery?.getRawValue()?.filter || [],
         };
 
         this.previewHTML = '';
@@ -1064,7 +1070,7 @@ export class EmailTemplateComponent
    *
    */
   getCommonServiceDataSet() {
-    console.log('Test');
+    this.getDataSet('preview', true);
   }
 
   /**
