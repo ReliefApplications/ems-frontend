@@ -6,8 +6,8 @@ import { Environment } from './environment.type';
 const authConfig: AuthConfig = {
   issuer:
     'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590/v2.0',
-  redirectUri: 'https://ems-safe-dev.who.int/widgets/',
-  postLogoutRedirectUri: 'https://ems-safe-dev.who.int/widgets/auth/',
+  redirectUri: 'https://hems-dev.who.int/widgets/',
+  postLogoutRedirectUri: 'https://hems-dev.who.int/widgets/auth/',
   clientId: '021202ac-d23b-4757-83e3-f6ecde12266b',
   scope:
     'openid profile email offline_access api://75deca06-ae07-4765-85c0-23e719062833/access_as_user',
@@ -21,10 +21,10 @@ const authConfig: AuthConfig = {
  */
 export const environment: Environment = {
   ...sharedAzureEnvironment,
-  apiUrl: 'https://ems-safe-dev.who.int/api',
-  subscriptionApiUrl: 'wss://ems-safe-dev.who.int/api',
-  frontOfficeUri: 'https://ems-safe-dev.who.int/',
-  backOfficeUri: 'https://ems-safe-dev.who.int/backoffice/',
+  apiUrl: 'https://hems-dev.who.int/api',
+  subscriptionApiUrl: 'wss://hems-dev.who.int/api',
+  frontOfficeUri: 'https://hems-dev.who.int/apps/',
+  backOfficeUri: 'https://hems-dev.who.int/backoffice/',
   authConfig,
   tinymceBaseUrl:
     'https://whoemssafedsta03.blob.core.windows.net/shared/dev/tinymce',
