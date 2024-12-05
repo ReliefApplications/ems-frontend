@@ -364,7 +364,7 @@ export class FilterRowComponent
     selectedField.options =
       data?.value.map((x: any) => ({
         text: x?.Name,
-        value: x?.Id,
+        value: x?.Name,
       })) || [];
   }
 }

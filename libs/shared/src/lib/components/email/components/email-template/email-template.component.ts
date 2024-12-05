@@ -30,6 +30,7 @@ import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
 import { prettifyLabel } from '../../../../../lib/utils/prettify';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ReferenceDataService } from 'libs/shared/src/lib/services/reference-data/reference-data.service';
 
 /**
  * Email template to create distribution list
@@ -206,7 +207,14 @@ export class EmailTemplateComponent
   /** Declare Dropdown Userfields property */
   userTableFields: string[] = [];
   /** Declare Dropdown fields property */
-  // fields: { key: string; la: string }[] = [];
+  public fields = [
+    { key: 'Application', label: 'Application' },
+    { key: 'PermissionAccessType', label: 'Access Type' },
+    { key: 'SystemRole', label: ' Role' },
+    { key: 'SystemPosition', label: 'Position' },
+    { key: 'Country', label: 'Country' },
+    { key: 'Region', label: 'Region' },
+  ];
 
   /**
    * Composite filter group.
@@ -221,6 +229,8 @@ export class EmailTemplateComponent
    * @param http Http client
    * @param restService rest service
    * @param sanitizer html sanitizer
+   * @param referenceData
+   * @param referenceData
    */
   constructor(
     private fb: FormBuilder,
@@ -232,7 +242,8 @@ export class EmailTemplateComponent
     public formBuilder: FormBuilder,
     private http: HttpClient,
     private restService: RestService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private referenceData: ReferenceDataService
   ) {
     super();
   }
@@ -308,14 +319,12 @@ export class EmailTemplateComponent
   public async getUserTableFields() {
     try {
       // Fetch the user table fields from the getFilterData
-      this.loading = true;
       const data = await this.referenceData.getFilterData('Users');
       if (data) {
         this.userTableFields = data;
         this.loading = false;
       }
     } catch (error) {
-      this.loading = false;
       console.error('Error fetching user table fields:', error);
     }
   }
@@ -498,6 +507,22 @@ export class EmailTemplateComponent
       // const allPreviewData: any = [];
       if (tabName == 'preview') {
         this.loading = true;
+        let commonServiceData: any = [];
+        if (this.dlCommonQuery?.getRawValue()) {
+          commonServiceData = Object.assign(
+            this.dlCommonQuery?.getRawValue(),
+            {}
+          );
+          commonServiceData?.filter?.filters?.forEach((ele: any) => {
+            if (
+              this.fields.filter((x: any) => x.key === ele.field).length > 0
+            ) {
+              ele.field = this.fields.filter(
+                (x: any) => x.key === ele.field
+              )?.[0].label;
+            }
+          });
+        }
 
         let objPreview: any = {};
         this.emailService.convertFields(
@@ -520,7 +545,7 @@ export class EmailTemplateComponent
             pageSize: 10,
             template: '',
           },
-          commonServiceFilter: this.dlCommonQuery?.getRawValue()?.filter || [],
+          commonServiceFilter: commonServiceData || [],
         };
 
         this.previewHTML = '';
@@ -528,7 +553,7 @@ export class EmailTemplateComponent
 
         this.http
           .post(
-            `${this.restService.apiUrl}/notification/preview-dataset`,
+            `${this.restService.apiUrl}/notification/azure/preview-dataset`,
             objPreview
           )
           .subscribe(
@@ -734,6 +759,22 @@ export class EmailTemplateComponent
             ?.getRawValue()
         ),
       };
+
+      let commonServiceData: any = [];
+      if (this.dlCommonQuery?.getRawValue()) {
+        commonServiceData = Object.assign(
+          this.dlCommonQuery?.getRawValue(),
+          {}
+        );
+        commonServiceData?.filter?.filters?.forEach((ele: any) => {
+          if (this.fields.filter((x: any) => x.key === ele.field).length > 0) {
+            ele.field = this.fields.filter(
+              (x: any) => x.key === ele.field
+            )?.[0].label;
+          }
+        });
+      }
+
       objPreview.emailDistributionList.to = {
         resource: this.resource?.id ?? '',
         reference: this.distributionList?.get('reference')?.value ?? '',
@@ -743,11 +784,12 @@ export class EmailTemplateComponent
           fields: this.distributionList.getRawValue().query?.fields,
         },
         inputEmails: [],
+        commonServiceFilter: commonServiceData || [],
       };
 
       firstValueFrom(
         this.http.post(
-          `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+          `${this.restService.apiUrl}/notification/azure/preview-distribution-lists/`,
           objPreview
         )
       )
@@ -1079,16 +1121,8 @@ export class EmailTemplateComponent
    */
   async setCommonServiceFields() {
     await this.getUserTableFields();
-    const fields = [
-      { key: 'Application', label: 'Application' },
-      { key: 'PermissionAccessType', label: ' Access Type' },
-      { key: 'SystemRole', label: ' Role' },
-      { key: ' SystemPosition', label: 'Position' },
-      { key: ' Country', label: 'Country' },
-      { key: ' Region', label: 'Region' },
-    ];
 
-    fields?.forEach((ele: any) => {
+    this.fields?.forEach((ele: any) => {
       this.commonServiceFields.push({
         graphQLFieldName: ele,
         name: ele.key,

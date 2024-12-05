@@ -125,6 +125,9 @@ export class SelectDistributionComponent
     this.enableForm('to');
     this.enableForm('cc');
     this.enableForm('bcc');
+    this.enableForm('to');
+    this.enableForm('cc');
+    this.enableForm('bcc');
     if (
       this.emailService?.editId &&
       this.emailService?.emailDistributionList?.id
