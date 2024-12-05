@@ -1,4 +1,5 @@
-import { Apollo } from 'apollo-angular';
+import { Dialog } from '@angular/cdk/dialog';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
   ElementRef,
@@ -9,25 +10,25 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { Dialog } from '@angular/cdk/dialog';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
+import { isNil } from 'lodash';
+import { BehaviorSubject, takeUntil } from 'rxjs';
 import { SurveyModel } from 'survey-core';
-import { ADD_RECORD, EDIT_RECORD } from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import {
   AddRecordMutationResponse,
   EditRecordMutationResponse,
   Record as RecordModel,
 } from '../../models/record.model';
-import { BehaviorSubject, takeUntil } from 'rxjs';
-import addCustomFunctions from '../../utils/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
-import { RecordHistoryComponent } from '../record-history/record-history.component';
-import { TranslateService } from '@ngx-translate/core';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
-import { SnackbarService, UILayoutService } from '@oort-front/ui';
-import { isNil } from 'lodash';
+import addCustomFunctions from '../../utils/custom-functions';
+import { RecordHistoryComponent } from '../record-history/record-history.component';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { ADD_RECORD, EDIT_RECORD } from './graphql/mutations';
 
 /**
  * This component is used to display forms
@@ -273,11 +274,11 @@ export class FormComponent
       );
     } catch (errors) {
       /** If there is any upload errors, save them for display */
-      const uploadErrors = (errors as { question: string; file: File }[]).map(
-        (error) => {
-          return `${error.question}: ${error.file.name}`;
-        }
-      );
+      const uploadErrors = (
+        errors as { question: string; file: File; error: HttpErrorResponse }[]
+      ).map((error) => {
+        return `- Error ${error.error.status}, ${error.error.message} for ${error.question}: ${error.file.name}`;
+      });
       this.snackBar.openSnackBar(
         this.translate.instant('models.form.notifications.savingFailed') +
           (!isNil(uploadErrors) ? '\n' + uploadErrors?.join('\n') : ''),

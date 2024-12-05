@@ -1,4 +1,5 @@
 import { DialogRef } from '@angular/cdk/dialog';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
@@ -125,7 +126,11 @@ export class FormHelpersService {
 
     const data = survey.data;
     const questionsToUpload = Object.keys(temporaryFilesStorage);
-    const failedFilesToUpload: { question: string; file: File }[] = [];
+    const failedFilesToUpload: {
+      question: string;
+      file: File;
+      error: HttpErrorResponse;
+    }[] = [];
     // Is using document management system
     const useDocumentManagement = !!this.environment.csApiUrl;
     for (const name of questionsToUpload) {
@@ -176,8 +181,8 @@ export class FormHelpersService {
                     });
                   });
                 }
-              } catch (error) {
-                failedFilesToUpload.push({ question: name, file });
+              } catch (error: any) {
+                failedFilesToUpload.push({ question: name, file, error });
               }
             }
           } else {

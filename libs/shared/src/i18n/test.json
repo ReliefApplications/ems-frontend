@@ -345,6 +345,11 @@
 			},
 			"fetchingGroups": "******",
 			"file": {
+				"csapi": {
+					"invalid": "******",
+					"notFound": "******",
+					"unauthorized": "******"
+				},
 				"download": {
 					"error": "******",
 					"ongoing": "******",

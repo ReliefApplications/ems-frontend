@@ -1,23 +1,23 @@
 import { DOCUMENT } from '@angular/common';
-import { HttpHeaders } from '@angular/common/http';
+import { HttpHeaders, HttpStatusCode } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import { InMemoryCache } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
+import { HttpLink } from 'apollo-angular/http';
 import { isNil, set } from 'lodash';
+import { catchError, firstValueFrom, throwError } from 'rxjs';
 import { Question } from 'survey-core';
 import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { RestService } from '../rest/rest.service';
-import { Apollo } from 'apollo-angular';
 import {
   DriveQueryResponse,
   GET_DRIVE_ID,
   GET_OCCURRENCE_BY_ID,
   OccurrenceQueryResponse,
 } from './graphql/queries';
-import { firstValueFrom } from 'rxjs';
-import { InMemoryCache } from '@apollo/client';
-import { HttpLink } from 'apollo-angular/http';
-import { setContext } from '@apollo/client/link/context';
 
 /**
  * Available properties from the CS API Documentation
@@ -160,6 +160,11 @@ export class DocumentManagementService {
     const url = `${this.environment.csApiUrl}/documents/drives/${file.content.driveId}/items/${file.content.itemId}/content`;
     this.restService
       .get(url, { ...options, responseType: 'blob', headers })
+      .pipe(
+        catchError((err) => {
+          return throwError(() => this.buildCSApiError(err));
+        })
+      )
       .subscribe({
         next: (res) => {
           const blob = new Blob([res]);
@@ -170,13 +175,12 @@ export class DocumentManagementService {
           snackBarSpinner.instance.loading = false;
           snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
-        error: () => {
-          snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.file.download.error'
+        error: async (error) => {
+          snackBarRef.instance.dismiss();
+          this.snackBar.openSnackBar(
+            `Error ${error.status}, ${error.message}:\n${file.name}`,
+            { error: true }
           );
-          snackBarSpinner.instance.loading = false;
-          snackBarSpinner.instance.error = true;
-          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
         },
       });
   }
@@ -195,6 +199,30 @@ export class DocumentManagementService {
     link.click();
     URL.revokeObjectURL(link.href);
     link.remove();
+  }
+
+  /**
+   * Update the given error instance from the eis-docs-interceptor to be displayed with correct message based on it's status
+   *
+   * @param error Error formatted from the eis-docs-interceptor file
+   * @returns Error instance with correct messages per status, or default if different status
+   */
+  private buildCSApiError(error: any) {
+    const parseError = JSON.parse(error.message || '{}');
+    if (parseError.status === HttpStatusCode.Unauthorized) {
+      parseError.message = this.translate.instant(
+        'common.notifications.file.csapi.unauthorized'
+      );
+    } else if (parseError.status === HttpStatusCode.NotFound) {
+      parseError.message = this.translate.instant(
+        'common.notifications.file.csapi.notFound'
+      );
+    } else if (parseError.status === HttpStatusCode.BadRequest) {
+      parseError.message = this.translate.instant(
+        'common.notifications.file.csapi.invalid'
+      );
+    }
+    return parseError;
   }
 
   /**
@@ -270,6 +298,11 @@ export class DocumentManagementService {
             headers,
           }
         )
+        .pipe(
+          catchError((err) => {
+            return throwError(() => this.buildCSApiError(err));
+          })
+        )
         .subscribe({
           next: (data) => {
             const { itemId, driveId } = data;
@@ -283,14 +316,9 @@ export class DocumentManagementService {
               itemId,
             });
           },
-          error: () => {
-            snackBarSpinner.instance.message = this.translate.instant(
-              'common.notifications.file.upload.error'
-            );
-            snackBarSpinner.instance.loading = false;
-            snackBarSpinner.instance.error = true;
-            snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-            reject(null);
+          error: (error) => {
+            snackBarRef.instance.dismiss();
+            reject(error);
           },
         });
     });

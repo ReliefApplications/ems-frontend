@@ -345,6 +345,11 @@
 			},
 			"fetchingGroups": "Fetching groups from service...",
 			"file": {
+				"csapi": {
+					"invalid": "File not valid",
+					"notFound": "File not found",
+					"unauthorized": "Unauthorized"
+				},
 				"download": {
 					"error": "Something went wrong during the download",
 					"ongoing": "Your file export is ongoing. You will receive an email once ready.",

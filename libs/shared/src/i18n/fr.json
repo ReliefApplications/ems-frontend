@@ -345,6 +345,11 @@
 			},
 			"fetchingGroups": "Fetching groups from service...",
 			"file": {
+				"csapi": {
+					"invalid": "**************************",
+					"notFound": "**************************",
+					"unauthorized": "**************************"
+				},
 				"download": {
 					"error": "Un problème est survenu lors du téléchargement",
 					"ongoing": "Votre téléchargement est en cours. Vous recevrez bientôt un e-mail contenant votre fichier.",
