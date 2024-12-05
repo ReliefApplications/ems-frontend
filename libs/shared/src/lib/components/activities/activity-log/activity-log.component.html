@@ -32,7 +32,7 @@
   </ui-button>
 </div>
 <!-- Table container -->
-<div class="h-[calc(100%-100px)] flex flex-col">
+<div class="h-[calc(100vh-300px)] flex flex-col">
   <div class="overflow-x-hidden h-full">
     <!-- Loading indicator -->
     <ng-container *ngIf="loading; else dataTmpl">
@@ -80,6 +80,14 @@
             </th>
             <td uiCell *cdkCellDef="let activity">
               {{ activity.attributes?.[attribute.value] }}
+            </td>
+          </ng-container>
+          <ng-container cdkColumnDef="count">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              <span>{{'components.application.activities.count' | translate}}</span>
+            </th>
+            <td uiCell *cdkCellDef="let activity">
+              {{ activity.count }}
             </td>
           </ng-container>
           <ng-container cdkColumnDef="url">

@@ -2,8 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivityLogComponent } from './activity-log.component';
 import { ActivityLogRoutingModule } from './activity-log-routing.module';
-import { ActivityLogModule as ApplicationActivityLogModule } from '@oort-front/shared';
-import { SkeletonTableModule } from '@oort-front/shared';
+import { ActivityModule, SkeletonTableModule } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -16,7 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ActivityLogRoutingModule,
     SkeletonTableModule,
     TranslateModule,
-    ApplicationActivityLogModule,
+    ActivityModule,
   ],
   exports: [ActivityLogComponent],
 })

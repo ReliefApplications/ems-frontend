@@ -26,3 +26,27 @@ export const LIST_ACTIVITIES = gql`
     }
   }
 `;
+
+/** GraphQL query to group activities by url */
+export const LIST_ACTIVITIES_BY_URL = gql`
+  query ListActivitiesByUrl($first: Int, $afterCursor: ID, $filter: JSON) {
+    activityLogsByUrl(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+    ) {
+      edges {
+        node {
+          url
+          count
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;

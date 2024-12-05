@@ -1,5 +1,5 @@
-import { DownloadService } from './../../services/download/download.service';
-import { Component, OnInit } from '@angular/core';
+import { DownloadService } from '../../../services/download/download.service';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client/core/types';
 import { handleTablePageEvent, UIPageChangeEvent } from '@oort-front/ui';
@@ -7,15 +7,16 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { takeUntil } from 'rxjs';
 import {
   ActivityLog,
+  ActivityLogsActivityLogByUrlNodesQueryResponse,
   ActivityLogsActivityLogNodesQueryResponse,
-} from '../../models/activity-log.model';
-import { RestService } from '../../services/rest/rest.service';
+} from '../../../models/activity-log.model';
+import { RestService } from '../../../services/rest/rest.service';
 import {
   getCachedValues,
   updateQueryUniqueValues,
-} from '../../utils/public-api';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { LIST_ACTIVITIES } from './graphql/queries';
+} from '../../../utils/public-api';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { LIST_ACTIVITIES } from '../graphql/queries';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 100;
@@ -32,12 +33,23 @@ export class ActivityLogComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** query used to fetch data */
+  @Input() query = LIST_ACTIVITIES;
   /** List of activities to display. */
   public activitiesLogs: ActivityLog[] = [];
   /** Columns to display in the table. */
   public displayedColumns: string[] = [];
   /** Attributes */
   public attributes: { text: string; value: string }[] = [];
+  /** Column if everything is fine */
+  @Input() correctColumns: string[] = [
+    'userId',
+    'username',
+    ...this.attributes.map((x) => x.value),
+    'url',
+  ];
+  /** Columns in case of error */
+  @Input() errorColumns: string[] = ['userId', 'username', 'url'];
   /** Loading flag */
   public loading = false;
   /** Filter form group */
@@ -60,7 +72,10 @@ export class ActivityLogComponent
   /** Cached activity logs */
   public cachedActivities: ActivityLog[] = [];
   /** Activity logs query */
-  private activityLogsQuery!: QueryRef<ActivityLogsActivityLogNodesQueryResponse>;
+  private activityLogsQuery!: QueryRef<
+    | ActivityLogsActivityLogNodesQueryResponse
+    | ActivityLogsActivityLogByUrlNodesQueryResponse
+  >;
 
   /**
    * Shared activity log component.
@@ -84,15 +99,17 @@ export class ActivityLogComponent
    */
   ngOnInit(): void {
     // Use Apollo service to watch the LIST_ACTIVITIES query
-    this.activityLogsQuery =
-      this.apollo.watchQuery<ActivityLogsActivityLogNodesQueryResponse>({
-        query: LIST_ACTIVITIES,
-        variables: {
-          first: DEFAULT_PAGE_SIZE,
-          afterCursor: null,
-          filter: this.filter,
-        },
-      });
+    this.activityLogsQuery = this.apollo.watchQuery<
+      | ActivityLogsActivityLogNodesQueryResponse
+      | ActivityLogsActivityLogByUrlNodesQueryResponse
+    >({
+      query: this.query,
+      variables: {
+        first: DEFAULT_PAGE_SIZE,
+        afterCursor: null,
+        filter: this.filter,
+      },
+    });
     this.getAttributes();
     this.setValueChangeListeners();
   }
@@ -107,15 +124,10 @@ export class ActivityLogComponent
       .subscribe({
         next: (attributes: any) => {
           this.attributes = attributes;
-          this.displayedColumns = [
-            'userId',
-            'username',
-            ...this.attributes.map((x) => x.value),
-            'url',
-          ];
+          this.displayedColumns = this.correctColumns;
         },
         error: () => {
-          this.displayedColumns = ['userId', 'username', 'url'];
+          this.displayedColumns = this.errorColumns;
         },
       });
   }
@@ -128,7 +140,10 @@ export class ActivityLogComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(
         (
-          results: ApolloQueryResult<ActivityLogsActivityLogNodesQueryResponse>
+          results: ApolloQueryResult<
+            | ActivityLogsActivityLogNodesQueryResponse
+            | ActivityLogsActivityLogByUrlNodesQueryResponse
+          >
         ) => {
           this.updateValues(
             results.errors?.length ? { activityLogs: [] as any } : results.data
@@ -200,8 +215,13 @@ export class ActivityLogComponent
       afterCursor: refetch ? null : this.pageInfo.endCursor,
       filter: this.filter,
     };
-    const cachedValues: ActivityLogsActivityLogNodesQueryResponse =
-      getCachedValues(this.apollo.client, LIST_ACTIVITIES, variables);
+    const cachedValues:
+      | ActivityLogsActivityLogNodesQueryResponse
+      | ActivityLogsActivityLogByUrlNodesQueryResponse = getCachedValues(
+      this.apollo.client,
+      this.query,
+      variables
+    );
     if (refetch) {
       this.cachedActivities = [];
       this.pageInfo.pageIndex = 0;
@@ -220,7 +240,10 @@ export class ActivityLogComponent
           })
           .then(
             (
-              results: ApolloQueryResult<ActivityLogsActivityLogNodesQueryResponse>
+              results: ApolloQueryResult<
+                | ActivityLogsActivityLogNodesQueryResponse
+                | ActivityLogsActivityLogByUrlNodesQueryResponse
+              >
             ) => {
               this.updateValues(results.data);
             }
@@ -234,14 +257,23 @@ export class ActivityLogComponent
    *
    * @param data New values to update forms
    */
-  private updateValues(data: ActivityLogsActivityLogNodesQueryResponse): void {
-    const mappedValues = data.activityLogs.edges.map((x) => x.node);
+  private updateValues(
+    data:
+      | ActivityLogsActivityLogNodesQueryResponse
+      | ActivityLogsActivityLogByUrlNodesQueryResponse
+  ): void {
+    const activityLogs =
+      'activityLogs' in data ? data.activityLogs : data.activityLogsByUrl;
+    const key = 'activityLogs' in data ? undefined : 'url';
+    const mappedValues = activityLogs.edges.map((x) => x.node);
     this.cachedActivities = updateQueryUniqueValues(
       this.cachedActivities,
-      mappedValues
+      mappedValues,
+      key
     );
-    this.pageInfo.length = data.activityLogs.totalCount;
-    this.pageInfo.endCursor = data.activityLogs.pageInfo.endCursor;
+
+    this.pageInfo.length = activityLogs.totalCount;
+    this.pageInfo.endCursor = activityLogs.pageInfo.endCursor;
     this.activitiesLogs = this.cachedActivities.slice(
       this.pageInfo.pageSize * this.pageInfo.pageIndex,
       this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)

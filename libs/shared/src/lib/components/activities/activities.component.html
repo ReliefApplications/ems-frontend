@@ -1,0 +1,18 @@
+<ui-tabs class>
+  <ui-tab>
+    <ng-container ngProjectAs="label">{{
+      'components.application.activities.recentHits' | translate
+    }}</ng-container>
+    <shared-activity-log class="h-full"></shared-activity-log>
+  </ui-tab>
+  <ui-tab>
+    <ng-container ngProjectAs="label">{{
+      'components.application.activities.topPages' | translate
+    }}</ng-container>
+    <shared-activity-log
+      [correctColumns]="['count', 'url']"
+      [errorColumns]="['count', 'url']"
+      [query]="topPagesQuery"
+    ></shared-activity-log>
+  </ui-tab>
+</ui-tabs>

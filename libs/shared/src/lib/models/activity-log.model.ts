@@ -29,3 +29,8 @@ export interface ActivityLog {
 export interface ActivityLogsActivityLogNodesQueryResponse {
   activityLogs: GraphqlNodesResponse<ActivityLog>;
 }
+
+/** Model for activity logs by url application nodes graphql query response*/
+export interface ActivityLogsActivityLogByUrlNodesQueryResponse {
+  activityLogsByUrl: GraphqlNodesResponse<ActivityLog>;
+}

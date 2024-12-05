@@ -629,11 +629,14 @@
 		},
 		"application": {
 			"activities": {
+				"count": "Compte",
 				"downloadXlsx": "Download XLSX",
 				"empty": "Aucune activité n'est disponible.",
 				"few": "Activités",
 				"metadata": "Métadonnées",
 				"one": "Activité",
+				"recentHits": "Derniers résultats",
+				"topPages": "Pages les plus consultées",
 				"url": "URL",
 				"userId": "Identifiant de l'utilisateur"
 			},

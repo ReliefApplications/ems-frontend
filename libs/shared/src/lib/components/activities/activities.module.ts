@@ -9,14 +9,16 @@ import {
   IconModule,
   PaginatorModule,
   TableModule,
+  TabsModule,
 } from '@oort-front/ui';
 import { SkeletonTableModule } from '../skeleton/skeleton-table/public-api';
 import { EmptyModule } from '../ui/empty/empty.module';
-import { ActivityLogComponent } from './activity-log.component';
+import { ActivityLogComponent } from './activity-log/activity-log.component';
+import { ActivitiesComponent } from './activities.component';
 
 /** Module for components related to templates */
 @NgModule({
-  declarations: [ActivityLogComponent],
+  declarations: [ActivityLogComponent, ActivitiesComponent],
   imports: [
     CommonModule,
     TableModule,
@@ -29,7 +31,8 @@ import { ActivityLogComponent } from './activity-log.component';
     SkeletonTableModule,
     PaginatorModule,
     EmptyModule,
+    TabsModule,
   ],
-  exports: [ActivityLogComponent],
+  exports: [ActivityLogComponent, ActivitiesComponent],
 })
-export class ActivityLogModule {}
+export class ActivityModule {}

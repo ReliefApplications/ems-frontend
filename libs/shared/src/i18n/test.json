@@ -629,11 +629,14 @@
 		},
 		"application": {
 			"activities": {
+				"count": "******",
 				"downloadXlsx": "******",
 				"empty": "******",
 				"few": "******",
 				"metadata": "******",
 				"one": "******",
+				"recentHits": "******",
+				"topPages": "******",
 				"url": "******",
 				"userId": "******"
 			},
