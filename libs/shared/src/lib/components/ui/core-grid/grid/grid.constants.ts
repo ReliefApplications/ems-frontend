@@ -3,13 +3,14 @@ import {
   SelectableSettings,
 } from '@progress/kendo-angular-grid';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
+import { QuestionType } from '../../../../services/form-helper/form-helper.service';
 
 /** Types of field that are multi-select */
 export const MULTISELECT_TYPES: string[] = [
-  'checkbox',
-  'tagbox',
-  'owner',
-  'users',
+  QuestionType.CHECKBOX,
+  QuestionType.TAGBOX,
+  QuestionType.OWNER,
+  QuestionType.USERS,
 ];
 
 /** Settings for pager */

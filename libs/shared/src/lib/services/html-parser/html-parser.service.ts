@@ -1,3 +1,4 @@
+import { InputType, QuestionType } from './../form-helper/form-helper.service';
 import { inject, Injectable } from '@angular/core';
 import { ceil, floor, get, isArray, isNil, max, min, round } from 'lodash';
 import { Page } from '../../models/page.model';
@@ -466,7 +467,7 @@ export class HtmlParserService {
           });
 
           switch (field.type) {
-            case 'url': {
+            case InputType.URL: {
               // Then, follow same logic than for other fields
               convertedValue = `<a href="${value}" style="${style}" target="_blank">${this.applyLayoutFormat(
                 value,
@@ -474,14 +475,14 @@ export class HtmlParserService {
               )}</a>`;
               break;
             }
-            case 'email':
+            case InputType.EMAIL:
               convertedValue = `<a href="mailto:${value}"
                 style="${style}"
                 >
                 ${this.applyLayoutFormat(value, field)}
                 </a>`;
               break;
-            case 'date':
+            case InputType.DATE:
               convertedValue =
                 `<span style='${style}'>` +
                 this.applyLayoutFormat(
@@ -490,7 +491,7 @@ export class HtmlParserService {
                 ) +
                 '</span>';
               break;
-            case 'datetime':
+            case InputType.DATETIME:
               const date = new Date(value);
               const hour =
                 date.getHours() >= 12 ? date.getHours() - 12 : date.getHours();
@@ -514,14 +515,14 @@ export class HtmlParserService {
                 ) +
                 '</span>';
               break;
-            case 'boolean':
+            case QuestionType.BOOLEAN:
               const checked = value ? 'checked' : '';
               convertedValue =
                 '<input type="checkbox" style="margin: 0; height: 16px; width: 16px;" ' +
                 checked +
                 ' disabled></input>';
               break;
-            case 'file':
+            case QuestionType.FILE:
               convertedValue = '';
               const fileArray = get(fieldsValue, field.name);
               if (isArray(fileArray)) {
@@ -550,17 +551,17 @@ export class HtmlParserService {
                 }
               }
               break;
-            case 'owner':
-            case 'users':
-            case 'resources': {
+            case QuestionType.OWNER:
+            case QuestionType.USERS:
+            case QuestionType.RESOURCES: {
               const length = value ? value.length : 0;
               convertedValue = `<span style='${style}'>${length} item${
                 length > 1 ? 's' : ''
               }</span>`;
               break;
             }
-            case 'matrixdropdown':
-            case 'matrixdynamic': {
+            case QuestionType.MATRIX_DROPDOWN:
+            case QuestionType.MATRIX_DYNAMIC: {
               convertedValue = '<table><tr><th></th>';
               const rows =
                 field.rows ??
@@ -592,7 +593,7 @@ export class HtmlParserService {
               convertedValue += '</table>';
               break;
             }
-            case 'matrix': {
+            case QuestionType.MATRIX: {
               convertedValue = `<span style='${style}'>`;
               const rows = field.rows || [];
               for (const row of rows) {

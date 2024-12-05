@@ -1,3 +1,4 @@
+import { QuestionType } from './../services/form-helper/form-helper.service';
 import { isArray, isEqual, isNil } from 'lodash';
 import { Record } from '../models/record.model';
 import { AuthService } from '../services/auth/auth.service';
@@ -117,7 +118,7 @@ const addCustomFunctions = (
               const value = matrix.value?.[row]?.[col.name];
               let formattedValue;
               switch (colType) {
-                case 'boolean':
+                case QuestionType.BOOLEAN:
                   // Get the label of the boolean value
                   formattedValue = isNil(value)
                     ? ''
@@ -125,10 +126,10 @@ const addCustomFunctions = (
                     ? col.labelTrue
                     : col.labelFalse;
                   break;
-                case 'dropdown':
+                case QuestionType.DROPDOWN:
                   formattedValue = value?.text || value?.value;
                   break;
-                case 'file':
+                case QuestionType.FILE:
                   if (isArray(value))
                     formattedValue = value.map((v) => v.name).join(', ');
                   break;

@@ -1,3 +1,4 @@
+import { QuestionType } from './../../services/form-helper/form-helper.service';
 import { Dialog } from '@angular/cdk/dialog';
 import { Injector, NgZone } from '@angular/core';
 import { FormControl, UntypedFormGroup } from '@angular/forms';
@@ -200,7 +201,7 @@ export const init = (
     category: 'Custom Questions',
     questionJSON: {
       name: 'resource',
-      type: 'dropdown',
+      type: QuestionType.DROPDOWN,
       optionsCaption: 'Select a record...',
       choicesOrder: 'asc',
       choices: [] as any[],
@@ -372,7 +373,7 @@ export const init = (
 
       Serializer.addProperty('resource', {
         category: 'Dynamic filtering',
-        type: 'boolean',
+        type: QuestionType.BOOLEAN,
         name: 'autoSelectFirstOption',
         displayName:
           'Automatically selects the first option when only one option is available',
@@ -390,13 +391,13 @@ export const init = (
 
       serializer.addProperty('resource', {
         name: 'afterRecordCreation',
-        // type: 'expression',
+        // type: QuestionType.EXPRESSION,
         category: 'logic',
       });
 
       serializer.addProperty('resource', {
         name: 'afterRecordSelection',
-        // type: 'expression',
+        // type: QuestionType.EXPRESSION,
         category: 'logic',
       });
 

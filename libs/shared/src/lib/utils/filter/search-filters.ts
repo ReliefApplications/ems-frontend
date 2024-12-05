@@ -1,3 +1,8 @@
+import {
+  InputType,
+  QuestionType,
+} from '../../services/form-helper/form-helper.service';
+
 /**
  * Returns the filters formatted to accommodate the searched string
  *
@@ -23,14 +28,14 @@ export const searchFilters = (
     // string
     if (
       [
-        'text',
-        'color',
-        'email',
-        'tel',
-        'url',
-        'comment',
-        'radiogroup',
-        'dropdown',
+        QuestionType.TEXT,
+        InputType.COLOR,
+        InputType.EMAIL,
+        InputType.TEL,
+        InputType.URL,
+        QuestionType.COMMENT,
+        QuestionType.RADIO_GROUP,
+        QuestionType.DROPDOWN,
       ].includes(field?.type)
     )
       filters.push({

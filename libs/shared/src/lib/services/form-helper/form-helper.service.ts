@@ -26,24 +26,47 @@ import {
 
 /** types for the surveyjs question types */
 export enum QuestionType {
+  BOOLEAN = 'boolean',
   CHECKBOX = 'checkbox',
   COMMENT = 'comment',
+  EDITOR = 'editor',
+  EXPRESSION = 'expression',
   DROPDOWN = 'dropdown',
   FILE = 'file',
+  GEOSPATIAL = 'geospatial',
   HTML = 'html',
+  IMAGE = 'image',
   MATRIX = 'matrix',
   MATRIX_DROPDOWN = 'matrixdropdown',
   MATRIX_DYNAMIC = 'matrixdynamic',
   MULTIPLE_TEXT = 'multipletext',
   OWNER = 'owner',
+  PANEL = 'panel',
+  PANEL_DYNAMIC = 'paneldynamic',
   RADIO_GROUP = 'radiogroup',
   RESOURCES = 'resources',
   RESOURCE = 'resource',
+  SELECT = 'select',
   TAGBOX = 'tagbox',
   TEXT = 'text',
   USERS = 'users',
 }
 
+/** Input type for text questions */
+export enum InputType {
+  COLOR = 'color',
+  DATE = 'date',
+  DATETIME_LOCAL = 'datetime-local',
+  DATETIME = 'datetime',
+  DECIMAL = 'decimal',
+  EMAIL = 'email',
+  NUMBER = 'number',
+  NUMERIC = 'numeric',
+  TIME = 'time',
+  TEL = 'tel',
+  TEXT = 'text',
+  URL = 'url',
+}
 /**
  * Checks if a question is of type matrix
  *

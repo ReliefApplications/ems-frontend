@@ -1,3 +1,4 @@
+import { QuestionType } from './../../services/form-helper/form-helper.service';
 import { JsonMetadata, Serializer } from 'survey-core';
 
 /**
@@ -7,7 +8,7 @@ import { JsonMetadata, Serializer } from 'survey-core';
 export const init = (): void => {
   const serializer: JsonMetadata = Serializer;
 
-  for (const type of ['dropdown', 'tagbox']) {
+  for (const type of [QuestionType.DROPDOWN, QuestionType.TAGBOX]) {
     // add popupWidth property
     serializer.addProperty(type, {
       name: 'popupWidth:number',

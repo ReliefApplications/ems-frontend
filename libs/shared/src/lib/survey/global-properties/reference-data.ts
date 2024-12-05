@@ -72,7 +72,7 @@ export const init = (referenceDataService: ReferenceDataService): void => {
     obj: Question
   ): boolean => !obj.referenceData;
 
-  for (const type of ['tagbox', 'dropdown']) {
+  for (const type of [QuestionType.TAGBOX, QuestionType.DROPDOWN]) {
     // add properties
     serializer.addProperty(type, {
       name: 'referenceData',

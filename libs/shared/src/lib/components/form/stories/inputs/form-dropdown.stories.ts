@@ -1,3 +1,4 @@
+import { QuestionType } from '../../../../services/form-helper/form-helper.service';
 import {
   FormInputStoryMeta,
   DefaultFormInputStory,
@@ -14,7 +15,7 @@ const questionName = 'Dropdown question';
 
 /** Base question */
 const baseQuestion = {
-  type: 'dropdown',
+  type: QuestionType.DROPDOWN,
   choices: ['Item 1', 'Item 2', 'Item 3'],
 };
 

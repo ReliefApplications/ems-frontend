@@ -1,3 +1,7 @@
+import {
+  InputType,
+  QuestionType,
+} from './../../../../services/form-helper/form-helper.service';
 /* eslint-disable jsdoc/require-param-description */
 import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -200,51 +204,51 @@ const DEFAULT_FIELDS = [
   {
     title: 'Text',
     name: 'text',
-    type: 'text',
+    type: QuestionType.TEXT,
     filter: 'text',
     editor: 'text',
     meta: {
-      type: 'text',
+      type: QuestionType.TEXT,
     },
   },
   {
     title: 'Comment',
     name: 'comment',
-    type: 'comment',
+    type: QuestionType.COMMENT,
     filter: 'text',
     editor: 'text',
     meta: {
-      type: 'text',
+      type: QuestionType.TEXT,
     },
   },
   {
     title: 'Boolean',
     name: 'bool',
-    type: 'boolean',
+    type: QuestionType.BOOLEAN,
     filter: 'boolean',
     editor: 'boolean',
     meta: {
-      type: 'boolean',
+      type: QuestionType.BOOLEAN,
     },
   },
   {
     title: 'Color',
     name: 'color',
-    type: 'color',
+    type: InputType.COLOR,
     filter: null,
     editor: 'text',
     meta: {
-      type: 'color',
+      type: InputType.COLOR,
     },
   },
   {
     title: 'Dropdown',
     name: 'dropdown',
-    type: 'dropdown',
+    type: QuestionType.DROPDOWN,
     filter: 'dropdown',
     editor: 'text',
     meta: {
-      type: 'dropdown',
+      type: QuestionType.DROPDOWN,
       choices: [
         {
           value: 1,
@@ -260,11 +264,11 @@ const DEFAULT_FIELDS = [
   {
     title: 'Radiogroup',
     name: 'radiogroup',
-    type: 'radiogroup',
+    type: QuestionType.RADIO_GROUP,
     filter: 'radiogroup',
     editor: 'text',
     meta: {
-      type: 'radiogroup',
+      type: QuestionType.RADIO_GROUP,
       choices: [
         {
           value: 1,
@@ -280,12 +284,12 @@ const DEFAULT_FIELDS = [
   {
     title: 'Date',
     name: 'date',
-    type: 'date',
+    type: InputType.DATE,
     filter: 'date',
     format: 'dd/MM/yy',
     editor: 'date',
     meta: {
-      type: 'date',
+      type: InputType.DATE,
     },
   },
   {
@@ -295,7 +299,7 @@ const DEFAULT_FIELDS = [
     filter: null,
     editor: null,
     meta: {
-      type: 'file',
+      type: QuestionType.FILE,
     },
   },
 ];
@@ -402,7 +406,7 @@ export const MULTI_SELECT_INPUTS = {
         type: 'JSON',
         editor: '',
         meta: {
-          type: 'checkbox',
+          type: QuestionType.CHECKBOX,
           choices: [
             {
               value: 1,
@@ -421,7 +425,7 @@ export const MULTI_SELECT_INPUTS = {
         type: 'JSON',
         editor: '',
         meta: {
-          type: 'tagbox',
+          type: QuestionType.TAGBOX,
           choices: [
             {
               value: 1,
@@ -440,7 +444,7 @@ export const MULTI_SELECT_INPUTS = {
         type: 'JSON',
         editor: '',
         meta: {
-          type: 'users',
+          type: QuestionType.USERS,
           choices: [
             {
               value: 1,
@@ -510,7 +514,7 @@ export const COMPLEX_INPUTS = {
         name: 'multipletext',
         type: 'JSON',
         meta: {
-          type: 'multipletext',
+          type: QuestionType.MULTIPLE_TEXT,
           columns: [
             {
               label: 'First',
@@ -528,7 +532,7 @@ export const COMPLEX_INPUTS = {
         name: 'matrix',
         type: 'JSON',
         meta: {
-          type: 'matrix',
+          type: QuestionType.MATRIX,
           rows: [
             {
               label: '1st',
@@ -560,7 +564,7 @@ export const COMPLEX_INPUTS = {
         name: 'matrixdropdown',
         type: 'JSON',
         meta: {
-          type: 'matrixdropdown',
+          type: QuestionType.MATRIX_DROPDOWN,
           rows: [
             {
               label: '1st',
@@ -575,12 +579,12 @@ export const COMPLEX_INPUTS = {
             {
               label: 'First',
               name: 'first',
-              type: 'dropdown',
+              type: QuestionType.DROPDOWN,
             },
             {
               label: 'Second',
               name: 'second',
-              type: 'radiogroup',
+              type: QuestionType.RADIO_GROUP,
             },
           ],
         },
@@ -590,17 +594,17 @@ export const COMPLEX_INPUTS = {
         name: 'matrixdynamic',
         type: 'JSON',
         meta: {
-          type: 'matrixdynamic',
+          type: QuestionType.MATRIX_DYNAMIC,
           columns: [
             {
               label: 'First',
               name: 'first',
-              type: 'dropdown',
+              type: QuestionType.DROPDOWN,
             },
             {
               label: 'Second',
               name: 'second',
-              type: 'radiogroup',
+              type: QuestionType.RADIO_GROUP,
             },
           ],
         },
