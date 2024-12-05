@@ -264,13 +264,11 @@ export class ActivityLogComponent
   ): void {
     const activityLogs =
       'activityLogs' in data ? data.activityLogs : data.activityLogsByUrl;
-    const key = 'activityLogs' in data ? undefined : 'url';
     const mappedValues = activityLogs.edges.map((x) => x.node);
-    this.cachedActivities = updateQueryUniqueValues(
-      this.cachedActivities,
-      mappedValues,
-      key
-    );
+    this.cachedActivities =
+      'activityLogs' in data
+        ? updateQueryUniqueValues(this.cachedActivities, mappedValues)
+        : updateQueryUniqueValues(this.cachedActivities, mappedValues, 'url'); //Url will be the id as we group by it
 
     this.pageInfo.length = activityLogs.totalCount;
     this.pageInfo.endCursor = activityLogs.pageInfo.endCursor;
