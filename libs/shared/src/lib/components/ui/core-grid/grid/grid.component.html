@@ -151,7 +151,7 @@
           field.type !== 'JSON' &&
           (!field.meta ||
             (field.meta.type !== 'referenceData' &&
-              field.meta.type !== 'editor'))
+              field.meta.type !== QuestionType.EDITOR))
         "
         [field]="field.name"
         [title]="field.title"
@@ -168,7 +168,11 @@
         <!-- FILTER -->
         <ng-container *ngIf="field.meta">
           <!-- FILTER ( datetime / date ) -->
-          <ng-container *ngIf="['datetime', 'date'].includes(field.meta.type)">
+          <ng-container
+            *ngIf="
+              [InputType.DATETIME, InputType.DATE].includes(field.meta.type)
+            "
+          >
             <ng-template
               kendoGridFilterMenuTemplate
               let-filter
@@ -187,7 +191,11 @@
           </ng-container>
           <!-- FILTER ( dropdown / radiogroup ) -->
           <ng-container
-            *ngIf="['dropdown', 'radiogroup'].includes(field.meta.type)"
+            *ngIf="
+              [QuestionType.DROPDOWN, QuestionType.RADIO_GROUP].includes(
+                field.meta.type
+              )
+            "
           >
             <ng-template
               kendoGridFilterMenuTemplate
@@ -230,7 +238,7 @@
             #refSpan
             kendoGridCellTemplate
             let-dataItem="dataItem"
-            *ngIf="['text'].includes(field.meta.type) || !field.meta.type"
+            *ngIf="field.meta.type === QuestionType.TEXT || !field.meta.type"
           >
             <div
               class="translate textbox-container"
@@ -260,9 +268,12 @@
             kendoGridCellTemplate
             let-dataItem="dataItem"
             *ngIf="
-              ['datetime', 'datetime-local', 'date', 'time'].includes(
-                field.meta.type
-              )
+              [
+                InputType.DATETIME,
+                InputType.DATETIME_LOCAL,
+                InputType.DATE,
+                InputType.TIME
+              ].includes(field.meta.type)
             "
           >
             <div
@@ -283,7 +294,7 @@
             #refSpan
             kendoGridCellTemplate
             let-dataItem="dataItem"
-            *ngIf="['url'].includes(field.meta.type)"
+            *ngIf="[InputType.URL].includes(field.meta.type)"
           >
             <div class="textbox-container" [style]="dataItem.style[field.name]">
               <a
@@ -314,7 +325,7 @@
             #refSpan
             kendoGridCellTemplate
             let-dataItem="dataItem"
-            *ngIf="['email'].includes(field.meta.type)"
+            *ngIf="[InputType.EMAIL].includes(field.meta.type)"
           >
             <div class="textbox-container" [style]="dataItem.style[field.name]">
               <a
@@ -345,7 +356,7 @@
             #refSpan
             kendoGridCellTemplate
             let-dataItem="dataItem"
-            *ngIf="['tel'].includes(field.meta.type)"
+            *ngIf="[InputType.EMAIL].includes(field.meta.type)"
           >
             <div class="textbox-container" [style]="dataItem.style[field.name]">
               <a
@@ -376,7 +387,7 @@
           <ng-template
             kendoGridCellTemplate
             let-dataItem="dataItem"
-            *ngIf="field.meta.type === 'boolean'"
+            *ngIf="field.meta.type === QuestionType.BOOLEAN"
           >
             <div class="textbox-container" [style]="dataItem.style[field.name]">
               <input
@@ -392,7 +403,7 @@
             #refSpan
             kendoGridCellTemplate
             let-dataItem="dataItem"
-            *ngIf="field.meta.type === 'numeric'"
+            *ngIf="field.meta.type === InputType.NUMERIC"
           >
             <div
               class="translate textbox-container"
@@ -419,7 +430,7 @@
           <ng-template
             kendoGridCellTemplate
             let-dataItem="dataItem"
-            *ngIf="field.meta.type === 'color'"
+            *ngIf="field.meta.type === InputType.COLOR"
           >
             <!-- In order to display the div -->
             <div [style.background-color]="dataItem[field.name]">&nbsp;</div>
@@ -466,7 +477,11 @@
             #refSpan
             kendoGridCellTemplate
             let-dataItem="dataItem"
-            *ngIf="['dropdown', 'radiogroup'].includes(field.meta.type)"
+            *ngIf="
+              [QuestionType.DROPDOWN, QuestionType.RADIO_GROUP].includes(
+                field.meta.type
+              )
+            "
           >
             <div class="textbox-container" [style]="dataItem.style[field.name]">
               <div
@@ -487,7 +502,7 @@
           *ngIf="field.editor === 'text'"
         >
           <!-- EDITION ( text / comment ) -->
-          <ng-container *ngIf="field.meta.type === 'text'">
+          <ng-container *ngIf="field.meta.type === QuestionType.TEXT">
             <ui-textarea
               [formControl]="formGroup.get(field.name)"
               [minRows]="2"
@@ -500,7 +515,11 @@
           </ng-container>
           <!-- EDITION ( url / email / tel ) -->
           <ng-container
-            *ngIf="['url', 'email', 'tel'].includes(field.meta.type)"
+            *ngIf="
+              [InputType.URL, InputType.EMAIL, InputType.TEL].includes(
+                field.meta.type
+              )
+            "
           >
             <input
               [formControl]="formGroup.get(field.name)"
@@ -510,7 +529,7 @@
             />
           </ng-container>
           <!-- EDITION ( color ) -->
-          <ng-container *ngIf="field.meta.type === 'color'">
+          <ng-container *ngIf="field.meta.type === InputType.COLOR">
             <kendo-colorpicker
               [formControl]="formGroup.get(field.name)"
               [format]="'hex'"
@@ -523,7 +542,9 @@
           <!-- EDITION ( dropdown / radiogroup ) -->
           <ng-container
             *ngIf="
-              field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'
+              [QuestionType.DROPDOWN, QuestionType.RADIO_GROUP].includes(
+                field.meta.type
+              )
             "
           >
             <kendo-dropdownlist
@@ -598,7 +619,7 @@
               let-filterService="filterService"
             >
               <shared-grid-filter-menu
-                [isNotArray]="subField.meta.type === 'dropdown'"
+                [isNotArray]="subField.meta.type === QuestionType.DROPDOWN"
                 [filter]="filter"
                 [filterService]="filterService"
                 [data]="subField.meta.choices || []"
@@ -614,7 +635,7 @@
               let-dataItem="dataItem"
             >
               <shared-grid-filter
-                [isNotArray]="subField.meta.type === 'dropdown'"
+                [isNotArray]="subField.meta.type === QuestionType.DROPDOWN"
                 [filter]="filter"
                 [data]="subField.meta.choices || []"
                 [field]="subField.name"
@@ -649,7 +670,9 @@
       </ng-container>
       <!-- Geospatial -->
       <kendo-grid-column
-        *ngIf="field.type === 'JSON' && field.meta.type === 'geospatial'"
+        *ngIf="
+          field.type === 'JSON' && field.meta.type === QuestionType.GEOSPATIAL
+        "
         [field]="field.name"
         [filterable]="true"
         [title]="field.title"
@@ -677,7 +700,7 @@
       </kendo-grid-column>
       <!-- Editor -->
       <kendo-grid-column
-        *ngIf="field.meta.type === 'editor'"
+        *ngIf="field.meta.type === QuestionType.EDITOR"
         [field]="field.name"
         [filterable]="true"
         [title]="field.title"
@@ -804,7 +827,7 @@
       <kendo-grid-column
         [field]="field.name"
         [title]="field.title"
-        *ngIf="field.type === 'JSON' && field.meta.type === 'file'"
+        *ngIf="field.type === 'JSON' && field.meta.type === QuestionType.FILE"
         [columnMenu]="false"
         [editable]="false"
         [width]="field.width"
@@ -876,12 +899,16 @@
         *ngIf="
           field.type === 'JSON' &&
           !multiSelectTypes.includes(field.meta.type) &&
-          field.meta.type !== 'file' &&
-          field.meta.type !== 'geospatial'
+          field.meta.type !== QuestionType.FILE &&
+          field.meta.type !== QuestionType.GEOSPATIAL
         "
       >
         <ng-container
-          *ngIf="!['multipletext', 'matrixdynamic'].includes(field.meta.type)"
+          *ngIf="
+            ![QuestionType.MULTIPLE_TEXT, QuestionType.MATRIX_DYNAMIC].includes(
+              field.meta.type
+            )
+          "
         >
           <!-- QUESTION ROWS ( matrix / matrixdropdown ) -->
           <kendo-grid-column
@@ -921,9 +948,11 @@
           >
             <ng-template kendoGridCellTemplate let-dataItem="dataItem">
               <!-- DISPLAY ( matrix / matrixdropdown / matrixdynamic ) -->
-              <ng-container *ngIf="field.meta.type !== 'multipletext'">
+              <ng-container
+                *ngIf="field.meta.type !== QuestionType.MULTIPLE_TEXT"
+              >
                 <ul class="matrix-cell">
-                  <ng-container *ngIf="field.meta.type === 'matrix'">
+                  <ng-container *ngIf="field.meta.type === QuestionType.MATRIX">
                     <li *ngFor="let row of field.meta.rows">
                       <input
                         type="radio"
@@ -936,7 +965,9 @@
                       />
                     </li>
                   </ng-container>
-                  <ng-container *ngIf="field.meta.type === 'matrixdropdown'">
+                  <ng-container
+                    *ngIf="field.meta.type === QuestionType.MATRIX_DROPDOWN"
+                  >
                     <li *ngFor="let row of field.meta.rows">
                       <ng-container
                         *ngIf="
@@ -947,7 +978,9 @@
                       </ng-container>
                     </li>
                   </ng-container>
-                  <ng-container *ngIf="field.meta.type === 'matrixdynamic'">
+                  <ng-container
+                    *ngIf="field.meta.type === QuestionType.MATRIX_DYNAMIC"
+                  >
                     <li *ngFor="let row of dataItem[field.name]">
                       <ng-container
                         *ngIf="row[column.name] || row[column.name] === false"
@@ -961,7 +994,8 @@
               <!-- DISPLAY ( multipletext ) -->
               <ng-container
                 *ngIf="
-                  field.meta.type === 'multipletext' && dataItem[field.name]
+                  field.meta.type === QuestionType.MULTIPLE_TEXT &&
+                  dataItem[field.name]
                 "
               >
                 <span class="translate">
@@ -975,10 +1009,12 @@
               let-formGroup="formGroup"
             >
               <!-- EDITION ( matrix / matrixdropdown / matrixdynamic ) -->
-              <ng-container *ngIf="field.meta.type !== 'multipletext'">
+              <ng-container
+                *ngIf="field.meta.type !== QuestionType.MULTIPLE_TEXT"
+              >
                 <ul class="matrix-cell">
                   <!-- EDITION ( matrix ) -->
-                  <ng-container *ngIf="field.meta.type === 'matrix'">
+                  <ng-container *ngIf="field.meta.type === QuestionType.MATRIX">
                     <li *ngFor="let row of field.meta.rows">
                       <input
                         type="radio"
@@ -990,9 +1026,11 @@
                     </li>
                   </ng-container>
                   <!-- EDITION ( matrixdropdown ) -->
-                  <ng-container *ngIf="field.meta.type === 'matrixdropdown'">
+                  <ng-container
+                    *ngIf="field.meta.type === QuestionType.MATRIX_DROPDOWN"
+                  >
                     <li *ngFor="let row of field.meta.rows">
-                      <ng-container *ngIf="column.type === 'text'">
+                      <ng-container *ngIf="column.type === QuestionType.TEXT">
                         <ui-textarea
                           [formControl]="
                             formGroup.get([field.name, row.name, column.name])
@@ -1007,9 +1045,11 @@
                       </ng-container>
                       <ng-container
                         *ngIf="
-                          ['default', 'dropdown', 'radiogroup'].includes(
-                            column.type
-                          )
+                          [
+                            'default',
+                            QuestionType.DROPDOWN,
+                            QuestionType.RADIO_GROUP
+                          ].includes(column.type)
                         "
                       >
                         <kendo-dropdownlist
@@ -1023,7 +1063,9 @@
                         >
                         </kendo-dropdownlist>
                       </ng-container>
-                      <ng-container *ngIf="column.type === 'boolean'">
+                      <ng-container
+                        *ngIf="column.type === QuestionType.BOOLEAN"
+                      >
                         <input
                           type="checkbox"
                           kendoCheckBox
@@ -1050,7 +1092,9 @@
                     </li>
                   </ng-container>
                   <!-- EDITION ( matrixdynamic ) -->
-                  <ng-container *ngIf="field.meta.type === 'matrixdynamic'">
+                  <ng-container
+                    *ngIf="field.meta.type === QuestionType.MATRIX_DYNAMIC"
+                  >
                     <li
                       *ngFor="
                         let group of formGroup.get(field.name).controls;
@@ -1058,7 +1102,7 @@
                       "
                       [formGroup]="group"
                     >
-                      <ng-container *ngIf="column.type === 'text'">
+                      <ng-container *ngIf="column.type === QuestionType.TEXT">
                         <ui-textarea
                           [formControlName]="column.name"
                           [name]="field.name + i"
@@ -1071,9 +1115,11 @@
                       </ng-container>
                       <ng-container
                         *ngIf="
-                          ['default', 'dropdown', 'radiogroup'].includes(
-                            column.type
-                          )
+                          [
+                            'default',
+                            QuestionType.DROPDOWN,
+                            QuestionType.RADIO_GROUP
+                          ].includes(column.type)
                         "
                       >
                         <kendo-dropdownlist
@@ -1085,7 +1131,9 @@
                         >
                         </kendo-dropdownlist>
                       </ng-container>
-                      <ng-container *ngIf="column.type === 'boolean'">
+                      <ng-container
+                        *ngIf="column.type === QuestionType.BOOLEAN"
+                      >
                         <input
                           type="checkbox"
                           kendoCheckBox
@@ -1110,7 +1158,9 @@
                 </ul>
               </ng-container>
               <!-- EDITION ( multipletext ) -->
-              <ng-container *ngIf="field.meta.type === 'multipletext'">
+              <ng-container
+                *ngIf="field.meta.type === QuestionType.MULTIPLE_TEXT"
+              >
                 <ui-textarea
                   [formControl]="formGroup.get([field.name, column.name])"
                   [minRows]="2"

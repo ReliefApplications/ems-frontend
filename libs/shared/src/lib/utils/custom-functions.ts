@@ -1,3 +1,4 @@
+import { QuestionType } from './../services/form-helper/form-helper.service';
 import { isArray, isEqual, isNil } from 'lodash';
 import { Record } from '../models/record.model';
 import { AuthService } from '../services/auth/auth.service';
@@ -8,6 +9,7 @@ import {
   QuestionMatrixModel,
   SurveyModel,
 } from 'survey-core';
+import { isMatrix } from '../services/form-helper/form-helper.service';
 
 /**
  * Registration of new custom functions for the survey.
@@ -58,7 +60,7 @@ const addCustomFunctions = (
       const colValue = params[2];
 
       const question = this.survey.getQuestionByName(params[0]);
-      if (!question || !question.getType().startsWith('matrix')) return [];
+      if (!question || !isMatrix(question.getType())) return [];
       if (typeof colName !== 'string') return [];
 
       const matrixQuestion = question as
@@ -95,7 +97,7 @@ const addCustomFunctions = (
       if (!questionName || !rows) return [];
 
       const question = this.survey.getQuestionByName(questionName);
-      if (!question || !question.getType().startsWith('matrix')) return [];
+      if (!question || !isMatrix(question.getType())) return [];
 
       const matrix = question as
         | QuestionMatrixDropdownModel
@@ -116,7 +118,7 @@ const addCustomFunctions = (
               const value = matrix.value?.[row]?.[col.name];
               let formattedValue;
               switch (colType) {
-                case 'boolean':
+                case QuestionType.BOOLEAN:
                   // Get the label of the boolean value
                   formattedValue = isNil(value)
                     ? ''
@@ -124,10 +126,10 @@ const addCustomFunctions = (
                     ? col.labelTrue
                     : col.labelFalse;
                   break;
-                case 'dropdown':
+                case QuestionType.DROPDOWN:
                   formattedValue = value?.text || value?.value;
                   break;
-                case 'file':
+                case QuestionType.FILE:
                   if (isArray(value))
                     formattedValue = value.map((v) => v.name).join(', ');
                   break;
@@ -176,7 +178,7 @@ const addCustomFunctions = (
       const gettingRows = isNil(isRow) ? true : isRow;
 
       const question = this.survey.getQuestionByName(params[0]);
-      if (!question || !question.getType().startsWith('matrix')) return [];
+      if (!question || !isMatrix(question.getType())) return [];
 
       const matrix = question as
         | QuestionMatrixDropdownModel

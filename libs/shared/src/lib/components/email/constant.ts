@@ -1,5 +1,12 @@
+import { QuestionType } from './../../services/form-helper/form-helper.service';
+
 /** Select field types */
-export const selectFieldTypes = ['select', 'dropdown', 'checkbox', 'tagbox'];
+export const selectFieldTypes = [
+  QuestionType.SELECT,
+  QuestionType.DROPDOWN,
+  QuestionType.CHECKBOX,
+  QuestionType.TAGBOX,
+];
 /**
  * Regex for valid strings in layout page select
  */
@@ -11,4 +18,8 @@ export const emailRegex =
 /**
  * Array for missing types
  */
-export const missingTypesArray = ['matrix', 'matrixdynamic', 'matrixdropdown'];
+export const missingTypesArray = [
+  QuestionType.MATRIX,
+  QuestionType.MATRIX_DYNAMIC,
+  QuestionType.MATRIX_DROPDOWN,
+];

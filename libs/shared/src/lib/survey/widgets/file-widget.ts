@@ -2,6 +2,7 @@ import { isNil } from 'lodash';
 import { CustomWidgetCollection, SurveyModel } from 'survey-core';
 import { CS_DOCUMENTS_PROPERTIES } from '../../services/document-management/document-management.service';
 import { Question, QuestionFile } from '../types';
+import { QuestionType } from '../../services/form-helper/form-helper.service';
 
 /**
  * Update file widget in order to be able to update properties with value expressions
@@ -14,7 +15,8 @@ export const init = (
   const widget = {
     name: 'file-widget',
     widgetIsLoaded: (): boolean => true,
-    isFit: (question: Question): boolean => question.getType() === 'file',
+    isFit: (question: Question): boolean =>
+      question.getType() === QuestionType.FILE,
     isDefaultRender: true,
     afterRender: (question: QuestionFile): void => {
       (question.survey as SurveyModel)?.onValueChanged.add((sender) => {

@@ -1,3 +1,5 @@
+import { InputType, QuestionType } from '../form-helper/form-helper.service';
+
 /** Not number value examples */
 export const notNumberValueExamples = [
   'k',
@@ -323,7 +325,7 @@ export const optionsData = {
 export const optionFields = [
   {
     name: 'modifiedAt',
-    type: 'date',
+    type: InputType.DATE,
     kind: 'SCALAR',
     label: 'Modified At',
     width: null,
@@ -332,12 +334,12 @@ export const optionFields = [
   },
   {
     name: 'createdAt',
-    type: 'datetime',
+    type: InputType.DATETIME,
     __typename: 'FieldMetaData',
   },
   {
     name: 'description',
-    type: 'text',
+    type: QuestionType.TEXT,
     kind: 'SCALAR',
     label: 'Description',
     width: null,
@@ -346,7 +348,7 @@ export const optionFields = [
   },
   {
     name: 'status',
-    type: 'dropdown',
+    type: QuestionType.DROPDOWN,
     kind: 'SCALAR',
     label: 'Status',
     width: null,
@@ -355,12 +357,12 @@ export const optionFields = [
   },
   {
     name: 'title',
-    type: 'text',
+    type: QuestionType.TEXT,
     __typename: 'FieldMetaData',
   },
   {
     name: 'id',
-    type: 'text',
+    type: QuestionType.TEXT,
     kind: 'SCALAR',
     label: 'Id',
     width: null,
@@ -369,7 +371,7 @@ export const optionFields = [
   },
   {
     name: 'check_box',
-    type: 'boolean',
+    type: QuestionType.BOOLEAN,
     __typename: 'FieldMetaData',
   },
 ];

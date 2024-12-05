@@ -14,6 +14,7 @@ import jsonpath from 'jsonpath';
 import graphQLVariables from './graphql-variables';
 import { isArray, isEqual, isNil } from 'lodash';
 import transformGraphQLVariables from '../../utils/reference-data/transform-graphql-variables.util';
+import { QuestionType } from '../../services/form-helper/form-helper.service';
 
 /** Question Settings category */
 const category = 'Choices by GraphQL';
@@ -39,7 +40,7 @@ const isSelectQuestion = (question: Question): boolean =>
  */
 const setQuestionValue = (question: Question, choices: ItemValue[]) => {
   const value = question.value;
-  if (question.getType() === 'tagbox') {
+  if (question.getType() === QuestionType.TAGBOX) {
     if (isArray(value)) {
       const updatedValue = choices
         .filter((choice) =>
@@ -53,7 +54,7 @@ const setQuestionValue = (question: Question, choices: ItemValue[]) => {
       }
     }
   }
-  if (question.getType() === 'dropdown') {
+  if (question.getType() === QuestionType.DROPDOWN) {
     if (value) {
       const updatedValue = choices.find(
         (choice) => isEqual(value, choice.value) || value == choice.value

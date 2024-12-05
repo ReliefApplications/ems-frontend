@@ -18,6 +18,7 @@ import {
   getDateDisplay,
   setDateValue,
 } from '../components/utils/create-picker-instance';
+import { QuestionType } from '../../services/form-helper/form-helper.service';
 
 /**
  * Custom definition for overriding the text question. Allowed support for dates.
@@ -35,7 +36,8 @@ export const init = (
   const widget = {
     name: 'text-widget',
     widgetIsLoaded: (): boolean => true,
-    isFit: (question: Question): boolean => question.getType() === 'text',
+    isFit: (question: Question): boolean =>
+      question.getType() === QuestionType.TEXT,
     init: (): void => {
       const serializer: JsonMetadata = Serializer;
       // hide the min and max property for date, datetime and time types

@@ -19,6 +19,7 @@ import { ResizeBatchService } from '@progress/kendo-angular-common';
 import { IconsService } from '@progress/kendo-angular-icons';
 import { ComponentCollection, CustomWidgetCollection } from 'survey-core';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+import { QuestionType } from '../../services/form-helper/form-helper.service';
 
 // You can create new stories getting the logic from: https://surveyjs.io/create-free-survey
 
@@ -173,14 +174,14 @@ export const MultiPages: Story = {
                 elements: [
                   {
                     title: 'Dropdown',
-                    type: 'dropdown',
+                    type: QuestionType.DROPDOWN,
                     name: 'question1',
                     ...sharedQuestion(args),
                     choices: ['Item 1', 'Item 2', 'Item 3'],
                   },
                   {
                     title: 'Radiogroup',
-                    type: 'radiogroup',
+                    type: QuestionType.RADIO_GROUP,
                     name: 'question2',
                     ...sharedQuestion(args),
                     choices: ['Item a', 'Item b', 'Item c'],
@@ -192,7 +193,7 @@ export const MultiPages: Story = {
                 elements: [
                   {
                     title: 'Yes/No',
-                    type: 'boolean',
+                    type: QuestionType.BOOLEAN,
                     name: 'question1',
                     ...sharedQuestion(args),
                   },
@@ -203,7 +204,7 @@ export const MultiPages: Story = {
                 elements: [
                   {
                     title: 'Date',
-                    type: 'text',
+                    type: QuestionType.TEXT,
                     name: 'question1',
                     inputType: 'date',
                     ...sharedQuestion(args),
@@ -236,7 +237,7 @@ export const Logic: Story = {
                 elements: [
                   {
                     title: 'Dropdown',
-                    type: 'dropdown',
+                    type: QuestionType.DROPDOWN,
                     name: 'question1',
                     description:
                       'Question 2 only will appears if the selected option is Item 1',
@@ -245,7 +246,7 @@ export const Logic: Story = {
                   },
                   {
                     title: 'Date',
-                    type: 'text',
+                    type: QuestionType.TEXT,
                     name: 'question2',
                     inputType: 'date',
                     visible: false,
@@ -283,7 +284,7 @@ export const DefaultValue: Story = {
                   {
                     title: 'Number',
                     defaultValue: 10,
-                    type: 'text',
+                    type: QuestionType.TEXT,
                     name: 'question1',
                     inputType: 'number',
                     ...sharedQuestion(args),
@@ -291,7 +292,7 @@ export const DefaultValue: Story = {
                   {
                     title: 'Text',
                     defaultValue: 'Default value',
-                    type: 'text',
+                    type: QuestionType.TEXT,
                     name: 'question2',
                     inputType: 'text',
                     ...sharedQuestion(args),

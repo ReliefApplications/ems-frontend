@@ -12,6 +12,7 @@ import { CustomPropertyGridComponentTypes } from '../components/utils/components
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
 import { get, isArray, isEqual, isNil, omit } from 'lodash';
 import graphQLVariables from './graphql-variables';
+import { QuestionType } from '../../services/form-helper/form-helper.service';
 
 /**
  * Sets the choices on the default value modal editor for a reference data dropdown
@@ -71,7 +72,7 @@ export const init = (referenceDataService: ReferenceDataService): void => {
     obj: Question
   ): boolean => !obj.referenceData;
 
-  for (const type of ['tagbox', 'dropdown']) {
+  for (const type of [QuestionType.TAGBOX, QuestionType.DROPDOWN]) {
     // add properties
     serializer.addProperty(type, {
       name: 'referenceData',
@@ -192,7 +193,10 @@ export const render = (
         question.setPropertyValue('visibleChoices', choiceItems);
         // manually set the selected option (not done by default)
         // only affects dropdown questions (only one option selected) with reference data and non primitive values
-        if (!question.isPrimitiveValue && question.getType() === 'dropdown') {
+        if (
+          !question.isPrimitiveValue &&
+          question.getType() === QuestionType.DROPDOWN
+        ) {
           // When using dashboard filters, the question.value object is truncated
           if (isEqual(question.value, question.defaultValue?.value)) {
             return (question.value = question.defaultValue);
@@ -218,7 +222,10 @@ export const render = (
       const valueField = question._referenceData.valueField;
       const choiceItems: ItemValue[] = question.visibleChoices;
       // Handle tagbox changes
-      if (question.getType() === 'tagbox' && isArray(question.value)) {
+      if (
+        question.getType() === QuestionType.TAGBOX &&
+        isArray(question.value)
+      ) {
         if (question.isPrimitiveValue) {
           question.value = choiceItems
             .filter((choice) =>
@@ -240,7 +247,7 @@ export const render = (
         question._instance.value = question.value;
       }
       // Handle dropdown changes
-      if (question.getType() === 'dropdown' && question.value) {
+      if (question.getType() === QuestionType.DROPDOWN && question.value) {
         if (question.isPrimitiveValue) {
           question.value = choiceItems.find((choice) =>
             isEqual(choice.value, question.value)

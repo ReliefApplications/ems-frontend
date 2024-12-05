@@ -1,3 +1,4 @@
+import { QuestionType } from './../../services/form-helper/form-helper.service';
 import {
   ComponentCollection,
   JsonMetadata,
@@ -33,7 +34,7 @@ export const init = (
     iconName: 'icon-geospatial',
     questionJSON: {
       name: 'geospatial',
-      type: 'text',
+      type: QuestionType.TEXT,
     },
     category: 'Custom Questions',
     onInit: (): void => {
@@ -41,7 +42,7 @@ export const init = (
       // Geospatial type
       serializer.addProperty('geospatial', {
         name: 'geometry',
-        type: 'dropdown',
+        type: QuestionType.DROPDOWN,
         category: 'general',
         required: true,
         default: 'Point',

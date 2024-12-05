@@ -54,6 +54,10 @@ import {
   SELECTABLE_SETTINGS,
 } from './grid.constants';
 import { DocumentManagementService } from '../../../../services/document-management/document-management.service';
+import {
+  InputType,
+  QuestionType,
+} from '../../../../services/form-helper/form-helper.service';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -188,6 +192,10 @@ export class GridComponent
   @ViewChildren(TooltipDirective) tooltips!: QueryList<TooltipDirective>;
   /** Array of multi-select types. */
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
+  /** import question type */
+  public QuestionType = QuestionType;
+  /** import Input type */
+  public InputType = InputType;
   /** Environment of the grid. */
   public environment: 'frontoffice' | 'backoffice';
   /** Status message of the grid. */
@@ -1062,10 +1070,10 @@ export class GridComponent
           const titleSize = type.title.length;
           let contentSize = 0;
           switch (type.type) {
-            case 'time':
-            case 'datetime-local':
-            case 'datetime':
-            case 'date': {
+            case InputType.TIME:
+            case InputType.DATETIME_LOCAL:
+            case InputType.DATETIME:
+            case InputType.DATE: {
               contentSize = (
                 this.gridDataFormatterService.datePipe.transform(
                   data[type.field]
@@ -1073,18 +1081,18 @@ export class GridComponent
               ).length;
               break;
             }
-            case 'file': {
+            case QuestionType.FILE: {
               contentSize = data[type.field]
                 ? data[type.field][0]?.name?.length
                 : 0;
               break;
             }
-            case 'numeric': {
+            case InputType.NUMERIC: {
               contentSize = data[type.field]?.toString()?.length;
               break;
             }
-            case 'checkbox':
-            case 'tagbox': {
+            case QuestionType.CHECKBOX:
+            case QuestionType.TAGBOX: {
               let checkboxLength = 0;
               (data[type.field] || []).forEach((obj: any) => {
                 checkboxLength += obj.length;
@@ -1092,8 +1100,8 @@ export class GridComponent
               contentSize = checkboxLength;
               break;
             }
-            case 'boolean':
-            case 'color': {
+            case QuestionType.BOOLEAN:
+            case InputType.COLOR: {
               //min size
               contentSize = 0;
               break;

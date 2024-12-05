@@ -18,13 +18,13 @@ import { ButtonModule, SnackbarService, TooltipModule } from '@oort-front/ui';
 import { DialogModule, AlertModule } from '@oort-front/ui';
 import { renderGlobalProperties } from '../../../survey/render-global-properties';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
-import { FormHelpersService } from '../../../services/form-helper/form-helper.service';
+import {
+  FormHelpersService,
+  QuestionType,
+} from '../../../services/form-helper/form-helper.service';
 import { Question } from '../../../survey/types';
 import 'survey-core/survey.i18n.min.js';
-import {
-  CustomJSONEditorComponent,
-  SurveyCustomJSONEditorPlugin,
-} from '../../form-builder/custom-json-editor/custom-json-editor.component';
+import { SurveyCustomJSONEditorPlugin } from '../../form-builder/custom-json-editor/custom-json-editor.component';
 import { updateModalChoicesAndValue } from '../../../survey/global-properties/reference-data';
 import { HttpClient } from '@angular/common/http';
 //import 'survey-creator-core/survey-creator-core.i18n.min.js';
@@ -46,26 +46,26 @@ const DEFAULT_STRUCTURE = {
  * Commented types are not yet implemented.
  */
 const QUESTION_TYPES = [
-  'text',
-  'checkbox',
-  'radiogroup',
-  'dropdown',
-  'tagbox',
-  'comment',
+  QuestionType.TEXT,
+  QuestionType.CHECKBOX,
+  QuestionType.RADIO_GROUP,
+  QuestionType.DROPDOWN,
+  QuestionType.TAGBOX,
+  QuestionType.COMMENT,
   // 'rating',
   // 'ranking',
   // 'imagepicker',
-  'boolean',
+  QuestionType.BOOLEAN,
   // 'image',
-  'html',
+  QuestionType.HTML,
   // 'signaturepad',
   // 'expression',
   // 'matrix',
   // 'matrixdropdown',
   // 'matrixdynamic',
   // 'multipletext',
-  'panel',
-  'paneldynamic',
+  QuestionType.PANEL,
+  QuestionType.PANEL_DYNAMIC,
 ];
 
 /**
@@ -170,7 +170,6 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
     AlertModule,
     SurveyCreatorModule,
     ButtonModule,
-    CustomJSONEditorComponent,
   ],
 })
 export class FilterBuilderModalComponent

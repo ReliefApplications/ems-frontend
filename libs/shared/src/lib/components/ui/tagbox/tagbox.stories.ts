@@ -1,3 +1,7 @@
+import {
+  InputType,
+  QuestionType,
+} from './../../../services/form-helper/form-helper.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { TagboxComponent } from './tagbox.component';
@@ -45,7 +49,7 @@ const TEMPLATE: StoryFn<TagboxComponent> = (args) => ({
  */
 const DEFAULT_FIELDS = [
   {
-    type: 'tagbox',
+    type: QuestionType.TAGBOX,
     name: 'affected_countriees',
     isRequired: false,
     readOnly: false,
@@ -58,7 +62,7 @@ const DEFAULT_FIELDS = [
     },
   },
   {
-    type: 'tagbox',
+    type: QuestionType.TAGBOX,
     name: 'regions',
     isRequired: false,
     readOnly: false,
@@ -66,7 +70,7 @@ const DEFAULT_FIELDS = [
     choices: ['AFR', 'AMR', 'WMR', 'EUR', 'SEAR', 'WPR'],
   },
   {
-    type: 'dropdown',
+    type: QuestionType.DROPDOWN,
     name: 'disease',
     isRequired: false,
     readOnly: false,
@@ -79,21 +83,21 @@ const DEFAULT_FIELDS = [
     },
   },
   {
-    type: 'text',
+    type: QuestionType.TEXT,
     name: 'title',
     isRequired: false,
     readOnly: false,
     isCore: true,
   },
   {
-    type: 'text',
+    type: QuestionType.TEXT,
     name: 'description',
     isRequired: false,
     readOnly: false,
     isCore: true,
   },
   {
-    type: 'resources',
+    type: QuestionType.RESOURCES,
     name: 'sources',
     isRequired: false,
     readOnly: false,
@@ -139,20 +143,20 @@ const DEFAULT_FIELDS = [
     },
   },
   {
-    type: 'date',
+    type: InputType.DATE,
     name: 'date',
     isRequired: false,
     readOnly: false,
     isCore: true,
   },
   {
-    type: 'text',
+    type: QuestionType.TEXT,
     name: 'follow_comment',
     isCore: true,
     generated: true,
   },
   {
-    type: 'radiogroup',
+    type: QuestionType.RADIO_GROUP,
     name: 'follow',
     isRequired: false,
     readOnly: false,

@@ -5,6 +5,7 @@ import { CustomWidgetCollection, QuestionDropdownModel } from 'survey-core';
 import { has, isArray, isEqual, isObject } from 'lodash';
 import { debounceTime, map, Subject, takeUntil, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
+import { QuestionType } from '../../services/form-helper/form-helper.service';
 
 /**
  * Init dropdown widget
@@ -21,7 +22,8 @@ export const init = (
   const widget = {
     name: 'dropdown-widget',
     widgetIsLoaded: (): boolean => true,
-    isFit: (question: Question): boolean => question.getType() === 'dropdown',
+    isFit: (question: Question): boolean =>
+      question.getType() === QuestionType.DROPDOWN,
     isDefaultRender: true,
     afterRender: (
       question: QuestionDropdownModel,
