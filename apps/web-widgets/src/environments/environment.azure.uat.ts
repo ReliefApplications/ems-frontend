@@ -6,8 +6,8 @@ import { Environment } from './environment.type';
 const authConfig: AuthConfig = {
   issuer:
     'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590/v2.0',
-  redirectUri: 'https://ems-safe-test.who.int/widgets/',
-  postLogoutRedirectUri: 'https://ems-safe-test.who.int/widgets/auth/',
+  redirectUri: 'https://hems-test.who.int/widgets/',
+  postLogoutRedirectUri: 'https://hems-test.who.int/widgets/auth/',
   clientId: '021202ac-d23b-4757-83e3-f6ecde12266b',
   scope: 'openid profile email offline_access',
   responseType: 'code',
@@ -20,10 +20,10 @@ const authConfig: AuthConfig = {
  */
 export const environment: Environment = {
   ...sharedAzureEnvironment,
-  apiUrl: 'https://ems-safe-test.who.int/api',
-  subscriptionApiUrl: 'wss://ems-safe-test.who.int/api',
-  frontOfficeUri: 'https://ems-safe-test.who.int/',
-  backOfficeUri: 'https://ems-safe-test.who.int/backoffice/',
+  apiUrl: 'https://hems-test.who.int/api',
+  subscriptionApiUrl: 'wss://hems-test.who.int/api',
+  frontOfficeUri: 'https://hems-test.who.int/apps/',
+  backOfficeUri: 'https://hems-test.who.int/backoffice/',
   authConfig,
   tinymceBaseUrl:
     'https://whoemssafedsta03.blob.core.windows.net/shared/uat/tinymce',
@@ -34,5 +34,5 @@ export const environment: Environment = {
     attributes: ['country', 'region', 'location', 'department'],
   },
   admin0Url: 'https://ems2-test.who.int/app-builder/admin0.json',
-  csApiUrl: 'https://hems-dev.who.int/csapi/api',
+  csApiUrl: 'https://hems-test.who.int/csapi/api',
 };
