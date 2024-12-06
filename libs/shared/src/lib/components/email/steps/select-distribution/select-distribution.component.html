@@ -168,7 +168,6 @@
   </div>
   <!-- To, CC, BCC Templates -->
   <div *ngIf="!showExistingDistributionList">
-     
     <ui-tabs>
       <!-- TO Tab -->
       <ui-tab [title]="'TO'">
@@ -177,7 +176,7 @@
         </ng-container>
         <ng-template uiTabContent>
           <ui-alert class="mb-4" variant="warning" *ngIf="distributionListId">
-            {{ 'components.distributionLists.DLWarning.message' | translate }}
+            {{ 'components.distributionLists.warning.message' | translate }}
           </ui-alert>
           <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.to">
             {{ 'components.email.distributionList.alert.noEmail' | translate }}
@@ -202,7 +201,7 @@
         </ng-container>
         <ng-template uiTabContent>
           <ui-alert class="mb-4" variant="warning" *ngIf="distributionListId">
-            {{ 'components.distributionLists.DLWarning.message' | translate }}
+            {{ 'components.distributionLists.warning.message' | translate }}
           </ui-alert>
           <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.cc">
             {{ 'components.email.distributionList.alert.noEmail' | translate }}
@@ -227,7 +226,7 @@
         </ng-container>
         <ng-template uiTabContent>
           <ui-alert class="mb-4" variant="warning" *ngIf="distributionListId">
-            {{ 'components.distributionLists.DLWarning.message' | translate }}
+            {{ 'components.distributionLists.warning.message' | translate }}
           </ui-alert>
           <ui-alert class="mb-4" variant="warning" *ngIf="noEmail.bcc">
             {{ 'components.email.distributionList.alert.noEmail' | translate }}

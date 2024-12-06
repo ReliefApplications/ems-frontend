@@ -833,10 +833,6 @@
 			}
 		},
 		"distributionLists": {
-			"DLWarning": {
-				"message": "******",
-				"noData": "******"
-			},
 			"delete": {
 				"confirmationMessage": "****** {{name}} ******"
 			},
@@ -853,6 +849,10 @@
 				"name": {
 					"required": "******"
 				}
+			},
+			"warning": {
+				"message": "******",
+				"noData": "******"
 			}
 		},
 		"email": {

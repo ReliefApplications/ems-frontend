@@ -833,10 +833,6 @@
 			}
 		},
 		"distributionLists": {
-			"DLWarning": {
-				"message": "Any modifications made to a distribution list will be reflected in all areas where the DL is utilized.",
-				"noData": "No Emails found"
-			},
 			"delete": {
 				"confirmationMessage": "Are you sure you want to delete the distribution list '{{name}}'?"
 			},
@@ -853,6 +849,10 @@
 				"name": {
 					"required": "Please provide a name"
 				}
+			},
+			"warning": {
+				"message": "Any modifications made to a distribution list will be reflected in all areas where the DL is utilized.",
+				"noData": "No Emails found"
 			}
 		},
 		"email": {
