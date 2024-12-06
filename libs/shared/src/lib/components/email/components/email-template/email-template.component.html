@@ -383,6 +383,7 @@
               *ngTemplateOutlet="showDLPreview"
             ></ng-container>
             <div
+             *ngIf="!showDatasetLimitWarning"
               id="tblPreview"
               class="overflow-scroll"
               #tblPreview
