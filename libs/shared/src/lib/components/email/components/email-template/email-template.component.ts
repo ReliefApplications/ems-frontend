@@ -3,11 +3,9 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  OnChanges,
   OnDestroy,
   OnInit,
   Output,
-  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import {
@@ -43,16 +41,13 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class EmailTemplateComponent
   extends UnsubscribeComponent
-  implements OnInit, OnDestroy, OnChanges
+  implements OnInit, OnDestroy
 {
   /** Data set containing emails and records. */
   public dataset?: {
     emails: string[];
     records: any[];
   };
-
-  /** Disable fields */
-  @Input() isDisable = false;
 
   /** records of selected Dataset*/
   public data!: any[];
@@ -186,6 +181,12 @@ export class EmailTemplateComponent
   public nonEmailFieldsAlert = false;
   /** Actual resourceFields data  */
   public resourceFields: any = [];
+  /** Expand for "To" list items. */
+  isExpandedPreview = false;
+  /** Expand for "To" list items. */
+  isPreviewEmail = true;
+  /** DL preview emails  */
+  previewDLEmails: any = [];
 
   /**
    * Composite filter group.
@@ -225,11 +226,6 @@ export class EmailTemplateComponent
     this.segmentForm.get('segment')?.valueChanges.subscribe((value: any) => {
       this.clearUnusedValues(value);
     });
-    if (this.isDisable) {
-      this.segmentForm?.get('segment')?.disable();
-      this.segmentForm?.get('dataType')?.disable();
-      this.distributionList?.get('reference')?.disable();
-    }
 
     this.distributionListValid =
       (this.emailService.isToValid &&
@@ -281,23 +277,6 @@ export class EmailTemplateComponent
       this.updateSegmentOptions('Select With Filter');
     } else {
       this.updateSegmentOptions('Add Manually');
-    }
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (
-      changes['isDisable'] &&
-      changes['isDisable'].previousValue !== changes['isDisable'].currentValue
-    ) {
-      if (this.isDisable) {
-        this.segmentForm?.get('segment')?.disable();
-        this.segmentForm?.get('dataType')?.disable();
-        this.distributionList?.get('reference')?.disable();
-      } else {
-        this.segmentForm?.get('segment')?.enable();
-        this.segmentForm?.get('dataType')?.enable();
-        this.distributionList?.get('reference')?.enable();
-      }
     }
   }
 
@@ -502,6 +481,7 @@ export class EmailTemplateComponent
         };
 
         this.previewHTML = '';
+        this.previewDLEmails = [];
 
         this.http
           .post(
@@ -526,7 +506,17 @@ export class EmailTemplateComponent
                 this.showDatasetLimitWarning = true;
               }
               await this.checkFilter();
-
+              if (this.type === 'to') {
+                this.previewDLEmails = this.emailService.filterToEmails;
+              }
+              if (this.type === 'cc') {
+                this.previewDLEmails = this.emailService.filterCCEmails;
+              }
+              if (this.type === 'bcc') {
+                this.previewDLEmails = this.emailService.filterBCCEmails;
+              }
+              this.isPreviewEmail =
+                this.previewDLEmails?.length > 0 ? true : false;
               this.previewHTML = window.atob(response.tableHtml);
               if (this.tblPreview?.nativeElement) {
                 setTimeout(() => {
@@ -750,6 +740,14 @@ export class EmailTemplateComponent
             this.emailService.validateNextButton();
           } else if (this.type === 'cc' || this.type === 'bcc') {
             this.emailService.validateNextButton();
+            if (this.type === 'cc') {
+              this.emailService.filterCCEmails =
+                response?.cc?.length > 0 ? response?.cc : [];
+            }
+            if (this.type === 'bcc') {
+              this.emailService.filterBCCEmails =
+                response?.bcc?.length > 0 ? response?.bcc : [];
+            }
           }
           resolve(response?.to.length > 0);
         })
@@ -1018,5 +1016,12 @@ export class EmailTemplateComponent
     if (!this.nonEmailFieldsAlert && matchedData !== 'email') {
       this.nonEmailFieldsAlert = true;
     }
+  }
+
+  /**
+   * Expand see more email list dropdown for "To".
+   */
+  toggleExpandPreview() {
+    this.isExpandedPreview = !this.isExpandedPreview;
   }
 }

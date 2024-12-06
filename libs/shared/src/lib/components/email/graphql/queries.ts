@@ -448,11 +448,11 @@ export const ADD_CUSTOM_TEMPLATE = gql`
  * Distribution List related queries
  */
 export const EDIT_DISTRIBUTION_LIST = gql`
-  mutation EditDistributionList(
+  mutation EditEmailDistributionList(
     $editDistributionListId: ID!
     $distributionList: JSON
   ) {
-    editDistributionList(
+    editEmailDistributionList(
       id: $editDistributionListId
       distributionList: $distributionList
     ) {

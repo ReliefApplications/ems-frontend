@@ -849,6 +849,10 @@
 				"name": {
 					"required": "Veuillez fournir un nom"
 				}
+			},
+			"warning": {
+				"message": "Toute modification apportée à une liste de distribution sera reflétée dans toutes les zones où le DL est utilisé.",
+				"noData": "Aucun e-mail trouvé"
 			}
 		},
 		"email": {

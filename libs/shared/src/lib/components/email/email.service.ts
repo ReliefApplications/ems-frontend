@@ -206,6 +206,10 @@ export class EmailService {
   public selectedDLName: any = '';
   /** Checks if separate emails is checked for all blocks */
   public isAllSeparateEmail = false;
+  /** For storing emails For CC from service response (In select with Filter option) */
+  public filterCCEmails: any = [];
+  /** For storing emails For BCC from service response (In select with Filter option) */
+  public filterBCCEmails: any = [];
 
   /**
    * Generates new dataset group.

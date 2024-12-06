@@ -40,7 +40,6 @@
         (change)="validateEmail(filterInput)"
         autocomplete="off"
         aria-autocomplete="none"
-        [disabled]="isDisable"
         type="text"
         [placeholder]="'components.select.distribution.email' | translate"
       />
@@ -134,7 +133,6 @@
             (change)="validateEmail(filterInput)"
             autocomplete="off"
             aria-autocomplete="none"
-            [disabled]="isDisable"
             type="text"
             [placeholder]="'components.select.distribution.email' | translate"
           />
@@ -173,7 +171,6 @@
       variant="primary"
       class="text-xl px-1"
       [removable]="true"
-      [disabled]="isDisable"
       (removed)="removeEmailChip(chipIndex)"
       *ngFor="let emailControl of inputEmails; let chipIndex = index"
       >{{ emailControl }}</ui-chip
@@ -293,7 +290,6 @@
                   [fields]="availableFields"
                   [showLimit]="false"
                   [showColumnWidth]="false"
-                  [disabled]="isDisable"
                   (droppedFields)="setNonEmailFields($event)"
                 ></shared-tab-fields>
               </div>
@@ -356,13 +352,52 @@
               class="mt-2"
               *ngTemplateOutlet="showDLPreview"
             ></ng-container>
-            <div
-             *ngIf="!showDatasetLimitWarning"
-              id="tblPreview"
-              class="overflow-scroll"
-              #tblPreview
-              [innerHTML]="previewHTML"
-            ></div>
+            <ng-container *ngIf="previewDLEmails?.length > 0">
+              <div
+                class="mb-4"
+                *ngIf="previewDLEmails && previewDLEmails?.length > 0"
+              >
+                <!-- <h2>{{ 'components.select.distribution.to' | translate }}:</h2> -->
+                <ul class="list-none space-y-1">
+                  <div uiChipList>
+                    <ng-container
+                      *ngFor="let email of previewDLEmails; let i = index"
+                    >
+                      <ui-chip
+                        *ngIf="i < 6 || isExpandedPreview"
+                        variant="primary"
+                        class="w-full flex-row flex-wrap justify-between mr-1"
+                        >{{ email }}</ui-chip
+                      >
+                    </ng-container>
+                  </div>
+                  <ui-button
+                    *ngIf="previewDLEmails.length > 6 && !isExpandedPreview"
+                    class="inline-block"
+                    (click)="toggleExpandPreview()"
+                    >{{
+                      'components.email.preview.more'
+                        | translate : { length: previewDLEmails.length - 6 }
+                    }}</ui-button
+                  >
+                  <ui-button
+                    *ngIf="isExpandedPreview"
+                    class="inline-block"
+                    (click)="toggleExpandPreview()"
+                    >{{
+                      'components.email.preview.less' | translate
+                    }}</ui-button
+                  >
+                </ul>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="!isPreviewEmail">
+              <ui-alert class="mb-4" variant="warning">
+                {{
+                  'components.distributionLists.warning.noData' | translate
+                }}
+              </ui-alert>
+            </ng-container>
           </ng-template>
         </ui-tab>
       </div>
