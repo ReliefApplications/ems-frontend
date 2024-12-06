@@ -78,12 +78,16 @@
       ></ui-spinner>
     </div>
   </div>
+  <ng-container
+    class="mt-5"
+    *ngTemplateOutlet="noFieldsInResourceAlertTmpl"
+  ></ng-container>
   <div>
     <ui-tabs
       [selectedIndex]="currentTabIndex"
       (selectedIndexChange)="onTabSelect($event, true)"
       #datasetPreview
-      *ngIf="resource?.fields?.length || availableFields.length > 0"
+      *ngIf="resource?.fields?.length && availableFields.length > 0"
     >
       <div class="mt-4 flex flex-row">
         <!-- Fields Tab -->
@@ -160,7 +164,7 @@
                 class="float-right mt-8"
                 category="secondary"
                 variant="primary"
-                (click)="getDataSet('preview'); showPreview = true"
+                (click)="getDataSet('preview', true); showPreview = true"
                 [disabled]="selectedFields.length === 0"
               >
                 {{ 'common.preview' | translate }}
@@ -277,7 +281,11 @@
               class="mt-2"
               *ngTemplateOutlet="tooManyRecordsAlertTmpl"
             ></ng-container>
-            <div class="overflow-x-auto" formGroupName="query">
+            <div
+              *ngIf="!showDatasetLimitWarning"
+              class="overflow-x-auto"
+              formGroupName="query"
+            >
               <div id="tblPreview" [innerHTML]="previewHTML"></div>
             </div>
           </ng-template>
@@ -336,10 +344,6 @@
       </div>
     </ui-tabs>
   </div>
-  <ng-container
-    class="mt-5"
-    *ngTemplateOutlet="noFieldsInResourceAlertTmpl"
-  ></ng-container>
 </form>
 
 <!-- Too many records in dataset -->

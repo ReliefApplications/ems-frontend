@@ -51,7 +51,6 @@
       class="w-1/2"
       *ngIf="activeSegmentIndex >= 1"
       [formGroup]="distributionList"
-      [ngClass]="{ 'pointer-events-none': isDisable }"
     >
       <label
         htmlFor="select__data__set"
@@ -179,22 +178,6 @@
   </div>
 </ng-template>
 
-<!-- Too many records in dataset -->
-<ng-template #tooManyRecordsAlertTmpl>
-  <ui-alert
-    variant="warning"
-    [closable]="true"
-    *ngIf="showDatasetLimitWarning"
-    (close)="closeWarningMessage()"
-  >
-    <div
-      [innerHTML]="
-        'components.email.alert.tooManyRecords'
-          | translate : { totalRecords: totalMatchingRecords }
-      "
-    ></div>
-  </ui-alert>
-</ng-template>
 <!-- Please select the child fields of the Selected fields -->
 <ng-template #ChildFieldAlertTmpl>
   <ui-alert
@@ -277,7 +260,7 @@
       [selectedIndex]="currentTabIndex"
       (selectedIndexChange)="onTabSelect($event, true)"
       #datasetPreview
-      *ngIf="resource?.fields?.length || availableFields.length > 0"
+      *ngIf="resource?.fields?.length && availableFields.length > 0"
     >
       <div class="mt-4 flex flex-row">
         <!-- Fields Tab -->
@@ -333,17 +316,12 @@
             <ng-container
               *ngIf="resource?.fields?.length || availableFields.length > 0"
             >
-              <ng-container
-                class="mt-2"
-                *ngTemplateOutlet="tooManyRecordsAlertTmpl"
-              ></ng-container>
               <div class="flex gap-4 mt-2">
                 <div class="mt-2 w-full">
                   <!-- NESTED FILTER GROUP -->
                   <shared-tab-filter
                     [form]="$any(dlQuery.get('filter'))"
                     [query]="dlQuery.getRawValue()"
-                    [disabled]="isDisable"
                   >
                   </shared-tab-filter>
                 </div>
@@ -370,10 +348,6 @@
             {{ 'common.preview' | translate }}
           </ng-container>
           <ng-template uiTabContent>
-            <ng-container
-              class="mt-2"
-              *ngTemplateOutlet="tooManyRecordsAlertTmpl"
-            ></ng-container>
             <ng-container
               class="mt-2"
               *ngTemplateOutlet="showDLPreview"
