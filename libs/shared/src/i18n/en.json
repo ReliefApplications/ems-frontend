@@ -856,14 +856,14 @@
 				"header": "Actions"
 			},
 			"alert": {
-				"dlPreview": "All emails showing in this table below will be used to create the distribution list",
+				"dlPreview": "All emails listed below will be used to create the distribution list.",
 				"individualEmailsInfo": "Select the email fields you would like to use to send record specific emails to",
 				"invalidFields": "The following fields are not available for selection: <strong>{{fields}}</strong> as they are of type <strong>{{types}}</strong> and cannot be properly displayed in the table for this form.",
 				"noResource": "Select a resource using the dropdown to display Distribution list filter wizard",
 				"noResourceFields": "Selected resource doesn't contain any fields",
 				"noSelectedFields": "Please select at least 1 field to save this dataset",
 				"selectChildFields": "You have selected an Object/list field. Select atleast one child field to proceed further and/or preview.",
-				"selectedNonEmailFields": "The selected field is not configured as an email field. Do you want to proceed?",
+				"selectedNonEmailFields": "The selected field is not configured as an email field. Proceeding further may cause errors.",
 				"subscribeExists": "Error! {{message}}",
 				"subscribeFailed": "Oops!... Something went wrong whilst subscribing. {{errorMessage}}",
 				"subscribeSuccess": "Success! {{message}}",

@@ -856,14 +856,14 @@
 				"header": "Actions"
 			},
 			"alert": {
-				"dlPreview": "Tous les e-mails affichés dans ce tableau ci-dessous seront utilisés pour créer la liste de distribution",
+				"dlPreview": "Tous les e-mails répertoriés ci-dessous seront utilisés pour créer la liste de distribution.",
 				"individualEmailsInfo": "Sélectionnez les champs de courrier électronique que vous souhaitez utiliser pour envoyer des courriers électroniques spécifiques à un enregistrement.",
 				"invalidFields": "Les champs suivants ne peuvent pas être sélectionnés: <strong>{{fields}}</strong> car ils sont du type <strong>{{types}}</strong> et ne peut pas être correctement affiché dans le tableau de ce formulaire.",
 				"noResource": "Sélectionnez une ressource à l'aide de la liste déroulante pour afficher l'assistant de filtrage de liste de distribution",
 				"noResourceFields": "La ressource sélectionnée ne contient aucun champ",
 				"noSelectedFields": "Veuillez sélectionner au moins 1 champ pour sauvegarder ce jeu de données",
 				"selectChildFields": "Vous avez sélectionné un champ Objet/liste. Sélectionnez au moins un champ enfant pour continuer.",
-				"selectedNonEmailFields": "Le champ sélectionné n'est pas configuré comme champ de courrier électronique. Voulez-vous continuer ?",
+				"selectedNonEmailFields": "Le champ sélectionné n'est pas configuré comme champ de courrier électronique. Aller plus loin peut provoquer des erreurs.",
 				"subscribeExists": "Erreur! \n{{message}}",
 				"subscribeFailed": "Oups!... Une erreur s'est produite lors de l'abonnement. \n{{Message d'erreur}}",
 				"subscribeSuccess": "Succès! \nAbonné à la notification par e-mail: {{email}}.",

@@ -78,12 +78,16 @@
       ></ui-spinner>
     </div>
   </div>
+  <ng-container
+    class="mt-5"
+    *ngTemplateOutlet="noFieldsInResourceAlertTmpl"
+  ></ng-container>
   <div>
     <ui-tabs
       [selectedIndex]="currentTabIndex"
       (selectedIndexChange)="onTabSelect($event, true)"
       #datasetPreview
-      *ngIf="resource?.fields?.length || availableFields.length > 0"
+      *ngIf="resource?.fields?.length && availableFields.length > 0"
     >
       <div class="mt-4 flex flex-row">
         <!-- Fields Tab -->
@@ -340,10 +344,6 @@
       </div>
     </ui-tabs>
   </div>
-  <ng-container
-    class="mt-5"
-    *ngTemplateOutlet="noFieldsInResourceAlertTmpl"
-  ></ng-container>
 </form>
 
 <!-- Too many records in dataset -->
