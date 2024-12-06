@@ -1,3 +1,13 @@
+# [2.17.0-alpha.14](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.13...v2.17.0-alpha.14) (2024-12-06)
+
+
+### Bug Fixes
+
+* Deselecting a resource in email dataset builder would not hide query builder ([#2730](https://github.com/ReliefApplications/ems-frontend/issues/2730)) ([4111693](https://github.com/ReliefApplications/ems-frontend/commit/4111693c2ec560d7d96bd187108c0c1456d5fc9e))
+* quick email button on grids would only work if button is first one ([03b8350](https://github.com/ReliefApplications/ems-frontend/commit/03b83508e1b56fb829622ab8a0c03f10861e7133))
+* Records appearing in email dataset preview even if limit exceeded ([#2728](https://github.com/ReliefApplications/ems-frontend/issues/2728)) ([47377cf](https://github.com/ReliefApplications/ems-frontend/commit/47377cf2eb2c3fcb1028e8503c739f845d5f1ea3)), closes [AB#106123](https://github.com/AB/issues/106123)
+* some expressions not triggering in edit record ([75d6e8d](https://github.com/ReliefApplications/ems-frontend/commit/75d6e8ded296eb1e0772dbad306fb5754c9bb3cf))
+
 # [2.17.0-alpha.13](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.12...v2.17.0-alpha.13) (2024-12-04)
 
 
