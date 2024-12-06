@@ -121,7 +121,8 @@
   </div>
   <!-- To, CC, BCC Templates -->
   <div *ngIf="!showExistingDistributionList">
-    <ui-tabs>
+
+    <ui-tabs class="dlTabs">
       <!-- TO Tab -->
       <ui-tab [title]="'TO'">
         <ng-container ngProjectAs="label">

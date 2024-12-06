@@ -126,7 +126,26 @@
           <div class="combo-accordion-item-header" (click)="accordionItem.toggle()">
             {{ item }}
             <span class="combo-accordion-item-description">
-              Click to {{ accordionItem.expanded ? 'close' : 'open' }}
+              <ng-container *ngIf="!accordionItem.expanded">
+                <ui-button
+                variant="danger"
+                class="-top-[70px] -right-[14px] btnClose"
+                [isIcon]="true"
+                size="small"
+                [icon]="'keyboard_arrow_downc'"
+                >
+                </ui-button>
+              </ng-container>
+              <ng-container *ngIf="accordionItem.expanded">
+                <ui-button
+                variant="danger"
+                class="-top-[70px] -right-[14px] btnClose"
+                [isIcon]="true"
+                size="small"
+                [icon]="'keyboard_arrow_up'"
+                >
+                </ui-button>
+              </ng-container>
             </span>
           </div>
           <div
@@ -192,7 +211,26 @@
           <div class="combo-accordion-item-header" (click)="accordionItem.toggle()">
             {{ item }}
             <span class="combo-accordion-item-description">
-              Click to {{ accordionItem.expanded ? 'close' : 'open' }}
+              <ng-container *ngIf="!accordionItem.expanded">
+                <ui-button
+                variant="danger"
+                class="-top-[70px] -right-[14px] btnClose"
+                [isIcon]="true"
+                size="small"
+                [icon]="'keyboard_arrow_downc'"
+                >
+                </ui-button>
+              </ng-container>
+              <ng-container *ngIf="accordionItem.expanded">
+                <ui-button
+                variant="danger"
+                class="-top-[70px] -right-[14px] btnClose"
+                [isIcon]="true"
+                size="small"
+                [icon]="'keyboard_arrow_up'"
+                >
+                </ui-button>
+              </ng-container>
             </span>
           </div>
           <div
@@ -253,7 +291,26 @@
           <div class="combo-accordion-item-header" (click)="accordionItem.toggle()">
             {{ item }}
             <span class="combo-accordion-item-description">
-              Click to {{ accordionItem.expanded ? 'close' : 'open' }}
+              <ng-container *ngIf="!accordionItem.expanded">
+                <ui-button
+                variant="danger"
+                class="-top-[70px] -right-[14px] btnClose"
+                [isIcon]="true"
+                size="small"
+                [icon]="'keyboard_arrow_downc'"
+                >
+                </ui-button>
+              </ng-container>
+              <ng-container *ngIf="accordionItem.expanded">
+                <ui-button
+                variant="danger"
+                class="-top-[70px] -right-[14px] btnClose"
+                [isIcon]="true"
+                size="small"
+                [icon]="'keyboard_arrow_up'"
+                >
+                </ui-button>
+              </ng-container>
             </span>
           </div>
           <div

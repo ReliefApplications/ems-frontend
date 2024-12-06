@@ -151,6 +151,34 @@ export class SelectDistributionComponent
     ) {
       this.emailDistributionList.get('bcc.query.filter.logic').setValue('and');
     }
+
+    if (
+      !this.emailDistributionList
+        ?.get('to.commonServiceFilter.filter.logic')
+        ?.value?.trim()
+    ) {
+      this.emailDistributionList
+        .get('to.commonServiceFilter.filter.logic')
+        .setValue('and');
+    }
+    if (
+      !this.emailDistributionList
+        ?.get('cc.commonServiceFilter.filter.logic')
+        ?.value?.trim()
+    ) {
+      this.emailDistributionList
+        .get('cc.commonServiceFilter.filter.logic')
+        .setValue('and');
+    }
+    if (
+      !this.emailDistributionList
+        ?.get('bcc.commonServiceFilter.filter.logic')
+        ?.value?.trim()
+    ) {
+      this.emailDistributionList
+        .get('bcc.commonServiceFilter.filter.logic')
+        .setValue('and');
+    }
     if (!this.isAllSeparate()) {
       this.validateDistributionList();
     }

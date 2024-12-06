@@ -158,6 +158,9 @@ export class FilterRowComponent
     if (this.disabled) {
       this.form.disable();
     }
+    if (this.field?.isCommonService) {
+      this.field.options = this.getFilterdata(this.field?.name, this.field);
+    }
   }
 
   /**

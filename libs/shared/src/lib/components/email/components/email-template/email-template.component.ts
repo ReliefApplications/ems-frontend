@@ -30,7 +30,7 @@ import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
 import { prettifyLabel } from '../../../../../lib/utils/prettify';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ReferenceDataService } from 'libs/shared/src/lib/services/reference-data/reference-data.service';
+import { ReferenceDataService } from '../../../../services/reference-data/reference-data.service';
 
 /**
  * Email template to create distribution list
@@ -206,15 +206,7 @@ export class EmailTemplateComponent
 
   /** Declare Dropdown Userfields property */
   userTableFields: string[] = [];
-  /** Declare Dropdown fields property */
-  public fields = [
-    { key: 'Application', label: 'Application' },
-    { key: 'PermissionAccessType', label: 'Access Type' },
-    { key: 'SystemRole', label: ' Role' },
-    { key: 'SystemPosition', label: 'Position' },
-    { key: 'Country', label: 'Country' },
-    { key: 'Region', label: 'Region' },
-  ];
+
   /**
    * Composite filter group.
    *
@@ -264,8 +256,9 @@ export class EmailTemplateComponent
       this.type === 'to';
 
     this.dlQuery = this.distributionList.get('query') as FormGroup;
-    this.dlCommonQuery = this.emailService.createQuerygroup() as FormGroup;
-    this.resetFilters(this.dlCommonQuery);
+    this.dlCommonQuery = this.distributionList.get(
+      'commonServiceFilter'
+    ) as FormGroup;
     if (this.distributionList.controls.resource?.value && !this.resource) {
       this.selectedResourceId = this.distributionList.controls.resource.value;
       this.segmentForm.get('dataType')?.setValue('Resource');
@@ -298,10 +291,16 @@ export class EmailTemplateComponent
 
     const hasSelectedEmails = this.selectedEmails.value.length > 0;
     const hasFields = this.dlQuery.get('fields')?.value.length > 0;
+    const hasCommonservice = this.dlCommonQuery.get('filter.filters')
+      ?.value?.[0]?.field
+      ? true
+      : false;
     this.type === 'to' ? (this.emailService.isToValid = false) : '';
 
     if (hasSelectedEmails && hasFields) {
       this.updateSegmentOptions('Use Combination');
+    } else if (hasCommonservice && !hasSelectedEmails) {
+      this.updateSegmentOptions('Select from Common Servcies');
     } else if (
       !hasSelectedEmails &&
       (hasFields || this.selectedResourceId !== '')
@@ -453,6 +452,7 @@ export class EmailTemplateComponent
    *
    * @param event The tab selected
    * @param fromHTML If state is in edit mode then false else true if new notification (means Event from UI)
+   * @param fromCommomService if state is from common service or not
    */
   onTabSelect(event: any, fromHTML: boolean): void {
     const newIndex = event;
@@ -480,6 +480,15 @@ export class EmailTemplateComponent
         this.emailService.validateNextButton();
       }
     }
+    if (this.currentTabIndex !== event) {
+      if (
+        (this.expandedIndex === 2 && event === 1) ||
+        (this.activeSegmentIndex === 3 && event === 1)
+      ) {
+        this.getCommonServiceDataSet();
+      }
+    }
+
     // if (!this.showDatasetLimitWarning) {
     this.currentTabIndex = newIndex;
     // }
@@ -491,11 +500,10 @@ export class EmailTemplateComponent
    * @param tabName - The name of the tab for which to get the data set.
    * @param fromCommomService = It is common service save or ot
    */
-  async getDataSet(tabName?: any, fromCommomService?: any): Promise<void> {
+  async getDataSet(tabName?: any): Promise<void> {
     if (
-      (this.dlQuery.controls['name'].value !== null &&
-        this.dlQuery.controls['name'].value !== '') ||
-      fromCommomService
+      this.dlQuery.controls['name'].value !== null &&
+      this.dlQuery.controls['name'].value !== ''
     ) {
       if (tabName == 'fields') {
         this.onTabSelect(1, false);
@@ -506,22 +514,6 @@ export class EmailTemplateComponent
       // const allPreviewData: any = [];
       if (tabName == 'preview') {
         this.loading = true;
-        let commonServiceData: any = [];
-        if (this.dlCommonQuery?.getRawValue()) {
-          commonServiceData = Object.assign(
-            this.dlCommonQuery?.getRawValue(),
-            {}
-          );
-          commonServiceData?.filter?.filters?.forEach((ele: any) => {
-            if (
-              this.fields.filter((x: any) => x.key === ele.field).length > 0
-            ) {
-              ele.field = this.fields.filter(
-                (x: any) => x.key === ele.field
-              )?.[0].label;
-            }
-          });
-        }
 
         let objPreview: any = {};
         this.emailService.convertFields(
@@ -544,7 +536,6 @@ export class EmailTemplateComponent
             pageSize: 10,
             template: '',
           },
-          commonServiceFilter: commonServiceData || [],
         };
 
         this.previewHTML = '';
@@ -673,7 +664,7 @@ export class EmailTemplateComponent
    * in the selectedEmails FormArray.
    */
   get inputEmails(): string[] {
-    return this.selectedEmails.controls.map(
+    return this.selectedEmails?.controls?.map(
       (control: AbstractControl) => control.value
     );
   }
@@ -766,8 +757,12 @@ export class EmailTemplateComponent
           {}
         );
         commonServiceData?.filter?.filters?.forEach((ele: any) => {
-          if (this.fields.filter((x: any) => x.key === ele.field).length > 0) {
-            ele.field = this.fields.filter(
+          if (
+            this.emailService.commonServiceFields.filter(
+              (x: any) => x.key === ele.field
+            ).length > 0
+          ) {
+            ele.field = this.emailService.commonServiceFields.filter(
               (x: any) => x.key === ele.field
             )?.[0].label;
           }
@@ -783,12 +778,11 @@ export class EmailTemplateComponent
           fields: this.distributionList.getRawValue().query?.fields,
         },
         inputEmails: [],
-        commonServiceFilter: commonServiceData || [],
       };
 
       firstValueFrom(
         this.http.post(
-          `${this.restService.apiUrl}/notification/azure/preview-distribution-lists/`,
+          `${this.restService.apiUrl}/notification/azure/preview-resource-emails/`,
           objPreview
         )
       )
@@ -955,6 +949,7 @@ export class EmailTemplateComponent
     }
     if (this.activeSegmentIndex === 3) {
       this.onTabSelect(0, false);
+      this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
     }
   }
 
@@ -1111,7 +1106,28 @@ export class EmailTemplateComponent
    *
    */
   getCommonServiceDataSet() {
-    this.getDataSet('preview', true);
+    const commonServiceData: any = this.emailService.setCommonServicePayload(
+      this.dlCommonQuery?.getRawValue()?.filter
+    );
+    this.loading = true;
+    this.http
+      .post(
+        `${this.restService.apiUrl}/notification/azure/preview-common-services-users`,
+        commonServiceData
+      )
+      .subscribe(
+        async (response: any) => {
+          this.showPreview = true;
+          this.onTabSelect(1, false);
+          this.previewDLEmails = response;
+          this.isPreviewEmail = this.previewDLEmails?.length > 0 ? true : false;
+          this.loading = false;
+        },
+        (error: string) => {
+          console.error('Error:', error);
+          this.loading = false;
+        }
+      );
   }
 
   /**
@@ -1121,7 +1137,7 @@ export class EmailTemplateComponent
   async setCommonServiceFields() {
     await this.getUserTableFields();
 
-    this.fields?.forEach((ele: any) => {
+    this.emailService.commonServiceFields?.forEach((ele: any) => {
       this.commonServiceFields.push({
         graphQLFieldName: ele,
         name: ele.key,
