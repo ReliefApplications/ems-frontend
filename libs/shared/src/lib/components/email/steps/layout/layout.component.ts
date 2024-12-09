@@ -158,6 +158,8 @@ export class LayoutComponent
     if (this.emailService.isQuickAction) {
       this.emailService.resetPreviewData();
       this.emailService.previewData.datasets = ['Block 1'];
+      this.emailService.emailLayout = {};
+      this.emailService.emailLayout.name = 'Block 1';
     } else {
       this.emailService.createPreviewData();
     }
@@ -168,6 +170,8 @@ export class LayoutComponent
         this.emailService.allLayoutdata?.bodyHtml?.trim() === ''
           ? '<p>{{Block 1}}</p>'
           : this.emailService.allLayoutdata.bodyHtml;
+      this.emailService.emailLayout = {};
+      this.emailService.emailLayout.name = 'Block 1';
       this.layoutForm = this.fb.group({
         subjectField: [''],
         timeInput: [''],
@@ -397,11 +401,7 @@ export class LayoutComponent
 
         // Get the current content of the editor
         const currentContent = this.headerEditor.editor.getContent();
-        this.headerEditor.editor.selection.select(
-          this.headerEditor.editor.getBody(),
-          true
-        );
-        this.headerEditor.editor.selection.collapse(false);
+
         // Check if the cursor is at the beginning or end of the content
         if (cursorPosition === 0) {
           // If at the beginning, remove the leading whitespace from the token
@@ -417,6 +417,11 @@ export class LayoutComponent
             token
           );
         }
+        // Move cursor to end of token after insertion
+        this.headerEditor.editor.selection.setCursorLocation(
+          this.headerEditor.editor.getBody(),
+          cursorPosition + token.length
+        );
 
         // Reset the dropdown value
         if (tokenType === 'time') {
@@ -645,12 +650,17 @@ export class LayoutComponent
       const token = `{{${tabName}}}`;
 
       if (this.bodyEditor && this.bodyEditor.editor) {
-        this.bodyEditor.editor.selection.select(
-          this.bodyEditor.editor.getBody(),
-          true
-        );
-        this.bodyEditor.editor.selection.collapse(false);
+        const range = this.bodyEditor.editor.selection.getRng();
+
+        // Get the current cursor position as a number
+        const cursorPosition = range.startOffset;
+
         this.bodyEditor.editor.insertContent(token);
+        // Move cursor to end of token after insertion
+        this.bodyEditor.editor.selection.setCursorLocation(
+          this.bodyEditor.editor.getBody(),
+          cursorPosition + token.length
+        );
         this.layoutForm
           .get('body')
           ?.setValue(this.bodyEditor.editor.getContent());

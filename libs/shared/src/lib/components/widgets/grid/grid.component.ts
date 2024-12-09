@@ -506,7 +506,10 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                     (x: any) => x.id === selectedId
                   )[0];
                   if (template) {
-                    const emailQuery = this.buildEmailQuery(selectedIds);
+                    const emailQuery = this.buildEmailQuery(
+                      selectedIds,
+                      options.bodyFields
+                    );
                     if (emailQuery) {
                       emailQuery.pipe(takeUntil(this.destroy$)).subscribe({
                         next: ({ data }) => {
@@ -519,7 +522,11 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                             distributionList,
                             emailData,
                             this.metaResourceData,
-                            options.bodyFields
+                            options.bodyFields,
+                            options.navigateToPage &&
+                              this.widget.settings.actions.navigateToPage
+                              ? this.widget.settings.actions.navigateSettings
+                              : undefined
                           );
                           this.status = {
                             error: false,
@@ -739,12 +746,12 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
    * Build email query for quick action button.
    *
    * @param selectedIds Ids selected in the grid for email sending
+   * @param fields List of fields to pass to email
    * @returns Records graphql query.
    */
-  private buildEmailQuery(selectedIds: string[]) {
+  private buildEmailQuery(selectedIds: string[], fields: any[]) {
     const settingsData: any = clone(this.layout);
-    settingsData.query.fields =
-      this.settings?.floatingButtons?.[0].bodyFields || [];
+    settingsData.query.fields = fields;
     const builtQuery = this.queryBuilder.buildQuery(settingsData);
     if (!builtQuery) {
       this.status = {

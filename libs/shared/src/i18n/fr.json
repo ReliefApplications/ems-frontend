@@ -863,21 +863,25 @@
 				"name": {
 					"required": "Veuillez fournir un nom"
 				}
+			},
+			"warning": {
+				"message": "Toute modification apportée à une liste de distribution sera reflétée dans toutes les zones où le DL est utilisé.",
+				"noData": "Aucun e-mail trouvé"
 			}
 		},
 		"email": {
 			"action": {
-				"header": "Actes"
+				"header": "Actions"
 			},
 			"alert": {
-				"dlPreview": "Tous les e-mails affichés dans ce tableau ci-dessous seront utilisés pour créer la liste de distribution",
+				"dlPreview": "Tous les e-mails répertoriés ci-dessous seront utilisés pour créer la liste de distribution.",
 				"individualEmailsInfo": "Sélectionnez les champs de courrier électronique que vous souhaitez utiliser pour envoyer des courriers électroniques spécifiques à un enregistrement.",
 				"invalidFields": "Les champs suivants ne peuvent pas être sélectionnés: <strong>{{fields}}</strong> car ils sont du type <strong>{{types}}</strong> et ne peut pas être correctement affiché dans le tableau de ce formulaire.",
 				"noResource": "Sélectionnez une ressource à l'aide de la liste déroulante pour afficher l'assistant de filtrage de liste de distribution",
 				"noResourceFields": "La ressource sélectionnée ne contient aucun champ",
 				"noSelectedFields": "Veuillez sélectionner au moins 1 champ pour sauvegarder ce jeu de données",
 				"selectChildFields": "Vous avez sélectionné un champ Objet/liste. Sélectionnez au moins un champ enfant pour continuer.",
-				"selectedNonEmailFields": "Le champ sélectionné n'est pas configuré comme champ de courrier électronique. Voulez-vous continuer ?",
+				"selectedNonEmailFields": "Le champ sélectionné n'est pas configuré comme champ de courrier électronique. Aller plus loin peut provoquer des erreurs.",
 				"subscribeExists": "Erreur! \n{{message}}",
 				"subscribeFailed": "Oups!... Une erreur s'est produite lors de l'abonnement. \n{{Message d'erreur}}",
 				"subscribeSuccess": "Succès! \nAbonné à la notification par e-mail: {{email}}.",
@@ -886,6 +890,15 @@
 				"unsubscribeSuccess": "Succès! \n{{message}}"
 			},
 			"back": "Retour à la liste",
+			"dataset": {
+				"block": {
+					"label": "Titre du Bloc",
+					"title": "Bloc"
+				},
+				"navigateToPage": {
+					"title": "Aller à la page"
+				}
+			},
 			"distributionList": {
 				"alert": {
 					"allSeparate": "La liste de distribution sera composée de tous les e-mails des utilisateurs obtenus en envoyant un e-mail séparé. Si vous souhaitez envoyer à une liste d'utilisateurs, veuillez créer un bloc normal à l'étape 2.",
@@ -1231,11 +1244,10 @@
 			}
 		},
 		"queryBuilder": {
-			"apply": "Appliquer le filtre",
-			"block": {
-				"label": "Titre du Bloc",
-				"title": "Bloc"
+			"action": {
+				"title": "Aller à la page"
 			},
+			"apply": "Appliquer le filtre",
 			"dataset": {
 				"dataType": "Type de données",
 				"referenceData": "Reference Data",
@@ -1838,6 +1850,7 @@
 							"modify": "Modifier automatiquement les lignes sélectionnées",
 							"modifyField": "Champ à modifier",
 							"modifyValue": "Value to attribute",
+							"navigateToPage": "Inclure le lien généré par Aller à la page",
 							"notify": {
 								"message": "Message de notification"
 							},

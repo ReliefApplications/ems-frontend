@@ -863,6 +863,10 @@
 				"name": {
 					"required": "******"
 				}
+			},
+			"warning": {
+				"message": "******",
+				"noData": "******"
 			}
 		},
 		"email": {
@@ -886,6 +890,15 @@
 				"unsubscribeSuccess": "****** {{message}}"
 			},
 			"back": "******",
+			"dataset": {
+				"block": {
+					"label": "******",
+					"title": "******"
+				},
+				"navigateToPage": {
+					"title": "******"
+				}
+			},
 			"distributionList": {
 				"alert": {
 					"allSeparate": "******",
@@ -1232,10 +1245,6 @@
 		},
 		"queryBuilder": {
 			"apply": "******",
-			"block": {
-				"label": "******",
-				"title": "******"
-			},
 			"dataset": {
 				"dataType": "******",
 				"referenceData": "******",
@@ -1838,6 +1847,7 @@
 							"modify": "******",
 							"modifyField": "******",
 							"modifyValue": "******",
+							"navigateToPage": "******",
 							"notify": {
 								"message": "******"
 							},

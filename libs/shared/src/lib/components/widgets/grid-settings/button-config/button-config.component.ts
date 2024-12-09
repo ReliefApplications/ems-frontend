@@ -35,6 +35,8 @@ export class ButtonConfigComponent
 {
   /** Event emitted when the user clicks on the delete button */
   @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
+  /** Widget form group */
+  @Input() widgetFormGroup!: FormGroup;
   /** Form group */
   @Input() formGroup!: FormGroup;
   /** List of fields */

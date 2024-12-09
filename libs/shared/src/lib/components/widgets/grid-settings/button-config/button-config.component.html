@@ -402,6 +402,17 @@
               | translate
           }}</ng-container>
         </ui-checkbox>
+
+        <!-- Include navigate To Page -->
+        <ui-checkbox
+          formControlName="navigateToPage"
+          *ngIf="widgetFormGroup.value.actions.navigateToPage"
+        >
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.navigateToPage'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
         <!-- Select fields to see in dataset -->
         <h2>{{ 'components.emailBuilder.fields' | translate }}</h2>
         <shared-tab-fields

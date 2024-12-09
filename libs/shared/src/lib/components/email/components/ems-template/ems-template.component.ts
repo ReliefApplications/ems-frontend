@@ -417,7 +417,16 @@ export class EmsTemplateComponent
     );
     //Check if DL id exist or all the dataset are to be send separate
     if (emailData?.emailDistributionList?.id && !isAllSendSeparate) {
+      const dlList: any = emailData?.emailDistributionList;
       emailData.emailDistributionList = emailData.emailDistributionList.id;
+      if (
+        emailData.emailDistributionList ||
+        emailData.emailDistributionList?.id
+      ) {
+        await firstValueFrom(
+          this.emailService.editDistributionList(dlList, dlList.id)
+        );
+      }
     } else if (
       ((emailData.emailDistributionList?.to?.resource ||
         emailData.emailDistributionList?.to?.reference) &&
@@ -1016,7 +1025,6 @@ export class EmsTemplateComponent
    * @param e stepper change event
    */
   currentStepChange(e: number) {
-    console.log(e);
     if (e === 5) {
       this.showPreview();
     }

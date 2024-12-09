@@ -8,8 +8,8 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { QueryRef } from 'apollo-angular';
 import { cloneDeep } from 'lodash';
 import {
   Resource,
@@ -26,15 +26,11 @@ import { RestService } from '../../../../services/rest/rest.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { prettifyLabel } from '../../../../../lib/utils/prettify';
 import {
-  ApiConfigurationsQueryResponse,
-  ReferenceDataQueryResponse,
-  ReferenceDatasQueryResponse,
+  Application,
+  ApplicationService,
+  ContentType,
+  Page,
 } from '../../../../../index';
-import {
-  GET_API_CONFIGURATIONS,
-  GET_REFERENCE_DATA,
-  GET_REFERENCE_DATAS,
-} from '../../graphql/queries';
 /**
  * Component for filtering, selecting fields and styling block data sets.
  */
@@ -82,7 +78,7 @@ export class DatasetFilterComponent
   /** Fields for filtering. */
   public filterFields: any[] = [];
   /** Available fields for filtering. */
-  public availableFields: any[] = [];
+  public availableFields: any = [];
   /** Available fields for individual Emails. */
   public availableFieldsIndividualEmail: any[] = [];
   /** Selected fields for individual Emails. */
@@ -126,50 +122,49 @@ export class DatasetFilterComponent
   /** Resource Populated Check */
   resourcePopulated = false;
   /** Preview HTML */
-  previewHTML = '';
+  previewHTML: any = '';
   /** Flag to show the Child fields limit warning. */
   public showFieldsWarning = false;
   /** Flag for data is Resource or Reference data */
   public isReferenceData = false;
   /** List of data types */
   public dataTypeList: any = ['Resource', 'Reference Data'];
-  /** List of Reference  types */
-  public refernceData: any = [];
+  /** Available pages from the application */
+  public pages: any[] = [];
+  /** Flag to show the Child fields limit warning. */
+  public showFieldsWarning_SSE = false;
 
   /**
    * To use helper functions, Apollo serve
    *
    * @param emailService helper functions
-   * @param apollo server
-   * @param formGroup Angular form builder
    * @param snackBar snackbar helper function
    * @param queryBuilder Shared query builder service
    * @param gridService Shared grid service
    * @param http Backend http client
    * @param restService rest service
    * @param sanitizer html sanitizer
+   * @param applicationService application service
    */
   constructor(
     public emailService: EmailService,
-    private apollo: Apollo,
-    private formGroup: FormBuilder,
     public snackBar: SnackbarService,
     public queryBuilder: QueryBuilderService,
     public gridService: GridService,
     private http: HttpClient,
     private restService: RestService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    public applicationService: ApplicationService
   ) {
     super();
   }
 
   ngOnInit(): void {
+    const application = this.applicationService.application.getValue();
+    this.pages = this.getPages(application);
     if (this.query.controls.resource.value && !this.resource) {
       this.selectedResourceId = this.query.controls.resource.value;
       this.getResourceData(false);
-    }
-    if (this.query.controls?.reference?.value) {
-      this.getRefernceData(this.query.controls?.reference?.value);
     }
     this.query.controls.resource.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -184,6 +179,12 @@ export class DatasetFilterComponent
             this.resource.fields = [];
           }
           this.getResourceData(true);
+        } else if (value === null) {
+          this.availableFields = [];
+          this.selectedFields = [];
+          if (this.resource?.fields) {
+            this.resource.fields = [];
+          }
         }
       });
     this.query.controls.name.valueChanges
@@ -197,7 +198,15 @@ export class DatasetFilterComponent
         }
         this.emailService.index.next(this.activeTab.index);
       });
-
+    this.query.controls?.navigateSettings?.controls?.field?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data: any) => {
+        if (data) {
+          this.query.controls['navigateToPage'].setValue(true);
+        } else {
+          this.query.controls['navigateToPage'].setValue(false);
+        }
+      });
     // this.query.get('individualEmail').disable();
     this.separateEmail = this.emailService.updateSeparateEmail(
       this.activeTab.index
@@ -246,9 +255,9 @@ export class DatasetFilterComponent
         if (
           value === true &&
           this.selectedFieldsIndividualEmail?.length === 0 &&
-          (this.resource || this.refernceData)
+          this.resource
         ) {
-          this.onTabSelect(3, false);
+          this.onTabSelect(4, false);
           this.emailService.disableSaveAndProceed.next(true);
         } else if (this.resource) {
           this.onTabSelect(0, false);
@@ -271,7 +280,7 @@ export class DatasetFilterComponent
   }
 
   override ngOnDestroy() {
-    if (!(this.resource || this.refernceData?.length > 0)) {
+    if (!this.resource) {
       if (this.query?.get('individualEmail') === true) {
         this.query?.get('individualEmail').setValue(false);
       }
@@ -298,7 +307,7 @@ export class DatasetFilterComponent
    */
   onTabSelect(event: any, fromHTML: boolean): void {
     const newIndex = event;
-    const previewTabIndex = 2;
+    const previewTabIndex = 3;
 
     const isSeparateEmailValid =
       (this.query.get('individualEmail').value === true &&
@@ -310,19 +319,22 @@ export class DatasetFilterComponent
       !this.showFieldsWarning &&
       isSeparateEmailValid;
     // Checks if entry is valid
-    if (
-      newIndex === previewTabIndex &&
-      this.currentTabIndex !== previewTabIndex
-    ) {
-      this.getDataSet('preview', true);
-    }
+    // if (
+    //   newIndex === previewTabIndex &&
+    //   this.currentTabIndex !== previewTabIndex
+    // ) {
+    //   this.getDataSet('preview', true);
+    // }
     //if new tab is preview, get preview data
+    this.showDatasetLimitWarning = fromHTML
+      ? false
+      : this.showDatasetLimitWarning;
     if (fromHTML && newIndex === previewTabIndex) {
       if (isValid) {
         this.emailService.disableSaveAndProceed.next(false);
         this.emailService.disableSaveAsDraft.next(false);
       }
-      this.getDataSet('preview');
+      this.currentTabIndex !== newIndex ? this.getDataSet('preview') : '';
     } else if (newIndex >= 0) {
       if (isValid) {
         this.emailService.disableSaveAndProceed.next(false);
@@ -459,15 +471,7 @@ export class DatasetFilterComponent
       this.query.controls['name'].value !== ''
     ) {
       if (tabName == 'fields') {
-        if (
-          this.query.get('resource').value === null ||
-          this.query.get('resource').value === ''
-        ) {
-          //For refernce data selection needs to skip filter tab
-          this.onTabSelect(2, false);
-        } else {
-          this.onTabSelect(1, false);
-        }
+        this.onTabSelect(1, false);
         if (this.selectedFields.length) {
           this.emailService.disableSaveAndProceed.next(false);
           this.emailService.disableSaveAsDraft.next(false);
@@ -497,7 +501,7 @@ export class DatasetFilterComponent
 
           objPreview = {
             resource: this.resource?.id ?? '',
-            reference: this.query.get('reference').value ?? '',
+            reference: '',
             name: query?.name,
             query: {
               name: query.query?.name,
@@ -511,6 +515,8 @@ export class DatasetFilterComponent
               pageSize: 10,
               template: '',
             },
+            navigateSettings: this.query.value.navigateSettings,
+            navigateToPage: this.query.value.navigateToPage,
           };
 
           // TODO: Somehow make this go down recursively instead of just checking for just the child
@@ -543,10 +549,12 @@ export class DatasetFilterComponent
                     }
                   }
                   if (!validCheck) {
-                    this.onTabSelect(2, false);
-                    this.showPreview = true;
                     if (response.count <= 50) {
                       this.showDatasetLimitWarning = false;
+                    }
+                    this.onTabSelect(3, false);
+                    if (response.count <= 50) {
+                      // this.showDatasetLimitWarning = false;
                       let allPreviewData: any = [];
                       allPreviewData.push({
                         dataList: response,
@@ -570,13 +578,10 @@ export class DatasetFilterComponent
 
                     const previewRes = window.atob(response.tableHtml);
                     if (previewRes.includes(this.activeTab.title)) {
-                      this.previewHTML = previewRes;
-                      const previewHTML = document.getElementById(
-                        'tblPreview'
-                      ) as HTMLInputElement;
-                      if (previewHTML) {
-                        previewHTML.innerHTML = this.previewHTML;
-                      }
+                      setTimeout(() => {
+                        this.previewHTML =
+                          this.sanitizer.bypassSecurityTrustHtml(previewRes);
+                      }, 100);
                     }
                   }
 
@@ -594,7 +599,15 @@ export class DatasetFilterComponent
         }
       }
     } else {
-      this.query.controls['name'].markAsTouched();
+      // TODO: Somehow make this go down recursively instead of just checking for just the child
+      this.showFieldsWarning_SSE = false;
+      this.query.getRawValue().query?.fields.forEach((field: any) => {
+        if (field.kind == 'OBJECT' || field.kind == 'LIST') {
+          if (field.fields == undefined || field.fields.length == 0) {
+            this.showFieldsWarning_SSE = true;
+          }
+        }
+      });
     }
     this.emailService.selectedDataSet = '';
   }
@@ -694,11 +707,14 @@ export class DatasetFilterComponent
     ) {
       if (
         this.query
+          ?.get('individualEmailFields')
           ?.getRawValue()
-          ?.fields?.filter((x: any) => x?.fields?.length === 0).length > 0
+          ?.filter((x: any) => x?.fields?.length === 0).length > 0
       ) {
         this.emailService.disableSaveAndProceed.next(true);
+        this.showFieldsWarning_SSE = true;
       } else {
+        this.showFieldsWarning_SSE = false;
         this.emailService.disableSaveAndProceed.next(false);
         this.emailService.disableSaveAsDraft.next(false);
       }
@@ -781,191 +797,34 @@ export class DatasetFilterComponent
   }
 
   /**
-   * Bind the reference data if reference data checkbox is checked.
+   * Get available pages from app
    *
-   * @param event selected Datatype Id
+   * @param application application
+   * @returns list of pages and their url
    */
-  onDataTypeChange(event: any) {
-    this.query.get('reference').setValue(null);
-    this.query.get('resource').setValue(null);
-    // this.resetQuery(this.query.get('query'));
-    this.availableFields = [];
-    this.selectedFields = [];
-    if (event?.toLowerCase() === 'resource') {
-      this.refernceData = [];
-    } else {
-      this.getRefernceData();
-    }
-  }
-
-  /**
-   * Bind the reference data if reference data checkbox is checked.
-   *
-   * @param refernceId selected refernce Id
-   */
-  getRefernceData(refernceId?: any): void {
-    this.loading = true;
-    this.apollo
-      .watchQuery<ApiConfigurationsQueryResponse>({
-        query: GET_API_CONFIGURATIONS,
-        variables: {
-          first: 10,
-          afterCursor: '',
-          filter: {
-            filters: [],
-            logic: 'and',
-          },
-          sortField: undefined,
-          sortOrder: undefined,
-        },
-      })
-      .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: ({ data }) => {
-          if (
-            data?.apiConfigurations?.edges?.filter(
-              (x) =>
-                x?.node?.status === 'active' &&
-                x?.node?.authType == 'serviceToService'
-            ).length > 0
-          ) {
-            const configurations = data?.apiConfigurations.edges.filter(
-              (x) =>
-                x.node.status === 'active' &&
-                x.node.authType == 'serviceToService'
-            );
-            this.apollo
-              .watchQuery<ReferenceDatasQueryResponse>({
-                query: GET_REFERENCE_DATAS,
-                variables: {
-                  first: 10,
-                  afterCursor: '',
-                  filter: {
-                    filters: [],
-                    logic: 'and',
-                  },
-                  sortField: undefined,
-                  sortOrder: undefined,
-                },
-              })
-              .valueChanges.pipe(takeUntil(this.destroy$))
-              .subscribe(
-                ({ data }) => {
-                  this.loading = false;
-                  if (data?.referenceDatas) {
-                    const refernceData: any = data.referenceDatas.edges
-                      .map((x: any) => x.node)
-                      .filter((x: any) =>
-                        configurations
-                          .map((x: any) => x?.node?.id)
-                          .includes(x.apiConfiguration?.id)
-                      );
-                    this.refernceData = refernceData;
-                    if (refernceId) {
-                      this.getSelectedReferenceData(refernceId);
-                    }
-                  }
-                },
-                (err) => {
-                  this.snackBar.openSnackBar(err.message, { error: true });
-                  this.loading = false;
-                }
-              );
-          }
-        },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
-          this.loading = false;
-        },
-      });
-  }
-
-  /**
-   * Bind the reference data if reference data checkbox is checked.
-   *
-   * @param event get selected Id of refernce data
-   * @param fromHTML Method call isfrom UI
-   */
-  getSelectedReferenceData(event: any, fromHTML?: boolean) {
-    // this.resetQuery(this.query.get('query'));
-    this.availableFields = [];
-    this.selectedFields = [];
-    this.availableFieldsIndividualEmail = [];
-    fromHTML ? this.resetQuery(this.query.get('query')) : '';
-    if (this.resource?.id) {
-      this.resource.id = undefined;
-    }
-    const tempReferData = this.refernceData?.filter(
-      (x: any) => x?.id === event
+  private getPages(application: Application | null) {
+    return (
+      application?.pages?.map((page: any) => ({
+        id: page.id,
+        name: page.name,
+        urlParams: this.getPageUrlParams(application, page),
+        placeholder: `{{page(${page.id})}}`,
+      })) || []
     );
-    if (tempReferData?.length > 0) {
-      this.query.get('query').get('name').setValue(tempReferData[0].name);
-    }
-    this.loading = true;
-    this.apollo
-      .watchQuery<ReferenceDataQueryResponse>({
-        query: GET_REFERENCE_DATA,
-        variables: {
-          id: event,
-        },
-      })
-      .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: ({ data }) => {
-          this.onTabSelect(0, false);
-          this.loading = false;
-          if (data?.referenceData?.fields) {
-            const refernceFields: any = [];
-            data.referenceData.fields.forEach((ele: any) => {
-              const eleType = this.getEditorType(ele.type);
-              refernceFields.push({
-                graphQLFieldName: ele.graphQLFieldName,
-                name: ele.name,
-                kind: 'SCALAR',
-                type: eleType,
-                editor: eleType,
-              });
-            });
-            this.availableFields = refernceFields;
-            this.availableFieldsIndividualEmail = cloneDeep(refernceFields);
-          }
-        },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
-          this.loading = false;
-        },
-      });
   }
 
   /**
-   * get the editor type name.
+   * Get page url params
    *
-   * @param type send the type name
-   * @returns type name
+   * @param application application
+   * @param page page to get url from
+   * @returns url of the page
    */
-  getEditorType(type: any) {
-    switch (type) {
-      case 'string':
-        return 'text';
-        break;
-      case 'integer':
-        return 'numeric';
-        break;
-      case 'number':
-        return 'numeric';
-        break;
-      case 'boolean':
-        return 'boolean';
-        break;
-      case 'object':
-        return '';
-        break;
-      case 'array':
-        return 'dropdown';
-        break;
-      default:
-        return 'text';
-        break;
-    }
+  private getPageUrlParams(application: Application, page: Page): string {
+    const applicationPath =
+      this.applicationService.getApplicationPath(application);
+    return page.type === ContentType.form
+      ? `${applicationPath}/${page.type}/${page.id}`
+      : `${applicationPath}/${page.type}/${page.content}`;
   }
 }
