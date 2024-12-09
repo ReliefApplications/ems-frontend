@@ -261,6 +261,7 @@ export class ActivityLogComponent
       filter: this.filter,
       userId: this.userId,
       applicationId: this.applicationId,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     });
   }
 

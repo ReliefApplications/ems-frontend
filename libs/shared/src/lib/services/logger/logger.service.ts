@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { RestService } from '../rest/rest.service';
-import { ApplicationService } from '../application/application.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 
@@ -18,20 +17,17 @@ export class LoggerService {
    * Service to track user activity
    *
    * @param restService Service to make REST calls
-   * @param applicationService Service to manage applications
    * @param router Angular router service
    * @param activatedRoute Angular activated route service
    */
   constructor(
     private restService: RestService,
-    private applicationService: ApplicationService,
     public router: Router,
     private activatedRoute: ActivatedRoute
   ) {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event) => {
-        console.log('NavigationEnd:', event);
         if (event instanceof NavigationEnd) {
           this.track({
             eventType: 'navigation',
@@ -55,20 +51,14 @@ export class LoggerService {
 
     if (componentAndParams['ApplicationComponent']) {
       const appParams = componentAndParams['ApplicationComponent'];
-      activity.applicationId = appParams.id;
       activity.metadata.applicationId = appParams.id;
     }
 
-    console.log('Activity:', activity);
-
-    this.restService.post(this.activityBasePath, activity).subscribe(
-      (response) => {
-        console.log('Activity tracked successfully', response);
+    this.restService.post(this.activityBasePath, activity).subscribe({
+      error: (err) => {
+        console.error('Error while tracking activity: ', err);
       },
-      (error) => {
-        console.error('Error tracking activity', error);
-      }
-    );
+    });
   }
 
   /**

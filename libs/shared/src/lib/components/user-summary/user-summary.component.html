@@ -2,6 +2,7 @@
   {{ title }}
 </h1>
 <ui-tabs>
+  <!-- User summary -->
   <ui-tab>
     <ng-container ngProjectAs="label">{{
       'components.user.summary.title' | translate
@@ -14,6 +15,7 @@
     ></shared-user-details>
     <ui-spinner *ngIf="loading"></ui-spinner>
   </ui-tab>
+  <!-- User roles -->
   <ui-tab>
     <ng-container ngProjectAs="label">{{
       'common.role.few' | translate
@@ -26,12 +28,13 @@
       [loading]="loading"
     ></shared-user-roles>
   </ui-tab>
+  <!-- User activities -->
   <ui-tab>
     <ng-container ngProjectAs="label">{{
       'common.activity.few' | translate
     }}</ng-container>
     <ng-container *ngIf="user">
-      <shared-activity-log [userId]="user.id"></shared-activity-log>
+      <shared-activity-log [userId]="user.id" [applicationId]="application?.id"></shared-activity-log>
     </ng-container>
   </ui-tab>
 </ui-tabs>
