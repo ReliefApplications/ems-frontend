@@ -1,5 +1,5 @@
 import { DownloadService } from './../../services/download/download.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client/core/types';
 import { handleTablePageEvent, UIPageChangeEvent } from '@oort-front/ui';
@@ -10,10 +10,7 @@ import {
   ActivityLogsActivityLogNodesQueryResponse,
 } from '../../models/activity-log.model';
 import { RestService } from '../../services/rest/rest.service';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../utils/public-api';
+import { updateQueryUniqueValues } from '../../utils/public-api';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { LIST_ACTIVITIES } from './graphql/queries';
 
@@ -32,24 +29,36 @@ export class ActivityLogComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** User ID to filter activities. */
+  @Input() userId: string | undefined;
+
+  /** Application ID to filter activities. */
+  @Input() applicationId: string | undefined;
+
   /** List of activities to display. */
   public activitiesLogs: ActivityLog[] = [];
+
   /** Columns to display in the table. */
   public displayedColumns: string[] = [];
+
   /** Attributes */
   public attributes: { text: string; value: string }[] = [];
+
   /** Loading flag */
   public loading = false;
+
   /** Filter form group */
   public filterForm = this.fb.group({
     startDate: [null],
     endDate: [null],
   });
+
   /** Filter */
   public filter: any = {
     filters: [],
     logic: 'and',
   };
+
   /** Page info */
   public pageInfo = {
     pageIndex: 0,
@@ -57,8 +66,10 @@ export class ActivityLogComponent
     length: 0,
     endCursor: '',
   };
+
   /** Cached activity logs */
   public cachedActivities: ActivityLog[] = [];
+
   /** Activity logs query */
   private activityLogsQuery!: QueryRef<ActivityLogsActivityLogNodesQueryResponse>;
 
@@ -83,7 +94,6 @@ export class ActivityLogComponent
    * OnInit lifecycle hook to fetch activities when the component initializes.
    */
   ngOnInit(): void {
-    // Use Apollo service to watch the LIST_ACTIVITIES query
     this.activityLogsQuery =
       this.apollo.watchQuery<ActivityLogsActivityLogNodesQueryResponse>({
         query: LIST_ACTIVITIES,
@@ -91,8 +101,11 @@ export class ActivityLogComponent
           first: DEFAULT_PAGE_SIZE,
           afterCursor: null,
           filter: this.filter,
+          userId: this.userId,
+          applicationId: this.applicationId,
         },
       });
+
     this.getAttributes();
     this.setValueChangeListeners();
   }
@@ -136,6 +149,7 @@ export class ActivityLogComponent
           );
         }
       );
+
     this.filterForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
       next: (value) => {
         const filters = [];
@@ -201,33 +215,21 @@ export class ActivityLogComponent
       afterCursor: refetch ? null : this.pageInfo.endCursor,
       filter: this.filter,
     };
-    const cachedValues: ActivityLogsActivityLogNodesQueryResponse =
-      getCachedValues(this.apollo.client, LIST_ACTIVITIES, variables);
+
     if (refetch) {
       this.cachedActivities = [];
       this.pageInfo.pageIndex = 0;
     }
-    if (cachedValues) {
-      this.updateValues(cachedValues);
-    } else {
-      if (refetch) {
-        // Rebuild the query
-        this.activityLogsQuery.refetch(variables);
-      } else {
-        // Fetch more records
-        this.activityLogsQuery
-          .fetchMore({
-            variables,
-          })
-          .then(
-            (
-              results: ApolloQueryResult<ActivityLogsActivityLogNodesQueryResponse>
-            ) => {
-              this.updateValues(results.data);
-            }
-          );
-      }
-    }
+
+    this.activityLogsQuery
+      .refetch(variables)
+      .then(
+        (
+          results: ApolloQueryResult<ActivityLogsActivityLogNodesQueryResponse>
+        ) => {
+          this.updateValues(results.data);
+        }
+      );
   }
 
   /**
@@ -257,6 +259,8 @@ export class ActivityLogComponent
     const path = '/activity/download-activities';
     this.downloadService.getActivitiesExport(path, {
       filter: this.filter,
+      userId: this.userId,
+      applicationId: this.applicationId,
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     });
   }

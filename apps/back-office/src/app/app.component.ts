@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
 import {
   GeofieldsListboxComponent,
   ApplicationDropdownComponent,
@@ -15,7 +14,6 @@ import {
   CsDocsPropertiesDropdownComponent,
   AcceptedValueTypesTextComponent,
 } from '@oort-front/shared';
-import { filter } from 'rxjs';
 
 /**
  * Root component of back-office.
@@ -47,12 +45,10 @@ export class AppComponent implements OnInit {
    * Root component of back-office
    *
    * @param authService Shared authentication service
-   * @param router Angular router
    * @param logger Shared logger service
    */
   constructor(
     private authService: AuthService,
-    private router: Router,
     private logger: LoggerService
   ) {}
 
@@ -61,18 +57,5 @@ export class AppComponent implements OnInit {
    */
   ngOnInit(): void {
     this.authService.initLoginSequence();
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event) => {
-        console.log(event);
-        if (event instanceof NavigationEnd) {
-          this.logger.track({
-            eventType: 'navigation',
-            metadata: {
-              url: event.urlAfterRedirects,
-            },
-          });
-        }
-      });
   }
 }

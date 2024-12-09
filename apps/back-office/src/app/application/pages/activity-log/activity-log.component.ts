@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import { ApplicationService } from '@oort-front/shared';
+import { Observable } from 'rxjs';
+import { Application } from '@oort-front/shared';
+
 /**
  * Archive page component for application preview.
  */
@@ -8,11 +12,15 @@ import { Component } from '@angular/core';
   styleUrls: ['./activity-log.component.scss'],
 })
 export class ActivityLogComponent {
-  /** Loading state */
-  public loading = true;
+  /** Observable for the application */
+  public application$: Observable<Application | null>;
 
-  /** Application pages */
-  constructor() {
-    console.log('Activity log component created in application');
+  /**
+   * Constructor to inject the ApplicationService
+   *
+   * @param applicationService The ApplicationService for interacting with the application state
+   */
+  constructor(private applicationService: ApplicationService) {
+    this.application$ = this.applicationService.application$;
   }
 }
