@@ -52,7 +52,7 @@
               {{ 'components.application.activities.createdAt' | translate }}
             </th>
             <td uiCell *cdkCellDef="let activity">
-              {{ activity.createdAt | date }}
+              {{ activity.createdAt | sharedDate : 'yyyy-MM-dd HH:mm' }}
             </td>
           </ng-container>
           <ng-container cdkColumnDef="userId">

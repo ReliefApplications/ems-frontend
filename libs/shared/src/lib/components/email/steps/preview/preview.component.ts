@@ -19,6 +19,7 @@ import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
 import { FormArray } from '@angular/forms';
 import { cloneDeep } from 'lodash';
+
 /**
  * The preview component is used to display the email layout using user input from layout component.
  */
@@ -253,7 +254,10 @@ export class PreviewComponent
           if (
             this.query.emailDistributionList.to?.resource?.trim() !== '' ||
             this.query.emailDistributionList.cc?.resource?.trim() !== '' ||
-            this.query.emailDistributionList.bcc?.resource?.trim() !== ''
+            this.query.emailDistributionList.bcc?.resource?.trim() !== '' ||
+            this.query.emailDistributionList?.to?.inputEmails?.length > 0 ||
+            this.query.emailDistributionList?.cc?.inputEmails?.length > 0 ||
+            this.query.emailDistributionList?.bcc?.inputEmails?.length > 0
           ) {
             this.distributionListTo = [
               ...new Set(
@@ -296,8 +300,7 @@ export class PreviewComponent
           });
           this.emailService.loading = false;
         },
-        (error: any) => {
-          console.log(error);
+        () => {
           this.emailService.loading = false;
         }
       );
@@ -328,6 +331,7 @@ export class PreviewComponent
       this.emailService.loading = true; // Show spinner
       // if (!this.emailService.datasetsForm.value.emailLayout) {
       await this.emailService.patchEmailLayout();
+
       const emailData: any = {
         emailLayout: this.emailService.emailLayout,
         tableInfo: previewData?.datasetFieldsObj
@@ -339,6 +343,8 @@ export class PreviewComponent
                 records: previewData?.dataList,
                 index: previewData?.tabIndex,
                 name: previewData?.tabName ? previewData?.tabName : [],
+                navigateToPage: previewData?.navigateToPage,
+                navigateSettings: previewData?.navigateSettings,
               },
             ]
           : [],

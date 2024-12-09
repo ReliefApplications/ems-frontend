@@ -1,3 +1,4 @@
+import { DownloadService } from './../../services/download/download.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client/core/types';
@@ -15,7 +16,6 @@ import {
 } from '../../utils/public-api';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { LIST_ACTIVITIES } from './graphql/queries';
-import { DateTranslateService } from '../../services/date-translate/date-translate.service';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 100;
@@ -68,13 +68,13 @@ export class ActivityLogComponent
    * @param apollo Apollo Client
    * @param restService Shared rest service
    * @param fb Angular form builder instance
-   * @param dateFormat Date translate service
+   * @param downloadService Shared download service
    */
   constructor(
     private apollo: Apollo,
     private restService: RestService,
     private fb: FormBuilder,
-    private dateFormat: DateTranslateService
+    private downloadService: DownloadService
   ) {
     super();
   }
@@ -254,20 +254,11 @@ export class ActivityLogComponent
    * Method to download activities when the link is clicked.
    */
   downloadActivities(): void {
-    this.restService
-      .post(
-        `/activity/download-activities?dateLocale=${this.dateFormat.currentLang}`,
-        { filter: this.filter },
-        { responseType: 'blob' }
-      )
-      .subscribe((blob: any) => {
-        const downloadUrl = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = 'activities.xlsx';
-        link.click();
-        window.URL.revokeObjectURL(downloadUrl);
-      });
+    const path = '/activity/download-activities';
+    this.downloadService.getActivitiesExport(path, {
+      filter: this.filter,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    });
   }
 
   /**

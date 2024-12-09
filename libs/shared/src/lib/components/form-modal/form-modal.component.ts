@@ -311,7 +311,14 @@ export class FormModalComponent
     );
 
     if (this.data.recordId && this.record) {
-      this.survey.data = this.isMultiEdition ? null : this.record.data;
+      if (this.isMultiEdition) {
+        this.survey.data = null;
+      } else {
+        const notNullValues = omitBy(this.record.data, isNil);
+        Object.keys(notNullValues).forEach((question) => {
+          this.survey.setValue(question, notNullValues[question]);
+        });
+      }
       addCustomFunctions(this.authService, this.record);
       this.survey.showCompletedPage = false;
       this.form?.fields?.forEach((field) => {

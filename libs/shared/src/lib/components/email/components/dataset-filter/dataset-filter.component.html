@@ -6,7 +6,7 @@
         class="block text-sm font-medium leading-6 text-gray-900"
         htmlFor="exampleSelect"
       >
-        {{ 'components.queryBuilder.block.label' | translate }}
+        {{ 'components.email.dataset.block.label' | translate }}
       </label>
       <div
         class="relative flex py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center w-full"
@@ -21,7 +21,7 @@
           id="block_title"
           class="form-input bg-transparent block overflow-hidden border-0 rounded-md w-full p-0 text-gray-900 placeholder:text-gray-400 text-sm sm:leading-6 focus:ring-0 focus:ring-inset ng-valid ng-dirty ng-touched"
           type="text"
-          [placeholder]="'components.queryBuilder.block.label' | translate"
+          [placeholder]="'components.email.dataset.block.label' | translate"
           formControlName="name"
           [ngModelOptions]="{ standalone: true }"
           (ngModelChange)="changeBlockTitle()"
@@ -36,61 +36,13 @@
           htmlFor="select__dataset"
           class="block text-sm font-medium leading-6 text-gray-900"
         >
-          {{ 'components.queryBuilder.dataset.dataType' | translate }}
+          {{ 'components.queryBuilder.dataset.title' | translate }}
         </label>
-        <!-- Data type selection -->
-        <div uiFormFieldDirective class="flex-1">
-          <ui-select-menu
-            id="dataType"
-            formControlName="dataType"
-            (ngModelChange)="onDataTypeChange($event)"
-            class="w-full"
-          >
-            <ui-select-option
-              *ngFor="let dataType of dataTypeList"
-              [value]="dataType"
-              >{{ dataType | titlecase }}</ui-select-option
-            >
-          </ui-select-menu>
-        </div>
-      </div>
-      <div class="w-1/2" *ngIf="query.get('dataType').value !== null">
-        <label
-          htmlFor="select__dataset"
-          class="block text-sm font-medium leading-6 text-gray-900"
-        >
-          {{
-            query.get('dataType').value === 'Reference Data'
-              ? 'Reference Data'
-              : ('components.queryBuilder.dataset.title' | translate)
-          }}
-        </label>
-        <!-- Reference Selection -->
-        <div
-          uiFormFieldDirective
-          class="flex-1"
-          *ngIf="query.get('dataType').value === 'Reference Data'"
-        >
-          <ui-select-menu
-            id="reference"
-            formControlName="reference"
-            class="w-full"
-            (ngModelChange)="getSelectedReferenceData($event, true)"
-          >
-            <ui-select-option
-              *ngFor="let reference of refernceData"
-              [value]="reference?.id"
-              >{{ reference?.name | titlecase }}</ui-select-option
-            >
-          </ui-select-menu>
-        </div>
+
         <!-- Resource selection -->
-        <div
-          uiFormFieldDirective
-          class="flex-1"
-          *ngIf="query.get('dataType').value === 'Resource'"
-        >
+        <div uiFormFieldDirective class="flex-1">
           <shared-resource-select
+            [ngClass]="{ 'w-[80%]': this.query.get('resource').value }"
             formControlName="resource"
             [selectedElements]="[resource]"
           ></shared-resource-select>
@@ -126,20 +78,20 @@
       ></ui-spinner>
     </div>
   </div>
-  <div formGroupName="query">
+  <ng-container
+    class="mt-5"
+    *ngTemplateOutlet="noFieldsInResourceAlertTmpl"
+  ></ng-container>
+  <div>
     <ui-tabs
       [selectedIndex]="currentTabIndex"
       (selectedIndexChange)="onTabSelect($event, true)"
       #datasetPreview
-      *ngIf="
-        (query.get('dataType').value === 'Resource' &&
-          resource?.fields?.length) ||
-        (refernceData.length > 0 && availableFields.length > 0)
-      "
+      *ngIf="resource?.fields?.length && availableFields.length > 0"
     >
       <div class="mt-4 flex flex-row">
         <!-- Fields Tab -->
-        <ui-tab [title]="'Fields'" [selected]="true">
+        <ui-tab title="Fields" [selected]="true">
           <ng-container ngProjectAs="label">
             {{ 'components.queryBuilder.fields.title' | translate }}
           </ng-container>
@@ -156,7 +108,7 @@
               class="mt-2"
               *ngTemplateOutlet="ChildFieldAlertTmpl"
             ></ng-container>
-            <div class="flex gap-4 mt-2">
+            <div class="flex gap-4 mt-2" formGroupName="query">
               <div class="mt-2 overflow-auto">
                 <!-- FIELDS -->
                 <shared-tab-fields
@@ -181,13 +133,7 @@
           </ng-template>
         </ui-tab>
         <!-- Filter Tab -->
-        <ui-tab
-          [title]="'Filter'"
-          [disabled]="
-            this.query.get('resource').value === null ||
-            this.query.get('resource').value === ''
-          "
-        >
+        <ui-tab title="Filter">
           <ng-container ngProjectAs="label">
             {{ 'components.queryBuilder.filter.title' | translate }}
           </ng-container>
@@ -197,27 +143,19 @@
               *ngTemplateOutlet="invalidFieldsAlertTmpl"
             ></ng-container>
             <ng-container
-              *ngIf="
-                resource?.fields?.length ||
-                (refernceData.length > 0 && availableFields.length > 0)
-              "
+              *ngIf="resource?.fields?.length || availableFields.length > 0"
             >
               <ng-container
                 class="mt-2"
                 *ngTemplateOutlet="tooManyRecordsAlertTmpl"
               ></ng-container>
-              <div class="flex gap-4 mt-2">
-                <div class="mt-2">
+              <div class="flex gap-4 mt-2" formGroupName="query">
+                <div class="mt-2 w-full">
                   <!-- NESTED FILTER GROUP -->
                   <!-- <shared-filter [form]="query.get('filter')" [fields]="filterFields" [isEmailNotification]="true"></shared-filter> -->
                   <shared-tab-filter
                     [form]="$any(query.controls.query.get('filter'))"
                     [query]="query.controls.query.getRawValue()"
-                    [referenceFields]="
-                      query.get('dataType').value === 'Reference Data'
-                        ? availableFields
-                        : []
-                    "
                   >
                   </shared-tab-filter>
                 </div>
@@ -226,7 +164,7 @@
                 class="float-right mt-8"
                 category="secondary"
                 variant="primary"
-                (click)="getDataSet('preview'); showPreview = true"
+                (click)="getDataSet('preview', true); showPreview = true"
                 [disabled]="selectedFields.length === 0"
               >
                 {{ 'common.preview' | translate }}
@@ -235,12 +173,100 @@
           </ng-template>
         </ui-tab>
 
+        <!-- navigate to page Tab -->
+        <ui-tab title="Action">
+          <ng-container ngProjectAs="label">
+            {{ 'components.email.dataset.navigateToPage.title' | translate }}
+          </ng-container>
+          <ng-template uiTabContent>
+            <!-- Redirect to specific page action details -->
+            <div
+              formGroupName="navigateSettings"
+              class="flex flex-col ml-[55px]"
+            >
+              <div uiFormFieldDirective class="w-80">
+                <label>{{
+                  'components.widget.settings.grid.actions.goTo.column.label'
+                    | translate
+                }}</label>
+                <input
+                  formControlName="title"
+                  [placeholder]="
+                    'components.widget.settings.grid.actions.goTo.column.placeholder'
+                      | translate
+                  "
+                />
+              </div>
+              <div uiFormFieldDirective class="w-80">
+                <label>
+                  {{
+                    'components.widget.settings.grid.actions.goTo.target.label'
+                      | translate
+                  }}
+                </label>
+                <ui-select-menu
+                  formControlName="pageUrl"
+                  [placeholder]="
+                    'components.widget.settings.grid.actions.goTo.target.placeholder'
+                      | translate
+                  "
+                >
+                  <ui-select-option
+                    *ngFor="let page of pages"
+                    [value]="page.urlParams"
+                  >
+                    {{ page.name }}
+                  </ui-select-option>
+                </ui-select-menu>
+              </div>
+              <div uiFormFieldDirective class="w-80">
+                {{
+                  'components.widget.settings.grid.actions.goTo.field.label'
+                    | translate
+                }}
+                <ui-select-menu
+                  formControlName="field"
+                  [placeholder]="
+                    'components.widget.settings.grid.actions.goTo.field.placeholder'
+                      | translate
+                  "
+                >
+                  <ng-container *ngFor="let field of availableFields">
+                    <ui-select-option
+                      *ngIf="!field.fields"
+                      [value]="field.name"
+                    >
+                      {{ field.text || field.name }}
+                    </ui-select-option>
+
+                    <ui-select-option *ngIf="field.fields" [isGroup]="true">
+                      {{ field.text || field.name }}
+                      <ui-select-option
+                        *ngFor="let subField of field.fields"
+                        [value]="field.name + '.' + subField.name"
+                      >
+                        {{
+                          field.name === '$attribute'
+                            ? subField.text || subField.name
+                            : field.name +
+                              ' - ' +
+                              (subField.text || subField.name)
+                        }}
+                      </ui-select-option>
+                    </ui-select-option>
+                  </ng-container>
+                </ui-select-menu>
+              </div>
+            </div>
+          </ng-template>
+        </ui-tab>
+
         <!-- Preview Tab -->
         <ui-tab
           [title]="'Preview'"
           [disabled]="
             showDatasetLimitWarning ||
-            this.query?.controls?.query.get('fields')?.value.length === 0
+            this.query?.controls?.query?.get('fields')?.value.length === 0
           "
         >
           <ng-container ngProjectAs="label">
@@ -255,7 +281,11 @@
               class="mt-2"
               *ngTemplateOutlet="tooManyRecordsAlertTmpl"
             ></ng-container>
-            <div class="overflow-x-auto">
+            <div
+              *ngIf="!showDatasetLimitWarning"
+              class="overflow-x-auto"
+              formGroupName="query"
+            >
               <div id="tblPreview" [innerHTML]="previewHTML"></div>
             </div>
           </ng-template>
@@ -263,7 +293,7 @@
 
         <!-- Send Separate Email Fields -->
         <ui-tab
-          [title]="'Send Separate Fields'"
+          title="Send Separate Fields"
           *ngIf="this.query.get('individualEmail').value"
         >
           <ng-container ngProjectAs="label">
@@ -284,9 +314,9 @@
             ></ng-container>
             <ng-container
               class="mt-2"
-              *ngTemplateOutlet="ChildFieldAlertTmpl"
+              *ngTemplateOutlet="ChildFieldAlertTmpl_individualEmail"
             ></ng-container>
-            <div class="flex gap-4 mt-2">
+            <div class="flex gap-4 mt-2" formGroupName="query">
               <div class="mt-2 overflow-auto">
                 <!-- FIELDS -->
                 <shared-tab-fields
@@ -314,10 +344,6 @@
       </div>
     </ui-tabs>
   </div>
-  <ng-container
-    class="mt-5"
-    *ngTemplateOutlet="noFieldsInResourceAlertTmpl"
-  ></ng-container>
 </form>
 
 <!-- Too many records in dataset -->
@@ -413,6 +439,19 @@
                 types: disabledTypes.join(', ')
               }
       "
+    ></div>
+  </ui-alert>
+</ng-template>
+<!-- Please select the child fields of the Selected fields in Send Seperate Email Fields -->
+<ng-template #ChildFieldAlertTmpl_individualEmail>
+  <ui-alert
+    variant="danger"
+    [closable]="true"
+    *ngIf="showFieldsWarning_SSE"
+    (close)="closeFieldsWarningMessage()"
+  >
+    <div
+      [innerHTML]="'components.email.alert.selectChildFields' | translate"
     ></div>
   </ui-alert>
 </ng-template>

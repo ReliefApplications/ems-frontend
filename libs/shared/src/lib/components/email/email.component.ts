@@ -42,8 +42,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   templateActualData: any = [];
   /** Application ID. */
   public applicationId = '';
-  /** Distribution lists. */
-  public distributionLists: any = [];
   /** Email notifications. */
   public emailNotifications: any = [];
   /** Page information for pagination. */
@@ -81,8 +79,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   distributionActualData: any = [];
   /** Actual data for Custom template. */
   customActualData: any = [];
-  /** Cached distribution list. */
-  cacheDistributionList: any = [];
   /** Cached Template list. */
   cacheTemplateList: any = [];
 
@@ -102,7 +98,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   public showTemplateCreationWizard = false;
 
   /** DL names */
-  public uniqueDLNames: string[] = [];
+  public uniqueDLNames: any = [];
 
   /** Distribution list names cache data */
   public cacheDistributionListNames: string[] = [];
@@ -358,11 +354,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService
       .getEmailDistributionList(this.applicationId)
       .subscribe((list: any) => {
-        // this.distributionLists = [];
+        let tempDL: any = [];
         this.emailService.distributionListNames = [];
         list?.data?.emailDistributionLists?.edges?.forEach((ele: any) => {
           if (ele.node.name !== null && ele.node.name !== '') {
-            this.distributionLists.push(ele.node);
+            tempDL.push(ele.node);
             this.emailService.distributionListNames.push(
               ele.node?.name.trim().toLowerCase()
             );
@@ -373,7 +369,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         );
         this.uniqueDLNames = [...uniqueDistributionLists];
         this.dlNamesActualData = cloneDeep(this.uniqueDLNames);
-        this.distributionLists = this.distributionLists.filter((ele: any) => {
+        tempDL = tempDL.filter((ele: any) => {
           if (
             uniqueDistributionLists.includes(ele?.name?.trim()?.toLowerCase())
           ) {
@@ -385,15 +381,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
             return false;
           }
         });
-        this.distributionActualData = cloneDeep(this.distributionLists);
-        this.cacheDistributionList = this.distributionLists;
-        this.distributionLists = this.cacheDistributionList.slice(
-          this.distributionPageInfo.pageSize *
-            this.distributionPageInfo.pageIndex,
-          this.distributionPageInfo.pageSize *
-            (this.distributionPageInfo.pageIndex + 1)
-        );
-        this.distributionPageInfo.length = this.cacheDistributionList.length;
+        this.distributionActualData = cloneDeep(tempDL);
       });
   }
 
@@ -414,10 +402,12 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       );
       this.pageInfo.length = this.filterTemplateData.length;
     } else if (this.selectedTabIndex == 1) {
-      this.uniqueDLNames = this.dlNamesActualData?.filter((name: any) =>
-        name?.toLowerCase()?.includes(searchText?.toLowerCase())
+      this.cacheDistributionListNames = this.dlNamesActualData?.filter(
+        (name: any) => name?.toLowerCase()?.includes(searchText?.toLowerCase())
       );
-      this.cacheDistributionListNames = this.uniqueDLNames;
+      if (this.cacheDistributionListNames.length > 0) {
+        this.distributionPageInfo.pageIndex = 0;
+      }
       this.uniqueDLNames = this.cacheDistributionListNames.slice(
         this.distributionPageInfo.pageSize *
           this.distributionPageInfo.pageIndex,
@@ -587,6 +577,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         index: 0,
       },
     ];
+    this.emailService.title.next(
+      this.emailService.tabs.filter((x: any) => x.active)?.[0].title
+    );
     const dataArray: FormArray | any = new FormArray([]);
     for (let index = 0; index < emailData.datasets.length; index++) {
       if (
@@ -821,6 +814,12 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       textStyle: new FormControl(null),
       individualEmail: new FormControl(ele.individualEmail),
       individualEmailFields: individualEmailFieldsArray, // Attach individualEmailFields array
+      navigateToPage: new FormControl(ele.navigateToPage),
+      navigateSettings: this.formBuilder.group({
+        title: new FormControl(ele.navigateSettings.title),
+        pageUrl: new FormControl(ele.navigateSettings.pageUrl),
+        field: new FormControl(ele.navigateSettings.field),
+      }),
     });
     this.emailService.setEmailFields(ele.query.fields);
     this.emailService.setSeparateEmail(ele.individualEmail, index);
@@ -963,7 +962,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
                     )
                   );
                   this.emailService.emailListLoading = true;
-                  this.distributionLists = [];
                   this.emailNotifications = [];
                   this.templateActualData = [];
                   this.filterTemplateData = [];
@@ -1022,7 +1020,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       this.distributionPageInfo,
       this.cacheDistributionListNames
     );
-    this.distributionLists = cachedData;
+    this.uniqueDLNames = cachedData;
   }
 
   /**

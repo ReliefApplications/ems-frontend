@@ -13,6 +13,7 @@ import { FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { EmailService } from '../../../email/email.service';
 import { TranslateService } from '@ngx-translate/core';
+import { isNil } from 'lodash';
 
 /**
  * Preview template modal.
@@ -56,6 +57,9 @@ export class PreviewTemplateModalComponent {
     },
   ];
 
+  /** Current environment */
+  private environment: any;
+
   /**
    * Preview template modal.
    * Triggered by grid widgets when sending emails.
@@ -65,14 +69,17 @@ export class PreviewTemplateModalComponent {
    * @param snackBar Shared snackbar service
    * @param translate Angular Translate service
    * @param dialogRef Dialog reference
+   * @param environment platform environment
    */
   constructor(
     @Inject(DIALOG_DATA) public data: any,
     private emailService: EmailService,
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private dialogRef: DialogRef
+    private dialogRef: DialogRef,
+    @Inject('environment') environment: any
   ) {
+    this.environment = environment;
     this.emailService.isQuickAction = true;
     this.emailService.datasetsForm.get('emailDistributionList')?.reset();
     this.emailService.quickEmailDLQuery = [];
@@ -89,6 +96,7 @@ export class PreviewTemplateModalComponent {
 
     this.emailService.emailLayout = {
       subject: this.data.emailContent?.subject,
+      name: this.data.emailContent?.name,
       header: this.data.emailContent?.header,
       body: this.data.emailContent?.body,
       banner: this.data.emailContent?.banner,
@@ -189,34 +197,22 @@ export class PreviewTemplateModalComponent {
 
       datasetFieldsObj
         ?.map((x: any) => x.name)
-        ?.forEach((keyNm: any) => {
-          let keyData!: any;
-          const relatedMetadata = metaData.filter(
-            (x: any) => x.name == keyNm
-          )?.[0];
-          const relatedMetadataInTheGivenNode =
-            relatedMetadata?.options?.filter((x: any) =>
-              item?.node[keyNm]?.includes(x.value)
+        ?.forEach((keyNm: any, index: number) => {
+          text[keyNm] = this.getValueOfKey(item, keyNm, metaData);
+          const navigateSettings = this.data.navigateSettings;
+          if (
+            navigateSettings &&
+            navigateSettings.field &&
+            !datasetFields.includes(navigateSettings.field) &&
+            index === datasetFieldsObj.length - 1
+          ) {
+            text[navigateSettings.field] = this.getValueOfKey(
+              item,
+              navigateSettings.field,
+              metaData
             );
-          keyData = relatedMetadataInTheGivenNode?.map((y: any) => y.text);
-          let notMatchedData: any = '';
-          if (Array.isArray(item?.node[keyNm])) {
-            //Finding non matched data
-            const metaValArr = metaData
-              ?.filter((x: any) => x.name == keyNm)?.[0]
-              ?.options?.map((x: any) => x.value);
-            const gridaDataVal = item?.node[keyNm];
-            notMatchedData = gridaDataVal
-              ?.map((item: any) => (!metaValArr?.includes(item) ? item : null))
-              ?.filter((x: any) => x !== null);
           }
-          keyData =
-            notMatchedData?.length > 0 && keyData?.length > 0
-              ? notMatchedData?.join(',') + ',' + keyData
-              : keyData;
-          text[keyNm] = keyData?.length > 0 ? keyData : item?.node[keyNm];
         });
-
       // Add the text object to the dataList array
       dataList.push(text);
     });
@@ -228,8 +224,43 @@ export class PreviewTemplateModalComponent {
         dataList,
         tabIndex: 0,
         tabName: 'Block 1',
+        navigateToPage: !isNil(this.data.navigateSettings),
+        navigateSettings: this.data.navigateSettings,
       },
     ];
+  }
+
+  /**
+   * Get value of key of record
+   *
+   * @param item selected row
+   * @param keyNm key name
+   * @param metaData metadata contaning all key data
+   * @returns the value of the key
+   */
+  getValueOfKey(item: any, keyNm: any, metaData: any) {
+    let keyData!: any;
+    const relatedMetadata = metaData.filter((x: any) => x.name == keyNm)?.[0];
+    const relatedMetadataInTheGivenNode = relatedMetadata?.options?.filter(
+      (x: any) => item?.node[keyNm]?.includes(x.value)
+    );
+    keyData = relatedMetadataInTheGivenNode?.map((y: any) => y.text);
+    let notMatchedData: any = '';
+    if (Array.isArray(item?.node[keyNm])) {
+      //Finding non matched data
+      const metaValArr = metaData
+        ?.filter((x: any) => x.name == keyNm)?.[0]
+        ?.options?.map((x: any) => x.value);
+      const gridaDataVal = item?.node[keyNm];
+      notMatchedData = gridaDataVal
+        ?.map((item: any) => (!metaValArr?.includes(item) ? item : null))
+        ?.filter((x: any) => x !== null);
+    }
+    keyData =
+      notMatchedData?.length > 0 && keyData?.length > 0
+        ? notMatchedData?.join(',') + ',' + keyData
+        : keyData;
+    return keyData?.length > 0 ? keyData : item?.node[keyNm];
   }
 
   /**
@@ -252,6 +283,8 @@ export class PreviewTemplateModalComponent {
           records: previewData?.dataList,
           index: previewData?.tabIndex,
           name: previewData?.tabName,
+          navigateToPage: previewData?.navigateToPage,
+          navigateSettings: previewData?.navigateSettings,
         },
       ],
     };

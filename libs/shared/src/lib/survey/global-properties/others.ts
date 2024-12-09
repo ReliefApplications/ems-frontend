@@ -38,8 +38,9 @@ export const init = (environment: any): void => {
   ) => {
     if (sender.url.includes(environment.apiUrl)) {
       const token = localStorage.getItem('idtoken');
+      const accessToken = localStorage.getItem('access_token');
       options.request.setRequestHeader('Authorization', `Bearer ${token}`);
-      // options.request.headers.append('Authorization', `Bearer ${token}`);
+      options.request.setRequestHeader('AccessToken', accessToken);
     }
   };
 
