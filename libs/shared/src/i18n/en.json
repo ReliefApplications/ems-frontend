@@ -629,6 +629,7 @@
 		},
 		"application": {
 			"activities": {
+				"createdAt": "Timestamp",
 				"downloadXlsx": "Download XLSX",
 				"empty": "No activities available",
 				"few": "Activities",
@@ -863,6 +864,10 @@
 				"name": {
 					"required": "Please provide a name"
 				}
+			},
+			"warning": {
+				"message": "Any modifications made to a distribution list will be reflected in all areas where the DL is utilized.",
+				"noData": "No Emails found"
 			}
 		},
 		"email": {
@@ -870,14 +875,14 @@
 				"header": "Actions"
 			},
 			"alert": {
-				"dlPreview": "All emails showing in this table below will be used to create the distribution list",
+				"dlPreview": "All emails listed below will be used to create the distribution list.",
 				"individualEmailsInfo": "Select the email fields you would like to use to send record specific emails to",
 				"invalidFields": "The following fields are not available for selection: <strong>{{fields}}</strong> as they are of type <strong>{{types}}</strong> and cannot be properly displayed in the table for this form.",
 				"noResource": "Select a resource using the dropdown to display Distribution list filter wizard",
 				"noResourceFields": "Selected resource doesn't contain any fields",
 				"noSelectedFields": "Please select at least 1 field to save this dataset",
 				"selectChildFields": "You have selected an Object/list field. Select atleast one child field to proceed further and/or preview.",
-				"selectedNonEmailFields": "The selected field is not configured as an email field. Do you want to proceed?",
+				"selectedNonEmailFields": "The selected field is not configured as an email field. Proceeding further may cause errors.",
 				"subscribeExists": "Error! {{message}}",
 				"subscribeFailed": "Oops!... Something went wrong whilst subscribing. {{errorMessage}}",
 				"subscribeSuccess": "Success! {{message}}",
@@ -886,6 +891,15 @@
 				"unsubscribeSuccess": "Success! {{message}}"
 			},
 			"back": "Back to list",
+			"dataset": {
+				"block": {
+					"label": "Block title",
+					"title": "Block"
+				},
+				"navigateToPage": {
+					"title": "Navigate to Page"
+				}
+			},
 			"distributionList": {
 				"alert": {
 					"allSeparate": "Distribution list will be composed of all user emails obtained from send separate email, if you'd like to send to a list of users please create a normal block in step 2.",
@@ -1232,13 +1246,9 @@
 		},
 		"queryBuilder": {
 			"apply": "Apply filter",
-			"block": {
-				"label": "Block title",
-				"title": "Block"
-			},
 			"dataset": {
 				"dataType": "Data Type",
-				"referenceData": "Données de référence",
+				"referenceData": "Reference data",
 				"select": "Select a dataset",
 				"title": "Resource"
 			},
@@ -1838,6 +1848,7 @@
 							"modify": "Auto-modify selected rows",
 							"modifyField": "Field to update",
 							"modifyValue": "Value to attribute",
+							"navigateToPage": "Include navigate to page link",
 							"notify": {
 								"message": "Notification message"
 							},

@@ -24,6 +24,10 @@ export interface ActivityLog {
    * The description of the activity.
    */
   description: string;
+  /**
+   * Date of creation
+   */
+  createdAt: Date;
 }
 /** Model for activity logs application nodes graphql query response*/
 export interface ActivityLogsActivityLogNodesQueryResponse {

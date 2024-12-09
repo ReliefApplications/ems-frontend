@@ -40,81 +40,27 @@
         (change)="validateEmail(filterInput)"
         autocomplete="off"
         aria-autocomplete="none"
-        [disabled]="isDisable"
         type="text"
         [placeholder]="'components.select.distribution.email' | translate"
       />
     </div>
     <div></div>
-    <!-- Selection of resource -->
-    <div class="w-1/2" *ngIf="activeSegmentIndex >= 1">
-      <label
-        htmlFor="select__dataset"
-        class="block text-sm font-medium leading-6 text-gray-900"
-      >
-        {{ 'components.queryBuilder.dataset.dataType' | translate }}
-      </label>
-      <!-- Data type selection -->
-      <div uiFormFieldDirective class="flex-1" [formGroup]="segmentForm">
-        <ui-select-menu
-          id="dataType"
-          formControlName="dataType"
-          (ngModelChange)="onDataTypeChange($event)"
-          class="w-full"
-        >
-          <ui-select-option
-            *ngFor="let dataType of dataTypeList"
-            [value]="dataType"
-            >{{ dataType | titlecase }}</ui-select-option
-          >
-        </ui-select-menu>
-      </div>
-    </div>
 
     <!-- Distribution list -->
     <div
       class="w-1/2"
-      *ngIf="
-        activeSegmentIndex >= 1 && segmentForm.get('dataType')?.value !== null
-      "
+      *ngIf="activeSegmentIndex >= 1"
       [formGroup]="distributionList"
     >
       <label
         htmlFor="select__data__set"
         class="block text-sm font-medium leading-6 text-gray-900"
       >
-        <!-- {{ 'components.queryBuilder.dataset.title' | translate }}* -->
-        {{
-          segmentForm.get('dataType')?.value === 'Reference Data'
-            ? 'Reference Data'
-            : ('components.queryBuilder.dataset.title' | translate)
-        }}*
+        {{ 'components.queryBuilder.dataset.title' | translate }}*
       </label>
-      <!-- Reference Selection -->
-      <div
-        uiFormFieldDirective
-        class="flex-1"
-        [formGroup]="distributionList"
-        *ngIf="segmentForm.get('dataType')?.value === 'Reference Data'"
-      >
-        <ui-select-menu
-          id="reference"
-          formControlName="reference"
-          class="w-full"
-          (ngModelChange)="getSelectedReferenceData($event, true)"
-        >
-          <ui-select-option
-            *ngFor="let reference of refernceData"
-            [value]="reference?.id"
-            >{{ reference?.name | titlecase }}</ui-select-option
-          >
-        </ui-select-menu>
-      </div>
+
       <!-- Resource selection -->
-      <div
-        uiFormFieldDirective
-        *ngIf="segmentForm.get('dataType')?.value === 'Resource'"
-      >
+      <div uiFormFieldDirective>
         <shared-resource-select
           formControlName="resource"
           [selectedElements]="[resource]"
@@ -187,7 +133,6 @@
             (change)="validateEmail(filterInput)"
             autocomplete="off"
             aria-autocomplete="none"
-            [disabled]="isDisable"
             type="text"
             [placeholder]="'components.select.distribution.email' | translate"
           />
@@ -226,7 +171,6 @@
       variant="primary"
       class="text-xl px-1"
       [removable]="true"
-      [disabled]="isDisable"
       (removed)="removeEmailChip(chipIndex)"
       *ngFor="let emailControl of inputEmails; let chipIndex = index"
       >{{ emailControl }}</ui-chip
@@ -234,22 +178,6 @@
   </div>
 </ng-template>
 
-<!-- Too many records in dataset -->
-<ng-template #tooManyRecordsAlertTmpl>
-  <ui-alert
-    variant="warning"
-    [closable]="true"
-    *ngIf="showDatasetLimitWarning"
-    (close)="closeWarningMessage()"
-  >
-    <div
-      [innerHTML]="
-        'components.email.alert.tooManyRecords'
-          | translate : { totalRecords: totalMatchingRecords }
-      "
-    ></div>
-  </ui-alert>
-</ng-template>
 <!-- Please select the child fields of the Selected fields -->
 <ng-template #ChildFieldAlertTmpl>
   <ui-alert
@@ -332,11 +260,7 @@
       [selectedIndex]="currentTabIndex"
       (selectedIndexChange)="onTabSelect($event, true)"
       #datasetPreview
-      *ngIf="
-        (segmentForm.get('dataType')?.value === 'Resource' &&
-          resource?.fields?.length) ||
-        (refernceData.length > 0 && availableFields.length > 0)
-      "
+      *ngIf="resource?.fields?.length && availableFields.length > 0"
     >
       <div class="mt-4 flex flex-row">
         <!-- Fields Tab -->
@@ -366,7 +290,6 @@
                   [fields]="availableFields"
                   [showLimit]="false"
                   [showColumnWidth]="false"
-                  [disabled]="isDisable"
                   (droppedFields)="setNonEmailFields($event)"
                 ></shared-tab-fields>
               </div>
@@ -385,39 +308,20 @@
           </ng-template>
         </ui-tab>
         <!-- Filter Tab -->
-        <ui-tab
-          [title]="'components.queryBuilder.filter.title' | translate"
-          [disabled]="
-            this.distributionList.get('resource').value === null ||
-            this.distributionList.get('resource').value === ''
-          "
-        >
+        <ui-tab [title]="'components.queryBuilder.filter.title' | translate">
           <ng-container ngProjectAs="label">
             {{ 'components.queryBuilder.filter.title' | translate }}
           </ng-container>
           <ng-template uiTabContent>
             <ng-container
-              *ngIf="
-                resource?.fields?.length ||
-                (refernceData.length > 0 && availableFields.length > 0)
-              "
+              *ngIf="resource?.fields?.length || availableFields.length > 0"
             >
-              <ng-container
-                class="mt-2"
-                *ngTemplateOutlet="tooManyRecordsAlertTmpl"
-              ></ng-container>
               <div class="flex gap-4 mt-2">
-                <div class="mt-2">
+                <div class="mt-2 w-full">
                   <!-- NESTED FILTER GROUP -->
                   <shared-tab-filter
                     [form]="$any(dlQuery.get('filter'))"
                     [query]="dlQuery.getRawValue()"
-                    [disabled]="isDisable"
-                    [referenceFields]="
-                      segmentForm.get('dataType')?.value === 'Reference Data'
-                        ? availableFields
-                        : []
-                    "
                   >
                   </shared-tab-filter>
                 </div>
@@ -446,18 +350,54 @@
           <ng-template uiTabContent>
             <ng-container
               class="mt-2"
-              *ngTemplateOutlet="tooManyRecordsAlertTmpl"
-            ></ng-container>
-            <ng-container
-              class="mt-2"
               *ngTemplateOutlet="showDLPreview"
             ></ng-container>
-            <div
-              id="tblPreview"
-              class="previewScroll"
-              #tblPreview
-              [innerHTML]="previewHTML"
-            ></div>
+            <ng-container *ngIf="previewDLEmails?.length > 0">
+              <div
+                class="mb-4"
+                *ngIf="previewDLEmails && previewDLEmails?.length > 0"
+              >
+                <!-- <h2>{{ 'components.select.distribution.to' | translate }}:</h2> -->
+                <ul class="list-none space-y-1">
+                  <div uiChipList>
+                    <ng-container
+                      *ngFor="let email of previewDLEmails; let i = index"
+                    >
+                      <ui-chip
+                        *ngIf="i < 6 || isExpandedPreview"
+                        variant="primary"
+                        class="w-full flex-row flex-wrap justify-between mr-1"
+                        >{{ email }}</ui-chip
+                      >
+                    </ng-container>
+                  </div>
+                  <ui-button
+                    *ngIf="previewDLEmails.length > 6 && !isExpandedPreview"
+                    class="inline-block"
+                    (click)="toggleExpandPreview()"
+                    >{{
+                      'components.email.preview.more'
+                        | translate : { length: previewDLEmails.length - 6 }
+                    }}</ui-button
+                  >
+                  <ui-button
+                    *ngIf="isExpandedPreview"
+                    class="inline-block"
+                    (click)="toggleExpandPreview()"
+                    >{{
+                      'components.email.preview.less' | translate
+                    }}</ui-button
+                  >
+                </ul>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="!isPreviewEmail">
+              <ui-alert class="mb-4" variant="warning">
+                {{
+                  'components.distributionLists.warning.noData' | translate
+                }}
+              </ui-alert>
+            </ng-container>
           </ng-template>
         </ui-tab>
       </div>

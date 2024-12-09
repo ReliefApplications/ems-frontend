@@ -36,8 +36,6 @@ export class TabFilterComponent implements OnInit {
 
   /** Loading status of the filter fields */
   public loading = true;
-  /** referenceFields for reference data */
-  @Input() referenceFields: any;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -56,16 +54,9 @@ export class TabFilterComponent implements OnInit {
       this.loading = false;
     };
 
-    // Using reference fields
-    if (this.referenceFields?.length > 0) {
-      this.query.name = null;
-      callback(this.referenceFields);
-    } else {
-      // Classic flow
-      this.queryBuilder.getFilterFields(this.query).then((fields) => {
-        callback(fields);
-      });
-    }
+    this.queryBuilder.getFilterFields(this.query).then((fields) => {
+      callback(fields);
+    });
   }
 
   /**

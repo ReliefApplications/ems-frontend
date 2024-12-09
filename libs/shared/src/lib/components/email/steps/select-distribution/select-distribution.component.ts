@@ -12,7 +12,7 @@ import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
-import { takeUntil } from 'rxjs';
+import { firstValueFrom, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/public-api';
 import { cloneDeep } from 'lodash';
 import { HttpClient } from '@angular/common/http';
@@ -122,6 +122,9 @@ export class SelectDistributionComponent
     | undefined;
 
   ngOnInit(): void {
+    this.enableForm('to');
+    this.enableForm('cc');
+    this.enableForm('bcc');
     if (
       this.emailService?.editId &&
       this.emailService?.emailDistributionList?.id
@@ -148,20 +151,6 @@ export class SelectDistributionComponent
     if (!this.isAllSeparate()) {
       this.validateDistributionList();
     }
-    if (this.emailDistributionList.get('id')?.value) {
-      this.emailDistributionList.get('name').disable();
-    } else {
-      this.emailDistributionList.get('name').enable();
-    }
-    this.emailDistributionList
-      .get('id')
-      ?.valueChanges.subscribe((value: string) => {
-        if (value) {
-          this.emailDistributionList.get('name').disable();
-        } else {
-          this.emailDistributionList.get('name').enable();
-        }
-      });
   }
 
   /**
@@ -392,6 +381,7 @@ export class SelectDistributionComponent
    * @param targetGroup Form group you want to clear
    */
   clearDL(targetGroup: FormGroup): void {
+    this.emailService.filterToEmails = [];
     // Clear 'resource'
     targetGroup.get('resource')?.patchValue('');
 
@@ -639,12 +629,12 @@ export class SelectDistributionComponent
             this.emailDistributionList.getRawValue()
           ),
         };
-        this.http
-          .post(
+        firstValueFrom(
+          this.http.post(
             `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
             query
           )
-          .toPromise()
+        )
           .then((response: any) => {
             this.loading = false;
             this.emailService.filterToEmails =
@@ -725,6 +715,7 @@ export class SelectDistributionComponent
     this.distributionListId = '';
     this.showExistingDistributionList = !this.showExistingDistributionList;
     this.emailService.selectedDLName = '';
+    this.emailService.distributionListName = '';
     // this.emailDistributionList.get('name').setValue('');
     this.emailService.datasetsForm
       ?.get('emailDistributionList')
@@ -768,6 +759,18 @@ export class SelectDistributionComponent
     form?.get('resource')?.setValue('');
 
     // Enable changes on the form
+    form?.enable();
+  }
+
+  /**
+   * Enable form To, cc, bcc dropdown
+   *
+   * @param type tab name
+   */
+  enableForm(type: string) {
+    const form = this.emailService.datasetsForm
+      ?.get('emailDistributionList')
+      ?.get(type);
     form?.enable();
   }
 }
