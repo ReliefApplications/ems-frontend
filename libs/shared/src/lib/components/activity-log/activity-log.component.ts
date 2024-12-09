@@ -31,34 +31,26 @@ export class ActivityLogComponent
 {
   /** User ID to filter activities. */
   @Input() userId: string | undefined;
-
   /** Application ID to filter activities. */
   @Input() applicationId: string | undefined;
-
   /** List of activities to display. */
   public activitiesLogs: ActivityLog[] = [];
-
   /** Columns to display in the table. */
   public displayedColumns: string[] = [];
-
   /** Attributes */
   public attributes: { text: string; value: string }[] = [];
-
   /** Loading flag */
   public loading = false;
-
   /** Filter form group */
   public filterForm = this.fb.group({
     startDate: [null],
     endDate: [null],
   });
-
   /** Filter */
   public filter: any = {
     filters: [],
     logic: 'and',
   };
-
   /** Page info */
   public pageInfo = {
     pageIndex: 0,
@@ -66,10 +58,8 @@ export class ActivityLogComponent
     length: 0,
     endCursor: '',
   };
-
   /** Cached activity logs */
   public cachedActivities: ActivityLog[] = [];
-
   /** Activity logs query */
   private activityLogsQuery!: QueryRef<ActivityLogsActivityLogNodesQueryResponse>;
 

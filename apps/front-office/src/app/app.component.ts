@@ -43,7 +43,7 @@ export class AppComponent implements OnInit {
    * Main component of Front-office.
    *
    * @param authService Shared authentication service,
-   * @param logger Shared logger service
+   * @param logger Shared logger service ( initialize logger so its subscription can start )
    */
   constructor(
     private authService: AuthService,
