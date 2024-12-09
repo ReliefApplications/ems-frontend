@@ -10,6 +10,8 @@ export const LIST_ACTIVITIES = gql`
     $filter: JSON
     $userId: String
     $applicationId: String
+    $sortField: String
+    $sortOrder: String
   ) {
     activityLogs(
       first: $first
@@ -17,6 +19,8 @@ export const LIST_ACTIVITIES = gql`
       filter: $filter
       userId: $userId
       applicationId: $applicationId
+      sortField: $sortField
+      sortOrder: $sortOrder
     ) {
       edges {
         node {

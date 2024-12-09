@@ -46,9 +46,15 @@
           cdk-table
           uiTableWrapper
           [dataSource]="activitiesLogs"
+          (sortChange)="onSort($event)"
         >
           <ng-container cdkColumnDef="createdAt">
-            <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <th
+              uiTableHeaderSort="createdAt"
+              uiCellHeader
+              *cdkHeaderCellDef
+              scope="col"
+            >
               {{ 'components.application.activities.createdAt' | translate }}
             </th>
             <td uiCell *cdkCellDef="let activity">
@@ -112,7 +118,7 @@
   </div>
   <!-- Pagination -->
   <ui-paginator
-    [disabled]="loading"
+    [disabled]="loading || updating"
     [pageIndex]="pageInfo.pageIndex"
     [pageSize]="pageInfo.pageSize"
     [totalItems]="pageInfo.length"

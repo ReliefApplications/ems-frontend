@@ -2,7 +2,11 @@ import { DownloadService } from './../../services/download/download.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client/core/types';
-import { handleTablePageEvent, UIPageChangeEvent } from '@oort-front/ui';
+import {
+  handleTablePageEvent,
+  TableSort,
+  UIPageChangeEvent,
+} from '@oort-front/ui';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { takeUntil } from 'rxjs';
 import {
@@ -10,7 +14,10 @@ import {
   ActivityLogsActivityLogNodesQueryResponse,
 } from '../../models/activity-log.model';
 import { RestService } from '../../services/rest/rest.service';
-import { updateQueryUniqueValues } from '../../utils/public-api';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../utils/public-api';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { LIST_ACTIVITIES } from './graphql/queries';
 
@@ -41,6 +48,8 @@ export class ActivityLogComponent
   public attributes: { text: string; value: string }[] = [];
   /** Loading flag */
   public loading = false;
+  /** Updating state */
+  public updating = false;
   /** Filter form group */
   public filterForm = this.fb.group({
     startDate: [null],
@@ -51,6 +60,8 @@ export class ActivityLogComponent
     filters: [],
     logic: 'and',
   };
+  /** Sort */
+  private sort: TableSort = { active: '', sortDirection: '' };
   /** Page info */
   public pageInfo = {
     pageIndex: 0,
@@ -93,11 +104,71 @@ export class ActivityLogComponent
           filter: this.filter,
           userId: this.userId,
           applicationId: this.applicationId,
+          sortField: this.sort?.sortDirection && this.sort.active,
+          sortOrder: this.sort?.sortDirection,
         },
       });
 
     this.getAttributes();
     this.setValueChangeListeners();
+  }
+
+  /**
+   * Filters applications and updates table.
+   *
+   * @param filter filter event.
+   */
+  onFilter(filter: any): void {
+    this.filter = filter;
+    this.fetchActivities(true);
+  }
+
+  /**
+   * Handle sort change.
+   *
+   * @param event sort event
+   */
+  onSort(event: TableSort): void {
+    this.sort = event;
+    this.fetchActivities(true);
+  }
+
+  /**
+   * Handles page event.
+   *
+   * @param e page event.
+   */
+  onPage(e: UIPageChangeEvent): void {
+    const cachedData = handleTablePageEvent(
+      e,
+      this.pageInfo,
+      this.cachedActivities
+    );
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
+      this.activitiesLogs = cachedData;
+    } else {
+      this.fetchActivities();
+    }
+  }
+
+  /**
+   * Method to download activities when the link is clicked.
+   */
+  downloadActivities(): void {
+    const path = '/activity/download-activities';
+    this.downloadService.getActivitiesExport(path, {
+      filter: this.filter,
+      userId: this.userId,
+      applicationId: this.applicationId,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    });
+  }
+
+  /**
+   * Clears form.
+   */
+  clear(): void {
+    this.filterForm.reset();
   }
 
   /**
@@ -135,7 +206,8 @@ export class ActivityLogComponent
           results: ApolloQueryResult<ActivityLogsActivityLogNodesQueryResponse>
         ) => {
           this.updateValues(
-            results.errors?.length ? { activityLogs: [] as any } : results.data
+            results.errors?.length ? { activityLogs: [] as any } : results.data,
+            results.loading
           );
         }
       );
@@ -166,68 +238,57 @@ export class ActivityLogComponent
   }
 
   /**
-   * Filters applications and updates table.
-   *
-   * @param filter filter event.
-   */
-  onFilter(filter: any): void {
-    this.filter = filter;
-    this.fetchActivities(true);
-  }
-
-  /**
-   * Handles page event.
-   *
-   * @param e page event.
-   */
-  onPage(e: UIPageChangeEvent): void {
-    const cachedData = handleTablePageEvent(
-      e,
-      this.pageInfo,
-      this.cachedActivities
-    );
-    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
-      this.activitiesLogs = cachedData;
-    } else {
-      this.fetchActivities();
-    }
-  }
-
-  /**
    * Update applications query.
    *
    * @param refetch erase previous query results
    */
   private fetchActivities(refetch?: boolean): void {
-    this.loading = true;
+    this.updating = true;
     const variables = {
       first: this.pageInfo.pageSize,
       afterCursor: refetch ? null : this.pageInfo.endCursor,
       filter: this.filter,
+      userId: this.userId,
+      applicationId: this.applicationId,
+      sortField: this.sort?.sortDirection && this.sort.active,
+      sortOrder: this.sort?.sortDirection,
     };
 
+    const cachedValues: ActivityLogsActivityLogNodesQueryResponse =
+      getCachedValues(this.apollo.client, LIST_ACTIVITIES, variables);
     if (refetch) {
       this.cachedActivities = [];
       this.pageInfo.pageIndex = 0;
     }
-
-    this.activityLogsQuery
-      .refetch(variables)
-      .then(
-        (
-          results: ApolloQueryResult<ActivityLogsActivityLogNodesQueryResponse>
-        ) => {
-          this.updateValues(results.data);
-        }
-      );
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
+    } else {
+      if (refetch) {
+        this.activityLogsQuery.refetch(variables);
+      } else {
+        this.activityLogsQuery
+          .refetch(variables)
+          .then(
+            (
+              results: ApolloQueryResult<ActivityLogsActivityLogNodesQueryResponse>
+            ) => {
+              this.updateValues(results.data, results.loading);
+            }
+          );
+      }
+    }
   }
 
   /**
    * Updates local list with given data
    *
    * @param data New values to update forms
+   * @param loading Loading state
    */
-  private updateValues(data: ActivityLogsActivityLogNodesQueryResponse): void {
+  private updateValues(
+    data: ActivityLogsActivityLogNodesQueryResponse,
+    loading: boolean
+  ): void {
     const mappedValues = data.activityLogs.edges.map((x) => x.node);
     this.cachedActivities = updateQueryUniqueValues(
       this.cachedActivities,
@@ -235,30 +296,11 @@ export class ActivityLogComponent
     );
     this.pageInfo.length = data.activityLogs.totalCount;
     this.pageInfo.endCursor = data.activityLogs.pageInfo.endCursor;
+    this.loading = loading;
     this.activitiesLogs = this.cachedActivities.slice(
       this.pageInfo.pageSize * this.pageInfo.pageIndex,
       this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
     );
-    this.loading = false;
-  }
-
-  /**
-   * Method to download activities when the link is clicked.
-   */
-  downloadActivities(): void {
-    const path = '/activity/download-activities';
-    this.downloadService.getActivitiesExport(path, {
-      filter: this.filter,
-      userId: this.userId,
-      applicationId: this.applicationId,
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    });
-  }
-
-  /**
-   * Clears form.
-   */
-  clear(): void {
-    this.filterForm.reset();
+    this.updating = false;
   }
 }
