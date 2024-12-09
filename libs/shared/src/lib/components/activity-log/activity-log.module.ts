@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
-  DateModule,
+  DateModule as UIDateModule,
   FormWrapperModule,
   IconModule,
   PaginatorModule,
@@ -13,6 +13,7 @@ import {
 import { SkeletonTableModule } from '../skeleton/skeleton-table/public-api';
 import { EmptyModule } from '../ui/empty/empty.module';
 import { ActivityLogComponent } from './activity-log.component';
+import { DateModule } from '../../pipes/date/date.module';
 
 /** Module for components related to templates */
 @NgModule({
@@ -23,12 +24,13 @@ import { ActivityLogComponent } from './activity-log.component';
     TranslateModule,
     IconModule,
     ButtonModule,
+    UIDateModule,
     ReactiveFormsModule,
     FormWrapperModule,
-    DateModule,
     SkeletonTableModule,
     PaginatorModule,
     EmptyModule,
+    DateModule,
   ],
   exports: [ActivityLogComponent],
 })

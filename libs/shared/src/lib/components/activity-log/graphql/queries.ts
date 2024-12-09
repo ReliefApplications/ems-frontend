@@ -15,6 +15,7 @@ export const LIST_ACTIVITIES = gql`
           url
           metadata
           attributes
+          createdAt
         }
         cursor
       }
