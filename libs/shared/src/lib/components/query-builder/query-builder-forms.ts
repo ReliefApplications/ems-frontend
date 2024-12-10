@@ -146,6 +146,7 @@ export const createDefaultField = (name: string): QueryField => ({
  * @returns Query form
  */
 export const createQueryForm = (value: any, validators = true) => {
+  const sort = get(value, 'sort');
   return formBuilder.group({
     name: [get(value, 'name', ''), validators ? Validators.required : null],
     template: [get(value, 'template', ''), null],
@@ -155,7 +156,9 @@ export const createQueryForm = (value: any, validators = true) => {
       validators ? Validators.required : null
     ),
     sort: formBuilder.array(
-      (get(value, 'sort', []) ?? []).map((x: any) => createSortGroup(x))
+      (sort ? (Array.isArray(sort) ? sort : [sort]) : []).map((x: any) =>
+        createSortGroup(x)
+      )
     ),
     filter: createFilterGroup(get(value, 'filter', {})),
     style: formBuilder.array(
