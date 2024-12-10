@@ -263,6 +263,11 @@ export const routes: Routes = [
       },
       {
         path: 'applications',
+        data: {
+          breadcrumb: {
+            key: 'common.application.few',
+          },
+        },
         children: [
           {
             path: '',
@@ -398,6 +403,9 @@ export const routes: Routes = [
                 (m) => m.PullJobsModule
               ),
             data: {
+              breadcrumb: {
+                key: 'common.pullJob.few',
+              },
               permission: {
                 action: 'read',
                 subject: 'PullJob',

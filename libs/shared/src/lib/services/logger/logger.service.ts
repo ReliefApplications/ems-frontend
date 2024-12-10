@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { RestService } from '../rest/rest.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs';
+import { BreadcrumbService } from '../breadcrumb/breadcrumb.service';
+import { Breadcrumb } from '@oort-front/ui';
+import { isNil } from 'lodash';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Service to track user activity
@@ -19,24 +23,60 @@ export class LoggerService {
    * @param restService Service to make REST calls
    * @param router Angular router service
    * @param activatedRoute Angular activated route service
+   * @param breadcrumbService Breadcrumb service
+   * @param translate Translate service
    */
   constructor(
     private restService: RestService,
     public router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private breadcrumbService: BreadcrumbService,
+    private translate: TranslateService
   ) {
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event) => {
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        switchMap((event) =>
+          this.breadcrumbService.breadcrumbs$.pipe(
+            map((breadcrumb) => ({
+              event,
+              title: this.getCurrentPageTitle(breadcrumb),
+            }))
+          )
+        )
+      )
+      .subscribe(({ event, title }) => {
         if (event instanceof NavigationEnd) {
+          console.log(title);
           this.track({
             eventType: 'navigation',
             metadata: {
-              url: event.urlAfterRedirects,
+              url: (event as any).urlAfterRedirects,
+              // ...(title && { title }),
             },
           });
         }
       });
+  }
+
+  /**
+   * Get current page or navbar section name for the activity track
+   *
+   * @param breadcrumbs Breadcrumbs for the current route
+   * @returns Current page name or navbar section title
+   */
+  private getCurrentPageTitle(breadcrumbs: Breadcrumb[]) {
+    let page = '';
+    let navSection = '';
+    breadcrumbs.forEach((bc) => {
+      if (!isNil(bc.text)) {
+        page = bc.text;
+      }
+      if (!isNil(bc.key)) {
+        navSection = this.translate.instant(bc.key);
+      }
+    });
+    return page || navSection;
   }
 
   /**
