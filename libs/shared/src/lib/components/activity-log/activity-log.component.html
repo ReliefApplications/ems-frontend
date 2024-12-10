@@ -96,12 +96,15 @@
               {{ activity.attributes?.[attribute.value] }}
             </td>
           </ng-container>
-          <ng-container cdkColumnDef="url">
+          <ng-container cdkColumnDef="title">
             <th uiCellHeader *cdkHeaderCellDef scope="col">
-              {{ 'components.application.activities.url' | translate }}
+              {{ 'components.application.activities.title' | translate }}
             </th>
             <td uiCell *cdkCellDef="let activity">
-              {{ activity.url }}
+              <b>{{ activity.title }}</b>
+              <a class="cursor-pointer block" [routerLink]="activity.url">{{
+                activity.url
+              }}</a>
             </td>
           </ng-container>
           <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>

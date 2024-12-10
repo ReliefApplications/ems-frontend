@@ -29,6 +29,7 @@ export const LIST_ACTIVITIES = gql`
           username
           eventType
           url
+          title
           metadata
           attributes
           createdAt

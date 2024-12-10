@@ -43,16 +43,17 @@ export class LoggerService {
               title: this.getCurrentPageTitle(breadcrumb),
             }))
           )
-        )
+        ),
+        /** make sure that the page title is ready to be saved */
+        filter(({ title }) => !!title)
       )
       .subscribe(({ event, title }) => {
         if (event instanceof NavigationEnd) {
-          console.log(title);
           this.track({
             eventType: 'navigation',
             metadata: {
               url: (event as any).urlAfterRedirects,
-              ...(title && { title }),
+              title,
             },
           });
         }

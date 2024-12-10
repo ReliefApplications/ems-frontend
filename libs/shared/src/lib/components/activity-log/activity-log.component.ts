@@ -186,11 +186,11 @@ export class ActivityLogComponent
             'userId',
             'username',
             ...this.attributes.map((x) => x.value),
-            'url',
+            'title',
           ];
         },
         error: () => {
-          this.displayedColumns = ['createdAt', 'userId', 'username', 'url'];
+          this.displayedColumns = ['createdAt', 'userId', 'username', 'title'];
         },
       });
   }

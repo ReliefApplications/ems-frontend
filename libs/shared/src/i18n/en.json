@@ -635,6 +635,7 @@
 				"few": "Activities",
 				"metadata": "Metadata",
 				"one": "Activity",
+				"title": "Title",
 				"url": "URL",
 				"userId": "User ID"
 			},
