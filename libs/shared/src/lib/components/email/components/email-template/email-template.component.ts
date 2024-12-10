@@ -204,9 +204,6 @@ export class EmailTemplateComponent
   /** Common service Query filter Preview HTML */
   public previewCommonHTML: any = '';
 
-  /** Declare Dropdown Userfields property */
-  userTableFields: string[] = [];
-
   /**
    * Composite filter group.
    *
@@ -317,9 +314,9 @@ export class EmailTemplateComponent
   public async getUserTableFields() {
     try {
       // Fetch the user table fields from the getFilterData
-      const data = await this.referenceData.getFilterData('Users');
+      const data = await this.referenceData.getCSUserFields();
       if (data) {
-        this.userTableFields = data;
+        this.emailService.userTableFields = data;
         this.loading = false;
       }
     } catch (error) {
@@ -345,6 +342,9 @@ export class EmailTemplateComponent
       this.dlQuery?.get('name')?.setValue('');
       this.resource = null;
       this.emailService.isToValidCheck();
+
+      //clear DLCommon Query
+      this.resetFilters(this.dlCommonQuery);
     } else if (value === 'Select With Filter') {
       // Clear the input emails form array
       while (this.selectedEmails.length !== 0) {
@@ -369,6 +369,9 @@ export class EmailTemplateComponent
         }
       }
       this.emailService.isToValidCheck();
+
+      //clear DLCommon Query
+      this.resetFilters(this.dlCommonQuery);
     } else if (value === 'Use Combination') {
       if (
         this.emailService.datasetsForm.getRawValue().emailDistributionList?.to
@@ -382,6 +385,26 @@ export class EmailTemplateComponent
       } else {
         this.emailService.isToValid = false;
       }
+    } else if (value === 'Select from Common Servcies') {
+      // Clear the input emails form array
+      while (this.selectedEmails.length !== 0) {
+        this.selectedEmails.removeAt(0);
+      }
+      this.selectedEmails.reset();
+      if (
+        this.emailService.datasetsForm.getRawValue().emailDistributionList?.to
+          ?.inputEmails?.length > 0 ||
+        (this.emailService.datasetsForm.getRawValue().emailDistributionList.to
+          .resource !== null &&
+          this.emailService.datasetsForm.getRawValue().emailDistributionList.to
+            .resource !== '')
+      ) {
+        this.emailService.isToValid = true;
+      } else {
+        this.emailService.isToValid = false;
+      }
+      //Clear the Select with filter data
+      this.resetFilters(this.dlQuery);
     }
     this.emailService.validateNextButton();
   }
@@ -485,7 +508,7 @@ export class EmailTemplateComponent
         (this.expandedIndex === 2 && event === 1) ||
         (this.activeSegmentIndex === 3 && event === 1)
       ) {
-        this.getCommonServiceDataSet();
+        fromHTML ? this.getCommonServiceDataSet() : '';
       }
     }
 
@@ -1135,7 +1158,9 @@ export class EmailTemplateComponent
    *
    */
   async setCommonServiceFields() {
-    await this.getUserTableFields();
+    if (this.emailService?.userTableFields?.length === 0) {
+      await this.getUserTableFields();
+    }
 
     this.emailService.commonServiceFields?.forEach((ele: any) => {
       this.commonServiceFields.push({
@@ -1148,7 +1173,7 @@ export class EmailTemplateComponent
       });
     });
 
-    this.userTableFields?.forEach((ele: any) => {
+    this.emailService.userTableFields?.forEach((ele: any) => {
       this.commonServiceFields.push({
         graphQLFieldName: ele,
         name: ele,

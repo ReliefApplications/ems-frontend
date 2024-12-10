@@ -820,3 +820,17 @@ export const GET_REFERENCE_DATA = gql`
     }
   }
 `;
+/** Get CS User Fields gql query definition */
+export const GET_CS_USER_FIELDS = `
+  {
+    __type(name: "user") {
+      fields {
+        name
+        type {
+          name
+          kind
+        }
+      }
+    }
+  }
+`;

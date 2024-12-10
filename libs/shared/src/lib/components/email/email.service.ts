@@ -219,6 +219,8 @@ export class EmailService {
     { key: 'Country', label: 'Country' },
     { key: 'Region', label: 'Region' },
   ];
+  /** Declare Dropdown Userfields property */
+  userTableFields: string[] = [];
 
   /**
    * Generates new dataset group.
