@@ -1,3 +1,11 @@
+## [1.0.3](https://github.com/ReliefApplications/oort-frontend/compare/v1.0.2...v1.0.3) (2024-12-10)
+
+
+### Bug Fixes
+
+* createQueryForm would break if sort stored as a single object instead of array ([5cfa2c1](https://github.com/ReliefApplications/oort-frontend/commit/5cfa2c1cee2ec2b76f4933e912d7ea32efd2e9cb))
+* using alwaysCreateRecord would duplicate records when adding them from another resource ([0420fd6](https://github.com/ReliefApplications/oort-frontend/commit/0420fd616fb4289010f521e1dc631bde114eef74))
+
 ## [1.0.2](https://github.com/ReliefApplications/oort-frontend/compare/v1.0.1...v1.0.2) (2024-10-30)
 
 
