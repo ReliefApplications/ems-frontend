@@ -33,8 +33,13 @@
     <ng-container ngProjectAs="label">{{
       'common.activity.few' | translate
     }}</ng-container>
-    <ng-container *ngIf="user">
-      <shared-activity-log [userId]="user.id" [applicationId]="application?.id"></shared-activity-log>
-    </ng-container>
+    <ng-template uiTabContent>
+      <ng-container *ngIf="user">
+        <shared-activity-log
+          [userId]="user.id"
+          [applicationId]="application?.id"
+        ></shared-activity-log>
+      </ng-container>
+    </ng-template>
   </ui-tab>
 </ui-tabs>
