@@ -244,6 +244,23 @@ export class PreviewComponent
    */
   loadDistributionList() {
     this.emailService.loading = true;
+    const objData: any = cloneDeep(this.query);
+    //Updating payload
+    objData.emailDistributionList.to.commonServiceFilter =
+      this.emailService.setCommonServicePayload(
+        objData.emailDistributionList?.to?.commonServiceFilter?.filter
+      )?.commonServiceFilter;
+
+    objData.emailDistributionList.cc.commonServiceFilter =
+      this.emailService.setCommonServicePayload(
+        objData.emailDistributionList?.cc?.commonServiceFilter?.filter
+      )?.commonServiceFilter;
+
+    objData.emailDistributionList.bcc.commonServiceFilter =
+      this.emailService.setCommonServicePayload(
+        objData.emailDistributionList?.bcc?.commonServiceFilter?.filter
+      )?.commonServiceFilter;
+
     this.http
       .post(
         `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
