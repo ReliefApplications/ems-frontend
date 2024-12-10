@@ -52,7 +52,7 @@ export class LoggerService {
             eventType: 'navigation',
             metadata: {
               url: (event as any).urlAfterRedirects,
-              // ...(title && { title }),
+              ...(title && { title }),
             },
           });
         }

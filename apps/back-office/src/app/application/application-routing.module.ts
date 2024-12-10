@@ -181,6 +181,11 @@ const routes: Routes = [
           import('../dashboard/pages/dashboard/dashboard.module').then(
             (m) => m.DashboardModule
           ),
+        data: {
+          breadcrumb: {
+            alias: '@dashboard',
+          },
+        },
         // canActivate: [PermissionGuard]
       },
       {
@@ -189,6 +194,11 @@ const routes: Routes = [
           import('./pages/workflow/workflow.module').then(
             (m) => m.WorkflowModule
           ),
+        data: {
+          breadcrumb: {
+            alias: '@workflow',
+          },
+        },
         // canActivate: [PermissionGuard]
       },
       {
@@ -209,6 +219,11 @@ const routes: Routes = [
             // canActivate: [PermissionGuard]
           },
         ],
+        data: {
+          breadcrumb: {
+            alias: '@form',
+          },
+        },
       },
     ],
   },

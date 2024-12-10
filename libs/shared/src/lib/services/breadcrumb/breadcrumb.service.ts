@@ -45,7 +45,7 @@ export class BreadcrumbService {
    * @param route current route
    * @param uri previous uri
    * @param breadcrumbs list of existing breadcrumbs
-   * @returns new bredcrumbs
+   * @returns new breadcrumbs
    */
   private createBreadcrumbs(
     route: ActivatedRoute,
