@@ -164,10 +164,13 @@ export const buildAddButton = (
           if (result) {
             const { data } = result;
             question.template = result.template;
-            question.draftData = {
-              ...question.draftData,
-              [data.id]: data.data,
-            };
+            if (!question.alwaysCreateRecord) {
+              // Only add record to draft if the question doesn't ask for record creation
+              question.draftData = {
+                ...question.draftData,
+                [data.id]: data.data,
+              };
+            }
             // TODO: call reload method
             // if (question.displayAsGrid && gridComponent) {
             //   gridComponent.availableRecords.push({
