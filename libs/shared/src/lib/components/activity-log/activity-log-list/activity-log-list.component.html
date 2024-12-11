@@ -54,7 +54,7 @@
       <!-- User -->
       <kendo-grid-column field="username" title="User">
         <ng-template kendoGridCellTemplate let-dataItem>
-          {{ dataItem.userId }}
+          {{ dataItem.username || dataItem.userId }}
         </ng-template>
       </kendo-grid-column>
       <!-- Attributes -->
