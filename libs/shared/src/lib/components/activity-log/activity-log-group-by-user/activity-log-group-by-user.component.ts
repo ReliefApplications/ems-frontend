@@ -3,18 +3,16 @@ import { CommonModule } from '@angular/common';
 import { RestService } from '../../../services/rest/rest.service';
 import { debounceTime, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import {
-  ButtonModule,
-  DateModule,
-  FormWrapperModule,
-  PaginatorModule,
-  TableModule,
-  UIPageChangeEvent,
-} from '@oort-front/ui';
+import { ButtonModule, DateModule, FormWrapperModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { SkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-table.module';
 import { EmptyModule } from '../../ui/empty/empty.module';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import {
+  GridModule,
+  PageChangeEvent,
+  PagerSettings,
+} from '@progress/kendo-angular-grid';
+import { SortDescriptor } from '@progress/kendo-data-query';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -35,15 +33,13 @@ interface GroupByUser {
   standalone: true,
   imports: [
     CommonModule,
-    TableModule,
     TranslateModule,
-    SkeletonTableModule,
-    PaginatorModule,
     EmptyModule,
     DateModule,
     ButtonModule,
     ReactiveFormsModule,
     FormWrapperModule,
+    GridModule,
   ],
   templateUrl: './activity-log-group-by-user.component.html',
   styleUrls: ['./activity-log-group-by-user.component.scss'],
@@ -56,10 +52,16 @@ export class ActivityLogGroupByUserComponent
   @Input() userId: string | undefined;
   /** Application ID to filter activities. */
   @Input() applicationId: string | undefined;
-  /** Group by url items */
-  public dataset: GroupByUser[] = [];
-  /** Columns to display in the table. */
-  public displayedColumns = ['count', 'username'];
+  /** Dataset */
+  public dataset: {
+    data: GroupByUser[];
+    total: number;
+  } = {
+    data: [],
+    total: 0,
+  };
+  /** Attributes */
+  public attributes: { text: string; value: string }[] = [];
   /** Loading flag */
   public loading = true;
   /** Filter form group */
@@ -72,12 +74,22 @@ export class ActivityLogGroupByUserComponent
     filters: [],
     logic: 'and',
   };
+  /** Header filter */
+  public headerFilter: any = {
+    filters: [],
+    logic: 'and',
+  };
   /** Page info */
   public pageInfo = {
-    pageIndex: 0,
-    pageSize: DEFAULT_PAGE_SIZE,
-    length: 0,
+    skip: 0,
+    take: DEFAULT_PAGE_SIZE,
   };
+  /** Pager settings */
+  public pagerSettings: PagerSettings = {
+    pageSizes: [10, 50, 100],
+  };
+  /** Sort descriptor */
+  public sort: SortDescriptor[] = [];
 
   /**
    * Activity log group by user.
@@ -91,6 +103,7 @@ export class ActivityLogGroupByUserComponent
 
   ngOnInit(): void {
     this.fetch();
+    this.getAttributes();
     this.filterForm.valueChanges
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe({
@@ -110,10 +123,12 @@ export class ActivityLogGroupByUserComponent
               value: value.endDate,
             });
           }
-          this.onFilter({
-            logic: 'and',
-            filters,
-          });
+          this.headerFilter.filters = filters;
+          this.pageInfo = {
+            ...this.pageInfo,
+            skip: 0,
+          };
+          this.fetch();
         },
       });
   }
@@ -123,12 +138,25 @@ export class ActivityLogGroupByUserComponent
    *
    * @param e page event.
    */
-  onPage(e: UIPageChangeEvent): void {
-    this.loading = true;
+  onPage(e: PageChangeEvent): void {
     this.pageInfo = {
       ...this.pageInfo,
-      pageIndex: e.pageIndex,
-      pageSize: e.pageSize,
+      skip: e.skip,
+      take: e.take,
+    };
+    this.fetch();
+  }
+
+  /**
+   * Handles sort event.
+   *
+   * @param e sort event
+   */
+  onSort(e: SortDescriptor[]): void {
+    this.sort = e;
+    this.pageInfo = {
+      ...this.pageInfo,
+      skip: 0,
     };
     this.fetch();
   }
@@ -149,7 +177,7 @@ export class ActivityLogGroupByUserComponent
     this.filter = filter;
     this.pageInfo = {
       ...this.pageInfo,
-      pageIndex: 0,
+      skip: 0,
     };
     this.fetch();
   }
@@ -158,33 +186,53 @@ export class ActivityLogGroupByUserComponent
    * Fetch items
    */
   private fetch() {
+    this.loading = true;
     this.restService
-      .post(
-        '/activity/group-by-user',
-        {
-          filter: this.filter,
+      .get('/activities/group-by-user', {
+        params: {
+          ...(this.sort[0] &&
+            this.sort[0].dir && {
+              sortField: this.sort[0].field,
+              sortOrder: this.sort[0].dir,
+            }),
+          skip: this.pageInfo.skip,
+          take: this.pageInfo.take,
+          ...(this.userId && {
+            user_id: this.userId,
+          }),
+          ...(this.applicationId && {
+            application_id: this.applicationId,
+          }),
+          filter: JSON.stringify({
+            logic: 'and',
+            filters: [this.filter, this.headerFilter],
+          }),
         },
-        {
-          params: {
-            page: this.pageInfo.pageIndex,
-            per_page: this.pageInfo.pageSize,
-            ...(this.userId && {
-              user_id: this.userId,
-            }),
-            ...(this.applicationId && {
-              application_id: this.applicationId,
-            }),
-          },
-        }
-      )
+      })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (value) => {
           this.loading = false;
-          this.dataset = value.items;
-          this.pageInfo.length = value.totalCount;
-          this.pageInfo.pageIndex = value.currentPage;
-          this.pageInfo.pageSize = value.perPage;
+          this.dataset = {
+            data: value.data,
+            total: value.total,
+          };
+          this.pageInfo.skip = value.skip;
+          this.pageInfo.take = value.take;
+        },
+      });
+  }
+
+  /**
+   * Fetch attributes to build columns
+   */
+  private getAttributes(): void {
+    this.restService
+      .get('/permissions/attributes')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (attributes: any) => {
+          this.attributes = attributes;
         },
       });
   }

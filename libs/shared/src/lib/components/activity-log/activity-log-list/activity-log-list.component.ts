@@ -1,40 +1,33 @@
 import { CommonModule } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
-  DateModule as UIDateModule,
   FormWrapperModule,
   IconModule,
-  PaginatorModule,
-  TableModule,
-  TableSort,
-  handleTablePageEvent,
-  UIPageChangeEvent,
+  DateModule as UIDateModule,
 } from '@oort-front/ui';
-import { SkeletonTableModule } from '../../skeleton/skeleton-table/public-api';
-import { EmptyModule } from '../../ui/empty/empty.module';
-import { DateModule } from '../../../pipes/date/date.module';
-import { Component, Input, OnInit } from '@angular/core';
 import {
-  ActivityLog,
-  ActivityLogsActivityLogNodesQueryResponse,
-} from '../../../models/activity-log.model';
-import { Apollo, QueryRef } from 'apollo-angular';
-import { RestService } from '../../../services/rest/rest.service';
-import { DownloadService } from '../../../services/download/download.service';
-import { LIST_ACTIVITIES } from './graphql/queries';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+  GridModule,
+  PageChangeEvent,
+  PagerSettings,
+} from '@progress/kendo-angular-grid';
+import {
+  CompositeFilterDescriptor,
+  SortDescriptor,
+} from '@progress/kendo-data-query';
 import { debounceTime, takeUntil } from 'rxjs';
-import { ApolloQueryResult } from '@apollo/client';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../utils/update-queries';
-import { RouterModule } from '@angular/router';
+import { ActivityLog } from '../../../models/activity-log.model';
+import { DateModule } from '../../../pipes/date/date.module';
+import { DownloadService } from '../../../services/download/download.service';
+import { RestService } from '../../../services/rest/rest.service';
+import { EmptyModule } from '../../ui/empty/empty.module';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /** Default number of items per request for pagination */
-const DEFAULT_PAGE_SIZE = 100;
+const DEFAULT_PAGE_SIZE = 50;
 
 /**
  * Shared activity log list component.
@@ -44,18 +37,16 @@ const DEFAULT_PAGE_SIZE = 100;
   standalone: true,
   imports: [
     CommonModule,
-    TableModule,
     TranslateModule,
     IconModule,
     ButtonModule,
     UIDateModule,
     ReactiveFormsModule,
     FormWrapperModule,
-    SkeletonTableModule,
-    PaginatorModule,
     EmptyModule,
     DateModule,
     RouterModule,
+    GridModule,
   ],
   templateUrl: './activity-log-list.component.html',
   styleUrls: ['./activity-log-list.component.scss'],
@@ -68,16 +59,18 @@ export class ActivityLogListComponent
   @Input() userId: string | undefined;
   /** Application ID to filter activities. */
   @Input() applicationId: string | undefined;
-  /** List of activities to display. */
-  public activitiesLogs: ActivityLog[] = [];
-  /** Columns to display in the table. */
-  public displayedColumns: string[] = [];
+  /** Dataset */
+  public dataset: {
+    data: ActivityLog[];
+    total: number;
+  } = {
+    data: [],
+    total: 0,
+  };
   /** Attributes */
   public attributes: { text: string; value: string }[] = [];
   /** Loading flag */
-  public loading = false;
-  /** Updating state */
-  public updating = false;
+  public loading = true;
   /** Filter form group */
   public filterForm = this.fb.group({
     startDate: [null],
@@ -88,30 +81,31 @@ export class ActivityLogListComponent
     filters: [],
     logic: 'and',
   };
-  /** Sort */
-  private sort: TableSort = { active: '', sortDirection: '' };
+  /** Header filter */
+  public headerFilter: any = {
+    filters: [],
+    logic: 'and',
+  };
   /** Page info */
   public pageInfo = {
-    pageIndex: 0,
-    pageSize: DEFAULT_PAGE_SIZE,
-    length: 0,
-    endCursor: '',
+    skip: 0,
+    take: DEFAULT_PAGE_SIZE,
   };
-  /** Cached activity logs */
-  public cachedActivities: ActivityLog[] = [];
-  /** Activity logs query */
-  private activityLogsQuery!: QueryRef<ActivityLogsActivityLogNodesQueryResponse>;
+  /** Pager settings */
+  public pagerSettings: PagerSettings = {
+    pageSizes: [10, 50, 100],
+  };
+  /** Sort descriptor */
+  public sort: SortDescriptor[] = [];
 
   /**
    * Shared activity log list component.
    *
-   * @param apollo Apollo Client
    * @param restService Shared rest service
    * @param fb Angular form builder instance
    * @param downloadService Shared download service
    */
   constructor(
-    private apollo: Apollo,
     private restService: RestService,
     private fb: FormBuilder,
     private downloadService: DownloadService
@@ -123,22 +117,35 @@ export class ActivityLogListComponent
    * OnInit lifecycle hook to fetch activities when the component initializes.
    */
   ngOnInit(): void {
-    this.activityLogsQuery =
-      this.apollo.watchQuery<ActivityLogsActivityLogNodesQueryResponse>({
-        query: LIST_ACTIVITIES,
-        variables: {
-          first: DEFAULT_PAGE_SIZE,
-          afterCursor: null,
-          filter: this.filter,
-          userId: this.userId,
-          applicationId: this.applicationId,
-          sortField: this.sort?.sortDirection && this.sort.active,
-          sortOrder: this.sort?.sortDirection,
+    this.fetch();
+    this.getAttributes();
+    this.filterForm.valueChanges
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe({
+        next: (value) => {
+          const filters = [];
+          if (value.startDate) {
+            filters.push({
+              field: 'createdAt',
+              operator: 'gte',
+              value: value.startDate,
+            });
+          }
+          if (value.endDate) {
+            filters.push({
+              field: 'createdAt',
+              operator: 'lte',
+              value: value.endDate,
+            });
+          }
+          this.headerFilter.filters = filters;
+          this.pageInfo = {
+            ...this.pageInfo,
+            skip: 0,
+          };
+          this.fetch();
         },
       });
-
-    this.getAttributes();
-    this.setValueChangeListeners();
   }
 
   /**
@@ -146,19 +153,27 @@ export class ActivityLogListComponent
    *
    * @param filter filter event.
    */
-  onFilter(filter: any): void {
+  onFilter(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
-    this.fetchActivities(true);
+    this.pageInfo = {
+      ...this.pageInfo,
+      skip: 0,
+    };
+    this.fetch();
   }
 
   /**
-   * Handle sort change.
+   * Handles sort event.
    *
-   * @param event sort event
+   * @param e sort event
    */
-  onSort(event: TableSort): void {
-    this.sort = event;
-    this.fetchActivities(true);
+  onSort(e: SortDescriptor[]): void {
+    this.sort = e;
+    this.pageInfo = {
+      ...this.pageInfo,
+      skip: 0,
+    };
+    this.fetch();
   }
 
   /**
@@ -166,24 +181,20 @@ export class ActivityLogListComponent
    *
    * @param e page event.
    */
-  onPage(e: UIPageChangeEvent): void {
-    const cachedData = handleTablePageEvent(
-      e,
-      this.pageInfo,
-      this.cachedActivities
-    );
-    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
-      this.activitiesLogs = cachedData;
-    } else {
-      this.fetchActivities();
-    }
+  onPage(e: PageChangeEvent): void {
+    this.pageInfo = {
+      ...this.pageInfo,
+      skip: e.skip,
+      take: e.take,
+    };
+    this.fetch();
   }
 
   /**
    * Method to download activities when the link is clicked.
    */
   downloadActivities(): void {
-    const path = '/activity/download';
+    const path = '/activities/download';
     this.downloadService.getActivitiesExport(path, {
       filter: this.filter,
       userId: this.userId,
@@ -209,128 +220,49 @@ export class ActivityLogListComponent
       .subscribe({
         next: (attributes: any) => {
           this.attributes = attributes;
-          this.displayedColumns = [
-            'createdAt',
-            'userId',
-            'username',
-            ...this.attributes.map((x) => x.value),
-            'title',
-          ];
         },
-        error: () => {
-          this.displayedColumns = ['createdAt', 'userId', 'username', 'title'];
-        },
+        error: () => {},
       });
   }
 
   /**
-   * Set any needed listeners for the current query or filter form
+   * Fetch items.
    */
-  private setValueChangeListeners() {
-    this.activityLogsQuery.valueChanges
+  private fetch() {
+    this.loading = true;
+    this.restService
+      .get('/activities', {
+        params: {
+          ...(this.sort[0] &&
+            this.sort[0].dir && {
+              sortField: this.sort[0].field,
+              sortOrder: this.sort[0].dir,
+            }),
+          skip: this.pageInfo.skip,
+          take: this.pageInfo.take,
+          ...(this.userId && {
+            user_id: this.userId,
+          }),
+          ...(this.applicationId && {
+            application_id: this.applicationId,
+          }),
+          filter: JSON.stringify({
+            logic: 'and',
+            filters: [this.filter, this.headerFilter],
+          }),
+        },
+      })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        (
-          results: ApolloQueryResult<ActivityLogsActivityLogNodesQueryResponse>
-        ) => {
-          this.updateValues(
-            results.errors?.length ? { activityLogs: [] as any } : results.data,
-            results.loading
-          );
-        }
-      );
-
-    this.filterForm.valueChanges
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe({
         next: (value) => {
-          const filters = [];
-          if (value.startDate) {
-            filters.push({
-              field: 'createdAt',
-              operator: 'gte',
-              value: value.startDate,
-            });
-          }
-          if (value.endDate) {
-            filters.push({
-              field: 'createdAt',
-              operator: 'lte',
-              value: value.endDate,
-            });
-          }
-          this.onFilter({
-            logic: 'and',
-            filters,
-          });
+          this.loading = false;
+          this.dataset = {
+            data: value.data,
+            total: value.total,
+          };
+          this.pageInfo.skip = value.skip;
+          this.pageInfo.take = value.take;
         },
       });
-  }
-
-  /**
-   * Update applications query.
-   *
-   * @param refetch erase previous query results
-   */
-  private fetchActivities(refetch?: boolean): void {
-    this.updating = true;
-    const variables = {
-      first: this.pageInfo.pageSize,
-      afterCursor: refetch ? null : this.pageInfo.endCursor,
-      filter: this.filter,
-      userId: this.userId,
-      applicationId: this.applicationId,
-      sortField: this.sort?.sortDirection && this.sort.active,
-      sortOrder: this.sort?.sortDirection,
-    };
-
-    const cachedValues: ActivityLogsActivityLogNodesQueryResponse =
-      getCachedValues(this.apollo.client, LIST_ACTIVITIES, variables);
-    if (refetch) {
-      this.cachedActivities = [];
-      this.pageInfo.pageIndex = 0;
-    }
-    if (cachedValues) {
-      this.updateValues(cachedValues, false);
-    } else {
-      if (refetch) {
-        this.activityLogsQuery.refetch(variables);
-      } else {
-        this.activityLogsQuery
-          .refetch(variables)
-          .then(
-            (
-              results: ApolloQueryResult<ActivityLogsActivityLogNodesQueryResponse>
-            ) => {
-              this.updateValues(results.data, results.loading);
-            }
-          );
-      }
-    }
-  }
-
-  /**
-   * Updates local list with given data
-   *
-   * @param data New values to update forms
-   * @param loading Loading state
-   */
-  private updateValues(
-    data: ActivityLogsActivityLogNodesQueryResponse,
-    loading: boolean
-  ): void {
-    const mappedValues = data.activityLogs.edges.map((x) => x.node);
-    this.cachedActivities = updateQueryUniqueValues(
-      this.cachedActivities,
-      mappedValues
-    );
-    this.pageInfo.length = data.activityLogs.totalCount;
-    this.pageInfo.endCursor = data.activityLogs.pageInfo.endCursor;
-    this.loading = loading;
-    this.activitiesLogs = this.cachedActivities.slice(
-      this.pageInfo.pageSize * this.pageInfo.pageIndex,
-      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-    );
-    this.updating = false;
   }
 }

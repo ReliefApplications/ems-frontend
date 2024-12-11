@@ -15,7 +15,7 @@ import { RestService } from '../rest/rest.service';
 })
 export class LoggerService {
   /** Base path for activity tracking */
-  private activityBasePath = '/activity';
+  private activityBasePath = '/activities';
 
   /**
    * Service to track user activity

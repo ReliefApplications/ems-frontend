@@ -34,54 +34,49 @@
 <!-- Table container -->
 <div class="h-[calc(100%-100px)] flex flex-col">
   <div class="overflow-x-hidden h-full">
-    <!-- Loading indicator -->
-    <ng-container *ngIf="loading; else dataTmpl">
-      <shared-skeleton-table [columns]="displayedColumns" [actions]="true">
-      </shared-skeleton-table>
-    </ng-container>
-    <ng-template #dataTmpl>
-      <ng-container *ngIf="dataset.length > 0; else emptyTmpl">
-        <table
-          class="max-h-full"
-          cdk-table
-          uiTableWrapper
-          [dataSource]="dataset"
-        >
-          <ng-container cdkColumnDef="count">
-            <th uiCellHeader *cdkHeaderCellDef scope="col">HITS</th>
-            <td uiCell *cdkCellDef="let item">
-              {{ item.count }}
-            </td>
-          </ng-container>
-          <ng-container cdkColumnDef="username">
-            <th uiCellHeader *cdkHeaderCellDef scope="col">
-              <span>{{ 'common.user.one' | translate }}</span>
-            </th>
-            <td uiCell *cdkCellDef="let activity">
-              {{ activity.username }}
-            </td>
-          </ng-container>
-          <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-          <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
-        </table>
-      </ng-container>
-      <ng-template #emptyTmpl>
-        <!-- Empty indicator -->
+    <kendo-grid
+      [loading]="loading"
+      [data]="dataset"
+      [pageable]="pagerSettings"
+      [skip]="pageInfo.skip"
+      [pageSize]="pageInfo.take"
+      [sortable]="true"
+      [sort]="sort"
+      [filter]="filter"
+      [resizable]="true"
+      [filterable]="true"
+      (pageChange)="onPage($event)"
+      (sortChange)="onSort($event)"
+      (filterChange)="onFilter($event)"
+    >
+      <!-- Number of hits -->
+      <kendo-grid-column field="count" title="Hits" [filterable]="false">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.count }}
+        </ng-template>
+      </kendo-grid-column>
+      <!-- User -->
+      <kendo-grid-column field="username" title="User">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.username }}
+        </ng-template>
+      </kendo-grid-column>
+      <!-- Attributes -->
+      <kendo-grid-column
+        *ngFor="let attribute of attributes"
+        [field]="'attributes.' + attribute.value"
+        [title]="attribute.text"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.attributes?.[attribute.value] }}
+        </ng-template>
+      </kendo-grid-column>
+      <!-- Empty indicator -->
+      <ng-template kendoGridNoRecordsTemplate>
         <shared-empty
           [title]="'components.application.activities.empty' | translate"
         ></shared-empty>
       </ng-template>
-    </ng-template>
+    </kendo-grid>
   </div>
-  <!-- Pagination -->
-  <ui-paginator
-    [disabled]="loading"
-    [hideFirstLastButtons]="false"
-    [pageIndex]="pageInfo.pageIndex"
-    [pageSize]="pageInfo.pageSize"
-    [totalItems]="pageInfo.length"
-    [pageSizeOptions]="[10, 50, 100]"
-    (pageChange)="onPage($event)"
-  >
-  </ui-paginator>
 </div>
