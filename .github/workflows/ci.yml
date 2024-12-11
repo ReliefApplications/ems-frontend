@@ -47,8 +47,8 @@ jobs:
       - name: Install Dependencies
         run: npm i
       - name: Run ${{ github.event.inputs.project }} tests - ${{ steps.get_version.outputs.version }}
-        run: npx nx run ${{ github.event.inputs.project }}:test:ci
+        run: npx nx run ${{ github.event.inputs.project }}:test:ci --skip-nx-cache
         if: ${{ github.event.inputs.project != '' }}
       - name: Run all tests - ${{ steps.get_version.outputs.version }}
-        run: npm run test
+        run: npm run test -- --skip-nx-cache
         if: ${{ github.event.inputs.project == '' }}
