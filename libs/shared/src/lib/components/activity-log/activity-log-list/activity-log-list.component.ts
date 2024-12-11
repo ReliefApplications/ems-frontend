@@ -221,7 +221,6 @@ export class ActivityLogListComponent
         next: (attributes: any) => {
           this.attributes = attributes;
         },
-        error: () => {},
       });
   }
 

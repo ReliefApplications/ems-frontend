@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
+import { ActivatedRoute, Router, Scroll } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Breadcrumb } from '@oort-front/ui';
 import { isEqual, isNil } from 'lodash';
@@ -41,6 +41,7 @@ export class LoggerService {
         filter(([prev, next]) => {
           return !isEqual(prev, next);
         }),
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         map(([_, next]) => this.getCurrentPageTitle(next as any))
       ),
     ])
