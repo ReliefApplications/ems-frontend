@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { RestService } from '../rest/rest.service';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, map, switchMap } from 'rxjs';
-import { BreadcrumbService } from '../breadcrumb/breadcrumb.service';
-import { Breadcrumb } from '@oort-front/ui';
-import { isNil } from 'lodash';
+import { ActivatedRoute, NavigationEnd, Router, Scroll } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { Breadcrumb } from '@oort-front/ui';
+import { isEqual, isNil } from 'lodash';
+import { combineLatest, filter, map, pairwise, startWith } from 'rxjs';
+import { BreadcrumbService } from '../breadcrumb/breadcrumb.service';
+import { RestService } from '../rest/rest.service';
 
 /**
  * Service to track user activity
@@ -33,22 +33,26 @@ export class LoggerService {
     private breadcrumbService: BreadcrumbService,
     private translate: TranslateService
   ) {
-    this.router.events
+    combineLatest([
+      this.router.events,
+      this.breadcrumbService.breadcrumbs$.pipe(
+        startWith(null),
+        pairwise(),
+        filter(([prev, next]) => {
+          return !isEqual(prev, next);
+        }),
+        map(([_, next]) => this.getCurrentPageTitle(next as any))
+      ),
+    ])
       .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        switchMap((event) =>
-          this.breadcrumbService.breadcrumbs$.pipe(
-            map((breadcrumb) => ({
-              event,
-              title: this.getCurrentPageTitle(breadcrumb),
-            }))
-          )
-        ),
-        /** make sure that the page title is ready to be saved */
-        filter(({ title }) => !!title)
+        filter(([event, title]) => {
+          const isEnd = event instanceof Scroll;
+          return isEnd && !!title;
+        })
       )
-      .subscribe(({ event, title }) => {
-        if (event instanceof NavigationEnd) {
+      .subscribe(([event, title]) => {
+        if (event instanceof Scroll) {
+          event = event instanceof Scroll ? event.routerEvent : event;
           this.track({
             eventType: 'navigation',
             metadata: {
@@ -69,11 +73,13 @@ export class LoggerService {
   private getCurrentPageTitle(breadcrumbs: Breadcrumb[]) {
     let page = '';
     let navSection = '';
-    breadcrumbs.forEach((bc) => {
+    const hasAlias = breadcrumbs.find((bc) => 'alias' in bc);
+    breadcrumbs?.forEach((bc) => {
       if (!isNil(bc.text)) {
         page = bc.text;
       }
-      if (!isNil(bc.key)) {
+      // If no alias present(custom page, e.g. User1), get the current nav section, e.g. Users
+      if (!isNil(bc.key) && !hasAlias) {
         navSection = this.translate.instant(bc.key);
       }
     });

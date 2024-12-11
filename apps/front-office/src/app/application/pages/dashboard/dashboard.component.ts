@@ -20,6 +20,7 @@ import {
   Record,
   DashboardComponent as SharedDashboardComponent,
   DashboardAutomationService,
+  BreadcrumbService,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
@@ -69,6 +70,8 @@ export class DashboardComponent
   public actionButtons: ActionButton[] = [];
   /** Should show dashboard name */
   public showName? = true;
+  /** If dashboard is displayed under workflow  */
+  public isStep = false;
 
   /**
    * Dashboard page.
@@ -85,6 +88,7 @@ export class DashboardComponent
    * @param document Document
    * @param contextService Dashboard context service
    * @param dashboardAutomationService Dashboard automation service
+   * @param breadcrumbService Breadcrumb service
    */
   constructor(
     private apollo: Apollo,
@@ -98,7 +102,8 @@ export class DashboardComponent
     public elementRef: ElementRef,
     @Inject(DOCUMENT) private document: Document,
     private contextService: ContextService,
-    private dashboardAutomationService: DashboardAutomationService
+    private dashboardAutomationService: DashboardAutomationService,
+    private breadcrumbService: BreadcrumbService
   ) {
     super();
     this.dashboardAutomationService.dashboard = this;
@@ -202,6 +207,10 @@ export class DashboardComponent
           this.id = data.dashboard.id || id;
           this.contextId = contextId ?? undefined;
           this.dashboard = data.dashboard;
+          this.breadcrumbService.setBreadcrumb(
+            this.isStep ? '@workflow' : '@dashboard',
+            this.dashboard.name as string
+          );
           this.initContext();
           this.setWidgets();
           this.actionButtons = this.dashboard.buttons || [];

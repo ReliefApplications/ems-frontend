@@ -24,6 +24,11 @@ export const routes: Routes = [
         path: 'profile',
         loadChildren: () =>
           import('@oort-front/shared').then((m) => m.ProfileViewModule),
+        data: {
+          breadcrumb: {
+            key: 'pages.profile.title',
+          },
+        },
       },
       {
         path: 'referencedata',
