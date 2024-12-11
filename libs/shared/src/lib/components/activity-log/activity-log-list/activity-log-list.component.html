@@ -40,7 +40,11 @@
       [pageable]="pagerSettings"
       [skip]="pageInfo.skip"
       [pageSize]="pageInfo.take"
+      [sortable]="true"
+      [sort]="sort"
+      [resizable]="true"
       (pageChange)="onPage($event)"
+      (sortChange)="onSort($event)"
     >
       <!-- Timestamp -->
       <kendo-grid-column
@@ -60,7 +64,7 @@
       <!-- Attributes -->
       <kendo-grid-column
         *ngFor="let attribute of attributes"
-        [field]="attribute.value"
+        [field]="'attributes.' + attribute.value"
         [title]="attribute.text"
       >
         <ng-template kendoGridCellTemplate let-dataItem>
@@ -68,7 +72,7 @@
         </ng-template>
       </kendo-grid-column>
       <!-- Page url -->
-      <kendo-grid-column field="url" title="Url">
+      <kendo-grid-column field="metadata.url" title="Url">
         <ng-template kendoGridCellTemplate let-dataItem>
           {{ dataItem.metadata?.url }}
         </ng-template>

@@ -12,6 +12,7 @@ import {
   PageChangeEvent,
   PagerSettings,
 } from '@progress/kendo-angular-grid';
+import { SortDescriptor } from '@progress/kendo-data-query';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -80,6 +81,8 @@ export class ActivityLogGroupByPageComponent
   public pagerSettings: PagerSettings = {
     pageSizes: [10, 50, 100],
   };
+  /** Sort descriptor */
+  public sort: SortDescriptor[] = [];
 
   /**
    * Activity log group by page
@@ -126,11 +129,24 @@ export class ActivityLogGroupByPageComponent
    * @param e page event.
    */
   onPage(e: PageChangeEvent): void {
-    this.loading = true;
     this.pageInfo = {
       ...this.pageInfo,
       skip: e.skip,
       take: e.take,
+    };
+    this.fetch();
+  }
+
+  /**
+   * Handles sort event.
+   *
+   * @param e sort event
+   */
+  onSort(e: SortDescriptor[]): void {
+    this.sort = e;
+    this.pageInfo = {
+      ...this.pageInfo,
+      skip: 0,
     };
     this.fetch();
   }
@@ -160,9 +176,15 @@ export class ActivityLogGroupByPageComponent
    * Fetch items.
    */
   private fetch() {
+    this.loading = true;
     this.restService
       .get('/activities/group-by-url', {
         params: {
+          ...(this.sort[0] &&
+            this.sort[0].dir && {
+              sortField: this.sort[0].field,
+              sortOrder: this.sort[0].dir,
+            }),
           skip: this.pageInfo.skip,
           take: this.pageInfo.take,
           ...(this.userId && {

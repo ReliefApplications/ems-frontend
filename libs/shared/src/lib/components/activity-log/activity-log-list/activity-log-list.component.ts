@@ -6,7 +6,6 @@ import {
   DateModule as UIDateModule,
   FormWrapperModule,
   IconModule,
-  TableSort,
 } from '@oort-front/ui';
 import { EmptyModule } from '../../ui/empty/empty.module';
 import { DateModule } from '../../../pipes/date/date.module';
@@ -21,9 +20,10 @@ import {
   PageChangeEvent,
   PagerSettings,
 } from '@progress/kendo-angular-grid';
+import { SortDescriptor } from '@progress/kendo-data-query';
 
 /** Default number of items per request for pagination */
-const DEFAULT_PAGE_SIZE = 100;
+const DEFAULT_PAGE_SIZE = 50;
 
 /**
  * Shared activity log list component.
@@ -76,8 +76,6 @@ export class ActivityLogListComponent
     filters: [],
     logic: 'and',
   };
-  /** Sort */
-  private sort: TableSort = { active: '', sortDirection: '' };
   /** Page info */
   public pageInfo = {
     skip: 0,
@@ -87,6 +85,8 @@ export class ActivityLogListComponent
   public pagerSettings: PagerSettings = {
     pageSizes: [10, 50, 100],
   };
+  /** Sort descriptor */
+  public sort: SortDescriptor[] = [];
 
   /**
    * Shared activity log list component.
@@ -151,13 +151,17 @@ export class ActivityLogListComponent
   }
 
   /**
-   * Handle sort change.
+   * Handles sort event.
    *
-   * @param event sort event
+   * @param e sort event
    */
-  onSort(event: TableSort): void {
-    this.sort = event;
-    // this.fetchActivities(true);
+  onSort(e: SortDescriptor[]): void {
+    this.sort = e;
+    this.pageInfo = {
+      ...this.pageInfo,
+      skip: 0,
+    };
+    this.fetch();
   }
 
   /**
@@ -166,7 +170,6 @@ export class ActivityLogListComponent
    * @param e page event.
    */
   onPage(e: PageChangeEvent): void {
-    this.loading = true;
     this.pageInfo = {
       ...this.pageInfo,
       skip: e.skip,
@@ -213,9 +216,15 @@ export class ActivityLogListComponent
    * Fetch items.
    */
   private fetch() {
+    this.loading = true;
     this.restService
       .get('/activities', {
         params: {
+          ...(this.sort[0] &&
+            this.sort[0].dir && {
+              sortField: this.sort[0].field,
+              sortOrder: this.sort[0].dir,
+            }),
           skip: this.pageInfo.skip,
           take: this.pageInfo.take,
           ...(this.userId && {

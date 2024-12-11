@@ -40,7 +40,11 @@
       [pageable]="pagerSettings"
       [skip]="pageInfo.skip"
       [pageSize]="pageInfo.take"
+      [sortable]="true"
+      [sort]="sort"
+      [resizable]="true"
       (pageChange)="onPage($event)"
+      (sortChange)="onSort($event)"
     >
       <!-- Number of hits -->
       <kendo-grid-column field="count" title="Hits">
