@@ -181,7 +181,7 @@ export class ActivityLogListComponent
    * Method to download activities when the link is clicked.
    */
   downloadActivities(): void {
-    const path = '/activity/download-activities';
+    const path = '/activity/download';
     this.downloadService.getActivitiesExport(path, {
       filter: this.filter,
       userId: this.userId,
