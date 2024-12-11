@@ -1,0 +1,132 @@
+<!-- Actions -->
+<div class="flex flex-wrap justify-between items-end mb-8 gap-2">
+  <div class="flex flex-wrap gap-2 items-end">
+    <!-- Date range filter -->
+    <div uiFormFieldDirective [defaultMargin]="false">
+      <label>{{ 'common.input.dateRange' | translate }}</label>
+      <div [formGroup]="filterForm" [uiDateWrapper]="calendar">
+        <input
+          [uiDatePicker]
+          formControlName="startDate"
+          [label]="'kendo.datepicker.startLabel' | translate"
+        />
+        <input
+          [uiDatePicker]
+          formControlName="endDate"
+          [label]="'kendo.datepicker.endLabel' | translate"
+        />
+        <ui-date-range #calendar> </ui-date-range>
+      </div>
+    </div>
+    <ui-button variant="danger" (click)="clear()" class="max-sm:!w-auto">{{
+      'common.filter.clear' | translate
+    }}</ui-button>
+  </div>
+  <!-- Export logs as xlsx -->
+  <ui-button
+    category="secondary"
+    variant="primary"
+    (click)="downloadActivities()"
+  >
+    {{ 'components.application.activities.downloadXlsx' | translate }}
+  </ui-button>
+</div>
+<!-- Table container -->
+<div class="h-[calc(100%-100px)] flex flex-col">
+  <div class="overflow-x-hidden h-full">
+    <!-- Loading indicator -->
+    <ng-container *ngIf="loading; else dataTmpl">
+      <shared-skeleton-table [columns]="displayedColumns" [actions]="true">
+      </shared-skeleton-table>
+    </ng-container>
+    <ng-template #dataTmpl>
+      <ng-container *ngIf="activitiesLogs.length > 0; else emptyTmpl">
+        <table
+          class="max-h-full"
+          cdk-table
+          uiTableWrapper
+          [dataSource]="activitiesLogs"
+          (sortChange)="onSort($event)"
+        >
+          <ng-container cdkColumnDef="createdAt">
+            <th
+              uiTableHeaderSort="createdAt"
+              uiCellHeader
+              *cdkHeaderCellDef
+              scope="col"
+            >
+              {{ 'components.application.activities.createdAt' | translate }}
+            </th>
+            <td uiCell *cdkCellDef="let activity">
+              {{ activity.createdAt | sharedDate : 'yyyy-MM-dd HH:mm' }}
+            </td>
+          </ng-container>
+          <ng-container cdkColumnDef="userId">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              {{ 'components.application.activities.userId' | translate }}
+            </th>
+            <td uiCell *cdkCellDef="let activity">
+              {{ activity.userId }}
+            </td>
+          </ng-container>
+          <ng-container cdkColumnDef="username">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              <span>{{ 'common.email.one' | translate }}</span>
+            </th>
+            <td uiCell *cdkCellDef="let activity">
+              {{ activity.username }}
+            </td>
+          </ng-container>
+          <ng-container cdkColumnDef="eventType">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              {{ 'components.application.activities.eventType' | translate }}
+            </th>
+            <td uiCell *cdkCellDef="let activity" class="min-w-[100px]">
+              {{ activity.eventType }}
+            </td>
+          </ng-container>
+          <ng-container
+            *ngFor="let attribute of attributes"
+            [cdkColumnDef]="attribute.value"
+          >
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              <span>{{ attribute.text }}</span>
+            </th>
+            <td uiCell *cdkCellDef="let activity">
+              {{ activity.attributes?.[attribute.value] }}
+            </td>
+          </ng-container>
+          <ng-container cdkColumnDef="title">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              {{ 'components.application.activities.title' | translate }}
+            </th>
+            <td uiCell *cdkCellDef="let activity">
+              <b>{{ activity.title }}</b>
+              <a class="cursor-pointer block" [routerLink]="activity.url">{{
+                activity.url
+              }}</a>
+            </td>
+          </ng-container>
+          <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+          <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </ng-container>
+      <ng-template #emptyTmpl>
+        <!-- Empty indicator -->
+        <shared-empty
+          [title]="'components.application.activities.empty' | translate"
+        ></shared-empty>
+      </ng-template>
+    </ng-template>
+  </div>
+  <!-- Pagination -->
+  <ui-paginator
+    [disabled]="loading || updating"
+    [pageIndex]="pageInfo.pageIndex"
+    [pageSize]="pageInfo.pageSize"
+    [totalItems]="pageInfo.length"
+    [pageSizeOptions]="[10, 50, 100]"
+    (pageChange)="onPage($event)"
+  >
+  </ui-paginator>
+</div>
