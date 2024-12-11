@@ -27,6 +27,9 @@ interface GroupByUrl {
   url: string;
 }
 
+/**
+ * Activity log group by page.
+ */
 @Component({
   selector: 'shared-activity-log-group-by-page',
   standalone: true,
@@ -76,6 +79,12 @@ export class ActivityLogGroupByPageComponent
     length: 0,
   };
 
+  /**
+   * Activity log group by page
+   *
+   * @param restService Shared REST service
+   * @param fb Angular form builder
+   */
   constructor(private restService: RestService, private fb: FormBuilder) {
     super();
   }
@@ -145,6 +154,9 @@ export class ActivityLogGroupByPageComponent
     this.fetch();
   }
 
+  /**
+   * Fetch items.
+   */
   private fetch() {
     this.restService
       .post(

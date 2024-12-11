@@ -23,7 +23,10 @@
   <ui-tab *ngIf="!userId">
     <ng-container ngProjectAs="label">Group by user</ng-container>
     <ng-template uiTabContent>
-      <shared-activity-log-group-by-user></shared-activity-log-group-by-user>
+      <shared-activity-log-group-by-user
+        [userId]="userId"
+        [applicationId]="applicationId"
+      ></shared-activity-log-group-by-user>
     </ng-template>
   </ui-tab>
 </ui-tabs>
