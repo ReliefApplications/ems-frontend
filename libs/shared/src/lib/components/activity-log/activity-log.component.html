@@ -15,7 +15,10 @@
     <!-- todo: translate -->
     <ng-container ngProjectAs="label">Group by page</ng-container>
     <ng-template uiTabContent>
-      <shared-activity-log-group-by-page></shared-activity-log-group-by-page>
+      <shared-activity-log-group-by-page
+        [userId]="userId"
+        [applicationId]="applicationId"
+      ></shared-activity-log-group-by-page>
     </ng-template>
   </ui-tab>
   <!-- Group by user, hide if seeing user page -->
@@ -23,7 +26,10 @@
     <!-- todo: translate -->
     <ng-container ngProjectAs="label">Group by user</ng-container>
     <ng-template uiTabContent>
-      <shared-activity-log-group-by-user></shared-activity-log-group-by-user>
+      <shared-activity-log-group-by-user
+        [userId]="userId"
+        [applicationId]="applicationId"
+      ></shared-activity-log-group-by-user>
     </ng-template>
   </ui-tab>
 </ui-tabs>
