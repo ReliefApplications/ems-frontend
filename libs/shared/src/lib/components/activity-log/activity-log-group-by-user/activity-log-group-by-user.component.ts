@@ -60,6 +60,8 @@ export class ActivityLogGroupByUserComponent
     data: [],
     total: 0,
   };
+  /** Attributes */
+  public attributes: { text: string; value: string }[] = [];
   /** Loading flag */
   public loading = true;
   /** Filter form group */
@@ -69,6 +71,11 @@ export class ActivityLogGroupByUserComponent
   });
   /** Filter */
   public filter: any = {
+    filters: [],
+    logic: 'and',
+  };
+  /** Header filter */
+  public headerFilter: any = {
     filters: [],
     logic: 'and',
   };
@@ -96,6 +103,7 @@ export class ActivityLogGroupByUserComponent
 
   ngOnInit(): void {
     this.fetch();
+    this.getAttributes();
     this.filterForm.valueChanges
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe({
@@ -115,10 +123,12 @@ export class ActivityLogGroupByUserComponent
               value: value.endDate,
             });
           }
-          this.onFilter({
-            logic: 'and',
-            filters,
-          });
+          this.headerFilter.filters = filters;
+          this.pageInfo = {
+            ...this.pageInfo,
+            skip: 0,
+          };
+          this.fetch();
         },
       });
   }
@@ -193,7 +203,10 @@ export class ActivityLogGroupByUserComponent
           ...(this.applicationId && {
             application_id: this.applicationId,
           }),
-          filter: JSON.stringify(this.filter),
+          filter: JSON.stringify({
+            logic: 'and',
+            filters: [this.filter, this.headerFilter],
+          }),
         },
       })
       .pipe(takeUntil(this.destroy$))
@@ -206,6 +219,20 @@ export class ActivityLogGroupByUserComponent
           };
           this.pageInfo.skip = value.skip;
           this.pageInfo.take = value.take;
+        },
+      });
+  }
+
+  /**
+   * Fetch attributes to build columns
+   */
+  private getAttributes(): void {
+    this.restService
+      .get('/permissions/attributes')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (attributes: any) => {
+          this.attributes = attributes;
         },
       });
   }

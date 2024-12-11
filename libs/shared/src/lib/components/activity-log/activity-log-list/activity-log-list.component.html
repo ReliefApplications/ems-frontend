@@ -42,14 +42,18 @@
       [pageSize]="pageInfo.take"
       [sortable]="true"
       [sort]="sort"
+      [filter]="filter"
       [resizable]="true"
+      [filterable]="true"
       (pageChange)="onPage($event)"
       (sortChange)="onSort($event)"
+      (filterChange)="onFilter($event)"
     >
       <!-- Timestamp -->
       <kendo-grid-column
         field="createdAt"
         [title]="'components.application.activities.createdAt' | translate"
+        [filterable]="false"
       >
         <ng-template kendoGridCellTemplate let-dataItem>
           {{ dataItem.createdAt | sharedDate : 'yyyy-MM-dd HH:mm' }}
@@ -72,7 +76,7 @@
         </ng-template>
       </kendo-grid-column>
       <!-- Page url -->
-      <kendo-grid-column field="metadata.url" title="Url">
+      <kendo-grid-column field="metadata.url" title="Url" [filterable]="false">
         <ng-template kendoGridCellTemplate let-dataItem>
           {{ dataItem.metadata?.url }}
         </ng-template>

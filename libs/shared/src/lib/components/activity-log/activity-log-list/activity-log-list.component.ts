@@ -20,7 +20,10 @@ import {
   PageChangeEvent,
   PagerSettings,
 } from '@progress/kendo-angular-grid';
-import { SortDescriptor } from '@progress/kendo-data-query';
+import {
+  CompositeFilterDescriptor,
+  SortDescriptor,
+} from '@progress/kendo-data-query';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 50;
@@ -76,6 +79,11 @@ export class ActivityLogListComponent
     filters: [],
     logic: 'and',
   };
+  /** Header filter */
+  public headerFilter: any = {
+    filters: [],
+    logic: 'and',
+  };
   /** Page info */
   public pageInfo = {
     skip: 0,
@@ -128,10 +136,12 @@ export class ActivityLogListComponent
               value: value.endDate,
             });
           }
-          this.onFilter({
-            logic: 'and',
-            filters,
-          });
+          this.headerFilter.filters = filters;
+          this.pageInfo = {
+            ...this.pageInfo,
+            skip: 0,
+          };
+          this.fetch();
         },
       });
   }
@@ -141,7 +151,7 @@ export class ActivityLogListComponent
    *
    * @param filter filter event.
    */
-  onFilter(filter: any): void {
+  onFilter(filter: CompositeFilterDescriptor): void {
     this.filter = filter;
     this.pageInfo = {
       ...this.pageInfo,
@@ -233,7 +243,10 @@ export class ActivityLogListComponent
           ...(this.applicationId && {
             application_id: this.applicationId,
           }),
-          filter: JSON.stringify(this.filter),
+          filter: JSON.stringify({
+            logic: 'and',
+            filters: [this.filter, this.headerFilter],
+          }),
         },
       })
       .pipe(takeUntil(this.destroy$))
