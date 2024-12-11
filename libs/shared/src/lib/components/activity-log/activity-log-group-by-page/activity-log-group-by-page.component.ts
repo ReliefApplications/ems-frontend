@@ -3,18 +3,15 @@ import { CommonModule } from '@angular/common';
 import { RestService } from '../../../services/rest/rest.service';
 import { debounceTime, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import {
-  ButtonModule,
-  DateModule,
-  FormWrapperModule,
-  PaginatorModule,
-  TableModule,
-  UIPageChangeEvent,
-} from '@oort-front/ui';
+import { ButtonModule, DateModule, FormWrapperModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { SkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-table.module';
 import { EmptyModule } from '../../ui/empty/empty.module';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import {
+  GridModule,
+  PageChangeEvent,
+  PagerSettings,
+} from '@progress/kendo-angular-grid';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -35,15 +32,13 @@ interface GroupByUrl {
   standalone: true,
   imports: [
     CommonModule,
-    TableModule,
     TranslateModule,
-    SkeletonTableModule,
-    PaginatorModule,
     EmptyModule,
     DateModule,
     ButtonModule,
     ReactiveFormsModule,
     FormWrapperModule,
+    GridModule,
   ],
   templateUrl: './activity-log-group-by-page.component.html',
   styleUrls: ['./activity-log-group-by-page.component.scss'],
@@ -56,8 +51,14 @@ export class ActivityLogGroupByPageComponent
   @Input() userId: string | undefined;
   /** Application ID to filter activities. */
   @Input() applicationId: string | undefined;
-  /** Group by url items */
-  public dataset: GroupByUrl[] = [];
+  /** Dataset */
+  public dataset: {
+    data: GroupByUrl[];
+    total: number;
+  } = {
+    data: [],
+    total: 0,
+  };
   /** Columns to display in the table. */
   public displayedColumns = ['count', 'url'];
   /** Loading flag */
@@ -74,9 +75,12 @@ export class ActivityLogGroupByPageComponent
   };
   /** Page info */
   public pageInfo = {
-    pageIndex: 0,
-    pageSize: DEFAULT_PAGE_SIZE,
-    length: 0,
+    skip: 0,
+    take: DEFAULT_PAGE_SIZE,
+  };
+  /** Pager settings */
+  public pagerSettings: PagerSettings = {
+    pageSizes: [10, 50, 100],
   };
 
   /**
@@ -123,12 +127,12 @@ export class ActivityLogGroupByPageComponent
    *
    * @param e page event.
    */
-  onPage(e: UIPageChangeEvent): void {
+  onPage(e: PageChangeEvent): void {
     this.loading = true;
     this.pageInfo = {
       ...this.pageInfo,
-      pageIndex: e.pageIndex,
-      pageSize: e.pageSize,
+      skip: e.skip,
+      take: e.take,
     };
     this.fetch();
   }
@@ -149,7 +153,7 @@ export class ActivityLogGroupByPageComponent
     this.filter = filter;
     this.pageInfo = {
       ...this.pageInfo,
-      pageIndex: 0,
+      skip: 0,
     };
     this.fetch();
   }
@@ -166,8 +170,8 @@ export class ActivityLogGroupByPageComponent
         },
         {
           params: {
-            page: this.pageInfo.pageIndex,
-            per_page: this.pageInfo.pageSize,
+            skip: this.pageInfo.skip,
+            take: this.pageInfo.take,
             ...(this.userId && {
               user_id: this.userId,
             }),
@@ -181,10 +185,12 @@ export class ActivityLogGroupByPageComponent
       .subscribe({
         next: (value) => {
           this.loading = false;
-          this.dataset = value.items;
-          this.pageInfo.length = value.totalCount;
-          this.pageInfo.pageIndex = value.currentPage;
-          this.pageInfo.pageSize = value.perPage;
+          this.dataset = {
+            data: value.data,
+            total: value.total,
+          };
+          this.pageInfo.skip = value.skip;
+          this.pageInfo.take = value.take;
         },
       });
   }
