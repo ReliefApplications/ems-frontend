@@ -25,7 +25,7 @@ import { RestService } from '../../../services/rest/rest.service';
 import { DownloadService } from '../../../services/download/download.service';
 import { LIST_ACTIVITIES } from './graphql/queries';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
 import {
   getCachedValues,
@@ -238,29 +238,31 @@ export class ActivityLogListComponent
         }
       );
 
-    this.filterForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
-      next: (value) => {
-        const filters = [];
-        if (value.startDate) {
-          filters.push({
-            field: 'createdAt',
-            operator: 'gte',
-            value: value.startDate,
+    this.filterForm.valueChanges
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe({
+        next: (value) => {
+          const filters = [];
+          if (value.startDate) {
+            filters.push({
+              field: 'createdAt',
+              operator: 'gte',
+              value: value.startDate,
+            });
+          }
+          if (value.endDate) {
+            filters.push({
+              field: 'createdAt',
+              operator: 'lte',
+              value: value.endDate,
+            });
+          }
+          this.onFilter({
+            logic: 'and',
+            filters,
           });
-        }
-        if (value.endDate) {
-          filters.push({
-            field: 'createdAt',
-            operator: 'lte',
-            value: value.endDate,
-          });
-        }
-        this.onFilter({
-          logic: 'and',
-          filters,
-        });
-      },
-    });
+        },
+      });
   }
 
   /**

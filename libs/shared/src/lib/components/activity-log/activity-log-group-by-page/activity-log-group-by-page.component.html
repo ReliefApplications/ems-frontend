@@ -1,1 +1,87 @@
-<p>activity-log-group-by-page works!</p>
+<!-- Actions -->
+<div class="flex flex-wrap justify-between items-end mb-8 gap-2">
+  <div class="flex flex-wrap gap-2 items-end">
+    <!-- Date range filter -->
+    <div uiFormFieldDirective [defaultMargin]="false">
+      <label>{{ 'common.input.dateRange' | translate }}</label>
+      <div [formGroup]="filterForm" [uiDateWrapper]="calendar">
+        <input
+          [uiDatePicker]
+          formControlName="startDate"
+          [label]="'kendo.datepicker.startLabel' | translate"
+        />
+        <input
+          [uiDatePicker]
+          formControlName="endDate"
+          [label]="'kendo.datepicker.endLabel' | translate"
+        />
+        <ui-date-range #calendar> </ui-date-range>
+      </div>
+    </div>
+    <ui-button variant="danger" (click)="clear()" class="max-sm:!w-auto">{{
+      'common.filter.clear' | translate
+    }}</ui-button>
+  </div>
+  <!-- Export logs as xlsx -->
+  <!-- <ui-button
+    category="secondary"
+    variant="primary"
+    (click)="downloadActivities()"
+  >
+    {{ 'components.application.activities.downloadXlsx' | translate }}
+  </ui-button> -->
+</div>
+<!-- Table container -->
+<div class="h-[calc(100%-100px)] flex flex-col">
+  <div class="overflow-x-hidden h-full">
+    <!-- Loading indicator -->
+    <ng-container *ngIf="loading; else dataTmpl">
+      <shared-skeleton-table [columns]="displayedColumns" [actions]="true">
+      </shared-skeleton-table>
+    </ng-container>
+    <ng-template #dataTmpl>
+      <ng-container *ngIf="dataset.length > 0; else emptyTmpl">
+        <table
+          class="max-h-full"
+          cdk-table
+          uiTableWrapper
+          [dataSource]="dataset"
+        >
+          <ng-container cdkColumnDef="count">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">Count</th>
+            <td uiCell *cdkCellDef="let item">
+              {{ item.count }}
+            </td>
+          </ng-container>
+          <ng-container cdkColumnDef="url">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              {{ 'components.application.activities.url' | translate }}
+            </th>
+            <td uiCell *cdkCellDef="let item">
+              {{ item.url }}
+            </td>
+          </ng-container>
+          <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+          <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </ng-container>
+      <ng-template #emptyTmpl>
+        <!-- Empty indicator -->
+        <shared-empty
+          [title]="'components.application.activities.empty' | translate"
+        ></shared-empty>
+      </ng-template>
+    </ng-template>
+  </div>
+  <!-- Pagination -->
+  <ui-paginator
+    [disabled]="loading"
+    [hideFirstLastButtons]="false"
+    [pageIndex]="pageInfo.pageIndex"
+    [pageSize]="pageInfo.pageSize"
+    [totalItems]="pageInfo.length"
+    [pageSizeOptions]="[10, 50, 100]"
+    (pageChange)="onPage($event)"
+  >
+  </ui-paginator>
+</div>
