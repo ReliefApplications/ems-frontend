@@ -59,8 +59,6 @@ export class ActivityLogGroupByUserComponent
     data: [],
     total: 0,
   };
-  /** Columns to display in the table. */
-  public displayedColumns = ['count', 'username'];
   /** Loading flag */
   public loading = true;
   /** Filter form group */
@@ -163,24 +161,19 @@ export class ActivityLogGroupByUserComponent
    */
   private fetch() {
     this.restService
-      .post(
-        '/activity/group-by-user',
-        {
-          filter: this.filter,
+      .get('/activities/group-by-user', {
+        params: {
+          skip: this.pageInfo.skip,
+          take: this.pageInfo.take,
+          ...(this.userId && {
+            user_id: this.userId,
+          }),
+          ...(this.applicationId && {
+            application_id: this.applicationId,
+          }),
+          filter: JSON.stringify(this.filter),
         },
-        {
-          params: {
-            skip: this.pageInfo.skip,
-            take: this.pageInfo.take,
-            ...(this.userId && {
-              user_id: this.userId,
-            }),
-            ...(this.applicationId && {
-              application_id: this.applicationId,
-            }),
-          },
-        }
-      )
+      })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (value) => {

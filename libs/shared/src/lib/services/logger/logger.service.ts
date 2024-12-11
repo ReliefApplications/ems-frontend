@@ -11,7 +11,7 @@ import { filter } from 'rxjs';
 })
 export class LoggerService {
   /** Base path for activity tracking */
-  private activityBasePath = '/activity';
+  private activityBasePath = '/activities';
 
   /**
    * Service to track user activity

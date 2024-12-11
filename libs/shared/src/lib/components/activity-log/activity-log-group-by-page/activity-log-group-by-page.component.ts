@@ -59,8 +59,6 @@ export class ActivityLogGroupByPageComponent
     data: [],
     total: 0,
   };
-  /** Columns to display in the table. */
-  public displayedColumns = ['count', 'url'];
   /** Loading flag */
   public loading = true;
   /** Filter form group */
@@ -163,24 +161,19 @@ export class ActivityLogGroupByPageComponent
    */
   private fetch() {
     this.restService
-      .post(
-        '/activity/group-by-url',
-        {
-          filter: this.filter,
+      .get('/activities/group-by-url', {
+        params: {
+          skip: this.pageInfo.skip,
+          take: this.pageInfo.take,
+          ...(this.userId && {
+            user_id: this.userId,
+          }),
+          ...(this.applicationId && {
+            application_id: this.applicationId,
+          }),
+          filter: JSON.stringify(this.filter),
         },
-        {
-          params: {
-            skip: this.pageInfo.skip,
-            take: this.pageInfo.take,
-            ...(this.userId && {
-              user_id: this.userId,
-            }),
-            ...(this.applicationId && {
-              application_id: this.applicationId,
-            }),
-          },
-        }
-      )
+      })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (value) => {
