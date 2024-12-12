@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
@@ -45,7 +44,6 @@ const DEFAULT_PAGE_SIZE = 50;
     FormWrapperModule,
     EmptyModule,
     DateModule,
-    RouterModule,
     GridModule,
   ],
   templateUrl: './activity-log-list.component.html',

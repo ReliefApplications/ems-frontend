@@ -190,6 +190,11 @@ export const routes: Routes = [
               import('./pages/activity-log/activity-log.module').then(
                 (m) => m.ActivityLogModule
               ),
+            data: {
+              breadcrumb: {
+                key: 'common.activity.few',
+              },
+            },
           },
         ],
       },

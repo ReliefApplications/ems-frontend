@@ -21,8 +21,8 @@ const DEFAULT_PAGE_SIZE = 10;
 interface GroupByUrl {
   /** Number of hits */
   count: number;
-  /** Page url */
-  url: string;
+  /** Page title ( or url if not set ) */
+  title: string;
 }
 
 /**

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { ActivatedRoute, Router, Scroll } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Breadcrumb } from '@oort-front/ui';
@@ -20,6 +20,7 @@ export class LoggerService {
   /**
    * Service to track user activity
    *
+   * @param environment Current environment
    * @param restService Service to make REST calls
    * @param router Angular router service
    * @param activatedRoute Angular activated route service
@@ -27,6 +28,7 @@ export class LoggerService {
    * @param translate Translate service
    */
   constructor(
+    @Inject('environment') private environment: any,
     private restService: RestService,
     public router: Router,
     private activatedRoute: ActivatedRoute,
@@ -59,6 +61,7 @@ export class LoggerService {
             metadata: {
               url: (event as any).urlAfterRedirects,
               title,
+              module: this.environment.module,
             },
           });
         }
