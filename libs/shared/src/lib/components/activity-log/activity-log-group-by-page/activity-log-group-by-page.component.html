@@ -42,20 +42,23 @@
       [pageSize]="pageInfo.take"
       [sortable]="true"
       [sort]="sort"
+      [filter]="filter"
       [resizable]="true"
+      [filterable]="true"
       (pageChange)="onPage($event)"
       (sortChange)="onSort($event)"
+      (filterChange)="onFilter($event)"
     >
       <!-- Number of hits -->
-      <kendo-grid-column field="count" title="Hits">
+      <kendo-grid-column field="count" title="Hits" [filterable]="false">
         <ng-template kendoGridCellTemplate let-dataItem>
           {{ dataItem.count }}
         </ng-template>
       </kendo-grid-column>
       <!-- Page title ( or url if not set ) -->
-      <kendo-grid-column field="title" title="Page">
+      <kendo-grid-column field="metadata.title" title="Page">
         <ng-template kendoGridCellTemplate let-dataItem>
-          {{ dataItem.title }}
+          {{ dataItem.metadata?.title }}
         </ng-template>
       </kendo-grid-column>
       <!-- Empty indicator -->

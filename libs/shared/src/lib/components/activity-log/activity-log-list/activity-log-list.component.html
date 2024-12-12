@@ -77,12 +77,11 @@
       </kendo-grid-column>
       <!-- Page url -->
       <kendo-grid-column
-        field="title"
+        field="metadata.title"
         [title]="'components.application.activities.title' | translate"
-        [filterable]="false"
       >
         <ng-template kendoGridCellTemplate let-dataItem>
-          <b>{{ dataItem.title }}</b>
+          <b>{{ dataItem.metadata?.title }}</b>
           <!-- <a
             class="cursor-pointer block"
             [routerLink]="dataItem.metadata?.url"
