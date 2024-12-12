@@ -40,6 +40,7 @@ import { ResourceQueryResponse } from '../../models/resource.model';
 import { prettifyLabel } from '../../utils/prettify';
 import { addNewField } from '../query-builder/query-builder-forms';
 import get from 'lodash/get';
+import { commonServiceFields } from './constant';
 
 /**
  * Interface for InValidDataSets
@@ -211,14 +212,7 @@ export class EmailService {
   /** For storing emails For BCC from service response (In select with Filter option) */
   public filterBCCEmails: any = [];
   /** Declare Dropdown commonServiceFields fields property */
-  public commonServiceFields = [
-    { key: 'Application', label: 'Application' },
-    { key: 'PermissionAccessType', label: 'Access Type' },
-    { key: 'SystemRole', label: ' Role' },
-    { key: 'SystemPosition', label: 'Position' },
-    { key: 'Country', label: 'Country' },
-    { key: 'Region', label: 'Region' },
-  ];
+  public commonServiceFields = commonServiceFields;
   /** Declare Dropdown Userfields property */
   userTableFields: string[] = [];
 

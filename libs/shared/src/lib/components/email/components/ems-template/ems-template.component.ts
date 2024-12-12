@@ -449,8 +449,9 @@ export class EmsTemplateComponent
         emailData.emailDistributionList?.to?.reference) &&
         emailData.emailDistributionList?.to?.query?.fields?.length) ||
       emailData.emailDistributionList?.to?.inputEmails?.length ||
-      emailData.emailDistributionList?.to?.commonServiceFilter?.filter?.filters
-        ?.length > 0
+      emailData.emailDistributionList?.to?.commonServiceFilter?.filter?.filters?.filter(
+        (x: any) => x?.field && x?.value
+      )?.length > 0
     ) {
       //Common service payload rebuild
       const objData: any = cloneDeep(emailData);
