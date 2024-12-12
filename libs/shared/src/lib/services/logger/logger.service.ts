@@ -37,7 +37,18 @@ export class LoggerService {
       .pipe(
         filter(([event, [prevLoadingState, nextLoadingState]]) => {
           const isEnd = event instanceof Scroll;
-          return isEnd && prevLoadingState && !nextLoadingState;
+          /**
+           * If application loading state goes
+           * - from true to false => then launch event,
+           * - or if there is no change in the loading state, from false to false
+           * meaning no application load is happening => rest of application pages => then launch event
+           *
+           */
+          return (
+            isEnd &&
+            ((prevLoadingState && !nextLoadingState) ||
+              (!prevLoadingState && !nextLoadingState))
+          );
         })
       )
       .subscribe(([event]) => {

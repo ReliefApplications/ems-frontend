@@ -356,6 +356,7 @@ export class ApplicationService {
     }
     const application = this.application.getValue();
     this.application.next(null);
+    this.loadingApplication.next(false);
     this.applicationSubscription?.unsubscribe();
     this.notificationSubscription?.unsubscribe();
     this.lockSubscription?.unsubscribe();
