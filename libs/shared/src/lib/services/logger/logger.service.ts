@@ -72,13 +72,17 @@ export class LoggerService {
       .subscribe(([event, title]) => {
         if (event instanceof Scroll) {
           event = event instanceof Scroll ? event.routerEvent : event;
-          const applicationId =
-            this.applicationService.application.getValue()?.id;
+          const application = this.applicationService.application.getValue();
           this.track({
             eventType: 'navigation',
             metadata: {
               url: (event as any).urlAfterRedirects,
-              ...(!isNil(applicationId) && { applicationId }),
+              ...(!isNil(application?.id) && {
+                applicationId: application?.id,
+              }),
+              ...(!isNil(application?.name) && {
+                applicationName: application?.name,
+              }),
               title,
               module: this.environment.module,
             },
