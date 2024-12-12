@@ -127,6 +127,7 @@ export class DashboardComponent
         if (pageContainer) {
           pageContainer.scrollTop = 0;
         }
+        this.isStep = this.router.url.includes('/workflow/');
         /** Extract main dashboard id */
         const id = this.route.snapshot.paramMap.get('id');
         /** Extract query id to load template */
