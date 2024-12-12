@@ -1,7 +1,7 @@
 <ui-tabs>
   <!-- List of logs -->
   <ui-tab>
-    <!-- todo: translate -->
+    <!-- todo: translate label -->
     <ng-container ngProjectAs="label">Recent hits</ng-container>
     <ng-template uiTabContent>
       <shared-activity-log-list
@@ -12,7 +12,7 @@
   </ui-tab>
   <!-- Group by page -->
   <ui-tab>
-    <!-- todo: translate -->
+    <!-- todo: translate label -->
     <ng-container ngProjectAs="label">Group by page</ng-container>
     <ng-template uiTabContent>
       <shared-activity-log-group-by-page
@@ -23,7 +23,7 @@
   </ui-tab>
   <!-- Group by user, hide if seeing user page -->
   <ui-tab *ngIf="!userId">
-    <!-- todo: translate -->
+    <!-- todo: translate label -->
     <ng-container ngProjectAs="label">Group by user</ng-container>
     <ng-template uiTabContent>
       <shared-activity-log-group-by-user

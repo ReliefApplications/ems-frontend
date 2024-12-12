@@ -51,12 +51,14 @@
     >
       <!-- Number of hits -->
       <kendo-grid-column field="count" title="Hits" [filterable]="false">
+        <!-- todo: translate title -->
         <ng-template kendoGridCellTemplate let-dataItem>
           {{ dataItem.count }}
         </ng-template>
       </kendo-grid-column>
       <!-- Page title ( or url if not set ) -->
       <kendo-grid-column field="metadata.title" title="Page">
+        <!-- todo: translate title -->
         <ng-template kendoGridCellTemplate let-dataItem>
           {{ dataItem.metadata?.title }}
         </ng-template>

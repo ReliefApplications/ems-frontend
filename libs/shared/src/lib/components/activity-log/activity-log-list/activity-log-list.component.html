@@ -61,6 +61,7 @@
       </kendo-grid-column>
       <!-- User -->
       <kendo-grid-column field="username" title="User">
+        <!-- todo: translate title -->
         <ng-template kendoGridCellTemplate let-dataItem>
           {{ dataItem.username || dataItem.userId }}
         </ng-template>
