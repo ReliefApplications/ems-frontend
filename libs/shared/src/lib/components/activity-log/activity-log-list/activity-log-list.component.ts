@@ -1,20 +1,13 @@
 import { CommonModule } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
-  DateModule as UIDateModule,
   FormWrapperModule,
   IconModule,
+  DateModule as UIDateModule,
 } from '@oort-front/ui';
-import { EmptyModule } from '../../ui/empty/empty.module';
-import { DateModule } from '../../../pipes/date/date.module';
-import { Component, Input, OnInit } from '@angular/core';
-import { ActivityLog } from '../../../models/activity-log.model';
-import { RestService } from '../../../services/rest/rest.service';
-import { DownloadService } from '../../../services/download/download.service';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { debounceTime, takeUntil } from 'rxjs';
 import {
   GridModule,
   PageChangeEvent,
@@ -24,6 +17,13 @@ import {
   CompositeFilterDescriptor,
   SortDescriptor,
 } from '@progress/kendo-data-query';
+import { debounceTime, takeUntil } from 'rxjs';
+import { ActivityLog } from '../../../models/activity-log.model';
+import { DateModule } from '../../../pipes/date/date.module';
+import { DownloadService } from '../../../services/download/download.service';
+import { RestService } from '../../../services/rest/rest.service';
+import { EmptyModule } from '../../ui/empty/empty.module';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 50;

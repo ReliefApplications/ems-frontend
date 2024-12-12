@@ -13,6 +13,7 @@ import {
   ActionButton,
   Record,
   ContextService,
+  BreadcrumbService,
 } from '@oort-front/shared';
 import {
   GET_FORM_BY_ID,
@@ -68,6 +69,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param contextService Shared context service
+   * @param breadcrumbService Breadcrumb service
    */
   constructor(
     private apollo: Apollo,
@@ -75,7 +77,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     private router: Router,
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private breadcrumbService: BreadcrumbService
   ) {
     super();
   }
@@ -160,6 +163,10 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     if (data) {
       this.form = data.form;
     }
+    this.breadcrumbService.setBreadcrumb(
+      this.isStep ? '@workflow' : '@form',
+      this.form.name as string
+    );
     if (
       !this.form ||
       this.form.status !== 'active' ||

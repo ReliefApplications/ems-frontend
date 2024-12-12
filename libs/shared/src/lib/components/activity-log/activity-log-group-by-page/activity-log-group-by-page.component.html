@@ -52,10 +52,10 @@
           {{ dataItem.count }}
         </ng-template>
       </kendo-grid-column>
-      <!-- Page url -->
-      <kendo-grid-column field="url" title="Url">
+      <!-- Page title ( or url if not set ) -->
+      <kendo-grid-column field="title" title="Page">
         <ng-template kendoGridCellTemplate let-dataItem>
-          {{ dataItem.url }}
+          {{ dataItem.title }}
         </ng-template>
       </kendo-grid-column>
       <!-- Empty indicator -->

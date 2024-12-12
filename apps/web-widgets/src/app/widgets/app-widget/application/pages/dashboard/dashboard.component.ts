@@ -1,4 +1,5 @@
-import { Apollo } from 'apollo-angular';
+import { Dialog } from '@angular/cdk/dialog';
+import { DOCUMENT } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -9,25 +10,25 @@ import {
   Output,
   Renderer2,
 } from '@angular/core';
-import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GET_DASHBOARD_BY_ID } from './graphql/queries';
-import {
-  Dashboard,
-  ConfirmService,
-  ActionButton,
-  ContextService,
-  DashboardQueryResponse,
-  Record,
-  MapWidgetComponent,
-  DashboardComponent as SharedDashboardComponent,
-  DashboardAutomationService,
-} from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
-import { map } from 'rxjs/operators';
-import { Observable, firstValueFrom } from 'rxjs';
-import { DOCUMENT } from '@angular/common';
+import {
+  ActionButton,
+  BreadcrumbService,
+  ConfirmService,
+  ContextService,
+  Dashboard,
+  DashboardAutomationService,
+  DashboardQueryResponse,
+  MapWidgetComponent,
+  Record,
+  DashboardComponent as SharedDashboardComponent,
+} from '@oort-front/shared';
+import { Apollo } from 'apollo-angular';
 import { cloneDeep, get } from 'lodash';
+import { Observable, firstValueFrom } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 
 /**
  * Dashboard page.
@@ -68,6 +69,8 @@ export class DashboardComponent
   public showName = false;
   /** Action buttons */
   public actionButtons: ActionButton[] = [];
+  /** Tells if the dashboard is within a workflow */
+  public isStep = false;
 
   /**
    * Dashboard page.
@@ -83,6 +86,7 @@ export class DashboardComponent
    * @param document Document
    * @param contextService Dashboard context service
    * @param dashboardAutomationService Dashboard automation service
+   * @param breadcrumbService Breadcrumb service
    */
   constructor(
     private apollo: Apollo,
@@ -95,7 +99,8 @@ export class DashboardComponent
     private elementRef: ElementRef,
     @Inject(DOCUMENT) private document: Document,
     private contextService: ContextService,
-    private dashboardAutomationService: DashboardAutomationService
+    private dashboardAutomationService: DashboardAutomationService,
+    private breadcrumbService: BreadcrumbService
   ) {
     super();
     this.dashboardAutomationService.dashboard = this;
@@ -111,6 +116,7 @@ export class DashboardComponent
     if (pageContainer) {
       pageContainer.scrollTop = 0;
     }
+    this.isStep = this.router.url.includes('/workflow/');
     /** Extract main dashboard id */
     const id = this.route.snapshot.paramMap.get('id');
     /** Extract query id to load template */
@@ -192,6 +198,10 @@ export class DashboardComponent
           this.id = data.dashboard.id || id;
           this.contextId = contextId ?? undefined;
           this.dashboard = data.dashboard;
+          this.breadcrumbService.setBreadcrumb(
+            this.isStep ? '@workflow' : '@dashboard',
+            this.dashboard.name as string
+          );
           this.contextService.context =
             { id: contextId, ...this.dashboard.contextData } || null;
           this.initContext();
