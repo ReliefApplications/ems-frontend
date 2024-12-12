@@ -260,9 +260,15 @@ export class EmailService {
    */
   async checkToValid() {
     if (
-      this.toDLHasFilter &&
-      (this.emailDistributionList?.to?.query?.resource ||
-        this.datasetsForm?.getRawValue()?.emailDistributionList?.to?.resource)
+      (this.toDLHasFilter &&
+        (this.emailDistributionList?.to?.query?.resource ||
+          this.datasetsForm?.getRawValue()?.emailDistributionList?.to
+            ?.resource)) ||
+      this.datasetsForm
+        ?.getRawValue()
+        ?.emailDistributionList?.to?.commonServiceFilter?.filter?.filters?.filter(
+          (x: any) => x?.field && x?.value
+        )?.length > 0
     ) {
       const query = {
         emailDistributionList: cloneDeep(this.emailDistributionList),
@@ -1820,16 +1826,18 @@ export class EmailService {
    *
    * validating next button by taking 3 conditions in consideration DL name mandatory, check duplicate name validation and requires To email
    */
-  validateNextButton() {
+  async validateNextButton() {
     const isDLNameExists = this.distributionListName?.trim()?.length > 0;
     const isDlDuplicateNm = this.isDLNameDuplicate;
     let isExistsToEmail = false;
     // if (!isExistsToEmail) {
-    this.isToValidCheck();
+    await this.isToValidCheck();
     isExistsToEmail = this.isToValid;
     // }
     //Check To is valid or not (Including filter Emails or Manually added emails)
     // const valid = await this.checkToValid();
+
+    // Check Common service Validation
 
     if (isDLNameExists && !isDlDuplicateNm && isExistsToEmail) {
       this.disableSaveAndProceed.next(false);
@@ -1849,12 +1857,17 @@ export class EmailService {
   async isToValidCheck() {
     if (
       this.datasetsForm.getRawValue().emailDistributionList?.to?.inputEmails
-        .length >= 0 ||
+        .length > 0 ||
       (this.datasetsForm.getRawValue().emailDistributionList?.to?.resource !==
         '' &&
         this.datasetsForm.getRawValue().emailDistributionList?.to?.resource !==
           null &&
-        this.filterToEmails?.length >= 0)
+        this.filterToEmails?.length >= 0) ||
+      this.datasetsForm
+        ?.getRawValue()
+        ?.emailDistributionList?.to?.commonServiceFilter?.filter?.filters?.filter(
+          (x: any) => x?.field && x?.value
+        )?.length > 0
     ) {
       this.isToValid = true;
     } else {

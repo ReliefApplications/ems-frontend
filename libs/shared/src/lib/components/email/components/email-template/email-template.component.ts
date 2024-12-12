@@ -283,6 +283,23 @@ export class EmailTemplateComponent
           }
         }
       });
+
+    this.dlCommonQuery
+      .get('filter.filters')
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value: any) => {
+        console.log(value);
+        if (
+          this.activeSegmentIndex === 3 &&
+          value?.filter((x: any) => x?.field && x?.value)?.length > 0
+        ) {
+          this.emailService.validateNextButton();
+        } else {
+          this.activeSegmentIndex === 3
+            ? this.emailService.disableSaveAndProceed.next(true)
+            : '';
+        }
+      });
     this.selectedEmails = this.distributionList.get('inputEmails') as FormArray;
 
     const hasSelectedEmails = this.selectedEmails.value.length > 0;
@@ -293,7 +310,11 @@ export class EmailTemplateComponent
       : false;
     this.type === 'to' ? (this.emailService.isToValid = false) : '';
 
-    if (hasSelectedEmails && hasFields) {
+    if (
+      (hasSelectedEmails && hasFields) ||
+      (hasSelectedEmails && hasCommonservice) ||
+      (hasFields && hasCommonservice)
+    ) {
       this.updateSegmentOptions('Use Combination');
     } else if (hasCommonservice && !hasSelectedEmails) {
       this.updateSegmentOptions('Select from Common Servcies');
@@ -952,6 +973,7 @@ export class EmailTemplateComponent
       this.type === 'to' ? (this.emailService.toDLHasFilter = false) : '';
     }
     if (this.activeSegmentIndex === 1) {
+      this.previewDLEmails = [];
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
         this.emailService.disableSaveAsDraft.next(false);
@@ -968,6 +990,7 @@ export class EmailTemplateComponent
       this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
     }
     if (this.activeSegmentIndex === 3) {
+      this.previewDLEmails = [];
       this.onTabSelect(0, false);
       this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
     }
