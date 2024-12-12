@@ -21,8 +21,8 @@ const DEFAULT_PAGE_SIZE = 10;
 interface GroupByUrl {
   /** Number of hits */
   count: number;
-  /** Page url */
-  url: string;
+  /** Page title ( or url if not set ) */
+  title: string;
 }
 
 /**
@@ -72,6 +72,11 @@ export class ActivityLogGroupByPageComponent
     filters: [],
     logic: 'and',
   };
+  /** Header filter */
+  public headerFilter: any = {
+    filters: [],
+    logic: 'and',
+  };
   /** Page info */
   public pageInfo = {
     skip: 0,
@@ -115,10 +120,12 @@ export class ActivityLogGroupByPageComponent
               value: value.endDate,
             });
           }
-          this.onFilter({
-            logic: 'and',
-            filters,
-          });
+          this.headerFilter.filters = filters;
+          this.pageInfo = {
+            ...this.pageInfo,
+            skip: 0,
+          };
+          this.fetch();
         },
       });
   }
@@ -193,7 +200,10 @@ export class ActivityLogGroupByPageComponent
           ...(this.applicationId && {
             application_id: this.applicationId,
           }),
-          filter: JSON.stringify(this.filter),
+          filter: JSON.stringify({
+            logic: 'and',
+            filters: [this.filter, this.headerFilter],
+          }),
         },
       })
       .pipe(takeUntil(this.destroy$))

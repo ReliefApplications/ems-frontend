@@ -61,6 +61,7 @@
       </kendo-grid-column>
       <!-- User -->
       <kendo-grid-column field="username" title="User">
+        <!-- todo: translate title -->
         <ng-template kendoGridCellTemplate let-dataItem>
           {{ dataItem.username || dataItem.userId }}
         </ng-template>
@@ -76,9 +77,17 @@
         </ng-template>
       </kendo-grid-column>
       <!-- Page url -->
-      <kendo-grid-column field="metadata.url" title="Url" [filterable]="false">
+      <kendo-grid-column
+        field="metadata.title"
+        [title]="'components.application.activities.title' | translate"
+      >
         <ng-template kendoGridCellTemplate let-dataItem>
-          {{ dataItem.metadata?.url }}
+          <b>{{ dataItem.metadata?.title }}</b>
+          <!-- <a
+            class="cursor-pointer block"
+            [routerLink]="dataItem.metadata?.url"
+            >{{ dataItem.metadata?.url }}</a
+          > -->
         </ng-template>
       </kendo-grid-column>
       <!-- Empty indicator -->

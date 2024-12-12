@@ -194,12 +194,10 @@
   >
     <ng-template #rightSidenav></ng-template>
   </div>
-
   <ng-container ngProjectAs="content">
-    <ui-breadcrumbs
-      *ngIf="breadcrumbs.length > 1"
-      [breadcrumbs]="breadcrumbs"
-    ></ui-breadcrumbs>
+    <ng-container *ngIf="breadcrumbs.length > 1">
+      <ui-breadcrumbs [breadcrumbs]="breadcrumbs"></ui-breadcrumbs>
+    </ng-container>
     <router-outlet
       (detach)="onDetach($event)"
       (attach)="onAttach($event)"

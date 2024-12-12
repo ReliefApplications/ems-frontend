@@ -14,11 +14,21 @@ const routes: Routes = [
           import('../dashboard/dashboard.module').then(
             (m) => m.DashboardModule
           ),
+        data: {
+          breadcrumb: {
+            alias: '@workflow',
+          },
+        },
       },
       {
         path: 'form/:id',
         loadChildren: () =>
           import('../form/form.module').then((m) => m.FormModule),
+        data: {
+          breadcrumb: {
+            alias: '@workflow',
+          },
+        },
       },
     ],
   },
