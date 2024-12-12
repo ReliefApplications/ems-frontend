@@ -132,6 +132,14 @@ export class ApplicationService {
     return this.application.asObservable();
   }
 
+  /** Current application */
+  public loadingApplication = new BehaviorSubject<boolean>(false);
+
+  /** @returns Current application as observable */
+  get loadingApplication$(): Observable<boolean> {
+    return this.loadingApplication.asObservable();
+  }
+
   /** Application query subscription */
   private applicationSubscription?: Subscription;
   /** Notifications query subscription */
@@ -241,6 +249,7 @@ export class ApplicationService {
    * @param asRole Role to use to preview
    */
   loadApplication(id: string, asRole?: string): void {
+    this.loadingApplication.next(true);
     // First make sure we close the opened application, if any
     if (this.application.getValue()) {
       this.leaveApplication();
@@ -277,6 +286,7 @@ export class ApplicationService {
             this.hasErrors = true;
           }
           this.application.next(data?.application);
+          this.loadingApplication.next(false);
           const application = this.application.getValue();
           if (data?.application?.locked) {
             if (!application?.lockedByUser) {
@@ -291,6 +301,7 @@ export class ApplicationService {
         error: () => {
           this.hasErrors = true;
           this.application.next(null);
+          this.loadingApplication.next(false);
         },
       });
     this.notificationSubscription = this.apollo
@@ -345,6 +356,7 @@ export class ApplicationService {
     }
     const application = this.application.getValue();
     this.application.next(null);
+    this.loadingApplication.next(false);
     this.applicationSubscription?.unsubscribe();
     this.notificationSubscription?.unsubscribe();
     this.lockSubscription?.unsubscribe();

@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@angular/core';
-import { ActivatedRoute, Router, Scroll } from '@angular/router';
+import { Router, Scroll } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Breadcrumb } from '@oort-front/ui';
 import { isEqual, isNil } from 'lodash';
 import { combineLatest, filter, map, pairwise, startWith } from 'rxjs';
+import { ApplicationService } from '../application/application.service';
 import { BreadcrumbService } from '../breadcrumb/breadcrumb.service';
 import { RestService } from '../rest/rest.service';
 
@@ -23,7 +24,7 @@ export class LoggerService {
    * @param environment Current environment
    * @param restService Service to make REST calls
    * @param router Angular router service
-   * @param activatedRoute Angular activated route service
+   * @param applicationService Application service
    * @param breadcrumbService Breadcrumb service
    * @param translate Translate service
    */
@@ -31,7 +32,7 @@ export class LoggerService {
     @Inject('environment') private environment: any,
     private restService: RestService,
     public router: Router,
-    private activatedRoute: ActivatedRoute,
+    private applicationService: ApplicationService,
     private breadcrumbService: BreadcrumbService,
     private translate: TranslateService
   ) {
@@ -46,20 +47,42 @@ export class LoggerService {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         map(([_, next]) => this.getCurrentPageTitle(next as any))
       ),
+      this.applicationService.loadingApplication$.pipe(
+        startWith(false),
+        pairwise()
+      ),
     ])
       .pipe(
-        filter(([event, title]) => {
+        filter(([event, title, [prevLoadingState, nextLoadingState]]) => {
           const isEnd = event instanceof Scroll;
-          return isEnd && !!title;
+          return (
+            isEnd &&
+            !!title &&
+            /**
+             * If application loading state goes
+             * - from true to false => then launch event,
+             * - or if there is no change in the loading state, from false to false
+             * meaning no application load is happening => rest of application pages => then launch event
+             */
+            ((prevLoadingState && !nextLoadingState) ||
+              (!prevLoadingState && !nextLoadingState))
+          );
         })
       )
       .subscribe(([event, title]) => {
         if (event instanceof Scroll) {
           event = event instanceof Scroll ? event.routerEvent : event;
+          const application = this.applicationService.application.getValue();
           this.track({
             eventType: 'navigation',
             metadata: {
               url: (event as any).urlAfterRedirects,
+              ...(!isNil(application?.id) && {
+                applicationId: application?.id,
+              }),
+              ...(!isNil(application?.name) && {
+                applicationName: application?.name,
+              }),
               title,
               module: this.environment.module,
             },
@@ -96,47 +119,10 @@ export class LoggerService {
    * @param activity Activity to track
    */
   public track(activity: any) {
-    const componentAndParams = this.getComponentAndParams(
-      this.activatedRoute.root
-    );
-
-    if (componentAndParams['ApplicationComponent']) {
-      const appParams = componentAndParams['ApplicationComponent'];
-      activity.metadata.applicationId = appParams.id;
-    }
-
     this.restService.post(this.activityBasePath, activity).subscribe({
       error: (err) => {
         console.error('Error while tracking activity: ', err);
       },
     });
-  }
-
-  /**
-   * Recursively traverse the route tree to gather components and their parameters
-   *
-   * @param route The current activated route
-   * @param componentAndParams Accumulator for components and their parameters
-   * @returns An object mapping component names to their parameters
-   */
-  private getComponentAndParams(
-    route: ActivatedRoute,
-    componentAndParams: Record<string, any> = {}
-  ): Record<string, any> {
-    if (route.component) {
-      const componentName = (route.component as any).name;
-      if (componentName) {
-        componentAndParams[componentName] = {
-          ...(componentAndParams[componentName] || {}),
-          ...route.snapshot.params,
-        };
-      }
-    }
-
-    route.children.forEach((childRoute) => {
-      this.getComponentAndParams(childRoute, componentAndParams);
-    });
-
-    return componentAndParams;
   }
 }
