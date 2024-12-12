@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
+import { Router, Scroll } from '@angular/router';
+import { isNil } from 'lodash';
+import { combineLatest, filter, pairwise, startWith } from 'rxjs';
+import { ApplicationService } from '../application/application.service';
 import { RestService } from '../rest/rest.service';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
 
 /**
  * Service to track user activity
@@ -18,21 +20,35 @@ export class LoggerService {
    *
    * @param restService Service to make REST calls
    * @param router Angular router service
-   * @param activatedRoute Angular activated route service
+   * @param applicationService Angular application service
    */
   constructor(
     private restService: RestService,
     public router: Router,
-    private activatedRoute: ActivatedRoute
+    private applicationService: ApplicationService
   ) {
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event) => {
-        if (event instanceof NavigationEnd) {
+    combineLatest([
+      this.router.events,
+      this.applicationService.loadingApplication$.pipe(
+        startWith(false),
+        pairwise()
+      ),
+    ])
+      .pipe(
+        filter(([event, [prevLoadingState, nextLoadingState]]) => {
+          const isEnd = event instanceof Scroll;
+          return isEnd && prevLoadingState && !nextLoadingState;
+        })
+      )
+      .subscribe(([event]) => {
+        if (event instanceof Scroll) {
+          const applicationId =
+            this.applicationService.application.getValue()?.id;
           this.track({
             eventType: 'navigation',
             metadata: {
-              url: event.urlAfterRedirects,
+              ...(!isNil(applicationId) && { applicationId }),
+              url: event.routerEvent.urlAfterRedirects,
             },
           });
         }
@@ -45,47 +61,10 @@ export class LoggerService {
    * @param activity Activity to track
    */
   public track(activity: any) {
-    const componentAndParams = this.getComponentAndParams(
-      this.activatedRoute.root
-    );
-
-    if (componentAndParams['ApplicationComponent']) {
-      const appParams = componentAndParams['ApplicationComponent'];
-      activity.metadata.applicationId = appParams.id;
-    }
-
     this.restService.post(this.activityBasePath, activity).subscribe({
       error: (err) => {
         console.error('Error while tracking activity: ', err);
       },
     });
-  }
-
-  /**
-   * Recursively traverse the route tree to gather components and their parameters
-   *
-   * @param route The current activated route
-   * @param componentAndParams Accumulator for components and their parameters
-   * @returns An object mapping component names to their parameters
-   */
-  private getComponentAndParams(
-    route: ActivatedRoute,
-    componentAndParams: Record<string, any> = {}
-  ): Record<string, any> {
-    if (route.component) {
-      const componentName = (route.component as any).name;
-      if (componentName) {
-        componentAndParams[componentName] = {
-          ...(componentAndParams[componentName] || {}),
-          ...route.snapshot.params,
-        };
-      }
-    }
-
-    route.children.forEach((childRoute) => {
-      this.getComponentAndParams(childRoute, componentAndParams);
-    });
-
-    return componentAndParams;
   }
 }
