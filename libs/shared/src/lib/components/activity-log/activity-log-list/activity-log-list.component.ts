@@ -191,9 +191,9 @@ export class ActivityLogListComponent
   /**
    * Method to download activities when the link is clicked.
    */
-  downloadActivities(): void {
+  onDownload(): void {
     const path = '/activities/download';
-    this.downloadService.getActivitiesExport(path, {
+    this.downloadService.getActivitiesExport(path, 'recent-hits.xlsx', {
       filter: this.filter,
       userId: this.userId,
       applicationId: this.applicationId,

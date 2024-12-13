@@ -177,9 +177,10 @@ export class DownloadService {
    * Downloads activities for current application
    *
    * @param path download path to append to base url
+   * @param fileName File name
    * @param body Request body
    */
-  getActivitiesExport(path: string, body: any) {
+  getActivitiesExport(path: string, fileName: string, body: any) {
     const { snackBarRef } = this.triggerFileDownloadMessage(
       'common.notifications.file.download.processing'
     );
@@ -188,7 +189,7 @@ export class DownloadService {
     this.restService.post(path, body, { responseType: 'blob' }).subscribe({
       next: (res: any) => {
         const blob = new Blob([res], { type: 'xlsx' });
-        this.saveFile('activities.xlsx', blob);
+        this.saveFile(fileName, blob);
         snackBarSpinner.instance.message = this.translate.instant(
           'common.notifications.file.download.ready'
         );

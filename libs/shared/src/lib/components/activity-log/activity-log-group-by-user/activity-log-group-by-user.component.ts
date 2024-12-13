@@ -13,6 +13,7 @@ import {
   PagerSettings,
 } from '@progress/kendo-angular-grid';
 import { SortDescriptor } from '@progress/kendo-data-query';
+import { DownloadService } from '../../../services/download/download.service';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -96,8 +97,13 @@ export class ActivityLogGroupByUserComponent
    *
    * @param restService Shared REST service
    * @param fb Angular form builder
+   * @param downloadService Shared download service
    */
-  constructor(private restService: RestService, private fb: FormBuilder) {
+  constructor(
+    private restService: RestService,
+    private fb: FormBuilder,
+    private downloadService: DownloadService
+  ) {
     super();
   }
 
@@ -180,6 +186,24 @@ export class ActivityLogGroupByUserComponent
       skip: 0,
     };
     this.fetch();
+  }
+
+  /**
+   * Method to download activities when the link is clicked.
+   */
+  onDownload(): void {
+    const path = '/activities/group-by-user/download';
+    this.downloadService.getActivitiesExport(path, 'group-by-user.xlsx', {
+      filter: this.filter,
+      userId: this.userId,
+      applicationId: this.applicationId,
+      ...(this.sort[0] &&
+        this.sort[0].dir && {
+          sortField: this.sort[0].field,
+          sortOrder: this.sort[0].dir,
+        }),
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    });
   }
 
   /**
