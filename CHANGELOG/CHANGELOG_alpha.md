@@ -1,3 +1,10 @@
+# [2.17.0-alpha.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.14...v2.17.0-alpha.15) (2024-12-13)
+
+
+### Features
+
+* Ability to track user activity navigation logs ([#2720](https://github.com/ReliefApplications/ems-frontend/issues/2720)) ([a90ca23](https://github.com/ReliefApplications/ems-frontend/commit/a90ca23e0c7ce956b9596a5bf7aa79c3c689aa9d)), closes [AB#105244](https://github.com/AB/issues/105244)
+
 # [2.17.0-alpha.14](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.13...v2.17.0-alpha.14) (2024-12-06)
 
 
