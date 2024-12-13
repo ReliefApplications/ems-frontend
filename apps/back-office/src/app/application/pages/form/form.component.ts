@@ -4,19 +4,20 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
   ActionButton,
+  ActionButtonService,
   ApplicationService,
+  BreadcrumbService,
+  ContextService,
   Form,
   FormQueryResponse,
   Page,
   PageQueryResponse,
-  ActionButtonService,
+  Record,
   FormComponent as SharedFormComponent,
   Step,
   StepQueryResponse,
   UnsubscribeComponent,
   WorkflowService,
-  ContextService,
-  Record,
 } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import { Observable, Subscription } from 'rxjs';
@@ -79,6 +80,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * @param dialog CDK Dialog service
    * @param actionButtonService Action button service
    * @param contextService Shared context service
+   * @param breadcrumbService Breadcrumb service
    */
   constructor(
     private applicationService: ApplicationService,
@@ -89,7 +91,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     private translate: TranslateService,
     private dialog: Dialog,
     private actionButtonService: ActionButtonService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private breadcrumbService: BreadcrumbService
   ) {
     super();
   }
@@ -177,6 +180,10 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
       (from === 'step'
         ? this.step?.workflow?.page?.application?.id
         : this.page?.application?.id) ?? '';
+    this.breadcrumbService.setBreadcrumb(
+      this.isStep ? '@workflow' : '@form',
+      this.form.name as string
+    );
   }
 
   /**

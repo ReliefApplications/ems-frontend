@@ -24,6 +24,11 @@ export const routes: Routes = [
         path: 'profile',
         loadChildren: () =>
           import('@oort-front/shared').then((m) => m.ProfileViewModule),
+        data: {
+          breadcrumb: {
+            key: 'pages.profile.title',
+          },
+        },
       },
       {
         path: 'referencedata',
@@ -263,6 +268,11 @@ export const routes: Routes = [
       },
       {
         path: 'applications',
+        data: {
+          breadcrumb: {
+            key: 'common.application.few',
+          },
+        },
         children: [
           {
             path: '',
@@ -398,6 +408,9 @@ export const routes: Routes = [
                 (m) => m.PullJobsModule
               ),
             data: {
+              breadcrumb: {
+                key: 'common.pullJob.few',
+              },
               permission: {
                 action: 'read',
                 subject: 'PullJob',

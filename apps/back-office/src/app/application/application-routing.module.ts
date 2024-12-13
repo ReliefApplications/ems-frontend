@@ -4,7 +4,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { CanDeactivateGuard } from '../guards/can-deactivate.guard';
 import { ApplicationComponent } from './application.component';
 import { PermissionGuard } from '@oort-front/shared';
-
+// import { ActivityLogModule } from './pages/activity-log/activity-log.module';
+// import { ActivityLogComponent } from './pages/activity-log/activity-log.component';
 /** Routes of application module */
 const routes: Routes = [
   {
@@ -35,9 +36,19 @@ const routes: Routes = [
               import('./pages/settings/settings.module').then(
                 (m) => m.SettingsModule
               ),
+            data: {
+              breadcrumb: {
+                key: 'common.settings',
+              },
+            },
           },
           {
             path: 'roles',
+            data: {
+              breadcrumb: {
+                key: 'common.role.few',
+              },
+            },
             children: [
               {
                 path: '',
@@ -45,7 +56,10 @@ const routes: Routes = [
                   import('../shared/pages/roles/roles.module').then(
                     (m) => m.RolesModule
                   ),
-                data: { inApplication: true },
+                data: {
+                  inApplication: true,
+                },
+
                 // canActivate: [PermissionGuard]
               },
               {
@@ -62,14 +76,14 @@ const routes: Routes = [
                 // canActivate: [PermissionGuard]
               },
             ],
-            data: {
-              breadcrumb: {
-                key: 'common.role.few',
-              },
-            },
           },
           {
             path: 'users',
+            data: {
+              breadcrumb: {
+                key: 'common.user.few',
+              },
+            },
             children: [
               {
                 path: '',
@@ -93,14 +107,14 @@ const routes: Routes = [
                 // canActivate: [PermissionGuard]
               },
             ],
-            data: {
-              breadcrumb: {
-                key: 'common.user.few',
-              },
-            },
           },
           {
             path: 'position',
+            data: {
+              breadcrumb: {
+                key: 'common.attribute.few',
+              },
+            },
             children: [
               {
                 path: '',
@@ -124,11 +138,6 @@ const routes: Routes = [
                 // canActivate: [PermissionGuard]
               },
             ],
-            data: {
-              breadcrumb: {
-                key: 'common.attribute.few',
-              },
-            },
           },
           {
             path: 'channels',
@@ -136,6 +145,11 @@ const routes: Routes = [
               import('./pages/channels/channels.module').then(
                 (m) => m.ChannelsModule
               ),
+            data: {
+              breadcrumb: {
+                key: 'common.channel.few',
+              },
+            },
             // canActivate: [PermissionGuard]
           },
           {
@@ -144,12 +158,22 @@ const routes: Routes = [
               import('./pages/subscriptions/subscriptions.module').then(
                 (m) => m.SubscriptionsModule
               ),
+            data: {
+              breadcrumb: {
+                key: 'common.subscription.few',
+              },
+            },
             // canActivate: [PermissionGuard]
           },
           {
             path: 'email-notifications',
             loadChildren: () =>
               import('@oort-front/shared').then((m) => m.EmailModule),
+            data: {
+              breadcrumb: {
+                key: 'common.email.notification.few',
+              },
+            },
             // canActivate: [PermissionGuard]
           },
           {
@@ -165,6 +189,18 @@ const routes: Routes = [
               },
             },
           },
+          {
+            path: 'activity-log',
+            loadChildren: () =>
+              import('./pages/activity-log/activity-log.module').then(
+                (m) => m.ActivityLogModule
+              ),
+            data: {
+              breadcrumb: {
+                key: 'common.activity.few',
+              },
+            },
+          },
         ],
       },
       {
@@ -173,6 +209,11 @@ const routes: Routes = [
           import('../dashboard/pages/dashboard/dashboard.module').then(
             (m) => m.DashboardModule
           ),
+        data: {
+          breadcrumb: {
+            alias: '@dashboard',
+          },
+        },
         // canActivate: [PermissionGuard]
       },
       {
@@ -201,6 +242,11 @@ const routes: Routes = [
             // canActivate: [PermissionGuard]
           },
         ],
+        data: {
+          breadcrumb: {
+            alias: '@form',
+          },
+        },
       },
     ],
   },

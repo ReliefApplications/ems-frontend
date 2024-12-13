@@ -26,6 +26,7 @@ export * from './lib/services/grid-layout/grid-layout.service';
 export * from './lib/services/grid/grid.service';
 export * from './lib/services/html-parser/html-parser.service';
 export * from './lib/services/kendo-translation/kendo-translation.service';
+export * from './lib/services/logger/logger.service';
 export * from './lib/services/map/map-layers.service';
 export * from './lib/services/reference-data/reference-data.service';
 export * from './lib/services/query-builder/query-builder.service';
@@ -106,6 +107,7 @@ export * from './lib/components/widgets/map-settings/public-api';
 export * from './lib/components/widgets/map/public-api';
 export * from './lib/components/widgets/summary-card-settings/public-api';
 export * from './lib/components/workflow-stepper/public-api';
+export * from './lib/components/activity-log/public-api';
 export * from './lib/components/query-builder/public-api';
 export * from './lib/components/action-buttons/public-api';
 
