@@ -265,6 +265,9 @@ export class ActivityLogListComponent
           this.pageInfo.skip = value.skip;
           this.pageInfo.take = value.take;
         },
+        error: () => {
+          this.loading = false;
+        },
       });
   }
 }

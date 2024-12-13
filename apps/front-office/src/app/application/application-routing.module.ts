@@ -190,9 +190,14 @@ export const routes: Routes = [
               import('./pages/activity-log/activity-log.module').then(
                 (m) => m.ActivityLogModule
               ),
+            canActivate: [PermissionGuard],
             data: {
               breadcrumb: {
                 key: 'common.activity.few',
+              },
+              permission: {
+                action: 'read',
+                subject: 'User',
               },
             },
           },
