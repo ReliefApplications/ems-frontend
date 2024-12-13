@@ -197,6 +197,11 @@ export class ActivityLogListComponent
       filter: this.filter,
       userId: this.userId,
       applicationId: this.applicationId,
+      ...(this.sort[0] &&
+        this.sort[0].dir && {
+          sortField: this.sort[0].field,
+          sortOrder: this.sort[0].dir,
+        }),
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     });
   }
