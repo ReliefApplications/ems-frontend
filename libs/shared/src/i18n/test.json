@@ -629,12 +629,22 @@
 		},
 		"application": {
 			"activities": {
-				"createdAt": "******",
+				"columns": {
+					"createdAt": "******",
+					"hits": "******",
+					"page": "******",
+					"user": "******"
+				},
 				"downloadXlsx": "******",
 				"empty": "******",
 				"few": "******",
 				"metadata": "******",
 				"one": "******",
+				"tabs": {
+					"groupByPage": "******",
+					"groupByUser": "******",
+					"recentHits": "******"
+				},
 				"title": "******",
 				"url": "******",
 				"userId": "******"
