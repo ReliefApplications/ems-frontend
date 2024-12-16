@@ -630,20 +630,19 @@
 		"application": {
 			"activities": {
 				"columns": {
-					"TimeStamp": "Date",
+					"createdAt": "Date",
 					"hits": "Activités",
 					"page": "Page",
 					"user": "Utilisateur"
 				},
-				"createdAt": "Date",
 				"downloadXlsx": "Download XLSX",
 				"empty": "Aucune activité n'est disponible.",
 				"few": "Activités",
 				"metadata": "Métadonnées",
 				"one": "Activité",
 				"tabs": {
-					"groupByPage": "Grouper par page",
-					"groupByUser": "Grouper par utilisateur",
+					"groupByPage": "Agréger par page",
+					"groupByUser": "Agréger par utilisateur",
 					"recentHits": "Activités récentes"
 				},
 				"title": "Page",

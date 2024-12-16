@@ -630,12 +630,11 @@
 		"application": {
 			"activities": {
 				"columns": {
-					"TimeStamp": "Timestamp",
+					"createdAt": "Timestamp",
 					"hits": "Hits",
 					"page": "Page",
 					"user": "User"
 				},
-				"createdAt": "Timestamp",
 				"downloadXlsx": "Download XLSX",
 				"empty": "No activities available",
 				"few": "Activities",
