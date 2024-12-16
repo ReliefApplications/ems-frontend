@@ -46,15 +46,24 @@
       (filterChange)="onFilter($event)"
     >
       <!-- Number of hits -->
-      <kendo-grid-column field="count" title="Hits" [filterable]="false">
-        <!-- todo: translate title -->
+      <kendo-grid-column
+        field="count"
+        title="{{
+          'components.application.activities.columns.hits' | translate
+        }}"
+        [filterable]="false"
+      >
         <ng-template kendoGridCellTemplate let-dataItem>
           {{ dataItem.count }}
         </ng-template>
       </kendo-grid-column>
       <!-- Page title ( or url if not set ) -->
-      <kendo-grid-column field="metadata.title" title="Page">
-        <!-- todo: translate title -->
+      <kendo-grid-column
+        field="metadata.title"
+        title="{{
+          'components.application.activities.columns.page' | translate
+        }}"
+      >
         <ng-template kendoGridCellTemplate let-dataItem>
           {{ dataItem.metadata?.title }}
         </ng-template>

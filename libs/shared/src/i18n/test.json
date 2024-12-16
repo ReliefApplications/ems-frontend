@@ -629,12 +629,23 @@
 		},
 		"application": {
 			"activities": {
+				"columns": {
+					"TimeStamp": "******",
+					"hits": "******",
+					"page": "******",
+					"user": "******"
+				},
 				"createdAt": "******",
 				"downloadXlsx": "******",
 				"empty": "******",
 				"few": "******",
 				"metadata": "******",
 				"one": "******",
+				"tabs": {
+					"groupByPage": "******",
+					"groupByUser": "******",
+					"recentHits": "******"
+				},
 				"title": "******",
 				"url": "******",
 				"userId": "******"

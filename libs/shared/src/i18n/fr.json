@@ -629,12 +629,23 @@
 		},
 		"application": {
 			"activities": {
+				"columns": {
+					"TimeStamp": "Date",
+					"hits": "Activités",
+					"page": "Page",
+					"user": "Utilisateur"
+				},
 				"createdAt": "Date",
 				"downloadXlsx": "Download XLSX",
 				"empty": "Aucune activité n'est disponible.",
 				"few": "Activités",
 				"metadata": "Métadonnées",
 				"one": "Activité",
+				"tabs": {
+					"groupByPage": "Grouper par page",
+					"groupByUser": "Grouper par utilisateur",
+					"recentHits": "Activités récentes"
+				},
 				"title": "Page",
 				"url": "URL",
 				"userId": "Identifiant de l'utilisateur"
