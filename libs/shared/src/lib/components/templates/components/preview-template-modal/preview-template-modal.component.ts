@@ -84,7 +84,7 @@ export class PreviewTemplateModalComponent {
     this.emailService.datasetsForm.get('emailDistributionList')?.reset();
     this.emailService.quickEmailDLQuery = [];
     this.currentStep = !this.data.distributionListInfo ? 0 : 1;
-    this.convertData(this.data.selectedRowsFromGrid, this.data.resourceData);
+    this.convertData();
     this.emailService.emailDistributionList = this.data.distributionListInfo;
 
     this.emailService.datasetsForm.patchValue({
@@ -167,61 +167,10 @@ export class PreviewTemplateModalComponent {
   /**
    * Used to convert the data format suitable for the preview
    *
-   * @param rowData The input array of data items to be converted.
-   * @param metaData The metadata of the data items.
    */
-  convertData(rowData: any, metaData: any) {
-    // Initialize the datasetFields and dataList arrays
-    const datasetFields: any = [];
-    const datasetFieldsObj: any = [];
-    const dataList: any = [];
-
-    // Iterate over each item in the input data
-    rowData?.forEach((item: any) => {
-      // Get the text object from the dataItem
-      const text: any = {};
-      // Extract the keys from the object to populate datasetFields
-      this.data.selectedLayoutFields.forEach((key: any) => {
-        if (!datasetFieldsObj?.map((x: any) => x.name).includes(key.name)) {
-          datasetFieldsObj.push(key);
-        }
-      });
-
-      this.data.selectedLayoutFields
-        ?.map((x: any) => x.name)
-        .forEach((key: any) => {
-          if (!datasetFields.includes(key)) {
-            datasetFields.push(key);
-          }
-        });
-
-      datasetFieldsObj
-        ?.map((x: any) => x.name)
-        ?.forEach((keyNm: any, index: number) => {
-          text[keyNm] = this.getValueOfKey(item, keyNm, metaData);
-          const navigateSettings = this.data.navigateSettings;
-          if (
-            navigateSettings &&
-            navigateSettings.field &&
-            !datasetFields.includes(navigateSettings.field) &&
-            index === datasetFieldsObj.length - 1
-          ) {
-            text[navigateSettings.field] = this.getValueOfKey(
-              item,
-              navigateSettings.field,
-              metaData
-            );
-          }
-        });
-      // Add the text object to the dataList array
-      dataList.push(text);
-    });
-
+  convertData() {
     this.emailService.allPreviewData = [
       {
-        datasetFields,
-        datasetFieldsObj,
-        dataList,
         tabIndex: 0,
         tabName: 'Block 1',
         navigateToPage: !isNil(this.data.navigateSettings),
