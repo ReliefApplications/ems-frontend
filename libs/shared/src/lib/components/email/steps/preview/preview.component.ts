@@ -344,11 +344,7 @@ export class PreviewComponent
       this.emailService.isQuickAction = true;
       this.emailService.quickEmailDLQuery = [];
     }
-    this.previewUrl = this.emailService.isQuickAction
-      ? `${this.restService.apiUrl}/notification/preview-quick-email`
-      : this.query
-      ? `${this.restService.apiUrl}/notification/preview-email/`
-      : '';
+    this.previewUrl = `${this.restService.apiUrl}/notification/preview-email/`;
 
     // Checks if url exists
     if (this.previewUrl) {
@@ -356,23 +352,23 @@ export class PreviewComponent
       // if (!this.emailService.datasetsForm.value.emailLayout) {
       await this.emailService.patchEmailLayout();
 
-      const emailData: any = {
-        emailLayout: this.emailService.emailLayout,
-        tableInfo: previewData?.datasetFieldsObj
-          ? [
-              {
-                columns: previewData?.datasetFieldsObj
-                  ? previewData?.datasetFieldsObj
-                  : [],
-                records: previewData?.dataList,
-                index: previewData?.tabIndex,
-                name: previewData?.tabName ? previewData?.tabName : [],
-                navigateToPage: previewData?.navigateToPage,
-                navigateSettings: previewData?.navigateSettings,
-              },
-            ]
-          : [],
-      };
+      if (this.emailService.isQuickAction) {
+        if (this.query?.datasets.length > 0) {
+          this.query.datasets[0].name = 'Block 1';
+          this.query.datasets[0].query.filter = previewData?.buildQueryPayload
+            ?.filter
+            ? previewData.buildQueryPayload.filter
+            : this.query.datasets[0].query.filter;
+          this.query.datasets[0].query.name =
+            previewData?.buildQueryPayload?.queryName || '';
+          this.query.datasets[0].query.fields =
+            previewData?.buildQueryPayload?.fields || [];
+          this.query.datasets[0].resource =
+            previewData?.buildQueryPayload?.resource || [];
+        }
+        this.emailService.allPreviewData[0]['emailDistributionList'] =
+          this.query?.emailDistributionList;
+      }
       const objData: any = cloneDeep(this.query);
       if (!this.emailService.isQuickAction) {
         //Updating payload
@@ -393,27 +389,22 @@ export class PreviewComponent
       }
       // this.query.emailLayout.subject =
       //   this.emailService.allLayoutdata?.txtSubject;
-      this.http
-        .post(
-          this.previewUrl,
-          this.emailService.isQuickAction ? emailData : objData
-        )
-        .subscribe(
-          (response: any) => {
-            this.emailService.finalEmailPreview = response;
-            this.updateEmailContainer(); // Update the email container with the new preview
-            this.subjectString =
-              this.emailService.finalEmailPreview.subject ?? this.subjectString; // Updae/Replace the subject string from the response
-            if (this.subjectHtmlRef?.nativeElement) {
-              this.subjectHtmlRef.nativeElement.innerHTML = this.subjectString;
-            }
-            this.emailService.loading = false; // Hide spinner
-          },
-          (error: string) => {
-            console.error('Failed to load final email preview:', error);
-            this.emailService.loading = false; // Hide spinner in case of error
+      this.http.post(this.previewUrl, this.query).subscribe(
+        (response: any) => {
+          this.emailService.finalEmailPreview = response;
+          this.updateEmailContainer(); // Update the email container with the new preview
+          this.subjectString =
+            this.emailService.finalEmailPreview.subject ?? this.subjectString; // Updae/Replace the subject string from the response
+          if (this.subjectHtmlRef?.nativeElement) {
+            this.subjectHtmlRef.nativeElement.innerHTML = this.subjectString;
           }
-        );
+          this.emailService.loading = false; // Hide spinner
+        },
+        (error: string) => {
+          console.error('Failed to load final email preview:', error);
+          this.emailService.loading = false; // Hide spinner in case of error
+        }
+      );
     }
   }
 

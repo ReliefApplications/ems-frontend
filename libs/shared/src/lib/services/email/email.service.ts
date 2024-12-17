@@ -377,6 +377,8 @@ export class EmailService {
    * @param resourceData Resource metadata
    * @param selectedLayoutFields Selected layout fields
    * @param navigateSettings Navigate settings, optional
+   * @param widgetSettings Widget settings of the grid
+   * @param buildQueryPayload Payload for final preview
    */
   async previewCustomTemplate(
     emailContent: any,
@@ -384,7 +386,8 @@ export class EmailService {
     selectedRowsFromGrid: any,
     resourceData: any,
     selectedLayoutFields: any,
-    navigateSettings?: any
+    navigateSettings: any,
+    buildQueryPayload?: any
   ) {
     const { PreviewTemplateModalComponent } = await import(
       '../../components/templates/components/preview-template-modal/preview-template-modal.component'
@@ -397,6 +400,7 @@ export class EmailService {
         resourceData,
         selectedLayoutFields,
         navigateSettings,
+        buildQueryPayload,
       },
       autoFocus: false,
       disableClose: true,

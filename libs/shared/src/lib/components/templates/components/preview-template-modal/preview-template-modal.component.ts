@@ -226,6 +226,7 @@ export class PreviewTemplateModalComponent {
         tabName: 'Block 1',
         navigateToPage: !isNil(this.data.navigateSettings),
         navigateSettings: this.data.navigateSettings,
+        buildQueryPayload: this.data.buildQueryPayload,
       },
     ];
   }
@@ -267,29 +268,26 @@ export class PreviewTemplateModalComponent {
    * To send the email from the GRID view
    */
   send() {
-    const dlData: any = this.emailService.emailDistributionList;
     const previewData: any = this.emailService.allPreviewData?.[0];
-    const emailData: any = {
-      emailDistributionList: {
-        to: dlData.to,
-        cc: dlData.cc,
-        bcc: dlData.bcc,
-        name: dlData.name,
-      },
-      emailLayout: this.emailService.datasetsForm.value.emailLayout,
-      tableInfo: [
-        {
-          columns: previewData?.datasetFieldsObj,
-          records: previewData?.dataList,
-          index: previewData?.tabIndex,
-          name: previewData?.tabName,
-          navigateToPage: previewData?.navigateToPage,
-          navigateSettings: previewData?.navigateSettings,
-        },
-      ],
-    };
+    const send_Payload: any = this.emailService.datasetsForm.getRawValue();
+    if (this.emailService.isQuickAction) {
+      if (send_Payload?.datasets.length > 0) {
+        send_Payload.datasets[0].name = 'Block 1';
+        send_Payload.datasets[0].query.filter = previewData?.buildQueryPayload
+          ?.filter
+          ? previewData.buildQueryPayload.filter
+          : send_Payload.datasets[0].query.filter;
+        send_Payload.datasets[0].query.name =
+          previewData?.buildQueryPayload?.queryName || '';
+        send_Payload.datasets[0].query.fields =
+          previewData?.buildQueryPayload?.fields || [];
+        send_Payload.datasets[0].resource =
+          previewData?.buildQueryPayload?.resource || [];
+        send_Payload.emailDistributionList = previewData.emailDistributionList;
+      }
+    }
     this.dialogRef.close();
-    this.emailService.sendQuickEmail(emailData).subscribe(() => {
+    this.emailService.sendQuickEmail(send_Payload).subscribe(() => {
       this.onClose();
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.emailSent', {

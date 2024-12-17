@@ -136,6 +136,9 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
   /** Resource data list */
   private metaResourceData: any = [];
 
+  /** Build Query Payload  */
+  buildQueryPayload: any = null;
+
   /**
    * Heavy constructor for the grid widget component
    *
@@ -517,6 +520,16 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                           Object.keys(data)?.forEach((key: any) => {
                             emailData = data[key].edges;
                           });
+                          const selectedQuickAction =
+                            this.widget.settings.floatingButtons?.filter(
+                              (x: any) => x.name === options.name
+                            )?.[0] || this.widget.settings.floatingButtons;
+                          this.buildQueryPayload.queryName =
+                            this.layout?.query?.name || '';
+                          this.buildQueryPayload.fields =
+                            distributionList?.to?.query?.fields || [];
+                          this.buildQueryPayload.resource =
+                            distributionList?.to?.resource || '';
                           this.emailService.previewCustomTemplate(
                             template,
                             distributionList,
@@ -526,7 +539,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                             options.navigateToPage &&
                               this.widget.settings.actions.navigateToPage
                               ? this.widget.settings.actions.navigateSettings
-                              : undefined
+                              : undefined,
+                            this.buildQueryPayload
                           );
                           this.status = {
                             error: false,
@@ -762,26 +776,27 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
       };
       return;
     } else {
+      this.buildQueryPayload = {
+        first: selectedIds.length,
+        filter: {
+          logic: 'and',
+          filters: [
+            {
+              operator: 'eq',
+              field: 'ids',
+              value: selectedIds,
+            },
+          ],
+        },
+        sortField: this.grid.sortField || undefined,
+        sortOrder: this.grid.sortOrder || undefined,
+        styles: this.layout?.query?.style,
+        at: undefined,
+        skip: this.grid.skip,
+      };
       return this.apollo.query({
         query: builtQuery,
-        variables: {
-          first: selectedIds.length,
-          filter: {
-            logic: 'and',
-            filters: [
-              {
-                operator: 'eq',
-                field: 'ids',
-                value: selectedIds,
-              },
-            ],
-          },
-          sortField: this.grid.sortField || undefined,
-          sortOrder: this.grid.sortOrder || undefined,
-          styles: this.layout?.query?.style,
-          at: undefined,
-          skip: this.grid.skip,
-        },
+        variables: this.buildQueryPayload,
         fetchPolicy: 'no-cache',
       });
     }
