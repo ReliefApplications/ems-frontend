@@ -520,10 +520,6 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                           Object.keys(data)?.forEach((key: any) => {
                             emailData = data[key].edges;
                           });
-                          const selectedQuickAction =
-                            this.widget.settings.floatingButtons?.filter(
-                              (x: any) => x.name === options.name
-                            )?.[0] || this.widget.settings.floatingButtons;
                           this.buildQueryPayload.queryName =
                             this.layout?.query?.name || '';
                           this.buildQueryPayload.fields =

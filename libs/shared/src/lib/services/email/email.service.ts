@@ -377,7 +377,6 @@ export class EmailService {
    * @param resourceData Resource metadata
    * @param selectedLayoutFields Selected layout fields
    * @param navigateSettings Navigate settings, optional
-   * @param widgetSettings Widget settings of the grid
    * @param buildQueryPayload Payload for final preview
    */
   async previewCustomTemplate(
