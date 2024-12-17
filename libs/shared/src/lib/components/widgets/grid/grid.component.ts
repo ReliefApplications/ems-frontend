@@ -523,7 +523,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                           this.buildQueryPayload.queryName =
                             this.layout?.query?.name || '';
                           this.buildQueryPayload.fields =
-                            distributionList?.to?.query?.fields || [];
+                            options?.bodyFields || [];
                           this.buildQueryPayload.resource =
                             distributionList?.to?.resource || '';
                           this.emailService.previewCustomTemplate(
