@@ -1,3 +1,10 @@
+# [2.17.0-alpha.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.15...v2.17.0-alpha.16) (2024-12-17)
+
+
+### Bug Fixes
+
+* user activity not tracked when system used as web element ([#2738](https://github.com/ReliefApplications/ems-frontend/issues/2738)) ([ad9c047](https://github.com/ReliefApplications/ems-frontend/commit/ad9c0474683406f63dd6ba9313ce535558f47461))
+
 # [2.17.0-alpha.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.14...v2.17.0-alpha.15) (2024-12-13)
 
 
