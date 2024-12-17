@@ -137,7 +137,7 @@ export class AppWidgetComponent
     private authService: AuthService,
     private logger: LoggerService
   ) {
-    console.log('DEBUG: 11-19-2024, v1');
+    console.log('DEBUG: 12-17-2024, v1');
     super(el, injector);
     this.shadowDomService.shadowRoot = el.nativeElement.shadowRoot;
 
