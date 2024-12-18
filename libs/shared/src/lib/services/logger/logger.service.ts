@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { NavigationEnd, Router, Scroll } from '@angular/router';
+import { Router, Scroll } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Breadcrumb } from '@oort-front/ui';
 import { isEqual, isNil } from 'lodash';
@@ -55,7 +55,7 @@ export class LoggerService {
       .pipe(
         filter(([event, title, [prevLoadingState, nextLoadingState]]) => {
           return (
-            (event instanceof Scroll || event instanceof NavigationEnd) &&
+            event instanceof Scroll &&
             !!title &&
             /**
              * If application loading state goes
