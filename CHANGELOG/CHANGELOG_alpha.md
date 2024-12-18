@@ -1,3 +1,11 @@
+# [2.17.0-alpha.17](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.16...v2.17.0-alpha.17) (2024-12-18)
+
+
+### Bug Fixes
+
+* could not configure document category in file questions ([0d47814](https://github.com/ReliefApplications/ems-frontend/commit/0d4781420a19bf5cdb143de11409fd60254aca5f))
+* some logs would be captured multiple times ([100c94b](https://github.com/ReliefApplications/ems-frontend/commit/100c94b20ab4809014af3fe44b999eab0953fb97))
+
 # [2.17.0-alpha.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.15...v2.17.0-alpha.16) (2024-12-17)
 
 
