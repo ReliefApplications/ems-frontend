@@ -221,6 +221,15 @@ export class PreviewTemplateModalComponent {
     const send_Payload: any = this.emailService.datasetsForm.getRawValue();
     if (this.emailService.isQuickAction) {
       if (send_Payload?.datasets.length > 0) {
+        previewData.emailDistributionList.to.inputEmails =
+          this.emailService.emailDistributionList.to;
+
+        previewData.emailDistributionList.cc.inputEmails =
+          this.emailService.emailDistributionList.cc;
+
+        previewData.emailDistributionList.bcc.inputEmails =
+          this.emailService.emailDistributionList.bcc;
+
         send_Payload.datasets[0].name = 'Block 1';
         send_Payload.datasets[0].query.filter = previewData?.buildQueryPayload
           ?.filter
