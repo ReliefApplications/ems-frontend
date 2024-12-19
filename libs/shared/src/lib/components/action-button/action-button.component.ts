@@ -290,7 +290,8 @@ export class ActionButtonComponent
               distributionList,
               emailData,
               resourceMetaData,
-              this.actionButton.sendNotification?.fields
+              this.actionButton.sendNotification?.fields,
+              null
             );
           }
         }

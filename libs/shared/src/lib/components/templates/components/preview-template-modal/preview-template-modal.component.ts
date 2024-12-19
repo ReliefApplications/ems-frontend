@@ -84,7 +84,7 @@ export class PreviewTemplateModalComponent {
     this.emailService.datasetsForm.get('emailDistributionList')?.reset();
     this.emailService.quickEmailDLQuery = [];
     this.currentStep = !this.data.distributionListInfo ? 0 : 1;
-    this.convertData(this.data.selectedRowsFromGrid, this.data.resourceData);
+    this.convertData();
     this.emailService.emailDistributionList = this.data.distributionListInfo;
 
     this.emailService.datasetsForm.patchValue({
@@ -167,65 +167,15 @@ export class PreviewTemplateModalComponent {
   /**
    * Used to convert the data format suitable for the preview
    *
-   * @param rowData The input array of data items to be converted.
-   * @param metaData The metadata of the data items.
    */
-  convertData(rowData: any, metaData: any) {
-    // Initialize the datasetFields and dataList arrays
-    const datasetFields: any = [];
-    const datasetFieldsObj: any = [];
-    const dataList: any = [];
-
-    // Iterate over each item in the input data
-    rowData?.forEach((item: any) => {
-      // Get the text object from the dataItem
-      const text: any = {};
-      // Extract the keys from the object to populate datasetFields
-      this.data.selectedLayoutFields.forEach((key: any) => {
-        if (!datasetFieldsObj?.map((x: any) => x.name).includes(key.name)) {
-          datasetFieldsObj.push(key);
-        }
-      });
-
-      this.data.selectedLayoutFields
-        ?.map((x: any) => x.name)
-        .forEach((key: any) => {
-          if (!datasetFields.includes(key)) {
-            datasetFields.push(key);
-          }
-        });
-
-      datasetFieldsObj
-        ?.map((x: any) => x.name)
-        ?.forEach((keyNm: any, index: number) => {
-          text[keyNm] = this.getValueOfKey(item, keyNm, metaData);
-          const navigateSettings = this.data.navigateSettings;
-          if (
-            navigateSettings &&
-            navigateSettings.field &&
-            !datasetFields.includes(navigateSettings.field) &&
-            index === datasetFieldsObj.length - 1
-          ) {
-            text[navigateSettings.field] = this.getValueOfKey(
-              item,
-              navigateSettings.field,
-              metaData
-            );
-          }
-        });
-      // Add the text object to the dataList array
-      dataList.push(text);
-    });
-
+  convertData() {
     this.emailService.allPreviewData = [
       {
-        datasetFields,
-        datasetFieldsObj,
-        dataList,
         tabIndex: 0,
         tabName: 'Block 1',
         navigateToPage: !isNil(this.data.navigateSettings),
         navigateSettings: this.data.navigateSettings,
+        buildQueryPayload: this.data.buildQueryPayload,
       },
     ];
   }
@@ -267,29 +217,35 @@ export class PreviewTemplateModalComponent {
    * To send the email from the GRID view
    */
   send() {
-    const dlData: any = this.emailService.emailDistributionList;
     const previewData: any = this.emailService.allPreviewData?.[0];
-    const emailData: any = {
-      emailDistributionList: {
-        to: dlData.to,
-        cc: dlData.cc,
-        bcc: dlData.bcc,
-        name: dlData.name,
-      },
-      emailLayout: this.emailService.datasetsForm.value.emailLayout,
-      tableInfo: [
-        {
-          columns: previewData?.datasetFieldsObj,
-          records: previewData?.dataList,
-          index: previewData?.tabIndex,
-          name: previewData?.tabName,
-          navigateToPage: previewData?.navigateToPage,
-          navigateSettings: previewData?.navigateSettings,
-        },
-      ],
-    };
+    const send_Payload: any = this.emailService.datasetsForm.getRawValue();
+    if (this.emailService.isQuickAction) {
+      if (send_Payload?.datasets.length > 0) {
+        previewData.emailDistributionList.to.inputEmails =
+          this.emailService.emailDistributionList.to;
+
+        previewData.emailDistributionList.cc.inputEmails =
+          this.emailService.emailDistributionList.cc;
+
+        previewData.emailDistributionList.bcc.inputEmails =
+          this.emailService.emailDistributionList.bcc;
+
+        send_Payload.datasets[0].name = 'Block 1';
+        send_Payload.datasets[0].query.filter = previewData?.buildQueryPayload
+          ?.filter
+          ? previewData.buildQueryPayload.filter
+          : send_Payload.datasets[0].query.filter;
+        send_Payload.datasets[0].query.name =
+          previewData?.buildQueryPayload?.queryName || '';
+        send_Payload.datasets[0].query.fields =
+          previewData?.buildQueryPayload?.fields || [];
+        send_Payload.datasets[0].resource =
+          previewData?.buildQueryPayload?.resource || [];
+        send_Payload.emailDistributionList = previewData.emailDistributionList;
+      }
+    }
     this.dialogRef.close();
-    this.emailService.sendQuickEmail(emailData).subscribe(() => {
+    this.emailService.sendQuickEmail(send_Payload).subscribe(() => {
       this.onClose();
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.emailSent', {
