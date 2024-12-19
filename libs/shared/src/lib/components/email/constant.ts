@@ -12,3 +12,15 @@ export const emailRegex =
  * Array for missing types
  */
 export const missingTypesArray = ['matrix', 'matrixdynamic', 'matrixdropdown'];
+
+/**
+ * commonServiceFields DL
+ */
+export const commonServiceFields = [
+  { key: 'Application', label: 'Application' },
+  { key: 'PermissionAccessType', label: 'Access' },
+  { key: 'SystemRole', label: 'ApplicationRoleName' },
+  { key: 'SystemPosition', label: 'ApplicationPositionName' },
+  { key: 'Country', label: 'Country' },
+  { key: 'Region', label: 'Region' },
+];

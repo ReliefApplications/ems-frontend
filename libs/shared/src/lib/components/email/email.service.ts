@@ -40,6 +40,7 @@ import { ResourceQueryResponse } from '../../models/resource.model';
 import { prettifyLabel } from '../../utils/prettify';
 import { addNewField } from '../query-builder/query-builder-forms';
 import get from 'lodash/get';
+import { commonServiceFields } from './constant';
 
 /**
  * Interface for InValidDataSets
@@ -210,6 +211,10 @@ export class EmailService {
   public filterCCEmails: any = [];
   /** For storing emails For BCC from service response (In select with Filter option) */
   public filterBCCEmails: any = [];
+  /** Declare Dropdown commonServiceFields fields property */
+  public commonServiceFields = commonServiceFields;
+  /** Declare Dropdown Userfields property */
+  userTableFields: string[] = [];
 
   /**
    * Generates new dataset group.
@@ -249,9 +254,15 @@ export class EmailService {
    */
   async checkToValid() {
     if (
-      this.toDLHasFilter &&
-      (this.emailDistributionList?.to?.query?.resource ||
-        this.datasetsForm?.getRawValue()?.emailDistributionList?.to?.resource)
+      (this.toDLHasFilter &&
+        (this.emailDistributionList?.to?.query?.resource ||
+          this.datasetsForm?.getRawValue()?.emailDistributionList?.to
+            ?.resource)) ||
+      this.datasetsForm
+        ?.getRawValue()
+        ?.emailDistributionList?.to?.commonServiceFilter?.filter?.filters?.filter(
+          (x: any) => x?.field && x?.value
+        )?.length > 0
     ) {
       const query = {
         emailDistributionList: cloneDeep(this.emailDistributionList),
@@ -375,7 +386,9 @@ export class EmailService {
           (this.datasetsForm.getRawValue().emailDistributionList?.to
             ?.resource ||
             this.datasetsForm.getRawValue().emailDistributionList?.to
-              ?.reference)
+              ?.reference ||
+            this.datasetsForm.getRawValue().emailDistributionList?.to
+              ?.commonServiceFilter?.filter?.filters?.length > 0)
         ) {
           const query = {
             emailDistributionList: cloneDeep(
@@ -383,6 +396,20 @@ export class EmailService {
             ),
           };
 
+          query.emailDistributionList.to.commonServiceFilter =
+            this.setCommonServicePayload(
+              query.emailDistributionList.to.commonServiceFilter.filter
+            )?.commonServiceFilter;
+
+          query.emailDistributionList.cc.commonServiceFilter =
+            this.setCommonServicePayload(
+              query.emailDistributionList.cc.commonServiceFilter.filter
+            )?.commonServiceFilter;
+
+          query.emailDistributionList.bcc.commonServiceFilter =
+            this.setCommonServicePayload(
+              query.emailDistributionList.bcc.commonServiceFilter.filter
+            )?.commonServiceFilter;
           firstValueFrom(
             this.http.post(
               `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
@@ -586,6 +613,7 @@ export class EmailService {
       query: this.createQuerygroup(),
       inputEmails: this.formBuilder.array([]),
       reference: null,
+      commonServiceFilter: this.createQuerygroup(),
     });
   }
 
@@ -689,6 +717,39 @@ export class EmailService {
             (field: any) => this.createFieldsFormGroup(field) // Using the utility function
           )
         ),
+      })
+    );
+
+    dlGroup.setControl(
+      'commonServiceFilter',
+      this.formBuilder.group({
+        name: new FormControl(null), // Query name
+        filter: this.formBuilder.group({
+          logic: new FormControl(emailDL?.commonServiceFilter?.logic || null), // Filter logic
+          filters: this.formBuilder.array(
+            emailDL?.commonServiceFilter?.filters?.map((filter: any) => {
+              const options: any = this.formBuilder.array([
+                this.formBuilder.group({
+                  text: filter?.value,
+                  value: filter?.value,
+                }),
+              ]);
+              return this.formBuilder.group({
+                ...filter,
+                inTheLast: this.formBuilder.group({
+                  number: new FormControl(filter?.inTheLast?.number || null),
+                  unit: new FormControl(filter?.inTheLast?.unit || null),
+                }),
+                options: options,
+              });
+            }) || []
+          ),
+        }),
+        // fields: this.formBuilder?.array(
+        //   emailDL?.commonServiceFilter?.fields?.map(
+        //     (field: any) => this.createFieldsFormGroup(field) // Using the utility function
+        //   )
+        // ),
       })
     );
 
@@ -1759,16 +1820,18 @@ export class EmailService {
    *
    * validating next button by taking 3 conditions in consideration DL name mandatory, check duplicate name validation and requires To email
    */
-  validateNextButton() {
+  async validateNextButton() {
     const isDLNameExists = this.distributionListName?.trim()?.length > 0;
     const isDlDuplicateNm = this.isDLNameDuplicate;
     let isExistsToEmail = false;
     // if (!isExistsToEmail) {
-    this.isToValidCheck();
+    await this.isToValidCheck();
     isExistsToEmail = this.isToValid;
     // }
     //Check To is valid or not (Including filter Emails or Manually added emails)
     // const valid = await this.checkToValid();
+
+    // Check Common service Validation
 
     if (isDLNameExists && !isDlDuplicateNm && isExistsToEmail) {
       this.disableSaveAndProceed.next(false);
@@ -1783,20 +1846,55 @@ export class EmailService {
 
   /**
    * checking that To tab is valid or not
+   *
    */
   async isToValidCheck() {
     if (
       this.datasetsForm.getRawValue().emailDistributionList?.to?.inputEmails
-        .length >= 0 ||
+        .length > 0 ||
       (this.datasetsForm.getRawValue().emailDistributionList?.to?.resource !==
         '' &&
         this.datasetsForm.getRawValue().emailDistributionList?.to?.resource !==
           null &&
-        this.filterToEmails?.length >= 0)
+        this.filterToEmails?.length >= 0) ||
+      this.datasetsForm
+        ?.getRawValue()
+        ?.emailDistributionList?.to?.commonServiceFilter?.filter?.filters?.filter(
+          (x: any) => x?.field && x?.value
+        )?.length > 0
     ) {
       this.isToValid = true;
     } else {
       this.isToValid = await this.checkToValid();
     }
+  }
+
+  /**
+   * Set common service payload
+   *
+   * @param dlCommonQuery commonquery form group
+   * @returns payload data
+   */
+  setCommonServicePayload(dlCommonQuery: any) {
+    const commonServiceData: any = {};
+    commonServiceData['commonServiceFilter'] = {};
+    if (dlCommonQuery) {
+      commonServiceData['commonServiceFilter']['logic'] = dlCommonQuery?.logic;
+      commonServiceData['commonServiceFilter']['filters'] = [];
+      dlCommonQuery?.filters?.forEach((ele: any) => {
+        const preDefineFields = this.commonServiceFields.filter(
+          (x: any) => x.key === ele?.field
+        );
+        ele.field =
+          preDefineFields?.length > 0 ? preDefineFields[0]['label'] : ele.field;
+        const newObj = {
+          field: ele.field,
+          operator: ele.operator,
+          value: ele.value,
+        };
+        commonServiceData['commonServiceFilter']['filters'].push(newObj);
+      });
+    }
+    return commonServiceData;
   }
 }
