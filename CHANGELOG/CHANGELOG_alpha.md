@@ -1,3 +1,10 @@
+# [2.17.0-alpha.18](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.17...v2.17.0-alpha.18) (2024-12-20)
+
+
+### Bug Fixes
+
+* regression on resource filters & roles auto assignment rules due to inTheLast ([c026a63](https://github.com/ReliefApplications/ems-frontend/commit/c026a6351b73d94772b974ee8d2a3f433dcb4f09))
+
 # [2.17.0-alpha.17](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.16...v2.17.0-alpha.17) (2024-12-18)
 
 
