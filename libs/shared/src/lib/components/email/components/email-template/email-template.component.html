@@ -49,7 +49,8 @@
     <!-- Distribution list -->
     <div
       class="w-1/2"
-      *ngIf="activeSegmentIndex >= 1"
+      *ngIf="
+        activeSegmentIndex === 1"
       [formGroup]="distributionList"
     >
       <label
@@ -109,53 +110,232 @@
 
   <!-- Combination ( selected from resource ) -->
   <div class="overflow-hidden mt-2" *ngIf="activeSegmentIndex === 2">
-    <div class="flex flex-col">
-      <div class="w-1/2">
-        <h3>
-          {{ 'components.email.distributionList.emailInput' | translate }}
-        </h3>
-        <div uiFormFieldDirective>
-          <label>{{
-            'components.select.distribution.email' | translate
-          }}</label>
-          <ui-icon
-            icon="info_outline"
-            class="cursor-help"
-            variant="grey"
-            [uiTooltip]="
-              'components.select.distribution.emailError' | translate
-            "
-            uiSuffix
-          ></ui-icon>
-          <input
-            #filterInput
-            (keyup.enter)="addEmailManually(filterInput)"
-            (change)="validateEmail(filterInput)"
-            autocomplete="off"
-            aria-autocomplete="none"
-            type="text"
-            [placeholder]="'components.select.distribution.email' | translate"
-          />
-        </div>
-        <!-- Chip List-->
-        <ng-container
-          class="mb-2"
-          *ngTemplateOutlet="
-            emailChipListTemplate;
-            context: {
-              $implicit: selectedEmails,
-              activeSegmentIndex: activeSegmentIndex,
-              isCombination: true
-            }
-          "
-        >
-        </ng-container>
-      </div>
-      <div>
-        <h3>{{ 'components.queryBuilder.filter.title' | translate }}</h3>
-        <ng-container *ngTemplateOutlet="datasetPreviewTmpl"></ng-container>
-      </div>
-    </div>
+    <cdk-accordion class="combo-accordion">
+      <ng-container *ngFor="let item of accordionItems;let i = index">
+        <!-- Email input -->
+        <cdk-accordion-item   
+        (opened)="expandedIndex = 0" 
+        *ngIf="i === 0"
+        #accordionItem="cdkAccordionItem"
+        class="combo-accordion-item"
+        role="button"
+        tabindex="0"
+        [attr.id]="'accordion-header-' + i"
+        [attr.aria-expanded]="accordionItem.expanded"
+        [attr.aria-controls]="'accordion-body-' + i">
+          <div class="combo-accordion-item-header" (click)="accordionItem.toggle()">
+            {{ item }}
+            <span class="combo-accordion-item-description">
+              <ng-container *ngIf="!accordionItem.expanded">
+                <ui-button
+                variant="danger"
+                class="-top-[70px] -right-[14px] btnClose"
+                [isIcon]="true"
+                size="small"
+                [icon]="'keyboard_arrow_downc'"
+                >
+                </ui-button>
+              </ng-container>
+              <ng-container *ngIf="accordionItem.expanded">
+                <ui-button
+                variant="danger"
+                class="-top-[70px] -right-[14px] btnClose"
+                [isIcon]="true"
+                size="small"
+                [icon]="'keyboard_arrow_up'"
+                >
+                </ui-button>
+              </ng-container>
+            </span>
+          </div>
+          <div
+            class="combo-accordion-item-body"
+            role="region"
+            [style.display]="accordionItem.expanded ? '' : 'none'"
+            [attr.id]="'accordion-body-' + i"
+            [attr.aria-labelledby]="'accordion-header-' + i">
+            
+            <div class="w-1/2">
+              <div uiFormFieldDirective>
+                <label>{{
+                  'components.select.distribution.email' | translate
+                }}</label>
+                <ui-icon
+                  icon="info_outline"
+                  class="cursor-help"
+                  variant="grey"
+                  [uiTooltip]="
+                    'components.select.distribution.emailError' | translate
+                  "
+                  uiSuffix
+                ></ui-icon>
+                <input
+                  #filterInput
+                  (keyup.enter)="addEmailManually(filterInput)"
+                  (change)="validateEmail(filterInput)"
+                  autocomplete="off"
+                  aria-autocomplete="none"
+                  type="text"
+                  [placeholder]="'components.select.distribution.email' | translate"
+                />
+              </div>
+              <!-- Chip List-->
+              <ng-container
+                class="mb-2"
+                *ngTemplateOutlet="
+                  emailChipListTemplate;
+                  context: {
+                    $implicit: selectedEmails,
+                    activeSegmentIndex: activeSegmentIndex,
+                    isCombination: true
+                  }
+                "
+              >
+              </ng-container>
+            </div>
+
+          </div>
+        </cdk-accordion-item>
+
+        <!-- Select with Filter Option -->
+        <cdk-accordion-item
+        (opened)="expandedIndex = 1"
+        *ngIf="i === 1"
+        #accordionItem="cdkAccordionItem"
+        class="combo-accordion-item"
+        role="button"
+        tabindex="1"
+        [attr.id]="'accordion-header-' + i"
+        [attr.aria-expanded]="accordionItem.expanded"
+        [attr.aria-controls]="'accordion-body-' + i">
+          <div class="combo-accordion-item-header" (click)="accordionItem.toggle()">
+            {{ item }}
+            <span class="combo-accordion-item-description">
+              <ng-container *ngIf="!accordionItem.expanded">
+                <ui-button
+                variant="danger"
+                class="-top-[70px] -right-[14px] btnClose"
+                [isIcon]="true"
+                size="small"
+                [icon]="'keyboard_arrow_downc'"
+                >
+                </ui-button>
+              </ng-container>
+              <ng-container *ngIf="accordionItem.expanded">
+                <ui-button
+                variant="danger"
+                class="-top-[70px] -right-[14px] btnClose"
+                [isIcon]="true"
+                size="small"
+                [icon]="'keyboard_arrow_up'"
+                >
+                </ui-button>
+              </ng-container>
+            </span>
+          </div>
+          <div
+            class="combo-accordion-item-body"
+            role="region"
+            [style.display]="accordionItem.expanded ? '' : 'none'"
+            [attr.id]="'accordion-body-' + i"
+            [attr.aria-labelledby]="'accordion-header-' + i">
+            <!-- Resource selection -->
+            <div
+              class="w-1/4"
+              [formGroup]="distributionList"
+            >
+              <label
+                htmlFor="select__data__set"
+                class="block text-sm font-medium leading-6 text-gray-900"
+              >
+                {{ 'components.queryBuilder.dataset.title' | translate }}*        
+              </label>
+              
+              <!-- Resource selection -->
+              <div
+                uiFormFieldDirective>
+                <shared-resource-select
+                  formControlName="resource"
+                  [selectedElements]="[resource]"
+                ></shared-resource-select>
+                <ui-button
+                  *ngIf="distributionList?.value.resource"
+                  uiSuffix
+                  size="small"
+                  [isIcon]="true"
+                  (click)="clearFormField('resource', $event)"
+                  icon="close"
+                  variant="danger"
+                  [uiTooltip]="'common.remove' | translate"
+                ></ui-button>
+              </div>
+            </div>
+            <div>
+              <ng-container *ngTemplateOutlet="datasetPreviewTmpl"></ng-container>
+            </div>
+            
+          </div>
+        </cdk-accordion-item>
+
+        <!-- select from common service  -->
+        <cdk-accordion-item
+        (opened)="expandedIndex = 2"
+        *ngIf="i === 2"
+        #accordionItem="cdkAccordionItem"
+        class="combo-accordion-item"
+        role="button"
+        tabindex="2"
+        [attr.id]="'accordion-header-' + i"
+        [attr.aria-expanded]="accordionItem.expanded"
+        [attr.aria-controls]="'accordion-body-' + i">
+          <div class="combo-accordion-item-header" (click)="accordionItem.toggle()">
+            {{ item }}
+            <span class="combo-accordion-item-description">
+              <ng-container *ngIf="!accordionItem.expanded">
+                <ui-button
+                variant="danger"
+                class="-top-[70px] -right-[14px] btnClose"
+                [isIcon]="true"
+                size="small"
+                [icon]="'keyboard_arrow_downc'"
+                >
+                </ui-button>
+              </ng-container>
+              <ng-container *ngIf="accordionItem.expanded">
+                <ui-button
+                variant="danger"
+                class="-top-[70px] -right-[14px] btnClose"
+                [isIcon]="true"
+                size="small"
+                [icon]="'keyboard_arrow_up'"
+                >
+                </ui-button>
+              </ng-container>
+            </span>
+          </div>
+          <div
+            class="combo-accordion-item-body"
+            role="region"
+            [style.display]="accordionItem.expanded ? '' : 'none'"
+            [attr.id]="'accordion-body-' + i"
+            [attr.aria-labelledby]="'accordion-header-' + i">
+            
+            <div class="overflow-hidden mt-2">
+              <ng-container *ngTemplateOutlet="commonServicePreviewTmpl"></ng-container>
+            </div>
+
+          </div>
+        </cdk-accordion-item>
+      </ng-container>
+    </cdk-accordion>
+
+  </div>
+
+  
+  <!-- Select from Common Servcies -->
+  <div class="overflow-hidden mt-2" *ngIf="activeSegmentIndex === 3">
+    <!-- <h3>{{ 'components.queryBuilder.filter.title' | translate }}</h3> -->
+    <ng-container *ngTemplateOutlet="commonServicePreviewTmpl"></ng-container>
   </div>
 </div>
 
@@ -260,11 +440,11 @@
       [selectedIndex]="currentTabIndex"
       (selectedIndexChange)="onTabSelect($event, true)"
       #datasetPreview
-      *ngIf="resource?.fields?.length && availableFields.length > 0"
+      *ngIf="(resource?.fields?.length && availableFields.length > 0) || activeSegmentIndex === 3 || (activeSegmentIndex === 2 && expandedIndex === 2)"
     >
       <div class="mt-4 flex flex-row">
         <!-- Fields Tab -->
-        <ui-tab [title]="'Fields'" [selected]="true">
+        <ui-tab [title]="'Fields'" [selected]="true" *ngIf="(expandedIndex < 2) && activeSegmentIndex !== 3">
           <ng-container ngProjectAs="label">
             {{ 'components.queryBuilder.fields.title' | translate }}
           </ng-container>
@@ -314,14 +494,14 @@
           </ng-container>
           <ng-template uiTabContent>
             <ng-container
-              *ngIf="resource?.fields?.length || availableFields.length > 0"
-            >
+              *ngIf="resource?.fields?.length || availableFields.length > 0 || commonServiceFields.length > 0">
               <div class="flex gap-4 mt-2">
                 <div class="mt-2 w-full">
                   <!-- NESTED FILTER GROUP -->
                   <shared-tab-filter
                     [form]="$any(dlQuery.get('filter'))"
                     [query]="dlQuery.getRawValue()"
+                    [referenceFields]="[]"
                   >
                   </shared-tab-filter>
                 </div>
@@ -394,6 +574,114 @@
             <ng-container *ngIf="!isPreviewEmail">
               <ui-alert class="mb-4" variant="warning">
                 {{ 'components.distributionLists.warning.noData' | translate }}
+              </ui-alert>
+            </ng-container>
+          </ng-template>
+        </ui-tab>
+      </div>
+    </ui-tabs>
+  </div>
+</ng-template>
+
+<!-- Distribution List Filter-Fields-Preview Query -->
+<ng-template #commonServicePreviewTmpl>
+  <div [formGroup]="dlCommonQuery">
+    <ui-tabs
+      [selectedIndex]="currentTabIndex"
+      (selectedIndexChange)="onTabSelect($event, true)"
+      #datasetPreview
+      *ngIf="(resource?.fields?.length || availableFields.length > 0) || activeSegmentIndex === 3 || (activeSegmentIndex === 2 && expandedIndex === 2)"
+    >
+      <div class="mt-4 flex flex-row">
+        
+        <!-- Filter Tab -->
+        <ui-tab
+          [title]="'components.queryBuilder.filter.title' | translate">
+          <ng-container ngProjectAs="label">
+            {{ 'components.queryBuilder.filter.title' | translate }}
+          </ng-container>
+          <ng-template uiTabContent>
+            <ng-container
+              *ngIf="commonServiceFields.length > 0">
+              <div class="flex gap-4 mt-2">
+                <div class="mt-2 w-full">
+                  <!-- NESTED FILTER GROUP -->
+                  <shared-tab-filter
+                    [form]="$any(dlCommonQuery.get('filter'))"
+                    [query]="dlCommonQuery.getRawValue()"
+                    [referenceFields]="commonServiceFields"
+                  >
+                  </shared-tab-filter>
+                </div>
+              </div>
+              <ui-button
+                class="float-right mt-8"
+                category="secondary"
+                variant="primary"
+                (click)="getCommonServiceDataSet()"
+              >
+                {{ 'common.preview' | translate }}
+              </ui-button>
+            </ng-container>
+          </ng-template>
+        </ui-tab>
+
+        <!-- Preview Tab -->
+        <ui-tab
+          [title]="'Preview'"
+        >
+          <ng-container ngProjectAs="label">
+            {{ 'common.preview' | translate }}
+          </ng-container>
+          <ng-template uiTabContent>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="showDLPreview"
+            ></ng-container>
+            <ng-container *ngIf="previewDLEmails?.length > 0">
+              <div
+                class="mb-4"
+                *ngIf="previewDLEmails && previewDLEmails?.length > 0"
+              >
+                <!-- <h2>{{ 'components.select.distribution.to' | translate }}:</h2> -->
+                <ul class="list-none space-y-1">
+                  <div uiChipList>
+                    <ng-container
+                      *ngFor="let email of previewDLEmails; let i = index"
+                    >
+                      <ui-chip
+                        *ngIf="i < 6 || isExpandedPreview"
+                        variant="primary"
+                        class="w-full flex-row flex-wrap justify-between mr-1"
+                        >{{ email }}</ui-chip
+                      >
+                    </ng-container>
+                  </div>
+                  <ui-button
+                    *ngIf="previewDLEmails.length > 6 && !isExpandedPreview"
+                    class="inline-block"
+                    (click)="toggleExpandPreview()"
+                    >{{
+                      'components.email.preview.more'
+                        | translate : { length: previewDLEmails.length - 6 }
+                    }}</ui-button
+                  >
+                  <ui-button
+                    *ngIf="isExpandedPreview"
+                    class="inline-block"
+                    (click)="toggleExpandPreview()"
+                    >{{
+                      'components.email.preview.less' | translate
+                    }}</ui-button
+                  >
+                </ul>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="!isPreviewEmail">
+              <ui-alert class="mb-4" variant="warning">
+                {{
+                  'components.distributionLists.warning.noData' | translate
+                }}
               </ui-alert>
             </ng-container>
           </ng-template>

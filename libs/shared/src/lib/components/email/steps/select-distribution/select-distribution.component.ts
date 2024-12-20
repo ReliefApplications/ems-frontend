@@ -148,6 +148,34 @@ export class SelectDistributionComponent
     ) {
       this.emailDistributionList.get('bcc.query.filter.logic').setValue('and');
     }
+
+    if (
+      !this.emailDistributionList
+        ?.get('to.commonServiceFilter.filter.logic')
+        ?.value?.trim()
+    ) {
+      this.emailDistributionList
+        .get('to.commonServiceFilter.filter.logic')
+        .setValue('and');
+    }
+    if (
+      !this.emailDistributionList
+        ?.get('cc.commonServiceFilter.filter.logic')
+        ?.value?.trim()
+    ) {
+      this.emailDistributionList
+        .get('cc.commonServiceFilter.filter.logic')
+        .setValue('and');
+    }
+    if (
+      !this.emailDistributionList
+        ?.get('bcc.commonServiceFilter.filter.logic')
+        ?.value?.trim()
+    ) {
+      this.emailDistributionList
+        .get('bcc.commonServiceFilter.filter.logic')
+        .setValue('and');
+    }
     if (!this.isAllSeparate()) {
       this.validateDistributionList();
     }
@@ -355,6 +383,7 @@ export class SelectDistributionComponent
       .get('name')
       ?.patchValue(emailDL.get('name')?.value);
     this.emailDistributionList.get('id')?.patchValue(emailDL.get('id')?.value);
+
     this.clearAndPatch(
       this.emailDistributionList.get('to') as FormGroup,
       emailDL.get('to') as FormGroup
@@ -417,9 +446,37 @@ export class SelectDistributionComponent
     // Clear 'resource'
     targetGroup.get('resource')?.patchValue(sourceGroup.get('resource')?.value);
 
+    // Filter Query
+    this.set_Filter_CS_Value(
+      targetGroup.get('query') as FormGroup,
+      sourceGroup.get('query') as FormGroup
+    );
+
+    // Common service filter query
+    this.set_Filter_CS_Value(
+      targetGroup.get('commonServiceFilter') as FormGroup,
+      sourceGroup.get('commonServiceFilter') as FormGroup
+    );
+
+    // Clear 'inputEmails'
+    const targetInputEmails = targetGroup.get('inputEmails') as FormArray;
+    const sourceInputEmails = sourceGroup.get('inputEmails') as FormArray;
+    targetInputEmails.clear();
+    sourceInputEmails.controls.forEach((control) => {
+      targetInputEmails.push(this.formBuilder.control(control.value));
+    });
+  }
+
+  /**
+   * Set Filter anfd common service
+   *
+   * @param targetQuery target query
+   * @param sourceQuery source query
+   */
+  set_Filter_CS_Value(targetQuery: FormGroup, sourceQuery: FormGroup) {
     // Clear 'query'
-    const targetQuery = targetGroup.get('query') as FormGroup;
-    const sourceQuery = sourceGroup.get('query') as FormGroup;
+    // const targetQuery = targetGroup.get('query') as FormGroup;
+    // const sourceQuery = sourceGroup.get('query') as FormGroup;
     targetQuery.reset();
 
     // Set 'name'
@@ -433,14 +490,14 @@ export class SelectDistributionComponent
     const sourceFiltersArray = sourceFilter.get('filters') as FormArray;
     targetFiltersArray.clear();
     sourceFiltersArray.controls.forEach((control) => {
-      targetFiltersArray.push(this.formBuilder.control(control.value));
+      targetFiltersArray.push(control);
     });
 
     // Set 'fields'
     const targetFieldsArray = targetQuery.get('fields') as FormArray;
     const sourceFieldsArray = sourceQuery.get('fields') as FormArray;
-    targetFieldsArray.clear();
-    sourceFieldsArray.controls.forEach((control) => {
+    targetFieldsArray?.clear();
+    sourceFieldsArray?.controls?.forEach((control) => {
       if (
         control?.value?.kind === 'LIST' ||
         control?.value?.kind === 'OBJECT'
@@ -466,14 +523,6 @@ export class SelectDistributionComponent
           })
         );
       }
-    });
-
-    // Clear 'inputEmails'
-    const targetInputEmails = targetGroup.get('inputEmails') as FormArray;
-    const sourceInputEmails = sourceGroup.get('inputEmails') as FormArray;
-    targetInputEmails.clear();
-    sourceInputEmails.controls.forEach((control) => {
-      targetInputEmails.push(this.formBuilder.control(control.value));
     });
   }
 

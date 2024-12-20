@@ -229,6 +229,14 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param isNew value of if the user is creating a new email notification.
    */
   toggle(isNew?: boolean) {
+    this.emailService.tabs = [
+      {
+        title: `Block 1`,
+        content: `Block 1 Content`,
+        active: true,
+        index: 0,
+      },
+    ];
     this.emailService.isLinear = true;
     this.emailService.stepperStep = 0;
     this.emailService.disableSaveAndProceed.next(false);
@@ -577,9 +585,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         index: 0,
       },
     ];
-    this.emailService.title.next(
-      this.emailService.tabs.filter((x: any) => x.active)?.[0].title
-    );
     const dataArray: FormArray | any = new FormArray([]);
     for (let index = 0; index < emailData.datasets.length; index++) {
       if (
@@ -612,6 +617,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       ele.active = false;
     });
     this.emailService.tabs[this.emailService.tabs.length - 1].active = true;
+
+    //Need this Set title after Setting atbs and active tab
+    this.emailService.title.next(
+      this.emailService.tabs.filter((x: any) => x?.active)?.[0]?.title
+    );
 
     const subscriptionListArray = this.formBuilder.array([]);
     if (emailData.subscriptionList.length > 0) {

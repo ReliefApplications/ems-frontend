@@ -48,6 +48,7 @@ import { EmptyModule } from '../ui/empty/empty.module';
 import { FilterModule } from '../filter/filter.module';
 import { ResourceSelectComponent } from '../controls/public-api';
 import { CustomTemplateComponent } from './components/custom-templates/custom-template.component';
+import { CdkAccordionModule } from '@angular/cdk/accordion';
 
 /**
  * Email module.
@@ -105,6 +106,7 @@ import { CustomTemplateComponent } from './components/custom-templates/custom-te
     ErrorMessageModule,
     FilterModule,
     ResourceSelectComponent,
+    CdkAccordionModule,
   ],
   schemas: [NO_ERRORS_SCHEMA],
   exports: [CustomTemplateComponent, PreviewComponent, LayoutComponent],
