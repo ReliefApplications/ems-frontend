@@ -247,14 +247,20 @@ export class PreviewComponent
     const objData: any = cloneDeep(this.query);
     //Updating payload
 
-    objData.emailDistributionList.to.inputEmails =
-      this.emailService.emailDistributionList.to;
-    objData.emailDistributionList.cc.inputEmails =
-      this.emailService.emailDistributionList.cc;
-    objData.emailDistributionList.bcc.inputEmails =
-      this.emailService.emailDistributionList.bcc;
+    if (this.emailService.emailDistributionList.to instanceof Array) {
+      objData.emailDistributionList.to.inputEmails =
+        this.emailService.emailDistributionList.to;
+    }
+    if (this.emailService.emailDistributionList.cc instanceof Array) {
+      objData.emailDistributionList.cc.inputEmails =
+        this.emailService.emailDistributionList.cc;
+    }
+    if (this.emailService.emailDistributionList.bcc instanceof Array) {
+      objData.emailDistributionList.bcc.inputEmails =
+        this.emailService.emailDistributionList.bcc;
+    }
 
-    if (objData.emailDistributionList?.bcc?.commonServiceFilter?.filter) {
+    if (objData.emailDistributionList?.to?.commonServiceFilter?.filter) {
       objData.emailDistributionList.to.commonServiceFilter =
         this.emailService.setCommonServicePayload(
           objData.emailDistributionList?.to?.commonServiceFilter?.filter
