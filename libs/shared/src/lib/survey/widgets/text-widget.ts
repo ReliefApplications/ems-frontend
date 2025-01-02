@@ -333,7 +333,7 @@ export const init = (
 
           (question.survey as SurveyModel).onValueChanged.add(
             (__: any, opt: any) => {
-              if (opt.question.name === question.name) {
+              if (opt.question?.name === question.name) {
                 if (
                   opt.question.value &&
                   !(

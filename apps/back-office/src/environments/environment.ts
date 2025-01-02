@@ -1,5 +1,5 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
-import { theme } from '../themes/default/default.local';
+import { theme } from '../themes/oort/oort.prod';
 import { sharedEnvironment } from './environment.shared';
 import { Environment } from './environment.type';
 
@@ -7,7 +7,7 @@ import { Environment } from './environment.type';
  * Authentication configuration
  */
 const authConfig: AuthConfig = {
-  issuer: 'https://id-dev.oortcloud.tech/realms/oort',
+  issuer: 'https://id-mab.unesco.oortcloud.tech/realms/oort',
   redirectUri: 'http://localhost:4200/',
   postLogoutRedirectUri: 'http://localhost:4200/auth/',
   clientId: 'oort-client',
@@ -21,15 +21,13 @@ const authConfig: AuthConfig = {
  */
 export const environment: Environment = {
   ...sharedEnvironment,
-  production: false,
+  production: true,
   apiUrl: 'http://localhost:3000',
   subscriptionApiUrl: 'ws://localhost:3000',
   frontOfficeUri: 'http://localhost:4200/',
   backOfficeUri: 'http://localhost:4200/',
   availableLanguages: ['en', 'fr', 'test'],
   authConfig,
-  esriApiKey:
-    'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg',
   theme,
   availableWidgets: [
     'form',
@@ -38,8 +36,6 @@ export const environment: Environment = {
     'bar-chart',
     'column-chart',
     'pie-chart',
-    'polar-chart',
-    'radar-chart',
     'grid',
     'text',
     'map',

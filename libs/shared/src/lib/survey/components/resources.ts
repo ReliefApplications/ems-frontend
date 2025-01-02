@@ -768,7 +768,7 @@ export const init = (
       );
 
       let gridComponentRef!: ComponentRef<CoreGridComponent>;
-      if (parentElement) {
+      if (parentElement && question.displayAsGrid) {
         gridComponentRef = buildGridDisplay(question, parentElement);
       }
 
