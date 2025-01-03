@@ -26,6 +26,11 @@ export const createFilterGroup = (filter: any) => {
       field: filter.field,
       operator: filter.operator || 'eq',
       value: Array.isArray(filter.value) ? [filter.value] : filter.value,
+      // todo: fix this regression introduced by changes done in emails
+      inTheLast: formBuilder.group({
+        number: [1],
+        unit: ['days'],
+      }),
     });
     if (
       FILTER_OPERATORS.find((op) => op.value === filter.operator)?.disableValue

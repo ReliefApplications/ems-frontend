@@ -54,9 +54,8 @@ export class LoggerService {
     ])
       .pipe(
         filter(([event, title, [prevLoadingState, nextLoadingState]]) => {
-          const isEnd = event instanceof Scroll;
           return (
-            isEnd &&
+            event instanceof Scroll &&
             !!title &&
             /**
              * If application loading state goes
@@ -70,24 +69,22 @@ export class LoggerService {
         })
       )
       .subscribe(([event, title]) => {
-        if (event instanceof Scroll) {
-          event = event instanceof Scroll ? event.routerEvent : event;
-          const application = this.applicationService.application.getValue();
-          this.track({
-            eventType: 'navigation',
-            metadata: {
-              url: (event as any).urlAfterRedirects,
-              ...(!isNil(application?.id) && {
-                applicationId: application?.id,
-              }),
-              ...(!isNil(application?.name) && {
-                applicationName: application?.name,
-              }),
-              title,
-              module: this.environment.module,
-            },
-          });
-        }
+        event = event instanceof Scroll ? event.routerEvent : event;
+        const application = this.applicationService.application.getValue();
+        this.track({
+          eventType: 'navigation',
+          metadata: {
+            url: (event as any).urlAfterRedirects,
+            ...(!isNil(application?.id) && {
+              applicationId: application?.id,
+            }),
+            ...(!isNil(application?.name) && {
+              applicationName: application?.name,
+            }),
+            title,
+            module: this.environment.module,
+          },
+        });
       });
   }
 

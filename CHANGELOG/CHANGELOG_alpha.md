@@ -1,3 +1,32 @@
+# [2.17.0-alpha.19](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.18...v2.17.0-alpha.19) (2025-01-03)
+
+
+### Bug Fixes
+
+* grid widgets actions incorrectly reordered ([#2740](https://github.com/ReliefApplications/ems-frontend/issues/2740)) ([f95a149](https://github.com/ReliefApplications/ems-frontend/commit/f95a149426b52714efca805f1e5f8bebd96dc4c3)), closes [AB#108137](https://github.com/AB/issues/108137)
+
+# [2.17.0-alpha.18](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.17...v2.17.0-alpha.18) (2024-12-20)
+
+
+### Bug Fixes
+
+* regression on resource filters & roles auto assignment rules due to inTheLast ([c026a63](https://github.com/ReliefApplications/ems-frontend/commit/c026a6351b73d94772b974ee8d2a3f433dcb4f09))
+
+# [2.17.0-alpha.17](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.16...v2.17.0-alpha.17) (2024-12-18)
+
+
+### Bug Fixes
+
+* could not configure document category in file questions ([0d47814](https://github.com/ReliefApplications/ems-frontend/commit/0d4781420a19bf5cdb143de11409fd60254aca5f))
+* some logs would be captured multiple times ([100c94b](https://github.com/ReliefApplications/ems-frontend/commit/100c94b20ab4809014af3fe44b999eab0953fb97))
+
+# [2.17.0-alpha.16](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.15...v2.17.0-alpha.16) (2024-12-17)
+
+
+### Bug Fixes
+
+* user activity not tracked when system used as web element ([#2738](https://github.com/ReliefApplications/ems-frontend/issues/2738)) ([ad9c047](https://github.com/ReliefApplications/ems-frontend/commit/ad9c0474683406f63dd6ba9313ce535558f47461))
+
 # [2.17.0-alpha.15](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.14...v2.17.0-alpha.15) (2024-12-13)
 
 
