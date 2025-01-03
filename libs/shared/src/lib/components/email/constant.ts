@@ -14,7 +14,7 @@ export const emailRegex =
 export const missingTypesArray = ['matrix', 'matrixdynamic', 'matrixdropdown'];
 
 /**
- * commonServiceFields DL
+ * Common Services default available fields
  */
 export const commonServiceFields = [
   { key: 'Application', label: 'Application' },
