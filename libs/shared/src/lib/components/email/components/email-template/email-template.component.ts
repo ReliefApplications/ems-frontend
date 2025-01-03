@@ -199,7 +199,7 @@ export class EmailTemplateComponent
   /** DL preview emails  */
   previewDLEmails: any = [];
   /** accordion items */
-  public accordionItems: any = [
+  public accordionItems = [
     RecipientsType.manual,
     RecipientsType.resource,
     RecipientsType.commonServices,

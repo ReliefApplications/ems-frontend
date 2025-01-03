@@ -112,60 +112,20 @@
   </div>
 
   <!-- Combination ( selected from resource ) -->
-  <div class="overflow-hidden mt-2" *ngIf="activeSegmentIndex === 2">
-    <cdk-accordion class="combo-accordion">
+  <div class="overflow-hidden mt-4" *ngIf="activeSegmentIndex === 2">
+    <cdk-accordion>
       <ng-container *ngFor="let item of accordionItems; let i = index">
-        <!-- Email input -->
-        <cdk-accordion-item
-          (opened)="expandedIndex = 0"
-          *ngIf="i === 0"
-          #accordionItem="cdkAccordionItem"
-          class="combo-accordion-item"
-          role="button"
-          tabindex="0"
-          [attr.id]="'accordion-header-' + i"
-          [attr.aria-expanded]="accordionItem.expanded"
-          [attr.aria-controls]="'accordion-body-' + i"
-        >
-          <div
-            class="combo-accordion-item-header"
-            (click)="accordionItem.toggle()"
-          >
+        <!-- Generic expansion panel -->
+        <ui-expansion-panel [index]="i">
+          <ng-container ngProjectAs="title">
             {{
               'common.notifications.email.recipients.' + item
                 | translate
                 | titlecase
             }}
-            <span class="combo-accordion-item-description">
-              <ng-container *ngIf="!accordionItem.expanded">
-                <ui-button
-                  variant="danger"
-                  class="-top-[70px] -right-[14px] btnClose"
-                  [isIcon]="true"
-                  size="small"
-                  [icon]="'keyboard_arrow_downc'"
-                >
-                </ui-button>
-              </ng-container>
-              <ng-container *ngIf="accordionItem.expanded">
-                <ui-button
-                  variant="danger"
-                  class="-top-[70px] -right-[14px] btnClose"
-                  [isIcon]="true"
-                  size="small"
-                  [icon]="'keyboard_arrow_up'"
-                >
-                </ui-button>
-              </ng-container>
-            </span>
-          </div>
-          <div
-            class="combo-accordion-item-body"
-            role="region"
-            [style.display]="accordionItem.expanded ? '' : 'none'"
-            [attr.id]="'accordion-body-' + i"
-            [attr.aria-labelledby]="'accordion-header-' + i"
-          >
+          </ng-container>
+          <!-- Manual input -->
+          <ng-container *ngIf="item === 'manual'">
             <div class="w-1/2">
               <div uiFormFieldDirective>
                 <label>{{
@@ -206,61 +166,9 @@
               >
               </ng-container>
             </div>
-          </div>
-        </cdk-accordion-item>
-
-        <!-- Select with Filter Option -->
-        <cdk-accordion-item
-          (opened)="expandedIndex = 1"
-          *ngIf="i === 1"
-          #accordionItem="cdkAccordionItem"
-          class="combo-accordion-item"
-          role="button"
-          tabindex="1"
-          [attr.id]="'accordion-header-' + i"
-          [attr.aria-expanded]="accordionItem.expanded"
-          [attr.aria-controls]="'accordion-body-' + i"
-        >
-          <div
-            class="combo-accordion-item-header"
-            (click)="accordionItem.toggle()"
-          >
-            {{
-              'common.notifications.email.recipients.' + item
-                | translate
-                | titlecase
-            }}
-            <span class="combo-accordion-item-description">
-              <ng-container *ngIf="!accordionItem.expanded">
-                <ui-button
-                  variant="danger"
-                  class="-top-[70px] -right-[14px] btnClose"
-                  [isIcon]="true"
-                  size="small"
-                  [icon]="'keyboard_arrow_downc'"
-                >
-                </ui-button>
-              </ng-container>
-              <ng-container *ngIf="accordionItem.expanded">
-                <ui-button
-                  variant="danger"
-                  class="-top-[70px] -right-[14px] btnClose"
-                  [isIcon]="true"
-                  size="small"
-                  [icon]="'keyboard_arrow_up'"
-                >
-                </ui-button>
-              </ng-container>
-            </span>
-          </div>
-          <div
-            class="combo-accordion-item-body"
-            role="region"
-            [style.display]="accordionItem.expanded ? '' : 'none'"
-            [attr.id]="'accordion-body-' + i"
-            [attr.aria-labelledby]="'accordion-header-' + i"
-          >
-            <!-- Resource selection -->
+          </ng-container>
+          <!-- Resource filtering -->
+          <ng-container *ngIf="item === 'resource'">
             <div class="w-1/4" [formGroup]="distributionList">
               <label
                 htmlFor="select__data__set"
@@ -292,72 +200,21 @@
                 *ngTemplateOutlet="datasetPreviewTmpl"
               ></ng-container>
             </div>
-          </div>
-        </cdk-accordion-item>
-
-        <!-- select from common service  -->
-        <cdk-accordion-item
-          (opened)="expandedIndex = 2"
-          *ngIf="i === 2"
-          #accordionItem="cdkAccordionItem"
-          class="combo-accordion-item"
-          role="button"
-          tabindex="2"
-          [attr.id]="'accordion-header-' + i"
-          [attr.aria-expanded]="accordionItem.expanded"
-          [attr.aria-controls]="'accordion-body-' + i"
-        >
-          <div
-            class="combo-accordion-item-header"
-            (click)="accordionItem.toggle()"
-          >
-            {{
-              'common.notifications.email.recipients.' + item
-                | translate
-                | titlecase
-            }}
-            <span class="combo-accordion-item-description">
-              <ng-container *ngIf="!accordionItem.expanded">
-                <ui-button
-                  variant="danger"
-                  class="-top-[70px] -right-[14px] btnClose"
-                  [isIcon]="true"
-                  size="small"
-                  [icon]="'keyboard_arrow_downc'"
-                >
-                </ui-button>
-              </ng-container>
-              <ng-container *ngIf="accordionItem.expanded">
-                <ui-button
-                  variant="danger"
-                  class="-top-[70px] -right-[14px] btnClose"
-                  [isIcon]="true"
-                  size="small"
-                  [icon]="'keyboard_arrow_up'"
-                >
-                </ui-button>
-              </ng-container>
-            </span>
-          </div>
-          <div
-            class="combo-accordion-item-body"
-            role="region"
-            [style.display]="accordionItem.expanded ? '' : 'none'"
-            [attr.id]="'accordion-body-' + i"
-            [attr.aria-labelledby]="'accordion-header-' + i"
-          >
+          </ng-container>
+          <!-- Common services filtering -->
+          <ng-container *ngIf="item === 'commonServices'">
             <div class="overflow-hidden mt-2">
               <ng-container
                 *ngTemplateOutlet="commonServicePreviewTmpl"
               ></ng-container>
             </div>
-          </div>
-        </cdk-accordion-item>
+          </ng-container>
+        </ui-expansion-panel>
       </ng-container>
     </cdk-accordion>
   </div>
 
-  <!-- Select from Common Servcies -->
+  <!-- Select from Common Services -->
   <div class="overflow-hidden mt-2" *ngIf="activeSegmentIndex === 3">
     <!-- <h3>{{ 'components.queryBuilder.filter.title' | translate }}</h3> -->
     <ng-container *ngTemplateOutlet="commonServicePreviewTmpl"></ng-container>
