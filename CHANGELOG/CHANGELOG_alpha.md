@@ -1,3 +1,10 @@
+# [2.17.0-alpha.19](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.18...v2.17.0-alpha.19) (2025-01-03)
+
+
+### Bug Fixes
+
+* grid widgets actions incorrectly reordered ([#2740](https://github.com/ReliefApplications/ems-frontend/issues/2740)) ([f95a149](https://github.com/ReliefApplications/ems-frontend/commit/f95a149426b52714efca805f1e5f8bebd96dc4c3)), closes [AB#108137](https://github.com/AB/issues/108137)
+
 # [2.17.0-alpha.18](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.17...v2.17.0-alpha.18) (2024-12-20)
 
 
