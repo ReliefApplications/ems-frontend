@@ -17,7 +17,8 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 import { EmailService } from '../../email/email.service';
 import convertToMinutes from '../../../utils/convert-to-minutes';
-import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
+import { CommonServicesService } from '../../../services/common-services/common-services.service';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Composite filter row.
@@ -91,11 +92,11 @@ export class FilterRowComponent
    * Composite filter row.
    *
    * @param emailService email notifications helper functions
-   * @param referenceDataService reference Data service
+   * @param cs Common Services connection
    */
   constructor(
     public emailService: EmailService,
-    private referenceDataService: ReferenceDataService
+    private cs: CommonServicesService
   ) {
     super();
   }
@@ -111,7 +112,7 @@ export class FilterRowComponent
           selectedField?.[0]?.isCommonService &&
           selectedField?.[0]?.editor === 'select'
         ) {
-          await this.getFilterdata(value, selectedField[0]);
+          await this.getCsData(value, selectedField[0]);
         }
         if (this.form?.get('operator')?.value) {
           this.setField(value);
@@ -179,7 +180,7 @@ export class FilterRowComponent
 
     //Calling the common service function for getting value for Select type of data
     if (this.field?.isCommonService) {
-      this.field.options = this.getFilterdata(this.field?.name, this.field);
+      this.field.options = this.getCsData(this.field?.name, this.field);
     }
   }
 
@@ -375,23 +376,28 @@ export class FilterRowComponent
   }
 
   /**
-   * Get common service filter data
+   * Get CS Data
    *
    * @param key selected key name
    * @param selectedField selected field object
    */
-  async getFilterdata(key: string, selectedField: any) {
+  async getCsData(key: string, selectedField: any) {
     if (
       this.emailService?.userTableFields?.filter((x) => x === key).length === 0
     ) {
       this.loading = true;
-      const data = await this.referenceDataService.getFilterData(key);
-      this.loading = false;
-      selectedField.options =
-        data?.value.map((x: any) => ({
-          text: x?.Name,
-          value: x?.Name,
-        })) || [];
+      await firstValueFrom(this.cs.restRequest(key))
+        .then((data) => {
+          this.loading = false;
+          selectedField.options =
+            data?.value.map((x: any) => ({
+              text: x?.Name,
+              value: x?.Name,
+            })) || [];
+        })
+        .catch((error) => {
+          console.error(`Error while fetching reference data ${key}:`, error);
+        });
     }
   }
 }

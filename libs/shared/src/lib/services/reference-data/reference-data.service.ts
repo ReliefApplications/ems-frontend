@@ -23,7 +23,6 @@ import { cloneDeep, get, set } from 'lodash';
 import { procPipelineStep } from '../../utils/reference-data/filter.util';
 import { DataTransformer } from '../../utils/reference-data/data-transformer.util';
 import { isEmpty } from 'lodash';
-import { GET_CS_USER_FIELDS } from '../../components/email/graphql/queries';
 
 /** Local storage key for last request */
 const LAST_REQUEST_KEY = '_last_request';
@@ -552,72 +551,5 @@ export class ReferenceDataService {
     } catch (err) {
       console.error(err);
     }
-  }
-
-  /**
-   * Get common service filter data
-   *
-   * @param key selected field key
-   * @returns options for the selected fields
-   */
-  public async getFilterData(key: string): Promise<any> {
-    //  todo Modify API environment changes dynamically
-
-    // Construct the dynamic URL based on the key
-    const requestUrl =
-      this.apiProxy.baseUrl + `CS_DEV/referenceData/items/${key}`;
-
-    try {
-      // Make the GET request using the common method
-      const data = await this.apiProxy.promisedRequestWithHeaders(requestUrl);
-
-      if (
-        key === 'Users' &&
-        data?.value &&
-        Array.isArray(data.value) &&
-        data.value.length > 0
-      ) {
-        const keys = Object.keys(data.value[0]);
-        return keys;
-      }
-
-      return data || [];
-    } catch (error) {
-      console.error(`Error fetching data for key ${key}:`, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Fetches the fields of the CSuser type
-   *
-   * @returns user fields
-   */
-  public async getCSUserFields(): Promise<any> {
-    //  todo Modify API environment changes dynamically
-
-    // MAJOR TODO: Change this to get the URL from RestService instead of hardcoding!!!
-    // Construct the dynamic URL based on the key
-    const url = this.apiProxy.baseUrl + 'CS_DEV/graphql/';
-    const body = {
-      query: GET_CS_USER_FIELDS,
-    };
-    const options = {
-      headers: new HttpHeaders(),
-    };
-
-    return this.apiProxy
-      .buildPostRequest(url, body, options)
-      .then((response: any) => {
-        const userFields = response?.data?.__type.fields
-          .filter((data: any) => data.type.kind === 'SCALAR')
-          .map((data: any) => data.name);
-        // console.log('User Fields:', userFields);
-        return userFields;
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        throw error;
-      });
   }
 }

@@ -322,6 +322,12 @@
 				},
 				"processing": "******",
 				"ready": "******",
+				"recipients": {
+					"combination": "******",
+					"commonServices": "******",
+					"manual": "******",
+					"resource": "******"
+				},
 				"sent": "******",
 				"style": {
 					"background": "******",

@@ -322,6 +322,12 @@
 				},
 				"processing": "Envoi en cours...",
 				"ready": "E-mail prêt",
+				"recipients": {
+					"combination": "Utiliser une combinaison",
+					"commonServices": "Sélectionner depuis Common Services",
+					"manual": "Ajouter manuellement",
+					"resource": "Utiliser un filtre"
+				},
 				"sent": "E-mail envoyé",
 				"style": {
 					"background": "Background Color",
