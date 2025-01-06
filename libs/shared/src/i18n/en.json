@@ -322,6 +322,12 @@
 				},
 				"processing": "Sending email...",
 				"ready": "Email ready",
+				"recipients": {
+					"combination": "Use Combination",
+					"commonServices": "Select from Common Services",
+					"manual": "Add Manually",
+					"resource": "Select With Filter"
+				},
 				"sent": "Email sent",
 				"style": {
 					"background": "Background color",
@@ -629,12 +635,22 @@
 		},
 		"application": {
 			"activities": {
-				"createdAt": "Timestamp",
+				"columns": {
+					"createdAt": "Timestamp",
+					"hits": "Hits",
+					"page": "Page",
+					"user": "User"
+				},
 				"downloadXlsx": "Download XLSX",
 				"empty": "No activities available",
 				"few": "Activities",
 				"metadata": "Metadata",
 				"one": "Activity",
+				"tabs": {
+					"groupByPage": "Group by page",
+					"groupByUser": "Group by user",
+					"recentHits": "Recent hits"
+				},
 				"title": "Page",
 				"url": "URL",
 				"userId": "User ID"

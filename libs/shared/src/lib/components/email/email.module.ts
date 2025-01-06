@@ -20,6 +20,7 @@ import {
   FixedWrapperModule,
   ChipModule,
   ErrorMessageModule,
+  ExpansionPanelModule,
 } from '@oort-front/ui';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
@@ -48,7 +49,6 @@ import { EmptyModule } from '../ui/empty/empty.module';
 import { FilterModule } from '../filter/filter.module';
 import { ResourceSelectComponent } from '../controls/public-api';
 import { CustomTemplateComponent } from './components/custom-templates/custom-template.component';
-import { CdkAccordionModule } from '@angular/cdk/accordion';
 
 /**
  * Email module.
@@ -106,7 +106,7 @@ import { CdkAccordionModule } from '@angular/cdk/accordion';
     ErrorMessageModule,
     FilterModule,
     ResourceSelectComponent,
-    CdkAccordionModule,
+    ExpansionPanelModule,
   ],
   schemas: [NO_ERRORS_SCHEMA],
   exports: [CustomTemplateComponent, PreviewComponent, LayoutComponent],

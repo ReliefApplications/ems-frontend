@@ -211,9 +211,9 @@ export class EmailService {
   public filterCCEmails: any = [];
   /** For storing emails For BCC from service response (In select with Filter option) */
   public filterBCCEmails: any = [];
-  /** Declare Dropdown commonServiceFields fields property */
+  /** Default common services available fields */
   public commonServiceFields = commonServiceFields;
-  /** Declare Dropdown Userfields property */
+  /** User table fields */
   userTableFields: string[] = [];
 
   /**

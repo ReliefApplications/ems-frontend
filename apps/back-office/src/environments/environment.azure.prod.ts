@@ -51,5 +51,5 @@ export const environment: Environment = {
   user: {
     attributes: ['country', 'region', 'location', 'department'],
   },
-  csApiUrl: 'https://hems-dev.who.int/csapi/api',
+  csApiUrl: 'https://hems.who.int/csapi/api',
 };

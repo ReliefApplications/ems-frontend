@@ -17,7 +17,6 @@ import {
 } from '@angular/forms';
 import { EmailService } from '../../email.service';
 import { FILTER_OPERATORS } from '../../filter/filter.const';
-import { Apollo } from 'apollo-angular';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { emailRegex } from '../../constant';
@@ -26,11 +25,19 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import { firstValueFrom, takeUntil } from 'rxjs';
 import { cloneDeep } from 'lodash';
 import { QueryBuilderService } from './../../../../services/query-builder/query-builder.service';
-import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
 import { prettifyLabel } from '../../../../../lib/utils/prettify';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ReferenceDataService } from '../../../../services/reference-data/reference-data.service';
+import { CommonServicesService } from '../../../../services/common-services/common-services.service';
+import { GET_CS_USER_FIELDS } from '../../graphql/queries';
+
+/** Recipients type */
+enum RecipientsType {
+  manual = 'manual',
+  resource = 'resource',
+  commonServices = 'commonServices',
+  combination = 'combination',
+}
 
 /**
  * Email template to create distribution list
@@ -147,10 +154,10 @@ export class EmailTemplateComponent
   public distributionListValid!: boolean;
   /** List of display types */
   public segmentList = [
-    'Add Manually',
-    'Select With Filter',
-    'Use Combination',
-    'Select from Common Servcies',
+    RecipientsType.manual,
+    RecipientsType.resource,
+    RecipientsType.combination,
+    RecipientsType.commonServices,
   ];
   /** Time units for filtering. */
   public timeUnits = [
@@ -192,10 +199,10 @@ export class EmailTemplateComponent
   /** DL preview emails  */
   previewDLEmails: any = [];
   /** accordion items */
-  public accordionItems: any = [
-    'Add Manually',
-    'Select With Filter',
-    'Select from Common Servcies',
+  public accordionItems = [
+    RecipientsType.manual,
+    RecipientsType.resource,
+    RecipientsType.commonServices,
   ];
   /** accordion expandedIndex */
   expandedIndex = 0;
@@ -209,28 +216,24 @@ export class EmailTemplateComponent
    *
    * @param fb Angular form builder
    * @param emailService helper functions
-   * @param apollo Apollo server
    * @param snackbar snackbar helper function
    * @param translate i18 translate service
    * @param queryBuilder Shared query builder service
    * @param formBuilder Angular form builder
-   * @param http Http client
    * @param restService rest service
    * @param sanitizer html sanitizer
-   * @param referenceData refernce data detail
+   * @param cs Common Services connection
    */
   constructor(
     private fb: FormBuilder,
     public emailService: EmailService,
-    private apollo: Apollo,
     public snackbar: SnackbarService,
     public translate: TranslateService,
     public queryBuilder: QueryBuilderService,
     public formBuilder: FormBuilder,
-    private http: HttpClient,
     private restService: RestService,
     private sanitizer: DomSanitizer,
-    private referenceData: ReferenceDataService
+    private cs: CommonServicesService
   ) {
     super();
   }
@@ -288,7 +291,6 @@ export class EmailTemplateComponent
       .get('filter.filters')
       .valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value: any) => {
-        console.log(value);
         if (
           this.activeSegmentIndex === 3 &&
           value?.filter((x: any) => x?.field && x?.value)?.length > 0
@@ -304,7 +306,7 @@ export class EmailTemplateComponent
 
     const hasSelectedEmails = this.selectedEmails.value.length > 0;
     const hasFields = this.dlQuery.get('fields')?.value.length > 0;
-    const hasCommonservice = this.dlCommonQuery.get('filter.filters')
+    const useCommonServices = this.dlCommonQuery.get('filter.filters')
       ?.value?.[0]?.field
       ? true
       : false;
@@ -312,19 +314,19 @@ export class EmailTemplateComponent
 
     if (
       (hasSelectedEmails && hasFields) ||
-      (hasSelectedEmails && hasCommonservice) ||
-      (hasFields && hasCommonservice)
+      (hasSelectedEmails && useCommonServices) ||
+      (hasFields && useCommonServices)
     ) {
-      this.updateSegmentOptions('Use Combination');
-    } else if (hasCommonservice && !hasSelectedEmails) {
-      this.updateSegmentOptions('Select from Common Servcies');
+      this.updateSegmentOptions(RecipientsType.combination);
+    } else if (useCommonServices && !hasSelectedEmails) {
+      this.updateSegmentOptions(RecipientsType.commonServices);
     } else if (
       !hasSelectedEmails &&
       (hasFields || this.selectedResourceId !== '')
     ) {
-      this.updateSegmentOptions('Select With Filter');
+      this.updateSegmentOptions(RecipientsType.resource);
     } else {
-      this.updateSegmentOptions('Add Manually');
+      this.updateSegmentOptions(RecipientsType.manual);
     }
   }
 
@@ -332,16 +334,18 @@ export class EmailTemplateComponent
    * Get the user table fields from common service
    */
   public async getUserTableFields() {
-    try {
-      // Fetch the user table fields from the getFilterData
-      const data = await this.referenceData.getCSUserFields();
-      if (data) {
-        this.emailService.userTableFields = data;
+    // Fetch the user table fields from the getFilterData
+    await firstValueFrom(this.cs.graphqlRequest(GET_CS_USER_FIELDS))
+      .then(({ data }) => {
+        const fields = data.__type.fields
+          .filter((f: any) => f.type.kind === 'SCALAR')
+          .map((f: any) => f.name);
+        this.emailService.userTableFields = fields;
         this.loading = false;
-      }
-    } catch (error) {
-      console.error('Error fetching user table fields:', error);
-    }
+      })
+      .catch((error) => {
+        console.error('Error, fail to fetch user table fields: ', error);
+      });
   }
 
   /**
@@ -405,7 +409,7 @@ export class EmailTemplateComponent
       } else {
         this.emailService.isToValid = false;
       }
-    } else if (value === 'Select from Common Servcies') {
+    } else if (value === 'Select from Common Services') {
       // Clear the input emails form array
       while (this.selectedEmails.length !== 0) {
         this.selectedEmails.removeAt(0);
@@ -582,11 +586,8 @@ export class EmailTemplateComponent
         this.previewHTML = '';
         this.previewDLEmails = [];
 
-        this.http
-          .post(
-            `${this.restService.apiUrl}/notification/preview-dataset`,
-            objPreview
-          )
+        this.restService
+          .post('/notification/preview-dataset', objPreview)
           .subscribe(
             async (response: any) => {
               this.showPreview = true;
@@ -822,8 +823,8 @@ export class EmailTemplateComponent
       };
 
       firstValueFrom(
-        this.http.post(
-          `${this.restService.apiUrl}/notification/preview-resource-emails/`,
+        this.restService.post(
+          '/notification/preview-resource-emails/',
           objPreview
         )
       )
@@ -1153,11 +1154,8 @@ export class EmailTemplateComponent
       this.dlCommonQuery?.getRawValue()?.filter
     );
     this.loading = true;
-    this.http
-      .post(
-        `${this.restService.apiUrl}/notification/preview-common-services-users`,
-        commonServiceData
-      )
+    this.restService
+      .post('/notification/preview-common-services-users', commonServiceData)
       .subscribe(
         async (response: any) => {
           this.showPreview = true;

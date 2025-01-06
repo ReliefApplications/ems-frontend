@@ -31,7 +31,11 @@ export const CS_DOCUMENTS_PROPERTIES = [
   },
   { text: 'Country', value: 'countrys', bodyKey: 'Country' },
   { text: 'Disease Condition', value: 'diseaseconds', bodyKey: 'DiseaseCond' },
-  // { text: 'Document Category', value: 'documentcategorys', bodyKey: '' },
+  {
+    text: 'Document Category',
+    value: 'documentcategorys',
+    bodyKey: 'DocumentCategory',
+  },
   { text: 'Document Type', value: 'documenttypes', bodyKey: 'DocumentType' },
   { text: 'Hazard', value: 'hazards', bodyKey: 'Hazard' },
   {
