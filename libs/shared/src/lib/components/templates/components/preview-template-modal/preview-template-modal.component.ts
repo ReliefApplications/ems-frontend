@@ -84,7 +84,15 @@ export class PreviewTemplateModalComponent {
     this.emailService.datasetsForm.get('emailDistributionList')?.reset();
     this.emailService.quickEmailDLQuery = [];
     this.currentStep = !this.data.distributionListInfo ? 0 : 1;
-    this.convertData();
+    this.emailService.allPreviewData = [
+      {
+        tabIndex: 0,
+        tabName: 'Block 1',
+        navigateToPage: !isNil(this.data.navigateSettings),
+        navigateSettings: this.data.navigateSettings,
+        buildQueryPayload: this.data.buildQueryPayload,
+      },
+    ];
     this.emailService.emailDistributionList = this.data.distributionListInfo;
 
     this.emailService.datasetsForm.patchValue({
@@ -162,22 +170,6 @@ export class PreviewTemplateModalComponent {
       this.data.distributionListInfo.bcc?.inputEmails,
       distributionListForm?.get('bcc')?.get('inputEmails') as FormArray
     );
-  }
-
-  /**
-   * Used to convert the data format suitable for the preview
-   *
-   */
-  convertData() {
-    this.emailService.allPreviewData = [
-      {
-        tabIndex: 0,
-        tabName: 'Block 1',
-        navigateToPage: !isNil(this.data.navigateSettings),
-        navigateSettings: this.data.navigateSettings,
-        buildQueryPayload: this.data.buildQueryPayload,
-      },
-    ];
   }
 
   /**
