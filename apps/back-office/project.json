@@ -318,7 +318,7 @@
           "baseHref": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/styles/src/lib/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/unesco-mab"]
           }
         },
         "oort-expertisefr": {
@@ -371,7 +371,7 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/styles/src/lib/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/unesco-mab"]
           }
         }
       },
@@ -388,6 +388,9 @@
         },
         "development": {
           "browserTarget": "back-office:build:development"
+        },
+        "oort-mab": {
+          "browserTarget": "back-office:build:oort-mab"
         }
       },
       "defaultConfiguration": "development"
