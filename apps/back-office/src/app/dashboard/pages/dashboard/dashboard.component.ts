@@ -239,7 +239,8 @@ export class DashboardComponent
           id,
           contextEl: contextID ?? null,
           createIfMissing:
-            this.route.snapshot.queryParamMap.get('createIfMissing') || false,
+            this.route.snapshot.queryParamMap.get('createIfMissing') ===
+              'true' || false,
         },
       })
     )
