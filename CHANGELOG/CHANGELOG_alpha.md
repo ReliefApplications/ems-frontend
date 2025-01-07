@@ -1,3 +1,10 @@
+# [2.17.0-alpha.20](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.19...v2.17.0-alpha.20) (2025-01-07)
+
+
+### Bug Fixes
+
+* add snackbar when role edition fails ([#2742](https://github.com/ReliefApplications/ems-frontend/issues/2742)) ([cd3a4c4](https://github.com/ReliefApplications/ems-frontend/commit/cd3a4c493d7005bb1466a6d15d2bbf5732fdb89d)), closes [AB#108245](https://github.com/AB/issues/108245)
+
 # [2.17.0-alpha.19](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.18...v2.17.0-alpha.19) (2025-01-03)
 
 
