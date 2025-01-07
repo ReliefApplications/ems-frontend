@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Run linting before pushing
+npm run lint
+
+# Exit with an error code if linting fails
+if [ $? -ne 0 ]; then
+  echo "Linting failed. Aborting push."
+  exit 1
+fi
