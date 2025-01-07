@@ -386,6 +386,7 @@ export class FormBuilderService {
       if (survey.initialConfigurationDone) {
         return;
       }
+      survey.checkErrorsMode = 'onComplete';
       survey.initialConfigurationDone = true;
 
       // Open survey on a specific page (openOnQuestionValuesPage has priority over openOnPage)
@@ -426,7 +427,6 @@ export class FormBuilderService {
       this.onDownloadFile(options)
     );
     survey.onCurrentPageChanged.add((survey: SurveyModel) => {
-      survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
       if (survey.currentPageNo !== selectedPageIndex.getValue()) {
         selectedPageIndex.next(survey.currentPageNo);
       }

@@ -340,9 +340,6 @@ export class FormHelpersService {
     // Get all nested records to add
     questions.concat(nestedQuestions).forEach((question) => {
       const type = question.getType();
-      if (!['resource', 'resources'].includes(type) || !question.draftData) {
-        return;
-      }
 
       // If this question uses valueExpression, we should not upload the records
       // in it, as they will be uploaded by the fields they get their values from
@@ -357,6 +354,11 @@ export class FormHelpersService {
           }
         });
       }
+
+      if (!['resource', 'resources'].includes(type) || !question.draftData) {
+        return;
+      }
+
       const isResource = type === 'resource';
 
       const toAdd = (isResource ? [question.value] : question.value).filter(
@@ -411,6 +413,9 @@ export class FormHelpersService {
                 element.question.newCreatedRecords[draftIndex] = newId;
               }
             }
+            updateResourcesExpressions.forEach((replacement) =>
+              replacement(draftId, newId)
+            );
             // delete old temporary/draft record and data
             this.deleteRecordDraft(draftId);
             delete element.question.draftData[draftId];
