@@ -402,7 +402,7 @@ export class PreviewComponent
       }
       // this.query.emailLayout.subject =
       //   this.emailService.allLayoutdata?.txtSubject;
-      this.http.post(this.previewUrl, this.query).subscribe(
+      this.http.post(this.previewUrl, objData).subscribe(
         (response: any) => {
           this.emailService.finalEmailPreview = response;
           this.updateEmailContainer(); // Update the email container with the new preview

@@ -83,6 +83,9 @@ export class ActionButtonComponent
     return true;
   }
 
+  /** Build Query Payload  */
+  buildQueryPayload: any = null;
+
   /**
    * Dashboard action button component.
    *
@@ -285,13 +288,19 @@ export class ActionButtonComponent
                 emailData = data[key].edges;
               });
             }
+            this.buildQueryPayload.fields =
+              this.actionButton.sendNotification?.fields || [];
+            this.buildQueryPayload.queryName = resource.queryName || '';
+            this.buildQueryPayload.resource = resource?.id || '';
+
             this.sharedEmailService.previewCustomTemplate(
               template,
               distributionList,
               emailData,
               resourceMetaData,
               this.actionButton.sendNotification?.fields,
-              null
+              null,
+              this.buildQueryPayload
             );
           }
         }
@@ -490,6 +499,7 @@ export class ActionButtonComponent
    * @returns Records graphql query.
    */
   private buildEmailQuery(selectedIds: string[], settingsData: any) {
+    settingsData.query.fields = this.actionButton.sendNotification?.fields;
     const builtQuery = this.queryBuilder.buildQuery(settingsData);
     if (!builtQuery) {
       this.snackBar.openSnackBar(
@@ -500,26 +510,27 @@ export class ActionButtonComponent
       );
       return;
     } else {
+      this.buildQueryPayload = {
+        first: selectedIds.length,
+        filter: {
+          logic: 'and',
+          filters: [
+            {
+              operator: 'eq',
+              field: 'ids',
+              value: selectedIds,
+            },
+          ],
+        },
+        sortField: undefined,
+        sortOrder: undefined,
+        styles: [],
+        at: undefined,
+        skip: 0,
+      };
       return this.apollo.query({
         query: builtQuery,
-        variables: {
-          first: selectedIds.length,
-          filter: {
-            logic: 'and',
-            filters: [
-              {
-                operator: 'eq',
-                field: 'ids',
-                value: selectedIds,
-              },
-            ],
-          },
-          sortField: undefined,
-          sortOrder: undefined,
-          styles: [],
-          at: undefined,
-          skip: 0,
-        },
+        variables: this.buildQueryPayload,
         fetchPolicy: 'no-cache',
       });
     }
