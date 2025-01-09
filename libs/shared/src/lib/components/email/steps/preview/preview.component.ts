@@ -247,17 +247,32 @@ export class PreviewComponent
     const objData: any = cloneDeep(this.query);
     //Updating payload
 
-    if (this.emailService.emailDistributionList.to instanceof Array) {
-      objData.emailDistributionList.to.inputEmails =
-        this.emailService.emailDistributionList.to;
+    if (
+      this.emailService.emailDistributionList.to instanceof Array &&
+      objData.emailDistributionList.to
+    ) {
+      objData.emailDistributionList.to.inputEmails = this.emailService
+        ?.emailDistributionList?.to?.inputEmails
+        ? this.emailService.emailDistributionList.to.inputEmails
+        : this.emailService.emailDistributionList.to;
     }
-    if (this.emailService.emailDistributionList.cc instanceof Array) {
-      objData.emailDistributionList.cc.inputEmails =
-        this.emailService.emailDistributionList.cc;
+    if (
+      this.emailService.emailDistributionList.cc instanceof Array &&
+      objData.emailDistributionList.cc
+    ) {
+      objData.emailDistributionList.cc.inputEmails = this.emailService
+        ?.emailDistributionList?.cc?.inputEmails
+        ? this.emailService.emailDistributionList.cc.inputEmails
+        : this.emailService.emailDistributionList.cc;
     }
-    if (this.emailService.emailDistributionList.bcc instanceof Array) {
-      objData.emailDistributionList.bcc.inputEmails =
-        this.emailService.emailDistributionList.bcc;
+    if (
+      this.emailService.emailDistributionList.bcc instanceof Array &&
+      objData.emailDistributionList.bcc
+    ) {
+      objData.emailDistributionList.bcc.inputEmails = this.emailService
+        ?.emailDistributionList?.bcc?.inputEmails
+        ? this.emailService.emailDistributionList.bcc.inputEmails
+        : this.emailService.emailDistributionList.bcc;
     }
 
     if (objData.emailDistributionList?.to?.commonServiceFilter?.filter) {
