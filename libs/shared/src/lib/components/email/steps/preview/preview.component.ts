@@ -379,8 +379,19 @@ export class PreviewComponent
           this.query.datasets[0].resource =
             previewData?.buildQueryPayload?.resource || [];
         }
-        this.emailService.allPreviewData[0]['emailDistributionList'] =
-          this.query?.emailDistributionList;
+        if (this.emailService.allPreviewData.length > 0) {
+          this.emailService.allPreviewData[0]['emailDistributionList'] =
+            this.query?.emailDistributionList;
+        }
+      }
+
+      this.query.emailLayout =
+        this.emailService.datasetsForm.getRawValue().emailLayout;
+      if (
+        this.query?.datasets?.length > 0 &&
+        this.emailService?.isQuickAction
+      ) {
+        this.query.datasets[0].resource = '';
       }
       const objData: any = cloneDeep(this.query);
       if (!this.emailService.isQuickAction) {
@@ -400,8 +411,6 @@ export class PreviewComponent
             objData.emailDistributionList.bcc.commonServiceFilter.filter
           )?.commonServiceFilter;
       }
-      // this.query.emailLayout.subject =
-      //   this.emailService.allLayoutdata?.txtSubject;
       this.http.post(this.previewUrl, objData).subscribe(
         (response: any) => {
           this.emailService.finalEmailPreview = response;
