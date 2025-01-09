@@ -1876,13 +1876,28 @@ export class EmailService {
    * @returns payload data
    */
   setCommonServicePayload(dlCommonQuery: any) {
-    const commonServiceData: any = {};
+    let commonServiceData: any = {};
     commonServiceData['commonServiceFilter'] = {};
     if (dlCommonQuery) {
       commonServiceData['commonServiceFilter']['logic'] = dlCommonQuery?.logic;
       commonServiceData['commonServiceFilter']['filters'] = [];
-      dlCommonQuery?.filters?.forEach((ele: any) => {
-        const preDefineFields = this.commonServiceFields.filter(
+      commonServiceData = this.processFilters(dlCommonQuery, commonServiceData);
+    }
+    return commonServiceData;
+  }
+
+  /**
+   * Process common service filter fo updating its fields value
+   *
+   * @param dlCommonQuery Commonservice filters
+   * @param commonServiceData update common service filters
+   * @returns Updated filters data
+   */
+  processFilters(dlCommonQuery: any, commonServiceData: any) {
+    dlCommonQuery?.filters?.forEach((ele: any) => {
+      let preDefineFields: any = [];
+      if (!ele.filters) {
+        preDefineFields = this.commonServiceFields.filter(
           (x: any) => x.key === ele?.field
         );
         ele.field =
@@ -1893,8 +1908,10 @@ export class EmailService {
           value: ele.value,
         };
         commonServiceData['commonServiceFilter']['filters'].push(newObj);
-      });
-    }
+      } else {
+        this.processFilters(ele, commonServiceData);
+      }
+    });
     return commonServiceData;
   }
 }
