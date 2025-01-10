@@ -759,6 +759,10 @@ export class EmailService {
       restrictSubscription: false,
       emailLayout: this.emailLayout,
       schedule: [''],
+      attachments: this.formBuilder.group({
+        files: [],
+        sendAsAttachment: null,
+      }),
     });
   }
 

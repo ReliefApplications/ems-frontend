@@ -26,3 +26,20 @@ export const commonServiceFields = [
   { key: 'LocationType', label: 'LocationType' },
   { key: 'InternalExternal', label: 'InternalExternal' },
 ];
+
+/**
+ * proxy Graphql Path
+ */
+export const proxyGraphqlPath = 'CS_DEV/graphql/';
+
+/** Maximum number of files allowed */
+export const MAX_FILE_COUNT = 5;
+
+/** Maximum file size allowed (7MB in bytes) */
+export const MAX_FILE_SIZE = 7 * 1024 * 1024;
+
+/** Required filter keys for validation */
+export const REQUIRED_FILTER_KEYS = [
+  'DocumentType',
+  'InformationConfidentiality',
+];

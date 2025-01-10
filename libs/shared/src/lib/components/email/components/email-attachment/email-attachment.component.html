@@ -1,0 +1,123 @@
+<!-- Attachment -->
+<div class="bg-[#F5FAFF] mb-4 p-5">
+  <label class="block text-base font-medium leading-6 text-gray-900">{{
+    'common.notifications.email.attachment.title' | translate
+  }}</label>
+  <div
+    class="flex items-center justify-between gap-5 mb-5 border border-gray-300 rounded-md p-4"
+  >
+    <!-- File Upload Button -->
+    <div class="w-full">
+      <label
+        for="fileUpload"
+        class="block text-sm font-normal leading-6 text-gray-900"
+      >
+        {{ 'common.notifications.email.attachment.uploadFile' | translate }}
+      </label>
+      <!-- File Upload Type -->
+      <div class="flex flex-col items-start gap-5 mt-2">
+        <!-- UI Radio for "Send As File" -->
+        <ui-radio
+          [value]="true"
+          name="uploadType"
+          formControlName="selectedOption"
+          (change)="onUploadTypeChange(true)"
+        >
+          <ng-container ngProjectAs="label">
+            {{ 'common.notifications.email.attachment.sendFile' | translate }}
+          </ng-container>
+        </ui-radio>
+        
+        <!-- UI Radio for "Send As URL" -->
+        <ui-radio
+          [value]="false"
+          name="uploadType"
+          formControlName="selectedOption"
+          (change)="onUploadTypeChange(false)"
+        >
+          <ng-container ngProjectAs="label">
+            {{ 'common.notifications.email.attachment.sendUrl' | translate }}
+          </ng-container>
+        </ui-radio>
+
+
+        <!-- Dropdowns -->
+        <form [formGroup]="propertySelectionForm">
+          <div *ngIf="sendAsAttachment === false" class="mt-2 fileAttach-container">
+            <div *ngFor="let property of properties" class="mb-2 fileAttach-width">
+              <label class="text-sm">
+                {{ property.text }}
+                <span class="text-mandatory"
+                  *ngIf="
+                    property.bodyKey === 'InformationConfidentiality' ||
+                    property.bodyKey === 'DocumentType'
+                  "
+                >
+                  *
+                </span>
+              </label>
+              <ui-select-menu
+                [filterable]="true"
+                [multiselect]="false"
+                formControlName="selectedOption"
+              >
+                <ui-select-option
+                  *ngFor="let item of propertyValues.get(property.value) || []"
+                  [value]="{ id: item.id, bodyKey: property.bodyKey }"
+                >
+                  {{ item.name }}
+                </ui-select-option>
+
+                <ng-container
+                  *ngIf="propertySelectionForm.get('selectedOption')?.value"
+                >
+                  <ui-button
+                    uiSuffix
+                    variant="danger"
+                    [isIcon]="true"
+                    class="mr-1 pl-0"
+                  ></ui-button>
+                </ng-container>
+              </ui-select-menu>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <input
+        type="file"
+        id="fileUpload"
+        name="fileUpload"
+        (change)="onFileSelected($event)"
+        class="text-sm py-1 px-2 border border-gray-300 bg-white rounded-lg shadow-sm w-full"
+        multiple
+      />
+    </div>
+  </div>
+
+  <div>
+    <div
+      *ngIf="
+        this.emailService.datasetsForm?.getRawValue()?.attachments?.files
+          ?.length > 0
+      "
+      class="flex flex-wrap gap-2"
+    >
+      <ui-chip
+        variant="primary"
+        *ngFor="
+          let file of this.emailService.datasetsForm.getRawValue().attachments
+            .files;
+          let i = index
+        "
+        [removable]="true"
+        (removed)="removeFile(i)"
+      >
+        {{ file.fileName }}
+      </ui-chip>
+    </div>
+    <div>
+      <p class="noteStyle">Please note: You can upload a maximum of 5 files, with each file not exceeding 7MB in size.</p>
+    </div>
+  </div>
+</div>

@@ -222,6 +222,7 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
           isDraft
           isDeleted
           draftStepper
+          attachments
         }
       }
     }
@@ -265,6 +266,7 @@ export const ADD_EMAIL_NOTIFICATION = gql`
       restrictSubscription
       recipientsType
       status
+      attachments
     }
   }
 `;
@@ -317,6 +319,7 @@ export const GET_AND_UPDATE_EMAIL_NOTIFICATION = gql`
       isDeleted
       isDraft
       draftStepper
+      attachments
     }
   }
 `;
@@ -771,4 +774,13 @@ export const GET_CS_USER_FIELDS = `
       }
     }
   }
+`;
+
+/** Get DriveID */
+export const GET_DRIVE_ID = `
+query {
+  storagedrive(drivetype: 2) {
+    driveid
+  }
+}
 `;

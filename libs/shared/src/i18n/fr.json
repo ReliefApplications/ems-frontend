@@ -268,6 +268,15 @@
 			"dataNotRecovered": "Échec de la récupération des données",
 			"dataRecovered": "Les données ont été récupérées !",
 			"email": {
+				"attachment": {
+					"countValidation": "Le nombre de fichiers dépasse la limite de {{maxFileCount}}",
+					"sendFile": "Envoyer en tant que fichier",
+					"sendUrl": "Envoyer sous forme de lien",
+					"sizeValidation": "dépasse la limite de taille de fichier de 7 Mo",
+					"title": "Pièces jointes",
+					"uploadFail": "Failed to upload file {{file.name}}",
+					"uploadFile": "Télécharger un fichier"
+				},
 				"banner": {
 					"image": "Bannière Image",
 					"removeTooltip": "Supprimer Bannière Image"
@@ -291,6 +300,7 @@
 					"noBody": "Le corps doit continuer!",
 					"noCustomTitle": "Le titre du modèle personnalisé est requis pour continuer!",
 					"noDistributionList": "Un problème est survenu lors de l'envoi de l'e-mail: aucune liste de distribution détectée",
+					"noFields": "Type de document et informationsLa confidentialité est requise pour continuer !",
 					"noSubject": "Le sujet doit continuer!",
 					"noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté",
 					"preview": "Erreur lors de la génération de l'e-mail"
@@ -962,8 +972,10 @@
 				"validTitle": "Veuillez saisir un titre"
 			},
 			"preview": {
+				"attachment": "Pièces jointes:",
 				"less": "Montrer moins",
 				"more": "Afficher {{length}} e-mails restants...",
+				"noAttachment": "Aucune pièce jointe disponible.",
 				"subject": "Sujet:"
 			},
 			"restrictSubscription": {

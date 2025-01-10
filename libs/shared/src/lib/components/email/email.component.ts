@@ -650,6 +650,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       restrictSubscription: emailData.restrictSubscription,
       emailLayout: emailData.emailLayout,
       schedule: emailData.schedule,
+      attachments: emailData.attachments,
     });
 
     // Setting up edit screen

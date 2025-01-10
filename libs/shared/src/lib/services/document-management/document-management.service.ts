@@ -34,21 +34,35 @@ interface PropertyQueryResponse {
  * Available properties from the CS API Documentation
  */
 export const CS_DOCUMENTS_PROPERTIES = [
-  { text: 'Aetiology', value: 'aetiologys', bodyKey: 'Aetiology' },
+  { text: 'Document Type', value: 'documenttypes', bodyKey: 'DocumentType' },
   {
     text: 'Confidentiality',
     value: 'informationconfidentialitys',
     bodyKey: 'InformationConfidentiality',
   },
-  { text: 'Country', value: 'countrys', bodyKey: 'Country' },
-  { text: 'Disease Condition', value: 'diseaseconds', bodyKey: 'DiseaseCond' },
   {
     text: 'Document Category',
     value: 'documentcategorys',
     bodyKey: 'DocumentCategory',
   },
-  { text: 'Document Type', value: 'documenttypes', bodyKey: 'DocumentType' },
+  { text: 'Occurrence', value: 'occurrences', bodyKey: null },
+  {
+    text: 'Occurrence Type',
+    value: 'occurrencetypes',
+    bodyKey: 'OccurrenceType',
+  },
+  { text: 'Region', value: 'regions', bodyKey: 'Region' },
+  { text: 'Country', value: 'countrys', bodyKey: 'Country' },
+  { text: 'Disease Condition', value: 'diseaseconds', bodyKey: 'DiseaseCond' },
   { text: 'Hazard', value: 'hazards', bodyKey: 'Hazard' },
+  { text: 'Syndrome', value: 'syndromes', bodyKey: 'Syndrome' },
+  { text: 'Aetiology', value: 'aetiologys', bodyKey: 'Aetiology' },
+  { text: 'Language', value: 'languages', bodyKey: 'Language' },
+  {
+    text: 'Source of information - type',
+    value: 'sourceofinformations',
+    bodyKey: 'SourceOfInformation',
+  },
   {
     text: 'IHR Communication',
     value: 'ihrcommunications',
@@ -60,20 +74,6 @@ export const CS_DOCUMENTS_PROPERTIES = [
     bodyKey: 'AssignmentFunction',
   },
   { text: 'IMS Role', value: 'documentroles', bodyKey: 'DocumentRole' },
-  { text: 'Language', value: 'languages', bodyKey: 'Language' },
-  { text: 'Occurrence', value: 'occurrences', bodyKey: null },
-  {
-    text: 'Occurrence Type',
-    value: 'occurrencetypes',
-    bodyKey: 'OccurrenceType',
-  },
-  { text: 'Region', value: 'regions', bodyKey: 'Region' },
-  {
-    text: 'Source of information - type',
-    value: 'sourceofinformations',
-    bodyKey: 'SourceOfInformation',
-  },
-  { text: 'Syndrome', value: 'syndromes', bodyKey: 'Syndrome' },
 ];
 
 /** Snackbar duration in ms */
@@ -317,7 +317,7 @@ export class DocumentManagementService {
    * @param file File to transform
    * @returns A valid base 64 input value for the cs api endpoint
    */
-  private transformFileToValidInput(file: any) {
+  public transformFileToValidInput(file: any) {
     const fileReader = new FileReader();
     return new Promise((resolve, reject) => {
       (fileReader as any).onload = () => {

@@ -11,7 +11,6 @@ import { Subscription } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import convertToMinutes from '../../../../utils/convert-to-minutes';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-
 /**
  * Email layout page component.
  */
@@ -87,7 +86,6 @@ export class LayoutComponent
   public datasetOverflow = false;
   /** Subscription for the graphql load change event. */
   private loadChangeSubscription: Subscription = new Subscription();
-
   /** To input HTML */
   @ViewChild('toInput') toInput!: ElementRef<HTMLInputElement>;
   /** Cc input HTML */
@@ -139,8 +137,8 @@ export class LayoutComponent
    * @param fb Form builder used for form creation
    * @param editorService Editor service used to get main URL and current language
    * @param emailService Service used for email-related operations and state management
-   * @param snackbar snackbar helper function
-   * @param translate i18 translate service
+   * @param snackbar Snackbar helper function
+   * @param translate i18n translate service
    */
   constructor(
     private fb: FormBuilder,
