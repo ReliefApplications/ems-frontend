@@ -41,6 +41,9 @@ export const GET_STEP_BY_ID = gql`
       content
       canSee
       buttons
+      workflow {
+        name
+      }
     }
   }
 `;

@@ -200,7 +200,8 @@ export class DashboardComponent
           this.dashboard = data.dashboard;
           this.breadcrumbService.setBreadcrumb(
             this.isStep ? '@workflow' : '@dashboard',
-            this.dashboard.name as string
+            this.dashboard.name as string,
+            this.isStep ? this.dashboard.step?.workflow?.name : ''
           );
           this.contextService.context =
             { id: contextId, ...this.dashboard.contextData } || null;

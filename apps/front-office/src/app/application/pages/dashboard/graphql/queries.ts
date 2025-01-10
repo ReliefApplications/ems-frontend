@@ -45,6 +45,9 @@ export const GET_DASHBOARD_BY_ID = gql`
       }
       step {
         showName
+        workflow {
+          name
+        }
       }
     }
   }

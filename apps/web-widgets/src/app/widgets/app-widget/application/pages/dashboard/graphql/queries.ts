@@ -42,6 +42,11 @@ export const GET_DASHBOARD_BY_ID = gql`
         content
         contentWithContext
       }
+      step {
+        workflow {
+          name
+        }
+      }
     }
   }
 `;
