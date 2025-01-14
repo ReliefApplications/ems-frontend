@@ -5,7 +5,7 @@ import { Environment } from './environment.type';
 
 /** Authentication configuration of the module. */
 const authConfig: AuthConfig = {
-  issuer: 'https://id.libyatt.ly/auth/realms/oort',
+  issuer: 'https://id.libyatt.ly/realms/oort',
   redirectUri: 'https://libyatt.ly/',
   postLogoutRedirectUri: 'https://libyatt.ly/auth/',
   clientId: 'oort-client',
