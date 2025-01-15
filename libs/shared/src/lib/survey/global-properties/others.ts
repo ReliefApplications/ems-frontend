@@ -41,6 +41,15 @@ export const init = (environment: any): void => {
       const accessToken = localStorage.getItem('access_token');
       options.request.setRequestHeader('Authorization', `Bearer ${token}`);
       options.request.setRequestHeader('AccessToken', accessToken);
+    } else if (
+      environment.csApiUrl &&
+      sender.url.startsWith(environment.csApiUrl)
+    ) {
+      const accessToken = localStorage.getItem('access_token');
+      options.request.setRequestHeader(
+        'Authorization',
+        `Bearer ${accessToken}`
+      );
     }
   };
 
