@@ -349,14 +349,7 @@ export const GET_DISTRIBUTION_LIST = gql`
               fields
             }
             inputEmails
-            commonServiceFilter {
-              logic
-              filters {
-                field
-                operator
-                value
-              }
-            }
+            commonServiceFilter
           }
           cc {
             resource
@@ -367,14 +360,7 @@ export const GET_DISTRIBUTION_LIST = gql`
               fields
             }
             inputEmails
-            commonServiceFilter {
-              logic
-              filters {
-                field
-                operator
-                value
-              }
-            }
+            commonServiceFilter
           }
           to {
             resource
@@ -385,14 +371,7 @@ export const GET_DISTRIBUTION_LIST = gql`
               fields
             }
             inputEmails
-            commonServiceFilter {
-              logic
-              filters {
-                field
-                operator
-                value
-              }
-            }
+            commonServiceFilter
           }
           name
           id
@@ -422,14 +401,7 @@ export const ADD_DISTRIBUTION_LIST = gql`
           fields
         }
         inputEmails
-        commonServiceFilter {
-          logic
-          filters {
-            field
-            operator
-            value
-          }
-        }
+        commonServiceFilter
       }
       cc {
         resource
@@ -440,14 +412,7 @@ export const ADD_DISTRIBUTION_LIST = gql`
           fields
         }
         inputEmails
-        commonServiceFilter {
-          logic
-          filters {
-            field
-            operator
-            value
-          }
-        }
+        commonServiceFilter
       }
       to {
         resource
@@ -458,14 +423,7 @@ export const ADD_DISTRIBUTION_LIST = gql`
           fields
         }
         inputEmails
-        commonServiceFilter {
-          logic
-          filters {
-            field
-            operator
-            value
-          }
-        }
+        commonServiceFilter
       }
       name
       id
@@ -513,14 +471,7 @@ export const EDIT_DISTRIBUTION_LIST = gql`
           fields
         }
         inputEmails
-        commonServiceFilter {
-          logic
-          filters {
-            field
-            operator
-            value
-          }
-        }
+        commonServiceFilter
       }
       cc {
         resource
@@ -531,14 +482,7 @@ export const EDIT_DISTRIBUTION_LIST = gql`
           fields
         }
         inputEmails
-        commonServiceFilter {
-          logic
-          filters {
-            field
-            operator
-            value
-          }
-        }
+        commonServiceFilter
       }
       to {
         resource
@@ -549,14 +493,7 @@ export const EDIT_DISTRIBUTION_LIST = gql`
           fields
         }
         inputEmails
-        commonServiceFilter {
-          logic
-          filters {
-            field
-            operator
-            value
-          }
-        }
+        commonServiceFilter
       }
       name
       id
