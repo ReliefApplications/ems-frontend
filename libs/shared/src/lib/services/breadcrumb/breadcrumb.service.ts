@@ -105,8 +105,10 @@ export class BreadcrumbService {
    *
    * @param alias alias ( id ) of the breadcrumb.
    * @param label label to apply
+   * @param parentLabel Parent label related to a workflow step needed for building app activity track
    */
-  public setBreadcrumb(alias: string, label: string) {
+  public setBreadcrumb(alias: string, label: string, parentLabel?: string) {
+    label = parentLabel ? parentLabel + ' | ' + label : label;
     const breadcrumbs = this.breadcrumbs.getValue();
     const breadcrumbIndex = breadcrumbs.findIndex((x) => x.alias === alias);
     if (breadcrumbIndex !== -1) {

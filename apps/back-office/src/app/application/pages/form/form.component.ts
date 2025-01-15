@@ -182,7 +182,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
         : this.page?.application?.id) ?? '';
     this.breadcrumbService.setBreadcrumb(
       this.isStep ? '@workflow' : '@form',
-      this.form.name as string
+      this.form.name as string,
+      this.isStep ? this.step?.workflow?.name : ''
     );
   }
 

@@ -47,6 +47,7 @@ export const GET_DASHBOARD_BY_ID = gql`
         showName
         workflow {
           id
+          name
           page {
             id
             application {

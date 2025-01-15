@@ -8,6 +8,8 @@ import { ApplicationService } from '../application/application.service';
 import { BreadcrumbService } from '../breadcrumb/breadcrumb.service';
 import { RestService } from '../rest/rest.service';
 
+type BreadcrumbItemForActivity = { text: string; order: number };
+
 /**
  * Service to track user activity
  */
@@ -95,19 +97,31 @@ export class LoggerService {
    * @returns Current page name or navbar section title
    */
   private getCurrentPageTitle(breadcrumbs: Breadcrumb[]) {
-    let page = '';
-    let navSection = '';
-    const hasAlias = breadcrumbs.find((bc) => 'alias' in bc);
+    let orderCount = 0;
+    const page: BreadcrumbItemForActivity[] = [];
+    const navSection: BreadcrumbItemForActivity[] = [];
+    const aliasCount = breadcrumbs.filter((bc) => 'alias' in bc).length;
     breadcrumbs?.forEach((bc) => {
       if (!isNil(bc.text)) {
-        page = bc.text;
+        page.push({ text: bc.text, order: orderCount++ });
       }
-      // If no alias present(custom page, e.g. User1), get the current nav section, e.g. Users
-      if (!isNil(bc.key) && !hasAlias) {
-        navSection = this.translate.instant(bc.key);
+      if (!isNil(bc.key)) {
+        navSection.push({
+          text: this.translate.instant(bc.key),
+          order: orderCount++,
+        });
       }
     });
-    return page || navSection;
+    /** Order all the elements in the breadcrumb and join them */
+    const pageTitle = [...navSection, ...page]
+      .sort((a, b) => a.order - b.order)
+      .map((text) => text.text)
+      .join(' | ');
+    /**
+     * If there is an alias but there is no page length, means that the current sub page is not ready yet, therefor return an empty array
+     * This way we avoid the return of the nav section if the page is not ready yet, triggering an unwanted activity upload
+     */
+    return aliasCount !== page.length ? '' : pageTitle;
   }
 
   /**

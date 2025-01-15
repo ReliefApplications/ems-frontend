@@ -332,7 +332,8 @@ export class DashboardComponent
           this.dashboard = dashboard;
           this.breadcrumbService.setBreadcrumb(
             this.isStep ? '@workflow' : '@dashboard',
-            this.dashboard.name as string
+            this.dashboard.name as string,
+            this.isStep ? this.dashboard.step?.workflow?.name : ''
           );
           this.gridOptions = {
             ...omit(this.gridOptions, ['gridType', 'minimumHeight']), // Prevent issue when gridType or minimumHeight was not set
