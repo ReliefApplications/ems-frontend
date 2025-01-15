@@ -5,7 +5,7 @@ import {
   HttpInterceptor,
   HttpRequest,
 } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
@@ -31,29 +31,48 @@ export class AuthInterceptorService implements HttpInterceptor {
    * @param authService Shared authentication service
    * @param restService Shared rest service
    * @param shadowDomService Shared shadow dom service
+   * @param environment Environment configuration
    */
   constructor(
     private authService: AuthService,
     private restService: RestService,
-    private shadowDomService: ShadowDomService
+    private shadowDomService: ShadowDomService,
+    @Inject('environment') private environment: any
   ) {}
 
   /**
    * Clones the current intercepted request and sets the current idtoken
    *
    * @param request Current intercepted request
+   * @param useAccessToken Should use access token instead of auth token
    * @returns Intercepted request with the current idtoken
    */
-  private addBearerTokenToRequest(request: HttpRequest<any>): HttpRequest<any> {
-    // If we have a token, we set it to the header
-    const token = this.authService.getAuthToken();
-    if (token) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  private addBearerTokenToRequest(
+    request: HttpRequest<any>,
+    useAccessToken = false
+  ): HttpRequest<any> {
+    if (useAccessToken) {
+      // If we have access token, use it
+      const accessToken = localStorage.getItem('access_token');
+      if (accessToken) {
+        request = request.clone({
+          setHeaders: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+      }
+    } else {
+      // If we have a token, we set it to the header
+      const token = this.authService.getAuthToken();
+      if (token) {
+        request = request.clone({
+          setHeaders: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
     }
+
     return request;
   }
 
@@ -86,6 +105,11 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (request.url.startsWith(this.restService.apiUrl)) {
       request = this.addBearerTokenToRequest(request);
       request = this.addAccessTokenToRequest(request);
+    } else if (
+      this.environment.csApiUrl &&
+      request.url.startsWith(this.environment.csApiUrl)
+    ) {
+      request = this.addBearerTokenToRequest(request, true);
     }
     return request;
   }
