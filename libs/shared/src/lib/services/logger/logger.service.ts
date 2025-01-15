@@ -100,7 +100,7 @@ export class LoggerService {
     let orderCount = 0;
     const page: BreadcrumbItemForActivity[] = [];
     const navSection: BreadcrumbItemForActivity[] = [];
-    const hasAlias = breadcrumbs.find((bc) => 'alias' in bc);
+    const aliasCount = breadcrumbs.filter((bc) => 'alias' in bc).length;
     breadcrumbs?.forEach((bc) => {
       if (!isNil(bc.text)) {
         page.push({ text: bc.text, order: orderCount++ });
@@ -121,7 +121,7 @@ export class LoggerService {
      * If there is an alias but there is no page length, means that the current sub page is not ready yet, therefor return an empty array
      * This way we avoid the return of the nav section if the page is not ready yet, triggering an unwanted activity upload
      */
-    return hasAlias && !page.length ? '' : pageTitle;
+    return aliasCount !== page.length ? '' : pageTitle;
   }
 
   /**
