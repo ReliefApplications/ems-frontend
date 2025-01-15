@@ -247,7 +247,35 @@ export class PreviewComponent
     const objData: any = cloneDeep(this.query);
     //Updating payload
 
-    if (objData.emailDistributionList?.bcc?.commonServiceFilter?.filter) {
+    if (
+      this.emailService.emailDistributionList.to instanceof Array &&
+      objData.emailDistributionList.to
+    ) {
+      objData.emailDistributionList.to.inputEmails = this.emailService
+        ?.emailDistributionList?.to?.inputEmails
+        ? this.emailService.emailDistributionList.to.inputEmails
+        : this.emailService.emailDistributionList.to;
+    }
+    if (
+      this.emailService.emailDistributionList.cc instanceof Array &&
+      objData.emailDistributionList.cc
+    ) {
+      objData.emailDistributionList.cc.inputEmails = this.emailService
+        ?.emailDistributionList?.cc?.inputEmails
+        ? this.emailService.emailDistributionList.cc.inputEmails
+        : this.emailService.emailDistributionList.cc;
+    }
+    if (
+      this.emailService.emailDistributionList.bcc instanceof Array &&
+      objData.emailDistributionList.bcc
+    ) {
+      objData.emailDistributionList.bcc.inputEmails = this.emailService
+        ?.emailDistributionList?.bcc?.inputEmails
+        ? this.emailService.emailDistributionList.bcc.inputEmails
+        : this.emailService.emailDistributionList.bcc;
+    }
+
+    if (objData.emailDistributionList?.to?.commonServiceFilter?.filter) {
       objData.emailDistributionList.to.commonServiceFilter =
         this.emailService.setCommonServicePayload(
           objData.emailDistributionList?.to?.commonServiceFilter?.filter
@@ -344,11 +372,7 @@ export class PreviewComponent
       this.emailService.isQuickAction = true;
       this.emailService.quickEmailDLQuery = [];
     }
-    this.previewUrl = this.emailService.isQuickAction
-      ? `${this.restService.apiUrl}/notification/preview-quick-email`
-      : this.query
-      ? `${this.restService.apiUrl}/notification/preview-email/`
-      : '';
+    this.previewUrl = `${this.restService.apiUrl}/notification/preview-email/`;
 
     // Checks if url exists
     if (this.previewUrl) {
@@ -356,23 +380,31 @@ export class PreviewComponent
       // if (!this.emailService.datasetsForm.value.emailLayout) {
       await this.emailService.patchEmailLayout();
 
-      const emailData: any = {
-        emailLayout: this.emailService.emailLayout,
-        tableInfo: previewData?.datasetFieldsObj
-          ? [
-              {
-                columns: previewData?.datasetFieldsObj
-                  ? previewData?.datasetFieldsObj
-                  : [],
-                records: previewData?.dataList,
-                index: previewData?.tabIndex,
-                name: previewData?.tabName ? previewData?.tabName : [],
-                navigateToPage: previewData?.navigateToPage,
-                navigateSettings: previewData?.navigateSettings,
-              },
-            ]
-          : [],
-      };
+      if (this.emailService.isQuickAction) {
+        if (this.query?.datasets.length > 0) {
+          this.query.datasets[0].name = 'Block 1';
+          this.query.datasets[0].query.filter = previewData?.dataQuery?.filter
+            ? previewData.dataQuery.filter
+            : this.query.datasets[0].query.filter;
+          this.query.datasets[0].query.name =
+            previewData?.dataQuery?.queryName || '';
+          this.query.datasets[0].query.fields =
+            previewData?.dataQuery?.fields || [];
+        }
+        if (this.emailService.allPreviewData.length > 0) {
+          this.emailService.allPreviewData[0]['emailDistributionList'] =
+            this.query?.emailDistributionList;
+        }
+      }
+
+      this.query.emailLayout =
+        this.emailService.datasetsForm.getRawValue().emailLayout;
+      if (
+        this.query?.datasets?.length > 0 &&
+        this.emailService?.isQuickAction
+      ) {
+        this.query.datasets[0].resource = '';
+      }
       const objData: any = cloneDeep(this.query);
       if (!this.emailService.isQuickAction) {
         //Updating payload
@@ -391,29 +423,22 @@ export class PreviewComponent
             objData.emailDistributionList.bcc.commonServiceFilter.filter
           )?.commonServiceFilter;
       }
-      // this.query.emailLayout.subject =
-      //   this.emailService.allLayoutdata?.txtSubject;
-      this.http
-        .post(
-          this.previewUrl,
-          this.emailService.isQuickAction ? emailData : objData
-        )
-        .subscribe(
-          (response: any) => {
-            this.emailService.finalEmailPreview = response;
-            this.updateEmailContainer(); // Update the email container with the new preview
-            this.subjectString =
-              this.emailService.finalEmailPreview.subject ?? this.subjectString; // Updae/Replace the subject string from the response
-            if (this.subjectHtmlRef?.nativeElement) {
-              this.subjectHtmlRef.nativeElement.innerHTML = this.subjectString;
-            }
-            this.emailService.loading = false; // Hide spinner
-          },
-          (error: string) => {
-            console.error('Failed to load final email preview:', error);
-            this.emailService.loading = false; // Hide spinner in case of error
+      this.http.post(this.previewUrl, objData).subscribe(
+        (response: any) => {
+          this.emailService.finalEmailPreview = response;
+          this.updateEmailContainer(); // Update the email container with the new preview
+          this.subjectString =
+            this.emailService.finalEmailPreview.subject ?? this.subjectString; // Updae/Replace the subject string from the response
+          if (this.subjectHtmlRef?.nativeElement) {
+            this.subjectHtmlRef.nativeElement.innerHTML = this.subjectString;
           }
-        );
+          this.emailService.loading = false; // Hide spinner
+        },
+        (error: string) => {
+          console.error('Failed to load final email preview:', error);
+          this.emailService.loading = false; // Hide spinner in case of error
+        }
+      );
     }
   }
 
@@ -425,7 +450,11 @@ export class PreviewComponent
     if (emailContainer) {
       this.emailPreviewHtml =
         this.emailService.finalEmailPreview ?? '<div></div>';
-      emailContainer.innerHTML = window.atob(this.emailPreviewHtml.html);
+      emailContainer.innerHTML = new TextDecoder().decode(
+        Uint8Array.from(window.atob(this.emailPreviewHtml.html), (c) =>
+          c.charCodeAt(0)
+        )
+      );
     }
   }
 

@@ -12,13 +12,10 @@ import { EmailService as SharedEmailService } from '../../services/email/email.s
 import { ApplicationService } from '../../services/application/application.service';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  QueryBuilderService,
-  QueryResponse,
-} from '../../services/query-builder/query-builder.service';
+import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { ContextService } from '../../services/context/context.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { lastValueFrom, Observable, Subject, takeUntil } from 'rxjs';
+import { lastValueFrom, Subject, takeUntil } from 'rxjs';
 import { Resource, ResourceQueryResponse } from '../../models/resource.model';
 import { GET_RECORD_BY_ID, GET_RESOURCE_BY_ID } from './graphql/queries';
 import { EDIT_RECORD } from './graphql/mutations';
@@ -27,10 +24,8 @@ import {
   EditRecordMutationResponse,
   RecordQueryResponse,
 } from '../../models/record.model';
-import { Metadata } from '../../models/metadata.model';
 import { get, isEmpty, isNil, set } from 'lodash';
 import { SnackbarSpinnerComponent } from '../snackbar-spinner/snackbar-spinner.component';
-import { ApolloQueryResult } from '@apollo/client';
 import { Layout } from '../../models/layout.model';
 import { EmailNotification } from '../../models/email-notifications.model';
 
@@ -231,12 +226,8 @@ export class ActionButtonComponent
           }
         );
         const snackBarSpinner = snackBarRef.instance.nestedComponent;
-        let resourceMetaData: Metadata[] = [];
         let resource!: Resource;
         if (this.dashboard?.page?.context?.resource) {
-          resourceMetaData = (await this.getResourceMetaData(
-            (this.actionButton.sendNotification.fields || []).map((x) => x.name)
-          )) as Metadata[];
           resource = (await this.getResourceById(
             this.dashboard?.page?.context?.resource
           )) as Resource;
@@ -263,9 +254,6 @@ export class ActionButtonComponent
           const selectedId = value?.template;
           const template = templates.filter((x: any) => x.id === selectedId)[0];
           if (template) {
-            let emailQuery!:
-              | Observable<ApolloQueryResult<QueryResponse>>
-              | undefined;
             let layout!: Layout;
             if (!isNil(resource)) {
               layout = {
@@ -274,24 +262,16 @@ export class ActionButtonComponent
                   fields: this.actionButton.sendNotification?.fields,
                 },
               };
-              emailQuery = this.buildEmailQuery(selectedIds, layout);
+              const emailQuery = this.buildEmailQuery(selectedIds, layout);
+              if (emailQuery) {
+                this.sharedEmailService.previewCustomTemplate(
+                  template,
+                  distributionList,
+                  null,
+                  emailQuery
+                );
+              }
             }
-            let emailData: any = [];
-            if (emailQuery) {
-              const { data } = await lastValueFrom(
-                emailQuery.pipe(takeUntil(this.destroy$))
-              );
-              Object.keys(data)?.forEach((key: any) => {
-                emailData = data[key].edges;
-              });
-            }
-            this.sharedEmailService.previewCustomTemplate(
-              template,
-              distributionList,
-              emailData,
-              resourceMetaData,
-              this.actionButton.sendNotification?.fields
-            );
           }
         }
       } catch (error) {
@@ -489,6 +469,7 @@ export class ActionButtonComponent
    * @returns Records graphql query.
    */
   private buildEmailQuery(selectedIds: string[], settingsData: any) {
+    settingsData.query.fields = this.actionButton.sendNotification?.fields;
     const builtQuery = this.queryBuilder.buildQuery(settingsData);
     if (!builtQuery) {
       this.snackBar.openSnackBar(
@@ -499,28 +480,26 @@ export class ActionButtonComponent
       );
       return;
     } else {
-      return this.apollo.query({
-        query: builtQuery,
-        variables: {
-          first: selectedIds.length,
-          filter: {
-            logic: 'and',
-            filters: [
-              {
-                operator: 'eq',
-                field: 'ids',
-                value: selectedIds,
-              },
-            ],
-          },
-          sortField: undefined,
-          sortOrder: undefined,
-          styles: [],
-          at: undefined,
-          skip: 0,
+      return {
+        queryName: settingsData.query.name,
+        fields: this.actionButton.sendNotification?.fields || [],
+        first: selectedIds.length,
+        filter: {
+          logic: 'and',
+          filters: [
+            {
+              operator: 'eq',
+              field: 'ids',
+              value: selectedIds,
+            },
+          ],
         },
-        fetchPolicy: 'no-cache',
-      });
+        sortField: undefined,
+        sortOrder: undefined,
+        styles: [],
+        at: undefined,
+        skip: 0,
+      };
     }
   }
 
