@@ -9,6 +9,7 @@ import {
 import { BreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 import { EDIT_ROLE } from './graphql/mutations';
 import { GET_ROLE } from './graphql/queries';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Shared role summary component.
@@ -37,10 +38,12 @@ export class RoleSummaryComponent implements OnInit {
    *
    * @param apollo Apollo client
    * @param breadcrumbService Setups the breadcrumb component variables
+   * @param snackBar Shared snackbar service
    */
   constructor(
     private apollo: Apollo,
-    private breadcrumbService: BreadcrumbService
+    private breadcrumbService: BreadcrumbService,
+    private snackBar: SnackbarService
   ) {}
 
   ngOnInit(): void {
@@ -76,11 +79,17 @@ export class RoleSummaryComponent implements OnInit {
         mutation: EDIT_ROLE,
         variables: { ...e, id: this.id },
       })
-      .subscribe(({ data, loading }) => {
-        if (data) {
-          this.role = data.editRole;
-          this.loading = loading;
+      .subscribe(({ data, errors, loading }) => {
+        if (errors) {
+          this.snackBar.openSnackBar(errors[0].message, { error: true });
+        } else {
+          this.role = data?.editRole;
+          this.breadcrumbService.setBreadcrumb(
+            '@role',
+            this.role?.title as string
+          );
         }
+        this.loading = loading;
       });
   }
 }

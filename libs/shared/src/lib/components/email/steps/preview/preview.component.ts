@@ -453,7 +453,11 @@ export class PreviewComponent
     if (emailContainer) {
       this.emailPreviewHtml =
         this.emailService.finalEmailPreview ?? '<div></div>';
-      emailContainer.innerHTML = window.atob(this.emailPreviewHtml.html);
+      emailContainer.innerHTML = new TextDecoder().decode(
+        Uint8Array.from(window.atob(this.emailPreviewHtml.html), (c) =>
+          c.charCodeAt(0)
+        )
+      );
     }
   }
 
