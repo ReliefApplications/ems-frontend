@@ -383,16 +383,13 @@ export class PreviewComponent
       if (this.emailService.isQuickAction) {
         if (this.query?.datasets.length > 0) {
           this.query.datasets[0].name = 'Block 1';
-          this.query.datasets[0].query.filter = previewData?.buildQueryPayload
-            ?.filter
-            ? previewData.buildQueryPayload.filter
+          this.query.datasets[0].query.filter = previewData?.dataQuery?.filter
+            ? previewData.dataQuery.filter
             : this.query.datasets[0].query.filter;
           this.query.datasets[0].query.name =
-            previewData?.buildQueryPayload?.queryName || '';
+            previewData?.dataQuery?.queryName || '';
           this.query.datasets[0].query.fields =
-            previewData?.buildQueryPayload?.fields || [];
-          this.query.datasets[0].resource =
-            previewData?.buildQueryPayload?.resource || [];
+            previewData?.dataQuery?.fields || [];
         }
         if (this.emailService.allPreviewData.length > 0) {
           this.emailService.allPreviewData[0]['emailDistributionList'] =

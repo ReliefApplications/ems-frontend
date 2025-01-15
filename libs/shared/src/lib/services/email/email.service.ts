@@ -373,20 +373,14 @@ export class EmailService {
    *
    * @param emailContent Email content
    * @param distributionListInfo Distribution list
-   * @param selectedRowsFromGrid Selected rows from grid
-   * @param resourceData Resource metadata
-   * @param selectedLayoutFields Selected layout fields
    * @param navigateSettings Navigate settings, optional
-   * @param buildQueryPayload Payload for final preview
+   * @param dataQuery Query email function will use to fetch data
    */
   async previewCustomTemplate(
     emailContent: any,
     distributionListInfo: any,
-    selectedRowsFromGrid: any,
-    resourceData: any,
-    selectedLayoutFields: any,
     navigateSettings: any,
-    buildQueryPayload?: any
+    dataQuery?: any
   ) {
     const { PreviewTemplateModalComponent } = await import(
       '../../components/templates/components/preview-template-modal/preview-template-modal.component'
@@ -395,11 +389,8 @@ export class EmailService {
       data: {
         emailContent,
         distributionListInfo,
-        selectedRowsFromGrid,
-        resourceData,
-        selectedLayoutFields,
         navigateSettings,
-        buildQueryPayload,
+        dataQuery,
       },
       autoFocus: false,
       disableClose: true,

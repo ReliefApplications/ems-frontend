@@ -133,12 +133,6 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     return (this.settings.floatingButtons || []).filter((x: any) => x.show);
   }
 
-  /** Resource data list */
-  private metaResourceData: any = [];
-
-  /** Build Query Payload  */
-  buildQueryPayload: any = null;
-
   /**
    * Heavy constructor for the grid widget component
    *
@@ -175,15 +169,6 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     delete this.gridSettings.query;
     let buildSortFields = false;
     if (this.settings.resource) {
-      // Fetch resource metadata for email sending
-      this.queryBuilder
-        .getQueryMetaData(this.settings.resource)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: ({ data }) => {
-            this.metaResourceData = data.resource.metadata;
-          },
-        });
       this.useReferenceData = false;
       const layouts = get(this.settings, 'layouts', []);
       const aggregations = get(this.settings, 'aggregations', []);
@@ -514,35 +499,18 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                       options.bodyFields
                     );
                     if (emailQuery) {
-                      emailQuery.pipe(takeUntil(this.destroy$)).subscribe({
-                        next: ({ data }) => {
-                          let emailData: any = [];
-                          Object.keys(data)?.forEach((key: any) => {
-                            emailData = data[key].edges;
-                          });
-                          this.buildQueryPayload.queryName =
-                            this.layout?.query?.name || '';
-                          this.buildQueryPayload.fields =
-                            options?.bodyFields || [];
-                          this.buildQueryPayload.resource =
-                            distributionList?.to?.resource || '';
-                          this.emailService.previewCustomTemplate(
-                            template,
-                            distributionList,
-                            emailData,
-                            this.metaResourceData,
-                            options.bodyFields,
-                            options.navigateToPage &&
-                              this.widget.settings.actions.navigateToPage
-                              ? this.widget.settings.actions.navigateSettings
-                              : undefined,
-                            this.buildQueryPayload
-                          );
-                          this.status = {
-                            error: false,
-                          };
-                        },
-                      });
+                      this.emailService.previewCustomTemplate(
+                        template,
+                        distributionList,
+                        options.navigateToPage &&
+                          this.widget.settings.actions.navigateToPage
+                          ? this.widget.settings.actions.navigateSettings
+                          : undefined,
+                        emailQuery
+                      );
+                      this.status = {
+                        error: false,
+                      };
                     }
                   }
                 }
@@ -772,7 +740,9 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
       };
       return;
     } else {
-      this.buildQueryPayload = {
+      return {
+        queryName: this.layout?.query.name || '',
+        fields: fields || [],
         first: selectedIds.length,
         filter: {
           logic: 'and',
@@ -790,11 +760,6 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
         at: undefined,
         skip: this.grid.skip,
       };
-      return this.apollo.query({
-        query: builtQuery,
-        variables: this.buildQueryPayload,
-        fetchPolicy: 'no-cache',
-      });
     }
   }
 }
