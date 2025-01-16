@@ -974,6 +974,8 @@ export class EmailTemplateComponent
       this.type === 'to' ? (this.emailService.toDLHasFilter = false) : '';
     }
     if (this.activeSegmentIndex === 1) {
+      const formArray = this.selectedEmails as FormArray;
+      formArray.clear();
       this.previewDLEmails = [];
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
@@ -991,6 +993,8 @@ export class EmailTemplateComponent
       this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
     }
     if (this.activeSegmentIndex === 3) {
+      const formArray = this.selectedEmails as FormArray;
+      formArray.clear();
       this.previewDLEmails = [];
       this.onTabSelect(0, false);
       this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
@@ -1096,6 +1100,12 @@ export class EmailTemplateComponent
 
       this.emailValidationError = '';
     }
+    if (this.activeSegmentIndex === 0) {
+      this.dlQuery?.get('name')?.setValue('');
+      this.resource = null;
+      this.resetFilters(this.dlQuery);
+      this.resetFilters(this.dlCommonQuery);
+    }
   }
 
   /**
@@ -1151,7 +1161,7 @@ export class EmailTemplateComponent
    */
   getCommonServiceDataSet() {
     const commonServiceData: any = this.emailService.setCommonServicePayload(
-      this.dlCommonQuery?.getRawValue()?.filter
+      cloneDeep(this.dlCommonQuery?.getRawValue()?.filter)
     );
     this.loading = true;
     this.restService

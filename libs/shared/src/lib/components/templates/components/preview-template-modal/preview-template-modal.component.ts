@@ -98,6 +98,7 @@ export class PreviewTemplateModalComponent {
     this.emailService.datasetsForm.patchValue({
       emailLayout: this.data.emailContent,
     });
+    this.emailService.layoutTitle = this.data?.emailContent?.name || '';
     if (this.data.distributionListInfo) {
       this.setDistributionData();
     }
@@ -233,6 +234,8 @@ export class PreviewTemplateModalComponent {
           previewData?.dataQuery?.queryName || '';
         payload.datasets[0].query.fields = previewData?.dataQuery?.fields || [];
         payload.emailDistributionList = previewData.emailDistributionList;
+        payload.datasets[0].navigateToPage = previewData?.navigateToPage;
+        payload.datasets[0].navigateSettings = previewData?.navigateSettings;
       }
     }
     this.dialogRef.close();

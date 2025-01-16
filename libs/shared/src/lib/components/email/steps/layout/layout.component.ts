@@ -158,7 +158,7 @@ export class LayoutComponent
     if (this.emailService.isQuickAction) {
       this.emailService.resetPreviewData();
       this.emailService.previewData.datasets = ['Block 1'];
-      const layoutName = this.emailService.emailLayout.name;
+      const layoutName = this.emailService?.emailLayout?.name || '';
       this.emailService.emailLayout = {};
       this.emailService.emailLayout.name = layoutName;
     } else {

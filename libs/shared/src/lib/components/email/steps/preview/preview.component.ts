@@ -279,21 +279,21 @@ export class PreviewComponent
       objData.emailDistributionList.to.commonServiceFilter =
         this.emailService.setCommonServicePayload(
           objData.emailDistributionList?.to?.commonServiceFilter?.filter
-        )?.commonServiceFilter;
+        );
     }
 
     if (objData.emailDistributionList?.cc?.commonServiceFilter) {
       objData.emailDistributionList.cc.commonServiceFilter =
         this.emailService.setCommonServicePayload(
           objData.emailDistributionList?.cc?.commonServiceFilter?.filter
-        )?.commonServiceFilter;
+        );
     }
 
     if (objData.emailDistributionList?.bcc?.commonServiceFilter) {
       objData.emailDistributionList.bcc.commonServiceFilter =
         this.emailService.setCommonServicePayload(
           objData.emailDistributionList?.bcc?.commonServiceFilter?.filter
-        )?.commonServiceFilter;
+        );
     }
 
     this.http
@@ -395,6 +395,8 @@ export class PreviewComponent
           this.emailService.allPreviewData[0]['emailDistributionList'] =
             this.query?.emailDistributionList;
         }
+        this.query.datasets[0].navigateToPage = previewData?.navigateToPage;
+        this.query.datasets[0].navigateSettings = previewData?.navigateSettings;
       }
 
       this.query.emailLayout =
@@ -406,22 +408,23 @@ export class PreviewComponent
         this.query.datasets[0].resource = '';
       }
       const objData: any = cloneDeep(this.query);
+      objData.emailLayout.name = this.emailService?.layoutTitle;
       if (!this.emailService.isQuickAction) {
         //Updating payload
         objData.emailDistributionList.to.commonServiceFilter =
           this.emailService.setCommonServicePayload(
             objData.emailDistributionList.to.commonServiceFilter.filter
-          )?.commonServiceFilter;
+          );
 
         objData.emailDistributionList.cc.commonServiceFilter =
           this.emailService.setCommonServicePayload(
             objData.emailDistributionList.cc.commonServiceFilter.filter
-          )?.commonServiceFilter;
+          );
 
         objData.emailDistributionList.bcc.commonServiceFilter =
           this.emailService.setCommonServicePayload(
             objData.emailDistributionList.bcc.commonServiceFilter.filter
-          )?.commonServiceFilter;
+          );
       }
       this.http.post(this.previewUrl, objData).subscribe(
         (response: any) => {

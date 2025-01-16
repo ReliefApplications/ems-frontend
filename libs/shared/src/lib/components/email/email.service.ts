@@ -399,17 +399,17 @@ export class EmailService {
           query.emailDistributionList.to.commonServiceFilter =
             this.setCommonServicePayload(
               query.emailDistributionList.to.commonServiceFilter.filter
-            )?.commonServiceFilter;
+            );
 
           query.emailDistributionList.cc.commonServiceFilter =
             this.setCommonServicePayload(
               query.emailDistributionList.cc.commonServiceFilter.filter
-            )?.commonServiceFilter;
+            );
 
           query.emailDistributionList.bcc.commonServiceFilter =
             this.setCommonServicePayload(
               query.emailDistributionList.bcc.commonServiceFilter.filter
-            )?.commonServiceFilter;
+            );
           firstValueFrom(
             this.http.post(
               `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
@@ -701,15 +701,7 @@ export class EmailService {
         filter: this.formBuilder.group({
           logic: new FormControl(emailDL?.query?.filter?.logic || null), // Filter logic
           filters: this.formBuilder.array(
-            emailDL?.query?.filter?.filters.map((filter: any) => {
-              return this.formBuilder.group({
-                ...filter,
-                inTheLast: this.formBuilder.group({
-                  number: new FormControl(filter.inTheLast?.number || null),
-                  unit: new FormControl(filter.inTheLast?.unit || null),
-                }),
-              });
-            }) || []
+            this.mapFilters(emailDL?.query?.filter?.filters || [])
           ),
         }),
         fields: this.formBuilder.array(
@@ -727,35 +719,44 @@ export class EmailService {
         filter: this.formBuilder.group({
           logic: new FormControl(emailDL?.commonServiceFilter?.logic || null), // Filter logic
           filters: this.formBuilder.array(
-            emailDL?.commonServiceFilter?.filters?.map((filter: any) => {
-              const options: any = this.formBuilder.array([
-                this.formBuilder.group({
-                  text: filter?.value,
-                  value: filter?.value,
-                }),
-              ]);
-              return this.formBuilder.group({
-                ...filter,
-                inTheLast: this.formBuilder.group({
-                  number: new FormControl(filter?.inTheLast?.number || null),
-                  unit: new FormControl(filter?.inTheLast?.unit || null),
-                }),
-                options: options,
-              });
-            }) || []
+            this.mapFilters(emailDL?.commonServiceFilter?.filters || [])
           ),
         }),
-        // fields: this.formBuilder?.array(
-        //   emailDL?.commonServiceFilter?.fields?.map(
-        //     (field: any) => this.createFieldsFormGroup(field) // Using the utility function
-        //   )
-        // ),
       })
     );
 
     dlGroup.setControl('inputEmails', this.formBuilder.array(inputArray));
 
     dlGroup.disable();
+  }
+
+  /**
+   * Recursive function to map filters
+   *
+   * @param filters filters Object (Nested object)
+   * @returns Filters formgroup
+   */
+  public mapFilters(filters: any[]): FormGroup[] {
+    return filters?.map((filter: any) => {
+      if (filter?.filters) {
+        // If nested filters exist, recursively map them
+        return this.formBuilder.group({
+          logic: new FormControl(filter.logic || null),
+          filters: this.formBuilder.array(this.mapFilters(filter.filters)),
+        });
+      } else {
+        // Handle individual filter
+        return this.formBuilder.group({
+          field: new FormControl(filter.field || null),
+          operator: new FormControl(filter.operator || null),
+          value: new FormControl(filter.value || null),
+          inTheLast: this.formBuilder.group({
+            number: new FormControl(filter?.inTheLast?.number || null),
+            unit: new FormControl(filter?.inTheLast?.unit || null),
+          }),
+        });
+      }
+    });
   }
 
   /**
@@ -1879,9 +1880,7 @@ export class EmailService {
     let commonServiceData: any = {};
     commonServiceData['commonServiceFilter'] = {};
     if (dlCommonQuery) {
-      commonServiceData['commonServiceFilter']['logic'] = dlCommonQuery?.logic;
-      commonServiceData['commonServiceFilter']['filters'] = [];
-      commonServiceData = this.processFilters(dlCommonQuery, commonServiceData);
+      commonServiceData = this.processFilters(dlCommonQuery);
     }
     return commonServiceData;
   }
@@ -1890,10 +1889,9 @@ export class EmailService {
    * Process common service filter fo updating its fields value
    *
    * @param dlCommonQuery Commonservice filters
-   * @param commonServiceData update common service filters
    * @returns Updated filters data
    */
-  processFilters(dlCommonQuery: any, commonServiceData: any) {
+  processFilters(dlCommonQuery: any) {
     dlCommonQuery?.filters?.forEach((ele: any) => {
       let preDefineFields: any = [];
       if (!ele.filters) {
@@ -1902,16 +1900,10 @@ export class EmailService {
         );
         ele.field =
           preDefineFields?.length > 0 ? preDefineFields[0]['label'] : ele.field;
-        const newObj = {
-          field: ele.field,
-          operator: ele.operator,
-          value: ele.value,
-        };
-        commonServiceData['commonServiceFilter']['filters'].push(newObj);
       } else {
-        this.processFilters(ele, commonServiceData);
+        this.processFilters(ele);
       }
     });
-    return commonServiceData;
+    return dlCommonQuery;
   }
 }

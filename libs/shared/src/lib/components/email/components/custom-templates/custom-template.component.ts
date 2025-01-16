@@ -69,6 +69,9 @@ export class CustomTemplateComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.emailService.layoutTitle = this.emailService?.isCustomTemplateEdit
+      ? this.emailService?.layoutTitle
+      : '';
     this.steps
       .filter((x: any) => x.label === 'Preview')
       .forEach((y: any) => {

@@ -23,4 +23,6 @@ export const commonServiceFields = [
   { key: 'SystemPosition', label: 'ApplicationPositionName' },
   { key: 'Country', label: 'Country' },
   { key: 'Region', label: 'Region' },
+  { key: 'LocationType', label: 'LocationType' },
+  { key: 'InternalExternal', label: 'InternalExternal' },
 ];
