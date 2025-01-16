@@ -222,7 +222,11 @@ export class AuthService {
    * @returns A promise that resolves to void.
    */
   public initLoginSequence(): Promise<void> {
-    if (!localStorage.getItem('idtoken')) {
+    console.log(
+      'User has valid token ( Login ): ',
+      this.oauthService.hasValidAccessToken()
+    );
+    if (!this.oauthService.hasValidAccessToken()) {
       let environmentUri =
         this.environment.module === 'backoffice'
           ? this.environment.backOfficeUri
@@ -245,10 +249,6 @@ export class AuthService {
       }
     } else {
       console.log('Found token, skipping redirection...');
-      console.log(
-        'User has valid token ( Login ): ',
-        this.oauthService.hasValidAccessToken()
-      );
     }
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()
@@ -275,6 +275,7 @@ export class AuthService {
    * Gets the Azure AD profile.
    */
   checkAccount(): void {
+    console.log('Check account');
     const claims: any = this.oauthService.getIdentityClaims();
     if (!claims) {
       return;
