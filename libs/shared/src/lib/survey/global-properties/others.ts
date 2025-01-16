@@ -184,6 +184,14 @@ export const init = (environment: any): void => {
     default: false,
   });
 
+  serializer.addProperty('survey', {
+    name: 'showPercentageProgressBar',
+    category: 'general',
+    type: 'dropdown',
+    choices: yesNoChoices,
+    default: false,
+  });
+
   // Allow user to select the default language of the survey
   serializer.addProperty('survey', {
     name: 'defaultLanguage:dropdown',

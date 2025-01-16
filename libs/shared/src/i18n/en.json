@@ -1516,7 +1516,8 @@
           "detail": "Open detail",
           "downloadReport": "Download",
           "goTo": "Go to page",
-          "history": "Show history"
+          "history": "Show history",
+          "progress": "Progress"
         },
         "errors": {
           "autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
@@ -1730,6 +1731,7 @@
               "text": "Show history"
             },
             "showDetails": "Show record details",
+            "showProgress": "Show record progress",
             "state": "Select dashboard state",
             "title": "Enabled actions",
             "update": {
@@ -1814,6 +1816,7 @@
               "navigateToPage": "User can go to specified page on click",
               "show": "User can see full history of visible records",
               "showDetails": "User can see full details of visible records",
+              "showProgress": "User can see in a column the progress percentage of the record",
               "singleSelection": "Si activé, une seule ligne peut être sélectionnée à la fois",
               "state": "Select the dashboard state to use to map and save the rows ID's. If no state is selected, a new one will be created for the widget.",
               "update": "If authorized, user can update visible records"

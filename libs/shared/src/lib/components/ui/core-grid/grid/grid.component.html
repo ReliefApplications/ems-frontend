@@ -1022,6 +1022,26 @@
         </ng-container>
       </kendo-grid-column-group>
     </ng-container>
+    <!-- Progress percentage column -->
+    <kendo-grid-column
+      *ngIf="actions.showProgress"
+      [columnMenu]="false"
+      [width]="150"
+      [resizable]="true"
+      [title]="'components.widget.grid.actions.progress' | translate"
+      [sticky]="true"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <div class="flex items-center" *ngIf="dataItem['progress']">
+          {{ dataItem['progress'] | number : '1.0-1' }}%
+          <div class="ml-1 bg-gray-200 w-full rounded-full h-2">
+            <div
+              class="bg-gray-500 h-full rounded-full"
+              [style.width.%]="dataItem['progress']"
+            ></div></div
+        ></div>
+      </ng-template>
+    </kendo-grid-column>
     <!-- Go to page ( navigateToPage action ) -->
     <kendo-grid-column
       *ngIf="actions.navigateToPage"

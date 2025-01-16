@@ -137,6 +137,7 @@ export class GridComponent
     showDetails: {
       display: false,
     },
+    showProgress: false,
     navigateToPage: false,
     navigateSettings: {
       field: '',

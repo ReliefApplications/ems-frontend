@@ -268,6 +268,7 @@ export const createGridActionsFormGroup = (configuration: any) => {
     ],
     showDetails: [get(configuration, 'actions.showDetails', true)],
     showDetailsLabel: [get(configuration, 'actions.showDetailsLabel', '')],
+    showProgress: [get(configuration, 'actions.showProgress', false)],
     navigateToPage: [get(configuration, 'actions.navigateToPage', false)],
     navigateSettings: fb.group({
       pageUrl: [get(configuration, 'actions.navigateSettings.pageUrl', '')],

@@ -1,0 +1,12 @@
+<div
+  class="flex bg-gray-200 rounded-full dark:bg-gray-700 h-4 mb-4 mx-10"
+  *ngIf="currentPageQuestions.length > 0"
+>
+  <div
+    class="bg-primary-500 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
+    [style.width.%]="value"
+    *ngIf="value"
+  >
+    {{ value | number : '1.0-1' }}%
+  </div>
+</div>

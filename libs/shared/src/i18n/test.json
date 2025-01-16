@@ -1516,7 +1516,8 @@
           "detail": "******",
           "downloadReport": "******",
           "goTo": "******",
-          "history": "******"
+          "history": "******",
+          "progress": "******"
         },
         "errors": {
           "autoSaveFailed": "******",
@@ -1730,6 +1731,7 @@
               "text": "******"
             },
             "showDetails": "******",
+            "showProgress": "******",
             "state": "******",
             "title": "******",
             "update": {
@@ -1814,6 +1816,7 @@
               "navigateToPage": "******",
               "show": "******",
               "showDetails": "******",
+              "showProgress": "******",
               "singleSelection": "******",
               "state": "******",
               "update": "******"
