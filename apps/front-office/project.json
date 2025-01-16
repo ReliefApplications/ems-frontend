@@ -304,7 +304,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/styles/src/lib/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/unesco-mab"]
           }
         },
         "oort-expertisefr": {

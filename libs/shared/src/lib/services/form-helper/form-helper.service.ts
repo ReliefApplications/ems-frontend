@@ -330,7 +330,9 @@ export class FormHelpersService {
               name,
               index
             ) as Question;
-            nestedQuestions.push(question as Question);
+            if (question) {
+              nestedQuestions.push(question as Question);
+            }
           });
         });
       });

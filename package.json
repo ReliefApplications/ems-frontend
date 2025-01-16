@@ -95,6 +95,7 @@
     "leaflet.timeline": "^1.6.0",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
+    "marked": "^9.1.6",
     "monaco-editor": "^0.34.1",
     "ng2-charts": "^4.1.1",
     "ngx-monaco-editor-v2": "^15.0.1",
