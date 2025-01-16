@@ -142,6 +142,10 @@ export class AuthService {
   ) {
     this.environment = environment;
     this.oauthService.events.subscribe(() => {
+      console.log(
+        'User has valid token ( events ): ',
+        this.oauthService.hasValidAccessToken()
+      );
       this.isAuthenticated.next(this.oauthService.hasValidAccessToken());
       this.checkAccount();
     });
@@ -239,6 +243,12 @@ export class AuthService {
           // redirectUri.pathname + redirectUri.search + redirectUri.hash || This would also work but since it does a concat, the other would be faster
         );
       }
+    } else {
+      console.log('Found token, skipping redirection...');
+      console.log(
+        'User has valid token ( Login ): ',
+        this.oauthService.hasValidAccessToken()
+      );
     }
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()
