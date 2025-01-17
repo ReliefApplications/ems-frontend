@@ -1744,7 +1744,6 @@
               "text": "Voir l'historique"
             },
             "showDetails": "Afficher les détails des enregistrements",
-            "showProgress": "Afficher le progrès des enregistrements",
             "state": "Sélectionner l'état du tableau de bord",
             "title": "Actions activées",
             "update": {
@@ -1829,7 +1828,6 @@
               "navigateToPage": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
               "show": "L'utilisateur peut afficher l'historique complet des enregistrements affichés",
               "showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
-              "showProgress": "L'utilisateur peut voir dans une colomne le pourcentage de progrès des enregistrements",
               "singleSelection": "Single selection",
               "state": "Sélectionnez l'état du tableau de bord à utiliser pour mapper et enregistrer les ID de lignes. Si aucun état n'est sélectionné, un nouveau sera créé pour le widget.",
               "update": "L'utilisateur peut mettre à jour les enregistrements affichés"

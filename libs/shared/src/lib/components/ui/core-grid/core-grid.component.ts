@@ -315,7 +315,6 @@ export class CoreGridComponent
     showDetails: {
       display: false,
     },
-    showProgress: false,
     navigateToPage: false,
     navigateSettings: {
       field: '',
@@ -466,7 +465,6 @@ export class CoreGridComponent
         display: get(this.settings, 'actions.showDetails', true),
         label: get(this.settings, 'actions.showDetailsLabel', ''),
       },
-      showProgress: get(this.settings, 'actions.showProgress', false),
       navigateToPage: get(this.settings, 'actions.navigateToPage', false),
       navigateSettings: {
         field: get(this.settings, 'actions.navigateSettings.field', false),

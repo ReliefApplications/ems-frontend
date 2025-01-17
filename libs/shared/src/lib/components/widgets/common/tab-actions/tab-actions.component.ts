@@ -43,11 +43,6 @@ export class TabActionsComponent
       placeholder: 'components.widget.settings.grid.actions.details.text',
     },
     {
-      name: 'showProgress',
-      text: 'components.widget.settings.grid.actions.showProgress',
-      tooltip: 'components.widget.settings.grid.hint.actions.showProgress',
-    },
-    {
       name: 'delete',
       text: 'components.widget.settings.grid.actions.delete.text',
       tooltip: 'components.widget.settings.grid.hint.actions.delete',

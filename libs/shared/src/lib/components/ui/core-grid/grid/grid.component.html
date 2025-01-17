@@ -466,6 +466,22 @@
               </div>
             </div>
           </ng-template>
+          <!-- DISPLAY ( progress bar ) -->
+          <ng-template
+            kendoGridCellTemplate
+            let-dataItem="dataItem"
+            *ngIf="field.meta.type === 'progress'"
+          >
+            <div class="flex items-center p-2">
+              {{ dataItem[field.name] ?? 0 | number : '1.0-1' }}%
+              <div class="ml-1 bg-gray-300 w-full rounded-full h-2">
+                <div
+                  class="bg-gray-600 h-full rounded-full"
+                  [style.width.%]="dataItem[field.name] ?? 0"
+                ></div>
+              </div>
+            </div>
+          </ng-template>
         </ng-container>
         <!-- EDITION ( text / color / comment - resource - dropdown ) -->
         <ng-template
@@ -565,6 +581,16 @@
             (close)="editing = false"
           ></kendo-datetimepicker>
         </ng-template>
+      </kendo-grid-column>
+      <!-- Progress percentage column -->
+      <kendo-grid-column
+        *ngIf="field.type === 'progress'"
+        [columnMenu]="false"
+        [width]="150"
+        [resizable]="true"
+        [title]="'components.widget.grid.actions.progress' | translate"
+        [sticky]="true"
+      >
       </kendo-grid-column>
       <!-- Reference data -->
       <ng-container *ngIf="field.meta && field.meta.type === 'referenceData'">
@@ -1022,26 +1048,6 @@
         </ng-container>
       </kendo-grid-column-group>
     </ng-container>
-    <!-- Progress percentage column -->
-    <kendo-grid-column
-      *ngIf="actions.showProgress"
-      [columnMenu]="false"
-      [width]="150"
-      [resizable]="true"
-      [title]="'components.widget.grid.actions.progress' | translate"
-      [sticky]="true"
-    >
-      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
-        <div class="flex items-center" *ngIf="dataItem['progress']">
-          {{ dataItem['progress'] | number : '1.0-1' }}%
-          <div class="ml-1 bg-gray-200 w-full rounded-full h-2">
-            <div
-              class="bg-gray-500 h-full rounded-full"
-              [style.width.%]="dataItem['progress']"
-            ></div></div
-        ></div>
-      </ng-template>
-    </kendo-grid-column>
     <!-- Go to page ( navigateToPage action ) -->
     <kendo-grid-column
       *ngIf="actions.navigateToPage"

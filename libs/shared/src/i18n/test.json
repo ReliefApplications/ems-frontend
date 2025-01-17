@@ -1731,7 +1731,6 @@
               "text": "******"
             },
             "showDetails": "******",
-            "showProgress": "******",
             "state": "******",
             "title": "******",
             "update": {
@@ -1816,7 +1815,6 @@
               "navigateToPage": "******",
               "show": "******",
               "showDetails": "******",
-              "showProgress": "******",
               "singleSelection": "******",
               "state": "******",
               "update": "******"

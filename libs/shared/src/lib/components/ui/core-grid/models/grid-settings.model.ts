@@ -45,7 +45,6 @@ export interface GridActions {
     display: boolean;
     label?: string;
   };
-  showProgress?: boolean;
   navigateToPage?: boolean;
   navigateSettings?: {
     field: string;
