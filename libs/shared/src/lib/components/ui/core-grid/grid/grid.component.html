@@ -582,16 +582,6 @@
           ></kendo-datetimepicker>
         </ng-template>
       </kendo-grid-column>
-      <!-- Progress percentage column -->
-      <kendo-grid-column
-        *ngIf="field.type === 'progress'"
-        [columnMenu]="false"
-        [width]="150"
-        [resizable]="true"
-        [title]="'components.widget.grid.actions.progress' | translate"
-        [sticky]="true"
-      >
-      </kendo-grid-column>
       <!-- Reference data -->
       <ng-container *ngIf="field.meta && field.meta.type === 'referenceData'">
         <ng-container *ngFor="let subField of field.subFields">

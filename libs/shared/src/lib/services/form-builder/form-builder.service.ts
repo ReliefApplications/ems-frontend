@@ -103,12 +103,14 @@ export const transformSurveyData = (survey: SurveyModel) => {
     }
   });
   if (survey.showPercentageProgressBar) {
+    const visibleQuestions = survey
+      .getAllQuestions()
+      .filter((question) => question.isVisible && !question.readOnly);
     data.progress =
-      (survey
-        .getAllQuestions()
-        .filter((question: Question) => !question.isEmpty()).length *
+      (visibleQuestions.filter((question: Question) => !question.isEmpty())
+        .length *
         100) /
-      survey.getAllQuestions().length;
+      visibleQuestions.length;
   }
   return data;
 };
