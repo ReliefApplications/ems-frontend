@@ -1516,8 +1516,7 @@
           "detail": "******",
           "downloadReport": "******",
           "goTo": "******",
-          "history": "******",
-          "progress": "******"
+          "history": "******"
         },
         "errors": {
           "autoSaveFailed": "******",

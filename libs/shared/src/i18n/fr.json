@@ -1528,8 +1528,7 @@
           "detail": "Ouvrir le détail",
           "downloadReport": "Télécharger",
           "goTo": "Aller à la page",
-          "history": "Voir l'historique",
-          "progress": "Progrès"
+          "history": "Voir l'historique"
         },
         "empty": "Aucun enregistrement détecté pour cette configuration de réseau",
         "errors": {

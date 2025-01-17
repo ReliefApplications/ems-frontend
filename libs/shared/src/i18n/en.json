@@ -1516,8 +1516,7 @@
           "detail": "Open detail",
           "downloadReport": "Download",
           "goTo": "Go to page",
-          "history": "Show history",
-          "progress": "Progress"
+          "history": "Show history"
         },
         "errors": {
           "autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
