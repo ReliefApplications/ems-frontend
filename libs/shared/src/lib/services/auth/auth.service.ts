@@ -141,7 +141,8 @@ export class AuthService {
     private ability: AppAbility
   ) {
     this.environment = environment;
-    this.oauthService.events.subscribe(() => {
+    this.oauthService.events.subscribe((e) => {
+      console.log('Event: ' + e);
       console.log(
         'User has valid token ( events ): ',
         this.oauthService.hasValidAccessToken()

@@ -39,14 +39,14 @@ export class AccessGuard implements CanActivate {
           return true;
         } else {
           console.log('Could not get profile');
-          // if (this.authService.account) {
-          //   console.log('Found account');
-          //   console.log(this.authService.account);
-          //   this.authService.logout();
-          // } else {
-          //   console.log('No account');
-          //   this.router.navigate(['/auth']);
-          // }
+          if (this.authService.account) {
+            console.log('Found account');
+            console.log(this.authService.account);
+            // this.authService.logout();
+          } else {
+            console.log('No account');
+            this.router.navigate(['/auth']);
+          }
           this.router.navigate(['/auth']);
           return false;
         }
