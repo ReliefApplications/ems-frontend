@@ -68,7 +68,11 @@ export class EditorControlComponent
    * @returns the value
    */
   @Input() get value(): string | null {
-    return this.ngControl?.value;
+    if (this.ngControl) {
+      return this.ngControl?.value;
+    } else {
+      return this.editorContent;
+    }
   }
 
   /** Sets the value */
@@ -82,6 +86,9 @@ export class EditorControlComponent
   /** Id of the component */
   @HostBinding()
   id = `shared-editor-control-${EditorControlComponent.nextId++}`;
+
+  /** Is control readonly */
+  @Input() readonly = false;
 
   /**
    * Gets the placeholder for the select
@@ -214,6 +221,14 @@ export class EditorControlComponent
     // Set the editor language
     this.editorConfig.language = this.editorService.language;
     this.editorContent = this.value || '';
+
+    if (this.editor) {
+      if (this.readonly) {
+        this.editor.editor.setMode('readonly');
+      } else {
+        this.editor.editor.setMode('design');
+      }
+    }
   }
 
   ngAfterViewInit(): void {
@@ -248,6 +263,9 @@ export class EditorControlComponent
     });
     this.editor.disabled = true;
     // this.editor.onInit.subscribe(() => {});
+    if (this.readonly) {
+      this.editor.editor.setMode('readonly');
+    }
   }
 
   /** Emit and change editor loading */
