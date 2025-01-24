@@ -48,7 +48,7 @@ export const CS_DOCUMENTS_PROPERTIES = [
     value: 'assignmentfunctions',
     bodyKey: 'AssignmentFunction',
   },
-  // { text: 'IMS Role', value: 'documentroles', bodyKey: '' },
+  { text: 'IMS Role', value: 'documentroles', bodyKey: 'DocumentRole' },
   { text: 'Language', value: 'languages', bodyKey: 'Language' },
   { text: 'Occurrence', value: 'occurrences', bodyKey: null },
   {
@@ -104,8 +104,8 @@ export class DocumentManagementService {
   /**
    * Set up a snackbar element with the given message and duration
    *
-   * @param {string} translationKey Translation key for the file download snackbar message
-   * @param {duration} duration Time duration of the opened snackbar element
+   * @param translationKey Translation key for the file download snackbar message
+   * @param duration Time duration of the opened snackbar element
    * @returns snackbar reference
    */
   private createLoadingSnackbarRef(translationKey: string, duration = 0) {
