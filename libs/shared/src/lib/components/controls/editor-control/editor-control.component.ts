@@ -68,7 +68,11 @@ export class EditorControlComponent
    * @returns the value
    */
   @Input() get value(): string | null {
-    return this.ngControl?.value;
+    if (this.ngControl) {
+      return this.ngControl?.value;
+    } else {
+      return this.editorContent;
+    }
   }
 
   /** Sets the value */
