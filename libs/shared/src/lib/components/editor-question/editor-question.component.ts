@@ -2,12 +2,15 @@ import {
   AfterViewInit,
   Component,
   EventEmitter,
+  Input,
+  OnInit,
   ViewChild,
 } from '@angular/core';
-import { WIDGET_EDITOR_CONFIG } from '../../const/tinymce.const';
+import { FIELD_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { EditorService } from '../../services/editor/editor.service';
 import { EditorControlComponent } from '../controls/public-api';
 import { BehaviorSubject } from 'rxjs';
+import { cloneDeep } from 'lodash';
 
 /**  */
 @Component({
@@ -17,9 +20,13 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './editor-question.component.html',
   styleUrls: ['./editor-question.component.scss'],
 })
-export class EditorQuestionComponent implements AfterViewInit {
+export class EditorQuestionComponent implements AfterViewInit, OnInit {
+  /** Is readonly */
+  @Input() readonly = false;
+  /** Is display mode */
+  @Input() displayMode = false;
   /** configuration of the editor */
-  public config = WIDGET_EDITOR_CONFIG;
+  public config = cloneDeep(FIELD_EDITOR_CONFIG);
   /** editor */
   @ViewChild(EditorControlComponent)
   public editor!: EditorControlComponent;
@@ -36,6 +43,16 @@ export class EditorQuestionComponent implements AfterViewInit {
   constructor(editorService: EditorService) {
     this.config.base_url = editorService.url;
     this.config.language = editorService.language;
+  }
+
+  ngOnInit(): void {
+    if (this.displayMode) {
+      this.config.toolbar = false;
+      this.config.menubar = false;
+    } else {
+      this.config.toolbar = FIELD_EDITOR_CONFIG.toolbar;
+      this.config.menubar = FIELD_EDITOR_CONFIG.menubar;
+    }
   }
 
   ngAfterViewInit() {

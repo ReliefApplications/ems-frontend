@@ -1,3 +1,11 @@
+# [2.17.0-alpha.22](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.21...v2.17.0-alpha.22) (2025-01-24)
+
+
+### Bug Fixes
+
+* html question not indicating if read only ([#2750](https://github.com/ReliefApplications/ems-frontend/issues/2750)) ([a7e245e](https://github.com/ReliefApplications/ems-frontend/commit/a7e245e4f068bf8551a5286215f34535d7359022)), closes [AB#109284](https://github.com/AB/issues/109284)
+* use utf-8 decoding in email preview component ([#2727](https://github.com/ReliefApplications/ems-frontend/issues/2727)) ([b16e489](https://github.com/ReliefApplications/ems-frontend/commit/b16e48932840ec7a71a3af13292cdd4528b23c2b)), closes [AB#107245](https://github.com/AB/issues/107245)
+
 # [2.17.0-alpha.21](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.20...v2.17.0-alpha.21) (2025-01-10)
 
 
