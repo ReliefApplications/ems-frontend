@@ -1,3 +1,10 @@
+# [2.17.0-alpha.23](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.22...v2.17.0-alpha.23) (2025-01-27)
+
+
+### Bug Fixes
+
+* prevent auto logout if token expired ([#2748](https://github.com/ReliefApplications/ems-frontend/issues/2748)) ([f92aa4d](https://github.com/ReliefApplications/ems-frontend/commit/f92aa4dff96a8fa5871c67925e9aaa537bcae3e9)), closes [AB#108676](https://github.com/AB/issues/108676)
+
 # [2.17.0-alpha.22](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.21...v2.17.0-alpha.22) (2025-01-24)
 
 
