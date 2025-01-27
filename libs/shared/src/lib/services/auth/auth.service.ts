@@ -141,12 +141,7 @@ export class AuthService {
     private ability: AppAbility
   ) {
     this.environment = environment;
-    this.oauthService.events.subscribe((e) => {
-      console.log('Event: ' + e);
-      console.log(
-        'User has valid token ( events ): ',
-        this.oauthService.hasValidAccessToken()
-      );
+    this.oauthService.events.subscribe(() => {
       this.isAuthenticated.next(this.oauthService.hasValidAccessToken());
       this.checkAccount();
     });
@@ -222,11 +217,7 @@ export class AuthService {
    *
    * @returns A promise that resolves to void.
    */
-  public initLoginSequence(): Promise<void> {
-    console.log(
-      'User has valid token ( Login ): ',
-      this.oauthService.hasValidAccessToken()
-    );
+  public async initLoginSequence(): Promise<void> {
     if (!this.oauthService.hasValidAccessToken()) {
       let environmentUri =
         this.environment.module === 'backoffice'
@@ -248,8 +239,6 @@ export class AuthService {
           // redirectUri.pathname + redirectUri.search + redirectUri.hash || This would also work but since it does a concat, the other would be faster
         );
       }
-    } else {
-      console.log('Found token, skipping redirection...');
     }
     return this.oauthService
       .loadDiscoveryDocumentAndLogin()
@@ -276,7 +265,6 @@ export class AuthService {
    * Gets the Azure AD profile.
    */
   checkAccount(): void {
-    console.log('Check account');
     const claims: any = this.oauthService.getIdentityClaims();
     if (!claims) {
       return;

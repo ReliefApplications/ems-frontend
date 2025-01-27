@@ -40,9 +40,7 @@ export class AccessGuard implements CanActivate {
     | UrlTree {
     return this.authService.getProfile().pipe(
       map(({ data }) => {
-        console.log('Got profile');
         if (data.me) {
-          console.log('Could fetch API');
           if (data.me.isAdmin) {
             this.authService.user.next(data.me);
             return true;
@@ -59,14 +57,10 @@ export class AccessGuard implements CanActivate {
           }
         } else {
           if (this.authService.account) {
-            console.log('Found account');
-            console.log(this.authService.account);
             // this.authService.logout();
           } else {
-            console.log('No account');
             this.router.navigate(['/auth']);
           }
-          // console.log('Could not get profile');
           // this.router.navigate(['/auth']);
           return false;
         }
