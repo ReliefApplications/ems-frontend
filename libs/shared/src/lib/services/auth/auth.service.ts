@@ -217,8 +217,8 @@ export class AuthService {
    *
    * @returns A promise that resolves to void.
    */
-  public initLoginSequence(): Promise<void> {
-    if (!localStorage.getItem('idtoken')) {
+  public async initLoginSequence(): Promise<void> {
+    if (!this.oauthService.hasValidAccessToken()) {
       let environmentUri =
         this.environment.module === 'backoffice'
           ? this.environment.backOfficeUri
