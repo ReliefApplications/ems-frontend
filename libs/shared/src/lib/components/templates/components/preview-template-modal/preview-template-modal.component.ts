@@ -79,6 +79,7 @@ export class PreviewTemplateModalComponent {
     private dialogRef: DialogRef,
     @Inject('environment') environment: any
   ) {
+    this.emailService.setDatasetForm();
     this.environment = environment;
     this.emailService.isQuickAction = true;
     this.emailService.datasetsForm.get('emailDistributionList')?.reset();
