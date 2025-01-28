@@ -269,6 +269,13 @@ export class EmailTemplateComponent
         if (
           value !== undefined &&
           value !== null &&
+          this.activeSegmentIndex === 1
+        ) {
+          this.resetFilters(this.dlCommonQuery);
+        }
+        if (
+          value !== undefined &&
+          value !== null &&
           this.selectedResourceId !== value
         ) {
           this.selectedResourceId = value;
@@ -996,6 +1003,12 @@ export class EmailTemplateComponent
       const formArray = this.selectedEmails as FormArray;
       formArray.clear();
       this.previewDLEmails = [];
+
+      //Reseting Add manually opyion Data
+      this.dlQuery?.get('name')?.setValue('');
+      this.resource = null;
+      this.resetFilters(this.dlQuery);
+
       this.onTabSelect(0, false);
       this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
     }
