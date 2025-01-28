@@ -60,3 +60,18 @@ export const GET_RECORD_BY_ID = gql`
   }
   ${FORM_FIELDS}
 `;
+
+/** GraphQL mutation to add a new comment */
+export const GET_COMMENTS = gql`
+  query GetComments($record: ID!, $questionId: String!) {
+    comments(record: $record, questionId: $questionId) {
+      id
+      message
+      createdAt
+      modifiedAt
+      createdBy {
+        name
+      }
+    }
+  }
+`;

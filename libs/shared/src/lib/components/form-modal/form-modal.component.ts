@@ -2,10 +2,12 @@ import { Apollo } from 'apollo-angular';
 import {
   Component,
   ElementRef,
+  HostListener,
   Inject,
   NgZone,
   OnDestroy,
   OnInit,
+  TemplateRef,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
@@ -53,9 +55,10 @@ import {
   transformSurveyData,
 } from '../../services/form-helper/form-helper.service';
 import { DialogModule } from '@oort-front/ui';
-import { DraftRecordComponent } from '../draft-record/draft-record.component';
 import { UploadRecordsComponent } from '../upload-records/upload-records.component';
 import { ContextService } from '../../services/context/context.service';
+import { PopupRef, PopupService } from '@progress/kendo-angular-popup';
+import { CommentsPopupComponent } from './comments-popup/comments-popup.component';
 
 /**
  * Interface of Dialog data.
@@ -92,7 +95,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     ButtonModule,
     SpinnerModule,
     SurveyModule,
-    DraftRecordComponent,
+    CommentsPopupComponent,
   ],
 })
 export class FormModalComponent
@@ -137,6 +140,15 @@ export class FormModalComponent
   private storedMergedData: any;
   /** If new records was uploaded */
   private uploadedRecords = false;
+  /** Currently commented question */
+  @ViewChild('popupTemplate', { static: true })
+  popupTemplate!: TemplateRef<any>;
+  /** */
+  popupRef: PopupRef | null = null;
+  /** Opened button */
+  popupAnchor: HTMLElement | null = null;
+  /** */
+  public selectedQuestion = { name: '', title: '' };
 
   /**
    * Modal to edit or add a record.
@@ -153,6 +165,7 @@ export class FormModalComponent
    * @param translate This is the service that allows us to translate the text in our application.
    * @param ngZone Angular Service to execute code inside Angular environment
    * @param contextService Shared context service
+   * @param popupService Popup service
    */
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
@@ -166,7 +179,8 @@ export class FormModalComponent
     protected confirmService: ConfirmService,
     protected translate: TranslateService,
     protected ngZone: NgZone,
-    protected contextService: ContextService
+    protected contextService: ContextService,
+    protected popupService: PopupService
   ) {
     super();
   }
@@ -329,6 +343,96 @@ export class FormModalComponent
       };
     }
     this.loading = false;
+    if (this.survey.canBeCommented && this.record) {
+      //Cannot comment on newly created record
+      this.survey.onAfterRenderQuestion.add((survey, options) => {
+        const questionElement = options.htmlElement;
+        const buttonId = 'popup_button_' + questionElement.id;
+        if (document.getElementById(buttonId)) {
+          // avoids having duplicated buttons
+          return;
+        }
+        questionElement.classList.add('group');
+
+        // Create the hover button
+        const button = document.createElement('button');
+        button.className =
+          'w-7 h-7 bg-primary-500 rounded-t-full rounded-br-full top-1/2 -right-9 absolute group-hover:opacity-100 opacity-0 items-center justify-center -translate-y-1/2';
+        button.id = buttonId;
+        // Add click event to the button
+        button.onclick = () => {
+          this.selectedQuestion = {
+            name: options.question.name,
+            title: options.question.title,
+          };
+          this.openPopup(button);
+        };
+        questionElement.appendChild(button);
+      });
+    }
+  }
+
+  /**
+   * Closes the open popup, and opens a new one next to clicked button
+   *
+   * @param anchor Button to anchor the popup to
+   */
+  openPopup(anchor: HTMLElement): void {
+    // Close any open popup
+    if (this.popupRef && this.popupAnchor) {
+      this.closePopup();
+    }
+    anchor.classList.replace('bg-primary-500', 'border-primary-500');
+    anchor.classList.replace('opacity-0', 'opacity-100');
+    anchor.classList.add('border-2');
+    this.popupAnchor = anchor;
+
+    // Open a new popup
+    this.popupRef = this.popupService.open({
+      content: this.popupTemplate,
+      popupAlign: { vertical: 'top', horizontal: 'right' },
+      margin: { horizontal: 20, vertical: 0 },
+      anchorAlign: { vertical: 'center', horizontal: 'left' },
+      collision: { vertical: 'fit', horizontal: 'flip' },
+      anchor,
+      popupClass: 'rounded-lg',
+    });
+  }
+
+  /**
+   * Closes the popup
+   */
+  closePopup() {
+    if (!this.popupAnchor || !this.popupRef) {
+      return;
+    }
+    this.popupAnchor.classList.replace('border-primary-500', 'bg-primary-500');
+    this.popupAnchor.classList.replace('opacity-100', 'opacity-0');
+    this.popupAnchor.classList.remove('border-2');
+    this.popupRef.close();
+    this.popupRef = null;
+    this.popupAnchor = null;
+  }
+
+  /**
+   * Listen for clicks anywhere in the document
+   *
+   * @param event mouse event
+   */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.popupRef || !this.popupAnchor) {
+      return;
+    }
+    // If the click is outside the popup, close it
+    const popupElement = this.popupRef.popupElement;
+    if (
+      popupElement &&
+      !popupElement.contains(event.target as Node) &&
+      !this.popupAnchor.contains(event.target as Node)
+    ) {
+      this.closePopup();
+    }
   }
 
   /**

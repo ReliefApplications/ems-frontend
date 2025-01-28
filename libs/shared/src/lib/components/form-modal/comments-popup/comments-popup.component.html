@@ -1,0 +1,55 @@
+<div class="flex flex-col max-h-screen w-96 p-4">
+  <div
+    class="flex border-b border-gray-400 justify-between items-center font-bold"
+  >
+    {{ 'common.collaboration' | translate }}
+    <ui-button
+      [isIcon]="true"
+      [size]="'small'"
+      icon="close"
+      (click)="closeModal.emit('')"
+      [uiTooltip]="'common.close' | translate"
+    >
+    </ui-button>
+  </div>
+  <p class="italic mb-4 text-slate-400">{{ selectedQuestion?.title }}</p>
+  <!-- Messages Section -->
+  <div class="flex-1 overflow-y-auto space-y-3 max-h-[calc(100vh-100px)]">
+    <!-- Individual Messages -->
+    <div class="mb-4" *ngFor="let comment of comments">
+      <span class="flex">
+        <p class="text-sm font-medium text-gray-900">
+          {{ comment.createdBy?.name }}
+        </p>
+        <p
+          [uiTooltip]="comment.createdAt?.toString() ?? ''"
+          class="text-slate-400 pl-2"
+        >
+          {{ getTimeAgo(comment.createdAt ?? 0) }}
+        </p>
+      </span>
+      <p class="text-sm text-gray-700">{{ comment.message }}</p>
+    </div>
+  </div>
+
+  <!-- Input Section -->
+  <div
+    class="mt-4 flex items-center border p-2 rounded-lg text-sm focus:outline-none focus:ring focus:ring-blue-300"
+  >
+    <input
+      type="text"
+      placeholder="Write a comment..."
+      [formControl]="comment"
+      class="flex-1"
+    />
+    <!-- For tagging people
+     <shared-editor-control
+      [formControl]="comment"
+      class="flex-1"
+      [editorConfig]="tinyMceConfig"
+    ></shared-editor-control> -->
+    <button (click)="addComment()">
+      <ui-icon icon="circle-up" fontFamily="fa"/>
+    </button>
+  </div>
+</div>

@@ -15,8 +15,9 @@ import {
   TabsModule,
 } from '@oort-front/ui';
 import { SurveyModule } from 'survey-angular-ui';
-import { DraftRecordComponent } from '../draft-record/draft-record.component';
 import { CheckUniqueProprietyReturnT } from '../../services/form-helper/form-helper.service';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CommentsPopupComponent } from '../form-modal/comments-popup/comments-popup.component';
 
 /**
  * Factory for creating scroll strategy
@@ -48,7 +49,8 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
     SpinnerModule,
     TabsModule,
     SurveyModule,
-    DraftRecordComponent,
+    ReactiveFormsModule,
+    CommentsPopupComponent,
   ],
 })
 export class ResourceModalComponent extends FormModalComponent {
