@@ -57,6 +57,10 @@ export class EmsTemplateComponent
   private disableDraft!: Subscription;
   /** Disable Save As Draft BUTTON */
   public disableSaveAsDraft = false;
+  /** Disable draft subscription */
+  private disableSend!: Subscription;
+  /** Disable Save And Send BUTTON */
+  public disableSaveAndSend = false;
   /** is submitted*/
   private submitted = false;
   /** Steps for stepper component */
@@ -203,6 +207,11 @@ export class EmsTemplateComponent
     this.disableDraft = this.emailService.disableSaveAsDraft.subscribe(
       (disable) => {
         this.disableSaveAsDraft = disable;
+      }
+    );
+    this.disableSend = this.emailService.disableSaveAndSend.subscribe(
+      (disable) => {
+        this.disableSaveAndSend = disable;
       }
     );
     if (
@@ -1040,6 +1049,7 @@ export class EmsTemplateComponent
   override ngOnDestroy(): void {
     this.disableSub.unsubscribe();
     this.disableDraft.unsubscribe();
+    this.disableSend.unsubscribe();
   }
 
   /**

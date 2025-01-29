@@ -358,6 +358,15 @@ export class PreviewComponent
             block.isExpanded = false;
             block.emails = Array.from(new Set(block.emails)); // Remove duplicate emails
           });
+
+          if (
+            !this.distributionListTo.length &&
+            !this.distributionListSeparate.length
+          ) {
+            this.emailService.disableSaveAndSend.next(true);
+          } else {
+            this.emailService.disableSaveAndSend.next(false);
+          }
           this.emailService.loading = false;
         },
         () => {

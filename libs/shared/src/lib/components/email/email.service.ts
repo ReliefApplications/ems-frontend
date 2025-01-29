@@ -98,6 +98,8 @@ export class EmailService {
   public disableSaveAsDraft = new BehaviorSubject<boolean>(false);
   /** DISABLE SAVE AND PROCEED BUTTON EMITTER */
   public disableSaveAndProceed = new BehaviorSubject<boolean>(false);
+  /** DISABLE SAVE AND SEND BUTTON EMITTER */
+  public disableSaveAndSend = new BehaviorSubject<boolean>(false);
   /** Control stepper disable status */
   public stepperDisable = new BehaviorSubject<any>('');
   /** Should show existing distribution list */
