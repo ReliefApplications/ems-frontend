@@ -1008,6 +1008,7 @@ export class EmailTemplateComponent
       this.dlQuery?.get('name')?.setValue('');
       this.resource = null;
       this.resetFilters(this.dlQuery);
+      this.distributionList.get('resource').setValue('');
 
       this.onTabSelect(0, false);
       this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
