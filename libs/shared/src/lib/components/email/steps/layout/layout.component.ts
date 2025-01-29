@@ -158,8 +158,9 @@ export class LayoutComponent
     if (this.emailService.isQuickAction) {
       this.emailService.resetPreviewData();
       this.emailService.previewData.datasets = ['Block 1'];
+      const layoutName = this.emailService?.emailLayout?.name || '';
       this.emailService.emailLayout = {};
-      this.emailService.emailLayout.name = 'Block 1';
+      this.emailService.emailLayout.name = layoutName;
     } else {
       this.emailService.createPreviewData();
     }
@@ -170,8 +171,9 @@ export class LayoutComponent
         this.emailService.allLayoutdata?.bodyHtml?.trim() === ''
           ? '<p>{{Block 1}}</p>'
           : this.emailService.allLayoutdata.bodyHtml;
+      const layoutName = this.emailService.emailLayout.name;
       this.emailService.emailLayout = {};
-      this.emailService.emailLayout.name = 'Block 1';
+      this.emailService.emailLayout.name = layoutName;
       this.layoutForm = this.fb.group({
         subjectField: [''],
         timeInput: [''],

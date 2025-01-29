@@ -40,6 +40,7 @@ import { ResourceQueryResponse } from '../../models/resource.model';
 import { prettifyLabel } from '../../utils/prettify';
 import { addNewField } from '../query-builder/query-builder-forms';
 import get from 'lodash/get';
+import { commonServiceFields } from './constant';
 
 /**
  * Interface for InValidDataSets
@@ -210,6 +211,10 @@ export class EmailService {
   public filterCCEmails: any = [];
   /** For storing emails For BCC from service response (In select with Filter option) */
   public filterBCCEmails: any = [];
+  /** Default common services available fields */
+  public commonServiceFields = commonServiceFields;
+  /** User table fields */
+  userTableFields: string[] = [];
 
   /**
    * Generates new dataset group.
@@ -249,9 +254,15 @@ export class EmailService {
    */
   async checkToValid() {
     if (
-      this.toDLHasFilter &&
-      (this.emailDistributionList?.to?.query?.resource ||
-        this.datasetsForm?.getRawValue()?.emailDistributionList?.to?.resource)
+      (this.toDLHasFilter &&
+        (this.emailDistributionList?.to?.query?.resource ||
+          this.datasetsForm?.getRawValue()?.emailDistributionList?.to
+            ?.resource)) ||
+      this.datasetsForm
+        ?.getRawValue()
+        ?.emailDistributionList?.to?.commonServiceFilter?.filter?.filters?.filter(
+          (x: any) => x?.field && x?.value
+        )?.length > 0
     ) {
       const query = {
         emailDistributionList: cloneDeep(this.emailDistributionList),
@@ -375,7 +386,9 @@ export class EmailService {
           (this.datasetsForm.getRawValue().emailDistributionList?.to
             ?.resource ||
             this.datasetsForm.getRawValue().emailDistributionList?.to
-              ?.reference)
+              ?.reference ||
+            this.datasetsForm.getRawValue().emailDistributionList?.to
+              ?.commonServiceFilter?.filter?.filters?.length > 0)
         ) {
           const query = {
             emailDistributionList: cloneDeep(
@@ -383,6 +396,20 @@ export class EmailService {
             ),
           };
 
+          query.emailDistributionList.to.commonServiceFilter =
+            this.setCommonServicePayload(
+              query.emailDistributionList.to.commonServiceFilter.filter
+            );
+
+          query.emailDistributionList.cc.commonServiceFilter =
+            this.setCommonServicePayload(
+              query.emailDistributionList.cc.commonServiceFilter.filter
+            );
+
+          query.emailDistributionList.bcc.commonServiceFilter =
+            this.setCommonServicePayload(
+              query.emailDistributionList.bcc.commonServiceFilter.filter
+            );
           firstValueFrom(
             this.http.post(
               `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
@@ -586,6 +613,7 @@ export class EmailService {
       query: this.createQuerygroup(),
       inputEmails: this.formBuilder.array([]),
       reference: null,
+      commonServiceFilter: this.createQuerygroup(),
     });
   }
 
@@ -673,15 +701,7 @@ export class EmailService {
         filter: this.formBuilder.group({
           logic: new FormControl(emailDL?.query?.filter?.logic || null), // Filter logic
           filters: this.formBuilder.array(
-            emailDL?.query?.filter?.filters.map((filter: any) => {
-              return this.formBuilder.group({
-                ...filter,
-                inTheLast: this.formBuilder.group({
-                  number: new FormControl(filter.inTheLast?.number || null),
-                  unit: new FormControl(filter.inTheLast?.unit || null),
-                }),
-              });
-            }) || []
+            this.mapFilters(emailDL?.query?.filter?.filters || [])
           ),
         }),
         fields: this.formBuilder.array(
@@ -692,9 +712,51 @@ export class EmailService {
       })
     );
 
+    dlGroup.setControl(
+      'commonServiceFilter',
+      this.formBuilder.group({
+        name: new FormControl(null), // Query name
+        filter: this.formBuilder.group({
+          logic: new FormControl(emailDL?.commonServiceFilter?.logic || null), // Filter logic
+          filters: this.formBuilder.array(
+            this.mapFilters(emailDL?.commonServiceFilter?.filters || [])
+          ),
+        }),
+      })
+    );
+
     dlGroup.setControl('inputEmails', this.formBuilder.array(inputArray));
 
     dlGroup.disable();
+  }
+
+  /**
+   * Recursive function to map filters
+   *
+   * @param filters filters Object (Nested object)
+   * @returns Filters formgroup
+   */
+  public mapFilters(filters: any[]): FormGroup[] {
+    return filters?.map((filter: any) => {
+      if (filter?.filters) {
+        // If nested filters exist, recursively map them
+        return this.formBuilder.group({
+          logic: new FormControl(filter.logic || null),
+          filters: this.formBuilder.array(this.mapFilters(filter.filters)),
+        });
+      } else {
+        // Handle individual filter
+        return this.formBuilder.group({
+          field: new FormControl(filter.field || null),
+          operator: new FormControl(filter.operator || null),
+          value: new FormControl(filter.value || null),
+          inTheLast: this.formBuilder.group({
+            number: new FormControl(filter?.inTheLast?.number || null),
+            unit: new FormControl(filter?.inTheLast?.unit || null),
+          }),
+        });
+      }
+    });
   }
 
   /**
@@ -1759,16 +1821,18 @@ export class EmailService {
    *
    * validating next button by taking 3 conditions in consideration DL name mandatory, check duplicate name validation and requires To email
    */
-  validateNextButton() {
+  async validateNextButton() {
     const isDLNameExists = this.distributionListName?.trim()?.length > 0;
     const isDlDuplicateNm = this.isDLNameDuplicate;
     let isExistsToEmail = false;
     // if (!isExistsToEmail) {
-    this.isToValidCheck();
+    await this.isToValidCheck();
     isExistsToEmail = this.isToValid;
     // }
     //Check To is valid or not (Including filter Emails or Manually added emails)
     // const valid = await this.checkToValid();
+
+    // Check Common service Validation
 
     if (isDLNameExists && !isDlDuplicateNm && isExistsToEmail) {
       this.disableSaveAndProceed.next(false);
@@ -1783,20 +1847,63 @@ export class EmailService {
 
   /**
    * checking that To tab is valid or not
+   *
    */
   async isToValidCheck() {
     if (
       this.datasetsForm.getRawValue().emailDistributionList?.to?.inputEmails
-        .length >= 0 ||
+        .length > 0 ||
       (this.datasetsForm.getRawValue().emailDistributionList?.to?.resource !==
         '' &&
         this.datasetsForm.getRawValue().emailDistributionList?.to?.resource !==
           null &&
-        this.filterToEmails?.length >= 0)
+        this.filterToEmails?.length >= 0) ||
+      this.datasetsForm
+        ?.getRawValue()
+        ?.emailDistributionList?.to?.commonServiceFilter?.filter?.filters?.filter(
+          (x: any) => x?.field && x?.value
+        )?.length > 0
     ) {
       this.isToValid = true;
     } else {
       this.isToValid = await this.checkToValid();
     }
+  }
+
+  /**
+   * Set common service payload
+   *
+   * @param dlCommonQuery commonquery form group
+   * @returns payload data
+   */
+  setCommonServicePayload(dlCommonQuery: any) {
+    let commonServiceData: any = {};
+    commonServiceData['commonServiceFilter'] = {};
+    if (dlCommonQuery) {
+      commonServiceData = this.processFilters(dlCommonQuery);
+    }
+    return commonServiceData;
+  }
+
+  /**
+   * Process common service filter fo updating its fields value
+   *
+   * @param dlCommonQuery Commonservice filters
+   * @returns Updated filters data
+   */
+  processFilters(dlCommonQuery: any) {
+    dlCommonQuery?.filters?.forEach((ele: any) => {
+      let preDefineFields: any = [];
+      if (!ele.filters) {
+        preDefineFields = this.commonServiceFields.filter(
+          (x: any) => x.key === ele?.field
+        );
+        ele.field =
+          preDefineFields?.length > 0 ? preDefineFields[0]['label'] : ele.field;
+      } else {
+        this.processFilters(ele);
+      }
+    });
+    return dlCommonQuery;
   }
 }

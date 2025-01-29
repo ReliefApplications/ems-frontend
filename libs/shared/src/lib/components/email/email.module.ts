@@ -20,6 +20,7 @@ import {
   FixedWrapperModule,
   ChipModule,
   ErrorMessageModule,
+  ExpansionPanelModule,
 } from '@oort-front/ui';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
@@ -105,6 +106,7 @@ import { CustomTemplateComponent } from './components/custom-templates/custom-te
     ErrorMessageModule,
     FilterModule,
     ResourceSelectComponent,
+    ExpansionPanelModule,
   ],
   schemas: [NO_ERRORS_SCHEMA],
   exports: [CustomTemplateComponent, PreviewComponent, LayoutComponent],
