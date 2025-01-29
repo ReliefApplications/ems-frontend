@@ -56,6 +56,7 @@ import { DialogModule } from '@oort-front/ui';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
 import { UploadRecordsComponent } from '../upload-records/upload-records.component';
 import { ContextService } from '../../services/context/context.service';
+import { FormPagesLayoutComponent } from '../form-pages-layout/form-pages-layout.component';
 
 /**
  * Interface of Dialog data.
@@ -93,6 +94,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     SpinnerModule,
     SurveyModule,
     DraftRecordComponent,
+    FormPagesLayoutComponent,
   ],
 })
 export class FormModalComponent
