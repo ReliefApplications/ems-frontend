@@ -16,24 +16,7 @@
   ></shared-draft-record> -->
 </div>
 <!-- Form pages -->
-<ui-tabs
-  class="mb-4"
-  [selectedIndex]="(selectedPageIndex$ | async)!"
-  (selectedIndexChange)="onShowPage($event)"
-  *ngIf="!survey?.hidePagesTab"
->
-  <ui-tab *ngFor="let page of survey?.visiblePages ?? []">
-    <ng-container ngProjectAs="label">
-      {{ page.title ? page.title : page.name }}
-      <ui-icon
-        *ngIf="page.containsErrors"
-        icon="error"
-        variant="danger"
-        [size]="20"
-      ></ui-icon>
-    </ng-container>
-  </ui-tab>
-</ui-tabs>
+
 <!-- Loading indicator -->
 <ui-spinner
   class="flex justify-center items-center h-screen"
@@ -48,7 +31,16 @@
   </ui-fixed-wrapper>
 </ng-container>
 
-<survey [model]="survey"></survey>
+<div class="flex">
+  <shared-form-pages-layout
+    class="max-h-[calc(100vh-175px)] sticky top-0"
+    *ngIf="!survey.hidePagesTab"
+    (showPage)="onShowPage($event)"
+    [pages]="survey.visiblePages"
+    [selectedPageIndex]="(selectedPageIndex$ | async) ?? 0"
+  ></shared-form-pages-layout>
+  <survey [model]="survey" class="flex-1"></survey>
+</div>
 
 <!-- Form buttons actions without floating div-->
 <div *ngIf="surveyActive && !floatingActions">

@@ -13,6 +13,7 @@ import { RecordSummaryModule } from '../record-summary/record-summary.module';
 import { ButtonModule } from '@oort-front/ui';
 import { SurveyModule } from 'survey-angular-ui';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
+import { FormPagesLayoutComponent } from '../form-pages-layout/form-pages-layout.component';
 
 /**
  * FormModule is a class used to manage all the modules and components
@@ -33,6 +34,7 @@ import { DraftRecordComponent } from '../draft-record/draft-record.component';
     FixedWrapperModule,
     DraftRecordComponent,
     SpinnerModule,
+    FormPagesLayoutComponent,
   ],
   exports: [FormComponent],
 })
