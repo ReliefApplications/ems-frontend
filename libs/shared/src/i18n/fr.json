@@ -2392,6 +2392,9 @@
       "edit": "Modifier le canal",
       "new": "Nouveau canal de diffusion"
     },
+    "comment": {
+      "write": "Ecrire un commentaire..."
+    },
     "customNotification": {
       "lastExecution": "Dernière exécution",
       "schedule": "Fréquence",

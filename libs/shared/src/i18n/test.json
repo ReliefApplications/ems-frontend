@@ -2378,6 +2378,9 @@
       "edit": "******",
       "new": "******"
     },
+    "comment": {
+      "write": "******"
+    },
     "customNotification": {
       "lastExecution": "******",
       "schedule": "******",

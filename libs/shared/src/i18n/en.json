@@ -2378,6 +2378,9 @@
       "edit": "Edit channel",
       "new": "New channel"
     },
+    "comment": {
+      "write": "Write a comment..."
+    },
     "customNotification": {
       "lastExecution": "Last execution",
       "schedule": "Schedule",

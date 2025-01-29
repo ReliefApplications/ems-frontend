@@ -455,6 +455,7 @@ export class FormModalComponent
    * Closes the dialog asking for confirmation if needed.
    */
   public close(): void {
+    this.closePopup();
     const surveyData = transformSurveyData(this.survey);
     const recordData = this.record?.data || {};
 
