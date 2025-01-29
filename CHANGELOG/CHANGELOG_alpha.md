@@ -1,3 +1,11 @@
+# [2.17.0-alpha.24](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.23...v2.17.0-alpha.24) (2025-01-29)
+
+
+### Features
+
+* distribution lists can be built using common services users ([#2735](https://github.com/ReliefApplications/ems-frontend/issues/2735)) ([818efc0](https://github.com/ReliefApplications/ems-frontend/commit/818efc02daef45e2bd06d10320320b027e71f157)), closes [#2739](https://github.com/ReliefApplications/ems-frontend/issues/2739) [AB#107541](https://github.com/AB/issues/107541) [AB#107578](https://github.com/AB/issues/107578)
+* Layers can now use metadata for popups when needed ([#2751](https://github.com/ReliefApplications/ems-frontend/issues/2751)) ([0243e14](https://github.com/ReliefApplications/ems-frontend/commit/0243e149e57188f1560fafd6da51d989445c0b89)), closes [AB#109440](https://github.com/AB/issues/109440)
+
 # [2.17.0-alpha.23](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.22...v2.17.0-alpha.23) (2025-01-27)
 
 
