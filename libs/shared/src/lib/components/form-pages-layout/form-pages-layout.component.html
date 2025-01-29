@@ -12,7 +12,7 @@
       class="w-4 h-4 rounded-full inline-block mr-4"
       [ngClass]="selectedPageIndex === i ? 'bg-primary-500 ' : 'bg-gray-300'"
     ></span>
-    <span
+    <div
       [ngClass]="
         selectedPageIndex === i
           ? 'text-primary-500 '
@@ -20,8 +20,16 @@
           ? ''
           : 'text-gray-300'
       "
+      class="flex items-center"
     >
-      {{ page.title ? page.title : page.name }}</span
-    >
+      {{ page.title ? page.title : page.name }}
+      <ui-icon
+    class="ml-1"
+        *ngIf="page.containsErrors"
+        icon="error"
+        variant="danger"
+        [size]="20"
+      ></ui-icon
+    ></div>
   </button>
 </div>
