@@ -410,6 +410,15 @@ export class EmailService {
             this.setCommonServicePayload(
               query.emailDistributionList.bcc.commonServiceFilter.filter
             );
+
+          //If no Fields selected then set as []
+          if (
+            query.emailDistributionList?.to?.commonServiceFilter?.filters?.filter(
+              (x: any) => x?.field != null
+            )
+          ) {
+            query.emailDistributionList.to.commonServiceFilter.filters = [];
+          }
           firstValueFrom(
             this.http.post(
               `${this.restService.apiUrl}/notification/preview-distribution-lists/`,

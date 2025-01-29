@@ -296,6 +296,14 @@ export class PreviewComponent
         );
     }
 
+    //If no Fields selected then set as []
+    if (
+      objData.emailDistributionList?.to?.commonServiceFilter?.filters?.filter(
+        (x: any) => x?.field != null
+      )
+    ) {
+      objData.emailDistributionList.to.commonServiceFilter.filters = [];
+    }
     this.http
       .post(
         `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
@@ -425,6 +433,15 @@ export class PreviewComponent
           this.emailService.setCommonServicePayload(
             objData.emailDistributionList.bcc.commonServiceFilter.filter
           );
+      }
+
+      //If no Fields selected then set as []
+      if (
+        objData.emailDistributionList?.to?.commonServiceFilter?.filters?.filter(
+          (x: any) => x?.field != null
+        )
+      ) {
+        objData.emailDistributionList.to.commonServiceFilter.filters = [];
       }
       this.http.post(this.previewUrl, objData).subscribe(
         (response: any) => {
