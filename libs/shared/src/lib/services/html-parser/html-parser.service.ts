@@ -364,41 +364,11 @@ export class HtmlParserService {
       });
 
       for (const field of fields) {
-        const toReadableObject = (obj: any): any => {
-          // If value exists keep checking
-          if (obj) {
-            if (typeof obj === 'object') {
-              // If array, return mapped elements
-              if (Array.isArray(obj)) {
-                return obj.map((o) => toReadableObject(o)).join('<br>');
-              } else {
-                // If object, return object keys and values as strings
-                return Object.keys(obj)
-                  .filter((key) => key !== '__typename')
-                  .map((key) => `${key}: ${obj[key]}`)
-                  .join(', ');
-              }
-            } else {
-              // If not an object, return string representation
-              return `${obj}`;
-            }
-          }
-          // Return default undefined/null value if no obj
-          return obj;
-        };
-
-        let value = get(fieldsValue, field.name);
-        // If object is of type resource, transform each associated record
-        if (['resources', 'checkbox', 'tagbox'].includes(field.type)) {
-          value = (value || []).map((x: any) => toReadableObject(x));
-        } else {
-          // Else, transform value into readable one
-          value = toReadableObject(value);
-        }
+        const value = this.getFieldValue(fieldsValue, field);
 
         const style = getLayoutsStyle(styles, field.name, fieldsValue);
-        let convertedValue = '';
-        // Inject avatars
+        let replacement = '';
+        // Start Inject avatars ===
         const avatarRgx = new RegExp(
           `{{avatars.(?<name>${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX})( (?<shape>[a-z]+))? (?<width>[0-9]+) (?<height>[0-9]+) (?<maxItems>[0-9]+)}}`,
           'gi'
@@ -444,6 +414,7 @@ export class HtmlParserService {
             formattedHtml = formattedHtml.replace(avatarRgx, '');
           }
         }
+        // === End inject avatars
         if (!isNil(value)) {
           // First, try to find cases where the url is used as src of image or link
           const srcRegex = new RegExp(
@@ -465,151 +436,7 @@ export class HtmlParserService {
             }
           });
 
-          switch (field.type) {
-            case 'url': {
-              // Then, follow same logic than for other fields
-              convertedValue = `<a href="${value}" style="${style}" target="_blank">${this.applyLayoutFormat(
-                value,
-                field
-              )}</a>`;
-              break;
-            }
-            case 'email':
-              convertedValue = `<a href="mailto:${value}"
-                style="${style}"
-                >
-                ${this.applyLayoutFormat(value, field)}
-                </a>`;
-              break;
-            case 'date':
-              convertedValue =
-                `<span style='${style}'>` +
-                this.applyLayoutFormat(
-                  new Date(value).toLocaleString('en').split(',')[0],
-                  field
-                ) +
-                '</span>';
-              break;
-            case 'datetime':
-              const date = new Date(value);
-              const hour =
-                date.getHours() >= 12 ? date.getHours() - 12 : date.getHours();
-              const minutes =
-                date.getMinutes() < 10
-                  ? '0' + date.getMinutes()
-                  : date.getMinutes();
-              const time = date.getHours() >= 12 ? 'PM' : 'AM';
-
-              convertedValue =
-                `<span style='${style}'>` +
-                this.applyLayoutFormat(
-                  date.toLocaleString('en').split(',')[0] +
-                    ', ' +
-                    hour +
-                    ':' +
-                    minutes +
-                    ' ' +
-                    time,
-                  field
-                ) +
-                '</span>';
-              break;
-            case 'boolean':
-              const checked = value ? 'checked' : '';
-              convertedValue =
-                '<input type="checkbox" style="margin: 0; height: 16px; width: 16px;" ' +
-                checked +
-                ' disabled></input>';
-              break;
-            case 'file':
-              convertedValue = '';
-              const fileArray = get(fieldsValue, field.name);
-              if (isArray(fileArray)) {
-                for (let i = 0; fileArray[i]; ) {
-                  const file = fileArray[i];
-                  const fileExt = file.name.split('.').pop();
-                  const fileIcon =
-                    fileExt && ICON_EXTENSIONS[fileExt]
-                      ? ICON_EXTENSIONS[fileExt]
-                      : 'k-i-file';
-                  const fileName = this.applyLayoutFormat(
-                    fileExt && ICON_EXTENSIONS[fileExt]
-                      ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1)
-                      : file.name,
-                    field
-                  );
-                  convertedValue += `<button type="file"
-                    field="${field.name}"
-                    index="${i++}"
-                    style="border: none; padding: 4px 6px; cursor: pointer; ${style}" title=
-                    ${file.name}
-                    >
-                    <span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>
-                    ${fileName}
-                    </button>`.replace(/\n/g, ''); // add elements to be able to identify file when clicking on button
-                }
-              }
-              break;
-            case 'owner':
-            case 'users':
-            case 'resources': {
-              const length = value ? value.length : 0;
-              convertedValue = `<span style='${style}'>${length} item${
-                length > 1 ? 's' : ''
-              }</span>`;
-              break;
-            }
-            case 'matrixdropdown':
-            case 'matrixdynamic': {
-              convertedValue = '<table><tr><th></th>';
-              const rows =
-                field.rows ??
-                (Object.keys(value).map((row) => {
-                  return { label: row, name: row };
-                }) ||
-                  []);
-              const columns = field.columns || [];
-              // Create header row with column names
-              for (const col of columns) {
-                convertedValue += `<th class="px-1">${col.label}</th>`;
-              }
-
-              convertedValue += '</tr>';
-
-              // Create table rows with row names and data values
-              for (const row of rows) {
-                convertedValue += `<tr><th>${row.label}</th>`;
-
-                for (const col of columns) {
-                  convertedValue += `<td class="text-right px-1">${
-                    value[row.name]?.[col.name] ?? ''
-                  }</td>`;
-                }
-
-                convertedValue += '</tr>';
-              }
-
-              convertedValue += '</table>';
-              break;
-            }
-            case 'matrix': {
-              convertedValue = `<span style='${style}'>`;
-              const rows = field.rows || [];
-              for (const row of rows) {
-                convertedValue += `${row.label}: ${value[row.name]} `;
-              }
-              convertedValue += '</span>';
-              break;
-            }
-            default:
-              const formattedValue = this.applyLayoutFormat(value, field);
-              convertedValue = style
-                ? `<span style='${style}'>${formattedValue}</span>`
-                : isNil(formattedValue)
-                ? ''
-                : formattedValue;
-              break;
-          }
+          replacement = this.placeholderToValue(field, value, style);
         }
 
         const escapeFieldNameForRegex = (fieldName: string): string =>
@@ -621,12 +448,12 @@ export class HtmlParserService {
           )}${PLACEHOLDER_SUFFIX}`,
           'gi'
         );
-        formattedHtml = formattedHtml.replace(regex, convertedValue);
+        formattedHtml = formattedHtml.replace(regex, replacement);
         const avatarCleanRegex = new RegExp(
           `${AVATAR_PREFIX}${field.name}[ 0-9]+${PLACEHOLDER_SUFFIX}`,
           'gi'
         );
-        formattedHtml = formattedHtml.replace(avatarCleanRegex, convertedValue);
+        formattedHtml = formattedHtml.replace(avatarCleanRegex, replacement);
       }
 
       const regex = /{{data\.(.*?)}}/g;
@@ -710,30 +537,6 @@ export class HtmlParserService {
       return lastRowStyle;
     }
     return '';
-  }
-
-  /**
-   * Returns an object with the record data keys paired with the values.
-   *
-   * @param record Record object.
-   * @returns fields
-   */
-  public getFieldsValue(record: any) {
-    const fields: any = {};
-    for (const [key, value] of Object.entries(record)) {
-      if (!key.startsWith('__') && key !== 'form') {
-        if (value instanceof Object) {
-          for (const [key2, value2] of Object.entries(value)) {
-            if (!key2.startsWith('__')) {
-              fields[(key === 'data' ? '' : key + '.') + key2] = value2;
-            }
-          }
-        } else {
-          fields[key] = value;
-        }
-      }
-    }
-    return fields;
   }
 
   /**
@@ -834,5 +637,211 @@ export class HtmlParserService {
     } else {
       return value;
     }
+  }
+
+  /**
+   * Replace placeholder by value
+   *
+   * @param field Current field
+   * @param value Value
+   * @param style Style, if any
+   * @returns Placeholder replacement, as html
+   */
+  public placeholderToValue(field: any, value: any, style?: any) {
+    let convertedValue = '';
+    switch (field.type) {
+      case 'url': {
+        // Then, follow same logic than for other fields
+        convertedValue = `<a href="${value}" style="${style}" target="_blank">${this.applyLayoutFormat(
+          value,
+          field
+        )}</a>`;
+        break;
+      }
+      case 'email':
+        convertedValue = `<a href="mailto:${value}"
+          style="${style}"
+          >
+          ${this.applyLayoutFormat(value, field)}
+          </a>`;
+        break;
+      case 'date':
+        convertedValue =
+          `<span style='${style}'>` +
+          this.applyLayoutFormat(
+            new Date(value).toLocaleString('en').split(',')[0],
+            field
+          ) +
+          '</span>';
+        break;
+      case 'datetime':
+        const date = new Date(value);
+        const hour =
+          date.getHours() >= 12 ? date.getHours() - 12 : date.getHours();
+        const minutes =
+          date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+        const time = date.getHours() >= 12 ? 'PM' : 'AM';
+
+        convertedValue =
+          `<span style='${style}'>` +
+          this.applyLayoutFormat(
+            date.toLocaleString('en').split(',')[0] +
+              ', ' +
+              hour +
+              ':' +
+              minutes +
+              ' ' +
+              time,
+            field
+          ) +
+          '</span>';
+        break;
+      case 'boolean':
+        const checked = value ? 'checked' : '';
+        convertedValue =
+          '<input type="checkbox" style="margin: 0; height: 16px; width: 16px;" ' +
+          checked +
+          ' disabled></input>';
+        break;
+      case 'file':
+        convertedValue = '';
+        if (isArray(value)) {
+          for (let i = 0; value[i]; ) {
+            const file = value[i];
+            const fileExt = file.name.split('.').pop();
+            const fileIcon =
+              fileExt && ICON_EXTENSIONS[fileExt]
+                ? ICON_EXTENSIONS[fileExt]
+                : 'k-i-file';
+            const fileName = this.applyLayoutFormat(
+              fileExt && ICON_EXTENSIONS[fileExt]
+                ? file.name.slice(0, file.name.lastIndexOf(fileExt) - 1)
+                : file.name,
+              field
+            );
+            convertedValue += `<button type="file"
+              field="${field.name}"
+              index="${i++}"
+              style="border: none; padding: 4px 6px; cursor: pointer; ${style}" title=
+              ${file.name}
+              >
+              <span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>
+              ${fileName}
+              </button>`.replace(/\n/g, ''); // add elements to be able to identify file when clicking on button
+          }
+        }
+        break;
+      case 'owner':
+      case 'users':
+      case 'resources': {
+        const length = value ? value.length : 0;
+        convertedValue = `<span style='${style}'>${length} item${
+          length > 1 ? 's' : ''
+        }</span>`;
+        break;
+      }
+      case 'matrixdropdown':
+      case 'matrixdynamic': {
+        convertedValue = '<table><tr><th></th>';
+        const rows =
+          field.rows ??
+          (Object.keys(value).map((row) => {
+            return { label: row, name: row };
+          }) ||
+            []);
+        const columns = field.columns || [];
+        // Create header row with column names
+        for (const col of columns) {
+          convertedValue += `<th class="px-1">${col.label}</th>`;
+        }
+
+        convertedValue += '</tr>';
+
+        // Create table rows with row names and data values
+        for (const row of rows) {
+          convertedValue += `<tr><th>${row.label}</th>`;
+
+          for (const col of columns) {
+            convertedValue += `<td class="text-right px-1">${
+              value[row.name]?.[col.name] ?? ''
+            }</td>`;
+          }
+
+          convertedValue += '</tr>';
+        }
+
+        convertedValue += '</table>';
+        break;
+      }
+      case 'matrix': {
+        convertedValue = `<span style='${style}'>`;
+        const rows = field.rows || [];
+        for (const row of rows) {
+          convertedValue += `${row.label}: ${value[row.name]} `;
+        }
+        convertedValue += '</span>';
+        break;
+      }
+      default:
+        const formattedValue = this.applyLayoutFormat(value, field);
+        convertedValue = style
+          ? `<span style='${style}'>${formattedValue}</span>`
+          : isNil(formattedValue)
+          ? ''
+          : formattedValue;
+        break;
+    }
+    return convertedValue;
+  }
+
+  /**
+   * Get field value from data object
+   *
+   * @param data Data
+   * @param field Field
+   * @returns Readable field value from object
+   */
+  public getFieldValue(data: any, field: any) {
+    let value = get(data, field.name);
+    // If object is of type resource, transform each associated record
+    if (['resources', 'checkbox', 'tagbox'].includes(field.type)) {
+      value = (value || []).map((x: any) => this.toReadableObject(x));
+    } else if (field.type === 'file') {
+      value = get(data, field.name);
+    } else {
+      // Else, transform value into readable one
+      value = this.toReadableObject(value);
+    }
+    return value;
+  }
+
+  /**
+   * Transform object to readable object
+   * Recursive
+   *
+   * @param obj Base object
+   * @returns Transformed object
+   */
+  private toReadableObject(obj: any): any {
+    // If value exists keep checking
+    if (obj) {
+      if (typeof obj === 'object') {
+        // If array, return mapped elements
+        if (Array.isArray(obj)) {
+          return obj.map((o) => this.toReadableObject(o)).join('<br>');
+        } else {
+          // If object, return object keys and values as strings
+          return Object.keys(obj)
+            .filter((key) => key !== '__typename')
+            .map((key) => `${key}: ${obj[key]}`)
+            .join(', ');
+        }
+      } else {
+        // If not an object, return string representation
+        return `${obj}`;
+      }
+    }
+    // Return default undefined/null value if no obj
+    return obj;
   }
 }

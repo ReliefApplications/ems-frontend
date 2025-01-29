@@ -1,4 +1,3 @@
-import { LocationStrategy } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import get from 'lodash/get';
@@ -28,7 +27,6 @@ export class DataTemplateService {
    * @param downloadService Used to download file type fields
    * @param applicationService Shared application service
    * @param environment Current environment
-   * @param locationStrategy Angular location strategy
    * @param htmlParserService Html parser service to parse the values for html layout
    * @param documentManagementService Shared document management service
    */
@@ -37,7 +35,6 @@ export class DataTemplateService {
     private downloadService: DownloadService,
     private applicationService: ApplicationService,
     @Inject('environment') environment: any,
-    private locationStrategy: LocationStrategy,
     private htmlParserService: HtmlParserService,
     private documentManagementService: DocumentManagementService
   ) {
