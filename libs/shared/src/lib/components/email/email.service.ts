@@ -417,7 +417,7 @@ export class EmailService {
           if (
             query.emailDistributionList?.to?.commonServiceFilter?.filters?.filter(
               (x: any) => x?.field != null
-            )
+            )?.length === 0
           ) {
             query.emailDistributionList.to.commonServiceFilter.filters = [];
           }

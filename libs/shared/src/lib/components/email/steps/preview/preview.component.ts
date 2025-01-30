@@ -300,7 +300,7 @@ export class PreviewComponent
     if (
       objData.emailDistributionList?.to?.commonServiceFilter?.filters?.filter(
         (x: any) => x?.field != null
-      )
+      )?.length === 0
     ) {
       objData.emailDistributionList.to.commonServiceFilter.filters = [];
     }
@@ -448,7 +448,7 @@ export class PreviewComponent
       if (
         objData.emailDistributionList?.to?.commonServiceFilter?.filters?.filter(
           (x: any) => x?.field != null
-        )
+        )?.length === 0
       ) {
         objData.emailDistributionList.to.commonServiceFilter.filters = [];
       }
