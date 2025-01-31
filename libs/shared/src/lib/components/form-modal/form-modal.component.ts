@@ -2,15 +2,22 @@ import { Apollo } from 'apollo-angular';
 import {
   Component,
   ElementRef,
+  EventEmitter,
+  HostListener,
   Inject,
   NgZone,
   OnDestroy,
   OnInit,
+  TemplateRef,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { GET_RECORD_BY_ID, GET_FORM_BY_ID } from './graphql/queries';
+import {
+  GET_RECORD_BY_ID,
+  GET_FORM_BY_ID,
+  GET_COMMENTS,
+} from './graphql/queries';
 import { Form, FormQueryResponse } from '../../models/form.model';
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { SurveyModel } from 'survey-core';
@@ -53,9 +60,12 @@ import {
   transformSurveyData,
 } from '../../services/form-helper/form-helper.service';
 import { DialogModule } from '@oort-front/ui';
-import { DraftRecordComponent } from '../draft-record/draft-record.component';
 import { UploadRecordsComponent } from '../upload-records/upload-records.component';
 import { ContextService } from '../../services/context/context.service';
+import { CommentsPopupComponent } from './comments-popup/comments-popup.component';
+import { Comment, CommentsQueryResponse } from '../../models/comments.model';
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
 import { FormPagesLayoutComponent } from '../form-pages-layout/form-pages-layout.component';
 
 /**
@@ -93,7 +103,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     ButtonModule,
     SpinnerModule,
     SurveyModule,
-    DraftRecordComponent,
+    CommentsPopupComponent,
     FormPagesLayoutComponent,
   ],
 })
@@ -139,6 +149,19 @@ export class FormModalComponent
   private storedMergedData: any;
   /** If new records was uploaded */
   private uploadedRecords = false;
+  /** Currently commented question */
+  @ViewChild('popupTemplate', { static: true })
+  popupTemplate!: TemplateRef<any>;
+  /** Overlay ref */
+  protected overlayRef: OverlayRef | null = null;
+  /** Opened button */
+  popupAnchor: HTMLElement | null = null;
+  /** current question being commented */
+  public selectedQuestion = { name: '', title: '' };
+  /** Comments list for current record */
+  public comments: { [key: string]: Comment[] } = {};
+  /** Comments loaded event */
+  protected commentsLoaded = new EventEmitter();
 
   /**
    * Modal to edit or add a record.
@@ -155,6 +178,8 @@ export class FormModalComponent
    * @param translate This is the service that allows us to translate the text in our application.
    * @param ngZone Angular Service to execute code inside Angular environment
    * @param contextService Shared context service
+   * @param overlay cdk overlay
+   * @param viewContainerRef View container ref
    */
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
@@ -168,7 +193,9 @@ export class FormModalComponent
     protected confirmService: ConfirmService,
     protected translate: TranslateService,
     protected ngZone: NgZone,
-    protected contextService: ContextService
+    protected contextService: ContextService,
+    private overlay: Overlay,
+    private viewContainerRef: ViewContainerRef
   ) {
     super();
   }
@@ -331,6 +358,164 @@ export class FormModalComponent
       };
     }
     this.loading = false;
+    if (this.survey.canBeCommented && this.record) {
+      this.getComments();
+      //Cannot comment on newly created record
+      this.survey.onAfterRenderQuestion.add((survey, options) => {
+        const questionElement = options.htmlElement;
+        const question = this.survey
+          .getAllQuestions()
+          .find((question) => question.id === options.question.id);
+        if (!question) {
+          return;
+        }
+        const buttonId = 'popup_button_' + questionElement.id;
+        if (document.getElementById(buttonId)) {
+          // avoids having duplicated buttons
+          return;
+        }
+        questionElement.classList.add('group');
+
+        // Create the hover button
+        const button = document.createElement('button');
+        button.className = 'comment-button closed group-hover:opacity-100';
+        button.id = buttonId;
+        this.setButtonText(button, question.name);
+        this.commentsLoaded.subscribe(() => {
+          this.setButtonText(button, question.name);
+        });
+
+        button.onclick = () => {
+          this.selectedQuestion = {
+            name: question.name,
+            title: question.title,
+          };
+          this.openPopup(button);
+        };
+        questionElement.appendChild(button);
+      });
+    }
+  }
+
+  /**
+   * Gets the number of resolved comments and affects the number
+   *
+   * @param button button to modify
+   * @param questionName question name to get comments from
+   */
+  setButtonText(button: HTMLElement, questionName: string) {
+    const relatedComments = this.comments[questionName];
+    if (relatedComments) {
+      const lastResolvedIndex = relatedComments
+        .map((comment) => comment.resolved)
+        .lastIndexOf(true);
+      const unresolvedCount = relatedComments.slice(
+        lastResolvedIndex + 1
+      ).length;
+      if (unresolvedCount > 0) {
+        button.classList.add('unresolved');
+        button.textContent = `${unresolvedCount}`;
+        return;
+      }
+      button.textContent = `${relatedComments.length}`;
+      button.classList.add('resolved');
+      return;
+    }
+    button.textContent = '+';
+  }
+
+  /**
+   * Gets comments related to current record
+   */
+  getComments() {
+    this.apollo
+      .query<CommentsQueryResponse>({
+        query: GET_COMMENTS,
+        variables: {
+          record: this.record?.id,
+        },
+      })
+      .subscribe((comments) => {
+        this.comments = comments.data.comments.reduce(
+          (acc: { [key: string]: Comment[] }, comment) => {
+            if (!acc[comment.questionId]) {
+              acc[comment.questionId] = [];
+            }
+            acc[comment.questionId].push(comment);
+            return acc;
+          },
+          {}
+        );
+        this.commentsLoaded.emit();
+      });
+  }
+
+  /**
+   * Closes the open popup, and opens a new one next to clicked button
+   *
+   * @param anchor Button to anchor the popup to
+   */
+  openPopup(anchor: HTMLElement): void {
+    // Close any open popup
+    if (this.overlayRef && this.popupAnchor) {
+      this.closePopup();
+    }
+    this.popupAnchor = anchor;
+    anchor.classList.replace('closed', 'open');
+
+    // Create overlay position strategy
+    const positionStrategy = this.overlay
+      .position()
+      .flexibleConnectedTo(anchor)
+      .withPositions([
+        {
+          originX: 'start',
+          originY: 'center',
+          overlayX: 'end',
+          overlayY: 'top',
+          offsetX: -10,
+        },
+      ]);
+
+    this.overlayRef = this.overlay.create({
+      positionStrategy,
+    });
+    const portal = new TemplatePortal(
+      this.popupTemplate,
+      this.viewContainerRef
+    );
+    this.overlayRef.attach(portal);
+  }
+
+  /**
+   * Closes the popup
+   */
+  closePopup() {
+    this.popupAnchor?.classList.replace('open', 'closed');
+    this.overlayRef?.detach();
+    this.overlayRef?.dispose();
+    this.popupAnchor = null;
+  }
+
+  /**
+   * Listen for clicks anywhere in the document
+   *
+   * @param event mouse event
+   */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.overlayRef || !this.popupAnchor) {
+      return;
+    }
+    const clickTarget = event.target as Node;
+    const overlayElement = this.overlayRef.hostElement;
+    if (
+      overlayElement &&
+      !overlayElement.contains(clickTarget) &&
+      !this.popupAnchor.contains(clickTarget)
+    ) {
+      this.closePopup();
+    }
   }
 
   /**
@@ -353,6 +538,7 @@ export class FormModalComponent
    * Closes the dialog asking for confirmation if needed.
    */
   public close(): void {
+    this.closePopup();
     const surveyData = transformSurveyData(this.survey);
     const recordData = this.record?.data || {};
 

@@ -86,3 +86,32 @@ export const ARCHIVE_RECORD = gql`
     }
   }
 `;
+
+/** GraphQL mutation to add a new comment */
+export const ADD_COMMENT = gql`
+  mutation AddComment($record: ID!, $message: String!, $questionId: String!) {
+    addComment(record: $record, message: $message, questionId: $questionId) {
+      id
+      message
+      createdAt
+      createdBy {
+        name
+      }
+    }
+  }
+`;
+
+/** GraphQL mutation to add a new comment */
+export const EDIT_COMMENT = gql`
+  mutation EditComment($record: ID!, $resolved: Boolean, $questionId: String!) {
+    editComment(record: $record, resolved: $resolved, questionId: $questionId) {
+      id
+      message
+      resolved
+      createdAt
+      createdBy {
+        name
+      }
+    }
+  }
+`;

@@ -71,6 +71,7 @@
     },
     "clear": "Annuler",
     "close": "Fermer",
+    "collaboration": "Collaboration",
     "column": {
       "few": "Colonnes",
       "none": "Aucune colonne",
@@ -2390,6 +2391,9 @@
       "create": "Créer un canal de diffusion",
       "edit": "Modifier le canal",
       "new": "Nouveau canal de diffusion"
+    },
+    "comment": {
+      "write": "Ecrire un commentaire..."
     },
     "customNotification": {
       "lastExecution": "Dernière exécution",

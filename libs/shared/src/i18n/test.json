@@ -71,6 +71,7 @@
     },
     "clear": "******",
     "close": "******",
+    "collaboration": "******",
     "column": {
       "few": "******",
       "none": "******",
@@ -2376,6 +2377,9 @@
       "create": "******",
       "edit": "******",
       "new": "******"
+    },
+    "comment": {
+      "write": "******"
     },
     "customNotification": {
       "lastExecution": "******",

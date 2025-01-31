@@ -71,6 +71,7 @@
     },
     "clear": "Clear",
     "close": "Close",
+    "collaboration": "Collaboration",
     "column": {
       "few": "Columns",
       "none": "No column",
@@ -2376,6 +2377,9 @@
       "create": "Create a channel",
       "edit": "Edit channel",
       "new": "New channel"
+    },
+    "comment": {
+      "write": "Write a comment..."
     },
     "customNotification": {
       "lastExecution": "Last execution",

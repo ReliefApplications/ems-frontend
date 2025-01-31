@@ -89,3 +89,13 @@
     </ui-button>
   </ng-container>
 </ui-dialog>
+
+<ng-template #popupTemplate let-data>
+  <shared-comments-popup
+    [recordId]="record?.id ?? ''"
+    [selectedQuestion]="selectedQuestion"
+    [comments]="comments"
+    [button]="popupAnchor"
+    (closeModal)="closePopup()"
+  ></shared-comments-popup>
+</ng-template>
