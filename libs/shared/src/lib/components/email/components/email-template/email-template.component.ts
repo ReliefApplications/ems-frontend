@@ -300,7 +300,7 @@ export class EmailTemplateComponent
       .subscribe((value: any) => {
         if (
           this.activeSegmentIndex === 3 &&
-          value?.filter((x: any) => x?.field && x?.value)?.length > 0
+          value?.filter((x: any) => x?.field || x?.value)?.length > 0
         ) {
           this.emailService.validateNextButton();
         } else {

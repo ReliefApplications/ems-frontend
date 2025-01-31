@@ -1872,7 +1872,7 @@ export class EmailService {
       this.datasetsForm
         ?.getRawValue()
         ?.emailDistributionList?.to?.commonServiceFilter?.filter?.filters?.filter(
-          (x: any) => x?.field && x?.value
+          (x: any) => x?.field || x?.value
         )?.length > 0
     ) {
       this.isToValid = true;
