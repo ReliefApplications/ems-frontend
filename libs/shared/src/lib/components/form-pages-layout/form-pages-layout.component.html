@@ -1,0 +1,35 @@
+<div class="flex flex-col mr-4 overflow-y-auto h-full" *ngIf="pages.length > 1">
+  <button
+    *ngFor="let page of pages ?? []; let i = index; let last = last"
+    (click)="showPage.emit(i)"
+    class="mb-4 flex items-center relative"
+  >
+    <div
+      *ngIf="!last"
+      class="absolute left-[7px] h-10 w-0.5 bg-gray-300 -z-10 translate-y-3"
+    ></div>
+    <span
+      class="w-4 h-4 rounded-full inline-block mr-4"
+      [ngClass]="selectedPageIndex === i ? 'bg-primary-500 ' : 'bg-gray-300'"
+    ></span>
+    <div
+      [ngClass]="
+        selectedPageIndex === i
+          ? 'text-primary-500 '
+          : i < selectedPageIndex
+          ? ''
+          : 'text-gray-300'
+      "
+      class="flex items-center"
+    >
+      {{ page.title ? page.title : page.name }}
+      <ui-icon
+    class="ml-1"
+        *ngIf="page.containsErrors"
+        icon="error"
+        variant="danger"
+        [size]="20"
+      ></ui-icon
+    ></div>
+  </button>
+</div>

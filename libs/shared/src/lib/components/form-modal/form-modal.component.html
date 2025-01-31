@@ -19,33 +19,25 @@
       </ng-container>
       <ng-template #uploadRecordsContent></ng-template>
     </div>
-    <ng-container *ngIf="!loading">
-      <ui-tabs
-        [selectedIndex]="(selectedPageIndex$ | async)!"
-        (selectedIndexChange)="onShowPage($event)"
-        *ngIf="!survey?.hidePagesTab"
-      >
-        <ui-tab *ngFor="let page of survey?.visiblePages ?? []">
-          <ng-container ngProjectAs="label">
-            {{ page.title ? page.title : page.name }}
-            <ui-icon
-              *ngIf="page.containsErrors"
-              icon="error"
-              variant="danger"
-              [size]="20"
-            ></ui-icon>
-          </ng-container>
-        </ui-tab>
-      </ui-tabs>
-    </ng-container>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <div class="grow max-h-full">
+    <div class="h-full">
       <div *ngIf="loading; else surveyTmpl" class="h-full flex">
         <ui-spinner class="m-auto block"></ui-spinner>
       </div>
       <ng-template #surveyTmpl>
-        <survey [model]="survey"></survey>
+        <div class="flex h-full">
+          <shared-form-pages-layout
+            *ngIf="!survey.hidePagesTab"
+            class="sticky h-full"
+            (showPage)="onShowPage($event)"
+            [pages]="survey.visiblePages"
+            [selectedPageIndex]="(selectedPageIndex$ | async) ?? 0"
+          ></shared-form-pages-layout>
+
+          <!-- Survey Form -->
+          <survey [model]="survey" class="flex-1"></survey>
+        </div>
       </ng-template>
     </div>
   </ng-container>

@@ -18,6 +18,7 @@ import { SurveyModule } from 'survey-angular-ui';
 import { CheckUniqueProprietyReturnT } from '../../services/form-helper/form-helper.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommentsPopupComponent } from '../form-modal/comments-popup/comments-popup.component';
+import { FormPagesLayoutComponent } from '../form-pages-layout/form-pages-layout.component';
 
 /**
  * Factory for creating scroll strategy
@@ -51,6 +52,7 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
     SurveyModule,
     ReactiveFormsModule,
     CommentsPopupComponent,
+    FormPagesLayoutComponent,
   ],
 })
 export class ResourceModalComponent extends FormModalComponent {

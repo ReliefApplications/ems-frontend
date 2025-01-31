@@ -66,6 +66,7 @@ import { CommentsPopupComponent } from './comments-popup/comments-popup.componen
 import { Comment, CommentsQueryResponse } from '../../models/comments.model';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
+import { FormPagesLayoutComponent } from '../form-pages-layout/form-pages-layout.component';
 
 /**
  * Interface of Dialog data.
@@ -103,6 +104,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     SpinnerModule,
     SurveyModule,
     CommentsPopupComponent,
+    FormPagesLayoutComponent,
   ],
 })
 export class FormModalComponent
