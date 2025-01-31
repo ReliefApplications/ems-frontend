@@ -17,6 +17,7 @@ import {
 import { SurveyModule } from 'survey-angular-ui';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
 import { CheckUniqueProprietyReturnT } from '../../services/form-helper/form-helper.service';
+import { FormPagesLayoutComponent } from '../form-pages-layout/form-pages-layout.component';
 
 /**
  * Factory for creating scroll strategy
@@ -49,6 +50,7 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
     TabsModule,
     SurveyModule,
     DraftRecordComponent,
+    FormPagesLayoutComponent,
   ],
 })
 export class ResourceModalComponent extends FormModalComponent {

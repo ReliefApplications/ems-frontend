@@ -23,6 +23,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { FormHelpersService } from '../form-helper/form-helper.service';
 import { cloneDeep, difference, get } from 'lodash';
 import { Form } from '../../models/form.model';
+import { marked } from 'marked';
 
 let counter = Math.floor(Math.random() * 0xffffff); // Initialize counter with a random value
 
@@ -370,6 +371,12 @@ export class FormBuilderService {
         });
       });
     }
+    survey.onTextMarkdown.add((_, options) => {
+      let str = marked(options.text);
+      str = str.substring(3);
+      str = str.substring(0, str.length - 5);
+      options.html = str;
+    });
     survey.showProgressBar = 'off';
     survey.focusFirstQuestionAutomatic = false;
     survey.applyTheme({ isPanelless: true });
