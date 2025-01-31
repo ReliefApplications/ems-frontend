@@ -466,6 +466,22 @@
               </div>
             </div>
           </ng-template>
+          <!-- DISPLAY ( progress bar ) -->
+          <ng-template
+            kendoGridCellTemplate
+            let-dataItem="dataItem"
+            *ngIf="field.meta.type === 'progress'"
+          >
+            <div class="flex items-center p-2">
+              {{ dataItem[field.name] ?? 0 | number : '1.0-1' }}%
+              <div class="ml-1 bg-gray-300 w-full rounded-full h-2">
+                <div
+                  class="bg-gray-600 h-full rounded-full"
+                  [style.width.%]="dataItem[field.name] ?? 0"
+                ></div>
+              </div>
+            </div>
+          </ng-template>
         </ng-container>
         <!-- EDITION ( text / color / comment - resource - dropdown ) -->
         <ng-template

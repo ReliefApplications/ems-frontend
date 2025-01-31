@@ -103,7 +103,16 @@ export const transformSurveyData = (survey: SurveyModel) => {
       }
     }
   });
-
+  if (survey.showPercentageProgressBar) {
+    const visibleQuestions = survey
+      .getAllQuestions()
+      .filter((question) => question.isVisible && !question.readOnly);
+    data.progress =
+      (visibleQuestions.filter((question: Question) => !question.isEmpty())
+        .length *
+        100) /
+      visibleQuestions.length;
+  }
   return data;
 };
 
@@ -352,6 +361,16 @@ export class FormBuilderService {
     this.formHelpersService.addQueryParamsVariables(survey);
 
     survey.showNavigationButtons = 'none';
+    if (survey.showPercentageProgressBar) {
+      import('../../survey/progress-bar/progress-bar.component').then(() => {
+        survey.addLayoutElement({
+          id: 'progressbar-percentage',
+          component: 'sv-progressbar-percentage',
+          container: 'contentTop',
+          data: survey,
+        });
+      });
+    }
     survey.onTextMarkdown.add((_, options) => {
       let str = marked(options.text);
       str = str.substring(3);
