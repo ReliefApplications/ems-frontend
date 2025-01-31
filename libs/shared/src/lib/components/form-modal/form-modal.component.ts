@@ -2,6 +2,7 @@ import { Apollo } from 'apollo-angular';
 import {
   Component,
   ElementRef,
+  EventEmitter,
   HostListener,
   Inject,
   NgZone,
@@ -12,7 +13,11 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { GET_RECORD_BY_ID, GET_FORM_BY_ID } from './graphql/queries';
+import {
+  GET_RECORD_BY_ID,
+  GET_FORM_BY_ID,
+  GET_COMMENTS,
+} from './graphql/queries';
 import { Form, FormQueryResponse } from '../../models/form.model';
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { SurveyModel } from 'survey-core';
@@ -57,8 +62,10 @@ import {
 import { DialogModule } from '@oort-front/ui';
 import { UploadRecordsComponent } from '../upload-records/upload-records.component';
 import { ContextService } from '../../services/context/context.service';
-import { PopupRef, PopupService } from '@progress/kendo-angular-popup';
 import { CommentsPopupComponent } from './comments-popup/comments-popup.component';
+import { Comment, CommentsQueryResponse } from '../../models/comments.model';
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
 
 /**
  * Interface of Dialog data.
@@ -143,12 +150,16 @@ export class FormModalComponent
   /** Currently commented question */
   @ViewChild('popupTemplate', { static: true })
   popupTemplate!: TemplateRef<any>;
-  /** */
-  popupRef: PopupRef | null = null;
+  /** Overlay ref */
+  protected overlayRef: OverlayRef | null = null;
   /** Opened button */
   popupAnchor: HTMLElement | null = null;
-  /** */
+  /** current question being commented */
   public selectedQuestion = { name: '', title: '' };
+  /** Comments list for current record */
+  public comments: { [key: string]: Comment[] } = {};
+  /** Comments loaded event */
+  protected commentsLoaded = new EventEmitter();
 
   /**
    * Modal to edit or add a record.
@@ -165,7 +176,8 @@ export class FormModalComponent
    * @param translate This is the service that allows us to translate the text in our application.
    * @param ngZone Angular Service to execute code inside Angular environment
    * @param contextService Shared context service
-   * @param popupService Popup service
+   * @param overlay cdk overlay
+   * @param viewContainerRef View container ref
    */
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
@@ -180,7 +192,8 @@ export class FormModalComponent
     protected translate: TranslateService,
     protected ngZone: NgZone,
     protected contextService: ContextService,
-    protected popupService: PopupService
+    private overlay: Overlay,
+    private viewContainerRef: ViewContainerRef
   ) {
     super();
   }
@@ -344,9 +357,16 @@ export class FormModalComponent
     }
     this.loading = false;
     if (this.survey.canBeCommented && this.record) {
+      this.getComments();
       //Cannot comment on newly created record
       this.survey.onAfterRenderQuestion.add((survey, options) => {
         const questionElement = options.htmlElement;
+        const question = this.survey
+          .getAllQuestions()
+          .find((question) => question.id === options.question.id);
+        if (!question) {
+          return;
+        }
         const buttonId = 'popup_button_' + questionElement.id;
         if (document.getElementById(buttonId)) {
           // avoids having duplicated buttons
@@ -356,14 +376,17 @@ export class FormModalComponent
 
         // Create the hover button
         const button = document.createElement('button');
-        button.className =
-          'w-7 h-7 bg-primary-500 rounded-t-full rounded-br-full top-1/2 -right-9 absolute group-hover:opacity-100 opacity-0 items-center justify-center -translate-y-1/2';
+        button.className = 'comment-button closed group-hover:opacity-100';
         button.id = buttonId;
-        // Add click event to the button
+        this.setButtonText(button, question.name);
+        this.commentsLoaded.subscribe(() => {
+          this.setButtonText(button, question.name);
+        });
+
         button.onclick = () => {
           this.selectedQuestion = {
-            name: options.question.name,
-            title: options.question.title,
+            name: question.name,
+            title: question.title,
           };
           this.openPopup(button);
         };
@@ -373,44 +396,102 @@ export class FormModalComponent
   }
 
   /**
+   * Gets the number of resolved comments and affects the number
+   *
+   * @param button button to modify
+   * @param questionName question name to get comments from
+   */
+  setButtonText(button: HTMLElement, questionName: string) {
+    const relatedComments = this.comments[questionName];
+    if (relatedComments) {
+      const lastResolvedIndex = relatedComments
+        .map((comment) => comment.resolved)
+        .lastIndexOf(true);
+      const unresolvedCount = relatedComments.slice(
+        lastResolvedIndex + 1
+      ).length;
+      if (unresolvedCount > 0) {
+        button.classList.add('unresolved');
+        button.textContent = `${unresolvedCount}`;
+        return;
+      }
+      button.textContent = `${relatedComments.length}`;
+      button.classList.add('resolved');
+      return;
+    }
+    button.textContent = '+';
+  }
+
+  /**
+   * Gets comments related to current record
+   */
+  getComments() {
+    this.apollo
+      .query<CommentsQueryResponse>({
+        query: GET_COMMENTS,
+        variables: {
+          record: this.record?.id,
+        },
+      })
+      .subscribe((comments) => {
+        this.comments = comments.data.comments.reduce(
+          (acc: { [key: string]: Comment[] }, comment) => {
+            if (!acc[comment.questionId]) {
+              acc[comment.questionId] = [];
+            }
+            acc[comment.questionId].push(comment);
+            return acc;
+          },
+          {}
+        );
+        this.commentsLoaded.emit();
+      });
+  }
+
+  /**
    * Closes the open popup, and opens a new one next to clicked button
    *
    * @param anchor Button to anchor the popup to
    */
   openPopup(anchor: HTMLElement): void {
     // Close any open popup
-    if (this.popupRef && this.popupAnchor) {
+    if (this.overlayRef && this.popupAnchor) {
       this.closePopup();
     }
-    anchor.classList.replace('bg-primary-500', 'border-primary-500');
-    anchor.classList.replace('opacity-0', 'opacity-100');
-    anchor.classList.add('border-2');
     this.popupAnchor = anchor;
+    anchor.classList.replace('closed', 'open');
 
-    // Open a new popup
-    this.popupRef = this.popupService.open({
-      content: this.popupTemplate,
-      popupAlign: { vertical: 'top', horizontal: 'right' },
-      margin: { horizontal: 20, vertical: 0 },
-      anchorAlign: { vertical: 'center', horizontal: 'left' },
-      collision: { vertical: 'fit', horizontal: 'flip' },
-      anchor,
-      popupClass: 'rounded-lg',
+    // Create overlay position strategy
+    const positionStrategy = this.overlay
+      .position()
+      .flexibleConnectedTo(anchor)
+      .withPositions([
+        {
+          originX: 'start',
+          originY: 'center',
+          overlayX: 'end',
+          overlayY: 'top',
+          offsetX: -10,
+        },
+      ]);
+
+    this.overlayRef = this.overlay.create({
+      positionStrategy,
     });
+    const portal = new TemplatePortal(
+      this.popupTemplate,
+      this.viewContainerRef
+    );
+    this.overlayRef.attach(portal);
   }
 
   /**
    * Closes the popup
    */
   closePopup() {
-    if (!this.popupAnchor || !this.popupRef) {
-      return;
-    }
-    this.popupAnchor.classList.replace('border-primary-500', 'bg-primary-500');
-    this.popupAnchor.classList.replace('opacity-100', 'opacity-0');
-    this.popupAnchor.classList.remove('border-2');
-    this.popupRef.close();
-    this.popupRef = null;
+    this.popupAnchor?.classList.replace('open', 'closed');
+    this.overlayRef?.detach();
+    this.overlayRef?.dispose();
     this.popupAnchor = null;
   }
 
@@ -421,15 +502,15 @@ export class FormModalComponent
    */
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
-    if (!this.popupRef || !this.popupAnchor) {
+    if (!this.overlayRef || !this.popupAnchor) {
       return;
     }
-    // If the click is outside the popup, close it
-    const popupElement = this.popupRef.popupElement;
+    const clickTarget = event.target as Node;
+    const overlayElement = this.overlayRef.hostElement;
     if (
-      popupElement &&
-      !popupElement.contains(event.target as Node) &&
-      !this.popupAnchor.contains(event.target as Node)
+      overlayElement &&
+      !overlayElement.contains(clickTarget) &&
+      !this.popupAnchor.contains(clickTarget)
     ) {
       this.closePopup();
     }

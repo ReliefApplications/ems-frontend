@@ -63,12 +63,13 @@ export const GET_RECORD_BY_ID = gql`
 
 /** GraphQL mutation to add a new comment */
 export const GET_COMMENTS = gql`
-  query GetComments($record: ID!, $questionId: String!) {
-    comments(record: $record, questionId: $questionId) {
+  query GetComments($record: ID!) {
+    comments(record: $record) {
       id
+      questionId
       message
+      resolved
       createdAt
-      modifiedAt
       createdBy {
         name
       }

@@ -100,3 +100,18 @@ export const ADD_COMMENT = gql`
     }
   }
 `;
+
+/** GraphQL mutation to add a new comment */
+export const EDIT_COMMENT = gql`
+  mutation EditComment($record: ID!, $resolved: Boolean, $questionId: String!) {
+    editComment(record: $record, resolved: $resolved, questionId: $questionId) {
+      id
+      message
+      resolved
+      createdAt
+      createdBy {
+        name
+      }
+    }
+  }
+`;
