@@ -36,12 +36,12 @@ export const init = (
             question[`valueExpression${cs.bodyKey}`]
           );
           // Set field parameter
-          if (!isNil(result) && question[`fromField${cs.bodyKey}`]) {
+          if (!isNil(result) && question[`convertFrom${cs.bodyKey}`]) {
             // If expression not build from ids, execute graphql query to get list of ids, filtering by the expression result
             const filterValue = Array.isArray(result) ? result : [result];
             const query = documentManagementService.filterQuery(
               cs.value,
-              question[`fromField${cs.bodyKey}`],
+              question[`convertFrom${cs.bodyKey}`],
               filterValue
             );
             await query.then(({ data }) => {
