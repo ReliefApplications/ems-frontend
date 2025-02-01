@@ -163,18 +163,19 @@
                           [uiTooltip]="'common.edit' | translate"
                         >
                         </ui-button>
-
-                        <ui-button
-                          variant="grey"
-                          class="hide-icons hover:text-primary-600"
-                          [isIcon]="true"
-                          size="large"
-                          (click)="cloneEmailNotification(element)"
-                          [icon]="'content_copy'"
-                          [uiTooltip]="'common.clone' | translate"
-                          *ngIf="!element.isDraft"
-                        >
-                        </ui-button>
+                        <ng-container *ngIf="this.ability.can('create', 'EmailNotification')">
+                          <ui-button
+                            variant="grey"
+                            class="hide-icons hover:text-primary-600"
+                            [isIcon]="true"
+                            size="large"
+                            (click)="cloneEmailNotification(element)"
+                            [icon]="'content_copy'"
+                            [uiTooltip]="'common.clone' | translate"
+                            *ngIf="!element.isDraft"
+                          >
+                          </ui-button>
+                        </ng-container>
 
                         <ui-button
                           variant="danger"
