@@ -133,9 +133,6 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     return (this.settings.floatingButtons || []).filter((x: any) => x.show);
   }
 
-  /** Resource data list */
-  private metaResourceData: any = [];
-
   /**
    * Heavy constructor for the grid widget component
    *
@@ -172,15 +169,6 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
     delete this.gridSettings.query;
     let buildSortFields = false;
     if (this.settings.resource) {
-      // Fetch resource metadata for email sending
-      this.queryBuilder
-        .getQueryMetaData(this.settings.resource)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: ({ data }) => {
-            this.metaResourceData = data.resource.metadata;
-          },
-        });
       this.useReferenceData = false;
       const layouts = get(this.settings, 'layouts', []);
       const aggregations = get(this.settings, 'aggregations', []);
@@ -511,28 +499,18 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                       options.bodyFields
                     );
                     if (emailQuery) {
-                      emailQuery.pipe(takeUntil(this.destroy$)).subscribe({
-                        next: ({ data }) => {
-                          let emailData: any = [];
-                          Object.keys(data)?.forEach((key: any) => {
-                            emailData = data[key].edges;
-                          });
-                          this.emailService.previewCustomTemplate(
-                            template,
-                            distributionList,
-                            emailData,
-                            this.metaResourceData,
-                            options.bodyFields,
-                            options.navigateToPage &&
-                              this.widget.settings.actions.navigateToPage
-                              ? this.widget.settings.actions.navigateSettings
-                              : undefined
-                          );
-                          this.status = {
-                            error: false,
-                          };
-                        },
-                      });
+                      this.emailService.previewCustomTemplate(
+                        template,
+                        distributionList,
+                        options.navigateToPage &&
+                          this.widget.settings.actions.navigateToPage
+                          ? this.widget.settings.actions.navigateSettings
+                          : undefined,
+                        emailQuery
+                      );
+                      this.status = {
+                        error: false,
+                      };
                     }
                   }
                 }
@@ -762,28 +740,26 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
       };
       return;
     } else {
-      return this.apollo.query({
-        query: builtQuery,
-        variables: {
-          first: selectedIds.length,
-          filter: {
-            logic: 'and',
-            filters: [
-              {
-                operator: 'eq',
-                field: 'ids',
-                value: selectedIds,
-              },
-            ],
-          },
-          sortField: this.grid.sortField || undefined,
-          sortOrder: this.grid.sortOrder || undefined,
-          styles: this.layout?.query?.style,
-          at: undefined,
-          skip: this.grid.skip,
+      return {
+        queryName: this.layout?.query.name || '',
+        fields: fields || [],
+        first: selectedIds.length,
+        filter: {
+          logic: 'and',
+          filters: [
+            {
+              operator: 'eq',
+              field: 'ids',
+              value: selectedIds,
+            },
+          ],
         },
-        fetchPolicy: 'no-cache',
-      });
+        sortField: this.grid.sortField || undefined,
+        sortOrder: this.grid.sortOrder || undefined,
+        styles: this.layout?.query?.style,
+        at: undefined,
+        skip: this.grid.skip,
+      };
     }
   }
 }

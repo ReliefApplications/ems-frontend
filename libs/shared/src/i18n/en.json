@@ -322,6 +322,12 @@
 				},
 				"processing": "Sending email...",
 				"ready": "Email ready",
+				"recipients": {
+					"combination": "Use Combination",
+					"commonServices": "Select from Common Services",
+					"manual": "Add Manually",
+					"resource": "Select With Filter"
+				},
 				"sent": "Email sent",
 				"style": {
 					"background": "Background color",

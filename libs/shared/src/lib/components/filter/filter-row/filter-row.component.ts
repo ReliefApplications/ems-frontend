@@ -17,6 +17,8 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 import { EmailService } from '../../email/email.service';
 import convertToMinutes from '../../../utils/convert-to-minutes';
+import { CommonServicesService } from '../../../services/common-services/common-services.service';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Composite filter row.
@@ -78,6 +80,8 @@ export class FilterRowComponent
     { value: 'months', label: 'Months' },
     { value: 'years', label: 'Years' },
   ];
+  /** Show loading sign */
+  public loading = false;
 
   /** @returns value form field as form control. */
   get valueControl(): UntypedFormControl {
@@ -88,17 +92,28 @@ export class FilterRowComponent
    * Composite filter row.
    *
    * @param emailService email notifications helper functions
+   * @param cs Common Services connection
    */
-  constructor(public emailService: EmailService) {
+  constructor(
+    public emailService: EmailService,
+    private cs: CommonServicesService
+  ) {
     super();
   }
 
   ngOnInit(): void {
     this.form
       .get('field')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
+      ?.valueChanges?.pipe(takeUntil(this.destroy$))
+      .subscribe(async (value) => {
         // remove value
+        const selectedField = this.fields.filter((x: any) => x.name == value);
+        if (
+          selectedField?.[0]?.isCommonService &&
+          selectedField?.[0]?.editor === 'select'
+        ) {
+          await this.getCsData(value, selectedField[0]);
+        }
         if (this.form?.get('operator')?.value) {
           this.setField(value);
         } else {
@@ -143,6 +158,29 @@ export class FilterRowComponent
       });
     if (this.disabled) {
       this.form.disable();
+    }
+
+    // Maps key to label so the field appears in filter field dropdown
+    if (
+      this.fields?.filter((x: any) => x?.isCommonService)?.length > 0 &&
+      this.form.get('field') &&
+      this.fields
+        ?.map((x: any) => x?.graphQLFieldName)
+        .filter((x: any) => x?.label === this.form?.getRawValue()?.field)
+        ?.length > 0
+    ) {
+      this.form
+        .get('field')
+        ?.setValue(
+          this.fields
+            .map((x) => x.graphQLFieldName)
+            .filter((x) => x.label === this.form.getRawValue().field)?.[0]?.key
+        );
+    }
+
+    //Calling the common service function for getting value for Select type of data
+    if (this.field?.isCommonService) {
+      this.field.options = this.getCsData(this.field?.name, this.field);
     }
   }
 
@@ -334,6 +372,32 @@ export class FilterRowComponent
     } else {
       this.editor = this.contextEditor;
       this.contextEditorIsActivated = true;
+    }
+  }
+
+  /**
+   * Get CS Data
+   *
+   * @param key selected key name
+   * @param selectedField selected field object
+   */
+  async getCsData(key: string, selectedField: any) {
+    if (
+      this.emailService?.userTableFields?.filter((x) => x === key).length === 0
+    ) {
+      this.loading = true;
+      await firstValueFrom(this.cs.restRequest(key))
+        .then((data) => {
+          this.loading = false;
+          selectedField.options =
+            data?.value.map((x: any) => ({
+              text: x?.Name,
+              value: x?.Name,
+            })) || [];
+        })
+        .catch((error) => {
+          console.error(`Error while fetching reference data ${key}:`, error);
+        });
     }
   }
 }

@@ -27,7 +27,7 @@ import { MapPopupService } from './map-popup/map-popup.service';
 import { haversineDistance } from './utils/haversine';
 import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
 import { MapLayersService } from '../../../services/map/map-layers.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import centroid from '@turf/centroid';
 import { coordEach } from '@turf/meta';
 import { Injector, Renderer2, Inject } from '@angular/core';
@@ -38,6 +38,11 @@ import {
 } from '@fortawesome/fontawesome-svg-core';
 import { getIconDefinition } from '@oort-front/ui';
 import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
+import { GridService } from '../../../services/grid/grid.service';
+import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { Apollo } from 'apollo-angular';
+import { ResourceQueryResponse } from '../../../models/resource.model';
+import { GET_LAYOUT } from './graphql/queries';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -145,6 +150,12 @@ export class Layer implements LayerModel {
   private popupService!: MapPopupService;
   /** Map layer service */
   private layerService!: MapLayersService;
+  /** Shared grid service */
+  private gridService!: GridService;
+  /** Query builder */
+  private queryBuilder!: QueryBuilderService;
+  /** Apollo service */
+  private apollo!: Apollo;
   /** Dashboard automation service */
   private dashboardAutomationService?: DashboardAutomationService;
   /** Map renderer */
@@ -205,7 +216,8 @@ export class Layer implements LayerModel {
 
   /** Layer fields, extracted from geojson */
   private fields: { [key in string]: FieldTypes } = {};
-
+  /** Metadata; used by popup elements */
+  private metaFields: any[] = [];
   // Declare variables to store the event listeners
   /** Event listener for zoom event */
   private zoomListener!: L.LeafletEventHandlerFn;
@@ -281,6 +293,9 @@ export class Layer implements LayerModel {
     if (options) {
       this.popupService = injector.get(MapPopupService);
       this.layerService = injector.get(MapLayersService);
+      this.gridService = injector.get(GridService);
+      this.queryBuilder = injector.get(QueryBuilderService);
+      this.apollo = injector.get(Apollo);
       // If no dashboard automation service is provided(it's optional, map settings does not use it), cannot recognize the token and breaks
       try {
         this.dashboardAutomationService = injector.get(
@@ -610,6 +625,7 @@ export class Layer implements LayerModel {
               lng: center.geometry.coordinates[0],
             }),
             this.popupInfo,
+            this.metaFields,
             layer
           );
         };
@@ -671,6 +687,10 @@ export class Layer implements LayerModel {
       }
       // Single layer
       default: {
+        // Fetch metadata if resource & layout configured
+        if (this.datasource?.resource && this.datasource.layout) {
+          await this.getLayoutMetadata();
+        }
         switch (
           get(this.layerDefinition, 'drawingInfo.renderer.type', 'simple')
         ) {
@@ -804,7 +824,8 @@ export class Layer implements LayerModel {
                 this.popupService.setPopUp(
                   matchedPoints,
                   event,
-                  this.popupInfo
+                  this.popupInfo,
+                  this.metaFields
                 );
               }
             };
@@ -909,6 +930,7 @@ export class Layer implements LayerModel {
                     children,
                     event.latlng,
                     this.popupInfo,
+                    this.metaFields,
                     event.layer
                   );
                 });
@@ -1415,6 +1437,69 @@ export class Layer implements LayerModel {
       return max([this.parent.getMinZoom(map), minZoom]) as number;
     } else {
       return minZoom;
+    }
+  }
+
+  /**
+   * Get layout metadata for popup
+   */
+  private async getLayoutMetadata() {
+    if (this.datasource) {
+      const { data } = await firstValueFrom(
+        this.apollo.query<ResourceQueryResponse>({
+          query: GET_LAYOUT,
+          variables: {
+            id: this.datasource.layout,
+            resource: this.datasource.resource,
+          },
+        })
+      );
+
+      if (data) {
+        const layout = data.resource.layouts?.edges[0]?.node;
+        if (layout) {
+          const layoutFields = layout.query.fields;
+          const fields = get(data, 'resource.metadata', []).map((f: any) => {
+            const layoutField = layoutFields.find(
+              (lf: any) => lf.name === f.name
+            );
+            if (layoutField) {
+              return { ...layoutField, ...f };
+            }
+            return f;
+          });
+          const metaQuery = this.queryBuilder.buildMetaQuery(layout.query);
+          if (metaQuery) {
+            const metaData = await firstValueFrom(metaQuery);
+            for (const field in metaData.data) {
+              if (Object.prototype.hasOwnProperty.call(metaData.data, field)) {
+                const metaFields = Object.assign({}, metaData.data[field]);
+                try {
+                  await this.gridService.populateMetaFields(metaFields);
+                  this.metaFields = fields.map((field) => {
+                    //add shape for columns and matrices
+                    const metaData = metaFields[field.name];
+                    field = {
+                      ...field,
+                      meta: metaData,
+                    };
+                    if (metaData && (metaData.columns || metaData.rows)) {
+                      return {
+                        ...field,
+                        columns: metaData.columns,
+                        rows: metaData.rows,
+                      };
+                    }
+                    return field;
+                  });
+                } catch (err) {
+                  console.error(err);
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

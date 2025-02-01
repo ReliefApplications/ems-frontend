@@ -229,6 +229,14 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param isNew value of if the user is creating a new email notification.
    */
   toggle(isNew?: boolean) {
+    this.emailService.tabs = [
+      {
+        title: `Block 1`,
+        content: `Block 1 Content`,
+        active: true,
+        index: 0,
+      },
+    ];
     this.emailService.isLinear = true;
     this.emailService.stepperStep = 0;
     this.emailService.disableSaveAndProceed.next(false);
@@ -567,6 +575,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.allLayoutdata = {};
     this.emailService.allPreviewData = [];
     this.emailService.emailLayout = {};
+
+    //Creating Distribtion Data
     const emailDL =
       this.emailService.populateDistributionListForm(distributionList);
     this.emailService.tabs = [
@@ -577,9 +587,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         index: 0,
       },
     ];
-    this.emailService.title.next(
-      this.emailService.tabs.filter((x: any) => x.active)?.[0].title
-    );
     const dataArray: FormArray | any = new FormArray([]);
     for (let index = 0; index < emailData.datasets.length; index++) {
       if (
@@ -612,6 +619,17 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       ele.active = false;
     });
     this.emailService.tabs[this.emailService.tabs.length - 1].active = true;
+
+    //Need this Set title after Setting a tbs and active tab
+    this.emailService.title.next(
+      this.emailService.tabs.filter((x: any) => x?.active)?.[0]?.title
+    );
+
+    //Need this Set Index after Setting a tbs and active tab
+    const activeIndex: any = this.emailService.tabs.findIndex(
+      (x: any) => x?.active
+    );
+    this.emailService.index.next(activeIndex);
 
     const subscriptionListArray = this.formBuilder.array([]);
     if (emailData.subscriptionList.length > 0) {
@@ -802,7 +820,12 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       name: new FormControl(ele.name),
       query: this.formBuilder.group({
         name: new FormControl(ele.query.name),
-        filter: this.getFilterGroup(ele.query.filter),
+        filter: this.formBuilder.group({
+          logic: new FormControl(ele.query.filter?.logic || null), // Filter logic
+          filters: this.formBuilder.array(
+            this.getFilterGroup(ele.query.filter?.filters || [])
+          ),
+        }),
         fields: fieldsArray,
       }),
       resource: new FormControl(ele.resource),
@@ -834,13 +857,17 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @returns The grouped filters.
    */
   getFilterGroup(filterData: any) {
-    const filterArray: FormArray | any = new FormArray([]);
-    filterData?.filters?.forEach((ele: any) => {
-      filterArray.push(this.getNewFilterFields(ele));
-    });
-    return this.formBuilder.group({
-      logic: filterData?.logic,
-      filters: filterArray,
+    return filterData?.map((filter: any) => {
+      if (filter?.filters) {
+        // If nested filters exist, recursively map them
+        return this.formBuilder.group({
+          logic: new FormControl(filter.logic || null),
+          filters: this.formBuilder.array(this.getFilterGroup(filter.filters)),
+        });
+      } else {
+        // Handle individual filter
+        return this.getNewFilterFields(filter);
+      }
     });
   }
 

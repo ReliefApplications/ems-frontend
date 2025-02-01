@@ -1,3 +1,26 @@
+# [2.17.0-alpha.24](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.23...v2.17.0-alpha.24) (2025-01-29)
+
+
+### Features
+
+* distribution lists can be built using common services users ([#2735](https://github.com/ReliefApplications/ems-frontend/issues/2735)) ([818efc0](https://github.com/ReliefApplications/ems-frontend/commit/818efc02daef45e2bd06d10320320b027e71f157)), closes [#2739](https://github.com/ReliefApplications/ems-frontend/issues/2739) [AB#107541](https://github.com/AB/issues/107541) [AB#107578](https://github.com/AB/issues/107578)
+* Layers can now use metadata for popups when needed ([#2751](https://github.com/ReliefApplications/ems-frontend/issues/2751)) ([0243e14](https://github.com/ReliefApplications/ems-frontend/commit/0243e149e57188f1560fafd6da51d989445c0b89)), closes [AB#109440](https://github.com/AB/issues/109440)
+
+# [2.17.0-alpha.23](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.22...v2.17.0-alpha.23) (2025-01-27)
+
+
+### Bug Fixes
+
+* prevent auto logout if token expired ([#2748](https://github.com/ReliefApplications/ems-frontend/issues/2748)) ([f92aa4d](https://github.com/ReliefApplications/ems-frontend/commit/f92aa4dff96a8fa5871c67925e9aaa537bcae3e9)), closes [AB#108676](https://github.com/AB/issues/108676)
+
+# [2.17.0-alpha.22](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.21...v2.17.0-alpha.22) (2025-01-24)
+
+
+### Bug Fixes
+
+* html question not indicating if read only ([#2750](https://github.com/ReliefApplications/ems-frontend/issues/2750)) ([a7e245e](https://github.com/ReliefApplications/ems-frontend/commit/a7e245e4f068bf8551a5286215f34535d7359022)), closes [AB#109284](https://github.com/AB/issues/109284)
+* use utf-8 decoding in email preview component ([#2727](https://github.com/ReliefApplications/ems-frontend/issues/2727)) ([b16e489](https://github.com/ReliefApplications/ems-frontend/commit/b16e48932840ec7a71a3af13292cdd4528b23c2b)), closes [AB#107245](https://github.com/AB/issues/107245)
+
 # [2.17.0-alpha.21](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.20...v2.17.0-alpha.21) (2025-01-10)
 
 

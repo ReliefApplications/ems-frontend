@@ -349,6 +349,7 @@ export const GET_DISTRIBUTION_LIST = gql`
               fields
             }
             inputEmails
+            commonServiceFilter
           }
           cc {
             resource
@@ -359,6 +360,7 @@ export const GET_DISTRIBUTION_LIST = gql`
               fields
             }
             inputEmails
+            commonServiceFilter
           }
           to {
             resource
@@ -369,6 +371,7 @@ export const GET_DISTRIBUTION_LIST = gql`
               fields
             }
             inputEmails
+            commonServiceFilter
           }
           name
           id
@@ -398,6 +401,7 @@ export const ADD_DISTRIBUTION_LIST = gql`
           fields
         }
         inputEmails
+        commonServiceFilter
       }
       cc {
         resource
@@ -408,6 +412,7 @@ export const ADD_DISTRIBUTION_LIST = gql`
           fields
         }
         inputEmails
+        commonServiceFilter
       }
       to {
         resource
@@ -418,6 +423,7 @@ export const ADD_DISTRIBUTION_LIST = gql`
           fields
         }
         inputEmails
+        commonServiceFilter
       }
       name
       id
@@ -465,6 +471,7 @@ export const EDIT_DISTRIBUTION_LIST = gql`
           fields
         }
         inputEmails
+        commonServiceFilter
       }
       cc {
         resource
@@ -475,6 +482,7 @@ export const EDIT_DISTRIBUTION_LIST = gql`
           fields
         }
         inputEmails
+        commonServiceFilter
       }
       to {
         resource
@@ -485,6 +493,7 @@ export const EDIT_DISTRIBUTION_LIST = gql`
           fields
         }
         inputEmails
+        commonServiceFilter
       }
       name
       id
@@ -745,6 +754,21 @@ export const GET_REFERENCE_DATA = gql`
       canSee
       canUpdate
       canDelete
+    }
+  }
+`;
+
+/** Get CS User Fields gql query definition */
+export const GET_CS_USER_FIELDS = `
+  {
+    __type(name: "user") {
+      fields {
+        name
+        type {
+          name
+          kind
+        }
+      }
     }
   }
 `;

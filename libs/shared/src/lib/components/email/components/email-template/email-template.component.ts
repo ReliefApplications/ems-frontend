@@ -17,7 +17,6 @@ import {
 } from '@angular/forms';
 import { EmailService } from '../../email.service';
 import { FILTER_OPERATORS } from '../../filter/filter.const';
-import { Apollo } from 'apollo-angular';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { emailRegex } from '../../constant';
@@ -26,10 +25,19 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import { firstValueFrom, takeUntil } from 'rxjs';
 import { cloneDeep } from 'lodash';
 import { QueryBuilderService } from './../../../../services/query-builder/query-builder.service';
-import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
 import { prettifyLabel } from '../../../../../lib/utils/prettify';
 import { DomSanitizer } from '@angular/platform-browser';
+import { CommonServicesService } from '../../../../services/common-services/common-services.service';
+import { GET_CS_USER_FIELDS } from '../../graphql/queries';
+
+/** Recipients type */
+enum RecipientsType {
+  manual = 'manual',
+  resource = 'resource',
+  commonServices = 'commonServices',
+  combination = 'combination',
+}
 
 /**
  * Email template to create distribution list
@@ -146,9 +154,10 @@ export class EmailTemplateComponent
   public distributionListValid!: boolean;
   /** List of display types */
   public segmentList = [
-    'Add Manually',
-    'Select With Filter',
-    'Use Combination',
+    RecipientsType.manual,
+    RecipientsType.resource,
+    RecipientsType.combination,
+    RecipientsType.commonServices,
   ];
   /** Time units for filtering. */
   public timeUnits = [
@@ -181,38 +190,50 @@ export class EmailTemplateComponent
   public nonEmailFieldsAlert = false;
   /** Actual resourceFields data  */
   public resourceFields: any = [];
+  /** Actual referenceFields common service data  */
+  public commonServiceFields: any = [];
   /** Expand for "To" list items. */
   isExpandedPreview = false;
   /** Expand for "To" list items. */
   isPreviewEmail = true;
   /** DL preview emails  */
   previewDLEmails: any = [];
+  /** accordion items */
+  public accordionItems = [
+    RecipientsType.manual,
+    RecipientsType.resource,
+    RecipientsType.commonServices,
+  ];
+  /** accordion expandedIndex */
+  expandedIndex = 0;
+  /** Form group for Common service filter query. */
+  public dlCommonQuery!: FormGroup | any;
+  /** Common service Query filter Preview HTML */
+  public previewCommonHTML: any = '';
 
   /**
    * Composite filter group.
    *
    * @param fb Angular form builder
    * @param emailService helper functions
-   * @param apollo Apollo server
    * @param snackbar snackbar helper function
    * @param translate i18 translate service
    * @param queryBuilder Shared query builder service
    * @param formBuilder Angular form builder
-   * @param http Http client
    * @param restService rest service
    * @param sanitizer html sanitizer
+   * @param cs Common Services connection
    */
   constructor(
     private fb: FormBuilder,
     public emailService: EmailService,
-    private apollo: Apollo,
     public snackbar: SnackbarService,
     public translate: TranslateService,
     public queryBuilder: QueryBuilderService,
     public formBuilder: FormBuilder,
-    private http: HttpClient,
     private restService: RestService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private cs: CommonServicesService
   ) {
     super();
   }
@@ -226,6 +247,7 @@ export class EmailTemplateComponent
     this.segmentForm.get('segment')?.valueChanges.subscribe((value: any) => {
       this.clearUnusedValues(value);
     });
+    this.setCommonServiceFields();
 
     this.distributionListValid =
       (this.emailService.isToValid &&
@@ -233,7 +255,9 @@ export class EmailTemplateComponent
       this.type === 'to';
 
     this.dlQuery = this.distributionList.get('query') as FormGroup;
-
+    this.dlCommonQuery = this.distributionList.get(
+      'commonServiceFilter'
+    ) as FormGroup;
     if (this.distributionList.controls.resource?.value && !this.resource) {
       this.selectedResourceId = this.distributionList.controls.resource.value;
       this.segmentForm.get('dataType')?.setValue('Resource');
@@ -262,22 +286,66 @@ export class EmailTemplateComponent
           }
         }
       });
+
+    this.dlCommonQuery
+      .get('filter.filters')
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value: any) => {
+        if (
+          this.activeSegmentIndex === 3 &&
+          value?.filter((x: any) => x?.field && x?.value)?.length > 0
+        ) {
+          this.emailService.validateNextButton();
+        } else {
+          this.activeSegmentIndex === 3
+            ? this.emailService.disableSaveAndProceed.next(true)
+            : '';
+        }
+      });
     this.selectedEmails = this.distributionList.get('inputEmails') as FormArray;
 
     const hasSelectedEmails = this.selectedEmails.value.length > 0;
     const hasFields = this.dlQuery.get('fields')?.value.length > 0;
+    const useCommonServices = this.dlCommonQuery.get('filter.filters')
+      ?.value?.[0]?.field
+      ? true
+      : false;
     this.type === 'to' ? (this.emailService.isToValid = false) : '';
 
-    if (hasSelectedEmails && hasFields) {
-      this.updateSegmentOptions('Use Combination');
+    if (
+      (hasSelectedEmails && hasFields) ||
+      (hasSelectedEmails && useCommonServices) ||
+      (hasFields && useCommonServices)
+    ) {
+      this.updateSegmentOptions(RecipientsType.combination);
+    } else if (useCommonServices && !hasSelectedEmails) {
+      this.updateSegmentOptions(RecipientsType.commonServices);
     } else if (
       !hasSelectedEmails &&
       (hasFields || this.selectedResourceId !== '')
     ) {
-      this.updateSegmentOptions('Select With Filter');
+      this.updateSegmentOptions(RecipientsType.resource);
     } else {
-      this.updateSegmentOptions('Add Manually');
+      this.updateSegmentOptions(RecipientsType.manual);
     }
+  }
+
+  /**
+   * Get the user table fields from common service
+   */
+  public async getUserTableFields() {
+    // Fetch the user table fields from the getFilterData
+    await firstValueFrom(this.cs.graphqlRequest(GET_CS_USER_FIELDS))
+      .then(({ data }) => {
+        const fields = data.__type.fields
+          .filter((f: any) => f.type.kind === 'SCALAR')
+          .map((f: any) => f.name);
+        this.emailService.userTableFields = fields;
+        this.loading = false;
+      })
+      .catch((error) => {
+        console.error('Error, fail to fetch user table fields: ', error);
+      });
   }
 
   /**
@@ -298,6 +366,9 @@ export class EmailTemplateComponent
       this.dlQuery?.get('name')?.setValue('');
       this.resource = null;
       this.emailService.isToValidCheck();
+
+      //clear DLCommon Query
+      this.resetFilters(this.dlCommonQuery);
     } else if (value === 'Select With Filter') {
       // Clear the input emails form array
       while (this.selectedEmails.length !== 0) {
@@ -322,6 +393,9 @@ export class EmailTemplateComponent
         }
       }
       this.emailService.isToValidCheck();
+
+      //clear DLCommon Query
+      this.resetFilters(this.dlCommonQuery);
     } else if (value === 'Use Combination') {
       if (
         this.emailService.datasetsForm.getRawValue().emailDistributionList?.to
@@ -335,6 +409,26 @@ export class EmailTemplateComponent
       } else {
         this.emailService.isToValid = false;
       }
+    } else if (value === 'Select from Common Services') {
+      // Clear the input emails form array
+      while (this.selectedEmails.length !== 0) {
+        this.selectedEmails.removeAt(0);
+      }
+      this.selectedEmails.reset();
+      if (
+        this.emailService.datasetsForm.getRawValue().emailDistributionList?.to
+          ?.inputEmails?.length > 0 ||
+        (this.emailService.datasetsForm.getRawValue().emailDistributionList.to
+          .resource !== null &&
+          this.emailService.datasetsForm.getRawValue().emailDistributionList.to
+            .resource !== '')
+      ) {
+        this.emailService.isToValid = true;
+      } else {
+        this.emailService.isToValid = false;
+      }
+      //Clear the Select with filter data
+      this.resetFilters(this.dlQuery);
     }
     this.emailService.validateNextButton();
   }
@@ -432,6 +526,15 @@ export class EmailTemplateComponent
         this.emailService.validateNextButton();
       }
     }
+    if (this.currentTabIndex !== event) {
+      if (
+        (this.expandedIndex === 2 && event === 1) ||
+        (this.activeSegmentIndex === 3 && event === 1)
+      ) {
+        fromHTML ? this.getCommonServiceDataSet() : '';
+      }
+    }
+
     // if (!this.showDatasetLimitWarning) {
     this.currentTabIndex = newIndex;
     // }
@@ -483,11 +586,8 @@ export class EmailTemplateComponent
         this.previewHTML = '';
         this.previewDLEmails = [];
 
-        this.http
-          .post(
-            `${this.restService.apiUrl}/notification/preview-dataset`,
-            objPreview
-          )
+        this.restService
+          .post('/notification/preview-dataset', objPreview)
           .subscribe(
             async (response: any) => {
               this.showPreview = true;
@@ -606,7 +706,7 @@ export class EmailTemplateComponent
    * in the selectedEmails FormArray.
    */
   get inputEmails(): string[] {
-    return this.selectedEmails.controls.map(
+    return this.selectedEmails?.controls?.map(
       (control: AbstractControl) => control.value
     );
   }
@@ -691,6 +791,26 @@ export class EmailTemplateComponent
             ?.getRawValue()
         ),
       };
+
+      let commonServiceData: any = [];
+      if (this.dlCommonQuery?.getRawValue()) {
+        commonServiceData = Object.assign(
+          this.dlCommonQuery?.getRawValue(),
+          {}
+        );
+        commonServiceData?.filter?.filters?.forEach((ele: any) => {
+          if (
+            this.emailService.commonServiceFields.filter(
+              (x: any) => x.key === ele.field
+            ).length > 0
+          ) {
+            ele.field = this.emailService.commonServiceFields.filter(
+              (x: any) => x.key === ele.field
+            )?.[0].label;
+          }
+        });
+      }
+
       objPreview.emailDistributionList.to = {
         resource: this.resource?.id ?? '',
         reference: this.distributionList?.get('reference')?.value ?? '',
@@ -703,8 +823,8 @@ export class EmailTemplateComponent
       };
 
       firstValueFrom(
-        this.http.post(
-          `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+        this.restService.post(
+          '/notification/preview-resource-emails/',
           objPreview
         )
       )
@@ -826,6 +946,7 @@ export class EmailTemplateComponent
    */
   onSegmentChange(event: any): void {
     this.noEmail.emit(false);
+    // this.commonServiceFields = [];
     const segment = event?.target?.value || event;
     this.activeSegmentIndex = this.segmentList.indexOf(segment);
     this.showPreview = false;
@@ -853,6 +974,9 @@ export class EmailTemplateComponent
       this.type === 'to' ? (this.emailService.toDLHasFilter = false) : '';
     }
     if (this.activeSegmentIndex === 1) {
+      const formArray = this.selectedEmails as FormArray;
+      formArray.clear();
+      this.previewDLEmails = [];
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
         this.emailService.disableSaveAsDraft.next(false);
@@ -866,6 +990,13 @@ export class EmailTemplateComponent
         this.emailService.disableSaveAsDraft.next(false);
       }
 
+      this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
+    }
+    if (this.activeSegmentIndex === 3) {
+      const formArray = this.selectedEmails as FormArray;
+      formArray.clear();
+      this.previewDLEmails = [];
+      this.onTabSelect(0, false);
       this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
     }
   }
@@ -969,6 +1100,12 @@ export class EmailTemplateComponent
 
       this.emailValidationError = '';
     }
+    if (this.activeSegmentIndex === 0) {
+      this.dlQuery?.get('name')?.setValue('');
+      this.resource = null;
+      this.resetFilters(this.dlQuery);
+      this.resetFilters(this.dlCommonQuery);
+    }
   }
 
   /**
@@ -1016,6 +1153,64 @@ export class EmailTemplateComponent
     if (!this.nonEmailFieldsAlert && matchedData !== 'email') {
       this.nonEmailFieldsAlert = true;
     }
+  }
+
+  /**
+   * To get data set for the applied filters.
+   *
+   */
+  getCommonServiceDataSet() {
+    const commonServiceData: any = this.emailService.setCommonServicePayload(
+      cloneDeep(this.dlCommonQuery?.getRawValue()?.filter)
+    );
+    this.loading = true;
+    this.restService
+      .post('/notification/preview-common-services-users', commonServiceData)
+      .subscribe(
+        async (response: any) => {
+          this.showPreview = true;
+          this.onTabSelect(1, false);
+          this.previewDLEmails = response;
+          this.isPreviewEmail = this.previewDLEmails?.length > 0 ? true : false;
+          this.loading = false;
+        },
+        (error: string) => {
+          console.error('Error:', error);
+          this.loading = false;
+        }
+      );
+  }
+
+  /**
+   * Set the common service fields.
+   *
+   */
+  async setCommonServiceFields() {
+    if (this.emailService?.userTableFields?.length === 0) {
+      await this.getUserTableFields();
+    }
+
+    this.emailService.commonServiceFields?.forEach((ele: any) => {
+      this.commonServiceFields.push({
+        graphQLFieldName: ele,
+        name: ele.key,
+        kind: 'SCALAR',
+        type: 'checkbox',
+        editor: 'select',
+        isCommonService: true,
+      });
+    });
+
+    this.emailService.userTableFields?.forEach((ele: any) => {
+      this.commonServiceFields.push({
+        graphQLFieldName: ele,
+        name: ele,
+        kind: 'SCALAR',
+        type: 'text',
+        editor: 'text',
+        isCommonService: true,
+      });
+    });
   }
 
   /**
