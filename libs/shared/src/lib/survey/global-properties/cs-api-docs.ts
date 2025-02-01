@@ -72,6 +72,13 @@ export const init = (): void => {
           displayName: 'Value expression for ' + property.text,
           visibleIndex: property.value === 'occurrencetypes' ? 1 : index,
         });
+
+        serializer.addProperty('file', {
+          category: 'Document Properties',
+          name: `fromField${property.bodyKey}`,
+          displayName: 'Transform From Field for ' + property.text,
+          visibleIndex: property.value === 'occurrencetypes' ? 1 : index,
+        });
       }
 
       serializer.addProperty('file', {

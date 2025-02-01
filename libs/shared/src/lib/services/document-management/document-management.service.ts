@@ -7,7 +7,7 @@ import { isNil, set } from 'lodash';
 import { Question } from 'survey-core';
 import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { RestService } from '../rest/rest.service';
-import { Apollo } from 'apollo-angular';
+import { Apollo, gql } from 'apollo-angular';
 import {
   DriveQueryResponse,
   GET_DRIVE_ID,
@@ -18,6 +18,17 @@ import { firstValueFrom } from 'rxjs';
 import { InMemoryCache } from '@apollo/client';
 import { HttpLink } from 'apollo-angular/http';
 import { setContext } from '@apollo/client/link/context';
+
+/**
+ * Property query response type
+ */
+interface PropertyQueryResponse {
+  [key: string]: {
+    id: string;
+    name: string;
+    _typename: string;
+  }[];
+}
 
 /**
  * Available properties from the CS API Documentation
@@ -380,6 +391,34 @@ export class DocumentManagementService {
         variables: {
           id,
         },
+      })
+    );
+  }
+
+  /**
+   * Generate a filter query, so property can get result from another field
+   *
+   * @param model CS model name
+   * @param filterField Field to filter on
+   * @param value Filter value ( must be array )
+   * @returns GraphQL query
+   */
+  public filterQuery(model: string, filterField: string, value: any[]) {
+    const apolloClient = this.apollo.use('csDocApi');
+    const query = gql`
+    {
+      ${model}(filter: {
+        ${filterField}_in: ${value}
+      }) {
+        id
+        name
+        __typename
+      }
+    }
+  `;
+    return firstValueFrom(
+      apolloClient.query<PropertyQueryResponse>({
+        query,
       })
     );
   }
