@@ -116,7 +116,7 @@
     <cdk-accordion>
       <ng-container *ngFor="let item of accordionItems; let i = index">
         <!-- Generic expansion panel -->
-        <ui-expansion-panel [index]="i">
+        <ui-expansion-panel [index]="i" (click)="onExpand(i)">
           <ng-container ngProjectAs="title">
             {{
               'common.notifications.email.recipients.' + item

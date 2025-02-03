@@ -535,9 +535,10 @@ export class EmailTemplateComponent
     }
     if (this.currentTabIndex !== event) {
       if (
-        (this.expandedIndex === 2 && event === 1) ||
+        this.expandedIndex === 2 ||
         (this.activeSegmentIndex === 3 && event === 1)
       ) {
+        this.previewDLEmails = [];
         fromHTML ? this.getCommonServiceDataSet() : '';
       }
     }
@@ -1232,5 +1233,19 @@ export class EmailTemplateComponent
    */
   toggleExpandPreview() {
     this.isExpandedPreview = !this.isExpandedPreview;
+  }
+
+  /**
+   * On Panel expand getting index of the expanded Panel
+   *
+   * @param index Selected Panel index
+   */
+  onExpand(index: any) {
+    this.expandedIndex = index;
+
+    //intiating onTabselection method call for common service filter in use combination
+    if (this.expandedIndex === 2) {
+      this.onTabSelect(0, false);
+    }
   }
 }
