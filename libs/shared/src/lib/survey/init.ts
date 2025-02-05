@@ -88,7 +88,7 @@ export const initCustomSurvey = (
   TagboxWidget.init(domService, CustomWidgetCollection.Instance, document);
   TextWidget.init(domService, CustomWidgetCollection.Instance, document);
   DropdownWidget.init(domService, CustomWidgetCollection.Instance, document);
-  FileWidget.init(CustomWidgetCollection.Instance);
+  FileWidget.init(injector, CustomWidgetCollection.Instance);
 
   if (containsCustomQuestions) {
     // Register all custom property grid component types

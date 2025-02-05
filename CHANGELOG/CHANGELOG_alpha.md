@@ -1,3 +1,10 @@
+# [2.17.0-alpha.25](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.24...v2.17.0-alpha.25) (2025-02-01)
+
+
+### Bug Fixes
+
+* Hide clone button if the user doesn't have sufficient permissions ([#2752](https://github.com/ReliefApplications/ems-frontend/issues/2752)) ([5b56f49](https://github.com/ReliefApplications/ems-frontend/commit/5b56f49d2d98c5ba8944831f1b2689c25d3a2400)), closes [AB#109540](https://github.com/AB/issues/109540)
+
 # [2.17.0-alpha.24](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.23...v2.17.0-alpha.24) (2025-01-29)
 
 
