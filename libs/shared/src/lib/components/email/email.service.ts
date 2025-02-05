@@ -178,6 +178,8 @@ export class EmailService {
   public cacheDistributionList: any = [];
   /** Final Email Preview */
   public finalEmailPreview: any = '';
+  /** Checks if custom template is new */
+  public isNewCustomTemplate = false;
   /** Checking the edit operation on custom template */
   public isCustomTemplateEdit = false;
   /** custom template ID */

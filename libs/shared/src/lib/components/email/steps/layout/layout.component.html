@@ -425,8 +425,7 @@
             >
               <ui-select-option
                 *ngFor="
-                  let previewData of this.emailService.previewData?.datasets ??
-                    this.emailService.getAllPreviewData();
+                  let previewData of blockData;
                   let i = index
                 "
                 [value]="previewData?.tabName ?? previewData"
