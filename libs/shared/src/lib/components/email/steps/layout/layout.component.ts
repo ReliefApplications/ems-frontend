@@ -130,6 +130,8 @@ export class LayoutComponent
   readonly separatorKeysCodes: number[] = this.SEPARATOR_KEYS_CODE;
   /** flag for custom preview template  */
   @Input() isPreviewTemplate = false;
+  /** Block Data for Body  */
+  blockData: any = [];
 
   /**
    * Email layout page component.
@@ -157,7 +159,12 @@ export class LayoutComponent
   ngOnInit(): void {
     if (this.emailService.isQuickAction) {
       this.emailService.resetPreviewData();
-      this.emailService.previewData.datasets = ['Block 1'];
+      if (
+        !this.emailService.isCustomTemplateEdit &&
+        !this.emailService.isNewCustomTemplate
+      ) {
+        this.emailService.previewData.datasets = ['Block 1'];
+      }
       const layoutName = this.emailService?.emailLayout?.name || '';
       this.emailService.emailLayout = {};
       this.emailService.emailLayout.name = layoutName;
@@ -263,6 +270,23 @@ export class LayoutComponent
       this.layoutForm
         .get('bcc')
         ?.setValue(this.emailService.emailDistributionList.bcc);
+    }
+    this.getBlockData();
+  }
+
+  /**
+   * Block Data for Body
+   */
+  getBlockData() {
+    if (
+      this.emailService.datasetsForm.get('datasets')?.value?.[0]?.query?.fields
+        ?.length > 0
+    ) {
+      this.blockData =
+        this.emailService.previewData?.datasets ??
+        this.emailService.getAllPreviewData();
+    } else {
+      this.blockData = [];
     }
   }
 

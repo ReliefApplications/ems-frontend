@@ -1069,9 +1069,10 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    */
   createTemplate(): void {
     this.showTemplateCreationWizard = true;
-    !this.emailService.isCustomTemplateEdit
-      ? this.emailService.resetAllLayoutData()
-      : '';
+    if (!this.emailService.isCustomTemplateEdit) {
+      this.emailService.isNewCustomTemplate = true;
+      this.emailService.resetAllLayoutData();
+    }
   }
 
   /**
@@ -1179,6 +1180,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService.datasetsForm?.get('emailLayout')?.reset();
     this.emailService.customTemplateId = '';
     this.emailService.isCustomTemplateEdit = false;
+    this.emailService.isNewCustomTemplate = false;
     this.emailService.allLayoutdata = {};
     this.emailService.emailLayout = {};
     this.emailService.customTemplateNames = this.customTemplates.map(
