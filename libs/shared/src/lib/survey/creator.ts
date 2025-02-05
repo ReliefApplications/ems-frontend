@@ -15,7 +15,8 @@ export const initCreatorSettings = (): void => {
   serializer.findProperty('file', 'storeDataAsText').onGetValue = () => false;
   serializer.findProperty('file', 'storeDataAsText').readOnly = true;
   serializer.findProperty('file', 'storeDataAsText').visible = false;
-  serializer.findProperty('file', 'maxSize').onGetValue = () => 7340032;
+  serializer.findProperty('file', 'maxSize').onGetValue = () =>
+    200 * 1024 * 1024;
 
   // Makes so we can edit the valueName property of HTML questions
   serializer.findProperty('html', 'valueName').visible = true;

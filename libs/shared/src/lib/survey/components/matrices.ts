@@ -344,6 +344,6 @@ function updateListMatrix(
 export const render = (question: Question): void => {
   // define the max size for files
   if (question.getType() === 'file') {
-    (question as QuestionFileModel).maxSize = 7340032;
+    (question as QuestionFileModel).maxSize = 200 * 1024 * 1024;
   }
 };

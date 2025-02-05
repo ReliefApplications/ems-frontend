@@ -14,6 +14,7 @@ import {
   DownloadFileEvent,
   EventType,
 } from '../analytics/analytics.service';
+import { v4 as uuidv4 } from 'uuid';
 
 /** Types of file we upload to blob storage */
 export enum BlobType {
@@ -359,10 +360,16 @@ export class DownloadService {
    * @returns The path of the uploaded file
    */
   public async uploadBlob(
-    file: any,
+    file: File,
     type: BlobType,
     entity: string
   ): Promise<string> {
+    // eslint-disable-next-line no-restricted-syntax
+    console.time('upload');
+    const CHUNK_SIZE = 4 * 1024 * 1024; // 4MB chunks
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+    const uploadId = uuidv4();
+
     const snackBarRef = this.snackBar.openComponentSnackBar(
       SnackbarSpinnerComponent,
       {
@@ -382,20 +389,26 @@ export class DownloadService {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
     });
-    const formData = new FormData();
-    formData.append('file', file, file.name);
+    let data: any = {};
 
-    const data: { path: string } = await firstValueFrom(
-      this.restService.post(uploadPath, formData, { headers })
-    ).catch(() => {
-      snackBarSpinner.instance.message = this.translate.instant(
-        'common.notifications.file.upload.error'
-      );
-      snackBarSpinner.instance.loading = false;
-      snackBarSpinner.instance.error = true;
-      setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
-      throw new Error(snackBarSpinner.instance.message);
-    });
+    for (let i = 0; i < totalChunks; i++) {
+      const start = i * CHUNK_SIZE;
+      const end = Math.min(start + CHUNK_SIZE, file.size);
+      const chunk = file.slice(start, end);
+
+      const formData = new FormData();
+      formData.append('file', chunk, file.name);
+      formData.append('chunkIndex', i.toString());
+      formData.append('totalChunks', totalChunks.toString());
+      formData.append('uploadId', uploadId);
+
+      data = await firstValueFrom(
+        this.restService.post(uploadPath, formData, { headers })
+      ).catch(() => {
+        setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+        throw new Error(snackBarSpinner.instance.message);
+      });
+    }
 
     const { path } = data ?? {};
     if (path) {
@@ -406,7 +419,8 @@ export class DownloadService {
 
       setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
     }
-
+    // eslint-disable-next-line no-restricted-syntax
+    console.timeEnd('upload');
     return path;
   }
 }

@@ -31,13 +31,13 @@
   <div class="flex-1 overflow-y-auto mt-4 space-y-3 max-h-[calc(100vh-100px)]">
     <!-- Individual Messages -->
     <div class="mb-4" *ngFor="let comment of comments[selectedQuestion.name]">
-      <span class="flex">
-        <p class="text-sm font-medium text-gray-900">
+      <span class="flex items-center">
+        <p class="text-sm text-gray-900">
           {{ comment.createdBy?.name }}
         </p>
         <p
           [uiTooltip]="(comment.createdAt | date : 'medium') ?? ''"
-          class="text-slate-400 pl-2"
+          class="text-slate-400 pl-2 text-sm"
         >
           {{ getTimeAgo(comment.createdAt ?? 0) }}
         </p>

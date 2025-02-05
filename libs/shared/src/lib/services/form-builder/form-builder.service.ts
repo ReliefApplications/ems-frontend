@@ -104,9 +104,7 @@ export const transformSurveyData = (survey: SurveyModel) => {
     }
   });
   if (survey.showPercentageProgressBar) {
-    const visibleQuestions = survey
-      .getAllQuestions()
-      .filter((question) => question.isVisible && !question.readOnly);
+    const visibleQuestions = getVisibleQuestions(survey.getAllQuestions());
     data.progress =
       (visibleQuestions.filter((question: Question) => !question.isEmpty())
         .length *
@@ -114,6 +112,29 @@ export const transformSurveyData = (survey: SurveyModel) => {
       visibleQuestions.length;
   }
   return data;
+};
+
+/**
+ * Gets visible questions
+ *
+ * @param questions current page questions
+ * @returns the interesting questions
+ */
+export const getVisibleQuestions = (questions: Question[]): Question[] => {
+  return questions.flatMap((question: Question) => {
+    if (question.getType() === 'panel' && question.elements) {
+      // If the question is a static panel, recursively get nested questions
+      return getVisibleQuestions(question.elements);
+    }
+    if (question.getType() === 'paneldynamic' && question.panels) {
+      // If the question is a dynamic panel, iterate through each panel's elements
+      return question.panels.flatMap((panel: any) =>
+        getVisibleQuestions(panel.elements)
+      );
+    }
+    // Include questions that are not read-only and are visible
+    return !question.readOnly && question.isVisible ? [question] : [];
+  });
 };
 
 /**
