@@ -86,7 +86,7 @@
           "esri-leaflet-heatmap",
           "esri-leaflet-renderers",
           "jsonpath",
-          "to-json-schema", 
+          "to-json-schema",
           "email-validator"
         ]
       },
@@ -183,6 +183,7 @@
               "maximumError": "20kb"
             }
           ],
+          "baseHref": "/apps/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/styles/src/lib/themes/default"]

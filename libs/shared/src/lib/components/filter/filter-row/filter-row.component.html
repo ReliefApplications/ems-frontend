@@ -29,6 +29,7 @@
   <ui-button
     *ngIf="field && canUseContext"
     [isIcon]="true"
+    [disabled]="disabled"
     icon="cached"
     (click)="toggleContextEditor()"
     [uiTooltip]="
@@ -58,6 +59,7 @@
   <ui-button
     [isIcon]="true"
     icon="delete"
+    [disabled]="disabled"
     variant="danger"
     (click)="delete.emit()"
     [uiTooltip]="'common.delete' | translate"
@@ -71,7 +73,11 @@
       <ui-select-menu formControlName="field" [filterable]="true">
         <ng-container *ngFor="let field of fields">
           <ui-select-option *ngIf="!field.fields" [value]="field.name">
-            {{ field.text || field.name }}
+            {{
+              !isEmailNotification
+                ? field.text || field.name
+                : (this.emailService.replaceUnderscores(field.name) | titlecase)
+            }}
           </ui-select-option>
 
           <ui-select-option *ngIf="field.fields" [isGroup]="true">
@@ -179,6 +185,32 @@
     </div>
   </ng-template>
 
+  <ng-template #inTheLastEditor>
+    <div formGroupName="inTheLast" class="flex flex-row">
+      <!-- In the last Number -->
+      <div uiFormFieldDirective [defaultMargin]="false" class="w-1/2 mr-1">
+        <label>Number</label>
+        <ui-select-menu formControlName="number">
+          <ui-select-option *ngFor="let num of getNumbersArray()" [value]="num">
+            {{ num }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <!-- In the Last Unit -->
+      <div uiFormFieldDirective [defaultMargin]="false" class="w-1/2 ml-1">
+        <label>Unit</label>
+        <ui-select-menu formControlName="unit">
+          <ui-select-option
+            [value]="timeUnit.value"
+            *ngFor="let timeUnit of timeUnits"
+          >
+            {{ timeUnit.label }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+    </div>
+  </ng-template>
+
   <!-- FILTER EDITOR -->
   <!-- <ng-template #dashboardFilterEditor>
     <div uiFormFieldDirective class="w-60">
@@ -207,3 +239,6 @@
     </div>
   </ng-template>
 </form>
+<ng-container *ngIf="loading">
+  <ui-spinner class="pt-4"></ui-spinner>
+</ng-container>

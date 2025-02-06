@@ -4,6 +4,11 @@
 		"accessDenied": "******",
 		"account": "******",
 		"actions": "******",
+		"activity": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"add": "******",
 		"adminField": "******",
 		"aggregation": {
@@ -70,6 +75,7 @@
 			"one": "******"
 		},
 		"clear": "******",
+		"clone": "******",
 		"close": "******",
 		"column": {
 			"few": "******",
@@ -151,6 +157,11 @@
 			"none": "******",
 			"one": "******"
 		},
+		"customTemplate": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"dashboard": {
 			"few": "******",
 			"none": "******",
@@ -172,6 +183,10 @@
 		"duplicate": "******",
 		"edit": "******",
 		"email": {
+			"customTemplate": "******",
+			"error": {
+				"duplicateName": "******"
+			},
 			"few": "******",
 			"none": "******",
 			"notification": {
@@ -272,10 +287,13 @@
 				},
 				"error": "******",
 				"errors": {
+					"customTitleExist": "******",
 					"noBody": "******",
+					"noCustomTitle": "******",
 					"noDistributionList": "******",
 					"noSubject": "******",
-					"noTemplate": "******"
+					"noTemplate": "******",
+					"preview": "******"
 				},
 				"existing": "******",
 				"field": {
@@ -299,14 +317,24 @@
 					"removeTooltip": "******",
 					"style": "******"
 				},
+				"preview": {
+					"processing": "******"
+				},
 				"processing": "******",
 				"ready": "******",
+				"recipients": {
+					"combination": "******",
+					"commonServices": "******",
+					"manual": "******",
+					"resource": "******"
+				},
 				"sent": "******",
 				"style": {
 					"background": "******",
 					"text": "******"
 				},
 				"subject": {
+					"customLayoutTitle": "******",
 					"textTitle": "******",
 					"title": "******"
 				},
@@ -364,6 +392,7 @@
 			"objectNotInvited": "{{name}} ******",
 			"objectNotReordered": "{{type}} ****** {{error}}",
 			"objectNotRestored": "{{value}} ****** {{error}}",
+			"objectNotSaved": "{{type}} ****** {{error}}",
 			"objectNotUpdated": "{{type}} ****** {{error}}",
 			"objectReordered": "{{type}} ******",
 			"objectRestored": "{{value}} ******",
@@ -605,6 +634,27 @@
 			}
 		},
 		"application": {
+			"activities": {
+				"columns": {
+					"createdAt": "******",
+					"hits": "******",
+					"page": "******",
+					"user": "******"
+				},
+				"downloadXlsx": "******",
+				"empty": "******",
+				"few": "******",
+				"metadata": "******",
+				"one": "******",
+				"tabs": {
+					"groupByPage": "******",
+					"groupByUser": "******",
+					"recentHits": "******"
+				},
+				"title": "******",
+				"url": "******",
+				"userId": "******"
+			},
 			"archive": {
 				"autoDeletedAt": "******",
 				"name": "******"
@@ -806,6 +856,7 @@
 				"update": "******"
 			},
 			"errors": {
+				"duplicate": "******",
 				"email": "******",
 				"schedule": "******"
 			},
@@ -830,18 +881,45 @@
 				"name": {
 					"required": "******"
 				}
+			},
+			"warning": {
+				"message": "******",
+				"noData": "******"
 			}
 		},
 		"email": {
+			"action": {
+				"header": "******"
+			},
 			"alert": {
+				"dlPreview": "******",
+				"individualEmailsInfo": "******",
 				"invalidFields": "****** {{fields}} ****** {{types}} ******",
+				"noResource": "******",
 				"noResourceFields": "******",
 				"noSelectedFields": "******",
-				"tooManyRecords": "****** {{totalRecords}} ******"
+				"selectChildFields": "******",
+				"selectedNonEmailFields": "******",
+				"subscribeExists": "****** {{message}}",
+				"subscribeFailed": "****** {{errorMessage}}",
+				"subscribeSuccess": "****** {{message}}",
+				"tooManyRecords": "****** {{totalRecords}} ******",
+				"unsubscribeFailed": "****** {{errorMessage}}",
+				"unsubscribeSuccess": "****** {{message}}"
 			},
 			"back": "******",
+			"dataset": {
+				"block": {
+					"label": "******",
+					"title": "******"
+				},
+				"navigateToPage": {
+					"title": "******"
+				}
+			},
 			"distributionList": {
 				"alert": {
+					"allSeparate": "******",
 					"and": "******",
 					"noEmail": "******",
 					"partOne": "******",
@@ -850,8 +928,13 @@
 				},
 				"bcc": "******",
 				"cc": "******",
+				"create": "******",
 				"createNew": "******",
 				"duplicate": "******",
+				"emailInput": "******",
+				"errors": {
+					"duplicateName": "******"
+				},
 				"import": {
 					"download": "******",
 					"import": "******",
@@ -862,6 +945,10 @@
 				"list": "******",
 				"name": "******",
 				"to": "******"
+			},
+			"error": {
+				"invalidDataset": "****** {{badDatasets}}",
+				"invalidToValue": "******"
 			},
 			"image": {
 				"rectangleValidation": "******",
@@ -879,9 +966,25 @@
 				"more": "****** {{length}} ******",
 				"subject": "******"
 			},
+			"restrictSubscription": {
+				"description": "******",
+				"title": "******"
+			},
 			"saveAsDraft": "******",
+			"subscribe": {
+				"error": {
+					"restricted": "******"
+				},
+				"restricted": {
+					"title": "******"
+				},
+				"title": "******"
+			},
 			"tooltip": {
 				"reverseDate": "******"
+			},
+			"unsubscribe": {
+				"title": "******"
 			}
 		},
 		"emailBuilder": {
@@ -975,6 +1078,7 @@
 				"modifiedBy": "****** {{user}} ****** {{date}}"
 			},
 			"update": {
+				"confirmMessage": "****** {{action}} ******",
 				"exit": "******",
 				"exitMessage": "******"
 			},
@@ -986,11 +1090,17 @@
 			"errors": {
 				"duplicatedRelatedName": "****** {{question}} ****** {{page}} ******",
 				"incorrectJSON": "******",
+				"maximumAllowedFiles": "****** {{number}}",
 				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
 			},
 			"propertyGrid": {
+				"file": {
+					"acceptedFiles": {
+						"clear": "******"
+					}
+				},
 				"resource": {
 					"availableGridFields": "******",
 					"resourceSelectText": "******"
@@ -1153,11 +1263,9 @@
 		},
 		"queryBuilder": {
 			"apply": "******",
-			"block": {
-				"label": "******",
-				"title": "******"
-			},
 			"dataset": {
+				"dataType": "******",
+				"referenceData": "******",
 				"select": "******",
 				"title": "******"
 			},
@@ -1184,6 +1292,7 @@
 			"filter": {
 				"and": "******",
 				"apply": "******",
+				"applyField": "******",
 				"field": "******",
 				"logic": "******",
 				"new": "******",
@@ -1203,6 +1312,9 @@
 				"title": "******"
 			},
 			"preview": {
+				"title": "******"
+			},
+			"sendSeparate": {
 				"title": "******"
 			},
 			"sort": {
@@ -1431,7 +1543,11 @@
 				"emailError": "******",
 				"label": "******",
 				"noPreviewData": "******",
+				"sendseparate": {
+					"list": "******"
+				},
 				"separateEmail": "******",
+				"subscriptionList": "******",
 				"to": "******"
 			}
 		},
@@ -1579,6 +1695,7 @@
 						"title": "******"
 					}
 				},
+				"files": "{{number}} ******",
 				"filter": {
 					"toggle": "******"
 				},
@@ -1688,8 +1805,20 @@
 					"confirmationMessage": "******"
 				},
 				"editor": {
-					"recordSelection": "******",
-					"title": "******"
+					"record": {
+						"choices": {
+							"expression": "******",
+							"manual": "******"
+						},
+						"expression": "******",
+						"title": "******"
+					},
+					"title": "******",
+					"tooltip": {
+						"record": {
+							"expression": "****** {{context}} ******"
+						}
+					}
 				},
 				"grid": {
 					"actions": {
@@ -1736,6 +1865,7 @@
 							"modify": "******",
 							"modifyField": "******",
 							"modifyValue": "******",
+							"navigateToPage": "******",
 							"notify": {
 								"message": "******"
 							},
@@ -2399,8 +2529,40 @@
 			"type": "******"
 		},
 		"dashboard": {
-			"activateFiltering": "******",
-			"buttonActions": {
+			"actionButtons": {
+				"action": "******",
+				"actions": {
+					"addRecord": {
+						"edition": "******",
+						"fieldsForUpdate": {
+							"text": "******"
+						},
+						"help": {
+							"mapping": "****** {{context.<fieldName>}} ******"
+						},
+						"text": "******",
+						"tooltip": {
+							"fieldsForUpdate": "******",
+							"template": "******"
+						}
+					},
+					"autoReload": "******",
+					"editRecord": {
+						"text": "******",
+						"tooltip": {
+							"template": "******"
+						}
+					},
+					"navigateTo": "******",
+					"openInNewTab": "******",
+					"previousPage": "******",
+					"sendNotification": {
+						"text": "******"
+					},
+					"subscribeToNotification": "******",
+					"unsubscribeFromNotification": "******",
+					"url": "******"
+				},
 				"category": "******",
 				"confirmDelete": "******",
 				"create": "******",
@@ -2417,6 +2579,7 @@
 				"variant": "******",
 				"visibleTo": "******"
 			},
+			"activateFiltering": "******",
 			"closable": "******",
 			"context": {
 				"addTemplate": "******",

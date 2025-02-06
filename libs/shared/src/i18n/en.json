@@ -4,6 +4,11 @@
 		"accessDenied": "Access denied",
 		"account": "Account",
 		"actions": "Actions",
+		"activity": {
+			"few": "Activities",
+			"none": "No activity",
+			"one": "Activity"
+		},
 		"add": "Add",
 		"adminField": "Admin field",
 		"aggregation": {
@@ -70,6 +75,7 @@
 			"one": "Child"
 		},
 		"clear": "Clear",
+		"clone": "Clone",
 		"close": "Close",
 		"column": {
 			"few": "Columns",
@@ -151,6 +157,11 @@
 			"none": "No Custom notification",
 			"one": "Custom notification"
 		},
+		"customTemplate": {
+			"few": "Custom templates",
+			"none": "No custom template",
+			"one": "Custom template"
+		},
 		"dashboard": {
 			"few": "Dashboards",
 			"none": "No dashboard",
@@ -172,6 +183,10 @@
 		"duplicate": "Duplicate",
 		"edit": "Edit",
 		"email": {
+			"customTemplate": "Custom template",
+			"error": {
+				"duplicateName": "Title already exists!"
+			},
 			"few": "Emails",
 			"none": "No email",
 			"notification": {
@@ -272,10 +287,13 @@
 				},
 				"error": "Something went wrong during the email sending",
 				"errors": {
+					"customTitleExist": "Custom template title already exist.",
 					"noBody": "Body is required to proceed!",
+					"noCustomTitle": "Custom template title is required to proceed!",
 					"noDistributionList": "Something went wrong during the email sending: no distribution list found",
 					"noSubject": "Subject is required to proceed!",
-					"noTemplate": "Something went wrong during the email sending: no template found"
+					"noTemplate": "Something went wrong during the email sending: no template found",
+					"preview": "Preview of email failed"
 				},
 				"existing": "Or use existing",
 				"field": {
@@ -299,14 +317,24 @@
 					"removeTooltip": "Remove header logo",
 					"style": "Header style"
 				},
+				"preview": {
+					"processing": "Creating email preview..."
+				},
 				"processing": "Sending email...",
 				"ready": "Email ready",
+				"recipients": {
+					"combination": "Use Combination",
+					"commonServices": "Select from Common Services",
+					"manual": "Add Manually",
+					"resource": "Select With Filter"
+				},
 				"sent": "Email sent",
 				"style": {
 					"background": "Background color",
 					"text": "Text color"
 				},
 				"subject": {
+					"customLayoutTitle": "Custom Template Title*",
 					"textTitle": "Subject text*",
 					"title": "Subject*"
 				},
@@ -364,6 +392,7 @@
 			"objectNotInvited": "{{name}} invitation failed.",
 			"objectNotReordered": "{{type}} not reordered. {{error}}",
 			"objectNotRestored": "{{value}} not restored. {{error}}",
+			"objectNotSaved": "{{type}} not saved. {{error}}",
 			"objectNotUpdated": "{{type}} not edited. {{error}}",
 			"objectReordered": "{{type}} reordered.",
 			"objectRestored": "{{value}} restored.",
@@ -605,6 +634,27 @@
 			}
 		},
 		"application": {
+			"activities": {
+				"columns": {
+					"createdAt": "Timestamp",
+					"hits": "Hits",
+					"page": "Page",
+					"user": "User"
+				},
+				"downloadXlsx": "Download XLSX",
+				"empty": "No activities available",
+				"few": "Activities",
+				"metadata": "Metadata",
+				"one": "Activity",
+				"tabs": {
+					"groupByPage": "Group by page",
+					"groupByUser": "Group by user",
+					"recentHits": "Recent hits"
+				},
+				"title": "Page",
+				"url": "URL",
+				"userId": "User ID"
+			},
 			"archive": {
 				"autoDeletedAt": "Automatically removed on",
 				"name": "Name"
@@ -806,6 +856,7 @@
 				"update": "Edit custom notification"
 			},
 			"errors": {
+				"duplicate": "Email already exists in distribution list",
 				"email": "Please input a valid email address",
 				"schedule": "Enter a valid cron expression"
 			},
@@ -830,18 +881,45 @@
 				"name": {
 					"required": "Please provide a name"
 				}
+			},
+			"warning": {
+				"message": "Any modifications made to a distribution list will be reflected in all areas where the DL is utilized.",
+				"noData": "No Emails found"
 			}
 		},
 		"email": {
+			"action": {
+				"header": "Actions"
+			},
 			"alert": {
+				"dlPreview": "All emails listed below will be used to create the distribution list.",
+				"individualEmailsInfo": "Select the email fields you would like to use to send record specific emails to",
 				"invalidFields": "The following fields are not available for selection: <strong>{{fields}}</strong> as they are of type <strong>{{types}}</strong> and cannot be properly displayed in the table for this form.",
+				"noResource": "Select a resource using the dropdown to display Distribution list filter wizard",
 				"noResourceFields": "Selected resource doesn't contain any fields",
 				"noSelectedFields": "Please select at least 1 field to save this dataset",
-				"tooManyRecords": "At this moment, we are limited to fetch only 50 records. Based on the provided filter conditions there are <strong>{{totalRecords}}</strong> matching records. Kindly add some additional filters to bring the record count less than or equals to 50."
+				"selectChildFields": "You have selected an Object/list field. Select atleast one child field to proceed further and/or preview.",
+				"selectedNonEmailFields": "The selected field is not configured as an email field. Proceeding further may cause errors.",
+				"subscribeExists": "Error! {{message}}",
+				"subscribeFailed": "Oops!... Something went wrong whilst subscribing. {{errorMessage}}",
+				"subscribeSuccess": "Success! {{message}}",
+				"tooManyRecords": "At this moment, we are limited to fetch only 50 records. Based on the provided filter conditions there are <strong>{{totalRecords}}</strong> matching records. Please add some additional filters to bring the record count less than or equals to 50.",
+				"unsubscribeFailed": "Oops!... Something went wrong whilst unsubscribing. {{errorMessage}}",
+				"unsubscribeSuccess": "Success! {{message}}"
 			},
 			"back": "Back to list",
+			"dataset": {
+				"block": {
+					"label": "Block title",
+					"title": "Block"
+				},
+				"navigateToPage": {
+					"title": "Navigate to Page"
+				}
+			},
 			"distributionList": {
 				"alert": {
+					"allSeparate": "Distribution list will be composed of all user emails obtained from send separate email, if you'd like to send to a list of users please create a normal block in step 2.",
 					"and": "and",
 					"noEmail": "Selected Dataset does not contain valid email addresses",
 					"partOne": "To proceed, please enter",
@@ -850,8 +928,13 @@
 				},
 				"bcc": "BCC",
 				"cc": "CC",
+				"create": "Create distribution list",
 				"createNew": "Or Create New",
 				"duplicate": "Title already exists",
+				"emailInput": "Manual email input",
+				"errors": {
+					"duplicateName": "This name already exists! Please enter a unique name."
+				},
 				"import": {
 					"download": "Download Template",
 					"import": "Import Distribution List",
@@ -862,6 +945,10 @@
 				"list": "Distribution List",
 				"name": "Distribution List name",
 				"to": "To"
+			},
+			"error": {
+				"invalidDataset": "Following datasets are not valid: {{badDatasets}}",
+				"invalidToValue": "List for To Recipients Invalid please fix!"
 			},
 			"image": {
 				"rectangleValidation": "Please upload an image with a more rectangular aspect ratio, similar to 960x80.",
@@ -879,9 +966,25 @@
 				"more": "Show {{length}} remaining emails...",
 				"subject": "Subject:"
 			},
+			"restrictSubscription": {
+				"description": "Restricts users being able to subscribe to this email notification",
+				"title": "Restrict user subscription"
+			},
 			"saveAsDraft": "Save as draft",
+			"subscribe": {
+				"error": {
+					"restricted": "Subscription Restricted"
+				},
+				"restricted": {
+					"title": "Subscription restricted for this email notification"
+				},
+				"title": "Subscribe"
+			},
 			"tooltip": {
 				"reverseDate": "YYYY/MM/DD"
+			},
+			"unsubscribe": {
+				"title": "Unsubscribe"
 			}
 		},
 		"emailBuilder": {
@@ -975,6 +1078,7 @@
 				"modifiedBy": "Last modified by {{user}} on {{date}}"
 			},
 			"update": {
+				"confirmMessage": "Do you confirm the {{action}} of the current record?",
 				"exit": "Exit without saving changes",
 				"exitMessage": "There are unsaved changes on your form. Are you sure you want to exit?"
 			},
@@ -986,11 +1090,17 @@
 			"errors": {
 				"duplicatedRelatedName": "Duplicated related name for question {{question}} on page {{page}}. Please provide a unique related name (snake case format) to save the form.",
 				"incorrectJSON": "JSON is invalid in JSON Editor, changes haven't been saved",
+				"maximumAllowedFiles": "Maximum number of files allowed: {{number}}",
 				"missingGridField": "Missing an available field grid for question {{question}} on page {{page}}. Please select a least one in Custom Question Properties to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
 			},
 			"propertyGrid": {
+				"file": {
+					"acceptedFiles": {
+						"clear": "Clear(All file types accepted)"
+					}
+				},
 				"resource": {
 					"availableGridFields": "Available grid fields",
 					"resourceSelectText": "First you have to select a resource before setting any filters"
@@ -1153,11 +1263,9 @@
 		},
 		"queryBuilder": {
 			"apply": "Apply filter",
-			"block": {
-				"label": "Block title",
-				"title": "Block"
-			},
 			"dataset": {
+				"dataType": "Data Type",
+				"referenceData": "Reference data",
 				"select": "Select a dataset",
 				"title": "Resource"
 			},
@@ -1184,6 +1292,7 @@
 			"filter": {
 				"and": "And",
 				"apply": "Apply filter",
+				"applyField": "Set Fields",
 				"field": "Field",
 				"logic": "Filter logic",
 				"new": "Add new filter",
@@ -1204,6 +1313,9 @@
 			},
 			"preview": {
 				"title": "Preview"
+			},
+			"sendSeparate": {
+				"title": "Send Separate Email Fields"
 			},
 			"sort": {
 				"ascending": "Ascending",
@@ -1431,7 +1543,11 @@
 				"emailError": "Type emails here and hit ENTER to add them to the distribution list",
 				"label": "Distribution List Name*",
 				"noPreviewData": "Selected dataset does not contain any preview data",
+				"sendseparate": {
+					"list": "Send separate email recipients"
+				},
 				"separateEmail": "Send separate email",
+				"subscriptionList": "Subscription list",
 				"to": "To"
 			}
 		},
@@ -1579,6 +1695,7 @@
 						"title": "Select export format"
 					}
 				},
+				"files": "{{number}} files",
 				"filter": {
 					"toggle": "Toggle visibility of filter"
 				},
@@ -1688,8 +1805,20 @@
 					"confirmationMessage": "Some changes will be lost when closing edition. Do you want to continue?"
 				},
 				"editor": {
-					"recordSelection": "Record selection",
-					"title": "Editor"
+					"record": {
+						"choices": {
+							"expression": "Use an expression",
+							"manual": "Manual selection"
+						},
+						"expression": "Record value expression",
+						"title": "Record selection"
+					},
+					"title": "Editor",
+					"tooltip": {
+						"record": {
+							"expression": "You can input a static value, or use {{context}} notation to dynamically inject a value"
+						}
+					}
 				},
 				"grid": {
 					"actions": {
@@ -1736,6 +1865,7 @@
 							"modify": "Auto-modify selected rows",
 							"modifyField": "Field to update",
 							"modifyValue": "Value to attribute",
+							"navigateToPage": "Include navigate to page link",
 							"notify": {
 								"message": "Notification message"
 							},
@@ -2399,8 +2529,40 @@
 			"type": "Notification type"
 		},
 		"dashboard": {
-			"activateFiltering": "Activate filtering",
-			"buttonActions": {
+			"actionButtons": {
+				"action": "Action",
+				"actions": {
+					"addRecord": {
+						"edition": "Edit current record",
+						"fieldsForUpdate": {
+							"text": "Attach newly created record to current record fields"
+						},
+						"help": {
+							"mapping": "Prefill fields of new records by providing static values or mapping them from the dashboard context using the {{context.<fieldName>}} syntax."
+						},
+						"text": "Add record",
+						"tooltip": {
+							"fieldsForUpdate": "Newly created record can be attached to resource & resources fields",
+							"template": "Select a resource template for addition of new records"
+						}
+					},
+					"autoReload": "Auto reload dashboard on save",
+					"editRecord": {
+						"text": "Edit record",
+						"tooltip": {
+							"template": "Select a resource template for edition of current record.\n If no template is selected, latest form used by the record will be used"
+						}
+					},
+					"navigateTo": "Navigate to",
+					"openInNewTab": "Open in new tab",
+					"previousPage": "Previous page",
+					"sendNotification": {
+						"text": "Send notification"
+					},
+					"subscribeToNotification": "Subscribe to notification",
+					"unsubscribeFromNotification": "Unsubscribe from notification",
+					"url": "Target URL"
+				},
 				"category": "Button category",
 				"confirmDelete": "Are you sure you want to delete this action button?",
 				"create": "Create an action button",
@@ -2417,6 +2579,7 @@
 				"variant": "Button variant",
 				"visibleTo": "Visible to roles"
 			},
+			"activateFiltering": "Activate filtering",
 			"closable": "Closable",
 			"context": {
 				"addTemplate": "Create a template for this record",

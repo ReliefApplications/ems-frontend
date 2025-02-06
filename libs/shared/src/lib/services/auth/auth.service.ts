@@ -217,14 +217,20 @@ export class AuthService {
    *
    * @returns A promise that resolves to void.
    */
-  public initLoginSequence(): Promise<void> {
-    if (!localStorage.getItem('idtoken')) {
+  public async initLoginSequence(): Promise<void> {
+    if (!this.oauthService.hasValidAccessToken()) {
       let environmentUri =
         this.environment.module === 'backoffice'
           ? this.environment.backOfficeUri
           : this.environment.frontOfficeUri;
-      environmentUri = environmentUri.endsWith('/').replace(/\/$/, '');
-      const pathName = location.href.replace(environmentUri, '/');
+      let pathName = '/';
+      // If href starts with environment uri, remove it to get pathname
+      if (location.href.startsWith(environmentUri)) {
+        pathName = location.href.replace(environmentUri, '/');
+      }
+      // else, the href is the environment uri without the trailing '/'
+      // We remove the trailing '/' from the environment uri as we would add it back
+      environmentUri = environmentUri.replace(/\/$/, '');
       const redirectUri = new URL(pathName, environmentUri);
       if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
         localStorage.setItem(

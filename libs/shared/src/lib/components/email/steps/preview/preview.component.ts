@@ -4,12 +4,21 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
+  OnChanges,
+  SimpleChanges,
+  OnInit,
+  Input,
 } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { EmailService } from '../../email.service';
 import { Subscription } from 'rxjs';
 import { TokenRegex } from '../../constant';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { DomSanitizer } from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
+import { RestService } from '../../../../services/rest/rest.service';
+import { FormArray } from '@angular/forms';
+import { cloneDeep } from 'lodash';
 
 /**
  * The preview component is used to display the email layout using user input from layout component.
@@ -21,7 +30,7 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 })
 export class PreviewComponent
   extends UnsubscribeComponent
-  implements OnDestroy, AfterViewInit
+  implements OnInit, OnChanges, OnDestroy, AfterViewInit
 {
   /** Selected resource ID. -TO DELETE? */
   public selectedResourceId: string | undefined;
@@ -42,12 +51,14 @@ export class PreviewComponent
   public bodyString: string | any = this.emailService.allLayoutdata.bodyHtml;
   /** HEADER HTML STRING */
   public headerString: string | any =
-    this.emailService.allLayoutdata.headerhtml;
+    this.emailService.allLayoutdata.headerHtml;
   /** FOOTER HTML STRING */
   public footerString: string | any =
     this.emailService.allLayoutdata.footerHtml;
   /** Subscription for query. */
   private querySubscription: Subscription | null = null;
+  /** Expand for Subscription list items. */
+  isExpandedSubscription = false;
   /** Expand for "To" list items. */
   isExpandedTo = false;
   /** Expand for "CC" list items. */
@@ -58,6 +69,33 @@ export class PreviewComponent
   @ViewChild('bodyHtml') bodyHtml!: ElementRef;
   /** Meta Data Graphql loading state subscription */
   private metaDataLoadSubscription: Subscription = new Subscription();
+  /** HTML content to be displayed in the email preview.*/
+  emailPreviewHtml: any = '<div></div>';
+  /** Dataset form group */
+  query: any;
+  /** Distribution List Send Separate */
+  distributionListSeparate: any = [];
+  /** Distribution List To */
+  distributionListTo: any = [];
+  /** Distribution List Cc */
+  distributionListCc: any[] = [];
+  /** Distribution List Bcc */
+  distributionListBcc: any[] = [];
+  /** Refernce to Subject */
+  @ViewChild('subjectHtmlRef') subjectHtmlRef: any;
+  /** Refernce to Subject */
+  @ViewChild('emailHTMLRef') emailHTMLRef: any;
+  /** data set*/
+  @Input() dataset!: any[];
+  /** previewUrl for cehcking the preview Type */
+  previewUrl = 'email';
+
+  /**
+   * Expand see more email list dropdown for Subscription List.
+   */
+  toggleExpandSubscription() {
+    this.isExpandedSubscription = !this.isExpandedSubscription;
+  }
 
   /**
    * Expand see more email list dropdown for "To".
@@ -85,70 +123,380 @@ export class PreviewComponent
    *
    * @param apollo - The Apollo client for making GraphQL queries.
    * @param emailService - The service for email-related operations.
+   * @param sanitizer - The sanitizer for sanitizing HTML.
+   * @param http - The http client for making HTTP requests.
+   * @param restService - The rest service for making REST requests.
    */
-  constructor(private apollo: Apollo, public emailService: EmailService) {
+  constructor(
+    private apollo: Apollo,
+    public emailService: EmailService,
+    private sanitizer: DomSanitizer,
+    private http: HttpClient,
+    private restService: RestService
+  ) {
     super();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['emailService']?.currentValue?.finalEmailPreview) {
+      this.loadFinalEmailPreview();
+    }
+  }
+
+  ngOnInit() {
+    const datasets = this.emailService.datasetsForm.get(
+      'datasets'
+    ) as FormArray;
+
+    datasets.controls.forEach((control: any) => {
+      if (control.get('cacheData')) {
+        control.removeControl('cacheData');
+      }
+    });
+
+    if (
+      this.emailService.isQuickAction &&
+      this.emailService.quickEmailDLQuery?.length === 0
+    ) {
+      const toData = this.emailService.emailDistributionList?.to;
+      const ccData = this.emailService.emailDistributionList?.cc;
+      const bccData = this.emailService.emailDistributionList?.bcc;
+      this.emailService.quickEmailDLQuery = { to: [], cc: [], bcc: [] };
+      this.emailService.quickEmailDLQuery.to = cloneDeep(toData);
+      this.emailService.quickEmailDLQuery.cc = cloneDeep(ccData);
+      this.emailService.quickEmailDLQuery.bcc = cloneDeep(bccData);
+    }
+
+    if (this.emailService.isQuickAction) {
+      this.populateDLForm();
+    }
+
+    this.query = this.emailService.datasetsForm.value;
+    this.query.datasets = this.emailService.datasetsForm
+      ?.get('datasets')
+      ?.getRawValue();
+    this.query.emailDistributionList = this.query.emailDistributionList
+      ? this.query.emailDistributionList
+      : {};
+    this.query.emailDistributionList = this.emailService?.datasetsForm
+      ?.get('emailDistributionList')
+      ?.getRawValue();
+    if (this.emailService.isQuickAction) {
+      this.query.emailDistributionList.to =
+        this.emailService.quickEmailDLQuery.to;
+      this.query.emailDistributionList.cc =
+        this.emailService.quickEmailDLQuery.cc;
+      this.query.emailDistributionList.bcc =
+        this.emailService.quickEmailDLQuery.bcc;
+    }
+    this.loadDistributionList();
+    this.loadFinalEmailPreview();
+  }
+
+  /**
+   * Populates dataset Form using custom template DL object
+   */
+  populateDLForm() {
+    if (this.emailService.isQuickAction) {
+      const { to, cc, bcc } = this.emailService.emailDistributionList; //this.emailService.customLayoutDL;
+
+      const uniqueTo: any = [...new Set(to?.inputEmails ?? to)];
+      const uniqueCc: any = [...new Set(cc?.inputEmails ?? cc)];
+      const uniqueBcc: any = [...new Set(bcc?.inputEmails ?? bcc)];
+
+      this.emailService.emailDistributionList.to = uniqueTo;
+      this.emailService.emailDistributionList.cc = uniqueCc;
+      this.emailService.emailDistributionList.bcc = uniqueBcc;
+
+      this.distributionListTo = this.emailService.emailDistributionList.to;
+      this.distributionListCc = this.emailService.emailDistributionList.cc;
+      this.distributionListBcc = this.emailService.emailDistributionList.bcc;
+
+      this.emailService.populateEmails(
+        this.emailService.emailDistributionList.to,
+        this.emailService?.datasetsForm
+          ?.get('emailDistributionList')
+          ?.get('to')
+          ?.get('inputEmails') as FormArray
+      );
+
+      this.emailService.populateEmails(
+        this.emailService.emailDistributionList.cc,
+        this.emailService?.datasetsForm
+          ?.get('emailDistributionList')
+          ?.get('cc')
+          ?.get('inputEmails') as FormArray
+      );
+
+      this.emailService.populateEmails(
+        this.emailService.emailDistributionList.bcc,
+        this.emailService?.datasetsForm
+          ?.get('emailDistributionList')
+          ?.get('bcc')
+          ?.get('inputEmails') as FormArray
+      );
+    }
+  }
+
+  /**
+   * Loads the distribution list.
+   *
+   */
+  loadDistributionList() {
+    this.emailService.loading = true;
+    const objData: any = cloneDeep(this.query);
+    //Updating payload
+
+    if (
+      this.emailService.emailDistributionList.to instanceof Array &&
+      objData.emailDistributionList.to
+    ) {
+      objData.emailDistributionList.to.inputEmails = this.emailService
+        ?.emailDistributionList?.to?.inputEmails
+        ? this.emailService.emailDistributionList.to.inputEmails
+        : this.emailService.emailDistributionList.to;
+    }
+    if (
+      this.emailService.emailDistributionList.cc instanceof Array &&
+      objData.emailDistributionList.cc
+    ) {
+      objData.emailDistributionList.cc.inputEmails = this.emailService
+        ?.emailDistributionList?.cc?.inputEmails
+        ? this.emailService.emailDistributionList.cc.inputEmails
+        : this.emailService.emailDistributionList.cc;
+    }
+    if (
+      this.emailService.emailDistributionList.bcc instanceof Array &&
+      objData.emailDistributionList.bcc
+    ) {
+      objData.emailDistributionList.bcc.inputEmails = this.emailService
+        ?.emailDistributionList?.bcc?.inputEmails
+        ? this.emailService.emailDistributionList.bcc.inputEmails
+        : this.emailService.emailDistributionList.bcc;
+    }
+
+    if (objData.emailDistributionList?.to?.commonServiceFilter?.filter) {
+      objData.emailDistributionList.to.commonServiceFilter =
+        this.emailService.setCommonServicePayload(
+          objData.emailDistributionList?.to?.commonServiceFilter?.filter
+        );
+    }
+
+    if (objData.emailDistributionList?.cc?.commonServiceFilter) {
+      objData.emailDistributionList.cc.commonServiceFilter =
+        this.emailService.setCommonServicePayload(
+          objData.emailDistributionList?.cc?.commonServiceFilter?.filter
+        );
+    }
+
+    if (objData.emailDistributionList?.bcc?.commonServiceFilter) {
+      objData.emailDistributionList.bcc.commonServiceFilter =
+        this.emailService.setCommonServicePayload(
+          objData.emailDistributionList?.bcc?.commonServiceFilter?.filter
+        );
+    }
+
+    this.http
+      .post(
+        `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+        objData
+      )
+      .subscribe(
+        (response: any) => {
+          if (
+            this.query.emailDistributionList.to?.resource?.trim() !== '' ||
+            this.query.emailDistributionList.cc?.resource?.trim() !== '' ||
+            this.query.emailDistributionList.bcc?.resource?.trim() !== '' ||
+            this.query.emailDistributionList?.to?.inputEmails?.length > 0 ||
+            this.query.emailDistributionList?.cc?.inputEmails?.length > 0 ||
+            this.query.emailDistributionList?.bcc?.inputEmails?.length > 0
+          ) {
+            this.distributionListTo = [
+              ...new Set(
+                response?.to.concat(
+                  this.emailService.emailDistributionList.to?.inputEmails ??
+                    this.emailService.emailDistributionList.to
+                )
+              ),
+            ];
+
+            this.distributionListCc = [
+              ...new Set(
+                response?.cc.concat(
+                  this.emailService.emailDistributionList.cc?.inputEmails ??
+                    this.emailService.emailDistributionList.cc
+                )
+              ),
+            ];
+
+            this.distributionListBcc = [
+              ...new Set(
+                response?.bcc.concat(
+                  this.emailService.emailDistributionList.bcc?.inputEmails ??
+                    this.emailService.emailDistributionList.bcc
+                )
+              ),
+            ];
+            this.emailService.emailDistributionList.to =
+              this.distributionListTo;
+            this.emailService.emailDistributionList.cc =
+              this.distributionListCc;
+            this.emailService.emailDistributionList.bcc =
+              this.distributionListBcc;
+          }
+
+          this.distributionListSeparate = response?.individualEmailList;
+          this.distributionListSeparate?.forEach((block: any) => {
+            block.isExpanded = false;
+            block.emails = Array.from(new Set(block.emails)); // Remove duplicate emails
+          });
+          this.emailService.loading = false;
+        },
+        () => {
+          this.emailService.loading = false;
+        }
+      );
+  }
+
+  /**
+   * Loads the final email preview.
+   *
+   */
+  async loadFinalEmailPreview(): Promise<void> {
+    const previewData: any = this.emailService.allPreviewData?.[0];
+    if (
+      this.emailService.datasetsForm.value.emailLayout !== null &&
+      this.emailService.datasetsForm.value.emailLayout !== undefined &&
+      !this.emailService.datasetsForm.value.emailLayout
+    ) {
+      this.emailService.isQuickAction = true;
+      this.emailService.quickEmailDLQuery = [];
+    }
+    this.previewUrl = `${this.restService.apiUrl}/notification/preview-email/`;
+
+    // Checks if url exists
+    if (this.previewUrl) {
+      this.emailService.loading = true; // Show spinner
+      // if (!this.emailService.datasetsForm.value.emailLayout) {
+      await this.emailService.patchEmailLayout();
+
+      if (this.emailService.isQuickAction) {
+        if (this.query?.datasets.length > 0) {
+          this.query.datasets[0].name = 'Block 1';
+          this.query.datasets[0].query.filter = previewData?.dataQuery?.filter
+            ? previewData.dataQuery.filter
+            : this.query.datasets[0].query.filter;
+          this.query.datasets[0].query.name =
+            previewData?.dataQuery?.queryName || '';
+          this.query.datasets[0].query.fields =
+            previewData?.dataQuery?.fields || [];
+        }
+        if (this.emailService.allPreviewData.length > 0) {
+          this.emailService.allPreviewData[0]['emailDistributionList'] =
+            this.query?.emailDistributionList;
+        }
+        this.query.datasets[0].navigateToPage = previewData?.navigateToPage;
+        this.query.datasets[0].navigateSettings = previewData?.navigateSettings;
+      }
+
+      this.query.emailLayout =
+        this.emailService.datasetsForm.getRawValue().emailLayout;
+      if (
+        this.query?.datasets?.length > 0 &&
+        this.emailService?.isQuickAction
+      ) {
+        this.query.datasets[0].resource = '';
+      }
+      const objData: any = cloneDeep(this.query);
+      objData.emailLayout.name = this.emailService?.layoutTitle;
+      if (!this.emailService.isQuickAction) {
+        //Updating payload
+        objData.emailDistributionList.to.commonServiceFilter =
+          this.emailService.setCommonServicePayload(
+            objData.emailDistributionList.to.commonServiceFilter.filter
+          );
+
+        objData.emailDistributionList.cc.commonServiceFilter =
+          this.emailService.setCommonServicePayload(
+            objData.emailDistributionList.cc.commonServiceFilter.filter
+          );
+
+        objData.emailDistributionList.bcc.commonServiceFilter =
+          this.emailService.setCommonServicePayload(
+            objData.emailDistributionList.bcc.commonServiceFilter.filter
+          );
+      }
+      this.http.post(this.previewUrl, objData).subscribe(
+        (response: any) => {
+          this.emailService.finalEmailPreview = response;
+          this.updateEmailContainer(); // Update the email container with the new preview
+          this.subjectString =
+            this.emailService.finalEmailPreview.subject ?? this.subjectString; // Updae/Replace the subject string from the response
+          if (this.subjectHtmlRef?.nativeElement) {
+            this.subjectHtmlRef.nativeElement.innerHTML = this.subjectString;
+          }
+          this.emailService.loading = false; // Hide spinner
+        },
+        (error: string) => {
+          console.error('Failed to load final email preview:', error);
+          this.emailService.loading = false; // Hide spinner in case of error
+        }
+      );
+    }
+  }
+
+  /**
+   * Updates the email container with the new preview
+   */
+  updateEmailContainer(): void {
+    const emailContainer = this.emailHTMLRef?.nativeElement;
+    if (emailContainer) {
+      this.emailPreviewHtml =
+        this.emailService.finalEmailPreview ?? '<div></div>';
+      emailContainer.innerHTML = new TextDecoder().decode(
+        Uint8Array.from(window.atob(this.emailPreviewHtml.html), (c) =>
+          c.charCodeAt(0)
+        )
+      );
+    }
   }
 
   ngAfterViewInit(): void {
     this.replaceTokensWithTables();
     this.replaceDateTimeTokens();
-
-    this.bodyHtml.nativeElement.innerHTML = this.bodyString;
-    this.checkAndApplyBodyStyle();
-
-    (document.getElementById('subjectHtml') as HTMLInputElement).innerHTML =
-      this.subjectString;
-
-    (document.getElementById('headerHtml') as HTMLInputElement).innerHTML =
-      this.headerString;
-    if (this.emailService.allLayoutdata.headerLogo) {
-      this.headerLogo = URL.createObjectURL(
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.headerLogo,
-          'image.png',
-          'image/png'
-        )
-      );
+    this.emailService.emailDistributionList =
+      this.emailService.emailDistributionList == undefined
+        ? {
+            name: '',
+            to: [],
+            cc: [],
+            bcc: [],
+          }
+        : this.emailService.emailDistributionList;
+    // this.bodyHtml.nativeElement.innerHTML = this.bodyString;
+    // this.checkAndApplyBodyStyle();
+    if (this.subjectHtmlRef?.nativeElement) {
+      this.subjectHtmlRef.nativeElement.innerHTML =
+        this.emailPreviewHtml.subject ?? '<div></div>';
     }
 
-    if (this.emailService.allLayoutdata.footerLogo) {
-      this.footerLogo = URL.createObjectURL(
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.footerLogo,
-          'image.png',
-          'image/png'
-        )
-      );
+    this.emailPreviewHtml =
+      this.emailService.finalEmailPreview ?? '<div></div>';
+    if (this.emailHTMLRef?.nativeElement) {
+      this.emailHTMLRef.nativeElement.innerHTML = this.emailPreviewHtml
+        .html as string;
     }
 
+    // this.loadFinalEmailPreview();
     if (this.emailService.allLayoutdata.bannerImage) {
-      this.bannerImage = URL.createObjectURL(
-        this.emailService.convertBase64ToFile(
-          this.emailService.allLayoutdata.bannerImage,
-          'image.png',
-          'image/png'
-        )
-      );
+      this.bannerImage = this.emailService.allLayoutdata.bannerImage;
     }
 
-    (document.getElementById('footerHtml') as HTMLInputElement).innerHTML =
-      this.footerString;
-  }
-
-  /**
-   * Check if the body has strong or em tags, and add the body-wrap class if it does.
-   */
-  checkAndApplyBodyStyle() {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(this.bodyString, 'text/html');
-
-    const strong = doc.querySelectorAll('strong');
-    const em = doc.querySelectorAll('em');
-    if (strong.length > 0 || em.length > 0) {
-      this.bodyHtml.nativeElement.classList.add('body-wrap');
-    } else {
-      this.bodyHtml.nativeElement.classList.remove('body-wrap');
+    if (
+      (document.getElementById('footerHtml') as HTMLInputElement)?.innerHTML
+    ) {
+      (document.getElementById('footerHtml') as HTMLInputElement).innerHTML =
+        this.footerString;
     }
   }
 
@@ -199,15 +547,6 @@ export class PreviewComponent
         this.subjectString = this.subjectString.replace(fName, fieldValue);
       }
     });
-  }
-
-  /**
-   * Checks if footer is empty
-   *
-   * @returns true if footer is empty
-   */
-  footerIsEmpty() {
-    return !this.footerString || /^<p>\s*<\/p>$/.test(this.footerString);
   }
 
   /**
@@ -415,7 +754,7 @@ export class PreviewComponent
       );
 
       if (previewData) {
-        const tableHtml = this.convertPreviewDataToHtml(previewData);
+        const tableHtml = this.emailService.allPreviewData?.[0].dataList; //this.convertPreviewDataToHtml(previewData);
         this.bodyString = this.bodyString.replace(match[0], tableHtml);
       }
     }
@@ -465,35 +804,35 @@ export class PreviewComponent
           value
         );
       });
-      this.replaceSubjectTokens();
+      // this.replaceSubjectTokens();
     } else {
       this.subjectString = '';
     }
 
-    this.headerString = this.emailService.allLayoutdata.headerHtml;
-    if (this.headerString) {
-      Object.entries(tokens).forEach(([token, value]) => {
-        this.headerString = this.headerString?.replace(
-          new RegExp(token, 'g'),
-          value
-        );
-      });
-      this.replaceInTheLast(this.headerString);
-    } else {
-      this.headerString = '';
-    }
+    // this.headerString = this.emailService.allLayoutdata.headerHtml;
+    // if (this.headerString) {
+    //   Object.entries(tokens).forEach(([token, value]) => {
+    //     this.headerString = this.headerString?.replace(
+    //       new RegExp(token, 'g'),
+    //       value
+    //     );
+    //   });
+    //   this.replaceInTheLast(this.headerString);
+    // } else {
+    //   this.headerString = '';
+    // }
 
-    this.footerString = this.emailService.allLayoutdata.footerHtml;
-    if (this.footerString) {
-      Object.entries(tokens).forEach(([token, value]) => {
-        this.footerString = this.footerString.replace(
-          new RegExp(token, 'g'),
-          value
-        );
-      });
-    } else {
-      this.footerString = '';
-    }
+    // this.footerString = this.emailService.allLayoutdata.footerHtml;
+    // if (this.footerString) {
+    //   Object.entries(tokens).forEach(([token, value]) => {
+    //     this.footerString = this.footerString.replace(
+    //       new RegExp(token, 'g'),
+    //       value
+    //     );
+    //   });
+    // } else {
+    //   this.footerString = '';
+    // }
   }
 
   /**

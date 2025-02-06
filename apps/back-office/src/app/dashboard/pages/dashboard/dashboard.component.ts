@@ -1,4 +1,7 @@
-import { Apollo } from 'apollo-angular';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { Dialog } from '@angular/cdk/dialog';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DOCUMENT } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -10,50 +13,50 @@ import {
   Output,
   Renderer2,
 } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import {
-  Dashboard,
-  ApplicationService,
-  WorkflowService,
-  DashboardService,
-  Application,
-  ConfirmService,
-  Record,
-  ButtonActionT,
-  DashboardQueryResponse,
-  EditDashboardMutationResponse,
-  DashboardComponent as SharedDashboardComponent,
-  DashboardAutomationService,
-  DashboardQueryType,
+  ActionButton,
+  ActionButtonService,
   AddDashboardTemplateMutationResponse,
-  DeleteDashboardTemplatesMutationResponse,
+  Application,
+  ApplicationService,
+  BreadcrumbService,
+  ConfirmService,
+  ContextService,
+  CustomWidgetStyleComponent,
+  Dashboard,
+  DashboardAutomationService,
+  DashboardQueryResponse,
+  DashboardQueryType,
+  DashboardService,
   DashboardTemplate,
+  DeleteDashboardTemplatesMutationResponse,
+  EditDashboardMutationResponse,
+  Record,
+  DashboardComponent as SharedDashboardComponent,
+  WorkflowService,
 } from '@oort-front/shared';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
+import { GridsterConfig } from 'angular-gridster2';
+import { Apollo } from 'apollo-angular';
+import localForage from 'localforage';
+import { cloneDeep, has, isEqual, omit } from 'lodash';
+import { Observable, firstValueFrom } from 'rxjs';
+import {
+  debounceTime,
+  filter,
+  map,
+  startWith,
+  takeUntil,
+} from 'rxjs/operators';
 import {
   ADD_DASHBOARD_TEMPLATE,
   DELETE_DASHBOARD_TEMPLATES,
   EDIT_DASHBOARD,
 } from './graphql/mutations';
 import { GET_DASHBOARD_BY_ID } from './graphql/queries';
-import { TranslateService } from '@ngx-translate/core';
-import {
-  map,
-  takeUntil,
-  filter,
-  startWith,
-  debounceTime,
-} from 'rxjs/operators';
-import { Observable, firstValueFrom } from 'rxjs';
-import { FormControl } from '@angular/forms';
-import { cloneDeep, has, isEqual, omit } from 'lodash';
-import { Dialog } from '@angular/cdk/dialog';
-import { SnackbarService, UILayoutService } from '@oort-front/ui';
-import localForage from 'localforage';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
-import { DOCUMENT } from '@angular/common';
-import { Clipboard } from '@angular/cdk/clipboard';
-import { GridsterConfig } from 'angular-gridster2';
 
 /**
  * Back-office Dashboard page.
@@ -101,8 +104,8 @@ export class DashboardComponent
   public contextId = new FormControl<string | number | null>(null);
   /** Contextual record */
   public contextRecord: Record | null = null;
-  /** Configured dashboard quick actions */
-  public buttonActions: ButtonActionT[] = [];
+  /** Configured dashboard action buttons */
+  public actionButtons: ActionButton[] = [];
   /** Timeout to scroll to newly added widget */
   private addTimeoutListener!: NodeJS.Timeout;
   /** Timeout to load grid options */
@@ -167,6 +170,8 @@ export class DashboardComponent
    * @param document Document
    * @param clipboard Angular clipboard service
    * @param dashboardAutomationService Dashboard automation service
+   * @param actionButtonService action button service
+   * @param breadcrumbService Breadcrumb service
    */
   constructor(
     private applicationService: ApplicationService,
@@ -185,7 +190,9 @@ export class DashboardComponent
     private layoutService: UILayoutService,
     @Inject(DOCUMENT) private document: Document,
     private clipboard: Clipboard,
-    private dashboardAutomationService: DashboardAutomationService
+    private dashboardAutomationService: DashboardAutomationService,
+    private actionButtonService: ActionButtonService,
+    private breadcrumbService: BreadcrumbService
   ) {
     super();
     this.dashboardAutomationService.dashboard = this;
@@ -238,6 +245,25 @@ export class DashboardComponent
   }
 
   /**
+   * Reload the dashboard.
+   */
+  reload(): void {
+    if (this.dashboardId) {
+      this.loadDashboard(
+        {
+          query: GET_DASHBOARD_BY_ID,
+          variables: {
+            id: this.dashboardId,
+            contextEl: this.contextEl,
+          },
+        },
+        this.dashboardId,
+        this.contextEl?.trim()
+      );
+    }
+  }
+
+  /**
    * Sets up the widgets from the dashboard structure
    *
    * @param dashboard Dashboard
@@ -249,8 +275,9 @@ export class DashboardComponent
         ?.filter((x: any) => x !== null)
         .map((widget: any) => {
           const contextData = this.dashboard?.contextData;
-          this.contextService.context =
-            { id: contextID, ...contextData } || null;
+          this.contextService.context = contextID
+            ? { id: contextID, ...contextData }
+            : null;
           if (!contextData) {
             return widget;
           }
@@ -303,6 +330,11 @@ export class DashboardComponent
         if (dashboard) {
           this.id = dashboard.id || id;
           this.dashboard = dashboard;
+          this.breadcrumbService.setBreadcrumb(
+            this.isStep ? '@workflow' : '@dashboard',
+            this.dashboard.name as string,
+            this.isStep ? this.dashboard.step?.workflow?.name : ''
+          );
           this.gridOptions = {
             ...omit(this.gridOptions, ['gridType', 'minimumHeight']), // Prevent issue when gridType or minimumHeight was not set
             ...this.dashboard?.gridOptions,
@@ -322,7 +354,7 @@ export class DashboardComponent
             : this.dashboard.step
             ? this.dashboard.step.workflow?.page?.application?.id
             : '';
-          this.buttonActions = this.dashboard.buttons || [];
+          this.actionButtons = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
           this.contextService.filterPosition.next({
@@ -629,15 +661,20 @@ export class DashboardComponent
     );
   }
 
-  /** Opens modal to modify button actions */
-  public async onEditButtonActions() {
-    const { EditButtonActionsModalComponent } = await import(
-      './components/edit-button-actions-modal/edit-button-actions-modal.component'
+  /** Opens modal to modify action buttons */
+  public async onEditActionButtons() {
+    const { EditActionButtonsModalComponent } = await import(
+      '../../../components/edit-action-buttons-modal/edit-action-buttons-modal.component'
     );
-    const dialogRef = this.dialog.open<ButtonActionT[] | undefined>(
-      EditButtonActionsModalComponent,
+    const dialogRef = this.dialog.open<ActionButton[] | undefined>(
+      EditActionButtonsModalComponent,
       {
-        data: { buttonActions: this.buttonActions },
+        data: {
+          dashboard: {
+            ...this.dashboard,
+            actionButtons: this.actionButtons,
+          },
+        },
         disableClose: true,
       }
     );
@@ -647,11 +684,14 @@ export class DashboardComponent
       .subscribe(async (buttons) => {
         if (!buttons) return;
 
-        this.dashboardService
-          .saveDashboardButtons(this.dashboard?.id, buttons)
+        this.actionButtonService
+          .savePageButtons(this.dashboard?.id, buttons)
           ?.pipe(takeUntil(this.destroy$))
           .subscribe(({ errors }) => {
-            this.buttonActions = buttons;
+            this.actionButtons = buttons;
+            if (this.dashboard) {
+              this.dashboard.buttons = buttons;
+            }
             this.applicationService.handleEditionMutationResponse(
               errors,
               this.translate.instant('common.dashboard.one')
@@ -785,25 +825,25 @@ export class DashboardComponent
   }
 
   /**
-   * Reorders button actions.
+   * Reorders action buttons.
    *
    * @param event Drop event
    */
-  public onButtonActionDrop(event: CdkDragDrop<typeof this.buttonActions>) {
+  public onActionButtonDrop(event: CdkDragDrop<typeof this.actionButtons>) {
     if (event.previousIndex === event.currentIndex) return;
 
     moveItemInArray(
-      this.buttonActions,
+      this.actionButtons,
       event.previousIndex,
       event.currentIndex
     );
 
-    this.dashboardService
-      .saveDashboardButtons(this.dashboard?.id, this.buttonActions)
+    this.actionButtonService
+      .savePageButtons(this.dashboard?.id, this.actionButtons)
       ?.subscribe(() => {
         this.dashboard = {
           ...this.dashboard,
-          buttons: this.buttonActions,
+          buttons: this.actionButtons,
         };
       });
   }

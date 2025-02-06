@@ -6,12 +6,17 @@ import {
   ViewChild,
 } from '@angular/core';
 import { EmailService } from '../../email.service';
-import { FormGroup } from '@angular/forms';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { DownloadService } from '../../../../services/download/download.service';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { firstValueFrom, takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/public-api';
+import { cloneDeep } from 'lodash';
+import { HttpClient } from '@angular/common/http';
+import { RestService } from '../../../../services/rest/rest.service';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
@@ -24,7 +29,10 @@ const DISTRIBUTION_PAGE_SIZE = 5;
   templateUrl: './select-distribution.component.html',
   styleUrls: ['./select-distribution.component.scss'],
 })
-export class SelectDistributionComponent implements OnInit, OnDestroy {
+export class SelectDistributionComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   /**
    * Composite email distribution.
    *
@@ -33,14 +41,21 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
    * @param downloadService helper functions
    * @param snackBar snackbar helper function
    * @param translate translate helper function
+   * @param formBuilder form builder helper function
+   * @param http http helper function
+   * @param restService rest helper function
    */
   constructor(
     public emailService: EmailService,
     public applicationService: ApplicationService,
     public downloadService: DownloadService,
     public snackBar: SnackbarService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    public formBuilder: FormBuilder,
+    private http: HttpClient,
+    private restService: RestService
   ) {
+    super();
     this.getExistingTemplate();
     this.showExistingDistributionList =
       this.emailService.showExistingDistributionList;
@@ -50,12 +65,6 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
   public showEmailTemplate = false;
   /** Type of email template. */
   public templateFor = '';
-  /** Filter form group for TO email. */
-  public toEmailFilter!: FormGroup | any;
-  /** Filter form group for CC email. */
-  public ccEmailFilter!: FormGroup | any;
-  /** Filter form group for BCC email. */
-  public bccEmailFilter!: FormGroup | any;
   /** Flag indicating whether existing distribution list is shown. */
   public showExistingDistributionList = false;
   /** Cached distribution list data. */
@@ -93,27 +102,12 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     limit: DEFAULT_PAGE_SIZE,
   };
   /** Recipients data. */
-  public emailDistributionList: {
-    name: string;
-    To: string[];
-    Cc: string[];
-    Bcc: string[];
-  } = {
-    name: '',
-    To: [],
-    Cc: [],
-    Bcc: [],
-  };
+  public emailDistributionList: FormGroup | any =
+    this.emailService.datasetsForm.get('emailDistributionList');
   /** Flag indicating loading state. */
   public isLoading = false;
   /** Cached data. */
   public cachedData: any = {};
-  /** Flag indicating whether the TO template is shown. */
-  public showToTemplate = false;
-  /** Flag indicating whether the CC template is shown. */
-  public showCCTemplate = false;
-  /** Flag indicating whether the BCC template is shown. */
-  public showBccTemplate = false;
 
   /** Checks for valid emails when filtering datasets   */
   public noEmail = {
@@ -128,28 +122,104 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     | undefined;
 
   ngOnInit(): void {
-    this.emailDistributionList = this.emailService.emailDistributionList;
-    this.toEmailFilter = this.emailService.toEmailFilter;
-    this.ccEmailFilter = this.emailService.ccEmailFilter;
-    this.bccEmailFilter = this.emailService.bccEmailFilter;
-    this.validateDistributionList();
-
-    // Toggle all dropdowns to open by default
-    this.showToTemplate = true;
-    this.showCCTemplate = true;
-    this.showBccTemplate = true;
-    const existingDataIndex = this.emailService.cacheDistributionList
-      .map((x: any) => x.node)
-      .map((y: any) => y.emailDistributionList)
-      .findIndex(
-        (x: any) =>
-          x.name.toLowerCase() ==
-          this.emailDistributionList?.name?.trim().toLowerCase()
-      );
-    if (existingDataIndex > -1) {
-      this.distributionListId =
-        this.emailService.cacheDistributionList[existingDataIndex].node.id;
+    this.enableForm('to');
+    this.enableForm('cc');
+    this.enableForm('bcc');
+    if (
+      this.emailService?.editId &&
+      this.emailService?.emailDistributionList?.id
+    ) {
+      this.distributionListId = this.emailService.emailDistributionList.id;
+      this.emailService.selectedDLName =
+        this.emailService.emailDistributionList?.name;
     }
+    if (
+      !this.emailDistributionList?.get('to.query.filter.logic')?.value?.trim()
+    ) {
+      this.emailDistributionList.get('to.query.filter.logic').setValue('and');
+    }
+    if (
+      !this.emailDistributionList?.get('cc.query.filter.logic')?.value?.trim()
+    ) {
+      this.emailDistributionList.get('cc.query.filter.logic').setValue('and');
+    }
+    if (
+      !this.emailDistributionList?.get('bcc.query.filter.logic')?.value?.trim()
+    ) {
+      this.emailDistributionList.get('bcc.query.filter.logic').setValue('and');
+    }
+
+    if (
+      !this.emailDistributionList
+        ?.get('to.commonServiceFilter.filter.logic')
+        ?.value?.trim()
+    ) {
+      this.emailDistributionList
+        .get('to.commonServiceFilter.filter.logic')
+        .setValue('and');
+    }
+    if (
+      !this.emailDistributionList
+        ?.get('cc.commonServiceFilter.filter.logic')
+        ?.value?.trim()
+    ) {
+      this.emailDistributionList
+        .get('cc.commonServiceFilter.filter.logic')
+        .setValue('and');
+    }
+    if (
+      !this.emailDistributionList
+        ?.get('bcc.commonServiceFilter.filter.logic')
+        ?.value?.trim()
+    ) {
+      this.emailDistributionList
+        .get('bcc.commonServiceFilter.filter.logic')
+        .setValue('and');
+    }
+    if (!this.isAllSeparate()) {
+      this.validateDistributionList();
+    }
+  }
+
+  /**
+   * Checks if all datasets are send separate email
+   *
+   * @returns boolean true if all are send separate
+   */
+  isAllSeparate(): boolean {
+    if (this.emailService.datasetsForm?.get('datasets')?.getRawValue()) {
+      let separateEmailCount = 0;
+      let datasetsCount = 0;
+      for (const dataset of this.emailService.datasetsForm.get('datasets')
+        ?.value ?? []) {
+        if (
+          (dataset.resource || dataset.reference) &&
+          dataset.individualEmail
+        ) {
+          datasetsCount += 1;
+          separateEmailCount += 1;
+        } else if (dataset.resource || dataset.reference) {
+          datasetsCount += 1;
+        }
+      }
+
+      if (separateEmailCount === datasetsCount && datasetsCount > 0) {
+        this.emailDistributionList.get('name')?.patchValue('');
+        this.clearDL(this.emailDistributionList.get('to') as FormGroup);
+        this.clearDL(this.emailDistributionList.get('cc') as FormGroup);
+        this.clearDL(this.emailDistributionList.get('bcc') as FormGroup);
+        this.emailService.selectedDLName = '';
+        this.distributionListId = '';
+
+        this.emailService.isAllSeparateEmail = true;
+
+        return true;
+      } else {
+        this.emailService.isAllSeparateEmail = false;
+        return false;
+      }
+    }
+    return false;
   }
 
   /**
@@ -181,32 +251,26 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * This method is used to show/hide the email template
-   *
-   * @param templateFor distribution email template for [ to | cc | bcc ]
-   */
-  toggleDropdown(templateFor: string): void {
-    if (templateFor.toLocaleLowerCase() === 'to') {
-      this.showToTemplate = !this.showToTemplate;
-    } else if (templateFor.toLocaleLowerCase() === 'cc') {
-      this.showCCTemplate = !this.showCCTemplate;
-    } else if (templateFor.toLocaleLowerCase() === 'bcc') {
-      this.showBccTemplate = !this.showBccTemplate;
-    }
-    if (!this.templateFor || this.templateFor === templateFor) {
-      this.showEmailTemplate = !this.showEmailTemplate;
-    }
-    this.templateFor = templateFor;
-  }
-
-  /**
    * Name validation.
    *
    * @returns boolean
    */
   isNameDuplicate(): boolean {
-    const enteredName = this.emailDistributionList?.name?.trim().toLowerCase();
-    return this.emailService.distributionListNames.includes(enteredName);
+    const enteredName = this.emailDistributionList
+      ?.get('name')
+      ?.value?.trim()
+      .toLowerCase();
+    if (
+      this.emailService.selectedDLName?.trim()?.toLowerCase() !==
+      enteredName?.trim()?.toLowerCase()
+    ) {
+      const isDupe =
+        this.emailService.distributionListNames.includes(enteredName);
+      this.emailService.isDLNameDuplicate = isDupe;
+      return isDupe;
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -216,58 +280,16 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
   triggerDuplicateChecker() {
     const flag = this.isNameDuplicate();
     if (
-      this.emailDistributionList.To.length === 0 ||
-      this.emailDistributionList.name.length === 0 ||
+      // this.emailDistributionList.To.length === 0 ||
+      this.emailDistributionList.get('name').value.length === 0 ||
       flag
     ) {
       this.emailService.stepperDisable.next({ id: 2, isValid: false });
     } else {
       this.emailService.stepperDisable.next({ id: 2, isValid: true });
+      this.emailService.distributionListName =
+        this.emailDistributionList.get('name').value;
     }
-  }
-
-  /**
-   * This method is used to set the 'To' field of the email.
-   *
-   * @param data The data to be set in the 'To' field.
-   * @param data.emails Array of email addresses to be set in the 'To' field.
-   * @param data.emailFilter The form group representing the email filter.
-   */
-  to(data: { emails: string[]; emailFilter: any }): void {
-    this.emailDistributionList.To = data.emails;
-    this.toEmailFilter = data.emailFilter;
-    this.validateDistributionList();
-  }
-
-  /**
-   * This method is used to set the 'CC' field of the email.
-   *
-   * @param data The data to be set in the 'CC' field.
-   * @param data.emails Array of email addresses to be set in the 'CC' field.
-   * @param data.emailFilter The form group representing the email filter.
-   */
-  cc(data: { emails: string[]; emailFilter: any }): void {
-    this.emailDistributionList.Cc = data.emails;
-    this.ccEmailFilter = data.emailFilter;
-  }
-
-  /**
-   * This method is used to set the 'BCC' field of the email.
-   *
-   * @param data The data to be set in the 'BCC' field.
-   * @param data.emails Array of email addresses to be set in the 'BCC' field.
-   * @param data.emailFilter The form group representing the email filter.
-   */
-  bcc(data: { emails: string[]; emailFilter: any }): void {
-    this.emailDistributionList.Bcc = data.emails;
-    this.bccEmailFilter = data.emailFilter;
-  }
-
-  ngOnDestroy(): void {
-    this.emailService.emailDistributionList = this.emailDistributionList;
-    this.emailService.toEmailFilter = this.toEmailFilter;
-    this.emailService.ccEmailFilter = this.ccEmailFilter;
-    this.emailService.bccEmailFilter = this.bccEmailFilter;
   }
 
   /**
@@ -280,30 +302,58 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
       this.applicationId = res?.id;
     });
     this.isLoading = true;
-    this.emailService
-      .getEmailNotifications(this.applicationId)
-      .subscribe(({ data }: any) => {
-        this.distributionLists = data?.emailNotifications?.edges ?? [];
-        let uniquDistributionLists = Array.from(
-          new Set(this.emailService.distributionListNames)
-        );
-        this.distributionLists = this.distributionLists.filter((ele: any) => {
-          if (
-            uniquDistributionLists.includes(
-              ele.node.emailDistributionList.name?.toLowerCase()
-            )
-          ) {
-            uniquDistributionLists = uniquDistributionLists.filter(
-              (name) =>
-                ele.node.emailDistributionList.name?.toLowerCase() !== name
+    this.emailService.getEmailDistributionList(this.applicationId).subscribe({
+      next: ({ data }: any) => {
+        this.distributionLists =
+          data?.emailDistributionLists?.edges?.map(({ node }: any) => {
+            this.emailService.distributionListNames.push(
+              node?.name?.trim()?.toLowerCase()
             );
-            return true;
-          } else {
-            return false;
-          }
-        });
+            return node;
+          }) || [];
+
+        //START :- filter distribution list data according to the Resource
+        const allDatasetResources =
+          this.emailService.datasetsForm.value.datasets.map(
+            (ele: any) => ele.resource
+          );
+        let filtered_DL = this.distributionLists.filter(
+          (x: any) =>
+            x.to?.resource === null ||
+            x.to?.resource === '' ||
+            allDatasetResources.includes(x.to?.resource)
+        );
+        filtered_DL = filtered_DL.filter(
+          (x: any) =>
+            x.cc?.resource === null ||
+            x.cc?.resource === '' ||
+            allDatasetResources.includes(x.cc?.resource)
+        );
+        filtered_DL = filtered_DL.filter(
+          (x: any) =>
+            x.bcc?.resource === null ||
+            x.bcc?.resource === '' ||
+            allDatasetResources.includes(x.bcc?.resource)
+        );
+        this.distributionLists = filtered_DL;
+        // END
         this.cacheDistributionList = this.distributionLists;
         this.emailService.cacheDistributionList = this.cacheDistributionList;
+        const existingDataIndex =
+          this.emailService.cacheDistributionList.findIndex(
+            (x: any) =>
+              x?.name?.toLowerCase() ==
+              this.emailDistributionList
+                ?.get('name')
+                ?.value?.trim()
+                ?.toLowerCase()
+          );
+        if (existingDataIndex > -1) {
+          this.distributionListId =
+            this.emailService.cacheDistributionList[existingDataIndex].id;
+          this.emailService.selectedDLName =
+            this.emailService.cacheDistributionList[existingDataIndex].name;
+        }
         this.distributionLists = this.cacheDistributionList.slice(
           this.distributionPageInfo.pageSize *
             this.distributionPageInfo.pageIndex,
@@ -312,7 +362,11 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
         );
         this.distributionPageInfo.length = this.cacheDistributionList.length;
         this.isLoading = false;
-      });
+      },
+      error: (err: any) => {
+        this.snackBar.openSnackBar(err.message, { error: true });
+      },
+    });
   }
 
   /**
@@ -321,12 +375,160 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
    * @param index table row index
    */
   selectDistributionListRow(index: number): void {
-    this.emailDistributionList =
-      this.distributionLists[index].node.emailDistributionList;
-    this.distributionListId = this.distributionLists[index].node.id;
+    const emailDL = this.emailService.populateDistributionListForm(
+      this.distributionLists[index]
+    );
+
+    this.emailDistributionList
+      .get('name')
+      ?.patchValue(emailDL.get('name')?.value);
+    this.emailDistributionList.get('id')?.patchValue(emailDL.get('id')?.value);
+
+    this.clearAndPatch(
+      this.emailDistributionList.get('to') as FormGroup,
+      emailDL.get('to') as FormGroup
+    );
+    this.clearAndPatch(
+      this.emailDistributionList.get('cc') as FormGroup,
+      emailDL.get('cc') as FormGroup
+    );
+    this.clearAndPatch(
+      this.emailDistributionList.get('bcc') as FormGroup,
+      emailDL.get('bcc') as FormGroup
+    );
+    // this.emailDistributionList = emailDL;
+    this.emailService.selectedDLName = emailDL?.getRawValue()?.name;
+    this.distributionListId = this.distributionLists[index]?.id;
     this.showExistingDistributionList = !this.showExistingDistributionList;
     this.validateDistributionList();
+    this.emailService.setDistributionList(this.emailDistributionList);
   }
+
+  /**
+   * Clear distribution list
+   *
+   * @param targetGroup Form group you want to clear
+   */
+  clearDL(targetGroup: FormGroup): void {
+    this.emailService.filterToEmails = [];
+    // Clear 'resource'
+    targetGroup.get('resource')?.patchValue('');
+
+    // Clear 'query'
+    const targetQuery = targetGroup.get('query') as FormGroup;
+    targetQuery.reset();
+
+    // Set 'name'
+    targetQuery.get('name')?.setValue('');
+
+    // Set 'filter'
+    const targetFilter = targetQuery.get('filter') as FormGroup;
+    targetFilter.get('logic')?.setValue('and');
+    const targetFiltersArray = targetFilter.get('filters') as FormArray;
+    targetFiltersArray.clear();
+
+    // Set 'fields'
+    const targetFieldsArray = targetQuery.get('fields') as FormArray;
+    targetFieldsArray.clear();
+
+    // Clear 'inputEmails'
+    const targetInputEmails = targetGroup.get('inputEmails') as FormArray;
+    targetInputEmails.clear();
+  }
+
+  /**
+   * Clear and patch function
+   *
+   * @param targetGroup Form group you want to clear and patch
+   * @param sourceGroup Form group you are retrieving the values from
+   */
+  clearAndPatch(targetGroup: FormGroup, sourceGroup: FormGroup): void {
+    // Clear 'resource'
+    targetGroup.get('resource')?.patchValue(sourceGroup.get('resource')?.value);
+
+    // Filter Query
+    this.set_Filter_CS_Value(
+      targetGroup.get('query') as FormGroup,
+      sourceGroup.get('query') as FormGroup
+    );
+
+    // Common service filter query
+    this.set_Filter_CS_Value(
+      targetGroup.get('commonServiceFilter') as FormGroup,
+      sourceGroup.get('commonServiceFilter') as FormGroup
+    );
+
+    // Clear 'inputEmails'
+    const targetInputEmails = targetGroup.get('inputEmails') as FormArray;
+    const sourceInputEmails = sourceGroup.get('inputEmails') as FormArray;
+    targetInputEmails.clear();
+    sourceInputEmails.controls.forEach((control) => {
+      targetInputEmails.push(this.formBuilder.control(control.value));
+    });
+  }
+
+  /**
+   * Set Filter anfd common service
+   *
+   * @param targetQuery target query
+   * @param sourceQuery source query
+   */
+  set_Filter_CS_Value(targetQuery: FormGroup, sourceQuery: FormGroup) {
+    // Clear 'query'
+    // const targetQuery = targetGroup.get('query') as FormGroup;
+    // const sourceQuery = sourceGroup.get('query') as FormGroup;
+    targetQuery.reset();
+
+    // Set 'name'
+    targetQuery.get('name')?.setValue(sourceQuery.get('name')?.value);
+
+    // Set 'filter'
+    const targetFilter = targetQuery.get('filter') as FormGroup;
+    const sourceFilter = sourceQuery.get('filter') as FormGroup;
+    targetFilter.get('logic')?.setValue(sourceFilter.get('logic')?.value);
+    const targetFiltersArray = targetFilter.get('filters') as FormArray;
+    const sourceFiltersArray = sourceFilter.get('filters') as FormArray;
+    targetFiltersArray.clear();
+    sourceFiltersArray.controls.forEach((control) => {
+      targetFiltersArray.push(control);
+    });
+
+    // Set 'fields'
+    const targetFieldsArray = targetQuery.get('fields') as FormArray;
+    const sourceFieldsArray = sourceQuery.get('fields') as FormArray;
+    targetFieldsArray?.clear();
+    sourceFieldsArray?.controls?.forEach((control) => {
+      if (
+        control?.value?.kind === 'LIST' ||
+        control?.value?.kind === 'OBJECT'
+      ) {
+        const fieldsData: any = new FormArray([]);
+        control?.value?.fields?.forEach((y: any) => {
+          fieldsData.push(
+            this.formBuilder.group({
+              ...y,
+            })
+          );
+        });
+        targetFieldsArray.push(
+          this.formBuilder.group({
+            ...control.value,
+            fields: fieldsData,
+          })
+        );
+      } else {
+        targetFieldsArray.push(
+          this.formBuilder.group({
+            ...control.value,
+          })
+        );
+      }
+    });
+  }
+
+  // transformDL() {
+  // TODO: DL Transformation
+  // }
 
   /**
    * Download Distribution List Template
@@ -345,32 +547,91 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
    * @param event file selection Event
    */
   fileSelectionHandler(event: any): void {
-    this.showToTemplate = false;
-    this.showCCTemplate = false;
-    this.showBccTemplate = false;
     const file: File = event.target.files[0];
     if (file) {
       this.downloadService
         .uploadFile('upload/distributionList', file)
-        .subscribe(({ To, Cc, Bcc }) => {
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(async ({ to, cc, bcc }) => {
           this.snackBar.openSnackBar(
             this.translate.instant(
               'components.email.distributionList.import.loading'
             )
           );
-          this.emailDistributionList.To = [
-            ...new Set([...this.emailDistributionList.To, ...To]),
-          ];
-          this.emailDistributionList.Cc = [
-            ...new Set([...this.emailDistributionList.Cc, ...Cc]),
-          ];
-          this.emailDistributionList.Bcc = [
-            ...new Set([...this.emailDistributionList.Bcc, ...Bcc]),
-          ];
-          this.showToTemplate = true;
+          const toAfterImport: any =
+            to?.length > 0
+              ? [
+                  ...new Set(
+                    to.map((email: string) => email.trim().toLowerCase())
+                  ),
+                ]
+              : [];
+
+          const ccAfterImport: any =
+            cc?.length > 0
+              ? [
+                  ...new Set(
+                    cc.map((email: string) => email.trim().toLowerCase())
+                  ),
+                ]
+              : [];
+
+          const bccAfterImport: any =
+            bcc?.length > 0
+              ? [
+                  ...new Set(
+                    bcc.map((email: string) => email.trim().toLowerCase())
+                  ),
+                ]
+              : [];
+
+          toAfterImport.forEach((email: string) => {
+            // Access the 'inputEmails' FormArray and push a new FormControl with the trimmed email
+            if (
+              !this.emailDistributionList
+                ?.getRawValue()
+                ?.to?.inputEmails?.includes(email)
+            ) {
+              this.emailDistributionList
+                .get('to')
+                .get('inputEmails')
+                .push(this.formBuilder.control(email.trim()));
+            }
+          });
+
+          ccAfterImport.forEach((email: string) => {
+            // Access the 'inputEmails' FormArray and push a new FormControl with the trimmed email
+            if (
+              !this.emailDistributionList
+                ?.getRawValue()
+                ?.cc?.inputEmails?.includes(email)
+            ) {
+              this.emailDistributionList
+                .get('cc')
+                .get('inputEmails')
+                .push(this.formBuilder.control(email.trim()));
+            }
+          });
+
+          bccAfterImport.forEach((email: string) => {
+            // Access the 'inputEmails' FormArray and push a new FormControl with the trimmed email
+            if (
+              !this.emailDistributionList
+                ?.getRawValue()
+                ?.bcc?.inputEmails?.includes(email)
+            ) {
+              this.emailDistributionList
+                .get('bcc')
+                .get('inputEmails')
+                .push(this.formBuilder.control(email.trim()));
+            }
+          });
+
           this.templateFor = 'to';
-          this.validateDistributionList();
+          await this.validateDistributionList();
+
           if (this.fileElement) this.fileElement.nativeElement.value = '';
+          event.target.value = null;
           this.snackBar.openSnackBar(
             this.translate.instant(
               'components.email.distributionList.import.success'
@@ -380,22 +641,90 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
     }
   }
 
+  override ngOnDestroy() {
+    super.ngOnDestroy();
+
+    this.emailService.datasetsForm.setControl(
+      'emailDistributionList',
+      this.emailDistributionList
+    );
+  }
+
+  /**
+   *
+   *check for valid email inouts
+   *
+   * @returns return true or false
+   */
+  checkToValid(): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.loading = true;
+      // Check if field
+      if (
+        this.emailDistributionList?.get('to')?.get('query')?.get('name')
+          ?.value ||
+        this.emailDistributionList?.get('to')?.get('resouce')?.value
+      ) {
+        if (this.emailService?.filterToEmails?.length === 0) {
+          resolve(false);
+        }
+      }
+      if (
+        this.emailService.toDLHasFilter &&
+        this.emailDistributionList?.get('to')?.get('query')?.get('name')?.value
+      ) {
+        const query = {
+          emailDistributionList: cloneDeep(
+            this.emailDistributionList.getRawValue()
+          ),
+        };
+        firstValueFrom(
+          this.http.post(
+            `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+            query
+          )
+        )
+          .then((response: any) => {
+            this.loading = false;
+            this.emailService.filterToEmails =
+              response?.to?.length > 0 ? response?.to : [];
+            if (
+              this.emailService?.datasetsForm?.value?.emailDistributionList
+                ?.name?.length > 0 &&
+              !this.isNameDuplicate() &&
+              response?.to.length > 0
+            ) {
+              this.emailService.disableSaveAndProceed.next(false);
+            }
+            resolve(response?.to.length > 0);
+          })
+          .catch((error) => {
+            console.error(error);
+            // this.emailService.filterToEmails = [];
+            resolve(false);
+          });
+      } else {
+        resolve(
+          this.emailDistributionList.get('to').get('inputEmails')?.value
+            ?.length > 0
+        );
+      }
+      this.loading = false;
+      resolve(false);
+    });
+  }
+
   /**
    * The distribution list should have at least
    * one To email address and name to proceed with next steps
    */
-  validateDistributionList(): void {
-    const isSaveAndProceedNotAllowed =
-      this.emailDistributionList.To.length === 0 ||
-      this.emailDistributionList.name.length === 0 ||
-      this.emailDistributionList.name.trim() === '';
-    this.emailService.disableSaveAndProceed.next(isSaveAndProceedNotAllowed);
-    if (isSaveAndProceedNotAllowed) {
-      this.emailService.disableFormSteps.next({
-        stepperIndex: 2,
-        disableAction: true,
-      });
-    }
+  validateDistributionList() {
+    this.isNameDuplicate();
+
+    //Distribution List name is valid
+    this.emailService.distributionListName =
+      this.emailDistributionList.get('name').value;
+    this.emailService.validateNextButton();
   }
 
   /**
@@ -425,5 +754,72 @@ export class SelectDistributionComponent implements OnInit, OnDestroy {
       this.cacheDistributionList
     );
     this.distributionLists = this.cachedData;
+  }
+
+  /**
+   *
+   * click of create New DL , so we are clearingthe data or reseting the form for reuse again
+   */
+  createNewDL() {
+    this.distributionListId = '';
+    this.showExistingDistributionList = !this.showExistingDistributionList;
+    this.emailService.selectedDLName = '';
+    this.emailService.distributionListName = '';
+    // this.emailDistributionList.get('name').setValue('');
+    this.emailService.datasetsForm
+      ?.get('emailDistributionList')
+      ?.get('name')
+      ?.setValue('');
+    this.emailService.datasetsForm
+      ?.get('emailDistributionList')
+      ?.get('id')
+      ?.setValue(null);
+
+    this.clearAllTabsData('to');
+    this.clearAllTabsData('cc');
+    this.clearAllTabsData('bcc');
+    this.emailDistributionList = this.emailService.datasetsForm.get(
+      'emailDistributionList'
+    );
+  }
+
+  /**
+   *
+   *clearing data from to, cc, bcc by passign th tabname
+   *
+   * @param type - Tab name
+   */
+  clearAllTabsData(type: any) {
+    const form = this.emailService.datasetsForm
+      ?.get('emailDistributionList')
+      ?.get(type);
+    const query = form?.get('query') as FormGroup;
+    query.get('name')?.setValue('');
+    const fields = form?.get('query')?.get('fields') as FormArray;
+    fields.clear();
+
+    const inputEmails = form?.get('inputEmails') as FormArray;
+    inputEmails.clear();
+
+    const filter = form?.get('query')?.get('filter') as FormGroup;
+    const filters = filter.get('filters') as FormArray;
+    filters.clear();
+
+    form?.get('resource')?.setValue('');
+
+    // Enable changes on the form
+    form?.enable();
+  }
+
+  /**
+   * Enable form To, cc, bcc dropdown
+   *
+   * @param type tab name
+   */
+  enableForm(type: string) {
+    const form = this.emailService.datasetsForm
+      ?.get('emailDistributionList')
+      ?.get(type);
+    form?.enable();
   }
 }

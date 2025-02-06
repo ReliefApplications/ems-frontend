@@ -6,6 +6,8 @@ import {
   matrixDropdownColumnTypes,
   settings,
 } from 'survey-core';
+import { registerCustomPropertyEditor } from '../components/utils/component-register';
+import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
 import { Question } from '../types';
 
 /**
@@ -39,6 +41,15 @@ export const init = (environment: any): void => {
       const accessToken = localStorage.getItem('access_token');
       options.request.setRequestHeader('Authorization', `Bearer ${token}`);
       options.request.setRequestHeader('AccessToken', accessToken);
+    } else if (
+      environment.csApiUrl &&
+      sender.url.startsWith(environment.csApiUrl)
+    ) {
+      const accessToken = localStorage.getItem('access_token');
+      options.request.setRequestHeader(
+        'Authorization',
+        `Bearer ${accessToken}`
+      );
     }
   };
 
@@ -64,6 +75,43 @@ export const init = (environment: any): void => {
       }
     },
   });
+
+  /** Readonly default accepted types, will use the acceptedTypesValues component */
+  serializer.getProperty('file', 'acceptedTypes').readOnly = true;
+  /** Size per file is mandatory */
+  serializer.getProperty('file', 'maxSize').isRequired = true;
+
+  serializer.addProperty('file', {
+    category: 'general',
+    type: CustomPropertyGridComponentTypes.acceptedTypesValues,
+    name: 'acceptedTypesValues',
+    displayName:
+      'Accepted file types list(use this dropdown to set the accepted file types)',
+    visibleIndex: 12,
+  });
+
+  // Accepted types tagbox
+  registerCustomPropertyEditor(
+    CustomPropertyGridComponentTypes.acceptedTypesValues
+  );
+
+  serializer.addProperty('file', {
+    name: 'allowedFileNumber',
+    category: 'general',
+    dependsOn: 'allowMultiple',
+    type: 'number',
+    required: true,
+    visibleIf: (obj: any) => {
+      if (!obj || !obj.allowMultiple) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    visibleIndex: 10,
+    default: 5,
+    minValue: 2,
+  });
 };
 
 /**
@@ -72,8 +120,8 @@ export const init = (environment: any): void => {
  * @param question The question object
  */
 export const render = (question: Question): void => {
-  // define the max size for files
-  if (question.getType() === 'file') {
+  // define the default max size for files
+  if (question.getType() === 'file' && !question.getPropertyValue('maxSize')) {
     (question as QuestionFileModel).maxSize = 7340032;
   }
 };

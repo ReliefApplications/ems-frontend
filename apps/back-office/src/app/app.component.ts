@@ -10,6 +10,9 @@ import {
   ResourceSelectTextComponent,
   TestServiceDropdownComponent,
   CodeEditorComponent,
+  LoggerService,
+  CsDocsPropertiesDropdownComponent,
+  AcceptedValueTypesTextComponent,
 } from '@oort-front/shared';
 
 /**
@@ -32,6 +35,8 @@ export class AppComponent implements OnInit {
     ResourceSelectTextComponent,
     TestServiceDropdownComponent,
     CodeEditorComponent,
+    CsDocsPropertiesDropdownComponent,
+    AcceptedValueTypesTextComponent,
   ];
   /** Application title */
   title = 'back-office';
@@ -40,8 +45,12 @@ export class AppComponent implements OnInit {
    * Root component of back-office
    *
    * @param authService Shared authentication service
+   * @param logger Shared logger service ( initialize logger so its subscription can start )
    */
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private logger: LoggerService
+  ) {}
 
   /**
    * Configuration of the Authentication behavior

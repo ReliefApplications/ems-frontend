@@ -1,20 +1,54 @@
-import { EventEmitter, Injectable, NgZone, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {
-  ADD_EMAIL_NOTIFICATION,
-  GET_AND_UPDATE_EMAIL_NOTIFICATION,
-  GET_EMAIL_DATA_SET,
-  GET_EMAIL_NOTIFICATIONS,
-  GET_QUERY_META_DATA,
-} from './graphql/queries';
-import { Apollo } from 'apollo-angular';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
+import { EventEmitter, Injectable, NgZone, Output } from '@angular/core';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
+import { cloneDeep } from 'lodash';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
+import {
+  EMAIL_NOTIFICATION_TYPES,
+  EmailDistributionListQueryResponse,
+  EmailNotificationQueryResponse,
+  EmailNotificationsQueryResponse,
+  EmailNotificationTypes,
+  EmailTemplatesQueryResponse,
+} from '../../models/email-notifications.model';
 import { RestService } from '../../services/rest/rest.service';
-import { TYPE_LABEL } from './filter/filter.const';
+import {
+  ADD_CUSTOM_TEMPLATE,
+  ADD_DISTRIBUTION_LIST,
+  ADD_EMAIL_NOTIFICATION,
+  DELETE_EMAIL_NOTIFICATION,
+  EDIT_CUSTOM_TEMPLATE,
+  EDIT_DISTRIBUTION_LIST,
+  GET_AND_UPDATE_EMAIL_NOTIFICATION,
+  GET_CUSTOM_TEMPLATES,
+  GET_DISTRIBUTION_LIST,
+  GET_EMAIL_NOTIFICATION_BY_ID,
+  GET_EMAIL_NOTIFICATIONS,
+  GET_RESOURCE_BY_ID,
+} from './graphql/queries';
 import { FieldStore } from './models/email.const';
-import { omit } from 'lodash';
-import { QueryMetaDataQueryResponse } from '../../models/metadata.model';
+import { ResourceQueryResponse } from '../../models/resource.model';
+import { prettifyLabel } from '../../utils/prettify';
+import { addNewField } from '../query-builder/query-builder-forms';
+import get from 'lodash/get';
+import { commonServiceFields } from './constant';
+
+/**
+ * Interface for InValidDataSets
+ */
+interface InValidDataSets {
+  name: string;
+  count: number;
+}
 
 /**
  * Helper functions service for emails template.
@@ -38,16 +72,10 @@ export class EmailService {
   }[];
   /** Selected dataset */
   public selectedDataSet: any;
-  /** Form group for to: email field */
-  public toEmailFilter!: FormGroup | any;
-  /** Form group for cc: email field */
-  public ccEmailFilter!: FormGroup | any;
-  /** Form group for bcc: email field */
-  public bccEmailFilter!: FormGroup | any;
   /** Email preview data */
   public allPreviewData: any[] = [];
   /** Email type ( only email supported now ) */
-  public notificationTypes: string[] = ['email', 'alert', 'push notification'];
+  public notificationTypes: EmailNotificationTypes[] = EMAIL_NOTIFICATION_TYPES;
   /** Email layout data + styles */
   public emailLayout!: any;
   /** Email header background color */
@@ -64,10 +92,9 @@ export class EmailService {
   public footerTextColor = '#000000';
   /** Dataset event emitter */
   public datasetSave: EventEmitter<boolean> = new EventEmitter();
-  // Disable SaveAsDraft button
-  /**
-   *
-   */
+  /** Loading state */
+  public loading = false;
+  /** Disable SaveAsDraft button */
   public disableSaveAsDraft = new BehaviorSubject<boolean>(false);
   /** DISABLE SAVE AND PROCEED BUTTON EMITTER */
   public disableSaveAndProceed = new BehaviorSubject<boolean>(false);
@@ -75,19 +102,17 @@ export class EmailService {
   public stepperDisable = new BehaviorSubject<any>('');
   /** Should show existing distribution list */
   public showExistingDistributionList = false;
-  /** Flag indicating whether graphql is loading. */
-  public metaDataQueryLoading = false;
   /** Distribution list data */
-  public emailDistributionList: {
-    name: string;
-    To: string[];
-    Cc: string[];
-    Bcc: string[];
-  } = {
-    name: '',
-    To: [],
-    Cc: [],
-    Bcc: [],
+  public emailDistributionList: any = [];
+  /** Quick send email  DL query list data */
+  public quickEmailDLQuery: any = [];
+  /** Initial tab value */
+  public initialTabValue = {
+    title: `Block 1`,
+    content: `Block 1 Content`,
+    active: true,
+    index: 0,
+    blockHeaderCount: 1,
   };
   /** List of tabs */
   public tabs: any[] = [
@@ -96,6 +121,7 @@ export class EmailService {
       content: `Block 1 Content`,
       active: true,
       index: 0,
+      blockHeaderCount: 1,
     },
   ];
   /** Used to disable stepper steps */
@@ -103,52 +129,17 @@ export class EmailService {
     stepperIndex: 0,
     disableAction: false,
   });
+  /** Email preview data */
+  public previewData!: {
+    fields: string[];
+    datasets: string[];
+  };
   /** Should stepper enable all steps */
   public enableAllSteps = new BehaviorSubject<boolean>(false);
   /** Email layout data */
-  public allLayoutdata: any = {
-    /** Images & styles */
-    bannerImage: null,
-    bannerImageStyle: '',
-    /** Container style */
-    containerStyle: '',
-    /** FOOTER COPYRIGHT STYLE */
-    copyrightStyle: '',
-    /** Email subject */
-    txtSubject: '',
-    /** Email header */
-    headerHtml: '',
-    headerLogo: null,
-    headerLogoStyle: '',
-    headerBackgroundColor: this.headerBackgroundColor,
-    headerTextColor: this.headerTextColor,
-    headerStyle: '',
-    /** Email body */
-    bodyHtml: '',
-    bodyBackgroundColor: this.bodyBackgroundColor,
-    bodyTextColor: this.bodyTextColor,
-    bodyStyle: '',
-    /** Email footer */
-    footerHtml: '',
-    footerLogo: null,
-    footerBackgroundColor: this.footerBackgroundColor,
-    footerTextColor: this.footerTextColor,
-    footerStyle: '',
-    footerImgStyle: '',
-    footerHtmlStyle: '',
-  };
-
+  public allLayoutdata!: any;
   /** Default block dataset table style*/
-  public defaultTableStyle: any = {
-    tableDivStyle: '',
-    labelStyle: '',
-    tableStyle: '',
-    theadStyle: '',
-    tbodyStyle: '',
-    thStyle: '',
-    trStyle: '',
-    tdStyle: '',
-  };
+  public defaultTableStyle!: any;
   /** Is distribution list existing */
   isExisting = true;
   /** Email notification id */
@@ -183,10 +174,49 @@ export class EmailService {
   public fields: FieldStore[] = [];
   /** Selected cacheDistributionList */
   public cacheDistributionList: any = [];
-  /** Meta Data Query Loading State Subject  */
-  private metaDataQueryLoadingSource = new BehaviorSubject<boolean>(false);
-  /** Meta Data Query Loading State Observable */
-  metaDataQueryLoading$ = this.metaDataQueryLoadingSource.asObservable();
+  /** Final Email Preview */
+  public finalEmailPreview: any = '';
+  /** Checks if custom template is new */
+  public isNewCustomTemplate = false;
+  /** Checking the edit operation on custom template */
+  public isCustomTemplateEdit = false;
+  /** custom template ID */
+  public customTemplateId = '';
+  /** Quick action flag */
+  public isQuickAction = false;
+  /** Custom Layout tile */
+  public layoutTitle = '';
+  /** Custom Template list names*/
+  public customTemplateNames: string[] = [];
+  /** Disable Quick Action screen Next Button error state*/
+  public disableNextActionBtn = false;
+  /** Distribution List Name */
+  public distributionListName = '';
+  /** Checks if to in email distribution list is valid */
+  public isToValid = false;
+  /** Checks if to in email distribution list is valid */
+  public toDLHasFilter = false;
+  /** Checks if to in email distribution list has a filter */
+  public displayDLToError = false;
+  /** Checks if Distribution list name is duplicate */
+  public isDLNameDuplicate = false;
+  /** For storing emails For To from service response (In select with Filter option) */
+  filterToEmails: any = [];
+  /**
+   * Name of selected DL name in DL screen used for use existing;
+   * 1) Assign value on select of existing; 2) Clear the value on click of Create New
+   */
+  public selectedDLName: any = '';
+  /** Checks if separate emails is checked for all blocks */
+  public isAllSeparateEmail = false;
+  /** For storing emails For CC from service response (In select with Filter option) */
+  public filterCCEmails: any = [];
+  /** For storing emails For BCC from service response (In select with Filter option) */
+  public filterBCCEmails: any = [];
+  /** Default common services available fields */
+  public commonServiceFields = commonServiceFields;
+  /** User table fields */
+  userTableFields: string[] = [];
 
   /**
    * Generates new dataset group.
@@ -195,22 +225,284 @@ export class EmailService {
    */
   createNewDataSetGroup(): FormGroup {
     return this.formBuilder.group({
-      resource: null,
       name: null,
+      query: this.createQuerygroup(),
+      resource: null,
       pageSize: 10,
-      filter: this.formBuilder.group({
-        logic: 'and',
-        filters: new FormArray([]),
-      }),
-      fields: [],
-      cacheData: {},
       tableStyle: this.defaultTableStyle,
       blockType: 'table', // Either Table or Text
       textStyle: this.formBuilder.group({
         fields: new FormArray([]),
         blockStyle: '',
       }), // Fields (field selected and style), Block Style (HTML wrapping field with token)
+      sendAsAttachment: false,
       individualEmail: false,
+      individualEmailFields: this.formBuilder.array([]),
+      dataType: null,
+      reference: null,
+      navigateToPage: false,
+      navigateSettings: this.formBuilder.group({
+        title: get('', 'actions.navigateSettings.title', 'Details view'),
+        pageUrl: [''],
+        field: [''],
+      }),
+    });
+  }
+
+  /**
+   * Checks if to in email distribution list is valid
+   *
+   * @returns true if to in email distribution list is valid
+   */
+  async checkToValid() {
+    if (
+      (this.toDLHasFilter &&
+        (this.emailDistributionList?.to?.query?.resource ||
+          this.datasetsForm?.getRawValue()?.emailDistributionList?.to
+            ?.resource)) ||
+      this.datasetsForm
+        ?.getRawValue()
+        ?.emailDistributionList?.to?.commonServiceFilter?.filter?.filters?.filter(
+          (x: any) => x?.field && x?.value
+        )?.length > 0
+    ) {
+      const query = {
+        emailDistributionList: cloneDeep(this.emailDistributionList),
+      };
+      await this.http
+        .post(
+          `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+          query
+        )
+        .subscribe((response: any) => {
+          return response?.to.length > 0;
+        });
+    } else {
+      return (
+        this.datasetsForm.getRawValue().emailDistributionList?.to?.inputEmails
+          ?.length > 0
+      );
+    }
+    return false;
+  }
+
+  /**
+   * Subscribes user to email notification
+   *
+   * @param id The email notification id
+   * @returns Promise
+   */
+  subscribeToEmail(id: string): Promise<void> {
+    return new Promise((resolve) => {
+      this.http
+        .post(
+          `${this.restService.apiUrl}/notification/add-subscription/`,
+          {
+            configId: id,
+          },
+          { responseType: 'text' }
+        )
+        .subscribe({
+          next: (response: any) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'components.email.alert.subscribeSuccess',
+                {
+                  message: response,
+                }
+              )
+            );
+
+            resolve();
+          },
+          error: (errMsg: any) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant('components.email.alert.subscribeFailed', {
+                errorMessage: errMsg,
+              }),
+              { error: true }
+            );
+            resolve();
+          },
+        });
+    });
+  }
+
+  /**
+   * Removes user subscription from email notification
+   *
+   * @param id The email notification id
+   * @returns Promise
+   */
+  unsubscribeFromEmail(id: string): Promise<void> {
+    return new Promise((resolve) => {
+      this.http
+        .post(
+          `${this.restService.apiUrl}/notification/remove-subscription/`,
+          {
+            configId: id,
+          },
+          { responseType: 'text' }
+        )
+        .subscribe({
+          next: (response: any) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'components.email.alert.unsubscribeSuccess',
+                {
+                  message: response,
+                }
+              )
+            );
+
+            resolve();
+          },
+          error: (errMsg: any) => {
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'components.email.alert.unsubscribeFailed',
+                {
+                  errorMessage: errMsg,
+                }
+              ),
+              { error: true }
+            );
+            resolve();
+          },
+        });
+    });
+  }
+
+  /**
+   * Checks if to in email distribution list is valid
+   *
+   * @returns true if to in email distribution list is valid
+   */
+  checkDLToValid(): Promise<boolean> {
+    return new Promise((resolve) => {
+      if (this.isAllSeparateEmail) {
+        resolve(true);
+      } else {
+        if (
+          this.toDLHasFilter &&
+          (this.datasetsForm.getRawValue().emailDistributionList?.to
+            ?.resource ||
+            this.datasetsForm.getRawValue().emailDistributionList?.to
+              ?.reference ||
+            this.datasetsForm.getRawValue().emailDistributionList?.to
+              ?.commonServiceFilter?.filter?.filters?.length > 0)
+        ) {
+          const query = {
+            emailDistributionList: cloneDeep(
+              this.datasetsForm.getRawValue()?.emailDistributionList
+            ),
+          };
+
+          query.emailDistributionList.to.commonServiceFilter =
+            this.setCommonServicePayload(
+              query.emailDistributionList.to.commonServiceFilter.filter
+            );
+
+          query.emailDistributionList.cc.commonServiceFilter =
+            this.setCommonServicePayload(
+              query.emailDistributionList.cc.commonServiceFilter.filter
+            );
+
+          query.emailDistributionList.bcc.commonServiceFilter =
+            this.setCommonServicePayload(
+              query.emailDistributionList.bcc.commonServiceFilter.filter
+            );
+          firstValueFrom(
+            this.http.post(
+              `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+              query
+            )
+          )
+            .then(() => {
+              resolve(true);
+            })
+            .catch(() => {
+              resolve(false);
+            });
+        } else {
+          resolve(
+            this.datasetsForm.getRawValue().emailDistributionList?.to
+              ?.inputEmails?.length > 0
+          );
+        }
+      }
+    });
+  }
+
+  /**
+   * Checks if all datasets are valid
+   *
+   * @returns if dataset is valid or not
+   */
+  checkDatasetsValid(): Promise<{ valid: boolean; badData: string[] }> {
+    return new Promise((resolve, reject) => {
+      const emailDatasets = cloneDeep(
+        this.datasetsForm.get('datasets')?.getRawValue()
+      ).filter((data: any) => data.resource);
+
+      if (emailDatasets.length) {
+        const inValidBlocks: string[] = [];
+
+        // Check for missing fields using forEach
+        emailDatasets.forEach((dataset: any) => {
+          const fields = dataset.query.fields;
+          if (!fields || fields.length === 0) {
+            // If fields are missing, add the dataset name to the inValidBlocks array
+            inValidBlocks.push(dataset.name);
+          }
+        });
+
+        // Check if there are any missing fields
+        if (inValidBlocks.length === 0) {
+          this.http
+            .post(
+              `${this.restService.apiUrl}/notification/validate-dataset`,
+              emailDatasets
+            )
+            .subscribe({
+              next: (data: any) => {
+                resolve({
+                  valid: !data?.inValidDataSets?.length,
+                  badData: data?.inValidDataSets?.map(
+                    ({ name }: InValidDataSets) => name // only name to show error
+                  ),
+                });
+              },
+              error: (error) => {
+                reject(error);
+              },
+            });
+        } else {
+          // If there are missing fields, resolve with invalid status and the messages
+          resolve({
+            valid: false,
+            badData: inValidBlocks, // Provide specific messages about which fields are missing
+          });
+        }
+      } else {
+        resolve({ valid: true, badData: [] });
+      }
+    });
+  }
+
+  /**
+   * Generates new query form group.
+   *
+   * @returns new query form group.
+   */
+  createQuerygroup(): FormGroup {
+    return this.formBuilder.group({
+      name: null,
+      filter: this.formBuilder.group({
+        logic: 'and',
+        filters: new FormArray([]),
+      }),
+      fields: this.formBuilder.array([]),
     });
   }
 
@@ -222,15 +514,70 @@ export class EmailService {
    * @param http The HttpClient instance used for making HTTP requests
    * @param restService mapping of the url
    * @param ngZone The NgZone instance
+   * @param translate The TranslateService
+   * @param snackBar The SnackBarService
    */
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
     private http: HttpClient,
     private restService: RestService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private translate: TranslateService,
+    private snackBar: SnackbarService
   ) {
     this.setDatasetForm();
+    this.initLayoutData();
+  }
+
+  /**
+   * Initialises email layout data and table data
+   */
+  initLayoutData() {
+    // Initialise all layout data
+    this.allLayoutdata = {
+      /** Images & styles */
+      bannerImage: null,
+      bannerImageStyle: '',
+      /** Container style */
+      containerStyle: '',
+      /** FOOTER COPYRIGHT STYLE */
+      copyrightStyle: '',
+      /** Email subject */
+      txtSubject: '',
+      /** Email header */
+      headerHtml: '',
+      headerLogo: null,
+      headerLogoStyle: '',
+      headerBackgroundColor: this.headerBackgroundColor,
+      headerTextColor: this.headerTextColor,
+      headerStyle: '',
+      /** Email body */
+      bodyHtml: '',
+      bodyBackgroundColor: this.bodyBackgroundColor,
+      bodyTextColor: this.bodyTextColor,
+      bodyStyle: '',
+      /** Email footer */
+      footerHtml: '',
+      footerLogo: null,
+      footerBackgroundColor: this.footerBackgroundColor,
+      footerTextColor: this.footerTextColor,
+      footerStyle: '',
+      footerImgStyle: '',
+      footerHtmlStyle: '',
+    };
+
+    //Initialise table data
+    this.defaultTableStyle = {
+      tableDivStyle: '',
+      labelStyle: '',
+      tableStyle: '',
+      theadStyle: '',
+      tbodyStyle: '',
+      thStyle: '',
+      trStyle: '',
+      tdStyle: '',
+    };
   }
 
   /**
@@ -243,6 +590,188 @@ export class EmailService {
   }
 
   /**
+   * Intialises Distribution List form group
+   *
+   * @returns Distribution List form group
+   */
+  initialiseDistributionList(): FormGroup {
+    return this.formBuilder.group({
+      name: null,
+      to: this.createDLGroup(),
+      cc: this.createDLGroup(),
+      bcc: this.createDLGroup(),
+      id: null,
+    });
+  }
+
+  /**
+   * Generates new distribution list form for to, cc and bcc
+   *
+   * @returns new Distribution List input form group
+   */
+  createDLGroup(): FormGroup {
+    return this.formBuilder.group({
+      resource: null,
+      query: this.createQuerygroup(),
+      inputEmails: this.formBuilder.array([]),
+      reference: null,
+      commonServiceFilter: this.createQuerygroup(),
+    });
+  }
+
+  /**
+   * Grabs filter row values.
+   *
+   *  @returns FormGroup
+   */
+  get getNewFilterFields(): FormGroup {
+    return this.formBuilder.group({
+      field: [],
+      operator: ['eq'],
+      value: [],
+      hideEditor: false,
+      inTheLast: this.formBuilder.group({
+        number: [1],
+        unit: ['days'],
+      }),
+    });
+  }
+
+  /**
+   * Creates and populates Distribution List form correctly
+   *
+   * @param emailDL The email distribution list
+   * @returns Distribution List form
+   */
+  populateDistributionListForm(emailDL: any): FormGroup {
+    const distributionListForm = this.initialiseDistributionList();
+    if (emailDL)
+      this.setDistributionListFormValues(distributionListForm, emailDL);
+    return distributionListForm;
+  }
+
+  /**
+   * Sets Distribution List form values
+   *
+   * @param form The Distribution List form
+   * @param emailDL The email distribution list data in object format
+   */
+  setDistributionListFormValues(form: FormGroup, emailDL: any) {
+    form.patchValue({
+      name: emailDL?.name || '',
+    });
+    form.patchValue({
+      id: emailDL?.id || null,
+    });
+
+    this.setDistributionListGroupValues(
+      form.get('to') as FormGroup,
+      emailDL.to
+    );
+    this.setDistributionListGroupValues(
+      form.get('cc') as FormGroup,
+      emailDL.cc
+    );
+    this.setDistributionListGroupValues(
+      form.get('bcc') as FormGroup,
+      emailDL.bcc
+    );
+  }
+
+  /**
+   * Sets Distribution List group values
+   *
+   * @param formGroup The Distribution List inner form (to, cc, bcc)
+   * @param emailDL The email distribution list data in object format
+   */
+  setDistributionListGroupValues(formGroup: FormGroup, emailDL: any) {
+    const inputArray =
+      emailDL?.inputEmails?.map((email: string) =>
+        this.formBuilder.control(email)
+      ) || [];
+    const dlGroup = formGroup as FormGroup;
+    dlGroup.setControl('resource', this.formBuilder.control(emailDL.resource));
+    dlGroup.setControl(
+      'reference',
+      this.formBuilder.control(emailDL.reference)
+    );
+    // Map filters
+    dlGroup.setControl(
+      'query',
+      this.formBuilder.group({
+        name: new FormControl(emailDL.query.name || null), // Query name
+        filter: this.formBuilder.group({
+          logic: new FormControl(emailDL?.query?.filter?.logic || null), // Filter logic
+          filters: this.formBuilder.array(
+            this.mapFilters(emailDL?.query?.filter?.filters || [])
+          ),
+        }),
+        fields: this.formBuilder.array(
+          emailDL?.query?.fields.map(
+            (field: any) => this.createFieldsFormGroup(field) // Using the utility function
+          )
+        ),
+      })
+    );
+
+    dlGroup.setControl(
+      'commonServiceFilter',
+      this.formBuilder.group({
+        name: new FormControl(null), // Query name
+        filter: this.formBuilder.group({
+          logic: new FormControl(emailDL?.commonServiceFilter?.logic || null), // Filter logic
+          filters: this.formBuilder.array(
+            this.mapFilters(emailDL?.commonServiceFilter?.filters || [])
+          ),
+        }),
+      })
+    );
+
+    dlGroup.setControl('inputEmails', this.formBuilder.array(inputArray));
+
+    dlGroup.disable();
+  }
+
+  /**
+   * Recursive function to map filters
+   *
+   * @param filters filters Object (Nested object)
+   * @returns Filters formgroup
+   */
+  public mapFilters(filters: any[]): FormGroup[] {
+    return filters?.map((filter: any) => {
+      if (filter?.filters) {
+        // If nested filters exist, recursively map them
+        return this.formBuilder.group({
+          logic: new FormControl(filter.logic || null),
+          filters: this.formBuilder.array(this.mapFilters(filter.filters)),
+        });
+      } else {
+        // Handle individual filter
+        return this.formBuilder.group({
+          field: new FormControl(filter.field || null),
+          operator: new FormControl(filter.operator || null),
+          value: new FormControl(filter.value || null),
+          inTheLast: this.formBuilder.group({
+            number: new FormControl(filter?.inTheLast?.number || null),
+            unit: new FormControl(filter?.inTheLast?.unit || null),
+          }),
+        });
+      }
+    });
+  }
+
+  /**
+   * Common function
+   *
+   * @param field nested field
+   * @returns FormGroup with nested fields
+   */
+  createFieldsFormGroup(field: any): FormGroup {
+    return addNewField(field);
+  }
+
+  /**
    * Initializes the `datasetsForm` with a default structure and validators.
    */
   setDatasetForm() {
@@ -251,10 +780,62 @@ export class EmailService {
       notificationType: [null, Validators.required],
       applicationId: [''],
       datasets: new FormArray([this.createNewDataSetGroup()]),
-      emailDistributionList: this.emailDistributionList,
+      emailDistributionList: this.initialiseDistributionList(),
+      subscriptionList: this.formBuilder.array([]),
+      restrictSubscription: false,
       emailLayout: this.emailLayout,
       schedule: [''],
     });
+  }
+
+  /**
+   * Sets the email distribution list.
+   *
+   * @param dlList The email distribution list
+   */
+  setDistributionList(dlList?: FormGroup) {
+    if (dlList?.getRawValue()) {
+      this.emailDistributionList = dlList?.getRawValue();
+      const emailDL = this.datasetsForm?.get(
+        'emailDistributionList'
+      ) as FormGroup;
+
+      // Assuming dlList.get('to').value is an array of strings (emails)
+      const toEmails = dlList?.get('to')?.value;
+      const ccEmails = dlList?.get('cc')?.value;
+      const bccEmails = dlList?.get('bcc')?.value;
+
+      // Function to set input emails for to, cc, and bcc
+      const setInputEmails = (emailArray: string[], formArray: FormArray) => {
+        formArray?.clear(); // Clear existing values
+        emailArray?.forEach((email) => {
+          formArray.push(this.formBuilder.control(email)); // Add each email as a new FormControl
+        });
+      };
+
+      // Set input emails for 'to', 'cc', and 'bcc'
+      setInputEmails(
+        toEmails?.inputEmails,
+        emailDL?.get('to')?.get('inputEmails') as FormArray
+      );
+      setInputEmails(
+        ccEmails?.inputEmails,
+        emailDL?.get('cc')?.get('inputEmails') as FormArray
+      );
+      setInputEmails(
+        bccEmails?.inputEmails,
+        emailDL?.get('bcc')?.get('inputEmails') as FormArray
+      );
+
+      // Existing patchValue calls
+      emailDL?.get('to')?.patchValue(dlList?.get('to')?.value);
+      emailDL?.get('cc')?.patchValue(dlList?.get('cc')?.value);
+      emailDL?.get('bcc')?.patchValue(dlList?.get('bcc')?.value);
+    } else {
+      this.emailDistributionList = this.datasetsForm
+        .get('emailDistributionList')
+        ?.getRawValue();
+    }
   }
 
   /**
@@ -294,15 +875,6 @@ export class EmailService {
   }
 
   /**
-   * Sets the metadata graphql query loading state.
-   *
-   * @param loadingState The loading state of metadata graphql query
-   */
-  updateMetaDataTypeLoading(loadingState: boolean): void {
-    this.metaDataQueryLoadingSource.next(loadingState);
-  }
-
-  /**
    * Sets the Table Styles.
    */
   setTableStyles(styles: { [key: string]: string }) {
@@ -332,6 +904,24 @@ export class EmailService {
   }
 
   /**
+   * Sets the tabs.
+   *
+   * @param tabs The tabs on DL page.
+   */
+  setTabs(tabs: any[]): void {
+    this.tabs = tabs;
+  }
+
+  /**
+   * Return tabs.
+   *
+   * @returns selected tabs
+   */
+  getTabs(): any[] {
+    return this.tabs;
+  }
+
+  /**
    * get selected data set
    *
    *@returns dataset
@@ -356,6 +946,61 @@ export class EmailService {
    */
   getAllPreviewData(): any[] {
     return this.allPreviewData;
+  }
+
+  /**
+   * Creates a preview data object.
+   */
+  createPreviewData() {
+    if (this.datasetsForm?.get('datasets')?.value?.length > 0) {
+      const datasetsValues = this.datasetsForm?.get('datasets')?.getRawValue();
+      const datasets: string[] = [];
+      datasetsValues.forEach((dataset: any) => {
+        if (dataset.query.name && dataset.resource) {
+          datasets.push(dataset.name);
+        } else {
+          dataset.query.name && dataset.reference
+            ? datasets.push(dataset.name)
+            : '';
+        }
+      });
+      const fields: string[] = [];
+      datasetsValues[0].query.fields.forEach((field: any) => {
+        this.appendFields(field, field.name, fields);
+      });
+      this.previewData = {
+        datasets: datasets,
+        fields: fields,
+      };
+    }
+  }
+
+  /**
+   * Resets preview data object.
+   */
+  resetPreviewData() {
+    this.previewData = {
+      datasets: [],
+      fields: [],
+    };
+  }
+
+  /**
+   * Creates Subject field values
+   *
+   * @param field Field to be appended
+   * @param parentName Name of the parent
+   * @param fields fields if it exists in the field
+   */
+  appendFields(field: any, parentName: string, fields: string[]): void {
+    if (field.fields && field.fields.length > 0) {
+      field.fields.forEach((child: any) => {
+        const childName = `${parentName}.${child.name}`;
+        this.appendFields(child, childName, fields);
+      });
+    } else {
+      fields.push(parentName);
+    }
   }
 
   /**
@@ -420,22 +1065,23 @@ export class EmailService {
         const headerPromise =
           this.allLayoutdata?.headerLogo instanceof File
             ? this.convertFileToBase64(this.allLayoutdata?.headerLogo)
-            : Promise.resolve(null);
+            : this.allLayoutdata?.headerLogo;
 
         const footerPromise =
           this.allLayoutdata?.footerLogo instanceof File
             ? this.convertFileToBase64(this.allLayoutdata?.footerLogo)
-            : Promise.resolve(null);
+            : this.allLayoutdata?.footerLogo;
 
         const bannerPromise =
           this.allLayoutdata?.bannerImage instanceof File
             ? this.convertFileToBase64(this.allLayoutdata?.bannerImage)
-            : Promise.resolve(null);
+            : this.allLayoutdata?.bannerImage;
 
         Promise.all([headerPromise, footerPromise, bannerPromise])
           .then(([headerImg, footerImg, bannerLogo]) => {
             this.emailLayout = {
               subject: this.allLayoutdata?.txtSubject,
+              name: this.emailLayout?.name,
               header: {
                 headerHtml: this.allLayoutdata?.headerHtml,
                 headerLogo: headerImg,
@@ -466,6 +1112,7 @@ export class EmailService {
                 footerImgStyle: this.allLayoutdata?.footerImgStyle,
                 footerHtmlStyle: this.allLayoutdata?.footerHtmlStyle,
               },
+              id: this.allLayoutdata?.id,
             };
             this.datasetsForm.get('emailLayout')?.setValue(this.emailLayout);
             this.allLayoutdata.headerLogo = headerImg;
@@ -515,7 +1162,7 @@ export class EmailService {
    * @returns A string where all non-alphanumeric and non-hyphen characters are replaced with a whitespace.
    */
   replaceUnderscores(userValue: string): string {
-    return userValue ? userValue.replace(/[^a-zA-Z0-9-]/g, ' ') : '';
+    return userValue ? userValue?.replace(/[^a-zA-Z0-9-]/g, ' ') : '';
   }
 
   /**
@@ -527,114 +1174,6 @@ export class EmailService {
     return this.formBuilder.group({
       logic: 'and',
       filters: new FormArray([]),
-    });
-  }
-
-  /**
-   * Preparing dataset filters dynamically
-   *
-   * @param operator The comparison operator to be used in the filter
-   * @param fieldValue The value of the field to be compared
-   * @param userValue The value provided by the user to compare against the field value
-   * @returns The result of the filter operation or undefined if no operator is provided
-   */
-  filterData(
-    operator: string,
-    fieldValue: string | any,
-    userValue: string | Date | number
-  ) {
-    let result;
-    if (!operator) return;
-    switch (operator) {
-      case 'eq':
-        result = userValue && fieldValue === userValue;
-        break;
-      case 'neq':
-        result = userValue && fieldValue !== userValue;
-        break;
-      case 'gte':
-        result = userValue && fieldValue >= userValue;
-        break;
-      case 'gt':
-        result = userValue && fieldValue > userValue;
-        break;
-      case 'lte':
-        result = userValue && fieldValue <= userValue;
-        break;
-      case 'lt':
-        result = userValue && fieldValue < userValue;
-        break;
-      case 'isnull':
-        result = fieldValue === null;
-        break;
-      case 'isnotnull':
-        result = fieldValue !== null;
-        break;
-      case 'isempty':
-        result = fieldValue === '' || !fieldValue;
-        break;
-      case 'isnotempty':
-        result = fieldValue !== '' && fieldValue !== undefined;
-        break;
-      case 'contains':
-        result =
-          fieldValue && userValue && fieldValue.includes(userValue as string);
-        break;
-      case 'doesnotcontain':
-        result =
-          fieldValue && userValue && !fieldValue.includes(userValue as string);
-        break;
-      case 'startswith':
-        result =
-          fieldValue && userValue && fieldValue.startsWith(userValue as string);
-        break;
-      case 'endswith':
-        result =
-          fieldValue && userValue && fieldValue.endsWith(userValue as string);
-        break;
-      case 'in':
-        result = userValue && (userValue as string | number) in fieldValue;
-        break;
-      case 'notin':
-        result = userValue && !((userValue as string | number) in fieldValue);
-        break;
-      default:
-        return;
-    }
-    return result;
-  }
-
-  /**
-   * To get data set
-   *
-   * @param filterQuery query details to fetch data set
-   * @returns the dataset.
-   */
-  fetchDataSet(filterQuery: any) {
-    let filters = Object.assign({}, filterQuery);
-
-    /* Removing the options key from the payload to avoid payload too large error */
-    const fieldsWithoutOptions = filters?.fields?.map((field: any) => {
-      const payloadOptions: { [key: string]: any } = {};
-      const fieldKeys = Object.keys(field);
-
-      fieldKeys.forEach((keyName: string) => {
-        if (keyName !== TYPE_LABEL.options) {
-          payloadOptions[keyName] = field[keyName];
-        }
-      });
-      return payloadOptions;
-    });
-
-    filters.fields = fieldsWithoutOptions;
-    // Create a new object excluding the 'cacheData' field
-    filters = omit(filters, 'cacheData');
-
-    return this.apollo.query<any>({
-      query: GET_EMAIL_DATA_SET,
-      variables: {
-        query: filters,
-      },
     });
   }
 
@@ -674,7 +1213,7 @@ export class EmailService {
    * @returns Email notifications query result.
    */
   getEmailNotifications(id: string, limit?: number, skip?: number) {
-    return this.apollo.query<any>({
+    return this.apollo.query<EmailNotificationsQueryResponse>({
       query: GET_EMAIL_NOTIFICATIONS,
       variables: {
         applicationId: id,
@@ -685,62 +1224,14 @@ export class EmailService {
   }
 
   /**
-   * Converts days, months, years to minutes.
-   *
-   * @param value number value
-   * @param unit days, months, years
-   * @returns days in days, months or years.
-   */
-  convertToMinutes(value: number, unit: string): number {
-    const currentDate = new Date();
-    let minutes;
-
-    switch (unit) {
-      case 'hours':
-        minutes = value * 60;
-        break;
-      case 'days':
-        minutes = value * 24 * 60;
-        break;
-      case 'weeks':
-        minutes = value * 7 * 24 * 60;
-        break;
-      case 'months':
-        const monthsAgo = new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth() - value,
-          currentDate.getDate()
-        );
-        minutes = Math.floor(
-          (currentDate.getTime() - monthsAgo.getTime()) / (1000 * 60)
-        );
-        break;
-      case 'years':
-        const yearsAgo = new Date(
-          currentDate.getFullYear() - value,
-          currentDate.getMonth(),
-          currentDate.getDate()
-        );
-        minutes = Math.floor(
-          (currentDate.getTime() - yearsAgo.getTime()) / (1000 * 60)
-        );
-        break;
-      default:
-        throw new Error(`Unsupported unit: ${unit}`);
-    }
-
-    return minutes;
-  }
-
-  /**
    * Adds an email notification with the provided data.
    *
    * @param data The notification data to be added.
    * @returns A query result after adding the email notification.
    */
   addEmailNotification(data: any) {
-    return this.apollo.query<any>({
-      query: ADD_EMAIL_NOTIFICATION,
+    return this.apollo.mutate<any>({
+      mutation: ADD_EMAIL_NOTIFICATION,
       variables: {
         notification: data,
       },
@@ -766,15 +1257,30 @@ export class EmailService {
   }
 
   /**
+   * Get email notification by id
+   *
+   * @param id Email notification id
+   * @returns Email notification query
+   */
+  public getEmailNotification(id: string) {
+    return this.apollo.query<EmailNotificationQueryResponse>({
+      query: GET_EMAIL_NOTIFICATION_BY_ID,
+      variables: {
+        id,
+      },
+    });
+  }
+
+  /**
    * Get an email notification with the provided id.
    *
    * @param id The notification data id.
    * @param applicationId The application id of the email notification.
    * @returns Email notification.
    */
-  getEmailNotification(id: string, applicationId: string) {
-    return this.apollo.query<any>({
-      query: GET_AND_UPDATE_EMAIL_NOTIFICATION,
+  getEmailNotificationForEdition(id: string, applicationId: string) {
+    return this.apollo.mutate<any>({
+      mutation: GET_AND_UPDATE_EMAIL_NOTIFICATION,
       variables: {
         notification: null,
         editEmailNotificationId: id,
@@ -814,69 +1320,24 @@ export class EmailService {
   }
 
   /**
-   * Manipulates the payload by modifying options of fields based on fetched dataset.
+   * Gets the final email preview.
    *
-   * @param {any} emailData - The payload to be manipulated with limited options.
-   * @returns {Promise<any>} A Promise that resolves with the modified emailData.
+   * @param configID - The configID of the email notification.
    */
-  async getDataSetToSkipOptions(emailData: any) {
-    // eslint-disable-next-line no-async-promise-executor
-    await Promise.all(
-      emailData.datasets.map(async (query: any, index: number) => {
-        // Dataset is invalid, skip
-        if (!query.resource || !query.fields) {
-          return;
+  async getFinalEmail(configID: any) {
+    this.http
+      .post(
+        `${this.restService.apiUrl}/notification/preview-email/${configID}`,
+        {}
+      )
+      .subscribe(
+        (response: any) => {
+          this.finalEmailPreview = response;
+        },
+        (error: string) => {
+          console.error('Error:', error);
         }
-
-        for (const x of query.fields) {
-          if (x.parentName) {
-            const child = x.name;
-            x.childName = child.split(' - ')[1];
-            x.name = x.parentName;
-            x.childType = x.type;
-            x.type = 'resource';
-          }
-        }
-
-        query.tabIndex = index;
-        query.pageSize = 50;
-
-        const { data } = await firstValueFrom(this.fetchDataSet(query));
-
-        if (data?.dataset) {
-          const datasetResponse = data.dataset.records;
-          const mergedObject = this.mergeObjects(datasetResponse);
-          const mergedObjectKeys = Object.keys(mergedObject);
-
-          query.fields.forEach((rowData: any, fieldIndex: number) => {
-            if (
-              mergedObjectKeys.includes(rowData.name) &&
-              mergedObject[rowData.name]?.length
-            ) {
-              const mergedKeyIndex = mergedObjectKeys.indexOf(rowData.name);
-              query.fields[fieldIndex].options = rowData?.options?.filter(
-                (x: any) =>
-                  mergedObject[mergedObjectKeys[mergedKeyIndex]].includes(
-                    x.value
-                  )
-              );
-              if (query.fields[fieldIndex].options?.length === 0) {
-                const matchDataArray = mergedObject[
-                  mergedObjectKeys[mergedKeyIndex]
-                ]
-                  .filter((x) => x !== null)
-                  .map((x) => (x = x.toString()));
-                query.fields[fieldIndex].options = rowData.options.filter(
-                  (x: any) => matchDataArray.includes(x.value.toString())
-                );
-              }
-            }
-          });
-        }
-      })
-    );
-
-    return emailData;
+      );
   }
 
   /**
@@ -888,8 +1349,9 @@ export class EmailService {
    */
   editEmailNotification(id: string, data: any) {
     const applicationId = data.applicationId;
-    return this.apollo.query<any>({
-      query: GET_AND_UPDATE_EMAIL_NOTIFICATION,
+
+    return this.apollo.mutate<any>({
+      mutation: GET_AND_UPDATE_EMAIL_NOTIFICATION,
       variables: {
         notification: data,
         applicationId: applicationId,
@@ -906,14 +1368,32 @@ export class EmailService {
    * @returns Email Notification that has been deleted.
    */
   deleteEmailNotification(id: string, applicationId: string) {
-    return this.apollo.query<any>({
-      query: GET_AND_UPDATE_EMAIL_NOTIFICATION,
+    return this.apollo.mutate<any>({
+      mutation: GET_AND_UPDATE_EMAIL_NOTIFICATION,
       variables: {
         notification: {
           isDeleted: 1,
           applicationId: applicationId,
         },
         editEmailNotificationId: id,
+        applicationId: applicationId,
+      },
+    });
+  }
+
+  /**
+   *
+   * Delete an email notification with the provided id Permanently.
+   *
+   * @param id The notification data id.
+   * @param applicationId The application id of the email notification.
+   * @returns success or error message.
+   */
+  deleteEmailNotificationPermanently(id: string, applicationId: string) {
+    return this.apollo.mutate<any>({
+      mutation: DELETE_EMAIL_NOTIFICATION,
+      variables: {
+        id: id,
         applicationId: applicationId,
       },
     });
@@ -937,7 +1417,7 @@ export class EmailService {
       return this.http.post<any>(urlWithConfigId, emailData);
     } else {
       const urlWithConfigId = `${this.restService.apiUrl}/notification/send-email/${configId}`;
-      return this.http.post<any>(urlWithConfigId, emailData);
+      return this.http.get<any>(urlWithConfigId);
     }
   }
 
@@ -981,356 +1461,23 @@ export class EmailService {
   }
 
   /**
-   * Get the data set and flatten it.
+   * Iterates over the query formgroup, matches each element with availableFields,
+   * and updates the element if a match is found.
    *
-   * @param emailData data to be sent.
-   * @param isSendEmail checks if sending email or not.
+   * @param query The raw formgroup value of elements to be converted.
+   * @param availableFields The array of available fields for matching.
    */
-  getDataSet(emailData: any, isSendEmail?: boolean) {
-    let count = 0;
-    let allPreviewData: any = [];
-    for (const query of emailData.datasets) {
-      query?.fields?.forEach((x: any) => {
-        if (x.parentName) {
-          const child = x.name;
-          x.childName = child.split(' - ')[1];
-          x.name = x.parentName;
-          x.childType = x.type;
-          x.type = 'resource';
-        }
-      });
-      const resourceInfo = { id: query.resource.id, name: query.resource.name };
-      query.tabIndex = count;
-      count++;
-      query.pageSize = Number(query.pageSize);
-      this.fetchDataSet(query).subscribe(
-        ({ data }: { data: { dataset: any } }) => {
-          if (data?.dataset) {
-            const datasetResponse = data?.dataset.records;
-            this.dataList = datasetResponse?.map((record: any) => {
-              const flattenedObject = this.flattenRecord(
-                record,
-                resourceInfo,
-                query
-              );
-
-              query.fields.forEach((x: any) => {
-                if (x.parentName) {
-                  x.name = `${x.parentName} - ${x.childName}`;
-                  x.type = x.childType;
-                }
-              });
-
-              delete flattenedObject.data;
-
-              const flatData = Object.fromEntries(
-                Object.entries(flattenedObject).filter(
-                  ([, value]) => value !== null && value !== undefined
-                )
-              );
-
-              return flatData;
-            });
-            if (this.dataList?.length) {
-              const existfields = emailData.datasets[
-                data?.dataset?.tabIndex
-              ].fields.map((x: any) => x.name);
-              const temp = Object.keys(this.dataList[0]);
-              const notmatching = temp.filter(
-                (currentId) =>
-                  !existfields.some((item: any) => item == currentId)
-              );
-              existfields.concat(notmatching);
-              this.datasetFields = existfields;
-            }
-            allPreviewData.push({
-              dataList: this.dataList,
-              datasetFields: this.datasetFields,
-              tabIndex: data?.dataset?.tabIndex,
-              tabName:
-                data?.dataset?.tabIndex < this.tabs.length
-                  ? this.tabs[data.dataset.tabIndex].title
-                  : '',
-            });
-            if (this.tabs.length == allPreviewData.length) {
-              allPreviewData = allPreviewData.sort(
-                (a: any, b: any) => a.tabIndex - b.tabIndex
-              );
-              // this.loading = false;
-              this.navigateToPreview.emit(allPreviewData);
-              this.setAllPreviewData(allPreviewData);
-              if (isSendEmail) {
-                this.stepperStep = 5;
-                this.isPreview = true;
-                this.isLinear = false;
-              }
-              this.emailListLoading = false;
-            }
-          } else {
-            this.emailListLoading = false;
-          }
-        }
+  convertFields(query: any, availableFields: any) {
+    query.forEach((ele: any) => {
+      const tempMatchedData = availableFields.find(
+        (x: any) => prettifyLabel(x.name) === ele.label
       );
-    }
-    if (emailData?.datasets?.length == 0) {
-      this.emailListLoading = false;
-    }
-  }
-
-  /**
-   * Flattens the given record object into a single level object.
-   *
-   * @param record The record to be flattened.
-   * @param resourceInfo Name and Id of the supplied resource.
-   * @param query Form Query Object for field values.
-   * @returns The flattened record.
-   */
-  flattenRecord(record: any, resourceInfo: any, query?: any): any {
-    const result: any = {};
-    for (const key in record) {
-      if (Object.prototype.hasOwnProperty.call(record, key)) {
-        const value = record[key];
-        if (typeof value === 'object' && value !== null) {
-          if (value.data) {
-            query.fields.forEach((x: any) => {
-              if (x.childName) {
-                // Check if the childName exists in the records object
-                let matchingKey = Object.keys(record[key].data).find(
-                  (child) => child === x.childName
-                );
-                if (
-                  x.childName.split('.')[0] === '_createdBy' ||
-                  x.childName.split('.')[0] === '_createdBy'
-                ) {
-                  const namedChild = `${x.childName}`;
-                  matchingKey = Object.keys(
-                    record[key][namedChild.split('.')[0]][
-                      namedChild.split('.')[1]
-                    ]
-                  ).find((child) => child === namedChild.split('.')[2]);
-                }
-
-                if (
-                  matchingKey &&
-                  !(
-                    x.childName.split('.')[0] === '_createdBy' ||
-                    x.childName.split('.')[0] === '_lastUpdatedBy'
-                  )
-                ) {
-                  // If a match is found, map the child field to the corresponding value in records
-                  result[`${x.parentName} - ${x.childName}`] =
-                    value.data[matchingKey];
-                } else {
-                  matchingKey =
-                    matchingKey ??
-                    Object.keys(record[key]).find(
-                      (child) => child === x.childName
-                    ) ??
-                    Object.keys(record[key]).find(
-                      (child) => child === `_${x.childName}`
-                    );
-                  if (
-                    matchingKey &&
-                    !(
-                      x.childName.split('.')[0] === '_createdBy' ||
-                      x.childName.split('.')[0] === '_lastUpdatedBy'
-                    )
-                  ) {
-                    // If a match is found, searches for meta data and sets if found
-                    result[`${x.parentName} - ${x.childName}`] =
-                      record[key][matchingKey];
-                  } else if (matchingKey) {
-                    const namedChild = `${x.childName}`;
-                    result[`${x.parentName} - ${x.childName}`] =
-                      record[key][namedChild.split('.')[0]][
-                        namedChild.split('.')[1]
-                      ][namedChild.split('.')[2]];
-                  }
-                }
-              }
-            });
-          } else if (value.geometry) {
-            result[
-              key
-            ] = `${record[key].properties.countryName} (${record[key].properties.coordinates.lat}, ${record[key].properties.coordinates.lng})`;
-          } else {
-            const metaField = query.fields.find((field: any) => {
-              return field.name === key;
-            });
-
-            const fieldType = metaField?.type;
-
-            if (fieldType !== TYPE_LABEL.resources) {
-              const fieldName = query.fields.find((field: any) => {
-                return field.name === key;
-              });
-
-              if (fieldType === 'owner' || fieldType === 'users') {
-                const options = fieldName?.options?.filter((option: any) => {
-                  return Object.values(record[key]).some((array: any) =>
-                    array.includes(option.value)
-                  );
-                });
-
-                if (options && options.length > 0) {
-                  // Map over the options to extract the text values and join them with commas
-                  result[key] = options
-                    .map((option: any) => option.text)
-                    .join(', ');
-                } else {
-                  result[key] = record[key];
-                }
-              } else if (
-                metaField?.options?.every((x: any) => !isNaN(x.value)) &&
-                metaField?.options?.length
-              ) {
-                // Checks that all of the metafield options are numbers.
-                const findMatchingTexts = (options: any, keysToFind: any) => {
-                  return options
-                    .filter((values: any) =>
-                      keysToFind.includes(parseInt(values.value))
-                    )
-                    .map((values: any) => values.text)
-                    .join(', ');
-                };
-
-                const matchingTexts = findMatchingTexts(
-                  metaField?.options,
-                  record[key]
-                );
-                result[key] = matchingTexts;
-                if (matchingTexts === '') {
-                  result[key] = record[key].join(', ');
-                }
-              } else if (metaField?.options?.length) {
-                // Checks that all of the metafield options are not numbers.
-                result[key] = metaField?.options
-                  ?.filter((values: any) => value.includes(values.value))
-                  .map((values: any) => values.text)
-                  .join(', ');
-              } else if (
-                Array.isArray(record[key]) &&
-                record[key].some(
-                  (item: any) =>
-                    Object.prototype.hasOwnProperty.call(item, 'text') &&
-                    Object.prototype.hasOwnProperty.call(item, 'value')
-                )
-              ) {
-                const texts = record[key]
-                  .filter((item: any) =>
-                    Object.prototype.hasOwnProperty.call(item, 'text')
-                  )
-                  .map((item: any) => item.text);
-
-                // Decide whether to join with a comma based on the length of the texts array
-                result[key] = texts.length === 1 ? texts[0] : texts.join(', ');
-              } else {
-                result[key] = record[key];
-              }
-            } else {
-              // Takes the resources count and maps it to the resource name.
-              result[key] =
-                record[key].length > 1
-                  ? `${record[key].length} items`
-                  : `${record[key].length} item`;
-            }
-          }
-        } else {
-          if (
-            key.split('_')[1] == 'createdBy' ||
-            key.split('_')[1] == 'lastUpdatedBy'
-          ) {
-            if (key.split('_')[3] === 'id') {
-              // Takes the created by and last updated by values and persists them.
-              result[
-                `_${key.split('_')[1]}.${key.split('_')[2]}._${
-                  key.split('_')[3]
-                }`
-              ] = value;
-            } else if (key.split('_')[4] === 'id') {
-              // Takes the created by and last updated by values and persists them.
-              result[
-                `_${key.split('_')[1]}.${key.split('_')[2]}._${
-                  key.split('_')[4]
-                }`
-              ] = value;
-            } else {
-              // Takes the created by and last updated by values and persists them.
-              result[
-                `_${key.split('_')[1]}.${key.split('_')[2]}.${
-                  key.split('_')[3]
-                }`
-              ] = value;
-            }
-          } else if (key == 'form') {
-            const metaField = query.fields.find((field: any) => {
-              return field.name === key;
-            });
-            result[key] = metaField?.options?.filter(
-              (x: any) => x.value === record[key]
-            )[0]?.text;
-          } else if (key == 'lastUpdateForm') {
-            // TO DO
-            // Ideally we will run an apollo graphql query to fetch the form
-            // names from the id's passed into the form and lastUpdateForm
-            // fields. This isn't currently working due to the data configuration,
-            // likely will need to normalise the metaData so that we have options/choices.
-            result[key] = value;
-          } else {
-            const metaField = query.fields.find((field: any) => {
-              return field.name === key;
-            });
-
-            if (
-              metaField?.options?.every((x: any) => !isNaN(x.value)) &&
-              metaField?.options?.length
-            ) {
-              const findMatchingTexts = (options: any, keysToFind: any) => {
-                return options
-                  .filter((values: any) => {
-                    if (typeof keysToFind === 'object') {
-                      return keysToFind?.includes(parseInt(values.value));
-                    } else {
-                      const keyAsArray = [keysToFind];
-                      return keyAsArray?.includes(parseInt(values.value));
-                    }
-                  })
-                  .map((values: any) => values.text)
-                  .join(', ');
-              };
-
-              let matchingTexts = findMatchingTexts(
-                metaField?.options,
-                record[key]
-              );
-              if (matchingTexts === '') {
-                // If matching text is blank then needs to check with passing int data (Type cast issue)
-                matchingTexts = metaField?.options
-                  .filter((values: any) => {
-                    if (typeof record[key] === 'object') {
-                      return record[key]?.includes(values?.value);
-                    } else {
-                      const keyAsArray = [record[key]];
-                      return keyAsArray?.includes(values?.value);
-                    }
-                  })
-                  .map((values: any) => values.text)
-                  .join(', ');
-                // matchingTexts = findMatchingTexts(
-                //   metaField?.options,
-                //   record[key] ? parseInt(record[key]) : record[key]
-                // );
-              }
-              result[key] = matchingTexts;
-            } else {
-              result[key] = value;
-            }
-          }
-        }
+      // Appends label onto the correct matched data
+      if (tempMatchedData) {
+        ele.name = tempMatchedData.name;
+        ele.type = tempMatchedData.type.name;
       }
-    }
-
-    return result;
+    });
   }
 
   /**
@@ -1371,12 +1518,10 @@ export class EmailService {
    * @param field Name of record field
    * @returns formatted data string ( can be original value )
    */
-  formatDataStrings(rowData: any, field: string): string {
-    const select = this.isSelect(field);
-
+  formatDataStrings(rowData: any, field?: string): string {
+    field;
     // Check if rowData is a string that can be parsed into a date
     if (
-      !select &&
       typeof rowData === 'string' &&
       !isNaN(Date.parse(rowData)) &&
       this.isValidDate(rowData)
@@ -1414,19 +1559,6 @@ export class EmailService {
   }
 
   /**
-   * Returns if field is Select
-   *
-   * @param fieldName Name of Field
-   * @returns boolean - true if field is Select
-   */
-  isSelect(fieldName: string) {
-    const field = this.fields.find((field: any) => {
-      return fieldName === field.name;
-    });
-    return field?.select;
-  }
-
-  /**
    * Converts String to Title Case
    *
    * @param str Input string to be converted
@@ -1450,9 +1582,9 @@ export class EmailService {
     this.emailLayout = {};
     this.emailDistributionList = {
       name: '',
-      To: [],
-      Cc: [],
-      Bcc: [],
+      to: [],
+      cc: [],
+      bcc: [],
     };
     this.tabs = [
       {
@@ -1460,22 +1592,320 @@ export class EmailService {
         content: `Block 1 Content`,
         active: true,
         index: 0,
+        blockHeaderCount: 1,
       },
     ];
   }
 
   /**
-   * Fetches Resource meta data
+   * Adds an email distribution list with the provided data.
    *
-   * @param selectedResourceId Id of the Resource
-   * @returns resource meta data
+   * @param data The notification data to be added.
+   * @param applicationId The application id of the email notification.
+   * @returns A query result after adding the email distribution list.
    */
-  fetchResourceMetaData(selectedResourceId: any) {
-    return this.apollo.query<QueryMetaDataQueryResponse>({
-      query: GET_QUERY_META_DATA,
+  addDistributionList(data: any, applicationId?: string): Observable<any> {
+    return this.apollo.query<any>({
+      query: ADD_DISTRIBUTION_LIST,
       variables: {
-        id: selectedResourceId,
+        distributionList: data,
+        applicationId,
       },
     });
+  }
+
+  /**
+   * sending query to endpoint
+   *
+   * @param queryData - Preview Data payload
+   * @returns rest post to end point.
+   */
+  getPreviewDataSet(queryData: any): Observable<any> {
+    const url = `${this.restService.apiUrl}/notification/preview-dataset`;
+    return this.http.post<any>(url, queryData, {
+      headers: { responseType: 'text/html' },
+    });
+  }
+
+  /**
+   * Adds a custom template to the distribution list.
+   *
+   * @param templateInfo - Information about the custom template to be added.
+   * @returns {Observable<any>} An observable that resolves with the result of the query.
+   */
+  addCustomTemplate(templateInfo: any): Observable<any> {
+    return this.apollo.query<any>({
+      query: ADD_CUSTOM_TEMPLATE,
+      variables: {
+        customTemplate: templateInfo,
+      },
+    });
+  }
+
+  /**
+   * Fetches Resource data
+   *
+   * @param resourceId Resource Id of Dataset
+   * @returns resource data
+   */
+  fetchResourceData(resourceId: string) {
+    return this.apollo.query<ResourceQueryResponse>({
+      query: GET_RESOURCE_BY_ID,
+      variables: {
+        id: resourceId,
+      },
+    });
+  }
+
+  /**
+   * Edit a custom template to the distribution list.
+   *
+   * @param customTemplate - Information about the custom template to be edit.
+   * @param id string
+   * @returns {Observable<any>} An observable that resolves with the result of the query.
+   */
+  editCustomTemplate(customTemplate: any, id: string): Observable<any> {
+    return this.apollo.query<any>({
+      query: EDIT_CUSTOM_TEMPLATE,
+      variables: {
+        editCustomTemplateId: id,
+        customTemplate,
+      },
+    });
+  }
+
+  /**
+   * Edit a distribution list.
+   *
+   * @param distributionList dl data
+   * @param id string
+   * @returns {Observable<any>} An observable that resolves with the result of the query.
+   */
+  editDistributionList(distributionList: any, id?: string): Observable<any> {
+    return this.apollo.query<any>({
+      query: EDIT_DISTRIBUTION_LIST,
+      variables: {
+        editDistributionListId: id,
+        distributionList,
+      },
+    });
+  }
+
+  /**
+   * Delete the distribution list.
+   *
+   * @param id string
+   * @returns {Observable<any>} An observable that resolves with the result of the query.
+   */
+  deleteDistributionList(id: string): Observable<any> {
+    return this.apollo.query<any>({
+      query: EDIT_DISTRIBUTION_LIST,
+      variables: {
+        editDistributionListId: id,
+        distributionList: { isDeleted: 1 },
+      },
+    });
+  }
+
+  /**
+   * Delete a custom template to the distribution list.
+   *
+   * @param id string
+   * @returns {Observable<any>} An observable that resolves with the result of the query.
+   */
+  deleteCustomTemplate(id: string): Observable<any> {
+    return this.apollo.query<any>({
+      query: EDIT_CUSTOM_TEMPLATE,
+      variables: {
+        editCustomTemplateId: id,
+        customTemplate: { isDeleted: 1 },
+      },
+    });
+  }
+
+  /**
+   * Retrieves custom templates from the server.
+   *
+   * @param id The application ids of the email notifications.
+   * @param isFromEmailNotification - Indicates if the templates are related to email notifications. Optional.
+   * @returns Observable that resolves with the result of the query.
+   */
+  getCustomTemplates(id?: string, isFromEmailNotification?: boolean) {
+    return this.apollo.query<EmailTemplatesQueryResponse>({
+      query: GET_CUSTOM_TEMPLATES,
+      variables: {
+        applicationId: id,
+        isFromEmailNotification,
+      },
+    });
+  }
+
+  /**
+   * Get an email distribution lists.
+   *
+   * @param applicationId The application ids of the email notifications.
+   * @param distributionListId The distributionList id to get specific distribution list.
+   * @returns Email distribution lists.
+   */
+  getEmailDistributionList(
+    applicationId?: string,
+    distributionListId?: string
+  ) {
+    return this.apollo.query<EmailDistributionListQueryResponse>({
+      query: GET_DISTRIBUTION_LIST,
+      variables: { applicationId, id: distributionListId },
+    });
+  }
+
+  /**
+   * sending emails to endpoint
+   *
+   * @param emailData data to be send.
+   * @returns rest post to end point.
+   */
+  sendQuickEmail(emailData: any): Observable<any> {
+    const urlWithConfigId = `${this.restService.apiUrl}/notification/send-quick-email`;
+    return this.http.post<any>(urlWithConfigId, emailData);
+  }
+
+  /**
+   *
+   * Reset All layout data
+   */
+  resetAllLayoutData() {
+    this.allLayoutdata = {
+      /** Images & styles */
+      bannerImage: null,
+      bannerImageStyle: '',
+      /** Container style */
+      containerStyle: '',
+      /** FOOTER COPYRIGHT STYLE */
+      copyrightStyle: '',
+      /** Email subject */
+      txtSubject: '',
+      /** Email header */
+      headerHtml: '',
+      headerLogo: null,
+      headerLogoStyle: '',
+      headerBackgroundColor: this.headerBackgroundColor,
+      headerTextColor: this.headerTextColor,
+      headerStyle: '',
+      /** Email body */
+      bodyHtml: '',
+      bodyBackgroundColor: this.bodyBackgroundColor,
+      bodyTextColor: this.bodyTextColor,
+      bodyStyle: '',
+      /** Email footer */
+      footerHtml: '',
+      footerLogo: null,
+      footerBackgroundColor: this.footerBackgroundColor,
+      footerTextColor: this.footerTextColor,
+      footerStyle: '',
+      footerImgStyle: '',
+      footerHtmlStyle: '',
+    };
+  }
+
+  /**
+   * Populate Emails into distributionlist input emails form array using email string array
+   *
+   * @param dlArray email string array
+   * @param input form group array
+   */
+  populateEmails(dlArray: string[], input: FormArray) {
+    input.clear();
+    dlArray?.forEach((item: string) => {
+      input?.push(new FormControl(item));
+    });
+  }
+
+  /**
+   *
+   * validating next button by taking 3 conditions in consideration DL name mandatory, check duplicate name validation and requires To email
+   */
+  async validateNextButton() {
+    const isDLNameExists = this.distributionListName?.trim()?.length > 0;
+    const isDlDuplicateNm = this.isDLNameDuplicate;
+    let isExistsToEmail = false;
+    // if (!isExistsToEmail) {
+    await this.isToValidCheck();
+    isExistsToEmail = this.isToValid;
+    // }
+    //Check To is valid or not (Including filter Emails or Manually added emails)
+    // const valid = await this.checkToValid();
+
+    // Check Common service Validation
+
+    if (isDLNameExists && !isDlDuplicateNm && isExistsToEmail) {
+      this.disableSaveAndProceed.next(false);
+    } else {
+      this.disableFormSteps.next({
+        stepperIndex: 2,
+        disableAction: true,
+      });
+      this.disableSaveAndProceed.next(true);
+    }
+  }
+
+  /**
+   * checking that To tab is valid or not
+   *
+   */
+  async isToValidCheck() {
+    if (
+      this.datasetsForm.getRawValue().emailDistributionList?.to?.inputEmails
+        .length > 0 ||
+      (this.datasetsForm.getRawValue().emailDistributionList?.to?.resource !==
+        '' &&
+        this.datasetsForm.getRawValue().emailDistributionList?.to?.resource !==
+          null &&
+        this.filterToEmails?.length >= 0) ||
+      this.datasetsForm
+        ?.getRawValue()
+        ?.emailDistributionList?.to?.commonServiceFilter?.filter?.filters?.filter(
+          (x: any) => x?.field && x?.value
+        )?.length > 0
+    ) {
+      this.isToValid = true;
+    } else {
+      this.isToValid = await this.checkToValid();
+    }
+  }
+
+  /**
+   * Set common service payload
+   *
+   * @param dlCommonQuery commonquery form group
+   * @returns payload data
+   */
+  setCommonServicePayload(dlCommonQuery: any) {
+    let commonServiceData: any = {};
+    commonServiceData['commonServiceFilter'] = {};
+    if (dlCommonQuery) {
+      commonServiceData = this.processFilters(dlCommonQuery);
+    }
+    return commonServiceData;
+  }
+
+  /**
+   * Process common service filter fo updating its fields value
+   *
+   * @param dlCommonQuery Commonservice filters
+   * @returns Updated filters data
+   */
+  processFilters(dlCommonQuery: any) {
+    dlCommonQuery?.filters?.forEach((ele: any) => {
+      let preDefineFields: any = [];
+      if (!ele.filters) {
+        preDefineFields = this.commonServiceFields.filter(
+          (x: any) => x.key === ele?.field
+        );
+        ele.field =
+          preDefineFields?.length > 0 ? preDefineFields[0]['label'] : ele.field;
+      } else {
+        this.processFilters(ele);
+      }
+    });
+    return dlCommonQuery;
   }
 }

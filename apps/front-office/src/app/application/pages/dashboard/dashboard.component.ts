@@ -14,12 +14,13 @@ import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
   ConfirmService,
-  ButtonActionT,
+  ActionButton,
   ContextService,
   DashboardQueryResponse,
   Record,
   DashboardComponent as SharedDashboardComponent,
   DashboardAutomationService,
+  BreadcrumbService,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
@@ -65,10 +66,12 @@ export class DashboardComponent
   public variant!: string;
   /** hide / show the close icon on the right */
   public closable = true;
-  /** Dashboard button actions */
-  public buttonActions: ButtonActionT[] = [];
+  /** Dashboard action buttons */
+  public actionButtons: ActionButton[] = [];
   /** Should show dashboard name */
   public showName? = true;
+  /** If dashboard is displayed under workflow  */
+  public isStep = false;
 
   /**
    * Dashboard page.
@@ -85,6 +88,7 @@ export class DashboardComponent
    * @param document Document
    * @param contextService Dashboard context service
    * @param dashboardAutomationService Dashboard automation service
+   * @param breadcrumbService Breadcrumb service
    */
   constructor(
     private apollo: Apollo,
@@ -98,7 +102,8 @@ export class DashboardComponent
     public elementRef: ElementRef,
     @Inject(DOCUMENT) private document: Document,
     private contextService: ContextService,
-    private dashboardAutomationService: DashboardAutomationService
+    private dashboardAutomationService: DashboardAutomationService,
+    private breadcrumbService: BreadcrumbService
   ) {
     super();
     this.dashboardAutomationService.dashboard = this;
@@ -122,6 +127,7 @@ export class DashboardComponent
         if (pageContainer) {
           pageContainer.scrollTop = 0;
         }
+        this.isStep = this.router.url.includes('/workflow/');
         /** Extract main dashboard id */
         const id = this.route.snapshot.paramMap.get('id');
         /** Extract query id to load template */
@@ -132,6 +138,15 @@ export class DashboardComponent
           );
         }
       });
+  }
+
+  /**
+   * Reload the dashboard.
+   */
+  reload(): void {
+    if (this.id) {
+      this.loadDashboard(this.id, this.contextId);
+    }
   }
 
   /** Sets up the widgets from the dashboard structure */
@@ -193,9 +208,14 @@ export class DashboardComponent
           this.id = data.dashboard.id || id;
           this.contextId = contextId ?? undefined;
           this.dashboard = data.dashboard;
+          this.breadcrumbService.setBreadcrumb(
+            this.isStep ? '@workflow' : '@dashboard',
+            this.dashboard.name as string,
+            this.isStep ? this.dashboard?.step?.workflow?.name : ''
+          );
           this.initContext();
           this.setWidgets();
-          this.buttonActions = this.dashboard.buttons || [];
+          this.actionButtons = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
           this.contextService.filterPosition.next({

@@ -435,7 +435,7 @@ export class MapComponent
   private drawMap(initMap = true): void {
     const {
       initialState,
-      maxBounds,
+      // maxBounds,
       basemap,
       maxZoom,
       minZoom,
@@ -460,12 +460,12 @@ export class MapComponent
           : this.mapId,
         {
           zoomControl,
-          maxBounds: maxBounds
-            ? L.latLngBounds(
-                L.latLng(maxBounds[0][0], maxBounds[0][1]),
-                L.latLng(maxBounds[1][0], maxBounds[1][1])
-              )
-            : undefined,
+          // maxBounds: maxBounds
+          //   ? L.latLngBounds(
+          //       L.latLng(maxBounds[0][0], maxBounds[0][1]),
+          //       L.latLng(maxBounds[1][0], maxBounds[1][1])
+          //     )
+          //   : undefined,
           minZoom,
           maxZoom,
           worldCopyJump,
@@ -496,9 +496,9 @@ export class MapComponent
       if (this.map.getMinZoom() !== minZoom) {
         this.map.setMinZoom(minZoom as number);
       }
-      if (maxBounds) {
-        this.map.setMaxBounds(maxBounds as L.LatLngBoundsExpression);
-      }
+      // if (maxBounds) {
+      //   this.map.setMaxBounds(maxBounds as L.LatLngBoundsExpression);
+      // }
       if (this.map.getZoom() !== initialState.viewpoint.zoom) {
         this.map.setZoom(initialState.viewpoint.zoom);
       }

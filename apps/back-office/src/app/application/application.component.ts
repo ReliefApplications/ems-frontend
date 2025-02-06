@@ -133,18 +133,6 @@ export class ApplicationComponent
     this.appSettingsNavItems = [];
     this.addNavItem('common.settings', './settings/edit', 'settings');
     this.addNavItem(
-      'common.template.few',
-      './settings/templates',
-      'description',
-      true
-    );
-    this.addNavItem(
-      'common.distributionList.few',
-      './settings/distribution-lists',
-      'mail',
-      true
-    );
-    this.addNavItem(
       'common.user.few',
       './settings/users',
       'supervisor_account'
@@ -169,6 +157,11 @@ export class ApplicationComponent
       'add_to_queue'
     );
     this.addNavItem('common.archive.few', './settings/archive', 'delete');
+    this.addNavItem(
+      'common.activity.few',
+      './settings/activity-log',
+      'timeline'
+    );
 
     // {
     //   name: this.translate.instant('common.customNotification.few'),

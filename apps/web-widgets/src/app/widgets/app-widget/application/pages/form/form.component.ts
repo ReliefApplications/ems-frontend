@@ -10,6 +10,10 @@ import {
   StepQueryResponse,
   FormQueryResponse,
   PageQueryResponse,
+  ActionButton,
+  Record,
+  ContextService,
+  BreadcrumbService,
 } from '@oort-front/shared';
 import {
   GET_FORM_BY_ID,
@@ -53,6 +57,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   public step?: Step;
   /** Tells if the form is within a workflow */
   public isStep = false;
+  /** Form button actions */
+  public actionButtons: ActionButton[] = [];
 
   /**
    * Form page.
@@ -62,13 +68,17 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * @param router Angular router
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param contextService Shared context service
+   * @param breadcrumbService Breadcrumb service
    */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: SnackbarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private contextService: ContextService,
+    private breadcrumbService: BreadcrumbService
   ) {
     super();
   }
@@ -96,6 +106,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.step = data.step;
+              this.actionButtons = data.step.buttons as ActionButton[];
               return this.getFormQuery(this.step.content ?? '');
             })
           )
@@ -113,6 +124,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.page = data.page;
+              this.actionButtons = data.page.buttons as ActionButton[];
               return this.getFormQuery(this.page.content ?? '');
             })
           )
@@ -151,6 +163,11 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     if (data) {
       this.form = data.form;
     }
+    this.breadcrumbService.setBreadcrumb(
+      this.isStep ? '@workflow' : '@form',
+      this.form.name as string,
+      this.isStep ? this.step?.workflow?.name : ''
+    );
     if (
       !this.form ||
       this.form.status !== 'active' ||
@@ -170,13 +187,24 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Updates status of the page.
+   * Complete form
    *
    * @param e completion event
-   * @param e.completed is form completed
-   * @param e.hideNewRecord is it needed to hide new record button
+   * @param e.completed is completed
+   * @param e.hideNewRecord do we show new record button
+   * @param e.record Saved record
    */
-  onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
+  onComplete(e: {
+    completed: boolean;
+    hideNewRecord?: boolean;
+    record?: Record;
+  }): void {
+    if (e.record) {
+      this.contextService.context = {
+        ...e.record.data,
+        id: e.record.id,
+      };
+    }
     this.completed = e.completed;
     this.hideNewRecord = e.hideNewRecord || false;
   }

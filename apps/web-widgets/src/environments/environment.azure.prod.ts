@@ -26,9 +26,11 @@ export const environment: Environment = {
   frontOfficeUri: 'https://ems-safe.who.int/',
   backOfficeUri: 'https://ems-safe.who.int/backoffice/',
   authConfig,
-  tinymceBaseUrl: 'https://ems2.who.int/app-builder/tinymce/',
-  i18nUrl: 'https://ems2.who.int/app-builder/i18n/',
+  tinymceBaseUrl: 'https://hems.who.int/app-builder/tinymce/',
+  i18nUrl: 'https://hems.who.int/app-builder/i18n/',
   user: {
     attributes: ['country', 'region', 'location', 'department'],
   },
+  admin0Url: 'https://hems.who.int/app-builder/admin0.json',
+  csApiUrl: 'https://hems.who.int/csapi/api',
 };

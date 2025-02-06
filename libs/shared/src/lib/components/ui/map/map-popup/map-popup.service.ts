@@ -52,12 +52,14 @@ export class MapPopupService {
    * @param featurePoints Feature points to group in the popup
    * @param coordinates Coordinates
    * @param popupInfo Popup info
+   * @param metadata Metadata
    * @param layerToBind Layer where to bind the popup, if not a default one would be created
    */
   public setPopUp(
     featurePoints: Feature<any>[],
     coordinates: L.LatLng,
     popupInfo: PopupInfo,
+    metadata: any[] = [],
     layerToBind?: L.Layer
   ) {
     if (
@@ -84,7 +86,8 @@ export class MapPopupService {
       const { instance, popup } = this.setPopupComponentAndContent(
         featurePoints,
         coordinates,
-        popupInfo
+        popupInfo,
+        metadata
       );
 
       popup.on('remove', () => {
@@ -233,12 +236,14 @@ export class MapPopupService {
    * @param coordinates.lat Coordinates latitude
    * @param coordinates.lng Coordinates longitude
    * @param popupInfo Popup info
+   * @param metadata Metadata
    * @returns Generated MapPopupComponent component instance and popup
    */
   private setPopupComponentAndContent(
     featurePoints: Feature<any>[],
     coordinates: L.LatLng,
-    popupInfo: PopupInfo
+    popupInfo: PopupInfo,
+    metadata: any[] = []
   ): { instance: ComponentRef<MapPopupComponent>; popup: L.Popup } {
     // create div element to render the MapPopupComponent content
     const div = this.document.createElement('div');
@@ -246,7 +251,8 @@ export class MapPopupService {
       coordinates,
       featurePoints,
       div,
-      popupInfo
+      popupInfo,
+      metadata
     );
     // create a popup that renders the MapPopupComponent
     const popup = L.popup({ closeButton: false })
@@ -295,13 +301,15 @@ export class MapPopupService {
    * @param featurePoints featurePoints
    * @param containerElement containerElement
    * @param popupInfo Popup info
+   * @param metadata Metadata
    * @returns MapPopupComponent instance
    */
-  public initializeMapPopupComponent(
+  private initializeMapPopupComponent(
     coordinates: L.LatLng,
     featurePoints: any[],
     containerElement: HTMLElement,
-    popupInfo: PopupInfo
+    popupInfo: PopupInfo,
+    metadata: any[] = []
   ): ComponentRef<MapPopupComponent> {
     // create component to render the MapPopupComponent
     const popupComponent = this.domService.appendComponentToBody(
@@ -313,6 +321,7 @@ export class MapPopupService {
     // set the component inputs
     instance.feature = featurePoints;
     instance.coordinates = coordinates;
+    instance.metadata = metadata;
 
     // Bind zoom
     instance.currZoom = this.map.getZoom();
@@ -321,24 +330,17 @@ export class MapPopupService {
     });
 
     // Use the first feature point as model to generate the popup template for the rest of features
-    instance.template = this.generatePopupContentTemplate(
-      featurePoints[0],
-      popupInfo
-    );
+    instance.template = this.generatePopupContentTemplate(popupInfo);
     return popupComponent;
   }
 
   /**
    * Generates de content inside the popup with the properties of the given feature
    *
-   * @param {Feature<any>} feature feature containing properties and coordinates
    * @param popupInfo Popup info
    * @returns Popup content template
    */
-  public generatePopupContentTemplate(
-    feature: Feature<any>,
-    popupInfo: PopupInfo
-  ): string {
+  private generatePopupContentTemplate(popupInfo: PopupInfo): string {
     const title = (title: string, popupTitle?: boolean) =>
       popupTitle
         ? `<h3 class="break-words !m-0 font-bold text-xl">${title}</h3>`
