@@ -87,7 +87,7 @@ export class SnackbarService {
   public openComponentSnackBar(
     component: ComponentType<any>,
     config?: SnackBarConfig
-  ): any {
+  ): ComponentRef<SnackbarComponent> {
     config = {
       ...DEFAULT_SNACKBAR,
       ...config,

@@ -15,6 +15,7 @@ import {
   EventType,
 } from '../analytics/analytics.service';
 import { v4 as uuidv4 } from 'uuid';
+import { Buffer } from 'buffer';
 
 /** Types of file we upload to blob storage */
 export enum BlobType {
@@ -364,8 +365,6 @@ export class DownloadService {
     type: BlobType,
     entity: string
   ): Promise<string> {
-    // eslint-disable-next-line no-restricted-syntax
-    console.time('upload');
     const CHUNK_SIZE = 4 * 1024 * 1024; // 4MB chunks
     const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
     const uploadId = uuidv4();
@@ -389,38 +388,50 @@ export class DownloadService {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
     });
-    let data: any = {};
+    let path = '';
 
+    const chunks: { [key: string]: Blob } = {};
     for (let i = 0; i < totalChunks; i++) {
       const start = i * CHUNK_SIZE;
       const end = Math.min(start + CHUNK_SIZE, file.size);
       const chunk = file.slice(start, end);
-
+      const chunkId = Buffer.from(uuidv4()).toString('base64');
+      chunks[chunkId] = chunk;
+    }
+    const promises: Promise<any>[] = [];
+    Object.entries(chunks).forEach(([chunkId, chunk]) => {
       const formData = new FormData();
       formData.append('file', chunk, file.name);
-      formData.append('chunkIndex', i.toString());
-      formData.append('totalChunks', totalChunks.toString());
+      formData.append('chunkList', JSON.stringify(Object.keys(chunks)));
+      formData.append('chunkId', chunkId);
       formData.append('uploadId', uploadId);
 
-      data = await firstValueFrom(
-        this.restService.post(uploadPath, formData, { headers })
-      ).catch(() => {
-        setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
-        throw new Error(snackBarSpinner.instance.message);
-      });
-    }
+      promises.push(
+        firstValueFrom(this.restService.post(uploadPath, formData, { headers }))
+          .then((result) => {
+            if (result) {
+              path = result.path;
+            }
+          })
+          .catch(() => {
+            setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+            throw new Error(snackBarSpinner.instance.message);
+          })
+      );
+    });
 
-    const { path } = data ?? {};
+    await Promise.all(promises);
+
     if (path) {
       snackBarSpinner.instance.message = this.translate.instant(
         'common.notifications.file.upload.ready'
       );
       snackBarSpinner.instance.loading = false;
-
-      setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+    } else {
+      throw new Error(snackBarSpinner.instance.message);
     }
-    // eslint-disable-next-line no-restricted-syntax
-    console.timeEnd('upload');
+    setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+
     return path;
   }
 }
