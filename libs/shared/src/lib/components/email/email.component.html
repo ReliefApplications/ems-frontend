@@ -163,7 +163,11 @@
                           [uiTooltip]="'common.edit' | translate"
                         >
                         </ui-button>
-                        <ng-container *ngIf="this.ability.can('create', 'EmailNotification')">
+                        <ng-container
+                          *ngIf="
+                            this.ability.can('create', 'EmailNotification')
+                          "
+                        >
                           <ui-button
                             variant="grey"
                             class="hide-icons hover:text-primary-600"

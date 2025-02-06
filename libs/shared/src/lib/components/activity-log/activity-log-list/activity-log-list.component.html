@@ -48,7 +48,9 @@
       <!-- Timestamp -->
       <kendo-grid-column
         field="createdAt"
-        [title]="'components.application.activities.columns.createdAt' | translate"
+        [title]="
+          'components.application.activities.columns.createdAt' | translate
+        "
         [filterable]="false"
       >
         <ng-template kendoGridCellTemplate let-dataItem>
@@ -56,7 +58,12 @@
         </ng-template>
       </kendo-grid-column>
       <!-- User -->
-      <kendo-grid-column field="username" title="{{ 'components.application.activities.columns.user' | translate }}">
+      <kendo-grid-column
+        field="username"
+        title="{{
+          'components.application.activities.columns.user' | translate
+        }}"
+      >
         <ng-template kendoGridCellTemplate let-dataItem>
           {{ dataItem.username || dataItem.userId }}
         </ng-template>

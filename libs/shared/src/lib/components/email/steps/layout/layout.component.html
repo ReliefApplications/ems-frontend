@@ -424,10 +424,7 @@
               (ngModelChange)="insertDataSetToBodyHtmlByTabName($event)"
             >
               <ui-select-option
-                *ngFor="
-                  let previewData of blockData;
-                  let i = index
-                "
+                *ngFor="let previewData of blockData; let i = index"
                 [value]="previewData?.tabName ?? previewData"
                 >{{ previewData?.tabName ?? previewData }}</ui-select-option
               >

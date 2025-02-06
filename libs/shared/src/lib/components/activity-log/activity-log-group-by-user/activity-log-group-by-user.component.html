@@ -46,13 +46,24 @@
       (filterChange)="onFilter($event)"
     >
       <!-- Number of hits -->
-      <kendo-grid-column field="count" title="{{ 'components.application.activities.columns.hits' | translate }}" [filterable]="false">
+      <kendo-grid-column
+        field="count"
+        title="{{
+          'components.application.activities.columns.hits' | translate
+        }}"
+        [filterable]="false"
+      >
         <ng-template kendoGridCellTemplate let-dataItem>
           {{ dataItem.count }}
         </ng-template>
       </kendo-grid-column>
       <!-- User -->
-      <kendo-grid-column field="username" title="{{ 'components.application.activities.columns.user' | translate }}">
+      <kendo-grid-column
+        field="username"
+        title="{{
+          'components.application.activities.columns.user' | translate
+        }}"
+      >
         <ng-template kendoGridCellTemplate let-dataItem>
           {{ dataItem.username }}
         </ng-template>
