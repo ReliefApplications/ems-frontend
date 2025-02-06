@@ -1,3 +1,10 @@
+# [2.17.0-alpha.26](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.25...v2.17.0-alpha.26) (2025-02-06)
+
+
+### Bug Fixes
+
+* front-office never reaching correct page on token refresh ([#2755](https://github.com/ReliefApplications/ems-frontend/issues/2755)) ([9981bce](https://github.com/ReliefApplications/ems-frontend/commit/9981bce5368ec9891c8746d4d4dbcf3f43ed6b71))
+
 # [2.17.0-alpha.25](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-alpha.24...v2.17.0-alpha.25) (2025-02-01)
 
 
