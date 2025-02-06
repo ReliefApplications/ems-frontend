@@ -107,9 +107,6 @@
     "
   >
   </ng-container>
-  <div class="loadingSign" [ngClass]="{ active: loading }">
-    <ui-spinner *ngIf="loading" style="position: relative"></ui-spinner>
-  </div>
 
   <!-- Combination ( selected from resource ) -->
   <div class="overflow-hidden mt-4" *ngIf="activeSegmentIndex === 2">
@@ -405,7 +402,7 @@
                 class="float-right mt-8"
                 category="secondary"
                 variant="primary"
-                (click)="getDataSet('preview'); showPreview = true"
+                (click)="getDataSet('preview', true); showPreview = true"
                 [disabled]="selectedFields.length === 0"
               >
                 {{ 'common.preview' | translate }}
@@ -471,6 +468,9 @@
                 {{ 'components.distributionLists.warning.noData' | translate }}
               </ui-alert>
             </ng-container>
+            <div class="loadingSign loadingHeight" [ngClass]="{ active: loading }">
+              <ui-spinner *ngIf="loading" style="position: relative"></ui-spinner>
+            </div>
           </ng-template>
         </ui-tab>
       </div>
@@ -515,7 +515,7 @@
                 class="float-right mt-8"
                 category="secondary"
                 variant="primary"
-                (click)="getCommonServiceDataSet()"
+                (click)="getCommonServiceDataSet(true); showPreview = true"
               >
                 {{ 'common.preview' | translate }}
               </ui-button>
@@ -533,16 +533,16 @@
               class="mt-2"
               *ngTemplateOutlet="showDLPreview"
             ></ng-container>
-            <ng-container *ngIf="previewDLEmails?.length > 0">
+            <ng-container *ngIf="previewCS_DLEmails?.length > 0">
               <div
                 class="mb-4"
-                *ngIf="previewDLEmails && previewDLEmails?.length > 0"
+                *ngIf="previewCS_DLEmails && previewCS_DLEmails?.length > 0"
               >
                 <!-- <h2>{{ 'components.select.distribution.to' | translate }}:</h2> -->
                 <ul class="list-none space-y-1">
                   <div uiChipList>
                     <ng-container
-                      *ngFor="let email of previewDLEmails; let i = index"
+                      *ngFor="let email of previewCS_DLEmails; let i = index"
                     >
                       <ui-chip
                         *ngIf="i < 6 || isExpandedPreview"
@@ -553,12 +553,12 @@
                     </ng-container>
                   </div>
                   <ui-button
-                    *ngIf="previewDLEmails.length > 6 && !isExpandedPreview"
+                    *ngIf="previewCS_DLEmails.length > 6 && !isExpandedPreview"
                     class="inline-block"
                     (click)="toggleExpandPreview()"
                     >{{
                       'components.email.preview.more'
-                        | translate : { length: previewDLEmails.length - 6 }
+                        | translate : { length: previewCS_DLEmails.length - 6 }
                     }}</ui-button
                   >
                   <ui-button
@@ -572,11 +572,14 @@
                 </ul>
               </div>
             </ng-container>
-            <ng-container *ngIf="!isPreviewEmail">
+            <ng-container *ngIf="previewCS_DLEmails?.length === 0">
               <ui-alert class="mb-4" variant="warning">
                 {{ 'components.distributionLists.warning.noData' | translate }}
               </ui-alert>
             </ng-container>
+            <div class="loadingSign loadingHeight" [ngClass]="{ active: loading }">
+              <ui-spinner *ngIf="loading" style="position: relative"></ui-spinner>
+            </div>
           </ng-template>
         </ui-tab>
       </div>

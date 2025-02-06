@@ -1,11 +1,12 @@
 .loadingSign {
   display: none;
-  width: 100%;
+  width: 100%;  
   justify-content: center;
-  align-items: center;
-  padding: 16px;
+  align-items: start;
+  padding: 0px;
 
   &.active {
     display: flex;
+    height: 40px;
   }
 }

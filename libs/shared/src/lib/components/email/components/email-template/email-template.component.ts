@@ -210,6 +210,8 @@ export class EmailTemplateComponent
   public dlCommonQuery!: FormGroup | any;
   /** Common service Query filter Preview HTML */
   public previewCommonHTML: any = '';
+  /** DL preview emails FOR CS  */
+  previewCS_DLEmails: any = [];
 
   /**
    * Composite filter group.
@@ -266,6 +268,7 @@ export class EmailTemplateComponent
     this.distributionList.controls.resource.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: any) => {
+        this.previewDLEmails = [];
         if (
           value !== undefined &&
           value !== null &&
@@ -506,8 +509,9 @@ export class EmailTemplateComponent
    *
    * @param event The tab selected
    * @param fromHTML If state is in edit mode then false else true if new notification (means Event from UI)
+   * @param isExpanded method is calling from expand method
    */
-  onTabSelect(event: any, fromHTML: boolean): void {
+  onTabSelect(event: any, fromHTML: boolean, isExpanded?: boolean): void {
     const newIndex = event;
     const previewTabIndex = 2;
     const isValid =
@@ -516,6 +520,10 @@ export class EmailTemplateComponent
       this.emailService.distributionListName?.length > 0 &&
       !this.distributionListValid;
 
+    //If clicking on other tabs (Filter, fields) and showpreview flag is true then make it false so it willl not auto navigate to preview after getting data from API
+    if (fromHTML && (event === 0 || event === 1)) {
+      this.showPreview = false;
+    }
     //if new tab is preview, get preview data
     if (fromHTML && newIndex === previewTabIndex) {
       if (isValid) {
@@ -538,7 +546,9 @@ export class EmailTemplateComponent
         this.expandedIndex === 2 ||
         (this.activeSegmentIndex === 3 && event === 1)
       ) {
-        this.previewDLEmails = [];
+        if (isExpanded) {
+          this.previewDLEmails = [];
+        }
         fromHTML ? this.getCommonServiceDataSet() : '';
       }
     }
@@ -552,8 +562,9 @@ export class EmailTemplateComponent
    * To get data set for the applied filters.
    *
    * @param tabName - The name of the tab for which to get the data set.
+   * @param isPreview call is from Preview button or not
    */
-  async getDataSet(tabName?: any): Promise<void> {
+  async getDataSet(tabName?: any, isPreview?: boolean): Promise<void> {
     if (
       this.dlQuery.controls['name'].value !== null &&
       this.dlQuery.controls['name'].value !== ''
@@ -592,21 +603,18 @@ export class EmailTemplateComponent
         };
 
         this.previewHTML = '';
-        this.previewDLEmails = [];
-
+        //When we click preview button at that time allow swich to preview tab directly (If not cliked on other tabs)
+        isPreview ? this.onTabSelect(2, false) : '';
         this.restService
           .post('/notification/preview-dataset', objPreview)
           .subscribe(
             async (response: any) => {
-              this.showPreview = true;
               this.emailService.filterToEmails =
                 this.type === 'to' ? [] : this.emailService.filterToEmails;
               // Navigates straight to preview tab if didn't fail before
               if (response.count <= 50) {
                 this.showDatasetLimitWarning = false;
               }
-              this.onTabSelect(2, false);
-              this.showPreview = true;
               if (response.count <= 50) {
                 // this.showDatasetLimitWarning = false;
               } else {
@@ -985,6 +993,7 @@ export class EmailTemplateComponent
       const formArray = this.selectedEmails as FormArray;
       formArray.clear();
       this.previewDLEmails = [];
+      this.isPreviewEmail = true;
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
         this.emailService.disableSaveAsDraft.next(false);
@@ -993,6 +1002,8 @@ export class EmailTemplateComponent
       this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
     }
     if (this.activeSegmentIndex === 2) {
+      this.previewDLEmails = [];
+      this.isPreviewEmail = true;
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
         this.emailService.disableSaveAsDraft.next(false);
@@ -1004,14 +1015,14 @@ export class EmailTemplateComponent
       const formArray = this.selectedEmails as FormArray;
       formArray.clear();
       this.previewDLEmails = [];
-
+      this.previewCS_DLEmails = [];
+      this.isPreviewEmail = true;
       //Reseting Add manually opyion Data
       this.dlQuery?.get('name')?.setValue('');
       this.resource = null;
       this.resetFilters(this.dlQuery);
       this.distributionList.get('resource').setValue('');
 
-      this.onTabSelect(0, false);
       this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
     }
   }
@@ -1173,20 +1184,22 @@ export class EmailTemplateComponent
   /**
    * To get data set for the applied filters.
    *
+   * @param isPreview this method call from preview button of Commonservice
    */
-  getCommonServiceDataSet() {
+  getCommonServiceDataSet(isPreview?: boolean) {
     const commonServiceData: any = this.emailService.setCommonServicePayload(
       cloneDeep(this.dlCommonQuery?.getRawValue()?.filter)
     );
     this.loading = true;
+    //When we click preview button at that time allow swich to preview tab directly (If not cliked on other tabs)
+    isPreview ? this.onTabSelect(1, false) : '';
     this.restService
       .post('/notification/preview-common-services-users', commonServiceData)
       .subscribe(
         async (response: any) => {
-          this.showPreview = true;
-          this.onTabSelect(1, false);
-          this.previewDLEmails = response;
-          this.isPreviewEmail = this.previewDLEmails?.length > 0 ? true : false;
+          this.previewCS_DLEmails = response;
+          this.isPreviewEmail =
+            this.previewCS_DLEmails?.length > 0 ? true : false;
           this.loading = false;
         },
         (error: string) => {
@@ -1244,8 +1257,8 @@ export class EmailTemplateComponent
     this.expandedIndex = index;
 
     //intiating onTabselection method call for common service filter in use combination
-    if (this.expandedIndex === 2) {
-      this.onTabSelect(0, false);
+    if (this.expandedIndex === 2 || this.expandedIndex === 1) {
+      this.previewDLEmails = [];
     }
   }
 }
