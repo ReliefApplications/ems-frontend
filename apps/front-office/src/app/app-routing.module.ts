@@ -16,29 +16,34 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () =>
-          import('./redirect/redirect.module').then((m) => m.RedirectModule),
-        pathMatch: 'full',
-        // canActivate: [AccessGuard],
-      },
-      {
-        path: ':id',
-        loadChildren: () =>
-          import('./application/application.module').then(
-            (m) => m.ApplicationModule
-          ),
-        // canActivate: [AccessGuard],
-      },
-      {
-        path: 'share/:id',
-        loadChildren: () =>
-          import('./application/pages/share/share.module').then(
-            (m) => m.ShareModule
-          ),
-        // canActivate: [AccessGuard],
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('./redirect/redirect.module').then(
+                (m) => m.RedirectModule
+              ),
+            pathMatch: 'full',
+          },
+          {
+            path: ':id',
+            loadChildren: () =>
+              import('./application/application.module').then(
+                (m) => m.ApplicationModule
+              ),
+          },
+          {
+            path: 'share/:id',
+            loadChildren: () =>
+              import('./application/pages/share/share.module').then(
+                (m) => m.ShareModule
+              ),
+          },
+        ],
+        canActivate: [AccessGuard],
       },
     ],
-    canActivate: [AuthGuard, AccessGuard],
+    canActivate: [AuthGuard],
   },
   // {
   //   path: '**',
