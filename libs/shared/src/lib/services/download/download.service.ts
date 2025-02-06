@@ -366,7 +366,7 @@ export class DownloadService {
     entity: string
   ): Promise<string> {
     const CHUNK_SIZE = 4 * 1024 * 1024; // 4MB chunks
-    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+    const totalChunks = Math.max(Math.ceil(file.size / CHUNK_SIZE), 1);
     const uploadId = uuidv4();
 
     const snackBarRef = this.snackBar.openComponentSnackBar(
@@ -391,6 +391,7 @@ export class DownloadService {
     let path = '';
 
     const chunks: { [key: string]: Blob } = {};
+    console.log(totalChunks);
     for (let i = 0; i < totalChunks; i++) {
       const start = i * CHUNK_SIZE;
       const end = Math.min(start + CHUNK_SIZE, file.size);
