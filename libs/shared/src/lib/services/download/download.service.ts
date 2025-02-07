@@ -414,6 +414,11 @@ export class DownloadService {
             }
           })
           .catch(() => {
+            snackBarSpinner.instance.message = this.translate.instant(
+              'common.notifications.file.upload.error'
+            );
+            snackBarSpinner.instance.loading = false;
+            snackBarSpinner.instance.error = true;
             setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
             throw new Error(snackBarSpinner.instance.message);
           })
@@ -428,7 +433,7 @@ export class DownloadService {
       );
       snackBarSpinner.instance.loading = false;
     } else {
-      throw new Error(snackBarSpinner.instance.message);
+      throw new Error('');
     }
     setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
 
