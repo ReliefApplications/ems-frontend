@@ -184,6 +184,7 @@ export class RecordModalComponent
           this.form?.structure || '',
           this.form?.metadata
         ));
+    this.formBuilderService.recordId = this.record.id;
 
     addCustomFunctions({
       record: this.record,
@@ -192,7 +193,6 @@ export class RecordModalComponent
       form: this.form,
       translateService: this.translate,
     });
-    this.survey.data = this.record.data;
 
     this.survey.mode = 'display';
     // After the survey is created we add common callback to survey events

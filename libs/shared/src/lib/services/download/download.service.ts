@@ -110,7 +110,6 @@ export class DownloadService {
     const { snackBarRef, headers } = this.triggerFileDownloadMessage(
       'common.notifications.file.download.processing'
     );
-    console.log('getting file', path, type, fileName, options);
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
 
     this.restService
@@ -392,7 +391,6 @@ export class DownloadService {
     let path = '';
 
     const chunks: { [key: string]: Blob } = {};
-    console.log(totalChunks);
     for (let i = 0; i < totalChunks; i++) {
       const start = i * CHUNK_SIZE;
       const end = Math.min(start + CHUNK_SIZE, file.size);

@@ -7,6 +7,7 @@ import {
   SurveyModel,
   settings,
   IPanel,
+  DownloadFileEvent,
 } from 'survey-core';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
@@ -25,7 +26,6 @@ import { cloneDeep, difference, get } from 'lodash';
 import { Form } from '../../models/form.model';
 import { marked } from 'marked';
 import { DownloadService } from '../download/download.service';
-import { HttpHeaders } from '@angular/common/http';
 
 let counter = Math.floor(Math.random() * 0xffffff); // Initialize counter with a random value
 
@@ -266,14 +266,31 @@ export class FormBuilderService {
     } else if (survey.generateNewRecordOid) {
       survey.setVariable('record.id', createNewObjectId());
     }
-    survey.onAfterRenderQuestion.add(
-      renderGlobalProperties(this.referenceDataService)
-    );
+    survey.onAfterRenderQuestion.add((_, options) => {
+      renderGlobalProperties(this.referenceDataService);
+      //Add tooltips to questions if exist
+      this.formHelpersService.addQuestionTooltips.bind(this.formHelpersService);
 
-    //Add tooltips to questions if exist
-    survey.onAfterRenderQuestion.add(
-      this.formHelpersService.addQuestionTooltips.bind(this.formHelpersService)
-    );
+      if (options.question.getType() === 'file') {
+        const files = options.question.value;
+        const fileElement = options.htmlElement.querySelector('a');
+        fileElement?.addEventListener('click', (event) => {
+          event.preventDefault();
+          files.forEach((file: any) => {
+            if (
+              file.content &&
+              !(file.content.indexOf('base64') !== -1) &&
+              !file.content.startsWith('http') &&
+              !file.content.startsWith('custom:') &&
+              this.recordId
+            ) {
+              const path = `${this.restService.apiUrl}/download/file/${file.content}/${this.recordId}/${file.name}`;
+              this.downloadService.getFile(path, file.type, file.name);
+            }
+          });
+        });
+      }
+    });
 
     // For each question, if validateOnValueChange is true, we will add a listener to the value change event
     survey.getAllQuestions().forEach((question) => {
@@ -474,8 +491,7 @@ export class FormBuilderService {
     survey.onUploadFiles.add((_, options: any) =>
       this.onUploadFiles(temporaryFilesStorage, options)
     );
-    survey.onDownloadFile.add((_, options: any) => {
-      console.log('triggering', _, options);
+    survey.onDownloadFile.add((_, options: DownloadFileEvent) => {
       this.onDownloadFile(options);
     });
     survey.onCurrentPageChanged.add((survey: SurveyModel) => {
@@ -538,8 +554,7 @@ export class FormBuilderService {
    *
    * @param options Options regarding the download
    */
-  private onDownloadFile(options: any): void {
-    console.log('download file', options, this.recordId);
+  private onDownloadFile(options: DownloadFileEvent): void {
     if (
       options.content.indexOf('base64') !== -1 ||
       options.content.startsWith('http')
@@ -569,60 +584,7 @@ export class FormBuilderService {
           options.callback('error', error);
         });
     } else if (this.recordId) {
-      /**
-       * Only gets here if: editing record (we need to download the file to be available)
-       * OR saving a new record with files (because when we edit the file.content after the uploadFile
-       * mutation the survey.onDownloadFile() event is triggered, but we don't need to download the file
-       *  in this case and the undefined this.recordId prevents this unnecessary call)
-       */
-      const path = `download/file/${options.content}/${this.recordId}/${options.name}`;
-      this.restService
-        .get(path, {
-          ...options,
-          responseType: 'blob',
-          headers: new HttpHeaders({
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            Accept: 'application/json',
-          }),
-        })
-        .subscribe({
-          next: (res) => {
-            const file = new File([res], options.fileValue.name, {
-              type: options.fileValue.type,
-            });
-            const reader = new FileReader();
-            reader.onload = (e) =>
-              options.callback('success', e.target?.result);
-            reader.readAsDataURL(file);
-          },
-          error: (e) => {
-            console.error(e);
-          },
-        });
-
-      // const xhr = new XMLHttpRequest();
-      // xhr.open(
-      //   'GET',
-      //   `${this.restService.apiUrl}/download/file/${options.content}/${this.recordId}/${options.name}`
-      // );
-      // xhr.setRequestHeader(
-      //   'Authorization',
-      //   `Bearer ${localStorage.getItem('idtoken')}`
-      // );
-      // xhr.onloadstart = () => {
-      //   xhr.responseType = 'blob';
-      // };
-      // xhr.onload = () => {
-      //   const file = new File([xhr.response], options.fileValue.name, {
-      //     type: options.fileValue.type,
-      //   });
-      //   const reader = new FileReader();
-      //   reader.onload = (e) => {
-      //     options.callback('success', e.target?.result);
-      //   };
-      //   reader.readAsDataURL(file);
-      // };
-      // xhr.send();
+      options.callback('success', '');
     }
   }
 
