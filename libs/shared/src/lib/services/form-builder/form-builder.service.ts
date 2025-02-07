@@ -24,6 +24,8 @@ import { FormHelpersService } from '../form-helper/form-helper.service';
 import { cloneDeep, difference, get } from 'lodash';
 import { Form } from '../../models/form.model';
 import { marked } from 'marked';
+import { DownloadService } from '../download/download.service';
+import { HttpHeaders } from '@angular/common/http';
 
 let counter = Math.floor(Math.random() * 0xffffff); // Initialize counter with a random value
 
@@ -203,6 +205,7 @@ export class FormBuilderService {
    * @param snackBar Service used to show a snackbar.
    * @param restService This is the service that is used to make http requests.
    * @param formHelpersService Shared form helper service.
+   * @param downloadService Shared download service
    */
   constructor(
     private referenceDataService: ReferenceDataService,
@@ -210,7 +213,8 @@ export class FormBuilderService {
     private apollo: Apollo,
     private snackBar: SnackbarService,
     private restService: RestService,
-    private formHelpersService: FormHelpersService
+    private formHelpersService: FormHelpersService,
+    private downloadService: DownloadService
   ) {}
 
   /**
@@ -470,9 +474,10 @@ export class FormBuilderService {
     survey.onUploadFiles.add((_, options: any) =>
       this.onUploadFiles(temporaryFilesStorage, options)
     );
-    survey.onDownloadFile.add((_, options: any) =>
-      this.onDownloadFile(options)
-    );
+    survey.onDownloadFile.add((_, options: any) => {
+      console.log('triggering', _, options);
+      this.onDownloadFile(options);
+    });
     survey.onCurrentPageChanged.add((survey: SurveyModel) => {
       if (survey.currentPageNo !== selectedPageIndex.getValue()) {
         selectedPageIndex.next(survey.currentPageNo);
@@ -534,6 +539,7 @@ export class FormBuilderService {
    * @param options Options regarding the download
    */
   private onDownloadFile(options: any): void {
+    console.log('download file', options, this.recordId);
     if (
       options.content.indexOf('base64') !== -1 ||
       options.content.startsWith('http')
@@ -569,29 +575,54 @@ export class FormBuilderService {
        * mutation the survey.onDownloadFile() event is triggered, but we don't need to download the file
        *  in this case and the undefined this.recordId prevents this unnecessary call)
        */
-      const xhr = new XMLHttpRequest();
-      xhr.open(
-        'GET',
-        `${this.restService.apiUrl}/download/file/${options.content}/${this.recordId}/${options.name}`
-      );
-      xhr.setRequestHeader(
-        'Authorization',
-        `Bearer ${localStorage.getItem('idtoken')}`
-      );
-      xhr.onloadstart = () => {
-        xhr.responseType = 'blob';
-      };
-      xhr.onload = () => {
-        const file = new File([xhr.response], options.fileValue.name, {
-          type: options.fileValue.type,
+      const path = `download/file/${options.content}/${this.recordId}/${options.name}`;
+      this.restService
+        .get(path, {
+          ...options,
+          responseType: 'blob',
+          headers: new HttpHeaders({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            Accept: 'application/json',
+          }),
+        })
+        .subscribe({
+          next: (res) => {
+            const file = new File([res], options.fileValue.name, {
+              type: options.fileValue.type,
+            });
+            const reader = new FileReader();
+            reader.onload = (e) =>
+              options.callback('success', e.target?.result);
+            reader.readAsDataURL(file);
+          },
+          error: (e) => {
+            console.error(e);
+          },
         });
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          options.callback('success', e.target?.result);
-        };
-        reader.readAsDataURL(file);
-      };
-      xhr.send();
+
+      // const xhr = new XMLHttpRequest();
+      // xhr.open(
+      //   'GET',
+      //   `${this.restService.apiUrl}/download/file/${options.content}/${this.recordId}/${options.name}`
+      // );
+      // xhr.setRequestHeader(
+      //   'Authorization',
+      //   `Bearer ${localStorage.getItem('idtoken')}`
+      // );
+      // xhr.onloadstart = () => {
+      //   xhr.responseType = 'blob';
+      // };
+      // xhr.onload = () => {
+      //   const file = new File([xhr.response], options.fileValue.name, {
+      //     type: options.fileValue.type,
+      //   });
+      //   const reader = new FileReader();
+      //   reader.onload = (e) => {
+      //     options.callback('success', e.target?.result);
+      //   };
+      //   reader.readAsDataURL(file);
+      // };
+      // xhr.send();
     }
   }
 

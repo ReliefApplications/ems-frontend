@@ -110,6 +110,7 @@ export class DownloadService {
     const { snackBarRef, headers } = this.triggerFileDownloadMessage(
       'common.notifications.file.download.processing'
     );
+    console.log('getting file', path, type, fileName, options);
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
 
     this.restService
