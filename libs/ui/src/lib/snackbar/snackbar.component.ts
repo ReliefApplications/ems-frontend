@@ -41,7 +41,7 @@ export class SnackbarComponent implements OnDestroy {
   /** The action to perform. */
   action!: string;
   /** Reference to nested component ( if created from one ) */
-  public nestedComponent?: ComponentRef<any>;
+  public nestedComponent!: ComponentRef<any>;
   /** Timeout to remove snackbar */
   private snackbarRemovalTimeoutListener!: NodeJS.Timeout;
   /** Timeout to remove snackbar */
@@ -95,7 +95,7 @@ export class SnackbarComponent implements OnDestroy {
    *
    * @param duration Snackbar display duration
    */
-  private async triggerSnackBar(duration: number | undefined) {
+  public async triggerSnackBar(duration: number | undefined) {
     this.displaySnackBar = true;
     await this.durationResolver(duration ?? 0);
     if (duration) {

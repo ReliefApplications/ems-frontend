@@ -14,6 +14,8 @@ import {
   DownloadFileEvent,
   EventType,
 } from '../analytics/analytics.service';
+import { v4 as uuidv4 } from 'uuid';
+import { Buffer } from 'buffer';
 
 /** Types of file we upload to blob storage */
 export enum BlobType {
@@ -359,10 +361,14 @@ export class DownloadService {
    * @returns The path of the uploaded file
    */
   public async uploadBlob(
-    file: any,
+    file: File,
     type: BlobType,
     entity: string
   ): Promise<string> {
+    const CHUNK_SIZE = 4 * 1024 * 1024; // 4MB chunks
+    const totalChunks = Math.max(Math.ceil(file.size / CHUNK_SIZE), 1);
+    const uploadId = uuidv4();
+
     const snackBarRef = this.snackBar.openComponentSnackBar(
       SnackbarSpinnerComponent,
       {
@@ -382,30 +388,54 @@ export class DownloadService {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
     });
-    const formData = new FormData();
-    formData.append('file', file, file.name);
+    let path = '';
 
-    const data: { path: string } = await firstValueFrom(
-      this.restService.post(uploadPath, formData, { headers })
-    ).catch(() => {
-      snackBarSpinner.instance.message = this.translate.instant(
-        'common.notifications.file.upload.error'
+    const chunks: { [key: string]: Blob } = {};
+    for (let i = 0; i < totalChunks; i++) {
+      const start = i * CHUNK_SIZE;
+      const end = Math.min(start + CHUNK_SIZE, file.size);
+      const chunk = file.slice(start, end);
+      const chunkId = Buffer.from(uuidv4()).toString('base64');
+      chunks[chunkId] = chunk;
+    }
+    const promises: Promise<any>[] = [];
+    Object.entries(chunks).forEach(([chunkId, chunk]) => {
+      const formData = new FormData();
+      formData.append('file', chunk, file.name);
+      formData.append('chunkList', JSON.stringify(Object.keys(chunks)));
+      formData.append('chunkId', chunkId);
+      formData.append('uploadId', uploadId);
+
+      promises.push(
+        firstValueFrom(this.restService.post(uploadPath, formData, { headers }))
+          .then((result) => {
+            if (result) {
+              path = result.path;
+            }
+          })
+          .catch(() => {
+            snackBarSpinner.instance.message = this.translate.instant(
+              'common.notifications.file.upload.error'
+            );
+            snackBarSpinner.instance.loading = false;
+            snackBarSpinner.instance.error = true;
+            setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+            throw new Error(snackBarSpinner.instance.message);
+          })
       );
-      snackBarSpinner.instance.loading = false;
-      snackBarSpinner.instance.error = true;
-      setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
-      throw new Error(snackBarSpinner.instance.message);
     });
 
-    const { path } = data ?? {};
+    await Promise.all(promises);
+
     if (path) {
       snackBarSpinner.instance.message = this.translate.instant(
         'common.notifications.file.upload.ready'
       );
       snackBarSpinner.instance.loading = false;
-
-      setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
+    } else {
+      throw new Error('');
     }
+    setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
 
     return path;
   }
