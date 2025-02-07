@@ -13,17 +13,6 @@
           [surveyNext]="surveyNext || undefined"
         ></shared-form-actions>
       </div>
-      <ui-tabs
-        [selectedIndex]="(selectedPageIndex$ | async)!"
-        (selectedIndexChange)="onShowPage($event)"
-        *ngIf="!survey?.hidePagesTab"
-      >
-        <ui-tab *ngFor="let page of survey?.visiblePages ?? []">
-          <ng-container ngProjectAs="label">{{
-            page.title ? page.title : page.name
-          }}</ng-container>
-        </ui-tab>
-      </ui-tabs>
       <div class="versions-info" *ngIf="data.compareTo">
         <div class="version-info">
           <div>{{ 'components.record.history.version.old' | translate }}</div>
@@ -46,10 +35,17 @@
         </div>
       </ng-container>
       <div
-        class="grow"
+        class="grow flex"
         [ngClass]="{ 'max-w-[50%]': surveyNext, 'max-w-full': !surveyNext }"
       >
-        <survey [model]="survey"></survey>
+        <shared-form-pages-layout
+          *ngIf="!survey?.hidePagesTab"
+          class="max-h-[calc(100vh-175px)] sticky top-0"
+          (showPage)="onShowPage($event)"
+          [pages]="survey ? survey.visiblePages : []"
+          [selectedPageIndex]="(selectedPageIndex$ | async) ?? 0"
+        ></shared-form-pages-layout>
+        <survey [model]="survey" class="flex-1"></survey>
       </div>
     </div>
     <div *ngIf="loading" class="h-full w-full flex">
