@@ -16,32 +16,37 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () =>
-          import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
-        canActivate: [AccessGuard],
-      },
-      {
-        path: 'applications',
         children: [
           {
-            path: ':id',
+            path: '',
             loadChildren: () =>
-              import('./application/application.module').then(
-                (m) => m.ApplicationModule
+              import('./dashboard/dashboard.module').then(
+                (m) => m.DashboardModule
               ),
           },
-        ],
-        canActivate: [AccessGuard],
-      },
-      {
-        path: 'app-preview',
-        children: [
           {
-            path: ':id',
-            loadChildren: () =>
-              import('./app-preview/app-preview.module').then(
-                (m) => m.AppPreviewModule
-              ),
+            path: 'applications',
+            children: [
+              {
+                path: ':id',
+                loadChildren: () =>
+                  import('./application/application.module').then(
+                    (m) => m.ApplicationModule
+                  ),
+              },
+            ],
+          },
+          {
+            path: 'app-preview',
+            children: [
+              {
+                path: ':id',
+                loadChildren: () =>
+                  import('./app-preview/app-preview.module').then(
+                    (m) => m.AppPreviewModule
+                  ),
+              },
+            ],
           },
         ],
         canActivate: [AccessGuard],

@@ -38,6 +38,6 @@ export const environment: Environment = {
   user: {
     attributes: ['country', 'region', 'location', 'department'],
   },
-  admin0Url: 'https://ems2-dev.who.int/app-builder/admin0.json',
+  admin0Url: 'https://hems-dev.who.int/app-builder/admin0.json',
   csApiUrl: 'https://hems-dev.who.int/csapi/api',
 };
