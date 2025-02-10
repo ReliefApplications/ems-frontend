@@ -805,11 +805,11 @@ export class SelectDistributionComponent
     const filters = filter.get('filters') as FormArray;
     filters.clear();
 
-    const cs_filter = form
+    const csFilter = form
       ?.get('commonServiceFilter')
       ?.get('filter') as FormGroup;
-    const cs_filters = cs_filter.get('filters') as FormArray;
-    cs_filters.clear();
+    const csFilters = csFilter.get('filters') as FormArray;
+    csFilters.clear();
 
     form?.get('resource')?.setValue('');
 

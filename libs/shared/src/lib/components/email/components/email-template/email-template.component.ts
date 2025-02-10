@@ -56,70 +56,42 @@ export class EmailTemplateComponent
     emails: string[];
     records: any[];
   };
-
   /** records of selected Dataset*/
   public data!: any[];
-
   /** List of data items. */
   public dataList!: any[];
-
   /** Fields selected in dataset step for display */
   public selectedFields: any[] = [];
-
-  /** List of emails. */
-  public emails: string[] = [];
-
   /** Selected resource. */
   public resource!: any;
-
   /** Selected value. */
   public selectedValue!: string;
-
-  /** Cache for filter data. */
-  public cacheFilterData!: string;
-
   /** Selected dataset. */
   public selectedDataset: any | undefined = '';
-
-  /** Emails in the data set. */
-  public datasetEmails!: string[];
-
   /** Fields in the data set. */
   public datasetFields: FieldStore[] = [];
-
   /** Form group for filter query. */
   public filterQuery: FormGroup | any | undefined;
-
   /** Selected emails. */
   public selectedEmails: string[] | any = [];
-
   /** Filter operators. */
   public filterOperators = FILTER_OPERATORS;
-
   /** Operators for filtering. */
   public operators: { [key: number]: { value: string; label: string }[] } = {};
-
   /** Form array for filter fields. */
   public filterFields: FormArray | any = new FormArray([]);
-
   /** Form group for datasets. */
   public datasetsForm: FormGroup | any = this.emailService.datasetsForm;
-
   /** Flag to control dropdown visibility. */
   public isDropdownVisible = false;
-
   /** List of data sets. */
   public datasets: any;
-
   /** Flag to switch between date picker and text expression. */
   public useExpression = false;
-
   /** Selected field. */
   public selectField = '';
-
   /** Error message for email validation. */
   public emailValidationError = '';
-
   /** It is for previously selected Dataset*/
   public prevDataset!: any | undefined;
   /** Show preview for select with filter option  */
@@ -193,11 +165,11 @@ export class EmailTemplateComponent
   /** Actual referenceFields common service data  */
   public commonServiceFields: any = [];
   /** Expand for "To" list items. */
-  isExpandedPreview = false;
+  public isExpandedPreview = false;
   /** Expand for "To" list items. */
-  isPreviewEmail = true;
+  public isPreviewEmail = true;
   /** DL preview emails  */
-  previewDLEmails: any = [];
+  public previewEmails: any = [];
   /** accordion items */
   public accordionItems = [
     RecipientsType.manual,
@@ -205,13 +177,13 @@ export class EmailTemplateComponent
     RecipientsType.commonServices,
   ];
   /** accordion expandedIndex */
-  expandedIndex = 0;
+  public expandedIndex = 0;
   /** Form group for Common service filter query. */
   public dlCommonQuery!: FormGroup | any;
   /** Common service Query filter Preview HTML */
   public previewCommonHTML: any = '';
-  /** DL preview emails FOR CS  */
-  previewCS_DLEmails: any = [];
+  /** DL preview emails from Common Services  */
+  public previewCsEmails: any = [];
 
   /**
    * Composite filter group.
@@ -268,7 +240,7 @@ export class EmailTemplateComponent
     this.distributionList.controls.resource.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: any) => {
-        this.previewDLEmails = [];
+        this.previewEmails = [];
         if (
           value !== undefined &&
           value !== null &&
@@ -547,7 +519,7 @@ export class EmailTemplateComponent
         (this.activeSegmentIndex === 3 && event === 1)
       ) {
         if (isExpanded) {
-          this.previewDLEmails = [];
+          this.previewEmails = [];
         }
         fromHTML ? this.getCommonServiceDataSet() : '';
       }
@@ -623,16 +595,16 @@ export class EmailTemplateComponent
               }
               await this.checkFilter();
               if (this.type === 'to') {
-                this.previewDLEmails = this.emailService.filterToEmails;
+                this.previewEmails = this.emailService.filterToEmails;
               }
               if (this.type === 'cc') {
-                this.previewDLEmails = this.emailService.filterCCEmails;
+                this.previewEmails = this.emailService.filterCCEmails;
               }
               if (this.type === 'bcc') {
-                this.previewDLEmails = this.emailService.filterBCCEmails;
+                this.previewEmails = this.emailService.filterBCCEmails;
               }
               this.isPreviewEmail =
-                this.previewDLEmails?.length > 0 ? true : false;
+                this.previewEmails?.length > 0 ? true : false;
               this.previewHTML = window.atob(response.tableHtml);
               if (this.tblPreview?.nativeElement) {
                 setTimeout(() => {
@@ -945,10 +917,6 @@ export class EmailTemplateComponent
       this.dataList = dataList;
       this.resource = resource;
       this.dataset = datasetResponse;
-      this.datasetEmails = datasetResponse?.records
-        ?.map((record: { email: string }) => record.email)
-        ?.filter(Boolean)
-        ?.flat();
       this.prevDataset = this.selectedDataset;
       this.emailService.setSelectedDataSet(dataset);
       this.loading = false;
@@ -992,7 +960,7 @@ export class EmailTemplateComponent
     if (this.activeSegmentIndex === 1) {
       const formArray = this.selectedEmails as FormArray;
       formArray.clear();
-      this.previewDLEmails = [];
+      this.previewEmails = [];
       this.isPreviewEmail = true;
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
@@ -1002,7 +970,7 @@ export class EmailTemplateComponent
       this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
     }
     if (this.activeSegmentIndex === 2) {
-      this.previewDLEmails = [];
+      this.previewEmails = [];
       this.isPreviewEmail = true;
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
@@ -1014,10 +982,10 @@ export class EmailTemplateComponent
     if (this.activeSegmentIndex === 3) {
       const formArray = this.selectedEmails as FormArray;
       formArray.clear();
-      this.previewDLEmails = [];
-      this.previewCS_DLEmails = [];
+      this.previewEmails = [];
+      this.previewCsEmails = [];
       this.isPreviewEmail = true;
-      //Reseting Add manually opyion Data
+      // Resetting Add manually option Data
       this.dlQuery?.get('name')?.setValue('');
       this.resource = null;
       this.resetFilters(this.dlQuery);
@@ -1197,9 +1165,8 @@ export class EmailTemplateComponent
       .post('/notification/preview-common-services-users', commonServiceData)
       .subscribe(
         async (response: any) => {
-          this.previewCS_DLEmails = response;
-          this.isPreviewEmail =
-            this.previewCS_DLEmails?.length > 0 ? true : false;
+          this.previewCsEmails = response;
+          this.isPreviewEmail = this.previewCsEmails?.length > 0 ? true : false;
           this.loading = false;
         },
         (error: string) => {
@@ -1211,7 +1178,6 @@ export class EmailTemplateComponent
 
   /**
    * Set the common service fields.
-   *
    */
   async setCommonServiceFields() {
     if (this.emailService?.userTableFields?.length === 0) {
@@ -1256,9 +1222,9 @@ export class EmailTemplateComponent
   onExpand(index: any) {
     this.expandedIndex = index;
 
-    //intiating onTabselection method call for common service filter in use combination
+    // Initiating onTabSelection method call for common service filter in use combination
     if (this.expandedIndex === 2 || this.expandedIndex === 1) {
-      this.previewDLEmails = [];
+      this.previewEmails = [];
     }
   }
 }
