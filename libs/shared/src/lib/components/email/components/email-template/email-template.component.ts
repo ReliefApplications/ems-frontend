@@ -16,7 +16,6 @@ import {
   FormGroup,
 } from '@angular/forms';
 import { EmailService } from '../../email.service';
-import { FILTER_OPERATORS } from '../../filter/filter.const';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { emailRegex } from '../../constant';
@@ -51,49 +50,32 @@ export class EmailTemplateComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
+  /** List of emails for back loading. */
+  @Input() distributionList: FormGroup | any;
+  /** Specifies if To, CC or BCC */
+  @Input() type: string | any;
+  /** Event Emitted for no email */
+  @Output() noEmail = new EventEmitter();
+  /** Event emitter for list change. */
+  @Output() listChange = new EventEmitter<void>();
+  /** Reference to tblPreview element. */
+  @ViewChild('tblPreview', { static: false })
+  tblPreview!: ElementRef<any>;
   /** Data set containing emails and records. */
   public dataset?: {
     emails: string[];
     records: any[];
   };
-  /** records of selected Dataset*/
-  public data!: any[];
-  /** List of data items. */
-  public dataList!: any[];
   /** Fields selected in dataset step for display */
   public selectedFields: any[] = [];
   /** Selected resource. */
   public resource!: any;
-  /** Selected value. */
-  public selectedValue!: string;
-  /** Selected dataset. */
-  public selectedDataset: any | undefined = '';
   /** Fields in the data set. */
   public datasetFields: FieldStore[] = [];
-  /** Form group for filter query. */
-  public filterQuery: FormGroup | any | undefined;
   /** Selected emails. */
   public selectedEmails: string[] | any = [];
-  /** Filter operators. */
-  public filterOperators = FILTER_OPERATORS;
-  /** Operators for filtering. */
-  public operators: { [key: number]: { value: string; label: string }[] } = {};
-  /** Form array for filter fields. */
-  public filterFields: FormArray | any = new FormArray([]);
-  /** Form group for datasets. */
-  public datasetsForm: FormGroup | any = this.emailService.datasetsForm;
-  /** Flag to control dropdown visibility. */
-  public isDropdownVisible = false;
-  /** List of data sets. */
-  public datasets: any;
-  /** Flag to switch between date picker and text expression. */
-  public useExpression = false;
-  /** Selected field. */
-  public selectField = '';
   /** Error message for email validation. */
   public emailValidationError = '';
-  /** It is for previously selected Dataset*/
-  public prevDataset!: any | undefined;
   /** Show preview for select with filter option  */
   public showPreview = false;
   /** Array of fields */
@@ -112,10 +94,6 @@ export class EmailTemplateComponent
   public segmentForm!: FormGroup;
   /** Index of active segment. */
   public activeSegmentIndex = 0;
-  /** List of selected item indexes. */
-  public selectedItemIndexes: number[] | any[] = [];
-  /** Flag to indicate if all items are selected. */
-  public isAllSelected = false;
   /** Loading status. */
   public loading = false;
   /** Query filter Preview HTML */
@@ -131,33 +109,8 @@ export class EmailTemplateComponent
     RecipientsType.combination,
     RecipientsType.commonServices,
   ];
-  /** Time units for filtering. */
-  public timeUnits = [
-    { value: 'hours', label: 'Hours' },
-    { value: 'days', label: 'Days' },
-    { value: 'weeks', label: 'Weeks' },
-    { value: 'months', label: 'Months' },
-    { value: 'years', label: 'Years' },
-  ];
-  /** List of emails for back loading. */
-  @Input() distributionList: FormGroup | any;
-  /** Specifies if To, CC or BCC */
-  @Input() type: string | any;
-  /** Existing ID. */
-  @Input() existingId = '';
-  /** Event Emitted for no email */
-  @Output() noEmail = new EventEmitter();
-  /** Event emitter for list change. */
-  @Output() listChange = new EventEmitter<void>();
-  /** Reference to tblPreview element. */
-  @ViewChild('tblPreview', { static: false })
-  tblPreview!: ElementRef<any>;
   /** Flag to show the Child fields limit warning. */
   public showFieldsWarning = false;
-  /** Flag for data is Resource or Reference data */
-  public isReferenceData = false;
-  /** List of data types */
-  public dataTypeList: any = ['Resource', 'Reference Data'];
   /** Show NonEmail Fields Alert */
   public nonEmailFieldsAlert = false;
   /** Actual resourceFields data  */
@@ -180,13 +133,11 @@ export class EmailTemplateComponent
   public expandedIndex = 0;
   /** Form group for Common service filter query. */
   public dlCommonQuery!: FormGroup | any;
-  /** Common service Query filter Preview HTML */
-  public previewCommonHTML: any = '';
   /** DL preview emails from Common Services  */
   public previewCsEmails: any = [];
 
   /**
-   * Composite filter group.
+   * Email template to create distribution list.
    *
    * @param fb Angular form builder
    * @param emailService helper functions
@@ -438,7 +389,6 @@ export class EmailTemplateComponent
       this.distributionList.controls.query.value.fields = [];
       this.distributionList.controls.query.get('fields').value = [];
       this.selectedFields = [];
-      this.filterFields = [];
     }
     this.showDatasetLimitWarning = false;
     this.type === 'to' ? (this.emailService.isToValid = false) : '';
@@ -466,7 +416,6 @@ export class EmailTemplateComponent
             .get('name')
             .setValue(queryTemp.queryName);
           this.availableFields = newData;
-          this.filterFields = cloneDeep(newData);
           this.loading = false;
           this.resourcePopulated = true;
           this.resource = data.resource;
@@ -890,13 +839,9 @@ export class EmailTemplateComponent
    */
   bindDataSetDetails(dataset: any): void {
     this.noEmail.emit(false);
-    this.selectedItemIndexes = [];
-    this.isAllSelected = false;
-    this.dataList = [];
     this.resource = [];
     this.datasetFields = [];
     if (dataset === undefined) {
-      this.dataList = [];
       this.resource = [];
       this.datasetFields = [];
       return;
@@ -907,17 +852,14 @@ export class EmailTemplateComponent
       Object.keys(dataset?.cacheData).length &&
       dataset?.cacheData?.datasetResponse
     ) {
-      this.dataList = [];
       this.resource = [];
       this.datasetFields = [];
       this.selectedFields = [];
       this.loading = true;
 
-      const { dataList, resource, datasetResponse } = dataset.cacheData;
-      this.dataList = dataList;
+      const { resource, datasetResponse } = dataset.cacheData;
       this.resource = resource;
       this.dataset = datasetResponse;
-      this.prevDataset = this.selectedDataset;
       this.emailService.setSelectedDataSet(dataset);
       this.loading = false;
     }
