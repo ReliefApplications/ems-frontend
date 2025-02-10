@@ -200,7 +200,7 @@
           </ng-container>
           <!-- Common services filtering -->
           <ng-container *ngIf="item === 'commonServices'">
-            <div class="overflow-hidden mt-2">
+            <div class="overflow-hidden mt-2" [formGroup]="distributionList">
               <ng-container
                 *ngTemplateOutlet="commonServicePreviewTmpl"
               ></ng-container>
@@ -578,7 +578,7 @@
                 </ul>
               </div>
             </ng-container>
-            <ng-container *ngIf="previewCsEmails?.length === 0">
+            <ng-container *ngIf="!isPreviewEmail">
               <ui-alert class="mb-4" variant="warning">
                 {{ 'components.distributionLists.warning.noData' | translate }}
               </ui-alert>

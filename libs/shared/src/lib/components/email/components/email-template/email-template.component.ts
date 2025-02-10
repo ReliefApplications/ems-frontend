@@ -430,9 +430,8 @@ export class EmailTemplateComponent
    *
    * @param event The tab selected
    * @param fromHTML If state is in edit mode then false else true if new notification (means Event from UI)
-   * @param isExpanded method is calling from expand method
    */
-  onTabSelect(event: any, fromHTML: boolean, isExpanded?: boolean): void {
+  onTabSelect(event: any, fromHTML: boolean): void {
     const newIndex = event;
     const previewTabIndex = 2;
     const isValid =
@@ -450,7 +449,7 @@ export class EmailTemplateComponent
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
       }
-      this.currentTabIndex === newIndex ? this.getDataSet('preview') : '';
+      this.currentTabIndex !== newIndex ? this.getDataSet('preview') : '';
       this.showDatasetLimitWarning = fromHTML
         ? false
         : this.showDatasetLimitWarning;
@@ -464,12 +463,9 @@ export class EmailTemplateComponent
     }
     if (this.currentTabIndex !== event) {
       if (
-        this.expandedIndex === 2 ||
+        (this.expandedIndex === 2 && event === 1) ||
         (this.activeSegmentIndex === 3 && event === 1)
       ) {
-        if (isExpanded) {
-          this.previewEmails = [];
-        }
         fromHTML ? this.getCommonServiceDataSet() : '';
       }
     }
@@ -523,7 +519,10 @@ export class EmailTemplateComponent
           },
         };
 
+        //reset the previous Data
         this.previewHTML = '';
+        this.previewEmails = [];
+        this.isPreviewEmail = true;
         //When we click preview button at that time allow swich to preview tab directly (If not cliked on other tabs)
         isPreview ? this.onTabSelect(2, false) : '';
         this.restService
@@ -904,12 +903,14 @@ export class EmailTemplateComponent
       formArray.clear();
       this.previewEmails = [];
       this.isPreviewEmail = true;
+      this.expandedIndex = 0;
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
         this.emailService.disableSaveAsDraft.next(false);
       }
 
       this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
+      this.currentTabIndex = 0;
     }
     if (this.activeSegmentIndex === 2) {
       this.previewEmails = [];
@@ -932,7 +933,7 @@ export class EmailTemplateComponent
       this.resource = null;
       this.resetFilters(this.dlQuery);
       this.distributionList.get('resource').setValue('');
-
+      this.currentTabIndex = 0;
       this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
     }
   }
@@ -1101,6 +1102,9 @@ export class EmailTemplateComponent
       cloneDeep(this.dlCommonQuery?.getRawValue()?.filter)
     );
     this.loading = true;
+    //Reset previous data
+    this.previewCsEmails = [];
+    this.isPreviewEmail = true;
     //When we click preview button at that time allow swich to preview tab directly (If not cliked on other tabs)
     isPreview ? this.onTabSelect(1, false) : '';
     this.restService
@@ -1162,11 +1166,15 @@ export class EmailTemplateComponent
    * @param index Selected Panel index
    */
   onExpand(index: any) {
-    this.expandedIndex = index;
+    if (this.expandedIndex !== index) {
+      this.expandedIndex = index;
 
-    // Initiating onTabSelection method call for common service filter in use combination
-    if (this.expandedIndex === 2 || this.expandedIndex === 1) {
-      this.previewEmails = [];
+      // Initiating onTabSelection method call for common service filter in use combination
+      if (this.expandedIndex === 2 || this.expandedIndex === 1) {
+        this.previewEmails = [];
+        this.previewCsEmails = [];
+        this.currentTabIndex = 0;
+      }
     }
   }
 }
