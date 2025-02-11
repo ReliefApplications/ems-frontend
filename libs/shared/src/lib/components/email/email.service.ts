@@ -415,7 +415,7 @@ export class EmailService {
               query.emailDistributionList.bcc.commonServiceFilter.filter
             );
 
-          //If no Fields selected then set as []
+          // If no Fields selected then set as []
           if (
             query.emailDistributionList?.to?.commonServiceFilter?.filters?.filter(
               (x: any) => x?.field != null

@@ -296,7 +296,7 @@ export class PreviewComponent
         );
     }
 
-    //If no Fields selected then set as []
+    // If no Fields selected then set as []
     if (
       objData.emailDistributionList?.to?.commonServiceFilter?.filters?.filter(
         (x: any) => x?.field != null
@@ -444,7 +444,7 @@ export class PreviewComponent
           );
       }
 
-      //If no Fields selected then set as []
+      // If no Fields selected then set as []
       if (
         objData.emailDistributionList?.to?.commonServiceFilter?.filters?.filter(
           (x: any) => x?.field != null
