@@ -1,3 +1,10 @@
+# [2.17.0-beta.23](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.22...v2.17.0-beta.23) (2025-02-10)
+
+
+### Bug Fixes
+
+* improve grid.service to populate choices related to resource fields ([#2757](https://github.com/ReliefApplications/ems-frontend/issues/2757)) ([a44220f](https://github.com/ReliefApplications/ems-frontend/commit/a44220f76cf384fe8cdbfe601a8cde6d54223f7c)), closes [AB#109869](https://github.com/AB/issues/109869)
+
 # [2.17.0-beta.22](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-beta.21...v2.17.0-beta.22) (2025-02-06)
 
 
