@@ -252,43 +252,6 @@ export class EmailService {
   }
 
   /**
-   * Checks if to in email distribution list is valid
-   *
-   * @returns true if to in email distribution list is valid
-   */
-  async checkToValid() {
-    if (
-      (this.toDLHasFilter &&
-        (this.emailDistributionList?.to?.query?.resource ||
-          this.datasetsForm?.getRawValue()?.emailDistributionList?.to
-            ?.resource)) ||
-      this.datasetsForm
-        ?.getRawValue()
-        ?.emailDistributionList?.to?.commonServiceFilter?.filter?.filters?.filter(
-          (x: any) => x?.field && x?.value
-        )?.length > 0
-    ) {
-      const query = {
-        emailDistributionList: cloneDeep(this.emailDistributionList),
-      };
-      await this.http
-        .post(
-          `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
-          query
-        )
-        .subscribe((response: any) => {
-          return response?.to.length > 0;
-        });
-    } else {
-      return (
-        this.datasetsForm.getRawValue().emailDistributionList?.to?.inputEmails
-          ?.length > 0
-      );
-    }
-    return false;
-  }
-
-  /**
    * Subscribes user to email notification
    *
    * @param id The email notification id
@@ -1838,14 +1801,9 @@ export class EmailService {
     const isDLNameExists = this.distributionListName?.trim()?.length > 0;
     const isDlDuplicateNm = this.isDLNameDuplicate;
     let isExistsToEmail = false;
-    // if (!isExistsToEmail) {
+
     await this.isToValidCheck();
     isExistsToEmail = this.isToValid;
-    // }
-    //Check To is valid or not (Including filter Emails or Manually added emails)
-    // const valid = await this.checkToValid();
-
-    // Check Common service Validation
 
     if (isDLNameExists && !isDlDuplicateNm && isExistsToEmail) {
       this.disableSaveAndProceed.next(false);
@@ -1859,17 +1817,16 @@ export class EmailService {
   }
 
   /**
-   * checking that To tab is valid or not
-   *
+   * Check if 'to' is valid. One of these conditions must match:
+   * - at least one email added manually
+   * - at least one email coming from resource
+   * - reference data filters are set
    */
   async isToValidCheck() {
     if (
       this.datasetsForm.getRawValue().emailDistributionList?.to?.inputEmails
         .length > 0 ||
-      (this.datasetsForm.getRawValue().emailDistributionList?.to?.resource !==
-        '' &&
-        this.datasetsForm.getRawValue().emailDistributionList?.to?.resource !==
-          null &&
+      (this.datasetsForm.getRawValue().emailDistributionList?.to?.resource &&
         this.filterToEmails?.length >= 0) ||
       this.datasetsForm
         ?.getRawValue()
@@ -1879,7 +1836,7 @@ export class EmailService {
     ) {
       this.isToValid = true;
     } else {
-      this.isToValid = await this.checkToValid();
+      this.isToValid = false;
     }
   }
 

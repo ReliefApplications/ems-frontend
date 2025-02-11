@@ -98,7 +98,7 @@
   <!-- Use the template with *ngTemplateOutlet and context -->
   <ng-container
     *ngTemplateOutlet="
-      emailChipListTemplate;
+      emailChipListTmpl;
       context: {
         $implicit: selectedEmails,
         activeSegmentIndex: activeSegmentIndex,
@@ -153,7 +153,7 @@
               <ng-container
                 class="mb-2"
                 *ngTemplateOutlet="
-                  emailChipListTemplate;
+                  emailChipListTmpl;
                   context: {
                     $implicit: selectedEmails,
                     activeSegmentIndex: activeSegmentIndex,
@@ -220,7 +220,7 @@
 
 <!-- Email chip list template -->
 <ng-template
-  #emailChipListTemplate
+  #emailChipListTmpl
   let-selectedEmails="selectedEmails"
   let-activeSegmentIndex="activeSegmentIndex"
   let-isCombination="isCombination"
