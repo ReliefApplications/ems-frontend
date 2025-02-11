@@ -1507,8 +1507,13 @@
           "stateToQuestion": "******"
         },
         "mapQuestionState": "******",
+        "noMappingsTooltip": "******",
         "questionStateTab": {
           "label": "******",
+          "tooltip": "******"
+        },
+        "updateRecord": {
+          "title": "******",
           "tooltip": "******"
         }
       },

@@ -444,6 +444,10 @@ export class FormBuilderService {
           question.currentIndex = question.visiblePanelCount - 1;
         }
       });
+      survey.onFocusInQuestion.add((survey, e) => {
+        survey.setVariable('__FOCUSED__.name', e.question.name);
+        survey.setVariable('__FOCUSED__.title', e.question.title);
+      });
     });
     survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
     survey.onUploadFiles.add((_, options: any) =>

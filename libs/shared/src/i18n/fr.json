@@ -1519,9 +1519,14 @@
           "stateToQuestion": "Les modifications apportées à l'état seront répercutées sur la question"
         },
         "mapQuestionState": "Mappez la valeur de la question à l'état",
+        "noMappingsTooltip": "Aucun mappage n'est configuré",
         "questionStateTab": {
           "label": "Mappage d'état",
           "tooltip": "Configurez le mappage d'état, permettant au widget d'interagir avec les états du tableau de bord"
+        },
+        "updateRecord": {
+          "title": "Mettre à jour l'enregistrement",
+          "tooltip": "Sélectionnez un état du tableau de bord. Lorsque l'état passe à un identifiant d'enregistrement valide, le formulaire sera rempli avec les données de l'enregistrement."
         }
       },
       "grid": {

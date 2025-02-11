@@ -4,6 +4,8 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { GET_FORMS } from '../graphql/queries';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { Form, FormsQueryResponse } from '../../../../models/form.model';
+import { DashboardService } from '../../../../services/dashboard/dashboard.service';
+import { map } from 'rxjs';
 
 /** Number of items per page */
 const ITEMS_PER_PAGE = 10;
@@ -23,13 +25,26 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
   @Input() form: Form | null = null;
   /** Forms query */
   public formsQuery!: QueryRef<FormsQueryResponse>;
+  /** Dashboard states options */
+  public dashboardStates = this.dashboardService.states$.pipe(
+    map((states) =>
+      states.map((state) => ({
+        label: state.name,
+        value: state.id,
+      }))
+    )
+  );
 
   /**
    * Main tab of form widget settings modal.
    *
    * @param apollo Apollo service
+   * @param dashboardService Dashboard service
    */
-  constructor(private apollo: Apollo) {
+  constructor(
+    private apollo: Apollo,
+    private dashboardService: DashboardService
+  ) {
     super();
   }
 

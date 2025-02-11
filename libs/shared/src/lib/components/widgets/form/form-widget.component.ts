@@ -19,6 +19,7 @@ import {
   CompositeFilterDescriptor,
   FilterDescriptor,
 } from '@progress/kendo-data-query';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
 
 /**
  * Form widget component.
@@ -65,12 +66,14 @@ export class FormWidgetComponent
    * @param snackBar This is the service that allows you to display a snackbar.
    * @param translate This is the service that allows us to translate the text in our application.
    * @param contextService Shared context service
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     private apollo: Apollo,
     protected snackBar: SnackbarService,
     protected translate: TranslateService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private dashboardService: DashboardService
   ) {
     super();
   }
@@ -95,6 +98,30 @@ export class FormWidgetComponent
       );
 
       await Promise.all(promises);
+    }
+
+    // Load record from updateRecord state
+    if (this.settings.updateRecord?.enabled) {
+      const stateID = this.settings.updateRecord.state;
+      this.dashboardService.states$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((states) => {
+          const state = states.find((s) => s.id === stateID);
+          if (state && state.value) {
+            this.apollo
+              .query<RecordQueryResponse>({
+                query: GET_RECORD_BY_ID,
+                variables: {
+                  id: state.value,
+                },
+              })
+              .subscribe(({ data }) => {
+                if (data) {
+                  this.record = data.record;
+                }
+              });
+          }
+        });
     }
 
     this.contextFilters = this.settings.contextFilters

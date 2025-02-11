@@ -1507,9 +1507,14 @@
           "stateToQuestion": "Changes on the state will be reflected on the question"
         },
         "mapQuestionState": "Map question value to state",
+        "noMappingsTooltip": "No mappings configured",
         "questionStateTab": {
           "label": "State mapping",
           "tooltip": "Configure state mapping, allowing the widget to interact with dashboard states"
+        },
+        "updateRecord": {
+          "title": "Update record",
+          "tooltip": "Select a dashboard state. When the state changes to a valid record id, the form will be populated with the record's data."
         }
       },
       "grid": {
