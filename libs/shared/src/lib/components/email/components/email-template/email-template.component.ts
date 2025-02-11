@@ -662,30 +662,6 @@ export class EmailTemplateComponent
 
   /**
    *
-   * Checking Email input is valid or not
-   *
-   * @returns Returns true if email is valid
-   */
-  async isEmailInputValid(): Promise<boolean> {
-    const inputsValid = this.selectedEmails.length > 0;
-    if (this.segmentForm.get('segment')?.value === 'Add Manually') {
-      return inputsValid;
-    } else {
-      const valid = await this.checkFilter();
-      if (this.segmentForm.get('segment')?.value === 'Select With Filter') {
-        return valid;
-      } else {
-        if (this.resource) {
-          return valid && inputsValid;
-        } else {
-          return inputsValid;
-        }
-      }
-    }
-  }
-
-  /**
-   *
    * Checks if distribution filters are emails
    *
    * @returns returns true if filter has email
@@ -745,31 +721,6 @@ export class EmailTemplateComponent
           if (this.type === 'to') {
             this.emailService.filterToEmails =
               response?.to?.length > 0 ? response?.to : [];
-            if (
-              response?.to?.length > 0 &&
-              response?.name?.length > 0 &&
-              !this.emailService.isDLNameDuplicate
-            ) {
-              this.emailService.isToValid = true;
-            } else {
-              // Check if To is use combination
-              if (
-                this.segmentForm.get('segment')?.value === 'Use Combination'
-              ) {
-                if (
-                  this.emailService.emailDistributionList?.to?.inputEmails
-                    ?.length > 0
-                ) {
-                  this.emailService.isToValid = true;
-                }
-              } else {
-                // False if returned emails are not correct
-                this.emailService.isToValid = false;
-              }
-            }
-            if (response?.to?.length === 0) {
-              this.emailService.isToValid = true;
-            }
             this.emailService.validateNextButton();
           } else if (this.type === 'cc' || this.type === 'bcc') {
             this.emailService.validateNextButton();
@@ -796,15 +747,6 @@ export class EmailTemplateComponent
   override async ngOnDestroy(): Promise<void> {
     super.ngOnDestroy();
     this.clearUnusedValues(this.segmentForm.get('segment')?.value);
-    if (this.type === 'to') {
-      const valid = await this.isEmailInputValid();
-      if (valid) {
-        this.emailService.isToValid = true;
-      } else {
-        this.emailService.isToValid = false;
-      }
-    }
-
     this.emailService.setDistributionList();
   }
 
@@ -938,16 +880,7 @@ export class EmailTemplateComponent
   async removeEmailChip(chipIndex: number): Promise<void> {
     this.selectedEmails.removeAt(chipIndex);
     this.listChange.emit();
-    if (
-      this.selectedEmails.length < 1 &&
-      this.segmentForm.get('segment')?.value === 'Add Manually'
-    ) {
-      this.type === 'to' ? (this.emailService.isToValid = false) : '';
-      this.emailService.validateNextButton();
-    } else {
-      this.emailService.isToValidCheck();
-      this.emailService.validateNextButton();
-    }
+    this.emailService.validateNextButton();
   }
 
   /**
@@ -964,51 +897,20 @@ export class EmailTemplateComponent
     );
 
     if (emailRegex.test(element.value) && !emailDuplicate) {
+      // Email is valid, add it
       this.selectedEmails.push(this.formBuilder.control(element.value));
-      if (
-        this.distributionListValid &&
-        (this.segmentForm.get('segment')?.value === 'Add Manually' ||
-          (this.segmentForm.get('segment')?.value === 'Use Combination' &&
-            !this.resource)) &&
-        this.emailService.datasetsForm?.value?.emailDistributionList?.name
-          ?.length > 0 &&
-        !this.emailService.isDLNameDuplicate
-      ) {
-        this.type === 'to' ? (this.emailService.isToValid = true) : '';
-      } else if (
-        this.segmentForm.get('segment')?.value === 'Use Combination' &&
-        this.resource &&
-        this.distributionListValid &&
-        this.emailService.datasetsForm?.value?.emailDistributionList?.name
-          ?.length > 0 &&
-        !this.emailService.isDLNameDuplicate
-      ) {
-        if (
-          this.dlQuery.get('fields')?.value.length > 0 ||
-          (this.dlQuery.get('fields')?.value.length > 0 &&
-            this.dlQuery.get('filter').get('filters').length > 0 &&
-            this.emailService.datasetsForm?.value?.emailDistributionList?.name
-              ?.length > 0)
-        ) {
-          //
-        } else if (this.dlQuery.get('filter').get('filters').length > 0) {
-          this.type === 'to' ? (this.emailService.isToValid = false) : '';
-        }
-      }
-
       element.value = '';
-      this.emailValidationError = '';
       this.listChange.emit();
     } else if (!emailRegex.test(element.value)) {
+      // Not a valid email
       this.snackbar.openSnackBar(
         this.translate.instant('components.customNotifications.errors.email'),
         {
           error: true,
         }
       );
-
-      this.emailValidationError = '';
     } else if (emailDuplicate) {
+      // Email already exists
       this.snackbar.openSnackBar(
         this.translate.instant(
           'components.customNotifications.errors.duplicate'
@@ -1017,9 +919,9 @@ export class EmailTemplateComponent
           error: true,
         }
       );
-
-      this.emailValidationError = '';
     }
+    this.emailValidationError = '';
+    // Reset other email options ( resource & cs ), certainly useless there
     if (this.activeSegmentIndex === 0) {
       this.dlQuery?.get('name')?.setValue('');
       this.resource = null;
