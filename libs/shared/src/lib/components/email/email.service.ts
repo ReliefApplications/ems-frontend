@@ -98,6 +98,8 @@ export class EmailService {
   public disableSaveAsDraft = new BehaviorSubject<boolean>(false);
   /** DISABLE SAVE AND PROCEED BUTTON EMITTER */
   public disableSaveAndProceed = new BehaviorSubject<boolean>(false);
+  /** DISABLE SAVE AND SEND BUTTON EMITTER */
+  public disableSaveAndSend = new BehaviorSubject<boolean>(false);
   /** Control stepper disable status */
   public stepperDisable = new BehaviorSubject<any>('');
   /** Should show existing distribution list */
@@ -412,6 +414,15 @@ export class EmailService {
             this.setCommonServicePayload(
               query.emailDistributionList.bcc.commonServiceFilter.filter
             );
+
+          // If no Fields selected then set as []
+          if (
+            query.emailDistributionList?.to?.commonServiceFilter?.filters?.filter(
+              (x: any) => x?.field != null
+            )?.length === 0
+          ) {
+            query.emailDistributionList.to.commonServiceFilter.filters = [];
+          }
           firstValueFrom(
             this.http.post(
               `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
@@ -1863,7 +1874,7 @@ export class EmailService {
       this.datasetsForm
         ?.getRawValue()
         ?.emailDistributionList?.to?.commonServiceFilter?.filter?.filters?.filter(
-          (x: any) => x?.field && x?.value
+          (x: any) => x?.field || x?.value
         )?.length > 0
     ) {
       this.isToValid = true;

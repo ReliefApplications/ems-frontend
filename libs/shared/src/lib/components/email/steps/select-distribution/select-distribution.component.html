@@ -182,7 +182,6 @@
             {{ 'components.email.distributionList.alert.noEmail' | translate }}
           </ui-alert>
           <shared-email-template
-            [existingId]="this.distributionListId"
             (noEmail)="update($event, 'to')"
             (listChange)="validateDistributionList()"
             [distributionList]="emailDistributionList.get('to')"
@@ -207,7 +206,6 @@
             {{ 'components.email.distributionList.alert.noEmail' | translate }}
           </ui-alert>
           <shared-email-template
-            [existingId]="this.distributionListId"
             (noEmail)="update($event, 'cc')"
             (listChange)="validateDistributionList()"
             [distributionList]="emailDistributionList.get('cc')"
@@ -232,7 +230,6 @@
             {{ 'components.email.distributionList.alert.noEmail' | translate }}
           </ui-alert>
           <shared-email-template
-            [existingId]="distributionListId"
             (noEmail)="update($event, 'bcc')"
             (listChange)="validateDistributionList()"
             [distributionList]="emailDistributionList.get('bcc')"

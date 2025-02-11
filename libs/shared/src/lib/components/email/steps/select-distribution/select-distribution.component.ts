@@ -805,6 +805,12 @@ export class SelectDistributionComponent
     const filters = filter.get('filters') as FormArray;
     filters.clear();
 
+    const csFilter = form
+      ?.get('commonServiceFilter')
+      ?.get('filter') as FormGroup;
+    const csFilters = csFilter.get('filters') as FormArray;
+    csFilters.clear();
+
     form?.get('resource')?.setValue('');
 
     // Enable changes on the form
