@@ -28,6 +28,7 @@ import { FormActionsModule } from '../form-actions/form-actions.module';
 import { DateModule } from '../../pipes/date/date.module';
 import { SpinnerModule, ButtonModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { FormPagesLayoutComponent } from '../form-pages-layout/form-pages-layout.component';
 
 /**
  * Interface that describes the structure of the data that will be shown in the dialog
@@ -58,6 +59,7 @@ interface DialogData {
     ButtonModule,
     SpinnerModule,
     SurveyModule,
+    FormPagesLayoutComponent,
   ],
   selector: 'shared-record-modal',
   templateUrl: './record-modal.component.html',
@@ -184,6 +186,7 @@ export class RecordModalComponent
           this.form?.structure || '',
           this.form?.metadata
         ));
+    this.formBuilderService.recordId = this.record.id;
 
     addCustomFunctions({
       record: this.record,
@@ -192,7 +195,6 @@ export class RecordModalComponent
       form: this.form,
       translateService: this.translate,
     });
-    this.survey.data = this.record.data;
 
     this.survey.mode = 'display';
     // After the survey is created we add common callback to survey events

@@ -92,6 +92,7 @@
           "esri-leaflet-heatmap",
           "esri-leaflet-renderers",
           "jsonpath",
+          "buffer",
           "to-json-schema"
         ]
       },
