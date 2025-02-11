@@ -481,6 +481,11 @@
         "insert": "Type '{' to inject expressions and variables"
       }
     },
+    "trigger": {
+      "few": "Triggers",
+      "none": "No triggers",
+      "one": "Trigger"
+    },
     "true": "True",
     "type": {
       "few": "Types",
@@ -774,6 +779,7 @@
         "recipients": {
           "distributionList": "Use a distribution list",
           "email": "Input a single email address",
+          "emailField": "Group by dataset email field",
           "title": "Recipients",
           "userField": "Group by dataset user field"
         },
@@ -1061,6 +1067,8 @@
       "value": "Value"
     },
     "notifications": {
+      "noRecord": "No record to be redirected",
+      "noRedirect": "Can't redirect. Missing information.",
       "paginator": {
         "ariaLabel": "Select page of notifications"
       },
@@ -1413,7 +1421,42 @@
       },
       "type": {
         "email": "Email",
+        "notification": "Notification",
         "title": "Template type"
+      }
+    },
+    "triggers": {
+      "addTrigger": "Add trigger",
+      "confirmDelete": "Do you confirm the deletion of the trigger {{name}}?",
+      "createTrigger": "New {{type}} Trigger",
+      "cronBased": "Cron Based",
+      "customNotificationRecipientsType": {
+        "channel": "Channel",
+        "distributionList": "Distribution list",
+        "email": "Email",
+        "emailField": "Email field",
+        "userField": "User field"
+      },
+      "editTrigger": "Edit {{type}} Trigger",
+      "noTriggers": "No triggers detected",
+      "notification": "Notification",
+      "onRecordCreation": "On Record Creation",
+      "onRecordUpdate": "On Record Update",
+      "openFilter": "OPEN FILTER",
+      "redirect": {
+        "active": "Add redirection when clicking on notification",
+        "recordIds": "Redirect to record(s) details",
+        "type": "Redirection type",
+        "url": "Redirect to page"
+      },
+      "selectNotificationType": "Please select a notification type first",
+      "tooltip": {
+        "withCronBasedTrigger": "Resource with a cron based trigger",
+        "withOnRecordCreationTrigger": "Resource with a trigger on record creation",
+        "withOnRecordUpdateTrigger": "Resource with a trigger on record update",
+        "withoutCronBasedTrigger": "Resource without any cron based trigger",
+        "withoutOnRecordCreationTrigger": "Resource without any trigger on record creation",
+        "withoutOnRecordUpdateTrigger": "Resource without any trigger on record update"
       }
     },
     "user": {

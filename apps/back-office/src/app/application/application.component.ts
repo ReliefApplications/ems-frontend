@@ -158,6 +158,11 @@ export class ApplicationComponent
                 path: './settings/subscriptions',
                 icon: 'add_to_queue',
               },
+              {
+                name: this.translate.instant('common.trigger.few'),
+                path: './settings/triggers',
+                icon: 'announcement',
+              },
             ];
           }
           if (application.canUpdate) {

@@ -1,5 +1,6 @@
 import { Connection } from '../utils/graphql/connection.type';
 import { Aggregation } from './aggregation.model';
+import { CustomNotification } from './custom-notification.model';
 import { Form } from './form.model';
 import { GraphqlNodesResponse } from './graphql-query.model';
 import { Layout } from './layout.model';
@@ -36,6 +37,8 @@ export interface Resource {
     padding: number;
   };
   importField?: string;
+  customNotifications?: CustomNotification[];
+  hasLayouts?: boolean;
 }
 
 /** Model for resource query response object */

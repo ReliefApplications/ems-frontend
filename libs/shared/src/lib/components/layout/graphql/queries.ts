@@ -12,6 +12,7 @@ export const GET_NOTIFICATIONS = gql`
           action
           content
           createdAt
+          redirect
           channel {
             id
             title

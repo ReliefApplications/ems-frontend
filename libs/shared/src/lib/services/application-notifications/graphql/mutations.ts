@@ -39,6 +39,7 @@ export const UPDATE_CUSTOM_NOTIFICATION = gql`
       layout
       description
       recipientsType
+      filter
     }
   }
 `;

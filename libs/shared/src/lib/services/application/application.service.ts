@@ -1670,7 +1670,7 @@ export class ApplicationService {
             application: application.id,
             template: {
               name: template.name,
-              type: 'email',
+              type: template.type,
               content: template.content,
             },
           },
@@ -2075,5 +2075,35 @@ export class ApplicationService {
           }
         });
     }
+  }
+
+  /**
+   * Get available pages from app
+   *
+   * @returns list of pages and their url
+   */
+  public getPages() {
+    const application = this.application.getValue();
+    return (
+      application?.pages?.map((page: any) => ({
+        id: page.id,
+        name: page.name,
+        urlParams: this.getPageUrlParams(application, page),
+        placeholder: `{{page(${page.id})}}`,
+      })) || []
+    );
+  }
+
+  /**
+   * Get page url params
+   *
+   * @param application application
+   * @param page page to get url from
+   * @returns url of the page
+   */
+  private getPageUrlParams(application: Application, page: Page): string {
+    return page.type === ContentType.form
+      ? `${application.id}/${page.type}/${page.id}`
+      : `${application.id}/${page.type}/${page.content}`;
   }
 }

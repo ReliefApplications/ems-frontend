@@ -132,19 +132,27 @@
     <!-- Remove visible notifications -->
     <ui-button
       (click)="onMarkAllNotificationsAsRead()"
-      class="self-end"
+      class="w-full"
       icon="check_circle_outline"
       >{{ 'components.notifications.readAll' | translate }}</ui-button
     >
     <!-- List of notifications -->
     <div class="flex flex-col overflow-y-auto max-h-[50vh]">
-      <button
+      <div
+        class="flex flex-row items-center"
         uiMenuItem
-        (click)="onNotificationClick(notification)"
         *ngFor="let notification of notifications"
       >
-        {{ notification.action }} - {{ notification.createdAt | sharedDate }}
-      </button>
+        <button
+          [ngClass]="{ 'cursor-auto' : !notification.redirect?.active }"
+          (click)="notification.redirect?.active ? onNotificationRedirect(notification) : ''"
+        >
+          {{ notification.action }} - {{ notification.createdAt | sharedDate }}
+        </button>
+        <button (click)="onNotificationRead(notification)">
+          <ui-icon icon="check_circle_outline" variant="primary"></ui-icon>
+        </button>
+      </div>
     </div>
     <!-- Load more notifications -->
     <ui-button

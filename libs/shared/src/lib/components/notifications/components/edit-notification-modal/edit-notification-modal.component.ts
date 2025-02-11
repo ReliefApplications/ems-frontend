@@ -162,17 +162,7 @@ export class EditNotificationModalComponent
           this.formGroup.get('layout')?.setValue(null);
         }
       });
-    this.formGroup
-      .get('recipientsType')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.formGroup.get('recipients')?.setValue(null);
-        if (value === 'email') {
-          this.formGroup.get('recipients.')?.addValidators(Validators.email);
-        } else {
-          this.formGroup.get('recipients.')?.removeValidators(Validators.email);
-        }
-      });
+
     // Build resource query
     this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES,
@@ -196,6 +186,7 @@ export class EditNotificationModalComponent
         get(this.notification, 'schedule', ''),
         [Validators.required, cronValidator()],
       ],
+      status: 'active',
       notificationType: [{ value: 'email', disabled: true }],
       resource: [get(this.notification, 'resource', ''), Validators.required],
       layout: [get(this.notification, 'layout', ''), Validators.required],
@@ -294,20 +285,28 @@ export class EditNotificationModalComponent
       disableClose: true,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value)
+      if (value) {
+        const content =
+          value.type === TemplateTypeEnum.EMAIL
+            ? {
+                subject: value.subject,
+                body: value.body,
+              }
+            : {
+                title: value.title,
+                description: value.description,
+              };
         this.applicationService.addTemplate(
           {
             name: value.name,
-            type: TemplateTypeEnum.EMAIL,
-            content: {
-              subject: value.subject,
-              body: value.body,
-            },
+            type: value.type,
+            content,
           },
           (template: Template) => {
             this.formGroup.get('template')?.setValue(template.id || null);
           }
         );
+      }
     });
   }
 }

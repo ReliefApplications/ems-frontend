@@ -28,6 +28,7 @@ export interface Record {
   canDelete?: boolean;
   koboId?: string;
   validationErrors?: { question: string; errors: string[] }[];
+  userCanEdit?: boolean;
 }
 
 /** Model for record graphql query response */
