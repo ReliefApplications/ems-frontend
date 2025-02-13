@@ -5,3 +5,9 @@
     gap: 8px;
   }
 }
+
+.virtual-scroll-viewport {
+  height: 200px; /* Adjust height as needed */
+  overflow: hidden;
+  display: block;
+}
