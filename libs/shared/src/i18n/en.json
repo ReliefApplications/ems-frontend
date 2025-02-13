@@ -174,8 +174,14 @@
 		"dismiss": "Dismiss",
 		"display": "Display",
 		"distributionList": {
+			"DLCreated": "Distribution list created",
+			"DLDeleted": "Distribution list deleted successfully",
+			"DLEdited": "Distribution list edited successfully",
+			"DeleteAlert": "Please be aware that deleting this Distribution List (DL) will impact all instances where it is currently in use. Do you want to proceed with the deletion?",
+			"deleteDLTooltip": "Connected Distribution list is deleted",
 			"few": "Distribution lists",
 			"none": "No distribution list",
+			"objectNotDeleted": "{{value}} deletion failed. {{error}}",
 			"one": "Distribution list"
 		},
 		"downloadObject": "Download {{name}}",
@@ -548,6 +554,7 @@
 			"none": "No value",
 			"one": "Value"
 		},
+		"view": "view",
 		"viewFullscreen": "View Fullscreen",
 		"viewObject": "View {{name}}",
 		"workflow": {
@@ -882,7 +889,7 @@
 			},
 			"edit": {
 				"name": "Distribution List Name",
-				"new": "New distribution list",
+				"new": "New Distribution List",
 				"update": "Edit distribution list"
 			},
 			"errors": {

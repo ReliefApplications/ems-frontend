@@ -1,5 +1,8 @@
 <!-- Loading indicator -->
-<!-- <ui-spinner class="flex justify-center items-center h-screen"></ui-spinner> -->
+<ui-spinner
+  *ngIf="emailService.isQuickAction && emailService.loading"
+  class="flex justify-center items-center w-full"
+></ui-spinner>
 <form [formGroup]="layoutForm">
   <!-- 5th step Layout -->
   <div>

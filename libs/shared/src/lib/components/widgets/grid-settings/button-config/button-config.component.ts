@@ -405,17 +405,32 @@ export class ButtonConfigComponent
 
   /** Open edit modal components and create new distribution list */
   public async addDistributionList() {
+    this.emailService.selectedDLName = '';
+    this.emailService.isDLEdit = true;
+    this.emailService.isQuickAction = true;
+    this.emailService.setDatasetForm();
+    this.emailService.resetPreviewData();
+    this.emailService.datasetsForm.reset();
+    this.emailService.DL_Data = this.emailService.datasetsForm.get(
+      'emailDistributionList'
+    );
     const dialogRef = this.dialog.open(DistributionModalComponent, {
       data: {
         isEdit: false,
-        distributionListNames: this.distributionLists?.map((x: any) => x.name),
+        distributionListNames: this.distributionLists?.map((x: any) => x?.name),
+        resource: this.widgetFormGroup?.value?.resource,
       },
+      autoFocus: false,
       disableClose: true,
+      width: '80%',
+      height: '80%',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((data: any) => {
-      const dlData = data.dlData.addEmailDistributionList;
-      this.distributionLists = [dlData, ...this.distributionLists];
-      this.formGroup.get('distributionList')?.setValue(dlData.id);
+      const dlData = data?.result;
+      if (dlData !== null && dlData !== undefined) {
+        this.distributionLists = [dlData, ...this.distributionLists];
+        this.formGroup.get('distributionList')?.setValue(dlData.id);
+      }
     });
   }
 

@@ -1,6 +1,8 @@
 <ng-container
   *ngIf="
-    this.ability.can('read', 'EmailNotification') && !showTemplateCreationWizard
+    this.ability.can('read', 'EmailNotification') &&
+    !showTemplateCreationWizard &&
+    !showDLCreationWizard
   "
 >
   <ui-spinner
@@ -34,6 +36,19 @@
         >
           {{ 'components.email.notification.create' | translate }}
         </ui-button>
+
+        <!-- Create a new DL -->
+        <ui-button
+          class="float-right"
+          icon="add"
+          category="secondary"
+          variant="primary"
+          (click)="createDL('create')"
+          *ngSwitchCase="1"
+        >
+          {{ 'components.distributionLists.edit.new' | translate }}
+        </ui-button>
+
         <!-- Create a new custom template -->
         <ui-button
           class="float-right"
@@ -142,13 +157,19 @@
                     >
                       <ng-container>
                         <ui-button
+                          [disabled]="!element?.isDLExists"
                           variant="grey"
                           class="hide-icons hover:text-primary-600"
                           [isIcon]="true"
                           size="large"
                           (click)="sendEmailList(element)"
                           [icon]="'forward_to_inbox'"
-                          [uiTooltip]="'common.sendEmail' | translate"
+                          [uiTooltip]="
+                            (!element?.isDLExists
+                              ? 'common.distributionList.deleteDLTooltip'
+                              : 'common.sendEmail'
+                            ) | translate
+                          "
                           *ngIf="!element.isDraft"
                         >
                         </ui-button>
@@ -313,8 +334,62 @@
                       {{ name }}
                     </td>
                   </ng-container>
-                  <tr cdk-header-row *cdkHeaderRowDef="['name']"></tr>
-                  <tr cdk-row *cdkRowDef="let row; columns: ['name']"></tr>
+                  <div>
+                    <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+                      <th
+                        uiCellHeader
+                        *cdkHeaderCellDef
+                        scope="col"
+                        class="w-16"
+                      ></th>
+                      <td
+                        uiCell
+                        *cdkCellDef="let element"
+                        class="flex items-center"
+                      >
+                        <ng-container>
+                          <ui-button
+                            variant="grey"
+                            class="hide-icons hover:text-primary-600"
+                            [isIcon]="true"
+                            size="large"
+                            (click)="previewDL(element)"
+                            [icon]="'info_outline'"
+                            [uiTooltip]="'common.view' | translate"
+                          >
+                          </ui-button>
+                          <ui-button
+                            variant="grey"
+                            class="hide-icons hover:text-primary-600"
+                            [isIcon]="true"
+                            size="large"
+                            (click)="editDLByName(element)"
+                            [icon]="'edit'"
+                            [uiTooltip]="'common.edit' | translate"
+                          >
+                          </ui-button>
+                          <ui-button
+                            variant="danger"
+                            class="hide-icons hover:text-primary-600"
+                            [isIcon]="true"
+                            size="large"
+                            (click)="deleteDL(element)"
+                            [icon]="'delete'"
+                            [uiTooltip]="'common.delete' | translate"
+                          >
+                          </ui-button>
+                        </ng-container>
+                      </td>
+                    </ng-container>
+                  </div>
+                  <tr
+                    cdk-header-row
+                    *cdkHeaderRowDef="['name', 'actions']"
+                  ></tr>
+                  <tr
+                    cdk-row
+                    *cdkRowDef="let row; columns: ['name', 'actions']"
+                  ></tr>
                 </table>
               </div>
             </div>
@@ -521,5 +596,178 @@
         getCustomTemplates()
       "
     ></ems-custom-template>
+  </ng-container>
+</div>
+<div *ngIf="showDLCreationWizard">
+  <ng-container>
+    <div class="relative">
+      <ui-button
+        variant="danger"
+        class="absolute -top-[22px] -right-[14px] btnClose"
+        [isIcon]="true"
+        size="large"
+        (click)="showDLCreationWizard = false"
+        [icon]="'close'"
+        [uiTooltip]="'components.email.back' | translate"
+        (click)="DLEditClose()"
+      >
+      </ui-button>
+    </div>
+    <ems-create-distribution
+      (navigateToEms)="showDLCreationWizard = false; getDistributionList()"
+    ></ems-create-distribution>
+  </ng-container>
+</div>
+<div *ngIf="showDLPreview">
+  <ng-container>
+    <div class="relative">
+      <div class="relative">
+        <ui-button
+          variant="danger"
+          class="absolute -top-[22px] -right-[14px] btnClose"
+          [isIcon]="true"
+          size="large"
+          (click)="showDLCreationWizard = false"
+          [icon]="'close'"
+          [uiTooltip]="'components.email.back' | translate"
+          (click)="DLEditClose()"
+        >
+        </ui-button>
+      </div>
+      <div>
+        <div class="w-full">
+          <div class="mb-4" *ngIf="!emailService.isQuickAction">
+            <h1>{{ 'common.distributionList.one' | translate }}</h1>
+          </div>
+          <div *ngIf="previewDLData?.to?.length > 0">
+            <!-- Distribution List -->
+            <div
+              class="mb-4"
+              *ngIf="
+                this.emailService.datasetsForm?.getRawValue()
+                  ?.emailDistributionList?.name
+              "
+            >
+              <p>
+                {{
+                  this.emailService.datasetsForm.getRawValue()
+                    ?.emailDistributionList?.name
+                }}
+              </p>
+            </div>
+
+            <!-- To -->
+            <div class="mb-4" *ngIf="previewDLData?.to?.length > 0">
+              <h2>{{ 'components.select.distribution.to' | translate }}:</h2>
+              <ul class="list-none space-y-1">
+                <div uiChipList>
+                  <ng-container
+                    *ngFor="let email of previewDLData?.to; let i = index"
+                  >
+                    <ui-chip
+                      *ngIf="i < 6 || isExpandedTo"
+                      variant="primary"
+                      class="w-full flex-row flex-wrap justify-between mr-1"
+                      >{{ email }}</ui-chip
+                    >
+                  </ng-container>
+                </div>
+                <ui-button
+                  *ngIf="previewDLData?.to?.length > 6 && !isExpandedTo"
+                  class="inline-block"
+                  (click)="toggleExpandTo()"
+                  >{{
+                    'components.email.preview.more'
+                      | translate : { length: previewDLData?.to?.length - 6 }
+                  }}</ui-button
+                >
+                <ui-button
+                  *ngIf="isExpandedTo"
+                  class="inline-block"
+                  (click)="toggleExpandTo()"
+                  >{{ 'components.email.preview.less' | translate }}</ui-button
+                >
+              </ul>
+            </div>
+
+            <!-- CC -->
+            <div *ngIf="previewDLData?.cc?.length > 0" class="mb-4">
+              <h2>{{ 'components.select.distribution.cc' | translate }}:</h2>
+              <ul class="list-none space-y-1">
+                <div uiChipList>
+                  <ng-container
+                    *ngFor="let email of previewDLData?.cc; let i = index"
+                  >
+                    <ui-chip
+                      *ngIf="i < 6 || isExpandedCc"
+                      variant="primary"
+                      class="w-full flex-row flex-wrap justify-between mr-1"
+                      >{{ email }}</ui-chip
+                    >
+                  </ng-container>
+                </div>
+                <ui-button
+                  *ngIf="previewDLData?.cc?.length > 6 && !isExpandedCc"
+                  variant="primary"
+                  class="inline-block"
+                  (click)="toggleExpandCc()"
+                  >{{
+                    'components.email.preview.more'
+                      | translate : { length: previewDLData?.cc?.length - 6 }
+                  }}</ui-button
+                >
+                <ui-button
+                  *ngIf="isExpandedCc"
+                  variant="primary"
+                  class="inline-block"
+                  (click)="toggleExpandCc()"
+                  >{{ 'components.email.preview.less' | translate }}</ui-button
+                >
+              </ul>
+            </div>
+
+            <!-- BCC -->
+            <div *ngIf="previewDLData?.bcc?.length > 0" class="mb-4">
+              <h2>{{ 'components.select.distribution.bcc' | translate }}:</h2>
+              <ul class="list-none space-y-1">
+                <div uiChipList>
+                  <ng-container
+                    *ngFor="let email of previewDLData?.bcc; let i = index"
+                  >
+                    <ui-chip
+                      *ngIf="i < 6 || isExpandedBcc"
+                      variant="primary"
+                      class="mr-1"
+                      >{{ email }}</ui-chip
+                    >
+                  </ng-container>
+                </div>
+                <ui-button
+                  *ngIf="previewDLData?.bcc?.length > 6 && !isExpandedBcc"
+                  variant="primary"
+                  class="inline-block"
+                  (click)="toggleExpandBcc()"
+                  >{{
+                    'components.email.preview.more'
+                      | translate : { length: previewDLData?.bcc?.length - 6 }
+                  }}</ui-button
+                >
+                <ui-button
+                  *ngIf="isExpandedBcc"
+                  variant="primary"
+                  class="inline-block"
+                  (click)="toggleExpandBcc()"
+                  >{{ 'components.email.preview.less' | translate }}
+                </ui-button>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Subject -->
+          <h1>{{ 'components.email.preview.subject' | translate }}</h1>
+          <div id="subjectHtml" #subjectHtmlRef class="w-full"></div>
+        </div>
+      </div>
+    </div>
   </ng-container>
 </div>

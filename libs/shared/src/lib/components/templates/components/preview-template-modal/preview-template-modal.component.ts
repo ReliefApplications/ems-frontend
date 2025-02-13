@@ -287,4 +287,19 @@ export class PreviewTemplateModalComponent implements OnInit {
       this.currentStep = 1;
     }
   }
+
+  /**
+   * Validate Quick action To emails when we cehck from Quick Action grid
+   *
+   * @returns value for button disable or enable
+   */
+  validateQuickActionNextBtn() {
+    this.steps = this.steps.map((step, index) => {
+      if (index > this.currentStep) {
+        step.disabled = this.emailService.disableNextActionBtn;
+      }
+      return step;
+    });
+    return this.emailService.disableNextActionBtn;
+  }
 }

@@ -174,8 +174,14 @@
 		"dismiss": "Fermer",
 		"display": "Afficher",
 		"distributionList": {
+			"DLCreated": "Liste de distribution créée",
+			"DLDeleted": "Liste de distribution supprimée avec succès",
+			"DLEdited": "Liste de distribution modifiée avec succès",
+			"DeleteAlert": "Veuillez noter que la suppression de cette liste de distribution (DL) aura un impact sur toutes les instances où elle est actuellement utilisée. Voulez-vous procéder à la suppression ?",
+			"deleteDLTooltip": "La liste de distribution connectée est supprimée",
 			"few": "Listes de distribution",
 			"none": "Aucune liste de distribution",
+			"objectNotDeleted": "{{value}} la suppression a échoué. {{error}}",
 			"one": "Liste de distribution"
 		},
 		"downloadObject": "Télécharger {{name}}",
@@ -548,6 +554,7 @@
 			"none": "Aucune valeur",
 			"one": "Valeur"
 		},
+		"view": "Voir",
 		"viewFullscreen": "Ouvrir le mode plein écran",
 		"viewObject": "Voir {{name}}",
 		"workflow": {

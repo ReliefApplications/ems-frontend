@@ -174,8 +174,14 @@
 		"dismiss": "******",
 		"display": "******",
 		"distributionList": {
+			"DLCreated": "******",
+			"DLDeleted": "******",
+			"DLEdited": "******",
+			"DeleteAlert": "******",
+			"deleteDLTooltip": "******",
 			"few": "******",
 			"none": "******",
+			"objectNotDeleted": "{{value}} ****** {{error}}",
 			"one": "******"
 		},
 		"downloadObject": "****** {{name}}",
@@ -548,6 +554,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"view": "******",
 		"viewFullscreen": "******",
 		"viewObject": "****** {{name}}",
 		"workflow": {

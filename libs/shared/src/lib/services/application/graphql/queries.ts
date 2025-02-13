@@ -122,3 +122,12 @@ export const GET_APPLICATION_BY_ID = gql`
     }
   }
 `;
+
+/** Graphql request for adding a template of an application */
+export const DELETE_EMAIL_DISTRIBUTION_LIST = gql`
+  mutation DeleteEmailDistributionList($id: ID!) {
+    deleteEmailDistributionList(id: $id) {
+      name
+    }
+  }
+`;

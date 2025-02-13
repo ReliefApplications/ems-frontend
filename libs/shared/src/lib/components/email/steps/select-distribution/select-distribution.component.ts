@@ -1,6 +1,7 @@
 import {
   Component,
   ElementRef,
+  Input,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -16,6 +17,7 @@ import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/public-api';
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
+import { cloneDeep } from 'lodash';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
@@ -100,9 +102,6 @@ export class SelectDistributionComponent
     skip: 0,
     limit: DEFAULT_PAGE_SIZE,
   };
-  /** Recipients data. */
-  public emailDistributionList: FormGroup | any =
-    this.emailService.datasetsForm.get('emailDistributionList');
   /** Flag indicating loading state. */
   public isLoading = false;
   /** Cached data. */
@@ -114,69 +113,79 @@ export class SelectDistributionComponent
     cc: false,
     bcc: false,
   };
+  /** Store Actual DL name in case of Edit Mode */
+  actualDLName = '';
 
   /** Reference to file upload element. */
   @ViewChild('fileUpload', { static: true }) fileElement:
     | ElementRef
     | undefined;
+  /** DL dialog data from Quick Action  */
+  @Input() DL_QuickAction: any;
 
   ngOnInit(): void {
+    if (!this.emailService?.isDLEdit) {
+      this.emailService.DL_Data = this.emailService.datasetsForm.get(
+        'emailDistributionList'
+      );
+    }
     this.enableForm('to');
     this.enableForm('cc');
     this.enableForm('bcc');
-    if (
-      this.emailService?.editId &&
-      this.emailService?.emailDistributionList?.id
-    ) {
-      this.distributionListId = this.emailService.emailDistributionList.id;
-      this.emailService.selectedDLName =
-        this.emailService.emailDistributionList?.name;
+    if (this.emailService?.editId && this.emailService?.DL_Data?.id) {
+      this.distributionListId = this.emailService.DL_Data.id;
+      this.emailService.selectedDLName = cloneDeep(
+        this.emailService.DL_Data?.name
+      );
     }
     if (
-      !this.emailDistributionList?.get('to.query.filter.logic')?.value?.trim()
+      !this.emailService.DL_Data?.get('to.query.filter.logic')?.value?.trim()
     ) {
-      this.emailDistributionList.get('to.query.filter.logic').setValue('and');
+      this.emailService.DL_Data.get('to.query.filter.logic').setValue('and');
     }
     if (
-      !this.emailDistributionList?.get('cc.query.filter.logic')?.value?.trim()
+      !this.emailService.DL_Data?.get('cc.query.filter.logic')?.value?.trim()
     ) {
-      this.emailDistributionList.get('cc.query.filter.logic').setValue('and');
+      this.emailService.DL_Data.get('cc.query.filter.logic').setValue('and');
     }
     if (
-      !this.emailDistributionList?.get('bcc.query.filter.logic')?.value?.trim()
+      !this.emailService.DL_Data?.get('bcc.query.filter.logic')?.value?.trim()
     ) {
-      this.emailDistributionList.get('bcc.query.filter.logic').setValue('and');
+      this.emailService.DL_Data.get('bcc.query.filter.logic').setValue('and');
     }
 
     if (
-      !this.emailDistributionList
-        ?.get('to.commonServiceFilter.filter.logic')
-        ?.value?.trim()
+      !this.emailService.DL_Data?.get(
+        'to.commonServiceFilter.filter.logic'
+      )?.value?.trim()
     ) {
-      this.emailDistributionList
-        .get('to.commonServiceFilter.filter.logic')
-        .setValue('and');
+      this.emailService.DL_Data.get(
+        'to.commonServiceFilter.filter.logic'
+      ).setValue('and');
     }
     if (
-      !this.emailDistributionList
-        ?.get('cc.commonServiceFilter.filter.logic')
-        ?.value?.trim()
+      !this.emailService.DL_Data?.get(
+        'cc.commonServiceFilter.filter.logic'
+      )?.value?.trim()
     ) {
-      this.emailDistributionList
-        .get('cc.commonServiceFilter.filter.logic')
-        .setValue('and');
+      this.emailService.DL_Data.get(
+        'cc.commonServiceFilter.filter.logic'
+      ).setValue('and');
     }
     if (
-      !this.emailDistributionList
-        ?.get('bcc.commonServiceFilter.filter.logic')
-        ?.value?.trim()
+      !this.emailService.DL_Data?.get(
+        'bcc.commonServiceFilter.filter.logic'
+      )?.value?.trim()
     ) {
-      this.emailDistributionList
-        .get('bcc.commonServiceFilter.filter.logic')
-        .setValue('and');
+      this.emailService.DL_Data.get(
+        'bcc.commonServiceFilter.filter.logic'
+      ).setValue('and');
     }
     if (!this.isAllSeparate()) {
       this.validateDistributionList();
+    }
+    if (this.emailService.isDLEdit || this.emailService?.editId) {
+      this.actualDLName = cloneDeep(this.emailService.distributionListName);
     }
   }
 
@@ -203,10 +212,16 @@ export class SelectDistributionComponent
       }
 
       if (separateEmailCount === datasetsCount && datasetsCount > 0) {
-        this.emailDistributionList.get('name')?.patchValue('');
-        this.clearDL(this.emailDistributionList.get('to') as FormGroup);
-        this.clearDL(this.emailDistributionList.get('cc') as FormGroup);
-        this.clearDL(this.emailDistributionList.get('bcc') as FormGroup);
+        this.emailService.DL_Data.get('name')?.patchValue('');
+        this.emailService.clearDL(
+          this.emailService.DL_Data.get('to') as FormGroup
+        );
+        this.emailService.clearDL(
+          this.emailService.DL_Data.get('cc') as FormGroup
+        );
+        this.emailService.clearDL(
+          this.emailService.DL_Data.get('bcc') as FormGroup
+        );
         this.emailService.selectedDLName = '';
         this.distributionListId = '';
 
@@ -255,16 +270,28 @@ export class SelectDistributionComponent
    * @returns boolean
    */
   isNameDuplicate(): boolean {
-    const enteredName = this.emailDistributionList
-      ?.get('name')
+    const enteredName = this.emailService.DL_Data?.get('name')
       ?.value?.trim()
       .toLowerCase();
     if (
       this.emailService.selectedDLName?.trim()?.toLowerCase() !==
       enteredName?.trim()?.toLowerCase()
     ) {
-      const isDupe =
+      let isDupe =
         this.emailService.distributionListNames.includes(enteredName);
+      if (!isDupe && this.emailService?.cacheDistributionList?.length > 0) {
+        isDupe = this.emailService.cacheDistributionList
+          .map((x: any) => x.name.toLowerCase())
+          .includes(enteredName);
+      }
+      //Check for Edit scenario
+      if ((this.emailService.isDLEdit || this.emailService?.editId) && isDupe) {
+        isDupe =
+          this.actualDLName === this.emailService.distributionListName
+            ? false
+            : true;
+      }
+
       this.emailService.isDLNameDuplicate = isDupe;
       return isDupe;
     } else {
@@ -280,14 +307,14 @@ export class SelectDistributionComponent
     const flag = this.isNameDuplicate();
     if (
       // this.emailDistributionList.To.length === 0 ||
-      this.emailDistributionList.get('name').value.length === 0 ||
+      this.emailService.DL_Data.get('name').value.length === 0 ||
       flag
     ) {
       this.emailService.stepperDisable.next({ id: 2, isValid: false });
     } else {
       this.emailService.stepperDisable.next({ id: 2, isValid: true });
       this.emailService.distributionListName =
-        this.emailDistributionList.get('name').value;
+        this.emailService.DL_Data.get('name').value;
     }
   }
 
@@ -311,47 +338,19 @@ export class SelectDistributionComponent
             return node;
           }) || [];
 
-        //START :- filter distribution list data according to the Resource
-        const allDatasetResources =
-          this.emailService.datasetsForm.value.datasets.map(
-            (ele: any) => ele.resource
-          );
-        let filtered_DL = this.distributionLists.filter(
-          (x: any) =>
-            x.to?.resource === null ||
-            x.to?.resource === '' ||
-            allDatasetResources.includes(x.to?.resource)
-        );
-        filtered_DL = filtered_DL.filter(
-          (x: any) =>
-            x.cc?.resource === null ||
-            x.cc?.resource === '' ||
-            allDatasetResources.includes(x.cc?.resource)
-        );
-        filtered_DL = filtered_DL.filter(
-          (x: any) =>
-            x.bcc?.resource === null ||
-            x.bcc?.resource === '' ||
-            allDatasetResources.includes(x.bcc?.resource)
-        );
-        this.distributionLists = filtered_DL;
-        // END
         this.cacheDistributionList = this.distributionLists;
         this.emailService.cacheDistributionList = this.cacheDistributionList;
         const existingDataIndex =
           this.emailService.cacheDistributionList.findIndex(
             (x: any) =>
               x?.name?.toLowerCase() ==
-              this.emailDistributionList
-                ?.get('name')
+              this.emailService.DL_Data?.get('name')
                 ?.value?.trim()
                 ?.toLowerCase()
           );
         if (existingDataIndex > -1) {
           this.distributionListId =
             this.emailService.cacheDistributionList[existingDataIndex].id;
-          this.emailService.selectedDLName =
-            this.emailService.cacheDistributionList[existingDataIndex].name;
         }
         this.distributionLists = this.cacheDistributionList.slice(
           this.distributionPageInfo.pageSize *
@@ -378,21 +377,21 @@ export class SelectDistributionComponent
       this.distributionLists[index]
     );
 
-    this.emailDistributionList
-      .get('name')
-      ?.patchValue(emailDL.get('name')?.value);
-    this.emailDistributionList.get('id')?.patchValue(emailDL.get('id')?.value);
+    this.emailService.DL_Data.get('name')?.patchValue(
+      emailDL.get('name')?.value
+    );
+    this.emailService.DL_Data.get('id')?.patchValue(emailDL.get('id')?.value);
 
-    this.clearAndPatch(
-      this.emailDistributionList.get('to') as FormGroup,
+    this.emailService.clearAndPatch(
+      this.emailService.DL_Data.get('to') as FormGroup,
       emailDL.get('to') as FormGroup
     );
-    this.clearAndPatch(
-      this.emailDistributionList.get('cc') as FormGroup,
+    this.emailService.clearAndPatch(
+      this.emailService.DL_Data.get('cc') as FormGroup,
       emailDL.get('cc') as FormGroup
     );
-    this.clearAndPatch(
-      this.emailDistributionList.get('bcc') as FormGroup,
+    this.emailService.clearAndPatch(
+      this.emailService.DL_Data.get('bcc') as FormGroup,
       emailDL.get('bcc') as FormGroup
     );
     // this.emailDistributionList = emailDL;
@@ -400,129 +399,7 @@ export class SelectDistributionComponent
     this.distributionListId = this.distributionLists[index]?.id;
     this.showExistingDistributionList = !this.showExistingDistributionList;
     this.validateDistributionList();
-    this.emailService.setDistributionList(this.emailDistributionList);
-  }
-
-  /**
-   * Clear distribution list
-   *
-   * @param targetGroup Form group you want to clear
-   */
-  clearDL(targetGroup: FormGroup): void {
-    this.emailService.filterToEmails = [];
-    // Clear 'resource'
-    targetGroup.get('resource')?.patchValue('');
-
-    // Clear 'query'
-    const targetQuery = targetGroup.get('query') as FormGroup;
-    targetQuery.reset();
-
-    // Set 'name'
-    targetQuery.get('name')?.setValue('');
-
-    // Set 'filter'
-    const targetFilter = targetQuery.get('filter') as FormGroup;
-    targetFilter.get('logic')?.setValue('and');
-    const targetFiltersArray = targetFilter.get('filters') as FormArray;
-    targetFiltersArray.clear();
-
-    // Set 'fields'
-    const targetFieldsArray = targetQuery.get('fields') as FormArray;
-    targetFieldsArray.clear();
-
-    // Clear 'inputEmails'
-    const targetInputEmails = targetGroup.get('inputEmails') as FormArray;
-    targetInputEmails.clear();
-  }
-
-  /**
-   * Clear and patch function
-   *
-   * @param targetGroup Form group you want to clear and patch
-   * @param sourceGroup Form group you are retrieving the values from
-   */
-  clearAndPatch(targetGroup: FormGroup, sourceGroup: FormGroup): void {
-    // Clear 'resource'
-    targetGroup.get('resource')?.patchValue(sourceGroup.get('resource')?.value);
-
-    // Filter Query
-    this.set_Filter_CS_Value(
-      targetGroup.get('query') as FormGroup,
-      sourceGroup.get('query') as FormGroup
-    );
-
-    // Common service filter query
-    this.set_Filter_CS_Value(
-      targetGroup.get('commonServiceFilter') as FormGroup,
-      sourceGroup.get('commonServiceFilter') as FormGroup
-    );
-
-    // Clear 'inputEmails'
-    const targetInputEmails = targetGroup.get('inputEmails') as FormArray;
-    const sourceInputEmails = sourceGroup.get('inputEmails') as FormArray;
-    targetInputEmails.clear();
-    sourceInputEmails.controls.forEach((control) => {
-      targetInputEmails.push(this.formBuilder.control(control.value));
-    });
-  }
-
-  /**
-   * Set Filter anfd common service
-   *
-   * @param targetQuery target query
-   * @param sourceQuery source query
-   */
-  set_Filter_CS_Value(targetQuery: FormGroup, sourceQuery: FormGroup) {
-    // Clear 'query'
-    // const targetQuery = targetGroup.get('query') as FormGroup;
-    // const sourceQuery = sourceGroup.get('query') as FormGroup;
-    targetQuery.reset();
-
-    // Set 'name'
-    targetQuery.get('name')?.setValue(sourceQuery.get('name')?.value);
-
-    // Set 'filter'
-    const targetFilter = targetQuery.get('filter') as FormGroup;
-    const sourceFilter = sourceQuery.get('filter') as FormGroup;
-    targetFilter.get('logic')?.setValue(sourceFilter.get('logic')?.value);
-    const targetFiltersArray = targetFilter.get('filters') as FormArray;
-    const sourceFiltersArray = sourceFilter.get('filters') as FormArray;
-    targetFiltersArray.clear();
-    sourceFiltersArray.controls.forEach((control) => {
-      targetFiltersArray.push(control);
-    });
-
-    // Set 'fields'
-    const targetFieldsArray = targetQuery.get('fields') as FormArray;
-    const sourceFieldsArray = sourceQuery.get('fields') as FormArray;
-    targetFieldsArray?.clear();
-    sourceFieldsArray?.controls?.forEach((control) => {
-      if (
-        control?.value?.kind === 'LIST' ||
-        control?.value?.kind === 'OBJECT'
-      ) {
-        const fieldsData: any = new FormArray([]);
-        control?.value?.fields?.forEach((y: any) => {
-          fieldsData.push(
-            this.formBuilder.group({
-              ...y,
-            })
-          );
-        });
-        targetFieldsArray.push(
-          this.formBuilder.group({
-            ...control.value,
-            fields: fieldsData,
-          })
-        );
-      } else {
-        targetFieldsArray.push(
-          this.formBuilder.group({
-            ...control.value,
-          })
-        );
-      }
-    });
+    this.emailService.setDistributionList(this.emailService.DL_Data);
   }
 
   // transformDL() {
@@ -587,12 +464,11 @@ export class SelectDistributionComponent
           toAfterImport.forEach((email: string) => {
             // Access the 'inputEmails' FormArray and push a new FormControl with the trimmed email
             if (
-              !this.emailDistributionList
-                ?.getRawValue()
-                ?.to?.inputEmails?.includes(email)
+              !this.emailService.DL_Data?.getRawValue()?.to?.inputEmails?.includes(
+                email
+              )
             ) {
-              this.emailDistributionList
-                .get('to')
+              this.emailService.DL_Data.get('to')
                 .get('inputEmails')
                 .push(this.formBuilder.control(email.trim()));
             }
@@ -601,12 +477,11 @@ export class SelectDistributionComponent
           ccAfterImport.forEach((email: string) => {
             // Access the 'inputEmails' FormArray and push a new FormControl with the trimmed email
             if (
-              !this.emailDistributionList
-                ?.getRawValue()
-                ?.cc?.inputEmails?.includes(email)
+              !this.emailService.DL_Data?.getRawValue()?.cc?.inputEmails?.includes(
+                email
+              )
             ) {
-              this.emailDistributionList
-                .get('cc')
+              this.emailService.DL_Data.get('cc')
                 .get('inputEmails')
                 .push(this.formBuilder.control(email.trim()));
             }
@@ -615,12 +490,11 @@ export class SelectDistributionComponent
           bccAfterImport.forEach((email: string) => {
             // Access the 'inputEmails' FormArray and push a new FormControl with the trimmed email
             if (
-              !this.emailDistributionList
-                ?.getRawValue()
-                ?.bcc?.inputEmails?.includes(email)
+              !this.emailService.DL_Data?.getRawValue()?.bcc?.inputEmails?.includes(
+                email
+              )
             ) {
-              this.emailDistributionList
-                .get('bcc')
+              this.emailService.DL_Data.get('bcc')
                 .get('inputEmails')
                 .push(this.formBuilder.control(email.trim()));
             }
@@ -645,7 +519,7 @@ export class SelectDistributionComponent
 
     this.emailService.datasetsForm.setControl(
       'emailDistributionList',
-      this.emailDistributionList
+      this.emailService.DL_Data
     );
   }
 
@@ -658,7 +532,7 @@ export class SelectDistributionComponent
 
     //Distribution List name is valid
     this.emailService.distributionListName =
-      this.emailDistributionList.get('name').value;
+      this.emailService.DL_Data.get('name').value;
     this.emailService.validateNextButton();
   }
 
@@ -713,7 +587,7 @@ export class SelectDistributionComponent
     this.clearAllTabsData('to');
     this.clearAllTabsData('cc');
     this.clearAllTabsData('bcc');
-    this.emailDistributionList = this.emailService.datasetsForm.get(
+    this.emailService.DL_Data = this.emailService.datasetsForm.get(
       'emailDistributionList'
     );
   }

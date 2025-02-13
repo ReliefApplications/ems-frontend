@@ -21,7 +21,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { emailRegex } from '../../constant';
 import { FieldStore } from '../../models/email.const';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { firstValueFrom, takeUntil } from 'rxjs';
+import { firstValueFrom, lastValueFrom, takeUntil } from 'rxjs';
 import { cloneDeep } from 'lodash';
 import { QueryBuilderService } from './../../../../services/query-builder/query-builder.service';
 import { RestService } from '../../../../services/rest/rest.service';
@@ -135,6 +135,10 @@ export class EmailTemplateComponent
   public dlCommonQuery!: FormGroup | any;
   /** DL preview emails from Common Services  */
   public previewCsEmails: any = [];
+  /** DL dialog data from Quick Action  */
+  @Input() DL_QuickAction: any;
+  /** Selected Quick Action resource Name */
+  public selectedResourceName = '';
 
   /**
    * Email template to create distribution list.
@@ -173,7 +177,6 @@ export class EmailTemplateComponent
       this.clearUnusedValues(value);
     });
     this.setCommonServiceFields();
-
     this.distributionListValid =
       (this.emailService.isToValid &&
         (this.type === 'bcc' || this.type === 'cc')) ||
@@ -226,7 +229,8 @@ export class EmailTemplateComponent
       .subscribe((value: any) => {
         if (
           this.activeSegmentIndex === 3 &&
-          value?.filter((x: any) => x?.field || x?.value)?.length > 0
+          (value?.filter((x: any) => x?.field || x?.value)?.length > 0 ||
+            value.length === 0)
         ) {
           this.emailService.validateNextButton();
         } else {
@@ -260,6 +264,11 @@ export class EmailTemplateComponent
       this.updateSegmentOptions(RecipientsType.resource);
     } else {
       this.updateSegmentOptions(RecipientsType.manual);
+    }
+
+    //GetResourceName for Quick Action DL
+    if (this.DL_QuickAction?.resource) {
+      this.getResourceNameById(this.DL_QuickAction.resource);
     }
   }
 
@@ -355,7 +364,7 @@ export class EmailTemplateComponent
    *
    * @param fromHtml if called from email-template HTML or not
    */
-  getResourceData(fromHtml: boolean): void {
+  async getResourceData(fromHtml: boolean) {
     this.resourceFields = [];
     this.loading = true;
     this.availableFields = [];
@@ -373,27 +382,24 @@ export class EmailTemplateComponent
       this.resetFilters(this.distributionList.get('query'));
     }
     if (this.selectedResourceId) {
-      this.emailService
-        .fetchResourceData(this.selectedResourceId)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(({ data }) => {
-          const queryTemp: any = data.resource;
-          this.resourceFields = queryTemp?.fields;
-          const newData = this.queryBuilder.getFields(queryTemp.queryName);
-          if (this.distributionList.controls.query.get('name') === null) {
-            this.distributionList.controls.query.addControl(
-              'name',
-              new FormControl('')
-            );
-          }
-          this.distributionList.controls.query
-            .get('name')
-            .setValue(queryTemp.queryName);
-          this.availableFields = newData;
-          this.loading = false;
-          this.resourcePopulated = true;
-          this.resource = data.resource;
-        });
+      const data: any = await this.getResourceNameById(this.selectedResourceId);
+      const queryTemp: any = data.resource;
+      this.resourceFields = queryTemp?.fields;
+      this.selectedResourceName = queryTemp.name;
+      const newData = this.queryBuilder.getFields(queryTemp.queryName);
+      if (this.distributionList.controls.query.get('name') === null) {
+        this.distributionList.controls.query.addControl(
+          'name',
+          new FormControl('')
+        );
+      }
+      this.distributionList.controls.query
+        .get('name')
+        .setValue(queryTemp.queryName);
+      this.availableFields = newData;
+      this.loading = false;
+      this.resourcePopulated = true;
+      this.resource = data.resource;
     } else {
       this.loading = false;
     }
@@ -605,6 +611,12 @@ export class EmailTemplateComponent
         this.emailService.disableSaveAndProceed.next(false);
       }
     }
+    if (this.emailService?.isDLEdit) {
+      this.emailService.isToValid =
+        this.selectedFields?.length === 0 || this.showFieldsWarning
+          ? false
+          : true;
+    }
     return formArray;
   }
 
@@ -631,13 +643,13 @@ export class EmailTemplateComponent
     const fields = query.get('fields') as FormArray;
     if (fields) {
       // Only for resource
-      fields.clear();
+      fields?.clear();
     }
 
     const filter = query.get('filter') as FormGroup;
     const filters = filter.get('filters') as FormArray;
-    filters.clear();
-    filters.push(this.emailService.getNewFilterFields);
+    filters?.clear();
+    filters?.push(this.emailService.getNewFilterFields);
 
     query.get('name')?.setValue('');
   }
@@ -700,12 +712,12 @@ export class EmailTemplateComponent
         });
       }
 
-      objPreview.emailDistributionList.to = {
+      objPreview.emailDistributionList[this.type] = {
         resource: this.resource?.id ?? '',
         reference: this.distributionList?.get('reference')?.value ?? '',
         query: {
-          name: this.dlQuery?.get('name').value,
-          filter: this.dlQuery.get('filter').value,
+          name: this.dlQuery?.get('name').getRawValue(),
+          filter: this.dlQuery.get('filter').getRawValue(),
           fields: this.distributionList.getRawValue().query?.fields,
         },
         inputEmails: [],
@@ -825,6 +837,11 @@ export class EmailTemplateComponent
         this.previewEmails = [];
         this.isPreviewEmail = true;
         this.expandedIndex = 0;
+        //Get Resource Details when Selecting Quick action from Grid for adding New DL
+        if (this.DL_QuickAction?.resource) {
+          this.selectedResourceId = this.DL_QuickAction.resource;
+          this.getResourceData(false);
+        }
         if (isValid) {
           this.type === 'to' ? (this.emailService.isToValid = true) : '';
           this.emailService.disableSaveAsDraft.next(false);
@@ -837,6 +854,11 @@ export class EmailTemplateComponent
       case 2: {
         this.previewEmails = [];
         this.isPreviewEmail = true;
+        //Get Resource Details when Selecting Quick action from Grid for adding New DL
+        if (this.DL_QuickAction?.resource) {
+          this.selectedResourceId = this.DL_QuickAction.resource;
+          this.getResourceData(false);
+        }
         if (isValid) {
           this.type === 'to' ? (this.emailService.isToValid = true) : '';
           this.emailService.disableSaveAsDraft.next(false);
@@ -992,19 +1014,30 @@ export class EmailTemplateComponent
     this.isPreviewEmail = true;
     //When we click preview button at that time allow swich to preview tab directly (If not cliked on other tabs)
     isPreview ? this.onTabSelect(1, false) : '';
-    this.restService
-      .post('/notification/preview-common-services-users', commonServiceData)
-      .subscribe(
-        async (response: any) => {
-          this.previewCsEmails = response;
-          this.isPreviewEmail = this.previewCsEmails?.length > 0 ? true : false;
-          this.loading = false;
-        },
-        (error: string) => {
-          console.error('Error:', error);
-          this.loading = false;
-        }
-      );
+    if (
+      this.dlCommonQuery
+        ?.getRawValue()
+        ?.filter?.filters?.filter((x: any) => x?.field || x?.value)?.length > 0
+    ) {
+      this.restService
+        .post('/notification/preview-common-services-users', commonServiceData)
+        .subscribe(
+          async (response: any) => {
+            this.previewCsEmails = response;
+            this.isPreviewEmail =
+              this.previewCsEmails?.length > 0 ? true : false;
+            this.emailService.validateNextButton();
+            this.loading = false;
+          },
+          (error: string) => {
+            console.error('Error:', error);
+            this.loading = false;
+          }
+        );
+    } else {
+      this.isPreviewEmail = false;
+      this.loading = false;
+    }
   }
 
   /**
@@ -1060,6 +1093,27 @@ export class EmailTemplateComponent
         this.previewCsEmails = [];
         this.currentTabIndex = 0;
       }
+    }
+  }
+
+  /**
+   * Get Resource Data by Id
+   *
+   * @param resourceId resource Id
+   * @returns Resource Data
+   */
+  async getResourceNameById(resourceId: string) {
+    try {
+      const response = await lastValueFrom(
+        this.emailService
+          .fetchResourceData(resourceId)
+          .pipe(takeUntil(this.destroy$))
+      );
+      this.selectedResourceName = response?.data?.resource?.name || '';
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return null;
     }
   }
 }
