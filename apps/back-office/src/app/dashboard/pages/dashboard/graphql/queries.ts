@@ -4,7 +4,7 @@ import { gql } from 'apollo-angular';
 /** Graphql query for getting a dashboard by its id */
 export const GET_DASHBOARD_BY_ID = gql`
   query GetDashboardById($id: ID!, $contextEl: JSON) {
-    dashboard(id: $id, contextEl: $contextEl, createIfMissing: true) {
+    dashboard(id: $id, contextEl: $contextEl) {
       id
       name
       createdAt
@@ -30,9 +30,11 @@ export const GET_DASHBOARD_BY_ID = gql`
       page {
         id
         icon
+        showName
         visible
         application {
           id
+          shortcut
         }
         canUpdate
         context
@@ -42,12 +44,15 @@ export const GET_DASHBOARD_BY_ID = gql`
       step {
         id
         icon
+        showName
         workflow {
           id
+          name
           page {
             id
             application {
               id
+              shortcut
             }
           }
         }
@@ -55,6 +60,18 @@ export const GET_DASHBOARD_BY_ID = gql`
       }
       filter
       gridOptions
+      defaultTemplate
+    }
+  }
+`;
+
+// === GET DASHBOARD BY ID ===
+/** Graphql query for getting a dashboard by its id */
+export const GET_DASHBOARDS_NAMES = gql`
+  query GetDashboardsById($ids: [ID]!) {
+    dashboards(ids: $ids) {
+      id
+      name
     }
   }
 `;

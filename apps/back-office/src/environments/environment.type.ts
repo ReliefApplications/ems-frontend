@@ -11,6 +11,7 @@ interface UserConfiguration {
  * Interface of Angular environment configuration.
  */
 export interface Environment {
+  href?: string;
   module: string;
   version: any;
   production: boolean;
@@ -27,4 +28,5 @@ export interface Environment {
   maxFileSize?: number;
   user?: UserConfiguration;
   admin0Url?: string;
+  csApiUrl?: string;
 }

@@ -1,9 +1,37 @@
 <ng-container *ngIf="loading"><ui-spinner></ui-spinner></ng-container>
-<ng-container *ngIf="!loading && form && canCreateRecords">
-  <shared-form [form]="form" (save)="onComplete($event)"></shared-form>
-  <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">
-    <ui-button category="secondary" (click)="clearForm()">{{
-      'models.record.new' | translate
-    }}</ui-button>
+<ng-container *ngIf="!loading">
+  <ng-container *ngIf="page && page.showName">
+    <ng-container
+      *ngTemplateOutlet="nameTmpl; context: { $implicit: page.name }"
+    ></ng-container>
+  </ng-container>
+  <ng-container *ngIf="step && step.showName">
+    <ng-container
+      *ngTemplateOutlet="nameTmpl; context: { $implicit: step.name }"
+    ></ng-container>
+  </ng-container>
+  <ng-container *ngIf="form && canCreateRecords">
+    <shared-form [form]="form" (save)="onComplete($event)"></shared-form>
+    <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">
+      <div class="flex gap-x-4 justify-center">
+        <!-- Action buttons -->
+        <shared-action-buttons [actionButtons]="actionButtons">
+          <ui-button category="secondary" (click)="clearForm()">{{
+            'models.record.new' | translate
+          }}</ui-button>
+        </shared-action-buttons>
+      </div>
+    </ng-container>
   </ng-container>
 </ng-container>
+
+<!-- Page / Step name template -->
+<ng-template #nameTmpl let-name>
+  <div class="flex flex-wrap items-center justify-between mb-3 gap-4">
+    <div class="flex items-center gap-1">
+      <h1 class="!m-0 overflow-hidden text-ellipsis">
+        {{ name }}
+      </h1>
+    </div>
+  </div>
+</ng-template>

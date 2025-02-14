@@ -4,7 +4,7 @@ export enum TemplateTypeEnum {
 }
 
 /** Model for Template object */
-export interface Template {
+export interface EmailTemplate {
   id?: string;
   type: TemplateTypeEnum;
   name: string;
@@ -12,14 +12,14 @@ export interface Template {
 }
 
 /** Model for add template mutation response */
-export interface AddTemplateMutationResponse {
-  addTemplate: Template;
+export interface AddEmailTemplateMutationResponse {
+  addEmailTemplate: EmailTemplate;
 }
 /** Model for edit template mutation response */
-export interface UpdateTemplateMutationResponse {
-  editTemplate: Template;
+export interface UpdateEmailTemplateMutationResponse {
+  editEmailTemplate: EmailTemplate;
 }
 /** Model for delete template mutation response */
-export interface DeleteTemplateMutationResponse {
-  deleteTemplate: Template;
+export interface DeleteEmailTemplateMutationResponse {
+  deleteEmailTemplate: EmailTemplate;
 }

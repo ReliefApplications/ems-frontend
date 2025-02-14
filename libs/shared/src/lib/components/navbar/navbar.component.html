@@ -67,83 +67,87 @@
     <!-- Classes determine nav-list height for application layout -->
     <ul [ngClass]="{ 'pr-6': vertical, flex: !vertical }">
       <ng-container *ngFor="let item of group.navItems">
-        <div
-          cdkDrag
-          [cdkDragDisabled]="!item.orderable"
-          [ngClass]="{ 'w-full max-w-[200px]': !vertical }"
-          class="show-icons"
+        <ng-container
+          *ngIf="!(environment.module === 'frontoffice' && !item.visible)"
         >
-          <li routerLinkActive="text-primary-600 bg-gray-50">
-            <a
-              class="group"
-              (click)="largeDevice ? null : nav.toggle()"
-              [routerLink]="item.path"
-            >
-              <ui-icon
-                variant="grey"
-                [icon]="item.icon"
-                [fontFamily]="item.fontFamily"
-                [size]="vertical ? 24 : 18"
-              >
-              </ui-icon>
-              <p class="truncate m-0" [uiTooltip]="item.name">
-                {{ item.name }}
-              </p>
-            </a>
-            <div
-              class="flex flex-row items-center"
-              *ngIf="item.action || item.orderable || item.visible === false"
-            >
-              <ui-icon
-                variant="grey"
-                class="eye-icon"
-                [size]="18"
-                *ngIf="!item.visible"
-                icon="visibility_off"
-                >S
-              </ui-icon>
-              <ui-button
-                variant="danger"
-                class="hide-icons hover:text-primary-600"
-                [isIcon]="true"
-                *ngIf="item.action"
-                size="small"
-                (click)="onClick(item.action.callback, $event)"
-                [icon]="item.action.icon"
-                [uiTooltip]="item.action.toolTip"
-              >
-              </ui-button>
-              <ui-button
-                variant="grey"
-                [ngClass]="{ 'hide-icons': vertical }"
-                class="hover:text-primary-600"
-                [isIcon]="true"
-                size="small"
-                cdkDragHandle
-                *ngIf="item.orderable"
-                icon="drag_indicator"
-                [uiTooltip]="'common.tooltip.dragDrop' | translate"
-              >
-              </ui-button>
-            </div>
-          </li>
-          <!-- Preview when dragging element -->
-          <li
-            *cdkDragPreview
-            class="flex items-center flex-row text-gray-700 bg-white rounded-md px-2 py-3 shadow-2lg"
+          <div
+            cdkDrag
+            [cdkDragDisabled]="!item.orderable"
+            [ngClass]="{ 'w-full max-w-[200px]': !vertical }"
+            class="show-icons"
           >
-            <a
-              class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
+            <li routerLinkActive="text-primary-600 bg-gray-50">
+              <a
+                class="group"
+                (click)="largeDevice ? null : nav.toggle()"
+                [routerLink]="item.path"
+              >
+                <ui-icon
+                  variant="grey"
+                  [icon]="item.icon"
+                  [fontFamily]="item.fontFamily"
+                  [size]="vertical ? 24 : 18"
+                >
+                </ui-icon>
+                <p class="truncate m-0" [uiTooltip]="item.name">
+                  {{ item.name }}
+                </p>
+              </a>
+              <div
+                class="flex flex-row items-center"
+                *ngIf="item.action || item.orderable || item.visible === false"
+              >
+                <ui-icon
+                  variant="grey"
+                  class="eye-icon"
+                  [size]="18"
+                  *ngIf="!item.visible"
+                  icon="visibility_off"
+                  >S
+                </ui-icon>
+                <ui-button
+                  variant="danger"
+                  class="hide-icons hover:text-primary-600"
+                  [isIcon]="true"
+                  *ngIf="item.action"
+                  size="small"
+                  (click)="onClick(item.action.callback, $event)"
+                  [icon]="item.action.icon"
+                  [uiTooltip]="item.action.toolTip"
+                >
+                </ui-button>
+                <ui-button
+                  variant="grey"
+                  [ngClass]="{ 'hide-icons': vertical }"
+                  class="hover:text-primary-600"
+                  [isIcon]="true"
+                  size="small"
+                  cdkDragHandle
+                  *ngIf="item.orderable"
+                  icon="drag_indicator"
+                  [uiTooltip]="'common.tooltip.dragDrop' | translate"
+                >
+                </ui-button>
+              </div>
+            </li>
+            <!-- Preview when dragging element -->
+            <li
+              *cdkDragPreview
+              class="flex items-center flex-row text-gray-700 bg-white rounded-md px-2 py-3 shadow-2lg"
             >
-              <ui-icon
-                variant="grey"
-                [icon]="item.icon"
-                [fontFamily]="item.fontFamily"
-              ></ui-icon>
-              <div class="pl-2">{{ item.name }}</div>
-            </a>
-          </li>
-        </div>
+              <a
+                class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
+              >
+                <ui-icon
+                  variant="grey"
+                  [icon]="item.icon"
+                  [fontFamily]="item.fontFamily"
+                ></ui-icon>
+                <div class="pl-2">{{ item.name }}</div>
+              </a>
+            </li>
+          </div>
+        </ng-container>
       </ng-container>
     </ul>
   </div>

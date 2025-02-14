@@ -9,12 +9,65 @@ import { Dialog } from '@angular/cdk/dialog';
 import { ReferenceData } from '../../../../models/reference-data.model';
 import { ReferenceDataService } from '../../../../services/reference-data/reference-data.service';
 import { createEditorForm } from '../editor-settings.forms';
+import { CommonModule } from '@angular/common';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import {
+  FormWrapperModule,
+  SelectMenuModule,
+  SelectOptionModule,
+  ButtonModule,
+  TabsModule,
+  TooltipModule,
+  IconModule,
+  CheckboxModule,
+  RadioModule,
+  DividerModule,
+  ToggleModule,
+  SpinnerModule,
+} from '@oort-front/ui';
+import { EditorModule } from '@tinymce/tinymce-angular';
+import {
+  ResourceSelectComponent,
+  ReferenceDataSelectComponent,
+} from '../../../controls/public-api';
+import { CoreGridModule } from '../../../ui/core-grid/core-grid.module';
+import { DisplaySettingsComponent } from '../../common/display-settings/display-settings.component';
+import { TabWidgetAutomationsComponent } from '../../common/tab-widget-automations/tab-widget-automations.component';
+import { TemplateAggregationsComponent } from '../../common/template-aggregations/template-aggregations.component';
 
 /** Component for the record selection in the editor widget settings */
 @Component({
   selector: 'shared-record-selection-tab',
   templateUrl: './record-selection-tab.component.html',
   styleUrls: ['./record-selection-tab.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    FormWrapperModule,
+    TranslateModule,
+    DisplaySettingsComponent,
+    CoreGridModule,
+    EditorModule,
+    SelectMenuModule,
+    SelectOptionModule,
+    ButtonModule,
+    TabsModule,
+    TooltipModule,
+    IconModule,
+    CheckboxModule,
+    RadioModule,
+    DividerModule,
+    ToggleModule,
+    ResourceSelectComponent,
+    ReferenceDataSelectComponent,
+    SpinnerModule,
+    TemplateAggregationsComponent,
+    // todo: rename ( remove s )
+    TabWidgetAutomationsComponent,
+  ],
 })
 export class RecordSelectionTabComponent
   extends UnsubscribeComponent
@@ -32,6 +85,10 @@ export class RecordSelectionTabComponent
   public selectedRecordID: string | null = null;
   /** Available reference data elements  */
   public refDataElements: any[] = [];
+  /** Handles manual selection display */
+  public manualControl = new FormControl<boolean>(false);
+  /** Handles expression builder display */
+  public expressionControl = new FormControl<boolean>(false);
 
   /**
    * Component for the record selection in the editor widget settings
@@ -50,6 +107,32 @@ export class RecordSelectionTabComponent
 
   ngOnInit(): void {
     this.selectedRecordID = this.form.get('record')?.value || null;
+    // Automation on manual / expression selection
+    this.manualControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.expressionControl.setValue(false);
+          this.form.get('recordExpression')?.setValue(null);
+        }
+      });
+    this.expressionControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.manualControl.setValue(false);
+          this.form.get('record')?.setValue(null);
+          this.selectedRecordID = null;
+        }
+      });
+    if (this.form.get('record')?.value) {
+      this.manualControl.setValue(true);
+    }
+    if (this.form.get('recordExpression')?.value) {
+      this.expressionControl.setValue(true);
+    }
+
+    // Automation on reference data selection
     if (this.form.get('referenceData')?.value) {
       this.referenceDataService
         .cacheItems(this.form.get('referenceData')?.value as string)

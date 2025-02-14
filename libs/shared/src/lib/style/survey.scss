@@ -307,6 +307,20 @@
       min-width: unset;
     }
   }
+  // Input disabled
+  .sd-input--disabled {
+    opacity: 1;
+    @apply disabled:bg-gray-50 disabled:text-gray-500 disabled:ring-gray-200;
+  }
+  // Radio & Checkbox disabled
+  .sd-item--disabled .sd-item__control-label {
+    opacity: 1;
+    @apply text-gray-500 #{!important};
+  }
+  // Boolean disabled
+  .sd-boolean--disabled .sd-boolean__thumb {
+    opacity: 0.75;
+  }
 }
 
 // On hover geospatial form field on survey creator, the actions are displayed over the map, which are not legible

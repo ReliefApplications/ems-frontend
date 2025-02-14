@@ -40,6 +40,7 @@ import {
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
 import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
+import { authType } from '../../../models/api-configuration.model';
 
 /**
  * Text widget component using Tinymce.
@@ -75,7 +76,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
   public formattedHtml: SafeHtml = '';
   /** Formatted style */
   public formattedStyle?: string;
-  /** Result of aggregations */
+  /** Result of aggregations, for html rendering */
   public aggregationsData: any = {};
   /** Loading indicator */
   public loading = true;
@@ -99,6 +100,13 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
   /** @returns available aggregations */
   get aggregations() {
     return this.settings.aggregations || [];
+  }
+
+  /** @returns Record id, manual selection or based on expression */
+  get recordId() {
+    return this.settings.record
+      ? this.settings.record
+      : this.contextService.replaceContext(this.settings.recordExpression);
   }
 
   /**
@@ -273,6 +281,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
    * Set widget html.
    */
   private setHtml() {
+    this.aggregationsData = {};
     const callback = () => {
       if (this.timeoutListener) {
         clearTimeout(this.timeoutListener);
@@ -309,7 +318,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
         });
       }, 500);
     };
-    if (this.settings.record && this.settings.resource) {
+    if (this.recordId && this.settings.resource) {
       from(
         Promise.all([
           new Promise<void>((resolve) => {
@@ -331,7 +340,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
             this.settings.text,
             {
               data: this.fieldsValue,
-              aggregation: this.aggregations,
+              aggregation: this.aggregationsData,
               fields: this.fields,
               styles: this.styles,
             }
@@ -378,7 +387,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
             this.settings.text,
             {
               data: this.fieldsValue,
-              aggregation: this.aggregations,
+              aggregation: this.aggregationsData,
               fields: this.fields,
             }
           );
@@ -393,7 +402,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
             this.settings.text,
             {
               data: this.fieldsValue,
-              aggregation: this.aggregations,
+              aggregation: this.aggregationsData,
               fields: this.fields,
             }
           );
@@ -410,41 +419,95 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
    */
   private getAggregationsData() {
     const promises: Promise<void>[] = [];
+
+    /**
+     * Default aggregation flow
+     *
+     * @param aggregation Aggregation item
+     */
+    const defaultPromise = (aggregation: any) =>
+      new Promise<void>((resolve) => {
+        firstValueFrom(
+          this.aggregationService.aggregationDataQuery({
+            resource: aggregation.resource,
+            referenceData: aggregation.referenceData,
+            aggregation: aggregation.aggregation,
+            contextFilters: aggregation.contextFilters
+              ? JSON.parse(aggregation.contextFilters)
+              : {},
+            queryParams: this.widgetService.replaceReferenceDataQueryParams(
+              aggregation.referenceDataVariableMapping
+            ),
+            at: this.contextService.atArgumentValue(aggregation.at),
+          })
+        )
+          .then(({ data }) => {
+            if (aggregation.resource) {
+              set(
+                this.aggregationsData,
+                aggregation.id,
+                (data as any).recordsAggregation
+              );
+            } else {
+              set(
+                this.aggregationsData,
+                aggregation.id,
+                (data as any).referenceDataAggregation
+              );
+            }
+          })
+          .finally(() => resolve());
+      });
+
     this.aggregations.forEach((aggregation: any) => {
-      promises.push(
-        new Promise<void>((resolve) => {
-          firstValueFrom(
-            this.aggregationService.aggregationDataQuery({
-              resource: aggregation.resource,
-              referenceData: aggregation.referenceData,
-              aggregation: aggregation.aggregation,
-              contextFilters: aggregation.contextFilters
-                ? JSON.parse(aggregation.contextFilters)
-                : {},
-              queryParams: this.widgetService.replaceReferenceDataQueryParams(
-                aggregation.referenceDataVariableMapping
-              ),
-              at: this.contextService.atArgumentValue(aggregation.at),
-            })
-          )
-            .then(({ data }) => {
-              if (aggregation.resource) {
-                set(
-                  this.aggregations,
-                  aggregation.id,
-                  (data as any).recordsAggregation
-                );
-              } else {
-                set(
-                  this.aggregations,
-                  aggregation.id,
-                  (data as any).referenceDataAggregation
-                );
-              }
-            })
-            .finally(() => resolve());
-        })
-      );
+      // If reference data
+      if (aggregation.referenceData) {
+        promises.push(
+          new Promise<void>((resolve) => {
+            // First, load reference data
+            this.referenceDataService
+              .loadReferenceData(aggregation.referenceData)
+              .then((refData) => {
+                // Then, if using auth code, directly query external API
+                if (
+                  refData.apiConfiguration?.authType ===
+                  authType.authorizationCode
+                ) {
+                  this.aggregationService
+                    .getAggregations({
+                      referenceData: aggregation.referenceData,
+                      ids: [aggregation.aggregation],
+                    })
+                    .then(({ edges }) => {
+                      const aggregationModel = edges[0].node;
+                      this.referenceDataService
+                        .aggregate(refData, aggregationModel, {
+                          contextFilters: aggregation.contextFilters
+                            ? JSON.parse(aggregation.contextFilters)
+                            : {},
+                          queryParams:
+                            this.widgetService.replaceReferenceDataQueryParams(
+                              aggregation.referenceDataVariableMapping
+                            ),
+                        })
+                        .then((data) => {
+                          set(this.aggregationsData, aggregation.id, data);
+                        })
+                        .finally(() => resolve());
+                    })
+                    .catch(() => resolve());
+                } else {
+                  // Else, apply default logic
+                  defaultPromise(aggregation).finally(() => resolve());
+                }
+              })
+              .catch(() => resolve());
+          })
+        );
+      } else {
+        // If resource
+        promises.push(defaultPromise(aggregation));
+      }
     });
     return Promise.all(promises);
   }
@@ -481,7 +544,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
                 this.settings.text,
                 {
                   data: this.fieldsValue,
-                  aggregation: this.aggregations,
+                  aggregation: this.aggregationsData,
                   fields: this.fields,
                   styles: this.styles,
                 }
@@ -495,7 +558,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
 
   /** Sets layout */
   private async getLayout(): Promise<void> {
-    const apolloRes = await firstValueFrom(
+    const { data } = await firstValueFrom(
       this.apollo.query<ResourceQueryResponse>({
         query: GET_LAYOUT,
         variables: {
@@ -505,8 +568,8 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
       })
     );
 
-    if (get(apolloRes, 'data')) {
-      this.layout = apolloRes.data.resource.layouts?.edges[0]?.node;
+    if (data) {
+      this.layout = data.resource.layouts?.edges[0]?.node;
       if (this.settings.useStyles) {
         this.styles = this.layout?.query.style;
       }
@@ -540,7 +603,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
     });
 
     if (builtQuery) {
-      const res = await firstValueFrom(
+      const { data } = await firstValueFrom(
         this.apollo.query<any>({
           query: builtQuery,
           variables: {
@@ -552,14 +615,14 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
                 {
                   field: 'id',
                   operator: 'eq',
-                  value: this.settings.record,
+                  value: this.recordId,
                 },
               ],
             },
           },
         })
       );
-      this.record = get(res.data, `${queryName}.edges[0].node`, null);
+      this.record = get(data, `${queryName}.edges[0].node`, null);
       this.fieldsValue = { ...this.record };
       const metaQuery = this.queryBuilder.buildMetaQuery(this.layout.query);
       if (metaQuery) {
@@ -572,6 +635,10 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
               this.fields = this.fields.map((field) => {
                 //add shape for columns and matrices
                 const metaData = metaFields[field.name];
+                field = {
+                  ...field,
+                  meta: metaData,
+                };
                 if (metaData && (metaData.columns || metaData.rows)) {
                   return {
                     ...field,

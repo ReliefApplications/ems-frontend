@@ -39,10 +39,10 @@ export class AccessGuard implements CanActivate {
     | boolean
     | UrlTree {
     return this.authService.getProfile().pipe(
-      map((res) => {
-        if (res.data.me) {
-          if (res.data.me.isAdmin) {
-            this.authService.user.next(res.data.me);
+      map(({ data }) => {
+        if (data.me) {
+          if (data.me.isAdmin) {
+            this.authService.user.next(data.me);
             return true;
           } else {
             this.snackBar.openSnackBar(
@@ -57,10 +57,11 @@ export class AccessGuard implements CanActivate {
           }
         } else {
           if (this.authService.account) {
-            this.authService.logout();
+            // this.authService.logout();
           } else {
             this.router.navigate(['/auth']);
           }
+          // this.router.navigate(['/auth']);
           return false;
         }
       })

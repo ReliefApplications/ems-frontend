@@ -1,7 +1,12 @@
 <div>
-  <div class="flex flex-row gap-2" [formGroup]="segmentForm">
-    <!-- Select type of email input ( manual / from list / from resource ) -->
-    <div class="w-1/3" uiFormFieldDirective [defaultMargin]="false">
+  <div class="flex flex-row gap-2">
+    <!-- Select type of email input ( manual / from filter / combined ) -->
+    <div
+      class="w-1/3"
+      uiFormFieldDirective
+      [defaultMargin]="false"
+      [formGroup]="segmentForm"
+    >
       <label>{{
         'components.notifications.email.dropdown.emailInput' | translate
       }}</label>
@@ -14,10 +19,15 @@
         <ui-select-option
           *ngFor="let segment of segmentList"
           [value]="segment"
-          >{{ segment | titlecase }}</ui-select-option
+          >{{
+            'common.notifications.email.recipients.' + segment
+              | translate
+              | titlecase
+          }}</ui-select-option
         >
       </ui-select-menu>
     </div>
+
     <!-- Manual input -->
     <div class="w-1/3" *ngIf="activeSegmentIndex === 0" uiFormFieldDirective>
       <label>{{ 'components.select.distribution.email' | translate }}</label>
@@ -38,546 +48,553 @@
         [placeholder]="'components.select.distribution.email' | translate"
       />
     </div>
-    <!-- Selection of resource -->
-    <div class="w-1/2" *ngIf="activeSegmentIndex >= 1">
+    <div></div>
+
+    <!-- Distribution list -->
+    <div
+      class="w-1/2"
+      *ngIf="activeSegmentIndex === 1"
+      [formGroup]="distributionList"
+    >
       <label
         htmlFor="select__data__set"
         class="block text-sm font-medium leading-6 text-gray-900"
       >
         {{ 'components.queryBuilder.dataset.title' | translate }}*
       </label>
-      <ng-select
-        id="select__data__set"
-        name="select__data__set"
-        [(ngModel)]="selectedDataset"
-        [ngModelOptions]="{ standalone: true }"
-        [items]="datasets"
-        bindLabel="blockName"
-        [searchable]="true"
-        [virtualScroll]="true"
-        (clear)="clearDatasetSelection()"
-        (change)="bindDataSetDetails($event)"
-        [placeholder]="'components.queryBuilder.dataset.select' | translate"
-      >
-        <ng-template disabled selected>
-          <span>{{
-            'components.queryBuilder.dataset.select' | translate
-          }}</span>
-        </ng-template>
-        <ng-template
-          ng-option-tmp
-          let-item="item"
-          let-index="index"
-          let-search="searchTerm"
-        >
-          <span>{{
-            this.emailService.replaceUnderscores(item.blockName || '')
-              | titlecase
-          }}</span>
-        </ng-template>
-      </ng-select>
-    </div>
-  </div>
 
-  <!-- From resource filter -->
-  <div *ngIf="activeSegmentIndex === 2">
-    <!-- Filter editor -->
-    <div>
-      <div [formGroup]="filterQuery" *ngIf="selectedDataset?.fields?.length">
-        <div class="flex-row gap-4 mt-6">
-          <div class="flex gap-4">
-            <div class="flex gap-4 mt-2">
-              <div class="mt-2">
-                <!-- Label for Filter Logic -->
-                <div>
-                  <label
-                    class="block text-sm font-medium leading-6 text-gray-900"
-                    htmlFor="exampleSelect"
-                    >{{
-                      'components.queryBuilder.filter.logic' | translate
-                    }}</label
-                  >
-                </div>
-
-                <div class="flex items-center gap-5 mt-1">
-                  <!-- Filter Logic -->
-                  <div
-                    uiFormFieldDirective
-                    [defaultMargin]="false"
-                    class="w-28"
-                  >
-                    <ui-select-menu formControlName="logic">
-                      <ui-select-option value="or">
-                        {{ 'components.queryBuilder.filter.or' | translate }}
-                      </ui-select-option>
-                      <ui-select-option value="and">
-                        {{ 'components.queryBuilder.filter.and' | translate }}
-                      </ui-select-option>
-                    </ui-select-menu>
-                  </div>
-
-                  <!-- Filter Row Button -->
-                  <ui-button
-                    category="tertiary"
-                    (click)="addNewDatasetFilter()"
-                  >
-                    {{ 'components.queryBuilder.filter.new' | translate }}
-                  </ui-button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div formArrayName="filters">
-            <div
-              *ngFor="
-                let data of filterFields?.controls;
-                let fieldIndex = index
-              "
-            >
-              <div class="flex gap-5 ml-6" [formGroupName]="fieldIndex">
-                <!-- Filter Field -->
-                <div
-                  uiFormFieldDirective
-                  [defaultMargin]="false"
-                  class="mt-4 w-1/3"
-                >
-                  <label htmlFor="exampleSelect">
-                    {{ 'components.queryBuilder.filter.field' | translate }}
-                  </label>
-                  <ui-select-menu
-                    [filterable]="true"
-                    id="exampleSelect"
-                    name="exampleSelect"
-                    (ngModelChange)="setField($event, fieldIndex)"
-                    formControlName="field"
-                  >
-                    <ng-container *ngFor="let field of availableFields">
-                      <!-- Normal Fields -->
-                      <ui-select-option
-                        *ngIf="!field.fields"
-                        [value]="field.name"
-                      >
-                        {{ field.text || field.name }}
-                      </ui-select-option>
-                      <!-- Resource and Resources Fields -->
-                      <ui-select-option *ngIf="field.fields" [isGroup]="true">
-                        <!-- Group Label -->
-                        {{ field.text || field.name }}
-                        <ui-select-option
-                          *ngFor="let subField of field.fields"
-                          [value]="
-                            subField.parentName
-                              ? subField.name.split(' - ').join('.')
-                              : field.name + '.' + subField.name
-                          "
-                        >
-                          {{
-                            field.name === '$attribute'
-                              ? subField.text || subField.name
-                              : field.type === 'resource' || subField.parentName
-                              ? subField.name
-                              : field.name + ' - ' + subField.name
-                          }}
-                        </ui-select-option>
-                      </ui-select-option>
-                    </ng-container>
-                  </ui-select-menu>
-                </div>
-                <!-- Filter Operator -->
-                <div
-                  uiFormFieldDirective
-                  [defaultMargin]="false"
-                  class="mt-4 w-1/3"
-                >
-                  <label htmlFor="exampleSelect">
-                    {{ 'components.queryBuilder.filter.operator' | translate }}
-                  </label>
-                  <ui-select-menu
-                    id="exampleSelect"
-                    name="exampleSelect"
-                    formControlName="operator"
-                    (ngModelChange)="onOperatorChange($event, data)"
-                  >
-                    <ui-select-option
-                      *ngFor="let operatorDetail of operators[fieldIndex]"
-                      [value]="operatorDetail?.value"
-                    >
-                      {{ operatorDetail.label | translate | titlecase }}
-                    </ui-select-option>
-                  </ui-select-menu>
-                </div>
-                <!-- Filter Value -->
-                <div
-                  class="mt-4 w-1/3"
-                  *ngIf="operators?.[fieldIndex] && !data.get('hideEditor')?.value"
-                >
-                  <!-- Text Input for non-date/datetime fields -->
-                  <ng-container
-                    *ngIf="
-                      !isDateOrDatetimeOperator(fieldIndex) &&
-                      !isNumericOperator(fieldIndex) &&
-                      !isSelectField(fieldIndex) &&
-                      getFieldType(fieldIndex) !== 'boolean'
-                    "
-                  >
-                    <div uiFormFieldDirective [defaultMargin]="false">
-                      <label>{{ 'common.value.one' | translate }}</label>
-                      <input
-                        formControlName="value"
-                        type="text"
-                        placeholder="Enter the value"
-                      />
-                    </div>
-                  </ng-container>
-                  <!-- Numeric Input -->
-                  <ng-container
-                    *ngIf="isNumericOperator(fieldIndex)"
-                    #numericEditor
-                  >
-                    <div uiFormFieldDirective [defaultMargin]="false">
-                      <label>{{ 'common.value.one' | translate }}</label>
-                      <input formControlName="value" type="number" />
-                    </div>
-                  </ng-container>
-                  <!-- Date / DateTime picker or within the Last... picker -->
-                  <ng-container *ngIf="isDateOrDatetimeOperator(fieldIndex)">
-                    <!-- Date Picker -->
-                    <div
-                      uiFormFieldDirective
-                      [defaultMargin]="false"
-                      *ngIf="
-                        getFieldType(fieldIndex) === 'date' &&
-                        data.get('operator')?.value !== 'inthelast'
-                      "
-                    >
-                      <label class="block text-gray-700 text-sm">{{
-                        'components.queryBuilder.filter.value' | translate
-                      }}</label>
-                      <div class="grid grid-cols-6 gap-2">
-                        <!-- Conditional rendering based on useExpression -->
-                        <ng-container *ngIf="!useExpression; else textInput">
-                          <div [uiDateWrapper]="calendar" class="col-span-5">
-                            <input
-                              [uiDatePicker]
-                              formControlName="value"
-                              [label]="'kendo.datepicker.dateLabel' | translate"
-                              class="w-full"
-                            />
-                            <ui-date-picker #calendar></ui-date-picker>
-                          </div>
-                        </ng-container>
-                        <ng-template #textInput>
-                          <input
-                            uiTooltip="YYYY/MM/DD"
-                            formControlName="value"
-                            type="text"
-                            placeholder="YYYY/MM/DD"
-                            class="col-span-5 w-full"
-                          />
-                        </ng-template>
-
-                        <!-- Date and text Button -->
-                        <div class="col-span-1">
-                          <ui-button
-                            [isIcon]="true"
-                            icon="change_circle_outline"
-                            variant="primary"
-                            (click)="changeEditor()"
-                            [uiTooltip]="
-                              (useExpression
-                                ? 'components.queryBuilder.tooltip.filter.date.usePicker'
-                                : 'components.queryBuilder.tooltip.filter.date.useExpression'
-                              ) | translate
-                            "
-                            class="w-full"
-                          ></ui-button>
-                        </div>
-                      </div>
-                    </div>
-                    <!-- Date Time Picker -->
-                    <div
-                      uiFormFieldDirective
-                      [defaultMargin]="false"
-                      *ngIf="
-                        (getFieldType(fieldIndex) === 'datetime' ||
-                          getFieldType(fieldIndex) === 'datetime-local') &&
-                        data.get('operator')?.value !== 'inthelast'
-                      "
-                    >
-                      <label class="block text-gray-700 text-sm">{{
-                        'components.queryBuilder.filter.value' | translate
-                      }}</label>
-                      <div class="grid grid-cols-6 gap-2">
-                        <ng-container *ngIf="!useExpression; else textInput">
-                          <div [uiDateWrapper]="calendar" class="col-span-5">
-                            <input
-                              [uiDatePicker]
-                              formControlName="value"
-                              [label]="'kendo.datepicker.dateLabel' | translate"
-                              class="w-full"
-                            />
-                            <ui-date-picker #calendar></ui-date-picker>
-                          </div>
-                        </ng-container>
-                        <ng-template #textInput>
-                          <input
-                            uiTooltip="YYYY/MM/DD"
-                            formControlName="value"
-                            type="text"
-                            placeholder="YYYY/MM/DD"
-                            class="col-span-5 w-full"
-                          />
-                        </ng-template>
-
-                        <!-- Date to text Button -->
-                        <div class="col-span-1">
-                          <ui-button
-                            [isIcon]="true"
-                            icon="change_circle_outline"
-                            variant="primary"
-                            (click)="changeEditor()"
-                            [uiTooltip]="
-                              (useExpression
-                                ? 'components.queryBuilder.tooltip.filter.date.usePicker'
-                                : 'components.queryBuilder.tooltip.filter.date.useExpression'
-                              ) | translate
-                            "
-                            class="w-full"
-                          ></ui-button>
-                        </div>
-                      </div>
-                    </div>
-                    <!-- within the Last... picker -->
-                    <div
-                      *ngIf="data.get('operator')?.value === 'inthelast'"
-                      formGroupName="inTheLast"
-                      class="flex"
-                    >
-                      <div
-                        uiFormFieldDirective
-                        [defaultMargin]="false"
-                        class="mr-2"
-                      >
-                        <label>Number</label>
-                        <ui-select-menu formControlName="number">
-                          <ui-select-option
-                            *ngFor="let num of getNumbersArray()"
-                            [value]="num"
-                          >
-                            {{ num }}
-                          </ui-select-option>
-                        </ui-select-menu>
-                      </div>
-                      <div uiFormFieldDirective [defaultMargin]="false">
-                        <label>Unit</label>
-                        <ui-select-menu formControlName="unit">
-                          <ng-container *ngFor="let timeUnit of timeUnits">
-                            <ui-select-option [value]="timeUnit.value">
-                              {{ timeUnit.label }}
-                            </ui-select-option>
-                          </ng-container>
-                        </ui-select-menu>
-                      </div>
-                    </div>
-                    <div
-                      *ngIf="data.get('operator')?.value === 'inthelast'"
-                      [hidden]="true"
-                    >
-                      <input formControlName="value" type="text" />
-                    </div>
-                  </ng-container>
-                  <!-- Value picker for Select fields -->
-                  <ng-container *ngIf="isSelectField(fieldIndex)">
-                    <div uiFormFieldDirective [defaultMargin]="false">
-                      <label>{{ 'common.value.one' | translate }}</label>
-                      <ui-select-menu
-                        [filterable]="true"
-                        *ngIf="!getField(fieldIndex).multiSelect"
-                        formControlName="value"
-                      >
-                        <ui-select-option>{{
-                          'common.input.none' | translate
-                        }}</ui-select-option>
-                        <ui-select-option
-                          *ngFor="let option of getField(fieldIndex).options"
-                          [value]="option.value"
-                        >
-                          {{ option.text }}
-                        </ui-select-option>
-                      </ui-select-menu>
-                      <ui-select-menu
-                        [filterable]="true"
-                        *ngIf="getField(fieldIndex).multiSelect"
-                        formControlName="value"
-                        [multiselect]="true"
-                      >
-                        <ui-select-option>{{
-                          'common.input.none' | translate
-                        }}</ui-select-option>
-                        <ui-select-option
-                          *ngFor="let option of getField(fieldIndex).options"
-                          [value]="option.value"
-                        >
-                          {{ option.text }}
-                        </ui-select-option>
-                      </ui-select-menu>
-                    </div>
-                  </ng-container>
-
-                  <!-- Value picker for boolean fields -->
-                  <ng-container *ngIf="getFieldType(fieldIndex) === 'boolean'">
-                    <div uiFormFieldDirective [defaultMargin]="false">
-                      <label>{{ 'common.value.one' | translate }}</label>
-                      <ui-select-menu formControlName="value">
-                        <ui-select-option>{{
-                          'common.input.none' | translate
-                        }}</ui-select-option>
-
-                        <ui-select-option [value]="true">
-                          {{ 'common.true' | translate }}
-                        </ui-select-option>
-
-                        <ui-select-option [value]="false">
-                          {{ 'common.false' | translate }}
-                        </ui-select-option>
-                      </ui-select-menu>
-                    </div>
-                  </ng-container>
-                </div>
-                <ui-button
-                  [variant]="'danger'"
-                  class="mt-8"
-                  [isIcon]="true"
-                  size="large"
-                  (click)="deleteDatasetFilter(fieldIndex)"
-                  [icon]="'delete'"
-                  [uiTooltip]="'common.archive.delete' | translate"
-                >
-                </ui-button>
-              </div>
-            </div>
-          </div>
-        </div>
+      <!-- Resource selection -->
+      <div uiFormFieldDirective>
+        <shared-resource-select
+          formControlName="resource"
+          [selectedElements]="[resource]"
+        ></shared-resource-select>
+        <ui-button
+          *ngIf="distributionList?.value.resource"
+          uiSuffix
+          size="small"
+          [isIcon]="true"
+          (click)="clearFormField('resource', $event)"
+          icon="close"
+          variant="danger"
+          [uiTooltip]="'common.remove' | translate"
+        ></ui-button>
       </div>
     </div>
   </div>
-  <div class="loadingSign" [ngClass]="{ active: loading }">
-    <ui-spinner *ngIf="loading" style="position: relative"></ui-spinner>
+
+  <div>
+    <!-- From resource filter -->
+    <div *ngIf="activeSegmentIndex === 1">
+      <!-- Filter editor -->
+      <ng-container *ngTemplateOutlet="datasetPreviewTmpl"></ng-container>
+      <!-- Resource has no fields -->
+      <ng-container
+        class="mt-5"
+        *ngTemplateOutlet="noFieldsInResourceAlertTmpl"
+      ></ng-container>
+    </div>
   </div>
-  <div uiChipList>
+  <!-- Use the template with *ngTemplateOutlet and context -->
+  <ng-container
+    *ngTemplateOutlet="
+      emailChipListTmpl;
+      context: {
+        $implicit: selectedEmails,
+        activeSegmentIndex: activeSegmentIndex,
+        isCombination: false
+      }
+    "
+  >
+  </ng-container>
+
+  <!-- Combination ( selected from resource ) -->
+  <div class="overflow-hidden mt-4" *ngIf="activeSegmentIndex === 2">
+    <cdk-accordion>
+      <ng-container *ngFor="let item of accordionItems; let i = index">
+        <!-- Generic expansion panel -->
+        <ui-expansion-panel [index]="i" (click)="onExpand(i)">
+          <ng-container ngProjectAs="title">
+            {{
+              'common.notifications.email.recipients.' + item
+                | translate
+                | titlecase
+            }}
+          </ng-container>
+          <!-- Manual input -->
+          <ng-container *ngIf="item === 'manual'">
+            <div class="w-1/2">
+              <div uiFormFieldDirective>
+                <label>{{
+                  'components.select.distribution.email' | translate
+                }}</label>
+                <ui-icon
+                  icon="info_outline"
+                  class="cursor-help"
+                  variant="grey"
+                  [uiTooltip]="
+                    'components.select.distribution.emailError' | translate
+                  "
+                  uiSuffix
+                ></ui-icon>
+                <input
+                  #filterInput
+                  (keyup.enter)="addEmailManually(filterInput)"
+                  (change)="validateEmail(filterInput)"
+                  autocomplete="off"
+                  aria-autocomplete="none"
+                  type="text"
+                  [placeholder]="
+                    'components.select.distribution.email' | translate
+                  "
+                />
+              </div>
+              <!-- Chip List-->
+              <ng-container
+                class="mb-2"
+                *ngTemplateOutlet="
+                  emailChipListTmpl;
+                  context: {
+                    $implicit: selectedEmails,
+                    activeSegmentIndex: activeSegmentIndex,
+                    isCombination: true
+                  }
+                "
+              >
+              </ng-container>
+            </div>
+          </ng-container>
+          <!-- Resource filtering -->
+          <ng-container *ngIf="item === 'resource'">
+            <div class="w-1/4" [formGroup]="distributionList">
+              <label
+                htmlFor="select__data__set"
+                class="block text-sm font-medium leading-6 text-gray-900"
+              >
+                {{ 'components.queryBuilder.dataset.title' | translate }}*
+              </label>
+
+              <!-- Resource selection -->
+              <div uiFormFieldDirective>
+                <shared-resource-select
+                  formControlName="resource"
+                  [selectedElements]="[resource]"
+                ></shared-resource-select>
+                <ui-button
+                  *ngIf="distributionList?.value.resource"
+                  uiSuffix
+                  size="small"
+                  [isIcon]="true"
+                  (click)="clearFormField('resource', $event)"
+                  icon="close"
+                  variant="danger"
+                  [uiTooltip]="'common.remove' | translate"
+                ></ui-button>
+              </div>
+            </div>
+            <div>
+              <ng-container
+                *ngTemplateOutlet="datasetPreviewTmpl"
+              ></ng-container>
+            </div>
+          </ng-container>
+          <!-- Common services filtering -->
+          <ng-container *ngIf="item === 'commonServices'">
+            <div class="overflow-hidden mt-2" [formGroup]="distributionList">
+              <ng-container
+                *ngTemplateOutlet="commonServicePreviewTmpl"
+              ></ng-container>
+            </div>
+          </ng-container>
+        </ui-expansion-panel>
+      </ng-container>
+    </cdk-accordion>
+  </div>
+
+  <!-- Select from Common Services -->
+  <div class="overflow-hidden mt-2" *ngIf="activeSegmentIndex === 3">
+    <!-- <h3>{{ 'components.queryBuilder.filter.title' | translate }}</h3> -->
+    <ng-container *ngTemplateOutlet="commonServicePreviewTmpl"></ng-container>
+  </div>
+</div>
+
+<!-- Email chip list template -->
+<ng-template
+  #emailChipListTmpl
+  let-selectedEmails="selectedEmails"
+  let-activeSegmentIndex="activeSegmentIndex"
+  let-isCombination="isCombination"
+>
+  <div uiChipList *ngIf="activeSegmentIndex === 0 || isCombination">
     <ui-chip
       variant="primary"
       class="text-xl px-1"
       [removable]="true"
       (removed)="removeEmailChip(chipIndex)"
-      *ngFor="let emailText of selectedEmails; let chipIndex = index"
-      >{{ emailText }}</ui-chip
+      *ngFor="let emailControl of inputEmails; let chipIndex = index"
+      >{{ emailControl }}</ui-chip
     >
   </div>
+</ng-template>
 
-  <!-- From list ( selected from resource ) -->
-  <div
-    class="overflow-hidden mt-2"
-    *ngIf="activeSegmentIndex === 1 || showPreview"
+<!-- Please select the child fields of the Selected fields -->
+<ng-template #ChildFieldAlertTmpl>
+  <ui-alert
+    variant="warning"
+    [closable]="true"
+    *ngIf="showFieldsWarning"
+    (close)="closeFieldsWarningMessage()"
   >
-    <!-- Selection of emails -->
-    <div class="overflow-auto h-64" *ngIf="!loading && dataList?.length">
-      <table
-        *ngIf="dataList?.length"
-        class="dataset-preview w-full border border-blue-600 shadow-xs m-1"
-      >
-        <thead class="bg-blue-600 border-blue-600 shadow-xs text-white">
-          <tr class="bg-blue-600 border-blue-600 shadow-xs text-white">
-            <th *ngIf="!showPreview">
-              <input
-                type="checkbox"
-                [checked]="false"
-                *ngIf="!isAllSelected"
-                (change)="selectAllEmailItems($event)"
-              />
-              <input
-                type="checkbox"
-                [checked]="true"
-                *ngIf="isAllSelected"
-                (change)="selectAllEmailItems($event)"
-              />
-            </th>
-            <ng-container *ngFor="let field of selectedFields">
-              <th
-                class="bg-blue-600 border-white-600 shadow-xs text-white p-2 text-center"
-              >
-                {{ this.emailService.replaceUnderscores(field) | titlecase }}
-              </th>
-            </ng-container>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            *ngFor="let data of dataList; index as i"
-            class="bg-white-600 border-blue-600 text-blue-600"
-          >
-            <td *ngIf="!showPreview">
-              <input
-                type="checkbox"
-                (change)="selectUnselectIndividualEmails(i, $event)"
-                [checked]="true"
-                *ngIf="selectedItemIndexes.indexOf(i) !== -1"
-              />
-              <input
-                type="checkbox"
-                (change)="selectUnselectIndividualEmails(i, $event)"
-                [checked]="false"
-                *ngIf="selectedItemIndexes.indexOf(i) === -1"
-              />
-            </td>
-            <ng-container *ngFor="let field of selectedFields">
-              <td class="p-2 border border-blue-600 shadow-xs m-1 text-center">
-                {{ this.emailService.formatDataStrings(data[field], field) }}
-              </td>
-            </ng-container>
-          </tr>
-        </tbody>
-      </table>
-      <div *ngIf="activeSegmentIndex === 2">
-        <ui-alert class="mb-4" variant="warning" *ngIf="dataList?.length === 0">
-          {{ 'components.select.distribution.noPreviewData' | translate }}
-        </ui-alert>
-      </div>
-    </div>
+    <div
+      [innerHTML]="
+        'components.email.alert.selectChildFields'
+          | translate : { totalRecords: totalMatchingRecords }
+      "
+    ></div>
+  </ui-alert>
+</ng-template>
+<!-- Selected NonEmail Fields -->
+<ng-template #NonEmailFieldAlertTmpl>
+  <ui-alert
+    variant="warning"
+    [closable]="true"
+    *ngIf="nonEmailFieldsAlert"
+    (close)="closeNonEmailFieldsAlert()"
+  >
+    <div
+      [innerHTML]="'components.email.alert.selectedNonEmailFields' | translate"
+    ></div>
+  </ui-alert>
+</ng-template>
+<!-- No Fields in Resource Message -->
+<ng-template #noFieldsInResourceAlertTmpl>
+  <ui-alert
+    variant="warning"
+    [closable]="true"
+    *ngIf="
+      this.resourcePopulated &&
+      this.distributionList?.value?.resource !== null &&
+      !this.resource?.fields?.length
+    "
+  >
+    <div
+      [innerHTML]="'components.email.alert.noResourceFields' | translate"
+    ></div>
+  </ui-alert>
+</ng-template>
+<!-- No selected fields in dataset -->
+<ng-template #noSelectedFieldsAlertTmpl>
+  <ui-alert
+    variant="warning"
+    *ngIf="!selectedFields?.length && !showDatasetLimitWarning"
+    [closable]="true"
+  >
     <div>
-      <ui-button
-        *ngIf="activeSegmentIndex === 1 && selectedItemIndexes.length"
-        class="float-right mt-8"
-        category="secondary"
-        variant="primary"
-        (click)="addSelectedEmails()"
-      >
-        {{ 'components.select.distribution.apply' | translate }}
-      </ui-button>
+      {{ 'components.email.alert.noSelectedFields' | translate }}
     </div>
-  </div>
+  </ui-alert>
+</ng-template>
+<!-- Showing Email Preview -->
+<ng-template #showDLPreview>
+  <ui-alert variant="default" *ngIf="showPreview" [closable]="true">
+    <div>
+      {{ 'components.email.alert.dlPreview' | translate }}
+    </div>
+  </ui-alert>
+</ng-template>
 
-  <div *ngIf="activeSegmentIndex === 2 && showBtnPreview">
-    <!-- Apply filter -->
-    <ui-button
-      *ngIf="datasetFilterInfo.controls"
-      class="float-right mt-8"
-      category="secondary"
-      variant="primary"
-      (click)="applyFilter('')"
+<ng-template #showQuery>
+  <ui-alert variant="default" *ngIf="!resource?.id" [closable]="true">
+    <div>
+      {{ 'components.email.alert.noResource' | translate }}
+    </div>
+  </ui-alert>
+</ng-template>
+
+<!-- Distribution List Filter-Fields-Preview Query -->
+<ng-template #datasetPreviewTmpl>
+  <ng-container class="mt-2" *ngTemplateOutlet="showQuery"></ng-container>
+  <div [formGroup]="dlQuery">
+    <ui-tabs
+      [selectedIndex]="currentTabIndex"
+      (selectedIndexChange)="onTabSelect($event, true)"
+      #datasetPreview
+      *ngIf="
+        (resource?.fields?.length && availableFields.length > 0) ||
+        activeSegmentIndex === 3 ||
+        (activeSegmentIndex === 2 && expandedIndex === 2)
+      "
     >
-      {{ 'components.queryBuilder.filter.apply' | translate }}
-    </ui-button>
-    <!-- Preview dataset -->
-    <ui-button
-      class="float-right mt-8 mr-2"
-      category="secondary"
-      variant="primary"
-      (click)="applyFilter('preview')"
-    >
-      {{ 'common.preview' | translate }}
-    </ui-button>
+      <div class="mt-4 flex flex-row">
+        <!-- Fields Tab -->
+        <ui-tab
+          [title]="'Fields'"
+          [selected]="true"
+          *ngIf="expandedIndex < 2 && activeSegmentIndex !== 3"
+        >
+          <ng-container ngProjectAs="label">
+            {{ 'components.queryBuilder.fields.title' | translate }}
+          </ng-container>
+          <ng-template uiTabContent>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="noSelectedFieldsAlertTmpl"
+            ></ng-container>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="ChildFieldAlertTmpl"
+            ></ng-container>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="NonEmailFieldAlertTmpl"
+            ></ng-container>
+            <div class="flex gap-4 mt-2">
+              <div class="mt-2 overflow-auto">
+                <!-- FIELDS -->
+                <shared-tab-fields
+                  *ngIf="availableFields.length > 0"
+                  [form]="getFieldsArray()"
+                  [fields]="availableFields"
+                  [showLimit]="false"
+                  [showColumnWidth]="false"
+                  (droppedFields)="setNonEmailFields($event)"
+                ></shared-tab-fields>
+              </div>
+            </div>
+
+            <ui-button
+              *ngIf="distributionList.controls"
+              class="float-right mt-8"
+              category="secondary"
+              variant="primary"
+              (click)="getDataSet('fields')"
+              [disabled]="showFieldsWarning"
+            >
+              {{ 'components.queryBuilder.filter.applyField' | translate }}
+            </ui-button>
+          </ng-template>
+        </ui-tab>
+        <!-- Filter Tab -->
+        <ui-tab [title]="'components.queryBuilder.filter.title' | translate">
+          <ng-container ngProjectAs="label">
+            {{ 'components.queryBuilder.filter.title' | translate }}
+          </ng-container>
+          <ng-template uiTabContent>
+            <ng-container
+              *ngIf="
+                resource?.fields?.length ||
+                availableFields.length > 0 ||
+                commonServiceFields.length > 0
+              "
+            >
+              <div class="flex gap-4 mt-2">
+                <div class="mt-2 w-full">
+                  <!-- NESTED FILTER GROUP -->
+                  <shared-tab-filter
+                    [form]="$any(dlQuery.get('filter'))"
+                    [query]="dlQuery.getRawValue()"
+                    [referenceFields]="[]"
+                  >
+                  </shared-tab-filter>
+                </div>
+              </div>
+              <ui-button
+                class="float-right mt-8"
+                category="secondary"
+                variant="primary"
+                (click)="getDataSet('preview', true); showPreview = true"
+                [disabled]="selectedFields.length === 0"
+              >
+                {{ 'common.preview' | translate }}
+              </ui-button>
+            </ng-container>
+          </ng-template>
+        </ui-tab>
+
+        <!-- Preview Tab -->
+        <ui-tab
+          [title]="'Preview'"
+          [disabled]="this.dlQuery.get('fields')?.value.length === 0"
+        >
+          <ng-container ngProjectAs="label">
+            {{ 'common.preview' | translate }}
+          </ng-container>
+          <ng-template uiTabContent>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="showDLPreview"
+            ></ng-container>
+            <ng-container *ngIf="previewEmails?.length > 0">
+              <div
+                class="mb-4"
+                *ngIf="previewEmails && previewEmails?.length > 0"
+              >
+                <!-- <h2>{{ 'components.select.distribution.to' | translate }}:</h2> -->
+                <ul class="list-none space-y-1">
+                  <div uiChipList>
+                    <ng-container
+                      *ngFor="let email of previewEmails; let i = index"
+                    >
+                      <ui-chip
+                        *ngIf="i < 6 || isExpandedPreview"
+                        variant="primary"
+                        class="w-full flex-row flex-wrap justify-between mr-1"
+                        >{{ email }}</ui-chip
+                      >
+                    </ng-container>
+                  </div>
+                  <ui-button
+                    *ngIf="previewEmails.length > 6 && !isExpandedPreview"
+                    class="inline-block"
+                    (click)="toggleExpandPreview()"
+                    >{{
+                      'components.email.preview.more'
+                        | translate : { length: previewEmails.length - 6 }
+                    }}</ui-button
+                  >
+                  <ui-button
+                    *ngIf="isExpandedPreview"
+                    class="inline-block"
+                    (click)="toggleExpandPreview()"
+                    >{{
+                      'components.email.preview.less' | translate
+                    }}</ui-button
+                  >
+                </ul>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="!isPreviewEmail">
+              <ui-alert class="mb-4" variant="warning">
+                {{ 'components.distributionLists.warning.noData' | translate }}
+              </ui-alert>
+            </ng-container>
+            <div
+              class="loadingSign loadingHeight"
+              [ngClass]="{ active: loading }"
+            >
+              <ui-spinner
+                *ngIf="loading"
+                style="position: relative"
+              ></ui-spinner>
+            </div>
+          </ng-template>
+        </ui-tab>
+      </div>
+    </ui-tabs>
   </div>
-</div>
+</ng-template>
+
+<!-- Distribution List Filter-Fields-Preview Query -->
+<ng-template #commonServicePreviewTmpl>
+  <div [formGroup]="dlCommonQuery">
+    <ui-tabs
+      [selectedIndex]="currentTabIndex"
+      (selectedIndexChange)="onTabSelect($event, true)"
+      #datasetPreview
+      *ngIf="
+        resource?.fields?.length ||
+        availableFields.length > 0 ||
+        activeSegmentIndex === 3 ||
+        activeSegmentIndex === 2
+      "
+    >
+      <div class="mt-4 flex flex-row">
+        <!-- Filter Tab -->
+        <ui-tab [title]="'components.queryBuilder.filter.title' | translate">
+          <ng-container ngProjectAs="label">
+            {{ 'components.queryBuilder.filter.title' | translate }}
+          </ng-container>
+          <ng-template uiTabContent>
+            <ng-container *ngIf="commonServiceFields.length > 0">
+              <div class="flex gap-4 mt-2">
+                <div class="mt-2 w-full">
+                  <!-- NESTED FILTER GROUP -->
+                  <shared-tab-filter
+                    [form]="$any(dlCommonQuery.get('filter'))"
+                    [query]="dlCommonQuery.getRawValue()"
+                    [referenceFields]="commonServiceFields"
+                  >
+                  </shared-tab-filter>
+                </div>
+              </div>
+              <ui-button
+                class="float-right mt-8"
+                category="secondary"
+                variant="primary"
+                (click)="getCommonServiceDataSet(true); showPreview = true"
+              >
+                {{ 'common.preview' | translate }}
+              </ui-button>
+            </ng-container>
+          </ng-template>
+        </ui-tab>
+
+        <!-- Preview Tab -->
+        <ui-tab [title]="'Preview'">
+          <ng-container ngProjectAs="label">
+            {{ 'common.preview' | translate }}
+          </ng-container>
+          <ng-template uiTabContent>
+            <ng-container
+              class="mt-2"
+              *ngTemplateOutlet="showDLPreview"
+            ></ng-container>
+            <ng-container *ngIf="previewCsEmails?.length > 0">
+              <div
+                class="mb-4"
+                *ngIf="previewCsEmails && previewCsEmails?.length > 0"
+              >
+                <!-- <h2>{{ 'components.select.distribution.to' | translate }}:</h2> -->
+                <ul class="list-none space-y-1">
+                  <div uiChipList>
+                    <ng-container
+                      *ngFor="let email of previewCsEmails; let i = index"
+                    >
+                      <ui-chip
+                        *ngIf="i < 6 || isExpandedPreview"
+                        variant="primary"
+                        class="w-full flex-row flex-wrap justify-between mr-1"
+                        >{{ email }}</ui-chip
+                      >
+                    </ng-container>
+                  </div>
+                  <ui-button
+                    *ngIf="previewCsEmails.length > 6 && !isExpandedPreview"
+                    class="inline-block"
+                    (click)="toggleExpandPreview()"
+                    >{{
+                      'components.email.preview.more'
+                        | translate : { length: previewCsEmails.length - 6 }
+                    }}</ui-button
+                  >
+                  <ui-button
+                    *ngIf="isExpandedPreview"
+                    class="inline-block"
+                    (click)="toggleExpandPreview()"
+                    >{{
+                      'components.email.preview.less' | translate
+                    }}</ui-button
+                  >
+                </ul>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="!isPreviewEmail">
+              <ui-alert class="mb-4" variant="warning">
+                {{ 'components.distributionLists.warning.noData' | translate }}
+              </ui-alert>
+            </ng-container>
+            <div
+              class="loadingSign loadingHeight"
+              [ngClass]="{ active: loading }"
+            >
+              <ui-spinner
+                *ngIf="loading"
+                style="position: relative"
+              ></ui-spinner>
+            </div>
+          </ng-template>
+        </ui-tab>
+      </div>
+    </ui-tabs>
+  </div>
+</ng-template>

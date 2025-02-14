@@ -39,9 +39,10 @@
     "
     kendoGridToolbarTemplate
     position="top"
+    class="export-hide"
   >
     <kendo-textbox
-      class="!w-full"
+      class="!w-full export-hide"
       *ngIf="searchable"
       [placeholder]="'common.placeholder.search' | translate"
       [formControl]="search"
@@ -55,6 +56,7 @@
       fillMode="flat"
       (click)="toggleColumnChooser(anchor.element, columnChooser)"
       icon="columns"
+      class="export-hide"
     ></kendo-button>
     <ng-template #columnChooser>
       <shared-grid-column-chooser
@@ -62,6 +64,7 @@
         (hideColumnChooser)="
           toggleColumnChooser(anchor.element, columnChooser, $event)
         "
+        class="export-hide"
       ></shared-grid-column-chooser>
     </ng-template>
 
@@ -69,17 +72,32 @@
       *ngIf="actions.add && canAdd"
       kendoButton
       (click)="action.emit({ action: 'add' })"
+      class="export-hide"
     >
       {{ 'common.add' | translate }}
     </button>
-    <button *ngIf="actions.export" kendoButton (click)="onExport()">
+    <button
+      *ngIf="actions.export && canDownload"
+      kendoButton
+      (click)="onExport()"
+    >
       {{ 'common.export' | translate }}
     </button>
     <ng-container *ngIf="editable">
-      <button kendoButton (click)="onSave()" [disabled]="!hasChanges">
+      <button
+        kendoButton
+        (click)="onSave()"
+        [disabled]="!hasChanges"
+        class="export-hide"
+      >
         {{ 'common.save' | translate }}
       </button>
-      <button kendoButton (click)="onCancel()" [disabled]="!hasChanges">
+      <button
+        kendoButton
+        (click)="onCancel()"
+        [disabled]="!hasChanges"
+        class="export-hide"
+      >
         {{ 'common.cancel' | translate }}
       </button>
     </ng-container>
@@ -89,6 +107,7 @@
       kendoButton
       icon="eye"
       (click)="onToggleFilter()"
+      class="export-hide"
     >
       {{
         (showFilter ? 'common.filter.hide' : 'common.filter.show') | translate
@@ -100,6 +119,7 @@
       kendoButton
       [title]="'components.widget.grid.layout.button.title' | translate"
       (click)="action.emit({ action: 'resetLayout' }); restoreColumns()"
+      class="export-hide"
     >
       {{ 'components.widget.grid.layout.reset' | translate }}
     </button>
@@ -107,6 +127,7 @@
       [actions]="actions"
       [items]="selectedItems"
       (action)="action.emit($event)"
+      class="export-hide"
     >
     </shared-grid-toolbar>
   </ng-template>
@@ -128,7 +149,9 @@
       <kendo-grid-column
         *ngIf="
           field.type !== 'JSON' &&
-          (!field.meta || field.meta.type !== 'referenceData')
+          (!field.meta ||
+            (field.meta.type !== 'referenceData' &&
+              field.meta.type !== 'editor'))
         "
         [field]="field.name"
         [title]="field.title"
@@ -224,7 +247,8 @@
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
-                (click)="onExpandText(dataItem, field.name)"
+                class="export-hide"
+                (click)="onExpandText(dataItem, field.name, field.title)"
                 [look]="'flat'"
                 [uiTooltip]="'common.viewFullscreen' | translate"
               ></button>
@@ -280,7 +304,7 @@
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
-                (click)="onExpandText(dataItem, field.name)"
+                (click)="onExpandText(dataItem, field.name, field.title)"
                 [look]="'flat'"
                 [uiTooltip]="'common.openFullScreen' | translate"
               ></button>
@@ -311,7 +335,7 @@
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
-                (click)="onExpandText(dataItem, field.name)"
+                (click)="onExpandText(dataItem, field.name, field.title)"
                 [look]="'flat'"
                 [uiTooltip]="'common.openFullScreen' | translate"
               ></button>
@@ -342,7 +366,7 @@
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
-                (click)="onExpandText(dataItem, field.name)"
+                (click)="onExpandText(dataItem, field.name, field.title)"
                 [look]="'flat'"
                 [uiTooltip]="'common.viewFullscreen' | translate"
               ></button>
@@ -385,7 +409,7 @@
                 kendoButton
                 *ngIf="dataItem.showFullScreenButton[field.name]"
                 icon="hyperlink-open-sm"
-                (click)="onExpandText(dataItem, field.name)"
+                (click)="onExpandText(dataItem, field.name, field.title)"
                 [look]="'flat'"
                 [uiTooltip]="'common.viewFullscreen' | translate"
               ></button>
@@ -423,14 +447,16 @@
                 "
               >
                 {{
-                  (dataItem[field.name].length > 1
-                    ? 'components.widget.grid.item.few'
-                    : 'components.widget.grid.item.one'
-                  )
-                    | translate
-                      : {
-                          count: dataItem[field.name].length
-                        }
+                  field.displayField
+                    ? dataItem.text[field.name]
+                    : ((dataItem[field.name].length > 1
+                        ? 'components.widget.grid.item.few'
+                        : 'components.widget.grid.item.one'
+                      )
+                      | translate
+                        : {
+                            count: dataItem[field.name].length
+                          })
                 }}
               </div>
             </div>
@@ -649,6 +675,59 @@
           </div>
         </ng-template>
       </kendo-grid-column>
+      <!-- Editor -->
+      <kendo-grid-column
+        *ngIf="field.meta.type === 'editor'"
+        [field]="field.name"
+        [filterable]="true"
+        [title]="field.title"
+        [editor]="field.editor"
+        [editable]="false"
+        [width]="field.width"
+        [hidden]="field.hidden"
+        [minResizableWidth]="50"
+        class="no-padding"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div class="textbox-container" [style]="dataItem.style[field.name]">
+            <div
+              class="truncate"
+              [innerHTML]="dataItem.text[field.name] | sharedStripHtml"
+            ></div>
+            <button
+              *ngIf="dataItem.text[field.name]"
+              kendoButton
+              icon="hyperlink-open-sm"
+              (click)="onOpenEditorModal(dataItem, field)"
+              [look]="'flat'"
+              [uiTooltip]="
+                'components.widget.grid.tooltip.displayEditor' | translate
+              "
+            ></button>
+          </div>
+        </ng-template>
+        <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
+          <kendo-grid-string-filter-cell [column]="column" [filter]="filter">
+            <kendo-filter-isnull-operator></kendo-filter-isnull-operator>
+            <kendo-filter-isnotnull-operator></kendo-filter-isnotnull-operator>
+          </kendo-grid-string-filter-cell>
+        </ng-template>
+        <ng-template
+          kendoGridFilterMenuTemplate
+          let-filter
+          let-column="column"
+          let-filterService="filterService"
+        >
+          <kendo-grid-string-filter-menu
+            [column]="column"
+            [filter]="filter"
+            [filterService]="filterService"
+          >
+            <kendo-filter-isnull-operator></kendo-filter-isnull-operator>
+            <kendo-filter-isnotnull-operator></kendo-filter-isnotnull-operator>
+          </kendo-grid-string-filter-menu>
+        </ng-template>
+      </kendo-grid-column>
       <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox / owner / users ) -->
       <kendo-grid-column
         *ngIf="
@@ -733,21 +812,61 @@
         [minResizableWidth]="50"
         class="no-padding"
       >
-        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <ng-template
+          kendoGridCellTemplate
+          let-dataItem="dataItem"
+          let-idx="rowIndex"
+        >
           <div class="textbox-container" [style]="dataItem.style[field.name]">
-            <button
-              kendoButton
-              *ngFor="let file of dataItem[field.name]"
-              [look]="'flat'"
-              [uiTooltip]="file.name"
-              (click)="onDownload(file)"
-              class="w-full justify-start overflow-hidden text-overflow-ellipsis"
-            >
-              <span [class]="dataItem.icon[file.name]"></span>
-              <span class="textbox">{{
-                dataItem.text[field.name][file.name]
-              }}</span>
-            </button>
+            <!-- Single file -->
+            <ng-container *ngIf="dataItem[field.name]?.length === 1">
+              <button
+                kendoButton
+                *ngFor="let file of dataItem[field.name]"
+                [look]="'flat'"
+                [uiTooltip]="file.name"
+                (click)="$event.stopPropagation(); onDownload(file)"
+                class="w-full !justify-start overflow-hidden text-ellipsis"
+              >
+                <span [class]="dataItem.icon[file.name]"></span>
+                <span class="textbox">{{
+                  dataItem.text[field.name][file.name] || file.name
+                }}</span>
+              </button>
+            </ng-container>
+            <!-- Multiple files -->
+            <ng-container *ngIf="dataItem[field.name]?.length > 1">
+              <button
+                kendoButton
+                class="w-full text-center"
+                icon="file"
+                [look]="'flat'"
+                [uiMenuTriggerFor]="fileMenu"
+                (click)="$event.stopPropagation()"
+              >
+                {{
+                  'components.widget.grid.files'
+                    | translate : { number: dataItem[field.name].length }
+                }}
+              </button>
+              <ui-menu #fileMenu>
+                <button
+                  kendoButton
+                  *ngFor="let file of dataItem[field.name]"
+                  [look]="'flat'"
+                  [uiTooltip]="file.name"
+                  (click)="onDownload(file)"
+                  class="w-full justify-start overflow-hidden text-overflow-ellipsis"
+                >
+                  <p style="text-wrap: auto" class="max-w-full">
+                    <span [class]="dataItem.icon[file.name]"></span>
+                    <span class="textbox">{{
+                      dataItem.text[field.name][file.name] || file.name
+                    }}</span>
+                  </p>
+                </button>
+              </ui-menu>
+            </ng-container>
           </div>
         </ng-template>
       </kendo-grid-column>

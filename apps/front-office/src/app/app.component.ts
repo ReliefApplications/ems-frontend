@@ -9,9 +9,10 @@ import {
   ResourceSelectTextComponent,
   TestServiceDropdownComponent,
   AuthService,
+  LoggerService,
+  CsDocsPropertiesDropdownComponent,
+  AcceptedValueTypesTextComponent,
 } from '@oort-front/shared';
-import { TranslateService } from '@ngx-translate/core';
-import { environment } from '../environments/environment';
 
 /**
  * Main component of Front-office.
@@ -32,6 +33,8 @@ export class AppComponent implements OnInit {
     ResourceDropdownComponent,
     ResourceSelectTextComponent,
     TestServiceDropdownComponent,
+    CsDocsPropertiesDropdownComponent,
+    AcceptedValueTypesTextComponent,
   ];
   /** Application title */
   title = 'front-office';
@@ -39,16 +42,13 @@ export class AppComponent implements OnInit {
   /**
    * Main component of Front-office.
    *
-   * @param authService Shared authentication service
-   * @param translate Angular translate service
+   * @param authService Shared authentication service,
+   * @param logger Shared logger service ( initialize logger so its subscription can start )
    */
   constructor(
     private authService: AuthService,
-    private translate: TranslateService
-  ) {
-    this.translate.addLangs(environment.availableLanguages);
-    this.translate.setDefaultLang(environment.availableLanguages[0]);
-  }
+    private logger: LoggerService
+  ) {}
 
   /**
    * Configuration of the Authentication behavior

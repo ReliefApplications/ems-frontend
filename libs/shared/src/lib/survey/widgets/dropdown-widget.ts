@@ -3,7 +3,7 @@ import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
 import { CustomWidgetCollection, QuestionDropdownModel } from 'survey-core';
 import { has, isArray, isEqual, isObject } from 'lodash';
-import { debounceTime, map, tap } from 'rxjs';
+import { debounceTime, map, Subject, takeUntil, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
 
 /**
@@ -32,6 +32,8 @@ export const init = (
       // Remove previous input if already rendered
       el.parentElement?.querySelector('.k-input')?.parentElement?.remove();
       widget.willUnmount(question);
+      question.destroy$ = new Subject<void>();
+      question.abortSignal = new AbortController();
       // remove default render
       el.parentElement?.querySelector('.sv_select_wrapper')?.remove();
       let dropdownDiv: HTMLDivElement | null = null;
@@ -61,7 +63,8 @@ export const init = (
         .pipe(
           debounceTime(500), // Debounce time to limit quantity of updates
           tap(() => (dropdownInstance.loading = true)),
-          map((searchValue: string) => searchValue?.toLowerCase()) // Make the filter non-case sensitive
+          map((searchValue: string) => searchValue?.toLowerCase()), // Make the filter non-case sensitive
+          takeUntil(question.destroy$)
         )
         .subscribe((searchValue: string) => {
           currentSearchValue = searchValue;
@@ -116,6 +119,9 @@ export const init = (
       defaultDropdown?.replaceWith(dropdownDiv);
     },
     willUnmount: (question: any): void => {
+      question.destroy$?.next();
+      question.destroy$?.complete();
+      question.abortSignal?.abort();
       if (!question._propertyValueChangedVirtual) return;
       question.readOnlyChangedCallback = null;
       question.valueChangedCallback = null;
@@ -157,6 +163,18 @@ export const init = (
       appendTo: 'component',
       width: question.popupWidth,
     };
+    // Automatic display of dropdown panel on element focus by default
+    dropdownInstance.wrapper.nativeElement
+      .querySelector('input')
+      ?.addEventListener(
+        'click',
+        () => {
+          if (!dropdownInstance.isOpen) {
+            dropdownInstance.toggle(true);
+          }
+        },
+        { signal: question.abortSignal.signal }
+      );
     dropdownInstance.fillMode = 'none';
     return dropdownInstance;
   };

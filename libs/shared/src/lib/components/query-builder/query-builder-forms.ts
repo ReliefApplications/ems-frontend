@@ -26,6 +26,11 @@ export const createFilterGroup = (filter: any) => {
       field: filter.field,
       operator: filter.operator || 'eq',
       value: Array.isArray(filter.value) ? [filter.value] : filter.value,
+      // todo: fix this regression introduced by changes done in emails
+      inTheLast: formBuilder.group({
+        number: [1],
+        unit: ['days'],
+      }),
     });
     if (
       FILTER_OPERATORS.find((op) => op.value === filter.operator)?.disableValue
@@ -48,12 +53,14 @@ export const createFilterGroup = (filter: any) => {
  * @returns Field form
  */
 export const addNewField = (field: any, newField?: boolean) => {
-  switch (newField ? field.type.kind : field.kind) {
+  switch (newField ? field?.type?.kind : field.kind) {
     case 'LIST': {
       return formBuilder.group({
         name: [{ value: field.name, disabled: true }],
         label: [field.label],
         width: [newField ? null : field.width],
+        displayField: [field.displayField],
+        separator: [field.separator ? field.separator : ';'],
         type: [newField ? field.type.ofType.name : field.type],
         kind: [newField ? field.type.kind : field.kind],
         fields: formBuilder.array(
@@ -95,7 +102,14 @@ export const addNewField = (field: any, newField?: boolean) => {
       return formBuilder.group({
         name: [{ value: field.name, disabled: true }],
         type: [
-          { value: newField ? field.type.name : field.type, disabled: true },
+          {
+            value: newField
+              ? field?.type?.name
+                ? field.type.name
+                : field.type
+              : field.type,
+            disabled: true,
+          },
         ],
         kind: [newField ? field.type.kind : field.kind],
         label: [

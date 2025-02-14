@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UserDetailsModule } from './user-details/user-details.module';
 import { UserRolesModule } from './user-roles/user-roles.module';
 import { SpinnerModule } from '@oort-front/ui';
+import { ActivityLogModule as ApplicationActivityLogModule } from '../activity-log/activity-log.module';
 
 /**
  * User Summary component module.
@@ -19,6 +20,7 @@ import { SpinnerModule } from '@oort-front/ui';
     UserDetailsModule,
     UserRolesModule,
     SpinnerModule,
+    ApplicationActivityLogModule,
   ],
   exports: [UserSummaryComponent],
 })

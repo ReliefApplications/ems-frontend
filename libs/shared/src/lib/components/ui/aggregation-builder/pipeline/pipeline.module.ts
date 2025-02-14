@@ -20,8 +20,11 @@ import {
   ExpansionPanelModule,
   SelectMenuModule,
   IconModule,
+  AlertModule,
   CheckboxModule,
 } from '@oort-front/ui';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { ResizableModule } from 'angular-resizable-element';
 
 /**
  * Aggregation builder pipeline module.
@@ -51,6 +54,9 @@ import {
     ButtonModule,
     FormWrapperModule,
     SelectMenuModule,
+    MonacoEditorModule,
+    ResizableModule,
+    AlertModule,
     CheckboxModule,
   ],
   exports: [

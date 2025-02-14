@@ -4,6 +4,11 @@
 		"accessDenied": "******",
 		"account": "******",
 		"actions": "******",
+		"activity": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"add": "******",
 		"adminField": "******",
 		"aggregation": {
@@ -70,6 +75,7 @@
 			"one": "******"
 		},
 		"clear": "******",
+		"clone": "******",
 		"close": "******",
 		"column": {
 			"few": "******",
@@ -151,6 +157,11 @@
 			"none": "******",
 			"one": "******"
 		},
+		"customTemplate": {
+			"few": "******",
+			"none": "******",
+			"one": "******"
+		},
 		"dashboard": {
 			"few": "******",
 			"none": "******",
@@ -172,6 +183,10 @@
 		"duplicate": "******",
 		"edit": "******",
 		"email": {
+			"customTemplate": "******",
+			"error": {
+				"duplicateName": "******"
+			},
 			"few": "******",
 			"none": "******",
 			"notification": {
@@ -189,6 +204,10 @@
 		"exitFullscreen": "******",
 		"export": "******",
 		"exportObject": "****** {{name}}",
+		"exportType": {
+			"image": "******",
+			"pdf": "******"
+		},
 		"false": "******",
 		"field": {
 			"few": "******",
@@ -268,10 +287,13 @@
 				},
 				"error": "******",
 				"errors": {
+					"customTitleExist": "******",
 					"noBody": "******",
+					"noCustomTitle": "******",
 					"noDistributionList": "******",
 					"noSubject": "******",
-					"noTemplate": "******"
+					"noTemplate": "******",
+					"preview": "******"
 				},
 				"existing": "******",
 				"field": {
@@ -295,18 +317,42 @@
 					"removeTooltip": "******",
 					"style": "******"
 				},
+				"preview": {
+					"processing": "******"
+				},
 				"processing": "******",
 				"ready": "******",
+				"recipients": {
+					"combination": "******",
+					"commonServices": "******",
+					"manual": "******",
+					"resource": "******"
+				},
 				"sent": "******",
 				"style": {
 					"background": "******",
 					"text": "******"
 				},
 				"subject": {
+					"customLayoutTitle": "******",
 					"textTitle": "******",
 					"title": "******"
 				},
 				"timestamp": "******"
+			},
+			"emailSent": "******",
+			"export": {
+				"download": "******",
+				"format": "******",
+				"image": "{{image}} ******",
+				"includeHeaderFooter": "******",
+				"landscape": "******",
+				"loading": "****** {{type}} ******",
+				"options": "******",
+				"orientation": "******",
+				"paperSize": "******",
+				"pdf": "******",
+				"portrait": "******"
 			},
 			"fetchingGroups": "******",
 			"file": {
@@ -346,6 +392,7 @@
 			"objectNotInvited": "{{name}} ******",
 			"objectNotReordered": "{{type}} ****** {{error}}",
 			"objectNotRestored": "{{value}} ****** {{error}}",
+			"objectNotSaved": "{{type}} ****** {{error}}",
 			"objectNotUpdated": "{{type}} ****** {{error}}",
 			"objectReordered": "{{type}} ******",
 			"objectRestored": "{{value}} ******",
@@ -569,7 +616,8 @@
 				"selectedFields": "******",
 				"sort": "******",
 				"unwind": "******"
-			}
+			},
+			"unavailableFields": "******"
 		},
 		"apiConfiguration": {
 			"create": {
@@ -586,6 +634,27 @@
 			}
 		},
 		"application": {
+			"activities": {
+				"columns": {
+					"createdAt": "******",
+					"hits": "******",
+					"page": "******",
+					"user": "******"
+				},
+				"downloadXlsx": "******",
+				"empty": "******",
+				"few": "******",
+				"metadata": "******",
+				"one": "******",
+				"tabs": {
+					"groupByPage": "******",
+					"groupByUser": "******",
+					"recentHits": "******"
+				},
+				"title": "******",
+				"url": "******",
+				"userId": "******"
+			},
 			"archive": {
 				"autoDeletedAt": "******",
 				"name": "******"
@@ -664,6 +733,7 @@
 				"settings": {
 					"actions": "******",
 					"selectIcon": "******",
+					"showName": "******",
 					"tooltip": {
 						"autoSave": "******"
 					}
@@ -786,6 +856,7 @@
 				"update": "******"
 			},
 			"errors": {
+				"duplicate": "******",
 				"email": "******",
 				"schedule": "******"
 			},
@@ -810,18 +881,45 @@
 				"name": {
 					"required": "******"
 				}
+			},
+			"warning": {
+				"message": "******",
+				"noData": "******"
 			}
 		},
 		"email": {
+			"action": {
+				"header": "******"
+			},
 			"alert": {
+				"dlPreview": "******",
+				"individualEmailsInfo": "******",
 				"invalidFields": "****** {{fields}} ****** {{types}} ******",
+				"noResource": "******",
 				"noResourceFields": "******",
 				"noSelectedFields": "******",
-				"tooManyRecords": "****** {{totalRecords}} ******"
+				"selectChildFields": "******",
+				"selectedNonEmailFields": "******",
+				"subscribeExists": "****** {{message}}",
+				"subscribeFailed": "****** {{errorMessage}}",
+				"subscribeSuccess": "****** {{message}}",
+				"tooManyRecords": "****** {{totalRecords}} ******",
+				"unsubscribeFailed": "****** {{errorMessage}}",
+				"unsubscribeSuccess": "****** {{message}}"
 			},
 			"back": "******",
+			"dataset": {
+				"block": {
+					"label": "******",
+					"title": "******"
+				},
+				"navigateToPage": {
+					"title": "******"
+				}
+			},
 			"distributionList": {
 				"alert": {
+					"allSeparate": "******",
 					"and": "******",
 					"noEmail": "******",
 					"partOne": "******",
@@ -830,8 +928,13 @@
 				},
 				"bcc": "******",
 				"cc": "******",
+				"create": "******",
 				"createNew": "******",
 				"duplicate": "******",
+				"emailInput": "******",
+				"errors": {
+					"duplicateName": "******"
+				},
 				"import": {
 					"download": "******",
 					"import": "******",
@@ -842,6 +945,10 @@
 				"list": "******",
 				"name": "******",
 				"to": "******"
+			},
+			"error": {
+				"invalidDataset": "****** {{badDatasets}}",
+				"invalidToValue": "******"
 			},
 			"image": {
 				"rectangleValidation": "******",
@@ -859,9 +966,25 @@
 				"more": "****** {{length}} ******",
 				"subject": "******"
 			},
+			"restrictSubscription": {
+				"description": "******",
+				"title": "******"
+			},
 			"saveAsDraft": "******",
+			"subscribe": {
+				"error": {
+					"restricted": "******"
+				},
+				"restricted": {
+					"title": "******"
+				},
+				"title": "******"
+			},
 			"tooltip": {
 				"reverseDate": "******"
+			},
+			"unsubscribe": {
+				"title": "******"
 			}
 		},
 		"emailBuilder": {
@@ -955,6 +1078,7 @@
 				"modifiedBy": "****** {{user}} ****** {{date}}"
 			},
 			"update": {
+				"confirmMessage": "****** {{action}} ******",
 				"exit": "******",
 				"exitMessage": "******"
 			},
@@ -966,11 +1090,17 @@
 			"errors": {
 				"duplicatedRelatedName": "****** {{question}} ****** {{page}} ******",
 				"incorrectJSON": "******",
+				"maximumAllowedFiles": "****** {{number}}",
 				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
 			},
 			"propertyGrid": {
+				"file": {
+					"acceptedFiles": {
+						"clear": "******"
+					}
+				},
 				"resource": {
 					"availableGridFields": "******",
 					"resourceSelectText": "******"
@@ -1133,13 +1263,15 @@
 		},
 		"queryBuilder": {
 			"apply": "******",
-			"block": {
-				"label": "******",
-				"title": "******"
-			},
 			"dataset": {
+				"dataType": "******",
+				"referenceData": "******",
 				"select": "******",
 				"title": "******"
+			},
+			"displayField": {
+				"separator": "******",
+				"text": "******"
 			},
 			"errors": {
 				"field": {
@@ -1160,6 +1292,7 @@
 			"filter": {
 				"and": "******",
 				"apply": "******",
+				"applyField": "******",
 				"field": "******",
 				"logic": "******",
 				"new": "******",
@@ -1179,6 +1312,9 @@
 				"title": "******"
 			},
 			"preview": {
+				"title": "******"
+			},
+			"sendSeparate": {
 				"title": "******"
 			},
 			"sort": {
@@ -1214,6 +1350,7 @@
 				"title": "******"
 			},
 			"tooltip": {
+				"displayField": "******",
 				"filter": {
 					"date": {
 						"useExpression": "******",
@@ -1369,6 +1506,7 @@
 				"disallowFieldUpdate": "****** {{field}}",
 				"grantAddRecordsPermission": "******",
 				"grantDeleteRecordsPermission": "******",
+				"grantDownloadRecordsPermission": "******",
 				"grantFilterDeleteRecordsPermission": "******",
 				"grantFilterReadRecordsPermission": "******",
 				"grantFilterUpdateRecordsPermission": "******",
@@ -1380,6 +1518,7 @@
 				"limitedUpdateRecordsPermission": "******",
 				"notGrantAddRecordsPermission": "******",
 				"notGrantDeleteRecordsPermission": "******",
+				"notGrantDownloadRecordsPermission": "******",
 				"notGrantFilterDeleteRecordsPermission": "******",
 				"notGrantFilterReadRecordsPermission": "******",
 				"notGrantFilterUpdateRecordsPermission": "******",
@@ -1404,7 +1543,11 @@
 				"emailError": "******",
 				"label": "******",
 				"noPreviewData": "******",
+				"sendseparate": {
+					"list": "******"
+				},
 				"separateEmail": "******",
+				"subscriptionList": "******",
 				"to": "******"
 			}
 		},
@@ -1552,6 +1695,7 @@
 						"title": "******"
 					}
 				},
+				"files": "{{number}} ******",
 				"filter": {
 					"toggle": "******"
 				},
@@ -1574,8 +1718,10 @@
 					"mapDetailsTitle": "******",
 					"mapDetailsTooltip": "******"
 				},
+				"openEditor": "******",
 				"openSettings": "******",
 				"tooltip": {
+					"displayEditor": "******",
 					"displayMap": "******",
 					"openPage": "******",
 					"saved": "******",
@@ -1659,8 +1805,20 @@
 					"confirmationMessage": "******"
 				},
 				"editor": {
-					"recordSelection": "******",
-					"title": "******"
+					"record": {
+						"choices": {
+							"expression": "******",
+							"manual": "******"
+						},
+						"expression": "******",
+						"title": "******"
+					},
+					"title": "******",
+					"tooltip": {
+						"record": {
+							"expression": "****** {{context}} ******"
+						}
+					}
 				},
 				"grid": {
 					"actions": {
@@ -1707,6 +1865,7 @@
 							"modify": "******",
 							"modifyField": "******",
 							"modifyValue": "******",
+							"navigateToPage": "******",
 							"notify": {
 								"message": "******"
 							},
@@ -1875,7 +2034,8 @@
 						}
 					},
 					"help": {
-						"geographicExtent": "******"
+						"geographicExtent": "******",
+						"layers": "******"
 					},
 					"layers": {
 						"add": "******",
@@ -1959,6 +2119,7 @@
 							"title": "******"
 						},
 						"geographicExtent": "******",
+						"geographicExtentPadding": "******",
 						"geographicExtentValue": "******",
 						"latitude": "******",
 						"longitude": "******",
@@ -1969,15 +2130,33 @@
 						"zoom": "******"
 					},
 					"renderer": {
+						"classBreak": "******",
 						"default": "******",
-						"defaultLabel": "******",
+						"defaultLabel": {
+							"info": "******",
+							"text": "******"
+						},
+						"errors": {
+							"invalidClassBreakOrder": "******",
+							"repeatedValues": "******",
+							"valuesOrder": "******"
+						},
 						"label": "******",
+						"maxValue": "******",
+						"minValue": "******",
 						"symbol": "******",
 						"uniqueValue": "******",
 						"value": "******"
 					},
 					"tooltip": {
 						"category": "******",
+						"classBreak": {
+							"maxValue": {
+								"first": "******",
+								"general": "******"
+							},
+							"minValue": "******"
+						},
 						"cluster": {
 							"autoSize": "******",
 							"lightMode": "******"
@@ -1991,6 +2170,7 @@
 						"geographicExtent": {
 							"add": "******",
 							"admin0": "******",
+							"padding": "******",
 							"region": "******",
 							"remove": "******",
 							"value": "****** {{context}} ****** {{filter}} ******"
@@ -2325,6 +2505,14 @@
 				"updated": "******"
 			},
 			"setAsFavorite": "******",
+			"shortcut": {
+				"errors": {
+					"isNotUnique": "******",
+					"isNotValid": "******"
+				},
+				"info": "******",
+				"text": "******"
+			},
 			"subscription": {
 				"create": "******"
 			}
@@ -2341,8 +2529,40 @@
 			"type": "******"
 		},
 		"dashboard": {
-			"activateFiltering": "******",
-			"buttonActions": {
+			"actionButtons": {
+				"action": "******",
+				"actions": {
+					"addRecord": {
+						"edition": "******",
+						"fieldsForUpdate": {
+							"text": "******"
+						},
+						"help": {
+							"mapping": "****** {{context.<fieldName>}} ******"
+						},
+						"text": "******",
+						"tooltip": {
+							"fieldsForUpdate": "******",
+							"template": "******"
+						}
+					},
+					"autoReload": "******",
+					"editRecord": {
+						"text": "******",
+						"tooltip": {
+							"template": "******"
+						}
+					},
+					"navigateTo": "******",
+					"openInNewTab": "******",
+					"previousPage": "******",
+					"sendNotification": {
+						"text": "******"
+					},
+					"subscribeToNotification": "******",
+					"unsubscribeFromNotification": "******",
+					"url": "******"
+				},
 				"category": "******",
 				"confirmDelete": "******",
 				"create": "******",
@@ -2359,8 +2579,17 @@
 				"variant": "******",
 				"visibleTo": "******"
 			},
+			"activateFiltering": "******",
 			"closable": "******",
 			"context": {
+				"addTemplate": "******",
+				"alert": {
+					"edition": {
+						"element": "******",
+						"template": "******"
+					},
+					"preview": "******"
+				},
 				"datasource": {
 					"alert": "******",
 					"info": "******",
@@ -2369,14 +2598,11 @@
 					"update": "******"
 				},
 				"displayField": "******",
-				"edition": {
-					"element": "******",
-					"template": "******"
-				},
 				"notifications": {
 					"creatingTemplate": "******",
 					"loadDefault": "******",
-					"templateCreated": "******"
+					"templateCreated": "******",
+					"templatesDeleted": "{{number}} ******"
 				},
 				"origin": "******",
 				"refData": {
@@ -2392,6 +2618,12 @@
 			},
 			"contextFilter": "******",
 			"dashboardFilter": "******",
+			"dashboardTemplates": {
+				"manage": {
+					"few": "******"
+				},
+				"none": "******"
+			},
 			"deactivateFiltering": "******",
 			"filterVariant": {
 				"title": "******",
@@ -2563,6 +2795,7 @@
 		},
 		"aggregation": {
 			"preview": {
+				"help": "******",
 				"label": "******",
 				"missingAggregation": "******"
 			}
@@ -2640,6 +2873,12 @@
 			"update": {
 				"exit": "******",
 				"exitMessage": "******"
+			}
+		},
+		"error": {
+			"unauthorized": {
+				"footer": "******",
+				"title": "******"
 			}
 		},
 		"formBuilder": {

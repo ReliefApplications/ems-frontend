@@ -31,16 +31,17 @@ export class AccessGuard implements CanActivate {
     | boolean
     | UrlTree {
     return this.authService.getProfile().pipe(
-      map((res) => {
-        if (res.data.me) {
-          this.authService.user.next(res.data.me);
+      map(({ data }) => {
+        if (data.me) {
+          this.authService.user.next(data.me);
           return true;
         } else {
           if (this.authService.account) {
-            this.authService.logout();
+            // this.authService.logout();
           } else {
             this.router.navigate(['/auth']);
           }
+          // this.router.navigate(['/auth']);
           return false;
         }
       })

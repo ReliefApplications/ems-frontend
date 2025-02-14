@@ -1,8 +1,11 @@
 import { Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
+import { GraphQLError } from 'graphql';
+import get from 'lodash/get';
+import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
 import {
-  Dashboard,
   EditDashboardMutationResponse,
   WIDGET_TYPES,
 } from '../../models/dashboard.model';
@@ -10,11 +13,7 @@ import {
   EditPageContextMutationResponse,
   PageContextT,
 } from '../../models/page.model';
-import { BehaviorSubject, Observable, firstValueFrom } from 'rxjs';
-import { Apollo } from 'apollo-angular';
 import { EDIT_DASHBOARD, UPDATE_PAGE_CONTEXT } from './graphql/mutations';
-import get from 'lodash/get';
-import { GraphQLError } from 'graphql';
 
 /**
  * Shared dashboard service. Handles dashboard events.
@@ -23,7 +22,7 @@ import { GraphQLError } from 'graphql';
   providedIn: 'root',
 })
 export class DashboardService {
-  /** List of available widgets */
+  /** Available widgets */
   public availableWidgets = WIDGET_TYPES;
   /** If dashboard content should be updated and empty widgets hidden */
   public widgetContentRefreshed = new BehaviorSubject<any>(null);
@@ -51,7 +50,7 @@ export class DashboardService {
     private snackBar: SnackbarService,
     private translate: TranslateService
   ) {
-    this.availableWidgets = WIDGET_TYPES.filter((widget) =>
+    this.availableWidgets = this.availableWidgets.filter((widget) =>
       get(environment, 'availableWidgets', []).includes(widget.id)
     );
   }
@@ -84,21 +83,6 @@ export class DashboardService {
         })
       );
     }
-  }
-
-  /**
-   * Finds the settings component from the widget.
-   *
-   * @param widget widget to get settings of.
-   * @returns Widget settings template.
-   */
-  public findSettingsTemplate(widget: any): any {
-    const availableWidget = this.availableWidgets.find(
-      (x) => x.component === widget.component
-    );
-    return availableWidget && availableWidget.settingsTemplate
-      ? availableWidget.settingsTemplate
-      : null;
   }
 
   /**
@@ -146,29 +130,6 @@ export class DashboardService {
       .subscribe(() => {
         if (callback) callback();
       });
-  }
-
-  /**
-   * Saves the buttons of the dashboard.
-   *
-   * @param dashboardId id of the dashboard
-   * @param buttons Button actions to save
-   * @returns apollo mutation
-   */
-  public saveDashboardButtons(
-    dashboardId: string | undefined,
-    buttons: Dashboard['buttons']
-  ) {
-    if (!dashboardId) return;
-    buttons = buttons || [];
-
-    return this.apollo.mutate<EditDashboardMutationResponse>({
-      mutation: EDIT_DASHBOARD,
-      variables: {
-        id: dashboardId,
-        buttons,
-      },
-    });
   }
 
   /**

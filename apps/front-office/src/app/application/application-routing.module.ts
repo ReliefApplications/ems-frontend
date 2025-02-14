@@ -18,11 +18,21 @@ export const routes: Routes = [
           import('./pages/dashboard/dashboard.module').then(
             (m) => m.DashboardModule
           ),
+        data: {
+          breadcrumb: {
+            alias: '@dashboard',
+          },
+        },
       },
       {
         path: 'form/:id',
         loadChildren: () =>
           import('./pages/form/form.module').then((m) => m.FormModule),
+        data: {
+          breadcrumb: {
+            alias: '@form',
+          },
+        },
       },
       {
         path: 'workflow/:id',
@@ -35,6 +45,11 @@ export const routes: Routes = [
         path: 'profile',
         loadChildren: () =>
           import('@oort-front/shared').then((m) => m.ProfileViewModule),
+        data: {
+          breadcrumb: {
+            key: 'pages.profile.title',
+          },
+        },
       },
       {
         path: 'settings',
@@ -47,6 +62,9 @@ export const routes: Routes = [
               ),
             canActivate: [PermissionGuard],
             data: {
+              breadcrumb: {
+                key: 'common.customTemplate.few',
+              },
               permission: {
                 action: 'manage',
                 subject: 'Template',
@@ -61,6 +79,9 @@ export const routes: Routes = [
               ),
             canActivate: [PermissionGuard],
             data: {
+              breadcrumb: {
+                key: 'common.distributionList.few',
+              },
               permission: {
                 action: 'manage',
                 subject: 'DistributionList',
@@ -73,12 +94,22 @@ export const routes: Routes = [
               import('@oort-front/shared').then(
                 (m) => m.ApplicationNotificationsViewModule
               ),
+            data: {
+              breadcrumb: {
+                key: 'components.notifications.title',
+              },
+            },
             // canActivate: [PermissionGuard]
           },
           {
             path: 'email-notifications',
             loadChildren: () =>
               import('@oort-front/shared').then((m) => m.EmailModule),
+            data: {
+              breadcrumb: {
+                key: 'common.email.notification.few',
+              },
+            },
             // canActivate: [PermissionGuard]
           },
           {
@@ -146,6 +177,23 @@ export const routes: Routes = [
             data: {
               breadcrumb: {
                 key: 'common.user.few',
+              },
+              permission: {
+                action: 'read',
+                subject: 'User',
+              },
+            },
+          },
+          {
+            path: 'activity-log',
+            loadChildren: () =>
+              import('./pages/activity-log/activity-log.module').then(
+                (m) => m.ActivityLogModule
+              ),
+            canActivate: [PermissionGuard],
+            data: {
+              breadcrumb: {
+                key: 'common.activity.few',
               },
               permission: {
                 action: 'read',

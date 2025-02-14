@@ -64,9 +64,6 @@
 .form-error {
   border: 1px solid red;
   outline-color: red;
-  .ng-select-container {
-    border: transparent !important;
-  }
 
   &:focus-within {
     --tw-ring-color: #ff0000;
@@ -99,4 +96,7 @@
   justify-content: center;
   align-items: center;
   padding: 16px;
+}
+::ng-deep .dlTabs .overflow-x-hidden {
+  overflow: hidden !important;
 }

@@ -49,6 +49,7 @@ export class FormComponent
   @Output() save: EventEmitter<{
     completed: boolean;
     hideNewRecord?: boolean;
+    record?: RecordModel;
   }> = new EventEmitter();
   /** Survey model */
   public survey!: SurveyModel;
@@ -126,13 +127,6 @@ export class FormComponent
       this.record
     );
 
-    // After the survey is created we add common callback to survey events
-    this.formBuilderService.addEventsCallBacksToSurvey(
-      this.survey,
-      this.selectedPageIndex,
-      this.temporaryFilesStorage
-    );
-
     this.survey.showCompletedPage = false;
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
@@ -141,7 +135,9 @@ export class FormComponent
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
     });
-    this.survey.onComplete.add(this.onComplete);
+    this.survey.onComplete.add(() => {
+      this.onComplete();
+    });
 
     // Unset readOnly fields if it's the record creation
     // It's a requirement to let all fields been editable during addition of records
@@ -171,6 +167,14 @@ export class FormComponent
     //this.survey.data = cachedData;
     // this.setUserVariables();
     //}
+
+    // After the survey is created, we add common callback to survey events
+    this.formBuilderService.addEventsCallBacksToSurvey(
+      this.survey,
+      this.selectedPageIndex,
+      this.temporaryFilesStorage
+    );
+
     if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
@@ -257,17 +261,33 @@ export class FormComponent
   /**
    * Creates the record when it is complete, or update it if provided.
    */
-  public onComplete = async () => {
+  public async onComplete() {
     let mutation: any;
     this.surveyActive = false;
-    // const promises: Promise<any>[] =
-    //   this.formHelpersService.uploadTemporaryRecords(this.survey);
 
-    await this.formHelpersService.uploadFiles(
-      this.survey,
-      this.temporaryFilesStorage,
-      this.form?.id
-    );
+    try {
+      await this.formHelpersService.uploadFiles(
+        this.survey,
+        this.temporaryFilesStorage,
+        this.form?.id
+      );
+    } catch (errors) {
+      /** If there is any upload errors, save them for display */
+      const uploadErrors = (errors as { question: string; file: File }[]).map(
+        (error) => {
+          return `${error.question}: ${error.file.name}`;
+        }
+      );
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.form.notifications.savingFailed') +
+          (!isNil(uploadErrors) ? '\n' + uploadErrors?.join('\n') : ''),
+        { error: true }
+      );
+      this.survey.clear(false, true);
+      this.surveyActive = true;
+      return;
+    }
+
     this.formHelpersService.setEmptyQuestions(this.survey);
     // We wait for the resources questions to update their ids
     await this.formHelpersService.createTemporaryRecords(this.survey);
@@ -327,10 +347,11 @@ export class FormComponent
         this.save.emit({
           completed: true,
           hideNewRecord: data.addRecord && data.addRecord.form.uniqueRecord,
+          record: data.addRecord || data.editRecord,
         });
       }
     });
-  };
+  }
 
   /**
    * Handles the show page event

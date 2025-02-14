@@ -1,48 +1,15 @@
-import {
-  Component,
-  OnDestroy,
-  Inject,
-  OnInit,
-  AfterViewInit,
-} from '@angular/core';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ConfirmService } from '../../../../services/confirm/confirm.service';
-import { Fields, LayerModel } from '../../../../models/layer.model';
-import { createLayerForm, LayerFormT } from '../map-forms';
-import {
-  takeUntil,
-  BehaviorSubject,
-  pairwise,
-  startWith,
-  distinctUntilChanged,
-  filter,
-  combineLatest,
-  tap,
-} from 'rxjs';
-import { MapComponent } from '../../../ui/map/map.component';
-import {
-  MapEvent,
-  MapEventType,
-} from '../../../ui/map/interfaces/map.interface';
-import { LayerFormData } from '../../../ui/map/interfaces/layer-settings.type';
-import { OverlayLayerTree } from '../../../ui/map/interfaces/map-layers.interface';
-import * as L from 'leaflet';
-import { MapLayersService } from '../../../../services/map/map-layers.service';
-import { Layer } from '../../../ui/map/layer';
-import { Apollo } from 'apollo-angular';
-import { GET_REFERENCE_DATA, GET_RESOURCE } from '../graphql/queries';
-import { get, isEqual } from 'lodash';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { LayerPropertiesModule } from './layer-properties/layer-properties.module';
-import { LayerDatasourceModule } from './layer-datasource/layer-datasource.module';
-import { LayerFieldsModule } from './layer-fields/layer-fields.module';
-import { LayerAggregationModule } from './layer-aggregation/layer-aggregation.module';
-import { LayerPopupModule } from './layer-popup/layer-popup.module';
-import { LayerLabelsModule } from './layer-labels/layer-labels.module';
-import { LayerFilterModule } from './layer-filter/layer-filter.module';
-import { LayerClusterModule } from './layer-cluster/layer-cluster.module';
-import { LayerStylingModule } from './layer-styling/layer-styling.module';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { DomPortal, PortalModule } from '@angular/cdk/portal';
 import { CommonModule } from '@angular/common';
+import {
+  AfterViewInit,
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   ButtonModule,
   DialogModule,
@@ -50,21 +17,55 @@ import {
   TabsModule,
   TooltipModule,
 } from '@oort-front/ui';
-import { MapLayersModule } from '../map-layers/map-layers.module';
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { ContextualFiltersSettingsComponent } from '../../common/contextual-filters-settings/contextual-filters-settings.component';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { Apollo } from 'apollo-angular';
+import * as L from 'leaflet';
+import { get, isEqual } from 'lodash';
 import {
-  Resource,
-  ResourceQueryResponse,
-} from '../../../../models/resource.model';
-import { Layout } from '../../../../models/layout.model';
+  BehaviorSubject,
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  pairwise,
+  startWith,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { Aggregation } from '../../../../models/aggregation.model';
-import { DomPortal, PortalModule } from '@angular/cdk/portal';
+import { Fields, LayerModel } from '../../../../models/layer.model';
+import { Layout } from '../../../../models/layout.model';
 import {
   ReferenceData,
   ReferenceDataQueryResponse,
 } from '../../../../models/reference-data.model';
+import {
+  Resource,
+  ResourceQueryResponse,
+} from '../../../../models/resource.model';
+import { ConfirmService } from '../../../../services/confirm/confirm.service';
+import { MapLayersService } from '../../../../services/map/map-layers.service';
+import { LayerFormData } from '../../../ui/map/interfaces/layer-settings.type';
+import { OverlayLayerTree } from '../../../ui/map/interfaces/map-layers.interface';
+import {
+  MapEvent,
+  MapEventType,
+} from '../../../ui/map/interfaces/map.interface';
+import { Layer } from '../../../ui/map/layer';
+import { MapComponent } from '../../../ui/map/map.component';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { ContextualFiltersSettingsComponent } from '../../common/contextual-filters-settings/contextual-filters-settings.component';
+import { GET_REFERENCE_DATA, GET_RESOURCE } from '../graphql/queries';
+import { createLayerForm, LayerFormT } from '../map-forms';
+import { MapLayersModule } from '../map-layers/map-layers.module';
+import { LayerAggregationModule } from './layer-aggregation/layer-aggregation.module';
+import { LayerClusterModule } from './layer-cluster/layer-cluster.module';
+import { LayerDatasourceModule } from './layer-datasource/layer-datasource.module';
+import { LayerFieldsModule } from './layer-fields/layer-fields.module';
+import { LayerFilterModule } from './layer-filter/layer-filter.module';
+import { LayerLabelsModule } from './layer-labels/layer-labels.module';
+import { LayerPopupModule } from './layer-popup/layer-popup.module';
+import { LayerPropertiesModule } from './layer-properties/layer-properties.module';
+import { LayerStylingModule } from './layer-styling/layer-styling.module';
 
 /**
  * Interface of dialog input
@@ -286,7 +287,8 @@ export class EditLayerModalComponent
     this.mapLayersService
       .createLayerFromDefinition(
         this.form.value as LayerModel,
-        this.data.mapComponent.injector
+        this.data.mapComponent.injector,
+        1
       )
       .then((layer) => {
         if (layer) {
@@ -345,6 +347,7 @@ export class EditLayerModalComponent
             this.triggerFormChange.getValue() &&
             !isEqual(this.triggerFormChange.getValue(), next)
         ),
+        debounceTime(1000),
         // Disable all map handlers while map data is updating to avoid any unwanted side effects
         tap(() => this.data.mapComponent.disableMapHandlers(true)),
         takeUntil(this.destroy$)

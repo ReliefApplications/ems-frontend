@@ -7,21 +7,15 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/web-widgets",
         "index": "apps/web-widgets/src/index.html",
         "main": "apps/web-widgets/src/main.ts",
-        "polyfills": [
-          "apps/web-widgets/src/polyfills.ts"
-        ],
+        "polyfills": ["apps/web-widgets/src/polyfills.ts"],
         "tsConfig": "apps/web-widgets/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
-        "styles": [
-          "apps/web-widgets/src/styles.scss"
-        ],
+        "styles": ["apps/web-widgets/src/styles.scss"],
         "scripts": [
           "node_modules/tinymce/tinymce.min.js",
           "node_modules/tinymce/themes/silver/theme.min.js"
@@ -45,7 +39,8 @@
           "leaflet",
           "leaflet.markercluster",
           "jsonpath",
-          "to-json-schema"
+          "to-json-schema",
+          "email-validator"
         ]
       },
       "configurations": {
@@ -60,7 +55,7 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
@@ -81,7 +76,7 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
@@ -104,22 +99,22 @@
           }
         },
         "azure-prod": {
+          "fileReplacements": [
+            {
+              "replace": "apps/web-widgets/src/environments/environment.ts",
+              "with": "apps/web-widgets/src/environments/environment.azure.prod.ts"
+            }
+          ],
           "budgets": [
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
               "maximumWarning": "1mb",
               "maximumError": "2mb"
-            }
-          ],
-          "fileReplacements": [
-            {
-              "replace": "apps/web-widgets/src/environments/environment.ts",
-              "with": "apps/web-widgets/src/environments/environment.azure.prod.ts"
             }
           ],
           "outputHashing": "none",
@@ -141,7 +136,7 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
@@ -162,7 +157,7 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
@@ -195,7 +190,7 @@
             {
               "type": "initial",
               "maximumWarning": "12mb",
-              "maximumError": "15mb"
+              "maximumError": "20mb"
             },
             {
               "type": "anyComponentStyle",
@@ -248,9 +243,7 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
           "apps/web-widgets/**/*.ts",
@@ -260,9 +253,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/{projectRoot}"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "apps/web-widgets/jest.config.ts",
         "passWithNoTests": true
@@ -277,9 +268,7 @@
     "bundle": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "node .scripts/build-widgets.js"
-        ]
+        "commands": ["node .scripts/build-widgets.js"]
       }
     }
   },

@@ -4,7 +4,6 @@ import {
   ElementRef,
   EventEmitter,
   Inject,
-  OnDestroy,
   OnInit,
   Output,
   Renderer2,
@@ -15,12 +14,13 @@ import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
   ConfirmService,
-  ButtonActionT,
+  ActionButton,
   ContextService,
   DashboardQueryResponse,
   Record,
   DashboardComponent as SharedDashboardComponent,
   DashboardAutomationService,
+  BreadcrumbService,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
@@ -46,7 +46,7 @@ import { cloneDeep } from 'lodash';
 })
 export class DashboardComponent
   extends SharedDashboardComponent
-  implements OnInit, OnDestroy
+  implements OnInit
 {
   /** Change step event ( in workflow ) */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
@@ -56,8 +56,6 @@ export class DashboardComponent
   public id = '';
   /** Context id */
   public contextId?: string;
-  /** Application id */
-  public applicationId?: string;
   /** Is dashboard loading */
   public loading = true;
   /** Current dashboard */
@@ -68,8 +66,12 @@ export class DashboardComponent
   public variant!: string;
   /** hide / show the close icon on the right */
   public closable = true;
-  /** Dashboard button actions */
-  public buttonActions: ButtonActionT[] = [];
+  /** Dashboard action buttons */
+  public actionButtons: ActionButton[] = [];
+  /** Should show dashboard name */
+  public showName? = true;
+  /** If dashboard is displayed under workflow  */
+  public isStep = false;
 
   /**
    * Dashboard page.
@@ -86,6 +88,7 @@ export class DashboardComponent
    * @param document Document
    * @param contextService Dashboard context service
    * @param dashboardAutomationService Dashboard automation service
+   * @param breadcrumbService Breadcrumb service
    */
   constructor(
     private apollo: Apollo,
@@ -96,10 +99,11 @@ export class DashboardComponent
     private translate: TranslateService,
     private confirmService: ConfirmService,
     private renderer: Renderer2,
-    private elementRef: ElementRef,
+    public elementRef: ElementRef,
     @Inject(DOCUMENT) private document: Document,
     private contextService: ContextService,
-    private dashboardAutomationService: DashboardAutomationService
+    private dashboardAutomationService: DashboardAutomationService,
+    private breadcrumbService: BreadcrumbService
   ) {
     super();
     this.dashboardAutomationService.dashboard = this;
@@ -123,6 +127,7 @@ export class DashboardComponent
         if (pageContainer) {
           pageContainer.scrollTop = 0;
         }
+        this.isStep = this.router.url.includes('/workflow/');
         /** Extract main dashboard id */
         const id = this.route.snapshot.paramMap.get('id');
         /** Extract query id to load template */
@@ -133,6 +138,15 @@ export class DashboardComponent
           );
         }
       });
+  }
+
+  /**
+   * Reload the dashboard.
+   */
+  reload(): void {
+    if (this.id) {
+      this.loadDashboard(this.id, this.contextId);
+    }
   }
 
   /** Sets up the widgets from the dashboard structure */
@@ -179,6 +193,7 @@ export class DashboardComponent
     // Doing this to be able to use custom styles on specific dashboards
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.loading = true;
+
     return firstValueFrom(
       this.apollo.query<DashboardQueryResponse>({
         query: GET_DASHBOARD_BY_ID,
@@ -193,9 +208,14 @@ export class DashboardComponent
           this.id = data.dashboard.id || id;
           this.contextId = contextId ?? undefined;
           this.dashboard = data.dashboard;
+          this.breadcrumbService.setBreadcrumb(
+            this.isStep ? '@workflow' : '@dashboard',
+            this.dashboard.name as string,
+            this.isStep ? this.dashboard?.step?.workflow?.name : ''
+          );
           this.initContext();
           this.setWidgets();
-          this.buttonActions = this.dashboard.buttons || [];
+          this.actionButtons = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.filter?.show ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
           this.contextService.filterPosition.next({
@@ -205,6 +225,9 @@ export class DashboardComponent
           this.contextService.setFilter(this.dashboard);
           this.variant = this.dashboard.filter?.variant || 'default';
           this.closable = this.dashboard.filter?.closable ?? false;
+          this.showName = this.dashboard.step
+            ? this.dashboard.step.showName
+            : this.dashboard.page?.showName;
         } else {
           this.contextService.isFilterEnabled.next(false);
           this.contextService.setFilter();

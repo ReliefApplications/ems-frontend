@@ -106,6 +106,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
       classes.push('flex-col');
       classes.push('h-full');
       classes.push('mr-4');
+      classes.push('sticky');
     } else {
       classes.push('border-b');
       classes.push('mb-4');
@@ -130,6 +131,12 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedIndex']) {
       this.setSelectedTab();
+      const selectedTab = this.tabs?.find((tab) => {
+        return tab.selected;
+      });
+      if (selectedTab) {
+        this.showContent(selectedTab);
+      }
     }
   }
 

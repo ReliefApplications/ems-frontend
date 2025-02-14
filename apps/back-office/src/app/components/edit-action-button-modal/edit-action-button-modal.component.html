@@ -1,0 +1,537 @@
+<ui-dialog
+  [size]="form.value?.action?.sendNotification?.enabled ? 'big' : 'medium'"
+  [closable]="true"
+>
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{
+        (isNew
+          ? 'models.dashboard.actionButtons.create'
+          : 'models.dashboard.actionButtons.edit.one'
+        ) | translate
+      }}
+    </h3>
+  </ng-container>
+
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="form" class="flex justify-between w-full flex-col py-2">
+      <ui-tabs [vertical]="true">
+        <!-- General settings -->
+        <ui-tab formGroupName="general">
+          <ng-container ngProjectAs="label">
+            <ui-icon
+              icon="preview"
+              [size]="18"
+              uiTooltip="{{ 'common.general' | translate }}"
+            ></ui-icon>
+            <span>{{ 'common.general' | translate }}</span>
+          </ng-container>
+          <ng-template uiTabContent>
+            <div class="flex gap-4 flex-col">
+              <!-- Button text -->
+              <div uiFormFieldDirective>
+                <label>{{
+                  'models.dashboard.actionButtons.text' | translate
+                }}</label>
+                <input formControlName="buttonText" type="string" />
+              </div>
+
+              <!-- Use role restriction -->
+              <ui-toggle formControlName="hasRoleRestriction" class="mb-4">
+                <ng-container ngProjectAs="label">
+                  {{
+                    'models.dashboard.actionButtons.hasRoleRestriction'
+                      | translate
+                  }}</ng-container
+                >
+              </ui-toggle>
+
+              <!-- Role restriction -->
+              <div
+                uiFormFieldDirective
+                *ngIf="form.value.general.hasRoleRestriction"
+              >
+                <label>{{
+                  'models.dashboard.actionButtons.visibleTo' | translate
+                }}</label>
+                <ui-select-menu formControlName="roles" [multiselect]="true">
+                  <ui-select-option
+                    *ngFor="let role of roles"
+                    [value]="role.id"
+                  >
+                    {{ role.title }}
+                  </ui-select-option>
+                </ui-select-menu>
+              </div>
+
+              <!-- Display settings -->
+              <div class="flex gap-2 mb-2">
+                <!-- Button category -->
+                <div uiFormFieldDirective [outline]="false" class="grow">
+                  <label>{{
+                    'models.dashboard.actionButtons.category' | translate
+                  }}</label>
+                  <ui-select-menu formControlName="category">
+                    <ui-select-option
+                      *ngFor="let category of categories"
+                      [value]="category"
+                    >
+                      {{ category }}
+                    </ui-select-option>
+                  </ui-select-menu>
+                </div>
+
+                <!-- Button variant -->
+                <div uiFormFieldDirective [outline]="false" class="grow">
+                  <label>{{
+                    'models.dashboard.actionButtons.variant' | translate
+                  }}</label>
+                  <ui-select-menu formControlName="variant">
+                    <ui-select-option
+                      *ngFor="let variant of variants"
+                      [value]="variant"
+                    >
+                      {{ variant }}
+                    </ui-select-option>
+                  </ui-select-menu>
+                </div>
+              </div>
+
+              <ui-divider class="my-4"></ui-divider>
+              <h3 class="font-semibold">{{ 'common.preview' | translate }}</h3>
+              <div>
+                <!-- Button preview -->
+                <ui-button
+                  *ngIf="form.value.general.buttonText"
+                  class="w-fit mx-auto mt-3"
+                  [category]="form.value.general.category || 'secondary'"
+                  [variant]="form.value.general.variant || 'primary'"
+                  (click)="preview()"
+                >
+                  {{ form.value.general.buttonText }}
+                </ui-button>
+              </div>
+            </div>
+          </ng-template>
+        </ui-tab>
+
+        <!-- Action configuration -->
+        <ui-tab formGroupName="action">
+          <ng-container ngProjectAs="label">
+            <ui-icon
+              icon="toggle_on"
+              [size]="18"
+              uiTooltip="{{ 'common.general' | translate }}"
+            ></ui-icon>
+            <span>{{
+              'models.dashboard.actionButtons.action' | translate
+            }}</span>
+          </ng-container>
+          <ng-template uiTabContent>
+            <div class="flex gap-4 flex-col">
+              <!-- Navigate to -->
+              <ng-container formGroupName="navigateTo">
+                <ui-toggle formControlName="enabled">
+                  <ng-container ngProjectAs="label">
+                    {{
+                      'models.dashboard.actionButtons.actions.navigateTo'
+                        | translate
+                    }}
+                  </ng-container>
+                </ui-toggle>
+                <div
+                  class="flex flex-col ml-[55px]"
+                  *ngIf="form.value.action.navigateTo.enabled"
+                >
+                  <!-- Previous page -->
+                  <ui-toggle formControlName="previousPage">
+                    <ng-container ngProjectAs="label">
+                      {{
+                        'models.dashboard.actionButtons.actions.previousPage'
+                          | translate
+                      }}
+                    </ng-container>
+                  </ui-toggle>
+                  <ng-container formGroupName="targetUrl">
+                    <ui-toggle formControlName="enabled">
+                      <ng-container ngProjectAs="label">
+                        {{
+                          'models.dashboard.actionButtons.actions.url'
+                            | translate
+                        }}
+                      </ng-container>
+                    </ui-toggle>
+                    <ng-container
+                      *ngIf="form.value.action.navigateTo.targetUrl.enabled"
+                    >
+                      <div uiFormFieldDirective>
+                        <label>{{
+                          'models.dashboard.actionButtons.actions.url'
+                            | translate
+                        }}</label>
+                        <shared-editor-control
+                          formControlName="href"
+                          [editorConfig]="hrefEditor"
+                        ></shared-editor-control>
+                      </div>
+                      <ui-toggle formControlName="openInNewTab">
+                        <ng-container ngProjectAs="label">
+                          {{
+                            'models.dashboard.actionButtons.actions.openInNewTab'
+                              | translate
+                          }}
+                        </ng-container>
+                      </ui-toggle>
+                    </ng-container>
+                  </ng-container>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="data.dashboard">
+                <!-- Edit record -->
+                <ng-container formGroupName="editRecord">
+                  <ui-toggle formControlName="enabled">
+                    <ng-container ngProjectAs="label">
+                      {{
+                        'models.dashboard.actionButtons.actions.editRecord.text'
+                          | translate
+                      }}
+                    </ng-container>
+                  </ui-toggle>
+                  <div
+                    class="flex flex-col ml-[55px]"
+                    *ngIf="form.value.action.editRecord.enabled"
+                  >
+                    <div uiFormFieldDirective class="flex-1">
+                      <label>{{ 'models.form.template' | translate }}</label>
+                      <ui-select-menu formControlName="template">
+                        <ui-select-option>-</ui-select-option>
+                        <ui-select-option
+                          *ngFor="let template of editRecordTemplates"
+                          [value]="template.id"
+                        >
+                          {{ template.name }}
+                        </ui-select-option>
+                      </ui-select-menu>
+                      <ui-icon
+                        uiSuffix
+                        icon="info_outline"
+                        variant="grey"
+                        [uiTooltip]="
+                          'models.dashboard.actionButtons.actions.editRecord.tooltip.template'
+                            | translate
+                        "
+                      ></ui-icon>
+                    </div>
+                    <!-- Auto reload on save -->
+                    <ui-toggle formControlName="autoReload">
+                      <ng-container ngProjectAs="label">
+                        {{
+                          'models.dashboard.actionButtons.actions.autoReload'
+                            | translate
+                        }}
+                      </ng-container>
+                    </ui-toggle>
+                  </div>
+                </ng-container>
+                <!-- Add record -->
+                <ng-container formGroupName="addRecord">
+                  <ui-toggle formControlName="enabled">
+                    <ng-container ngProjectAs="label">
+                      {{
+                        'models.dashboard.actionButtons.actions.addRecord.text'
+                          | translate
+                      }}
+                    </ng-container>
+                  </ui-toggle>
+                  <ng-container *ngIf="form.value.action.addRecord.enabled">
+                    <div class="flex flex-col ml-[55px]">
+                      <!-- Resource selection -->
+                      <div uiFormFieldDirective class="flex-1">
+                        <label>{{
+                          'models.resource.select' | translate
+                        }}</label>
+                        <shared-resource-select
+                          formControlName="resource"
+                          [selectedElements]="[selectedResource]"
+                        ></shared-resource-select>
+                      </div>
+                      <!-- Template selection -->
+                      <div uiFormFieldDirective class="flex-1">
+                        <label>{{ 'models.form.template' | translate }}</label>
+                        <ui-select-menu formControlName="template">
+                          <ui-select-option>-</ui-select-option>
+                          <ui-select-option
+                            *ngFor="let template of addRecordTemplates"
+                            [value]="template.id"
+                          >
+                            {{ template.name }}
+                          </ui-select-option>
+                        </ui-select-menu>
+                        <ui-icon
+                          uiSuffix
+                          icon="info_outline"
+                          variant="grey"
+                          [uiTooltip]="
+                            'models.dashboard.actionButtons.actions.addRecord.tooltip.template'
+                              | translate
+                          "
+                        ></ui-icon>
+                      </div>
+                      <!-- Auto reload on save -->
+                      <ui-toggle formControlName="autoReload">
+                        <ng-container ngProjectAs="label">
+                          {{
+                            'models.dashboard.actionButtons.actions.autoReload'
+                              | translate
+                          }}
+                        </ng-container>
+                      </ui-toggle>
+                      <!-- Edit record callback -->
+                      <ui-toggle formControlName="edition">
+                        <ng-container ngProjectAs="label">
+                          {{
+                            'models.dashboard.actionButtons.actions.addRecord.edition'
+                              | translate
+                          }}
+                        </ng-container>
+                      </ui-toggle>
+                      <ng-container *ngIf="form.value.action.addRecord.edition">
+                        <!-- Record fields selection -->
+                        <div uiFormFieldDirective class="mt-2 flex-1">
+                          <label>{{
+                            'models.dashboard.actionButtons.actions.addRecord.fieldsForUpdate.text'
+                              | translate
+                          }}</label>
+                          <ui-select-menu
+                            [filterable]="true"
+                            [multiselect]="true"
+                            formControlName="fieldsForUpdate"
+                          >
+                            <ng-container *ngFor="let field of resourceFields">
+                              <ui-select-option
+                                *ngIf="
+                                  field.resource ===
+                                  form.value.action.addRecord.resource
+                                "
+                                [value]="field.name"
+                              >
+                                {{ field.name }}
+                              </ui-select-option>
+                            </ng-container>
+                          </ui-select-menu>
+                          <ui-icon
+                            icon="info_outline"
+                            variant="grey"
+                            uiSuffix
+                            [uiTooltip]="
+                              'models.dashboard.actionButtons.actions.addRecord.tooltip.fieldsForUpdate'
+                                | translate
+                            "
+                          ></ui-icon>
+                        </div>
+                      </ng-container>
+                      <!-- Mapping -->
+                      <ui-alert
+                        >{{
+                          'models.dashboard.actionButtons.actions.addRecord.help.mapping'
+                            | translate
+                        }}
+                      </ui-alert>
+                      <shared-field-mapper
+                        class="my-2"
+                        [formGroupInstance]="$any(form.get('action.addRecord'))"
+                        [fields]="addRecordFields"
+                      ></shared-field-mapper>
+                    </div>
+                  </ng-container>
+                </ng-container>
+                <!-- Subscribe to notification -->
+                <ng-container formGroupName="subscribeToNotification">
+                  <ui-toggle formControlName="enabled">
+                    <ng-container ngProjectAs="label">
+                      {{
+                        'models.dashboard.actionButtons.actions.subscribeToNotification'
+                          | translate
+                      }}
+                    </ng-container>
+                  </ui-toggle>
+                  <ng-container
+                    *ngIf="form.value.action.subscribeToNotification.enabled"
+                  >
+                    <div class="flex flex-col ml-[55px]">
+                      <div uiFormFieldDirective class="flex-1">
+                        <label>{{
+                          'components.notifications.title' | translate
+                        }}</label>
+                        <ui-select-menu
+                          [filterable]="true"
+                          [multiselect]="false"
+                          formControlName="notification"
+                        >
+                          <ui-select-option [value]="''">-</ui-select-option>
+                          <ng-container
+                            *ngFor="let notification of emailNotifications"
+                          >
+                            <ui-select-option [value]="notification.id">
+                              {{ notification.name }}
+                            </ui-select-option>
+                          </ng-container>
+                        </ui-select-menu>
+                      </div>
+                    </div>
+                  </ng-container>
+                </ng-container>
+                <!-- Unsubscribe from notification -->
+                <ng-container formGroupName="unsubscribeFromNotification">
+                  <ui-toggle formControlName="enabled">
+                    <ng-container ngProjectAs="label">
+                      {{
+                        'models.dashboard.actionButtons.actions.unsubscribeFromNotification'
+                          | translate
+                      }}
+                    </ng-container>
+                  </ui-toggle>
+                  <ng-container
+                    *ngIf="
+                      form.value.action.unsubscribeFromNotification.enabled
+                    "
+                  >
+                    <div class="flex flex-col ml-[55px]">
+                      <div uiFormFieldDirective class="flex-1">
+                        <label>{{
+                          'components.notifications.title' | translate
+                        }}</label>
+                        <ui-select-menu
+                          [filterable]="true"
+                          [multiselect]="false"
+                          formControlName="notification"
+                        >
+                          <ui-select-option [value]="''">-</ui-select-option>
+                          <ng-container
+                            *ngFor="let notification of emailNotifications"
+                          >
+                            <ui-select-option [value]="notification.id">
+                              {{ notification.name }}
+                            </ui-select-option>
+                          </ng-container>
+                        </ui-select-menu>
+                      </div>
+                    </div>
+                  </ng-container>
+                </ng-container>
+                <!-- Send notification -->
+                <ng-container formGroupName="sendNotification">
+                  <ui-toggle formControlName="enabled">
+                    <ng-container ngProjectAs="label">
+                      {{
+                        'models.dashboard.actionButtons.actions.sendNotification.text'
+                          | translate
+                      }}
+                    </ng-container>
+                  </ui-toggle>
+                  <ng-container
+                    *ngIf="form.value.action.sendNotification.enabled"
+                  >
+                    <!-- Distribution list -->
+                    <div uiFormFieldDirective>
+                      <label>{{
+                        'components.emailBuilder.distribution' | translate
+                      }}</label>
+                      <ui-select-menu
+                        formControlName="distributionList"
+                        [filterable]="true"
+                      >
+                        <ui-select-option
+                          *ngFor="let list of sendNotificationDistributionList"
+                          [value]="list.id"
+                        >
+                          {{ list.name }}
+                        </ui-select-option>
+                      </ui-select-menu>
+                      <ui-icon
+                        uiSuffix
+                        icon="info_outline"
+                        class="cursor-pointer"
+                        variant="grey"
+                        [uiTooltip]="
+                          'components.widget.settings.grid.buttons.tooltip.mail.selectDistributionList'
+                            | translate
+                        "
+                        class="self-center ml-1 cursor-help"
+                      ></ui-icon>
+                    </div>
+                    <!-- Templates -->
+                    <div uiFormFieldDirective>
+                      <label>{{
+                        'components.templates.available' | translate
+                      }}</label>
+                      <ui-select-menu
+                        class="select"
+                        formControlName="templates"
+                        [multiselect]="true"
+                        [filterable]="true"
+                      >
+                        <ui-select-option
+                          *ngFor="let template of sendNotificationTemplates"
+                          [value]="template.id"
+                        >
+                          {{ template.name }}
+                        </ui-select-option>
+                      </ui-select-menu>
+                      <ui-icon
+                        icon="info_outline"
+                        class="cursor-pointer"
+                        variant="grey"
+                        uiSuffix
+                        [uiTooltip]="
+                          'components.widget.settings.grid.buttons.tooltip.mail.selectTemplates'
+                            | translate
+                        "
+                        class="self-center ml-1 cursor-help"
+                      ></ui-icon>
+                    </div>
+                    <!-- Select fields -->
+                    <ng-container
+                      *ngIf="data.dashboard.page?.context?.resource"
+                    >
+                      <!-- Select fields to see in dataset -->
+                      <h2>
+                        {{ 'components.emailBuilder.fields' | translate }}
+                      </h2>
+                      <ng-container *ngIf="sendNotificationFields.length > 0">
+                        <shared-tab-fields
+                          [form]="
+                            $any(form.get('action.sendNotification.fields'))
+                          "
+                          [fields]="sendNotificationFields"
+                          [showLimit]="true"
+                          [showColumnWidth]="true"
+                        ></shared-tab-fields>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </div>
+          </ng-template>
+        </ui-tab>
+      </ui-tabs>
+    </form>
+  </ng-container>
+
+  <!-- Modal actions -->
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">{{
+      'common.cancel' | translate
+    }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onSubmit()"
+      cdkFocusInitial
+      [disabled]="!form.valid"
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

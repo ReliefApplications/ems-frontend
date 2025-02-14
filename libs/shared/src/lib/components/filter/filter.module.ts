@@ -11,6 +11,7 @@ import {
   FormWrapperModule,
   DateModule,
   TooltipModule,
+  SpinnerModule,
 } from '@oort-front/ui';
 
 /**
@@ -29,6 +30,7 @@ import {
     DateModule,
     FormWrapperModule,
     TooltipModule,
+    SpinnerModule,
   ],
   exports: [FilterComponent],
 })

@@ -1,3 +1,4 @@
+import { ActionButton } from '../components/action-button/action-button.type';
 import { Application } from './application.model';
 
 /**
@@ -21,14 +22,9 @@ export interface IContentType {
 }
 
 /** Interface for the page context */
-export type PageContextT = (
-  | {
-      refData: string;
-    }
-  | {
-      resource: string;
-    }
-) & {
+export type PageContextT = {
+  refData?: string;
+  resource?: string;
   displayField: string;
 };
 
@@ -78,6 +74,7 @@ export interface Page {
   context?: PageContextT;
   visible?: boolean;
   icon?: string;
+  showName?: boolean;
   contentWithContext?: ((
     | {
         // The element string is the value for the value field of the refData
@@ -90,6 +87,7 @@ export interface Page {
     content: string;
   })[];
   autoDeletedAt?: Date;
+  buttons?: ActionButton[];
 }
 
 /** Model for page graphql query response */

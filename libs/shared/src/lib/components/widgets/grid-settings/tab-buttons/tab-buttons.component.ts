@@ -77,9 +77,11 @@ export class TabButtonsComponent {
    * @param event cdk drag and drop event.
    */
   onReorder(event: CdkDragDrop<string[]>): void {
-    const reorderedButtons = this.buttons.value;
-    moveItemInArray(reorderedButtons, event.previousIndex, event.currentIndex);
-    this.buttons.setValue(reorderedButtons);
+    moveItemInArray(
+      this.buttons.controls,
+      event.previousIndex,
+      event.currentIndex
+    );
     const previousTabIndex = this.tabGroup.selectedIndex || 0;
     let selectedIndex = 0;
     if (event.previousIndex === previousTabIndex) {

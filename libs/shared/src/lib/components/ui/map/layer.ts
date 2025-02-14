@@ -4,7 +4,7 @@ import 'leaflet.heat';
 import 'leaflet.markercluster';
 import './utils/leaflet-heatmap.js';
 import { Feature, Geometry } from 'geojson';
-import { get, isNaN, isNil, max, maxBy, min, set } from 'lodash';
+import { clone, get, isNaN, isNil, max, maxBy, min, set } from 'lodash';
 import {
   LayerType,
   LayerFilter,
@@ -27,8 +27,9 @@ import { MapPopupService } from './map-popup/map-popup.service';
 import { haversineDistance } from './utils/haversine';
 import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
 import { MapLayersService } from '../../../services/map/map-layers.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import centroid from '@turf/centroid';
+import { coordEach } from '@turf/meta';
 import { Injector, Renderer2, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import {
@@ -37,6 +38,11 @@ import {
 } from '@fortawesome/fontawesome-svg-core';
 import { getIconDefinition } from '@oort-front/ui';
 import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
+import { GridService } from '../../../services/grid/grid.service';
+import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { Apollo } from 'apollo-angular';
+import { ResourceQueryResponse } from '../../../models/resource.model';
+import { GET_LAYOUT } from './graphql/queries';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -144,6 +150,12 @@ export class Layer implements LayerModel {
   private popupService!: MapPopupService;
   /** Map layer service */
   private layerService!: MapLayersService;
+  /** Shared grid service */
+  private gridService!: GridService;
+  /** Query builder */
+  private queryBuilder!: QueryBuilderService;
+  /** Apollo service */
+  private apollo!: Apollo;
   /** Dashboard automation service */
   private dashboardAutomationService?: DashboardAutomationService;
   /** Map renderer */
@@ -204,7 +216,8 @@ export class Layer implements LayerModel {
 
   /** Layer fields, extracted from geojson */
   private fields: { [key in string]: FieldTypes } = {};
-
+  /** Metadata; used by popup elements */
+  private metaFields: any[] = [];
   // Declare variables to store the event listeners
   /** Event listener for zoom event */
   private zoomListener!: L.LeafletEventHandlerFn;
@@ -216,6 +229,10 @@ export class Layer implements LayerModel {
   public shouldRefresh = false;
   /** Parent layer ( optional, only for sub-layer ) */
   public parent?: Layer;
+  /** All children layer classes if exits */
+  public children?: Layer[] = [];
+  /** Given layer index position in the map */
+  public zIndex!: number;
 
   /**
    * Get layer children. Await for sub-layers to be loaded first.
@@ -276,6 +293,9 @@ export class Layer implements LayerModel {
     if (options) {
       this.popupService = injector.get(MapPopupService);
       this.layerService = injector.get(MapLayersService);
+      this.gridService = injector.get(GridService);
+      this.queryBuilder = injector.get(QueryBuilderService);
+      this.apollo = injector.get(Apollo);
       // If no dashboard automation service is provided(it's optional, map settings does not use it), cannot recognize the token and breaks
       try {
         this.dashboardAutomationService = injector.get(
@@ -304,6 +324,9 @@ export class Layer implements LayerModel {
     this.opacity = get(options, 'opacity', 1);
     this.visibility = get(options, 'visibility', true);
     this.layerDefinition = get(options, 'layerDefinition');
+    // Default zIndex values for layers are above 500, popups work around 600 and above,
+    // This way we make sure panes are correctly placed in the general stack
+    this.zIndex = get(options, 'zIndex') + 500;
 
     if (options.type !== 'GroupLayer') {
       this.sublayersLoaded.next(true);
@@ -457,17 +480,56 @@ export class Layer implements LayerModel {
       []
     );
 
+    const classBreakInfos = get(
+      this.layerDefinition,
+      'drawingInfo.renderer.classBreakInfos',
+      []
+    );
+
     const valueField = get(
       this.layerDefinition,
       'drawingInfo.renderer.field1',
       ''
     );
 
-    const uniqueValueDefaultSymbol = get(
+    const defaultSymbol = get(
       this.layerDefinition,
       'drawingInfo.renderer.defaultSymbol',
       symbol
     );
+
+    const getClassBreakSymbol = (feature: Feature<any, any>) => {
+      const minValue = get(
+        this.layerDefinition,
+        'drawingInfo.renderer.minValue',
+        undefined
+      );
+      const fieldValue = get(feature, `properties.${valueField}`, null);
+      let classBreakSymbol = defaultSymbol;
+      /**
+       * According to the value field to check, we set on symbol or other
+       * The value in the class break should be contained in a range, otherwise if not or nullish, the default symbol is applied
+       *
+       * - We use generic minValue as the start range in where to be included, if not provided, just use the roof value to calculate the associated symbol
+       * - After the first item in the class break, other ranges are calculated with current class break maxValue and the previous class break item maxValue
+       */
+      const ascendingMaxBreaks = clone(classBreakInfos).reverse();
+      for (let i = 0; i < ascendingMaxBreaks.length; i++) {
+        const currentSymbol = ascendingMaxBreaks[i].symbol;
+        const from = i > 0 ? ascendingMaxBreaks[i - 1].maxValue : minValue;
+        const to = ascendingMaxBreaks[i].maxValue;
+
+        // Check if fieldValue is within the range [from, to]
+        if (
+          (isNil(from) || fieldValue > from) &&
+          (isNil(to) || fieldValue <= to)
+        ) {
+          classBreakSymbol = currentSymbol;
+          break; // No need to continue once the correct symbol is found
+        }
+      }
+      return classBreakSymbol;
+    };
 
     // options used for parsing geojson to leaflet layer
     const geoJSONopts: L.GeoJSONOptions<any> = {
@@ -477,8 +539,10 @@ export class Layer implements LayerModel {
             const fieldValue = get(feature, `properties.${valueField}`, null);
             const uniqueValueSymbol =
               uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
-              uniqueValueDefaultSymbol;
-            return new L.Marker(latlng).setIcon(
+              defaultSymbol;
+            return new L.Marker(latlng, {
+              pane: this.zIndex.toString(),
+            }).setIcon(
               createCustomDivIcon({
                 icon: uniqueValueSymbol.style,
                 color: uniqueValueSymbol.color,
@@ -486,8 +550,22 @@ export class Layer implements LayerModel {
                 opacity: this.opacity,
               })
             );
+          } else if (rendererType === 'classBreak') {
+            const classBreakSymbol = getClassBreakSymbol(feature);
+            return new L.Marker(latlng, {
+              pane: this.zIndex.toString(),
+            }).setIcon(
+              createCustomDivIcon({
+                icon: classBreakSymbol.style,
+                color: classBreakSymbol.color,
+                size: classBreakSymbol.size,
+                opacity: this.opacity,
+              })
+            );
           } else {
-            return new L.Marker(latlng).setIcon(
+            return new L.Marker(latlng, {
+              pane: this.zIndex.toString(),
+            }).setIcon(
               createCustomDivIcon({
                 icon: symbol.style,
                 color: symbol.color,
@@ -504,11 +582,22 @@ export class Layer implements LayerModel {
             const fieldValue = get(feature, `properties.${valueField}`, null);
             const uniqueValueSymbol =
               uniqueValueInfos.find((x) => x.value == fieldValue)?.symbol ||
-              uniqueValueDefaultSymbol;
+              defaultSymbol;
             return {
               fillColor: uniqueValueSymbol.color,
               color: uniqueValueSymbol.outline?.color,
               weight: uniqueValueSymbol.outline?.width,
+              fillOpacity: this.opacity,
+              opacity: this.opacity,
+            };
+          } else if (rendererType === 'classBreak') {
+            const classBreakSymbol = getClassBreakSymbol(
+              feature as Feature<any, any>
+            );
+            return {
+              fillColor: classBreakSymbol.color,
+              color: classBreakSymbol.outline?.color,
+              weight: classBreakSymbol.outline?.width,
               fillOpacity: this.opacity,
               opacity: this.opacity,
             };
@@ -536,6 +625,7 @@ export class Layer implements LayerModel {
               lng: center.geometry.coordinates[0],
             }),
             this.popupInfo,
+            this.metaFields,
             layer
           );
         };
@@ -554,27 +644,35 @@ export class Layer implements LayerModel {
       //     // weight: style.borderWidth,
       //   };
       // },
+      pane: this.zIndex.toString(),
     };
 
     switch (this.type) {
-      case 'GroupLayer':
-        const ChildrenIds = this.getChildren();
-        const layerPromises = ChildrenIds.map((layer) => {
-          return this.layerService.createLayersFromId(layer, this.injector);
+      case 'GroupLayer': {
+        const childrenIds = this.getChildren();
+        const layerPromises = childrenIds.map((layer) => {
+          return this.layerService.createLayersFromId(
+            layer,
+            this.injector,
+            // children layers would have same index context as the parent
+            this.zIndex - 500
+          );
         });
         const sublayers = await Promise.all(layerPromises);
-
+        this.children = [];
         for (const child of sublayers) {
           child.opacity = child.opacity * this.opacity;
           child.visibility = this.visibility && child.visibility;
           child.parent = this;
           child.layer = await child.getLayer();
+          this.children.push(child);
         }
         const layers = sublayers
           .map((child) => child.layer)
           .filter((layer) => layer !== undefined) as L.Layer[];
-        const layer = L.layerGroup(layers);
+        const layer = L.layerGroup(layers, { pane: this.zIndex.toString() });
         layer.onAdd = (map: L.Map) => {
+          this.updateMapPanesStatus(map);
           const l = L.LayerGroup.prototype.onAdd.call(layer, map);
           // Leaflet.heat doesn't support click events, so we have to do it ourselves
           this.onAddLayer(map, layer);
@@ -585,16 +683,19 @@ export class Layer implements LayerModel {
           this.onRemoveLayer(map, layer);
           return l;
         };
-        this.layer = layer;
-        (this.layer as any).origin = 'app-builder';
-        (this.layer as any).id = this.id;
-        return this.layer;
-
-      default:
+        return this.updateLayerContextInformation(layer);
+      }
+      // Single layer
+      default: {
+        // Fetch metadata if resource & layout configured
+        if (this.datasource?.resource && this.datasource.layout) {
+          await this.getLayoutMetadata();
+        }
         switch (
           get(this.layerDefinition, 'drawingInfo.renderer.type', 'simple')
         ) {
-          case 'heatmap':
+          // Heatmap
+          case 'heatmap': {
             // check data type
             if (data.type !== 'FeatureCollection') {
               throw new Error(
@@ -618,9 +719,13 @@ export class Layer implements LayerModel {
                   const long = parseFloat(get(feature, 'coordinates[0]'));
                   if (!isNaN(lat) && !isNaN(long)) {
                     if (valueField) {
+                      heatArray.push([lat, long - 360, intensity(feature)]);
                       heatArray.push([lat, long, intensity(feature)]);
+                      heatArray.push([lat, long + 360, intensity(feature)]);
                     } else {
+                      heatArray.push([lat, long - 360]);
                       heatArray.push([lat, long]);
+                      heatArray.push([lat, long + 360]);
                     }
                   }
                   break;
@@ -634,9 +739,13 @@ export class Layer implements LayerModel {
                   );
                   if (!isNaN(lat) && !isNaN(long)) {
                     if (valueField) {
+                      heatArray.push([lat, long - 360, intensity(feature)]);
                       heatArray.push([lat, long, intensity(feature)]);
+                      heatArray.push([lat, long + 360, intensity(feature)]);
                     } else {
+                      heatArray.push([lat, long - 360]);
                       heatArray.push([lat, long]);
+                      heatArray.push([lat, long + 360]);
                     }
                   }
                   break;
@@ -654,6 +763,7 @@ export class Layer implements LayerModel {
             );
 
             const heatmapOptions: HeatMapOptions = {
+              pane: this.zIndex.toString(),
               opacity: this.opacity,
               blur: get(
                 this.layerDefinition,
@@ -714,11 +824,13 @@ export class Layer implements LayerModel {
                 this.popupService.setPopUp(
                   matchedPoints,
                   event,
-                  this.popupInfo
+                  this.popupInfo,
+                  this.metaFields
                 );
               }
             };
             layer.onAdd = (map: L.Map) => {
+              this.updateMapPanesStatus(map);
               // So we can use onAdd method from HeatLayer class
               const l = (L as any).HeatLayer.prototype.onAdd.call(layer, map);
               // Leaflet.heat doesn't support click events, so we have to do it ourselves
@@ -744,19 +856,20 @@ export class Layer implements LayerModel {
               this.onRemoveLayer(map, layer);
               return l;
             };
-            this.layer = layer;
-            (this.layer as any).origin = 'app-builder';
-            (this.layer as any).id = this.id;
-            return this.layer;
-          default:
+            return this.updateLayerContextInformation(layer);
+          }
+          // Cluster & everything else
+          default: {
             switch (get(this.layerDefinition, 'featureReduction.type')) {
-              case 'cluster':
+              // Cluster
+              case 'cluster': {
                 const clusterSymbol: LayerSymbol = get(
                   this.layerDefinition,
                   'featureReduction.drawingInfo.renderer.symbol',
                   symbol
                 );
                 const clusterGroup = L.markerClusterGroup({
+                  clusterPane: this.zIndex.toString(),
                   chunkedLoading: true, // Load markers in chunks
                   chunkInterval: 250, // Time interval (in ms) during which addLayers works before pausing to let the rest of the page process
                   chunkDelay: 50, // Time delay (in ms) between consecutive periods of processing for addLayers
@@ -791,6 +904,7 @@ export class Layer implements LayerModel {
                   },
                 });
                 clusterGroup.onAdd = (map: L.Map) => {
+                  this.updateMapPanesStatus(map);
                   const l = L.MarkerClusterGroup.prototype.onAdd.call(
                     clusterGroup,
                     map
@@ -816,30 +930,68 @@ export class Layer implements LayerModel {
                     children,
                     event.latlng,
                     this.popupInfo,
+                    this.metaFields,
                     event.layer
                   );
                 });
 
-                const clusterLayer = L.geoJSON(data, geoJSONopts);
+                const leftData = JSON.parse(JSON.stringify(data));
+                coordEach(leftData, (coord) => {
+                  coord[0] += -360;
+                });
+
+                const rightData = JSON.parse(JSON.stringify(data));
+                coordEach(rightData, (coord) => {
+                  coord[0] += 360;
+                });
+
+                const clusterLayer = L.geoJSON(
+                  {
+                    type: 'FeatureCollection',
+                    features: [leftData, data, rightData],
+                  } as any,
+                  geoJSONopts
+                );
+
                 clusterLayer.onAdd = (map: L.Map) => {
+                  this.updateMapPanesStatus(map);
                   const l = L.GeoJSON.prototype.onAdd.call(clusterLayer, map);
                   this.onAddLayer(map, clusterLayer);
                   return l;
                 };
                 clusterLayer.onRemove = (map: L.Map) => {
-                  const l = L.GeoJSON.prototype.onRemove.call(layer, map);
+                  const l = L.GeoJSON.prototype.onRemove.call(
+                    clusterLayer,
+                    map
+                  );
                   this.onRemoveLayer(map, clusterLayer);
                   return l;
                 };
                 clusterGroup.addLayer(clusterLayer);
-                this.layer = clusterGroup;
-                (this.layer as any).origin = 'app-builder';
-                (this.layer as any).id = this.id;
-                return this.layer;
-              default:
-                const layer = L.geoJSON(data, geoJSONopts);
+                return this.updateLayerContextInformation(clusterGroup);
+              }
+              // Everything else
+              default: {
+                const leftData = JSON.parse(JSON.stringify(data));
+                coordEach(leftData, (coord) => {
+                  coord[0] += -360;
+                });
+
+                const rightData = JSON.parse(JSON.stringify(data));
+                coordEach(rightData, (coord) => {
+                  coord[0] += 360;
+                });
+
+                const layer = L.geoJSON(
+                  {
+                    type: 'FeatureCollection',
+                    features: [leftData, data, rightData],
+                  } as any,
+                  geoJSONopts
+                );
 
                 layer.onAdd = (map: L.Map) => {
+                  this.updateMapPanesStatus(map);
                   const l = L.GeoJSON.prototype.onAdd.call(layer, map);
                   this.onAddLayer(map, layer);
                   return l;
@@ -849,12 +1001,41 @@ export class Layer implements LayerModel {
                   this.onRemoveLayer(map, layer);
                   return l;
                 };
-                this.layer = layer;
-                (this.layer as any).origin = 'app-builder';
-                (this.layer as any).id = this.id;
-                return this.layer;
+                return this.updateLayerContextInformation(layer);
+              }
             }
+          }
         }
+      }
+    }
+  }
+
+  /**
+   * Update given layer with necessary context information, including
+   * - Related system layer id
+   * - Layer origin
+   * - Z index in the layer stack context
+   *
+   * @param layer Layer to update with context information
+   * @returns layer with updated context information
+   */
+  private updateLayerContextInformation(layer: L.Layer): L.Layer {
+    this.layer = layer;
+    (this.layer as any).origin = 'app-builder';
+    (this.layer as any).id = this.id;
+    (this.layer as any).zIndex = this.zIndex;
+    return this.layer;
+  }
+
+  /**
+   * Set up panes to keep current map layers stack in order
+   *
+   * @param map Current map instance
+   */
+  private updateMapPanesStatus(map: L.Map) {
+    if (!map.getPane(this.zIndex.toString())) {
+      map.createPane(this.zIndex.toString()).style.zIndex =
+        this.zIndex.toString();
     }
   }
 
@@ -1005,11 +1186,14 @@ export class Layer implements LayerModel {
   get legend() {
     let html = '';
     const geometryType = get(this.datasource, 'type') || 'Point';
+    const rendererType = get(
+      this.layerDefinition,
+      'drawingInfo.renderer.type',
+      'simple'
+    );
     switch (this.type) {
       case 'FeatureLayer': {
-        switch (
-          get(this.layerDefinition, 'drawingInfo.renderer.type', 'simple')
-        ) {
+        switch (rendererType) {
           case 'heatmap':
             const gradient = get(
               this.layerDefinition,
@@ -1031,14 +1215,15 @@ export class Layer implements LayerModel {
             container.innerHTML = linearGradient.outerHTML + legend.outerHTML;
             html = container.outerHTML;
             break;
-          case 'uniqueValue': {
+          case 'uniqueValue':
+          case 'classBreak': {
             const defaultSymbol: LayerSymbol | undefined = get(
               this.layerDefinition,
               'drawingInfo.renderer.defaultSymbol'
             );
             for (const info of get(
               this.layerDefinition,
-              'drawingInfo.renderer.uniqueValueInfos',
+              `drawingInfo.renderer.${rendererType}Infos` as any,
               []
             )) {
               const symbol: LayerSymbol = info.symbol;
@@ -1130,7 +1315,7 @@ export class Layer implements LayerModel {
       }
     }
     if (html) {
-      html = `<div class="font-bold truncate">${this.name}</div>` + html;
+      html = `<div class="font-bold">${this.name}</div>` + html;
     }
     return html;
   }
@@ -1252,6 +1437,69 @@ export class Layer implements LayerModel {
       return max([this.parent.getMinZoom(map), minZoom]) as number;
     } else {
       return minZoom;
+    }
+  }
+
+  /**
+   * Get layout metadata for popup
+   */
+  private async getLayoutMetadata() {
+    if (this.datasource) {
+      const { data } = await firstValueFrom(
+        this.apollo.query<ResourceQueryResponse>({
+          query: GET_LAYOUT,
+          variables: {
+            id: this.datasource.layout,
+            resource: this.datasource.resource,
+          },
+        })
+      );
+
+      if (data) {
+        const layout = data.resource.layouts?.edges[0]?.node;
+        if (layout) {
+          const layoutFields = layout.query.fields;
+          const fields = get(data, 'resource.metadata', []).map((f: any) => {
+            const layoutField = layoutFields.find(
+              (lf: any) => lf.name === f.name
+            );
+            if (layoutField) {
+              return { ...layoutField, ...f };
+            }
+            return f;
+          });
+          const metaQuery = this.queryBuilder.buildMetaQuery(layout.query);
+          if (metaQuery) {
+            const metaData = await firstValueFrom(metaQuery);
+            for (const field in metaData.data) {
+              if (Object.prototype.hasOwnProperty.call(metaData.data, field)) {
+                const metaFields = Object.assign({}, metaData.data[field]);
+                try {
+                  await this.gridService.populateMetaFields(metaFields);
+                  this.metaFields = fields.map((field) => {
+                    //add shape for columns and matrices
+                    const metaData = metaFields[field.name];
+                    field = {
+                      ...field,
+                      meta: metaData,
+                    };
+                    if (metaData && (metaData.columns || metaData.rows)) {
+                      return {
+                        ...field,
+                        columns: metaData.columns,
+                        rows: metaData.rows,
+                      };
+                    }
+                    return field;
+                  });
+                } catch (err) {
+                  console.error(err);
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

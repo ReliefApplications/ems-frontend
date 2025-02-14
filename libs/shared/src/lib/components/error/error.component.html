@@ -1,0 +1,12 @@
+<div class="flex h-full items-center justify-center">
+  <shared-empty
+    icon="lock"
+    [title]="'pages.error.unauthorized.title' | translate"
+    [footerTemplate]="footerTpml"
+  ></shared-empty>
+</div>
+
+<!-- Footer template, if set in the auth error -->
+<ng-template #footerTpml>
+  <div [innerHTML]="'pages.error.unauthorized.footer' | translate"></div>
+</ng-template>

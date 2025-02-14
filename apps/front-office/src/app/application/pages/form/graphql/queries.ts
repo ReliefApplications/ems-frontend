@@ -36,10 +36,15 @@ export const GET_STEP_BY_ID = gql`
     step(id: $id) {
       id
       name
+      showName
       createdAt
       modifiedAt
       content
       canSee
+      buttons
+      workflow {
+        name
+      }
     }
   }
 `;
@@ -52,11 +57,13 @@ export const GET_PAGE_BY_ID = gql`
     page(id: $id) {
       id
       name
+      showName
       createdAt
       modifiedAt
       type
       content
       canSee
+      buttons
     }
   }
 `;
