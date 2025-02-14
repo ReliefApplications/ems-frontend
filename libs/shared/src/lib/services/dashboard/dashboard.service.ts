@@ -72,7 +72,7 @@ export class DashboardService {
     this.dashboard = dashboard;
 
     // Initialize any states coming from the dashboard or query parameters
-    const states = dashboard.states ?? [];
+    const states = structuredClone(dashboard.states ?? []);
     const params = this.router.snapshot.queryParams;
     states.forEach((state) => {
       if (params[state.name]) {

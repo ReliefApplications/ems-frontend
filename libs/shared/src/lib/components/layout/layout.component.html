@@ -127,45 +127,75 @@
       {{ environment.version }}
     </div>
   </ui-menu>
+
   <!-- Notification menu -->
-  <ui-menu #notificationMenu>
-    <!-- Remove visible notifications -->
-    <ui-button
-      (click)="onMarkAllNotificationsAsRead()"
-      class="w-full"
-      icon="check_circle_outline"
-      >{{ 'components.notifications.readAll' | translate }}</ui-button
+  <ui-menu #notificationMenu containerClasses="w-96">
+    <header
+      class="flex justify-between items-center px-3 py-2 border-b border-gray-100"
     >
+      <span class="flex items-center gap-2">
+        <h2 class="mb-0">{{ 'components.notifications.title' | translate }}</h2>
+        <span
+          *ngIf="notifications.length > 0"
+          class="w-6 h-6 bg-red-500 text-white rounded-full grid place-items-center"
+        >
+          {{ notifications.length }}
+        </span>
+      </span>
+      <ui-button class="w-full" icon="close" [isIcon]="true"></ui-button>
+    </header>
+
     <!-- List of notifications -->
-    <div class="flex flex-col overflow-y-auto max-h-[50vh]">
+    <div class="flex flex-col">
       <div
-        class="flex flex-row items-center"
-        uiMenuItem
+        class="border-b border-gray-100"
         *ngFor="let notification of notifications"
       >
-        <button
-          [ngClass]="{ 'cursor-auto' : !notification.redirect?.active }"
-          (click)="notification.redirect?.active ? onNotificationRedirect(notification) : ''"
-        >
-          {{ notification.action }} - {{ notification.createdAt | sharedDate }}
-        </button>
-        <button (click)="onNotificationRead(notification)">
-          <ui-icon icon="check_circle_outline" variant="primary"></ui-icon>
-        </button>
+        <div class="flex flex-row items-center !p-3" uiMenuItem>
+          <button
+            [ngClass]="{ 'cursor-auto': !notification.redirect?.active }"
+            (click)="onNotificationClick(notification)"
+            class="w-full flex flex-col items-start"
+          >
+            <div class="flex w-full justify-between items-center">
+              <span>
+                <span class="font-medium">{{ notification.action }}</span>
+                <span class="font-light text-gray-400">
+                  {{ notification.createdAt | sharedDate }}
+                </span>
+              </span>
+              <div class="w-2 h-2 bg-primary-500 rounded-full">&nbsp;</div>
+            </div>
+            <div
+              *ngIf="shouldDisplayContentCard(notification)"
+              class="py-1.5 px-3 bg-white rounded-md w-full mt-2 border border-gray-200 text-start"
+              [innerHTML]="notification.content"
+            ></div>
+          </button>
+        </div>
       </div>
     </div>
-    <!-- Load more notifications -->
-    <ui-button
-      *ngIf="hasMoreNotifications"
-      category="primary"
-      variant="primary"
-      [isBlock]="true"
-      [disabled]="loadingNotifications"
-      [loading]="loadingNotifications"
-      (click)="onLoadMoreNotifications($event)"
-    >
-      {{ 'common.pagination.loadMore' | translate }}
-    </ui-button>
+
+    <!-- Actions -->
+    <div class="flex p-3 justify-between w-full">
+      <!-- Remove visible notifications -->
+      <button
+        (click)="onMarkAllNotificationsAsRead()"
+        class="flex items-center text-gray-500 gap-2"
+      >
+        {{ 'components.notifications.readAll' | translate }}
+        <ui-icon icon="done_all" [size]="18"></ui-icon>
+      </button>
+
+      <!-- Load more notifications -->
+      <button
+        [disabled]="loadingNotifications || !hasMoreNotifications"
+        (click)="onLoadMoreNotifications($event)"
+        class="flex items-center text-primary-500 underline font-semibold"
+      >
+        {{ 'common.pagination.loadMore' | translate }}
+      </button>
+    </div>
   </ui-menu>
 </nav>
 <!-- Vertical navigation -->

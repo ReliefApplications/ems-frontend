@@ -450,4 +450,25 @@ export class LayoutComponent
     }
     return language;
   }
+
+  /**
+   * Handles click on notification item
+   *
+   * @param notification Notification
+   */
+  onNotificationClick(notification: Notification): void {
+    if (notification.redirect && notification.redirect.active) {
+      this.onNotificationRedirect(notification);
+    }
+  }
+
+  /**
+   * Whether to display additional card
+   *
+   * @param notification Notification
+   * @returns boolean
+   */
+  shouldDisplayContentCard(notification: Notification) {
+    return typeof notification.content === 'string';
+  }
 }
