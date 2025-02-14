@@ -1,15 +1,19 @@
 import { gql } from 'apollo-angular';
 
-// === GET APPLICATION BY ID ===
 /** Graphql request for getting application data by its id */
 export const GET_APPLICATION_BY_ID = gql`
-  query GetApplicationById($id: ID!, $asRole: ID) {
-    application(id: $id, asRole: $asRole) {
+  query ApplicationService_GetApplicationById(
+    $id: ID!
+    $shortcut: String!
+    $asRole: ID
+  ) {
+    application(id: $id, shortcut: $shortcut, asRole: $asRole) {
       id
       name
       description
       sideMenu
       hideMenu
+      shortcut
       createdAt
       status
       templates {
@@ -57,6 +61,7 @@ export const GET_APPLICATION_BY_ID = gql`
         application {
           id
           name
+          shortcut
         }
       }
       userRoles {

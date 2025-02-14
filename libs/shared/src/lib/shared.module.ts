@@ -29,7 +29,6 @@ import { CronExpressionControlModule } from './components/controls/cron-expressi
 import { MapModule } from './components/ui/map';
 import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
 import { DashboardFilterModule } from './components/dashboard-filter/dashboard-filter.module';
-import { ButtonActionModule } from './components/button-action/button-action.module';
 import { GraphQLSelectModule } from '@oort-front/ui';
 import { SortingSettingsModule } from './components/widgets/common/sorting-settings/sorting-settings.module';
 import { WidgetChoiceModule } from './components/widget-choice/widget-choice.module';
@@ -66,7 +65,6 @@ import { DashboardFilterIconComponent } from './components/dashboard-filter-icon
     MapModule,
     DashboardFilterModule,
     DashboardFilterIconComponent,
-    ButtonActionModule,
     WidgetChoiceModule,
     ReferenceDataDropdownModule,
     StatusOptionsComponent,
@@ -86,7 +84,6 @@ import { DashboardFilterIconComponent } from './components/dashboard-filter-icon
     // === VIEWS ===
     ViewsModule,
   ],
-  declarations: [],
   imports: [
     ListFilterComponent,
     StatusOptionsComponent,

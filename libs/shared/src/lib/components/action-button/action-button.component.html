@@ -1,0 +1,8 @@
+<ui-button
+  *ngIf="showButton"
+  [variant]="actionButton.variant"
+  [category]="actionButton.category"
+  (click)="onClick()"
+>
+  {{ actionButton.text }}
+</ui-button>

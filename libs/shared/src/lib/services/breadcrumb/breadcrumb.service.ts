@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  NavigationStart,
+  Router,
+} from '@angular/router';
 import { Breadcrumb } from '@oort-front/ui';
+import { BehaviorSubject } from 'rxjs';
+import { filter, tap } from 'rxjs/operators';
 
 /**
  * Shared Breadcrumb service.
@@ -28,14 +33,26 @@ export class BreadcrumbService {
    */
   constructor(private activateRoute: ActivatedRoute, private router: Router) {
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
+      .pipe(
+        tap((event) => {
+          if (event instanceof NavigationStart) {
+            this.breadcrumbs.next([]);
+          }
+        }),
+        filter(
+          (event) =>
+            event instanceof NavigationEnd &&
+            (this.previousRoot !== event.urlAfterRedirects ||
+              /** If first loaded route contains information for breadcrumbs, emit data */
+              !this.previousRoot)
+        ),
+        tap((event) => {
+          this.previousRoot = (event as NavigationEnd).urlAfterRedirects;
+        })
+      )
       .subscribe(() => {
-        if (this.previousRoot !== this.activateRoute.root.children) {
-          this.breadcrumbs.next(
-            this.createBreadcrumbs(this.activateRoute.root)
-          );
-          this.previousRoot = this.activateRoute.root.children;
-        }
+        const breadcrumbs = this.createBreadcrumbs(this.activateRoute.root);
+        this.breadcrumbs.next(breadcrumbs);
       });
   }
 
@@ -45,7 +62,7 @@ export class BreadcrumbService {
    * @param route current route
    * @param uri previous uri
    * @param breadcrumbs list of existing breadcrumbs
-   * @returns new bredcrumbs
+   * @returns new breadcrumbs
    */
   private createBreadcrumbs(
     route: ActivatedRoute,
@@ -88,13 +105,18 @@ export class BreadcrumbService {
    *
    * @param alias alias ( id ) of the breadcrumb.
    * @param label label to apply
+   * @param parentLabel Parent label related to a workflow step needed for building app activity track
    */
-  public setBreadcrumb(alias: string, label: string) {
+  public setBreadcrumb(alias: string, label: string, parentLabel?: string) {
+    label = parentLabel ? parentLabel + ' | ' + label : label;
     const breadcrumbs = this.breadcrumbs.getValue();
-    const breadcrumb = breadcrumbs.find((x) => x.alias === alias);
-    if (breadcrumb) {
-      breadcrumb.text = label ? label[0].toUpperCase() + label.slice(1) : '';
-      this.breadcrumbs.next(breadcrumbs);
+    const breadcrumbIndex = breadcrumbs.findIndex((x) => x.alias === alias);
+    if (breadcrumbIndex !== -1) {
+      const shallowCopy = { ...breadcrumbs[breadcrumbIndex] };
+      shallowCopy.text = label ? label[0].toUpperCase() + label.slice(1) : '';
+      const shallowBreadcrumbs = [...breadcrumbs];
+      shallowBreadcrumbs.splice(breadcrumbIndex, 1, shallowCopy);
+      this.breadcrumbs.next(shallowBreadcrumbs);
     }
   }
 }

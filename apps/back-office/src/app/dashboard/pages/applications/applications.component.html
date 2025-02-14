@@ -128,7 +128,7 @@
           class="cursor-pointer"
           cdk-row
           *cdkRowDef="let row; columns: displayedColumns"
-          [routerLink]="['/applications', row.id]"
+          [routerLink]="['/applications', row.shortcut || row.id]"
         ></tr>
       </table>
       <!-- Loading indicator -->

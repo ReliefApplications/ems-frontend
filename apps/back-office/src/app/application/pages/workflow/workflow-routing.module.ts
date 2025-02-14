@@ -26,6 +26,11 @@ const routes: Routes = [
           import('../../../dashboard/pages/dashboard/dashboard.module').then(
             (m) => m.DashboardModule
           ),
+        data: {
+          breadcrumb: {
+            alias: '@workflow',
+          },
+        },
       },
       {
         path: 'form/:id',
@@ -45,6 +50,11 @@ const routes: Routes = [
             // canActivate: [PermissionGuard]
           },
         ],
+        data: {
+          breadcrumb: {
+            alias: '@workflow',
+          },
+        },
       },
     ],
   },

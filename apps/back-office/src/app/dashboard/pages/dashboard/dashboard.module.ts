@@ -9,7 +9,8 @@ import {
   EditableTextModule,
   FullScreenModule,
   DashboardFilterModule,
-  ButtonActionModule,
+  DashboardExportButtonComponent,
+  ActionButtonsComponent,
 } from '@oort-front/shared';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { TranslateModule } from '@ngx-translate/core';
@@ -56,8 +57,9 @@ import { ContextSelectorComponent } from './components/context-selector/context-
     GraphQLSelectModule,
     AlertModule,
     DragDropModule,
-    ButtonActionModule,
+    ActionButtonsComponent,
     ContextSelectorComponent,
+    DashboardExportButtonComponent,
   ],
   exports: [DashboardComponent],
 })

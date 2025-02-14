@@ -30,7 +30,7 @@ import { get } from 'lodash';
 const DEFAULT_PAGE_SIZE = 10;
 
 /**
- * Component which will show all the resources in the app.
+ * Component which will show all the resources in the application.
  */
 @Component({
   selector: 'app-resources',

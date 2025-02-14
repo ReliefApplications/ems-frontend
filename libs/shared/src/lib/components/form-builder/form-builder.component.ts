@@ -1,35 +1,36 @@
+import { Dialog } from '@angular/cdk/dialog';
+import { DOCUMENT } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
   Output,
-  Inject,
 } from '@angular/core';
-import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { get, uniqBy, difference } from 'lodash';
-import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
-import { Form } from '../../models/form.model';
-import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { SnackbarService } from '@oort-front/ui';
-import { FormHelpersService } from '../../services/form-helper/form-helper.service';
+import { difference, get, uniqBy } from 'lodash';
+import { takeUntil } from 'rxjs';
 import {
   Action,
   PageModel,
+  QuestionFileModel,
   SurveyModel,
   surveyLocalization,
 } from 'survey-core';
 import { SurveyCreatorModel } from 'survey-creator-core';
+import { Form } from '../../models/form.model';
+import { FormHelpersService } from '../../services/form-helper/form-helper.service';
+import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
+import { updateModalChoicesAndValue } from '../../survey/global-properties/reference-data';
+import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Question } from '../../survey/types';
-import { DOCUMENT } from '@angular/common';
-import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
-import { updateModalChoicesAndValue } from '../../survey/global-properties/reference-data';
-import { HttpClient } from '@angular/common/http';
 
 /**
  * Array containing the different types of questions.
@@ -237,6 +238,17 @@ export class FormBuilderComponent
         this.formHelpersService.addQuestionTooltips
       );
       this.formHelpersService.addUserVariables(survey);
+      /** Apply all placeholder with limitation info to all file questions */
+      survey
+        .getAllQuestions()
+        .filter((question) => question instanceof QuestionFileModel)
+        .forEach((question) => {
+          const text = surveyLocalization.getString(
+            'oort:fileLimitations',
+            (survey as SurveyModel).locale
+          )(question);
+          question.dragAreaPlaceholder = text;
+        });
     });
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.text = structure;

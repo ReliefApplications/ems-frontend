@@ -21,6 +21,7 @@ export const GET_APPLICATIONS = gql`
       edges {
         node {
           id
+          shortcut
           name
         }
         cursor

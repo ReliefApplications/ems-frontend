@@ -1,0 +1,20 @@
+<!-- PDF + image Export -->
+<ui-button
+  variant="grey"
+  class="export-hide"
+  [isIcon]="true"
+  icon="get_app"
+  [uiMenuTriggerFor]="exportMenu"
+  [uiTooltip]="'common.export' | translate"
+></ui-button>
+<ui-menu #exportMenu class="export-hide">
+  <!-- Export menu -->
+  <button uiMenuItem (click)="pdfExporter()">
+    <ui-icon icon="file_download" variant="grey"></ui-icon>
+    {{ 'common.exportType.pdf' | translate }}
+  </button>
+  <button uiMenuItem (click)="imageExporter()">
+    <ui-icon icon="add_a_photo" variant="grey"></ui-icon>
+    {{ 'common.exportType.image' | translate }}
+  </button>
+</ui-menu>

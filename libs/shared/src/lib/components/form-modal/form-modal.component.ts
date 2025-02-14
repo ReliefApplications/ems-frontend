@@ -1,4 +1,5 @@
-import { Apollo } from 'apollo-angular';
+import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -8,12 +9,22 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { GET_RECORD_BY_ID, GET_FORM_BY_ID } from './graphql/queries';
-import { Form, FormQueryResponse } from '../../models/form.model';
-import { ConfirmService } from '../../services/confirm/confirm.service';
-import { SurveyModel } from 'survey-core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import {
+  ButtonModule,
+  DialogModule,
+  IconModule,
+  SnackbarService,
+  SpinnerModule,
+  TabsModule,
+} from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
+import isNil from 'lodash/isNil';
+import omitBy from 'lodash/omitBy';
+import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';
 import { SurveyModule } from 'survey-angular-ui';
+import { SurveyModel } from 'survey-core';
+import { Form, FormQueryResponse } from '../../models/form.model';
 import {
   AddRecordMutationResponse,
   EditRecordMutationResponse,
@@ -21,26 +32,20 @@ import {
   Record,
   RecordQueryResponse,
 } from '../../models/record.model';
-import { EDIT_RECORD, ADD_RECORD, EDIT_RECORDS } from './graphql/mutations';
-import addCustomFunctions from '../../utils/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
+import {
+  ConfirmDialogData,
+  ConfirmService,
+} from '../../services/confirm/confirm.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
-import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';
-import isNil from 'lodash/isNil';
-import omitBy from 'lodash/omitBy';
-import { TranslateService } from '@ngx-translate/core';
-import { cleanRecord } from '../../utils/cleanRecord';
-import { CommonModule } from '@angular/common';
-import { IconModule } from '@oort-front/ui';
-import { ButtonModule, SnackbarService, TabsModule } from '@oort-front/ui';
-import { RecordSummaryModule } from '../record-summary/record-summary.module';
-import { FormActionsModule } from '../form-actions/form-actions.module';
-import { TranslateModule } from '@ngx-translate/core';
-import { SpinnerModule } from '@oort-front/ui';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
-import { DialogModule } from '@oort-front/ui';
-import { DraftRecordComponent } from '../draft-record/draft-record.component';
+import { cleanRecord } from '../../utils/cleanRecord';
+import addCustomFunctions from '../../utils/custom-functions';
+import { FormActionsModule } from '../form-actions/form-actions.module';
+import { RecordSummaryModule } from '../record-summary/record-summary.module';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { ADD_RECORD, EDIT_RECORD, EDIT_RECORDS } from './graphql/mutations';
+import { GET_FORM_BY_ID, GET_RECORD_BY_ID } from './graphql/queries';
 
 /**
  * Interface of Dialog data.
@@ -52,6 +57,7 @@ interface DialogData {
   prefillData?: any;
   askForConfirm?: boolean;
   recordData?: any;
+  actionButtonCtx?: boolean;
 }
 /**
  * Defines the default Dialog data
@@ -77,7 +83,6 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     ButtonModule,
     SpinnerModule,
     SurveyModule,
-    DraftRecordComponent,
   ],
 })
 export class FormModalComponent
@@ -147,6 +152,61 @@ export class FormModalComponent
     protected ngZone: NgZone
   ) {
     super();
+  }
+
+  /**
+   * Create confirmation message on save edition based on action button or default context
+   *
+   * @returns Confirmation message for form record edit for each context
+   */
+  private getConfirmMessageByContext(): ConfirmDialogData {
+    const rowsSelected = Array.isArray(this.data.recordId)
+      ? this.data.recordId.length
+      : 1;
+    let confirmMessage: ConfirmDialogData = {
+      title: this.translate.instant('common.updateObject', {
+        name:
+          rowsSelected > 1
+            ? this.translate.instant('common.row.few')
+            : this.translate.instant('common.row.one'),
+      }),
+      content: this.translate.instant(
+        'components.form.updateRow.confirmationMessage',
+        {
+          quantity: rowsSelected,
+          rowText:
+            rowsSelected > 1
+              ? this.translate.instant('common.row.few')
+              : this.translate.instant('common.row.one'),
+        }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.confirm'),
+      confirmVariant: 'primary',
+    };
+    if (this.data.actionButtonCtx) {
+      confirmMessage = {
+        title: this.translate.instant(
+          this.data.recordId ? 'common.updateObject' : 'common.uploadObject',
+          {
+            name:
+              this.translate.instant('common.record.one') +
+              ' ' +
+              this.form?.name,
+          }
+        ),
+        content: this.translate.instant(
+          'components.form.update.confirmMessage',
+          {
+            action: this.translate.instant(
+              this.data.recordId ? 'common.update' : 'common.create'
+            ),
+          }
+        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
+        confirmVariant: 'primary',
+      };
+    }
+    return confirmMessage;
   }
 
   async ngOnInit(): Promise<void> {
@@ -230,7 +290,20 @@ export class FormModalComponent
       this.form?.metadata,
       this.record
     );
-    // After the survey is created we add common callback to survey events
+
+    this.survey.onValueChanged.add(() => {
+      // Allow user to save as draft
+      this.disableSaveAsDraft = false;
+    });
+    this.survey.onComplete.add(this.onComplete);
+    if (this.storedMergedData) {
+      const notNullValues = omitBy(this.storedMergedData, isNil);
+      Object.keys(notNullValues).forEach((question) => {
+        this.survey.setValue(question, notNullValues[question]);
+      });
+    }
+
+    // After the survey is created, we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
       this.selectedPageIndex,
@@ -238,38 +311,57 @@ export class FormModalComponent
     );
 
     if (this.data.recordId && this.record) {
+      if (this.isMultiEdition) {
+        this.survey.data = null;
+      } else {
+        const notNullValues = omitBy(this.record.data, isNil);
+        Object.keys(notNullValues).forEach((question) => {
+          this.survey.setValue(question, notNullValues[question]);
+        });
+      }
       addCustomFunctions(this.authService, this.record);
-      this.survey.data = this.isMultiEdition ? null : this.record.data;
       this.survey.showCompletedPage = false;
       this.form?.fields?.forEach((field) => {
         if (field.readOnly && this.survey.getQuestionByName(field.name))
           this.survey.getQuestionByName(field.name).readOnly = true;
       });
     }
-    this.survey.onValueChanged.add(() => {
-      // Allow user to save as draft
-      this.disableSaveAsDraft = false;
-    });
-    this.survey.onComplete.add(this.onComplete);
-    if (this.storedMergedData) {
-      this.survey.data = {
-        ...this.survey.data,
-        ...omitBy(this.storedMergedData, isNil),
-      };
-    }
+
     this.loading = false;
   }
 
   /**
    * Calls the complete method of the survey if no error.
    */
-  public submit(): void {
+  public async submit(): Promise<void> {
     this.saving = true;
-    if (!this.survey?.hasErrors()) {
+    let uploadErrors;
+    /** If any file attached, first upload them before record creation */
+    if (
+      !isNil(this.temporaryFilesStorage) &&
+      Object.keys(this.temporaryFilesStorage).length
+    ) {
+      try {
+        await this.formHelpersService.uploadFiles(
+          this.survey,
+          this.temporaryFilesStorage,
+          this.form?.id as string
+        );
+      } catch (errors) {
+        /** If there is any upload errors, save them for display */
+        uploadErrors = (errors as { question: string; file: File }[]).map(
+          (error) => {
+            return `${error.question}: ${error.file.name}`;
+          }
+        );
+      }
+    }
+    if (!this.survey?.hasErrors() && isNil(uploadErrors)) {
       this.survey?.completeLastPage();
     } else {
       this.snackBar.openSnackBar(
-        this.translate.instant('models.form.notifications.savingFailed'),
+        this.translate.instant('models.form.notifications.savingFailed') +
+          (!isNil(uploadErrors) ? '\n' + uploadErrors?.join('\n') : ''),
         { error: true }
       );
       this.saving = false;
@@ -283,34 +375,13 @@ export class FormModalComponent
    */
   public onComplete = (survey: any) => {
     this.survey?.clear(false);
-    const rowsSelected = Array.isArray(this.data.recordId)
-      ? this.data.recordId.length
-      : 1;
 
     /** we can send to backend empty data if they are not required */
     this.formHelpersService.setEmptyQuestions(survey);
     // Displays confirmation modal.
     if (this.data.askForConfirm) {
-      const dialogRef = this.confirmService.openConfirmModal({
-        title: this.translate.instant('common.updateObject', {
-          name:
-            rowsSelected > 1
-              ? this.translate.instant('common.row.few')
-              : this.translate.instant('common.row.one'),
-        }),
-        content: this.translate.instant(
-          'components.form.updateRow.confirmationMessage',
-          {
-            quantity: rowsSelected,
-            rowText:
-              rowsSelected > 1
-                ? this.translate.instant('common.row.few')
-                : this.translate.instant('common.row.one'),
-          }
-        ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmVariant: 'primary',
-      });
+      const confirmMessage = this.getConfirmMessageByContext();
+      const dialogRef = this.confirmService.openConfirmModal(confirmMessage);
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))
         .subscribe(async (value: any) => {
@@ -332,16 +403,6 @@ export class FormModalComponent
    * @param survey current survey
    */
   public async onUpdate(survey: any): Promise<void> {
-    try {
-      await this.formHelpersService.uploadFiles(
-        survey,
-        this.temporaryFilesStorage,
-        this.form?.id
-      );
-    } catch {
-      this.saving = false;
-      return;
-    }
     // await Promise.allSettled(promises);
     await this.formHelpersService.createTemporaryRecords(survey);
 
@@ -384,6 +445,11 @@ export class FormModalComponent
                   template: this.data.template,
                   data: data?.addRecord,
                 } as any);
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'components.form.display.submissionMessage'
+                  )
+                );
               });
             }
           },

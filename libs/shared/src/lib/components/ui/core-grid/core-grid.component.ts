@@ -929,6 +929,7 @@ export class CoreGridComponent
    * @param event.value value to apply to item, if any
    * @param event.field field to use in action, optional
    * @param event.pageUrl url of page
+   * @param event.html html string
    */
   public onAction(event: {
     action: string;
@@ -937,6 +938,7 @@ export class CoreGridComponent
     value?: any;
     field?: any;
     pageUrl?: string;
+    html?: string;
   }): void {
     switch (event.action) {
       case 'add': {
@@ -1046,7 +1048,19 @@ export class CoreGridComponent
             });
           }
         );
-
+        break;
+      }
+      case 'editor': {
+        import('./editor-modal/editor-modal.component').then(
+          ({ EditorModalComponent }) => {
+            this.dialog.open(EditorModalComponent, {
+              data: {
+                html: event.item.text[event.field.name],
+                title: event.field.title,
+              },
+            });
+          }
+        );
         break;
       }
       default: {
@@ -1435,6 +1449,10 @@ export class CoreGridComponent
                 name: y.name,
                 title: y.title,
               })),
+            ...(x.displayField && {
+              displayField: x.displayField,
+              separator: x.separator,
+            }),
           })),
       }),
       // we export ALL fields of the grid ( including hidden columns )
@@ -1447,6 +1465,10 @@ export class CoreGridComponent
             subFields: x.subFields.map((y: any) => ({
               name: y.name,
               title: y.title,
+              ...(y.displayField && {
+                displayField: y.displayField,
+                separator: y.separator,
+              }),
             })),
           })),
       }),

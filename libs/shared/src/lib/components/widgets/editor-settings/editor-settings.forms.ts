@@ -66,6 +66,7 @@ export const createEditorForm = (id: string, value: any) => {
       referenceData: get<string | null>(value, 'referenceData', null),
       layout: get<string | null>(value, 'layout', null),
       record: get<string | null>(value, 'record', null),
+      recordExpression: get<string | null>(value, 'recordExpression', null),
       element: get<string | null>(value, 'element', null),
       showDataSourceLink: [
         {

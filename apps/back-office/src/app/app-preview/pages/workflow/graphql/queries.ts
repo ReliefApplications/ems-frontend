@@ -53,6 +53,7 @@ export const GET_WORKFLOW_BY_ID = gql`
         }
         application {
           id
+          shortcut
         }
       }
     }

@@ -211,12 +211,14 @@ export class MapPolygonsService {
   /**
    * Fit bounds & zoom on country
    *
-   * @param geographicExtentValue geographic extent value
    * @param map leaflet map
+   * @param geographicExtentValue geographic extent value
+   * @param geographicExtentPadding Geographic extent padding, may be null
    */
   public zoomOn(
+    map: L.Map,
     geographicExtentValue: { extent: string; value: string | string[] }[],
-    map: L.Map
+    geographicExtentPadding?: number
   ): void {
     this.admin0sReady$.pipe(first((v) => v)).subscribe(() => {
       // let layer: L.GeoJSON | undefined = undefined;
@@ -227,37 +229,30 @@ export class MapPolygonsService {
       geographicExtentValue.forEach((x) => {
         switch (x.extent) {
           case 'admin0': {
+            let admin0s: Admin0[] = [];
             if (isArray(x.value)) {
-              const admin0s = this.admin0s.filter(
+              admin0s = this.admin0s.filter(
                 (data) =>
                   x.value.includes(data.iso2code) ||
                   x.value.includes(data.iso3code) ||
                   x.value.includes(data.name)
               );
-              if (admin0s.length > 0) {
-                geoJSON.features.push({
-                  type: 'FeatureCollection',
-                  features: admin0s.map((x: any) => ({
-                    type: 'Feature',
-                    geometry: x.polygons,
-                    properties: {},
-                  })),
-                });
-              }
             } else {
-              const admin0 = this.admin0s.find(
+              admin0s = this.admin0s.filter(
                 (data) =>
                   data.iso2code === x.value ||
                   data.iso3code === x.value ||
                   data.name === x.value
               );
-              if (admin0) {
-                geoJSON.features.push({
+            }
+            if (admin0s.length > 0) {
+              geoJSON.features.push(
+                ...admin0s.map((x: any) => ({
                   type: 'Feature',
-                  geometry: admin0.polygons,
+                  geometry: x.polygons,
                   properties: {},
-                });
-              }
+                }))
+              );
             }
             break;
           }
@@ -267,14 +262,13 @@ export class MapPolygonsService {
                 x.value.includes(data.name)
               );
               if (regions.length > 0) {
-                geoJSON.features.push({
-                  type: 'FeatureCollection',
-                  features: regions.map((x) => ({
+                geoJSON.features.push(
+                  ...regions.map((x) => ({
                     type: 'Feature',
                     geometry: x.geometry,
                     properties: {},
-                  })),
-                });
+                  }))
+                );
               }
             } else {
               const region = REGIONS.find((data) => data.name === x.value);
@@ -292,9 +286,16 @@ export class MapPolygonsService {
       });
 
       if (geoJSON.features.length > 0) {
+        const bounds = L.geoJSON(geoJSON).getBounds();
+        const padding = geographicExtentPadding || 0;
         // Timeout seems to be needed for first load of the map.
         setTimeout(() => {
-          map.fitBounds(L.geoJSON(geoJSON).getBounds());
+          map.fitBounds(
+            L.latLngBounds(
+              L.latLng(bounds.getSouth() - padding, bounds.getWest() - padding), // Southwest corner
+              L.latLng(bounds.getNorth() + padding, bounds.getEast() + padding) // Northeast corner
+            )
+          );
         }, 500);
       }
     });

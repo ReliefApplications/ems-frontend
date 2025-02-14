@@ -16,6 +16,7 @@ import {
   ContentType,
   ContextService,
   AuthService,
+  LoggerService,
 } from '@oort-front/shared';
 import { Subject, debounceTime, filter, skip, takeUntil } from 'rxjs';
 import { isEmpty } from 'lodash';
@@ -124,6 +125,7 @@ export class AppWidgetComponent
    * @param router Angular router service
    * @param shadowDomService Shared shadow dom service
    * @param authService Auth service
+   * @param logger Shared logger service ( initialize logger so its subscription can start )
    */
   constructor(
     el: ElementRef,
@@ -132,9 +134,10 @@ export class AppWidgetComponent
     private applicationService: ApplicationService,
     private router: Router,
     private shadowDomService: ShadowDomService,
-    private authService: AuthService
+    private authService: AuthService,
+    private logger: LoggerService
   ) {
-    console.log('DEBUG: 06-26-2024, v1');
+    console.log('DEBUG: 02/06/2025, v1');
     super(el, injector);
     this.shadowDomService.shadowRoot = el.nativeElement.shadowRoot;
 
@@ -157,8 +160,12 @@ export class AppWidgetComponent
               name: x.name,
               path:
                 x.type === ContentType.form
-                  ? `./${application.id}/${x.type}/${x.id}`
-                  : `./${application.id}/${x.type}/${x.content}`,
+                  ? `./${this.applicationService.getApplicationPath(
+                      application
+                    )}/${x.type}/${x.id}`
+                  : `./${this.applicationService.getApplicationPath(
+                      application
+                    )}/${x.type}/${x.content}`,
               icon: x.icon || this.getNavIcon(x.type || ''),
               fontFamily: x.icon ? 'fa' : 'material',
               visible: x.visible,

@@ -1,21 +1,13 @@
-import { Apollo } from 'apollo-angular';
-import {
-  GET_SHORT_RESOURCE_BY_ID,
-  GET_RESOURCE_BY_ID,
-} from '../graphql/queries';
-import { BehaviorSubject } from 'rxjs';
-import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
-import { CoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
-import { DomService } from '../../services/dom/dom.service';
-import {
-  buildAddButton,
-  buildSearchButton,
-  processNewCreatedRecords,
-  setUpActionsButtonWrapper,
-} from './utils';
-import { QuestionResource } from '../types';
 import { ComponentRef, Injector, NgZone } from '@angular/core';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
+import {
+  CompositeFilterDescriptor,
+  FilterDescriptor,
+} from '@progress/kendo-data-query';
+import { Apollo } from 'apollo-angular';
+import { isNil } from 'lodash';
+import get from 'lodash/get';
 import {
   ComponentCollection,
   JsonObject,
@@ -23,25 +15,22 @@ import {
   SurveyModel,
   SvgRegistry,
 } from 'survey-core';
+import { CoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
+import { ResourceQueryResponse } from '../../models/resource.model';
+import { DomService } from '../../services/dom/dom.service';
+import {
+  GET_RESOURCE_BY_ID,
+  GET_SHORT_RESOURCE_BY_ID,
+} from '../graphql/queries';
+import { QuestionResource } from '../types';
+import {
+  buildAddButton,
+  buildSearchButton,
+  processNewCreatedRecords,
+  setUpActionsButtonWrapper,
+} from './utils';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
-import { ResourceQueryResponse } from '../../models/resource.model';
-
-/** Create the list of filter values for resources */
-export const resourcesFilterValues = new BehaviorSubject<
-  { field: string; operator: string; value: string }[]
->([{ field: '', operator: '', value: '' }]);
-
-/** List of operators for the resource conditions */
-export const resourceConditions = [
-  { value: '=', text: 'equals' },
-  { value: '!=', text: 'not equals' },
-  { value: 'contains', text: 'contains' },
-  { value: '>', text: 'greater' },
-  { value: '<', text: 'less' },
-  { value: '>=', text: 'greater or equals' },
-  { value: '<=', text: 'less or equals' },
-];
 
 /** Question temporary records */
 const temporaryRecordsForm = new FormControl([]);
@@ -64,11 +53,17 @@ export const init = (
   const apollo = injector.get(Apollo);
   const dialog = injector.get(Dialog);
 
-  const getResourceById = (data: { id: string }) =>
+  /**
+   * Get resource by id
+   *
+   * @param id resource id
+   * @returns Apollo query to get resource
+   */
+  const getResourceById = (id: string) =>
     apollo.query<ResourceQueryResponse>({
       query: GET_SHORT_RESOURCE_BY_ID,
       variables: {
-        id: data.id,
+        id,
       },
     });
 
@@ -83,29 +78,68 @@ export const init = (
     );
   };
 
-  const getResourceRecordsById = (data: {
-    id: string;
-    filters?: { field: string; operator: string; value: string }[];
-  }) =>
-    apollo.query<ResourceQueryResponse>({
+  /**
+   * Fetch records of resource
+   *
+   * @param question Current question
+   * @returns Resource records query
+   */
+  const getResourceRecordsById = (question: any) => {
+    return apollo.query<ResourceQueryResponse>({
       query: GET_RESOURCE_BY_ID,
       variables: {
-        id: data.id,
-        filter: data.filters,
+        id: question.resource, // id of the resource
+        ...(question.filters && {
+          filter: question.filters,
+        }),
       },
       fetchPolicy: 'no-cache',
     });
+  };
+
+  /**
+   * Update question filter based on survey data
+   *
+   * @param data survey data
+   * @param filter question filter
+   * @returns updated filter
+   */
+  const updateFilter = (
+    data: any,
+    filter: CompositeFilterDescriptor | FilterDescriptor
+  ): CompositeFilterDescriptor | FilterDescriptor | null => {
+    if ('filters' in filter) {
+      return {
+        logic: filter.logic,
+        filters: filter.filters
+          .map((x) => updateFilter(data, x))
+          .filter((x) => !isNil(x)) as (
+          | FilterDescriptor
+          | CompositeFilterDescriptor
+        )[],
+      };
+    } else {
+      // Extract the placeholder (if present)
+      const matches = filter.value.match(/\{([^}]+)\}/);
+      if (matches) {
+        const field = matches[1]; // extract the part between { }
+        const value = get(data, field);
+        if (isNil(value)) {
+          return null;
+        } else {
+          return {
+            ...filter,
+            value,
+          };
+        }
+      } else {
+        return filter;
+      }
+    }
+  };
 
   // const hasUniqueRecord = ((id: string) => false);
   // resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
-
-  let filters: { field: string; operator: string; value: string }[] = [
-    {
-      field: '',
-      operator: '',
-      value: '',
-    },
-  ];
 
   // registers icon-resources in the SurveyJS library
   SvgRegistry.registerIconFromSvg(
@@ -155,6 +189,7 @@ export const init = (
       registerCustomPropertyEditor(
         CustomPropertyGridComponentTypes.resourcesDropdown
       );
+
       Serializer.addProperty('resources', {
         name: 'displayField',
         category: 'Custom Questions',
@@ -164,7 +199,7 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
+            getResourceById(obj.resource).subscribe(({ data }) => {
               const choices = (data.resource.fields || [])
                 .filter((item: any) => item.type !== 'matrix')
                 .map((item: any) => {
@@ -306,7 +341,7 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource && obj.addRecord) {
-            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
+            getResourceById(obj.resource).subscribe(({ data }) => {
               const choices = (data.resource.forms || []).map((item: any) => {
                 return { value: item.id, text: item.name };
               });
@@ -329,28 +364,6 @@ export const init = (
         },
         visibleIndex: 8,
       });
-      Serializer.addProperty('resources', {
-        name: 'selectQuestion:dropdown',
-        category: 'Filter by Questions',
-        dependsOn: ['resource', 'displayField'],
-        required: true,
-        visibleIf: visibleIfResourceAndDisplayField,
-        visibleIndex: 3,
-        choices: (obj: any, choicesCallback: any) => {
-          if (obj && obj.resource) {
-            const questions: any[] = [
-              '',
-              { value: '#staticValue', text: 'Set from static value' },
-            ];
-            obj.survey.getAllQuestions().forEach((question: any) => {
-              if (question.id !== obj.id) {
-                questions.push(question.name);
-              }
-            });
-            choicesCallback(questions);
-          }
-        },
-      });
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       Serializer.addProperty('resources', {
         name: 'gridFieldsSettings',
@@ -362,87 +375,29 @@ export const init = (
           return false;
         },
       });
+
       Serializer.addProperty('resources', {
-        type: 'string',
-        name: 'staticValue',
-        category: 'Filter by Questions',
-        dependsOn: ['resource', 'selectQuestion', 'displayField'],
-        visibleIf: (obj: any) =>
-          obj.selectQuestion === '#staticValue' && obj.displayField,
-        visibleIndex: 3,
-      });
-      Serializer.addProperty('resources', {
-        type: 'dropdown',
-        name: 'filterBy',
-        category: 'Filter by Questions',
-        dependsOn: ['resource', 'displayField', 'selectQuestion'],
-        visibleIf: (obj: any) => obj.selectQuestion && obj.displayField,
-        choices: (obj: any, choicesCallback: any) => {
-          if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const choices = (data.resource.fields || []).map((item: any) => {
-                return { value: item.name };
-              });
-              choicesCallback(choices);
-            });
-          }
-        },
-        visibleIndex: 3,
-      });
-      Serializer.addProperty('resources', {
-        type: 'dropdown',
-        name: 'filterCondition',
-        category: 'Filter by Questions',
-        dependsOn: ['resource', 'displayField', 'selectQuestion'],
-        visibleIf: (obj: any) =>
-          obj.resource && obj.displayField && obj.selectQuestion,
-        choices: (obj: any, choicesCallback: any) => {
-          const questionByName = obj.survey.getQuestionByName(
-            obj.selectQuestion
-          )
-            ? obj.survey.getQuestionByName(obj.selectQuestion)
-            : obj.customQuestion;
-          if (questionByName && questionByName.inputType === 'date') {
-            choicesCallback(
-              resourceConditions.filter((r) => r.value !== 'contains')
-            );
-          } else {
-            choicesCallback(resourceConditions);
-          }
-        },
-        visibleIndex: 3,
-      });
-      Serializer.addProperty('resources', {
-        category: 'Filter by Questions',
-        type: CustomPropertyGridComponentTypes.resourceSelectText,
-        name: 'selectResourceText',
-        displayName: 'Select a resource',
-        dependsOn: ['resource', 'displayField'],
-        visibleIf: (obj: any) => !obj.resource || !obj.displayField,
+        category: 'Dynamic filtering',
+        type: CustomPropertyGridComponentTypes.resourceCustomFilters,
+        name: 'customFilterEl',
+        displayName: 'Custom Filter',
+        dependsOn: ['resource'],
+        visibleIf: (obj: null | QuestionResource) =>
+          obj && !isNil(obj.resource),
         visibleIndex: 3,
       });
 
       registerCustomPropertyEditor(
-        CustomPropertyGridComponentTypes.resourceSelectText
+        CustomPropertyGridComponentTypes.resourceCustomFilters
       );
 
       Serializer.addProperty('resources', {
-        category: 'Filter by Questions',
-        type: 'customFilter',
-        name: 'customFilterEl',
-        displayName: 'Custom Filter',
-        dependsOn: ['resource', 'selectQuestion'],
-        visibleIf: (obj: any) => obj.resource && !obj.selectQuestion,
-        visibleIndex: 3,
-      });
-
-      Serializer.addProperty('resources', {
-        category: 'Filter by Questions',
-        type: 'text',
+        category: 'Dynamic filtering',
+        type: CustomPropertyGridComponentTypes.jsonEditor,
         name: 'customFilter',
         displayName: ' ',
-        dependsOn: ['resource', 'selectQuestion'],
-        visibleIf: (obj: any) => obj.resource && !obj.selectQuestion,
+        dependsOn: ['resource'],
+        visibleIf: (obj: any) => obj && !isNil(obj.resource),
         visibleIndex: 4,
       });
 
@@ -463,6 +418,13 @@ export const init = (
         // type: 'expression',
         category: 'logic',
       });
+
+      Serializer.addProperty('resources', {
+        name: 'filters',
+        category: 'Custom Questions',
+        visible: false,
+        isSerializable: false,
+      });
     },
     /**
      * Fetch the resources when the question is loaded
@@ -470,41 +432,13 @@ export const init = (
      * @param question The current question.
      */
     onLoaded(question: any): void {
+      // Set placeholder
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = question.placeholder;
       }
+      // If question is valid
       if (question.resource) {
-        if (question.selectQuestion) {
-          if (filters.length === 0) {
-            filters = [
-              {
-                field: '',
-                operator: '',
-                value: '',
-              },
-            ];
-          }
-          filters[0].operator = question.filterCondition;
-          filters[0].field = question.filterBy;
-          if (question.displayAsGrid) {
-            resourcesFilterValues.next(filters);
-          }
-          question.registerFunctionOnPropertyValueChanged(
-            'filterCondition',
-            () => {
-              const resourcesFilters = resourcesFilterValues.getValue();
-              resourcesFilters[0].operator = question.filterCondition;
-              resourcesFilterValues.next(resourcesFilters);
-              resourcesFilters.map((i: any) => {
-                i.operator = question.filterCondition;
-              });
-            }
-          );
-          if (!question.filterBy || question.filterBy.length < 1) {
-            this.populateChoices(question);
-          }
-        }
-        getResourceById({ id: question.resource }).subscribe(({ data }) => {
+        getResourceById(question.resource).subscribe(({ data }) => {
           // const choices = mapQuestionChoices(data, question);
           // question.contentQuestion.choices = choices;
           if (!question.placeholder) {
@@ -512,86 +446,68 @@ export const init = (
               'Select a record from ' + data.resource.name + '...';
           }
         });
-        if (question.selectQuestion) {
-          if (question.selectQuestion === '#staticValue') {
-            setAdvanceFilter(question.staticValue, question);
-            this.populateChoices(question);
-          } else {
-            question.survey?.onValueChanged.add((_: any, options: any) => {
-              if (options.name === question.selectQuestion) {
-                if (!!options.value || options.question.customQuestion) {
-                  setAdvanceFilter(options.value, question);
-                  if (question.displayAsGrid) {
-                    resourcesFilterValues.next(filters);
-                  } else {
-                    this.populateChoices(question);
-                  }
-                }
-              }
-            });
-          }
-        } else if (
-          !question.selectQuestion &&
-          question.customFilter &&
-          question.customFilter.trim().length > 0
-        ) {
-          const obj = JSON.parse(question.customFilter);
-          if (obj) {
-            for (const objElement of obj) {
-              const value = objElement.value;
-              if (typeof value === 'string' && value.match(/^{*.*}$/)) {
-                const quest = value.substr(1, value.length - 2);
-                objElement.value = '';
-                question.survey?.onValueChanged.add((_: any, options: any) => {
-                  if (options.question.name === quest) {
-                    if (options.value) {
-                      setAdvanceFilter(options.value, objElement.field);
-                      if (question.displayAsGrid) {
-                        resourcesFilterValues.next(filters);
-                      } else {
-                        this.populateChoices(question, objElement.field);
-                      }
-                    }
-                  }
-                });
-              }
+        if (question.customFilter && question.customFilter.trim().length > 0) {
+          /**
+           * Get question filters value
+           *
+           * @param question Current question
+           */
+          const getQuestionFilters = (question: any) => {
+            const surveyData = question.survey?.data;
+
+            const customFilter = JSON.parse(question.customFilter);
+            if (Array.isArray(customFilter)) {
+              question.filters = {
+                logic: 'and',
+                filters: customFilter
+                  .map((x) => updateFilter(surveyData, x))
+                  .filter((x) => !isNil(x)),
+              };
+            } else {
+              question.filters = updateFilter(surveyData, customFilter);
             }
-            filters = obj;
+
+            // Load question choices
+            if (!question.displayAsGrid) {
+              this.populateChoices(question);
+            }
+          };
+
+          // Subscribe to survey value changes
+          question.survey?.onValueChanged.add(() => {
+            getQuestionFilters(question);
+          });
+
+          // Initial load
+          getQuestionFilters(question);
+        } else {
+          // Load question choices
+          if (!question.displayAsGrid) {
             this.populateChoices(question);
           }
         }
       }
     },
-    populateChoices: (question: any, field?: string): void => {
-      if (question.displayAsGrid) {
-        if (question.selectQuestion) {
-          const f = field ? field : question.filterBy;
-          const obj = filters.filter((i: any) => i.field === f);
-          if (obj.length > 0) {
-            resourcesFilterValues.next(obj);
-          }
-        } else if (question.customFilter) {
-          resourcesFilterValues.next(filters);
-        }
-      } else {
-        getResourceRecordsById({ id: question.resource, filters }).subscribe(
-          ({ data }) => {
-            const choices = mapQuestionChoices(data, question);
-            question.contentQuestion.choices = choices;
-          }
-        );
-      }
+    /**
+     * Populate question choices
+     *
+     * @param question Current question
+     */
+    populateChoices: (question: any): void => {
+      getResourceRecordsById(question).subscribe(({ data }) => {
+        const choices = mapQuestionChoices(data, question);
+        question.contentQuestion.choices = choices;
+      });
     },
     /**
      * Update question properties when the resource property is changed
      *
-     * @param question The current question
+     * @param question Current question
      * @param propertyName The name of the property
      */
     onPropertyChanged(question: any, propertyName: string): void {
       if (propertyName === 'resource') {
         question.displayField = null;
-        filters = [];
         this.resourceFieldsName = [];
         question.addRecord = false;
         question.addTemplate = null;
@@ -626,7 +542,10 @@ export const init = (
       if (question.resource) {
         searchBtn.style.display = 'block';
         if (parentElement) {
-          gridComponentRef = buildGridDisplay(question, parentElement);
+          if (question.displayAsGrid) {
+            gridComponentRef = buildGridDisplay(question, parentElement);
+          }
+
           if ((question.survey as SurveyModel).mode !== 'display') {
             searchBtn.style.display = 'block';
             const addBtn = buildAddButton(
@@ -741,29 +660,6 @@ export const init = (
     }
     return grid;
   }
-
-  /**
-   * Set an advance filter
-   *
-   * @param value Value of the filter
-   * @param question The question object
-   */
-  const setAdvanceFilter = (value: string, question: string | any) => {
-    const field = typeof question !== 'string' ? question.filterBy : question;
-    if (!filters.some((x: any) => x.field === field)) {
-      filters.push({
-        field: question.filterBy,
-        operator: question.filterCondition,
-        value,
-      });
-    } else {
-      filters.map((x: any) => {
-        if (x.field === field) {
-          x.value = value;
-        }
-      });
-    }
-  };
 
   /**
    * Build the grid with the records

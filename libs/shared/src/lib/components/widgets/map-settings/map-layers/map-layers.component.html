@@ -11,6 +11,9 @@
     </div>
     <ng-container *ngIf="!loading; else loadingTmpl">
       <ng-container *ngIf="mapLayers.length; else emptyTmpl">
+        <ui-alert>{{
+          'components.widget.settings.map.help.layers' | translate
+        }}</ui-alert>
         <!-- Table container -->
         <div class="overflow-x-hidden mt-4 shadow-2lg">
           <!-- Table scroll container -->

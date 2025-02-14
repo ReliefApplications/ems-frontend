@@ -14,6 +14,11 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard/:id',
+        data: {
+          breadcrumb: {
+            alias: '@dashboard',
+          },
+        },
         loadChildren: () =>
           import('./pages/dashboard/dashboard.module').then(
             (m) => m.DashboardModule
@@ -22,6 +27,11 @@ export const routes: Routes = [
       },
       {
         path: 'form/:id',
+        data: {
+          breadcrumb: {
+            alias: '@form',
+          },
+        },
         loadChildren: () =>
           import('./pages/form/form.module').then((m) => m.FormModule),
         canActivate: [AccessGuard],

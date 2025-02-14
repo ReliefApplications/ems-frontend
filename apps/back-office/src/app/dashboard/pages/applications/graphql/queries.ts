@@ -24,6 +24,7 @@ export const GET_APPLICATIONS = gql`
           createdAt
           modifiedAt
           status
+          shortcut
           permissions {
             canSee {
               id

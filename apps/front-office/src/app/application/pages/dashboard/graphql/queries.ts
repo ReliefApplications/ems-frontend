@@ -36,6 +36,7 @@ export const GET_DASHBOARD_BY_ID = gql`
         visible
         application {
           id
+          shortcut
         }
         canUpdate
         context
@@ -44,6 +45,9 @@ export const GET_DASHBOARD_BY_ID = gql`
       }
       step {
         showName
+        workflow {
+          name
+        }
       }
     }
   }

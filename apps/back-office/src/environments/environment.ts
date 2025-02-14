@@ -22,6 +22,7 @@ const authConfig: AuthConfig = {
 export const environment: Environment = {
   ...sharedEnvironment,
   production: false,
+  href: 'http://localhost:4200',
   apiUrl: 'http://localhost:3000',
   subscriptionApiUrl: 'ws://localhost:3000',
   frontOfficeUri: 'http://localhost:4200/',
@@ -45,5 +46,6 @@ export const environment: Environment = {
     'summaryCard',
     'tabs',
   ],
-  admin0Url: 'https://ems2-dev.who.int/app-builder/admin0.json',
+  admin0Url: 'https://hems-dev.who.int/app-builder/admin0.json',
+  csApiUrl: 'https://hems-dev.who.int/csapi/api',
 };

@@ -99,9 +99,19 @@
     <h2>{{ 'components.widget.settings.map.renderer.default' | translate }}</h2>
     <div uiFormFieldDirective>
       <label>{{
-        'components.widget.settings.map.renderer.defaultLabel' | translate
+        'components.widget.settings.map.renderer.defaultLabel.text' | translate
       }}</label>
       <input formControlName="defaultLabel" type="text" />
+      <ui-icon
+        icon="info_outline"
+        class="cursor-help"
+        variant="grey"
+        uiSuffix
+        [uiTooltip]="
+          'components.widget.settings.map.renderer.defaultLabel.info'
+            | translate
+        "
+      ></ui-icon>
     </div>
     <h3>{{ 'components.widget.settings.map.renderer.symbol' | translate }}</h3>
     <shared-simple-renderer
