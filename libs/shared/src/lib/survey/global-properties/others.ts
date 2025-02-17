@@ -261,6 +261,14 @@ export const init = (environment: any): void => {
     default: false,
   });
 
+  const allowImportProp = {
+    name: 'allowImport:boolean',
+    default: false,
+    category: 'general',
+  };
+  serializer.addProperty('paneldynamic', allowImportProp);
+  serializer.addProperty('matrixdynamic', allowImportProp);
+
   // Add option to omit question from fields
   serializer.addProperty('question', {
     name: 'omitField:boolean',
