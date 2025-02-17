@@ -24,7 +24,7 @@ import { RestService } from '../rest/rest.service';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { FormHelpersService } from '../form-helper/form-helper.service';
-import { cloneDeep, difference, get, isEqual } from 'lodash';
+import { cloneDeep, difference, get } from 'lodash';
 import { Form } from '../../models/form.model';
 import { marked } from 'marked';
 import { DownloadService } from '../download/download.service';
