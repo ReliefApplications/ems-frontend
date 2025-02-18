@@ -723,11 +723,17 @@ export class LayoutComponent
   /**
    * Inserts a dataset token into the body HTML based on the provided tab name.
    *
-   * @param tabName The name of the tab to insert the dataset token for.
+   * @param valueClicked - The value of the menu option that was clicked.
+   * @param time - True if the token is a timestamp, false otherwise.
    */
-  insertDataSetToBodyHtmlByTabName(tabName: string): void {
-    if (tabName) {
-      const token = `{{${tabName}}}`;
+  insertTokenToBody(valueClicked: string, time?: boolean): void {
+    if (valueClicked) {
+      let token = '';
+      if (time) {
+        token = ` ${valueClicked} `;
+      } else {
+        token = `{{${valueClicked}}}`;
+      }
 
       if (this.bodyEditor && this.bodyEditor.editor) {
         const range = this.bodyEditor.editor.selection.getRng();

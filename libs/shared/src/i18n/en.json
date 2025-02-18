@@ -293,7 +293,7 @@
 						"tooltip": "Use this configuration only if you’ve filtered data using the ‘within last’ operator. For example, within the last 2 days or 24 hours"
 					},
 					"selectBlock": "Select a block",
-					"timestamp": "Select a timestamp"
+					"timestamp": "Select a date/ timestamp"
 				},
 				"error": "Something went wrong during the email sending",
 				"errors": {
@@ -349,7 +349,7 @@
 					"textTitle": "Subject text*",
 					"title": "Subject*"
 				},
-				"timestamp": "Timestamp"
+				"timestamp": "Date/ Timestamp"
 			},
 			"emailSent": "Email sent successfully.",
 			"export": {

@@ -293,7 +293,7 @@
 						"tooltip": "Utilisez cette configuration uniquement si vous avez filtré les données à l'aide de l'opérateur « dans le dernier ». \nPar exemple, au cours des 2 derniers jours ou 24 heures"
 					},
 					"selectBlock": "Select a block",
-					"timestamp": "Select a timestamp"
+					"timestamp": "Sélectionnez une date / horodatage"
 				},
 				"error": "Un problème est survenu lors de l'envoi de l'e-mail",
 				"errors": {
@@ -349,7 +349,7 @@
 					"textTitle": "Sujet Text*",
 					"title": "Sujet"
 				},
-				"timestamp": "Horodatage"
+				"timestamp": "Date / horodatage"
 			},
 			"emailSent": "E-mail envoyé avec succès.",
 			"export": {
