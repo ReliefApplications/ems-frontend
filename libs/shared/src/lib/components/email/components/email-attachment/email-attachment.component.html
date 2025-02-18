@@ -27,7 +27,7 @@
             {{ 'common.notifications.email.attachment.sendFile' | translate }}
           </ng-container>
         </ui-radio>
-        
+
         <!-- UI Radio for "Send As URL" -->
         <ui-radio
           [value]="false"
@@ -40,14 +40,17 @@
           </ng-container>
         </ui-radio>
 
-
-        <!-- Dropdowns -->
+        <!-- Document properties -->
         <form [formGroup]="propertySelectionForm">
-          <div *ngIf="sendAsAttachment === false" class="mt-2 fileAttach-container">
-            <div *ngFor="let property of properties" class="mb-2 fileAttach-width">
+          <div
+            *ngIf="sendAsAttachment === false"
+            class="mt-2 flex flex-wrap gap-x-4 gap-y-6"
+          >
+            <div *ngFor="let property of properties" class="property_dropdown">
               <label class="text-sm">
                 {{ property.text }}
-                <span class="text-mandatory"
+                <span
+                  class="text-red-400"
                   *ngIf="
                     property.bodyKey === 'InformationConfidentiality' ||
                     property.bodyKey === 'DocumentType'
@@ -82,20 +85,22 @@
             </div>
           </div>
         </form>
-      </div>
 
-      <input
-        type="file"
-        id="fileUpload"
-        name="fileUpload"
-        (change)="onFileSelected($event)"
-        class="text-sm py-1 px-2 border border-gray-300 bg-white rounded-lg shadow-sm w-full"
-        multiple
-      />
+        <!-- File input -->
+        <input
+          type="file"
+          id="fileUpload"
+          name="fileUpload"
+          (change)="onFileSelected($event)"
+          class="text-sm py-1 px-2 border border-gray-300 bg-white rounded-lg shadow-sm w-full"
+          multiple
+        />
+      </div>
     </div>
   </div>
 
   <div>
+    <!-- Provided files -->
     <div
       *ngIf="
         this.emailService.datasetsForm?.getRawValue()?.attachments?.files
@@ -116,8 +121,12 @@
         {{ file.fileName }}
       </ui-chip>
     </div>
+    <!-- File limitations -->
     <div>
-      <p class="noteStyle">Please note: You can upload a maximum of 5 files, with each file not exceeding 7MB in size.</p>
+      <p class="text-xs italic">
+        Please note: You can upload a maximum of 5 files, with each file not
+        exceeding 7MB in size.
+      </p>
     </div>
   </div>
 </div>

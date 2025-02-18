@@ -20,7 +20,7 @@ import {
 } from '../../constant';
 
 /**
- *
+ * Attach files to email settings component.
  */
 @Component({
   selector: 'app-email-attachment',
@@ -29,19 +29,19 @@ import {
 })
 export class EmailAttachmentComponent implements OnInit {
   /** Property filter to add in upload Api*/
-  bodyFilter: { [key: string]: any[] } = {};
+  public bodyFilter: { [key: string]: any[] } = {};
   /** CS Document Properties */
-  properties = CS_DOCUMENTS_PROPERTIES;
+  public properties = CS_DOCUMENTS_PROPERTIES;
   /** PropertyValues */
-  propertyValues = new Map<string, any[]>();
+  public propertyValues = new Map<string, any[]>();
   /** Track if file is selected */
-  isFileSelected = false;
+  public isFileSelected = false;
   /** Determines file to be sent as  attachment or URL */
-  sendAsAttachment: boolean | undefined;
+  public sendAsAttachment: boolean | undefined;
   /** List of selected file */
-  selectedFiles: string[] = [];
+  public selectedFiles: string[] = [];
   /** Form group for property selection */
-  propertySelectionForm!: FormGroup;
+  public propertySelectionForm!: FormGroup;
 
   /**
    * Email layout page component.
