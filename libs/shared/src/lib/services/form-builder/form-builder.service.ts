@@ -8,6 +8,8 @@ import {
   settings,
   IPanel,
   DownloadFileEvent,
+  QuestionPanelDynamicModel as PanelDynamicT,
+  QuestionMatrixDynamicModel as MatrixDynamicT,
 } from 'survey-core';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
@@ -383,6 +385,72 @@ export class FormBuilderService {
           question.allowAddPanel = true;
         }
       }
+    });
+
+    // Adds upload button
+    const showUploadButtonTypes = ['paneldynamic', 'matrixdynamic'];
+    survey.onAfterRenderQuestion.add((_, options) => {
+      const questionType = options.question.getType();
+      if (!showUploadButtonTypes.includes(questionType)) {
+        return;
+      }
+
+      const uploadButton = document.createElement('button');
+      uploadButton.classList.add('sd-action', 'ml-auto');
+      uploadButton.onclick = () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.xlsx';
+        input.addEventListener('change', (e) => {
+          const file = (e.target as HTMLInputElement)?.files?.[0];
+          if (file) {
+            this.downloadService
+              .uploadFile('upload/parse/json', file)
+              .subscribe((data) => {
+                data.forEach((row: Record<string, unknown>) => {
+                  if (questionType === 'paneldynamic') {
+                    const question = options.question as PanelDynamicT;
+                    const newPanel = question.addPanel();
+
+                    Object.entries(row).forEach(([key, value]) => {
+                      const question = newPanel.getQuestionByName(key);
+                      if (question) {
+                        question.value = value;
+                      }
+                    });
+                  } else {
+                    const question = options.question as MatrixDynamicT;
+
+                    const idx = question.rowCount;
+                    question.addRow();
+                    console.log(idx, row);
+                    question.setRowValue(idx, row);
+                    question.expand();
+                  }
+                });
+              });
+          }
+        });
+        input.click();
+      };
+      uploadButton.innerHTML = this.translate.instant('common.uploadObject', {
+        name: 'XLSX',
+      });
+
+      const htmlEl = options.htmlElement.querySelector('.sd-element__header');
+      const title = htmlEl?.querySelector('.sd-element__title');
+
+      const div = document.createElement('div');
+      div.classList.add('flex', 'items-center');
+
+      if (title) {
+        div.appendChild(title.cloneNode(true));
+        htmlEl?.appendChild(div);
+        title.remove(); // remove original title
+      }
+
+      div.appendChild(uploadButton);
+      htmlEl?.appendChild(div);
     });
 
     // set the lang of the survey
