@@ -102,7 +102,6 @@ import { FormSettingsModule } from './components/widgets/form-settings/form-sett
     // === VIEWS ===
     ViewsModule,
   ],
-  declarations: [],
   imports: [
     ListFilterComponent,
     StatusOptionsComponent,

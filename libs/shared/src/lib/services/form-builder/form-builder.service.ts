@@ -8,6 +8,7 @@ import {
   settings,
   IPanel,
   DownloadFileEvent,
+  UploadFilesEvent,
   PanelModelBase,
   QuestionPanelDynamicModel as PanelDynamicT,
   QuestionMatrixDynamicModel as MatrixDynamicT,
@@ -29,6 +30,8 @@ import { cloneDeep, difference, get } from 'lodash';
 import { Form } from '../../models/form.model';
 import { marked } from 'marked';
 import { DownloadService } from '../download/download.service';
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { FeatureCollection } from 'geojson';
 
 let counter = Math.floor(Math.random() * 0xffffff); // Initialize counter with a random value
 
@@ -110,7 +113,7 @@ export const transformSurveyData = (survey: SurveyModel) => {
   });
   if (survey.showPercentageProgressBar) {
     const visibleQuestions = getVisibleQuestions(survey.getAllQuestions());
-    data.progress =
+    data._progress =
       (visibleQuestions.filter((question: Question) => !question.isEmpty())
         .length *
         100) /
@@ -620,9 +623,31 @@ export class FormBuilderService {
    */
   private onUploadFiles(
     temporaryFilesStorage: TemporaryFilesStorage,
-    options: any
+    options: UploadFilesEvent
   ): void {
     const question = options.question as QuestionFileModel;
+    if (question.name === 'shapefile') {
+      const formData = new FormData();
+      const headers = new HttpHeaders({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Accept: 'application/json',
+      });
+      formData.append('file', options.files[0]);
+      this.restService
+        .post(`${this.restService.apiUrl}/gis/shapefile-to-geojson`, formData, {
+          headers,
+        })
+        .subscribe({
+          next: (data: { geojson: FeatureCollection }) => {
+            question.value = data.geojson;
+          },
+          error: (error: HttpErrorResponse) => {
+            this.snackBar.openSnackBar(error.message, { error: true });
+            options.callback(null, error);
+          },
+        });
+      return;
+    }
     temporaryFilesStorage.set(question, options.files);
 
     let content: any[] = [];
@@ -657,6 +682,9 @@ export class FormBuilderService {
    * @param options Options regarding the download
    */
   private onDownloadFile(options: DownloadFileEvent): void {
+    if (options.question.name === 'shapefile') {
+      return;
+    }
     if (
       options.content.indexOf('base64') !== -1 ||
       options.content.startsWith('http')

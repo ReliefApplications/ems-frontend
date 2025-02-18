@@ -59,6 +59,8 @@ import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
+import { LayerDatasource } from '../../../models/layer.model';
+import { FeatureCollection } from 'geojson';
 
 /**
  * Default file name when exporting grid data.
@@ -1134,17 +1136,33 @@ export class CoreGridComponent
       case 'map': {
         import('./map-modal/map-modal.component').then(
           ({ MapModalComponent }) => {
+            let data: {
+              item?: any;
+              datasource?: LayerDatasource;
+              shapefile?: FeatureCollection;
+            } = {};
+            switch (event.field.meta.type) {
+              case 'shapefile':
+                data.shapefile = event.item.text[event.field.name];
+                break;
+              case 'geospatial':
+                data = {
+                  item: event.item,
+                  datasource: {
+                    type: 'Point',
+                    resource: this.settings.resource,
+                    // todo(change)
+                    layout: this.settings.id,
+                    geoField: event.field.name,
+                  },
+                };
+                break;
+              default:
+                console.error('Wrong map type');
+                return;
+            }
             this.dialog.open(MapModalComponent, {
-              data: {
-                item: event.item,
-                datasource: {
-                  type: 'Point',
-                  resource: this.settings.resource,
-                  // todo(change)
-                  layout: this.settings.id,
-                  geoField: event.field.name,
-                },
-              },
+              data,
             });
           }
         );
