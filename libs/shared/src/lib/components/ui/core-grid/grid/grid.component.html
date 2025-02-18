@@ -653,7 +653,10 @@
       </ng-container>
       <!-- Geospatial -->
       <kendo-grid-column
-        *ngIf="field.type === 'JSON' && field.meta.type === 'geospatial'"
+        *ngIf="
+          field.type === 'JSON' &&
+          ['geospatial', 'shapefile'].includes(field.meta.type)
+        "
         [field]="field.name"
         [filterable]="true"
         [title]="field.title"
@@ -674,7 +677,11 @@
                 'components.widget.grid.tooltip.displayMap' | translate
               "
             >
-              {{ dataItem.text[field.name] }}
+              {{
+                field.meta.type === 'shapefile' && dataItem.text[field.name]
+                  ? ('components.widget.grid.tooltip.displayMap' | translate)
+                  : dataItem.text[field.name]
+              }}
             </a>
           </div>
         </ng-template>
@@ -788,8 +795,7 @@
         *ngIf="
           field.type === 'JSON' &&
           !multiSelectTypes.includes(field.meta.type) &&
-          field.meta.type !== 'file' &&
-          field.meta.type !== 'geospatial'
+          !['geospatial', 'shapefile', 'file'].includes(field.meta.type)
         "
       >
         <ng-container
