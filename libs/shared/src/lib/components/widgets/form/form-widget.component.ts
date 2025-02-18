@@ -20,6 +20,7 @@ import {
   FilterDescriptor,
 } from '@progress/kendo-data-query';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
+import { isNil } from 'lodash';
 
 /**
  * Form widget component.
@@ -107,13 +108,14 @@ export class FormWidgetComponent
         .pipe(takeUntil(this.destroy$))
         .subscribe((states) => {
           const state = states.find((s) => s.id === stateID);
-          if (state && state.value) {
+          const value = state?.value;
+          if (!isNil(value) && value !== this.record?.id) {
             this.loading = true;
             this.apollo
               .query<RecordQueryResponse>({
                 query: GET_RECORD_BY_ID,
                 variables: {
-                  id: state.value,
+                  id: value,
                 },
               })
               .subscribe(({ data }) => {
