@@ -310,85 +310,103 @@ export class GridService {
      * @param key cache key
      * @returns A promise to execute everything.
      */
-    const fetchChoicesAndSetMeta = (
+    const fetchChoicesAndSetMeta = async (
       fieldName: string,
       meta: IMeta,
       key: string
     ): Promise<void> => {
       if (meta.choicesByGraphQL) {
-        return this.apiProxyService
-          .buildPostRequest(meta.choicesByGraphQL.url || '', {
+        const value = await this.apiProxyService.buildPostRequest(
+          meta.choicesByGraphQL.url || '',
+          {
             query: meta.choicesByGraphQL.query,
-          })
-          .then((value: any) => {
-            const choices = this.extractChoices(value, meta);
-            setWithExpiry(key, choices);
-            metaFields[fieldName] = {
-              ...meta,
-              choices,
-            };
-          });
+          }
+        );
+        const choices = this.extractChoices(value, meta);
+        setWithExpiry(key, choices);
+        metaFields[fieldName] = {
+          ...meta,
+          choices,
+        };
       }
       if (meta.choicesByUrl) {
-        return this.apiProxyService
-          .promisedRequestWithHeaders(meta.choicesByUrl.url || '')
-          .then((value: any) => {
-            const choices = this.extractChoices(value, meta);
-            setWithExpiry(key, choices);
-            metaFields[fieldName] = {
-              ...meta,
-              choices,
-            };
-          });
+        const value = await this.apiProxyService.promisedRequestWithHeaders(
+          meta.choicesByUrl.url || ''
+        );
+        const choices = this.extractChoices(value, meta);
+        setWithExpiry(key, choices);
+        metaFields[fieldName] = {
+          ...meta,
+          choices,
+        };
       }
       return Promise.resolve();
     };
 
-    for (const fieldName of Object.keys(metaFields)) {
-      const meta = metaFields[fieldName];
-      if (meta.choicesByUrl || meta.choicesByGraphQL) {
-        let url: string;
-        let key: string;
-        if (meta.choicesByGraphQL) {
-          url = meta.choicesByGraphQL.url;
-          key = `${url}:${meta.choicesByGraphQL.query || ''}`;
-        } else {
-          url = meta.choicesByUrl.url;
-          key = url;
-        }
-        if (cachedKeys.includes(key)) {
-          promises.push(
-            getWithExpiry(key).then(
-              (choices: { value: string; text: string }[] | null) => {
-                if (choices === null) {
-                  return fetchChoicesAndSetMeta(fieldName, meta, key);
-                } else {
-                  metaFields[fieldName] = {
-                    ...meta,
-                    choices,
-                  };
-                  return;
-                }
-              }
-            )
-          );
-        } else {
-          promises.push(fetchChoicesAndSetMeta(fieldName, meta, key));
+    /**
+     * Process meta fields
+     * Recursive method
+     *
+     * @param fields Fields, as object
+     * @param prefix Prefix, indicate path in metaFields
+     */
+    const processMetaFields = async (
+      fields: any,
+      prefix?: any
+    ): Promise<void> => {
+      for (const fieldName of Object.keys(fields)) {
+        const path = prefix ? `${prefix}.${fieldName}` : fieldName;
+        const meta = fields[fieldName];
+        if (meta) {
+          if (meta.choicesByUrl || meta.choicesByGraphQL) {
+            let url: string;
+            let key: string;
+            if (meta.choicesByGraphQL) {
+              url = meta.choicesByGraphQL.url;
+              key = `${url}:${meta.choicesByGraphQL.query || ''}`;
+            } else {
+              url = meta.choicesByUrl.url;
+              key = url;
+            }
+            if (cachedKeys.includes(key)) {
+              promises.push(
+                getWithExpiry(key).then(
+                  (choices: { value: string; text: string }[] | null) => {
+                    if (choices === null) {
+                      return fetchChoicesAndSetMeta(fieldName, meta, key);
+                    } else {
+                      metaFields[path] = {
+                        ...meta,
+                        choices,
+                      };
+                      return;
+                    }
+                  }
+                )
+              );
+            } else {
+              promises.push(fetchChoicesAndSetMeta(fieldName, meta, key));
+            }
+          } else if (meta.choices) {
+            metaFields[path] = {
+              ...meta,
+              choices: meta.choices.map((choice: any) => ({
+                value: choice.value,
+                text:
+                  choice.text[this.translate.currentLang] ||
+                  choice.text.default ||
+                  choice.text,
+              })),
+            };
+          } else if (typeof meta === 'object') {
+            // If it's an object, recurse through its properties
+            await processMetaFields(meta, path);
+          }
         }
       }
-      if (meta.choices) {
-        metaFields[fieldName] = {
-          ...meta,
-          choices: meta.choices.map((choice: any) => ({
-            value: choice.value,
-            text:
-              choice.text[this.translate.currentLang] ||
-              choice.text.default ||
-              choice.text,
-          })),
-        };
-      }
-    }
+    };
+
+    await processMetaFields(metaFields);
     await Promise.all(promises);
   }
 

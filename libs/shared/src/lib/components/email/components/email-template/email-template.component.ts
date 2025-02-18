@@ -16,7 +16,6 @@ import {
   FormGroup,
 } from '@angular/forms';
 import { EmailService } from '../../email.service';
-import { FILTER_OPERATORS } from '../../filter/filter.const';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { emailRegex } from '../../constant';
@@ -51,77 +50,32 @@ export class EmailTemplateComponent
   extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
+  /** List of emails for back loading. */
+  @Input() distributionList: FormGroup | any;
+  /** Specifies if To, CC or BCC */
+  @Input() type: string | any;
+  /** Event Emitted for no email */
+  @Output() noEmail = new EventEmitter();
+  /** Event emitter for list change. */
+  @Output() listChange = new EventEmitter<void>();
+  /** Reference to tblPreview element. */
+  @ViewChild('tblPreview', { static: false })
+  tblPreview!: ElementRef<any>;
   /** Data set containing emails and records. */
   public dataset?: {
     emails: string[];
     records: any[];
   };
-
-  /** records of selected Dataset*/
-  public data!: any[];
-
-  /** List of data items. */
-  public dataList!: any[];
-
   /** Fields selected in dataset step for display */
   public selectedFields: any[] = [];
-
-  /** List of emails. */
-  public emails: string[] = [];
-
   /** Selected resource. */
   public resource!: any;
-
-  /** Selected value. */
-  public selectedValue!: string;
-
-  /** Cache for filter data. */
-  public cacheFilterData!: string;
-
-  /** Selected dataset. */
-  public selectedDataset: any | undefined = '';
-
-  /** Emails in the data set. */
-  public datasetEmails!: string[];
-
   /** Fields in the data set. */
   public datasetFields: FieldStore[] = [];
-
-  /** Form group for filter query. */
-  public filterQuery: FormGroup | any | undefined;
-
   /** Selected emails. */
   public selectedEmails: string[] | any = [];
-
-  /** Filter operators. */
-  public filterOperators = FILTER_OPERATORS;
-
-  /** Operators for filtering. */
-  public operators: { [key: number]: { value: string; label: string }[] } = {};
-
-  /** Form array for filter fields. */
-  public filterFields: FormArray | any = new FormArray([]);
-
-  /** Form group for datasets. */
-  public datasetsForm: FormGroup | any = this.emailService.datasetsForm;
-
-  /** Flag to control dropdown visibility. */
-  public isDropdownVisible = false;
-
-  /** List of data sets. */
-  public datasets: any;
-
-  /** Flag to switch between date picker and text expression. */
-  public useExpression = false;
-
-  /** Selected field. */
-  public selectField = '';
-
   /** Error message for email validation. */
   public emailValidationError = '';
-
-  /** It is for previously selected Dataset*/
-  public prevDataset!: any | undefined;
   /** Show preview for select with filter option  */
   public showPreview = false;
   /** Array of fields */
@@ -140,10 +94,6 @@ export class EmailTemplateComponent
   public segmentForm!: FormGroup;
   /** Index of active segment. */
   public activeSegmentIndex = 0;
-  /** List of selected item indexes. */
-  public selectedItemIndexes: number[] | any[] = [];
-  /** Flag to indicate if all items are selected. */
-  public isAllSelected = false;
   /** Loading status. */
   public loading = false;
   /** Query filter Preview HTML */
@@ -159,33 +109,8 @@ export class EmailTemplateComponent
     RecipientsType.combination,
     RecipientsType.commonServices,
   ];
-  /** Time units for filtering. */
-  public timeUnits = [
-    { value: 'hours', label: 'Hours' },
-    { value: 'days', label: 'Days' },
-    { value: 'weeks', label: 'Weeks' },
-    { value: 'months', label: 'Months' },
-    { value: 'years', label: 'Years' },
-  ];
-  /** List of emails for back loading. */
-  @Input() distributionList: FormGroup | any;
-  /** Specifies if To, CC or BCC */
-  @Input() type: string | any;
-  /** Existing ID. */
-  @Input() existingId = '';
-  /** Event Emitted for no email */
-  @Output() noEmail = new EventEmitter();
-  /** Event emitter for list change. */
-  @Output() listChange = new EventEmitter<void>();
-  /** Reference to tblPreview element. */
-  @ViewChild('tblPreview', { static: false })
-  tblPreview!: ElementRef<any>;
   /** Flag to show the Child fields limit warning. */
   public showFieldsWarning = false;
-  /** Flag for data is Resource or Reference data */
-  public isReferenceData = false;
-  /** List of data types */
-  public dataTypeList: any = ['Resource', 'Reference Data'];
   /** Show NonEmail Fields Alert */
   public nonEmailFieldsAlert = false;
   /** Actual resourceFields data  */
@@ -193,11 +118,11 @@ export class EmailTemplateComponent
   /** Actual referenceFields common service data  */
   public commonServiceFields: any = [];
   /** Expand for "To" list items. */
-  isExpandedPreview = false;
+  public isExpandedPreview = false;
   /** Expand for "To" list items. */
-  isPreviewEmail = true;
+  public isPreviewEmail = true;
   /** DL preview emails  */
-  previewDLEmails: any = [];
+  public previewEmails: any = [];
   /** accordion items */
   public accordionItems = [
     RecipientsType.manual,
@@ -205,14 +130,14 @@ export class EmailTemplateComponent
     RecipientsType.commonServices,
   ];
   /** accordion expandedIndex */
-  expandedIndex = 0;
+  public expandedIndex = 0;
   /** Form group for Common service filter query. */
   public dlCommonQuery!: FormGroup | any;
-  /** Common service Query filter Preview HTML */
-  public previewCommonHTML: any = '';
+  /** DL preview emails from Common Services  */
+  public previewCsEmails: any = [];
 
   /**
-   * Composite filter group.
+   * Email template to create distribution list.
    *
    * @param fb Angular form builder
    * @param emailService helper functions
@@ -266,6 +191,14 @@ export class EmailTemplateComponent
     this.distributionList.controls.resource.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: any) => {
+        this.previewEmails = [];
+        if (
+          value !== undefined &&
+          value !== null &&
+          this.activeSegmentIndex === 1
+        ) {
+          this.resetFilters(this.dlCommonQuery);
+        }
         if (
           value !== undefined &&
           value !== null &&
@@ -293,7 +226,7 @@ export class EmailTemplateComponent
       .subscribe((value: any) => {
         if (
           this.activeSegmentIndex === 3 &&
-          value?.filter((x: any) => x?.field && x?.value)?.length > 0
+          value?.filter((x: any) => x?.field || x?.value)?.length > 0
         ) {
           this.emailService.validateNextButton();
         } else {
@@ -353,82 +286,56 @@ export class EmailTemplateComponent
    *
    * @param value form value
    */
-  clearUnusedValues(value: string) {
-    if (value === 'Add Manually' && this.dlQuery) {
-      const fields = this.dlQuery?.get('fields') as FormArray;
-      fields?.clear();
-
-      const filter = this.dlQuery?.get('filter') as FormGroup;
-      const filters = filter?.get('filters') as FormArray;
-      filters?.clear();
-
-      this.distributionList.get('resource')?.setValue('');
-      this.dlQuery?.get('name')?.setValue('');
-      this.resource = null;
-      this.emailService.isToValidCheck();
-
-      //clear DLCommon Query
-      this.resetFilters(this.dlCommonQuery);
-    } else if (value === 'Select With Filter') {
-      // Clear the input emails form array
-      while (this.selectedEmails.length !== 0) {
-        this.selectedEmails.removeAt(0);
+  clearUnusedValues(value: RecipientsType) {
+    switch (value) {
+      case RecipientsType.manual: {
+        this.resetFilters(this.dlQuery);
+        this.distributionList.get('resource')?.setValue('');
+        this.resource = null;
+        this.resetFilters(this.dlCommonQuery);
+        break;
       }
-      this.selectedEmails.reset();
-      if (this.type) {
-        let type = this.type == 'to' ? 'To' : this.type == 'cc' ? 'Cc' : 'Bcc';
-        if (this.emailService.emailDistributionList[type]) {
-          this.emailService.emailDistributionList[type].inputEmails = this
-            .emailService.emailDistributionList[type]?.inputEmails
-            ? []
-            : this.emailService.emailDistributionList[type].inputEmails;
+      case RecipientsType.resource: {
+        // Clear the input emails form array
+        while (this.selectedEmails.length !== 0) {
+          this.selectedEmails.removeAt(0);
         }
+        this.selectedEmails.reset();
+        if (this.type) {
+          let type =
+            this.type == 'to' ? 'To' : this.type == 'cc' ? 'Cc' : 'Bcc';
+          if (this.emailService.emailDistributionList[type]) {
+            this.emailService.emailDistributionList[type].inputEmails = this
+              .emailService.emailDistributionList[type]?.inputEmails
+              ? []
+              : this.emailService.emailDistributionList[type].inputEmails;
+          }
 
-        type = this.type == 'To' ? 'to' : this.type == 'Cc' ? 'cc' : 'bcc';
-        if (this.emailService.emailDistributionList[type]) {
-          this.emailService.emailDistributionList[type].inputEmails = this
-            .emailService.emailDistributionList[type]?.inputEmails
-            ? []
-            : this.emailService.emailDistributionList[type].inputEmails;
+          type = this.type == 'To' ? 'to' : this.type == 'Cc' ? 'cc' : 'bcc';
+          if (this.emailService.emailDistributionList[type]) {
+            this.emailService.emailDistributionList[type].inputEmails = this
+              .emailService.emailDistributionList[type]?.inputEmails
+              ? []
+              : this.emailService.emailDistributionList[type].inputEmails;
+          }
         }
+        this.resetFilters(this.dlCommonQuery);
+        break;
       }
-      this.emailService.isToValidCheck();
-
-      //clear DLCommon Query
-      this.resetFilters(this.dlCommonQuery);
-    } else if (value === 'Use Combination') {
-      if (
-        this.emailService.datasetsForm.getRawValue().emailDistributionList?.to
-          ?.inputEmails?.length > 0 ||
-        (this.emailService.datasetsForm.getRawValue().emailDistributionList.to
-          .resource !== null &&
-          this.emailService.datasetsForm.getRawValue().emailDistributionList.to
-            .resource !== '')
-      ) {
-        this.emailService.isToValid = true;
-      } else {
-        this.emailService.isToValid = false;
+      case RecipientsType.combination: {
+        break;
       }
-    } else if (value === 'Select from Common Services') {
-      // Clear the input emails form array
-      while (this.selectedEmails.length !== 0) {
-        this.selectedEmails.removeAt(0);
+      case RecipientsType.commonServices: {
+        // Clear the input emails form array
+        while (this.selectedEmails.length !== 0) {
+          this.selectedEmails.removeAt(0);
+        }
+        this.selectedEmails.reset();
+        this.resetFilters(this.dlQuery);
+        this.distributionList.get('resource')?.setValue('');
+        this.resource = null;
+        break;
       }
-      this.selectedEmails.reset();
-      if (
-        this.emailService.datasetsForm.getRawValue().emailDistributionList?.to
-          ?.inputEmails?.length > 0 ||
-        (this.emailService.datasetsForm.getRawValue().emailDistributionList.to
-          .resource !== null &&
-          this.emailService.datasetsForm.getRawValue().emailDistributionList.to
-            .resource !== '')
-      ) {
-        this.emailService.isToValid = true;
-      } else {
-        this.emailService.isToValid = false;
-      }
-      //Clear the Select with filter data
-      this.resetFilters(this.dlQuery);
     }
     this.emailService.validateNextButton();
   }
@@ -456,7 +363,6 @@ export class EmailTemplateComponent
       this.distributionList.controls.query.value.fields = [];
       this.distributionList.controls.query.get('fields').value = [];
       this.selectedFields = [];
-      this.filterFields = [];
     }
     this.showDatasetLimitWarning = false;
     this.type === 'to' ? (this.emailService.isToValid = false) : '';
@@ -484,7 +390,6 @@ export class EmailTemplateComponent
             .get('name')
             .setValue(queryTemp.queryName);
           this.availableFields = newData;
-          this.filterFields = cloneDeep(newData);
           this.loading = false;
           this.resourcePopulated = true;
           this.resource = data.resource;
@@ -509,12 +414,16 @@ export class EmailTemplateComponent
       this.emailService.distributionListName?.length > 0 &&
       !this.distributionListValid;
 
+    //If clicking on other tabs (Filter, fields) and showpreview flag is true then make it false so it willl not auto navigate to preview after getting data from API
+    if (fromHTML && (event === 0 || event === 1)) {
+      this.showPreview = false;
+    }
     //if new tab is preview, get preview data
     if (fromHTML && newIndex === previewTabIndex) {
       if (isValid) {
         this.type === 'to' ? (this.emailService.isToValid = true) : '';
       }
-      this.currentTabIndex === newIndex ? this.getDataSet('preview') : '';
+      this.currentTabIndex !== newIndex ? this.getDataSet('preview') : '';
       this.showDatasetLimitWarning = fromHTML
         ? false
         : this.showDatasetLimitWarning;
@@ -544,8 +453,9 @@ export class EmailTemplateComponent
    * To get data set for the applied filters.
    *
    * @param tabName - The name of the tab for which to get the data set.
+   * @param isPreview call is from Preview button or not
    */
-  async getDataSet(tabName?: any): Promise<void> {
+  async getDataSet(tabName?: any, isPreview?: boolean): Promise<void> {
     if (
       this.dlQuery.controls['name'].value !== null &&
       this.dlQuery.controls['name'].value !== ''
@@ -583,22 +493,22 @@ export class EmailTemplateComponent
           },
         };
 
+        //reset the previous Data
         this.previewHTML = '';
-        this.previewDLEmails = [];
-
+        this.previewEmails = [];
+        this.isPreviewEmail = true;
+        //When we click preview button at that time allow swich to preview tab directly (If not cliked on other tabs)
+        isPreview ? this.onTabSelect(2, false) : '';
         this.restService
           .post('/notification/preview-dataset', objPreview)
           .subscribe(
             async (response: any) => {
-              this.showPreview = true;
               this.emailService.filterToEmails =
                 this.type === 'to' ? [] : this.emailService.filterToEmails;
               // Navigates straight to preview tab if didn't fail before
               if (response.count <= 50) {
                 this.showDatasetLimitWarning = false;
               }
-              this.onTabSelect(2, false);
-              this.showPreview = true;
               if (response.count <= 50) {
                 // this.showDatasetLimitWarning = false;
               } else {
@@ -607,16 +517,16 @@ export class EmailTemplateComponent
               }
               await this.checkFilter();
               if (this.type === 'to') {
-                this.previewDLEmails = this.emailService.filterToEmails;
+                this.previewEmails = this.emailService.filterToEmails;
               }
               if (this.type === 'cc') {
-                this.previewDLEmails = this.emailService.filterCCEmails;
+                this.previewEmails = this.emailService.filterCCEmails;
               }
               if (this.type === 'bcc') {
-                this.previewDLEmails = this.emailService.filterBCCEmails;
+                this.previewEmails = this.emailService.filterBCCEmails;
               }
               this.isPreviewEmail =
-                this.previewDLEmails?.length > 0 ? true : false;
+                this.previewEmails?.length > 0 ? true : false;
               this.previewHTML = window.atob(response.tableHtml);
               if (this.tblPreview?.nativeElement) {
                 setTimeout(() => {
@@ -712,14 +622,17 @@ export class EmailTemplateComponent
   }
 
   /**
-   * Reinitialises and resets Distribution List Filter values
+   * Reinitializes and resets Distribution List Filter values
    *
    * @param query - Dataset Form Group
    */
   resetFilters(query: FormGroup) {
     this.resourceFields = [];
     const fields = query.get('fields') as FormArray;
-    fields.clear();
+    if (fields) {
+      // Only for resource
+      fields.clear();
+    }
 
     const filter = query.get('filter') as FormGroup;
     const filters = filter.get('filters') as FormArray;
@@ -745,30 +658,6 @@ export class EmailTemplateComponent
     this.resource.fields = [];
     this.selectedResourceId = '';
     event.stopPropagation();
-  }
-
-  /**
-   *
-   * Checking Email input is valid or not
-   *
-   * @returns Returns true if email is valid
-   */
-  async isEmailInputValid(): Promise<boolean> {
-    const inputsValid = this.selectedEmails.length > 0;
-    if (this.segmentForm.get('segment')?.value === 'Add Manually') {
-      return inputsValid;
-    } else {
-      const valid = await this.checkFilter();
-      if (this.segmentForm.get('segment')?.value === 'Select With Filter') {
-        return valid;
-      } else {
-        if (this.resource) {
-          return valid && inputsValid;
-        } else {
-          return inputsValid;
-        }
-      }
-    }
   }
 
   /**
@@ -832,31 +721,6 @@ export class EmailTemplateComponent
           if (this.type === 'to') {
             this.emailService.filterToEmails =
               response?.to?.length > 0 ? response?.to : [];
-            if (
-              response?.to?.length > 0 &&
-              response?.name?.length > 0 &&
-              !this.emailService.isDLNameDuplicate
-            ) {
-              this.emailService.isToValid = true;
-            } else {
-              // Check if To is use combination
-              if (
-                this.segmentForm.get('segment')?.value === 'Use Combination'
-              ) {
-                if (
-                  this.emailService.emailDistributionList?.to?.inputEmails
-                    ?.length > 0
-                ) {
-                  this.emailService.isToValid = true;
-                }
-              } else {
-                // False if returned emails are not correct
-                this.emailService.isToValid = false;
-              }
-            }
-            if (response?.to?.length === 0) {
-              this.emailService.isToValid = true;
-            }
             this.emailService.validateNextButton();
           } else if (this.type === 'cc' || this.type === 'bcc') {
             this.emailService.validateNextButton();
@@ -883,15 +747,6 @@ export class EmailTemplateComponent
   override async ngOnDestroy(): Promise<void> {
     super.ngOnDestroy();
     this.clearUnusedValues(this.segmentForm.get('segment')?.value);
-    if (this.type === 'to') {
-      const valid = await this.isEmailInputValid();
-      if (valid) {
-        this.emailService.isToValid = true;
-      } else {
-        this.emailService.isToValid = false;
-      }
-    }
-
     this.emailService.setDistributionList();
   }
 
@@ -902,13 +757,9 @@ export class EmailTemplateComponent
    */
   bindDataSetDetails(dataset: any): void {
     this.noEmail.emit(false);
-    this.selectedItemIndexes = [];
-    this.isAllSelected = false;
-    this.dataList = [];
     this.resource = [];
     this.datasetFields = [];
     if (dataset === undefined) {
-      this.dataList = [];
       this.resource = [];
       this.datasetFields = [];
       return;
@@ -919,21 +770,14 @@ export class EmailTemplateComponent
       Object.keys(dataset?.cacheData).length &&
       dataset?.cacheData?.datasetResponse
     ) {
-      this.dataList = [];
       this.resource = [];
       this.datasetFields = [];
       this.selectedFields = [];
       this.loading = true;
 
-      const { dataList, resource, datasetResponse } = dataset.cacheData;
-      this.dataList = dataList;
+      const { resource, datasetResponse } = dataset.cacheData;
       this.resource = resource;
       this.dataset = datasetResponse;
-      this.datasetEmails = datasetResponse?.records
-        ?.map((record: { email: string }) => record.email)
-        ?.filter(Boolean)
-        ?.flat();
-      this.prevDataset = this.selectedDataset;
       this.emailService.setSelectedDataSet(dataset);
       this.loading = false;
     }
@@ -960,44 +804,62 @@ export class EmailTemplateComponent
       !this.emailService.isDLNameDuplicate &&
       this.distributionListValid;
 
-    if (this.activeSegmentIndex === 0) {
-      //Add Manually
-      if (this.selectedEmails?.value?.length === 0 && this.type === 'to') {
-        this.emailService.isToValid = false;
-        isValid = false;
+    switch (this.activeSegmentIndex) {
+      // Add manually
+      case 0: {
+        if (this.selectedEmails?.value?.length === 0 && this.type === 'to') {
+          this.emailService.isToValid = false;
+          isValid = false;
+        }
+        if (isValid) {
+          this.type === 'to' ? (this.emailService.isToValid = true) : '';
+          this.emailService.disableSaveAsDraft.next(false);
+        }
+        this.type === 'to' ? (this.emailService.toDLHasFilter = false) : '';
+        break;
       }
-      if (isValid) {
-        this.type === 'to' ? (this.emailService.isToValid = true) : '';
-        this.emailService.disableSaveAsDraft.next(false);
+      // Select with filter
+      case 1: {
+        const formArray = this.selectedEmails as FormArray;
+        formArray.clear();
+        this.previewEmails = [];
+        this.isPreviewEmail = true;
+        this.expandedIndex = 0;
+        if (isValid) {
+          this.type === 'to' ? (this.emailService.isToValid = true) : '';
+          this.emailService.disableSaveAsDraft.next(false);
+        }
+        this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
+        this.currentTabIndex = 0;
+        break;
       }
-
-      this.type === 'to' ? (this.emailService.toDLHasFilter = false) : '';
-    }
-    if (this.activeSegmentIndex === 1) {
-      const formArray = this.selectedEmails as FormArray;
-      formArray.clear();
-      this.previewDLEmails = [];
-      if (isValid) {
-        this.type === 'to' ? (this.emailService.isToValid = true) : '';
-        this.emailService.disableSaveAsDraft.next(false);
+      /// Use combination
+      case 2: {
+        this.previewEmails = [];
+        this.isPreviewEmail = true;
+        if (isValid) {
+          this.type === 'to' ? (this.emailService.isToValid = true) : '';
+          this.emailService.disableSaveAsDraft.next(false);
+        }
+        this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
+        break;
       }
-
-      this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
-    }
-    if (this.activeSegmentIndex === 2) {
-      if (isValid) {
-        this.type === 'to' ? (this.emailService.isToValid = true) : '';
-        this.emailService.disableSaveAsDraft.next(false);
+      // Select from Common Services
+      case 3: {
+        const formArray = this.selectedEmails as FormArray;
+        formArray.clear();
+        this.previewEmails = [];
+        this.previewCsEmails = [];
+        this.isPreviewEmail = true;
+        // Resetting Add manually option Data
+        this.dlQuery?.get('name')?.setValue('');
+        this.resource = null;
+        this.resetFilters(this.dlQuery);
+        this.distributionList.get('resource').setValue('');
+        this.currentTabIndex = 0;
+        this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
+        break;
       }
-
-      this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
-    }
-    if (this.activeSegmentIndex === 3) {
-      const formArray = this.selectedEmails as FormArray;
-      formArray.clear();
-      this.previewDLEmails = [];
-      this.onTabSelect(0, false);
-      this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
     }
   }
 
@@ -1018,16 +880,7 @@ export class EmailTemplateComponent
   async removeEmailChip(chipIndex: number): Promise<void> {
     this.selectedEmails.removeAt(chipIndex);
     this.listChange.emit();
-    if (
-      this.selectedEmails.length < 1 &&
-      this.segmentForm.get('segment')?.value === 'Add Manually'
-    ) {
-      this.type === 'to' ? (this.emailService.isToValid = false) : '';
-      this.emailService.validateNextButton();
-    } else {
-      this.emailService.isToValidCheck();
-      this.emailService.validateNextButton();
-    }
+    this.emailService.validateNextButton();
   }
 
   /**
@@ -1044,51 +897,20 @@ export class EmailTemplateComponent
     );
 
     if (emailRegex.test(element.value) && !emailDuplicate) {
+      // Email is valid, add it
       this.selectedEmails.push(this.formBuilder.control(element.value));
-      if (
-        this.distributionListValid &&
-        (this.segmentForm.get('segment')?.value === 'Add Manually' ||
-          (this.segmentForm.get('segment')?.value === 'Use Combination' &&
-            !this.resource)) &&
-        this.emailService.datasetsForm?.value?.emailDistributionList?.name
-          ?.length > 0 &&
-        !this.emailService.isDLNameDuplicate
-      ) {
-        this.type === 'to' ? (this.emailService.isToValid = true) : '';
-      } else if (
-        this.segmentForm.get('segment')?.value === 'Use Combination' &&
-        this.resource &&
-        this.distributionListValid &&
-        this.emailService.datasetsForm?.value?.emailDistributionList?.name
-          ?.length > 0 &&
-        !this.emailService.isDLNameDuplicate
-      ) {
-        if (
-          this.dlQuery.get('fields')?.value.length > 0 ||
-          (this.dlQuery.get('fields')?.value.length > 0 &&
-            this.dlQuery.get('filter').get('filters').length > 0 &&
-            this.emailService.datasetsForm?.value?.emailDistributionList?.name
-              ?.length > 0)
-        ) {
-          // console.log(this.dlQuery.get('fields')?.value);
-        } else if (this.dlQuery.get('filter').get('filters').length > 0) {
-          this.type === 'to' ? (this.emailService.isToValid = false) : '';
-        }
-      }
-
       element.value = '';
-      this.emailValidationError = '';
       this.listChange.emit();
     } else if (!emailRegex.test(element.value)) {
+      // Not a valid email
       this.snackbar.openSnackBar(
         this.translate.instant('components.customNotifications.errors.email'),
         {
           error: true,
         }
       );
-
-      this.emailValidationError = '';
     } else if (emailDuplicate) {
+      // Email already exists
       this.snackbar.openSnackBar(
         this.translate.instant(
           'components.customNotifications.errors.duplicate'
@@ -1097,9 +919,9 @@ export class EmailTemplateComponent
           error: true,
         }
       );
-
-      this.emailValidationError = '';
     }
+    this.emailValidationError = '';
+    // Reset other email options ( resource & cs ), certainly useless there
     if (this.activeSegmentIndex === 0) {
       this.dlQuery?.get('name')?.setValue('');
       this.resource = null;
@@ -1158,20 +980,24 @@ export class EmailTemplateComponent
   /**
    * To get data set for the applied filters.
    *
+   * @param isPreview this method call from preview button of Commonservice
    */
-  getCommonServiceDataSet() {
+  getCommonServiceDataSet(isPreview?: boolean) {
     const commonServiceData: any = this.emailService.setCommonServicePayload(
       cloneDeep(this.dlCommonQuery?.getRawValue()?.filter)
     );
     this.loading = true;
+    //Reset previous data
+    this.previewCsEmails = [];
+    this.isPreviewEmail = true;
+    //When we click preview button at that time allow swich to preview tab directly (If not cliked on other tabs)
+    isPreview ? this.onTabSelect(1, false) : '';
     this.restService
       .post('/notification/preview-common-services-users', commonServiceData)
       .subscribe(
         async (response: any) => {
-          this.showPreview = true;
-          this.onTabSelect(1, false);
-          this.previewDLEmails = response;
-          this.isPreviewEmail = this.previewDLEmails?.length > 0 ? true : false;
+          this.previewCsEmails = response;
+          this.isPreviewEmail = this.previewCsEmails?.length > 0 ? true : false;
           this.loading = false;
         },
         (error: string) => {
@@ -1183,7 +1009,6 @@ export class EmailTemplateComponent
 
   /**
    * Set the common service fields.
-   *
    */
   async setCommonServiceFields() {
     if (this.emailService?.userTableFields?.length === 0) {
@@ -1218,5 +1043,23 @@ export class EmailTemplateComponent
    */
   toggleExpandPreview() {
     this.isExpandedPreview = !this.isExpandedPreview;
+  }
+
+  /**
+   * On Panel expand getting index of the expanded Panel
+   *
+   * @param index Selected Panel index
+   */
+  onExpand(index: any) {
+    if (this.expandedIndex !== index) {
+      this.expandedIndex = index;
+
+      // Initiating onTabSelection method call for common service filter in use combination
+      if (this.expandedIndex === 2 || this.expandedIndex === 1) {
+        this.previewEmails = [];
+        this.previewCsEmails = [];
+        this.currentTabIndex = 0;
+      }
+    }
   }
 }

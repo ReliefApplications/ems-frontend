@@ -30,11 +30,6 @@ export const environment: Environment = {
   availableLanguages: ['en'],
   authConfig,
   theme,
-  // sentry: {
-  //   environment: 'staging',
-  //   dns: 'https://da63b46285f94315b2d6f8e9c69d7c8c@o4505563078918144.ingest.sentry.io/4505563106312192',
-  //   tracePropagationTargets: ['ems-safe-test.who.int'],
-  // },
   user: {
     attributes: ['country', 'region', 'location', 'department'],
   },

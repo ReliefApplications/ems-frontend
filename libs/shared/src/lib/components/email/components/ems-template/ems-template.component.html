@@ -84,6 +84,7 @@
         type="button"
         category="secondary"
         variant="primary"
+        [disabled]="disableSaveAndSend"
         (click)="send()"
       >
         {{ 'common.sendEmail' | translate }}

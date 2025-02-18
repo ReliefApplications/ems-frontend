@@ -296,6 +296,14 @@ export class PreviewComponent
         );
     }
 
+    // If no Fields selected then set as []
+    if (
+      objData.emailDistributionList?.to?.commonServiceFilter?.filters?.filter(
+        (x: any) => x?.field != null
+      )?.length === 0
+    ) {
+      objData.emailDistributionList.to.commonServiceFilter.filters = [];
+    }
     this.http
       .post(
         `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
@@ -350,6 +358,15 @@ export class PreviewComponent
             block.isExpanded = false;
             block.emails = Array.from(new Set(block.emails)); // Remove duplicate emails
           });
+
+          if (
+            !this.distributionListTo.length &&
+            !this.distributionListSeparate.length
+          ) {
+            this.emailService.disableSaveAndSend.next(true);
+          } else {
+            this.emailService.disableSaveAndSend.next(false);
+          }
           this.emailService.loading = false;
         },
         () => {
@@ -425,6 +442,15 @@ export class PreviewComponent
           this.emailService.setCommonServicePayload(
             objData.emailDistributionList.bcc.commonServiceFilter.filter
           );
+      }
+
+      // If no Fields selected then set as []
+      if (
+        objData.emailDistributionList?.to?.commonServiceFilter?.filters?.filter(
+          (x: any) => x?.field != null
+        )?.length === 0
+      ) {
+        objData.emailDistributionList.to.commonServiceFilter.filters = [];
       }
       this.http.post(this.previewUrl, objData).subscribe(
         (response: any) => {

@@ -12,9 +12,8 @@ import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
-import { firstValueFrom, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/public-api';
-import { cloneDeep } from 'lodash';
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
 
@@ -651,70 +650,6 @@ export class SelectDistributionComponent
   }
 
   /**
-   *
-   *check for valid email inouts
-   *
-   * @returns return true or false
-   */
-  checkToValid(): Promise<boolean> {
-    return new Promise((resolve) => {
-      this.loading = true;
-      // Check if field
-      if (
-        this.emailDistributionList?.get('to')?.get('query')?.get('name')
-          ?.value ||
-        this.emailDistributionList?.get('to')?.get('resouce')?.value
-      ) {
-        if (this.emailService?.filterToEmails?.length === 0) {
-          resolve(false);
-        }
-      }
-      if (
-        this.emailService.toDLHasFilter &&
-        this.emailDistributionList?.get('to')?.get('query')?.get('name')?.value
-      ) {
-        const query = {
-          emailDistributionList: cloneDeep(
-            this.emailDistributionList.getRawValue()
-          ),
-        };
-        firstValueFrom(
-          this.http.post(
-            `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
-            query
-          )
-        )
-          .then((response: any) => {
-            this.loading = false;
-            this.emailService.filterToEmails =
-              response?.to?.length > 0 ? response?.to : [];
-            if (
-              this.emailService?.datasetsForm?.value?.emailDistributionList
-                ?.name?.length > 0 &&
-              !this.isNameDuplicate() &&
-              response?.to.length > 0
-            ) {
-              this.emailService.disableSaveAndProceed.next(false);
-            }
-            resolve(response?.to.length > 0);
-          })
-          .catch((error) => {
-            console.error(error);
-            // this.emailService.filterToEmails = [];
-            resolve(false);
-          });
-      } else {
-        resolve(
-          this.emailDistributionList.get('to').get('inputEmails')?.value
-            ?.length > 0
-        );
-      }
-      this.loading = false;
-      resolve(false);
-    });
-  }
-
-  /**
    * The distribution list should have at least
    * one To email address and name to proceed with next steps
    */
@@ -804,6 +739,12 @@ export class SelectDistributionComponent
     const filter = form?.get('query')?.get('filter') as FormGroup;
     const filters = filter.get('filters') as FormArray;
     filters.clear();
+
+    const csFilter = form
+      ?.get('commonServiceFilter')
+      ?.get('filter') as FormGroup;
+    const csFilters = csFilter.get('filters') as FormArray;
+    csFilters.clear();
 
     form?.get('resource')?.setValue('');
 
