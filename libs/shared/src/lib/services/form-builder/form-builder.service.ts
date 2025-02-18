@@ -8,6 +8,7 @@ import {
   settings,
   IPanel,
   DownloadFileEvent,
+  PanelModelBase,
   QuestionPanelDynamicModel as PanelDynamicT,
   QuestionMatrixDynamicModel as MatrixDynamicT,
 } from 'survey-core';
@@ -139,6 +140,29 @@ export const getVisibleQuestions = (questions: Question[]): Question[] => {
     // Include questions that are not read-only and are visible
     return !question.readOnly && question.isVisible ? [question] : [];
   });
+};
+
+/**
+ * Gets the outermost parent of a question before page level
+ *
+ * @param question Question to get the root parent of
+ * @returns The title and name of the root
+ */
+export const getRootParent = (
+  question: Question | PanelModelBase
+): {
+  title: string;
+  name: string;
+} => {
+  if (question.parent?.getType() === 'page') {
+    return { title: question.title, name: question.name };
+  }
+
+  if ('parentQuestion' in question && question.parentQuestion) {
+    return getRootParent(question.parentQuestion);
+  } else {
+    return getRootParent(question.parent as PanelModelBase);
+  }
 };
 
 /**
@@ -553,6 +577,13 @@ export class FormBuilderService {
         ) {
           question.currentIndex = question.visiblePanelCount - 1;
         }
+      });
+      survey.onFocusInQuestion.add((survey, e) => {
+        const { title: rootTitle, name: rootName } = getRootParent(e.question);
+        survey.setVariable('__FOCUSED__.name', e.question.name);
+        survey.setVariable('__FOCUSED__.title', e.question.title);
+        survey.setVariable('__FOCUSED__.root.name', rootName);
+        survey.setVariable('__FOCUSED__.root.title', rootTitle);
       });
     });
     survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));

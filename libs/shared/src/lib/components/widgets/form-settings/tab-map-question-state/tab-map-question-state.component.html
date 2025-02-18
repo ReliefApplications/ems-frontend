@@ -4,7 +4,7 @@
   *ngIf="loading"
 ></ui-spinner>
 
-<ng-container *ngIf="!loading && form; else emptyTmpl">
+<ng-container *ngIf="!loading && form">
   <div class="flex justify-between items-center wrap">
     <span class="flex gap-2 items-center">
       <h2 class="m-0">
@@ -30,7 +30,10 @@
     </ui-button>
   </div>
 
-  <div *ngIf="mappings" class="ml-2 mt-3">
+  <div
+    *ngIf="mappings && mappings.length > 0; else emptyTmpl"
+    class="ml-2 mt-3"
+  >
     <!-- Mappings -->
     <form [formGroup]="formGroup" class="flex">
       <div
@@ -55,8 +58,7 @@
 <!-- Empty template -->
 <ng-template #emptyTmpl>
   <shared-empty
-    *ngIf="!loading"
-    [title]="'components.role.summary.noForm' | translate"
+    [title]="'components.widget.form.noMappingsTooltip' | translate"
   >
   </shared-empty>
 </ng-template>

@@ -1039,10 +1039,11 @@
       </kendo-grid-column-group>
     </ng-container>
     <!-- Go to page ( navigateToPage action ) -->
+    <!-- TODO: Figure out proper solution for the width -->
     <kendo-grid-column
       *ngIf="actions.navigateToPage"
       [columnMenu]="false"
-      [width]="54"
+      [width]="actions.navigateSettings?.title ? 120 : 54"
       [resizable]="true"
       [title]="actions.navigateSettings?.title ?? ''"
       [sticky]="true"

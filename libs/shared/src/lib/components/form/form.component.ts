@@ -167,6 +167,7 @@ export class FormComponent
         };
 
         (question.survey as SurveyModel)?.onValueChanged.add(updateState);
+        updateState(null, { question, value: question.value });
       }
 
       if (rule.direction === 'stateToQuestion' || rule.direction === 'both') {

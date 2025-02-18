@@ -110,6 +110,7 @@ export class FormWidgetComponent
           const state = states.find((s) => s.id === stateID);
           const value = state?.value;
           if (!isNil(value) && value !== this.record?.id) {
+            this.loading = true;
             this.apollo
               .query<RecordQueryResponse>({
                 query: GET_RECORD_BY_ID,
@@ -118,6 +119,7 @@ export class FormWidgetComponent
                 },
               })
               .subscribe(({ data }) => {
+                this.loading = false;
                 if (data) {
                   this.record = data.record;
                 }

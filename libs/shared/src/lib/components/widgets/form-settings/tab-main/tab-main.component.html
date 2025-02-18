@@ -18,48 +18,111 @@
     </ui-graphql-select>
   </div>
 
-  <!-- re-populate just submitted records -->
-  <div class="mt-6" *ngIf="form">
-    <ui-toggle formControlName="autoPopulateOnSubmit">
-      <ng-container ngProjectAs="label">
-        {{ 'components.widget.form.autoPopulateOnSubmit.label' | translate }}
+  <div class="flex flex-wrap items-start" *ngIf="form">
+    <!-- re-populate just submitted records -->
+    <div class="flex-1 mr-4 min-w-max">
+      <ui-toggle formControlName="autoPopulateOnSubmit">
+        <ng-container ngProjectAs="label">
+          {{ 'components.widget.form.autoPopulateOnSubmit.label' | translate }}
+          <ui-icon
+            class="ml-1 cursor-help self-center"
+            icon="info_outline"
+            variant="grey"
+            [size]="18"
+            [uiTooltip]="
+              'components.widget.form.autoPopulateOnSubmit.tooltip' | translate
+            "
+          ></ui-icon>
+        </ng-container>
+      </ui-toggle>
+    </div>
+
+    <!-- omit questions -->
+    <div
+      uiFormFieldDirective
+      class="flex-1"
+      *ngIf="form && formGroup.get('autoPopulateOnSubmit')?.value === true"
+    >
+      <label class="flex items-center">
+        {{
+          'components.widget.form.autoPopulateOnSubmit.omit.label' | translate
+        }}
         <ui-icon
           class="ml-1 cursor-help self-center"
           icon="info_outline"
           variant="grey"
           [size]="18"
           [uiTooltip]="
-            'components.widget.form.autoPopulateOnSubmit.tooltip' | translate
+            'components.widget.form.autoPopulateOnSubmit.omit.tooltip'
+              | translate
           "
         ></ui-icon>
-      </ng-container>
-    </ui-toggle>
+      </label>
+
+      <ui-select-menu
+        formControlName="autoPopulateOmitQuestions"
+        [multiselect]="true"
+      >
+        <ui-select-option
+          *ngFor="let field of form?.fields"
+          [value]="field.name"
+        >
+          {{ field.name }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
   </div>
 
   <div
-    class="mt-2"
-    *ngIf="form && formGroup.get('autoPopulateOnSubmit')?.value === true"
+    class="flex flex-wrap items-start"
+    formGroupName="updateRecord"
+    *ngIf="form"
   >
-    <label>
-      {{ 'components.widget.form.autoPopulateOnSubmit.omit.label' | translate }}
-      <ui-icon
-        class="ml-1 cursor-help self-center"
-        icon="info_outline"
-        variant="grey"
-        [size]="18"
-        [uiTooltip]="
-          'components.widget.form.autoPopulateOnSubmit.omit.tooltip' | translate
-        "
-      ></ui-icon>
-    </label>
+    <!-- update record with id -->
+    <div class="flex-1 mr-4 min-w-max">
+      <ui-toggle formControlName="enabled">
+        <ng-container ngProjectAs="label">
+          {{ 'components.widget.form.updateRecord.title' | translate }}
+          <ui-icon
+            class="ml-1 cursor-help self-center"
+            icon="info_outline"
+            variant="grey"
+            [size]="18"
+            [uiTooltip]="
+              'components.widget.form.updateRecord.tooltip' | translate
+            "
+          ></ui-icon>
+        </ng-container>
+      </ui-toggle>
+    </div>
 
-    <ui-select-menu
-      formControlName="autoPopulateOmitQuestions"
-      [multiselect]="true"
+    <!-- dropdown with states-->
+    <div
+      uiFormFieldDirective
+      class="flex-1"
+      *ngIf="form && formGroup.get('updateRecord.enabled')?.value === true"
     >
-      <ui-select-option *ngFor="let field of form?.fields" [value]="field.name">
-        {{ field.name }}
-      </ui-select-option>
-    </ui-select-menu>
+      <label class="flex items-center">
+        {{ 'components.widget.form.updateRecord.title' | translate }}
+        <ui-icon
+          class="ml-1 cursor-help self-center"
+          icon="info_outline"
+          variant="grey"
+          [size]="18"
+          [uiTooltip]="
+            'components.widget.form.updateRecord.tooltip' | translate
+          "
+        ></ui-icon>
+      </label>
+
+      <ui-select-menu formControlName="state">
+        <ui-select-option
+          *ngFor="let field of dashboardStates | async"
+          [value]="field.value"
+        >
+          {{ field.label }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
   </div>
 </div>

@@ -17,6 +17,7 @@ import { EDIT_DASHBOARD, UPDATE_PAGE_CONTEXT } from './graphql/mutations';
 import { GraphQLError } from 'graphql';
 import { cloneDeep, get, isEqual } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import { ActivatedRoute } from '@angular/router';
 
 /**
  * Shared dashboard service. Handles dashboard events.
@@ -47,12 +48,15 @@ export class DashboardService {
    * @param apollo Apollo client
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param router Angular router
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    // router to get the query parameters
+    private router: ActivatedRoute
   ) {
     this.availableWidgets = WIDGET_TYPES.filter((widget) =>
       get(environment, 'availableWidgets', []).includes(widget.widgetType)
@@ -66,8 +70,18 @@ export class DashboardService {
    */
   openDashboard(dashboard: Dashboard): void {
     this.dashboard = dashboard;
+
+    // Initialize any states coming from the dashboard or query parameters
+    const states = dashboard.states ?? [];
+    const params = this.router.snapshot.queryParams;
+    states.forEach((state) => {
+      if (params[state.name]) {
+        state.value = `${params[state.name]}`;
+      }
+    });
+
     // Load dashboard states, if any
-    this.states.next(dashboard.states ?? []);
+    this.states.next(states);
   }
 
   /**
