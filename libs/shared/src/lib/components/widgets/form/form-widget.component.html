@@ -4,6 +4,11 @@
   }}</span>
 </ng-template>
 
+<!-- if loading, show loading spinner -->
+<ui-spinner
+  class="flex justify-center items-center !h-full"
+  *ngIf="loading"
+></ui-spinner>
 <ng-container *ngIf="!loading && form">
   <shared-form
     [form]="form"

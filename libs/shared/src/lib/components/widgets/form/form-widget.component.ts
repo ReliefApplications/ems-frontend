@@ -108,6 +108,7 @@ export class FormWidgetComponent
         .subscribe((states) => {
           const state = states.find((s) => s.id === stateID);
           if (state && state.value) {
+            this.loading = true;
             this.apollo
               .query<RecordQueryResponse>({
                 query: GET_RECORD_BY_ID,
@@ -116,6 +117,7 @@ export class FormWidgetComponent
                 },
               })
               .subscribe(({ data }) => {
+                this.loading = false;
                 if (data) {
                   this.record = data.record;
                 }
