@@ -415,7 +415,10 @@ export class FormBuilderService {
     const showUploadButtonTypes = ['paneldynamic', 'matrixdynamic'];
     survey.onAfterRenderQuestion.add((_, options) => {
       const questionType = options.question.getType();
-      if (!showUploadButtonTypes.includes(questionType)) {
+      if (
+        !showUploadButtonTypes.includes(questionType) ||
+        !options.question.allowImport
+      ) {
         return;
       }
 
