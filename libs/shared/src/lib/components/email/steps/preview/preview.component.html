@@ -239,25 +239,3 @@
 <div class="overflow-y-scroll">
   <div class="h-fit mb-3" #emailHTMLRef id="emailContainer"></div>
 </div>
-
-       <!-- Attachment -->
-<div *ngIf="this.emailService.datasetsForm?.getRawValue()?.attachments?.files?.length > 0" class="mt-4">
-  <h2 class="text-2xl">{{ 'components.email.preview.attachment' | translate }}</h2>
-
-  <div *ngIf="attachments?.length > 0">
-    <div id="attachmentHtml" #attachmentHtmlRef class="flex flex-col gap-2 mt-4">
-      <div *ngFor="let attachment of attachments">
-        <ui-chip 
-          variant="primary"
-          (click)="openAttachment(attachment.url)"
-          class="cursor-pointer text-lg px-6 py-4 rounded-lg hover:bg-gray-100">
-          {{ attachment.fileName }}
-        </ui-chip>
-      </div>
-    </div>
-  </div>
-  
-  <div *ngIf="attachments?.length === 0" class="text-gray-500 mt-5 text-xl">
-    {{ 'components.email.preview.noAttachment' | translate }}
-  </div>
-</div>

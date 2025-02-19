@@ -8,7 +8,6 @@ import {
   SimpleChanges,
   OnInit,
   Input,
-  Inject,
 } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { EmailService } from '../../email.service';
@@ -86,14 +85,10 @@ export class PreviewComponent
   @ViewChild('subjectHtmlRef') subjectHtmlRef: any;
   /** Refernce to Subject */
   @ViewChild('emailHTMLRef') emailHTMLRef: any;
-  /** Reference to Attachment */
-  @ViewChild('attachmentHtmlRef') attachmentHtmlRef: any;
   /** data set*/
   @Input() dataset!: any[];
   /** previewUrl for cehcking the preview Type */
   previewUrl = 'email';
-  /** EmailNotification Attachments */
-  attachments: any = [];
 
   /**
    * Expand see more email list dropdown for Subscription List.
@@ -131,15 +126,13 @@ export class PreviewComponent
    * @param sanitizer - The sanitizer for sanitizing HTML.
    * @param http - The http client for making HTTP requests.
    * @param restService - The rest service for making REST requests.
-   *  @param environment  Environment
    */
   constructor(
     private apollo: Apollo,
     public emailService: EmailService,
     private sanitizer: DomSanitizer,
     private http: HttpClient,
-    private restService: RestService,
-    @Inject('environment') private environment: any
+    private restService: RestService
   ) {
     super();
   }
@@ -412,35 +405,6 @@ export class PreviewComponent
           if (this.subjectHtmlRef?.nativeElement) {
             this.subjectHtmlRef.nativeElement.innerHTML = this.subjectString;
           }
-          if (this.attachmentHtmlRef?.nativeElement) {
-            const attachmentUrls =
-              this.emailService.finalEmailPreview.attachments.files;
-
-            if (Array.isArray(attachmentUrls) && attachmentUrls.length > 0) {
-              const attachmentLinks = attachmentUrls
-                .map((url) => `<a href="${url}" target="_blank">${url}</a>`)
-                .join('<br>');
-
-              this.attachmentHtmlRef.nativeElement.innerHTML = attachmentLinks;
-            } else {
-              this.attachmentHtmlRef.nativeElement.innerHTML =
-                'No attachments available.';
-            }
-          }
-
-          // Store the attachment details (file names and URLs)
-          const attachmentUrls =
-            this.emailService.finalEmailPreview.attachments.files.map(
-              (file: any) => {
-                return {
-                  fileName: file.fileName,
-                  url: `${this.environment.csDocUrl}/download.html?driveid=${file.driveId}&itemid=${file.itemId}`,
-                };
-              }
-            );
-
-          // Store the attachment data in a variable for easy access
-          this.attachments = attachmentUrls;
           this.emailService.loading = false; // Hide spinner
         },
         (error: string) => {
@@ -449,15 +413,6 @@ export class PreviewComponent
         }
       );
     }
-  }
-
-  /**
-   * Open the URL in a new tab
-   *
-   * @param url url
-   */
-  openAttachment(url: string): void {
-    window.open(url, '_blank');
   }
 
   /**
