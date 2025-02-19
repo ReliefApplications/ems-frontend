@@ -69,7 +69,7 @@ export class EmailAttachmentComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadProperties();
+    // this.loadProperties(); // todo: enable back when properties should bet set for links
     this.propertySelectionForm = this.fb.group({
       selectedOption: [''],
     });
