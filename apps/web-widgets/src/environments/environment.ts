@@ -29,4 +29,5 @@ export const environment: Environment = {
   theme,
   tinymceBaseUrl: '',
   i18nUrl: '',
+  csDocUrl: 'https://hems-dev.who.int/csdocui',
 };

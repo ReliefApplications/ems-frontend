@@ -31,6 +31,7 @@ export const ADD_CONFIGURATION = gql`
       modifiedAt
       status
       recipientsType
+      attachments
     }
   }
 `;
