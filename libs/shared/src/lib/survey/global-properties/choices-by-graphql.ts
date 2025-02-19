@@ -9,12 +9,13 @@ import { CustomPropertyGridComponentTypes } from '../components/utils/components
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
 import { HttpClient } from '@angular/common/http';
 import get from 'lodash/get';
-import { Subject, firstValueFrom, takeUntil } from 'rxjs';
+import { Observable, Subject, firstValueFrom, takeUntil } from 'rxjs';
 import jsonpath from 'jsonpath';
 import graphQLVariables from './graphql-variables';
 import { isArray, isEqual, isNil } from 'lodash';
 import transformGraphQLVariables from '../../utils/reference-data/transform-graphql-variables.util';
 import { Injector } from '@angular/core';
+import { Apollo, gql } from 'apollo-angular';
 
 /** Question Settings category */
 const category = 'Choices by GraphQL';
@@ -140,6 +141,9 @@ export const init = (): void => {
  */
 export const render = (questionElement: Question, injector: Injector): void => {
   const http = injector.get(HttpClient);
+  const apollo = injector.get(Apollo);
+  const environment = injector.get('environment');
+  const csApiUrl = environment.csApiUrl;
 
   // Create a new subject in the question
   // Subject will close the http post request when choices are fetched, to prevent wrong choices to be visible
@@ -156,18 +160,42 @@ export const render = (questionElement: Question, injector: Injector): void => {
       }
       const valueName = get(questionElement, 'gqlValueName');
       const titleName = get(questionElement, 'gqlTitleName');
-      const variables = graphQLVariables(questionElement, 'gqlVariableMapping');
-      // Transform variables to make sure JSON can be passed
-      transformGraphQLVariables(get(questionElement, 'gqlQuery'), variables);
-      firstValueFrom(
-        http
-          .post(get(questionElement, 'gqlUrl'), {
-            query: get(questionElement, 'gqlQuery'),
+
+      // Build & send request
+      const sendRequest = (): Promise<any> => {
+        const url = get(questionElement, 'gqlUrl');
+        const query = get(questionElement, 'gqlQuery');
+        const variables = graphQLVariables(
+          questionElement,
+          'gqlVariableMapping'
+        );
+        // Transform variables to make sure JSON can be passed
+        transformGraphQLVariables(get(questionElement, 'gqlQuery'), variables);
+
+        let observable: Observable<any>;
+
+        if (url.startsWith(csApiUrl)) {
+          // Common Services API call
+          const csApolloClient = apollo.use('csDocApi');
+          observable = csApolloClient.query({
+            query: gql`
+              ${query}
+            `,
             variables,
-          })
-          // Cancel the request when refreshing
-          .pipe(takeUntil(questionElement.refresh$))
-      )
+          });
+        } else {
+          // other API call
+          observable = http.post(url, {
+            query,
+            variables,
+          });
+        }
+        return firstValueFrom(
+          observable.pipe(takeUntil(questionElement.refresh$))
+        );
+      };
+
+      sendRequest()
         .then((result) => {
           questionElement.setPropertyValue(
             '_graphQLVariables',
