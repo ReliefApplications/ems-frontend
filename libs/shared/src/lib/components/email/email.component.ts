@@ -735,7 +735,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     // Execute all queries in parallel and update metadata loading status when done
     Promise.all(promises).finally(() => {
       if (isSendEmail) {
-        // Show File upload when Sent email is slected
+        // Show File upload when Sent email is selected
         this.emailService.showFileUpload = this.emailService.isDirectSend;
         // on send from EN list - navigate them to Layout screen
         this.emailService.stepperStep = 4;

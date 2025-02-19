@@ -103,14 +103,15 @@ export class EmailAttachmentComponent implements OnInit {
    * @returns {Promise<any>} Resolves with drive and item IDs or rejects with an error.
    */
   public async onFileSelected(event: Event): Promise<any> {
-    if (this.emailService.isQuickAction) {
-      this.emailService.disableNextActionBtn = true;
-    } else {
-      this.emailService.disableSaveAndProceed.next(true);
-    }
     const input = event.target as HTMLInputElement;
 
     if (input.files && input.files.length > 0) {
+      if (this.emailService.isQuickAction) {
+        this.emailService.disableNextActionBtn = true;
+      } else {
+        this.emailService.disableSaveAndProceed.next(true);
+      }
+
       const files = Array.from(input.files);
 
       const isValid = this.validateFiles(files);
