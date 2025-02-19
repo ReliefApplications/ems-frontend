@@ -1,3 +1,10 @@
+## [2.17.1-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0...v2.17.1-rc.1) (2025-02-19)
+
+
+### Bug Fixes
+
+* allow files to be attached to emails ([#2764](https://github.com/ReliefApplications/ems-frontend/issues/2764)) ([60709c5](https://github.com/ReliefApplications/ems-frontend/commit/60709c51b74e834d3377511997890ee93e85a927)), closes [AB#107812](https://github.com/AB/issues/107812)
+
 # [2.17.0-rc.5](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0-rc.4...v2.17.0-rc.5) (2025-02-14)
 
 
