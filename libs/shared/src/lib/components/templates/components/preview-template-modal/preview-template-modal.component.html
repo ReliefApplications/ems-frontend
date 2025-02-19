@@ -43,7 +43,7 @@
         *ngIf="currentStep !== 1"
         type="submit"
         category="secondary"
-        [disabled]="disableActionButton || emailService.disableNextActionBtn"
+        [disabled]="emailService.disableNextActionBtn"
         (click)="next()"
       >
         {{ 'common.next' | translate }}

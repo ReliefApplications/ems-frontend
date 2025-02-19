@@ -155,9 +155,9 @@ export class PreviewComponent
     });
 
     if (this.emailService.isQuickAction) {
-      this.distributionListTo = this.emailService.emailDistributionList.to;
-      this.distributionListCc = this.emailService.emailDistributionList.cc;
-      this.distributionListBcc = this.emailService.emailDistributionList.bcc;
+      this.distributionListTo = this.emailService.emailDistributionList?.to;
+      this.distributionListCc = this.emailService.emailDistributionList?.cc;
+      this.distributionListBcc = this.emailService.emailDistributionList?.bcc;
     }
 
     this.query = this.emailService.datasetsForm.value;
@@ -289,6 +289,15 @@ export class PreviewComponent
                 )
               ),
             ];
+            this.distributionListTo =
+              this.distributionListTo?.filter((x: any) => x !== undefined) ??
+              [];
+            this.distributionListCc =
+              this.distributionListCc?.filter((x: any) => x !== undefined) ??
+              [];
+            this.distributionListBcc =
+              this.distributionListBcc?.filter((x: any) => x !== undefined) ??
+              [];
             this.emailService.emailDistributionList.to =
               this.distributionListTo;
             this.emailService.emailDistributionList.cc =

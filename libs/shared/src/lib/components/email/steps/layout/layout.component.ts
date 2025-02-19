@@ -278,7 +278,6 @@ export class LayoutComponent
   populateDLForm() {
     if (this.emailService.isQuickAction) {
       const { to, cc, bcc } = this.emailService.emailDistributionList; //this.emailService.customLayoutDL;
-
       const uniqueTo: any = [...new Set(to?.inputEmails ?? to)];
       const uniqueCc: any = [...new Set(cc?.inputEmails ?? cc)];
       const uniqueBcc: any = [...new Set(bcc?.inputEmails ?? bcc)];
@@ -389,7 +388,8 @@ export class LayoutComponent
       this.emailService.customTemplateNames.includes(
         this.emailService.layoutTitle.trim().toLowerCase()
       ) &&
-      !this.emailService.isCustomTemplateEdit
+      !this.emailService.isCustomTemplateEdit &&
+      this.emailService.showFileUpload
     ) {
       checkDuplicateName = true;
     }

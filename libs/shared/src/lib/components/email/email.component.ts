@@ -138,6 +138,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.emailService.showFileUpload = false;
     this.emailService.isQuickAction = false;
     this.applicationService.application$.subscribe((res: any) => {
       this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
@@ -229,6 +230,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param isNew value of if the user is creating a new email notification.
    */
   toggle(isNew?: boolean) {
+    this.emailService.showFileUpload = false;
     this.emailService.tabs = [
       {
         title: `Block 1`,
