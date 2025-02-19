@@ -275,7 +275,8 @@
 					"sizeValidation": "******",
 					"title": "******",
 					"uploadFail": "****** {{file.name}}",
-					"uploadFile": "******"
+					"uploadFile": "******",
+					"uploadFileNote": "******"
 				},
 				"banner": {
 					"image": "******",

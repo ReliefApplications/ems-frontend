@@ -37,7 +37,7 @@ export class EmailAttachmentComponent implements OnInit {
   /** Track if file is selected */
   public isFileSelected = false;
   /** Determines file to be sent as  attachment or URL */
-  public sendAsAttachment: boolean | undefined;
+  public sendAsAttachment: boolean | undefined = true;
   /** List of selected file */
   public selectedFiles: string[] = [];
   /** Form group for property selection */
@@ -162,8 +162,7 @@ export class EmailAttachmentComponent implements OnInit {
         // If send as file
         if (this.sendAsAttachment) {
           this.bodyFilter = {
-            DocumentType: [50],
-            InformationConfidentiality: [2],
+            DocumentType: [51],
           };
         }
         const body = {

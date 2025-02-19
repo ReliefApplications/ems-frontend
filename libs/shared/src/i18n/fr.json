@@ -275,7 +275,8 @@
 					"sizeValidation": "dépasse la limite de taille de fichier de 7 Mo",
 					"title": "Pièces jointes",
 					"uploadFail": "Failed to upload file {{file.name}}",
-					"uploadFile": "Télécharger un fichier"
+					"uploadFile": "Télécharger un fichier",
+					"uploadFileNote": "Remarque : Vous pouvez télécharger un maximum de 5 fichiers, la taille de chaque fichier ne dépassant pas 7 Mo."
 				},
 				"banner": {
 					"image": "Bannière Image",

@@ -219,6 +219,8 @@ export class EmailService {
   public commonServiceFields = commonServiceFields;
   /** User table fields */
   userTableFields: string[] = [];
+  /** Show File Upload */
+  public showFileUpload = false;
 
   /**
    * Generates new dataset group.

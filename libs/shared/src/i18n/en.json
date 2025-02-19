@@ -275,7 +275,8 @@
 					"sizeValidation": "File exceeds the size limit of 7 MB",
 					"title": "Attachments",
 					"uploadFail": "Failed to upload file {{file.name}}",
-					"uploadFile": "Upload file"
+					"uploadFile": "Upload file",
+					"uploadFileNote": "Please note: You can upload a maximum of 5 files, with each file not exceeding 7MB in size."
 				},
 				"banner": {
 					"image": "Banner image",
