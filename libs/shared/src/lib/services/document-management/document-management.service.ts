@@ -366,7 +366,7 @@ export class DocumentManagementService {
    *
    * @returns Query to fetch default drive id
    */
-  private getDriveId() {
+  public getDriveId() {
     const apolloClient = this.apollo.use('csDocApi');
     return firstValueFrom(
       apolloClient.query<DriveQueryResponse>({

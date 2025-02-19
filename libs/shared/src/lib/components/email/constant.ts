@@ -27,11 +27,6 @@ export const commonServiceFields = [
   { key: 'InternalExternal', label: 'InternalExternal' },
 ];
 
-/**
- * proxy Graphql Path
- */
-export const proxyGraphqlPath = 'CS_DEV/graphql/';
-
 /** Maximum number of files allowed */
 export const MAX_FILE_COUNT = 5;
 

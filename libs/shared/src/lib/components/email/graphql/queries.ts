@@ -775,12 +775,3 @@ export const GET_CS_USER_FIELDS = `
     }
   }
 `;
-
-/** Get DriveID */
-export const GET_DRIVE_ID = `
-query {
-  storagedrive(drivetype: 2) {
-    driveid
-  }
-}
-`;

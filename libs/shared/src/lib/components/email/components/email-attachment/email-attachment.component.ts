@@ -10,14 +10,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { ApiProxyService } from '../../../../services/api-proxy/api-proxy.service';
 import { HttpHeaders } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
-import { GET_DRIVE_ID } from '../../graphql/queries';
 import { set } from 'lodash';
 import {
   MAX_FILE_COUNT,
   MAX_FILE_SIZE,
-  proxyGraphqlPath,
   REQUIRED_FILTER_KEYS,
 } from '../../constant';
+import { Apollo, gql } from 'apollo-angular';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Attach files to email settings component.
@@ -53,6 +53,7 @@ export class EmailAttachmentComponent implements OnInit {
    * @param translate i18n translate service
    * @param apiProxy Shared API proxy service
    * @param restService Shared REST service
+   * @param apollo Apollo service
    * @param environment Environment
    */
   constructor(
@@ -63,6 +64,7 @@ export class EmailAttachmentComponent implements OnInit {
     public translate: TranslateService,
     public apiProxy: ApiProxyService,
     public restService: RestService,
+    private apollo: Apollo,
     @Inject('environment') private environment: any
   ) {}
 
@@ -95,37 +97,6 @@ export class EmailAttachmentComponent implements OnInit {
   }
 
   /**
-   * Get default drive id
-   *
-   * @returns drive id
-   */
-  public async getDriveId(): Promise<any> {
-    const url = this.apiProxy.baseUrl + proxyGraphqlPath;
-    const body = {
-      query: GET_DRIVE_ID,
-    };
-    const options = {
-      headers: new HttpHeaders(),
-    };
-    try {
-      const response: any = await this.apiProxy.buildPostRequest(
-        url,
-        body,
-        options
-      );
-      const driveId = response?.data?.storagedrive?.driveid;
-      if (driveId) {
-        return driveId;
-      } else {
-        throw new Error('Drive ID not found');
-      }
-    } catch (error) {
-      console.error('Error fetching drive ID:', error);
-      throw error;
-    }
-  }
-
-  /**
    * Handles file selection and uploads the file to the drive.
    *
    * @param event - The file input change event.
@@ -147,7 +118,8 @@ export class EmailAttachmentComponent implements OnInit {
         console.error('Validation failed: Check file count and size.');
         return;
       }
-      const driveId = await this.getDriveId();
+      await this.docManagement.getDriveId();
+      const driveId = this.docManagement.defaultDriveId;
       const token = localStorage.getItem('access_token');
       const headers = new HttpHeaders({
         Authorization: `Bearer ${token}`,
@@ -255,7 +227,8 @@ export class EmailAttachmentComponent implements OnInit {
    */
   async loadProperties() {
     for (const property of this.properties) {
-      const GET_PROPERTY_VALUES = `
+      const apolloClient = this.apollo.use('csDocApi');
+      const query = gql`
         {
           ${property.value}(sortBy: { field: "name", direction: "asc" }) {
             id
@@ -264,14 +237,10 @@ export class EmailAttachmentComponent implements OnInit {
         }
       `;
 
-      const url = this.apiProxy.baseUrl + proxyGraphqlPath;
-      const body = { query: GET_PROPERTY_VALUES };
-
       try {
-        const response: any = await this.apiProxy.buildPostRequest(url, body, {
-          headers: new HttpHeaders(),
-        });
-
+        const response: any = await firstValueFrom(
+          apolloClient.query<any>({ query })
+        );
         const data = response?.data?.[property.value] || [];
         this.propertyValues.set(property.value, data);
       } catch (error) {
