@@ -14,6 +14,7 @@ import jsonpath from 'jsonpath';
 import graphQLVariables from './graphql-variables';
 import { isArray, isEqual, isNil } from 'lodash';
 import transformGraphQLVariables from '../../utils/reference-data/transform-graphql-variables.util';
+import { Injector } from '@angular/core';
 
 /** Question Settings category */
 const category = 'Choices by GraphQL';
@@ -137,9 +138,11 @@ export const init = (): void => {
  * Render the custom properties
  *
  * @param questionElement Current question
- * @param http Http client
+ * @param injector Angular injector
  */
-export const render = (questionElement: Question, http: HttpClient): void => {
+export const render = (questionElement: Question, injector: Injector): void => {
+  const http = injector.get(HttpClient);
+
   // Create a new subject in the question
   // Subject will close the http post request when choices are fetched, to prevent wrong choices to be visible
   if (!questionElement.refresh$) {

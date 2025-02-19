@@ -195,6 +195,7 @@ export class CsDocsPropertiesDropdownComponent
     ) {
       this.loading = true;
       this.changeDetectorRef.detectChanges();
+      console.log('sending query...');
       this.csDocsApolloClient
         .query<PropertyQueryResponse>({
           query: this.isOccurrenceRelated

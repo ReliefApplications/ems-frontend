@@ -358,6 +358,7 @@ export class DocumentManagementService {
     this.apollo.createNamed('csDocApi', {
       cache: new InMemoryCache(),
       link,
+      // queryDeduplication: true,
     });
   }
 
@@ -404,6 +405,7 @@ export class DocumentManagementService {
    * @returns GraphQL query
    */
   public filterQuery(model: string, filterField: string, value: any[]) {
+    console.log('will send query...');
     const apolloClient = this.apollo.use('csDocApi');
     const query = gql`
     {
