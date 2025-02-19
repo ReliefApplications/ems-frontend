@@ -15,9 +15,6 @@ import {
   OccurrenceQueryResponse,
 } from './graphql/queries';
 import { firstValueFrom } from 'rxjs';
-import { InMemoryCache } from '@apollo/client';
-import { HttpLink } from 'apollo-angular/http';
-import { setContext } from '@apollo/client/link/context';
 
 /**
  * Property query response type
@@ -96,7 +93,6 @@ export class DocumentManagementService {
    * @param translate Angular translate service
    * @param restService Shared rest service
    * @param apollo Apollo service
-   * @param httpLink Apollo http link
    * @param document Document
    * @param environment Environment
    */
@@ -105,12 +101,9 @@ export class DocumentManagementService {
     private translate: TranslateService,
     private restService: RestService,
     private apollo: Apollo,
-    private httpLink: HttpLink,
     @Inject(DOCUMENT) private document: Document,
     @Inject('environment') private environment: any
-  ) {
-    this.createCSApolloClient();
-  }
+  ) {}
 
   /**
    * Set up a snackbar element with the given message and duration
@@ -331,44 +324,12 @@ export class DocumentManagementService {
   }
 
   /**
-   * Create Apollo Client to contact CS API.
-   */
-  private createCSApolloClient() {
-    // Remove client if previously set
-    this.apollo.removeClient('csDocApi');
-
-    const httpLink = this.httpLink.create({
-      uri: `${this.environment.csApiUrl}/graphql`,
-    });
-
-    const authLink = setContext(() => {
-      const token = localStorage.getItem('access_token');
-      return {
-        headers: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          Accept: 'application/json; charset=utf-8',
-          UserTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          Authorization: token ? `Bearer ${token}` : '',
-        },
-      };
-    });
-
-    const link = authLink.concat(httpLink);
-
-    this.apollo.createNamed('csDocApi', {
-      cache: new InMemoryCache(),
-      link,
-      // queryDeduplication: true,
-    });
-  }
-
-  /**
    * Get default drive id
    *
    * @returns Query to fetch default drive id
    */
   private getDriveId() {
-    const apolloClient = this.apollo.use('csDocApi');
+    const apolloClient = this.apollo.use('csClient');
     return firstValueFrom(
       apolloClient.query<DriveQueryResponse>({
         query: GET_DRIVE_ID,
@@ -385,7 +346,7 @@ export class DocumentManagementService {
    * @returns Query to fetch occurrence by id
    */
   private getOccurrenceById(id: string) {
-    const apolloClient = this.apollo.use('csDocApi');
+    const apolloClient = this.apollo.use('csClient');
     return firstValueFrom(
       apolloClient.query<OccurrenceQueryResponse>({
         query: GET_OCCURRENCE_BY_ID,
@@ -405,7 +366,7 @@ export class DocumentManagementService {
    * @returns GraphQL query
    */
   public filterQuery(model: string, filterField: string, value: any[]) {
-    const apolloClient = this.apollo.use('csDocApi');
+    const apolloClient = this.apollo.use('csClient');
     const query = gql`
     {
       ${model}(filter: {

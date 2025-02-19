@@ -176,7 +176,7 @@ export const render = (questionElement: Question, injector: Injector): void => {
 
         if (url.startsWith(csApiUrl)) {
           // Common Services API call
-          const csApolloClient = apollo.use('csDocApi');
+          const csApolloClient = apollo.use('csClient');
           observable = csApolloClient.query({
             query: gql`
               ${query}
