@@ -29,4 +29,5 @@ export interface Environment {
   i18nUrl: string;
   admin0Url?: string;
   csApiUrl?: string;
+  csDocUrl?: string;
 }

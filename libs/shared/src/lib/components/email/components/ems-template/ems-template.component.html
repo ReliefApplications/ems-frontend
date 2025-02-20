@@ -80,7 +80,10 @@
         {{ 'common.save' | translate }}
       </ui-button>
       <!-- Save & send button -->
+      <!-- On email notification creation and edit - Hide Send email in step 6 -->
+      <!-- Show this only for Send email -->
       <ui-button
+        *ngIf="emailService.showFileUpload"
         type="button"
         category="secondary"
         variant="primary"

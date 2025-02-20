@@ -21,6 +21,7 @@ import {
   ChipModule,
   ErrorMessageModule,
   ExpansionPanelModule,
+  RadioModule,
 } from '@oort-front/ui';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
@@ -49,6 +50,7 @@ import { EmptyModule } from '../ui/empty/empty.module';
 import { FilterModule } from '../filter/filter.module';
 import { ResourceSelectComponent } from '../controls/public-api';
 import { CustomTemplateComponent } from './components/custom-templates/custom-template.component';
+import { EmailAttachmentComponent } from './components/email-attachment/email-attachment.component';
 
 /**
  * Email module.
@@ -67,8 +69,10 @@ import { CustomTemplateComponent } from './components/custom-templates/custom-te
     DatasetFilterComponent,
     EmsTemplateComponent,
     CustomTemplateComponent,
+    EmailAttachmentComponent,
   ],
   imports: [
+    RadioModule,
     FormsModule,
     ChipModule,
     ReactiveFormsModule,
@@ -109,6 +113,11 @@ import { CustomTemplateComponent } from './components/custom-templates/custom-te
     ExpansionPanelModule,
   ],
   schemas: [NO_ERRORS_SCHEMA],
-  exports: [CustomTemplateComponent, PreviewComponent, LayoutComponent],
+  exports: [
+    CustomTemplateComponent,
+    PreviewComponent,
+    LayoutComponent,
+    EmailAttachmentComponent,
+  ],
 })
 export class EmailModule {}

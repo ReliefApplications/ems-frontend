@@ -219,6 +219,8 @@ export class EmailService {
   public commonServiceFields = commonServiceFields;
   /** User table fields */
   userTableFields: string[] = [];
+  /** Show File Upload */
+  public showFileUpload = false;
 
   /**
    * Generates new dataset group.
@@ -759,6 +761,10 @@ export class EmailService {
       restrictSubscription: false,
       emailLayout: this.emailLayout,
       schedule: [''],
+      attachments: this.formBuilder.group({
+        files: [],
+        sendAsAttachment: null,
+      }),
     });
   }
 

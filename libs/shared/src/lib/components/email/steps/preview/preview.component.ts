@@ -154,21 +154,10 @@ export class PreviewComponent
       }
     });
 
-    if (
-      this.emailService.isQuickAction &&
-      this.emailService.quickEmailDLQuery?.length === 0
-    ) {
-      const toData = this.emailService.emailDistributionList?.to;
-      const ccData = this.emailService.emailDistributionList?.cc;
-      const bccData = this.emailService.emailDistributionList?.bcc;
-      this.emailService.quickEmailDLQuery = { to: [], cc: [], bcc: [] };
-      this.emailService.quickEmailDLQuery.to = cloneDeep(toData);
-      this.emailService.quickEmailDLQuery.cc = cloneDeep(ccData);
-      this.emailService.quickEmailDLQuery.bcc = cloneDeep(bccData);
-    }
-
     if (this.emailService.isQuickAction) {
-      this.populateDLForm();
+      this.distributionListTo = this.emailService.emailDistributionList?.to;
+      this.distributionListCc = this.emailService.emailDistributionList?.cc;
+      this.distributionListBcc = this.emailService.emailDistributionList?.bcc;
     }
 
     this.query = this.emailService.datasetsForm.value;
@@ -191,51 +180,6 @@ export class PreviewComponent
     }
     this.loadDistributionList();
     this.loadFinalEmailPreview();
-  }
-
-  /**
-   * Populates dataset Form using custom template DL object
-   */
-  populateDLForm() {
-    if (this.emailService.isQuickAction) {
-      const { to, cc, bcc } = this.emailService.emailDistributionList; //this.emailService.customLayoutDL;
-
-      const uniqueTo: any = [...new Set(to?.inputEmails ?? to)];
-      const uniqueCc: any = [...new Set(cc?.inputEmails ?? cc)];
-      const uniqueBcc: any = [...new Set(bcc?.inputEmails ?? bcc)];
-
-      this.emailService.emailDistributionList.to = uniqueTo;
-      this.emailService.emailDistributionList.cc = uniqueCc;
-      this.emailService.emailDistributionList.bcc = uniqueBcc;
-
-      this.distributionListTo = this.emailService.emailDistributionList.to;
-      this.distributionListCc = this.emailService.emailDistributionList.cc;
-      this.distributionListBcc = this.emailService.emailDistributionList.bcc;
-
-      this.emailService.populateEmails(
-        this.emailService.emailDistributionList.to,
-        this.emailService?.datasetsForm
-          ?.get('emailDistributionList')
-          ?.get('to')
-          ?.get('inputEmails') as FormArray
-      );
-
-      this.emailService.populateEmails(
-        this.emailService.emailDistributionList.cc,
-        this.emailService?.datasetsForm
-          ?.get('emailDistributionList')
-          ?.get('cc')
-          ?.get('inputEmails') as FormArray
-      );
-
-      this.emailService.populateEmails(
-        this.emailService.emailDistributionList.bcc,
-        this.emailService?.datasetsForm
-          ?.get('emailDistributionList')
-          ?.get('bcc')
-          ?.get('inputEmails') as FormArray
-      );
-    }
   }
 
   /**
@@ -345,6 +289,15 @@ export class PreviewComponent
                 )
               ),
             ];
+            this.distributionListTo =
+              this.distributionListTo?.filter((x: any) => x !== undefined) ??
+              [];
+            this.distributionListCc =
+              this.distributionListCc?.filter((x: any) => x !== undefined) ??
+              [];
+            this.distributionListBcc =
+              this.distributionListBcc?.filter((x: any) => x !== undefined) ??
+              [];
             this.emailService.emailDistributionList.to =
               this.distributionListTo;
             this.emailService.emailDistributionList.cc =

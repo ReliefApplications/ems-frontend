@@ -26,4 +26,5 @@ export const environment: Environment = {
   authConfig,
   theme,
   admin0Url: 'https://hems-dev.who.int/app-builder/admin0.json',
+  csDocUrl: 'https://hems-dev.who.int/csdocui',
 };
