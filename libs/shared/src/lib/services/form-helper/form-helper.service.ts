@@ -4,6 +4,7 @@ import {
   PageModel,
   QuestionPanelDynamicModel,
   SurveyModel,
+  ValueChangedEvent,
 } from 'survey-core';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -17,7 +18,15 @@ import {
   TooltipDirective,
 } from '@oort-front/ui';
 import localForage from 'localforage';
-import { snakeCase, cloneDeep, set, get, isNil, flattenDeep } from 'lodash';
+import {
+  snakeCase,
+  cloneDeep,
+  set,
+  get,
+  isNil,
+  flattenDeep,
+  debounce,
+} from 'lodash';
 import { AuthService } from '../auth/auth.service';
 import { BlobType, DownloadService } from '../download/download.service';
 import {
@@ -42,6 +51,8 @@ import { DashboardService } from '../dashboard/dashboard.service';
 import { GET_RECORD_BY_UNIQUE_FIELD_VALUE } from './graphql/queries';
 import { Metadata } from '../../models/metadata.model';
 import { Overlay, OverlayPositionBuilder } from '@angular/cdk/overlay';
+import { FormComponent } from '../../components/form/form.component';
+import { FormModalComponent } from '../../components/form-modal/form-modal.component';
 
 export type CheckUniqueProprietyReturnT = {
   verified: boolean;
@@ -96,6 +107,18 @@ export const transformSurveyData = (survey: SurveyModel) => {
   providedIn: 'root',
 })
 export class FormHelpersService {
+  /**
+   * Saves with a debounce time
+   *
+   * @returns the debounced function
+   */
+  private saveDebounced = debounce((value, callback: () => Promise<void>) => {
+    this.snackBar.openSnackBar(
+      this.translate.instant('common.notifications.autoSaving')
+    );
+    callback();
+  }, 5000);
+
   /**
    * Shared survey helper service.
    *
@@ -208,10 +231,13 @@ export class FormHelpersService {
       );
 
       // Maps the files array, replacing the content with the path from the blob storage
-      const mappedFiles = ((question.value as any[]) || []).map((f, idx) => ({
-        ...f,
-        content: paths[idx],
-      }));
+      const mappedFiles = ((question.value as Array<File>) || []).map(
+        (f: File, idx: number) => ({
+          ...f,
+          content: paths[idx],
+          readyToSave: true, //used to autosave only once
+        })
+      );
 
       question.value = mappedFiles;
     }
@@ -814,6 +840,34 @@ export class FormHelpersService {
     } else {
       return;
     }
+  }
+
+  /**
+   * Saves the record automatically after some time
+   *
+   * @param valueChangedEvent surveyjs value changed event
+   * @param callback Function to execute once debounce time has passed
+   * @param formComponent Form to save the record from
+   */
+  public async autoSaveRecord(
+    valueChangedEvent: ValueChangedEvent,
+    callback: () => Promise<void>,
+    formComponent: FormComponent | FormModalComponent
+  ) {
+    if (
+      valueChangedEvent.question.getType() === 'file' &&
+      valueChangedEvent.value.length &&
+      !valueChangedEvent.value[0].readyToSave
+    ) {
+      //Avoids editing the record multiple times for file questions
+      await this.uploadFiles(
+        formComponent.temporaryFilesStorage,
+        formComponent.form?.id
+      );
+      formComponent.temporaryFilesStorage.clear();
+      return;
+    }
+    this.saveDebounced(valueChangedEvent.value, callback);
   }
 
   /**

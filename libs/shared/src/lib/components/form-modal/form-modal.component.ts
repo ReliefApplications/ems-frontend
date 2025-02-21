@@ -12,7 +12,12 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import {
+  Dialog,
+  DIALOG_DATA,
+  DialogCloseOptions,
+  DialogRef,
+} from '@angular/cdk/dialog';
 import {
   GET_RECORD_BY_ID,
   GET_FORM_BY_ID,
@@ -144,7 +149,7 @@ export class FormModalComponent
   /** Is multi edition of records enabled ( for grid actions ) */
   protected isMultiEdition = false;
   /** Temporary storage of files */
-  protected temporaryFilesStorage: TemporaryFilesStorage = new Map();
+  public temporaryFilesStorage: TemporaryFilesStorage = new Map();
   /** Stored merged data */
   private storedMergedData: any;
   /** If new records was uploaded */
@@ -346,9 +351,16 @@ export class FormModalComponent
           this.survey.getQuestionByName(field.name).readOnly = true;
       });
     }
-    this.survey.onValueChanged.add(() => {
+    this.survey.onValueChanged.add((_, options) => {
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
+      if (this.survey.autoSave) {
+        this.formHelpersService.autoSaveRecord(
+          options,
+          this.onUpdate.bind(this),
+          this
+        );
+      }
     });
     this.survey.onComplete.add(this.onComplete);
     if (this.storedMergedData) {
@@ -498,6 +510,22 @@ export class FormModalComponent
   }
 
   /**
+   * Closes the dialog if not in autosave mode
+   *
+   * @param result Optional result to return to the dialog opener.
+   * @param options Additional options to customize the closing behavior.
+   */
+  closeDialog(
+    result?: FormModalComponent | undefined,
+    options?: DialogCloseOptions
+  ) {
+    if (this.survey.autoSave) {
+      return;
+    }
+    this.dialogRef.close(result, options);
+  }
+
+  /**
    * Listen for clicks anywhere in the document
    *
    * @param event mouse event
@@ -547,7 +575,11 @@ export class FormModalComponent
     const isModified = Object.keys(surveyData).some(
       (key) => surveyData[key] !== recordData[key]
     );
-    if (this.survey.confirmOnModalClose && isModified) {
+    if (
+      this.survey.confirmOnModalClose &&
+      !this.survey.autoSave &&
+      isModified
+    ) {
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('common.close'),
         content: this.translate.instant(
@@ -560,7 +592,7 @@ export class FormModalComponent
         .pipe(takeUntil(this.destroy$))
         .subscribe((value: any) => {
           if (value) {
-            this.dialogRef.close(!!this.uploadedRecords as any);
+            this.closeDialog(!!this.uploadedRecords as any);
           }
         });
     } else {
@@ -570,17 +602,15 @@ export class FormModalComponent
 
   /**
    * Creates the record, or update it if provided.
-   *
-   * @param survey Survey instance.
    */
-  public onComplete = (survey: any) => {
+  public onComplete = () => {
     this.survey?.clear(false);
     const rowsSelected = Array.isArray(this.data.recordId)
       ? this.data.recordId.length
       : 1;
 
     /** we can send to backend empty data if they are not required */
-    this.formHelpersService.setEmptyQuestions(survey);
+    this.formHelpersService.setEmptyQuestions(this.survey);
     // Displays confirmation modal.
     if (this.data.askForConfirm) {
       const dialogRef = this.confirmService.openConfirmModal({
@@ -600,45 +630,50 @@ export class FormModalComponent
         .pipe(takeUntil(this.destroy$))
         .subscribe(async (value: any) => {
           if (value) {
-            await this.onUpdate(survey);
+            await this.onUpdate();
           } else {
             this.saving = false;
           }
         });
       // Updates the data directly.
     } else {
-      this.onUpdate(survey);
+      this.onUpdate();
     }
   };
 
   /**
    * Handles update data event.
    *
-   * @param survey current survey
    * @param refreshWidgets if updating/creating resource on resource-modal and widgets using it need to be refreshed
    */
-  public async onUpdate(survey: any, refreshWidgets = false): Promise<void> {
+  public async onUpdate(refreshWidgets = false): Promise<void> {
     this.formHelpersService
       .checkUniquePropriety(this.survey)
       .then(async (response: CheckUniqueProprietyReturnT) => {
         if (response.verified) {
-          this.loading = true;
+          const autoSave = this.survey.autoSave;
+          if (!autoSave) {
+            this.loading = true;
+          }
           await this.formHelpersService.uploadFiles(
             this.temporaryFilesStorage,
             this.form?.id
           );
+          this.temporaryFilesStorage.clear();
           // await Promise.allSettled(promises);
-          await this.formHelpersService.createTemporaryRecords(survey);
-          const editRecord = response.overwriteRecord ?? this.data.recordId;
+          await this.formHelpersService.createTemporaryRecords(this.survey);
+          const editRecord = response.overwriteRecord
+            ? response.overwriteRecord
+            : this.data.recordId;
           if (editRecord) {
             // If update or creation of record is overwriting another record because unique field values
             const recordId = response.overwriteRecord
               ? response.overwriteRecord.id
               : this.data.recordId;
             if (this.isMultiEdition) {
-              this.updateMultipleData(recordId, survey, refreshWidgets);
+              this.updateMultipleData(recordId, this.survey, refreshWidgets);
             } else {
-              this.updateData(recordId, survey, refreshWidgets);
+              this.updateData(recordId, this.survey, refreshWidgets);
             }
           } else {
             this.apollo
@@ -647,7 +682,7 @@ export class FormModalComponent
                 variables: {
                   id: this.survey.getVariable('record.id'),
                   form: this.data.template,
-                  data: survey.getParsedData?.() ?? survey.data,
+                  data: this.survey.getParsedData?.() ?? this.survey.data,
                 },
               })
               .subscribe({
@@ -656,9 +691,11 @@ export class FormModalComponent
                     this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
                       error: true,
                     });
-                    this.ngZone.run(() => {
-                      this.dialogRef.close();
-                    });
+                    if (!autoSave) {
+                      this.ngZone.run(() => {
+                        this.closeDialog();
+                      });
+                    }
                   } else {
                     if (this.lastDraftRecord) {
                       const callback = () => {
@@ -677,12 +714,15 @@ export class FormModalComponent
                         )
                       );
                     }
-                    this.ngZone.run(() => {
-                      this.dialogRef.close({
-                        template: this.data.template,
-                        data: data?.addRecord,
-                      } as any);
-                    });
+                    if (!autoSave) {
+                      this.ngZone.run(() => {
+                        this.closeDialog({
+                          template: this.data.template,
+                          data: data?.addRecord,
+                        } as any);
+                      });
+                    }
+                    this.data.recordId = data?.addRecord.id;
                   }
                 },
                 error: (err) => {
@@ -690,7 +730,7 @@ export class FormModalComponent
                 },
               });
           }
-          survey.showCompletedPage = true;
+          this.survey.showCompletedPage = true;
         } else {
           this.snackBar.openSnackBar(
             this.translate.instant('components.form.display.cancelMessage')
@@ -708,7 +748,11 @@ export class FormModalComponent
    * @param survey current survey.
    * @param refreshWidgets if updating/creating resource on resource-modal and widgets using it need to be refreshed
    */
-  public updateData(id: any, survey: any, refreshWidgets = false): void {
+  public updateData(
+    id: any,
+    survey: SurveyModel,
+    refreshWidgets = false
+  ): void {
     this.apollo
       .mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
@@ -747,7 +791,7 @@ export class FormModalComponent
    */
   public updateMultipleData(
     ids: any,
-    survey: any,
+    survey: SurveyModel,
     refreshWidgets = false
   ): void {
     const recordData = cleanRecord(survey.getParsedData?.() ?? survey.data);
@@ -822,7 +866,7 @@ export class FormModalComponent
             value: '',
           })
         );
-        this.dialogRef.close({
+        this.closeDialog({
           template: this.form?.id,
           data: data[responseType],
         } as any);
@@ -1048,7 +1092,7 @@ export class FormModalComponent
                   value: this.translate.instant('common.record.one'),
                 })
               );
-              this.dialogRef.close();
+              this.closeDialog();
             }
           });
       }

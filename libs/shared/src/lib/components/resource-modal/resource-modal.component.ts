@@ -64,7 +64,7 @@ export class ResourceModalComponent extends FormModalComponent {
   public override async onUpdate(survey: any): Promise<void> {
     // If question propriety alwaysCreateRecord set to true, don't use override method and create new record
     if (this.data.alwaysCreateRecord) {
-      super.onUpdate(survey, true);
+      super.onUpdate(true);
     } else if (this.data.recordId) {
       this.formHelpersService
         .checkUniquePropriety(this.survey)

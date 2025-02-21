@@ -183,6 +183,14 @@ export const init = (environment: any): void => {
     choices: yesNoChoices,
     default: false,
   });
+  // Adds the ability to autosave records every time we would save one question
+  serializer.addProperty('survey', {
+    name: 'autoSave',
+    category: 'general',
+    type: 'dropdown',
+    choices: yesNoChoices,
+    default: false,
+  });
   // Adds a property to the survey settings to have comments
   serializer.addProperty('survey', {
     name: 'canBeCommented',

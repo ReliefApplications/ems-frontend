@@ -235,7 +235,13 @@ export class FormComponent
    * Saves the current data as a draft record
    */
   public saveAsDraft(): void {
-    const callback = (details: any) => {
+    const callback = (details: {
+      id: string;
+      save: {
+        completed: boolean;
+        hideNewRecord: boolean;
+      };
+    }) => {
       this.surveyActive = true;
       this.lastDraftRecord = details.id;
       // Updates parent component
@@ -253,14 +259,17 @@ export class FormComponent
   /**
    * Creates the record when it is complete, or update it if provided.
    */
-  public onComplete = async () => {
+  private async onComplete() {
     this.formHelpersService
       .checkUniquePropriety(this.survey)
       .then(async (response: CheckUniqueProprietyReturnT) => {
         if (response.verified) {
+          const autoSave = this.survey.autoSave;
           let mutation: any;
           this.surveyActive = false;
-          this.saving = true;
+          if (!autoSave) {
+            this.saving = true;
+          }
           // const promises: Promise<any>[] =
           //   this.formHelpersService.uploadTemporaryRecords(this.survey);
 
@@ -268,11 +277,16 @@ export class FormComponent
             this.temporaryFilesStorage,
             this.form?.id
           );
-          this.formHelpersService.setEmptyQuestions(this.survey);
+          this.temporaryFilesStorage.clear();
+          if (!autoSave) {
+            this.formHelpersService.setEmptyQuestions(this.survey);
+          }
           // We wait for the resources questions to update their ids
           await this.formHelpersService.createTemporaryRecords(this.survey);
-          const editRecord =
-            response.overwriteRecord ?? (this.record || this.form.uniqueRecord);
+          const editRecord = autoSave
+            ? this.record
+            : response.overwriteRecord ??
+              (this.record || this.form.uniqueRecord);
           // If is an already saved record, edit it
           if (editRecord) {
             // If update or creation of record is overwriting another record because unique field values
@@ -326,7 +340,11 @@ export class FormComponent
                   );
                 }
                 // localStorage.removeItem(this.storageId);
-                if (data.editRecord || data.addRecord.form.uniqueRecord) {
+                if (
+                  data.editRecord ||
+                  data.addRecord.form.uniqueRecord ||
+                  autoSave
+                ) {
                   this.survey.clear(false, false);
                   if (data.addRecord) {
                     this.record = data.addRecord;
@@ -340,8 +358,9 @@ export class FormComponent
                 }
                 this.save.emit({
                   completed: true,
-                  hideNewRecord:
-                    data.addRecord && data.addRecord.form.uniqueRecord,
+                  hideNewRecord: autoSave
+                    ? true
+                    : data.addRecord && data.addRecord.form.uniqueRecord,
                 });
               }
               this.saving = false;
@@ -353,7 +372,7 @@ export class FormComponent
           this.survey.clear(false);
         }
       });
-  };
+  }
 
   /**
    * Handles the show page event
@@ -503,11 +522,20 @@ export class FormComponent
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
-    this.survey.onValueChanged.add(() => {
+    this.survey.onValueChanged.add(async (_, options) => {
       // Allow user to save as draft
       this.disableSaveAsDraft = false;
+      if (this.survey.autoSave) {
+        this.formHelpersService.autoSaveRecord(
+          options,
+          this.onComplete.bind(this),
+          this
+        );
+      }
     });
-    this.survey.onComplete.add(this.onComplete);
+    this.survey.onComplete.add(async () => {
+      this.onComplete();
+    });
 
     // Set readOnly fields
     this.form.fields?.forEach((field) => {
