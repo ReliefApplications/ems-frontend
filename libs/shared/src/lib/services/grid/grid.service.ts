@@ -380,7 +380,9 @@ export class GridService {
             let key: string;
             if (meta.choicesByGraphQL) {
               url = meta.choicesByGraphQL.url;
-              key = `${url}:${meta.choicesByGraphQL.query || ''}`;
+              key = `${url}:${meta.choicesByGraphQL.query || ''}:${
+                meta.choicesByGraphQL.path
+              }`; // <url>:<query>:<path-to-data>
             } else {
               url = meta.choicesByUrl.url;
               key = url;
