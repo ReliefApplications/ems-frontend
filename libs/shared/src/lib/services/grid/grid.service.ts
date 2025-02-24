@@ -318,7 +318,6 @@ export class GridService {
       meta: IMeta,
       key: string
     ): Promise<void> => {
-      console.log('will send choices');
       if (meta.choicesByGraphQL) {
         const url = meta.choicesByGraphQL.url || '';
         let value: ArrayBuffer | ApolloQueryResult<unknown>;
@@ -331,7 +330,6 @@ export class GridService {
               `,
             })
           );
-          console.log(value);
         } else {
           value = await this.apiProxyService.buildPostRequest(
             meta.choicesByGraphQL.url || '',
@@ -388,7 +386,6 @@ export class GridService {
               key = url;
             }
             if (cachedKeys.includes(key)) {
-              console.log('got the key');
               promises.push(
                 getWithExpiry(key).then(
                   (choices: { value: string; text: string }[] | null) => {
