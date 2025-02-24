@@ -270,6 +270,7 @@
 			"email": {
 				"attachment": {
 					"countValidation": "Le nombre de fichiers dépasse la limite de {{maxFileCount}}",
+					"removeFile": "{{fileName}} supprimé avec succès",
 					"sendFile": "Envoyer en tant que fichier",
 					"sendUrl": "Envoyer sous forme de lien",
 					"sizeValidation": "dépasse la limite de taille de fichier de 7 Mo",

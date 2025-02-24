@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { EmailModule } from '../../../email/email.module';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
   ButtonModule,
   DialogModule,
@@ -36,7 +36,7 @@ import { isNil } from 'lodash';
   templateUrl: './preview-template-modal.component.html',
   styleUrls: ['./preview-template-modal.component.scss'],
 })
-export class PreviewTemplateModalComponent {
+export class PreviewTemplateModalComponent implements OnInit {
   /** Current step */
   public currentStep = 1;
   /** Should disable action button */
@@ -149,6 +149,16 @@ export class PreviewTemplateModalComponent {
       footerImgStyle: this.data.emailContent?.footer?.footerImgStyle,
       footerHtmlStyle: this.data.emailContent?.footer?.footerHtmlStyle,
     };
+  }
+
+  ngOnInit(): void {
+    this.dialogRef.closed.subscribe(() => {
+      const attachments =
+        this.emailService.datasetsForm.get('attachments')?.value;
+      if (attachments.files?.length) {
+        this.emailService.deleteFile(attachments.files);
+      }
+    });
   }
 
   /**

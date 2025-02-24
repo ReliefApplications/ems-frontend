@@ -270,6 +270,7 @@
 			"email": {
 				"attachment": {
 					"countValidation": "****** {{maxFileCount}}",
+					"removeFile": "{{fileName}} ******",
 					"sendFile": "******",
 					"sendUrl": "******",
 					"sizeValidation": "******",
@@ -293,7 +294,7 @@
 						"tooltip": "******"
 					},
 					"selectBlock": "******",
-					"timestamp": "***** *** / ***"
+					"timestamp": "******"
 				},
 				"error": "******",
 				"errors": {
@@ -349,7 +350,7 @@
 					"textTitle": "******",
 					"title": "******"
 				},
-				"timestamp": "****/ ****"
+				"timestamp": "******"
 			},
 			"emailSent": "******",
 			"export": {

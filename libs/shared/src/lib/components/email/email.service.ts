@@ -1,5 +1,11 @@
-import { HttpClient } from '@angular/common/http';
-import { EventEmitter, Injectable, NgZone, Output } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {
+  EventEmitter,
+  Inject,
+  Injectable,
+  NgZone,
+  Output,
+} from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -15,6 +21,7 @@ import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import {
   EMAIL_NOTIFICATION_TYPES,
   EmailDistributionListQueryResponse,
+  EmailNotificationFile,
   EmailNotificationQueryResponse,
   EmailNotificationsQueryResponse,
   EmailNotificationTypes,
@@ -492,6 +499,7 @@ export class EmailService {
    * @param ngZone The NgZone instance
    * @param translate The TranslateService
    * @param snackBar The SnackBarService
+   * @param environment Environment
    */
   constructor(
     private formBuilder: FormBuilder,
@@ -500,7 +508,8 @@ export class EmailService {
     private restService: RestService,
     private ngZone: NgZone,
     private translate: TranslateService,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    @Inject('environment') private environment: any
   ) {
     this.setDatasetForm();
     this.initLayoutData();
@@ -1700,6 +1709,45 @@ export class EmailService {
         editCustomTemplateId: id,
         customTemplate: { isDeleted: 1 },
       },
+    });
+  }
+
+  /**
+   * Removes file from documentary if file is removed before sending email
+   *
+   * @param attachments files to be removed from documentary
+   */
+  async deleteFile(attachments: EmailNotificationFile[]): Promise<void> {
+    if (!attachments || attachments.length === 0) {
+      return;
+    }
+
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    attachments.forEach((file) => {
+      const { driveId, itemId, fileName } = file;
+
+      this.http
+        .delete(
+          `${this.environment.csApiUrl}/documents/drives/${driveId}/items/${itemId}`,
+          { headers }
+        )
+        .subscribe({
+          next: () => {
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'common.notifications.email.attachment.removeFile',
+                { fileName }
+              )
+            );
+          },
+          error: (error) => {
+            console.error(`Failed to delete file: ${fileName}`, error.message);
+          },
+        });
     });
   }
 

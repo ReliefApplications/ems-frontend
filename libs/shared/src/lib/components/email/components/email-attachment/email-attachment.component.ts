@@ -213,6 +213,7 @@ export class EmailAttachmentComponent implements OnInit {
 
     if (attachmentsForm) {
       const files = attachmentsForm.value.files;
+      this.emailService.deleteFile([files[index]]);
 
       if (files && files.length > 0) {
         files.splice(index, 1);

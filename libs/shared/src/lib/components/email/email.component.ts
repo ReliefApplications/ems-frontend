@@ -181,6 +181,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * Confirmation Tab
    */
   confirmClose(): void {
+    const attachments =
+      this.emailService.datasetsForm.get('attachments')?.value;
+    if (attachments.files?.length) {
+      this.emailService.deleteFile(attachments.files);
+    }
     const dialogRef = this.confirmService.openConfirmModal({
       title: this.translate.instant('common.close'),
       content: this.translate.instant('common.notifications.email.close'),
@@ -1185,6 +1190,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * Close the custom template;
    */
   customTemplateClose() {
+    const attachments =
+      this.emailService.datasetsForm.get('attachments')?.value;
+    if (attachments.files?.length) {
+      this.emailService.deleteFile(attachments.files);
+    }
     this.emailService.datasetsForm?.get('emailLayout')?.reset();
     this.emailService.customTemplateId = '';
     this.emailService.isCustomTemplateEdit = false;
