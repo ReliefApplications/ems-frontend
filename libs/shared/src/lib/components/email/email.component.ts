@@ -138,6 +138,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.emailService.showFileUpload = false;
     this.emailService.isQuickAction = false;
     this.applicationService.application$.subscribe((res: any) => {
       this.emailService.datasetsForm.get('applicationId')?.setValue(res?.id);
@@ -229,6 +230,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param isNew value of if the user is creating a new email notification.
    */
   toggle(isNew?: boolean) {
+    this.emailService.showFileUpload = false;
     this.emailService.tabs = [
       {
         title: `Block 1`,
@@ -532,6 +534,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param isClone Identify it is cloned or not
    */
   prepareEditData(emailData: any, isSendEmail?: boolean, isClone?: boolean) {
+    this.emailService.showFileUpload = false;
     if (isClone) {
       this.emailService.isEdit = false;
     } else {
@@ -650,6 +653,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       restrictSubscription: emailData.restrictSubscription,
       emailLayout: emailData.emailLayout,
       schedule: emailData.schedule,
+      attachments: emailData.attachments,
     });
 
     // Setting up edit screen
@@ -731,7 +735,10 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     // Execute all queries in parallel and update metadata loading status when done
     Promise.all(promises).finally(() => {
       if (isSendEmail) {
-        this.emailService.stepperStep = 5;
+        // Show File upload when Sent email is selected
+        this.emailService.showFileUpload = this.emailService.isDirectSend;
+        // on send from EN list - navigate them to Layout screen
+        this.emailService.stepperStep = 4;
       } else {
         this.emailService.stepperStep = 0;
       }
@@ -1068,6 +1075,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * used to create new custom template
    */
   createTemplate(): void {
+    this.emailService.showFileUpload = false;
     this.showTemplateCreationWizard = true;
     if (!this.emailService.isCustomTemplateEdit) {
       this.emailService.isNewCustomTemplate = true;

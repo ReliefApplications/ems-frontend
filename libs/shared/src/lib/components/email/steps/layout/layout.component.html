@@ -607,5 +607,10 @@
         (ngModelChange)="onEditorContentChange()"
       ></editor>
     </div>
+
+    <!-- On email notification creation and edit - Hide File upload in Step 5 -->
+    <ng-container *ngIf="emailService.showFileUpload">
+      <app-email-attachment></app-email-attachment>
+    </ng-container>
   </div>
 </form>

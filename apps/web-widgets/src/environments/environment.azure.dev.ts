@@ -31,6 +31,7 @@ export const environment: Environment = {
   i18nUrl: 'https://whoemssafedsta03.blob.core.windows.net/shared/dev/i18n/',
   admin0Url: 'https://hems-dev.who.int/app-builder/admin0.json',
   csApiUrl: 'https://hems-dev.who.int/csapi/api',
+  csDocUrl: 'https://hems-dev.who.int/csdocui',
   user: {
     attributes: ['country', 'region', 'location', 'department'],
   },

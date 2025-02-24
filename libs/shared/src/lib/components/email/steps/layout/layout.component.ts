@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import convertToMinutes from '../../../../utils/convert-to-minutes';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-
+import { cloneDeep } from 'lodash';
 /**
  * Email layout page component.
  */
@@ -87,7 +87,6 @@ export class LayoutComponent
   public datasetOverflow = false;
   /** Subscription for the graphql load change event. */
   private loadChangeSubscription: Subscription = new Subscription();
-
   /** To input HTML */
   @ViewChild('toInput') toInput!: ElementRef<HTMLInputElement>;
   /** Cc input HTML */
@@ -139,8 +138,8 @@ export class LayoutComponent
    * @param fb Form builder used for form creation
    * @param editorService Editor service used to get main URL and current language
    * @param emailService Service used for email-related operations and state management
-   * @param snackbar snackbar helper function
-   * @param translate i18 translate service
+   * @param snackbar Snackbar helper function
+   * @param translate i18n translate service
    */
   constructor(
     private fb: FormBuilder,
@@ -168,6 +167,17 @@ export class LayoutComponent
       const layoutName = this.emailService?.emailLayout?.name || '';
       this.emailService.emailLayout = {};
       this.emailService.emailLayout.name = layoutName;
+
+      //Bind DL data
+      if (this.emailService.quickEmailDLQuery?.length === 0) {
+        const toData = this.emailService.emailDistributionList?.to;
+        const ccData = this.emailService.emailDistributionList?.cc;
+        const bccData = this.emailService.emailDistributionList?.bcc;
+        this.emailService.quickEmailDLQuery = { to: [], cc: [], bcc: [] };
+        this.emailService.quickEmailDLQuery.to = cloneDeep(toData);
+        this.emailService.quickEmailDLQuery.cc = cloneDeep(ccData);
+        this.emailService.quickEmailDLQuery.bcc = cloneDeep(bccData);
+      }
     } else {
       this.emailService.createPreviewData();
     }
@@ -256,22 +266,65 @@ export class LayoutComponent
           this.emailService.allLayoutdata.footerLogo;
       }
     }
-    if (this.emailService.emailDistributionList.to) {
-      this.layoutForm
-        .get('to')
-        ?.setValue(this.emailService.emailDistributionList.to);
-    }
-    if (this.emailService.emailDistributionList.cc) {
-      this.layoutForm
-        .get('cc')
-        ?.setValue(this.emailService.emailDistributionList.cc);
-    }
-    if (this.emailService.emailDistributionList.bcc) {
-      this.layoutForm
-        .get('bcc')
-        ?.setValue(this.emailService.emailDistributionList.bcc);
+    if (this.emailService.isQuickAction) {
+      this.populateDLForm();
     }
     this.getBlockData();
+  }
+
+  /**
+   * Populates dataset Form using custom template DL object
+   */
+  populateDLForm() {
+    if (this.emailService.isQuickAction) {
+      const { to, cc, bcc } = this.emailService.emailDistributionList; //this.emailService.customLayoutDL;
+      const uniqueTo: any = [...new Set(to?.inputEmails ?? to)];
+      const uniqueCc: any = [...new Set(cc?.inputEmails ?? cc)];
+      const uniqueBcc: any = [...new Set(bcc?.inputEmails ?? bcc)];
+
+      this.emailService.emailDistributionList.to = uniqueTo;
+      this.emailService.emailDistributionList.cc = uniqueCc;
+      this.emailService.emailDistributionList.bcc = uniqueBcc;
+
+      this.emailService.populateEmails(
+        this.emailService.emailDistributionList.to,
+        this.emailService?.datasetsForm
+          ?.get('emailDistributionList')
+          ?.get('to')
+          ?.get('inputEmails') as FormArray
+      );
+
+      this.emailService.populateEmails(
+        this.emailService.emailDistributionList.cc,
+        this.emailService?.datasetsForm
+          ?.get('emailDistributionList')
+          ?.get('cc')
+          ?.get('inputEmails') as FormArray
+      );
+
+      this.emailService.populateEmails(
+        this.emailService.emailDistributionList.bcc,
+        this.emailService?.datasetsForm
+          ?.get('emailDistributionList')
+          ?.get('bcc')
+          ?.get('inputEmails') as FormArray
+      );
+      if (this.emailService.emailDistributionList.to) {
+        this.layoutForm
+          .get('to')
+          ?.setValue(this.emailService.emailDistributionList.to);
+      }
+      if (this.emailService.emailDistributionList.cc) {
+        this.layoutForm
+          .get('cc')
+          ?.setValue(this.emailService.emailDistributionList.cc);
+      }
+      if (this.emailService.emailDistributionList.bcc) {
+        this.layoutForm
+          .get('bcc')
+          ?.setValue(this.emailService.emailDistributionList.bcc);
+      }
+    }
   }
 
   /**
@@ -335,7 +388,8 @@ export class LayoutComponent
       this.emailService.customTemplateNames.includes(
         this.emailService.layoutTitle.trim().toLowerCase()
       ) &&
-      !this.emailService.isCustomTemplateEdit
+      !this.emailService.isCustomTemplateEdit &&
+      this.emailService.showFileUpload
     ) {
       checkDuplicateName = true;
     }

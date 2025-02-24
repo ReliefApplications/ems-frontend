@@ -310,7 +310,7 @@ export class DocumentManagementService {
    * @param file File to transform
    * @returns A valid base 64 input value for the cs api endpoint
    */
-  private transformFileToValidInput(file: any) {
+  public transformFileToValidInput(file: any) {
     const fileReader = new FileReader();
     return new Promise((resolve, reject) => {
       (fileReader as any).onload = () => {
@@ -328,7 +328,7 @@ export class DocumentManagementService {
    *
    * @returns Query to fetch default drive id
    */
-  private getDriveId() {
+  public async getDriveId() {
     const apolloClient = this.apollo.use('csClient');
     return firstValueFrom(
       apolloClient.query<DriveQueryResponse>({

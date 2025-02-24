@@ -73,18 +73,21 @@ export class PreviewTemplateModalComponent {
    */
   constructor(
     @Inject(DIALOG_DATA) public data: any,
-    private emailService: EmailService,
+    public emailService: EmailService,
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private dialogRef: DialogRef,
     @Inject('environment') environment: any
   ) {
+    this.emailService.disableNextActionBtn = false;
     this.emailService.setDatasetForm();
     this.environment = environment;
     this.emailService.isQuickAction = true;
     this.emailService.datasetsForm.get('emailDistributionList')?.reset();
     this.emailService.quickEmailDLQuery = [];
-    this.currentStep = !this.data.distributionListInfo ? 0 : 1;
+    // Show File upload in step 1 only on clicking the action button from Grid and send email in step 2
+    this.emailService.showFileUpload = true;
+    this.currentStep = 0;
     this.emailService.allPreviewData = [
       {
         tabIndex: 0,
