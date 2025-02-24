@@ -16,7 +16,7 @@ import {
   SpinnerModule,
   SelectMenuModule,
   TableModule,
-  DialogModule as DialgModule,
+  DialogModule as UiDialogModule,
   FormWrapperModule,
   PaginatorModule,
   ErrorMessageModule,
@@ -47,7 +47,7 @@ describe('ApiConfigurationsComponent', () => {
         FormWrapperModule,
         PaginatorModule,
         ErrorMessageModule,
-        DialgModule,
+        UiDialogModule,
         SkeletonTableModule,
         FormsModule,
         TranslateModule.forRoot({

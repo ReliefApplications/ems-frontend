@@ -121,7 +121,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
   new TranslateHttpLoader(http, environment.i18nUrl, '.json');
 
 /**
- * Provides custom overlay to inject modals / snackbars in shadow root.
+ * Provides custom overlay to inject modals / snackbar in shadow root.
  *
  * @param shadowDomService Shadow Dom service
  * @param _platform CDK platform.
