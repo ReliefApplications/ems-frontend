@@ -7,6 +7,7 @@ import { Environment } from './environment.type';
  * Authentication configuration
  */
 const authConfig: AuthConfig = {
+  /* cSpell:disable */
   issuer: 'https://id-dev.oortcloud.tech/realms/oort',
   redirectUri: 'http://localhost:4200/',
   postLogoutRedirectUri: 'http://localhost:4200/auth/',
@@ -14,12 +15,14 @@ const authConfig: AuthConfig = {
   scope: 'openid profile email offline_access',
   responseType: 'code',
   showDebugInformation: true,
+  /* cSpell:enable */
 };
 
 /**
  * Environment file for local development.
  */
 export const environment: Environment = {
+  /* cSpell:disable */
   ...sharedEnvironment,
   production: false,
   apiUrl: 'https://oort-dev.oortcloud.tech/api',
@@ -44,4 +47,5 @@ export const environment: Environment = {
     'summaryCard',
     'tabs',
   ],
+  /* cSpell:enable */
 };

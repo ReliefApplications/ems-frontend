@@ -4,9 +4,10 @@ import { sharedEnvironment } from './environment.shared';
 import { Environment } from './environment.type';
 
 /**
- * Authentification configuration
+ * Authentication configuration
  */
 const authConfig: AuthConfig = {
+  /* cSpell:disable */
   issuer: 'https://id.oortcloud.tech/auth/realms/oort-demo',
   redirectUri: 'https://demo.oortcloud.tech/admin/',
   postLogoutRedirectUri: 'https://demo.oortcloud.tech/admin/auth/',
@@ -14,12 +15,14 @@ const authConfig: AuthConfig = {
   scope: 'openid profile email offline_access',
   responseType: 'code',
   showDebugInformation: true,
+  /* cSpell:enable */
 };
 
 /**
  * Environment file for local development.
  */
 export const environment: Environment = {
+  /* cSpell:disable */
   ...sharedEnvironment,
   production: true,
   apiUrl: 'https://demo.oortcloud.tech/api',
@@ -40,4 +43,5 @@ export const environment: Environment = {
     'text',
     'map',
   ],
+  /* cSpell:enable */
 };

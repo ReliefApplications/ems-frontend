@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   Inject,
+  Injector,
   OnChanges,
   OnDestroy,
   OnInit,
@@ -17,16 +18,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule, SnackbarService, TooltipModule } from '@oort-front/ui';
 import { DialogModule, AlertModule } from '@oort-front/ui';
 import { renderGlobalProperties } from '../../../survey/render-global-properties';
-import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 import { FormHelpersService } from '../../../services/form-helper/form-helper.service';
 import { Question } from '../../../survey/types';
 import 'survey-core/survey.i18n.min.js';
-import {
-  CustomJSONEditorComponent,
-  SurveyCustomJSONEditorPlugin,
-} from '../../form-builder/custom-json-editor/custom-json-editor.component';
+import { SurveyCustomJSONEditorPlugin } from '../../form-builder/custom-json-editor/custom-json-editor.component';
 import { updateModalChoicesAndValue } from '../../../survey/global-properties/reference-data';
-import { HttpClient } from '@angular/common/http';
 //import 'survey-creator-core/survey-creator-core.i18n.min.js';
 
 /**
@@ -170,7 +166,6 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
     AlertModule,
     SurveyCreatorModule,
     ButtonModule,
-    CustomJSONEditorComponent,
   ],
 })
 export class FilterBuilderModalComponent
@@ -185,19 +180,17 @@ export class FilterBuilderModalComponent
    * @param formService Shared form service
    * @param dialogRef reference to the dialog component
    * @param data data passed to initialize the filter builder
-   * @param referenceDataService reference data service
    * @param formHelpersService Shared form helper service.
    * @param snackBar Service that will be used to display the snackbar.
-   * @param http Http client
+   * @param injector Angular injector
    */
   constructor(
     private formService: FormService,
     private dialogRef: DialogRef<FilterBuilderModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
-    private referenceDataService: ReferenceDataService,
     private formHelpersService: FormHelpersService,
     private snackBar: SnackbarService,
-    private http: HttpClient
+    private injector: Injector
   ) {}
 
   ngOnInit(): void {
@@ -271,7 +264,7 @@ export class FilterBuilderModalComponent
 
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
-      renderGlobalProperties(this.referenceDataService, this.http)
+      renderGlobalProperties(this.injector)
     );
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       this.formHelpersService.addQuestionTooltips
@@ -279,7 +272,7 @@ export class FilterBuilderModalComponent
     this.surveyCreator.onPreviewSurveyCreated.add((sender: any, opt: any) => {
       this.formHelpersService.addUserVariables(opt.survey);
       opt.survey.onAfterRenderQuestion.add(
-        renderGlobalProperties(this.referenceDataService, this.http)
+        renderGlobalProperties(this.injector)
       );
     });
 

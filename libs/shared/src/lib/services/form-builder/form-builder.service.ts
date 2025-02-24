@@ -1,7 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, Injector } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
@@ -37,23 +35,21 @@ export class FormBuilderService {
    * Shared form builder service.
    * Only used to add on complete expression to the survey.
    *
-   * @param referenceDataService Reference data service
    * @param translate Translation service
    * @param apollo Apollo service
    * @param snackBar Service used to show a snackbar.
    * @param restService This is the service that is used to make http requests.
    * @param formHelpersService Shared form helper service.
-   * @param http Http client
+   * @param injector Angular injector
    * @param environment Environment
    */
   constructor(
-    private referenceDataService: ReferenceDataService,
     private translate: TranslateService,
     private apollo: Apollo,
     private snackBar: SnackbarService,
     private restService: RestService,
     private formHelpersService: FormHelpersService,
-    private http: HttpClient,
+    private injector: Injector,
     @Inject('environment') private environment: any
   ) {}
 
@@ -74,9 +70,7 @@ export class FormBuilderService {
     settings.useCachingForChoicesRestfull = false;
     const survey = new Model(structure);
     this.formHelpersService.addUserVariables(survey);
-    survey.onAfterRenderQuestion.add(
-      renderGlobalProperties(this.referenceDataService, this.http)
-    );
+    survey.onAfterRenderQuestion.add(renderGlobalProperties(this.injector));
     //Add tooltips to questions if exist
     survey.onAfterRenderQuestion.add(
       this.formHelpersService.addQuestionTooltips

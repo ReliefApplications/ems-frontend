@@ -5,6 +5,7 @@ import {
   ElementRef,
   HostListener,
   Inject,
+  Injector,
   Input,
   NgZone,
   OnChanges,
@@ -21,10 +22,8 @@ import { SidenavContainerComponent } from '@oort-front/ui';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
-import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { DOCUMENT } from '@angular/common';
 import { Dashboard } from '../../models/dashboard.model';
-import { HttpClient } from '@angular/common/http';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 
 /**
@@ -87,26 +86,24 @@ export class DashboardFilterComponent
    *
    * @param contextService Context service
    * @param ngZone Triggers html changes
-   * @param referenceDataService Reference data service
    * @param changeDetectorRef Change detector reference
    * @param dateTranslate Service used for date formatting
    * @param {ElementRef} el Current components element ref in the DOM
    * @param document Document
    * @param _host sidenav container host
-   * @param http Http client
    * @param formHelpersService Shared form helper service.
+   * @param injector Angular injector
    */
   constructor(
     public contextService: ContextService,
     private ngZone: NgZone,
-    private referenceDataService: ReferenceDataService,
     private changeDetectorRef: ChangeDetectorRef,
     private dateTranslate: DateTranslateService,
     private el: ElementRef,
     @Inject(DOCUMENT) private document: Document,
     @Optional() private _host: SidenavContainerComponent,
-    private http: HttpClient,
-    private formHelpersService: FormHelpersService
+    private formHelpersService: FormHelpersService,
+    private injector: Injector
   ) {
     super();
   }
@@ -231,7 +228,7 @@ export class DashboardFilterComponent
       if (parent) {
         parent.style['min-width'] = '0px';
       }
-      renderGlobalProperties(this.referenceDataService, this.http);
+      renderGlobalProperties(this.injector);
     });
     this.onValueChange();
     this.surveyInit = false;

@@ -113,7 +113,7 @@ export class DashboardComponent
   /** Is edition active */
   @HostBinding('class.edit-mode-dashboard')
   public editionActive = true;
-  /** If we are visualising a new template */
+  /** If we are visualizing a new template */
   public templateMode = false;
   /** Additional grid configuration */
   public gridOptions: GridsterConfig = {};

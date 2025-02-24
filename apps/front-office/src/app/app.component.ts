@@ -12,6 +12,7 @@ import {
   LoggerService,
   CsDocsPropertiesDropdownComponent,
   AcceptedValueTypesTextComponent,
+  CommonServicesService,
 } from '@oort-front/shared';
 
 /**
@@ -44,10 +45,12 @@ export class AppComponent implements OnInit {
    *
    * @param authService Shared authentication service,
    * @param logger Shared logger service ( initialize logger so its subscription can start )
+   * @param csService Common Services connector ( initialize service to create client )
    */
   constructor(
     private authService: AuthService,
-    private logger: LoggerService
+    private logger: LoggerService,
+    private csService: CommonServicesService
   ) {}
 
   /**

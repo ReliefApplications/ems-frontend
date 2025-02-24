@@ -1,0 +1,15 @@
+{
+  "words": [
+    "casl",
+    "geoman",
+    "leafletgeocoder",
+    "leafletgeoman",
+    "markercluster",
+    "geocoder",
+    "leaftletmeasure",
+    "gridster",
+    "maplibre",
+    "webmap"
+  ],
+  "ignorePaths": ["apps/**/*/project.json", "apps/**/*/documentation.json"]
+}

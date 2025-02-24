@@ -16,6 +16,7 @@ const authConfig: AuthConfig = {
 
 /** Environment configuration */
 export const environment: Environment = {
+  /* cSpell:disable */
   ...sharedEnvironment,
   production: true,
   apiUrl: 'https://dms.oortcloud.tech/api',
@@ -26,4 +27,5 @@ export const environment: Environment = {
   availableLanguages: ['en', 'fr'],
   authConfig,
   theme,
+  /* cSpell:enable */
 };

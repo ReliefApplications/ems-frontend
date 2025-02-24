@@ -2,7 +2,7 @@ import { gql } from 'apollo-angular';
 
 // === GET PULL JOBS ===
 
-/** Graphql queryfor getting multiple pull job objects with a cursor */
+/** Graphql query for getting multiple pull job objects with a cursor */
 export const GET_PULL_JOBS = gql`
   query GetPullJobs($first: Int, $afterCursor: ID) {
     pullJobs(first: $first, afterCursor: $afterCursor) {

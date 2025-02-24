@@ -4,9 +4,10 @@ import { sharedEnvironment } from './environment.shared';
 import { Environment } from './environment.type';
 
 /**
- * Authentification configuration
+ * Authentication configuration
  */
 const authConfig: AuthConfig = {
+  /* cSpell:disable */
   issuer:
     'https://login.microsoftonline.com/f610c0b7-bd24-4b39-810b-3dc280afb590/v2.0',
   redirectUri: 'https://hems.who.int/backoffice/',
@@ -18,12 +19,14 @@ const authConfig: AuthConfig = {
   responseType: 'code',
   showDebugInformation: true,
   strictDiscoveryDocumentValidation: false,
+  /* cSpell:enable */
 };
 
 /**
  * Environment file for local development.
  */
 export const environment: Environment = {
+  /* cSpell:disable */
   ...sharedEnvironment,
   production: true,
   href: '/backoffice',
@@ -55,4 +58,5 @@ export const environment: Environment = {
   admin0Url: 'https://hems.who.int/app-builder/admin0.json',
   csApiUrl: 'https://hems.who.int/csapi/api',
   csDocUrl: 'https://hems.who.int/csdocui',
+  /* cSpell:enable */
 };

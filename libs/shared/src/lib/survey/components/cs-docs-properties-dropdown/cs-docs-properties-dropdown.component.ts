@@ -129,7 +129,7 @@ export class CsDocsPropertiesDropdownComponent
     apollo: Apollo
   ) {
     super(changeDetectorRef, viewContainerRef);
-    this.csDocsApolloClient = apollo.use('csDocApi');
+    this.csDocsApolloClient = apollo.use('csClient');
   }
 
   override ngOnInit(): void {
