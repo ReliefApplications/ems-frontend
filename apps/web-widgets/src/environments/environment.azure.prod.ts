@@ -33,4 +33,5 @@ export const environment: Environment = {
   },
   admin0Url: 'https://hems.who.int/app-builder/admin0.json',
   csApiUrl: 'https://hems.who.int/csapi/api',
+  csDocUrl: 'https://hems.who.int/csdocui',
 };

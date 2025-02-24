@@ -28,4 +28,5 @@ export interface Environment {
   user?: UserConfiguration;
   admin0Url?: string;
   csApiUrl?: string;
+  csDocUrl?: string;
 }

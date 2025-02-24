@@ -27,6 +27,31 @@ export interface EmailNotification {
   isDeleted: boolean;
   draftStepper: any;
   __typename: string;
+  attachments: EmailNotificationAttachment;
+}
+
+/** Model for File upload response */
+export interface EmailNotificationFile {
+  occurrence?: {
+    id: string;
+    name?: string;
+  };
+  driveId: string;
+  itemId: string;
+  fileName: string;
+  clamAV?: string;
+  fileFormat?: string;
+  versionName?: string;
+  fileSize: string;
+  documentType?: any[];
+  documentCategory?: any[];
+  createdDate?: string;
+  modifiedDate?: string;
+}
+/** Model for email File attachement response */
+export interface EmailNotificationAttachment {
+  sendAsAttachment: boolean;
+  files?: EmailNotificationFile[];
 }
 
 /** Email notification query response interface */
