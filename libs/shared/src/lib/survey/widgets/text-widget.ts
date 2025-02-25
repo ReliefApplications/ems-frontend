@@ -3,12 +3,7 @@ import { EmbeddedViewRef } from '@angular/core';
 import { Question, QuestionText } from '../types';
 import { ButtonComponent } from '@oort-front/ui';
 import { IconComponent } from '@oort-front/ui';
-import {
-  CustomWidgetCollection,
-  JsonMetadata,
-  Serializer,
-  SurveyModel,
-} from 'survey-core';
+import { CustomWidgetCollection, JsonMetadata, Serializer } from 'survey-core';
 import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
 import {
