@@ -247,11 +247,7 @@ export const buildUpdateButton = (
   };
 
   setDisabled();
-  survey.onValueChanged.add((val, options) => {
-    if (options.question === question) {
-      setDisabled();
-    }
-  });
+  question.registerFunctionOnPropertyValueChanged('value', setDisabled);
 
   // Listen to language change and update button text
   survey.onLocaleChangedEvent.add(updateButtonText);

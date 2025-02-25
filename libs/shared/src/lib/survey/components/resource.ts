@@ -656,11 +656,6 @@ export const init = (
      * @param question The current resource question
      */
     onLoaded(question: QuestionResource): void {
-      (question.survey as any)?.onValueChanged.add((_: any, options: any) => {
-        if (options.name === question.name) {
-          question.value = options.value;
-        }
-      });
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = question.placeholder;
       }
@@ -783,10 +778,8 @@ export const init = (
       }
 
       // Listen to value changes in order to add records to the survey context
-      survey.onValueChanged.add((_, options) => {
-        if (options.name === question.name) {
-          addRecordToSurveyContext(options.question, options.value);
-        }
+      question.registerFunctionOnPropertyValueChanged('value', () => {
+        addRecordToSurveyContext(question, question.value);
       });
 
       // Create a div that will hold the buttons

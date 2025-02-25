@@ -97,7 +97,7 @@ export const init = (environment: any): void => {
   // Adds a property to the survey settings to open the form on a specific page using the question value
   // of the selected question (the value must be a page name)
   serializer.addProperty('survey', {
-    name: 'openOnQuestionValuesPage',
+    name: 'openOnPageByQuestionValue',
     displayName: 'Open survey on page based on question value',
     category: 'pages',
     choices: (survey: SurveyModel, choicesCallback: any) => {

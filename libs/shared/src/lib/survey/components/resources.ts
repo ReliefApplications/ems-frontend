@@ -20,6 +20,7 @@ import { QuestionResource } from '../types';
 import { ComponentRef, Injector, NgZone } from '@angular/core';
 import {
   ComponentCollection,
+  Question,
   Serializer,
   SurveyModel,
   SvgRegistry,
@@ -666,23 +667,21 @@ export const init = (
 
       // Auto save changes, if enabled
       if (question.autoSaveChanges && survey) {
-        survey.onValueChanged.add(async (_: any, options: any) => {
+        question.registerFunctionOnPropertyValueChanged('value', async () => {
           const record = survey.getVariable('record.id');
-          // Can only auto save when updating a records
-          if (options.name === question.name && record) {
-            // Automatically save the changes
-            await firstValueFrom(
-              apollo.mutate({
-                mutation: UPDATE_RECORD,
-                variables: {
-                  id: record,
-                  data: {
-                    [question.name]: options.value,
-                  },
+          if (!record) return;
+
+          await firstValueFrom(
+            apollo.mutate({
+              mutation: UPDATE_RECORD,
+              variables: {
+                id: record,
+                data: {
+                  [question.name]: question.value,
                 },
-              })
-            );
-          }
+              },
+            })
+          );
         });
       }
 
@@ -883,24 +882,27 @@ export const init = (
    * of the question object is false
    */
   const buildRecordsGrid = (
-    question: any,
+    question: Question,
     el: any
   ): ComponentRef<CoreGridComponent> => {
     const grid = domService.appendComponentToBody(
       CoreGridComponent,
       el.parentElement
     );
-    setGridInputs(grid.instance, question);
-    question.survey?.onValueChanged.add((_: any, options: any) => {
-      // If question is inside a panel that is updated, also updates the grid
-      const isInPanel = question.parentQuestion?.getType() === 'paneldynamic';
-      if (
-        options.name === question.name ||
-        (isInPanel && options.name === question.parentQuestion.name)
-      ) {
-        setGridInputs(grid.instance, question);
-      }
-    });
+
+    const updateGrid = () => {
+      setGridInputs(grid.instance, question);
+    };
+    updateGrid();
+
+    question.registerFunctionOnPropertyValueChanged('value', updateGrid);
+    if (question.parentQuestion?.getType() === 'paneldynamic') {
+      question.parentQuestion.registerFunctionOnPropertyValueChanged(
+        'value',
+        updateGrid
+      );
+    }
+
     return grid;
   };
 

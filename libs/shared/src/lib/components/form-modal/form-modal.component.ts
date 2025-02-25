@@ -140,8 +140,6 @@ export class FormModalComponent
   public selectedPageIndex$ = this.selectedPageIndex.asObservable();
   /** The id of the last draft record that was loaded */
   public lastDraftRecord?: string;
-  /** Disables the save as draft button */
-  public disableSaveAsDraft = false;
   /** Available pages*/
   private pages = new BehaviorSubject<any[]>([]);
   /** Pages as observable */
@@ -351,17 +349,15 @@ export class FormModalComponent
           this.survey.getQuestionByName(field.name).readOnly = true;
       });
     }
-    this.survey.onValueChanged.add((_, options) => {
-      // Allow user to save as draft
-      this.disableSaveAsDraft = false;
-      if (this.survey.autoSave) {
+    if (this.survey.autoSave) {
+      this.survey.onValueChanged.add((_, options) => {
         this.formHelpersService.autoSaveRecord(
           options,
           this.onUpdate.bind(this, false, true),
           this
         );
-      }
-    });
+      });
+    }
     this.survey.onComplete.add(() => {
       this.onComplete();
       this.formHelpersService.saveDebounced.cancel();
@@ -1063,16 +1059,6 @@ export class FormModalComponent
       this.lastDraftRecord,
       callback
     );
-  }
-
-  /**
-   * Handle draft record load .
-   *
-   * @param id if of the draft record loaded
-   */
-  public onLoadDraftRecord(id: string): void {
-    this.lastDraftRecord = id;
-    this.disableSaveAsDraft = true;
   }
 
   /** Confirms deletion of record using the confirm service and deletes the record if confirmed */

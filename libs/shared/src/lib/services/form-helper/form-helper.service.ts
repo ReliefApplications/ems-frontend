@@ -1,7 +1,9 @@
 import { Inject, Injectable } from '@angular/core';
 import {
+  AfterRenderQuestionEvent,
   IPanel,
   PageModel,
+  QuestionMatrixDynamicModel,
   QuestionPanelDynamicModel,
   SurveyModel,
   ValueChangedEvent,
@@ -34,7 +36,7 @@ import {
   AddRecordMutationResponse,
   EditDraftRecordMutationResponse,
   RecordQueryResponse,
-  Record,
+  Record as RecordModel,
 } from '../../models/record.model';
 import { Question } from '../../survey/types';
 import {
@@ -56,7 +58,7 @@ import { FormModalComponent } from '../../components/form-modal/form-modal.compo
 
 export type CheckUniqueProprietyReturnT = {
   verified: boolean;
-  overwriteRecord?: Record;
+  overwriteRecord?: RecordModel;
 };
 
 /**
@@ -770,7 +772,7 @@ export class FormHelpersService {
    * @param record.id Record id
    * @param record.incrementalId Record incremental id
    */
-  public addRecordVariables = (survey: SurveyModel, record: Record) => {
+  public addRecordVariables = (survey: SurveyModel, record: RecordModel) => {
     survey.setVariable('record.id', record.id);
     survey.setVariable('record.incrementalID', record?.incrementalId ?? '');
 
@@ -999,5 +1001,96 @@ export class FormHelpersService {
     } else {
       return checkUniqueResponse;
     }
+  }
+
+  /**
+   * Adds upload button dynamic panel or dynamic matrix questions
+   *
+   * @param e Event raised after rendering a question
+   */
+  public addUploadButton(e: AfterRenderQuestionEvent): void {
+    const { question, htmlElement } = e;
+    if (!question.allowImport) return;
+
+    const uploadButton = document.createElement('button');
+    uploadButton.classList.add('sd-action', 'ml-auto');
+    uploadButton.onclick = () => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.xlsx';
+      input.addEventListener('change', (e) => {
+        const file = (e.target as HTMLInputElement)?.files?.[0];
+        if (file) {
+          this.downloadService
+            .uploadFile('upload/parse/json', file)
+            .subscribe((data) => {
+              data.forEach((row: Record<string, unknown>) => {
+                if (question.type === 'paneldynamic') {
+                  const panel = question as QuestionPanelDynamicModel;
+                  const newPanel = panel.addPanel();
+
+                  Object.entries(row).forEach(([key, value]) => {
+                    const nestedQuestion = newPanel.getQuestionByName(key);
+                    if (nestedQuestion) {
+                      nestedQuestion.value = value;
+                    }
+                  });
+                } else {
+                  const matrix = question as QuestionMatrixDynamicModel;
+
+                  const idx = matrix.rowCount;
+                  matrix.addRow();
+                  matrix.setRowValue(idx, row);
+                  matrix.expand();
+                }
+              });
+            });
+        }
+      });
+      input.click();
+    };
+    uploadButton.innerHTML = this.translate.instant('common.uploadObject', {
+      name: 'XLSX',
+    });
+
+    const htmlEl = htmlElement.querySelector('.sd-element__header');
+    const title = htmlEl?.querySelector('.sd-element__title');
+
+    const div = document.createElement('div');
+    div.classList.add('flex', 'items-center');
+
+    if (title) {
+      div.appendChild(title.cloneNode(true));
+      htmlEl?.appendChild(div);
+      title.remove(); // remove original title
+    }
+
+    div.appendChild(uploadButton);
+    htmlEl?.appendChild(div);
+  }
+
+  /**
+   * Set download listener for files in the survey
+   *
+   * @param e Event raised after rendering a question
+   */
+  public setDownloadListener(e: AfterRenderQuestionEvent): void {
+    const { question, htmlElement } = e;
+    const files = question.value;
+    const fileElement = htmlElement.querySelector('a');
+    fileElement?.addEventListener('click', (event) => {
+      event.preventDefault();
+      files.forEach((file: any) => {
+        if (
+          file.content &&
+          !(file.content.indexOf('base64') !== -1) &&
+          !file.content.startsWith('http') &&
+          !file.content.startsWith('custom:')
+        ) {
+          const path = `${this.environment.apiUrl}/download/file/${file.content}/${file.name}`;
+          this.downloadService.getFile(path, file.type, file.name);
+        }
+      });
+    });
   }
 }
