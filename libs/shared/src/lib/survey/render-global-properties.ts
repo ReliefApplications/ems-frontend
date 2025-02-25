@@ -12,7 +12,7 @@ import * as ReferenceDataProperties from './global-properties/reference-data';
  */
 export const renderGlobalProperties =
   (referenceDataService: ReferenceDataService) =>
-  (survey: SurveyModel, options: AfterRenderQuestionEvent) => {
+  (_: SurveyModel, options: AfterRenderQuestionEvent) => {
     OthersProperties.render(options.question);
     ReferenceDataProperties.render(options.question, referenceDataService);
   };

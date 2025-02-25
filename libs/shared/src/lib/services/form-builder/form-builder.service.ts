@@ -10,8 +10,6 @@ import {
   DownloadFileEvent,
   UploadFilesEvent,
   PanelModelBase,
-  QuestionPanelDynamicModel as PanelDynamicT,
-  QuestionMatrixDynamicModel as MatrixDynamicT,
 } from 'survey-core';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
@@ -263,7 +261,12 @@ export class FormBuilderService {
   ): SurveyModel {
     settings.useCachingForChoicesRestful = false;
     settings.useCachingForChoicesRestfull = false;
+    settings.lazyRender = {
+      enabled: true,
+      firstBatchSize: 10,
+    };
     const survey = new Model(structure);
+    survey.checkErrorsMode = 'onComplete';
 
     // Adds function to survey to be able to get the current parsed data
     survey.getParsedData = () => {
@@ -284,7 +287,6 @@ export class FormBuilderService {
     if (record) {
       survey.record = record;
     }
-
     // Add custom variables
     this.formHelpersService.addUserVariables(survey);
     this.formHelpersService.addApplicationVariables(survey);
@@ -295,10 +297,23 @@ export class FormBuilderService {
     } else if (survey.generateNewRecordOid) {
       survey.setVariable('record.id', createNewObjectId());
     }
-    survey.onAfterRenderQuestion.add((_, options) => {
-      renderGlobalProperties(this.referenceDataService);
+
+    survey.onAfterRenderQuestion.add((survey, options) => {
+      renderGlobalProperties(this.referenceDataService)(survey, options);
+
       //Add tooltips to questions if exist
       this.formHelpersService.addQuestionTooltips.bind(this.formHelpersService);
+
+      const questionType = options.question.getType();
+      switch (questionType) {
+        case 'paneldynamic':
+        case 'matrixdynamic':
+          this.formHelpersService.addUploadButton(options);
+          break;
+        case 'file':
+          this.formHelpersService.setDownloadListener(options);
+          break;
+      }
 
       if (options.question.getType() === 'file') {
         const files = options.question.value;
@@ -321,21 +336,13 @@ export class FormBuilderService {
       }
     });
 
-    // For each question, if validateOnValueChange is true, we will add a listener to the value change event
-    survey.getAllQuestions().forEach((question) => {
-      if (question.validateOnValueChange) {
-        question.registerFunctionOnPropertyValueChanged('value', () => {
-          question.validate();
-        });
-      }
-    });
-
-    survey.onQuestionValueChanged = {};
-    survey.onValueChanged.add((_, options) => {
-      if (survey.onQuestionValueChanged[options.name]) {
-        survey.onQuestionValueChanged[options.name](options);
-      }
-    });
+    // @TODO: Check if commenting this breaks guyane prescriptions
+    // survey.onQuestionValueChanged = {};
+    // survey.onValueChanged.add((_, options) => {
+    //   if (survey.onQuestionValueChanged[options.name]) {
+    //     survey.onQuestionValueChanged[options.name](options);
+    //   }
+    // });
 
     // Handles logic for after record creation, selection and deselection on resource type questions
     survey.onCompleting.add(() => {
@@ -424,63 +431,6 @@ export class FormBuilderService {
       ) {
         return;
       }
-
-      const uploadButton = document.createElement('button');
-      uploadButton.classList.add('sd-action', 'ml-auto');
-      uploadButton.onclick = () => {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.xlsx';
-        input.addEventListener('change', (e) => {
-          const file = (e.target as HTMLInputElement)?.files?.[0];
-          if (file) {
-            this.downloadService
-              .uploadFile('upload/parse/json', file)
-              .subscribe((data) => {
-                data.forEach((row: Record<string, unknown>) => {
-                  if (questionType === 'paneldynamic') {
-                    const question = options.question as PanelDynamicT;
-                    const newPanel = question.addPanel();
-
-                    Object.entries(row).forEach(([key, value]) => {
-                      const question = newPanel.getQuestionByName(key);
-                      if (question) {
-                        question.value = value;
-                      }
-                    });
-                  } else {
-                    const question = options.question as MatrixDynamicT;
-
-                    const idx = question.rowCount;
-                    question.addRow();
-                    console.log(idx, row);
-                    question.setRowValue(idx, row);
-                    question.expand();
-                  }
-                });
-              });
-          }
-        });
-        input.click();
-      };
-      uploadButton.innerHTML = this.translate.instant('common.uploadObject', {
-        name: 'XLSX',
-      });
-
-      const htmlEl = options.htmlElement.querySelector('.sd-element__header');
-      const title = htmlEl?.querySelector('.sd-element__title');
-
-      const div = document.createElement('div');
-      div.classList.add('flex', 'items-center');
-
-      if (title) {
-        div.appendChild(title.cloneNode(true));
-        htmlEl?.appendChild(div);
-        title.remove(); // remove original title
-      }
-
-      div.appendChild(uploadButton);
-      htmlEl?.appendChild(div);
     });
 
     // set the lang of the survey
@@ -545,53 +495,40 @@ export class FormBuilderService {
         survey.currentPageNo = index;
       });
 
-    survey.onAfterRenderSurvey.add(() => {
-      // onAfterRenderSurvey is called after each page change,
-      // so we add a custom flag to avoid running the code multiple times
-      // as it should only be run once, on first loading the entire survey
-      if (survey.initialConfigurationDone) {
-        return;
-      }
-      survey.checkErrorsMode = 'onComplete';
-      survey.initialConfigurationDone = true;
-
-      // Open survey on a specific page (openOnQuestionValuesPage has priority over openOnPage)
-      if (survey.openOnQuestionValuesPage) {
-        const question = survey.getQuestionByName(
-          survey.openOnQuestionValuesPage
-        );
-        if (question) {
-          const page = survey.getPageByName(question.value);
-          if (page) {
-            setTimeout(() => {
-              selectedPageIndex.next(page.visibleIndex);
-            }, 100);
-          }
-        }
-      } else if (survey.openOnPage) {
-        const page = survey.getPageByName(survey.openOnPage);
-        if (page) {
+    // Logic to initialize the survey on a specific page
+    if (survey.openOnPageByQuestionValue) {
+      const question = survey.getQuestionByName(
+        survey.openOnPageByQuestionValue
+      );
+      const page = survey.getPageByName(question?.value);
+      if (page) {
+        const setInitialPage = () => {
           selectedPageIndex.next(page.visibleIndex);
-        }
+          survey.onAfterRenderSurvey.remove(setInitialPage);
+        };
+        survey.onAfterRenderSurvey.add(setInitialPage);
+      }
+    } else if (survey.openOnPage) {
+      const page = survey.getPageByName(survey.openOnPage);
+      if (page) {
+        selectedPageIndex.next(page.visibleIndex);
+      }
+    }
+
+    survey.getAllQuestions().forEach((question) => {
+      // For each question, if validateOnValueChange is true, we will add a listener to the value change event
+      if (question.validateOnValueChange) {
+        question.registerFunctionOnPropertyValueChanged('value', () => {
+          question.validate();
+        });
       }
 
       // Set all the indexes of configured dynamic panel questions in the survey to the last panel.
-      survey.getAllQuestions().forEach((question) => {
-        if (
-          question.getType() == 'paneldynamic' &&
-          question.getPropertyValue('startOnLastElement')
-        ) {
-          question.currentIndex = question.visiblePanelCount - 1;
-        }
-      });
-      survey.onFocusInQuestion.add((survey, e) => {
-        const { title: rootTitle, name: rootName } = getRootParent(e.question);
-        survey.setVariable('__FOCUSED__.name', e.question.name);
-        survey.setVariable('__FOCUSED__.title', e.question.title);
-        survey.setVariable('__FOCUSED__.root.name', rootName);
-        survey.setVariable('__FOCUSED__.root.title', rootTitle);
-      });
+      if (question.getPropertyValue('startOnLastElement')) {
+        question.currentIndex = question.visiblePanelCount - 1;
+      }
     });
+
     survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
     survey.onUploadFiles.add((_, options: any) =>
       this.onUploadFiles(temporaryFilesStorage, options)
@@ -603,6 +540,13 @@ export class FormBuilderService {
       if (survey.currentPageNo !== selectedPageIndex.getValue()) {
         selectedPageIndex.next(survey.currentPageNo);
       }
+    });
+    survey.onFocusInQuestion.add((survey, e) => {
+      const { title: rootTitle, name: rootName } = getRootParent(e.question);
+      survey.setVariable('__FOCUSED__.name', e.question.name);
+      survey.setVariable('__FOCUSED__.title', e.question.title);
+      survey.setVariable('__FOCUSED__.root.name', rootName);
+      survey.setVariable('__FOCUSED__.root.title', rootTitle);
     });
   }
 
