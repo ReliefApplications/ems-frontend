@@ -20,16 +20,15 @@
           ? ''
           : 'text-gray-300'
       "
-      class="flex items-center"
     >
       {{ page.title ? page.title : page.name }}
       <ui-icon
-    class="ml-1"
+        class="ml-1"
         *ngIf="page.containsErrors"
         icon="error"
         variant="danger"
         [size]="20"
-      ></ui-icon
-    ></div>
+      ></ui-icon>
+    </div>
   </button>
 </div>

@@ -71,7 +71,7 @@
     <!-- <ui-button [disabled]="disableSaveAsDraft" (click)="saveAsDraft()">{{
       'components.form.draftRecords.save' | translate
     }}</ui-button> -->
-    <p *ngIf="!survey.autoSave">
+    <p>
       <ui-button variant="primary" category="secondary" (click)="submit()">
         {{ survey.toJSON().saveButtonText || ('common.save' | translate) }}
       </ui-button>

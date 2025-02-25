@@ -109,15 +109,13 @@ export const transformSurveyData = (survey: SurveyModel) => {
 export class FormHelpersService {
   /**
    * Saves with a debounce time
-   *
-   * @returns the debounced function
    */
-  private saveDebounced = debounce((value, callback: () => Promise<void>) => {
+  public saveDebounced = debounce((callback: () => Promise<void>) => {
     this.snackBar.openSnackBar(
       this.translate.instant('common.notifications.autoSaving')
     );
     callback();
-  }, 5000);
+  }, 10000);
 
   /**
    * Shared survey helper service.
@@ -230,16 +228,23 @@ export class FormHelpersService {
         )
       );
 
-      // Maps the files array, replacing the content with the path from the blob storage
-      const mappedFiles = ((question.value as Array<File>) || []).map(
-        (f: File, idx: number) => ({
-          ...f,
-          content: paths[idx],
-          readyToSave: true, //used to autosave only once
-        })
-      );
+      const questionFiles =
+        (question.value as Array<File & { readyToSave: boolean }>) || [];
 
-      question.value = mappedFiles;
+      // Maps the files array, replacing the content with the path from the blob storage
+      const mappedFiles = questionFiles
+        .filter((f) => !f.readyToSave)
+        .map((f: File, idx: number) => {
+          return {
+            ...f,
+            content: paths[idx],
+            readyToSave: true, //used to autosave only once
+          };
+        });
+
+      question.value = questionFiles
+        .filter((f) => f.readyToSave)
+        .concat(mappedFiles);
     }
   }
 
@@ -857,7 +862,9 @@ export class FormHelpersService {
     if (
       valueChangedEvent.question.getType() === 'file' &&
       valueChangedEvent.value.length &&
-      !valueChangedEvent.value[0].readyToSave
+      !valueChangedEvent.value.every(
+        (file: File & { readyToSave?: boolean }) => file.readyToSave
+      )
     ) {
       //Avoids editing the record multiple times for file questions
       await this.uploadFiles(
@@ -867,7 +874,7 @@ export class FormHelpersService {
       formComponent.temporaryFilesStorage.clear();
       return;
     }
-    this.saveDebounced(valueChangedEvent.value, callback);
+    this.saveDebounced(callback);
   }
 
   /**

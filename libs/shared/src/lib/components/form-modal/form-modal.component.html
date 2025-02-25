@@ -84,7 +84,6 @@
       [disabled]="saving"
       (click)="submit()"
       cdkFocusInitial
-      *ngIf="!survey?.autoSave"
     >
       {{ 'components.record.modal.update' | translate }}
     </ui-button>

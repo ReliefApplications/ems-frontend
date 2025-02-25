@@ -258,15 +258,16 @@ export class FormComponent
 
   /**
    * Creates the record when it is complete, or update it if provided.
+   *
+   * @param autoSave whether the save is automatic or manual
    */
-  private async onComplete() {
+  private async onComplete(autoSave = false) {
     this.formHelpersService
       .checkUniquePropriety(this.survey)
       .then(async (response: CheckUniqueProprietyReturnT) => {
         if (response.verified) {
-          const autoSave = this.survey.autoSave;
           let mutation: any;
-          this.surveyActive = false;
+          this.surveyActive = autoSave;
           if (!autoSave) {
             this.saving = true;
           }
@@ -528,13 +529,14 @@ export class FormComponent
       if (this.survey.autoSave) {
         this.formHelpersService.autoSaveRecord(
           options,
-          this.onComplete.bind(this),
+          this.onComplete.bind(this, true),
           this
         );
       }
     });
     this.survey.onComplete.add(async () => {
       this.onComplete();
+      this.formHelpersService.saveDebounced.cancel();
     });
 
     // Set readOnly fields
