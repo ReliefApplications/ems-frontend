@@ -90,7 +90,6 @@ export const init = (
       tagboxDiv = document.createElement('div');
       tagboxDiv.classList.add('flex', 'min-h-[36px]');
       tagboxDiv.id = 'tagbox';
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const tagboxInstance = createTagboxInstance(tagboxDiv, question);
       // Make sure the value is valid
       try {
@@ -107,13 +106,6 @@ export const init = (
         question.value = value;
       });
 
-      // On change, we update the value of the select
-      question.valueChangedCallback = () => {
-        if (question.value !== tagboxInstance.value) {
-          tagboxInstance.value = question.value;
-        }
-      };
-
       // We subscribe to whatever you write on the field so we can filter the data accordingly
       tagboxInstance.filterChange
         .pipe(
@@ -126,6 +118,16 @@ export const init = (
           updateChoices(tagboxInstance, question, searchValue);
         });
 
+      // On change, we update the value of the select
+      question._onValueChanged = () => {
+        if (question.value !== tagboxInstance.value) {
+          tagboxInstance.value = question.value;
+        }
+      };
+      question.registerFunctionOnPropertyValueChanged(
+        'value',
+        question._onValueChanged
+      );
       question._propertyValueChangedVirtual = () => {
         updateChoices(tagboxInstance, question, currentSearchValue);
       };
@@ -163,6 +165,10 @@ export const init = (
         question._propertyValueChangedVirtual
       );
       question._propertyValueChangedVirtual = undefined;
+      question.unRegisterFunctionOnPropertyValueChanged(
+        'value',
+        question._onValueChanged
+      );
     },
   };
 

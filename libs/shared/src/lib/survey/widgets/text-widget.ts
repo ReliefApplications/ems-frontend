@@ -3,12 +3,7 @@ import { EmbeddedViewRef } from '@angular/core';
 import { Question, QuestionText } from '../types';
 import { ButtonComponent } from '@oort-front/ui';
 import { IconComponent } from '@oort-front/ui';
-import {
-  CustomWidgetCollection,
-  JsonMetadata,
-  Serializer,
-  SurveyModel,
-} from 'survey-core';
+import { CustomWidgetCollection, JsonMetadata, Serializer } from 'survey-core';
 import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
 import {
@@ -189,7 +184,7 @@ export const init = (
             });
 
             // On change, we update the value of the select
-            question.valueChangedCallback = () => {
+            const updatePickerValue = () => {
               if (question.value !== pickerInstance.value?.toISOString()) {
                 try {
                   pickerInstance.writeValue(
@@ -201,6 +196,10 @@ export const init = (
                 }
               }
             };
+            question.registerFunctionOnPropertyValueChanged(
+              'value',
+              updatePickerValue
+            );
 
             if (question.value) {
               // Init the question with the date in the correct format
@@ -239,19 +238,15 @@ export const init = (
             // Positioning the button inside the picker
             el.parentElement?.classList.add('relative');
             button.classList.add('absolute', 'right-7', 'z-10');
-            (question.survey as SurveyModel).onValueChanged.add(
-              (_: any, options: any) => {
-                if (options.question.name === question.name) {
-                  if (options.question.value) {
-                    pickerInstance.writeValue(
-                      getDateDisplay(question.value, question.inputType)
-                    );
-                  } else {
-                    pickerInstance.writeValue(null as any);
-                  }
-                }
+            question.registerFunctionOnPropertyValueChanged('value', () => {
+              if (question.value) {
+                pickerInstance.writeValue(
+                  getDateDisplay(question.value, question.inputType)
+                );
+              } else {
+                pickerInstance.writeValue(null as any);
               }
-            );
+            });
             question.registerFunctionOnPropertyValueChanged(
               'readOnly',
               (value: boolean) => {
@@ -281,8 +276,7 @@ export const init = (
       };
       question.registerFunctionOnPropertyValueChanged(
         'inputType',
-        updateTextInput,
-        el.id // a unique key to distinguish fields
+        updateTextInput
       );
       // Init
       updateTextInput();
@@ -315,41 +309,19 @@ export const init = (
           parentElement.title =
             'The URL should start with "http://" or "https://"';
 
-          // Create an <a> HTMLElement only used to verify the validity of the URL
           const urlTester = document.createElement('a');
-          if (
-            question.value &&
-            !(
-              question.value.startsWith('https://') ||
-              question.value.startsWith('http://')
-            )
-          ) {
-            urlTester.href = 'https://' + question.value;
-          } else {
-            urlTester.href = question.value || '';
-          }
-          instance.disabled =
-            !urlTester.host || urlTester.host === window.location.host;
-
-          (question.survey as SurveyModel).onValueChanged.add(
-            (__: any, opt: any) => {
-              if (opt.question?.name === question.name) {
-                if (
-                  opt.question.value &&
-                  !(
-                    opt.question.value.startsWith('https://') ||
-                    opt.question.value.startsWith('http://')
-                  )
-                ) {
-                  urlTester.href = 'https://' + opt.question.value;
-                } else {
-                  urlTester.href = opt.question.value || '';
-                }
-                instance.disabled =
-                  !urlTester.host || urlTester.host === window.location.host;
-              }
-            }
-          );
+          const validateURL = () => {
+            const url = question.value || '';
+            const prefix =
+              url.startsWith('https://') || url.startsWith('http://')
+                ? ''
+                : 'https://';
+            urlTester.href = `${prefix}${url}`;
+            instance.disabled =
+              !urlTester.host || urlTester.host === window.location.host;
+          };
+          validateURL();
+          question.registerFunctionOnPropertyValueChanged('value', validateURL);
 
           button.instance.emittedEventSubject.subscribe((eventType: string) => {
             if (

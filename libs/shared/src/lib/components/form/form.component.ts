@@ -93,8 +93,6 @@ export class FormComponent
   public pages$ = this.pages.asObservable();
   /** The id of the last draft record that was loaded */
   public lastDraftRecord?: string;
-  /** Disables the save as draft button */
-  public disableSaveAsDraft = false;
   /** saving operations */
   public saving = false;
   /** Timeout for reset survey */
@@ -155,19 +153,16 @@ export class FormComponent
       }
 
       if (rule.direction === 'questionToState' || rule.direction === 'both') {
-        const updateState = (_: any, options: any) => {
-          if (options.question.name === question.name) {
-            const state = this.dashboardService.states
-              .getValue()
-              .find((s: DashboardState) => s.name === rule.state);
-            if (state) {
-              this.dashboardService.setDashboardState(options.value, state.id);
-            }
+        const updateState = () => {
+          const state = this.dashboardService.states
+            .getValue()
+            .find((s: DashboardState) => s.name === rule.state);
+          if (state) {
+            this.dashboardService.setDashboardState(question.value, state.id);
           }
         };
-
-        (question.survey as SurveyModel)?.onValueChanged.add(updateState);
-        updateState(null, { question, value: question.value });
+        question.registerFunctionOnPropertyValueChanged('value', updateState);
+        updateState();
       }
 
       if (rule.direction === 'stateToQuestion' || rule.direction === 'both') {
@@ -400,16 +395,6 @@ export class FormComponent
   }
 
   /**
-   * Handle draft record load .
-   *
-   * @param id if of the draft record loaded
-   */
-  public onLoadDraftRecord(id: string): void {
-    this.lastDraftRecord = id;
-    this.disableSaveAsDraft = true;
-  }
-
-  /**
    * Open a dialog modal to confirm the recovery of data
    *
    * @param record The record whose data we need to recover
@@ -503,10 +488,6 @@ export class FormComponent
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
-    this.survey.onValueChanged.add(() => {
-      // Allow user to save as draft
-      this.disableSaveAsDraft = false;
-    });
     this.survey.onComplete.add(this.onComplete);
 
     // Set readOnly fields
