@@ -80,17 +80,7 @@ export class ResourceSelectComponent extends GraphQLSelectComponent {
     this.valueField = 'id';
     this.textField = 'name';
     this.filterable = true;
-    this.searchChange.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      this.onSearchChange(value);
-    });
-  }
-
-  /**
-   * Override GraphQLSelectComponent onOpenSelect to only load query when
-   * select menu is open for the first time.
-   *
-   */
-  public override onOpenSelect(): void {
+    /** Initialize resource query with the component automatically*/
     if (!this.query) {
       this.query = this.apollo.watchQuery<ResourcesQueryResponse>({
         query: GET_RESOURCES,
@@ -99,15 +89,10 @@ export class ResourceSelectComponent extends GraphQLSelectComponent {
           sortField: 'name',
         },
       });
-
-      this.query.valueChanges
-        .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
-        .subscribe(({ data, loading }) => {
-          this.queryName = Object.keys(data)[0];
-          this.updateValues(data, loading);
-        });
     }
-    super.onOpenSelect();
+    this.searchChange.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      this.onSearchChange(value);
+    });
   }
 
   /**
