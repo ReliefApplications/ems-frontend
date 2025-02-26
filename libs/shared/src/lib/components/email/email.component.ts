@@ -21,6 +21,7 @@ import { QueryBuilderService } from '../../services/query-builder/query-builder.
 import { cloneDeep } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { DistributionModalComponent } from '../distribution-lists/components/distribution-modal/distribution-modal.component';
+import { PreviewDistributionComponent } from './components/preview-distribution/preview-distribution.component';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
@@ -111,12 +112,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   public showDLPreview = false;
   /** Preview DL data from Dashboard view */
   public previewDLData: any = [];
-  /** Expand for "To" list items. */
-  isExpandedTo = false;
-  /** Expand for "CC" list items. */
-  isExpandedCc = false;
-  /** Expand for "BCC" list items. */
-  isExpandedBcc = false;
 
   /**
    * Email Notification setup component.
@@ -1362,12 +1357,19 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param name The name of the DL.
    */
   async previewDL(name: string) {
-    this.showDLPreview = true;
+    this.emailService.emailListLoading = true;
     this.getDistributionDetails(name);
     this.previewDLData = await this.emailService.loadLayoutDistributionList(
       this.emailService.datasetsForm.getRawValue()
     );
-    this.emailService.loading = false;
+    this.emailService.emailListLoading = false;
+    this.dialog.open(PreviewDistributionComponent, {
+      data: { previewDLData: this.previewDLData },
+      disableClose: true,
+      autoFocus: false,
+      width: '40%',
+      height: '40%',
+    });
   }
 
   /**
@@ -1409,26 +1411,5 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       );
       this.emailService.setDistributionList(emailDistributionList);
     }
-  }
-
-  /**
-   * Expand see more email list dropdown for "To".
-   */
-  toggleExpandTo() {
-    this.isExpandedTo = !this.isExpandedTo;
-  }
-
-  /**
-   * Expand see more email list dropdown for "Cc".
-   */
-  toggleExpandCc() {
-    this.isExpandedCc = !this.isExpandedCc;
-  }
-
-  /**
-   * Expand see more email list dropdown for "Bcc".
-   */
-  toggleExpandBcc() {
-    this.isExpandedBcc = !this.isExpandedBcc;
   }
 }

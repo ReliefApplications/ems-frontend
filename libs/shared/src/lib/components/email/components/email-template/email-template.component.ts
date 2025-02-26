@@ -189,7 +189,6 @@ export class EmailTemplateComponent
     if (this.distributionList.controls.resource?.value && !this.resource) {
       this.selectedResourceId = this.distributionList.controls.resource.value;
       this.segmentForm.get('dataType')?.setValue('Resource');
-      this.getResourceData(false);
     }
     this.distributionList.controls.resource.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -201,6 +200,7 @@ export class EmailTemplateComponent
           this.activeSegmentIndex === 1
         ) {
           this.resetFilters(this.dlCommonQuery);
+          this.getResourceData(false);
         }
         if (
           value !== undefined &&
@@ -840,7 +840,6 @@ export class EmailTemplateComponent
         //Get Resource Details when Selecting Quick action from Grid for adding New DL
         if (this.DL_QuickAction?.resource) {
           this.selectedResourceId = this.DL_QuickAction.resource;
-          this.getResourceData(false);
         }
         if (isValid) {
           this.type === 'to' ? (this.emailService.isToValid = true) : '';
@@ -857,7 +856,6 @@ export class EmailTemplateComponent
         //Get Resource Details when Selecting Quick action from Grid for adding New DL
         if (this.DL_QuickAction?.resource) {
           this.selectedResourceId = this.DL_QuickAction.resource;
-          this.getResourceData(false);
         }
         if (isValid) {
           this.type === 'to' ? (this.emailService.isToValid = true) : '';

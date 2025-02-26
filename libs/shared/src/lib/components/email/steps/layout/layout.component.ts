@@ -302,8 +302,9 @@ export class LayoutComponent
     //Start:- When We are checking from Quick action grid in that case - Needs to check Resource of DL and Resource of Grid is matching or not
     // if its not matching in that case don't call DL services , (It should call once its matching the Resource Name)
     if (
+      this.emailService?.quickEmailDLQuery.to?.query?.name === '' ||
       this.emailService?.allPreviewData?.[0]?.dataQuery?.queryName ===
-      this.emailService?.quickEmailDLQuery?.to?.query?.name
+        this.emailService?.quickEmailDLQuery?.to?.query?.name
     ) {
       const response: any = await this.emailService.loadLayoutDistributionList(
         query
@@ -357,15 +358,17 @@ export class LayoutComponent
         this.emailService.emailDistributionList.bcc = distributionListBcc;
       }
     } else {
-      //When Not matching Resource In that case Don't show Manual DL as well 
-      if (this.emailService?.emailDistributionList?.to?.inputEmails) {
-        this.emailService.emailDistributionList.to.inputEmails = [];
-      }
-      if (this.emailService?.emailDistributionList?.cc?.inputEmails) {
-        this.emailService.emailDistributionList.cc.inputEmails = [];
-      }
-      if (this.emailService?.emailDistributionList?.bcc?.inputEmails) {
-        this.emailService.emailDistributionList.bcc.inputEmails = [];
+      //When Not matching Resource In that case Don't show Manual DL as well And if Resource !== ''
+      if (this.emailService?.quickEmailDLQuery.to.resource !== '') {
+        if (this.emailService?.emailDistributionList?.to?.inputEmails) {
+          this.emailService.emailDistributionList.to.inputEmails = [];
+        }
+        if (this.emailService?.emailDistributionList?.cc?.inputEmails) {
+          this.emailService.emailDistributionList.cc.inputEmails = [];
+        }
+        if (this.emailService?.emailDistributionList?.bcc?.inputEmails) {
+          this.emailService.emailDistributionList.bcc.inputEmails = [];
+        }
       }
     }
     this.populateDLForm();

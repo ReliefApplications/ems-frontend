@@ -106,7 +106,7 @@ export class ResourceSelectComponent extends GraphQLSelectComponent {
             filters: [
               {
                 field: 'name',
-                operator: 'contains',
+                operator: 'eq',
                 value: this.quickActionResource,
               },
             ],
@@ -138,7 +138,7 @@ export class ResourceSelectComponent extends GraphQLSelectComponent {
         filters: [
           {
             field: 'name',
-            operator: 'contains',
+            operator: this.quickActionResource === '' ? 'contains' : 'eq',
             value:
               this.quickActionResource === ''
                 ? search
