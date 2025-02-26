@@ -903,6 +903,7 @@
         "successEdit": "******",
         "successSave": "******"
       },
+      "lastSavedAt": "****** {{date}}",
       "layout": {
         "delete": {
           "confirmationMessage": "****** {{name}} ******"

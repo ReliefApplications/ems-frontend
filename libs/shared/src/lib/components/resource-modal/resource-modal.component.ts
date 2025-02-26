@@ -19,6 +19,7 @@ import { CheckUniqueProprietyReturnT } from '../../services/form-helper/form-hel
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommentsPopupComponent } from '../form-modal/comments-popup/comments-popup.component';
 import { FormPagesLayoutComponent } from '../form-pages-layout/form-pages-layout.component';
+import { DateModule } from '../../pipes/date/date.module';
 
 /**
  * Factory for creating scroll strategy
@@ -53,6 +54,7 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
     ReactiveFormsModule,
     CommentsPopupComponent,
     FormPagesLayoutComponent,
+    DateModule,
   ],
 })
 export class ResourceModalComponent extends FormModalComponent {

@@ -903,6 +903,7 @@
         "successEdit": "Successfully edited draft",
         "successSave": "Successfully saved as draft"
       },
+      "lastSavedAt": "Last saved at {{date}}",
       "layout": {
         "delete": {
           "confirmationMessage": "Do you confirm the deletion of the layout {{name}}?"

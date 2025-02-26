@@ -95,6 +95,10 @@ export class FormComponent
   public lastDraftRecord?: string;
   /** saving operations */
   public saving = false;
+  /** autosaving operations */
+  public autosaving = false;
+  /** last date saved */
+  public latestSaveDate: Date | null = null;
   /** Timeout for reset survey */
   private resetTimeoutListener!: NodeJS.Timeout;
   /** As we save the draft record in the db, the local storage is no longer used */
@@ -263,9 +267,8 @@ export class FormComponent
         if (response.verified) {
           let mutation: any;
           this.surveyActive = autoSave;
-          if (!autoSave) {
-            this.saving = true;
-          }
+          this.autosaving = autoSave;
+          this.saving = !autoSave;
           // const promises: Promise<any>[] =
           //   this.formHelpersService.uploadTemporaryRecords(this.survey);
 
@@ -359,6 +362,8 @@ export class FormComponent
                 });
               }
               this.saving = false;
+              this.autosaving = false;
+              this.latestSaveDate = new Date();
             });
         } else {
           this.snackBar.openSnackBar(

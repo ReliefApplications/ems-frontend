@@ -72,6 +72,7 @@ import { Comment, CommentsQueryResponse } from '../../models/comments.model';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { FormPagesLayoutComponent } from '../form-pages-layout/form-pages-layout.component';
+import { DateModule } from '../../pipes/date/date.module';
 
 /**
  * Interface of Dialog data.
@@ -110,6 +111,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     SurveyModule,
     CommentsPopupComponent,
     FormPagesLayoutComponent,
+    DateModule,
   ],
 })
 export class FormModalComponent
@@ -127,6 +129,10 @@ export class FormModalComponent
   public loading = true;
   /** Is form saving */
   public saving = false;
+  /** autosaving operations */
+  public autosaving = false;
+  /** last date saved */
+  public latestSaveDate: Date | null = null;
   /** Loaded form */
   public form?: Form;
   /** Loaded record (optional) */
@@ -657,9 +663,8 @@ export class FormModalComponent
       .checkUniquePropriety(this.survey)
       .then(async (response: CheckUniqueProprietyReturnT) => {
         if (response.verified) {
-          if (!autoSave) {
-            this.loading = true;
-          }
+          this.loading = !autoSave;
+          this.autosaving = autoSave;
           await this.formHelpersService.uploadFiles(
             this.temporaryFilesStorage,
             this.form?.id
@@ -788,10 +793,13 @@ export class FormModalComponent
             );
           }
           this.loading = false;
+          this.autosaving = false;
+          this.latestSaveDate = new Date();
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
           this.loading = false;
+          this.autosaving = false;
         },
       });
   }

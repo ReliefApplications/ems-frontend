@@ -36,7 +36,7 @@
           {{ comment.createdBy?.name }}
         </p>
         <p
-          [uiTooltip]="(comment.createdAt | date : 'medium') ?? ''"
+          [uiTooltip]="(comment.createdAt | sharedDate : 'medium') ?? ''"
           class="text-slate-400 pl-2 text-sm font-medium"
         >
           {{ getTimeAgo(comment.createdAt ?? 0) }}

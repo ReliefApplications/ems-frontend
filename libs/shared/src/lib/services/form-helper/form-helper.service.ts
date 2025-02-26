@@ -111,11 +111,8 @@ export class FormHelpersService {
    * Saves with a debounce time
    */
   public saveDebounced = debounce((callback: () => Promise<void>) => {
-    this.snackBar.openSnackBar(
-      this.translate.instant('common.notifications.autoSaving')
-    );
     callback();
-  }, 10000);
+  }, 3000);
 
   /**
    * Shared survey helper service.

@@ -914,6 +914,7 @@
         "successEdit": "Brouillon modifié avec succès",
         "successSave": "Enregistré dans les brouillons avec succès"
       },
+      "lastSavedAt": "Dernière sauvegarde à {{date}}",
       "layout": {
         "delete": {
           "confirmationMessage": "Voulez-vous vraiment supprimer la mise en page {{name}} ?"
