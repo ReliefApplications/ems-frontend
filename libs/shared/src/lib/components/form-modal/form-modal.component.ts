@@ -147,7 +147,7 @@ export class FormModalComponent
   /** Is multi edition of records enabled ( for grid actions ) */
   protected isMultiEdition = false;
   /** Temporary storage of files */
-  public temporaryFilesStorage: TemporaryFilesStorage = new Map();
+  protected temporaryFilesStorage: TemporaryFilesStorage = new Map();
   /** Stored merged data */
   private storedMergedData: any;
   /** If new records was uploaded */
@@ -354,7 +354,8 @@ export class FormModalComponent
         this.formHelpersService.autoSaveRecord(
           options,
           this.onUpdate.bind(this, false, true),
-          this
+          this.temporaryFilesStorage,
+          this.form?.id
         );
       });
     }

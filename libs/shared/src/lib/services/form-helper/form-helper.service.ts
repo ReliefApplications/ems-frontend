@@ -53,8 +53,6 @@ import { DashboardService } from '../dashboard/dashboard.service';
 import { GET_RECORD_BY_UNIQUE_FIELD_VALUE } from './graphql/queries';
 import { Metadata } from '../../models/metadata.model';
 import { Overlay, OverlayPositionBuilder } from '@angular/cdk/overlay';
-import { FormComponent } from '../../components/form/form.component';
-import { FormModalComponent } from '../../components/form-modal/form-modal.component';
 
 export type CheckUniqueProprietyReturnT = {
   verified: boolean;
@@ -854,12 +852,14 @@ export class FormHelpersService {
    *
    * @param valueChangedEvent surveyjs value changed event
    * @param callback Function to execute once debounce time has passed
-   * @param formComponent Form to save the record from
+   * @param temporaryFilesStorage Form to save the record from
+   * @param formId Id of the form
    */
   public async autoSaveRecord(
     valueChangedEvent: ValueChangedEvent,
     callback: () => Promise<void>,
-    formComponent: FormComponent | FormModalComponent
+    temporaryFilesStorage: TemporaryFilesStorage,
+    formId: string | undefined
   ) {
     if (
       valueChangedEvent.question.getType() === 'file' &&
@@ -869,11 +869,8 @@ export class FormHelpersService {
       )
     ) {
       //Avoids editing the record multiple times for file questions
-      await this.uploadFiles(
-        formComponent.temporaryFilesStorage,
-        formComponent.form?.id
-      );
-      formComponent.temporaryFilesStorage.clear();
+      await this.uploadFiles(temporaryFilesStorage, formId);
+      temporaryFilesStorage.clear();
       return;
     }
     this.saveDebounced(callback);

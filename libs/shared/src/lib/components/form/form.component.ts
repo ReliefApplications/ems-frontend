@@ -513,7 +513,8 @@ export class FormComponent
         this.formHelpersService.autoSaveRecord(
           options,
           this.onComplete.bind(this, true),
-          this
+          this.temporaryFilesStorage,
+          this.form.id
         );
       });
     }
