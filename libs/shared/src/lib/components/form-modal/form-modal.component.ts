@@ -701,11 +701,9 @@ export class FormModalComponent
                     this.snackBar.openSnackBar(`Error. ${errors[0].message}`, {
                       error: true,
                     });
-                    if (!autoSave) {
-                      this.ngZone.run(() => {
-                        this.closeDialog(autoSave);
-                      });
-                    }
+                    this.ngZone.run(() => {
+                      this.closeDialog(autoSave);
+                    });
                   } else {
                     if (this.lastDraftRecord) {
                       const callback = () => {
