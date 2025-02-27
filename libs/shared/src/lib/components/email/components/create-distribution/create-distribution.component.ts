@@ -31,7 +31,7 @@ export class CreateDistributionComponent implements OnInit, AfterViewInit {
   /** DL tile isDuplicate ? */
   public isDuplicateTitle = false;
   /** DL dialog data from Quick Action  */
-  @Input() DL_QuickAction: any;
+  @Input() quickActionDistribution: any;
 
   /**
    * Angular Component constructor
@@ -49,13 +49,17 @@ export class CreateDistributionComponent implements OnInit, AfterViewInit {
   ) {
     if (!this.emailService.isCustomTemplateEdit) {
       this.emailService.layoutTitle = '';
-      this.emailService.quickEmailDLQuery = { to: [], cc: [], bcc: [] };
+      this.emailService.quickEmailDistributionListQuery = {
+        to: [],
+        cc: [],
+        bcc: [],
+      };
     }
   }
 
   ngOnInit(): void {
     this.emailService.isToValid = false;
-    this.emailService.isDLEdit = true;
+    this.emailService.isDistributionListEdit = true;
     this.emailService.resetPreviewData();
     this.emailService.allPreviewData = [];
     this.emailService.disableNextActionBtn = true;
@@ -74,7 +78,7 @@ export class CreateDistributionComponent implements OnInit, AfterViewInit {
    */
   async submit() {
     // this.emailService.checkDLToValid();
-    const dlData = this.emailService?.DL_Data?.getRawValue();
+    const dlData = this.emailService?.distributionListData?.getRawValue();
     const emailDL = this.emailService.populateDistributionListForm(dlData);
     this.emailService.datasetsForm.setControl('emailDistributionList', emailDL);
     await this.emailService.validateNextButton();
@@ -130,7 +134,7 @@ export class CreateDistributionComponent implements OnInit, AfterViewInit {
   checkValidation() {
     const validateFlg =
       this.emailService?.distributionListName?.trim()?.length > 0 &&
-      !this.emailService?.isDLNameDuplicate &&
+      !this.emailService?.isDistributionListNameDuplicate &&
       this.emailService?.isToValid;
     return !validateFlg;
   }

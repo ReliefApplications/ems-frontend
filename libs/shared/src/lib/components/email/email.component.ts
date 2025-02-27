@@ -289,10 +289,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService
       .getEmailNotifications(this.applicationId)
       .subscribe(({ data }: any) => {
-        this.emailService.DL_Data = this.emailService.datasetsForm.get(
-          'emailDistributionList'
-        );
-        this.emailService.isDLEdit = false;
+        this.emailService.distributionListData =
+          this.emailService.datasetsForm.get('emailDistributionList');
+        this.emailService.isDistributionListEdit = false;
         this.emailService.distributionListNames = [];
         this.emailService.emailNotificationNames = [];
         if (data?.emailNotifications?.edges?.length === 0) {
@@ -485,9 +484,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     isClone?: boolean,
     isSendEmail?: boolean
   ) {
-    this.emailService.isDLEdit = false;
+    this.emailService.isDistributionListEdit = false;
     this.emailService.isQuickAction = false;
-    this.emailService.isDLNameDuplicate = false;
+    this.emailService.isDistributionListNameDuplicate = false;
     this.emailService.emailListLoading = true;
     this.emailService.enableAllSteps.next(true);
     this.emailService
@@ -1261,11 +1260,10 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   createDL(type?: string): void {
     if (type === 'create') {
       this.emailService.setDatasetForm();
-      this.emailService.isDLEdit = false;
+      this.emailService.isDistributionListEdit = false;
       this.emailService.setDatasetForm();
-      this.emailService.DL_Data = this.emailService.datasetsForm.get(
-        'emailDistributionList'
-      );
+      this.emailService.distributionListData =
+        this.emailService.datasetsForm.get('emailDistributionList');
     }
     this.showDLCreationWizard = true;
   }
@@ -1354,7 +1352,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   DLEditClose() {
     this.emailService.datasetsForm?.get('emailLayout')?.reset();
     this.emailService.customTemplateId = '';
-    this.emailService.isDLEdit = false;
+    this.emailService.isDistributionListEdit = false;
     this.emailService.allLayoutdata = {};
     this.emailService.emailLayout = {};
     this.getDistributionList();
@@ -1388,12 +1386,12 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    */
   getDistributionDetails(name: string) {
     this.emailService.setDatasetForm();
-    this.emailService.selectedDLName = '';
+    this.emailService.selectedDistributionListName = '';
     this.emailService.isQuickAction = false;
-    this.emailService.isDLNameDuplicate = false;
+    this.emailService.isDistributionListNameDuplicate = false;
     this.emailService.emailListLoading = true;
     this.emailService.enableAllSteps.next(true);
-    this.emailService.isDLEdit = true;
+    this.emailService.isDistributionListEdit = true;
     const selectedDL =
       this.distributionActualData.filter(
         (x: any) =>

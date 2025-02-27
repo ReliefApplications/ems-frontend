@@ -406,13 +406,13 @@ export class ButtonConfigComponent
 
   /** Open edit modal components and create new distribution list */
   public async addDistributionList() {
-    this.emailService.selectedDLName = '';
-    this.emailService.isDLEdit = true;
+    this.emailService.selectedDistributionListName = '';
+    this.emailService.isDistributionListEdit = true;
     this.emailService.isQuickAction = true;
     this.emailService.setDatasetForm();
     this.emailService.resetPreviewData();
     this.emailService.datasetsForm.reset();
-    this.emailService.DL_Data = this.emailService.datasetsForm.get(
+    this.emailService.distributionListData = this.emailService.datasetsForm.get(
       'emailDistributionList'
     );
     const dialogRef = this.dialog.open(DistributionModalComponent, {

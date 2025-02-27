@@ -170,14 +170,21 @@ export class LayoutComponent
       this.emailService.emailLayout.name = layoutName;
 
       //Bind DL data
-      if (this.emailService.quickEmailDLQuery?.length === 0) {
+      if (this.emailService.quickEmailDistributionListQuery?.length === 0) {
         const toData = this.emailService.emailDistributionList?.to;
         const ccData = this.emailService.emailDistributionList?.cc;
         const bccData = this.emailService.emailDistributionList?.bcc;
-        this.emailService.quickEmailDLQuery = { to: [], cc: [], bcc: [] };
-        this.emailService.quickEmailDLQuery.to = cloneDeep(toData);
-        this.emailService.quickEmailDLQuery.cc = cloneDeep(ccData);
-        this.emailService.quickEmailDLQuery.bcc = cloneDeep(bccData);
+        this.emailService.quickEmailDistributionListQuery = {
+          to: [],
+          cc: [],
+          bcc: [],
+        };
+        this.emailService.quickEmailDistributionListQuery.to =
+          cloneDeep(toData);
+        this.emailService.quickEmailDistributionListQuery.cc =
+          cloneDeep(ccData);
+        this.emailService.quickEmailDistributionListQuery.bcc =
+          cloneDeep(bccData);
       }
     } else {
       this.emailService.createPreviewData();
@@ -290,16 +297,20 @@ export class LayoutComponent
       ?.get('emailDistributionList')
       ?.getRawValue();
     if (this.emailService.isQuickAction) {
-      query.emailDistributionList.to = this.emailService.quickEmailDLQuery.to;
-      query.emailDistributionList.cc = this.emailService.quickEmailDLQuery.cc;
-      query.emailDistributionList.bcc = this.emailService.quickEmailDLQuery.bcc;
+      query.emailDistributionList.to =
+        this.emailService.quickEmailDistributionListQuery.to;
+      query.emailDistributionList.cc =
+        this.emailService.quickEmailDistributionListQuery.cc;
+      query.emailDistributionList.bcc =
+        this.emailService.quickEmailDistributionListQuery.bcc;
     }
     //Start:- When We are checking from Quick action grid in that case - Needs to check Resource of DL and Resource of Grid is matching or not
     // if its not matching in that case don't call DL services , (It should call once its matching the Resource Name)
     if (
-      this.emailService?.quickEmailDLQuery.to?.query?.name === '' ||
+      this.emailService?.quickEmailDistributionListQuery.to?.query?.name ===
+        '' ||
       this.emailService?.allPreviewData?.[0]?.dataQuery?.queryName ===
-        this.emailService?.quickEmailDLQuery?.to?.query?.name
+        this.emailService?.quickEmailDistributionListQuery?.to?.query?.name
     ) {
       const response: any = await this.emailService.loadLayoutDistributionList(
         query
@@ -354,7 +365,9 @@ export class LayoutComponent
       }
     } else {
       //When Not matching Resource In that case Don't show Manual DL as well And if Resource !== ''
-      if (this.emailService?.quickEmailDLQuery.to.resource !== '') {
+      if (
+        this.emailService?.quickEmailDistributionListQuery.to.resource !== ''
+      ) {
         if (this.emailService?.emailDistributionList?.to?.inputEmails) {
           this.emailService.emailDistributionList.to.inputEmails = [];
         }

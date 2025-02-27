@@ -121,68 +121,83 @@ export class SelectDistributionComponent
     | ElementRef
     | undefined;
   /** DL dialog data from Quick Action  */
-  @Input() DL_QuickAction: any;
+  @Input() quickActionDistribution: any;
 
   ngOnInit(): void {
-    this.emailService.DL_Data = this.emailService.datasetsForm.get(
+    this.emailService.distributionListData = this.emailService.datasetsForm.get(
       'emailDistributionList'
     );
     this.enableForm('to');
     this.enableForm('cc');
     this.enableForm('bcc');
-    if (this.emailService?.editId && this.emailService?.DL_Data?.id) {
-      this.distributionListId = this.emailService.DL_Data.id;
-      this.emailService.selectedDLName = cloneDeep(
-        this.emailService.DL_Data?.name
+    if (
+      this.emailService?.editId &&
+      this.emailService?.distributionListData?.id
+    ) {
+      this.distributionListId = this.emailService.distributionListData.id;
+      this.emailService.selectedDistributionListName = cloneDeep(
+        this.emailService.distributionListData?.name
       );
     }
     if (
-      !this.emailService.DL_Data?.get('to.query.filter.logic')?.value?.trim()
+      !this.emailService.distributionListData
+        ?.get('to.query.filter.logic')
+        ?.value?.trim()
     ) {
-      this.emailService.DL_Data.get('to.query.filter.logic').setValue('and');
+      this.emailService.distributionListData
+        .get('to.query.filter.logic')
+        .setValue('and');
     }
     if (
-      !this.emailService.DL_Data?.get('cc.query.filter.logic')?.value?.trim()
+      !this.emailService.distributionListData
+        ?.get('cc.query.filter.logic')
+        ?.value?.trim()
     ) {
-      this.emailService.DL_Data.get('cc.query.filter.logic').setValue('and');
+      this.emailService.distributionListData
+        .get('cc.query.filter.logic')
+        .setValue('and');
     }
     if (
-      !this.emailService.DL_Data?.get('bcc.query.filter.logic')?.value?.trim()
+      !this.emailService.distributionListData
+        ?.get('bcc.query.filter.logic')
+        ?.value?.trim()
     ) {
-      this.emailService.DL_Data.get('bcc.query.filter.logic').setValue('and');
+      this.emailService.distributionListData
+        .get('bcc.query.filter.logic')
+        .setValue('and');
     }
 
     if (
-      !this.emailService.DL_Data?.get(
-        'to.commonServiceFilter.filter.logic'
-      )?.value?.trim()
+      !this.emailService.distributionListData
+        ?.get('to.commonServiceFilter.filter.logic')
+        ?.value?.trim()
     ) {
-      this.emailService.DL_Data.get(
-        'to.commonServiceFilter.filter.logic'
-      ).setValue('and');
+      this.emailService.distributionListData
+        .get('to.commonServiceFilter.filter.logic')
+        .setValue('and');
     }
     if (
-      !this.emailService.DL_Data?.get(
-        'cc.commonServiceFilter.filter.logic'
-      )?.value?.trim()
+      !this.emailService.distributionListData
+        ?.get('cc.commonServiceFilter.filter.logic')
+        ?.value?.trim()
     ) {
-      this.emailService.DL_Data.get(
-        'cc.commonServiceFilter.filter.logic'
-      ).setValue('and');
+      this.emailService.distributionListData
+        .get('cc.commonServiceFilter.filter.logic')
+        .setValue('and');
     }
     if (
-      !this.emailService.DL_Data?.get(
-        'bcc.commonServiceFilter.filter.logic'
-      )?.value?.trim()
+      !this.emailService.distributionListData
+        ?.get('bcc.commonServiceFilter.filter.logic')
+        ?.value?.trim()
     ) {
-      this.emailService.DL_Data.get(
-        'bcc.commonServiceFilter.filter.logic'
-      ).setValue('and');
+      this.emailService.distributionListData
+        .get('bcc.commonServiceFilter.filter.logic')
+        .setValue('and');
     }
     if (!this.isAllSeparate()) {
       this.validateDistributionList();
     }
-    if (this.emailService.isDLEdit || this.emailService?.editId) {
+    if (this.emailService.isDistributionListEdit || this.emailService?.editId) {
       this.actualDLName = cloneDeep(this.emailService.distributionListName);
     }
   }
@@ -210,17 +225,17 @@ export class SelectDistributionComponent
       }
 
       if (separateEmailCount === datasetsCount && datasetsCount > 0) {
-        this.emailService.DL_Data.get('name')?.patchValue('');
-        this.emailService.clearDL(
-          this.emailService.DL_Data.get('to') as FormGroup
+        this.emailService.distributionListData.get('name')?.patchValue('');
+        this.emailService.clearDistributionList(
+          this.emailService.distributionListData.get('to') as FormGroup
         );
-        this.emailService.clearDL(
-          this.emailService.DL_Data.get('cc') as FormGroup
+        this.emailService.clearDistributionList(
+          this.emailService.distributionListData.get('cc') as FormGroup
         );
-        this.emailService.clearDL(
-          this.emailService.DL_Data.get('bcc') as FormGroup
+        this.emailService.clearDistributionList(
+          this.emailService.distributionListData.get('bcc') as FormGroup
         );
-        this.emailService.selectedDLName = '';
+        this.emailService.selectedDistributionListName = '';
         this.distributionListId = '';
 
         this.emailService.isAllSeparateEmail = true;
@@ -268,11 +283,12 @@ export class SelectDistributionComponent
    * @returns boolean
    */
   isNameDuplicate(): boolean {
-    const enteredName = this.emailService.DL_Data?.get('name')
+    const enteredName = this.emailService.distributionListData
+      ?.get('name')
       ?.value?.trim()
       .toLowerCase();
     if (
-      this.emailService.selectedDLName?.trim()?.toLowerCase() !==
+      this.emailService.selectedDistributionListName?.trim()?.toLowerCase() !==
       enteredName?.trim()?.toLowerCase()
     ) {
       let isDupe =
@@ -283,14 +299,18 @@ export class SelectDistributionComponent
           .includes(enteredName);
       }
       //Check for Edit scenario
-      if ((this.emailService.isDLEdit || this.emailService?.editId) && isDupe) {
+      if (
+        (this.emailService.isDistributionListEdit ||
+          this.emailService?.editId) &&
+        isDupe
+      ) {
         isDupe =
           this.actualDLName === this.emailService.distributionListName
             ? false
             : true;
       }
 
-      this.emailService.isDLNameDuplicate = isDupe;
+      this.emailService.isDistributionListNameDuplicate = isDupe;
       return isDupe;
     } else {
       return false;
@@ -305,14 +325,14 @@ export class SelectDistributionComponent
     const flag = this.isNameDuplicate();
     if (
       // this.emailDistributionList.To.length === 0 ||
-      this.emailService.DL_Data.get('name').value.length === 0 ||
+      this.emailService.distributionListData.get('name').value.length === 0 ||
       flag
     ) {
       this.emailService.stepperDisable.next({ id: 2, isValid: false });
     } else {
       this.emailService.stepperDisable.next({ id: 2, isValid: true });
       this.emailService.distributionListName =
-        this.emailService.DL_Data.get('name').value;
+        this.emailService.distributionListData.get('name').value;
     }
   }
 
@@ -342,7 +362,8 @@ export class SelectDistributionComponent
           this.emailService.cacheDistributionList.findIndex(
             (x: any) =>
               x?.name?.toLowerCase() ==
-              this.emailService.DL_Data?.get('name')
+              this.emailService.distributionListData
+                ?.get('name')
                 ?.value?.trim()
                 ?.toLowerCase()
           );
@@ -375,29 +396,34 @@ export class SelectDistributionComponent
       this.distributionLists[index]
     );
 
-    this.emailService.DL_Data.get('name')?.patchValue(
-      emailDL.get('name')?.value
-    );
-    this.emailService.DL_Data.get('id')?.patchValue(emailDL.get('id')?.value);
+    this.emailService.distributionListData
+      .get('name')
+      ?.patchValue(emailDL.get('name')?.value);
+    this.emailService.distributionListData
+      .get('id')
+      ?.patchValue(emailDL.get('id')?.value);
 
     this.emailService.clearAndPatch(
-      this.emailService.DL_Data.get('to') as FormGroup,
+      this.emailService.distributionListData.get('to') as FormGroup,
       emailDL.get('to') as FormGroup
     );
     this.emailService.clearAndPatch(
-      this.emailService.DL_Data.get('cc') as FormGroup,
+      this.emailService.distributionListData.get('cc') as FormGroup,
       emailDL.get('cc') as FormGroup
     );
     this.emailService.clearAndPatch(
-      this.emailService.DL_Data.get('bcc') as FormGroup,
+      this.emailService.distributionListData.get('bcc') as FormGroup,
       emailDL.get('bcc') as FormGroup
     );
     // this.emailDistributionList = emailDL;
-    this.emailService.selectedDLName = emailDL?.getRawValue()?.name;
+    this.emailService.selectedDistributionListName =
+      emailDL?.getRawValue()?.name;
     this.distributionListId = this.distributionLists[index]?.id;
     this.showExistingDistributionList = !this.showExistingDistributionList;
     this.validateDistributionList();
-    this.emailService.setDistributionList(this.emailService.DL_Data);
+    this.emailService.setDistributionList(
+      this.emailService.distributionListData
+    );
   }
 
   // transformDL() {
@@ -462,11 +488,12 @@ export class SelectDistributionComponent
           toAfterImport.forEach((email: string) => {
             // Access the 'inputEmails' FormArray and push a new FormControl with the trimmed email
             if (
-              !this.emailService.DL_Data?.getRawValue()?.to?.inputEmails?.includes(
-                email
-              )
+              !this.emailService.distributionListData
+                ?.getRawValue()
+                ?.to?.inputEmails?.includes(email)
             ) {
-              this.emailService.DL_Data.get('to')
+              this.emailService.distributionListData
+                .get('to')
                 .get('inputEmails')
                 .push(this.formBuilder.control(email.trim()));
             }
@@ -475,11 +502,12 @@ export class SelectDistributionComponent
           ccAfterImport.forEach((email: string) => {
             // Access the 'inputEmails' FormArray and push a new FormControl with the trimmed email
             if (
-              !this.emailService.DL_Data?.getRawValue()?.cc?.inputEmails?.includes(
-                email
-              )
+              !this.emailService.distributionListData
+                ?.getRawValue()
+                ?.cc?.inputEmails?.includes(email)
             ) {
-              this.emailService.DL_Data.get('cc')
+              this.emailService.distributionListData
+                .get('cc')
                 .get('inputEmails')
                 .push(this.formBuilder.control(email.trim()));
             }
@@ -488,11 +516,12 @@ export class SelectDistributionComponent
           bccAfterImport.forEach((email: string) => {
             // Access the 'inputEmails' FormArray and push a new FormControl with the trimmed email
             if (
-              !this.emailService.DL_Data?.getRawValue()?.bcc?.inputEmails?.includes(
-                email
-              )
+              !this.emailService.distributionListData
+                ?.getRawValue()
+                ?.bcc?.inputEmails?.includes(email)
             ) {
-              this.emailService.DL_Data.get('bcc')
+              this.emailService.distributionListData
+                .get('bcc')
                 .get('inputEmails')
                 .push(this.formBuilder.control(email.trim()));
             }
@@ -517,7 +546,7 @@ export class SelectDistributionComponent
 
     this.emailService.datasetsForm.setControl(
       'emailDistributionList',
-      this.emailService.DL_Data
+      this.emailService.distributionListData
     );
   }
 
@@ -530,7 +559,7 @@ export class SelectDistributionComponent
 
     //Distribution List name is valid
     this.emailService.distributionListName =
-      this.emailService.DL_Data.get('name').value;
+      this.emailService.distributionListData.get('name').value;
     this.emailService.validateNextButton();
   }
 
@@ -570,7 +599,7 @@ export class SelectDistributionComponent
   createNewDL() {
     this.distributionListId = '';
     this.showExistingDistributionList = !this.showExistingDistributionList;
-    this.emailService.selectedDLName = '';
+    this.emailService.selectedDistributionListName = '';
     this.emailService.distributionListName = '';
     // this.emailDistributionList.get('name').setValue('');
     this.emailService.datasetsForm
@@ -585,7 +614,7 @@ export class SelectDistributionComponent
     this.clearAllTabsData('to');
     this.clearAllTabsData('cc');
     this.clearAllTabsData('bcc');
-    this.emailService.DL_Data = this.emailService.datasetsForm.get(
+    this.emailService.distributionListData = this.emailService.datasetsForm.get(
       'emailDistributionList'
     );
   }

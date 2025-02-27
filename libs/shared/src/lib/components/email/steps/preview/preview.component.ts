@@ -172,11 +172,11 @@ export class PreviewComponent
       ?.getRawValue();
     if (this.emailService.isQuickAction) {
       this.query.emailDistributionList.to =
-        this.emailService.quickEmailDLQuery.to;
+        this.emailService.quickEmailDistributionListQuery.to;
       this.query.emailDistributionList.cc =
-        this.emailService.quickEmailDLQuery.cc;
+        this.emailService.quickEmailDistributionListQuery.cc;
       this.query.emailDistributionList.bcc =
-        this.emailService.quickEmailDLQuery.bcc;
+        this.emailService.quickEmailDistributionListQuery.bcc;
     }
     if (!this.emailService.isQuickAction) {
       this.loadDistributionList();
@@ -268,7 +268,7 @@ export class PreviewComponent
       !this.emailService.datasetsForm.value.emailLayout
     ) {
       this.emailService.isQuickAction = true;
-      this.emailService.quickEmailDLQuery = [];
+      this.emailService.quickEmailDistributionListQuery = [];
     }
     this.previewUrl = `${this.restService.apiUrl}/notification/preview-email/`;
 

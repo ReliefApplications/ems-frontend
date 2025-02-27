@@ -84,7 +84,7 @@ export class PreviewTemplateModalComponent implements OnInit {
     this.environment = environment;
     this.emailService.isQuickAction = true;
     this.emailService.datasetsForm.get('emailDistributionList')?.reset();
-    this.emailService.quickEmailDLQuery = [];
+    this.emailService.quickEmailDistributionListQuery = [];
     // Show File upload in step 1 only on clicking the action button from Grid and send email in step 2
     this.emailService.showFileUpload = true;
     this.currentStep = 0;

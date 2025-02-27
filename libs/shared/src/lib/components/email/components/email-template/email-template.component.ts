@@ -136,7 +136,7 @@ export class EmailTemplateComponent
   /** DL preview emails from Common Services  */
   public previewCsEmails: any = [];
   /** DL dialog data from Quick Action  */
-  @Input() DL_QuickAction: any;
+  @Input() quickActionDistribution: any;
   /** Selected Quick Action resource Name */
   public selectedResourceName = '';
 
@@ -267,8 +267,8 @@ export class EmailTemplateComponent
     }
 
     //GetResourceName for Quick Action DL
-    if (this.DL_QuickAction?.resource) {
-      this.getResourceNameById(this.DL_QuickAction.resource);
+    if (this.quickActionDistribution?.resource) {
+      this.getResourceNameById(this.quickActionDistribution.resource);
     }
   }
 
@@ -607,12 +607,12 @@ export class EmailTemplateComponent
       if (
         this.emailService.isToValid &&
         this.emailService.distributionListName?.trim()?.length > 0 &&
-        this.emailService.isDLNameDuplicate
+        this.emailService.isDistributionListNameDuplicate
       ) {
         this.emailService.disableSaveAndProceed.next(false);
       }
     }
-    if (this.emailService?.isDLEdit) {
+    if (this.emailService?.isDistributionListEdit) {
       this.emailService.isToValid =
         this.selectedFields?.length === 0 || this.showFieldsWarning
           ? false
@@ -814,7 +814,7 @@ export class EmailTemplateComponent
         hasEmails) &&
       this.emailService.datasetsForm?.value?.emailDistributionList?.name
         ?.length > 0 &&
-      !this.emailService.isDLNameDuplicate &&
+      !this.emailService.isDistributionListNameDuplicate &&
       this.distributionListValid;
 
     switch (this.activeSegmentIndex) {
@@ -828,7 +828,9 @@ export class EmailTemplateComponent
           this.type === 'to' ? (this.emailService.isToValid = true) : '';
           this.emailService.disableSaveAsDraft.next(false);
         }
-        this.type === 'to' ? (this.emailService.toDLHasFilter = false) : '';
+        this.type === 'to'
+          ? (this.emailService.toDistributionListHasFilter = false)
+          : '';
         break;
       }
       // Select with filter
@@ -839,8 +841,8 @@ export class EmailTemplateComponent
         this.isPreviewEmail = true;
         this.expandedIndex = 0;
         //Get Resource Details when Selecting Quick action from Grid for adding New DL
-        if (this.DL_QuickAction?.resource) {
-          this.selectedResourceId = this.DL_QuickAction.resource;
+        if (this.quickActionDistribution?.resource) {
+          this.selectedResourceId = this.quickActionDistribution.resource;
         } else {
           this.getResourceData(false);
         }
@@ -849,7 +851,9 @@ export class EmailTemplateComponent
           this.type === 'to' ? (this.emailService.isToValid = true) : '';
           this.emailService.disableSaveAsDraft.next(false);
         }
-        this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
+        this.type === 'to'
+          ? (this.emailService.toDistributionListHasFilter = true)
+          : '';
         this.currentTabIndex = 0;
         break;
       }
@@ -858,8 +862,8 @@ export class EmailTemplateComponent
         this.previewEmails = [];
         this.isPreviewEmail = true;
         //Get Resource Details when Selecting Quick action from Grid for adding New DL
-        if (this.DL_QuickAction?.resource) {
-          this.selectedResourceId = this.DL_QuickAction.resource;
+        if (this.quickActionDistribution?.resource) {
+          this.selectedResourceId = this.quickActionDistribution.resource;
         } else {
           this.getResourceData(false);
         }
@@ -867,7 +871,9 @@ export class EmailTemplateComponent
           this.type === 'to' ? (this.emailService.isToValid = true) : '';
           this.emailService.disableSaveAsDraft.next(false);
         }
-        this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
+        this.type === 'to'
+          ? (this.emailService.toDistributionListHasFilter = true)
+          : '';
         break;
       }
       // Select from Common Services
@@ -883,7 +889,9 @@ export class EmailTemplateComponent
         this.resetFilters(this.dlQuery);
         this.distributionList.get('resource').setValue('');
         this.currentTabIndex = 0;
-        this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
+        this.type === 'to'
+          ? (this.emailService.toDistributionListHasFilter = true)
+          : '';
         break;
       }
     }

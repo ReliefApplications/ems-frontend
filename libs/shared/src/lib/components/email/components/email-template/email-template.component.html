@@ -69,7 +69,7 @@
           formControlName="resource"
           [selectedElements]="[resource]"
           [quickActionResource]="
-            DL_QuickAction?.resource ? selectedResourceName : ''
+          quickActionDistribution?.resource ? selectedResourceName : ''
           "
         ></shared-resource-select>
         <ui-button
@@ -183,7 +183,7 @@
                   formControlName="resource"
                   [selectedElements]="[resource]"
                   [quickActionResource]="
-                    DL_QuickAction?.resource ? selectedResourceName : ''
+                  quickActionDistribution?.resource ? selectedResourceName : ''
                   "
                 ></shared-resource-select>
                 <ui-button
