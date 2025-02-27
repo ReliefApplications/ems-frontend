@@ -12,8 +12,7 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import convertToMinutes from '../../../../utils/convert-to-minutes';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { cloneDeep } from 'lodash';
-import { RestService } from '../../../../services/rest/rest.service';
-import { HttpClient } from '@angular/common/http';
+
 /**
  * Email layout page component.
  */
@@ -142,17 +141,13 @@ export class LayoutComponent
    * @param emailService Service used for email-related operations and state management
    * @param snackbar Snackbar helper function
    * @param translate i18n translate service
-   * @param restService - The rest service for making REST requests.
-   * @param http - The http client for making HTTP requests.
    */
   constructor(
     private fb: FormBuilder,
-    private editorService: EditorService,
+    public editorService: EditorService,
     public emailService: EmailService,
     public snackbar: SnackbarService,
-    public translate: TranslateService,
-    private restService: RestService,
-    private http: HttpClient
+    public translate: TranslateService
   ) {
     super();
     // Set the editor base url based on the environment file
