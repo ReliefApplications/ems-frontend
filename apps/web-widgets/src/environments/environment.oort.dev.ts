@@ -18,6 +18,7 @@ const authConfig: AuthConfig = {
  * Environment file for local development.
  */
 export const environment: Environment = {
+  /* cSpell:disable */
   ...sharedEnvironment,
   production: true,
   apiUrl: 'https://oort-dev.oortcloud.tech/api',
@@ -29,4 +30,5 @@ export const environment: Environment = {
   theme,
   tinymceBaseUrl: '',
   i18nUrl: '',
+  /* cSpell:enable */
 };

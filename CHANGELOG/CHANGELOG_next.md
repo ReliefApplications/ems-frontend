@@ -1,3 +1,10 @@
+## [2.17.2-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.1...v2.17.2-rc.1) (2025-02-27)
+
+
+### Bug Fixes
+
+* nested fields from ref data can now be used as display field in contextual dashboards ([#2770](https://github.com/ReliefApplications/ems-frontend/issues/2770)) ([20557b3](https://github.com/ReliefApplications/ems-frontend/commit/20557b3e9984cb347b39e2d4acde88060aea582e)), closes [AB#110861](https://github.com/AB/issues/110861)
+
 ## [2.17.1-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0...v2.17.1-rc.1) (2025-02-19)
 
 

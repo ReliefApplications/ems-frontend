@@ -12,6 +12,7 @@ import { CustomPropertyGridComponentTypes } from '../components/utils/components
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
 import { get, isArray, isEqual, isNil, omit } from 'lodash';
 import graphQLVariables from './graphql-variables';
+import { Injector } from '@angular/core';
 
 /**
  * Sets the choices on the default value modal editor for a reference data dropdown
@@ -163,12 +164,11 @@ export const init = (referenceDataService: ReferenceDataService): void => {
  * Render the custom properties
  *
  * @param questionElement The question element
- * @param referenceDataService The reference data service
+ * @param injector Angular injector
  */
-export const render = (
-  questionElement: Question,
-  referenceDataService: ReferenceDataService
-): void => {
+export const render = (questionElement: Question, injector: Injector): void => {
+  const referenceDataService = injector.get(ReferenceDataService);
+
   if (isSelectQuestion(questionElement)) {
     const question = questionElement as QuestionSelectBase;
 

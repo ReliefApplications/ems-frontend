@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { prettifyLabel } from '../../utils/prettify';
 import get from 'lodash/get';
 import { ApiProxyService } from '../api-proxy/api-proxy.service';
@@ -13,11 +13,12 @@ import {
 } from '../../utils/cache-with-expiry';
 import { FormBuilder } from '@angular/forms';
 import { flatDeep } from '../../utils/array-filter';
-import { Apollo } from 'apollo-angular';
+import { Apollo, gql } from 'apollo-angular';
 import { ResourceQueryResponse } from '../../models/resource.model';
 import { GET_RESOURCE_FIELDS } from './graphql/queries';
-import { map } from 'rxjs';
+import { firstValueFrom, map } from 'rxjs';
 import jsonpath from 'jsonpath';
+import { ApolloQueryResult } from '@apollo/client';
 
 /** List of disabled fields */
 const DISABLED_FIELDS = [
@@ -60,14 +61,16 @@ interface IMeta {
 export class GridService {
   /**
    * Shared grid service for the dashboards.
-   * Exposes the available wigets, and find the settings from a widget.
+   * Exposes the available widgets, and find the settings from a widget.
    *
+   * @param environment Environment configuration
    * @param fb Angular form builder
    * @param apiProxyService Shared API proxy service
    * @param translate Translate service
    * @param apollo Apollo service
    */
   constructor(
+    @Inject('environment') private environment: any,
     private fb: FormBuilder,
     private apiProxyService: ApiProxyService,
     private translate: TranslateService,
@@ -316,12 +319,26 @@ export class GridService {
       key: string
     ): Promise<void> => {
       if (meta.choicesByGraphQL) {
-        const value = await this.apiProxyService.buildPostRequest(
-          meta.choicesByGraphQL.url || '',
-          {
-            query: meta.choicesByGraphQL.query,
-          }
-        );
+        const url = meta.choicesByGraphQL.url || '';
+        let value: ArrayBuffer | ApolloQueryResult<unknown>;
+        if (url.startsWith(this.environment.csApiUrl)) {
+          const csApolloClient = this.apollo.use('csClient');
+          value = await firstValueFrom(
+            csApolloClient.query({
+              query: gql`
+                ${meta.choicesByGraphQL.query || ''}
+              `,
+            })
+          );
+        } else {
+          value = await this.apiProxyService.buildPostRequest(
+            meta.choicesByGraphQL.url || '',
+            {
+              query: meta.choicesByGraphQL.query,
+            }
+          );
+        }
+
         const choices = this.extractChoices(value, meta);
         setWithExpiry(key, choices);
         metaFields[fieldName] = {
@@ -363,7 +380,9 @@ export class GridService {
             let key: string;
             if (meta.choicesByGraphQL) {
               url = meta.choicesByGraphQL.url;
-              key = `${url}:${meta.choicesByGraphQL.query || ''}`;
+              key = `${url}:${meta.choicesByGraphQL.query || ''}:${
+                meta.choicesByGraphQL.path
+              }`; // <url>:<query>:<path-to-data>
             } else {
               url = meta.choicesByUrl.url;
               key = url;
@@ -387,6 +406,7 @@ export class GridService {
             } else {
               promises.push(fetchChoicesAndSetMeta(fieldName, meta, key));
             }
+            promises.push(fetchChoicesAndSetMeta(fieldName, meta, key));
           } else if (meta.choices) {
             metaFields[path] = {
               ...meta,
