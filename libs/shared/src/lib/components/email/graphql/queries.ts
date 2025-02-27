@@ -775,15 +775,3 @@ export const GET_CS_USER_FIELDS = gql`
     }
   }
 `;
-
-/**
- *Graphql query for Delete email notification permanently
- */
-export const DELETE_DISTRIBUTION_LIST = gql`
-  mutation DeleteEmailDistributionList($id: ID!, $applicationId: ID!) {
-    deleteEmailDistributionList(id: $id, applicationId: $applicationId) {
-      success
-      message
-    }
-  }
-`;
