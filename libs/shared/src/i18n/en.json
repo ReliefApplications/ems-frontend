@@ -589,6 +589,7 @@
         "unwind": "Deconstructs an array field from the input documents to output a document for each element.",
         "user": "Replaces the user ID with some information about the user. Note that the result will always be an array. Use unwind if necessary."
       },
+      "unavailableFields": "These fields are unavailable because their types are not supported",
       "userProperty": "User property"
     },
     "apiConfiguration": {
@@ -1584,8 +1585,10 @@
           "mapDetailsTitle": "Query Map View",
           "mapDetailsTooltip": "Centered by default on selected record"
         },
+        "openEditor": "Open html",
         "openSettings": "Open settings",
         "tooltip": {
+          "displayEditor": "Display html in modal",
           "displayMap": "Display map",
           "openPage": "Navigate to page",
           "saved": "Changes saved",

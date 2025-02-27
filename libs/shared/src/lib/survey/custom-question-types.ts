@@ -6,6 +6,7 @@ import * as ResourcesComponent from './components/resources';
 import * as OwnerComponent from './components/owner';
 import * as UsersComponent from './components/users';
 import * as GeospatialComponent from './components/geospatial';
+import * as EditorComponent from './components/editor';
 import * as ShapeFileComponent from './components/shapefile-picker';
 import { Apollo } from 'apollo-angular';
 import { Dialog } from '@angular/cdk/dialog';
@@ -72,6 +73,10 @@ export const InitCustomQuestionComponent: {
     const { injector, instance } = options;
     const domService = injector.get(DomService);
     GeospatialComponent.init(domService, instance);
+  },
+  editor: (options) => {
+    const { injector, instance } = options;
+    EditorComponent.init(injector, instance);
   },
   shapeFile: (options) => {
     const { injector, instance } = options;

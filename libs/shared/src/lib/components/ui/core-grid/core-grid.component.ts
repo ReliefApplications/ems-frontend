@@ -1008,6 +1008,7 @@ export class CoreGridComponent
    * @param event.value value to apply to item, if any
    * @param event.field field to use in action, optional
    * @param event.pageUrl url of page
+   * @param event.html html string
    */
   public onAction(event: {
     action: string;
@@ -1016,6 +1017,7 @@ export class CoreGridComponent
     value?: any;
     field?: any;
     pageUrl?: string;
+    html?: string;
   }): void {
     const getTargetUrl = () => {
       if (!event.item) {
@@ -1166,7 +1168,19 @@ export class CoreGridComponent
             });
           }
         );
-
+        break;
+      }
+      case 'editor': {
+        import('./editor-modal/editor-modal.component').then(
+          ({ EditorModalComponent }) => {
+            this.dialog.open(EditorModalComponent, {
+              data: {
+                html: event.item[event.field.name],
+                title: event.field.name,
+              },
+            });
+          }
+        );
         break;
       }
       case 'mapView': {

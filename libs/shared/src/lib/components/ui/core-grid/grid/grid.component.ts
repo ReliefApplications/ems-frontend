@@ -959,6 +959,20 @@ export class GridComponent
   }
 
   /**
+   * Open editor around clicked item
+   *
+   * @param dataItem Clicked item
+   * @param field html field
+   */
+  public onOpenEditorModal(dataItem: any, field: any) {
+    this.action.emit({
+      action: 'editor',
+      item: dataItem,
+      field,
+    });
+  }
+
+  /**
    * Expand the action column so the edit icon fits
    */
   expandActionsColumn() {
