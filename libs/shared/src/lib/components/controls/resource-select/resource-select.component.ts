@@ -101,16 +101,19 @@ export class ResourceSelectComponent extends GraphQLSelectComponent {
         variables: {
           first: ITEMS_PER_PAGE,
           sortField: 'name',
-          filter: {
-            logic: 'and',
-            filters: [
-              {
-                field: 'name',
-                operator: 'eq',
-                value: this.quickActionResource,
-              },
-            ],
-          },
+          filter:
+            this.quickActionResource === ''
+              ? {}
+              : {
+                  logic: 'and',
+                  filters: [
+                    {
+                      field: 'name',
+                      operator: 'eq',
+                      value: this.quickActionResource,
+                    },
+                  ],
+                },
         },
       });
 

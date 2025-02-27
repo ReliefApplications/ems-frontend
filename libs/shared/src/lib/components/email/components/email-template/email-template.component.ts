@@ -840,7 +840,10 @@ export class EmailTemplateComponent
         //Get Resource Details when Selecting Quick action from Grid for adding New DL
         if (this.DL_QuickAction?.resource) {
           this.selectedResourceId = this.DL_QuickAction.resource;
+        } else {
+          this.getResourceData(false);
         }
+
         if (isValid) {
           this.type === 'to' ? (this.emailService.isToValid = true) : '';
           this.emailService.disableSaveAsDraft.next(false);
@@ -856,6 +859,8 @@ export class EmailTemplateComponent
         //Get Resource Details when Selecting Quick action from Grid for adding New DL
         if (this.DL_QuickAction?.resource) {
           this.selectedResourceId = this.DL_QuickAction.resource;
+        } else {
+          this.getResourceData(false);
         }
         if (isValid) {
           this.type === 'to' ? (this.emailService.isToValid = true) : '';

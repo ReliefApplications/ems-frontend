@@ -124,11 +124,9 @@ export class SelectDistributionComponent
   @Input() DL_QuickAction: any;
 
   ngOnInit(): void {
-    if (!this.emailService?.isDLEdit) {
-      this.emailService.DL_Data = this.emailService.datasetsForm.get(
-        'emailDistributionList'
-      );
-    }
+    this.emailService.DL_Data = this.emailService.datasetsForm.get(
+      'emailDistributionList'
+    );
     this.enableForm('to');
     this.enableForm('cc');
     this.enableForm('bcc');
