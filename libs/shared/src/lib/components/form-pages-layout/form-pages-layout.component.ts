@@ -18,12 +18,19 @@ import { ButtonModule, IconModule, TooltipModule } from '@oort-front/ui';
   styleUrls: ['./form-pages-layout.component.scss'],
   animations: [
     trigger('toggle', [
-      state('collapsed', style({ width: '0px' })),
-      state('expanded', style({ width: '*' })),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
-      ),
+      state('collapsed', style({ width: '0px', opacity: 0 })),
+      state('expanded', style({ width: '*', opacity: 1 })),
+      transition('expanded => collapsed', [
+        animate(
+          '225ms cubic-bezier(0.4, 0.0, 0.2, 1)',
+          style({ width: '0px' })
+        ),
+        animate('225ms ease-out', style({ opacity: 0 })),
+      ]),
+      transition('collapsed => expanded', [
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)', style({ width: '*' })),
+        animate('225ms ease-in', style({ opacity: 1 })),
+      ]),
     ]),
   ],
 })
