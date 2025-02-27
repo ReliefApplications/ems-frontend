@@ -18,6 +18,7 @@ import {
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { GET_RESOURCE_RECORDS } from '../../graphql/queries';
+import get from 'lodash/get';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -56,8 +57,8 @@ export class ContextSelectorComponent implements OnInit {
   public recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
   /** Field of contextual reference data */
   public refDataValueField = '';
-  /** Contextual reference data elements  */
-  public refDataElements: any[] = [];
+  /** Contextual reference data choices  */
+  public refDataChoices: { text: unknown; value: unknown }[] = [];
 
   /**
    * Dashboard context selector.
@@ -122,7 +123,10 @@ export class ContextSelectorComponent implements OnInit {
         .then((refData) => {
           this.refDataValueField = refData.valueField || '';
           this.refDataService.fetchItems(refData).then(({ items }) => {
-            this.refDataElements = items;
+            this.refDataChoices = items.map((x) => ({
+              value: get(x, this.refDataValueField),
+              text: get(x, this.context.displayField),
+            }));
           });
         });
     }

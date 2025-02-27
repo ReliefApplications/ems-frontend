@@ -32,15 +32,15 @@
       (click)="contextId.setValue(null)"
     ></ui-button>
   </div>
-  <!-- Selection of element from reference data -->
+  <!-- Selection of choice from reference data -->
   <div uiFormFieldDirective [outline]="false" *ngIf="$any(context).refData">
     <label>{{ 'models.dashboard.context.refData.element' | translate }}</label>
     <ui-select-menu [formControl]="contextId" [filterable]="true">
       <ui-select-option
-        *ngFor="let element of refDataElements"
-        [value]="element[refDataValueField]"
+        *ngFor="let choice of refDataChoices"
+        [value]="choice.value"
       >
-        {{ element[context.displayField] }}
+        {{ choice.text }}
       </ui-select-option>
     </ui-select-menu>
     <ui-button
