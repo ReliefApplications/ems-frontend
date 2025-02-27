@@ -35,3 +35,12 @@ export const ADD_CONFIGURATION = gql`
     }
   }
 `;
+
+/** Graphql mutation for deleting a distribution list */
+export const DELETE_EMAIL_DISTRIBUTION_LIST = gql`
+  mutation DeleteEmailDistributionList($id: ID!) {
+    deleteEmailDistributionList(id: $id) {
+      name
+    }
+  }
+`;

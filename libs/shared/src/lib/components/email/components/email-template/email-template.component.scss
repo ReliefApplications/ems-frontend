@@ -1,6 +1,6 @@
 .loadingSign {
   display: none;
-  width: 100%;  
+  width: 100%;
   justify-content: center;
   align-items: start;
   padding: 0px;
@@ -9,4 +9,7 @@
     display: flex;
     height: 40px;
   }
+}
+.disableResource {
+  pointer-events: none;
 }

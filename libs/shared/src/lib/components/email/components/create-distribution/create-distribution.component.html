@@ -1,0 +1,25 @@
+<div class="flex flex-col items-center">
+  <div class="max-w-5xl w-full">
+    <app-select-distribution
+      [DL_QuickAction]="DL_QuickAction"
+    ></app-select-distribution>
+  </div>
+</div>
+<!-- Floating div for actions buttons -->
+<ui-fixed-wrapper>
+  <ng-container *ngTemplateOutlet="actionsTmpl"></ng-container>
+</ui-fixed-wrapper>
+<ng-template #actionsTmpl>
+  <div class="flex justify-end gap-2 flex-wrap">
+    <!-- Save -->
+    <ui-button
+      [disabled]="checkValidation()"
+      type="submit"
+      category="secondary"
+      variant="primary"
+      (click)="submit()"
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </div>
+</ng-template>

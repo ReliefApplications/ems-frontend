@@ -2,11 +2,16 @@
 <div class="bg-[#F5FAFF] mb-4 p-5">
   <label class="block text-base font-medium leading-6 text-gray-900">{{
     'common.notifications.email.attachment.title' | translate
-    }}</label>
-  <div class="flex items-center justify-between gap-5 mb-5 border border-gray-300 rounded-md p-4">
+  }}</label>
+  <div
+    class="flex items-center justify-between gap-5 mb-5 border border-gray-300 rounded-md p-4"
+  >
     <!-- File Upload Button -->
     <div class="w-full">
-      <label for="fileUpload" class="block text-sm font-normal leading-6 text-gray-900">
+      <label
+        for="fileUpload"
+        class="block text-sm font-normal leading-6 text-gray-900"
+      >
         {{ 'common.notifications.email.attachment.uploadFile' | translate }}
       </label>
       <!-- File Upload Type -->
@@ -81,29 +86,45 @@
         </form> -->
 
         <!-- File input -->
-        <input type="file" id="fileUpload" name="fileUpload" (change)="onFileSelected($event)"
-          class="text-sm py-1 px-2 border border-gray-300 bg-white rounded-lg shadow-sm w-full" multiple />
+        <input
+          type="file"
+          id="fileUpload"
+          name="fileUpload"
+          (change)="onFileSelected($event)"
+          class="text-sm py-1 px-2 border border-gray-300 bg-white rounded-lg shadow-sm w-full"
+          multiple
+        />
       </div>
     </div>
   </div>
 
   <div>
     <!-- Provided files -->
-    <div *ngIf="
+    <div
+      *ngIf="
         this.emailService.datasetsForm?.getRawValue()?.attachments?.files
           ?.length > 0
-      " class="flex flex-wrap gap-2">
-      <ui-chip variant="primary" *ngFor="
+      "
+      class="flex flex-wrap gap-2"
+    >
+      <ui-chip
+        variant="primary"
+        *ngFor="
           let file of this.emailService.datasetsForm.getRawValue().attachments
             .files;
           let i = index
-        " [removable]="true" (removed)="removeFile(i)">
+        "
+        [removable]="true"
+        (removed)="removeFile(i)"
+      >
         {{ file.fileName }}
       </ui-chip>
     </div>
     <!-- File limitations -->
     <div>
-      <p class="text-xs italic">{{ 'common.notifications.email.attachment.uploadFileNote' | translate }}</p>
+      <p class="text-xs italic">
+        {{ 'common.notifications.email.attachment.uploadFileNote' | translate }}
+      </p>
     </div>
   </div>
 </div>

@@ -270,6 +270,7 @@
 			"email": {
 				"attachment": {
 					"countValidation": "File count exceeds the limit of {{maxFileCount}}",
+					"removeFile": "{{fileName}} removed successfully",
 					"sendFile": "Send as file",
 					"sendUrl": "Send as link",
 					"sizeValidation": "File exceeds the size limit of 7 MB",
@@ -293,7 +294,7 @@
 						"tooltip": "Use this configuration only if you’ve filtered data using the ‘within last’ operator. For example, within the last 2 days or 24 hours"
 					},
 					"selectBlock": "Select a block",
-					"timestamp": "Select a timestamp"
+					"timestamp": "Select a date / timestamp"
 				},
 				"error": "Something went wrong during the email sending",
 				"errors": {
@@ -349,7 +350,7 @@
 					"textTitle": "Subject text*",
 					"title": "Subject*"
 				},
-				"timestamp": "Timestamp"
+				"timestamp": "Date / Timestamp"
 			},
 			"emailSent": "Email sent successfully.",
 			"export": {
@@ -547,6 +548,7 @@
 			"none": "No value",
 			"one": "Value"
 		},
+		"view": "View",
 		"viewFullscreen": "View Fullscreen",
 		"viewObject": "View {{name}}",
 		"workflow": {
@@ -880,8 +882,8 @@
 				"confirmationMessage": "Are you sure you want to delete the distribution list '{{name}}'?"
 			},
 			"edit": {
-				"name": "Distribution List Name",
-				"new": "New distribution list",
+				"name": "Distribution list Name",
+				"new": "New Distribution list",
 				"update": "Edit distribution list"
 			},
 			"errors": {
@@ -893,8 +895,12 @@
 					"required": "Please provide a name"
 				}
 			},
+			"tooltip": {
+				"deleted": "Connected Distribution list has been deleted"
+			},
 			"warning": {
-				"message": "Any modifications made to a distribution list will be reflected in all areas where the DL is utilized.",
+				"delete": "Please be aware that deleting this Distribution list will impact all areas where it is currently in use. Do you want to proceed with the deletion?",
+				"message": "Any modifications made to a distribution list will be reflected in all areas where it is currently in use.",
 				"noData": "No Emails found"
 			}
 		},

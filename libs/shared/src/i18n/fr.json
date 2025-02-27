@@ -270,6 +270,7 @@
 			"email": {
 				"attachment": {
 					"countValidation": "Le nombre de fichiers dépasse la limite de {{maxFileCount}}",
+					"removeFile": "{{fileName}} supprimé avec succès",
 					"sendFile": "Envoyer en tant que fichier",
 					"sendUrl": "Envoyer sous forme de lien",
 					"sizeValidation": "dépasse la limite de taille de fichier de 7 Mo",
@@ -293,7 +294,7 @@
 						"tooltip": "Utilisez cette configuration uniquement si vous avez filtré les données à l'aide de l'opérateur « dans le dernier ». \nPar exemple, au cours des 2 derniers jours ou 24 heures"
 					},
 					"selectBlock": "Select a block",
-					"timestamp": "Select a timestamp"
+					"timestamp": "Sélectionnez une date / horodatage"
 				},
 				"error": "Un problème est survenu lors de l'envoi de l'e-mail",
 				"errors": {
@@ -349,7 +350,7 @@
 					"textTitle": "Sujet Text*",
 					"title": "Sujet"
 				},
-				"timestamp": "Horodatage"
+				"timestamp": "Date / horodatage"
 			},
 			"emailSent": "E-mail envoyé avec succès.",
 			"export": {
@@ -547,6 +548,7 @@
 			"none": "Aucune valeur",
 			"one": "Valeur"
 		},
+		"view": "Voir",
 		"viewFullscreen": "Ouvrir le mode plein écran",
 		"viewObject": "Voir {{name}}",
 		"workflow": {
@@ -893,8 +895,12 @@
 					"required": "Veuillez fournir un nom"
 				}
 			},
+			"tooltip": {
+				"deleted": "La liste de distribution connectée a été supprimée"
+			},
 			"warning": {
-				"message": "Toute modification apportée à une liste de distribution sera reflétée dans toutes les zones où le DL est utilisé.",
+				"delete": "Veuillez noter que la suppression de cette liste de distribution aura un impact sur toutes les instances où elle est actuellement utilisée. Voulez-vous procéder à la suppression ?",
+				"message": "Toute modification apportée à une liste de distribution sera répércutée partout où elle est actuellement utilisée.",
 				"noData": "Aucun e-mail trouvé"
 			}
 		},

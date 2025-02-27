@@ -21,6 +21,7 @@ import { QueryBuilderService } from '../../services/query-builder/query-builder.
 import { cloneDeep } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { DistributionModalComponent } from '../distribution-lists/components/distribution-modal/distribution-modal.component';
+import { PreviewDistributionComponent } from './components/preview-distribution/preview-distribution.component';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
@@ -105,6 +106,12 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
 
   /** DL names unmodified data */
   public dlNamesActualData: string[] = [];
+  /** Handler to show DL creation wizard */
+  public showDLCreationWizard = false;
+  /** Handler to show DL Preview PopUp */
+  public showDLPreview = false;
+  /** Preview DL data from Dashboard view */
+  public previewDLData: any = [];
 
   /**
    * Email Notification setup component.
@@ -181,6 +188,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * Confirmation Tab
    */
   confirmClose(): void {
+    const attachments =
+      this.emailService.datasetsForm.get('attachments')?.value;
+    if (attachments.files?.length) {
+      this.emailService.deleteFile(attachments.files);
+    }
     const dialogRef = this.confirmService.openConfirmModal({
       title: this.translate.instant('common.close'),
       content: this.translate.instant('common.notifications.email.close'),
@@ -260,7 +272,6 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     }
     if (!this.emailService.isExisting) {
       this.emailService.resetDataSetForm();
-      this.emailService.setDatasetForm();
     } else {
       const datasetArray = this.emailService.datasetsForm.get(
         'datasets'
@@ -278,6 +289,10 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     this.emailService
       .getEmailNotifications(this.applicationId)
       .subscribe(({ data }: any) => {
+        this.emailService.DL_Data = this.emailService.datasetsForm.get(
+          'emailDistributionList'
+        );
+        this.emailService.isDLEdit = false;
         this.emailService.distributionListNames = [];
         this.emailService.emailNotificationNames = [];
         if (data?.emailNotifications?.edges?.length === 0) {
@@ -316,6 +331,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * Retrieves existing Email Notification.
    */
   getExistingTemplate() {
+    this.getDistributionList();
     this.emailService.emailListLoading = true;
     this.emailService.isExisting = true;
     this.emailService.isPreview = false;
@@ -336,6 +352,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         this.emailService.distributionListNames = [];
         this.emailService.emailNotificationNames = [];
         data?.emailNotifications?.edges?.forEach((ele: any) => {
+          ele.node.exists = this.dlNamesActualData
+            .map((x: any) => x.id)
+            .includes(ele?.node?.emailDistributionList);
           if (!ele.node.isDeleted) {
             this.templateActualData.push(ele.node);
           }
@@ -353,14 +372,14 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         );
         this.pageInfo.length = this.templateActualData.length;
       });
-    this.getDistributionList();
   }
 
   /**
    * Get Distribution List data
    *
+   * @param deletedDLDetails Sending Delete DL data for Disabling that EN Send email button on dashboard
    */
-  getDistributionList() {
+  getDistributionList(deletedDLDetails?: any) {
     this.emailService
       .getEmailDistributionList(this.applicationId)
       .subscribe((list: any) => {
@@ -369,29 +388,43 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         list?.data?.emailDistributionLists?.edges?.forEach((ele: any) => {
           if (ele.node.name !== null && ele.node.name !== '') {
             tempDL.push(ele.node);
-            this.emailService.distributionListNames.push(
-              ele.node?.name.trim().toLowerCase()
-            );
+            this.emailService.distributionListNames.push(ele.node?.name.trim());
           }
         });
         let uniqueDistributionLists = Array.from(
           new Set(this.emailService.distributionListNames)
         );
         this.uniqueDLNames = [...uniqueDistributionLists];
-        this.dlNamesActualData = cloneDeep(this.uniqueDLNames);
+        // this.dlNamesActualData = cloneDeep(this.uniqueDLNames);
+        this.dlNamesActualData = list?.data?.emailDistributionLists?.edges?.map(
+          (x: any) => x?.node
+        );
         tempDL = tempDL.filter((ele: any) => {
-          if (
-            uniqueDistributionLists.includes(ele?.name?.trim()?.toLowerCase())
-          ) {
+          if (uniqueDistributionLists.includes(ele?.name?.trim())) {
             uniqueDistributionLists = uniqueDistributionLists.filter(
-              (name) => ele.name?.toLowerCase() !== name
+              (name) => ele.name !== name
             );
             return true;
           } else {
             return false;
           }
         });
+        this.filterTemplateData
+          .filter((x: any) => x.emailDistributionList === deletedDLDetails?.id)
+          ?.forEach((element: any) => {
+            element.exists = false;
+          });
+        this.cacheDistributionListNames = cloneDeep(this.uniqueDLNames);
         this.distributionActualData = cloneDeep(tempDL);
+        this.uniqueDLNames = this.emailService.distributionListNames.slice(
+          this.distributionPageInfo.pageSize *
+            this.distributionPageInfo.pageIndex,
+          this.distributionPageInfo.pageSize *
+            (this.distributionPageInfo.pageIndex + 1)
+        );
+        this.distributionPageInfo.length =
+          this.emailService.distributionListNames.length;
+        this.emailService.emailListLoading = false;
       });
   }
 
@@ -412,9 +445,12 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       );
       this.pageInfo.length = this.filterTemplateData.length;
     } else if (this.selectedTabIndex == 1) {
-      this.cacheDistributionListNames = this.dlNamesActualData?.filter(
-        (name: any) => name?.toLowerCase()?.includes(searchText?.toLowerCase())
-      );
+      const dlData = cloneDeep(this.dlNamesActualData);
+      this.cacheDistributionListNames = dlData
+        ?.map((x: any) => x.name)
+        ?.filter((name: any) =>
+          name?.toLowerCase()?.includes(searchText?.toLowerCase())
+        );
       if (this.cacheDistributionListNames.length > 0) {
         this.distributionPageInfo.pageIndex = 0;
       }
@@ -449,6 +485,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     isClone?: boolean,
     isSendEmail?: boolean
   ) {
+    this.emailService.isDLEdit = false;
     this.emailService.isQuickAction = false;
     this.emailService.isDLNameDuplicate = false;
     this.emailService.emailListLoading = true;
@@ -534,6 +571,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * @param isClone Identify it is cloned or not
    */
   prepareEditData(emailData: any, isSendEmail?: boolean, isClone?: boolean) {
+    this.emailService.resetDataSetForm();
     this.emailService.showFileUpload = false;
     if (isClone) {
       this.emailService.isEdit = false;
@@ -1185,6 +1223,11 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
    * Close the custom template;
    */
   customTemplateClose() {
+    const attachments =
+      this.emailService.datasetsForm.get('attachments')?.value;
+    if (attachments.files?.length) {
+      this.emailService.deleteFile(attachments.files);
+    }
     this.emailService.datasetsForm?.get('emailLayout')?.reset();
     this.emailService.customTemplateId = '';
     this.emailService.isCustomTemplateEdit = false;
@@ -1208,5 +1251,174 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       'exampleSelect'
     ) as HTMLElement;
     this.searchTemplate(searchText?.value ?? '');
+  }
+
+  /**
+   * used to create new custom template
+   *
+   * @param type type of event
+   */
+  createDL(type?: string): void {
+    if (type === 'create') {
+      this.emailService.setDatasetForm();
+      this.emailService.isDLEdit = false;
+      this.emailService.setDatasetForm();
+      this.emailService.DL_Data = this.emailService.datasetsForm.get(
+        'emailDistributionList'
+      );
+    }
+    this.showDLCreationWizard = true;
+  }
+
+  /**
+   * Deletes the specified Distribution List data.
+   *
+   * @param name The DL to be deleted.
+   */
+  public deleteDL(name: any) {
+    const selectedDL =
+      this.distributionActualData.filter(
+        (x: any) =>
+          x.name?.trim()?.toLowerCase() === name?.trim()?.toLowerCase()
+      )?.[0] || null;
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('components.email.distributionList.list'),
+      }),
+      content: this.translate.instant(
+        'components.distributionLists.warning.delete'
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmVariant: 'danger',
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        this.emailService
+          .deleteDistributionListPermanently(selectedDL.id)
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.objectNotDeleted',
+                    {
+                      value: this.translate.instant(
+                        'common.distributionList.few'
+                      ),
+                      error: errors ? errors[0].message : '',
+                    }
+                  ),
+                  { error: true }
+                );
+              } else {
+                if (data) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectDeleted',
+                      {
+                        value: this.translate.instant(
+                          'common.distributionList.one'
+                        ),
+                      }
+                    )
+                  );
+                  this.emailService.emailListLoading = true;
+                  this.uniqueDLNames = [];
+                  this.dlNamesActualData = [];
+                  this.distributionActualData = [];
+                  this.getDistributionList(selectedDL);
+                }
+              }
+            },
+            error: (err: any) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
+          });
+      }
+    });
+  }
+
+  /**
+   * Retrieves an DL by its name.
+   *
+   * @param name The name of the DL.
+   */
+  editDLByName(name: string) {
+    this.getDistributionDetails(name);
+    this.createDL();
+  }
+
+  /**
+   * Close the custom template;
+   */
+  DLEditClose() {
+    this.emailService.datasetsForm?.get('emailLayout')?.reset();
+    this.emailService.customTemplateId = '';
+    this.emailService.isDLEdit = false;
+    this.emailService.allLayoutdata = {};
+    this.emailService.emailLayout = {};
+    this.getDistributionList();
+  }
+
+  /**
+   * Preview DL from Dashboard DL list.
+   *
+   * @param name The name of the DL.
+   */
+  async previewDL(name: string) {
+    this.emailService.emailListLoading = true;
+    this.getDistributionDetails(name);
+    this.previewDLData = await this.emailService.loadLayoutDistributionList(
+      this.emailService.datasetsForm.getRawValue()
+    );
+    this.emailService.emailListLoading = false;
+    this.dialog.open(PreviewDistributionComponent, {
+      data: { previewDLData: this.previewDLData },
+      disableClose: true,
+      autoFocus: false,
+      width: '40%',
+      height: '40%',
+    });
+  }
+
+  /**
+   * Get details of DL by name
+   *
+   * @param name The name of the DL.
+   */
+  getDistributionDetails(name: string) {
+    this.emailService.setDatasetForm();
+    this.emailService.selectedDLName = '';
+    this.emailService.isQuickAction = false;
+    this.emailService.isDLNameDuplicate = false;
+    this.emailService.emailListLoading = true;
+    this.emailService.enableAllSteps.next(true);
+    this.emailService.isDLEdit = true;
+    const selectedDL =
+      this.distributionActualData.filter(
+        (x: any) =>
+          x.name?.trim()?.toLowerCase() === name?.trim()?.toLowerCase()
+      )?.[0] || null;
+    if (selectedDL !== null) {
+      const emailDL =
+        this.emailService.populateDistributionListForm(selectedDL);
+      const emailDistributionList: FormGroup | any =
+        this.emailService.datasetsForm.get('emailDistributionList');
+      emailDistributionList.get('name')?.patchValue(emailDL.get('name')?.value);
+      emailDistributionList.get('id')?.patchValue(emailDL.get('id')?.value);
+      this.emailService.clearAndPatch(
+        emailDistributionList.get('to') as FormGroup,
+        emailDL.get('to') as FormGroup
+      );
+      this.emailService.clearAndPatch(
+        emailDistributionList.get('cc') as FormGroup,
+        emailDL.get('cc') as FormGroup
+      );
+      this.emailService.clearAndPatch(
+        emailDistributionList.get('bcc') as FormGroup,
+        emailDL.get('bcc') as FormGroup
+      );
+      this.emailService.setDistributionList(emailDistributionList);
+    }
   }
 }

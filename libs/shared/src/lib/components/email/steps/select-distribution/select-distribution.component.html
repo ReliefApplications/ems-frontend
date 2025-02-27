@@ -44,22 +44,19 @@
         {{ 'components.select.distribution.label' | translate }}
       </label>
       <input
-        [formControl]="emailDistributionList.get('name')"
+        [formControl]="emailService.DL_Data.get('name')"
         (input)="validateDistributionList()"
         [class]="{
           'form-error':
             (isNameDuplicate() && !distributionListId) ||
-            !emailDistributionList.get('name').value ||
-            emailDistributionList.get('name').value.trim() === ''
+            !emailService.DL_Data.get('name').value ||
+            emailService.DL_Data.get('name').value.trim() === ''
         }"
         class="relative flex py-1.5 px-2 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 items-center w-full"
         (change)="validateDistributionList()"
         placeholder="{{ 'common.name' | translate }}"
       />
-      <div
-        *ngIf="isNameDuplicate() && !distributionListId"
-        class="text-red-500 text-sm mt-1"
-      >
+      <div *ngIf="isNameDuplicate()" class="text-red-500 text-sm mt-1">
         {{ 'components.email.distributionList.duplicate' | translate }}
       </div>
     </div>
@@ -73,15 +70,15 @@
     class="mb-4"
     variant="warning"
     *ngIf="
-      emailDistributionList?.name?.length === 0 ||
-      emailDistributionList?.To?.length === 0
+      emailService.DL_Data?.name?.length === 0 ||
+      emailService.DL_Data?.To?.length === 0
     "
   >
     {{ 'components.email.distributionList.alert.partOne' | translate }}
     <strong
       *ngIf="
-        emailDistributionList?.name?.length === 0 ||
-        emailDistributionList?.name?.trim() === ''
+        emailService.DL_Data?.name?.length === 0 ||
+        emailService.DL_Data?.name?.trim() === ''
       "
     >
       {{
@@ -90,13 +87,13 @@
     >
     <strong
       *ngIf="
-        emailDistributionList?.To?.length === 0 &&
-        (emailDistributionList?.name?.length === 0 ||
-          emailDistributionList?.name?.trim() === '')
+        emailService.DL_Data?.To?.length === 0 &&
+        (emailService.DL_Data?.name?.length === 0 ||
+          emailService.DL_Data?.name?.trim() === '')
       "
     >
       {{ 'components.email.distributionList.alert.and' | translate }} </strong
-    ><strong *ngIf="emailDistributionList?.To?.length === 0">{{
+    ><strong *ngIf="emailService.DL_Data?.To?.length === 0">{{
       'components.email.distributionList.alert.partThree' | translate
     }}</strong
     >.
@@ -184,8 +181,9 @@
           <shared-email-template
             (noEmail)="update($event, 'to')"
             (listChange)="validateDistributionList()"
-            [distributionList]="emailDistributionList.get('to')"
+            [distributionList]="emailService.DL_Data.get('to')"
             [type]="'to'"
+            [DL_QuickAction]="DL_QuickAction"
             >{{
               'components.email.distributionList.to' | translate
             }}</shared-email-template
@@ -208,8 +206,9 @@
           <shared-email-template
             (noEmail)="update($event, 'cc')"
             (listChange)="validateDistributionList()"
-            [distributionList]="emailDistributionList.get('cc')"
+            [distributionList]="emailService.DL_Data.get('cc')"
             [type]="'cc'"
+            [DL_QuickAction]="DL_QuickAction"
             >{{
               'components.email.distributionList.cc' | translate
             }}</shared-email-template
@@ -232,8 +231,9 @@
           <shared-email-template
             (noEmail)="update($event, 'bcc')"
             (listChange)="validateDistributionList()"
-            [distributionList]="emailDistributionList.get('bcc')"
+            [distributionList]="emailService.DL_Data.get('bcc')"
             [type]="'bcc'"
+            [DL_QuickAction]="DL_QuickAction"
             >{{
               'components.email.distributionList.bcc' | translate
             }}</shared-email-template
