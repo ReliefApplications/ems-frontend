@@ -177,7 +177,7 @@
 			"DLCreated": "Liste de distribution créée",
 			"DLDeleted": "Liste de distribution supprimée avec succès",
 			"DLEdited": "Liste de distribution modifiée avec succès",
-			"DeleteAlert": "Veuillez noter que la suppression de cette liste de distribution (DL) aura un impact sur toutes les instances où elle est actuellement utilisée. Voulez-vous procéder à la suppression ?",
+			"DeleteAlert": "Veuillez noter que la suppression de cette liste de distribution aura un impact sur toutes les instances où elle est actuellement utilisée. Voulez-vous procéder à la suppression ?",
 			"deleteDLTooltip": "La liste de distribution connectée est supprimée",
 			"few": "Listes de distribution",
 			"none": "Aucune liste de distribution",
@@ -902,7 +902,7 @@
 				}
 			},
 			"warning": {
-				"message": "Toute modification apportée à une liste de distribution sera reflétée dans toutes les zones où le DL est utilisé.",
+				"message": "Toute modification apportée à une liste de distribution sera répércutée partout où elle est actuellement utilisée.",
 				"noData": "Aucun e-mail trouvé"
 			}
 		},

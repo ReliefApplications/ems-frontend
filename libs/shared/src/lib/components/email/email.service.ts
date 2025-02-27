@@ -53,7 +53,7 @@ import { prettifyLabel } from '../../utils/prettify';
 import { addNewField } from '../query-builder/query-builder-forms';
 import get from 'lodash/get';
 import { commonServiceFields } from './constant';
-import { DELETE_EMAIL_DISTRIBUTION_LIST } from '../../services/application/graphql/queries';
+import { DELETE_EMAIL_DISTRIBUTION_LIST } from './graphql/mutations';
 
 /**
  * Interface for InValidDataSets

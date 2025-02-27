@@ -177,7 +177,7 @@
 			"DLCreated": "Distribution list created",
 			"DLDeleted": "Distribution list deleted successfully",
 			"DLEdited": "Distribution list edited successfully",
-			"DeleteAlert": "Please be aware that deleting this Distribution List (DL) will impact all instances where it is currently in use. Do you want to proceed with the deletion?",
+			"DeleteAlert": "Please be aware that deleting this Distribution list will impact all areas where it is currently in use. Do you want to proceed with the deletion?",
 			"deleteDLTooltip": "Connected Distribution list is deleted",
 			"few": "Distribution lists",
 			"none": "No distribution list",
@@ -300,7 +300,7 @@
 						"tooltip": "Use this configuration only if you’ve filtered data using the ‘within last’ operator. For example, within the last 2 days or 24 hours"
 					},
 					"selectBlock": "Select a block",
-					"timestamp": "Select a date/ timestamp"
+					"timestamp": "Select a date / timestamp"
 				},
 				"error": "Something went wrong during the email sending",
 				"errors": {
@@ -356,7 +356,7 @@
 					"textTitle": "Subject text*",
 					"title": "Subject*"
 				},
-				"timestamp": "Date/ Timestamp"
+				"timestamp": "Date / Timestamp"
 			},
 			"emailSent": "Email sent successfully.",
 			"export": {
@@ -888,8 +888,8 @@
 				"confirmationMessage": "Are you sure you want to delete the distribution list '{{name}}'?"
 			},
 			"edit": {
-				"name": "Distribution List Name",
-				"new": "New Distribution List",
+				"name": "Distribution list Name",
+				"new": "New Distribution list",
 				"update": "Edit distribution list"
 			},
 			"errors": {
@@ -902,7 +902,7 @@
 				}
 			},
 			"warning": {
-				"message": "Any modifications made to a distribution list will be reflected in all areas where the DL is utilized.",
+				"message": "Any modifications made to a distribution list will be reflected in all areas where it is currently in use.",
 				"noData": "No Emails found"
 			}
 		},
