@@ -197,7 +197,7 @@ export class EmailTemplateComponent
         if (
           value !== undefined &&
           value !== null &&
-          this.activeSegmentIndex === 1
+          (this.activeSegmentIndex === 1 || this.activeSegmentIndex === 2)
         ) {
           this.resetFilters(this.dlCommonQuery);
           this.getResourceData(false);
