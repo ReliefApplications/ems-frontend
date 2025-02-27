@@ -157,7 +157,7 @@
                     >
                       <ng-container>
                         <ui-button
-                          [disabled]="!element?.isDLExists"
+                          [disabled]="!element?.exists"
                           variant="grey"
                           class="hide-icons hover:text-primary-600"
                           [isIcon]="true"
@@ -165,8 +165,8 @@
                           (click)="sendEmailList(element)"
                           [icon]="'forward_to_inbox'"
                           [uiTooltip]="
-                            (!element?.isDLExists
-                              ? 'common.distributionList.deleteDLTooltip'
+                            (!element?.exists
+                              ? 'components.distributionLists.tooltip.deleted'
                               : 'common.sendEmail'
                             ) | translate
                           "

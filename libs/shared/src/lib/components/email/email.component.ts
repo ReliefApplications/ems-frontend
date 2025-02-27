@@ -352,7 +352,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         this.emailService.distributionListNames = [];
         this.emailService.emailNotificationNames = [];
         data?.emailNotifications?.edges?.forEach((ele: any) => {
-          ele.node.isDLExists = this.dlNamesActualData
+          ele.node.exists = this.dlNamesActualData
             .map((x: any) => x.id)
             .includes(ele?.node?.emailDistributionList);
           if (!ele.node.isDeleted) {
@@ -412,7 +412,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         this.filterTemplateData
           .filter((x: any) => x.emailDistributionList === deletedDLDetails?.id)
           ?.forEach((element: any) => {
-            element.isDLExists = false;
+            element.exists = false;
           });
         this.cacheDistributionListNames = cloneDeep(this.uniqueDLNames);
         this.distributionActualData = cloneDeep(tempDL);
@@ -1285,7 +1285,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       title: this.translate.instant('common.deleteObject', {
         name: this.translate.instant('components.email.distributionList.list'),
       }),
-      content: this.translate.instant('common.distributionList.DeleteAlert'),
+      content: this.translate.instant(
+        'components.distributionLists.warning.delete'
+      ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
@@ -1298,7 +1300,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
               if (errors) {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
-                    'common.distributionList.objectNotDeleted',
+                    'common.notifications.objectNotDeleted',
                     {
                       value: this.translate.instant(
                         'common.distributionList.few'
@@ -1311,7 +1313,14 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
               } else {
                 if (data) {
                   this.snackBar.openSnackBar(
-                    this.translate.instant('common.distributionList.DLDeleted')
+                    this.translate.instant(
+                      'common.notifications.objectDeleted',
+                      {
+                        value: this.translate.instant(
+                          'common.distributionList.one'
+                        ),
+                      }
+                    )
                   );
                   this.emailService.emailListLoading = true;
                   this.uniqueDLNames = [];

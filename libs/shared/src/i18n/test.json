@@ -174,14 +174,8 @@
 		"dismiss": "******",
 		"display": "******",
 		"distributionList": {
-			"DLCreated": "******",
-			"DLDeleted": "******",
-			"DLEdited": "******",
-			"DeleteAlert": "******",
-			"deleteDLTooltip": "******",
 			"few": "******",
 			"none": "******",
-			"objectNotDeleted": "{{value}} ****** {{error}}",
 			"one": "******"
 		},
 		"downloadObject": "****** {{name}}",
@@ -901,7 +895,11 @@
 					"required": "******"
 				}
 			},
+			"tooltip": {
+				"deleted": "******"
+			},
 			"warning": {
+				"delete": "******",
 				"message": "******",
 				"noData": "******"
 			}

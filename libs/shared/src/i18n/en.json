@@ -174,14 +174,8 @@
 		"dismiss": "Dismiss",
 		"display": "Display",
 		"distributionList": {
-			"DLCreated": "Distribution list created",
-			"DLDeleted": "Distribution list deleted successfully",
-			"DLEdited": "Distribution list edited successfully",
-			"DeleteAlert": "Please be aware that deleting this Distribution list will impact all areas where it is currently in use. Do you want to proceed with the deletion?",
-			"deleteDLTooltip": "Connected Distribution list is deleted",
 			"few": "Distribution lists",
 			"none": "No distribution list",
-			"objectNotDeleted": "{{value}} deletion failed. {{error}}",
 			"one": "Distribution list"
 		},
 		"downloadObject": "Download {{name}}",
@@ -554,7 +548,7 @@
 			"none": "No value",
 			"one": "Value"
 		},
-		"view": "view",
+		"view": "View",
 		"viewFullscreen": "View Fullscreen",
 		"viewObject": "View {{name}}",
 		"workflow": {
@@ -901,7 +895,11 @@
 					"required": "Please provide a name"
 				}
 			},
+			"tooltip": {
+				"deleted": "Connected Distribution list has been deleted"
+			},
 			"warning": {
+				"delete": "Please be aware that deleting this Distribution list will impact all areas where it is currently in use. Do you want to proceed with the deletion?",
 				"message": "Any modifications made to a distribution list will be reflected in all areas where it is currently in use.",
 				"noData": "No Emails found"
 			}

@@ -99,11 +99,16 @@ export class CreateDistributionComponent implements OnInit, AfterViewInit {
             this.emailService.addDistributionList(dlData, this.applicationId)
           );
       if (!saveDL?.errors) {
+        const isNew = !dlData?.id;
         this.snackBar.openSnackBar(
           this.translate.instant(
-            dlData?.id
-              ? 'common.distributionList.DLEdited'
-              : 'common.distributionList.DLCreated'
+            isNew
+              ? 'common.notifications.objectCreated'
+              : 'common.notifications.objectUpdated',
+            {
+              type: this.translate.instant('common.distributionList.one'),
+              value: '',
+            }
           )
         );
         this.navigateToEms.emit({ template: saveDL });
