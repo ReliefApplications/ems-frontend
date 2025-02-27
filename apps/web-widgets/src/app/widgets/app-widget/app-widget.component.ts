@@ -17,6 +17,7 @@ import {
   ContextService,
   AuthService,
   LoggerService,
+  CommonServicesService,
 } from '@oort-front/shared';
 import { Subject, debounceTime, filter, skip, takeUntil } from 'rxjs';
 import { isEmpty } from 'lodash';
@@ -126,6 +127,7 @@ export class AppWidgetComponent
    * @param shadowDomService Shared shadow dom service
    * @param authService Auth service
    * @param logger Shared logger service ( initialize logger so its subscription can start )
+   * @param csService Common Services connector ( initialize service to create client )
    */
   constructor(
     el: ElementRef,
@@ -135,7 +137,8 @@ export class AppWidgetComponent
     private router: Router,
     private shadowDomService: ShadowDomService,
     private authService: AuthService,
-    private logger: LoggerService
+    private logger: LoggerService,
+    private csService: CommonServicesService
   ) {
     console.log('DEBUG: 02/06/2025, v1');
     super(el, injector);

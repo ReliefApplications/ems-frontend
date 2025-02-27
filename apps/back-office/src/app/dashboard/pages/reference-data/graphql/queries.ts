@@ -61,7 +61,7 @@ export const GET_API_CONFIGURATION = gql`
   }
 `;
 
-// === GET API CONFGIURATIONS NAME ===
+// === GET API CONFIGURATIONS NAME ===
 /** API configuration names query */
 export const GET_API_CONFIGURATIONS_NAMES = gql`
   query GetApiConfigurationsName($first: Int, $afterCursor: ID, $filter: JSON) {

@@ -27,8 +27,8 @@ import { QueryBuilderService } from './../../../../services/query-builder/query-
 import { RestService } from '../../../../services/rest/rest.service';
 import { prettifyLabel } from '../../../../../lib/utils/prettify';
 import { DomSanitizer } from '@angular/platform-browser';
-import { CommonServicesService } from '../../../../services/common-services/common-services.service';
 import { GET_CS_USER_FIELDS } from '../../graphql/queries';
+import { Apollo } from 'apollo-angular';
 
 /** Recipients type */
 enum RecipientsType {
@@ -147,7 +147,7 @@ export class EmailTemplateComponent
    * @param formBuilder Angular form builder
    * @param restService rest service
    * @param sanitizer html sanitizer
-   * @param cs Common Services connection
+   * @param apollo Apollo
    */
   constructor(
     private fb: FormBuilder,
@@ -158,7 +158,7 @@ export class EmailTemplateComponent
     public formBuilder: FormBuilder,
     private restService: RestService,
     private sanitizer: DomSanitizer,
-    private cs: CommonServicesService
+    private apollo: Apollo
   ) {
     super();
   }
@@ -267,8 +267,9 @@ export class EmailTemplateComponent
    * Get the user table fields from common service
    */
   public async getUserTableFields() {
+    const apolloClient = this.apollo.use('csClient');
     // Fetch the user table fields from the getFilterData
-    await firstValueFrom(this.cs.graphqlRequest(GET_CS_USER_FIELDS))
+    await firstValueFrom(apolloClient.query<any>({ query: GET_CS_USER_FIELDS }))
       .then(({ data }) => {
         const fields = data.__type.fields
           .filter((f: any) => f.type.kind === 'SCALAR')
