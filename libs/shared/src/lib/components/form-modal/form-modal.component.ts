@@ -361,7 +361,8 @@ export class FormModalComponent
           options,
           this.onUpdate.bind(this, false, true),
           this.temporaryFilesStorage,
-          this.form?.id
+          this.form?.id,
+          this.survey
         );
       });
     }

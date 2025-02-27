@@ -96,11 +96,14 @@
     <ui-button
       category="secondary"
       variant="primary"
-      [disabled]="saving"
+      [disabled]="saving || autosaving"
       (click)="submit()"
       cdkFocusInitial
     >
-      {{ 'components.record.modal.update' | translate }}
+      <p *ngIf="!autosaving">
+        {{ 'components.record.modal.update' | translate }}
+      </p>
+      <ui-spinner *ngIf="autosaving" [size]="'small'" />
     </ui-button>
   </ng-container>
 </ui-dialog>

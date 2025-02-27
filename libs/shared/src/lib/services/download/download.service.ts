@@ -409,7 +409,7 @@ export class DownloadService {
       promises.push(
         firstValueFrom(this.restService.post(uploadPath, formData, { headers }))
           .then((result) => {
-            if (result) {
+            if (result?.path) {
               path = result.path;
             }
           })
@@ -433,7 +433,7 @@ export class DownloadService {
       );
       snackBarSpinner.instance.loading = false;
     } else {
-      throw new Error('');
+      throw new Error(`Path missing for upload ${uploadId}`);
     }
     setTimeout(() => snackBarRef.instance.dismiss(), SNACKBAR_DURATION);
 

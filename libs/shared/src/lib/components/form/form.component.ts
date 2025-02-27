@@ -518,7 +518,8 @@ export class FormComponent
           options,
           this.onComplete.bind(this, true),
           this.temporaryFilesStorage,
-          this.form.id
+          this.form.id,
+          this.survey
         );
       });
     }
