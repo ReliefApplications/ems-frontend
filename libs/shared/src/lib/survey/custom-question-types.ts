@@ -22,6 +22,7 @@ export enum CustomQuestionTypes {
   OWNER = 'owner',
   USERS = 'users',
   GEO_SPATIAL = 'geoSpatial',
+  EDITOR = 'editor',
   SHAPEFILE = 'shapeFile',
 }
 
