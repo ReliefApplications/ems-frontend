@@ -29,7 +29,7 @@
         <div class="flex h-full">
           <shared-form-pages-layout
             *ngIf="!survey.hidePagesTab"
-            class="sticky h-full"
+            class="sticky h-full z-10"
             (showPage)="onShowPage($event)"
             [pages]="survey.visiblePages"
             [selectedPageIndex]="(selectedPageIndex$ | async) ?? 0"
