@@ -673,9 +673,9 @@ export class FormModalComponent
           this.temporaryFilesStorage.clear();
           // await Promise.allSettled(promises);
           await this.formHelpersService.createTemporaryRecords(this.survey);
-          const editRecord = response.overwriteRecord
-            ? response.overwriteRecord
-            : this.data.recordId;
+          const editRecord = autoSave
+            ? this.data.recordId
+            : response.overwriteRecord ?? this.data.recordId;
           if (editRecord) {
             // If update or creation of record is overwriting another record because unique field values
             const recordId = response.overwriteRecord
@@ -728,14 +728,12 @@ export class FormModalComponent
                         )
                       );
                     }
-                    if (!autoSave) {
-                      this.ngZone.run(() => {
-                        this.closeDialog(autoSave, {
-                          template: this.data.template,
-                          data: data?.addRecord,
-                        } as any);
-                      });
-                    }
+                    this.ngZone.run(() => {
+                      this.closeDialog(autoSave, {
+                        template: this.data.template,
+                        data: data?.addRecord,
+                      } as any);
+                    });
                     this.data.recordId = data?.addRecord.id;
                   }
                 },

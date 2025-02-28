@@ -282,9 +282,10 @@ export class FormComponent
           }
           // We wait for the resources questions to update their ids
           await this.formHelpersService.createTemporaryRecords(this.survey);
-          const editRecord = response.overwriteRecord
-            ? response.overwriteRecord
-            : this.record || this.form.uniqueRecord;
+          const editRecord = autoSave
+            ? this.record
+            : response.overwriteRecord ??
+              (this.record || this.form.uniqueRecord);
           // If is an already saved record, edit it
           if (editRecord) {
             // If update or creation of record is overwriting another record because unique field values
