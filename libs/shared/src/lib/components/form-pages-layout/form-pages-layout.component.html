@@ -1,35 +1,48 @@
-<div class="flex flex-col mr-4 overflow-y-auto h-full" *ngIf="pages.length > 1">
-  <button
-    *ngFor="let page of pages ?? []; let i = index; let last = last"
-    (click)="showPage.emit(i)"
-    class="mb-4 flex items-center relative"
+<div
+  class="flex flex-col overflow-y-auto h-full group"
+  [ngClass]="{ 'mr-4': !isPanelCollapsed }"
+  *ngIf="pages.length > 1"
+>
+  <ui-button
+    (click)="togglePanel()"
+    class="absolute -right-6 top-1/2 group-hover:opacity-100"
+    [ngClass]="{ 'opacity-0': !isPanelCollapsed }"
+    [uiTooltip]="isPanelCollapsed ? 'Open pages panel' : 'Hide pages panel'"
+    [category]="'secondary'"
+    [isIcon]="true"
+    [icon]="isPanelCollapsed ? 'chevron_right' : 'chevron_left'"
+    [size]="'medium'"
   >
-    <div
-      *ngIf="!last"
-      class="absolute left-[7px] h-10 w-0.5 bg-gray-300 -z-10 translate-y-3"
-    ></div>
-    <span
-      class="w-4 h-4 rounded-full inline-block mr-4"
-      [ngClass]="selectedPageIndex === i ? 'bg-primary-500 ' : 'bg-gray-300'"
-    ></span>
-    <div
-      [ngClass]="
-        selectedPageIndex === i
-          ? 'text-primary-500 '
-          : i < selectedPageIndex
-          ? ''
-          : 'text-gray-300'
-      "
-      class="flex items-center"
+  </ui-button>
+  <div [@toggle]="isPanelCollapsed ? 'collapsed' : 'expanded'">
+    <button
+      *ngFor="let page of pages; let i = index; let last = last"
+      (click)="showPage.emit(i)"
+      class="mb-4 flex items-center relative"
     >
-      {{ page.title ? page.title : page.name }}
-      <ui-icon
-    class="ml-1"
-        *ngIf="page.containsErrors"
-        icon="error"
-        variant="danger"
-        [size]="20"
-      ></ui-icon
-    ></div>
-  </button>
+      <div
+        *ngIf="!last"
+        class="absolute left-[7px] h-10 w-0.5 bg-gray-300 -z-10 translate-y-3"
+      ></div>
+      <span
+        class="w-4 h-4 rounded-full inline-block mr-4"
+        [ngClass]="selectedPageIndex === i ? 'bg-primary-500 ' : 'bg-gray-300'"
+      ></span>
+      <div
+        [ngClass]="{
+          'text-primary-500': selectedPageIndex === i,
+          'text-gray-300': selectedPageIndex < i
+        }"
+      >
+        {{ page.title ? page.title : page.name }}
+        <ui-icon
+          class="ml-1"
+          *ngIf="page.containsErrors"
+          icon="error"
+          variant="danger"
+          [size]="20"
+        ></ui-icon>
+      </div>
+    </button>
+  </div>
 </div>
