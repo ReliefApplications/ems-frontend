@@ -40,7 +40,7 @@
       >
         <shared-form-pages-layout
           *ngIf="!survey?.hidePagesTab"
-          class="max-h-[calc(100vh-175px)] sticky top-0"
+          class="max-h-[calc(100vh-215px)] sticky top-0 z-10"
           (showPage)="onShowPage($event)"
           [pages]="survey ? survey.visiblePages : []"
           [selectedPageIndex]="(selectedPageIndex$ | async) ?? 0"
