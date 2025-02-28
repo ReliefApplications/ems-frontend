@@ -12,7 +12,12 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import {
+  Dialog,
+  DIALOG_DATA,
+  DialogCloseOptions,
+  DialogRef,
+} from '@angular/cdk/dialog';
 import {
   GET_RECORD_BY_ID,
   GET_FORM_BY_ID,
@@ -67,6 +72,7 @@ import { Comment, CommentsQueryResponse } from '../../models/comments.model';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { FormPagesLayoutComponent } from '../form-pages-layout/form-pages-layout.component';
+import { DateModule } from '../../pipes/date/date.module';
 
 /**
  * Interface of Dialog data.
@@ -105,6 +111,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     SurveyModule,
     CommentsPopupComponent,
     FormPagesLayoutComponent,
+    DateModule,
   ],
 })
 export class FormModalComponent
@@ -122,6 +129,10 @@ export class FormModalComponent
   public loading = true;
   /** Is form saving */
   public saving = false;
+  /** autosaving operations */
+  public autosaving = false;
+  /** last date saved */
+  public latestSaveDate: Date | null = null;
   /** Loaded form */
   public form?: Form;
   /** Loaded record (optional) */
@@ -344,7 +355,21 @@ export class FormModalComponent
           this.survey.getQuestionByName(field.name).readOnly = true;
       });
     }
-    this.survey.onComplete.add(this.onComplete);
+    if (this.survey.autoSave) {
+      this.survey.onValueChanged.add((_, options) => {
+        this.formHelpersService.autoSaveRecord(
+          options,
+          this.onUpdate.bind(this, false, true),
+          this.temporaryFilesStorage,
+          this.form?.id,
+          this.survey
+        );
+      });
+    }
+    this.survey.onComplete.add(() => {
+      this.onComplete();
+      this.formHelpersService.saveDebounced.cancel();
+    });
     if (this.storedMergedData) {
       this.survey.data = {
         ...this.survey.data,
@@ -492,6 +517,24 @@ export class FormModalComponent
   }
 
   /**
+   * Closes the dialog if not in autosave mode
+   *
+   * @param autoSave whether the save is automatic or manual
+   * @param result Optional result to return to the dialog opener.
+   * @param options Additional options to customize the closing behavior.
+   */
+  closeDialog(
+    autoSave: boolean,
+    result?: FormModalComponent | undefined,
+    options?: DialogCloseOptions
+  ) {
+    if (autoSave) {
+      return;
+    }
+    this.dialogRef.close(result, options);
+  }
+
+  /**
    * Listen for clicks anywhere in the document
    *
    * @param event mouse event
@@ -541,7 +584,11 @@ export class FormModalComponent
     const isModified = Object.keys(surveyData).some(
       (key) => surveyData[key] !== recordData[key]
     );
-    if (this.survey.confirmOnModalClose && isModified) {
+    if (
+      this.survey.confirmOnModalClose &&
+      !this.survey.autoSave &&
+      isModified
+    ) {
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('common.close'),
         content: this.translate.instant(
@@ -564,17 +611,15 @@ export class FormModalComponent
 
   /**
    * Creates the record, or update it if provided.
-   *
-   * @param survey Survey instance.
    */
-  public onComplete = (survey: any) => {
+  public onComplete = () => {
     this.survey?.clear(false);
     const rowsSelected = Array.isArray(this.data.recordId)
       ? this.data.recordId.length
       : 1;
 
     /** we can send to backend empty data if they are not required */
-    this.formHelpersService.setEmptyQuestions(survey);
+    this.formHelpersService.setEmptyQuestions(this.survey);
     // Displays confirmation modal.
     if (this.data.askForConfirm) {
       const dialogRef = this.confirmService.openConfirmModal({
@@ -594,45 +639,57 @@ export class FormModalComponent
         .pipe(takeUntil(this.destroy$))
         .subscribe(async (value: any) => {
           if (value) {
-            await this.onUpdate(survey);
+            await this.onUpdate();
           } else {
             this.saving = false;
           }
         });
       // Updates the data directly.
     } else {
-      this.onUpdate(survey);
+      this.onUpdate();
     }
   };
 
   /**
    * Handles update data event.
    *
-   * @param survey current survey
    * @param refreshWidgets if updating/creating resource on resource-modal and widgets using it need to be refreshed
+   * @param autoSave whether the save is automatic or manual
    */
-  public async onUpdate(survey: any, refreshWidgets = false): Promise<void> {
+  public async onUpdate(
+    refreshWidgets = false,
+    autoSave = false
+  ): Promise<void> {
     this.formHelpersService
       .checkUniquePropriety(this.survey)
       .then(async (response: CheckUniqueProprietyReturnT) => {
         if (response.verified) {
-          this.loading = true;
+          this.loading = !autoSave;
+          this.autosaving = autoSave;
           await this.formHelpersService.uploadFiles(
             this.temporaryFilesStorage,
             this.form?.id
           );
+          this.temporaryFilesStorage.clear();
           // await Promise.allSettled(promises);
-          await this.formHelpersService.createTemporaryRecords(survey);
-          const editRecord = response.overwriteRecord ?? this.data.recordId;
+          await this.formHelpersService.createTemporaryRecords(this.survey);
+          const editRecord = autoSave
+            ? this.data.recordId
+            : response.overwriteRecord ?? this.data.recordId;
           if (editRecord) {
             // If update or creation of record is overwriting another record because unique field values
             const recordId = response.overwriteRecord
               ? response.overwriteRecord.id
               : this.data.recordId;
             if (this.isMultiEdition) {
-              this.updateMultipleData(recordId, survey, refreshWidgets);
+              this.updateMultipleData(
+                recordId,
+                this.survey,
+                refreshWidgets,
+                autoSave
+              );
             } else {
-              this.updateData(recordId, survey, refreshWidgets);
+              this.updateData(recordId, this.survey, refreshWidgets, autoSave);
             }
           } else {
             this.apollo
@@ -641,7 +698,7 @@ export class FormModalComponent
                 variables: {
                   id: this.survey.getVariable('record.id'),
                   form: this.data.template,
-                  data: survey.getParsedData?.() ?? survey.data,
+                  data: this.survey.getParsedData?.() ?? this.survey.data,
                 },
               })
               .subscribe({
@@ -651,7 +708,7 @@ export class FormModalComponent
                       error: true,
                     });
                     this.ngZone.run(() => {
-                      this.dialogRef.close();
+                      this.closeDialog(autoSave);
                     });
                   } else {
                     if (this.lastDraftRecord) {
@@ -672,11 +729,12 @@ export class FormModalComponent
                       );
                     }
                     this.ngZone.run(() => {
-                      this.dialogRef.close({
+                      this.closeDialog(autoSave, {
                         template: this.data.template,
                         data: data?.addRecord,
                       } as any);
                     });
+                    this.data.recordId = data?.addRecord.id;
                   }
                 },
                 error: (err) => {
@@ -684,7 +742,7 @@ export class FormModalComponent
                 },
               });
           }
-          survey.showCompletedPage = true;
+          this.survey.showCompletedPage = true;
         } else {
           this.snackBar.openSnackBar(
             this.translate.instant('components.form.display.cancelMessage')
@@ -701,8 +759,14 @@ export class FormModalComponent
    * @param id record id.
    * @param survey current survey.
    * @param refreshWidgets if updating/creating resource on resource-modal and widgets using it need to be refreshed
+   * @param autoSave whether the save is automatic or manual
    */
-  public updateData(id: any, survey: any, refreshWidgets = false): void {
+  public updateData(
+    id: any,
+    survey: SurveyModel,
+    refreshWidgets = false,
+    autoSave = false
+  ): void {
     this.apollo
       .mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
@@ -714,7 +778,11 @@ export class FormModalComponent
       })
       .subscribe({
         next: async ({ errors, data }) => {
-          this.handleRecordMutationResponse({ data, errors }, 'editRecord');
+          this.handleRecordMutationResponse(
+            { data, errors },
+            'editRecord',
+            autoSave
+          );
           if (refreshWidgets) {
             this.contextService.setWidgets(
               await this.formHelpersService.checkResourceOnFilter(
@@ -724,10 +792,13 @@ export class FormModalComponent
             );
           }
           this.loading = false;
+          this.autosaving = false;
+          this.latestSaveDate = new Date();
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
           this.loading = false;
+          this.autosaving = false;
         },
       });
   }
@@ -738,11 +809,13 @@ export class FormModalComponent
    * @param ids list of record ids.
    * @param survey current survey.
    * @param refreshWidgets if updating/creating resource on resource-modal and widgets using it need to be refreshed
+   * @param autoSave whether the save is automatic or manual
    */
   public updateMultipleData(
     ids: any,
-    survey: any,
-    refreshWidgets = false
+    survey: SurveyModel,
+    refreshWidgets = false,
+    autoSave = false
   ): void {
     const recordData = cleanRecord(survey.getParsedData?.() ?? survey.data);
     this.apollo
@@ -765,7 +838,11 @@ export class FormModalComponent
               callback
             );
           }
-          this.handleRecordMutationResponse({ data, errors }, 'editRecords');
+          this.handleRecordMutationResponse(
+            { data, errors },
+            'editRecords',
+            autoSave
+          );
           if (refreshWidgets) {
             this.contextService.setWidgets(
               await this.formHelpersService.checkResourceOnFilter(
@@ -790,10 +867,12 @@ export class FormModalComponent
    * @param response.data response data
    * @param response.errors response errors
    * @param responseType response type
+   * @param autoSave whether we are autosaving the record
    */
   private handleRecordMutationResponse(
     response: { data: any; errors: any },
-    responseType: 'editRecords' | 'editRecord'
+    responseType: 'editRecords' | 'editRecord',
+    autoSave: boolean
   ) {
     const { data, errors } = response;
     const type =
@@ -808,19 +887,19 @@ export class FormModalComponent
         }),
         { error: true }
       );
-    } else {
-      if (data) {
+    } else if (data) {
+      if (!autoSave) {
         this.snackBar.openSnackBar(
           this.translate.instant('common.notifications.objectUpdated', {
             type,
             value: '',
           })
         );
-        this.dialogRef.close({
-          template: this.form?.id,
-          data: data[responseType],
-        } as any);
       }
+      this.closeDialog(autoSave, {
+        template: this.form?.id,
+        data: data[responseType],
+      } as any);
     }
   }
 

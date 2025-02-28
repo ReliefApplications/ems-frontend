@@ -15,6 +15,7 @@ import {
 } from '@oort-front/ui';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { DateModule } from '../../../pipes/date/date.module';
 
 /** Comment popup component */
 @Component({
@@ -27,6 +28,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule,
     ButtonModule,
     TextareaModule,
+    DateModule,
   ],
   selector: 'shared-comments-popup',
   templateUrl: './comments-popup.component.html',

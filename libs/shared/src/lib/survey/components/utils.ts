@@ -144,12 +144,13 @@ export const buildAddButton = (
       const { ResourceModalComponent } = await import(
         '../../components/resource-modal/resource-modal.component'
       );
+      const alwaysCreateRecord = question.alwaysCreateRecord || survey.autoSave;
       ngZone.run(() => {
         const dialogRef = dialog.open(ResourceModalComponent, {
           disableClose: true,
           data: {
             template: question.addTemplate,
-            alwaysCreateRecord: question.alwaysCreateRecord,
+            alwaysCreateRecord,
             locale: question.resource.value,
             askForConfirm: false,
             ...(question.prefillWithCurrentRecord && {
@@ -164,7 +165,7 @@ export const buildAddButton = (
           if (result) {
             const { data } = result;
             question.template = result.template;
-            if (!question.alwaysCreateRecord) {
+            if (!alwaysCreateRecord) {
               // Only add record to draft if the question doesn't ask for record creation
               question.draftData = {
                 ...question.draftData,
