@@ -22,6 +22,21 @@
 <!-- Floating div for form buttons actions -->
 <ng-container *ngIf="surveyActive && floatingActions">
   <ui-fixed-wrapper>
+    <div class="text-sm text-gray-400 flex absolute left-2 items-center">
+      <ng-container *ngIf="autosaving; else latestSave">
+        <ui-spinner size="small" class="mr-1" />
+        {{ 'common.notifications.autoSaving' | translate }}
+      </ng-container>
+      <ng-template #latestSave>
+        <span *ngIf="latestSaveDate"
+          >{{
+            'components.form.lastSavedAt'
+              | translate : { date: latestSaveDate | sharedDate : 'shortTime' }
+          }}
+        </span>
+      </ng-template>
+    </div>
+
     <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
   </ui-fixed-wrapper>
 </ng-container>
@@ -67,8 +82,16 @@
       'components.form.draftRecords.save' | translate
     }}</ui-button> -->
     <p>
-      <ui-button variant="primary" category="secondary" (click)="submit()">
-        {{ survey.toJSON().saveButtonText || ('common.save' | translate) }}
+      <ui-button
+        variant="primary"
+        category="secondary"
+        [disabled]="autosaving"
+        (click)="submit()"
+      >
+        <p *ngIf="!autosaving">
+          {{ survey.toJSON().saveButtonText || ('common.save' | translate) }}
+        </p>
+        <ui-spinner *ngIf="autosaving" [size]="'small'" />
       </ui-button>
     </p>
   </div>

@@ -297,6 +297,7 @@
       "accessDenied": "You don't have permission to see the {{type}}.",
       "accessNotProvided": "No access provided to this {{type}}. {{error}}",
       "alreadyExists": "The {{type}} {{value}} already exists on this application.",
+      "autoSaving": "Auto saving",
       "copiedToClipboard": "Dashboard link copied!",
       "dataGenerated": "new record(s) successfully generated.",
       "dataNotRecovered": "Failure on data recovery",
@@ -903,6 +904,7 @@
         "successEdit": "Successfully edited draft",
         "successSave": "Successfully saved as draft"
       },
+      "lastSavedAt": "Last saved at {{date}}",
       "layout": {
         "delete": {
           "confirmationMessage": "Do you confirm the deletion of the layout {{name}}?"

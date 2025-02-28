@@ -657,7 +657,7 @@ export class FormBuilderService {
           console.error('Error downloading file:', error);
           options.callback('error', error);
         });
-    } else if (this.recordId) {
+    } else if (this.recordId || options.fileValue.readyToSave) {
       options.callback('success', '');
     }
   }

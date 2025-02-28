@@ -18,7 +18,10 @@ import { ButtonModule, IconModule, TooltipModule } from '@oort-front/ui';
   styleUrls: ['./form-pages-layout.component.scss'],
   animations: [
     trigger('toggle', [
-      state('collapsed', style({ width: '0px', opacity: 0 })),
+      state(
+        'collapsed',
+        style({ width: '0px', opacity: 0, overflow: 'hidden' })
+      ),
       state('expanded', style({ width: '*', opacity: 1 })),
       transition('expanded => collapsed', [
         animate(

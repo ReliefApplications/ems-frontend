@@ -6,6 +6,7 @@ import {
   QuestionMatrixDynamicModel,
   QuestionPanelDynamicModel,
   SurveyModel,
+  ValueChangedEvent,
 } from 'survey-core';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -19,7 +20,15 @@ import {
   TooltipDirective,
 } from '@oort-front/ui';
 import localForage from 'localforage';
-import { snakeCase, cloneDeep, set, get, isNil, flattenDeep } from 'lodash';
+import {
+  snakeCase,
+  cloneDeep,
+  set,
+  get,
+  isNil,
+  flattenDeep,
+  debounce,
+} from 'lodash';
 import { AuthService } from '../auth/auth.service';
 import { BlobType, DownloadService } from '../download/download.service';
 import {
@@ -98,6 +107,13 @@ export const transformSurveyData = (survey: SurveyModel) => {
   providedIn: 'root',
 })
 export class FormHelpersService {
+  /**
+   * Saves with a debounce time
+   */
+  public saveDebounced = debounce((callback: () => Promise<void>) => {
+    callback();
+  }, 3000);
+
   /**
    * Shared survey helper service.
    *
@@ -209,13 +225,23 @@ export class FormHelpersService {
         )
       );
 
-      // Maps the files array, replacing the content with the path from the blob storage
-      const mappedFiles = ((question.value as any[]) || []).map((f, idx) => ({
-        ...f,
-        content: paths[idx],
-      }));
+      const questionFiles =
+        (question.value as Array<File & { readyToSave: boolean }>) || [];
 
-      question.value = mappedFiles;
+      // Maps the files array, replacing the content with the path from the blob storage
+      const mappedFiles = questionFiles
+        .filter((f) => !f.readyToSave)
+        .map((f: File, idx: number) => {
+          return {
+            ...f,
+            content: paths[idx],
+            readyToSave: true, //used to autosave only once
+          };
+        });
+
+      question.value = questionFiles
+        .filter((f) => f.readyToSave)
+        .concat(mappedFiles);
     }
   }
 
@@ -816,6 +842,45 @@ export class FormHelpersService {
     } else {
       return;
     }
+  }
+
+  /**
+   * Saves the record automatically after some time
+   *
+   * @param valueChangedEvent surveyjs value changed event
+   * @param callback Function to execute once debounce time has passed
+   * @param temporaryFilesStorage Form to save the record from
+   * @param formId Id of the form
+   * @param survey Survey being saved
+   */
+  public async autoSaveRecord(
+    valueChangedEvent: ValueChangedEvent,
+    callback: () => Promise<void>,
+    temporaryFilesStorage: TemporaryFilesStorage,
+    formId: string | undefined,
+    survey: SurveyModel
+  ) {
+    if (
+      valueChangedEvent.question.getType() === 'file' &&
+      valueChangedEvent.value.length &&
+      !valueChangedEvent.value.every(
+        (file: File & { readyToSave?: boolean }) => file.readyToSave
+      )
+    ) {
+      const questions = survey.getAllQuestions(false, false, true);
+      const initialStates = questions.reduce((acc, q) => {
+        acc[q.name] = q.readOnly;
+        return acc;
+      }, {} as { [key: string]: boolean });
+      //Set everything as readonly during the upload of the files
+      questions.forEach((q) => (q.readOnly = true));
+      //Avoids editing the record multiple times for file questions
+      await this.uploadFiles(temporaryFilesStorage, formId);
+      temporaryFilesStorage.clear();
+      questions.forEach((q) => (q.readOnly = initialStates[q.name]));
+      return;
+    }
+    this.saveDebounced(callback);
   }
 
   /**

@@ -297,6 +297,7 @@
       "accessDenied": "Vous n'avez pas la permission pour accéder à cet objet de type {{type}}.",
       "accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
       "alreadyExists": "Cet objet {{type}} {{value}} existe déjà dans cette application.",
+      "autoSaving": "Sauvegarde automatique",
       "copiedToClipboard": "Lien du tableau de bord copié !",
       "dataGenerated": "le(s) nouvel(aux) enregistrement(s) a (ont) été généré(s) avec succès.",
       "dataNotRecovered": "Échec de la récupération des données",
@@ -914,6 +915,7 @@
         "successEdit": "Brouillon modifié avec succès",
         "successSave": "Enregistré dans les brouillons avec succès"
       },
+      "lastSavedAt": "Dernière sauvegarde à {{date}}",
       "layout": {
         "delete": {
           "confirmationMessage": "Voulez-vous vraiment supprimer la mise en page {{name}} ?"
