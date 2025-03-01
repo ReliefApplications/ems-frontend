@@ -358,26 +358,33 @@
                             [uiTooltip]="'common.view' | translate"
                           >
                           </ui-button>
-                          <ui-button
-                            variant="grey"
-                            class="hide-icons hover:text-primary-600"
-                            [isIcon]="true"
-                            size="large"
-                            (click)="editDLByName(element)"
-                            [icon]="'edit'"
-                            [uiTooltip]="'common.edit' | translate"
+                          <div
+                            *ngIf="
+                              this.ability.can('update', 'EmailNotification')
+                            "
+                            class="flex flex-row items-center"
                           >
-                          </ui-button>
-                          <ui-button
-                            variant="danger"
-                            class="hide-icons hover:text-primary-600"
-                            [isIcon]="true"
-                            size="large"
-                            (click)="deleteDL(element)"
-                            [icon]="'delete'"
-                            [uiTooltip]="'common.delete' | translate"
-                          >
-                          </ui-button>
+                            <ui-button
+                              variant="grey"
+                              class="hide-icons hover:text-primary-600"
+                              [isIcon]="true"
+                              size="large"
+                              (click)="editDLByName(element)"
+                              [icon]="'edit'"
+                              [uiTooltip]="'common.edit' | translate"
+                            >
+                            </ui-button>
+                            <ui-button
+                              variant="danger"
+                              class="hide-icons hover:text-primary-600"
+                              [isIcon]="true"
+                              size="large"
+                              (click)="deleteDL(element)"
+                              [icon]="'delete'"
+                              [uiTooltip]="'common.delete' | translate"
+                            >
+                            </ui-button>
+                          </div>
                         </ng-container>
                       </td>
                     </ng-container>
