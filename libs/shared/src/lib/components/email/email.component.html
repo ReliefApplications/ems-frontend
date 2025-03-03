@@ -157,7 +157,7 @@
                     >
                       <ng-container>
                         <ui-button
-                          [disabled]="!element?.exists"
+                          [disabled]="!element?.sendEmail"
                           variant="grey"
                           class="hide-icons hover:text-primary-600"
                           [isIcon]="true"
@@ -165,7 +165,7 @@
                           (click)="sendEmailList(element)"
                           [icon]="'forward_to_inbox'"
                           [uiTooltip]="
-                            (!element?.exists
+                            (!element?.sendEmail
                               ? 'components.distributionLists.tooltip.deleted'
                               : 'common.sendEmail'
                             ) | translate
@@ -319,11 +319,11 @@
         <ng-container ngProjectAs="label">{{
           'components.email.distributionList.list' | translate
         }}</ng-container>
-        <ng-container *ngIf="uniqueDLNames?.length; else noDl">
+        <ng-container *ngIf="uniqueDistributionNames?.length; else noDl">
           <div *ngIf="emailService.isExisting" class="mt-4">
             <div class="mt-4 overflow-x-hidden shadow-2lg">
               <div class="overflow-x-auto">
-                <table cdk-table uiTableWrapper [dataSource]="uniqueDLNames">
+                <table cdk-table uiTableWrapper [dataSource]="uniqueDistributionNames">
                   <ng-container cdkColumnDef="name">
                     <th uiCellHeader *cdkHeaderCellDef scope="col">
                       <span class="headerTitle">

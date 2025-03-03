@@ -98,14 +98,14 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   /** Handler to show template creation wizard */
   public showTemplateCreationWizard = false;
 
-  /** DL names */
-  public uniqueDLNames: any = [];
+  /** Distribution List names */
+  public uniqueDistributionNames: any = [];
 
   /** Distribution list names cache data */
   public cacheDistributionListNames: string[] = [];
 
-  /** DL names unmodified data */
-  public dlNamesActualData: string[] = [];
+  /** Distribution List names unmodified data */
+  public unmodifiedDistributionList: string[] = [];
   /** Handler to show DL creation wizard */
   public showDLCreationWizard = false;
   /** Handler to show DL Preview PopUp */
@@ -351,9 +351,15 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         this.emailService.distributionListNames = [];
         this.emailService.emailNotificationNames = [];
         data?.emailNotifications?.edges?.forEach((ele: any) => {
-          ele.node.exists = this.dlNamesActualData
-            .map((x: any) => x.id)
-            .includes(ele?.node?.emailDistributionList);
+          ele.node.sendEmail =
+            (ele?.node?.datasets?.filter((x: any) => !x.individualEmail)
+              ?.length > 0 &&
+              ele?.node.emailDistributionList !== null) ||
+            ele?.node?.datasets?.filter((x: any) => x.individualEmail)
+              ?.length === ele.node?.datasets?.length ||
+            this.unmodifiedDistributionList
+              .map((x: any) => x.id)
+              .includes(ele?.node?.emailDistributionList);
           if (!ele.node.isDeleted) {
             this.templateActualData.push(ele.node);
           }
@@ -393,11 +399,9 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         let uniqueDistributionLists = Array.from(
           new Set(this.emailService.distributionListNames)
         );
-        this.uniqueDLNames = [...uniqueDistributionLists];
-        // this.dlNamesActualData = cloneDeep(this.uniqueDLNames);
-        this.dlNamesActualData = list?.data?.emailDistributionLists?.edges?.map(
-          (x: any) => x?.node
-        );
+        this.uniqueDistributionNames = [...uniqueDistributionLists];
+        this.unmodifiedDistributionList =
+          list?.data?.emailDistributionLists?.edges?.map((x: any) => x?.node);
         tempDL = tempDL.filter((ele: any) => {
           if (uniqueDistributionLists.includes(ele?.name?.trim())) {
             uniqueDistributionLists = uniqueDistributionLists.filter(
@@ -411,16 +415,25 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
         this.filterTemplateData
           .filter((x: any) => x.emailDistributionList === deletedDLDetails?.id)
           ?.forEach((element: any) => {
-            element.exists = false;
+            element.emailDistributionList = null;
+            element.sendEmail =
+              (element?.datasets?.filter((x: any) => !x.individualEmail)
+                ?.length > 0 &&
+                element?.emailDistributionList !== null) ||
+              element?.datasets?.filter((x: any) => x.individualEmail)
+                ?.length === element.datasets?.length;
           });
-        this.cacheDistributionListNames = cloneDeep(this.uniqueDLNames);
-        this.distributionActualData = cloneDeep(tempDL);
-        this.uniqueDLNames = this.emailService.distributionListNames.slice(
-          this.distributionPageInfo.pageSize *
-            this.distributionPageInfo.pageIndex,
-          this.distributionPageInfo.pageSize *
-            (this.distributionPageInfo.pageIndex + 1)
+        this.cacheDistributionListNames = cloneDeep(
+          this.uniqueDistributionNames
         );
+        this.distributionActualData = cloneDeep(tempDL);
+        this.uniqueDistributionNames =
+          this.emailService.distributionListNames.slice(
+            this.distributionPageInfo.pageSize *
+              this.distributionPageInfo.pageIndex,
+            this.distributionPageInfo.pageSize *
+              (this.distributionPageInfo.pageIndex + 1)
+          );
         this.distributionPageInfo.length =
           this.emailService.distributionListNames.length;
         this.emailService.emailListLoading = false;
@@ -444,8 +457,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       );
       this.pageInfo.length = this.filterTemplateData.length;
     } else if (this.selectedTabIndex == 1) {
-      const dlData = cloneDeep(this.dlNamesActualData);
-      this.cacheDistributionListNames = dlData
+      const distirbutionData = cloneDeep(this.unmodifiedDistributionList);
+      this.cacheDistributionListNames = distirbutionData
         ?.map((x: any) => x.name)
         ?.filter((name: any) =>
           name?.toLowerCase()?.includes(searchText?.toLowerCase())
@@ -453,7 +466,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       if (this.cacheDistributionListNames.length > 0) {
         this.distributionPageInfo.pageIndex = 0;
       }
-      this.uniqueDLNames = this.cacheDistributionListNames.slice(
+      this.uniqueDistributionNames = this.cacheDistributionListNames.slice(
         this.distributionPageInfo.pageSize *
           this.distributionPageInfo.pageIndex,
         this.distributionPageInfo.pageSize *
@@ -1091,7 +1104,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       this.distributionPageInfo,
       this.cacheDistributionListNames
     );
-    this.uniqueDLNames = cachedData;
+    this.uniqueDistributionNames = cachedData;
   }
 
   /**
@@ -1321,8 +1334,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
                     )
                   );
                   this.emailService.emailListLoading = true;
-                  this.uniqueDLNames = [];
-                  this.dlNamesActualData = [];
+                  this.uniqueDistributionNames = [];
+                  this.unmodifiedDistributionList = [];
                   this.distributionActualData = [];
                   this.getDistributionList(selectedDL);
                 }
