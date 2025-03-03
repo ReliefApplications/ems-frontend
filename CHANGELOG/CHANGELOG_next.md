@@ -1,3 +1,10 @@
+## [2.17.2-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.2-rc.1...v2.17.2-rc.2) (2025-03-03)
+
+
+### Bug Fixes
+
+* prevent tab widget to do incorrect scrolling when switching tab ([#2772](https://github.com/ReliefApplications/ems-frontend/issues/2772)) ([41b7ec9](https://github.com/ReliefApplications/ems-frontend/commit/41b7ec983a66a25908ecd5a371ba1a2eb06ead31)), closes [AB#110913](https://github.com/AB/issues/110913)
+
 ## [2.17.2-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.1...v2.17.2-rc.1) (2025-02-27)
 
 
