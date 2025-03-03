@@ -132,7 +132,7 @@ export class EmailTemplateComponent
   /** accordion expandedIndex */
   public expandedIndex = 0;
   /** Form group for Common service filter query. */
-  public dlCommonQuery!: FormGroup | any;
+  public distributionCommonQuery!: FormGroup | any;
   /** DL preview emails from Common Services  */
   public previewCsEmails: any = [];
   /** DL dialog data from Quick Action  */
@@ -183,7 +183,7 @@ export class EmailTemplateComponent
       this.type === 'to';
 
     this.dlQuery = this.distributionList.get('query') as FormGroup;
-    this.dlCommonQuery = this.distributionList.get(
+    this.distributionCommonQuery = this.distributionList.get(
       'commonServiceFilter'
     ) as FormGroup;
     if (this.distributionList.controls.resource?.value && !this.resource) {
@@ -199,7 +199,9 @@ export class EmailTemplateComponent
           value !== null &&
           (this.activeSegmentIndex === 1 || this.activeSegmentIndex === 2)
         ) {
-          this.resetFilters(this.dlCommonQuery);
+          if (this.activeSegmentIndex === 1) {
+            this.resetFilters(this.distributionCommonQuery);
+          }
           this.getResourceData(false);
         }
         if (
@@ -223,7 +225,7 @@ export class EmailTemplateComponent
         }
       });
 
-    this.dlCommonQuery
+    this.distributionCommonQuery
       .get('filter.filters')
       .valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value: any) => {
@@ -243,7 +245,7 @@ export class EmailTemplateComponent
 
     const hasSelectedEmails = this.selectedEmails.value.length > 0;
     const hasFields = this.dlQuery.get('fields')?.value.length > 0;
-    const useCommonServices = this.dlCommonQuery.get('filter.filters')
+    const useCommonServices = this.distributionCommonQuery.get('filter.filters')
       ?.value?.[0]?.field
       ? true
       : false;
@@ -302,7 +304,7 @@ export class EmailTemplateComponent
         this.resetFilters(this.dlQuery);
         this.distributionList.get('resource')?.setValue('');
         this.resource = null;
-        this.resetFilters(this.dlCommonQuery);
+        this.resetFilters(this.distributionCommonQuery);
         break;
       }
       case RecipientsType.resource: {
@@ -329,7 +331,7 @@ export class EmailTemplateComponent
               : this.emailService.emailDistributionList[type].inputEmails;
           }
         }
-        this.resetFilters(this.dlCommonQuery);
+        this.resetFilters(this.distributionCommonQuery);
         break;
       }
       case RecipientsType.combination: {
@@ -695,9 +697,9 @@ export class EmailTemplateComponent
       };
 
       let commonServiceData: any = [];
-      if (this.dlCommonQuery?.getRawValue()) {
+      if (this.distributionCommonQuery?.getRawValue()) {
         commonServiceData = Object.assign(
-          this.dlCommonQuery?.getRawValue(),
+          this.distributionCommonQuery?.getRawValue(),
           {}
         );
         commonServiceData?.filter?.filters?.forEach((ele: any) => {
@@ -960,7 +962,7 @@ export class EmailTemplateComponent
       this.dlQuery?.get('name')?.setValue('');
       this.resource = null;
       this.resetFilters(this.dlQuery);
-      this.resetFilters(this.dlCommonQuery);
+      this.resetFilters(this.distributionCommonQuery);
     }
   }
 
@@ -1018,7 +1020,7 @@ export class EmailTemplateComponent
    */
   getCommonServiceDataSet(isPreview?: boolean) {
     const commonServiceData: any = this.emailService.setCommonServicePayload(
-      cloneDeep(this.dlCommonQuery?.getRawValue()?.filter)
+      cloneDeep(this.distributionCommonQuery?.getRawValue()?.filter)
     );
     this.loading = true;
     //Reset previous data
@@ -1027,7 +1029,7 @@ export class EmailTemplateComponent
     //When we click preview button at that time allow swich to preview tab directly (If not cliked on other tabs)
     isPreview ? this.onTabSelect(1, false) : '';
     if (
-      this.dlCommonQuery
+      this.distributionCommonQuery
         ?.getRawValue()
         ?.filter?.filters?.filter((x: any) => x?.field || x?.value)?.length > 0
     ) {

@@ -492,7 +492,7 @@
 
 <!-- Distribution List Filter-Fields-Preview Query -->
 <ng-template #commonServicePreviewTmpl>
-  <div [formGroup]="dlCommonQuery">
+  <div [formGroup]="distributionCommonQuery">
     <ui-tabs
       [selectedIndex]="currentTabIndex"
       (selectedIndexChange)="onTabSelect($event, true)"
@@ -516,8 +516,8 @@
                 <div class="mt-2 w-full">
                   <!-- NESTED FILTER GROUP -->
                   <shared-tab-filter
-                    [form]="$any(dlCommonQuery.get('filter'))"
-                    [query]="dlCommonQuery.getRawValue()"
+                    [form]="$any(distributionCommonQuery.get('filter'))"
+                    [query]="distributionCommonQuery.getRawValue()"
                     [referenceFields]="commonServiceFields"
                   >
                   </shared-tab-filter>
