@@ -64,13 +64,10 @@
       </label>
 
       <!-- Resource selection -->
-      <div uiFormFieldDirective>
+      <div uiFormFieldDirective [ngClass]="{ disableResource: quickActionDistribution?.resource }">
         <shared-resource-select
           formControlName="resource"
           [selectedElements]="[resource]"
-          [quickActionResource]="
-          quickActionDistribution?.resource ? selectedResourceName : ''
-          "
         ></shared-resource-select>
         <ui-button
           *ngIf="distributionList?.value?.resource"
@@ -178,13 +175,10 @@
               </label>
 
               <!-- Resource selection -->
-              <div uiFormFieldDirective>
+              <div uiFormFieldDirective [ngClass]="{ disableResource: quickActionDistribution?.resource }">
                 <shared-resource-select
                   formControlName="resource"
                   [selectedElements]="[resource]"
-                  [quickActionResource]="
-                  quickActionDistribution?.resource ? selectedResourceName : ''
-                  "
                 ></shared-resource-select>
                 <ui-button
                   *ngIf="distributionList?.value.resource"

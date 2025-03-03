@@ -137,8 +137,6 @@ export class EmailTemplateComponent
   public previewCsEmails: any = [];
   /** DL dialog data from Quick Action  */
   @Input() quickActionDistribution: any;
-  /** Selected Quick Action resource Name */
-  public selectedResourceName = '';
 
   /**
    * Email template to create distribution list.
@@ -189,6 +187,7 @@ export class EmailTemplateComponent
     if (this.distributionList.controls.resource?.value && !this.resource) {
       this.selectedResourceId = this.distributionList.controls.resource.value;
       this.segmentForm.get('dataType')?.setValue('Resource');
+      this.getResourceData(false);
     }
     this.distributionList.controls.resource.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -266,11 +265,6 @@ export class EmailTemplateComponent
       this.updateSegmentOptions(RecipientsType.resource);
     } else {
       this.updateSegmentOptions(RecipientsType.manual);
-    }
-
-    //GetResourceName for Quick Action DL
-    if (this.quickActionDistribution?.resource) {
-      this.getResourceNameById(this.quickActionDistribution.resource);
     }
   }
 
@@ -388,7 +382,6 @@ export class EmailTemplateComponent
       const data: any = await this.getResourceNameById(this.selectedResourceId);
       const queryTemp: any = data.resource;
       this.resourceFields = queryTemp?.fields;
-      this.selectedResourceName = queryTemp.name;
       const newData = this.queryBuilder.getFields(queryTemp.queryName);
       if (this.distributionList.controls.query.get('name') === null) {
         this.distributionList.controls.query.addControl(
@@ -844,11 +837,10 @@ export class EmailTemplateComponent
         this.expandedIndex = 0;
         //Get Resource Details when Selecting Quick action from Grid for adding New DL
         if (this.quickActionDistribution?.resource) {
-          this.selectedResourceId = this.quickActionDistribution.resource;
-        } else {
-          this.getResourceData(false);
+          this.distributionList
+            ?.get('resource')
+            ?.setValue(this.quickActionDistribution.resource);
         }
-
         if (isValid) {
           this.type === 'to' ? (this.emailService.isToValid = true) : '';
           this.emailService.disableSaveAsDraft.next(false);
@@ -865,9 +857,9 @@ export class EmailTemplateComponent
         this.isPreviewEmail = true;
         //Get Resource Details when Selecting Quick action from Grid for adding New DL
         if (this.quickActionDistribution?.resource) {
-          this.selectedResourceId = this.quickActionDistribution.resource;
-        } else {
-          this.getResourceData(false);
+          this.distributionList
+            ?.get('resource')
+            ?.setValue(this.quickActionDistribution.resource);
         }
         if (isValid) {
           this.type === 'to' ? (this.emailService.isToValid = true) : '';
@@ -1123,7 +1115,6 @@ export class EmailTemplateComponent
           .fetchResourceData(resourceId)
           .pipe(takeUntil(this.destroy$))
       );
-      this.selectedResourceName = response?.data?.resource?.name || '';
       return response.data;
     } catch (error) {
       console.error(error);

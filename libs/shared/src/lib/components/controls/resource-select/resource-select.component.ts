@@ -2,7 +2,6 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  Input,
   Optional,
   Renderer2,
   Self,
@@ -57,9 +56,6 @@ const ITEMS_PER_PAGE = 10;
   ],
 })
 export class ResourceSelectComponent extends GraphQLSelectComponent {
-  /** For Quick action Existing Resource Id */
-  @Input() quickActionResource = '';
-
   /**
    * Shared resource select component.
    * Extends graphql select component.
@@ -101,19 +97,6 @@ export class ResourceSelectComponent extends GraphQLSelectComponent {
         variables: {
           first: ITEMS_PER_PAGE,
           sortField: 'name',
-          filter:
-            this.quickActionResource === ''
-              ? {}
-              : {
-                  logic: 'and',
-                  filters: [
-                    {
-                      field: 'name',
-                      operator: 'eq',
-                      value: this.quickActionResource,
-                    },
-                  ],
-                },
         },
       });
 
@@ -141,11 +124,8 @@ export class ResourceSelectComponent extends GraphQLSelectComponent {
         filters: [
           {
             field: 'name',
-            operator: this.quickActionResource === '' ? 'contains' : 'eq',
-            value:
-              this.quickActionResource === ''
-                ? search
-                : this.quickActionResource,
+            operator: 'contains',
+            value: search,
           },
         ],
       },

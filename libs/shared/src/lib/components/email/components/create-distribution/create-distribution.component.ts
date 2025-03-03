@@ -77,33 +77,53 @@ export class CreateDistributionComponent implements OnInit, AfterViewInit {
    * Submits the form data to the email service.
    */
   async submit() {
-    // this.emailService.checkDLToValid();
-    const dlData = this.emailService?.distributionListData?.getRawValue();
-    const emailDL = this.emailService.populateDistributionListForm(dlData);
-    this.emailService.datasetsForm.setControl('emailDistributionList', emailDL);
+    const distributionListData =
+      this.emailService?.distributionListData?.getRawValue();
+    const emailDistribution =
+      this.emailService.populateDistributionListForm(distributionListData);
+    this.emailService.datasetsForm.setControl(
+      'emailDistributionList',
+      emailDistribution
+    );
     await this.emailService.validateNextButton();
-    //Common service payload rebuild
-    // const objData: any = cloneDeep(emailData);
 
-    dlData.to.commonServiceFilter = this.emailService.setCommonServicePayload(
-      dlData.to.commonServiceFilter.filter
-    );
-    dlData.cc.commonServiceFilter = this.emailService.setCommonServicePayload(
-      dlData.cc.commonServiceFilter.filter
-    );
-    dlData.bcc.commonServiceFilter = this.emailService.setCommonServicePayload(
-      dlData.bcc.commonServiceFilter.filter
-    );
+    //Check or the filter resource if no fields then send it as blank
+    ['to', 'cc', 'bcc'].forEach((key) => {
+      if (distributionListData[key]?.query?.fields?.length === 0) {
+        distributionListData[key].query.name = '';
+        distributionListData[key].resource = '';
+      }
+    });
+
+    //Common service payload rebuild
+    distributionListData.to.commonServiceFilter =
+      this.emailService.setCommonServicePayload(
+        distributionListData.to.commonServiceFilter.filter
+      );
+    distributionListData.cc.commonServiceFilter =
+      this.emailService.setCommonServicePayload(
+        distributionListData.cc.commonServiceFilter.filter
+      );
+    distributionListData.bcc.commonServiceFilter =
+      this.emailService.setCommonServicePayload(
+        distributionListData.bcc.commonServiceFilter.filter
+      );
     if (this.emailService.isToValid) {
-      const saveDL = dlData?.id
+      const saveDistribution = distributionListData?.id
         ? await firstValueFrom(
-            this.emailService.editDistributionList(dlData, dlData.id)
+            this.emailService.editDistributionList(
+              distributionListData,
+              distributionListData.id
+            )
           )
         : await firstValueFrom(
-            this.emailService.addDistributionList(dlData, this.applicationId)
+            this.emailService.addDistributionList(
+              distributionListData,
+              this.applicationId
+            )
           );
-      if (!saveDL?.errors) {
-        const isNew = !dlData?.id;
+      if (!saveDistribution?.errors) {
+        const isNew = !distributionListData?.id;
         this.snackBar.openSnackBar(
           this.translate.instant(
             isNew
@@ -115,13 +135,13 @@ export class CreateDistributionComponent implements OnInit, AfterViewInit {
             }
           )
         );
-        this.navigateToEms.emit({ template: saveDL });
+        this.navigateToEms.emit({ template: saveDistribution });
       } else {
         this.snackBar.openSnackBar(
-          saveDL?.errors ? saveDL?.errors[0]?.message : '',
+          saveDistribution?.errors ? saveDistribution?.errors[0]?.message : '',
           { error: true }
         );
-        throw new Error(saveDL?.errors[0].message);
+        throw new Error(saveDistribution?.errors[0].message);
       }
     }
   }
@@ -132,6 +152,19 @@ export class CreateDistributionComponent implements OnInit, AfterViewInit {
    * @returns Button is valid or not for save data
    */
   checkValidation() {
+    if (!this.emailService?.isToValid) {
+      const distributionListData =
+        this.emailService.distributionListData.getRawValue();
+      this.emailService.isToValid =
+        distributionListData?.to?.inputEmails?.length > 0 ||
+        (distributionListData?.to?.query?.fields?.length > 0 &&
+          distributionListData?.to?.query?.fields?.filter(
+            (x: any) => x?.fields?.length === 0
+          ).length === 0) ||
+        distributionListData?.to?.commonServiceFilter?.filter?.filters?.filter(
+          (x: any) => x?.field || x?.value
+        )?.length > 0;
+    }
     const validateFlg =
       this.emailService?.distributionListName?.trim()?.length > 0 &&
       !this.emailService?.isDistributionListNameDuplicate &&
