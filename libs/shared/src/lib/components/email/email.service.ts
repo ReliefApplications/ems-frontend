@@ -2134,7 +2134,7 @@ export class EmailService {
     //Updating payload
 
     if (
-      this.emailDistributionList.to instanceof Array &&
+      this.emailDistributionList?.to instanceof Array &&
       objData.emailDistributionList.to
     ) {
       objData.emailDistributionList.to.inputEmails = this?.emailDistributionList
@@ -2143,7 +2143,7 @@ export class EmailService {
         : this.emailDistributionList.to;
     }
     if (
-      this.emailDistributionList.cc instanceof Array &&
+      this.emailDistributionList?.cc instanceof Array &&
       objData.emailDistributionList.cc
     ) {
       objData.emailDistributionList.cc.inputEmails = this?.emailDistributionList
@@ -2152,7 +2152,7 @@ export class EmailService {
         : this.emailDistributionList.cc;
     }
     if (
-      this.emailDistributionList.bcc instanceof Array &&
+      this.emailDistributionList?.bcc instanceof Array &&
       objData.emailDistributionList.bcc
     ) {
       objData.emailDistributionList.bcc.inputEmails = this

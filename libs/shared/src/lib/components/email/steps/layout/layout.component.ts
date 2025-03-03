@@ -305,79 +305,41 @@ export class LayoutComponent
         this.emailService.quickEmailDistributionListQuery.bcc;
     }
     //Start:- When We are checking from Quick action grid in that case - Needs to check Resource of DL and Resource of Grid is matching or not
-    // if its not matching in that case don't call DL services , (It should call once its matching the Resource Name)
+    // if its not matching in that case we are doing Filter as blank , (It should call once its matching the Resource Name)
     if (
-      this.emailService?.quickEmailDistributionListQuery.to?.query?.name ===
-        '' ||
-      this.emailService?.allPreviewData?.[0]?.dataQuery?.queryName ===
-        this.emailService?.quickEmailDistributionListQuery?.to?.query?.name
+      this.emailService?.allPreviewData?.[0]?.dataQuery?.queryName !==
+        this.emailService?.quickEmailDistributionListQuery?.to?.query?.name &&
+      query.emailDistributionList?.to?.query?.filter
     ) {
-      const response: any = await this.emailService.loadLayoutDistributionList(
-        query
-      );
+      query.emailDistributionList.to.query.filter.filters = {};
+      query.emailDistributionList.to.query.name = '';
+      query.emailDistributionList.to.resource = '';
+    }
 
-      if (
-        query.emailDistributionList.to?.resource?.trim() !== '' ||
-        query.emailDistributionList.cc?.resource?.trim() !== '' ||
-        query.emailDistributionList.bcc?.resource?.trim() !== '' ||
-        query.emailDistributionList?.to?.inputEmails?.length > 0 ||
-        query.emailDistributionList?.cc?.inputEmails?.length > 0 ||
-        query.emailDistributionList?.bcc?.inputEmails?.length > 0 ||
-        response?.to?.length > 0 ||
-        response?.cc?.length > 0 ||
-        response?.bcc?.length > 0
-      ) {
-        let distributionListTo = [
-          ...new Set(
-            response?.to.concat(
-              this.emailService.emailDistributionList.to?.inputEmails ??
-                this.emailService.emailDistributionList.to
-            )
-          ),
-        ];
+    const response: any = await this.emailService.loadLayoutDistributionList(
+      query
+    );
 
-        let distributionListCc = [
-          ...new Set(
-            response?.cc.concat(
-              this.emailService.emailDistributionList.cc?.inputEmails ??
-                this.emailService.emailDistributionList.cc
-            )
-          ),
-        ];
-
-        let distributionListBcc = [
-          ...new Set(
-            response?.bcc.concat(
-              this.emailService.emailDistributionList.bcc?.inputEmails ??
-                this.emailService.emailDistributionList.bcc
-            )
-          ),
-        ];
-        distributionListTo =
-          distributionListTo?.filter((x: any) => x !== undefined) ?? [];
-        distributionListCc =
-          distributionListCc?.filter((x: any) => x !== undefined) ?? [];
-        distributionListBcc =
-          distributionListBcc?.filter((x: any) => x !== undefined) ?? [];
-        this.emailService.emailDistributionList.to = distributionListTo;
-        this.emailService.emailDistributionList.cc = distributionListCc;
-        this.emailService.emailDistributionList.bcc = distributionListBcc;
-      }
+    if (
+      query.emailDistributionList.to?.resource ||
+      query.emailDistributionList.cc?.resource ||
+      query.emailDistributionList.bcc?.resource ||
+      query.emailDistributionList?.to?.inputEmails?.length > 0 ||
+      query.emailDistributionList?.cc?.inputEmails?.length > 0 ||
+      query.emailDistributionList?.bcc?.inputEmails?.length > 0 ||
+      response?.to?.length > 0 ||
+      response?.cc?.length > 0 ||
+      response?.bcc?.length > 0
+    ) {
+      this.emailService.emailDistributionList.to = response?.to;
+      this.emailService.emailDistributionList.cc = response?.cc;
+      this.emailService.emailDistributionList.bcc = response?.bcc;
     } else {
-      //When Not matching Resource In that case Don't show Manual DL as well And if Resource !== ''
-      if (
-        this.emailService?.quickEmailDistributionListQuery.to.resource !== ''
-      ) {
-        if (this.emailService?.emailDistributionList?.to?.inputEmails) {
-          this.emailService.emailDistributionList.to.inputEmails = [];
-        }
-        if (this.emailService?.emailDistributionList?.cc?.inputEmails) {
-          this.emailService.emailDistributionList.cc.inputEmails = [];
-        }
-        if (this.emailService?.emailDistributionList?.bcc?.inputEmails) {
-          this.emailService.emailDistributionList.bcc.inputEmails = [];
-        }
-      }
+      this.emailService.emailDistributionList = {
+        to: this.emailService.emailDistributionList?.to || [],
+        cc: this.emailService.emailDistributionList?.cc || [],
+        bcc: this.emailService.emailDistributionList?.bcc || [],
+      };
     }
     this.populateDLForm();
     this.emailService.loading = false;
