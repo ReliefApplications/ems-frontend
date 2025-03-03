@@ -195,12 +195,15 @@ export class PreviewComponent
       objData
     );
     if (
-      this.query.emailDistributionList.to?.resource?.trim() !== '' ||
-      this.query.emailDistributionList.cc?.resource?.trim() !== '' ||
-      this.query.emailDistributionList.bcc?.resource?.trim() !== '' ||
+      this.query.emailDistributionList.to?.resource ||
+      this.query.emailDistributionList.cc?.resource ||
+      this.query.emailDistributionList.bcc?.resource ||
       this.query.emailDistributionList?.to?.inputEmails?.length > 0 ||
       this.query.emailDistributionList?.cc?.inputEmails?.length > 0 ||
-      this.query.emailDistributionList?.bcc?.inputEmails?.length > 0
+      this.query.emailDistributionList?.bcc?.inputEmails?.length > 0 ||
+      response?.to?.length > 0 ||
+      response?.cc?.length > 0 ||
+      response?.bcc?.length > 0
     ) {
       this.distributionListTo = [
         ...new Set(
