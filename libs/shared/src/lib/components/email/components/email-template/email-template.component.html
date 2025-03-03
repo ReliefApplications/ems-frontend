@@ -64,7 +64,10 @@
       </label>
 
       <!-- Resource selection -->
-      <div uiFormFieldDirective [ngClass]="{ disableResource: quickActionDistribution?.resource }">
+      <div
+        uiFormFieldDirective
+        [ngClass]="{ disableResource: quickActionDistribution?.resource }"
+      >
         <shared-resource-select
           formControlName="resource"
           [selectedElements]="[resource]"
@@ -175,7 +178,12 @@
               </label>
 
               <!-- Resource selection -->
-              <div uiFormFieldDirective [ngClass]="{ disableResource: quickActionDistribution?.resource }">
+              <div
+                uiFormFieldDirective
+                [ngClass]="{
+                  disableResource: quickActionDistribution?.resource
+                }"
+              >
                 <shared-resource-select
                   formControlName="resource"
                   [selectedElements]="[resource]"

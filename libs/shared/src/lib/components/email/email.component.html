@@ -323,7 +323,11 @@
           <div *ngIf="emailService.isExisting" class="mt-4">
             <div class="mt-4 overflow-x-hidden shadow-2lg">
               <div class="overflow-x-auto">
-                <table cdk-table uiTableWrapper [dataSource]="uniqueDistributionNames">
+                <table
+                  cdk-table
+                  uiTableWrapper
+                  [dataSource]="uniqueDistributionNames"
+                >
                   <ng-container cdkColumnDef="name">
                     <th uiCellHeader *cdkHeaderCellDef scope="col">
                       <span class="headerTitle">
