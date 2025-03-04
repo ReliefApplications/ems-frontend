@@ -1,5 +1,8 @@
 <!-- Loading indicator -->
-<!-- <ui-spinner class="flex justify-center items-center h-screen"></ui-spinner> -->
+<ui-spinner
+  *ngIf="emailService.isQuickAction && emailService.loading"
+  class="flex justify-center items-center w-full"
+></ui-spinner>
 <form [formGroup]="layoutForm">
   <!-- 5th step Layout -->
   <div>
@@ -403,6 +406,32 @@
         'common.notifications.email.body.title' | translate
       }}</label>
       <div class="flex flex-row mb-4 gap-5">
+        <!-- Body Date/ Timestamp dropdown -->
+        <div uiFormFieldDirective [defaultMargin]="false" class="w-1/3">
+          <label
+            for="timeInput"
+            class="block text-sm font-normal leading-6 text-gray-900"
+          >
+            {{ 'common.notifications.email.timestamp' | translate }}
+          </label>
+          <ui-select-menu
+            id="timeInput"
+            formControlName="timeInput"
+            (ngModelChange)="insertTokenToBody($event, true)"
+            placeholder="{{
+              'common.notifications.email.dropdown.timestamp' | translate
+            }}"
+            class="w-full"
+          >
+            <ui-select-option
+              *ngFor="let option of timeOptions"
+              [value]="option.value"
+              >{{ option.label }}</ui-select-option
+            >
+          </ui-select-menu>
+        </div>
+      </div>
+      <div class="flex flex-row mb-4 gap-5">
         <!-- Add Block Scrollable List -->
         <ng-container
           *ngIf="
@@ -421,7 +450,7 @@
               [placeholder]="
                 'common.notifications.email.dropdown.selectBlock' | translate
               "
-              (ngModelChange)="insertDataSetToBodyHtmlByTabName($event)"
+              (ngModelChange)="insertTokenToBody($event)"
             >
               <ui-select-option
                 *ngFor="let previewData of blockData; let i = index"
@@ -447,6 +476,7 @@
             </ui-select-menu>
           </div>
         </ng-template>
+
         <!-- Color Picker for Background Color -->
         <div class="w-1/6">
           <label

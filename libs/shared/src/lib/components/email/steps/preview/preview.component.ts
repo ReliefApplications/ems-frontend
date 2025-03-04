@@ -172,13 +172,15 @@ export class PreviewComponent
       ?.getRawValue();
     if (this.emailService.isQuickAction) {
       this.query.emailDistributionList.to =
-        this.emailService.quickEmailDLQuery.to;
+        this.emailService.quickEmailDistributionListQuery.to;
       this.query.emailDistributionList.cc =
-        this.emailService.quickEmailDLQuery.cc;
+        this.emailService.quickEmailDistributionListQuery.cc;
       this.query.emailDistributionList.bcc =
-        this.emailService.quickEmailDLQuery.bcc;
+        this.emailService.quickEmailDistributionListQuery.bcc;
     }
-    this.loadDistributionList();
+    if (!this.emailService.isQuickAction) {
+      this.loadDistributionList();
+    }
     this.loadFinalEmailPreview();
   }
 
@@ -186,146 +188,75 @@ export class PreviewComponent
    * Loads the distribution list.
    *
    */
-  loadDistributionList() {
+  async loadDistributionList() {
     this.emailService.loading = true;
     const objData: any = cloneDeep(this.query);
-    //Updating payload
+    const response: any = await this.emailService.loadLayoutDistributionList(
+      objData
+    );
+    if (
+      this.query.emailDistributionList.to?.resource ||
+      this.query.emailDistributionList.cc?.resource ||
+      this.query.emailDistributionList.bcc?.resource ||
+      this.query.emailDistributionList?.to?.inputEmails?.length > 0 ||
+      this.query.emailDistributionList?.cc?.inputEmails?.length > 0 ||
+      this.query.emailDistributionList?.bcc?.inputEmails?.length > 0 ||
+      response?.to?.length > 0 ||
+      response?.cc?.length > 0 ||
+      response?.bcc?.length > 0
+    ) {
+      this.distributionListTo = [
+        ...new Set(
+          response?.to.concat(
+            this.emailService.emailDistributionList.to?.inputEmails ??
+              this.emailService.emailDistributionList.to
+          )
+        ),
+      ];
+
+      this.distributionListCc = [
+        ...new Set(
+          response?.cc.concat(
+            this.emailService.emailDistributionList.cc?.inputEmails ??
+              this.emailService.emailDistributionList.cc
+          )
+        ),
+      ];
+
+      this.distributionListBcc = [
+        ...new Set(
+          response?.bcc.concat(
+            this.emailService.emailDistributionList.bcc?.inputEmails ??
+              this.emailService.emailDistributionList.bcc
+          )
+        ),
+      ];
+      this.distributionListTo =
+        this.distributionListTo?.filter((x: any) => x !== undefined) ?? [];
+      this.distributionListCc =
+        this.distributionListCc?.filter((x: any) => x !== undefined) ?? [];
+      this.distributionListBcc =
+        this.distributionListBcc?.filter((x: any) => x !== undefined) ?? [];
+      this.emailService.emailDistributionList.to = this.distributionListTo;
+      this.emailService.emailDistributionList.cc = this.distributionListCc;
+      this.emailService.emailDistributionList.bcc = this.distributionListBcc;
+    }
+
+    this.distributionListSeparate = response?.individualEmailList;
+    this.distributionListSeparate?.forEach((block: any) => {
+      block.isExpanded = false;
+      block.emails = Array.from(new Set(block.emails)); // Remove duplicate emails
+    });
 
     if (
-      this.emailService.emailDistributionList.to instanceof Array &&
-      objData.emailDistributionList.to
+      !this.distributionListTo.length &&
+      !this.distributionListSeparate.length
     ) {
-      objData.emailDistributionList.to.inputEmails = this.emailService
-        ?.emailDistributionList?.to?.inputEmails
-        ? this.emailService.emailDistributionList.to.inputEmails
-        : this.emailService.emailDistributionList.to;
+      this.emailService.disableSaveAndSend.next(true);
+    } else {
+      this.emailService.disableSaveAndSend.next(false);
     }
-    if (
-      this.emailService.emailDistributionList.cc instanceof Array &&
-      objData.emailDistributionList.cc
-    ) {
-      objData.emailDistributionList.cc.inputEmails = this.emailService
-        ?.emailDistributionList?.cc?.inputEmails
-        ? this.emailService.emailDistributionList.cc.inputEmails
-        : this.emailService.emailDistributionList.cc;
-    }
-    if (
-      this.emailService.emailDistributionList.bcc instanceof Array &&
-      objData.emailDistributionList.bcc
-    ) {
-      objData.emailDistributionList.bcc.inputEmails = this.emailService
-        ?.emailDistributionList?.bcc?.inputEmails
-        ? this.emailService.emailDistributionList.bcc.inputEmails
-        : this.emailService.emailDistributionList.bcc;
-    }
-
-    if (objData.emailDistributionList?.to?.commonServiceFilter?.filter) {
-      objData.emailDistributionList.to.commonServiceFilter =
-        this.emailService.setCommonServicePayload(
-          objData.emailDistributionList?.to?.commonServiceFilter?.filter
-        );
-    }
-
-    if (objData.emailDistributionList?.cc?.commonServiceFilter) {
-      objData.emailDistributionList.cc.commonServiceFilter =
-        this.emailService.setCommonServicePayload(
-          objData.emailDistributionList?.cc?.commonServiceFilter?.filter
-        );
-    }
-
-    if (objData.emailDistributionList?.bcc?.commonServiceFilter) {
-      objData.emailDistributionList.bcc.commonServiceFilter =
-        this.emailService.setCommonServicePayload(
-          objData.emailDistributionList?.bcc?.commonServiceFilter?.filter
-        );
-    }
-
-    // If no Fields selected then set as []
-    if (
-      objData.emailDistributionList?.to?.commonServiceFilter?.filters?.filter(
-        (x: any) => x?.field != null
-      )?.length === 0
-    ) {
-      objData.emailDistributionList.to.commonServiceFilter.filters = [];
-    }
-    this.http
-      .post(
-        `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
-        objData
-      )
-      .subscribe(
-        (response: any) => {
-          if (
-            this.query.emailDistributionList.to?.resource?.trim() !== '' ||
-            this.query.emailDistributionList.cc?.resource?.trim() !== '' ||
-            this.query.emailDistributionList.bcc?.resource?.trim() !== '' ||
-            this.query.emailDistributionList?.to?.inputEmails?.length > 0 ||
-            this.query.emailDistributionList?.cc?.inputEmails?.length > 0 ||
-            this.query.emailDistributionList?.bcc?.inputEmails?.length > 0
-          ) {
-            this.distributionListTo = [
-              ...new Set(
-                response?.to.concat(
-                  this.emailService.emailDistributionList.to?.inputEmails ??
-                    this.emailService.emailDistributionList.to
-                )
-              ),
-            ];
-
-            this.distributionListCc = [
-              ...new Set(
-                response?.cc.concat(
-                  this.emailService.emailDistributionList.cc?.inputEmails ??
-                    this.emailService.emailDistributionList.cc
-                )
-              ),
-            ];
-
-            this.distributionListBcc = [
-              ...new Set(
-                response?.bcc.concat(
-                  this.emailService.emailDistributionList.bcc?.inputEmails ??
-                    this.emailService.emailDistributionList.bcc
-                )
-              ),
-            ];
-            this.distributionListTo =
-              this.distributionListTo?.filter((x: any) => x !== undefined) ??
-              [];
-            this.distributionListCc =
-              this.distributionListCc?.filter((x: any) => x !== undefined) ??
-              [];
-            this.distributionListBcc =
-              this.distributionListBcc?.filter((x: any) => x !== undefined) ??
-              [];
-            this.emailService.emailDistributionList.to =
-              this.distributionListTo;
-            this.emailService.emailDistributionList.cc =
-              this.distributionListCc;
-            this.emailService.emailDistributionList.bcc =
-              this.distributionListBcc;
-          }
-
-          this.distributionListSeparate = response?.individualEmailList;
-          this.distributionListSeparate?.forEach((block: any) => {
-            block.isExpanded = false;
-            block.emails = Array.from(new Set(block.emails)); // Remove duplicate emails
-          });
-
-          if (
-            !this.distributionListTo.length &&
-            !this.distributionListSeparate.length
-          ) {
-            this.emailService.disableSaveAndSend.next(true);
-          } else {
-            this.emailService.disableSaveAndSend.next(false);
-          }
-          this.emailService.loading = false;
-        },
-        () => {
-          this.emailService.loading = false;
-        }
-      );
+    this.emailService.loading = false;
   }
 
   /**
@@ -340,7 +271,7 @@ export class PreviewComponent
       !this.emailService.datasetsForm.value.emailLayout
     ) {
       this.emailService.isQuickAction = true;
-      this.emailService.quickEmailDLQuery = [];
+      this.emailService.quickEmailDistributionListQuery = [];
     }
     this.previewUrl = `${this.restService.apiUrl}/notification/preview-email/`;
 

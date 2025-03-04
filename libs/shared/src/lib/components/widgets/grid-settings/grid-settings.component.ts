@@ -356,27 +356,9 @@ export class GridSettingsComponent
                 this.resource.queryName as string
               );
             }
-
-            // Filter distribution list based on grid resource
-            let filteredDistributionLists = this.distributionLists.filter(
-              (x: any) =>
-                x.to?.resource === null ||
-                x.to?.resource === '' ||
-                x.to?.resource === this.resource?.id
-            );
-            filteredDistributionLists = filteredDistributionLists.filter(
-              (x: any) =>
-                x.cc?.resource === null ||
-                x.cc?.resource === '' ||
-                x.cc?.resource === this.resource?.id
-            );
-            filteredDistributionLists = filteredDistributionLists.filter(
-              (x: any) =>
-                x.bcc?.resource === null ||
-                x.bcc?.resource === '' ||
-                x.bcc?.resource === this.resource?.id
-            );
-            this.distributionLists = filteredDistributionLists;
+            if (this.resource) {
+              this.filterDistributionByResourceId();
+            }
           } else {
             this.relatedForms = [];
             this.templates = [];
@@ -447,31 +429,14 @@ export class GridSettingsComponent
     this.emailService
       .getEmailDistributionList(appId)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res: any) => {
-        if (res.data?.emailDistributionLists?.edges) {
-          const distributionList = res.data.emailDistributionLists.edges.map(
+      .subscribe(({ data }) => {
+        if (data?.emailDistributionLists?.edges) {
+          this.distributionLists = data.emailDistributionLists.edges.map(
             (e: any) => e.node
           );
-          // Filter distribution list based on grid resource
-          let filteredDistributionLists = distributionList?.filter(
-            (x: any) =>
-              x.to?.resource === null ||
-              x.to?.resource === '' ||
-              x.to?.resource === this.resource?.id
-          );
-          filteredDistributionLists = filteredDistributionLists?.filter(
-            (x: any) =>
-              x.cc?.resource === null ||
-              x.cc?.resource === '' ||
-              x.cc?.resource === this.resource?.id
-          );
-          filteredDistributionLists = filteredDistributionLists?.filter(
-            (x: any) =>
-              x.bcc?.resource === null ||
-              x.bcc?.resource === '' ||
-              x.bcc?.resource === this.resource?.id
-          );
-          this.distributionLists = filteredDistributionLists || [];
+          if (this.resource) {
+            this.filterDistributionByResourceId();
+          }
         }
       });
   }
@@ -485,13 +450,28 @@ export class GridSettingsComponent
     this.emailService
       .getCustomTemplates(appId)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res: any) => {
-        if (res.data?.customTemplates?.edges) {
-          const emailTemplates = res.data.customTemplates.edges.map(
+      .subscribe(({ data }) => {
+        if (data?.customTemplates?.edges) {
+          const emailTemplates = data.customTemplates.edges.map(
             (e: any) => e.node
           );
           this.emailTemplates = emailTemplates || [];
         }
       });
+  }
+
+  /**
+   * Filter distribution list based on grid resource
+   */
+  filterDistributionByResourceId() {
+    this.distributionLists = this.distributionLists.filter(
+      (distribution: any) =>
+        (!distribution.to?.resource ||
+          distribution.to?.resource === this.resource?.id) &&
+        (!distribution.cc?.resource ||
+          distribution.cc?.resource === this.resource?.id) &&
+        (!distribution.bcc?.resource ||
+          distribution.bcc?.resource === this.resource?.id)
+    );
   }
 }
