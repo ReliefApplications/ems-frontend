@@ -24,15 +24,16 @@ import {
   TINYMCE_SCRIPT_SRC,
 } from '@tinymce/tinymce-angular';
 import { EditorService } from '../../../services/editor/editor.service';
-import { RawEditorSettings } from 'tinymce';
 import { FormControlComponent } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
+import { RawEditorOptions } from 'tinymce';
+import { SpinnerModule } from '@oort-front/ui';
 
 /** Component for using TinyMCE editor with formControl */
 @Component({
   selector: 'shared-editor-control',
   standalone: true,
-  imports: [CommonModule, EditorModule, FormsModule],
+  imports: [CommonModule, EditorModule, FormsModule, SpinnerModule],
   templateUrl: './editor-control.component.html',
   styleUrls: ['./editor-control.component.scss'],
   providers: [
@@ -60,7 +61,7 @@ export class EditorControlComponent
   @Output() editorLoaded = new EventEmitter<boolean>();
 
   /** Tinymce editor configuration */
-  @Input() editorConfig!: RawEditorSettings;
+  @Input() editorConfig!: RawEditorOptions;
 
   /**
    * Gets the value
@@ -224,14 +225,15 @@ export class EditorControlComponent
 
     if (this.editor) {
       if (this.readonly) {
-        this.editor.editor.setMode('readonly');
+        this.editor.editor.mode.set('readonly');
       } else {
-        this.editor.editor.setMode('design');
+        this.editor.editor.mode.set('design');
       }
     }
   }
 
   ngAfterViewInit(): void {
+    console.log('init', this.editor.id);
     this.editor.onFocusIn.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.onFocusIn();
     });
@@ -264,13 +266,14 @@ export class EditorControlComponent
     this.editor.disabled = true;
     // this.editor.onInit.subscribe(() => {});
     if (this.readonly) {
-      this.editor.editor.setMode('readonly');
+      this.editor.editor.mode.set('readonly');
     }
   }
 
   /** Emit and change editor loading */
   public endLoading() {
     this.editorLoaded.emit(true);
+    console.log('editor loaded', this.editor.id);
     this.editorLoading = false;
   }
 

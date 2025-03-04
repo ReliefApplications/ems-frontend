@@ -1,7 +1,7 @@
 import { Inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { EDITOR_LANGUAGE_PAIRS } from '../../const/tinymce.const';
 import { TranslateService } from '@ngx-translate/core';
-import { Editor, RawEditorSettings } from 'tinymce';
+import { Editor, RawEditorOptions } from 'tinymce';
 import { DOCUMENT } from '@angular/common';
 
 /**
@@ -77,14 +77,14 @@ export class EditorService {
    * @param keys list of keys
    */
   addCalcAndKeysAutoCompleter(
-    editor: RawEditorSettings,
+    editor: RawEditorOptions,
     keys: { value: string; text: string }[]
   ) {
     const defaultSetup = editor.setup;
     editor.setup = (e: Editor) => {
       if (defaultSetup && typeof defaultSetup === 'function') defaultSetup(e);
       e.ui.registry.addAutocompleter('keys_data_and_calc', {
-        ch: '{',
+        trigger: '{',
         minChars: 0,
         onAction: (autocompleteApi, rng, value) => {
           e.selection.setRng(rng);
