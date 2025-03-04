@@ -54,6 +54,7 @@ export const init = (
         el
       );
       const instance: EditorQuestionComponent = editor.instance;
+      instance.cdr.detectChanges();
 
       // Set readonly mode of instance based on readonly & survey mode
       instance.readonly =

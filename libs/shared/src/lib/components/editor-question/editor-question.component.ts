@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -39,8 +40,9 @@ export class EditorQuestionComponent implements AfterViewInit, OnInit {
    * Editor question component
    *
    * @param editorService shared editor service
+   * @param cdr Angular change detector ref
    */
-  constructor(editorService: EditorService) {
+  constructor(editorService: EditorService, public cdr: ChangeDetectorRef) {
     this.config.base_url = editorService.url;
     this.config.language = editorService.language;
   }

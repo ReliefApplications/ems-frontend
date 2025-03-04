@@ -262,7 +262,7 @@ export class FormBuilderService {
     settings.useCachingForChoicesRestful = false;
     settings.useCachingForChoicesRestfull = false;
     settings.lazyRender = {
-      enabled: false,
+      enabled: true,
       firstBatchSize: 10,
     };
     const survey = new Model(structure);

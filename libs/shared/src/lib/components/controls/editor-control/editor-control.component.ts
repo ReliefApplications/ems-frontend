@@ -27,13 +27,12 @@ import { EditorService } from '../../../services/editor/editor.service';
 import { FormControlComponent } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
 import { RawEditorOptions } from 'tinymce';
-import { SpinnerModule } from '@oort-front/ui';
 
 /** Component for using TinyMCE editor with formControl */
 @Component({
   selector: 'shared-editor-control',
   standalone: true,
-  imports: [CommonModule, EditorModule, FormsModule, SpinnerModule],
+  imports: [CommonModule, EditorModule, FormsModule],
   templateUrl: './editor-control.component.html',
   styleUrls: ['./editor-control.component.scss'],
   providers: [
@@ -233,23 +232,6 @@ export class EditorControlComponent
   }
 
   ngAfterViewInit(): void {
-    this.editorConfig.setup = (editor) => {
-      editor.on('init', () => {
-        console.log('TinyMCE initialized:', editor.id);
-      });
-
-      editor.on('SkinLoadError', (e) => {
-        console.error('TinyMCE Error:', e);
-      });
-
-      editor.on('Error', (e) => {
-        console.error('TinyMCE Error:', e);
-      });
-    };
-    this.editorConfig.init_instance_callback = (editor) => {
-      console.log(`Editor ${editor.id} initialized successfully.`);
-    };
-    console.log('init', this.editor.id, this.editorConfig);
     this.editor.onFocusIn.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.onFocusIn();
     });
@@ -286,19 +268,9 @@ export class EditorControlComponent
     }
   }
 
-  /**
-   * Logs editor error
-   *
-   * @param error error
-   */
-  logEditorError(error: any) {
-    console.error('TinyMCE Editor Error:', error);
-  }
-
   /** Emit and change editor loading */
   public endLoading() {
     this.editorLoaded.emit(true);
-    console.log('editor loaded', this.editor.id);
     this.editorLoading = false;
   }
 
