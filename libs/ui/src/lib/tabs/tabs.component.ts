@@ -159,7 +159,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
     }
     this.showContentTimeoutListener = setTimeout(() => {
       this.triggerAnimation = true;
-      this.openedTab.emit(tab);
+      this.openedTab?.emit(tab);
     }, 100);
     // Emits the current selected index
     this.selectedIndexChange.emit(this.selectedIndex);

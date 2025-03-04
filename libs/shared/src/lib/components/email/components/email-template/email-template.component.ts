@@ -21,7 +21,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { emailRegex } from '../../constant';
 import { FieldStore } from '../../models/email.const';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { firstValueFrom, takeUntil } from 'rxjs';
+import { firstValueFrom, lastValueFrom, takeUntil } from 'rxjs';
 import { cloneDeep } from 'lodash';
 import { QueryBuilderService } from './../../../../services/query-builder/query-builder.service';
 import { RestService } from '../../../../services/rest/rest.service';
@@ -132,9 +132,11 @@ export class EmailTemplateComponent
   /** accordion expandedIndex */
   public expandedIndex = 0;
   /** Form group for Common service filter query. */
-  public dlCommonQuery!: FormGroup | any;
+  public distributionCommonQuery!: FormGroup | any;
   /** DL preview emails from Common Services  */
   public previewCsEmails: any = [];
+  /** DL dialog data from Quick Action  */
+  @Input() quickActionDistribution: any;
 
   /**
    * Email template to create distribution list.
@@ -173,14 +175,13 @@ export class EmailTemplateComponent
       this.clearUnusedValues(value);
     });
     this.setCommonServiceFields();
-
     this.distributionListValid =
       (this.emailService.isToValid &&
         (this.type === 'bcc' || this.type === 'cc')) ||
       this.type === 'to';
 
     this.dlQuery = this.distributionList.get('query') as FormGroup;
-    this.dlCommonQuery = this.distributionList.get(
+    this.distributionCommonQuery = this.distributionList.get(
       'commonServiceFilter'
     ) as FormGroup;
     if (this.distributionList.controls.resource?.value && !this.resource) {
@@ -195,9 +196,12 @@ export class EmailTemplateComponent
         if (
           value !== undefined &&
           value !== null &&
-          this.activeSegmentIndex === 1
+          (this.activeSegmentIndex === 1 || this.activeSegmentIndex === 2)
         ) {
-          this.resetFilters(this.dlCommonQuery);
+          if (this.activeSegmentIndex === 1) {
+            this.resetFilters(this.distributionCommonQuery);
+          }
+          this.getResourceData(false);
         }
         if (
           value !== undefined &&
@@ -220,13 +224,14 @@ export class EmailTemplateComponent
         }
       });
 
-    this.dlCommonQuery
+    this.distributionCommonQuery
       .get('filter.filters')
       .valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value: any) => {
         if (
           this.activeSegmentIndex === 3 &&
-          value?.filter((x: any) => x?.field || x?.value)?.length > 0
+          (value?.filter((x: any) => x?.field || x?.value)?.length > 0 ||
+            value.length === 0)
         ) {
           this.emailService.validateNextButton();
         } else {
@@ -239,7 +244,7 @@ export class EmailTemplateComponent
 
     const hasSelectedEmails = this.selectedEmails.value.length > 0;
     const hasFields = this.dlQuery.get('fields')?.value.length > 0;
-    const useCommonServices = this.dlCommonQuery.get('filter.filters')
+    const useCommonServices = this.distributionCommonQuery.get('filter.filters')
       ?.value?.[0]?.field
       ? true
       : false;
@@ -293,7 +298,7 @@ export class EmailTemplateComponent
         this.resetFilters(this.dlQuery);
         this.distributionList.get('resource')?.setValue('');
         this.resource = null;
-        this.resetFilters(this.dlCommonQuery);
+        this.resetFilters(this.distributionCommonQuery);
         break;
       }
       case RecipientsType.resource: {
@@ -320,7 +325,7 @@ export class EmailTemplateComponent
               : this.emailService.emailDistributionList[type].inputEmails;
           }
         }
-        this.resetFilters(this.dlCommonQuery);
+        this.resetFilters(this.distributionCommonQuery);
         break;
       }
       case RecipientsType.combination: {
@@ -356,7 +361,7 @@ export class EmailTemplateComponent
    *
    * @param fromHtml if called from email-template HTML or not
    */
-  getResourceData(fromHtml: boolean): void {
+  async getResourceData(fromHtml: boolean) {
     this.resourceFields = [];
     this.loading = true;
     this.availableFields = [];
@@ -374,27 +379,23 @@ export class EmailTemplateComponent
       this.resetFilters(this.distributionList.get('query'));
     }
     if (this.selectedResourceId) {
-      this.emailService
-        .fetchResourceData(this.selectedResourceId)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(({ data }) => {
-          const queryTemp: any = data.resource;
-          this.resourceFields = queryTemp?.fields;
-          const newData = this.queryBuilder.getFields(queryTemp.queryName);
-          if (this.distributionList.controls.query.get('name') === null) {
-            this.distributionList.controls.query.addControl(
-              'name',
-              new FormControl('')
-            );
-          }
-          this.distributionList.controls.query
-            .get('name')
-            .setValue(queryTemp.queryName);
-          this.availableFields = newData;
-          this.loading = false;
-          this.resourcePopulated = true;
-          this.resource = data.resource;
-        });
+      const data: any = await this.getResourceNameById(this.selectedResourceId);
+      const queryTemp: any = data.resource;
+      this.resourceFields = queryTemp?.fields;
+      const newData = this.queryBuilder.getFields(queryTemp.queryName);
+      if (this.distributionList.controls.query.get('name') === null) {
+        this.distributionList.controls.query.addControl(
+          'name',
+          new FormControl('')
+        );
+      }
+      this.distributionList.controls.query
+        .get('name')
+        .setValue(queryTemp.queryName);
+      this.availableFields = newData;
+      this.loading = false;
+      this.resourcePopulated = true;
+      this.resource = data.resource;
     } else {
       this.loading = false;
     }
@@ -601,10 +602,16 @@ export class EmailTemplateComponent
       if (
         this.emailService.isToValid &&
         this.emailService.distributionListName?.trim()?.length > 0 &&
-        this.emailService.isDLNameDuplicate
+        this.emailService.isDistributionListNameDuplicate
       ) {
         this.emailService.disableSaveAndProceed.next(false);
       }
+    }
+    if (this.emailService?.isDistributionListEdit) {
+      this.emailService.isToValid =
+        this.selectedFields?.length === 0 || this.showFieldsWarning
+          ? false
+          : true;
     }
     return formArray;
   }
@@ -632,13 +639,13 @@ export class EmailTemplateComponent
     const fields = query.get('fields') as FormArray;
     if (fields) {
       // Only for resource
-      fields.clear();
+      fields?.clear();
     }
 
     const filter = query.get('filter') as FormGroup;
     const filters = filter.get('filters') as FormArray;
-    filters.clear();
-    filters.push(this.emailService.getNewFilterFields);
+    filters?.clear();
+    filters?.push(this.emailService.getNewFilterFields);
 
     query.get('name')?.setValue('');
   }
@@ -683,9 +690,9 @@ export class EmailTemplateComponent
       };
 
       let commonServiceData: any = [];
-      if (this.dlCommonQuery?.getRawValue()) {
+      if (this.distributionCommonQuery?.getRawValue()) {
         commonServiceData = Object.assign(
-          this.dlCommonQuery?.getRawValue(),
+          this.distributionCommonQuery?.getRawValue(),
           {}
         );
         commonServiceData?.filter?.filters?.forEach((ele: any) => {
@@ -701,12 +708,12 @@ export class EmailTemplateComponent
         });
       }
 
-      objPreview.emailDistributionList.to = {
+      objPreview.emailDistributionList[this.type] = {
         resource: this.resource?.id ?? '',
         reference: this.distributionList?.get('reference')?.value ?? '',
         query: {
-          name: this.dlQuery?.get('name').value,
-          filter: this.dlQuery.get('filter').value,
+          name: this.dlQuery?.get('name').getRawValue(),
+          filter: this.dlQuery.get('filter').getRawValue(),
           fields: this.distributionList.getRawValue().query?.fields,
         },
         inputEmails: [],
@@ -802,7 +809,7 @@ export class EmailTemplateComponent
         hasEmails) &&
       this.emailService.datasetsForm?.value?.emailDistributionList?.name
         ?.length > 0 &&
-      !this.emailService.isDLNameDuplicate &&
+      !this.emailService.isDistributionListNameDuplicate &&
       this.distributionListValid;
 
     switch (this.activeSegmentIndex) {
@@ -816,7 +823,9 @@ export class EmailTemplateComponent
           this.type === 'to' ? (this.emailService.isToValid = true) : '';
           this.emailService.disableSaveAsDraft.next(false);
         }
-        this.type === 'to' ? (this.emailService.toDLHasFilter = false) : '';
+        this.type === 'to'
+          ? (this.emailService.toDistributionListHasFilter = false)
+          : '';
         break;
       }
       // Select with filter
@@ -826,11 +835,19 @@ export class EmailTemplateComponent
         this.previewEmails = [];
         this.isPreviewEmail = true;
         this.expandedIndex = 0;
+        //Get Resource Details when Selecting Quick action from Grid for adding New DL
+        if (this.quickActionDistribution?.resource) {
+          this.distributionList
+            ?.get('resource')
+            ?.setValue(this.quickActionDistribution.resource);
+        }
         if (isValid) {
           this.type === 'to' ? (this.emailService.isToValid = true) : '';
           this.emailService.disableSaveAsDraft.next(false);
         }
-        this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
+        this.type === 'to'
+          ? (this.emailService.toDistributionListHasFilter = true)
+          : '';
         this.currentTabIndex = 0;
         break;
       }
@@ -838,11 +855,19 @@ export class EmailTemplateComponent
       case 2: {
         this.previewEmails = [];
         this.isPreviewEmail = true;
+        //Get Resource Details when Selecting Quick action from Grid for adding New DL
+        if (this.quickActionDistribution?.resource) {
+          this.distributionList
+            ?.get('resource')
+            ?.setValue(this.quickActionDistribution.resource);
+        }
         if (isValid) {
           this.type === 'to' ? (this.emailService.isToValid = true) : '';
           this.emailService.disableSaveAsDraft.next(false);
         }
-        this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
+        this.type === 'to'
+          ? (this.emailService.toDistributionListHasFilter = true)
+          : '';
         break;
       }
       // Select from Common Services
@@ -858,7 +883,9 @@ export class EmailTemplateComponent
         this.resetFilters(this.dlQuery);
         this.distributionList.get('resource').setValue('');
         this.currentTabIndex = 0;
-        this.type === 'to' ? (this.emailService.toDLHasFilter = true) : '';
+        this.type === 'to'
+          ? (this.emailService.toDistributionListHasFilter = true)
+          : '';
         break;
       }
     }
@@ -927,7 +954,7 @@ export class EmailTemplateComponent
       this.dlQuery?.get('name')?.setValue('');
       this.resource = null;
       this.resetFilters(this.dlQuery);
-      this.resetFilters(this.dlCommonQuery);
+      this.resetFilters(this.distributionCommonQuery);
     }
   }
 
@@ -985,7 +1012,7 @@ export class EmailTemplateComponent
    */
   getCommonServiceDataSet(isPreview?: boolean) {
     const commonServiceData: any = this.emailService.setCommonServicePayload(
-      cloneDeep(this.dlCommonQuery?.getRawValue()?.filter)
+      cloneDeep(this.distributionCommonQuery?.getRawValue()?.filter)
     );
     this.loading = true;
     //Reset previous data
@@ -993,19 +1020,30 @@ export class EmailTemplateComponent
     this.isPreviewEmail = true;
     //When we click preview button at that time allow swich to preview tab directly (If not cliked on other tabs)
     isPreview ? this.onTabSelect(1, false) : '';
-    this.restService
-      .post('/notification/preview-common-services-users', commonServiceData)
-      .subscribe(
-        async (response: any) => {
-          this.previewCsEmails = response;
-          this.isPreviewEmail = this.previewCsEmails?.length > 0 ? true : false;
-          this.loading = false;
-        },
-        (error: string) => {
-          console.error('Error:', error);
-          this.loading = false;
-        }
-      );
+    if (
+      this.distributionCommonQuery
+        ?.getRawValue()
+        ?.filter?.filters?.filter((x: any) => x?.field || x?.value)?.length > 0
+    ) {
+      this.restService
+        .post('/notification/preview-common-services-users', commonServiceData)
+        .subscribe(
+          async (response: any) => {
+            this.previewCsEmails = response;
+            this.isPreviewEmail =
+              this.previewCsEmails?.length > 0 ? true : false;
+            this.emailService.validateNextButton();
+            this.loading = false;
+          },
+          (error: string) => {
+            console.error('Error:', error);
+            this.loading = false;
+          }
+        );
+    } else {
+      this.isPreviewEmail = false;
+      this.loading = false;
+    }
   }
 
   /**
@@ -1061,6 +1099,26 @@ export class EmailTemplateComponent
         this.previewCsEmails = [];
         this.currentTabIndex = 0;
       }
+    }
+  }
+
+  /**
+   * Get Resource Data by Id
+   *
+   * @param resourceId resource Id
+   * @returns Resource Data
+   */
+  async getResourceNameById(resourceId: string) {
+    try {
+      const response = await lastValueFrom(
+        this.emailService
+          .fetchResourceData(resourceId)
+          .pipe(takeUntil(this.destroy$))
+      );
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return null;
     }
   }
 }

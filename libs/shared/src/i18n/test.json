@@ -270,6 +270,7 @@
 			"email": {
 				"attachment": {
 					"countValidation": "****** {{maxFileCount}}",
+					"removeFile": "{{fileName}} ******",
 					"sendFile": "******",
 					"sendUrl": "******",
 					"sizeValidation": "******",
@@ -547,6 +548,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"view": "******",
 		"viewFullscreen": "******",
 		"viewObject": "****** {{name}}",
 		"workflow": {
@@ -893,7 +895,11 @@
 					"required": "******"
 				}
 			},
+			"tooltip": {
+				"deleted": "******"
+			},
 			"warning": {
+				"delete": "******",
 				"message": "******",
 				"noData": "******"
 			}

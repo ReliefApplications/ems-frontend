@@ -1,5 +1,11 @@
-import { HttpClient } from '@angular/common/http';
-import { EventEmitter, Injectable, NgZone, Output } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {
+  EventEmitter,
+  Inject,
+  Injectable,
+  NgZone,
+  Output,
+} from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -11,10 +17,16 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
 import { cloneDeep } from 'lodash';
-import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
+import {
+  BehaviorSubject,
+  firstValueFrom,
+  lastValueFrom,
+  Observable,
+} from 'rxjs';
 import {
   EMAIL_NOTIFICATION_TYPES,
   EmailDistributionListQueryResponse,
+  EmailNotificationFile,
   EmailNotificationQueryResponse,
   EmailNotificationsQueryResponse,
   EmailNotificationTypes,
@@ -41,6 +53,7 @@ import { prettifyLabel } from '../../utils/prettify';
 import { addNewField } from '../query-builder/query-builder-forms';
 import get from 'lodash/get';
 import { commonServiceFields } from './constant';
+import { DELETE_EMAIL_DISTRIBUTION_LIST } from './graphql/mutations';
 
 /**
  * Interface for InValidDataSets
@@ -106,8 +119,8 @@ export class EmailService {
   public showExistingDistributionList = false;
   /** Distribution list data */
   public emailDistributionList: any = [];
-  /** Quick send email  DL query list data */
-  public quickEmailDLQuery: any = [];
+  /** Quick send email  DistributionList  query list data */
+  public quickEmailDistributionListQuery: any = [];
   /** Initial tab value */
   public initialTabValue = {
     title: `Block 1`,
@@ -197,18 +210,18 @@ export class EmailService {
   /** Checks if to in email distribution list is valid */
   public isToValid = false;
   /** Checks if to in email distribution list is valid */
-  public toDLHasFilter = false;
+  public toDistributionListHasFilter = false;
   /** Checks if to in email distribution list has a filter */
-  public displayDLToError = false;
+  public displayDistributionListToError = false;
   /** Checks if Distribution list name is duplicate */
-  public isDLNameDuplicate = false;
+  public isDistributionListNameDuplicate = false;
   /** For storing emails For To from service response (In select with Filter option) */
   filterToEmails: any = [];
   /**
-   * Name of selected DL name in DL screen used for use existing;
+   * Name of selected DistributionList name in DistributionList  screen used for use existing;
    * 1) Assign value on select of existing; 2) Clear the value on click of Create New
    */
-  public selectedDLName: any = '';
+  public selectedDistributionListName: any = '';
   /** Checks if separate emails is checked for all blocks */
   public isAllSeparateEmail = false;
   /** For storing emails For CC from service response (In select with Filter option) */
@@ -219,6 +232,15 @@ export class EmailService {
   public commonServiceFields = commonServiceFields;
   /** User table fields */
   userTableFields: string[] = [];
+  /** display types */
+  public displayTypes: any[] = [
+    { id: 'table', name: 'Table' },
+    { id: 'freeText', name: 'Free Text' },
+  ];
+  /** Checking the edit operation on Distribution list */
+  public isDistributionListEdit = false;
+  /** Recipients data. */
+  public distributionListData: FormGroup | any = [];
   /** Show File Upload */
   public showFileUpload = false;
 
@@ -351,7 +373,7 @@ export class EmailService {
         resolve(true);
       } else {
         if (
-          this.toDLHasFilter &&
+          this.toDistributionListHasFilter &&
           (this.datasetsForm.getRawValue().emailDistributionList?.to
             ?.resource ||
             this.datasetsForm.getRawValue().emailDistributionList?.to
@@ -492,6 +514,7 @@ export class EmailService {
    * @param ngZone The NgZone instance
    * @param translate The TranslateService
    * @param snackBar The SnackBarService
+   * @param environment Environment
    */
   constructor(
     private formBuilder: FormBuilder,
@@ -500,10 +523,12 @@ export class EmailService {
     private restService: RestService,
     private ngZone: NgZone,
     private translate: TranslateService,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    @Inject('environment') private environment: any
   ) {
     this.setDatasetForm();
     this.initLayoutData();
+    this.distributionListData = this.datasetsForm.get('emailDistributionList');
   }
 
   /**
@@ -573,9 +598,9 @@ export class EmailService {
   initialiseDistributionList(): FormGroup {
     return this.formBuilder.group({
       name: null,
-      to: this.createDLGroup(),
-      cc: this.createDLGroup(),
-      bcc: this.createDLGroup(),
+      to: this.createDistributionListGroup(),
+      cc: this.createDistributionListGroup(),
+      bcc: this.createDistributionListGroup(),
       id: null,
     });
   }
@@ -585,7 +610,7 @@ export class EmailService {
    *
    * @returns new Distribution List input form group
    */
-  createDLGroup(): FormGroup {
+  createDistributionListGroup(): FormGroup {
     return this.formBuilder.group({
       resource: null,
       query: this.createQuerygroup(),
@@ -616,13 +641,16 @@ export class EmailService {
   /**
    * Creates and populates Distribution List form correctly
    *
-   * @param emailDL The email distribution list
+   * @param emailDistributionList  The email distribution list
    * @returns Distribution List form
    */
-  populateDistributionListForm(emailDL: any): FormGroup {
+  populateDistributionListForm(emailDistributionList: any): FormGroup {
     const distributionListForm = this.initialiseDistributionList();
-    if (emailDL)
-      this.setDistributionListFormValues(distributionListForm, emailDL);
+    if (emailDistributionList)
+      this.setDistributionListFormValues(
+        distributionListForm,
+        emailDistributionList
+      );
     return distributionListForm;
   }
 
@@ -630,27 +658,27 @@ export class EmailService {
    * Sets Distribution List form values
    *
    * @param form The Distribution List form
-   * @param emailDL The email distribution list data in object format
+   * @param emailDistributionList The email distribution list data in object format
    */
-  setDistributionListFormValues(form: FormGroup, emailDL: any) {
+  setDistributionListFormValues(form: FormGroup, emailDistributionList: any) {
     form.patchValue({
-      name: emailDL?.name || '',
+      name: emailDistributionList?.name || '',
     });
     form.patchValue({
-      id: emailDL?.id || null,
+      id: emailDistributionList?.id || null,
     });
 
     this.setDistributionListGroupValues(
       form.get('to') as FormGroup,
-      emailDL.to
+      emailDistributionList.to
     );
     this.setDistributionListGroupValues(
       form.get('cc') as FormGroup,
-      emailDL.cc
+      emailDistributionList.cc
     );
     this.setDistributionListGroupValues(
       form.get('bcc') as FormGroup,
-      emailDL.bcc
+      emailDistributionList.bcc
     );
   }
 
@@ -658,54 +686,72 @@ export class EmailService {
    * Sets Distribution List group values
    *
    * @param formGroup The Distribution List inner form (to, cc, bcc)
-   * @param emailDL The email distribution list data in object format
+   * @param emailDistributionList The email distribution list data in object format
    */
-  setDistributionListGroupValues(formGroup: FormGroup, emailDL: any) {
+  setDistributionListGroupValues(
+    formGroup: FormGroup,
+    emailDistributionList: any
+  ) {
     const inputArray =
-      emailDL?.inputEmails?.map((email: string) =>
+      emailDistributionList?.inputEmails?.map((email: string) =>
         this.formBuilder.control(email)
       ) || [];
-    const dlGroup = formGroup as FormGroup;
-    dlGroup.setControl('resource', this.formBuilder.control(emailDL.resource));
-    dlGroup.setControl(
+    const distributionListGroup = formGroup as FormGroup;
+    distributionListGroup.setControl(
+      'resource',
+      this.formBuilder.control(emailDistributionList.resource)
+    );
+    distributionListGroup.setControl(
       'reference',
-      this.formBuilder.control(emailDL.reference)
+      this.formBuilder.control(emailDistributionList.reference)
     );
     // Map filters
-    dlGroup.setControl(
+    distributionListGroup.setControl(
       'query',
       this.formBuilder.group({
-        name: new FormControl(emailDL.query.name || null), // Query name
+        name: new FormControl(emailDistributionList.query.name || null), // Query name
         filter: this.formBuilder.group({
-          logic: new FormControl(emailDL?.query?.filter?.logic || null), // Filter logic
+          logic: new FormControl(
+            emailDistributionList?.query?.filter?.logic || null
+          ), // Filter logic
           filters: this.formBuilder.array(
-            this.mapFilters(emailDL?.query?.filter?.filters || [])
+            this.mapFilters(emailDistributionList?.query?.filter?.filters || [])
           ),
         }),
         fields: this.formBuilder.array(
-          emailDL?.query?.fields.map(
+          emailDistributionList?.query?.fields.map(
             (field: any) => this.createFieldsFormGroup(field) // Using the utility function
           )
         ),
       })
     );
 
-    dlGroup.setControl(
+    const commonServiceDetail =
+      emailDistributionList?.commonServiceFilter?.filters ||
+      emailDistributionList?.commonServiceFilter?.filter?.filters;
+    distributionListGroup.setControl(
       'commonServiceFilter',
       this.formBuilder.group({
         name: new FormControl(null), // Query name
         filter: this.formBuilder.group({
-          logic: new FormControl(emailDL?.commonServiceFilter?.logic || null), // Filter logic
+          logic: new FormControl(
+            emailDistributionList?.commonServiceFilter?.logic ||
+              emailDistributionList?.commonServiceFilter?.filter?.logic ||
+              null
+          ), // Filter logic
           filters: this.formBuilder.array(
-            this.mapFilters(emailDL?.commonServiceFilter?.filters || [])
+            this.mapFilters(commonServiceDetail || [])
           ),
         }),
       })
     );
 
-    dlGroup.setControl('inputEmails', this.formBuilder.array(inputArray));
+    distributionListGroup.setControl(
+      'inputEmails',
+      this.formBuilder.array(inputArray)
+    );
 
-    dlGroup.disable();
+    distributionListGroup.disable();
   }
 
   /**
@@ -771,19 +817,19 @@ export class EmailService {
   /**
    * Sets the email distribution list.
    *
-   * @param dlList The email distribution list
+   * @param distributionList The email distribution list
    */
-  setDistributionList(dlList?: FormGroup) {
-    if (dlList?.getRawValue()) {
-      this.emailDistributionList = dlList?.getRawValue();
-      const emailDL = this.datasetsForm?.get(
+  setDistributionList(distributionList?: FormGroup) {
+    if (distributionList?.getRawValue()) {
+      this.emailDistributionList = distributionList?.getRawValue();
+      const emailDistributionList = this.datasetsForm?.get(
         'emailDistributionList'
       ) as FormGroup;
 
-      // Assuming dlList.get('to').value is an array of strings (emails)
-      const toEmails = dlList?.get('to')?.value;
-      const ccEmails = dlList?.get('cc')?.value;
-      const bccEmails = dlList?.get('bcc')?.value;
+      // Assuming distributionList.get('to').value is an array of strings (emails)
+      const toEmails = distributionList?.get('to')?.getRawValue();
+      const ccEmails = distributionList?.get('cc')?.getRawValue();
+      const bccEmails = distributionList?.get('bcc')?.getRawValue();
 
       // Function to set input emails for to, cc, and bcc
       const setInputEmails = (emailArray: string[], formArray: FormArray) => {
@@ -796,21 +842,27 @@ export class EmailService {
       // Set input emails for 'to', 'cc', and 'bcc'
       setInputEmails(
         toEmails?.inputEmails,
-        emailDL?.get('to')?.get('inputEmails') as FormArray
+        emailDistributionList?.get('to')?.get('inputEmails') as FormArray
       );
       setInputEmails(
         ccEmails?.inputEmails,
-        emailDL?.get('cc')?.get('inputEmails') as FormArray
+        emailDistributionList?.get('cc')?.get('inputEmails') as FormArray
       );
       setInputEmails(
         bccEmails?.inputEmails,
-        emailDL?.get('bcc')?.get('inputEmails') as FormArray
+        emailDistributionList?.get('bcc')?.get('inputEmails') as FormArray
       );
 
       // Existing patchValue calls
-      emailDL?.get('to')?.patchValue(dlList?.get('to')?.value);
-      emailDL?.get('cc')?.patchValue(dlList?.get('cc')?.value);
-      emailDL?.get('bcc')?.patchValue(dlList?.get('bcc')?.value);
+      emailDistributionList
+        ?.get('to')
+        ?.patchValue(distributionList?.get('to')?.value);
+      emailDistributionList
+        ?.get('cc')
+        ?.patchValue(distributionList?.get('cc')?.value);
+      emailDistributionList
+        ?.get('bcc')
+        ?.patchValue(distributionList?.get('bcc')?.value);
     } else {
       this.emailDistributionList = this.datasetsForm
         .get('emailDistributionList')
@@ -886,7 +938,7 @@ export class EmailService {
   /**
    * Sets the tabs.
    *
-   * @param tabs The tabs on DL page.
+   * @param tabs The tabs on DistributionList page.
    */
   setTabs(tabs: any[]): void {
     this.tabs = tabs;
@@ -1556,7 +1608,7 @@ export class EmailService {
    * Resets the form.
    */
   resetDataSetForm() {
-    this.datasetsForm.reset();
+    this.setDatasetForm();
     this.allLayoutdata = {};
     this.allPreviewData = [];
     this.emailLayout = {};
@@ -1575,6 +1627,7 @@ export class EmailService {
         blockHeaderCount: 1,
       },
     ];
+    this.distributionListData = this.datasetsForm.get('emailDistributionList');
   }
 
   /**
@@ -1657,7 +1710,7 @@ export class EmailService {
   /**
    * Edit a distribution list.
    *
-   * @param distributionList dl data
+   * @param distributionList DistributionList data
    * @param id string
    * @returns {Observable<any>} An observable that resolves with the result of the query.
    */
@@ -1700,6 +1753,45 @@ export class EmailService {
         editCustomTemplateId: id,
         customTemplate: { isDeleted: 1 },
       },
+    });
+  }
+
+  /**
+   * Removes file from documentary if file is removed before sending email
+   *
+   * @param attachments files to be removed from documentary
+   */
+  async deleteFile(attachments: EmailNotificationFile[]): Promise<void> {
+    if (!attachments || attachments.length === 0) {
+      return;
+    }
+
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    attachments.forEach((file) => {
+      const { driveId, itemId, fileName } = file;
+
+      this.http
+        .delete(
+          `${this.environment.csApiUrl}/documents/drives/${driveId}/items/${itemId}`,
+          { headers }
+        )
+        .subscribe({
+          next: () => {
+            this.snackBar.openSnackBar(
+              this.translate.instant(
+                'common.notifications.email.attachment.removeFile',
+                { fileName }
+              )
+            );
+          },
+          error: (error) => {
+            console.error(`Failed to delete file: ${fileName}`, error.message);
+          },
+        });
     });
   }
 
@@ -1789,29 +1881,34 @@ export class EmailService {
   /**
    * Populate Emails into distributionlist input emails form array using email string array
    *
-   * @param dlArray email string array
+   * @param distributionListArray email string array
    * @param input form group array
    */
-  populateEmails(dlArray: string[], input: FormArray) {
+  populateEmails(distributionListArray: string[], input: FormArray) {
     input.clear();
-    dlArray?.forEach((item: string) => {
+    distributionListArray?.forEach((item: string) => {
       input?.push(new FormControl(item));
     });
   }
 
   /**
    *
-   * validating next button by taking 3 conditions in consideration DL name mandatory, check duplicate name validation and requires To email
+   * validating next button by taking 3 conditions in consideration DistributionList name mandatory, check duplicate name validation and requires To email
    */
   async validateNextButton() {
-    const isDLNameExists = this.distributionListName?.trim()?.length > 0;
-    const isDlDuplicateNm = this.isDLNameDuplicate;
+    const distributionListNameExists =
+      this.distributionListName?.trim()?.length > 0;
+    const distributionListDuplicateName = this.isDistributionListNameDuplicate;
     let isExistsToEmail = false;
 
     await this.isToValidCheck();
     isExistsToEmail = this.isToValid;
 
-    if (isDLNameExists && !isDlDuplicateNm && isExistsToEmail) {
+    if (
+      distributionListNameExists &&
+      !distributionListDuplicateName &&
+      isExistsToEmail
+    ) {
       this.disableSaveAndProceed.next(false);
     } else {
       this.disableFormSteps.next({
@@ -1829,14 +1926,26 @@ export class EmailService {
    * - reference data filters are set
    */
   async isToValidCheck() {
+    let data: any = [];
+    if (this.isDistributionListEdit) {
+      data = this.distributionListData.getRawValue();
+    } else {
+      data = this.datasetsForm.getRawValue().emailDistributionList;
+    }
     if (
-      this.datasetsForm.getRawValue().emailDistributionList?.to?.inputEmails
-        .length > 0 ||
-      (this.datasetsForm.getRawValue().emailDistributionList?.to?.resource &&
-        this.filterToEmails?.length >= 0) ||
+      data?.to?.inputEmails.length > 0 ||
+      (data?.to?.resource !== '' &&
+        data?.to?.resource !== null &&
+        this.filterToEmails?.length >= 0 &&
+        data.to.query.fields.length > 0) ||
       this.datasetsForm
         ?.getRawValue()
         ?.emailDistributionList?.to?.commonServiceFilter?.filter?.filters?.filter(
+          (x: any) => x?.field || x?.value
+        )?.length > 0 ||
+      this.distributionListData
+        ?.getRawValue()
+        ?.to?.commonServiceFilter?.filter?.filters?.filter(
           (x: any) => x?.field || x?.value
         )?.length > 0
     ) {
@@ -1849,14 +1958,14 @@ export class EmailService {
   /**
    * Set common service payload
    *
-   * @param dlCommonQuery commonquery form group
+   * @param distributionListCommonQuery commonquery form group
    * @returns payload data
    */
-  setCommonServicePayload(dlCommonQuery: any) {
+  setCommonServicePayload(distributionListCommonQuery: any) {
     let commonServiceData: any = {};
     commonServiceData['commonServiceFilter'] = {};
-    if (dlCommonQuery) {
-      commonServiceData = this.processFilters(dlCommonQuery);
+    if (distributionListCommonQuery) {
+      commonServiceData = this.processFilters(distributionListCommonQuery);
     }
     return commonServiceData;
   }
@@ -1864,11 +1973,11 @@ export class EmailService {
   /**
    * Process common service filter fo updating its fields value
    *
-   * @param dlCommonQuery Commonservice filters
+   * @param distributionListCommonQuery Commonservice filters
    * @returns Updated filters data
    */
-  processFilters(dlCommonQuery: any) {
-    dlCommonQuery?.filters?.forEach((ele: any) => {
+  processFilters(distributionListCommonQuery: any) {
+    distributionListCommonQuery?.filters?.forEach((ele: any) => {
       let preDefineFields: any = [];
       if (!ele.filters) {
         preDefineFields = this.commonServiceFields.filter(
@@ -1880,6 +1989,219 @@ export class EmailService {
         this.processFilters(ele);
       }
     });
-    return dlCommonQuery;
+    return distributionListCommonQuery;
+  }
+
+  /**
+   * Clear and patch function
+   *
+   * @param targetGroup Form group you want to clear and patch
+   * @param sourceGroup Form group you are retrieving the values from
+   */
+  clearAndPatch(targetGroup: FormGroup, sourceGroup: FormGroup): void {
+    // Clear 'resource'
+    targetGroup.get('resource')?.patchValue(sourceGroup.get('resource')?.value);
+    // Filter Query
+    this.setCommonServiceValue(
+      targetGroup.get('query') as FormGroup,
+      sourceGroup.get('query') as FormGroup
+    );
+    // Common service filter query
+    this.setCommonServiceValue(
+      targetGroup.get('commonServiceFilter') as FormGroup,
+      sourceGroup.get('commonServiceFilter') as FormGroup
+    );
+    // Clear 'inputEmails'
+    const targetInputEmails = targetGroup.get('inputEmails') as FormArray;
+    const sourceInputEmails = sourceGroup.get('inputEmails') as FormArray;
+    targetInputEmails.clear();
+    sourceInputEmails.controls.forEach((control) => {
+      targetInputEmails.push(this.formBuilder.control(control.value));
+    });
+  }
+
+  /**
+   * Clear distribution list
+   *
+   * @param targetGroup Form group you want to clear
+   */
+  clearDistributionList(targetGroup: FormGroup): void {
+    this.filterToEmails = [];
+    // Clear 'resource'
+    targetGroup.get('resource')?.patchValue('');
+    // Clear 'query'
+    const targetQuery = targetGroup.get('query') as FormGroup;
+    targetQuery.reset();
+    // Set 'name'
+    targetQuery.get('name')?.setValue('');
+    // Set 'filter'
+    const targetFilter = targetQuery.get('filter') as FormGroup;
+    targetFilter.get('logic')?.setValue('and');
+    const targetFiltersArray = targetFilter.get('filters') as FormArray;
+    targetFiltersArray.clear();
+    // Set 'fields'
+    const targetFieldsArray = targetQuery.get('fields') as FormArray;
+    targetFieldsArray.clear();
+    // Clear 'inputEmails'
+    const targetInputEmails = targetGroup.get('inputEmails') as FormArray;
+    targetInputEmails.clear();
+  }
+
+  /**
+   * Set Filter anfd common service
+   *
+   * @param targetQuery target query
+   * @param sourceQuery source query
+   */
+  setCommonServiceValue(targetQuery: FormGroup, sourceQuery: FormGroup) {
+    // Clear 'query'
+    // const targetQuery = targetGroup.get('query') as FormGroup;
+    // const sourceQuery = sourceGroup.get('query') as FormGroup;
+    targetQuery.reset();
+    // Set 'name'
+    targetQuery.get('name')?.setValue(sourceQuery.get('name')?.value);
+    // Set 'filter'
+    const targetFilter = targetQuery.get('filter') as FormGroup;
+    const sourceFilter = sourceQuery.get('filter') as FormGroup;
+    targetFilter.get('logic')?.setValue(sourceFilter.get('logic')?.value);
+    const targetFiltersArray = targetFilter.get('filters') as FormArray;
+    const sourceFiltersArray = sourceFilter.get('filters') as FormArray;
+    targetFiltersArray?.clear();
+    sourceFiltersArray?.controls?.forEach((control) => {
+      targetFiltersArray.push(control);
+    });
+    // Set 'fields'
+    const targetFieldsArray = targetQuery.get('fields') as FormArray;
+    const sourceFieldsArray = sourceQuery.get('fields') as FormArray;
+    targetFieldsArray?.clear(); // Clear target array
+
+    // Copy each control from sourceFieldsArray to targetFieldsArray
+    sourceFieldsArray?.controls?.forEach((control) => {
+      if (control instanceof FormGroup) {
+        targetFieldsArray?.push(new FormGroup({ ...control.controls }));
+      } else if (control instanceof FormControl) {
+        targetFieldsArray?.push(new FormControl(control.value));
+      } else if (control instanceof FormArray) {
+        targetFieldsArray?.push(this.deepCopyFormArray(control));
+      }
+    });
+  }
+
+  /**
+   * Function to recursively copy FormArray if it has nested structures
+   *
+   * @param sourceArray Source array from where needs to do copy
+   * @returns Returns updated sourcearray
+   */
+  deepCopyFormArray(sourceArray: FormArray): FormArray {
+    const newArray: any = new FormArray([]);
+    sourceArray?.controls?.forEach((control) => {
+      if (control instanceof FormGroup) {
+        newArray?.push(new FormGroup({ ...control.controls }));
+      } else if (control instanceof FormControl) {
+        newArray?.push(new FormControl(control?.value));
+      } else if (control instanceof FormArray) {
+        newArray?.push(this.deepCopyFormArray(control)); // Recursive call for nested FormArray
+      }
+    });
+    return newArray;
+  }
+
+  /**
+   *
+   * Delete an email notification with the provided id Permanently.
+   *
+   * @param id The distribution list id.
+   * @returns success or error message.
+   */
+  deleteDistributionListPermanently(id: string) {
+    return this.apollo.mutate<any>({
+      mutation: DELETE_EMAIL_DISTRIBUTION_LIST,
+      variables: {
+        id: id,
+      },
+    });
+  }
+
+  /**
+   * Loads the distribution list.
+   *
+   * @param query distribution list query
+   * @returns returns response
+   */
+  async loadLayoutDistributionList(query: any) {
+    const objData: any = cloneDeep(query);
+    //Updating payload
+
+    if (
+      this.emailDistributionList?.to instanceof Array &&
+      objData.emailDistributionList.to
+    ) {
+      objData.emailDistributionList.to.inputEmails = this?.emailDistributionList
+        ?.to?.inputEmails
+        ? this.emailDistributionList.to.inputEmails
+        : this.emailDistributionList.to;
+    }
+    if (
+      this.emailDistributionList?.cc instanceof Array &&
+      objData.emailDistributionList.cc
+    ) {
+      objData.emailDistributionList.cc.inputEmails = this?.emailDistributionList
+        ?.cc?.inputEmails
+        ? this.emailDistributionList.cc.inputEmails
+        : this.emailDistributionList.cc;
+    }
+    if (
+      this.emailDistributionList?.bcc instanceof Array &&
+      objData.emailDistributionList.bcc
+    ) {
+      objData.emailDistributionList.bcc.inputEmails = this
+        ?.emailDistributionList?.bcc?.inputEmails
+        ? this.emailDistributionList.bcc.inputEmails
+        : this.emailDistributionList.bcc;
+    }
+
+    if (objData.emailDistributionList?.to?.commonServiceFilter?.filter) {
+      objData.emailDistributionList.to.commonServiceFilter =
+        this.setCommonServicePayload(
+          objData.emailDistributionList?.to?.commonServiceFilter?.filter
+        );
+    }
+
+    if (objData.emailDistributionList?.cc?.commonServiceFilter?.filter) {
+      objData.emailDistributionList.cc.commonServiceFilter =
+        this.setCommonServicePayload(
+          objData.emailDistributionList?.cc?.commonServiceFilter?.filter
+        );
+    }
+
+    if (objData.emailDistributionList?.bcc?.commonServiceFilter?.filter) {
+      objData.emailDistributionList.bcc.commonServiceFilter =
+        this.setCommonServicePayload(
+          objData.emailDistributionList?.bcc?.commonServiceFilter?.filter
+        );
+    }
+
+    // If no Fields selected then set as []
+    if (
+      objData.emailDistributionList?.to?.commonServiceFilter?.filters?.filter(
+        (x: any) => x?.field != null
+      )?.length === 0
+    ) {
+      objData.emailDistributionList.to.commonServiceFilter.filters = [];
+    }
+
+    try {
+      const response = await lastValueFrom(
+        this.http.post(
+          `${this.restService.apiUrl}/notification/preview-distribution-lists/`,
+          objData
+        )
+      );
+      return response;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   }
 }

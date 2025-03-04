@@ -211,6 +211,25 @@ export const GET_EMAIL_NOTIFICATIONS = gql`
         node {
           applicationId
           createdAt
+          datasets {
+            name
+            query {
+              name
+              filter
+              fields
+            }
+            resource
+            reference
+            tableStyle
+            blockType
+            textStyle
+            individualEmail
+            individualEmailFields
+            sendAsAttachment
+            pageSize
+            navigateToPage
+            navigateSettings
+          }
           emailDistributionList
           userSubscribed
           subscriptionList

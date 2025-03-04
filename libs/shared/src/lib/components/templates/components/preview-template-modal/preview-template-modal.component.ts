@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { EmailModule } from '../../../email/email.module';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
   ButtonModule,
   DialogModule,
@@ -36,7 +36,7 @@ import { isNil } from 'lodash';
   templateUrl: './preview-template-modal.component.html',
   styleUrls: ['./preview-template-modal.component.scss'],
 })
-export class PreviewTemplateModalComponent {
+export class PreviewTemplateModalComponent implements OnInit {
   /** Current step */
   public currentStep = 1;
   /** Should disable action button */
@@ -57,9 +57,6 @@ export class PreviewTemplateModalComponent {
     },
   ];
 
-  /** Current environment */
-  private environment: any;
-
   /**
    * Preview template modal.
    * Triggered by grid widgets when sending emails.
@@ -69,22 +66,19 @@ export class PreviewTemplateModalComponent {
    * @param snackBar Shared snackbar service
    * @param translate Angular Translate service
    * @param dialogRef Dialog reference
-   * @param environment platform environment
    */
   constructor(
     @Inject(DIALOG_DATA) public data: any,
     public emailService: EmailService,
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private dialogRef: DialogRef,
-    @Inject('environment') environment: any
+    private dialogRef: DialogRef
   ) {
     this.emailService.disableNextActionBtn = false;
     this.emailService.setDatasetForm();
-    this.environment = environment;
     this.emailService.isQuickAction = true;
     this.emailService.datasetsForm.get('emailDistributionList')?.reset();
-    this.emailService.quickEmailDLQuery = [];
+    this.emailService.quickEmailDistributionListQuery = [];
     // Show File upload in step 1 only on clicking the action button from Grid and send email in step 2
     this.emailService.showFileUpload = true;
     this.currentStep = 0;
@@ -149,6 +143,16 @@ export class PreviewTemplateModalComponent {
       footerImgStyle: this.data.emailContent?.footer?.footerImgStyle,
       footerHtmlStyle: this.data.emailContent?.footer?.footerHtmlStyle,
     };
+  }
+
+  ngOnInit(): void {
+    this.dialogRef.closed.subscribe(() => {
+      const attachments =
+        this.emailService.datasetsForm.get('attachments')?.value;
+      if (attachments.files?.length) {
+        this.emailService.deleteFile(attachments.files);
+      }
+    });
   }
 
   /**
@@ -276,5 +280,20 @@ export class PreviewTemplateModalComponent {
     } else {
       this.currentStep = 1;
     }
+  }
+
+  /**
+   * Validate Quick action To emails when we cehck from Quick Action grid
+   *
+   * @returns value for button disable or enable
+   */
+  validateQuickActionNextBtn() {
+    this.steps = this.steps.map((step, index) => {
+      if (index > this.currentStep) {
+        step.disabled = this.emailService.disableNextActionBtn;
+      }
+      return step;
+    });
+    return this.emailService.disableNextActionBtn;
   }
 }

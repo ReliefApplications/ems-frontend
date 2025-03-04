@@ -18,6 +18,7 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import { DistributionModalComponent } from '../../../distribution-lists/components/distribution-modal/distribution-modal.component';
 import { takeUntil } from 'rxjs/operators';
 import { EmailService } from '../../../email/email.service';
+import isNil from 'lodash/isNil';
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -405,17 +406,33 @@ export class ButtonConfigComponent
 
   /** Open edit modal components and create new distribution list */
   public async addDistributionList() {
+    this.emailService.selectedDistributionListName = '';
+    this.emailService.isDistributionListEdit = true;
+    this.emailService.isQuickAction = true;
+    this.emailService.setDatasetForm();
+    this.emailService.resetPreviewData();
+    this.emailService.datasetsForm.reset();
+    this.emailService.distributionListData = this.emailService.datasetsForm.get(
+      'emailDistributionList'
+    );
     const dialogRef = this.dialog.open(DistributionModalComponent, {
       data: {
         isEdit: false,
-        distributionListNames: this.distributionLists?.map((x: any) => x.name),
+        distributionListNames: this.distributionLists?.map((x: any) => x?.name),
+        resource: this.widgetFormGroup?.value?.resource,
       },
+      autoFocus: false,
       disableClose: true,
+      width: '80%',
+      height: '80%',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((data: any) => {
-      const dlData = data.dlData.addEmailDistributionList;
-      this.distributionLists = [dlData, ...this.distributionLists];
-      this.formGroup.get('distributionList')?.setValue(dlData.id);
+      // On save, add distribution list to available list + set button property to new distribution list
+      const distributionList = data?.result;
+      if (!isNil(distributionList)) {
+        this.distributionLists = [distributionList, ...this.distributionLists];
+        this.formGroup.get('distributionList')?.setValue(distributionList.id);
+      }
     });
   }
 
