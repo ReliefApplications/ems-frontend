@@ -1,12 +1,14 @@
 <ui-dialog>
   <ng-container ngProjectAs="content">
     <ems-create-distribution
-      #DLEditor
+      #distributionListEditor
       [quickActionDistribution]="data"
       (navigateToEms)="handleNavigation($event)"
     ></ems-create-distribution>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ng-container *ngTemplateOutlet="DLEditor.actionsTemplate"></ng-container>
+    <ng-container
+      *ngTemplateOutlet="distributionListEditor.actionsTemplate"
+    ></ng-container>
   </ng-container>
 </ui-dialog>

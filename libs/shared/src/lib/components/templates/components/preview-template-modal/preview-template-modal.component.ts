@@ -57,9 +57,6 @@ export class PreviewTemplateModalComponent implements OnInit {
     },
   ];
 
-  /** Current environment */
-  private environment: any;
-
   /**
    * Preview template modal.
    * Triggered by grid widgets when sending emails.
@@ -69,19 +66,16 @@ export class PreviewTemplateModalComponent implements OnInit {
    * @param snackBar Shared snackbar service
    * @param translate Angular Translate service
    * @param dialogRef Dialog reference
-   * @param environment platform environment
    */
   constructor(
     @Inject(DIALOG_DATA) public data: any,
     public emailService: EmailService,
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private dialogRef: DialogRef,
-    @Inject('environment') environment: any
+    private dialogRef: DialogRef
   ) {
     this.emailService.disableNextActionBtn = false;
     this.emailService.setDatasetForm();
-    this.environment = environment;
     this.emailService.isQuickAction = true;
     this.emailService.datasetsForm.get('emailDistributionList')?.reset();
     this.emailService.quickEmailDistributionListQuery = [];

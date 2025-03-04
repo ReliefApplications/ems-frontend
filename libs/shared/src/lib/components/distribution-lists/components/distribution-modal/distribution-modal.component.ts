@@ -69,14 +69,14 @@ export class DistributionModalComponent extends EmailComponent {
    * Custom template modal edition.
    *
    * @param dialogRef CDK Dialog reference.
-   * @param EmailService Email service.
-   * @param ApplicationService Shared application service.
-   * @param FormBuilder Angular form builder.
-   * @param ConfirmService Shared confirmation service.
-   * @param AuthService Shared authentication service.
-   * @param DownloadService Shared download service.
-   * @param Dialog CDK Dialog service.
-   * @param TranslateService Angular translation service.
+   * @param emailService Email service.
+   * @param applicationService Shared application service.
+   * @param fb Angular form builder.
+   * @param confirmService Shared confirmation service.
+   * @param authService Shared authentication service.
+   * @param downloadService Shared download service.
+   * @param dialog CDK Dialog service.
+   * @param translate Angular translation service.
    * @param ability App Ability object.
    * @param snackBar Shared snackbar service.
    * @param queryBuilder Shared query builder service.
@@ -84,31 +84,31 @@ export class DistributionModalComponent extends EmailComponent {
    */
   constructor(
     public dialogRef: DialogRef<any>,
-    EmailService: EmailService,
-    ApplicationService: ApplicationService,
-    FormBuilder: FormBuilder,
-    ConfirmService: ConfirmService,
-    AuthService: AuthService,
-    DownloadService: DownloadService,
-    Dialog: Dialog,
-    TranslateService: TranslateService,
+    emailService: EmailService,
+    applicationService: ApplicationService,
+    fb: FormBuilder,
+    confirmService: ConfirmService,
+    authService: AuthService,
+    downloadService: DownloadService,
+    dialog: Dialog,
+    translate: TranslateService,
     ability: AppAbility,
     snackBar: SnackbarService,
     queryBuilder: QueryBuilderService,
     @Inject(DIALOG_DATA) public data: DialogData
   ) {
     super(
-      EmailService,
-      ApplicationService,
-      FormBuilder,
+      emailService,
+      applicationService,
+      fb,
       snackBar,
-      ConfirmService,
-      TranslateService,
-      AuthService,
-      DownloadService,
+      confirmService,
+      translate,
+      authService,
+      downloadService,
       ability,
       queryBuilder,
-      Dialog
+      dialog
     );
   }
 

@@ -3,7 +3,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { EmailService } from '../../email.service';
 
 /**
- * Chose role component, to preview application with selected role.
+ * Preview distribution list component.
  */
 @Component({
   selector: 'preview-distribution',
@@ -19,7 +19,7 @@ export class PreviewDistributionComponent {
   isExpandedBcc = false;
 
   /**
-   * Chose role component, to preview application with selected role.
+   * Preview distribution list component.
    *
    * @param dialogRef Dialog ref
    * @param data Injected modal data

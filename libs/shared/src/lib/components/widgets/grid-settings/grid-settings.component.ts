@@ -429,9 +429,9 @@ export class GridSettingsComponent
     this.emailService
       .getEmailDistributionList(appId)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res: any) => {
-        if (res.data?.emailDistributionLists?.edges) {
-          this.distributionLists = res.data.emailDistributionLists.edges.map(
+      .subscribe(({ data }) => {
+        if (data?.emailDistributionLists?.edges) {
+          this.distributionLists = data.emailDistributionLists.edges.map(
             (e: any) => e.node
           );
           if (this.resource) {
@@ -450,9 +450,9 @@ export class GridSettingsComponent
     this.emailService
       .getCustomTemplates(appId)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res: any) => {
-        if (res.data?.customTemplates?.edges) {
-          const emailTemplates = res.data.customTemplates.edges.map(
+      .subscribe(({ data }) => {
+        if (data?.customTemplates?.edges) {
+          const emailTemplates = data.customTemplates.edges.map(
             (e: any) => e.node
           );
           this.emailTemplates = emailTemplates || [];

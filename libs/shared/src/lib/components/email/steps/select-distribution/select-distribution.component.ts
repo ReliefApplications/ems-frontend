@@ -291,10 +291,10 @@ export class SelectDistributionComponent
       this.emailService.selectedDistributionListName?.trim()?.toLowerCase() !==
       enteredName?.trim()?.toLowerCase()
     ) {
-      let isDupe =
+      let duplicated =
         this.emailService.distributionListNames.includes(enteredName);
-      if (!isDupe && this.emailService?.cacheDistributionList?.length > 0) {
-        isDupe = this.emailService.cacheDistributionList
+      if (!duplicated && this.emailService?.cacheDistributionList?.length > 0) {
+        duplicated = this.emailService.cacheDistributionList
           .map((x: any) => x.name.toLowerCase())
           .includes(enteredName);
       }
@@ -302,16 +302,16 @@ export class SelectDistributionComponent
       if (
         (this.emailService.isDistributionListEdit ||
           this.emailService?.editId) &&
-        isDupe
+        duplicated
       ) {
-        isDupe =
+        duplicated =
           this.actualDLName === this.emailService.distributionListName
             ? false
             : true;
       }
 
-      this.emailService.isDistributionListNameDuplicate = isDupe;
-      return isDupe;
+      this.emailService.isDistributionListNameDuplicate = duplicated;
+      return duplicated;
     } else {
       return false;
     }
