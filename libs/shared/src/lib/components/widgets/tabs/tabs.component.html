@@ -4,6 +4,8 @@
     (openedTab)="selectedIndex = $event.index"
     class="h-full overflow-hidden"
     *ngIf="tabs && tabs.length > 0; else empty"
+    (willDetach)="onWillDetach()"
+    (didAttach)="onDidAttach()"
   >
     <ng-container *ngFor="let tab of tabs">
       <ng-container *ngIf="!tab.hide">
