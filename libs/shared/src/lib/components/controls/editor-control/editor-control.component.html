@@ -2,6 +2,7 @@
   #editor
   (onInit)="endLoading()"
   [init]="editorConfig"
+  (onError)="logEditorError($event)"
   [(ngModel)]="editorContent"
   (ngModelChange)="onEditorContentChange()"
 ></editor>

@@ -233,7 +233,23 @@ export class EditorControlComponent
   }
 
   ngAfterViewInit(): void {
-    console.log('init', this.editor.id);
+    this.editorConfig.setup = (editor) => {
+      editor.on('init', () => {
+        console.log('TinyMCE initialized:', editor.id);
+      });
+
+      editor.on('SkinLoadError', (e) => {
+        console.error('TinyMCE Error:', e);
+      });
+
+      editor.on('Error', (e) => {
+        console.error('TinyMCE Error:', e);
+      });
+    };
+    this.editorConfig.init_instance_callback = (editor) => {
+      console.log(`Editor ${editor.id} initialized successfully.`);
+    };
+    console.log('init', this.editor.id, this.editorConfig);
     this.editor.onFocusIn.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.onFocusIn();
     });
@@ -268,6 +284,15 @@ export class EditorControlComponent
     if (this.readonly) {
       this.editor.editor.mode.set('readonly');
     }
+  }
+
+  /**
+   * Logs editor error
+   *
+   * @param error error
+   */
+  logEditorError(error: any) {
+    console.error('TinyMCE Editor Error:', error);
   }
 
   /** Emit and change editor loading */
