@@ -1,3 +1,10 @@
+# [2.18.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.2-rc.2...v2.18.0-rc.1) (2025-03-04)
+
+
+### Features
+
+* distribution list CRUD  ([#2768](https://github.com/ReliefApplications/ems-frontend/issues/2768)) ([1fe22e6](https://github.com/ReliefApplications/ems-frontend/commit/1fe22e683879a72f33b9fbffdeab57d6a4b85017))
+
 ## [2.17.2-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.2-rc.1...v2.17.2-rc.2) (2025-03-03)
 
 
