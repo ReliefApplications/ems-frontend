@@ -1711,8 +1711,11 @@
                 "placeholder": "******"
               },
               "field": {
+                "addParam": "******",
                 "label": "******",
-                "placeholder": "******"
+                "paramName": "******",
+                "placeholder": "******",
+                "title": "******"
               },
               "label": "******",
               "target": {
@@ -1781,6 +1784,14 @@
             "create": "******",
             "defaultName": "******",
             "enable": "******",
+            "inline": {
+              "displayIfTruthy": {
+                "title": "******",
+                "tooltip": "******"
+              },
+              "title": "******",
+              "tooltip": "******"
+            },
             "placeholder": {
               "modifyValue": "******"
             },

@@ -144,6 +144,8 @@ export class CoreGridComponent
   @Output() edit: EventEmitter<any> = new EventEmitter();
   /** Event emitter for inline edition of records */
   @Output() inlineEdition: EventEmitter<any> = new EventEmitter();
+  /** Event emitter for clicking an inline action button */
+  @Output() inlineAction = new EventEmitter<{ options: any; row: string }>();
 
   // === SELECTION OUTPUTS ===
   /** Event emitter for row selection */
@@ -1003,6 +1005,7 @@ export class CoreGridComponent
    *
    * @param event Grid Action.
    * @param event.action action to perform, short string code
+   * @param event.button inline floating button clicked
    * @param event.item item to perform the action on
    * @param event.items list of items to perform the action on
    * @param event.value value to apply to item, if any
@@ -1011,6 +1014,7 @@ export class CoreGridComponent
    */
   public onAction(event: {
     action: string;
+    button?: any;
     item?: any;
     items?: any[];
     value?: any;
@@ -1032,6 +1036,15 @@ export class CoreGridComponent
       return fullUrl;
     };
     switch (event.action) {
+      case 'btnClick': {
+        if (event.button) {
+          this.inlineAction.emit({
+            options: event.button,
+            row: event.item.id,
+          });
+        }
+        break;
+      }
       case 'add': {
         this.onAdd();
         break;

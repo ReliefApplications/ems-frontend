@@ -6,6 +6,7 @@ import {
   Observable,
   Subscription,
   firstValueFrom,
+  map,
 } from 'rxjs';
 import {
   AddRoleMutationResponse,
@@ -146,6 +147,19 @@ export class ApplicationService {
   public customStyle?: HTMLStyleElement;
   /** Custom style edited */
   public customStyleEdited = false;
+
+  /** @returns pages from the application */
+  pages$ = this.application$.pipe(
+    map(
+      (application) =>
+        application?.pages?.map((page: any) => ({
+          id: page.id,
+          name: page.name,
+          urlParams: this.getPageUrlParams(application, page),
+          placeholder: `{{page(${page.id})}}`,
+        })) || []
+    )
+  );
 
   /** @returns Path to download application users */
   get usersDownloadPath(): string {
@@ -2075,5 +2089,18 @@ export class ApplicationService {
           }
         });
     }
+  }
+
+  /**
+   * Get page url params
+   *
+   * @param application application
+   * @param page page to get url from
+   * @returns url of the page
+   */
+  private getPageUrlParams(application: Application, page: Page): string {
+    return page.type === ContentType.form
+      ? `${application.id}/${page.type}/${page.id}`
+      : `${application.id}/${page.type}/${page.content}`;
   }
 }

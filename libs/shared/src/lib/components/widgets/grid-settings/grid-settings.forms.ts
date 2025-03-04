@@ -38,6 +38,22 @@ export const createButtonFormGroup = (value: any) => {
       value && value.name ? value.name : DEFAULT_ACTION_NAME,
       Validators.required,
     ],
+    inline: [value && value.inline ? value.inline : false],
+    displayIfTruthy: [
+      value && value.displayIfTruthy ? value.displayIfTruthy : null,
+    ],
+    goToPage: [value && value.goToPage ? value.goToPage : false],
+    targetPage: [value && value.targetPage ? value.targetPage : null],
+    goToPageFields: fb.array(
+      value && value.goToPageFields
+        ? value.goToPageFields.map((x: any) =>
+            fb.group({
+              param: [x.param, Validators.required],
+              field: [x.field, Validators.required],
+            })
+          )
+        : []
+    ),
     selectAll: [value && value.selectAll ? value.selectAll : false],
     selectPage: [value && value.selectPage ? value.selectPage : false],
     goToNextStep: [get(value, 'goToNextStep', false)],

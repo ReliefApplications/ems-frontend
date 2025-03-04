@@ -1711,8 +1711,11 @@
                 "placeholder": "Type a title for the column..."
               },
               "field": {
+                "addParam": "Add parameter",
                 "label": "Pass field as query parameter",
-                "placeholder": "Select a field"
+                "paramName": "Parameter name",
+                "placeholder": "Select a field",
+                "title": "Query parameter"
               },
               "label": "Navigate to page",
               "target": {
@@ -1781,6 +1784,14 @@
             "create": "Add a button",
             "defaultName": "Action button",
             "enable": "Enable",
+            "inline": {
+              "displayIfTruthy": {
+                "title": "Visibility by field",
+                "tooltip": "If enabled, the button will be displayed on a row if the value of the selected field is truthy"
+              },
+              "title": "Inline",
+              "tooltip": "When enabled, the button will be displayed in each row of the grid instead of the widget's header"
+            },
             "placeholder": {
               "modifyValue": "Set as null"
             },
