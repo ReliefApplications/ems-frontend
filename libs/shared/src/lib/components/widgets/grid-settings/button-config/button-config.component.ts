@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import {
+  FormArray,
   FormBuilder,
   FormGroup,
   UntypedFormArray,
@@ -18,8 +19,9 @@ import { DistributionList } from '../../../../models/distribution-list.model';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+
 /** List fo disabled fields */
-const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
+const DISABLED_FIELDS = ['createdAt', 'modifiedAt'];
 
 /**
  * Configuration component for grid widget button.
@@ -75,6 +77,9 @@ export class ButtonConfigComponent
   get mailTemplates(): any[] {
     return this.templates.filter((x) => x.type === TemplateTypeEnum.EMAIL);
   }
+
+  /** Application pages */
+  pages$ = this.applicationService.pages$;
 
   /**
    * Configuration component for grid widget button.
@@ -508,5 +513,27 @@ export class ButtonConfigComponent
       this.loadChannels.emit();
       this.loadedChannel = true;
     }
+  }
+
+  /**
+   * Removes a a query param mapping
+   *
+   * @param index Index of the query param mapping to remove
+   */
+  public removeGoToPageField(index: number): void {
+    (this.formGroup.get('goToPageFields') as FormArray).removeAt(index);
+  }
+
+  /** Adds new query param mapping */
+  public addGoToPageField(): void {
+    (this.formGroup.get('goToPageFields') as FormArray).push(
+      this.fb.control(
+        {
+          param: null,
+          field: null,
+        },
+        Validators.required
+      )
+    );
   }
 }

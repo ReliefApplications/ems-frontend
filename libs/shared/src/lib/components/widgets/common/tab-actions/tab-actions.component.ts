@@ -1,8 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { ApplicationService } from '../../../../services/application/application.service';
-import { Application } from '../../../../models/application.model';
-import { ContentType, Page } from '../../../../models/page.model';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { DashboardState } from '../../../../models/dashboard.model';
@@ -131,14 +129,18 @@ export class TabActionsComponent
     private dashboardService: DashboardService
   ) {
     super();
+
+    this.applicationService.pages$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((pages) => {
+        this.pages = pages;
+      });
   }
 
   ngOnInit(): void {
     this.showSelectPage =
       this.formGroup.controls.actions.get('navigateToPage')?.value;
     // Add available pages to the list of available keys
-    const application = this.applicationService.application.getValue();
-    this.pages = this.getPages(application);
     this.states = this.dashboardService.states.getValue() || [];
     this.formGroup.controls.actions
       .get('navigateToPage')
@@ -146,35 +148,5 @@ export class TabActionsComponent
       .subscribe((val: boolean) => {
         this.showSelectPage = val;
       });
-  }
-
-  /**
-   * Get available pages from app
-   *
-   * @param application application
-   * @returns list of pages and their url
-   */
-  private getPages(application: Application | null) {
-    return (
-      application?.pages?.map((page: any) => ({
-        id: page.id,
-        name: page.name,
-        urlParams: this.getPageUrlParams(application, page),
-        placeholder: `{{page(${page.id})}}`,
-      })) || []
-    );
-  }
-
-  /**
-   * Get page url params
-   *
-   * @param application application
-   * @param page page to get url from
-   * @returns url of the page
-   */
-  private getPageUrlParams(application: Application, page: Page): string {
-    return page.type === ContentType.form
-      ? `${application.id}/${page.type}/${page.id}`
-      : `${application.id}/${page.type}/${page.content}`;
   }
 }

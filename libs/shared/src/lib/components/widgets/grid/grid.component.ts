@@ -19,6 +19,7 @@ import {
   Output,
   EventEmitter,
   TemplateRef,
+  Inject,
 } from '@angular/core';
 import { WorkflowService } from '../../../services/workflow/workflow.service';
 import { EmailService } from '../../../services/email/email.service';
@@ -51,6 +52,7 @@ import { FormQueryResponse } from '../../../models/form.model';
 import { AggregationGridComponent } from '../../aggregation/aggregation-grid/aggregation-grid.component';
 import { ReferenceDataGridComponent } from '../../ui/reference-data-grid/reference-data-grid.component';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
+import { Router } from '@angular/router';
 
 /** Component for the grid widget */
 @Component({
@@ -134,14 +136,20 @@ export class GridWidgetComponent
       : true;
   }
 
-  /** @returns list of active floating buttons */
+  /** @returns list of active floating buttons that are not inline */
   get floatingButtons() {
-    return (this.settings.floatingButtons || []).filter((x: any) => x.show);
+    return (this.settings.floatingButtons || []).filter(
+      (x: any) => x.show && !x.inline
+    );
   }
+
+  /** Environment */
+  public environment: any;
 
   /**
    * Heavy constructor for the grid widget component
    *
+   * @param environment The environment configuration
    * @param apollo The apollo client
    * @param dialog Dialogs service
    * @param snackBar Shared snack bar service
@@ -154,8 +162,10 @@ export class GridWidgetComponent
    * @param translate Angular translate service
    * @param aggregationService Shared aggregation service
    * @param dashboardService Shared dashboard service
+   * @param router Angular router
    */
   constructor(
+    @Inject('environment') environment: any,
     private apollo: Apollo,
     public dialog: Dialog,
     private snackBar: SnackbarService,
@@ -167,9 +177,11 @@ export class GridWidgetComponent
     private applicationService: ApplicationService,
     private translate: TranslateService,
     private aggregationService: AggregationService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private router: Router
   ) {
     super();
+    this.environment = environment;
   }
 
   ngOnInit() {
@@ -569,7 +581,43 @@ export class GridWidgetComponent
         }
       }
     }
+
+    // Go to
+    if (options.goToPage) {
+      if (options.targetPage) {
+        let url =
+          this.environment.module === 'backoffice'
+            ? `applications/${options.targetPage}?`
+            : `${options.targetPage}?`;
+
+        (options.goToPageFields || []).forEach(
+          (mapping: Record<'param' | 'field', string>) => {
+            const { param, field } = mapping;
+            const [id] = this.grid.selectedRows;
+            const idx = this.grid.gridData.data.findIndex((x) => x.id === id);
+            const row = this.grid.gridData.data[idx];
+            const rowData = { ...row._meta.raw, id: row.id };
+            const value = get(rowData, field, null);
+            url = url.concat(`${param}=${value}&`);
+          }
+        );
+
+        // navigate to the page
+        this.router.navigateByUrl(url.toString());
+      }
+    }
     this.grid.reloadData();
+  }
+
+  /**
+   * Handles quick action when clicked from inside a grid row.
+   *
+   * @param options action options.
+   * @param row clicked row.
+   */
+  public onQuickInlineAction(options: any, row: string) {
+    this.grid.selectedRows = [row];
+    this.onQuickAction(options);
   }
 
   /**

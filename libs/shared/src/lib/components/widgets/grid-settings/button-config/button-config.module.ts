@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { ButtonConfigComponent } from './button-config.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { GridModule } from '@progress/kendo-angular-grid';
 import { QueryBuilderModule } from '../../../query-builder/query-builder.module';
 import {
   CheckboxModule,
   TooltipModule,
   ToggleModule,
+  DividerModule,
   ButtonModule,
   FormWrapperModule,
   ErrorMessageModule,
@@ -25,6 +27,7 @@ import {
   imports: [
     CommonModule,
     TranslateModule,
+    GridModule,
     FormsModule,
     ReactiveFormsModule,
     ToggleModule,
@@ -39,6 +42,7 @@ import {
     ErrorMessageModule,
     IconModule,
     SelectMenuModule,
+    DividerModule,
     TabsModule,
     AlertModule,
   ],
