@@ -312,6 +312,9 @@ export const POPUP_EDITOR_CONFIG: RawEditorOptions = {
   promotion: false,
   branding: false,
   plugins:
+    'preview importcss searchreplace autolink code visualblocks visualchars fullscreen image link media table charmap nonbreaking insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+  menubar: 'edit view insert format tools table help',
+  toolbar:
     'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link',
   toolbar_sticky: true,
   image_advtab: true,
