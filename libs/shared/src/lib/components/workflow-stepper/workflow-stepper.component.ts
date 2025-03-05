@@ -27,6 +27,11 @@ export class WorkflowStepperComponent {
   @Output() openStep = new EventEmitter<number>();
   /** Reorder steps event emitter   */
   @Output() reorderSteps = new EventEmitter<Step[]>();
+  /** Parent scroll position, restored on each tab change */
+  public parentScroll = {
+    scrollTop: 0,
+    scrollLeft: 0,
+  };
 
   /**
    * Open a step on click
@@ -50,6 +55,27 @@ export class WorkflowStepperComponent {
     this.steps = reorderedSteps;
     if (event.previousIndex !== event.currentIndex) {
       this.reorderSteps.emit(this.steps);
+    }
+  }
+
+  /**
+   * Store previous scroll positions of parent app page container
+   */
+  onWillDetach() {
+    const pageContainer = document.getElementById('appPageContainer');
+    this.parentScroll.scrollLeft = pageContainer?.scrollLeft || 0;
+    this.parentScroll.scrollTop = pageContainer?.scrollTop || 0;
+  }
+
+  /**
+   * Restore previous scroll positions of parent app page container
+   * Prevent app page container to incorrectly scroll when loading a new tab in tabs widget.
+   */
+  onDidAttach() {
+    const pageContainer = document.getElementById('appPageContainer');
+    if (pageContainer) {
+      pageContainer.scrollTop = this.parentScroll.scrollTop;
+      pageContainer.scrollLeft = this.parentScroll.scrollLeft;
     }
   }
 }

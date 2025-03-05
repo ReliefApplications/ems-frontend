@@ -9,18 +9,18 @@ import { CustomPropertyGridComponentTypes } from '../components/utils/components
 import { registerCustomPropertyEditor } from '../components/utils/component-register';
 import { HttpClient } from '@angular/common/http';
 import get from 'lodash/get';
-import { Subject, firstValueFrom, takeUntil } from 'rxjs';
+import { Observable, Subject, firstValueFrom, takeUntil } from 'rxjs';
 import jsonpath from 'jsonpath';
 import graphQLVariables from './graphql-variables';
 import { isArray, isEqual, isNil } from 'lodash';
 import transformGraphQLVariables from '../../utils/reference-data/transform-graphql-variables.util';
+import { Injector } from '@angular/core';
+import { Apollo, gql } from 'apollo-angular';
 
 /** Question Settings category */
 const category = 'Choices by GraphQL';
 /** Question type ( includes dropdown & tagbox ) */
 const questionType = 'selectBase';
-/** GraphQL prefix */
-const prefix = 'gql';
 
 /**
  * Check if a question is of select type
@@ -85,14 +85,14 @@ export const init = (): void => {
   let visibleIndex = 0;
 
   serializer.addProperty(questionType, {
-    name: `${prefix}Url:string`,
+    name: 'gqlUrl:string',
     displayName: 'Service URL',
     category,
     visibleIndex: (visibleIndex += 1),
   });
 
   serializer.addProperty(questionType, {
-    name: `${prefix}Query`,
+    name: 'gqlQuery',
     displayName: 'GraphQL Query',
     category,
     type: CustomPropertyGridComponentTypes.queryEditor,
@@ -102,28 +102,28 @@ export const init = (): void => {
   registerCustomPropertyEditor(CustomPropertyGridComponentTypes.queryEditor);
 
   serializer.addProperty(questionType, {
-    name: `${prefix}Path:string`,
+    name: 'gqlPath:string',
     displayName: 'Path to data within the service',
     category,
     visibleIndex: (visibleIndex += 1),
   });
 
   serializer.addProperty(questionType, {
-    name: `${prefix}ValueName:string`,
+    name: 'gqlValueName:string',
     displayName: 'Get values from the following JSON field',
     category,
     visibleIndex: (visibleIndex += 1),
   });
 
   serializer.addProperty(questionType, {
-    name: `${prefix}TitleName:string`,
+    name: 'gqlTitleName:string',
     displayName: 'Get display texts from the following JSON field',
     category,
     visibleIndex: (visibleIndex += 1),
   });
 
   serializer.addProperty(questionType, {
-    name: `${prefix}VariableMapping`,
+    name: 'gqlVariableMapping',
     displayName: 'GraphQL variables',
     category,
     type: CustomPropertyGridComponentTypes.jsonEditor,
@@ -137,9 +137,14 @@ export const init = (): void => {
  * Render the custom properties
  *
  * @param questionElement Current question
- * @param http Http client
+ * @param injector Angular injector
  */
-export const render = (questionElement: Question, http: HttpClient): void => {
+export const render = (questionElement: Question, injector: Injector): void => {
+  const http = injector.get(HttpClient);
+  const apollo = injector.get(Apollo);
+  const environment = injector.get('environment');
+  const csApiUrl = environment.csApiUrl;
+
   // Create a new subject in the question
   // Subject will close the http post request when choices are fetched, to prevent wrong choices to be visible
   if (!questionElement.refresh$) {
@@ -153,36 +158,54 @@ export const render = (questionElement: Question, http: HttpClient): void => {
         questionElement._instance.disabled = true;
         questionElement._instance.toggle(false);
       }
-      const valueName = get(questionElement, `${prefix}ValueName`);
-      const titleName = get(questionElement, `${prefix}TitleName`);
-      const variables = graphQLVariables(
-        questionElement,
-        `${prefix}VariableMapping`
-      );
-      // Transform variables to make sure JSON can be passed
-      transformGraphQLVariables(
-        get(questionElement, `${prefix}Query`),
-        variables
-      );
-      firstValueFrom(
-        http
-          .post(get(questionElement, `${prefix}Url`), {
-            query: get(questionElement, `${prefix}Query`),
+      const valueName = get(questionElement, 'gqlValueName');
+      const titleName = get(questionElement, 'gqlTitleName');
+
+      // Build & send request
+      const sendRequest = (): Promise<any> => {
+        const url = get(questionElement, 'gqlUrl');
+        const query = get(questionElement, 'gqlQuery');
+        const variables = graphQLVariables(
+          questionElement,
+          'gqlVariableMapping'
+        );
+        // Transform variables to make sure JSON can be passed
+        transformGraphQLVariables(get(questionElement, 'gqlQuery'), variables);
+
+        let observable: Observable<any>;
+
+        if (url.startsWith(csApiUrl)) {
+          // Common Services API call
+          const csApolloClient = apollo.use('csClient');
+          observable = csApolloClient.query({
+            query: gql`
+              ${query}
+            `,
             variables,
-          })
-          // Cancel the request when refreshing
-          .pipe(takeUntil(questionElement.refresh$))
-      )
+          });
+        } else {
+          // other API call
+          observable = http.post(url, {
+            query,
+            variables,
+          });
+        }
+        return firstValueFrom(
+          observable.pipe(takeUntil(questionElement.refresh$))
+        );
+      };
+
+      sendRequest()
         .then((result) => {
           questionElement.setPropertyValue(
             '_graphQLVariables',
-            graphQLVariables(questionElement, `${prefix}VariableMapping`)
+            graphQLVariables(questionElement, 'gqlVariableMapping')
           );
           // this is to avoid that the choices appear on the 'choices' tab
           // and also to avoid the choices being sent to the server
           questionElement.choices = [];
           const choices = jsonpath
-            .query(result, get(questionElement, `${prefix}Path`))
+            .query(result, get(questionElement, 'gqlPath'))
             .map((x) => ({
               value: get(x, valueName),
               text: get(x, titleName),
@@ -208,10 +231,7 @@ export const render = (questionElement: Question, http: HttpClient): void => {
         });
     };
 
-    if (
-      get(questionElement, `${prefix}Url`) &&
-      get(questionElement, `${prefix}Query`)
-    ) {
+    if (get(questionElement, 'gqlUrl') && get(questionElement, 'gqlQuery')) {
       updateChoices();
     }
 
@@ -220,7 +240,7 @@ export const render = (questionElement: Question, http: HttpClient): void => {
       questionElement.survey as SurveyModel
     )
       .getAllQuestions()
-      .find((qu) => qu[`${prefix}VariableMapping`]);
+      .find((qu) => qu['gqlVariableMapping']);
     if (containsLinkedReferenceDataQuestions) {
       (questionElement.survey as SurveyModel).onValueChanged.add(async () => {
         // For the reference data questions in the survey we distinguish two levels of update that could be related but not necessarily related
@@ -229,21 +249,21 @@ export const render = (questionElement: Question, http: HttpClient): void => {
         // 2. The selected choices in the question. If the question's selected choices should be updated/cleared if the dependant reference data question changes it's value.
         //
         // As this two update methods could work on their own specific terms, we have one property for each action to handle:
-        // - [`${prefix}variableMapping`]
+        // - ['gqlvariableMapping']
         // Added a few other checks, making sure that the question exists
         if (
           questionElement.visible &&
           questionElement._instance &&
-          questionElement[`${prefix}VariableMapping`] &&
-          questionElement[`${prefix}VariableMapping`] != '{}' &&
+          questionElement['gqlVariableMapping'] &&
+          questionElement['gqlVariableMapping'] != '{}' &&
           !isEqual(
             questionElement._graphQLVariables,
-            graphQLVariables(questionElement, `${prefix}VariableMapping`)
+            graphQLVariables(questionElement, 'gqlVariableMapping')
           )
         ) {
           questionElement.setPropertyValue(
             '_graphQLVariables',
-            graphQLVariables(questionElement, `${prefix}VariableMapping`)
+            graphQLVariables(questionElement, 'gqlVariableMapping')
           );
           updateChoices();
         }
@@ -251,10 +271,7 @@ export const render = (questionElement: Question, http: HttpClient): void => {
     }
 
     (questionElement.survey as SurveyModel).onValueChanged.add(() => {
-      if (
-        get(questionElement, `${prefix}Url`) &&
-        get(questionElement, `${prefix}Query`)
-      ) {
+      if (get(questionElement, 'gqlUrl') && get(questionElement, 'gqlQuery')) {
         const choices = questionElement.getPropertyValue('visibleChoices');
         // Avoid to update if choices not defined yet, otherwise, it removes the value
         if (choices.length > 0) {

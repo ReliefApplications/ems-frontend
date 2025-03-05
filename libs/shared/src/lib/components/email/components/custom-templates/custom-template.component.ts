@@ -63,7 +63,11 @@ export class CustomTemplateComponent implements OnInit, AfterViewInit {
   ) {
     if (!this.emailService.isCustomTemplateEdit) {
       this.emailService.layoutTitle = '';
-      this.emailService.quickEmailDLQuery = { to: [], cc: [], bcc: [] };
+      this.emailService.quickEmailDistributionListQuery = {
+        to: [],
+        cc: [],
+        bcc: [],
+      };
     }
     this.updateStep(true);
   }

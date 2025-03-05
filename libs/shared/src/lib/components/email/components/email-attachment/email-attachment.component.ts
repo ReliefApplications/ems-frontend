@@ -213,6 +213,7 @@ export class EmailAttachmentComponent implements OnInit {
 
     if (attachmentsForm) {
       const files = attachmentsForm.value.files;
+      this.emailService.deleteFile([files[index]]);
 
       if (files && files.length > 0) {
         files.splice(index, 1);
@@ -228,7 +229,7 @@ export class EmailAttachmentComponent implements OnInit {
    */
   async loadProperties() {
     for (const property of this.properties) {
-      const apolloClient = this.apollo.use('csDocApi');
+      const apolloClient = this.apollo.use('csClient');
       const query = gql`
         {
           ${property.value}(sortBy: { field: "name", direction: "asc" }) {

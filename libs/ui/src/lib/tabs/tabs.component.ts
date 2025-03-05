@@ -73,6 +73,10 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   @Output() selectedIndexChange = new EventEmitter<number>();
   /** Event emitter for when a tab is opened. */
   @Output() openedTab = new EventEmitter<TabComponent>();
+  /** Will detach portal */
+  @Output() willDetach = new EventEmitter<void>();
+  /** Did portal attach */
+  @Output() didAttach = new EventEmitter<void>();
   /** Reference to the TabBodyHostDirective. */
   @ViewChild(TabBodyHostDirective)
   tabBodyHost!: TabBodyHostDirective;
@@ -159,7 +163,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
     }
     this.showContentTimeoutListener = setTimeout(() => {
       this.triggerAnimation = true;
-      this.openedTab.emit(tab);
+      this.openedTab?.emit(tab);
     }, 100);
     // Emits the current selected index
     this.selectedIndexChange.emit(this.selectedIndex);

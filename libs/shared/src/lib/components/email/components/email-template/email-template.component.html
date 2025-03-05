@@ -64,13 +64,16 @@
       </label>
 
       <!-- Resource selection -->
-      <div uiFormFieldDirective>
+      <div
+        uiFormFieldDirective
+        [ngClass]="{ 'pointer-events-none': quickActionDistribution?.resource }"
+      >
         <shared-resource-select
           formControlName="resource"
           [selectedElements]="[resource]"
         ></shared-resource-select>
         <ui-button
-          *ngIf="distributionList?.value.resource"
+          *ngIf="distributionList?.value?.resource"
           uiSuffix
           size="small"
           [isIcon]="true"
@@ -175,7 +178,12 @@
               </label>
 
               <!-- Resource selection -->
-              <div uiFormFieldDirective>
+              <div
+                uiFormFieldDirective
+                [ngClass]="{
+                  'pointer-events-none': quickActionDistribution?.resource
+                }"
+              >
                 <shared-resource-select
                   formControlName="resource"
                   [selectedElements]="[resource]"
@@ -486,7 +494,7 @@
 
 <!-- Distribution List Filter-Fields-Preview Query -->
 <ng-template #commonServicePreviewTmpl>
-  <div [formGroup]="dlCommonQuery">
+  <div [formGroup]="distributionCommonQuery">
     <ui-tabs
       [selectedIndex]="currentTabIndex"
       (selectedIndexChange)="onTabSelect($event, true)"
@@ -510,8 +518,8 @@
                 <div class="mt-2 w-full">
                   <!-- NESTED FILTER GROUP -->
                   <shared-tab-filter
-                    [form]="$any(dlCommonQuery.get('filter'))"
-                    [query]="dlCommonQuery.getRawValue()"
+                    [form]="$any(distributionCommonQuery.get('filter'))"
+                    [query]="distributionCommonQuery.getRawValue()"
                     [referenceFields]="commonServiceFields"
                   >
                   </shared-tab-filter>

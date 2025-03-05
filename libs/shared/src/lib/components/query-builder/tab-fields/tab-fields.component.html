@@ -102,7 +102,7 @@
                 icon="error"
                 variant="danger"
                 (click)="onEdit(index)"
-                *ngIf="form.at(index)?.invalid && field.type"
+                *ngIf="form?.at(index)?.invalid && field?.type"
                 [uiTooltip]="'common.edit' | translate"
               >
               </ui-button>

@@ -12,6 +12,7 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import convertToMinutes from '../../../../utils/convert-to-minutes';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { cloneDeep } from 'lodash';
+
 /**
  * Email layout page component.
  */
@@ -143,7 +144,7 @@ export class LayoutComponent
    */
   constructor(
     private fb: FormBuilder,
-    private editorService: EditorService,
+    public editorService: EditorService,
     public emailService: EmailService,
     public snackbar: SnackbarService,
     public translate: TranslateService
@@ -169,14 +170,21 @@ export class LayoutComponent
       this.emailService.emailLayout.name = layoutName;
 
       //Bind DL data
-      if (this.emailService.quickEmailDLQuery?.length === 0) {
+      if (this.emailService.quickEmailDistributionListQuery?.length === 0) {
         const toData = this.emailService.emailDistributionList?.to;
         const ccData = this.emailService.emailDistributionList?.cc;
         const bccData = this.emailService.emailDistributionList?.bcc;
-        this.emailService.quickEmailDLQuery = { to: [], cc: [], bcc: [] };
-        this.emailService.quickEmailDLQuery.to = cloneDeep(toData);
-        this.emailService.quickEmailDLQuery.cc = cloneDeep(ccData);
-        this.emailService.quickEmailDLQuery.bcc = cloneDeep(bccData);
+        this.emailService.quickEmailDistributionListQuery = {
+          to: [],
+          cc: [],
+          bcc: [],
+        };
+        this.emailService.quickEmailDistributionListQuery.to =
+          cloneDeep(toData);
+        this.emailService.quickEmailDistributionListQuery.cc =
+          cloneDeep(ccData);
+        this.emailService.quickEmailDistributionListQuery.bcc =
+          cloneDeep(bccData);
       }
     } else {
       this.emailService.createPreviewData();
@@ -266,10 +274,75 @@ export class LayoutComponent
           this.emailService.allLayoutdata.footerLogo;
       }
     }
-    if (this.emailService.isQuickAction) {
-      this.populateDLForm();
-    }
     this.getBlockData();
+    if (this.emailService.isQuickAction) {
+      this.loadDistributionList();
+    }
+  }
+
+  /**
+   * Loads the distribution list.
+   *
+   */
+  async loadDistributionList() {
+    this.emailService.loading = true;
+    const query = this.emailService.datasetsForm?.getRawValue();
+    query.datasets = this.emailService.datasetsForm
+      ?.get('datasets')
+      ?.getRawValue();
+    query.emailDistributionList = query.emailDistributionList
+      ? query.emailDistributionList
+      : {};
+    query.emailDistributionList = this.emailService?.datasetsForm
+      ?.get('emailDistributionList')
+      ?.getRawValue();
+    if (this.emailService.isQuickAction) {
+      query.emailDistributionList.to =
+        this.emailService.quickEmailDistributionListQuery.to;
+      query.emailDistributionList.cc =
+        this.emailService.quickEmailDistributionListQuery.cc;
+      query.emailDistributionList.bcc =
+        this.emailService.quickEmailDistributionListQuery.bcc;
+    }
+    //Start:- When We are checking from Quick action grid in that case - Needs to check Resource of DL and Resource of Grid is matching or not
+    // if its not matching in that case we are doing Filter as blank , (It should call once its matching the Resource Name)
+    if (
+      this.emailService?.allPreviewData?.[0]?.dataQuery?.queryName !==
+        this.emailService?.quickEmailDistributionListQuery?.to?.query?.name &&
+      query.emailDistributionList?.to?.query?.filter
+    ) {
+      query.emailDistributionList.to.query.filter.filters = {};
+      query.emailDistributionList.to.query.name = '';
+      query.emailDistributionList.to.resource = '';
+    }
+
+    const response: any = await this.emailService.loadLayoutDistributionList(
+      query
+    );
+
+    if (
+      query.emailDistributionList.to?.resource ||
+      query.emailDistributionList.cc?.resource ||
+      query.emailDistributionList.bcc?.resource ||
+      query.emailDistributionList?.to?.inputEmails?.length > 0 ||
+      query.emailDistributionList?.cc?.inputEmails?.length > 0 ||
+      query.emailDistributionList?.bcc?.inputEmails?.length > 0 ||
+      response?.to?.length > 0 ||
+      response?.cc?.length > 0 ||
+      response?.bcc?.length > 0
+    ) {
+      this.emailService.emailDistributionList.to = response?.to;
+      this.emailService.emailDistributionList.cc = response?.cc;
+      this.emailService.emailDistributionList.bcc = response?.bcc;
+    } else {
+      this.emailService.emailDistributionList = {
+        to: this.emailService.emailDistributionList?.to || [],
+        cc: this.emailService.emailDistributionList?.cc || [],
+        bcc: this.emailService.emailDistributionList?.bcc || [],
+      };
+    }
+    this.populateDLForm();
+    this.emailService.loading = false;
   }
 
   /**
@@ -324,6 +397,7 @@ export class LayoutComponent
           .get('bcc')
           ?.setValue(this.emailService.emailDistributionList.bcc);
       }
+      this.validateQuickActionToEmails();
     }
   }
 
@@ -723,11 +797,17 @@ export class LayoutComponent
   /**
    * Inserts a dataset token into the body HTML based on the provided tab name.
    *
-   * @param tabName The name of the tab to insert the dataset token for.
+   * @param valueClicked - The value of the menu option that was clicked.
+   * @param time - True if the token is a timestamp, false otherwise.
    */
-  insertDataSetToBodyHtmlByTabName(tabName: string): void {
-    if (tabName) {
-      const token = `{{${tabName}}}`;
+  insertTokenToBody(valueClicked: string, time?: boolean): void {
+    if (valueClicked) {
+      let token = '';
+      if (time) {
+        token = ` ${valueClicked} `;
+      } else {
+        token = `{{${valueClicked}}}`;
+      }
 
       if (this.bodyEditor && this.bodyEditor.editor) {
         const range = this.bodyEditor.editor.selection.getRng();
@@ -929,8 +1009,23 @@ export class LayoutComponent
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {
-        const value: string =
-          event.type === 'focusout' ? this.toInput.nativeElement.value : event;
+        let inputValue = '';
+        switch (emailType) {
+          case 'to':
+            inputValue = this.toInput.nativeElement.value;
+            break;
+          case 'cc':
+            inputValue = this.ccInput.nativeElement.value;
+            break;
+          case 'bcc':
+            inputValue = this.bccInput.nativeElement.value;
+            break;
+          default:
+            inputValue = '';
+            break;
+        }
+
+        const value: string = event.type === 'focusout' ? inputValue : event;
 
         // Add the mail
         const emails =
@@ -985,6 +1080,7 @@ export class LayoutComponent
           default:
             break;
         }
+        this.validateQuickActionToEmails();
       },
       event.type === 'focusout' ? 500 : 0
     );
@@ -1017,6 +1113,17 @@ export class LayoutComponent
       );
       this.layoutForm.get(type)?.setValue(emails);
       this.emailService.emailDistributionList.bcc = emails;
+    }
+    this.validateQuickActionToEmails();
+  }
+
+  /**
+   * Validate Quick action To emails when we cehck from Quick Action grid
+   */
+  validateQuickActionToEmails() {
+    if (this.emailService.isQuickAction) {
+      this.emailService.disableNextActionBtn =
+        this.layoutForm?.getRawValue()?.to?.length === 0 ? true : false;
     }
   }
 }
