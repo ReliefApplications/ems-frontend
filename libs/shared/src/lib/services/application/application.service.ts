@@ -442,6 +442,7 @@ export class ApplicationService {
                 status: data.editApplication.status,
                 shortcut: data.editApplication.shortcut,
               };
+              this.title.setTitle(newApplication.name ?? this.title.getTitle());
               this.application.next(newApplication);
             }
           }
