@@ -116,6 +116,7 @@ import {
   APPLICATION_EDITED_SUBSCRIPTION,
   APPLICATION_UNLOCKED_SUBSCRIPTION,
 } from './graphql/subscriptions';
+import { Title } from '@angular/platform-browser';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -225,6 +226,7 @@ export class ApplicationService {
    * @param {DownloadService} downloadService - The download service.
    * @param {Document} document - The Document object.
    * @param shadowDomService shadow dom service to handle the current host of the component
+   * @param title Angular title service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -237,7 +239,8 @@ export class ApplicationService {
     private restService: RestService,
     private downloadService: DownloadService,
     @Inject(DOCUMENT) private document: Document,
-    private shadowDomService: ShadowDomService
+    private shadowDomService: ShadowDomService,
+    private title: Title
   ) {
     this.environment = environment;
   }
@@ -269,6 +272,7 @@ export class ApplicationService {
           // extend user abilities for application
           if (data?.application) {
             this.hasErrors = false;
+            this.title.setTitle(data.application.name ?? this.title.getTitle());
             // Map all previously configured icons in v4 to v6 so on application edit, new icons are saved in DB
             data.application.pages?.map((page: Page) => {
               if (faV4toV6Mapper[page.icon as string]) {
