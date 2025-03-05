@@ -14,6 +14,7 @@ export const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
+    title: 'Back-office',
     children: [
       {
         path: '',
