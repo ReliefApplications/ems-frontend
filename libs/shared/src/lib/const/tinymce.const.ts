@@ -283,25 +283,25 @@ export const FIELD_EDITOR_CONFIG: RawEditorOptions = {
   promotion: false,
   branding: false,
   plugins:
-    'preview importcss searchreplace autolink code visualblocks visualchars fullscreen image link media table charmap nonbreaking insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+    'preview importcss searchreplace autolink code visualblocks visualchars fullscreen link media table charmap nonbreaking insertdatetime advlist lists wordcount help charmap quickbars emoticons',
   menubar: 'edit view insert format tools table help',
   toolbar:
-    'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link avatar recordeditor',
-  image_advtab: true,
+    'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile media link avatar recordeditor',
   importcss_append: true,
   height: 300,
-  image_caption: true,
+  quickbars_insert_toolbar: 'quicktable',
   quickbars_selection_toolbar:
-    'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
+    'bold italic | quicklink h2 h3 blockquote quicktable',
   toolbar_mode: 'sliding',
-  contextmenu: 'link image table',
+  contextmenu: 'link table',
   content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
   help_tabs: [
     'shortcuts', // the default shortcuts tab
     'keyboardnav', // the default keyboard navigation tab
   ],
   extended_valid_elements:
-    'a[*],altGlyphDef[*],altGlyphItem[*],altGlyph[*],animateColor[*],animateMotion[*],animateTransform[*],animate[*],circle[*],clipPath[*],color-profile[*],cursor[*],defs[*],desc[*],discard[*],ellipse[*],feBlend[*],feColorMatrix[*],feComponentTransfer[*],feComposite[*],feConvolveMatrix[*],feDiffuseLighting[*],feDisplacementMap[*],feDistantLight[*],feDropShadow[*],feFlood[*],feFuncA[*],feFuncB[*],feFuncG[*],feFuncR[*],feGaussianBlur[*],feImage[*],feMergeNode[*],feMerge[*],feMorphology[*],feOffset[*],fePointLight[*],feSpecularLighting[*],feSpotLight[*],feTile[*],feTurbulence[*],filter[*],font-face-format[*],font-face-name[*],font-face-src[*],font-face-uri[*],font-face[*],font[*],foreignObject[*],g[*],glyphRef[*],glyph[*],hatch[*],hatchpath[*],hkern[*],image[*],img[*],line[*],linearGradient[*],marker[*],mask[*],metadata[*],missing-glyph[*],mpath[*],path[*],pattern[*],polygon[*],polyline[*],radialGradient[*],rect[*],script[*],set[*],solidcolor[*],stop[*],style[*],svg[*],switch[*],symbol[*],textPath[*],text[*],title[*],tref[*],tspan[*],use[*],view[*],vkern[*]',
+    'a[*],altGlyphDef[*],altGlyphItem[*],altGlyph[*],animateColor[*],animateMotion[*],animateTransform[*],animate[*],circle[*],clipPath[*],color-profile[*],cursor[*],defs[*],desc[*],discard[*],ellipse[*],feBlend[*],feColorMatrix[*],feComponentTransfer[*],feComposite[*],feConvolveMatrix[*],feDiffuseLighting[*],feDisplacementMap[*],feDistantLight[*],feDropShadow[*],feFlood[*],feFuncA[*],feFuncB[*],feFuncG[*],feFuncR[*],feGaussianBlur[*],feMergeNode[*],feMerge[*],feMorphology[*],feOffset[*],fePointLight[*],feSpecularLighting[*],feSpotLight[*],feTile[*],feTurbulence[*],filter[*],font-face-format[*],font-face-name[*],font-face-src[*],font-face-uri[*],font-face[*],font[*],foreignObject[*],g[*],glyphRef[*],glyph[*],hatch[*],hatchpath[*],hkern[*],line[*],linearGradient[*],marker[*],mask[*],metadata[*],missing-glyph[*],mpath[*],path[*],pattern[*],polygon[*],polyline[*],radialGradient[*],rect[*],script[*],set[*],solidcolor[*],stop[*],style[*],svg[*],switch[*],symbol[*],textPath[*],text[*],title[*],tref[*],tspan[*],use[*],view[*],vkern[*]',
+  invalid_elements: 'feImage,image,img',
   convert_urls: false,
 };
 
