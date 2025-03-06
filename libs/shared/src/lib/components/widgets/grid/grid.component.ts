@@ -562,8 +562,13 @@ export class GridWidgetComponent
           ? firstValueFrom(
               this.confirmService.openConfirmModal({
                 title: this.translate.instant(
-                  'components.widget.settings.chart.grid.buttons.modifySelectedRows.confirmation'
+                  'components.widget.settings.grid.buttons.confirmation.title'
                 ),
+                content:
+                  options.modifyConfirmationText ||
+                  this.translate.instant(
+                    'components.widget.settings.grid.buttons.confirmation.defaultText'
+                  ),
                 confirmText: this.translate.instant(
                   'components.confirmModal.confirm'
                 ),

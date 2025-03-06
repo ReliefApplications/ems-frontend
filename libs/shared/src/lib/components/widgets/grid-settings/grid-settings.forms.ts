@@ -71,6 +71,7 @@ export const createButtonFormGroup = (value: any) => {
     autoSave: [value && value.autoSave ? value.autoSave : false],
     modifySelectedRows: [value ? value.modifySelectedRows : false],
     requireConfirmation: [value ? value.requireConfirmation : false],
+    modifyConfirmationText: [value?.modifyConfirmationText ?? ''],
     modifications: fb.array(
       value && value.modifications && value.modifications.length
         ? value.modifications.map((x: any) =>

@@ -1794,6 +1794,11 @@
                 "previous": "Aller à l'étape précédente"
               }
             },
+            "confirmation": {
+              "defaultText": "Êtes-vous sûr de vouloir supprimer cet enregistrement ?",
+              "text": "Texte de confirmation (facultatif)",
+              "title": "Confirmer l'action"
+            },
             "create": "Ajouter un bouton",
             "defaultName": "Bouton d'action",
             "enable": "Activer",

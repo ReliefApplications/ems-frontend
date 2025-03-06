@@ -225,6 +225,21 @@
                 | translate
             }}</ng-container>
           </ui-toggle>
+          <div
+            uiFormFieldDirective
+            *ngIf="formGroup.value.requireConfirmation"
+            class="flex-auto"
+          >
+            <ui-textarea
+              formControlName="modifyConfirmationText"
+              [minRows]="3"
+              [placeholder]="
+                'components.widget.settings.grid.buttons.confirmation.text'
+                  | translate
+              "
+            >
+            </ui-textarea>
+          </div>
           <form
             [formGroup]="$any(modification)"
             *ngFor="let modification of modificationsArray.controls; index as i"
