@@ -1781,6 +1781,11 @@
                 "previous": "Go to previous step"
               }
             },
+            "confirmation": {
+              "defaultText": "Are you sure you want to delete this record?",
+              "text": "Confirmation text (optional)",
+              "title": "Confirm action"
+            },
             "create": "Add a button",
             "defaultName": "Action button",
             "enable": "Enable",

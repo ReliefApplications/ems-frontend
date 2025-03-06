@@ -1781,6 +1781,11 @@
                 "previous": "******"
               }
             },
+            "confirmation": {
+              "defaultText": "******",
+              "text": "******",
+              "title": "******"
+            },
             "create": "******",
             "defaultName": "******",
             "enable": "******",

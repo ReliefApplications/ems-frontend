@@ -17,6 +17,7 @@ import {
   TabsModule,
   SelectMenuModule,
   AlertModule,
+  TextareaModule,
 } from '@oort-front/ui';
 
 /**
@@ -45,6 +46,7 @@ import {
     DividerModule,
     TabsModule,
     AlertModule,
+    TextareaModule,
   ],
   exports: [ButtonConfigComponent],
 })
