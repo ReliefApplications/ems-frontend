@@ -1790,7 +1790,7 @@
             "defaultName": "******",
             "enable": "******",
             "inline": {
-              "displayIfTruthy": {
+              "displayIf": {
                 "title": "******",
                 "tooltip": "******"
               },

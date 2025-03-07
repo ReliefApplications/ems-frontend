@@ -526,14 +526,11 @@ export class ButtonConfigComponent
 
   /** Adds new query param mapping */
   public addGoToPageField(): void {
-    (this.formGroup.get('goToPageFields') as FormArray).push(
-      this.fb.control(
-        {
-          param: null,
-          field: null,
-        },
-        Validators.required
-      )
-    );
+    const newControl = this.fb.group({
+      param: [null, Validators.required],
+      field: [null, Validators.required],
+    });
+
+    (this.formGroup.get('goToPageFields') as FormArray).push(newControl);
   }
 }

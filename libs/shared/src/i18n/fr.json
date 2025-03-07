@@ -1803,9 +1803,9 @@
             "defaultName": "Bouton d'action",
             "enable": "Activer",
             "inline": {
-              "displayIfTruthy": {
-                "title": "Visibilité par champ",
-                "tooltip": "Si cette option est activée, le bouton s'affiche sur une ligne si la valeur du champ sélectionné est vraie"
+              "displayIf": {
+                "title": "Condition d'affichage",
+                "tooltip": "Le bouton ne s'affichera sur la ligne que si la condition est remplie"
               },
               "title": "Inline",
               "tooltip": "Lorsque cette option est activée, le bouton s'affiche sur chaque ligne de la grille au lieu de l'en-tête du widget"

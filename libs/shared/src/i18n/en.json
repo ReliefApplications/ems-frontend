@@ -1790,9 +1790,9 @@
             "defaultName": "Action button",
             "enable": "Enable",
             "inline": {
-              "displayIfTruthy": {
-                "title": "Visibility by field",
-                "tooltip": "If enabled, the button will be displayed on a row if the value of the selected field is truthy"
+              "displayIf": {
+                "title": "Display condition",
+                "tooltip": "The button will be displayed on the row only if the condition is met"
               },
               "title": "Inline",
               "tooltip": "When enabled, the button will be displayed in each row of the grid instead of the widget's header"

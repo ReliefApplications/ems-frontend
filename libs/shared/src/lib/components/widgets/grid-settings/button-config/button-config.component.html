@@ -18,11 +18,13 @@
       </div>
 
       <div class="flex gap-9">
+        <!-- Show button -->
         <ui-toggle formControlName="show" class="self-center">
           <ng-container ngProjectAs="label">{{
             'components.widget.settings.grid.buttons.enable' | translate
           }}</ng-container>
         </ui-toggle>
+        <!-- Inline button (each row) -->
         <ui-toggle formControlName="inline" class="self-center">
           ">
           <ng-container ngProjectAs="label">
@@ -41,39 +43,35 @@
             ></ui-icon>
           </ng-container>
         </ui-toggle>
-        <!-- Inline options -->
-        <div
-          uiFormFieldDirective
-          *ngIf="formGroup.value.inline"
-          class="min-w-44"
-        >
-          <label class="flex">
+      </div>
+
+      <!-- Visibility filter-->
+      <div class="mt-4" *ngIf="formGroup.value.inline">
+        <span class="flex gap-1 items-center">
+          <span class="field-name">
             {{
-              'components.widget.settings.grid.buttons.inline.displayIfTruthy.title'
+              'components.widget.settings.grid.buttons.inline.displayIf.title'
                 | translate
             }}
-            <ui-icon
-              icon="info_outline"
-              variant="grey"
-              [size]="18"
-              [uiTooltip]="
-                'components.widget.settings.grid.buttons.inline.displayIfTruthy.tooltip'
-                  | translate
-              "
-              class="self-center ml-1 cursor-help"
-            ></ui-icon>
-          </label>
-          <ui-select-menu formControlName="displayIfTruthy">
-            <ui-select-option
-              *ngFor="let field of scalarFields"
-              [value]="field.name"
-            >
-              {{ field.name }}
-            </ui-select-option>
-          </ui-select-menu>
-        </div>
+          </span>
+          <ui-icon
+            icon="info_outline"
+            variant="grey"
+            [size]="18"
+            [uiTooltip]="
+              'components.widget.settings.grid.buttons.inline.displayIf.tooltip'
+                | translate
+            "
+            class="self-center ml-1 cursor-help"
+          ></ui-icon>
+        </span>
+        <shared-filter
+          [form]="$any(formGroup.controls.filterForm)"
+          [fields]="fields"
+        ></shared-filter>
       </div>
-      <ui-divider class="py-1 pb-6"></ui-divider>
+
+      <ui-divider class="py-6"></ui-divider>
       <!-- Select all records of query -->
       <ui-checkbox formControlName="selectAll">
         <ng-container ngProjectAs="label">{{
@@ -525,64 +523,75 @@
           </ui-select-menu>
         </div>
 
-        <div class="w-full flex justify-between mt-2">
-          <h3 class="">
-            {{
-              'components.widget.settings.grid.actions.goTo.field.title'
-                | translate
-            }}
-          </h3>
-          <ui-button
-            icon="add_circle_outline"
-            variant="primary"
-            (click)="addGoToPageField()"
-            [uiTooltip]="'common.add' | translate"
-          >
-            {{
-              'components.widget.settings.grid.actions.goTo.field.addParam'
-                | translate
-            }}
-          </ui-button>
-        </div>
-        <div formArrayName="goToPageFields">
-          <div
-            *ngFor="
-              let field of $any(formGroup.controls.goToPageFields).controls;
-              let i = index
-            "
-            [formGroupName]="i"
-          >
-            <div class="w-full flex gap-2 items-center">
-              <div uiFormFieldDirective class="flex-1 min-w-44">
-                <label>{{
-                  'components.widget.settings.grid.actions.goTo.field.paramName'
-                    | translate
-                }}</label>
-                <input formControlName="param" type="text" />
+        <div class="bg-white shadow-2lg rounded-lg p-4 m-4">
+          <div class="w-full flex justify-between mt-2">
+            <h3 class="text-lg font-semibold">
+              {{
+                'components.widget.settings.grid.actions.goTo.field.title'
+                  | translate
+              }}
+            </h3>
+            <ui-button
+              icon="add_circle_outline"
+              variant="primary"
+              (click)="addGoToPageField()"
+              [uiTooltip]="'common.add' | translate"
+            >
+              {{
+                'components.widget.settings.grid.actions.goTo.field.addParam'
+                  | translate
+              }}
+            </ui-button>
+          </div>
+          <div formArrayName="goToPageFields">
+            <div
+              *ngFor="
+                let field of $any(formGroup.controls.goToPageFields).controls;
+                let i = index
+              "
+              [formGroupName]="i"
+              class="py-2"
+              [ngClass]="{
+                'border-b border-gray-200':
+                  i !== $any(formGroup.controls.goToPageFields).length - 1
+              }"
+            >
+              <div class="w-full flex gap-2 items-center">
+                <div uiFormFieldDirective class="flex-1 min-w-44">
+                  <label>{{
+                    'components.widget.settings.grid.actions.goTo.field.paramName'
+                      | translate
+                  }}</label>
+                  <input formControlName="param" type="text" />
+                </div>
+                <div uiFormFieldDirective class="flex-1">
+                  <label>{{
+                    'common.cronEditor.question.one' | translate
+                  }}</label>
+                  <ui-select-menu formControlName="field">
+                    <ui-select-option
+                      *ngFor="let field of scalarFields"
+                      [value]="field.name"
+                    >
+                      {{ field.name }}
+                    </ui-select-option>
+                  </ui-select-menu>
+                </div>
+                <ui-button
+                  [isIcon]="true"
+                  icon="remove_circle_outline"
+                  variant="danger"
+                  (click)="removeGoToPageField(i)"
+                  [uiTooltip]="'common.remove' | translate"
+                >
+                </ui-button>
               </div>
-              <div uiFormFieldDirective class="flex-1">
-                <label>{{
-                  'common.cronEditor.question.one' | translate
-                }}</label>
-                <ui-select-menu formControlName="field">
-                  <ui-select-option
-                    *ngFor="let field of scalarFields"
-                    [value]="field.name"
-                  >
-                    {{ field.name }}
-                  </ui-select-option>
-                </ui-select-menu>
-              </div>
-              <ui-button
-                [isIcon]="true"
-                icon="remove_circle_outline"
-                variant="danger"
-                (click)="removeGoToPageField(i)"
-                [uiTooltip]="'common.remove' | translate"
-              >
-              </ui-button>
             </div>
           </div>
+          <shared-empty
+            *ngIf="!formGroup.get('goToPageFields')?.value.length"
+            [title]="'components.widget.form.noMappingsTooltip' | translate"
+          ></shared-empty>
         </div>
       </div>
 
