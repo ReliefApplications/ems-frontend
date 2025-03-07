@@ -9,6 +9,7 @@ import {
 import { get } from 'lodash';
 import {
   addNewField,
+  createFilterGroup,
   createQueryForm,
 } from '../../query-builder/query-builder-forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
@@ -39,9 +40,7 @@ export const createButtonFormGroup = (value: any) => {
       Validators.required,
     ],
     inline: [value && value.inline ? value.inline : false],
-    displayIfTruthy: [
-      value && value.displayIfTruthy ? value.displayIfTruthy : null,
-    ],
+    filterForm: createFilterGroup(value.filterForm),
     goToPage: [value && value.goToPage ? value.goToPage : false],
     targetPage: [value && value.targetPage ? value.targetPage : null],
     goToPageFields: fb.array(

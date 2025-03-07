@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { QueryBuilderModule } from '../../../query-builder/query-builder.module';
+import { EmptyModule } from '../../../ui/empty/empty.module';
 import {
   CheckboxModule,
   TooltipModule,
@@ -19,6 +20,7 @@ import {
   AlertModule,
   TextareaModule,
 } from '@oort-front/ui';
+import { FilterModule } from '../../../filter/filter.module';
 
 /**
  * Button config component for grid widget.
@@ -47,6 +49,8 @@ import {
     TabsModule,
     AlertModule,
     TextareaModule,
+    EmptyModule,
+    FilterModule,
   ],
   exports: [ButtonConfigComponent],
 })

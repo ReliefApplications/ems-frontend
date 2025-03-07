@@ -56,6 +56,7 @@ import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util'
 import { formatGridRowData } from './utils/grid-data-formatter';
 import { GridActions } from '../models/grid-settings.model';
 import { HttpHeaders } from '@angular/common/http';
+import { applyFilters } from '../../map/filter';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -1374,4 +1375,21 @@ export class GridComponent
       this.actionsWidth = size + 24;
     }
   }
+
+  /**
+   * Checks if the button should be displayed
+   *
+   * @param button button configuration
+   * @param data row data
+   * @returns boolean indicating if the button should be displayed
+   */
+  public shouldShowButton = (button: any, data: Record<string, unknown>) => {
+    return applyFilters(
+      data,
+      button.filterForm ?? {
+        logic: 'and',
+        filters: [],
+      }
+    );
+  };
 }

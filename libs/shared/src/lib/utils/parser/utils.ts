@@ -705,7 +705,7 @@ const getLayoutStyle = (layout: any): string => {
  * @param fields Array of fields
  * @returns Returns a boolean with the result of the filter
  */
-const applyFilters = (filter: any, fields: any): boolean => {
+export const applyFilters = (filter: any, fields: any): boolean => {
   if (filter.logic) {
     const exp = filter.logic === 'or' ? 'some' : 'every';
     return filter.filters[exp]((f: any) => applyFilters(f, fields));
