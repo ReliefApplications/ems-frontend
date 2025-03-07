@@ -1,9 +1,12 @@
 import { Inject, Injectable } from '@angular/core';
 import {
+  AfterRenderQuestionEvent,
   IPanel,
   PageModel,
+  QuestionMatrixDynamicModel,
   QuestionPanelDynamicModel,
   SurveyModel,
+  ValueChangedEvent,
 } from 'survey-core';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -17,7 +20,15 @@ import {
   TooltipDirective,
 } from '@oort-front/ui';
 import localForage from 'localforage';
-import { snakeCase, cloneDeep, set, get, isNil, flattenDeep } from 'lodash';
+import {
+  snakeCase,
+  cloneDeep,
+  set,
+  get,
+  isNil,
+  flattenDeep,
+  debounce,
+} from 'lodash';
 import { AuthService } from '../auth/auth.service';
 import { BlobType, DownloadService } from '../download/download.service';
 import {
@@ -25,7 +36,7 @@ import {
   AddRecordMutationResponse,
   EditDraftRecordMutationResponse,
   RecordQueryResponse,
-  Record,
+  Record as RecordModel,
 } from '../../models/record.model';
 import { Question } from '../../survey/types';
 import {
@@ -45,7 +56,7 @@ import { Overlay, OverlayPositionBuilder } from '@angular/cdk/overlay';
 
 export type CheckUniqueProprietyReturnT = {
   verified: boolean;
-  overwriteRecord?: Record;
+  overwriteRecord?: RecordModel;
 };
 
 /**
@@ -96,6 +107,13 @@ export const transformSurveyData = (survey: SurveyModel) => {
   providedIn: 'root',
 })
 export class FormHelpersService {
+  /**
+   * Saves with a debounce time
+   */
+  public saveDebounced = debounce((callback: () => Promise<void>) => {
+    callback();
+  }, 3000);
+
   /**
    * Shared survey helper service.
    *
@@ -207,13 +225,23 @@ export class FormHelpersService {
         )
       );
 
-      // Maps the files array, replacing the content with the path from the blob storage
-      const mappedFiles = ((question.value as any[]) || []).map((f, idx) => ({
-        ...f,
-        content: paths[idx],
-      }));
+      const questionFiles =
+        (question.value as Array<File & { readyToSave: boolean }>) || [];
 
-      question.value = mappedFiles;
+      // Maps the files array, replacing the content with the path from the blob storage
+      const mappedFiles = questionFiles
+        .filter((f) => !f.readyToSave)
+        .map((f: File, idx: number) => {
+          return {
+            ...f,
+            content: paths[idx],
+            readyToSave: true, //used to autosave only once
+          };
+        });
+
+      question.value = questionFiles
+        .filter((f) => f.readyToSave)
+        .concat(mappedFiles);
     }
   }
 
@@ -739,7 +767,7 @@ export class FormHelpersService {
    * @param record.id Record id
    * @param record.incrementalId Record incremental id
    */
-  public addRecordVariables = (survey: SurveyModel, record: Record) => {
+  public addRecordVariables = (survey: SurveyModel, record: RecordModel) => {
     survey.setVariable('record.id', record.id);
     survey.setVariable('record.incrementalID', record?.incrementalId ?? '');
 
@@ -814,6 +842,45 @@ export class FormHelpersService {
     } else {
       return;
     }
+  }
+
+  /**
+   * Saves the record automatically after some time
+   *
+   * @param valueChangedEvent surveyjs value changed event
+   * @param callback Function to execute once debounce time has passed
+   * @param temporaryFilesStorage Form to save the record from
+   * @param formId Id of the form
+   * @param survey Survey being saved
+   */
+  public async autoSaveRecord(
+    valueChangedEvent: ValueChangedEvent,
+    callback: () => Promise<void>,
+    temporaryFilesStorage: TemporaryFilesStorage,
+    formId: string | undefined,
+    survey: SurveyModel
+  ) {
+    if (
+      valueChangedEvent.question.getType() === 'file' &&
+      valueChangedEvent.value.length &&
+      !valueChangedEvent.value.every(
+        (file: File & { readyToSave?: boolean }) => file.readyToSave
+      )
+    ) {
+      const questions = survey.getAllQuestions(false, false, true);
+      const initialStates = questions.reduce((acc, q) => {
+        acc[q.name] = q.readOnly;
+        return acc;
+      }, {} as { [key: string]: boolean });
+      //Set everything as readonly during the upload of the files
+      questions.forEach((q) => (q.readOnly = true));
+      //Avoids editing the record multiple times for file questions
+      await this.uploadFiles(temporaryFilesStorage, formId);
+      temporaryFilesStorage.clear();
+      questions.forEach((q) => (q.readOnly = initialStates[q.name]));
+      return;
+    }
+    this.saveDebounced(callback);
   }
 
   /**
@@ -938,5 +1005,96 @@ export class FormHelpersService {
     } else {
       return checkUniqueResponse;
     }
+  }
+
+  /**
+   * Adds upload button dynamic panel or dynamic matrix questions
+   *
+   * @param e Event raised after rendering a question
+   */
+  public addUploadButton(e: AfterRenderQuestionEvent): void {
+    const { question, htmlElement } = e;
+    if (!question.allowImport) return;
+
+    const uploadButton = document.createElement('button');
+    uploadButton.classList.add('sd-action', 'ml-auto');
+    uploadButton.onclick = () => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.xlsx';
+      input.addEventListener('change', (e) => {
+        const file = (e.target as HTMLInputElement)?.files?.[0];
+        if (file) {
+          this.downloadService
+            .uploadFile('upload/parse/json', file)
+            .subscribe((data) => {
+              data.forEach((row: Record<string, unknown>) => {
+                if (question.type === 'paneldynamic') {
+                  const panel = question as QuestionPanelDynamicModel;
+                  const newPanel = panel.addPanel();
+
+                  Object.entries(row).forEach(([key, value]) => {
+                    const nestedQuestion = newPanel.getQuestionByName(key);
+                    if (nestedQuestion) {
+                      nestedQuestion.value = value;
+                    }
+                  });
+                } else {
+                  const matrix = question as QuestionMatrixDynamicModel;
+
+                  const idx = matrix.rowCount;
+                  matrix.addRow();
+                  matrix.setRowValue(idx, row);
+                  matrix.expand();
+                }
+              });
+            });
+        }
+      });
+      input.click();
+    };
+    uploadButton.innerHTML = this.translate.instant('common.uploadObject', {
+      name: 'XLSX',
+    });
+
+    const htmlEl = htmlElement.querySelector('.sd-element__header');
+    const title = htmlEl?.querySelector('.sd-element__title');
+
+    const div = document.createElement('div');
+    div.classList.add('flex', 'items-center');
+
+    if (title) {
+      div.appendChild(title.cloneNode(true));
+      htmlEl?.appendChild(div);
+      title.remove(); // remove original title
+    }
+
+    div.appendChild(uploadButton);
+    htmlEl?.appendChild(div);
+  }
+
+  /**
+   * Set download listener for files in the survey
+   *
+   * @param e Event raised after rendering a question
+   */
+  public setDownloadListener(e: AfterRenderQuestionEvent): void {
+    const { question, htmlElement } = e;
+    const files = question.value;
+    const fileElement = htmlElement.querySelector('a');
+    fileElement?.addEventListener('click', (event) => {
+      event.preventDefault();
+      files.forEach((file: any) => {
+        if (
+          file.content &&
+          !(file.content.indexOf('base64') !== -1) &&
+          !file.content.startsWith('http') &&
+          !file.content.startsWith('custom:')
+        ) {
+          const path = `${this.environment.apiUrl}/download/file/${file.content}/${file.name}`;
+          this.downloadService.getFile(path, file.type, file.name);
+        }
+      });
+    });
   }
 }

@@ -297,6 +297,7 @@
       "accessDenied": "You don't have permission to see the {{type}}.",
       "accessNotProvided": "No access provided to this {{type}}. {{error}}",
       "alreadyExists": "The {{type}} {{value}} already exists on this application.",
+      "autoSaving": "Auto saving",
       "copiedToClipboard": "Dashboard link copied!",
       "dataGenerated": "new record(s) successfully generated.",
       "dataNotRecovered": "Failure on data recovery",
@@ -908,6 +909,7 @@
         "successEdit": "Successfully edited draft",
         "successSave": "Successfully saved as draft"
       },
+      "lastSavedAt": "Last saved at {{date}}",
       "layout": {
         "delete": {
           "confirmationMessage": "Do you confirm the deletion of the layout {{name}}?"
@@ -1752,8 +1754,11 @@
                 "placeholder": "Type a title for the column..."
               },
               "field": {
+                "addParam": "Add parameter",
                 "label": "Pass field as query parameter",
-                "placeholder": "Select a field"
+                "paramName": "Parameter name",
+                "placeholder": "Select a field",
+                "title": "Query parameter"
               },
               "label": "Navigate to page",
               "target": {
@@ -1819,9 +1824,22 @@
                 "previous": "Go to previous step"
               }
             },
+            "confirmation": {
+              "defaultText": "Are you sure you want to delete this record?",
+              "text": "Confirmation text (optional)",
+              "title": "Confirm action"
+            },
             "create": "Add a button",
             "defaultName": "Action button",
             "enable": "Enable",
+            "inline": {
+              "displayIf": {
+                "title": "Display condition",
+                "tooltip": "The button will be displayed on the row only if the condition is met"
+              },
+              "title": "Inline",
+              "tooltip": "When enabled, the button will be displayed in each row of the grid instead of the widget's header"
+            },
             "placeholder": {
               "modifyValue": "Set as null"
             },

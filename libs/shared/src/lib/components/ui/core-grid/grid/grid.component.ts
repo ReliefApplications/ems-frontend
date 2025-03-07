@@ -56,6 +56,7 @@ import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util'
 import { formatGridRowData } from './utils/grid-data-formatter';
 import { GridActions } from '../models/grid-settings.model';
 import { HttpHeaders } from '@angular/common/http';
+import { applyFilters } from '../../map/filter';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -265,6 +266,31 @@ export class GridComponent
       this.rowActions
     );
   }
+
+  /** @returns an array with the settings for buttons to be displayed on rows */
+  get inlineActionButtons(): any[] {
+    const buttons = get(this.widget, 'settings.floatingButtons', []).filter(
+      (b: any) => b.show && b.inline
+    );
+
+    const chars = buttons.reduce(
+      (acc: number, button: any) => acc + button.name,
+      ''
+    );
+
+    // calculate the width of the buttons using measureText
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    if (context) {
+      context.font = '14px system-ui';
+      const width = context.measureText(chars).width;
+      this.floatingButtonsWidth = width * 0.95 + buttons.length * 20 + 20;
+    }
+    return buttons;
+  }
+
+  /** Width of the floating clickable buttons */
+  public floatingButtonsWidth = 120;
 
   /** @returns show border of grid */
   get showBorder(): boolean {
@@ -1349,4 +1375,21 @@ export class GridComponent
       this.actionsWidth = size + 24;
     }
   }
+
+  /**
+   * Checks if the button should be displayed
+   *
+   * @param button button configuration
+   * @param data row data
+   * @returns boolean indicating if the button should be displayed
+   */
+  public shouldShowButton = (button: any, data: Record<string, unknown>) => {
+    return applyFilters(
+      data,
+      button.filterForm ?? {
+        logic: 'and',
+        filters: [],
+      }
+    );
+  };
 }

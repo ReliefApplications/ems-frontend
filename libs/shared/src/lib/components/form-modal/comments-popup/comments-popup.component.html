@@ -1,4 +1,4 @@
-<div class="flex flex-col max-h-screen w-96 p-4 bg-white rounded-lg">
+<div class="flex flex-col max-h-screen w-96 p-4 bg-white rounded-lg shadow-2xl">
   <div
     class="flex border-b border-gray-400 justify-between items-center font-bold pb-2"
   >
@@ -36,7 +36,7 @@
           {{ comment.createdBy?.name }}
         </p>
         <p
-          [uiTooltip]="(comment.createdAt | date : 'medium') ?? ''"
+          [uiTooltip]="(comment.createdAt | sharedDate : 'medium') ?? ''"
           class="text-slate-400 pl-2 text-sm font-medium"
         >
           {{ getTimeAgo(comment.createdAt ?? 0) }}

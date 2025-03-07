@@ -29,7 +29,7 @@
         <div class="flex h-full">
           <shared-form-pages-layout
             *ngIf="!survey.hidePagesTab"
-            class="sticky h-full"
+            class="sticky h-full z-10"
             (showPage)="onShowPage($event)"
             [pages]="survey.visiblePages"
             [selectedPageIndex]="(selectedPageIndex$ | async) ?? 0"
@@ -42,6 +42,21 @@
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions">
+    <div class="text-sm text-gray-400 flex absolute left-2 items-center">
+      <ng-container *ngIf="autosaving; else latestSave">
+        <ui-spinner size="small" class="mr-1" />
+        {{ 'common.notifications.autoSaving' | translate }}
+      </ng-container>
+      <ng-template #latestSave>
+        <span *ngIf="latestSaveDate"
+          >{{
+            'components.form.lastSavedAt'
+              | translate : { date: latestSaveDate | sharedDate : 'shortTime' }
+          }}
+        </span>
+      </ng-template>
+    </div>
+
     <ui-button (click)="close()" *ngIf="survey?.showCloseButtonOnModal">
       {{ 'common.close' | translate }}
     </ui-button>
@@ -81,11 +96,14 @@
     <ui-button
       category="secondary"
       variant="primary"
-      [disabled]="saving"
+      [disabled]="saving || autosaving"
       (click)="submit()"
       cdkFocusInitial
     >
-      {{ 'components.record.modal.update' | translate }}
+      <p *ngIf="!autosaving">
+        {{ 'components.record.modal.update' | translate }}
+      </p>
+      <ui-spinner *ngIf="autosaving" [size]="'small'" />
     </ui-button>
   </ng-container>
 </ui-dialog>

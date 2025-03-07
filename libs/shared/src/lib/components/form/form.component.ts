@@ -93,10 +93,12 @@ export class FormComponent
   public pages$ = this.pages.asObservable();
   /** The id of the last draft record that was loaded */
   public lastDraftRecord?: string;
-  /** Disables the save as draft button */
-  public disableSaveAsDraft = false;
   /** saving operations */
   public saving = false;
+  /** autosaving operations */
+  public autosaving = false;
+  /** last date saved */
+  public latestSaveDate: Date | null = null;
   /** Timeout for reset survey */
   private resetTimeoutListener!: NodeJS.Timeout;
   /** As we save the draft record in the db, the local storage is no longer used */
@@ -155,19 +157,16 @@ export class FormComponent
       }
 
       if (rule.direction === 'questionToState' || rule.direction === 'both') {
-        const updateState = (_: any, options: any) => {
-          if (options.question.name === question.name) {
-            const state = this.dashboardService.states
-              .getValue()
-              .find((s: DashboardState) => s.name === rule.state);
-            if (state) {
-              this.dashboardService.setDashboardState(options.value, state.id);
-            }
+        const updateState = () => {
+          const state = this.dashboardService.states
+            .getValue()
+            .find((s: DashboardState) => s.name === rule.state);
+          if (state) {
+            this.dashboardService.setDashboardState(question.value, state.id);
           }
         };
-
-        (question.survey as SurveyModel)?.onValueChanged.add(updateState);
-        updateState(null, { question, value: question.value });
+        question.registerFunctionOnPropertyValueChanged('value', updateState);
+        updateState();
       }
 
       if (rule.direction === 'stateToQuestion' || rule.direction === 'both') {
@@ -235,7 +234,13 @@ export class FormComponent
    * Saves the current data as a draft record
    */
   public saveAsDraft(): void {
-    const callback = (details: any) => {
+    const callback = (details: {
+      id: string;
+      save: {
+        completed: boolean;
+        hideNewRecord: boolean;
+      };
+    }) => {
       this.surveyActive = true;
       this.lastDraftRecord = details.id;
       // Updates parent component
@@ -252,15 +257,18 @@ export class FormComponent
 
   /**
    * Creates the record when it is complete, or update it if provided.
+   *
+   * @param autoSave whether the save is automatic or manual
    */
-  public onComplete = async () => {
+  private async onComplete(autoSave = false) {
     this.formHelpersService
       .checkUniquePropriety(this.survey)
       .then(async (response: CheckUniqueProprietyReturnT) => {
         if (response.verified) {
           let mutation: any;
-          this.surveyActive = false;
-          this.saving = true;
+          this.surveyActive = autoSave;
+          this.autosaving = autoSave;
+          this.saving = !autoSave;
           // const promises: Promise<any>[] =
           //   this.formHelpersService.uploadTemporaryRecords(this.survey);
 
@@ -268,11 +276,16 @@ export class FormComponent
             this.temporaryFilesStorage,
             this.form?.id
           );
-          this.formHelpersService.setEmptyQuestions(this.survey);
+          this.temporaryFilesStorage.clear();
+          if (!autoSave) {
+            this.formHelpersService.setEmptyQuestions(this.survey);
+          }
           // We wait for the resources questions to update their ids
           await this.formHelpersService.createTemporaryRecords(this.survey);
-          const editRecord =
-            response.overwriteRecord ?? (this.record || this.form.uniqueRecord);
+          const editRecord = autoSave
+            ? this.record
+            : response.overwriteRecord ??
+              (this.record || this.form.uniqueRecord);
           // If is an already saved record, edit it
           if (editRecord) {
             // If update or creation of record is overwriting another record because unique field values
@@ -326,7 +339,11 @@ export class FormComponent
                   );
                 }
                 // localStorage.removeItem(this.storageId);
-                if (data.editRecord || data.addRecord.form.uniqueRecord) {
+                if (
+                  data.editRecord ||
+                  data.addRecord.form.uniqueRecord ||
+                  autoSave
+                ) {
                   this.survey.clear(false, false);
                   if (data.addRecord) {
                     this.record = data.addRecord;
@@ -340,11 +357,14 @@ export class FormComponent
                 }
                 this.save.emit({
                   completed: true,
-                  hideNewRecord:
-                    data.addRecord && data.addRecord.form.uniqueRecord,
+                  hideNewRecord: autoSave
+                    ? true
+                    : data.addRecord && data.addRecord.form.uniqueRecord,
                 });
               }
               this.saving = false;
+              this.autosaving = false;
+              this.latestSaveDate = new Date();
             });
         } else {
           this.snackBar.openSnackBar(
@@ -353,7 +373,7 @@ export class FormComponent
           this.survey.clear(false);
         }
       });
-  };
+  }
 
   /**
    * Handles the show page event
@@ -397,16 +417,6 @@ export class FormComponent
         },
       });
     }
-  }
-
-  /**
-   * Handle draft record load .
-   *
-   * @param id if of the draft record loaded
-   */
-  public onLoadDraftRecord(id: string): void {
-    this.lastDraftRecord = id;
-    this.disableSaveAsDraft = true;
   }
 
   /**
@@ -503,11 +513,21 @@ export class FormComponent
     if (!this.record && !this.form.canCreateRecords) {
       this.survey.mode = 'display';
     }
-    this.survey.onValueChanged.add(() => {
-      // Allow user to save as draft
-      this.disableSaveAsDraft = false;
+    if (this.survey.autoSave) {
+      this.survey.onValueChanged.add(async (_, options) => {
+        this.formHelpersService.autoSaveRecord(
+          options,
+          this.onComplete.bind(this, true),
+          this.temporaryFilesStorage,
+          this.form.id,
+          this.survey
+        );
+      });
+    }
+    this.survey.onComplete.add(() => {
+      this.onComplete();
+      this.formHelpersService.saveDebounced.cancel();
     });
-    this.survey.onComplete.add(this.onComplete);
 
     // Set readOnly fields
     this.form.fields?.forEach((field) => {

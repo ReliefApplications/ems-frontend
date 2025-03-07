@@ -11,6 +11,7 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { FeatureCollection } from 'geojson';
 
 /**
  * Dialog data interface
@@ -18,6 +19,7 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 interface DialogData {
   item: any;
   datasource: LayerDatasource;
+  shapefile: FeatureCollection;
 }
 
 /**
@@ -57,6 +59,13 @@ export class MapModalComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     const mapComponent = this.mapComponent;
     if (!mapComponent) {
+      return;
+    }
+    if (this.data.shapefile) {
+      this.mapLayersService.createShapefileLayer(
+        mapComponent.map,
+        this.data.shapefile
+      );
       return;
     }
     this.mapLayersService

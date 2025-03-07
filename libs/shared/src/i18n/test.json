@@ -297,6 +297,7 @@
       "accessDenied": "****** {{type}} ******",
       "accessNotProvided": "****** {{type}} ****** {{error}}",
       "alreadyExists": "****** {{type}} ****** {{value}} ******",
+      "autoSaving": "******",
       "copiedToClipboard": "******",
       "dataGenerated": "******",
       "dataNotRecovered": "******",
@@ -908,6 +909,7 @@
         "successEdit": "******",
         "successSave": "******"
       },
+      "lastSavedAt": "****** {{date}}",
       "layout": {
         "delete": {
           "confirmationMessage": "****** {{name}} ******"
@@ -1752,8 +1754,11 @@
                 "placeholder": "******"
               },
               "field": {
+                "addParam": "******",
                 "label": "******",
-                "placeholder": "******"
+                "paramName": "******",
+                "placeholder": "******",
+                "title": "******"
               },
               "label": "******",
               "target": {
@@ -1819,9 +1824,22 @@
                 "previous": "******"
               }
             },
+            "confirmation": {
+              "defaultText": "******",
+              "text": "******",
+              "title": "******"
+            },
             "create": "******",
             "defaultName": "******",
             "enable": "******",
+            "inline": {
+              "displayIf": {
+                "title": "******",
+                "tooltip": "******"
+              },
+              "title": "******",
+              "tooltip": "******"
+            },
             "placeholder": {
               "modifyValue": "******"
             },

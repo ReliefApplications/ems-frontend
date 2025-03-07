@@ -108,15 +108,18 @@ export class FormWidgetComponent
         .pipe(takeUntil(this.destroy$))
         .subscribe((states) => {
           const state = states.find((s) => s.id === stateID);
-          if (!isNil(state?.value) && state.value !== this.record?.id) {
+          const value = state?.value;
+          if (!isNil(value) && value !== this.record?.id) {
+            this.loading = true;
             this.apollo
               .query<RecordQueryResponse>({
                 query: GET_RECORD_BY_ID,
                 variables: {
-                  id: state.value,
+                  id: value,
                 },
               })
               .subscribe(({ data }) => {
+                this.loading = false;
                 if (data) {
                   this.record = data.record;
                 }

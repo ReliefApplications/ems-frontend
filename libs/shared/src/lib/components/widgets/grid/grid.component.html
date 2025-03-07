@@ -57,6 +57,7 @@
     (defaultLayoutReset)="onResetLayout()"
     (edit)="edit.emit($event)"
     (inlineEdition)="inlineEdition.emit()"
+    (inlineAction)="onQuickInlineAction($event.options, $event.row)"
     [widget]="widget"
     [canUpdate]="canUpdate"
     [status]="status"

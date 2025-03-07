@@ -14,6 +14,7 @@ import { ButtonModule } from '@oort-front/ui';
 import { SurveyModule } from 'survey-angular-ui';
 import { DraftRecordComponent } from '../draft-record/draft-record.component';
 import { FormPagesLayoutComponent } from '../form-pages-layout/form-pages-layout.component';
+import { DateModule } from '../../pipes/date/date.module';
 
 /**
  * FormModule is a class used to manage all the modules and components
@@ -35,6 +36,7 @@ import { FormPagesLayoutComponent } from '../form-pages-layout/form-pages-layout
     DraftRecordComponent,
     SpinnerModule,
     FormPagesLayoutComponent,
+    DateModule,
   ],
   exports: [FormComponent],
 })

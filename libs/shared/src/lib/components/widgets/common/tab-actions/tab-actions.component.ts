@@ -129,13 +129,18 @@ export class TabActionsComponent
     private dashboardService: DashboardService
   ) {
     super();
+
+    this.applicationService.pages$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((pages) => {
+        this.pages = pages;
+      });
   }
 
   ngOnInit(): void {
     this.showSelectPage =
       this.formGroup.controls.actions.get('navigateToPage')?.value;
     // Add available pages to the list of available keys
-    this.pages = this.applicationService.getPages();
     this.states = this.dashboardService.states.getValue() || [];
     this.formGroup.controls.actions
       .get('navigateToPage')

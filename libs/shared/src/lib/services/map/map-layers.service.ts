@@ -35,6 +35,8 @@ import { omitBy, isNil, get } from 'lodash';
 import { ContextService } from '../context/context.service';
 import { DOCUMENT } from '@angular/common';
 import { MapPolygonsService } from './map-polygons.service';
+import { FeatureCollection } from 'geojson';
+import * as L from 'leaflet';
 
 /**
  * Shared map layer service
@@ -362,6 +364,47 @@ export class MapLayersService {
     );
 
     return promise;
+  }
+
+  /**
+   * Adds a shapefile translated to feature collection to a map
+   * /!\ Specific to MAB as layer names are hardcoded
+   *
+   * @param map Map to add the layer to
+   * @param shapefile Shapefile feature collection
+   */
+  public createShapefileLayer(map: L.Map, shapefile: FeatureCollection) {
+    const colors: { [key: string]: string } = {
+      Core: '#fbbbbb',
+      Buffer: '#96d07b',
+      Transition: '#7a8eb5',
+    };
+
+    const layer = L.geoJSON(shapefile, {
+      style: (feature) => {
+        return {
+          color: colors[feature?.properties.Zonation],
+          fillOpacity: 0.5,
+        };
+      },
+    }).addTo(map);
+
+    const bounds = layer.getBounds();
+    if (bounds.isValid()) {
+      map.fitBounds(bounds);
+    }
+
+    const div = L.DomUtil.create('div');
+    let labels = '';
+
+    shapefile.features.forEach((feature) => {
+      const zonation = feature.properties?.Zonation;
+      labels += `<div class="flex"><i class="w-6 h-4 border mr-1" style="background:${colors[zonation]}"></i>${zonation}</div>`;
+    });
+
+    div.innerHTML = labels;
+    const legend = div.outerHTML;
+    (map as any).legendControl.addLayer(layer, legend);
   }
 
   /**

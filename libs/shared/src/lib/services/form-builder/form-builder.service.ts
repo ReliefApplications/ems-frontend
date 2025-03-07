@@ -8,6 +8,8 @@ import {
   settings,
   IPanel,
   DownloadFileEvent,
+  UploadFilesEvent,
+  PanelModelBase,
 } from 'survey-core';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
@@ -26,6 +28,8 @@ import { cloneDeep, difference, get } from 'lodash';
 import { Form } from '../../models/form.model';
 import { marked } from 'marked';
 import { DownloadService } from '../download/download.service';
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { FeatureCollection } from 'geojson';
 
 let counter = Math.floor(Math.random() * 0xffffff); // Initialize counter with a random value
 
@@ -107,7 +111,7 @@ export const transformSurveyData = (survey: SurveyModel) => {
   });
   if (survey.showPercentageProgressBar) {
     const visibleQuestions = getVisibleQuestions(survey.getAllQuestions());
-    data.progress =
+    data._progress =
       (visibleQuestions.filter((question: Question) => !question.isEmpty())
         .length *
         100) /
@@ -137,6 +141,29 @@ export const getVisibleQuestions = (questions: Question[]): Question[] => {
     // Include questions that are not read-only and are visible
     return !question.readOnly && question.isVisible ? [question] : [];
   });
+};
+
+/**
+ * Gets the outermost parent of a question before page level
+ *
+ * @param question Question to get the root parent of
+ * @returns The title and name of the root
+ */
+export const getRootParent = (
+  question: Question | PanelModelBase
+): {
+  title: string;
+  name: string;
+} => {
+  if (question.parent?.getType() === 'page') {
+    return { title: question.title, name: question.name };
+  }
+
+  if ('parentQuestion' in question && question.parentQuestion) {
+    return getRootParent(question.parentQuestion);
+  } else {
+    return getRootParent(question.parent as PanelModelBase);
+  }
 };
 
 /**
@@ -234,7 +261,12 @@ export class FormBuilderService {
   ): SurveyModel {
     settings.useCachingForChoicesRestful = false;
     settings.useCachingForChoicesRestfull = false;
+    settings.lazyRender = {
+      enabled: true,
+      firstBatchSize: 10,
+    };
     const survey = new Model(structure);
+    survey.checkErrorsMode = 'onComplete';
 
     // Adds function to survey to be able to get the current parsed data
     survey.getParsedData = () => {
@@ -255,7 +287,6 @@ export class FormBuilderService {
     if (record) {
       survey.record = record;
     }
-
     // Add custom variables
     this.formHelpersService.addUserVariables(survey);
     this.formHelpersService.addApplicationVariables(survey);
@@ -266,10 +297,23 @@ export class FormBuilderService {
     } else if (survey.generateNewRecordOid) {
       survey.setVariable('record.id', createNewObjectId());
     }
-    survey.onAfterRenderQuestion.add((_, options) => {
-      renderGlobalProperties(this.referenceDataService);
+
+    survey.onAfterRenderQuestion.add((survey, options) => {
+      renderGlobalProperties(this.referenceDataService)(survey, options);
+
       //Add tooltips to questions if exist
       this.formHelpersService.addQuestionTooltips.bind(this.formHelpersService);
+
+      const questionType = options.question.getType();
+      switch (questionType) {
+        case 'paneldynamic':
+        case 'matrixdynamic':
+          this.formHelpersService.addUploadButton(options);
+          break;
+        case 'file':
+          this.formHelpersService.setDownloadListener(options);
+          break;
+      }
 
       if (options.question.getType() === 'file') {
         const files = options.question.value;
@@ -292,21 +336,13 @@ export class FormBuilderService {
       }
     });
 
-    // For each question, if validateOnValueChange is true, we will add a listener to the value change event
-    survey.getAllQuestions().forEach((question) => {
-      if (question.validateOnValueChange) {
-        question.registerFunctionOnPropertyValueChanged('value', () => {
-          question.validate();
-        });
-      }
-    });
-
-    survey.onQuestionValueChanged = {};
-    survey.onValueChanged.add((_, options) => {
-      if (survey.onQuestionValueChanged[options.name]) {
-        survey.onQuestionValueChanged[options.name](options);
-      }
-    });
+    // @TODO: Check if commenting this breaks guyane prescriptions
+    // survey.onQuestionValueChanged = {};
+    // survey.onValueChanged.add((_, options) => {
+    //   if (survey.onQuestionValueChanged[options.name]) {
+    //     survey.onQuestionValueChanged[options.name](options);
+    //   }
+    // });
 
     // Handles logic for after record creation, selection and deselection on resource type questions
     survey.onCompleting.add(() => {
@@ -385,6 +421,18 @@ export class FormBuilderService {
       }
     });
 
+    // Adds upload button
+    const showUploadButtonTypes = ['paneldynamic', 'matrixdynamic'];
+    survey.onAfterRenderQuestion.add((_, options) => {
+      const questionType = options.question.getType();
+      if (
+        !showUploadButtonTypes.includes(questionType) ||
+        !options.question.allowImport
+      ) {
+        return;
+      }
+    });
+
     // set the lang of the survey
     const surveyLang = localStorage.getItem('surveyLang');
     const surveyLocales = survey.getUsedLocales();
@@ -447,50 +495,40 @@ export class FormBuilderService {
         survey.currentPageNo = index;
       });
 
-    survey.onAfterRenderSurvey.add(() => {
-      // onAfterRenderSurvey is called after each page change,
-      // so we add a custom flag to avoid running the code multiple times
-      // as it should only be run once, on first loading the entire survey
-      if (survey.initialConfigurationDone) {
-        return;
-      }
-      survey.checkErrorsMode = 'onComplete';
-      survey.initialConfigurationDone = true;
-
-      // Open survey on a specific page (openOnQuestionValuesPage has priority over openOnPage)
-      if (survey.openOnQuestionValuesPage) {
-        const question = survey.getQuestionByName(
-          survey.openOnQuestionValuesPage
-        );
-        if (question) {
-          const page = survey.getPageByName(question.value);
-          if (page) {
-            setTimeout(() => {
-              selectedPageIndex.next(page.visibleIndex);
-            }, 100);
-          }
-        }
-      } else if (survey.openOnPage) {
-        const page = survey.getPageByName(survey.openOnPage);
-        if (page) {
+    // Logic to initialize the survey on a specific page
+    if (survey.openOnPageByQuestionValue) {
+      const question = survey.getQuestionByName(
+        survey.openOnPageByQuestionValue
+      );
+      const page = survey.getPageByName(question?.value);
+      if (page) {
+        const setInitialPage = () => {
           selectedPageIndex.next(page.visibleIndex);
-        }
+          survey.onAfterRenderSurvey.remove(setInitialPage);
+        };
+        survey.onAfterRenderSurvey.add(setInitialPage);
+      }
+    } else if (survey.openOnPage) {
+      const page = survey.getPageByName(survey.openOnPage);
+      if (page) {
+        selectedPageIndex.next(page.visibleIndex);
+      }
+    }
+
+    survey.getAllQuestions().forEach((question) => {
+      // For each question, if validateOnValueChange is true, we will add a listener to the value change event
+      if (question.validateOnValueChange) {
+        question.registerFunctionOnPropertyValueChanged('value', () => {
+          question.validate();
+        });
       }
 
       // Set all the indexes of configured dynamic panel questions in the survey to the last panel.
-      survey.getAllQuestions().forEach((question) => {
-        if (
-          question.getType() == 'paneldynamic' &&
-          question.getPropertyValue('startOnLastElement')
-        ) {
-          question.currentIndex = question.visiblePanelCount - 1;
-        }
-      });
-      survey.onFocusInQuestion.add((survey, e) => {
-        survey.setVariable('__FOCUSED__.name', e.question.name);
-        survey.setVariable('__FOCUSED__.title', e.question.title);
-      });
+      if (question.getPropertyValue('startOnLastElement')) {
+        question.currentIndex = question.visiblePanelCount - 1;
+      }
     });
+
     survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
     survey.onUploadFiles.add((_, options: any) =>
       this.onUploadFiles(temporaryFilesStorage, options)
@@ -502,6 +540,13 @@ export class FormBuilderService {
       if (survey.currentPageNo !== selectedPageIndex.getValue()) {
         selectedPageIndex.next(survey.currentPageNo);
       }
+    });
+    survey.onFocusInQuestion.add((survey, e) => {
+      const { title: rootTitle, name: rootName } = getRootParent(e.question);
+      survey.setVariable('__FOCUSED__.name', e.question.name);
+      survey.setVariable('__FOCUSED__.title', e.question.title);
+      survey.setVariable('__FOCUSED__.root.name', rootName);
+      survey.setVariable('__FOCUSED__.root.title', rootTitle);
     });
   }
 
@@ -522,9 +567,31 @@ export class FormBuilderService {
    */
   private onUploadFiles(
     temporaryFilesStorage: TemporaryFilesStorage,
-    options: any
+    options: UploadFilesEvent
   ): void {
     const question = options.question as QuestionFileModel;
+    if (question.name === 'shapefile') {
+      const formData = new FormData();
+      const headers = new HttpHeaders({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Accept: 'application/json',
+      });
+      formData.append('file', options.files[0]);
+      this.restService
+        .post(`${this.restService.apiUrl}/gis/shapefile-to-geojson`, formData, {
+          headers,
+        })
+        .subscribe({
+          next: (data: { geojson: FeatureCollection }) => {
+            question.value = data.geojson;
+          },
+          error: (error: HttpErrorResponse) => {
+            this.snackBar.openSnackBar(error.message, { error: true });
+            options.callback(null, error);
+          },
+        });
+      return;
+    }
     temporaryFilesStorage.set(question, options.files);
 
     let content: any[] = [];
@@ -559,6 +626,9 @@ export class FormBuilderService {
    * @param options Options regarding the download
    */
   private onDownloadFile(options: DownloadFileEvent): void {
+    if (options.question.name === 'shapefile') {
+      return;
+    }
     if (
       options.content.indexOf('base64') !== -1 ||
       options.content.startsWith('http')
@@ -587,7 +657,7 @@ export class FormBuilderService {
           console.error('Error downloading file:', error);
           options.callback('error', error);
         });
-    } else if (this.recordId) {
+    } else if (this.recordId || options.fileValue.readyToSave) {
       options.callback('success', '');
     }
   }

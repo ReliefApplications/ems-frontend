@@ -653,7 +653,10 @@
       </ng-container>
       <!-- Geospatial -->
       <kendo-grid-column
-        *ngIf="field.type === 'JSON' && field.meta.type === 'geospatial'"
+        *ngIf="
+          field.type === 'JSON' &&
+          ['geospatial', 'shapefile'].includes(field.meta.type)
+        "
         [field]="field.name"
         [filterable]="true"
         [title]="field.title"
@@ -674,7 +677,11 @@
                 'components.widget.grid.tooltip.displayMap' | translate
               "
             >
-              {{ dataItem.text[field.name] }}
+              {{
+                field.meta.type === 'shapefile' && dataItem.text[field.name]
+                  ? ('components.widget.grid.tooltip.displayMap' | translate)
+                  : dataItem.text[field.name]
+              }}
             </a>
           </div>
         </ng-template>
@@ -788,8 +795,7 @@
         *ngIf="
           field.type === 'JSON' &&
           !multiSelectTypes.includes(field.meta.type) &&
-          field.meta.type !== 'file' &&
-          field.meta.type !== 'geospatial'
+          !['geospatial', 'shapefile', 'file'].includes(field.meta.type)
         "
       >
         <ng-container
@@ -1039,7 +1045,36 @@
       </kendo-grid-column-group>
     </ng-container>
     <!-- Go to page ( navigateToPage action ) -->
-    <!-- TODO: Figure out proper solution for the width -->
+    <kendo-grid-column
+      *ngIf="inlineActionButtons.length > 0"
+      [columnMenu]="false"
+      [width]="floatingButtonsWidth"
+      [resizable]="true"
+      [title]="''"
+      [sticky]="true"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <div id="floating-buttons" class="flex flex-row gap-1">
+          <ng-container *ngFor="let button of inlineActionButtons">
+            <button
+              class="text-center"
+              *ngIf="shouldShowButton(button, dataItem)"
+              kendoButton
+              (click)="
+                action.emit({
+                  action: 'btnClick',
+                  item: dataItem,
+                  button,
+                })
+              "
+            >
+              {{ button.name }}
+            </button>
+          </ng-container>
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- Inline floating buttons -->
     <kendo-grid-column
       *ngIf="actions.navigateToPage"
       [columnMenu]="false"

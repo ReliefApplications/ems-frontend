@@ -6,6 +6,7 @@ import * as ResourcesComponent from './components/resources';
 import * as OwnerComponent from './components/owner';
 import * as UsersComponent from './components/users';
 import * as GeospatialComponent from './components/geospatial';
+import * as ShapeFileComponent from './components/shapefile-picker';
 import { Apollo } from 'apollo-angular';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
@@ -20,6 +21,7 @@ export enum CustomQuestionTypes {
   OWNER = 'owner',
   USERS = 'users',
   GEO_SPATIAL = 'geoSpatial',
+  SHAPEFILE = 'shapeFile',
 }
 
 /** Custom question options */
@@ -70,5 +72,10 @@ export const InitCustomQuestionComponent: {
     const { injector, instance } = options;
     const domService = injector.get(DomService);
     GeospatialComponent.init(domService, instance);
+  },
+  shapeFile: (options) => {
+    const { injector, instance } = options;
+    const domService = injector.get(DomService);
+    ShapeFileComponent.init(domService, instance);
   },
 };

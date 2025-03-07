@@ -9,6 +9,7 @@ import {
 import { get } from 'lodash';
 import {
   addNewField,
+  createFilterGroup,
   createQueryForm,
 } from '../../query-builder/query-builder-forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
@@ -38,6 +39,20 @@ export const createButtonFormGroup = (value: any) => {
       value && value.name ? value.name : DEFAULT_ACTION_NAME,
       Validators.required,
     ],
+    inline: [value && value.inline ? value.inline : false],
+    filterForm: createFilterGroup(value.filterForm),
+    goToPage: [value && value.goToPage ? value.goToPage : false],
+    targetPage: [value && value.targetPage ? value.targetPage : null],
+    goToPageFields: fb.array(
+      value && value.goToPageFields
+        ? value.goToPageFields.map((x: any) =>
+            fb.group({
+              param: [x.param, Validators.required],
+              field: [x.field, Validators.required],
+            })
+          )
+        : []
+    ),
     selectAll: [value && value.selectAll ? value.selectAll : false],
     selectPage: [value && value.selectPage ? value.selectPage : false],
     goToNextStep: [get(value, 'goToNextStep', false)],
@@ -55,6 +70,7 @@ export const createButtonFormGroup = (value: any) => {
     autoSave: [value && value.autoSave ? value.autoSave : false],
     modifySelectedRows: [value ? value.modifySelectedRows : false],
     requireConfirmation: [value ? value.requireConfirmation : false],
+    modifyConfirmationText: [value?.modifyConfirmationText ?? ''],
     modifications: fb.array(
       value && value.modifications && value.modifications.length
         ? value.modifications.map((x: any) =>

@@ -19,6 +19,7 @@ import { CheckUniqueProprietyReturnT } from '../../services/form-helper/form-hel
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommentsPopupComponent } from '../form-modal/comments-popup/comments-popup.component';
 import { FormPagesLayoutComponent } from '../form-pages-layout/form-pages-layout.component';
+import { DateModule } from '../../pipes/date/date.module';
 
 /**
  * Factory for creating scroll strategy
@@ -53,6 +54,7 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
     ReactiveFormsModule,
     CommentsPopupComponent,
     FormPagesLayoutComponent,
+    DateModule,
   ],
 })
 export class ResourceModalComponent extends FormModalComponent {
@@ -64,7 +66,7 @@ export class ResourceModalComponent extends FormModalComponent {
   public override async onUpdate(survey: any): Promise<void> {
     // If question propriety alwaysCreateRecord set to true, don't use override method and create new record
     if (this.data.alwaysCreateRecord) {
-      super.onUpdate(survey, true);
+      super.onUpdate(true);
     } else if (this.data.recordId) {
       this.formHelpersService
         .checkUniquePropriety(this.survey)

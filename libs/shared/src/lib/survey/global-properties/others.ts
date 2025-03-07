@@ -97,7 +97,7 @@ export const init = (environment: any): void => {
   // Adds a property to the survey settings to open the form on a specific page using the question value
   // of the selected question (the value must be a page name)
   serializer.addProperty('survey', {
-    name: 'openOnQuestionValuesPage',
+    name: 'openOnPageByQuestionValue',
     displayName: 'Open survey on page based on question value',
     category: 'pages',
     choices: (survey: SurveyModel, choicesCallback: any) => {
@@ -183,6 +183,14 @@ export const init = (environment: any): void => {
     choices: yesNoChoices,
     default: false,
   });
+  // Adds the ability to autosave records every time we would save one question
+  serializer.addProperty('survey', {
+    name: 'autoSave',
+    category: 'general',
+    type: 'dropdown',
+    choices: yesNoChoices,
+    default: false,
+  });
   // Adds a property to the survey settings to have comments
   serializer.addProperty('survey', {
     name: 'canBeCommented',
@@ -260,6 +268,14 @@ export const init = (environment: any): void => {
     category: 'general',
     default: false,
   });
+
+  const allowImportProp = {
+    name: 'allowImport:boolean',
+    default: false,
+    category: 'general',
+  };
+  serializer.addProperty('paneldynamic', allowImportProp);
+  serializer.addProperty('matrixdynamic', allowImportProp);
 
   // Add option to omit question from fields
   serializer.addProperty('question', {

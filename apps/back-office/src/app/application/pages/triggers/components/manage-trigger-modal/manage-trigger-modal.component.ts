@@ -66,8 +66,8 @@ export class ManageTriggerModalComponent
   public layout?: Layout;
   /** List of channels */
   public channels?: Channel[];
-  /** Available pages from the application */
-  public pages: any[] = [];
+  /** List of pages */
+  public pages$ = this.applicationService.pages$;
   /** List of recipients options depending on selected type */
   public recipientsTypeOptions?:
     | typeof emailRecipientsOptions
@@ -133,9 +133,6 @@ export class ManageTriggerModalComponent
     if (this.data.trigger?.layout) {
       this.getLayout(this.data.trigger?.layout);
     }
-
-    // Get available application pages
-    this.pages = this.applicationService.getPages();
 
     // Add email validation to recipients field if recipients type is email
     this.formGroup
