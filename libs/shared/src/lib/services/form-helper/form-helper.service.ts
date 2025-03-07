@@ -1074,6 +1074,28 @@ export class FormHelpersService {
   }
 
   /**
+   * Sorts dynamic panels by a subquestion
+   *
+   * @param question Question to sort
+   */
+  public orderDynamicPanels(question: QuestionPanelDynamicModel): void {
+    const { sortBySubQuestion, sortDirection } = question;
+    if (sortBySubQuestion && question.value) {
+      const initPanels = question.value;
+      const sorted: Record<string, any>[] = cloneDeep(initPanels ?? []);
+
+      sorted.sort((a, b) => {
+        const aValue = get(a, sortBySubQuestion)?.toString() ?? '';
+        const bValue = get(b, sortBySubQuestion)?.toString() ?? '';
+        return sortDirection === 'asc'
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      });
+      question.value = sorted;
+    }
+  }
+
+  /**
    * Set download listener for files in the survey
    *
    * @param e Event raised after rendering a question

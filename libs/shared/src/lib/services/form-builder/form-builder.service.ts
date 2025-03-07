@@ -10,6 +10,7 @@ import {
   DownloadFileEvent,
   UploadFilesEvent,
   PanelModelBase,
+  QuestionPanelDynamicModel,
 } from 'survey-core';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
@@ -307,6 +308,11 @@ export class FormBuilderService {
       const questionType = options.question.getType();
       switch (questionType) {
         case 'paneldynamic':
+          this.formHelpersService.addUploadButton(options);
+          this.formHelpersService.orderDynamicPanels(
+            options.question as QuestionPanelDynamicModel
+          );
+          break;
         case 'matrixdynamic':
           this.formHelpersService.addUploadButton(options);
           break;
