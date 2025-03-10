@@ -269,6 +269,48 @@ export const init = (environment: any): void => {
     default: false,
   });
 
+  // Sort panels by sub-question value
+  serializer.addProperty('paneldynamic', {
+    name: 'sortBySubQuestion:dropdown',
+    category: 'general',
+    choices: (
+      obj: null | QuestionPanelDynamicModel,
+      choicesCallback: (choices: any[]) => void
+    ) => {
+      if (!obj) {
+        choicesCallback([]);
+        return;
+      }
+
+      const choices = obj.templateElements.map((el) => {
+        const title = 'title' in el ? el.title : '';
+        return {
+          value: el.name,
+          text: title || el.name,
+        };
+      });
+      choicesCallback(choices);
+    },
+  });
+
+  // if the sortBySubQuestion is set, display the sort direction
+  serializer.addProperty('paneldynamic', {
+    name: 'sortDirection:dropdown',
+    category: 'general',
+    choices: [
+      {
+        value: 'asc',
+        text: 'Ascending',
+      },
+      {
+        value: 'desc',
+        text: 'Descending',
+      },
+    ],
+    default: 'asc',
+    visibleIf: (obj: QuestionPanelDynamicModel) => !!obj.sortBySubQuestion,
+  });
+
   const allowImportProp = {
     name: 'allowImport:boolean',
     default: false,
