@@ -1,4 +1,4 @@
-import { RawEditorSettings } from 'tinymce';
+import { RawEditorOptions } from 'tinymce';
 import { createFontAwesomeIcon } from '../components/ui/map/utils/create-div-icon';
 
 /** Language tinymce keys paired with the default ones */
@@ -10,11 +10,12 @@ export const EDITOR_LANGUAGE_PAIRS: { key: string; tinymceKey: string }[] = [
 ];
 
 /** Widget Editor tinymce configuration. */
-export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
+export const WIDGET_EDITOR_CONFIG: RawEditorOptions = {
   suffix: '.min',
+  promotion: false,
+  branding: false,
   plugins:
-    'preview paste importcss searchreplace autolink code visualblocks visualchars fullscreen image link media table charmap hr nonbreaking insertdatetime advlist lists wordcount imagetools textpattern help charmap quickbars emoticons',
-  imagetools_cors_hosts: ['picsum.photos'],
+    'preview importcss searchreplace autolink code visualblocks visualchars fullscreen image link media table charmap nonbreaking insertdatetime advlist lists wordcount help charmap quickbars emoticons',
   menubar: 'edit view insert format tools table help',
   toolbar:
     'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link avatar recordeditor',
@@ -26,14 +27,14 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
   quickbars_selection_toolbar:
     'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
   toolbar_mode: 'sliding',
-  contextmenu: 'link image imagetools table',
+  contextmenu: 'link image table',
   content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
   help_tabs: [
     'shortcuts', // the default shortcuts tab
     'keyboardnav', // the default keyboard navigation tab
   ],
   extended_valid_elements:
-    'a[*],altGlyph[*],altGlyphDef[*],altGlyphItem[*],animate[*],animateMotion[*],animateTransform[*],circle[*],clipPath[*],color-profile[*],cursor[*],defs[*],desc[*],ellipse[*],feBlend[*],feColorMatrix[*],feComponentTransfer[*],feComposite[*],feConvolveMatrix[*],feDiffuseLighting[*],feDisplacementMap[*],feDistantLight[*],feFlood[*],feFuncA[*],feFuncB[*],feFuncG[*],feFuncR[*],feGaussianBlur[*],feImage[*],feMerge[*],feMergeNode[*],feMorphology[*],feOffset[*],fePointLight[*],feSpecularLighting[*],feSpotLight[*],feTile[*],feTurbulence[*],filter[*],font[*],font-face[*],font-face-format[*],font-face-name[*],font-face-src[*],font-face-uri[*],foreignObject[*],g[*],glyph[*],glyphRef[*],hkern[*],image[*],line[*],linearGradient[*],marker[*],mask[*],metadata[*],missing-glyph[*],mpath[*],path[*],pattern[*],polygon[*],polyline[*],radialGradient[*],rect[*],script[*],set[*],stop[*],style[*],svg[*],switch[*],symbol[*],text[*],textPath[*],title[*],tref[*],tspan[*],use[*],view[*],vkern[*],a[*],animate[*],animateMotion[*],animateTransform[*],circle[*],clipPath[*],defs[*],desc[*],discard[*],ellipse[*],feBlend[*],feColorMatrix[*],feComponentTransfer[*],feComposite[*],feConvolveMatrix[*],feDiffuseLighting[*],feDisplacementMap[*],feDistantLight[*],feDropShadow[*],feFlood[*],feFuncA[*],feFuncB[*],feFuncG[*],feFuncR[*],feGaussianBlur[*],feImage[*],feMerge[*],feMergeNode[*],feMorphology[*],feOffset[*],fePointLight[*],feSpecularLighting[*],feSpotLight[*],feTile[*],feTurbulence[*],filter[*],foreignObject[*],g[*],hatch[*],hatchpath[*],image[*],line[*],linearGradient[*],marker[*],mask[*],metadata[*],mpath[*],path[*],pattern[*],polygon[*],polyline[*],radialGradient[*],rect[*],script[*],set[*],stop[*],style[*],svg[*],switch[*],symbol[*],text[*],textPath[*],title[*],tspan[*],use[*],view[*],g[*],animate[*],animateColor[*],animateMotion[*],animateTransform[*],discard[*],mpath[*],set[*],circle[*],ellipse[*],line[*],polygon[*],polyline[*],rect[*],a[*],defs[*],g[*],marker[*],mask[*],missing-glyph[*],pattern[*],svg[*],switch[*],symbol[*],desc[*],metadata[*],title[*],feBlend[*],feColorMatrix[*],feComponentTransfer[*],feComposite[*],feConvolveMatrix[*],feDiffuseLighting[*],feDisplacementMap[*],feDropShadow[*],feFlood[*],feFuncA[*],feFuncB[*],feFuncG[*],feFuncR[*],feGaussianBlur[*],feImage[*],feMerge[*],feMergeNode[*],feMorphology[*],feOffset[*],feSpecularLighting[*],feTile[*],feTurbulence[*],font[*],font-face[*],font-face-format[*],font-face-name[*],font-face-src[*],font-face-uri[*],hkern[*],vkern[*],linearGradient[*],radialGradient[*],stop[*],circle[*],ellipse[*],image[*],line[*],path[*],polygon[*],polyline[*],rect[*],text[*],use[*],use[*],feDistantLight[*],fePointLight[*],feSpotLight[*],clipPath[*],defs[*],hatch[*],linearGradient[*],marker[*],mask[*],metadata[*],pattern[*],radialGradient[*],script[*],style[*],symbol[*],title[*],hatch[*],linearGradient[*],pattern[*],radialGradient[*],solidcolor[*],a[*],circle[*],ellipse[*],foreignObject[*],g[*],image[*],line[*],path[*],polygon[*],polyline[*],rect[*],svg[*],switch[*],symbol[*],text[*],textPath[*],tspan[*],use[*],g[*],circle[*],ellipse[*],line[*],path[*],polygon[*],polyline[*],rect[*],defs[*],g[*],svg[*],symbol[*],use[*],altGlyph[*],altGlyphDef[*],altGlyphItem[*],glyph[*],glyphRef[*],textPath[*],text[*],tref[*],tspan[*],altGlyph[*],textPath[*],tref[*],tspan[*],clipPath[*],cursor[*],filter[*],foreignObject[*],hatchpath[*],script[*],style[*],view[*],altGlyph[*],altGlyphDef[*],altGlyphItem[*],animateColor[*],cursor[*],font[*],font-face[*],font-face-format[*],font-face-name[*],font-face-src[*],font-face-uri[*],glyph[*],glyphRef[*],hkern[*],missing-glyph[*],tref[*],vkern[*]',
+    'a[*],altGlyphDef[*],altGlyphItem[*],altGlyph[*],animateColor[*],animateMotion[*],animateTransform[*],animate[*],circle[*],clipPath[*],color-profile[*],cursor[*],defs[*],desc[*],discard[*],ellipse[*],feBlend[*],feColorMatrix[*],feComponentTransfer[*],feComposite[*],feConvolveMatrix[*],feDiffuseLighting[*],feDisplacementMap[*],feDistantLight[*],feDropShadow[*],feFlood[*],feFuncA[*],feFuncB[*],feFuncG[*],feFuncR[*],feGaussianBlur[*],feImage[*],feMergeNode[*],feMerge[*],feMorphology[*],feOffset[*],fePointLight[*],feSpecularLighting[*],feSpotLight[*],feTile[*],feTurbulence[*],filter[*],font-face-format[*],font-face-name[*],font-face-src[*],font-face-uri[*],font-face[*],font[*],foreignObject[*],g[*],glyphRef[*],glyph[*],hatch[*],hatchpath[*],hkern[*],image[*],line[*],linearGradient[*],marker[*],mask[*],metadata[*],missing-glyph[*],mpath[*],path[*],pattern[*],polygon[*],polyline[*],radialGradient[*],rect[*],script[*],set[*],solidcolor[*],stop[*],style[*],svg[*],switch[*],symbol[*],textPath[*],text[*],title[*],tref[*],tspan[*],use[*],view[*],vkern[*]',
   convert_urls: false,
   setup: (editor) => {
     // Record edition
@@ -140,8 +141,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
               Number(data.avatarsMaxItems) > 0 &&
               data.avatarsSource.length > 0
             );
-            if (submitDisabled) api.disable('submit');
-            else api.enable('submit');
+            api.setEnabled('submit', !submitDisabled);
           },
           onSubmit: (api) => {
             const data = api.getData();
@@ -159,7 +159,6 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
               type: 'submit',
               name: 'submit',
               primary: true,
-              disabled: true,
             },
           ],
         });
@@ -248,11 +247,13 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
 };
 
 /** Email Editor tinymce configuration. */
-export const EMAIL_EDITOR_CONFIG: RawEditorSettings = {
+export const EMAIL_EDITOR_CONFIG: RawEditorOptions = {
   suffix: '.min',
+  license_key: 'gpl',
+  promotion: false,
+  branding: false,
   plugins:
-    'preview paste importcss searchreplace autolink code visualblocks visualchars fullscreen image link media table charmap hr nonbreaking insertdatetime advlist lists wordcount imagetools textpattern help charmap quickbars emoticons',
-  // imagetools_cors_hosts: ['picsum.photos'],
+    'preview importcss searchreplace autolink code visualblocks visualchars fullscreen image link media table charmap nonbreaking insertdatetime advlist lists wordcount help charmap quickbars emoticons',
   menubar: 'edit view insert format tools table help',
   toolbar:
     'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link',
@@ -265,7 +266,7 @@ export const EMAIL_EDITOR_CONFIG: RawEditorSettings = {
   quickbars_selection_toolbar:
     'bold italic | quicklink h2 h3 blockquote quicktable',
   toolbar_mode: 'sliding',
-  contextmenu: 'link image imagetools table',
+  contextmenu: 'link image table',
   content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
   file_browser_callback: false, // removes possibility to upload files
   help_tabs: [
@@ -276,28 +277,42 @@ export const EMAIL_EDITOR_CONFIG: RawEditorSettings = {
 };
 
 /** Field Editor tinymce configuration. */
-export const FIELD_EDITOR_CONFIG: RawEditorSettings = {
+export const FIELD_EDITOR_CONFIG: RawEditorOptions = {
   suffix: '.min',
-  plugins: '',
-  imagetools_cors_hosts: ['picsum.photos'],
-  menubar: false,
-  toolbar: false,
+  license_key: 'gpl',
+  promotion: false,
+  branding: false,
+  plugins:
+    'preview importcss searchreplace autolink code visualblocks visualchars fullscreen link media table charmap nonbreaking insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+  menubar: 'edit view insert format tools table help',
+  toolbar:
+    'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile media link avatar recordeditor',
   importcss_append: true,
-  height: 90,
-  quickbars_selection_toolbar: '',
+  height: 300,
+  quickbars_insert_toolbar: 'quicktable',
+  quickbars_selection_toolbar:
+    'bold italic | quicklink h2 h3 blockquote quicktable',
+  toolbar_mode: 'sliding',
+  contextmenu: 'link table',
   content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
   help_tabs: [
     'shortcuts', // the default shortcuts tab
     'keyboardnav', // the default keyboard navigation tab
   ],
+  extended_valid_elements:
+    'a[*],altGlyphDef[*],altGlyphItem[*],altGlyph[*],animateColor[*],animateMotion[*],animateTransform[*],animate[*],circle[*],clipPath[*],color-profile[*],cursor[*],defs[*],desc[*],discard[*],ellipse[*],feBlend[*],feColorMatrix[*],feComponentTransfer[*],feComposite[*],feConvolveMatrix[*],feDiffuseLighting[*],feDisplacementMap[*],feDistantLight[*],feDropShadow[*],feFlood[*],feFuncA[*],feFuncB[*],feFuncG[*],feFuncR[*],feGaussianBlur[*],feMergeNode[*],feMerge[*],feMorphology[*],feOffset[*],fePointLight[*],feSpecularLighting[*],feSpotLight[*],feTile[*],feTurbulence[*],filter[*],font-face-format[*],font-face-name[*],font-face-src[*],font-face-uri[*],font-face[*],font[*],foreignObject[*],g[*],glyphRef[*],glyph[*],hatch[*],hatchpath[*],hkern[*],line[*],linearGradient[*],marker[*],mask[*],metadata[*],missing-glyph[*],mpath[*],path[*],pattern[*],polygon[*],polyline[*],radialGradient[*],rect[*],script[*],set[*],solidcolor[*],stop[*],style[*],svg[*],switch[*],symbol[*],textPath[*],text[*],title[*],tref[*],tspan[*],use[*],view[*],vkern[*]',
+  invalid_elements: 'feImage,image,img',
+  convert_urls: false,
 };
 
 /** Popup Editor tinymce configuration. */
-export const POPUP_EDITOR_CONFIG: RawEditorSettings = {
+export const POPUP_EDITOR_CONFIG: RawEditorOptions = {
   suffix: '.min',
+  license_key: 'gpl',
+  promotion: false,
+  branding: false,
   plugins:
-    'preview paste importcss searchreplace autolink code visualblocks visualchars fullscreen image link media table charmap hr nonbreaking insertdatetime advlist lists wordcount imagetools textpattern help charmap quickbars emoticons',
-  // imagetools_cors_hosts: ['picsum.photos'],
+    'preview importcss searchreplace autolink code visualblocks visualchars fullscreen image link media table charmap nonbreaking insertdatetime advlist lists wordcount help charmap quickbars emoticons',
   menubar: 'edit view insert format tools table help',
   toolbar:
     'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link',
@@ -310,7 +325,7 @@ export const POPUP_EDITOR_CONFIG: RawEditorSettings = {
   quickbars_selection_toolbar:
     'bold italic | quicklink h2 h3 blockquote quicktable',
   toolbar_mode: 'sliding',
-  contextmenu: 'link image imagetools table',
+  contextmenu: 'link image table',
   content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
   file_browser_callback: false, // removes possibility to upload files
   help_tabs: [
@@ -320,8 +335,11 @@ export const POPUP_EDITOR_CONFIG: RawEditorSettings = {
 };
 
 /** Inline Editor tinymce configuration. */
-export const INLINE_EDITOR_CONFIG: RawEditorSettings = {
+export const INLINE_EDITOR_CONFIG: RawEditorOptions = {
   menubar: false,
+  license_key: 'gpl',
+  promotion: false,
+  branding: false,
   inline: true,
   toolbar: '',
   plugins: '',

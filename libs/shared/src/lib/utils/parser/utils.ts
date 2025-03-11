@@ -82,6 +82,7 @@ export const parseHtml = (
       options.styles
     );
   }
+  formattedHtml = applyTableStyle(formattedHtml);
   formattedHtml = applyOperations(formattedHtml);
 
   const linkRegex = /<a[^>]+href="([^"]+)"[^>]*>/g;
@@ -101,6 +102,48 @@ export const parseHtml = (
   });
 
   return formattedHtml;
+};
+
+/**
+ * Function to apply table width based on existing 'border' property
+ *
+ * @param formattedHtml html to parse
+ * @returns formatted html string
+ */
+const applyTableStyle = (formattedHtml: string) => {
+  if (!formattedHtml.includes('table')) {
+    return formattedHtml;
+  }
+  // Create a temporary container element to work with the HTML string
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = formattedHtml;
+
+  const applyChildStyle = (table: HTMLTableElement, tag: 'th' | 'td') => {
+    const elements = table.querySelectorAll(tag);
+    for (let i = 0; i < elements.length; i++) {
+      const element = elements[i];
+      if (table.style.borderColor && !element.style.borderColor) {
+        element.style.borderColor = table.style.borderColor;
+      }
+      if (table.style.borderWidth && !element.style.borderWidth) {
+        element.style.borderWidth = table.style.borderWidth;
+      }
+    }
+  };
+
+  // Find all table elements within the temporary container
+  const tables = tempDiv.getElementsByTagName('table');
+
+  // Loop through each table element
+  for (let i = 0; i < tables.length; i++) {
+    const table = tables[i];
+    applyChildStyle(table, 'th');
+    applyChildStyle(table, 'td');
+    table.style.borderWidth = `${table.getAttribute('border')}px` || '';
+  }
+
+  // Return the modified HTML content as a string
+  return tempDiv.innerHTML;
 };
 
 /**

@@ -11,7 +11,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { EditorControlComponent } from '../../../controls/editor-control/editor-control.component';
-import { RawEditorSettings } from 'tinymce';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import {
   ButtonModule,
@@ -20,6 +19,7 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { DialogModule, FormWrapperModule } from '@oort-front/ui';
+import { RawEditorOptions } from 'tinymce';
 
 /** Model for the data input */
 interface DialogData {
@@ -65,10 +65,10 @@ export class EditTemplateModalComponent implements OnInit {
   });
 
   /** tinymce body editor */
-  public bodyEditor: RawEditorSettings = EMAIL_EDITOR_CONFIG;
+  public bodyEditor: RawEditorOptions = EMAIL_EDITOR_CONFIG;
 
   /** tinymce subject editor */
-  public subjectEditor: RawEditorSettings = INLINE_EDITOR_CONFIG;
+  public subjectEditor: RawEditorOptions = INLINE_EDITOR_CONFIG;
 
   /**
    * Component for editing a template

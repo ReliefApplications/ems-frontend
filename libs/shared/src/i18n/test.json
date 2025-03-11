@@ -590,6 +590,7 @@
         "unwind": "******",
         "user": "******"
       },
+      "unavailableFields": "******",
       "userProperty": "******"
     },
     "apiConfiguration": {
@@ -1586,8 +1587,10 @@
           "mapDetailsTitle": "******",
           "mapDetailsTooltip": "******"
         },
+        "openEditor": "******",
         "openSettings": "******",
         "tooltip": {
+          "displayEditor": "******",
           "displayMap": "******",
           "openPage": "******",
           "saved": "******",

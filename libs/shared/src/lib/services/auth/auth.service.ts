@@ -244,7 +244,7 @@ export class AuthService {
       if (redirectUri.pathname !== '/' && redirectUri.pathname !== '/auth/') {
         localStorage.setItem(
           'redirectPath',
-          redirectUri.pathname + redirectUri.search ?? ''
+          redirectUri.pathname + redirectUri.search
         );
       }
     }

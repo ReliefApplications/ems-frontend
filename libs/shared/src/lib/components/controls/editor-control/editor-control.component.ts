@@ -11,6 +11,8 @@ import {
   ViewChild,
   forwardRef,
   Inject,
+  EventEmitter,
+  Output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
@@ -22,9 +24,9 @@ import {
   TINYMCE_SCRIPT_SRC,
 } from '@tinymce/tinymce-angular';
 import { EditorService } from '../../../services/editor/editor.service';
-import { RawEditorSettings } from 'tinymce';
 import { FormControlComponent } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
+import { RawEditorOptions } from 'tinymce';
 
 /** Component for using TinyMCE editor with formControl */
 @Component({
@@ -52,9 +54,13 @@ export class EditorControlComponent
   @ViewChild('editor') editor!: EditorComponent;
   /** Editor content */
   public editorContent = '';
+  /** Is editor loading */
+  public editorLoading = true;
+  /** Editor loaded event emitter */
+  @Output() editorLoaded = new EventEmitter<boolean>();
 
   /** Tinymce editor configuration */
-  @Input() editorConfig!: RawEditorSettings;
+  @Input() editorConfig!: RawEditorOptions;
 
   /**
    * Gets the value
@@ -62,7 +68,11 @@ export class EditorControlComponent
    * @returns the value
    */
   @Input() get value(): string | null {
-    return this.ngControl.value;
+    if (this.ngControl) {
+      return this.ngControl?.value;
+    } else {
+      return this.editorContent;
+    }
   }
 
   /** Sets the value */
@@ -76,6 +86,9 @@ export class EditorControlComponent
   /** Id of the component */
   @HostBinding()
   id = `shared-editor-control-${EditorControlComponent.nextId++}`;
+
+  /** Is control readonly */
+  @Input() readonly = false;
 
   /**
    * Gets the placeholder for the select
@@ -107,7 +120,7 @@ export class EditorControlComponent
    * @returns if an option is selected
    */
   get empty() {
-    return !this.ngControl.control?.value;
+    return !this.ngControl?.control?.value;
   }
 
   /**
@@ -148,16 +161,16 @@ export class EditorControlComponent
    */
   @Input()
   get disabled(): boolean {
-    return this.ngControl.disabled || false;
+    return this.ngControl?.disabled || false;
   }
 
   /** Sets whether the field is disabled */
   set disabled(value: boolean) {
     const isDisabled = coerceBooleanProperty(value);
     if (isDisabled) {
-      this.ngControl.control?.disable();
+      this.ngControl?.control?.disable();
     } else {
-      this.ngControl.control?.enable();
+      this.ngControl?.control?.enable();
     }
     this.stateChanges.next();
   }
@@ -168,7 +181,7 @@ export class EditorControlComponent
    * @returns whether the input is in an error state
    */
   get errorState(): boolean {
-    return (this.ngControl.invalid && this.touched) || false;
+    return (this.ngControl?.invalid && this.touched) || false;
   }
 
   /** Control type */
@@ -208,6 +221,14 @@ export class EditorControlComponent
     // Set the editor language
     this.editorConfig.language = this.editorService.language;
     this.editorContent = this.value || '';
+
+    if (this.editor) {
+      if (this.readonly) {
+        this.editor.editor.mode.set('readonly');
+      } else {
+        this.editor.editor.mode.set('design');
+      }
+    }
   }
 
   ngAfterViewInit(): void {
@@ -240,7 +261,17 @@ export class EditorControlComponent
         }
       }
     });
+    this.editor.disabled = true;
     // this.editor.onInit.subscribe(() => {});
+    if (this.readonly) {
+      this.editor.editor.mode.set('readonly');
+    }
+  }
+
+  /** Emit and change editor loading */
+  public endLoading() {
+    this.editorLoaded.emit(true);
+    this.editorLoading = false;
   }
 
   /** onTouched function shell */

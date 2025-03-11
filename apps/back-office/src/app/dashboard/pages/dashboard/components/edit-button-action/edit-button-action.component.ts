@@ -22,7 +22,6 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { get } from 'lodash';
-import { RawEditorSettings } from 'tinymce';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import {
   EditorService,
@@ -32,6 +31,7 @@ import {
   ButtonActionT,
 } from '@oort-front/shared';
 import { Router } from '@angular/router';
+import { RawEditorOptions } from 'tinymce';
 
 /**
  * Create a form group for the button action
@@ -85,7 +85,7 @@ export class EditButtonActionComponent implements OnInit {
   public isNew: boolean;
 
   /** tinymce href editor */
-  public hrefEditor: RawEditorSettings = INLINE_EDITOR_CONFIG;
+  public hrefEditor: RawEditorOptions = INLINE_EDITOR_CONFIG;
 
   /**
    * Component for editing a dashboard button action
