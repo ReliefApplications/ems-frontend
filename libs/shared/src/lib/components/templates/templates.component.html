@@ -10,7 +10,7 @@
       icon="add"
       category="secondary"
       variant="primary"
-      (click)="addEmailTemplate()"
+      (click)="addTemplate()"
     >
       {{ 'components.templates.edit.new' | translate }}
     </ui-button>
@@ -59,7 +59,7 @@
               >
               </ui-button>
               <ui-menu #menu>
-                <button uiMenuItem (click)="editEmailTemplate(element)">
+                <button uiMenuItem (click)="editTemplate(element)">
                   <ui-icon icon="edit" variant="grey"></ui-icon>
                   {{ 'common.edit' | translate }}
                 </button>

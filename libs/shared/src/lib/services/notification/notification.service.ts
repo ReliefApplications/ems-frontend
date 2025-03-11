@@ -1,8 +1,8 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { SEE_NOTIFICATION, SEE_NOTIFICATIONS } from './graphql/mutations';
-import { GET_NOTIFICATIONS } from './graphql/queries';
+import { GET_LAYOUT, GET_NOTIFICATIONS } from './graphql/queries';
 import { NOTIFICATION_SUBSCRIPTION } from './graphql/subscriptions';
 import {
   Notification,
@@ -12,6 +12,12 @@ import {
   SeeNotificationsMutationResponse,
 } from '../../models/notification.model';
 import { updateQueryUniqueValues } from '../../utils/update-queries';
+import { SnackbarService } from '@oort-front/ui';
+import { TranslateService } from '@ngx-translate/core';
+import { ResourceQueryResponse } from '../../models/resource.model';
+import { clone, get } from 'lodash';
+import { Layout } from '../../models/layout.model';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Pagination: number of items per query */
 const ITEMS_PER_PAGE = 10;
@@ -57,8 +63,16 @@ export class NotificationService {
    * Shared notification service. Subscribes to Apollo to automatically fetch new notifications.
    *
    * @param apollo Apollo client
+   * @param snackBar shared snackbar service
+   * @param dialog Dialog service
+   * @param translate Angular translate service
    */
-  constructor(private apollo: Apollo) {}
+  constructor(
+    private apollo: Apollo,
+    private snackBar: SnackbarService,
+    private dialog: Dialog,
+    private translate: TranslateService
+  ) {}
 
   /**
    * If notifications are empty, fetch all notifications and listen to new one.
@@ -124,6 +138,68 @@ export class NotificationService {
   }
 
   /**
+   * Redirect to records modal after clicking on notification with active redirection.
+   *
+   * @param notification The notification that was clicked on
+   */
+  public async redirectToRecords(notification: Notification) {
+    const redirect = notification.redirect;
+
+    if (redirect && redirect.active && redirect.layout && redirect.resource) {
+      if (!redirect.recordIds?.length) {
+        // No record id detected
+        this.snackBar.openSnackBar(
+          this.translate.instant('components.notifications.noRecord'),
+          { error: true }
+        );
+      }
+
+      if (redirect.recordIds?.length === 1) {
+        // Open record modal to single record id
+        const { RecordModalComponent } = await import(
+          '../../components/record-modal/record-modal.component'
+        );
+        this.dialog.open(RecordModalComponent, {
+          data: {
+            recordId: redirect.recordIds[0],
+          },
+          autoFocus: false,
+        });
+      } else if (redirect.recordIds?.length) {
+        // Get layout selected on trigger
+        const layout = await this.getNotificationLayout(
+          redirect.layout,
+          redirect.resource
+        );
+
+        if (layout?.query) {
+          // Open ResourceGridModalComponent to multiple record ids
+          const { ResourceGridModalComponent } = await import(
+            '../../components/search-resource-grid-modal/search-resource-grid-modal.component'
+          );
+          this.dialog.open(ResourceGridModalComponent, {
+            data: {
+              gridSettings: clone(layout.query),
+            },
+          });
+        } else {
+          this.snackBar.openSnackBar(
+            this.translate.instant(
+              'components.widget.summaryCard.errors.invalidSource'
+            ),
+            { error: true }
+          );
+        }
+      }
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant('components.notifications.noRedirect'),
+        { error: true }
+      );
+    }
+  }
+
+  /**
    * Marks all notifications as seen and remove it from the array of notifications.
    */
   public markAllAsSeen(): void {
@@ -168,5 +244,33 @@ export class NotificationService {
     this.pageInfo.endCursor = data.notifications.pageInfo.endCursor;
     this.hasNextPage.next(data.notifications.pageInfo.hasNextPage);
     this.firstLoad = false;
+  }
+
+  /**
+   * Get notification with trigger redirection layout
+   *
+   * @param layout layout id
+   * @param resource resource id
+   * @returns Layout object
+   */
+  private async getNotificationLayout(
+    layout: string,
+    resource: string
+  ): Promise<Layout | undefined> {
+    const apolloRes = await firstValueFrom(
+      this.apollo.query<ResourceQueryResponse>({
+        query: GET_LAYOUT,
+        variables: {
+          id: layout,
+          resource,
+        },
+      })
+    );
+
+    if (get(apolloRes, 'data')) {
+      return apolloRes.data.resource.layouts?.edges[0]?.node;
+    } else {
+      return undefined;
+    }
   }
 }

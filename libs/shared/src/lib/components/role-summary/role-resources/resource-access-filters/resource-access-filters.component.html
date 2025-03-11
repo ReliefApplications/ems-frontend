@@ -21,7 +21,7 @@
           {{ 'components.queryBuilder.filter.title' | translate }}
         </th>
         <td uiCell *cdkCellDef="let element">
-          {{ getAccessString(element.access) }}
+          {{ filtersService.getAccessString(element.access) }}
         </td>
       </ng-container>
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">

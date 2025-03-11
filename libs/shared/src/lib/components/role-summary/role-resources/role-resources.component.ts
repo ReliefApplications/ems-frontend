@@ -241,7 +241,7 @@ export class RoleResourcesComponent
   }
 
   /**
-   * Filters applications and updates table.
+   * Filters resources and updates table.
    *
    * @param filter filter event.
    */
@@ -534,7 +534,7 @@ export class RoleResourcesComponent
    *
    * @param resource A resource
    * @param permission The permission name
-   * @returns the name of the icon to be displayed
+   * @returns the name of the variant to be displayed
    */
   private getVariant(resource: Resource, permission: Permission) {
     const permissionLevel = this.permissionLevel(resource, permission);
@@ -554,7 +554,7 @@ export class RoleResourcesComponent
    *
    * @param resource A resource
    * @param permission The permission name
-   * @returns the name of the icon to be displayed
+   * @returns the tooltip to be displayed
    */
   private getTooltip(resource: Resource, permission: Permission) {
     const permissionLevel = this.permissionLevel(resource, permission);

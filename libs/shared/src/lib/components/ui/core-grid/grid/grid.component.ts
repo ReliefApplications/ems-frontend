@@ -270,7 +270,10 @@ export class GridComponent
   /** @returns an array with the settings for buttons to be displayed on rows */
   get inlineActionButtons(): any[] {
     const buttons = get(this.widget, 'settings.floatingButtons', []).filter(
-      (b: any) => b.show && b.inline
+      (b: any) =>
+        b.show &&
+        b.inline &&
+        this.data.data.some((row) => this.shouldShowButton(b, row))
     );
 
     const chars = buttons.reduce(

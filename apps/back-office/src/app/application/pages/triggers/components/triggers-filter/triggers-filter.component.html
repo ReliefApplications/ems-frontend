@@ -1,0 +1,30 @@
+<div [formGroup]="form" class="flex flex-col gap-4">
+  <!-- Default filter -->
+  <shared-list-filter
+    [hasSiblingFilters]="true"
+    [loading]="loading"
+    (showFilters)="show = $event"
+  ></shared-list-filter>
+  <!-- Filters when on "show" mode -->
+  <div class="flex flex-wrap gap-2 items-end" *ngIf="show">
+    <div uiFormFieldDirective [defaultMargin]="false">
+      <label>{{ 'common.input.dateRange' | translate }}</label>
+      <div [uiDateWrapper]="calendar">
+        <input
+          [uiDatePicker]
+          formControlName="startDate"
+          [label]="'kendo.datepicker.startLabel' | translate"
+        />
+        <input
+          [uiDatePicker]
+          formControlName="endDate"
+          [label]="'kendo.datepicker.endLabel' | translate"
+        />
+        <ui-date-range #calendar> </ui-date-range>
+      </div>
+    </div>
+    <ui-button variant="danger" (click)="clear()">
+      {{ 'common.filter.clear' | translate }}
+    </ui-button>
+  </div>
+</div>

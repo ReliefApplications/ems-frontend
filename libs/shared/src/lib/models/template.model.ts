@@ -1,6 +1,7 @@
 /** Enum for types of template */
 export enum TemplateTypeEnum {
   EMAIL = 'email',
+  NOTIFICATION = 'notification',
 }
 
 /** Model for Template object */

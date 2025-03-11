@@ -14,10 +14,13 @@
       <div class="flex gap-2">
         <div uiFormFieldDirective class="flex-1">
           <label>{{ 'components.templates.type.title' | translate }}</label>
-          <ui-select-menu formControlName="type" [disabled]="true">
+          <ui-select-menu formControlName="type">
             <ui-select-option value="email">{{
               'components.templates.type.email' | translate
             }}</ui-select-option>
+            <ui-select-option value="notification">
+              {{ 'components.triggers.notification' | translate }}
+            </ui-select-option>
           </ui-select-menu>
         </div>
         <div uiFormFieldDirective class="flex-1">
@@ -25,6 +28,28 @@
           <input formControlName="name" type="text" />
         </div>
       </div>
+      <ng-container *ngIf="form.value.type === 'notification'">
+        <div uiFormFieldDirective>
+          <label>{{ 'common.title' | translate }}</label>
+          <shared-editor-control
+            formControlName="title"
+            [editorConfig]="subjectEditor"
+          ></shared-editor-control>
+          <ui-icon
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
+            uiSuffix
+            [uiTooltip]="'common.tooltip.editor.insert' | translate"
+          ></ui-icon>
+        </div>
+        <editor
+          [init]="descriptionEditor"
+          formControlName="description"
+        ></editor>
+      </ng-container>
+
+      <ng-container *ngIf="form.value.type === 'email'">
       <div uiFormFieldDirective>
         <label>{{ 'components.templates.edit.subject' | translate }}</label>
         <shared-editor-control
@@ -40,6 +65,7 @@
         ></ui-icon>
       </div>
       <editor [init]="bodyEditor" formControlName="body"></editor>
+    </ng-container>
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">

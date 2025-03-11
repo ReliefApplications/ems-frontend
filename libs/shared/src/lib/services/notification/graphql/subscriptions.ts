@@ -15,6 +15,9 @@ export const NOTIFICATION_SUBSCRIPTION = gql`
           id
         }
       }
+      user {
+        id
+      }
       seenBy {
         id
         name

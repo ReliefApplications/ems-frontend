@@ -173,11 +173,11 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
       ],
       actions: createGridActionsFormGroup(configuration),
       floatingButtons: fb.array(
-        configuration.floatingButtons && configuration.floatingButtons.length
+        configuration?.floatingButtons && configuration?.floatingButtons?.length
           ? configuration.floatingButtons.map((x: any) =>
               createButtonFormGroup(x)
             )
-          : [createButtonFormGroup(null)]
+          : []
       ) as FormArray<FormControl<typeof createButtonFormGroup>>,
       sortFields: new FormArray<any>([]),
       contextFilters: [

@@ -9,14 +9,17 @@ import {
   trigger,
 } from '@angular/animations';
 import { Resource } from '../../../../models/resource.model';
-import { Access, Permission } from '../permissions.types';
-import { createFilterGroup } from '../../../query-builder/query-builder-forms';
+import { Permission } from '../permissions.types';
 import {
   FormBuilder,
   UntypedFormArray,
   UntypedFormGroup,
 } from '@angular/forms';
 import { RestService } from '../../../../services/rest/rest.service';
+import {
+  Access,
+  FiltersService,
+} from '../../../../services/filters/filters.service';
 import { firstValueFrom } from 'rxjs';
 
 type AccessPermissions = {
@@ -51,29 +54,6 @@ const BASE_PERMISSIONS = {
   ],
 })
 export class RoleResourceFiltersComponent implements OnInit {
-  /** Map of operators to their translation */
-  private opMap: {
-    [key: string]: string;
-  } = {
-    eq: this.translate.instant('kendo.grid.filterEqOperator'),
-    neq: this.translate.instant('kendo.grid.filterNotEqOperator'),
-    contains: this.translate.instant('kendo.grid.filterContainsOperator'),
-    doesnotcontain: this.translate.instant(
-      'kendo.grid.filterNotContainsOperator'
-    ),
-    startswith: this.translate.instant('kendo.grid.filterStartsWithOperator'),
-    endswith: this.translate.instant('kendo.grid.filterEndsWithOperator'),
-    isnull: this.translate.instant('kendo.grid.filterIsNullOperator'),
-    isnotnull: this.translate.instant('kendo.grid.filterIsNotNullOperator'),
-    isempty: this.translate.instant('kendo.grid.filterIsEmptyOperator'),
-    isnotempty: this.translate.instant('kendo.grid.filterIsNotEmptyOperator'),
-    in: this.translate.instant('kendo.grid.filterIsInOperator'),
-    notin: this.translate.instant('kendo.grid.filterIsNotInOperator'),
-    gt: this.translate.instant('kendo.grid.filterGtOperator'),
-    gte: this.translate.instant('kendo.grid.filterGteOperator'),
-    lt: this.translate.instant('kendo.grid.filterLtOperator'),
-    lte: this.translate.instant('kendo.grid.filterLteOperator'),
-  };
   /** List of permission types */
   public permissionTypes = Object.values(Permission);
 
@@ -112,11 +92,13 @@ export class RoleResourceFiltersComponent implements OnInit {
    * @param translate Angular translate service
    * @param fb Angular form builder
    * @param restService  REST service
+   * @param filtersService  Filters service
    */
   constructor(
     public translate: TranslateService,
     private fb: FormBuilder,
-    private restService: RestService
+    private restService: RestService,
+    public filtersService: FiltersService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -149,6 +131,7 @@ export class RoleResourceFiltersComponent implements OnInit {
     this.filtersFormArray = this.fb.array(
       filters.map((x) => this.createAccessFilterFormGroup(x))
     );
+
     this.initialValue = this.filtersFormArray.value;
     this.filterFields = get(this.resource, 'metadata', [])
       .filter((x: any) => x.filterable !== false)
@@ -189,7 +172,9 @@ export class RoleResourceFiltersComponent implements OnInit {
    */
   private createAccessFilterFormGroup(filter?: AccessPermissions) {
     return this.fb.group({
-      access: createFilterGroup(get(filter, 'access', null)),
+      access: this.filtersService.createFilterGroup(
+        get(filter, 'access', null)
+      ),
       permissions: this.fb.group({
         canCreateRecords: get(filter, 'permissions.canCreateRecords', false),
         canDeleteRecords: get(filter, 'permissions.canDeleteRecords', false),
@@ -210,43 +195,6 @@ export class RoleResourceFiltersComponent implements OnInit {
     const formControl = formGroup.get(`permissions.${action}`);
     formControl?.setValue(!formControl.value);
     this.filters = this.setTableElements(this.filtersFormArray.value);
-  }
-
-  /**
-   * Gets the string representation of an access object
-   *
-   * @param access The access object
-   * @returns the string representation of an access object
-   */
-  getAccessString(access: Access) {
-    const rulesStr: string[] = [];
-    access.filters.forEach((rule) => {
-      // nested access
-      // eslint-disable-next-line no-prototype-builtins
-      if (rule.hasOwnProperty('logic')) {
-        const nestedAccess = rule as Access;
-        rulesStr.push(`(${this.getAccessString(nestedAccess)})`);
-      } else {
-        const r = rule as {
-          field: string;
-          operator: string;
-          value: string;
-        };
-        rulesStr.push(
-          `${r.field} ${this.opMap[
-            r.operator
-          ].toLowerCase()} ${this.getPrettyValue(r.field, r.value)}`.trim()
-        );
-      }
-    });
-    if (rulesStr.length)
-      return rulesStr.join(
-        ` ${(access.logic === 'and'
-          ? this.translate.instant('kendo.grid.filterAndLogic')
-          : this.translate.instant('kendo.grid.filterOrLogic')
-        ).toLowerCase()} `
-      );
-    else return this.translate.instant('components.role.summary.newFilter');
   }
 
   /**

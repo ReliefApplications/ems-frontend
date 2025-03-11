@@ -28,6 +28,7 @@ export const GET_RECORD_BY_ID = gql`
       data
       createdAt
       modifiedAt
+      userCanEdit
       createdBy {
         name
       }

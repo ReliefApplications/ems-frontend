@@ -482,6 +482,11 @@
         "insert": "Tapez '{' pour utiliser des expressions et des variables"
       }
     },
+    "trigger": {
+      "few": "Déclencheurs",
+      "none": "Aucun déclencheur",
+      "one": "Déclenchement"
+    },
     "true": "Vrai",
     "type": {
       "few": "Types",
@@ -782,6 +787,7 @@
         "recipients": {
           "distributionList": "Utiliser une liste de distribution",
           "email": "Utiliser une adresse email unique",
+          "emailField": "Grouper par e-mail détectés dans les enregistrements",
           "title": "Destinataires",
           "userField": "Grouper par utilisateurs détectés dans les enregistrements"
         },
@@ -1075,6 +1081,8 @@
       "value": "Valeur"
     },
     "notifications": {
+      "noRecord": "Aucun enregistrement à rediriger",
+      "noRedirect": "Impossible de rediriger. Informations manquantes.",
       "paginator": {
         "ariaLabel": "Sélectionnez la page de notifications"
       },
@@ -1428,7 +1436,42 @@
       },
       "type": {
         "email": "E-mail",
+        "notification": "Notification",
         "title": "Type de modèle"
+      }
+    },
+    "triggers": {
+      "addTrigger": "Ajouter un déclencheur",
+      "confirmDelete": "Confirmez-vous la suppression du déclencheur {{name}} ?",
+      "createTrigger": "Nouveau {{type}} déclencheur",
+      "cronBased": "Basé sur Cron",
+      "customNotificationRecipientsType": {
+        "channel": "Canal",
+        "distributionList": "Liste de distribution",
+        "email": "E-mail",
+        "emailField": "Champ e-mail",
+        "userField": "Champ de l'utilisateur"
+      },
+      "editTrigger": "Modifier {{type}} déclencheur",
+      "noTriggers": "Aucun déclencheur détecté",
+      "notification": "Notification",
+      "onRecordCreation": "Création d'un enregistrement",
+      "onRecordUpdate": "Mise à jour sur l'enregistrement",
+      "openFilter": "OUVRIR LE FILTRE",
+      "redirect": {
+        "active": "Ajouter une redirection lors d'un clic sur une notification",
+        "recordIds": "Redirection vers les détails du ou des enregistrements",
+        "type": "Type de redirection",
+        "url": "Redirection vers la page"
+      },
+      "selectNotificationType": "Veuillez d'abord sélectionner un type de notification",
+      "tooltip": {
+        "withCronBasedTrigger": "Ressource avec un déclencheur basé sur cron",
+        "withOnRecordCreationTrigger": "Ressource avec un déclencheur lors de la création d'un enregistrement",
+        "withOnRecordUpdateTrigger": "Ressource avec un déclencheur lors de la mise à jour de l'enregistrement",
+        "withoutCronBasedTrigger": "Ressource sans aucun déclencheur basé sur cron",
+        "withoutOnRecordCreationTrigger": "Ressource sans aucun déclencheur lors de la création d'un enregistrement",
+        "withoutOnRecordUpdateTrigger": "Ressource sans aucun déclencheur lors de la mise à jour de l'enregistrement"
       }
     },
     "user": {

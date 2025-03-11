@@ -1,3 +1,14 @@
+/**
+ * Enum of custom notification recipients type.
+ */
+export const customNotificationRecipientsType = {
+  email: 'email',
+  userField: 'userField',
+  emailField: 'emailField',
+  distributionList: 'distributionList',
+  channel: 'channel',
+};
+
 /** Interface of Custom Notification objects */
 export interface CustomNotification {
   id?: string;
@@ -15,6 +26,16 @@ export interface CustomNotification {
   createdAt?: Date;
   modifiedAt?: Date;
   status?: string;
+  onRecordCreation?: boolean;
+  onRecordUpdate?: boolean;
+  applicationTrigger?: boolean;
+  filter?: any;
+  redirect?: {
+    active: boolean;
+    type: 'url' | 'recordIds';
+    url?: string;
+    recordIds?: string[];
+  };
 }
 
 /** Model for add custom notification mutation response */

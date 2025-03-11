@@ -1,0 +1,339 @@
+<ui-dialog size="medium">
+  <!-- Modal header -->
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{
+        data.trigger
+          ? ('components.triggers.editTrigger'
+            | translate
+              : { type: 'components.triggers.' + data.triggerType | translate })
+          : ('components.triggers.createTrigger'
+            | translate
+              : { type: 'components.triggers.' + data.triggerType | translate })
+      }}
+    </h3>
+  </ng-container>
+
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="formGroup">
+      <!-- Name -->
+      <div uiFormFieldDirective class="flex-auto">
+        <label>{{ 'common.name' | translate }}</label>
+        <input
+          type="text"
+          [placeholder]="'common.placeholder.name' | translate"
+          formControlName="name"
+        />
+      </div>
+      <!-- Notification Type -->
+      <div uiFormFieldDirective [outline]="false" class="w-full">
+        <label>{{ 'models.customNotification.type' | translate }}</label>
+        <ui-select-menu
+          (selectedOption)="onNotificationTypeChange($any($event))"
+          formControlName="notificationType"
+        >
+          <ui-select-option value="email">
+            {{ 'common.email.one' | translate }}
+          </ui-select-option>
+          <ui-select-option value="notification">
+            {{ 'components.triggers.notification' | translate }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <!-- Alert message to select notification type first -->
+      <ui-alert *ngIf="!formGroup.value.notificationType" class="mb-4">
+        {{ 'components.triggers.selectNotificationType' | translate }}
+      </ui-alert>
+      <!-- Template -->
+      <div uiFormFieldDirective [outline]="false" class="w-full">
+        <label>{{ 'common.template.one' | translate }}</label>
+        <ui-select-menu formControlName="template">
+          <ui-select-option
+            *ngFor="let template of templates"
+            [value]="template.id"
+          >
+            {{ template.name }}
+          </ui-select-option>
+        </ui-select-menu>
+        <ui-icon
+          uiPrefix
+          icon="info_outline"
+          class="cursor-pointer"
+          variant="grey"
+          uiTooltip="HINT"
+        ></ui-icon>
+        <ui-button
+          uiSuffix
+          [isIcon]="true"
+          icon="add_circle_outline"
+          variant="primary"
+          (click)="$event.stopPropagation(); addTemplate()"
+          [uiTooltip]="'components.templates.edit.new' | translate"
+        >
+        </ui-button>
+      </div>
+      <!-- Cron Schedule -->
+      <ng-container *ngIf="data.triggerType === TriggersEnum.cronBased">
+        <shared-cron-expression-control
+          class="flex"
+          formControlName="schedule"
+        ></shared-cron-expression-control>
+      </ng-container>
+
+      <ng-container *ngIf="formGroup.value.notificationType === 'notification'">
+        <!-- Notification redirect options for if trigger type is notification -->
+        <div formGroupName="redirect" class="flex flex-col mt-2">
+          <!-- Active notification redirection -->
+          <ui-checkbox formControlName="active" (change)="onRedirectToggle()">
+            <ng-container ngProjectAs="label">{{
+              'components.triggers.redirect.active' | translate
+            }}</ng-container>
+          </ui-checkbox>
+          <ng-container *ngIf="formGroup.value.redirect.active">
+            <!-- Notification redirection type -->
+            <div uiFormFieldDirective [outline]="false" class="w-full">
+              <label>{{
+                'components.triggers.redirect.type' | translate
+              }}</label>
+              <ui-select-menu
+                (selectedOption)="onRedirectTypeChange($any($event))"
+                formControlName="type"
+              >
+                <ui-select-option value="url">
+                  {{ 'components.triggers.redirect.url' | translate }}
+                </ui-select-option>
+                <ui-select-option value="recordIds">
+                  {{ 'components.triggers.redirect.recordIds' | translate }}
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
+            <!--Ifn notification redirection type === url/page: select a page -->
+            <div
+              *ngIf="formGroup.value.redirect.type === 'url'"
+              uiFormFieldDirective
+              class="w-full"
+            >
+              <ng-container ngProjectAs="label">
+                <label>
+                  {{
+                    'components.widget.settings.grid.actions.goTo.target.label'
+                      | translate
+                  }}
+                </label>
+              </ng-container>
+              <ui-select-menu
+                formControlName="url"
+                [placeholder]="
+                  'components.widget.settings.grid.actions.goTo.target.placeholder'
+                    | translate
+                "
+              >
+                <ui-select-option
+                  *ngFor="let page of pages$ | async"
+                  [value]="page.urlParams"
+                >
+                  {{ page.name }}
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+
+      <ui-divider class="mb-2"></ui-divider>
+      <h3>{{ 'components.customNotifications.edit.dataset' | translate }}</h3>
+      <!-- Resource (disabled) -->
+      <div uiFormFieldDirective [outline]="false" class="w-full">
+        <label>{{ 'common.resource.one' | translate }}</label>
+        <input [value]="data.resource.name" [disabled]="true" />
+      </div>
+      <!-- Layout -->
+      <ng-container *ngIf="layout">
+        <!-- Layout is selected -->
+        <div uiFormFieldDirective [outline]="false" class="w-full">
+          <label>{{ 'common.layout.one' | translate }}</label>
+          <input [value]="layout.name" [disabled]="true" />
+          <ui-button
+            uiPrefix
+            variant="primary"
+            [isIcon]="true"
+            icon="edit"
+            (click)="editLayout()"
+            [uiTooltip]="'common.edit' | translate"
+          ></ui-button>
+          <ui-button
+            uiSuffix
+            variant="danger"
+            [isIcon]="true"
+            icon="close"
+            (click)="removeLayout()"
+            [uiTooltip]="'common.remove' | translate"
+          ></ui-button>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!formGroup.value.layout">
+        <!-- Layout is not selected yet -->
+        <ui-button
+          class="!w-auto text-center"
+          category="tertiary"
+          variant="primary"
+          (click)="addLayout()"
+          >{{
+            'components.widget.settings.grid.layouts.add.title' | translate
+          }}</ui-button
+        >
+      </ng-container>
+
+      <ui-divider class="my-2"></ui-divider>
+
+      <!-- Recipients -->
+      <h3>
+        {{ 'components.customNotifications.edit.recipients.title' | translate }}
+      </h3>
+      <!-- Alert message to select notification type first -->
+      <ui-alert *ngIf="!formGroup.value.notificationType" class="mb-4">
+        {{ 'components.triggers.selectNotificationType' | translate }}
+      </ui-alert>
+
+      <ng-container *ngIf="formGroup.value.notificationType">
+        <!-- Recipients options -->
+        <div
+          class="space-y-4"
+          formControlName="recipientsType"
+          uiRadioGroupDirective="recipientsTypeOptionsRadioGroup"
+        >
+          <ui-radio
+            *ngFor="let option of recipientsTypeOptions"
+            [value]="option"
+          >
+            <ng-container ngProjectAs="label">{{
+              'components.triggers.customNotificationRecipientsType.' + option
+                | translate
+            }}</ng-container>
+          </ui-radio>
+        </div>
+
+        <!-- Recipients == distribution list -->
+        <div
+          uiFormFieldDirective
+          [outline]="false"
+          class="w-full"
+          *ngIf="formGroup.value.recipientsType === 'distributionList'"
+        >
+          <label>{{ 'common.distributionList.one' | translate }}</label>
+          <ui-select-menu formControlName="recipients">
+            <ui-select-option
+              *ngFor="let list of distributionLists"
+              [value]="list.id"
+            >
+              {{ list.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+
+        <!-- Recipients == user field -->
+        <div
+          uiFormFieldDirective
+          [outline]="false"
+          class="w-full"
+          *ngIf="formGroup.value.recipientsType === 'userField'"
+        >
+          <label>
+            {{
+              'components.customNotifications.edit.recipients.userField'
+                | translate
+            }}
+          </label>
+          <ui-select-menu formControlName="recipients">
+            <ui-select-option
+              *ngFor="let field of userFields"
+              [value]="field.name"
+            >
+              {{ field.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+
+        <!-- Recipients == email field -->
+        <div
+          uiFormFieldDirective
+          [outline]="false"
+          class="w-full"
+          *ngIf="formGroup.value.recipientsType === 'emailField'"
+        >
+          <label>
+            {{
+              'components.customNotifications.edit.recipients.emailField'
+                | translate
+            }}
+          </label>
+          <ui-select-menu formControlName="recipients">
+            <ui-select-option
+              *ngFor="let field of emailFields"
+              [value]="field.name"
+            >
+              {{ field.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+
+        <!-- Recipients == single email -->
+        <div
+          uiFormFieldDirective
+          [uiErrorMessage]="
+            'components.customNotifications.errors.email' | translate
+          "
+          [uiErrorMessageIf]="
+            formGroup.get('recipients')?.errors &&
+            formGroup.get('recipients')?.touched
+          "
+          *ngIf="formGroup.value.recipientsType === 'email'"
+          class="w-full"
+        >
+          <label>{{ 'common.email.one' | translate }}</label>
+          <input
+            type="text"
+            [placeholder]="'common.placeholder.email' | translate"
+            formControlName="recipients"
+          />
+        </div>
+
+        <!-- Recipients == channel -->
+        <div
+          *ngIf="formGroup.value.recipientsType === 'channel'"
+          class="w-full"
+          uiFormFieldDirective
+        >
+          <label>{{ 'common.channel.one' | translate }}</label>
+          <ui-select-menu
+            formControlName="recipients"
+            [loading]="!channels"
+            [filterable]="true"
+          >
+            <ui-select-option
+              *ngFor="let channel of channels"
+              [value]="channel.id"
+            >
+              {{ channel.title }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+      </ng-container>
+    </form>
+  </ng-container>
+
+  <!-- Modal actions -->
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose] variant="default">
+      {{ 'common.close' | translate }}
+    </ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="formGroup.getRawValue()"
+      [disabled]="!formGroup.valid || formGroup.pristine"
+    >
+      {{ (data.trigger ? 'common.update' : 'common.create') | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>
