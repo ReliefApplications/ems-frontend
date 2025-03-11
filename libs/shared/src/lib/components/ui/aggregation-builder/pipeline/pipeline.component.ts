@@ -32,7 +32,8 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   @Input() public filterFields$!: Observable<any[]>;
   /** Array to hold the filter fields. */
   public filterFields: any[] = [];
-
+  /** Current expanded panel */
+  public accordionItemExpanded: number | null = null;
   /** Editor options */
   public editorOptions = {
     automaticLayout: true,

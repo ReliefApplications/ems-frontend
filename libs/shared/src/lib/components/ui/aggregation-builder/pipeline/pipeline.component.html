@@ -9,6 +9,7 @@
     class="bg-white block"
     cdkDrag
     [cdkDragDisabled]="!dragEnabled"
+    (openPanel)="accordionItemExpanded = index"
   >
     <ng-container ngProjectAs="title">
       <div class="flex items-center w-full">
@@ -108,6 +109,7 @@
         >
           <!-- JSON editor -->
           <ngx-monaco-editor
+            *ngIf="accordionItemExpanded === index"
             class="!h-full !w-full min-w-[200px]"
             [formControl]="$any(stageForm).controls.form.controls.raw"
             [options]="editorOptions"
