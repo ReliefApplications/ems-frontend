@@ -13,9 +13,9 @@ import {
 import { ApplicationService } from '../application/application.service';
 import { Application } from '../../models/application.model';
 import { ContentType, Page } from '../../models/page.model';
-import { RawEditorSettings } from 'tinymce';
 import { LocationStrategy } from '@angular/common';
 import { HttpHeaders } from '@angular/common/http';
+import { RawEditorOptions } from 'tinymce';
 
 /**
  * Data template service
@@ -92,7 +92,7 @@ export class DataTemplateService {
       aggregation?: any;
       fields?: any[];
       styles?: any[];
-    }
+    } = {}
   ) {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
@@ -209,7 +209,7 @@ export class DataTemplateService {
    *
    * @param editor current editor
    */
-  public setEditorLinkList(editor: RawEditorSettings): void {
+  public setEditorLinkList(editor: RawEditorOptions): void {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
     const pages = this.getPages(application);

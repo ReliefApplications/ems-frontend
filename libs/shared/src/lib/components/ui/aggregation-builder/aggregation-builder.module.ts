@@ -6,7 +6,12 @@ import { PipelineModule } from './pipeline/pipeline.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TagboxModule } from '../tagbox/tagbox.module';
 import { GridModule } from '../core-grid/grid/grid.module';
-import { SpinnerModule, CheckboxModule, ButtonModule } from '@oort-front/ui';
+import {
+  AlertModule,
+  SpinnerModule,
+  CheckboxModule,
+  ButtonModule,
+} from '@oort-front/ui';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 /**
@@ -27,6 +32,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
     CheckboxModule,
     ButtonModule,
     MonacoEditorModule,
+    AlertModule,
   ],
   exports: [AggregationBuilderComponent],
 })

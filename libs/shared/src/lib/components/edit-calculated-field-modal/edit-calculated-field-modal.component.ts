@@ -14,7 +14,8 @@ import {
   FormWrapperModule,
   IconModule,
 } from '@oort-front/ui';
-import { RawEditorSettings } from 'tinymce';
+import { RawEditorOptions } from 'tinymce';
+
 /**
  * Interface describing the structure of the data displayed in the dialog
  */
@@ -61,7 +62,7 @@ export class EditCalculatedFieldModalComponent implements OnInit {
   public resourceFields: any[] = [];
 
   /** tinymce editor */
-  public editor: RawEditorSettings = INLINE_EDITOR_CONFIG;
+  public editor: RawEditorOptions = INLINE_EDITOR_CONFIG;
 
   /**
    * Modal to edit Calculated field.

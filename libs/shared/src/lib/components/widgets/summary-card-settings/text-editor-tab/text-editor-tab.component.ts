@@ -3,6 +3,7 @@ import { UntypedFormGroup } from '@angular/forms';
 import { EditorService } from '../../../../services/editor/editor.service';
 import { WIDGET_EDITOR_CONFIG } from '../../../../const/tinymce.const';
 import { DataTemplateService } from '../../../../services/data-template/data-template.service';
+import { RawEditorOptions } from 'tinymce';
 
 /**
  * Edition of card template.
@@ -18,7 +19,7 @@ export class TextEditorTabComponent implements OnChanges {
   /** Available fields */
   @Input() fields: any[] = [];
   /** Tinymce editor configuration */
-  public editor = WIDGET_EDITOR_CONFIG;
+  public editor: RawEditorOptions = WIDGET_EDITOR_CONFIG;
 
   /**
    * Edition of card template.

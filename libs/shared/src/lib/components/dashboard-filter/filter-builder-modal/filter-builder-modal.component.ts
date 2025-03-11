@@ -21,10 +21,7 @@ import { FormHelpersService } from '../../../services/form-helper/form-helper.se
 import { Question } from '../../../survey/types';
 import 'survey-core/survey.i18n.min.js';
 import { CustomQuestionTypes } from '../../../survey/custom-question-types';
-import {
-  CustomJSONEditorComponent,
-  SurveyCustomJSONEditorPlugin,
-} from '../../form-builder/custom-json-editor/custom-json-editor.component';
+import { SurveyCustomJSONEditorPlugin } from '../../form-builder/custom-json-editor/custom-json-editor.component';
 import { updateModalChoicesAndValue } from '../../../survey/global-properties/reference-data';
 //import 'survey-creator-core/survey-creator-core.i18n.min.js';
 
@@ -216,7 +213,6 @@ const NAVIGATION_PROPERTIES = [
     AlertModule,
     SurveyCreatorModule,
     ButtonModule,
-    CustomJSONEditorComponent,
   ],
 })
 export class FilterBuilderModalComponent

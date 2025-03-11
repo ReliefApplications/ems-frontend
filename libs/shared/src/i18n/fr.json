@@ -595,6 +595,7 @@
         "unwind": "Déconstruit un tableau depuis les documents d'entrée et ressort un document pour chaque élément.",
         "user": "Remplace l'ID utilisateur par des informations sur l'utilisateur."
       },
+      "unavailableFields": "Ces champs ne sont pas disponibles car leurs types ne sont pas supportés",
       "userProperty": "Propriété utilisateur"
     },
     "apiConfiguration": {
@@ -1642,8 +1643,10 @@
           "mapDetailsTitle": "Cartographie des données",
           "mapDetailsTooltip": "Centré par defaut sur l'enregistrement sélectionné"
         },
+        "openEditor": "Afficher le html",
         "openSettings": "Ouvrir les paramètres",
         "tooltip": {
+          "displayEditor": "Afficher le html dans un modal",
           "displayMap": "Afficher la carte",
           "openPage": "Aller à la page",
           "saved": "Changements sauvegardés",

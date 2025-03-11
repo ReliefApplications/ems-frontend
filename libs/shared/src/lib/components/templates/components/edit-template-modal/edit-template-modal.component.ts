@@ -12,7 +12,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { EditorControlComponent } from '../../../controls/editor-control/editor-control.component';
-import { RawEditorSettings } from 'tinymce';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import {
   ButtonModule,
@@ -23,6 +22,7 @@ import {
 import { DialogModule, FormWrapperModule } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
+import { RawEditorSettings } from 'tinymce';
 
 /** Model for the data input */
 interface DialogData {
