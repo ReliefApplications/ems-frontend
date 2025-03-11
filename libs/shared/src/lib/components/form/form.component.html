@@ -22,21 +22,6 @@
 <!-- Floating div for form buttons actions -->
 <ng-container *ngIf="surveyActive && floatingActions">
   <ui-fixed-wrapper>
-    <div class="text-sm text-gray-400 flex absolute left-2 items-center">
-      <ng-container *ngIf="autosaving; else latestSave">
-        <ui-spinner size="small" class="mr-1" />
-        {{ 'common.notifications.autoSaving' | translate }}
-      </ng-container>
-      <ng-template #latestSave>
-        <span *ngIf="latestSaveDate"
-          >{{
-            'components.form.lastSavedAt'
-              | translate : { date: latestSaveDate | sharedDate : 'shortTime' }
-          }}
-        </span>
-      </ng-template>
-    </div>
-
     <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
   </ui-fixed-wrapper>
 </ng-container>
@@ -53,11 +38,25 @@
 </div>
 
 <!-- Form buttons actions without floating div-->
-<div *ngIf="surveyActive && !floatingActions">
+<div class="relative" *ngIf="surveyActive && !floatingActions">
   <ng-container *ngTemplateOutlet="actionButtons"></ng-container>
 </div>
 
 <ng-template #actionButtons>
+  <div class="text-sm text-gray-400 flex absolute top-0 bottom-0 left-2 items-center">
+    <ng-container *ngIf="autosaving; else latestSave">
+      <ui-spinner size="small" class="mr-1" />
+      {{ 'common.notifications.autoSaving' | translate }}
+    </ng-container>
+    <ng-template #latestSave>
+      <span *ngIf="latestSaveDate"
+        >{{
+          'components.form.lastSavedAt'
+            | translate : { date: latestSaveDate | sharedDate : 'shortTime' }
+        }}
+      </span>
+    </ng-template>
+  </div>
   <div
     class="flex justify-end gap-2 flex-wrap"
     [ngClass]="{ 'mt-2 mr-2': !floatingActions }"
