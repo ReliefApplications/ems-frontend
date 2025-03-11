@@ -348,7 +348,7 @@ export const INLINE_EDITOR_CONFIG: RawEditorOptions = {
 };
 
 /** Description Editor tinymce configuration. */
-export const DESCRIPTION_EDITOR_CONFIG: RawEditorSettings = {
+export const DESCRIPTION_EDITOR_CONFIG: RawEditorOptions = {
   menubar: false,
   toolbar: '',
   plugins: '',

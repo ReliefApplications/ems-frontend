@@ -22,7 +22,7 @@ import {
 import { DialogModule, FormWrapperModule } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
-import { RawEditorSettings } from 'tinymce';
+import { RawEditorOptions } from 'tinymce';
 
 /** Model for the data input */
 interface DialogData {
@@ -84,13 +84,13 @@ export class EditTemplateModalComponent
   });
 
   /** tinymce body editor */
-  public bodyEditor: RawEditorSettings = EMAIL_EDITOR_CONFIG;
+  public bodyEditor: RawEditorOptions = EMAIL_EDITOR_CONFIG;
 
   /** tinymce subject editor */
-  public subjectEditor: RawEditorSettings = INLINE_EDITOR_CONFIG;
+  public subjectEditor: RawEditorOptions = INLINE_EDITOR_CONFIG;
 
   /** tinymce description editor */
-  public descriptionEditor: RawEditorSettings = DESCRIPTION_EDITOR_CONFIG;
+  public descriptionEditor: RawEditorOptions = DESCRIPTION_EDITOR_CONFIG;
 
   /**
    * Component for editing a template
