@@ -515,6 +515,9 @@ export class FormComponent
     }
     if (this.survey.autoSave) {
       this.survey.onValueChanged.add(async (_, options) => {
+        if (options.question.omitField) {
+          return;
+        }
         this.formHelpersService.autoSaveRecord(
           options,
           this.onComplete.bind(this, true),
