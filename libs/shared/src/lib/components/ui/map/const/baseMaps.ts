@@ -13,11 +13,12 @@ export const BASEMAP_LAYERS: any = {
   Midcentury: 'ArcGIS:Midcentury',
   OSM: 'OSM:Standard',
   'OSM:Streets': 'OSM:Streets',
+  Unesco: 'Unesco',
 };
 
 /** List of basemap that can be used by the widget */
 export const BASEMAPS: (keyof typeof BASEMAP_LAYERS)[] = [
-  'Sreets',
+  'Streets',
   'Navigation',
   'Topographic',
   'Light Gray',
@@ -30,4 +31,5 @@ export const BASEMAPS: (keyof typeof BASEMAP_LAYERS)[] = [
   'Midcentury',
   'OSM',
   'OSM:Streets',
+  'Unesco',
 ];

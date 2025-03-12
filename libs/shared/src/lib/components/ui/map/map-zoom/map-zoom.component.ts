@@ -25,7 +25,10 @@ export class MapZoomComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.mapEvent.subscribe((event) => {
-      if (event.type === MapEventType.ZOOM_END || event.content.bounds)
+      if (
+        event.type === MapEventType.ZOOM_END ||
+        event.type === MapEventType.FIRST_LOAD
+      )
         this.currentZoom = event.content.zoom;
     });
   }
