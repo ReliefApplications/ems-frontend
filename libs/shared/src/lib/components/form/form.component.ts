@@ -95,6 +95,8 @@ export class FormComponent
   public lastDraftRecord?: string;
   /** saving operations */
   public saving = false;
+  /** Text shown on the save button */
+  public saveButtonText = this.translate.instant('common.save');
   /** autosaving operations */
   public autosaving = false;
   /** last date saved */
@@ -496,6 +498,11 @@ export class FormComponent
       this.record,
       this.form
     );
+
+    const customSaveText = this.survey.getPropertyValue('saveButtonText');
+    if (customSaveText) {
+      this.saveButtonText = customSaveText;
+    }
 
     this.survey.onAfterRenderSurvey.add(() => {
       this.setupStateMappingListeners();
