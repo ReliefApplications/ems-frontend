@@ -5,13 +5,13 @@ import { EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
 import set from 'lodash/set';
 import { flattenDeep, get, isArray, isNil, isObject, uniq } from 'lodash';
 import * as L from 'leaflet';
-import REGIONS from './regions';
+import { FeatureCollection } from 'geojson';
 
 /** Available admin identifiers */
-type AdminIdentifier = 'admin0.iso2code' | 'admin0.iso3code' | 'admin0.id';
+type AdminIdentifier = 'admin0.iso2' | 'admin0.iso3' | 'admin0.id';
 
 /** Admin 0 available identifiers */
-type Admin0Identifier = 'iso2code' | 'iso3code' | 'id';
+type Admin0Identifier = 'iso2' | 'iso3' | 'id';
 
 /**
  * Shared map polygons service.
@@ -22,7 +22,36 @@ type Admin0Identifier = 'iso2code' | 'iso3code' | 'id';
 })
 export class MapPolygonsService {
   /** Admin0 polygons */
-  public admin0s: any[] = [];
+  public admin0s: {
+    id: string;
+    iso2: string;
+    iso3: string;
+    title_en: string;
+    title_fr: string;
+    title_es: string;
+    title_ar: string;
+    title_ru: string;
+    title_zh: string;
+    electoral_group: string;
+    regional_group: string;
+    membership: string;
+    date_first_admission: Date;
+    date_departure: Date;
+    capital_en: string;
+    capital_fr: string;
+    capital_es: string;
+    capital_ar: string;
+    capital_ru: string;
+    capital_zh: string;
+    createdAt: Date;
+    updatedAt: Date;
+    ldc: boolean;
+    lldc: boolean;
+    sids: boolean;
+    coordinates: FeatureCollection;
+    geometry: FeatureCollection;
+    uuid: string;
+  }[] = [];
   /** Are admin0 polygons ready */
   private admin0sReady = new BehaviorSubject<boolean>(false);
   /** Admin0 polygons status as observable */
@@ -63,11 +92,11 @@ export class MapPolygonsService {
    */
   public assignAdmin0Polygons(
     data: any,
-    identifier: Admin0Identifier = 'iso3code'
+    identifier: Admin0Identifier = 'iso3'
   ) {
     const polygons = {};
     for (const admin0 of this.admin0s) {
-      set(polygons, admin0[identifier].toLowerCase(), admin0.polygons);
+      set(polygons, admin0[identifier].toLowerCase(), admin0.geometry);
     }
     const features: any[] = [];
     for (const feature of data.features) {
@@ -100,7 +129,7 @@ export class MapPolygonsService {
    */
   public assignPolygons(
     data: any,
-    identifier: AdminIdentifier = 'admin0.iso3code'
+    identifier: AdminIdentifier = 'admin0.iso3'
   ) {
     if (identifier.startsWith('admin0.')) {
       return this.assignAdmin0Polygons(
@@ -124,7 +153,7 @@ export class MapPolygonsService {
   ): void {
     this.admin0sReady$.pipe(first((v) => v)).subscribe(() => {
       // let layer: L.GeoJSON | undefined = undefined;
-      const geoJSON: any = {
+      const geoJSON: FeatureCollection | FeatureCollection[] = {
         type: 'FeatureCollection',
         features: [],
       };
@@ -134,63 +163,57 @@ export class MapPolygonsService {
             if (isArray(x.value)) {
               const admin0s = this.admin0s.filter(
                 (data) =>
-                  x.value.includes(data.iso2code) ||
-                  x.value.includes(data.iso3code) ||
-                  x.value.includes(data.name)
+                  x.value.includes(data.iso2) ||
+                  x.value.includes(data.iso3) ||
+                  x.value.includes(data.title_en)
               );
               if (admin0s.length > 0) {
-                geoJSON.features.push({
-                  type: 'FeatureCollection',
-                  features: admin0s.map((x: any) => ({
-                    type: 'Feature',
-                    geometry: x.polygons,
-                    properties: {},
-                  })),
-                });
+                geoJSON.features = geoJSON.features.concat(
+                  admin0s.flatMap((x) => x.geometry.features)
+                );
               }
             } else {
               const admin0 = this.admin0s.find(
                 (data) =>
-                  data.iso2code === x.value ||
-                  data.iso3code === x.value ||
-                  data.name === x.value
+                  data.iso2 === x.value ||
+                  data.iso3 === x.value ||
+                  data.title_en === x.value
               );
               if (admin0) {
-                geoJSON.features.push({
-                  type: 'Feature',
-                  geometry: admin0.polygons,
-                  properties: {},
-                });
+                geoJSON.features = geoJSON.features.concat(
+                  admin0.geometry.features
+                );
               }
             }
             break;
           }
           case 'region': {
-            if (isArray(x.value)) {
-              const regions = REGIONS.filter((data) =>
-                x.value.includes(data.name)
-              );
-              if (regions.length > 0) {
-                geoJSON.features.push({
-                  type: 'FeatureCollection',
-                  features: regions.map((x) => ({
-                    type: 'Feature',
-                    geometry: x.geometry,
-                    properties: {},
-                  })),
-                });
-              }
-            } else {
-              const region = REGIONS.find((data) => data.name === x.value);
-              if (region) {
-                geoJSON.features.push({
-                  type: 'Feature',
-                  geometry: region.geometry,
-                  properties: {},
-                });
-              }
-            }
-            break;
+            // if (isArray(x.value)) {
+            //   const regions = REGIONS.filter((data) =>
+            //     x.value.includes(data.name)
+            //   );
+            //   if (regions.length > 0) {
+            //     geoJSON.features.push({
+            //       type: 'FeatureCollection',
+            //       features: regions.map((x) => ({
+            //         type: 'Feature',
+            //         geometry: x.geometry,
+            //         properties: {},
+            //       })),
+            //     });
+            //     regions.flatMap((x) => x.geometry.features);
+            //   }
+            // } else {
+            //   const region = REGIONS.find((data) => data.name === x.value);
+            //   if (region) {
+            //     geoJSON.features.push({
+            //       type: 'Feature',
+            //       geometry: region.geometry as Polygon,
+            //       properties: {},
+            //     });
+            //   }
+            // }
+            // break;
           }
         }
       });

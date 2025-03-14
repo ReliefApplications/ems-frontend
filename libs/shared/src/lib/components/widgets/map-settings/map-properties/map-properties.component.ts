@@ -1,9 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormArray, UntypedFormGroup } from '@angular/forms';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { MapConstructorSettings } from '../../../ui/map/interfaces/map.interface';
 import { BASEMAPS } from '../../../ui/map/const/baseMaps';
 import { DomPortal } from '@angular/cdk/portal';
+import { createGeographicExtent } from '../map-forms';
 
 /**
  * Map Properties of Map widget.
@@ -23,7 +24,12 @@ export class MapPropertiesComponent extends UnsubscribeComponent {
   /** Available base maps */
   public baseMaps = BASEMAPS;
   /** Available geographic extent fields */
-  public geographicExtents = ['admin0'];
+  public extents = ['admin0', 'region'];
+
+  /** @returns geographic extents as form array */
+  get geographicExtents() {
+    return this.form.get('geographicExtents') as FormArray;
+  }
 
   /** @returns the form group for the map controls */
   get controlsFormGroup() {
@@ -60,5 +66,21 @@ export class MapPropertiesComponent extends UnsubscribeComponent {
       this.form.get(formField)?.setValue(null);
     }
     event.stopPropagation();
+  }
+
+  /**
+   * Add a new geographic extent mapping
+   */
+  onAddExtent(): void {
+    this.geographicExtents.push(createGeographicExtent());
+  }
+
+  /**
+   * Remove geographic extent mapping at index
+   *
+   * @param index index of element to remove
+   */
+  onDeleteExtent(index: number): void {
+    this.geographicExtents.removeAt(index);
   }
 }
