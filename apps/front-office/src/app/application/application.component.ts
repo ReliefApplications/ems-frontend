@@ -1,4 +1,5 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { subject } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,7 +12,6 @@ import {
   UnsubscribeComponent,
   User,
 } from '@oort-front/shared';
-import { SnackbarService } from '@oort-front/ui';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 
@@ -56,19 +56,19 @@ export class ApplicationComponent
    * @param authService Shared authentication service
    * @param applicationService Shared application service
    * @param route Angular current route
-   * @param snackBar Shared snackbar service
    * @param router Angular router
    * @param translate Angular translate service
    * @param ability user ability
+   * @param htmlTitle HTML title service
    */
   constructor(
     private authService: AuthService,
     private applicationService: ApplicationService,
     public route: ActivatedRoute,
-    private snackBar: SnackbarService,
     private router: Router,
     private translate: TranslateService,
-    private ability: AppAbility
+    private ability: AppAbility,
+    private htmlTitle: Title
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
@@ -111,6 +111,7 @@ export class ApplicationComponent
             this.applicationService.getApplicationPath(application) +
             '/profile';
           this.title = application.name || '';
+          this.htmlTitle.setTitle(this.title);
           this.adminNavItems = [];
           this.setAdminNavItems(application);
           this.setNavGroups(application);
@@ -145,6 +146,7 @@ export class ApplicationComponent
         } else {
           this.profileRoute = '/profile';
           this.title = '';
+          this.htmlTitle.setTitle('Front-office');
           this.navGroups = [];
           if (this.applicationService.hasErrors) {
             this.router.navigate(['/auth/error']);
