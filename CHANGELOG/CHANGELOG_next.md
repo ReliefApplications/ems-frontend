@@ -1,3 +1,10 @@
+# [2.18.0-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.18.0-rc.1...v2.18.0-rc.2) (2025-03-17)
+
+
+### Bug Fixes
+
+* date, datetime & time fields not passed as correct dates for inline edition ([#2776](https://github.com/ReliefApplications/ems-frontend/issues/2776)) ([43b8ed2](https://github.com/ReliefApplications/ems-frontend/commit/43b8ed26c4eac4cf5380ce515cf8a846cb1015c8))
+
 # [2.18.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.2-rc.2...v2.18.0-rc.1) (2025-03-04)
 
 
