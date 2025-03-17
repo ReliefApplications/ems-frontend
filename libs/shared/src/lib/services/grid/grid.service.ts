@@ -500,8 +500,33 @@ export class GridService {
           field.type !== 'JSON' ||
           MULTISELECT_TYPES.includes(field.meta.type)
         ) {
-          formGroup[field.name] = [data[field.name]];
+          // Simple fields
+          switch (field.meta.type) {
+            case 'date':
+            case 'datetime':
+            case 'datetime-local': {
+              formGroup[field.name] = [
+                data[field.name] && new Date(data[field.name]),
+              ];
+              break;
+            }
+            case 'time': {
+              const date = data[field.name] && new Date(data[field.name]);
+              formGroup[field.name] = [
+                date &&
+                  new Date(
+                    date.getTime() + date.getTimezoneOffset() * 60 * 1000
+                  ),
+              ];
+              break;
+            }
+            default: {
+              formGroup[field.name] = [data[field.name]];
+              break;
+            }
+          }
         } else {
+          // Complex fields
           if (field.meta.type === 'multipletext') {
             const fieldGroup: any = {};
             for (const item of field.meta.items) {
