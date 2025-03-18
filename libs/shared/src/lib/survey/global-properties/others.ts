@@ -262,6 +262,15 @@ export const init = (environment: any): void => {
     },
   });
 
+  // Add ability to set class for panels
+  serializer.addProperty('panel', {
+    name: 'elementClasses',
+    displayName: 'HTML Class',
+    type: 'string',
+    category: 'layout',
+    isLocalizable: true,
+  });
+
   // Add property to the dynamic panel to start on the last element
   serializer.addProperty('paneldynamic', {
     name: 'startOnLastElement:boolean',

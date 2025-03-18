@@ -6,7 +6,6 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
-import { UntypedFormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SpinnerModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -50,7 +49,7 @@ export class ConfigDisplayGridFieldsModalComponent
   implements OnInit
 {
   /** Form for the query */
-  public form: UntypedFormGroup = new UntypedFormGroup({});
+  public form = createQueryForm(undefined);
   /** Loading state */
   public loading = true;
 

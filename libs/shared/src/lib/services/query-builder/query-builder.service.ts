@@ -387,7 +387,7 @@ export class QueryBuilderService {
       first: $first
       skip: $skip
       sort: $sort
-      filter: $filter    
+      filter: $filter
       display: $display
       contextFilters: $contextFilters
       styles: $styles
@@ -495,11 +495,13 @@ export class QueryBuilderService {
       .replace(/_|-/g, '')
       .replace(/\s+(?=\d)/g, '_')
       .replace(/\s/g, '')
+      .replace(/[{}[\]]/g, '')
       .toLowerCase();
+
     return (
       this.availableQueries
         .getValue()
-        .find((x) => x.type.name.toLowerCase() === nameTrimmed + 'connection')
+        .find((x) => x.type.name?.toLowerCase() === nameTrimmed + 'connection')
         ?.name || ''
     );
   }
