@@ -202,6 +202,11 @@ const addCustomFunctions = (
     if (!params[0]) return '';
     return JSON.parse(params[0]);
   });
+
+  // Now
+  FunctionFactory.Instance.register('now', () => {
+    return new Date().toISOString();
+  });
 };
 
 export default addCustomFunctions;

@@ -1,3 +1,29 @@
+# [2.19.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.18.0...v2.19.0-rc.1) (2025-03-20)
+
+
+### Bug Fixes
+
+* date, datetime & time fields not passed as correct dates for inline edition ([#2776](https://github.com/ReliefApplications/ems-frontend/issues/2776)) ([43b8ed2](https://github.com/ReliefApplications/ems-frontend/commit/43b8ed26c4eac4cf5380ce515cf8a846cb1015c8))
+
+
+### Features
+
+* add now function in form builder ([#2777](https://github.com/ReliefApplications/ems-frontend/issues/2777)) ([ada93c7](https://github.com/ReliefApplications/ems-frontend/commit/ada93c7ee98f9d572ae437129d0f9a25e768616d)), closes [AB#111579](https://github.com/AB/issues/111579)
+
+# [2.18.0-rc.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.18.0-rc.2...v2.18.0-rc.3) (2025-03-18)
+
+
+### Features
+
+* add now function in form builder ([#2777](https://github.com/ReliefApplications/ems-frontend/issues/2777)) ([ada93c7](https://github.com/ReliefApplications/ems-frontend/commit/ada93c7ee98f9d572ae437129d0f9a25e768616d)), closes [AB#111579](https://github.com/AB/issues/111579)
+
+# [2.18.0-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.18.0-rc.1...v2.18.0-rc.2) (2025-03-17)
+
+
+### Bug Fixes
+
+* date, datetime & time fields not passed as correct dates for inline edition ([#2776](https://github.com/ReliefApplications/ems-frontend/issues/2776)) ([43b8ed2](https://github.com/ReliefApplications/ems-frontend/commit/43b8ed26c4eac4cf5380ce515cf8a846cb1015c8))
+
 # [2.18.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.2-rc.2...v2.18.0-rc.1) (2025-03-04)
 
 
