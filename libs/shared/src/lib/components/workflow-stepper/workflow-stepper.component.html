@@ -4,6 +4,8 @@
   cdkDropListOrientation="horizontal"
   cdkDropList
   (cdkDropListDropped)="onReorder($event)"
+  (willDetach)="onWillDetach()"
+  (didAttach)="onDidAttach()"
 >
   <ng-container *ngIf="!loading; else loadingTemplate">
     <ui-tab *ngFor="let step of steps; let i = index" cdkDrag>

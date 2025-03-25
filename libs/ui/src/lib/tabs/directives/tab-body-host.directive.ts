@@ -8,6 +8,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  Output,
   ViewContainerRef,
 } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
@@ -32,6 +33,10 @@ export class TabBodyHostDirective
    * Current opened tab setter
    */
   @Input() openedTab!: EventEmitter<TabComponent>;
+  /** Will detach portal */
+  @Output() willDetach = new EventEmitter<void>();
+  /** Did portal attach */
+  @Output() didAttach = new EventEmitter<void>();
 
   /**
    * UI Tab body host directive.
@@ -56,10 +61,12 @@ export class TabBodyHostDirective
       .pipe(takeUntil(this.destroy$))
       .subscribe((tab: TabComponent) => {
         if (tab !== this._openedTab && this.hasAttached()) {
+          this.willDetach.emit();
           this.detach();
         }
         if (!this.hasAttached()) {
           this.attach(tab.content);
+          this.didAttach.emit();
         }
       });
   }

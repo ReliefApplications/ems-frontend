@@ -49,6 +49,11 @@ export class TabsComponent
   selectedIndex = 0;
   /** Current tabs */
   tabs: any[] = [];
+  /** Parent scroll position, restored on each tab change */
+  public parentScroll = {
+    scrollTop: 0,
+    scrollLeft: 0,
+  };
 
   /**
    * Tabs widget component.
@@ -101,6 +106,27 @@ export class TabsComponent
           });
         }
       });
+    }
+  }
+
+  /**
+   * Store previous scroll positions of parent app page container
+   */
+  onWillDetach() {
+    const pageContainer = document.getElementById('appPageContainer');
+    this.parentScroll.scrollLeft = pageContainer?.scrollLeft || 0;
+    this.parentScroll.scrollTop = pageContainer?.scrollTop || 0;
+  }
+
+  /**
+   * Restore previous scroll positions of parent app page container
+   * Prevent app page container to incorrectly scroll when loading a new tab in tabs widget.
+   */
+  onDidAttach() {
+    const pageContainer = document.getElementById('appPageContainer');
+    if (pageContainer) {
+      pageContainer.scrollTop = this.parentScroll.scrollTop;
+      pageContainer.scrollLeft = this.parentScroll.scrollLeft;
     }
   }
 }

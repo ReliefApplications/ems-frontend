@@ -22,6 +22,11 @@
     class="flex-1"
     [@tabContentDisplay]="triggerAnimation ? 'initial' : 'loadContent'"
   >
-    <ng-template uiTabBodyHost [openedTab]="openedTab"></ng-template>
+    <ng-template
+      uiTabBodyHost
+      [openedTab]="openedTab"
+      (willDetach)="willDetach.emit()"
+      (didAttach)="didAttach.emit()"
+    ></ng-template>
   </div>
 </div>

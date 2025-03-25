@@ -1,3 +1,28 @@
+# [2.19.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.18.0...v2.19.0) (2025-03-21)
+
+
+### Bug Fixes
+
+* date, datetime & time fields not passed as correct dates for inline edition ([#2776](https://github.com/ReliefApplications/ems-frontend/issues/2776)) ([43b8ed2](https://github.com/ReliefApplications/ems-frontend/commit/43b8ed26c4eac4cf5380ce515cf8a846cb1015c8))
+
+
+### Features
+
+* add now function in form builder ([#2777](https://github.com/ReliefApplications/ems-frontend/issues/2777)) ([ada93c7](https://github.com/ReliefApplications/ems-frontend/commit/ada93c7ee98f9d572ae437129d0f9a25e768616d)), closes [AB#111579](https://github.com/AB/issues/111579)
+
+# [2.18.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.1...v2.18.0) (2025-03-05)
+
+
+### Bug Fixes
+
+* nested fields from ref data can now be used as display field in contextual dashboards ([#2770](https://github.com/ReliefApplications/ems-frontend/issues/2770)) ([20557b3](https://github.com/ReliefApplications/ems-frontend/commit/20557b3e9984cb347b39e2d4acde88060aea582e)), closes [AB#110861](https://github.com/AB/issues/110861)
+* prevent tab widget to do incorrect scrolling when switching tab ([#2772](https://github.com/ReliefApplications/ems-frontend/issues/2772)) ([41b7ec9](https://github.com/ReliefApplications/ems-frontend/commit/41b7ec983a66a25908ecd5a371ba1a2eb06ead31)), closes [AB#110913](https://github.com/AB/issues/110913)
+
+
+### Features
+
+* distribution list CRUD  ([#2768](https://github.com/ReliefApplications/ems-frontend/issues/2768)) ([1fe22e6](https://github.com/ReliefApplications/ems-frontend/commit/1fe22e683879a72f33b9fbffdeab57d6a4b85017))
+
 ## [2.17.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.0...v2.17.1) (2025-02-20)
 
 

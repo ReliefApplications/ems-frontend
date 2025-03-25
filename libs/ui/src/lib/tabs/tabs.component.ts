@@ -73,6 +73,10 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   @Output() selectedIndexChange = new EventEmitter<number>();
   /** Event emitter for when a tab is opened. */
   @Output() openedTab = new EventEmitter<TabComponent>();
+  /** Will detach portal */
+  @Output() willDetach = new EventEmitter<void>();
+  /** Did portal attach */
+  @Output() didAttach = new EventEmitter<void>();
   /** Reference to the TabBodyHostDirective. */
   @ViewChild(TabBodyHostDirective)
   tabBodyHost!: TabBodyHostDirective;

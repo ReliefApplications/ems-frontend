@@ -1,3 +1,43 @@
+# [2.19.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.18.0...v2.19.0-rc.1) (2025-03-20)
+
+
+### Bug Fixes
+
+* date, datetime & time fields not passed as correct dates for inline edition ([#2776](https://github.com/ReliefApplications/ems-frontend/issues/2776)) ([43b8ed2](https://github.com/ReliefApplications/ems-frontend/commit/43b8ed26c4eac4cf5380ce515cf8a846cb1015c8))
+
+
+### Features
+
+* add now function in form builder ([#2777](https://github.com/ReliefApplications/ems-frontend/issues/2777)) ([ada93c7](https://github.com/ReliefApplications/ems-frontend/commit/ada93c7ee98f9d572ae437129d0f9a25e768616d)), closes [AB#111579](https://github.com/AB/issues/111579)
+
+# [2.18.0-rc.3](https://github.com/ReliefApplications/ems-frontend/compare/v2.18.0-rc.2...v2.18.0-rc.3) (2025-03-18)
+
+
+### Features
+
+* add now function in form builder ([#2777](https://github.com/ReliefApplications/ems-frontend/issues/2777)) ([ada93c7](https://github.com/ReliefApplications/ems-frontend/commit/ada93c7ee98f9d572ae437129d0f9a25e768616d)), closes [AB#111579](https://github.com/AB/issues/111579)
+
+# [2.18.0-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.18.0-rc.1...v2.18.0-rc.2) (2025-03-17)
+
+
+### Bug Fixes
+
+* date, datetime & time fields not passed as correct dates for inline edition ([#2776](https://github.com/ReliefApplications/ems-frontend/issues/2776)) ([43b8ed2](https://github.com/ReliefApplications/ems-frontend/commit/43b8ed26c4eac4cf5380ce515cf8a846cb1015c8))
+
+# [2.18.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.2-rc.2...v2.18.0-rc.1) (2025-03-04)
+
+
+### Features
+
+* distribution list CRUD  ([#2768](https://github.com/ReliefApplications/ems-frontend/issues/2768)) ([1fe22e6](https://github.com/ReliefApplications/ems-frontend/commit/1fe22e683879a72f33b9fbffdeab57d6a4b85017))
+
+## [2.17.2-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.2-rc.1...v2.17.2-rc.2) (2025-03-03)
+
+
+### Bug Fixes
+
+* prevent tab widget to do incorrect scrolling when switching tab ([#2772](https://github.com/ReliefApplications/ems-frontend/issues/2772)) ([41b7ec9](https://github.com/ReliefApplications/ems-frontend/commit/41b7ec983a66a25908ecd5a371ba1a2eb06ead31)), closes [AB#110913](https://github.com/AB/issues/110913)
+
 ## [2.17.2-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.17.1...v2.17.2-rc.1) (2025-02-27)
 
 
