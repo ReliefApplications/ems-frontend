@@ -24,11 +24,11 @@ const ADMIN_FIELDS = [
     fields: [
       {
         name: 'Alpha-3 code',
-        value: 'admin0.iso3code',
+        value: 'admin0.iso3',
       },
       {
         name: 'Alpha-2 code',
-        value: 'admin0.iso2code',
+        value: 'admin0.iso2',
       },
       {
         name: 'ID',

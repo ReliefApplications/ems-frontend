@@ -497,6 +497,7 @@ export class MapComponent
 
     this.setupMapLayers({ layers, controls, arcGisWebMap, basemap });
     this.setMapControls(controls, initMap);
+    this.map.attributionControl.setPrefix('');
 
     // To zoom on getGeographicExtentValue, if necessary
     // Check if has initial getGeographicExtentValue to zoom on country

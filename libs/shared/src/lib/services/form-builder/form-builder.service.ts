@@ -438,6 +438,12 @@ export class FormBuilderService {
         return;
       }
     });
+    survey.onAfterRenderPanel.add((_, options) => {
+      const htmlClass = options.panel.getPropertyValue('elementClasses');
+      if (htmlClass) {
+        options.htmlElement.classList.add(...htmlClass.split(' '));
+      }
+    });
 
     // set the lang of the survey
     const surveyLang = localStorage.getItem('surveyLang');
