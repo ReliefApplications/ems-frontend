@@ -37,6 +37,7 @@ import { DOCUMENT } from '@angular/common';
 import { MapPolygonsService } from './map-polygons.service';
 import { FeatureCollection } from 'geojson';
 import * as L from 'leaflet';
+import Color from 'color';
 
 /**
  * Shared map layer service
@@ -379,12 +380,13 @@ export class MapLayersService {
       Buffer: '#96d07b',
       Transition: '#7a8eb5',
     };
+    const fillOpacity = 0.5;
 
     const layer = L.geoJSON(shapefile, {
       style: (feature) => {
         return {
           color: colors[feature?.properties.Zonation],
-          fillOpacity: 0.5,
+          fillOpacity,
         };
       },
     }).addTo(map);
@@ -399,7 +401,15 @@ export class MapLayersService {
 
     shapefile.features.forEach((feature) => {
       const zonation = feature.properties?.Zonation;
-      labels += `<div class="flex"><i class="w-6 h-4 border mr-1" style="background:${colors[zonation]}"></i>${zonation}</div>`;
+      const color = Color(colors[zonation]).alpha(fillOpacity).rgb().string();
+      labels += `<div class="flex">
+                  <i
+                    class="w-6 h-4 border mr-1"
+                    style="background:${color}; border-color:${colors[zonation]};"
+                  ></i
+                  >${zonation}
+                </div>
+                `;
     });
 
     div.innerHTML = labels;

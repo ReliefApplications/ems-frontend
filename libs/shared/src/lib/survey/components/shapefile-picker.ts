@@ -8,7 +8,12 @@ import {
 import { Question } from '../types';
 import { DomService } from '../../services/dom/dom.service';
 import { ComponentRef } from '@angular/core';
-import { ShapeFileMapComponent as ShapeFileMapComponent } from '../../components/shapefile-map/shapefile-map.component';
+import {
+  ERROR_MESSAGES,
+  ErrorType,
+  ShapeFileMapComponent as ShapeFileMapComponent,
+} from '../../components/shapefile-map/shapefile-map.component';
+import { FeatureCollection, Polygon } from 'geojson';
 
 /**
  * Inits the geospatial component.
@@ -45,16 +50,34 @@ export const init = (
       if (file) {
         file.style.padding = 'unset';
       }
+
+      const setUpMap = (value: FeatureCollection<Polygon>) => {
+        const map: ComponentRef<ShapeFileMapComponent> =
+          domService.appendComponentToBody(ShapeFileMapComponent, file);
+        const instance = map.instance;
+        instance.shapefile = value;
+        instance.errors.subscribe((errors: ErrorType) => {
+          if (instance.hasErrors) {
+            Object.keys(errors).forEach((error) => {
+              const key = error as keyof ErrorType;
+              if (errors[key]) {
+                question.addError(ERROR_MESSAGES[key]);
+              }
+            });
+          }
+        });
+      };
+
+      if (question.value) {
+        setUpMap(question.value);
+      }
       (question.survey as SurveyModel).onValueChanged.add(
         (_: SurveyModel, options: ValueChangedEvent) => {
           if (!(options.name === question.name)) {
             return;
           }
           if (options.value) {
-            const map: ComponentRef<ShapeFileMapComponent> =
-              domService.appendComponentToBody(ShapeFileMapComponent, file);
-            const instance = map.instance;
-            instance.shapefile = options.value;
+            setUpMap(options.value);
           } else {
             const map = el.querySelector<HTMLElement>('shared-shapefile-map');
             map?.remove();
