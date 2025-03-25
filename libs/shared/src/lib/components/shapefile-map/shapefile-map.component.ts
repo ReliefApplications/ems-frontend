@@ -60,6 +60,7 @@ export class ShapeFileMapComponent
       lastUpdate: null,
     },
     zoomControl: true,
+    basemap: 'Unesco',
   };
   /** layer to add to the map */
   public shapefile?: FeatureCollection<Polygon | MultiPolygon>;

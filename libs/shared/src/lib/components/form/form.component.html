@@ -43,9 +43,7 @@
 </div>
 
 <ng-template #actionButtons>
-  <div
-    class="text-sm text-gray-400 flex absolute top-0 bottom-0 left-2 items-center"
-  >
+  <div class="text-sm text-gray-400 flex absolute inset-y-0 left-2 items-center">
     <ng-container *ngIf="autosaving; else latestSave">
       <ui-spinner size="small" class="mr-1" />
       {{ 'common.notifications.autoSaving' | translate }}
