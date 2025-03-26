@@ -205,7 +205,13 @@ const replacePages = (html: string, pages: any[]): string => {
 const replaceRecordFields = (
   html: string,
   fieldsValue: any,
-  fields: any,
+  fields: {
+    name: string;
+    type: string;
+    rows?: { label: string; name: string }[];
+    columns?: { label: string; name: string }[];
+    choices?: { text: string; value: string }[];
+  }[],
   styles: any[] = []
 ): string => {
   let formattedHtml = html;
@@ -438,8 +444,19 @@ const replaceRecordFields = (
               }
             }
             break;
-          case 'owner':
           case 'users':
+            convertedValue = value
+              .split('<br>')
+              .map((userId: string) => {
+                const userName = field.choices?.find(
+                  (choice: { text: string; value: string }) =>
+                    choice.value == userId
+                )?.text;
+                return userName ? userName : userId;
+              })
+              .join('<br>');
+            break;
+          case 'owner':
           case 'resources':
             convertedValue = `<span style='${style}'>${
               value ? value.length : 0

@@ -68,8 +68,8 @@ export const init = (
         if (!value) {
           return;
         }
-        if (!question.value && question.defaultValueExpression) {
-          question.value = question.defaultValueExpression;
+        if (!question.value && question.defaultValue) {
+          question.value = question.defaultValue;
         }
         if (question.value) {
           instance.editor.editor.writeValue(question.value);
@@ -80,7 +80,7 @@ export const init = (
             return;
           }
           if (question.survey?.isDesignMode) {
-            question.defaultValueExpression = html;
+            question.defaultValue = html;
           } else {
             question.value = html;
           }

@@ -873,15 +873,26 @@ export class SummaryCardComponent
                       this.fields = this.fields.map((field) => {
                         //add shape for columns and matrices
                         const metaData = this.metaFields[field.name];
-                        if (metaData && (metaData.columns || metaData.rows)) {
+                        if (!metaData) {
+                          return field;
+                        }
+                        if (metaData.columns || metaData.rows) {
                           return {
                             ...field,
                             columns: metaData.columns,
                             rows: metaData.rows,
                           };
                         }
+                        //add choices for users
+                        if (metaData.choices) {
+                          return { ...field, choices: metaData.choices };
+                        }
                         return field;
                       });
+                      this.cards = this.cards.map((card) => ({
+                        ...card,
+                        metadata: this.fields,
+                      }));
                     } catch (err) {
                       console.error(err);
                     }
