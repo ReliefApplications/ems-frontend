@@ -19,6 +19,7 @@ export type RecordHistory = {
   createdBy: string;
   changes: Change[];
   version?: Version;
+  incrementalId?: string;
 }[];
 
 /** Get record history query response interface */

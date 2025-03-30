@@ -1177,7 +1177,8 @@
 				"originalValue": "Old value",
 				"person": "User",
 				"time": "Time",
-				"variable": "Field"
+				"variable": "Field",
+				"incrementalId": "Incremental Id"
 			},
 			"download": "Download history",
 			"empty": "No activity detected",
