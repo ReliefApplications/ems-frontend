@@ -613,7 +613,6 @@ export class SummaryCardComponent
     }
 
     // update card list and scroll behavior according to the card items display
-
     this.cards = newCards;
     if (this.widget.settings.widgetDisplay.hideEmpty) {
       // Listen to cards data changes to know when widget is empty and will be hidden
@@ -697,12 +696,15 @@ export class SummaryCardComponent
     this.cachedCards.splice(
       start,
       items.length,
-      ...((items || []).map((x: any, index: number) => ({
-        ...this.settings.card,
-        rawValue: x,
-        index,
-        metadata,
-      })) as CardT[])
+      ...((items || []).map((x: any, index: number) => {
+        this.fixDiferenteType(metadata, x);
+        return {
+          ...this.settings.card,
+          rawValue: x,
+          index,
+          metadata,
+        };
+      }) as CardT[])
     );
 
     const isPaginated = !!strategy && !!pageInfo;
@@ -775,6 +777,33 @@ export class SummaryCardComponent
 
     this.scrolling = false;
     this.loading = false;
+  }
+
+  /**
+   * Fix the diference between the type of the metadata and the type of the data received
+   *
+   * @param metadata metadata
+   * @param x data
+   */
+  fixDiferenteType(metadata: any[], x: any) {
+    for (const meta of metadata) {
+      if (meta.type === 'boolean' && typeof x[meta.label] != 'boolean') {
+        x[meta.label] = this.toBool(x[meta.label]);
+      }
+    }
+  }
+
+  /**
+   * convert any type to boolean
+   *
+   * @param value value to convert
+   * @returns boolean value
+   */
+  toBool(value: any) {
+    if (typeof value === 'string') {
+      return value.toLowerCase() === 'true';
+    }
+    return Boolean(value);
   }
 
   /**
