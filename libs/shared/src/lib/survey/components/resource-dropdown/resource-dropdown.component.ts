@@ -7,15 +7,15 @@ import {
 } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { QuestionAngular } from 'survey-angular-ui';
 import {
   Resource,
   ResourceQueryResponse,
 } from '../../../models/resource.model';
 import { GET_SHORT_RESOURCE_BY_ID } from './graphql/queries';
-import { takeUntil } from 'rxjs/operators';
-import { QuestionAngular } from 'survey-angular-ui';
 import { QuestionResourceDropdownModel } from './resource-dropdown.model';
-import { Subject } from 'rxjs';
 
 /**
  * This component is used to create a dropdown where the user can select a resource.
@@ -30,7 +30,7 @@ export class ResourceDropdownComponent
   implements OnInit, OnDestroy
 {
   /** Selected resource */
-  public selectedResource?: Resource;
+  public selectedResource: Resource[] = [];
   /** Resource control */
   public resourceControl!: UntypedFormControl;
 
@@ -55,13 +55,6 @@ export class ResourceDropdownComponent
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.resourceControl = new UntypedFormControl(this.model.value ?? '');
-    this.resourceControl.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.model.value = value;
-        this.model.obj.gridFieldsSettings = null;
-      });
     if (this.model.value) {
       this.apollo
         .query<ResourceQueryResponse>({
@@ -72,10 +65,18 @@ export class ResourceDropdownComponent
         })
         .subscribe(({ data }) => {
           if (data.resource) {
-            this.selectedResource = data.resource;
+            this.selectedResource = [data.resource];
+            this.changeDetectorRef.detectChanges();
           }
         });
     }
+    this.resourceControl = new UntypedFormControl(this.model.value ?? '');
+    this.resourceControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.model.value = value;
+        this.model.obj.gridFieldsSettings = null;
+      });
   }
 
   override ngOnDestroy(): void {

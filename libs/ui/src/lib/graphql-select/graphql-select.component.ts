@@ -536,9 +536,10 @@ export class GraphQLSelectComponent
     const selectedElements = this.selectedElements.filter(
       (selectedElement) =>
         selectedElement &&
-        !elements.find(
-          (node) => node[this.valueField] === selectedElement[this.valueField]
-        )
+        (this.isSurveyQuestion ||
+          !elements.find(
+            (node) => node[this.valueField] === selectedElement[this.valueField]
+          ))
     );
     this.cachedElements = updateQueryUniqueValues(this.cachedElements, [
       ...selectedElements,
