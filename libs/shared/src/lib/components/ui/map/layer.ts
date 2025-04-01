@@ -1289,7 +1289,6 @@ export class Layer implements LayerModel {
                 'featureReduction.drawingInfo.renderer.symbol',
                 symbol
               );
-              // html += `<div>${this.name}</div>`;
               const iconDef = getIconDefinition('circle');
               const i = iconCreator(iconDef, {
                 styles: {
@@ -1298,7 +1297,6 @@ export class Layer implements LayerModel {
                   color: clusterSymbol.color,
                   'line-height': '1rem',
                   'font-size': '1rem',
-                  // 'padding-left': '.5rem',
                 },
               });
               html += i.html[0];
