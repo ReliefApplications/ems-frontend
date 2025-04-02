@@ -12,7 +12,7 @@ import { GlobalOptions } from '../types';
  */
 function once(this: { question: QuestionCustomModel }, params: any) {
   const expression = params;
-  return this.question.value ? this.question.value : expression;
+  return this.question?.value ? this.question?.value : expression;
 }
 
 /**
