@@ -246,6 +246,7 @@ export class FormBuilderComponent
       showTranslationTab: true,
       questionTypes: QUESTION_TYPES,
       allowChangeThemeInPreview: false,
+      pageEditMode: 'bypage' as const,
     };
 
     this.surveyCreator = new SurveyCreatorModel(creatorOptions);
@@ -496,6 +497,7 @@ export class FormBuilderComponent
         }
       })
       .catch((error) => {
+        console.log('Saving survey failed:', error);
         this.snackBar.openSnackBar(error.message, {
           error: true,
           duration: 15000,
