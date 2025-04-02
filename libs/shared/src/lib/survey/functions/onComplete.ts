@@ -15,12 +15,10 @@ function onComplete(
   this: { survey: SurveyModel; question: Question },
   params: any[]
 ) {
-  console.log(params, 'yessai cool');
   if (!this.question.onCompletion) {
     this.survey.onComplete.add(() => {
       if (!this.question.onCompletion.triggered) {
         const completionValue = this.question.onCompletion.value;
-        console.log(this.question.value, completionValue);
         this.question.value = isArray(this.question.value)
           ? completionValue
           : completionValue[0];
