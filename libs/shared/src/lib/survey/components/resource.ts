@@ -387,12 +387,20 @@ export const init = (
       });
 
       serializer.addProperty('resource', {
+        name: 'prefillWithValues:itemvalues',
+        category: 'Custom Questions',
+        dependsOn: ['addRecord', 'resource'],
+        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
+        visibleIndex: 9,
+      });
+
+      serializer.addProperty('resource', {
         name: 'addTemplate',
         category: 'Custom Questions',
         dependsOn: ['addRecord', 'resource'],
         visibleIf: (obj: null | QuestionResource) =>
           !!obj?.resource && !!obj.addRecord,
-        visibleIndex: 9,
+        visibleIndex: 10,
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource && obj.addRecord) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
@@ -410,7 +418,7 @@ export const init = (
         name: 'addRecordText',
         category: 'Custom Questions',
         dependsOn: ['resource', 'addRecord'],
-        visibleIndex: 10,
+        visibleIndex: 11,
         visibleIf: (obj: null | QuestionResource) =>
           !!obj?.resource && !!obj.addRecord,
       });
@@ -420,7 +428,7 @@ export const init = (
         name: 'canOnlyCreateRecords:boolean',
         category: 'Custom Questions',
         dependsOn: ['resource'],
-        visibleIndex: 11,
+        visibleIndex: 12,
         visibleIf: (obj: null | QuestionResource) =>
           !!obj?.resource && !!obj.addRecord,
         onSetValue: (question: QuestionResource, value: boolean) => {
@@ -436,7 +444,7 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: ['resource', 'addRecord'],
         visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
-        visibleIndex: 12,
+        visibleIndex: 13,
       });
 
       serializer.addProperty('resource', {
@@ -444,7 +452,7 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: ['addRecord', 'resource'],
         visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
-        visibleIndex: 13,
+        visibleIndex: 14,
       });
 
       serializer.addProperty('resource', {
@@ -452,14 +460,14 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: ['resource'],
         visibleIf: visibleIfResource,
-        visibleIndex: 14,
+        visibleIndex: 15,
       });
 
       serializer.addProperty('resource', {
         name: 'updateRecordText',
         category: 'Custom Questions',
         dependsOn: ['resource', 'updateRecord'],
-        visibleIndex: 15,
+        visibleIndex: 16,
         visibleIf: (obj: null | QuestionResource) =>
           !!obj && !!obj.updateRecord,
       });
@@ -470,7 +478,7 @@ export const init = (
         dependsOn: ['canSearch', 'addRecord', 'updateRecord'],
         visibleIf: (obj: null | QuestionResource) =>
           !!obj && (obj.canSearch || obj.addRecord || obj.updateRecord),
-        visibleIndex: 16,
+        visibleIndex: 17,
       });
 
       serializer.addProperty('resource', {
@@ -479,7 +487,7 @@ export const init = (
         dependsOn: ['resource'],
         default: false,
         visibleIf: visibleIfResource,
-        visibleIndex: 17,
+        visibleIndex: 18,
         onSetValue: (question: QuestionResource, value: boolean) => {
           if (value) {
             question.setPropertyValue('autoSelectFirstOption', true);
@@ -494,7 +502,7 @@ export const init = (
         dependsOn: ['resource'],
         default: false,
         visibleIf: visibleIfResource,
-        visibleIndex: 18,
+        visibleIndex: 19,
         onSetValue: (question: QuestionResource, value: boolean) => {
           if (value) {
             question.setPropertyValue('autoSelectFirstOption', false);
@@ -738,6 +746,7 @@ export const init = (
         question.updateRecord = false;
         question.addTemplate = null;
         question.prefillWithCurrentRecord = false;
+        question.prefillWithValues = [];
       }
     },
     // Display of add button for resource question ans set placeholder, if any

@@ -1,7 +1,7 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { NgZone } from '@angular/core';
 // todo: as it something to do with survey-angular
-import { SurveyModel, surveyLocalization } from 'survey-core';
+import { SurveyModel, surveyLocalization, ItemValue } from 'survey-core';
 import { Question } from '../types';
 import { BehaviorSubject } from 'rxjs';
 
@@ -146,6 +146,16 @@ export const buildAddButton = (
       );
       const alwaysCreateRecord = question.alwaysCreateRecord || survey.autoSave;
       ngZone.run(() => {
+        const prefillData = question.prefillWithCurrentRecord
+          ? (question.survey as SurveyModel).data
+          : {};
+        (question.prefillWithValues ?? []).forEach((itemValue: ItemValue) => {
+          const obj = itemValue.toJSON();
+          console.log(obj);
+          Object.assign(prefillData, {
+            [obj.value]: obj.text,
+          });
+        });
         const dialogRef = dialog.open(ResourceModalComponent, {
           disableClose: true,
           data: {
@@ -153,9 +163,7 @@ export const buildAddButton = (
             alwaysCreateRecord,
             locale: question.resource.value,
             askForConfirm: false,
-            ...(question.prefillWithCurrentRecord && {
-              prefillData: (question.survey as SurveyModel).data,
-            }),
+            prefillData,
           },
           height: '98%',
           width: '100vw',

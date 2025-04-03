@@ -241,10 +241,17 @@ export const init = (
         visibleIndex: 2,
       });
       Serializer.addProperty('resources', {
+        name: 'prefillWithValues:itemvalues',
+        category: 'Custom Questions',
+        dependsOn: ['resources', 'addRecord'],
+        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
+        visibleIndex: 3,
+      });
+      Serializer.addProperty('resources', {
         name: 'addRecordText',
         category: 'Custom Questions',
         dependsOn: ['resources', 'addRecord'],
-        visibleIndex: 3,
+        visibleIndex: 4,
         visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
       });
       Serializer.addProperty('resources', {
@@ -253,7 +260,7 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: 'resource',
         visibleIf: visibleIfResource,
-        visibleIndex: 3,
+        visibleIndex: 5,
       });
       Serializer.addProperty('resources', {
         name: 'history:boolean',
@@ -261,7 +268,7 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: 'resource',
         visibleIf: visibleIfResource,
-        visibleIndex: 3,
+        visibleIndex: 6,
       });
       Serializer.addProperty('resources', {
         name: 'convert:boolean',
@@ -269,7 +276,7 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: 'resource',
         visibleIf: visibleIfResource,
-        visibleIndex: 3,
+        visibleIndex: 7,
       });
       Serializer.addProperty('resources', {
         name: 'update:boolean',
@@ -277,7 +284,7 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: 'resource',
         visibleIf: visibleIfResource,
-        visibleIndex: 3,
+        visibleIndex: 8,
       });
       Serializer.addProperty('resources', {
         name: 'inlineEdition:boolean',
@@ -285,7 +292,7 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: 'resource',
         visibleIf: visibleIfResource,
-        visibleIndex: 3,
+        visibleIndex: 9,
       });
       Serializer.addProperty('resources', {
         name: 'export:boolean',
@@ -293,7 +300,7 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: 'resource',
         visibleIf: visibleIfResource,
-        visibleIndex: 3,
+        visibleIndex: 10,
       });
       Serializer.addProperty('resources', {
         name: 'canSearch:boolean',
@@ -301,14 +308,14 @@ export const init = (
         dependsOn: 'resource',
         default: true,
         visibleIf: visibleIfResource,
-        visibleIndex: 3,
+        visibleIndex: 11,
       });
 
       Serializer.addProperty('resources', {
         name: 'searchButtonText',
         category: 'Custom Questions',
         dependsOn: ['resource', 'canSearch'],
-        visibleIndex: 3,
+        visibleIndex: 12,
         visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.canSearch,
       });
 
@@ -318,21 +325,21 @@ export const init = (
         dependsOn: 'resource',
         default: true,
         visibleIf: visibleIfResource,
-        visibleIndex: 3,
+        visibleIndex: 13,
       });
       Serializer.addProperty('resources', {
         name: 'alwaysCreateRecord:boolean',
         category: 'Custom Questions',
         dependsOn: ['resource', 'addRecord'],
         visibleIf: (obj: any) => !!obj.resource && !!obj.addRecord,
-        visibleIndex: 3,
+        visibleIndex: 14,
       });
       Serializer.addProperty('resources', {
         name: 'autoSaveChanges:boolean',
         category: 'Custom Questions',
         dependsOn: ['resource'],
         visibleIf: (obj: any) => !!obj.resource,
-        visibleIndex: 3,
+        visibleIndex: 15,
       });
       Serializer.addProperty('resources', {
         name: 'addTemplate',
@@ -350,7 +357,7 @@ export const init = (
             // return !uniqueRecord;
           }
         },
-        visibleIndex: 3,
+        visibleIndex: 16,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource && obj.addRecord) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
@@ -374,7 +381,7 @@ export const init = (
             return true;
           }
         },
-        visibleIndex: 8,
+        visibleIndex: 17,
       });
       Serializer.addProperty('resources', {
         name: 'selectQuestion:dropdown',
@@ -655,6 +662,7 @@ export const init = (
         question.alwaysCreateRecord = false;
         question.addTemplate = null;
         question.prefillWithCurrentRecord = false;
+        question.prefillWithValues = [];
       }
     },
     onAfterRender: (question: QuestionResource, el: any): void => {
