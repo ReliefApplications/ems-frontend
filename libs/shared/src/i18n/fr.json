@@ -2309,7 +2309,7 @@
 	"kendo": {
 		"combobox": {
 			"clearTitle": "Supprimer la valeur",
-			"noDataText": "No available choice"
+			"noDataText": "Aucune donnée trouvée"
 		},
 		"datepicker": {
 			"dateFormat": "AAAA/MM/JJ ou une expression ({{today}} ou  {{now}})",
@@ -2331,6 +2331,9 @@
 			"timeTabLabel": "Heure",
 			"today": "Aujourd'hui",
 			"toggle": "Sélectionnez une date et une heure"
+		},
+		"dropdownlist": {
+			"noDataText": "Aucune donnée trouvée"
 		},
 		"editor": {
 			"addColumnAfter": "Nouvelle colonne à droite",
