@@ -1,3 +1,10 @@
+## [2.19.1-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.19.0...v2.19.1-rc.1) (2025-04-03)
+
+
+### Bug Fixes
+
+* missing translation key for dropdownlist.noDataText ([#2782](https://github.com/ReliefApplications/ems-frontend/issues/2782)) ([22654a3](https://github.com/ReliefApplications/ems-frontend/commit/22654a3f5d3b5df28795b6748c51908f91e8cce3)), closes [AB#112154](https://github.com/AB/issues/112154)
+
 # [2.19.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.18.0...v2.19.0-rc.1) (2025-03-20)
 
 

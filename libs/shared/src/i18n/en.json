@@ -2329,6 +2329,9 @@
 			"today": "Today",
 			"toggle": "Choose a date and a time"
 		},
+		"dropdownlist": {
+			"noDataText": "No data found"
+		},
 		"editor": {
 			"addColumnAfter": "Add column after",
 			"addColumnBefore": "Add column before",
