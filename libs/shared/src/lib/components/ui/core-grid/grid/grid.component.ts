@@ -27,6 +27,7 @@ import {
 } from '@progress/kendo-angular-grid';
 import { Dialog } from '@angular/cdk/dialog';
 import {
+  DEFAULT_ACTIONS,
   EXPORT_SETTINGS,
   GRADIENT_SETTINGS,
   MULTISELECT_TYPES,
@@ -120,7 +121,7 @@ export class GridComponent
   /** Input decorator for canUpdate. */
   @Input() canUpdate = false;
   /** Input decorator for actions */
-  @Input() actions: GridActions = {
+  @Input() actions: Partial<GridActions> = {
     add: false,
     update: {
       display: false,
@@ -149,6 +150,8 @@ export class GridComponent
     mapSelected: false,
     mapView: false,
   };
+  /** If true, the dialog asking for export options will not be displayed */
+  @Input() skipExportModal = false;
   /** Input decorator */
   @Input() hasDetails = true;
   /** Resizable status */
@@ -184,7 +187,7 @@ export class GridComponent
   /** Output decorator for action */
   @Output() action = new EventEmitter();
   /** Output decorator for export */
-  @Output() export = new EventEmitter();
+  @Output() export = new EventEmitter<typeof this.exportSettings>();
   /** Output decorator for edit */
   @Output() edit: EventEmitter<any> = new EventEmitter();
   /** Filter change event emitter */
@@ -416,6 +419,10 @@ export class GridComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.actions = {
+      ...DEFAULT_ACTIONS,
+      ...this.actions,
+    };
     this.statusMessage = this.getStatusMessage();
     if (
       !isEqual(
@@ -835,6 +842,11 @@ export class GridComponent
    * Opens export modal.
    */
   public async onExport(): Promise<void> {
+    if (this.skipExportModal) {
+      this.export.emit();
+      return;
+    }
+
     const { ExportComponent } = await import('../export/export.component');
     const dialogRef = this.dialog.open(ExportComponent, {
       data: {

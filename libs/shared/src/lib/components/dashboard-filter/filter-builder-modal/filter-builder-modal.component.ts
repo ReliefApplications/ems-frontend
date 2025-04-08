@@ -170,6 +170,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'export',
   'canDeselectRecords',
   'autoSaveChanges',
+  'prefillWithValues',
 ];
 
 /**

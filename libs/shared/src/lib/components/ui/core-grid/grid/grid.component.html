@@ -116,7 +116,7 @@
       {{ 'components.widget.settings.grid.actions.mapView' | translate }}
     </button>
     <shared-grid-toolbar
-      [actions]="actions"
+      [actions]="$any(actions)"
       [items]="selectedItems"
       (action)="action.emit($event)"
     >

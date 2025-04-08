@@ -390,7 +390,8 @@ export const init = (
         name: 'prefillWithValues:itemvalues',
         category: 'Custom Questions',
         dependsOn: ['addRecord', 'resource'],
-        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
+        visibleIf: (obj: null | QuestionResource) =>
+          !!obj && (!!obj.addRecord || !!obj.updateRecord),
         visibleIndex: 9,
       });
 

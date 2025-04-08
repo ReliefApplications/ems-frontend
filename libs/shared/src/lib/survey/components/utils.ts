@@ -151,7 +151,6 @@ export const buildAddButton = (
           : {};
         (question.prefillWithValues ?? []).forEach((itemValue: ItemValue) => {
           const obj = itemValue.toJSON();
-          console.log(obj);
           Object.assign(prefillData, {
             [obj.value]: obj.text,
           });
@@ -274,12 +273,24 @@ export const buildUpdateButton = (
         '../../components/resource-modal/resource-modal.component'
       );
       ngZone.run(() => {
+        const prefillData = (question.prefillWithValues ?? []).reduce(
+          (acc: Record<string, unknown>, itemValue: ItemValue) => {
+            const obj = itemValue.toJSON();
+            return {
+              ...acc,
+              [obj.value]: obj.text,
+            };
+          },
+          {}
+        );
+        console.log('hey', prefillData);
         const dialogRef = dialog.open(ResourceModalComponent, {
           disableClose: true,
           data: {
             recordId: question.value,
             alwaysCreateRecord: false,
             askForConfirm: false,
+            prefillData,
           },
           height: '98%',
           width: '100vw',

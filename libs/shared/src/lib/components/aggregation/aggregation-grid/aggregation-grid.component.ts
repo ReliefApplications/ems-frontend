@@ -19,6 +19,7 @@ import { ResourceQueryResponse } from '../../../models/resource.model';
 import { SortDescriptor } from '@progress/kendo-data-query';
 import { cloneDeep, isNil, uniq } from 'lodash';
 import { DashboardService } from '../../../services/dashboard/dashboard.service';
+import { DownloadService } from '../../../services/download/download.service';
 
 /**
  * Shared aggregation grid component.
@@ -103,6 +104,7 @@ export class AggregationGridComponent
    * @param translate Angular translate service
    * @param contextService Shared context service
    * @param dashboardService Shared dashboard service
+   * @param downloadService Shared download service
    */
   constructor(
     private aggregationService: AggregationService,
@@ -112,7 +114,8 @@ export class AggregationGridComponent
     private apollo: Apollo,
     private translate: TranslateService,
     private contextService: ContextService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private downloadService: DownloadService
   ) {
     super();
   }
@@ -329,8 +332,21 @@ export class AggregationGridComponent
           disabled: true,
           hidden: false,
         }))
-      );
-
+      )
+      .map((x) => ({
+        width: x.name.length * 7 + 50, // minimum default width
+        ...x,
+      }));
     this.loading = loading;
+  }
+
+  /** Downloads the aggregation as excel */
+  onExport() {
+    // Builds and make the request
+    this.downloadService.getRecordsExport(
+      `/download/aggregation/${this.resourceId}/${this.aggregation.id}`,
+      `text/xlsx;charset=utf-8;`,
+      `${this.widget?.settings?.title ?? 'aggregation'}.xlsx`
+    );
   }
 }

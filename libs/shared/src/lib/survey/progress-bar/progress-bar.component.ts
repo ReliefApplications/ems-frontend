@@ -20,6 +20,8 @@ export class ProgressBarComponent implements OnInit {
   public currentPageQuestions: Question[] = [];
   /** Progress bar percentage value */
   public value = 0;
+  /** Title shown above percentage */
+  public title = '';
 
   /**
    * Percentage progress bar for the forms
@@ -29,6 +31,7 @@ export class ProgressBarComponent implements OnInit {
   constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
+    this.title = this.model.data.form_and_br;
     const updateCurrentPageQuestions = () => {
       this.currentPageQuestions = getVisibleQuestions(
         this.model.currentPage.questions

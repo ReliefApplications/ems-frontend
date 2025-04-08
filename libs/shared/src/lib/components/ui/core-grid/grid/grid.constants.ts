@@ -3,6 +3,7 @@ import {
   SelectableSettings,
 } from '@progress/kendo-angular-grid';
 import { GradientSettings } from '@progress/kendo-angular-inputs';
+import { GridActions } from '../models/grid-settings.model';
 
 /** Types of field that are multi-select */
 export const MULTISELECT_TYPES: string[] = [
@@ -76,4 +77,35 @@ export const ICON_EXTENSIONS: any = {
   zip: 'k-i-file-zip',
   xlsm: 'k-i-file-excel',
   xml: 'k-i-file-excel',
+};
+
+/** Default actions */
+export const DEFAULT_ACTIONS: GridActions = {
+  add: false,
+  update: {
+    display: false,
+  },
+  delete: {
+    display: false,
+  },
+  history: {
+    display: false,
+  },
+  convert: {
+    display: false,
+  },
+  export: false,
+  showDetails: {
+    display: false,
+  },
+  navigateToPage: false,
+  navigateSettings: {
+    field: '',
+    pageUrl: '',
+    title: '',
+    copyLink: false,
+  },
+  remove: false,
+  mapSelected: false,
+  mapView: false,
 };

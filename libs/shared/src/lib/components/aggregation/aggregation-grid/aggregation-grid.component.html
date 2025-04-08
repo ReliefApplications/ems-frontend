@@ -13,5 +13,8 @@
   [status]="status"
   [blank]="!resourceId || !aggregation"
   [noLayout]="true"
+  [actions]="{ export: true }"
+  [skipExportModal]="true"
+  (export)="onExport()"
 >
 </shared-grid>

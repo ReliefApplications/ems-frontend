@@ -74,6 +74,9 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { FormPagesLayoutComponent } from '../form-pages-layout/form-pages-layout.component';
 import { DateModule } from '../../pipes/date/date.module';
 
+/** Question type which should not display the add comment button when hovered */
+const UNCOMMENTABLE_TYPES = ['html'];
+
 /**
  * Interface of Dialog data.
  */
@@ -211,6 +214,7 @@ export class FormModalComponent
 
   async ngOnInit(): Promise<void> {
     this.data = { ...DEFAULT_DIALOG_DATA, ...this.data };
+    this.storedMergedData = this.data.prefillData;
 
     this.isMultiEdition = Array.isArray(this.data.recordId);
     const promises: Promise<FormQueryResponse | RecordQueryResponse | void>[] =
@@ -385,7 +389,7 @@ export class FormModalComponent
         const question = this.survey
           .getAllQuestions()
           .find((question) => question.id === options.question.id);
-        if (!question) {
+        if (!question || UNCOMMENTABLE_TYPES.includes(question.getType())) {
           return;
         }
         const buttonId = 'popup_button_' + questionElement.id;
