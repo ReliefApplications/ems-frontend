@@ -10,6 +10,8 @@ import {
 import { Question } from '../types';
 import { SurveyModel, PageModel, surveyLocalization } from 'survey-core';
 import { MatrixManager } from '../controllers/matrixManager';
+import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
+import { registerCustomPropertyEditor } from '../components/utils/component-register';
 
 /**
  * Add support for custom properties to the survey
@@ -319,6 +321,8 @@ export const init = (environment: any): void => {
     default: 'asc',
     visibleIf: (obj: QuestionPanelDynamicModel) => !!obj.sortBySubQuestion,
   });
+
+  registerCustomPropertyEditor(CustomPropertyGridComponentTypes.jsonEditor);
 
   const allowImportProp = {
     name: 'allowImport:boolean',

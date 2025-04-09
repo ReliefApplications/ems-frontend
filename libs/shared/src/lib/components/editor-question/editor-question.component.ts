@@ -4,14 +4,11 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnInit,
   ViewChild,
 } from '@angular/core';
-import { FIELD_EDITOR_CONFIG } from '../../const/tinymce.const';
-import { EditorService } from '../../services/editor/editor.service';
 import { EditorControlComponent } from '../controls/public-api';
 import { BehaviorSubject } from 'rxjs';
-import { cloneDeep } from 'lodash';
+import { RawEditorOptions } from 'tinymce';
 
 /**  */
 @Component({
@@ -21,13 +18,11 @@ import { cloneDeep } from 'lodash';
   templateUrl: './editor-question.component.html',
   styleUrls: ['./editor-question.component.scss'],
 })
-export class EditorQuestionComponent implements AfterViewInit, OnInit {
+export class EditorQuestionComponent implements AfterViewInit {
   /** Is readonly */
   @Input() readonly = false;
-  /** Is display mode */
-  @Input() displayMode = false;
   /** configuration of the editor */
-  public config = cloneDeep(FIELD_EDITOR_CONFIG);
+  @Input() config!: RawEditorOptions;
   /** editor */
   @ViewChild(EditorControlComponent)
   public editor!: EditorControlComponent;
@@ -39,23 +34,9 @@ export class EditorQuestionComponent implements AfterViewInit, OnInit {
   /**
    * Editor question component
    *
-   * @param editorService shared editor service
    * @param cdr Angular change detector ref
    */
-  constructor(editorService: EditorService, public cdr: ChangeDetectorRef) {
-    this.config.base_url = editorService.url;
-    this.config.language = editorService.language;
-  }
-
-  ngOnInit(): void {
-    if (this.displayMode) {
-      this.config.toolbar = false;
-      this.config.menubar = false;
-    } else {
-      this.config.toolbar = FIELD_EDITOR_CONFIG.toolbar;
-      this.config.menubar = FIELD_EDITOR_CONFIG.menubar;
-    }
-  }
+  constructor(public cdr: ChangeDetectorRef) {}
 
   ngAfterViewInit() {
     this.editor.registerOnChange(() => {

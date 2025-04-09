@@ -52,6 +52,7 @@ import selectColumns from './matrices/selectColumns';
 import log from './log';
 import getFollowupSummary from './lift/getFollowupSummary';
 import onComplete from './onComplete';
+import onInit from './onInit';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -107,6 +108,7 @@ export const functions = [
   { fn: getPrescriptionInfo, name: 'getPrescriptionInfo' },
   { fn: getFollowupSummary, name: 'getFollowupSummary' },
   { fn: onComplete, name: 'onComplete' },
+  { fn: onInit, name: 'onInit' },
 ];
 
 /** Generators for each async custom function available  */

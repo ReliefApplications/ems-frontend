@@ -1,9 +1,12 @@
-import { ComponentCollection, SvgRegistry } from 'survey-core';
+import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
 import { Question } from '../types';
 import { DomService } from '../../services/dom/dom.service';
 import { EditorQuestionComponent } from '../../components/editor-question/editor-question.component';
-import { isNil } from 'lodash';
+import { cloneDeep, isNil } from 'lodash';
 import { Injector } from '@angular/core';
+import { FIELD_EDITOR_CONFIG } from '../../const/tinymce.const';
+import { EditorService } from '../../services/editor/editor.service';
+import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 
 /**
  * Inits the editor component.
@@ -17,6 +20,7 @@ export const init = (
 ): void => {
   // get services
   const domService = injector.get(DomService);
+  const editorService = injector.get(EditorService);
 
   // Register icon
   SvgRegistry.registerIconFromSvg(
@@ -33,6 +37,13 @@ export const init = (
     },
     category: 'Custom Questions',
     onInit: (): void => {
+      Serializer.addProperty('editor', {
+        name: 'tinymceConfig',
+        type: CustomPropertyGridComponentTypes.jsonEditor,
+        category: 'Editor configuration',
+        visibleIndex: 1,
+        default: JSON.stringify(cloneDeep(FIELD_EDITOR_CONFIG)),
+      });
       return;
     },
     onAfterRender: (question: Question, el: HTMLElement): void => {
@@ -54,6 +65,15 @@ export const init = (
         el
       );
       const instance: EditorQuestionComponent = editor.instance;
+      instance.config = {
+        ...JSON.parse(question.tinymceConfig),
+        base_url: editorService.url,
+        language: editorService.language,
+        ...(question.survey.isDisplayMode && {
+          toolbar: false,
+          menubar: false,
+        }),
+      };
       instance.cdr.detectChanges();
 
       // Set readonly mode of instance based on readonly & survey mode
@@ -61,8 +81,6 @@ export const init = (
         question.isReadOnly ||
         question.survey.isDesignMode ||
         question.survey.isDisplayMode;
-
-      instance.displayMode = question.survey.isDisplayMode;
 
       instance.editorLoaded.subscribe((value) => {
         if (!value) {
