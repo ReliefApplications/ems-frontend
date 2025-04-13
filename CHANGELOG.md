@@ -1,3 +1,10 @@
+## [2.19.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.19.1...v2.19.2) (2025-04-13)
+
+
+### Bug Fixes
+
+* incorrect visibility of activities in front-office ([c9aa26a](https://github.com/ReliefApplications/ems-frontend/commit/c9aa26a8b07a66e9a54a6e4f2d9983604f99c2c3))
+
 ## [2.19.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.19.0...v2.19.1) (2025-04-05)
 
 
