@@ -1,3 +1,10 @@
+## [2.19.3-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.19.2...v2.19.3-rc.1) (2025-04-14)
+
+
+### Bug Fixes
+
+* auto reload of dashboard after button edition action not working ([99bcde9](https://github.com/ReliefApplications/ems-frontend/commit/99bcde96054de5c641010d456ec6e5c3f4411cd6)), closes [AB#112622](https://github.com/AB/issues/112622)
+
 ## [2.19.1-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.19.0...v2.19.1-rc.1) (2025-04-03)
 
 
