@@ -168,9 +168,36 @@ ui-checkbox {
   }
 }
 
+@font-face {
+  font-family: 'DejaVu Sans';
+  src: url('../../../src/lib/fonts/DejaVu/DejaVuSans.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'DejaVu Sans';
+  font-weight: bold;
+  src: url('../../../src/lib/fonts/DejaVu/DejaVuSans-Bold.ttf')
+    format('truetype');
+}
+
+@font-face {
+  font-family: 'DejaVu Sans';
+  font-style: italic;
+  src: url('../../../src/lib/fonts/DejaVu/DejaVuSans-Oblique.ttf')
+    format('truetype');
+}
+
+@font-face {
+  font-family: 'DejaVu Sans';
+  font-weight: bold;
+  font-style: italic;
+  src: url('../../../src/lib/fonts/DejaVu/DejaVuSans-BoldOblique.ttf')
+    format('truetype');
+}
+
 // Style needed for dashboard export to work
 .k-pdf-export {
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-family: 'DejaVu Sans', Roboto, 'Helvetica Neue', sans-serif;
   overflow: visible !important;
   .export-hide {
     display: none;
