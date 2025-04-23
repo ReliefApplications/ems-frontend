@@ -340,6 +340,8 @@ export const FIELD_EDITOR_CONFIG: RawEditorSettings = {
   paste_retain_style_properties: 'color font-size',
   paste_webkit_styles: 'color font-size',
   toolbar_sticky: true,
+  paste_retain_style_properties: 'color font-size',
+  paste_webkit_styles: 'color font-size',
   image_advtab: true,
   importcss_append: true,
   height: 600,
