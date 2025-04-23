@@ -337,8 +337,6 @@ export const FIELD_EDITOR_CONFIG: RawEditorSettings = {
   menubar: 'edit view insert format tools table help',
   toolbar:
     'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link avatar recordeditor',
-  paste_retain_style_properties: 'color font-size',
-  paste_webkit_styles: 'color font-size',
   toolbar_sticky: true,
   paste_retain_style_properties: 'color font-size',
   paste_webkit_styles: 'color font-size',
