@@ -166,83 +166,11 @@
             "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
-        "oort-prod": {
+        "local-prod": {
           "fileReplacements": [
             {
               "replace": "apps/front-office/src/environments/environment.ts",
-              "with": "apps/front-office/src/environments/environment.oort.prod.ts"
-            }
-          ],
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "12mb",
-              "maximumError": "20mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "6kb",
-              "maximumError": "20kb"
-            }
-          ],
-          "outputHashing": "all",
-          "stylePreprocessorOptions": {
-            "includePaths": ["libs/styles/src/lib/themes/oort"]
-          }
-        },
-        "oort-dev": {
-          "fileReplacements": [
-            {
-              "replace": "apps/front-office/src/environments/environment.ts",
-              "with": "apps/front-office/src/environments/environment.oort.dev.ts"
-            }
-          ],
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "12mb",
-              "maximumError": "20mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "6kb",
-              "maximumError": "20kb"
-            }
-          ],
-          "outputHashing": "all",
-          "stylePreprocessorOptions": {
-            "includePaths": ["libs/styles/src/lib/themes/oort"]
-          }
-        },
-        "oort-demo": {
-          "fileReplacements": [
-            {
-              "replace": "apps/front-office/src/environments/environment.ts",
-              "with": "apps/front-office/src/environments/environment.oort.demo.ts"
-            }
-          ],
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "12mb",
-              "maximumError": "20mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "6kb",
-              "maximumError": "20kb"
-            }
-          ],
-          "outputHashing": "all",
-          "stylePreprocessorOptions": {
-            "includePaths": ["libs/styles/src/lib/themes/oort"]
-          }
-        },
-        "oort-local": {
-          "fileReplacements": [
-            {
-              "replace": "apps/front-office/src/environments/environment.ts",
-              "with": "apps/front-office/src/environments/environment.oort.local.ts"
+              "with": "apps/front-office/src/environments/environment.local.prod.ts"
             }
           ],
           "buildOptimizer": false,
@@ -252,7 +180,41 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/styles/src/lib/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
+          }
+        },
+        "local-uat": {
+          "fileReplacements": [
+            {
+              "replace": "apps/front-office/src/environments/environment.ts",
+              "with": "apps/front-office/src/environments/environment.local.uat.ts"
+            }
+          ],
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true,
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/lib/themes/default"]
+          }
+        },
+        "local-dev": {
+          "fileReplacements": [
+            {
+              "replace": "apps/front-office/src/environments/environment.ts",
+              "with": "apps/front-office/src/environments/environment.local.dev.ts"
+            }
+          ],
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true,
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "development": {
@@ -267,16 +229,19 @@
           }
         }
       },
-      "defaultConfiguration": "oort-prod"
+      "defaultConfiguration": "azure-dev"
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
-        "oort-prod": {
-          "browserTarget": "front-office:build:oort-prod"
+        "local-prod": {
+          "browserTarget": "front-office:build:local-prod"
         },
-        "oort-local": {
-          "browserTarget": "front-office:build:oort-local"
+        "local-uat": {
+          "browserTarget": "front-office:build:local-uat"
+        },
+        "local-dev": {
+          "browserTarget": "front-office:build:local-dev"
         },
         "development": {
           "browserTarget": "front-office:build:development"

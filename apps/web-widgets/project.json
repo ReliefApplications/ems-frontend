@@ -152,60 +152,6 @@
             ]
           }
         },
-        "oort-dev": {
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "12mb",
-              "maximumError": "20mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "1mb",
-              "maximumError": "2mb"
-            }
-          ],
-          "stylePreprocessorOptions": {
-            "includePaths": [
-              "libs/styles/src/lib/themes/default",
-              "apps/web-widgets/src/app/styles"
-            ]
-          },
-          "fileReplacements": [
-            {
-              "replace": "apps/web-widgets/src/environments/environment.ts",
-              "with": "apps/web-widgets/src/environments/environment.oort.dev.ts"
-            }
-          ],
-          "outputHashing": "none"
-        },
-        "oort-local": {
-          "fileReplacements": [
-            {
-              "replace": "apps/web-widgets/src/environments/environment.ts",
-              "with": "apps/web-widgets/src/environments/environment.oort.local.ts"
-            }
-          ],
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "12mb",
-              "maximumError": "20mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "1mb",
-              "maximumError": "2mb"
-            }
-          ],
-          "outputHashing": "none",
-          "stylePreprocessorOptions": {
-            "includePaths": [
-              "libs/styles/src/lib/themes/default",
-              "apps/web-widgets/src/app/styles"
-            ]
-          }
-        },
         "development": {
           "buildOptimizer": false,
           "optimization": false,
@@ -221,14 +167,11 @@
           }
         }
       },
-      "defaultConfiguration": "oort-dev"
+      "defaultConfiguration": "azure-dev"
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
-        "oort-dev": {
-          "browserTarget": "web-widgets:build:oort-dev"
-        },
         "development": {
           "browserTarget": "web-widgets:build:development"
         }
