@@ -1,3 +1,10 @@
+## [2.19.3-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.19.3-rc.1...v2.19.3-rc.2) (2025-04-24)
+
+
+### Bug Fixes
+
+* Some characters not being correctly exported by kendo in PDF / images ([#2785](https://github.com/ReliefApplications/ems-frontend/issues/2785)) ([1e3c317](https://github.com/ReliefApplications/ems-frontend/commit/1e3c317b108d15fdae96776cf5e57936822f23cd)), closes [AB#112754](https://github.com/AB/issues/112754)
+
 ## [2.19.3-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.19.2...v2.19.3-rc.1) (2025-04-14)
 
 
