@@ -171,6 +171,57 @@
             "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
+        "local-prod": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.local.prod.ts"
+            }
+          ],
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true,
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/lib/themes/default"]
+          }
+        },
+        "local-uat": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.local.uat.ts"
+            }
+          ],
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true,
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/lib/themes/default"]
+          }
+        },
+        "local-dev": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.local.dev.ts"
+            }
+          ],
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true,
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/styles/src/lib/themes/default"]
+          }
+        },
         "development": {
           "buildOptimizer": false,
           "optimization": false,
@@ -188,6 +239,15 @@
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
+        "local-prod": {
+          "browserTarget": "back-office:build:local-prod"
+        },
+        "local-uat": {
+          "browserTarget": "back-office:build:local-uat"
+        },
+        "local-dev": {
+          "browserTarget": "back-office:build:local-dev"
+        },
         "development": {
           "browserTarget": "back-office:build:development"
         }
