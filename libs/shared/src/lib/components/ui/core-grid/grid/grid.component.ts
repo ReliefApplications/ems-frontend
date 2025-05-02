@@ -1065,6 +1065,10 @@ export class GridComponent
     if (this.selectable) {
       totalWidthSticky += 41;
     }
+    // ADD THIS BLOCK: include inline action button column width if present
+    if (this.inlineActionButtons.length > 0) {
+      totalWidthSticky += this.floatingButtonsWidth;
+    }
     // Hide the columns that are hidden by default
     const hiddenFields = this.fields.filter((field) => field.hiddenByDefault);
     hiddenFields.forEach((field) => {
@@ -1298,6 +1302,10 @@ export class GridComponent
         column.width = MIN_COLUMN_WIDTH;
       }
     });
+
+    if (this.inlineActionButtons.length > 0) {
+      totalWidthSticky += this.floatingButtonsWidth;
+    }
   }
 
   /** Restore all columns visibility and size when reset the layout of the grid */
