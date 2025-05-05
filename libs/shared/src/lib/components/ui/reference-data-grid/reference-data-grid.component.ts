@@ -1,9 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { GridDataResult } from '@progress/kendo-angular-grid';
 import { CardT } from '../../widgets/summary-card/summary-card.component';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
 import { SortDescriptor } from '@progress/kendo-data-query';
 import { sortBy } from 'lodash';
+import { GridActions } from '../core-grid/models/grid-settings.model';
+import { CommonServicesService } from '../../../services/common-services/common-services.service';
 
 /**
  * Shared reference data grid component.
@@ -32,8 +34,27 @@ export class ReferenceDataGridComponent implements OnInit {
   public loadingRecords = true;
   /** Sort descriptor */
   public sort: SortDescriptor[] = [];
+  /** Grid actions */
+  public actions: GridActions = {
+    add: false,
+    update: false,
+    delete: false,
+    history: false,
+    convert: false,
+    export: true,
+    showDetails: false,
+    navigateToPage: false,
+    navigateSettings: {
+      field: '',
+      pageUrl: '',
+      title: '',
+    },
+    remove: false,
+  };
   /** Data for the gridData */
   private data: any[] = [];
+  /** Common Services connector */
+  private cs = inject(CommonServicesService);
 
   /** @returns current field used for sorting */
   get sortField(): string | null {
@@ -160,5 +181,19 @@ export class ReferenceDataGridComponent implements OnInit {
     this.sort = sort;
     this.skip = 0;
     this.onPageChange({ skip: this.skip, take: this.pageSize });
+  }
+
+  /**
+   * On Export
+   */
+  public onExport() {
+    console.log('export');
+    // if (this.refData && this.refData.type === 'graphql') {
+    //   const query = this.refData.query;
+    //   if (query) {
+    //     const queryParams = this.queryParams ?? {};
+    //     this.cs.graphqlToExcel(query, queryParams);
+    //   }
+    // }
   }
 }

@@ -262,7 +262,7 @@ export class DownloadService {
    * @param fileName name of the file
    * @param blob File blob
    */
-  private saveFile(fileName: string, blob: Blob): void {
+  public saveFile(fileName: string, blob: Blob): void {
     const link = this.document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = fileName;
