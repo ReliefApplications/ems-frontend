@@ -22,6 +22,7 @@ export class CommonServicesService {
    * @param restService Shared REST Service
    * @param apollo Apollo client
    * @param httpLink Apollo http link
+   * @param downloadService Generic download service
    */
   constructor(
     @Inject('environment') private environment: any,
@@ -64,22 +65,22 @@ export class CommonServicesService {
   /**
    * Get excel from graphql request
    *
+   * @param filename Filename
    * @param query GraphQL query
+   * @param variables GraphQL query variables
    * @returns Excel download
    */
-  public graphqlToExcel(query: string, variables: any = {}) {
+  public graphqlToExcel(filename: string, query: string, variables: any = {}) {
     const url = `${this.environment.csApiUrl}/graphql/excel`;
     const headers = this.buildHeaders();
     transformGraphQLVariables(query, variables);
     const body = { query, variables };
-    return this.restService
-      .post(url, body, { headers, responseType: 'blob' })
-      .subscribe({
-        next: (file) => {
-          const blob = new Blob([file], { type: `text/xlsx;charset=utf-8;` });
-          this.downloadService.saveFile('test.xlsx', blob);
-        },
-      });
+
+    return this.downloadService.download(
+      filename,
+      'text/xlsx;charset=utf-8;',
+      this.restService.post(url, body, { headers, responseType: 'blob' })
+    );
   }
 
   /**
