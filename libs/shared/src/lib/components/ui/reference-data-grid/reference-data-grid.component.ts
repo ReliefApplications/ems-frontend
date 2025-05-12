@@ -1,10 +1,12 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
 import { GridDataResult } from '@progress/kendo-angular-grid';
-import { CardT } from '../../widgets/summary-card/summary-card.component';
+import {
+  CardT,
+  SummaryCardComponent,
+} from '../../widgets/summary-card/summary-card.component';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
 import { SortDescriptor } from '@progress/kendo-data-query';
 import { sortBy } from 'lodash';
-import { GridActions } from '../core-grid/models/grid-settings.model';
 import { CommonServicesService } from '../../../services/common-services/common-services.service';
 
 /**
@@ -34,27 +36,10 @@ export class ReferenceDataGridComponent implements OnInit {
   public loadingRecords = true;
   /** Sort descriptor */
   public sort: SortDescriptor[] = [];
-  /** Grid actions */
-  public actions: GridActions = {
-    add: false,
-    update: false,
-    delete: false,
-    history: false,
-    convert: false,
-    export: true,
-    showDetails: false,
-    navigateToPage: false,
-    navigateSettings: {
-      field: '',
-      pageUrl: '',
-      title: '',
-    },
-    remove: false,
-  };
   /** Data for the gridData */
   private data: any[] = [];
-  /** Common Services connector */
-  private cs = inject(CommonServicesService);
+  /** Can reference data be exported */
+  public canExport = false;
 
   /** @returns current field used for sorting */
   get sortField(): string | null {
@@ -65,6 +50,19 @@ export class ReferenceDataGridComponent implements OnInit {
   get sortOrder(): string {
     return this.sort.length > 0 && this.sort[0].dir ? this.sort[0].dir : '';
   }
+
+  /**
+   * Shared reference data grid component.
+   *
+   * @param summaryCardComponent Reference to parent summary card component
+   * @param cs Common Services connector
+   * @param environment Environment configuration
+   */
+  constructor(
+    @Optional() public summaryCardComponent: SummaryCardComponent,
+    private cs: CommonServicesService,
+    @Inject('environment') private environment: any
+  ) {}
 
   ngOnInit(): void {
     if (this.settings && this.settings.refDataCards) {
@@ -85,6 +83,16 @@ export class ReferenceDataGridComponent implements OnInit {
         })
       );
       this.setGridData();
+      // Set can export. Ref data must use CS & be of type graphql & use auth code connection
+      this.canExport =
+        (this.summaryCardComponent.refData?.type === 'graphql' &&
+          this.summaryCardComponent.refData.apiConfiguration?.authType ===
+            'authorizationCode' &&
+          this.summaryCardComponent.refData.apiConfiguration?.endpoint?.startsWith(
+            this.environment.csApiUrl
+          )) ||
+        false;
+      console.log(this.summaryCardComponent.refData);
       this.loadingSettings = false;
     }
   }
@@ -187,13 +195,17 @@ export class ReferenceDataGridComponent implements OnInit {
    * On Export
    */
   public onExport() {
-    console.log('export');
-    // if (this.refData && this.refData.type === 'graphql') {
-    //   const query = this.refData.query;
-    //   if (query) {
-    //     const queryParams = this.queryParams ?? {};
-    //     this.cs.graphqlToExcel(query, queryParams);
-    //   }
-    // }
+    if (this.summaryCardComponent) {
+      if (
+        this.summaryCardComponent.refData &&
+        this.summaryCardComponent.refData.type === 'graphql'
+      ) {
+        const query = this.summaryCardComponent.refData.query;
+        if (query) {
+          const queryParams = this.summaryCardComponent.queryParams ?? {};
+          this.cs.graphqlToExcel(query, queryParams);
+        }
+      }
+    }
   }
 }
