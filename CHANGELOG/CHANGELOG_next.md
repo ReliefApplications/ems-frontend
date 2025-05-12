@@ -1,3 +1,10 @@
+# [2.20.0-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.19.3-rc.2...v2.20.0-rc.1) (2025-05-12)
+
+
+### Features
+
+* excel export from grids that use common services graphql data  ([#2790](https://github.com/ReliefApplications/ems-frontend/issues/2790)) ([5d4e495](https://github.com/ReliefApplications/ems-frontend/commit/5d4e49502baa7fdfb819603bfbd9eb9896abd214)), closes [AB#112615](https://github.com/AB/issues/112615)
+
 ## [2.19.3-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.19.3-rc.1...v2.19.3-rc.2) (2025-04-24)
 
 
