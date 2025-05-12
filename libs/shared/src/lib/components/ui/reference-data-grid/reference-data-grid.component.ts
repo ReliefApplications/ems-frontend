@@ -109,7 +109,6 @@ export class ReferenceDataGridComponent implements OnInit {
             this.environment.csApiUrl
           )) ||
         false;
-      console.log(this.summaryCardComponent.refData);
       this.loadingSettings = false;
     }
   }
