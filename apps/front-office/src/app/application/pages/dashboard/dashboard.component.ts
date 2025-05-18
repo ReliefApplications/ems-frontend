@@ -121,7 +121,6 @@ export class DashboardComponent
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        this.loading = true;
         // Reset scroll when changing page
         const pageContainer = this.document.getElementById('appPageContainer');
         if (pageContainer) {
@@ -133,9 +132,7 @@ export class DashboardComponent
         /** Extract query id to load template */
         const queryId = this.route.snapshot.queryParamMap.get('id');
         if (id) {
-          this.loadDashboard(id, queryId?.trim()).then(
-            () => (this.loading = false)
-          );
+          this.loadDashboard(id, queryId?.trim());
         }
       });
   }
@@ -156,9 +153,10 @@ export class DashboardComponent
         ?.filter((x: any) => x !== null)
         .map((widget: any) => {
           const contextData = this.dashboard?.contextData;
-          this.contextService.context =
-            { id: this.contextId, ...contextData } || null;
-          if (!contextData) {
+          this.contextService.context = this.contextId
+            ? { id: this.contextId, ...contextData }
+            : null;
+          if (contextData) {
             return widget;
           }
           const { settings, originalSettings } =
@@ -184,11 +182,6 @@ export class DashboardComponent
    * @returns Promise
    */
   private async loadDashboard(id: string, contextId?: string) {
-    // don't init the dashboard if the id is the same
-    if (this.dashboard?.id === id && this.contextId === contextId) {
-      return;
-    }
-
     const rootElement = this.elementRef.nativeElement;
     // Doing this to be able to use custom styles on specific dashboards
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
@@ -242,6 +235,7 @@ export class DashboardComponent
           );
           this.router.navigate(['/']);
         }
+        this.loading = false;
       })
       .catch((err) => {
         this.snackBar.openSnackBar(err.message, { error: true });

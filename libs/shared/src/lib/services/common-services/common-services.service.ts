@@ -5,6 +5,8 @@ import { Apollo } from 'apollo-angular';
 import { InMemoryCache } from '@apollo/client';
 import { HttpLink } from 'apollo-angular/http';
 import { setContext } from '@apollo/client/link/context';
+import { DownloadService } from '../download/download.service';
+import transformGraphQLVariables from '../../utils/reference-data/transform-graphql-variables.util';
 
 /**
  * Common Services connection.
@@ -20,12 +22,14 @@ export class CommonServicesService {
    * @param restService Shared REST Service
    * @param apollo Apollo client
    * @param httpLink Apollo http link
+   * @param downloadService Generic download service
    */
   constructor(
     @Inject('environment') private environment: any,
     private restService: RestService,
     private apollo: Apollo,
-    private httpLink: HttpLink
+    private httpLink: HttpLink,
+    private downloadService: DownloadService
   ) {
     this.createApolloClient();
   }
@@ -56,6 +60,27 @@ export class CommonServicesService {
     const headers = this.buildHeaders();
     const body = { query };
     return this.restService.post(url, body, { headers });
+  }
+
+  /**
+   * Get excel from graphql request
+   *
+   * @param filename Filename
+   * @param query GraphQL query
+   * @param variables GraphQL query variables
+   * @returns Excel download
+   */
+  public graphqlToExcel(filename: string, query: string, variables: any = {}) {
+    const url = `${this.environment.csApiUrl}/graphql/excel`;
+    const headers = this.buildHeaders();
+    transformGraphQLVariables(query, variables);
+    const body = { query, variables };
+
+    return this.downloadService.download(
+      filename,
+      'text/xlsx;charset=utf-8;',
+      this.restService.post(url, body, { headers, responseType: 'blob' })
+    );
   }
 
   /**
