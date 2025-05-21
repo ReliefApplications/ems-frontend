@@ -1,3 +1,10 @@
+## [2.20.1-rc.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.20.1-rc.1...v2.20.1-rc.2) (2025-05-21)
+
+
+### Bug Fixes
+
+* some widgets using context wouldn't inject contextual data ([#2794](https://github.com/ReliefApplications/ems-frontend/issues/2794)) ([189fcc4](https://github.com/ReliefApplications/ems-frontend/commit/189fcc440f5938e98c8e32779fe014fa4e916a2b)), closes [AB#113721](https://github.com/AB/issues/113721)
+
 ## [2.20.1-rc.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.20.0...v2.20.1-rc.1) (2025-05-21)
 
 
