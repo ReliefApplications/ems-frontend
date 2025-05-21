@@ -156,7 +156,7 @@ export class DashboardComponent
           this.contextService.context = this.contextId
             ? { id: this.contextId, ...contextData }
             : null;
-          if (contextData) {
+          if (!contextData) {
             return widget;
           }
           const { settings, originalSettings } =
