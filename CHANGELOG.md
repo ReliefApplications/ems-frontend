@@ -1,3 +1,16 @@
+# [2.20.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.19.2...v2.20.0) (2025-05-18)
+
+
+### Bug Fixes
+
+* auto reload of dashboard after button edition action not working ([99bcde9](https://github.com/ReliefApplications/ems-frontend/commit/99bcde96054de5c641010d456ec6e5c3f4411cd6)), closes [AB#112622](https://github.com/AB/issues/112622)
+* Some characters not being correctly exported by kendo in PDF / images ([#2785](https://github.com/ReliefApplications/ems-frontend/issues/2785)) ([1e3c317](https://github.com/ReliefApplications/ems-frontend/commit/1e3c317b108d15fdae96776cf5e57936822f23cd)), closes [AB#112754](https://github.com/AB/issues/112754)
+
+
+### Features
+
+* excel export from grids that use common services graphql data  ([#2790](https://github.com/ReliefApplications/ems-frontend/issues/2790)) ([5d4e495](https://github.com/ReliefApplications/ems-frontend/commit/5d4e49502baa7fdfb819603bfbd9eb9896abd214)), closes [AB#112615](https://github.com/AB/issues/112615)
+
 ## [2.19.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.19.1...v2.19.2) (2025-04-13)
 
 
