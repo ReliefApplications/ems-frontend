@@ -13,8 +13,8 @@ import {
   LoggerService,
   CsDocsPropertiesDropdownComponent,
   AcceptedValueTypesTextComponent,
-  CommonServicesService,
 } from '@oort-front/shared';
+import { CommonServicesService } from '@oort-front/core';
 
 /**
  * Root component of back-office.

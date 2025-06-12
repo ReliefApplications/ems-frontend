@@ -7,7 +7,7 @@ import {
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
 import { SortDescriptor } from '@progress/kendo-data-query';
 import { sortBy } from 'lodash';
-import { CommonServicesService } from '../../../services/common-services/common-services.service';
+import { CommonServicesService } from '@oort-front/core';
 import get from 'lodash/get';
 
 /**

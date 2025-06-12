@@ -17,7 +17,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 import { EmailService } from '../../email/email.service';
 import convertToMinutes from '../../../utils/convert-to-minutes';
-import { CommonServicesService } from '../../../services/common-services/common-services.service';
+import { CommonServicesService } from '@oort-front/core';
 import { firstValueFrom } from 'rxjs';
 
 /**

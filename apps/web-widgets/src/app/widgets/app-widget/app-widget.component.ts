@@ -17,8 +17,8 @@ import {
   ContextService,
   AuthService,
   LoggerService,
-  CommonServicesService,
 } from '@oort-front/shared';
+import { CommonServicesService } from '@oort-front/core';
 import { Subject, debounceTime, filter, skip, takeUntil } from 'rxjs';
 import { isEmpty } from 'lodash';
 import { ShadowDomService } from '@oort-front/ui';

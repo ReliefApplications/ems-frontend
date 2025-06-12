@@ -12,8 +12,8 @@ import {
   LoggerService,
   CsDocsPropertiesDropdownComponent,
   AcceptedValueTypesTextComponent,
-  CommonServicesService,
 } from '@oort-front/shared';
+import { CommonServicesService } from '@oort-front/core';
 
 /**
  * Main component of Front-office.
