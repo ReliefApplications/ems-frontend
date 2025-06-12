@@ -1,14 +1,13 @@
 import { moduleMetadata, Story, Meta } from '@storybook/angular';
 import { FileExplorerWidgetComponent } from './file-explorer-widget.component';
 import { CommonModule } from '@angular/common';
-import { LayoutModule } from '@progress/kendo-angular-layout';
 
 export default {
-  title: 'FileExplorerWidgetComponent',
+  title: 'File explorer widget',
   component: FileExplorerWidgetComponent,
   decorators: [
     moduleMetadata({
-      imports: [CommonModule, LayoutModule, FileExplorerWidgetComponent],
+      imports: [CommonModule, FileExplorerWidgetComponent],
     }),
   ],
 } as Meta<FileExplorerWidgetComponent>;

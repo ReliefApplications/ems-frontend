@@ -35,7 +35,19 @@
         "port": 4400,
         "configDir": "libs/file-explorer/.storybook",
         "browserTarget": "file-explorer:build-storybook",
-        "compodoc": false
+        "compodoc": false,
+        "styles": [
+          "libs/shared/src/lib/style/styles.scss",
+          "libs/styles/src/lib/storybook/storybook.scss",
+          "libs/styles/src/lib/tailwind/tailwind.scss",
+          "libs/styles/src/lib/shared/shared.scss",
+          "libs/styles/src/lib/kendo/theme.scss",
+          "node_modules/survey-core/defaultV2.min.css",
+          "node_modules/survey-core/survey.min.css"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": ["libs/styles/src/lib/themes/default"]
+        }
       },
       "configurations": {
         "ci": {
@@ -50,7 +62,14 @@
         "outputDir": "dist/storybook/file-explorer",
         "configDir": "libs/file-explorer/.storybook",
         "browserTarget": "file-explorer:build-storybook",
-        "compodoc": false
+        "compodoc": false,
+        "styles": ["libs/shared/src/lib/style/styles.scss"],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "libs/styles/src/lib/themes/default",
+            "libs/styles/src/lib/kendo"
+          ]
+        }
       },
       "configurations": {
         "ci": {
