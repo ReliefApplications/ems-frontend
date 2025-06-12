@@ -2,6 +2,13 @@
   <kendo-grid-column field="id" title="ID"> </kendo-grid-column>
   <kendo-grid-column field="filename" title="Name"> </kendo-grid-column>
   <kendo-grid-column field="createddate" title="Created On">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      {{ dataItem.createddate | date : 'yyyy-MM-dd HH:mm' }}
+    </ng-template>
   </kendo-grid-column>
-  <kendo-grid-column field="modifieddate" title="Last Updated On"> </kendo-grid-column>
+  <kendo-grid-column field="modifieddate" title="Last Updated On">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      {{ dataItem.modifieddate | date : 'yyyy-MM-dd HH:mm' }}
+    </ng-template>
+  </kendo-grid-column>
 </kendo-grid>
