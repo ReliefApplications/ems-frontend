@@ -6,7 +6,7 @@ import { Apollo } from 'apollo-angular';
 import { isArray } from 'lodash';
 import get from 'lodash/get';
 import { Group, GroupsQueryResponse, Role } from '../../../models/user.model';
-import { RestService } from '../../../services/rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { getFilterGroupDisplay } from '../../../utils/filter/filter-display.helper';
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
 import { GET_GROUPS } from '../graphql/queries';

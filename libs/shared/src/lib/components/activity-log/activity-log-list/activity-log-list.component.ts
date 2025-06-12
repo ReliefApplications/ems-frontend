@@ -21,7 +21,7 @@ import { debounceTime, takeUntil } from 'rxjs';
 import { ActivityLog } from '../../../models/activity-log.model';
 import { DateModule } from '../../../pipes/date/date.module';
 import { DownloadService } from '../../../services/download/download.service';
-import { RestService } from '../../../services/rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { EmptyModule } from '../../ui/empty/empty.module';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 

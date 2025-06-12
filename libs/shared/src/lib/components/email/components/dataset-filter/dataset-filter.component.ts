@@ -22,7 +22,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { HttpClient } from '@angular/common/http';
-import { RestService } from '../../../../services/rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { prettifyLabel } from '../../../../../lib/utils/prettify';
 import {

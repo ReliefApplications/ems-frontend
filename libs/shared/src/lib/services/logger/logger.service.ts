@@ -6,7 +6,7 @@ import { isEqual, isNil } from 'lodash';
 import { combineLatest, filter, map, pairwise, startWith } from 'rxjs';
 import { ApplicationService } from '../application/application.service';
 import { BreadcrumbService } from '../breadcrumb/breadcrumb.service';
-import { RestService } from '../rest/rest.service';
+import { RestService } from '@oort-front/core';
 
 type BreadcrumbItemForActivity = { text: string; order: number };
 

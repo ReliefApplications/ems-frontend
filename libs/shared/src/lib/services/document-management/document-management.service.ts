@@ -6,7 +6,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { isNil, set } from 'lodash';
 import { Question } from 'survey-core';
 import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
-import { RestService } from '../rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { Apollo, gql } from 'apollo-angular';
 import {
   DriveQueryResponse,

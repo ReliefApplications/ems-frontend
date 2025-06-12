@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { RestService } from '../rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { BehaviorSubject, first } from 'rxjs';
 import { EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
 import set from 'lodash/set';

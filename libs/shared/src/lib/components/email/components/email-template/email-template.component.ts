@@ -24,7 +24,7 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
 import { firstValueFrom, lastValueFrom, takeUntil } from 'rxjs';
 import { cloneDeep } from 'lodash';
 import { QueryBuilderService } from './../../../../services/query-builder/query-builder.service';
-import { RestService } from '../../../../services/rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { prettifyLabel } from '../../../../../lib/utils/prettify';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GET_CS_USER_FIELDS } from '../../graphql/queries';

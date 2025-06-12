@@ -30,7 +30,6 @@ export * from './lib/services/logger/logger.service';
 export * from './lib/services/map/map-layers.service';
 export * from './lib/services/reference-data/reference-data.service';
 export * from './lib/services/query-builder/query-builder.service';
-export * from './lib/services/rest/rest.service';
 export * from './lib/services/workflow/workflow.service';
 export * from './lib/services/common-services/common-services.service';
 

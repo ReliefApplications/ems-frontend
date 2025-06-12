@@ -20,7 +20,7 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
 import { DOCUMENT } from '@angular/common';
 import { ResizeEvent } from 'angular-resizable-element';
 import { ResizableModule } from 'angular-resizable-element';
-import { RestService } from '../../services/rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { AsyncMonacoEditorDirective } from '../../directives/async-monaco-editor/async-monaco-editor.directive';
 
 /** Default css style example to initialize the form and editor */

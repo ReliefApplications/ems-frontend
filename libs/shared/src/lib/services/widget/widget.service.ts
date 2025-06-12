@@ -6,7 +6,7 @@ import get from 'lodash/get';
 import { ContextService } from '../context/context.service';
 import { DashboardAutomationService } from '../dashboard-automation/dashboard-automation.service';
 import { ActionWithValue } from '../../models/automation.model';
-import { RestService } from '../rest/rest.service';
+import { RestService } from '@oort-front/core';
 
 /**
  * Shared widget service.

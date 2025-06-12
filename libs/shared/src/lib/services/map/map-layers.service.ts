@@ -27,7 +27,7 @@ import {
   LayerQueryResponse,
   LayersQueryResponse,
 } from '../../models/layer.model';
-import { RestService } from '../rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { QueryBuilderService } from '../query-builder/query-builder.service';
 import { AggregationBuilderService } from '../aggregation-builder/aggregation-builder.service';
 import { Aggregation } from '../../models/aggregation.model';

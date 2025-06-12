@@ -80,7 +80,7 @@ import {
 import { UPDATE_CUSTOM_NOTIFICATION } from '../application-notifications/graphql/mutations';
 import { AuthService } from '../auth/auth.service';
 import { DownloadService } from '../download/download.service';
-import { RestService } from '../rest/rest.service';
+import { RestService } from '@oort-front/core';
 import {
   ADD_CHANNEL,
   ADD_CUSTOM_NOTIFICATION,

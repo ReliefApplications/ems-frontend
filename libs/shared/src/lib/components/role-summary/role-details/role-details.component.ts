@@ -8,7 +8,7 @@ import {
 } from '../../../models/user.model';
 import { GET_PERMISSIONS } from '../graphql/queries';
 import { get } from 'lodash';
-import { RestService } from '../../../services/rest/rest.service';
+import { RestService } from '@oort-front/core';
 
 /**
  * General tab of Role Summary.

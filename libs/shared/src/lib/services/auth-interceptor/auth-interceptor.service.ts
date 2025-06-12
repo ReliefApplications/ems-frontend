@@ -9,7 +9,7 @@ import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
-import { RestService } from '../rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { ShadowDomService } from '@oort-front/ui';
 import { jwtDecode } from 'jwt-decode';
 

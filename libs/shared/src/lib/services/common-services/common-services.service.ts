@@ -1,6 +1,6 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { RestService } from '../rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { Apollo } from 'apollo-angular';
 import { InMemoryCache } from '@apollo/client';
 import { HttpLink } from 'apollo-angular/http';

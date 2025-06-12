@@ -16,7 +16,7 @@ import { TokenRegex } from '../../constant';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
-import { RestService } from '../../../../services/rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { FormArray } from '@angular/forms';
 import { cloneDeep } from 'lodash';
 

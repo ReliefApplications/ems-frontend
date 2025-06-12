@@ -16,9 +16,9 @@ import {
   ConfirmService,
   BlobType,
   DownloadService,
-  RestService,
   AsyncMonacoEditorDirective,
 } from '@oort-front/shared';
+import { RestService } from '@oort-front/core';
 import { takeUntil } from 'rxjs/operators';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {

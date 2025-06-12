@@ -16,7 +16,7 @@ import {
   UntypedFormArray,
   UntypedFormGroup,
 } from '@angular/forms';
-import { RestService } from '../../../../services/rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { firstValueFrom } from 'rxjs';
 
 type AccessPermissions = {

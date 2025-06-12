@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RestService } from '../../../services/rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { debounceTime, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ButtonModule, DateModule, FormWrapperModule } from '@oort-front/ui';

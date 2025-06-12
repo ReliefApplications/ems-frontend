@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
-import { RestService } from '../rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { Application } from '../../models/application.model';
 import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';

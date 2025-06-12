@@ -16,7 +16,7 @@ import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/public-api';
 import { HttpClient } from '@angular/common/http';
-import { RestService } from '../../../../services/rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { cloneDeep } from 'lodash';
 
 /** Default number of items per request for pagination */

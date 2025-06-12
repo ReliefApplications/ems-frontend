@@ -1,1 +1,2 @@
-export * from './lib/core.module';
+// === SERVICES ===
+export * from './lib/services/rest/rest.service';

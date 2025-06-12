@@ -32,7 +32,7 @@ import {
   EmailNotificationTypes,
   EmailTemplatesQueryResponse,
 } from '../../models/email-notifications.model';
-import { RestService } from '../../services/rest/rest.service';
+import { RestService } from '@oort-front/core';
 import {
   ADD_CUSTOM_TEMPLATE,
   ADD_DISTRIBUTION_LIST,

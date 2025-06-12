@@ -1,7 +1,7 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { RestService } from '../rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { ApiConfiguration } from '../../models/api-configuration.model';
 
 /**

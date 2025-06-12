@@ -9,7 +9,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { ApiProxyService } from '../../../../services/api-proxy/api-proxy.service';
 import { HttpHeaders } from '@angular/common/http';
-import { RestService } from '../../../../services/rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { set } from 'lodash';
 import {
   MAX_FILE_COUNT,

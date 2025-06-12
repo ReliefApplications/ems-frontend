@@ -6,7 +6,7 @@ import { GridModule } from './grid.module';
 import { HttpClientModule } from '@angular/common/http';
 import { GridService } from '../../../../services/grid/grid.service';
 import { ApiProxyService } from '../../../../services/api-proxy/api-proxy.service';
-import { RestService } from '../../../../services/rest/rest.service';
+import { RestService } from '@oort-front/core';
 import {
   DEFAULT_LANGUAGE,
   MissingTranslationHandler,

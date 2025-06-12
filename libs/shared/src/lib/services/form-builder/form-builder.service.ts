@@ -20,7 +20,7 @@ import {
   Record as RecordModel,
 } from '../../models/record.model';
 import { FormHelpersService } from '../form-helper/form-helper.service';
-import { RestService } from '../rest/rest.service';
+import { RestService } from '@oort-front/core';
 import { EDIT_RECORD } from './graphql/mutations';
 
 /**

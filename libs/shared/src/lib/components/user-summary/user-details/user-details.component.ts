@@ -7,7 +7,7 @@ import {
 import get from 'lodash/get';
 import { User } from '../../../models/user.model';
 import { AppAbility } from '../../../services/auth/auth.service';
-import { RestService } from '../../../services/rest/rest.service';
+import { RestService } from '@oort-front/core';
 
 /**
  * User summary details component.
