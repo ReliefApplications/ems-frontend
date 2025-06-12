@@ -27,6 +27,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { ApolloQueryResult } from '@apollo/client';
+import { RestService } from '@oort-front/core';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -92,6 +93,7 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
    * @param confirmService Shared confirm service
    * @param translate Angular translation service
    * @param activatedRoute Angular active route
+   * @param restService Shared rest service
    */
   constructor(
     private apollo: Apollo,
@@ -101,7 +103,8 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
     private downloadService: DownloadService,
     private confirmService: ConfirmService,
     private translate: TranslateService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private restService: RestService
   ) {
     super();
   }
@@ -359,9 +362,18 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
    * @param type The type of file we want ('csv' or 'xlsx')
    */
   async onExport(type: 'csv' | 'xlsx') {
-    this.downloadService.getUsersExport(
-      type,
-      this.selection.selected.map((x) => x.id || '').filter((x) => x !== '')
+    const users = this.selection.selected
+      .map((x) => x.id || '')
+      .filter((x) => x !== '');
+    const queryString = new URLSearchParams({ type }).toString();
+    this.downloadService.download(
+      `users.${type}`,
+      `text/${type};charset=utf-8;`,
+      this.restService.post(
+        `download/users?${queryString}`,
+        { users },
+        { responseType: 'blob' }
+      )
     );
   }
 

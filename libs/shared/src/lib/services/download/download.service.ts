@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { RestService } from '@oort-front/core';
-import { Application } from '../../models/application.model';
 import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
 
@@ -208,55 +207,6 @@ export class DownloadService {
   }
 
   /**
-   * Downloads file with users from the server
-   *
-   * @param type type of the file
-   * @param users users to export, if any
-   * @param application application get export users from, if any
-   */
-  getUsersExport(
-    type: 'csv' | 'xlsx',
-    users: string[],
-    application?: Application
-  ): void {
-    const fileName = application
-      ? `users_${application.name}.${type}`
-      : `users.${type}`;
-
-    const queryString = new URLSearchParams({ type }).toString();
-    const path = application
-      ? `download/application/${application.id}/users?${queryString}`
-      : `download/users?${queryString}`;
-
-    const { snackBarRef, headers } = this.triggerFileDownloadMessage(
-      'common.notifications.file.download.processing'
-    );
-    const snackBarSpinner = snackBarRef.instance.nestedComponent;
-
-    this.restService
-      .post(path, { users }, { responseType: 'blob', headers })
-      .subscribe(
-        (res) => {
-          const blob = new Blob([res], { type: `text/${type};charset=utf-8;` });
-          this.saveFile(fileName, blob);
-          snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.file.download.ready'
-          );
-          snackBarSpinner.instance.loading = false;
-          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-        },
-        () => {
-          snackBarSpinner.instance.message = this.translate.instant(
-            'common.notifications.file.download.error'
-          );
-          snackBarSpinner.instance.loading = false;
-          snackBarSpinner.instance.error = true;
-          snackBarRef.instance.triggerSnackBar(SNACKBAR_DURATION);
-        }
-      );
-  }
-
-  /**
    * Saves file from blob
    *
    * @param fileName name of the file
@@ -373,7 +323,7 @@ export class DownloadService {
    */
   download(
     filename: string,
-    type: 'text/xlsx;charset=utf-8;',
+    type: string = 'text/xlsx;charset=utf-8;',
     observable: Observable<unknown>
   ): void {
     const { snackBarRef } = this.triggerFileDownloadMessage(

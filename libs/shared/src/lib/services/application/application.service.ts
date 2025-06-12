@@ -1192,7 +1192,16 @@ export class ApplicationService {
   downloadUsers(type: 'csv' | 'xlsx', users: string[] = []): void {
     const application = this.application.getValue();
     if (application) {
-      this.downloadService.getUsersExport(type, users, application);
+      const queryString = new URLSearchParams({ type }).toString();
+      this.downloadService.download(
+        `users_${application.name}.${type}`,
+        `text/${type};charset=utf-8;`,
+        this.restService.post(
+          `download/application/${application.id}/users?${queryString}`,
+          { users },
+          { responseType: 'blob' }
+        )
+      );
     }
   }
 
