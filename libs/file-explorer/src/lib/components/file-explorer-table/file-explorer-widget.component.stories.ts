@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FileExplorerTableComponent } from './file-explorer-table.component';
 
 export default {
-  title: 'File explorer table',
+  title: 'Components/File explorer table',
   component: FileExplorerTableComponent,
   decorators: [
     moduleMetadata({

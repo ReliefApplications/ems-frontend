@@ -107,7 +107,7 @@ const data: FileExplorerDocument[] = [
 ];
 
 export default {
-  title: 'File explorer widget',
+  title: 'Components/File explorer widget',
   component: FileExplorerWidgetComponent,
   decorators: [
     moduleMetadata({
