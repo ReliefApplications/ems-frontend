@@ -1,6 +1,8 @@
 <div class="flex flex-col gap-4">
   <!-- Toolbar -->
-  <oort-front-file-explorer-toolbar [view]="view"></oort-front-file-explorer-toolbar>
+  <oort-front-file-explorer-toolbar
+    [view]="view"
+  ></oort-front-file-explorer-toolbar>
   <!-- Content -->
   <kendo-splitter class="!h-full">
     <kendo-splitter-pane [collapsible]="true" size="30%">
@@ -12,7 +14,12 @@
 
     <kendo-splitter-pane>
       <div class="pane-content">
-        <oort-front-file-explorer-table></oort-front-file-explorer-table>
+        <oort-front-file-explorer-table
+          *ngIf="view === 'grid'"
+        ></oort-front-file-explorer-table>
+        <oort-front-file-explorer-list
+          *ngIf="view === 'list'"
+        ></oort-front-file-explorer-list>
       </div>
     </kendo-splitter-pane>
 
