@@ -15,7 +15,7 @@ import {
 } from '../../models/api-configuration.model';
 import jsonpath from 'jsonpath';
 import toJsonSchema from 'to-json-schema';
-import transformGraphQLVariables from '../../utils/reference-data/transform-graphql-variables.util';
+import { transformGraphQLVariables } from '@oort-front/core';
 import { HttpHeaders } from '@angular/common/http';
 import { Aggregation } from '../../models/aggregation.model';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';

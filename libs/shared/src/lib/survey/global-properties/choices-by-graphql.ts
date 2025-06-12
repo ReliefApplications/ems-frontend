@@ -13,7 +13,7 @@ import { Observable, Subject, firstValueFrom, takeUntil } from 'rxjs';
 import jsonpath from 'jsonpath';
 import graphQLVariables from './graphql-variables';
 import { isArray, isEqual, isNil } from 'lodash';
-import transformGraphQLVariables from '../../utils/reference-data/transform-graphql-variables.util';
+import { transformGraphQLVariables } from '@oort-front/core';
 import { Injector } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 
