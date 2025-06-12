@@ -1,21 +1,26 @@
-<kendo-splitter class="!h-full">
-  <kendo-splitter-pane [collapsible]="true" size="30%">
-    <div class="pane-content">
-      <h3>Inner splitter / left pane</h3>
-      <p>Resizable and collapsible.</p>
-    </div>
-  </kendo-splitter-pane>
+<div class="flex flex-col gap-4">
+  <!-- Toolbar -->
+  <oort-front-file-explorer-toolbar [view]="view"></oort-front-file-explorer-toolbar>
+  <!-- Content -->
+  <kendo-splitter class="!h-full">
+    <kendo-splitter-pane [collapsible]="true" size="30%">
+      <div class="pane-content">
+        <h3>Inner splitter / left pane</h3>
+        <p>Resizable and collapsible.</p>
+      </div>
+    </kendo-splitter-pane>
 
-  <kendo-splitter-pane>
-    <div class="pane-content">
-      <oort-front-file-explorer-table></oort-front-file-explorer-table>
-    </div>
-  </kendo-splitter-pane>
+    <kendo-splitter-pane>
+      <div class="pane-content">
+        <oort-front-file-explorer-table></oort-front-file-explorer-table>
+      </div>
+    </kendo-splitter-pane>
 
-  <kendo-splitter-pane [collapsible]="true" size="30%">
-    <div class="pane-content">
-      <h3>Inner splitter / right pane</h3>
-      <p>Resizable and collapsible.</p>
-    </div>
-  </kendo-splitter-pane>
-</kendo-splitter>
+    <kendo-splitter-pane [collapsible]="true" size="30%">
+      <div class="pane-content">
+        <h3>Inner splitter / right pane</h3>
+        <p>Resizable and collapsible.</p>
+      </div>
+    </kendo-splitter-pane>
+  </kendo-splitter>
+</div>

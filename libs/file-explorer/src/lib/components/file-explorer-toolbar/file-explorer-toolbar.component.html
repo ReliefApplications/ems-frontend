@@ -1,0 +1,29 @@
+<div class="flex flex-row gap-2">
+  <!-- Change display mode -->
+  <div class="flex flex-row">
+    <ui-button
+      [isIcon]="true"
+      icon="grid_view"
+      [category]="view === 'grid' ? 'secondary' : 'primary'"
+      [variant]="view === 'grid' ? 'primary' : 'grey'"
+      (click)="onChangeView('grid')"
+    ></ui-button>
+    <ui-button
+      [isIcon]="true"
+      icon="view_list"
+      [category]="view === 'list' ? 'secondary' : 'primary'"
+      [variant]="view === 'list' ? 'primary' : 'grey'"
+      (click)="onChangeView('list')"
+    ></ui-button>
+  </div>
+  <!-- Searchbar -->
+  <div uiFormFieldDirective [defaultMargin]="false" class="max-sm:flex-auto">
+    <ui-icon icon="search" uiPrefix></ui-icon>
+    <input
+      id="exampleSelect"
+      type="text"
+      [placeholder]="'Search...'"
+      class="w-64 relative flex py-0.5 px-2rounded-md border-0 items-center"
+    />
+  </div>
+</div>
