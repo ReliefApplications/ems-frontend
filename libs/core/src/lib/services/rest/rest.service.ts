@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -9,20 +9,14 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class RestService {
-  /** Api url */
-  public apiUrl = '';
+  /** Http client */
+  private http = inject(HttpClient);
+  /** Environment */
+  private environment: any = inject('environment' as any);
 
-  /**
-   * Shared Rest service, used to create Http request.
-   *
-   * @param environment Environment variable
-   * @param http Http client
-   */
-  constructor(
-    @Inject('environment') environment: any,
-    private http: HttpClient
-  ) {
-    this.apiUrl = environment.apiUrl;
+  /** @returns API url */
+  get apiUrl() {
+    return this.environment.apiUrl;
   }
 
   /**
