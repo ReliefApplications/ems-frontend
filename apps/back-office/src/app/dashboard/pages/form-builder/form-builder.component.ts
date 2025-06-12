@@ -17,8 +17,8 @@ import {
   status,
   FormQueryResponse,
   EditFormMutationResponse,
-  SnackbarSpinnerComponent,
 } from '@oort-front/shared';
+import { SnackbarSpinnerComponent } from '@oort-front/core';
 import { SpinnerComponent } from '@oort-front/ui';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';

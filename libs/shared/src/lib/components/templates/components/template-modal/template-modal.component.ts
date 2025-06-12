@@ -27,10 +27,10 @@ import {
 import { Dialog } from '@angular/cdk/dialog';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { ConfirmService } from '../../../../services/confirm/confirm.service';
-import { DownloadService } from '../../../../services/download/download.service';
 import { EmailService } from '../../../email/email.service';
 import { DialogRef } from '@angular/cdk/dialog';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
+import { DownloadService } from '@oort-front/core';
 
 /**
  * Custom template modal edition.

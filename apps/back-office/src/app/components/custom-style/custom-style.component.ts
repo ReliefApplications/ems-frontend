@@ -14,8 +14,6 @@ import {
   ApplicationService,
   UnsubscribeComponent,
   ConfirmService,
-  BlobType,
-  DownloadService,
   AsyncMonacoEditorDirective,
 } from '@oort-front/shared';
 import { RestService } from '@oort-front/core';
@@ -31,6 +29,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
 import { ResizeEvent } from 'angular-resizable-element';
 import { ResizableModule } from 'angular-resizable-element';
+import { DownloadService, BlobType } from '@oort-front/core';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';

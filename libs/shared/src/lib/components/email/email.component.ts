@@ -16,12 +16,12 @@ import { firstValueFrom, takeUntil } from 'rxjs';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { ApiConfiguration } from '../../models/api-configuration.model';
 import { AppAbility, AuthService } from '../../services/auth/auth.service';
-import { DownloadService } from '../../services/download/download.service';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { cloneDeep } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { DistributionModalComponent } from '../distribution-lists/components/distribution-modal/distribution-modal.component';
 import { PreviewDistributionComponent } from './components/preview-distribution/preview-distribution.component';
+import { DownloadService } from '@oort-front/core';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;

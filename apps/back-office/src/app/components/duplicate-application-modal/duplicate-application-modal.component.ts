@@ -5,8 +5,8 @@ import { DUPLICATE_APPLICATION } from './graphql/mutations';
 import {
   Application,
   DuplicateApplicationMutationResponse,
-  SnackbarSpinnerComponent,
 } from '@oort-front/shared';
+import { SnackbarSpinnerComponent } from '@oort-front/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';

@@ -5,7 +5,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { isNil, set } from 'lodash';
 import { Question } from 'survey-core';
-import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { RestService } from '@oort-front/core';
 import { Apollo, gql } from 'apollo-angular';
 import {
@@ -15,6 +14,7 @@ import {
   OccurrenceQueryResponse,
 } from './graphql/queries';
 import { firstValueFrom } from 'rxjs';
+import { SnackbarSpinnerComponent } from '@oort-front/core';
 
 /**
  * Property query response type

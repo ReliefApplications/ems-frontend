@@ -28,8 +28,8 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { SnackbarSpinnerComponent } from '../snackbar-spinner/snackbar-spinner.component';
 import { DashboardExportService } from '../../services/dashboard-export/dashboard-export.service';
+import { SnackbarSpinnerComponent } from '@oort-front/core';
 
 /**
  * Shared dashboard export button.

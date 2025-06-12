@@ -21,7 +21,6 @@ import {
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { DownloadService } from '../../../services/download/download.service';
 import {
   QueryBuilderService,
   QueryResponse,
@@ -55,6 +54,7 @@ import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
+import { DownloadService } from '@oort-front/core';
 
 /**
  * Default file name when exporting grid data.

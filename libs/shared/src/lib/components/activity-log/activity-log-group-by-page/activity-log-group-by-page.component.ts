@@ -13,7 +13,7 @@ import {
   PagerSettings,
 } from '@progress/kendo-angular-grid';
 import { SortDescriptor } from '@progress/kendo-data-query';
-import { DownloadService } from '../../../services/download/download.service';
+import { DownloadService } from '@oort-front/core';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;

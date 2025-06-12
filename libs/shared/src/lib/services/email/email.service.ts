@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { HttpHeaders } from '@angular/common/http';
 import { Dialog } from '@angular/cdk/dialog';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { prettifyLabel } from '../../utils/prettify';
 import { firstValueFrom, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { RestService } from '@oort-front/core';
+import { RestService, SnackbarSpinnerComponent } from '@oort-front/core';
 import { SnackbarService } from '@oort-front/ui';
 import { flatDeep } from '../../utils/array-filter';
 import {

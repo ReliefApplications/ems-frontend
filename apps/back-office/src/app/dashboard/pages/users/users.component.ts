@@ -6,7 +6,6 @@ import {
   AddUsersMutationResponse,
   ConfirmService,
   DeleteUsersMutationResponse,
-  DownloadService,
   Role,
   RolesQueryResponse,
   UnsubscribeComponent,
@@ -27,7 +26,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { ApolloQueryResult } from '@apollo/client';
-import { RestService } from '@oort-front/core';
+import { RestService, DownloadService } from '@oort-front/core';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;

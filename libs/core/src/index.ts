@@ -1,2 +1,2 @@
-// === SERVICES ===
-export * from './lib/services/rest/rest.service';
+export * from './lib/components';
+export * from './lib/services';

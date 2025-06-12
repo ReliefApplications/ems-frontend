@@ -5,7 +5,6 @@ import {
   Form,
   ConfirmService,
   Resource,
-  DownloadService,
   UnsubscribeComponent,
   ResourceRecordsNodesQueryResponse,
   DeleteRecordMutationResponse,
@@ -24,6 +23,7 @@ import {
 } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
 import { GraphQLError } from 'graphql';
+import { DownloadService } from '@oort-front/core';
 
 /** Quantity of resource that will be loaded at once. */
 const ITEMS_PER_PAGE = 10;

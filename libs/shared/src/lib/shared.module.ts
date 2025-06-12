@@ -12,7 +12,6 @@ import { ApplicationsSummaryModule } from './components/applications-summary/app
 import { SearchMenuModule } from './components/search-menu/search-menu.module';
 import { AggregationBuilderModule } from './components/ui/aggregation-builder/aggregation-builder.module';
 import { TagboxModule } from './components/ui/tagbox/tagbox.module';
-import { SnackbarSpinnerModule } from './components/snackbar-spinner/snackbar-spinner.module';
 import { SkeletonTableModule } from './components/skeleton/skeleton-table/skeleton-table.module';
 import { SkeletonModule } from './directives/skeleton/skeleton.module';
 import { UserSummaryModule } from './components/user-summary/user-summary.module';
@@ -55,7 +54,6 @@ import { DashboardFilterIconComponent } from './components/dashboard-filter-icon
     SearchMenuModule,
     AggregationBuilderModule,
     TagboxModule,
-    SnackbarSpinnerModule,
     ApplicationsArchiveModule,
     SkeletonTableModule,
     UserSummaryModule,

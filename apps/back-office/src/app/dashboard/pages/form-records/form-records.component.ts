@@ -16,7 +16,6 @@ import {
   RestoreRecordMutationResponse,
   BreadcrumbService,
   ConfirmService,
-  DownloadService,
   getCachedValues,
   updateQueryUniqueValues,
 } from '@oort-front/shared';
@@ -33,6 +32,7 @@ import {
 } from '@oort-front/ui';
 import { GraphQLError } from 'graphql';
 import { ApolloQueryResult } from '@apollo/client';
+import { DownloadService } from '@oort-front/core';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;

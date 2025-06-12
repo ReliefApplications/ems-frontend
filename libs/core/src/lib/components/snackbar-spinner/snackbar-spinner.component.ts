@@ -1,5 +1,11 @@
+import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
-import { SnackBarData, SNACKBAR_DATA } from '@oort-front/ui';
+import {
+  SnackBarData,
+  SNACKBAR_DATA,
+  SpinnerModule,
+  IconModule,
+} from '@oort-front/ui';
 import { BehaviorSubject } from 'rxjs';
 
 /**
@@ -7,9 +13,11 @@ import { BehaviorSubject } from 'rxjs';
  * Used for download / upload.
  */
 @Component({
-  selector: 'shared-snackbar-spinner',
+  standalone: true,
+  selector: 'core-snackbar-spinner',
   templateUrl: './snackbar-spinner.component.html',
   styleUrls: ['./snackbar-spinner.component.scss'],
+  imports: [CommonModule, SpinnerModule, IconModule],
 })
 export class SnackbarSpinnerComponent {
   /** Message displayed in snackbar */

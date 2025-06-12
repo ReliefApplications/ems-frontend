@@ -4,7 +4,6 @@ import { GridComponent, GridDataResult } from '@progress/kendo-angular-grid';
 import { Role } from '../../../models/user.model';
 import { PositionAttributeCategory } from '../../../models/position-attribute-category.model';
 import { FormBuilder, UntypedFormArray, Validators } from '@angular/forms';
-import { DownloadService } from '../../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UploadEvent } from '@progress/kendo-angular-upload';
 import { SnackbarService } from '@oort-front/ui';
@@ -20,6 +19,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UploadsModule } from '@progress/kendo-angular-upload';
 import { ButtonModule as uiButtonModule, TextareaModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { DownloadService } from '@oort-front/core';
 
 /** Model fot the input data */
 interface DialogData {

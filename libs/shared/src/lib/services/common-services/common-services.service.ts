@@ -1,11 +1,10 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { RestService } from '@oort-front/core';
+import { RestService, DownloadService } from '@oort-front/core';
 import { Apollo } from 'apollo-angular';
 import { InMemoryCache } from '@apollo/client';
 import { HttpLink } from 'apollo-angular/http';
 import { setContext } from '@apollo/client/link/context';
-import { DownloadService } from '../download/download.service';
 import transformGraphQLVariables from '../../utils/reference-data/transform-graphql-variables.util';
 
 /**

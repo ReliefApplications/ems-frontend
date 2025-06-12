@@ -25,9 +25,9 @@ import {
   RecordQueryResponse,
 } from '../../models/record.model';
 import { get, isEmpty, isNil, set } from 'lodash';
-import { SnackbarSpinnerComponent } from '../snackbar-spinner/snackbar-spinner.component';
 import { Layout } from '../../models/layout.model';
 import { EmailNotification } from '../../models/email-notifications.model';
+import { SnackbarSpinnerComponent } from '@oort-front/core';
 
 /**
  * Dashboard action button component.

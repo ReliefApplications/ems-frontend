@@ -17,12 +17,12 @@ import { Question } from '../../survey/types';
 import { AuthService } from '../auth/auth.service';
 import { ConfirmService } from '../confirm/confirm.service';
 import { DocumentManagementService } from '../document-management/document-management.service';
-import { BlobType, DownloadService } from '../download/download.service';
 import {
   ADD_DRAFT_RECORD,
   DELETE_DRAFT_RECORD,
   EDIT_DRAFT_RECORD,
 } from './graphql/mutations';
+import { DownloadService, BlobType } from '@oort-front/core';
 
 /**
  * Shared survey helper service.

@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { EmailService } from '../../email.service';
 import { ApplicationService } from '../../../../services/application/application.service';
-import { DownloadService } from '../../../../services/download/download.service';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
@@ -16,7 +15,7 @@ import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/public-api';
 import { HttpClient } from '@angular/common/http';
-import { RestService } from '@oort-front/core';
+import { RestService, DownloadService } from '@oort-front/core';
 import { cloneDeep } from 'lodash';
 
 /** Default number of items per request for pagination */

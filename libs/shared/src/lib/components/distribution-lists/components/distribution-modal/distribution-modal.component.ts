@@ -13,7 +13,6 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { EmailService } from '../../../email/email.service';
-import { DownloadService } from '../../../../services/download/download.service';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { EmailComponent } from '../../../email/email.component';
 import { EmailModule } from '../../../email/email.module';
@@ -30,6 +29,7 @@ import {
   AuthService,
 } from '../../../../services/auth/auth.service';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
+import { DownloadService } from '@oort-front/core';
 
 /** Model for the data input */
 interface DialogData {

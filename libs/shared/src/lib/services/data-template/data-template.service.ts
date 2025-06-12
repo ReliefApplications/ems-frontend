@@ -5,9 +5,9 @@ import { RawEditorSettings } from 'tinymce';
 import { Application } from '../../models/application.model';
 import { ContentType, Page } from '../../models/page.model';
 import { ApplicationService } from '../application/application.service';
-import { DownloadService } from '../download/download.service';
 import { HtmlParserService } from '../html-parser/html-parser.service';
 import { DocumentManagementService } from '../document-management/document-management.service';
+import { DownloadService } from '@oort-front/core';
 
 /**
  * Data template service

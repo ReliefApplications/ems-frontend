@@ -14,7 +14,6 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Version } from '../../models/form.model';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
-import { DownloadService } from '../../services/download/download.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { Record, RecordQueryResponse } from '../../models/record.model';
 import {
@@ -30,6 +29,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { startCase, isNil } from 'lodash';
 import { ResizeEvent } from 'angular-resizable-element';
 import { DOCUMENT } from '@angular/common';
+import { DownloadService } from '@oort-front/core';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.

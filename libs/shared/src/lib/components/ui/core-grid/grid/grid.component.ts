@@ -38,7 +38,6 @@ import {
 } from '@progress/kendo-data-query';
 import { get, has, intersection, isEqual, isNil } from 'lodash';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { DownloadService } from '../../../../services/download/download.service';
 import { GridDataFormatterService } from '../../../../services/grid-data-formatter/grid-data-formatter.service';
 import { GridService } from '../../../../services/grid/grid.service';
 import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
@@ -54,6 +53,7 @@ import {
   SELECTABLE_SETTINGS,
 } from './grid.constants';
 import { DocumentManagementService } from '../../../../services/document-management/document-management.service';
+import { DownloadService } from '@oort-front/core';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;

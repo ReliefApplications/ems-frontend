@@ -17,8 +17,8 @@ import { Subscription, first, firstValueFrom, takeUntil } from 'rxjs';
 import { LayoutComponent } from '../../steps/layout/layout.component';
 import { SelectDistributionComponent } from '../../steps/select-distribution/select-distribution.component';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { SnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
 import { cloneDeep } from 'lodash';
+import { SnackbarSpinnerComponent } from '@oort-front/core';
 
 /** Snackbar duration in ms */
 const SNACKBAR_DURATION = 700;
