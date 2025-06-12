@@ -3,6 +3,7 @@ import { FileExplorerWidgetComponent } from './file-explorer-widget.component';
 import { CommonModule } from '@angular/common';
 import { FileExplorerDocument } from '../../types/file-explorer-document.type';
 
+/** Mocked list of documents */
 const data: FileExplorerDocument[] = [
   {
     id: '1a2b3c4d',
@@ -116,12 +117,19 @@ export default {
   ],
 } as Meta<FileExplorerWidgetComponent>;
 
+/**
+ * Base template
+ *
+ * @param args arguments
+ * @returns story
+ */
 const Template: Story<FileExplorerWidgetComponent> = (
   args: FileExplorerWidgetComponent
 ) => ({
   props: args,
 });
 
+/** Main story */
 export const Primary = Template.bind({});
 Primary.args = {
   documents: data,

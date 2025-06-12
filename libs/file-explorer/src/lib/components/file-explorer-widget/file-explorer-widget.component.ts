@@ -24,6 +24,8 @@ import { FileExplorerDocument } from '../../types/file-explorer-document.type';
   styleUrls: ['./file-explorer-widget.component.scss'],
 })
 export class FileExplorerWidgetComponent {
+  /** Current view */
   public view: fileExplorerView = 'list';
+  /** List of documents */
   public documents: FileExplorerDocument[] = [];
 }

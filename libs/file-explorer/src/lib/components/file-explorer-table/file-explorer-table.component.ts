@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { FileExplorerDocument } from '../../types/file-explorer-document.type';
 
+/**
+ * File explorer 'grid' view component.
+ * Display documents as table.
+ */
 @Component({
   selector: 'oort-front-file-explorer-table',
   standalone: true,
@@ -11,5 +15,6 @@ import { FileExplorerDocument } from '../../types/file-explorer-document.type';
   styleUrls: ['./file-explorer-table.component.scss'],
 })
 export class FileExplorerTableComponent {
+  /** List of documents */
   @Input() gridData: FileExplorerDocument[] = [];
 }

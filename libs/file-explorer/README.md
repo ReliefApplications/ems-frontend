@@ -4,8 +4,11 @@ This library was generated with [Nx](https://nx.dev).
 
 ## Run storybook
 
-Run:
 `npx nx run file-explorer:storybook`
+
+## Lint
+
+`npx nx run file-explorer:lint`
 
 ## Generate new Angular files
 

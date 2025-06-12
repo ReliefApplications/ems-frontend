@@ -12,11 +12,20 @@ export default {
   ],
 } as Meta<FileExplorerTableComponent>;
 
+/**
+ * Base template
+ *
+ * @param args arguments
+ * @returns story
+ */
 const Template: Story<FileExplorerTableComponent> = (
   args: FileExplorerTableComponent
 ) => ({
   props: args,
 });
 
+/**
+ * Main story
+ */
 export const Primary = Template.bind({});
 Primary.args = {};

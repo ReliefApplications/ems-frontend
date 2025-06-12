@@ -13,6 +13,7 @@ export default {
   ],
 } as Meta;
 
+/** Base document */
 const baseDocument: FileExplorerDocument = {
   id: 'testfile',
   filename: '',
@@ -24,6 +25,7 @@ const baseDocument: FileExplorerDocument = {
   },
 };
 
+/** List of all documents */
 const allDocuments: FileExplorerDocument[] = [
   { ...baseDocument, filename: 'report.pdf' },
   { ...baseDocument, filename: 'contract.doc' },
@@ -40,6 +42,11 @@ const allDocuments: FileExplorerDocument[] = [
   { ...baseDocument, filename: 'unknownfile.xyz' },
 ];
 
+/**
+ * Story to show all types.
+ *
+ * @returns story
+ */
 export const AllTypes: Story = () => ({
   template: `
     <div class="flex flex-row flex-wrap gap-2">

@@ -1,8 +1,10 @@
+/** File explorer document user interface */
 export interface FileExplorerDocumentUser {
   firstname: string;
   lastname: string;
 }
 
+/** File explorer document interface */
 export interface FileExplorerDocument {
   id: string;
   filename: string;
