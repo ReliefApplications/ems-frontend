@@ -16,9 +16,11 @@
       <div class="pane-content">
         <oort-front-file-explorer-table
           *ngIf="view === 'grid'"
+          [gridData]="documents"
         ></oort-front-file-explorer-table>
         <oort-front-file-explorer-list
           *ngIf="view === 'list'"
+          [listData]="documents"
         ></oort-front-file-explorer-list>
       </div>
     </kendo-splitter-pane>
