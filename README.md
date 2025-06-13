@@ -56,6 +56,17 @@ The compiled applications can be found there in ./dist/apps/ folder.
 
 # Useful commands
 
+## Create libraries
+
+`npx nx g @nrwl/angular:lib <name> --directory=widget`
+
+You can also put it in a directory with tag:
+`--directory=<directory-name>`
+
+And set the prefix:
+`--prefix=<prefix>`
+
+
 ## Development server
 
 To serve a project, run:

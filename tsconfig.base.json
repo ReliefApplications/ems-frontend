@@ -20,7 +20,22 @@
       "@oort-front/doc-management": ["libs/doc-management/src/index.ts"],
       "@oort-front/shared": ["libs/shared/src/index.ts"],
       "@oort-front/shared/widgets": ["libs/shared/src/widgets/index.ts"],
-      "@oort-front/ui": ["libs/ui/src/index.ts"]
+      "@oort-front/ui": ["libs/ui/src/index.ts"],
+      "@oort-front/widget/chart-widget": [
+        "libs/widget/chart-widget/src/index.ts"
+      ],
+      "@oort-front/widget/core": ["libs/widget/core/src/index.ts"],
+      "@oort-front/widget/editor-widget": [
+        "libs/widget/editor-widget/src/index.ts"
+      ],
+      "@oort-front/widget/grid-widget": [
+        "libs/widget/grid-widget/src/index.ts"
+      ],
+      "@oort-front/widget/map-widget": ["libs/widget/map-widget/src/index.ts"],
+      "@oort-front/widget/summary-card-widget": [
+        "libs/widget/summary-card-widget/src/index.ts"
+      ],
+      "@oort-front/widget/tabs-widget": ["libs/widget/tabs-widget/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
