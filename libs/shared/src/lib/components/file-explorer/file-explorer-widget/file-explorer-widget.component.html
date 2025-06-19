@@ -22,7 +22,11 @@
         ></shared-file-explorer-table>
         <shared-file-explorer-list
           *ngIf="view === 'list'"
+          [loading]="loading"
           [listData]="documents"
+          [total]="total"
+          [skip]="skip"
+          (pageChange)="onPageChange($event)"
         ></shared-file-explorer-list>
       </div>
     </kendo-splitter-pane>
