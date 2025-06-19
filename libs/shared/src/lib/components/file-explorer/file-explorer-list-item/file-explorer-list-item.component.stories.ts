@@ -1,8 +1,8 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { CommonModule } from '@angular/common';
-import { FileIconPipe } from '../../pipes/file-icon/file-icon.pipe';
+import { FileIconPipe } from '../../../pipes/file-icon/file-icon.pipe';
 import { FileExplorerListItemComponent } from './file-explorer-list-item.component';
-import { FileExplorerDocument } from '../../types/file-explorer-document.type';
+import { FileExplorerDocument } from '../types/file-explorer-document.type';
 
 export default {
   title: 'Components/List Item',

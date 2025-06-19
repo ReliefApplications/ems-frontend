@@ -1,7 +1,7 @@
 import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule, FormWrapperModule, IconModule } from '@oort-front/ui';
-import { fileExplorerView } from '../../types/fie-explorer-view.type';
+import { fileExplorerView } from '../types/file-explorer-view.type';
 import { FileExplorerWidgetComponent } from '../file-explorer-widget/file-explorer-widget.component';
 
 /**

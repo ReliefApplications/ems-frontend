@@ -1,7 +1,7 @@
 import { moduleMetadata, Story, Meta } from '@storybook/angular';
 import { FileExplorerWidgetComponent } from './file-explorer-widget.component';
 import { CommonModule } from '@angular/common';
-import { FileExplorerDocument } from '../../types/file-explorer-document.type';
+import { FileExplorerDocument } from '../types/file-explorer-document.type';
 
 /** Mocked list of documents */
 const data: FileExplorerDocument[] = [

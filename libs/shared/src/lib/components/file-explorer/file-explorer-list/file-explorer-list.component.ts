@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FileExplorerDocument } from '../../types/file-explorer-document.type';
+import { FileExplorerDocument } from '../types/file-explorer-document.type';
 import { FileExplorerListItemComponent } from '../file-explorer-list-item/file-explorer-list-item.component';
 
 /**
