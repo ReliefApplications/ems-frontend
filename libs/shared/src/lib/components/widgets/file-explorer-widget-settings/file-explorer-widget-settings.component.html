@@ -1,4 +1,17 @@
 <ui-tabs class="flex flex-col h-full grow" [vertical]="true">
+  <!-- Folder structure -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <!-- todo: translate -->
+      <ui-icon icon="tab" [size]="24" uiTooltip="Folders"> </ui-icon>
+      <!-- todo: translate -->
+      <span>FOLDERS</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-file-explorer-folders-tab></shared-file-explorer-folders-tab>
+    </ng-template>
+  </ui-tab>
+  <!-- Display options -->
   <ui-tab>
     <ng-container ngProjectAs="label">
       <ui-icon

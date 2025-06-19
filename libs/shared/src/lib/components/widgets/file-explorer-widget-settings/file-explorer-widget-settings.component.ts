@@ -9,6 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { IconModule, TabsModule, TooltipModule } from '@oort-front/ui';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FileExplorerFoldersTabComponent } from './file-explorer-folders-tab/file-explorer-folders-tab.component';
 
 /**
  * File explorer widget settings.
@@ -25,6 +26,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     TabsModule,
     TooltipModule,
+    FileExplorerFoldersTabComponent,
   ],
   templateUrl: './file-explorer-widget-settings.component.html',
   styleUrls: ['./file-explorer-widget-settings.component.scss'],
