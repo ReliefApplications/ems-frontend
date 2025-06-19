@@ -10,8 +10,10 @@ import { RestService } from '../rest/rest.service';
 import { Apollo, gql } from 'apollo-angular';
 import {
   DriveQueryResponse,
+  GET_DOCUMENTS,
   GET_DRIVE_ID,
   GET_OCCURRENCE_BY_ID,
+  GetDocumentsQueryResponse,
   OccurrenceQueryResponse,
 } from './graphql/queries';
 import { firstValueFrom } from 'rxjs';
@@ -336,6 +338,18 @@ export class DocumentManagementService {
       })
     ).then(({ data }) => {
       this.defaultDriveId = data.storagedrive.driveid;
+    });
+  }
+
+  /**
+   * List documents query
+   *
+   * @returns Query to list documents
+   */
+  public listDocuments() {
+    const apolloClient = this.apollo.use('csClient');
+    return apolloClient.query<GetDocumentsQueryResponse>({
+      query: GET_DOCUMENTS,
     });
   }
 

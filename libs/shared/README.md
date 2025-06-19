@@ -18,6 +18,8 @@ Generate a new component:
 Generate a new standalone component:
 `npx nx g c components/<name> --standalone true --project=shared`
 
+Generate a service
+`npx nx g s services/<name>/<name> --project=shared`
 
 ## Running unit tests
 

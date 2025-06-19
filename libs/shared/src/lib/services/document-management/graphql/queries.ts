@@ -1,4 +1,5 @@
 import { gql } from 'apollo-angular';
+import { FileExplorerDocument } from '../../../components/file-explorer/types/file-explorer-document.type';
 
 /** Get Drive ID query definition */
 export const GET_DRIVE_ID = gql`
@@ -36,4 +37,38 @@ export interface OccurrenceQueryResponse {
     occurrencetype: number;
     driveid: string;
   };
+}
+
+/** GQL query to list documents */
+export const GET_DOCUMENTS = gql`
+  query {
+    vw_allmetatablerelations(limitItems: 10, offset: 0) {
+      document {
+        id
+        filename
+        createddate
+        modifiedbyuser {
+          firstname
+          lastname
+        }
+        modifieddate
+        occurrence {
+          driveid
+        }
+        documenttypemetadatas {
+          documenttype {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+`;
+
+/** List documents query interface */
+export interface GetDocumentsQueryResponse {
+  vw_allmetatablerelations: {
+    document: FileExplorerDocument;
+  }[];
 }
