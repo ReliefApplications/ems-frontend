@@ -10,6 +10,7 @@ import { BaseWidgetComponent } from '../../widgets/base-widget/base-widget.compo
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
 import { BehaviorSubject, switchMap, takeUntil, tap } from 'rxjs';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
+import { FileExplorerFilter } from '../types/file-explorer-filter.type';
 
 /**
  * File explorer widget component.
@@ -48,7 +49,7 @@ export class FileExplorerWidgetComponent
   /** Current page index */
   private page = new BehaviorSubject<number>(1);
   /** Filter */
-  private filter: any = {
+  private filter: FileExplorerFilter = {
     search: '',
   };
   /** Shared document management service */
@@ -93,7 +94,7 @@ export class FileExplorerWidgetComponent
    *
    * @param filter Filter change event
    */
-  onFilterChange(filter: any) {
+  onFilterChange(filter: FileExplorerFilter) {
     this.filter = filter;
     this.page.next(1);
   }
