@@ -22,8 +22,19 @@
     <input
       id="exampleSelect"
       type="text"
+      [formControl]="searchControl"
       [placeholder]="'Search...'"
       class="w-64 relative flex py-0.5 px-2rounded-md border-0 items-center"
     />
+    <ui-button
+      *ngIf="searchControl.value"
+      uiSuffix
+      size="small"
+      [isIcon]="true"
+      icon="close"
+      variant="danger"
+      uiSuffix
+      (click)="searchControl.setValue('')"
+    ></ui-button>
   </div>
 </div>

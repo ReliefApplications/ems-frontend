@@ -346,11 +346,13 @@ export class DocumentManagementService {
    *
    * @param options Query options
    * @param options.offset Query offset
+   * @param options.filter Query filter
    * @returns Query to list documents
    */
   public listDocuments(
     options: {
       offset: number;
+      filter?: any;
     } = {
       offset: 0,
     }
@@ -360,6 +362,7 @@ export class DocumentManagementService {
       query: GET_DOCUMENTS,
       variables: {
         offset: options.offset,
+        ...(options.filter && { filter: JSON.stringify(options.filter) }),
       },
     });
   }

@@ -41,8 +41,12 @@ export interface OccurrenceQueryResponse {
 
 /** GQL query to list documents */
 export const GET_DOCUMENTS = gql`
-  query GetDocuments($offset: Int) {
-    items: vw_allmetatablerelations(limitItems: 10, offset: $offset) {
+  query GetDocuments($offset: Int, $filter: JSON) {
+    items: vw_allmetatablerelations(
+      limitItems: 10
+      offset: $offset
+      filter: $filter
+    ) {
       document {
         id
         filename
@@ -63,7 +67,7 @@ export const GET_DOCUMENTS = gql`
         }
       }
     }
-    metadata: vw_allmetatablerelations {
+    metadata: vw_allmetatablerelations(filter: $filter) {
       aggregate_count
       aggregate_id_max
     }

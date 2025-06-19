@@ -47,6 +47,10 @@ export class FileExplorerWidgetComponent
   private pageSize = 10;
   /** Current page index */
   private page = new BehaviorSubject<number>(1);
+  /** Filter */
+  private filter: any = {
+    search: '',
+  };
   /** Shared document management service */
   private documentManagementService = inject(DocumentManagementService);
 
@@ -57,6 +61,11 @@ export class FileExplorerWidgetComponent
         switchMap((page) =>
           this.documentManagementService.listDocuments({
             offset: (page - 1) * this.pageSize,
+            filter: {
+              ...(this.filter.search && {
+                filename_like: `%${this.filter.search}%`,
+              }),
+            },
           })
         ),
         takeUntil(this.destroy$)
@@ -77,5 +86,15 @@ export class FileExplorerWidgetComponent
   onPageChange(page: PageChangeEvent) {
     const pageNumber = page.skip / this.pageSize + 1;
     this.page.next(pageNumber);
+  }
+
+  /**
+   * On filter change, update filter and reset page
+   *
+   * @param filter Filter change event
+   */
+  onFilterChange(filter: any) {
+    this.filter = filter;
+    this.page.next(1);
   }
 }
