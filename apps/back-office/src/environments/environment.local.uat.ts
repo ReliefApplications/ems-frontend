@@ -1,5 +1,5 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
-import { theme } from '../themes/default/default.dev';
+import { theme } from '../themes/default/default.uat';
 import { sharedEnvironment } from './environment.shared';
 import { Environment } from './environment.type';
 
@@ -53,6 +53,7 @@ export const environment: Environment = {
     'map',
     'summaryCard',
     'tabs',
+    'file-explorer',
   ],
   user: {
     attributes: ['country', 'region', 'location', 'department'],

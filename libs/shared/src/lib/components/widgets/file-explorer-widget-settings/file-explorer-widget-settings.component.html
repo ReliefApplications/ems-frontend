@@ -1,0 +1,16 @@
+<ui-tabs class="flex flex-col h-full grow" [vertical]="true">
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="settings_overscan"
+        [size]="24"
+        [uiTooltip]="'models.widget.display.title' | translate"
+      ></ui-icon>
+      <span>{{ 'models.widget.display.title' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-display-settings [formGroup]="widgetFormGroup">
+      </shared-display-settings>
+    </ng-template>
+  </ui-tab>
+</ui-tabs>
