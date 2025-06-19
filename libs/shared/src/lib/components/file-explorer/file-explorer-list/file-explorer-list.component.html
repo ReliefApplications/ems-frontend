@@ -1,11 +1,16 @@
 <div class="flex flex-col">
   <!-- List of files -->
-  <div class="w-full h-full flex flex-row flex-wrap">
+  <div *ngIf="!loading" class="w-full h-full flex flex-row flex-wrap">
     <shared-file-explorer-list-item
       *ngFor="let document of listData"
       [document]="document"
     ></shared-file-explorer-list-item>
   </div>
+  <!-- Loading indicator -->
+  <ui-spinner
+    class="flex justify-center items-center"
+    *ngIf="loading"
+  ></ui-spinner>
   <!-- Pagination -->
   <ui-paginator
     [disabled]="loading"
