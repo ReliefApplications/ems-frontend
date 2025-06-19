@@ -344,12 +344,23 @@ export class DocumentManagementService {
   /**
    * List documents query
    *
+   * @param options Query options
+   * @param options.offset Query offset
    * @returns Query to list documents
    */
-  public listDocuments() {
+  public listDocuments(
+    options: {
+      offset: number;
+    } = {
+      offset: 0,
+    }
+  ) {
     const apolloClient = this.apollo.use('csClient');
     return apolloClient.query<GetDocumentsQueryResponse>({
       query: GET_DOCUMENTS,
+      variables: {
+        offset: options.offset,
+      },
     });
   }
 

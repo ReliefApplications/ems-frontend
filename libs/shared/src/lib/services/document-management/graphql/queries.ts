@@ -41,8 +41,8 @@ export interface OccurrenceQueryResponse {
 
 /** GQL query to list documents */
 export const GET_DOCUMENTS = gql`
-  query {
-    vw_allmetatablerelations(limitItems: 10, offset: 0) {
+  query GetDocuments($offset: Int) {
+    items: vw_allmetatablerelations(limitItems: 10, offset: $offset) {
       document {
         id
         filename
@@ -63,12 +63,20 @@ export const GET_DOCUMENTS = gql`
         }
       }
     }
+    metadata: vw_allmetatablerelations {
+      aggregate_count
+      aggregate_id_max
+    }
   }
 `;
 
 /** List documents query interface */
 export interface GetDocumentsQueryResponse {
-  vw_allmetatablerelations: {
+  items: {
     document: FileExplorerDocument;
+  }[];
+  metadata: {
+    aggregate_count: number;
+    aggregate_id_max: string;
   }[];
 }
