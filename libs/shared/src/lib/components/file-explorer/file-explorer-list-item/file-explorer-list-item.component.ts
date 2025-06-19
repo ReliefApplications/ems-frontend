@@ -9,7 +9,7 @@ import { FileIconPipe } from '../../../pipes/file-icon/file-icon.pipe';
  * Display a single document in 'list' view.
  */
 @Component({
-  selector: 'oort-front-file-explorer-list-item',
+  selector: 'shared-file-explorer-list-item',
   standalone: true,
   imports: [CommonModule, IconModule, FileIconPipe],
   templateUrl: './file-explorer-list-item.component.html',

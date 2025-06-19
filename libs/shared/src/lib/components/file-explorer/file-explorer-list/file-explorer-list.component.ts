@@ -8,7 +8,7 @@ import { FileExplorerListItemComponent } from '../file-explorer-list-item/file-e
  * Display list of documents.
  */
 @Component({
-  selector: 'oort-front-file-explorer-list',
+  selector: 'shared-file-explorer-list',
   standalone: true,
   imports: [CommonModule, FileExplorerListItemComponent],
   templateUrl: './file-explorer-list.component.html',

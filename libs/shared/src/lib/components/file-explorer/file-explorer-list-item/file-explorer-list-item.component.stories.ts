@@ -51,7 +51,7 @@ export const AllTypes: Story = () => ({
   template: `
     <div class="flex flex-row flex-wrap gap-2">
       <ng-container *ngFor="let doc of documents">
-        <oort-front-file-explorer-list-item [document]="doc"></oort-front-file-explorer-list-item>
+        <shared-file-explorer-list-item [document]="doc"></shared-file-explorer-list-item>
       </ng-container>
     </div>
   `,

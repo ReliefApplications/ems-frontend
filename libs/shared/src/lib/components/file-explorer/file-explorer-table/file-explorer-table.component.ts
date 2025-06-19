@@ -8,7 +8,7 @@ import { FileExplorerDocument } from '../types/file-explorer-document.type';
  * Display documents as table.
  */
 @Component({
-  selector: 'oort-front-file-explorer-table',
+  selector: 'shared-file-explorer-table',
   standalone: true,
   imports: [CommonModule, GridModule],
   templateUrl: './file-explorer-table.component.html',

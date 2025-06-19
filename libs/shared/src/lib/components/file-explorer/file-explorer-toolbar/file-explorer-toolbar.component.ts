@@ -8,7 +8,7 @@ import { FileExplorerWidgetComponent } from '../file-explorer-widget/file-explor
  * File explorer widget toolbar.
  */
 @Component({
-  selector: 'oort-front-file-explorer-toolbar',
+  selector: 'shared-file-explorer-toolbar',
   standalone: true,
   imports: [CommonModule, IconModule, FormWrapperModule, ButtonModule],
   templateUrl: './file-explorer-toolbar.component.html',
