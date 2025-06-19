@@ -8,7 +8,7 @@ import { FileExplorerListComponent } from '../file-explorer-list/file-explorer-l
 import { FileExplorerDocument } from '../types/file-explorer-document.type';
 import { BaseWidgetComponent } from '../../widgets/base-widget/base-widget.component';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
-import { BehaviorSubject, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, switchMap, takeUntil, tap } from 'rxjs';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
 
 /**
@@ -35,6 +35,8 @@ export class FileExplorerWidgetComponent
   @Input() settings: any;
   /** Current view */
   public view: fileExplorerView = 'list';
+  /** Loading indicator */
+  public loading = true;
   /** List of documents */
   public documents: FileExplorerDocument[] = [];
   /** Total documents */
@@ -51,6 +53,7 @@ export class FileExplorerWidgetComponent
   ngOnInit(): void {
     this.page
       .pipe(
+        tap(() => (this.loading = true)),
         switchMap((page) =>
           this.documentManagementService.listDocuments({
             offset: (page - 1) * this.pageSize,
@@ -59,10 +62,10 @@ export class FileExplorerWidgetComponent
         takeUntil(this.destroy$)
       )
       .subscribe(({ data }) => {
-        console.log('query done');
         this.documents = data.items.map((x) => x.document);
         this.total = data.metadata[0].aggregate_count;
         this.skip = (this.page.getValue() - 1) * this.pageSize;
+        this.loading = false;
       });
   }
 
@@ -72,9 +75,7 @@ export class FileExplorerWidgetComponent
    * @param page Page change event
    */
   onPageChange(page: PageChangeEvent) {
-    console.log('change');
     const pageNumber = page.skip / this.pageSize + 1;
-    console.log(pageNumber);
     this.page.next(pageNumber);
   }
 }

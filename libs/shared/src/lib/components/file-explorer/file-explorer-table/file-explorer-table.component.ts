@@ -29,6 +29,8 @@ export class FileExplorerTableComponent implements OnChanges {
   @Input() total = 0;
   /** Skip value */
   @Input() skip = 0;
+  /** Loading indicator */
+  @Input() loading = true;
   /** Page change event emitter */
   @Output() pageChange = new EventEmitter<PageChangeEvent>();
   /** Grid data */

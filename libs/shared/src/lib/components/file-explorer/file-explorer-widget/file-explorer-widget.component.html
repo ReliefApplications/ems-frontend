@@ -14,6 +14,7 @@
       <div class="pane-content">
         <shared-file-explorer-table
           *ngIf="view === 'grid'"
+          [loading]="loading"
           [gridData]="documents"
           [total]="total"
           [skip]="skip"
