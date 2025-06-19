@@ -41,11 +41,17 @@ export interface OccurrenceQueryResponse {
 
 /** GQL query to list documents */
 export const GET_DOCUMENTS = gql`
-  query GetDocuments($offset: Int, $filter: JSON) {
+  query GetDocuments(
+    $offset: Int
+    $filter: JSON
+    $sortField: String = "modifiedat"
+    $sortDirection: String = "desc"
+  ) {
     items: vw_allmetatablerelations(
       limitItems: 10
       offset: $offset
       filter: $filter
+      sortBy: { field: $sortField, direction: $sortDirection }
     ) {
       document {
         id

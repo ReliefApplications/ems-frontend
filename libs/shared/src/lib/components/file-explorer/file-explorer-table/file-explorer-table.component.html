@@ -5,6 +5,9 @@
   [pageSize]="pageSize"
   [skip]="skip"
   (pageChange)="pageChange.emit($event)"
+  [sortable]="true"
+  [sort]="sort"
+  (sortChange)="sortChange.emit($event)"
 >
   <kendo-grid-column field="id" title="ID"> </kendo-grid-column>
   <kendo-grid-column field="filename" title="Name"> </kendo-grid-column>

@@ -17,6 +17,7 @@ import {
   OccurrenceQueryResponse,
 } from './graphql/queries';
 import { firstValueFrom } from 'rxjs';
+import { SortDescriptor } from '@progress/kendo-data-query';
 
 /**
  * Property query response type
@@ -347,12 +348,14 @@ export class DocumentManagementService {
    * @param options Query options
    * @param options.offset Query offset
    * @param options.filter Query filter
+   * @param options.sort Query sort descriptor
    * @returns Query to list documents
    */
   public listDocuments(
     options: {
       offset: number;
       filter?: any;
+      sort?: SortDescriptor[];
     } = {
       offset: 0,
     }
@@ -363,6 +366,10 @@ export class DocumentManagementService {
       variables: {
         offset: options.offset,
         ...(options.filter && { filter: JSON.stringify(options.filter) }),
+        ...(options.sort?.length && {
+          sortField: options.sort[0].field,
+          sortDirection: options.sort[0].dir,
+        }),
       },
     });
   }

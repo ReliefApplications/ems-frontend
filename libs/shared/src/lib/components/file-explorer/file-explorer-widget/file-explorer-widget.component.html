@@ -18,7 +18,9 @@
           [gridData]="documents"
           [total]="total"
           [skip]="skip"
+          [sort]="sort"
           (pageChange)="onPageChange($event)"
+          (sortChange)="onSortChange($event)"
         ></shared-file-explorer-table>
         <shared-file-explorer-list
           *ngIf="view === 'list'"

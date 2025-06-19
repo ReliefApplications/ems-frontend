@@ -10,6 +10,7 @@ import { GridDataResult, GridModule } from '@progress/kendo-angular-grid';
 import { FileExplorerDocument } from '../types/file-explorer-document.type';
 import { PAGER_SETTINGS } from './file-explorer-table.constants';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
+import { SortDescriptor } from '@progress/kendo-data-query';
 
 /**
  * File explorer 'grid' view component.
@@ -31,8 +32,12 @@ export class FileExplorerTableComponent implements OnChanges {
   @Input() skip = 0;
   /** Loading indicator */
   @Input() loading = true;
+  /** Sort descriptor */
+  @Input() sort: SortDescriptor[] = [];
   /** Page change event emitter */
   @Output() pageChange = new EventEmitter<PageChangeEvent>();
+  /** Sort change event emitter */
+  @Output() sortChange = new EventEmitter<SortDescriptor[]>();
   /** Grid data */
   public data: GridDataResult = {
     data: [],

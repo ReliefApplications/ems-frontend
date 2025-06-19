@@ -11,6 +11,7 @@ import { DocumentManagementService } from '../../../services/document-management
 import { BehaviorSubject, switchMap, takeUntil, tap } from 'rxjs';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
 import { FileExplorerFilter } from '../types/file-explorer-filter.type';
+import { SortDescriptor } from '@progress/kendo-data-query';
 
 /**
  * File explorer widget component.
@@ -52,6 +53,13 @@ export class FileExplorerWidgetComponent
   private filter: FileExplorerFilter = {
     search: '',
   };
+  /** Sort descriptor */
+  public sort: SortDescriptor[] = [
+    {
+      field: 'modifieddate',
+      dir: 'desc',
+    },
+  ];
   /** Shared document management service */
   private documentManagementService = inject(DocumentManagementService);
 
@@ -67,6 +75,9 @@ export class FileExplorerWidgetComponent
                 filename_like: `%${this.filter.search}%`,
               }),
             },
+            ...(this.sort.length && {
+              sort: this.sort,
+            }),
           })
         ),
         takeUntil(this.destroy$)
@@ -96,6 +107,16 @@ export class FileExplorerWidgetComponent
    */
   onFilterChange(filter: FileExplorerFilter) {
     this.filter = filter;
+    this.page.next(1);
+  }
+
+  /**
+   * On sort change, update sort and reset page
+   *
+   * @param sort Sort descriptor
+   */
+  onSortChange(sort: SortDescriptor[]) {
+    this.sort = sort;
     this.page.next(1);
   }
 }
