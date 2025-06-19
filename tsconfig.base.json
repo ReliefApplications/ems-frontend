@@ -17,7 +17,6 @@
     "baseUrl": ".",
     "paths": {
       "@oort-front/doc-management": ["libs/doc-management/src/index.ts"],
-      "@oort-front/file-explorer": ["libs/file-explorer/src/index.ts"],
       "@oort-front/shared": ["libs/shared/src/index.ts"],
       "@oort-front/shared/widgets": ["libs/shared/src/widgets/index.ts"],
       "@oort-front/ui": ["libs/ui/src/index.ts"]
