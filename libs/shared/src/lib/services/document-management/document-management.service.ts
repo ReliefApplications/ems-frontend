@@ -18,6 +18,7 @@ import {
 } from './graphql/queries';
 import { firstValueFrom } from 'rxjs';
 import { SortDescriptor } from '@progress/kendo-data-query';
+import { FileExplorerTagSelection } from '../../components/file-explorer/types/file-explorer-filter.type';
 
 /**
  * Property query response type
@@ -349,6 +350,7 @@ export class DocumentManagementService {
    * @param options.offset Query offset
    * @param options.filter Query filter
    * @param options.sort Query sort descriptor
+   * @param options.tags Query tags selection
    * @returns Query to list documents
    */
   public listDocuments(
@@ -356,6 +358,7 @@ export class DocumentManagementService {
       offset: number;
       filter?: any;
       sort?: SortDescriptor[];
+      tags?: FileExplorerTagSelection;
     } = {
       offset: 0,
     }

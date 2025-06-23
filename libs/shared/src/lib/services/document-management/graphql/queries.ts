@@ -46,12 +46,14 @@ export const GET_DOCUMENTS = gql`
     $filter: JSON
     $sortField: String = "modifiedat"
     $sortDirection: String = "desc"
+    $regionid: Int
   ) {
     items: vw_allmetatablerelations(
       limitItems: 10
       offset: $offset
       filter: $filter
       sortBy: { field: $sortField, direction: $sortDirection }
+      regionid: $regionid
     ) {
       document {
         id
@@ -73,7 +75,7 @@ export const GET_DOCUMENTS = gql`
         }
       }
     }
-    metadata: vw_allmetatablerelations(filter: $filter) {
+    metadata: vw_allmetatablerelations(filter: $filter, regionid: $regionid) {
       aggregate_count
       aggregate_id_max
     }

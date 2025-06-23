@@ -18,6 +18,7 @@ export const createFileExplorerWidgetFormGroup = (
   const formGroup = fb.group({
     id,
     title: [get(value, 'title', '')],
+    tags: [get(value, 'tags', [])] as string[],
   });
   return formGroup;
 };

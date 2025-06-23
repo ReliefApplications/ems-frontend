@@ -10,7 +10,10 @@ import { BaseWidgetComponent } from '../../widgets/base-widget/base-widget.compo
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
 import { BehaviorSubject, switchMap, takeUntil, tap } from 'rxjs';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
-import { FileExplorerFilter } from '../types/file-explorer-filter.type';
+import {
+  FileExplorerFilter,
+  FileExplorerTagSelection,
+} from '../types/file-explorer-filter.type';
 import { SortDescriptor } from '@progress/kendo-data-query';
 
 /**
@@ -62,6 +65,8 @@ export class FileExplorerWidgetComponent
   ];
   /** Shared document management service */
   private documentManagementService = inject(DocumentManagementService);
+  /** Tag selection */
+  private tagSelection: FileExplorerTagSelection = {};
 
   ngOnInit(): void {
     this.page
