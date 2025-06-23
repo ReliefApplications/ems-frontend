@@ -81,6 +81,7 @@ export class FileExplorerWidgetComponent
               ...(this.filter.search && {
                 filename_like: `%${this.filter.search}%`,
               }),
+              ...this.tagSelection,
             },
             ...(this.sort.length && {
               sort: this.sort,
@@ -114,6 +115,11 @@ export class FileExplorerWidgetComponent
    */
   onFilterChange(filter: FileExplorerFilter) {
     this.filter = filter;
+    this.page.next(1);
+  }
+
+  onSelectionChange(tagSelection: FileExplorerTagSelection) {
+    this.tagSelection = tagSelection;
     this.page.next(1);
   }
 

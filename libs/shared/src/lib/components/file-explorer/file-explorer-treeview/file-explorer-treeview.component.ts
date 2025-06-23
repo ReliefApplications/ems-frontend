@@ -1,15 +1,20 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FileExplorerTagKey } from '../types/file-explorer-filter.type';
+import {
+  FileExplorerTagKey,
+  FileExplorerTagSelection,
+} from '../types/file-explorer-filter.type';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
 import { TreeItem, TreeViewModule } from '@progress/kendo-angular-treeview';
-import { map } from 'rxjs';
+import { map, tap } from 'rxjs';
+import { FileExplorerWidgetComponent } from '../file-explorer-widget/file-explorer-widget.component';
+import { some } from 'lodash';
 
 /**
  * Structure of data used in the tree view.
  */
 interface TreeData {
-  id: number;
+  id: number | string;
   compositeId: string;
   type: FileExplorerTagKey;
   text: string;
@@ -35,9 +40,14 @@ export class FileExplorerTreeviewComponent implements OnInit {
   /** Selected keys in the tree view */
   public selectedKeys: any[] = [];
   /** Selected tags */
-  private selectedTags: { tag: FileExplorerTagKey; id: number }[] = [];
+  private selectedTags: { tag: FileExplorerTagKey; id: number | string }[] = [];
   /** Shared document management service */
   private documentManagementService = inject(DocumentManagementService);
+  /** Parent component */
+  private parent: FileExplorerWidgetComponent | null = inject(
+    FileExplorerWidgetComponent,
+    { optional: true }
+  );
 
   ngOnInit() {
     console.log(this.tags);
@@ -84,6 +94,9 @@ export class FileExplorerTreeviewComponent implements OnInit {
               type: nextTag,
             }))
             .sort((a, b) => a.text.localeCompare(b.text)) as TreeData[];
+        }),
+        tap((items) => {
+          node.items = items;
         })
       );
   }
@@ -93,35 +106,45 @@ export class FileExplorerTreeviewComponent implements OnInit {
   }
 
   public onSelectionChange(event: TreeItem) {
+    console.log(this.data);
     this.selectedTags = this.getParentChain(event.dataItem.compositeId);
+    console.log(this.selectedTags);
+    if (this.parent) {
+      this.parent.onSelectionChange(this.getFilter());
+    }
   }
 
   private getParentChain(
     compositeId: string
-  ): { tag: FileExplorerTagKey; id: number }[] {
-    const parts = compositeId.split('_');
-    const chain: { tag: FileExplorerTagKey; id: number }[] = [];
-    for (let i = 0; i < this.tags.length; i++) {
-      if (i === 0) {
-        if (parts[0] === this.tags[0]) {
-          chain.push({ tag: this.tags[0], id: Number(parts[1]) });
+  ): { tag: FileExplorerTagKey; id: number | string }[] {
+    const path: { tag: FileExplorerTagKey; id: number | string }[] = [];
+
+    function findPath(
+      nodes: TreeData[],
+      targetId: string,
+      currentPath: { tag: FileExplorerTagKey; id: number | string }[]
+    ): boolean {
+      return some(nodes, (node) => {
+        const newPath = [...currentPath, { tag: node.type, id: node.id }];
+        if (node.compositeId === targetId) {
+          path.push(...newPath);
+          return true;
         }
-      } else {
-        if (parts[0] === this.tags[i]) {
-          for (let j = 0; j <= i; j++) {
-            chain.push({ tag: this.tags[j], id: Number(parts[1]) });
-          }
-          break;
+        if (node.items && findPath(node.items, targetId, newPath)) {
+          return true;
         }
-      }
+        return false;
+      });
     }
-    return chain;
+
+    findPath(this.data, compositeId, []);
+    return path;
   }
 
-  private getFilter() {
+  private getFilter(): FileExplorerTagSelection {
     return this.selectedTags.reduce((acc, tag) => {
       acc[tag.tag] = tag.id;
       return acc;
-    }, {} as Record<FileExplorerTagKey, number>);
+    }, {} as any);
   }
 }
