@@ -15,6 +15,7 @@ import {
   FileExplorerTagSelection,
 } from '../types/file-explorer-filter.type';
 import { SortDescriptor } from '@progress/kendo-data-query';
+import { FileExplorerTreeviewComponent } from '../file-explorer-treeview/file-explorer-treeview.component';
 
 /**
  * File explorer widget component.
@@ -28,6 +29,7 @@ import { SortDescriptor } from '@progress/kendo-data-query';
     FileExplorerToolbarComponent,
     FileExplorerTableComponent,
     FileExplorerListComponent,
+    FileExplorerTreeviewComponent,
   ],
   templateUrl: './file-explorer-widget.component.html',
   styleUrls: ['./file-explorer-widget.component.scss'],

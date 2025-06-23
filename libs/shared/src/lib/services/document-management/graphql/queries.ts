@@ -92,3 +92,31 @@ export interface GetDocumentsQueryResponse {
     aggregate_id_max: string;
   }[];
 }
+
+/**
+ * Get document count per selection of tags
+ */
+export const COUNT_DOCUMENTS = gql`
+  query CountDocuments(
+    $filter: JSON
+    $withCountry: Boolean!
+    $withRegion: Boolean!
+  ) {
+    metadata: vw_allmetatablerelations(filter: $filter) {
+      aggregate_count
+      id: countryid @include(if: $withCountry)
+      name: countryname @include(if: $withCountry)
+      id: regionid @include(if: $withRegion)
+      name: regionname @include(if: $withRegion)
+    }
+  }
+`;
+
+/** Count documents query interface */
+export interface CountDocumentsQueryResponse {
+  metadata: {
+    aggregate_count: number;
+    name: string;
+    id: number;
+  }[];
+}

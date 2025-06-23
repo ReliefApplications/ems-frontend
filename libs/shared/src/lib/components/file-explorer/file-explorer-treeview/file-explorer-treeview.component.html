@@ -1,0 +1,12 @@
+<kendo-treeview
+  [nodes]="data"
+  textField="text"
+  childrenField="items"
+  kendoTreeViewExpandable
+  kendoTreeViewSelectable
+  [children]="$any(fetchChildren.bind(this))"
+  [hasChildren]="$any(hasChildren.bind(this))"
+  selectBy="compositeId"
+  [(selectedKeys)]="selectedKeys"
+  (selectionChange)="onSelectionChange($event)"
+></kendo-treeview>

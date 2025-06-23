@@ -24,3 +24,8 @@ export interface FileExplorerTagSelection {
   syndromeid?: number;
   regionid?: number;
 }
+
+export type FileExplorerTagKey = Extract<
+  keyof FileExplorerTagSelection,
+  string
+>;

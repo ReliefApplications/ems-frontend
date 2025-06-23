@@ -9,6 +9,8 @@ import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snac
 import { RestService } from '../rest/rest.service';
 import { Apollo, gql } from 'apollo-angular';
 import {
+  COUNT_DOCUMENTS,
+  CountDocumentsQueryResponse,
   DriveQueryResponse,
   GET_DOCUMENTS,
   GET_DRIVE_ID,
@@ -18,7 +20,10 @@ import {
 } from './graphql/queries';
 import { firstValueFrom } from 'rxjs';
 import { SortDescriptor } from '@progress/kendo-data-query';
-import { FileExplorerTagSelection } from '../../components/file-explorer/types/file-explorer-filter.type';
+import {
+  FileExplorerTagKey,
+  FileExplorerTagSelection,
+} from '../../components/file-explorer/types/file-explorer-filter.type';
 
 /**
  * Property query response type
@@ -373,6 +378,23 @@ export class DocumentManagementService {
           sortField: options.sort[0].field,
           sortDirection: options.sort[0].dir,
         }),
+      },
+    });
+  }
+
+  public countDocuments(
+    options: {
+      byTag?: FileExplorerTagKey;
+      filter?: any;
+    } = {}
+  ) {
+    const apolloClient = this.apollo.use('csClient');
+    return apolloClient.query<CountDocumentsQueryResponse>({
+      query: COUNT_DOCUMENTS,
+      variables: {
+        ...(options.filter && { filter: JSON.stringify(options.filter) }),
+        withCountry: options.byTag === 'countryid',
+        withRegion: options.byTag === 'regionid',
       },
     });
   }

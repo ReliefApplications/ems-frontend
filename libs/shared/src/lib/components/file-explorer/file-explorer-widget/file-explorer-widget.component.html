@@ -3,12 +3,18 @@
   <shared-file-explorer-toolbar [view]="view"></shared-file-explorer-toolbar>
   <!-- Content -->
   <kendo-splitter class="!flex-1 overflow-hidden">
-    <!-- <kendo-splitter-pane [collapsible]="true" [collapsed]="true" size="30%">
+    <kendo-splitter-pane
+      [collapsible]="true"
+      [collapsed]="true"
+      size="30%"
+      [scrollable]="false"
+    >
       <div class="pane-content">
-        <h3>Inner splitter / left pane</h3>
-        <p>Resizable and collapsible.</p>
+        <shared-file-explorer-treeview
+          [tags]="settings.tags"
+        ></shared-file-explorer-treeview>
       </div>
-    </kendo-splitter-pane> -->
+    </kendo-splitter-pane>
 
     <kendo-splitter-pane [scrollable]="false">
       <div class="h-full">
