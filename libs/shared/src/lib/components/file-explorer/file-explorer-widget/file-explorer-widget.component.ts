@@ -118,6 +118,11 @@ export class FileExplorerWidgetComponent
     this.page.next(1);
   }
 
+  /**
+   * On tag selection change, update tag selection and reset page
+   *
+   * @param tagSelection Tag selection change event
+   */
   onSelectionChange(tagSelection: FileExplorerTagSelection) {
     this.tagSelection = tagSelection;
     this.page.next(1);

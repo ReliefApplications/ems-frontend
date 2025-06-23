@@ -382,6 +382,14 @@ export class DocumentManagementService {
     });
   }
 
+  /**
+   * Count documents query
+   *
+   * @param options Query options
+   * @param options.byTag Tag to filter by
+   * @param options.filter Query filter
+   * @returns Query to count documents
+   */
   public countDocuments(
     options: {
       byTag?: FileExplorerTagKey;

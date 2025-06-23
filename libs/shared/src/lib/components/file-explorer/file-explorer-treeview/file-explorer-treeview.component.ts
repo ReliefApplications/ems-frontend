@@ -56,6 +56,10 @@ export class FileExplorerTreeviewComponent implements OnInit {
     }
   }
 
+  /**
+   * Fetches the initial tag values and populates the tree view data.
+   * This method is called during component initialization.
+   */
   private getTagValues() {
     this.documentManagementService
       .countDocuments({
@@ -71,10 +75,16 @@ export class FileExplorerTreeviewComponent implements OnInit {
             type: this.tags[0],
           }))
           .sort((a, b) => a.text.localeCompare(b.text));
-        console.log(this.data);
       });
   }
 
+  /**
+   * Fetches the children of a given node in the tree view.
+   * This method is called when a node is expanded.
+   *
+   * @param node The node for which to fetch children.
+   * @returns An observable that emits the children of the node.
+   */
   public fetchChildren(node: TreeData) {
     const nodeTag = node.compositeId.split('_')[0] as FileExplorerTagKey;
     const nextTag = this.tags[this.tags.indexOf(nodeTag) + 1];
@@ -101,24 +111,49 @@ export class FileExplorerTreeviewComponent implements OnInit {
       );
   }
 
+  /**
+   * Checks if a given node has children in the tree view.
+   * Returns true, if node corresponds to a tag that is not the last one in the tags array.
+   *
+   * @param node The node to check for children.
+   * @returns A boolean indicating whether the node has children.
+   */
   public hasChildren(node: TreeData): boolean {
     return !node.compositeId.startsWith(this.tags[this.tags.length - 1]);
   }
 
+  /**
+   * Handles the selection change event in the tree view.
+   *
+   * @param event Event triggered when the selection changes in the tree view.
+   */
   public onSelectionChange(event: TreeItem) {
-    console.log(this.data);
     this.selectedTags = this.getParentChain(event.dataItem.compositeId);
-    console.log(this.selectedTags);
     if (this.parent) {
       this.parent.onSelectionChange(this.getFilter());
     }
   }
 
+  /**
+   * Retrieves the parent chain of a node in the tree view based on its composite ID.
+   *
+   * @param compositeId Composite ID of the node to find its parent chain.
+   * @returns An array of objects representing the parent chain, each containing a tag and an ID.
+   */
   private getParentChain(
     compositeId: string
   ): { tag: FileExplorerTagKey; id: number | string }[] {
     const path: { tag: FileExplorerTagKey; id: number | string }[] = [];
 
+    /**
+     * Recursive function to find the path to a node with the given composite ID.
+     * It traverses the tree structure and builds the path as it goes.
+     *
+     * @param nodes The current level of nodes in the tree.
+     * @param targetId The composite ID of the target node.
+     * @param currentPath The current path being built.
+     * @returns A boolean indicating whether the target node was found.
+     */
     function findPath(
       nodes: TreeData[],
       targetId: string,
@@ -141,6 +176,11 @@ export class FileExplorerTreeviewComponent implements OnInit {
     return path;
   }
 
+  /**
+   * Generates a filter object based on the selected tags.
+   *
+   * @returns An object representing the filter for the file explorer.
+   */
   private getFilter(): FileExplorerTagSelection {
     return this.selectedTags.reduce((acc, tag) => {
       acc[tag.tag] = tag.id;
