@@ -397,12 +397,29 @@ export class DocumentManagementService {
     } = {}
   ) {
     const apolloClient = this.apollo.use('csClient');
+    const byTag = options.byTag;
+    // todo: add document role
     return apolloClient.query<CountDocumentsQueryResponse>({
       query: COUNT_DOCUMENTS,
       variables: {
         ...(options.filter && { filter: JSON.stringify(options.filter) }),
-        withCountry: options.byTag === 'countryid',
-        withRegion: options.byTag === 'regionid',
+        withAetiology: byTag === 'aetiologyid',
+        withInformationConfidentiality:
+          byTag === 'informationconfidentialityid',
+        withCountry: byTag === 'countryid',
+        withDiseaseCond: byTag === 'diseasecondid',
+        withDocumentCategory: byTag === 'documentcategoryid',
+        withDocumentType: byTag === 'documenttypeid',
+        withHazard: byTag === 'hazardid',
+        withIHRCommunication: byTag === 'ihrcommunicationid',
+        withAssignmentFunction: byTag === 'assignmentfunctionid',
+        // withDocumentRole: byTag === 'documentroleid',
+        withLanguage: byTag === 'languageid',
+        withOccurrence: byTag === 'occurrenceid',
+        withOccurrenceType: byTag === 'occurrencetype',
+        withSourceOfInformation: byTag === 'sourceofinformationid',
+        withSyndrome: byTag === 'syndromeid',
+        withRegion: byTag === 'regionid',
       },
     });
   }
