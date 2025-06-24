@@ -15,10 +15,12 @@ import {
   GET_DOCUMENTS,
   GET_DRIVE_ID,
   GET_OCCURRENCE_BY_ID,
+  GET_OCCURRENCE_TYPES,
   GetDocumentsQueryResponse,
+  GetOccurrenceTypesResponse,
   OccurrenceQueryResponse,
 } from './graphql/queries';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, forkJoin, map } from 'rxjs';
 import { SortDescriptor } from '@progress/kendo-data-query';
 import {
   FileExplorerTagKey,
@@ -398,30 +400,55 @@ export class DocumentManagementService {
   ) {
     const apolloClient = this.apollo.use('csClient');
     const byTag = options.byTag;
-    // todo: add document role
-    return apolloClient.query<CountDocumentsQueryResponse>({
-      query: COUNT_DOCUMENTS,
-      variables: {
-        ...(options.filter && { filter: JSON.stringify(options.filter) }),
-        withAetiology: byTag === 'aetiologyid',
-        withInformationConfidentiality:
-          byTag === 'informationconfidentialityid',
-        withCountry: byTag === 'countryid',
-        withDiseaseCond: byTag === 'diseasecondid',
-        withDocumentCategory: byTag === 'documentcategoryid',
-        withDocumentType: byTag === 'documenttypeid',
-        withHazard: byTag === 'hazardid',
-        withIHRCommunication: byTag === 'ihrcommunicationid',
-        withAssignmentFunction: byTag === 'assignmentfunctionid',
-        // withDocumentRole: byTag === 'documentroleid',
-        withLanguage: byTag === 'languageid',
-        withOccurrence: byTag === 'occurrenceid',
-        withOccurrenceType: byTag === 'occurrencetype',
-        withSourceOfInformation: byTag === 'sourceofinformationid',
-        withSyndrome: byTag === 'syndromeid',
-        withRegion: byTag === 'regionid',
-      },
-    });
+
+    const countVariables = {
+      ...(options.filter && { filter: JSON.stringify(options.filter) }),
+      withAetiology: byTag === 'aetiologyid',
+      withInformationConfidentiality: byTag === 'informationconfidentialityid',
+      withCountry: byTag === 'countryid',
+      withDiseaseCond: byTag === 'diseasecondid',
+      withDocumentCategory: byTag === 'documentcategoryid',
+      withDocumentType: byTag === 'documenttypeid',
+      withHazard: byTag === 'hazardid',
+      withIHRCommunication: byTag === 'ihrcommunicationid',
+      withAssignmentFunction: byTag === 'assignmentfunctionid',
+      // withDocumentRole: byTag === 'documentroleid',
+      withLanguage: byTag === 'languageid',
+      withOccurrence: byTag === 'occurrenceid',
+      withOccurrenceType: byTag === 'occurrencetype',
+      withSourceOfInformation: byTag === 'sourceofinformationid',
+      withSyndrome: byTag === 'syndromeid',
+      withRegion: byTag === 'regionid',
+    };
+
+    if (byTag === 'occurrencetype') {
+      return forkJoin({
+        count: apolloClient.query<CountDocumentsQueryResponse>({
+          query: COUNT_DOCUMENTS,
+          variables: countVariables,
+        }),
+        occurrenceTypes: apolloClient.query<GetOccurrenceTypesResponse>({
+          query: GET_OCCURRENCE_TYPES,
+        }),
+      }).pipe(
+        map(({ count, occurrenceTypes }) => {
+          const metadata = (count.data.metadata || []).map((item: any) => ({
+            ...item,
+            name:
+              occurrenceTypes.data.occurrencetypes.find(
+                (type) => type.id === item.id
+              )?.name || item.name,
+          }));
+          return { data: { metadata } };
+        })
+      );
+    } else {
+      // todo: add document role
+      return apolloClient.query<CountDocumentsQueryResponse>({
+        query: COUNT_DOCUMENTS,
+        variables: countVariables,
+      });
+    }
   }
 
   /**
