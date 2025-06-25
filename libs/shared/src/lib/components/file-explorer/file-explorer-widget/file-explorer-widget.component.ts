@@ -12,10 +12,12 @@ import { BehaviorSubject, switchMap, takeUntil, tap } from 'rxjs';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
 import {
   FileExplorerFilter,
+  FileExplorerTagKey,
   FileExplorerTagSelection,
 } from '../types/file-explorer-filter.type';
 import { SortDescriptor } from '@progress/kendo-data-query';
 import { FileExplorerTreeviewComponent } from '../file-explorer-treeview/file-explorer-treeview.component';
+import { FileExplorerBreadcrumbComponent } from '../file-explorer-breadcrumb/file-explorer-breadcrumb.component';
 
 /**
  * File explorer widget component.
@@ -30,6 +32,7 @@ import { FileExplorerTreeviewComponent } from '../file-explorer-treeview/file-ex
     FileExplorerTableComponent,
     FileExplorerListComponent,
     FileExplorerTreeviewComponent,
+    FileExplorerBreadcrumbComponent,
   ],
   templateUrl: './file-explorer-widget.component.html',
   styleUrls: ['./file-explorer-widget.component.scss'],
@@ -67,8 +70,12 @@ export class FileExplorerWidgetComponent
   ];
   /** Shared document management service */
   private documentManagementService = inject(DocumentManagementService);
-  /** Tag selection */
-  private tagSelection: FileExplorerTagSelection = {};
+  /** Selected tags */
+  public selectedTags: {
+    tag: FileExplorerTagKey;
+    id: number | string;
+    text: string;
+  }[] = [];
 
   ngOnInit(): void {
     this.page
@@ -81,7 +88,7 @@ export class FileExplorerWidgetComponent
               ...(this.filter.search && {
                 filename_like: `%${this.filter.search}%`,
               }),
-              ...this.tagSelection,
+              ...this.getFilter(),
             },
             ...(this.sort.length && {
               sort: this.sort,
@@ -121,10 +128,16 @@ export class FileExplorerWidgetComponent
   /**
    * On tag selection change, update tag selection and reset page
    *
-   * @param tagSelection Tag selection change event
+   * @param tags Tag selection change event
    */
-  onSelectionChange(tagSelection: FileExplorerTagSelection) {
-    this.tagSelection = tagSelection;
+  onSelectionChange(
+    tags: {
+      tag: FileExplorerTagKey;
+      id: number | string;
+      text: string;
+    }[]
+  ) {
+    this.selectedTags = tags;
     this.page.next(1);
   }
 
@@ -136,5 +149,17 @@ export class FileExplorerWidgetComponent
   onSortChange(sort: SortDescriptor[]) {
     this.sort = sort;
     this.page.next(1);
+  }
+
+  /**
+   * Generates a filter object based on the selected tags.
+   *
+   * @returns An object representing the filter for the file explorer.
+   */
+  private getFilter(): FileExplorerTagSelection {
+    return this.selectedTags.reduce((acc, tag) => {
+      acc[tag.tag] = tag.id;
+      return acc;
+    }, {} as any);
   }
 }

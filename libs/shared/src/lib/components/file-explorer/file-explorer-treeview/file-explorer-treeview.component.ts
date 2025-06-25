@@ -40,7 +40,11 @@ export class FileExplorerTreeviewComponent implements OnInit {
   /** Selected keys in the tree view */
   public selectedKeys: any[] = [];
   /** Selected tags */
-  private selectedTags: { tag: FileExplorerTagKey; id: number | string }[] = [];
+  private selectedTags: {
+    tag: FileExplorerTagKey;
+    id: number | string;
+    text: string;
+  }[] = [];
   /** Shared document management service */
   private documentManagementService = inject(DocumentManagementService);
   /** Parent component */
@@ -130,7 +134,7 @@ export class FileExplorerTreeviewComponent implements OnInit {
   public onSelectionChange(event: TreeItem) {
     this.selectedTags = this.getParentChain(event.dataItem.compositeId);
     if (this.parent) {
-      this.parent.onSelectionChange(this.getFilter());
+      this.parent.onSelectionChange(this.selectedTags);
     }
   }
 
@@ -142,8 +146,12 @@ export class FileExplorerTreeviewComponent implements OnInit {
    */
   private getParentChain(
     compositeId: string
-  ): { tag: FileExplorerTagKey; id: number | string }[] {
-    const path: { tag: FileExplorerTagKey; id: number | string }[] = [];
+  ): { tag: FileExplorerTagKey; id: number | string; text: string }[] {
+    const path: {
+      tag: FileExplorerTagKey;
+      id: number | string;
+      text: string;
+    }[] = [];
 
     /**
      * Recursive function to find the path to a node with the given composite ID.
@@ -157,10 +165,17 @@ export class FileExplorerTreeviewComponent implements OnInit {
     function findPath(
       nodes: TreeData[],
       targetId: string,
-      currentPath: { tag: FileExplorerTagKey; id: number | string }[]
+      currentPath: {
+        tag: FileExplorerTagKey;
+        id: number | string;
+        text: string;
+      }[]
     ): boolean {
       return some(nodes, (node) => {
-        const newPath = [...currentPath, { tag: node.type, id: node.id }];
+        const newPath = [
+          ...currentPath,
+          { tag: node.type, id: node.id, text: node.text },
+        ];
         if (node.compositeId === targetId) {
           path.push(...newPath);
           return true;

@@ -3,11 +3,7 @@
   <shared-file-explorer-toolbar [view]="view"></shared-file-explorer-toolbar>
   <!-- Content -->
   <kendo-splitter class="!flex-1 overflow-hidden">
-    <kendo-splitter-pane
-      [collapsible]="true"
-      [collapsed]="true"
-      size="30%"
-    >
+    <kendo-splitter-pane [collapsible]="true" [collapsed]="true" size="30%">
       <div class="pane-content">
         <shared-file-explorer-treeview
           [tags]="settings.tags"
@@ -16,7 +12,11 @@
     </kendo-splitter-pane>
 
     <kendo-splitter-pane [scrollable]="false">
-      <div class="h-full">
+      <div class="h-full flex flex-col">
+        <shared-file-explorer-breadcrumb
+          class="flex-shrink-0 h-8"
+          [selectedTags]="selectedTags"
+        ></shared-file-explorer-breadcrumb>
         <shared-file-explorer-table
           *ngIf="view === 'grid'"
           [loading]="loading"
@@ -26,7 +26,7 @@
           [sort]="sort"
           (pageChange)="onPageChange($event)"
           (sortChange)="onSortChange($event)"
-          class="flex h-full w-full"
+          class="flex h-[calc(100%-32px)] w-full"
         ></shared-file-explorer-table>
         <shared-file-explorer-list
           *ngIf="view === 'list'"
@@ -35,6 +35,7 @@
           [total]="total"
           [skip]="skip"
           (pageChange)="onPageChange($event)"
+          class="flex-1 w-full"
         ></shared-file-explorer-list>
       </div>
     </kendo-splitter-pane>
