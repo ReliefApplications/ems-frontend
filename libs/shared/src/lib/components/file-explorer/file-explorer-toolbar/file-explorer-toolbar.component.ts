@@ -55,8 +55,6 @@ export class FileExplorerToolbarComponent
    * @param view selected view
    */
   public onChangeView(view: fileExplorerView) {
-    console.log(view);
-    console.log(this.parent);
     if (this.parent) {
       this.parent.view = view;
     }

@@ -39,6 +39,8 @@ export class FileExplorerTreeviewComponent implements OnInit {
   public data: TreeData[] = [];
   /** Selected keys in the tree view */
   public selectedKeys: any[] = [];
+  /** Expanded keys in the tree view */
+  public expandedKeys: string[] = [];
   /** Selected tags */
   private selectedTags: {
     tag: FileExplorerTagKey;
@@ -54,7 +56,6 @@ export class FileExplorerTreeviewComponent implements OnInit {
   );
 
   ngOnInit() {
-    console.log(this.tags);
     if (this.tags.length > 0) {
       this.getTagValues();
     }
@@ -95,7 +96,7 @@ export class FileExplorerTreeviewComponent implements OnInit {
     return this.documentManagementService
       .countDocuments({
         byTag: nextTag,
-        filter: this.getFilter(),
+        filter: this.getFilter(nextTag),
       })
       .pipe(
         map(({ data }) => {
@@ -132,7 +133,9 @@ export class FileExplorerTreeviewComponent implements OnInit {
    * @param event Event triggered when the selection changes in the tree view.
    */
   public onSelectionChange(event: TreeItem) {
-    this.selectedTags = this.getParentChain(event.dataItem.compositeId);
+    const key = event.dataItem.compositeId;
+    this.expandToNode(key);
+    this.selectedTags = this.getParentChain(key);
     if (this.parent) {
       this.parent.onSelectionChange(this.selectedTags);
     }
@@ -194,12 +197,51 @@ export class FileExplorerTreeviewComponent implements OnInit {
   /**
    * Generates a filter object based on the selected tags.
    *
+   * @param excludeTag Exclude tag from filter
    * @returns An object representing the filter for the file explorer.
    */
-  private getFilter(): FileExplorerTagSelection {
+  private getFilter(excludeTag?: FileExplorerTagKey): FileExplorerTagSelection {
     return this.selectedTags.reduce((acc, tag) => {
-      acc[tag.tag] = tag.id;
+      if (tag.tag !== excludeTag) {
+        acc[tag.tag] = tag.id;
+      }
       return acc;
     }, {} as any);
+  }
+
+  /**
+   * On Expand, set selected & expanded keys
+   *
+   * @param event Expand event
+   * @param event.index Item index
+   * @param event.dataItem Data item
+   */
+  public onExpand(event: { index: string; dataItem: TreeData }) {
+    const key = event.dataItem.compositeId;
+    // Select the node when expanded
+    // this.selectedKeys = [key];
+    // Collapse all other branches except ancestors and this node
+    this.expandToNode(key);
+    this.selectedTags = this.getParentChain(key);
+    if (this.parent) {
+      this.parent.onSelectionChange(this.selectedTags);
+    }
+  }
+
+  /**
+   * Expand to node:
+   * - set selected keys
+   * - set expanded keys
+   *
+   * @param key Key to expand to
+   */
+  private expandToNode(key: string) {
+    // Find the parent chain (all compositeIds in the path)
+    const path = this.getParentChain(key).map(
+      (item) => `${item.tag}_${item.id}`
+    );
+    // Set expandedKeys to only the path (ancestors + this node)
+    this.expandedKeys = path;
+    this.selectedKeys = path;
   }
 }
