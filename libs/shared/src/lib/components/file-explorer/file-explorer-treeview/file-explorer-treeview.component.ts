@@ -1,4 +1,11 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FileExplorerTagKey,
@@ -32,21 +39,21 @@ interface TreeData {
   templateUrl: './file-explorer-treeview.component.html',
   styleUrls: ['./file-explorer-treeview.component.scss'],
 })
-export class FileExplorerTreeviewComponent implements OnInit {
+export class FileExplorerTreeviewComponent implements OnInit, OnChanges {
   /** List of tags to generate folders */
   @Input() tags: FileExplorerTagKey[] = [];
+  /** Selected tags */
+  @Input() selectedTags: {
+    tag: FileExplorerTagKey;
+    id: number | string;
+    text: string;
+  }[] = [];
   /** Treeview data */
   public data: TreeData[] = [];
   /** Selected keys in the tree view */
   public selectedKeys: any[] = [];
   /** Expanded keys in the tree view */
   public expandedKeys: string[] = [];
-  /** Selected tags */
-  private selectedTags: {
-    tag: FileExplorerTagKey;
-    id: number | string;
-    text: string;
-  }[] = [];
   /** Shared document management service */
   private documentManagementService = inject(DocumentManagementService);
   /** Parent component */
@@ -58,6 +65,18 @@ export class FileExplorerTreeviewComponent implements OnInit {
   ngOnInit() {
     if (this.tags.length > 0) {
       this.getTagValues();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+    console.log(this.selectedTags);
+    if (changes.selectedTags) {
+      const path = changes.selectedTags.currentValue.map(
+        (tag: any) => `${tag.tag}_${tag.id}`
+      );
+      console.log(path);
+      this.expandToNode(path);
     }
   }
 
