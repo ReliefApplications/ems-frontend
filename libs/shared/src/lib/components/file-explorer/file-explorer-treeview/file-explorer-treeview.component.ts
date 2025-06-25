@@ -8,7 +8,6 @@ import { DocumentManagementService } from '../../../services/document-management
 import { TreeItem, TreeViewModule } from '@progress/kendo-angular-treeview';
 import { map, tap } from 'rxjs';
 import { FileExplorerWidgetComponent } from '../file-explorer-widget/file-explorer-widget.component';
-import { some } from 'lodash';
 
 /**
  * Structure of data used in the tree view.
@@ -19,6 +18,7 @@ interface TreeData {
   type: FileExplorerTagKey;
   text: string;
   items?: TreeData[];
+  path: string[];
 }
 
 /**
@@ -78,6 +78,7 @@ export class FileExplorerTreeviewComponent implements OnInit {
             // todo: translate
             text: item.name || 'Undefined',
             type: this.tags[0],
+            path: [`${this.tags[0]}_${item.id}`],
           }))
           .sort((a, b) => a.text.localeCompare(b.text));
       });
@@ -107,6 +108,7 @@ export class FileExplorerTreeviewComponent implements OnInit {
               // todo: translate
               text: item.name || 'Undefined',
               type: nextTag,
+              path: [...node.path, `${nextTag}_${item.id}`],
             }))
             .sort((a, b) => a.text.localeCompare(b.text)) as TreeData[];
         }),
@@ -124,7 +126,7 @@ export class FileExplorerTreeviewComponent implements OnInit {
    * @returns A boolean indicating whether the node has children.
    */
   public hasChildren(node: TreeData): boolean {
-    return !node.compositeId.startsWith(this.tags[this.tags.length - 1]);
+    return node.path.length < this.tags.length;
   }
 
   /**
@@ -133,9 +135,9 @@ export class FileExplorerTreeviewComponent implements OnInit {
    * @param event Event triggered when the selection changes in the tree view.
    */
   public onSelectionChange(event: TreeItem) {
-    const key = event.dataItem.compositeId;
-    this.expandToNode(key);
-    this.selectedTags = this.getParentChain(key);
+    const path = event.dataItem.path;
+    this.expandToNode(path);
+    this.selectedTags = this.getParentChain(path);
     if (this.parent) {
       this.parent.onSelectionChange(this.selectedTags);
     }
@@ -144,54 +146,27 @@ export class FileExplorerTreeviewComponent implements OnInit {
   /**
    * Retrieves the parent chain of a node in the tree view based on its composite ID.
    *
-   * @param compositeId Composite ID of the node to find its parent chain.
+   * @param path List of composite ids
    * @returns An array of objects representing the parent chain, each containing a tag and an ID.
    */
   private getParentChain(
-    compositeId: string
+    path: string[]
   ): { tag: FileExplorerTagKey; id: number | string; text: string }[] {
-    const path: {
+    const chain: {
       tag: FileExplorerTagKey;
       id: number | string;
       text: string;
     }[] = [];
-
-    /**
-     * Recursive function to find the path to a node with the given composite ID.
-     * It traverses the tree structure and builds the path as it goes.
-     *
-     * @param nodes The current level of nodes in the tree.
-     * @param targetId The composite ID of the target node.
-     * @param currentPath The current path being built.
-     * @returns A boolean indicating whether the target node was found.
-     */
-    function findPath(
-      nodes: TreeData[],
-      targetId: string,
-      currentPath: {
-        tag: FileExplorerTagKey;
-        id: number | string;
-        text: string;
-      }[]
-    ): boolean {
-      return some(nodes, (node) => {
-        const newPath = [
-          ...currentPath,
-          { tag: node.type, id: node.id, text: node.text },
-        ];
-        if (node.compositeId === targetId) {
-          path.push(...newPath);
-          return true;
-        }
-        if (node.items && findPath(node.items, targetId, newPath)) {
-          return true;
-        }
-        return false;
-      });
-    }
-
-    findPath(this.data, compositeId, []);
-    return path;
+    let node: TreeData | undefined = undefined;
+    let items = this.data;
+    path.forEach((key) => {
+      node = items.find((x) => x.compositeId === key);
+      if (node) {
+        chain.push({ tag: node.type, id: node?.id, text: node?.text });
+        items = node.items || [];
+      }
+    });
+    return chain;
   }
 
   /**
@@ -213,16 +188,12 @@ export class FileExplorerTreeviewComponent implements OnInit {
    * On Expand, set selected & expanded keys
    *
    * @param event Expand event
-   * @param event.index Item index
-   * @param event.dataItem Data item
    */
-  public onExpand(event: { index: string; dataItem: TreeData }) {
-    const key = event.dataItem.compositeId;
-    // Select the node when expanded
-    // this.selectedKeys = [key];
+  public onExpand(event: TreeItem) {
+    const path = event.dataItem.path;
     // Collapse all other branches except ancestors and this node
-    this.expandToNode(key);
-    this.selectedTags = this.getParentChain(key);
+    this.expandToNode(path);
+    this.selectedTags = this.getParentChain(path);
     if (this.parent) {
       this.parent.onSelectionChange(this.selectedTags);
     }
@@ -233,13 +204,9 @@ export class FileExplorerTreeviewComponent implements OnInit {
    * - set selected keys
    * - set expanded keys
    *
-   * @param key Key to expand to
+   * @param path List of composite ids
    */
-  private expandToNode(key: string) {
-    // Find the parent chain (all compositeIds in the path)
-    const path = this.getParentChain(key).map(
-      (item) => `${item.tag}_${item.id}`
-    );
+  private expandToNode(path: string[]) {
     // Set expandedKeys to only the path (ancestors + this node)
     this.expandedKeys = path;
     this.selectedKeys = path;

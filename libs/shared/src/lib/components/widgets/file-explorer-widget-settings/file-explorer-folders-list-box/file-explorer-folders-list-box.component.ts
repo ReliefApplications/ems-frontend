@@ -116,6 +116,8 @@ export class FileExplorerFoldersListBoxComponent implements OnInit {
     );
     this.selectedTags = ALL_TAGS.filter((tag) =>
       initialValue.includes(tag.value)
+    ).sort(
+      (a, b) => initialValue.indexOf(a.value) - initialValue.indexOf(b.value)
     );
   }
 
