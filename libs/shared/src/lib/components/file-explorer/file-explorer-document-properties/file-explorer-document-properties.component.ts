@@ -10,6 +10,7 @@ import { GetDocumentByIdResponse } from '../../../services/document-management/g
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
 import { Subject, takeUntil } from 'rxjs';
+import { SpinnerModule } from '@oort-front/ui';
 
 /**
  * Component to display the properties of a document in the file explorer.
@@ -18,7 +19,7 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'shared-file-explorer-document-properties',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SpinnerModule],
   templateUrl: './file-explorer-document-properties.component.html',
   styleUrls: ['./file-explorer-document-properties.component.scss'],
 })

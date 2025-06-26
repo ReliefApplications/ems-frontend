@@ -8,7 +8,7 @@
   [sortable]="true"
   [sort]="sort"
   (sortChange)="sortChange.emit($event)"
-  (rowClick)="onRowClick($event)"
+  (cellClick)="onCellClick($event)"
 >
   <kendo-grid-column field="id" title="ID"> </kendo-grid-column>
   <kendo-grid-column field="filename" title="Name"> </kendo-grid-column>

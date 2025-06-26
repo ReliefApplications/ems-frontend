@@ -6,7 +6,11 @@ import {
   Output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GridDataResult, GridModule } from '@progress/kendo-angular-grid';
+import {
+  CellClickEvent,
+  GridDataResult,
+  GridModule,
+} from '@progress/kendo-angular-grid';
 import { FileExplorerDocument } from '../types/file-explorer-document.type';
 import { PAGER_SETTINGS } from './file-explorer-table.constants';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
@@ -58,11 +62,11 @@ export class FileExplorerTableComponent implements OnChanges {
   }
 
   /**
-   * On row click, emit the clicked item.
+   * On cell click, emit the clicked item.
    *
-   * @param event Grid row click event
+   * @param event Grid cell click event
    */
-  public onRowClick(event: any) {
+  public onCellClick(event: CellClickEvent) {
     this.itemClick.emit(event.dataItem);
   }
 }
