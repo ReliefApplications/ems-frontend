@@ -63,7 +63,6 @@ export class FileExplorerTableComponent implements OnChanges {
    * @param event Grid row click event
    */
   public onRowClick(event: any) {
-    console.log(typeof event);
     this.itemClick.emit(event.dataItem);
   }
 }

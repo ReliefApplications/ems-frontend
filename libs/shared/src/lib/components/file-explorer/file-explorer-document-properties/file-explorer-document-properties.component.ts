@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 import { GetDocumentByIdResponse } from '../../../services/document-management/graphql/queries';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
-import { takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 /**
  * Component to display the properties of a document in the file explorer.
@@ -58,6 +58,8 @@ export class FileExplorerDocumentPropertiesComponent
   };
   /** Document management service */
   private documentManagementService = inject(DocumentManagementService);
+  /** Subject to cancel previous requests */
+  private cancelPreviousRequest$ = new Subject<void>();
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['documentId'] && this.documentId) {
@@ -70,13 +72,17 @@ export class FileExplorerDocumentPropertiesComponent
    */
   private fetchDocumentProperties(): void {
     if (!this.documentId) return;
+
+    // Cancel any previous request
+    this.cancelPreviousRequest$.next();
+
     this.loading = true;
     this.document = undefined;
 
     // Cancel previous request when documentId changes
     this.documentManagementService
       .getDocumentProperties(this.documentId)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntil(this.cancelPreviousRequest$), takeUntil(this.destroy$))
       .subscribe({
         next: ({ data }) => {
           this.formatDocument(data);

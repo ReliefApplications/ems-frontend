@@ -69,13 +69,10 @@ export class FileExplorerTreeviewComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-    console.log(this.selectedTags);
     if (changes.selectedTags) {
       const path = changes.selectedTags.currentValue.map(
         (tag: any) => `${tag.tag}_${tag.id}`
       );
-      console.log(path);
       this.expandToNode(path);
     }
   }
