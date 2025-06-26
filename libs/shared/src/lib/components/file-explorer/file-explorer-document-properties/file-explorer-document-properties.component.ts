@@ -1,6 +1,15 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import {
+  Component,
+  inject,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GetDocumentByIdResponse } from '../../../services/document-management/graphql/queries';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { DocumentManagementService } from '../../../services/document-management/document-management.service';
+import { takeUntil } from 'rxjs';
 
 /**
  * Component to display the properties of a document in the file explorer.
@@ -13,11 +22,16 @@ import { GetDocumentByIdResponse } from '../../../services/document-management/g
   templateUrl: './file-explorer-document-properties.component.html',
   styleUrls: ['./file-explorer-document-properties.component.scss'],
 })
-export class FileExplorerDocumentPropertiesComponent implements OnChanges {
-  /** Raw document properties */
-  @Input() properties!: GetDocumentByIdResponse['properties'];
+export class FileExplorerDocumentPropertiesComponent
+  extends UnsubscribeComponent
+  implements OnChanges
+{
+  /** Document ID to fetch properties for */
+  @Input() documentId!: string;
+  /** Loading state */
+  public loading = false;
   /** Document properties, formatted for display */
-  public document!: {
+  public document?: {
     filename: string;
     informationconfidentialityname?: string;
     documentcategoryname?: string;
@@ -40,56 +54,100 @@ export class FileExplorerDocumentPropertiesComponent implements OnChanges {
     occurrence?: string;
     documentrolename?: string;
     imsfunctionname?: string;
+    occurrencetype?: string;
   };
+  /** Document management service */
+  private documentManagementService = inject(DocumentManagementService);
 
-  ngOnChanges(): void {
-    const versions = this.properties.document.documentversions
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['documentId'] && this.documentId) {
+      this.fetchDocumentProperties();
+    }
+  }
+
+  /**
+   * Fetches the properties of the document by its ID.
+   */
+  private fetchDocumentProperties(): void {
+    if (!this.documentId) return;
+    this.loading = true;
+    this.document = undefined;
+
+    // Cancel previous request when documentId changes
+    this.documentManagementService
+      .getDocumentProperties(this.documentId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ data }) => {
+          this.formatDocument(data);
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Error fetching document properties:', error);
+          this.loading = false;
+        },
+      });
+  }
+
+  /**
+   * Formats the document properties from the GraphQL response, to display in the UI
+   *
+   * @param queryResult GraphQL response containing document properties.
+   */
+  formatDocument(queryResult: GetDocumentByIdResponse) {
+    const versions = queryResult.properties.document.documentversions
       ?.slice()
       .sort((a, b) => Number(b.version) - Number(a.version));
+
     this.document = {
-      filename: this.properties.document.filename,
+      filename: queryResult.properties.document.filename,
       informationconfidentialityname:
-        this.properties.informationconfidentialityname,
-      documentcategoryname: this.properties.documentcategoryname,
-      languagename: this.properties.languagename,
-      sourceofinformationname: this.properties.sourceofinformationname,
-      ihrcommunicationname: this.properties.ihrcommunicationname,
-      diseasecondition: this.properties.document.diseasecondmetadatas
+        queryResult.properties.informationconfidentialityname,
+      documentcategoryname: queryResult.properties.documentcategoryname,
+      languagename: queryResult.properties.languagename,
+      sourceofinformationname: queryResult.properties.sourceofinformationname,
+      ihrcommunicationname: queryResult.properties.ihrcommunicationname,
+      diseasecondition: queryResult.properties.document.diseasecondmetadatas
         ?.map((d) => d.diseasecond.name)
         .join(', '),
-      aetiology: this.properties.document.aetiologymetadatas
+      aetiology: queryResult.properties.document.aetiologymetadatas
         ?.map((a) => a.aetiology.name)
         .join(', '),
-      syndrome: this.properties.document.syndromemetadatas
+      syndrome: queryResult.properties.document.syndromemetadatas
         ?.map((s) => s.syndrome.name)
         .join(', '),
-      hazard: this.properties.document.hazardmetadatas
+      hazard: queryResult.properties.document.hazardmetadatas
         ?.map((h) => h.hazard.name)
         .join(', '),
-      country: this.properties.document.countrymetadatas
+      country: queryResult.properties.document.countrymetadatas
         ?.map((c) => c.country.name)
         .join(', '),
-      region: this.properties.document.regionmetadatas
+      region: queryResult.properties.document.regionmetadatas
         ?.map((r) => r.region.name)
         .join(', '),
-      createddate: this.properties.document.createddate,
+      createddate: queryResult.properties.document.createddate,
       createdbyuser: [
-        this.properties.document.createdbyuser?.firstname,
-        this.properties.document.createdbyuser?.lastname,
+        queryResult.properties.document.createdbyuser?.firstname,
+        queryResult.properties.document.createdbyuser?.lastname,
       ].join(' '),
-      modifieddate: this.properties.document.modifieddate,
+      modifieddate: queryResult.properties.document.modifieddate,
       modifiedbyuser: [
-        this.properties.document.modifiedbyuser?.firstname,
-        this.properties.document.modifiedbyuser?.lastname,
+        queryResult.properties.document.modifiedbyuser?.firstname,
+        queryResult.properties.document.modifiedbyuser?.lastname,
       ].join(' '),
       size: versions?.[0]?.size,
       version: versions?.[0]?.version,
-      documenttypename: this.properties.documenttypename,
-      occurrence: this.properties.document.occurrence?.occurrencename,
-      documentrolename: this.properties.documentrolename,
-      imsfunctionname: this.properties.document.assignmentfunctionmetadatas
-        ?.map((f) => f.assignmentfunction.name)
-        .join(', '),
+      documenttypename: queryResult.properties.documenttypename,
+      occurrence: queryResult.properties.document.occurrence?.occurrencename,
+      occurrencetype: queryResult.occurrencetypes?.find(
+        (o) =>
+          o.id === queryResult.properties.document.occurrence?.occurrencetype
+      )?.name,
+      documentrolename: queryResult.properties.documentrolename,
+      imsfunctionname:
+        queryResult.properties.document.assignmentfunctionmetadatas
+          ?.map((f) => f.assignmentfunction.name)
+          .join(', '),
     };
   }
 }

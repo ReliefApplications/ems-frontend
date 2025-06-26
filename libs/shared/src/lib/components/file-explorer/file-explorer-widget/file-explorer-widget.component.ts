@@ -19,7 +19,6 @@ import { SortDescriptor } from '@progress/kendo-data-query';
 import { FileExplorerTreeviewComponent } from '../file-explorer-treeview/file-explorer-treeview.component';
 import { FileExplorerBreadcrumbComponent } from '../file-explorer-breadcrumb/file-explorer-breadcrumb.component';
 import { FileExplorerDocumentPropertiesComponent } from '../file-explorer-document-properties/file-explorer-document-properties.component';
-import { GetDocumentByIdResponse } from '../../../services/document-management/graphql/queries';
 
 /**
  * File explorer widget component.
@@ -79,14 +78,14 @@ export class FileExplorerWidgetComponent
     id: number | string;
     text: string;
   }[] = [];
-  /** Selected document */
-  public selectedDocument?: GetDocumentByIdResponse['properties'];
+  /** Selected document ID */
+  public selectedDocumentId?: string;
 
   ngOnInit(): void {
     this.page
       .pipe(
         tap(() => {
-          this.selectedDocument = undefined;
+          this.selectedDocumentId = undefined;
           this.loading = true;
         }),
         switchMap((page) =>
@@ -165,12 +164,7 @@ export class FileExplorerWidgetComponent
    * @param document Clicked document
    */
   onItemClick(document: FileExplorerDocument) {
-    console.log(document);
-    this.documentManagementService
-      .getDocumentProperties(document.id)
-      .subscribe(({ data }) => {
-        this.selectedDocument = data.properties;
-      });
+    this.selectedDocumentId = document.id;
   }
 
   /**

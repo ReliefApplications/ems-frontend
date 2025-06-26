@@ -49,7 +49,7 @@
     </kendo-splitter-pane>
 
     <kendo-splitter-pane
-      *ngIf="selectedDocument"
+      *ngIf="selectedDocumentId"
       [collapsible]="true"
       [collapsed]="false"
       size="30%"
@@ -57,7 +57,7 @@
     >
       <div class="h-full">
         <shared-file-explorer-document-properties
-          [properties]="selectedDocument"
+          [documentId]="selectedDocumentId"
         ></shared-file-explorer-document-properties>
       </div>
     </kendo-splitter-pane>

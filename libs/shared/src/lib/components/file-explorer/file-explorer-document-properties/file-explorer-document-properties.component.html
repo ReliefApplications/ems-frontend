@@ -1,5 +1,11 @@
+<div *ngIf="loading">
+  <div>Loading document properties...</div>
+</div>
 <!-- todo: translate -->
-<div class="flex flex-col gap-2 p-2 h-full overflow-auto">
+<div
+  class="flex flex-col gap-2 p-2 h-full overflow-auto"
+  *ngIf="!loading && document"
+>
   <!-- Filename -->
   <ng-container
     *ngTemplateOutlet="
@@ -92,6 +98,15 @@
     "
   ></ng-container>
   <!-- Occurrence type -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'Occurrence type',
+        value: document.occurrencetype
+      }
+    "
+  ></ng-container>
   <!-- Document type -->
   <ng-container
     *ngTemplateOutlet="

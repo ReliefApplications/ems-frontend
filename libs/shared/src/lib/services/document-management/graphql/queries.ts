@@ -177,7 +177,7 @@ export const GET_OCCURRENCE_TYPES = gql`
 /** Get Occurrence Types Response Interface */
 export interface GetOccurrenceTypesResponse {
   occurrencetypes: {
-    id: string;
+    id: number;
     name: string;
   }[];
 }
@@ -284,11 +284,15 @@ export const GET_DOCUMENT_BY_ID = gql`
         }
       }
     }
+    occurrencetypes {
+      id
+      name
+    }
   }
 `;
 
 /** Get Document by ID response interface */
-export interface GetDocumentByIdResponse {
+export interface GetDocumentByIdResponse extends GetOccurrenceTypesResponse {
   properties: {
     id: string;
     documentid: string;
