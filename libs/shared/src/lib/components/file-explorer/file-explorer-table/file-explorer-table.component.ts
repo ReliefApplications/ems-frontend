@@ -38,6 +38,8 @@ export class FileExplorerTableComponent implements OnChanges {
   @Output() pageChange = new EventEmitter<PageChangeEvent>();
   /** Sort change event emitter */
   @Output() sortChange = new EventEmitter<SortDescriptor[]>();
+  /** Item click event emitter */
+  @Output() itemClick = new EventEmitter<FileExplorerDocument>();
   /** Grid data */
   public data: GridDataResult = {
     data: [],
@@ -53,5 +55,15 @@ export class FileExplorerTableComponent implements OnChanges {
       data: this.gridData,
       total: this.total,
     };
+  }
+
+  /**
+   * On row click, emit the clicked item.
+   *
+   * @param event Grid row click event
+   */
+  public onRowClick(event: any) {
+    console.log(typeof event);
+    this.itemClick.emit(event.dataItem);
   }
 }

@@ -32,6 +32,7 @@
           [sort]="sort"
           (pageChange)="onPageChange($event)"
           (sortChange)="onSortChange($event)"
+          (itemClick)="onItemClick($event)"
           class="flex h-[calc(100%-32px)] w-full"
         ></shared-file-explorer-table>
         <shared-file-explorer-list
@@ -41,20 +42,23 @@
           [total]="total"
           [skip]="skip"
           (pageChange)="onPageChange($event)"
+          (itemClick)="onItemClick($event)"
           class="flex-1 w-full"
         ></shared-file-explorer-list>
       </div>
     </kendo-splitter-pane>
 
     <kendo-splitter-pane
+      *ngIf="selectedDocument"
       [collapsible]="true"
-      [collapsed]="true"
+      [collapsed]="false"
       size="30%"
       [scrollable]="false"
     >
-      <div class="pane-content">
-        <h3>Inner splitter / right pane</h3>
-        <p>Resizable and collapsible.</p>
+      <div class="h-full">
+        <shared-file-explorer-document-properties
+          [properties]="selectedDocument"
+        ></shared-file-explorer-document-properties>
       </div>
     </kendo-splitter-pane>
   </kendo-splitter>

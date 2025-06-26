@@ -1,5 +1,8 @@
 import { gql } from 'apollo-angular';
-import { FileExplorerDocument } from '../../../components/file-explorer/types/file-explorer-document.type';
+import {
+  FileExplorerDocument,
+  FileExplorerDocumentUser,
+} from '../../../components/file-explorer/types/file-explorer-document.type';
 
 /** Get Drive ID query definition */
 export const GET_DRIVE_ID = gql`
@@ -177,4 +180,199 @@ export interface GetOccurrenceTypesResponse {
     id: string;
     name: string;
   }[];
+}
+
+/** Get Document by ID query definition */
+export const GET_DOCUMENT_BY_ID = gql`
+  query GetDocumentById($id: String!) {
+    properties: vw_docpropertie(documentid: $id) {
+      id
+      documentid
+      documenttypename
+      documentcategoryname
+      documentrolename
+      languagename
+      sourceofinformationname
+      informationconfidentialityname
+      ihrcommunicationname
+      documenttypeid
+      documentcategoryid
+      roletypeid
+      languageid
+      sourceofinformationid
+      informationconfidentialityid
+      ihrcommunicationid
+      occurrenceid
+      document {
+        id
+        filename
+        createddate
+        modifieddate
+        createdbyuser {
+          firstname
+          lastname
+          emailaddress
+        }
+        modifiedbyuser {
+          firstname
+          lastname
+          emailaddress
+        }
+        documentversions {
+          version
+          size
+        }
+        occurrence {
+          id
+          driveid
+          occurrencename
+          occurrencetype
+        }
+        aetiologymetadatas {
+          aetiology {
+            id
+            name
+          }
+        }
+        assignmentfunctionmetadatas {
+          assignmentfunction {
+            id
+            name
+          }
+        }
+        confidentialitylevelmetadatas {
+          confidentialitylevel {
+            id
+            name
+          }
+        }
+        countrymetadatas {
+          country {
+            id
+            name
+          }
+        }
+        diseasecondmetadatas {
+          diseasecond {
+            id
+            name
+          }
+        }
+        hazardmetadatas {
+          hazard {
+            id
+            name
+          }
+        }
+        regionmetadatas {
+          region {
+            id
+            name
+          }
+        }
+        sensitiveinfometadatas {
+          sensitiveinfo {
+            id
+            name
+          }
+        }
+        syndromemetadatas {
+          syndrome {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+`;
+
+/** Get Document by ID response interface */
+export interface GetDocumentByIdResponse {
+  properties: {
+    id: string;
+    documentid: string;
+    documenttypename: string;
+    documentcategoryname: string;
+    documentrolename: string;
+    languagename: string;
+    sourceofinformationname: string;
+    informationconfidentialityname: string;
+    ihrcommunicationname: string;
+    documenttypeid: string;
+    documentcategoryid: string;
+    roletypeid: string;
+    languageid: string;
+    sourceofinformationid: string;
+    informationconfidentialityid: string;
+    ihrcommunicationid: string;
+    occurrenceid: string;
+    document: FileExplorerDocument & {
+      createdbyuser: FileExplorerDocumentUser;
+      documentversions: {
+        version: string;
+        size: number;
+      }[];
+      occurrence: {
+        id: string;
+        driveid: string;
+        occurrencename: string;
+        occurrencetype: number;
+      };
+      aetiologymetadatas: {
+        aetiology: {
+          id: string;
+          name: string;
+        };
+      }[];
+      assignmentfunctionmetadatas: {
+        assignmentfunction: {
+          id: string;
+          name: string;
+        };
+      }[];
+      confidentialitylevelmetadatas: {
+        confidentialitylevel: {
+          id: string;
+          name: string;
+        };
+      }[];
+      countrymetadatas: {
+        country: {
+          id: string;
+          name: string;
+        };
+      }[];
+      diseasecondmetadatas: {
+        diseasecond: {
+          id: string;
+          name: string;
+        };
+      }[];
+      hazardmetadatas: {
+        hazard: {
+          id: string;
+          name: string;
+        };
+      }[];
+      regionmetadatas: {
+        region: {
+          id: string;
+          name: string;
+        };
+      }[];
+      sensitiveinfometadatas: {
+        sensitiveinfo: {
+          id: string;
+          name: string;
+        };
+      }[];
+      syndromemetadatas: {
+        syndrome: {
+          id: string;
+          name: string;
+        };
+      }[];
+    };
+  };
 }

@@ -18,6 +18,8 @@ import {
 import { SortDescriptor } from '@progress/kendo-data-query';
 import { FileExplorerTreeviewComponent } from '../file-explorer-treeview/file-explorer-treeview.component';
 import { FileExplorerBreadcrumbComponent } from '../file-explorer-breadcrumb/file-explorer-breadcrumb.component';
+import { FileExplorerDocumentPropertiesComponent } from '../file-explorer-document-properties/file-explorer-document-properties.component';
+import { GetDocumentByIdResponse } from '../../../services/document-management/graphql/queries';
 
 /**
  * File explorer widget component.
@@ -33,6 +35,7 @@ import { FileExplorerBreadcrumbComponent } from '../file-explorer-breadcrumb/fil
     FileExplorerListComponent,
     FileExplorerTreeviewComponent,
     FileExplorerBreadcrumbComponent,
+    FileExplorerDocumentPropertiesComponent,
   ],
   templateUrl: './file-explorer-widget.component.html',
   styleUrls: ['./file-explorer-widget.component.scss'],
@@ -76,11 +79,16 @@ export class FileExplorerWidgetComponent
     id: number | string;
     text: string;
   }[] = [];
+  /** Selected document */
+  public selectedDocument?: GetDocumentByIdResponse['properties'];
 
   ngOnInit(): void {
     this.page
       .pipe(
-        tap(() => (this.loading = true)),
+        tap(() => {
+          this.selectedDocument = undefined;
+          this.loading = true;
+        }),
         switchMap((page) =>
           this.documentManagementService.listDocuments({
             offset: (page - 1) * this.pageSize,
@@ -149,6 +157,20 @@ export class FileExplorerWidgetComponent
   onSortChange(sort: SortDescriptor[]) {
     this.sort = sort;
     this.page.next(1);
+  }
+
+  /**
+   * On item click, fetch document properties
+   *
+   * @param document Clicked document
+   */
+  onItemClick(document: FileExplorerDocument) {
+    console.log(document);
+    this.documentManagementService
+      .getDocumentProperties(document.id)
+      .subscribe(({ data }) => {
+        this.selectedDocument = data.properties;
+      });
   }
 
   /**

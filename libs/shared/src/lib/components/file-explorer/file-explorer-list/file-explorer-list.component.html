@@ -4,6 +4,7 @@
     <shared-file-explorer-list-item
       *ngFor="let document of listData"
       [document]="document"
+      (click)="itemClick.emit(document)"
     ></shared-file-explorer-list-item>
   </div>
   <!-- Loading indicator -->

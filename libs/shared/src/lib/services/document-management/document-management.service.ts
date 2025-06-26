@@ -12,10 +12,12 @@ import {
   COUNT_DOCUMENTS,
   CountDocumentsQueryResponse,
   DriveQueryResponse,
+  GET_DOCUMENT_BY_ID,
   GET_DOCUMENTS,
   GET_DRIVE_ID,
   GET_OCCURRENCE_BY_ID,
   GET_OCCURRENCE_TYPES,
+  GetDocumentByIdResponse,
   GetDocumentsQueryResponse,
   GetOccurrenceTypesResponse,
   OccurrenceQueryResponse,
@@ -449,6 +451,22 @@ export class DocumentManagementService {
         variables: countVariables,
       });
     }
+  }
+
+  /**
+   * Get document properties by id
+   *
+   * @param id Document id
+   * @returns Document properties query
+   */
+  public getDocumentProperties(id: string) {
+    const apolloClient = this.apollo.use('csClient');
+    return apolloClient.query<GetDocumentByIdResponse>({
+      query: GET_DOCUMENT_BY_ID,
+      variables: {
+        id,
+      },
+    });
   }
 
   /**

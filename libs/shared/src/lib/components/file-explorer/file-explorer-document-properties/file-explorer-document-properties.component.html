@@ -1,0 +1,233 @@
+<!-- todo: translate -->
+<div class="flex flex-col gap-2 p-2 h-full overflow-auto">
+  <!-- Filename -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'Filename',
+        value: document.filename
+      }
+    "
+  >
+  </ng-container>
+  <!-- Confidentiality -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'Confidentiality',
+        value: document.informationconfidentialityname
+      }
+    "
+  ></ng-container>
+  <!-- File version -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'File version',
+        value: document.version
+      }
+    "
+  ></ng-container>
+  <!-- Created by -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'Created by',
+        value: document.createdbyuser
+      }
+    "
+  ></ng-container>
+  <!-- Created on -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'Created on',
+        value: document.createddate | date : 'yyyy-MM-dd HH:mm'
+      }
+    "
+  ></ng-container>
+  <!-- Last updated by -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'Last updated by',
+        value: document.modifiedbyuser
+      }
+    "
+  ></ng-container>
+  <!-- Last updated on -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'Last updated on',
+        value: document.modifieddate | date : 'yyyy-MM-dd HH:mm'
+      }
+    "
+  ></ng-container>
+  <!-- File size -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'File size',
+        value: document.size
+      }
+    "
+  ></ng-container>
+  <!-- Occurrence -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'Occurrence',
+        value: document.occurrence
+      }
+    "
+  ></ng-container>
+  <!-- Occurrence type -->
+  <!-- Document type -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'Document type',
+        value: document.documenttypename
+      }
+    "
+  ></ng-container>
+  <!-- IMS function -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'IMS function',
+        value: document.imsfunctionname
+      }
+    "
+  ></ng-container>
+  <!-- IMS role -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'IMS role',
+        value: document.documentrolename
+      }
+    "
+  ></ng-container>
+  <!-- Document category -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'Document category',
+        value: document.documentcategoryname
+      }
+    "
+  ></ng-container>
+  <!-- Region -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'Region',
+        value: document.region
+      }
+    "
+  ></ng-container>
+  <!-- Country -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'Country',
+        value: document.country
+      }
+    "
+  ></ng-container>
+  <!-- Hazard -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'Hazard',
+        value: document.hazard
+      }
+    "
+  ></ng-container>
+  <!-- Syndrome -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'Syndrome',
+        value: document.syndrome
+      }
+    "
+  ></ng-container>
+  <!-- Aetiology -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'Disease condition',
+        value: document.aetiology
+      }
+    "
+  ></ng-container>
+  <!-- Disease condition -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'Disease condition',
+        value: document.diseasecondition
+      }
+    "
+  ></ng-container>
+  <!-- Language -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'Language',
+        value: document.languagename
+      }
+    "
+  ></ng-container>
+  <!-- Source of information - type -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'IHR Source of information - type',
+        value: document.sourceofinformationname
+      }
+    "
+  ></ng-container>
+  <!-- IHR communication -->
+  <ng-container
+    *ngTemplateOutlet="
+      propertyTmpl;
+      context: {
+        label: 'IHR communication',
+        value: document.ihrcommunicationname
+      }
+    "
+  ></ng-container>
+</div>
+
+<!-- Property template -->
+<ng-template #propertyTmpl let-label="label" let-value="value">
+  <div class="flex flex-row gap-1">
+    <span class="text-sm font-semibold flex-shrink-0">{{ label }} :</span>
+    <span class="text-sm">{{ value }}</span>
+  </div>
+</ng-template>

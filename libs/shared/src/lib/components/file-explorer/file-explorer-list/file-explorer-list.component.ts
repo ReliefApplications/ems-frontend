@@ -38,6 +38,8 @@ export class FileExplorerListComponent implements OnChanges {
   @Input() loading = true;
   /** Page change event emitter */
   @Output() pageChange = new EventEmitter<PageChangeEvent>();
+  /** Item click event emitter */
+  @Output() itemClick = new EventEmitter<FileExplorerDocument>();
   /** Page size */
   public pageSize = 10;
   /** Page index */
