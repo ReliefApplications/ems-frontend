@@ -6,6 +6,7 @@
   class="flex flex-col gap-3 p-2 h-full overflow-auto"
   *ngIf="!loading && document"
 >
+  <shared-file-explorer-document-toolbar [document]="document"></shared-file-explorer-document-toolbar>
   <!-- Filename -->
   <ng-container
     *ngTemplateOutlet="

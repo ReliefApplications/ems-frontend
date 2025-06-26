@@ -11,6 +11,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
 import { Subject, takeUntil } from 'rxjs';
 import { SpinnerModule } from '@oort-front/ui';
+import { FileExplorerDocumentToolbarComponent } from '../file-explorer-document-toolbar/file-explorer-document-toolbar.component';
 
 /**
  * Component to display the properties of a document in the file explorer.
@@ -19,7 +20,7 @@ import { SpinnerModule } from '@oort-front/ui';
 @Component({
   selector: 'shared-file-explorer-document-properties',
   standalone: true,
-  imports: [CommonModule, SpinnerModule],
+  imports: [CommonModule, SpinnerModule, FileExplorerDocumentToolbarComponent],
   templateUrl: './file-explorer-document-properties.component.html',
   styleUrls: ['./file-explorer-document-properties.component.scss'],
 })
@@ -33,6 +34,7 @@ export class FileExplorerDocumentPropertiesComponent
   public loading = false;
   /** Document properties, formatted for display */
   public document?: {
+    id: string;
     filename: string;
     informationconfidentialityname?: string;
     documentcategoryname?: string;
@@ -56,6 +58,7 @@ export class FileExplorerDocumentPropertiesComponent
     documentrolename?: string;
     imsfunctionname?: string;
     occurrencetype?: string;
+    driveid?: string;
   };
   /** Document management service */
   private documentManagementService = inject(DocumentManagementService);
@@ -107,6 +110,7 @@ export class FileExplorerDocumentPropertiesComponent
       .sort((a, b) => Number(b.version) - Number(a.version));
 
     this.document = {
+      id: queryResult.properties.document.id,
       filename: queryResult.properties.document.filename,
       informationconfidentialityname:
         queryResult.properties.informationconfidentialityname,
@@ -150,6 +154,7 @@ export class FileExplorerDocumentPropertiesComponent
         (o) =>
           o.id === queryResult.properties.document.occurrence?.occurrencetype
       )?.name,
+      driveid: queryResult.properties.document.occurrence?.driveid,
       documentrolename: queryResult.properties.documentrolename,
       imsfunctionname:
         queryResult.properties.document.assignmentfunctionmetadatas
