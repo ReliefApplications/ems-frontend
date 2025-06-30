@@ -18,4 +18,6 @@ import { FileIconPipe } from '../../../pipes/file-icon/file-icon.pipe';
 export class FileExplorerListItemComponent {
   /** Document */
   @Input() document!: FileExplorerDocument;
+  /** Is document selected */
+  @Input() selected = false;
 }

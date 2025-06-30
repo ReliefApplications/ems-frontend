@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   Output,
@@ -10,6 +11,7 @@ import { FileExplorerDocument } from '../types/file-explorer-document.type';
 import { FileExplorerListItemComponent } from '../file-explorer-list-item/file-explorer-list-item.component';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
 import { PaginatorModule, SpinnerModule } from '@oort-front/ui';
+import { FileExplorerWidgetComponent } from '../file-explorer-widget/file-explorer-widget.component';
 
 /**
  * File explorer 'list' view component.
@@ -44,6 +46,11 @@ export class FileExplorerListComponent implements OnChanges {
   public pageSize = 10;
   /** Page index */
   public pageIndex = 0;
+  /** Parent component */
+  public parent: FileExplorerWidgetComponent | null = inject(
+    FileExplorerWidgetComponent,
+    { optional: true }
+  );
 
   ngOnChanges(): void {
     this.pageIndex = Math.floor(this.skip / this.pageSize);

@@ -1,4 +1,7 @@
-<div class="flex flex-col gap-2 p-4 w-32 h-32 justify-between items-center">
+<div
+  class="flex flex-col gap-2 p-4 w-32 h-32 justify-between items-center cursor-pointer rounded-lg"
+  [ngClass]="{ 'bg-primary-50 border border-primary-500': selected }"
+>
   <ui-icon
     [icon]="document.filename | fileIcon"
     [size]="32"

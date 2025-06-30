@@ -4,6 +4,7 @@
     <shared-file-explorer-list-item
       *ngFor="let document of listData"
       [document]="document"
+      [selected]="parent?.selectedDocumentId === document.id"
       (click)="itemClick.emit(document)"
     ></shared-file-explorer-list-item>
   </div>
