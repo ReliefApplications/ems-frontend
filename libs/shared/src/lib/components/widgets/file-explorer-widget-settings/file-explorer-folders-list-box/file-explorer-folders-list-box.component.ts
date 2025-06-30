@@ -61,16 +61,16 @@ const ALL_TAGS = [
     value: 'occurrencetype',
   },
   {
+    text: 'Region',
+    value: 'regionid',
+  },
+  {
     text: 'Source of information - type',
     value: 'sourceofinformationid',
   },
   {
     text: 'Syndrome',
     value: 'syndromeid',
-  },
-  {
-    text: 'Region',
-    value: 'regionid',
   },
 ];
 

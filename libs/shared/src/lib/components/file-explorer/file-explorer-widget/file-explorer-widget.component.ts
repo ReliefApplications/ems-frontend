@@ -30,6 +30,7 @@ import { FileExplorerTreeviewComponent } from '../file-explorer-treeview/file-ex
 import { FileExplorerBreadcrumbComponent } from '../file-explorer-breadcrumb/file-explorer-breadcrumb.component';
 import { FileExplorerDocumentPropertiesComponent } from '../file-explorer-document-properties/file-explorer-document-properties.component';
 import { ContextService } from '../../../services/context/context.service';
+import getFilter from '../../../utils/common-services/filter.util';
 
 /**
  * File explorer widget component.
@@ -230,11 +231,15 @@ export class FileExplorerWidgetComponent
     );
     this.contextService.removeEmptyPlaceholders(contextFilter);
     return {
+      // User selected tags
       ...this.selectedTags.reduce((acc, tag) => {
         acc[tag.tag] = tag.id;
         return acc;
       }, {} as any),
+      // Dashboard & context filters
       ...contextFilter,
+      // Static filters, set by admin, cannot be overwritten by users
+      ...getFilter(this.settings.filter),
     };
   }
 }

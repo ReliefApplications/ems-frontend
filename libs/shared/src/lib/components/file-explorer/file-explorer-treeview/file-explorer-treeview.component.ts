@@ -17,6 +17,7 @@ import { map, tap } from 'rxjs';
 import { FileExplorerWidgetComponent } from '../file-explorer-widget/file-explorer-widget.component';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { ContextService } from '../../../services/context/context.service';
+import getFilter from '../../../utils/common-services/filter.util';
 
 /**
  * Structure of data used in the tree view.
@@ -215,13 +216,17 @@ export class FileExplorerTreeviewComponent implements OnInit, OnChanges {
     );
     this.contextService.removeEmptyPlaceholders(contextFilter);
     return {
+      // User selected tags
       ...this.selectedTags.reduce((acc, tag) => {
         if (tag.tag !== excludeTag) {
           acc[tag.tag] = tag.id;
         }
         return acc;
       }, {} as any),
+      // Dashboard & context filters
       ...contextFilter,
+      // Static filters, set by admin, cannot be overwritten by users
+      ...(this.parent && getFilter(this.parent.settings.filter)),
     };
   }
 
