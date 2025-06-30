@@ -8,7 +8,9 @@
       <span>FOLDERS</span>
     </ng-container>
     <ng-template uiTabContent>
-      <shared-file-explorer-folders-tab [formGroup]="widgetFormGroup"></shared-file-explorer-folders-tab>
+      <shared-file-explorer-folders-tab
+        [formGroup]="widgetFormGroup"
+      ></shared-file-explorer-folders-tab>
     </ng-template>
   </ui-tab>
   <!-- Display options -->
@@ -24,6 +26,19 @@
     <ng-template uiTabContent>
       <shared-display-settings [formGroup]="widgetFormGroup">
       </shared-display-settings>
+    </ng-template>
+  </ui-tab>
+  <!-- Context filter settings -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="filter_list" [size]="24"></ui-icon>
+      <span>{{ 'models.dashboard.contextFilter' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-contextual-filters-settings
+        [form]="widgetFormGroup"
+        [useHistoricalDate]="false"
+      ></shared-contextual-filters-settings>
     </ng-template>
   </ui-tab>
 </ui-tabs>

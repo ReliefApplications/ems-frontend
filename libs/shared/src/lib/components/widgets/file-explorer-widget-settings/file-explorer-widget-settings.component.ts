@@ -10,6 +10,7 @@ import { IconModule, TabsModule, TooltipModule } from '@oort-front/ui';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FileExplorerFoldersTabComponent } from './file-explorer-folders-tab/file-explorer-folders-tab.component';
+import { ContextualFiltersSettingsComponent } from '../common/contextual-filters-settings/contextual-filters-settings.component';
 
 /**
  * File explorer widget settings.
@@ -27,6 +28,7 @@ import { FileExplorerFoldersTabComponent } from './file-explorer-folders-tab/fil
     TabsModule,
     TooltipModule,
     FileExplorerFoldersTabComponent,
+    ContextualFiltersSettingsComponent,
   ],
   templateUrl: './file-explorer-widget-settings.component.html',
   styleUrls: ['./file-explorer-widget-settings.component.scss'],

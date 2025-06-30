@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { FileExplorerToolbarComponent } from '../file-explorer-toolbar/file-explorer-toolbar.component';
@@ -8,17 +8,28 @@ import { FileExplorerListComponent } from '../file-explorer-list/file-explorer-l
 import { FileExplorerDocument } from '../types/file-explorer-document.type';
 import { BaseWidgetComponent } from '../../widgets/base-widget/base-widget.component';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
-import { BehaviorSubject, switchMap, takeUntil, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  debounceTime,
+  filter,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
 import {
   FileExplorerFilter,
   FileExplorerTagKey,
   FileExplorerTagSelection,
 } from '../types/file-explorer-filter.type';
-import { SortDescriptor } from '@progress/kendo-data-query';
+import {
+  CompositeFilterDescriptor,
+  SortDescriptor,
+} from '@progress/kendo-data-query';
 import { FileExplorerTreeviewComponent } from '../file-explorer-treeview/file-explorer-treeview.component';
 import { FileExplorerBreadcrumbComponent } from '../file-explorer-breadcrumb/file-explorer-breadcrumb.component';
 import { FileExplorerDocumentPropertiesComponent } from '../file-explorer-document-properties/file-explorer-document-properties.component';
+import { ContextService } from '../../../services/context/context.service';
 
 /**
  * File explorer widget component.
@@ -70,8 +81,6 @@ export class FileExplorerWidgetComponent
       dir: 'desc',
     },
   ];
-  /** Shared document management service */
-  private documentManagementService = inject(DocumentManagementService);
   /** Selected tags */
   public selectedTags: {
     tag: FileExplorerTagKey;
@@ -80,6 +89,22 @@ export class FileExplorerWidgetComponent
   }[] = [];
   /** Selected document ID */
   public selectedDocumentId?: string;
+  /** Shared document management service */
+  private documentManagementService = inject(DocumentManagementService);
+  /** Shared context service */
+  private contextService = inject(ContextService);
+  /** Element ref */
+  private el = inject(ElementRef);
+
+  /** @returns Context filters array */
+  get contextFilters(): CompositeFilterDescriptor {
+    return this.settings.contextFilters
+      ? JSON.parse(this.settings.contextFilters)
+      : {
+          logic: 'and',
+          filters: [],
+        };
+  }
 
   ngOnInit(): void {
     this.page
@@ -109,6 +134,32 @@ export class FileExplorerWidgetComponent
         this.total = data.metadata[0].aggregate_count;
         this.skip = (this.page.getValue() - 1) * this.pageSize;
         this.loading = false;
+      });
+    this.contextService.filter$
+      .pipe(
+        // On working with web components we want to send filter value if this current element is in the DOM
+        // Otherwise send value always
+        filter(() =>
+          this.contextService.shadowDomService.isShadowRoot
+            ? this.contextService.shadowDomService.currentHost.contains(
+                this.el.nativeElement
+              )
+            : true
+        ),
+        debounceTime(500),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(({ previous, current }) => {
+        if (
+          this.contextService.filterRegex.test(this.settings.contextFilters)
+        ) {
+          if (
+            this.contextService.shouldRefresh(this.settings, previous, current)
+          ) {
+            // If the context filter has changed, reset the selection of tags
+            this.onSelectionChange([]);
+          }
+        }
       });
   }
 
@@ -169,13 +220,21 @@ export class FileExplorerWidgetComponent
 
   /**
    * Generates a filter object based on the selected tags.
+   * Use context service to replace any placeholders in the context filters.
    *
    * @returns An object representing the filter for the file explorer.
    */
   private getFilter(): FileExplorerTagSelection {
-    return this.selectedTags.reduce((acc, tag) => {
-      acc[tag.tag] = tag.id;
-      return acc;
-    }, {} as any);
+    const contextFilter = this.contextService.replaceFilter(
+      this.contextFilters
+    );
+    this.contextService.removeEmptyPlaceholders(contextFilter);
+    return {
+      ...this.selectedTags.reduce((acc, tag) => {
+        acc[tag.tag] = tag.id;
+        return acc;
+      }, {} as any),
+      ...contextFilter,
+    };
   }
 }

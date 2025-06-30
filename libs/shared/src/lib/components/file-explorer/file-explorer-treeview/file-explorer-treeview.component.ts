@@ -15,6 +15,8 @@ import { DocumentManagementService } from '../../../services/document-management
 import { TreeItem, TreeViewModule } from '@progress/kendo-angular-treeview';
 import { map, tap } from 'rxjs';
 import { FileExplorerWidgetComponent } from '../file-explorer-widget/file-explorer-widget.component';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { ContextService } from '../../../services/context/context.service';
 
 /**
  * Structure of data used in the tree view.
@@ -56,11 +58,23 @@ export class FileExplorerTreeviewComponent implements OnInit, OnChanges {
   public expandedKeys: string[] = [];
   /** Shared document management service */
   private documentManagementService = inject(DocumentManagementService);
+  /** Shared context service */
+  private contextService = inject(ContextService);
   /** Parent component */
   private parent: FileExplorerWidgetComponent | null = inject(
     FileExplorerWidgetComponent,
     { optional: true }
   );
+
+  /** @returns Context filters array */
+  get contextFilters(): CompositeFilterDescriptor {
+    return this.parent?.settings.contextFilters
+      ? JSON.parse(this.parent.settings.contextFilters)
+      : {
+          logic: 'and',
+          filters: [],
+        };
+  }
 
   ngOnInit() {
     if (this.tags.length > 0) {
@@ -74,6 +88,9 @@ export class FileExplorerTreeviewComponent implements OnInit, OnChanges {
         (tag: any) => `${tag.tag}_${tag.id}`
       );
       this.expandToNode(path);
+      if (this.selectedTags.length === 0) {
+        this.getTagValues();
+      }
     }
   }
 
@@ -85,6 +102,7 @@ export class FileExplorerTreeviewComponent implements OnInit, OnChanges {
     this.documentManagementService
       .countDocuments({
         byTag: this.tags[0],
+        filter: this.getFilter(),
       })
       .subscribe(({ data }) => {
         this.data = data.metadata
@@ -192,12 +210,19 @@ export class FileExplorerTreeviewComponent implements OnInit, OnChanges {
    * @returns An object representing the filter for the file explorer.
    */
   private getFilter(excludeTag?: FileExplorerTagKey): FileExplorerTagSelection {
-    return this.selectedTags.reduce((acc, tag) => {
-      if (tag.tag !== excludeTag) {
-        acc[tag.tag] = tag.id;
-      }
-      return acc;
-    }, {} as any);
+    const contextFilter = this.contextService.replaceFilter(
+      this.contextFilters
+    );
+    this.contextService.removeEmptyPlaceholders(contextFilter);
+    return {
+      ...this.selectedTags.reduce((acc, tag) => {
+        if (tag.tag !== excludeTag) {
+          acc[tag.tag] = tag.id;
+        }
+        return acc;
+      }, {} as any),
+      ...contextFilter,
+    };
   }
 
   /**

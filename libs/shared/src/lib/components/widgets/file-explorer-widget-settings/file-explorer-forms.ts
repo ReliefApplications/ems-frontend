@@ -4,6 +4,12 @@ import get from 'lodash/get';
 /** Angular Form Builder */
 const fb = new FormBuilder();
 
+/** TODO: Replace once we have UI */
+const DEFAULT_CONTEXT_FILTER = `{
+  "logic": "and",
+  "filters": []
+}`;
+
 /**
  * Create file explorer widget form group
  *
@@ -19,6 +25,7 @@ export const createFileExplorerWidgetFormGroup = (
     id,
     title: [get(value, 'title', '')],
     tags: [get(value, 'tags', [])] as string[],
+    contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
   });
   return formGroup;
 };
