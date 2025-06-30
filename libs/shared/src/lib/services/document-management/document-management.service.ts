@@ -422,7 +422,7 @@ export class DocumentManagementService {
       withHazard: byTag === 'hazardid',
       withIHRCommunication: byTag === 'ihrcommunicationid',
       withAssignmentFunction: byTag === 'assignmentfunctionid',
-      // withDocumentRole: byTag === 'documentroleid',
+      withDocumentRole: byTag === 'roletypeid',
       withLanguage: byTag === 'languageid',
       withOccurrence: byTag === 'occurrenceid',
       withOccurrenceType: byTag === 'occurrencetype',
@@ -431,33 +431,35 @@ export class DocumentManagementService {
       withRegion: byTag === 'regionid',
     };
 
-    if (byTag === 'occurrencetype') {
-      return forkJoin({
-        count: apolloClient.query<CountDocumentsQueryResponse>({
+    switch (byTag) {
+      case 'occurrencetype': {
+        return forkJoin({
+          count: apolloClient.query<CountDocumentsQueryResponse>({
+            query: COUNT_DOCUMENTS,
+            variables: countVariables,
+          }),
+          occurrenceTypes: apolloClient.query<GetOccurrenceTypesResponse>({
+            query: GET_OCCURRENCE_TYPES,
+          }),
+        }).pipe(
+          map(({ count, occurrenceTypes }) => {
+            const metadata = (count.data.metadata || []).map((item: any) => ({
+              ...item,
+              name:
+                occurrenceTypes.data.occurrencetypes.find(
+                  (type) => type.id === item.id
+                )?.name || item.name,
+            }));
+            return { data: { metadata } };
+          })
+        );
+      }
+      default: {
+        return apolloClient.query<CountDocumentsQueryResponse>({
           query: COUNT_DOCUMENTS,
           variables: countVariables,
-        }),
-        occurrenceTypes: apolloClient.query<GetOccurrenceTypesResponse>({
-          query: GET_OCCURRENCE_TYPES,
-        }),
-      }).pipe(
-        map(({ count, occurrenceTypes }) => {
-          const metadata = (count.data.metadata || []).map((item: any) => ({
-            ...item,
-            name:
-              occurrenceTypes.data.occurrencetypes.find(
-                (type) => type.id === item.id
-              )?.name || item.name,
-          }));
-          return { data: { metadata } };
-        })
-      );
-    } else {
-      // todo: add document role
-      return apolloClient.query<CountDocumentsQueryResponse>({
-        query: COUNT_DOCUMENTS,
-        variables: countVariables,
-      });
+        });
+      }
     }
   }
 

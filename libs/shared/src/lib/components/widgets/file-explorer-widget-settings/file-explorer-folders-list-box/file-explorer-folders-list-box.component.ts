@@ -46,7 +46,7 @@ const ALL_TAGS = [
   },
   {
     text: 'IMS Role',
-    value: 'documentroleid',
+    value: 'roletypeid',
   },
   {
     text: 'Language',

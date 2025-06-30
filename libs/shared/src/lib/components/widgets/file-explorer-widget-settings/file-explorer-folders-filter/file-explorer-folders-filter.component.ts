@@ -137,10 +137,9 @@ export class FileExplorerFoldersFilterComponent
       multiSelect: true,
       options: [],
     },
-    // todo: fix
     {
       text: 'IMS Role',
-      name: 'documentroleid',
+      name: 'roletypeid',
       queryField: 'documentroles',
       type: 'tagbox',
       editor: 'select',

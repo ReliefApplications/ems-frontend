@@ -107,6 +107,7 @@ export const COUNT_DOCUMENTS = gql`
     $withCountry: Boolean! = false
     $withDiseaseCond: Boolean! = false
     $withDocumentCategory: Boolean! = false
+    $withDocumentRole: Boolean! = false
     $withDocumentType: Boolean! = false
     $withHazard: Boolean! = false
     $withIHRCommunication: Boolean! = false
@@ -132,6 +133,8 @@ export const COUNT_DOCUMENTS = gql`
       name: diseasecondname @include(if: $withDiseaseCond)
       id: documentcategoryid @include(if: $withDocumentCategory)
       name: documentcategoryname @include(if: $withDocumentCategory)
+      id: roletypeid @include(if: $withDocumentRole)
+      name: documentrolename @include(if: $withDocumentRole)
       id: documenttypeid @include(if: $withDocumentType)
       name: documenttypename @include(if: $withDocumentType)
       id: hazardid @include(if: $withHazard)
