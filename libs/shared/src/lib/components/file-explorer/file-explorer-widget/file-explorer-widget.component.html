@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-4 h-full pt-2">
+<div class="flex flex-col gap-2 h-full pt-2">
   <!-- Toolbar -->
   <shared-file-explorer-toolbar [view]="view"></shared-file-explorer-toolbar>
   <!-- Content -->
@@ -64,3 +64,20 @@
     </kendo-splitter-pane>
   </kendo-splitter>
 </div>
+
+<!-- Header template -->
+<ng-template #headerTemplate>
+  <div class="overflow-hidden flex-1 flex gap-1 items-center">
+    <!-- Widget title -->
+    <span class="widget-title" [title]="settings.title">{{
+      settings.title
+    }}</span>
+    <!-- Widget tooltip -->
+    <span
+      *ngIf="settings.widgetDisplay?.tooltip"
+      class="widget-tooltip"
+      [title]="settings.widgetDisplay.tooltip"
+      >?</span
+    >
+  </div>
+</ng-template>
