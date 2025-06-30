@@ -1,9 +1,10 @@
 import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ButtonModule, SnackbarService } from '@oort-front/ui';
+import { ButtonModule, SnackbarService, TooltipModule } from '@oort-front/ui';
 import { FileExplorerDocumentPropertiesComponent } from '../file-explorer-document-properties/file-explorer-document-properties.component';
 import { Clipboard, ClipboardModule } from '@angular/cdk/clipboard';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 /**
  * Document toolbar component for the file explorer.
@@ -12,7 +13,13 @@ import { DocumentManagementService } from '../../../services/document-management
 @Component({
   selector: 'shared-file-explorer-document-toolbar',
   standalone: true,
-  imports: [CommonModule, ButtonModule, ClipboardModule],
+  imports: [
+    CommonModule,
+    ButtonModule,
+    ClipboardModule,
+    TranslateModule,
+    TooltipModule,
+  ],
   templateUrl: './file-explorer-document-toolbar.component.html',
   styleUrls: ['./file-explorer-document-toolbar.component.scss'],
 })
@@ -27,6 +34,8 @@ export class FileExplorerDocumentToolbarComponent {
   private documentManagementService = inject(DocumentManagementService);
   /** Environment variables */
   private environment: any = inject('environment' as any);
+  /** Translate service */
+  private translate = inject(TranslateService);
 
   /**
    * Get drive id for the document.
@@ -69,6 +78,10 @@ export class FileExplorerDocumentToolbarComponent {
       this.document?.id
     }`;
     this.clipboard.copy(url);
-    this.snackBar.openSnackBar('File link copied to clipboard');
+    this.snackBar.openSnackBar(
+      this.translate.instant(
+        'components.widget.fileExplorer.notifications.copyLink.success'
+      )
+    );
   }
 }

@@ -1,11 +1,17 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ButtonModule, FormWrapperModule, IconModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  FormWrapperModule,
+  IconModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { fileExplorerView } from '../types/file-explorer-view.type';
 import { FileExplorerWidgetComponent } from '../file-explorer-widget/file-explorer-widget.component';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, takeUntil } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * File explorer widget toolbar.
@@ -19,6 +25,8 @@ import { debounceTime, takeUntil } from 'rxjs';
     FormWrapperModule,
     ButtonModule,
     ReactiveFormsModule,
+    TranslateModule,
+    TooltipModule,
   ],
   templateUrl: './file-explorer-toolbar.component.html',
   styleUrls: ['./file-explorer-toolbar.component.scss'],

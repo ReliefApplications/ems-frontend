@@ -1670,6 +1670,19 @@
 				"other": "Other"
 			},
 			"expand": "Expand",
+			"fileExplorer": {
+				"actions": {
+					"copyLink": "Copy file link",
+					"download": "Download file",
+					"viewAsGrid": "View as grid",
+					"viewAsList": "View as list"
+				},
+				"notifications": {
+					"copyLink": {
+						"success": "File link copied to clipboard"
+					}
+				}
+			},
 			"grid": {
 				"actions": {
 					"detail": "Open detail",

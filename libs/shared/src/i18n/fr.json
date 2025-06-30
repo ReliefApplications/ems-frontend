@@ -1673,6 +1673,19 @@
 				"other": "Autre"
 			},
 			"expand": "Étendre",
+			"fileExplorer": {
+				"actions": {
+					"copyLink": "Copier le lien du fichier",
+					"download": "Télécharger le fichier",
+					"viewAsGrid": "Afficher sous forme de grille",
+					"viewAsList": "Afficher sous forme de liste"
+				},
+				"notifications": {
+					"copyLink": {
+						"success": "Lien du fichier copié dans le presse-papiers"
+					}
+				}
+			},
 			"grid": {
 				"actions": {
 					"detail": "Ouvrir le détail",

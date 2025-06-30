@@ -7,6 +7,7 @@
       [category]="view === 'grid' ? 'secondary' : 'primary'"
       [variant]="view === 'grid' ? 'primary' : 'grey'"
       (click)="onChangeView('grid')"
+      [uiTooltip]="'components.widget.fileExplorer.actions.viewAsGrid' | translate"
     ></ui-button>
     <ui-button
       [isIcon]="true"
@@ -14,6 +15,7 @@
       [category]="view === 'list' ? 'secondary' : 'primary'"
       [variant]="view === 'list' ? 'primary' : 'grey'"
       (click)="onChangeView('list')"
+      [uiTooltip]="'components.widget.fileExplorer.actions.viewAsList' | translate"
     ></ui-button>
   </div>
   <!-- Searchbar -->
@@ -35,6 +37,7 @@
       variant="danger"
       uiSuffix
       (click)="searchControl.setValue('')"
+      [uiTooltip]="'common.clear' | translate"
     ></ui-button>
   </div>
 </div>

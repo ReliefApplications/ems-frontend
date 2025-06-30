@@ -6,6 +6,7 @@
     icon="download"
     variant="grey"
     (click)="onDownload()"
+    [uiTooltip]="'components.widget.fileExplorer.actions.download' | translate"
   ></ui-button>
   <!-- Copy link -->
   <ui-button
@@ -13,5 +14,6 @@
     icon="content_copy"
     variant="grey"
     (click)="onCopyLink()"
+    [uiTooltip]="'components.widget.fileExplorer.actions.copyLink' | translate"
   ></ui-button>
 </div>
