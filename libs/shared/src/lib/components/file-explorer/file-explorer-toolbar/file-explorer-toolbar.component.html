@@ -1,4 +1,4 @@
-<div class="flex flex-row gap-2">
+<div class="flex flex-row gap-2 items-center">
   <!-- Change display mode -->
   <div class="flex flex-row">
     <ui-button
@@ -7,7 +7,9 @@
       [category]="view === 'grid' ? 'secondary' : 'primary'"
       [variant]="view === 'grid' ? 'primary' : 'grey'"
       (click)="onChangeView('grid')"
-      [uiTooltip]="'components.widget.fileExplorer.actions.viewAsGrid' | translate"
+      [uiTooltip]="
+        'components.widget.fileExplorer.actions.viewAsGrid' | translate
+      "
     ></ui-button>
     <ui-button
       [isIcon]="true"
@@ -15,7 +17,9 @@
       [category]="view === 'list' ? 'secondary' : 'primary'"
       [variant]="view === 'list' ? 'primary' : 'grey'"
       (click)="onChangeView('list')"
-      [uiTooltip]="'components.widget.fileExplorer.actions.viewAsList' | translate"
+      [uiTooltip]="
+        'components.widget.fileExplorer.actions.viewAsList' | translate
+      "
     ></ui-button>
   </div>
   <!-- Searchbar -->
@@ -38,6 +42,47 @@
       uiSuffix
       (click)="searchControl.setValue('')"
       [uiTooltip]="'common.clear' | translate"
+    ></ui-button>
+  </div>
+  <!-- Sort -->
+  <div uiFormFieldDirective [defaultMargin]="false">
+    <ng-template #labelTmpl>{{ 'common.sortBy' | translate }}</ng-template>
+    <ui-select-menu
+      (selectedOption)="onSortChange($any($event))"
+      [customTemplate]="{
+        template: labelTmpl,
+        context: null
+      }"
+    >
+      <ui-select-option value="id" [selected]="sort[0].field === 'id'"
+        >ID</ui-select-option
+      >
+      <ui-select-option
+        value="filename"
+        [selected]="sort[0].field === 'filename'"
+        >Name</ui-select-option
+      >
+      <ui-select-option
+        value="createddate"
+        [selected]="sort[0].field === 'createddate'"
+        >Created On</ui-select-option
+      >
+      <ui-select-option
+        value="modifieddate"
+        [selected]="sort[0].field === 'modifieddate'"
+        >Last Updated On</ui-select-option
+      >
+    </ui-select-menu>
+    <ui-button
+      *ngIf="sort[0]?.dir"
+      [isIcon]="true"
+      [icon]="sort[0].dir === 'asc' ? 'arrow_upward' : 'arrow_downward'"
+      uiPrefix
+      size="small"
+      (click)="onSortDirChange()"
+      [uiTooltip]="
+        (sort[0].dir === 'asc' ? 'common.asc' : 'common.desc') | translate
+      "
     ></ui-button>
   </div>
 </div>

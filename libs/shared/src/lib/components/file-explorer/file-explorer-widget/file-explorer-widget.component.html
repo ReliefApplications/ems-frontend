@@ -1,6 +1,9 @@
 <div class="flex flex-col gap-2 h-full pt-2">
   <!-- Toolbar -->
-  <shared-file-explorer-toolbar [view]="view"></shared-file-explorer-toolbar>
+  <shared-file-explorer-toolbar
+    [view]="view"
+    [sort]="sort"
+  ></shared-file-explorer-toolbar>
   <!-- Content -->
   <kendo-splitter class="!flex-1 overflow-hidden">
     <kendo-splitter-pane

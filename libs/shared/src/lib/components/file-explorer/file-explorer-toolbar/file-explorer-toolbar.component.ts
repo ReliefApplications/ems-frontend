@@ -1,9 +1,10 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnChanges, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ButtonModule,
   FormWrapperModule,
   IconModule,
+  SelectMenuModule,
   TooltipModule,
 } from '@oort-front/ui';
 import { fileExplorerView } from '../types/file-explorer-view.type';
@@ -12,6 +13,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, takeUntil } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
+import { SortDescriptor } from '@progress/kendo-data-query';
 
 /**
  * File explorer widget toolbar.
@@ -27,18 +29,23 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     TranslateModule,
     TooltipModule,
+    SelectMenuModule,
   ],
   templateUrl: './file-explorer-toolbar.component.html',
   styleUrls: ['./file-explorer-toolbar.component.scss'],
 })
 export class FileExplorerToolbarComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnChanges
 {
   /** File explorer view */
   @Input() view: fileExplorerView = 'list';
+  /** Sort descriptor */
+  @Input() sort: SortDescriptor[] = [];
   /** Search control */
   public searchControl: FormControl = new FormControl();
+  /** Sort field control */
+  public sortFieldControl: FormControl = new FormControl();
   /** Parent component */
   private parent: FileExplorerWidgetComponent | null = inject(
     FileExplorerWidgetComponent,
@@ -57,6 +64,10 @@ export class FileExplorerToolbarComponent
       });
   }
 
+  ngOnChanges(): void {
+    this.sortFieldControl.setValue(this.sort[0]?.field);
+  }
+
   /**
    * Update view
    *
@@ -66,5 +77,31 @@ export class FileExplorerToolbarComponent
     if (this.parent) {
       this.parent.view = view;
     }
+  }
+
+  /**
+   * Update sort field
+   *
+   * @param field selected field
+   */
+  public onSortChange(field: string) {
+    this.parent?.onSortChange([
+      {
+        field: field,
+        dir: 'asc',
+      },
+    ]);
+  }
+
+  /**
+   * Toggle sort direction
+   */
+  public onSortDirChange() {
+    this.parent?.onSortChange([
+      {
+        field: this.sort[0]?.field,
+        dir: this.sort[0]?.dir === 'asc' ? 'desc' : 'asc',
+      },
+    ]);
   }
 }
