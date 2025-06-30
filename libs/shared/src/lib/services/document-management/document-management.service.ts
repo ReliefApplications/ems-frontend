@@ -378,6 +378,9 @@ export class DocumentManagementService {
     return apolloClient.query<GetDocumentsQueryResponse>({
       query: GET_DOCUMENTS,
       variables: {
+        // countfields & distinct are used by common services to avoid duplicating documents in query result
+        countfields: 'documentid',
+        distinct: 'vw_allmetatablerelations',
         offset: options.offset,
         ...(options.filter && { filter: JSON.stringify(options.filter) }),
         ...(options.sort?.length && {
@@ -406,6 +409,9 @@ export class DocumentManagementService {
     const byTag = options.byTag;
 
     const countVariables = {
+      // countfields & distinct are used by common services to avoid duplicating documents in query result
+      countfields: 'documentid',
+      distinct: 'vw_allmetatablerelations',
       ...(options.filter && { filter: JSON.stringify(options.filter) }),
       withAetiology: byTag === 'aetiologyid',
       withInformationConfidentiality: byTag === 'informationconfidentialityid',
