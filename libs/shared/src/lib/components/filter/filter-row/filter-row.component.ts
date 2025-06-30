@@ -102,6 +102,7 @@ export class FilterRowComponent
   }
 
   ngOnInit(): void {
+    console.log(this.fields);
     this.form
       .get('field')
       ?.valueChanges?.pipe(takeUntil(this.destroy$))

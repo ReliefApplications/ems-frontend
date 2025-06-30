@@ -1,3 +1,17 @@
-<shared-file-explorer-folders-list-box
-  [formGroup]="formGroup"
-></shared-file-explorer-folders-list-box>
+<!-- todo: translate -->
+<div class="flex flex-col gap-8">
+  <!-- Folder structure -->
+  <div>
+    <h2>Folder Structure</h2>
+    <shared-file-explorer-folders-list-box
+      [formGroup]="formGroup"
+    ></shared-file-explorer-folders-list-box>
+  </div>
+  <!-- Filter -->
+  <div>
+    <h2>Filter</h2>
+    <shared-file-explorer-folders-filter
+      [formGroup]="formGroup"
+    ></shared-file-explorer-folders-filter>
+  </div>
+</div>

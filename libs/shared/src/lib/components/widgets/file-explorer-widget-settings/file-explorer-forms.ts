@@ -1,5 +1,6 @@
 import { FormBuilder, FormGroup } from '@angular/forms';
 import get from 'lodash/get';
+import { createFilterGroup } from '../../query-builder/query-builder-forms';
 
 /** Angular Form Builder */
 const fb = new FormBuilder();
@@ -26,6 +27,7 @@ export const createFileExplorerWidgetFormGroup = (
     title: [get(value, 'title', '')],
     tags: [get(value, 'tags', [])] as string[],
     contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
+    filter: createFilterGroup(get(value, 'filter', null)),
   });
   return formGroup;
 };

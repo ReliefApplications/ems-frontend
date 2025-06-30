@@ -380,3 +380,145 @@ export interface GetDocumentByIdResponse extends GetOccurrenceTypesResponse {
     };
   };
 }
+
+/**
+ * Get Fields Options query definition
+ */
+export const GET_FIELDS_OPTIONS = gql`
+  query GetFieldsOptions {
+    aetiologys {
+      id
+      name
+    }
+    informationconfidentialitys {
+      id
+      name
+    }
+    countrys {
+      id
+      name
+    }
+    diseaseconds {
+      id
+      name
+    }
+    documentcategorys {
+      id
+      name
+    }
+    documenttypes {
+      id
+      name
+    }
+    hazards {
+      id
+      name
+    }
+    ihrcommunications {
+      id
+      name
+    }
+    assignmentfunctions {
+      id
+      name
+    }
+    documentroles {
+      id
+      name
+    }
+    languages {
+      id
+      name
+    }
+    occurrences {
+      id
+      name: occurrencename
+    }
+    occurrencetypes {
+      id
+      name
+    }
+    regions {
+      id
+      name
+    }
+    sourceofinformations {
+      id
+      name
+    }
+    syndromes {
+      id
+      name
+    }
+  }
+`;
+
+/**
+ * Get Fields Options Response Interface
+ */
+export interface GetFieldsOptionsResponse {
+  aetiologys: {
+    id: string;
+    name: string;
+  }[];
+  informationconfidentialitys: {
+    id: string;
+    name: string;
+  }[];
+  countrys: {
+    id: string;
+    name: string;
+  }[];
+  diseaseconds: {
+    id: string;
+    name: string;
+  }[];
+  documentcategorys: {
+    id: string;
+    name: string;
+  }[];
+  documenttypes: {
+    id: string;
+    name: string;
+  }[];
+  hazards: {
+    id: string;
+    name: string;
+  }[];
+  ihrcommunications: {
+    id: string;
+    name: string;
+  }[];
+  assignmentfunctions: {
+    id: string;
+    name: string;
+  }[];
+  documentroles: {
+    id: string;
+    name: string;
+  }[];
+  languages: {
+    id: string;
+    name: string;
+  }[];
+  occurrences: {
+    id: string;
+    name: string;
+  }[];
+  occurrencetypes: {
+    id: string;
+    name: string;
+  }[];
+  regions: {
+    id: string;
+    name: string;
+  }[];
+  sourceofinformations: {
+    id: string;
+    name: string;
+  }[];
+  syndromes: {
+    id: string;
+    name: string;
+  }[];
+}

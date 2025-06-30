@@ -15,10 +15,12 @@ import {
   GET_DOCUMENT_BY_ID,
   GET_DOCUMENTS,
   GET_DRIVE_ID,
+  GET_FIELDS_OPTIONS,
   GET_OCCURRENCE_BY_ID,
   GET_OCCURRENCE_TYPES,
   GetDocumentByIdResponse,
   GetDocumentsQueryResponse,
+  GetFieldsOptionsResponse,
   GetOccurrenceTypesResponse,
   OccurrenceQueryResponse,
 } from './graphql/queries';
@@ -513,5 +515,17 @@ export class DocumentManagementService {
         query,
       })
     );
+  }
+
+  /**
+   * Get fields options for the document management system
+   *
+   * @returns Query to fetch fields options
+   */
+  public getFieldsOptions() {
+    const apolloClient = this.apollo.use('csClient');
+    return apolloClient.query<GetFieldsOptionsResponse>({
+      query: GET_FIELDS_OPTIONS,
+    });
   }
 }
