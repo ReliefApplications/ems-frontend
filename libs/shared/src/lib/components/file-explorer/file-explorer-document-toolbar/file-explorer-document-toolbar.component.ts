@@ -8,7 +8,6 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 /**
  * Document toolbar component for the file explorer.
- * todo: translate
  */
 @Component({
   selector: 'shared-file-explorer-document-toolbar',
