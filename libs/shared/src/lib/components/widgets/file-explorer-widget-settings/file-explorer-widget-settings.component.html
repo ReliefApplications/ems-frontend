@@ -2,10 +2,13 @@
   <!-- Folder structure -->
   <ui-tab>
     <ng-container ngProjectAs="label">
-      <!-- todo: translate -->
-      <ui-icon icon="tab" [size]="24" uiTooltip="Folders"> </ui-icon>
-      <!-- todo: translate -->
-      <span>Folders</span>
+      <ui-icon
+        icon="tab"
+        [size]="24"
+        [uiTooltip]="'components.widget.fileExplorer.folders' | translate"
+      >
+      </ui-icon>
+      <span>{{ 'components.widget.fileExplorer.folders' | translate }}</span>
     </ng-container>
     <ng-template uiTabContent>
       <shared-file-explorer-folders-tab
@@ -31,7 +34,7 @@
   <!-- Context filter settings -->
   <ui-tab>
     <ng-container ngProjectAs="label">
-      <ui-icon icon="filter_list" [size]="24"></ui-icon>
+      <ui-icon icon="filter_list" [size]="24" [uiTooltip]="'models.dashboard.contextFilter' | translate"></ui-icon>
       <span>{{ 'models.dashboard.contextFilter' | translate }}</span>
     </ng-container>
     <ng-template uiTabContent>

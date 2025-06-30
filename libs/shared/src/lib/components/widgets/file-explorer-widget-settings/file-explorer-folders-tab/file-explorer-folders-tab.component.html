@@ -1,15 +1,21 @@
 <!-- todo: translate -->
 <div class="flex flex-col gap-8">
-  <!-- Folder structure -->
-  <div>
-    <h2>Folder Structure</h2>
+  <!-- Folder hierarchy -->
+  <div class="flex flex-col gap-4">
+    <h2 class="mb-0">{{ 'components.widget.fileExplorer.folderHierarchy.title' | translate }}</h2>
+    <ui-alert>
+      {{ 'components.widget.fileExplorer.folderHierarchy.alert' | translate }}
+    </ui-alert>
     <shared-file-explorer-folders-list-box
       [formGroup]="formGroup"
     ></shared-file-explorer-folders-list-box>
   </div>
   <!-- Filter -->
-  <div>
-    <h2>Filter</h2>
+  <div class="flex flex-col gap-4">
+    <h2 class="mb-0">{{ 'components.widget.fileExplorer.filter.title' | translate }}</h2>
+    <ui-alert>
+      {{ 'components.widget.fileExplorer.filter.alert' | translate }}
+    </ui-alert>
     <shared-file-explorer-folders-filter
       [formGroup]="formGroup"
     ></shared-file-explorer-folders-filter>

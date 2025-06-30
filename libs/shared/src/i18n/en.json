@@ -1677,6 +1677,15 @@
 					"viewAsGrid": "View as grid",
 					"viewAsList": "View as list"
 				},
+				"filter": {
+					"alert": "Define system-level filters that restrict the document set for all users. These administrative filters cannot be seen or modified by end users and will be applied in addition to any folder navigation or context filtering.",
+					"title": "Static Filters"
+				},
+				"folderHierarchy": {
+					"alert": "Choose which tags to use as folders and arrange them in your preferred order. The first tag becomes the top-level folder, with subsequent tags creating subfolders. Documents are automatically organized based on their tag values.",
+					"title": "Folder Hierarchy"
+				},
+				"folders": "Folders",
 				"notifications": {
 					"copyLink": {
 						"success": "File link copied to clipboard"

@@ -1680,6 +1680,15 @@
 					"viewAsGrid": "Afficher sous forme de grille",
 					"viewAsList": "Afficher sous forme de liste"
 				},
+				"filter": {
+					"alert": "Définir des filtres au niveau du système qui restreignent l'ensemble des documents pour tous les utilisateurs. Ces filtres administratifs ne peuvent pas être vus ou modifiés par les utilisateurs finaux et seront appliqués en plus de toute navigation dans les dossiers ou filtrage contextuel.",
+					"title": "Filtres statiques"
+				},
+				"folderHierarchy": {
+					"alert": "Choisissez les balises à utiliser comme dossiers et organisez-les dans l'ordre de votre choix. La première balise devient le dossier de niveau supérieur, les balises suivantes créant des sous-dossiers. Les documents sont automatiquement organisés en fonction de leurs valeurs de balise.",
+					"title": "Hiérarchie des dossiers"
+				},
+				"folders": "Dossiers",
 				"notifications": {
 					"copyLink": {
 						"success": "Lien du fichier copié dans le presse-papiers"

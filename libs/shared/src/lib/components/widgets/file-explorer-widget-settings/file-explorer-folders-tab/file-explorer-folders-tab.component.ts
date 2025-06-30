@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FileExplorerFoldersListBoxComponent } from '../file-explorer-folders-list-box/file-explorer-folders-list-box.component';
 import { FormGroup } from '@angular/forms';
 import { FileExplorerFoldersFilterComponent } from '../file-explorer-folders-filter/file-explorer-folders-filter.component';
+import { AlertModule } from '@oort-front/ui';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Component for displaying a tab with a list box of folders in the file explorer widget settings.
@@ -16,6 +18,8 @@ import { FileExplorerFoldersFilterComponent } from '../file-explorer-folders-fil
     CommonModule,
     FileExplorerFoldersListBoxComponent,
     FileExplorerFoldersFilterComponent,
+    AlertModule,
+    TranslateModule,
   ],
   templateUrl: './file-explorer-folders-tab.component.html',
   styleUrls: ['./file-explorer-folders-tab.component.scss'],
