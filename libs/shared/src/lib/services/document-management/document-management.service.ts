@@ -536,4 +536,22 @@ export class DocumentManagementService {
       query: GET_FIELDS_OPTIONS,
     });
   }
+
+  /**
+   * Get document permissions
+   * Logic as follows:
+   * - 0: no access
+   * - 1: read access
+   * - 2: read and write access
+   * - 3: full access
+   *
+   * @param driveId Drive id
+   * @param itemId Item id
+   * @returns Query to fetch document permissions
+   */
+  public getDocumentPermissions(driveId: string, itemId: string) {
+    return this.restService.get(
+      `${this.environment.csApiUrl}/documents/drives/${driveId}/items/${itemId}/permissions`
+    );
+  }
 }

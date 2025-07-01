@@ -1,10 +1,12 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule, SnackbarService, TooltipModule } from '@oort-front/ui';
 import { FileExplorerDocumentPropertiesComponent } from '../file-explorer-document-properties/file-explorer-document-properties.component';
 import { Clipboard, ClipboardModule } from '@angular/cdk/clipboard';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs';
 
 /**
  * Document toolbar component for the file explorer.
@@ -22,9 +24,16 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   templateUrl: './file-explorer-document-toolbar.component.html',
   styleUrls: ['./file-explorer-document-toolbar.component.scss'],
 })
-export class FileExplorerDocumentToolbarComponent {
+export class FileExplorerDocumentToolbarComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   /** Document properties to be displayed */
   @Input() document!: FileExplorerDocumentPropertiesComponent['document'];
+  /** Loading indicator */
+  public loading = true;
+  /** Access level, see document management service for more explanations */
+  public accessLevel = -1;
   /** Clipboard service for copying links */
   private clipboard = inject(Clipboard);
   /** Snackbar service for displaying messages */
@@ -35,6 +44,10 @@ export class FileExplorerDocumentToolbarComponent {
   private environment: any = inject('environment' as any);
   /** Translate service */
   private translate = inject(TranslateService);
+
+  ngOnInit() {
+    this.getPermissions();
+  }
 
   /**
    * Get drive id for the document.
@@ -82,5 +95,18 @@ export class FileExplorerDocumentToolbarComponent {
         'components.widget.fileExplorer.notifications.copyLink.success'
       )
     );
+  }
+
+  /**
+   * Get permissions for the document.
+   */
+  private async getPermissions() {
+    this.documentManagementService
+      .getDocumentPermissions(await this.driveId(), this.document?.id as string)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ value }) => {
+        this.accessLevel = value;
+        this.loading = false;
+      });
   }
 }
