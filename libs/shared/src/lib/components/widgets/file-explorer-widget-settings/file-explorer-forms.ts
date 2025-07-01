@@ -28,6 +28,9 @@ export const createFileExplorerWidgetFormGroup = (
     tags: [get(value, 'tags', [])] as string[],
     contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
     filter: createFilterGroup(get(value, 'filter', null)),
+    // form binding
+    resource: [get(value, 'resource', null)],
+    template: [get(value, 'template', null)],
   });
   return formGroup;
 };

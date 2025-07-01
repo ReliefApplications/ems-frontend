@@ -85,4 +85,15 @@
       "
     ></ui-button>
   </div>
+  <!-- Upload -->
+  <!-- todo: translate -->
+  <ui-button
+    class="ml-auto"
+    *ngIf="form?.canCreateRecords"
+    icon="upload"
+    [loading]="uploading"
+    [disabled]="uploading"
+    (click)="onUpload()"
+    >Upload</ui-button
+  >
 </div>

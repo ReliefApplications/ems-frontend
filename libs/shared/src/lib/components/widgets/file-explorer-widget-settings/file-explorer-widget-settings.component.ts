@@ -11,6 +11,7 @@ import { DisplaySettingsComponent } from '../common/display-settings/display-set
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FileExplorerFoldersTabComponent } from './file-explorer-folders-tab/file-explorer-folders-tab.component';
 import { ContextualFiltersSettingsComponent } from '../common/contextual-filters-settings/contextual-filters-settings.component';
+import { FileExplorerFormTabComponent } from './file-explorer-form-tab/file-explorer-form-tab.component';
 
 /**
  * File explorer widget settings.
@@ -28,6 +29,7 @@ import { ContextualFiltersSettingsComponent } from '../common/contextual-filters
     TabsModule,
     TooltipModule,
     FileExplorerFoldersTabComponent,
+    FileExplorerFormTabComponent,
     ContextualFiltersSettingsComponent,
   ],
   templateUrl: './file-explorer-widget-settings.component.html',

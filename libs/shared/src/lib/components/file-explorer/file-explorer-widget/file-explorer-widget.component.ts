@@ -70,7 +70,7 @@ export class FileExplorerWidgetComponent
   /** Page size */
   private pageSize = 10;
   /** Current page index */
-  private page = new BehaviorSubject<number>(1);
+  public page = new BehaviorSubject<number>(1);
   /** Filter */
   private filter: FileExplorerFilter = {
     search: '',
