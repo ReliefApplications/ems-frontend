@@ -57,3 +57,19 @@ export const AllTypes: Story = () => ({
   `,
   props: { documents: allDocuments },
 });
+
+/**
+ * Story to show all types selected.
+ *
+ * @returns story
+ */
+export const AllTypesSelected: Story = () => ({
+  template: `
+    <div class="flex flex-row flex-wrap gap-2">
+      <ng-container *ngFor="let doc of documents">
+        <shared-file-explorer-list-item [document]="doc" [selected]="true"></shared-file-explorer-list-item>
+      </ng-container>
+    </div>
+  `,
+  props: { documents: allDocuments },
+});
