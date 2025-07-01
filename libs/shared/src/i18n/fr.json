@@ -1678,6 +1678,7 @@
 				"actions": {
 					"copyLink": "Copier le lien du fichier",
 					"download": "Télécharger le fichier",
+					"requestAccess": "Demander l'accès",
 					"viewAsGrid": "Afficher sous forme de grille",
 					"viewAsList": "Afficher sous forme de liste"
 				},

@@ -1675,6 +1675,7 @@
 				"actions": {
 					"copyLink": "******",
 					"download": "******",
+					"requestAccess": "******",
 					"viewAsGrid": "******",
 					"viewAsList": "******"
 				},

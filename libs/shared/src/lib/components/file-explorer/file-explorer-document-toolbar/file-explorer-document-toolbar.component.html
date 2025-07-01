@@ -1,4 +1,7 @@
 <div class="flex flex-row border-b pb-2">
+  <ui-button *ngIf="accessLevel === 0" (click)="onRequestAccess()">
+    {{ 'components.widget.fileExplorer.actions.requestAccess' | translate }}
+  </ui-button>
   <!-- Download button -->
   <ui-button
     class="ml-auto"

@@ -7,6 +7,7 @@ import { DocumentManagementService } from '../../../services/document-management
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
+import { AuthService } from '../../../services/auth/auth.service';
 
 /**
  * Document toolbar component for the file explorer.
@@ -44,6 +45,8 @@ export class FileExplorerDocumentToolbarComponent
   private environment: any = inject('environment' as any);
   /** Translate service */
   private translate = inject(TranslateService);
+  /** Auth service */
+  private auth = inject(AuthService);
 
   ngOnInit() {
     this.getPermissions();
@@ -108,5 +111,43 @@ export class FileExplorerDocumentToolbarComponent
         this.accessLevel = value;
         this.loading = false;
       });
+  }
+
+  /**
+   * Open mail client to request access to the document.
+   */
+  public onRequestAccess() {
+    if (!this.document) return;
+
+    const createdBy = this.document.createdbyuser || '';
+    const modifiedBy = this.document.modifiedbyuser || '';
+    const createdByMail = this.document.createdbyuseremail || '';
+    const modifiedByMail = this.document.modifiedbyuseremail || '';
+    const fileName = this.document.filename || '';
+    const documentId = this.document.id || '';
+    const currentUser = this.auth.userValue?.name;
+
+    const recipients =
+      createdByMail === modifiedByMail
+        ? createdByMail
+        : `${createdByMail};${modifiedByMail}`;
+
+    const subject = encodeURIComponent(`Request access to ${fileName}`);
+    const body = encodeURIComponent(
+      `Dear ${createdBy}${
+        createdByMail !== modifiedByMail ? ', ' + modifiedBy : ''
+      },\n\n` +
+        `Can you please give me access to ${fileName}, which was created or modified by you?\n\n` +
+        `(Insert reason you're requesting access)\n\n` +
+        `Click this link to approve:\n${
+          this.environment.csDocUrl
+        }/index.html?documentid=${documentId}&usersearch=${encodeURIComponent(
+          this.auth.userValue?.username || ''
+        )}\n\n` +
+        `Or reply to this e-mail if you choose to not grant permissions.\n\n` +
+        `Thank you for your consideration.\n\n${currentUser}`
+    );
+
+    window.open(`mailto:${recipients}?subject=${subject}&body=${body}`);
   }
 }

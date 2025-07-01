@@ -1675,6 +1675,7 @@
 				"actions": {
 					"copyLink": "Copy file link",
 					"download": "Download file",
+					"requestAccess": "Request access",
 					"viewAsGrid": "View as grid",
 					"viewAsList": "View as list"
 				},

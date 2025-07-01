@@ -49,8 +49,10 @@ export class FileExplorerDocumentPropertiesComponent
     region?: string;
     createddate?: string;
     createdbyuser?: string;
+    createdbyuseremail?: string;
     modifieddate?: string;
     modifiedbyuser?: string;
+    modifiedbyuseremail?: string;
     size?: number;
     version?: string;
     documenttypename?: string;
@@ -141,11 +143,15 @@ export class FileExplorerDocumentPropertiesComponent
         queryResult.properties.document.createdbyuser?.firstname,
         queryResult.properties.document.createdbyuser?.lastname,
       ].join(' '),
+      createdbyuseremail:
+        queryResult.properties.document.createdbyuser?.emailaddress,
       modifieddate: queryResult.properties.document.modifieddate,
       modifiedbyuser: [
         queryResult.properties.document.modifiedbyuser?.firstname,
         queryResult.properties.document.modifiedbyuser?.lastname,
       ].join(' '),
+      modifiedbyuseremail:
+        queryResult.properties.document.modifiedbyuser?.emailaddress,
       size: versions?.[0]?.size,
       version: versions?.[0]?.version,
       documenttypename: queryResult.properties.documenttypename,
