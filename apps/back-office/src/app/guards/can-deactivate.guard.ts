@@ -13,9 +13,7 @@ export interface CanComponentDeactivate {
 
 /** Injectable for checking deactivation */
 @Injectable()
-export class CanDeactivateGuard
-  
-{
+export class CanDeactivateGuard {
   /**
    * Check if the component can deactivate
    *

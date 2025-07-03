@@ -5,13 +5,11 @@ import {
   ContentType,
   CONTENT_TYPES,
   ApplicationService,
-  UnsubscribeComponent,
   FormsQueryResponse,
   AddFormMutationResponse,
   DashboardService,
   WidgetType,
 } from '@oort-front/shared';
-import { takeUntil } from 'rxjs';
 import { ADD_FORM } from './graphql/mutations';
 import { GET_FORMS } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';

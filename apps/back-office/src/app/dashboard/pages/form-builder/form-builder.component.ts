@@ -223,10 +223,7 @@ export class FormBuilderComponent implements OnInit {
    * @param {number} duration Time duration of the opened snackbar element
    * @returns snackbar reference and header for the file download request
    */
-  private snackBarMessageInit(
-    translationKey: string = 'common.loading',
-    duration: number = 0
-  ) {
+  private snackBarMessageInit(translationKey = 'common.loading', duration = 0) {
     // Opens a loader in a snackbar
     const snackBarRef = this.snackBar.openComponentSnackBar(
       SnackbarSpinnerComponent,

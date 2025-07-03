@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root',
 })
-export class AccessGuard  {
+export class AccessGuard {
   /**
    * Constructor of the access guard
    *

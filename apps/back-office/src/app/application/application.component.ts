@@ -13,11 +13,10 @@ import {
   ContentType,
   ApplicationService,
   ConfirmService,
-  UnsubscribeComponent,
   AppAbility,
 } from '@oort-front/shared';
 import get from 'lodash/get';
-import { takeUntil, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 

@@ -22,12 +22,11 @@ import {
   FormComponent as SharedFormComponent,
   Step,
   StepQueryResponse,
-  UnsubscribeComponent,
   WorkflowService,
 } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import { Observable, Subscription } from 'rxjs';
-import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import {
   GET_PAGE_BY_ID,
   GET_SHORT_FORM_BY_ID,

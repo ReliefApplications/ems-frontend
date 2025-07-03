@@ -5,11 +5,10 @@ import {
   ArchivePage,
   Page,
   ApplicationService,
-  UnsubscribeComponent,
   ApplicationQueryResponse,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
-import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { combineLatest, of } from 'rxjs';
 import { PreviewService } from '../../../services/preview.service';

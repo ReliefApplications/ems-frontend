@@ -4,7 +4,6 @@ import { TranslateService } from '@ngx-translate/core';
 import {
   ContentType,
   Step,
-  UnsubscribeComponent,
   Workflow,
   WorkflowQueryResponse,
 } from '@oort-front/shared';
@@ -12,7 +11,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
 import { isNil } from 'lodash';
 import { Subscription } from 'rxjs';
-import { filter, startWith, takeUntil } from 'rxjs/operators';
+import { filter, startWith } from 'rxjs/operators';
 import { PreviewService } from '../../../services/preview.service';
 import { GET_WORKFLOW_BY_ID } from './graphql/queries';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';

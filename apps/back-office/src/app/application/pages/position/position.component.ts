@@ -6,9 +6,7 @@ import {
   ApplicationService,
   PositionAttributeCategory,
   ConfirmService,
-  UnsubscribeComponent,
 } from '@oort-front/shared';
-import { takeUntil } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**

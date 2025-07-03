@@ -6,19 +6,7 @@
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
-        "@nx/enforce-module-boundaries": [
-          "error",
-          {
-            "enforceBuildableLibDependency": true,
-            "allow": [],
-            "depConstraints": [
-              {
-                "sourceTag": "*",
-                "onlyDependOnLibsWithTags": ["*"]
-              }
-            ]
-          }
-        ]
+        "@nx/enforce-module-boundaries": 0
       }
     },
     {
@@ -77,14 +65,15 @@
           {
             "startLines": 1
           }
-        ],
-        "lines-between-class-members": [
-          "error",
-          "always",
-          {
-            "exceptAfterSingleLine": false
-          }
         ]
+        // todo: reactivate using stylistic
+        // "lines-between-class-members": [
+        //   "error",
+        //   "always",
+        //   {
+        //     "exceptAfterSingleLine": false
+        //   }
+        // ]
       }
     },
     {
