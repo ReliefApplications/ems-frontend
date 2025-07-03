@@ -1,11 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  Router,
-  RouterStateSnapshot,
-  UrlTree,
-} from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { subject } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
@@ -21,7 +15,7 @@ import { AppAbility } from '../services/auth/auth.service';
 @Injectable({
   providedIn: 'root',
 })
-export class PermissionGuard implements CanActivate {
+export class PermissionGuard  {
   /**
    * Guard to prevent unauthorized users to see pages
    *

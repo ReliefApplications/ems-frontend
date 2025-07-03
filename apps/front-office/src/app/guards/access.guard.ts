@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, UrlTree, Router } from '@angular/router';
+import { UrlTree, Router } from '@angular/router';
 import { AuthService } from '@oort-front/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root',
 })
-export class AccessGuard implements CanActivate {
+export class AccessGuard  {
   /**
    * Guard to check if user is authenticated or not.
    *

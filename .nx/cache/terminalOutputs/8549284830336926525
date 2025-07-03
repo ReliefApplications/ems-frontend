@@ -1,0 +1,179 @@
+[1m[2mDetermining test suites to run...[22m[22m[999D[K
+
+[1mTest Suites: [22m0 of 4 total
+[1mTests:       [22m0 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        0 s[K[1A[K[1A[K[1A[K[1A[K[1A
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/html-parser/[22m[1mhtml-parser.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/gradient/[22m[1mgradient.pipe.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/asset/[22m[1masset.pipe.spec.ts[22m
+
+[1mTest Suites: [22m0 of 4 total
+[1mTests:       [22m0 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        0 s[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/html-parser/[22m[1mhtml-parser.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/gradient/[22m[1mgradient.pipe.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/asset/[22m[1masset.pipe.spec.ts[22m
+
+[1mTest Suites: [22m0 of 4 total
+[1mTests:       [22m0 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        1 s[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/html-parser/[22m[1mhtml-parser.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/gradient/[22m[1mgradient.pipe.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/asset/[22m[1masset.pipe.spec.ts[22m
+
+[1mTest Suites: [22m0 of 4 total
+[1mTests:       [22m0 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        2 s[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/html-parser/[22m[1mhtml-parser.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/gradient/[22m[1mgradient.pipe.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/asset/[22m[1masset.pipe.spec.ts[22m
+
+[1mTest Suites: [22m0 of 4 total
+[1mTests:       [22m0 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        3 s[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/html-parser/[22m[1mhtml-parser.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/gradient/[22m[1mgradient.pipe.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/asset/[22m[1masset.pipe.spec.ts[22m
+
+[1mTest Suites: [22m0 of 4 total
+[1mTests:       [22m0 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        4 s[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/html-parser/[22m[1mhtml-parser.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/gradient/[22m[1mgradient.pipe.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/asset/[22m[1masset.pipe.spec.ts[22m
+
+[1mTest Suites: [22m0 of 4 total
+[1mTests:       [22m0 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        5 s[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/html-parser/[22m[1mhtml-parser.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/gradient/[22m[1mgradient.pipe.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/asset/[22m[1masset.pipe.spec.ts[22m
+
+[1mTest Suites: [22m0 of 4 total
+[1mTests:       [22m0 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        6 s[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/gradient/[22m[1mgradient.pipe.spec.ts[22m ([0m[1m[41m5.92 s[49m[22m[0m)
+
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/html-parser/[22m[1mhtml-parser.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/gradient/[22m[1mgradient.pipe.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/asset/[22m[1masset.pipe.spec.ts[22m
+
+[1mTest Suites: [22m0 of 4 total
+[1mTests:       [22m0 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        6 s[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/html-parser/[22m[1mhtml-parser.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/gradient/[22m[1mgradient.pipe.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/asset/[22m[1masset.pipe.spec.ts[22m
+
+[1mTest Suites: [22m0 of 4 total
+[1mTests:       [22m0 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        6 s[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/asset/[22m[1masset.pipe.spec.ts[22m ([0m[1m[41m5.95 s[49m[22m[0m)
+
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/html-parser/[22m[1mhtml-parser.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/gradient/[22m[1mgradient.pipe.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/pipes/asset/[22m[1masset.pipe.spec.ts[22m
+
+[1mTest Suites: [22m0 of 4 total
+[1mTests:       [22m0 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        6 s[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/html-parser/[22m[1mhtml-parser.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+
+[1mTest Suites: [22m[1m[32m2 passed[39m[22m, 2 of 4 total
+[1mTests:       [22m[1m[32m16 passed[39m[22m, 16 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        6 s[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/html-parser/[22m[1mhtml-parser.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+
+[1mTest Suites: [22m[1m[32m2 passed[39m[22m, 2 of 4 total
+[1mTests:       [22m[1m[32m16 passed[39m[22m, 16 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        7 s[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/html-parser/[22m[1mhtml-parser.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+
+[1mTest Suites: [22m[1m[32m2 passed[39m[22m, 2 of 4 total
+[1mTests:       [22m[1m[32m42 passed[39m[22m, 42 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        7 s[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[0m[7m[1m[32m PASS [39m[22m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/html-parser/[22m[1mhtml-parser.service.spec.ts[22m ([0m[1m[41m6.827 s[49m[22m[0m)
+
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/html-parser/[22m[1mhtml-parser.service.spec.ts[22m
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+
+[1mTest Suites: [22m[1m[32m2 passed[39m[22m, 2 of 4 total
+[1mTests:       [22m[1m[32m42 passed[39m[22m, 42 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        7 s[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+
+[1mTest Suites: [22m[1m[32m3 passed[39m[22m, 3 of 4 total
+[1mTests:       [22m[1m[32m144 passed[39m[22m, 144 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        7 s[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[0m[7m[1m[31m FAIL [39m[22m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+
+[1mTest Suites: [22m[1m[32m3 passed[39m[22m, 3 of 4 total
+[1mTests:       [22m[1m[32m144 passed[39m[22m, 144 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        7 s[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A  [1m● [22mTest suite failed to run
+
+    Cannot find module '@progress/kendo-svg-icons' from '../../node_modules/@progress/kendo-angular-pager/fesm2015/progress-kendo-angular-pager.mjs'
+
+    Require stack:
+      /Users/antoinehurard/Documents/who/hems-front/node_modules/@progress/kendo-angular-pager/fesm2015/progress-kendo-angular-pager.mjs
+      /Users/antoinehurard/Documents/who/hems-front/libs/ui/src/lib/paginator/paginator.module.ts
+      /Users/antoinehurard/Documents/who/hems-front/libs/ui/src/index.ts
+      src/lib/services/context/context.service.spec.ts
+
+    [0m [90m 1 |[39m [36mimport[39m { [33mNgModule[39m } [36mfrom[39m [32m'@angular/core'[39m[33m;[39m
+     [90m 2 |[39m [36mimport[39m { [33mCommonModule[39m } [36mfrom[39m [32m'@angular/common'[39m[33m;[39m
+    [31m[1m>[22m[39m[90m 3 |[39m [36mimport[39m { [33mPagerModule[39m } [36mfrom[39m [32m'@progress/kendo-angular-pager'[39m[33m;[39m
+     [90m   |[39m [31m[1m^[22m[39m
+     [90m 4 |[39m [36mimport[39m { [33mPaginatorComponent[39m } [36mfrom[39m [32m'./paginator.component'[39m[33m;[39m
+     [90m 5 |[39m [36mimport[39m { [33mTranslateModule[39m } [36mfrom[39m [32m'@ngx-translate/core'[39m[33m;[39m
+     [90m 6 |[39m[0m
+
+      [2mat Resolver._throwModNotFoundError ([22m../../node_modules/jest-resolve/build/resolver.js[2m:427:11)[22m
+      [2mat Object.<anonymous> ([22m../../node_modules/@progress/kendo-angular-pager/fesm2015/progress-kendo-angular-pager.mjs[2m:10:94)[22m
+      [2mat Object.<anonymous> ([22m../ui/src/lib/paginator/paginator.module.ts[2m:3:1)[22m
+      [2mat Object.<anonymous> ([22m../ui/src/index.ts[2m:14:1)[22m
+      [2mat Object.<anonymous> ([22m[0m[36msrc/lib/services/context/context.service.spec.ts[39m[0m[2m:7:1)[22m
+
+
+[0m[7m[33m[1m RUNS [22m[39m[27m[0m [0m[7m[37m shared [39m[27m[0m [2mlibs/shared/src/lib/services/context/[22m[1mcontext.service.spec.ts[22m
+
+[1mTest Suites: [22m[1m[32m3 passed[39m[22m, 3 of 4 total
+[1mTests:       [22m[1m[32m144 passed[39m[22m, 144 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        7 s[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A
+
+[1mTest Suites: [22m[1m[31m1 failed[39m[22m, [1m[32m3 passed[39m[22m, 4 total
+[1mTests:       [22m[1m[32m144 passed[39m[22m, 144 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        8 s[K[1A[K[1A[K[1A[K[1A[K[1A[999D[K[1mTest Suites: [22m[1m[31m1 failed[39m[22m, [1m[32m3 passed[39m[22m, 4 total
+[1mTests:       [22m[1m[32m144 passed[39m[22m, 144 total
+[1mSnapshots:   [22m0 total
+[1mTime:[22m        8.12 s
+[2mRan all test suites[22m[2m.[22m

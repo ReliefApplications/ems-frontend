@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, UrlTree, Router } from '@angular/router';
+import { UrlTree, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '@oort-front/shared';
 import { SnackbarService } from '@oort-front/ui';
@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root',
 })
-export class AccessGuard implements CanActivate {
+export class AccessGuard  {
   /**
    * Constructor of the access guard
    *

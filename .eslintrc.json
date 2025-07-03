@@ -1,12 +1,12 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nrwl/nx"],
+  "plugins": ["@nx"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
-        "@nrwl/nx/enforce-module-boundaries": [
+        "@nx/enforce-module-boundaries": [
           "error",
           {
             "enforceBuildableLibDependency": true,
@@ -23,19 +23,15 @@
     },
     {
       "files": ["*.ts", "*.tsx"],
-      "plugins": [
-        "prettier",
-        "jsdoc"
-        // "deprecation"
-      ],
+      "plugins": ["prettier", "jsdoc"],
       "extends": [
-        "plugin:@nrwl/nx/typescript",
+        "plugin:@nx/typescript",
         "prettier",
         "plugin:jsdoc/recommended"
       ],
       "rules": {
         "no-case-declarations": 0,
-        "@typescript-eslint/no-explicit-any": 0, // todo: set to 1
+        "@typescript-eslint/no-explicit-any": 0,
         "prettier/prettier": 2,
         "@typescript-eslint/naming-convention": [
           1,
@@ -67,25 +63,33 @@
         ],
         "jsdoc/require-param-type": 0,
         "jsdoc/require-property-type": 0,
-        "jsdoc/require-description": ["warn", { "checkGetters": false }],
+        "jsdoc/require-description": [
+          "warn",
+          {
+            "checkGetters": false
+          }
+        ],
         "jsdoc/require-returns-type": 0,
         "@typescript-eslint/no-unused-vars": 2,
-        "jsdoc/tag-lines": ["warn", "any", { "startLines": 1 }],
+        "jsdoc/tag-lines": [
+          "warn",
+          "any",
+          {
+            "startLines": 1
+          }
+        ],
         "lines-between-class-members": [
           "error",
+          "always",
           {
-            "enforce": [
-              { "blankLine": "always", "prev": "*", "next": "method" },
-              { "blankLine": "always", "prev": "method", "next": "*" }
-            ]
+            "exceptAfterSingleLine": false
           }
         ]
-        // "deprecation/deprecation": "warn"
       }
     },
     {
       "files": ["*.js", "*.jsx"],
-      "extends": ["plugin:@nrwl/nx/javascript"],
+      "extends": ["plugin:@nx/javascript"],
       "rules": {}
     },
     {
