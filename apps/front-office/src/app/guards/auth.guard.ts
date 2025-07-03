@@ -10,7 +10,7 @@ import { tap } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthGuard  {
+export class AuthGuard {
   /**
    * Auth Guard. Checks that the user is authenticated.
    *

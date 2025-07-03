@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root',
 })
-export class AccessGuard  {
+export class AccessGuard {
   /**
    * Guard to check if user is authenticated or not.
    *
