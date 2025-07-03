@@ -1,8 +1,9 @@
 import { Apollo } from 'apollo-angular';
 import {
   Component,
+  DestroyRef,
   EventEmitter,
-  OnDestroy,
+  inject,
   OnInit,
   Output,
 } from '@angular/core';
@@ -12,12 +13,11 @@ import {
   Dashboard,
   DashboardQueryResponse,
   DashboardService,
-  UnsubscribeComponent,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { cloneDeep } from 'lodash';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Dashboard component page, for application preview.
@@ -27,10 +27,7 @@ import { cloneDeep } from 'lodash';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class DashboardComponent implements OnInit {
   /** Id of loaded dashboard */
   public id = '';
   /** Loading indicator */
@@ -41,6 +38,8 @@ export class DashboardComponent
   public dashboard?: Dashboard;
   /** Emit event when changing steps */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Dashboard component page for application preview.
@@ -59,60 +58,53 @@ export class DashboardComponent
     private snackBar: SnackbarService,
     private dashboardService: DashboardService,
     private translate: TranslateService
-  ) {
-    super();
-  }
+  ) {}
 
   /**
    * Gets the dashboard from the page parameters.
    */
   ngOnInit(): void {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.loading = true;
-      this.id = params.id;
-      this.apollo
-        .query<DashboardQueryResponse>({
-          query: GET_DASHBOARD_BY_ID,
-          variables: {
-            id: this.id,
-          },
-        })
-        .subscribe({
-          next: ({ data, loading }) => {
-            if (data.dashboard) {
-              this.dashboard = data.dashboard;
-              this.widgets = cloneDeep(
-                data.dashboard.structure ? data.dashboard.structure : []
-              );
-              this.loading = loading;
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.accessNotProvided',
-                  {
-                    type: this.translate
-                      .instant('common.dashboard.one')
-                      .toLowerCase(),
-                    error: '',
-                  }
-                ),
-                { error: true }
-              );
+    this.route.params
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        this.loading = true;
+        this.id = params.id;
+        this.apollo
+          .query<DashboardQueryResponse>({
+            query: GET_DASHBOARD_BY_ID,
+            variables: {
+              id: this.id,
+            },
+          })
+          .subscribe({
+            next: ({ data, loading }) => {
+              if (data.dashboard) {
+                this.dashboard = data.dashboard;
+                this.widgets = cloneDeep(
+                  data.dashboard.structure ? data.dashboard.structure : []
+                );
+                this.loading = loading;
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.accessNotProvided',
+                    {
+                      type: this.translate
+                        .instant('common.dashboard.one')
+                        .toLowerCase(),
+                      error: '',
+                    }
+                  ),
+                  { error: true }
+                );
+                this.router.navigate(['/dashboards']);
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
               this.router.navigate(['/dashboards']);
-            }
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-            this.router.navigate(['/dashboards']);
-          },
-        });
-    });
-  }
-
-  /**
-   * Destroys all subscriptions of the page.
-   */
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+            },
+          });
+      });
   }
 }

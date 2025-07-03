@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import {
   ContentType,
@@ -17,6 +17,7 @@ import { GET_FORMS } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Number of items per page */
 const ITEMS_PER_PAGE = 10;
@@ -31,7 +32,7 @@ const SINGLE_WIDGET_PAGE_TYPES = ['grid', 'map', 'summaryCard', 'tabs'];
   templateUrl: './add-page.component.html',
   styleUrls: ['./add-page.component.scss'],
 })
-export class AddPageComponent extends UnsubscribeComponent implements OnInit {
+export class AddPageComponent implements OnInit {
   /** Available content types */
   public contentTypes = CONTENT_TYPES;
   /** Available widgets for addition */
@@ -46,6 +47,8 @@ export class AddPageComponent extends UnsubscribeComponent implements OnInit {
   });
   /** Current step in stepper */
   public step = 1;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Add page component
@@ -66,9 +69,7 @@ export class AddPageComponent extends UnsubscribeComponent implements OnInit {
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private dashboardService: DashboardService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.pageForm.get('type')?.valueChanges.subscribe((type) => {
@@ -168,53 +169,58 @@ export class AddPageComponent extends UnsubscribeComponent implements OnInit {
       '../../../components/add-form-modal/add-form-modal.component'
     );
     const dialogRef = this.dialog.open(AddFormModalComponent);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        const variablesData = { name: value.name };
-        Object.assign(
-          variablesData,
-          value.resource && { resource: value.resource },
-          value.template && { template: value.template }
-        );
-        this.apollo
-          .mutate<AddFormMutationResponse>({
-            mutation: ADD_FORM,
-            variables: variablesData,
-          })
-          .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotCreated',
-                    {
-                      type: this.translate
-                        .instant('common.form.one')
-                        .toLowerCase(),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                const id = data?.addForm.id || '';
-                this.pageForm.controls.content.setValue(id);
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectCreated', {
-                    type: this.translate.instant('common.page.one'),
-                    value: value.name,
-                  })
-                );
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          const variablesData = { name: value.name };
+          Object.assign(
+            variablesData,
+            value.resource && { resource: value.resource },
+            value.template && { template: value.template }
+          );
+          this.apollo
+            .mutate<AddFormMutationResponse>({
+              mutation: ADD_FORM,
+              variables: variablesData,
+            })
+            .subscribe({
+              next: ({ errors, data }) => {
+                if (errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectNotCreated',
+                      {
+                        type: this.translate
+                          .instant('common.form.one')
+                          .toLowerCase(),
+                        error: errors ? errors[0].message : '',
+                      }
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  const id = data?.addForm.id || '';
+                  this.pageForm.controls.content.setValue(id);
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectCreated',
+                      {
+                        type: this.translate.instant('common.page.one'),
+                        value: value.name,
+                      }
+                    )
+                  );
 
-                this.onSubmit();
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+                  this.onSubmit();
+                }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
   /**

@@ -1,4 +1,11 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  HostListener,
+  inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbilityBuilder } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
@@ -7,11 +14,10 @@ import {
   Application,
   ContentType,
   ApplicationService,
-  UnsubscribeComponent,
 } from '@oort-front/shared';
 import get from 'lodash/get';
-import { takeUntil } from 'rxjs/operators';
 import { PreviewService } from '../services/preview.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Creates a ability object the application preview
@@ -75,10 +81,7 @@ const getAbilityForAppPreview = (application: Application, role: string) => {
   templateUrl: './app-preview.component.html',
   styleUrls: ['./app-preview.component.scss'],
 })
-export class AppPreviewComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class AppPreviewComponent implements OnInit, OnDestroy {
   /**
    * Title of application.
    */
@@ -105,6 +108,8 @@ export class AppPreviewComponent
    * Is large device.
    */
   public largeDevice: boolean;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Main component of Application preview capacity.
@@ -122,7 +127,6 @@ export class AppPreviewComponent
     private router: Router,
     private translate: TranslateService
   ) {
-    super();
     this.largeDevice = window.innerWidth > 1024;
   }
 
@@ -226,16 +230,18 @@ export class AppPreviewComponent
    * Generates the routes from the application that is loaded.
    */
   ngOnInit(): void {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.previewService.roleId$
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((role: string) => {
-          this.applicationService.loadApplication(params.id, role);
-          this.role = role;
-        });
-    });
+    this.route.params
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        this.previewService.roleId$
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe((role: string) => {
+            this.applicationService.loadApplication(params.id, role);
+            this.role = role;
+          });
+      });
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((application: Application | null) => {
         if (application) {
           this.title = application.name + ' (Preview)';
@@ -285,8 +291,7 @@ export class AppPreviewComponent
   /**
    * Remove application data such as styling when exiting preview.
    */
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     this.applicationService.leaveApplication();
   }
 

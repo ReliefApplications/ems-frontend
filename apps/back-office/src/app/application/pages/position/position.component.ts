@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -9,6 +9,7 @@ import {
   UnsubscribeComponent,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Application position component.
@@ -18,7 +19,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './position.component.html',
   styleUrls: ['./position.component.scss'],
 })
-export class PositionComponent extends UnsubscribeComponent implements OnInit {
+export class PositionComponent implements OnInit {
   // === DATA ===
   /** Loading state */
   public loading = true;
@@ -26,6 +27,8 @@ export class PositionComponent extends UnsubscribeComponent implements OnInit {
   public positionCategories: any[] = [];
   /** Table columns */
   public displayedColumns = ['title', 'actions'];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Application position component
@@ -40,14 +43,12 @@ export class PositionComponent extends UnsubscribeComponent implements OnInit {
     private applicationService: ApplicationService,
     private confirmService: ConfirmService,
     private translate: TranslateService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.loading = false;
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((application: Application | null) => {
         if (application) {
           this.positionCategories =
@@ -70,11 +71,13 @@ export class PositionComponent extends UnsubscribeComponent implements OnInit {
         add: true,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value) {
-        this.applicationService.addPositionAttributeCategory(value);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value) {
+          this.applicationService.addPositionAttributeCategory(value);
+        }
+      });
   }
 
   /**
@@ -92,14 +95,16 @@ export class PositionComponent extends UnsubscribeComponent implements OnInit {
         title: positionCategory.title,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.applicationService.editPositionAttributeCategory(
-          value,
-          positionCategory
-        );
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.applicationService.editPositionAttributeCategory(
+            value,
+            positionCategory
+          );
+        }
+      });
   }
 
   /**
@@ -121,12 +126,14 @@ export class PositionComponent extends UnsubscribeComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.applicationService.deletePositionAttributeCategory(
-          positionCategory
-        );
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.applicationService.deletePositionAttributeCategory(
+            positionCategory
+          );
+        }
+      });
   }
 }

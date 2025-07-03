@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 import { filter, startWith, takeUntil } from 'rxjs/operators';
 import { PreviewService } from '../../../services/preview.service';
 import { GET_WORKFLOW_BY_ID } from './graphql/queries';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Workflow page component for application preview.
@@ -24,7 +25,7 @@ import { GET_WORKFLOW_BY_ID } from './graphql/queries';
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss'],
 })
-export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
+export class WorkflowComponent implements OnInit {
   /** Loading indicator */
   public loading = true;
   /** Current workflow id */
@@ -39,6 +40,8 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   public role = '';
   /** Subscription to change step events */
   private changeStepSubscription!: Subscription;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Workflow page component for application preview
@@ -57,16 +60,14 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
     private router: Router,
     private previewService: PreviewService,
     private translate: TranslateService
-  ) {
-    super();
-  }
+  ) {}
 
   /**
    * Gets the workflow from the route.
    */
   ngOnInit(): void {
     this.previewService.roleId$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((role) => {
         this.role = role;
       });
@@ -74,7 +75,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
       .pipe(
         filter((event) => event instanceof NavigationEnd),
         startWith(this.router), // initialize
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((e) => {
         let validActiveStepIndex = -1;
@@ -103,47 +104,49 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
           );
         }
       });
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.loading = true;
-      this.id = params.id;
-      this.apollo
-        .watchQuery<WorkflowQueryResponse>({
-          query: GET_WORKFLOW_BY_ID,
-          variables: {
-            id: this.id,
-            asRole: this.role,
-          },
-        })
-        .valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: ({ data, loading }) => {
-            if (data.workflow) {
-              this.workflow = data.workflow;
-              this.steps = data.workflow.steps || [];
-              this.loading = loading;
-              if (this.steps.length > 0) {
-                this.onOpenStep(0);
+    this.route.params
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        this.loading = true;
+        this.id = params.id;
+        this.apollo
+          .watchQuery<WorkflowQueryResponse>({
+            query: GET_WORKFLOW_BY_ID,
+            variables: {
+              id: this.id,
+              asRole: this.role,
+            },
+          })
+          .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: ({ data, loading }) => {
+              if (data.workflow) {
+                this.workflow = data.workflow;
+                this.steps = data.workflow.steps || [];
+                this.loading = loading;
+                if (this.steps.length > 0) {
+                  this.onOpenStep(0);
+                }
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.accessNotProvided',
+                    {
+                      type: this.translate
+                        .instant('common.workflow.one')
+                        .toLowerCase(),
+                      error: '',
+                    }
+                  ),
+                  { error: true }
+                );
               }
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.accessNotProvided',
-                  {
-                    type: this.translate
-                      .instant('common.workflow.one')
-                      .toLowerCase(),
-                    error: '',
-                  }
-                ),
-                { error: true }
-              );
-            }
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-          },
-        });
-    });
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
+          });
+      });
   }
 
   /**
