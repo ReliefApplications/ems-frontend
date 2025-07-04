@@ -3,8 +3,10 @@ import {
   ChangeDetectorRef,
   Component,
   ContentChildren,
+  DestroyRef,
   ElementRef,
   HostListener,
+  inject,
   OnDestroy,
   QueryList,
   Renderer2,
@@ -14,10 +16,10 @@ import {
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { SidenavDirective } from './sidenav.directive';
-import { Subject, takeUntil } from 'rxjs';
 import { SidenavPositionTypes, SidenavTypes } from './types/sidenavs';
 import { filter } from 'rxjs/operators';
 import { UILayoutService } from './layout/layout.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * UI Sidenav component
@@ -50,14 +52,14 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   public position: SidenavPositionTypes[] = [];
   /** Array indicating whether each side navigation menu is visible. */
   public visible: boolean[] = [];
-  /** Subject to emit when the component is destroyed. */
-  private destroy$ = new Subject<void>();
   /** Array of classes for animations. */
   animationClasses = ['transition-all', 'duration-500', 'ease-in-out'] as const;
   /** Should display fixed wrapper at bottom */
   fixedWrapperActionExist = false;
   /** Timeout to transitions */
   private transitionsTimeoutListener!: NodeJS.Timeout;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns height of element */
   get height() {
@@ -96,7 +98,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this.layoutService.fixedWrapperActions$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((view) => {
         if (view && this.fixedWrapperActions) {
           this.fixedWrapperActionExist = true;
@@ -112,7 +114,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => {
         this.contentWrapper.nativeElement.scroll({
@@ -138,7 +140,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
         sidenavDirective.el.nativeElement
       );
       sidenavDirective.openedChange
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((opened: boolean) => {
           this.showSidenav[index] = sidenavDirective.visible ? opened : false;
           // Change the mode if it has changed since last opening/closure
@@ -225,7 +227,5 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
     if (this.transitionsTimeoutListener) {
       clearTimeout(this.transitionsTimeoutListener);
     }
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

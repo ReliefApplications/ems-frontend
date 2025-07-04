@@ -8,12 +8,13 @@ import {
   SimpleChanges,
   OnInit,
   Input,
+  DestroyRef,
+  inject,
 } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { EmailService } from '../../email.service';
 import { Subscription } from 'rxjs';
 import { TokenRegex } from '../../constant';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
@@ -29,7 +30,6 @@ import { cloneDeep } from 'lodash';
   styleUrls: ['./preview.component.scss'],
 })
 export class PreviewComponent
-  extends UnsubscribeComponent
   implements OnInit, OnChanges, OnDestroy, AfterViewInit
 {
   /** Selected resource ID. -TO DELETE? */
@@ -89,6 +89,8 @@ export class PreviewComponent
   @Input() dataset!: any[];
   /** previewUrl for cehcking the preview Type */
   previewUrl = 'email';
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Expand see more email list dropdown for Subscription List.
@@ -133,9 +135,7 @@ export class PreviewComponent
     private sanitizer: DomSanitizer,
     private http: HttpClient,
     private restService: RestService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['emailService']?.currentValue?.finalEmailPreview) {
@@ -819,7 +819,7 @@ export class PreviewComponent
     return tableHtml;
   }
 
-  override ngOnDestroy(): void {
+  ngOnDestroy(): void {
     if (this.querySubscription) {
       this.querySubscription.unsubscribe();
     }

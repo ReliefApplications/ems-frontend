@@ -1,13 +1,19 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  HostListener,
+  inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Application,
   ApplicationService,
   ContentType,
-  UnsubscribeComponent,
 } from '@oort-front/shared';
 import get from 'lodash/get';
-import { takeUntil } from 'rxjs/operators';
 
 /**
  * Front-office Application component.
@@ -17,10 +23,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './application.component.html',
   styleUrls: ['./application.component.scss'],
 })
-export class ApplicationComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class ApplicationComponent implements OnInit, OnDestroy {
   /** Application title */
   public title = '';
   /** Current application */
@@ -33,6 +36,8 @@ export class ApplicationComponent
   public largeDevice: boolean;
   /** Loading indicator */
   public loading = true;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Front-office Application component.
@@ -46,7 +51,6 @@ export class ApplicationComponent
     public route: ActivatedRoute,
     private router: Router
   ) {
-    super();
     this.largeDevice = window.innerWidth > 1024;
   }
 
@@ -68,8 +72,7 @@ export class ApplicationComponent
     this.setUpApplicationListeners();
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     this.applicationService.leaveApplication();
   }
 
@@ -78,7 +81,7 @@ export class ApplicationComponent
    */
   private setUpApplicationListeners() {
     // Subscribe to params change
-    // this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+    // this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
     //   if (this.application) {
     //     if (params.id !== this.application.id) {
     //       this.loading = true;
@@ -91,7 +94,7 @@ export class ApplicationComponent
     // });
     // Subscribe to application change
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((application: Application | null) => {
         this.loading = false;
         if (application) {

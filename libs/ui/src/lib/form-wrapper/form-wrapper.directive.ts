@@ -3,16 +3,17 @@ import {
   AfterViewInit,
   ContentChild,
   ContentChildren,
+  DestroyRef,
   Directive,
   ElementRef,
+  inject,
   Input,
-  OnDestroy,
   QueryList,
   Renderer2,
 } from '@angular/core';
 import { SuffixDirective } from './suffix.directive';
 import { PrefixDirective } from './prefix.directive';
-import { BehaviorSubject, Subject, startWith, takeUntil } from 'rxjs';
+import { BehaviorSubject, startWith } from 'rxjs';
 import { SelectMenuComponent } from '../select-menu/select-menu.component';
 import { TextareaComponent } from '../textarea/textarea.component';
 import { GraphQLSelectComponent } from '../graphql-select/graphql-select.component';
@@ -21,6 +22,7 @@ import { ChipListDirective } from '../chip/chip-list.directive';
 import { DateWrapperDirective } from '../date/date-wrapper.directive';
 import { AutocompleteComponent } from '../autocomplete/autocomplete.component';
 import { FormControlComponent } from './form-control/form-control.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * UI Form Wrapper Directive
@@ -28,9 +30,7 @@ import { FormControlComponent } from './form-control/form-control.component';
 @Directive({
   selector: '[uiFormFieldDirective]',
 })
-export class FormWrapperDirective
-  implements AfterContentInit, AfterViewInit, OnDestroy
-{
+export class FormWrapperDirective implements AfterContentInit, AfterViewInit {
   /**
    * Will the form field be wrapped ?
    */
@@ -180,11 +180,10 @@ export class FormWrapperDirective
     'focus:ring-inset',
     'focus:ring-primary-600',
   ];
-
-  /** Destroy subject */
-  private destroy$ = new Subject<void>();
   /** Element wrapped subject */
   elementWrapped = new BehaviorSubject<boolean>(false);
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Constructor including a ref to the element on which the directive is applied
@@ -274,7 +273,7 @@ export class FormWrapperDirective
     if (this.control) {
       // Manage form control status changes
       this.control.control.statusChanges
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (status: FormControlStatus) => {
             // Disabled state
@@ -420,7 +419,10 @@ export class FormWrapperDirective
    */
   private initializeDirectiveListeners() {
     this.allPrefixDirectives.changes
-      .pipe(startWith(this.allPrefixDirectives), takeUntil(this.destroy$))
+      .pipe(
+        startWith(this.allPrefixDirectives),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe({
         next: (prefixes: QueryList<PrefixDirective>) => {
           for (const prefix of prefixes) {
@@ -433,7 +435,10 @@ export class FormWrapperDirective
         },
       });
     this.allSuffixDirectives.changes
-      .pipe(startWith(this.allSuffixDirectives), takeUntil(this.destroy$))
+      .pipe(
+        startWith(this.allSuffixDirectives),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe({
         next: (suffixes: QueryList<SuffixDirective>) => {
           suffixes.forEach((suffix) => {
@@ -546,10 +551,5 @@ export class FormWrapperDirective
     if (this.chipListElement && this.currentInputElement) {
       this.currentInputElement.disabled = false;
     }
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

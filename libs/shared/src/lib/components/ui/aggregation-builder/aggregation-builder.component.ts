@@ -1,16 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { SnackbarService } from '@oort-front/ui';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 import { Metadata } from '../../../models/metadata.model';
 import { ReferenceData } from '../../../models/reference-data.model';
 import { Resource } from '../../../models/resource.model';
 import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { getReferenceMetadata } from '../../../utils/reference-data-metadata.util';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { PipelineStage } from './pipeline/pipeline-stage.enum';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Main component of Aggregation builder.
@@ -21,10 +21,7 @@ import { PipelineStage } from './pipeline/pipeline-stage.enum';
   templateUrl: './aggregation-builder.component.html',
   styleUrls: ['./aggregation-builder.component.scss'],
 })
-export class AggregationBuilderComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class AggregationBuilderComponent implements OnInit {
   /** Aggregation reactive form group */
   @Input() aggregationForm: UntypedFormGroup = new UntypedFormGroup({});
   /** Current resource */
@@ -63,6 +60,8 @@ export class AggregationBuilderComponent
   public loadingAggregationRecords = false;
   /** Array to hold the list of stages allowed for aggregation data source type. */
   public stageList!: string[];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Getter for the pipeline of the aggregation form
@@ -85,14 +84,12 @@ export class AggregationBuilderComponent
     private snackBar: SnackbarService,
     private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     // Fixes issue where sometimes we try to load the fields before the queries are loaded
     this.queryBuilder.availableQueries$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((queryList) => {
         if (queryList.length > 0) {
           this.initFields();
@@ -107,17 +104,19 @@ export class AggregationBuilderComponent
       : Object.values(PipelineStage);
 
     // Fields query
-    this.fields$.pipe(takeUntil(this.destroy$)).subscribe((fields) => {
-      fields.forEach((field) => {
-        field['used'] = this.pipelineForm.value.some((x: any) => {
-          return (
-            x.form.groupBy?.find((y: any) => y.field?.includes(field.name)) || // group
-            x.form.field?.includes(field.name) || // sort & Unwind
-            x.form.filters?.find((y: any) => y.field?.includes(field.name)) // filters
-          );
+    this.fields$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((fields) => {
+        fields.forEach((field) => {
+          field['used'] = this.pipelineForm.value.some((x: any) => {
+            return (
+              x.form.groupBy?.find((y: any) => y.field?.includes(field.name)) || // group
+              x.form.field?.includes(field.name) || // sort & Unwind
+              x.form.filters?.find((y: any) => y.field?.includes(field.name)) // filters
+            );
+          });
         });
       });
-    });
 
     // Meta selected fields query
     this.selectedFields$ = this.selectedFields.asObservable();
@@ -128,7 +127,10 @@ export class AggregationBuilderComponent
 
     this.aggregationForm
       .get('sourceFields')
-      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
+      ?.valueChanges.pipe(
+        debounceTime(1000),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe((fieldsNames: string[]) => {
         this.updateSelectedAndMetaFields(fieldsNames);
       });
@@ -137,7 +139,10 @@ export class AggregationBuilderComponent
     this.mappingFields$ = this.mappingFields.asObservable();
     this.aggregationForm
       .get('pipeline')
-      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
+      ?.valueChanges.pipe(
+        debounceTime(1000),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe((pipeline) => {
         this.mappingFields.next(
           this.aggregationBuilder.fieldsAfter(
@@ -220,7 +225,7 @@ export class AggregationBuilderComponent
           }),
         });
         if (metaQuery) {
-          metaQuery.pipe(takeUntil(this.destroy$)).subscribe({
+          metaQuery.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: async ({ data }: any) => {
               for (const field in data) {
                 if (Object.prototype.hasOwnProperty.call(data, field)) {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CdkTableModule } from '@angular/cdk/table';
 import {
@@ -18,11 +18,10 @@ import {
   ButtonModule,
 } from '@oort-front/ui';
 import { EmptyModule } from '../../../ui/empty/empty.module';
-import { takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { isNil } from 'lodash';
 import { createAutomationForm } from '../../../../forms/automation.forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Tab for widget automation rules.
@@ -48,10 +47,7 @@ import { createAutomationForm } from '../../../../forms/automation.forms';
   templateUrl: './tab-widget-automations.component.html',
   styleUrls: ['./tab-widget-automations.component.scss'],
 })
-export class TabWidgetAutomationsComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class TabWidgetAutomationsComponent implements OnInit {
   /** Rules form array */
   @Input() formArray!: FormArray<ReturnType<typeof createAutomationForm>>;
 
@@ -59,6 +55,8 @@ export class TabWidgetAutomationsComponent
   public displayedColumnsApps = ['name', 'id', 'actions'];
   /** List of rules */
   public data: any[] = [];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Tab for widget automation rules.
@@ -66,9 +64,7 @@ export class TabWidgetAutomationsComponent
    * @param fb Angular form builder
    * @param dialog Angular CDK Dialog service
    */
-  constructor(private fb: FormBuilder, private dialog: Dialog) {
-    super();
-  }
+  constructor(private fb: FormBuilder, private dialog: Dialog) {}
 
   ngOnInit() {
     this.updateRuleList();
@@ -107,16 +103,18 @@ export class TabWidgetAutomationsComponent
     const dialogRef = this.dialog.open(WidgetAutomationComponent, {
       data: selectedRule?.value,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        if (!isNil(itemIndex)) {
-          this.formArray.removeAt(itemIndex);
-          this.formArray.insert(itemIndex, createAutomationForm(value));
-        } else {
-          this.formArray.push(createAutomationForm(value));
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          if (!isNil(itemIndex)) {
+            this.formArray.removeAt(itemIndex);
+            this.formArray.insert(itemIndex, createAutomationForm(value));
+          } else {
+            this.formArray.push(createAutomationForm(value));
+          }
+          this.updateRuleList();
         }
-        this.updateRuleList();
-      }
-    });
+      });
   }
 }

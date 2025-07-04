@@ -1,9 +1,11 @@
 import {
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
   HostBinding,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -25,6 +27,7 @@ import { takeUntil } from 'rxjs/operators';
 import { SelectMenuComponent } from '../select-menu/select-menu.component';
 import { updateQueryUniqueValues } from './utils/update-queries';
 import { ShadowDomService } from '../shadow-dom/shadow-dom.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** A constant that is used to determine how many items should be added on scroll. */
 const ITEMS_PER_RELOAD = 10;
@@ -149,9 +152,6 @@ export class GraphQLSelectComponent
   public focused = false;
   /** Touched status */
   public touched = false;
-
-  /** Destroy subject */
-  public destroy$ = new Subject<void>();
   /** Query name */
   protected queryName!: string;
   /** Query change subject */
@@ -174,6 +174,8 @@ export class GraphQLSelectComponent
   @ViewChild(SelectMenuComponent) elementSelect!: SelectMenuComponent;
   /** Search input element */
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+  /** Component destroy ref */
+  public destroyRef = inject(DestroyRef);
 
   /**
    * Indicates whether the label should be in the floating position
@@ -308,14 +310,14 @@ export class GraphQLSelectComponent
     this.elements$ = this.elements.asObservable();
     if (this.query) {
       this.query.valueChanges
-        .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
+        .pipe(takeUntil(this.queryChange$), takeUntilDestroyed(this.destroyRef))
         .subscribe(({ data, loading }) => {
           this.queryName = Object.keys(data)[0];
           this.updateValues(data, loading);
         });
     }
     this.ngControl?.valueChanges
-      ?.pipe(takeUntil(this.destroy$))
+      ?.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         const elements = this.elements.getValue();
         if (Array.isArray(value)) {
@@ -333,7 +335,11 @@ export class GraphQLSelectComponent
       });
     // this way we can wait for 0.5s before sending an update
     this.searchControl.valueChanges
-      .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe((value) => {
         this.cachedElements = [];
         this.elementSelect.resetSubscriptions();
@@ -373,7 +379,7 @@ export class GraphQLSelectComponent
 
       // Subscribe to the new query
       this.query.valueChanges
-        .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
+        .pipe(takeUntil(this.queryChange$), takeUntilDestroyed(this.destroyRef))
         .subscribe(({ data, loading }) => {
           this.queryName = Object.keys(data)[0];
           this.updateValues(data, loading);
@@ -395,8 +401,6 @@ export class GraphQLSelectComponent
     if (this.scrollListener) {
       this.scrollListener();
     }
-    this.destroy$.next();
-    this.destroy$.complete();
     this.stateChanges.complete();
   }
 

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Inject, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { cronValidator } from '../../../../utils/validators/cron.validator';
 import { CustomNotification } from '../../../../models/custom-notification.model';
@@ -19,8 +19,6 @@ import {
 } from '../../../../models/template.model';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { DistributionList } from '../../../../models/distribution-list.model';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
@@ -37,6 +35,7 @@ import {
   IconModule,
   ErrorMessageModule,
 } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Dialog data interface
@@ -75,10 +74,7 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './edit-notification-modal.component.html',
   styleUrls: ['./edit-notification-modal.component.scss'],
 })
-export class EditNotificationModalComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class EditNotificationModalComponent implements OnInit {
   /** Notification */
   public notification?: CustomNotification;
   /** Notification form group */
@@ -89,6 +85,8 @@ export class EditNotificationModalComponent
   public resource?: Resource;
   /** Layout */
   public layout?: Layout;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns application templates */
   get templates(): EmailTemplate[] {
@@ -125,9 +123,7 @@ export class EditNotificationModalComponent
     private dialog: Dialog,
     private gridLayoutService: GridLayoutService,
     private applicationService: ApplicationService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.notification = this.data?.notification;
@@ -142,7 +138,7 @@ export class EditNotificationModalComponent
     // Add email validation to recipients field if recipients type is email
     this.formGroup
       .get('recipientsType')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value === 'email') {
           this.formGroup.get('recipients')?.addValidators(Validators.email);
@@ -153,7 +149,7 @@ export class EditNotificationModalComponent
     // Subscribe to form changes
     this.formGroup
       .get('resource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value && !isEqual(value, this.resource?.id)) {
           this.getResource(value);
@@ -167,7 +163,7 @@ export class EditNotificationModalComponent
       });
     this.formGroup
       .get('recipientsType')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.formGroup.get('recipients')?.setValue(null);
         if (value === 'email') {
@@ -245,16 +241,18 @@ export class EditNotificationModalComponent
         hasLayouts: get(this.resource, 'layouts.totalCount', 0) > 0,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        if (typeof value === 'string') {
-          this.formGroup.get('layout')?.setValue(value);
-        } else {
-          this.formGroup.get('layout')?.setValue(value.id);
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          if (typeof value === 'string') {
+            this.formGroup.get('layout')?.setValue(value);
+          } else {
+            this.formGroup.get('layout')?.setValue(value.id);
+          }
+          this.getResource(this.resource?.id as string);
         }
-        this.getResource(this.resource?.id as string);
-      }
-    });
+      });
   }
 
   /**
@@ -271,17 +269,19 @@ export class EditNotificationModalComponent
         queryName: this.resource?.queryName,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value && this.layout) {
-        this.gridLayoutService
-          .editLayout(this.layout, value, this.resource?.id)
-          .subscribe(({ data }) => {
-            if (data) {
-              this.layout = data.editLayout;
-            }
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value && this.layout) {
+          this.gridLayoutService
+            .editLayout(this.layout, value, this.resource?.id)
+            .subscribe(({ data }) => {
+              if (data) {
+                this.layout = data.editLayout;
+              }
+            });
+        }
+      });
   }
 
   /** Unset layout. */
@@ -298,21 +298,23 @@ export class EditNotificationModalComponent
     const dialogRef = this.dialog.open(EditTemplateModalComponent, {
       disableClose: true,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value)
-        this.applicationService.addEmailTemplate(
-          {
-            name: value.name,
-            type: TemplateTypeEnum.EMAIL,
-            content: {
-              subject: value.subject,
-              body: value.body,
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value)
+          this.applicationService.addEmailTemplate(
+            {
+              name: value.name,
+              type: TemplateTypeEnum.EMAIL,
+              content: {
+                subject: value.subject,
+                body: value.body,
+              },
             },
-          },
-          (template: EmailTemplate) => {
-            this.formGroup.get('template')?.setValue(template.id || null);
-          }
-        );
-    });
+            (template: EmailTemplate) => {
+              this.formGroup.get('template')?.setValue(template.id || null);
+            }
+          );
+      });
   }
 }

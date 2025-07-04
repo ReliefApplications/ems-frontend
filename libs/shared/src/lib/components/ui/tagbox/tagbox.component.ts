@@ -1,7 +1,9 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import {
   Component,
+  DestroyRef,
   ElementRef,
+  inject,
   Input,
   OnDestroy,
   OnInit,
@@ -9,8 +11,8 @@ import {
 } from '@angular/core';
 import { FormControl, UntypedFormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { startWith, takeUntil } from 'rxjs/operators';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { startWith } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Custom tagbox component to use in the app
@@ -20,10 +22,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
   templateUrl: './tagbox.component.html',
   styleUrls: ['./tagbox.component.scss'],
 })
-export class TagboxComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class TagboxComponent implements OnInit, OnDestroy {
   // === CHOICES ===
   /** Observable of choices */
   @Input() public choices$!: Observable<any[]>;
@@ -58,51 +57,48 @@ export class TagboxComponent
   public showInput = false;
   /** Timeout to add */
   private addTimeoutListener!: NodeJS.Timeout;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   // === OUTPUT CONTROL ===
   /** Output control */
   @Input() control!: FormControl;
 
-  /**
-   * Custom tagbox component to use in the app
-   */
-  constructor() {
-    super();
-  }
-
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
-    this.choices$.pipe(takeUntil(this.destroy$)).subscribe((choices: any[]) => {
-      this.choicesEmpty = choices.length === 0;
-      if (this.choicesEmpty) {
-        this.inputControl.disable();
-      } else {
-        this.inputControl.enable();
-      }
-      this.selectedChoices = this.choicesEmpty
-        ? []
-        : this.control.value
-            .map((value: string) =>
-              choices.find((choice) => value === choice[this.valueKey])
-            )
-            .filter((x: any) => x);
-      this.allChoices = choices;
-      this.setAvailableChoices();
+    this.choices$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((choices: any[]) => {
+        this.choicesEmpty = choices.length === 0;
+        if (this.choicesEmpty) {
+          this.inputControl.disable();
+        } else {
+          this.inputControl.enable();
+        }
+        this.selectedChoices = this.choicesEmpty
+          ? []
+          : this.control.value
+              .map((value: string) =>
+                choices.find((choice) => value === choice[this.valueKey])
+              )
+              .filter((x: any) => x);
+        this.allChoices = choices;
+        this.setAvailableChoices();
 
-      this.inputControl.valueChanges
-        .pipe(startWith(''), takeUntil(this.destroy$))
-        .subscribe({
-          next: (value: string) => {
-            this.filteredChoices = this.filterChoices(
-              this.availableChoices,
-              value
-            ).sort((a: any, b: any) =>
-              a[this.displayKey] > b[this.displayKey] ? 1 : -1
-            );
-            this.showInput = true;
-          },
-        });
-    });
+        this.inputControl.valueChanges
+          .pipe(startWith(''), takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: (value: string) => {
+              this.filteredChoices = this.filterChoices(
+                this.availableChoices,
+                value
+              ).sort((a: any, b: any) =>
+                a[this.displayKey] > b[this.displayKey] ? 1 : -1
+              );
+              this.showInput = true;
+            },
+          });
+      });
   }
 
   /**
@@ -192,8 +188,7 @@ export class TagboxComponent
     );
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     if (this.addTimeoutListener) {
       clearTimeout(this.addTimeoutListener);
     }

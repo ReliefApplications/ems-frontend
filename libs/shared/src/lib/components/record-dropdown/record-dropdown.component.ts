@@ -1,6 +1,8 @@
 import {
   Component,
+  DestroyRef,
   EventEmitter,
+  inject,
   Inject,
   Input,
   OnDestroy,
@@ -13,11 +15,10 @@ import { GET_RECORD_BY_ID, GET_RESOURCE_RECORDS } from './graphql/queries';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Record, RecordQueryResponse } from '../../models/record.model';
 import { TranslateService } from '@ngx-translate/core';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../utils/update-queries';
 import { DOCUMENT } from '@angular/common';
 import { ResourceRecordsNodesQueryResponse } from '../../models/resource.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** A constant that is used to set the number of items to be displayed on the page. */
 const ITEMS_PER_PAGE = 25;
@@ -30,10 +31,7 @@ const ITEMS_PER_PAGE = 25;
   templateUrl: './record-dropdown.component.html',
   styleUrls: ['./record-dropdown.component.scss'],
 })
-export class RecordDropdownComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class RecordDropdownComponent implements OnInit, OnDestroy {
   /** Record id */
   @Input() record = '';
   /** Resource id */
@@ -68,6 +66,8 @@ export class RecordDropdownComponent
   private loading = true;
   /** Scroll listener */
   private scrollListener!: any;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -83,9 +83,7 @@ export class RecordDropdownComponent
     private translate: TranslateService,
     private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     if (this.record) {
@@ -96,7 +94,7 @@ export class RecordDropdownComponent
             id: this.record,
           },
         })
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(({ data }) => {
           if (data.record) {
             this.selectedRecord = data.record;
@@ -119,7 +117,7 @@ export class RecordDropdownComponent
 
       this.records$ = this.records.asObservable();
       this.recordsQuery.valueChanges
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(({ data, loading }) => {
           this.updateValues(data, loading);
         });
@@ -195,8 +193,7 @@ export class RecordDropdownComponent
     this.loading = loading;
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     if (this.scrollListener) {
       this.scrollListener();
     }

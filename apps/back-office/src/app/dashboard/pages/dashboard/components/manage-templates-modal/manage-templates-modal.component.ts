@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   DialogModule,
@@ -15,7 +15,6 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { DialogRef, DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
 import {
-  UnsubscribeComponent,
   EmptyModule,
   DashboardsQueryResponse,
   DashboardTemplate,
@@ -58,10 +57,7 @@ import { GET_DASHBOARDS_NAMES } from '../../graphql/queries';
     TableModule,
   ],
 })
-export class ManageTemplateModalComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class ManageTemplateModalComponent implements OnInit {
   /** List of action buttons from dashboard */
   public dashboardTemplates: DashboardTemplate[] = [];
   /** Behavior subject to track change in action buttons */
@@ -72,6 +68,8 @@ export class ManageTemplateModalComponent
   public loading = false;
   /** Table columns */
   public displayedColumns: string[] = ['name', 'actions'];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Component for editing dashboard templates
@@ -90,9 +88,7 @@ export class ManageTemplateModalComponent
     public dialog: Dialog,
     public translateService: TranslateService,
     public apollo: Apollo
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.searchControl.valueChanges
@@ -104,10 +100,6 @@ export class ManageTemplateModalComponent
       this.dashboardTemplates = this.data.dashboardTemplates;
       this.getDashboardNames();
     }
-  }
-
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
   }
 
   /** get dashboard names for templates using records */

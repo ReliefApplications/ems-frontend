@@ -1,10 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
 import { get } from 'lodash';
 import { GridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { ReferenceData } from '../../../../models/reference-data.model';
 import { ReferenceDataService } from '../../../../services/reference-data/reference-data.service';
@@ -35,6 +33,7 @@ import { CoreGridModule } from '../../../ui/core-grid/core-grid.module';
 import { DisplaySettingsComponent } from '../../common/display-settings/display-settings.component';
 import { TabWidgetAutomationsComponent } from '../../common/tab-widget-automations/tab-widget-automations.component';
 import { TemplateAggregationsComponent } from '../../common/template-aggregations/template-aggregations.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Component for the record selection in the editor widget settings */
 @Component({
@@ -69,10 +68,7 @@ import { TemplateAggregationsComponent } from '../../common/template-aggregation
     TabWidgetAutomationsComponent,
   ],
 })
-export class RecordSelectionTabComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class RecordSelectionTabComponent implements OnInit {
   /** Widget form group */
   @Input() form!: ReturnType<typeof createEditorForm>;
   /** Current resource */
@@ -89,6 +85,8 @@ export class RecordSelectionTabComponent
   public manualControl = new FormControl<boolean>(false);
   /** Handles expression builder display */
   public expressionControl = new FormControl<boolean>(false);
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Component for the record selection in the editor widget settings
@@ -101,15 +99,13 @@ export class RecordSelectionTabComponent
     private dialog: Dialog,
     private gridLayoutService: GridLayoutService,
     private referenceDataService: ReferenceDataService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.selectedRecordID = this.form.get('record')?.value || null;
     // Automation on manual / expression selection
     this.manualControl.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value) {
           this.expressionControl.setValue(false);
@@ -117,7 +113,7 @@ export class RecordSelectionTabComponent
         }
       });
     this.expressionControl.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value) {
           this.manualControl.setValue(false);
@@ -143,7 +139,7 @@ export class RecordSelectionTabComponent
         });
     }
     this.form.controls.referenceData.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value) {
           this.referenceDataService
@@ -173,15 +169,17 @@ export class RecordSelectionTabComponent
         hasLayouts: get(this.resource, 'layouts.totalCount', 0) > 0,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value) {
-        if (typeof value === 'string') {
-          this.form.get('layout')?.setValue(value);
-        } else {
-          this.form.get('layout')?.setValue((value as any).id);
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value) {
+          if (typeof value === 'string') {
+            this.form.get('layout')?.setValue(value);
+          } else {
+            this.form.get('layout')?.setValue((value as any).id);
+          }
         }
-      }
-    });
+      });
   }
 
   /**
@@ -198,19 +196,21 @@ export class RecordSelectionTabComponent
         queryName: this.resource?.queryName,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value && this.layout) {
-        this.gridLayoutService
-          .editLayout(this.layout, value, this.resource?.id)
-          .subscribe(() => {
-            if (this.form.get('layout')) {
-              this.form
-                .get('layout')
-                ?.setValue(this.form.get('layout')?.value || null);
-            }
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value && this.layout) {
+          this.gridLayoutService
+            .editLayout(this.layout, value, this.resource?.id)
+            .subscribe(() => {
+              if (this.form.get('layout')) {
+                this.form
+                  .get('layout')
+                  ?.setValue(this.form.get('layout')?.value || null);
+              }
+            });
+        }
+      });
   }
 
   /** Handles deselect current layout */

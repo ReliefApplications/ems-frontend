@@ -6,10 +6,12 @@ import {
   Output,
   ViewChild,
   TemplateRef,
+  DestroyRef,
+  inject,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder } from '@angular/forms';
-import { UnsubscribeComponent } from '@oort-front/shared';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 /**
  * Filter used by the resources component
@@ -19,7 +21,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
 })
-export class FilterComponent extends UnsubscribeComponent implements OnInit {
+export class FilterComponent implements OnInit {
   /**
    * Loading state
    */
@@ -31,6 +33,8 @@ export class FilterComponent extends UnsubscribeComponent implements OnInit {
   /** Reference to expanded filter template */
   @ViewChild('expandedFilter')
   expandedFilter!: TemplateRef<any>;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Form group
@@ -49,16 +53,14 @@ export class FilterComponent extends UnsubscribeComponent implements OnInit {
    *
    * @param fb Used to create reactive forms.
    */
-  constructor(private fb: FormBuilder) {
-    super();
-  }
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.form.valueChanges
       .pipe(
         debounceTime(1000),
         distinctUntilChanged(),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((value) => {
         this.emitFilter(value);

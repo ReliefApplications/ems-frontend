@@ -1,12 +1,11 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Inject, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import {
   Application,
   Channel,
   Form,
   Subscription,
-  UnsubscribeComponent,
   FormsQueryResponse,
   ApplicationsApplicationNodesQueryResponse,
   getCachedValues,
@@ -14,7 +13,7 @@ import {
 } from '@oort-front/shared';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { GET_ROUTING_KEYS, GET_FORM_NAMES } from '../../graphql/queries';
-import { map, startWith, takeUntil } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import get from 'lodash/get';
 import { ApolloQueryResult } from '@apollo/client';
 import { CommonModule, DOCUMENT } from '@angular/common';
@@ -35,6 +34,7 @@ import {
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -66,10 +66,7 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './subscription-modal.component.html',
   styleUrls: ['./subscription-modal.component.scss'],
 })
-export class SubscriptionModalComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class SubscriptionModalComponent implements OnInit {
   /** Subscription reactive form group */
   subscriptionForm = this.fb.group({
     routingKey: [
@@ -110,6 +107,8 @@ export class SubscriptionModalComponent
   };
   /** Loading indicator for applications */
   private applicationsLoading = true;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns subscription routing key */
   get routingKey(): string | null | undefined {
@@ -147,9 +146,7 @@ export class SubscriptionModalComponent
       subscription?: Subscription;
     },
     @Inject(DOCUMENT) private document: Document
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     // Get applications and set pagination logic
@@ -164,7 +161,7 @@ export class SubscriptionModalComponent
 
     // this.applications$ = this.applications.asObservable();
     this.applicationsQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((results) => {
         this.updateValues(results.data, results.loading);
       });

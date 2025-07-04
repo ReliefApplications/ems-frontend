@@ -1,6 +1,8 @@
 import {
   ChangeDetectorRef,
   Component,
+  DestroyRef,
+  inject,
   Inject,
   OnDestroy,
   OnInit,
@@ -13,14 +15,14 @@ import {
   Application,
   ApplicationsApplicationNodesQueryResponse,
 } from '../../../models/application.model';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { GET_APPLICATIONS } from './graphql/queries';
-import { takeUntil } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
 import { QuestionAngular } from 'survey-angular-ui';
 import { QuestionOwnerApplicationsDropdownModel } from './application-dropdown.model';
 import { updateQueryUniqueValues } from '../../../utils/update-queries';
 import { SelectMenuComponent } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * A constant that is used to set the number of items to be displayed on the page.
@@ -58,14 +60,13 @@ export class ApplicationDropdownComponent
   };
   /** Loading */
   private loading = true;
-  /** Destroy subject */
-  private destroy$: Subject<void> = new Subject<void>();
-
   /**
    * Select menu component
    */
   @ViewChild(SelectMenuComponent, { static: true })
   selectMenu!: SelectMenuComponent;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -91,7 +92,7 @@ export class ApplicationDropdownComponent
     super.ngOnInit();
     // Listen to select menu UI event in order to update UI
     this.selectMenu.triggerUIChange$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((hasChanged: boolean) => {
         if (hasChanged) {
           this.detectChangesUI();
@@ -118,7 +119,7 @@ export class ApplicationDropdownComponent
             },
           },
         })
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(({ data }) => {
           this.selectedApplications = data.applications.edges.map(
             (x) => x.node
@@ -138,7 +139,7 @@ export class ApplicationDropdownComponent
 
     this.applications$ = this.applications.asObservable();
     this.applicationsQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data, loading }) => {
         this.updateValues(data, loading);
       });
@@ -214,8 +215,6 @@ export class ApplicationDropdownComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    this.destroy$.next();
-    this.destroy$.complete();
     if (this.scrollListener) {
       this.scrollListener();
     }

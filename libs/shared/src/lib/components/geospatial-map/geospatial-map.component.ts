@@ -1,7 +1,9 @@
 import {
   AfterViewInit,
   Component,
+  DestroyRef,
   EventEmitter,
+  inject,
   Input,
   OnInit,
   Output,
@@ -9,7 +11,6 @@ import {
 } from '@angular/core';
 import { Feature, FeatureCollection } from 'geojson';
 import { MapConstructorSettings } from '../ui/map/interfaces/map.interface';
-import { UnsubscribeComponent } from '../utils/unsubscribe/public-api';
 // Leaflet
 import * as L from 'leaflet';
 import '@geoman-io/leaflet-geoman-free';
@@ -24,12 +25,13 @@ import {
   updateGeoManLayerPosition,
 } from '../ui/map/utils/get-map-features';
 import { TranslateService } from '@ngx-translate/core';
-import { debounceTime, takeUntil } from 'rxjs';
+import { debounceTime } from 'rxjs';
 import { GeospatialFieldsComponent } from './geospatial-fields/geospatial-fields.component';
 import { GeoProperties } from './geospatial-map.interface';
 import { get } from 'lodash';
 import { ArcgisService } from '../../services/map/arcgis.service';
 import { FormBuilder } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Default geocoding value
@@ -57,10 +59,7 @@ const DEFAULT_GEOCODING: GeoProperties = {
   styleUrls: ['./geospatial-map.component.scss'],
   imports: [CommonModule, MapModule, GeospatialFieldsComponent],
 })
-export class GeospatialMapComponent
-  extends UnsubscribeComponent
-  implements OnInit, AfterViewInit
-{
+export class GeospatialMapComponent implements OnInit, AfterViewInit {
   /**
    * Data to display on the map
    */
@@ -146,6 +145,8 @@ export class GeospatialMapComponent
    * Map component
    */
   @ViewChild(MapComponent) mapComponent?: MapComponent;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Component for displaying the input map
@@ -159,9 +160,7 @@ export class GeospatialMapComponent
     private translate: TranslateService,
     private arcgisService: ArcgisService,
     private fb: FormBuilder
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.geoForm = this.buildGeoForm();
@@ -175,7 +174,10 @@ export class GeospatialMapComponent
     (['lat', 'lng'] as const).forEach((key) => {
       this.geoForm
         .get(`coordinates.${key}`)
-        ?.valueChanges.pipe(debounceTime(500), takeUntil(this.destroy$))
+        ?.valueChanges.pipe(
+          debounceTime(500),
+          takeUntilDestroyed(this.destroyRef)
+        )
         .subscribe(() => {
           const lat = this.geoForm.get('coordinates.lat')?.value;
           const lng = this.geoForm.get('coordinates.lng')?.value;
@@ -322,7 +324,7 @@ export class GeospatialMapComponent
     setLang(this.translate.currentLang || 'en');
 
     this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((event) => {
         setLang(event.lang);
       });

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
@@ -7,11 +7,10 @@ import {
   ApplicationService,
   Dashboard,
   DashboardQueryResponse,
-  UnsubscribeComponent,
 } from '@oort-front/shared';
 import { GET_SHARE_DASHBOARD_BY_ID } from './graphql/queries';
-import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Share URL access component.
@@ -21,7 +20,10 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './share.component.html',
   styleUrls: ['./share.component.scss'],
 })
-export class ShareComponent extends UnsubscribeComponent implements OnInit {
+export class ShareComponent implements OnInit {
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
+
   /**
    * Share URL access component.
    *
@@ -39,16 +41,14 @@ export class ShareComponent extends UnsubscribeComponent implements OnInit {
     private snackBar: SnackbarService,
     private translateService: TranslateService,
     private applicationService: ApplicationService
-  ) {
-    super();
-  }
+  ) {}
 
   /**
    * Query dashboard information from share url and redirect to dashboard page.
    */
   ngOnInit(): void {
     this.route.params
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((params: any) => {
         this.apollo
           .query<DashboardQueryResponse>({

@@ -1,6 +1,8 @@
 import {
   Component,
+  DestroyRef,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   Output,
@@ -11,8 +13,7 @@ import { QueryBuilderService } from '../../services/query-builder/query-builder.
 import { Form } from '../../models/form.model';
 import { createFilterGroup } from './query-builder-forms';
 import { LayoutPreviewData } from './tab-layout-preview/tab-layout-preview.component';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Main query builder component.
@@ -23,10 +24,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './query-builder.component.html',
   styleUrls: ['./query-builder.component.scss'],
 })
-export class QueryBuilderComponent
-  extends UnsubscribeComponent
-  implements OnChanges
-{
+export class QueryBuilderComponent implements OnChanges {
   /** Form group */
   @Input() form?: FormGroup;
   /** CanExpand boolean control */
@@ -63,6 +61,8 @@ export class QueryBuilderComponent
   public filteredQueries: any[] = [];
   /** Selected text fields */
   public selectedTextFields: any[] = [];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Getter for the available scalar fields
@@ -85,9 +85,7 @@ export class QueryBuilderComponent
   constructor(
     private fb: FormBuilder,
     private queryBuilder: QueryBuilderService
-  ) {
-    super();
-  }
+  ) {}
 
   /**
    * Allows to inject the component without creating circular dependency.
@@ -122,7 +120,7 @@ export class QueryBuilderComponent
         setSelectedTextFields();
         this.form
           .get('fields')
-          ?.valueChanges.pipe(takeUntil(this.destroy$))
+          ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe(() => {
             setSelectedTextFields();
           });
@@ -168,7 +166,7 @@ export class QueryBuilderComponent
         );
       };
       this.form?.controls.name.valueChanges
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value) => {
           if (value !== this.form?.value.name) {
             if (this.allQueries.find((x) => x === value)) {

@@ -1,20 +1,19 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import {
   ContentType,
   CONTENT_TYPES,
-  UnsubscribeComponent,
   WorkflowService,
   FormsQueryResponse,
   AddFormMutationResponse,
 } from '@oort-front/shared';
 import { ActivatedRoute } from '@angular/router';
-import { takeUntil } from 'rxjs';
 import { ADD_FORM } from '../../graphql/mutations';
 import { GET_FORMS } from '../../graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -27,7 +26,7 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './add-step.component.html',
   styleUrls: ['./add-step.component.scss'],
 })
-export class AddStepComponent extends UnsubscribeComponent implements OnInit {
+export class AddStepComponent implements OnInit {
   // === DATA ===
   /** Content types */
   public contentTypes = CONTENT_TYPES.filter((x) => x.value !== 'workflow');
@@ -42,6 +41,8 @@ export class AddStepComponent extends UnsubscribeComponent implements OnInit {
   });
   /** Current stage */
   public stage = 1;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Add step page component
@@ -60,9 +61,7 @@ export class AddStepComponent extends UnsubscribeComponent implements OnInit {
     private snackBar: SnackbarService,
     private apollo: Apollo,
     private workflowService: WorkflowService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.stepForm.get('type')?.valueChanges.subscribe((type) => {
@@ -151,33 +150,35 @@ export class AddStepComponent extends UnsubscribeComponent implements OnInit {
       '../../../../../components/add-form-modal/add-form-modal.component'
     );
     const dialogRef = this.dialog.open(AddFormModalComponent);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        const variablesData = { name: value.name };
-        Object.assign(
-          variablesData,
-          value.resource && { resource: value.resource },
-          value.template && { template: value.template }
-        );
-        this.apollo
-          .mutate<AddFormMutationResponse>({
-            mutation: ADD_FORM,
-            variables: variablesData,
-          })
-          .subscribe({
-            next: ({ data }) => {
-              if (data) {
-                const { id } = data.addForm;
-                this.stepForm.controls.content.setValue(id as string);
-                this.onSubmit();
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          const variablesData = { name: value.name };
+          Object.assign(
+            variablesData,
+            value.resource && { resource: value.resource },
+            value.template && { template: value.template }
+          );
+          this.apollo
+            .mutate<AddFormMutationResponse>({
+              mutation: ADD_FORM,
+              variables: variablesData,
+            })
+            .subscribe({
+              next: ({ data }) => {
+                if (data) {
+                  const { id } = data.addForm;
+                  this.stepForm.controls.content.setValue(id as string);
+                  this.onSubmit();
+                }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
   /**

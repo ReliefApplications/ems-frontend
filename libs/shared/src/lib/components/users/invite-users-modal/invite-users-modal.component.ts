@@ -1,4 +1,10 @@
-import { Component, Inject, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  Inject,
+  ViewChild,
+} from '@angular/core';
 import { DialogRef, DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
 import { GridComponent, GridDataResult } from '@progress/kendo-angular-grid';
 import { Role } from '../../../models/user.model';
@@ -8,8 +14,6 @@ import { DownloadService } from '../../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UploadEvent } from '@progress/kendo-angular-upload';
 import { SnackbarService } from '@oort-front/ui';
-import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { CommonModule } from '@angular/common';
 import { GridModule, GroupModule } from '@progress/kendo-angular-grid';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
@@ -20,6 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UploadsModule } from '@progress/kendo-angular-upload';
 import { ButtonModule as uiButtonModule, TextareaModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Model fot the input data */
 interface DialogData {
@@ -52,7 +57,7 @@ interface DialogData {
     uiButtonModule,
   ],
 })
-export class InviteUsersModalComponent extends UnsubscribeComponent {
+export class InviteUsersModalComponent {
   /** Grid data */
   public gridData: GridDataResult = { data: [], total: 0 };
   /** Form group */
@@ -70,6 +75,8 @@ export class InviteUsersModalComponent extends UnsubscribeComponent {
 
   /** Reference to the file reader */
   @ViewChild('fileReader') fileReader: any;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns The position attributes available */
   get positionAttributes(): UntypedFormArray | null {
@@ -98,7 +105,6 @@ export class InviteUsersModalComponent extends UnsubscribeComponent {
     @Inject(DIALOG_DATA) public data: DialogData,
     @Inject('environment') public environment: any
   ) {
-    super();
     this.maxFileSize = environment.maxFileSize;
   }
 
@@ -116,11 +122,13 @@ export class InviteUsersModalComponent extends UnsubscribeComponent {
       },
       autoFocus: false,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.gridData.data.push(value);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.gridData.data.push(value);
+        }
+      });
   }
 
   /**

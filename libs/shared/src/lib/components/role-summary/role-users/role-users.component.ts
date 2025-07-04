@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   Role,
@@ -6,10 +6,9 @@ import {
   User,
 } from '../../../models/user.model';
 import { GET_ROLE_USERS } from './graphql/queries';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../../utils/update-queries';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -22,7 +21,7 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './role-users.component.html',
   styleUrls: ['./role-users.component.scss'],
 })
-export class RoleUsersComponent extends UnsubscribeComponent implements OnInit {
+export class RoleUsersComponent implements OnInit {
   /** Role to display */
   @Input() role!: Role;
   /** Auto assigned flag */
@@ -49,6 +48,8 @@ export class RoleUsersComponent extends UnsubscribeComponent implements OnInit {
     length: 0,
     endCursor: '',
   };
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns empty state of the table */
   get empty(): boolean {
@@ -60,9 +61,7 @@ export class RoleUsersComponent extends UnsubscribeComponent implements OnInit {
    *
    * @param apollo apollo client
    */
-  constructor(private apollo: Apollo) {
-    super();
-  }
+  constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
     this.usersQuery = this.apollo.watchQuery<RoleUsersNodesQueryResponse>({
@@ -74,7 +73,7 @@ export class RoleUsersComponent extends UnsubscribeComponent implements OnInit {
       },
     });
     this.usersQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data, loading }) => {
         this.updateValues(data, loading);
       });

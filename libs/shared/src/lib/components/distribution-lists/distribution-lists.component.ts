@@ -1,11 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ApplicationService } from '../../services/application/application.service';
 import { Dialog } from '@angular/cdk/dialog';
-import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SnackbarService } from '@oort-front/ui';
 import { DistributionList } from '../../models/distribution-list.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Component to show the list of distribution lists of an application
@@ -15,21 +14,17 @@ import { DistributionList } from '../../models/distribution-list.model';
   templateUrl: './distribution-lists.component.html',
   styleUrls: ['./distribution-lists.component.scss'],
 })
-export class DistributionListsComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
-  // === INPUT DATA ===
+export class DistributionListsComponent implements OnInit {
   /** Distribution lists array */
   public distributionLists: DistributionList[] = [];
   /** Application service */
   @Input() applicationService!: ApplicationService;
-  // === DISPLAYED COLUMNS ===
   /** List of displayed columns */
   public displayedColumns = ['name', 'actions'];
-
   /** Loading state */
   public loading = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Constructor of the distribution lists component
@@ -42,13 +37,11 @@ export class DistributionListsComponent
     public dialog: Dialog,
     private translate: TranslateService,
     private snackBar: SnackbarService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.distributionLists = value?.distributionLists || [];
       });
@@ -70,22 +63,24 @@ export class DistributionListsComponent
       data: distributionList,
       disableClose: true,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      // value: { name: string; emails: string[] }
-      if (value) {
-        this.applicationService.editDistributionList({
-          id: distributionList.id,
-          name: value.name,
-          emails: value.emails,
-        });
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.objectUpdated', {
-            value: value.name,
-            type: this.translate.instant('common.distributionList.one'),
-          })
-        );
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        // value: { name: string; emails: string[] }
+        if (value) {
+          this.applicationService.editDistributionList({
+            id: distributionList.id,
+            name: value.name,
+            emails: value.emails,
+          });
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectUpdated', {
+              value: value.name,
+              type: this.translate.instant('common.distributionList.one'),
+            })
+          );
+        }
+      });
   }
 
   /**
@@ -99,20 +94,22 @@ export class DistributionListsComponent
       data: null,
       disableClose: true,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.applicationService.addDistributionList({
-          name: value.name,
-          emails: value.emails,
-        });
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.objectCreated', {
-            value: value.name,
-            type: this.translate.instant('common.distributionList.one'),
-          })
-        );
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.applicationService.addDistributionList({
+            name: value.name,
+            emails: value.emails,
+          });
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectCreated', {
+              value: value.name,
+              type: this.translate.instant('common.distributionList.one'),
+            })
+          );
+        }
+      });
   }
 
   /**
@@ -142,17 +139,19 @@ export class DistributionListsComponent
         confirmVariant: 'danger',
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.applicationService.deleteDistributionList(
-          distributionList.id || ''
-        );
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.objectDeleted', {
-            value: distributionList.name,
-          })
-        );
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.applicationService.deleteDistributionList(
+            distributionList.id || ''
+          );
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectDeleted', {
+              value: distributionList.name,
+            })
+          );
+        }
+      });
   }
 }

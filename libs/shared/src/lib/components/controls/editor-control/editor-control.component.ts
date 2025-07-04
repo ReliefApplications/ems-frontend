@@ -13,10 +13,12 @@ import {
   Inject,
   EventEmitter,
   Output,
+  inject,
+  DestroyRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import {
   EditorComponent,
@@ -27,6 +29,7 @@ import { EditorService } from '../../../services/editor/editor.service';
 import { RawEditorSettings } from 'tinymce';
 import { FormControlComponent, SpinnerModule } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Component for using TinyMCE editor with formControl */
 @Component({
@@ -47,6 +50,8 @@ export class EditorControlComponent
   extends FormControlComponent
   implements ControlValueAccessor, OnDestroy, AfterViewInit, OnChanges
 {
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
   /** Next id */
   static nextId = 0;
 
@@ -191,9 +196,6 @@ export class EditorControlComponent
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
 
-  /** Editor destroy subject */
-  private destroy$ = new Subject<void>();
-
   /**
    * Component for using TinyMCE editor with formControl
    *
@@ -232,35 +234,41 @@ export class EditorControlComponent
   }
 
   ngAfterViewInit(): void {
-    this.editor.onFocusIn.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.onFocusIn();
-    });
-    this.editor.onFocusOut.pipe(takeUntil(this.destroy$)).subscribe((e) => {
-      this.onFocusOut(e.event);
-    });
-    this.editor.onKeyDown.pipe(takeUntil(this.destroy$)).subscribe((e) => {
-      if (e.event.code === 'ArrowDown' || e.event.code === 'ArrowUp') {
-        const collectionGroup = this.document.querySelector(
-          '.tox-collection__group'
-        );
-        // If autocomplete list in the DOM, trigger scrolling events
-        if (collectionGroup) {
-          if (!this.editorService.activeItemScrollListener) {
-            // Initialize listener
-            this.editorService.initScrollActive(
-              collectionGroup,
-              e.editor.getElement()
-            );
-            // Execute directly first keydown event when no listener is ready
-            this.editorService.handleKeyDownEvent(
-              e.event,
-              collectionGroup,
-              e.editor.getElement()
-            );
+    this.editor.onFocusIn
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.onFocusIn();
+      });
+    this.editor.onFocusOut
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((e) => {
+        this.onFocusOut(e.event);
+      });
+    this.editor.onKeyDown
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((e) => {
+        if (e.event.code === 'ArrowDown' || e.event.code === 'ArrowUp') {
+          const collectionGroup = this.document.querySelector(
+            '.tox-collection__group'
+          );
+          // If autocomplete list in the DOM, trigger scrolling events
+          if (collectionGroup) {
+            if (!this.editorService.activeItemScrollListener) {
+              // Initialize listener
+              this.editorService.initScrollActive(
+                collectionGroup,
+                e.editor.getElement()
+              );
+              // Execute directly first keydown event when no listener is ready
+              this.editorService.handleKeyDownEvent(
+                e.event,
+                collectionGroup,
+                e.editor.getElement()
+              );
+            }
           }
         }
-      }
-    });
+      });
     this.editor.disabled = true;
     // this.editor.onInit.subscribe(() => {});
     if (this.readonly) {
@@ -365,8 +373,6 @@ export class EditorControlComponent
 
   ngOnDestroy(): void {
     this.stateChanges.complete();
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   /** Updates the value when the editor content changes */

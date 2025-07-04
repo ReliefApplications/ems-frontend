@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   Component,
+  DestroyRef,
+  inject,
   Inject,
   OnDestroy,
   OnInit,
@@ -28,7 +30,6 @@ import {
   filter,
   pairwise,
   startWith,
-  takeUntil,
   tap,
 } from 'rxjs';
 import { Aggregation } from '../../../../models/aggregation.model';
@@ -52,7 +53,6 @@ import {
 } from '../../../ui/map/interfaces/map.interface';
 import { Layer } from '../../../ui/map/layer';
 import { MapComponent } from '../../../ui/map/map.component';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { ContextualFiltersSettingsComponent } from '../../common/contextual-filters-settings/contextual-filters-settings.component';
 import { GET_REFERENCE_DATA, GET_RESOURCE } from '../graphql/queries';
 import { createLayerForm, LayerFormT } from '../map-forms';
@@ -66,6 +66,7 @@ import { LayerLabelsModule } from './layer-labels/layer-labels.module';
 import { LayerPopupModule } from './layer-popup/layer-popup.module';
 import { LayerPropertiesModule } from './layer-properties/layer-properties.module';
 import { LayerStylingModule } from './layer-styling/layer-styling.module';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Interface of dialog input
@@ -107,7 +108,6 @@ interface DialogData {
   styleUrls: ['./edit-layer-modal.component.scss'],
 })
 export class EditLayerModalComponent
-  extends UnsubscribeComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
   /** Current Layer */
@@ -142,6 +142,8 @@ export class EditLayerModalComponent
    * a property change, layer data retrieval and form update
    */
   private triggerFormChange = new BehaviorSubject(true);
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Get the overlay tree object of the current map
@@ -174,9 +176,7 @@ export class EditLayerModalComponent
     private apollo: Apollo,
     public dialogRef: DialogRef<LayerFormData>,
     private fb: FormBuilder
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.form = createLayerForm(this.data.layer);
@@ -185,7 +185,7 @@ export class EditLayerModalComponent
       .get('datasource')
       ?.valueChanges.pipe(
         distinctUntilChanged((prev, next) => isEqual(prev, next)),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((value) => {
         this.setIsDatasourceValid(value);
@@ -217,13 +217,14 @@ export class EditLayerModalComponent
 
   ngAfterViewInit(): void {
     // If datasource changes, update fields form control
-    this.fields.pipe(takeUntil(this.destroy$)).subscribe((fields: any) => {
-      fields.forEach((field: Fields) => this.updateFormField(field));
-    });
+    this.fields
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((fields: any) => {
+        fields.forEach((field: Fields) => this.updateFormField(field));
+      });
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     const overlays: OverlayLayerTree = {
       label: this.form.get('name')?.value || '',
       layer: this.currentLayer,
@@ -350,7 +351,7 @@ export class EditLayerModalComponent
         debounceTime(1000),
         // Disable all map handlers while map data is updating to avoid any unwanted side effects
         tap(() => this.data.mapComponent.disableMapHandlers(true)),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -385,7 +386,7 @@ export class EditLayerModalComponent
       }
       this.form
         .get('datasource.refData')
-        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value) => {
           this.clearFields();
           this.form
@@ -406,7 +407,7 @@ export class EditLayerModalComponent
       }
       this.form
         .get('datasource.resource')
-        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value) => {
           this.clearFields();
           const datasourceGroup = this.form.controls.datasource as FormGroup;
@@ -425,7 +426,7 @@ export class EditLayerModalComponent
         });
       this.form
         .get('datasource.layout')
-        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value) => {
           this.clearFields;
           if (value) {
@@ -436,7 +437,7 @@ export class EditLayerModalComponent
         });
       this.form
         .get('datasource.aggregation')
-        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value) => {
           this.clearFields();
           const formValue = this.form.getRawValue();
@@ -453,9 +454,11 @@ export class EditLayerModalComponent
         });
     }
 
-    this.data.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
-      next: (event: MapEvent) => this.handleMapEvent(event),
-    });
+    this.data.mapComponent?.mapEvent
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (event: MapEvent) => this.handleMapEvent(event),
+      });
   }
 
   /** Clears the geo, admin, latitude and longitude fields */
@@ -509,7 +512,7 @@ export class EditLayerModalComponent
         confirmVariant: 'danger',
       });
       confirmDialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value: any) => {
           if (value) {
             this.dialogRef.close();
@@ -538,7 +541,7 @@ export class EditLayerModalComponent
             aggregation: aggregationID ? [aggregationID] : [],
           },
         })
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(({ data }) => {
           this.resource = data.resource;
           // Update fields

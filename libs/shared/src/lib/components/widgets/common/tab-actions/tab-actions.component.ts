@@ -1,10 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { Application } from '../../../../models/application.model';
 import { ContentType, Page } from '../../../../models/page.model';
-import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Actions tab of grid widget configuration modal.
@@ -14,10 +13,7 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
   templateUrl: './tab-actions.component.html',
   styleUrls: ['./tab-actions.component.scss'],
 })
-export class TabActionsComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class TabActionsComponent implements OnInit {
   /** Widget reactive form group */
   @Input() formGroup!: UntypedFormGroup;
   /** Available fields */
@@ -75,15 +71,15 @@ export class TabActionsComponent
       tooltip: 'components.widget.settings.grid.hint.actions.goTo',
     },
   ];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Constructor of the grid component
    *
    * @param applicationService Application service
    */
-  constructor(public applicationService: ApplicationService) {
-    super();
-  }
+  constructor(public applicationService: ApplicationService) {}
 
   ngOnInit(): void {
     this.showSelectPage =
@@ -93,7 +89,7 @@ export class TabActionsComponent
     this.pages = this.getPages(application);
     this.formGroup.controls.actions
       .get('navigateToPage')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((val: boolean) => {
         this.showSelectPage = val;
       });

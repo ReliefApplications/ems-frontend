@@ -1,11 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import {
-  Application,
-  ApplicationService,
-  UnsubscribeComponent,
-} from '@oort-front/shared';
-import { takeUntil } from 'rxjs/operators';
+import { Application, ApplicationService } from '@oort-front/shared';
 
 /**
  * Role summary page
@@ -15,14 +11,13 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './role-summary.component.html',
   styleUrls: ['./role-summary.component.scss'],
 })
-export class RoleSummaryComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class RoleSummaryComponent implements OnInit {
   /** Current application id */
   public id = '';
   /** Current application */
   public application!: Application;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Role summary page
@@ -33,16 +28,16 @@ export class RoleSummaryComponent
   constructor(
     private route: ActivatedRoute,
     public applicationService: ApplicationService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((val: any) => {
-      this.id = val.id;
-    });
+    this.route.params
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((val: any) => {
+        this.id = val.id;
+      });
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((application: Application | null) => {
         if (application) {
           this.application = application;

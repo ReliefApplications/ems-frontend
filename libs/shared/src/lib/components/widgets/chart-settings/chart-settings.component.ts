@@ -1,8 +1,14 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  EventEmitter,
+  Output,
+  inject,
+  DestroyRef,
+} from '@angular/core';
 import { createChartWidgetForm } from './chart-forms';
 import { CHART_TYPES } from './constants';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs';
 import { WidgetSettings } from '../../../models/dashboard.model';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { CommonModule } from '@angular/common';
@@ -24,6 +30,7 @@ import { DisplaySettingsComponent } from '../common/display-settings/display-set
 import { TabDisplayModule } from './tab-display/tab-display.module';
 import { TabFiltersComponent } from './tab-filters/tab-filters.component';
 import { TabMainModule } from './tab-main/tab-main.module';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Chart settings component
@@ -57,7 +64,6 @@ import { TabMainModule } from './tab-main/tab-main.module';
 })
 /** Modal content for the settings of the chart widgets. */
 export class ChartSettingsComponent
-  extends UnsubscribeComponent
   implements OnInit, WidgetSettings<typeof createChartWidgetForm>
 {
   /** Widget definition */
@@ -71,6 +77,8 @@ export class ChartSettingsComponent
   public types = CHART_TYPES;
   /** Current chart type */
   public type: any;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns Chart form */
   public get chartForm() {
@@ -89,20 +97,20 @@ export class ChartSettingsComponent
     this.type = this.types.find((x) => x.name === this.chartForm.value.type);
 
     this.widgetFormGroup.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.widgetFormGroup.markAsDirty({ onlySelf: true });
         this.formChange.emit(this.widgetFormGroup);
       });
 
     this.chartForm.controls.type.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.type = this.types.find((x) => x.name === value);
       });
 
     this.legendForm.controls.position.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.legendForm.controls.visible.patchValue(value !== 'none');
       });

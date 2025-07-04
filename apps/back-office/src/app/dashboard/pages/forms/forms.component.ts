@@ -1,12 +1,11 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import {
   AuthService,
   ConfirmService,
   Form,
-  UnsubscribeComponent,
   FormsQueryResponse,
   DeleteFormMutationResponse,
   AddFormMutationResponse,
@@ -17,13 +16,13 @@ import { GET_SHORT_FORMS } from './graphql/queries';
 import { DELETE_FORM, ADD_FORM } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { ApolloQueryResult } from '@apollo/client';
-import { takeUntil } from 'rxjs';
 import {
   TableSort,
   UIPageChangeEvent,
   handleTablePageEvent,
 } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default number of items for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -34,7 +33,7 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './forms.component.html',
   styleUrls: ['./forms.component.scss'],
 })
-export class FormsComponent extends UnsubscribeComponent implements OnInit {
+export class FormsComponent implements OnInit {
   // === DATA ===
   /** Loading state */
   public loading = true;
@@ -57,8 +56,6 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
   public forms = new Array<Form>();
   /** Cached forms */
   public cachedForms: Form[] = [];
-
-  // === FILTERING ===
   /** Filter object */
   public filter: any = {
     filters: [],
@@ -66,8 +63,6 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
   };
   /** Sort object */
   private sort: TableSort = { active: '', sortDirection: '' };
-
-  // === PAGINATION ===
   /** Page info */
   public pageInfo = {
     pageIndex: 0,
@@ -75,6 +70,8 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
     length: 0,
     endCursor: '',
   };
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Forms page component
@@ -95,9 +92,7 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
     private authService: AuthService,
     private confirmService: ConfirmService,
     private translate: TranslateService
-  ) {
-    super();
-  }
+  ) {}
 
   /**
    * Creates the form query, and subscribes to the query changes.
@@ -115,7 +110,7 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
     });
 
     this.formsQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((results) => {
         this.updateValues(results.data, results.loading);
       });
@@ -217,47 +212,52 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        const id = form.id;
-        this.apollo
-          .mutate<DeleteFormMutationResponse>({
-            mutation: DELETE_FORM,
-            variables: {
-              id,
-            },
-          })
-          .subscribe({
-            next: ({ errors }) => {
-              if (!errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectDeleted', {
-                    value: this.translate.instant('common.form.one'),
-                  })
-                );
-                this.forms = this.forms.filter(
-                  (x) =>
-                    x.id !== form.id && form.id !== x.resource?.coreForm?.id
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotDeleted',
-                    {
-                      value: this.translate.instant('common.form.one'),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          const id = form.id;
+          this.apollo
+            .mutate<DeleteFormMutationResponse>({
+              mutation: DELETE_FORM,
+              variables: {
+                id,
+              },
+            })
+            .subscribe({
+              next: ({ errors }) => {
+                if (!errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectDeleted',
+                      {
+                        value: this.translate.instant('common.form.one'),
+                      }
+                    )
+                  );
+                  this.forms = this.forms.filter(
+                    (x) =>
+                      x.id !== form.id && form.id !== x.resource?.coreForm?.id
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectNotDeleted',
+                      {
+                        value: this.translate.instant('common.form.one'),
+                        error: errors ? errors[0].message : '',
+                      }
+                    ),
+                    { error: true }
+                  );
+                }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
   /**
@@ -269,58 +269,60 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
       '../../../components/add-form-modal/add-form-modal.component'
     );
     const dialogRef = this.dialog.open(AddFormModalComponent);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        const variablesData = { name: value.name };
-        Object.assign(
-          variablesData,
-          value.resource && { resource: value.resource },
-          value.template && { template: value.template }
-        );
-        this.apollo
-          .mutate<AddFormMutationResponse>({
-            mutation: ADD_FORM,
-            variables: variablesData,
-          })
-          .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotCreated',
-                    {
-                      type: this.translate
-                        .instant('common.form.one')
-                        .toLowerCase(),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                if (data) {
-                  const { id } = data.addForm;
-                  this.router.navigate(['/forms/' + id + '/builder']);
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          const variablesData = { name: value.name };
+          Object.assign(
+            variablesData,
+            value.resource && { resource: value.resource },
+            value.template && { template: value.template }
+          );
+          this.apollo
+            .mutate<AddFormMutationResponse>({
+              mutation: ADD_FORM,
+              variables: variablesData,
+            })
+            .subscribe({
+              next: ({ errors, data }) => {
+                if (errors) {
                   this.snackBar.openSnackBar(
                     this.translate.instant(
-                      'common.notifications.objectCreated',
+                      'common.notifications.objectNotCreated',
                       {
                         type: this.translate
                           .instant('common.form.one')
                           .toLowerCase(),
-                        value: value.name,
+                        error: errors ? errors[0].message : '',
                       }
-                    )
+                    ),
+                    { error: true }
                   );
+                } else {
+                  if (data) {
+                    const { id } = data.addForm;
+                    this.router.navigate(['/forms/' + id + '/builder']);
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'common.notifications.objectCreated',
+                        {
+                          type: this.translate
+                            .instant('common.form.one')
+                            .toLowerCase(),
+                          value: value.name,
+                        }
+                      )
+                    );
+                  }
                 }
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
   /**

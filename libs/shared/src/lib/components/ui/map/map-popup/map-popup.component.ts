@@ -1,14 +1,15 @@
 import {
   AfterContentInit,
   Component,
+  DestroyRef,
   EventEmitter,
+  inject,
   Input,
   Output,
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Feature, GeoJsonProperties, Geometry } from 'geojson';
-import { BehaviorSubject, takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { BehaviorSubject } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule, DividerModule, TooltipModule } from '@oort-front/ui';
@@ -16,6 +17,7 @@ import { LatLng } from 'leaflet';
 import { get, isNil } from 'lodash';
 import { getFlatFields } from '../../../../services/html-parser/html-parser-helper';
 import { HtmlParserService } from '../../../../services/html-parser/html-parser.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Component for a popup that has information on multiple points */
 @Component({
@@ -31,10 +33,7 @@ import { HtmlParserService } from '../../../../services/html-parser/html-parser.
   templateUrl: './map-popup.component.html',
   styleUrls: ['./map-popup.component.scss'],
 })
-export class MapPopupComponent
-  extends UnsubscribeComponent
-  implements AfterContentInit
-{
+export class MapPopupComponent implements AfterContentInit {
   /** Coordinates of the point */
   @Input() coordinates!: LatLng;
   /** Features */
@@ -54,6 +53,8 @@ export class MapPopupComponent
   public currentHtml: SafeHtml = '';
   /** Current point */
   public current = new BehaviorSubject<number>(0);
+  /** Component destroy ref */
+  public destroyRef = inject(DestroyRef);
 
   /** @returns current as an observable */
   get current$() {
@@ -74,13 +75,11 @@ export class MapPopupComponent
   constructor(
     private sanitizer: DomSanitizer,
     private htmlParserService: HtmlParserService
-  ) {
-    super();
-  }
+  ) {}
 
   ngAfterContentInit(): void {
     this.setInnerHtml();
-    this.current$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    this.current$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.setInnerHtml();
     });
   }

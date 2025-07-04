@@ -1,7 +1,9 @@
 import {
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -14,8 +16,7 @@ import {
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { WidgetComponent } from '../widget/widget.component';
-import { Subject, Subscription, debounceTime, takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { Subject, Subscription, debounceTime } from 'rxjs';
 import { ExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 import {
   CompactType,
@@ -29,6 +30,7 @@ import { cloneDeep, set } from 'lodash';
 import { ResizeObservable } from '../../utils/rxjs/resize-observable.util';
 import { ContextService } from '../../services/context/context.service';
 import { WidgetType } from '../../models/dashboard.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Maximum height of the widget in row units when loading grid */
 const MAX_ROW_SPAN_LOADING = 4;
@@ -44,10 +46,7 @@ const MAX_COL_SPAN = 8;
   templateUrl: './widget-grid.component.html',
   styleUrls: ['./widget-grid.component.scss'],
 })
-export class WidgetGridComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnChanges, OnDestroy
-{
+export class WidgetGridComponent implements OnInit, OnChanges, OnDestroy {
   /** Available widgets */
   public availableWidgets: WidgetType[] = [];
   /** Loading status */
@@ -98,6 +97,8 @@ export class WidgetGridComponent
   private _widgets: any[] = [];
   /** Disables the tooltips */
   public tooltipDisabled = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -127,9 +128,7 @@ export class WidgetGridComponent
     private dashboardService: DashboardService,
     private _host: ElementRef,
     private contextService: ContextService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.sortWidgets();
@@ -137,7 +136,7 @@ export class WidgetGridComponent
     this.skeletons = this.getSkeletons();
     this.setLayout();
     new ResizeObservable(this._host.nativeElement)
-      .pipe(debounceTime(100), takeUntil(this.destroy$))
+      .pipe(debounceTime(100), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.colsNumber = this.setColsNumber(
           this._host.nativeElement.innerWidth
@@ -152,7 +151,7 @@ export class WidgetGridComponent
     this.enableMinHeight();
 
     this.dashboardService.widgetContentRefreshed$
-      .pipe(debounceTime(100), takeUntil(this.destroy$))
+      .pipe(debounceTime(100), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         // sending 'false' to prevent triggering this function infinitely due to cloning
         this.setVisibleWidgets(false);
@@ -160,7 +159,7 @@ export class WidgetGridComponent
     // Listen to dashboard filters changes if it is necessary
     // So when hiding empty widgets, we can re-display them on filter change
     this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         if (!this.canUpdate) {
           this.setVisibleWidgets();
@@ -191,8 +190,7 @@ export class WidgetGridComponent
     }
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     if (this.gridOptionsTimeoutListener) {
       clearTimeout(this.gridOptionsTimeoutListener);
     }
@@ -346,7 +344,7 @@ export class WidgetGridComponent
       });
       // Destroy dialog ref after closed to show the widget header actions again
       this.expandWidgetDialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
           // sync with the dashboard content
           if (this.setFullscreenTimeoutListener) {
@@ -393,7 +391,7 @@ export class WidgetGridComponent
           },
         });
         dialogRef.closed
-          .pipe(takeUntil(this.destroy$))
+          .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe((value: any) => {
             // Should save the value, and so, add the widget to the grid
             if (value) {
@@ -493,7 +491,7 @@ export class WidgetGridComponent
     });
     // Prevent changes to be saved too often
     this.changesSubscription = this.structureChanges
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         if (this.canUpdate) {
           this.onEditWidget({ type: 'display' });

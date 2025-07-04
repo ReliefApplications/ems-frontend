@@ -1,14 +1,13 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import {
   Application,
   ApplicationService,
   ConfirmService,
-  UnsubscribeComponent,
 } from '@oort-front/shared';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Header component visible when editing application.
@@ -19,10 +18,7 @@ import {
   templateUrl: './application-header.component.html',
   styleUrls: ['./application-header.component.scss'],
 })
-export class ApplicationHeaderComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class ApplicationHeaderComponent implements OnInit {
   /** Application title */
   @Input() title = '';
   /** Admin routes */
@@ -37,6 +33,8 @@ export class ApplicationHeaderComponent
   public lockedByUser: boolean | undefined = undefined;
   /** Can application be published */
   public canPublish = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Header component visible when editing application
@@ -53,13 +51,11 @@ export class ApplicationHeaderComponent
     private snackBar: SnackbarService,
     private confirmService: ConfirmService,
     private translate: TranslateService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((application: Application | null) => {
         this.application = application;
         this.locked = this.application?.locked;
@@ -85,7 +81,7 @@ export class ApplicationHeaderComponent
       ),
       confirmVariant: 'primary',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.applicationService.toggleApplicationLock();
     });
   }
@@ -112,7 +108,7 @@ export class ApplicationHeaderComponent
         confirmVariant: 'primary',
       });
       dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value: any) => {
           if (value) {
             this.applicationService.publish();

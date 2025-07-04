@@ -1,22 +1,19 @@
 import {
   AfterViewInit,
   Component,
+  DestroyRef,
+  inject,
   Input,
   OnInit,
   ViewChild,
 } from '@angular/core';
 import { UntypedFormGroup, FormBuilder, FormArray } from '@angular/forms';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  skip,
-  takeUntil,
-} from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, skip } from 'rxjs/operators';
 import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
 import { ChartComponent } from '../../chart/chart.component';
 import { createSerieForm } from '../chart-forms';
 import { isEqual, isNil, get } from 'lodash';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Display tab of the chart settings modal.
@@ -26,10 +23,7 @@ import { isEqual, isNil, get } from 'lodash';
   templateUrl: './tab-display.component.html',
   styleUrls: ['./tab-display.component.scss'],
 })
-export class TabDisplayComponent
-  extends UnsubscribeComponent
-  implements OnInit, AfterViewInit
-{
+export class TabDisplayComponent implements OnInit, AfterViewInit {
   /** Form group */
   @Input() formGroup!: UntypedFormGroup;
   /** Type of the chart */
@@ -46,6 +40,8 @@ export class TabDisplayComponent
     4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26,
     28,
   ];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns the form for the chart */
   public get chartForm(): UntypedFormGroup {
@@ -60,20 +56,18 @@ export class TabDisplayComponent
    *
    * @param fb Angular form builder
    */
-  constructor(public fb: FormBuilder) {
-    super();
-  }
+  constructor(public fb: FormBuilder) {}
 
   ngOnInit(): void {
     const sizeControl = this.chartForm.get('title.size');
     sizeControl?.setValue(sizeControl.value);
     sizeControl?.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.onToggleStyle(''));
     // Set the chart settings and add delay to avoid changes to be too frequent
     this.chartSettings = this.formGroup.value;
     this.formGroup.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value) => {
         this.chartSettings = value;
@@ -83,7 +77,7 @@ export class TabDisplayComponent
 
   ngAfterViewInit(): void {
     this.chartComponent.series$
-      .pipe(skip(1), takeUntil(this.destroy$))
+      .pipe(skip(1), takeUntilDestroyed(this.destroyRef))
       .subscribe((series) => {
         const useCategory = ['pie', 'polar', 'donut', 'radar'].includes(
           this.chartForm.value.type

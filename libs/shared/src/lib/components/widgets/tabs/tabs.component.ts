@@ -2,7 +2,9 @@ import { Dialog } from '@angular/cdk/dialog';
 import {
   AfterViewInit,
   Component,
+  DestroyRef,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   OnInit,
@@ -11,12 +13,12 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { takeUntil } from 'rxjs';
 import { DomPortal } from '@angular/cdk/portal';
 import { TabsComponent as UiTabsComponent } from '@oort-front/ui';
 import { WidgetComponent } from '../../widget/widget.component';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 import { cloneDeep } from 'lodash';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Tabs widget component.
@@ -54,6 +56,8 @@ export class TabsComponent
     scrollTop: 0,
     scrollLeft: 0,
   };
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Tabs widget component.
@@ -97,15 +101,17 @@ export class TabsComponent
           widget: this.widget,
         },
       });
-      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-        if (res) {
-          this.edit.emit({
-            type: 'data',
-            id: this.widgetComponent.id,
-            options: res,
-          });
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((res: any) => {
+          if (res) {
+            this.edit.emit({
+              type: 'data',
+              id: this.widgetComponent.id,
+              options: res,
+            });
+          }
+        });
     }
   }
 

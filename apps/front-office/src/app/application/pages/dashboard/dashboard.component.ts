@@ -1,8 +1,10 @@
 import { Apollo } from 'apollo-angular';
 import {
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
+  inject,
   Inject,
   OnInit,
   Output,
@@ -23,11 +25,12 @@ import {
   BreadcrumbService,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
-import { filter, map, startWith, takeUntil } from 'rxjs/operators';
+import { filter, map, startWith } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { DOCUMENT } from '@angular/common';
 import { cloneDeep } from 'lodash';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Dashboard page.
@@ -72,6 +75,8 @@ export class DashboardComponent
   public showName? = true;
   /** If dashboard is displayed under workflow  */
   public isStep = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Dashboard page.
@@ -118,7 +123,7 @@ export class DashboardComponent
       .pipe(
         filter((event) => event instanceof NavigationEnd),
         startWith(this.router), // initialize
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => {
         // Reset scroll when changing page

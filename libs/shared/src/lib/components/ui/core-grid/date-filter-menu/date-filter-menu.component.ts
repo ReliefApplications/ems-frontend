@@ -1,4 +1,12 @@
-import { Component, ElementRef, Input, OnInit, Inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  Inject,
+  inject,
+  DestroyRef,
+} from '@angular/core';
 import { FormBuilder, UntypedFormArray } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -7,13 +15,12 @@ import {
   SinglePopupService,
 } from '@progress/kendo-angular-grid';
 import { PopupSettings } from '@progress/kendo-angular-dateinputs';
-import { takeUntil } from 'rxjs';
 import {
   FIELD_TYPES,
   DATE_FILTER_OPERATORS,
 } from '../../../filter/filter.const';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { DOCUMENT } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Required in order to prevent the kendo datepicker to close the menu on click.
@@ -41,10 +48,7 @@ const closest = (
   templateUrl: './date-filter-menu.component.html',
   styleUrls: ['./date-filter-menu.component.scss'],
 })
-export class DateFilterMenuComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class DateFilterMenuComponent implements OnInit {
   /** Field */
   @Input() public field = '';
   /** Filter */
@@ -81,6 +85,8 @@ export class DateFilterMenuComponent
   public popupSettings: PopupSettings = {
     popupClass: 'date-range-filter',
   };
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns The filters */
   public get filters(): UntypedFormArray {
@@ -103,7 +109,6 @@ export class DateFilterMenuComponent
     private popupService: SinglePopupService,
     @Inject(DOCUMENT) private document: Document
   ) {
-    super();
     const type = FIELD_TYPES.find((x) => x.editor === 'datetime');
     this.operatorsList = DATE_FILTER_OPERATORS.filter((x) =>
       type?.operators?.includes(x.value)
@@ -112,7 +117,7 @@ export class DateFilterMenuComponent
       o.text = this.translate.instant(o.label);
     });
     popupService.onClose
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((e: PopupCloseEvent) => {
         if (
           this.document.activeElement &&

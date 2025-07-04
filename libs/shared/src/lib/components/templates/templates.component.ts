@@ -1,11 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { ApplicationService } from '../../services/application/application.service';
 import { TemplateTypeEnum } from '../../models/template.model';
 import { Dialog } from '@angular/cdk/dialog';
-import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * A component to display the list of templates of an application
@@ -15,7 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './templates.component.html',
   styleUrls: ['./templates.component.scss'],
 })
-export class TemplatesComponent extends UnsubscribeComponent implements OnInit {
+export class TemplatesComponent implements OnInit {
   // === INPUT DATA ===
   /** Templates */
   public templates: Array<any> = new Array<any>();
@@ -27,6 +26,8 @@ export class TemplatesComponent extends UnsubscribeComponent implements OnInit {
   public displayedColumns = ['name', 'type', 'actions'];
   /** Loading state */
   public loading = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Constructor of the templates component
@@ -39,13 +40,11 @@ export class TemplatesComponent extends UnsubscribeComponent implements OnInit {
     public dialog: Dialog,
     private translate: TranslateService,
     private snackBar: SnackbarService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.templates = value?.templates || [];
       });
@@ -64,25 +63,27 @@ export class TemplatesComponent extends UnsubscribeComponent implements OnInit {
       data: template,
       disableClose: true,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.applicationService.editTemplate({
-          id: template.id,
-          name: value.name,
-          type: TemplateTypeEnum.EMAIL,
-          content: {
-            subject: value.subject,
-            body: value.body,
-          },
-        });
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.objectUpdated', {
-            value: value.name,
-            type: this.translate.instant('common.template.one'),
-          })
-        );
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.applicationService.editTemplate({
+            id: template.id,
+            name: value.name,
+            type: TemplateTypeEnum.EMAIL,
+            content: {
+              subject: value.subject,
+              body: value.body,
+            },
+          });
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectUpdated', {
+              value: value.name,
+              type: this.translate.instant('common.template.one'),
+            })
+          );
+        }
+      });
   }
 
   /**
@@ -110,16 +111,18 @@ export class TemplatesComponent extends UnsubscribeComponent implements OnInit {
         confirmVariant: 'danger',
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.applicationService.deleteTemplate(template.id);
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.objectDeleted', {
-            value: template.name,
-          })
-        );
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.applicationService.deleteTemplate(template.id);
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectDeleted', {
+              value: template.name,
+            })
+          );
+        }
+      });
   }
 
   /** Opens modal for adding a new email template */
@@ -130,23 +133,25 @@ export class TemplatesComponent extends UnsubscribeComponent implements OnInit {
     const dialogRef = this.dialog.open(EditTemplateModalComponent, {
       disableClose: true,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.applicationService.addEmailTemplate({
-          name: value.name,
-          type: TemplateTypeEnum.EMAIL,
-          content: {
-            subject: value.subject,
-            body: value.body,
-          },
-        });
-        this.snackBar.openSnackBar(
-          this.translate.instant('common.notifications.objectCreated', {
-            value: value.name,
-            type: this.translate.instant('common.template.one'),
-          })
-        );
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.applicationService.addEmailTemplate({
+            name: value.name,
+            type: TemplateTypeEnum.EMAIL,
+            content: {
+              subject: value.subject,
+              body: value.body,
+            },
+          });
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectCreated', {
+              value: value.name,
+              type: this.translate.instant('common.template.one'),
+            })
+          );
+        }
+      });
   }
 }

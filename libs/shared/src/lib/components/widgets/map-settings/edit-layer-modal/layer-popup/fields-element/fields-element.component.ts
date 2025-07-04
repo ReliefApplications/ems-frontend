@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormArray,
@@ -9,11 +9,10 @@ import {
 } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Fields } from '../../../../../../models/layer.model';
-import { Observable, takeUntil } from 'rxjs';
+import { Observable } from 'rxjs';
 import { EditorControlComponent } from '../../../../../controls/editor-control/editor-control.component';
 import { INLINE_EDITOR_CONFIG } from '../../../../../../const/tinymce.const';
 import { EditorService } from '../../../../../../services/editor/editor.service';
-import { UnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';
 import {
   ListBoxModule,
   ListBoxToolbarConfig,
@@ -25,6 +24,7 @@ import {
   IconModule,
   TooltipModule,
 } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 /**
  * Popup fields element component.
  */
@@ -47,10 +47,7 @@ import {
   templateUrl: './fields-element.component.html',
   styleUrls: ['./fields-element.component.scss'],
 })
-export class FieldsElementComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class FieldsElementComponent implements OnInit {
   /** Current form group */
   @Input() formGroup!: FormGroup;
   /** Available fields */
@@ -73,19 +70,30 @@ export class FieldsElementComponent
       'transferAllTo',
     ],
   };
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
+
+  /**
+   * Creates an instance of FieldsElementComponent.
+   *
+   * @param editorService Shared tinymce editor service.
+   */
+  constructor(private editorService: EditorService) {}
 
   ngOnInit(): void {
     // Listen to fields changes
-    this.fields$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      this.availableFields = value.map((field) => field.name);
-      this.editorService.addCalcAndKeysAutoCompleter(
-        this.editorConfig,
-        this.availableFields.map((field) => ({
-          text: `{{${field}}}`,
-          value: `{{${field}}}`,
-        }))
-      );
-    });
+    this.fields$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        this.availableFields = value.map((field) => field.name);
+        this.editorService.addCalcAndKeysAutoCompleter(
+          this.editorConfig,
+          this.availableFields.map((field) => ({
+            text: `{{${field}}}`,
+            value: `{{${field}}}`,
+          }))
+        );
+      });
 
     // Get initial selected fields
     this.selectedFields = this.formGroup.get('fields')?.value ?? [];
@@ -93,15 +101,6 @@ export class FieldsElementComponent
       const index = this.availableFields.indexOf(field);
       if (index > -1) this.availableFields.splice(index, 1);
     });
-  }
-
-  /**
-   * Creates an instance of FieldsElementComponent.
-   *
-   * @param editorService Shared tinymce editor service.
-   */
-  constructor(private editorService: EditorService) {
-    super();
   }
 
   /** Updates the element selected fields form value */

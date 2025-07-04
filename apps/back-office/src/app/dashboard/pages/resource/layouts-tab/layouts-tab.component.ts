@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Layout,
   GridLayoutService,
   ConfirmService,
   Resource,
-  UnsubscribeComponent,
   ResourceQueryResponse,
   getCachedValues,
   updateQueryUniqueValues,
@@ -13,10 +12,10 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import { Dialog } from '@angular/cdk/dialog';
-import { takeUntil } from 'rxjs';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { GET_RESOURCE_LAYOUTS } from './graphql/queries';
 import { SnackbarService } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Layouts tab of resource page
@@ -26,10 +25,7 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './layouts-tab.component.html',
   styleUrls: ['./layouts-tab.component.scss'],
 })
-export class LayoutsTabComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class LayoutsTabComponent implements OnInit {
   /**
    * Resource
    */
@@ -66,6 +62,8 @@ export class LayoutsTabComponent
     length: 0,
     endCursor: '',
   };
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns True if the layouts tab is empty */
   get empty(): boolean {
@@ -89,9 +87,7 @@ export class LayoutsTabComponent
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private snackBar: SnackbarService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     const state = history.state;
@@ -187,29 +183,31 @@ export class LayoutsTabComponent
         queryName: this.resource.queryName,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.gridLayoutService.addLayout(value, this.resource.id).subscribe({
-          next: ({ data }: any) => {
-            if (data.addLayout) {
-              this.layouts = [...this.layouts, data?.addLayout];
-              this.pageInfo.length += 1;
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectCreated', {
-                  type: this.translate
-                    .instant('common.layout.one')
-                    .toLowerCase(),
-                  value: value.name,
-                })
-              );
-            }
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-          },
-        });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.gridLayoutService.addLayout(value, this.resource.id).subscribe({
+            next: ({ data }: any) => {
+              if (data.addLayout) {
+                this.layouts = [...this.layouts, data?.addLayout];
+                this.pageInfo.length += 1;
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.layout.one')
+                      .toLowerCase(),
+                    value: value.name,
+                  })
+                );
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
+          });
+        }
+      });
   }
 
   /**
@@ -226,31 +224,33 @@ export class LayoutsTabComponent
         queryName: this.resource.queryName,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.gridLayoutService
-          .editLayout(layout, value, this.resource.id)
-          .subscribe(({ data }: any) => {
-            if (data.editLayout) {
-              this.layouts = this.layouts.map((x: any) => {
-                if (x.id === layout.id) {
-                  return data.editLayout;
-                } else {
-                  return x;
-                }
-              });
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  value: data.editLayout.name,
-                  type: this.translate
-                    .instant('common.layout.one')
-                    .toLowerCase(),
-                })
-              );
-            }
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.gridLayoutService
+            .editLayout(layout, value, this.resource.id)
+            .subscribe(({ data }: any) => {
+              if (data.editLayout) {
+                this.layouts = this.layouts.map((x: any) => {
+                  if (x.id === layout.id) {
+                    return data.editLayout;
+                  } else {
+                    return x;
+                  }
+                });
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectUpdated', {
+                    value: data.editLayout.name,
+                    type: this.translate
+                      .instant('common.layout.one')
+                      .toLowerCase(),
+                  })
+                );
+              }
+            });
+        }
+      });
   }
 
   /**
@@ -271,25 +271,27 @@ export class LayoutsTabComponent
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.gridLayoutService
-          .deleteLayout(layout, this.resource.id)
-          .subscribe(({ errors }: any) => {
-            if (!errors) {
-              this.layouts = this.layouts.filter(
-                (x: any) => x.id !== layout.id
-              );
-              this.pageInfo.length -= 1;
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate.instant('common.layout.one'),
-                })
-              );
-            }
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.gridLayoutService
+            .deleteLayout(layout, this.resource.id)
+            .subscribe(({ errors }: any) => {
+              if (!errors) {
+                this.layouts = this.layouts.filter(
+                  (x: any) => x.id !== layout.id
+                );
+                this.pageInfo.length -= 1;
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: this.translate.instant('common.layout.one'),
+                  })
+                );
+              }
+            });
+        }
+      });
   }
 
   /**

@@ -1,7 +1,9 @@
 import {
   AfterViewInit,
   Component,
+  DestroyRef,
   EventEmitter,
+  inject,
   Input,
   OnDestroy,
   OnInit,
@@ -26,9 +28,8 @@ import {
   ResourceQueryResponse,
 } from '../../../models/resource.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
-import { startWith, takeUntil } from 'rxjs';
+import { startWith } from 'rxjs';
 import { Form } from '../../../models/form.model';
 import { createSummaryCardForm } from './summary-card-settings.forms';
 import {
@@ -62,6 +63,7 @@ import { TextEditorTabModule } from './text-editor-tab/text-editor.module';
 import { DisplayTabModule } from './display-tab/display.module';
 import { TabActionsModule } from '../common/tab-actions/tab-actions.module';
 import { SortingSettingsModule } from '../common/sorting-settings/sorting-settings.module';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 
@@ -101,7 +103,6 @@ export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
   ],
 })
 export class SummaryCardSettingsComponent
-  extends UnsubscribeComponent
   implements
     OnInit,
     AfterViewInit,
@@ -132,6 +133,8 @@ export class SummaryCardSettingsComponent
   public activeSettingsTab = 0;
   /** Loading status */
   public loading = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
@@ -161,9 +164,7 @@ export class SummaryCardSettingsComponent
     private aggregationService: AggregationService,
     private fb: FormBuilder,
     private widgetService: WidgetService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     // Initialize style
@@ -185,7 +186,7 @@ export class SummaryCardSettingsComponent
     }
     // Subscribe on resource changes
     this.widgetFormGroup.controls.card.controls.resource.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         // clear sort fields array
         const sortFields = this.widgetFormGroup?.get('sortFields') as FormArray;
@@ -214,7 +215,7 @@ export class SummaryCardSettingsComponent
     }
     // Subscribe on reference data changes
     this.widgetFormGroup.controls.card.controls.referenceData.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value) {
           this.resource = null;
@@ -227,7 +228,7 @@ export class SummaryCardSettingsComponent
 
     // Subscribe to aggregation changes
     this.widgetFormGroup.controls.card.controls.aggregation.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         // disable searchable if aggregation is selected
         if (value) {
@@ -256,7 +257,7 @@ export class SummaryCardSettingsComponent
 
     // Subscribe to layout changes
     this.widgetFormGroup.controls.card.controls.layout.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value) {
           this.widgetFormGroup?.get('widgetDisplay.searchable')?.enable();
@@ -275,7 +276,7 @@ export class SummaryCardSettingsComponent
     this.initSortFields();
   }
 
-  override ngOnDestroy(): void {
+  ngOnDestroy(): void {
     // Remove the custom style when the component is destroyed
     if (this.customStyle) {
       this.customStyle.remove();
@@ -287,14 +288,17 @@ export class SummaryCardSettingsComponent
    */
   ngAfterViewInit(): void {
     this.widgetFormGroup?.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.widgetFormGroup.markAsDirty({ onlySelf: true });
         this.formChange.emit(this.widgetFormGroup);
       });
 
     this.tabsComponent.tabs.changes
-      .pipe(startWith(this.tabsComponent.tabs), takeUntil(this.destroy$))
+      .pipe(
+        startWith(this.tabsComponent.tabs),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe((tabs: QueryList<TabComponent>) => {
         // Update selectedIndex according to the absolute number of tabs added/removed
         // only if active tab distinct of first one

@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { UntypedFormArray, FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
@@ -11,8 +19,7 @@ import { getFilterGroupDisplay } from '../../../utils/filter/filter-display.help
 import { createFilterGroup } from '../../query-builder/query-builder-forms';
 import { GET_GROUPS } from '../graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
-import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Component for Auto assignment of role
@@ -22,10 +29,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
   templateUrl: './role-auto-assignment.component.html',
   styleUrls: ['./role-auto-assignment.component.scss'],
 })
-export class RoleAutoAssignmentComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class RoleAutoAssignmentComponent implements OnInit {
   /** Role to display */
   @Input() role!: Role;
   /** Form array */
@@ -51,6 +55,8 @@ export class RoleAutoAssignmentComponent
   private fields: any[] = [];
   /** List of groups */
   private groups: Group[] = [];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Component for Auto assignment of role
@@ -67,9 +73,7 @@ export class RoleAutoAssignmentComponent
     private dialog: Dialog,
     private translate: TranslateService,
     private restService: RestService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.formArray = this.fb.array(
@@ -183,16 +187,18 @@ export class RoleAutoAssignmentComponent
         fields: this.fields,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.edit.emit({
-          autoAssignment: {
-            add: value,
-          },
-        });
-        this.formArray.push(createFilterGroup(value));
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.edit.emit({
+            autoAssignment: {
+              add: value,
+            },
+          });
+          this.formArray.push(createFilterGroup(value));
+        }
+      });
   }
 
   /**
@@ -225,17 +231,19 @@ export class RoleAutoAssignmentComponent
         fields: this.fields,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.edit.emit({
-          autoAssignment: {
-            add: value,
-            remove: this.formArray.at(index).value,
-          },
-        });
-        this.formArray.removeAt(index);
-        this.formArray.insert(index, createFilterGroup(value));
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.edit.emit({
+            autoAssignment: {
+              add: value,
+              remove: this.formArray.at(index).value,
+            },
+          });
+          this.formArray.removeAt(index);
+          this.formArray.insert(index, createFilterGroup(value));
+        }
+      });
   }
 }

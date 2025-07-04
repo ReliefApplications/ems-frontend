@@ -1,10 +1,16 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { EmailService } from '../../email.service';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * First step of email notification editor.
@@ -16,10 +22,7 @@ import { takeUntil } from 'rxjs';
   templateUrl: './create-notification.component.html',
   styleUrls: ['./create-notification.component.scss'],
 })
-export class CreateNotificationComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class CreateNotificationComponent implements OnInit {
   /** Current form group */
   public formGroup: FormGroup = this.emailService.datasetsForm;
   /** Notification types for email service. */
@@ -28,6 +31,8 @@ export class CreateNotificationComponent
   @Output() navigateToListScreen: EventEmitter<any> = new EventEmitter();
   /** Opened snackBars */
   private snackBars: any[] = [];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Checks if name input is empty.
@@ -66,15 +71,13 @@ export class CreateNotificationComponent
     public emailService: EmailService,
     public snackBar: SnackbarService,
     public translate: TranslateService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     // Subscribe to changes on notification name
     this.formGroup
       .get('name')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.onNameChange();
         this.checkIfInvalid();

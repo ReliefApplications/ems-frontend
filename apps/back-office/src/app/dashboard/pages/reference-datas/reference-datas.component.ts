@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   AddReferenceDataMutationResponse,
   DeleteReferenceDataMutationResponse,
   ReferenceData,
   ConfirmService,
-  UnsubscribeComponent,
   ReferenceDatasQueryResponse,
   getCachedValues,
   updateQueryUniqueValues,
@@ -14,7 +13,6 @@ import { GET_REFERENCE_DATAS } from './graphql/queries';
 import { ADD_REFERENCE_DATA, DELETE_REFERENCE_DATA } from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   TableSort,
@@ -23,6 +21,7 @@ import {
 } from '@oort-front/ui';
 import { ApolloQueryResult } from '@apollo/client';
 import { SnackbarService } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default pagination settings. */
 const ITEMS_PER_PAGE = 10;
@@ -35,10 +34,7 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './reference-datas.component.html',
   styleUrls: ['./reference-datas.component.scss'],
 })
-export class ReferenceDatasComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class ReferenceDatasComponent implements OnInit {
   /** Loading status */
   public loading = true;
   /** Updating status */
@@ -71,6 +67,8 @@ export class ReferenceDatasComponent
   private referenceDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
   /** Table sorting */
   private sort!: TableSort;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * List of Reference data page.
@@ -89,9 +87,7 @@ export class ReferenceDatasComponent
     private confirmService: ConfirmService,
     private router: Router,
     private translate: TranslateService
-  ) {
-    super();
-  }
+  ) {}
 
   /**
    * Creates the Reference data query, and subscribes to the query changes.
@@ -110,7 +106,7 @@ export class ReferenceDatasComponent
       });
 
     this.referenceDatasQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data, loading }) => {
         this.updateValues(data, loading);
       });
@@ -159,67 +155,69 @@ export class ReferenceDatasComponent
       './add-reference-data/add-reference-data.component'
     );
     const dialogRef = this.dialog.open(AddReferenceDataComponent);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<AddReferenceDataMutationResponse>({
-            mutation: ADD_REFERENCE_DATA,
-            variables: {
-              name: value.name,
-            },
-          })
-          .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotCreated',
-                    {
-                      type: this.translate
-                        .instant('common.referenceData.one')
-                        .toLowerCase(),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                if (data) {
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.apollo
+            .mutate<AddReferenceDataMutationResponse>({
+              mutation: ADD_REFERENCE_DATA,
+              variables: {
+                name: value.name,
+              },
+            })
+            .subscribe({
+              next: ({ errors, data }) => {
+                if (errors) {
                   this.snackBar.openSnackBar(
                     this.translate.instant(
-                      'common.notifications.objectCreated',
-                      {
-                        type: this.translate.instant(
-                          'common.referenceData.one'
-                        ),
-                        value: value.name,
-                      }
-                    )
-                  );
-                  this.router.navigate([
-                    '/referencedata',
-                    data.addReferenceData.id,
-                  ]);
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectCreated',
+                      'common.notifications.objectNotCreated',
                       {
                         type: this.translate
                           .instant('common.referenceData.one')
                           .toLowerCase(),
-                        value: value.name,
+                        error: errors ? errors[0].message : '',
                       }
-                    )
+                    ),
+                    { error: true }
                   );
+                } else {
+                  if (data) {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'common.notifications.objectCreated',
+                        {
+                          type: this.translate.instant(
+                            'common.referenceData.one'
+                          ),
+                          value: value.name,
+                        }
+                      )
+                    );
+                    this.router.navigate([
+                      '/referencedata',
+                      data.addReferenceData.id,
+                    ]);
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'common.notifications.objectCreated',
+                        {
+                          type: this.translate
+                            .instant('common.referenceData.one')
+                            .toLowerCase(),
+                          value: value.name,
+                        }
+                      )
+                    );
+                  }
                 }
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
   /**
@@ -241,45 +239,54 @@ export class ReferenceDatasComponent
       confirmText: this.translate.instant('common.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<DeleteReferenceDataMutationResponse>({
-            mutation: DELETE_REFERENCE_DATA,
-            variables: {
-              id: element.id,
-            },
-          })
-          .subscribe({
-            next: ({ errors }) => {
-              if (!errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectDeleted', {
-                    value: this.translate.instant('common.referenceData.one'),
-                  })
-                );
-                this.dataSource = this.dataSource.filter(
-                  (x) => x.id !== element.id
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotDeleted',
-                    {
-                      value: this.translate.instant('common.referenceData.one'),
-                      error: errors[0].message,
-                    }
-                  ),
-                  { error: true }
-                );
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.apollo
+            .mutate<DeleteReferenceDataMutationResponse>({
+              mutation: DELETE_REFERENCE_DATA,
+              variables: {
+                id: element.id,
+              },
+            })
+            .subscribe({
+              next: ({ errors }) => {
+                if (!errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectDeleted',
+                      {
+                        value: this.translate.instant(
+                          'common.referenceData.one'
+                        ),
+                      }
+                    )
+                  );
+                  this.dataSource = this.dataSource.filter(
+                    (x) => x.id !== element.id
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectNotDeleted',
+                      {
+                        value: this.translate.instant(
+                          'common.referenceData.one'
+                        ),
+                        error: errors[0].message,
+                      }
+                    ),
+                    { error: true }
+                  );
+                }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
   /**

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Record,
@@ -6,7 +6,6 @@ import {
   ConfirmService,
   Resource,
   DownloadService,
-  UnsubscribeComponent,
   ResourceRecordsNodesQueryResponse,
   DeleteRecordMutationResponse,
   RestoreRecordMutationResponse,
@@ -22,8 +21,8 @@ import {
   UIPageChangeEvent,
   handleTablePageEvent,
 } from '@oort-front/ui';
-import { takeUntil } from 'rxjs';
 import { GraphQLError } from 'graphql';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Quantity of resource that will be loaded at once. */
 const ITEMS_PER_PAGE = 10;
@@ -41,10 +40,7 @@ const RECORDS_DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
   templateUrl: './records-tab.component.html',
   styleUrls: ['./records-tab.component.scss'],
 })
-export class RecordsTabComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class RecordsTabComponent implements OnInit {
   /**
    * Query to get records.
    */
@@ -91,6 +87,8 @@ export class RecordsTabComponent
    * Upload state.
    */
   public showUpload = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns True if the records tab is empty */
   get empty(): boolean {
@@ -112,9 +110,7 @@ export class RecordsTabComponent
     private snackBar: SnackbarService,
     private confirmService: ConfirmService,
     private downloadService: DownloadService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     const state = history.state;
@@ -132,7 +128,7 @@ export class RecordsTabComponent
         },
       });
     this.recordsQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data, loading }) => {
         this.updateValues(data, loading);
       });
@@ -160,7 +156,7 @@ export class RecordsTabComponent
         confirmText: this.translate.instant('components.confirmModal.delete'),
       });
       dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value: any) => {
           if (value) {
             this.deleteRecord(element.id);

@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { DELETE_RESOURCE, ADD_FORM } from './graphql/mutations';
 import { GET_RESOURCES_EXTENDED } from './graphql/queries';
 import {
@@ -7,7 +7,6 @@ import {
   DeleteResourceMutationResponse,
   Resource,
   ConfirmService,
-  UnsubscribeComponent,
   ResourcesQueryResponse,
   getCachedValues,
   updateQueryUniqueValues,
@@ -21,8 +20,8 @@ import {
   handleTablePageEvent,
 } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
-import { takeUntil } from 'rxjs';
 import { get } from 'lodash';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Default number of resources that will be shown at once.
@@ -37,7 +36,7 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './resources.component.html',
   styleUrls: ['./resources.component.scss'],
 })
-export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
+export class ResourcesComponent implements OnInit {
   // === DATA ===
   /**
    * Loading state
@@ -93,6 +92,8 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
     length: 0,
     endCursor: '',
   };
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * ResourcesComponent constructor.
@@ -111,9 +112,7 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private router: Router
-  ) {
-    super();
-  }
+  ) {}
 
   /** Load the resources. */
   ngOnInit(): void {
@@ -236,40 +235,42 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
       confirmVariant: 'danger',
     });
 
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<DeleteResourceMutationResponse>({
-            mutation: DELETE_RESOURCE,
-            variables: {
-              id: resource.id,
-            },
-          })
-          .subscribe(({ errors }) => {
-            if (!errors) {
-              this.resources = this.resources.filter(
-                (x) => x.id !== resource.id
-              );
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate.instant('common.resource.one'),
-                })
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotDeleted',
-                  {
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.apollo
+            .mutate<DeleteResourceMutationResponse>({
+              mutation: DELETE_RESOURCE,
+              variables: {
+                id: resource.id,
+              },
+            })
+            .subscribe(({ errors }) => {
+              if (!errors) {
+                this.resources = this.resources.filter(
+                  (x) => x.id !== resource.id
+                );
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectDeleted', {
                     value: this.translate.instant('common.resource.one'),
-                    error: errors[0].message,
-                  }
-                ),
-                { error: true }
-              );
-            }
-          });
-      }
-    });
+                  })
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.objectNotDeleted',
+                    {
+                      value: this.translate.instant('common.resource.one'),
+                      error: errors[0].message,
+                    }
+                  ),
+                  { error: true }
+                );
+              }
+            });
+        }
+      });
   }
 
   /**
@@ -281,53 +282,55 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
       '../../../components/add-resource-modal/add-resource-modal.component'
     );
     const dialogRef = this.dialog.open(AddResourceModalComponent);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        const variablesData = { name: value.name };
-        this.apollo
-          .mutate<AddFormMutationResponse>({
-            mutation: ADD_FORM,
-            variables: variablesData,
-          })
-          .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotCreated',
-                    {
-                      type: this.translate
-                        .instant('common.form.one')
-                        .toLowerCase(),
-                      error: errors[0].message,
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                if (data) {
-                  const resourceId = get(data.addForm, 'resource.id');
-                  this.router.navigate(['/resources/' + resourceId]);
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          const variablesData = { name: value.name };
+          this.apollo
+            .mutate<AddFormMutationResponse>({
+              mutation: ADD_FORM,
+              variables: variablesData,
+            })
+            .subscribe({
+              next: ({ errors, data }) => {
+                if (errors) {
                   this.snackBar.openSnackBar(
                     this.translate.instant(
-                      'common.notifications.objectCreated',
+                      'common.notifications.objectNotCreated',
                       {
                         type: this.translate
-                          .instant('common.resource.one')
+                          .instant('common.form.one')
                           .toLowerCase(),
-                        value: value.name,
+                        error: errors[0].message,
                       }
-                    )
+                    ),
+                    { error: true }
                   );
+                } else {
+                  if (data) {
+                    const resourceId = get(data.addForm, 'resource.id');
+                    this.router.navigate(['/resources/' + resourceId]);
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'common.notifications.objectCreated',
+                        {
+                          type: this.translate
+                            .instant('common.resource.one')
+                            .toLowerCase(),
+                          value: value.name,
+                        }
+                      )
+                    );
+                  }
                 }
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
   /**

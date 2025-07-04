@@ -1,6 +1,8 @@
 import {
   ChangeDetectorRef,
   Component,
+  DestroyRef,
+  inject,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -11,11 +13,10 @@ import { gql } from '@apollo/client';
 import { SelectMenuComponent } from '@oort-front/ui';
 import { Apollo, ApolloBase } from 'apollo-angular';
 import { isNil } from 'lodash';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { QuestionAngular } from 'survey-angular-ui';
 import { CS_DOCUMENTS_PROPERTIES } from '../../../services/document-management/document-management.service';
 import { QuestionCsDocsPropertiesDropdownModel } from './cs-docs-properties-dropdown.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Property query response type
@@ -61,9 +62,6 @@ export class CsDocsPropertiesDropdownComponent
 
   /** Properties control */
   public propertyItemsControl: UntypedFormControl = new FormControl([]);
-
-  /** Destroy subject */
-  private destroy$: Subject<void> = new Subject<void>();
   /** Current body key to save the value */
   public bodyKey!: string;
 
@@ -72,6 +70,8 @@ export class CsDocsPropertiesDropdownComponent
    */
   @ViewChild(SelectMenuComponent, { static: true })
   selectMenu!: SelectMenuComponent;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * GraphQL query to fetch items for a given document property(tag)
@@ -152,14 +152,14 @@ export class CsDocsPropertiesDropdownComponent
     }
     // Listen to select menu UI event in order to update UI
     this.selectMenu.triggerUIChange$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((hasChanged: boolean) => {
         if (hasChanged) {
           this.changeDetectorRef.detectChanges();
         }
       });
     this.propertyItemsControl.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (items) => {
           this.model.obj[this.bodyKey] = items;
@@ -238,7 +238,5 @@ export class CsDocsPropertiesDropdownComponent
     } else {
       this.model.obj.unRegisterFunctionOnPropertyValueChanged('OccurrenceType');
     }
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

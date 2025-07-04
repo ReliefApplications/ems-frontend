@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
-  OnDestroy,
+  DestroyRef,
+  inject,
   OnInit,
   ViewContainerRef,
 } from '@angular/core';
@@ -14,9 +15,9 @@ import {
   SelectMenuModule,
   TooltipModule,
 } from '@oort-front/ui';
-import { Subject, takeUntil } from 'rxjs';
 import { QuestionAngular } from 'survey-angular-ui';
 import { QuestionAcceptedValueTypesTextModel } from './accepted-value-types-text.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Default accepted types
@@ -101,7 +102,7 @@ const DEFAULT_ACCEPTED_TYPES = [
 })
 export class AcceptedValueTypesTextComponent
   extends QuestionAngular<QuestionAcceptedValueTypesTextModel>
-  implements OnInit, OnDestroy
+  implements OnInit
 {
   /** Accepted value types for file questions */
   public acceptedValueTypes = [
@@ -161,9 +162,8 @@ export class AcceptedValueTypesTextComponent
   public formGroup = this.fb.group({
     valueTypes: [['']],
   });
-
-  /** Destroy subject */
-  private destroy$: Subject<void> = new Subject<void>();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Selection of accepted file types for a file question
@@ -184,7 +184,7 @@ export class AcceptedValueTypesTextComponent
     super.ngOnInit();
     this.formGroup
       .get('valueTypes')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (values) => {
           this.surveyModel.getQuestionByName('acceptedTypes').value =
@@ -206,11 +206,5 @@ export class AcceptedValueTypesTextComponent
   public clearSelection() {
     this.formGroup.get('valueTypes')?.setValue([]);
     this.formGroup.get('valueTypes')?.reset();
-  }
-
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

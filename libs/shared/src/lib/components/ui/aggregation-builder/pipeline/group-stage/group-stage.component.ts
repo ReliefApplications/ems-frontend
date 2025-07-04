@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, DestroyRef, inject } from '@angular/core';
 import {
   AbstractControl,
   UntypedFormArray,
@@ -8,8 +8,7 @@ import { isEmpty } from 'lodash';
 import { AggregationBuilderService } from '../../../../../services/aggregation-builder/aggregation-builder.service';
 import { groupByRuleForm } from '../../aggregation-builder-forms';
 import { Accumulators, DateOperators } from '../expressions/operators';
-import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Group Stage (it's also about accumulators) pipeline component.
@@ -19,10 +18,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './group-stage.component.html',
   styleUrls: ['./group-stage.component.scss'],
 })
-export class GroupStageComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class GroupStageComponent implements OnInit {
   /** Input decorator for form. */
   @Input() form!: AbstractControl;
   /** Input decorator for fields. */
@@ -33,6 +29,8 @@ export class GroupStageComponent
   public dateOperators = DateOperators;
   /** Array to hold the used date fields. */
   public usedDateFields: string[] = [];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns this for as form group */
   get formGroup() {
@@ -58,15 +56,13 @@ export class GroupStageComponent
    *
    * @param aggregationBuilder Shared aggregation builder service
    */
-  constructor(private aggregationBuilder: AggregationBuilderService) {
-    super();
-  }
+  constructor(private aggregationBuilder: AggregationBuilderService) {}
 
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.getDateFields(this.groupBy.value);
     this.groupBy.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.getDateFields(value);
       });

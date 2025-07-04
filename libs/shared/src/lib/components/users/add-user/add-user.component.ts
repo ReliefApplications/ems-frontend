@@ -4,7 +4,6 @@ import { PositionAttributeCategory } from '../../../models/position-attribute-ca
 import { FormBuilder, UntypedFormArray, Validators } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /** Model for the input  */
 interface DialogData {
@@ -18,7 +17,7 @@ interface DialogData {
   templateUrl: './add-user.component.html',
   styleUrls: ['./add-user.component.scss'],
 })
-export class AddUserComponent extends UnsubscribeComponent {
+export class AddUserComponent {
   /** Form for the add user modal */
   form = this.fb.group({
     email: ['', Validators.minLength(1)],
@@ -55,7 +54,5 @@ export class AddUserComponent extends UnsubscribeComponent {
     public dialogRef: DialogRef<AddUserComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
     public translate: TranslateService
-  ) {
-    super();
-  }
+  ) {}
 }

@@ -1,7 +1,9 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import {
   Component,
+  DestroyRef,
   EventEmitter,
+  inject,
   Inject,
   Input,
   OnDestroy,
@@ -15,8 +17,8 @@ import { WidgetGridComponent } from '../../../widget-grid/widget-grid.component'
 import { DOCUMENT } from '@angular/common';
 import { GridsterConfig } from 'angular-gridster2';
 import { createTabFormGroup } from '../tabs-settings.form';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { debounceTime, takeUntil } from 'rxjs';
+import { debounceTime } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Edition of a single tab, in tabs widget
@@ -26,10 +28,7 @@ import { debounceTime, takeUntil } from 'rxjs';
   templateUrl: './tab-settings.component.html',
   styleUrls: ['./tab-settings.component.scss'],
 })
-export class TabSettingsComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class TabSettingsComponent implements OnInit, OnDestroy {
   /** Tab form group */
   @Input() tabGroup!: ReturnType<typeof createTabFormGroup>;
   /** Delete tab event emitter */
@@ -47,6 +46,8 @@ export class TabSettingsComponent
   private addWidgetTimeoutListener!: NodeJS.Timeout;
   /** Timeout to grid options */
   private gridOptionsTimeoutListener!: NodeJS.Timeout;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Edition of a single tab, in tabs widget
@@ -57,9 +58,7 @@ export class TabSettingsComponent
   constructor(
     private dialog: Dialog,
     @Inject(DOCUMENT) private document: Document
-  ) {
-    super();
-  }
+  ) {}
 
   /** @returns structure of the widget ( nested widgets ) */
   get structure() {
@@ -68,7 +67,7 @@ export class TabSettingsComponent
 
   ngOnInit() {
     this.tabGroup.controls.gridOptions.valueChanges
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.gridOptions = {
           ...this.gridOptions,
@@ -91,8 +90,7 @@ export class TabSettingsComponent
     }, 1000);
   }
 
-  override ngOnDestroy() {
-    super.ngOnDestroy();
+  ngOnDestroy() {
     if (this.styleDialog) {
       this.styleDialog.close();
     }

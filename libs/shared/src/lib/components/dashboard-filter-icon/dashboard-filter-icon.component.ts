@@ -1,12 +1,18 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { ContextService } from '../../services/context/context.service';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { Observable, debounceTime, filter, takeUntil } from 'rxjs';
+import { Observable, debounceTime, filter } from 'rxjs';
 import { isEmpty } from 'lodash';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Dashboard filter icon.
@@ -25,14 +31,13 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
   templateUrl: './dashboard-filter-icon.component.html',
   styleUrls: ['./dashboard-filter-icon.component.scss'],
 })
-export class DashboardFilterIconComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class DashboardFilterIconComponent implements OnInit {
   /** Is filter active ( value not empty ) */
   public active = false;
   /** Should button be enabled */
   public enabled!: Observable<boolean>;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Dashboard filter icon.
@@ -42,7 +47,6 @@ export class DashboardFilterIconComponent
    * @param {ElementRef} el Current components element ref in the DOM
    */
   constructor(private contextService: ContextService, private el: ElementRef) {
-    super();
     this.enabled = this.contextService.isFilterEnabled$;
   }
 
@@ -59,7 +63,7 @@ export class DashboardFilterIconComponent
             : true
         ),
         debounceTime(500),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(({ current }) => {
         this.active = !isEmpty(current);

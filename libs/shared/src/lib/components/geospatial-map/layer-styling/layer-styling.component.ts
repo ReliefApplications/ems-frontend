@@ -1,11 +1,18 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Observable, takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-
+import { Observable } from 'rxjs';
 /** Leaflet */
 import * as L from 'leaflet';
 import { GeometryType } from '../../ui/map/interfaces/layer-settings.type';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Component for styling leaflet layers */
 @Component({
@@ -13,10 +20,7 @@ import { GeometryType } from '../../ui/map/interfaces/layer-settings.type';
   templateUrl: './layer-styling.component.html',
   styleUrls: ['./layer-styling.component.scss'],
 })
-export class LayerStylingComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class LayerStylingComponent implements OnInit {
   /**
    * Selected layer
    */
@@ -61,11 +65,8 @@ export class LayerStylingComponent
    * Form for styling the selected layer
    */
   public styleForm!: ReturnType<typeof this.getStyleForm>;
-
-  /** Component for styling leaflet layers */
-  constructor() {
-    super();
-  }
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
     this.updateForm();
@@ -82,9 +83,11 @@ export class LayerStylingComponent
       typeof this.styleForm.value
     >;
 
-    formValueChanges$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      this.edit.emit(value);
-    });
+    formValueChanges$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        this.edit.emit(value);
+      });
   }
 
   /**

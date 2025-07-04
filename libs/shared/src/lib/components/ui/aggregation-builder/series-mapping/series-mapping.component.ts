@@ -1,9 +1,15 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  Input,
+  OnChanges,
+  OnInit,
+} from '@angular/core';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { merge } from 'rxjs';
 import { startWith, delay } from 'rxjs/operators';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Mapping of series parameters ( category / field ).
@@ -13,10 +19,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './series-mapping.component.html',
   styleUrls: ['./series-mapping.component.scss'],
 })
-export class SeriesMappingComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnChanges
-{
+export class SeriesMappingComponent implements OnInit, OnChanges {
   /** Input decorator for availableFields. */
   @Input() availableFields: any[] = [];
   /** Object to hold the fields by control. */
@@ -25,13 +28,8 @@ export class SeriesMappingComponent
   @Input() formGroup!: AbstractControl;
   /** Array to hold the control names. */
   public controlNames: string[] = [];
-
-  /**
-   * Mapping of series parameters ( category / field ).
-   */
-  constructor() {
-    super();
-  }
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
@@ -57,7 +55,7 @@ export class SeriesMappingComponent
       )
     )
       .pipe(startWith(null), delay(100))
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         for (const controlName of this.controlNames) {
           const excludedFields: string[] = [];

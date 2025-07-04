@@ -1,7 +1,8 @@
 import {
   ChangeDetectorRef,
   Component,
-  OnDestroy,
+  DestroyRef,
+  inject,
   OnInit,
   ViewContainerRef,
 } from '@angular/core';
@@ -10,8 +11,8 @@ import { QuestionAngular } from 'survey-angular-ui';
 import { CodeEditorModel } from './code-editor.model';
 import { QueryParamsMappingComponent } from '../../../components/widgets/common/query-params-mapping/query-params-mapping.component';
 import { FormControl } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
 import { ReferenceData } from '../../../models/reference-data.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Code editor component for Form Builder.
@@ -27,14 +28,14 @@ import { ReferenceData } from '../../../models/reference-data.model';
 })
 export class CodeEditorComponent
   extends QuestionAngular<CodeEditorModel>
-  implements OnInit, OnDestroy
+  implements OnInit
 {
   /** Control */
   public control = new FormControl<string | null>(null);
-  /** Destroy subject */
-  private destroy$: Subject<void> = new Subject<void>();
   /** Selected reference data */
   public referenceData: ReferenceData | null = null;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Code editor component for Form Builder.
@@ -54,17 +55,13 @@ export class CodeEditorComponent
   override ngOnInit(): void {
     super.ngOnInit();
     this.control.setValue(this.model.value);
-    this.control.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
-      next: (value: any) => {
-        this.model.value = value;
-      },
-    });
+    this.control.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (value: any) => {
+          this.model.value = value;
+        },
+      });
     this.referenceData = this.model.obj._referenceData;
-  }
-
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

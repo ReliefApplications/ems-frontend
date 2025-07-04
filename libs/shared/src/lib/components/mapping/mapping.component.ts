@@ -1,9 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
 import { createFormGroup, Mapping, Mappings } from './mapping-forms';
 import { Dialog } from '@angular/cdk/dialog';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Mapping component to handle all mapping grids.
@@ -13,28 +12,28 @@ import { Dialog } from '@angular/cdk/dialog';
   templateUrl: './mapping.component.html',
   styleUrls: ['./mapping.component.scss'],
 })
-export class MappingComponent extends UnsubscribeComponent implements OnInit {
+export class MappingComponent implements OnInit {
   /** Input decorator for mappingForm. */
   @Input() mappingForm!: UntypedFormArray;
   /** Array of column names to be displayed in the table. */
   displayedColumns = ['field', 'path', 'value', 'text', 'actions'];
   /** Array to hold the data source for the table. */
   dataSource = new Array<Mapping>();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Mapping component constructor.
    *
    * @param dialog Angular Dialog service.
    */
-  constructor(private dialog: Dialog) {
-    super();
-  }
+  constructor(private dialog: Dialog) {}
 
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.dataSource = [...this.mappingForm.value];
     this.mappingForm.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((mappings: Mappings) => {
         this.dataSource = [...mappings];
       });
@@ -56,7 +55,7 @@ export class MappingComponent extends UnsubscribeComponent implements OnInit {
       },
     });
     dialogRef.closed
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((mapping: any) => {
         if (mapping) {
           this.mappingForm.at(index).setValue(mapping);
@@ -88,7 +87,7 @@ export class MappingComponent extends UnsubscribeComponent implements OnInit {
       },
     });
     dialogRef.closed
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((mapping: any) => {
         if (mapping) {
           this.mappingForm.push(createFormGroup(mapping));

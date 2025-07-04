@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import {
   PopupElement,
@@ -7,11 +7,11 @@ import {
 } from '../../../../../models/layer.model';
 import { createPopupElementForm } from '../../map-forms';
 import { Fields } from '../../../../../models/layer.model';
-import { Observable, takeUntil } from 'rxjs';
+import { Observable } from 'rxjs';
 import { INLINE_EDITOR_CONFIG } from '../../../../../const/tinymce.const';
 import { EditorService } from '../../../../../services/editor/editor.service';
-import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 import { DomPortal } from '@angular/cdk/portal';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Map layer popup settings component.
@@ -21,10 +21,7 @@ import { DomPortal } from '@angular/cdk/portal';
   templateUrl: './layer-popup.component.html',
   styleUrls: ['./layer-popup.component.scss'],
 })
-export class LayerPopupComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class LayerPopupComponent implements OnInit {
   /** Current form group */
   @Input() formGroup!: FormGroup;
   /** Map dom portal */
@@ -35,6 +32,8 @@ export class LayerPopupComponent
   public keys: { text: string; value: string }[] = [];
   /** Editor configuration */
   public editorConfig = INLINE_EDITOR_CONFIG;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns popup elements as form array */
   get popupElements(): FormArray {
@@ -46,22 +45,22 @@ export class LayerPopupComponent
    *
    * @param editorService Shared tinymce editor service.
    */
-  constructor(private editorService: EditorService) {
-    super();
-  }
+  constructor(private editorService: EditorService) {}
 
   ngOnInit(): void {
     // Listen to fields changes
-    this.fields$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      this.keys = value.map((field) => ({
-        text: `{{${field.name}}}`,
-        value: `{{${field.name}}}`,
-      }));
-      this.editorService.addCalcAndKeysAutoCompleter(
-        this.editorConfig,
-        this.keys
-      );
-    });
+    this.fields$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        this.keys = value.map((field) => ({
+          text: `{{${field.name}}}`,
+          value: `{{${field.name}}}`,
+        }));
+        this.editorService.addCalcAndKeysAutoCompleter(
+          this.editorConfig,
+          this.keys
+        );
+      });
   }
 
   /**

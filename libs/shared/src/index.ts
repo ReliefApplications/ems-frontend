@@ -99,7 +99,6 @@ export * from './lib/components/templates/public-api';
 export * from './lib/components/ui/empty/public-api';
 export * from './lib/components/user-summary/public-api';
 export * from './lib/components/users/public-api';
-export * from './lib/components/utils/unsubscribe/public-api';
 export * from './lib/components/widget-grid/public-api';
 export * from './lib/components/widgets/chart-settings/public-api';
 export * from './lib/components/widgets/editor-settings/public-api';

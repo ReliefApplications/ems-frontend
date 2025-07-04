@@ -2,11 +2,12 @@ import {
   Component,
   Input,
   OnInit,
-  OnDestroy,
   Output,
   EventEmitter,
   Optional,
   Self,
+  DestroyRef,
+  inject,
 } from '@angular/core';
 import { CronOptions, DefaultCronOptions } from './options/cron.options';
 import { Days, MonthWeeks, Months } from './enum/enums';
@@ -16,8 +17,9 @@ import {
   NgControl,
   Validators,
 } from '@angular/forms';
-import { debounceTime, Subject, takeUntil } from 'rxjs';
+import { debounceTime } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 type CronType =
   | 'minutely'
@@ -92,11 +94,7 @@ function* range(start: number, end: number) {
   templateUrl: './cron-editor.component.html',
   styleUrls: ['./cron-editor.component.scss'],
 })
-export class CronEditorComponent
-  implements OnInit, OnDestroy, ControlValueAccessor
-{
-  /** Subject to emit when the component is destroyed. */
-  destroy$: Subject<boolean> = new Subject<boolean>();
+export class CronEditorComponent implements OnInit, ControlValueAccessor {
   /** Arrays representing seconds */
   public seconds = [...range(0, 59)];
   /** Arrays representing minutes */
@@ -151,6 +149,8 @@ export class CronEditorComponent
     SUN: [true],
     expression: ['0 0 0 0 0'],
   });
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * ControlValueAccessor
@@ -208,21 +208,13 @@ export class CronEditorComponent
 
   public async ngOnInit() {
     this.allForm.valueChanges
-      .pipe(debounceTime(1000), takeUntil(this.destroy$))
+      .pipe(debounceTime(1000), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.markAsTouched();
         const cron = this.computeCron();
         this.cronValidEmitter.emit(this.cronIsValid(cron));
         this.onChange(cron);
       });
-  }
-
-  /**
-   * Emit Destroy event, and unsubscribe to destroy
-   */
-  ngOnDestroy() {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
   }
 
   /**

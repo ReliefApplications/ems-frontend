@@ -1,6 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, DestroyRef, inject, Input } from '@angular/core';
 import { FormArray, UntypedFormGroup } from '@angular/forms';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { MapConstructorSettings } from '../../../ui/map/interfaces/map.interface';
 import { BASEMAPS } from '../../../ui/map/const/baseMaps';
 import { DomPortal } from '@angular/cdk/portal';
@@ -14,7 +13,7 @@ import { createGeographicExtent } from '../map-forms';
   templateUrl: './map-properties.component.html',
   styleUrls: ['./map-properties.component.scss'],
 })
-export class MapPropertiesComponent extends UnsubscribeComponent {
+export class MapPropertiesComponent {
   /** Current form group */
   @Input() form!: UntypedFormGroup;
   /** Map settings */
@@ -25,6 +24,8 @@ export class MapPropertiesComponent extends UnsubscribeComponent {
   public baseMaps = BASEMAPS;
   /** Available geographic extent fields */
   public extents = ['admin0', 'region'];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns geographic extents as form array */
   get geographicExtents() {
@@ -34,13 +35,6 @@ export class MapPropertiesComponent extends UnsubscribeComponent {
   /** @returns the form group for the map controls */
   get controlsFormGroup() {
     return this.form.get('controls') as UntypedFormGroup;
-  }
-
-  /**
-   * Map Properties of Map widget.
-   */
-  constructor() {
-    super();
   }
 
   /**

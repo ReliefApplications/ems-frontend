@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActionButton } from './action-button.type';
 import { ButtonModule, TooltipModule } from '@oort-front/ui';
@@ -14,8 +22,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { ContextService } from '../../services/context/context.service';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { lastValueFrom, Subject, takeUntil } from 'rxjs';
+import { lastValueFrom, Subject } from 'rxjs';
 import { Resource, ResourceQueryResponse } from '../../models/resource.model';
 import { GET_RECORD_BY_ID, GET_RESOURCE_BY_ID } from './graphql/queries';
 import { EDIT_RECORD } from './graphql/mutations';
@@ -28,6 +35,7 @@ import { get, isEmpty, isNil, set } from 'lodash';
 import { SnackbarSpinnerComponent } from '../snackbar-spinner/snackbar-spinner.component';
 import { Layout } from '../../models/layout.model';
 import { EmailNotification } from '../../models/email-notifications.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Dashboard action button component.
@@ -39,10 +47,7 @@ import { EmailNotification } from '../../models/email-notifications.model';
   templateUrl: './action-button.component.html',
   styleUrls: ['./action-button.component.scss'],
 })
-export class ActionButtonComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class ActionButtonComponent implements OnInit {
   /** Action button definition */
   @Input() actionButton!: ActionButton;
   /** Dashboard */
@@ -55,6 +60,8 @@ export class ActionButtonComponent
   public contextId!: string;
   /** Email notification, for subscribe & unsubscribe actions */
   private emailNotification?: EmailNotification;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns Should hide button */
   get showButton(): boolean {
@@ -110,12 +117,13 @@ export class ActionButtonComponent
     private queryBuilder: QueryBuilderService,
     private contextService: ContextService
   ) {
-    super();
-    this.activatedRoute.queryParams.pipe(takeUntil(this.destroy$)).subscribe({
-      next: ({ id }) => {
-        this.contextId = id;
-      },
-    });
+    this.activatedRoute.queryParams
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ({ id }) => {
+          this.contextId = id;
+        },
+      });
   }
 
   ngOnInit(): void {
@@ -130,7 +138,7 @@ export class ActionButtonComponent
         this.getNotification(notificationId);
       }
       // As other buttons may update the subscription to notification, we listen to these changes
-      this.refresh.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.refresh.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
         if (notificationId) {
           this.getNotification(notificationId);
         }
@@ -246,7 +254,7 @@ export class ActionButtonComponent
         });
         // Get template from dialog ref
         const value = await lastValueFrom<any>(
-          dialogRef.closed.pipe(takeUntil(this.destroy$))
+          dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef))
         );
         if (value?.template) {
           snackBarSpinner.instance.loading = false;
@@ -314,79 +322,81 @@ export class ActionButtonComponent
       },
       autoFocus: false,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value && value.data?.id) {
-        // Add record action
-        if (this.actionButton.addRecord) {
-          const newRecordId = value.data.id;
-          const fieldsForUpdate =
-            this.actionButton.addRecord.fieldsForUpdate || [];
-          // Execute callback if possible
-          if (
-            this.contextId &&
-            Array.isArray(fieldsForUpdate) &&
-            fieldsForUpdate.length > 0
-          ) {
-            this.apollo
-              .query<RecordQueryResponse>({
-                query: GET_RECORD_BY_ID,
-                variables: {
-                  id: this.contextId,
-                },
-              })
-              .pipe(takeUntil(this.destroy$))
-              .subscribe(({ data }) => {
-                const update = {};
-                for (const field of fieldsForUpdate as string[]) {
-                  const resourceField = data.record.resource?.fields.find(
-                    (f: any) => f.name === field
-                  );
-                  if (resourceField) {
-                    // Current field value in record
-                    const value = get(data.record.data, field);
-                    switch (resourceField.type) {
-                      case 'resource': {
-                        set(update, field, newRecordId);
-                        break;
-                      }
-                      case 'resources': {
-                        if (Array.isArray(value)) {
-                          set(update, field, [...value, newRecordId]);
-                        } else {
-                          set(update, field, [newRecordId]);
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value && value.data?.id) {
+          // Add record action
+          if (this.actionButton.addRecord) {
+            const newRecordId = value.data.id;
+            const fieldsForUpdate =
+              this.actionButton.addRecord.fieldsForUpdate || [];
+            // Execute callback if possible
+            if (
+              this.contextId &&
+              Array.isArray(fieldsForUpdate) &&
+              fieldsForUpdate.length > 0
+            ) {
+              this.apollo
+                .query<RecordQueryResponse>({
+                  query: GET_RECORD_BY_ID,
+                  variables: {
+                    id: this.contextId,
+                  },
+                })
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe(({ data }) => {
+                  const update = {};
+                  for (const field of fieldsForUpdate as string[]) {
+                    const resourceField = data.record.resource?.fields.find(
+                      (f: any) => f.name === field
+                    );
+                    if (resourceField) {
+                      // Current field value in record
+                      const value = get(data.record.data, field);
+                      switch (resourceField.type) {
+                        case 'resource': {
+                          set(update, field, newRecordId);
+                          break;
                         }
-                        break;
+                        case 'resources': {
+                          if (Array.isArray(value)) {
+                            set(update, field, [...value, newRecordId]);
+                          } else {
+                            set(update, field, [newRecordId]);
+                          }
+                          break;
+                        }
+                        // Else, skip
                       }
-                      // Else, skip
                     }
+                    // Else, skip
                   }
-                  // Else, skip
-                }
-                // If update not empty
-                if (!isEmpty(update)) {
-                  this.apollo
-                    .mutate<EditRecordMutationResponse>({
-                      mutation: EDIT_RECORD,
-                      variables: {
-                        id: this.contextId,
-                        data: update,
-                      },
-                    })
-                    .pipe(takeUntil(this.destroy$))
-                    .subscribe({ next: () => callback() });
-                } else {
-                  callback();
-                }
-              });
+                  // If update not empty
+                  if (!isEmpty(update)) {
+                    this.apollo
+                      .mutate<EditRecordMutationResponse>({
+                        mutation: EDIT_RECORD,
+                        variables: {
+                          id: this.contextId,
+                          data: update,
+                        },
+                      })
+                      .pipe(takeUntilDestroyed(this.destroyRef))
+                      .subscribe({ next: () => callback() });
+                  } else {
+                    callback();
+                  }
+                });
+            } else {
+              callback();
+            }
           } else {
+            // Edit record action
             callback();
           }
-        } else {
-          // Edit record action
-          callback();
         }
-      }
-    });
+      });
   }
 
   /**
@@ -511,7 +521,7 @@ export class ActionButtonComponent
   private getNotification(id: string) {
     this.emailService
       .getEmailNotification(id)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ data }) => {
           this.emailNotification = data.emailNotification;

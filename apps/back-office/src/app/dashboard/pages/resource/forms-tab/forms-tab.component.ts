@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import {
   DeleteFormMutationResponse,
   Form,
   Resource,
   ConfirmService,
-  UnsubscribeComponent,
   ResourceQueryResponse,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
@@ -14,7 +13,7 @@ import get from 'lodash/get';
 import { GET_RESOURCE_FORMS } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
-import { takeUntil } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  *Forms tab of resource page
@@ -24,7 +23,7 @@ import { takeUntil } from 'rxjs';
   templateUrl: './forms-tab.component.html',
   styleUrls: ['./forms-tab.component.scss'],
 })
-export class FormsTabComponent extends UnsubscribeComponent implements OnInit {
+export class FormsTabComponent implements OnInit {
   /**
    * Resource
    */
@@ -49,6 +48,8 @@ export class FormsTabComponent extends UnsubscribeComponent implements OnInit {
     'core',
     '_actions',
   ];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Forms tab of resource page
@@ -65,9 +66,7 @@ export class FormsTabComponent extends UnsubscribeComponent implements OnInit {
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private dialog: Dialog
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     const state = history.state;
@@ -109,42 +108,47 @@ export class FormsTabComponent extends UnsubscribeComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<DeleteFormMutationResponse>({
-            mutation: DELETE_FORM,
-            variables: {
-              id: form.id,
-            },
-          })
-          .subscribe({
-            next: ({ errors }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotDeleted',
-                    {
-                      value: this.translate.instant('common.form.one'),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectDeleted', {
-                    value: this.translate.instant('common.form.one'),
-                  })
-                );
-                this.forms = this.forms.filter((x: any) => x.id !== form.id);
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.apollo
+            .mutate<DeleteFormMutationResponse>({
+              mutation: DELETE_FORM,
+              variables: {
+                id: form.id,
+              },
+            })
+            .subscribe({
+              next: ({ errors }) => {
+                if (errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectNotDeleted',
+                      {
+                        value: this.translate.instant('common.form.one'),
+                        error: errors ? errors[0].message : '',
+                      }
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectDeleted',
+                      {
+                        value: this.translate.instant('common.form.one'),
+                      }
+                    )
+                  );
+                  this.forms = this.forms.filter((x: any) => x.id !== form.id);
+                }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 }

@@ -6,6 +6,8 @@ import {
   Input,
   AfterViewInit,
   OnDestroy,
+  DestroyRef,
+  inject,
 } from '@angular/core';
 import { WIDGET_EDITOR_CONFIG } from '../../../const/tinymce.const';
 import { EditorService } from '../../../services/editor/editor.service';
@@ -18,8 +20,6 @@ import { Apollo } from 'apollo-angular';
 import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
 import { get } from 'lodash';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
-import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import {
   ReferenceData,
   ReferenceDataQueryResponse,
@@ -59,6 +59,7 @@ import {
 } from '@tinymce/tinymce-angular';
 import { RecordSelectionTabComponent } from './record-selection-tab/record-selection-tab.component';
 import { EditorModule } from '../editor/editor.module';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Modal content for the settings of the editor widgets.
@@ -101,7 +102,6 @@ import { EditorModule } from '../editor/editor.module';
   ],
 })
 export class EditorSettingsComponent
-  extends UnsubscribeComponent
   implements
     OnInit,
     AfterViewInit,
@@ -129,6 +129,8 @@ export class EditorSettingsComponent
   public editorLoading = true;
   /** Html element containing widget custom style */
   private customStyle?: HTMLStyleElement;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Modal content for the settings of the editor widgets.
@@ -144,7 +146,6 @@ export class EditorSettingsComponent
     private dataTemplateService: DataTemplateService,
     private widgetService: WidgetService
   ) {
-    super();
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
     // Set the editor language
@@ -177,7 +178,7 @@ export class EditorSettingsComponent
     }
     // Subscribe to resource changes
     this.widgetFormGroup.controls.resource.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((resource) => {
         this.widget.settings.resource = resource;
         if (resource) {
@@ -191,7 +192,7 @@ export class EditorSettingsComponent
       });
     // Subscribe to layout changes
     this.widgetFormGroup.controls.layout.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((layout) => {
         this.widget.settings.layout = layout;
         if (layout && this.resource) {
@@ -207,7 +208,7 @@ export class EditorSettingsComponent
     }
     // Subscribe to reference data changes
     this.widgetFormGroup.controls.referenceData.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((referenceData) => {
         this.widget.settings.referenceData = referenceData;
         if (referenceData) {
@@ -225,14 +226,14 @@ export class EditorSettingsComponent
 
     // Refresh when aggregations field changes
     this.widgetFormGroup.controls.aggregations.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((aggregations) => {
         this.widget.settings.aggregations = aggregations;
         this.updateFields();
       });
   }
 
-  override ngOnDestroy(): void {
+  ngOnDestroy(): void {
     // Remove the custom style when the component is destroyed
     if (this.customStyle) {
       this.customStyle.remove();
@@ -244,7 +245,7 @@ export class EditorSettingsComponent
    */
   ngAfterViewInit(): void {
     this.widgetFormGroup?.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.widgetFormGroup.markAsDirty({ onlySelf: true });
         this.formChange.emit(this.widgetFormGroup);

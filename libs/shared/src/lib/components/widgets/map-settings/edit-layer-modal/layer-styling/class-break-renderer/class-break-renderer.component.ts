@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import {
   FormArray,
   FormGroup,
@@ -21,14 +21,14 @@ import {
   TooltipModule,
   getIconDefinition,
 } from '@oort-front/ui';
-import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Fields } from '../../../../../../models/layer.model';
 import { GeometryType } from '../../../../../ui/map/interfaces/layer-settings.type';
-import { UnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';
 import { createClassBreakInfoForm } from '../../../map-forms';
 import { SimpleRendererComponent } from '../simple-renderer/simple-renderer.component';
 import { isNil } from 'lodash';
 import { SanitizeHtmlPipe } from '../../../../../../pipes/sanitize-html/sanitize-html.pipe';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Updates form validation checking if set values order set is correct
@@ -143,10 +143,7 @@ function classBreakValidators(): any {
   templateUrl: './class-break-renderer.component.html',
   styleUrls: ['./class-break-renderer.component.scss'],
 })
-export class ClassBreakRendererComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class ClassBreakRendererComponent implements OnInit {
   /** Type of layer geometry ( point / polygon ) */
   @Input() geometryType: GeometryType = 'Point';
   /** Current form group */
@@ -161,6 +158,8 @@ export class ClassBreakRendererComponent
   public svgIcons: { [key: string]: string } = {};
   /** Currently opened class break vale */
   public openedIndex = -1;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns get class break infos settings as form array */
   get classBreakInfos(): FormArray {
@@ -170,18 +169,20 @@ export class ClassBreakRendererComponent
   ngOnInit(): void {
     this.formGroup.addValidators(isMaxValueOrderValid());
     this.classBreakInfos.addValidators(classBreakValidators());
-    this.fields$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      this.scalarFields.next(
-        value.filter((field) =>
-          ['string', 'datetime', 'number', 'int', 'float'].includes(
-            field.type.toLowerCase()
+    this.fields$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        this.scalarFields.next(
+          value.filter((field) =>
+            ['string', 'datetime', 'number', 'int', 'float'].includes(
+              field.type.toLowerCase()
+            )
           )
-        )
-      );
-    });
+        );
+      });
     this.createIconsSvgs();
     this.classBreakInfos.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.createIconsSvgs();
       });

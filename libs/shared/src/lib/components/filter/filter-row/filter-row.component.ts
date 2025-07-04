@@ -1,7 +1,9 @@
 import {
   AfterViewInit,
   Component,
+  DestroyRef,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   OnInit,
@@ -12,13 +14,12 @@ import {
 } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { clone, get, isEqual } from 'lodash';
-import { takeUntil } from 'rxjs/operators';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 import { EmailService } from '../../email/email.service';
 import convertToMinutes from '../../../utils/convert-to-minutes';
 import { CommonServicesService } from '../../../services/common-services/common-services.service';
 import { firstValueFrom } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Composite filter row.
@@ -28,10 +29,7 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './filter-row.component.html',
   styleUrls: ['./filter-row.component.scss'],
 })
-export class FilterRowComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnChanges, AfterViewInit
-{
+export class FilterRowComponent implements OnInit, OnChanges, AfterViewInit {
   /** Filter form group */
   @Input() form!: UntypedFormGroup;
   /** Is disabled */
@@ -82,6 +80,8 @@ export class FilterRowComponent
   ];
   /** Show loading sign */
   public loading = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns value form field as form control. */
   get valueControl(): UntypedFormControl {
@@ -97,14 +97,12 @@ export class FilterRowComponent
   constructor(
     public emailService: EmailService,
     private cs: CommonServicesService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.form
       .get('field')
-      ?.valueChanges?.pipe(takeUntil(this.destroy$))
+      ?.valueChanges?.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(async (value) => {
         // remove value
         const selectedField = this.fields.filter((x: any) => x.name == value);
@@ -123,7 +121,7 @@ export class FilterRowComponent
       });
     this.form
       .get('operator')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.setHideEditor(value);
         // Checks for in the last operator

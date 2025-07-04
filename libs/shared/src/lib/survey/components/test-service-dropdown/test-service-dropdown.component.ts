@@ -1,13 +1,14 @@
 import {
   ChangeDetectorRef,
   Component,
+  DestroyRef,
+  inject,
   OnDestroy,
   OnInit,
   ViewContainerRef,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { UntypedFormControl } from '@angular/forms';
-import { takeUntil } from 'rxjs/operators';
 import { GET_RECORD_BY_ID, GET_RESOURCE_RECORDS } from './graphql/queries';
 import { Record, RecordQueryResponse } from '../../../models/record.model';
 import { CommonModule } from '@angular/common';
@@ -15,8 +16,8 @@ import { GraphQLSelectModule, FormWrapperModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QuestionAngular } from 'survey-angular-ui';
 import { QuestionTestServiceDropdownModel } from './test-service-dropdown.model';
-import { Subject } from 'rxjs';
 import { ResourceRecordsNodesQueryResponse } from '../../../models/resource.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** A constant that is used to determine how many items should be on one page. */
 const ITEMS_PER_PAGE = 10;
@@ -52,9 +53,8 @@ export class TestServiceDropdownComponent
   public recordsControl!: UntypedFormControl;
   /** Records query */
   public recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
-
-  /** Destroy subject */
-  private destroy$: Subject<void> = new Subject<void>();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -101,7 +101,7 @@ export class TestServiceDropdownComponent
     );
     this.recordsControl = new UntypedFormControl(this.model.value);
     this.recordsControl.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.model.value = value;
       });
@@ -133,8 +133,6 @@ export class TestServiceDropdownComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    this.destroy$.next();
-    this.destroy$.complete();
     this.model.obj.unRegisterFunctionOnPropertyValueChanged('resource');
     this.model.obj.unRegisterFunctionOnPropertyValueChanged('displayField');
   }

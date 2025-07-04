@@ -1,10 +1,16 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { takeUntil, Observable } from 'rxjs';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
+  Output,
+} from '@angular/core';
+import { Observable } from 'rxjs';
 import { Resource } from '../../../../../models/resource.model';
 import { ReferenceData } from '../../../../../models/reference-data.model';
 import { Aggregation } from '../../../../../models/aggregation.model';
 import { Layout } from '../../../../../models/layout.model';
-import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 import { AddLayoutModalComponent } from '../../../../grid-layout/add-layout-modal/add-layout-modal.component';
 import { get } from 'lodash';
 import { AddAggregationModalComponent } from '../../../../aggregation/add-aggregation-modal/add-aggregation-modal.component';
@@ -16,6 +22,7 @@ import { FormGroup } from '@angular/forms';
 import { Fields } from '../../../../../models/layer.model';
 import { Dialog } from '@angular/cdk/dialog';
 import { DomPortal } from '@angular/cdk/portal';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Available admin fields ( only admin 0 now ) */
 const ADMIN_FIELDS = [
@@ -44,7 +51,7 @@ const ADMIN_FIELDS = [
   templateUrl: './layer-datasource.component.html',
   styleUrls: ['./layer-datasource.component.scss'],
 })
-export class LayerDatasourceComponent extends UnsubscribeComponent {
+export class LayerDatasourceComponent {
   /** Current form group */
   @Input() formGroup!: FormGroup;
   /** Selected resource */
@@ -65,6 +72,8 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
   @Input() loading = false;
   /** Admin fields */
   public adminFields = ADMIN_FIELDS;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Component for the layer datasource selection tab
@@ -77,9 +86,7 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
     private dialog: Dialog,
     private gridLayoutService: GridLayoutService,
     private aggregationService: AggregationService
-  ) {
-    super();
-  }
+  ) {}
 
   /** Opens modal for layout selection/creation */
   public selectLayout() {
@@ -89,15 +96,17 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
         hasLayouts: get(this.resource, 'layouts.totalCount', 0) > 0,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value) {
-        if (typeof value === 'string') {
-          this.formGroup.get('layout')?.setValue(value);
-        } else {
-          this.formGroup.get('layout')?.setValue((value as any).id);
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value) {
+          if (typeof value === 'string') {
+            this.formGroup.get('layout')?.setValue(value);
+          } else {
+            this.formGroup.get('layout')?.setValue((value as any).id);
+          }
         }
-      }
-    });
+      });
   }
 
   /** Opens modal for aggregation selection/creation */
@@ -111,15 +120,17 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
         referenceData: this.referenceData,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value) {
-        if (typeof value === 'string') {
-          this.formGroup.get('aggregation')?.setValue(value);
-        } else {
-          this.formGroup.get('aggregation')?.setValue((value as any)?.id);
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value) {
+          if (typeof value === 'string') {
+            this.formGroup.get('aggregation')?.setValue(value);
+          } else {
+            this.formGroup.get('aggregation')?.setValue((value as any)?.id);
+          }
         }
-      }
-    });
+      });
   }
 
   /**
@@ -132,15 +143,19 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
         layout: this.layout,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value && this.layout) {
-        this.gridLayoutService
-          .editLayout(this.layout, value, this.resource?.id)
-          .subscribe(() => {
-            this.formGroup.get('layout')?.setValue(this.formGroup.value.layout);
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value && this.layout) {
+          this.gridLayoutService
+            .editLayout(this.layout, value, this.resource?.id)
+            .subscribe(() => {
+              this.formGroup
+                .get('layout')
+                ?.setValue(this.formGroup.value.layout);
+            });
+        }
+      });
   }
 
   /**
@@ -155,20 +170,22 @@ export class LayerDatasourceComponent extends UnsubscribeComponent {
         aggregation: this.aggregation,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value && this.aggregation) {
-        this.aggregationService
-          .editAggregation(this.aggregation, value, {
-            resource: this.resource?.id,
-            referenceData: this.referenceData?.id,
-          })
-          .subscribe(() => {
-            this.formGroup
-              .get('aggregation')
-              ?.setValue(this.formGroup.value.aggregation);
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value && this.aggregation) {
+          this.aggregationService
+            .editAggregation(this.aggregation, value, {
+              resource: this.resource?.id,
+              referenceData: this.referenceData?.id,
+            })
+            .subscribe(() => {
+              this.formGroup
+                .get('aggregation')
+                ?.setValue(this.formGroup.value.aggregation);
+            });
+        }
+      });
   }
 
   /**

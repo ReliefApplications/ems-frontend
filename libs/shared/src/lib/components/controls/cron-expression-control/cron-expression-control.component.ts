@@ -1,8 +1,7 @@
-import { Component, Optional, Self } from '@angular/core';
+import { Component, DestroyRef, inject, Optional, Self } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
-import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Cron expression form control
@@ -12,10 +11,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
   templateUrl: './cron-expression-control.component.html',
   styleUrls: ['./cron-expression-control.component.scss'],
 })
-export class CronExpressionControlComponent
-  extends UnsubscribeComponent
-  implements ControlValueAccessor
-{
+export class CronExpressionControlComponent implements ControlValueAccessor {
   // /** @returns the value */
   // get value(): string | undefined | null {
   //   return this.ngControl.value;
@@ -40,6 +36,8 @@ export class CronExpressionControlComponent
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   private onChanged = (_: any) => {};
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    *  Cron expression form control
@@ -51,7 +49,6 @@ export class CronExpressionControlComponent
     @Optional() @Self() public ngControl: NgControl,
     private dialog: Dialog
   ) {
-    super();
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
@@ -102,11 +99,13 @@ export class CronExpressionControlComponent
       data: this.value,
       autoFocus: false,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.writeValue(value);
-        this.onChanged(value);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.writeValue(value);
+          this.onChanged(value);
+        }
+      });
   }
 }

@@ -3,8 +3,10 @@ import {
   ChangeDetectorRef,
   Component,
   ContentChildren,
+  DestroyRef,
   ElementRef,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -24,6 +26,7 @@ import {
 import { TabComponent } from './components/tab/tab.component';
 import { Subject, takeUntil, startWith } from 'rxjs';
 import { TabBodyHostDirective } from './directives/tab-body-host.directive';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * UI Tabs component
@@ -88,12 +91,12 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   previousTabsLength = 0;
   /** Trigger animation */
   triggerAnimation = false;
-  /** Destroy subject */
-  destroy$ = new Subject<void>();
   /** Reorder subject */
   reorder$ = new Subject<void>();
   /** Timeout to show content */
   private showContentTimeoutListener!: NodeJS.Timeout;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Ui Sidenav constructor
@@ -122,7 +125,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   ngAfterViewInit() {
     // This ensures that the subscription logic is executed for both existing and new tab elements
     this.tabs.changes
-      .pipe(startWith(this.tabs), takeUntil(this.destroy$))
+      .pipe(startWith(this.tabs), takeUntilDestroyed(this.destroyRef))
       .subscribe((tabs: QueryList<TabComponent>) => {
         this.cdr.detectChanges();
         this.reorder$.next();
@@ -191,7 +194,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
       tab.vertical = this.vertical;
       tab.index = index;
       tab.openTab
-        .pipe(takeUntil(this.reorder$), takeUntil(this.destroy$))
+        .pipe(takeUntil(this.reorder$), takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
           if (
             tab.index !== this.selectedIndex ||
@@ -214,7 +217,5 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
     if (this.showContentTimeoutListener) {
       clearTimeout(this.showContentTimeoutListener);
     }
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

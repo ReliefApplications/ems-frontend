@@ -2,17 +2,18 @@ import { CdkPortalOutlet } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
 import {
   ComponentFactoryResolver,
+  DestroyRef,
   Directive,
   EventEmitter,
+  inject,
   Inject,
   Input,
-  OnDestroy,
   OnInit,
   Output,
   ViewContainerRef,
 } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
 import { TabComponent } from '../components/tab/tab.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * UI Tab body host directive.
@@ -21,12 +22,7 @@ import { TabComponent } from '../components/tab/tab.component';
 @Directive({
   selector: '[uiTabBodyHost]',
 })
-export class TabBodyHostDirective
-  extends CdkPortalOutlet
-  implements OnInit, OnDestroy
-{
-  /** Destroy subject */
-  destroy$: Subject<boolean> = new Subject<boolean>();
+export class TabBodyHostDirective extends CdkPortalOutlet implements OnInit {
   /** Current opened tab */
   private _openedTab?: TabComponent;
   /**
@@ -37,6 +33,8 @@ export class TabBodyHostDirective
   @Output() willDetach = new EventEmitter<void>();
   /** Did portal attach */
   @Output() didAttach = new EventEmitter<void>();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * UI Tab body host directive.
@@ -58,7 +56,7 @@ export class TabBodyHostDirective
     super.ngOnInit();
 
     this.openedTab
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((tab: TabComponent) => {
         if (tab !== this._openedTab && this.hasAttached()) {
           this.willDetach.emit();
@@ -69,14 +67,5 @@ export class TabBodyHostDirective
           this.didAttach.emit();
         }
       });
-  }
-
-  /**
-   * Emit Destroy event, and unsubscribe to destroy
-   */
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
   }
 }

@@ -2,7 +2,9 @@ import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  DestroyRef,
   ElementRef,
+  inject,
   Inject,
   NgZone,
   OnDestroy,
@@ -21,7 +23,7 @@ import {
 import { Apollo } from 'apollo-angular';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
-import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { SurveyModule } from 'survey-angular-ui';
 import { SurveyModel } from 'survey-core';
 import { Form, FormQueryResponse } from '../../models/form.model';
@@ -43,9 +45,9 @@ import { cleanRecord } from '../../utils/cleanRecord';
 import addCustomFunctions from '../../utils/custom-functions';
 import { FormActionsModule } from '../form-actions/form-actions.module';
 import { RecordSummaryModule } from '../record-summary/record-summary.module';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { ADD_RECORD, EDIT_RECORD, EDIT_RECORDS } from './graphql/mutations';
 import { GET_FORM_BY_ID, GET_RECORD_BY_ID } from './graphql/queries';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Interface of Dialog data.
@@ -85,10 +87,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     SurveyModule,
   ],
 })
-export class FormModalComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class FormModalComponent implements OnInit, OnDestroy {
   /** Reference to form container */
   @ViewChild('formContainer') formContainer!: ElementRef;
   /** Current template */
@@ -122,6 +121,8 @@ export class FormModalComponent
   protected temporaryFilesStorage: any = {};
   /** Stored merged data */
   private storedMergedData: any;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Display a form instance in a modal.
@@ -150,9 +151,7 @@ export class FormModalComponent
     protected confirmService: ConfirmService,
     protected translate: TranslateService,
     protected ngZone: NgZone
-  ) {
-    super();
-  }
+  ) {}
 
   /**
    * Create confirmation message on save edition based on action button or default context
@@ -383,7 +382,7 @@ export class FormModalComponent
       const confirmMessage = this.getConfirmMessageByContext();
       const dialogRef = this.confirmService.openConfirmModal(confirmMessage);
       dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(async (value: any) => {
           if (value) {
             await this.onUpdate(survey);
@@ -682,38 +681,40 @@ export class FormModalComponent
    */
   private confirmRevertDialog(record: any, version: any) {
     const dialogRef = this.formHelpersService.createRevertDialog(version);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
-            mutation: EDIT_RECORD,
-            variables: {
-              id: record.id,
-              version: version.id,
-            },
-          })
-          .subscribe({
-            next: (errors) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.dataNotRecovered'
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.dataRecovered')
-                );
-              }
-              this.dialog.closeAll();
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.apollo
+            .mutate<EditRecordMutationResponse>({
+              mutation: EDIT_RECORD,
+              variables: {
+                id: record.id,
+                version: version.id,
+              },
+            })
+            .subscribe({
+              next: (errors) => {
+                if (errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.dataNotRecovered'
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('common.notifications.dataRecovered')
+                  );
+                }
+                this.dialog.closeAll();
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
   /**
@@ -744,8 +745,7 @@ export class FormModalComponent
   /**
    * Clears the cache for the records created by resource questions
    */
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     this.survey?.dispose();
   }
 }

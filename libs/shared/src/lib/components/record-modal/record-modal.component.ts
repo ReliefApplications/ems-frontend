@@ -1,5 +1,12 @@
 import { Apollo } from 'apollo-angular';
-import { AfterViewInit, Component, Inject, OnDestroy } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  inject,
+  Inject,
+  OnDestroy,
+} from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { SurveyModel } from 'survey-core';
 import { SurveyModule } from 'survey-angular-ui';
@@ -14,10 +21,9 @@ import addCustomFunctions from '../../utils/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
 import { EDIT_RECORD } from './graphql/mutations';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
-import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import isEqual from 'lodash/isEqual';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { CommonModule } from '@angular/common';
 import { SnackbarService, TabsModule } from '@oort-front/ui';
@@ -28,6 +34,7 @@ import { FormActionsModule } from '../form-actions/form-actions.module';
 import { DateModule } from '../../pipes/date/date.module';
 import { SpinnerModule, ButtonModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Interface that describes the structure of the data that will be shown in the dialog
@@ -63,10 +70,7 @@ interface DialogData {
   templateUrl: './record-modal.component.html',
   styleUrls: ['../../style/survey.scss', './record-modal.component.scss'],
 })
-export class RecordModalComponent
-  extends UnsubscribeComponent
-  implements AfterViewInit, OnDestroy
-{
+export class RecordModalComponent implements AfterViewInit, OnDestroy {
   // === DATA ===
   /** Loading state */
   public loading = true;
@@ -95,6 +99,8 @@ export class RecordModalComponent
   private pages = new BehaviorSubject<any[]>([]);
   /** Pages as observable */
   public pages$ = this.pages.asObservable();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -120,9 +126,7 @@ export class RecordModalComponent
     private formBuilderService: FormBuilderService,
     private formHelpersService: FormHelpersService,
     private translate: TranslateService
-  ) {
-    super();
-  }
+  ) {}
 
   async ngAfterViewInit(): Promise<void> {
     this.canEdit = this.data.canUpdate;
@@ -289,42 +293,43 @@ export class RecordModalComponent
    */
   private confirmRevertDialog(record: any, version: any) {
     const dialogRef = this.formHelpersService.createRevertDialog(version);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
-            mutation: EDIT_RECORD,
-            variables: {
-              id: record.id,
-              version: version.id,
-            },
-          })
-          .subscribe({
-            next: (errors) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.dataNotRecovered'
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.dataRecovered')
-                );
-              }
-              this.dialogRef.close();
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.apollo
+            .mutate<EditRecordMutationResponse>({
+              mutation: EDIT_RECORD,
+              variables: {
+                id: record.id,
+                version: version.id,
+              },
+            })
+            .subscribe({
+              next: (errors) => {
+                if (errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.dataNotRecovered'
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('common.notifications.dataRecovered')
+                  );
+                }
+                this.dialogRef.close();
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     this.survey?.dispose();
     this.surveyNext?.dispose();
   }

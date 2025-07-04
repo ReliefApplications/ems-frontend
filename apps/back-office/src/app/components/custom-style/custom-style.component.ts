@@ -5,6 +5,8 @@ import {
   OnInit,
   OnDestroy,
   Inject,
+  inject,
+  DestroyRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -12,14 +14,12 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import {
   Application,
   ApplicationService,
-  UnsubscribeComponent,
   ConfirmService,
   BlobType,
   DownloadService,
   RestService,
   AsyncMonacoEditorDirective,
 } from '@oort-front/shared';
-import { takeUntil } from 'rxjs/operators';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   ButtonModule,
@@ -31,6 +31,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
 import { ResizeEvent } from 'angular-resizable-element';
 import { ResizableModule } from 'angular-resizable-element';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -54,10 +55,7 @@ const DEFAULT_STYLE = '';
   templateUrl: './custom-style.component.html',
   styleUrls: ['./custom-style.component.scss'],
 })
-export class CustomStyleComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class CustomStyleComponent implements OnInit, OnDestroy {
   /** Form control */
   public formControl = new FormControl(DEFAULT_STYLE);
   /** Application id */
@@ -83,6 +81,8 @@ export class CustomStyleComponent
   private timeoutListener!: NodeJS.Timeout;
   /** Navbar size style */
   public navbarStyle: any = {};
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Creates an instance of CustomStyleComponent, form and updates.
@@ -104,13 +104,12 @@ export class CustomStyleComponent
     @Inject(DOCUMENT) private document: Document,
     private downloadService: DownloadService
   ) {
-    super();
     // Updates the style when the value changes
     this.formControl.valueChanges
       .pipe(
         debounceTime(1000),
         distinctUntilChanged(),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((value: any) => {
         const scss = value as string;
@@ -143,7 +142,7 @@ export class CustomStyleComponent
     }
 
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((application: Application | null) => {
         if (application) {
           this.applicationId = application.id;
@@ -166,7 +165,7 @@ export class CustomStyleComponent
         confirmVariant: 'danger',
       });
       confirmDialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((confirm: any) => {
           if (confirm) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -245,8 +244,7 @@ export class CustomStyleComponent
     }
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }

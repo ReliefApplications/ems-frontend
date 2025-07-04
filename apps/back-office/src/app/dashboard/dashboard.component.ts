@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
-import { AppAbility, UnsubscribeComponent } from '@oort-front/shared';
-import { takeUntil } from 'rxjs';
+import { AppAbility } from '@oort-front/shared';
 
 /**
  * Main BO dashboard component
@@ -11,7 +11,7 @@ import { takeUntil } from 'rxjs';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent extends UnsubscribeComponent {
+export class DashboardComponent {
   // === HEADER TITLE ===
   /** Title of the page */
   public title = 'Back-office';
@@ -19,6 +19,8 @@ export class DashboardComponent extends UnsubscribeComponent {
   // === AVAILABLE ROUTES, DEPENDS ON USER ===
   /** Navigation groups */
   public navGroups: any[] = [];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Main BO dashboard component
@@ -30,11 +32,12 @@ export class DashboardComponent extends UnsubscribeComponent {
     private translate: TranslateService,
     private ability: AppAbility
   ) {
-    super();
     this.setNavGroups();
-    translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.setNavGroups();
-    });
+    translate.onLangChange
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.setNavGroups();
+      });
   }
 
   /**

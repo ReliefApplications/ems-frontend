@@ -1,11 +1,18 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  Input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import {
   BaseFilterCellComponent,
   FilterService,
 } from '@progress/kendo-angular-grid';
 import { isEmpty, isNil } from 'lodash';
-import { Subject, takeUntil } from 'rxjs';
 
 /**
  * Shared-grid-filter component
@@ -98,8 +105,8 @@ export class GridFilterComponent
 
   /** Selected operator */
   public selectedOperator!: string;
-  /** Destroy subject */
-  private destroy$: Subject<void> = new Subject<void>();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Constructor for shared-grid-filter
@@ -118,9 +125,11 @@ export class GridFilterComponent
     this.selectedOperator = this.isNotArray ? 'eq' : 'contains';
     this.setOperators();
     this.choices = (this.data || []).slice();
-    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.setOperators();
-    });
+    this.translate.onLangChange
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.setOperators();
+      });
   }
 
   /**
@@ -190,11 +199,5 @@ export class GridFilterComponent
       logic: 'and',
     };
     this.applyFilter(this.filter);
-  }
-
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

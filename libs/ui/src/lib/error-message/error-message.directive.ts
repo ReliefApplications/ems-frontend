@@ -1,13 +1,14 @@
 import {
+  DestroyRef,
   Directive,
   ElementRef,
+  inject,
   Input,
-  OnDestroy,
   Optional,
   Renderer2,
 } from '@angular/core';
 import { FormWrapperDirective } from '../form-wrapper/form-wrapper.directive';
-import { Subject, takeUntil } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * UI Error Message directive
@@ -15,7 +16,7 @@ import { Subject, takeUntil } from 'rxjs';
 @Directive({
   selector: '[uiErrorMessage]',
 })
-export class ErrorMessageDirective implements OnDestroy {
+export class ErrorMessageDirective {
   /**
    * Set current error messages and updates the error message template if exists
    */
@@ -52,10 +53,10 @@ export class ErrorMessageDirective implements OnDestroy {
     'py-2',
     'text-xs',
   ] as const;
-  /** Destroy subject */
-  private destroy$ = new Subject<void>();
   /** Host is ready */
   private hostIsReady = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * UI Error Message constructor
@@ -72,7 +73,7 @@ export class ErrorMessageDirective implements OnDestroy {
     this.buildErrorMessageTemplate();
     if (this.formWrapperDirective) {
       this.formWrapperDirective.elementWrapped
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (hostIsReady: boolean) => (this.hostIsReady = hostIsReady),
         });
@@ -104,10 +105,5 @@ export class ErrorMessageDirective implements OnDestroy {
    */
   private removeErrorMessage() {
     this.renderer.removeChild(this.el.nativeElement, this.errorMessageTemplate);
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

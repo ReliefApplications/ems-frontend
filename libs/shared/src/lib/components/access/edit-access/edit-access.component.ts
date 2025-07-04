@@ -1,11 +1,18 @@
 import { Apollo } from 'apollo-angular';
-import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Inject,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { GET_ROLES } from './graphql/queries';
 import { Role, RolesQueryResponse } from '../../../models/user.model';
-import { takeUntil } from 'rxjs/operators';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Interface defining the structure of the data
@@ -25,10 +32,7 @@ export interface AccessData {
   templateUrl: './edit-access.component.html',
   styleUrls: ['./edit-access.component.scss'],
 })
-export class EditAccessComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class EditAccessComponent implements OnInit {
   /** Component is used as modal or not? */
   public useModal!: boolean;
   /** Available roles */
@@ -41,6 +45,8 @@ export class EditAccessComponent
   public accessForm!: ReturnType<typeof this.createAccessForm>;
   /** Event to update the parent component of updates */
   @Output() updateAccess: EventEmitter<any> = new EventEmitter();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * The constructor function is used to create a new instance of the EditAccessComponent class
@@ -57,7 +63,6 @@ export class EditAccessComponent
     public dialogRef: DialogRef<EditAccessComponent>,
     @Inject(DIALOG_DATA) public data: AccessData
   ) {
-    super();
     // If dialog opened from the View settings modal modal
     if (this.data.accessData) {
       this.contentType = this.data.accessData.objectTypeName;
@@ -85,14 +90,14 @@ export class EditAccessComponent
           application: this.applicationId,
         },
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data }) => {
         this.roles = data.roles;
       });
 
     if (!this.useModal) {
       this.accessForm.valueChanges
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value: any) => {
           if (value) {
             this.updateAccess.emit(value);

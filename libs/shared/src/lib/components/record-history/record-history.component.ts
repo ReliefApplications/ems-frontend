@@ -6,16 +6,16 @@ import {
   OnInit,
   Output,
   Inject,
+  inject,
+  DestroyRef,
 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { Version } from '../../models/form.model';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
 import { DownloadService } from '../../services/download/download.service';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { Record, RecordQueryResponse } from '../../models/record.model';
 import {
   Change,
@@ -30,6 +30,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { startCase, isNil } from 'lodash';
 import { ResizeEvent } from 'angular-resizable-element';
 import { DOCUMENT } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -60,10 +61,7 @@ const getValueType = (
   templateUrl: './record-history.component.html',
   styleUrls: ['./record-history.component.scss'],
 })
-export class RecordHistoryComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class RecordHistoryComponent implements OnInit {
   /** Id of the record */
   @Input() id!: string;
   /** Function to revert to a version */
@@ -124,6 +122,8 @@ export class RecordHistoryComponent
   viewAsTable = new FormControl(true);
   /** size style */
   public style: any = {};
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns filename from current date and record inc. id */
   get fileName(): string {
@@ -154,9 +154,7 @@ export class RecordHistoryComponent
     private apollo: Apollo,
     private snackBar: SnackbarService,
     @Inject(DOCUMENT) private document: Document
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     const setSubscription = () => {
@@ -167,7 +165,7 @@ export class RecordHistoryComponent
             id: this.id,
           },
         })
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(({ data }) => {
           this.record = data.record;
           this.sortedFields = this.sortFields(this.getFields());
@@ -181,7 +179,7 @@ export class RecordHistoryComponent
             lang: this.translate.currentLang,
           },
         })
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(({ errors, data }) => {
           if (errors) {
             this.snackBar.openSnackBar(
@@ -208,7 +206,7 @@ export class RecordHistoryComponent
     };
     if (this.refresh$) {
       // Set subscription to load records
-      this.refresh$?.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.refresh$?.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
         setSubscription();
       });
       // Send first refresh event to load data
@@ -217,46 +215,48 @@ export class RecordHistoryComponent
       setSubscription();
     }
 
-    this.filters.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      const startDate = this.filters.get('startDate')?.value
-        ? new Date(this.filters.get('startDate')?.value as any)
-        : undefined;
-      if (startDate) startDate.setHours(0, 0, 0, 0);
-      const endDate = this.filters.get('endDate')?.value
-        ? new Date(this.filters.get('endDate')?.value as any)
-        : undefined;
-      if (endDate) endDate.setHours(23, 59, 59, 99);
-      this.filterHistory = this.history.filter((item) => {
-        const createdAt = new Date(item.createdAt);
-        return (
-          !startDate ||
-          !endDate ||
-          (createdAt >= startDate && createdAt <= endDate)
-        );
-      });
+    this.filters.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        const startDate = this.filters.get('startDate')?.value
+          ? new Date(this.filters.get('startDate')?.value as any)
+          : undefined;
+        if (startDate) startDate.setHours(0, 0, 0, 0);
+        const endDate = this.filters.get('endDate')?.value
+          ? new Date(this.filters.get('endDate')?.value as any)
+          : undefined;
+        if (endDate) endDate.setHours(23, 59, 59, 99);
+        this.filterHistory = this.history.filter((item) => {
+          const createdAt = new Date(item.createdAt);
+          return (
+            !startDate ||
+            !endDate ||
+            (createdAt >= startDate && createdAt <= endDate)
+          );
+        });
 
-      const fields: any = this.filters.get('fields')?.value;
-      if (fields.length > 0) {
-        this.filterHistory = this.filterHistory
-          .filter(
-            (item) =>
-              !!item.changes.find((change) => fields.includes(change.field))
-          )
-          .map((item) => {
-            const newItem = Object.assign({}, item);
-            newItem.changes = item.changes.filter((change) =>
-              fields.includes(change.field)
-            );
-            return newItem;
+        const fields: any = this.filters.get('fields')?.value;
+        if (fields.length > 0) {
+          this.filterHistory = this.filterHistory
+            .filter(
+              (item) =>
+                !!item.changes.find((change) => fields.includes(change.field))
+            )
+            .map((item) => {
+              const newItem = Object.assign({}, item);
+              newItem.changes = item.changes.filter((change) =>
+                fields.includes(change.field)
+              );
+              return newItem;
+            });
+        }
+        this.historyForTable = [];
+        this.filterHistory.map((elt) => {
+          elt.changes.map((change) => {
+            this.setHistoryForTableFromChange(change, elt);
           });
-      }
-      this.historyForTable = [];
-      this.filterHistory.map((elt) => {
-        elt.changes.map((change) => {
-          this.setHistoryForTableFromChange(change, elt);
         });
       });
-    });
   }
 
   /**
@@ -451,11 +451,13 @@ export class RecordHistoryComponent
       },
       autoFocus: false,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.revert(version);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.revert(version);
+        }
+      });
   }
 
   /**

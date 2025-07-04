@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, DestroyRef, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -10,8 +10,6 @@ import { Layout } from '../../../../models/layout.model';
 import { get } from 'lodash';
 import { GridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
 import { AggregationService } from '../../../../services/aggregation/aggregation.service';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs';
 import {
   ButtonModule,
   CheckboxModule,
@@ -32,6 +30,7 @@ import {
 } from '../../../controls/public-api';
 import { ReferenceData } from '../../../../models/reference-data.model';
 import { QueryParamsMappingComponent } from '../../common/query-params-mapping/query-params-mapping.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Component for the general summary cards tab */
 @Component({
@@ -62,7 +61,7 @@ import { QueryParamsMappingComponent } from '../../common/query-params-mapping/q
   templateUrl: './summary-card-general.component.html',
   styleUrls: ['./summary-card-general.component.scss'],
 })
-export class SummaryCardGeneralComponent extends UnsubscribeComponent {
+export class SummaryCardGeneralComponent {
   /** Widget form group */
   @Input() formGroup!: SummaryCardFormT;
   /** Selected reference data */
@@ -75,6 +74,8 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
   @Input() aggregation: Aggregation | null = null;
   /** Loading status */
   @Input() loading = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Component for the general summary cards tab
@@ -87,9 +88,7 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
     private dialog: Dialog,
     private layoutService: GridLayoutService,
     private aggregationService: AggregationService
-  ) {
-    super();
-  }
+  ) {}
 
   /** Opens modal for layout selection/creation */
   public async addLayout() {
@@ -105,15 +104,17 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
         hasLayouts: get(this.resource, 'layouts.totalCount', 0) > 0,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value) {
-        if (typeof value === 'string') {
-          this.formGroup.get('card.layout')?.setValue(value);
-        } else {
-          this.formGroup.get('card.layout')?.setValue((value as any).id);
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value) {
+          if (typeof value === 'string') {
+            this.formGroup.get('card.layout')?.setValue(value);
+          } else {
+            this.formGroup.get('card.layout')?.setValue((value as any).id);
+          }
         }
-      }
-    });
+      });
   }
 
   /**
@@ -130,19 +131,21 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
         queryName: this.resource?.queryName,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value && this.layout) {
-        this.layoutService
-          .editLayout(this.layout, value, this.resource?.id)
-          .subscribe(() => {
-            if (this.formGroup.get('card.layout')) {
-              this.formGroup
-                .get('card.layout')
-                ?.setValue(this.formGroup.get('card.layout')?.value || null);
-            }
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value && this.layout) {
+          this.layoutService
+            .editLayout(this.layout, value, this.resource?.id)
+            .subscribe(() => {
+              if (this.formGroup.get('card.layout')) {
+                this.formGroup
+                  .get('card.layout')
+                  ?.setValue(this.formGroup.get('card.layout')?.value || null);
+              }
+            });
+        }
+      });
   }
 
   /**
@@ -161,15 +164,17 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
         resource: this.resource,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value) {
-        if (typeof value === 'string') {
-          this.formGroup.get('card.aggregation')?.setValue(value);
-        } else {
-          this.formGroup.get('card.aggregation')?.setValue((value as any).id);
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value) {
+          if (typeof value === 'string') {
+            this.formGroup.get('card.aggregation')?.setValue(value);
+          } else {
+            this.formGroup.get('card.aggregation')?.setValue((value as any).id);
+          }
         }
-      }
-    });
+      });
   }
 
   /**
@@ -186,23 +191,25 @@ export class SummaryCardGeneralComponent extends UnsubscribeComponent {
         aggregation: this.aggregation,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value && this.aggregation) {
-        this.aggregationService
-          .editAggregation(this.aggregation, value, {
-            resource: this.resource?.id,
-          })
-          .subscribe(() => {
-            if (this.formGroup.get('card.aggregation')) {
-              this.formGroup
-                .get('card.aggregation')
-                ?.setValue(
-                  this.formGroup.get('card.aggregation')?.value || null
-                );
-            }
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value && this.aggregation) {
+          this.aggregationService
+            .editAggregation(this.aggregation, value, {
+              resource: this.resource?.id,
+            })
+            .subscribe(() => {
+              if (this.formGroup.get('card.aggregation')) {
+                this.formGroup
+                  .get('card.aggregation')
+                  ?.setValue(
+                    this.formGroup.get('card.aggregation')?.value || null
+                  );
+              }
+            });
+        }
+      });
   }
 
   /**

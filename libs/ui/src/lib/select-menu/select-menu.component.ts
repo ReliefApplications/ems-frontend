@@ -15,6 +15,8 @@ import {
   Optional,
   Self,
   OnChanges,
+  inject,
+  DestroyRef,
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { SelectOptionComponent } from './components/select-option.component';
@@ -32,6 +34,7 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { isNil } from 'lodash';
 import { ShadowDomService } from '../shadow-dom/shadow-dom.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * UI Select Menu component
@@ -94,8 +97,6 @@ export class SelectMenuComponent
   public displayTrigger = this.placeholder;
   /** Needed property for the components in survey that would use the select-menu component */
   public triggerUIChange$ = new Subject<boolean>();
-  /** Destroy subject */
-  private destroy$ = new Subject<void>();
   /** Click outside listener */
   private clickOutsideListener!: () => void;
   /** Subscription to the closing actions */
@@ -106,6 +107,8 @@ export class SelectMenuComponent
   private applyAnimationTimeoutListener!: NodeJS.Timeout;
   /** Timeout listener for the closing of the panel */
   private closePanelTimeoutListener!: NodeJS.Timeout;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** Control access value functions */
   onChange!: (value: any) => void;
@@ -153,7 +156,7 @@ export class SelectMenuComponent
         .pipe(
           debounceTime(500),
           distinctUntilChanged(),
-          takeUntil(this.destroy$)
+          takeUntilDestroyed(this.destroyRef)
         )
         .subscribe((searchValue: string) => {
           this.filterOptionList(searchValue);
@@ -179,23 +182,25 @@ export class SelectMenuComponent
       }
     );
     this.optionList?.changes
-      .pipe(startWith(this.optionList), takeUntil(this.destroy$))
+      .pipe(startWith(this.optionList), takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (options: QueryList<SelectOptionComponent>) => {
           this.handleOptionsQueryChange(options);
         },
       });
     if (this.control) {
-      this.control.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe({
-        next: (value) => {
-          // If the value is cleared from outside, reset displayed values
-          if (isNil(value) || value.length === 0) {
-            this.selectedValues = [];
-            this.optionList.forEach((option) => (option.selected = false));
-            this.setDisplayTriggerText();
-          }
-        },
-      });
+      this.control.valueChanges
+        ?.pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (value) => {
+            // If the value is cleared from outside, reset displayed values
+            if (isNil(value) || value.length === 0) {
+              this.selectedValues = [];
+              this.optionList.forEach((option) => (option.selected = false));
+              this.setDisplayTriggerText();
+            }
+          },
+        });
     }
   }
 
@@ -207,7 +212,7 @@ export class SelectMenuComponent
   forceOptionList(optionList: QueryList<SelectOptionComponent>) {
     this.optionList = optionList;
     this.optionList?.changes
-      .pipe(startWith(this.optionList), takeUntil(this.destroy$))
+      .pipe(startWith(this.optionList), takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (options: QueryList<SelectOptionComponent>) => {
           this.handleOptionsQueryChange(options);
@@ -228,7 +233,10 @@ export class SelectMenuComponent
     }
     options.forEach((option) => {
       option.optionClick
-        .pipe(takeUntil(this.destroy$), takeUntil(this.resetSubscriptions$))
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          takeUntil(this.resetSubscriptions$)
+        )
         .subscribe({
           next: (isSelected: boolean) => {
             this.updateSelectedValues(option, isSelected);
@@ -560,7 +568,5 @@ export class SelectMenuComponent
     if (this.selectClosingActionsSubscription) {
       this.selectClosingActionsSubscription.unsubscribe();
     }
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }
