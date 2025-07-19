@@ -131,7 +131,7 @@ export class FormHelpersService {
     for (const name of questionsToUpload) {
       const files = temporaryFilesStorage[name];
       if (!isNil(files)) {
-        for (const [index, file] of files.entries()) {
+        for (const [, file] of files.entries()) {
           // Upload the file using document management system
           if (useDocumentManagement) {
             // Avoid already uploaded ones checking if contains an itemId
@@ -148,33 +148,37 @@ export class FormHelpersService {
                     question
                   );
                 if (driveId && itemId) {
-                  const fileContent = data[name][index].content;
-                  data[name][index].content = {
-                    driveId,
-                    itemId,
-                  };
-
-                  // Check if any other question is using the same file
-                  survey.getAllQuestions().forEach((question) => {
-                    const questionType = question.getType();
-                    if (
-                      questionType !== 'file' ||
-                      // Only change files that are not in the temporary storage
-                      // meaning their values came from the default values
-                      !!temporaryFilesStorage[question.name]
-                    ) {
-                      return;
-                    }
-                    const files = data[question.name] ?? [];
-                    files.forEach((file: any) => {
-                      if (file && file.content === fileContent) {
-                        file.content = {
-                          driveId,
-                          itemId,
-                        };
+                  const matchingFile = data[name].find(
+                    (x: any) => x.name === file.name
+                  );
+                  if (matchingFile) {
+                    const fileContent = matchingFile.content;
+                    matchingFile.content = {
+                      driveId,
+                      itemId,
+                    };
+                    // Check if any other question is using the same file
+                    survey.getAllQuestions().forEach((question) => {
+                      const questionType = question.getType();
+                      if (
+                        questionType !== 'file' ||
+                        // Only change files that are not in the temporary storage
+                        // meaning their values came from the default values
+                        !!temporaryFilesStorage[question.name]
+                      ) {
+                        return;
                       }
+                      const files = data[question.name] ?? [];
+                      files.forEach((file: any) => {
+                        if (file && file.content === fileContent) {
+                          file.content = {
+                            driveId,
+                            itemId,
+                          };
+                        }
+                      });
                     });
-                  });
+                  }
                 }
               } catch (error) {
                 failedFilesToUpload.push({ question: name, file });
@@ -188,28 +192,33 @@ export class FormHelpersService {
               formId
             )) as string;
             if (path) {
-              const fileContent = data[name][index].content;
-              data[name][index].content = path;
+              const matchingFile = data[name].find(
+                (x: any) => x.name === file.name
+              );
+              if (matchingFile) {
+                const fileContent = matchingFile.content;
+                matchingFile.content = path;
 
-              // Check if any other question is using the same file
-              survey.getAllQuestions().forEach((question) => {
-                const questionType = question.getType();
-                if (
-                  questionType !== 'file' ||
-                  // Only change files that are not in the temporary storage
-                  // meaning their values came from the default values
-                  !!temporaryFilesStorage[question.name]
-                ) {
-                  return;
-                }
-
-                const files = data[question.name] ?? [];
-                files.forEach((file: any) => {
-                  if (file && file.content === fileContent) {
-                    file.content = path;
+                // Check if any other question is using the same file
+                survey.getAllQuestions().forEach((question) => {
+                  const questionType = question.getType();
+                  if (
+                    questionType !== 'file' ||
+                    // Only change files that are not in the temporary storage
+                    // meaning their values came from the default values
+                    !!temporaryFilesStorage[question.name]
+                  ) {
+                    return;
                   }
+
+                  const files = data[question.name] ?? [];
+                  files.forEach((file: any) => {
+                    if (file && file.content === fileContent) {
+                      file.content = path;
+                    }
+                  });
                 });
-              });
+              }
             }
           }
         }
