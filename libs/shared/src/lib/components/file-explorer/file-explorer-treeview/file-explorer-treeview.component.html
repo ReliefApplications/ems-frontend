@@ -1,16 +1,38 @@
-<kendo-treeview
-  class="h-full"
-  [nodes]="data"
-  textField="text"
-  childrenField="items"
-  kendoTreeViewExpandable
-  kendoTreeViewSelectable
-  [children]="$any(fetchChildren.bind(this))"
-  [hasChildren]="$any(hasChildren.bind(this))"
-  selectBy="compositeId"
-  expandBy="compositeId"
-  [(selectedKeys)]="selectedKeys"
-  [(expandedKeys)]="expandedKeys"
-  (selectionChange)="onSelectionChange($event)"
-  (expand)="onExpand($event)"
-></kendo-treeview>
+<ng-container *ngIf="!loading; else loadingTmpl">
+  <!-- Tree view for file explorer -->
+  <ng-container *ngIf="data.length > 0; else emptyTmpl">
+    <kendo-treeview
+      class="h-full"
+      [nodes]="data"
+      textField="text"
+      childrenField="items"
+      kendoTreeViewExpandable
+      kendoTreeViewSelectable
+      [children]="$any(fetchChildren.bind(this))"
+      [hasChildren]="$any(hasChildren.bind(this))"
+      selectBy="compositeId"
+      expandBy="compositeId"
+      [(selectedKeys)]="selectedKeys"
+      [(expandedKeys)]="expandedKeys"
+      (selectionChange)="onSelectionChange($event)"
+      (expand)="onExpand($event)"
+    ></kendo-treeview>
+  </ng-container>
+</ng-container>
+
+<!-- Loading indicator -->
+<ng-template #loadingTmpl>
+  <div class="h-full flex">
+    <ui-spinner class="m-auto" *ngIf="loading"></ui-spinner>
+  </div>
+</ng-template>
+
+<!-- Empty indicator -->
+<ng-template #emptyTmpl>
+  <div class="h-full flex">
+    <shared-empty
+      class="m-auto"
+      [title]="'components.widget.fileExplorer.empty.folders' | translate"
+    ></shared-empty>
+  </div>
+</ng-template>

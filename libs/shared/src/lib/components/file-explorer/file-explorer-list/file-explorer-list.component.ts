@@ -12,6 +12,8 @@ import { FileExplorerListItemComponent } from '../file-explorer-list-item/file-e
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
 import { PaginatorModule, SpinnerModule } from '@oort-front/ui';
 import { FileExplorerWidgetComponent } from '../file-explorer-widget/file-explorer-widget.component';
+import { EmptyModule } from '../../ui/empty/empty.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * File explorer 'list' view component.
@@ -25,6 +27,8 @@ import { FileExplorerWidgetComponent } from '../file-explorer-widget/file-explor
     FileExplorerListItemComponent,
     PaginatorModule,
     SpinnerModule,
+    EmptyModule,
+    TranslateModule,
   ],
   templateUrl: './file-explorer-list.component.html',
   styleUrls: ['./file-explorer-list.component.scss'],

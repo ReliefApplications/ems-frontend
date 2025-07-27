@@ -4,12 +4,14 @@
     *ngIf="!loading"
     class="w-full flex-1 flex flex-row flex-wrap gap-4 overflow-y-auto"
   >
-    <shared-file-explorer-list-item
-      *ngFor="let document of listData"
-      [document]="document"
-      [selected]="parent?.selectedDocumentId === document.id"
-      (click)="itemClick.emit(document)"
-    ></shared-file-explorer-list-item>
+    <ng-container *ngIf="listData.length > 0; else emptyTmpl">
+      <shared-file-explorer-list-item
+        *ngFor="let document of listData"
+        [document]="document"
+        [selected]="parent?.selectedDocumentId === document.id"
+        (click)="itemClick.emit(document)"
+      ></shared-file-explorer-list-item>
+    </ng-container>
   </div>
   <!-- Loading indicator -->
   <ui-spinner class="flex m-auto" *ngIf="loading"></ui-spinner>
@@ -27,3 +29,11 @@
   >
   </ui-paginator>
 </div>
+
+<ng-template #emptyTmpl>
+  <shared-empty
+    class="flex m-auto"
+    icon="draft"
+    [title]="'components.widget.fileExplorer.empty.files' | translate"
+  ></shared-empty>
+</ng-template>

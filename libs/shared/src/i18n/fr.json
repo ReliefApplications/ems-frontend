@@ -1682,6 +1682,10 @@
 					"viewAsGrid": "Afficher sous forme de grille",
 					"viewAsList": "Afficher sous forme de liste"
 				},
+				"empty": {
+					"files": "Aucun fichier trouvé",
+					"folders": "Aucun dossier trouvé"
+				},
 				"filter": {
 					"alert": "Définir des filtres au niveau du système qui restreignent l'ensemble des documents pour tous les utilisateurs. Ces filtres administratifs ne peuvent pas être vus ou modifiés par les utilisateurs finaux et seront appliqués en plus de toute navigation dans les dossiers ou filtrage contextuel.",
 					"title": "Filtres statiques"

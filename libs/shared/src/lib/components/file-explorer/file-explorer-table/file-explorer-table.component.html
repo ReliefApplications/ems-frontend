@@ -22,4 +22,11 @@
       {{ dataItem.modifieddate | date : 'yyyy-MM-dd HH:mm' }}
     </ng-template>
   </kendo-grid-column>
+  <ng-template kendoGridNoRecordsTemplate>
+    <shared-empty
+      class="m-auto"
+      icon="draft"
+      [title]="'components.widget.fileExplorer.empty.files' | translate"
+    ></shared-empty>
+  </ng-template>
 </kendo-grid>

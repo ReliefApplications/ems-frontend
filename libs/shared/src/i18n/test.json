@@ -1679,6 +1679,10 @@
 					"viewAsGrid": "******",
 					"viewAsList": "******"
 				},
+				"empty": {
+					"files": "******",
+					"folders": "******"
+				},
 				"filter": {
 					"alert": "******",
 					"title": "******"

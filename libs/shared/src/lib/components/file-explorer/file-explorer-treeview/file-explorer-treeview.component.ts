@@ -18,6 +18,9 @@ import { FileExplorerWidgetComponent } from '../file-explorer-widget/file-explor
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { ContextService } from '../../../services/context/context.service';
 import getFilter from '../../../utils/common-services/filter.util';
+import { TranslateModule } from '@ngx-translate/core';
+import { SpinnerModule } from '@oort-front/ui';
+import { EmptyModule } from '../../ui/empty/empty.module';
 
 /**
  * Structure of data used in the tree view.
@@ -38,7 +41,13 @@ interface TreeData {
 @Component({
   selector: 'shared-file-explorer-treeview',
   standalone: true,
-  imports: [CommonModule, TreeViewModule],
+  imports: [
+    CommonModule,
+    TreeViewModule,
+    TranslateModule,
+    SpinnerModule,
+    EmptyModule,
+  ],
   templateUrl: './file-explorer-treeview.component.html',
   styleUrls: ['./file-explorer-treeview.component.scss'],
 })
@@ -57,6 +66,8 @@ export class FileExplorerTreeviewComponent implements OnInit, OnChanges {
   public selectedKeys: any[] = [];
   /** Expanded keys in the tree view */
   public expandedKeys: string[] = [];
+  /** Loading indicator */
+  public loading = false;
   /** Shared document management service */
   private documentManagementService = inject(DocumentManagementService);
   /** Shared context service */
@@ -100,6 +111,7 @@ export class FileExplorerTreeviewComponent implements OnInit, OnChanges {
    * This method is called during component initialization.
    */
   private getTagValues() {
+    this.loading = true;
     this.documentManagementService
       .countDocuments({
         byTag: this.tags[0],
@@ -116,6 +128,7 @@ export class FileExplorerTreeviewComponent implements OnInit, OnChanges {
             path: [`${this.tags[0]}_${item.id}`],
           }))
           .sort((a, b) => a.text.localeCompare(b.text));
+        this.loading = false;
       });
   }
 

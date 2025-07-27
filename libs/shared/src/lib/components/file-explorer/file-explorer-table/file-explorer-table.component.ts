@@ -15,6 +15,8 @@ import { FileExplorerDocument } from '../types/file-explorer-document.type';
 import { PAGER_SETTINGS } from './file-explorer-table.constants';
 import { PageChangeEvent } from '@progress/kendo-angular-pager';
 import { SortDescriptor } from '@progress/kendo-data-query';
+import { EmptyModule } from '../../ui/empty/empty.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * File explorer 'grid' view component.
@@ -23,7 +25,7 @@ import { SortDescriptor } from '@progress/kendo-data-query';
 @Component({
   selector: 'shared-file-explorer-table',
   standalone: true,
-  imports: [CommonModule, GridModule],
+  imports: [CommonModule, GridModule, EmptyModule, TranslateModule],
   templateUrl: './file-explorer-table.component.html',
   styleUrls: ['./file-explorer-table.component.scss'],
 })
