@@ -98,13 +98,10 @@ export class FileExplorerWidgetComponent
   private el = inject(ElementRef);
 
   /** @returns Context filters array */
-  get contextFilters(): CompositeFilterDescriptor {
+  get contextFilters(): CompositeFilterDescriptor | object {
     return this.settings.contextFilters
       ? JSON.parse(this.settings.contextFilters)
-      : {
-          logic: 'and',
-          filters: [],
-        };
+      : {};
   }
 
   ngOnInit(): void {
@@ -239,7 +236,7 @@ export class FileExplorerWidgetComponent
       // Dashboard & context filters
       ...contextFilter,
       // Static filters, set by admin, cannot be overwritten by users
-      ...getFilter(this.settings.filter),
+      ...(this.settings.filter ? getFilter(this.settings.filter) : {}),
     };
   }
 }

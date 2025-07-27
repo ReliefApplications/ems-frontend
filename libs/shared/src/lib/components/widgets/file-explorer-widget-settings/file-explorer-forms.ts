@@ -6,10 +6,7 @@ import { createFilterGroup } from '../../query-builder/query-builder-forms';
 const fb = new FormBuilder();
 
 /** TODO: Replace once we have UI */
-const DEFAULT_CONTEXT_FILTER = `{
-  "logic": "and",
-  "filters": []
-}`;
+const DEFAULT_CONTEXT_FILTER = `{}`;
 
 /**
  * Create file explorer widget form group
