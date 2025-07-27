@@ -87,13 +87,22 @@
   </div>
   <!-- Upload -->
   <!-- todo: translate -->
-  <ui-button
-    class="ml-auto"
-    *ngIf="form?.canCreateRecords"
-    icon="upload"
-    [loading]="uploading"
-    [disabled]="uploading"
-    (click)="onUpload()"
-    >Upload</ui-button
-  >
+  <ng-container *ngIf="form">
+    <ui-button
+      class="ml-auto"
+      *ngIf="form.canCreateRecords"
+      icon="upload"
+      [loading]="uploading"
+      [disabled]="uploading"
+      (click)="onUpload()"
+      >Upload</ui-button
+    >
+    <ui-button
+      class="ml-auto"
+      *ngIf="!form.canCreateRecords"
+      icon="admin_panel_settings"
+      (click)="onRequestAccess()"
+      >Request elevated permissions</ui-button
+    >
+  </ng-container>
 </div>

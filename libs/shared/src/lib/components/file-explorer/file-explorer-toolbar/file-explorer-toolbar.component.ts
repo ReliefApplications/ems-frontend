@@ -18,6 +18,7 @@ import { Apollo } from 'apollo-angular';
 import { Form, FormQueryResponse } from '../../../models/form.model';
 import { GET_FORM_BY_ID } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
+import { AuthService } from '../../../services/auth/auth.service';
 
 /**
  * File explorer widget toolbar.
@@ -65,6 +66,8 @@ export class FileExplorerToolbarComponent
   private apollo = inject(Apollo);
   /** Dialog service */
   private dialog = inject(Dialog);
+  /** Auth service */
+  private auth = inject(AuthService);
 
   ngOnInit(): void {
     // Subscribe to search control value changes
@@ -163,5 +166,26 @@ export class FileExplorerToolbarComponent
       }
       this.uploading = false;
     });
+  }
+
+  /**
+   * Request access to the form, opening email client
+   */
+  public onRequestAccess() {
+    if (!this.form) {
+      return;
+    }
+    const currentUser = this.auth.userValue?.name;
+    const recipients = 'ems2@who.int';
+    const subject = encodeURIComponent(
+      `Access Request: Permission to Add Records to “${this.form.name}”`
+    );
+    const body = encodeURIComponent(
+      `Dear EMS Team,\n\n` +
+        `Can you please give me permission to add new records to the ${this.form.name} form?\n\n` +
+        `(Insert reason you're requesting access)\n\n` +
+        `Thank you for your consideration.\n\n${currentUser}`
+    );
+    window.open(`mailto:${recipients}?subject=${subject}&body=${body}`);
   }
 }
