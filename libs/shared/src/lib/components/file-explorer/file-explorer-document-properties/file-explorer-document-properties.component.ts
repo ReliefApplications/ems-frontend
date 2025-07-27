@@ -76,7 +76,7 @@ export class FileExplorerDocumentPropertiesComponent
   /**
    * Fetches the properties of the document by its ID.
    */
-  private fetchDocumentProperties(): void {
+  public fetchDocumentProperties(): void {
     if (!this.documentId) return;
 
     // Cancel any previous request

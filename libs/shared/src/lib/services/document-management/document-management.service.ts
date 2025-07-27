@@ -476,6 +476,7 @@ export class DocumentManagementService {
       variables: {
         id,
       },
+      fetchPolicy: 'no-cache',
     });
   }
 
