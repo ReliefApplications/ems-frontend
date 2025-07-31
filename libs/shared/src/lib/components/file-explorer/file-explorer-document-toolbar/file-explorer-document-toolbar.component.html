@@ -1,0 +1,24 @@
+<div class="flex flex-row border-b pb-2">
+  <ui-button *ngIf="accessLevel === 0" (click)="onRequestAccess()">
+    {{ 'components.widget.fileExplorer.actions.requestAccess' | translate }}
+  </ui-button>
+  <!-- Download button -->
+  <ui-button
+    class="ml-auto"
+    [isIcon]="true"
+    icon="download"
+    variant="grey"
+    (click)="onDownload()"
+    [uiTooltip]="'components.widget.fileExplorer.actions.download' | translate"
+    [disabled]="loading || accessLevel < 1"
+  ></ui-button>
+  <!-- Copy link -->
+  <ui-button
+    [isIcon]="true"
+    icon="content_copy"
+    variant="grey"
+    (click)="onCopyLink()"
+    [uiTooltip]="'components.widget.fileExplorer.actions.copyLink' | translate"
+    [disabled]="loading || accessLevel < 1"
+  ></ui-button>
+</div>

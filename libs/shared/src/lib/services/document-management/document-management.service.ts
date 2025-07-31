@@ -9,12 +9,27 @@ import { SnackbarSpinnerComponent } from '../../components/snackbar-spinner/snac
 import { RestService } from '../rest/rest.service';
 import { Apollo, gql } from 'apollo-angular';
 import {
+  COUNT_DOCUMENTS,
+  CountDocumentsQueryResponse,
   DriveQueryResponse,
+  GET_DOCUMENT_BY_ID,
+  GET_DOCUMENTS,
   GET_DRIVE_ID,
+  GET_FIELDS_OPTIONS,
   GET_OCCURRENCE_BY_ID,
+  GET_OCCURRENCE_TYPES,
+  GetDocumentByIdResponse,
+  GetDocumentsQueryResponse,
+  GetFieldsOptionsResponse,
+  GetOccurrenceTypesResponse,
   OccurrenceQueryResponse,
 } from './graphql/queries';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, forkJoin, map } from 'rxjs';
+import { SortDescriptor } from '@progress/kendo-data-query';
+import {
+  FileExplorerTagKey,
+  FileExplorerTagSelection,
+} from '../../components/file-explorer/types/file-explorer-filter.type';
 
 /**
  * Property query response type
@@ -340,6 +355,131 @@ export class DocumentManagementService {
   }
 
   /**
+   * List documents query
+   *
+   * @param options Query options
+   * @param options.offset Query offset
+   * @param options.filter Query filter
+   * @param options.sort Query sort descriptor
+   * @param options.tags Query tags selection
+   * @returns Query to list documents
+   */
+  public listDocuments(
+    options: {
+      offset: number;
+      filter?: any;
+      sort?: SortDescriptor[];
+      tags?: FileExplorerTagSelection;
+    } = {
+      offset: 0,
+    }
+  ) {
+    const apolloClient = this.apollo.use('csClient');
+    return apolloClient.query<GetDocumentsQueryResponse>({
+      query: GET_DOCUMENTS,
+      variables: {
+        // countfields & distinct are used by common services to avoid duplicating documents in query result
+        countfields: 'documentid',
+        distinct: 'vw_allmetatablerelations',
+        offset: options.offset,
+        ...(options.filter && { filter: JSON.stringify(options.filter) }),
+        ...(options.sort?.length && {
+          sortField: options.sort[0].field,
+          sortDirection: options.sort[0].dir,
+        }),
+      },
+    });
+  }
+
+  /**
+   * Count documents query
+   *
+   * @param options Query options
+   * @param options.byTag Tag to filter by
+   * @param options.filter Query filter
+   * @returns Query to count documents
+   */
+  public countDocuments(
+    options: {
+      byTag?: FileExplorerTagKey;
+      filter?: any;
+    } = {}
+  ) {
+    const apolloClient = this.apollo.use('csClient');
+    const byTag = options.byTag;
+
+    const countVariables = {
+      // countfields & distinct are used by common services to avoid duplicating documents in query result
+      countfields: 'documentid',
+      distinct: 'vw_allmetatablerelations',
+      ...(options.filter && { filter: JSON.stringify(options.filter) }),
+      withAetiology: byTag === 'aetiologyid',
+      withInformationConfidentiality: byTag === 'informationconfidentialityid',
+      withCountry: byTag === 'countryid',
+      withDiseaseCond: byTag === 'diseasecondid',
+      withDocumentCategory: byTag === 'documentcategoryid',
+      withDocumentType: byTag === 'documenttypeid',
+      withHazard: byTag === 'hazardid',
+      withIHRCommunication: byTag === 'ihrcommunicationid',
+      withAssignmentFunction: byTag === 'assignmentfunctionid',
+      withDocumentRole: byTag === 'roletypeid',
+      withLanguage: byTag === 'languageid',
+      withOccurrence: byTag === 'occurrenceid',
+      withOccurrenceType: byTag === 'occurrencetype',
+      withSourceOfInformation: byTag === 'sourceofinformationid',
+      withSyndrome: byTag === 'syndromeid',
+      withRegion: byTag === 'regionid',
+    };
+
+    switch (byTag) {
+      case 'occurrencetype': {
+        return forkJoin({
+          count: apolloClient.query<CountDocumentsQueryResponse>({
+            query: COUNT_DOCUMENTS,
+            variables: countVariables,
+          }),
+          occurrenceTypes: apolloClient.query<GetOccurrenceTypesResponse>({
+            query: GET_OCCURRENCE_TYPES,
+          }),
+        }).pipe(
+          map(({ count, occurrenceTypes }) => {
+            const metadata = (count.data.metadata || []).map((item: any) => ({
+              ...item,
+              name:
+                occurrenceTypes.data.occurrencetypes.find(
+                  (type) => type.id === item.id
+                )?.name || item.name,
+            }));
+            return { data: { metadata } };
+          })
+        );
+      }
+      default: {
+        return apolloClient.query<CountDocumentsQueryResponse>({
+          query: COUNT_DOCUMENTS,
+          variables: countVariables,
+        });
+      }
+    }
+  }
+
+  /**
+   * Get document properties by id
+   *
+   * @param id Document id
+   * @returns Document properties query
+   */
+  public getDocumentProperties(id: string) {
+    const apolloClient = this.apollo.use('csClient');
+    return apolloClient.query<GetDocumentByIdResponse>({
+      query: GET_DOCUMENT_BY_ID,
+      variables: {
+        id,
+      },
+    });
+  }
+
+  /**
    * Get occurrence by id
    *
    * @param id occurrence id
@@ -382,6 +522,36 @@ export class DocumentManagementService {
       apolloClient.query<PropertyQueryResponse>({
         query,
       })
+    );
+  }
+
+  /**
+   * Get fields options for the document management system
+   *
+   * @returns Query to fetch fields options
+   */
+  public getFieldsOptions() {
+    const apolloClient = this.apollo.use('csClient');
+    return apolloClient.query<GetFieldsOptionsResponse>({
+      query: GET_FIELDS_OPTIONS,
+    });
+  }
+
+  /**
+   * Get document permissions
+   * Logic as follows:
+   * - 0: no access
+   * - 1: read access
+   * - 2: read and write access
+   * - 3: full access
+   *
+   * @param driveId Drive id
+   * @param itemId Item id
+   * @returns Query to fetch document permissions
+   */
+  public getDocumentPermissions(driveId: string, itemId: string) {
+    return this.restService.get(
+      `${this.environment.csApiUrl}/documents/drives/${driveId}/items/${itemId}/permissions`
     );
   }
 }

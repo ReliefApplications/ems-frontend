@@ -1,5 +1,5 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
-import { theme } from '../themes/default/default.dev';
+import { theme } from '../themes/default/default.uat';
 import { sharedEnvironment } from './environment.shared';
 import { Environment } from './environment.type';
 
@@ -35,7 +35,7 @@ export const environment: Environment = {
   frontOfficeUri: 'https://hems-test.who.int/apps/',
   backOfficeUri: 'http://localhost:4200/',
   module: 'backoffice',
-  availableLanguages: ['en'],
+  availableLanguages: ['en', 'fr', 'test'],
   authConfig,
   esriApiKey:
     'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg',
@@ -53,6 +53,7 @@ export const environment: Environment = {
     'map',
     'summaryCard',
     'tabs',
+    'file-explorer',
   ],
   user: {
     attributes: ['country', 'region', 'location', 'department'],

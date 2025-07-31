@@ -23,6 +23,7 @@ import get from 'lodash/get';
 import { GridsterComponent, GridsterItemComponent } from 'angular-gridster2';
 import { WidgetService } from '../../services/widget/widget.service';
 import { TabsComponent } from '../widgets/tabs/tabs.component';
+import { FileExplorerWidgetComponent } from '../file-explorer/file-explorer-widget/file-explorer-widget.component';
 
 /** Component for the widgets */
 @Component({
@@ -58,7 +59,8 @@ export class WidgetComponent implements OnInit, OnDestroy, OnChanges {
     | MapWidgetComponent
     | EditorComponent
     | SummaryCardComponent
-    | TabsComponent;
+    | TabsComponent
+    | FileExplorerWidgetComponent;
   /** Expanded state of the widget */
   public expanded = false;
   /** Loading state of the widget */

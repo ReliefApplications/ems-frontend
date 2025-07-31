@@ -1,0 +1,25 @@
+<kendo-grid
+  [loading]="loading"
+  [data]="data"
+  [pageable]="pagerSettings"
+  [pageSize]="pageSize"
+  [skip]="skip"
+  (pageChange)="pageChange.emit($event)"
+  [sortable]="true"
+  [sort]="sort"
+  (sortChange)="sortChange.emit($event)"
+  (cellClick)="onCellClick($event)"
+>
+  <kendo-grid-column field="id" title="ID"> </kendo-grid-column>
+  <kendo-grid-column field="filename" title="Name"> </kendo-grid-column>
+  <kendo-grid-column field="createddate" title="Created On">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      {{ dataItem.createddate | date : 'yyyy-MM-dd HH:mm' }}
+    </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-column field="modifieddate" title="Last Updated On">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      {{ dataItem.modifieddate | date : 'yyyy-MM-dd HH:mm' }}
+    </ng-template>
+  </kendo-grid-column>
+</kendo-grid>

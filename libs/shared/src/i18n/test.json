@@ -499,6 +499,7 @@
 		"sendEmail": "******",
 		"separator": "******",
 		"settings": "******",
+		"sortBy": "******",
 		"status": "******",
 		"status_active": "******",
 		"status_archived": "******",
@@ -1670,6 +1671,29 @@
 				"other": "******"
 			},
 			"expand": "******",
+			"fileExplorer": {
+				"actions": {
+					"copyLink": "******",
+					"download": "******",
+					"requestAccess": "******",
+					"viewAsGrid": "******",
+					"viewAsList": "******"
+				},
+				"filter": {
+					"alert": "******",
+					"title": "******"
+				},
+				"folderHierarchy": {
+					"alert": "******",
+					"title": "******"
+				},
+				"folders": "******",
+				"notifications": {
+					"copyLink": {
+						"success": "******"
+					}
+				}
+			},
 			"grid": {
 				"actions": {
 					"detail": "******",

@@ -118,6 +118,13 @@ export class EditWidgetModalComponent
         template = TabsSettingsComponent;
         break;
       }
+      case 'file-explorer': {
+        const { FileExplorerWidgetSettingsComponent } = await import(
+          '../../widgets/file-explorer-widget-settings/file-explorer-widget-settings.component'
+        );
+        template = FileExplorerWidgetSettingsComponent;
+        break;
+      }
     }
     if (template) {
       // Create the settings component in the modal constructor to keep all hooks ready for the view insertion

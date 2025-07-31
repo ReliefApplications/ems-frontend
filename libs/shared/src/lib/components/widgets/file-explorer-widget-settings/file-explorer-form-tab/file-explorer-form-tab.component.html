@@ -1,0 +1,44 @@
+<!-- todo: translate -->
+<h2>Form binding</h2>
+<!-- todo: display alert to explain -->
+<div class="flex flex-col gap-2" [formGroup]="formGroup">
+  <!-- Resource selection -->
+  <div uiFormFieldDirective class="flex-1">
+    <label>{{ 'common.resource.one' | translate }}</label>
+    <shared-resource-select
+      formControlName="resource"
+      [selectedElements]="[resource]"
+    ></shared-resource-select>
+    <ui-button
+      *ngIf="formGroup.value.resource"
+      uiSuffix
+      size="small"
+      [isIcon]="true"
+      (click)="
+        formGroup.get('resource')?.setValue(null); $event.stopPropagation()
+      "
+      icon="close"
+      variant="danger"
+      [uiTooltip]="'common.clear' | translate"
+    ></ui-button>
+  </div>
+  <!-- Form selection -->
+  <div *ngIf="resource" uiFormFieldDirective class="flex-1">
+    <label>{{ 'common.form.one' | translate }}</label>
+    <ui-select-menu formControlName="template">
+      <ui-select-option>-</ui-select-option>
+      <ui-select-option
+        *ngFor="let form of resource.forms"
+        [value]="form.id"
+      >
+        {{ form.name }}
+      </ui-select-option>
+    </ui-select-menu>
+    <ui-icon
+      uiSuffix
+      icon="info_outline"
+      variant="grey"
+      [uiTooltip]="'Select a template for upload / edition'"
+    ></ui-icon>
+  </div>
+</div>
