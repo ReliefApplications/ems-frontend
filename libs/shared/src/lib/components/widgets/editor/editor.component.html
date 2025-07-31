@@ -5,11 +5,7 @@
   }"
   (click)="onClick($event)"
 >
-  <div
-    *ngIf="!loading; else loadingTmpl"
-    class="w-full h-fit"
-    (click)="onClick($event)"
-  >
+  <div *ngIf="!loading; else loadingTmpl" class="w-full h-fit">
     <shared-html-widget-content
       [html]="formattedHtml"
       [style]="formattedStyle"
