@@ -1,3 +1,11 @@
+## [2.20.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.20.0...v2.20.1) (2025-05-21)
+
+
+### Bug Fixes
+
+* dejavu font links failling in deployed environments ([#2792](https://github.com/ReliefApplications/ems-frontend/issues/2792)) ([99c1020](https://github.com/ReliefApplications/ems-frontend/commit/99c1020f81be424302af7da5bbb17c07572b9da0)), closes [Ab#112754](https://github.com/Ab/issues/112754)
+* some widgets using context wouldn't inject contextual data ([#2794](https://github.com/ReliefApplications/ems-frontend/issues/2794)) ([189fcc4](https://github.com/ReliefApplications/ems-frontend/commit/189fcc440f5938e98c8e32779fe014fa4e916a2b)), closes [AB#113721](https://github.com/AB/issues/113721)
+
 # [2.20.0](https://github.com/ReliefApplications/ems-frontend/compare/v2.19.2...v2.20.0) (2025-05-18)
 
 
