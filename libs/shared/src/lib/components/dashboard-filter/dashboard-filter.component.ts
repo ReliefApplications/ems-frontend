@@ -2,21 +2,21 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   ElementRef,
   HostListener,
+  inject,
   Inject,
   Injector,
   Input,
   NgZone,
   OnChanges,
-  OnDestroy,
   Optional,
   SimpleChanges,
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
 import { Model, SurveyModel } from 'survey-core';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { takeUntil, debounceTime, filter } from 'rxjs/operators';
+import { debounceTime, filter } from 'rxjs/operators';
 import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent } from '@oort-front/ui';
 import { DatePipe } from '../../pipes/date/date.pipe';
@@ -25,6 +25,7 @@ import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { DOCUMENT } from '@angular/common';
 import { Dashboard } from '../../models/dashboard.model';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Interface for quick filters
@@ -40,10 +41,7 @@ interface QuickFilter {
   templateUrl: './dashboard-filter.component.html',
   styleUrls: ['../../style/survey.scss', './dashboard-filter.component.scss'],
 })
-export class DashboardFilterComponent
-  extends UnsubscribeComponent
-  implements OnDestroy, OnChanges, AfterViewInit
-{
+export class DashboardFilterComponent implements OnChanges, AfterViewInit {
   /** Is editable */
   @Input() editable = false;
   /** Is fullscreen */
@@ -80,6 +78,8 @@ export class DashboardFilterComponent
   public empty = true;
   /** Resize observer for the sidenav container */
   private resizeObserver!: ResizeObserver;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Dashboard contextual filter component.
@@ -104,9 +104,7 @@ export class DashboardFilterComponent
     @Optional() private _host: SidenavContainerComponent,
     private formHelpersService: FormHelpersService,
     private injector: Injector
-  ) {
-    super();
-  }
+  ) {}
 
   ngAfterViewInit(): void {
     if (this._host) {
@@ -128,19 +126,19 @@ export class DashboardFilterComponent
             : true
         ),
         debounceTime(500),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(({ current }) => {
         this.survey.data = current;
         this.survey.setPropertyValue('refreshData', true);
       });
     this.contextService.filterOpened$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.opened = value;
       });
     this.contextService.filterPosition$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(
         (value: { position: FilterPosition; dashboardId: string } | null) => {
           if (value) {

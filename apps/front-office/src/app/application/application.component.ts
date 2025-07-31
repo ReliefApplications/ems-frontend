@@ -1,4 +1,12 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  HostListener,
+  inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { subject } from '@casl/ability';
@@ -9,11 +17,9 @@ import {
   ApplicationService,
   AuthService,
   ContentType,
-  UnsubscribeComponent,
   User,
 } from '@oort-front/shared';
 import get from 'lodash/get';
-import { takeUntil } from 'rxjs/operators';
 
 /**
  * Front-office Application component.
@@ -23,10 +29,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './application.component.html',
   styleUrls: ['./application.component.scss'],
 })
-export class ApplicationComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class ApplicationComponent implements OnInit, OnDestroy {
   /** Application title */
   public title = '';
   /** Stores current app page */
@@ -49,6 +52,8 @@ export class ApplicationComponent
   public loading = true;
   /** Current profile route */
   public profileRoute = '/profile';
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Front-office Application component.
@@ -70,7 +75,6 @@ export class ApplicationComponent
     private ability: AppAbility,
     private htmlTitle: Title
   ) {
-    super();
     this.largeDevice = window.innerWidth > 1024;
   }
 
@@ -90,19 +94,21 @@ export class ApplicationComponent
    */
   ngOnInit(): void {
     // Subscribe to params change
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.loading = true;
-      this.applicationService.loadApplication(params.id);
-    });
+    this.route.params
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        this.loading = true;
+        this.applicationService.loadApplication(params.id);
+      });
     // Get list of available applications
     this.authService.user$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((user: User | null) => {
         this.applications = user?.applications || [];
       });
     // Subscribe to application change
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((application: Application | null) => {
         if (application) {
           this.loading = false;
@@ -258,8 +264,7 @@ export class ApplicationComponent
     }
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     this.applicationService.leaveApplication();
   }
 }

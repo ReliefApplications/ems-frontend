@@ -1,7 +1,15 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Filter used by the roles component
@@ -11,7 +19,7 @@ import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
 })
-export class FilterComponent extends UnsubscribeComponent implements OnInit {
+export class FilterComponent implements OnInit {
   /** Loading state */
   @Input() loading = false;
   /** Event emitter for filter */
@@ -19,22 +27,22 @@ export class FilterComponent extends UnsubscribeComponent implements OnInit {
 
   /** Form */
   public form = this.fb.group({});
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * FilterComponent constructor.
    *
    * @param fb Used to create reactive forms.
    */
-  constructor(private fb: FormBuilder) {
-    super();
-  }
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.form.valueChanges
       .pipe(
         debounceTime(1000),
         distinctUntilChanged(),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((value: any) => {
         this.emitFilter(value);

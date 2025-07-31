@@ -6,22 +6,24 @@ import {
   Input,
   Inject,
   OnDestroy,
+  inject,
+  DestroyRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule, TooltipModule } from '@oort-front/ui';
-import { debounceTime, takeUntil } from 'rxjs';
+import { debounceTime } from 'rxjs';
 import set from 'lodash/set';
 import get from 'lodash/get';
 import { ConfirmService } from '../../services/confirm/confirm.service';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { DOCUMENT } from '@angular/common';
 import { ResizeEvent } from 'angular-resizable-element';
 import { ResizableModule } from 'angular-resizable-element';
 import { RestService } from '../../services/rest/rest.service';
 import { AsyncMonacoEditorDirective } from '../../directives/async-monaco-editor/async-monaco-editor.directive';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -44,10 +46,7 @@ const DEFAULT_STYLE = '';
   templateUrl: './custom-widget-style.component.html',
   styleUrls: ['./custom-widget-style.component.scss'],
 })
-export class CustomWidgetStyleComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class CustomWidgetStyleComponent implements OnInit, OnDestroy {
   /** Form control for the scss editor */
   public formControl = new FormControl(DEFAULT_STYLE);
   /** Event emitter for cancel event */
@@ -75,6 +74,8 @@ export class CustomWidgetStyleComponent
   private initEditorTimeoutListener!: NodeJS.Timeout;
   /** Navbar size style */
   public navbarStyle: any = {};
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Creates an instance of CustomStyleComponent, form and updates.
@@ -90,25 +91,23 @@ export class CustomWidgetStyleComponent
     private confirmService: ConfirmService,
     @Inject(DOCUMENT) private document: Document
   ) {
-    super();
-
     // Avoids saving until the style is updated
     this.formControl.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.loading = true;
       });
 
     // Updates the style when the value changes
     this.formControl.valueChanges
-      .pipe(debounceTime(1000), takeUntil(this.destroy$))
+      .pipe(debounceTime(1000), takeUntilDestroyed(this.destroyRef))
       .subscribe((value: any) => {
         const scss = `#${this.widgetComp.id} {
         ${value}
       }`;
         this.restService
           .post('style/scss-to-css', { scss }, { responseType: 'text' })
-          .pipe(takeUntil(this.destroy$))
+          .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe((css) => {
             set(this.widgetComp, 'widget.settings.widgetDisplay.style', value);
             this.styleApplied.innerText = css;
@@ -152,7 +151,7 @@ export class CustomWidgetStyleComponent
         confirmVariant: 'danger',
       });
       confirmDialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((confirm: any) => {
           if (confirm) {
             this.formControl.setValue(this.initialStyle);
@@ -195,8 +194,7 @@ export class CustomWidgetStyleComponent
     }
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     if (this.initEditorTimeoutListener) {
       clearTimeout(this.initEditorTimeoutListener);
     }

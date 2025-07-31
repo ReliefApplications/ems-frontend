@@ -1,10 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { SimpleRendererComponent } from '../simple-renderer/simple-renderer.component';
 import { createUniqueValueInfoForm } from '../../../map-forms';
 import { Fields } from '../../../../../../models/layer.model';
-import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
   ButtonModule,
@@ -20,8 +20,8 @@ import {
   IconName,
   icon as iconCreator,
 } from '@fortawesome/fontawesome-svg-core';
-import { UnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';
 import { SanitizeHtmlPipe } from '../../../../../../pipes/sanitize-html/sanitize-html.pipe';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Unique value renderer layer settings.
@@ -45,10 +45,7 @@ import { SanitizeHtmlPipe } from '../../../../../../pipes/sanitize-html/sanitize
   templateUrl: './unique-value-renderer.component.html',
   styleUrls: ['./unique-value-renderer.component.scss'],
 })
-export class UniqueValueRendererComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class UniqueValueRendererComponent implements OnInit {
   /** Type of layer geometry ( point / polygon ) */
   @Input() geometryType: GeometryType = 'Point';
   /** Current form group */
@@ -63,6 +60,8 @@ export class UniqueValueRendererComponent
   public svgIcons: { [key: string]: string } = {};
   /** Currently opened unique vale */
   public openedIndex = -1;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns get unique infos settings as form array */
   get uniqueValueInfos(): FormArray {
@@ -79,7 +78,7 @@ export class UniqueValueRendererComponent
     });
     this.createIconsSvgs();
     this.uniqueValueInfos.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.createIconsSvgs();
       });

@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
@@ -6,8 +14,7 @@ import { Application } from '../../../models/application.model';
 import { Channel, ChannelsQueryResponse } from '../../../models/channel.model';
 import { Role } from '../../../models/user.model';
 import { GET_CHANNELS } from '../graphql/queries';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Channels tab of Role Summary.
@@ -17,10 +24,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './role-channels.component.html',
   styleUrls: ['./role-channels.component.scss'],
 })
-export class RoleChannelsComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class RoleChannelsComponent implements OnInit {
   /** Role to display */
   @Input() role!: Role;
   /** Application to display */
@@ -44,6 +48,8 @@ export class RoleChannelsComponent
       this.form?.get('email')?.disable();
     }
   }
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Channels tab of Role Summary.
@@ -51,9 +57,7 @@ export class RoleChannelsComponent
    * @param fb Angular form builder
    * @param apollo Apollo client
    */
-  constructor(private fb: FormBuilder, private apollo: Apollo) {
-    super();
-  }
+  constructor(private fb: FormBuilder, private apollo: Apollo) {}
 
   ngOnInit(): void {
     this.form = this.createFormGroup(this.role);
@@ -64,7 +68,7 @@ export class RoleChannelsComponent
           application: this.application?.id,
         },
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data }) => {
         this.channels = data.channels;
         // Move channels in an array under corresponding applications.

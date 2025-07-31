@@ -1,5 +1,7 @@
 import {
   Component,
+  DestroyRef,
+  inject,
   Input,
   OnChanges,
   OnInit,
@@ -7,8 +9,7 @@ import {
 } from '@angular/core';
 import { UntypedFormGroup, Validators } from '@angular/forms';
 import { DEFAULT_OPERATORS, NO_FIELD_OPERATORS } from './operators';
-import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Aggregation pipeline expression component.
@@ -18,10 +19,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './expressions.component.html',
   styleUrls: ['./expressions.component.scss'],
 })
-export class ExpressionsComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnChanges
-{
+export class ExpressionsComponent implements OnInit, OnChanges {
   /** Input decorator for form. */
   @Input() form!: UntypedFormGroup;
   /** Input decorator for fields. */
@@ -34,20 +32,15 @@ export class ExpressionsComponent
   public operatorsList: string[] = Object.values(this.operators);
   /** Array to hold the list of no field operators. */
   public noFieldOperators = NO_FIELD_OPERATORS;
-
-  /**
-   * Aggregation pipeline expression component.
-   */
-  constructor() {
-    super();
-  }
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** OnInit lifecycle hook. */
   ngOnInit(): void {
     if (this.displayField) {
       this.form
         .get('operator')
-        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((operator: string) => {
           if (operator) {
             if (this.noFieldOperators.includes(operator)) {

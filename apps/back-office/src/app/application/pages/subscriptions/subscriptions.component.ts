@@ -1,14 +1,12 @@
-import { Apollo } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   Application,
   Channel,
   Subscription as ApplicationSubscription,
   ApplicationService,
-  UnsubscribeComponent,
 } from '@oort-front/shared';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Application subscriptions page component.
@@ -18,10 +16,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './subscriptions.component.html',
   styleUrls: ['./subscriptions.component.scss'],
 })
-export class SubscriptionsComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class SubscriptionsComponent implements OnInit {
   // === DATA ===
   /** Application subscriptions */
   public subscriptions: ApplicationSubscription[] = [];
@@ -38,26 +33,24 @@ export class SubscriptionsComponent
   // === SUBSCRIPTIONS ===
   /** Channels list */
   private channels: Channel[] = [];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Application subscriptions page component
    *
    * @param applicationService Shared application service
    * @param dialog Dialog service
-   * @param apollo Apollo service
    */
   constructor(
     private applicationService: ApplicationService,
-    public dialog: Dialog,
-    private apollo: Apollo
-  ) {
-    super();
-  }
+    public dialog: Dialog
+  ) {}
 
   ngOnInit(): void {
     this.loading = false;
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((application: Application | null) => {
         if (application) {
           this.subscriptions = application.subscriptions || [];
@@ -81,11 +74,13 @@ export class SubscriptionsComponent
         channels: this.channels,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.applicationService.addSubscription(value);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.applicationService.addSubscription(value);
+        }
+      });
   }
 
   /**
@@ -114,10 +109,12 @@ export class SubscriptionsComponent
         subscription: element,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.applicationService.editSubscription(value, element.routingKey);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.applicationService.editSubscription(value, element.routingKey);
+        }
+      });
   }
 }

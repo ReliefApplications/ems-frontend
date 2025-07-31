@@ -1,6 +1,8 @@
 import {
   Component,
+  DestroyRef,
   EventEmitter,
+  inject,
   Input,
   OnDestroy,
   OnInit,
@@ -13,12 +15,12 @@ import { EmailService } from '../../email.service';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, first, firstValueFrom, takeUntil } from 'rxjs';
+import { Subscription, first, firstValueFrom } from 'rxjs';
 import { LayoutComponent } from '../../steps/layout/layout.component';
 import { SelectDistributionComponent } from '../../steps/select-distribution/select-distribution.component';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { SnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
 import { cloneDeep } from 'lodash';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Snackbar duration in ms */
 const SNACKBAR_DURATION = 700;
@@ -31,10 +33,7 @@ const SNACKBAR_DURATION = 700;
   templateUrl: './ems-template.component.html',
   styleUrls: ['./ems-template.component.scss'],
 })
-export class EmsTemplateComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class EmsTemplateComponent implements OnInit, OnDestroy {
   /** Reference to email layout. */
   @ViewChild(LayoutComponent) layout!: LayoutComponent;
   /** Reference to selector of distribution list. */
@@ -67,8 +66,10 @@ export class EmsTemplateComponent
   public steps: any[];
   /** LAYOUT PAGE VALIDATION */
   setLayoutValidation = false;
-  /** PREVIEW TRIGGERED state   */
+  /** PREVIEW TRIGGERED state */
   public previewTriggered = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** DUMMY FORM */
   public form = new FormGroup({
@@ -113,7 +114,6 @@ export class EmsTemplateComponent
     private snackBar: SnackbarService,
     private translate: TranslateService
   ) {
-    super();
     this.steps = [
       {
         label: 'Notification/Alert',
@@ -349,7 +349,7 @@ export class EmsTemplateComponent
           {},
           this.emailService.sendSeparateEmail()
         )
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
             this.emailService.isEdit = false;
@@ -838,7 +838,7 @@ export class EmsTemplateComponent
         (manipulatedDataWithoutOptions) => {
           this.emailService
             .addEmailNotification(manipulatedDataWithoutOptions)
-            .pipe(takeUntil(this.destroy$))
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(({ data }) => {
               this.emailService.configId = data.addEmailNotification.id;
 
@@ -1046,7 +1046,7 @@ export class EmsTemplateComponent
     this.navigateToEms.emit();
   }
 
-  override ngOnDestroy(): void {
+  ngOnDestroy(): void {
     this.disableSub.unsubscribe();
     this.disableDraft.unsubscribe();
     this.disableSend.unsubscribe();

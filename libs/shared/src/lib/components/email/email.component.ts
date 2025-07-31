@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { EmailService } from './email.service';
 import { ApplicationService } from '../../services/application/application.service';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SnackbarService } from '@oort-front/ui';
 import {
   AbstractControl,
@@ -12,7 +11,7 @@ import {
 } from '@angular/forms';
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
-import { firstValueFrom, takeUntil } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { ApiConfiguration } from '../../models/api-configuration.model';
 import { AppAbility, AuthService } from '../../services/auth/auth.service';
@@ -22,6 +21,7 @@ import { cloneDeep } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { DistributionModalComponent } from '../distribution-lists/components/distribution-modal/distribution-modal.component';
 import { PreviewDistributionComponent } from './components/preview-distribution/preview-distribution.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
@@ -36,7 +36,7 @@ const TEMPLATE_PAGE_SIZE = 5;
   templateUrl: './email.component.html',
   styleUrls: ['./email.component.scss'],
 })
-export class EmailComponent extends UnsubscribeComponent implements OnInit {
+export class EmailComponent implements OnInit {
   /** Data for filtering templates. */
   filterTemplateData: any = [];
   /** Actual data for templates. */
@@ -112,6 +112,8 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
   public showDLPreview = false;
   /** Preview DL data from Dashboard view */
   public previewDLData: any = [];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Email Notification setup component.
@@ -140,9 +142,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
     public ability: AppAbility,
     public queryBuilder: QueryBuilderService,
     public dialog: Dialog
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.emailService.showFileUpload = false;
@@ -199,11 +199,13 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       confirmText: 'Confirm',
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.toggle();
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.toggle();
+        }
+      });
   }
 
   /**
@@ -963,17 +965,19 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.emailService.emailListLoading = true;
-        this.emailService.deleteCustomTemplate(data.id).subscribe((res) => {
-          if (res.data?.editCustomTemplate?.id) {
-            this.emailService.emailListLoading = false;
-            this.getCustomTemplates();
-          }
-        });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.emailService.emailListLoading = true;
+          this.emailService.deleteCustomTemplate(data.id).subscribe((res) => {
+            if (res.data?.editCustomTemplate?.id) {
+              this.emailService.emailListLoading = false;
+              this.getCustomTemplates();
+            }
+          });
+        }
+      });
   }
 
   /**
@@ -990,19 +994,21 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.emailService.emailListLoading = true;
-        this.emailService.deleteDistributionList(data.id).subscribe((res) => {
-          this.emailService.emailListLoading = false;
-          if (res.data?.editDistributionList?.id) {
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.emailService.emailListLoading = true;
+          this.emailService.deleteDistributionList(data.id).subscribe((res) => {
             this.emailService.emailListLoading = false;
-            this.getExistingTemplate();
-            // this.getDistributionList();
-          }
-        });
-      }
-    });
+            if (res.data?.editDistributionList?.id) {
+              this.emailService.emailListLoading = false;
+              this.getExistingTemplate();
+              // this.getDistributionList();
+            }
+          });
+        }
+      });
   }
 
   /**
@@ -1019,46 +1025,48 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.emailService
-          .deleteEmailNotificationPermanently(data.id, this.applicationId)
-          .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotDeleted',
-                    {
-                      value: this.translate.instant(
-                        'common.email.notification.one'
-                      ),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                if (data) {
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.emailService
+            .deleteEmailNotificationPermanently(data.id, this.applicationId)
+            .subscribe({
+              next: ({ errors, data }) => {
+                if (errors) {
                   this.snackBar.openSnackBar(
                     this.translate.instant(
-                      'pages.application.settings.emailDeleted'
-                    )
+                      'common.notifications.objectNotDeleted',
+                      {
+                        value: this.translate.instant(
+                          'common.email.notification.one'
+                        ),
+                        error: errors ? errors[0].message : '',
+                      }
+                    ),
+                    { error: true }
                   );
-                  this.emailService.emailListLoading = true;
-                  this.emailNotifications = [];
-                  this.templateActualData = [];
-                  this.filterTemplateData = [];
-                  this.getExistingTemplate();
+                } else {
+                  if (data) {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'pages.application.settings.emailDeleted'
+                      )
+                    );
+                    this.emailService.emailListLoading = true;
+                    this.emailNotifications = [];
+                    this.templateActualData = [];
+                    this.filterTemplateData = [];
+                    this.getExistingTemplate();
+                  }
                 }
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
   /**
@@ -1142,7 +1150,7 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       disableClose: true,
     });
 
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.getExistingTemplate();
     });
   }
@@ -1302,51 +1310,53 @@ export class EmailComponent extends UnsubscribeComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.emailService
-          .deleteDistributionListPermanently(selectedDL.id)
-          .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotDeleted',
-                    {
-                      value: this.translate.instant(
-                        'common.distributionList.few'
-                      ),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                if (data) {
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.emailService
+            .deleteDistributionListPermanently(selectedDL.id)
+            .subscribe({
+              next: ({ errors, data }) => {
+                if (errors) {
                   this.snackBar.openSnackBar(
                     this.translate.instant(
-                      'common.notifications.objectDeleted',
+                      'common.notifications.objectNotDeleted',
                       {
                         value: this.translate.instant(
-                          'common.distributionList.one'
+                          'common.distributionList.few'
                         ),
+                        error: errors ? errors[0].message : '',
                       }
-                    )
+                    ),
+                    { error: true }
                   );
-                  this.emailService.emailListLoading = true;
-                  this.uniqueDistributionNames = [];
-                  this.unmodifiedDistributionList = [];
-                  this.distributionActualData = [];
-                  this.getDistributionList(selectedDL);
+                } else {
+                  if (data) {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'common.notifications.objectDeleted',
+                        {
+                          value: this.translate.instant(
+                            'common.distributionList.one'
+                          ),
+                        }
+                      )
+                    );
+                    this.emailService.emailListLoading = true;
+                    this.uniqueDistributionNames = [];
+                    this.unmodifiedDistributionList = [];
+                    this.distributionActualData = [];
+                    this.getDistributionList(selectedDL);
+                  }
                 }
-              }
-            },
-            error: (err: any) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+              },
+              error: (err: any) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
   /**

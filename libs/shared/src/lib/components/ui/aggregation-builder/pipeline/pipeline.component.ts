@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 import { Observable } from 'rxjs';
@@ -6,10 +6,10 @@ import { PipelineStage } from './pipeline-stage.enum';
 import { addStage } from '../aggregation-builder-forms';
 import { combineLatestWith } from 'rxjs/operators';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { distinctUntilChanged } from 'rxjs/operators';
 import { isEqual } from 'lodash';
 import { ResizeEvent } from 'angular-resizable-element';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Aggregation pipeline component.
@@ -19,7 +19,7 @@ import { ResizeEvent } from 'angular-resizable-element';
   templateUrl: './pipeline.component.html',
   styleUrls: ['./pipeline.component.scss'],
 })
-export class PipelineComponent extends UnsubscribeComponent implements OnInit {
+export class PipelineComponent implements OnInit {
   /** Public variable for stage type. */
   public stageType = PipelineStage;
   /** Input array to hold the list of stages. */
@@ -54,21 +54,21 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   public dragEnabled = false;
   /** Input decorator for pipelineForm. */
   @Input() pipelineForm!: UntypedFormArray;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Aggregation pipeline component.
    *
    * @param aggregationBuilder Shared aggregation builder
    */
-  constructor(private aggregationBuilder: AggregationBuilderService) {
-    super();
-  }
+  constructor(private aggregationBuilder: AggregationBuilderService) {}
 
   ngOnInit(): void {
     this.fields$
       .pipe(
         combineLatestWith(this.metaFields$, this.filterFields$),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: ([fields, metaFields, filterFields]) => {
@@ -81,7 +81,7 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
       });
 
     this.pipelineForm.valueChanges
-      .pipe(distinctUntilChanged(isEqual), takeUntil(this.destroy$))
+      .pipe(distinctUntilChanged(isEqual), takeUntilDestroyed(this.destroyRef))
       .subscribe((pipeline: any[]) => {
         this.updateFieldsPerStage(pipeline);
       });

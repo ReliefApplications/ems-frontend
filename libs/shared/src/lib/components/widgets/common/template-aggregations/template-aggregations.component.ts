@@ -1,6 +1,6 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   AlertModule,
@@ -13,15 +13,14 @@ import {
   TableModule,
   TooltipModule,
 } from '@oort-front/ui';
-import { takeUntil } from 'rxjs';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 import { ContextService } from '../../../../services/context/context.service';
 import { EmptyModule } from '../../../ui/empty/empty.module';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import {
   createEditorForm,
   createTemplateAggregationForm,
 } from '../../editor-settings/editor-settings.forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Template aggregations component.
@@ -47,10 +46,7 @@ import {
   templateUrl: './template-aggregations.component.html',
   styleUrls: ['./template-aggregations.component.scss'],
 })
-export class TemplateAggregationsComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class TemplateAggregationsComponent implements OnInit {
   /** Template aggregation form group */
   @Input() formGroup!: ReturnType<typeof createEditorForm>;
   /** Bind to form group data */
@@ -65,6 +61,8 @@ export class TemplateAggregationsComponent
 
   /** Loading state of the aggregation preview */
   public loadingAggregationRecords = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Template aggregations component.
@@ -83,9 +81,7 @@ export class TemplateAggregationsComponent
     private translateService: TranslateService,
     private contextService: ContextService,
     private aggregationBuilder: AggregationBuilderService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit() {
     this.data = this.aggregations.value;
@@ -101,12 +97,14 @@ export class TemplateAggregationsComponent
       const dialogRef = this.dialog.open(TemplateAggregationModalComponent, {
         autoFocus: false,
       });
-      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-        if (value) {
-          this.aggregations.push(createTemplateAggregationForm(value));
-          this.data = this.aggregations.value;
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((value) => {
+          if (value) {
+            this.aggregations.push(createTemplateAggregationForm(value));
+            this.data = this.aggregations.value;
+          }
+        });
     });
   }
 
@@ -136,7 +134,7 @@ export class TemplateAggregationsComponent
         autoFocus: false,
       });
       dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value: any) => {
           if (value) {
             this.aggregations.at(index).setValue(value);

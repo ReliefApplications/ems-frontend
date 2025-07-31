@@ -1,9 +1,10 @@
 import {
   ChangeDetectorRef,
   Component,
+  DestroyRef,
+  inject,
   NgZone,
   OnChanges,
-  OnDestroy,
   OnInit,
   ViewContainerRef,
 } from '@angular/core';
@@ -16,11 +17,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GeoProperties } from '../../../components/geospatial-map/geospatial-map.interface';
 import { Dialog } from '@angular/cdk/dialog';
 import { GeoField } from './geofield.type';
-import { Subject, takeUntil } from 'rxjs';
 import { IconModule } from '@oort-front/ui';
 import { QuestionAngular } from 'survey-angular-ui';
 import { QuestionGeospatialListboxModel } from './geofields-listbox.model';
 import { getGeoFields } from '../utils/get-geospatial-fields';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** All available fields */
 export const ALL_FIELDS: { value: keyof GeoProperties; label: string }[] = [
@@ -51,7 +52,7 @@ export const ALL_FIELDS: { value: keyof GeoProperties; label: string }[] = [
 })
 export class GeofieldsListboxComponent
   extends QuestionAngular<QuestionGeospatialListboxModel>
-  implements OnInit, OnChanges, OnDestroy
+  implements OnInit, OnChanges
 {
   /** Selected fields */
   selectedFields: { value: keyof GeoProperties; label: string }[] = [];
@@ -69,9 +70,8 @@ export class GeofieldsListboxComponent
       'transferAllTo',
     ],
   };
-
-  /** Destroy subject */
-  private destroy$: Subject<void> = new Subject<void>();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Component for the selection of the interest fields from geospatial question
@@ -126,7 +126,7 @@ export class GeofieldsListboxComponent
         },
       });
       dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value: any) => {
           if (value) {
             const modified_fields = this.availableFields.map((field) => {
@@ -149,11 +149,5 @@ export class GeofieldsListboxComponent
           }
         });
     });
-  }
-
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

@@ -1,13 +1,13 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditorService } from '../../../../../../services/editor/editor.service';
 import { POPUP_EDITOR_CONFIG } from '../../../../../../const/tinymce.const';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { Fields } from '../../../../../../models/layer.model';
-import { Observable, takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';
+import { Observable } from 'rxjs';
 import { SpinnerModule } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Popup text element component.
@@ -28,10 +28,7 @@ import { SpinnerModule } from '@oort-front/ui';
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
   ],
 })
-export class TextElementComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class TextElementComponent implements OnInit {
   /** Current form group */
   @Input() formGroup!: FormGroup;
   /** Available fields */
@@ -40,6 +37,8 @@ export class TextElementComponent
   public editor: any = POPUP_EDITOR_CONFIG;
   /** Is editor loading */
   public editorLoading = true;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Popup text element component.
@@ -47,7 +46,6 @@ export class TextElementComponent
    * @param editorService Shared tinymce editor service
    */
   constructor(private editorService: EditorService) {
-    super();
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
     // Set the editor language
@@ -56,12 +54,14 @@ export class TextElementComponent
 
   ngOnInit(): void {
     // Listen to fields changes
-    this.fields$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      const keys = value.map((field) => ({
-        value: `{{${field.name}}}`,
-        text: `{{${field.name}}}`,
-      }));
-      this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
-    });
+    this.fields$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        const keys = value.map((field) => ({
+          value: `{{${field.name}}}`,
+          text: `{{${field.name}}}`,
+        }));
+        this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
+      });
   }
 }

@@ -22,6 +22,7 @@ import { ResourcesQueryResponse } from '../../../models/resource.model';
 import { GET_RESOURCES } from './graphql/queries';
 import { TranslateModule } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -80,9 +81,11 @@ export class ResourceSelectComponent extends GraphQLSelectComponent {
     this.valueField = 'id';
     this.textField = 'name';
     this.filterable = true;
-    this.searchChange.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      this.onSearchChange(value);
-    });
+    this.searchChange
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        this.onSearchChange(value);
+      });
   }
 
   /**
@@ -101,7 +104,7 @@ export class ResourceSelectComponent extends GraphQLSelectComponent {
       });
 
       this.query.valueChanges
-        .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
+        .pipe(takeUntil(this.queryChange$), takeUntilDestroyed(this.destroyRef))
         .subscribe(({ data, loading }) => {
           this.queryName = Object.keys(data)[0];
           this.updateValues(data, loading);

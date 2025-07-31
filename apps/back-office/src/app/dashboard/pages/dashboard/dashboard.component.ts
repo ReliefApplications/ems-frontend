@@ -4,9 +4,11 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DOCUMENT } from '@angular/common';
 import {
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
   HostBinding,
+  inject,
   Inject,
   OnDestroy,
   OnInit,
@@ -44,19 +46,14 @@ import { Apollo } from 'apollo-angular';
 import localForage from 'localforage';
 import { cloneDeep, has, isEqual, omit } from 'lodash';
 import { Observable, firstValueFrom } from 'rxjs';
-import {
-  debounceTime,
-  filter,
-  map,
-  startWith,
-  takeUntil,
-} from 'rxjs/operators';
+import { debounceTime, filter, map, startWith } from 'rxjs/operators';
 import {
   ADD_DASHBOARD_TEMPLATE,
   DELETE_DASHBOARD_TEMPLATES,
   EDIT_DASHBOARD,
 } from './graphql/mutations';
 import { GET_DASHBOARD_BY_ID } from './graphql/queries';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Back-office Dashboard page.
@@ -119,6 +116,8 @@ export class DashboardComponent
   public gridOptions: GridsterConfig = {};
   /** Should show dashboard name */
   public showName? = true;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns type of context element */
   get contextType() {
@@ -200,7 +199,7 @@ export class DashboardComponent
 
   ngOnInit(): void {
     this.contextId.valueChanges
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         // Load template, or go back to default one
         this.contextService.onContextChange(value, this.route, this.dashboard);
@@ -210,7 +209,7 @@ export class DashboardComponent
       .pipe(
         filter((event) => event instanceof NavigationEnd),
         startWith(this.router), // initialize
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => {
         this.loading = true;
@@ -424,8 +423,7 @@ export class DashboardComponent
   /**
    * Leave dashboard
    */
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     if (this.addTimeoutListener) {
       clearTimeout(this.addTimeoutListener);
     }
@@ -449,7 +447,7 @@ export class DashboardComponent
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmVariant: 'primary',
       });
-      return dialogRef.closed.pipe(takeUntil(this.destroy$)).pipe(
+      return dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).pipe(
         map((confirm) => {
           if (confirm) {
             return true;
@@ -680,13 +678,13 @@ export class DashboardComponent
     );
 
     dialogRef.closed
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(async (buttons) => {
         if (!buttons) return;
 
         this.actionButtonService
           .savePageButtons(this.dashboard?.id, buttons)
-          ?.pipe(takeUntil(this.destroy$))
+          ?.pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe(({ errors }) => {
             this.actionButtons = buttons;
             if (this.dashboard) {
@@ -714,7 +712,7 @@ export class DashboardComponent
     );
 
     dialogRef.closed
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(async (templates) => {
         if (!templates) return;
         const templatesToDelete = this.dashboardTemplates
@@ -770,7 +768,7 @@ export class DashboardComponent
     const parentDashboardId = this.route.snapshot.paramMap.get('id');
 
     dialogRef.closed
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(async (context: any) => {
         if (context) {
           if (isEqual(context, currContext)) return;
@@ -885,7 +883,7 @@ export class DashboardComponent
     });
     // Subscribes to settings updates
     const subscription = dialogRef.componentInstance?.onUpdate
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((updates: any) => {
         if (updates) {
           if (this.isStep) {
@@ -929,7 +927,7 @@ export class DashboardComponent
         }
       });
     // Unsubscribe to dialog onUpdate event
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       subscription?.unsubscribe();
     });
   }

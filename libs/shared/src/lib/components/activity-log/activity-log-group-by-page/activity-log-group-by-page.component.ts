@@ -1,8 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RestService } from '../../../services/rest/rest.service';
-import { debounceTime, takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { debounceTime } from 'rxjs';
 import { ButtonModule, DateModule, FormWrapperModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { EmptyModule } from '../../ui/empty/empty.module';
@@ -14,6 +13,7 @@ import {
 } from '@progress/kendo-angular-grid';
 import { SortDescriptor } from '@progress/kendo-data-query';
 import { DownloadService } from '../../../services/download/download.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -45,10 +45,7 @@ interface GroupByUrl {
   templateUrl: './activity-log-group-by-page.component.html',
   styleUrls: ['./activity-log-group-by-page.component.scss'],
 })
-export class ActivityLogGroupByPageComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class ActivityLogGroupByPageComponent implements OnInit {
   /** User ID to filter activities. */
   @Input() userId: string | undefined;
   /** Application ID to filter activities. */
@@ -89,6 +86,8 @@ export class ActivityLogGroupByPageComponent
   };
   /** Sort descriptor */
   public sort: SortDescriptor[] = [];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Activity log group by page
@@ -101,14 +100,12 @@ export class ActivityLogGroupByPageComponent
     private restService: RestService,
     private fb: FormBuilder,
     private downloadService: DownloadService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.fetch();
     this.filterForm.valueChanges
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (value) => {
           const filters = [];
@@ -230,7 +227,7 @@ export class ActivityLogGroupByPageComponent
           }),
         },
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (value) => {
           this.loading = false;

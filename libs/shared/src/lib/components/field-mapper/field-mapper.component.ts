@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -16,8 +16,7 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Resource field mapper component.
@@ -39,10 +38,7 @@ import { takeUntil } from 'rxjs';
   templateUrl: './field-mapper.component.html',
   styleUrls: ['./field-mapper.component.scss'],
 })
-export class FieldMapperComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class FieldMapperComponent implements OnInit {
   /** Resource fields to map */
   @Input() fields: any[] = [];
   /** Parent form group */
@@ -57,6 +53,8 @@ export class FieldMapperComponent
     language: 'json',
     fixedOverflowWidgets: true,
   };
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns pull job mapping as form array */
   get mappingArray(): UntypedFormArray {
@@ -68,16 +66,16 @@ export class FieldMapperComponent
    *
    * @param fb Angular form builder
    */
-  constructor(private fb: FormBuilder) {
-    super();
-  }
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.mappingArray.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
-      next: () => {
-        this.synchronizeFormValueData();
-      },
-    });
+    this.mappingArray.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.synchronizeFormValueData();
+        },
+      });
   }
 
   /**

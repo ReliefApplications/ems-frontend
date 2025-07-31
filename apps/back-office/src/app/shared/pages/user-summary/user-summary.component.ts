@@ -1,11 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import {
-  Application,
-  ApplicationService,
-  UnsubscribeComponent,
-} from '@oort-front/shared';
-import { takeUntil } from 'rxjs/operators';
+import { Application, ApplicationService } from '@oort-front/shared';
 
 /**
  * User Summary page component.
@@ -15,18 +11,13 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './user-summary.component.html',
   styleUrls: ['./user-summary.component.scss'],
 })
-export class UserSummaryComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
-  /**
-   * User id
-   */
+export class UserSummaryComponent implements OnInit {
+  /** User id */
   public id = '';
-  /**
-   * Application
-   */
+  /** Application */
   public application!: Application;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * User summary page component.
@@ -37,9 +28,7 @@ export class UserSummaryComponent
   constructor(
     private route: ActivatedRoute,
     public applicationService: ApplicationService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     const routeSubscription = this.route.params.subscribe((val: any) => {
@@ -47,7 +36,7 @@ export class UserSummaryComponent
     });
     routeSubscription.unsubscribe();
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((application: Application | null) => {
         if (application) {
           this.application = application;

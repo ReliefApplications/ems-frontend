@@ -1,9 +1,11 @@
 import {
   AfterViewInit,
   ContentChildren,
+  DestroyRef,
   Directive,
   ElementRef,
   EventEmitter,
+  inject,
   OnDestroy,
   OnInit,
   Output,
@@ -12,7 +14,8 @@ import {
 } from '@angular/core';
 import { TableSort } from './interfaces/table-column.interface';
 import { TableHeaderSortDirective } from './table-header-sort.directive';
-import { Observable, Subject, filter, merge, startWith, takeUntil } from 'rxjs';
+import { Observable, filter, merge, startWith } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * UI Table wrapper directive
@@ -54,8 +57,8 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
 
   /** Table wrapper element */
   private tableWrapperElement!: HTMLDivElement;
-  /** Destroy subject */
-  private destroy$ = new Subject<void>();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * UI Table wrapper directive constructor
@@ -92,7 +95,10 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     // Initialize sortable column listeners
     this.sortableColumns.changes
-      .pipe(startWith(this.sortableColumns), takeUntil(this.destroy$))
+      .pipe(
+        startWith(this.sortableColumns),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe({
         next: () => {
           if (this.sortableColumns.length) {
@@ -113,7 +119,7 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
       );
     });
     merge(...sortListeners)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (sortData: TableSort) => {
           // Reset all the other sortable properties
@@ -129,8 +135,6 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
     if (this.tableWrapperElement) {
       this.tableWrapperElement.remove();
     }

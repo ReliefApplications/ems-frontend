@@ -1,12 +1,13 @@
 import {
   Component,
   ComponentRef,
+  DestroyRef,
   EventEmitter,
   HostListener,
+  inject,
   Inject,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit,
   Output,
   TemplateRef,
@@ -23,12 +24,11 @@ import { NotificationService } from '../../services/notification/notification.se
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
 import { Breadcrumb, UILayoutService } from '@oort-front/ui';
 import { BreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 import { ContextService } from '../../services/context/context.service';
 import { DashboardComponent } from '../dashboard/dashboard.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Component for the main layout of the platform
@@ -38,10 +38,7 @@ import { DashboardComponent } from '../dashboard/dashboard.component';
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss'],
 })
-export class LayoutComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnChanges, OnDestroy
-{
+export class LayoutComponent implements OnInit, OnChanges {
   /** Page title ( name of application ) */
   @Input() title = '';
 
@@ -146,6 +143,8 @@ export class LayoutComponent
   // === BREADCRUMB ===
   /** Breadcrumbs */
   public breadcrumbs: Breadcrumb[] = [];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** Timeout listeners */
   // private attachViewFilterTriggerListener!: NodeJS.Timeout;
@@ -225,7 +224,6 @@ export class LayoutComponent
     private breadcrumbService: BreadcrumbService,
     private contextService: ContextService
   ) {
-    super();
     this.largeDevice = window.innerWidth > 1024;
     this.account = this.authService.account;
     this.environment = environment;
@@ -244,7 +242,7 @@ export class LayoutComponent
     this.loadUser();
     this.notificationService.init();
     this.notificationService.notifications$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((notifications: Notification[]) => {
         if (notifications) {
           this.notifications = notifications;
@@ -254,14 +252,14 @@ export class LayoutComponent
       });
 
     this.notificationService.hasNextPage$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => {
         this.hasMoreNotifications = res;
         this.loadingNotifications = false;
       });
 
     this.layoutService.rightSidenav$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((view) => {
         if (view && this.rightSidenav) {
           // avoid to have multiple right sidenav components at same time
@@ -287,7 +285,7 @@ export class LayoutComponent
       });
 
     this.breadcrumbService.breadcrumbs$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => {
         this.breadcrumbs = res;
       });
@@ -297,11 +295,13 @@ export class LayoutComponent
    * Load the user
    */
   private loadUser(): void {
-    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe((user) => {
-      if (user) {
-        this.user = { ...user };
-      }
-    });
+    this.authService.user$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((user) => {
+        if (user) {
+          this.user = { ...user };
+        }
+      });
   }
 
   ngOnChanges(): void {
@@ -348,7 +348,7 @@ export class LayoutComponent
         confirmVariant: 'primary',
       });
       dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value: any) => {
           if (value) {
             this.authService.canLogout.next(true);
@@ -373,14 +373,16 @@ export class LayoutComponent
         languages: this.languages,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((form: any) => {
-      if (form && form.touched) {
-        this.setLanguage(form.value.language);
-        this.dateTranslate.use(form.value.dateFormat);
-      } else if (!form) {
-        this.setLanguage(this.getLanguage());
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((form: any) => {
+        if (form && form.touched) {
+          this.setLanguage(form.value.language);
+          this.dateTranslate.use(form.value.dateFormat);
+        } else if (!form) {
+          this.setLanguage(this.getLanguage());
+        }
+      });
   }
 
   /**

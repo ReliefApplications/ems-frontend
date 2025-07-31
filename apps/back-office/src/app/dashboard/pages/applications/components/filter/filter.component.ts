@@ -1,15 +1,17 @@
 import {
   Component,
+  DestroyRef,
   EventEmitter,
+  inject,
   Input,
   OnInit,
   Output,
   TemplateRef,
   ViewChild,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder } from '@angular/forms';
-import { UnsubscribeComponent } from '@oort-front/shared';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 /**
  * Filter component of applications page.
@@ -19,7 +21,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
 })
-export class FilterComponent extends UnsubscribeComponent implements OnInit {
+export class FilterComponent implements OnInit {
   /** Loading indicator */
   @Input() loading = false;
   /** Filter update event */
@@ -35,22 +37,22 @@ export class FilterComponent extends UnsubscribeComponent implements OnInit {
   /** Reference to expanded filter template */
   @ViewChild('expandedFilter')
   expandedFilter!: TemplateRef<any>;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Filter component of applications page.
    *
    * @param fb Angular form builder
    */
-  constructor(private fb: FormBuilder) {
-    super();
-  }
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.form.valueChanges
       .pipe(
         debounceTime(1000),
         distinctUntilChanged(),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((value) => {
         this.emitFilter(value);

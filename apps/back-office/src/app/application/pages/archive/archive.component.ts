@@ -1,19 +1,19 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import {
   Application,
   ArchivePage,
   Page,
   ApplicationService,
-  UnsubscribeComponent,
   ApplicationQueryResponse,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
-import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { combineLatest, of } from 'rxjs';
 import { PreviewService } from '../../../services/preview.service';
 import { GET_APPLICATION_ARCHIVED_PAGES } from './graphql/queries';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Archive page component for application preview.
@@ -23,7 +23,7 @@ import { GET_APPLICATION_ARCHIVED_PAGES } from './graphql/queries';
   templateUrl: './archive.component.html',
   styleUrls: ['./archive.component.scss'],
 })
-export class ArchiveComponent extends UnsubscribeComponent implements OnInit {
+export class ArchiveComponent implements OnInit {
   // === DATA ===
   /** Loading state */
   public loading = true;
@@ -33,6 +33,8 @@ export class ArchiveComponent extends UnsubscribeComponent implements OnInit {
   // === PREVIEWED ROLE ===
   /** Current previewed role */
   public role = '';
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Workflow page component for application preview
@@ -49,9 +51,7 @@ export class ArchiveComponent extends UnsubscribeComponent implements OnInit {
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private previewService: PreviewService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     const applicationStream$ = combineLatest([
@@ -76,7 +76,7 @@ export class ArchiveComponent extends UnsubscribeComponent implements OnInit {
             return of({ data: { application: { pages: [] as Page[] } } });
           }
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: ({ data }) => {

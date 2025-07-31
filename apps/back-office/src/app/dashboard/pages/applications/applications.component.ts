@@ -1,12 +1,11 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import {
   AddApplicationMutationResponse,
   Application,
   ConfirmService,
-  UnsubscribeComponent,
   ApplicationsApplicationNodesQueryResponse,
   DeleteApplicationMutationResponse,
   EditApplicationMutationResponse,
@@ -21,7 +20,6 @@ import {
 } from './graphql/mutations';
 import { PreviewService } from '../../../services/preview.service';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
 import { ApolloQueryResult } from '@apollo/client';
 import {
   TableSort,
@@ -30,6 +28,7 @@ import {
 } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
 import { GET_APPLICATIONS } from './graphql/queries';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -40,10 +39,7 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './applications.component.html',
   styleUrls: ['./applications.component.scss'],
 })
-export class ApplicationsComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class ApplicationsComponent implements OnInit {
   // === DATA ===
   /** Loading state */
   public loading = true;
@@ -80,6 +76,8 @@ export class ApplicationsComponent
     length: 0,
     endCursor: '',
   };
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Applications page component
@@ -102,9 +100,7 @@ export class ApplicationsComponent
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private applicationService: ApplicationService
-  ) {
-    super();
-  }
+  ) {}
 
   /**
    * Creates the application query and subscribes to the query changes.
@@ -131,12 +127,12 @@ export class ApplicationsComponent
           sortOrder: 'desc',
         },
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data }) => {
         this.newApplications = data.applications.edges.map((x) => x.node);
       });
     this.applicationsQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(
         (
           results: ApolloQueryResult<ApplicationsApplicationNodesQueryResponse>
@@ -248,49 +244,54 @@ export class ApplicationsComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        const id = element.id;
-        this.apollo
-          .mutate<DeleteApplicationMutationResponse>({
-            mutation: DELETE_APPLICATION,
-            variables: {
-              id,
-            },
-          })
-          .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotDeleted',
-                    {
-                      value: this.translate.instant('common.application.one'),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectDeleted', {
-                    value: this.translate.instant('common.application.one'),
-                  })
-                );
-                this.applications = this.applications.filter(
-                  (x) => x.id !== data?.deleteApplication.id
-                );
-                this.newApplications = this.newApplications.filter(
-                  (x) => x.id !== data?.deleteApplication.id
-                );
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          const id = element.id;
+          this.apollo
+            .mutate<DeleteApplicationMutationResponse>({
+              mutation: DELETE_APPLICATION,
+              variables: {
+                id,
+              },
+            })
+            .subscribe({
+              next: ({ errors, data }) => {
+                if (errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectNotDeleted',
+                      {
+                        value: this.translate.instant('common.application.one'),
+                        error: errors ? errors[0].message : '',
+                      }
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectDeleted',
+                      {
+                        value: this.translate.instant('common.application.one'),
+                      }
+                    )
+                  );
+                  this.applications = this.applications.filter(
+                    (x) => x.id !== data?.deleteApplication.id
+                  );
+                  this.newApplications = this.newApplications.filter(
+                    (x) => x.id !== data?.deleteApplication.id
+                  );
+                }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
   /**
@@ -397,12 +398,14 @@ export class ApplicationsComponent
         application: element.id,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.previewService.setRole(value.role);
-        this.router.navigate(['./app-preview', element.id]);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.previewService.setRole(value.role);
+          this.router.navigate(['./app-preview', element.id]);
+        }
+      });
   }
 
   /**
@@ -420,13 +423,15 @@ export class ApplicationsComponent
         name: application.name,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.onOpenApplication(
-          this.applicationService.getApplicationPath(value)
-        );
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.onOpenApplication(
+            this.applicationService.getApplicationPath(value)
+          );
+        }
+      });
   }
 
   /**

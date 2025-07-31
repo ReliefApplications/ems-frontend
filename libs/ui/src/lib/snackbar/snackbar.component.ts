@@ -82,7 +82,7 @@ export class SnackbarComponent implements OnDestroy {
    * @param config Snackbar config
    * @param message Snackbar message
    */
-  private setSnackbarProperties(config: SnackBarConfig, message: string = '') {
+  private setSnackbarProperties(config: SnackBarConfig, message = '') {
     this.error = config.error ?? false;
     this.message = message;
     this.action = config.action ?? '';

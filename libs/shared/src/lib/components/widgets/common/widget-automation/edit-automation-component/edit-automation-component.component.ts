@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ButtonModule,
@@ -11,8 +11,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { createAutomationComponentForm } from '../../../../../forms/automation.forms';
 import { DashboardService } from '../../../../../services/dashboard/dashboard.service';
-import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
-import { BehaviorSubject, isObservable, map, takeUntil } from 'rxjs';
+import { BehaviorSubject, isObservable, map } from 'rxjs';
 import { MapLayersService } from '../../../../../services/map/map-layers.service';
 import { get, isArray, isNil } from 'lodash';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
@@ -21,6 +20,7 @@ import {
   ActionWithProperties,
 } from '../../../../../models/automation.model';
 import { AsyncMonacoEditorDirective } from '../../../../../directives/async-monaco-editor/async-monaco-editor.directive';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Edition of automation component.
@@ -42,10 +42,7 @@ import { AsyncMonacoEditorDirective } from '../../../../../directives/async-mona
   templateUrl: './edit-automation-component.component.html',
   styleUrls: ['./edit-automation-component.component.scss'],
 })
-export class EditAutomationComponentComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class EditAutomationComponentComponent implements OnInit {
   /** Automation component form */
   public formGroup!: ReturnType<typeof createAutomationComponentForm>;
   /** Available widgets */
@@ -270,6 +267,8 @@ export class EditAutomationComponentComponent
       ],
     },
   ];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Edition of automation component.
@@ -283,13 +282,12 @@ export class EditAutomationComponentComponent
     private mapLayersService: MapLayersService,
     @Inject(DIALOG_DATA) public data: any
   ) {
-    super();
     this.formGroup = createAutomationComponentForm(data);
   }
 
   ngOnInit(): void {
     this.dashboardService.widgets$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((widgets: any[]) => {
         this.widgets.next(widgets || []);
       });
@@ -306,7 +304,7 @@ export class EditAutomationComponentComponent
       if (property.onValueChanged) {
         (this.formGroup as any)
           .get(`value.${property.name}`)
-          ?.valueChanges.pipe(takeUntil(this.destroy$))
+          ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe((value: string) => property.onValueChanged(value));
       }
       if (property.onInit) {
@@ -337,7 +335,7 @@ export class EditAutomationComponentComponent
         case 'layers':
           this.mapLayersService
             .getLayers(get(widget, 'settings.layers') || [])
-            .pipe(takeUntil(this.destroy$))
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((layers) => {
               property.choices = layers.map((layer) => ({
                 value: layer.id,
@@ -369,7 +367,7 @@ export class EditAutomationComponentComponent
    */
   private getChoicesFromWidgets(widgetType?: string) {
     return this.widgets.pipe(
-      takeUntil(this.destroy$),
+      takeUntilDestroyed(this.destroyRef),
       map((widgets) => {
         if (widgetType) {
           widgets = widgets.filter((widget) => widget.component === widgetType);

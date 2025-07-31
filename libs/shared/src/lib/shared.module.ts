@@ -22,7 +22,6 @@ import { EmptyModule } from './components/ui/empty/empty.module';
 import { NavbarModule } from './components/navbar/navbar.module';
 import { ReadableCronModule } from './pipes/readable-cron/readable-cron.module';
 import { CronParserModule } from './pipes/cron-parser/cron-parser.module';
-import { UnsubscribeModule } from './components/utils/unsubscribe/unsubscribe.module';
 import { ViewsModule } from './views/views.module';
 import { EditableTextModule } from './components/editable-text/editable-text.module';
 import { CronExpressionControlModule } from './components/controls/cron-expression-control/cron-expression-control.module';
@@ -79,8 +78,6 @@ import { DashboardFilterIconComponent } from './components/dashboard-filter-icon
     // === Directives
     SkeletonModule,
     FullScreenModule,
-    // === UTILS COMPONENTS ===
-    UnsubscribeModule,
     // === VIEWS ===
     ViewsModule,
   ],

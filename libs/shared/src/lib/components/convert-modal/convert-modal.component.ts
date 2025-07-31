@@ -1,11 +1,9 @@
 import { Apollo } from 'apollo-angular';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { GET_RECORD_DETAILS } from './graphql/queries';
 import { Form } from '../../models/form.model';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SpinnerModule } from '@oort-front/ui';
@@ -19,6 +17,7 @@ import {
   DialogModule,
 } from '@oort-front/ui';
 import { RecordQueryResponse } from '../../models/record.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * An interface to define the structure of the data displayed in the modal
@@ -50,10 +49,7 @@ interface DialogData {
   templateUrl: './convert-modal.component.html',
   styleUrls: ['./convert-modal.component.scss'],
 })
-export class ConvertModalComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class ConvertModalComponent implements OnInit {
   // === REACTIVE FORM ===
   /** Form for conversion */
   convertForm = this.fb.group({
@@ -72,6 +68,8 @@ export class ConvertModalComponent
   // === LOAD DATA ===
   /** Loading state */
   public loading = true;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -87,9 +85,7 @@ export class ConvertModalComponent
     private apollo: Apollo,
     public dialogRef: DialogRef<ConvertModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.apollo
@@ -99,7 +95,7 @@ export class ConvertModalComponent
           id: this.data.record,
         },
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data }) => {
         const record = data.record;
         this.form = record.form;
@@ -110,7 +106,7 @@ export class ConvertModalComponent
       });
     this.convertForm
       .get('targetForm')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((targetForm: Form | null) => {
         if (targetForm) {
           this.ignoredFields =

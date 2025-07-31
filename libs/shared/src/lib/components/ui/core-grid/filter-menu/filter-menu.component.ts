@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import {
   UntypedFormArray,
   UntypedFormBuilder,
@@ -6,8 +6,7 @@ import {
 } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { FilterService } from '@progress/kendo-angular-grid';
-import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/public-api';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Grid filter menu, used by grid when filtering by multi choices question or by dropdown filter menu
@@ -17,10 +16,7 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/public-api';
   templateUrl: './filter-menu.component.html',
   styleUrls: ['./filter-menu.component.scss'],
 })
-export class GridFilterMenuComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class GridFilterMenuComponent implements OnInit {
   /** Field */
   @Input() public field = '';
   /** Filter */
@@ -47,6 +43,8 @@ export class GridFilterMenuComponent
   private defaultValue!: string | Array<any>;
   /** Default operator */
   private defaultOperator!: string;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns default item choice */
   public get defaultItem(): any {
@@ -114,9 +112,7 @@ export class GridFilterMenuComponent
   constructor(
     private fb: UntypedFormBuilder,
     private translate: TranslateService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.defaultValue = this.isNotArray ? '' : [];
@@ -153,9 +149,11 @@ export class GridFilterMenuComponent
         }),
       ]),
     });
-    this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      this.filterService?.filter(value);
-    });
+    this.form.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        this.filterService?.filter(value);
+      });
   }
 
   /**

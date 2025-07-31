@@ -8,18 +8,19 @@ import {
   ComponentRef,
   OnInit,
   Type,
+  inject,
+  DestroyRef,
 } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ButtonModule, DialogModule } from '@oort-front/ui';
 import {
   WidgetSettingsType,
   WidgetTypeComponent,
 } from '../../../models/dashboard.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Model for dialog data */
 interface DialogData {
@@ -39,10 +40,7 @@ interface DialogData {
   imports: [DialogModule, ButtonModule],
 })
 /** Modal content to edit the settings of a component. */
-export class EditWidgetModalComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class EditWidgetModalComponent implements OnInit {
   /** Widget reactive form */
   public widgetForm?: UntypedFormGroup;
   /** Reference to widget settings container */
@@ -50,6 +48,8 @@ export class EditWidgetModalComponent
   public settingsContainer!: ViewContainerRef;
   /** Settings component ref used to display content */
   private componentRef!: ComponentRef<WidgetSettingsType>;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Edition of widget configuration in modal.
@@ -67,9 +67,7 @@ export class EditWidgetModalComponent
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private environmentInjector: EnvironmentInjector
-  ) {
-    super();
-  }
+  ) {}
 
   async ngOnInit() {
     // Component of the edited widget, must match with one defined angular component
@@ -130,7 +128,7 @@ export class EditWidgetModalComponent
       this.widgetForm = this.componentRef.instance.widgetFormGroup;
       /** Subscribe to current widget form changes */
       this.componentRef.instance.formChange
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((e: any) => {
           this.widgetForm = e;
         });
@@ -165,7 +163,7 @@ export class EditWidgetModalComponent
         confirmVariant: 'danger',
       });
       confirmDialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value: any) => {
           if (value) {
             this.dialogRef.close();

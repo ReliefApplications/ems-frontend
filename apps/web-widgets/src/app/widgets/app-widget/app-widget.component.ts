@@ -1,10 +1,11 @@
 import {
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
+  inject,
   Injector,
   Input,
-  OnDestroy,
   OnInit,
   Output,
   ViewEncapsulation,
@@ -19,10 +20,11 @@ import {
   LoggerService,
   CommonServicesService,
 } from '@oort-front/shared';
-import { Subject, debounceTime, filter, skip, takeUntil } from 'rxjs';
+import { debounceTime, filter, skip } from 'rxjs';
 import { isEmpty } from 'lodash';
 import { ShadowDomService } from '@oort-front/ui';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Application as Web Widget.
@@ -46,7 +48,7 @@ import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 })
 export class AppWidgetComponent
   extends ShadowRootExtendedHostComponent
-  implements OnInit, OnDestroy
+  implements OnInit
 {
   /** Application Id */
   @Input()
@@ -109,12 +111,12 @@ export class AppWidgetComponent
   /** Available pages */
   @Output()
   pages = new EventEmitter<any[]>();
-  /** Trigger subscription teardown on component destruction */
-  private destroy$: Subject<void> = new Subject<void>();
   /** Navigation in SUI is loading */
   public isNavigationLoading = false;
   /** Is there an application error */
   public hasError = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Application as Web Widget.
@@ -154,7 +156,7 @@ export class AppWidgetComponent
 
     // Subscribe to application changes to update the pages
     this.applicationService.application$
-      .pipe(skip(1), takeUntil(this.destroy$))
+      .pipe(skip(1), takeUntilDestroyed(this.destroyRef))
       .subscribe((application: Application | null) => {
         if (application) {
           const pages = application.pages
@@ -186,21 +188,23 @@ export class AppWidgetComponent
     this.authService.refreshToken$
       .pipe(
         filter((refreshToken) => !!refreshToken),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: () => this.refreshToken$.emit(),
       });
 
     // Subscribe to router events, to show / hide loading indicator
-    this.router.events.pipe(takeUntil(this.destroy$)).subscribe((event) => {
-      if (event instanceof NavigationStart) {
-        this.isNavigationLoading = true;
-      }
-      if (event instanceof NavigationEnd) {
-        this.isNavigationLoading = false;
-      }
-    });
+    this.router.events
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((event) => {
+        if (event instanceof NavigationStart) {
+          this.isNavigationLoading = true;
+        }
+        if (event instanceof NavigationEnd) {
+          this.isNavigationLoading = false;
+        }
+      });
   }
 
   /**
@@ -260,10 +264,5 @@ export class AppWidgetComponent
       default:
         return 'dashboard';
     }
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

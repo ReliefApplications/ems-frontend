@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import {
@@ -15,9 +15,8 @@ import {
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 import { AggregationService } from '../../../../services/aggregation/aggregation.service';
 import { get } from 'lodash';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Main tab of chart settings modal.
@@ -27,7 +26,7 @@ import { Dialog } from '@angular/cdk/dialog';
   templateUrl: './tab-main.component.html',
   styleUrls: ['./tab-main.component.scss'],
 })
-export class TabMainComponent extends UnsubscribeComponent implements OnInit {
+export class TabMainComponent implements OnInit {
   /** Reactive form group */
   @Input() formGroup!: UntypedFormGroup;
   /** Selected chart type */
@@ -44,6 +43,8 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
   public availableSeriesFields: any[] = [];
   /** Loading status */
   public loading = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Get the selected chart type object
@@ -71,14 +72,12 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
     private dialog: Dialog,
     private aggregationBuilder: AggregationBuilderService,
     private aggregationService: AggregationService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.formGroup
       .get('resource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value) {
           this.formGroup.get('chart.aggregationId')?.setValue(null);
@@ -92,7 +91,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
     }
     this.formGroup
       .get('referenceData')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value) {
           this.formGroup.get('chart.aggregationId')?.setValue(null);
@@ -122,7 +121,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
           aggregationIds: aggregationId ? [aggregationId] : null,
         },
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data }) => {
         this.loading = false;
         this.resource = data.resource;
@@ -154,7 +153,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
           aggregationIds: aggregationId ? [aggregationId] : null,
         },
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data }) => {
         this.loading = false;
         this.referenceData = data.referenceData;
@@ -189,21 +188,26 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
         referenceData: this.referenceData,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.formGroup.get('chart.aggregationId')?.setValue(value.id);
-        this.aggregation = value;
-        if (this.aggregation) {
-          this.availableSeriesFields =
-            this.aggregationBuilder.getAvailableSeriesFields(this.aggregation, {
-              referenceData: this.referenceData,
-              resource: this.resource,
-            });
-        } else {
-          this.availableSeriesFields = [];
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.formGroup.get('chart.aggregationId')?.setValue(value.id);
+          this.aggregation = value;
+          if (this.aggregation) {
+            this.availableSeriesFields =
+              this.aggregationBuilder.getAvailableSeriesFields(
+                this.aggregation,
+                {
+                  referenceData: this.referenceData,
+                  resource: this.resource,
+                }
+              );
+          } else {
+            this.availableSeriesFields = [];
+          }
         }
-      }
-    });
+      });
   }
 
   /**
@@ -221,25 +225,27 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
         aggregation: this.aggregation,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value && this.aggregation) {
-        this.aggregationService
-          .editAggregation(this.aggregation, value, {
-            resource: this.resource?.id,
-            referenceData: this.referenceData?.id,
-          })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe(({ data }) => {
-            if (data?.editAggregation) {
-              if (this.resource) {
-                this.getResource(this.resource?.id as string);
-              } else {
-                this.getReferenceData(this.referenceData?.id as string);
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value && this.aggregation) {
+          this.aggregationService
+            .editAggregation(this.aggregation, value, {
+              resource: this.resource?.id,
+              referenceData: this.referenceData?.id,
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(({ data }) => {
+              if (data?.editAggregation) {
+                if (this.resource) {
+                  this.getResource(this.resource?.id as string);
+                } else {
+                  this.getReferenceData(this.referenceData?.id as string);
+                }
               }
-            }
-          });
-      }
-    });
+            });
+        }
+      });
   }
 
   /**

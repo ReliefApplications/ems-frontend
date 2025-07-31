@@ -1,6 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { WidgetGridComponent } from '../widget-grid/widget-grid.component';
 
 /**
@@ -14,7 +13,7 @@ import { WidgetGridComponent } from '../widget-grid/widget-grid.component';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent extends UnsubscribeComponent {
+export class DashboardComponent {
   /** Widget grid reference */
   @ViewChild(WidgetGridComponent)
   public widgetGridComponent!: WidgetGridComponent;

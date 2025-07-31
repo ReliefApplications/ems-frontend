@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ButtonModule,
@@ -26,8 +26,6 @@ import {
   ReferenceData,
   ReferenceDataQueryResponse,
 } from '../../../../models/reference-data.model';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
 import { AggregationService } from '../../../../services/aggregation/aggregation.service';
@@ -35,6 +33,7 @@ import { DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
 import get from 'lodash/get';
 import { createTemplateAggregationForm } from '../../editor-settings/editor-settings.forms';
 import { QueryParamsMappingComponent } from '../query-params-mapping/query-params-mapping.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Dialog data interface */
 interface DialogData {
@@ -69,10 +68,7 @@ interface DialogData {
   templateUrl: './template-aggregation-modal.component.html',
   styleUrls: ['./template-aggregation-modal.component.scss'],
 })
-export class TemplateAggregationModalComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class TemplateAggregationModalComponent implements OnInit {
   /** Reactive form group */
   public form!: ReturnType<typeof createTemplateAggregationForm>;
   /** Current resource */
@@ -81,6 +77,8 @@ export class TemplateAggregationModalComponent
   public referenceData: ReferenceData | null = null;
   /** Current aggregation */
   public aggregation?: Aggregation;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Modal to edit or add template aggregation.
@@ -97,14 +95,13 @@ export class TemplateAggregationModalComponent
     private dialog: Dialog,
     @Inject(DIALOG_DATA) public data?: DialogData
   ) {
-    super();
     this.form = createTemplateAggregationForm(data?.aggregation?.value);
   }
 
   ngOnInit(): void {
     this.form
       .get('resource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         // As the ui doesn't allow resource to be set to null while resource appears, we can always remove the aggregation
         this.form.get('aggregation')?.setValue(null);
@@ -119,7 +116,7 @@ export class TemplateAggregationModalComponent
     }
     this.form
       .get('referenceData')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         // As the ui doesn't allow ref data to be set to null while resource appears, we can always remove the aggregation
         this.form.get('aggregation')?.setValue(null);
@@ -163,7 +160,7 @@ export class TemplateAggregationModalComponent
           aggregationIds: aggregationId ? [aggregationId] : null,
         },
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data }) => {
         this.resource = data.resource;
         if (aggregationId && this.resource.aggregations?.edges[0]) {
@@ -188,7 +185,7 @@ export class TemplateAggregationModalComponent
           aggregationIds: aggregationId ? [aggregationId] : null,
         },
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data }) => {
         this.referenceData = data.referenceData;
         if (aggregationId && this.referenceData.aggregations?.edges[0]) {
@@ -217,13 +214,15 @@ export class TemplateAggregationModalComponent
         referenceData: this.referenceData,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.form.get('aggregation')?.setValue(value.id);
-        this.aggregation = value;
-        this.form.controls.name.setValue(this.aggregation?.name as string);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.form.get('aggregation')?.setValue(value.id);
+          this.aggregation = value;
+          this.form.controls.name.setValue(this.aggregation?.name as string);
+        }
+      });
   }
 
   /**
@@ -241,24 +240,26 @@ export class TemplateAggregationModalComponent
         aggregation: this.aggregation,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value && this.aggregation) {
-        this.aggregationService
-          .editAggregation(this.aggregation, value, {
-            resource: this.resource?.id,
-            referenceData: this.referenceData?.id,
-          })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe(({ data }) => {
-            if (data?.editAggregation) {
-              if (this.resource) {
-                this.getResource(this.resource?.id as string);
-              } else {
-                this.getReferenceData(this.referenceData?.id as string);
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value && this.aggregation) {
+          this.aggregationService
+            .editAggregation(this.aggregation, value, {
+              resource: this.resource?.id,
+              referenceData: this.referenceData?.id,
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(({ data }) => {
+              if (data?.editAggregation) {
+                if (this.resource) {
+                  this.getResource(this.resource?.id as string);
+                } else {
+                  this.getReferenceData(this.referenceData?.id as string);
+                }
               }
-            }
-          });
-      }
-    });
+            });
+        }
+      });
   }
 }

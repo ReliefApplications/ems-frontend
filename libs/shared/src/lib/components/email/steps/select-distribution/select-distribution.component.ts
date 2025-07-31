@@ -1,6 +1,8 @@
 import {
   Component,
+  DestroyRef,
   ElementRef,
+  inject,
   Input,
   OnDestroy,
   OnInit,
@@ -13,11 +15,10 @@ import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
-import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/public-api';
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
 import { cloneDeep } from 'lodash';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 5;
@@ -30,10 +31,10 @@ const DISTRIBUTION_PAGE_SIZE = 5;
   templateUrl: './select-distribution.component.html',
   styleUrls: ['./select-distribution.component.scss'],
 })
-export class SelectDistributionComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class SelectDistributionComponent implements OnInit, OnDestroy {
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
+
   /**
    * Composite email distribution.
    *
@@ -56,7 +57,6 @@ export class SelectDistributionComponent
     private http: HttpClient,
     private restService: RestService
   ) {
-    super();
     this.getExistingTemplate();
     this.showExistingDistributionList =
       this.emailService.showExistingDistributionList;
@@ -451,7 +451,7 @@ export class SelectDistributionComponent
     if (file) {
       this.downloadService
         .uploadFile('upload/distributionList', file)
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(async ({ to, cc, bcc }) => {
           this.snackBar.openSnackBar(
             this.translate.instant(
@@ -541,9 +541,7 @@ export class SelectDistributionComponent
     }
   }
 
-  override ngOnDestroy() {
-    super.ngOnDestroy();
-
+  ngOnDestroy() {
     this.emailService.datasetsForm.setControl(
       'emailDistributionList',
       this.emailService.distributionListData

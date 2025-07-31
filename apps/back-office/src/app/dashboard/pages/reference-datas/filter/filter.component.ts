@@ -1,8 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ListFilterComponent, UnsubscribeComponent } from '@oort-front/shared';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { ListFilterComponent } from '@oort-front/shared';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 /**
  * Filter used by the reference data component
@@ -20,7 +29,7 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
     </form>
   `,
 })
-export class FilterComponent extends UnsubscribeComponent implements OnInit {
+export class FilterComponent implements OnInit {
   /**
    * Loading state
    */
@@ -34,22 +43,22 @@ export class FilterComponent extends UnsubscribeComponent implements OnInit {
    * Form group
    */
   public form = this.fb.group({});
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * FilterComponent constructor.
    *
    * @param fb Used to create reactive forms.
    */
-  constructor(private fb: FormBuilder) {
-    super();
-  }
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.form.valueChanges
       .pipe(
         debounceTime(1000),
         distinctUntilChanged(),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((value: any) => {
         this.emitFilter(value);

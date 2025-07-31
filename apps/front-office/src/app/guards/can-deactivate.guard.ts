@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanDeactivate, UrlTree } from '@angular/router';
+import { UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 
 /** Model for deactivation authorisation */
@@ -13,9 +13,7 @@ export interface CanComponentDeactivate {
 
 /** Injectable for checking deactivation */
 @Injectable()
-export class CanDeactivateGuard
-  implements CanDeactivate<CanComponentDeactivate>
-{
+export class CanDeactivateGuard {
   /**
    * Check if the component can deactivate
    *

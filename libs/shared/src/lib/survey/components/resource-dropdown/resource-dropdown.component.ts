@@ -1,7 +1,8 @@
 import {
   ChangeDetectorRef,
   Component,
-  OnDestroy,
+  DestroyRef,
+  inject,
   OnInit,
   ViewContainerRef,
 } from '@angular/core';
@@ -12,10 +13,9 @@ import {
   ResourceQueryResponse,
 } from '../../../models/resource.model';
 import { GET_SHORT_RESOURCE_BY_ID } from './graphql/queries';
-import { takeUntil } from 'rxjs/operators';
 import { QuestionAngular } from 'survey-angular-ui';
 import { QuestionResourceDropdownModel } from './resource-dropdown.model';
-import { Subject } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * This component is used to create a dropdown where the user can select a resource.
@@ -27,15 +27,14 @@ import { Subject } from 'rxjs';
 })
 export class ResourceDropdownComponent
   extends QuestionAngular<QuestionResourceDropdownModel>
-  implements OnInit, OnDestroy
+  implements OnInit
 {
   /** Selected resource */
   public selectedResource?: Resource;
   /** Resource control */
   public resourceControl!: UntypedFormControl;
-
-  /** Destroy subject */
-  private destroy$: Subject<void> = new Subject<void>();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -57,7 +56,7 @@ export class ResourceDropdownComponent
     super.ngOnInit();
     this.resourceControl = new UntypedFormControl(this.model.value ?? '');
     this.resourceControl.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.model.value = value;
         this.model.obj.gridFieldsSettings = null;
@@ -76,11 +75,5 @@ export class ResourceDropdownComponent
           }
         });
     }
-  }
-
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

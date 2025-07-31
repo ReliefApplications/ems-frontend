@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, DestroyRef, inject } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Application } from '../../../../models/application.model';
 import {
@@ -14,10 +14,9 @@ import { ADD_ROLE, DELETE_ROLE } from '../../graphql/mutations';
 import { GET_ROLES } from '../../graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { FormBuilder } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * This component is used to display the back-office roles tab
@@ -28,7 +27,7 @@ import { FormBuilder } from '@angular/forms';
   templateUrl: './role-list.component.html',
   styleUrls: ['./role-list.component.scss'],
 })
-export class RoleListComponent extends UnsubscribeComponent implements OnInit {
+export class RoleListComponent implements OnInit {
   // === INPUT DATA ===
   /** Whether the role list is in an application */
   @Input() inApplication = false;
@@ -52,6 +51,8 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
   public searchText = '';
   /** Users filter */
   public usersFilter = '';
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -81,15 +82,13 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private fb: FormBuilder
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     if (this.inApplication) {
       this.loading = false;
       this.applicationService.application$
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((application: Application | null) => {
           if (application) {
             this.roles = application.roles || [];
@@ -126,7 +125,7 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
       .query<RolesQueryResponse>({
         query: GET_ROLES,
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data, loading }) => {
         this.roles = data.roles;
         this.loading = loading;
@@ -142,54 +141,56 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
     const dialogRef = this.dialog.open(AddRoleComponent, {
       data: { title: 'components.role.add.title' },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        if (this.inApplication) {
-          this.applicationService.addRole(value);
-        } else {
-          this.apollo
-            .mutate<AddRoleMutationResponse>({
-              mutation: ADD_ROLE,
-              variables: {
-                title: value.title,
-              },
-            })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe({
-              next: ({ errors }) => {
-                if (errors) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectNotCreated',
-                      {
-                        type: this.translate
-                          .instant('common.role.one')
-                          .toLowerCase(),
-                        error: errors ? errors[0].message : '',
-                      }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectCreated',
-                      {
-                        type: this.translate.instant('common.role.one'),
-                        value: value.title,
-                      }
-                    )
-                  );
-                  this.getRoles();
-                }
-              },
-              error: (err) => {
-                this.snackBar.openSnackBar(err.message, { error: true });
-              },
-            });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          if (this.inApplication) {
+            this.applicationService.addRole(value);
+          } else {
+            this.apollo
+              .mutate<AddRoleMutationResponse>({
+                mutation: ADD_ROLE,
+                variables: {
+                  title: value.title,
+                },
+              })
+              .pipe(takeUntilDestroyed(this.destroyRef))
+              .subscribe({
+                next: ({ errors }) => {
+                  if (errors) {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'common.notifications.objectNotCreated',
+                        {
+                          type: this.translate
+                            .instant('common.role.one')
+                            .toLowerCase(),
+                          error: errors ? errors[0].message : '',
+                        }
+                      ),
+                      { error: true }
+                    );
+                  } else {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'common.notifications.objectCreated',
+                        {
+                          type: this.translate.instant('common.role.one'),
+                          value: value.title,
+                        }
+                      )
+                    );
+                    this.getRoles();
+                  }
+                },
+                error: (err) => {
+                  this.snackBar.openSnackBar(err.message, { error: true });
+                },
+              });
+          }
         }
-      }
-    });
+      });
   }
 
   /**
@@ -210,51 +211,53 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        if (this.inApplication) {
-          this.applicationService.deleteRole(item);
-        } else {
-          this.apollo
-            .mutate<DeleteRoleMutationResponse>({
-              mutation: DELETE_ROLE,
-              variables: {
-                id: item.id,
-              },
-            })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe({
-              next: ({ errors }) => {
-                if (errors) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectNotDeleted',
-                      {
-                        value: item.title,
-                        error: errors ? errors[0].message : '',
-                      }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectDeleted',
-                      {
-                        value: item.title,
-                      }
-                    )
-                  );
-                  this.getRoles();
-                }
-              },
-              error: (err) => {
-                this.snackBar.openSnackBar(err.message, { error: true });
-              },
-            });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          if (this.inApplication) {
+            this.applicationService.deleteRole(item);
+          } else {
+            this.apollo
+              .mutate<DeleteRoleMutationResponse>({
+                mutation: DELETE_ROLE,
+                variables: {
+                  id: item.id,
+                },
+              })
+              .pipe(takeUntilDestroyed(this.destroyRef))
+              .subscribe({
+                next: ({ errors }) => {
+                  if (errors) {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'common.notifications.objectNotDeleted',
+                        {
+                          value: item.title,
+                          error: errors ? errors[0].message : '',
+                        }
+                      ),
+                      { error: true }
+                    );
+                  } else {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'common.notifications.objectDeleted',
+                        {
+                          value: item.title,
+                        }
+                      )
+                    );
+                    this.getRoles();
+                  }
+                },
+                error: (err) => {
+                  this.snackBar.openSnackBar(err.message, { error: true });
+                },
+              });
+          }
         }
-      }
-    });
+      });
   }
 
   /**

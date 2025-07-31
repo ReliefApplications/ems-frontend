@@ -1,7 +1,9 @@
 import {
   Component,
+  DestroyRef,
   EventEmitter,
   HostListener,
+  inject,
   Input,
   OnChanges,
   OnInit,
@@ -10,12 +12,12 @@ import {
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FaIconName, getIconDefinition } from '@oort-front/ui';
-import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { BehaviorSubject, Observable } from 'rxjs';
 import {
   IconName,
   icon as iconCreator,
 } from '@fortawesome/fontawesome-svg-core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Icon picker popup component
@@ -25,10 +27,7 @@ import {
   templateUrl: './icon-picker-popup.component.html',
   styleUrls: ['./icon-picker-popup.component.scss'],
 })
-export class IconPickerPopupComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnChanges
-{
+export class IconPickerPopupComponent implements OnInit, OnChanges {
   /** Event emitter for close event */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close: EventEmitter<string> = new EventEmitter();
@@ -46,6 +45,8 @@ export class IconPickerPopupComponent
   public filteredIcons$!: Observable<FaIconName[]>;
   /** List of svg icons */
   public svgIcons: any = {};
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** Listen to click event on the document */
   @HostListener('click')
@@ -63,13 +64,6 @@ export class IconPickerPopupComponent
   }
 
   /**
-   * Constructor of the IconPickerPopupComponent in order to extend the UnsubscribeComponent class
-   */
-  constructor() {
-    super();
-  }
-
-  /**
    * Select icon
    *
    * @param icon icon name
@@ -82,7 +76,7 @@ export class IconPickerPopupComponent
   // this.filteredIcons.next(this.icons);
   ngOnInit(): void {
     this.searchControl.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value) {
           this.filteredIcons.next(

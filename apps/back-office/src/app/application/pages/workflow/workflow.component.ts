@@ -1,5 +1,11 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   ActivatedRoute,
   NavigationEnd,
@@ -16,7 +22,6 @@ import {
   DeleteStepMutationResponse,
   EditWorkflowMutationResponse,
   Step,
-  UnsubscribeComponent,
   Workflow,
   WorkflowService,
 } from '@oort-front/shared';
@@ -24,8 +29,9 @@ import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
 import { isNil } from 'lodash';
 import { Subscription } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { DELETE_STEP, EDIT_WORKFLOW } from './graphql/mutations';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Application workflow page component.
@@ -35,7 +41,7 @@ import { DELETE_STEP, EDIT_WORKFLOW } from './graphql/mutations';
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss'],
 })
-export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
+export class WorkflowComponent implements OnInit {
   /** Reference to router outlet */
   @ViewChild(RouterOutlet) routerOutlet?: RouterOutlet;
   /** Loading state */
@@ -62,6 +68,8 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   public showAppMenu = false;
   /** Application list */
   public applications: Application[] = [];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Application workflow page component
@@ -88,16 +96,14 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
     private authService: AuthService,
     private confirmService: ConfirmService,
     private translate: TranslateService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.formActive = false;
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((e) => {
         let validActiveStepIndex = -1;
@@ -126,14 +132,16 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
           );
         }
       });
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.loading = true;
-      this.id = params.id;
-      this.workflowService.loadWorkflow(this.id);
-    });
+    this.route.params
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        this.loading = true;
+        this.id = params.id;
+        this.workflowService.loadWorkflow(this.id);
+      });
 
     this.workflowService.workflow$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((workflow: Workflow | null) => {
         if (workflow) {
           this.steps = workflow.steps || [];
@@ -250,7 +258,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
         confirmVariant: 'danger',
       });
       dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value: any) => {
           if (value) {
             this.apollo
@@ -479,7 +487,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
     });
     // Subscribes to settings updates
     const subscription = dialogRef.componentInstance?.onUpdate
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((updates: any) => {
         if (updates) {
           this.workflow = {
@@ -493,7 +501,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
         }
       });
     // Unsubscribe to dialog onUpdate event
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       subscription?.unsubscribe();
     });
   }

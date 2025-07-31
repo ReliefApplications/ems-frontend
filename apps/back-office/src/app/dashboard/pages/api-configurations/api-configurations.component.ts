@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   AddApiConfigurationMutationResponse,
   ApiConfiguration,
   ConfirmService,
-  UnsubscribeComponent,
   ApiConfigurationsQueryResponse,
   DeleteApiConfigurationMutationResponse,
   getCachedValues,
@@ -17,7 +16,6 @@ import {
 } from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
 import { ApolloQueryResult } from '@apollo/client';
 import {
   TableSort,
@@ -27,6 +25,7 @@ import {
 import { SnackbarService } from '@oort-front/ui';
 import { GET_API_CONFIGURATIONS } from './graphql/queries';
 import { FormBuilder } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -39,10 +38,7 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './api-configurations.component.html',
   styleUrls: ['./api-configurations.component.scss'],
 })
-export class ApiConfigurationsComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class ApiConfigurationsComponent implements OnInit {
   // === DATA ===
   /** Loading state */
   public loading = true;
@@ -79,6 +75,8 @@ export class ApiConfigurationsComponent
     length: 0,
     endCursor: '',
   };
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * API configurations page component
@@ -99,9 +97,7 @@ export class ApiConfigurationsComponent
     private router: Router,
     private translate: TranslateService, // private uiTableWrapper: TableWrapperDirective
     private fb: FormBuilder
-  ) {
-    super();
-  }
+  ) {}
 
   /**
    * Creates the API configuration query, and subscribes to the query changes.
@@ -120,7 +116,7 @@ export class ApiConfigurationsComponent
       });
 
     this.apiConfigurationsQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(
         (results: ApolloQueryResult<ApiConfigurationsQueryResponse>) => {
           this.updateValues(results.data, results.loading);
@@ -170,53 +166,58 @@ export class ApiConfigurationsComponent
       './components/add-api-configuration/add-api-configuration.component'
     );
     const dialogRef = this.dialog.open(AddApiConfigurationComponent);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<AddApiConfigurationMutationResponse>({
-            mutation: ADD_API_CONFIGURATION,
-            variables: {
-              name: value.name,
-            },
-          })
-          .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotCreated',
-                    {
-                      type: this.translate
-                        .instant('common.apiConfiguration.one')
-                        .toLowerCase(),
-                      error: errors ? errors[0].message : '',
-                    }
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectCreated', {
-                    type: this.translate
-                      .instant('common.apiConfiguration.one')
-                      .toLowerCase(),
-                    value: data?.addApiConfiguration.name,
-                  })
-                );
-                if (data) {
-                  this.router.navigate([
-                    '/settings/apiconfigurations',
-                    data.addApiConfiguration.id,
-                  ]);
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.apollo
+            .mutate<AddApiConfigurationMutationResponse>({
+              mutation: ADD_API_CONFIGURATION,
+              variables: {
+                name: value.name,
+              },
+            })
+            .subscribe({
+              next: ({ errors, data }) => {
+                if (errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectNotCreated',
+                      {
+                        type: this.translate
+                          .instant('common.apiConfiguration.one')
+                          .toLowerCase(),
+                        error: errors ? errors[0].message : '',
+                      }
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectCreated',
+                      {
+                        type: this.translate
+                          .instant('common.apiConfiguration.one')
+                          .toLowerCase(),
+                        value: data?.addApiConfiguration.name,
+                      }
+                    )
+                  );
+                  if (data) {
+                    this.router.navigate([
+                      '/settings/apiconfigurations',
+                      data.addApiConfiguration.id,
+                    ]);
+                  }
                 }
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
   /**
@@ -238,49 +239,54 @@ export class ApiConfigurationsComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<DeleteApiConfigurationMutationResponse>({
-            mutation: DELETE_API_CONFIGURATION,
-            variables: {
-              id: element.id,
-            },
-          })
-          .subscribe({
-            next: ({ errors }) => {
-              if (!errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectDeleted', {
-                    value: this.translate.instant(
-                      'common.apiConfiguration.one'
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.apollo
+            .mutate<DeleteApiConfigurationMutationResponse>({
+              mutation: DELETE_API_CONFIGURATION,
+              variables: {
+                id: element.id,
+              },
+            })
+            .subscribe({
+              next: ({ errors }) => {
+                if (!errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectDeleted',
+                      {
+                        value: this.translate.instant(
+                          'common.apiConfiguration.one'
+                        ),
+                      }
+                    )
+                  );
+                  this.dataSource = this.dataSource.filter(
+                    (x) => x.id !== element.id
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectNotDeleted',
+                      {
+                        value: this.translate.instant(
+                          'common.apiConfiguration.one'
+                        ),
+                        error: errors[0].message,
+                      }
                     ),
-                  })
-                );
-                this.dataSource = this.dataSource.filter(
-                  (x) => x.id !== element.id
-                );
-              } else {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.objectNotDeleted',
-                    {
-                      value: this.translate.instant(
-                        'common.apiConfiguration.one'
-                      ),
-                      error: errors[0].message,
-                    }
-                  ),
-                  { error: true }
-                );
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+                    { error: true }
+                  );
+                }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
   /**

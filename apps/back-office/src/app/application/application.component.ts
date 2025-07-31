@@ -1,4 +1,11 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  HostListener,
+  inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -6,12 +13,12 @@ import {
   ContentType,
   ApplicationService,
   ConfirmService,
-  UnsubscribeComponent,
   AppAbility,
 } from '@oort-front/shared';
 import get from 'lodash/get';
-import { takeUntil, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Navigation item type */
 type NavigationItem = {
@@ -29,10 +36,7 @@ type NavigationItem = {
   templateUrl: './application.component.html',
   styleUrls: ['./application.component.scss'],
 })
-export class ApplicationComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class ApplicationComponent implements OnInit, OnDestroy {
   /** Application title */
   public title = '';
   /** Navigation groups */
@@ -70,6 +74,8 @@ export class ApplicationComponent
       legacy: legacy,
     });
   };
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Main component of application view
@@ -89,7 +95,6 @@ export class ApplicationComponent
     private confirmService: ConfirmService,
     private ability: AppAbility
   ) {
-    super();
     this.largeDevice = window.innerWidth > 1024;
   }
 
@@ -171,12 +176,14 @@ export class ApplicationComponent
   }
 
   ngOnInit(): void {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.loading = true;
-      this.applicationService.loadApplication(params.id);
-    });
+    this.route.params
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        this.loading = true;
+        this.applicationService.loadApplication(params.id);
+      });
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((application: Application | null) => {
         if (application) {
           this.loading = false;
@@ -271,11 +278,13 @@ export class ApplicationComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.applicationService.deletePage(item.id);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.applicationService.deletePage(item.id);
+        }
+      });
   }
 
   /**
@@ -319,8 +328,7 @@ export class ApplicationComponent
   /**
    * Remove application data such as styling when existing application edition.
    */
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     this.applicationService.leaveApplication();
   }
 }

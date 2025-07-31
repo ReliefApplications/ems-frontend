@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -8,9 +8,8 @@ import {
   Role,
   ApplicationService,
   ConfirmService,
-  UnsubscribeComponent,
 } from '@oort-front/shared';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Channels page component.
@@ -20,7 +19,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './channels.component.html',
   styleUrls: ['./channels.component.scss'],
 })
-export class ChannelsComponent extends UnsubscribeComponent implements OnInit {
+export class ChannelsComponent implements OnInit {
   /** Channels list */
   private channels: Channel[] = [];
   /** Channels data */
@@ -29,6 +28,8 @@ export class ChannelsComponent extends UnsubscribeComponent implements OnInit {
   public loading = true;
   /** Table columns */
   public displayedColumns: string[] = ['title', 'subscribedRoles', 'actions'];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Channels page component
@@ -43,14 +44,12 @@ export class ChannelsComponent extends UnsubscribeComponent implements OnInit {
     private confirmService: ConfirmService,
     public dialog: Dialog,
     private translate: TranslateService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.loading = false;
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((application: Application | null) => {
         if (application) {
           this.channels = application.channels || [];
@@ -86,11 +85,13 @@ export class ChannelsComponent extends UnsubscribeComponent implements OnInit {
       './components/channel-modal/channel-modal.component'
     );
     const dialogRef = this.dialog.open(ChannelModalComponent);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.applicationService.addChannel(value);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.applicationService.addChannel(value);
+        }
+      });
   }
 
   /**
@@ -107,11 +108,13 @@ export class ChannelsComponent extends UnsubscribeComponent implements OnInit {
         channel,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.applicationService.editChannel(channel, value.title);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.applicationService.editChannel(channel, value.title);
+        }
+      });
   }
 
   /**
@@ -134,10 +137,12 @@ export class ChannelsComponent extends UnsubscribeComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.applicationService.deleteChannel(channel);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.applicationService.deleteChannel(channel);
+        }
+      });
   }
 }

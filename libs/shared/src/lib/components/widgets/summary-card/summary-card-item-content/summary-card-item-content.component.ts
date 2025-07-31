@@ -1,8 +1,10 @@
 import { Dialog } from '@angular/cdk/dialog';
 import {
   Component,
+  DestroyRef,
   ElementRef,
   HostListener,
+  inject,
   Input,
   OnChanges,
   OnInit,
@@ -14,14 +16,13 @@ import {
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { takeUntil } from 'rxjs';
 import { DataTemplateService } from '../../../../services/data-template/data-template.service';
 import { WidgetService } from '../../../../services/widget/widget.service';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { HtmlWidgetContentComponent } from '../../common/html-widget-content/html-widget-content.component';
 import { SummaryCardFormT } from '../../summary-card-settings/summary-card-settings.component';
 import { SummaryCardItemComponent } from '../summary-card-item/summary-card-item.component';
 import { DashboardAutomationService } from '../../../../services/dashboard-automation/dashboard-automation.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -33,10 +34,7 @@ import { DashboardAutomationService } from '../../../../services/dashboard-autom
   styleUrls: ['./summary-card-item-content.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class SummaryCardItemContentComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnChanges
-{
+export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   /** Html template */
   @Input() html = '';
   /** Available fields */
@@ -58,6 +56,8 @@ export class SummaryCardItemContentComponent
   public formattedStyle?: string;
   /** Timeout to init active filter */
   private timeoutListener!: NodeJS.Timeout;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Listen to click events from host element, and trigger any action attached to the content clicked in the summary card item
@@ -104,9 +104,7 @@ export class SummaryCardItemContentComponent
     @Optional()
     @SkipSelf()
     private dashboardAutomationService: DashboardAutomationService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.setHtml();
@@ -194,25 +192,27 @@ export class SummaryCardItemContentComponent
         },
         autoFocus: false,
       });
-      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-        if (value) {
-          this.parent.refresh();
-          // Update the record, based on new configuration
-          // this.getRecord().then(() => {
-          //   this.formattedStyle = this.dataTemplateService.renderStyle(
-          //     this.settings.wholeCardStyles || false,
-          //     this.fieldsValue,
-          //     this.styles
-          //   );
-          //   this.formattedHtml = this.dataTemplateService.renderHtml(
-          //     this.settings.text,
-          //     this.fieldsValue,
-          //     this.fields,
-          //     this.styles
-          //   );
-          // });
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((value) => {
+          if (value) {
+            this.parent.refresh();
+            // Update the record, based on new configuration
+            // this.getRecord().then(() => {
+            //   this.formattedStyle = this.dataTemplateService.renderStyle(
+            //     this.settings.wholeCardStyles || false,
+            //     this.fieldsValue,
+            //     this.styles
+            //   );
+            //   this.formattedHtml = this.dataTemplateService.renderHtml(
+            //     this.settings.text,
+            //     this.fieldsValue,
+            //     this.fields,
+            //     this.styles
+            //   );
+            // });
+          }
+        });
     }
   }
 }

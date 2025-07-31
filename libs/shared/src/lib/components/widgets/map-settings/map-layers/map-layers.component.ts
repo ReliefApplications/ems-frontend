@@ -2,16 +2,23 @@ import { Dialog } from '@angular/cdk/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DomPortal } from '@angular/cdk/portal';
 import { CdkTable } from '@angular/cdk/table';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
-import { map, takeUntil } from 'rxjs';
+import { map } from 'rxjs';
 import { LayerModel } from '../../../../models/layer.model';
 import { MapLayersService } from '../../../../services/map/map-layers.service';
 import { LayerType } from '../../../ui/map/interfaces/layer-settings.type';
 import { MapControls } from '../../../ui/map/interfaces/map.interface';
 import { MapComponent } from '../../../ui/map/map.component';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { AddLayerModalComponent } from '../add-layer-modal/add-layer-modal.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Layers configuration component of Map Widget.
@@ -21,7 +28,7 @@ import { AddLayerModalComponent } from '../add-layer-modal/add-layer-modal.compo
   templateUrl: './map-layers.component.html',
   styleUrls: ['./map-layers.component.scss'],
 })
-export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
+export class MapLayersComponent implements OnInit {
   /** Map component */
   @Input() mapComponent?: MapComponent;
   /** Layers */
@@ -36,6 +43,8 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
   public displayedColumns = ['name', 'actions'];
   /** Loading status */
   public loading = true;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Layers configuration component of Map Widget.
@@ -46,9 +55,7 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
   constructor(
     private dialog: Dialog,
     private mapLayersService: MapLayersService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.updateLayerList();
@@ -114,24 +121,26 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
         mapPortal: this.mapPortal,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.loading = true;
-        this.mapLayersService.addLayer(value).subscribe({
-          next: (layer) => {
-            if (layer) {
-              const value = this.control.value;
-              this.control.setValue([...value, layer.id]);
-              this.mapLayers.push(layer);
-            }
-          },
-          error: (err) => console.error(err),
-          complete: () => (this.loading = false),
-        });
-      } else {
-        this.restoreMapSettingsView();
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.loading = true;
+          this.mapLayersService.addLayer(value).subscribe({
+            next: (layer) => {
+              if (layer) {
+                const value = this.control.value;
+                this.control.setValue([...value, layer.id]);
+                this.mapLayers.push(layer);
+              }
+            },
+            error: (err) => console.error(err),
+            complete: () => (this.loading = false),
+          });
+        } else {
+          this.restoreMapSettingsView();
+        }
+      });
   }
 
   /**
@@ -142,11 +151,13 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
     const dialogRef = this.dialog.open(AddLayerModalComponent, {
       disableClose: true,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((id) => {
-      if (id) {
-        this.onEditLayer(id as string);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((id) => {
+        if (id) {
+          this.onEditLayer(id as string);
+        }
+      });
   }
 
   /**
@@ -157,7 +168,7 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
   public onEditLayer(id: string) {
     this.mapLayersService
       .getLayerById(id)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(async (layer) => {
         const { EditLayerModalComponent } = await import(
           '../edit-layer-modal/edit-layer-modal.component'
@@ -176,7 +187,7 @@ export class MapLayersComponent extends UnsubscribeComponent implements OnInit {
           },
         });
         dialogRef.closed
-          .pipe(takeUntil(this.destroy$))
+          .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe((value: any) => {
             if (value) {
               this.loading = true;

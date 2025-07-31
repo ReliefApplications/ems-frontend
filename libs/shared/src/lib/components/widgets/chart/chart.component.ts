@@ -8,6 +8,8 @@ import {
   OnInit,
   OnDestroy,
   ElementRef,
+  inject,
+  DestroyRef,
 } from '@angular/core';
 import { LineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { PieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
@@ -15,7 +17,7 @@ import { BarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component
 import { uniq, get, groupBy, isEqual, cloneDeep } from 'lodash';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
-import { BehaviorSubject, Subject, merge } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
@@ -25,6 +27,7 @@ import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 import { WidgetService } from '../../../services/widget/widget.service';
 import { authType } from '../../../models/api-configuration.model';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Default file name for chart exports
@@ -101,6 +104,8 @@ export class ChartComponent
   private aggregationId?: string;
   /** Subject to emit signals for cancelling previous data queries */
   private cancelRefresh$ = new Subject<void>();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns Context filters array */
   get contextFilters(): CompositeFilterDescriptor {
@@ -187,7 +192,7 @@ export class ChartComponent
             : true
         ),
         debounceTime(500),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(({ previous, current }) => {
         if (
@@ -207,7 +212,7 @@ export class ChartComponent
       });
     // Listen to series data changes to know when widget is empty and will be hidden
     if (this.settings.widgetDisplay.hideEmpty) {
-      this.series$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.series$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
         this.dashboardService.widgetContentRefreshed.next(null);
       });
     }
@@ -248,8 +253,7 @@ export class ChartComponent
     this.getOptions();
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     this.cancelRefresh$.next();
     this.cancelRefresh$.complete();
   }
@@ -277,7 +281,10 @@ export class ChartComponent
       });
       if (this.dataQuery) {
         this.dataQuery
-          .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+          .pipe(
+            takeUntil(this.cancelRefresh$),
+            takeUntilDestroyed(this.destroyRef)
+          )
           .subscribe(({ errors, data, loading }: any) => {
             if (errors) {
               this.loading = false;

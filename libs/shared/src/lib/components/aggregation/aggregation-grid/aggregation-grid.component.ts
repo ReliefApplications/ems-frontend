@@ -1,4 +1,12 @@
-import { Component, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  Input,
+  OnChanges,
+  OnInit,
+} from '@angular/core';
 import { GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -9,15 +17,15 @@ import { AggregationBuilderService } from '../../../services/aggregation-builder
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { PAGER_SETTINGS } from './aggregation-grid.constants';
 import { GET_RESOURCE } from './graphql/queries';
-import { Subject, debounceTime, filter, from, merge, takeUntil } from 'rxjs';
+import { Subject, debounceTime, filter, from, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { GridService } from '../../../services/grid/grid.service';
 import { ContextService } from '../../../services/context/context.service';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { SortDescriptor } from '@progress/kendo-data-query';
 import { cloneDeep } from 'lodash';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Shared aggregation grid component.
@@ -27,10 +35,7 @@ import { cloneDeep } from 'lodash';
   templateUrl: './aggregation-grid.component.html',
   styleUrls: ['./aggregation-grid.component.scss'],
 })
-export class AggregationGridComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnChanges
-{
+export class AggregationGridComponent implements OnInit, OnChanges {
   /** Data */
   @Input() widget: any;
   /** Resource id */
@@ -70,6 +75,8 @@ export class AggregationGridComponent
   private dataQuery!: QueryRef<AggregationDataQueryResponse>;
   /** Subject to emit signals for cancelling previous data queries */
   private cancelRefresh$ = new Subject<void>();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns The column menu */
   get columnMenu(): { columnChooser: boolean; filter: boolean } {
@@ -110,9 +117,7 @@ export class AggregationGridComponent
     private translate: TranslateService,
     private contextService: ContextService,
     private el: ElementRef
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     // Listen to dashboard filters changes if it is necessary
@@ -129,7 +134,7 @@ export class AggregationGridComponent
               : true
           ),
           debounceTime(500),
-          takeUntil(this.destroy$)
+          takeUntilDestroyed(this.destroyRef)
         )
         .subscribe(({ previous, current }) => {
           if (
@@ -167,7 +172,7 @@ export class AggregationGridComponent
       this.at ? this.contextService.atArgumentValue(this.at) : undefined
     );
     this.dataQuery.valueChanges
-      .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+      .pipe(takeUntil(this.cancelRefresh$), takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ data, loading }) => {
           this.updateValues(data, loading);
@@ -286,7 +291,7 @@ export class AggregationGridComponent
         },
       })
     )
-      .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+      .pipe(takeUntil(this.cancelRefresh$), takeUntilDestroyed(this.destroyRef))
       .subscribe((results) => this.updateValues(results.data, results.loading));
   }
 

@@ -1,7 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { GridSettings } from '../../ui/core-grid/models/grid-settings.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Layout preview interface */
 export interface LayoutPreviewData {
@@ -29,21 +28,13 @@ const DEFAULT_GRID_SETTINGS = {
   templateUrl: './tab-layout-preview.component.html',
   styleUrls: ['./tab-layout-preview.component.scss'],
 })
-export class TabLayoutPreviewComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class TabLayoutPreviewComponent implements OnInit {
   /** Layout preview data */
   @Input() data: LayoutPreviewData | null = null;
   /** Grid settings */
   public gridSettings: GridSettings = DEFAULT_GRID_SETTINGS;
-
-  /**
-   * The constructor for the preview of the grid widget
-   */
-  constructor() {
-    super();
-  }
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** Update grid actions, listening to form changes */
   ngOnInit(): void {
@@ -54,7 +45,7 @@ export class TabLayoutPreviewComponent
       };
       this.data.form
         .get('query')
-        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
           this.gridSettings = {
             ...this.data?.form?.getRawValue(),

@@ -1,13 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { EDIT_USER_PROFILE } from './graphql/mutations';
 import { AuthService } from '../../services/auth/auth.service';
 import { TranslateService } from '@ngx-translate/core';
-import { UnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { EditUserProfileMutationResponse, User } from '../../models/user.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Shared profile page.
@@ -18,7 +17,7 @@ import { EditUserProfileMutationResponse, User } from '../../models/user.model';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
-export class ProfileComponent extends UnsubscribeComponent implements OnInit {
+export class ProfileComponent implements OnInit {
   /** Current user */
   public user: any;
   /** Form to edit the user */
@@ -30,6 +29,8 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
     'positionAttributes',
     'actions',
   ];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Shared profile page.
@@ -47,21 +48,21 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
     private authService: AuthService,
     private fb: FormBuilder,
     public translate: TranslateService
-  ) {
-    super();
-  }
+  ) {}
 
   /**
    * Subscribes to authenticated user.
    * Creates user form.
    */
   ngOnInit(): void {
-    this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe((user) => {
-      if (user) {
-        this.user = { ...user };
-        this.userForm = this.createUserForm(user);
-      }
-    });
+    this.authService.user$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((user) => {
+        if (user) {
+          this.user = { ...user };
+          this.userForm = this.createUserForm(user);
+        }
+      });
   }
 
   /**

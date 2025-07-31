@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormControl,
@@ -14,12 +14,10 @@ import {
   ReferenceData,
   ReferenceDataQueryResponse,
   Resource,
-  UnsubscribeComponent,
   ResourceQueryResponse,
   ResourceSelectComponent,
   ReferenceDataSelectComponent,
 } from '@oort-front/shared';
-import { takeUntil } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
 import {
@@ -32,6 +30,7 @@ import {
   IconModule,
   DividerModule,
 } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Create a form group for the page context datasource selection
@@ -75,10 +74,7 @@ const createContextDatasourceForm = (data?: PageContextT) => {
   templateUrl: './edit-context-modal.component.html',
   styleUrls: ['./edit-context-modal.component.scss'],
 })
-export class EditContextModalComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class EditContextModalComponent implements OnInit {
   /** Context form group */
   public form!: ReturnType<typeof createContextDatasourceForm>;
   /** Selected resource */
@@ -89,6 +85,8 @@ export class EditContextModalComponent
   public displayField: string | null = null;
   /** Available fields */
   public availableFields: string[] = [];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Component for selecting the dashboard context datasource
@@ -102,7 +100,6 @@ export class EditContextModalComponent
     @Inject(DIALOG_DATA) public data: PageContextT,
     public dialogRef: DialogRef<EditContextModalComponent>
   ) {
-    super();
     this.form = createContextDatasourceForm(data);
   }
 
@@ -114,7 +111,7 @@ export class EditContextModalComponent
     }
     // Set subscription of resource
     this.form.controls.resource.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         // Set displayField to null
         const displayField = this.form.get('displayField');
@@ -137,7 +134,7 @@ export class EditContextModalComponent
     }
     // Set subscription of resource
     this.form.controls.refData.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         // Set displayField to null
         const displayField = this.form.get('displayField');

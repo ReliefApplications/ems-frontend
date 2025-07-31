@@ -1,8 +1,10 @@
 import { Dialog } from '@angular/cdk/dialog';
 import {
   Component,
+  DestroyRef,
   ElementRef,
   HostListener,
+  inject,
   Input,
   OnInit,
   Optional,
@@ -41,6 +43,7 @@ import {
 } from '../summary-card/graphql/queries';
 import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
 import { authType } from '../../../models/api-configuration.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Text widget component using Tinymce.
@@ -84,6 +87,8 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
   private cancelRefresh$ = new Subject<void>();
   /** Timeout to init active filter */
   private timeoutListener!: NodeJS.Timeout;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns does the card use reference data */
   get useReferenceData() {
@@ -196,7 +201,7 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
             : true
         ),
         debounceTime(500),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(({ previous, current }) => {
         if (
@@ -529,30 +534,32 @@ export class EditorComponent extends BaseWidgetComponent implements OnInit {
         },
         autoFocus: false,
       });
-      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-        if (value) {
-          this.loading = true;
-          // Update the record, based on new configuration
-          this.getRecord()
-            .then(() => {
-              this.formattedStyle = this.dataTemplateService.renderStyle(
-                this.settings.wholeCardStyles || false,
-                this.fieldsValue,
-                this.styles
-              );
-              this.formattedHtml = this.dataTemplateService.renderHtml(
-                this.settings.text,
-                {
-                  data: this.fieldsValue,
-                  aggregation: this.aggregationsData,
-                  fields: this.fields,
-                  styles: this.styles,
-                }
-              );
-            })
-            .finally(() => (this.loading = false));
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((value) => {
+          if (value) {
+            this.loading = true;
+            // Update the record, based on new configuration
+            this.getRecord()
+              .then(() => {
+                this.formattedStyle = this.dataTemplateService.renderStyle(
+                  this.settings.wholeCardStyles || false,
+                  this.fieldsValue,
+                  this.styles
+                );
+                this.formattedHtml = this.dataTemplateService.renderHtml(
+                  this.settings.text,
+                  {
+                    data: this.fieldsValue,
+                    aggregation: this.aggregationsData,
+                    fields: this.fields,
+                    styles: this.styles,
+                  }
+                );
+              })
+              .finally(() => (this.loading = false));
+          }
+        });
     }
   }
 

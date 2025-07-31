@@ -1,4 +1,12 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  Input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { EMAIL_LAYOUT_EDITOR_CONFIG } from '../../../../const/tinymce.const';
 import { EditorService } from '../../../../services/editor/editor.service';
 import { EmailService } from '../../email.service';
@@ -7,8 +15,6 @@ import { ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import convertToMinutes from '../../../../utils/convert-to-minutes';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { cloneDeep } from 'lodash';
@@ -21,10 +27,7 @@ import { cloneDeep } from 'lodash';
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss'],
 })
-export class LayoutComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class LayoutComponent implements OnInit, OnDestroy {
   /** Reference to the body editor component. */
   @ViewChild('bodyEditor', { static: false })
   bodyEditor: EditorComponent | null = null;
@@ -86,8 +89,6 @@ export class LayoutComponent
   public inTheLastDropdown = new FormArray<FormControl>([]);
   /** DATASETS LIST GREATER THAN 1 CHECK */
   public datasetOverflow = false;
-  /** Subscription for the graphql load change event. */
-  private loadChangeSubscription: Subscription = new Subscription();
   /** To input HTML */
   @ViewChild('toInput') toInput!: ElementRef<HTMLInputElement>;
   /** Cc input HTML */
@@ -98,6 +99,8 @@ export class LayoutComponent
   EMAIL_REGEX = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
   /** Key codes of separators */
   SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns list of emails */
   get emails(): string[] {
@@ -149,7 +152,6 @@ export class LayoutComponent
     public snackbar: SnackbarService,
     public translate: TranslateService
   ) {
-    super();
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
     // Set the editor language
@@ -987,7 +989,7 @@ export class LayoutComponent
   /**
    * patch the data in service file.
    */
-  override ngOnDestroy(): void {
+  ngOnDestroy(): void {
     this.getColors();
     this.emailService.allLayoutdata.txtSubject =
       this.layoutForm.get('subjectInput')?.value;

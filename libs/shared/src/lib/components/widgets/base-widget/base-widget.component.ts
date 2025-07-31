@@ -1,6 +1,5 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Generic widget component, must be extended by other widgets.
@@ -12,7 +11,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
   templateUrl: './base-widget.component.html',
   styleUrls: ['./base-widget.component.scss'],
 })
-export class BaseWidgetComponent extends UnsubscribeComponent {
+export class BaseWidgetComponent {
   /** Widget header template reference */
   @ViewChild('headerTemplate') headerTemplate!: TemplateRef<any>;
   /** If had an empty response */

@@ -2,10 +2,10 @@ import { moduleMetadata, Story, Meta } from '@storybook/angular';
 import { Dialog, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DialogModule } from './dialog.module';
 import { CommonModule } from '@angular/common';
-import { Component, Input, Inject, OnDestroy } from '@angular/core';
+import { Component, Input, Inject, DestroyRef, inject } from '@angular/core';
 import { DialogRef } from '@angular/cdk/dialog';
-import { Subject, takeUntil } from 'rxjs';
 import { DialogSize, dialogSizes } from './types/dialog-size';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * LaunchDialog component.
@@ -22,13 +22,13 @@ import { DialogSize, dialogSizes } from './types/dialog-size';
     </button>
   `,
 })
-class LaunchDialogComponent implements OnDestroy {
+class LaunchDialogComponent {
   /** Animal name */
   @Input() animal = '';
   /** Dialog size */
   @Input() size: DialogSize = 'medium';
-  /** Destroy subject */
-  private destroy$ = new Subject<void>();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Constructor for the launchDialog component
@@ -47,14 +47,11 @@ class LaunchDialogComponent implements OnDestroy {
         size: this.size,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((result: any) => {
-      console.log(`Dialog result: ${result}`);
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((result: any) => {
+        console.log(`Dialog result: ${result}`);
+      });
   }
 }
 

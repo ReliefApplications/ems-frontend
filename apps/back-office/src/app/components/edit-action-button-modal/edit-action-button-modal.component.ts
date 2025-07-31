@@ -1,6 +1,6 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Inject, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -31,7 +31,6 @@ import {
   ResourceQueryResponse,
   ResourceSelectComponent,
   Role,
-  UnsubscribeComponent,
   addNewField,
 } from '@oort-front/shared';
 import {
@@ -51,9 +50,10 @@ import {
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { Apollo } from 'apollo-angular';
 import { get, isNil } from 'lodash';
-import { filter, iif, map, of, switchMap, takeUntil } from 'rxjs';
+import { filter, iif, map, of, switchMap } from 'rxjs';
 import { RawEditorSettings } from 'tinymce';
 import { GET_RESOURCE } from './graphql/queries';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Dialog data interface */
 interface DialogData {
@@ -90,10 +90,7 @@ interface DialogData {
   templateUrl: './edit-action-button-modal.component.html',
   styleUrls: ['./edit-action-button-modal.component.scss'],
 })
-export class EditActionButtonModalComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class EditActionButtonModalComponent implements OnInit {
   /** Form group */
   public form: FormGroup;
   /** Button variants */
@@ -124,6 +121,8 @@ export class EditActionButtonModalComponent
   public sendNotificationTemplates: Form[] = [];
   /** Fields, of current page context resource, if any */
   public sendNotificationFields: any[] = [];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Component for editing a dashboard action button
@@ -151,7 +150,6 @@ export class EditActionButtonModalComponent
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService
   ) {
-    super();
     this.roles = this.applicationService.application.value?.roles || [];
     this.form = this.createActionButtonForm(data.button, this.roles);
     this.isNew = !data.button;
@@ -480,7 +478,7 @@ export class EditActionButtonModalComponent
             },
           })
         ),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: ({ data }) => {
@@ -505,7 +503,7 @@ export class EditActionButtonModalComponent
             of({ data: null })
           )
         ),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: ({ data }) => {
@@ -532,7 +530,7 @@ export class EditActionButtonModalComponent
             this.applicationService.application?.getValue()?.id as string
           )
         ),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: ({ data }) => {
@@ -551,7 +549,7 @@ export class EditActionButtonModalComponent
             this.applicationService.application?.getValue()?.id as string
           )
         ),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: ({ data }) => {
@@ -589,7 +587,7 @@ export class EditActionButtonModalComponent
               }))
             );
         }),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: ({ customTemplates, emailDistributionLists }) => {
@@ -710,7 +708,7 @@ export class EditActionButtonModalComponent
   setupMutualExclusivity = (controls: AbstractControl[]) => {
     controls.forEach((control, index) => {
       control?.valueChanges
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value: boolean | null) => {
           if (value) {
             controls.forEach((otherControl, otherIndex) => {

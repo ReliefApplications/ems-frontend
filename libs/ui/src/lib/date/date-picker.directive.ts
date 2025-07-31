@@ -1,5 +1,6 @@
 import {
   ApplicationRef,
+  DestroyRef,
   Directive,
   ElementRef,
   EnvironmentInjector,
@@ -12,12 +13,13 @@ import {
   Renderer2,
   Self,
   createComponent,
+  inject,
 } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { formatDate } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { ButtonComponent } from '../button/button.component';
-import { Subject, takeUntil } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 /**
  * UI Datepicker directive
  */
@@ -29,12 +31,8 @@ export class DatePickerDirective implements OnInit, OnDestroy {
   @Input() uiDatePicker: any = 'calendar_today';
   /** Datepicker label */
   @Input() label = '';
-
   /** Click event */
   @Output() clickEvent = new EventEmitter<void>();
-
-  /** Destroy subject */
-  private destroy$ = new Subject<void>();
   /** Click event listener */
   private clickEventListener!: any;
   /** Label element */
@@ -109,6 +107,8 @@ export class DatePickerDirective implements OnInit, OnDestroy {
 
   /** Timeout to dispatch event */
   private dispatchEventTimeoutListener!: NodeJS.Timeout;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * UI Date picker directive constructor
@@ -143,7 +143,7 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     this.setIconElement();
     if (this.control?.control) {
       this.control.control.valueChanges
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (value) => {
             // If the control is reset programmatically trigger event to display selected values in calendar,
@@ -275,7 +275,5 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     if (this.clickEventListener) {
       this.clickEventListener();
     }
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

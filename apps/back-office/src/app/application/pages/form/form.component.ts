@@ -1,5 +1,11 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -16,17 +22,17 @@ import {
   FormComponent as SharedFormComponent,
   Step,
   StepQueryResponse,
-  UnsubscribeComponent,
   WorkflowService,
 } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import { Observable, Subscription } from 'rxjs';
-import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import {
   GET_PAGE_BY_ID,
   GET_SHORT_FORM_BY_ID,
   GET_STEP_BY_ID,
 } from './graphql/queries';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Form page in application.
@@ -36,7 +42,7 @@ import {
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent extends UnsubscribeComponent implements OnInit {
+export class FormComponent implements OnInit {
   /** Form component */
   @ViewChild(SharedFormComponent)
   private formComponent?: SharedFormComponent;
@@ -67,6 +73,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   public isStep = false;
   /** Configured form action buttons */
   public actionButtons: ActionButton[] = [];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Form page in application
@@ -93,60 +101,60 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     private actionButtonService: ActionButtonService,
     private contextService: ContextService,
     private breadcrumbService: BreadcrumbService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.formActive = false;
-      this.loading = true;
-      this.id = params.id;
-      this.isStep = this.router.url.includes('/workflow/');
-      // If a query is already loading, cancel it
-      if (this.querySubscription) {
-        this.querySubscription.unsubscribe();
-      }
-      if (this.isStep) {
-        this.querySubscription = this.apollo
-          .query<StepQueryResponse>({
-            query: GET_STEP_BY_ID,
-            variables: {
-              id: this.id,
-            },
-          })
-          .pipe(
-            switchMap(({ data }) => {
-              this.step = data.step;
-              this.actionButtons = data.step.buttons as ActionButton[];
-              return this.getFormQuery(this.step.content ?? '');
+    this.route.params
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        this.formActive = false;
+        this.loading = true;
+        this.id = params.id;
+        this.isStep = this.router.url.includes('/workflow/');
+        // If a query is already loading, cancel it
+        if (this.querySubscription) {
+          this.querySubscription.unsubscribe();
+        }
+        if (this.isStep) {
+          this.querySubscription = this.apollo
+            .query<StepQueryResponse>({
+              query: GET_STEP_BY_ID,
+              variables: {
+                id: this.id,
+              },
             })
-          )
-          .subscribe(({ data, loading }) => {
-            this.handleFormQueryResponse(data, 'step');
-            this.loading = loading;
-          });
-      } else {
-        this.querySubscription = this.apollo
-          .query<PageQueryResponse>({
-            query: GET_PAGE_BY_ID,
-            variables: {
-              id: this.id,
-            },
-          })
-          .pipe(
-            switchMap(({ data }) => {
-              this.page = data.page;
-              this.actionButtons = data.page.buttons as ActionButton[];
-              return this.getFormQuery(this.page.content ?? '');
+            .pipe(
+              switchMap(({ data }) => {
+                this.step = data.step;
+                this.actionButtons = data.step.buttons as ActionButton[];
+                return this.getFormQuery(this.step.content ?? '');
+              })
+            )
+            .subscribe(({ data, loading }) => {
+              this.handleFormQueryResponse(data, 'step');
+              this.loading = loading;
+            });
+        } else {
+          this.querySubscription = this.apollo
+            .query<PageQueryResponse>({
+              query: GET_PAGE_BY_ID,
+              variables: {
+                id: this.id,
+              },
             })
-          )
-          .subscribe(({ data, loading }) => {
-            this.handleFormQueryResponse(data, 'page');
-            this.loading = loading;
-          });
-      }
-    });
+            .pipe(
+              switchMap(({ data }) => {
+                this.page = data.page;
+                this.actionButtons = data.page.buttons as ActionButton[];
+                return this.getFormQuery(this.page.content ?? '');
+              })
+            )
+            .subscribe(({ data, loading }) => {
+              this.handleFormQueryResponse(data, 'page');
+              this.loading = loading;
+            });
+        }
+      });
   }
 
   /**
@@ -317,7 +325,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     });
     // Subscribes to settings updates
     const subscription = dialogRef.componentInstance?.onUpdate
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((updates: any) => {
         if (updates) {
           if (this.isStep) {
@@ -334,7 +342,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
         }
       });
     // Unsubscribe to dialog onUpdate event
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       subscription?.unsubscribe();
     });
   }
@@ -378,7 +386,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
                 })
               ) as Observable<any>
         ),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(({ errors, buttons }) => {
         this.actionButtons = buttons as ActionButton[];

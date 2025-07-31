@@ -1,13 +1,14 @@
 import { moduleMetadata, Story, Meta } from '@storybook/angular';
 import { SnackbarModule } from './snackbar.module';
 import { CommonModule } from '@angular/common';
-import { Component, Inject, Input, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { Component, DestroyRef, inject, Inject, Input } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { SNACKBAR_DATA, SnackBarData } from './snackbar.token';
 import { SnackbarService } from './snackbar.service';
 import { IconModule } from '../icon/icon.module';
 import { SpinnerModule } from '../spinner/spinner.module';
 import { StorybookTranslateModule } from '../../storybook-translate.module';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * LaunchSnackbarComponent component.
@@ -24,11 +25,11 @@ import { StorybookTranslateModule } from '../../storybook-translate.module';
     </button>
   `,
 })
-class LaunchSnackbarComponent implements OnDestroy {
+class LaunchSnackbarComponent {
   /** Default snackbar */
   @Input() default = true;
-  /** Destroy subject */
-  destroy$ = new Subject<void>();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Constructor for the launch Snackbar component
@@ -59,16 +60,11 @@ class LaunchSnackbarComponent implements OnDestroy {
         }
       );
       snackbarRef.instance.actionComplete
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => window.alert('Action complete!!'),
         });
     }
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }
 

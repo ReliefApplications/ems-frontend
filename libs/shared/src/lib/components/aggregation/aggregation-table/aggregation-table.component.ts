@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { Layout } from '../../../models/layout.model';
 import { Resource } from '../../../models/resource.model';
 import { UntypedFormControl } from '@angular/forms';
@@ -6,9 +6,8 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Aggregation } from '../../../models/aggregation.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { get } from 'lodash';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Aggregation table component.
@@ -18,10 +17,7 @@ import { Dialog } from '@angular/cdk/dialog';
   templateUrl: './aggregation-table.component.html',
   styleUrls: ['./aggregation-table.component.scss'],
 })
-export class AggregationTableComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class AggregationTableComponent implements OnInit {
   /** Can select new aggregations or not */
   @Input() canAdd = true;
   /** Aggregation resource */
@@ -35,6 +31,8 @@ export class AggregationTableComponent
   allAggregations: Layout[] = [];
   /** List of displayed columns */
   columns: string[] = ['name', 'createdAt', '_actions'];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Aggregation table component.
@@ -45,16 +43,14 @@ export class AggregationTableComponent
   constructor(
     private dialog: Dialog,
     private aggregationService: AggregationService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     const defaultValue = this.selectedAggregations?.value;
     this.setAllAggregations();
     this.setSelectedAggregations(defaultValue);
     this.selectedAggregations?.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.setSelectedAggregations(value);
       });
@@ -101,20 +97,22 @@ export class AggregationTableComponent
         resource: this.resource,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        if (!this.allAggregations.find((x) => x.id === value.id)) {
-          this.allAggregations.push(value);
-          this.resource?.aggregations?.edges?.push({
-            node: value,
-            cursor: value.id,
-          });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          if (!this.allAggregations.find((x) => x.id === value.id)) {
+            this.allAggregations.push(value);
+            this.resource?.aggregations?.edges?.push({
+              node: value,
+              cursor: value.id,
+            });
+          }
+          this.selectedAggregations?.setValue(
+            this.selectedAggregations?.value.concat(value.id)
+          );
         }
-        this.selectedAggregations?.setValue(
-          this.selectedAggregations?.value.concat(value.id)
-        );
-      }
-    });
+      });
   }
 
   /**
@@ -133,21 +131,25 @@ export class AggregationTableComponent
         resource: this.resource,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.aggregationService
-          .editAggregation(aggregation, value, { resource: this.resource?.id })
-          .subscribe(({ data }: any) => {
-            if (data.editAggregation) {
-              const layouts = [...this.allAggregations];
-              const index = layouts.findIndex((x) => x.id === aggregation.id);
-              layouts[index] = data.editAggregation;
-              this.allAggregations = layouts;
-              this.setSelectedAggregations(this.selectedAggregations?.value);
-            }
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.aggregationService
+            .editAggregation(aggregation, value, {
+              resource: this.resource?.id,
+            })
+            .subscribe(({ data }: any) => {
+              if (data.editAggregation) {
+                const layouts = [...this.allAggregations];
+                const index = layouts.findIndex((x) => x.id === aggregation.id);
+                layouts[index] = data.editAggregation;
+                this.allAggregations = layouts;
+                this.setSelectedAggregations(this.selectedAggregations?.value);
+              }
+            });
+        }
+      });
   }
 
   /**

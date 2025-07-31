@@ -6,10 +6,12 @@ import {
   Output,
   ViewChild,
   TemplateRef,
+  DestroyRef,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UnsubscribeComponent, ListFilterComponent } from '@oort-front/shared';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { ListFilterComponent } from '@oort-front/shared';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import {
   ButtonModule,
@@ -17,6 +19,7 @@ import {
   FormWrapperModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Filter used by the resources component
@@ -36,7 +39,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
 })
-export class FilterComponent extends UnsubscribeComponent implements OnInit {
+export class FilterComponent implements OnInit {
   /** Loading state */
   @Input() loading = false;
   /** Roles list */
@@ -51,22 +54,22 @@ export class FilterComponent extends UnsubscribeComponent implements OnInit {
   });
   /** Show expanded filter */
   public show = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * FilterComponent constructor.
    *
    * @param fb Used to create reactive forms.
    */
-  constructor(private fb: FormBuilder) {
-    super();
-  }
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.form.valueChanges
       .pipe(
         debounceTime(1000),
         distinctUntilChanged(),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((value) => {
         this.emitFilter(value);

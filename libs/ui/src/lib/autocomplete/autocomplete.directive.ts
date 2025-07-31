@@ -14,16 +14,19 @@ import {
   Self,
   ViewContainerRef,
   Inject,
+  inject,
+  DestroyRef,
 } from '@angular/core';
 import { AutocompleteComponent } from './autocomplete.component';
 import { isEqual } from 'lodash';
-import { Observable, Subject, Subscription, merge, takeUntil } from 'rxjs';
+import { Observable, Subscription, merge } from 'rxjs';
 import { OptionComponent } from './components/option.component';
 import { NgControl } from '@angular/forms';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { ScrollStrategies } from './types/scroll-strategies';
 import { DOCUMENT } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * UI Autocomplete directive
@@ -59,8 +62,6 @@ export class AutocompleteDirective
   private value!: any;
   /** Input event listener */
   private inputEventListener!: () => void;
-  /** Destroy subject */
-  private destroy$ = new Subject<void>();
   /** NgControl */
   private control!: NgControl;
   /** Autocomplete closing actions subscription */
@@ -73,6 +74,8 @@ export class AutocompleteDirective
   private closeAutoCompleteTimeoutListener!: NodeJS.Timeout;
   /** Timeout to autocomplete animation */
   private AutoCompleteAnimationTimeoutListener!: NodeJS.Timeout;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Get the value from the option to set in the input host element
@@ -162,7 +165,7 @@ export class AutocompleteDirective
     // Check if form control exists and contains any value
     if (this.control?.control) {
       this.control.control.valueChanges
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (value) => {
             this.updateListAndSelectedOption(value);
@@ -433,7 +436,5 @@ export class AutocompleteDirective
     if (this.autocompleteClosingActionsSubscription) {
       this.autocompleteClosingActionsSubscription.unsubscribe();
     }
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

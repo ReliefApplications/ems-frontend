@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { UnsubscribeComponent } from '@oort-front/shared';
-import { takeUntil } from 'rxjs';
 
 /**
  * Application roles page component.
@@ -11,9 +10,11 @@ import { takeUntil } from 'rxjs';
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.scss'],
 })
-export class RolesComponent extends UnsubscribeComponent {
+export class RolesComponent {
   /** If application view would be displayed or not */
   inApplication = true;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Role list constructor
@@ -22,9 +23,10 @@ export class RolesComponent extends UnsubscribeComponent {
    * @param {ActivatedRoute} router Activated route containing the route data
    */
   constructor(private router: ActivatedRoute) {
-    super();
-    this.router.data.pipe(takeUntil(this.destroy$)).subscribe((data) => {
-      this.inApplication = Boolean(data.inApplication);
-    });
+    this.router.data
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((data) => {
+        this.inApplication = Boolean(data.inApplication);
+      });
   }
 }

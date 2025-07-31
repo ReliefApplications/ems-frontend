@@ -1,10 +1,16 @@
-import { Component, Input, OnInit, Optional } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  Input,
+  OnInit,
+  Optional,
+} from '@angular/core';
 import {
   ContextService,
   Dashboard,
   DashboardService,
   EditDashboardMutationResponse,
-  UnsubscribeComponent,
   FilterPosition,
 } from '@oort-front/shared';
 import {
@@ -20,12 +26,12 @@ import { EDIT_DASHBOARD } from '../../dashboard/pages/dashboard/graphql/mutation
 import { Apollo } from 'apollo-angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormBuilder } from '@angular/forms';
-import { takeUntil } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { UiModule } from '@oort-front/ui';
 import get from 'lodash/get';
 import { ViewSettingsModalComponent } from '../view-settings-modal/view-settings-modal.component';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Settings filter of dashboards
@@ -49,10 +55,7 @@ import { CommonModule } from '@angular/common';
     SelectMenuModule,
   ],
 })
-export class DashboardFilterSettingsComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class DashboardFilterSettingsComponent implements OnInit {
   /** Current dashboard */
   @Input() dashboard!: Dashboard;
   /** Reactive Form */
@@ -61,6 +64,8 @@ export class DashboardFilterSettingsComponent
   public openEditStructure = false;
   /** Available positions */
   public positions = ['top', 'right', 'bottom', 'left'];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    *  Settings filter of dashboards
@@ -79,16 +84,14 @@ export class DashboardFilterSettingsComponent
     public contextService: ContextService,
     private translate: TranslateService,
     private fb: FormBuilder
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     // erase the option to show the filter in the top menu
     this.formGroup = this.createSettingsForm();
 
     this.formGroup.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.onEdit(value);
       });

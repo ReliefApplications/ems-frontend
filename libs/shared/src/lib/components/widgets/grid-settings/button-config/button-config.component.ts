@@ -1,4 +1,12 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  Output,
+  EventEmitter,
+  DestroyRef,
+  inject,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -14,11 +22,10 @@ import { WorkflowService } from '../../../../services/workflow/workflow.service'
 import { TemplateTypeEnum } from '../../../../models/template.model';
 import { Dialog } from '@angular/cdk/dialog';
 import { createQueryForm } from '../../../query-builder/query-builder-forms';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { DistributionModalComponent } from '../../../distribution-lists/components/distribution-modal/distribution-modal.component';
-import { takeUntil } from 'rxjs/operators';
 import { EmailService } from '../../../email/email.service';
 import isNil from 'lodash/isNil';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 /** List fo disabled fields */
 const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
 
@@ -30,10 +37,7 @@ const DISABLED_FIELDS = ['id', 'createdAt', 'modifiedAt'];
   templateUrl: './button-config.component.html',
   styleUrls: ['./button-config.component.scss'],
 })
-export class ButtonConfigComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class ButtonConfigComponent implements OnInit {
   /** Event emitted when the user clicks on the delete button */
   @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
   /** Widget form group */
@@ -66,6 +70,8 @@ export class ButtonConfigComponent
   @Output() loadChannels = new EventEmitter<void>();
   /** Saves if the channels has been fetched */
   public loadedChannel = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns The list of fields which are of type scalar and not disabled */
   get scalarFields(): any[] {
@@ -94,9 +100,7 @@ export class ButtonConfigComponent
     private workflowService: WorkflowService,
     public dialog: Dialog,
     private emailService: EmailService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     if (
@@ -107,7 +111,7 @@ export class ButtonConfigComponent
     } else {
       const currentStepContent = this.router.url.split('/').pop();
       this.workflowService.workflow$
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((workflow) => {
           if (workflow) {
             const steps = workflow.steps || [];
@@ -131,7 +135,7 @@ export class ButtonConfigComponent
 
     this.formGroup
       ?.get('prefillForm')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value) {
           this.formGroup
@@ -145,7 +149,7 @@ export class ButtonConfigComponent
 
     this.formGroup
       ?.get('notify')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value) {
           this.formGroup
@@ -164,7 +168,7 @@ export class ButtonConfigComponent
 
     this.formGroup
       ?.get('publish')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value) {
           this.formGroup
@@ -178,7 +182,7 @@ export class ButtonConfigComponent
 
     this.formGroup
       ?.get('show')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (!value) {
           this.deleteInvalidModifications();
@@ -189,7 +193,7 @@ export class ButtonConfigComponent
 
     this.formGroup
       ?.get('modifySelectedRows')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (!value) {
           this.deleteInvalidModifications();
@@ -198,7 +202,7 @@ export class ButtonConfigComponent
 
     this.formGroup
       ?.get('attachToRecord')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value) {
           this.formGroup?.get('targetForm')?.setValidators(Validators.required);
@@ -211,7 +215,7 @@ export class ButtonConfigComponent
 
     this.formGroup
       ?.get('sendMail')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value) {
           this.formGroup?.get('templates')?.setValidators(Validators.required);
@@ -225,7 +229,7 @@ export class ButtonConfigComponent
 
     this.formGroup
       ?.get('targetResource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value) {
           this.targetResource = this.relatedResources.find(
@@ -275,7 +279,7 @@ export class ButtonConfigComponent
 
     this.formGroup
       ?.get('sendMail')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((sendEmail: boolean) => {
         if (sendEmail) {
           this.formGroup
@@ -289,7 +293,7 @@ export class ButtonConfigComponent
 
     this.formGroup
       ?.get('closeWorkflow')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((closeWorkflow: boolean) => {
         if (closeWorkflow) {
           this.formGroup
@@ -303,7 +307,7 @@ export class ButtonConfigComponent
 
     this.formGroup
       ?.get('selectAll')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((selectAll: boolean) => {
         if (selectAll) {
           this.formGroup?.controls.selectPage.setValue(false);
@@ -313,7 +317,7 @@ export class ButtonConfigComponent
 
     this.formGroup
       ?.get('selectPage')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((selectPage: boolean) => {
         if (selectPage) {
           this.formGroup?.controls.selectAll.setValue(false);
@@ -426,14 +430,19 @@ export class ButtonConfigComponent
       width: '80%',
       height: '80%',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((data: any) => {
-      // On save, add distribution list to available list + set button property to new distribution list
-      const distributionList = data?.result;
-      if (!isNil(distributionList)) {
-        this.distributionLists = [distributionList, ...this.distributionLists];
-        this.formGroup.get('distributionList')?.setValue(distributionList.id);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((data: any) => {
+        // On save, add distribution list to available list + set button property to new distribution list
+        const distributionList = data?.result;
+        if (!isNil(distributionList)) {
+          this.distributionLists = [
+            distributionList,
+            ...this.distributionLists,
+          ];
+          this.formGroup.get('distributionList')?.setValue(distributionList.id);
+        }
+      });
   }
 
   /** Opens modal for adding a new email template */
@@ -449,13 +458,15 @@ export class ButtonConfigComponent
       disableClose: true,
       width: '80%',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        const data = value.result.data.addCustomTemplate;
-        this.templates = [data, ...this.templates];
-        this.formGroup.get('templates')?.setValue(data.id);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          const data = value.result.data.addCustomTemplate;
+          this.templates = [data, ...this.templates];
+          this.formGroup.get('templates')?.setValue(data.id);
+        }
+      });
   }
 
   /**

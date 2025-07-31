@@ -6,6 +6,8 @@ import {
   Output,
   EventEmitter,
   AfterViewInit,
+  inject,
+  DestroyRef,
 } from '@angular/core';
 import {
   UntypedFormArray,
@@ -26,8 +28,6 @@ import {
   ResourceQueryResponse,
 } from '../../../models/resource.model';
 import { createGridWidgetFormGroup } from './grid-settings.forms';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { WidgetSettings } from '../../../models/dashboard.model';
 import { EmailService } from '../../email/email.service';
@@ -45,6 +45,7 @@ import { SortingSettingsModule } from '../common/sorting-settings/sorting-settin
 import { TabActionsModule } from '../common/tab-actions/tab-actions.module';
 import { TabButtonsModule } from './tab-buttons/tab-buttons.module';
 import { TabMainModule } from './tab-main/tab-main.module';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -72,7 +73,6 @@ import { TabMainModule } from './tab-main/tab-main.module';
   ],
 })
 export class GridSettingsComponent
-  extends UnsubscribeComponent
   implements
     OnInit,
     AfterViewInit,
@@ -106,6 +106,8 @@ export class GridSettingsComponent
   public distributionLists: any[] = [];
   /** Available email templates */
   public emailTemplates: any[] = [];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Modal content for the settings of the grid widgets.
@@ -124,13 +126,11 @@ export class GridSettingsComponent
     private fb: FormBuilder,
     private aggregationService: AggregationService,
     private emailService: EmailService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((application: Application | null) => {
         if (application) {
           this.getDistributionLists(application?.id);
@@ -146,7 +146,7 @@ export class GridSettingsComponent
     // Subscribe to form resource changes
     this.widgetFormGroup
       .get('resource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value) {
           // Check if the query changed to clean modifications and fields for email in floating button
@@ -195,7 +195,7 @@ export class GridSettingsComponent
     // Subscribe to form aggregations changes
     this.widgetFormGroup
       .get('aggregations')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.updateValueAndValidityByType(value, 'aggregations');
         if (value.length > 0) {
@@ -210,7 +210,7 @@ export class GridSettingsComponent
     // Subscribe to form layouts changes
     this.widgetFormGroup
       .get('layouts')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.updateValueAndValidityByType(value, 'layouts');
       });
@@ -280,7 +280,7 @@ export class GridSettingsComponent
   ngAfterViewInit(): void {
     if (this.widgetFormGroup) {
       this.widgetFormGroup.valueChanges
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
           this.formChange.emit(this.widgetFormGroup);
         });
@@ -293,7 +293,7 @@ export class GridSettingsComponent
   public getChannels(): void {
     if (this.widgetFormGroup) {
       this.applicationService.application$
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((application: Application | null) => {
           if (application) {
             this.apollo
@@ -303,7 +303,7 @@ export class GridSettingsComponent
                   application: application.id,
                 },
               })
-              .pipe(takeUntil(this.destroy$))
+              .pipe(takeUntilDestroyed(this.destroyRef))
               .subscribe(({ data }) => {
                 this.channels = data.channels;
               });
@@ -312,7 +312,7 @@ export class GridSettingsComponent
               .query<ChannelsQueryResponse>({
                 query: GET_CHANNELS,
               })
-              .pipe(takeUntil(this.destroy$))
+              .pipe(takeUntilDestroyed(this.destroyRef))
               .subscribe(({ data }) => {
                 this.channels = data.channels;
               });
@@ -428,7 +428,7 @@ export class GridSettingsComponent
   private getDistributionLists(appId?: string) {
     this.emailService
       .getEmailDistributionList(appId)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data }) => {
         if (data?.emailDistributionLists?.edges) {
           this.distributionLists = data.emailDistributionLists.edges.map(
@@ -449,7 +449,7 @@ export class GridSettingsComponent
   private getEmailTemplates(appId?: string) {
     this.emailService
       .getCustomTemplates(appId)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data }) => {
         if (data?.customTemplates?.edges) {
           const emailTemplates = data.customTemplates.edges.map(

@@ -1,4 +1,11 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import {
@@ -23,9 +30,8 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
-import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ReferenceData } from '../../../models/reference-data.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Data needed for the dialog, should contain an aggregations array, a form and a resource
@@ -56,10 +62,7 @@ interface DialogData {
   templateUrl: './add-aggregation-modal.component.html',
   styleUrls: ['./add-aggregation-modal.component.scss'],
 })
-export class AddAggregationModalComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class AddAggregationModalComponent implements OnInit {
   /** Reference to graphql select for layout */
   @ViewChild(GraphQLSelectComponent)
   aggregationSelect?: GraphQLSelectComponent;
@@ -75,6 +78,8 @@ export class AddAggregationModalComponent
   private resource?: Resource;
   /** Current reference data */
   private referenceData?: ReferenceData;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Modal to add or select an aggregation.
@@ -97,7 +102,6 @@ export class AddAggregationModalComponent
     private snackBar: SnackbarService,
     private translate: TranslateService
   ) {
-    super();
     this.hasAggregations = data.hasAggregations;
     this.resource = data.resource;
     this.referenceData = data.referenceData;
@@ -147,7 +151,7 @@ export class AddAggregationModalComponent
       },
     });
     dialogRef.closed
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((aggregation: any) => {
         if (aggregation) {
           this.aggregationService

@@ -1,4 +1,11 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { Form, FormQueryResponse } from '../../../models/form.model';
 import {
@@ -20,9 +27,8 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
-import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { GET_RESOURCE_LAYOUTS, GET_FORM_LAYOUTS } from './graphql/queries';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Data needed for the dialog, should contain a layouts array, a form and a resource
@@ -54,10 +60,7 @@ interface DialogData {
   templateUrl: './add-layout-modal.component.html',
   styleUrls: ['./add-layout-modal.component.scss'],
 })
-export class AddLayoutModalComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class AddLayoutModalComponent implements OnInit {
   /**
    * Form
    */
@@ -89,6 +92,8 @@ export class AddLayoutModalComponent
   /** Reference to graphql select for layout */
   @ViewChild(GraphQLSelectComponent)
   layoutSelect?: GraphQLSelectComponent;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Add layout modal component.
@@ -110,7 +115,6 @@ export class AddLayoutModalComponent
     private snackBar: SnackbarService,
     private translate: TranslateService
   ) {
-    super();
     this.hasLayouts = data.hasLayouts;
     this.form = data.form;
     this.resource = data.resource;
@@ -154,26 +158,28 @@ export class AddLayoutModalComponent
         queryName: this.resource?.queryName || this.form?.queryName,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((layout: any) => {
-      if (layout) {
-        this.gridLayoutService
-          .addLayout(layout, this.resource?.id, this.form?.id)
-          .subscribe(({ data }) => {
-            if (data?.addLayout) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectCreated', {
-                  type: this.translate
-                    .instant('common.layout.one')
-                    .toLowerCase(),
-                  value: data.addLayout.name,
-                })
-              );
-              this.dialogRef.close(data.addLayout as any);
-            } else {
-              this.dialogRef.close();
-            }
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((layout: any) => {
+        if (layout) {
+          this.gridLayoutService
+            .addLayout(layout, this.resource?.id, this.form?.id)
+            .subscribe(({ data }) => {
+              if (data?.addLayout) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate
+                      .instant('common.layout.one')
+                      .toLowerCase(),
+                    value: data.addLayout.name,
+                  })
+                );
+                this.dialogRef.close(data.addLayout as any);
+              } else {
+                this.dialogRef.close();
+              }
+            });
+        }
+      });
   }
 }

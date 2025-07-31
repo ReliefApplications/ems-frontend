@@ -51,3 +51,6 @@ libs/ui/documentation.json
 
 # Kendo license
 kendo-ui-license.txt
+
+# Nx
+.nx/

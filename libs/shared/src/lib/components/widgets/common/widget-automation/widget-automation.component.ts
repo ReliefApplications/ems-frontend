@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, DestroyRef, inject, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ButtonModule,
@@ -8,17 +8,16 @@ import {
 } from '@oort-front/ui';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import {
   createAutomationComponentForm,
   createAutomationForm,
 } from '../../../../forms/automation.forms';
-import { takeUntil } from 'rxjs';
 import {
   CdkDragDrop,
   DragDropModule,
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Widget automation edition.
@@ -38,9 +37,11 @@ import {
   templateUrl: './widget-automation.component.html',
   styleUrls: ['./widget-automation.component.scss'],
 })
-export class WidgetAutomationComponent extends UnsubscribeComponent {
+export class WidgetAutomationComponent {
   /** Widget automation rule form group */
   public formGroup!: ReturnType<typeof createAutomationForm>;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns list of rule components as form array */
   get components() {
@@ -54,7 +55,6 @@ export class WidgetAutomationComponent extends UnsubscribeComponent {
    * @param dialog Angular dialog
    */
   constructor(@Inject(DIALOG_DATA) public data: any, private dialog: Dialog) {
-    super();
     if (data) {
       this.formGroup = createAutomationForm(data);
     } else {
@@ -70,11 +70,13 @@ export class WidgetAutomationComponent extends UnsubscribeComponent {
       './automation-component-selector/automation-component-selector.component'
     );
     const dialogRef = this.dialog.open(AutomationComponentSelectorComponent);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.components.push(createAutomationComponentForm(value));
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.components.push(createAutomationComponentForm(value));
+        }
+      });
   }
 
   /**
@@ -90,12 +92,14 @@ export class WidgetAutomationComponent extends UnsubscribeComponent {
     const dialogRef = this.dialog.open(EditAutomationComponentComponent, {
       data: this.components.at(index).value,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.components.removeAt(index);
-        this.components.insert(index, createAutomationComponentForm(value));
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.components.removeAt(index);
+          this.components.insert(index, createAutomationComponentForm(value));
+        }
+      });
   }
 
   /**

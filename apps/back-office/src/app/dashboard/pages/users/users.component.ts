@@ -1,5 +1,12 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { GET_USERS, GET_ROLES } from './graphql/queries';
 import { ADD_USERS, DELETE_USERS } from './graphql/mutations';
 import {
@@ -9,7 +16,6 @@ import {
   DownloadService,
   Role,
   RolesQueryResponse,
-  UnsubscribeComponent,
   User,
   UsersNodeQueryResponse,
   getCachedValues,
@@ -24,9 +30,9 @@ import {
 } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { ApolloQueryResult } from '@apollo/client';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -41,7 +47,7 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
-export class UsersComponent extends UnsubscribeComponent implements OnInit {
+export class UsersComponent implements OnInit {
   /** Reference to expanded filter template */
   @ViewChild('expandedFilter')
   expandedFilter!: TemplateRef<any>;
@@ -78,6 +84,8 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
   };
   /** Users query */
   private usersQuery!: QueryRef<UsersNodeQueryResponse>;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Component which will show all the user in the application.
@@ -102,9 +110,7 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private activatedRoute: ActivatedRoute
-  ) {
-    super();
-  }
+  ) {}
 
   /** Load the users */
   ngOnInit(): void {
@@ -125,7 +131,7 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
         this.loading = loading;
       });
     this.usersQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data, loading }) => {
         this.loading = true;
         this.updateValues(data, loading);
@@ -155,52 +161,56 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
         uploadPath: 'upload/invite',
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<AddUsersMutationResponse>({
-            mutation: ADD_USERS,
-            variables: {
-              users: value,
-              application: this.roles[0].application?.id,
-            },
-          })
-          .subscribe({
-            next: ({ errors, data }) => {
-              if (!errors) {
-                if (data?.addUsers.length) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant('components.users.onInvite.plural')
-                  );
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.apollo
+            .mutate<AddUsersMutationResponse>({
+              mutation: ADD_USERS,
+              variables: {
+                users: value,
+                application: this.roles[0].application?.id,
+              },
+            })
+            .subscribe({
+              next: ({ errors, data }) => {
+                if (!errors) {
+                  if (data?.addUsers.length) {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant('components.users.onInvite.plural')
+                    );
+                  } else {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'components.users.onInvite.singular'
+                      )
+                    );
+                  }
+                  this.fetchUsers(true);
                 } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant('components.users.onInvite.singular')
-                  );
+                  if (value.length > 1) {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'components.users.onNotInvite.plural',
+                        { error: errors[0].message }
+                      ),
+                      { error: true }
+                    );
+                  } else {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'components.users.onNotInvite.singular',
+                        { error: errors[0].message }
+                      ),
+                      { error: true }
+                    );
+                  }
                 }
-                this.fetchUsers(true);
-              } else {
-                if (value.length > 1) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onNotInvite.plural',
-                      { error: errors[0].message }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onNotInvite.singular',
-                      { error: errors[0].message }
-                    ),
-                    { error: true }
-                  );
-                }
-              }
-            },
-          });
-      }
-    });
+              },
+            });
+        }
+      });
   }
 
   /**
@@ -235,58 +245,27 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        const ids = users.map((u) => u.id);
-        this.loading = true;
-        this.selection.clear();
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          const ids = users.map((u) => u.id);
+          this.loading = true;
+          this.selection.clear();
 
-        this.apollo
-          .mutate<DeleteUsersMutationResponse>({
-            mutation: DELETE_USERS,
-            variables: { ids },
-          })
-          .subscribe({
-            next: ({ errors, data }) => {
-              if (errors) {
-                if (ids.length > 1) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onNotDelete.plural',
-                      { error: errors ? errors[0].message : '' }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onNotDelete.singular',
-                      { error: errors ? errors[0].message : '' }
-                    ),
-                    { error: true }
-                  );
-                }
-              } else {
-                this.loading = false;
-                if (data?.deleteUsers) {
-                  if (data.deleteUsers > 1) {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant('components.users.onDelete.plural')
-                    );
-                  } else {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant(
-                        'components.users.onDelete.singular'
-                      )
-                    );
-                  }
-                  this.fetchUsers(true);
-                } else {
+          this.apollo
+            .mutate<DeleteUsersMutationResponse>({
+              mutation: DELETE_USERS,
+              variables: { ids },
+            })
+            .subscribe({
+              next: ({ errors, data }) => {
+                if (errors) {
                   if (ids.length > 1) {
                     this.snackBar.openSnackBar(
                       this.translate.instant(
                         'components.users.onNotDelete.plural',
-                        { error: '' }
+                        { error: errors ? errors[0].message : '' }
                       ),
                       { error: true }
                     );
@@ -294,17 +273,52 @@ export class UsersComponent extends UnsubscribeComponent implements OnInit {
                     this.snackBar.openSnackBar(
                       this.translate.instant(
                         'components.users.onNotDelete.singular',
-                        { error: '' }
+                        { error: errors ? errors[0].message : '' }
                       ),
                       { error: true }
                     );
                   }
+                } else {
+                  this.loading = false;
+                  if (data?.deleteUsers) {
+                    if (data.deleteUsers > 1) {
+                      this.snackBar.openSnackBar(
+                        this.translate.instant(
+                          'components.users.onDelete.plural'
+                        )
+                      );
+                    } else {
+                      this.snackBar.openSnackBar(
+                        this.translate.instant(
+                          'components.users.onDelete.singular'
+                        )
+                      );
+                    }
+                    this.fetchUsers(true);
+                  } else {
+                    if (ids.length > 1) {
+                      this.snackBar.openSnackBar(
+                        this.translate.instant(
+                          'components.users.onNotDelete.plural',
+                          { error: '' }
+                        ),
+                        { error: true }
+                      );
+                    } else {
+                      this.snackBar.openSnackBar(
+                        this.translate.instant(
+                          'components.users.onNotDelete.singular',
+                          { error: '' }
+                        ),
+                        { error: true }
+                      );
+                    }
+                  }
                 }
-              }
-            },
-          });
-      }
-    });
+              },
+            });
+        }
+      });
   }
 
   /**

@@ -1,5 +1,7 @@
 import {
   Component,
+  DestroyRef,
+  inject,
   Inject,
   OnInit,
   ViewChild,
@@ -13,11 +15,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
-import { takeUntil } from 'rxjs';
 import { QueryBuilderModule } from '../../../../components/query-builder/query-builder.module';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { createQueryForm } from '../../../../components/query-builder/query-builder-forms';
-import { UnsubscribeComponent } from '../../../../components/utils/unsubscribe/unsubscribe.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Interface that describes the structure of the data shown in the dialog
@@ -45,10 +46,7 @@ interface DialogData {
   selector: 'shared-config-display-grid-fields-modal',
   templateUrl: './config-display-grid-fields-modal.component.html',
 })
-export class ConfigDisplayGridFieldsModalComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class ConfigDisplayGridFieldsModalComponent implements OnInit {
   /** Form for the query */
   public form: UntypedFormGroup = new UntypedFormGroup({});
   /** Loading state */
@@ -57,6 +55,8 @@ export class ConfigDisplayGridFieldsModalComponent
   /** View container reference */
   @ViewChild('settingsContainer', { read: ViewContainerRef })
   settingsContainer: any;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -68,13 +68,11 @@ export class ConfigDisplayGridFieldsModalComponent
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
     private queryBuilder: QueryBuilderService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.queryBuilder.availableQueries$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((queries) => {
         if (queries.length > 0) {
           const hasDataForm = this.data.form !== null;

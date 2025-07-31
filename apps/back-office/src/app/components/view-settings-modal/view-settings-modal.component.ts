@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Inject,
+  OnInit,
+} from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { FormBuilder, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -23,7 +30,6 @@ import {
   Page,
   Dashboard,
   Step,
-  UnsubscribeComponent,
   WorkflowService,
   AccessData,
   SearchMenuModule,
@@ -31,11 +37,12 @@ import {
   Application,
   DashboardService,
 } from '@oort-front/shared';
-import { debounceTime, takeUntil } from 'rxjs';
+import { debounceTime } from 'rxjs';
 import { get, isNil } from 'lodash';
 import { AbilityModule } from '@casl/angular';
 import { DashboardFilterSettingsComponent } from '../dashboard-filter-settings/dashboard-filter-settings.component';
 import { GridType } from 'angular-gridster2';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Settings Dialog Data */
 interface DialogData {
@@ -82,10 +89,7 @@ interface DialogData {
   templateUrl: './view-settings-modal.component.html',
   styleUrls: ['./view-settings-modal.component.scss'],
 })
-export class ViewSettingsModalComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class ViewSettingsModalComponent implements OnInit {
   /** Reactive Form */
   public settingsForm!: ReturnType<typeof this.createSettingsForm>;
   /** Event to parent subscribe and update its own object after changes */
@@ -112,6 +116,8 @@ export class ViewSettingsModalComponent
   public showFilter!: boolean;
   /** Grid type */
   public gridType = GridType;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Common settings of pages / steps.
@@ -133,7 +139,6 @@ export class ViewSettingsModalComponent
     private authService: AuthService,
     private dashboardService: DashboardService
   ) {
-    super();
     if (this.data) {
       this.page = this.data.page;
       this.step = this.data.step;
@@ -149,7 +154,7 @@ export class ViewSettingsModalComponent
 
     // Listen to icon updates
     this.settingsForm?.controls.icon.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value: string | null) => {
         if (value) {
           this.onUpdateIcon(value);
@@ -158,7 +163,7 @@ export class ViewSettingsModalComponent
 
     // Listen to showName updates
     this.settingsForm?.controls.showName?.valueChanges
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe((value: any) => {
         this.onUpdateShowName(value);
       });
@@ -166,7 +171,7 @@ export class ViewSettingsModalComponent
     // Listen to visibility updates (only for pages)
     if (this.data.type === 'page') {
       this.settingsForm?.controls.visible.valueChanges
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value: boolean | null) => {
           if (!isNil(value)) {
             this.onUpdateVisibility(value);
@@ -177,7 +182,7 @@ export class ViewSettingsModalComponent
     if (this.dashboard) {
       // Listen to grid settings updates
       this.settingsForm?.controls.gridOptions?.valueChanges
-        .pipe(debounceTime(500), takeUntil(this.destroy$))
+        .pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef))
         .subscribe((value: any) => {
           // update only if the form is valid
           if (this.settingsForm?.controls.gridOptions?.valid) {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { get, isEqual } from 'lodash';
 import {
@@ -21,14 +21,13 @@ import {
   EDIT_RESOURCE_ACCESS,
 } from '../graphql/mutations';
 import { Permission } from './permissions.types';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../../utils/update-queries';
 import {
   SnackbarService,
   UIPageChangeEvent,
   handleTablePageEvent,
 } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
@@ -62,10 +61,7 @@ interface TableResourceElement {
     ]),
   ],
 })
-export class RoleResourcesComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class RoleResourcesComponent implements OnInit {
   /** Role to display */
   @Input() role!: Role; // Opened role
 
@@ -101,6 +97,8 @@ export class RoleResourcesComponent
     length: 0,
     endCursor: '',
   };
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Resource tab of Role Summary component.
@@ -108,9 +106,7 @@ export class RoleResourcesComponent
    * @param apollo Apollo client service
    * @param snackBar shared snackbar service
    */
-  constructor(private apollo: Apollo, private snackBar: SnackbarService) {
-    super();
-  }
+  constructor(private apollo: Apollo, private snackBar: SnackbarService) {}
 
   /** Load the resources. */
   ngOnInit(): void {
@@ -125,7 +121,7 @@ export class RoleResourcesComponent
     });
 
     this.resourcesQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data, loading }) => {
         this.updateValues(data, loading);
       });
@@ -231,7 +227,7 @@ export class RoleResourcesComponent
             role: this.role.id,
           },
         })
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(({ data }) => {
           if (data.resource) {
             this.openedResource = data.resource;
@@ -300,7 +296,7 @@ export class RoleResourcesComponent
           role: this.role.id as string,
         },
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ errors, data }) => {
           this.handleResourceMutationResponse(resource, { data, errors }, true);
@@ -330,7 +326,7 @@ export class RoleResourcesComponent
           role: this.role.id as string,
         },
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ errors, data }) => {
           this.handleResourceMutationResponse(resource, { data, errors });
@@ -427,7 +423,7 @@ export class RoleResourcesComponent
           },
         },
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ errors, data }) => {
           this.handleResourceMutationResponse(resource, { data, errors });

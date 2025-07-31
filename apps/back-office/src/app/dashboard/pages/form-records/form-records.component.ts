@@ -1,5 +1,11 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GET_FORM_RECORDS } from './graphql/queries';
 import {
@@ -8,7 +14,6 @@ import {
   RESTORE_RECORD,
 } from './graphql/mutations';
 import {
-  UnsubscribeComponent,
   Record,
   FormRecordsQueryResponse,
   DeleteRecordMutationResponse,
@@ -23,7 +28,6 @@ import {
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
-import { takeUntil } from 'rxjs/operators';
 import { Metadata } from '@oort-front/shared';
 import {
   SnackbarService,
@@ -33,6 +37,7 @@ import {
 } from '@oort-front/ui';
 import { GraphQLError } from 'graphql';
 import { ApolloQueryResult } from '@apollo/client';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -48,10 +53,7 @@ const DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
   templateUrl: './form-records.component.html',
   styleUrls: ['./form-records.component.scss'],
 })
-export class FormRecordsComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class FormRecordsComponent implements OnInit {
   // === DATA ===
   /** Loading state */
   public loading = true;
@@ -77,11 +79,8 @@ export class FormRecordsComponent
   public defaultColumns = DEFAULT_COLUMNS;
   /** Updating status */
   public updating = false;
-
-  // === DELETED RECORDS VIEW ===
   /** Show deleted records */
   public showDeletedRecords = false;
-
   /** Page info */
   public pageInfo = {
     pageIndex: 0,
@@ -89,6 +88,8 @@ export class FormRecordsComponent
     length: 0,
     endCursor: '',
   };
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns True if the layouts tab is empty */
   get empty(): boolean {
@@ -125,9 +126,7 @@ export class FormRecordsComponent
     private translate: TranslateService,
     private breadcrumbService: BreadcrumbService,
     private confirmService: ConfirmService
-  ) {
-    super();
-  }
+  ) {}
 
   /** Load the records, using the form id passed as a parameter. */
   ngOnInit(): void {
@@ -156,7 +155,7 @@ export class FormRecordsComponent
     });
 
     this.recordsQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ errors, data, loading }) => {
         this.updateValues(data, loading, true);
 
@@ -304,7 +303,7 @@ export class FormRecordsComponent
         confirmVariant: 'danger',
       });
       dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value: any) => {
           if (value) {
             this.deleteRecord(element.id);
@@ -367,38 +366,40 @@ export class FormRecordsComponent
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmVariant: 'primary',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
-            mutation: EDIT_RECORD,
-            variables: {
-              id: record.id,
-              version: version.id,
-            },
-          })
-          .subscribe({
-            next: ({ errors }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.dataNotRecovered'
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.layoutService.setRightSidenav(null);
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.dataRecovered')
-                );
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.apollo
+            .mutate<EditRecordMutationResponse>({
+              mutation: EDIT_RECORD,
+              variables: {
+                id: record.id,
+                version: version.id,
+              },
+            })
+            .subscribe({
+              next: ({ errors }) => {
+                if (errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.dataNotRecovered'
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  this.layoutService.setRightSidenav(null);
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('common.notifications.dataRecovered')
+                  );
+                }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
   /**

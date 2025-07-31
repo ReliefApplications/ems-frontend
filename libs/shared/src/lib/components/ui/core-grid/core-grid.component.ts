@@ -1,7 +1,9 @@
 import {
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
+  inject,
   Inject,
   Input,
   OnChanges,
@@ -47,14 +49,14 @@ import { DatePipe } from '../../../pipes/date/date.pipe';
 import { GridComponent } from './grid/grid.component';
 import { DateTranslateService } from '../../../services/date-translate/date-translate.service';
 import { ApplicationService } from '../../../services/application/application.service';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
-import { firstValueFrom, from, merge, Subject } from 'rxjs';
+import { firstValueFrom, from, Subject } from 'rxjs';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Default file name when exporting grid data.
@@ -78,15 +80,14 @@ const cloneData = (data: any[]) => data.map((item) => Object.assign({}, item));
   templateUrl: './core-grid.component.html',
   styleUrls: ['./core-grid.component.scss'],
 })
-export class CoreGridComponent
-  extends UnsubscribeComponent
-  implements OnChanges
-{
+export class CoreGridComponent implements OnChanges {
   // === INPUTS ===
   /** Grid settings */
   @Input() settings: GridSettings | any = {};
   /** Default grid layout */
   @Input() defaultLayout: GridLayout = {};
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns current grid layout */
   get layout(): any {
@@ -366,7 +367,6 @@ export class CoreGridComponent
     private router: Router,
     private el: ElementRef
   ) {
-    super();
     this.environment = environment;
     contextService.filter$
       .pipe(
@@ -380,7 +380,7 @@ export class CoreGridComponent
             : true
         ),
         debounceTime(500),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(({ previous, current }) => {
         if (contextService.filterRegex.test(this.settings.contextFilters)) {
@@ -485,7 +485,7 @@ export class CoreGridComponent
       this.metaQuery = this.queryBuilder.buildMetaQuery(this.settings?.query);
       if (this.metaQuery) {
         this.loading = true;
-        this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe({
+        this.metaQuery.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: async ({ data }: any) => {
             this.status = {
               error: false,
@@ -602,7 +602,7 @@ export class CoreGridComponent
           draft: true,
         },
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data }) => {
         if (data?.editRecord.data) {
           const editedData = data.editRecord.data;
@@ -613,7 +613,7 @@ export class CoreGridComponent
                 id: this.settings.resource,
               },
             })
-            .pipe(takeUntil(this.destroy$))
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(({ data }) => {
               const queryName = data.resource.singleQueryName;
               if (queryName) {
@@ -635,7 +635,7 @@ export class CoreGridComponent
                         data: editedData,
                       },
                     })
-                    .pipe(takeUntil(this.destroy$))
+                    .pipe(takeUntilDestroyed(this.destroyRef))
                     .subscribe(({ data }) => {
                       const dataItem = this.gridData.data.find(
                         (x) => x.id === item.id
@@ -793,66 +793,68 @@ export class CoreGridComponent
     this.loading = true;
     this.updatedItems = [];
     if (this.dataQuery) {
-      this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
-        next: ({ data }) => {
-          this.loading = false;
-          this.status = {
-            error: false,
-          };
-          for (const field in data) {
-            try {
-              if (Object.prototype.hasOwnProperty.call(data, field)) {
-                const nodes =
-                  data[field]?.edges.map((x: any) => ({
-                    ...x.node,
-                    _meta: {
-                      style: x.meta.style,
-                      raw: x.meta.raw,
-                    },
-                  })) || [];
-                this.totalCount = data[field] ? data[field].totalCount : 0;
-                this.items = cloneData(nodes);
-                this.convertDateFields(this.items);
-                this.originalItems = cloneData(this.items);
-                this.loadItems();
-                for (const updatedItem of this.updatedItems) {
-                  const item: any = this.items.find(
-                    (x) => x.id === updatedItem.id
-                  );
-                  if (item) {
-                    Object.assign(item, updatedItem);
-                    item.saved = false;
+      this.dataQuery.valueChanges
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: ({ data }) => {
+            this.loading = false;
+            this.status = {
+              error: false,
+            };
+            for (const field in data) {
+              try {
+                if (Object.prototype.hasOwnProperty.call(data, field)) {
+                  const nodes =
+                    data[field]?.edges.map((x: any) => ({
+                      ...x.node,
+                      _meta: {
+                        style: x.meta.style,
+                        raw: x.meta.raw,
+                      },
+                    })) || [];
+                  this.totalCount = data[field] ? data[field].totalCount : 0;
+                  this.items = cloneData(nodes);
+                  this.convertDateFields(this.items);
+                  this.originalItems = cloneData(this.items);
+                  this.loadItems();
+                  for (const updatedItem of this.updatedItems) {
+                    const item: any = this.items.find(
+                      (x) => x.id === updatedItem.id
+                    );
+                    if (item) {
+                      Object.assign(item, updatedItem);
+                      item.saved = false;
+                    }
                   }
+                  // if (!this.readOnly) {
+                  //   this.initSelectedRows();
+                  // }
                 }
-                // if (!this.readOnly) {
-                //   this.initSelectedRows();
-                // }
+              } catch (error) {
+                console.error(error);
               }
-            } catch (error) {
-              console.error(error);
             }
-          }
-          if (this.settings.query.temporaryRecords?.length) {
-            //Handles temporary records for resources creation in forms
-            this.getTemporaryRecords();
-          }
-        },
-        error: (err: any) => {
-          this.status = {
-            error: true,
-            message: this.translate.instant(
-              'components.widget.grid.errors.queryFetchFailed',
-              {
-                error:
-                  err.networkError?.error?.errors
-                    ?.map((x: any) => x.message)
-                    .join(', ') || err,
-              }
-            ),
-          };
-          this.loading = false;
-        },
-      });
+            if (this.settings.query.temporaryRecords?.length) {
+              //Handles temporary records for resources creation in forms
+              this.getTemporaryRecords();
+            }
+          },
+          error: (err: any) => {
+            this.status = {
+              error: true,
+              message: this.translate.instant(
+                'components.widget.grid.errors.queryFetchFailed',
+                {
+                  error:
+                    err.networkError?.error?.errors
+                      ?.map((x: any) => x.message)
+                      .join(', ') || err,
+                }
+              ),
+            };
+            this.loading = false;
+          },
+        });
     } else {
       this.loading = false;
     }
@@ -1086,7 +1088,7 @@ export class CoreGridComponent
         autoFocus: false,
       });
       dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value: any) => {
           if (value) {
             this.reloadData();
@@ -1161,7 +1163,7 @@ export class CoreGridComponent
         autoFocus: false,
       });
       dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value: any) => {
           if (value) {
             this.onUpdate(isArray ? items : [items]);
@@ -1188,12 +1190,14 @@ export class CoreGridComponent
       },
       autoFocus: false,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.validateRecords(ids);
-        this.reloadData();
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.validateRecords(ids);
+          this.reloadData();
+        }
+      });
   }
 
   /**
@@ -1233,22 +1237,24 @@ export class CoreGridComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
-            mutation: DELETE_RECORDS,
-            variables: {
-              ids,
-            },
-          })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe(() => {
-            this.reloadData();
-            this.layoutService.setRightSidenav(null);
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.apollo
+            .mutate<EditRecordMutationResponse>({
+              mutation: DELETE_RECORDS,
+              variables: {
+                ids,
+              },
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() => {
+              this.reloadData();
+              this.layoutService.setRightSidenav(null);
+            });
+        }
+      });
   }
 
   /**
@@ -1267,28 +1273,30 @@ export class CoreGridComponent
         record: items[0].id ? items[0].id : items[0],
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        const promises: Promise<any>[] = [];
-        for (const item of items) {
-          promises.push(
-            firstValueFrom(
-              this.apollo.mutate<ConvertRecordMutationResponse>({
-                mutation: CONVERT_RECORD,
-                variables: {
-                  id: item.id ? item.id : item,
-                  form: value.targetForm.id,
-                  copyRecord: value.copyRecord,
-                },
-              })
-            )
-          );
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          const promises: Promise<any>[] = [];
+          for (const item of items) {
+            promises.push(
+              firstValueFrom(
+                this.apollo.mutate<ConvertRecordMutationResponse>({
+                  mutation: CONVERT_RECORD,
+                  variables: {
+                    id: item.id ? item.id : item,
+                    form: value.targetForm.id,
+                    copyRecord: value.copyRecord,
+                  },
+                })
+              )
+            );
+          }
+          Promise.all(promises).then(() => {
+            this.reloadData();
+          });
         }
-        Promise.all(promises).then(() => {
-          this.reloadData();
-        });
-      }
-    });
+      });
   }
 
   // === HISTORY ===
@@ -1356,40 +1364,42 @@ export class CoreGridComponent
       confirmText: this.translate.instant('components.confirmModal.confirm'),
       confirmVariant: 'primary',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
-            mutation: EDIT_RECORD,
-            variables: {
-              id: record.id,
-              version: version.id,
-            },
-          })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: ({ errors }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.dataNotRecovered'
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.reloadData();
-                this.layoutService.setRightSidenav(null);
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.dataRecovered')
-                );
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.apollo
+            .mutate<EditRecordMutationResponse>({
+              mutation: EDIT_RECORD,
+              variables: {
+                id: record.id,
+                version: version.id,
+              },
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+              next: ({ errors }) => {
+                if (errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.dataNotRecovered'
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  this.reloadData();
+                  this.layoutService.setRightSidenav(null);
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('common.notifications.dataRecovered')
+                  );
+                }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
   // === EXPORT ===
@@ -1507,7 +1517,7 @@ export class CoreGridComponent
         }),
       })
     )
-      .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+      .pipe(takeUntil(this.cancelRefresh$), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => (this.loading = false));
   }
 

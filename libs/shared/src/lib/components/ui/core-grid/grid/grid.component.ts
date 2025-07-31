@@ -3,8 +3,10 @@ import { DOCUMENT } from '@angular/common';
 import {
   AfterViewInit,
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
+  inject,
   Inject,
   Input,
   OnChanges,
@@ -37,12 +39,11 @@ import {
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { get, has, intersection, isEqual, isNil } from 'lodash';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DownloadService } from '../../../../services/download/download.service';
 import { GridDataFormatterService } from '../../../../services/grid-data-formatter/grid-data-formatter.service';
 import { GridService } from '../../../../services/grid/grid.service';
 import { ResizeObservable } from '../../../../utils/rxjs/resize-observable.util';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { WidgetComponent } from '../../../widget/widget.component';
 import { GridLayout } from '../models/grid-layout.model';
 import { GridActions } from '../models/grid-settings.model';
@@ -54,6 +55,7 @@ import {
   SELECTABLE_SETTINGS,
 } from './grid.constants';
 import { DocumentManagementService } from '../../../../services/document-management/document-management.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Minimum column width */
 const MIN_COLUMN_WIDTH = 100;
@@ -78,7 +80,6 @@ const matches = (el: any, selector: any) =>
   providers: [PopupService, ResizeBatchService],
 })
 export class GridComponent
-  extends UnsubscribeComponent
   implements OnInit, OnDestroy, AfterViewInit, OnChanges
 {
   /** Input decorator for widget. */
@@ -230,6 +231,8 @@ export class GridComponent
   private columnChooserRef: PopupRef | null = null;
   /** Prevent next column reset */
   private preventColumnResize = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns show border of grid */
   get showBorder(): boolean {
@@ -332,7 +335,6 @@ export class GridComponent
     private documentManagementService: DocumentManagementService,
     private gridDataFormatterService: GridDataFormatterService
   ) {
-    super();
     this.environment = environment.module || 'frontoffice';
   }
 
@@ -351,7 +353,7 @@ export class GridComponent
       .pipe(
         debounceTime(2000),
         distinctUntilChanged(),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((value) => {
         this.searchChange.emit(value);
@@ -409,22 +411,23 @@ export class GridComponent
   ngAfterViewInit(): void {
     this.setSelectedItems();
     // Wait for columns to be reordered before updating the layout
-    this.grid?.columnReorder.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      if (this.columnChangeTimeoutListener) {
-        clearTimeout(this.columnChangeTimeoutListener);
-      }
-      this.columnChangeTimeoutListener = setTimeout(
-        () => this.columnChange.emit(),
-        500
-      );
-    });
+    this.grid?.columnReorder
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        if (this.columnChangeTimeoutListener) {
+          clearTimeout(this.columnChangeTimeoutListener);
+        }
+        this.columnChangeTimeoutListener = setTimeout(
+          () => this.columnChange.emit(),
+          500
+        );
+      });
     new ResizeObservable(this.gridRef.nativeElement)
-      .pipe(debounceTime(100), takeUntil(this.destroy$))
+      .pipe(debounceTime(100), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.setColumnsWidth());
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     if (this.columnChangeTimeoutListener) {
       clearTimeout(this.columnChangeTimeoutListener);
     }
@@ -639,7 +642,7 @@ export class GridComponent
     if (this.formGroup) {
       this.gridService
         .getFieldDefinition(this.widget.settings.resource, field.name)
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(async (fieldDefinition) => {
           // Prevent edition to be cancelled
           this.editing = true;
@@ -655,7 +658,7 @@ export class GridComponent
             disableClose: true,
           });
           dialogRef.closed
-            .pipe(takeUntil(this.destroy$))
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((data: any) => {
               if (has(data, 'value')) {
                 this.formGroup.get(field.name)?.setValue(data.value);
@@ -780,12 +783,14 @@ export class GridComponent
       },
       autoFocus: false,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-      if (res) {
-        this.exportSettings = res;
-        this.export.emit(this.exportSettings);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res: any) => {
+        if (res) {
+          this.exportSettings = res;
+          this.export.emit(this.exportSettings);
+        }
+      });
   }
 
   /**
@@ -817,15 +822,17 @@ export class GridComponent
       },
       autoFocus: false,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      // Only update if value is not null or undefined, and different from previous value
-      if (!isNil(value) && value !== get(item, fieldName)) {
-        // Create update
-        const update = { [fieldName]: value };
-        // Emit update so the grid can handle the event and update its content
-        this.action.emit({ action: 'edit', item, value: update });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        // Only update if value is not null or undefined, and different from previous value
+        if (!isNil(value) && value !== get(item, fieldName)) {
+          // Create update
+          const update = { [fieldName]: value };
+          // Emit update so the grid can handle the event and update its content
+          this.action.emit({ action: 'edit', item, value: update });
+        }
+      });
   }
 
   /**
@@ -844,11 +851,13 @@ export class GridComponent
       },
       autoFocus: false,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-      if (res) {
-        this.action.emit({ action: 'update', item });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res: any) => {
+        if (res) {
+          this.action.emit({ action: 'update', item });
+        }
+      });
   }
 
   /**
@@ -865,15 +874,17 @@ export class GridComponent
           widget: this.widget,
         },
       });
-      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-        if (res) {
-          this.edit.emit({
-            type: 'data',
-            id: this.widgetComponent.id,
-            options: res,
-          });
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((res: any) => {
+          if (res) {
+            this.edit.emit({
+              type: 'data',
+              id: this.widgetComponent.id,
+              options: res,
+            });
+          }
+        });
     }
   }
 

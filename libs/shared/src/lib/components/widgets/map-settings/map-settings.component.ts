@@ -8,6 +8,8 @@ import {
   ViewContainerRef,
   OnDestroy,
   AfterViewInit,
+  DestroyRef,
+  inject,
 } from '@angular/core';
 import { createMapWidgetFormGroup } from './map-forms';
 import {
@@ -15,8 +17,7 @@ import {
   MapEvent,
   MapEventType,
 } from '../../ui/map/interfaces/map.interface';
-import { debounceTime, takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { debounceTime } from 'rxjs';
 import { LayerModel } from '../../../models/layer.model';
 import { MapComponent, MapModule } from '../../ui/map';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
@@ -38,6 +39,7 @@ import { DisplaySettingsComponent } from '../common/display-settings/display-set
 import { TabWidgetAutomationsComponent } from '../common/tab-widget-automations/tab-widget-automations.component';
 import { MapLayersModule } from './map-layers/map-layers.module';
 import { MapPropertiesModule } from './map-properties/map-properties.module';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Map widget settings editor.
@@ -70,7 +72,6 @@ import { MapPropertiesModule } from './map-properties/map-properties.module';
   ],
 })
 export class MapSettingsComponent
-  extends UnsubscribeComponent
   implements
     OnInit,
     OnDestroy,
@@ -97,15 +98,15 @@ export class MapSettingsComponent
   public mapComponent?: MapComponent;
   /** Layers controls right side nav. Store if sidenav is used, to be able to destroy it when closing the view. */
   private openedLayersSideNav = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Map widget settings editor.
    *
    * @param layoutService Shared layout service
    */
-  constructor(private layoutService: UILayoutService) {
-    super();
-  }
+  constructor(private layoutService: UILayoutService) {}
 
   ngOnInit(): void {
     if (!this.widgetFormGroup) {
@@ -127,7 +128,7 @@ export class MapSettingsComponent
     const componentRef = this.mapContainer.createComponent(MapComponent);
     componentRef.instance.mapSettings = this.mapSettings;
     componentRef.instance.mapEvent
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((event) => this.handleMapEvent(event));
     componentRef.changeDetectorRef.detectChanges();
     this.mapPortal = new DomPortal(componentRef.instance.el);
@@ -135,7 +136,7 @@ export class MapSettingsComponent
 
     // Prevent sidenav to appear after closing dialog, when user clicks on "layers" button
     this.layoutService.rightSidenav$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((view: any) => {
         if (view?.inputs?.layersMenuExpanded) {
           this.openedLayersSideNav = true;
@@ -150,14 +151,17 @@ export class MapSettingsComponent
     if (!this.widgetFormGroup) return;
 
     this.widgetFormGroup?.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.widgetFormGroup.markAsDirty({ onlySelf: true });
         this.formChange.emit(this.widgetFormGroup);
       });
     this.widgetFormGroup
       .get('initialState')
-      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
+      ?.valueChanges.pipe(
+        debounceTime(1000),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe((value) =>
         this.updateMapSettings({
           initialState: value,
@@ -165,13 +169,19 @@ export class MapSettingsComponent
       );
     this.widgetFormGroup
       .get('basemap')
-      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
+      ?.valueChanges.pipe(
+        debounceTime(1000),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe((value) =>
         this.updateMapSettings({ basemap: value } as MapConstructorSettings)
       );
     this.widgetFormGroup
       .get('controls')
-      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
+      ?.valueChanges.pipe(
+        debounceTime(1000),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe((value) => {
         this.updateMapSettings({
           controls: value,
@@ -179,7 +189,10 @@ export class MapSettingsComponent
       });
     this.widgetFormGroup
       .get('arcGisWebMap')
-      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
+      ?.valueChanges.pipe(
+        debounceTime(1000),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe((value) =>
         this.updateMapSettings({
           arcGisWebMap: value,
@@ -187,7 +200,10 @@ export class MapSettingsComponent
       );
     this.widgetFormGroup
       .get('layers')
-      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
+      ?.valueChanges.pipe(
+        debounceTime(1000),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe((value) =>
         this.updateMapSettings({
           layers: value,
@@ -195,7 +211,10 @@ export class MapSettingsComponent
       );
     this.widgetFormGroup
       .get('geographicExtents')
-      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
+      ?.valueChanges.pipe(
+        debounceTime(1000),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe((value) =>
         this.updateMapSettings({
           geographicExtents: value,
@@ -259,8 +278,7 @@ export class MapSettingsComponent
     );
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     // Destroy layers control sidenav when closing the settings
     if (this.openedLayersSideNav) {
       this.layoutService.setRightSidenav(null);

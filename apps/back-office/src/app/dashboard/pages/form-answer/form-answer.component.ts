@@ -1,15 +1,20 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   BreadcrumbService,
   Form,
   FormComponent,
   FormQueryResponse,
-  UnsubscribeComponent,
 } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
-import { takeUntil } from 'rxjs';
 import { GET_SHORT_FORM_BY_ID } from './graphql/queries';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Form answer page component.
@@ -19,10 +24,7 @@ import { GET_SHORT_FORM_BY_ID } from './graphql/queries';
   templateUrl: './form-answer.component.html',
   styleUrls: ['./form-answer.component.scss'],
 })
-export class FormAnswerComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class FormAnswerComponent implements OnInit {
   /** Reference to shared form component */
   @ViewChild(FormComponent)
   private formComponent?: FormComponent;
@@ -34,6 +36,8 @@ export class FormAnswerComponent
   public form?: Form;
   /** Is form completed */
   public completed = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Form answer page component.
@@ -46,9 +50,7 @@ export class FormAnswerComponent
     private apollo: Apollo,
     private route: ActivatedRoute,
     private breadcrumbService: BreadcrumbService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
@@ -60,7 +62,7 @@ export class FormAnswerComponent
             id: this.id,
           },
         })
-        .valueChanges.pipe(takeUntil(this.destroy$))
+        .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(({ data, loading }) => {
           this.loading = loading;
           this.form = data.form;

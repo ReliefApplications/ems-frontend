@@ -1,8 +1,7 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Inject, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { Apollo } from 'apollo-angular';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 import { CommonModule, DOCUMENT } from '@angular/common';
@@ -47,10 +46,7 @@ interface DialogData {
   templateUrl: './choose-record-modal.component.html',
   styleUrls: ['./choose-record-modal.component.scss'],
 })
-export class ChooseRecordModalComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class ChooseRecordModalComponent implements OnInit {
   // === REACTIVE FORM ===
   /** Where the record is to be choosed from */
   public chooseRecordForm = this.fb.group({
@@ -70,6 +66,8 @@ export class ChooseRecordModalComponent
   // === LOAD DATA ===
   /** Whether the search is activated */
   public isSearchActivated = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -89,9 +87,7 @@ export class ChooseRecordModalComponent
     public dialogRef: DialogRef<ChooseRecordModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
     @Inject(DOCUMENT) public document: Document
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.settings = { query: this.data.targetFormQuery };

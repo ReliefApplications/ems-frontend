@@ -1,8 +1,9 @@
 import {
   ChangeDetectorRef,
   Component,
+  DestroyRef,
+  inject,
   NgZone,
-  OnDestroy,
   ViewContainerRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -12,10 +13,10 @@ import { Dialog } from '@angular/cdk/dialog';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { GET_SHORT_RESOURCE_BY_ID } from './graphql/queries';
-import { Subject, takeUntil } from 'rxjs';
 import { ButtonModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { ResourceQueryResponse } from '../../../models/resource.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Resource available fields component for survey creator
@@ -39,15 +40,11 @@ import { ResourceQueryResponse } from '../../../models/resource.model';
     </ui-button>
   `,
 })
-export class ResourceAvailableFieldsComponent
-  extends QuestionAngular<QuestionResourceAvailableFieldsModel>
-  implements OnDestroy
-{
-  /** Destroy subject */
-  private destroy$: Subject<void> = new Subject<void>();
-
+export class ResourceAvailableFieldsComponent extends QuestionAngular<QuestionResourceAvailableFieldsModel> {
   /** Loading state of resource for opening dialog */
   public loading = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -112,7 +109,7 @@ export class ResourceAvailableFieldsComponent
                 }
               );
               dialogRef.closed
-                .pipe(takeUntil(this.destroy$))
+                .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe((res: any) => {
                   if (res && res.value.fields) {
                     this.model.obj.gridFieldsSettings = res.getRawValue();
@@ -138,11 +135,5 @@ export class ResourceAvailableFieldsComponent
     const auxForm = this.fb.group(gridSettingsRaw);
     auxForm.controls.fields.setValue(gridSettingsRaw.fields);
     return auxForm;
-  }
-
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

@@ -2,7 +2,9 @@ import { Dialog } from '@angular/cdk/dialog';
 import { DOCUMENT } from '@angular/common';
 import {
   Component,
+  DestroyRef,
   EventEmitter,
+  inject,
   Inject,
   Injector,
   Input,
@@ -14,7 +16,6 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { difference, get, uniqBy } from 'lodash';
-import { takeUntil } from 'rxjs';
 import {
   Action,
   PageModel,
@@ -28,8 +29,8 @@ import { FormHelpersService } from '../../services/form-helper/form-helper.servi
 import { updateModalChoicesAndValue } from '../../survey/global-properties/reference-data';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Question } from '../../survey/types';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SurveyCustomJSONEditorPlugin } from './custom-json-editor/custom-json-editor.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Array containing the different types of questions.
@@ -100,10 +101,7 @@ const CORE_FIELD_CLASS = 'core-question';
   templateUrl: './form-builder.component.html',
   styleUrls: ['../../style/survey.scss', './form-builder.component.scss'],
 })
-export class FormBuilderComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnChanges, OnDestroy
-{
+export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Form object
    */
@@ -133,6 +131,8 @@ export class FormBuilderComponent
   private relatedNames!: string[];
   /** Timeout to survey creator */
   private timeoutListener!: NodeJS.Timeout;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -153,13 +153,14 @@ export class FormBuilderComponent
     @Inject(DOCUMENT) private document: Document,
     private injector: Injector
   ) {
-    super();
     // translate the editor in the same language as the interface
     surveyLocalization.currentLocale = this.translate.currentLang;
-    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      surveyLocalization.currentLocale = this.translate.currentLang;
-      this.setFormBuilder(this.surveyCreator.text);
-    });
+    this.translate.onLangChange
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        surveyLocalization.currentLocale = this.translate.currentLang;
+        this.setFormBuilder(this.surveyCreator.text);
+      });
   }
 
   ngOnInit(): void {
@@ -201,8 +202,7 @@ export class FormBuilderComponent
     }
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     if (this.timeoutListener) {
       clearTimeout(this.timeoutListener);
     }

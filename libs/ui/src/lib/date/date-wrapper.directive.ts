@@ -2,9 +2,11 @@ import {
   AfterContentInit,
   ChangeDetectorRef,
   ContentChildren,
+  DestroyRef,
   Directive,
   ElementRef,
   EventEmitter,
+  inject,
   Inject,
   Input,
   OnDestroy,
@@ -13,13 +15,14 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { SelectionRange } from '@progress/kendo-angular-dateinputs';
-import { Observable, Subject, Subscription, merge, takeUntil } from 'rxjs';
+import { Observable, Subscription, merge } from 'rxjs';
 import { DateRangeComponent } from './date-range/date-range.component';
 import { DatePickerComponent } from './date-picker/date-picker.component';
 import { DatePickerDirective } from './date-picker.directive';
 import { ConnectedPosition, Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 /**
  * UI Date wrapper directive
  */
@@ -32,9 +35,6 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
   /** Date inputs */
   @ContentChildren(DatePickerDirective)
   private dateInputs!: QueryList<DatePickerDirective>;
-
-  /** Destroy subject */
-  private destroy$ = new Subject<void>();
   /** Outside click listener */
   private outsideClickListener!: any;
   /** Date input listeners */
@@ -49,6 +49,8 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
   private calendarAnimationTimeoutListener!: NodeJS.Timeout;
   /** Timeout to close calendar */
   private closeCalendarTimeoutListener!: NodeJS.Timeout;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * UI Date wrapper directive constructor
@@ -115,7 +117,7 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
       dateInputClickEventStreams.push(dateInput.clickEvent);
     });
     merge(...dateInputClickEventStreams)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.openCalendar();
@@ -123,7 +125,7 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
       });
 
     (this.uiDateWrapper as any).selectedValue
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (value: Date | SelectionRange) => {
           if (this.uiDateWrapper instanceof DatePickerComponent) {
@@ -311,7 +313,5 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
         listener();
       }
     });
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

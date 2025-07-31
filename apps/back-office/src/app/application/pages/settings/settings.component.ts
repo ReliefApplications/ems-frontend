@@ -1,5 +1,5 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -14,13 +14,12 @@ import {
   ConfirmService,
   DeleteApplicationMutationResponse,
   status,
-  UnsubscribeComponent,
 } from '@oort-front/shared';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
-import { takeUntil } from 'rxjs/operators';
 import { CustomStyleComponent } from '../../../components/custom-style/custom-style.component';
 import { DELETE_APPLICATION } from './graphql/mutations';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Validators for checking that given shortcut value is valid
@@ -56,7 +55,7 @@ const shortcutValidator = (
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
 })
-export class SettingsComponent extends UnsubscribeComponent implements OnInit {
+export class SettingsComponent implements OnInit {
   /** Application list */
   public applications = new Array<Application>();
   /** Application settings form */
@@ -71,6 +70,8 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
   public locked: boolean | undefined = undefined;
   /** Is application locked for edition by current user */
   public lockedByUser: boolean | undefined = undefined;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns Application shortcut form field */
   get shortcut(): AbstractControl | null {
@@ -100,13 +101,11 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
     public dialog: Dialog,
     private translate: TranslateService,
     private layoutService: UILayoutService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((application: Application | null) => {
         if (application) {
           this.application = application;
@@ -190,7 +189,7 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
         confirmVariant: 'danger',
       });
       dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value: any) => {
           if (value) {
             const id = this.application?.id;

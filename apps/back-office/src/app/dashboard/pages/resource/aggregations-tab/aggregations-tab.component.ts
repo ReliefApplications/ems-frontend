@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Dialog } from '@angular/cdk/dialog';
 import {
@@ -6,7 +6,6 @@ import {
   AggregationService,
   ConfirmService,
   Resource,
-  UnsubscribeComponent,
   ResourceQueryResponse,
   getCachedValues,
   updateQueryUniqueValues,
@@ -14,12 +13,12 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import { GET_RESOURCE_AGGREGATIONS } from './graphql/queries';
-import { takeUntil } from 'rxjs';
 import {
   UIPageChangeEvent,
   handleTablePageEvent,
   SnackbarService,
 } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Aggregations tab of resource page
@@ -29,10 +28,7 @@ import {
   templateUrl: './aggregations-tab.component.html',
   styleUrls: ['./aggregations-tab.component.scss'],
 })
-export class AggregationsTabComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class AggregationsTabComponent implements OnInit {
   /**
    * Resource
    */
@@ -73,6 +69,8 @@ export class AggregationsTabComponent
     length: 0,
     endCursor: '',
   };
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Aggregations tab of resource page
@@ -91,9 +89,7 @@ export class AggregationsTabComponent
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private snackBar: SnackbarService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     const state = history.state;
@@ -191,49 +187,54 @@ export class AggregationsTabComponent
         resource: this.resource,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.aggregationService
-          .addAggregation(value, { resource: this.resource.id })
-          .subscribe({
-            next: ({ data }: any) => {
-              if (data.addAggregation && !data.errors) {
-                this.aggregations = [
-                  ...this.aggregations,
-                  data?.addAggregation,
-                ];
-                this.pageInfo.length += 1;
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectCreated', {
-                    type: this.translate
-                      .instant('common.aggregation.one')
-                      .toLowerCase(),
-                    value: data.addAggregation.name,
-                  })
-                );
-              } else {
-                if (data.errors) {
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.aggregationService
+            .addAggregation(value, { resource: this.resource.id })
+            .subscribe({
+              next: ({ data }: any) => {
+                if (data.addAggregation && !data.errors) {
+                  this.aggregations = [
+                    ...this.aggregations,
+                    data?.addAggregation,
+                  ];
+                  this.pageInfo.length += 1;
                   this.snackBar.openSnackBar(
                     this.translate.instant(
-                      'common.notifications.objectNotCreated',
+                      'common.notifications.objectCreated',
                       {
                         type: this.translate
                           .instant('common.aggregation.one')
                           .toLowerCase(),
-                        error: data.errors ? data.errors[0] : '',
+                        value: data.addAggregation.name,
                       }
-                    ),
-                    { error: true }
+                    )
                   );
+                } else {
+                  if (data.errors) {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'common.notifications.objectNotCreated',
+                        {
+                          type: this.translate
+                            .instant('common.aggregation.one')
+                            .toLowerCase(),
+                          error: data.errors ? data.errors[0] : '',
+                        }
+                      ),
+                      { error: true }
+                    );
+                  }
                 }
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
   /**
@@ -252,31 +253,33 @@ export class AggregationsTabComponent
         aggregation,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.aggregationService
-          .editAggregation(aggregation, value, { resource: this.resource.id })
-          .subscribe(({ data }: any) => {
-            if (data.editAggregation) {
-              this.aggregations = this.aggregations.map((x: any) => {
-                if (x.id === aggregation.id) {
-                  return data.editAggregation;
-                } else {
-                  return x;
-                }
-              });
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  value: data.editAggregation.name,
-                  type: this.translate
-                    .instant('common.aggregation.one')
-                    .toLowerCase(),
-                })
-              );
-            }
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.aggregationService
+            .editAggregation(aggregation, value, { resource: this.resource.id })
+            .subscribe(({ data }: any) => {
+              if (data.editAggregation) {
+                this.aggregations = this.aggregations.map((x: any) => {
+                  if (x.id === aggregation.id) {
+                    return data.editAggregation;
+                  } else {
+                    return x;
+                  }
+                });
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectUpdated', {
+                    value: data.editAggregation.name,
+                    type: this.translate
+                      .instant('common.aggregation.one')
+                      .toLowerCase(),
+                  })
+                );
+              }
+            });
+        }
+      });
   }
 
   /**
@@ -297,25 +300,27 @@ export class AggregationsTabComponent
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.aggregationService
-          .deleteAggregation(aggregation, { resource: this.resource.id })
-          .subscribe(({ errors }: any) => {
-            if (!errors) {
-              this.aggregations = this.aggregations.filter(
-                (x: any) => x.id !== aggregation.id
-              );
-              this.pageInfo.length -= 1;
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectDeleted', {
-                  value: this.translate.instant('common.aggregation.one'),
-                })
-              );
-            }
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.aggregationService
+            .deleteAggregation(aggregation, { resource: this.resource.id })
+            .subscribe(({ errors }: any) => {
+              if (!errors) {
+                this.aggregations = this.aggregations.filter(
+                  (x: any) => x.id !== aggregation.id
+                );
+                this.pageInfo.length -= 1;
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectDeleted', {
+                    value: this.translate.instant('common.aggregation.one'),
+                  })
+                );
+              }
+            });
+        }
+      });
   }
 
   /**

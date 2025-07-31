@@ -1,5 +1,11 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   ActionButton,
@@ -7,7 +13,6 @@ import {
   Page,
   Step,
   FormComponent as SharedFormComponent,
-  UnsubscribeComponent,
   StepQueryResponse,
   FormQueryResponse,
   PageQueryResponse,
@@ -21,9 +26,10 @@ import {
   GET_STEP_BY_ID,
 } from './graphql/queries';
 import { Subscription } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Form page.
@@ -33,7 +39,7 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent extends UnsubscribeComponent implements OnInit {
+export class FormComponent implements OnInit {
   /** View reference of Shared form component */
   @ViewChild(SharedFormComponent)
   private formComponent?: SharedFormComponent;
@@ -59,6 +65,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   public isStep = false;
   /** Form button actions */
   public actionButtons: ActionButton[] = [];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Form page.
@@ -79,60 +87,60 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     private translate: TranslateService,
     private contextService: ContextService,
     private breadcrumbService: BreadcrumbService
-  ) {
-    super();
-  }
+  ) {}
 
   /**
    * Subscribes to the route to load the form.
    */
   ngOnInit(): void {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.loading = true;
-      this.id = params.id;
-      this.isStep = this.router.url.includes('/workflow/');
-      // If a query is already loading, cancel it
-      if (this.querySubscription) {
-        this.querySubscription.unsubscribe();
-      }
-      if (this.isStep) {
-        this.querySubscription = this.apollo
-          .query<StepQueryResponse>({
-            query: GET_STEP_BY_ID,
-            variables: {
-              id: this.id,
-            },
-          })
-          .pipe(
-            switchMap(({ data }) => {
-              this.step = data.step;
-              this.actionButtons = data.step.buttons as ActionButton[];
-              return this.getFormQuery(this.step.content ?? '');
+    this.route.params
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        this.loading = true;
+        this.id = params.id;
+        this.isStep = this.router.url.includes('/workflow/');
+        // If a query is already loading, cancel it
+        if (this.querySubscription) {
+          this.querySubscription.unsubscribe();
+        }
+        if (this.isStep) {
+          this.querySubscription = this.apollo
+            .query<StepQueryResponse>({
+              query: GET_STEP_BY_ID,
+              variables: {
+                id: this.id,
+              },
             })
-          )
-          .subscribe(({ data, loading }) => {
-            this.handleApplicationLoadResponse(data, loading);
-          });
-      } else {
-        this.querySubscription = this.apollo
-          .query<PageQueryResponse>({
-            query: GET_PAGE_BY_ID,
-            variables: {
-              id: this.id,
-            },
-          })
-          .pipe(
-            switchMap(({ data }) => {
-              this.page = data.page;
-              this.actionButtons = data.page.buttons as ActionButton[];
-              return this.getFormQuery(this.page.content ?? '');
+            .pipe(
+              switchMap(({ data }) => {
+                this.step = data.step;
+                this.actionButtons = data.step.buttons as ActionButton[];
+                return this.getFormQuery(this.step.content ?? '');
+              })
+            )
+            .subscribe(({ data, loading }) => {
+              this.handleApplicationLoadResponse(data, loading);
+            });
+        } else {
+          this.querySubscription = this.apollo
+            .query<PageQueryResponse>({
+              query: GET_PAGE_BY_ID,
+              variables: {
+                id: this.id,
+              },
             })
-          )
-          .subscribe(({ data, loading }) => {
-            this.handleApplicationLoadResponse(data, loading);
-          });
-      }
-    });
+            .pipe(
+              switchMap(({ data }) => {
+                this.page = data.page;
+                this.actionButtons = data.page.buttons as ActionButton[];
+                return this.getFormQuery(this.page.content ?? '');
+              })
+            )
+            .subscribe(({ data, loading }) => {
+              this.handleApplicationLoadResponse(data, loading);
+            });
+        }
+      });
   }
 
   /**

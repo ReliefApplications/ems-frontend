@@ -1,6 +1,8 @@
 import {
   Component,
+  DestroyRef,
   ElementRef,
+  inject,
   Inject,
   OnDestroy,
   OnInit,
@@ -20,7 +22,6 @@ import {
   ReferenceData,
   referenceDataType,
   BreadcrumbService,
-  UnsubscribeComponent,
   ReferenceDataService,
   ApiConfigurationsQueryResponse,
   ReferenceDataQueryResponse,
@@ -36,7 +37,6 @@ import {
   GET_REFERENCE_DATA,
 } from './graphql/queries';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-import { takeUntil } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { inferTypeFromString } from './utils/inferTypeFromString';
@@ -49,6 +49,7 @@ import { GridComponent } from '@progress/kendo-angular-grid';
 import { gql } from '@apollo/client';
 import { createRefDataForm } from './reference-data.form';
 import { ResizeEvent } from 'angular-resizable-element';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default graphql query */
 const DEFAULT_QUERY = `query {\n  \n}`;
@@ -65,10 +66,7 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
   templateUrl: './reference-data.component.html',
   styleUrls: ['./reference-data.component.scss'],
 })
-export class ReferenceDataComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class ReferenceDataComponent implements OnInit, OnDestroy {
   /** Reference to the field input.*/
   @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
   /** Reference to the csv data input. */
@@ -142,6 +140,8 @@ export class ReferenceDataComponent
   private inlineEditionOutsideClickListener!: any;
   /** size style of editor */
   public style: any = {};
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns the graphqlQuery form control */
   get queryControl() {
@@ -193,9 +193,7 @@ export class ReferenceDataComponent
     private fb: FormBuilder,
     private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document
-  ) {
-    super();
-  }
+  ) {}
 
   /**
    * Create a new edition form group.
@@ -288,7 +286,7 @@ export class ReferenceDataComponent
     this.formTimeoutListener = setTimeout(() => {
       form
         .get('type')
-        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
           clearFields();
 
@@ -307,12 +305,12 @@ export class ReferenceDataComponent
 
       form
         .get('apiConfiguration')
-        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(clearFields);
 
       // Subscribe to query changes, and update the query variables and clear fields
       this.queryControl?.valueChanges
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((query) => {
           if (query) {
             handleQueryChange(query);
@@ -321,14 +319,14 @@ export class ReferenceDataComponent
 
       form
         .get('pageInfo.strategy')
-        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
           setPaginationValidators();
         });
 
       form
         .get('usePagination')
-        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(setPaginationValidators);
 
       // Initialize the query variables
@@ -372,7 +370,7 @@ export class ReferenceDataComponent
             id: this.id,
           },
         })
-        .valueChanges.pipe(takeUntil(this.destroy$))
+        .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: ({ data, loading }) => {
             if (data.referenceData) {
@@ -426,8 +424,7 @@ export class ReferenceDataComponent
   /**
    * Override ngOnDestroy of base component to clear listeners.
    */
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     if (this.addChipListTimeoutListener) {
       clearTimeout(this.addChipListTimeoutListener);
     }

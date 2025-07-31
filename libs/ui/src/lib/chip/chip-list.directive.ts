@@ -2,15 +2,17 @@ import {
   Directive,
   Input,
   AfterContentInit,
-  OnDestroy,
   forwardRef,
   ContentChildren,
   QueryList,
   ChangeDetectorRef,
+  DestroyRef,
+  inject,
 } from '@angular/core';
-import { Subject, filter, startWith, takeUntil } from 'rxjs';
+import { filter, startWith } from 'rxjs';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ChipComponent } from './chip.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * UI Chip list directive
@@ -26,16 +28,12 @@ import { ChipComponent } from './chip.component';
   ],
 })
 export class ChipListDirective
-  implements AfterContentInit, OnDestroy, ControlValueAccessor
+  implements AfterContentInit, ControlValueAccessor
 {
   /** Chip List */
   @Input() uiChipList!: any;
-
   /** Current chip list */
   @ContentChildren(ChipComponent) currentChipList!: QueryList<ChipComponent>;
-  /** Destroy subject */
-  private destroy$: Subject<void> = new Subject<void>();
-
   /** Current chip list value */
   value: string[] = [];
   /** Disabled state */
@@ -44,6 +42,8 @@ export class ChipListDirective
   onChange!: (value: string[]) => void;
   /** Callback function to call when control touch state change */
   onTouch!: () => void;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * UI Chip list directive constructor
@@ -57,7 +57,7 @@ export class ChipListDirective
       .pipe(
         startWith(this.currentChipList),
         filter(() => !this.disabled),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: (chips: QueryList<ChipComponent>) => {
@@ -114,10 +114,5 @@ export class ChipListDirective
     this.currentChipList?.forEach((chip: ChipComponent) => {
       chip.disabled = isDisabled;
     });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

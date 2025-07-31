@@ -1,18 +1,18 @@
 import {
   ChangeDetectorRef,
   Component,
-  OnDestroy,
+  DestroyRef,
+  inject,
   OnInit,
   ViewContainerRef,
 } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { ReferenceData } from '../../../models/reference-data.model';
-import { takeUntil } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { QuestionAngular } from 'survey-angular-ui';
 import { QuestionReferenceDataDropdownModel } from './reference-data-dropdown.model';
-import { Subject } from 'rxjs';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Reference data dropdown component.
@@ -24,14 +24,14 @@ import { ReferenceDataService } from '../../../services/reference-data/reference
 })
 export class ReferenceDataDropdownComponent
   extends QuestionAngular<QuestionReferenceDataDropdownModel>
-  implements OnInit, OnDestroy
+  implements OnInit
 {
   /** Control */
   public control = new FormControl<string | null>(null);
   /** Selected reference data */
   public selectedReferenceData: ReferenceData | null = null;
-  /** Destroy subject */
-  private destroy$: Subject<void> = new Subject<void>();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -53,11 +53,13 @@ export class ReferenceDataDropdownComponent
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.control.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
-      next: (value: string | null) => {
-        this.model.value = value;
-      },
-    });
+    this.control.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (value: string | null) => {
+          this.model.value = value;
+        },
+      });
     if (this.model.obj.referenceData) {
       this.referenceDataService
         .loadReferenceData(this.model.obj.referenceData)
@@ -70,12 +72,6 @@ export class ReferenceDataDropdownComponent
           this.changeDetectorRef.detectChanges();
         });
     }
-  }
-
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   /**

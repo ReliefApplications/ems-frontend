@@ -17,6 +17,8 @@ import {
   Input,
   Output,
   EventEmitter,
+  DestroyRef,
+  inject,
 } from '@angular/core';
 import { WorkflowService } from '../../../services/workflow/workflow.service';
 import { EmailService } from '../../../services/email/email.service';
@@ -31,7 +33,7 @@ import set from 'lodash/set';
 import { ApplicationService } from '../../../services/application/application.service';
 import { Aggregation } from '../../../models/aggregation.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
-import { firstValueFrom, takeUntil } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { RoleUsersNodesQueryResponse } from '../../../models/user.model';
@@ -48,6 +50,7 @@ import { AggregationGridComponent } from '../../aggregation/aggregation-grid/agg
 import { ReferenceDataGridComponent } from '../../ui/reference-data-grid/reference-data-grid.component';
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 import { clone } from 'lodash';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Component for the grid widget */
 @Component({
@@ -116,6 +119,8 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
 
   /** Event emitter for inline edition of records */
   @Output() inlineEdition: EventEmitter<any> = new EventEmitter();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Test if the grid uses a layout, and if a layout is used, if any item is currently updated.
@@ -383,13 +388,15 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
             },
             autoFocus: false,
           });
-          dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-            if (!value) {
-              resolve(false);
-            } else {
-              resolve(true);
-            }
-          });
+          dialogRef.closed
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((value) => {
+              if (!value) {
+                resolve(false);
+              } else {
+                resolve(true);
+              }
+            });
         });
       });
       const shouldContinue = await promise;
@@ -486,7 +493,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
 
                 // Get template from dialog ref
                 const value = await firstValueFrom<any>(
-                  dialogRef.closed.pipe(takeUntil(this.destroy$))
+                  dialogRef.closed.pipe(takeUntilDestroyed(this.destroyRef))
                 );
                 if (value?.template) {
                   const selectedId = value?.template;
@@ -543,7 +550,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
           confirmVariant: 'primary',
         });
         dialogRef.closed
-          .pipe(takeUntil(this.destroy$))
+          .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe((confirm: any) => {
             if (confirm) {
               this.workflowService.closeWorkflow();
@@ -616,7 +623,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
             id: targetForm,
           },
         })
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(async (getForm) => {
           if (getForm.data.form) {
             const form = getForm.data.form;
@@ -677,7 +684,7 @@ export class GridWidgetComponent extends BaseWidgetComponent implements OnInit {
                     autoFocus: false,
                   });
                   formDialogRef.closed
-                    .pipe(takeUntil(this.destroy$))
+                    .pipe(takeUntilDestroyed(this.destroyRef))
                     .subscribe((res) => resolve(res ? true : false));
                 });
             } else {

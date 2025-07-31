@@ -1,9 +1,15 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  DestroyRef,
+  inject,
+} from '@angular/core';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Button on top left of each widget, if user can see it, with menu of possible
@@ -14,7 +20,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
   templateUrl: './widget-actions.component.html',
   styleUrls: ['./widget-actions.component.scss'],
 })
-export class WidgetActionsComponent extends UnsubscribeComponent {
+export class WidgetActionsComponent {
   /** Current widget */
   @Input() widget: any;
   /** Widget id */
@@ -31,6 +37,8 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
   @Output() expand: EventEmitter<any> = new EventEmitter();
   /** Style event emitter */
   @Output() style: EventEmitter<any> = new EventEmitter();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Button on top left of each widget, if user can see it, with menu of possible
@@ -44,9 +52,7 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
     public dialog: Dialog,
     private confirmService: ConfirmService,
     private translate: TranslateService
-  ) {
-    super();
-  }
+  ) {}
 
   /**
    * Opens a modal, or emit an event depending on the action clicked.
@@ -69,11 +75,13 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
           },
         },
       });
-      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-        if (res) {
-          this.edit.emit({ type: 'data', id: this.id, options: res });
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((res: any) => {
+          if (res) {
+            this.edit.emit({ type: 'data', id: this.id, options: res });
+          }
+        });
     }
     if (action === 'expand') {
       this.expand.emit({ id: this.id });
@@ -91,7 +99,7 @@ export class WidgetActionsComponent extends UnsubscribeComponent {
         confirmVariant: 'danger',
       });
       dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value: any) => {
           if (value) {
             this.delete.emit({ id: this.id });

@@ -1,8 +1,10 @@
 import { Apollo } from 'apollo-angular';
 import {
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
+  inject,
   Input,
   OnDestroy,
   OnInit,
@@ -18,16 +20,16 @@ import {
   EditRecordMutationResponse,
   Record as RecordModel,
 } from '../../models/record.model';
-import { BehaviorSubject, takeUntil } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { RecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { isNil } from 'lodash';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * This component is used to display forms
@@ -37,10 +39,7 @@ import { isNil } from 'lodash';
   templateUrl: './form.component.html',
   styleUrls: ['../../style/survey.scss', './form.component.scss'],
 })
-export class FormComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class FormComponent implements OnInit, OnDestroy {
   /** Form input */
   @Input() form!: Form;
   /** Record input, optional */
@@ -83,6 +82,8 @@ export class FormComponent
   // private storageId = '';
   /** Date of local storage */
   // public storageDate?: Date;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -106,9 +107,7 @@ export class FormComponent
     private formBuilderService: FormBuilderService,
     public formHelpersService: FormHelpersService,
     private translate: TranslateService
-  ) {
-    super();
-  }
+  ) {}
 
   /** It adds custom functions, creates the lookup, adds callbacks to the lookup events, fetches cached data from local storage, and sets the lookup data. */
   ngOnInit(): void {
@@ -415,43 +414,44 @@ export class FormComponent
    */
   private confirmRevertDialog(record: any, version: any) {
     const dialogRef = this.formHelpersService.createRevertDialog(version);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<EditRecordMutationResponse>({
-            mutation: EDIT_RECORD,
-            variables: {
-              id: record.id,
-              version: version.id,
-            },
-          })
-          .subscribe({
-            next: ({ errors }) => {
-              if (errors) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant(
-                    'common.notifications.dataNotRecovered'
-                  ),
-                  { error: true }
-                );
-              } else {
-                this.layoutService.setRightSidenav(null);
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.dataRecovered')
-                );
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.apollo
+            .mutate<EditRecordMutationResponse>({
+              mutation: EDIT_RECORD,
+              variables: {
+                id: record.id,
+                version: version.id,
+              },
+            })
+            .subscribe({
+              next: ({ errors }) => {
+                if (errors) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.dataNotRecovered'
+                    ),
+                    { error: true }
+                  );
+                } else {
+                  this.layoutService.setRightSidenav(null);
+                  this.snackBar.openSnackBar(
+                    this.translate.instant('common.notifications.dataRecovered')
+                  );
+                }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 
   /** It removes the item from local storage, clears cached records, and discards the search. */
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     if (this.resetTimeoutListener) {
       clearTimeout(this.resetTimeoutListener);
     }

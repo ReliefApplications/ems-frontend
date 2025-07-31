@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { distinctUntilChanged, takeUntil } from 'rxjs';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { distinctUntilChanged } from 'rxjs';
 import { ApplicationService } from '../../services/application/application.service';
 import { ConfirmService } from '../../services/confirm/confirm.service';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Mocked Interface
@@ -24,10 +24,7 @@ export interface ArchivePage {
   templateUrl: './applications-archive.component.html',
   styleUrls: ['./applications-archive.component.scss'],
 })
-export class ApplicationsArchiveComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class ApplicationsArchiveComponent implements OnInit {
   /** Loading state */
   loading = false;
   /** List of pages */
@@ -49,6 +46,8 @@ export class ApplicationsArchiveComponent
   public searchText = '';
   /** Date filter */
   public dateFilter = '';
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Applications archive constructor
@@ -63,13 +62,11 @@ export class ApplicationsArchiveComponent
     private translate: TranslateService,
     private confirmService: ConfirmService,
     private fb: FormBuilder
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.form.valueChanges
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((value: any) => {
         this.searchText = (value?.search ?? '').trim().toLowerCase();
         this.applyFilter('', this.searchText);
@@ -133,13 +130,15 @@ export class ApplicationsArchiveComponent
       confirmText: this.translate.instant('common.archive.modal.delete.action'),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.pages = this.pages.filter((p) => p.id !== page.id); //remove the deleted page from the archive
-        this.filterPredicate();
-        this.applicationService.deletePage(page.id, true);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.pages = this.pages.filter((p) => p.id !== page.id); //remove the deleted page from the archive
+          this.filterPredicate();
+          this.applicationService.deletePage(page.id, true);
+        }
+      });
   }
 
   /**
@@ -162,10 +161,12 @@ export class ApplicationsArchiveComponent
       ),
       confirmVariant: 'danger',
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.applicationService.restorePage(page.id);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.applicationService.restorePage(page.id);
+        }
+      });
   }
 }

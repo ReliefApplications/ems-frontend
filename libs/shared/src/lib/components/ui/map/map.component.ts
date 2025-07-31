@@ -12,9 +12,10 @@ import {
   ElementRef,
   Optional,
   SkipSelf,
+  inject,
+  DestroyRef,
 } from '@angular/core';
 import { take } from 'rxjs/operators';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
 import 'leaflet';
 import 'leaflet.markercluster';
@@ -63,7 +64,6 @@ import {
   debounceTime,
   filter,
   from,
-  merge,
   takeUntil,
 } from 'rxjs';
 import { MapPopupService } from './map-popup/map-popup.service';
@@ -75,6 +75,7 @@ import { ShadowDomService } from '@oort-front/ui';
 import { DashboardAutomationService } from '../../../services/dashboard-automation/dashboard-automation.service';
 import { ActionComponent, ActionType } from '../../../models/automation.model';
 import { DashboardExportService } from '../../../services/dashboard-export/dashboard-export.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Component for the map widget */
 @Component({
@@ -83,10 +84,7 @@ import { DashboardExportService } from '../../../services/dashboard-export/dashb
   styleUrls: ['../../../style/map.scss', './map.component.scss'],
   providers: [MapControlsService, MapPopupService],
 })
-export class MapComponent
-  extends UnsubscribeComponent
-  implements AfterViewInit, OnDestroy
-{
+export class MapComponent implements AfterViewInit, OnDestroy {
   /** Add or delete layer setter */
   @Input() set addOrDeleteLayer(layerAction: LayerActionOnMap | null) {
     if (layerAction?.layerData) {
@@ -181,6 +179,8 @@ export class MapComponent
   private useContextZoom = false;
   /** Revert Map Exporting subscription */
   private revertMapSubscription?: Subscription;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Map widget component
@@ -220,7 +220,6 @@ export class MapComponent
     @SkipSelf()
     private dashboardAutomationService: DashboardAutomationService
   ) {
-    super();
     this.esriApiKey = environment.esriApiKey;
     this.mapId = uuidv4();
   }
@@ -286,7 +285,7 @@ export class MapComponent
             });
             return this.layers.some((layer) => layer.shouldRefresh);
           }),
-          takeUntil(this.destroy$)
+          takeUntilDestroyed(this.destroyRef)
         )
         .subscribe(() => {
           this.filterLayers();
@@ -294,8 +293,7 @@ export class MapComponent
     }
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     if (this.firstLoadEmitTimeoutListener) {
       clearTimeout(this.firstLoadEmitTimeoutListener);
     }
@@ -360,7 +358,7 @@ export class MapComponent
 
     // Listen for language change
     this.translate.onLangChange
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((event) => {
         // Update controls that use translation
         if (event.lang !== this.mapControlsService.lang) {
@@ -547,7 +545,7 @@ export class MapComponent
               : true
           ),
           debounceTime(500),
-          takeUntil(this.destroy$)
+          takeUntilDestroyed(this.destroyRef)
         )
         .subscribe(() => {
           this.zoomOn();
@@ -1168,7 +1166,7 @@ export class MapComponent
     // get new layers, with filters applied
     this.resetLayers(this.layers.filter((x) => x.shouldRefresh));
     from(this.getLayers(layersToGet ?? [], false))
-      .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+      .pipe(takeUntil(this.cancelRefresh$), takeUntilDestroyed(this.destroyRef))
       .subscribe(({ layers }) => {
         this.overlaysTree = [layers];
 
@@ -1325,7 +1323,7 @@ export class MapComponent
     this.dashboardExportService.isExporting$
       .pipe(
         filter((isExporting) => !!isExporting),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => {
         const { originalBasemap, originalWebMap } = this.buildMapToExport();
@@ -1334,7 +1332,7 @@ export class MapComponent
           .pipe(
             filter((isExporting) => !isExporting),
             take(1),
-            takeUntil(this.destroy$)
+            takeUntilDestroyed(this.destroyRef)
           )
           .subscribe(() => {
             this.setMapBackToOriginState(originalBasemap, originalWebMap);

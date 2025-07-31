@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -8,9 +8,9 @@ import {
   SelectMenuModule,
   SliderModule,
 } from '@oort-front/ui';
-import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Fields } from '../../../../../../models/layer.model';
-import { UnsubscribeComponent } from '../../../../../../components/utils/unsubscribe/unsubscribe.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Layer Heatmap renderer component
@@ -31,27 +31,27 @@ import { UnsubscribeComponent } from '../../../../../../components/utils/unsubsc
   templateUrl: './heatmap-renderer.component.html',
   styleUrls: ['./heatmap-renderer.component.scss'],
 })
-export class HeatmapRendererComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class HeatmapRendererComponent implements OnInit {
   /** Current form group */
   @Input() formGroup!: FormGroup;
   /** Available fields */
   @Input() fields$!: Observable<Fields[]>;
-
   /** All scalar fields */
   private scalarFields = new BehaviorSubject<Fields[]>([]);
   /** Scalar fields as observable */
   public scalarFields$ = this.scalarFields.asObservable();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
-    this.fields$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      this.scalarFields.next(
-        value.filter((field) =>
-          ['integer', 'number'].includes(field.type.toLowerCase())
-        )
-      );
-    });
+    this.fields$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        this.scalarFields.next(
+          value.filter((field) =>
+            ['integer', 'number'].includes(field.type.toLowerCase())
+          )
+        );
+      });
   }
 }

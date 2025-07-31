@@ -1,4 +1,11 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  Input,
+  OnChanges,
+  OnInit,
+} from '@angular/core';
 import { Layout } from '../../../models/layout.model';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
@@ -6,9 +13,8 @@ import { UntypedFormControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import get from 'lodash/get';
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Layouts list configuration for grid widgets
@@ -18,10 +24,7 @@ import { Dialog } from '@angular/cdk/dialog';
   templateUrl: './layout-table.component.html',
   styleUrls: ['./layout-table.component.scss'],
 })
-export class LayoutTableComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnChanges
-{
+export class LayoutTableComponent implements OnInit, OnChanges {
   /** Resource to display */
   @Input() resource: Resource | null = null;
   /** Form to display */
@@ -37,6 +40,8 @@ export class LayoutTableComponent
   allLayouts: Layout[] = [];
   /** List of displayed columns */
   columns: string[] = ['name', 'createdAt', '_actions'];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Constructor of the layout list component
@@ -47,16 +52,14 @@ export class LayoutTableComponent
   constructor(
     private dialog: Dialog,
     private gridLayoutService: GridLayoutService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     const defaultValue = this.selectedLayouts?.value;
     this.setAllLayouts();
     this.setSelectedLayouts(defaultValue);
     this.selectedLayouts?.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.setSelectedLayouts(value);
       });
@@ -119,20 +122,22 @@ export class LayoutTableComponent
         resource: this.resource,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        if (!this.allLayouts.find((x) => x.id === value.id)) {
-          this.allLayouts.push(value);
-          this.resource?.layouts?.edges?.push({
-            node: value,
-            cursor: value.id,
-          });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          if (!this.allLayouts.find((x) => x.id === value.id)) {
+            this.allLayouts.push(value);
+            this.resource?.layouts?.edges?.push({
+              node: value,
+              cursor: value.id,
+            });
+          }
+          this.selectedLayouts?.setValue(
+            this.selectedLayouts?.value.concat(value.id)
+          );
         }
-        this.selectedLayouts?.setValue(
-          this.selectedLayouts?.value.concat(value.id)
-        );
-      }
-    });
+      });
   }
 
   /**
@@ -151,21 +156,23 @@ export class LayoutTableComponent
         queryName: this.resource?.queryName,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.gridLayoutService
-          .editLayout(layout, value, this.resource?.id, this.form?.id)
-          .subscribe(({ data }: any) => {
-            if (data.editLayout) {
-              const layouts = [...this.allLayouts];
-              const index = layouts.findIndex((x) => x.id === layout.id);
-              layouts[index] = data.editLayout;
-              this.allLayouts = layouts;
-              this.setSelectedLayouts(this.selectedLayouts?.value);
-            }
-          });
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.gridLayoutService
+            .editLayout(layout, value, this.resource?.id, this.form?.id)
+            .subscribe(({ data }: any) => {
+              if (data.editLayout) {
+                const layouts = [...this.allLayouts];
+                const index = layouts.findIndex((x) => x.id === layout.id);
+                layouts[index] = data.editLayout;
+                this.allLayouts = layouts;
+                this.setSelectedLayouts(this.selectedLayouts?.value);
+              }
+            });
+        }
+      });
   }
 
   /**

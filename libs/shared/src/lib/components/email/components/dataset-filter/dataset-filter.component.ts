@@ -7,6 +7,8 @@ import {
   OnDestroy,
   Output,
   ViewChild,
+  DestroyRef,
+  inject,
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { QueryRef } from 'apollo-angular';
@@ -17,9 +19,8 @@ import {
 } from '../../../../models/resource.model';
 import { EmailService } from '../../email.service';
 import { FILTER_OPERATORS, TYPE_LABEL } from '../../filter/filter.const';
-import { Subscription, takeUntil } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { HttpClient } from '@angular/common/http';
 import { RestService } from '../../../../services/rest/rest.service';
@@ -31,6 +32,7 @@ import {
   ContentType,
   Page,
 } from '../../../../../index';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 /**
  * Component for filtering, selecting fields and styling block data sets.
  */
@@ -39,10 +41,7 @@ import {
   templateUrl: './dataset-filter.component.html',
   styleUrls: ['./dataset-filter.component.scss'],
 })
-export class DatasetFilterComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class DatasetFilterComponent implements OnInit, OnDestroy {
   /** Active tab in the component. */
   @Input() activeTab: any;
   /** Array of tabs in the component. */
@@ -133,6 +132,8 @@ export class DatasetFilterComponent
   public pages: any[] = [];
   /** Flag to show the Child fields limit warning. */
   public showFieldsWarning_SSE = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * To use helper functions, Apollo serve
@@ -155,9 +156,7 @@ export class DatasetFilterComponent
     private restService: RestService,
     private sanitizer: DomSanitizer,
     public applicationService: ApplicationService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     const application = this.applicationService.application.getValue();
@@ -167,7 +166,7 @@ export class DatasetFilterComponent
       this.getResourceData(false);
     }
     this.query.controls.resource.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value: any) => {
         if (
           value !== undefined &&
@@ -188,7 +187,7 @@ export class DatasetFilterComponent
         }
       });
     this.query.controls.name.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((data: any) => {
         this.activeTab = this.tabs.filter((x: any) => x.active)?.[0];
         if (data === null) {
@@ -199,7 +198,7 @@ export class DatasetFilterComponent
         this.emailService.index.next(this.activeTab.index);
       });
     this.query.controls?.navigateSettings?.controls?.field?.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((data: any) => {
         if (data) {
           this.query.controls['navigateToPage'].setValue(true);
@@ -250,7 +249,7 @@ export class DatasetFilterComponent
 
     // Check for individual email checkbox value
     this.query.controls.individualEmail.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value: any) => {
         if (
           value === true &&
@@ -279,7 +278,7 @@ export class DatasetFilterComponent
     });
   }
 
-  override ngOnDestroy() {
+  ngOnDestroy() {
     if (!this.resource) {
       if (this.query?.get('individualEmail') === true) {
         this.query?.get('individualEmail').setValue(false);
@@ -374,7 +373,7 @@ export class DatasetFilterComponent
     if (this.selectedResourceId) {
       this.emailService
         .fetchResourceData(this.selectedResourceId)
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(({ data }) => {
           const queryTemp: any = data.resource;
           const newData = this.queryBuilder.getFields(queryTemp.queryName);

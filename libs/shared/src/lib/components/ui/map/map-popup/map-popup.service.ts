@@ -3,11 +3,11 @@ import { Feature } from 'geojson';
 
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
 import * as L from 'leaflet';
-import { takeUntil } from 'rxjs';
 import { DomService } from '../../../../services/dom/dom.service';
 import { MapPopupComponent } from './map-popup.component';
 import { PopupInfo } from '../../../../models/layer.model';
 import { DOCUMENT } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 /**
  * Shared map control service.
  */
@@ -275,7 +275,7 @@ export class MapPopupService {
   ) {
     // listen to popup close event
     popupComponent.instance.closePopup
-      .pipe(takeUntil(popupComponent.instance.destroy$))
+      .pipe(takeUntilDestroyed(popupComponent.instance.destroyRef))
       .subscribe(() => {
         if (this.timeoutPopupCloseListener) {
           clearTimeout(this.timeoutPopupCloseListener);
@@ -287,7 +287,7 @@ export class MapPopupService {
 
     // listen to popup zoom to event
     popupComponent.instance.zoomTo
-      .pipe(takeUntil(popupComponent.instance.destroy$))
+      .pipe(takeUntilDestroyed(popupComponent.instance.destroyRef))
       .subscribe((event: L.LatLng) => {
         popup.remove();
         this.map.setView(L.latLng(event), 10);

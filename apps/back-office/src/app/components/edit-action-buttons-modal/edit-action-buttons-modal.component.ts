@@ -1,7 +1,8 @@
 import { DIALOG_DATA, Dialog, DialogRef } from '@angular/cdk/dialog';
 import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
@@ -12,7 +13,6 @@ import {
   Page,
   Role,
   Step,
-  UnsubscribeComponent,
 } from '@oort-front/shared';
 import {
   ButtonModule,
@@ -25,7 +25,7 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { isNil } from 'lodash';
-import { BehaviorSubject, takeUntil } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 /** Component for editing dashboard action buttons */
 @Component({
@@ -49,10 +49,7 @@ import { BehaviorSubject, takeUntil } from 'rxjs';
   templateUrl: './edit-action-buttons-modal.component.html',
   styleUrls: ['./edit-action-buttons-modal.component.scss'],
 })
-export class EditActionButtonsModalComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class EditActionButtonsModalComponent implements OnInit {
   /** List of action buttons from dashboard */
   public actionButtons: ActionButton[] = [];
   /** Behavior subject to track change in action buttons */
@@ -61,6 +58,8 @@ export class EditActionButtonsModalComponent
   public searchTerm = '';
   /** Columns to display */
   public displayedColumns = ['dragDrop', 'name', 'roles', 'actions'];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Component for editing dashboard action buttons
@@ -80,9 +79,7 @@ export class EditActionButtonsModalComponent
     public dialog: Dialog,
     public translateService: TranslateService,
     public applicationService: ApplicationService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     if (this.data) {
@@ -91,10 +88,6 @@ export class EditActionButtonsModalComponent
       this.actionButtons = [...buttons];
       this.updateTable();
     }
-  }
-
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
   }
 
   /** Open modal to add new action button */
@@ -118,7 +111,7 @@ export class EditActionButtonsModalComponent
     );
 
     dialogRef.closed
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(async (button) => {
         if (!button) return;
         this.actionButtons.push(button);
@@ -153,7 +146,7 @@ export class EditActionButtonsModalComponent
     );
 
     dialogRef.closed
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(async (button) => {
         if (!button) return;
         const index = this.actionButtons.indexOf(actionButton);

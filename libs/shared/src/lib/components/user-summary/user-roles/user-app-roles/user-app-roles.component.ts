@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { get, isNil } from 'lodash';
@@ -8,9 +16,8 @@ import {
   ApplicationsApplicationNodesQueryResponse,
 } from '../../../../models/application.model';
 import { GET_APPLICATIONS, GET_ROLES } from '../../graphql/queries';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Roles tab for the user summary */
 @Component({
@@ -18,10 +25,7 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './user-app-roles.component.html',
   styleUrls: ['./user-app-roles.component.scss'],
 })
-export class UserAppRolesComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class UserAppRolesComponent implements OnInit {
   /** Roles */
   public roles: Role[] = [];
   /** User */
@@ -48,6 +52,8 @@ export class UserAppRolesComponent
   public applicationsQuery!: QueryRef<ApplicationsApplicationNodesQueryResponse>;
   /** Page size */
   private readonly PAGE_SIZE = 10;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Roles tab for the user summary.
@@ -60,14 +66,12 @@ export class UserAppRolesComponent
     private fb: FormBuilder,
     private apollo: Apollo,
     private snackBar: SnackbarService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.selectedRoles = this.createRolesControl();
     this.selectedRoles.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (this.selectedApplication.value) {
           this.edit.emit({
@@ -79,7 +83,7 @@ export class UserAppRolesComponent
 
     this.selectedApplication = this.createApplicationControl();
     this.selectedApplication.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.selectedRoles.setValue([], { emitEvent: isNil(value) });
         this.roles = [];
@@ -100,7 +104,7 @@ export class UserAppRolesComponent
         },
       });
     this.applicationsQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
@@ -147,7 +151,7 @@ export class UserAppRolesComponent
           application,
         },
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ data, loading }) => {
           if (data) {

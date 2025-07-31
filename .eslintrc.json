@@ -1,41 +1,25 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nrwl/nx"],
+  "plugins": ["@nx"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
-        "@nrwl/nx/enforce-module-boundaries": [
-          "error",
-          {
-            "enforceBuildableLibDependency": true,
-            "allow": [],
-            "depConstraints": [
-              {
-                "sourceTag": "*",
-                "onlyDependOnLibsWithTags": ["*"]
-              }
-            ]
-          }
-        ]
+        "@nx/enforce-module-boundaries": 0
       }
     },
     {
       "files": ["*.ts", "*.tsx"],
-      "plugins": [
-        "prettier",
-        "jsdoc"
-        // "deprecation"
-      ],
+      "plugins": ["prettier", "jsdoc"],
       "extends": [
-        "plugin:@nrwl/nx/typescript",
+        "plugin:@nx/typescript",
         "prettier",
         "plugin:jsdoc/recommended"
       ],
       "rules": {
         "no-case-declarations": 0,
-        "@typescript-eslint/no-explicit-any": 0, // todo: set to 1
+        "@typescript-eslint/no-explicit-any": 0,
         "prettier/prettier": 2,
         "@typescript-eslint/naming-convention": [
           1,
@@ -67,25 +51,34 @@
         ],
         "jsdoc/require-param-type": 0,
         "jsdoc/require-property-type": 0,
-        "jsdoc/require-description": ["warn", { "checkGetters": false }],
+        "jsdoc/require-description": [
+          "warn",
+          {
+            "checkGetters": false
+          }
+        ],
         "jsdoc/require-returns-type": 0,
         "@typescript-eslint/no-unused-vars": 2,
-        "jsdoc/tag-lines": ["warn", "any", { "startLines": 1 }],
-        "lines-between-class-members": [
-          "error",
+        "jsdoc/tag-lines": [
+          "warn",
+          "any",
           {
-            "enforce": [
-              { "blankLine": "always", "prev": "*", "next": "method" },
-              { "blankLine": "always", "prev": "method", "next": "*" }
-            ]
+            "startLines": 1
           }
         ]
-        // "deprecation/deprecation": "warn"
+        // todo: reactivate using stylistic
+        // "lines-between-class-members": [
+        //   "error",
+        //   "always",
+        //   {
+        //     "exceptAfterSingleLine": false
+        //   }
+        // ]
       }
     },
     {
       "files": ["*.js", "*.jsx"],
-      "extends": ["plugin:@nrwl/nx/javascript"],
+      "extends": ["plugin:@nx/javascript"],
       "rules": {}
     },
     {

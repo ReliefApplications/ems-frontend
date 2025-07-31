@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  DestroyRef,
   EventEmitter,
+  inject,
   Input,
   OnInit,
   Output,
@@ -12,10 +14,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { GraphQLSelectModule, SelectMenuComponent } from '@oort-front/ui';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../../components/utils/unsubscribe/unsubscribe.component';
 import { User, UsersNodeQueryResponse } from '../../../models/user.model';
 import { GET_USERS } from './graphql/queries';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default page size */
 const ITEMS_PER_PAGE = 10;
@@ -37,10 +38,7 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './users-dropdown.component.html',
   styleUrls: ['./users-dropdown.component.scss'],
 })
-export class UsersDropdownComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class UsersDropdownComponent implements OnInit {
   /** Applications to get users from, if any */
   @Input() applications?: string[];
   /** IDs of the initial user selection */
@@ -59,6 +57,8 @@ export class UsersDropdownComponent
    */
   @ViewChild(SelectMenuComponent, { static: true })
   selectMenu!: SelectMenuComponent;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Component to pick users from the list of users
@@ -66,9 +66,7 @@ export class UsersDropdownComponent
    *
    * @param apollo Apollo client
    */
-  constructor(private apollo: Apollo) {
-    super();
-  }
+  constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
     this.setupInitialSelection();
@@ -80,9 +78,11 @@ export class UsersDropdownComponent
       },
     });
 
-    this.control.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.selectionChange.emit(this.control.value ?? []);
-    });
+    this.control.valueChanges
+      ?.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.selectionChange.emit(this.control.value ?? []);
+      });
   }
 
   /** Fetches already selected users */
@@ -111,7 +111,7 @@ export class UsersDropdownComponent
           },
         },
       })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(({ data }) => {
         if (data.users) {
           this.initialSelection = data.users.edges.map((x) => x.node);

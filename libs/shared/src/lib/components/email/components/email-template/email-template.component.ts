@@ -1,7 +1,9 @@
 import {
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
+  inject,
   Input,
   OnDestroy,
   OnInit,
@@ -20,8 +22,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { emailRegex } from '../../constant';
 import { FieldStore } from '../../models/email.const';
-import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { firstValueFrom, lastValueFrom, takeUntil } from 'rxjs';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { cloneDeep } from 'lodash';
 import { QueryBuilderService } from './../../../../services/query-builder/query-builder.service';
 import { RestService } from '../../../../services/rest/rest.service';
@@ -29,6 +30,7 @@ import { prettifyLabel } from '../../../../../lib/utils/prettify';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GET_CS_USER_FIELDS } from '../../graphql/queries';
 import { Apollo } from 'apollo-angular';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Recipients type */
 enum RecipientsType {
@@ -46,10 +48,7 @@ enum RecipientsType {
   templateUrl: './email-template.component.html',
   styleUrls: ['./email-template.component.scss'],
 })
-export class EmailTemplateComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnDestroy
-{
+export class EmailTemplateComponent implements OnInit, OnDestroy {
   /** List of emails for back loading. */
   @Input() distributionList: FormGroup | any;
   /** Specifies if To, CC or BCC */
@@ -137,6 +136,8 @@ export class EmailTemplateComponent
   public previewCsEmails: any = [];
   /** DL dialog data from Quick Action  */
   @Input() quickActionDistribution: any;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Email template to create distribution list.
@@ -161,9 +162,7 @@ export class EmailTemplateComponent
     private restService: RestService,
     private sanitizer: DomSanitizer,
     private apollo: Apollo
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.segmentForm = this.fb.group({
@@ -190,7 +189,7 @@ export class EmailTemplateComponent
       this.getResourceData(false);
     }
     this.distributionList.controls.resource.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value: any) => {
         this.previewEmails = [];
         if (
@@ -226,7 +225,7 @@ export class EmailTemplateComponent
 
     this.distributionCommonQuery
       .get('filter.filters')
-      .valueChanges.pipe(takeUntil(this.destroy$))
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value: any) => {
         if (
           this.activeSegmentIndex === 3 &&
@@ -752,8 +751,7 @@ export class EmailTemplateComponent
     });
   }
 
-  override async ngOnDestroy(): Promise<void> {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     this.clearUnusedValues(this.segmentForm.get('segment')?.value);
     this.emailService.setDistributionList();
   }
@@ -1113,7 +1111,7 @@ export class EmailTemplateComponent
       const response = await lastValueFrom(
         this.emailService
           .fetchResourceData(resourceId)
-          .pipe(takeUntil(this.destroy$))
+          .pipe(takeUntilDestroyed(this.destroyRef))
       );
       return response.data;
     } catch (error) {

@@ -1,13 +1,14 @@
 import {
+  DestroyRef,
   Directive,
   ElementRef,
-  OnDestroy,
+  inject,
   Renderer2,
   ViewContainerRef,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SpinnerComponent } from '@oort-front/ui';
 import { EditorComponent } from 'ngx-monaco-editor-v2';
-import { Subject, takeUntil } from 'rxjs';
 
 /**
  * Async Monaco editor directive.
@@ -17,11 +18,11 @@ import { Subject, takeUntil } from 'rxjs';
   selector: '[sharedAsyncMonacoEditor]',
   standalone: true,
 })
-export class AsyncMonacoEditorDirective implements OnDestroy {
-  /** Destroy subject */
-  private destroy$ = new Subject<void>();
+export class AsyncMonacoEditorDirective {
   /** HTML Spinner element */
   private spinner!: HTMLElement;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Async Monaco editor directive.
@@ -40,14 +41,11 @@ export class AsyncMonacoEditorDirective implements OnDestroy {
   ) {
     this.renderer.addClass(this.el.nativeElement, 'relative');
     this.createSpinner();
-    this.editor.onInit.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.spinner.remove();
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.editor.onInit
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.spinner.remove();
+      });
   }
 
   /**

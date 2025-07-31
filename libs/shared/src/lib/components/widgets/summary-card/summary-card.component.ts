@@ -1,7 +1,9 @@
 import {
   AfterViewInit,
   Component,
+  DestroyRef,
   ElementRef,
+  inject,
   Input,
   OnDestroy,
   OnInit,
@@ -17,7 +19,6 @@ import {
   filter,
   firstValueFrom,
   from,
-  merge,
   takeUntil,
 } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -54,6 +55,7 @@ import { DashboardService } from '../../../services/dashboard/dashboard.service'
 import { BaseWidgetComponent } from '../base-widget/base-widget.component';
 import { PageSizeChangeEvent } from '@progress/kendo-angular-pager';
 import { WidgetService } from '../../../services/widget/widget.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -149,6 +151,8 @@ export class SummaryCardComponent
   private scrollEventBindTimeout!: NodeJS.Timeout;
   /** Subject to emit signals for cancelling previous data queries */
   private cancelRefresh$ = new Subject<void>();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns Get query filter */
   get queryFilter(): CompositeFilterDescriptor {
@@ -322,7 +326,7 @@ export class SummaryCardComponent
       .pipe(
         debounceTime(2000),
         distinctUntilChanged(),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((value) => {
         this.handleSearch(value || '');
@@ -349,7 +353,7 @@ export class SummaryCardComponent
               : true
           ),
           debounceTime(500),
-          takeUntil(this.destroy$)
+          takeUntilDestroyed(this.destroyRef)
         )
         .subscribe(({ previous, current }) => {
           if (
@@ -392,8 +396,7 @@ export class SummaryCardComponent
     }
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
+  ngOnDestroy(): void {
     this.resizeObserver.disconnect();
     if (this.scrollEventListener) {
       this.scrollEventListener();
@@ -491,7 +494,10 @@ export class SummaryCardComponent
           ...(this.queryParams ?? {}),
         })
       )
-        .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+        .pipe(
+          takeUntil(this.cancelRefresh$),
+          takeUntilDestroyed(this.destroyRef)
+        )
         .subscribe(({ items, pageInfo }) =>
           this.updateReferenceDataCards(items, pageInfo)
         );
@@ -542,7 +548,10 @@ export class SummaryCardComponent
           }),
         })
       )
-        .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+        .pipe(
+          takeUntil(this.cancelRefresh$),
+          takeUntilDestroyed(this.destroyRef)
+        )
         .subscribe(this.updateRecordCards.bind(this));
     } else if (this.useReferenceData) {
       if (this.refData?.pageInfo?.strategy) {
@@ -899,7 +908,7 @@ export class SummaryCardComponent
               nextFetchPolicy: 'cache-first',
             });
             this.dataQuery.valueChanges
-              .pipe(takeUntil(this.destroy$))
+              .pipe(takeUntilDestroyed(this.destroyRef))
               .subscribe(this.updateRecordCards.bind(this));
           }
           // Build meta query to add information to fields
@@ -907,7 +916,7 @@ export class SummaryCardComponent
           if (this.metaQuery) {
             this.loading = true;
             const { data } = await this.metaQuery
-              .pipe(takeUntil(this.destroy$))
+              .pipe(takeUntilDestroyed(this.destroyRef))
               .toPromise();
 
             const promises = Object.entries(data).map(async ([key]) => {
@@ -1018,7 +1027,7 @@ export class SummaryCardComponent
     );
 
     this.dataQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(this.updateRecordCards.bind(this));
 
     // Set sort fields
@@ -1064,7 +1073,10 @@ export class SummaryCardComponent
               },
             })
           )
-            .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+            .pipe(
+              takeUntil(this.cancelRefresh$),
+              takeUntilDestroyed(this.destroyRef)
+            )
             .subscribe(() => this.updateRecordCards.bind(this));
         }
       }
@@ -1100,7 +1112,10 @@ export class SummaryCardComponent
           }),
         })
       )
-        .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+        .pipe(
+          takeUntil(this.cancelRefresh$),
+          takeUntilDestroyed(this.destroyRef)
+        )
         .subscribe(this.updateRecordCards.bind(this));
     } else if (this.useReferenceData && this.refData) {
       // Only set loading state if using pagination, not infinite scroll
@@ -1113,7 +1128,10 @@ export class SummaryCardComponent
           ...(this.queryParams ?? {}),
         })
       )
-        .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+        .pipe(
+          takeUntil(this.cancelRefresh$),
+          takeUntilDestroyed(this.destroyRef)
+        )
         .subscribe(({ items, pageInfo }) => {
           this.updateReferenceDataCards(items, pageInfo);
           this.loading = false;
@@ -1218,7 +1236,10 @@ export class SummaryCardComponent
             }),
           })
         )
-          .pipe(takeUntil(merge(this.cancelRefresh$, this.destroy$)))
+          .pipe(
+            takeUntil(this.cancelRefresh$),
+            takeUntilDestroyed(this.destroyRef)
+          )
           .subscribe(() => (this.loading = false));
       } else if (this.useReferenceData) {
         if (this.refData?.pageInfo?.strategy) {

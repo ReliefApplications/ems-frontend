@@ -2,10 +2,11 @@ import { Dialog } from '@angular/cdk/dialog';
 import { DOCUMENT } from '@angular/common';
 import {
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
+  inject,
   Inject,
-  OnDestroy,
   OnInit,
   Output,
   Renderer2,
@@ -47,7 +48,7 @@ import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 })
 export class DashboardComponent
   extends SharedDashboardComponent
-  implements OnInit, OnDestroy
+  implements OnInit
 {
   /** Change step event ( in workflow ) */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
@@ -71,6 +72,8 @@ export class DashboardComponent
   public actionButtons: ActionButton[] = [];
   /** Tells if the dashboard is within a workflow */
   public isStep = false;
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Dashboard page.

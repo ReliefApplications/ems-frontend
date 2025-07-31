@@ -1,16 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  EditResourceMutationResponse,
-  Resource,
-  UnsubscribeComponent,
-} from '@oort-front/shared';
+import { EditResourceMutationResponse, Resource } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
 import { Calculated_FIELD_UPDATE } from './graphql/mutations';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
-import { takeUntil } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Calculated fields tab of resource page
@@ -20,10 +16,7 @@ import { takeUntil } from 'rxjs';
   templateUrl: './calculated-fields-tab.component.html',
   styleUrls: ['./calculated-fields-tab.component.scss'],
 })
-export class CalculatedFieldsTabComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class CalculatedFieldsTabComponent implements OnInit {
   /**
    * Resource
    */
@@ -37,6 +30,8 @@ export class CalculatedFieldsTabComponent
    * Columns to display
    */
   public displayedColumns: string[] = ['name', 'createdAt', '_actions'];
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Layouts tab of resource page
@@ -51,9 +46,7 @@ export class CalculatedFieldsTabComponent
     private dialog: Dialog,
     private translate: TranslateService,
     private snackBar: SnackbarService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     const state = history.state;
@@ -82,9 +75,11 @@ export class CalculatedFieldsTabComponent
         ),
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      this.handleCalculatedFieldResponse(value);
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        this.handleCalculatedFieldResponse(value);
+      });
   }
 
   /**
@@ -105,9 +100,11 @@ export class CalculatedFieldsTabComponent
         ),
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      this.handleCalculatedFieldResponse(value, field);
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        this.handleCalculatedFieldResponse(value, field);
+      });
   }
 
   /**
@@ -216,43 +213,50 @@ export class CalculatedFieldsTabComponent
       },
     });
 
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<EditResourceMutationResponse>({
-            mutation: Calculated_FIELD_UPDATE,
-            variables: {
-              resourceId: this.resource.id,
-              calculatedField: {
-                remove: {
-                  name: field.name,
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: any) => {
+        if (value) {
+          this.apollo
+            .mutate<EditResourceMutationResponse>({
+              mutation: Calculated_FIELD_UPDATE,
+              variables: {
+                resourceId: this.resource.id,
+                calculatedField: {
+                  remove: {
+                    name: field.name,
+                  },
                 },
               },
-            },
-          })
-          .subscribe({
-            next: ({ data, errors }) => {
-              if (data?.editResource) {
-                this.fields = this.fields.filter(
-                  (f: any) => f.name !== field.name
-                );
-                this.snackBar.openSnackBar(
-                  this.translate.instant('common.notifications.objectDeleted', {
-                    value: this.translate.instant('common.calculatedField.one'),
-                  })
-                );
-              }
-              if (errors) {
-                this.snackBar.openSnackBar(errors[0].message, {
-                  error: true,
-                });
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
-    });
+            })
+            .subscribe({
+              next: ({ data, errors }) => {
+                if (data?.editResource) {
+                  this.fields = this.fields.filter(
+                    (f: any) => f.name !== field.name
+                  );
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'common.notifications.objectDeleted',
+                      {
+                        value: this.translate.instant(
+                          'common.calculatedField.one'
+                        ),
+                      }
+                    )
+                  );
+                }
+                if (errors) {
+                  this.snackBar.openSnackBar(errors[0].message, {
+                    error: true,
+                  });
+                }
+              },
+              error: (err) => {
+                this.snackBar.openSnackBar(err.message, { error: true });
+              },
+            });
+        }
+      });
   }
 }

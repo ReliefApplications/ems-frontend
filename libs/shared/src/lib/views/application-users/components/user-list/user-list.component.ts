@@ -1,6 +1,8 @@
 import {
   Component,
+  DestroyRef,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   OnInit,
@@ -9,8 +11,7 @@ import {
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { ApplicationService } from '../../../../services/application/application.service';
-import { BehaviorSubject, takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../../../../components/utils/unsubscribe/unsubscribe.component';
+import { BehaviorSubject } from 'rxjs';
 import {
   ApplicationUsersQueryResponse,
   Role,
@@ -25,6 +26,7 @@ import { ConfirmService } from '../../../../services/confirm/confirm.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -37,10 +39,7 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
 })
-export class UserListComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnChanges
-{
+export class UserListComponent implements OnInit, OnChanges {
   /** Whether the users are auto assigned or not */
   @Input() autoAssigned = false;
   /** Filter to apply on the users query */
@@ -89,6 +88,8 @@ export class UserListComponent
 
   /** Selection model for users */
   public selection = new SelectionModel<User>(true, []);
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Users list component
@@ -107,15 +108,13 @@ export class UserListComponent
     private confirmService: ConfirmService,
     private router: Router,
     private route: ActivatedRoute
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     // Emit loading value
     this.loading
       .asObservable()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.loadingStatusChange.emit(this.loading.value);
       });
@@ -126,7 +125,7 @@ export class UserListComponent
       );
     }
     this.applicationService.application$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((application) => {
         if (application) {
           this.usersQuery =
@@ -140,7 +139,7 @@ export class UserListComponent
               },
             });
           this.usersQuery.valueChanges
-            .pipe(takeUntil(this.destroy$))
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(({ data, loading }) => {
               this.updateValues(data, loading);
             });
@@ -259,7 +258,7 @@ export class UserListComponent
         confirmVariant: 'danger',
       });
       dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((value: any) => {
           if (value) {
             const ids = users.map((u) => u.id);

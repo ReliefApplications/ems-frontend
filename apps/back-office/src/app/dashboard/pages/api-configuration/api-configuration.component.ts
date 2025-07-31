@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -8,16 +8,15 @@ import {
   ApiProxyService,
   status,
   BreadcrumbService,
-  UnsubscribeComponent,
   ApiConfigurationQueryResponse,
   EditApiConfigurationMutationResponse,
 } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
-import { takeUntil } from 'rxjs/operators';
 import { apiValidator } from '../../../utils/nameValidation';
 import { EDIT_API_CONFIGURATION } from './graphql/mutations';
 import { GET_API_CONFIGURATION } from './graphql/queries';
 import { SnackbarService } from '@oort-front/ui';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Default value shown for private settings fields
@@ -32,10 +31,7 @@ const ENCRYPTED_VALUE = '●●●●●●●●●●●●●';
   templateUrl: './api-configuration.component.html',
   styleUrls: ['./api-configuration.component.scss'],
 })
-export class ApiConfigurationComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class ApiConfigurationComponent implements OnInit {
   /** Loading indicator */
   public loading = true;
   /** Api configuration id */
@@ -52,6 +48,8 @@ export class ApiConfigurationComponent
   public authType = authType;
   /** Available auth types */
   public authTypeChoices = Object.values(authType);
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /** @returns API configuration name */
   get name(): AbstractControl | null {
@@ -79,9 +77,7 @@ export class ApiConfigurationComponent
     private apiProxy: ApiProxyService,
     private translate: TranslateService,
     private breadcrumbService: BreadcrumbService
-  ) {
-    super();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
@@ -93,7 +89,7 @@ export class ApiConfigurationComponent
             id: this.id,
           },
         })
-        .valueChanges.pipe(takeUntil(this.destroy$))
+        .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: ({ data, loading }) => {
             if (data.apiConfiguration) {
@@ -104,7 +100,7 @@ export class ApiConfigurationComponent
               );
               this.apiForm = this.createApiForm(data.apiConfiguration);
               this.apiForm.controls.authType?.valueChanges
-                .pipe(takeUntil(this.destroy$))
+                .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe((value) => {
                   this.resetFormSettings(value);
                 });

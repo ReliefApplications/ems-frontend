@@ -1,7 +1,13 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
+  Output,
+} from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { takeUntil } from 'rxjs';
-import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Component that is used to create the access management modals
@@ -11,7 +17,7 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
   templateUrl: './access.component.html',
   styleUrls: ['./access.component.scss'],
 })
-export class AccessComponent extends UnsubscribeComponent {
+export class AccessComponent {
   // === PERMISSIONS LAYER OF CURRENT OBJECT ===
   /** Access object */
   @Input() access!: any;
@@ -27,6 +33,8 @@ export class AccessComponent extends UnsubscribeComponent {
   // === PASS THE RESULT TO PARENT COMPONENT ===
   /** Event emitter for save event */
   @Output() save: EventEmitter<any> = new EventEmitter();
+  /** Component destroy ref */
+  private destroyRef = inject(DestroyRef);
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -34,9 +42,7 @@ export class AccessComponent extends UnsubscribeComponent {
    *
    * @param {Dialog} dialog - Dialog - This is the service that is used to open modal dialogs
    */
-  constructor(private dialog: Dialog) {
-    super();
-  }
+  constructor(private dialog: Dialog) {}
 
   /**
    * Function that on click displays the EditAccess modal. Once closed, emits the result if exists.
@@ -52,10 +58,12 @@ export class AccessComponent extends UnsubscribeComponent {
         objectTypeName: this.objectTypeName,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res) => {
-      if (res) {
-        this.save.emit(res);
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
+        if (res) {
+          this.save.emit(res);
+        }
+      });
   }
 }
