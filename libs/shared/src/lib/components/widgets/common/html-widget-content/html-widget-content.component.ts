@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 
 /**
@@ -13,7 +13,7 @@ import { SafeHtml } from '@angular/platform-browser';
   // todo: enable
   // encapsulation: ViewEncapsulation.ShadowDom,
 })
-export class HtmlWidgetContentComponent {
+export class HtmlWidgetContentComponent implements AfterViewInit {
   /**
    * HTML to render
    */
@@ -29,4 +29,25 @@ export class HtmlWidgetContentComponent {
    * @param {ElementRef} el Element reference
    */
   constructor(public el: ElementRef) {}
+
+  /**
+   * Script to fix bulletin and announcement text overlapping issue
+   */
+  ngAfterViewInit(): void {
+    // Find the element with the class "text-overlapping-fix"
+    const overlappedElement: HTMLElement | null =
+      this.el.nativeElement.querySelector('.text-overlapping-fix');
+
+    // If the element exists, remove all inline styles from its children
+    if (overlappedElement) {
+      // Find all elements with the "style" attribute
+      const elementsWithStyle: NodeListOf<HTMLElement> =
+        overlappedElement.querySelectorAll<HTMLElement>('[style]');
+
+      // Iterate over the elements and remove the "style" attribute
+      elementsWithStyle.forEach((element: HTMLElement) => {
+        element.removeAttribute('style');
+      });
+    }
+  }
 }
