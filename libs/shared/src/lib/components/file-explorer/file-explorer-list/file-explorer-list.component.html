@@ -2,10 +2,11 @@
   <!-- List of files -->
   <div
     *ngIf="!loading"
-    class="w-full flex-1 flex flex-row flex-wrap gap-4 overflow-y-auto"
+    class="w-full flex-1 flex flex-row flex-wrap gap-4 overflow-y-auto p-2 content-start"
   >
     <ng-container *ngIf="listData.length > 0; else emptyTmpl">
       <shared-file-explorer-list-item
+        class="block h-fit"
         *ngFor="let document of listData"
         [document]="document"
         [selected]="parent?.selectedDocumentId === document.id"
