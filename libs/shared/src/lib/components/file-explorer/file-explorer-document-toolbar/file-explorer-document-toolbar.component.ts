@@ -79,22 +79,17 @@ export class FileExplorerDocumentToolbarComponent
       this.parentWidget.settings.resource &&
       this.parentWidget.settings.template
     ) {
-      this.driveId().then((driveId) => {
-        this.restService
-          .get(
-            `/file/drive/${driveId}/item/${this.document?.id}/associated-record`,
-            {
-              params: {
-                resourceId: this.parentWidget?.settings.resource,
-              },
-            }
-          )
-          .subscribe((id) => {
-            if (id) {
-              this.getAssociatedRecord(id as string);
-            }
-          });
-      });
+      this.restService
+        .get(`/file/item/${this.document?.id}/associated-record`, {
+          params: {
+            resourceId: this.parentWidget?.settings.resource,
+          },
+        })
+        .subscribe((id) => {
+          if (id) {
+            this.getAssociatedRecord(id as string);
+          }
+        });
     }
   }
 
