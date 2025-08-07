@@ -128,6 +128,13 @@ export class FileExplorerTreeviewComponent implements OnInit, OnChanges {
             path: [`${this.tags[0]}_${item.id}`],
           }))
           .sort((a, b) => a.text.localeCompare(b.text));
+        if (this.data.length === 1) {
+          // if only one folder found at root, expand it
+          this.onSelectionChange({
+            dataItem: this.data[0],
+            index: this.data[0].compositeId,
+          });
+        }
         this.loading = false;
       });
   }
