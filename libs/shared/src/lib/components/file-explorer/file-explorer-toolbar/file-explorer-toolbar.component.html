@@ -54,23 +54,30 @@
         context: null
       }"
     >
-      <ui-select-option value="id" [selected]="sort[0].field === 'id'"
+      <!-- <ui-select-option value="id" [selected]="sort[0].field === 'id'"
         >ID</ui-select-option
-      >
+      > -->
       <ui-select-option
         value="filename"
         [selected]="sort[0].field === 'filename'"
-        >Name</ui-select-option
+        >{{
+          'components.widget.fileExplorer.fields.name.label' | translate
+        }}</ui-select-option
       >
       <ui-select-option
         value="createddate"
         [selected]="sort[0].field === 'createddate'"
-        >Created On</ui-select-option
+        >{{
+          'components.widget.fileExplorer.fields.createdOn.label' | translate
+        }}</ui-select-option
       >
       <ui-select-option
         value="modifieddate"
         [selected]="sort[0].field === 'modifieddate'"
-        >Last Updated On</ui-select-option
+        >{{
+          'components.widget.fileExplorer.fields.lastUpdatedOn.label'
+            | translate
+        }}</ui-select-option
       >
     </ui-select-menu>
     <ui-button
@@ -95,14 +102,18 @@
       [loading]="uploading"
       [disabled]="uploading"
       (click)="onUpload()"
-      >Upload</ui-button
+      >{{
+        'components.widget.fileExplorer.actions.upload' | translate
+      }}</ui-button
     >
     <ui-button
       class="ml-auto"
       *ngIf="!form.canCreateRecords"
       icon="admin_panel_settings"
       (click)="onRequestAccess()"
-      >Request elevated permissions</ui-button
+      >{{
+        'components.widget.fileExplorer.actions.requestPermission' | translate
+      }}</ui-button
     >
   </ng-container>
 </div>

@@ -1679,12 +1679,25 @@
 					"copyLink": "Copier le lien du fichier",
 					"download": "Télécharger le fichier",
 					"requestAccess": "Demander l'accès",
+					"requestPermission": "Demander des autorisations supplémentaires",
+					"upload": "Importer",
 					"viewAsGrid": "Afficher sous forme de grille",
 					"viewAsList": "Afficher sous forme de liste"
 				},
 				"empty": {
 					"files": "Aucun fichier trouvé",
 					"folders": "Aucun dossier trouvé"
+				},
+				"fields": {
+					"createdOn": {
+						"label": "Créé le"
+					},
+					"lastUpdatedOn": {
+						"label": "Dernière mise à jour le"
+					},
+					"name": {
+						"label": "Nom"
+					}
 				},
 				"filter": {
 					"alert": "Définir des filtres au niveau du système qui restreignent l'ensemble des documents pour tous les utilisateurs. Ces filtres administratifs ne peuvent pas être vus ou modifiés par les utilisateurs finaux et seront appliqués en plus de toute navigation dans les dossiers ou filtrage contextuel.",

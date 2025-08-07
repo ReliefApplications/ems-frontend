@@ -150,15 +150,22 @@ export class DocumentManagementService {
    */
   private triggerFileDownloadMessage(translationKey: string) {
     // Opens a loader in a snackbar
-    const snackBarRef = this.createLoadingSnackbarRef(translationKey);
+    return this.createLoadingSnackbarRef(translationKey);
+  }
+
+  /**
+   * Get request headers
+   *
+   * @returns request headers
+   */
+  private getRequestHeaders() {
     // Should be added into the request for cs documentation api
     const token = localStorage.getItem('access_token');
-    const headers = new HttpHeaders({
+    return new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'application/json',
       Authorization: `Bearer ${token}`,
     });
-    return { snackBarRef, headers };
   }
 
   /**
@@ -175,14 +182,18 @@ export class DocumentManagementService {
     file: { name: string; content: { driveId: string; itemId: string } },
     options?: any
   ): void {
-    const { snackBarRef, headers } = this.triggerFileDownloadMessage(
+    const snackBarRef = this.triggerFileDownloadMessage(
       'common.notifications.file.download.processing'
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
 
     const url = `${this.environment.csApiUrl}/documents/drives/${file.content.driveId}/items/${file.content.itemId}/content`;
     this.restService
-      .get(url, { ...options, responseType: 'blob', headers })
+      .get(url, {
+        ...options,
+        responseType: 'blob',
+        headers: this.getRequestHeaders(),
+      })
       .subscribe({
         next: (res) => {
           const blob = new Blob([res]);
@@ -221,6 +232,71 @@ export class DocumentManagementService {
   }
 
   /**
+   * Update file, passing new properties
+   *
+   * @param file File to update
+   * @param question Question context
+   * @returns File update
+   */
+  async updateFile(file: any, question: Question): Promise<any> {
+    const bodyFilter = Object.create({});
+    const occurrenceId = question.getPropertyValue('Occurrence');
+    let driveId = file.content.driveId;
+    let occurrenceType: number | undefined = undefined;
+    try {
+      // If occurrence, fetch related drive id
+      if (occurrenceId) {
+        const occurrence = (await this.getOccurrenceById(occurrenceId)).data
+          .occurrence;
+        if (occurrence && occurrence.driveid) {
+          driveId = occurrence.driveid;
+          occurrenceType = occurrence.occurrencetype;
+          // Set occurrence type if any
+          if (!isNil(occurrenceType)) {
+            set(bodyFilter, 'OccurrenceType', [occurrenceType]);
+          }
+        } else {
+          throw new Error('Could not fetch occurrence');
+        }
+      }
+      CS_DOCUMENTS_PROPERTIES.filter(
+        (prop) => !isNil(prop.bodyKey) && prop.bodyKey !== 'OccurrenceType'
+      ).forEach((prop) => {
+        const value = question.getPropertyValue(prop.bodyKey as string);
+        // OccurrenceType is single select value, but body receives it as array
+        if (!!value && value.length) {
+          set(bodyFilter, prop.bodyKey as string, value);
+        }
+      });
+      return new Promise((resolve, reject) => {
+        this.restService
+          .patch(
+            `${this.environment.csApiUrl}/documents/drives/${driveId}/items/${file.content.itemId}`,
+            bodyFilter,
+            {
+              headers: this.getRequestHeaders(),
+            }
+          )
+          .subscribe({
+            next: (data: any) => {
+              const { itemId, driveId } = data;
+              resolve({
+                driveId,
+                itemId,
+              });
+            },
+            error: () => {
+              reject(null);
+            },
+          });
+      });
+    } catch (error) {
+      console.error('Error updating file:', error);
+      return null;
+    }
+  }
+
+  /**
    * Uploads a file
    *
    * @param file file to upload
@@ -228,7 +304,7 @@ export class DocumentManagementService {
    * @returns http upload request
    */
   async uploadFile(file: any, question: Question): Promise<any> {
-    const { snackBarRef, headers } = this.triggerFileDownloadMessage(
+    const snackBarRef = this.triggerFileDownloadMessage(
       'common.notifications.file.upload.processing'
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
@@ -290,7 +366,7 @@ export class DocumentManagementService {
           `${this.environment.csApiUrl}/documents/drives/${driveId}/items`,
           body,
           {
-            headers,
+            headers: this.getRequestHeaders(),
           }
         )
         .subscribe({

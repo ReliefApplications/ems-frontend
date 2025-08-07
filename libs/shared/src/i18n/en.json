@@ -1676,12 +1676,25 @@
 					"copyLink": "Copy file link",
 					"download": "Download file",
 					"requestAccess": "Request access",
+					"requestPermission": "Request elevated permissions",
+					"upload": "Upload",
 					"viewAsGrid": "View as grid",
 					"viewAsList": "View as list"
 				},
 				"empty": {
 					"files": "No files found",
 					"folders": "No folders found"
+				},
+				"fields": {
+					"createdOn": {
+						"label": "Created on"
+					},
+					"lastUpdatedOn": {
+						"label": "Last updated on"
+					},
+					"name": {
+						"label": "Name"
+					}
 				},
 				"filter": {
 					"alert": "Define system-level filters that restrict the document set for all users. These administrative filters cannot be seen or modified by end users and will be applied in addition to any folder navigation or context filtering.",

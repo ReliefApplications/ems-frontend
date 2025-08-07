@@ -57,6 +57,22 @@ export class RestService {
   }
 
   /**
+   * Create Http PATCH request
+   *
+   * @param path the path.
+   * @param body the body of the Http PATCH request.
+   * @param options the options object for http request.
+   * @returns Http PATCH request.
+   */
+  public patch(path: string, body: any, options?: any): Observable<any> {
+    const url = this.buildUrl(path);
+    if (!options) {
+      return this.http.patch(url, body);
+    }
+    return this.http.patch(url, body, options);
+  }
+
+  /**
    * Build the url from the given path.
    *
    * @param path the path.

@@ -122,7 +122,23 @@ export class FormHelpersService {
     if (!formId) {
       throw new Error('Form id is not defined');
     }
-
+    // Try to update existing files, if required. Update is only about document properties, not about the content of the file itself
+    survey
+      .getAllQuestions()
+      .filter((q) => q.getType() === 'file')
+      .forEach((q) => {
+        if (q.value && Array.isArray(q.value)) {
+          q.value.forEach(async (file: any) => {
+            if (
+              file.content &&
+              'itemId' in file.content &&
+              'driveId' in file.content
+            ) {
+              await this.documentManagementService.updateFile(file, q);
+            }
+          });
+        }
+      });
     const data = survey.data;
     const questionsToUpload = Object.keys(temporaryFilesStorage);
     const failedFilesToUpload: { question: string; file: File }[] = [];

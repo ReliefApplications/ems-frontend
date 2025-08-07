@@ -11,13 +11,27 @@
   (cellClick)="onCellClick($event)"
 >
   <!-- <kendo-grid-column field="id" title="ID"> </kendo-grid-column> -->
-  <kendo-grid-column field="filename" title="Name"> </kendo-grid-column>
-  <kendo-grid-column field="createddate" title="Created On">
+  <kendo-grid-column
+    field="filename"
+    [title]="'components.widget.fileExplorer.fields.name.label' | translate"
+  >
+  </kendo-grid-column>
+  <kendo-grid-column
+    field="createddate"
+    [title]="
+      'components.widget.fileExplorer.fields.createdOn.label' | translate
+    "
+  >
     <ng-template kendoGridCellTemplate let-dataItem>
       {{ dataItem.createddate | date : 'yyyy-MM-dd HH:mm' }}
     </ng-template>
   </kendo-grid-column>
-  <kendo-grid-column field="modifieddate" title="Last Updated On">
+  <kendo-grid-column
+    field="modifieddate"
+    [title]="
+      'components.widget.fileExplorer.fields.lastUpdatedOn.label' | translate
+    "
+  >
     <ng-template kendoGridCellTemplate let-dataItem>
       {{ dataItem.modifieddate | date : 'yyyy-MM-dd HH:mm' }}
     </ng-template>

@@ -1676,12 +1676,25 @@
 					"copyLink": "******",
 					"download": "******",
 					"requestAccess": "******",
+					"requestPermission": "******",
+					"upload": "******",
 					"viewAsGrid": "******",
 					"viewAsList": "******"
 				},
 				"empty": {
 					"files": "******",
 					"folders": "******"
+				},
+				"fields": {
+					"createdOn": {
+						"label": "******"
+					},
+					"lastUpdatedOn": {
+						"label": "******"
+					},
+					"name": {
+						"label": "******"
+					}
 				},
 				"filter": {
 					"alert": "******",
