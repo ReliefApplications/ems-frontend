@@ -1,0 +1,31 @@
+<!-- todo: translate -->
+<h3>
+  {{ 'components.widget.fileExplorer.accessRequestForm.title' | translate }}
+</h3>
+<ui-alert class="block mb-4">
+  <div
+    [innerHTML]="
+      'components.widget.fileExplorer.accessRequestForm.alert' | translate
+    "
+  ></div>
+</ui-alert>
+<ng-container [formGroup]="formGroup">
+  <!-- Distribution list -->
+  <!-- Replace with distribution list selector -->
+  <!-- Subject -->
+  <div uiFormFieldDirective>
+    <label>Subject</label>
+    <shared-editor-control
+      formControlName="subject"
+      [editorConfig]="subjectEditor"
+    ></shared-editor-control>
+  </div>
+  <!-- Body -->
+  <div uiFormFieldDirective>
+    <label>Body</label>
+    <shared-editor-control
+      formControlName="body"
+      [editorConfig]="bodyEditor"
+    ></shared-editor-control>
+  </div>
+</ng-container>

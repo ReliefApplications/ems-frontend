@@ -28,6 +28,10 @@ export const createFileExplorerWidgetFormGroup = (
     // form binding
     resource: [get(value, 'resource', null)],
     template: [get(value, 'template', null)],
+    accessRequestForm: fb.group({
+      subject: [get(value, 'accessRequestForm.subject', '')],
+      body: [get(value, 'accessRequestForm.body', '')],
+    }),
   });
   return formGroup;
 };

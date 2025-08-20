@@ -1672,6 +1672,10 @@
 			},
 			"expand": "Expand",
 			"fileExplorer": {
+				"accessRequestForm": {
+					"alert": "<p>Customize the email that users can send if they don’t have permission to upload new records using the template.</p><p>This email will be opened in the user’s default email client.</p><p class=\"font-semibold\">Available Placeholders:</p><ul><li>{{data.user}} — replaced with the user's name or email.</li><li>{{data.form}} — replaced with the name of the form.</li></ul><p> Use these placeholders in the subject and body to personalize the message.</p><p>If left blank, a default message will be used.</p>",
+					"title": "Request Access Email template"
+				},
 				"actions": {
 					"copyLink": "Copy file link",
 					"download": "Download file",

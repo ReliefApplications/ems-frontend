@@ -27,10 +27,7 @@
     <label>{{ 'common.form.one' | translate }}</label>
     <ui-select-menu formControlName="template">
       <ui-select-option>-</ui-select-option>
-      <ui-select-option
-        *ngFor="let form of resource.forms"
-        [value]="form.id"
-      >
+      <ui-select-option *ngFor="let form of resource.forms" [value]="form.id">
         {{ form.name }}
       </ui-select-option>
     </ui-select-menu>
@@ -41,4 +38,9 @@
       [uiTooltip]="'Select a template for upload / edition'"
     ></ui-icon>
   </div>
+  <!-- Request permissions template -->
+  <shared-file-explorer-request-permissions-template
+    *ngIf="formGroup.value.template"
+    [formGroup]="$any(formGroup.get('accessRequestForm'))"
+  ></shared-file-explorer-request-permissions-template>
 </div>

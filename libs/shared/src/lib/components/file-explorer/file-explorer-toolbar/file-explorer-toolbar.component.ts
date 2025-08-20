@@ -19,6 +19,21 @@ import { Form, FormQueryResponse } from '../../../models/form.model';
 import { GET_FORM_BY_ID } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import { AuthService } from '../../../services/auth/auth.service';
+import get from 'lodash/get';
+
+/** Default recipients */
+const DEFAULT_RECIPIENTS = 'ems2@who.int';
+
+/** Default subject */
+const DEFAULT_SUBJECT =
+  'Access Request: Permission to Add Records to “{{data.form}}”';
+
+/** Default body */
+const DEFAULT_BODY =
+  `Dear EMS Team,\n\n` +
+  `Can you please give me permission to add new records to the {{data.form}} form?\n\n` +
+  `(Insert reason you're requesting access)\n\n` +
+  `Thank you for your consideration.\n\n{{data.user}}`;
 
 /**
  * File explorer widget toolbar.
@@ -175,17 +190,34 @@ export class FileExplorerToolbarComponent
     if (!this.form) {
       return;
     }
-    const currentUser = this.auth.userValue?.name;
-    const recipients = 'ems2@who.int';
-    const subject = encodeURIComponent(
-      `Access Request: Permission to Add Records to “${this.form.name}”`
-    );
-    const body = encodeURIComponent(
-      `Dear EMS Team,\n\n` +
-        `Can you please give me permission to add new records to the ${this.form.name} form?\n\n` +
-        `(Insert reason you're requesting access)\n\n` +
-        `Thank you for your consideration.\n\n${currentUser}`
-    );
+    const recipients = DEFAULT_RECIPIENTS;
+    const subjectTemplate =
+      get(this.parent?.settings.accessRequestForm, 'subject') ||
+      DEFAULT_SUBJECT;
+    const bodyTemplate =
+      get(this.parent?.settings.accessRequestForm, 'body') || DEFAULT_BODY;
+    const subject = encodeURIComponent(this.parseTemplate(subjectTemplate));
+    const body = encodeURIComponent(this.parseTemplate(bodyTemplate));
     window.open(`mailto:${recipients}?subject=${subject}&body=${body}`);
+  }
+
+  /**
+   * Parse template field with values
+   *
+   * @param text Template field text
+   * @returns Parsed text
+   */
+  private parseTemplate(text: string) {
+    const regex = /{{data\.(.*?)}}/g;
+    const currentUser = this.auth.userValue?.name;
+    const values = {
+      user: currentUser,
+      form: (this.form as Form).name,
+    };
+    text = text.replace(regex, (match, p1) => {
+      // Replace the key with correct value
+      return get(values, p1, '');
+    });
+    return text;
   }
 }

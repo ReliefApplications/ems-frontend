@@ -17,6 +17,7 @@ import { Apollo } from 'apollo-angular';
 import { GET_RESOURCE } from './graphql/queries';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
+import { FileExplorerRequestPermissionsTemplateComponent } from '../file-explorer-request-permissions-template/file-explorer-request-permissions-template.component';
 
 /**
  * Component for displaying a tab with form settings in the file explorer widget settings.
@@ -34,6 +35,7 @@ import { takeUntil } from 'rxjs';
     SelectMenuModule,
     ButtonModule,
     TooltipModule,
+    FileExplorerRequestPermissionsTemplateComponent,
   ],
   templateUrl: './file-explorer-form-tab.component.html',
   styleUrls: ['./file-explorer-form-tab.component.scss'],
