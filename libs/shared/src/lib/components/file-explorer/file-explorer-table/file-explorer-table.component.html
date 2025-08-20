@@ -10,10 +10,23 @@
   (sortChange)="sortChange.emit($event)"
   (cellClick)="onCellClick($event)"
 >
-  <!-- <kendo-grid-column field="id" title="ID"> </kendo-grid-column> -->
   <kendo-grid-column
     field="filename"
     [title]="'components.widget.fileExplorer.fields.name.label' | translate"
+  >
+  </kendo-grid-column>
+  <kendo-grid-column
+    field="documenttypename"
+    [title]="
+      'components.widget.fileExplorer.fields.documentType.label' | translate
+    "
+  >
+  </kendo-grid-column>
+  <kendo-grid-column
+    field="modifiedbyuser"
+    [title]="
+      'components.widget.fileExplorer.fields.lastUpdatedBy.label' | translate
+    "
   >
   </kendo-grid-column>
   <kendo-grid-column

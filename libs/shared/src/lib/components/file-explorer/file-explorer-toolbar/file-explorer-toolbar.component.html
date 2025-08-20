@@ -54,14 +54,26 @@
         context: null
       }"
     >
-      <!-- <ui-select-option value="id" [selected]="sort[0].field === 'id'"
-        >ID</ui-select-option
-      > -->
       <ui-select-option
         value="filename"
         [selected]="sort[0].field === 'filename'"
         >{{
           'components.widget.fileExplorer.fields.name.label' | translate
+        }}</ui-select-option
+      >
+      <ui-select-option
+        value="documenttypename"
+        [selected]="sort[0].field === 'documenttypename'"
+        >{{
+          'components.widget.fileExplorer.fields.documentType.label' | translate
+        }}</ui-select-option
+      >
+      <ui-select-option
+        value="modifiedbyuser"
+        [selected]="sort[0].field === 'modifiedbyuser'"
+        >{{
+          'components.widget.fileExplorer.fields.lastUpdatedBy.label'
+            | translate
         }}</ui-select-option
       >
       <ui-select-option

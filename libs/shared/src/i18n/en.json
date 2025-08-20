@@ -1687,10 +1687,16 @@
 				},
 				"fields": {
 					"createdOn": {
-						"label": "Created on"
+						"label": "Created On"
+					},
+					"documentType": {
+						"label": "Document Type"
+					},
+					"lastUpdatedBy": {
+						"label": "Last Updated By"
 					},
 					"lastUpdatedOn": {
-						"label": "Last updated on"
+						"label": "Last Updated On"
 					},
 					"name": {
 						"label": "Name"

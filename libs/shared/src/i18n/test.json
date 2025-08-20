@@ -1689,6 +1689,12 @@
 					"createdOn": {
 						"label": "******"
 					},
+					"documentType": {
+						"label": "******"
+					},
+					"lastUpdatedBy": {
+						"label": "******"
+					},
 					"lastUpdatedOn": {
 						"label": "******"
 					},

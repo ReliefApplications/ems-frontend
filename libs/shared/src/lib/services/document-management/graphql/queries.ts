@@ -62,17 +62,16 @@ export const GET_DOCUMENTS = gql`
         id
         filename
         createddate
-        modifiedbyuser {
-          firstname
-          lastname
-        }
         modifieddate
         occurrence {
           driveid
         }
+        modifiedbyuser {
+          firstname
+          lastname
+        }
         documenttypemetadatas {
           documenttype {
-            id
             name
           }
         }
@@ -316,6 +315,7 @@ export interface GetDocumentByIdResponse extends GetOccurrenceTypesResponse {
     occurrenceid: string;
     document: FileExplorerDocument & {
       createdbyuser: FileExplorerDocumentUser;
+      modifiedbyuser: FileExplorerDocumentUser;
       documentversions: {
         version: string;
         size: number;

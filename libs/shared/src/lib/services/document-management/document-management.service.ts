@@ -451,20 +451,47 @@ export class DocumentManagementService {
     }
   ) {
     const apolloClient = this.apollo.use('csClient');
-    return apolloClient.query<GetDocumentsQueryResponse>({
-      query: GET_DOCUMENTS,
-      variables: {
-        // countfields & distinct are used by common services to avoid duplicating documents in query result
-        countfields: 'documentid',
-        distinct: 'vw_allmetatablerelations',
-        offset: options.offset,
-        ...(options.filter && { filter: JSON.stringify(options.filter) }),
-        ...(options.sort?.length && {
-          sortField: options.sort[0].field,
-          sortDirection: options.sort[0].dir,
-        }),
-      },
-    });
+    return apolloClient
+      .query<GetDocumentsQueryResponse>({
+        query: GET_DOCUMENTS,
+        variables: {
+          // countfields & distinct are used by common services to avoid duplicating documents in query result
+          countfields: 'documentid',
+          distinct: 'vw_allmetatablerelations',
+          offset: options.offset,
+          ...(options.filter && { filter: JSON.stringify(options.filter) }),
+          ...(options.sort?.length && {
+            sortField: options.sort[0].field,
+            sortDirection: options.sort[0].dir,
+          }),
+        },
+      })
+      .pipe(
+        map((response) => {
+          return {
+            ...response,
+            data: {
+              ...response.data,
+              items: response.data.items.map((item: any) => ({
+                document: {
+                  ...item.document,
+                  modifiedbyuser: item.document.modifiedbyuser
+                    ? [
+                        item.document.modifiedbyuser.firstname,
+                        item.document.modifiedbyuser.lastname,
+                      ].join(' ')
+                    : '',
+                  documenttypename: item.document.documenttypemetadatas
+                    ? item.document.documenttypemetadatas
+                        .map((meta: any) => meta.documenttype.name)
+                        .join(', ')
+                    : '',
+                },
+              })),
+            },
+          };
+        })
+      );
   }
 
   /**

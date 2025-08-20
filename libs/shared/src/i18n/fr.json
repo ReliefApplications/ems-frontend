@@ -1692,6 +1692,12 @@
 					"createdOn": {
 						"label": "Créé le"
 					},
+					"documentType": {
+						"label": "Type de document"
+					},
+					"lastUpdatedBy": {
+						"label": "Dernière mise à jour par"
+					},
 					"lastUpdatedOn": {
 						"label": "Dernière mise à jour le"
 					},

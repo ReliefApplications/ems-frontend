@@ -11,5 +11,6 @@ export interface FileExplorerDocument {
   filename: string;
   createddate: string;
   modifieddate: string;
-  modifiedbyuser: FileExplorerDocumentUser;
+  modifiedbyuser: string;
+  documenttypename: string;
 }
