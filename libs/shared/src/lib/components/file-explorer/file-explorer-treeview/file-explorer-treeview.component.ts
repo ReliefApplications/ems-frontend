@@ -18,7 +18,7 @@ import { FileExplorerWidgetComponent } from '../file-explorer-widget/file-explor
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { ContextService } from '../../../services/context/context.service';
 import getFilter from '../../../utils/common-services/filter.util';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SpinnerModule } from '@oort-front/ui';
 import { EmptyModule } from '../../ui/empty/empty.module';
 
@@ -72,6 +72,8 @@ export class FileExplorerTreeviewComponent implements OnInit, OnChanges {
   private documentManagementService = inject(DocumentManagementService);
   /** Shared context service */
   private contextService = inject(ContextService);
+  /** Translate service */
+  private translate = inject(TranslateService);
   /** Parent component */
   private parent: FileExplorerWidgetComponent | null = inject(
     FileExplorerWidgetComponent,
@@ -122,8 +124,7 @@ export class FileExplorerTreeviewComponent implements OnInit, OnChanges {
           .map((item) => ({
             id: item.id,
             compositeId: `${this.tags[0]}_${item.id}`,
-            // todo: translate
-            text: item.name || 'Undefined',
+            text: item.name || this.translate.instant('common.undefined'),
             type: this.tags[0],
             path: [`${this.tags[0]}_${item.id}`],
           }))
@@ -160,8 +161,7 @@ export class FileExplorerTreeviewComponent implements OnInit, OnChanges {
             .map((item) => ({
               id: item.id,
               compositeId: `${nextTag}_${item.id}`,
-              // todo: translate
-              text: item.name || 'Undefined',
+              text: item.name || this.translate.instant('common.undefined'),
               type: nextTag,
               path: [...node.path, `${nextTag}_${item.id}`],
             }))

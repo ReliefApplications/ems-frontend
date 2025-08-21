@@ -1,4 +1,3 @@
-<!-- todo: translate -->
 <h3>
   {{ 'components.widget.fileExplorer.accessRequestForm.title' | translate }}
 </h3>
@@ -14,7 +13,10 @@
   <!-- Replace with distribution list selector -->
   <!-- Subject -->
   <div uiFormFieldDirective>
-    <label>Subject</label>
+    <label>{{
+      'components.widget.fileExplorer.accessRequestForm.fields.subject.label'
+        | translate
+    }}</label>
     <shared-editor-control
       formControlName="subject"
       [editorConfig]="subjectEditor"
@@ -22,7 +24,10 @@
   </div>
   <!-- Body -->
   <div uiFormFieldDirective>
-    <label>Body</label>
+    <label>{{
+      'components.widget.fileExplorer.accessRequestForm.fields.body.label'
+        | translate
+    }}</label>
     <shared-editor-control
       formControlName="body"
       [editorConfig]="bodyEditor"

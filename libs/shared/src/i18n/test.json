@@ -536,6 +536,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"undefined": "******",
 		"update": "******",
 		"updateObject": "****** {{name}}",
 		"uploadObject": "****** {{name}}",
@@ -1672,6 +1673,18 @@
 			},
 			"expand": "******",
 			"fileExplorer": {
+				"accessRequestForm": {
+					"alert": "****** {{data.user}} ****** {{data.form}} ******",
+					"fields": {
+						"body": {
+							"label": "******"
+						},
+						"subject": {
+							"label": "******"
+						}
+					},
+					"title": "******"
+				},
 				"actions": {
 					"copyLink": "******",
 					"download": "******",
@@ -1686,10 +1699,49 @@
 					"folders": "******"
 				},
 				"fields": {
+					"aetiology": {
+						"label": "******"
+					},
+					"confidentiality": {
+						"label": "******"
+					},
+					"country": {
+						"label": "******"
+					},
+					"createdBy": {
+						"label": "******"
+					},
 					"createdOn": {
 						"label": "******"
 					},
+					"diseaseCondition": {
+						"label": "******"
+					},
+					"documentCategory": {
+						"label": "******"
+					},
 					"documentType": {
+						"label": "******"
+					},
+					"filename": {
+						"label": "******"
+					},
+					"hazard": {
+						"label": "******"
+					},
+					"ihrCommunication": {
+						"label": "******"
+					},
+					"imsFunction": {
+						"label": "******"
+					},
+					"imsRole": {
+						"label": "******"
+					},
+					"informationSource": {
+						"label": "******"
+					},
+					"language": {
 						"label": "******"
 					},
 					"lastUpdatedBy": {
@@ -1699,6 +1751,24 @@
 						"label": "******"
 					},
 					"name": {
+						"label": "******"
+					},
+					"occurrence": {
+						"label": "******"
+					},
+					"occurrenceType": {
+						"label": "******"
+					},
+					"region": {
+						"label": "******"
+					},
+					"size": {
+						"label": "******"
+					},
+					"syndrome": {
+						"label": "******"
+					},
+					"version": {
 						"label": "******"
 					}
 				},
@@ -1711,6 +1781,9 @@
 					"title": "******"
 				},
 				"folders": "******",
+				"formBinding": {
+					"title": "******"
+				},
 				"notifications": {
 					"copyLink": {
 						"success": "******"

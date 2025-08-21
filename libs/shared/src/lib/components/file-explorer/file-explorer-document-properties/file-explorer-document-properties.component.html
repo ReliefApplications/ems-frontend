@@ -1,7 +1,6 @@
 <div *ngIf="loading" class="h-full flex flex-col">
   <ui-spinner class="m-auto block"></ui-spinner>
 </div>
-<!-- todo: translate -->
 <div
   class="flex flex-col gap-3 p-2 h-full overflow-auto"
   *ngIf="!loading && document"
@@ -12,7 +11,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'Filename',
+        label: 'components.widget.fileExplorer.fields.filename.label' | translate,
         value: document.filename
       }
     "
@@ -23,7 +22,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'Confidentiality',
+        label: 'components.widget.fileExplorer.fields.confidentiality.label' | translate,
         value: document.informationconfidentialityname
       }
     "
@@ -33,7 +32,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'File version',
+        label: 'components.widget.fileExplorer.fields.version.label' | translate,
         value: document.version
       }
     "
@@ -43,7 +42,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'Created by',
+        label: 'components.widget.fileExplorer.fields.createdBy.label' | translate,
         value: document.createdbyuser
       }
     "
@@ -53,7 +52,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'Created on',
+        label: 'components.widget.fileExplorer.fields.createdOn.label' | translate,
         value: document.createddate | date : 'yyyy-MM-dd HH:mm'
       }
     "
@@ -63,7 +62,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'Last updated by',
+        label: 'components.widget.fileExplorer.fields.lastUpdatedBy.label' | translate,
         value: document.modifiedbyuser
       }
     "
@@ -73,7 +72,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'Last updated on',
+        label: 'components.widget.fileExplorer.fields.lastUpdatedOn.label' | translate,
         value: document.modifieddate | date : 'yyyy-MM-dd HH:mm'
       }
     "
@@ -83,7 +82,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'File size',
+        label: 'components.widget.fileExplorer.fields.size.label' | translate,
         value: document.size
       }
     "
@@ -93,7 +92,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'Occurrence',
+        label: 'components.widget.fileExplorer.fields.occurrence.label' | translate,
         value: document.occurrence
       }
     "
@@ -103,7 +102,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'Occurrence type',
+        label: 'components.widget.fileExplorer.fields.occurrenceType.label' | translate,
         value: document.occurrencetype
       }
     "
@@ -113,7 +112,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'Document type',
+        label: 'components.widget.fileExplorer.fields.documentType.label' | translate,
         value: document.documenttypename
       }
     "
@@ -123,7 +122,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'IMS function',
+        label: 'components.widget.fileExplorer.fields.imsFunction.label' | translate,
         value: document.imsfunctionname
       }
     "
@@ -133,7 +132,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'IMS role',
+        label: 'components.widget.fileExplorer.fields.imsRole.label' | translate,
         value: document.documentrolename
       }
     "
@@ -143,7 +142,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'Document category',
+        label: 'components.widget.fileExplorer.fields.documentCategory.label' | translate,
         value: document.documentcategoryname
       }
     "
@@ -153,7 +152,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'Region',
+        label: 'components.widget.fileExplorer.fields.region.label' | translate,
         value: document.region
       }
     "
@@ -163,7 +162,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'Country',
+        label: 'components.widget.fileExplorer.fields.country.label' | translate,
         value: document.country
       }
     "
@@ -173,7 +172,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'Hazard',
+        label: 'components.widget.fileExplorer.fields.hazard.label' | translate,
         value: document.hazard
       }
     "
@@ -183,7 +182,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'Syndrome',
+        label: 'components.widget.fileExplorer.fields.syndrome.label' | translate,
         value: document.syndrome
       }
     "
@@ -193,7 +192,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'Disease condition',
+        label: 'components.widget.fileExplorer.fields.aetiology.label' | translate,
         value: document.aetiology
       }
     "
@@ -203,7 +202,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'Disease condition',
+        label: 'components.widget.fileExplorer.fields.diseaseCondition.label' | translate,
         value: document.diseasecondition
       }
     "
@@ -213,7 +212,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'Language',
+        label: 'components.widget.fileExplorer.fields.language.label' | translate,
         value: document.languagename
       }
     "
@@ -223,7 +222,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'IHR Source of information - type',
+        label: 'components.widget.fileExplorer.fields.informationSource.label' | translate,
         value: document.sourceofinformationname
       }
     "
@@ -233,7 +232,7 @@
     *ngTemplateOutlet="
       propertyTmpl;
       context: {
-        label: 'IHR communication',
+        label: 'components.widget.fileExplorer.fields.ihrCommunication.label' | translate,
         value: document.ihrcommunicationname
       }
     "

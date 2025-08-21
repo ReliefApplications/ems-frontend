@@ -12,6 +12,7 @@ import { DocumentManagementService } from '../../../services/document-management
 import { Subject, takeUntil } from 'rxjs';
 import { SpinnerModule } from '@oort-front/ui';
 import { FileExplorerDocumentToolbarComponent } from '../file-explorer-document-toolbar/file-explorer-document-toolbar.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Component to display the properties of a document in the file explorer.
@@ -20,7 +21,12 @@ import { FileExplorerDocumentToolbarComponent } from '../file-explorer-document-
 @Component({
   selector: 'shared-file-explorer-document-properties',
   standalone: true,
-  imports: [CommonModule, SpinnerModule, FileExplorerDocumentToolbarComponent],
+  imports: [
+    CommonModule,
+    SpinnerModule,
+    FileExplorerDocumentToolbarComponent,
+    TranslateModule,
+  ],
   templateUrl: './file-explorer-document-properties.component.html',
   styleUrls: ['./file-explorer-document-properties.component.scss'],
 })
