@@ -13,6 +13,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { SpinnerModule } from '@oort-front/ui';
 import { FileExplorerDocumentToolbarComponent } from '../file-explorer-document-toolbar/file-explorer-document-toolbar.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { SplitterPaneComponent } from '@progress/kendo-angular-layout';
 
 /**
  * Component to display the properties of a document in the file explorer.
@@ -72,6 +73,10 @@ export class FileExplorerDocumentPropertiesComponent
   private documentManagementService = inject(DocumentManagementService);
   /** Subject to cancel previous requests */
   private cancelPreviousRequest$ = new Subject<void>();
+  private splitterPane: SplitterPaneComponent | null = inject(
+    SplitterPaneComponent,
+    { optional: true }
+  );
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['documentId'] && this.documentId) {
@@ -99,6 +104,10 @@ export class FileExplorerDocumentPropertiesComponent
         next: ({ data }) => {
           this.formatDocument(data);
           this.loading = false;
+          // Automatically expend parent pane to show the details
+          if (this.splitterPane) {
+            this.splitterPane.collapsed = false;
+          }
         },
         error: (error) => {
           console.error('Error fetching document properties:', error);

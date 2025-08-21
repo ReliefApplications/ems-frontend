@@ -7,6 +7,7 @@
   ></shared-file-explorer-toolbar>
   <!-- Content -->
   <kendo-splitter class="!flex-1 overflow-hidden">
+    <!-- Navigation through folders -->
     <kendo-splitter-pane
       *ngIf="settings.tags?.length > 0"
       [collapsible]="true"
@@ -22,6 +23,7 @@
       </div>
     </kendo-splitter-pane>
 
+    <!-- Grid or List -->
     <kendo-splitter-pane [scrollable]="false">
       <div class="h-full flex flex-col">
         <shared-file-explorer-breadcrumb
@@ -53,6 +55,7 @@
       </div>
     </kendo-splitter-pane>
 
+    <!-- Document details -->
     <kendo-splitter-pane
       *ngIf="selectedDocumentId"
       [collapsible]="true"
