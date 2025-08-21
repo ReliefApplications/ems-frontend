@@ -6,7 +6,7 @@ import { Clipboard, ClipboardModule } from '@angular/cdk/clipboard';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs';
+import { firstValueFrom, takeUntil } from 'rxjs';
 import { AuthService } from '../../../services/auth/auth.service';
 import { RestService } from '../../../services/rest/rest.service';
 import { FileExplorerWidgetComponent } from '../file-explorer-widget/file-explorer-widget.component';
@@ -104,10 +104,7 @@ export class FileExplorerDocumentToolbarComponent
     if (this.document?.driveid) {
       return this.document.driveid;
     }
-    if (!this.documentManagementService.defaultDriveId) {
-      await this.documentManagementService.getDriveId();
-    }
-    return this.documentManagementService.defaultDriveId;
+    return await firstValueFrom(this.documentManagementService.getDriveId());
   }
 
   /**

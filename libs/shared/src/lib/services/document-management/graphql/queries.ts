@@ -525,3 +525,27 @@ export interface GetFieldsOptionsResponse {
     name: string;
   }[];
 }
+
+/**
+ * Get document drive id
+ */
+export const GET_DOCUMENT_DRIVE_ID = gql`
+  query GetDocumentDriveId($id: String!) {
+    document(id: $id) {
+      id
+      occurrence {
+        driveid
+      }
+    }
+  }
+`;
+
+/** Get Document Drive ID Response Interface */
+export interface GetDocumentDriveIdResponse {
+  document: {
+    id: string;
+    occurrence: {
+      driveid: string;
+    };
+  };
+}

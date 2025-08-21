@@ -131,6 +131,7 @@ export class FormHelpersService {
           q.value.forEach(async (file: any) => {
             if (
               file.content &&
+              typeof file.content === 'object' &&
               'itemId' in file.content &&
               'driveId' in file.content
             ) {

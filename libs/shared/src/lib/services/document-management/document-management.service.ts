@@ -13,18 +13,20 @@ import {
   CountDocumentsQueryResponse,
   DriveQueryResponse,
   GET_DOCUMENT_BY_ID,
+  GET_DOCUMENT_DRIVE_ID,
   GET_DOCUMENTS,
   GET_DRIVE_ID,
   GET_FIELDS_OPTIONS,
   GET_OCCURRENCE_BY_ID,
   GET_OCCURRENCE_TYPES,
   GetDocumentByIdResponse,
+  GetDocumentDriveIdResponse,
   GetDocumentsQueryResponse,
   GetFieldsOptionsResponse,
   GetOccurrenceTypesResponse,
   OccurrenceQueryResponse,
 } from './graphql/queries';
-import { firstValueFrom, forkJoin, map } from 'rxjs';
+import { firstValueFrom, forkJoin, map, of, switchMap, tap } from 'rxjs';
 import { SortDescriptor } from '@progress/kendo-data-query';
 import {
   FileExplorerTagKey,
@@ -169,6 +171,32 @@ export class DocumentManagementService {
   }
 
   /**
+   * Get document drive id for target document, if does not exist, returns default drive id
+   *
+   * @param id Document id
+   * @returns Document drive id
+   */
+  public getDocumentDriveId(id: string) {
+    const apolloClient = this.apollo.use('csClient');
+    return apolloClient
+      .query<GetDocumentDriveIdResponse>({
+        query: GET_DOCUMENT_DRIVE_ID,
+        variables: { id },
+        fetchPolicy: 'no-cache',
+      })
+      .pipe(
+        switchMap(({ data }) => {
+          const driveId = data?.document?.occurrence?.driveid;
+          if (driveId) {
+            return of(driveId);
+          } else {
+            return this.getDriveId();
+          }
+        })
+      );
+  }
+
+  /**
    * Downloads file from the server
    *
    * @param file Uploaded file
@@ -187,13 +215,20 @@ export class DocumentManagementService {
     );
     const snackBarSpinner = snackBarRef.instance.nestedComponent;
 
-    const url = `${this.environment.csApiUrl}/documents/drives/${file.content.driveId}/items/${file.content.itemId}/content`;
-    this.restService
-      .get(url, {
-        ...options,
-        responseType: 'blob',
-        headers: this.getRequestHeaders(),
-      })
+    // Make sure the drive id is up to date ( changes in csdocui can affect it )
+    this.getDocumentDriveId(file.content.itemId)
+      .pipe(
+        switchMap((driveId) =>
+          this.restService.get(
+            `${this.environment.csApiUrl}/documents/drives/${driveId}/items/${file.content.itemId}/content`,
+            {
+              ...options,
+              responseType: 'blob',
+              headers: this.getRequestHeaders(),
+            }
+          )
+        )
+      )
       .subscribe({
         next: (res) => {
           const blob = new Blob([res]);
@@ -330,11 +365,7 @@ export class DocumentManagementService {
         }
       }
       if (!driveId) {
-        // Get default data, if not already fetched
-        if (!this.defaultDriveId) {
-          await this.getDriveId();
-        }
-        driveId = this.defaultDriveId;
+        driveId = await firstValueFrom(this.getDriveId());
       }
       fileStream = await this.transformFileToValidInput(file);
       CS_DOCUMENTS_PROPERTIES.filter(
@@ -419,15 +450,21 @@ export class DocumentManagementService {
    *
    * @returns Query to fetch default drive id
    */
-  public async getDriveId() {
+  public getDriveId() {
+    if (this.defaultDriveId) {
+      return of(this.defaultDriveId);
+    }
     const apolloClient = this.apollo.use('csClient');
-    return firstValueFrom(
-      apolloClient.query<DriveQueryResponse>({
+    return apolloClient
+      .query<DriveQueryResponse>({
         query: GET_DRIVE_ID,
       })
-    ).then(({ data }) => {
-      this.defaultDriveId = data.storagedrive.driveid;
-    });
+      .pipe(
+        tap(({ data }) => {
+          this.defaultDriveId = data.storagedrive.driveid;
+        }),
+        map(({ data }) => data.storagedrive.driveid)
+      );
   }
 
   /**

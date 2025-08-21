@@ -47,13 +47,8 @@ export class FileExplorerRequestPermissionsTemplateComponent implements OnInit {
     setup: (editor) => {
       editor.on('init', () => {
         const text: string = this.formGroup.get('body')?.value || '';
-        console.log(this.formGroup.get('body')?.value);
         const lines = text.split('\n');
-        console.log(lines.map((line) => `<p>${line}</p>`).join(''));
         editor.setContent(lines.map((line) => `<p>${line}</p>`).join(''));
-      });
-      editor.on('change keyup', () => {
-        console.log(editor.getContent());
       });
     },
     inline: false,

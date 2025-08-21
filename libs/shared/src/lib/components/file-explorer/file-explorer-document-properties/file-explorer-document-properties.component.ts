@@ -73,6 +73,7 @@ export class FileExplorerDocumentPropertiesComponent
   private documentManagementService = inject(DocumentManagementService);
   /** Subject to cancel previous requests */
   private cancelPreviousRequest$ = new Subject<void>();
+  /** Parent splitter pane reference */
   private splitterPane: SplitterPaneComponent | null = inject(
     SplitterPaneComponent,
     { optional: true }
