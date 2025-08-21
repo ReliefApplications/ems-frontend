@@ -29,6 +29,7 @@ export const createFileExplorerWidgetFormGroup = (
     resource: [get(value, 'resource', null)],
     template: [get(value, 'template', null)],
     accessRequestForm: fb.group({
+      recipients: [get(value, 'accessRequestForm.recipients', [])],
       subject: [get(value, 'accessRequestForm.subject', '')],
       body: [get(value, 'accessRequestForm.body', '')],
     }),

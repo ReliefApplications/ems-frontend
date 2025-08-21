@@ -1682,6 +1682,15 @@
 						"body": {
 							"label": "Corps du message"
 						},
+						"recipients": {
+							"errors": {
+								"duplicated": "Les adresses e-mail doivent être uniques.",
+								"invalid": "Veuillez saisir une adresse e-mail valide."
+							},
+							"label": "Destinataires",
+							"placeholder": "Tapez l'adresse e-mail et appuyez sur Entrée...",
+							"tooltip": "Par défaut : ems2@who.int"
+						},
 						"subject": {
 							"label": "Objet"
 						}

@@ -8,6 +8,7 @@ import { RawEditorSettings } from 'tinymce';
 import { INLINE_EDITOR_CONFIG } from '../../../../const/tinymce.const';
 import { EditorService } from '../../../../services/editor/editor.service';
 import { getDataKeys } from '../../../edit-calculated-field-modal/utils/keys';
+import { FileExplorerRequestPermissionsRecipientsComponent } from '../file-explorer-request-permissions-recipients/file-explorer-request-permissions-recipients.component';
 
 /** Available fields for the email template */
 const AVAILABLE_FIELDS = [
@@ -30,6 +31,7 @@ const AVAILABLE_FIELDS = [
     FormWrapperModule,
     AlertModule,
     TextareaModule,
+    FileExplorerRequestPermissionsRecipientsComponent,
   ],
   templateUrl: './file-explorer-request-permissions-template.component.html',
   styleUrls: ['./file-explorer-request-permissions-template.component.scss'],

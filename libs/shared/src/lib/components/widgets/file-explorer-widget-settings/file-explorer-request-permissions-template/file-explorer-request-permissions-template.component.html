@@ -10,7 +10,9 @@
 </ui-alert>
 <ng-container [formGroup]="formGroup">
   <!-- Distribution list -->
-  <!-- Replace with distribution list selector -->
+  <shared-file-explorer-request-permissions-recipients
+    formControlName="recipients"
+  ></shared-file-explorer-request-permissions-recipients>
   <!-- Subject -->
   <div uiFormFieldDirective>
     <label>{{

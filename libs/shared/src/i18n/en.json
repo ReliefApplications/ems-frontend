@@ -1679,6 +1679,15 @@
 						"body": {
 							"label": "Body"
 						},
+						"recipients": {
+							"errors": {
+								"duplicated": "Email addresses must be unique.",
+								"invalid": "Please input a valid email address"
+							},
+							"label": "Recipients",
+							"placeholder": "Type email and press enter...",
+							"tooltip": "Default to ems2@who.int"
+						},
 						"subject": {
 							"label": "Subject"
 						}

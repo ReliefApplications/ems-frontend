@@ -22,7 +22,7 @@ import { AuthService } from '../../../services/auth/auth.service';
 import get from 'lodash/get';
 
 /** Default recipients */
-const DEFAULT_RECIPIENTS = 'ems2@who.int';
+const DEFAULT_RECIPIENTS = ['ems2@who.int'];
 
 /** Default subject */
 const DEFAULT_SUBJECT =
@@ -190,7 +190,13 @@ export class FileExplorerToolbarComponent
     if (!this.form) {
       return;
     }
-    const recipients = DEFAULT_RECIPIENTS;
+    const recipients = (
+      Array.isArray(
+        get(this.parent?.settings.accessRequestForm, 'recipients')
+      ) && get(this.parent?.settings.accessRequestForm, 'recipients').length > 0
+        ? get(this.parent?.settings.accessRequestForm, 'recipients')
+        : DEFAULT_RECIPIENTS
+    ).join(',');
     const subjectTemplate =
       get(this.parent?.settings.accessRequestForm, 'subject') ||
       DEFAULT_SUBJECT;

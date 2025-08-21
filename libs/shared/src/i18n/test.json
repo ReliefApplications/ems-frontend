@@ -1679,6 +1679,15 @@
 						"body": {
 							"label": "******"
 						},
+						"recipients": {
+							"errors": {
+								"duplicated": "******",
+								"invalid": "******"
+							},
+							"label": "******",
+							"placeholder": "******",
+							"tooltip": "******"
+						},
 						"subject": {
 							"label": "******"
 						}
