@@ -260,8 +260,8 @@ export const WIDGET_TYPES: WidgetType[] = [
   {
     id: 'file-explorer',
     name: 'File Explorer',
-    icon: '/assets/tab.svg',
-    color: '#D5B38C',
+    icon: '/assets/file-explorer.svg',
+    color: '#D58080',
     settings: { title: 'File Explorer' },
     cols: 8,
     rows: 4,
