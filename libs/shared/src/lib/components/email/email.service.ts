@@ -806,11 +806,23 @@ export class EmailService {
       subscriptionList: this.formBuilder.array([]),
       restrictSubscription: false,
       emailLayout: this.emailLayout,
-      schedule: [''],
+      schedule: this.createScheduleGroup(),
       attachments: this.formBuilder.group({
         files: [],
         sendAsAttachment: null,
       }),
+    });
+  }
+
+  /**
+   * Creates a new schedule form group.
+   *
+   * @returns A new schedule form group.
+   */
+  createScheduleGroup(): FormGroup {
+    return this.formBuilder.group({
+      scheduleEnabled: false,
+      cronValue: [''],
     });
   }
 
