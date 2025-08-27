@@ -1041,6 +1041,10 @@
         "title": "Restrict user subscription"
       },
       "saveAsDraft": "Save as draft",
+      "schedule": {
+        "checkbox": "Click to enable/ disable scheduler",
+        "title": "Schedule Alert"
+      },
       "subscribe": {
         "error": {
           "restricted": "Subscription Restricted"

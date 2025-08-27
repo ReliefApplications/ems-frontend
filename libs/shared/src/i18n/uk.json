@@ -1041,6 +1041,10 @@
         "title": "Обмежити підписку користувачів"
       },
       "saveAsDraft": "Зберегти як чернетку",
+      "schedule": {
+        "checkbox": "Click to enable/ disable scheduler",
+        "title": "Schedule Alert"
+      },
       "subscribe": {
         "error": {
           "restricted": "Підписку обмежено"

@@ -1041,6 +1041,10 @@
         "title": "Restreindre l'abonnement des utilisateurs"
       },
       "saveAsDraft": "Enregistrer comme brouillon",
+      "schedule": {
+        "checkbox": "Cliquez pour activer / désactiver le planificateur",
+        "title": "Alerte de planification"
+      },
       "subscribe": {
         "error": {
           "restricted": "Abonnement restreint"
