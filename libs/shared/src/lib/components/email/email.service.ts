@@ -822,7 +822,7 @@ export class EmailService {
   createScheduleGroup(): FormGroup {
     return this.formBuilder.group({
       scheduleEnabled: false,
-      cronValue: [''],
+      cronValue: new FormControl(),
     });
   }
 

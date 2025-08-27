@@ -1009,7 +1009,7 @@
 					"checkbox": "Enable scheduler",
 					"tooltip": "Click to enable scheduler"
 				},
-				"title": "Enable scheduler"
+				"title": "Schedule alerts"
 			},
 			"subscribe": {
 				"error": {
