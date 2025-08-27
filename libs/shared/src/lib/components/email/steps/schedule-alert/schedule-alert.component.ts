@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EmailService } from '../../email.service';
+import { FormControl } from '@angular/forms';
 
 /**
  * Schedule notification configuration step.
@@ -12,6 +13,10 @@ import { EmailService } from '../../email.service';
 export class ScheduleAlertComponent implements OnInit {
   /** Flag indicating whether schedule alert is enabled. */
   schedule_alert = false;
+  /** Is current cron valid */
+  public cronValid!: boolean;
+  /** Cron expression form control */
+  public control: FormControl = new FormControl();
 
   /**
    * Schedule notification configuration step.
@@ -25,5 +30,14 @@ export class ScheduleAlertComponent implements OnInit {
     if (!this.schedule_alert) {
       this.emailService.disableSaveAndProceed.next(false);
     }
+  }
+
+  /**
+   * Is current cron valud
+   *
+   * @param value is valid boolean
+   */
+  public cronIsValid(value: boolean) {
+    this.cronValid = value;
   }
 }
