@@ -1043,6 +1043,14 @@
       "saveAsDraft": "Зберегти як чернетку",
       "schedule": {
         "checkbox": "Click to enable/ disable scheduler",
+        "disable": {
+          "checkbox": "Disable Scheduler",
+          "tooltip": "Click to disable scheduler"
+        },
+        "enable": {
+          "checkbox": "Enable scheduler",
+          "tooltip": "Click to enable scheduler"
+        },
         "title": "Schedule Alert"
       },
       "subscribe": {
