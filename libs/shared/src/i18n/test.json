@@ -1001,7 +1001,13 @@
 			},
 			"saveAsDraft": "******",
 			"schedule": {
-				"checkbox": "******",
+
+				"disable": {
+					"checkbox": "***********"
+				},
+				"enable": {
+					"checkbox": "***********"
+				},
 				"title": "*******"
 			},
 			"subscribe": {

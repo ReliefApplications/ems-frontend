@@ -1001,8 +1001,13 @@
 			},
 			"saveAsDraft": "Enregistrer comme brouillon",
 			"schedule": {
-				"checkbox": "Cliquez pour activer / désactiver le planificateur",
-				"title": "Alerte de planification"
+				"disable": {
+					"checkbox": "Désactiver"
+				},
+				"enable": {
+					"checkbox": "Activer le planificateur"
+				},
+				"title": "Activer le planificateur"
 			},
 			"subscribe": {
 				"error": {

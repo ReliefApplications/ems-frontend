@@ -1001,8 +1001,15 @@
 			},
 			"saveAsDraft": "Save as draft",
 			"schedule": {
-				"checkbox": "Click to enable/ disable scheduler",
-				"title": "Schedule Alert"
+				"disable": {
+					"checkbox": "Disable Scheduler",
+					"tooltip": "Click to disable scheduler"
+				},
+				"enable": {
+					"checkbox": "Enable scheduler",
+					"tooltip": "Click to enable scheduler"
+				},
+				"title": "Enable scheduler"
 			},
 			"subscribe": {
 				"error": {
