@@ -181,6 +181,7 @@
 		"downloadObject": "Télécharger {{name}}",
 		"downloadTemplate": "Télécharger le modèle",
 		"duplicate": "Dupliquer",
+		"duplicateRecord": "Dupliquer l'enregistrement",
 		"edit": "Modifier",
 		"email": {
 			"customTemplate": "Modèle personnalisé",

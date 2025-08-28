@@ -280,11 +280,6 @@ export class RecordModalComponent
       },
       autoFocus: false,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.dialogRef.close(value);
-      }
-    });
   }
 
   /**

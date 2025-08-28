@@ -1163,9 +1163,7 @@ export class CoreGridComponent
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))
         .subscribe((value: any) => {
-          if (value?.data) {
-            this.reloadData();
-          } else if (value) {
+          if (value) {
             this.onUpdate(isArray ? items : [items]);
           }
         });
