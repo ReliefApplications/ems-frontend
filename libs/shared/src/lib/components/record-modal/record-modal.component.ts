@@ -271,7 +271,7 @@ export class RecordModalComponent
     const { FormModalComponent } = await import(
       '../form-modal/form-modal.component'
     );
-    const dialogRef = this.dialog.open(FormModalComponent, {
+    this.dialog.open(FormModalComponent, {
       disableClose: true,
       data: {
         template: this.form.id,
