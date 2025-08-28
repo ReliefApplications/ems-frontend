@@ -264,6 +264,30 @@ export class RecordModalComponent
   }
 
   /**
+   * Open a create form modal prefilled with this record's data
+   */
+  public async onDuplicate(): Promise<void> {
+    if (!this.form?.id) return;
+    const { FormModalComponent } = await import('../form-modal/form-modal.component');
+    const dialogRef = this.dialog.open(FormModalComponent, {
+      disableClose: true,
+      data: {
+        template: this.form.id,
+        prefillData: this.record?.data,
+        askForConfirm: false,
+      },
+      autoFocus: false,
+    });
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: any) => {
+        if (value) {
+          this.dialogRef.close(value);
+        }
+      });
+  }
+
+  /**
    * Opens the history of the record in a modal.
    */
   public async onShowHistory(): Promise<void> {

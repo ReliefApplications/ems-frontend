@@ -12,6 +12,15 @@
           [survey]="survey"
           [surveyNext]="surveyNext || undefined"
         ></shared-form-actions>
+
+        <ui-button
+          *ngIf="form?.canCreateRecords && !data.compareTo"
+          variant="primary"
+          category="secondary"
+          (click)="onDuplicate()"
+        >
+          Duplicate record
+        </ui-button>
       </div>
       <ui-tabs
         [selectedIndex]="(selectedPageIndex$ | async)!"
