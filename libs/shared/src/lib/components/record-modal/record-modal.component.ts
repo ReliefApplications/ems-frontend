@@ -268,7 +268,9 @@ export class RecordModalComponent
    */
   public async onDuplicate(): Promise<void> {
     if (!this.form?.id) return;
-    const { FormModalComponent } = await import('../form-modal/form-modal.component');
+    const { FormModalComponent } = await import(
+      '../form-modal/form-modal.component'
+    );
     const dialogRef = this.dialog.open(FormModalComponent, {
       disableClose: true,
       data: {
@@ -278,13 +280,11 @@ export class RecordModalComponent
       },
       autoFocus: false,
     });
-    dialogRef.closed
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value: any) => {
-        if (value) {
-          this.dialogRef.close(value);
-        }
-      });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        this.dialogRef.close(value);
+      }
+    });
   }
 
   /**
