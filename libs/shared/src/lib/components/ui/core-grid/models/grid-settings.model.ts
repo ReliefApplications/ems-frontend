@@ -40,4 +40,5 @@ export interface GridActions {
   };
   search?: boolean;
   inlineEdition?: boolean;
+  addInline?: boolean;
 }

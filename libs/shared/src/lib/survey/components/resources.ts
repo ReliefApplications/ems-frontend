@@ -18,6 +18,7 @@ import {
 import { CoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { ResourceQueryResponse } from '../../models/resource.model';
 import { DomService } from '../../services/dom/dom.service';
+import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import {
   GET_RESOURCE_BY_ID,
   GET_SHORT_RESOURCE_BY_ID,
@@ -26,6 +27,7 @@ import { QuestionResource } from '../types';
 import {
   buildAddButton,
   buildSearchButton,
+  buildAddInlineButton,
   processNewCreatedRecords,
   setUpActionsButtonWrapper,
 } from './utils';
@@ -52,6 +54,7 @@ export const init = (
   const domService = injector.get(DomService);
   const apollo = injector.get(Apollo);
   const dialog = injector.get(Dialog);
+  const formHelpersService = injector.get(FormHelpersService);
 
   /**
    * Get resource by id
@@ -164,6 +167,14 @@ export const init = (
     }
   };
 
+  const visibleIfResourceAndDisplayGridAndAddRecord = (obj: any) => {
+    if (!obj || !obj.resource || !obj.displayAsGrid || !obj.addRecord) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   const component = {
     name: 'resources',
     title: 'Resources',
@@ -256,7 +267,7 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: 'resource',
         visibleIf: visibleIfResource,
-        visibleIndex: 3,
+        visibleIndex: 2,
       });
       Serializer.addProperty('resources', {
         name: 'addRecord:boolean',
@@ -265,6 +276,14 @@ export const init = (
         dependsOn: 'resource',
         visibleIf: visibleIfResource,
         visibleIndex: 2,
+      });
+      Serializer.addProperty('resources', {
+        name: 'addInline:boolean',
+        displayName: 'Add records inline',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'displayAsGrid', 'addRecord', 'addTemplate'],
+        visibleIf: visibleIfResourceAndDisplayGridAndAddRecord,
+        visibleIndex: 4,
       });
       Serializer.addProperty('resources', {
         name: 'canDelete:boolean',
@@ -557,6 +576,18 @@ export const init = (
             );
             actionsButtons.appendChild(addBtn);
 
+            // Inline add button (when enabled and grid mode)
+            const addInlineBtn = buildAddInlineButton(
+              question,
+              setGridInputs,
+              gridComponentRef,
+              dialog,
+              ngZone,
+              document,
+              formHelpersService
+            );
+            actionsButtons.appendChild(addInlineBtn);
+
             // actionsButtons.style.display = ((!question.addRecord || !question.addTemplate) && !question.gridFieldsSettings) ? 'none' : '';
             question.registerFunctionOnPropertyValueChanged(
               'addTemplate',
@@ -710,6 +741,7 @@ export const init = (
           convert: question.convert,
           update: question.update,
           inlineEdition: question.inlineEdition,
+          addInline: question.addInline,
           remove: true,
         },
       });

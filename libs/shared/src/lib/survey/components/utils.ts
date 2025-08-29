@@ -4,6 +4,7 @@ import { UntypedFormControl } from '@angular/forms';
 // todo: as it something to do with survey-angular
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { SurveyModel, surveyLocalization } from 'survey-core';
+import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { Question } from '../types';
 
 /**
@@ -216,6 +217,106 @@ export const buildAddButton = (
     }
   );
   return addButton;
+};
+
+/**
+ * Build the add inline button for resources components
+ *
+ * @param question The question object
+ * @param setGridInputs Function to refresh grid inputs
+ * @param gridComponentRef Reference to the grid component
+ * @param dialog The Dialog service
+ * @param ngZone Angular Service to execute code inside Angular environment
+ * @param document Document
+ * @returns The button DOM element
+ */
+export const buildAddInlineButton = (
+  question: Question,
+  setGridInputs: (instance: any, question: any) => void,
+  gridComponentRef: any,
+  dialog: Dialog,
+  ngZone: NgZone,
+  document: Document,
+  formHelpersService: FormHelpersService
+): any => {
+  const addInlineButton = document.createElement('button');
+  addInlineButton.innerText = surveyLocalization.getString(
+    'oort:addInline',
+    (question.survey as SurveyModel).locale
+  );
+  addInlineButton.className = 'sd-btn !px-3 !py-1';
+  
+  const updateAddInlineVisibility = () => {
+    addInlineButton.style.display =
+      question.displayAsGrid &&
+      question.addRecord &&
+      question.addInline &&
+      question.addTemplate &&
+      !question.isReadOnly
+        ? ''
+        : 'none';
+  };
+  
+  updateAddInlineVisibility();
+
+  // TODO: Fix the editing problem
+  
+  if (question.displayAsGrid && question.addRecord && question.addInline && question.addTemplate && !question.isReadOnly) {
+    addInlineButton.onclick = () => {
+      ngZone.run(() => {
+        
+        const tempSurvey = {
+          data: {},
+        } as any;
+        
+        formHelpersService.saveAsDraft(
+          tempSurvey,
+          question.addTemplate,
+          undefined,
+          (details: any) => {
+            const newRecordId = details.id;
+            const emptyData = {};
+            
+            question.template = question.addTemplate;
+            question.draftData = {
+              ...question.draftData,
+              [newRecordId]: emptyData,
+            }
+            const newItem = {
+              value: newRecordId,
+              text: (emptyData as any)[question.displayField] || '',
+            };
+            question.contentQuestion.choices = [
+              newItem,
+              ...question.contentQuestion.choices,
+            ];
+            
+            if (!Array.isArray(question.newCreatedRecords)) {
+              question.newCreatedRecords = [];
+            }
+            if (!Array.isArray(question.value)) {
+              question.value = [];
+            }
+            
+            question.newCreatedRecords.push(newRecordId);
+            question.value.push(newRecordId);
+
+            if (question.displayAsGrid && gridComponentRef?.instance) {
+              setGridInputs(gridComponentRef.instance, question);
+              
+            }
+          }
+        );
+      });
+    };
+  }
+  
+  question.registerFunctionOnPropertiesValueChanged(
+    ['displayAsGrid', 'addRecord', 'addInline', 'readOnly'],
+    () => updateAddInlineVisibility()
+  );
+  
+  return addInlineButton;
 };
 
 /**
