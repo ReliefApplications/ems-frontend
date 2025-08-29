@@ -19,6 +19,7 @@ export const GET_RECORD_BY_ID = gql`
       form {
         id
         structure
+        canCreateRecords
         permissions {
           recordsUnicity
         }
@@ -42,6 +43,7 @@ export const GET_FORM_STRUCTURE = gql`
     form(id: $id) {
       id
       structure
+      canCreateRecords
       metadata {
         name
         automated

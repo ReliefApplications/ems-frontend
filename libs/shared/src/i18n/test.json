@@ -181,6 +181,7 @@
 		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
 		"duplicate": "******",
+		"duplicateRecord": "******",
 		"edit": "******",
 		"email": {
 			"customTemplate": "******",
