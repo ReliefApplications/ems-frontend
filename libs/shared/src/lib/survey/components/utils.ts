@@ -257,6 +257,7 @@ export const buildAddInlineButton = (
         : 'none';
   };
   updateAddInlineVisibility();
+
   // TODO: Fix the editing problem
 
   if (
@@ -313,8 +314,12 @@ export const buildAddInlineButton = (
     };
   }
 
-  question.registerFunctionOnPropertyValueChanged('displayAsGrid', () => updateAddInlineVisibility());
-  question.registerFunctionOnPropertyValueChanged('addRecord', () => updateAddInlineVisibility());
+  question.registerFunctionOnPropertyValueChanged('displayAsGrid', () =>
+    updateAddInlineVisibility()
+  );
+  question.registerFunctionOnPropertyValueChanged('addRecord', () =>
+    updateAddInlineVisibility()
+  );
   
   return addInlineButton;
 };
