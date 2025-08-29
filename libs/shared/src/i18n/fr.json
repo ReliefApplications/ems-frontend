@@ -500,6 +500,7 @@
 		"sendEmail": "Envoyer un e-mail",
 		"separator": "Séparateur",
 		"settings": "Paramètres",
+		"sortBy": "Trier par",
 		"status": "Statut",
 		"status_active": "Actif",
 		"status_archived": "Archivé",
@@ -536,6 +537,7 @@
 			"none": "Aucun type",
 			"one": "Type"
 		},
+		"undefined": "Non défini",
 		"update": "Mettre à jour",
 		"updateObject": "Mettre à jour {{name}}",
 		"uploadObject": "Importer {{name}}",
@@ -1674,6 +1676,133 @@
 				"other": "Autre"
 			},
 			"expand": "Étendre",
+			"fileExplorer": {
+				"accessRequestForm": {
+					"alert": "<p>Personnalisez l’e-mail que les utilisateurs peuvent envoyer s’ils n’ont pas l’autorisation de téléverser de nouveaux enregistrements à l’aide du modèle.</p><p>Cet e-mail sera ouvert dans le client de messagerie par défaut de l’utilisateur.</p><p class=\"font-semibold\">Variables disponibles :</p><ul><li>{{data.user}} — remplacé par le nom de l’utilisateur.</li><li>{{data.form}} — remplacé par le nom du formulaire.</li></ul><p> Utilisez ces variables dans l’objet et le corps du message pour le personnaliser.</p><p>Si vous laissez les champs vides, un message par défaut sera utilisé.</p>",
+					"fields": {
+						"body": {
+							"label": "Corps du message"
+						},
+						"recipients": {
+							"errors": {
+								"duplicated": "Les adresses e-mail doivent être uniques.",
+								"invalid": "Veuillez saisir une adresse e-mail valide."
+							},
+							"label": "Destinataires",
+							"placeholder": "Tapez l'adresse e-mail et appuyez sur Entrée...",
+							"tooltip": "Par défaut : ems2@who.int"
+						},
+						"subject": {
+							"label": "Objet"
+						}
+					},
+					"title": "Modèle d’e-mail de demande d’accès"
+				},
+				"actions": {
+					"copyLink": "Copier le lien du fichier",
+					"download": "Télécharger le fichier",
+					"requestAccess": "Demander l'accès",
+					"requestPermission": "Demander des autorisations supplémentaires",
+					"upload": "Importer",
+					"viewAsGrid": "Afficher sous forme de grille",
+					"viewAsList": "Afficher sous forme de liste"
+				},
+				"empty": {
+					"files": "Aucun fichier trouvé",
+					"folders": "Aucun dossier trouvé"
+				},
+				"fields": {
+					"aetiology": {
+						"label": "Étiologie"
+					},
+					"confidentiality": {
+						"label": "Confidentialité"
+					},
+					"country": {
+						"label": "Pays"
+					},
+					"createdBy": {
+						"label": "Créé par"
+					},
+					"createdOn": {
+						"label": "Créé le"
+					},
+					"diseaseCondition": {
+						"label": "Maladie Affection"
+					},
+					"documentCategory": {
+						"label": "Catégorie de document"
+					},
+					"documentType": {
+						"label": "Type de document"
+					},
+					"filename": {
+						"label": "Nom du fichier"
+					},
+					"hazard": {
+						"label": "Danger"
+					},
+					"ihrCommunication": {
+						"label": "Communication IHR"
+					},
+					"imsFunction": {
+						"label": "Fonction IMS"
+					},
+					"imsRole": {
+						"label": "Rôle IMS"
+					},
+					"informationSource": {
+						"label": "Source d’information IHR - type"
+					},
+					"language": {
+						"label": "Langue"
+					},
+					"lastUpdatedBy": {
+						"label": "Dernière mise à jour par"
+					},
+					"lastUpdatedOn": {
+						"label": "Dernière mise à jour le"
+					},
+					"name": {
+						"label": "Nom"
+					},
+					"occurrence": {
+						"label": "Occurrence"
+					},
+					"occurrenceType": {
+						"label": "Type d’occurrence"
+					},
+					"region": {
+						"label": "Région"
+					},
+					"size": {
+						"label": "Taille du fichier"
+					},
+					"syndrome": {
+						"label": "Syndrome"
+					},
+					"version": {
+						"label": "Version du fichier"
+					}
+				},
+				"filter": {
+					"alert": "Définir des filtres au niveau du système qui restreignent l'ensemble des documents pour tous les utilisateurs. Ces filtres administratifs ne peuvent pas être vus ou modifiés par les utilisateurs finaux et seront appliqués en plus de toute navigation dans les dossiers ou filtrage contextuel.",
+					"title": "Filtres statiques"
+				},
+				"folderHierarchy": {
+					"alert": "Choisissez les balises à utiliser comme dossiers et organisez-les dans l'ordre de votre choix. La première balise devient le dossier de niveau supérieur, les balises suivantes créant des sous-dossiers. Les documents sont automatiquement organisés en fonction de leurs valeurs de balise.",
+					"title": "Hiérarchie des dossiers"
+				},
+				"folders": "Dossiers",
+				"formBinding": {
+					"title": "Association au formulaire"
+				},
+				"notifications": {
+					"copyLink": {
+						"success": "Lien du fichier copié dans le presse-papiers"
+					}
+				}
+			},
 			"grid": {
 				"actions": {
 					"detail": "Ouvrir le détail",

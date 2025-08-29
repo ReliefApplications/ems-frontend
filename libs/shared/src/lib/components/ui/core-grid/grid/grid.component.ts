@@ -765,6 +765,7 @@ export class GridComponent
         this.downloadService.getFile(path, file.type, file.name);
       }
     } else {
+      // Using document management
       this.documentManagementService.getFile(file);
     }
   }

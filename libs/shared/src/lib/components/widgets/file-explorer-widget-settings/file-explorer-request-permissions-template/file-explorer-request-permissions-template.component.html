@@ -1,0 +1,38 @@
+<h3>
+  {{ 'components.widget.fileExplorer.accessRequestForm.title' | translate }}
+</h3>
+<ui-alert class="block mb-4">
+  <div
+    [innerHTML]="
+      'components.widget.fileExplorer.accessRequestForm.alert' | translate
+    "
+  ></div>
+</ui-alert>
+<ng-container [formGroup]="formGroup">
+  <!-- Distribution list -->
+  <shared-file-explorer-request-permissions-recipients
+    formControlName="recipients"
+  ></shared-file-explorer-request-permissions-recipients>
+  <!-- Subject -->
+  <div uiFormFieldDirective>
+    <label>{{
+      'components.widget.fileExplorer.accessRequestForm.fields.subject.label'
+        | translate
+    }}</label>
+    <shared-editor-control
+      formControlName="subject"
+      [editorConfig]="subjectEditor"
+    ></shared-editor-control>
+  </div>
+  <!-- Body -->
+  <div uiFormFieldDirective>
+    <label>{{
+      'components.widget.fileExplorer.accessRequestForm.fields.body.label'
+        | translate
+    }}</label>
+    <shared-editor-control
+      formControlName="body"
+      [editorConfig]="bodyEditor"
+    ></shared-editor-control>
+  </div>
+</ng-container>

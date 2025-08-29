@@ -1,0 +1,7 @@
+// Only applies to current component
+:host ::ng-deep {
+  // Table cells look clickable
+  .k-grid td {
+    @apply cursor-pointer;
+  }
+}
