@@ -319,8 +319,7 @@ export const buildAddInlineButton = (
   );
   question.registerFunctionOnPropertyValueChanged('addRecord', () =>
     updateAddInlineVisibility()
-  );
-  
+  );  
   return addInlineButton;
 };
 
