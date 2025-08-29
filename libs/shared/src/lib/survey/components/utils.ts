@@ -228,6 +228,7 @@ export const buildAddButton = (
  * @param dialog The Dialog service
  * @param ngZone Angular Service to execute code inside Angular environment
  * @param document Document
+ * @param formHelpersService Form helper service
  * @returns The button DOM element
  */
 export const buildAddInlineButton = (
@@ -257,18 +258,23 @@ export const buildAddInlineButton = (
         : 'none';
   };
   
-  updateAddInlineVisibility();
+    updateAddInlineVisibility();
 
   // TODO: Fix the editing problem
-  
-  if (question.displayAsGrid && question.addRecord && question.addInline && question.addTemplate && !question.isReadOnly) {
+
+  if (
+    question.displayAsGrid &&
+    question.addRecord &&
+    question.addInline &&
+    question.addTemplate &&
+    !question.isReadOnly
+  ) {
     addInlineButton.onclick = () => {
       ngZone.run(() => {
-        
         const tempSurvey = {
           data: {},
         } as any;
-        
+
         formHelpersService.saveAsDraft(
           tempSurvey,
           question.addTemplate,
@@ -276,12 +282,12 @@ export const buildAddInlineButton = (
           (details: any) => {
             const newRecordId = details.id;
             const emptyData = {};
-            
+
             question.template = question.addTemplate;
             question.draftData = {
               ...question.draftData,
               [newRecordId]: emptyData,
-            }
+            };
             const newItem = {
               value: newRecordId,
               text: (emptyData as any)[question.displayField] || '',
@@ -290,27 +296,26 @@ export const buildAddInlineButton = (
               newItem,
               ...question.contentQuestion.choices,
             ];
-            
+
             if (!Array.isArray(question.newCreatedRecords)) {
               question.newCreatedRecords = [];
             }
             if (!Array.isArray(question.value)) {
               question.value = [];
             }
-            
+
             question.newCreatedRecords.push(newRecordId);
             question.value.push(newRecordId);
 
             if (question.displayAsGrid && gridComponentRef?.instance) {
               setGridInputs(gridComponentRef.instance, question);
-              
             }
           }
         );
       });
     };
-  }
-  
+    }
+
   question.registerFunctionOnPropertiesValueChanged(
     ['displayAsGrid', 'addRecord', 'addInline', 'readOnly'],
     () => updateAddInlineVisibility()
