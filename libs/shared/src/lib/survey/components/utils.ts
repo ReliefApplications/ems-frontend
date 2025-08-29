@@ -246,7 +246,6 @@ export const buildAddInlineButton = (
     (question.survey as SurveyModel).locale
   );
   addInlineButton.className = 'sd-btn !px-3 !py-1';
-  
   const updateAddInlineVisibility = () => {
     addInlineButton.style.display =
       question.displayAsGrid &&
@@ -258,8 +257,7 @@ export const buildAddInlineButton = (
         : 'none';
   };
   
-    updateAddInlineVisibility();
-
+  updateAddInlineVisibility();
   // TODO: Fix the editing problem
 
   if (
@@ -314,10 +312,14 @@ export const buildAddInlineButton = (
         );
       });
     };
-    }
+  }
 
-  question.registerFunctionOnPropertiesValueChanged(
-    ['displayAsGrid', 'addRecord', 'addInline', 'readOnly'],
+  question.registerFunctionOnPropertyValueChanged(
+    'displayAsGrid',
+    () => updateAddInlineVisibility()
+  );
+  question.registerFunctionOnPropertyValueChanged(
+    'addRecord',
     () => updateAddInlineVisibility()
   );
   
