@@ -146,7 +146,10 @@ export class PreviewTemplateModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dialogRef.closed.subscribe(() => {
+    this.dialogRef.closed.subscribe((value: any) => {
+      if (value && value.preventDeletion) {
+        return;
+      }
       const attachments =
         this.emailService.datasetsForm.get('attachments')?.value;
       if (attachments.files?.length) {
@@ -246,7 +249,7 @@ export class PreviewTemplateModalComponent implements OnInit {
         payload.datasets[0].navigateSettings = previewData?.navigateSettings;
       }
     }
-    this.dialogRef.close();
+    this.dialogRef.close({ preventDeletion: true });
     this.emailService.sendQuickEmail(payload).subscribe(() => {
       this.onClose();
       this.snackBar.openSnackBar(
