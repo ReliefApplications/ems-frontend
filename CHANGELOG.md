@@ -1,3 +1,11 @@
+## [2.20.2](https://github.com/ReliefApplications/ems-frontend/compare/v2.20.1...v2.20.2) (2025-08-31)
+
+
+### Bug Fixes
+
+* files in editor widget would download twice on click & uploading multiple files at once could mix the file ids  ([#2799](https://github.com/ReliefApplications/ems-frontend/issues/2799)) ([0dbd703](https://github.com/ReliefApplications/ems-frontend/commit/0dbd7034ff3056e4fc87a1c9b7ae24a2755b2d30)), closes [Ab#116765](https://github.com/Ab/issues/116765)
+* prevent deletion of files before sending emails from grid as quick action ([b85bfb4](https://github.com/ReliefApplications/ems-frontend/commit/b85bfb466529640ce401acc46e9e6657ce975374)), closes [AB#118682](https://github.com/AB/issues/118682)
+
 ## [2.20.1](https://github.com/ReliefApplications/ems-frontend/compare/v2.20.0...v2.20.1) (2025-05-21)
 
 
