@@ -76,6 +76,7 @@
 		},
 		"clear": "******",
 		"clone": "******",
+		"cloneRecord": "******",
 		"close": "******",
 		"column": {
 			"few": "******",
@@ -181,7 +182,6 @@
 		"downloadObject": "****** {{name}}",
 		"downloadTemplate": "******",
 		"duplicate": "******",
-		"duplicateRecord": "******",
 		"edit": "******",
 		"email": {
 			"customTemplate": "******",

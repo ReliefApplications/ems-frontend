@@ -15,16 +15,6 @@
             [survey]="survey"
             [surveyNext]="surveyNext || undefined"
           ></shared-form-actions>
-
-          <!-- Open form to duplicate record -->
-          <ui-button
-            *ngIf="form?.canCreateRecords && !data.compareTo"
-            variant="primary"
-            category="secondary"
-            (click)="onDuplicate()"
-          >
-            {{ 'common.duplicateRecord' | translate }}
-          </ui-button>
         </div>
       </div>
       <ui-tabs
@@ -70,6 +60,7 @@
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions">
+    <!-- If comparing record with another one -->
     <ng-container *ngIf="!loading && data.compareTo">
       <ui-button uiDialogClose variant="default">
         {{ 'common.close' | translate }}
@@ -83,6 +74,7 @@
         {{ 'components.record.history.revert' | translate }}
       </ui-button>
     </ng-container>
+    <!-- If seeing record details only -->
     <ng-container *ngIf="!loading && !data.compareTo">
       <ui-button [uiDialogClose] variant="danger">
         {{ 'common.close' | translate }}
@@ -109,6 +101,15 @@
           {{ 'common.next' | translate }}
         </ui-button>
       </ng-container>
+      <!-- Open form to duplicate record -->
+      <ui-button
+        *ngIf="form?.canCreateRecords"
+        variant="primary"
+        category="secondary"
+        (click)="onDuplicate()"
+      >
+        {{ 'common.cloneRecord' | translate }}
+      </ui-button>
       <ui-button
         category="secondary"
         variant="primary"

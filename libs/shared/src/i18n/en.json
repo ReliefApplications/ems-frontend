@@ -76,6 +76,7 @@
 		},
 		"clear": "Clear",
 		"clone": "Clone",
+		"cloneRecord": "Clone record",
 		"close": "Close",
 		"column": {
 			"few": "Columns",
@@ -181,7 +182,6 @@
 		"downloadObject": "Download {{name}}",
 		"downloadTemplate": "Get template",
 		"duplicate": "Duplicate",
-		"duplicateRecord": "Duplicate record",
 		"edit": "Edit",
 		"email": {
 			"customTemplate": "Custom template",

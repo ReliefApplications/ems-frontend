@@ -76,6 +76,7 @@
 		},
 		"clear": "Annuler",
 		"clone": "Cloner",
+		"cloneRecord": "Cloner l'enregistrement",
 		"close": "Fermer",
 		"column": {
 			"few": "Colonnes",
@@ -181,7 +182,6 @@
 		"downloadObject": "Télécharger {{name}}",
 		"downloadTemplate": "Télécharger le modèle",
 		"duplicate": "Dupliquer",
-		"duplicateRecord": "Dupliquer l'enregistrement",
 		"edit": "Modifier",
 		"email": {
 			"customTemplate": "Modèle personnalisé",
