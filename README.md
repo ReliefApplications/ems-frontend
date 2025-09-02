@@ -65,7 +65,8 @@ az staticwebapp secrets list --name <static-webapp-name> --query "properties.api
 
 Deploy code:
 ```
-npx swa deploy ./dist/apps/<app-name> --deployment-token "<insert-deployment-token>" --env production
+npm i -g @azure/static-web-apps-cli
+npx swa deploy ./dist/apps/<app-name> --deployment-token <insert-deployment-token> --env production
 ```
 
 # Useful commands
